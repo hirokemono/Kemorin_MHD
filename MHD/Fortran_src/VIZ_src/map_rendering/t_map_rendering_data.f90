@@ -13,10 +13,13 @@
 !!        integer(kind = kint), intent(in) :: num_pixel
 !!        type(map_rendering_data), intent(inout) :: map_data
 !!
+!!      subroutine set_ctl_map_rendering_param(map_define_ctl,          &
+!!     &                                       map_data)
+!!        type(pvr_section_ctl), intent(in) :: map_define_ctl
+!!        type(map_rendering_data), intent(inout) :: map_data
 !!      subroutine init_map_rendering_data                              &
-!!     &         (view_param, cbar_param, pvr_rgb, map_data)
+!!     &         (view_param, pvr_rgb, map_data)
 !!        type(pvr_view_parameter), intent(in):: view_param
-!!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_image_type), intent(in) :: pvr_rgb
 !!        type(map_rendering_data), intent(inout) :: map_data
 !!      subroutine cal_map_rendering_data(time_d, psf_nod, psf_ele,     &
@@ -47,12 +50,20 @@
       real(kind= kreal), parameter, private :: yframe = 1.8
 !
       type map_rendering_data
+        logical :: flag_zeroline = .FALSE.
+!
         real(kind= kreal) :: xmin_frame = -xframe
         real(kind= kreal) :: xmax_frame =  xframe
         real(kind= kreal) :: ymin_frame = -yframe
         real(kind= kreal) :: ymax_frame =  yframe
 !
-        real(kind = kreal) :: tangent_cylinder_theta(2)
+        logical :: flag_tangent_cylinder = .FALSE.
+        real(kind = kreal) :: tangent_cylinder_radius(2)
+        real(kind = kreal) :: tangent_cylinder_theta(2)                 &
+     &                           = (/(20.0d0/13.0d0), (7.0d0/13.0d0)/)
+!>    Color of tangent cylinder
+        real(kind = kreal) :: tangent_cylinder_rgba(4)                  &
+     &                           = (/zero,zero,zero,one/)
 !
         real(kind = kreal), allocatable :: d_map(:)
       end type map_rendering_data
@@ -90,30 +101,62 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine set_ctl_map_rendering_param(map_define_ctl,            &
+     &                                       map_data)
+!
+      use t_ctl_data_pvr_section
+!
+      type(pvr_section_ctl), intent(in) :: map_define_ctl
+      type(map_rendering_data), intent(inout) :: map_data
+!
+      real(kind = kreal) :: pi
+!
+      if(map_define_ctl%zeroline_ctl%iflag .gt. 0) then
+        map_data%flag_zeroline                                          &
+     &   = yes_flag(map_define_ctl%zeroline_ctl%charavalue)
+      end if
+!
+      if(map_define_ctl%tan_cyl_switch_ctl%iflag.gt.0) then
+        map_data%flag_tangent_cylinder                                  &
+     &   = yes_flag(map_define_ctl%tan_cyl_switch_ctl%charavalue)
+      end if
+!
+      if( (map_define_ctl%tangent_cylinder_inner_ctl%iflag              &
+     &  * map_define_ctl%tangent_cylinder_outer_ctl%iflag) .gt. 0) then
+        map_data%tangent_cylinder_radius(1)                             &
+     &   = map_define_ctl%tangent_cylinder_outer_ctl%realvalue
+        map_data%tangent_cylinder_radius(2)                             &
+     &   = map_define_ctl%tangent_cylinder_inner_ctl%realvalue
+      end if
+!
+      pi = four*atan(one)
+      map_data%tangent_cylinder_theta(1)                                &
+     &          = asin(map_data%tangent_cylinder_radius(2)              &
+     &               / map_data%tangent_cylinder_radius(1))
+      map_data%tangent_cylinder_theta(2)                                &
+     &          = pi - map_data%tangent_cylinder_theta(1)
+!
+      end subroutine set_ctl_map_rendering_param
+!
+!  ---------------------------------------------------------------------
+!
       subroutine init_map_rendering_data                                &
-     &         (view_param, cbar_param, pvr_rgb, map_data)
+     &         (view_param, pvr_rgb, map_data)
 !
       use t_psf_patch_data
       use t_pvr_image_array
 !
       type(pvr_view_parameter), intent(in):: view_param
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_image_type), intent(in) :: pvr_rgb
 !
       type(map_rendering_data), intent(inout) :: map_data
 !
       real(kind = kreal) :: xtmp, ytmp
-      real(kind = kreal) :: aspect, pi
+      real(kind = kreal) :: aspect
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
-        pi = four*atan(one)
-        map_data%tangent_cylinder_theta(1)                              &
-     &            = asin(cbar_param%tangent_cylinder_radius(2)          &
-     &                 / cbar_param%tangent_cylinder_radius(1))
-        map_data%tangent_cylinder_theta(2)                              &
-     &            = pi - map_data%tangent_cylinder_theta(1)
 !
       aspect =  view_param%perspective_xy_ratio
 !
@@ -173,31 +216,34 @@
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
      &    pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl,   &
      &    map_e1)
+      call dealloc_map_patch_from_1patch(map_e1)
+!
       call map_value_to_rgb                                             &
      &   (color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),    &
      &    pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl)
 !
+      if(map_data%flag_zeroline) then
         call draw_aitoff_map_zeroline                                   &
      &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl)
-      call dealloc_map_patch_from_1patch(map_e1)
+      end if
 !
-!      if(cbar_param%flag_draw_tangent_cylinder) then
+      if(map_data%flag_tangent_cylinder) then
         call draw_aitoff_lat_line                                       &
      &     (map_data%xmin_frame, map_data%xmax_frame,                   &
      &      map_data%ymin_frame, map_data%ymax_frame,                   &
      &      map_data%tangent_cylinder_theta(1),                         &
-     &      cbar_param%tangent_cylinder_rgba,                           &
+     &      map_data%tangent_cylinder_rgba,                             &
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
         call draw_aitoff_lat_line                                       &
      &     (map_data%xmin_frame, map_data%xmax_frame,                   &
      &      map_data%ymin_frame, map_data%ymax_frame,                   &
      &      map_data%tangent_cylinder_theta(2),                         &
-     &      cbar_param%tangent_cylinder_rgba,                           &
+     &      map_data%tangent_cylinder_rgba,                             &
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
-!      end if
+      end if
 !
       if(cbar_param%flag_draw_mapgrid) then
         call draw_aitoff_map_frame                                      &

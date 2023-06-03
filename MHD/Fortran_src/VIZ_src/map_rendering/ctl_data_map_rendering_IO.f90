@@ -34,26 +34,17 @@
 !!    output_field       magnetic_field
 !!    output_component   r
 !!
-!!    begin surface_define
-!!      section_method    equation
-!!  
-!!      array coefs_ctl  10
-!!        coefs_ctl  x2     1.0
-!!        coefs_ctl  y2     1.0
-!!        coefs_ctl  z2     0.0
-!!        coefs_ctl  xy     0.0
-!!        coefs_ctl  yz     0.0
-!!        coefs_ctl  zx     0.0
-!!        coefs_ctl  x      0.0
-!!        coefs_ctl  y      0.0
-!!        coefs_ctl  z      0.0
-!!        coefs_ctl  const  1.0
-!!      end array coefs_ctl
-!!  
-!!      array section_area_ctl 1
-!!        section_area_ctl   outer_core   end
-!!      end array section_area_ctl
-!!    end surface_define
+!!    begin section_ctl
+!!      file surface_define     ctl_psf_eq
+!!      begin surface_define
+!!        ...
+!!      end surface_define
+!!
+!!      zeroline_switch_ctl           On
+!!      tangent_cylinder_switch_ctl   On
+!!      inner_radius_ctl              0.53846
+!!      outer_radius_ctl              1.53846
+!!    end section_ctl
 !!
 !!    begin map_projection_ctl
 !!      begin image_size_ctl
@@ -163,9 +154,8 @@
       use t_control_array_real
       use t_control_array_character
       use t_control_array_charareal
-      use t_control_array_character2
-      use t_control_data_4_psf_def
       use t_control_data_4_map
+      use t_ctl_data_pvr_section
       use calypso_mpi
 !
       implicit  none
@@ -176,7 +166,7 @@
       character(len=kchara), parameter, private                         &
      &                  :: hd_map_image_format = 'map_image_format'
       character(len=kchara), parameter, private                         &
-     &                  :: hd_surface_define =  'surface_define'
+     &                  :: hd_section_ctl =      'section_ctl'
 !
       character(len=kchara), parameter, private                         &
      &                  :: hd_map_output_field = 'output_field'
@@ -202,7 +192,7 @@
 !
       use t_ctl_data_pvr_colormap_bar
       use ctl_file_pvr_modelview_IO
-      use ctl_data_section_def_IO
+      use ctl_data_pvr_section_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -223,8 +213,8 @@
      &     (id_control, hd_map_colormap_file, map_c%fname_cmap_cbar_c,  &
      &      map_c%cmap_cbar_c, c_buf)
 !
-        call read_section_def_control(id_control, hd_surface_define,    &
-     &                                map_c%map_def_c, c_buf)
+        call read_pvr_section_ctl(id_control, hd_section_ctl,           &
+     &                            map_c%map_define_ctl, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_map_image_prefix,            &
      &      map_c%map_image_prefix_ctl)
@@ -247,7 +237,7 @@
 !
       use t_ctl_data_pvr_colormap_bar
       use ctl_file_pvr_modelview_IO
-      use ctl_data_section_def_IO
+      use ctl_data_pvr_section_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -278,8 +268,8 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_map_output_comp, map_c%map_comp_ctl)
 !
-      call write_section_def_control(id_control, hd_surface_define,     &
-     &                               map_c%map_def_c, level)
+      call write_pvr_section_ctl(id_control, hd_section_ctl,            &
+     &                           map_c%map_define_ctl, level)
 !
       call sel_write_ctl_modelview_file(id_control, hd_map_projection,  &
      &    map_c%fname_mat_ctl, map_c%mat, level)
@@ -309,7 +299,7 @@
 !
       call set_control_labels(hd_map_image_prefix, names( 1))
       call set_control_labels(hd_map_image_format, names( 2))
-      call set_control_labels(hd_surface_define,   names( 3))
+      call set_control_labels(hd_section_ctl,      names( 3))
 !
       call set_control_labels(hd_map_output_field,   names( 4))
       call set_control_labels(hd_map_output_comp,    names( 5))

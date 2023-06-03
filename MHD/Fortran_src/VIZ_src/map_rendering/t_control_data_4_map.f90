@@ -27,27 +27,35 @@
 !!    output_field       magnetic_field
 !!    output_component   r
 !!
-!!    begin surface_define
-!!      section_method    equation
+!!    begin section_ctl
+!!      file surface_define     ctl_psf_eq
+!!      begin surface_define
+!!        section_method    equation
 !!  
-!!      array coefs_ctl  10
-!!        coefs_ctl  x2     1.0
-!!        coefs_ctl  y2     1.0
-!!        coefs_ctl  z2     0.0
-!!        coefs_ctl  xy     0.0
-!!        coefs_ctl  yz     0.0
-!!        coefs_ctl  zx     0.0
-!!        coefs_ctl  x      0.0
-!!        coefs_ctl  y      0.0
-!!        coefs_ctl  z      0.0
-!!        coefs_ctl  const  1.0
-!!      end array coefs_ctl
+!!        array coefs_ctl  10
+!!          coefs_ctl  x2     1.0
+!!          coefs_ctl  y2     1.0
+!!          coefs_ctl  z2     0.0
+!!          coefs_ctl  xy     0.0
+!!          coefs_ctl  yz     0.0
+!!          coefs_ctl  zx     0.0
+!!          coefs_ctl  x      0.0
+!!          coefs_ctl  y      0.0
+!!          coefs_ctl  z      0.0
+!!          coefs_ctl  const  1.0
+!!        end array coefs_ctl
 !!  
-!!      array section_area_ctl 1
-!!        section_area_ctl   outer_core   end
-!!      end array section_area_ctl
-!!    end surface_define
-!!  
+!!        array section_area_ctl 1
+!!          section_area_ctl   outer_core   end
+!!        end array section_area_ctl
+!!      end surface_define
+!!
+!!      zeroline_switch_ctl           On
+!!      tangent_cylinder_switch_ctl   On
+!!      inner_radius_ctl              0.53846
+!!      outer_radius_ctl              1.53846
+!!    end section_ctl
+!!
 !!    begin map_projection_ctl
 !!      begin image_size_ctl
 !!        x_pixel_ctl  640
@@ -146,7 +154,7 @@
       use skip_comment_f
       use t_read_control_elements
       use t_control_array_character
-      use t_control_data_4_psf_def
+      use t_ctl_data_pvr_section
       use t_ctl_data_4_view_transfer
       use t_ctl_data_pvr_colormap_bar
 !
@@ -155,7 +163,7 @@
 !
       type map_ctl
 !>        Structure of cross section definition
-        type(psf_define_ctl) :: map_def_c
+        type(pvr_section_ctl) :: map_define_ctl
 !
 !>        Structure for file prefix
         type(read_character_item) :: map_image_prefix_ctl
@@ -193,7 +201,7 @@
 !
       type(map_ctl), intent(inout) :: map_c
 !
-      call init_psf_def_ctl_stract(map_c%map_def_c)
+      call init_psf_def_ctl_stract(map_c%map_define_ctl%psf_def_c)
 !
       end subroutine init_map_ctl_stract
 !
@@ -204,7 +212,7 @@
       type(map_ctl), intent(inout) :: map_c
 !
 !
-      call dealloc_cont_dat_4_psf_def(map_c%map_def_c)
+      call dealloc_pvr_section_ctl(map_c%map_define_ctl)
       call dealloc_view_transfer_ctl(map_c%mat)
       call deallocate_pvr_cmap_cbar(map_c%cmap_cbar_c)
 !
@@ -226,8 +234,8 @@
       type(map_ctl), intent(inout) :: new_map_c
 !
 !
-      call dup_control_4_psf_def(org_map_c%map_def_c,                   &
-     &                           new_map_c%map_def_c)
+      call dup_pvr_section_ctl(org_map_c%map_define_ctl,                &
+     &                         new_map_c%map_define_ctl)
       call dup_view_transfer_ctl(org_map_c%mat, new_map_c%mat)
       call dup_pvr_cmap_cbar(org_map_c%cmap_cbar_c,                     &
      &                       new_map_c%cmap_cbar_c)

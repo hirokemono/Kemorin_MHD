@@ -22,7 +22,7 @@ begin volume_rendering   (BMP or PNG)
   end  plot_area_ctl
 !
 !
-  array section_ctl   2
+  array section_ctl
     begin section_ctl
       opacity_ctl       0.5
       file surface_define    ctl_psf_z0

@@ -86,15 +86,6 @@
 !
 !>    Draw flag for map grid
         logical :: flag_draw_mapgrid = .FALSE.
-
-!>    Draw flag for tangent cylinder
-        logical :: flag_draw_tangent_cylinder = .FALSE.
-!>    Color of tangent cylinder
-        real(kind = kreal) :: tangent_cylinder_rgba(4)                  &
-     &                           = (/zero,zero,zero,one/)
-!>    Radius for tangent cylinder (1: outer radius 2: inner radius)
-        real(kind = kreal) :: tangent_cylinder_radius(2)                &
-     &                           = (/(20.0d0/13.0d0), (7.0d0/13.0d0)/)
       end type pvr_colorbar_parameter
 !
 !  ---------------------------------------------------------------------

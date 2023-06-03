@@ -50,7 +50,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_map_mesh(num_map, view_param, cbar_param,       &
+      subroutine output_map_mesh(num_map, view_param,                   &
      &          psf_mesh, psf_dat, map_data, pvr_rgb, SR_sig)
 !
       use m_elapsed_labels_4_VIZ
@@ -63,7 +63,6 @@
       integer(kind= kint), intent(in) :: num_map
       type(psf_local_data), intent(in) :: psf_mesh(num_map)
       type(pvr_view_parameter), intent(in):: view_param(num_map)
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param(num_map)
 !
       type(psf_results), intent(inout) :: psf_dat(num_map)
       type(map_rendering_data), intent(inout) :: map_data(num_map)
@@ -78,7 +77,7 @@
         call alloc_pvr_image_array(view_param(i_map)%n_pvr_pixel,       &
      &                             pvr_rgb(i_map))
         call init_map_rendering_data(view_param(i_map),                 &
-     &      cbar_param(i_map), pvr_rgb(i_map), map_data(i_map))
+     &                               pvr_rgb(i_map), map_data(i_map))
         call alloc_scalar_on_map(pvr_rgb(i_map)%num_pixel_xy,           &
      &                           map_data(i_map))
       end do

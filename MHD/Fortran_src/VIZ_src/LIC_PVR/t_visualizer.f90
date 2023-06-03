@@ -73,6 +73,8 @@
       use t_shape_functions
       use t_jacobians
       use volume_rendering
+      use map_projection
+      use map_projection
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
@@ -130,6 +132,7 @@
      &                         VIZ_DAT, vizs, m_SR)
 !
       use volume_rendering
+      use map_projection
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step

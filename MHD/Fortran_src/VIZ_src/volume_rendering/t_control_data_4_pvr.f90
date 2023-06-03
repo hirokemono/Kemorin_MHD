@@ -51,11 +51,11 @@
 !!   ...
 !!  end colorbar_ctl
 !!!
-!!  array section_ctl  2
-!!    file section_ctl     ctl_psf_eq
-!!    begin section_ctl
+!!  array section_ctl
+!!    file surface_define     ctl_psf_eq
+!!    begin surface_define
 !!      ...
-!!    end section_ctl
+!!    end surface_define
 !!  end array section_ctl
 !!!
 !!  array isosurface_ctl  2

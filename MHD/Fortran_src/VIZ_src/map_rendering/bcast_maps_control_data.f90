@@ -62,8 +62,8 @@
       use t_control_data_4_map
       use calypso_mpi_int
       use calypso_mpi_char
-      use bcast_section_control_data
       use bcast_control_arrays
+      use bcast_ctl_data_pvr_surfaces
       use bcast_ctl_data_view_trans
       use bcast_pvr_color_ctl
       use transfer_to_long_integers
@@ -81,13 +81,12 @@
       call bcast_view_transfer_ctl(map_c%mat)
       call bcast_pvr_colorbar_ctl(map_c%cmap_cbar_c%cbar_ctl)
       call bcast_pvr_colordef_ctl(map_c%cmap_cbar_c%color)
+      call bcast_pvr_section_ctl(map_c%map_define_ctl)
 !
       call bcast_ctl_type_c1(map_c%map_image_prefix_ctl)
       call bcast_ctl_type_c1(map_c%map_image_fmt_ctl)
       call bcast_ctl_type_c1(map_c%map_field_ctl)
       call bcast_ctl_type_c1(map_c%map_comp_ctl)
-!
-      call bcast_section_def_control(map_c%map_def_c)
 !
       end subroutine bcast_map_control_data
 !

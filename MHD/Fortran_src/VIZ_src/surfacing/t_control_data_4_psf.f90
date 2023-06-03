@@ -133,6 +133,8 @@
 !
 !
       type psf_ctl
+!>        file name for surface definision
+        character(len=kchara) :: fname_section_ctl
 !>        Structure of cross section definition
         type(psf_define_ctl) :: psf_def_c
 !>        Structure of fields on isosurface control
@@ -200,8 +202,9 @@
       call copy_chara_ctl(org_psf_c%psf_output_type_ctl,                &
      &                    new_psf_c%psf_output_type_ctl)
 !
-      new_psf_c%i_psf_ctl =        org_psf_c%i_psf_ctl
-      new_psf_c%i_output_field =   org_psf_c%i_output_field
+      new_psf_c%fname_section_ctl = org_psf_c%fname_section_ctl
+      new_psf_c%i_psf_ctl =         org_psf_c%i_psf_ctl
+      new_psf_c%i_output_field =    org_psf_c%i_output_field
 !
       end subroutine dup_control_4_psf
 !

@@ -67,6 +67,7 @@
      &                               VIZ_DAT, viz_ctls, vizs, m_SR)
 !
       use volume_rendering
+      use map_projection
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
@@ -117,6 +118,7 @@
      &                          nod_fld, VIZ_DAT, vizs, m_SR)
 !
       use volume_rendering
+      use map_projection
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
