@@ -90,7 +90,8 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      pvr_sect_ctl%psf_def_c%i_surface_define = 0
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      if(pvr_sect_ctl%i_pvr_sect_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
