@@ -149,7 +149,6 @@
       if (iflag_debug.eq.1) write(*,*) 'reset_update_flag'
       call reset_update_flag                                            &
      &   (nod_fld, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs)
-      call calypso_mpi_barrier
 !
 !     ---- magnetic field update
 !
