@@ -109,6 +109,7 @@
         if(check_end_flag(c_buf1, hd_block)) exit
         call read_section_def_control(id_control, hd_block,             &
      &                                psf_def_c, c_buf1)
+        if(psf_def_c%i_surface_define .gt. 0) exit
       end do
 !
       close(id_control)
