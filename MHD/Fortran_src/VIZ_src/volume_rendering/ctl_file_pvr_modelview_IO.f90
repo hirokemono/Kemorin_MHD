@@ -209,7 +209,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      write(*,*) 'Modelview control: ', trim(file_name)
+      write(*,*) trim(file_name)
       open(id_control, file = file_name, status='old')
 !
       do 
@@ -236,7 +236,7 @@
       integer(kind = kint) :: level
 !
 !
-      write(*,*) 'Modelview control: ', trim(file_name)
+      write(*,*) trim(file_name)
       open(id_control, file = file_name)
 !
       level = 0
