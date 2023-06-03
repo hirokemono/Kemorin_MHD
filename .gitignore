@@ -15,5 +15,4 @@ config.status
 
 *.mod
 *.xcbkptlist
-
-*.xcbkptlist
+*.xcuserstate
