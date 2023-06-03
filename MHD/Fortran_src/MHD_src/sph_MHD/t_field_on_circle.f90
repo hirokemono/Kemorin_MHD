@@ -164,8 +164,7 @@
      &   (sph%sph_rj%nidx_rj(1), sph%sph_rj%radius_1d_rj_r,             &
      &    cdat%leg_circ, cdat%circle)
 !
-      call alloc_work_circle_transform(my_rank, cdat%d_circle,          &
-     &                                 cdat%leg_circ)
+      call alloc_work_circle_transform(cdat%d_circle, cdat%leg_circ)
       call init_legendre_on_circle(sph, comms_sph, trans_p,             &
      &                             cdat%leg_circ, SR_sig, SR_r)
 !
@@ -238,7 +237,7 @@
       do kr = 1, nri - 1
         if(radius_1d_rj_r(kr) .eq. leg_circ%r_circle) then
           circle%kr_gl_rcirc_in =  kr
-          circle%kr_gl_rcirc_out = izero
+          circle%kr_gl_rcirc_out = kr
           circle%coef_gl_rcirc_in =  one
           circle%coef_gl_rcirc_out = zero
           exit
