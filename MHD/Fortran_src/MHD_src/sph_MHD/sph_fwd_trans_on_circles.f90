@@ -65,13 +65,11 @@
       integer(kind = kint) :: i
 !
 !
-      call calypso_mpi_barrier
       do i = 1, num_circles
         call circle_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld,         &
      &    cdat(i)%ipol_circle_trns, cdat(i)%circle, cdat(i)%leg_circ,   &
      &    cdat(i)%d_circle, cdat(i)%WK_circle_fft)
       end do
-      call calypso_mpi_barrier
 !
       end subroutine sph_forward_trans_on_circles
 !
