@@ -32,7 +32,7 @@
 !!        type(pvr_image_type), intent(inout) :: map_rgb(num_map)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
-      module collect_psf_data
+      module multi_map_projections
 !
       use calypso_mpi
       use m_precision
