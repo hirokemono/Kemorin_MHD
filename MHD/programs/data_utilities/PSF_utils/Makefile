@@ -104,7 +104,9 @@ MOD_MAP_PG = \
 drmap_fem.o \
 set_rgb_colors.o \
 m_psf_results.o \
-t_norms_4_psf.o
+t_norms_4_psf.o \
+t_map_patch_from_1patch.o \
+map_patch_from_1patch.o
 
 MOD_LINE_ON_PSF = \
 section_from_psf.o \

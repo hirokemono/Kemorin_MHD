@@ -21,7 +21,7 @@
 
 #define NLBL_COLORMAP_CTL     13
 #define NLBL_LIGHTING_CTL      4
-#define NLBL_PVR_COLORBAR_CTL  8
+#define NLBL_PVR_COLORBAR_CTL  9
 #define NLBL_CMAP_CBAR_CTL     2
 
 struct colormap_ctl_c{
@@ -73,6 +73,7 @@ struct pvr_colorbar_ctl_c{
 	
 	struct chara_ctl_item *axis_switch_ctl;
     struct chara_ctl_item *time_switch_ctl;
+    struct chara_ctl_item *mapgrid_switch_ctl;
 };
 
 struct pvr_colormap_bar_ctl_c{

@@ -30,6 +30,7 @@ struct time_data_control_c{
     struct int_ctl_item *i_step_pvr_c;
     struct int_ctl_item *i_step_psf_c;
     struct int_ctl_item *i_step_iso_c;
+    struct int_ctl_item *i_step_map_c;
     struct int_ctl_item *i_step_ucd_c;
     struct int_ctl_item *i_step_fline_c;
     struct int_ctl_item *i_step_lic_c;
@@ -56,6 +57,7 @@ struct time_data_control_c{
     struct real_ctl_item *delta_t_field_c;
     struct real_ctl_item *delta_t_psf_c;
     struct real_ctl_item *delta_t_iso_c;
+    struct real_ctl_item *delta_t_map_c;
     struct real_ctl_item *delta_t_pvr_c;
     struct real_ctl_item *delta_t_fline_c;
     struct real_ctl_item *delta_t_lic_c;

@@ -105,9 +105,13 @@ label[0]   colormap_ctl
 label[1]   colorbar_ctl 
 
 Check pvr_ctl_labls->label_pvr_section
-ctl_list->num_labels 2 
+ctl_list->num_labels 
 label[0]   surface_define 
 label[1]   opacity_ctl 
+label[2]   zeroline_switch_ctl 
+label[3]   tangent_cylinder_switch_ctl 
+label[4]   inner_radius_ctl 
+label[5]   outer_radius_ctl 
 
 Check pvr_ctl_labls->label_pvr_isosurf
 ctl_list->num_labels 3 

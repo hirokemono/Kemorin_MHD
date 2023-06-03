@@ -210,6 +210,7 @@
 !      if(my_rank .eq. 0) then
 !        write(*,*) 't_VIZ_T%viz_step%PSF_t', t_VIZ_T%viz_step%PSF_t
 !        write(*,*) 't_VIZ_T%viz_step%ISO_t', t_VIZ_T%viz_step%ISO_t
+!        write(*,*) 't_VIZ_T%viz_step%MAP_t', t_VIZ_T%viz_step%MAP_t
 !        write(*,*) 't_VIZ_T%viz_step%PVR_t', t_VIZ_T%viz_step%PVR_t
 !        write(*,*) 't_VIZ_T%viz_step%FLINE_t',t_VIZ_T%viz_step%FLINE_t
 !        write(*,*) 't_VIZ_T%viz_step%LIC_t', t_VIZ_T%viz_step%LIC_t

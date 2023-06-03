@@ -138,7 +138,7 @@
       subroutine set_primary_psf_format_flag_f(name)  bind(c)
 !
       use skip_comment_f
-      use t_control_params_4_psf
+      use set_sections_file_ctl
 !
       character(C_CHAR), intent(inout) :: name(*)
 !
@@ -156,7 +156,7 @@
       subroutine set_primary_iso_format_flag_f(name)  bind(c)
 !
       use skip_comment_f
-      use t_control_params_4_iso
+      use set_isosurface_file_ctl
 !
       character(C_CHAR), intent(inout) :: name(*)
 !

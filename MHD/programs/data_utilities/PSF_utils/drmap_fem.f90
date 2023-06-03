@@ -13,13 +13,13 @@
       use m_isoline_dat_pg
       use m_psf_results
       use t_ctl_data_plot_pg
+      use t_map_patch_from_1patch
       use set_control_draw_pg
       use set_components_flags
       use contour_fem_pg
       use drcap_pg
       use draw_colorbar_pg
       use set_parallel_file_name
-      use set_map_from_1patch
       use draw_mapframe_pg
       use map_contour_fem_pg
 !
@@ -29,6 +29,7 @@
       implicit none
 !
       type(controls_with_pgplot), save :: pg_ctl1
+      type(map_patches_for_1patch), save :: map_e_pg
 !
       integer(kind = kint) :: iw, iw2, iw3
       integer(kind = kint) :: istep, i_field, ist_comp
@@ -66,6 +67,7 @@
         call pgsubp(iw2,2)
       endif
 !*
+      call alloc_map_patch_from_1patch(ione, map_e_pg)
 !
 !*  ----------  main loop for graphic  ---------------
 !*
@@ -172,7 +174,7 @@
 !
               call fill_tri_map(idisp_mode, icolor_mode, num_color_pg,  &
      &            nnod_pg, nele_pg, psf_u%psf_nod%xx, psf_u%psf_ele%ie, &
-     &            cont_pg, xmax_pg, xmin_pg)
+     &            cont_pg, xmax_pg, xmin_pg, map_e_pg)
 !
 !   ------- draw flame  ---------------------------------
 !
@@ -183,7 +185,7 @@
               call drawline_map_fem(idisp_mode, icolor_mode,            &
      &            num_color_pg, nnod_pg, nele_pg, psf_u%psf_nod%xx,     &
      &            psf_u%psf_ele%ie, cont_pg, num_line_pg(iw), xc,       &
-     &            xmax_pg, xmin_pg)
+     &            xmax_pg, xmin_pg, map_e_pg)
 !
 !  ----------  draw colorbar
               call draw_colorbar(idisp_mode, icolor_mode, num_color_pg, &
@@ -199,6 +201,7 @@
           call deallocate_pg_grid
 !
       end do
+      call dealloc_map_patch_from_1patch(map_e_pg)
 !*
       call pgclos
 !*

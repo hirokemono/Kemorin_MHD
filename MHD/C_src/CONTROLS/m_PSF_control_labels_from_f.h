@@ -26,6 +26,17 @@ label[2]   surface_define
 label[3]   output_field_define 
 label[4]   psf_file_head 
 
+Check map_ctl_lbls->label_map_ctl
+ctl_list->num_labels 8
+label[0]   map_image_prefix 
+label[1]   psf_output_type 
+label[2]   output_field 
+label[3]   output_component 
+label[4]   surface_define
+label[5]   map_projection_ctl 
+label[6]   map_color_ctl 
+label[7]   colorbar_ctl 
+
 Check psf_ctl_lbls->label_fld_on_psf_ctl
 ctl_list->num_labels 3 
 label[0]   result_type 

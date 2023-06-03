@@ -46,6 +46,7 @@ load_MHD_control_c.o: \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_ISO_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_iso_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_data_MAP_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_FLINE_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_fline_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
@@ -188,6 +189,7 @@ t_SGS_MHD_control_c.o: \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_ISO_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_iso_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_data_MAP_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_FLINE_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_fline_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
@@ -479,6 +481,20 @@ t_control_data_LIC_pvr_c.o: \
   $(C_SRCDIR)/CONTROLS/m_LIC_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_kernel_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+t_control_data_MAP_ctl_list.o: \
+  $(C_SRCDIR)/CONTROLS/t_control_data_MAP_ctl_list.c \
+  $(C_SRCDIR)/CONTROLS/t_control_data_MAP_ctl_list.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_data_4_psf_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
+  $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_PSF_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_PSF_ctl_list.c \
   $(C_SRCDIR)/CONTROLS/t_control_data_PSF_ctl_list.h \
@@ -605,6 +621,7 @@ t_control_data_visualizer_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_ISO_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_iso_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_data_MAP_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_FLINE_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_fline_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int2_IO.h \
@@ -644,6 +661,7 @@ t_control_data_vizs_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_ISO_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_iso_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_data_MAP_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_FLINE_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_fline_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \

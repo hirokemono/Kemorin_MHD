@@ -6,8 +6,9 @@ LIB_VIZ =       -lkemo_viz
 LIB_VIZ_FILE = libkemo_viz.a
 
 SUBDIRS = \
-surfacing       \
+surfacing        \
 fieldline        \
+map_rendering    \
 volume_rendering \
 LIC_PVR          \
 \
@@ -61,6 +62,7 @@ mod_list:
 	@echo '$$(MOD_FIELDLINE)'  \\ >> $(MAKENAME)
 	@echo '$$(MOD_PVR)'        \\ >> $(MAKENAME)
 	@echo '$$(MOD_LIC)'        \\ >> $(MAKENAME)
+	@echo '$$(MOD_MAP)'        \\ >> $(MAKENAME)
 	@echo '$$(MOD_VIZ_F2003)'  \\ >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	

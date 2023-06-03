@@ -15,6 +15,7 @@
 #include "control_elements_IO_c.h"
 #include "t_control_data_PSF_ctl_list.h"
 #include "t_control_data_ISO_ctl_list.h"
+#include "t_control_data_MAP_ctl_list.h"
 #include "t_control_data_FLINE_ctl_list.h"
 #include "t_control_data_PVR_ctl_list.h"
 #include "t_control_data_LIC_ctl_list.h"
@@ -26,6 +27,7 @@ struct visualizers_ctl_c{
     
     struct PSF_ctl_list psf_ctl_list;
     struct ISO_ctl_list iso_ctl_list;
+    struct MAP_ctl_list map_ctl_list;
     struct PVR_ctl_list pvr_ctl_list;
     struct LIC_PVR_ctl_list lic_ctl_list;
     struct FLINE_ctl_list fline_ctl_list;

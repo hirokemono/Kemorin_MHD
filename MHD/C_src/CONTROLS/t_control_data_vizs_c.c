@@ -7,17 +7,18 @@
 
 #include "t_control_data_vizs_c.h"
 
-#define NLBL_VIZ_CTL  7
+#define NLBL_VIZ_CTL  8
 
 const char label_viz_ctl[NLBL_VIZ_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"cross_section_ctl"},
 	/*[ 1]*/	{"isosurface_ctl"},
-	/*[ 2]*/	{"fieldline"},
-	/*[ 3]*/	{"volume_rendering"},
-	/*[ 4]*/	{"LIC_rendering"},
+    /*[ 2]*/    {"map_rendering_ctl"},
+	/*[ 3]*/	{"fieldline"},
+	/*[ 4]*/	{"volume_rendering"},
+	/*[ 5]*/	{"LIC_rendering"},
 	
-	/*[ 5]*/	{"surface_rendering"},
-	/*[ 6]*/	{"isosurf_rendering"}
+	/*[ 6]*/	{"surface_rendering"},
+	/*[ 7]*/	{"isosurf_rendering"}
 };
 
 
@@ -44,6 +45,7 @@ struct visualizers_ctl_c * init_vizs_ctl_c(){
 	
 	init_PSF_ctl_list(&viz_c->psf_ctl_list);
 	init_ISO_ctl_list(&viz_c->iso_ctl_list);
+    init_MAP_ctl_list(&viz_c->map_ctl_list);
 	init_PVR_ctl_list(&viz_c->pvr_ctl_list);
 	init_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	init_FLINE_ctl_list(&viz_c->fline_ctl_list);
@@ -55,6 +57,7 @@ void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	
 	clear_PSF_ctl_list(&viz_c->psf_ctl_list);
 	clear_ISO_ctl_list(&viz_c->iso_ctl_list);
+    clear_MAP_ctl_list(&viz_c->map_ctl_list);
 	clear_PVR_ctl_list(&viz_c->pvr_ctl_list);
 	clear_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	clear_FLINE_ctl_list(&viz_c->fline_ctl_list);
@@ -71,12 +74,13 @@ void read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF],
 		
 		iflag = read_PSF_ctl_list(fp, buf, label_viz_ctl[ 0], &viz_c->psf_ctl_list);
 		iflag = read_ISO_ctl_list(fp, buf, label_viz_ctl[ 1], &viz_c->iso_ctl_list);
-		iflag = read_PVR_ctl_list(fp, buf, label_viz_ctl[ 3], &viz_c->pvr_ctl_list);
-		iflag = read_LIC_PVR_ctl_list(fp, buf, label_viz_ctl[ 4], &viz_c->lic_ctl_list);
-		iflag = read_FLINE_ctl_list(fp, buf, label_viz_ctl[ 2], &viz_c->fline_ctl_list);
+        iflag = read_MAP_ctl_list(fp, buf, label_viz_ctl[ 2], &viz_c->map_ctl_list);
+		iflag = read_PVR_ctl_list(fp, buf, label_viz_ctl[ 4], &viz_c->pvr_ctl_list);
+		iflag = read_LIC_PVR_ctl_list(fp, buf, label_viz_ctl[ 5], &viz_c->lic_ctl_list);
+		iflag = read_FLINE_ctl_list(fp, buf, label_viz_ctl[ 3], &viz_c->fline_ctl_list);
 		
-		iflag = read_PSF_ctl_list(fp, buf, label_viz_ctl[ 5], &viz_c->psf_ctl_list);
-		iflag = read_ISO_ctl_list(fp, buf, label_viz_ctl[ 6], &viz_c->iso_ctl_list);
+		iflag = read_PSF_ctl_list(fp, buf, label_viz_ctl[ 6], &viz_c->psf_ctl_list);
+		iflag = read_ISO_ctl_list(fp, buf, label_viz_ctl[ 7], &viz_c->iso_ctl_list);
 	};
 	viz_c->iflag_use = 1;
     return;
@@ -91,9 +95,10 @@ int write_vizs_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_PSF_ctl_list(fp, level, label_viz_ctl[ 0], &viz_c->psf_ctl_list);
 	level = write_ISO_ctl_list(fp, level, label_viz_ctl[ 1], &viz_c->iso_ctl_list);
-	level = write_PVR_ctl_list(fp, level, label_viz_ctl[ 3], &viz_c->pvr_ctl_list);
-	level = write_LIC_PVR_ctl_list(fp, level, label_viz_ctl[ 4], &viz_c->lic_ctl_list);
-	level = write_FLINE_ctl_list(fp, level, label_viz_ctl[ 2], &viz_c->fline_ctl_list);
+    level = write_MAP_ctl_list(fp, level, label_viz_ctl[ 2], &viz_c->map_ctl_list);
+	level = write_PVR_ctl_list(fp, level, label_viz_ctl[ 4], &viz_c->pvr_ctl_list);
+	level = write_LIC_PVR_ctl_list(fp, level, label_viz_ctl[ 5], &viz_c->lic_ctl_list);
+	level = write_FLINE_ctl_list(fp, level, label_viz_ctl[ 3], &viz_c->fline_ctl_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -103,6 +108,7 @@ void rename_vizs_ctl_subfiles(struct visualizers_ctl_c *viz_c){
 	
 	rename_PSF_subfile_list(&viz_c->psf_ctl_list);
 	rename_ISO_subfile_list(&viz_c->iso_ctl_list);
+    rename_MAP_subfile_list(&viz_c->map_ctl_list);
 	rename_PVR_subfile_list(&viz_c->pvr_ctl_list);
 	rename_LIC_PVR_subfile_list(&viz_c->lic_ctl_list);
 	rename_FLINE_subfile_list(&viz_c->fline_ctl_list);
@@ -113,6 +119,7 @@ void read_vizs_ctl_files_c(char buf[LENGTHBUF], struct visualizers_ctl_c *viz_c)
 	
 	read_PSF_subfile_list(buf, &viz_c->psf_ctl_list);
 	read_ISO_subfile_list(buf, &viz_c->iso_ctl_list);
+    read_MAP_subfile_list(buf, &viz_c->map_ctl_list);
 	read_PVR_subfile_list(buf, &viz_c->pvr_ctl_list);
 	read_LIC_PVR_subfile_list(buf, &viz_c->lic_ctl_list);
 	read_FLINE_subfile_list(buf, &viz_c->fline_ctl_list);
@@ -123,6 +130,7 @@ void write_vizs_ctl_files_c(struct visualizers_ctl_c *viz_c){
 	
 	write_PSF_subfile_list(&viz_c->psf_ctl_list);
 	write_ISO_subfile_list(&viz_c->iso_ctl_list);
+    write_MAP_subfile_list(&viz_c->map_ctl_list);
 	write_PVR_subfile_list(&viz_c->pvr_ctl_list);
 	write_LIC_PVR_subfile_list(&viz_c->lic_ctl_list);
 	write_FLINE_subfile_list(&viz_c->fline_ctl_list);

@@ -12,7 +12,7 @@
 !!     &          pvr_param, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !!      subroutine anaglyph_lic_rendering_w_rot                         &
 !!     &         (istep_pvr, time, viz_fem, field_lic, lic_p,           &
-!!     &          lic_p, pvr_rgb, pvr_param, pvr_bound, pvr_proj,       &
+!!     &          lic_p, pvr_param, pvr_bound, pvr_proj, pvr_rgb,       &
 !!     &          rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        type(mesh_data), intent(in) :: viz_fem
@@ -80,7 +80,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
       type(lic_repart_reference), intent(inout) :: rep_ref_viz
       type(mesh_SR), intent(inout) :: m_SR
 !
@@ -90,18 +90,20 @@
      &   (pvr_param%outline, pvr_param%color)
 !
 !   Left eye
+      call alloc_pvr_left_eye_image(pvr_rgb)
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb(1),                &
+     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb,                   &
      &    rep_ref_viz, m_SR)
-      call store_left_eye_image(pvr_rgb(1))
+      call store_left_eye_image(pvr_rgb)
 !
 !   Right eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb(1),                &
+     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb,                   &
      &    rep_ref_viz, m_SR)
-      call add_left_eye_image(pvr_rgb(1))
+      call add_left_eye_image(pvr_rgb)
+      call dealloc_pvr_left_eye_image(pvr_rgb)
 !
       end subroutine s_each_LIC_anaglyph
 !
@@ -109,7 +111,7 @@
 !
       subroutine anaglyph_lic_rendering_w_rot                           &
      &         (istep_pvr, time, viz_fem, sf_grp_4_sf, field_lic,       &
-     &          lic_p, pvr_rgb, pvr_param, pvr_bound, pvr_proj,         &
+     &          lic_p, pvr_param, pvr_bound, pvr_proj, pvr_rgb,         &
      &          rep_ref_viz, m_SR)
 !
       use m_work_time
@@ -128,11 +130,11 @@
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
-      type(pvr_image_type), intent(in) :: pvr_rgb(2)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
       type(lic_repart_reference), intent(inout) :: rep_ref_viz
       type(mesh_SR), intent(inout) :: m_SR
 !
@@ -146,9 +148,10 @@
 !
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
       call init_rot_pvr_image_arrays                                    &
-     &   (pvr_param%movie_def, pvr_rgb(1), rot_imgs1)
+     &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
 !
+      call alloc_pvr_left_eye_image(pvr_rgb)
       do i_rot = 1, pvr_param%movie_def%num_frame
 !   Left eye
         call rot_multi_view_projection_mats(ione, i_rot,                &
@@ -156,9 +159,8 @@
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
      &      sf_grp_4_sf, lic_p, field_lic, pvr_param, pvr_bound,        &
-     &      pvr_proj(1), rot_imgs1%rot_pvr_rgb(i_rot),                  &
-     &      rep_ref_viz, m_SR)
-        call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
+     &      pvr_proj(1), pvr_rgb, rep_ref_viz, m_SR)
+        call store_left_eye_image(pvr_rgb)
 !
 !   Right eye
         call rot_multi_view_projection_mats(itwo, i_rot,                &
@@ -166,10 +168,11 @@
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
      &      sf_grp_4_sf, lic_p, field_lic, pvr_param, pvr_bound,        &
-     &      pvr_proj(2), rot_imgs1%rot_pvr_rgb(i_rot),                  &
-     &      rep_ref_viz, m_SR)
-        call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
+     &      pvr_proj(2), pvr_rgb, rep_ref_viz, m_SR)
+        call add_left_eye_image(pvr_rgb)
+        call copy_pvr_image_data(pvr_rgb, rot_imgs1%rot_pvr_rgb(i_rot))
       end do
+      call dealloc_pvr_left_eye_image(pvr_rgb)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)

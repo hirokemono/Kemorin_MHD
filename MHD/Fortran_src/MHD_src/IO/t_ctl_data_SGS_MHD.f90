@@ -177,7 +177,7 @@
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
       use ctl_data_SGS_MHD_model_IO
-      use ctl_data_viualiser_IO
+      use ctl_data_visualiser_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -236,7 +236,7 @@
       use ctl_file_gen_sph_shell_IO
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
-      use ctl_data_viualiser_IO
+      use ctl_data_visualiser_IO
 !
       use write_control_elements
 !

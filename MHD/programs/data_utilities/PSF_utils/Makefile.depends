@@ -10,7 +10,7 @@ drcy_fem.o: $(PSF_UTIL_MAINDIR)/drcy_fem.f90 m_precision.o m_constants.o m_ctl_p
 	$(F90) -c $(F90OPTFLAGS) $<
 drcz_fem.o: $(PSF_UTIL_MAINDIR)/drcz_fem.f90 m_precision.o m_constants.o m_ctl_param_plot_pg.o m_drawpg_fem.o m_isoline_dat_pg.o m_psf_results.o t_ctl_data_plot_pg.o set_control_draw_pg.o set_components_flags.o contour_fem_pg.o drcap_pg.o draw_colorbar_pg.o set_zplane_posi_pg.o set_parallel_file_name.o rbcolor_pg.o
 	$(F90) -c $(F90OPTFLAGS) $<
-drmap_fem.o: $(PSF_UTIL_MAINDIR)/drmap_fem.f90 m_precision.o m_constants.o m_ctl_param_plot_pg.o m_drawpg_fem.o m_isoline_dat_pg.o m_psf_results.o t_ctl_data_plot_pg.o set_control_draw_pg.o set_components_flags.o contour_fem_pg.o drcap_pg.o draw_colorbar_pg.o set_parallel_file_name.o set_map_from_1patch.o draw_mapframe_pg.o map_contour_fem_pg.o set_zplane_posi_pg.o rbcolor_pg.o
+drmap_fem.o: $(PSF_UTIL_MAINDIR)/drmap_fem.f90 m_precision.o m_constants.o m_ctl_param_plot_pg.o m_drawpg_fem.o m_isoline_dat_pg.o m_psf_results.o t_ctl_data_plot_pg.o t_map_patch_from_1patch.o set_control_draw_pg.o set_components_flags.o contour_fem_pg.o drcap_pg.o draw_colorbar_pg.o set_parallel_file_name.o draw_mapframe_pg.o map_contour_fem_pg.o set_zplane_posi_pg.o rbcolor_pg.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fix_temperature_4_psf.o: $(PSF_UTIL_MAINDIR)/fix_temperature_4_psf.f90 m_precision.o m_constants.o m_base_field_labels.o m_psf_results.o m_field_file_format.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o stop_by_missing_zlib.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -44,7 +44,7 @@ t_ctl_data_psf_compare.o: $(PSF_UTIL_MAINDIR)/t_ctl_data_psf_compare.f90 m_preci
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_psf_compares.o: $(PSF_UTIL_MAINDIR)/t_ctl_data_psf_compares.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_psf_compare.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_param_psf_compares.o: $(PSF_UTIL_MAINDIR)/t_ctl_param_psf_compares.f90 m_precision.o m_machine_parameter.o t_file_IO_parameter.o t_ctl_data_psf_compare.o t_control_params_4_psf.o t_ucd_data.o t_psf_results.o append_phys_data.o compare_mesh_structures.o
+t_ctl_param_psf_compares.o: $(PSF_UTIL_MAINDIR)/t_ctl_param_psf_compares.f90 m_precision.o m_machine_parameter.o t_file_IO_parameter.o t_ctl_data_psf_compare.o set_sections_file_ctl.o t_ucd_data.o t_psf_results.o append_phys_data.o compare_mesh_structures.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_norms_4_psf.o: $(PSF_UTIL_MAINDIR)/t_norms_4_psf.f90 m_precision.o t_geometry_data.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

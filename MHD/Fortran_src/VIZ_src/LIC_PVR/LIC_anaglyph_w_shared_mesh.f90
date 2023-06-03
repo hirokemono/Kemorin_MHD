@@ -162,8 +162,8 @@
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
      &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
      &      repart_data%field_lic, lic_param(i_lic),                    &
-     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1),              &
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
      &      rep_ref_viz, m_SR)
       end do
 !
