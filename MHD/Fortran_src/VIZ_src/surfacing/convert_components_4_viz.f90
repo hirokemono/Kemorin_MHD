@@ -60,11 +60,10 @@
           if( ncomp_org .eq. ncomp_SCALAR) then
             call copy_nod_scalar_smp(nnod, dat_xyz(1,1), dat_viz(1,1))
           else if ( ncomp_org .eq. ncomp_VECTOR) then
-            call cal_vector_magnitude(np_smp, nnod, istack_n_smp,       &
-     &          dat_xyz(1,1), dat_viz(1,1))
+            call cal_vector_magnitude(nnod, dat_xyz(1,1), dat_viz(1,1))
           else if ( ncomp_org .eq. ncomp_SYM_TENSOR) then
-            call cal_sym_tensor_magnitude(np_smp, nnod, istack_n_smp,   &
-     &          dat_xyz(1,1), dat_viz(1,1))
+            call cal_sym_tensor_magnitude(nnod, dat_xyz(1,1),           &
+     &                                    dat_viz(1,1))
           end if
 !
         else if ( icomp_viz.eq.icomp_VECTOR                             &
@@ -203,8 +202,7 @@
 !
 !$omp parallel
 !        if (icomp_viz .eq. icomp_NORM) then
-!          call cal_vector_magnitude(np_smp, nnod, istack_n_smp,        &
-!     &        xx(1,1), dat_viz(1))
+!          call cal_vector_magnitude(nnod, xx(1,1), dat_viz(1))
 !
         if(icomp_viz.ge.icomp_X .and. icomp_viz.le.icomp_Z) then
           call copy_nod_scalar_smp                                      &

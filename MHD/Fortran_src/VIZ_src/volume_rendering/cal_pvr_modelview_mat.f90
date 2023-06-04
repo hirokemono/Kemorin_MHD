@@ -29,9 +29,6 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: ione_stack(0:1) = (/0,1/)
-      private :: ione_stack
-!
       private :: cal_modelview_mat_by_views
       private :: update_rot_mat_from_viewpts
 !
@@ -208,54 +205,33 @@
       integer(kind = kint) :: i
       real(kind = kreal) :: viewing_dir(3), u(3), v(3), size(1)
       real(kind = kreal) :: look_norm(3), view_norm(3), up_norm(3)
+      real(kind = kreal) :: v_tmp(3)
 !
 !
-      viewing_dir(1:3) = view_param%viewpoint(1:3)                      &
+!$omp parallel
+!$omp single
+      v_tmp(1:3) = view_param%viewpoint(1:3)                            &
      &                  - view_param%lookat_vec(1:3)
-!$omp parallel
-      call cal_vector_magnitude(ione, ione, ione_stack,                 &
-     &    viewing_dir(1), size(1) )
-!$omp end parallel
-      viewing_dir(1:3) = viewing_dir(1:3) / size(1)
+      call cal_normalized_vector(ione, v_tmp(1), viewing_dir(1))
+      call cal_normalized_vector(ione, view_param%lookat_vec(1),        &
+     &                           look_norm(1))
 !
-!$omp parallel
-      call cal_vector_magnitude(ione, ione, ione_stack,                 &
-     &    viewing_dir(1), size(1) )
-!$omp end parallel
-      look_norm(1:3) = view_param%lookat_vec(1:3) / size(1)
-!
-!$omp parallel
-      call cal_vector_magnitude(ione, ione, ione_stack,                 &
-     &    view_param%viewpoint, size(1) )
-!$omp end parallel
-      view_norm(1:3) = view_param%viewpoint(1:3) / size(1)
-!
-!$omp parallel
-      call cal_vector_magnitude(ione, ione, ione_stack,                 &
-     &    view_param%up_direction_vec(1), size(1) )
-!$omp end parallel
-      up_norm(1:3) = view_param%up_direction_vec(1:3) / size(1)
+      v_tmp(1:3) = view_param%viewpoint(1:3)
+      call cal_normalized_vector(ione, v_tmp(1), view_norm(1))
+      call cal_normalized_vector(ione, view_param%up_direction_vec(1),  &
+     &                           up_norm(1))
 !
 !    /* find the direction of axis U */
-!$omp parallel
       call cal_cross_prod_no_coef_smp                                   &
-     &   (ione, up_norm(1), viewing_dir(1), u(1))
-!$omp end parallel
-!$omp parallel
-      call cal_vector_magnitude(ione, ione, ione_stack,                 &
-     &    u(1), size(1) )
-!$omp end parallel
-      u(1:3) = u(1:3) / size(1)
+     &   (ione, up_norm(1), viewing_dir(1), v_tmp(1))
+      call cal_normalized_vector(ione, v_tmp(1), u(1) )
 !
 !    /*find the direction of axix V */
-!$omp parallel
-      call cal_cross_prod_no_coef_smp(ione, viewing_dir(1), u(1), v(1))
+      call cal_cross_prod_no_coef_smp(ione, viewing_dir(1), u(1),       &
+     &                                v_tmp(1))
+      call cal_normalized_vector(ione, v_tmp(1), v(1))
+!$omp end single
 !$omp end parallel
-!$omp parallel
-      call cal_vector_magnitude(ione, ione, ione_stack,                 &
-     &    v(1), size(1) )
-!$omp end parallel
-      v(1:3) = v(1:3) / size(1)
 !
       do i = 1, 3
         rotation_mat(1,i) = u(i)

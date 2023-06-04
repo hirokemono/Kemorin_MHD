@@ -32,9 +32,6 @@
       real(kind = kreal), allocatable :: d_mag(:)
       private :: d_mag
 !
-      private :: cal_vect_length_scale_by_rot
-      private :: cal_length_scale_by_diffuse1
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -72,6 +69,7 @@
       use m_field_product_labels
       use m_ctl_params_4_prod_udt
       use set_and_cal_udt_data
+      use mag_of_field_smp
 !
       use parallel_ucd_IO_select
 !
@@ -102,9 +100,11 @@
       if(iphys%base%i_temp  .gt. 0) then
         icou = icou + 1
         ucd%phys_name(icou) = temperature_scale%name
-        call cal_length_scale_by_diffuse1                               &
-     &     (iphys%base%i_temp, iphys%diffusion%i_t_diffuse,             &
-     &      node, nod_fld)
+!$omp parallel
+        call cal_len_scale_by_diffuse_smp                               &
+     &     (node%numnod, nod_fld%d_fld(1,iphys%base%i_temp),            &
+     &      nod_fld%d_fld(1,iphys%diffusion%i_t_diffuse), d_mag(1))
+!$omp end parallel
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -112,8 +112,11 @@
       if(iphys%base%i_velo  .gt. 0) then
         icou = icou + 1
         ucd%phys_name(icou) = velocity_scale%name
-        call cal_vect_length_scale_by_rot                               &
-     &     (iphys%base%i_velo, iphys%base%i_vort, node, nod_fld)
+!$omp parallel
+        call cal_len_scale_by_rot_smp                                   &
+     &     (node%numnod, nod_fld%d_fld(1,iphys%base%i_velo),            &
+     &      nod_fld%d_fld(1,iphys%base%i_vort), d_mag(1))
+!$omp end parallel
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -121,8 +124,11 @@
       if(iphys%base%i_magne .gt. 0) then
         icou = icou + 1
         ucd%phys_name(3) =    magnetic_scale%name
-        call cal_vect_length_scale_by_rot                               &
-     &     (iphys%base%i_magne, iphys%base%i_current, node, nod_fld)
+!$omp parallel
+        call cal_len_scale_by_rot_smp                                   &
+     &     (node%numnod, nod_fld%d_fld(1,iphys%base%i_magne),           &
+     &      nod_fld%d_fld(1,iphys%base%i_current), d_mag(1))
+!$omp end parallel
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -173,44 +179,6 @@
       end do
 !
       end subroutine find_field_address_4_lscale
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_vect_length_scale_by_rot(i_v, i_w, node, nod_fld)
-!
-      use mag_of_field_smp
-!
-      integer(kind = kint),  intent(in) :: i_v, i_w
-      type(node_data), intent(in) :: node
-      type(phys_data), intent(in) :: nod_fld
-!
-!
-!$omp parallel
-      call nodal_lscale_by_rot_smp                                      &
-     &   (np_smp, node%numnod, node%istack_nod_smp,                     &
-     &    nod_fld%ntot_phys, i_v, i_w, nod_fld%d_fld, d_mag(1))
-!$omp end parallel
-!
-      end subroutine cal_vect_length_scale_by_rot
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_length_scale_by_diffuse1(i_t, i_d, node, nod_fld)
-!
-      use mag_of_field_smp
-!
-      integer(kind = kint),  intent(in) :: i_t, i_d
-      type(node_data), intent(in) :: node
-      type(phys_data), intent(in) :: nod_fld
-!
-!$omp parallel
-     call nodal_lscale_by_diffuse_smp                                   &
-     &   (np_smp, node%numnod, node%istack_nod_smp,                     &
-     &    nod_fld%ntot_phys, i_t, i_d, nod_fld%d_fld, d_mag(1))
-!$omp end parallel
-!
-     end subroutine cal_length_scale_by_diffuse1
 !
 !-----------------------------------------------------------------------
 !
