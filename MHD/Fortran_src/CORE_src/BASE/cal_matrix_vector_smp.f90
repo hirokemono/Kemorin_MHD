@@ -47,7 +47,7 @@
 !
 !cdir nodep
 !$omp parallel do private(inod)
-        do inod = ist, ied
+        do inod = 1, nnod
           prod(inod,1) =  mat(1,1)*vec(inod,1)                          &
      &                  + mat(1,2)*vec(inod,2)                          &
      &                  + mat(1,3)*vec(inod,3)
@@ -76,8 +76,8 @@
 !
 !
 !cdir nodep
-!$omp parallel do private(inod,ist,ied)
-        do inod = ist, ied
+!$omp parallel do private(inod)
+        do inod = 1, nnod
           prod(inod,1) =  mat(1,1)*vec(inod,1)                          &
      &                  + mat(1,2)*vec(inod,2)                          &
      &                  + mat(1,3)*vec(inod,3)                          &

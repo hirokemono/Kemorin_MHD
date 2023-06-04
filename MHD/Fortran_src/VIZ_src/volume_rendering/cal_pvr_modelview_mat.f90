@@ -70,8 +70,8 @@
 !
       call cal_inverse_44_matrix(modelview_mat,                         &
      &                           modelview_inv, ierr2)
-      call cal_mat44_vec3_on_node(ione, ione, ione_stack,               &
-     &    modelview_inv, posi_zero(1), vec_tmp(1))
+      call cal_mat44_vec3_on_node(ione, modelview_inv,                  &
+     &                            posi_zero(1), vec_tmp(1))
       viewpoint_vec(1:3) = vec_tmp(1:3)
 !
 !      if(my_rank .eq. 0) then
@@ -148,8 +148,8 @@
       end if
 !
       if(view_param%iflag_viewpt_in_view .eq. 0) then
-        call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &      rotation_mat, view_param%viewpoint, rev_eye)
+        call cal_mat44_vec3_on_node(ione, rotation_mat,                 &
+     &                              view_param%viewpoint, rev_eye)
       else
         rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       end if
