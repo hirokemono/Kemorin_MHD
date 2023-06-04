@@ -237,8 +237,10 @@
       up_norm(1:3) = view_param%up_direction_vec(1:3) / size(1)
 !
 !    /* find the direction of axis U */
+!$omp parallel
       call cal_cross_prod_no_coef_smp                                   &
      &   (ione, up_norm(1), viewing_dir(1), u(1))
+!$omp end parallel
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack,                 &
      &    u(1), size(1) )
@@ -246,7 +248,9 @@
       u(1:3) = u(1:3) / size(1)
 !
 !    /*find the direction of axix V */
+!$omp parallel
       call cal_cross_prod_no_coef_smp(ione, viewing_dir(1), u(1), v(1))
+!$omp end parallel
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack,                 &
      &    v(1), size(1) )
