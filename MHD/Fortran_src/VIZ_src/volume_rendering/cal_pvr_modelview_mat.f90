@@ -44,7 +44,7 @@
 !
       use t_surf_grp_4_pvr_domain
       use cal_inverse_small_matrix
-      use cal_matrix_vector_smp
+      use small_mat_mat_product
 !
       integer(kind = kint), intent(in) :: i_stereo, i_rot
       type(pvr_domain_outline), intent(in) :: outline
@@ -67,8 +67,8 @@
 !
       call cal_inverse_44_matrix(modelview_mat,                         &
      &                           modelview_inv, ierr2)
-      call cal_mat44_vec3_on_node(ione, modelview_inv,                  &
-     &                            posi_zero(1), vec_tmp(1))
+      call prod_mat44_vec3(modelview_inv, posi_zero(1),                 &
+     &                     vec_tmp(1))
       viewpoint_vec(1:3) = vec_tmp(1:3)
 !
 !      if(my_rank .eq. 0) then
@@ -102,7 +102,6 @@
 !
       use t_surf_grp_4_pvr_domain
       use transform_mat_operations
-      use cal_matrix_vector_smp
 !
       integer(kind = kint), intent(in) :: i_stereo, i_rot
       type(pvr_domain_outline), intent(in) :: outline
@@ -145,8 +144,8 @@
       end if
 !
       if(view_param%iflag_viewpt_in_view .eq. 0) then
-        call cal_mat44_vec3_on_node(ione, rotation_mat,                 &
-     &                              view_param%viewpoint, rev_eye)
+        call prod_mat44_vec3(rotation_mat, view_param%viewpoint,        &
+     &                       rev_eye)
       else
         rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       end if
