@@ -10,9 +10,8 @@
 !!      subroutine convert_comps_4_viz(nnod, istack_n_smp, xx,          &
 !!     &          sph_r, a_r, cyl_s, a_s, ncomp_viz, ncomp_org,         &
 !!     &          icomp_viz, dat_xyz, dat_viz)
-!!      subroutine convert_position_4_viz                               &
-!!     &         (nnod, istack_n_smp, xx, sph_r, a_r, cyl_s, a_s,       &
-!!     &          icomp_viz, dat_viz)
+!!      subroutine convert_position_4_viz(nnod, xx, sph_r,              &
+!!     &          a_r, cyl_s, a_s, icomp_viz, dat_viz)
 !!@endverbatim
 !
       module convert_components_4_viz
@@ -174,9 +173,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine convert_position_4_viz                                 &
-     &         (nnod, istack_n_smp, xx, sph_r, a_r, cyl_s, a_s,         &
-     &          icomp_viz, dat_viz)
+      subroutine convert_position_4_viz(nnod, xx, sph_r,                &
+     &          a_r, cyl_s, a_s, icomp_viz, dat_viz)
 !
       use set_components_flags
       use set_nodal_field_for_psf
@@ -188,7 +186,6 @@
       use cvt_xyz_tensor_2_cyl_smp
 !
       integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint), intent(in) :: istack_n_smp(0:np_smp)
       real(kind = kreal), intent(in) :: xx(nnod,3)
       real(kind = kreal), intent(in) :: sph_r(nnod), a_r(nnod)
       real(kind = kreal), intent(in) :: cyl_s(nnod), a_s(nnod)

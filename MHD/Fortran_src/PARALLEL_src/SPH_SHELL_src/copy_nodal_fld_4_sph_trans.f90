@@ -204,7 +204,7 @@
 !$omp end parallel
 !
 !$omp parallel
-      call overwrite_vector_2_sph_smp(sph_rtp%nnod_rtp, d_rtp           &
+      call overwrite_vector_2_sph_smp(sph_rtp%nnod_rtp, d_rtp,          &
      &    node%xx(1,1), node%xx(1,2), node%xx(1,3),                     &
      &    node%rr(1), node%ss(1), node%a_r(1), node%a_s(1) )
 !$omp end parallel

@@ -13,10 +13,6 @@
 !!        integer(kind = kint), intent(in) :: nnod
 !!        real(kind=kreal), intent(in)    :: d_fld(nnod,3)
 !!        real(kind=kreal), intent(inout) :: d_mag(nnod)
-!!      subroutine cal_normalized_vector(nnod, d_fld, d_norm)
-!!        integer(kind = kint), intent(in) :: nnod
-!!        real(kind=kreal), intent(in)    :: d_fld(nnod,3)
-!!        real(kind=kreal), intent(inout) :: d_norm(nnod,3)
 !!      subroutine cal_sym_tensor_magnitude(nnod, d_fld, d_mag)
 !!         integer (kind = kint) :: nnod
 !!         real(kind=kreal), intent(in)    :: d_fld(nnod,6)
@@ -80,32 +76,6 @@
 !$omp end do nowait
 !
       end subroutine cal_vector_magnitude
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_normalized_vector(nnod, d_fld, d_norm)
-!
-       integer(kind = kint), intent(in) :: nnod
-       real(kind=kreal), intent(in)    :: d_fld(nnod,3)
-       real(kind=kreal), intent(inout) :: d_norm(nnod,3)
-!
-       integer (kind = kint) :: inod
-       real(kind = kreal) :: d_mag
-!
-!$omp do private(inod,d_mag)
-       do inod = 1, nnod
-         d_mag = sqrt( d_fld(inod,1)*d_fld(inod,1)                      &
-     &               + d_fld(inod,2)*d_fld(inod,2)                      &
-     &               + d_fld(inod,3)*d_fld(inod,3) )
-         if(d_mag .le. zero) then
-           d_norm(inod,1:3) = zero
-         else
-           d_norm(inod,1:3) = d_fld(inod,1:3) / d_mag
-         end if
-      end do
-!$omp end do nowait
-!
-      end subroutine cal_normalized_vector
 !
 ! -----------------------------------------------------------------------
 !

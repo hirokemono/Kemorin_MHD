@@ -138,7 +138,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_mat44_vec3_for_viz(nnod, mat, vec, prod)
+      subroutine cal_mat44_vec3_for_viz(mat, vec, prod)
 !
       integer (kind=kint), intent(in) :: nnod
       real (kind=kreal), intent(in) :: mat(4,4)

@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine cvt_nod_vec_to_sph_vec                               &
-!!     &         (numnod, np_smp, inod_smp_stack,                       &
-!!     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,       &
-!!     &          i_field, ntot_phys, d_nod,                            &
-!!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp, d_tmp)
+!!     &        (numnod, xx, radius, s_cylinder, a_radius, a_s_cylinder,&
+!!     &         i_field, ntot_phys, d_nod, i_rtp,                      &
+!!     &         nnod_rtp, ntot_rtp, d_rtp, d_tmp)
 !!      subroutine cvt_sph_vec_to_nod_vec(numnod, internal_node,        &
 !!     &          np_smp, inod_smp_stack, colatitude, longitude,        &
 !!     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp,                     &
@@ -68,17 +67,14 @@
 ! -------------------------------------------------------------------
 !
       subroutine cvt_nod_vec_to_sph_vec                                 &
-     &         (numnod, np_smp, inod_smp_stack,                         &
-     &          xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
-     &          i_field, ntot_phys, d_nod,                              &
-     &          i_rtp, nnod_rtp, ntot_rtp, d_rtp, d_tmp)
+     &        (numnod, xx, radius, s_cylinder, a_radius, a_s_cylinder,  &
+     &         i_field, ntot_phys, d_nod, i_rtp,                        &
+     &         nnod_rtp, ntot_rtp, d_rtp, d_tmp)
 !
       use cvt_xyz_vector_2_sph_smp
       use copy_between_two_fields
 !
-      integer(kind = kint), intent(in) :: i_rtp, i_field
-      integer(kind = kint), intent(in) :: np_smp, numnod
-      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: numnod, i_rtp, i_field
       real(kind = kreal), intent(in) :: xx(numnod, 3)
       real(kind = kreal), intent(in) :: radius(numnod)
       real(kind = kreal), intent(in) :: s_cylinder(numnod)
