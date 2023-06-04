@@ -65,7 +65,7 @@
 !
 !
 !$omp do private(inod,vx,vy,vz)
-         do inod = i, numnod
+         do inod = 1, numnod
            vx = vect(inod,1)
            vy = vect(inod,2)
            vz = vect(inod,3)
@@ -102,7 +102,7 @@
 !
 !
 !$omp do private(inod,vx,vy)
-         do inod = i, numnod
+         do inod = 1, numnod
            vx = vect(inod,1)
            vy = vect(inod,2)
 !
@@ -138,7 +138,7 @@
 !
 !
 !$omp do private(inod,vx,vy)
-         do inod = i, numnod
+         do inod = 1, numnod
            vx = vect(inod,1)
            vy = vect(inod,2)
 !
