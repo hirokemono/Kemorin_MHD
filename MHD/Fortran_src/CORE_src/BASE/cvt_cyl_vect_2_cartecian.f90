@@ -43,9 +43,6 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: istack(0:1) = (/0, 1/)
-      private :: istack
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -61,8 +58,7 @@
 !
 !
 !$omp parallel
-       call cvt_cyl_vect_2_xyz_smp(ione, numnod, istack,                &
-     &     vect, v_cyl, phi)
+       call cvt_cyl_vect_2_xyz_smp(numnod, vect, v_cyl, phi)
 !$omp end parallel
 !
       end subroutine cal_cyl_vect_2_cartecian
@@ -78,8 +74,7 @@
 !
 !
 !$omp parallel
-       call cvt_cyl_vect_2_x_comp_smp(ione, numnod, istack,             &
-     &     v_x, v_cyl, phi)
+       call cvt_cyl_vect_2_x_comp_smp(numnod, v_x, v_cyl, phi)
 !$omp end parallel
 !
       end subroutine cal_cyl_vect_2_x_comp
@@ -95,8 +90,7 @@
 !
 !
 !$omp parallel
-      call cvt_cyl_vect_2_y_comp_smp(ione, numnod, istack,              &
-     &    v_y, v_cyl, phi)
+      call cvt_cyl_vect_2_y_comp_smp(numnod, v_y, v_cyl, phi)
 !$omp end parallel
 !
       end subroutine cal_cyl_vect_2_y_comp

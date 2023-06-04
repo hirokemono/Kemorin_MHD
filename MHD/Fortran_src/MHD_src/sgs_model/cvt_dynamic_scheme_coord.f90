@@ -121,14 +121,12 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'convert cylindrical corrdinate'
 !$omp parallel
-      call overwrite_vector_2_cyl_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,i_sgs_simi), xx(1,1), xx(1,2), s, a_s)
-
-      call overwrite_vector_2_cyl_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,i_sgs_grad), xx(1,1), xx(1,2), s, a_s)
-
-      call overwrite_vector_2_cyl_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,i_sgs_grad_f), xx(1,1), xx(1,2), s, a_s)
+      call overwrite_vector_2_cyl_smp(numnod, d_nod(1,i_sgs_simi),      &
+     &                                xx(1,1), xx(1,2), s, a_s)
+      call overwrite_vector_2_cyl_smp(numnod, d_nod(1,i_sgs_grad),      &
+     &                                xx(1,1), xx(1,2), s, a_s)
+      call overwrite_vector_2_cyl_smp(numnod, d_nod(1,i_sgs_grad_f),    &
+     &                                xx(1,1), xx(1,2), s, a_s)
 !$omp end parallel
 !
       end subroutine convert_dynamic_vectors_2_cyl
@@ -156,17 +154,12 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'convert spherical corrdinate'
 !$omp parallel
-      call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,i_sgs_simi), xx(1,1), xx(1,2), xx(1,3),               &
-     &    r, s, a_r, a_s)
-
-      call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,i_sgs_grad), xx(1,1), xx(1,2), xx(1,3),               &
-     &    r, s, a_r, a_s)
-
-      call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
-     &    d_nod(1,i_sgs_grad_f), xx(1,1), xx(1,2), xx(1,3),             &
-     &    r, s, a_r, a_s)
+      call overwrite_vector_2_sph_smp(numnod, d_nod(1,i_sgs_simi),      &
+     &    xx(1,1), xx(1,2), xx(1,3), r, s, a_r, a_s)
+      call overwrite_vector_2_sph_smp(numnod, d_nod(1,i_sgs_grad),      &
+     &    xx(1,1), xx(1,2), xx(1,3), r, s, a_r, a_s)
+      call overwrite_vector_2_sph_smp(numnod, d_nod(1,i_sgs_grad_f),    &
+     &    xx(1,1), xx(1,2), xx(1,3), r, s, a_r, a_s)
 !$omp end parallel
 !
       end subroutine convert_dynamic_vectors_2_sph

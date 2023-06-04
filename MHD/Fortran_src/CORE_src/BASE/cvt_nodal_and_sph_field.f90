@@ -96,9 +96,9 @@
 !
 !
 !$omp parallel
-      call cvt_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,         &
-     &    d_nod(1,i_field), d_tmp(1,1), xx(1,1), xx(1,2), xx(1,3),      &
-     &    radius, s_cylinder, a_radius, a_s_cylinder)
+      call cvt_vector_2_sph_smp(numnod, d_nod(1,i_field), d_tmp(1,1),   &
+     &    xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,                &
+     &    a_radius, a_s_cylinder)
 !$omp end parallel
 !
       call copy_vector_2_vector_fld(ione, numnod, isix, d_tmp,          &
@@ -139,7 +139,7 @@
      &    ione, numnod, internal_node, isix, d_tmp)
 !
 !$omp parallel
-      call cvt_sph_vect_2_xyz_smp(np_smp, numnod, inod_smp_stack,       &
+      call cvt_sph_vect_2_xyz_smp(numnod,                               &
      &    d_nod(1,i_field), d_tmp(1,1), colatitude, longitude)
 !$omp end parallel
 !
