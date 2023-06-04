@@ -102,6 +102,7 @@
 !
       use t_surf_grp_4_pvr_domain
       use transform_mat_operations
+      use small_mat_mat_product
 !
       integer(kind = kint), intent(in) :: i_stereo, i_rot
       type(pvr_domain_outline), intent(in) :: outline
