@@ -90,14 +90,22 @@
 !
       real(kind = kreal), intent(inout) :: f_int
 !
-      integer(kind = kint) :: kr, kst
+      integer(kind = kint) :: kr
       real(kind = kreal) :: r_in, r_out, d_in, d_out
 !
 !
-      if(kst .eq. kg_ed(1)) then
-        r_in =          c_inter_st * radius(kst)                        &
+      if(kg_st(1) .eq. 0 .and. kg_st(1) .eq. kg_ed(1)) then
+        r_in =  (one - c_inter_st) * radius(1)
+        d_in =         c_inter_st *  f_ctr                              &
+     &        + (one - c_inter_st) * f_org(1)
+        r_out = (one - c_inter_ed)* radius(1)
+        d_out =        c_inter_st *  f_ctr                              &
+     &         + (one - c_inter_ed)* f_org(1)
+        f_int = f_int + half * (r_out-r_in) * (d_out + d_in)
+      else if(kg_st(1) .eq. kg_ed(1)) then
+        r_in =          c_inter_st * radius(kg_st(1))                   &
      &         + (one - c_inter_st)* radius(kg_st(2))
-        d_in =          c_inter_st * f_org(kst)                         &
+        d_in =          c_inter_st * f_org(kg_st(1))                    &
      &         + (one - c_inter_st)* f_org(kg_st(2))
         r_out =         c_inter_ed * radius(kg_ed(1))                   &
      &         + (one - c_inter_ed)* radius(kg_ed(2))
@@ -106,19 +114,20 @@
         f_int = f_int + half * (r_out-r_in) * (d_out + d_in)
       else
         if(kg_st(1) .eq. 0) then
-          kst = 1
-          f_int = half * radius(1) * (f_ctr + f_org(1))
+          r_in = (one - c_inter_st) * radius(1)
+          d_in =        c_inter_st *  f_ctr                             &
+     &         + (one - c_inter_st) * f_org(1)
+          f_int = half * (radius(1) - r_in) * (f_org(1) + d_in)
         else
-          kst = kg_st(1)
-          r_in =          c_inter_st * radius(kst)                      &
-     &           + (one - c_inter_st)* radius(kst+1)
-          d_in =          c_inter_st * f_org(kst)                       &
-     &           + (one - c_inter_st)* f_org(kst)
-          f_int = half * (radius(kst+1) - r_in)                         &
-     &                 * (f_org(kst+1) + d_in)
-      end if
+          r_in =          c_inter_st * radius(kg_st(1))                 &
+     &           + (one - c_inter_st)* radius(kg_st(1)+1)
+          d_in =          c_inter_st * f_org(kg_st(1))                  &
+     &           + (one - c_inter_st)* f_org(kg_st(1))
+          f_int = half * (radius(kg_st(1)+1) - r_in)                    &
+     &                 * (f_org(kg_st(1)+1) + d_in)
+        end if
 !
-        do kr = kst+1, kg_ed(1)-1
+        do kr = kg_st(1)+1, kg_ed(1)-1
           f_int = f_int + half * (radius(kr+1) - radius(kr))            &
      &                         * (f_org(kr) + f_org(kr+1))
         end do
