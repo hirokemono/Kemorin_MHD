@@ -69,6 +69,11 @@
       call set_field_list_sph_monitor(sph_params, sph_rj,               &
      &                                      rj_fld, pwr, WK_pwr)
 !
+      do i = 1, pwr%num_vol_spectr
+        call init_sph_vol_spectr_r_param(sph_params, sph_rj,            &
+&                                        pwr%v_spectr(i))
+      end do
+!
 !      if(iflag_debug .gt. 0) then
       if(my_rank .eq. 0) then
         write(*,*) 'spectr later data:', pwr%nri_rms
