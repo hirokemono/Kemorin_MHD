@@ -23,6 +23,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use calypso_mpi
       use t_spheric_parameter
       use t_phys_data
       use t_phys_address
@@ -45,13 +46,6 @@
 !
       use calypso_mpi
 !
-      use sum_sph_rms_data
-      use volume_average_4_sph
-      use cal_ave_4_rms_vector_sph
-      use set_parallel_file_name
-      use set_radial_interpolation
-      use quicksort
-!
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
@@ -60,8 +54,7 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
-      integer(kind = kint) :: i_fld, j_fld
-      integer(kind = kint) :: i, k, kg, kr_st, num_field
+      integer(kind = kint) :: i, k
 !
 !
       if(pwr%nri_rms .eq. -1) then
@@ -77,50 +70,10 @@
         call append_CMB_layer_f_dipolarity(sph_params, pwr)
       end if
 !
-      do k = 1, pwr%nri_rms
-        kg = pwr%kr_4_rms(k,1)
-        if(kg .gt. 0) then
-          pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(kg)
-        end if
-      end do
+      call set_layers_4_sph_spectr(sph_rj, pwr)
 !
-      if(pwr%nri_rms .gt. 1) then
-        call quicksort_real_w_index(pwr%nri_rms,                        &
-     &      pwr%r_4_rms(1,1), ione, pwr%nri_rms, pwr%kr_4_rms(1,1))
-      end if
-!
-      kr_st = 1
-      do k = 1, pwr%nri_rms
-        if(pwr%r_4_rms(k,1) .eq. zero) then
-          pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
-          pwr%c_gl_itp(k) = one
-        else if(pwr%kr_4_rms(k,1) .gt. 0) then
-          pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
-          pwr%c_gl_itp(k) = one
-        else
-          call s_set_radial_interpolation(sph_rj%nidx_rj(1),            &
-     &        sph_rj%radius_1d_rj_r, pwr%r_4_rms(k,1), kr_st,           &
-     &        pwr%kr_4_rms(k,1), pwr%kr_4_rms(k,2), pwr%c_gl_itp(k))
-        end if
-!
-        if(abs(pwr%c_gl_itp(k)) .lt. 1.0d-6) then
-          kr_st = pwr%kr_4_rms(k,1)
-          pwr%kr_4_rms(k,2) = kr_st
-          pwr%r_4_rms(k,1) =  sph_rj%radius_1d_rj_r(kr_st)
-          pwr%c_gl_itp(k) =   one
-        else if(abs(one - pwr%c_gl_itp(k)) .lt. 1.0d-6) then
-          kr_st = pwr%kr_4_rms(k,2)
-          pwr%kr_4_rms(k,1) = kr_st
-          pwr%r_4_rms(k,1) =  sph_rj%radius_1d_rj_r(kr_st)
-          pwr%c_gl_itp(k) =   one
-        end if
-!
-        if(pwr%r_4_rms(k,1) .eq. zero) then
-          pwr%r_4_rms(k,2) = zero
-        else
-          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
-        end if
-      end do
+      call set_field_list_sph_monitor(sph_params, sph_rj,               &
+     &                                      rj_fld, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
         write(*,*) 'spectr later data:', pwr%nri_rms
@@ -130,59 +83,6 @@
      &            pwr%c_gl_itp(k)
         end do
       end if
-!
-!
-!
-      do i = 1, pwr%num_vol_spectr
-        call init_sph_vol_spectr_r_param(sph_params, sph_rj,            &
-     &                                   pwr%v_spectr(i))
-        if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
-        call cal_one_over_volume                                        &
-     &     (pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%r_outside,        &
-     &      pwr%v_spectr(i)%avol)
-      end do
-!
-      num_field = 0
-      do i_fld = 1, rj_fld%num_phys
-        if(rj_fld%flag_monitor(i_fld)) num_field = num_field + 1
-      end do
-!
-      call alloc_rms_name_sph_spec(num_field, pwr)
-!
-      j_fld = 0
-      do i_fld = 1, rj_fld%num_phys
-        if(rj_fld%flag_monitor(i_fld)) then
-          j_fld = j_fld + 1
-          pwr%id_field(j_fld) =   i_fld
-          pwr%num_comp_sq(j_fld) =    rj_fld%num_component(i_fld)
-          pwr%istack_comp_sq(j_fld) = pwr%istack_comp_sq(j_fld-1)       &
-     &                              + rj_fld%num_component(i_fld)
-          pwr%pwr_name(j_fld) =   rj_fld%phys_name(i_fld)
-        end if
-      end do
-!
-      if(pwr%nri_rms .gt. 1) then
-        call quicksort_int                                              &
-     &     (pwr%nri_rms, pwr%kr_4_rms(1,1), ione, pwr%nri_rms)
-      end if
-!
-      call set_domains_4_spectr_output(sph_rj, pwr)
-      call alloc_rms_4_sph_spectr                                       &
-     &   (my_rank, sph_params%l_truncation, pwr)
-      call alloc_ave_4_sph_spectr                                       &
-     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1), pwr)
-      call allocate_rms_sph_local_data                                  &
-     &   (sph_params%l_truncation, sph_rj%nidx_rj,                      &
-     &    pwr%num_vol_spectr, pwr%nri_rms, pwr%ntot_comp_sq, WK_pwr)
-!
-      call set_sum_table_4_sph_spectr(sph_params%l_truncation,          &
-     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                        &
-     &    WK_pwr%num_mode_sum_l,  WK_pwr%num_mode_sum_m,                &
-     &    WK_pwr%num_mode_sum_lm, WK_pwr%istack_mode_sum_l,             &
-     &    WK_pwr%istack_mode_sum_m, WK_pwr%istack_mode_sum_lm,          &
-     &    WK_pwr%item_mode_sum_l, WK_pwr%item_mode_sum_m,               &
-     &    WK_pwr%item_mode_sum_lm)
-!
 !
       if(my_rank .eq. 0) then
 !      if(iflag_debug .gt. 0) then
@@ -395,6 +295,124 @@
         end if
 !
       end subroutine append_CMB_layer_f_dipolarity
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_layers_4_sph_spectr(sph_rj, pwr)
+!
+      use set_radial_interpolation
+      use quicksort
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_mean_squares), intent(inout) :: pwr
+!
+      integer(kind = kint) :: k, kg, kr_st
+!
+!
+      do k = 1, pwr%nri_rms
+        kg = pwr%kr_4_rms(k,1)
+        if(kg .gt. 0) then
+          pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(kg)
+        end if
+      end do
+!
+      if(pwr%nri_rms .gt. 1) then
+        call quicksort_real_w_index(pwr%nri_rms,                        &
+     &      pwr%r_4_rms(1,1), ione, pwr%nri_rms, pwr%kr_4_rms(1,1))
+      end if
+!
+      kr_st = 1
+      do k = 1, pwr%nri_rms
+        if(pwr%r_4_rms(k,1) .eq. zero) then
+          pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
+          pwr%c_gl_itp(k) = one
+        else if(pwr%kr_4_rms(k,1) .gt. 0) then
+          pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
+          pwr%c_gl_itp(k) = one
+        else
+          call s_set_radial_interpolation(sph_rj%nidx_rj(1),            &
+     &        sph_rj%radius_1d_rj_r, pwr%r_4_rms(k,1), kr_st,           &
+     &        pwr%kr_4_rms(k,1), pwr%kr_4_rms(k,2), pwr%c_gl_itp(k))
+        end if
+!
+        if(abs(pwr%c_gl_itp(k)) .lt. 1.0d-6) then
+          kr_st = pwr%kr_4_rms(k,1)
+          pwr%kr_4_rms(k,2) = kr_st
+          pwr%r_4_rms(k,1) =  sph_rj%radius_1d_rj_r(kr_st)
+          pwr%c_gl_itp(k) =   one
+        else if(abs(one - pwr%c_gl_itp(k)) .lt. 1.0d-6) then
+          kr_st = pwr%kr_4_rms(k,2)
+          pwr%kr_4_rms(k,1) = kr_st
+          pwr%r_4_rms(k,1) =  sph_rj%radius_1d_rj_r(kr_st)
+          pwr%c_gl_itp(k) =   one
+        end if
+!
+        if(pwr%r_4_rms(k,1) .eq. zero) then
+          pwr%r_4_rms(k,2) = zero
+        else
+          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
+        end if
+      end do
+!
+      end subroutine set_layers_4_sph_spectr
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_field_list_sph_monitor(sph_params, sph_rj,         &
+     &                                      rj_fld, pwr, WK_pwr)
+!
+      use sum_sph_rms_data
+      use volume_average_4_sph
+      use cal_ave_4_rms_vector_sph
+      use set_parallel_file_name
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_data), intent(in) :: rj_fld
+!
+      type(sph_mean_squares), intent(inout) :: pwr
+      type(sph_mean_square_work), intent(inout) :: WK_pwr
+!
+      integer(kind = kint) :: i_fld, j_fld, num_field
+!
+!
+      num_field = 0
+      do i_fld = 1, rj_fld%num_phys
+        if(rj_fld%flag_monitor(i_fld)) num_field = num_field + 1
+      end do
+!
+      call alloc_rms_name_sph_spec(num_field, pwr)
+!
+      j_fld = 0
+      do i_fld = 1, rj_fld%num_phys
+        if(rj_fld%flag_monitor(i_fld)) then
+          j_fld = j_fld + 1
+          pwr%id_field(j_fld) =   i_fld
+          pwr%num_comp_sq(j_fld) =    rj_fld%num_component(i_fld)
+          pwr%istack_comp_sq(j_fld) = pwr%istack_comp_sq(j_fld-1)       &
+     &                              + rj_fld%num_component(i_fld)
+          pwr%pwr_name(j_fld) =   rj_fld%phys_name(i_fld)
+        end if
+      end do
+!
+      call set_domains_4_spectr_output(sph_rj, pwr)
+      call alloc_rms_4_sph_spectr                                       &
+     &   (my_rank, sph_params%l_truncation, pwr)
+      call alloc_ave_4_sph_spectr                                       &
+     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1), pwr)
+      call allocate_rms_sph_local_data                                  &
+     &   (sph_params%l_truncation, sph_rj%nidx_rj,                      &
+     &    pwr%num_vol_spectr, pwr%nri_rms, pwr%ntot_comp_sq, WK_pwr)
+!
+      call set_sum_table_4_sph_spectr(sph_params%l_truncation,          &
+     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                        &
+     &    WK_pwr%num_mode_sum_l,  WK_pwr%num_mode_sum_m,                &
+     &    WK_pwr%num_mode_sum_lm, WK_pwr%istack_mode_sum_l,             &
+     &    WK_pwr%istack_mode_sum_m, WK_pwr%istack_mode_sum_lm,          &
+     &    WK_pwr%item_mode_sum_l, WK_pwr%item_mode_sum_m,               &
+     &    WK_pwr%item_mode_sum_lm)
+!
+      end subroutine set_field_list_sph_monitor
 !
 ! ----------------------------------------------------------------------
 !
