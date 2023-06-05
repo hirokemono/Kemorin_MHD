@@ -154,15 +154,23 @@
 !
 !
       do i = 1, pwr%num_vol_spectr
-        call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,      &
-     &      pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%kr_inside)
-        call find_radial_grid_index(sph_rj, sph_params%nlayer_CMB,      &
-     &      pwr%v_spectr(i)%r_outside, pwr%v_spectr(i)%kr_outside)
+        kr_st = 1
+        call s_set_radial_interpolation(sph_rj%nidx_rj(1),              &
+     &    sph_rj%radius_1d_rj_r, pwr%v_spectr(i)%r_inside, kr_st,       &
+     &    pwr%v_spectr(i)%kr_inside(1), pwr%v_spectr(i)%kr_inside(2),   &
+     &    pwr%v_spectr(i)%c_inter_in)
+        call s_set_radial_interpolation(sph_rj%nidx_rj(1),              &
+     &    sph_rj%radius_1d_rj_r, pwr%v_spectr(i)%r_outside, kr_st,      &
+     &    pwr%v_spectr(i)%kr_outside(1), pwr%v_spectr(i)%kr_outside(2), &
+     &    pwr%v_spectr(i)%c_inter_out)
+!        call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,     &
+!     &      pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%kr_inside)
+!        call find_radial_grid_index(sph_rj, sph_params%nlayer_CMB,     &
+!     &      pwr%v_spectr(i)%r_outside, pwr%v_spectr(i)%kr_outside)
 !
         if(iflag_debug .gt. 0) write(*,*) 'cal_one_over_volume'
         call cal_one_over_volume                                        &
-     &     (pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,      &
-     &      sph_rj%nidx_rj(i), sph_rj%radius_1d_rj_r,                   &
+     &     (pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%r_outside,        &
      &      pwr%v_spectr(i)%avol)
       end do
 !
@@ -223,8 +231,9 @@
         write(*,*) 'Integration area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i,                                                 &
-     &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
-     &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside
+     &     pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,        &
+     &     pwr%v_spectr(i)%kr_inside(1:2), pwr%v_spectr(i)%c_inter_in,  &
+     &     pwr%v_spectr(i)%kr_outside(1:2), pwr%v_spectr(i)%c_inter_out
         end do
       end if
 !

@@ -197,6 +197,9 @@
       real(kind=kreal), allocatable :: d_rj_out(:)
       real(kind=kreal), allocatable :: d_layer(:,:)
 !
+      integer(kind = kint) :: kr_inside(2), kr_outside(2)
+      real(kind = kreal), parameter :: c_interpolate = one
+!
 !
       ilen_n = len_fixed + ntot_comp_rj*25
       num = picked%istack_picked_spec_lc(my_rank+1)                     &
@@ -225,8 +228,10 @@
 !
           ist = ist + 1
           icou = icou + 1
+          kr_inside(1:2) =  sph_params%nlayer_ICB
+          kr_outside(1:2) = sph_params%nlayer_CMB
           call radial_integration                                       &
-     &       (sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
+     &       (kr_inside, kr_outside, c_interpolate, c_interpolate,      &
      &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                 &
      &        ntot_comp_rj, d_layer, d_rj_out)
           call convert_to_energy_sph_monitor                            &
@@ -239,6 +244,8 @@
      &          ntot_comp_rj, d_rj_out)
         end if
 !
+        kr_inside(1:2) =  1
+        kr_outside(1:2) = nlayer
         do inum = ist, picked%num_sph_mode_lc
           do knum = kst, ked
             call cal_rj_mean_sq_spectr_monitor                          &
@@ -249,7 +256,8 @@
 !
           icou = icou + 1
           call radial_integration                                       &
-     &       (ione, nlayer, nlayer, sph_rj%radius_1d_rj_r(kst),         &
+     &       (kr_inside, kr_outside, c_interpolate, c_interpolate,      &
+     &        nlayer, sph_rj%radius_1d_rj_r(kst),                       &
      &        ntot_comp_rj, d_layer(kst,1), d_rj_out)
           call convert_to_energy_sph_monitor                            &
      &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)

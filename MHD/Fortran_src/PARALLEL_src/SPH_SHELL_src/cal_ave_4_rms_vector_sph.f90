@@ -7,8 +7,9 @@
 !>@brief  Take surface or volume average for mean square data
 !!
 !!@verbatim
-!!      subroutine cal_one_over_volume                                  &
-!!     &         (kg_st, kg_ed, nri, radius_1d_rj_r, avol)
+!!      subroutine cal_one_over_volume(r_inside, r_outside, avol)
+!!        real(kind = kreal), intent(in) :: r_inside, r_outside
+!!        real(kind = kreal), intent(inout) :: avol
 !!
 !!      subroutine surf_ave_4_sph_rms_int(l_truncation, nri_rms,        &
 !!     &          ar_for_rms, ntot_rms_rj, rms_sph_l)
@@ -49,20 +50,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_one_over_volume                                    &
-     &         (kg_st, kg_ed, nri, radius_1d_rj_r, avol)
+      subroutine cal_one_over_volume(r_inside, r_outside, avol)
 !
-      integer(kind = kint), intent(in) :: nri
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      integer(kind = kint), intent(in) :: kg_st, kg_ed
+      real(kind = kreal), intent(in) :: r_inside, r_outside
       real(kind = kreal), intent(inout) :: avol
 !
 !
-      if(kg_st .eq. 0) then
-        avol = three / (radius_1d_rj_r(kg_ed)**3)
+      if(r_inside .eq. 0.0d0) then
+        avol = three / (r_outside**3)
       else
-        avol = three / (radius_1d_rj_r(kg_ed)**3                        &
-     &                - radius_1d_rj_r(kg_st)**3 )
+        avol = three / (r_inside**3 - r_outside**3 )
       end if
 !
       end subroutine cal_one_over_volume

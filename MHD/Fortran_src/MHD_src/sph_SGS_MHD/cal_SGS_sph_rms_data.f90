@@ -244,6 +244,7 @@
         do i = 1, pwr%num_vol_spectr
           call radial_integration                                       &
      &       (pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
+     &        pwr%v_spectr(i)%c_inter_in, pwr%v_spectr(i)%c_inter_out,  &
      &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, num,            &
      &        WK_pwr%shl_rj(0,1,1), WK_pwr%volume_j(1,1))
 !

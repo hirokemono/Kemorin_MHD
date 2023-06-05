@@ -143,10 +143,10 @@
         pwr%v_spectr(i)%ltr = 0
         pwr%v_spectr(i)%ntot_comp_sq = 0
 !
-        pwr%v_spectr(i)%r_inside =  0
-        pwr%v_spectr(i)%r_outside = 0
-        pwr%v_spectr(i)%kr_inside =  0.0d0
-        pwr%v_spectr(i)%kr_outside = 0.0d0
+        pwr%v_spectr(i)%r_inside =  0.0d0
+        pwr%v_spectr(i)%r_outside = 0.0d0
+        pwr%v_spectr(i)%kr_inside(1:2) =  0
+        pwr%v_spectr(i)%kr_outside(1:2) = 0
       end do
 !
       end subroutine alloc_volume_spectr_data
