@@ -60,11 +60,8 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
-      logical :: false_flag
       integer(kind = kint) :: i_fld, j_fld
       integer(kind = kint) :: i, k, kg, kr_st, num_field
-      integer(kind = kint), allocatable :: kr_tmp(:)
-      real(kind = kreal), allocatable :: r_tmp(:)
 !
 !
       if(pwr%nri_rms .eq. -1) then
@@ -77,39 +74,7 @@
       end if
 !
       if(iflag_dipolarity .gt. 0) then
-        false_flag = .TRUE.
-        do k = 1, pwr%nri_rms
-          if(pwr%kr_4_rms(k,1) .eq. sph_params%nlayer_CMB) then
-            false_flag = .FALSE.
-            exit
-          end if
-          if(abs(pwr%r_4_rms(k,1) - sph_params%radius_CMB)              &
-     &                                           .lt. 1.0e-7) then
-            pwr%r_4_rms(k,1) = sph_params%radius_CMB
-            false_flag = .FALSE.
-            exit
-          end if
-        end do
-!
-        if(false_flag) then
-          allocate(kr_tmp(1:pwr%nri_rms))
-          allocate(r_tmp(1:pwr%nri_rms))
-          if(pwr%nri_rms .gt. 0) then
-            kr_tmp(1:pwr%nri_rms) = pwr%kr_4_rms(1:pwr%nri_rms,1)
-            r_tmp(1:pwr%nri_rms) =  pwr%r_4_rms(1:pwr%nri_rms,1)
-          end if
-          call dealloc_num_spec_layer(pwr)
-!
-          k = pwr%nri_rms + 1
-          call alloc_num_spec_layer(k, pwr)
-          if(pwr%nri_rms .gt. 1) then
-            pwr%kr_4_rms(1:pwr%nri_rms-1,1) = kr_tmp(1:pwr%nri_rms-1)
-            pwr%r_4_rms(1:pwr%nri_rms-1,1) =  r_tmp(1:pwr%nri_rms-1)
-          end if
-          pwr%kr_4_rms(pwr%nri_rms,1) = sph_params%nlayer_CMB
-          pwr%r_4_rms(pwr%nri_rms,1) =  -one
-          deallocate(kr_tmp)
-        end if
+        call append_CMB_layer_f_dipolarity(sph_params, pwr)
       end if
 !
       do k = 1, pwr%nri_rms
@@ -227,7 +192,7 @@
      &                  trim(pwr%v_spectr(i)%fhead_rms_v),              &
      &                  pwr%v_spectr(i)%avol
         end do
-        write(*,*) 'volume mean square file area:'
+        write(*,*) 'volume average file area:'
         do i = 1, pwr%num_vol_spectr
           write(*,*) i, pwr%v_spectr(i)%iflag_volume_ave_sph,           &
      &                  trim(pwr%v_spectr(i)%fhead_ave)
@@ -380,6 +345,56 @@
         end if
 !
       end subroutine init_sph_vol_spectr_r_param
+!
+! ----------------------------------------------------------------------
+!
+      subroutine append_CMB_layer_f_dipolarity(sph_params, pwr)
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+!
+      type(sph_mean_squares), intent(inout) :: pwr
+!
+      logical :: false_flag
+      integer(kind = kint) :: k
+      integer(kind = kint), allocatable :: kr_tmp(:)
+      real(kind = kreal), allocatable :: r_tmp(:)
+!
+!
+        false_flag = .TRUE.
+        do k = 1, pwr%nri_rms
+          if(pwr%kr_4_rms(k,1) .eq. sph_params%nlayer_CMB) then
+            false_flag = .FALSE.
+            exit
+          end if
+          if(abs(pwr%r_4_rms(k,1) - sph_params%radius_CMB)              &
+     &                                           .lt. 1.0e-7) then
+            pwr%r_4_rms(k,1) = sph_params%radius_CMB
+            false_flag = .FALSE.
+            exit
+          end if
+        end do
+!
+        if(false_flag) then
+          allocate(kr_tmp(1:pwr%nri_rms))
+          allocate(r_tmp(1:pwr%nri_rms))
+          if(pwr%nri_rms .gt. 0) then
+            kr_tmp(1:pwr%nri_rms) = pwr%kr_4_rms(1:pwr%nri_rms,1)
+            r_tmp(1:pwr%nri_rms) =  pwr%r_4_rms(1:pwr%nri_rms,1)
+          end if
+          call dealloc_num_spec_layer(pwr)
+!
+          k = pwr%nri_rms + 1
+          call alloc_num_spec_layer(k, pwr)
+          if(pwr%nri_rms .gt. 1) then
+            pwr%kr_4_rms(1:pwr%nri_rms-1,1) = kr_tmp(1:pwr%nri_rms-1)
+            pwr%r_4_rms(1:pwr%nri_rms-1,1) =  r_tmp(1:pwr%nri_rms-1)
+          end if
+          pwr%kr_4_rms(pwr%nri_rms,1) = sph_params%nlayer_CMB
+          pwr%r_4_rms(pwr%nri_rms,1) =  -one
+          deallocate(kr_tmp)
+        end if
+!
+      end subroutine append_CMB_layer_f_dipolarity
 !
 ! ----------------------------------------------------------------------
 !
