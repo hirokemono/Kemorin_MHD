@@ -49,6 +49,7 @@
       use volume_average_4_sph
       use cal_ave_4_rms_vector_sph
       use set_parallel_file_name
+      use set_radial_interpolation
       use quicksort
 !
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -61,8 +62,9 @@
 !
       logical :: false_flag
       integer(kind = kint) :: i_fld, j_fld
-      integer(kind = kint) :: i, k, kg, num_field
+      integer(kind = kint) :: i, k, kg, kr_st, num_field
       integer(kind = kint), allocatable :: kr_tmp(:)
+      real(kind = kreal), allocatable :: r_tmp(:)
 !
 !
       if(pwr%nri_rms .eq. -1) then
@@ -70,6 +72,7 @@
 !
         do k = 1, sph_rj%nidx_rj(1)
           pwr%kr_4_rms(k,1) = k
+          pwr%r_4_rms(i,1) = -one
         end do
       end if
 !
@@ -84,8 +87,10 @@
 !
         if(false_flag) then
           allocate(kr_tmp(1:pwr%nri_rms))
+          allocate(r_tmp(1:pwr%nri_rms))
           if(pwr%nri_rms .gt. 0) then
             kr_tmp(1:pwr%nri_rms) = pwr%kr_4_rms(1:pwr%nri_rms,1)
+            r_tmp(1:pwr%nri_rms) =  pwr%r_4_rms(1:pwr%nri_rms,1)
           end if
           call dealloc_num_spec_layer(pwr)
 !
@@ -93,11 +98,55 @@
           call alloc_num_spec_layer(k, pwr)
           if(pwr%nri_rms .gt. 1) then
             pwr%kr_4_rms(1:pwr%nri_rms-1,1) = kr_tmp(1:pwr%nri_rms-1)
+            pwr%r_4_rms(1:pwr%nri_rms-1,1) =  r_tmp(1:pwr%nri_rms-1)
           end if
           pwr%kr_4_rms(pwr%nri_rms,1) = sph_params%nlayer_CMB
+          pwr%r_4_rms(pwr%nri_rms,1) =  -one
           deallocate(kr_tmp)
         end if
       end if
+!
+      do k = 1, pwr%nri_rms
+        kg = pwr%kr_4_rms(k,1)
+          pwr%r_4_rms(k,1) = 0.0d0
+        if(kg .gt. 0) then
+          pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(kg)
+        end if
+      end do
+!
+      if(pwr%nri_rms .gt. 1) then
+        call quicksort_real_w_index(pwr%nri_rms,                        &
+     &      pwr%r_4_rms(1,1), ione, pwr%nri_rms, pwr%kr_4_rms(1,1))
+      end if
+!
+      kr_st = 1
+      do k = 1, pwr%nri_rms
+        if(pwr%r_4_rms(k,1) .eq. zero) then
+          pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
+          pwr%r_4_rms(k,2) = zero
+          pwr%c_gl_itp(k) = one
+        else if(pwr%kr_4_rms(k,1) .gt. 0) then
+          pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
+          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
+          pwr%c_gl_itp(k) = one
+        else
+          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
+          call s_set_radial_interpolation(sph_rj%nidx_rj(1),            &
+     &        sph_rj%radius_1d_rj_r, pwr%r_4_rms(k,1), kr_st,           &
+     &        pwr%kr_4_rms(k,1), pwr%kr_4_rms(k,2), pwr%c_gl_itp(k))
+        end if
+      end do
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'spectr later data:', pwr%nri_rms
+        do k = 1, pwr%nri_rms
+          write(*,*) k, pwr%r_4_rms(k,1), pwr%kr_4_rms(k,1:2),          &
+     &            sph_rj%radius_1d_rj_r(pwr%kr_4_rms(k,1:2)),           &
+     &            pwr%c_gl_itp(k)
+        end do
+      end if
+!
+!
 !
       do i = 1, pwr%num_vol_spectr
         call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,      &
@@ -153,16 +202,6 @@
      &    WK_pwr%item_mode_sum_l, WK_pwr%item_mode_sum_m,               &
      &    WK_pwr%item_mode_sum_lm)
 !
-!
-      do k = 1, pwr%nri_rms
-        kg = pwr%kr_4_rms(k,1)
-        if(kg .le. 0) then
-          pwr%r_4_rms(k,1:2) = 0.0d0
-        else
-          pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(kg)
-          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
-        end if
-      end do
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'volume mean square file area:'
