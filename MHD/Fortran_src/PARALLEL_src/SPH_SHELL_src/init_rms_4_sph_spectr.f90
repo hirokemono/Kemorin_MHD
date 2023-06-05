@@ -83,6 +83,12 @@
             false_flag = .FALSE.
             exit
           end if
+          if(abs(pwr%r_4_rms(k,1) - sph_params%radius_CMB)              &
+     &                                           .lt. 1.0e-7) then
+            pwr%r_4_rms(k,1) = sph_params%radius_CMB
+            false_flag = .FALSE.
+            exit
+          end if
         end do
 !
         if(false_flag) then
@@ -108,7 +114,6 @@
 !
       do k = 1, pwr%nri_rms
         kg = pwr%kr_4_rms(k,1)
-          pwr%r_4_rms(k,1) = 0.0d0
         if(kg .gt. 0) then
           pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(kg)
         end if
