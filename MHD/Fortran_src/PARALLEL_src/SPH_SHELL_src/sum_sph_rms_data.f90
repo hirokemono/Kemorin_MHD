@@ -370,7 +370,7 @@
       do icomp = 1, ncomp
 !$omp do private(k,kg,lm,lst,led,l0,j)
         do k = 1, pwr%nri_rms
-          kg = pwr%kr_4_rms(k)
+          kg = pwr%kr_4_rms(k,1)
           do lm = 0, ltr
             lst = istack_sum(lm-1) + 1
             led = istack_sum(lm)

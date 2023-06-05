@@ -85,7 +85,7 @@
       else if(lp_ctl%idx_spec_layer_ctl%num .gt. 0) then
         call alloc_num_spec_layer(lp_ctl%idx_spec_layer_ctl%num, pwr)
 !
-        pwr%kr_4_rms(1:pwr%nri_rms)                                     &
+        pwr%kr_4_rms(1:pwr%nri_rms,1)                                   &
      &         = lp_ctl%idx_spec_layer_ctl%ivec(1:pwr%nri_rms)
       else
         pwr%nri_rms = -1

@@ -69,14 +69,14 @@
         call alloc_num_spec_layer(sph_rj%nidx_rj(1), pwr)
 !
         do k = 1, sph_rj%nidx_rj(1)
-          pwr%kr_4_rms(k) = k
+          pwr%kr_4_rms(k,1) = k
         end do
       end if
 !
       if(iflag_dipolarity .gt. 0) then
         false_flag = .TRUE.
         do k = 1, pwr%nri_rms
-          if(pwr%kr_4_rms(k) .eq. sph_params%nlayer_CMB) then
+          if(pwr%kr_4_rms(k,1) .eq. sph_params%nlayer_CMB) then
             false_flag = .FALSE.
             exit
           end if
@@ -85,16 +85,16 @@
         if(false_flag) then
           allocate(kr_tmp(1:pwr%nri_rms))
           if(pwr%nri_rms .gt. 0) then
-            kr_tmp(1:pwr%nri_rms) = pwr%kr_4_rms(1:pwr%nri_rms)
+            kr_tmp(1:pwr%nri_rms) = pwr%kr_4_rms(1:pwr%nri_rms,1)
           end if
           call dealloc_num_spec_layer(pwr)
 !
           k = pwr%nri_rms + 1
           call alloc_num_spec_layer(k, pwr)
           if(pwr%nri_rms .gt. 1) then
-            pwr%kr_4_rms(1:pwr%nri_rms-1) = kr_tmp(1:pwr%nri_rms-1)
+            pwr%kr_4_rms(1:pwr%nri_rms-1,1) = kr_tmp(1:pwr%nri_rms-1)
           end if
-          pwr%kr_4_rms(pwr%nri_rms) = sph_params%nlayer_CMB
+          pwr%kr_4_rms(pwr%nri_rms,1) = sph_params%nlayer_CMB
           deallocate(kr_tmp)
         end if
       end if
@@ -133,7 +133,7 @@
 !
       if(pwr%nri_rms .gt. 1) then
         call quicksort_int                                              &
-     &     (pwr%nri_rms, pwr%kr_4_rms, ione, pwr%nri_rms)
+     &     (pwr%nri_rms, pwr%kr_4_rms(1,1), ione, pwr%nri_rms)
       end if
 !
       call set_domains_4_spectr_output(sph_rj, pwr)
@@ -155,7 +155,7 @@
 !
 !
       do k = 1, pwr%nri_rms
-        kg = pwr%kr_4_rms(k)
+        kg = pwr%kr_4_rms(k,1)
         if(kg .le. 0) then
           pwr%r_4_rms(k,1:2) = 0.0d0
         else
