@@ -61,7 +61,7 @@
 !
       logical :: false_flag
       integer(kind = kint) :: i_fld, j_fld
-      integer(kind = kint) :: i, k, knum, num_field
+      integer(kind = kint) :: i, k, kg, num_field
       integer(kind = kint), allocatable :: kr_tmp(:)
 !
 !
@@ -75,8 +75,8 @@
 !
       if(iflag_dipolarity .gt. 0) then
         false_flag = .TRUE.
-        do knum = 1, pwr%nri_rms
-          if(pwr%kr_4_rms(knum) .eq. sph_params%nlayer_CMB) then
+        do k = 1, pwr%nri_rms
+          if(pwr%kr_4_rms(k) .eq. sph_params%nlayer_CMB) then
             false_flag = .FALSE.
             exit
           end if
@@ -89,8 +89,8 @@
           end if
           call dealloc_num_spec_layer(pwr)
 !
-          knum = pwr%nri_rms + 1
-          call alloc_num_spec_layer(knum, pwr)
+          k = pwr%nri_rms + 1
+          call alloc_num_spec_layer(k, pwr)
           if(pwr%nri_rms .gt. 1) then
             pwr%kr_4_rms(1:pwr%nri_rms-1) = kr_tmp(1:pwr%nri_rms-1)
           end if
@@ -154,12 +154,13 @@
      &    WK_pwr%item_mode_sum_lm)
 !
 !
-      do knum = 1, pwr%nri_rms
-        k = pwr%kr_4_rms(knum)
-        if(k .le. 0) then
-          pwr%r_4_rms(knum) = 0.0d0
+      do k = 1, pwr%nri_rms
+        kg = pwr%kr_4_rms(k)
+        if(kg .le. 0) then
+          pwr%r_4_rms(k,1:2) = 0.0d0
         else
-          pwr%r_4_rms(knum) = sph_rj%radius_1d_rj_r(k)
+          pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(kg)
+          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
         end if
       end do
 !

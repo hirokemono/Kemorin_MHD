@@ -80,7 +80,9 @@
 !>        Radial ID from layered mean square
         integer(kind=kint), allocatable :: kr_4_rms(:)
 !>        Radius from layered mean square
-        real(kind = kreal), allocatable :: r_4_rms(:)
+!!                       r_4_rms(:,1): radius
+!!                       r_4_rms(:,2): 1 / r
+        real(kind = kreal), allocatable :: r_4_rms(:,:)
 !
 !>        Mean square spectrum for degree on spheres
         real(kind = kreal), allocatable :: shl_l(:,:,:)
@@ -168,7 +170,7 @@
       pwr%nri_rms = nri_in
 !
       allocate( pwr%kr_4_rms(pwr%nri_rms) )
-      allocate( pwr%r_4_rms(pwr%nri_rms) )
+      allocate( pwr%r_4_rms(pwr%nri_rms,2) )
       if(pwr%nri_rms .gt. 0) then
         pwr%kr_4_rms = 0
         pwr%r_4_rms =  0.0d0
