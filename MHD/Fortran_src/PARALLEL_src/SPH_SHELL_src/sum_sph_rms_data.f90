@@ -362,22 +362,24 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: rms_sph_lc(pwr%nri_rms,0:ltr,ncomp)
 !
-      integer(kind = kint) :: lm, k, kg, j, l0, icomp
+      integer(kind = kint) :: lm, k, k_in, k_out, j, l0, icomp
       integer(kind = kint) :: lst, led
 !
 !
 !$omp parallel private(icomp)
       do icomp = 1, ncomp
-!$omp do private(k,kg,lm,lst,led,l0,j)
+!$omp do private(k,k_in,k_out,lm,lst,led,l0,j)
         do k = 1, pwr%nri_rms
-          kg = pwr%kr_4_rms(k,1)
+          k_in =  pwr%kr_4_rms(k,1)
+          k_out = pwr%kr_4_rms(k,2)
           do lm = 0, ltr
             lst = istack_sum(lm-1) + 1
             led = istack_sum(lm)
             do l0 = lst, led
               j = item_mode_4_sum(l0)
               rms_sph_lc(k,lm,icomp) = rms_sph_lc(k,lm,icomp)           &
-     &                                + rms_sph_rj(kg,j,icomp)
+     &            +        pwr%c_gl_itp(k) * rms_sph_rj(k_in,j,icomp)   &
+     &            + (one - pwr%c_gl_itp(k)) * rms_sph_rj(k_out,j,icomp)
             end do
           end do
         end do
