@@ -88,7 +88,7 @@
           picked%coef_radius_gl(k) = one
         else if(picked%id_radius(k,1) .gt. 0) then
           picked%id_radius(k,2) = picked%id_radius(k,1)
-          picked%radius_gl(k,2) = one / picked%radius_gl(k,1)**2
+          picked%radius_gl(k,2) = one / picked%radius_gl(k,1)
           picked%coef_radius_gl(k) = one
         else
           call s_set_radial_interpolation                               &
@@ -96,7 +96,7 @@
      &        picked%radius_gl(k,1), kr_st,                             &
      &        picked%id_radius(k,1), picked%id_radius(k,2),             &
      &        picked%coef_radius_gl(k))
-          picked%radius_gl(k,2) = one / picked%radius_gl(k,1)**2
+          picked%radius_gl(k,2) = one / picked%radius_gl(k,1)
         end if
       end do
 !

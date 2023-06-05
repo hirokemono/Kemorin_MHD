@@ -187,7 +187,7 @@
         gauss_coef%radius_gl(1,1)                                       &
      &        = g_pwr%gauss_coefs_radius_ctl%realvalue
       end if
-      gauss_coef%radius_gl(1,2) = one / gauss_coef%radius_gl(1,1)**2
+      gauss_coef%radius_gl(1,2) = one / gauss_coef%radius_gl(1,1)
 !
       gauss_list%num_modes = g_pwr%idx_gauss_ctl%num
       call alloc_pick_sph_mode(gauss_list)

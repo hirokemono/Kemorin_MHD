@@ -65,7 +65,7 @@
         integer(kind = kint), allocatable :: id_radius(:,:)
 !>        Radius for monitoring spectrum
 !!                       radius_gl(:,1): radius
-!!                       radius_gl(:,2): 1 / r^2
+!!                       radius_gl(:,2): 1 / r
 !!        Radius for monitoring spectrum
         real(kind = kreal), allocatable :: radius_gl(:,:)
 !>        Coefs for radial interpolation
