@@ -28,9 +28,8 @@
 !!        type(sph_vol_mean_squares), intent(inout)                     &
 !!     &                         :: v_pwr(num_vol_spectr)
 !!
-!!      subroutine sum_mean_square_on_sphere(sph_params, sph_rj, pwr)
+!!      subroutine sum_mean_square_on_sphere(sph_params, pwr)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!      subroutine sum_mean_square_on_volume                            &
 !!     &         (sph_params, ntot_rms_rj, num_vol_spectr, v_pwr)
@@ -96,7 +95,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
       call cal_volume_average_sph(sph_rj, rj_fld, pwr)
 !
-      call sum_mean_square_on_sphere(sph_params, sph_rj, pwr)
+      call sum_mean_square_on_sphere(sph_params, pwr)
       call sum_mean_square_on_volume(sph_params, pwr%ntot_comp_sq,      &
      &    pwr%num_vol_spectr, pwr%v_spectr)
 !
@@ -135,7 +134,7 @@
      &    (sph_params%l_truncation, cor%ntot_comp_sq, WK_pwr,           &
      &     cor%num_vol_spectr, cor%v_spectr)
 !
-      call sum_mean_square_on_sphere(sph_params, sph_rj, cor)
+      call sum_mean_square_on_sphere(sph_params, cor)
       call sum_mean_square_on_volume(sph_params, cor%ntot_comp_sq,      &
      &    cor%num_vol_spectr, cor%v_spectr)
 !
@@ -211,13 +210,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sum_mean_square_on_sphere(sph_params, sph_rj, pwr)
+      subroutine sum_mean_square_on_sphere(sph_params, pwr)
 !
       use calypso_mpi
       use cal_ave_4_rms_vector_sph
 !
       type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_mean_squares), intent(inout) :: pwr
 !
 !

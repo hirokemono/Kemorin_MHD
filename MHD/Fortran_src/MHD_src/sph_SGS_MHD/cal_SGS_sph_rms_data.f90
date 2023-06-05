@@ -186,7 +186,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
       call cal_volume_average_sph(sph_rj, rj_fld, pwr)
 !
-      call sum_mean_square_on_sphere(sph_params, sph_rj, pwr)
+      call sum_mean_square_on_sphere(sph_params, pwr)
       call sum_mean_square_on_volume(sph_params, pwr%ntot_comp_sq,      &
      &    pwr%num_vol_spectr, pwr%v_spectr)
 !
@@ -200,7 +200,7 @@
       use cal_rms_by_sph_spectr
       use cal_ave_4_rms_vector_sph
       use radial_int_for_sph_spec
-      use sum_sph_rms_data
+      use sum_sph_rms_by_degree
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_address), intent(in) :: ipol
@@ -263,13 +263,13 @@
         end do
 !
         if(pwr%nri_rms .le. 0) cycle
-        call sum_sph_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj,   &
+        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
      &      WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,          &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_l_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj,   &
+        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
      &      WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,          &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_m_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj,   &
+        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
      &      WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,         &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_lm_local(1,0,jcomp_st))
       end do
