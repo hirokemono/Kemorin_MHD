@@ -37,9 +37,18 @@
 !!
 !!      subroutine sum_sph_v_rms_by_degree(ltr, nidx_j, istack_sum,     &
 !!     &          item_mode_4_sum, ncomp, rms_sph_vol_j, rms_sph_vlc)
-!!      subroutine sum_sph_rms_by_degree(ltr, nidx_rj, nri_rms,         &
-!!     &          kr_for_rms, istack_sum, item_mode_4_sum, ncomp,       &
-!!     &          rms_sph_rj, rms_sph_lc)
+!!      subroutine sum_sph_rms_by_degree(pwr, ltr, nidx_rj, istack_sum, &
+!!     &          item_mode_4_sum, ncomp, rms_sph_rj, rms_sph_lc)
+!!       integer(kind = kint), intent(in) :: ltr
+!!       integer(kind = kint), intent(in) :: nidx_rj(2)
+!!       type(sph_mean_squares), intent(in) :: pwr
+!!       integer(kind = kint), intent(in) :: ncomp
+!!       integer(kind = kint), intent(in) :: istack_sum(-1:ltr)
+!!       integer(kind = kint), intent(in) :: item_mode_4_sum(nidx_rj(2))
+!!       real(kind = kreal), intent(in)                                 &
+!!     &                   :: rms_sph_rj(0:nidx_rj(1),nidx_rj(2),3)
+!!       real(kind = kreal), intent(inout)                              &
+!!     &                   :: rms_sph_lc(pwr%nri_rms,0:ltr,ncomp)
 !!@endverbatim
 !
       module sum_sph_rms_data
@@ -213,16 +222,13 @@
         end do
 !
         if(pwr%nri_rms .le. 0) cycle
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, pwr%nri_rms, pwr%kr_4_rms,    &
+        call sum_sph_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj,   &
      &      WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,          &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_l_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, pwr%nri_rms, pwr%kr_4_rms,  &
+        call sum_sph_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj,   &
      &      WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,          &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_m_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, pwr%nri_rms, pwr%kr_4_rms,  &
+        call sum_sph_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj,   &
      &      WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,         &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_lm_local(1,0,jcomp_st))
       end do
@@ -292,8 +298,7 @@
         end do
 !
         if(pwr%nri_rms .le. 0) cycle
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, pwr%nri_rms, pwr%kr_4_rms,    &
+        call sum_sph_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj,   &
      &      WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,          &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_l_local(1,0,jcomp_st))
       end do
@@ -339,13 +344,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sum_sph_rms_by_degree(ltr, nidx_rj, nri_rms,           &
-     &          kr_for_rms, istack_sum, item_mode_4_sum, ncomp,         &
-     &          rms_sph_rj, rms_sph_lc)
+      subroutine sum_sph_rms_by_degree(pwr, ltr, nidx_rj, istack_sum,   &
+     &          item_mode_4_sum, ncomp, rms_sph_rj, rms_sph_lc)
 !
-      integer(kind = kint), intent(in) :: ltr, nri_rms
+      use t_rms_4_sph_spectr
+!
+      integer(kind = kint), intent(in) :: ltr
       integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: kr_for_rms(nri_rms)
+      type(sph_mean_squares), intent(in) :: pwr
       integer(kind = kint), intent(in) :: ncomp
 !
       integer(kind = kint), intent(in) :: istack_sum(-1:ltr)
@@ -354,7 +360,7 @@
      &                   :: rms_sph_rj(0:nidx_rj(1),nidx_rj(2),3)
 !
       real(kind = kreal), intent(inout)                                 &
-     &                   :: rms_sph_lc(nri_rms,0:ltr,ncomp)
+     &                   :: rms_sph_lc(pwr%nri_rms,0:ltr,ncomp)
 !
       integer(kind = kint) :: lm, k, kg, j, l0, icomp
       integer(kind = kint) :: lst, led
@@ -363,8 +369,8 @@
 !$omp parallel private(icomp)
       do icomp = 1, ncomp
 !$omp do private(k,kg,lm,lst,led,l0,j)
-        do k = 1, nri_rms
-          kg = kr_for_rms(k)
+        do k = 1, pwr%nri_rms
+          kg = pwr%kr_4_rms(k)
           do lm = 0, ltr
             lst = istack_sum(lm-1) + 1
             led = istack_sum(lm)
