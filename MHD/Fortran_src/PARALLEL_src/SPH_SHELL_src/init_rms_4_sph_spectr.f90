@@ -128,17 +128,32 @@
       do k = 1, pwr%nri_rms
         if(pwr%r_4_rms(k,1) .eq. zero) then
           pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
-          pwr%r_4_rms(k,2) = zero
           pwr%c_gl_itp(k) = one
         else if(pwr%kr_4_rms(k,1) .gt. 0) then
           pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
-          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
           pwr%c_gl_itp(k) = one
         else
-          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
           call s_set_radial_interpolation(sph_rj%nidx_rj(1),            &
      &        sph_rj%radius_1d_rj_r, pwr%r_4_rms(k,1), kr_st,           &
      &        pwr%kr_4_rms(k,1), pwr%kr_4_rms(k,2), pwr%c_gl_itp(k))
+        end if
+!
+        if(abs(pwr%c_gl_itp(k)) .lt. 1.0d-6) then
+          kr_st = pwr%kr_4_rms(k,1)
+          pwr%kr_4_rms(k,2) = kr_st
+          pwr%r_4_rms(k,1) =  sph_rj%radius_1d_rj_r(kr_st)
+          pwr%c_gl_itp(k) =   one
+        else if(abs(one - pwr%c_gl_itp(k)) .lt. 1.0d-6) then
+          kr_st = pwr%kr_4_rms(k,2)
+          pwr%kr_4_rms(k,1) = kr_st
+          pwr%r_4_rms(k,1) =  sph_rj%radius_1d_rj_r(kr_st)
+          pwr%c_gl_itp(k) =   one
+        end if
+!
+        if(pwr%r_4_rms(k,1) .eq. zero) then
+          pwr%r_4_rms(k,2) = zero
+        else
+          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
         end if
       end do
 !
@@ -154,15 +169,68 @@
 !
 !
       do i = 1, pwr%num_vol_spectr
-        kr_st = 1
-        call s_set_radial_interpolation(sph_rj%nidx_rj(1),              &
-     &    sph_rj%radius_1d_rj_r, pwr%v_spectr(i)%r_inside, kr_st,       &
-     &    pwr%v_spectr(i)%kr_inside(1), pwr%v_spectr(i)%kr_inside(2),   &
-     &    pwr%v_spectr(i)%c_inter_in)
-        call s_set_radial_interpolation(sph_rj%nidx_rj(1),              &
-     &    sph_rj%radius_1d_rj_r, pwr%v_spectr(i)%r_outside, kr_st,      &
+        if(pwr%v_spectr(i)%r_inside .le. zero) then
+          pwr%v_spectr(i)%kr_inside(1:2) = sph_params%nlayer_ICB
+          pwr%v_spectr(i)%r_inside = sph_params%radius_ICB
+          pwr%v_spectr(i)%c_inter_in = one
+        else if(pwr%v_spectr(i)%r_inside .eq. zero) then
+          pwr%v_spectr(i)%kr_inside(1:2) = 0
+          pwr%v_spectr(i)%c_inter_in = one
+        else if(pwr%v_spectr(i)%r_inside                                &
+     &         .le. sph_rj%radius_1d_rj_r(1)) then
+          pwr%v_spectr(i)%kr_inside(1) = 0
+          pwr%v_spectr(i)%kr_inside(2) = 1
+          pwr%v_spectr(i)%c_inter_in                                    &
+     &         = pwr%v_spectr(i)%r_inside / sph_rj%radius_1d_rj_r(1)
+        else
+          kr_st = 1
+          call s_set_radial_interpolation(sph_rj%nidx_rj(1),            &
+     &      sph_rj%radius_1d_rj_r, pwr%v_spectr(i)%r_inside, kr_st,     &
+     &      pwr%v_spectr(i)%kr_inside(1), pwr%v_spectr(i)%kr_inside(2), &
+     &      pwr%v_spectr(i)%c_inter_in)
+        end if
+!
+        if(abs(pwr%v_spectr(i)%c_inter_in) .lt. 1.0d-6) then
+          kr_st = pwr%v_spectr(i)%kr_inside(1)
+          pwr%v_spectr(i)%kr_inside(2) = kr_st
+          pwr%v_spectr(i)%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
+          pwr%v_spectr(i)%c_inter_in =   one
+        else if(abs(one - pwr%v_spectr(i)%c_inter_in) .lt. 1.0d-6) then
+          kr_st = pwr%v_spectr(i)%kr_inside(2)
+          pwr%v_spectr(i)%kr_inside(1) = kr_st
+          pwr%v_spectr(i)%r_inside =     sph_rj%radius_1d_rj_r(kr_st)
+          pwr%v_spectr(i)%c_inter_in =   one
+        end if
+!
+        if(pwr%v_spectr(i)%r_outside .le. zero) then
+          pwr%v_spectr(i)%kr_outside(1:2) = sph_params%nlayer_CMB
+          pwr%v_spectr(i)%r_outside = sph_params%radius_CMB
+          pwr%v_spectr(i)%c_inter_out = one
+        else if(pwr%v_spectr(i)%r_outside                               &
+     &      .ge. sph_rj%radius_1d_rj_r(sph_rj%nidx_rj(1))) then
+          pwr%v_spectr(i)%kr_outside(1:2) = sph_rj%nidx_rj(1)
+          pwr%v_spectr(i)%r_outside                                     &
+     &            = sph_rj%radius_1d_rj_r(sph_rj%nidx_rj(1))
+          pwr%v_spectr(i)%c_inter_out = one
+        else
+          call s_set_radial_interpolation(sph_rj%nidx_rj(1),            &
+     &      sph_rj%radius_1d_rj_r, pwr%v_spectr(i)%r_outside, kr_st,    &
      &    pwr%v_spectr(i)%kr_outside(1), pwr%v_spectr(i)%kr_outside(2), &
-     &    pwr%v_spectr(i)%c_inter_out)
+     &      pwr%v_spectr(i)%c_inter_out)
+        end if
+!
+        if(abs(pwr%v_spectr(i)%c_inter_out) .lt. 1.0d-6) then
+          kr_st = pwr%v_spectr(i)%kr_outside(1)
+          pwr%v_spectr(i)%kr_outside(2) = kr_st
+          pwr%v_spectr(i)%r_outside =     sph_rj%radius_1d_rj_r(kr_st)
+          pwr%v_spectr(i)%c_inter_out =   one
+        else if(abs(one - pwr%v_spectr(i)%c_inter_out) .lt. 1.0d-6) then
+          kr_st = pwr%v_spectr(i)%kr_outside(2)
+          pwr%v_spectr(i)%kr_outside(1) = kr_st
+          pwr%v_spectr(i)%r_outside =     sph_rj%radius_1d_rj_r(kr_st)
+          pwr%v_spectr(i)%c_inter_out =   one
+        end if
+!
 !        call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,     &
 !     &      pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%kr_inside)
 !        call find_radial_grid_index(sph_rj, sph_params%nlayer_CMB,     &
