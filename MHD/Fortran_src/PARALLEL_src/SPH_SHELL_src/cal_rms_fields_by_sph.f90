@@ -83,11 +83,8 @@
       if(pwr%ntot_comp_sq .eq. 0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_pwr'
-      call sum_sph_layerd_pwr                                           &
-     &   (sph_params%l_truncation, sph_rj, ipol, leg%g_sph_rj, rj_fld,  &
-     &    pwr%nri_rms, pwr%num_fld_sq, pwr%istack_comp_sq,              &
-     &    pwr%id_field, pwr%kr_4_rms, pwr%num_vol_spectr,               &
-     &    pwr%v_spectr, WK_pwr)
+      call sum_sph_layerd_pwr(sph_params%l_truncation, sph_rj,  pwr,    &
+     &                        ipol, rj_fld, leg%g_sph_rj, WK_pwr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'global_sum_sph_layerd_square'
       call global_sum_sph_layerd_square                                 &
@@ -128,11 +125,8 @@
       if(cor%ntot_comp_sq .eq. 0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_correlate'
-      call sum_sph_layerd_correlate(sph_params%l_truncation,            &
-     &    sph_rj, leg%g_sph_rj, rj_fld1, rj_fld2,                       &
-     &    cor%nri_rms, cor%num_fld_sq, cor%istack_comp_sq,              &
-     &    cor%id_field, cor%kr_4_rms, cor%num_vol_spectr,               &
-     &    cor%v_spectr, WK_pwr)
+      call sum_sph_layerd_correlate(sph_params%l_truncation, sph_rj,    &
+     &    cor, rj_fld1, rj_fld2, leg%g_sph_rj, WK_pwr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'global_sum_sph_layerd_square'
       call global_sum_sph_layerd_square                                 &
@@ -235,40 +229,37 @@
      &     (sph_params%l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,     &
      &      pwr%shl_m, pwr%shl_sq, pwr%shl_m0, pwr%ratio_shl_m0)
 !
-        call surf_ave_4_sph_rms(sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,  &
-     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_sq)
-        call surf_ave_4_sph_rms(sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,  &
-     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_m0)
+        call surf_ave_4_sph_rms(pwr%nri_rms, pwr%r_4_rms(1,2),          &
+     &                          pwr%ntot_comp_sq, pwr%shl_sq)
+        call surf_ave_4_sph_rms(pwr%nri_rms, pwr%r_4_rms(1,2),          &
+     &                          pwr%ntot_comp_sq, pwr%shl_m0)
 !
       else if(my_rank .eq. pwr%irank_l) then
         call sum_sph_rms_all_modes                                      &
      &     (sph_params%l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,     &
      &      pwr%shl_l, pwr%shl_sq)
-        call surf_ave_4_sph_rms(sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,  &
-     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_sq)
+        call surf_ave_4_sph_rms(pwr%nri_rms, pwr%r_4_rms(1,2),          &
+     &                          pwr%ntot_comp_sq, pwr%shl_sq)
 !
       else if(my_rank .eq. pwr%irank_lm) then
         call sum_sph_rms_all_modes                                      &
      &     (sph_params%l_truncation, pwr%nri_rms, pwr%ntot_comp_sq,     &
      &      pwr%shl_lm, pwr%shl_sq)
-        call surf_ave_4_sph_rms(sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,  &
-     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_sq)
+        call surf_ave_4_sph_rms(pwr%nri_rms, pwr%r_4_rms(1,2),          &
+     &                          pwr%ntot_comp_sq, pwr%shl_sq)
       end if
 !
       if(my_rank .eq. pwr%irank_m) then
         call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
-     &        sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                    &
-     &        pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_m)
+     &      pwr%nri_rms, pwr%r_4_rms(1,2), pwr%ntot_comp_sq, pwr%shl_m)
       end if
       if(my_rank .eq. pwr%irank_l) then
         call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
-     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                      &
-     &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_l)
+     &      pwr%nri_rms, pwr%r_4_rms(1,2), pwr%ntot_comp_sq, pwr%shl_l)
       end if
       if(my_rank .eq. pwr%irank_lm) then
         call surf_ave_4_sph_rms_int(sph_params%l_truncation,            &
-     &      sph_rj%nidx_rj(1), sph_rj%a_r_1d_rj_r,                      &
-     &      pwr%nri_rms, pwr%ntot_comp_sq, pwr%kr_4_rms, pwr%shl_lm)
+     &     pwr%nri_rms, pwr%r_4_rms(1,2), pwr%ntot_comp_sq, pwr%shl_lm)
       end if
 !
       end subroutine sum_mean_square_on_sphere

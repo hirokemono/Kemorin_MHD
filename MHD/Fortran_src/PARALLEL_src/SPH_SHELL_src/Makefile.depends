@@ -186,7 +186,7 @@ spherical_transforms.o: $(SPH_COMMDIR)/spherical_transforms.f90 m_precision.o ca
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_spectr_over_smp_segment.o: $(SPH_COMMDIR)/sum_spectr_over_smp_segment.f90 m_precision.o m_constants.o m_machine_parameter.o t_field_matrices_4_legendre.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sum_sph_rms_data.o: $(SPH_COMMDIR)/sum_sph_rms_data.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_sph_volume_mean_square.o t_sum_sph_rms_data.o cal_rms_by_sph_spectr.o cal_ave_4_rms_vector_sph.o radial_int_for_sph_spec.o correlation_by_sph_spectr.o
+sum_sph_rms_data.o: $(SPH_COMMDIR)/sum_sph_rms_data.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_sph_volume_mean_square.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o cal_rms_by_sph_spectr.o cal_ave_4_rms_vector_sph.o radial_int_for_sph_spec.o correlation_by_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 swap_phi_4_sph_trans.o: $(SPH_COMMDIR)/swap_phi_4_sph_trans.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
