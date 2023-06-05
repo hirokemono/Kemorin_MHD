@@ -53,12 +53,15 @@
         picked%num_layer = sph_rj%nidx_rj(1)
         call alloc_num_pick_layer(picked)
 !
+!$omp parallel do
         do k = 1, picked%num_layer
           picked%id_radius(k,1) = k
           picked%radius_gl(k,1:2) = -one
         end do
+!$omp end parallel do
       end if
 !
+!$omp parallel do
       do k = 1, picked%num_layer
         if(picked%radius_gl(k,1) .lt. zero) then
           if(picked%id_radius(k,1) .eq. 0) then
@@ -68,6 +71,7 @@
           end if
         end if
       end do
+!$omp end parallel do
 !
       if(picked%num_layer .gt. 1) then
         call quicksort_real_w_index(picked%num_layer,                   &
@@ -98,6 +102,14 @@
       iflag_center = 0
       if(sph_rj%iflag_rj_center.gt.0 .and. picked%id_radius(1,1).eq.1)  &
      &     iflag_center = 1
+!
+      if(my_rank .gt. 0) return
+      write(*,*) 'Picked spectr later data:', picked%num_layer
+      do k = 1, picked%num_layer
+        write(*,*) k, picked%radius_gl(k,1), picked%id_radius(k,1:2),   &
+     &            sph_rj%radius_1d_rj_r(picked%id_radius(k,1:2)),       &
+     &            picked%coef_radius_gl(k)
+      end do
 !
       end subroutine init_sph_radial_monitor_list
 !

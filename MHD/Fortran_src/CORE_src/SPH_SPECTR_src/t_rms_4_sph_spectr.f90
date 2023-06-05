@@ -78,9 +78,13 @@
         integer(kind=kint) :: nri_rms
 !
 !>        Radial ID from layered mean square
-        integer(kind=kint), allocatable :: kr_4_rms(:)
+        integer(kind=kint), allocatable :: kr_4_rms(:,:)
 !>        Radius from layered mean square
-        real(kind = kreal), allocatable :: r_4_rms(:)
+!!           r_4_rms(:,1) : Radius
+!!           r_4_rms(:,2) : 1 / r^2
+        real(kind = kreal), allocatable :: r_4_rms(:,:)
+!>        Interpolation coefficient for layerd spectra
+        real(kind = kreal), allocatable :: c_gl_itp(:)
 !
 !>        Mean square spectrum for degree on spheres
         real(kind = kreal), allocatable :: shl_l(:,:,:)
@@ -167,11 +171,13 @@
 !
       pwr%nri_rms = nri_in
 !
-      allocate( pwr%kr_4_rms(pwr%nri_rms) )
-      allocate( pwr%r_4_rms(pwr%nri_rms) )
+      allocate( pwr%kr_4_rms(pwr%nri_rms,2) )
+      allocate( pwr%r_4_rms(pwr%nri_rms,2) )
+      allocate( pwr%c_gl_itp(pwr%nri_rms) )
       if(pwr%nri_rms .gt. 0) then
         pwr%kr_4_rms = 0
         pwr%r_4_rms =  0.0d0
+        pwr%c_gl_itp =  0.0d0
       end if
 !
       end subroutine alloc_num_spec_layer
@@ -289,7 +295,7 @@
 !
 !
       pwr%nri_rms = 0
-      deallocate(pwr%r_4_rms, pwr%kr_4_rms)
+      deallocate(pwr%r_4_rms, pwr%kr_4_rms, pwr%c_gl_itp)
 !
       end subroutine dealloc_num_spec_layer
 !

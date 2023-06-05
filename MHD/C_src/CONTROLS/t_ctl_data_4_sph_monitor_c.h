@@ -45,6 +45,7 @@ struct layerd_spectr_control_c{
 	struct chara_ctl_item *axis_spectr_switch_c;
 	
     struct int_clist *idx_spec_layer_list;
+    struct real_clist *spec_layer_radius_list;
 };
 
 struct gauss_spectr_control_c{

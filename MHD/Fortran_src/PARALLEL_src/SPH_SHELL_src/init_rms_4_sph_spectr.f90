@@ -50,6 +50,7 @@
       use cal_ave_4_rms_vector_sph
       use set_parallel_file_name
       use quicksort
+      use set_radial_interpolation
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -61,43 +62,110 @@
 !
       logical :: false_flag
       integer(kind = kint) :: i_fld, j_fld
-      integer(kind = kint) :: i, k, knum, num_field
-      integer(kind = kint), allocatable :: kr_tmp(:)
+      integer(kind = kint) :: i, k, knum, kr_st, num_field
+      integer(kind = kint), allocatable :: kr_tmp(:,:)
+      real(kind = kreal), allocatable :: r_tmp(:,:)
 !
 !
       if(pwr%nri_rms .eq. -1) then
         call alloc_num_spec_layer(sph_rj%nidx_rj(1), pwr)
 !
+!$omp parallel do
         do k = 1, sph_rj%nidx_rj(1)
-          pwr%kr_4_rms(k) = k
+          pwr%kr_4_rms(k,1) = k
+          pwr%r_4_rms(k,1:2) = -one
         end do
+!$omp end parallel do
       end if
 !
       if(iflag_dipolarity .gt. 0) then
         false_flag = .TRUE.
-        do knum = 1, pwr%nri_rms
-          if(pwr%kr_4_rms(knum) .eq. sph_params%nlayer_CMB) then
+        do k = 1, pwr%nri_rms
+          if(pwr%kr_4_rms(k,1) .eq. sph_params%nlayer_CMB) then
+            false_flag = .FALSE.
+            exit
+          end if
+        end do
+        do k = 1, pwr%nri_rms
+          if(abs(pwr%r_4_rms(k,1) - sph_params%radius_CMB)              &
+     &                                          .le. 1.0e-8) then
+            pwr%r_4_rms(k,1) = sph_params%radius_CMB
             false_flag = .FALSE.
             exit
           end if
         end do
 !
         if(false_flag) then
-          allocate(kr_tmp(1:pwr%nri_rms))
+          allocate(kr_tmp(1:pwr%nri_rms,1:2))
+          allocate(r_tmp(1:pwr%nri_rms,1:2))
           if(pwr%nri_rms .gt. 0) then
-            kr_tmp(1:pwr%nri_rms) = pwr%kr_4_rms(1:pwr%nri_rms)
+!$omp parallel workshare
+            kr_tmp(1:pwr%nri_rms,1:2) = pwr%kr_4_rms(1:pwr%nri_rms,1:2)
+            r_tmp(1:pwr%nri_rms,1:2) =  pwr%r_4_rms(1:pwr%nri_rms,1:2)
+!$omp end parallel workshare
           end if
           call dealloc_num_spec_layer(pwr)
 !
-          knum = pwr%nri_rms + 1
-          call alloc_num_spec_layer(knum, pwr)
+          k = pwr%nri_rms + 1
+          call alloc_num_spec_layer(k, pwr)
           if(pwr%nri_rms .gt. 1) then
-            pwr%kr_4_rms(1:pwr%nri_rms-1) = kr_tmp(1:pwr%nri_rms-1)
+!$omp parallel workshare
+            pwr%kr_4_rms(1:pwr%nri_rms-1,1) = kr_tmp(1:pwr%nri_rms-1,1)
+            pwr%kr_4_rms(1:pwr%nri_rms-1,2) = kr_tmp(1:pwr%nri_rms-1,2)
+            pwr%r_4_rms(1:pwr%nri_rms-1,1) =  r_tmp(1:pwr%nri_rms-1,1)
+            pwr%r_4_rms(1:pwr%nri_rms-1,2) =  r_tmp(1:pwr%nri_rms-1,2)
+!$omp end parallel workshare
           end if
-          pwr%kr_4_rms(pwr%nri_rms) = sph_params%nlayer_CMB
-          deallocate(kr_tmp)
+          pwr%kr_4_rms(pwr%nri_rms,1) = sph_params%nlayer_CMB
+          pwr%r_4_rms(pwr%nri_rms,1) = -one
+          deallocate(kr_tmp, r_tmp)
         end if
       end if
+!
+!$omp parallel do
+      do k = 1, pwr%nri_rms
+        if(pwr%r_4_rms(k,1) .lt. zero) then
+          if(pwr%kr_4_rms(k,1) .eq. 0) then
+            pwr%r_4_rms(k,1) = zero
+          else
+            pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(k)
+          end if
+        end if
+      end do
+!$omp end parallel do
+!
+      if(pwr%nri_rms .gt. 1) then
+        call quicksort_real_w_index(pwr%nri_rms, pwr%r_4_rms(1,1),      &
+     &      ione, pwr%nri_rms, pwr%kr_4_rms(1,1))
+      end if
+!
+      kr_st = 1
+      do k = 1, pwr%nri_rms
+        if(pwr%r_4_rms(k,1) .eq. zero) then
+          pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
+          pwr%r_4_rms(k,2) = zero
+          pwr%c_gl_itp(k) = one
+        else if(pwr%kr_4_rms(k,1) .gt. 0) then
+          pwr%kr_4_rms(k,2) = pwr%kr_4_rms(k,1)
+          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
+          pwr%c_gl_itp(k) = one
+        else
+          call s_set_radial_interpolation                               &
+     &       (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                 &
+     &        pwr%r_4_rms(k,1), kr_st,                                  &
+     &        pwr%kr_4_rms(k,1), pwr%kr_4_rms(k,2), pwr%c_gl_itp(k))
+          pwr%r_4_rms(k,2) = one / pwr%r_4_rms(k,1)
+        end if
+      end do
+!
+      if(my_rank .gt. 0) return
+      write(*,*) 'layperd power spectr data:', pwr%nri_rms
+      do k = 1, pwr%nri_rms
+        write(*,*) k, pwr%r_4_rms(k,1), pwr%kr_4_rms(k,1:2),            &
+     &            sph_rj%radius_1d_rj_r(pwr%kr_4_rms(k,1:2)),           &
+     &            pwr%c_gl_itp(k)
+      end do
+!
 !
       do i = 1, pwr%num_vol_spectr
         call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,      &
@@ -131,11 +199,6 @@
         end if
       end do
 !
-      if(pwr%nri_rms .gt. 1) then
-        call quicksort_int                                              &
-     &     (pwr%nri_rms, pwr%kr_4_rms, ione, pwr%nri_rms)
-      end if
-!
       call set_domains_4_spectr_output(sph_rj, pwr)
       call alloc_rms_4_sph_spectr                                       &
      &   (my_rank, sph_params%l_truncation, pwr)
@@ -152,16 +215,6 @@
      &    WK_pwr%istack_mode_sum_m, WK_pwr%istack_mode_sum_lm,          &
      &    WK_pwr%item_mode_sum_l, WK_pwr%item_mode_sum_m,               &
      &    WK_pwr%item_mode_sum_lm)
-!
-!
-      do knum = 1, pwr%nri_rms
-        k = pwr%kr_4_rms(knum)
-        if(k .le. 0) then
-          pwr%r_4_rms(knum) = 0.0d0
-        else
-          pwr%r_4_rms(knum) = sph_rj%radius_1d_rj_r(k)
-        end if
-      end do
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'volume mean square file area:'
