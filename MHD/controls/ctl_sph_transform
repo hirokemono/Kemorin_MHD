@@ -23,7 +23,7 @@ begin spherical_transform
 !
   begin model
     begin phys_values_ctl
-      array nod_value_ctl   8
+      array nod_value_ctl
         nod_value_ctl  velocity            Viz_On   Monitor_On    end
         nod_value_ctl  temperature         Viz_On   Monitor_On    end
         nod_value_ctl  pressure            Viz_On   Monitor_Off   end
@@ -57,8 +57,11 @@ begin spherical_transform
 !   if num_pick_layer_ctl = 0 or negative: 
 !           output all layer and volume average
     rj_picked_data_head_ctl   'sph_spectr/rj_pick_ene_spec'
-    array pick_layer_ctl  1
+    array pick_layer_ctl
       pick_layer_ctl  62
+    end array
+    array pick_radius_ctl
+      pick_radius_ctl  1.053
     end array
   end
 !
@@ -85,7 +88,7 @@ begin spherical_transform
 !
 !
   begin visual_control
-    array cross_section_ctl  4
+    array cross_section_ctl
       file  cross_section_ctl   ctl_psf_cmb
       file  cross_section_ctl   ctl_psf_z0 
       file  cross_section_ctl   ctl_psf_z0.3

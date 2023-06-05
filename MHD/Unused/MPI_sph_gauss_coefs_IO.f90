@@ -108,7 +108,7 @@
         ioffset = IO_param%ioff_gl
         write(timebuf,'(a, i16,1pe25.15e3,a1, a)')                      &
      &        hd_pick_gauss_head(),                                     &
-     &        picked%num_sph_mode, picked%radius_gl(1), char(10),       &
+     &        picked%num_sph_mode, picked%radius_gl(1,1), char(10),     &
      &        hd_time_label()
 !
         call mpi_write_one_chara_b                                      &
@@ -253,17 +253,17 @@
       call skip_comment(tmpchara,id_gauss_coef)
       read(id_gauss_coef,*) nmode_read, radius_read
 !      write(*,*) 'num_mode', gauss%num_sph_mode, nmode_read
-!      write(*,*) 'radius_gauss', gauss%radius_gl(1), radius_read
+!      write(*,*) 'radius_gauss', gauss%radius_gl(1,1), radius_read
       if(gauss%num_sph_mode .ne. nmode_read) then
         write(*,*) 'Number of Gauss coefficients does not match ',      &
      &             'with the data in the file'
         check_gauss_coefs_4_monitor = 1
         return
       end if
-      if(abs(gauss%radius_gl(1) - radius_read) .gt. 1.0E-8) then
+      if(abs(gauss%radius_gl(1,1) - radius_read) .gt. 1.0E-8) then
         write(*,*) 'Radius of Gauss coefficients does not match ',      &
      &             'with the data in the file',                         &
-     &              gauss%radius_gl(1), radius_read
+     &              gauss%radius_gl(1,1), radius_read
         check_gauss_coefs_4_monitor = 1
         return
       end if

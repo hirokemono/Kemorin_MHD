@@ -234,7 +234,7 @@
            pickedbuf(icou)                                              &
      &         = picked_each_mode_data_text                             &
      &         (time_d%i_time_step, time_d%time,                        &
-     &          picked%radius_gl(knum), picked%id_radius(knum),         &
+     &          picked%radius_gl(knum,1), picked%id_radius(knum,1),     &
      &          picked%idx_out(1,1), picked%idx_out(1,2),               &
      &          ntot_comp_rj, d_rj_out)
         end if
@@ -256,7 +256,7 @@
            pickedbuf(icou)                                              &
      &         = picked_each_mode_data_text                             &
      &         (time_d%i_time_step, time_d%time,                        &
-     &          picked%radius_gl(knum), picked%id_radius(knum),         &
+     &          picked%radius_gl(knum,1), picked%id_radius(knum,1),     &
      &          picked%idx_out(inum,1), picked%idx_out(inum,2),         &
      &          ntot_comp_rj, d_rj_out)
         end do

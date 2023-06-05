@@ -66,12 +66,16 @@
       real(kind=kreal), intent(inout) :: rms_out(ntot_comp_monitor)
 !
       integer(kind = kint) :: nd, i_fld, j_fld, icou, jcou, ncomp
-      integer(kind = kint) :: j, k, inod
+      integer(kind = kint) :: j, k_in, k_out, i_in, i_out
 !
 !
-      k = picked%id_radius(knum)
       j = picked%idx_out(inum,4)
-      inod = j + (k-1) * sph_rj%nidx_rj(2)
+      k_in =  picked%id_radius(knum,1)
+      k_out = picked%id_radius(knum,2)
+      i_in =  1 + (k_in-1) * sph_rj%istep_rj(1)                         &
+     &          + (j-1) *    sph_rj%istep_rj(2)
+      i_out =  1 + (k_out-1) * sph_rj%istep_rj(1)                       &
+     &           + (j-1) *      sph_rj%istep_rj(2)
       do j_fld = 1, picked%num_field_rj
         i_fld = picked%ifield_monitor_rj(j_fld)
         ncomp = rj_fld%istack_component(i_fld)                          &
@@ -79,15 +83,19 @@
         icou = rj_fld%istack_component(i_fld-1)
         jcou = picked%istack_comp_rj(j_fld-1)
         if(ncomp .eq. 3) then
-          call sph_vector_mean_square(sph_rj%a_r_1d_rj_r(k),            &
+          call sph_vector_mean_square(picked%radius_gl(knum,2),         &
      &        leg%g_sph_rj(j,3), leg%g_sph_rj(j,12),                    &
-     &        rj_fld%d_fld(inod,icou+1), rj_fld%d_fld(inod,icou+2),     &
-     &        rj_fld%d_fld(inod,icou+3), rms_out(jcou+1))
+     &        rj_fld%d_fld(i_in,icou+1),  rj_fld%d_fld(i_in,icou+2),    &
+     &        rj_fld%d_fld(i_in,icou+3),  rj_fld%d_fld(i_out,icou+1),   &
+     &        rj_fld%d_fld(i_out,icou+2), rj_fld%d_fld(i_in,i_out+3),   &
+     &        picked%coef_radius_gl(knum), rms_out(jcou+1))
         else
           do nd = 1, ncomp
-            rms_out(jcou+nd)                                            &
-     &               = sph_scalar_mean_square(sph_rj%radius_1d_rj_r(k), &
-     &                leg%g_sph_rj(j,11), rj_fld%d_fld(inod,icou+nd))
+            rms_out(jcou+nd) = sph_scalar_mean_square                   &
+     &                  (picked%radius_gl(knum,1), leg%g_sph_rj(j,11),  &
+     &                   rj_fld%d_fld(i_in,icou+nd),                    &
+     &                   rj_fld%d_fld(i_out,icou+nd),                   &
+     &                   picked%coef_radius_gl(knum))
           end do
         end if
       end do
@@ -110,12 +118,16 @@
       real(kind=kreal), intent(inout) :: rms_out(ntot_comp_monitor)
 !
       integer(kind = kint) :: nd, i_fld, j_fld, icou, jcou, ncomp
-      integer(kind = kint) :: j, k, inod
+      integer(kind = kint) :: j, k_in, k_out, i_in, i_out
 !
 !
-      k = picked%id_radius(knum)
       j = sph_rj%idx_rj_degree_zero
-      inod = j + (k-1) * sph_rj%nidx_rj(2)
+      k_in =  picked%id_radius(knum,1)
+      k_out = picked%id_radius(knum,2)
+      i_in =  1 + (k_in-1) * sph_rj%istep_rj(1)                         &
+     &          + (j-1) *    sph_rj%istep_rj(2)
+      i_out =  1 + (k_out-1) * sph_rj%istep_rj(1)                       &
+     &           + (j-1) *      sph_rj%istep_rj(2)
       do j_fld = 1, picked%num_field_rj
         i_fld = picked%ifield_monitor_rj(j_fld)
         ncomp = rj_fld%istack_component(i_fld)                          &
@@ -123,13 +135,16 @@
         icou = rj_fld%istack_component(i_fld-1)
         jcou = picked%istack_comp_rj(j_fld-1)
         if(ncomp .eq. 3) then
-          call degree0_vector_mean_square(sph_rj%a_r_1d_rj_r(k),        &
-     &       rj_fld%d_fld(inod,icou+1), rms_out(jcou+1))
+          call degree0_vector_mean_square(picked%radius_gl(knum,2),     &
+     &        rj_fld%d_fld(i_in,icou+1), rj_fld%d_fld(i_out,icou+1),    &
+     &        picked%coef_radius_gl(knum), rms_out(jcou+1))
         else
           do nd = 1, ncomp
-            rms_out(jcou+nd)                                            &
-     &          = sph_scalar_mean_square(sph_rj%radius_1d_rj_r(k),      &
-     &           one, rj_fld%d_fld(inod,icou+nd))
+            rms_out(jcou+nd) = sph_scalar_mean_square                   &
+     &                       (picked%radius_gl(knum,1), one,            &
+     &                        rj_fld%d_fld(i_in,icou+nd),               &
+     &                        rj_fld%d_fld(i_out,icou+nd),              &
+     &                        picked%coef_radius_gl(knum))
           end do
         end if
       end do

@@ -9,7 +9,7 @@
 
 #define NLBL_SPH_MONITOR   9
 
-#define NLBL_PICK_SPECTR   5
+#define NLBL_PICK_SPECTR   6
 #define NLBL_GAUSS_SPECTR  5
 #define NLBL_LAYERD_SPECTR 7
 #define NLBL_MID_EQUATOR   4
@@ -33,10 +33,11 @@ const char label_sph_monitor_ctl[NLBL_SPH_MONITOR][KCHARA_C] = {
 const char label_pick_spectr_ctl[NLBL_PICK_SPECTR][KCHARA_C] = {
     /*[ 0]*/    {"picked_sph_prefix"},
     /*[ 1]*/    {"pick_layer_ctl"},
-    
-    /*[ 2]*/    {"pick_sph_spectr_ctl"},
-    /*[ 3]*/    {"pick_sph_degree_ctl"},
-    /*[ 4]*/    {"pick_sph_order_ctl"}
+    /*[ 2]*/    {"pick_radius_ctl"},
+
+    /*[ 3]*/    {"pick_sph_spectr_ctl"},
+    /*[ 4]*/    {"pick_sph_degree_ctl"},
+    /*[ 5]*/    {"pick_sph_order_ctl"}
 };
 
 const char label_gauss_spectr_ctl[NLBL_GAUSS_SPECTR][KCHARA_C] = {
@@ -110,6 +111,9 @@ struct pick_spectr_control_c * init_pick_spectr_control_c(){
     pspec_ctl_c->idx_pick_layer_list = init_int_clist();
     sprintf(pspec_ctl_c->idx_pick_layer_list->i1_name, "Radial_ID");
     
+    pspec_ctl_c->pick_layer_radius_list = init_real_clist();
+    sprintf(pspec_ctl_c->pick_layer_radius_list->r1_name, "Radius");
+    
     pspec_ctl_c->idx_pick_sph_list = init_int2_clist();
     sprintf(pspec_ctl_c->idx_pick_sph_list->i1_name, "Degree");
     sprintf(pspec_ctl_c->idx_pick_sph_list->i2_name, "Order");
@@ -129,7 +133,8 @@ void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
     dealloc_int_clist(pspec_ctl_c->idx_pick_sph_l_list);
     dealloc_int_clist(pspec_ctl_c->idx_pick_sph_m_list);
     dealloc_int_clist(pspec_ctl_c->idx_pick_layer_list);
-	
+    dealloc_real_clist(pspec_ctl_c->pick_layer_radius_list);
+
     dealloc_chara_ctl_item_c(pspec_ctl_c->picked_mode_head_c);
     free(pspec_ctl_c);
 	return;
@@ -143,10 +148,11 @@ void read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 		read_chara_ctl_item_c(buf, label_pick_spectr_ctl[0], pspec_ctl_c->picked_mode_head_c);
 		
 		read_int_clist(fp, buf, label_pick_spectr_ctl[1], pspec_ctl_c->idx_pick_layer_list);
-		
-		read_int2_clist(fp, buf, label_pick_spectr_ctl[2], pspec_ctl_c->idx_pick_sph_list);
-		read_int_clist(fp, buf, label_pick_spectr_ctl[3], pspec_ctl_c->idx_pick_sph_l_list);
-		read_int_clist(fp, buf, label_pick_spectr_ctl[4], pspec_ctl_c->idx_pick_sph_m_list);
+        read_real_clist(fp, buf, label_pick_spectr_ctl[2], pspec_ctl_c->pick_layer_radius_list);
+
+		read_int2_clist(fp, buf, label_pick_spectr_ctl[3], pspec_ctl_c->idx_pick_sph_list);
+		read_int_clist(fp, buf, label_pick_spectr_ctl[4], pspec_ctl_c->idx_pick_sph_l_list);
+		read_int_clist(fp, buf, label_pick_spectr_ctl[5], pspec_ctl_c->idx_pick_sph_m_list);
 	};
     pspec_ctl_c->iflag_use = 1;
     return;
@@ -163,11 +169,11 @@ int write_pick_spectr_control_c(FILE *fp, int level, const char *label,
 				label_pick_spectr_ctl[0], pspec_ctl_c->picked_mode_head_c);
 	
 	write_int_clist(fp, level, label_pick_spectr_ctl[1], pspec_ctl_c->idx_pick_layer_list);
-	
-	write_int2_clist(fp, level, label_pick_spectr_ctl[2], pspec_ctl_c->idx_pick_sph_list);
-	
-	write_int_clist(fp, level, label_pick_spectr_ctl[3], pspec_ctl_c->idx_pick_sph_l_list);
-	write_int_clist(fp, level, label_pick_spectr_ctl[4], pspec_ctl_c->idx_pick_sph_m_list);
+    write_real_clist(fp, level, label_pick_spectr_ctl[2], pspec_ctl_c->pick_layer_radius_list);
+
+	write_int2_clist(fp, level, label_pick_spectr_ctl[3], pspec_ctl_c->idx_pick_sph_list);
+	write_int_clist(fp, level, label_pick_spectr_ctl[4], pspec_ctl_c->idx_pick_sph_l_list);
+	write_int_clist(fp, level, label_pick_spectr_ctl[5], pspec_ctl_c->idx_pick_sph_m_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

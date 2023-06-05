@@ -40,41 +40,64 @@
 !
       use calypso_mpi
       use quicksort
+      use set_radial_interpolation
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(picked_spectrum_data), intent(inout) :: picked
       integer(kind = kint), intent(inout) :: iflag_center
 !
-      integer(kind = kint) :: k, knum
+      integer(kind = kint) :: k, kr_st
 !
 !
       if(picked%num_layer .le. 0) then
         picked%num_layer = sph_rj%nidx_rj(1)
-!
         call alloc_num_pick_layer(picked)
 !
         do k = 1, picked%num_layer
-          picked%id_radius(k) = k
+          picked%id_radius(k,1) = k
+          picked%radius_gl(k,1:2) = -one
         end do
       end if
-
-      if(picked%num_layer .gt. 1) then
-        call quicksort_int(picked%num_layer, picked%id_radius,          &
-     &                     ione, picked%num_layer)
-      end if
 !
-      iflag_center = 0
-      if(sph_rj%iflag_rj_center.gt.0 .and. picked%id_radius(1).eq.1)    &
-     &     iflag_center = 1
-!
-      do knum = 1, picked%num_layer
-        k = picked%id_radius(knum)
-        if(k .le. 0) then
-          picked%radius_gl(knum) = 0.0d0
-        else
-          picked%radius_gl(knum) = sph_rj%radius_1d_rj_r(k)
+      do k = 1, picked%num_layer
+        if(picked%radius_gl(k,1) .lt. zero) then
+          if(picked%id_radius(k,1) .eq. 0) then
+            picked%radius_gl(k,1) = zero
+          else
+            picked%radius_gl(k,1) = sph_rj%radius_1d_rj_r(k)
+          end if
         end if
       end do
+!
+      if(picked%num_layer .gt. 1) then
+        call quicksort_real_w_index(picked%num_layer,                   &
+     &      picked%radius_gl(1,1), ione, picked%num_layer,              &
+     &      picked%id_radius(1,1))
+      end if
+!
+      kr_st = 1
+      do k = 1, picked%num_layer
+        if(picked%radius_gl(k,1) .eq. zero) then
+          picked%id_radius(k,2) = picked%id_radius(k,1)
+          picked%radius_gl(k,2) = zero
+          picked%coef_radius_gl(k) = one
+        else if(picked%id_radius(k,1) .gt. 0) then
+          picked%id_radius(k,2) = picked%id_radius(k,1)
+          picked%radius_gl(k,2) = one / picked%radius_gl(k,1)**2
+          picked%coef_radius_gl(k) = one
+        else
+          call s_set_radial_interpolation                               &
+     &       (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                 &
+     &        picked%radius_gl(k,1), kr_st,                             &
+     &        picked%id_radius(k,1), picked%id_radius(k,2),             &
+     &        picked%coef_radius_gl(k))
+          picked%radius_gl(k,2) = one / picked%radius_gl(k,1)**2
+        end if
+      end do
+!
+      iflag_center = 0
+      if(sph_rj%iflag_rj_center.gt.0 .and. picked%id_radius(1,1).eq.1)  &
+     &     iflag_center = 1
 !
       end subroutine init_sph_radial_monitor_list
 !
