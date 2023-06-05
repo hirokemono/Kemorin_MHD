@@ -46,7 +46,7 @@
       type(picked_spectrum_data), intent(inout) :: picked
       integer(kind = kint), intent(inout) :: iflag_center
 !
-      integer(kind = kint) :: k, kr_st
+      integer(kind = kint) :: k, kg, kr_st
 !
 !
       if(picked%num_layer .le. 0) then
@@ -67,7 +67,8 @@
           if(picked%id_radius(k,1) .eq. 0) then
             picked%radius_gl(k,1) = zero
           else
-            picked%radius_gl(k,1) = sph_rj%radius_1d_rj_r(k)
+            kg = picked%id_radius(k,1)
+            picked%radius_gl(k,1) = sph_rj%radius_1d_rj_r(kg)
           end if
         end if
       end do

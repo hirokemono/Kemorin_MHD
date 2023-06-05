@@ -62,7 +62,7 @@
 !
       logical :: false_flag
       integer(kind = kint) :: i_fld, j_fld
-      integer(kind = kint) :: i, k, knum, kr_st, num_field
+      integer(kind = kint) :: i, k, kg, kr_st, num_field
       integer(kind = kint), allocatable :: kr_tmp(:,:)
       real(kind = kreal), allocatable :: r_tmp(:,:)
 !
@@ -128,7 +128,8 @@
           if(pwr%kr_4_rms(k,1) .eq. 0) then
             pwr%r_4_rms(k,1) = zero
           else
-            pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(k)
+            kg = pwr%kr_4_rms(k,1)
+            pwr%r_4_rms(k,1) = sph_rj%radius_1d_rj_r(kg)
           end if
         end if
       end do
