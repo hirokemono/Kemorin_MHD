@@ -149,7 +149,7 @@
       end do
 !$omp end parallel do
       anoise = dble(nidx(1)) * dble(nidx(2)) * dble(nidx(3)) / anoise
-      if(iflag_degug .gt. 0) write(*,*) 'anoise', anoise
+      if(iflag_debug .gt. 0) write(*,*) 'anoise', anoise
 !
 !$omp parallel do
       do i0 = 1, nnod_gl
