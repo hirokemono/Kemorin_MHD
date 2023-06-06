@@ -184,8 +184,7 @@
 !
 !$omp parallel
       call cvt_vector_2_sph_smp                                         &
-     &   (np_smp, edge%numedge, edge%istack_edge_smp,                   &
-     &    edge%edge_vect, edge%edge_vect_sph,                           &
+     &   (edge%numedge, edge%edge_vect, edge%edge_vect_sph,             &
      &    edge%x_edge(1:edge%numedge,1), edge%x_edge(1:edge%numedge,2), &
      &    edge%x_edge(1:edge%numedge,3), edge%r_edge, edge%s_edge,      &
      &    edge%ar_edge, edge%as_edge)
@@ -205,8 +204,7 @@
 !
 !$omp parallel
       call cvt_vector_2_cyl_smp                                         &
-     &   (np_smp, edge%numedge, edge%istack_edge_smp,                   &
-     &    edge%edge_vect, edge_sph%edge_vect_cyl,                       &
+     &   (edge%numedge, edge%edge_vect, edge_sph%edge_vect_cyl,         &
      &    edge%x_edge(1:edge%numedge,1), edge%x_edge(1:edge%numedge,2), &
      &    edge%s_edge, edge%as_edge)
 !$omp end parallel

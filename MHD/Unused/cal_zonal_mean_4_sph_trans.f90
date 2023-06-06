@@ -131,9 +131,8 @@
 !$omp end parallel
 !
 !$omp parallel
-      call overwrite_sph_vect_2_xyz_smp(np_smp, node%numnod,            &
-     &    node%istack_nod_smp, nod_fld%d_fld(1,i_field),                &
-     &    node%theta(1), node%phi(1))
+      call overwrite_sph_vect_2_xyz_smp(node%numnod,                    &
+     &    nod_fld%d_fld(1,i_field), node%theta(1), node%phi(1))
 !$omp end parallel
 !
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
@@ -270,9 +269,8 @@
 !$omp end parallel
 !
 !$omp parallel
-      call overwrite_sph_vect_2_xyz_smp(np_smp, node%numnod,            &
-     &    node%istack_nod_smp, nod_fld%d_fld(1,i_field),                &
-     &    node%theta(1), node%phi(1))
+      call overwrite_sph_vect_2_xyz_smp(node%numnod,            &
+     &    nod_fld%d_fld(1,i_field), node%theta(1), node%phi(1))
 !$omp end parallel
 !
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &

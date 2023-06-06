@@ -25,6 +25,7 @@ struct pick_spectr_control_c{
     
     struct chara_ctl_item *picked_mode_head_c;
 	
+    struct real_clist  *pick_layer_radius_list;
     struct int_clist  *idx_pick_layer_list;
     struct int2_clist *idx_pick_sph_list;
     struct int_clist  *idx_pick_sph_l_list;
@@ -44,6 +45,7 @@ struct layerd_spectr_control_c{
 	struct chara_ctl_item *axis_spectr_switch_c;
 	
     struct int_clist *idx_spec_layer_list;
+    struct real_clist *spec_layer_radius_list;
 };
 
 struct gauss_spectr_control_c{

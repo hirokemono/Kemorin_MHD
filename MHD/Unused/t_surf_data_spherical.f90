@@ -192,8 +192,7 @@
 !
 !$omp parallel
       call cvt_vector_2_sph_smp                                         &
-     &   (np_smp, surf%numsurf, surf%istack_surf_smp,                   &
-     &    surf%vnorm_surf, surf_sph%vnorm_surf_sph,                     &
+     &   (surf%numsurf, surf%vnorm_surf, surf_sph%vnorm_surf_sph,       &
      &    surf%x_surf(1:surf%numsurf,1), surf%x_surf(1:surf%numsurf,2), &
      &    surf%x_surf(1:surf%numsurf,3), surf%r_surf, surf%s_surf,      &
      &    surf%ar_surf, surf%as_surf)
@@ -213,8 +212,7 @@
 !
 !$omp parallel
       call cvt_vector_2_cyl_smp                                         &
-     &   (np_smp, surf%numsurf, surf%istack_surf_smp,                   &
-     &    surf%vnorm_surf, surf_sph%vnorm_surf_cyl,                     &
+     &   (surf%numsurf, surf%vnorm_surf, surf_sph%vnorm_surf_cyl,       &
      &    surf%x_surf(1:surf%numsurf,1), surf%x_surf(1:surf%numsurf,2), &
      &    surf%s_surf, surf%as_surf)
 !$omp end parallel

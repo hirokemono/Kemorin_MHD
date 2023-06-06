@@ -208,6 +208,9 @@
       type(phys_data), intent(inout) :: rj_fld
       type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
 !
+      integer(kind = kint) :: kr_inside(2), kr_outside(2)
+      real(kind = kreal), parameter :: c_interpolate = one
+!
 !
       wk_sgs_buo%Cbuo_vol_lc(1:2) = 0.0d0
       wk_sgs_buo%Cbuo_vol_gl(1:2) = 0.0d0
@@ -233,9 +236,12 @@
         end if
 !
         if (iflag_debug.gt.0) write(*,*) 'radial_integration'
-!        write(*,*) 'wk_sgs_buo%Cbuo_ave_sph_lc',wk_sgs_buo%Cbuo_ave_sph_lc
+!        write(*,*) 'wk_sgs_buo%Cbuo_ave_sph_lc',  &
+!     &            wk_sgs_buo%Cbuo_ave_sph_lc
+        kr_inside(1:2) =  sph_params%nlayer_ICB
+        kr_outside(1:2) = sph_params%nlayer_CMB
         call radial_integration                                         &
-     &     (sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
+     &     (kr_inside, kr_outside, c_interpolate, c_interpolate,        &
      &      sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, itwo,             &
      &      wk_sgs_buo%Cbuo_ave_sph_lc, wk_sgs_buo%Cbuo_vol_lc)
 !

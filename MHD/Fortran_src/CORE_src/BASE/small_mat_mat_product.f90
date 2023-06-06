@@ -11,6 +11,9 @@
 !!      subroutine mat_3x3_product(a_left, a_right, a_prod)
 !!      subroutine mat_4x4_product(a_left, a_right, a_prod)
 !!      subroutine mat_5x5_product(a_left, a_right, a_prod)
+!!
+!!      subroutine prod_mat33_vec3(A, V, prod)
+!!      subroutine prod_mat44_vec3(A, V, prod)
 !!@endverbatim
 !!
 !!@n @param a_left(n,n)       input matrix on left  (2x2 to 5x5)
@@ -146,5 +149,38 @@
       end subroutine mat_5x5_product
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine prod_mat33_vec3(A, V, prod)
+!
+      real (kind=kreal), intent(in) :: A(3,3)
+      real (kind=kreal), intent(in) :: V(3)
+!
+      real (kind=kreal), intent(inout) :: prod(3)
+!
+!
+      prod(1) =  A(1,1)*V(1) + A(1,2)*V(2) + A(1,3)*V(3)
+      prod(2) =  A(2,1)*V(1) + A(2,2)*V(2) + A(2,3)*V(3)
+      prod(3) =  A(3,1)*V(1) + A(3,2)*V(2) + A(3,3)*V(3)
+!
+      end subroutine prod_mat33_vec3
+!
+! ----------------------------------------------------------------------
+!
+      subroutine prod_mat44_vec3(A, V, prod)
+!
+      real (kind=kreal), intent(in) :: A(4,4)
+      real (kind=kreal), intent(in) :: V(3)
+!
+      real (kind=kreal), intent(inout) :: prod(3)
+!
+!
+      prod(1) =  A(1,1)*V(1) + A(1,2)*V(2) + A(1,3)*V(3) + A(1,4)
+      prod(2) =  A(2,1)*V(1) + A(2,2)*V(2) + A(2,3)*V(3) + A(2,4)
+      prod(3) =  A(3,1)*V(1) + A(3,2)*V(2) + A(3,3)*V(3) + A(3,4)
+!
+      end subroutine prod_mat44_vec3
+!
+! ----------------------------------------------------------------------
 !
       end module small_mat_mat_product

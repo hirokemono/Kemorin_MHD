@@ -18,7 +18,7 @@ bcast_ctl_data_LIC_noise.o: $(LIC_DIR)/bcast_ctl_data_LIC_noise.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 bring_back_rendering_counts.o: $(LIC_DIR)/bring_back_rendering_counts.f90 m_precision.o m_constants.o calypso_mpi.o t_lic_repart_reference.o t_mesh_SR.o t_calypso_comm_table.o calypso_reverse_send_recv.o t_mesh_data.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_3d_noise.o: $(LIC_DIR)/cal_3d_noise.f90 m_precision.o m_constants.o mt_stream.o
+cal_3d_noise.o: $(LIC_DIR)/cal_3d_noise.f90 m_precision.o m_constants.o m_machine_parameter.o mt_stream.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_lic_on_surf_viz.o: $(LIC_DIR)/cal_lic_on_surf_viz.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_control_param_LIC.o m_geometry_constants.o calypso_mpi.o t_noise_node_data.o cal_noise_value.o get_geometry_reference.o cal_field_on_surf_viz.o cal_fline_in_cube.o
 	$(F90) -c $(F90OPTFLAGS) $<

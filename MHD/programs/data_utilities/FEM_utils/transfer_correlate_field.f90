@@ -167,8 +167,7 @@
 !$omp parallel
         if     (ncomp .eq. n_vector) then
           call overwrite_vector_2_sph_smp                               &
-     &       (np_smp, node%numnod, node%istack_nod_smp,                 &
-     &        d_nod(1,ist), node%xx(1:node%numnod,1),                   &
+     &       (node%numnod, d_nod(1,ist), node%xx(1:node%numnod,1),      &
      &        node%xx(1:node%numnod,2), node%xx(1:node%numnod,3),       &
      &        node%rr, node%ss, node%a_r, node%a_s)
         else if(ncomp .eq. n_sym_tensor) then
@@ -205,8 +204,7 @@
         ncomp = istack_component(i_fld) - istack_component(i_fld-1)
 !$omp parallel
         if     (ncomp .eq. n_vector) then
-          call overwrite_vector_2_cyl_smp                               &
-     &       (np_smp, node%numnod, node%istack_nod_smp, d_nod(1,ist),   &
+          call overwrite_vector_2_cyl_smp(node%numnod, d_nod(1,ist),    &
      &        node%xx(1:node%numnod,1), node%xx(1:node%numnod,2),       &
      &        node%ss, node%a_s)
        else if(ncomp .eq. n_sym_tensor) then

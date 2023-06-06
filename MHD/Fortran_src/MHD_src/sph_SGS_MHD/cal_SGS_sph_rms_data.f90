@@ -173,11 +173,8 @@
       if(pwr%ntot_comp_sq .eq. 0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_SGS_sph_layerd_rms'
-      call sum_SGS_sph_layerd_rms(sph_params%l_truncation,              &
-     &    sph_rj, ipol, ipol_LES, leg%g_sph_rj, rj_fld,                 &
-     &    pwr%nri_rms, pwr%num_fld_sq, pwr%istack_comp_sq,              &
-     &    pwr%id_field, pwr%kr_4_rms, pwr%num_vol_spectr,               &
-     &    pwr%v_spectr, WK_pwr)
+      call sum_SGS_sph_layerd_rms(sph_params%l_truncation, sph_rj, pwr, &
+     &    ipol, ipol_LES, leg%g_sph_rj, rj_fld, WK_pwr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'global_sum_sph_layerd_square'
       call global_sum_sph_layerd_square                                 &
@@ -189,7 +186,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_average_sph'
       call cal_volume_average_sph(sph_rj, rj_fld, pwr)
 !
-      call sum_mean_square_on_sphere(sph_params, sph_rj, pwr)
+      call sum_mean_square_on_sphere(sph_params, pwr)
       call sum_mean_square_on_volume(sph_params, pwr%ntot_comp_sq,      &
      &    pwr%num_vol_spectr, pwr%v_spectr)
 !
@@ -197,37 +194,28 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sum_SGS_sph_layerd_rms(l_truncation, sph_rj,           &
-     &          ipol, ipol_LES, g_sph_rj, rj_fld, nri_rms, num_rms_rj,  &
-     &          istack_rms_comp_rj, ifield_rms_rj, kr_for_rms,          &
-     &          num_vol_spectr, v_pwr, WK_pwr)
+      subroutine sum_SGS_sph_layerd_rms(l_truncation, sph_rj, pwr,      &
+     &          ipol, ipol_LES, g_sph_rj, rj_fld, WK_pwr)
 !
       use cal_rms_by_sph_spectr
       use cal_ave_4_rms_vector_sph
       use radial_int_for_sph_spec
-      use sum_sph_rms_data
+      use sum_sph_rms_by_degree
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: l_truncation
-      integer(kind = kint), intent(in) :: nri_rms
-      integer(kind = kint), intent(in) :: num_rms_rj
-      integer(kind = kint), intent(in)                                  &
-     &            :: istack_rms_comp_rj(0:num_rms_rj)
-      integer(kind = kint), intent(in) :: ifield_rms_rj(num_rms_rj)
-      integer(kind = kint), intent(in) :: kr_for_rms(nri_rms)
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
-      integer(kind = kint), intent(in) :: num_vol_spectr
-      type(sph_vol_mean_squares), intent(in) :: v_pwr(num_vol_spectr)
+      type(sph_mean_squares), intent(in) :: pwr
 !
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
       integer(kind = kint) :: j_fld, i_fld
       integer(kind = kint) :: icomp_rj, jcomp_st, ncomp_rj
-      integer(kind = kint) :: num, inum
+      integer(kind = kint) :: num, i
 !
 !
 !$omp parallel workshare
@@ -239,12 +227,12 @@
       WK_pwr%vol_lm_local = zero
 !$omp end parallel workshare
 !
-      do j_fld = 1, num_rms_rj
-        i_fld = ifield_rms_rj(j_fld)
+      do j_fld = 1, pwr%num_fld_sq
+        i_fld = pwr%id_field(j_fld)
         icomp_rj = rj_fld%istack_component(i_fld-1) + 1
-        jcomp_st = istack_rms_comp_rj(j_fld-1) + 1
-        ncomp_rj = istack_rms_comp_rj(j_fld)                            &
-     &            - istack_rms_comp_rj(j_fld-1)
+        jcomp_st = pwr%istack_comp_sq(j_fld-1) + 1
+        ncomp_rj = pwr%istack_comp_sq(j_fld)                            &
+     &            - pwr%istack_comp_sq(j_fld-1)
         num = sph_rj%nidx_rj(2) * ncomp_rj
         call cal_rms_sph_spec_one_field                                 &
      &     (sph_rj, ipol, ncomp_rj, g_sph_rj, icomp_rj,                 &
@@ -253,37 +241,35 @@
         call cvt_filtered_ene_spectr                                    &
      &     (sph_rj, ipol_LES, ncomp_rj, icomp_rj, WK_pwr%shl_rj(0,1,1))
 !
-        do inum = 1, num_vol_spectr
+        do i = 1, pwr%num_vol_spectr
           call radial_integration                                       &
-     &       (v_pwr(inum)%kr_inside, v_pwr(inum)%kr_outside,            &
+     &       (pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
+     &        pwr%v_spectr(i)%c_inter_in, pwr%v_spectr(i)%c_inter_out,  &
      &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, num,            &
      &        WK_pwr%shl_rj(0,1,1), WK_pwr%volume_j(1,1))
 !
           call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
      &        WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,        &
      &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_l_local(0,jcomp_st,inum))
+     &        WK_pwr%vol_l_local(0,jcomp_st,i))
           call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
      &        WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,        &
      &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_m_local(0,jcomp_st,inum))
+     &        WK_pwr%vol_m_local(0,jcomp_st,i))
           call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
      &        WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,       &
      &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_lm_local(0,jcomp_st,inum))
+     &        WK_pwr%vol_lm_local(0,jcomp_st,i))
         end do
 !
-        if(nri_rms .le. 0) cycle
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, nri_rms, kr_for_rms,          &
+        if(pwr%nri_rms .le. 0) cycle
+        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
      &      WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,          &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_l_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, nri_rms, kr_for_rms,          &
+        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
      &      WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,          &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_m_local(1,0,jcomp_st))
-        call sum_sph_rms_by_degree                                      &
-     &     (l_truncation, sph_rj%nidx_rj, nri_rms, kr_for_rms,          &
+        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
      &      WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,         &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_lm_local(1,0,jcomp_st))
       end do

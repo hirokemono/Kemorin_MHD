@@ -38,6 +38,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use mt_stream
 !
       implicit none
@@ -148,7 +149,7 @@
       end do
 !$omp end parallel do
       anoise = dble(nidx(1)) * dble(nidx(2)) * dble(nidx(3)) / anoise
-      write(*,*) 'anoise', anoise
+      if(iflag_debug .gt. 0) write(*,*) 'anoise', anoise
 !
 !$omp parallel do
       do i0 = 1, nnod_gl
