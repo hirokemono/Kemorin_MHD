@@ -74,8 +74,8 @@
 &                                        pwr%v_spectr(i))
       end do
 !
-!      if(iflag_debug .gt. 0) then
-      if(my_rank .eq. 0) then
+      if(iflag_debug .gt. 0) then
+!      if(my_rank .eq. 0) then
         write(*,*) 'spectr later data:', pwr%nri_rms
         do k = 1, pwr%nri_rms
           write(*,*) k, pwr%r_4_rms(k,1), pwr%kr_4_rms(k,1:2),          &

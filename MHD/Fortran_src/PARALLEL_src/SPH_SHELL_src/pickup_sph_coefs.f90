@@ -104,7 +104,8 @@
       if(sph_rj%iflag_rj_center.gt.0 .and. picked%id_radius(1,1).eq.1)  &
      &     iflag_center = 1
 !
-      if(my_rank .gt. 0) return
+      if(iflag_debug .gt. 0) then
+!      if(my_rank .gt. 0) return
       write(*,*) 'Picked spectr later data:', picked%num_layer
       do k = 1, picked%num_layer
         write(*,*) k, picked%radius_gl(k,1), picked%id_radius(k,1:2),   &
