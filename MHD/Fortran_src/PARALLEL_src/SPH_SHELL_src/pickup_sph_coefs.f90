@@ -21,6 +21,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       use t_spheric_rj_data
       use t_pickup_sph_spectr_data
@@ -104,7 +105,7 @@
       if(sph_rj%iflag_rj_center.gt.0 .and. picked%id_radius(1,1).eq.1)  &
      &     iflag_center = 1
 !
-      if(iflag_debug .gt. 0) then
+      if(iflag_debug .eq. 0) return
 !      if(my_rank .gt. 0) return
       write(*,*) 'Picked spectr later data:', picked%num_layer
       do k = 1, picked%num_layer
