@@ -19,11 +19,11 @@
 !!    degree_range_ctl     1   12
 !!
 !!    begin monitor_data_list_ctl
-!!      array vol_spectr_prefix
-!!        vol_spectr_prefix     'sph_pwr_volume_l'
-!!        vol_spectr_prefix     'sph_pwr_volume_m'
-!!        vol_spectr_prefix     'sph_pwr_volume_lm'
-!!      end array vol_spectr_prefix
+!!      array volume_sph_spectr_prefix
+!!        volume_sph_spectr_prefix     'sph_pwr_volume_l'
+!!        volume_sph_spectr_prefix     'sph_pwr_volume_m'
+!!        volume_sph_spectr_prefix     'sph_pwr_volume_lm'
+!!      end array volume_sph_spectr_prefix
 !!
 !!      array layer_sph_spectr_prefix
 !!        layer_sph_spectr_prefix     'sph_pwr_layer_l'

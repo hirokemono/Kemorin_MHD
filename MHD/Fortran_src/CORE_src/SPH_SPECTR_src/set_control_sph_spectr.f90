@@ -83,12 +83,16 @@
 !
 !   set pickup layer
       num_layer = 0
-      if(pwr%iflag_layer_rms_spec .eq. 0) then
-        num_layer = 0
+      if(pwr%iflag_layer_rms_spec .eq. 0                                &
+     &     .and. lp_ctl%layer_radius_ctl%num .eq. 0) then
+        pwr%nri_rms = -1
+        return
       else if(lp_ctl%idx_spec_layer_ctl%num .eq. 1                      &
         .and. lp_ctl%idx_spec_layer_ctl%ivec(1) .lt. 0) then
         pwr%nri_rms = -1
         return
+      else if(pwr%iflag_layer_rms_spec .eq. 0) then
+        num_layer = 0
       else
         num_layer = lp_ctl%idx_spec_layer_ctl%num
       end if
@@ -181,6 +185,20 @@
         if(check_mul_flags(input_flag, gzip_flags))                     &
      &                     v_spectr%gzip_flag_vol_spec = .TRUE.
       end if
+!
+!
+      v_spectr%flag_skip_v_spec_l =  .FALSE.
+      if(no_flag(smonitor_ctl%degree_v_spectra_switch%charavalue))      &
+     &                           v_spectr%flag_skip_v_spec_l = .TRUE.
+      v_spectr%flag_skip_v_spec_m =  .FALSE.
+      if(no_flag(smonitor_ctl%order_v_spectra_switch%charavalue))       &
+     &                           v_spectr%flag_skip_v_spec_m = .TRUE.
+      v_spectr%flag_skip_v_spec_lm = .FALSE.
+      if(no_flag(smonitor_ctl%diff_v_lm_spectra_switch%charavalue))     &
+     &                           v_spectr%flag_skip_v_spec_lm = .TRUE.
+       v_spectr%flag_skip_v_spec_m0 = .FALSE.
+      if(no_flag(smonitor_ctl%axis_v_power_switch%charavalue))          &
+     &                           v_spectr%flag_skip_v_spec_m0 = .TRUE.
 !
       v_spectr%r_inside =  -1.0
       v_spectr%r_outside = -1.0

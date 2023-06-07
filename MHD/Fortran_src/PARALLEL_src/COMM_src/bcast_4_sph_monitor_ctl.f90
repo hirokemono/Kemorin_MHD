@@ -47,7 +47,12 @@
       call bcast_ctl_type_c1(smonitor_ctl%volume_average_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_format)
-
+!
+      call bcast_ctl_type_c1(smonitor_ctl%degree_v_spectra_switch)
+      call bcast_ctl_type_c1(smonitor_ctl%order_v_spectra_switch)
+      call bcast_ctl_type_c1(smonitor_ctl%diff_v_lm_spectra_switch)
+      call bcast_ctl_type_c1(smonitor_ctl%axis_v_power_switch)
+!
       call bcast_ctl_type_c1(smonitor_ctl%heat_Nusselt_file_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%heat_Nusselt_file_format)
       call bcast_ctl_type_c1(smonitor_ctl%comp_Nusselt_file_prefix)

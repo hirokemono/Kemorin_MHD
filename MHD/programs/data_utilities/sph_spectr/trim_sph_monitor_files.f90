@@ -19,15 +19,15 @@
 !!    end_time_ctl            468.05
 !!
 !!    begin monitor_file_list_ctl
-!!      array vol_integrate_prefix
-!!        vol_integrate_prefix     'sph_ave_volume'
+!!      array volume_integrate_prefix
+!!        volume_integrate_prefix     'sph_ave_volume'
 !!        ...
-!!      end array vol_integrate_prefix
+!!      end array volume_integrate_prefix
 !!
-!!      array vol_spectr_prefix
-!!        vol_spectr_prefix     'sph_pwr_volume_l'
+!!      array volume_sph_spectr_prefix
+!!        volume_sph_spectr_prefix     'sph_pwr_volume_l'
 !!        ...
-!!      end array vol_spectr_prefix
+!!      end array volume_sph_spectr_prefix
 !!
 !!      array sph_integrate_prefix
 !!        sph_integrate_prefix     'sph_pwr_layer_s'
