@@ -55,10 +55,10 @@ const char label_layerd_spectr_ctl[NLBL_LAYERD_SPECTR][KCHARA_C] = {
     /*[ 2]*/    {"spectr_layer_ctl"},
     /*[ 3]*/    {"spectr_radius_ctl"},
     
-    /*[ 4]*/    {"degree_spectr_switch"},
-    /*[ 5]*/    {"order_spectr_switch"},
-    /*[ 6]*/    {"diff_lm_spectr_switch"},
-    /*[ 7]*/    {"axisymmetric_spectr_switch"}
+    /*[ 4]*/    {"degree_spectra_switch"},
+    /*[ 5]*/    {"order_spectra_switch"},
+    /*[ 6]*/    {"diff_lm_spectra_switch"},
+    /*[ 7]*/    {"axisymmetric_power_switch"}
 };
 
 const char label_mid_equator_ctl[NLBL_MID_EQUATOR][KCHARA_C] = {
