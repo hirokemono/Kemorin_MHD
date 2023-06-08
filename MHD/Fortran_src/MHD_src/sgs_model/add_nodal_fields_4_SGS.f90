@@ -124,13 +124,10 @@
           else if(field_ctl%c1_tbl(i) .eq. temperature%name) then
             call add_phys_name_ctl(grad_temp, field_ctl)
           else if(field_ctl%c1_tbl(i)                                   &
-     &             .eq. reference_temperature%name) then
+     &             .eq. perturbation_temp%name) then
             call add_phys_name_ctl(grad_pert_temp, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. composition%name) then
             call add_phys_name_ctl(grad_composition, field_ctl)
-          else if(field_ctl%c1_tbl(i)                                   &
-     &              .eq. reference_composition%name) then
-            call add_phys_name_ctl(grad_pert_composition, field_ctl)
           end if
         end do
       end if

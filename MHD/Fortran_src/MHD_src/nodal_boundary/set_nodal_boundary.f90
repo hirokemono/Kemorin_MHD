@@ -123,7 +123,7 @@
       use t_nodal_bc_data
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_ref_t
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
       type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_t
 !
       integer (kind = kint) :: inum, inod

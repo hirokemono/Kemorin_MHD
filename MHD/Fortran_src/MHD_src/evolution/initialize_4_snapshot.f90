@@ -6,8 +6,9 @@
 !!      subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,      &
 !!     &          IO_bc, MHD_step, geofem, MHD_mesh, FEM_filters,       &
 !!     &          MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD, &
-!!     &          iphys, iphys_LES, nod_fld, t_IO, rst_step, SGS_MHD_wk,&
-!!     &          fem_sq, fem_fst_IO, m_SR, label_sim)
+!!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
+!!     &          nod_fld, t_IO, rst_step, SGS_MHD_wk, fem_sq,          &
+!!     &          fem_fst_IO, m_SR, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -20,8 +21,11 @@
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!        type(base_field_address), intent(inout) :: iref_base
+!!        type(gradient_field_address), intent(inout) :: iref_grad
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
+!!        type(phys_data), intent(inout) :: ref_fld
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: rst_step
@@ -43,6 +47,8 @@
       use t_time_data
       use t_phys_data
       use t_phys_address
+      use t_base_force_labels
+      use t_grad_field_labels
       use t_SGS_model_addresses
 !
       use t_mesh_data
@@ -76,8 +82,9 @@
       subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,        &
      &          IO_bc, MHD_step, geofem, MHD_mesh, FEM_filters,         &
      &          MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD,   &
-     &          iphys, iphys_LES, nod_fld, t_IO, rst_step, SGS_MHD_wk,  &
-     &          fem_sq, fem_fst_IO, m_SR, label_sim)
+     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
+     &          nod_fld, t_IO, rst_step, SGS_MHD_wk, fem_sq,            &
+     &          fem_fst_IO, m_SR, label_sim)
 !
       use m_boundary_condition_IDs
       use m_fem_mhd_restart
@@ -120,8 +127,11 @@
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(base_field_address), intent(inout) :: iref_base
+      type(gradient_field_address), intent(inout) :: iref_grad
       type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
+      type(phys_data), intent(inout) :: ref_fld
       type(phys_data), intent(inout) :: nod_fld
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
@@ -167,19 +177,19 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array_FEM_MHD'
-      call allocate_array_FEM_MHD                                       &
-     &   (SGS_par, geofem%mesh, MHD_prop, iphys, iphys_LES, nod_fld,    &
+      call allocate_array_FEM_MHD(SGS_par, geofem%mesh, MHD_prop,       &
+     &    iphys, iphys_LES, nod_fld, iref_base, iref_grad, ref_fld,     &
      &    Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
      &   (MHD_prop%ref_param_T, MHD_prop%takepito_T,                    &
      &    geofem%mesh%node, MHD_mesh%fluid,                             &
-     &    iphys%base%i_ref_t, iphys%grad_fld%i_grad_ref_t, nod_fld)
+     &    iref_base%i_temp, iref_grad%i_grad_temp, ref_fld)
       call set_reference_temp                                           &
      &   (MHD_prop%ref_param_C, MHD_prop%takepito_C,                    &
-     &    geofem%mesh%node, MHD_mesh%fluid, iphys%base%i_ref_c,         &
-     &    iphys%grad_fld%i_grad_ref_c, nod_fld)
+     &    geofem%mesh%node, MHD_mesh%fluid, iref_base%i_light,          &
+     &    iref_grad%i_grad_composit, ref_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &
@@ -241,7 +251,8 @@
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data                                            &
      &   (MHD_step%time_d, IO_bc, geofem%mesh, MHD_mesh, geofem%group,  &
-     &    MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
+     &    MHD_prop, MHD_BC, iref_base, ref_fld, iphys, nod_fld,         &
+     &    FEM_MHD_BCs)
 !
 !     ---------------------
 !

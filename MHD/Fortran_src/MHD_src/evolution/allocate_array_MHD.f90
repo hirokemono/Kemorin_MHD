@@ -6,9 +6,9 @@
 !        Modified by H. Matsui on July, 2006
 !        Modified by H. Matsui on May, 2007
 !
-!!      subroutine allocate_array_FEM_MHD                               &
-!!     &         (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,   &
-!!     &          Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
+!!      subroutine allocate_array_FEM_MHD(SGS_par, mesh, MHD_prop,      &
+!!     &          iphys, iphys_LES, nod_fld, iref_base, iref_grad,      &
+!!     &          ref_fld, Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -29,6 +29,8 @@
 !
       use t_control_parameter
       use t_phys_address
+      use t_base_field_labels
+      use t_grad_field_labels
       use t_SGS_model_addresses
       use t_phys_data
       use t_SGS_control_parameter
@@ -47,9 +49,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_array_FEM_MHD                                 &
-     &         (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,     &
-     &          Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
+      subroutine allocate_array_FEM_MHD(SGS_par, mesh, MHD_prop,        &
+     &          iphys, iphys_LES, nod_fld, iref_base, iref_grad,        &
+     &          ref_fld, Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_phys_constants
 !
@@ -65,6 +67,7 @@
       use count_sgs_components
       use dependency_FEM_SGS_MHD
       use set_mean_square_array
+      use init_reference_field_data
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -72,6 +75,10 @@
       type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(phys_data), intent(inout) :: nod_fld
+      type(base_field_address), intent(inout) :: iref_base
+      type(gradient_field_address), intent(inout) :: iref_grad
+      type(phys_data), intent(inout) :: ref_fld
+!
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
@@ -107,6 +114,10 @@
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_FEM_MHD_mean_square'
       call init_FEM_MHD_mean_square(nod_fld, iphys, iphys_LES, fem_sq)
+!
+!
+      call s_init_reference_field_data(mesh%node, iphys,                &
+     &                                 iref_base, iref_grad, ref_fld)
 !
       end subroutine allocate_array_FEM_MHD
 !

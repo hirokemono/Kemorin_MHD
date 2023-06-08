@@ -21,7 +21,7 @@
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
-!!!         type(phys_data), intent(in) :: rj_fld
+!!        type(phys_data), intent(in) :: rj_fld
 !!        type(scalar_property), intent(in) :: sc_prop
 !!        type(sph_boundary_type), intent(in) :: sph_bc_S
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
@@ -118,6 +118,7 @@
      &      fdm2_center, r_2nd, band_s00_poisson,                       &
      &      iref_scalar, iref_grad, iref_source, ref_field)
         call dealloc_band_matrix(band_s00_poisson)
+!      else if(ref_param%iflag_reference .eq. id_read_file) then
       else
         call no_ref_temp_sph_mhd(sph_rj%nidx_rj(1),                     &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &

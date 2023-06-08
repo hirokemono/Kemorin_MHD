@@ -7,7 +7,8 @@
 !
 !!      subroutine set_bc_fields                                        &
 !!     &         (time, mesh, fl_prop, cd_prop, ht_prop, cp_prop,       &
-!!     &          ref_param_T, ref_param_C, iphys, nod_fld, nod_bcs)
+!!     &          ref_param_T, ref_param_C, iref_base, ref_fld, iphys,  &
+!!     &          nod_fld, nod_bcs)
 !!      subroutine set_boundary_velo                                    &
 !!     &         (time, node, Vnod_bcs, i_velo, nod_fld)
 !!      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
@@ -21,6 +22,8 @@
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(node_data), intent(in) :: node
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
+!!        type(base_field_address), intent(in) :: iref_base
+!!        type(phys_data), intent(in) :: ref_fld
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(nodal_boundarty_conditions), intent(inout) :: nod_bcs
@@ -40,6 +43,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_bc_data_MHD
       use t_boundary_field_IO
 !
@@ -53,7 +57,8 @@
 !
       subroutine set_bc_fields                                          &
      &         (time, mesh, fl_prop, cd_prop, ht_prop, cp_prop,         &
-     &          ref_param_T, ref_param_C, iphys, nod_fld, nod_bcs)
+     &          ref_param_T, ref_param_C, iref_base, ref_fld, iphys,    &
+     &          nod_fld, nod_bcs)
 !
       use m_machine_parameter
       use m_boundary_condition_IDs
@@ -71,7 +76,10 @@
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
 !
+      type(base_field_address), intent(in) :: iref_base
+      type(phys_data), intent(in) :: ref_fld
       type(phys_address), intent(in) :: iphys
+&
       type(phys_data), intent(inout) :: nod_fld
       type(nodal_boundarty_conditions), intent(inout) :: nod_bcs
 !
@@ -86,8 +94,8 @@
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if (ref_param_T%iflag_reference .ne. id_no_ref_temp) then
           call set_fixed_bc_per_scalar                                  &
-     &       (mesh%node%numnod, nod_fld%ntot_phys, iphys%base%i_ref_t,  &
-     &        nod_fld%d_fld, nod_bcs%Tnod_bcs%nod_bc_s)
+     &       (mesh%node%numnod, nod_fld%ntot_phys, iref_base%i_temp,    &
+     &        ref_fld%d_fld, nod_bcs%Tnod_bcs%nod_bc_s)
         end if
 !
         call set_boundary_scalar                                        &
@@ -97,8 +105,8 @@
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (ref_param_C%iflag_reference .ne. id_no_ref_temp) then
           call set_fixed_bc_per_scalar                                  &
-     &       (mesh%node%numnod, nod_fld%ntot_phys, iphys%base%i_ref_c,  &
-     &        nod_fld%d_fld, nod_bcs%Cnod_bcs%nod_bc_s)
+     &       (mesh%node%numnod, nod_fld%ntot_phys, iref_base%i_light,   &
+     &        ref_fld%d_fld, nod_bcs%Cnod_bcs%nod_bc_s)
         end if
 !
         call set_boundary_scalar                                        &
