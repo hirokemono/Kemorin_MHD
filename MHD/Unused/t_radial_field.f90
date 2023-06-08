@@ -181,9 +181,6 @@
       call set_diffusivity_addresses                                    &
      &   (i_phys, rfld%r_param_name, irad%diffusivity, flag)
 !
-      if(cmp_no_case(rfld%r_param_name, reference_density%name))        &
-     &     irad%base%i_ref_density = d_rad%istack_component(icou-1) + 1
-!
       end subroutine each_radial_field_name_by_file
 !
 ! ----------------------------------------------------------------------
@@ -218,26 +215,6 @@
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
         irad%base%i_back_B = d_rad%istack_component(icou-1) + 1
-      end if
-      if(    ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
-     &  .or. ref_param_T%iflag_reference .eq. id_numerical_solution     &
-     &     ) then
-        icou = icou + 1
-        d_rad%phys_name(icou) = reference_temperature%name
-        d_rad%num_component(icou) = n_vector
-        d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
-     &                                + d_rad%num_component(icou)
-        irad%base%i_ref_t = d_rad%istack_component(icou-1) + 1
-      end if
-      if(    ref_param_C%iflag_reference .eq. id_sphere_ref_temp        &
-     &  .or. ref_param_C%iflag_reference .eq. id_numerical_solution     &
-     &     ) then
-        icou = icou + 1
-        d_rad%phys_name(icou) = reference_composition%name
-        d_rad%num_component(icou) = n_vector
-        d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
-     &                                + d_rad%num_component(icou)
-        irad%base%i_ref_c = d_rad%istack_component(icou-1) + 1
       end if
 !
       end subroutine each_radial_field_name_by_model

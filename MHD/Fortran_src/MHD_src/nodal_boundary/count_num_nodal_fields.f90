@@ -9,10 +9,10 @@
 !
 !      subroutine count_num_bc_scalar(num_bc, bc_istack, bc_name,       &
 !     &          num_bc_field,  bc_field_name, ibc_field_type,          &
-!     &          num_bc_nod, iref)
+!     &          num_bc_nod, i_ref)
 !      subroutine count_num_bc_vector(num_bc, bc_istack, bc_name,       &
 !     &          num_bc_field, bc_field_name, ibc_field_type,           &
-!     &          num_bc_nod, iref)
+!     &          num_bc_nod, i_ref)
 !      subroutine add_num_bc_magne(num_bc, bc_istack, bc_name,          &
 !     &          num_bc_field, bc_field_name, ibc_field_type,           &
 !     &          num_bc_nod)
@@ -37,12 +37,12 @@
 !
       subroutine count_num_bc_scalar(num_bc, bc_istack, bc_name,        &
      &          num_bc_field,  bc_field_name, ibc_field_type,           &
-     &          num_bc_nod, iref)
+     &          num_bc_nod, i_ref)
 !
       integer(kind=kint),    intent(in) :: num_bc
       integer(kind=kint),    intent(in) :: bc_istack(0:num_bc)
       character(len=kchara), intent(in) :: bc_name(num_bc)
-      integer(kind=kint),    intent(in) :: iref
+      integer(kind=kint),    intent(in) :: i_ref
       integer(kind=kint),    intent(in) :: num_bc_field
       integer(kind=kint),    intent(in) :: ibc_field_type(num_bc_field)
       character(len=kchara), intent(in) :: bc_field_name(num_bc_field)
@@ -59,7 +59,7 @@
 !
         do j=1, num_bc_field
           if(bc_name(i) .eq. bc_field_name(j)                           &
-     &      .and.  abs(ibc_field_type(j)) .eq. iref ) then
+     &      .and.  abs(ibc_field_type(j)) .eq. i_ref ) then
               call count_nod_bc(i, num_bc, bc_istack, num_bc_nod )
           end if
         end do
@@ -71,12 +71,12 @@
 !
       subroutine count_num_bc_vector(num_bc, bc_istack, bc_name,        &
      &          num_bc_field, bc_field_name, ibc_field_type,            &
-     &          num_bc_nod, iref)
+     &          num_bc_nod, i_ref)
 !
       integer(kind=kint),    intent(in) :: num_bc
       integer(kind=kint),    intent(in) :: bc_istack(0:num_bc)
       character(len=kchara), intent(in) :: bc_name(num_bc)
-      integer(kind=kint),    intent(in) :: iref
+      integer(kind=kint),    intent(in) :: i_ref
       integer(kind=kint),    intent(in) :: num_bc_field
       integer(kind=kint),    intent(in) :: ibc_field_type(num_bc_field)
       character(len=kchara), intent(in) :: bc_field_name(num_bc_field)
@@ -94,7 +94,7 @@
          if (bc_name(i) .eq. bc_field_name(j)) then
 !
           do nd = 1, 3
-            if ( abs(ibc_field_type(j)) == (nd+iref) ) then
+            if ( abs(ibc_field_type(j)) == (nd+i_ref) ) then
               call count_nod_bc(i, num_bc, bc_istack, num_bc_nod(nd) )
             end if
           end do

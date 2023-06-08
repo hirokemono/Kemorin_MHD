@@ -92,6 +92,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh,                           &
      &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, FEM_model%MHD_BC,    &
      &    FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,                         &
+     &    FEM_MHD%iref_base, FEM_MHD%iref_grad, FEM_MHD%ref_fld,        &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
      &    MHD_CG, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, label_sim)
 !
@@ -226,7 +227,8 @@
       call fields_evolution_4_FEM_SPH                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    FEM_MHD%geofem, FEM_model%MHD_mesh%fluid, FEM_model%MHD_prop, &
-     &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
+     &    FEM_model%FEM_MHD_BCs, FEM_MHD%iref_base, FEM_MHD%iref_grad,  &
+     &    FEM_MHD%ref_fld, FEM_MHD%iphys, FEM_SGS%iphys_LES,            &
      &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,       &
      &    MHD_CG%MGCG_WK, SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,     &
      &    fem_sq, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)

@@ -46,7 +46,7 @@ set_nod_bc_vector_id.o: $(MHD_NOD_BC_DIR)/set_nod_bc_vector_id.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_nodal_bc_4_velo.o: $(MHD_NOD_BC_DIR)/set_nodal_bc_4_velo.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_nodal_bc_id_data.o: $(MHD_NOD_BC_DIR)/set_nodal_bc_id_data.f90 m_precision.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_mesh_data.o t_geometry_data_MHD.o t_geometry_data.o t_group_data.o t_phys_data.o t_phys_address.o t_bc_data_MHD.o t_boundary_field_IO.o m_machine_parameter.o m_boundary_condition_IDs.o count_num_nod_bc_MHD.o set_nodal_boundary.o set_boundary_scalars.o t_bc_data_velo.o set_nodal_bc_4_velo.o set_fixed_boundaries.o t_finite_element_mat.o
+set_nodal_bc_id_data.o: $(MHD_NOD_BC_DIR)/set_nodal_bc_id_data.f90 m_precision.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_mesh_data.o t_geometry_data_MHD.o t_geometry_data.o t_group_data.o t_phys_data.o t_phys_address.o t_base_field_labels.o t_bc_data_MHD.o t_boundary_field_IO.o m_machine_parameter.o m_boundary_condition_IDs.o count_num_nod_bc_MHD.o set_nodal_boundary.o set_boundary_scalars.o t_bc_data_velo.o set_nodal_bc_4_velo.o set_fixed_boundaries.o t_finite_element_mat.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_nodal_bc_type.o: $(MHD_NOD_BC_DIR)/set_nodal_bc_type.f90 m_precision.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

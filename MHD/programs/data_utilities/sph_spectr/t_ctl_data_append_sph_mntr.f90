@@ -21,7 +21,6 @@
 !!    folder_to_add_ctl     'monitor'
 !!
 !!    begin monitor_file_list_ctl
-!!      volume_average_prefix        'no02/sph_ave_volume'
 !!      ...
 !!    end monitor_file_list_ctl
 !!  end monitor_data_connect_ctl

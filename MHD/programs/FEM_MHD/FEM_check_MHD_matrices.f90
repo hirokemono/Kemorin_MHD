@@ -75,11 +75,11 @@
       call init_analyzer_fl                                             &
      &   (MHD_files, FEM_model%bc_FEM_IO, FEM_model%FEM_prm,            &
      &    FEM_SGS%SGS_par, flex_MHD, MHD_step, FEM_MHD%geofem,          &
-     &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters,                      &
-     &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
-     &    FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,              &
-     &    FEM_MHD%field, MHD_CG, SGS_MHD_wk, fem_sq,                    &
-     &    MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
+     &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters, FEM_model%MHD_prop,  &
+     &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,       &
+     &    FEM_MHD%iref_base, FEM_MHD%iref_grad, FEM_MHD%ref_fld,        &
+     &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field, MHD_CG,      &
+     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !

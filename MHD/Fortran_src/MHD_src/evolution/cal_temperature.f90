@@ -5,9 +5,10 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_temperature_field                                &
-!!     &        (i_field, dt, FEM_prm, SGS_par, mesh, group,            &
-!!     &         fluid, property, ref_param, nod_bcs, sf_bcs,           &
+!
+!!      subroutine cal_temperature_field(i_field, dt, FEM_prm, SGS_par, &
+!!     &         mesh, group, fluid, property, ref_param,               &
+!!     &         nod_bcs, sf_bcs, iref_grad, ref_fld,                   &
 !!     &         iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,    &
 !!     &         FEM_elens, icomp_sgs_term, iak_diff_base, iak_diff_sgs,&
 !!     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,           &
@@ -23,6 +24,8 @@
 !!        type(reference_scalar_param), intent(in) :: ref_param
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
+!!        type(gradient_field_address), intent(in) :: iref_grad
+!!        type(phys_data), intent(in) :: ref_fld
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(base_field_address), intent(in) :: iphys_ele_base
@@ -99,9 +102,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_temperature_field                                  &
-     &        (i_field, dt, FEM_prm, SGS_par, mesh, group,              &
-     &         fluid, property, ref_param, nod_bcs, sf_bcs,             &
+      subroutine cal_temperature_field(i_field, dt, FEM_prm, SGS_par,   &
+     &         mesh, group, fluid, property, ref_param,                 &
+     &         nod_bcs, sf_bcs, iref_grad, ref_fld,                     &
      &         iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,      &
      &         FEM_elens, icomp_sgs_term, iak_diff_base, iak_diff_sgs,  &
      &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
@@ -121,6 +124,10 @@
       type(reference_scalar_param), intent(in) :: ref_param
       type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
+!
+      type(gradient_field_address), intent(in) :: iref_grad
+      type(phys_data), intent(in) :: ref_fld
+!
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(base_field_address), intent(in) :: iphys_ele_base
@@ -151,15 +158,14 @@
 !
       call cal_temperature_pre                                          &
      &   (i_field, dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
-     &    SGS_par%filter_p, mesh, group, fluid,                         &
-     &    property, ref_param, nod_bcs, sf_bcs,                         &
-     &    iphys%base, iphys%grad_fld, iphys_LES%filter_fld,             &
-     &    iphys_LES%SGS_term, iphys%exp_work, iphys_ele_base, ele_fld,  &
-     &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, icomp_sgs_term,      &
-     &    iak_diff_base, iak_diff_sgs, iphys_elediff_vec,               &
-     &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
-     &    mk_MHD%mlump_fl, Smatrix, ak_MHD%ak_d_temp, MGCG_WK,          &
-     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
+     &    SGS_par%filter_p, mesh, group, fluid, property, ref_param,    &
+     &    nod_bcs, sf_bcs, iref_grad, ref_fld, iphys%base,              &
+     &    iphys_LES%filter_fld, iphys_LES%SGS_term, iphys%exp_work,     &
+     &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
+     &    FEM_elens, icomp_sgs_term, iak_diff_base, iak_diff_sgs,       &
+     &    iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,      &
+     &    filtering, mk_MHD%mlump_fl, Smatrix, ak_MHD%ak_d_temp,        &
+     &    MGCG_WK, FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,    &
      &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,          &
      &    v_sol, SR_sig, SR_r)
 !
@@ -170,8 +176,9 @@
       subroutine cal_temperature_pre(i_field, dt, FEM_prm,              &
      &         SGS_param, cmt_param, filter_param, mesh, group,         &
      &         fluid, property, ref_param, nod_bcs, sf_bcs,             &
-     &         iphys_base, iphys_grd, iphys_fil, iphys_SGS, iphys_exp,  &
-     &         iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,       &
+     &         iref_grad, ref_fld, iphys_base, iphys_fil,               &
+     &         iphys_SGS, iphys_exp, iphys_ele_base,                    &
+     &         ele_fld, jacs, rhs_tbl, FEM_elens,                       &
      &         icomp_sgs_term, iak_diff_base, iak_diff_SGS,             &
      &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
      &         diff_coefs, filtering, mlump_fl, Smatrix, ak_diffuse,    &
@@ -206,8 +213,10 @@
       type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !
+      type(gradient_field_address), intent(in) :: iref_grad
+      type(phys_data), intent(in) :: ref_fld
+!
       type(base_field_address), intent(in) :: iphys_base
-      type(gradient_field_address), intent(in) :: iphys_grd
       type(base_field_address), intent(in) :: iphys_fil
       type(SGS_term_address), intent(in) :: iphys_SGS
       type(explicit_term_address), intent(in) :: iphys_exp
@@ -331,15 +340,15 @@
       if (ref_param%iflag_reference .eq. id_takepiro_temp) then
         if (FEM_prm%iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
-     &       (iphys_grd%i_grad_ref_t, FEM_prm%npoint_t_evo_int,         &
-     &        dt, mesh%node, mesh%ele, fluid, nod_fld,                  &
+     &       (iref_grad%i_grad_temp, FEM_prm%npoint_t_evo_int,          &
+     &        dt, mesh%node, mesh%ele, fluid, ref_fld,                  &
      &        ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,  &
      &        jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,             &
      &        fem_wk, f_nl)
         else
           call cal_stratified_layer                                     &
-     &       (iphys_grd%i_grad_ref_t, FEM_prm%npoint_t_evo_int,         &
-     &        mesh%node, mesh%ele, fluid, nod_fld,                      &
+     &       (iref_grad%i_grad_temp, FEM_prm%npoint_t_evo_int,          &
+     &        mesh%node, mesh%ele, fluid, ref_fld,                      &
      &        ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,  &
      &        jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,             &
      &        fem_wk, f_nl)

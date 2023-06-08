@@ -5,17 +5,17 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_stratified_layer                                 &
-!!     &         (i_gref, num_int, , ele, fluid, nod_fld,               &
+!!     &         (i_gref, num_int, node, ele, fluid, ref_fld,           &
 !!     &          ncomp_ele, iele_velo, d_ele, g_FEM, jac_3d, rhs_tbl,  &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_stratified_layer_upw                             &
-!!     &         (i_gref, num_int, dt, node, ele, fluid, nod_fld,       &
+!!     &         (i_gref, num_int, dt, node, ele, fluid, ref_fld,       &
 !!     &          ncomp_ele, iele_velo, d_ele, g_FEM, jac_3d, rhs_tbl,  &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
-!!        type(phys_data), intent(in) :: nod_fld
+!!        type(phys_data), intent(in) :: ref_fld
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -59,7 +59,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_stratified_layer                                   &
-     &         (i_gref, num_int, node, ele, fluid, nod_fld,             &
+     &         (i_gref, num_int, node, ele, fluid, ref_fld,             &
      &          ncomp_ele, iele_velo, d_ele, g_FEM, jac_3d, rhs_tbl,    &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
@@ -71,7 +71,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
-      type(phys_data), intent(in) :: nod_fld
+      type(phys_data), intent(in) :: ref_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -95,7 +95,7 @@
 ! --------- set position at each node in an element
        call position_2_each_element(node, ele,                          &
      &     k2, mhd_fem_wk%xx_e, mhd_fem_wk%rr_e)
-       call scalar_phys_2_each_element(node, ele, nod_fld,              &
+       call scalar_phys_2_each_element(node, ele, ref_fld,              &
      &     k2, i_gref, fem_wk%scalar_1)
 !
         call fem_skv_stratified_pg                                      &
@@ -116,7 +116,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_stratified_layer_upw                               &
-     &         (i_gref, num_int, dt, node, ele, fluid, nod_fld,         &
+     &         (i_gref, num_int, dt, node, ele, fluid, ref_fld,         &
      &          ncomp_ele, iele_velo, d_ele, g_FEM, jac_3d, rhs_tbl,    &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
@@ -128,7 +128,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
-      type(phys_data), intent(in) :: nod_fld
+      type(phys_data), intent(in) :: ref_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -154,7 +154,7 @@
 ! --------- set position at each node in an element
         call position_2_each_element(node, ele,                         &
      &      k2, mhd_fem_wk%xx_e, mhd_fem_wk%rr_e)
-        call scalar_phys_2_each_element(node, ele, nod_fld,             &
+        call scalar_phys_2_each_element(node, ele, ref_fld,             &
      &      k2, i_gref, fem_wk%scalar_1)
 !
         call fem_skv_stratified_upw                                     &

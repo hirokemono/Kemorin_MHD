@@ -1,16 +1,20 @@
-!
-!     module set_reference_value
-!
-!      Written by H.Matsui
-!      Modified by H.Matsui on Sep., 2007
-!
+!>@file   set_reference_value.f90
+!!        module set_reference_value
+!!
+!! @author H. Matsui
+!! @date ...when???
+!!
+!> @brief Set reference scalar field
+!!
+!!@verbatim
 !!      subroutine set_reference_temp(ref_param, takepiro,              &
-!!     &          node, fluid, i_ref, i_gref, nod_fld)
+!!     &          node, fluid, i_ref, i_gref, ref_fld)
 !!        type(reference_scalar_param), intent(in) :: ref_param
 !!        type(takepiro_model_param), intent(in) :: takepiro
 !!        type(node_data), intent(in) :: node
 !!        type(field_geometry_data), intent(in) :: fluid
-!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: ref_fld
+!!@endverbatim
 !
       module set_reference_value
 !
@@ -26,7 +30,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_reference_temp(ref_param, takepiro,                &
-     &          node, fluid, i_ref, i_gref, nod_fld)
+     &          node, fluid, i_ref, i_gref, ref_fld)
 !
       use t_reference_scalar_param
       use t_geometry_data
@@ -39,7 +43,7 @@
       type(field_geometry_data), intent(in) :: fluid
       integer(kind = kint), intent(in) :: i_ref, i_gref
 !
-      type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: ref_fld
 !
 !
 ! set reference temperature (for spherical shell)
@@ -50,14 +54,14 @@
      &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld,                              &
      &      fluid%inod_fld, node%rr, node%a_r,                          &
-     &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
+     &      ref_fld%d_fld(1,i_ref), ref_fld%d_fld(1,i_gref))
 !
       else if(ref_param%iflag_reference .eq. id_linear_r_ref_temp) then
         call set_linear_r_reftemp                                       &
      &     (ref_param%low_value, ref_param%depth_top,                   &
      &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,     &
-     &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
+     &      ref_fld%d_fld(1,i_ref), ref_fld%d_fld(1,i_gref))
 !
       else if(ref_param%iflag_reference .ge. 1                          &
      &  .and. ref_param%iflag_reference .le. 3) then
@@ -65,13 +69,13 @@
      &      ref_param%low_value, ref_param%depth_top,                   &
      &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld, fluid%inod_fld, node%xx,     &
-     &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
+     &      ref_fld%d_fld(1,i_ref), ref_fld%d_fld(1,i_gref))
 !
       else if(ref_param%iflag_reference .eq. id_takepiro_temp) then
         call set_takepiro_temp(takepiro%stratified_sigma,               &
      &     takepiro%stratified_width, takepiro%stratified_outer_r,      &
      &     node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,      &
-     &     nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
+     &     ref_fld%d_fld(1,i_ref), ref_fld%d_fld(1,i_gref))
 !
       else if(ref_param%iflag_reference                                 &
      &                             .eq. id_numerical_solution) then
@@ -80,7 +84,7 @@
 !     &      ref_param%high_value, ref_param%depth_bottom,              &
 !     &      node%numnod, fluid%numnod_fld,                             &
 !     &      fluid%inod_fld, node%rr, node%a_r,                         &
-!     &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
+!     &      ref_fld%d_fld(1,i_ref), ref_fld%d_fld(1,i_gref))
       end if
 !
       end subroutine set_reference_temp

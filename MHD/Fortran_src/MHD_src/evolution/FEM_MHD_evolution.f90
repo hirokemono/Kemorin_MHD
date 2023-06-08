@@ -7,9 +7,9 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine fields_evolution                                     &
-!!     &         (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,           &
-!!     &          MHD_prop, nod_bcs, surf_bcs, iphys, iphys_LES,        &
+!!      subroutine fields_evolution(time_d, FEM_prm, SGS_par,           &
+!!     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
+!!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
 !!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
 !!     &          nod_fld, Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
 !!      subroutine update_fields(time_d, FEM_prm, SGS_par,              &
@@ -20,9 +20,9 @@
 !!
 !!      subroutine fields_evo_for_FEM_SPH(time_d, FEM_prm, SGS_par,     &
 !!     &          geofem, fluid, MHD_prop, nod_bcs, surf_bcs,           &
-!!     &          iphys, iphys_LES, ak_MHD, FEM_filters,                &
-!!     &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,              &
-!!     &          Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
+!!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
+!!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
+!!     &          nod_fld, Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -32,6 +32,9 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
+!!        type(base_field_address), intent(in) :: iref_base
+!!        type(gradient_field_address), intent(in) :: iref_grad
+!!        type(phys_data), intent(in) :: ref_fld
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -52,7 +55,13 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
-!!      subroutine set_perturbation_to_scalar(MHD_prop, iphys, nod_fld)
+!!      subroutine set_perturbation_to_scalar(MHD_prop,                 &
+!!     &          iref_base, ref_fld, iphys, nod_fld)
+!!         type(MHD_evolution_param), intent(in) :: MHD_prop
+!!         type(base_field_address), intent(in) :: iref_base
+!!         type(phys_data), intent(in) :: ref_fld
+!!         type(phys_address), intent(in) :: iphys
+!!         type(phys_data), intent(inout) :: nod_fld
 !!      subroutine reset_update_flag(nod_fld, sgs_coefs, diff_coefs)
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -79,6 +88,8 @@
       use t_surface_group_connect
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
+      use t_grad_field_labels
       use t_SGS_model_addresses
       use t_table_FEM_const
       use t_material_property
@@ -104,9 +115,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fields_evolution                                       &
-     &         (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,             &
-     &          MHD_prop, nod_bcs, surf_bcs, iphys, iphys_LES,          &
+      subroutine fields_evolution(time_d, FEM_prm, SGS_par,             &
+     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
+     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
      &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
      &          nod_fld, Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
 !
@@ -115,7 +126,8 @@
       use cal_velocity
       use cal_magnetic_field
       use cal_light_element
-      use copy_nodal_fields
+      use cal_add_smp
+      use cal_subtract_smp
 !
       use update_with_scalars
       use update_with_velo
@@ -130,6 +142,9 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
+      type(base_field_address), intent(in) :: iref_base
+      type(gradient_field_address), intent(in) :: iref_grad
+      type(phys_data), intent(in) :: ref_fld
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -220,7 +235,8 @@
           call cal_temperature_field(iphys%base%i_per_temp, time_d%dt,  &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,    &
-     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,      &
+     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
+     &       iref_grad, ref_fld, iphys, iphys_LES,                      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
@@ -233,9 +249,12 @@
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
      &       SGS_MHD_wk%rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
-          call add_2_nod_scalars(nod_fld,                               &
-     &        iphys%base%i_ref_t, iphys%base%i_per_temp,                &
-     &        iphys%base%i_temp)
+!$omp parallel
+          call add_scalars_smp(nod_fld%n_point,                         &
+     &                         ref_fld%d_fld(1,iref_base%i_temp),       &
+     &                         nod_fld%d_fld(1,iphys%base%i_per_temp), &
+     &                         nod_fld%d_fld(1,iphys%base%i_temp))
+!$omp end parallel
         else
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, geofem%group%surf_nod_grp)
@@ -243,7 +262,8 @@
           call cal_temperature_field(iphys%base%i_temp, time_d%dt,      &
      &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
      &        MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,   &
-     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
+     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
      &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
      &        Csims_FEM_MHD%icomp_sgs_term,                             &
@@ -257,9 +277,12 @@
      &        SGS_MHD_wk%rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
         if (iphys%base%i_per_temp .gt. 0) then
-          call subtract_2_nod_scalars(nod_fld,                          &
-     &        iphys%base%i_temp, iphys%base%i_ref_t,                    &
-     &        iphys%base%i_per_temp)
+!$omp parallel
+          call subtract_scalars_smp(nod_fld%n_point,                    &
+     &                          nod_fld%d_fld(1,iphys%base%i_temp),     &
+     &                          ref_fld%d_fld(1,iref_base%i_temp),      &
+     &                          nod_fld%d_fld(1,iphys%base%i_per_temp))
+!$omp end parallel
         end if
       end if
 !
@@ -285,7 +308,8 @@
           call s_cal_light_element(iphys%base%i_per_light, time_d%dt,   &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       MHD_mesh%fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,    &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
+     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
+     &       iref_grad, ref_fld, iphys, iphys_LES,                      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
@@ -298,14 +322,19 @@
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
      &       v_sol, SR_sig, SR_r)
 !
-          call add_2_nod_scalars(nod_fld, iphys%base%i_ref_c,           &
-     &        iphys%base%i_per_light, iphys%base%i_light)
+!$omp parallel
+          call add_scalars_smp(nod_fld%n_point,                         &
+     &                         ref_fld%d_fld(1,iref_base%i_light),      &
+     &                         nod_fld%d_fld(1,iphys%base%i_per_light), &
+     &                         nod_fld%d_fld(1,iphys%base%i_light))
+!$omp end parallel
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
           call s_cal_light_element(iphys%base%i_light, time_d%dt,       &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       MHD_mesh%fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,    &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
+     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
+     &       iref_grad, ref_fld, iphys, iphys_LES,                      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
@@ -319,8 +348,12 @@
      &       v_sol, SR_sig, SR_r)
 !
           if (iphys%base%i_per_light .gt. 0) then
-            call subtract_2_nod_scalars(nod_fld, iphys%base%i_light,    &
-     &          iphys%base%i_ref_c, iphys%base%i_per_light)
+!$omp parallel
+            call subtract_scalars_smp(nod_fld%n_point,                  &
+     &                         nod_fld%d_fld(1,iphys%base%i_light),     &
+     &                         ref_fld%d_fld(1,iref_base%i_light),      &
+     &                         nod_fld%d_fld(1,iphys%base%i_per_light))
+!$omp end parallel
           end if
         end if
 !
@@ -484,14 +517,15 @@
 !
       subroutine fields_evo_for_FEM_SPH(time_d, FEM_prm, SGS_par,       &
      &          geofem, fluid, MHD_prop, nod_bcs, surf_bcs,             &
-     &          iphys, iphys_LES, ak_MHD, FEM_filters,                  &
-     &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                &
-     &          Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
+     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
+     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
+     &          nod_fld, Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
 !
       use cal_temperature
       use cal_velocity
       use cal_light_element
-      use copy_nodal_fields
+      use cal_add_smp
+      use cal_subtract_smp
 !
       use update_with_scalars
       use update_with_velo
@@ -504,6 +538,9 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
+      type(base_field_address), intent(in) :: iref_base
+      type(gradient_field_address), intent(in) :: iref_grad
+      type(phys_data), intent(in) :: ref_fld
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -534,7 +571,8 @@
           call cal_temperature_field(iphys%base%i_per_temp, time_d%dt,  &
      &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
      &        fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,            &
-     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
+     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
      &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
      &        Csims_FEM_MHD%icomp_sgs_term,                             &
@@ -546,15 +584,19 @@
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
      &        SGS_MHD_wk%rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
-          call add_2_nod_scalars(nod_fld,                               &
-     &        iphys%base%i_ref_t, iphys%base%i_per_temp,                &
-     &        iphys%base%i_temp)
+!$omp parallel
+          call add_scalars_smp(nod_fld%n_point,                         &
+     &                         ref_fld%d_fld(1,iref_base%i_temp),       &
+     &                         nod_fld%d_fld(1,iphys%base%i_per_temp),  &
+     &                         nod_fld%d_fld(1,iphys%base%i_temp))
+!$omp end parallel
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field(iphys%base%i_temp, time_d%dt,      &
      &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
      &        fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,            &
-     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
+     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
      &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
      &        Csims_FEM_MHD%icomp_sgs_term,                             &
@@ -567,8 +609,12 @@
      &        SGS_MHD_wk%rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
           if (iphys%base%i_per_temp .gt. 0) then
-            call subtract_2_nod_scalars(nod_fld, iphys%base%i_temp,     &
-     &          iphys%base%i_ref_t, iphys%base%i_per_temp)
+!$omp parallel
+            call subtract_scalars_smp(nod_fld%n_point,                  &
+     &                          nod_fld%d_fld(1,iphys%base%i_temp),     &
+     &                          ref_fld%d_fld(1,iref_base%i_temp),      &
+     &                          nod_fld%d_fld(1,iphys%base%i_per_temp))
+!$omp end parallel
           end if
         end if
 !
@@ -594,7 +640,8 @@
           call s_cal_light_element(iphys%base%i_per_light, time_d%dt,   &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,             &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
+     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
+     &       iref_grad, ref_fld, iphys, iphys_LES,                      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
@@ -606,14 +653,19 @@
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
      &       v_sol, SR_sig, SR_r)
 !
-          call add_2_nod_scalars(nod_fld, iphys%base%i_ref_c,           &
-     &        iphys%base%i_per_light, iphys%base%i_light)
+!$omp parallel
+          call add_scalars_smp(nod_fld%n_point,                         &
+     &                         ref_fld%d_fld(1,iref_base%i_light),      &
+     &                         nod_fld%d_fld(1,iphys%base%i_per_light), &
+     &                         nod_fld%d_fld(1,iphys%base%i_light))
+!$omp end parallel
         else
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
           call s_cal_light_element(iphys%base%i_light, time_d%dt,       &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,             &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
+     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
+     &       iref_grad, ref_fld, iphys, iphys_LES,                      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
@@ -626,8 +678,12 @@
      &       v_sol, SR_sig, SR_r)
 !
           if (iphys%base%i_per_light .gt. 0) then
-            call subtract_2_nod_scalars(nod_fld, iphys%base%i_light,    &
-     &          iphys%base%i_ref_c, iphys%base%i_per_light)
+!$omp parallel
+            call subtract_scalars_smp(nod_fld%n_point,                  &
+     &                         nod_fld%d_fld(1,iphys%base%i_light),     &
+     &                         ref_fld%d_fld(1,iref_base%i_light),      &
+     &                         nod_fld%d_fld(1,iphys%base%i_per_light))
+!$omp end parallel
           end if
         end if
 !
@@ -681,11 +737,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_perturbation_to_scalar(MHD_prop, iphys, nod_fld)
+      subroutine set_perturbation_to_scalar(MHD_prop,                   &
+     &          iref_base, ref_fld, iphys, nod_fld)
 !
-      use copy_nodal_fields
+      use cal_subtract_smp
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(base_field_address), intent(in) :: iref_base
+      type(phys_data), intent(in) :: ref_fld
       type(phys_address), intent(in) :: iphys
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -693,14 +752,21 @@
 !
       if(MHD_prop%ref_param_T%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call subtract_2_nod_scalars(nod_fld, iphys%base%i_temp,         &
-     &      iphys%base%i_ref_t, iphys%base%i_per_temp)
+!$omp parallel
+          call subtract_scalars_smp(nod_fld%n_point,                    &
+     &                          nod_fld%d_fld(1,iphys%base%i_temp),     &
+     &                          ref_fld%d_fld(1,iref_base%i_temp),      &
+     &                          nod_fld%d_fld(1,iphys%base%i_per_temp))
+!$omp end parallel
       end if
       if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
-        call subtract_2_nod_scalars                                     &
-     &     (nod_fld, iphys%base%i_light, iphys%base%i_ref_c,            &
-     &      iphys%base%i_per_light)
+!$omp parallel
+          call subtract_scalars_smp(nod_fld%n_point,                    &
+     &                         nod_fld%d_fld(1,iphys%base%i_light),     &
+     &                         ref_fld%d_fld(1,iref_base%i_light),      &
+     &                         nod_fld%d_fld(1,iphys%base%i_per_light))
+!$omp end parallel
       end if
 !
       end subroutine set_perturbation_to_scalar

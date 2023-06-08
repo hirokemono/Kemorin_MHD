@@ -2,7 +2,7 @@
 !      module refinment_info_IO
 !
 !!      subroutine write_refinement_table                               &
-!!     &         (iref, refine_info_head, ele, refine_tbl)
+!!     &         (i_ref, refine_info_head, ele, refine_tbl)
 !!      subroutine write_merged_refinement_tbl                          &
 !!     &         (refine_info_head, ele, ref_itp_wk, refine_tbl)
 !!        type(element_data), intent(in) :: ele
@@ -48,11 +48,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_refinement_table                                 &
-     &         (iref, refine_info_head, ele, refine_tbl)
+     &         (i_ref, refine_info_head, ele, refine_tbl)
 !
       use element_refine_file_IO
 !
-      integer(kind = kint), intent(in) :: iref
+      integer(kind = kint), intent(in) :: i_ref
       character(len = kchara), intent(in) :: refine_info_head
       type(element_data), intent(in) :: ele
       type(element_refine_table), intent(in) :: refine_tbl
@@ -66,7 +66,7 @@
 !
 !
       if(refine_tbl%iflag_tmp_tri_refine .eq. 1) then
-        IO_e_ref%file_head = add_int_suffix(iref, refine_info_head)
+        IO_e_ref%file_head = add_int_suffix(i_ref, refine_info_head)
       else
         IO_e_ref%file_head = refine_info_head
       end if

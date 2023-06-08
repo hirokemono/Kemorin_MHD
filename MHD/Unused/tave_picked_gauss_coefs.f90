@@ -9,7 +9,7 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    array vol_integrate_prefix
+!!    array volume_integrate_prefix
 !!      gauss_coefs_prefix        'gauss_coefs_Re'
 !!    end monitor_data_list_ctl
 !!  end time_averaging_sph_monitor

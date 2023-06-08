@@ -8,13 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine set_boundary_data                                    &
-!!     &         (time_d, IO_bc, mesh, MHD_mesh, group,                 &
-!!     &          MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
+!!     &        (time_d, IO_bc, mesh, MHD_mesh, group, MHD_prop, MHD_BC,&
+!!     &         iref_base, ref_fld, iphys, nod_fld, FEM_MHD_BCs)
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(mesh_groups), intent(in) ::   group
+!!        type(base_field_address), intent(in) :: iref_base
+!!        type(phys_data), intent(in) :: ref_fld
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -45,8 +47,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_boundary_data                                      &
-     &         (time_d, IO_bc, mesh, MHD_mesh, group,                   &
-     &          MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
+     &        (time_d, IO_bc, mesh, MHD_mesh, group, MHD_prop, MHD_BC,  &
+     &         iref_base, ref_fld, iphys, nod_fld, FEM_MHD_BCs)
 !
       use t_time_data
       use t_control_parameter
@@ -56,6 +58,7 @@
       use t_surface_group_normals
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_boundary_field_IO
       use t_physical_property
       use t_reference_scalar_param
@@ -71,6 +74,8 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(mesh_groups), intent(in) ::   group
+      type(base_field_address), intent(in) :: iref_base
+      type(phys_data), intent(in) :: ref_fld
       type(phys_address), intent(in) :: iphys
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -88,7 +93,7 @@
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
-     &    iphys, nod_fld, FEM_MHD_BCs%nod_bcs)
+     &    iref_base, ref_fld, iphys, nod_fld, FEM_MHD_BCs%nod_bcs)
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_surface_data'
       call set_bc_surface_data                                          &

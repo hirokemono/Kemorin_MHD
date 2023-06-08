@@ -17,20 +17,20 @@
 !!    folder_to_add_ctl     'monitor'
 !!
 !!    begin monitor_file_list_ctl
-!!      array vol_integrate_prefix
-!!        vol_integrate_prefix     'sph_ave_volume'
+!!      array volume_integrate_prefix
+!!        volume_integrate_prefix     'sph_ave_volume'
 !!        ...
-!!      end array vol_integrate_prefix
+!!      end array volume_integrate_prefix
 !!
-!!      array vol_spectr_prefix
-!!        vol_spectr_prefix     'sph_pwr_volume_l'
+!!      array volume_sph_spectr_prefix
+!!        volume_sph_spectr_prefix     'sph_pwr_volume_l'
 !!        ...
-!!      end array vol_spectr_prefix
+!!      end array volume_sph_spectr_prefix
 !!
-!!      array sph_integrate_prefix
-!!        sph_integrate_prefix     'sph_pwr_layer_s'
+!!      array sphere_integrate_prefix
+!!        sphere_integrate_prefix     'sph_pwr_layer_s'
 !!        ...
-!!      end array sph_integrate_prefix
+!!      end array sphere_integrate_prefix
 !!
 !!      array layer_sph_spectr_prefix
 !!        layer_sph_spectr_prefix     'sph_pwr_layer_l'
