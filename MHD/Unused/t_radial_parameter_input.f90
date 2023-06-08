@@ -247,8 +247,6 @@
       call skip_comment(tmpchara,id_radial_file)
       read(tmpchara,*) rfld%nri_param
 !
-      call set_num_comp_r_params                                        &
-     &   (rfld%r_param_name, rfld%ncomp_r_param)
       call alloc_each_r_param_ctl(rfld)
 !
       do inum = 1, rfld%nri_param
@@ -309,27 +307,6 @@
       end if
 !
       end subroutine set_radius_params_by_file
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_num_comp_r_params(field_name, ncomp)
-!
-      use m_base_field_labels
-      use m_diffusion_term_labels
-      use skip_comment_f
-!
-      character(len=kchara), intent(in) :: field_name
-      integer(kind = kint), intent(inout) :: ncomp
-!
-!
-      if(check_diffusivity(field_name)) ncomp = 3
-      if(cmp_no_case(field_name, reference_density%name)) ncomp = 3
-!
-      if(    cmp_no_case(field_name, reference_temperature%name)        &
-     &  .or. cmp_no_case(field_name, reference_composition%name))       &
-     &      ncomp = 1
-!
-      end subroutine set_num_comp_r_params
 !
 ! -----------------------------------------------------------------------
 !
