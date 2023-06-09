@@ -69,7 +69,7 @@
       character(len = kchara), parameter :: label_linear_z = 'linear_z'
 !
       character(len = kchara), parameter                                &
-     &               :: label_get_numerical = 'numrical_solution'
+     &               :: label_get_numerical = 'numerical_solution'
       character(len = kchara), parameter :: label_load_file = 'file'
 !
       type reference_scalar_param
