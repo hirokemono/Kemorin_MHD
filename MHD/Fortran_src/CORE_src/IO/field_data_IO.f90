@@ -45,7 +45,7 @@
       character(len=25), parameter                                      &
      &            :: FLD_HD0 = '! List of Number of nodes'
       character(len=31), parameter                                      &
-     &            :: FLD_HD1 = '! Number of field and component'
+     &            :: FLD_HD1 = '! Num. of grid, field and comps'
 !
       private :: FLD_HD1
 !
