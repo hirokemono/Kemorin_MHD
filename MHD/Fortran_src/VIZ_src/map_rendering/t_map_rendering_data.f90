@@ -229,9 +229,9 @@
       end if
 !
       if(map_data%flag_zeroline) then
-        call draw_aitoff_map_zeroline                                   &
+        call draw_zeroline                                              &
      &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl)
+     &      map_data%d_map, pvr_rgb%rgba_real_gl)
       end if
 !
       if(num_line .gt. 0) then
@@ -263,34 +263,6 @@
      &    pvr_rgb%rgba_real_gl)
       call draw_mapflame(pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),  &
      &                   map_data%d_map, pvr_rgb%rgba_real_gl)
-      go to 100
-!
-!
-      if(map_data%flag_tangent_cylinder) then
-        call draw_aitoff_lat_line                                       &
-     &     (map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      map_data%tangent_cylinder_theta(1),                         &
-     &      map_data%tangent_cylinder_rgba,                             &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
-        call draw_aitoff_lat_line                                       &
-     &     (map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      map_data%tangent_cylinder_theta(2),                         &
-     &      map_data%tangent_cylinder_rgba,                             &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
-      end if
-!
-      if(cbar_param%flag_draw_mapgrid) then
-        call draw_aitoff_map_frame                                      &
-     &     (map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
-      end if
-  100 continue
 !
       call fill_background                                              &
      &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), bg_color,       &

@@ -351,7 +351,7 @@
         if(d_ref .le. zero) then
           idots = 0
         else
-          idots = 3
+          idots = 2
         end if
         call value_to_rgb(color_param%id_pvr_color(2),                  &
      &                    color_param%id_pvr_color(1),                  &
@@ -418,7 +418,7 @@
 !
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
-      integer(kind = kint), parameter :: idots = 3
+      integer(kind = kint), parameter :: idots =  2
       integer(kind = kint), parameter :: nwidth = 1
       real(kind = kreal), parameter                                     &
      &                   :: color_ref(4) = (/zero,zero,zero,one/)
@@ -444,7 +444,7 @@
 !
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
-      integer(kind = kint), parameter :: idots = 3
+      integer(kind = kint), parameter :: idots =  2
       integer(kind = kint), parameter :: nwidth = 1
       real(kind = kreal), parameter                                     &
      &                   :: color_ref(4) = (/zero,zero,zero,one/)
@@ -472,7 +472,7 @@
 !
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
-      integer(kind = kint), parameter :: idots = 0
+      integer(kind = kint), parameter :: idots =  2
       integer(kind = kint), parameter :: nwidth = 2
       real(kind = kreal), parameter                                     &
      &                   :: color_ref(4) = (/zero,zero,zero,one/)
@@ -582,9 +582,12 @@
       do j = 1, nypixel
         do i = 1, nxpixel
           i_img = i + (j-1) * nxpixel
-          if(mod(j,isq).ge.idots .and. mod(i,isq).lt.idots) cycle
-          if(mod(j,isq).lt.idots .and. mod(i,isq).ge.idots) cycle
           if(rgba(4,i_img) .eq. zero) cycle
+          if(isq .gt. 0) then
+            if(mod(j,isq).ge.idots .and. mod(i,isq).lt.idots) cycle
+            if(mod(j,isq).lt.idots .and. mod(i,isq).ge.idots) cycle
+          end if
+!
           do icou = nwidth_xn, nwidth_xp
             i1 = max(i+icou,  1) +       (j-1) * nxpixel
             i2 = min(i+icou+1,nxpixel) + (j-1) * nxpixel
