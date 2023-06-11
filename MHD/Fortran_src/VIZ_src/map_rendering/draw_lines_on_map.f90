@@ -328,6 +328,7 @@
      &                         nline, d_map, rgba)
 !
       use t_pvr_colormap_parameter
+      use set_color_4_pvr
 !
       integer(kind = kint), intent(in) :: nxpixel, nypixel, nline
       type(pvr_colormap_parameter), intent(in) :: color_param
