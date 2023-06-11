@@ -206,6 +206,10 @@
 !
       type(map_patches_for_1patch) :: map_e1
 !
+      logical :: fill_flag = .TRUE.
+      integer(kind = kint) :: num_line = 0
+      real(kind = kreal) :: bg_color(4) = (/zero,zero,zero,one/)
+!
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
@@ -218,15 +222,49 @@
      &    map_e1)
       call dealloc_map_patch_from_1patch(map_e1)
 !
-      call map_value_to_rgb                                             &
-     &   (color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),    &
-     &    pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl)
+      if(fill_flag) then
+        call map_value_to_rgb                                           &
+     &     (color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),  &
+     &      pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl)
+      end if
 !
       if(map_data%flag_zeroline) then
         call draw_aitoff_map_zeroline                                   &
      &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl)
       end if
+!
+      if(num_line .gt. 0) then
+        call draw_isolines                                              &
+     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), color_param,  &
+     &      num_line, map_data%d_map, pvr_rgb%rgba_real_gl)
+      end if
+!
+      call map_value_to_colatitude                                      &
+     &   (map_data%xmin_frame, map_data%xmax_frame,                     &
+     &    map_data%ymin_frame, map_data%ymax_frame,                     &
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
+      call draw_latitude_grid                                           &
+     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map, &
+     &    pvr_rgb%rgba_real_gl)
+      if(map_data%flag_tangent_cylinder) then
+        call draw_tangent_cyl_grid                                      &
+     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    map_data%tangent_cylinder_theta, map_data%d_map,              &
+     &    pvr_rgb%rgba_real_gl)
+      end if
+!
+      call map_value_to_longitude                                       &
+     &   (map_data%xmin_frame, map_data%xmax_frame,                     &
+     &    map_data%ymin_frame, map_data%ymax_frame,                     &
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
+      call draw_longitude_grid                                          &
+     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map, &
+     &    pvr_rgb%rgba_real_gl)
+      call draw_mapflame(pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),  &
+     &                   map_data%d_map, pvr_rgb%rgba_real_gl)
+      go to 100
+!
 !
       if(map_data%flag_tangent_cylinder) then
         call draw_aitoff_lat_line                                       &
@@ -252,6 +290,11 @@
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
       end if
+  100 continue
+!
+      call fill_background                                              &
+     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), bg_color,       &
+     &    pvr_rgb%rgba_real_gl)
 !
       if(cbar_param%flag_pvr_colorbar) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
