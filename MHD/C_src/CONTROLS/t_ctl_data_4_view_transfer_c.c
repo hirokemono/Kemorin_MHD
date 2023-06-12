@@ -9,8 +9,8 @@
 
 #define NLBL_IMAGE_SIZE_CTL       2
 #define NLBL_STEREO_VIEW_CTL      2
-#define NLBL_PROJECTION_MAT_CTL   4
-#define NLBL_MODELVIEW_CTL       12
+#define NLBL_PROJECTION_MAT_CTL   6
+#define NLBL_MODELVIEW_CTL       13
 
 FILE *FP_View;
 
@@ -28,7 +28,9 @@ const char label_projection_mat_ctl[NLBL_PROJECTION_MAT_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"perspective_angle_ctl"},
 	/*[ 1]*/	{"perspective_xy_ratio_ctl"},
 	/*[ 2]*/	{"perspective_near_ctl"},
-	/*[ 3]*/	{"perspective_far_ctl"}
+	/*[ 3]*/	{"perspective_far_ctl"},
+    /*[ 4]*/    {"horizontal_range_ctl"},
+    /*[ 5]*/    {"vertical_range_ctl"}
 };
 
 const char label_modeview_ctl[NLBL_MODELVIEW_CTL][KCHARA_C] = {
@@ -45,7 +47,8 @@ const char label_modeview_ctl[NLBL_MODELVIEW_CTL][KCHARA_C] = {
 	
 	/*[ 9]*/	{"projection_matrix_ctl"},
 	/*[10]*/	{"modelview_matrix_ctl"},
-	/*[11]*/	{"stereo_view_parameter_ctl"}
+	/*[11]*/	{"stereo_view_parameter_ctl"},
+    /*[12]*/    {"projection_type_ctl"}
 };
 
 const char label_modeview_head[KCHARA_C] = "view_transform_ctl";
@@ -194,6 +197,8 @@ struct projection_mat_ctl_c * init_projection_mat_ctl_c(void){
     projection_c->perspective_xy_ratio_ctl = init_real_ctl_item_c();
     projection_c->perspective_near_ctl =     init_real_ctl_item_c();
     projection_c->perspective_far_ctl =      init_real_ctl_item_c();
+    projection_c->horizontal_range_ctl =     init_real2_ctl_item_c();
+    projection_c->vertical_range_ctl =       init_real2_ctl_item_c();
 	return projection_c;
 };
 
@@ -203,6 +208,8 @@ void dealloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c){
 	free(projection_c->perspective_xy_ratio_ctl);
 	free(projection_c->perspective_near_ctl);
 	free(projection_c->perspective_far_ctl);
+    free(projection_c->horizontal_range_ctl);
+    free(projection_c->vertical_range_ctl);
 	
     projection_c->iflag_use = 0;
 	return;
@@ -217,6 +224,8 @@ void read_projection_mat_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 1], projection_c->perspective_xy_ratio_ctl);
 		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 2], projection_c->perspective_near_ctl);
 		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 3], projection_c->perspective_far_ctl);
+        read_real2_ctl_item_c(buf, label_projection_mat_ctl[ 4], projection_c->horizontal_range_ctl);
+        read_real2_ctl_item_c(buf, label_projection_mat_ctl[ 5], projection_c->vertical_range_ctl);
 	};
 	projection_c->iflag_use = 1;
     return;
@@ -237,6 +246,10 @@ int write_projection_mat_ctl_c(FILE *fp, int level, const char *label,
 				label_projection_mat_ctl[ 2], projection_c->perspective_near_ctl);
 	write_real_ctl_item_c(fp, level, projection_c->maxlen, 
 				label_projection_mat_ctl[ 3], projection_c->perspective_far_ctl);
+    write_real2_ctl_item_c(fp, level, projection_c->maxlen, 
+                label_projection_mat_ctl[ 4], projection_c->horizontal_range_ctl);
+    write_real2_ctl_item_c(fp, level, projection_c->maxlen, 
+                label_projection_mat_ctl[ 5], projection_c->vertical_range_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -278,7 +291,9 @@ struct modelview_ctl_c * init_modelview_ctl_c(void){
 	
     mat_c->view_rotation_deg_ctl = init_real_ctl_item_c();
     mat_c->scale_factor_ctl =      init_real_ctl_item_c();
-	
+
+    mat_c->projection_type_ctl =      init_chara_ctl_item_c();
+    
     mat_c->scale_vector_list =     init_chara_real_clist();
     mat_c->viewpt_in_viewer_list = init_chara_real_clist();
 
@@ -305,6 +320,7 @@ void dealloc_modelview_ctl_c(struct modelview_ctl_c *mat_c){
 	
 	free(mat_c->view_rotation_deg_ctl);
 	free(mat_c->scale_factor_ctl);
+    dealloc_chara_ctl_item_c(mat_c->projection_type_ctl);
 	
 	dealloc_chara_real_clist(mat_c->scale_vector_list);
 	dealloc_chara_real_clist(mat_c->viewpt_in_viewer_list);
@@ -331,6 +347,7 @@ void read_modelview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_real_ctl_item_c(buf, label_modeview_ctl[ 5], mat_c->view_rotation_deg_ctl);
 		read_real_ctl_item_c(buf, label_modeview_ctl[ 6], mat_c->scale_factor_ctl);
+        read_chara_ctl_item_c(buf, label_modeview_ctl[12], mat_c->projection_type_ctl);
 		
 		read_chara_real_clist(fp, buf, label_modeview_ctl[ 7],
 							  mat_c->scale_vector_list);
@@ -371,6 +388,8 @@ int write_modelview_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_real_ctl_item_c(fp, level, mat_c->maxlen, 
 				label_modeview_ctl[ 6], mat_c->scale_factor_ctl);
+    write_chara_ctl_item_c(fp, level, mat_c->maxlen, 
+                label_modeview_ctl[12], mat_c->projection_type_ctl);
 	
 	write_chara_real_clist(fp, level, label_modeview_ctl[ 1], mat_c->lookpoint_list);
 	write_chara_real_clist(fp, level, label_modeview_ctl[ 2], mat_c->viewpoint_list);

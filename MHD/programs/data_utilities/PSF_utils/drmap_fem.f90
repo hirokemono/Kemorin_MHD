@@ -67,7 +67,7 @@
         call pgsubp(iw2,2)
       endif
 !*
-      call alloc_map_patch_from_1patch(ione, map_e_pg)
+      call alloc_map_patch_from_1patch(map_e_pg)
 !
 !*  ----------  main loop for graphic  ---------------
 !*

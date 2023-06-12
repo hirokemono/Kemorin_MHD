@@ -1,22 +1,18 @@
 !copy_refined_nod_quad.f90
 !      module copy_refined_nod_quad
 !
-      module copy_refined_nod_quad
-!
 !      Written by H. Matsui on Oct., 2007
-!
-      use m_precision
-!
-      implicit none
-!
 !      subroutine s_copy_refined_nod_quad27(inod_refine_local,          &
 !     &          inod_refine_nod_local, inod_refine_ele_local,          &
 !     &          inod_refine_surf_local, inod_refine_edge_local)
 !      subroutine s_copy_refined_nod_quad20(inod_refine_local,          &
-!     &          inod_refine_nod_local, inod_refine_surf_local,         &
-!     &          inod_refine_edge_local)
+!     &          inod_refine_nod_local, inod_refine_edge_local)
 !      subroutine s_copy_nod_no_refine(inod_refine_local,               &
 !     &          inod_refine_nod_local)
+!
+      module copy_refined_nod_quad
+      use m_precision
+      implicit none
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,11 +68,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_copy_refined_nod_quad20(inod_refine_local,           &
-     &          inod_refine_nod_local, inod_refine_surf_local,          &
-     &          inod_refine_edge_local)
+     &          inod_refine_nod_local, inod_refine_edge_local)
 !
       integer(kind = kint), intent(in) :: inod_refine_nod_local(8)
-      integer(kind = kint), intent(in) :: inod_refine_surf_local(6,1)
       integer(kind = kint), intent(in) :: inod_refine_edge_local(12,1)
 !
       integer(kind = kint), intent(inout) :: inod_refine_local(20)

@@ -46,6 +46,7 @@ label[8]   eye_position_in_viewer_ctl
 label[9]   projection_matrix_ctl 
 label[10]   modelview_matrix_ctl 
 label[11]   stereo_view_parameter_ctl 
+label[12]   projection_type_ctl 
 
 Check pvr_ctl_labls->label_pvr_pixels
 ctl_list->num_labels 2 
@@ -59,6 +60,8 @@ label[0]   perspective_angle_ctl
 label[1]   perspective_xy_ratio_ctl 
 label[2]   perspective_near_ctl 
 label[3]   perspective_far_ctl 
+label[4]   horizontal_range_ctl
+label[5]   vertical_range_ctl 
 
 Check pvr_ctl_labls->label_pvr_streo
 ctl_list->num_labels 2 
@@ -88,6 +91,7 @@ label[5]   opacity_style_ctl
 label[6]   constant_opacity_ctl 
 label[7]   linear_opacity_ctl 
 label[8]   step_opacity_ctl 
+label[9]   background_color_ctl 
 
 Check pvr_ctl_labls->label_pvr_cbar
 ctl_list->num_labels 7 
@@ -109,9 +113,12 @@ ctl_list->num_labels
 label[0]   surface_define 
 label[1]   opacity_ctl 
 label[2]   zeroline_switch_ctl 
-label[3]   tangent_cylinder_switch_ctl 
-label[4]   inner_radius_ctl 
-label[5]   outer_radius_ctl 
+label[3]   isoline_switch_ctl 
+label[4]   isoline_color_mode 
+label[5]   isoline_number_ctl 
+label[6]   tangent_cylinder_switch_ctl 
+label[7]   inner_radius_ctl 
+label[8]   outer_radius_ctl 
 
 Check pvr_ctl_labls->label_pvr_isosurf
 ctl_list->num_labels 3 

@@ -3,10 +3,12 @@
 !
 !!      subroutine set_initial_components(merged_fld)
 !!        type(phys_data), intent(inout) :: merged_fld
-!!      subroutine add_initial_num_comp_mhd(merged_fld, pini_p)
+!!       subroutine add_initial_num_comp_mhd(merged_fld,                &
+!!     &                                     pini_p, num_added_merge)
 !!        type(phys_data), intent(in) :: merged_fld
 !!        type(plane_initial_setting), intent(inout) :: pini_p
-!!      subroutine add_initial_comp_mhd(merged_fld, pini_p)
+!!      subroutine add_initial_comp_mhd(num_added_merge,                &
+!!     &                                merged_fld, pini_p)
 !!        type(phys_data), intent(inout) :: merged_fld
 !!        type(plane_initial_setting), intent(inout) :: pini_p
 !
@@ -95,12 +97,12 @@
 !
 !-----------------------------------------------------------------
 !
-       subroutine add_initial_num_comp_mhd(merged_fld, pini_p)
+       subroutine add_initial_num_comp_mhd(merged_fld,                  &
+     &                                     pini_p, num_added_merge)
 !
       type(phys_data), intent(in) :: merged_fld
       type(plane_initial_setting), intent(inout) :: pini_p
-!
-      integer(kind=kint) :: num_added_merge
+      integer(kind = kint), intent(inout) :: num_added_merge
 !
 !
       write(*,*) 'input number of physical valuesto add'
@@ -112,14 +114,15 @@
 !
 !-----------------------------------------------------------------
 !
-      subroutine add_initial_comp_mhd(merged_fld, pini_p)
+      subroutine add_initial_comp_mhd(num_added_merge,                  &
+     &                                merged_fld, pini_p)
 !
       use m_base_field_labels
 !
+      integer(kind = kint), intent(in) :: num_added_merge
       type(phys_data), intent(inout) :: merged_fld
       type(plane_initial_setting), intent(inout) :: pini_p
 !
-      integer(kind=kint) :: num_added_merge
       integer(kind=kint) :: np, nq
 !
 !

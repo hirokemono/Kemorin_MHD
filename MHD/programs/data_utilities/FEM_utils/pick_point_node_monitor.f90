@@ -63,6 +63,7 @@
           read(id_monitor_file,*) fld_name_monitor(i)
         end do
 !
+        ntot_cmp_monitor = 0
         if(iflag_init .eq. 0) then
           fname_tmp = add_int_suffix(inod_2_pick, picked_header)
           fname_tmp2 = add_process_id(id_rank, fname_tmp)
@@ -81,7 +82,6 @@
             write(pick_monitor_file_code,*) trim(fld_name_monitor(i))
           end do
 !
-          ntot_cmp_monitor = 0
           do nd = 1, num_fld_monitor
             ntot_cmp_monitor = ntot_cmp_monitor + num_nod_component(nd)
           end do

@@ -120,7 +120,14 @@
 !
       allocate(istack_ele(0:num_grp))
       allocate(grp_ucd(num_grp))
-      do igrp = 1, num_grp
+!
+      igrp = 1
+        f_tmp = add_int_suffix((igrp+ist_mesh-1), mesh_file_head)
+        write(*,*) 'grp_ucd: ', ist_mesh, f_tmp
+        file_name = set_parallel_grd_file_name(f_tmp, iflag_vtd, -1)
+        call read_vtk_grid(-1, file_name, grp_ucd(igrp))
+!
+      do igrp = 2, num_grp
         f_tmp = add_int_suffix((igrp+ist_mesh-1), mesh_file_head)
         write(*,*) 'grp_ucd: ', ist_mesh, f_tmp
         file_name = set_parallel_grd_file_name(f_tmp, iflag_vtd, -1)

@@ -25,7 +25,9 @@ const char label_colormap_ctl[NLBL_COLORMAP_CTL][KCHARA_C] = {
 	/*[ 9]*/	{"opacity_style_ctl"},
 	/*[10]*/	{"constant_opacity_ctl"},
 	/*[11]*/	{"linear_opacity_ctl"},
-	/*[12]*/	{"step_opacity_ctl"}
+	/*[12]*/	{"step_opacity_ctl"},
+
+    /*[13]*/    {"background_color_ctl"}
 };
 
 const char label_lighting_ctl[NLBL_LIGHTING_CTL][KCHARA_C] = {
@@ -74,7 +76,8 @@ struct colormap_ctl_c * init_colormap_ctl_c(){
 		};
 	};
 	
-	cmap_c->colormap_mode_ctl = init_chara_ctl_item_c();
+	cmap_c->colormap_mode_ctl =    init_chara_ctl_item_c();
+    cmap_c->background_color_ctl = init_real3_ctl_item_c();
 	
 	cmap_c->lic_color_fld_ctl =    init_chara_ctl_item_c();
 	cmap_c->lic_color_comp_ctl =   init_chara_ctl_item_c();
@@ -109,6 +112,7 @@ struct colormap_ctl_c * init_colormap_ctl_c(){
 void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	
 	dealloc_chara_ctl_item_c(cmap_c->colormap_mode_ctl);
+    free(cmap_c->background_color_ctl);
 	
 	dealloc_chara_ctl_item_c(cmap_c->lic_color_fld_ctl);
 	dealloc_chara_ctl_item_c(cmap_c->lic_color_comp_ctl);
@@ -141,6 +145,7 @@ void read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_ctl_item_c(buf, label_colormap_ctl[ 0], cmap_c->colormap_mode_ctl);
+        read_real3_ctl_item_c(buf, label_colormap_ctl[13], cmap_c->background_color_ctl);
 		
 		read_chara_ctl_item_c(buf, label_colormap_ctl[ 1], cmap_c->lic_color_fld_ctl);
 		read_chara_ctl_item_c(buf, label_colormap_ctl[ 2], cmap_c->lic_color_comp_ctl);
@@ -172,6 +177,7 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 0], cmap_c->colormap_mode_ctl);
+    write_real3_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[13], cmap_c->background_color_ctl);
 	
 	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 1], cmap_c->lic_color_fld_ctl);
 	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 2], cmap_c->lic_color_comp_ctl);
