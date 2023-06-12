@@ -193,6 +193,8 @@
       use draw_aitoff_map
       use draw_lines_on_map
       use draw_pvr_colorbar
+      use draw_pixels_on_map
+      use set_map_values_for_grids
 !
       type(time_data), intent(in) :: time_d
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -208,7 +210,6 @@
 !
       logical :: fill_flag = .TRUE.
       integer(kind = kint) :: num_line = 0
-      real(kind = kreal) :: bg_color(4) = (/zero,zero,zero,one/)
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -225,7 +226,7 @@
       if(fill_flag) then
         call map_value_to_rgb                                           &
      &     (color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),  &
-     &      pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl)
+     &      map_data%d_map, pvr_rgb%rgba_real_gl)
       end if
 !
       if(map_data%flag_zeroline) then
@@ -248,7 +249,7 @@
      &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map, &
      &    pvr_rgb%rgba_real_gl)
       if(map_data%flag_tangent_cylinder) then
-        call draw_tangent_cyl_grid                                      &
+        call draw_map_tangent_cyl_grid                                  &
      &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
      &    map_data%tangent_cylinder_theta, map_data%d_map,              &
      &    pvr_rgb%rgba_real_gl)
@@ -265,8 +266,8 @@
      &                   map_data%d_map, pvr_rgb%rgba_real_gl)
 !
       call fill_background                                              &
-     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), bg_color,       &
-     &    pvr_rgb%rgba_real_gl)
+     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    color_param%bg_rgba_real, pvr_rgb%rgba_real_gl)
 !
       if(cbar_param%flag_pvr_colorbar) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &

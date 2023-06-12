@@ -60,6 +60,7 @@
 !!    file map_color_ctl    'ctl_color_Br'
 !!    begin colormap_ctl
 !!      colormap_mode_ctl       rainbow
+!!      background_color_ctl    0.0   0.0   0.0
 !!
 !!      data_mapping_ctl   Colormap_list
 !!      array color_table_ctl

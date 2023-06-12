@@ -88,6 +88,7 @@ label[5]   opacity_style_ctl
 label[6]   constant_opacity_ctl 
 label[7]   linear_opacity_ctl 
 label[8]   step_opacity_ctl 
+label[9]   background_color_ctl 
 
 Check pvr_ctl_labls->label_pvr_cbar
 ctl_list->num_labels 7 

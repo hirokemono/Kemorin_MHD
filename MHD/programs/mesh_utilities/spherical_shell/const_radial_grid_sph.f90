@@ -20,7 +20,7 @@
 !
       type(read_integer_item) :: num_fluid_grid_ctl
       type(ctl_array_real) :: add_ext_layer_ctl
-      integer(kind = kint) :: nele, increment_cheby
+      integer(kind = kint) :: increment_cheby
       real(kind = kreal) :: shell, ratio, rmin, rmax
 !
 !>  Structure of grid and spectr data for spherical spectr method

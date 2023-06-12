@@ -80,6 +80,7 @@ label[9]   opacity_style_ctl
 label[10]   constant_opacity_ctl 
 label[11]   linear_opacity_ctl 
 label[12]   step_opacity_ctl 
+label[13]   background_color_ctl 
 
 Check lic_ctl_labls->label_lic_dirs
 ctl_list->num_labels 3 

@@ -19,9 +19,9 @@
 #include "t_control_real2_IO.h"
 #include "t_control_real3_IO.h"
 
-#define NLBL_COLORMAP_CTL     13
+#define NLBL_COLORMAP_CTL     14
 #define NLBL_LIGHTING_CTL      4
-#define NLBL_PVR_COLORBAR_CTL  9
+#define NLBL_PVR_COLORBAR_CTL 10
 #define NLBL_CMAP_CBAR_CTL     2
 
 struct colormap_ctl_c{
@@ -35,9 +35,11 @@ struct colormap_ctl_c{
 	struct chara_ctl_item *lic_opacity_fld_ctl;
 	struct chara_ctl_item *lic_opacity_comp_ctl;
 	
+    struct real3_ctl_item *background_color_ctl;
+    
 	struct chara_ctl_item *data_mapping_ctl;
 	struct real2_clist *colortbl_list;
-	
+
 	struct chara_ctl_item *opacity_style_ctl;
 	struct real_ctl_item *fix_opacity_ctl;
 	struct real2_clist *linear_opacity_list;
