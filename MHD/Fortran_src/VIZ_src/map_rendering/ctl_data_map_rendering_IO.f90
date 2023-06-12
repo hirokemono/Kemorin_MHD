@@ -41,6 +41,10 @@
 !!      end surface_define
 !!
 !!      zeroline_switch_ctl           On
+!!      isoline_switch_ctl            On
+!!      isoline_color_mode      color, white, or black
+!!      isoline_number_ctl            20
+!!
 !!      tangent_cylinder_switch_ctl   On
 !!      inner_radius_ctl              0.53846
 !!      outer_radius_ctl              1.53846
@@ -54,6 +58,8 @@
 !!
 !!      begin projection_matrix_ctl
 !!        perspective_xy_ratio_ctl   1.0
+!!        horizontal_range_ctl       -2.4   2.4
+!!        vertical_range_ctl         -1.2   1.2
 !!      end projection_matrix_ctl
 !!    end map_projection_ctl
 !!

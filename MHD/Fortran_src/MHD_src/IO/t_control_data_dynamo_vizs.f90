@@ -24,14 +24,28 @@
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin dynamo_vizs_control
+!!    begin crustal_filtering_ctl
+!!      truncation_degree_ctl        13
+!!    end crustal_filtering_ctl
+!!
 !!    file  zonal_mean_section_ctl
 !!    begin  zonal_RMS_section_ctl
 !!      ....
 !!    end zonal_RMS_section_ctl
 !!
-!!    begin crustal_filtering_ctl
-!!      truncation_degree_ctl        13
-!!    end crustal_filtering_ctl
+!!    array zonal_mean_rendering_ctl
+!!      file zonal_mean_rendering_ctl  ctl_zm_Bline
+!!      begin  zonal_mean_rendering_ctl
+!!        ....
+!!      end    zonal_mean_rendering_ctl
+!!    end array zonal_mean_rendering_ctl
+!!
+!!    array zonal_RMS_rendering_ctl
+!!      file zonal_RMS_rendering_ctl  ctl_zRMS_Bline
+!!      begin  zonal_RMS_rendering_ctl
+!!        ....
+!!      end    zonal_RMS_rendering_ctl
+!!    end array zonal_RMS_rendering_ctl
 !!  end dynamo_vizs_control
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

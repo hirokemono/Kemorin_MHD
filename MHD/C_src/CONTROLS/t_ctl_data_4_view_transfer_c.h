@@ -15,6 +15,8 @@
 #include "control_elements_IO_c.h"
 #include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
+#include "t_control_real2_IO.h"
+#include "t_control_chara_IO.h"
 #include "t_control_chara_real_IO.h"
 #include "t_control_chara2_real_IO.h"
 
@@ -42,6 +44,9 @@ struct projection_mat_ctl_c{
     struct real_ctl_item *perspective_xy_ratio_ctl;
     struct real_ctl_item *perspective_near_ctl;
     struct real_ctl_item *perspective_far_ctl;
+
+    struct real2_ctl_item *horizontal_range_ctl;
+    struct real2_ctl_item *vertical_range_ctl;
 };
 
 struct modelview_ctl_c{
@@ -57,6 +62,7 @@ struct modelview_ctl_c{
 	
     struct real_ctl_item *view_rotation_deg_ctl;
     struct real_ctl_item *scale_factor_ctl;
+    struct chara_ctl_item *projection_type_ctl;
 	
 	struct chara_real_clist *scale_vector_list;
 	struct chara_real_clist *viewpt_in_viewer_list;
