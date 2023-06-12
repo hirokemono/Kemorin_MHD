@@ -73,6 +73,7 @@
       use t_ctl_data_sph_MHD_w_psf
       use bcast_control_sph_MHD
       use bcast_ctl_data_surfacings
+      use bcast_dynamo_sect_control
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -86,7 +87,7 @@
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
       call bcast_surfacing_controls(add_SMHD_ctl%surfacing_ctls)
-      call bcast_dynamo_viz_control(add_SMHD_ctl%zm_ctls)
+      call s_bcast_dynamo_section_control(add_SMHD_ctl%zm_sects)
 !
       end subroutine load_control_4_sph_MHD_w_psf
 !
@@ -119,7 +120,7 @@
       use t_time_data
       use t_ctl_data_MHD
       use t_ctl_data_sph_MHD_w_psf
-use t_node_monitor_IO
+      use t_node_monitor_IO
       use m_error_IDs
 !
       use set_control_sph_mhd
@@ -154,7 +155,7 @@ use t_node_monitor_IO
 !
       call set_control_SPH_MHD_w_viz                                    &
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
-     &    add_SMHD_ctl%zm_ctls, MHD_ctl%nmtr_ctl,                       &
+     &    add_SMHD_ctl%zm_sects%crust_filter_ctl, MHD_ctl%nmtr_ctl,     &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_MHD%sph,            &
      &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, FEM_dat%nod_mntr)
 !
@@ -265,7 +266,7 @@ use t_node_monitor_IO
 !
       call set_control_SPH_MHD_w_viz                                    &
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
-     &    add_SMHD_ctl%zm_ctls, MHD_ctl%nmtr_ctl,                       &
+     &    add_SMHD_ctl%zm_sects%crust_filter_ctl, MHD_ctl%nmtr_ctl,     &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_MHD%sph,            &
      &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, FEM_dat%nod_mntr)
 !

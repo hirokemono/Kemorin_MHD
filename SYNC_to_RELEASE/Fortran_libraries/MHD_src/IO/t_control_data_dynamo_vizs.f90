@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/MHD_src/IO/t_control_data_dynamo_vizs.f90

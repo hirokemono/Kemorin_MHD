@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine init_zonal_mean_sections(viz_step, geofem, edge_comm,&
-!!     &         nod_fld, zm_ctls, zmeans, m_SR)
+!!     &         nod_fld, zm_sects, zmeans, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+!!        type(sph_dynamo_section_controls), intent(inout) :: zm_sects
 !!        type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine SPH_MHD_zmean_sections(viz_step, time_d,             &
@@ -66,16 +66,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_zonal_mean_sections(viz_step, geofem, edge_comm,  &
-     &         nod_fld, zm_ctls, zmeans, m_SR)
+     &         nod_fld, zm_sects, zmeans, m_SR)
 !
-      use t_control_data_dynamo_vizs
+      use t_control_data_dynamo_sects
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: edge_comm
       type(phys_data), intent(in) :: nod_fld
 !
-      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+      type(sph_dynamo_section_controls), intent(inout) :: zm_sects
       type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
       type(mesh_SR), intent(inout) :: m_SR
 !
@@ -83,9 +83,9 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, edge_comm, nod_fld,         &
-     &    zm_ctls%zm_psf_ctls, zmeans%zm_psf, m_SR%SR_sig, m_SR%SR_il)
+     &    zm_sects%zm_psf_ctls, zmeans%zm_psf, m_SR%SR_sig, m_SR%SR_il)
       call SECTIONING_initialize(viz_step%PSF_t%increment,              &
-     &    geofem, edge_comm, nod_fld, zm_ctls%zRMS_psf_ctls,            &
+     &    geofem, edge_comm, nod_fld, zm_sects%zRMS_psf_ctls,           &
      &    zmeans%zrms_psf, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !

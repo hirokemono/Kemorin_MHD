@@ -7,10 +7,10 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!
 !!      subroutine set_control_SGS_SPH_MHD_field(model_ctl, psph_ctl,   &
-!!     &          smonitor_ctl, zm_ctls, nmtr_ctl, SGS_par, MHD_prop,   &
-!!     &          MHD_BC, sph, rj_fld, nod_fld, monitor, nod_mntr)
+!!     &          smonitor_ctl, crust_filter_ctl, nmtr_ctl,             &
+!!     &          SGS_par, MHD_prop, MHD_BC, sph, rj_fld,               &
+!!     &          nod_fld, monitor, nod_mntr)
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt,              &
 !!     &          model_ctl, smctl_ctl, psph_ctl, sgs_ctl,              &
 !!     &          MHD_files, bc_IO, refs, SGS_par, dynamic_SPH,         &
@@ -22,6 +22,7 @@
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(node_monitor_control), intent(in) :: nmtr_ctl
 !!        type(parallel_sph_shell_control), intent(in) :: psph_ctl
+!!        type(clust_filtering_ctl), intent(in) :: crust_filter_ctl
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(node_monitor_control), intent(in) :: nmtr_ctl
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -61,7 +62,7 @@
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
       use t_ctl_data_SGS_model
-      use t_control_data_dynamo_vizs
+      use t_ctl_data_crust_filter
       use t_sph_grid_maker_in_sim
       use t_bc_data_list
       use t_flex_delta_t_data
@@ -79,8 +80,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SGS_SPH_MHD_field(model_ctl, psph_ctl,     &
-     &          smonitor_ctl, zm_ctls, nmtr_ctl, SGS_par, MHD_prop,     &
-     &          MHD_BC, sph, rj_fld, nod_fld, monitor, nod_mntr)
+     &          smonitor_ctl, crust_filter_ctl, nmtr_ctl,               &
+     &          SGS_par, MHD_prop, MHD_BC, sph, rj_fld,                 &
+     &          nod_fld, monitor, nod_mntr)
 !
       use t_SGS_control_parameter
       use t_phys_data
@@ -96,7 +98,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mhd_model_control), intent(inout) :: model_ctl
       type(sph_monitor_control), intent(in) :: smonitor_ctl
-      type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+      type(clust_filtering_ctl), intent(in) :: crust_filter_ctl
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(node_monitor_control), intent(in) :: nmtr_ctl
       type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -121,10 +123,9 @@
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors                                 &
-     &   (smonitor_ctl, model_ctl%fld_ctl, MHD_BC, rj_fld, monitor)
+     &   (smonitor_ctl, MHD_BC, rj_fld, monitor)
 !
-      call set_crustal_filtering_control                                &
-     &   (zm_ctls%crust_filter_ctl, monitor)
+      call set_crustal_filtering_control(crust_filter_ctl, monitor)
 !
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
 !

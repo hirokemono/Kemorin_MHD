@@ -72,6 +72,7 @@
       use bcast_ctl_SGS_MHD_model
       use bcast_control_sph_MHD
       use bcast_control_data_vizs
+      use bcast_dynamo_viz_control
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -86,7 +87,7 @@
       call bcast_sph_mhd_control_data(MHD_ctl)
       call bcast_sgs_ctl(add_SSMHD_ctl%sgs_ctl)
       call bcast_viz_controls(add_SSMHD_ctl%viz_ctls)
-      call bcast_dynamo_viz_control(add_SSMHD_ctl%zm_ctls)
+      call s_bcast_dynamo_viz_control(add_SSMHD_ctl%zm_ctls)
 !
       end subroutine load_control_sph_SGS_MHD
 !
@@ -134,7 +135,7 @@
 !
       call set_control_SGS_SPH_MHD_field                                &
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
-     &    add_SSMHD_ctl%zm_ctls, MHD_ctl%nmtr_ctl,                      &
+     &    add_SSMHD_ctl%zm_ctls%crust_filter_ctl, MHD_ctl%nmtr_ctl,     &
      &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_model%MHD_BC,        &
      &    SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor,      &
      &    FEM_dat%nod_mntr)

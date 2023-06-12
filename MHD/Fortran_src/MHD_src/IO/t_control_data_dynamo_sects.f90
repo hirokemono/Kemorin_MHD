@@ -7,20 +7,20 @@
 !> @brief Control data structure for zonal mean visualization controls
 !!
 !!@verbatim
-!!      subroutine read_dynamo_viz_control                              &
-!!     &         (id_control, hd_block, zm_ctls, c_buf)
+!!      subroutine read_dynamo_sects_control                            &
+!!     &         (id_control, hd_block, zm_sects, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(sph_dynamo_section_controls), intent(inout) :: zm_ctls
+!!        type(sph_dynamo_section_controls), intent(inout) :: zm_sects
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_dynamo_viz_control                             &
-!!     &         (id_control, hd_block, zm_ctls, level)
+!!      subroutine write_dynamo_sects_control                           &
+!!     &         (id_control, hd_block, zm_sects, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(sph_dynamo_section_controls), intent(in) :: zm_ctls
+!!        type(sph_dynamo_section_controls), intent(in) :: zm_sects
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine dealloc_dynamo_viz_control(zm_ctls)
-!!        type(sph_dynamo_section_controls), intent(in) :: zm_ctls
+!!      subroutine dealloc_dynamo_sects_control(zm_sects)
+!!        type(sph_dynamo_section_controls), intent(in) :: zm_sects
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin dynamo_vizs_control
@@ -101,8 +101,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_dynamo_viz_control                                &
-     &         (id_control, hd_block, zm_ctls, c_buf)
+      subroutine read_dynamo_sects_control                              &
+     &         (id_control, hd_block, zm_sects, c_buf)
 !
       use t_read_control_elements
       use skip_comment_f
@@ -110,33 +110,33 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(sph_dynamo_section_controls), intent(inout) :: zm_ctls
+      type(sph_dynamo_section_controls), intent(inout) :: zm_sects
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(zm_ctls%i_viz_ctl .gt. 0) return
+      if(zm_sects%i_viz_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_crustal_filtering_ctl                                 &
      &     (id_control, hd_crustal_filtering,                           &
-     &      zm_ctls%crust_filter_ctl, c_buf)
+     &      zm_sects%crust_filter_ctl, c_buf)
 !
         call read_single_sect_ctl(id_control, hd_zm_section,            &
-     &      zm_ctls%zm_psf_ctls, c_buf)
+     &      zm_sects%zm_psf_ctls, c_buf)
         call read_single_sect_ctl(id_control, hd_zRMS_section,          &
-     &      zm_ctls%zRMS_psf_ctls, c_buf)
+     &      zm_sects%zRMS_psf_ctls, c_buf)
       end do
-      zm_ctls%i_viz_ctl = 1
+      zm_sects%i_viz_ctl = 1
 !
-      end subroutine read_dynamo_viz_control
+      end subroutine read_dynamo_sects_control
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_dynamo_viz_control                               &
-     &         (id_control, hd_block, zm_ctls, level)
+      subroutine write_dynamo_sects_control                             &
+     &         (id_control, hd_block, zm_sects, level)
 !
       use t_read_control_elements
       use write_control_elements
@@ -145,38 +145,38 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(sph_dynamo_section_controls), intent(in) :: zm_ctls
+      type(sph_dynamo_section_controls), intent(in) :: zm_sects
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(zm_ctls%i_viz_ctl .le. 0) return
+      if(zm_sects%i_viz_ctl .le. 0) return
 !
       write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_crustal_filtering_ctl(id_control,                      &
-     &    hd_crustal_filtering, zm_ctls%crust_filter_ctl, level)
+     &    hd_crustal_filtering, zm_sects%crust_filter_ctl, level)
 !
       call write_single_sect_ctl(id_control, hd_zm_section,             &
-     &    zm_ctls%zm_psf_ctls, level)
+     &    zm_sects%zm_psf_ctls, level)
       call write_single_sect_ctl(id_control, hd_zRMS_section,           &
-     &    zm_ctls%zRMS_psf_ctls, level)
+     &    zm_sects%zRMS_psf_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
-      end subroutine write_dynamo_viz_control
+      end subroutine write_dynamo_sects_control
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_dynamo_viz_control(zm_ctls)
+      subroutine dealloc_dynamo_sects_control(zm_sects)
 !
-      type(sph_dynamo_section_controls), intent(inout) :: zm_ctls
+      type(sph_dynamo_section_controls), intent(inout) :: zm_sects
 !
 !
-      call reset_crustal_filtering_ctl(zm_ctls%crust_filter_ctl)
-      call dealloc_psf_ctl_stract(zm_ctls%zm_psf_ctls)
-      call dealloc_psf_ctl_stract(zm_ctls%zRMS_psf_ctls)
+      call reset_crustal_filtering_ctl(zm_sects%crust_filter_ctl)
+      call dealloc_psf_ctl_stract(zm_sects%zm_psf_ctls)
+      call dealloc_psf_ctl_stract(zm_sects%zRMS_psf_ctls)
 !
-      end subroutine dealloc_dynamo_viz_control
+      end subroutine dealloc_dynamo_sects_control
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
