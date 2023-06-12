@@ -336,7 +336,7 @@
 !
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
-      integer(kind = kint), parameter :: nwidth = 2
+      integer(kind = kint), parameter :: nwidth = 3
       integer(kind = kint) :: idots
       integer(kind = kint) :: iline, imax
       real(kind = kreal) :: color_ref(4)
@@ -395,7 +395,7 @@
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
       integer(kind = kint), parameter :: idots =  0
-      integer(kind = kint), parameter :: nwidth = 1
+      integer(kind = kint), parameter :: nwidth = 2
       real(kind = kreal), parameter                                     &
      &                   :: color_ref(4) = (/zero,zero,zero,one/)
       real(kind = kreal) :: pi
@@ -403,9 +403,9 @@
 !
       pi = four * atan(one)
       call draw_isoline_on_pixel(nxpixel, nypixel, nwidth,              &
-     &    idots, zero, color_ref, phi_map, rgba)
+     &    idots, (-pi), color_ref, phi_map, rgba)
       call draw_isoline_on_pixel(nxpixel, nypixel, nwidth,              &
-     &    idots, (two*pi), color_ref, phi_map, rgba)
+     &    idots, pi, color_ref, phi_map, rgba)
 !
       end subroutine draw_mapflame
 !
@@ -418,7 +418,7 @@
 !
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
-      integer(kind = kint), parameter :: idots =  2
+      integer(kind = kint), parameter :: idots =  3
       integer(kind = kint), parameter :: nwidth = 1
       real(kind = kreal), parameter                                     &
      &                   :: color_ref(4) = (/zero,zero,zero,one/)
@@ -444,7 +444,7 @@
 !
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
-      integer(kind = kint), parameter :: idots =  2
+      integer(kind = kint), parameter :: idots =  3
       integer(kind = kint), parameter :: nwidth = 1
       real(kind = kreal), parameter                                     &
      &                   :: color_ref(4) = (/zero,zero,zero,one/)
@@ -472,8 +472,8 @@
 !
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
-      integer(kind = kint), parameter :: idots =  2
-      integer(kind = kint), parameter :: nwidth = 2
+      integer(kind = kint), parameter :: idots =  4
+      integer(kind = kint), parameter :: nwidth = 3
       real(kind = kreal), parameter                                     &
      &                   :: color_ref(4) = (/zero,zero,zero,one/)
 !
