@@ -142,7 +142,7 @@ t_MHD_file_parameter.o: $(MHD_IO_DIR)/t_MHD_file_parameter.f90 m_precision.o t_f
 	$(F90) -c $(F90OPTFLAGS) $<
 t_bc_data_list.o: $(MHD_IO_DIR)/t_bc_data_list.f90 m_precision.o t_control_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_dynamo_sects.o: $(MHD_IO_DIR)/t_control_data_dynamo_sects.f90 m_precision.o m_machine_parameter.o t_control_data_sections.o t_ctl_data_crust_filter.o t_control_data_maps.o t_read_control_elements.o skip_comment_f.o ctl_file_map_renderings_IO.o write_control_elements.o ctl_data_section_IO.o ctl_file_sections_IO.o
+t_control_data_dynamo_sects.o: $(MHD_IO_DIR)/t_control_data_dynamo_sects.f90 m_precision.o m_machine_parameter.o t_control_data_sections.o t_ctl_data_crust_filter.o t_read_control_elements.o skip_comment_f.o write_control_elements.o ctl_data_section_IO.o ctl_file_sections_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_dynamo_vizs.o: $(MHD_IO_DIR)/t_control_data_dynamo_vizs.f90 m_precision.o m_machine_parameter.o t_control_data_sections.o t_ctl_data_crust_filter.o t_control_data_maps.o t_read_control_elements.o skip_comment_f.o ctl_file_map_renderings_IO.o write_control_elements.o ctl_data_section_IO.o ctl_file_sections_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -152,7 +152,7 @@ t_ctl_data_FEM_MHD.o: $(MHD_IO_DIR)/t_ctl_data_FEM_MHD.f90 m_precision.o m_machi
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_FEM_MHD_control.o: $(MHD_IO_DIR)/t_ctl_data_FEM_MHD_control.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_time_steps.o t_ctl_data_mhd_evo_scheme.o t_ctl_data_mhd_restart.o t_ctl_data_4_solvers.o t_ctl_data_4_fem_int_pts.o skip_comment_f.o ctl_data_4_time_steps_IO.o ctl_data_mhd_evo_scheme_IO.o write_control_elements.o calypso_mpi_int.o bcast_4_time_step_ctl.o bcast_4_solver_ctl.o bcast_4_fem_int_pts_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_MHD.o: $(MHD_IO_DIR)/t_ctl_data_MHD.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_MHD_model.o t_ctl_data_SPH_MHD_control.o t_ctl_data_4_sph_monitor.o t_ctl_data_node_monitor.o t_ctl_data_gen_sph_shell.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_sph_monitor_IO.o ctl_data_MHD_model_IO.o ctl_file_gen_sph_shell_IO.o t_control_data_dynamo_vizs.o write_control_elements.o
+t_ctl_data_MHD.o: $(MHD_IO_DIR)/t_ctl_data_MHD.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_MHD_model.o t_ctl_data_SPH_MHD_control.o t_ctl_data_4_sph_monitor.o t_ctl_data_node_monitor.o t_ctl_data_gen_sph_shell.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_sph_monitor_IO.o ctl_data_MHD_model_IO.o ctl_file_gen_sph_shell_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_MHD_model.o: $(MHD_IO_DIR)/t_ctl_data_MHD_model.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_fields.o t_ctl_data_mhd_evolution.o t_ctl_data_mhd_evo_area.o t_ctl_data_node_boundary.o t_ctl_data_surf_boundary.o t_ctl_data_mhd_normalize.o t_ctl_data_mhd_forces.o t_ctl_data_coriolis_force.o t_ctl_data_gravity.o t_ctl_data_mhd_magne.o t_ctl_data_magnetic_scale.o t_ctl_data_temp_model.o t_ctl_data_dimless_numbers.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -194,7 +194,7 @@ t_ctl_data_node_boundary.o: $(MHD_IO_DIR)/t_ctl_data_node_boundary.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_node_monitor.o: $(MHD_IO_DIR)/t_ctl_data_node_monitor.f90 m_precision.o m_machine_parameter.o t_control_array_character.o t_control_array_integer2.o t_control_array_real3.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_sph_MHD_w_psf.o: $(MHD_IO_DIR)/t_ctl_data_sph_MHD_w_psf.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_MHD.o t_ctl_data_MHD_model.o t_ctl_data_SPH_MHD_control.o t_ctl_data_4_sph_monitor.o t_ctl_data_node_monitor.o t_ctl_data_gen_sph_shell.o t_control_data_surfacings.o t_control_data_dynamo_sects.o t_control_data_dynamo_vizs.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_sph_monitor_IO.o ctl_data_MHD_model_IO.o control_data_surfacing_IO.o ctl_file_gen_sph_shell_IO.o write_control_elements.o
+t_ctl_data_sph_MHD_w_psf.o: $(MHD_IO_DIR)/t_ctl_data_sph_MHD_w_psf.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_MHD.o t_ctl_data_MHD_model.o t_ctl_data_SPH_MHD_control.o t_ctl_data_4_sph_monitor.o t_ctl_data_node_monitor.o t_ctl_data_gen_sph_shell.o t_control_data_surfacings.o t_control_data_dynamo_sects.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_sph_monitor_IO.o ctl_data_MHD_model_IO.o control_data_surfacing_IO.o ctl_file_gen_sph_shell_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_sph_MHD_w_vizs.o: $(MHD_IO_DIR)/t_ctl_data_sph_MHD_w_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_MHD.o t_ctl_data_MHD_model.o t_ctl_data_SPH_MHD_control.o t_ctl_data_4_sph_monitor.o t_ctl_data_node_monitor.o t_ctl_data_gen_sph_shell.o t_control_data_viz3.o t_control_data_dynamo_vizs.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_sph_monitor_IO.o ctl_data_MHD_model_IO.o ctl_data_three_vizs_IO.o ctl_file_gen_sph_shell_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

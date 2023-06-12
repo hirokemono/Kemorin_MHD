@@ -44,7 +44,7 @@
       use t_ctl_data_MHD
       use t_ctl_data_sph_MHD_w_psf
       use t_SPH_mesh_field_data
-      use t_SPH_MHD_zonal_mean_viz
+      use t_SPH_MHD_zmean_sections
       use t_viz_sections
       use input_control_sph_MHD
       use set_control_sph_mhd
@@ -118,7 +118,7 @@
       subroutine evolution_sph_mhd_w_psf
 !
       use t_time_data
-      use t_SPH_MHD_zonal_mean_viz
+      use t_SPH_MHD_zmean_sections
       use t_viz_sections
       use SPH_analyzer_MHD
       use FEM_analyzer_sph_MHD

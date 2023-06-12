@@ -32,20 +32,6 @@
 !!    begin  zonal_RMS_section_ctl
 !!      ....
 !!    end zonal_RMS_section_ctl
-!!
-!!    array zonal_mean_rendering_ctl
-!!      file zonal_mean_rendering_ctl  ctl_zm_Bline
-!!      begin  zonal_mean_rendering_ctl
-!!        ....
-!!      end    zonal_mean_rendering_ctl
-!!    end array zonal_mean_rendering_ctl
-!!
-!!    array zonal_RMS_rendering_ctl
-!!      file zonal_RMS_rendering_ctl  ctl_zRMS_Bline
-!!      begin  zonal_RMS_rendering_ctl
-!!        ....
-!!      end    zonal_RMS_rendering_ctl
-!!    end array zonal_RMS_rendering_ctl
 !!  end dynamo_vizs_control
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -58,7 +44,6 @@
       use m_machine_parameter
       use t_control_data_sections
       use t_ctl_data_crust_filter
-      use t_control_data_maps
 !
       implicit  none
 !
@@ -72,11 +57,6 @@
         type(section_controls) :: zm_psf_ctls
 !>        Structure of zonal RMS sectioning controls
         type(section_controls) :: zRMS_psf_ctls
-!
-!>        Structures of map projection controls
-        type(map_rendering_controls) :: zm_map_ctls
-!>        Structures of map projection controls
-        type(map_rendering_controls) :: zRMS_map_ctls
 !
         integer (kind=kint) :: i_viz_ctl = 0
       end type sph_dynamo_section_controls
@@ -106,7 +86,6 @@
 !
       use t_read_control_elements
       use skip_comment_f
-      use ctl_file_map_renderings_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -141,7 +120,6 @@
       use t_read_control_elements
       use write_control_elements
       use skip_comment_f
-      use ctl_file_map_renderings_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

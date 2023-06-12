@@ -40,7 +40,6 @@
       use t_comm_table
       use t_mesh_data
       use t_phys_data
-      use t_map_projection
       use t_spheric_parameter
       use t_sph_trans_arrays_MHD
       use t_cross_section

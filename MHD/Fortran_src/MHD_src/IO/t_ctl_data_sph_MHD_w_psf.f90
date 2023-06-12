@@ -109,7 +109,6 @@
      &                                        add_SMHD_ctl)
 !
       use t_control_data_surfacings
-      use t_control_data_dynamo_vizs
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -141,7 +140,6 @@
      &                                         add_SMHD_ctl)
 !
       use t_control_data_surfacings
-      use t_control_data_dynamo_vizs
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
