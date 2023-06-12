@@ -81,7 +81,7 @@
           call fill_triangle_patch_on_image                             &
      &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
      &          nxpixel, nypixel, npix, k_ymin, k_ymid, k_ymax,         &
-     &          map_e%xy_map(1,1,i), map_e%d_map_patch(1,1,i),          &
+     &          map_e%xy_map(1,1,i), map_e%d_map_patch(1,i),            &
      &          d_map, rgba)
         end do
       end do

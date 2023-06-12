@@ -165,7 +165,7 @@
             do k1 = 1, 3
               x_tri(k1) = real( map_e%xy_map(1,k1,i) )
               y_tri(k1) = real( map_e%xy_map(2,k1,i) )
-              s_patch = s_patch + map_e%d_map_patch(k1,1,i)
+              s_patch = s_patch + map_e%d_map_patch(k1,i)
             end do
             s_patch = s_patch / three
 !
@@ -247,7 +247,7 @@
               xg(1,k1) = real( map_e%xy_map(1,k1,i) )
               xg(2,k1) = real( map_e%xy_map(2,k1,i) )
               xg(3,k1) = zero
-              sc3(k1) =  map_e%d_map_patch(k1,1,i)
+              sc3(k1) =  map_e%d_map_patch(k1,i)
             end do
             call drawline_rb1(num_color_pg, iflag_cline, ithree, ione,  &
      &           xg, ie, sc3(1), ncl, xc, xmin, xmax)

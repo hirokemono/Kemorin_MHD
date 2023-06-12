@@ -213,7 +213,7 @@
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
-      call alloc_map_patch_from_1patch(ione, map_e1)
+      call alloc_map_patch_from_1patch(map_e1)
       call set_scalar_on_map_image(psf_nod, psf_ele, psf_phys,          &
      &    map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
