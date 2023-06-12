@@ -74,7 +74,6 @@
       use t_jacobians
       use volume_rendering
       use map_projection
-      use map_projection
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem

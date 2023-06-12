@@ -87,7 +87,7 @@
       use t_time_data
       use t_ctl_data_MHD
       use t_ctl_data_sph_MHD_w_vizs
-use t_node_monitor_IO
+      use t_node_monitor_IO
       use m_error_IDs
 !
       use set_control_sph_mhd

@@ -29,7 +29,7 @@
 !>        Structures of visualizations
         type(visualize_modules) :: VIZs
 !>        Structures of zonal mean controls
-        type(sph_zonal_mean_sectioning) :: zmeans
+        type(sph_zonal_mean_viz) :: zmeans
       end type sph_SGS_MHD
 !
       end module t_sph_SGS_MHD

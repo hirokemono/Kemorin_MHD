@@ -182,7 +182,7 @@ use t_node_monitor_IO
      &          SPH_model, SPH_WK, SPH_MHD)
 !
       use t_ctl_data_MHD
-use t_node_monitor_IO
+      use t_node_monitor_IO
       use set_control_sph_mhd
       use parallel_load_data_4_sph
       use set_control_4_SPH_to_FEM

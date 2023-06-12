@@ -109,7 +109,7 @@
       call init_visualize(SSMHDs%MHD_step%viz_step,                    &
      &    SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field, SVIZ_m%VIZ_FEM, &
      &    add_SSMHD_ctl1%viz_ctls, SVIZ_m%VIZs, SSMHDs%m_SR)
-      call init_zonal_mean_sections                                     &
+      call init_zonal_mean_vizs                                         &
      &   (SSMHDs%MHD_step%viz_step, SVIZ_m%FEM_DAT%geofem,              &
      &    SVIZ_m%VIZ_FEM%edge_comm, SVIZ_m%FEM_DAT%field,               &
      &    add_SSMHD_ctl1%zm_ctls, SVIZ_m%zmeans, SSMHDs%m_SR)

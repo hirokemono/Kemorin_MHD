@@ -1,5 +1,5 @@
-!>@file   t_control_data_dynamo_vizs.f90
-!!@brief  module t_control_data_dynamo_vizs
+!>@file   t_control_data_dynamo_sects.f90
+!!@brief  module t_control_data_dynamo_sects
 !!
 !!@author H. Matsui
 !!@date Programmed in Nov., 2017
@@ -11,16 +11,16 @@
 !!     &         (id_control, hd_block, zm_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+!!        type(sph_dynamo_section_controls), intent(inout) :: zm_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_dynamo_viz_control                             &
 !!     &         (id_control, hd_block, zm_ctls, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+!!        type(sph_dynamo_section_controls), intent(in) :: zm_ctls
 !!        integer(kind = kint), intent(inout) :: level
 !!      subroutine dealloc_dynamo_viz_control(zm_ctls)
-!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+!!        type(sph_dynamo_section_controls), intent(in) :: zm_ctls
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin dynamo_vizs_control
@@ -51,8 +51,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-!
-      module t_control_data_dynamo_vizs
+      module t_control_data_dynamo_sects
 !
       use m_precision
 !
@@ -65,7 +64,7 @@
 !
 !
 !>      Structures of zonal mean controls
-      type sph_dynamo_viz_controls
+      type sph_dynamo_section_controls
 !>        Structure of crustal filtering of mangeitc field
         type(clust_filtering_ctl) :: crust_filter_ctl
 !
@@ -80,7 +79,7 @@
         type(map_rendering_controls) :: zRMS_map_ctls
 !
         integer (kind=kint) :: i_viz_ctl = 0
-      end type sph_dynamo_viz_controls
+      end type sph_dynamo_section_controls
 !
 !     lavel for volume rendering
 !
@@ -91,13 +90,10 @@
      &             :: hd_zm_section = 'zonal_mean_section_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_zRMS_section = 'zonal_RMS_section_ctl'
-      character(len=kchara), parameter                                  &
-     &             :: hd_zm_rendering = 'zonal_mean_rendering_ctl'
-      character(len=kchara), parameter                                  &
-     &             :: hd_zRMS_rendering = 'zonal_RMS_rendering_ctl'
 !
       private :: hd_zm_section, hd_zRMS_section
       private :: hd_crustal_filtering
+      private :: read_single_sect_ctl, write_single_sect_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -114,7 +110,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+      type(sph_dynamo_section_controls), intent(inout) :: zm_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -128,15 +124,10 @@
      &     (id_control, hd_crustal_filtering,                           &
      &      zm_ctls%crust_filter_ctl, c_buf)
 !
-        call read_single_section_ctl(id_control, hd_zm_section,         &
+        call read_single_sect_ctl(id_control, hd_zm_section,            &
      &      zm_ctls%zm_psf_ctls, c_buf)
-        call read_single_section_ctl(id_control, hd_zRMS_section,       &
+        call read_single_sect_ctl(id_control, hd_zRMS_section,          &
      &      zm_ctls%zRMS_psf_ctls, c_buf)
-!
-        call read_files_4_map_ctl(id_control, hd_zm_rendering,          &
-     &                            zm_ctls%zm_map_ctls, c_buf)
-        call read_files_4_map_ctl(id_control, hd_zRMS_rendering,        &
-     &                            zm_ctls%zRMS_map_ctls, c_buf)
       end do
       zm_ctls%i_viz_ctl = 1
 !
@@ -154,7 +145,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+      type(sph_dynamo_section_controls), intent(in) :: zm_ctls
       integer(kind = kint), intent(inout) :: level
 !
 !
@@ -166,15 +157,10 @@
       call write_crustal_filtering_ctl(id_control,                      &
      &    hd_crustal_filtering, zm_ctls%crust_filter_ctl, level)
 !
-      call write_single_section_ctl(id_control, hd_zm_section,          &
+      call write_single_sect_ctl(id_control, hd_zm_section,             &
      &    zm_ctls%zm_psf_ctls, level)
-      call write_single_section_ctl(id_control, hd_zRMS_section,        &
+      call write_single_sect_ctl(id_control, hd_zRMS_section,           &
      &    zm_ctls%zRMS_psf_ctls, level)
-!
-      call write_files_4_map_ctl(id_control, hd_zm_rendering,           &
-     &                           zm_ctls%zm_map_ctls, level)
-      call write_files_4_map_ctl(id_control, hd_zRMS_rendering,         &
-     &                           zm_ctls%zRMS_map_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_dynamo_viz_control
@@ -183,21 +169,19 @@
 !
       subroutine dealloc_dynamo_viz_control(zm_ctls)
 !
-      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+      type(sph_dynamo_section_controls), intent(inout) :: zm_ctls
 !
 !
       call reset_crustal_filtering_ctl(zm_ctls%crust_filter_ctl)
       call dealloc_psf_ctl_stract(zm_ctls%zm_psf_ctls)
       call dealloc_psf_ctl_stract(zm_ctls%zRMS_psf_ctls)
-      call dealloc_map_ctl_stract(zm_ctls%zm_map_ctls)
-      call dealloc_map_ctl_stract(zm_ctls%zRMS_map_ctls)
 !
       end subroutine dealloc_dynamo_viz_control
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_single_section_ctl                                &
+      subroutine read_single_sect_ctl                                   &
      &          (id_control, hd_section, psf_ctls, c_buf)
 !
       use t_read_control_elements
@@ -224,11 +208,11 @@
      &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
       end if
 !
-      end subroutine read_single_section_ctl
+      end subroutine read_single_sect_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_single_section_ctl                               &
+      subroutine write_single_sect_ctl                                  &
      &          (id_control, hd_section, psf_ctls, level)
 !
       use t_control_data_sections
@@ -244,8 +228,8 @@
       call sel_write_control_4_psf_file(id_control, hd_section,         &
      &    psf_ctls%fname_psf_ctl(1), psf_ctls%psf_ctl_struct(1), level)
 !
-      end subroutine write_single_section_ctl
+      end subroutine write_single_sect_ctl
 !
 !   --------------------------------------------------------------------
 !
-      end module t_control_data_dynamo_vizs
+      end module t_control_data_dynamo_sects

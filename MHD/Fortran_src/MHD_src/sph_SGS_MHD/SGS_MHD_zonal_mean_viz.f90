@@ -17,7 +17,7 @@
 !!        type(works_4_sph_trans_MHD), intent(in) :: WK
 !!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
+!!        type(sph_zonal_mean_viz), intent(inout) :: zmeans
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
@@ -44,7 +44,7 @@
 !
       implicit  none
 !
-      private :: SGS_MHD_zonal_RMS_section
+      private :: SGS_MHD_zonal_RMS_vizs
 !
 !  ---------------------------------------------------------------------
 !
@@ -67,29 +67,30 @@
       type(SPH_SGS_structure), intent(in) :: SPH_SGS
 !
       type(phys_data), intent(inout) :: nod_fld
-      type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
+      type(sph_zonal_mean_viz), intent(inout) :: zmeans
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      call SPH_MHD_zonal_mean_section(viz_step, time_d,                 &
-     &    sph, fem, nod_fld, zmeans%zm_psf, m_SR)
+      call SPH_MHD_zonal_mean_vizs(viz_step, time_d, sph, fem,          &
+     &    nod_fld, zmeans%zm_psf, zmeans%zm_maps, m_SR)
 !
-      call SGS_MHD_zonal_RMS_section(viz_step, time_d,                  &
+      call SGS_MHD_zonal_RMS_vizs(viz_step, time_d,                     &
      &    SPH_SGS%SGS_par, sph, fem, WK, SPH_SGS%trns_WK_LES,           &
-     &    nod_fld, zmeans%zrms_psf, m_SR)
+     &    nod_fld, zmeans%zrms_psf, zmeans%zrms_maps, m_SR)
 !
       end subroutine SGS_MHD_zmean_sections
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine SGS_MHD_zonal_RMS_section(viz_step, time_d, SGS_par,   &
-     &          sph, fem, WK, WK_LES, nod_fld, zrms_psf, m_SR)
+      subroutine SGS_MHD_zonal_RMS_vizs(viz_step, time_d, SGS_par, sph, &
+     &          fem, WK, WK_LES, nod_fld, zrms_psf, zrms_maps, m_SR)
 !
       use m_elapsed_labels_4_VIZ
       use FEM_analyzer_sph_SGS_MHD
       use sph_rtp_zonal_rms_data
       use nod_phys_send_recv
+      use map_projection
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -102,10 +103,11 @@
 !
       type(phys_data), intent(inout) :: nod_fld
       type(sectioning_module), intent(inout) :: zrms_psf
+      type(map_rendering_module), intent(inout) :: zrms_maps
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(zrms_psf%num_psf .le. 0) return
+      if((zrms_psf%num_psf+zrms_maps%num_map) .le. 0) return
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
       call SPH_to_FEM_bridge_SGS_MHD                                    &
@@ -116,13 +118,23 @@
       call nod_fields_send_recv(fem%mesh, nod_fld,                      &
      &                          m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
-      if(iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'
-      call SECTIONING_visualize                                         &
-     &   (viz_step%istep_psf, time_d, fem, nod_fld, zrms_psf)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
+      if(zrms_psf%num_psf .gt. 0) then
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
+        if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'
+        call SECTIONING_visualize                                       &
+     &     (viz_step%istep_psf, time_d, fem, nod_fld, zrms_psf)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
+      end if
 !
-      end subroutine SGS_MHD_zonal_RMS_section
+      if(zrms_maps%num_map .gt. 0) then
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
+        call MAP_PROJECTION_visualize                                   &
+     &     (viz_step%istep_map, time_d, fem, nod_fld, zRMS_maps,        &
+     &      m_SR%SR_sig)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
+      end if
+!
+      end subroutine SGS_MHD_zonal_RMS_vizs
 !
 !  ---------------------------------------------------------------------
 !

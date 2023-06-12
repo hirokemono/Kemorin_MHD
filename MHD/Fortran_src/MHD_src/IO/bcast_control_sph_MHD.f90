@@ -81,13 +81,16 @@
 !
       use t_control_data_dynamo_vizs
       use bcast_section_control_data
+      use bcast_maps_control_data
 !
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !
 !
+      call bcast_crustal_filtering_ctl(zm_ctls%crust_filter_ctl)
       call bcast_files_4_psf_ctl(zm_ctls%zm_psf_ctls)
       call bcast_files_4_psf_ctl(zm_ctls%zRMS_psf_ctls)
-      call bcast_crustal_filtering_ctl(zm_ctls%crust_filter_ctl)
+      call bcast_files_4_map_ctl(zm_ctls%zm_map_ctls)
+      call bcast_files_4_map_ctl(zm_ctls%zRMS_map_ctls)
 !
       end subroutine bcast_dynamo_viz_control
 !

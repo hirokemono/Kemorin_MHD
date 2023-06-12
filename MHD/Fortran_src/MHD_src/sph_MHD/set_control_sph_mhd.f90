@@ -45,8 +45,8 @@
 !!        type(node_bc_control), intent(in) :: nbc_ctl
 !!        type(surf_bc_control), intent(in) :: sbc_ctl
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
-!!      subroutine set_control_SPH_MHD_monitors                         &
-!!     &         (smonitor_ctl, fld_ctl, rj_fld, monitor)
+!!      subroutine set_control_SPH_MHD_monitors(smonitor_ctl, fld_ctl,  &
+!!     &                                        MHD_BC, rj_fld, monitor)
 !!      subroutine set_crustal_filtering_control                        &
 !!     &         (crust_truncation_c, monitor)
 !!        type(phys_data), intent(in) :: crust_truncation_c
