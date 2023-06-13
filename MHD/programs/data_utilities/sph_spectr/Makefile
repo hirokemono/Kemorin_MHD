@@ -367,7 +367,9 @@ time_average_gauss_coefs.o \
 t_ave_spectr_stable_and_rev.o
 
 MOD_SPH_ENE_CHECK = \
-compare_sph_mean_square.o
+compare_sph_mean_square.o \
+old_sph_spectr_data_IO.o \
+gz_spl_sph_spectr_data_IO.o
 
 #
 #  ------------------------------------------------------------------
