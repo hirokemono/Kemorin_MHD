@@ -85,13 +85,10 @@ sph_volume_monitor_snap_IO.o \
 old_sph_spectr_data_IO.o \
 picked_sph_spectr_data_IO.o \
 gz_gauss_coefs_monitor_IO.o \
-gz_Nusselt_monitor_IO.o \
 count_monitor_time_series.o \
 cal_tave_sph_ene_spectr.o \
 m_read_sph_spectra_f.o \
-m_load_gauss_coefficients_f.o \
 m_load_picked_sph_spectr_f.o \
-m_load_section_file_f.o \
 write_gauss_coefs_4_monitor.o \
 time_average_sph_ene_spectr.o \
 time_average_gauss_coefs.o \
@@ -172,7 +169,6 @@ t_ctl_param_sph_series_util.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 gz_gauss_coefs_monitor_IO.o \
-gz_Nusselt_monitor_IO.o \
 write_snap_pick_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
 t_pick_copy_monitor_data.o \
@@ -194,7 +190,6 @@ t_ctl_param_sph_series_util.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 gz_gauss_coefs_monitor_IO.o \
-gz_Nusselt_monitor_IO.o \
 write_snap_pick_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
 t_pick_copy_monitor_data.o \
