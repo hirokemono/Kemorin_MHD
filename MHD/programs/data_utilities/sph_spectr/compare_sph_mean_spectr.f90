@@ -1,5 +1,5 @@
-!>@file   compare_sph_mean_square.f90
-!!        program compare_sph_mean_square
+!>@file   compare_sph_mean_spectr.f90
+!!        program compare_sph_mean_spectr
 !!
 !! @author H. Matsui
 !! @date   Programmed in  Nov., 2007
@@ -11,7 +11,7 @@
 !!@n      Compared data:          ./sph_pwr_volumne.dat
 !!
 !
-      program compare_sph_mean_square
+      program compare_sph_mean_spectr
 !
       use m_precision
       use skip_comment_f
@@ -23,6 +23,7 @@
       use sel_gz_input_sph_mtr_head
       use select_gz_stream_file_IO
       use gz_spl_sph_spectr_data_IO
+      use gz_volume_spectr_monitor_IO
       use set_parallel_file_name
       use skip_comment_f
 !
@@ -30,7 +31,6 @@
 !
       character(len = kchara) :: fhead_rms_vol, fname_rms_vol
       character(len = kchara) :: fhead_rms_ref, fname_rms_ref
-!
 !
       integer(kind = kint), parameter :: id_file1 = 34, id_file2 = 36
       character, pointer :: FPz_f1, FPz_f2
@@ -42,15 +42,15 @@
       character(len = kchara) :: file_name
 !
       logical :: error
-      integer(kind = kint) :: ierr1, ierr2
+      integer(kind = kint) :: ierr1, ierr2, l
       real(kind = kreal) :: diff
-      real(kind = kreal), allocatable :: spectr_IN1(:)
-      real(kind = kreal), allocatable :: spectr_IN2(:)
+      real(kind = kreal), allocatable :: spectr_IN1(:,:)
+      real(kind = kreal), allocatable :: spectr_IN2(:,:)
       integer(kind = kint) :: icomp, icomp2
 !
 !
       if(iargc_kemo() .le. 1) then
-        write(*,*) 'sph_ene_check ',                                    &
+        write(*,*) 'sph_vol_spectr_check ',                             &
      &             'REFERENCE_FILE_PREFIX COMPARED_FILE_PREFIX'
         stop
       end if
@@ -62,31 +62,36 @@
 !
       call sel_open_check_gz_stream_file(FPz_f1, id_file1,              &
      &   fname_rms_vol, flag_gzip1, flag_miss1, file_name, zbuf1)
-      call read_sph_volume_mean_head(FPz_f1, id_file1, flag_gzip1,      &
-     &                               sph_lbl_IN1, sph_IN1, zbuf1)
-!
       call sel_open_check_gz_stream_file(FPz_f2, id_file2,              &
      &   fname_rms_ref, flag_gzip2, flag_miss2, file_name, zbuf2)
-      call read_sph_volume_mean_head(FPz_f2, id_file2, flag_gzip2,      &
-     &                               sph_lbl_IN2, sph_IN2, zbuf2)
 !
+      call read_sph_volume_spectr_head(FPz_f1, id_file1, flag_gzip1,    &
+     &                                 sph_lbl_IN1, sph_IN1, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f2, id_file2, flag_gzip2,    &
+     &                                 sph_lbl_IN2, sph_IN2, zbuf2)
       error = .not. cmp_sph_volume_monitor_heads                        &
      &            (sph_lbl_IN1, sph_IN1, sph_lbl_IN2, sph_IN2)
+!
       if(error) then
         write(*,*) 'time sequence data header does not match'
         stop 1
       end if
 !
-      allocate(spectr_IN1(sph_IN1%ntot_sph_spec))
-      allocate(spectr_IN2(sph_IN2%ntot_sph_spec))
+      call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
+      call alloc_sph_spectr_data(sph_IN2%ltr_sph, sph_IN2)
+      allocate(spectr_IN1(sph_IN1%ntot_sph_spec,0:sph_IN1%ltr_sph))
+      allocate(spectr_IN2(sph_IN2%ntot_sph_spec,0:sph_IN2%ltr_sph))
 !
       do
-        call gz_read_volume_pwr_sph(FPz_f1, id_file1, flag_gzip1,       &
-     &      sph_IN1%ntot_sph_spec, sph_IN1%i_step, sph_IN1%time,        &
-     &      spectr_IN1(1), zbuf1, ierr1)
-        call gz_read_volume_pwr_sph(FPz_f2, id_file2, flag_gzip2,       &
-     &      sph_IN2%ntot_sph_spec, sph_IN2%i_step, sph_IN2%time,        &
-     &      spectr_IN2(1), zbuf2, ierr2)
+        call sel_gz_read_volume_spectr_mtr(FPz_f1, id_file1,            &
+     &      flag_gzip1, sph_IN1%ltr_sph, sph_IN1%ntot_sph_spec,         &
+     &      sph_IN1%i_step, sph_IN1%time, sph_IN1%i_mode,               &
+     &      spectr_IN1(1,0), zbuf1, ierr1)
+        call sel_gz_read_volume_spectr_mtr(FPz_f2, id_file2,            &
+     &      flag_gzip2, sph_IN2%ltr_sph, sph_IN2%ntot_sph_spec,         &
+     &      sph_IN2%i_step, sph_IN2%time, sph_IN2%i_mode,               &
+     &      spectr_IN1(1,0), zbuf2, ierr2)
+!
         if(ierr1*ierr2 .gt. 0) exit
         if(ierr1+ierr1 .gt. 0 .and. ierr1*ierr2 .eq. 0) then
           error = .TRUE.
@@ -94,16 +99,19 @@
         end if
 !
         error = .FALSE.
-        do icomp = 1, sph_IN1%ntot_sph_spec
-          diff = compare_data(spectr_IN1(icomp), spectr_IN2(icomp))
-          if(abs(diff) .gt. 1.d-9) then
-            icomp2 = icomp + sph_IN1%num_time_labels
-            write(*,*) 'Large error in ',                               &
-     &           trim(sph_IN1%ene_sph_spec_name(icomp2)),               &
-     &           ': ', spectr_IN1(icomp), spectr_IN2(icomp), diff
-            error = .TRUE.
-            exit
-          end if
+        do l = 0, sph_IN1%ltr_sph
+          do icomp = 1, sph_IN1%ntot_sph_spec
+            diff = compare_data(spectr_IN1(icomp,l),                    &
+     &                          spectr_IN2(icomp,l))
+            if(abs(diff) .gt. 1.d-9) then
+              icomp2 = icomp + sph_IN1%num_time_labels
+              write(*,*) 'Error in ', l,                                &
+     &             trim(sph_IN1%ene_sph_spec_name(icomp2)),             &
+     &             ': ', spectr_IN1(icomp,l), spectr_IN2(icomp,l), diff
+              error = .TRUE.
+              exit
+            end if
+          end do
         end do
       end do
 !
@@ -153,4 +161,4 @@
 !
 !   --------------------------------------------------------------------
 !
-      end program compare_sph_mean_square
+      end program compare_sph_mean_spectr
