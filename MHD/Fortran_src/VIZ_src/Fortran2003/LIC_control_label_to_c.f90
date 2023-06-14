@@ -84,7 +84,7 @@
       character(len=kchara), pointer :: labels(:)
 !
       call c_f_pointer(labels_c, labels, [num_ctl_label_LIC_pvr()])
-      call set_ctl_label_LIC_pvr(labels(1))
+      call set_ctl_label_LIC_pvr(labels)
 !
       end subroutine set_ctl_label_LIC_pvr_f
 !
@@ -112,7 +112,7 @@
       character(len=kchara), pointer :: labels(:)
 !
       call c_f_pointer(labels_c, labels, [num_ctl_label_LIC()])
-      call set_ctl_label_LIC(labels(1))
+      call set_ctl_label_LIC(labels)
 !
       end subroutine set_ctl_label_LIC_f
 !
@@ -140,7 +140,7 @@
       character(len=kchara), pointer :: labels(:)
 !
       call c_f_pointer(labels_c, labels, [num_ctl_label_LIC_noise()])
-      call set_ctl_label_LIC_noise(labels(1))
+      call set_ctl_label_LIC_noise(labels)
 !
       end subroutine set_ctl_label_LIC_noise_f
 !
@@ -168,7 +168,7 @@
       character(len=kchara), pointer :: labels(:)
 !
       call c_f_pointer(labels_c, labels, [num_ctl_label_LIC_kernel()])
-      call set_ctl_label_LIC_kernel(labels(1))
+      call set_ctl_label_LIC_kernel(labels)
 !
       end subroutine set_ctl_label_LIC_kernel_f
 !
@@ -196,7 +196,7 @@
       character(len=kchara), pointer :: labels(:)
 !
       call c_f_pointer(labels_c, labels, [num_ctl_label_masking()])
-      call set_ctl_label_masking(labels(1))
+      call set_ctl_label_masking(labels)
 !
       end subroutine set_ctl_label_masking_f
 !
@@ -251,7 +251,7 @@
       character(len=kchara), pointer :: labels(:)
 !
       call c_f_pointer(labels_c, labels, [num_label_LIC_movie()])
-      call set_label_LIC_movie(labels(1))
+      call set_label_LIC_movie(labels)
 !
       end subroutine set_label_LIC_movie_f
 !
