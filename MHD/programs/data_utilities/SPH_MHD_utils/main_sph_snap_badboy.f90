@@ -29,7 +29,6 @@
 !
       call calypso_MPI_finalize
 !
-      write(*,*) '***** program finished *****'
-      stop
+      stop '***** program finished *****'
 !
       end program kemorin_sph_snap_badboy

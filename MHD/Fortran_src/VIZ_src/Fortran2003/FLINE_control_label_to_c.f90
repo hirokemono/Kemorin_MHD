@@ -11,10 +11,10 @@
 !!      integer(c_int) function num_fline_direction_flags_f() bind(c)
 !!      integer(c_int) function num_fline_seeds_flags_f() bind(c)
 !!
-!!      subroutine set_label_fline_ctl_f(names)  bind(c)
-!!      subroutine set_fline_start_flags_f(names)  bind(c)
-!!      subroutine set_fline_direction_flags_f(names)  bind(c)
-!!      subroutine set_fline_seeds_flags_f(names)  bind(c)
+!!      subroutine set_label_fline_ctl_f(names_c)  bind(c)
+!!      subroutine set_fline_start_flags_f(names_c)  bind(c)
+!!      subroutine set_fline_direction_flags_f(names_c)  bind(c)
+!!      subroutine set_fline_seeds_flags_f(names_c)  bind(c)
 !!@endverbatim
 !
       module FLINE_control_label_to_c
@@ -72,46 +72,58 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_label_fline_ctl_f(names)  bind(c)
+      subroutine set_label_fline_ctl_f(names_c)  bind(c)
 !
       use ctl_data_field_line_IO
 !
-      character(C_CHAR), intent(inout) :: names(*)
+      type(C_ptr), value :: names_c
 !
-      call set_label_fline_ctl(names)
+      character(len=kchara), pointer :: name_f(:)
+!
+      call c_f_pointer(names_c, name_f, [num_label_fline_ctl()])
+      call set_label_fline_ctl(name_f)
       end subroutine set_label_fline_ctl_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_flags_f(names)  bind(c)
+      subroutine set_fline_start_flags_f(names_c)  bind(c)
 !
       use t_control_params_4_fline
 !
-      character(C_CHAR), intent(inout) :: names(*)
+      type(C_ptr), value :: names_c
 !
-      call set_fline_start_flags(names)
+      character(len=kchara), pointer :: name_f(:)
+!
+      call c_f_pointer(names_c, name_f, [num_fline_start_flags()])
+      call set_fline_start_flags(name_f)
       end subroutine set_fline_start_flags_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_direction_flags_f(names)  bind(c)
+      subroutine set_fline_direction_flags_f(names_c)  bind(c)
 !
       use t_control_params_4_fline
 !
-      character(C_CHAR), intent(inout) :: names(*)
+      type(C_ptr), value :: names_c
 !
-      call set_fline_direction_flags(names)
+      character(len=kchara), pointer :: name_f(:)
+!
+      call c_f_pointer(names_c, name_f, [num_fline_direction_flags()])
+      call set_fline_direction_flags(name_f)
       end subroutine set_fline_direction_flags_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_seeds_flags_f(names)  bind(c)
+      subroutine set_fline_seeds_flags_f(names_c)  bind(c)
 !
       use t_control_params_4_fline
 !
-      character(C_CHAR), intent(inout) :: names(*)
+      type(C_ptr), value :: names_c
 !
-      call set_fline_seeds_flags(names)
+      character(len=kchara), pointer :: name_f(:)
+!
+      call c_f_pointer(names_c, name_f, [num_fline_seeds_flags()])
+      call set_fline_seeds_flags(name_f)
       end subroutine set_fline_seeds_flags_f
 !
 !  ---------------------------------------------------------------------

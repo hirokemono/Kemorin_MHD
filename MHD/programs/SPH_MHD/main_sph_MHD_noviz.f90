@@ -30,5 +30,5 @@
 !
       call calypso_MPI_finalize
 !
-      stop
+      stop '***** program finished *****'
       end program sph_MHD_no_visualizer

@@ -176,7 +176,7 @@
         picked_OUT%idx_sph(1:n_mode,3) = picked_IN%idx_sph(1:n_mode,3)
         picked_OUT%idx_sph(1:n_mode,4) = picked_IN%idx_sph(1:n_mode,4)
         picked_OUT%radius(1:n_mode) =    picked_IN%radius(1:n_mode)
-!$omp endparallel workshare
+!$omp end parallel workshare
 !
         call pick_copy_monitor_data                                     &
      &     (comp_tbl, picked_IN%ntot_comp, picked_OUT%ntot_comp,        &

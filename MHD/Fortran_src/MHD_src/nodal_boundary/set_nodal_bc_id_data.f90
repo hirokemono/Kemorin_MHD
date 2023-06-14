@@ -79,7 +79,7 @@
       type(base_field_address), intent(in) :: iref_base
       type(phys_data), intent(in) :: ref_fld
       type(phys_address), intent(in) :: iphys
-&
+!
       type(phys_data), intent(inout) :: nod_fld
       type(nodal_boundarty_conditions), intent(inout) :: nod_bcs
 !

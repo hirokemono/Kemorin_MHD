@@ -20,6 +20,7 @@
       type(field_IO_params) :: ucd_param
       type(time_data), save :: t_IO
       type(ucd_data), save :: ucd
+      character(len = kchara) :: file_ext
 !
 !
       ucd_param%iflag_IO = 0
@@ -34,7 +35,11 @@
       read(*,*) t_IO%dt
 !
   90  continue
-      ucd_param%iflag_format = psf_to_vtk_format_id_from_input()
+      write(*,*) 'Input file extension including "gz":'
+      write(*,*) psf_to_vtk_format_list()
+      read(*,*) file_ext
+      ucd_param%iflag_format                                            &
+     &      = psf_to_vtk_format_id_from_input(file_ext)
       write(*,*) 'ifmt_input', ucd_param%iflag_format
       if(ucd_param%iflag_format .eq. iflag_vtk) then
         write(*,*) 'Set correct file extension (except for vtk)'

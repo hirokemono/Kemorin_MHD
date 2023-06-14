@@ -16,8 +16,8 @@
 !!      integer(c_int) function num_label_iso_format_f() bind(c)
 !!      subroutine set_ctl_label_iso_format_f(names) bind(c)
 !!
-!!      subroutine set_primary_psf_format_flag_f(name)  bind(c)
-!!      subroutine set_primary_iso_format_flag_f(name)  bind(c)
+!!      subroutine set_primary_psf_format_flag_f(name_c)  bind(c)
+!!      subroutine set_primary_iso_format_flag_f(name_c)  bind(c)
 !!@endverbatim
 !!
 !
@@ -108,11 +108,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_label_psf_format_f(names)  bind(c)
+      subroutine set_ctl_label_psf_format_f(names_c)  bind(c)
 !
-      character(C_CHAR), intent(inout) :: names(*)
+      type(C_ptr), value :: names_c
+      character(len=kchara), pointer :: names_f(:)
 !
-      call set_ctl_label_psf_format(names)
+      call c_f_pointer(names_c, names_f, [n_label_psf_format])
+      call set_ctl_label_psf_format(names_f)
       end subroutine set_ctl_label_psf_format_f
 !
 !  ---------------------------------------------------------------------
@@ -125,47 +127,50 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_label_iso_format_f(names)  bind(c)
+      subroutine set_ctl_label_iso_format_f(names_c)  bind(c)
 !
-      character(C_CHAR), intent(inout) :: names(*)
+      type(C_ptr), value :: names_c
+      character(len=kchara), pointer :: names_f(:)
 !
-      call set_ctl_label_iso_format(names)
+      call c_f_pointer(names_c, names_f, [n_label_iso_format])
+      call set_ctl_label_iso_format(names_f)
       end subroutine set_ctl_label_iso_format_f
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_primary_psf_format_flag_f(name)  bind(c)
+      subroutine set_primary_psf_format_flag_f(name_c)  bind(c)
 !
       use skip_comment_f
       use set_sections_file_ctl
 !
-      character(C_CHAR), intent(inout) :: name(*)
+      type(C_ptr), value :: name_c
 !
       integer(kind = kint) ::  i_format
-      character(len=kchara) :: name_f
+      character(len=kchara), pointer :: name_f(:)
 !
-      name_f = fill_from_null(name(1))
-      i_format = sel_psf_file_format(name_f)
-      call set_primary_psf_format_flag(i_format, name(1))
+      call c_f_pointer(name_c, name_f, [1])
+      i_format = sel_psf_file_format(name_f(1))
+      call set_primary_psf_format_flag(i_format, name_f(1))
 !
       end subroutine set_primary_psf_format_flag_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_primary_iso_format_flag_f(name)  bind(c)
+      subroutine set_primary_iso_format_flag_f(name_c)  bind(c)
 !
       use skip_comment_f
       use set_isosurface_file_ctl
 !
-      character(C_CHAR), intent(inout) :: name(*)
+      type(C_ptr), value :: name_c
 !
       integer(kind = kint) ::  i_format
-      character(len=kchara) :: name_f
+      character(len=kchara), pointer :: name_f(:)
 !
-      name_f = fill_from_null(name(1))
-      i_format = sel_iso_file_format(name_f)
-      call set_primary_psf_format_flag(i_format, name(1))
+      call c_f_pointer(name_c, name_f, [1])
+      name_f(1) = fill_from_null(name_f(1))
+      i_format = sel_iso_file_format(name_f(1))
+      call set_primary_psf_format_flag(i_format, name_f(1))
 !
       end subroutine set_primary_iso_format_flag_f
 !
