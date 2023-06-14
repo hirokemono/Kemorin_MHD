@@ -47,19 +47,15 @@
       use m_force_control_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
-      character(C_CHAR), intent(inout) :: field_name_c(*)
-      character(C_CHAR), intent(inout) :: field_math_c(*)
+      type(C_ptr), value :: field_name_c
+      type(C_ptr), value :: field_math_c
 !
-      character(len = kchara) :: field_name, field_math
-      integer(kind = kint) :: i
+      character(len=kchara), pointer :: field(:)
+      character(len=kchara), pointer :: math(:)
 !
-      call set_advection_control_labels                                 &
-     &   (n_comps_c(1), field_name, field_math)
-!
-      do i = 0, n_comps_c(1)-1
-        field_name_c(i*kchara+1:i*kchara+kchara) = field_name
-        field_math_c(i*kchara+1:i*kchara+kchara) = field_math
-      end do
+      call c_f_pointer(field_name_c, field, [num_advection_controls()])
+      call c_f_pointer(field_math_c, math, [num_advection_controls()])
+      call set_advection_control_labels(n_comps_c(1), field, math)
 !
       end subroutine set_advection_control_labels_f
 !
@@ -82,19 +78,15 @@
       use m_force_control_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
-      character(C_CHAR), intent(inout) :: field_name_c(*)
-      character(C_CHAR), intent(inout) :: field_math_c(*)
+      type(C_ptr), value :: field_name_c
+      type(C_ptr), value :: field_math_c
 !
-      character(len = kchara) :: field_name, field_math
-      integer(kind = kint) :: i
+      character(len=kchara), pointer :: field(:)
+      character(len=kchara), pointer :: math(:)
 !
-      call set_force_control_labels                                     &
-     &   (n_comps_c(1), field_name, field_math)
-!
-      do i = 0, n_comps_c(1)-1
-        field_name_c(i*kchara+1:i*kchara+kchara) = field_name
-        field_math_c(i*kchara+1:i*kchara+kchara) = field_math
-      end do
+      call c_f_pointer(field_name_c, field, [num_force_controls()])
+      call c_f_pointer(field_math_c, math, [num_force_controls()])
+      call set_force_control_labels(n_comps_c(1), field, math)
 !
       end subroutine set_force_control_labels_f
 !
