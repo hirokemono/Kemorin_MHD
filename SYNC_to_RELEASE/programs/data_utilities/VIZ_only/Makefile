@@ -4,11 +4,21 @@
 
 VIZ_PLUG_DIR = $$(DATA_UTILS_DIR)/VIZ_only
 
+TARGET_THREE_VIZS =  utilities/three_vizualizations
 TARGET_PSF =         utilities/sectioning
 TARGET_VTK_CONVERT = utilities/field_to_VTK
 TARGET_PSF_2_VTK =   utilities/section_to_vtk
 
 SOURCES = $(shell ls *.f90)
+
+MOD_THREE_VIZS_PLUG =  \
+main_three_visualizations.o  \
+analyzer_three_vizs.o \
+FEM_analyzer_four_vizs.o \
+t_FEM_mesh_field_4_viz.o \
+t_control_data_three_vizs.o \
+t_field_list_for_vizs.o \
+input_control_three_vizs.o
 
 MOD_PSF_PLUG = \
 main_surface_rendering.o \
@@ -41,6 +51,7 @@ dir_list:
 	@echo 'VIZ_PLUG_DIR =  $(VIZ_PLUG_DIR)'         >> $(MAKENAME)
 
 target_list:
+	@echo 'TARGET_THREE_VIZS =  $$(BUILDDIR)/$(TARGET_THREE_VIZS)'  >> $(MAKENAME)
 	@echo 'TARGET_PSF =         $$(BUILDDIR)/$(TARGET_PSF)'         >> $(MAKENAME)
 	@echo 'TARGET_VTK_CONVERT = $$(BUILDDIR)/$(TARGET_VTK_CONVERT)' >> $(MAKENAME)
 	@echo 'TARGET_PSF_2_VTK =    $$(BUILDDIR)/$(TARGET_PSF_2_VTK)'  >> $(MAKENAME)
@@ -48,10 +59,17 @@ target_list:
 
 target_task:
 	@echo visualizer: \
+	'$$(TARGET_THREE_VIZS)' \
 	'$$(TARGET_PSF)'         \
 	'$$(TARGET_VTK_CONVERT)' \
-	 '$$(TARGET_PSF_2_VTK)'  \
+	'$$(TARGET_PSF_2_VTK)'  \
 	>> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_THREE_VIZS):  $$(MOD_THREE_VIZS_PLUG)' \
+	'$$(LIB_FILES_SPH_MHD)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_THREE_VIZS)' '$$(MOD_THREE_VIZS_PLUG)' \
+	'-L. $$(LIBS_SPH_MHD) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF): $$(MOD_PSF_PLUG)' \
 	'$$(LIB_FILES_SPH_MHD)' >> $(MAKENAME)
@@ -75,6 +93,8 @@ target_task:
 lib_name:
 
 mod_list:
+	@echo  MOD_THREE_VIZS_PLUG=  \\   >> $(MAKENAME)
+	@echo  $(MOD_THREE_VIZS_PLUG)     >> $(MAKENAME)
 	@echo  MOD_PSF_PLUG=  \\         >> $(MAKENAME)
 	@echo  $(MOD_PSF_PLUG)           >> $(MAKENAME)
 	@echo  MOD_VTK_CONVERT_PLUG=  \\ >> $(MAKENAME)

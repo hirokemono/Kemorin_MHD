@@ -6,7 +6,11 @@ LIB_VIZ =       -lkemo_viz
 LIB_VIZ_FILE = libkemo_viz.a
 
 SUBDIRS = \
-surfacing
+surfacing \
+fieldline \
+map_rendering \
+volume_rendering
+
 
 #
 #  -------------------------------------------------------------------------
@@ -53,6 +57,8 @@ lib_archve:
 mod_list:
 	@echo MOD_VIZ= \\ >> $(MAKENAME)
 	@echo '$$(MOD_SURFACING)' \\ >> $(MAKENAME)
+	@echo '$$(MOD_FIELDLINE)'  \\ >> $(MAKENAME)
+	@echo '$$(MOD_PVR)'        \\ >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \

@@ -1,6 +1,10 @@
 cal_buoyancies_sph_MHD.o: $(ZLIB_IO_DIR)/cal_buoyancies_sph_MHD.f90 m_precision.o m_machine_parameter.o m_constants.o t_phys_address.o
 	$(F90) -c $(F90OPTFLAGS) $<
+calypso_png_file_IO.o: $(ZLIB_IO_DIR)/calypso_png_file_IO.f90 m_precision.o m_png_file_IO.o t_buffer_4_gzip.o gzip_defleate.o number_to_bit.o filtering_rgba_png_line.o byte_swap_f.o transfer_to_long_integers.o gzip_infleate.o
+	$(F90) -c $(F90OPTFLAGS) $<
 data_convert_by_zlib.o: $(ZLIB_IO_DIR)/data_convert_by_zlib.f90 m_precision.o m_constants.o m_machine_parameter.o t_buffer_4_gzip.o transfer_to_long_integers.o gzip_defleate.o binary_IO.o gzip_infleate.o
+	$(F90) -c $(F90OPTFLAGS) $<
+filtering_rgba_png_line.o: $(ZLIB_IO_DIR)/filtering_rgba_png_line.f90 m_precision.o line_rgba_filtering_4_png.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_binary_IO.o: $(ZLIB_IO_DIR)/gz_binary_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_buffer_4_gzip.o binary_IO.o set_parallel_file_name.o skip_gz_comment.o gzip_file_access.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -103,6 +107,12 @@ gz_vtk_file_IO.o: $(ZLIB_IO_DIR)/gz_vtk_file_IO.f90 m_precision.o m_constants.o 
 init_reference_scalar.o: $(ZLIB_IO_DIR)/init_reference_scalar.f90 m_precision.o m_constants.o m_spheric_constants.o m_machine_parameter.o m_phys_constants.o t_spheric_parameter.o t_fdm_coefs.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_reference_scalar_param.o t_sph_matrix.o set_reference_sph_mhd.o set_reference_temp_sph.o const_r_mat_4_scalar_sph.o const_radial_references.o const_diffusive_profile.o set_parallel_file_name.o radial_reference_field_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 input_old_file_sel_4_zlib.o: $(ZLIB_IO_DIR)/input_old_file_sel_4_zlib.F90 m_precision.o m_file_format_switch.o t_file_IO_parameter.o t_time_data.o t_field_data_IO.o gz_rst_data_IO_by_fld.o gz_field_file_IO.o field_file_IO.o set_field_file_names.o rst_data_IO_by_fld.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
+line_rgba_filtering_4_png.o: $(ZLIB_IO_DIR)/line_rgba_filtering_4_png.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_png_file_IO.o: $(ZLIB_IO_DIR)/m_png_file_IO.f90 m_precision.o number_to_bit.o transfer_to_long_integers.o byte_swap_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+output_image_sel_4_png.o: $(ZLIB_IO_DIR)/output_image_sel_4_png.F90 m_precision.o m_constants.o t_png_file_access.o write_bmp_image.o calypso_png_file_IO.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 sel_gz_read_sph_mtr_header.o: $(ZLIB_IO_DIR)/sel_gz_read_sph_mtr_header.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_buffer_4_gzip.o select_gz_stream_file_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
