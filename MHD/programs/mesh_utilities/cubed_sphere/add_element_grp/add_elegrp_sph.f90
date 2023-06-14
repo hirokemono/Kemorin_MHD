@@ -15,7 +15,6 @@
 !
       call calypso_MPI_finalize
 !
-      write(*,*) '***** program finished *****'
-      stop
+      stop '***** program finished *****'
 !
       end program add_elegrp_sph
