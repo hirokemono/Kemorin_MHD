@@ -50,8 +50,16 @@
       character(C_CHAR), intent(inout) :: field_name_c(*)
       character(C_CHAR), intent(inout) :: field_math_c(*)
 !
+      character(len = kchara) :: field_name, field_math
+      integer(kind = kint) :: i
+!
       call set_advection_control_labels                                 &
-     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+     &   (n_comps_c(1), field_name, field_math)
+!
+      do i = 0, n_comps_c(1)-1
+        field_name_c(i*kchara+1:i*kchara+kchara) = field_name
+        field_math_c(i*kchara+1:i*kchara+kchara) = field_math
+      end do
 !
       end subroutine set_advection_control_labels_f
 !
@@ -77,8 +85,16 @@
       character(C_CHAR), intent(inout) :: field_name_c(*)
       character(C_CHAR), intent(inout) :: field_math_c(*)
 !
+      character(len = kchara) :: field_name, field_math
+      integer(kind = kint) :: i
+!
       call set_force_control_labels                                     &
-     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+     &   (n_comps_c(1), field_name, field_math)
+!
+      do i = 0, n_comps_c(1)-1
+        field_name_c(i*kchara+1:i*kchara+kchara) = field_name
+        field_math_c(i*kchara+1:i*kchara+kchara) = field_math
+      end do
 !
       end subroutine set_force_control_labels_f
 !
