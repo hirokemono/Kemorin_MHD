@@ -247,6 +247,7 @@
 !
       use skip_comment_f
       use skip_gz_comment
+      use gzip_file_access
 !
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_file
