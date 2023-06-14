@@ -24,7 +24,7 @@
 !!      subroutine set_flag_asym_tensor_comp_f                          &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
-!!      subroutine set_primary_componnet_flag_f(input_flag) bind(c)
+!!      subroutine set_primary_componnet_flag_f(input_flag_c) bind(c)
 !!        character(C_CHAR), intent(inout) :: input_flag(*)
 !!@endverbatim
 !
@@ -58,11 +58,15 @@
       use m_component_flags
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
-      character(C_CHAR), intent(inout) :: field_name_c(*)
-      character(C_CHAR), intent(inout) :: field_math_c(*)
+      type(C_ptr), value :: field_name_c
+      type(C_ptr), value :: field_math_c
 !
-      call set_flag_scalar_comp                                         &
-     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+      character(len=kchara), pointer :: field(:)
+      character(len=kchara), pointer :: math(:)
+!
+      call c_f_pointer(field_name_c, field, [num_flag_scalar_comp()])
+      call c_f_pointer(field_math_c, math,  [num_flag_scalar_comp()])
+      call set_flag_scalar_comp(n_comps_c(1), field, math)
 !
       end subroutine set_flag_scalar_comp_f
 !
@@ -85,11 +89,15 @@
       use m_component_flags
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
-      character(C_CHAR), intent(inout) :: field_name_c(*)
-      character(C_CHAR), intent(inout) :: field_math_c(*)
+      type(C_ptr), value :: field_name_c
+      type(C_ptr), value :: field_math_c
 !
-      call set_flag_vector_comp                                         &
-     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+      character(len=kchara), pointer :: field(:)
+      character(len=kchara), pointer :: math(:)
+!
+      call c_f_pointer(field_name_c, field, [num_flag_vector_comp()])
+      call c_f_pointer(field_math_c, math,  [num_flag_vector_comp()])
+      call set_flag_vector_comp(n_comps_c(1), field, math)
 !
       end subroutine set_flag_vector_comp_f
 !
@@ -112,11 +120,17 @@
       use m_component_flags
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
-      character(C_CHAR), intent(inout) :: field_name_c(*)
-      character(C_CHAR), intent(inout) :: field_math_c(*)
+      type(C_ptr), value :: field_name_c
+      type(C_ptr), value :: field_math_c
 !
-      call set_flag_sym_tensor_comp                                     &
-     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+      character(len=kchara), pointer :: field(:)
+      character(len=kchara), pointer :: math(:)
+!
+      call c_f_pointer(field_name_c, field,                             &
+     &                 [num_flag_sym_tensor_comp()])
+      call c_f_pointer(field_math_c, math,                              &
+     &                 [num_flag_sym_tensor_comp()])
+      call set_flag_sym_tensor_comp(n_comps_c(1), field, math)
 !
       end subroutine set_flag_sym_tensor_comp_f
 !
@@ -139,24 +153,32 @@
       use m_component_flags
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
-      character(C_CHAR), intent(inout) :: field_name_c(*)
-      character(C_CHAR), intent(inout) :: field_math_c(*)
+      type(C_ptr), value :: field_name_c
+      type(C_ptr), value :: field_math_c
 !
-      call set_flag_asym_tensor_comp                                    &
-     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+      character(len=kchara), pointer :: field(:)
+      character(len=kchara), pointer :: math(:)
+!
+      call c_f_pointer(field_name_c, field,                             &
+     &                 [num_flag_asym_tensor_comp_f()])
+      call c_f_pointer(field_math_c, math,                              &
+     &                 [num_flag_asym_tensor_comp_f()])
+      call set_flag_asym_tensor_comp(n_comps_c(1), field, math)
 !
       end subroutine set_flag_asym_tensor_comp_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_primary_componnet_flag_f(input_flag) bind(c)
+      subroutine set_primary_componnet_flag_f(input_flag_c) bind(c)
 !
       use m_more_component_flags
 !
-      character(C_CHAR), intent(inout) :: input_flag(*)
+      type(C_ptr), value :: input_flag_c
+      character(len=kchara), pointer :: names(:)
 !
-      call set_primary_componnet_flag(input_flag(1))
+      call c_f_pointer(input_flag_c,names,[1])
+      call set_primary_componnet_flag(names(1))
 !
       end subroutine set_primary_componnet_flag_f
 !

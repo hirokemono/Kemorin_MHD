@@ -169,11 +169,13 @@
       use m_explicit_term_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
-      character(C_CHAR), intent(inout) :: field_group_c(*)
+      type(C_ptr), value :: field_group_c
 !
+      character(len=kchara), pointer :: field_grp(:)
 !
+      call c_f_pointer(field_group_c, field_grp, [ngrp_MHD_fields])
       call copy_filxed_lengh_chara                                      &
-     &   (ngrp_MHD_fields, MHD_field_group, field_group_c)
+     &   (ngrp_MHD_fields, MHD_field_group, field_grp)
 !
 !
       nfld_group_c( 1) = num_base_fields()
@@ -199,11 +201,13 @@
       use t_grad_field_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
-      character(C_CHAR), intent(inout) :: field_group_c(*)
+      type(C_ptr), value :: field_group_c
 !
+      character(len=kchara), pointer :: field_grp(:)
 !
+      call c_f_pointer(field_group_c, field_grp, [ngrp_MHD_sym_fields])
       call copy_filxed_lengh_chara                                      &
-     &   (ngrp_MHD_sym_fields, MHD_sym_field_group, field_group_c)
+     &   (ngrp_MHD_sym_fields, MHD_sym_field_group, field_grp)
 !
       nfld_group_c( 1) = num_fields_w_symmetry()
       nfld_group_c( 2) = num_forces_w_symmetry()
@@ -222,11 +226,13 @@
       use m_SGS_enegy_flux_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
-      character(C_CHAR), intent(inout) :: field_group_c(*)
+      type(C_ptr), value :: field_group_c
 !
+      character(len=kchara), pointer :: field_grp(:)
 !
+      call c_f_pointer(field_group_c, field_grp, [ngrp_SGS_MHD_fields])
       call copy_filxed_lengh_chara                                      &
-     &   (ngrp_SGS_MHD_fields, SGS_MHD_field_group, field_group_c)
+     &   (ngrp_SGS_MHD_fields, SGS_MHD_field_group, field_grp)
 !
       nfld_group_c( 1) = num_SGS_terms()
       nfld_group_c( 2) = num_SGS_energy_fluxes()

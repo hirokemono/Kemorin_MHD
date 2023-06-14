@@ -8,7 +8,7 @@
 !!@verbatim
 !!      integer(c_int) function num_label_time_step_ctl_f() bind(c)
 !!      integer(c_int) function num_label_time_step_ctl_w_dep_f() bind(c)
-!!      subroutine set_label_time_step_ctl_f(names)  bind(c)
+!!      subroutine set_label_time_step_ctl_f(names_c)  bind(c)
 !!@endverbatim
 !
       module base_control_labels_to_c
@@ -45,12 +45,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_label_time_step_ctl_f(names)  bind(c)
+      subroutine set_label_time_step_ctl_f(names_c)  bind(c)
 !
       use ctl_data_4_time_steps_IO
 !
-      character(C_CHAR), intent(inout) :: names(*)
+      type(C_ptr), value :: names_c
+      character(len=kchara), pointer :: names(:)
 !
+      call c_f_pointer(names_c,names,[num_label_time_step_ctl_w_dep()])
       call set_label_time_step_ctl(names)
       end subroutine set_label_time_step_ctl_f
 !
