@@ -99,7 +99,7 @@
         dmax = color_param%pvr_datamap_param(1,imax)
         d_ref = dmin + dble(iline-1) * (dmax - dmin)                    &
      &         / dble(map_data%num_line-1)
-        if(d_ref .le. zero) then
+        if(d_ref .ge. zero) then
           idots = 0
         else
           idots = 2
