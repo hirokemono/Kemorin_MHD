@@ -142,6 +142,7 @@
       real(kind = kreal) :: pi
 !
 !
+      map_data%iflag_2d_projection_mode = iflag_aitoff
       if(proj_type_c%iflag .gt. 0) then
         tmpchara = proj_type_c%charavalue
         if(cmp_no_case(tmpchara, label_xy_plane)) then
