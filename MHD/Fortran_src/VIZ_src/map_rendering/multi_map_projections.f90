@@ -131,6 +131,9 @@
         call collect_psf_scalar(map_rgb(i_map)%irank_image_file, ione,  &
      &      psf_mesh(i_map)%node, psf_mesh(i_map)%field,                &
      &      psf_dat(i_map)%psf_phys%d_fld(1,1), SR_sig)
+        call collect_psf_scalar(map_rgb(i_map)%irank_image_file, ione,  &
+     &      psf_mesh(i_map)%node, psf_mesh(i_map)%field,                &
+     &      psf_dat(i_map)%psf_phys%d_fld(1,2), SR_sig)
       end do
       if(iflag_MAP_time) call end_elapsed_time(ist_elapsed_MAP+1)
 !

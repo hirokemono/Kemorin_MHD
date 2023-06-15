@@ -32,7 +32,6 @@
 !!    opacity_ctl           0.9
 !!
 !!    zeroline_switch_ctl           On
-!!    isoline_switch_ctl            On
 !!    isoline_color_mode      color, white, or black
 !!    isoline_number_ctl            20
 !!
@@ -61,7 +60,7 @@
 !
 !   Labels
       integer(kind = kint), parameter, private                          &
-     &                   :: n_label_pvr_section =   9
+     &                   :: n_label_pvr_section =   8
 !
       character(len=kchara), parameter, private                         &
      &                  :: hd_surface_define =  'surface_define'
@@ -70,8 +69,6 @@
 !
       character(len=kchara), parameter, private                         &
      &                  :: hd_pvr_sec_zeroline = 'zeroline_switch_ctl'
-      character(len=kchara), parameter, private                         &
-     &                  :: hd_pvr_sec_isoline =  'isoline_switch_ctl'
       character(len=kchara), parameter, private                         &
      &                  :: hd_pvr_isoline_color = 'isoline_color_mode'
       character(len=kchara), parameter, private                         &
@@ -115,8 +112,6 @@
      &     (c_buf, hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
         call read_chara_ctl_type(c_buf, hd_pvr_sec_zeroline,            &
      &      pvr_sect_ctl%zeroline_switch_ctl)
-        call read_chara_ctl_type(c_buf, hd_pvr_sec_isoline,             &
-     &      pvr_sect_ctl%isoline_switch_ctl)
         call read_chara_ctl_type(c_buf, hd_pvr_isoline_color,           &
      &      pvr_sect_ctl%isoline_color_mode)
         call read_integer_ctl_type(c_buf, hd_isoline_number,            &
@@ -152,7 +147,6 @@
       if(pvr_sect_ctl%i_pvr_sect_ctl .le. 0) return
       maxlen = len_trim(hd_pvr_opacity)
       maxlen = max(maxlen,len_trim(hd_pvr_sec_zeroline))
-      maxlen = max(maxlen,len_trim(hd_pvr_sec_isoline))
       maxlen = max(maxlen,len_trim(hd_pvr_isoline_color))
       maxlen = max(maxlen,len_trim(hd_isoline_number))
       maxlen = max(maxlen,len_trim(hd_tangent_cylinder))
@@ -170,8 +164,6 @@
      &    hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_sec_zeroline, pvr_sect_ctl%zeroline_switch_ctl)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_sec_isoline, pvr_sect_ctl%isoline_switch_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_isoline_color, pvr_sect_ctl%isoline_color_mode)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -209,13 +201,12 @@
       call set_control_labels(hd_pvr_opacity,      names( 2))
 !
       call set_control_labels(hd_pvr_sec_zeroline,  names( 3))
-      call set_control_labels(hd_pvr_sec_isoline,   names( 4))
-      call set_control_labels(hd_pvr_isoline_color, names( 5))
-      call set_control_labels(hd_isoline_number,    names( 6))
+      call set_control_labels(hd_pvr_isoline_color, names( 4))
+      call set_control_labels(hd_isoline_number,    names( 5))
 !
-      call set_control_labels(hd_tangent_cylinder, names( 7))
-      call set_control_labels(hd_tcyl_inner,       names( 8))
-      call set_control_labels(hd_tcyl_outer,       names( 9))
+      call set_control_labels(hd_tangent_cylinder, names( 6))
+      call set_control_labels(hd_tcyl_inner,       names( 7))
+      call set_control_labels(hd_tcyl_outer,       names( 8))
 !
       end subroutine set_label_pvr_section
 !

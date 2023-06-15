@@ -22,7 +22,6 @@
 !!    opacity_ctl           0.9
 !!
 !!    zeroline_switch_ctl           On
-!!    isoline_switch_ctl            On
 !!    isoline_color_mode      color, white, or black
 !!    isoline_number_ctl            20
 !!
@@ -59,8 +58,6 @@
 !
 !>        Structure of zero line switch
         type(read_character_item) :: zeroline_switch_ctl
-!>        Structure of isoline switch
-        type(read_character_item) :: isoline_switch_ctl
 !>        Structure of isoline color mode
         type(read_character_item) :: isoline_color_mode
 !>        Structure of number of isoline
@@ -98,8 +95,6 @@
 !
       call copy_chara_ctl(org_pvr_sect_c%zeroline_switch_ctl,           &
      &                   new_pvr_sect_c%zeroline_switch_ctl)
-      call copy_chara_ctl(org_pvr_sect_c%isoline_switch_ctl,            &
-     &                   new_pvr_sect_c%isoline_switch_ctl)
       call copy_chara_ctl(org_pvr_sect_c%isoline_color_mode,            &
      &                   new_pvr_sect_c%isoline_color_mode)
       call copy_integer_ctl(org_pvr_sect_c%isoline_number_ctl,          &
@@ -125,7 +120,6 @@
       pvr_sect_ctl%opacity_ctl%iflag = 0
 !
       pvr_sect_ctl%zeroline_switch_ctl%iflag = 0
-      pvr_sect_ctl%isoline_switch_ctl%iflag = 0
       pvr_sect_ctl%isoline_color_mode%iflag = 0
       pvr_sect_ctl%isoline_number_ctl%iflag = 0
 !

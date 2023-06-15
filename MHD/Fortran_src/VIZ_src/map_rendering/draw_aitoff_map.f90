@@ -8,12 +8,12 @@
 !>@brief Structure for cross sectioning
 !!
 !!@verbatim
-!!      subroutine set_scalar_on_map_image(psf_nod, psf_ele, psf_phys,  &
+!!      subroutine set_scalar_on_map_image(psf_nod, psf_ele, d_scalar,  &
 !!     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
 !!     &          nxpixel, nypixel, npix, d_map, rgba, map_e)
 !!        type(node_data), intent(in) :: psf_nod
 !!        type(element_data), intent(in) :: psf_ele
-!!        type(phys_data), intent(in) :: psf_phys
+!!        real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
 !!        real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
 !!        real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
 !!        integer(kind = kint), intent(in) :: nxpixel, nypixel, npix
@@ -34,7 +34,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_scalar_on_map_image(psf_nod, psf_ele, psf_phys,    &
+      subroutine set_scalar_on_map_image(psf_nod, psf_ele, d_scalar,    &
      &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
      &          nxpixel, nypixel, npix, d_map, rgba, map_e)
 !
@@ -46,8 +46,8 @@
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
-      type(phys_data), intent(in) :: psf_phys
 !
+      real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
       real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
       real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
       integer(kind = kint), intent(in) :: nxpixel, nypixel, npix
@@ -63,7 +63,7 @@
       do iele = 1, psf_ele%numele
         call s_set_map_patch_from_1patch(iele,                          &
      &      psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie,     &
-     &      ione, psf_phys%d_fld(1,1), map_e%n_map_patch,               &
+     &      ione, d_scalar, map_e%n_map_patch,                          &
      &      map_e%x_map_patch, map_e%d_map_patch(1,1))
 !
         do i = 1, map_e%n_map_patch
