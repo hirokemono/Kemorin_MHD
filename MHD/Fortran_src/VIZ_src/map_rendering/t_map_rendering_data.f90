@@ -235,11 +235,6 @@
 !
       aspect =  view_param%perspective_xy_ratio
 !
-      map_data%xmin_frame = -xframe
-      map_data%xmax_frame =  xframe
-      map_data%ymin_frame = -yframe
-      map_data%ymax_frame =  yframe
-!
       width(1) = map_data%xmax_frame - map_data%xmin_frame
       width(2) = map_data%ymax_frame - map_data%ymin_frame
 !
