@@ -25,6 +25,7 @@
 !!        integer(kind = kint), intent(in) :: nxpixel, nypixel
 !!        real(kind = kreal), intent(in) :: d_map(npix)
 !!        real(kind = kreal), intent(inout) :: rgba(4,npix)
+!!      subroutine fill_map_one_color(nxpixel, nypixel, bg_rgba, rgba)
 !!      subroutine fill_background(nxpixel, nypixel, bg_rgba, rgba)
 !!        integer(kind = kint), intent(in) :: nxpixel, nypixel
 !!        real(kind = kreal), intent(in) :: bg_rgba(4)
@@ -204,6 +205,32 @@
 !$omp end parallel do
 !
       end subroutine map_value_to_rgb
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine fill_map_one_color(nxpixel, nypixel, bg_rgba, rgba)
+!
+      use t_pvr_colormap_parameter
+      use set_color_4_pvr
+!
+      integer(kind = kint), intent(in) :: nxpixel, nypixel
+      real(kind = kreal), intent(in) :: bg_rgba(4)
+!
+      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+!
+      integer(kind = kint) :: i_img, i, j
+!
+!
+!$omp parallel do private(i,j,i_img)
+      do j = 1, nypixel
+        do i = 1, nxpixel
+          i_img = i + (j-1) * nxpixel
+          if(rgba(4,i_img) .gt. zero) rgba(1:4,i_img) = bg_rgba(1:4)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine fill_map_one_color
 !
 !  ---------------------------------------------------------------------
 !

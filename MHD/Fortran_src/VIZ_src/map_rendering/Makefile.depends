@@ -22,7 +22,7 @@ set_map_values_for_grids.o: $(MAP_RENDERING_DIR)/set_map_values_for_grids.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 set_scalar_on_xyz_plane.o: $(MAP_RENDERING_DIR)/set_scalar_on_xyz_plane.f90 m_precision.o m_constants.o t_geometry_data.o t_phys_data.o t_map_patch_from_1patch.o t_pvr_image_array.o t_map_rendering_data.o set_xyz_plot_from_1patch.o map_patch_from_1patch.o draw_pixels_on_map.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_xyz_plot_from_1patch.o: $(MAP_RENDERING_DIR)/set_xyz_plot_from_1patch.f90 m_precision.o m_constants.o t_geometry_data.o t_phys_data.o
+set_xyz_plot_from_1patch.o: $(MAP_RENDERING_DIR)/set_xyz_plot_from_1patch.f90 m_precision.o m_constants.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_4_map.o: $(MAP_RENDERING_DIR)/t_control_data_4_map.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_read_control_elements.o t_control_array_character.o t_ctl_data_pvr_section.o t_ctl_data_4_view_transfer.o t_ctl_data_pvr_colormap_bar.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
