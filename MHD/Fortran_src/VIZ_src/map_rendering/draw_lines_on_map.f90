@@ -7,11 +7,12 @@
 !>@brief Subroutines to draw lines on map
 !!
 !!@verbatim
-!!      subroutine draw_isolines(nxpixel, nypixel, color_param,         &
-!!     &                         nline, d_map, rgba)
+!!      subroutine draw_isolines(nxpixel, nypixel,                      &
+!!     &                         map_data, color_param, rgba)
 !!      subroutine draw_zeroline(nxpixel, nypixel, color_param,         &
 !!     &                         d_map, rgba)
 !!        integer(kind = kint), intent(in) :: nxpixel, nypixel, nline
+!!        type(map_rendering_data), intent(in) :: map_data
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        real(kind = kreal), intent(in) :: d_map(nxpixel*nypixel)
 !!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
@@ -71,16 +72,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_isolines(nxpixel, nypixel, color_param,           &
-     &                         nline, d_map, rgba)
+      subroutine draw_isolines(nxpixel, nypixel,                        &
+     &                         map_data, color_param, rgba)
 !
+      use t_map_rendering_data
       use t_pvr_colormap_parameter
       use set_color_4_pvr
       use draw_pixels_on_map
 !
-      integer(kind = kint), intent(in) :: nxpixel, nypixel, nline
+      integer(kind = kint), intent(in) :: nxpixel, nypixel
+      type(map_rendering_data), intent(in) :: map_data
       type(pvr_colormap_parameter), intent(in) :: color_param
-      real(kind = kreal), intent(in) :: d_map(nxpixel*nypixel)
 !
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
@@ -92,23 +94,32 @@
 !
 !
       imax = color_param%num_pvr_datamap_pnt
-      do iline = 1, nline
+      do iline = 1, map_data%num_line
         dmin = color_param%pvr_datamap_param(1,1)
         dmax = color_param%pvr_datamap_param(1,imax)
-        d_ref = dmin + dble(iline-1) * (dmax - dmin) / dble(nline-1)
+        d_ref = dmin + dble(iline-1) * (dmax - dmin)                    &
+     &         / dble(map_data%num_line-1)
         if(d_ref .le. zero) then
           idots = 0
         else
           idots = 2
         end if
-        call value_to_rgb(color_param%id_pvr_color(2),                  &
-     &                    color_param%id_pvr_color(1),                  &
-     &                    color_param%num_pvr_datamap_pnt,              &
-     &                    color_param%pvr_datamap_param,                &
-     &                    d_ref, color_ref(1))
+!
+        if(map_data%iflag_isoline_color .eq. iflag_white) then
+          color_ref(1:4) =   one
+        else if(map_data%iflag_isoline_color .eq. iflag_black) then
+          color_ref(1:4) =   zero
+        else
+          call value_to_rgb(color_param%id_pvr_color(2),                &
+     &                      color_param%id_pvr_color(1),                &
+     &                      color_param%num_pvr_datamap_pnt,            &
+     &                      color_param%pvr_datamap_param,              &
+     &                      d_ref, color_ref(1))
+        end if
+!
         color_ref(4) =   one
         call draw_isoline_on_pixel(nxpixel, nypixel, nwidth,            &
-     &      idots, d_ref, color_ref, d_map, rgba)
+     &      idots, d_ref, color_ref, map_data%d_map, rgba)
       end do
 !
       end subroutine draw_isolines
@@ -185,7 +196,7 @@
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
       integer(kind = kint), parameter :: idots =  0
-      integer(kind = kint), parameter :: nwidth = 2
+      integer(kind = kint), parameter :: nwidth = 4
       real(kind = kreal) :: pi
       real(kind = kreal) :: color_ref(4)
 !

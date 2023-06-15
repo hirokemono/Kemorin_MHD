@@ -105,8 +105,8 @@
         call dealloc_map_patch_from_1patch(map_e1)
 !
         call draw_isolines                                              &
-     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), color_param,  &
-     &      map_data%num_line, map_data%d_map, pvr_rgb%rgba_real_gl)
+     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      map_data, color_param, pvr_rgb%rgba_real_gl)
 !
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
@@ -218,8 +218,8 @@
         call dealloc_map_patch_from_1patch(map_e1)
 !
         call draw_isolines                                              &
-     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), color_param,  &
-     &      map_data%num_line, map_data%d_map, pvr_rgb%rgba_real_gl)
+     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      map_data, color_param, pvr_rgb%rgba_real_gl)
 !
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
