@@ -115,7 +115,7 @@
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
-      type(phys_data), intent(in) :: psf_phys 
+      real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
 !
       integer(kind = kint), intent(in) :: nwidth, idots
       real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
@@ -136,7 +136,7 @@
       do iele = 1, psf_ele%numele
         call s_set_map_patch_from_1patch(iele,                          &
      &      psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie,     &
-     &      ione, psf_phys%d_fld(1,1), map_e%n_map_patch,               &
+     &      ione, psf_phys%d_fld(1), map_e%n_map_patch,               &
      &      xy_map(1,1,1), d_map_patch(1,1))
 !
         do i = 1, map_e%n_map_patch
@@ -157,7 +157,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine draw_aitoff_map_isolines                               &
-     &         (psf_nod, psf_ele, psf_phys, map_data, color_param,      &
+     &         (psf_nod, psf_ele, d_scalar, map_data, color_param,      &
+     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
      &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
 !
       use t_map_rendering_data
@@ -167,7 +168,7 @@
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
-      type(phys_data), intent(in) :: psf_phys 
+      real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
 !
       integer(kind = kint), intent(in) :: nxpixel, nypixel
       type(map_rendering_data), intent(in) :: map_data
@@ -182,6 +183,11 @@
       real(kind = kreal) :: color_ref(4)
       real(kind = kreal) :: d_ref
 !
+!
+      if(flag_fixed_isoline_range .eqv. .FALSE.) then
+        map_data%dmin_isoline = minval(d_scalar)
+        map_data%dmax_isoline = maxval(d_scalar)
+      end if
 !
       imax = color_param%num_pvr_datamap_pnt
       do iline = 0, map_data%num_line-1
@@ -208,7 +214,7 @@
 !
         color_ref(4) =   one
         call draw_isoline_on_map_image                                  &
-     &     (psf_nod, psf_ele, psf_phys, nwidth, idots,                  &
+     &     (psf_nod, psf_ele, d_scalar, nwidth, idots,                  &
      &      map_data%xmin_frame, map_data%xmax_frame,                   &
      &      map_data%ymin_frame, map_data%ymax_frame,                   &
      &      nxpixel, nypixel, d_ref, color_ref, rgba, map_e)

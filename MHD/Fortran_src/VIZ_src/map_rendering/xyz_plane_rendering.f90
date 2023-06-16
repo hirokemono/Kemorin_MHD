@@ -85,7 +85,7 @@
 !
         if(map_data%flag_zeroline .and. (map_data%num_line.le.0)) then
           call draw_isoline_on_map_image                                &
-     &       (psf_nod, psf_ele, psf_phys, 3, 0,                         &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), 3, 0,              &
      &        map_data%xmin_frame, map_data%xmax_frame,                 &
      &        map_data%ymin_frame, map_data%ymax_frame,                 &
      &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
@@ -110,9 +110,9 @@
 !     &      map_e1)
 !
         call draw_aitoff_map_isolines                                   &
-     &     (psf_nod, psf_ele, psf_phys, map_data, color_param,          &
-     &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        zero, black, pvr_rgb%rgba_real_gl, map_e1)
+     &     (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data,            &
+     &      color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),  &
+     &      zero, black, pvr_rgb%rgba_real_gl, map_e1)
 !        call draw_isolines                                             &
 !     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
 !     &      map_data, color_param, pvr_rgb%rgba_real_gl)
@@ -120,7 +120,7 @@
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
           call draw_isoline_on_map_image                                &
-     &       (psf_nod, psf_ele, psf_phys, 2, 0,                         &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,2), 2, 0,              &
      &        map_data%xmin_frame, map_data%xmax_frame,                 &
      &        map_data%ymin_frame, map_data%ymax_frame,                 &
      &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
