@@ -158,6 +158,7 @@
       use set_scalar_on_xyz_plane
       use draw_xyz_plane_isolines
       use draw_pvr_colorbar
+      use draw_pixels_on_map
       use draw_lines_on_map
       use cal_mesh_position
 !
