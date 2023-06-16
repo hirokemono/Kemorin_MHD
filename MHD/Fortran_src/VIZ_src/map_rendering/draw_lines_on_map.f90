@@ -367,7 +367,7 @@
 !
       pi = four*atan(one)
       anum = one / dble(nstep-1)
-!!$omp parallel do private(iline,theta,xy_edge)
+!$omp parallel do private(iline,theta,xy_edge)
       do iline = 0, nstep-1
         theta(1) = pi * dble(iline-1) * anum
         theta(2) = pi * dble(iline  ) * anum
@@ -379,7 +379,7 @@
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      xy_edge, color_ref, pvr_rgb%rgba_real_gl)
       end do
-!!$omp end parallel do
+!$omp end parallel do
 !
       end subroutine draw_radial_grid_on_section
 !
@@ -406,7 +406,7 @@
 !
       pi = four*atan(one)
       anum = one / dble(nstep-1)
-!!$omp parallel do private(iline,rtp_map_edge,xy_edge)
+!$omp parallel do private(iline,rtp_map_edge,xy_edge)
       do iline = 0, nstep-1
         rtp_map_edge(1:2,1) = one
         rtp_map_edge(1:2,3) = phi_ref
@@ -419,7 +419,7 @@
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      xy_edge, color_ref, pvr_rgb%rgba_real_gl)
       end do
-!!$omp end parallel do
+!$omp end parallel do
 !
       end subroutine draw_meridional_grid_on_aitoff
 !
@@ -446,7 +446,7 @@
 !
       pi = four*atan(one)
       anum = one / dble(nstep-1)
-!!$omp parallel do private(iline,rtp_map_edge,xy_edge)
+!$omp parallel do private(iline,rtp_map_edge,xy_edge)
       do iline = 0, nstep-1
         rtp_map_edge(1:2,1) = one
         rtp_map_edge(1:2,2) = theta_ref
@@ -459,7 +459,7 @@
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      xy_edge, color_ref, pvr_rgb%rgba_real_gl)
       end do
-!!$omp end parallel do
+!$omp end parallel do
 !
       end subroutine draw_zonal_grid_on_aitoff
 !
