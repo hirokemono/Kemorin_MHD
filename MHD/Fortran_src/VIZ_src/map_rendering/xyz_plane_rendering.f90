@@ -77,13 +77,12 @@
       pi = four*atan(one)
       call alloc_map_patch_from_1patch(map_e1)
       if(map_data%fill_flag) then
+        call set_scalar_on_map_image(color_param, psf_nod, psf_ele,     &
+     &      psf_phys%d_fld(1,1), map_data, pvr_rgb, map_e1)
         if(map_data%flag_zeroline .and. (map_data%num_line.le.0)) then
           call draw_isoline_on_map_image                                &
-     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), 3, 0,              &
-     &        map_data%xmin_frame, map_data%xmax_frame,                 &
-     &        map_data%ymin_frame, map_data%ymax_frame,                 &
-     &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        zero, black, pvr_rgb%rgba_real_gl, map_e1)
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), map_data, 3, 0,    &
+     &        zero, black, pvr_rgb, map_e1)
         end if
       else
         call fill_map_one_color                                         &
@@ -94,17 +93,13 @@
       if(map_data%num_line .gt. 0) then
         call draw_aitoff_map_isolines                                   &
      &     (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data,            &
-     &      color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),  &
-     &      pvr_rgb%rgba_real_gl, map_e1)
+     &      color_param, pvr_rgb, map_e1)
 !
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
           call draw_isoline_on_map_image                                &
-     &       (psf_nod, psf_ele, psf_phys%d_fld(1,2), 2, 0,              &
-     &        map_data%xmin_frame, map_data%xmax_frame,                 &
-     &        map_data%ymin_frame, map_data%ymax_frame,                 &
-     &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        zero, white, pvr_rgb%rgba_real_gl, map_e1)
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data, 2, 0,    &
+     &        zero, white, pvr_rgb, map_e1)
         end if
       end if
 !
@@ -205,7 +200,7 @@
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
           call sel_draw_isoline_on_xyz_plane                            &
-     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), 3, 0,              &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,2), 3, 0,              &
      &        map_data, zero, white, pvr_rgb, map_e1)
         end if
       end if

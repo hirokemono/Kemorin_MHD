@@ -98,17 +98,11 @@
 !
       pi = four * atan(one)
       call draw_isoline_on_map_image                                    &
-     &   (psf_nod, psf_ele, phi_shift(1), nwidth, idots,                &
-     &    map_data%xmin_frame, map_data%xmax_frame,                     &
-     &    map_data%ymin_frame, map_data%ymax_frame,                     &
-     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
-     &    (-pi), color_ref, pvr_rgb%rgba_real_gl, map_e)
+     &   (psf_nod, psf_ele, phi_shift(1), map_data, nwidth, idots,      &
+     &    (-pi), color_ref, pvr_rgb, map_e)
       call draw_isoline_on_map_image                                    &
-     &   (psf_nod, psf_ele, phi_shift(1), nwidth, idots,                &
-     &    map_data%xmin_frame, map_data%xmax_frame,                     &
-     &    map_data%ymin_frame, map_data%ymax_frame,                     &
-     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
-     &    pi, color_ref, pvr_rgb%rgba_real_gl, map_e)
+     &   (psf_nod, psf_ele, phi_shift(1), map_data, nwidth, idots,      &
+     &    pi, color_ref, pvr_rgb, map_e)
 !
       end subroutine draw_mapflame
 !
@@ -141,11 +135,8 @@
       do ii = 1, 5
         phi_ref = pi * dble(ii-3) / 3.0d0
         call draw_isoline_on_map_image                                  &
-     &     (psf_nod, psf_ele, phi_shift(1), nwidth, idots,              &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      phi_ref, color_ref, pvr_rgb%rgba_real_gl, map_e)
+     &     (psf_nod, psf_ele, phi_shift(1), map_data, nwidth, idots,    &
+     &      phi_ref, color_ref, pvr_rgb, map_e)
       end do
 !
       end subroutine draw_longitude_grid
@@ -177,11 +168,8 @@
       do jj = 1, 5
         theta_ref = pi * dble(jj) / 6.0d0
         call draw_isoline_on_map_image                                  &
-     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      theta_ref, color_ref, pvr_rgb%rgba_real_gl, map_e)
+     &    (psf_nod, psf_ele, psf_nod%theta(1), map_data, nwidth, idots, &
+     &     theta_ref, color_ref, pvr_rgb, map_e)
       end do
 !
       end subroutine draw_latitude_grid
@@ -208,18 +196,12 @@
 !
       call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
-        call draw_isoline_on_map_image                                  &
-     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      theta_ref(1), color_ref, pvr_rgb%rgba_real_gl, map_e)
-        call draw_isoline_on_map_image                                  &
-     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      theta_ref(2), color_ref, pvr_rgb%rgba_real_gl, map_e)
+      call draw_isoline_on_map_image                                    &
+     &   (psf_nod, psf_ele, psf_nod%theta(1), map_data, nwidth, idots,  &
+     &     theta_ref(1), color_ref, pvr_rgb, map_e)
+      call draw_isoline_on_map_image                                    &
+     &   (psf_nod, psf_ele, psf_nod%theta(1), map_data, nwidth, idots,  &
+     &     theta_ref(2), color_ref, pvr_rgb, map_e)
 !
       end subroutine draw_map_tangent_cyl_grid
 !

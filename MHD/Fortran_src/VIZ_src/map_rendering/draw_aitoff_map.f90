@@ -18,22 +18,18 @@
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!        type(map_patches_for_1patch), intent(inout) :: map_e
 !!      subroutine draw_isoline_on_map_image                            &
-!!     &         (psf_nod, psf_ele, d_scalar, nwidth, idots,            &
-!!     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
-!!     &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
-!!      subroutine draw_aitoff_map_isolines                             &
-!!     &         (psf_nod, psf_ele, d_scalar, map_data, color_param,    &
-!!     &          nxpixel, nypixel, rgba, map_e)
+!!     &         (psf_nod, psf_ele, d_scalar, map_data, nwidth, idots,  &
+!!     &          d_ref, color_ref, pvr_rgb, map_e)
+!!      subroutine draw_aitoff_map_isolines(psf_nod, psf_ele, d_scalar, &
+!!     &          map_data, color_param, pvr_rgb, map_e)
 !!        type(node_data), intent(in) :: psf_nod
 !!        type(element_data), intent(in) :: psf_ele
+!!        type(map_rendering_data), intent(in) :: map_data
 !!        real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
 !!        integer(kind = kint), intent(in) :: nwidth, idots
-!!        real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
-!!        real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
-!!        integer(kind = kint), intent(in) :: nxpixel, nypixel, npix
 !!        real(kind = kreal), intent(in) :: d_ref
 !!        real(kind = kreal), intent(in) :: color_ref(4)
-!!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!        type(map_patches_for_1patch), intent(inout) :: map_e
 !!@endverbatim
       module draw_aitoff_map
@@ -43,6 +39,8 @@
 !
       use t_geometry_data
       use t_phys_data
+      use t_pvr_image_array
+      use t_map_rendering_data
       use t_map_patch_from_1patch
 !
       implicit  none
@@ -56,8 +54,6 @@
       subroutine set_scalar_on_map_image(color_param,                   &
      &          psf_nod, psf_ele, d_scalar, map_data, pvr_rgb, map_e)
 !
-      use t_pvr_image_array
-      use t_map_rendering_data
       use map_patch_from_1patch
       use draw_pixels_on_map
 !
@@ -98,25 +94,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine draw_isoline_on_map_image                              &
-     &         (psf_nod, psf_ele, d_scalar, nwidth, idots,              &
-     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
-     &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
+     &         (psf_nod, psf_ele, d_scalar, map_data, nwidth, idots,    &
+     &          d_ref, color_ref, pvr_rgb, map_e)
 !
       use map_patch_from_1patch
       use draw_isoline_in_triangle
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
+      type(map_rendering_data), intent(in) :: map_data
       real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
 !
       integer(kind = kint), intent(in) :: nwidth, idots
-      real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
-      real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
       real(kind = kreal), intent(in) :: d_ref
       real(kind = kreal), intent(in) :: color_ref(4)
 !
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint) :: iele, i
@@ -138,9 +131,11 @@
      &                         map_e%xy_map(1,1,i))
 !
           call s_draw_isoline_in_triangle(nwidth, idots,                &
-     &        xmin_frame, xmax_frame, ymin_frame, ymax_frame,           &
-     &        nxpixel, nypixel, map_e%xy_map(1,1,i),                    &
-     &        d_map_patch(1,i), d_ref, color_ref, rgba)
+     &        map_data%xmin_frame, map_data%xmax_frame,                 &
+     &        map_data%ymin_frame, map_data%ymax_frame,                 &
+     &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
+     &        map_e%xy_map(1,1,i), d_map_patch(1,i), d_ref, color_ref,  &
+     &        pvr_rgb%rgba_real_gl)
         end do
       end do
 !
@@ -148,12 +143,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_aitoff_map_isolines                               &
-     &         (psf_nod, psf_ele, d_scalar, map_data, color_param,      &
-     &          nxpixel, nypixel, rgba, map_e)
+      subroutine draw_aitoff_map_isolines(psf_nod, psf_ele, d_scalar,   &
+     &          map_data, color_param, pvr_rgb, map_e)
 !
-      use t_map_rendering_data
-      use t_pvr_colormap_parameter
       use set_color_4_pvr
       use draw_pixels_on_map
 !
@@ -161,11 +153,10 @@
       type(element_data), intent(in) :: psf_ele
       real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
 !
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
       type(map_rendering_data), intent(in) :: map_data
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: nwidth = 2
@@ -207,10 +198,8 @@
 !
         color_ref(4) =   one
         call draw_isoline_on_map_image                                  &
-     &     (psf_nod, psf_ele, d_scalar, nwidth, idots,                  &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
+     &     (psf_nod, psf_ele, d_scalar, map_data, nwidth, idots,        &
+     &      d_ref, color_ref, pvr_rgb, map_e)
       end do
 !
       end subroutine draw_aitoff_map_isolines
