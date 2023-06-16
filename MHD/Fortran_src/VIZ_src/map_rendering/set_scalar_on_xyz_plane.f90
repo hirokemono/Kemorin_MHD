@@ -35,12 +35,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_scalar_on_xyz_plane(psf_nod, psf_ele, d_scalar,    &
-     &                                   map_data, pvr_rgb, map_e)
+      subroutine sel_scalar_on_xyz_plane(color_param,                   &
+     &          psf_nod, psf_ele, d_scalar, map_data, pvr_rgb, map_e)
 !
       use t_pvr_image_array
       use t_map_rendering_data
+      use draw_pixels_on_map
 !
+      type(pvr_colormap_parameter), intent(in) :: color_param
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
       real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
@@ -71,6 +73,10 @@
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      map_data%d_map, pvr_rgb%rgba_real_gl, map_e)
       end if
+!
+      call map_value_to_rgb                                             &
+     &   (color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),    &
+     &    map_data%d_map, pvr_rgb%rgba_real_gl)
 !
       end subroutine sel_scalar_on_xyz_plane
 !
