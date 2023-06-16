@@ -21,15 +21,15 @@
 !!        real(kind = kreal), intent(inout) :: rgba(4,npix)
 !!        type(map_patches_for_1patch), intent(inout) :: map_e
 !!      subroutine draw_isoline_on_map_image                            &
-!!     &         (psf_nod, psf_ele, psf_phys, nwidth, idots,            &
+!!     &         (psf_nod, psf_ele, d_scalar, nwidth, idots,            &
 !!     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
 !!     &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
-!!      subroutine draw_aitoff_map_isolines(psf_nod, psf_ele, psf_phys, &
-!!     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
+!!      subroutine draw_aitoff_map_isolines                             &
+!!     &         (psf_nod, psf_ele, d_scalar, map_data, color_param,    &
 !!     &          nxpixel, nypixel, npix, d_ref, color_ref, rgba, map_e)
 !!        type(node_data), intent(in) :: psf_nod
 !!        type(element_data), intent(in) :: psf_ele
-!!        type(phys_data), intent(in) :: psf_phys
+!!        real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
 !!        integer(kind = kint), intent(in) :: nwidth, idots
 !!        real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
 !!        real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
@@ -106,7 +106,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine draw_isoline_on_map_image                              &
-     &         (psf_nod, psf_ele, psf_phys, nwidth, idots,              &
+     &         (psf_nod, psf_ele, d_scalar, nwidth, idots,              &
      &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
      &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
 !
@@ -136,7 +136,7 @@
       do iele = 1, psf_ele%numele
         call s_set_map_patch_from_1patch(iele,                          &
      &      psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie,     &
-     &      ione, psf_phys%d_fld(1), map_e%n_map_patch,               &
+     &      ione, d_scalar(1), map_e%n_map_patch,                       &
      &      xy_map(1,1,1), d_map_patch(1,1))
 !
         do i = 1, map_e%n_map_patch
@@ -158,7 +158,6 @@
 !
       subroutine draw_aitoff_map_isolines                               &
      &         (psf_nod, psf_ele, d_scalar, map_data, color_param,      &
-     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
      &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
 !
       use t_map_rendering_data
@@ -181,19 +180,21 @@
       integer(kind = kint) :: idots
       integer(kind = kint) :: iline, imax
       real(kind = kreal) :: color_ref(4)
-      real(kind = kreal) :: d_ref
+      real(kind = kreal) :: d_min, d_max, d_ref
 !
 !
-      if(flag_fixed_isoline_range .eqv. .FALSE.) then
-        map_data%dmin_isoline = minval(d_scalar)
-        map_data%dmax_isoline = maxval(d_scalar)
+      if(map_data%flag_fixed_isoline_range) then
+        d_min = map_data%dmin_isoline
+        d_max = map_data%dmax_isoline
+      else
+        d_min = minval(d_scalar)
+        d_max = maxval(d_scalar)
       end if
 !
       imax = color_param%num_pvr_datamap_pnt
       do iline = 0, map_data%num_line-1
-        d_ref = map_data%dmin_isoline                                   &
-     &         + (map_data%dmax_isoline - map_data%dmin_isoline)        &
-     &          * dble(iline) / dble(map_data%num_line-1)
+        d_ref = d_min + (d_max - d_min)                                 &
+     &                 * dble(iline) / dble(map_data%num_line-1)
         if(d_ref .ge. zero) then
           idots = 0
         else
