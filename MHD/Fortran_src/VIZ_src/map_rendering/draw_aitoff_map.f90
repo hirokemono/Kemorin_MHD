@@ -148,7 +148,7 @@
           call s_draw_isoline_in_triangle(nwidth, idots,                &
      &        xmin_frame, xmax_frame, ymin_frame, ymax_frame,           &
      &        nxpixel, nypixel, map_e%xy_map(1,1,i),                    &
-     &        d_map_patch(1,1), d_ref, color_ref, rgba)
+     &        d_map_patch(1,i), d_ref, color_ref, rgba)
         end do
       end do
 !

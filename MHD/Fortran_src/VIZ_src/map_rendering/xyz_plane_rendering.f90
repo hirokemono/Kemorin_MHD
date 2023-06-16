@@ -200,6 +200,8 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       type(map_patches_for_1patch) :: map_e1
+      real(kind = kreal), parameter                                     &
+     &                   :: black(4) = (/zero,zero,zero,one/)
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -208,7 +210,6 @@
       call sel_scalar_on_xyz_plane                                      &
      &   (psf_nod, psf_ele, psf_phys%d_fld(1,1),                        &
      &    map_data, pvr_rgb, map_e1)
-      call dealloc_map_patch_from_1patch(map_e1)
 !
       if(map_data%fill_flag) then
         call map_value_to_rgb                                           &
@@ -216,9 +217,12 @@
      &      map_data%d_map, pvr_rgb%rgba_real_gl)
 !
         if(map_data%flag_zeroline .and. (map_data%num_line.le.0)) then
-          call draw_zeroline                                            &
-     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
+          call sel_draw_isoline_on_xyz_plane                            &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), 3, 0,              &
+     &        map_data, zero, black, pvr_rgb, map_e1)
+!          call draw_zeroline                                           &
+!     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),            &
+!     &        color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
         end if
       else
         call fill_map_one_color                                         &
@@ -277,6 +281,7 @@
      &    color_param%bg_rgba_real, map_data%fill_flag,                 &
      &    map_data%tangent_cylinder_radius(2), map_data%d_map,          &
      &    pvr_rgb%rgba_real_gl)
+      call dealloc_map_patch_from_1patch(map_e1)
 !
       call fill_background                                              &
      &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
