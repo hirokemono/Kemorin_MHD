@@ -29,6 +29,11 @@
 !!        real(kind = kreal), intent(in) :: phi_shift(psf_nod%numnod)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!        type(map_patches_for_1patch), intent(inout) :: map_e
+!!
+!!      subroutine set_flame_color(flag_fill, bg_color, flame_color)
+!!        logical, intent(in) :: flag_fill
+!!        real(kind = kreal), intent(in) :: bg_color(4)
+!!        real(kind = kreal), intent(inout) :: flame_color(4)
 !!@endverbatim
       module draw_lines_on_map
 !
@@ -50,7 +55,7 @@
       subroutine draw_radius_grid(psf_nod, psf_ele, map_data,           &
      &          bg_color, ref_r, pvr_rgb, map_e)
 !
-      use set_scalar_on_xyz_plane
+      use draw_xyz_plane_isolines
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -61,13 +66,13 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
-      integer(kind = kint), parameter :: idots =  0
-      integer(kind = kint), parameter :: nwidth = 3
+      integer(kind = kint) :: nwidth
       real(kind = kreal) :: color_ref(4)
 !
+      nwidth = int(2 * map_data%width_grid)
       call set_flame_color(map_data%fill_flag, bg_color, color_ref)
       call sel_draw_isoline_on_xyz_plane                                &
-     &   (psf_nod, psf_ele, psf_nod%rr(1), nwidth, idots,               &
+     &   (psf_nod, psf_ele, psf_nod%rr(1), nwidth, izero,               &
      &    map_data, ref_r, color_ref, pvr_rgb, map_e)
 !
       end subroutine draw_radius_grid
@@ -88,20 +93,20 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
-      integer(kind = kint), parameter :: idots =  0
-      integer(kind = kint), parameter :: nwidth = 3
+      integer(kind = kint) :: nwidth
       real(kind = kreal) :: pi
       real(kind = kreal) :: color_ref(4)
 !
 !
+      nwidth = int(2 * map_data%width_grid)
       call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
       pi = four * atan(one)
       call draw_isoline_on_map_image                                    &
-     &   (psf_nod, psf_ele, phi_shift(1), map_data, nwidth, idots,      &
+     &   (psf_nod, psf_ele, phi_shift(1), map_data, nwidth, izero,      &
      &    (-pi), color_ref, pvr_rgb, map_e)
       call draw_isoline_on_map_image                                    &
-     &   (psf_nod, psf_ele, phi_shift(1), map_data, nwidth, idots,      &
+     &   (psf_nod, psf_ele, phi_shift(1), map_data, nwidth, izero,      &
      &    pi, color_ref, pvr_rgb, map_e)
 !
       end subroutine draw_mapflame
@@ -122,21 +127,22 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
-      integer(kind = kint), parameter :: idots =  3
-      integer(kind = kint), parameter :: nwidth = 1
+      integer(kind = kint) :: idots
       integer(kind = kint) :: ii
       real(kind = kreal) :: phi_ref, pi
       real(kind = kreal) :: color_ref(4)
 !
 !
+      idots = int(2 * map_data%width_grid)
       call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
       pi = four * atan(one)
       do ii = 1, 5
         phi_ref = pi * dble(ii-3) / 3.0d0
         call draw_isoline_on_map_image                                  &
-     &     (psf_nod, psf_ele, phi_shift(1), map_data, nwidth, idots,    &
-     &      phi_ref, color_ref, pvr_rgb, map_e)
+     &     (psf_nod, psf_ele, phi_shift(1), map_data,                   &
+     &      int(map_data%width_grid), idots, phi_ref, color_ref,        &
+     &      pvr_rgb, map_e)
       end do
 !
       end subroutine draw_longitude_grid
@@ -156,20 +162,21 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
-      integer(kind = kint), parameter :: idots =  3
-      integer(kind = kint), parameter :: nwidth = 1
+      integer(kind = kint) :: idots
       integer(kind = kint) :: jj
       real(kind = kreal) :: theta_ref, pi
       real(kind = kreal) :: color_ref(4)
 !
+      idots = int(2* map_data%width_grid)
       call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
       pi = four * atan(one)
       do jj = 1, 5
         theta_ref = pi * dble(jj) / 6.0d0
         call draw_isoline_on_map_image                                  &
-     &    (psf_nod, psf_ele, psf_nod%theta(1), map_data, nwidth, idots, &
-     &     theta_ref, color_ref, pvr_rgb, map_e)
+     &    (psf_nod, psf_ele, psf_nod%theta(1), map_data,                &
+     &     int(map_data%width_grid), idots, theta_ref, color_ref,       &
+     &     pvr_rgb, map_e)
       end do
 !
       end subroutine draw_latitude_grid
@@ -190,12 +197,13 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
-      integer(kind = kint), parameter :: idots =  4
-      integer(kind = kint), parameter :: nwidth = 3
+      integer(kind = kint) :: idots, nwidth
       real(kind = kreal) :: color_ref(4)
 !
       call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
+      nwidth = int(2 * map_data%width_grid)
+      idots =  int(4 * map_data%width_grid)
       call draw_isoline_on_map_image                                    &
      &   (psf_nod, psf_ele, psf_nod%theta(1), map_data, nwidth, idots,  &
      &     theta_ref(1), color_ref, pvr_rgb, map_e)
@@ -210,7 +218,7 @@
       subroutine draw_med_tangent_cyl_grid(psf_nod, psf_ele, map_data,  &
      &          bg_color, radius_ICB, pvr_rgb, map_e)
 !
-      use set_scalar_on_xyz_plane
+      use draw_xyz_plane_isolines
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -221,11 +229,11 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
-!
-      integer(kind = kint), parameter :: idots =  6
-      integer(kind = kint), parameter :: nwidth = 3
+      integer(kind = kint) :: idots, nwidth
       real(kind = kreal) :: color_ref(4)
 !
+      nwidth = int(2 * map_data%width_grid)
+      idots =  int(4 * map_data%width_grid)
       call set_flame_color(map_data%fill_flag, bg_color, color_ref)
       call sel_draw_isoline_on_xyz_plane                                &
      &   (psf_nod, psf_ele, psf_nod%xx(1,1), nwidth, idots,             &

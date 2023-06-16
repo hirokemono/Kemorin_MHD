@@ -66,6 +66,8 @@
      &                   :: black(4) = (/zero,zero,zero,one/)
       real(kind = kreal), parameter                                     &
      &                   :: white(4) = (/one,one,one,one/)
+      real(kind = kreal) :: color_ref(4)
+!
       real(kind = kreal), allocatable :: phi_shift(:)
       real(kind = kreal) :: pi
       integer(kind = kint) :: i
@@ -80,9 +82,9 @@
         call set_scalar_on_map_image(color_param, psf_nod, psf_ele,     &
      &      psf_phys%d_fld(1,1), map_data, pvr_rgb, map_e1)
         if(map_data%flag_zeroline .and. (map_data%num_line.le.0)) then
-          call draw_isoline_on_map_image                                &
-     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), map_data, 3, 0,    &
-     &        zero, black, pvr_rgb, map_e1)
+          call draw_aitoff_map_zeroline                                 &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), map_data,          &
+     &        black, pvr_rgb, map_e1)
         end if
       else
         call fill_map_one_color                                         &
@@ -97,9 +99,11 @@
 !
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
-          call draw_isoline_on_map_image                                &
-     &       (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data, 2, 0,    &
-     &        zero, white, pvr_rgb, map_e1)
+          call set_flame_color                                          &
+     &       (map_data%fill_flag, color_param%bg_rgba_real, color_ref)
+          call draw_aitoff_map_zeroline                                 &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data,          &
+     &        white, pvr_rgb, map_e1)
         end if
       end if
 !
@@ -151,8 +155,7 @@
      &          psf_phys, color_param, cbar_param, map_data, pvr_rgb)
 !
       use set_scalar_on_xyz_plane
-      use draw_pixels_on_map
-      use draw_lines_on_map
+      use draw_xyz_plane_isolines
       use draw_pvr_colorbar
       use cal_mesh_position
 !
@@ -171,6 +174,7 @@
      &                   :: black(4) = (/zero,zero,zero,one/)
       real(kind = kreal), parameter                                     &
      &                   :: white(4) = (/one,one,one,one/)
+      real(kind = kreal) :: color_ref(4)
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -183,9 +187,9 @@
      &      map_data, pvr_rgb, map_e1)
 !
         if(map_data%flag_zeroline .and. (map_data%num_line.le.0)) then
-          call sel_draw_isoline_on_xyz_plane                            &
-     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), 3, 0,              &
-     &        map_data, zero, black, pvr_rgb, map_e1)
+          call draw_xyz_plane_zeroline                                  &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), map_data,          &
+     &        black, pvr_rgb, map_e1)
         end if
       else
         call fill_map_one_color                                         &
@@ -194,14 +198,16 @@
       end if
 !
       if(map_data%num_line .gt. 0) then
-        call draw_xyz_plane_isolines                                    &
+        call s_draw_xyz_plane_isolines                                  &
      &     (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data,            &
      &      color_param, pvr_rgb, map_e1)
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
-          call sel_draw_isoline_on_xyz_plane                            &
-     &       (psf_nod, psf_ele, psf_phys%d_fld(1,2), 3, 0,              &
-     &        map_data, zero, white, pvr_rgb, map_e1)
+          call set_flame_color                                          &
+     &       (map_data%fill_flag, color_param%bg_rgba_real, color_ref)
+          call draw_xyz_plane_zeroline                                  &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data,          &
+     &        white, pvr_rgb, map_e1)
         end if
       end if
 !

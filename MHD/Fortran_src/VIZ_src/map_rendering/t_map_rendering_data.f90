@@ -61,6 +61,9 @@
         real(kind= kreal) :: dmin_isoline
         real(kind= kreal) :: dmax_isoline
 !
+        real(kind = kreal) :: width_isoline = 1.5d0
+        real(kind = kreal) :: width_grid =    1.0d0
+!
         integer(kind = kint) :: iflag_2d_projection_mode = 0
         integer(kind = kint) :: iflag_isoline_color = 0
 !
@@ -149,6 +152,18 @@
      &        = map_define_ctl%isoline_range_ctl%realvalue(1)
         map_data%dmax_isoline                                           &
      &        = map_define_ctl%isoline_range_ctl%realvalue(2)
+      end if
+!
+      map_data%width_isoline = 1.5d0
+      if(map_define_ctl%isoline_width_ctl%iflag .gt. 0) then
+        map_data%width_isoline                                          &
+     &        = map_define_ctl%isoline_width_ctl%realvalue
+      end if
+!
+      map_data%width_grid = 1.0d0
+      if(map_define_ctl%grid_width_ctl%iflag .gt. 0) then
+        map_data%width_grid                                             &
+     &        = map_define_ctl%grid_width_ctl%realvalue
       end if
 !
       map_data%iflag_isoline_color = iflag_black
