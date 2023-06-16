@@ -208,9 +208,9 @@
 !
       pi = four * atan(one)
       call draw_meridional_grid_on_aitoff(nwidth, idots, nstep,       &
-     &    map_data, zero, color_ref, pvr_rgb)
+     &    map_data, (-pi), color_ref, pvr_rgb)
       call draw_meridional_grid_on_aitoff(nwidth, idots, nstep,       &
-     &    map_data, two*pi, color_ref, pvr_rgb)
+     &    map_data, pi, color_ref, pvr_rgb)
 !
       end subroutine draw_mapflame
 !
@@ -234,7 +234,7 @@
 !
       pi = four * atan(one)
       do ii = 1, 5
-        phi_ref = pi * dble(ii) / 3.0d0
+        phi_ref = pi * dble(ii-3) / 3.0d0
         call draw_meridional_grid_on_aitoff(nwidth, idots, nstep,       &
      &      map_data, phi_ref, color_ref, pvr_rgb)
       end do
@@ -243,57 +243,76 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_latitude_grid(map_data, bg_color, pvr_rgb)
+      subroutine draw_latitude_grid(psf_nod, psf_ele, map_data,         &
+     &          bg_color, flag_fill, pvr_rgb, map_e)
 !
       use draw_aitoff_map
 !
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: bg_color(4)
+      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  3
       integer(kind = kint), parameter :: nwidth = 1
-      integer(kind = kint), parameter :: nstep =  256
       integer(kind = kint) :: jj
       real(kind = kreal) :: theta_ref, pi
       real(kind = kreal) :: color_ref(4)
 !
-      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
+      call set_flame_color(flag_fill, bg_color, color_ref)
 !
       pi = four * atan(one)
       do jj = 1, 5
         theta_ref = pi * dble(jj) / 6.0d0
-        call draw_zonal_grid_on_aitoff(nwidth, idots, nstep,            &
-     &      map_data, theta_ref, color_ref, pvr_rgb)
+        call draw_isoline_on_map_image                                  &
+     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
+     &      map_data%xmin_frame, map_data%xmax_frame,                   &
+     &      map_data%ymin_frame, map_data%ymax_frame,                   &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      theta_ref, color_ref, pvr_rgb%rgba_real_gl, map_e)
       end do
 !
       end subroutine draw_latitude_grid
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_map_tangent_cyl_grid(map_data,  &
-     &          bg_color, theta_ref, pvr_rgb)
+      subroutine draw_map_tangent_cyl_grid(psf_nod, psf_ele, map_data,  &
+     &          bg_color, flag_fill, theta_ref, pvr_rgb, map_e)
 !
       use draw_aitoff_map
 !
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: theta_ref(2)
       real(kind = kreal), intent(in) :: bg_color(4)
+      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  4
       integer(kind = kint), parameter :: nwidth = 3
-      integer(kind = kint), parameter :: nstep =  256
       real(kind = kreal) :: color_ref(4)
 !
-      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
+      call set_flame_color(flag_fill, bg_color, color_ref)
 !
-        call draw_zonal_grid_on_aitoff(nwidth, idots, nstep,            &
-     &      map_data, theta_ref(1), color_ref, pvr_rgb)
-        call draw_zonal_grid_on_aitoff(nwidth, idots, nstep,            &
-     &      map_data, theta_ref(2), color_ref, pvr_rgb)
+        call draw_isoline_on_map_image                                  &
+     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
+     &      map_data%xmin_frame, map_data%xmax_frame,                   &
+     &      map_data%ymin_frame, map_data%ymax_frame,                   &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      theta_ref(1), color_ref, pvr_rgb%rgba_real_gl, map_e)
+        call draw_isoline_on_map_image                                  &
+     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
+     &      map_data%xmin_frame, map_data%xmax_frame,                   &
+     &      map_data%ymin_frame, map_data%ymax_frame,                   &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      theta_ref(2), color_ref, pvr_rgb%rgba_real_gl, map_e)
 !
       end subroutine draw_map_tangent_cyl_grid
 !
