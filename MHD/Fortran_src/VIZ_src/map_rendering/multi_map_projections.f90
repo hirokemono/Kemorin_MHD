@@ -129,7 +129,7 @@
         call collect_psf_scalar(map_rgb(i_map)%irank_image_file, ione,  &
      &      psf_mesh(i_map)%node, psf_mesh(i_map)%field,                &
      &      psf_dat(i_map)%psf_phys%d_fld(1,1), SR_sig)
-        call collect_psf_scalar(map_rgb(i_map)%irank_image_file, ione,  &
+        call collect_psf_scalar(map_rgb(i_map)%irank_image_file, itwo,  &
      &      psf_mesh(i_map)%node, psf_mesh(i_map)%field,                &
      &      psf_dat(i_map)%psf_phys%d_fld(1,2), SR_sig)
       end do
