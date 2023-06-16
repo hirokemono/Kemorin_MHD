@@ -108,35 +108,31 @@
      &        zero, white, pvr_rgb%rgba_real_gl, map_e1)
         end if
       end if
-      call dealloc_map_patch_from_1patch(map_e1)
 !
       call map_value_to_colatitude                                      &
      &   (map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
-      call draw_latitude_grid                                           &
-     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+      call draw_latitude_grid(psf_nod, psf_ele, map_data,               &
      &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    map_data%d_map, pvr_rgb%rgba_real_gl)
+     &    pvr_rgb, map_e1)
       if(map_data%flag_tangent_cylinder) then
-        call draw_map_tangent_cyl_grid                                  &
-     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+        call draw_map_tangent_cyl_grid(psf_nod, psf_ele, map_data,      &
      &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    map_data%tangent_cylinder_theta, map_data%d_map,              &
-     &    pvr_rgb%rgba_real_gl)
+     &    map_data%tangent_cylinder_theta, pvr_rgb, map_e1)
       end if
 !
       call map_value_to_longitude                                       &
      &   (map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
-      call draw_longitude_grid                                          &
-     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+      call draw_longitude_grid(psf_nod, psf_ele, map_data,              &
      &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    map_data%d_map, pvr_rgb%rgba_real_gl)
-      call draw_mapflame(pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),  &
-     &                   color_param%bg_rgba_real, map_data%fill_flag,  &
-     &                   map_data%d_map, pvr_rgb%rgba_real_gl)
+     &    pvr_rgb, map_e1)
+      call draw_mapflame(psf_nod, psf_ele, map_data,                    &
+     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
+     &    pvr_rgb, map_e1)
+      call dealloc_map_patch_from_1patch(map_e1)
 !
       call fill_background                                              &
      &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
@@ -183,7 +179,6 @@
      &                   :: black(4) = (/zero,zero,zero,one/)
       real(kind = kreal), parameter                                     &
      &                   :: white(4) = (/one,one,one,one/)
-      real(kind = kreal) :: flame_color(4)
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -222,51 +217,19 @@
      &   .or. map_data%iflag_2d_projection_mode .eq. iflag_xz_plane     &
      &  ) then
         if(map_data%flag_tangent_cylinder) then
-          call set_flame_color(map_data%fill_flag, color_param%bg_rgba_real,     &
-     &                        flame_color)
-          call sel_draw_isoline_on_xyz_plane                            &
-     &       (psf_nod, psf_ele, psf_nod%xx(1,1), 4, 0,                  &
-     &        map_data, map_data%tangent_cylinder_radius(2),            &
-     &        flame_color, pvr_rgb, map_e1)
-!          call map_value_to_projected_x                                &
-!     &       (map_data%xmin_frame, map_data%xmax_frame,                &
-!     &        map_data%ymin_frame, map_data%ymax_frame,                &
-!     &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),            &
-!     &        map_data%d_map)
-!          call draw_med_tangent_cyl_grid                               &
-!     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),            &
-!     &        color_param%bg_rgba_real, map_data%fill_flag,            &
-!     &        map_data%tangent_cylinder_radius(2), map_data%d_map,     &
-!     &        pvr_rgb%rgba_real_gl)
+          call draw_med_tangent_cyl_grid(psf_nod, psf_ele, map_data,    &
+     &        color_param%bg_rgba_real, map_data%fill_flag,             &
+     &        map_data%tangent_cylinder_radius(2), pvr_rgb, map_e1)
         end if
       end if
 !
-!      call map_value_to_projected_r                                    &
-!     &   (map_data%xmin_frame, map_data%xmax_frame,                    &
-!     &    map_data%ymin_frame, map_data%ymax_frame,                    &
-!     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
-!
-      call set_flame_color(map_data%fill_flag, color_param%bg_rgba_real, &
-     &                     flame_color)
-      call sel_draw_isoline_on_xyz_plane                                &
-     &   (psf_nod, psf_ele, psf_nod%rr(1), 4, 0,                        &
-     &    map_data, map_data%tangent_cylinder_radius(2),                &
-     &    flame_color, pvr_rgb, map_e1)
-      call sel_draw_isoline_on_xyz_plane                                &
-     &   (psf_nod, psf_ele, psf_nod%rr(1), 4, 0,                        &
-     &    map_data, map_data%tangent_cylinder_radius(2),                &
-     &    flame_color, pvr_rgb, map_e1)
+      call draw_radius_grid(psf_nod, psf_ele, map_data,                 &
+     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
+     &    map_data%tangent_cylinder_radius(2), pvr_rgb, map_e1)
+      call draw_radius_grid(psf_nod, psf_ele, map_data,                 &
+     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
+     &    map_data%tangent_cylinder_radius(1), pvr_rgb, map_e1)
       call dealloc_map_patch_from_1patch(map_e1)
-!      call draw_radius_grid                                            &
-!     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                &
-!     &    color_param%bg_rgba_real, map_data%fill_flag,                &
-!     &    map_data%tangent_cylinder_radius(1), map_data%d_map,         &
-!     &    pvr_rgb%rgba_real_gl)
-!      call draw_radius_grid                                            &
-!     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                &
-!     &    color_param%bg_rgba_real, map_data%fill_flag,                &
-!     &    map_data%tangent_cylinder_radius(2), map_data%d_map,         &
-!     &    pvr_rgb%rgba_real_gl)
 !
       call fill_background                                              &
      &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &

@@ -7,12 +7,6 @@
 !>@brief Subroutines to draw lines on map
 !!
 !!@verbatim
-!!      subroutine map_value_to_projected_x                             &
-!!     &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
-!!     &          nxpixel, nypixel, x_map)
-!!      subroutine map_value_to_projected_r                             &
-!!     &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
-!!     &          nxpixel, nypixel, r_map)
 !!      subroutine map_value_to_longitude                               &
 !!     &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
 !!     &          nxpixel, nypixel, phi_map)
@@ -36,72 +30,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine map_value_to_projected_x                               &
-     &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
-     &          nxpixel, nypixel, x_map)
-!
-      use aitoff
-!
-      real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
-      real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
-!
-      real(kind = kreal), intent(inout) :: x_map(nxpixel*nypixel)
-!
-      integer(kind = kint) :: i_img, i, j
-      real(kind = kreal) :: x_pix1
-      real(kind = kreal) :: theta(1), phi(1)
-!
-!
-!$omp parallel do private(i,j,x_pix1,i_img,theta,phi)
-      do j = 1, nypixel-1
-        do i = 1, nxpixel-1
-          x_pix1 = xmin_frame + (xmax_frame - xmin_frame)               &
-     &                         * dble(i-1) / dble(nxpixel-1)
-          i_img = i + (j-1) * nxpixel
-          x_map(i_img) = x_pix1
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine map_value_to_projected_x
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine map_value_to_projected_r                               &
-     &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
-     &          nxpixel, nypixel, r_map)
-!
-      use aitoff
-!
-      real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
-      real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
-!
-      real(kind = kreal), intent(inout) :: r_map(nxpixel*nypixel)
-!
-      integer(kind = kint) :: i_img, i, j
-      real(kind = kreal) :: x_pix1, y_pix1
-      real(kind = kreal) :: theta(1), phi(1)
-!
-!
-!$omp parallel do private(i,j,x_pix1,y_pix1,i_img,theta,phi)
-      do j = 1, nypixel-1
-        do i = 1, nxpixel-1
-          x_pix1 = xmin_frame + (xmax_frame - xmin_frame)               &
-     &                         * dble(i-1) / dble(nxpixel-1)
-          y_pix1 = ymin_frame + (ymax_frame - ymin_frame)               &
-     &                         * dble(j-1) / dble(nypixel-1)
-          i_img = i + (j-1) * nxpixel
-          r_map(i_img) = sqrt(x_pix1**2 + y_pix1**2)
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine map_value_to_projected_r
 !
 !  ---------------------------------------------------------------------
 !

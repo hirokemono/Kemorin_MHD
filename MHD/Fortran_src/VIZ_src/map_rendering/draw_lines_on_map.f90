@@ -63,6 +63,10 @@
 !
       use m_precision
       use m_constants
+      use t_geometry_data
+      use t_map_patch_from_1patch
+      use t_map_rendering_data
+      use t_pvr_image_array
 !
       implicit  none
 !
@@ -157,72 +161,86 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_radius_grid(nxpixel, nypixel,                     &
-     &          bg_color, flag_fill, ref_r, r_map, rgba)
+      subroutine draw_radius_grid(psf_nod, psf_ele, map_data,           &
+     &          bg_color, flag_fill, ref_r, pvr_rgb, map_e)
 !
-      use draw_pixels_on_map
+      use set_scalar_on_xyz_plane
 !
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
+      type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: ref_r
-      real(kind = kreal), intent(in) :: r_map(nxpixel*nypixel)
       real(kind = kreal), intent(in) :: bg_color(4)
       logical, intent(in) :: flag_fill
 !
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  0
-      integer(kind = kint), parameter :: nwidth = 2
+      integer(kind = kint), parameter :: nwidth = 3
       real(kind = kreal) :: color_ref(4)
 !
       call set_flame_color(flag_fill, bg_color, color_ref)
-!
-      call draw_isoline_on_pixel(nxpixel, nypixel, nwidth, idots,       &
-     &    ref_r, color_ref, r_map, rgba)
+      call sel_draw_isoline_on_xyz_plane                                &
+     &   (psf_nod, psf_ele, psf_nod%rr(1), nwidth, idots,               &
+     &    map_data, ref_r, color_ref, pvr_rgb, map_e)
 !
       end subroutine draw_radius_grid
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_mapflame(nxpixel, nypixel, bg_color, flag_fill,   &
-     &                         phi_map, rgba)
+      subroutine draw_mapflame(psf_nod, psf_ele, map_data,              &
+     &          bg_color, flag_fill, pvr_rgb, map_e)
 !
       use draw_pixels_on_map
 !
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
-      real(kind = kreal), intent(in) :: phi_map(nxpixel*nypixel)
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
+      type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: bg_color(4)
       logical, intent(in) :: flag_fill
 !
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  0
-      integer(kind = kint), parameter :: nwidth = 4
+      integer(kind = kint), parameter :: nwidth = 3
       real(kind = kreal) :: pi
       real(kind = kreal) :: color_ref(4)
 !
       call set_flame_color(flag_fill, bg_color, color_ref)
 !
       pi = four * atan(one)
-      call draw_isoline_on_pixel(nxpixel, nypixel, nwidth,              &
-     &    idots, (-pi), color_ref, phi_map, rgba)
-      call draw_isoline_on_pixel(nxpixel, nypixel, nwidth,              &
-     &    idots, pi, color_ref, phi_map, rgba)
+      call draw_isoline_on_map_image                                    &
+     &   (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,              &
+     &    map_data%xmin_frame, map_data%xmax_frame,                     &
+     &    map_data%ymin_frame, map_data%ymax_frame,                     &
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    (-pi), color_ref, pvr_rgb%rgba_real_gl, map_e)
+      call draw_isoline_on_map_image                                    &
+     &   (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,              &
+     &    map_data%xmin_frame, map_data%xmax_frame,                     &
+     &    map_data%ymin_frame, map_data%ymax_frame,                     &
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    pi, color_ref, pvr_rgb%rgba_real_gl, map_e)
 !
       end subroutine draw_mapflame
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_longitude_grid(nxpixel, nypixel,                  &
-     &          bg_color, flag_fill, phi_map, rgba)
+      subroutine draw_longitude_grid(psf_nod, psf_ele, map_data,        &
+     &          bg_color, flag_fill, pvr_rgb, map_e)
 !
       use draw_pixels_on_map
 !
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
-      real(kind = kreal), intent(in) :: phi_map(nxpixel*nypixel)
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
+      type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: bg_color(4)
       logical, intent(in) :: flag_fill
 !
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  3
       integer(kind = kint), parameter :: nwidth = 1
@@ -235,25 +253,31 @@
       pi = four * atan(one)
       do ii = 1, 5
         phi_ref = pi * dble(ii-3) / 3.0d0
-        call draw_isoline_on_pixel(nxpixel, nypixel, nwidth, idots,     &
-     &      phi_ref, color_ref, phi_map, rgba)
+        call draw_isoline_on_map_image                                  &
+     &     (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,            &
+     &      map_data%xmin_frame, map_data%xmax_frame,                   &
+     &      map_data%ymin_frame, map_data%ymax_frame,                   &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      phi_ref, color_ref, pvr_rgb%rgba_real_gl, map_e)
       end do
 !
       end subroutine draw_longitude_grid
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_latitude_grid(nxpixel, nypixel,                   &
-     &          bg_color, flag_fill, theta_map, rgba)
+      subroutine draw_latitude_grid(psf_nod, psf_ele, map_data,         &
+     &          bg_color, flag_fill, pvr_rgb, map_e)
 !
       use draw_pixels_on_map
 !
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
-      real(kind = kreal), intent(in) :: theta_map(nxpixel*nypixel)
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
+      type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: bg_color(4)
       logical, intent(in) :: flag_fill
 !
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  3
       integer(kind = kint), parameter :: nwidth = 1
@@ -266,26 +290,32 @@
       pi = four * atan(one)
       do jj = 1, 5
         theta_ref = pi * dble(jj) / 6.0d0
-        call draw_isoline_on_pixel(nxpixel, nypixel, nwidth, idots,     &
-     &      theta_ref, color_ref, theta_map, rgba)
+        call draw_isoline_on_map_image                                  &
+     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
+     &      map_data%xmin_frame, map_data%xmax_frame,                   &
+     &      map_data%ymin_frame, map_data%ymax_frame,                   &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      theta_ref, color_ref, pvr_rgb%rgba_real_gl, map_e)
       end do
 !
       end subroutine draw_latitude_grid
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_map_tangent_cyl_grid(nxpixel, nypixel,            &
-     &          bg_color, flag_fill, theta_ref, theta_map, rgba)
+      subroutine draw_map_tangent_cyl_grid(psf_nod, psf_ele, map_data,  &
+     &          bg_color, flag_fill, theta_ref, pvr_rgb, map_e)
 !
       use draw_pixels_on_map
 !
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
+      type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: theta_ref(2)
-      real(kind = kreal), intent(in) :: theta_map(nxpixel*nypixel)
       real(kind = kreal), intent(in) :: bg_color(4)
       logical, intent(in) :: flag_fill
 !
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  4
       integer(kind = kint), parameter :: nwidth = 3
@@ -293,38 +323,47 @@
 !
       call set_flame_color(flag_fill, bg_color, color_ref)
 !
-      call draw_isoline_on_pixel(nxpixel, nypixel, nwidth, idots,       &
-     &    theta_ref(1), color_ref, theta_map, rgba)
-      call draw_isoline_on_pixel(nxpixel, nypixel, nwidth, idots,       &
-     &    theta_ref(2), color_ref, theta_map, rgba)
+        call draw_isoline_on_map_image                                  &
+     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
+     &      map_data%xmin_frame, map_data%xmax_frame,                   &
+     &      map_data%ymin_frame, map_data%ymax_frame,                   &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      theta_ref(1), color_ref, pvr_rgb%rgba_real_gl, map_e)
+        call draw_isoline_on_map_image                                  &
+     &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
+     &      map_data%xmin_frame, map_data%xmax_frame,                   &
+     &      map_data%ymin_frame, map_data%ymax_frame,                   &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      theta_ref(2), color_ref, pvr_rgb%rgba_real_gl, map_e)
 !
       end subroutine draw_map_tangent_cyl_grid
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_med_tangent_cyl_grid(nxpixel, nypixel,            &
-     &          bg_color, flag_fill, radius_ICB, x_map, rgba)
+      subroutine draw_med_tangent_cyl_grid(psf_nod, psf_ele, map_data,  &
+     &          bg_color, flag_fill, radius_ICB, pvr_rgb, map_e)
 !
       use draw_pixels_on_map
 !
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
+      type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: radius_ICB
-      real(kind = kreal), intent(in) :: x_map(nxpixel*nypixel)
       real(kind = kreal), intent(in) :: bg_color(4)
       logical, intent(in) :: flag_fill
 !
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
-      integer(kind = kint), parameter :: idots =  4
+!
+      integer(kind = kint), parameter :: idots =  6
       integer(kind = kint), parameter :: nwidth = 3
       real(kind = kreal) :: color_ref(4)
 !
       call set_flame_color(flag_fill, bg_color, color_ref)
-!
-      call draw_isoline_on_pixel(nxpixel, nypixel, nwidth, idots,       &
-     &    (-radius_ICB), color_ref, x_map, rgba)
-      call draw_isoline_on_pixel(nxpixel, nypixel, nwidth, idots,       &
-     &    radius_ICB, color_ref, x_map, rgba)
+      call sel_draw_isoline_on_xyz_plane                                &
+     &   (psf_nod, psf_ele, psf_nod%xx(1,1), nwidth, idots,             &
+     &    map_data, radius_ICB, color_ref, pvr_rgb, map_e)
 !
       end subroutine draw_med_tangent_cyl_grid
 !
