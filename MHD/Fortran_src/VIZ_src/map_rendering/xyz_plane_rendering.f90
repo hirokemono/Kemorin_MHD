@@ -113,13 +113,12 @@
      &   (map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
-      call draw_latitude_grid(psf_nod, psf_ele, map_data,               &
-     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    pvr_rgb, map_e1)
+      call draw_latitude_grid(map_data, color_param%bg_rgba_real,       &
+     &                        pvr_rgb)
       if(map_data%flag_tangent_cylinder) then
-        call draw_map_tangent_cyl_grid(psf_nod, psf_ele, map_data,      &
-     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    map_data%tangent_cylinder_theta, pvr_rgb, map_e1)
+        call draw_map_tangent_cyl_grid                                  &
+     &     (map_data, color_param%bg_rgba_real,                         &
+     &      map_data%tangent_cylinder_theta, pvr_rgb)
       end if
 !
       call map_value_to_longitude                                       &
