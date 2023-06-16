@@ -207,22 +207,26 @@
       integer(kind = kint), parameter :: nwidth = 3
       real(kind = kreal) :: pi
       real(kind = kreal) :: color_ref(4)
+      real(kind = kreal), allocatable :: phi_shift(:)
 !
       call set_flame_color(flag_fill, bg_color, color_ref)
 !
       pi = four * atan(one)
+      allocate(phi_shift(psf_nod%numnod))
+      phi_shift(1:psf_nod%numnod) = psf_nod%phi(1:psf_nod%numnod) - pi
       call draw_isoline_on_map_image                                    &
-     &   (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,              &
+     &   (psf_nod, psf_ele, phi_shift(1), nwidth, idots,                &
      &    map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
      &    (-pi), color_ref, pvr_rgb%rgba_real_gl, map_e)
       call draw_isoline_on_map_image                                    &
-     &   (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,              &
+     &   (psf_nod, psf_ele, phi_shift(1), nwidth, idots,                &
      &    map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
      &    pi, color_ref, pvr_rgb%rgba_real_gl, map_e)
+      deallocate(phi_shift)
 !
       end subroutine draw_mapflame
 !
@@ -247,19 +251,25 @@
       integer(kind = kint) :: ii
       real(kind = kreal) :: phi_ref, pi
       real(kind = kreal) :: color_ref(4)
+      real(kind = kreal), allocatable :: phi_shift(:)
+!
 !
       call set_flame_color(flag_fill, bg_color, color_ref)
 !
       pi = four * atan(one)
+      allocate(phi_shift(psf_nod%numnod))
+      phi_shift(1:psf_nod%numnod) = psf_nod%phi(1:psf_nod%numnod) - pi
+!
       do ii = 1, 5
         phi_ref = pi * dble(ii-3) / 3.0d0
         call draw_isoline_on_map_image                                  &
-     &     (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,            &
+     &     (psf_nod, psf_ele, phi_shift(1), nwidth, idots,              &
      &      map_data%xmin_frame, map_data%xmax_frame,                   &
      &      map_data%ymin_frame, map_data%ymax_frame,                   &
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      phi_ref, color_ref, pvr_rgb%rgba_real_gl, map_e)
       end do
+      deallocate(phi_shift)
 !
       end subroutine draw_longitude_grid
 !
