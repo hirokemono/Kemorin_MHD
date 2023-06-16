@@ -208,12 +208,19 @@
       real(kind = kreal) :: pi
       real(kind = kreal) :: color_ref(4)
       real(kind = kreal), allocatable :: phi_shift(:)
+      integer(kind = kint) :: i
 !
       call set_flame_color(flag_fill, bg_color, color_ref)
 !
       pi = four * atan(one)
       allocate(phi_shift(psf_nod%numnod))
-      phi_shift(1:psf_nod%numnod) = psf_nod%phi(1:psf_nod%numnod) - pi
+      do i = 1, psf_nod%numnod
+        if(psf_nod%xx(i,2) .ge. 0) then
+          phi_shift(i) = psf_nod%phi(i)
+        else
+          phi_shift(i) = pi - psf_nod%phi(i)
+        end if
+      end do
       call draw_isoline_on_map_image                                    &
      &   (psf_nod, psf_ele, phi_shift(1), nwidth, idots,                &
      &    map_data%xmin_frame, map_data%xmax_frame,                     &
@@ -248,7 +255,7 @@
 !
       integer(kind = kint), parameter :: idots =  3
       integer(kind = kint), parameter :: nwidth = 1
-      integer(kind = kint) :: ii
+      integer(kind = kint) :: ii, i
       real(kind = kreal) :: phi_ref, pi
       real(kind = kreal) :: color_ref(4)
       real(kind = kreal), allocatable :: phi_shift(:)
@@ -258,7 +265,13 @@
 !
       pi = four * atan(one)
       allocate(phi_shift(psf_nod%numnod))
-      phi_shift(1:psf_nod%numnod) = psf_nod%phi(1:psf_nod%numnod) - pi
+      do i = 1, psf_nod%numnod
+        if(psf_nod%xx(i,2) .ge. 0) then
+          phi_shift(i) = psf_nod%phi(i)
+        else
+          phi_shift(i) = pi - psf_nod%phi(i)
+        end if
+      end do
 !
       do ii = 1, 5
         phi_ref = pi * dble(ii-3) / 3.0d0
