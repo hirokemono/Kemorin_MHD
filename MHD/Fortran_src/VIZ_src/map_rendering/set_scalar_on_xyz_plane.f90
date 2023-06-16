@@ -251,8 +251,8 @@
      &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
 !
       use set_xyz_plot_from_1patch
-      use map_patch_from_1patch
-      use draw_pixels_on_map
+      use set_xyz_plot_from_1patch
+      use draw_isoline_in_triangle
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -291,8 +291,7 @@
 !
       use t_map_patch_from_1patch
       use set_xyz_plot_from_1patch
-      use map_patch_from_1patch
-      use draw_pixels_on_map
+      use draw_isoline_in_triangle
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -331,8 +330,7 @@
 !
       use t_map_patch_from_1patch
       use set_xyz_plot_from_1patch
-      use map_patch_from_1patch
-      use draw_pixels_on_map
+      use draw_isoline_in_triangle
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
