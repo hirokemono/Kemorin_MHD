@@ -67,11 +67,15 @@
      &                   :: black(4) = (/zero,zero,zero,one/)
       real(kind = kreal), parameter                                     &
      &                   :: white(4) = (/one,one,one,one/)
+      real(kind = kreal), allocatable :: phi_shift(:)
+      real(kind = kreal) :: pi
+      integer(kind = kint) :: i
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
 !
+      pi = four*atan(one)
       call alloc_map_patch_from_1patch(map_e1)
       if(map_data%fill_flag) then
         call set_scalar_on_map_image                                    &
@@ -126,12 +130,23 @@
      &   (map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
-      call draw_longitude_grid(psf_nod, psf_ele, map_data,              &
+!
+      allocate(phi_shift(psf_nod%numnod))
+      do i = 1, psf_nod%numnod
+        if(psf_nod%xx(i,2) .ge. 0) then
+          phi_shift(i) = psf_nod%phi(i)
+        else
+          phi_shift(i) = two*pi - psf_nod%phi(i)
+        end if
+      end do
+!
+      call draw_longitude_grid(psf_nod, psf_ele, phi_shift, map_data,   &
      &    color_param%bg_rgba_real, map_data%fill_flag,                 &
      &    pvr_rgb, map_e1)
-      call draw_mapflame(psf_nod, psf_ele, map_data,                    &
+      call draw_mapflame(psf_nod, psf_ele, phi_shift, map_data,         &
      &    color_param%bg_rgba_real, map_data%fill_flag,                 &
      &    pvr_rgb, map_e1)
+      deallocate(phi_shift)
       call dealloc_map_patch_from_1patch(map_e1)
 !
       call fill_background                                              &

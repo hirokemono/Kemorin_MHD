@@ -7,10 +7,11 @@
 !>@brief Fraw pixels on projected image
 !!
 !!@verbatim
-!!      subroutine fill_triangle_data_on_image                          &
-!!     &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
+!!      subroutine fill_triangle_data_on_image(color_param,             &
+!!     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
 !!     &          nxpixel, nypixel, k_ymin, k_ymid, k_ymax,             &
 !!     &          xy_patch, d_patch, d_map, rgba)
+!!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
 !!        real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
 !!        integer(kind = kint), intent(in) :: nxpixel, nypixel
@@ -44,8 +45,11 @@
 !
       use m_precision
       use m_constants
+      use m_geometry_constants
 !
       implicit  none
+!
+      private :: find_map_path_orientation
 !
 !  ---------------------------------------------------------------------
 !
@@ -53,28 +57,32 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine fill_triangle_data_on_image                            &
-     &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
-     &          nxpixel, nypixel, k_ymin, k_ymid, k_ymax,               &
-     &          xy_patch, d_patch, d_map, rgba)
+      subroutine fill_triangle_data_on_image(color_param,               &
+     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
+     &          nxpixel, nypixel, xy_patch, d_patch, rgba)
 !
+      use t_pvr_colormap_parameter
+      use set_color_4_pvr
+!
+      type(pvr_colormap_parameter), intent(in) :: color_param
       real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
       real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
       integer(kind = kint), intent(in) :: nxpixel, nypixel
-      integer(kind = kint), intent(in) :: k_ymin, k_ymid, k_ymax
       real(kind = kreal), intent(in) :: xy_patch(2,3)
       real(kind = kreal), intent(in) :: d_patch(3)
 !
-      real(kind = kreal), intent(inout) :: d_map(nxpixel*nypixel)
       real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !
+      integer(kind = kint) :: k_ymin, k_ymid, k_ymax
       integer(kind = kint) :: ix, iy, i_img
       integer(kind = kint) :: ix_min, ix_max
       integer(kind = kint) :: iy_min, iy_mid, iy_max
       integer(kind = kint) :: kmin, kmax
-      real(kind = kreal) :: x(2), d(2)
+      real(kind = kreal) :: x(2), d(2), d_map
       real(kind = kreal) :: ratio_ymid, ratio_ymax, ratio_x
 !
+!
+      call find_map_path_orientation(xy_patch, k_ymin, k_ymid, k_ymax)
 !
       iy_min = int(1 + dble(nypixel-1)                                  &
      &                * (xy_patch(2,k_ymin) - ymin_frame)               &
@@ -123,14 +131,23 @@
 !
         if(ix_max .gt. 0) then
           i_img = ix_min + (iy-1) * nxpixel
-          d_map(i_img) =  d(kmin)
+          call value_to_rgb(color_param%id_pvr_color(2),                &
+     &                      color_param%id_pvr_color(1),                &
+     &                      color_param%num_pvr_datamap_pnt,            &
+     &                      color_param%pvr_datamap_param,              &
+     &                      d(kmin), rgba(1,i_img))
           rgba(4,i_img) = one
         end if
 !
         do ix = ix_min+1, ix_max
           i_img = ix + (iy-1) * nxpixel
           ratio_x = dble(ix-ix_min) / dble(ix_max-ix_min)
-          d_map(i_img) = (one - ratio_x) * d(kmin) + ratio_x *  d(kmax)
+          d_map = (one - ratio_x) * d(kmin) + ratio_x * d(kmax)
+          call value_to_rgb(color_param%id_pvr_color(2),                &
+     &                      color_param%id_pvr_color(1),                &
+     &                      color_param%num_pvr_datamap_pnt,            &
+     &                      color_param%pvr_datamap_param,              &
+     &                      d_map, rgba(1,i_img))
           rgba(4,i_img) = one
         end do
       end do
@@ -169,14 +186,23 @@
 !
         if(ix_max .gt. 0) then
           i_img = ix_min + (iy-1) * nxpixel
-          d_map(i_img) =  d(kmin)
+          call value_to_rgb(color_param%id_pvr_color(2),                &
+     &                      color_param%id_pvr_color(1),                &
+     &                      color_param%num_pvr_datamap_pnt,            &
+     &                      color_param%pvr_datamap_param,              &
+     &                      d(kmin), rgba(1,i_img))
           rgba(4,i_img) = one
         end if
 !
         do ix = ix_min+1, ix_max
           i_img = ix + (iy-1) * nxpixel
           ratio_x = dble(ix-ix_min) / dble(ix_max-ix_min)
-          d_map(i_img) = (one - ratio_x) * d(kmin) + ratio_x *  d(kmax)
+          d_map = (one - ratio_x) * d(kmin) + ratio_x * d(kmax)
+          call value_to_rgb(color_param%id_pvr_color(2),                &
+     &                      color_param%id_pvr_color(1),                &
+     &                      color_param%num_pvr_datamap_pnt,            &
+     &                      color_param%pvr_datamap_param,              &
+     &                      d_map, rgba(1,i_img))
           rgba(4,i_img) = one
         end do
       end do
@@ -339,5 +365,48 @@
       end subroutine draw_isoline_on_pixel
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine find_map_path_orientation                              &
+     &         (xy_map, k_ymin, k_ymid, k_ymax)
+!
+      real(kind = kreal), intent(in) :: xy_map(2,num_triangle)
+      integer(kind = kint), intent(inout) :: k_ymin, k_ymid, k_ymax
+!
+!
+      if(      xy_map(2,1) .le. xy_map(2,2)                             &
+     &   .and. xy_map(2,1) .le. xy_map(2,3)) then
+        k_ymin = 1
+        if(xy_map(2,2) .le. xy_map(2,3)) then
+          k_ymid = 2
+          k_ymax = 3
+        else
+          k_ymid = 3
+          k_ymax = 2
+        end if
+      else if( xy_map(2,2) .le. xy_map(2,3)                             &
+     &   .and. xy_map(2,2) .le. xy_map(2,1)) then
+        k_ymin = 2
+        if(xy_map(2,3) .le. xy_map(2,1)) then
+          k_ymid = 3
+          k_ymax = 1
+        else
+          k_ymid = 1
+          k_ymax = 3
+        end if
+      else
+        k_ymin = 3
+        if(xy_map(2,1) .le. xy_map(2,2)) then
+          k_ymid = 1
+          k_ymax = 2
+        else
+          k_ymid = 2
+          k_ymax = 1
+        end if
+      end if
+!
+      end subroutine find_map_path_orientation
+!
+!-----------------------------------------------------------------------
 !
       end module draw_pixels_on_map

@@ -74,7 +74,6 @@
       type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint) :: iele, i
-      integer(kind = kint) :: k_ymin, k_ymid, k_ymax
 !
 !
       do iele = 1, psf_ele%numele
@@ -88,22 +87,14 @@
      &       (map_e%x_map_patch(1,1,i), map_e%rtp_map_patch(1,1,i))
           call patch_to_aitoff(map_e%rtp_map_patch(1,1,i),              &
      &                         map_e%xy_map(1,1,i))
-!
-          call find_map_path_orientation(map_e%xy_map(1,1,i),           &
-     &                                   k_ymin, k_ymid, k_ymax)
-          call fill_triangle_data_on_image                              &
-     &       (map_data%xmin_frame, map_data%xmax_frame,                 &
+          call fill_triangle_data_on_image(color_param,                 &
+     &        map_data%xmin_frame, map_data%xmax_frame,                 &
      &        map_data%ymin_frame, map_data%ymax_frame,                 &
      &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        k_ymin, k_ymid, k_ymax,                                   &
      &        map_e%xy_map(1,1,i), map_e%d_map_patch(1,i),              &
-     &        map_data%d_map, pvr_rgb%rgba_real_gl)
+     &        pvr_rgb%rgba_real_gl)
         end do
       end do
-!
-      call map_value_to_rgb                                             &
-     &   (color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),    &
-     &    map_data%d_map, pvr_rgb%rgba_real_gl)
 !
       end subroutine set_scalar_on_map_image
 !
