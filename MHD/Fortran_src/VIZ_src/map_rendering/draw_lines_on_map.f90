@@ -389,6 +389,7 @@
      &          map_data, phi_ref, color_ref, pvr_rgb)
 !
       use draw_isoline_in_triangle
+      use aitoff
 !
       integer(kind = kint), intent(in) :: nwidth, idots, nstep
       real(kind = kreal), intent(in) :: phi_ref
