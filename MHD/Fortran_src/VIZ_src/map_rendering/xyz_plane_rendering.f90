@@ -89,8 +89,7 @@
      &        map_data%xmin_frame, map_data%xmax_frame,                 &
      &        map_data%ymin_frame, map_data%ymax_frame,                 &
      &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        pvr_rgb%num_pixel_xy, zero, black, pvr_rgb%rgba_real_gl,  &
-     &        map_e1)
+     &        zero, black, pvr_rgb%rgba_real_gl, map_e1)
 !        call draw_zeroline                                             &
 !     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
 !     &      map_data%d_map, pvr_rgb%rgba_real_gl)
@@ -104,25 +103,35 @@
 !
       if(map_data%num_line .gt. 0) then
         call alloc_map_patch_from_1patch(map_e1)
-        call set_scalar_on_map_image                                    &
-     &     (psf_nod, psf_ele, psf_phys%d_fld(1,2),                      &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl, &
-     &      map_e1)
-        call dealloc_map_patch_from_1patch(map_e1)
+!        call set_scalar_on_map_image                                   &
+!     &     (psf_nod, psf_ele, psf_phys%d_fld(1,2),                     &
+!     &      map_data%xmin_frame, map_data%xmax_frame,                  &
+!     &      map_data%ymin_frame, map_data%ymax_frame,                  &
+!     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
+!     &      pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl,&
+!     &      map_e1)
 !
-        call draw_isolines                                              &
-     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      map_data, color_param, pvr_rgb%rgba_real_gl)
+        call draw_aitoff_map_isolines                                   &
+     &     (psf_nod, psf_ele, psf_phys, map_data, color_param,          &
+     &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
+     &        zero, black, pvr_rgb%rgba_real_gl, map_e1)
+!        call draw_isolines                                             &
+!     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
+!     &      map_data, color_param, pvr_rgb%rgba_real_gl)
 !
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
-          call draw_zeroline                                            &
-     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
+          call draw_isoline_on_map_image                                &
+     &       (psf_nod, psf_ele, psf_phys, 2, 0,                         &
+     &        map_data%xmin_frame, map_data%xmax_frame,                 &
+     &        map_data%ymin_frame, map_data%ymax_frame,                 &
+     &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
+     &        zero, black, pvr_rgb%rgba_real_gl, map_e1)
+!          call draw_zeroline                                           &
+!     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),            &
+!     &        color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
         end if
+        call dealloc_map_patch_from_1patch(map_e1)
       end if
 !
       call map_value_to_colatitude                                      &
