@@ -166,12 +166,13 @@
       use draw_pixels_on_map
       use draw_lines_on_map
       use draw_pvr_colorbar
+      use cal_mesh_position
 !
       type(time_data), intent(in) :: time_d
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(phys_data), intent(in) :: psf_phys
-      type(node_data), intent(in) :: psf_nod
+      type(node_data), intent(inout) :: psf_nod
       type(element_data), intent(in) :: psf_ele
 !
       type(map_rendering_data), intent(inout) :: map_data
@@ -187,6 +188,8 @@
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
+      call alloc_sph_node_geometry(psf_nod)
+      call set_spherical_position(psf_nod)
       call alloc_map_patch_from_1patch(map_e1)
 !
       if(map_data%fill_flag) then
@@ -281,6 +284,7 @@
      &     (time_d%time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,      &
      &      cbar_param, pvr_rgb%rgba_real_gl(1,1))
       end if
+      call dealloc_sph_node_geometry(psf_nod)
 !
       end subroutine s_xyz_plane_rendering
 !
