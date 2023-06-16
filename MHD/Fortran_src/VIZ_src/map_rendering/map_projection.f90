@@ -148,8 +148,8 @@
       if (iflag_debug.eq.1) write(*,*) 'output_section_data'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
       call s_multi_map_projections(map%num_map, istep_psf, time_d,      &
-     &    map%map_mesh, map%color_param, map%cbar_param,                &
-     &    map%map_psf_dat, map%map_data, map%map_rgb, SR_sig)
+     &   map%map_mesh, map%view_param, map%color_param, map%cbar_param, &
+     &   map%map_psf_dat, map%map_data, map%map_rgb, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_visualize
