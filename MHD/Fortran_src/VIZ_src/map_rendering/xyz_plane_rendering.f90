@@ -172,7 +172,7 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(phys_data), intent(in) :: psf_phys
-      type(node_data), intent(inout) :: psf_nod
+      type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
 !
       type(map_rendering_data), intent(inout) :: map_data
@@ -188,8 +188,6 @@
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
-      call alloc_sph_node_geometry(psf_nod)
-      call set_spherical_position(psf_nod)
       call alloc_map_patch_from_1patch(map_e1)
 !
       if(map_data%fill_flag) then
@@ -219,7 +217,6 @@
      &        map_data, zero, white, pvr_rgb, map_e1)
         end if
       end if
-      call dealloc_map_patch_from_1patch(map_e1)
 !
       if(map_data%iflag_2d_projection_mode .eq. iflag_xz_plane          &
      &   .or. map_data%iflag_2d_projection_mode .eq. iflag_xz_plane     &
@@ -259,6 +256,7 @@
      &   (psf_nod, psf_ele, psf_nod%rr(1), 4, 0,                        &
      &    map_data, map_data%tangent_cylinder_radius(2),                &
      &    flame_color, pvr_rgb, map_e1)
+      call dealloc_map_patch_from_1patch(map_e1)
 !      call draw_radius_grid                                            &
 !     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                &
 !     &    color_param%bg_rgba_real, map_data%fill_flag,                &
@@ -284,7 +282,6 @@
      &     (time_d%time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,      &
      &      cbar_param, pvr_rgb%rgba_real_gl(1,1))
       end if
-      call dealloc_sph_node_geometry(psf_nod)
 !
       end subroutine s_xyz_plane_rendering
 !
