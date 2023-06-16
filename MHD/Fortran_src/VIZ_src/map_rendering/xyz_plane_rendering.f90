@@ -99,10 +99,8 @@
      &      (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
      &       color_param%bg_rgba_real, pvr_rgb%rgba_real_gl)
       end if
-      call dealloc_map_patch_from_1patch(map_e1)
 !
       if(map_data%num_line .gt. 0) then
-        call alloc_map_patch_from_1patch(map_e1)
 !        call set_scalar_on_map_image                                   &
 !     &     (psf_nod, psf_ele, psf_phys%d_fld(1,2),                     &
 !     &      map_data%xmin_frame, map_data%xmax_frame,                  &
@@ -131,7 +129,6 @@
 !     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),            &
 !     &        color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
         end if
-        call dealloc_map_patch_from_1patch(map_e1)
       end if
 !
       call map_value_to_colatitude                                      &
@@ -165,6 +162,7 @@
       call fill_background                                              &
      &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
      &    color_param%bg_rgba_real, pvr_rgb%rgba_real_gl)
+      call dealloc_map_patch_from_1patch(map_e1)
 !
       if(cbar_param%flag_pvr_colorbar) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
