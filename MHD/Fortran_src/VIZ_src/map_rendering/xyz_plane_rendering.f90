@@ -50,7 +50,6 @@
       use draw_lines_on_map
       use draw_pvr_colorbar
       use draw_pixels_on_map
-      use set_map_values_for_grids
 !
       type(time_data), intent(in) :: time_d
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -113,23 +112,13 @@
         end if
       end if
 !
-      call map_value_to_colatitude                                      &
-     &   (map_data%xmin_frame, map_data%xmax_frame,                     &
-     &    map_data%ymin_frame, map_data%ymax_frame,                     &
-     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
       call draw_latitude_grid(psf_nod, psf_ele, map_data,               &
-     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    pvr_rgb, map_e1)
+     &    color_param%bg_rgba_real, pvr_rgb, map_e1)
       if(map_data%flag_tangent_cylinder) then
         call draw_map_tangent_cyl_grid(psf_nod, psf_ele, map_data,      &
-     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    map_data%tangent_cylinder_theta, pvr_rgb, map_e1)
+     &      color_param%bg_rgba_real, map_data%tangent_cylinder_theta,  &
+     &      pvr_rgb, map_e1)
       end if
-!
-      call map_value_to_longitude                                       &
-     &   (map_data%xmin_frame, map_data%xmax_frame,                     &
-     &    map_data%ymin_frame, map_data%ymax_frame,                     &
-     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
 !
       allocate(phi_shift(psf_nod%numnod))
       do i = 1, psf_nod%numnod
@@ -141,11 +130,9 @@
       end do
 !
       call draw_longitude_grid(psf_nod, psf_ele, phi_shift, map_data,   &
-     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    pvr_rgb, map_e1)
+     &    color_param%bg_rgba_real, pvr_rgb, map_e1)
       call draw_mapflame(psf_nod, psf_ele, phi_shift, map_data,         &
-     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    pvr_rgb, map_e1)
+     &    color_param%bg_rgba_real, pvr_rgb, map_e1)
       deallocate(phi_shift)
       call dealloc_map_patch_from_1patch(map_e1)
 !
@@ -173,7 +160,6 @@
      &          psf_phys, color_param, cbar_param, map_data, pvr_rgb)
 !
       use set_scalar_on_xyz_plane
-      use set_map_values_for_grids
       use draw_pixels_on_map
       use draw_lines_on_map
       use draw_pvr_colorbar
@@ -232,18 +218,18 @@
      &   .or. map_data%iflag_2d_projection_mode .eq. iflag_xz_plane     &
      &  ) then
         if(map_data%flag_tangent_cylinder) then
-          call draw_med_tangent_cyl_grid(psf_nod, psf_ele, map_data,    &
-     &        color_param%bg_rgba_real, map_data%fill_flag,             &
+          call draw_med_tangent_cyl_grid                                &
+     &       (psf_nod, psf_ele, map_data, color_param%bg_rgba_real,     &
      &        map_data%tangent_cylinder_radius(2), pvr_rgb, map_e1)
         end if
       end if
 !
       call draw_radius_grid(psf_nod, psf_ele, map_data,                 &
-     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    map_data%tangent_cylinder_radius(2), pvr_rgb, map_e1)
+     &   color_param%bg_rgba_real, map_data%tangent_cylinder_radius(2), &
+     &   pvr_rgb, map_e1)
       call draw_radius_grid(psf_nod, psf_ele, map_data,                 &
-     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
-     &    map_data%tangent_cylinder_radius(1), pvr_rgb, map_e1)
+     &   color_param%bg_rgba_real, map_data%tangent_cylinder_radius(1), &
+     &   pvr_rgb, map_e1)
       call dealloc_map_patch_from_1patch(map_e1)
 !
       call fill_background                                              &

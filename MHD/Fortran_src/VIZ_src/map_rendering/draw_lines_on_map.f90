@@ -7,57 +7,28 @@
 !>@brief Subroutines to draw lines on map
 !!
 !!@verbatim
-!!      subroutine draw_isolines(nxpixel, nypixel,                      &
-!!     &                         map_data, color_param, rgba)
-!!      subroutine draw_zeroline(nxpixel, nypixel, color_param,         &
-!!     &                         d_map, rgba)
-!!        integer(kind = kint), intent(in) :: nxpixel, nypixel, nline
+!!      subroutine draw_radius_grid(psf_nod, psf_ele, map_data,         &
+!!     &          bg_color, ref_r, pvr_rgb, map_e)
+!!      subroutine draw_mapflame(psf_nod, psf_ele, phi_shift, map_data, &
+!!     &          bg_color, pvr_rgb, map_e)
+!!      subroutine draw_longitude_grid(psf_nod, psf_ele, phi_shift,     &
+!!     &          map_data, bg_color, pvr_rgb, map_e)
+!!      subroutine draw_latitude_grid(psf_nod, psf_ele, map_data,       &
+!!     &          bg_color, pvr_rgb, map_e)
+!!      subroutine draw_map_tangent_cyl_grid(psf_nod, psf_ele, map_data,&
+!!     &          bg_color, theta_ref, pvr_rgb, map_e)
+!!      subroutine draw_med_tangent_cyl_grid(psf_nod, psf_ele, map_data,&
+!!     &          bg_color, radius_ICB, pvr_rgb, map_e)
+!!        type(node_data), intent(in) :: psf_nod
+!!        type(element_data), intent(in) :: psf_ele
 !!        type(map_rendering_data), intent(in) :: map_data
-!!        type(pvr_colormap_parameter), intent(in) :: color_param
-!!        real(kind = kreal), intent(in) :: d_map(nxpixel*nypixel)
-!!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
-!!
-!!      subroutine draw_radius_grid(nxpixel, nypixel,                   &
-!!     &          bg_color, flag_fill, ref_r, r_map, rgba)
-!!        integer(kind = kint), intent(in) :: nxpixel, nypixel
 !!        real(kind = kreal), intent(in) :: ref_r
-!!        real(kind = kreal), intent(in) :: r_map(nxpixel*nypixel)
-!!        real(kind = kreal), intent(in) :: bg_color(4)
-!!        logical, intent(in) :: flag_fill
-!!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
-!!      subroutine draw_mapflame(nxpixel, nypixel, bg_color, flag_fill, &
-!!     &                         phi_map, rgba)
-!!      subroutine draw_longitude_grid(nxpixel, nypixel,                &
-!!     &          bg_color, flag_fill, phi_map, rgba)
-!!        integer(kind = kint), intent(in) :: nxpixel, nypixel
-!!        real(kind = kreal), intent(in) :: phi_map(nxpixel*nypixel)
-!!        real(kind = kreal), intent(in) :: bg_color(4)
-!!        logical, intent(in) :: flag_fill
-!!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
-!!        integer(kind = kint), intent(in) :: nxpixel, nypixel
-!!        real(kind = kreal), intent(in) :: phi_map(nxpixel*nypixel)
-!!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
-!!        real(kind = kreal), intent(in) :: bg_color(4)
-!!        logical, intent(in) :: flag_fill
-!!      subroutine draw_latitude_grid(nxpixel, nypixel,                 &
-!!     &          bg_color, flag_fill, theta_map, rgba)
-!!        integer(kind = kint), intent(in) :: nxpixel, nypixel
-!!        real(kind = kreal), intent(in) :: theta_map(nxpixel*nypixel)
-!!        real(kind = kreal), intent(in) :: bg_color(4)
-!!        logical, intent(in) :: flag_fill
-!!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
-!!
-!!      subroutine draw_map_tangent_cyl_grid(nxpixel, nypixel,          &
-!!     &          bg_color, flag_fill, theta_ref, theta_map, rgba)
-!!      subroutine draw_med_tangent_cyl_grid(nxpixel, nypixel,          &
-!!     &          bg_color, flag_fill, radius_ICB, x_map, rgba)
-!!        integer(kind = kint), intent(in) :: nxpixel, nypixel
 !!        real(kind = kreal), intent(in) :: theta_ref(2)
-!!        real(kind = kreal), intent(in) :: theta_map(nxpixel*nypixel)
 !!        real(kind = kreal), intent(in) :: radius_ICB
 !!        real(kind = kreal), intent(in) :: bg_color(4)
-!!        logical, intent(in) :: flag_fill
-!!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
+!!        real(kind = kreal), intent(in) :: phi_shift(psf_nod%numnod)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!        type(map_patches_for_1patch), intent(inout) :: map_e
 !!@endverbatim
       module draw_lines_on_map
 !
@@ -76,93 +47,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_isolines(nxpixel, nypixel,                        &
-     &                         map_data, color_param, rgba)
-!
-      use t_map_rendering_data
-      use t_pvr_colormap_parameter
-      use set_color_4_pvr
-      use draw_pixels_on_map
-!
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
-      type(map_rendering_data), intent(in) :: map_data
-      type(pvr_colormap_parameter), intent(in) :: color_param
-!
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
-!
-      integer(kind = kint), parameter :: nwidth = 3
-      integer(kind = kint) :: idots
-      integer(kind = kint) :: iline, imax
-      real(kind = kreal) :: color_ref(4)
-      real(kind = kreal) :: d_ref, dmin, dmax
-!
-!
-      imax = color_param%num_pvr_datamap_pnt
-      do iline = 1, map_data%num_line
-        dmin = color_param%pvr_datamap_param(1,1)
-        dmax = color_param%pvr_datamap_param(1,imax)
-        d_ref = dmin + dble(iline-1) * (dmax - dmin)                    &
-     &         / dble(map_data%num_line-1)
-        if(d_ref .ge. zero) then
-          idots = 0
-        else
-          idots = 2
-        end if
-!
-        if(map_data%iflag_isoline_color .eq. iflag_white) then
-          color_ref(1:4) =   one
-        else if(map_data%iflag_isoline_color .eq. iflag_black) then
-          color_ref(1:4) =   zero
-        else
-          call value_to_rgb(color_param%id_pvr_color(2),                &
-     &                      color_param%id_pvr_color(1),                &
-     &                      color_param%num_pvr_datamap_pnt,            &
-     &                      color_param%pvr_datamap_param,              &
-     &                      d_ref, color_ref(1))
-        end if
-!
-        color_ref(4) =   one
-        call draw_isoline_on_pixel(nxpixel, nypixel, nwidth,            &
-     &      idots, d_ref, color_ref, map_data%d_map, rgba)
-      end do
-!
-      end subroutine draw_isolines
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine draw_zeroline(nxpixel, nypixel, color_param,           &
-     &                         d_map, rgba)
-!
-      use t_pvr_colormap_parameter
-      use set_color_4_pvr
-      use draw_pixels_on_map
-!
-      integer(kind = kint), intent(in) :: nxpixel, nypixel
-      type(pvr_colormap_parameter), intent(in) :: color_param
-      real(kind = kreal), intent(in) :: d_map(nxpixel*nypixel)
-!
-      real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
-!
-      integer(kind = kint), parameter :: idots =  0
-      integer(kind = kint), parameter :: nwidth = 4
-      real(kind = kreal) :: color_ref(4)
-!
-!
-      call value_to_rgb(color_param%id_pvr_color(2),                    &
-     &                  color_param%id_pvr_color(1),                    &
-     &                  color_param%num_pvr_datamap_pnt,                &
-     &                  color_param%pvr_datamap_param,                  &
-     &                  zero, color_ref(1))
-      call draw_isoline_on_pixel(nxpixel, nypixel, nwidth,              &
-     &    idots, zero, color_ref, d_map, rgba)
-!
-      end subroutine draw_zeroline
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine draw_radius_grid(psf_nod, psf_ele, map_data,           &
-     &          bg_color, flag_fill, ref_r, pvr_rgb, map_e)
+     &          bg_color, ref_r, pvr_rgb, map_e)
 !
       use set_scalar_on_xyz_plane
 !
@@ -171,7 +57,6 @@
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: ref_r
       real(kind = kreal), intent(in) :: bg_color(4)
-      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
@@ -180,7 +65,7 @@
       integer(kind = kint), parameter :: nwidth = 3
       real(kind = kreal) :: color_ref(4)
 !
-      call set_flame_color(flag_fill, bg_color, color_ref)
+      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
       call sel_draw_isoline_on_xyz_plane                                &
      &   (psf_nod, psf_ele, psf_nod%rr(1), nwidth, idots,               &
      &    map_data, ref_r, color_ref, pvr_rgb, map_e)
@@ -190,7 +75,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine draw_mapflame(psf_nod, psf_ele, phi_shift, map_data,   &
-     &          bg_color, flag_fill, pvr_rgb, map_e)
+     &          bg_color, pvr_rgb, map_e)
 !
       use draw_aitoff_map
 !
@@ -199,7 +84,6 @@
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: phi_shift(psf_nod%numnod)
       real(kind = kreal), intent(in) :: bg_color(4)
-      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
@@ -210,7 +94,7 @@
       real(kind = kreal) :: color_ref(4)
 !
 !
-      call set_flame_color(flag_fill, bg_color, color_ref)
+      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
       pi = four * atan(one)
       call draw_isoline_on_map_image                                    &
@@ -231,7 +115,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine draw_longitude_grid(psf_nod, psf_ele, phi_shift,       &
-     &          map_data, bg_color, flag_fill, pvr_rgb, map_e)
+     &          map_data, bg_color, pvr_rgb, map_e)
 !
       use draw_aitoff_map
 !
@@ -240,7 +124,6 @@
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: phi_shift(psf_nod%numnod)
       real(kind = kreal), intent(in) :: bg_color(4)
-      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
@@ -252,7 +135,7 @@
       real(kind = kreal) :: color_ref(4)
 !
 !
-      call set_flame_color(flag_fill, bg_color, color_ref)
+      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
       pi = four * atan(one)
       do ii = 1, 5
@@ -270,7 +153,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine draw_latitude_grid(psf_nod, psf_ele, map_data,         &
-     &          bg_color, flag_fill, pvr_rgb, map_e)
+     &          bg_color, pvr_rgb, map_e)
 !
       use draw_aitoff_map
 !
@@ -278,7 +161,6 @@
       type(element_data), intent(in) :: psf_ele
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: bg_color(4)
-      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
@@ -289,7 +171,7 @@
       real(kind = kreal) :: theta_ref, pi
       real(kind = kreal) :: color_ref(4)
 !
-      call set_flame_color(flag_fill, bg_color, color_ref)
+      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
       pi = four * atan(one)
       do jj = 1, 5
@@ -307,7 +189,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine draw_map_tangent_cyl_grid(psf_nod, psf_ele, map_data,  &
-     &          bg_color, flag_fill, theta_ref, pvr_rgb, map_e)
+     &          bg_color, theta_ref, pvr_rgb, map_e)
 !
       use draw_aitoff_map
 !
@@ -316,7 +198,6 @@
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: theta_ref(2)
       real(kind = kreal), intent(in) :: bg_color(4)
-      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
@@ -325,7 +206,7 @@
       integer(kind = kint), parameter :: nwidth = 3
       real(kind = kreal) :: color_ref(4)
 !
-      call set_flame_color(flag_fill, bg_color, color_ref)
+      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
 !
         call draw_isoline_on_map_image                                  &
      &     (psf_nod, psf_ele, psf_nod%theta(1), nwidth, idots,          &
@@ -345,7 +226,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine draw_med_tangent_cyl_grid(psf_nod, psf_ele, map_data,  &
-     &          bg_color, flag_fill, radius_ICB, pvr_rgb, map_e)
+     &          bg_color, radius_ICB, pvr_rgb, map_e)
 !
       use set_scalar_on_xyz_plane
 !
@@ -354,7 +235,6 @@
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: radius_ICB
       real(kind = kreal), intent(in) :: bg_color(4)
-      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
@@ -364,7 +244,7 @@
       integer(kind = kint), parameter :: nwidth = 3
       real(kind = kreal) :: color_ref(4)
 !
-      call set_flame_color(flag_fill, bg_color, color_ref)
+      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
       call sel_draw_isoline_on_xyz_plane                                &
      &   (psf_nod, psf_ele, psf_nod%xx(1,1), nwidth, idots,             &
      &    map_data, radius_ICB, color_ref, pvr_rgb, map_e)
