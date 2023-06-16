@@ -192,7 +192,7 @@
       subroutine draw_mapflame(psf_nod, psf_ele, map_data,              &
      &          bg_color, flag_fill, pvr_rgb, map_e)
 !
-      use draw_pixels_on_map
+      use draw_aitoff_map
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -231,7 +231,7 @@
       subroutine draw_longitude_grid(psf_nod, psf_ele, map_data,        &
      &          bg_color, flag_fill, pvr_rgb, map_e)
 !
-      use draw_pixels_on_map
+      use draw_aitoff_map
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -268,7 +268,7 @@
       subroutine draw_latitude_grid(psf_nod, psf_ele, map_data,         &
      &          bg_color, flag_fill, pvr_rgb, map_e)
 !
-      use draw_pixels_on_map
+      use draw_aitoff_map
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -305,7 +305,7 @@
       subroutine draw_map_tangent_cyl_grid(psf_nod, psf_ele, map_data,  &
      &          bg_color, flag_fill, theta_ref, pvr_rgb, map_e)
 !
-      use draw_pixels_on_map
+      use draw_aitoff_map
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
