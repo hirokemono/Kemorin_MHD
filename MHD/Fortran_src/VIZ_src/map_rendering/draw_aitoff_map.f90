@@ -20,12 +20,14 @@
 !!        real(kind = kreal), intent(inout) :: d_map(npix)
 !!        real(kind = kreal), intent(inout) :: rgba(4,npix)
 !!        type(map_patches_for_1patch), intent(inout) :: map_e
-!!      subroutine draw_isoline_on_map_image(psf_nod, psf_ele, psf_phys,&
+!!      subroutine draw_isoline_on_map_image                            &
+!!     &         (psf_nod, psf_ele, psf_phys, nwidth, idots,            &
 !!     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
 !!     &          nxpixel, nypixel, npix, d_ref, color_ref, rgba, map_e)
 !!        type(node_data), intent(in) :: psf_nod
 !!        type(element_data), intent(in) :: psf_ele
 !!        type(phys_data), intent(in) :: psf_phys
+!!        integer(kind = kint), intent(in) :: nwidth, idots
 !!        real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
 !!        real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
 !!        integer(kind = kint), intent(in) :: nxpixel, nypixel, npix
@@ -99,7 +101,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_isoline_on_map_image(psf_nod, psf_ele, psf_phys,  &
+      subroutine draw_isoline_on_map_image                              &
+     &         (psf_nod, psf_ele, psf_phys, nwidth, idots,              &
      &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
      &          nxpixel, nypixel, npix, d_ref, color_ref, rgba, map_e)
 !
@@ -111,8 +114,9 @@
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
-      type(phys_data), intent(in) :: psf_phys
+      type(phys_data), intent(in) :: psf_phys 
 !
+      integer(kind = kint), intent(in) :: nwidth, idots
       real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
       real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
       integer(kind = kint), intent(in) :: nxpixel, nypixel, npix

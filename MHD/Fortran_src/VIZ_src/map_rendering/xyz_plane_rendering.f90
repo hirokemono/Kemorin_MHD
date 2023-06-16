@@ -84,7 +84,8 @@
      &      map_data%d_map, pvr_rgb%rgba_real_gl)
 !
         if(map_data%flag_zeroline .and. (map_data%num_line.le.0)) then
-          call draw_isoline_on_map_image(psf_nod, psf_ele, psf_phys,    &
+          call draw_isoline_on_map_image                                &
+     &       (psf_nod, psf_ele, psf_phys, 3, 0,                         &
      &        map_data%xmin_frame, map_data%xmax_frame,                 &
      &        map_data%ymin_frame, map_data%ymax_frame,                 &
      &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
