@@ -218,7 +218,7 @@
         if(psf_nod%xx(i,2) .ge. 0) then
           phi_shift(i) = psf_nod%phi(i)
         else
-          phi_shift(i) = pi - psf_nod%phi(i)
+          phi_shift(i) = two*pi - psf_nod%phi(i)
         end if
       end do
       call draw_isoline_on_map_image                                    &
@@ -269,7 +269,7 @@
         if(psf_nod%xx(i,2) .ge. 0) then
           phi_shift(i) = psf_nod%phi(i)
         else
-          phi_shift(i) = pi - psf_nod%phi(i)
+          phi_shift(i) = two*pi - psf_nod%phi(i)
         end if
       end do
 !
