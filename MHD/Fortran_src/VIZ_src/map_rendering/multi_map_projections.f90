@@ -106,6 +106,7 @@
 !
       use collect_psf_mesh_field
       use xyz_plane_rendering
+      use draw_pixels_on_map
       use draw_pvr_colorbar
       use write_PVR_image
 !
