@@ -189,54 +189,76 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_mapflame(map_data, bg_color, pvr_rgb)
+      subroutine draw_mapflame(psf_nod, psf_ele, map_data,              &
+     &          bg_color, flag_fill, pvr_rgb, map_e)
 !
       use draw_aitoff_map
 !
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: bg_color(4)
+      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  0
       integer(kind = kint), parameter :: nwidth = 3
-      integer(kind = kint), parameter :: nstep =  128
       real(kind = kreal) :: pi
       real(kind = kreal) :: color_ref(4)
 !
-      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
+      call set_flame_color(flag_fill, bg_color, color_ref)
 !
       pi = four * atan(one)
-      call draw_meridional_grid_on_aitoff(nwidth, idots, nstep,       &
-     &    map_data, (-pi), color_ref, pvr_rgb)
-      call draw_meridional_grid_on_aitoff(nwidth, idots, nstep,       &
-     &    map_data, pi, color_ref, pvr_rgb)
+      call draw_isoline_on_map_image                                    &
+     &   (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,              &
+     &    map_data%xmin_frame, map_data%xmax_frame,                     &
+     &    map_data%ymin_frame, map_data%ymax_frame,                     &
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    zero, color_ref, pvr_rgb%rgba_real_gl, map_e)
+      call draw_isoline_on_map_image                                    &
+     &   (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,              &
+     &    map_data%xmin_frame, map_data%xmax_frame,                     &
+     &    map_data%ymin_frame, map_data%ymax_frame,                     &
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    (two*pi), color_ref, pvr_rgb%rgba_real_gl, map_e)
 !
       end subroutine draw_mapflame
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine draw_longitude_grid(map_data, bg_color, pvr_rgb)
+      subroutine draw_longitude_grid(psf_nod, psf_ele, map_data,        &
+     &          bg_color, flag_fill, pvr_rgb, map_e)
 !
+      use draw_aitoff_map
+!
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
       type(map_rendering_data), intent(in) :: map_data
       real(kind = kreal), intent(in) :: bg_color(4)
+      logical, intent(in) :: flag_fill
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: idots =  3
       integer(kind = kint), parameter :: nwidth = 1
-      integer(kind = kint), parameter :: nstep =  128
       integer(kind = kint) :: ii
       real(kind = kreal) :: phi_ref, pi
       real(kind = kreal) :: color_ref(4)
 !
-      call set_flame_color(map_data%fill_flag, bg_color, color_ref)
+      call set_flame_color(flag_fill, bg_color, color_ref)
 !
       pi = four * atan(one)
       do ii = 1, 5
-        phi_ref = pi * dble(ii-3) / 3.0d0
-        call draw_meridional_grid_on_aitoff(nwidth, idots, nstep,       &
-     &      map_data, phi_ref, color_ref, pvr_rgb)
+        phi_ref = pi * dble(ii) / 3.0d0
+        call draw_isoline_on_map_image                                  &
+     &     (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,            &
+     &      map_data%xmin_frame, map_data%xmax_frame,                   &
+     &      map_data%ymin_frame, map_data%ymax_frame,                   &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      phi_ref, color_ref, pvr_rgb%rgba_real_gl, map_e)
       end do
 !
       end subroutine draw_longitude_grid
@@ -344,123 +366,6 @@
      &    map_data, radius_ICB, color_ref, pvr_rgb, map_e)
 !
       end subroutine draw_med_tangent_cyl_grid
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine draw_radial_grid_on_section(nwidth, idots, nstep,      &
-     &          map_data, ref_radius, color_ref, pvr_rgb)
-!
-      use draw_isoline_in_triangle
-!
-      integer(kind = kint), intent(in) :: nwidth, idots, nstep
-      real(kind = kreal), intent(in) :: ref_radius
-      real(kind = kreal), intent(in) :: color_ref(4)
-      type(map_rendering_data), intent(in) :: map_data
-!
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-      integer(kind = kint) :: iline
-      real(kind = kreal) :: xy_edge(2,2)
-      real(kind = kreal) :: theta(2)
-      real(kind = kreal) :: pi, anum
-!
-!
-      pi = four*atan(one)
-      anum = one / dble(nstep-1)
-!$omp parallel do private(iline,theta,xy_edge)
-      do iline = 0, nstep-1
-        theta(1) = pi * dble(iline-1) * anum
-        theta(2) = pi * dble(iline  ) * anum
-        xy_edge(1,1:2) = ref_radius * cos(theta(1:2))
-        xy_edge(2,1:2) = ref_radius * sin(theta(1:2))
-        call draw_pixel_on_isoline(nwidth, idots,                       &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      xy_edge, color_ref, pvr_rgb%rgba_real_gl)
-      end do
-!$omp end parallel do
-!
-      end subroutine draw_radial_grid_on_section
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine draw_meridional_grid_on_aitoff(nwidth, idots, nstep,   &
-     &          map_data, phi_ref, color_ref, pvr_rgb)
-!
-      use draw_isoline_in_triangle
-!
-      integer(kind = kint), intent(in) :: nwidth, idots, nstep
-      real(kind = kreal), intent(in) :: phi_ref
-      real(kind = kreal), intent(in) :: color_ref(4)
-      type(map_rendering_data), intent(in) :: map_data
-!
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-      integer(kind = kint) :: iline
-      real(kind = kreal) :: xy_edge(2,2)
-      real(kind = kreal) :: rtp_map_edge(2,3)
-      real(kind = kreal) :: pi, anum
-!
-!
-      pi = four*atan(one)
-      anum = one / dble(nstep-1)
-!$omp parallel do private(iline,rtp_map_edge,xy_edge)
-      do iline = 0, nstep-1
-        rtp_map_edge(1:2,1) = one
-        rtp_map_edge(1:2,3) = phi_ref
-        rtp_map_edge(1,2) = pi * dble(iline-1) * anum
-        rtp_map_edge(2,2) = pi * dble(iline  ) * anum
-        call line_to_aitoff(rtp_map_edge, xy_edge)
-        call draw_pixel_on_isoline(nwidth, idots,                       &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      xy_edge, color_ref, pvr_rgb%rgba_real_gl)
-      end do
-!$omp end parallel do
-!
-      end subroutine draw_meridional_grid_on_aitoff
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine draw_zonal_grid_on_aitoff(nwidth, idots, nstep,        &
-     &          map_data, theta_ref, color_ref, pvr_rgb)
-!
-      use draw_isoline_in_triangle
-      use aitoff
-!
-      integer(kind = kint), intent(in) :: nwidth, idots, nstep
-      real(kind = kreal), intent(in) :: theta_ref
-      real(kind = kreal), intent(in) :: color_ref(4)
-      type(map_rendering_data), intent(in) :: map_data
-!
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-      integer(kind = kint) :: iline
-      real(kind = kreal) :: xy_edge(2,2)
-      real(kind = kreal) :: rtp_map_edge(2,3)
-      real(kind = kreal) :: pi, anum
-!
-!
-      pi = four*atan(one)
-      anum = one / dble(nstep-1)
-!$omp parallel do private(iline,rtp_map_edge,xy_edge)
-      do iline = 0, nstep-1
-        rtp_map_edge(1:2,1) = one
-        rtp_map_edge(1:2,2) = theta_ref
-        rtp_map_edge(1,3) = two*pi * dble(iline-1) * anum - pi
-        rtp_map_edge(2,3) = two*pi * dble(iline  ) * anum - pi
-        call line_to_aitoff(rtp_map_edge, xy_edge)
-        call draw_pixel_on_isoline(nwidth, idots,                       &
-     &      map_data%xmin_frame, map_data%xmax_frame,                   &
-     &      map_data%ymin_frame, map_data%ymax_frame,                   &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      xy_edge, color_ref, pvr_rgb%rgba_real_gl)
-      end do
-!$omp end parallel do
-!
-      end subroutine draw_zonal_grid_on_aitoff
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

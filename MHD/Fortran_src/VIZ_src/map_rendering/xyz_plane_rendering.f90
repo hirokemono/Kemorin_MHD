@@ -126,10 +126,12 @@
      &   (map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), map_data%d_map)
-      call draw_longitude_grid(map_data, color_param%bg_rgba_real,      &
-     &                         pvr_rgb)
-      call draw_mapflame(map_data, color_param%bg_rgba_real,            &
-     &                   pvr_rgb)
+      call draw_longitude_grid(psf_nod, psf_ele, map_data,              &
+     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
+     &    pvr_rgb, map_e1)
+      call draw_mapflame(psf_nod, psf_ele, map_data,                    &
+     &    color_param%bg_rgba_real, map_data%fill_flag,                 &
+     &    pvr_rgb, map_e1)
       call dealloc_map_patch_from_1patch(map_e1)
 !
       call fill_background                                              &

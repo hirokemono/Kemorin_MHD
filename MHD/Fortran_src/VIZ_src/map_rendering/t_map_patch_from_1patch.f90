@@ -21,9 +21,6 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &          :: rtp_map_patch(num_triangle,n_vector)
 !!        real(kind = kreal), intent(inout) :: xy_map(2,num_triangle)
-!!      subroutine line_to_aitoff(rtp_map_edge, xy_map)
-!!        real(kind = kreal), intent(in) :: rtp_map_edge(2,n_vector)
-!!        real(kind = kreal), intent(inout) :: xy_map(2,2)
 !!
 !!      subroutine find_map_path_orientation                            &
 !!     &         (xy_map, k_ymin, k_ymid, k_ymax)
@@ -167,30 +164,6 @@
       end do
 !
       end subroutine patch_to_aitoff
-!
-!-----------------------------------------------------------------------
-!
-      subroutine line_to_aitoff(rtp_map_edge, xy_map)
-!
-      use aitoff
-!
-      real(kind = kreal), intent(in) :: rtp_map_edge(2,n_vector)
-      real(kind = kreal), intent(inout) :: xy_map(2,2)
-!
-      integer(kind = kint) :: k1
-      real(kind = kreal) :: s_theta, c_theta, pi, phi_map
-!
-!
-      pi = four * atan(one)
-      do k1 = 1, 2
-        s_theta = sin(rtp_map_edge(k1,2))
-        c_theta = cos(rtp_map_edge(k1,2))
-!        phi_map = mod((rtp_map_edge(k1,3)+pi),(two*pi))
-        call s_aitoff(s_theta, c_theta, rtp_map_edge(k1,3),            &
-     &                xy_map(1,k1), xy_map(2,k1))
-      end do
-!
-      end subroutine line_to_aitoff
 !
 !-----------------------------------------------------------------------
 !
