@@ -56,6 +56,7 @@
 !!      zeroline_switch_ctl           On
 !!      isoline_color_mode      color, white, or black
 !!      isoline_number_ctl            20
+!!      isoline_range_ctl          -0.5   0.5
 !!
 !!      tangent_cylinder_switch_ctl   On
 !!      inner_radius_ctl              0.53846

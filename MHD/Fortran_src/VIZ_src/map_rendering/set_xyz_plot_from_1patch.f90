@@ -45,17 +45,15 @@
       real(kind = kreal), intent(inout) :: xy_patch(2,3)
       real(kind = kreal), intent(inout) :: d_patch(3)
 !
-      integer(kind = kint) :: k1, j, inod
+      integer(kind = kint) :: k1, inod
 !
 !
       do k1 = 1, 3
         inod = psf_ele%ie(iele,k1)
 !
-        do j = 1, 3
-          xy_patch(1,j) = psf_nod%xx(inod,1)
-          xy_patch(2,j) = psf_nod%xx(inod,2)
-          d_patch(j) =    d_scalar(inod)
-        end do
+        xy_patch(1,k1) = psf_nod%xx(inod,1)
+        xy_patch(2,k1) = psf_nod%xx(inod,2)
+        d_patch(k1) =    d_scalar(inod)
       end do
 !
       end subroutine set_xy_plot_from_1patch
@@ -73,16 +71,13 @@
       real(kind = kreal), intent(inout) :: xy_patch(2,3)
       real(kind = kreal), intent(inout) :: d_patch(3)
 !
-      integer(kind = kint) :: k1, j, inod
+      integer(kind = kint) :: k1, inod
 !
       do k1 = 1, 3
         inod = psf_ele%ie(iele,k1)
-!
-        do j = 1, 3
-          xy_patch(1,j) = psf_nod%xx(inod,1)
-          xy_patch(2,j) = psf_nod%xx(inod,3)
-          d_patch(j) =    d_scalar(inod)
-        end do
+        xy_patch(1,k1) = psf_nod%xx(inod,1)
+        xy_patch(2,k1) = psf_nod%xx(inod,3)
+        d_patch(k1) =    d_scalar(inod)
       end do
 !
       end subroutine set_xz_plot_from_1patch
@@ -100,17 +95,15 @@
       real(kind = kreal), intent(inout) :: xy_patch(2,3)
       real(kind = kreal), intent(inout) :: d_patch(3)
 !
-      integer(kind = kint) :: k1, j, inod
+      integer(kind = kint) :: k1, inod
 !
 !
       do k1 = 1, 3
         inod = psf_ele%ie(iele,k1)
 !
-        do j = 1, 3
-          xy_patch(1,j) = psf_nod%xx(inod,1)
-          xy_patch(2,j) = psf_nod%xx(inod,2)
-          d_patch(j) =    d_scalar(inod)
-        end do
+        xy_patch(1,k1) = psf_nod%xx(inod,1)
+        xy_patch(2,k1) = psf_nod%xx(inod,2)
+        d_patch(k1) =    d_scalar(inod)
       end do
 !
       end subroutine set_yz_plot_from_1patch

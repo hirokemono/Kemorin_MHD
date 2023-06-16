@@ -63,6 +63,8 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       type(map_patches_for_1patch) :: map_e1
+      real(kind = kreal), parameter                                     &
+     &                   :: black(4) = (/zero,zero,zero,one/)
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -75,7 +77,6 @@
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
      &    pvr_rgb%num_pixel_xy, map_data%d_map, pvr_rgb%rgba_real_gl,   &
      &    map_e1)
-      call dealloc_map_patch_from_1patch(map_e1)
 !
       if(map_data%fill_flag) then
         call map_value_to_rgb                                           &
@@ -83,15 +84,22 @@
      &      map_data%d_map, pvr_rgb%rgba_real_gl)
 !
         if(map_data%flag_zeroline .and. (map_data%num_line.le.0)) then
-          call draw_zeroline                                            &
-     &      (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
-     &       color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
+          call draw_isoline_on_map_image(psf_nod, psf_ele, psf_phys,    &
+     &        map_data%xmin_frame, map_data%xmax_frame,                 &
+     &        map_data%ymin_frame, map_data%ymax_frame,                 &
+     &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
+     &        pvr_rgb%num_pixel_xy, zero, black, pvr_rgb%rgba_real_gl,  &
+     &        map_e1)
+!        call draw_zeroline                                             &
+!     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
+!     &      map_data%d_map, pvr_rgb%rgba_real_gl)
         end if
       else
         call fill_map_one_color                                         &
      &      (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
      &       color_param%bg_rgba_real, pvr_rgb%rgba_real_gl)
       end if
+      call dealloc_map_patch_from_1patch(map_e1)
 !
       if(map_data%num_line .gt. 0) then
         call alloc_map_patch_from_1patch(map_e1)

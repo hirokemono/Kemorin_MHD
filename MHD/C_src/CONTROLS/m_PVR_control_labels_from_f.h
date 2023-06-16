@@ -115,9 +115,10 @@ label[1]   opacity_ctl
 label[2]   zeroline_switch_ctl 
 label[3]   isoline_color_mode 
 label[4]   isoline_number_ctl 
-label[5]   tangent_cylinder_switch_ctl 
-label[6]   inner_radius_ctl 
-label[7]   outer_radius_ctl 
+label[5]   isoline_range_ctl 
+label[6]   tangent_cylinder_switch_ctl 
+label[7]   inner_radius_ctl 
+label[8]   outer_radius_ctl 
 
 Check pvr_ctl_labls->label_pvr_isosurf
 ctl_list->num_labels 3 

@@ -85,6 +85,10 @@
       iy_max = int(1 + dble(nypixel-1)                                  &
      &                * (xy_patch(2,k_ymax) - ymin_frame)               &
      &                  / (ymax_frame - ymin_frame))
+!
+      iy_min = max(iy_min,1)
+      iy_mid = max(iy_mid,0)
+      iy_max = max(iy_max,0)
       do iy = iy_min, iy_mid
         if(iy_max.eq.iy_min .or. iy_mid.eq.iy_min) then
           x(1) = xy_patch(1,k_ymin)
@@ -114,10 +118,14 @@
      &                  / (xmax_frame - xmin_frame))
         ix_max = int(1 + dble(nxpixel-1)*(x(kmax) - xmin_frame)         &
      &                  / (xmax_frame - xmin_frame))
+        ix_min = max(ix_min,1)
+        ix_max = max(ix_max,0)
 !
-        i_img = ix_min + (iy-1) * nxpixel
-        d_map(i_img) =  d(kmin)
-        rgba(4,i_img) = one
+        if(ix_max .gt. 0) then
+          i_img = ix_min + (iy-1) * nxpixel
+          d_map(i_img) =  d(kmin)
+          rgba(4,i_img) = one
+        end if
 !
         do ix = ix_min+1, ix_max
           i_img = ix + (iy-1) * nxpixel
@@ -156,10 +164,14 @@
      &                  / (xmax_frame - xmin_frame))
         ix_max = int(1 + dble(nxpixel-1)*(x(kmax) - xmin_frame)         &
      &                  / (xmax_frame - xmin_frame))
+        ix_min = max(ix_min,1)
+        ix_max = max(ix_max,0)
 !
-        i_img = ix_min + (iy-1) * nxpixel
-        d_map(i_img) =  d(kmin)
-        rgba(4,i_img) = one
+        if(ix_max .gt. 0) then
+          i_img = ix_min + (iy-1) * nxpixel
+          d_map(i_img) =  d(kmin)
+          rgba(4,i_img) = one
+        end if
 !
         do ix = ix_min+1, ix_max
           i_img = ix + (iy-1) * nxpixel

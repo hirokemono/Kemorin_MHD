@@ -6,6 +6,8 @@ ctl_file_map_renderings_IO.o: $(MAP_RENDERING_DIR)/ctl_file_map_renderings_IO.f9
 	$(F90) -c $(F90OPTFLAGS) $<
 draw_aitoff_map.o: $(MAP_RENDERING_DIR)/draw_aitoff_map.f90 m_precision.o m_constants.o t_geometry_data.o t_phys_data.o t_map_patch_from_1patch.o map_patch_from_1patch.o draw_pixels_on_map.o
 	$(F90) -c $(F90OPTFLAGS) $<
+draw_isoline_in_triangle.o: $(MAP_RENDERING_DIR)/draw_isoline_in_triangle.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 draw_lines_on_map.o: $(MAP_RENDERING_DIR)/draw_lines_on_map.f90 m_precision.o m_constants.o t_map_rendering_data.o t_pvr_colormap_parameter.o set_color_4_pvr.o draw_pixels_on_map.o
 	$(F90) -c $(F90OPTFLAGS) $<
 draw_pixels_on_map.o: $(MAP_RENDERING_DIR)/draw_pixels_on_map.f90 m_precision.o m_constants.o t_pvr_colormap_parameter.o set_color_4_pvr.o
