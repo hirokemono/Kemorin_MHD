@@ -26,7 +26,7 @@
 !!     &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
 !!      subroutine draw_aitoff_map_isolines                             &
 !!     &         (psf_nod, psf_ele, d_scalar, map_data, color_param,    &
-!!     &          nxpixel, nypixel, npix, d_ref, color_ref, rgba, map_e)
+!!     &          nxpixel, nypixel, color_ref, rgba, map_e)
 !!        type(node_data), intent(in) :: psf_nod
 !!        type(element_data), intent(in) :: psf_ele
 !!        real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
@@ -36,7 +36,7 @@
 !!        integer(kind = kint), intent(in) :: nxpixel, nypixel, npix
 !!        real(kind = kreal), intent(in) :: d_ref
 !!        real(kind = kreal), intent(in) :: color_ref(4)
-!!        real(kind = kreal), intent(inout) :: rgba(4,npix)
+!!        real(kind = kreal), intent(inout) :: rgba(4,nxpixel*nypixel)
 !!        type(map_patches_for_1patch), intent(inout) :: map_e
 !!@endverbatim
       module draw_aitoff_map
@@ -158,7 +158,7 @@
 !
       subroutine draw_aitoff_map_isolines                               &
      &         (psf_nod, psf_ele, d_scalar, map_data, color_param,      &
-     &          nxpixel, nypixel, d_ref, color_ref, rgba, map_e)
+     &          nxpixel, nypixel, color_ref, rgba, map_e)
 !
       use t_map_rendering_data
       use t_pvr_colormap_parameter

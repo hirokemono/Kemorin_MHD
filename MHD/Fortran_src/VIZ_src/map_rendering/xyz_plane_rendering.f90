@@ -112,7 +112,7 @@
         call draw_aitoff_map_isolines                                   &
      &     (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data,            &
      &      color_param, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),  &
-     &      zero, black, pvr_rgb%rgba_real_gl, map_e1)
+     &      black, pvr_rgb%rgba_real_gl, map_e1)
 !        call draw_isolines                                             &
 !     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
 !     &      map_data, color_param, pvr_rgb%rgba_real_gl)
