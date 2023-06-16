@@ -50,6 +50,7 @@
       use draw_lines_on_map
       use draw_pvr_colorbar
       use draw_pixels_on_map
+      use draw_lines_on_map
 !
       type(time_data), intent(in) :: time_d
       type(pvr_colormap_parameter), intent(in) :: color_param
