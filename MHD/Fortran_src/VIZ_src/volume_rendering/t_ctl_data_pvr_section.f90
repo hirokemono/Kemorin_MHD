@@ -24,6 +24,7 @@
 !!    zeroline_switch_ctl           On
 !!    isoline_color_mode      color, white, or black
 !!    isoline_number_ctl            20
+!!    isoline_range_ctl          -0.5   0.5
 !!
 !!    tangent_cylinder_switch_ctl   On
 !!    inner_radius_ctl              0.53846
@@ -41,6 +42,7 @@
       use t_read_control_elements
       use t_control_data_4_psf_def
       use t_control_array_real
+      use t_control_array_real2
       use t_control_array_integer
       use t_control_array_character
       use t_control_array_chara2real
@@ -62,6 +64,8 @@
         type(read_character_item) :: isoline_color_mode
 !>        Structure of number of isoline
         type(read_integer_item) :: isoline_number_ctl
+!>        Structure of range of isoline
+        type(read_real2_item) :: isoline_range_ctl
 !
 !>        Structure of tangent cylinder line switch
         type(read_character_item) :: tan_cyl_switch_ctl
@@ -99,6 +103,8 @@
      &                   new_pvr_sect_c%isoline_color_mode)
       call copy_integer_ctl(org_pvr_sect_c%isoline_number_ctl,          &
      &                      new_pvr_sect_c%isoline_number_ctl)
+      call copy_real2_ctl(org_pvr_sect_c%isoline_range_ctl,             &
+     &                      new_pvr_sect_c%isoline_range_ctl)
 !
       call copy_chara_ctl(org_pvr_sect_c%tan_cyl_switch_ctl,            &
      &                   new_pvr_sect_c%tan_cyl_switch_ctl)
@@ -122,6 +128,7 @@
       pvr_sect_ctl%zeroline_switch_ctl%iflag = 0
       pvr_sect_ctl%isoline_color_mode%iflag = 0
       pvr_sect_ctl%isoline_number_ctl%iflag = 0
+      pvr_sect_ctl%isoline_range_ctl%iflag = 0
 !
       pvr_sect_ctl%tan_cyl_switch_ctl%iflag =          0
       pvr_sect_ctl%tangent_cylinder_inner_ctl%iflag =  0

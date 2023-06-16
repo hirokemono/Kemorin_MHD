@@ -62,6 +62,10 @@
         logical :: flag_zeroline = .FALSE.
         integer(kind = kint) :: num_line = 0
 !
+        logical :: flag_fixed_isoline_range = .FALSE.
+        real(kind= kreal) :: dmin_isoline
+        real(kind= kreal) :: dmax_isoline
+!
         integer(kind = kint) :: iflag_2d_projection_mode = 0
         integer(kind = kint) :: iflag_isoline_color = 0
 !
@@ -169,6 +173,16 @@
       map_data%num_line = 0
       if(map_define_ctl%isoline_number_ctl%iflag .gt. 0) then
         map_data%num_line = map_define_ctl%isoline_number_ctl%intvalue
+      end if
+!
+      map_data%dmin_isoline = zero
+      map_data%dmax_isoline = zero
+      if(map_define_ctl%isoline_range_ctl%iflag .gt. 0) then
+        map_data%flag_fixed_isoline_range = .TRUE.
+        map_data%dmin_isoline                                           &
+     &        = map_define_ctl%isoline_range_ctl%realvalue(1)
+        map_data%dmax_isoline                                           &
+     &        = map_define_ctl%isoline_range_ctl%realvalue(2)
       end if
 !
       map_data%iflag_isoline_color = iflag_black
