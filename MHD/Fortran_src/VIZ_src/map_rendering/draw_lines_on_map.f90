@@ -216,13 +216,13 @@
      &    map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
-     &    zero, color_ref, pvr_rgb%rgba_real_gl, map_e)
+     &    (-pi), color_ref, pvr_rgb%rgba_real_gl, map_e)
       call draw_isoline_on_map_image                                    &
      &   (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,              &
      &    map_data%xmin_frame, map_data%xmax_frame,                     &
      &    map_data%ymin_frame, map_data%ymax_frame,                     &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
-     &    (two*pi), color_ref, pvr_rgb%rgba_real_gl, map_e)
+     &    pi, color_ref, pvr_rgb%rgba_real_gl, map_e)
 !
       end subroutine draw_mapflame
 !
@@ -252,7 +252,7 @@
 !
       pi = four * atan(one)
       do ii = 1, 5
-        phi_ref = pi * dble(ii) / 3.0d0
+        phi_ref = pi * dble(ii-3) / 3.0d0
         call draw_isoline_on_map_image                                  &
      &     (psf_nod, psf_ele, psf_nod%phi(1), nwidth, idots,            &
      &      map_data%xmin_frame, map_data%xmax_frame,                   &
