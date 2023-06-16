@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine aitoff_projection_rendering(time_d, psf_nod, psf_ele,&
-!!     &          psf_phys, color_param, map_data, pvr_rgb)
+!!     &          psf_phys, color_param, cbar_param, map_data, pvr_rgb)
 !!      subroutine s_xyz_plane_rendering(time_d, psf_nod, psf_ele,      &
-!!     &          psf_phys, color_param, map_data, pvr_rgb)
+!!     &          psf_phys, color_param, cbar_param, map_data, pvr_rgb)
 !!        type(time_data), intent(in) :: time_d
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
+!!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(phys_data), intent(in) :: psf_phys
 !!        type(node_data), intent(in) :: psf_nod
 !!        type(element_data), intent(in) :: psf_ele
@@ -40,17 +41,19 @@
 !  ---------------------------------------------------------------------
 !
       subroutine aitoff_projection_rendering(time_d, psf_nod, psf_ele,  &
-     &          psf_phys, color_param, map_data, pvr_rgb)
+     &          psf_phys, color_param, cbar_param, map_data, pvr_rgb)
 !
       use set_ucd_data_to_type
       use ucd_IO_select
 !
       use draw_aitoff_map
       use draw_lines_on_map
+      use draw_pvr_colorbar
       use draw_pixels_on_map
 !
       type(time_data), intent(in) :: time_d
       type(pvr_colormap_parameter), intent(in) :: color_param
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(phys_data), intent(in) :: psf_phys
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -124,21 +127,38 @@
       deallocate(phi_shift)
       call dealloc_map_patch_from_1patch(map_e1)
 !
+      call fill_background                                              &
+     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    color_param%bg_rgba_real, pvr_rgb%rgba_real_gl)
+!
+      if(cbar_param%flag_pvr_colorbar) then
+        call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
+     &      color_param, cbar_param, pvr_rgb%rgba_real_gl(1,1))
+      end if
+!
+      if(cbar_param%flag_draw_time) then
+        call set_pvr_timelabel                                          &
+     &     (time_d%time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,      &
+     &      cbar_param, pvr_rgb%rgba_real_gl(1,1))
+      end if
+!
       end subroutine aitoff_projection_rendering
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine s_xyz_plane_rendering(time_d, psf_nod, psf_ele,        &
-     &          psf_phys, color_param, map_data, pvr_rgb)
+     &          psf_phys, color_param, cbar_param, map_data, pvr_rgb)
 !
       use set_scalar_on_xyz_plane
       use draw_pixels_on_map
       use draw_lines_on_map
+      use draw_pvr_colorbar
       use cal_mesh_position
 !
       type(time_data), intent(in) :: time_d
       type(pvr_colormap_parameter), intent(in) :: color_param
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(phys_data), intent(in) :: psf_phys
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
@@ -202,6 +222,21 @@
      &   color_param%bg_rgba_real, map_data%tangent_cylinder_radius(1), &
      &   pvr_rgb, map_e1)
       call dealloc_map_patch_from_1patch(map_e1)
+!
+      call fill_background                                              &
+     &   (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    color_param%bg_rgba_real, pvr_rgb%rgba_real_gl)
+!
+      if(cbar_param%flag_pvr_colorbar) then
+        call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
+     &      color_param, cbar_param, pvr_rgb%rgba_real_gl(1,1))
+      end if
+!
+      if(cbar_param%flag_draw_time) then
+        call set_pvr_timelabel                                          &
+     &     (time_d%time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,      &
+     &      cbar_param, pvr_rgb%rgba_real_gl(1,1))
+      end if
 !
       end subroutine s_xyz_plane_rendering
 !
