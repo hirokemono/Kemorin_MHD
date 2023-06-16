@@ -343,7 +343,7 @@
       subroutine draw_med_tangent_cyl_grid(psf_nod, psf_ele, map_data,  &
      &          bg_color, flag_fill, radius_ICB, pvr_rgb, map_e)
 !
-      use draw_pixels_on_map
+      use set_scalar_on_xyz_plane
 !
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
