@@ -80,8 +80,6 @@
      &                             map_rgb(i_map))
         call init_map_rendering_data(view_param(i_map),                 &
      &                               map_rgb(i_map), map_data(i_map))
-        call alloc_scalar_on_map(map_rgb(i_map)%num_pixel_xy,           &
-     &                           map_data(i_map))
       end do
 !
       if(iflag_MAP_time) call start_elapsed_time(ist_elapsed_MAP+1)

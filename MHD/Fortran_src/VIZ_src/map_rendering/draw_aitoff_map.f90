@@ -8,17 +8,14 @@
 !>@brief Structure for cross sectioning
 !!
 !!@verbatim
-!!      subroutine set_scalar_on_map_image(psf_nod, psf_ele, d_scalar,  &
-!!     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
-!!     &          nxpixel, nypixel, npix, d_map, rgba, map_e)
+!!      subroutine set_scalar_on_map_image(color_param,                 &
+!!     &          psf_nod, psf_ele, d_scalar, map_data, pvr_rgb, map_e)
+!!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(node_data), intent(in) :: psf_nod
 !!        type(element_data), intent(in) :: psf_ele
+!!        type(map_rendering_data), intent(in) :: map_data
 !!        real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
-!!        real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
-!!        real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
-!!        integer(kind = kint), intent(in) :: nxpixel, nypixel, npix
-!!        real(kind = kreal), intent(inout) :: d_map(npix)
-!!        real(kind = kreal), intent(inout) :: rgba(4,npix)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!        type(map_patches_for_1patch), intent(inout) :: map_e
 !!      subroutine draw_isoline_on_map_image                            &
 !!     &         (psf_nod, psf_ele, d_scalar, nwidth, idots,            &
@@ -67,9 +64,9 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(node_data), intent(in) :: psf_nod
       type(element_data), intent(in) :: psf_ele
+      type(map_rendering_data), intent(in) :: map_data
       real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
 !
-      type(map_rendering_data), intent(inout) :: map_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !

@@ -8,11 +8,6 @@
 !>@brief Structure for cross sectioning
 !!
 !!@verbatim
-!!      subroutine alloc_scalar_on_map(num_pixel, map_data)
-!!      subroutine dealloc_scalar_on_map(map_data)
-!!        integer(kind = kint), intent(in) :: num_pixel
-!!        type(map_rendering_data), intent(inout) :: map_data
-!!
 !!      subroutine set_ctl_map_rendering_param                          &
 !!     &         (proj_type_c, proj_c, map_define_ctl, map_data)
 !!        type(read_character_item), intent(in) :: proj_type_c
@@ -81,41 +76,12 @@
 !>    Color of tangent cylinder
         real(kind = kreal) :: tangent_cylinder_rgba(4)                  &
      &                           = (/zero,zero,zero,one/)
-!
-        real(kind = kreal), allocatable :: d_map(:)
       end type map_rendering_data
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_scalar_on_map(num_pixel, map_data)
-!
-      integer(kind = kint), intent(in) :: num_pixel
-      type(map_rendering_data), intent(inout) :: map_data
-!
-      allocate(map_data%d_map(num_pixel))
-!
-      if(num_pixel .le. 0) return
-!$omp parallel workshare
-      map_data%d_map(num_pixel) = 0.0d0
-!$omp end parallel workshare
-!
-      end subroutine alloc_scalar_on_map
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_scalar_on_map(map_data)
-!
-      type(map_rendering_data), intent(inout) :: map_data
-!
-      deallocate(map_data%d_map)
-!
-      end subroutine dealloc_scalar_on_map
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_ctl_map_rendering_param                            &

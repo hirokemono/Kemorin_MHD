@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_draw_isoline_in_triangle(nwidth, idots,            &
-!!     &         (xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
-!!     &          nxpixel, nypixel, xy_patch, d_patch, d_map, rgba)
-!!        integer(kind = kint), intent(in) :: nwidth, idots
+!!     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,       &
+!!     &          nxpixel, nypixel, xy_patch, d_patch, d_ref, color_ref,&
+!!     &          rgba)
 !!        real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
 !!        real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
+!!        integer(kind = kint), intent(in) :: nwidth, idots
 !!        integer(kind = kint), intent(in) :: nxpixel, nypixel
 !!        real(kind = kreal), intent(in) :: xy_patch(2,3)
 !!        real(kind = kreal), intent(in) :: d_patch(3)

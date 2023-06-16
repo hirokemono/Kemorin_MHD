@@ -77,10 +77,6 @@
       pi = four*atan(one)
       call alloc_map_patch_from_1patch(map_e1)
       if(map_data%fill_flag) then
-        call set_scalar_on_map_image                                    &
-     &     (color_param, psf_nod, psf_ele, psf_phys%d_fld(1,1),         &
-     &      map_data, pvr_rgb, map_e1)
-!
         if(map_data%flag_zeroline .and. (map_data%num_line.le.0)) then
           call draw_isoline_on_map_image                                &
      &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), 3, 0,              &
