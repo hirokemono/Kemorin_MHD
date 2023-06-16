@@ -27,7 +27,7 @@
 !
       implicit  none
 !
-      private :: find_isoline_in_triangle
+      private :: find_isoline_in_triangle, draw_pixel_on_isoline
 !
 !  ---------------------------------------------------------------------
 !
