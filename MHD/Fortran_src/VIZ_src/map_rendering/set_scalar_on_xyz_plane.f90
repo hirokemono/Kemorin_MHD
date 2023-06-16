@@ -75,6 +75,74 @@
       end subroutine sel_scalar_on_xyz_plane
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine draw_xyz_plane_isolines                                &
+     &         (psf_nod, psf_ele, d_scalar, map_data, color_param,      &
+     &          pvr_rgb, map_e)
+!
+      use t_pvr_image_array
+      use t_map_rendering_data
+      use t_pvr_colormap_parameter
+      use set_color_4_pvr
+      use draw_pixels_on_map
+!
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
+      real(kind= kreal), intent(in) :: d_scalar(psf_nod%numnod)
+!
+      type(map_rendering_data), intent(in) :: map_data
+      type(pvr_colormap_parameter), intent(in) :: color_param
+!
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(map_patches_for_1patch), intent(inout) :: map_e
+!
+      integer(kind = kint), parameter :: nwidth = 2
+      integer(kind = kint) :: idots
+      integer(kind = kint) :: iline, imax
+      real(kind = kreal) :: color_ref(4)
+      real(kind = kreal) :: d_min, d_max, d_ref
+!
+!
+      if(map_data%flag_fixed_isoline_range) then
+        d_min = map_data%dmin_isoline
+        d_max = map_data%dmax_isoline
+      else
+        d_min = minval(d_scalar)
+        d_max = maxval(d_scalar)
+      end if
+!
+      imax = color_param%num_pvr_datamap_pnt
+      do iline = 0, map_data%num_line-1
+        d_ref = d_min + (d_max - d_min)                                 &
+     &                 * dble(iline) / dble(map_data%num_line-1)
+        if(d_ref .ge. zero) then
+          idots = 0
+        else
+          idots = 2
+        end if
+!
+        if(map_data%iflag_isoline_color .eq. iflag_white) then
+          color_ref(1:4) =   one
+        else if(map_data%iflag_isoline_color .eq. iflag_black) then
+          color_ref(1:4) =   zero
+        else
+          call value_to_rgb(color_param%id_pvr_color(2),                &
+     &                      color_param%id_pvr_color(1),                &
+     &                      color_param%num_pvr_datamap_pnt,            &
+     &                      color_param%pvr_datamap_param,              &
+     &                      d_ref, color_ref(1))
+        end if
+!
+        color_ref(4) =   one
+        call sel_draw_isoline_on_xyz_plane                              &
+     &     (psf_nod, psf_ele, d_scalar, nwidth, idots, map_data,        &
+     &      d_ref, color_ref, pvr_rgb, map_e)
+      end do
+!
+      end subroutine draw_xyz_plane_isolines
+!
+!  ---------------------------------------------------------------------
 !
       subroutine sel_draw_isoline_on_xyz_plane                          &
      &         (psf_nod, psf_ele, d_scalar, nwidth, idots,              &
@@ -89,8 +157,8 @@
       integer(kind = kint), intent(in) :: nwidth, idots
       real(kind = kreal), intent(in) :: d_ref
       real(kind = kreal), intent(in) :: color_ref(4)
+      type(map_rendering_data), intent(in) :: map_data
 !
-      type(map_rendering_data), intent(inout) :: map_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(map_patches_for_1patch), intent(inout) :: map_e
 !

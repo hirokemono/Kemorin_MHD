@@ -65,6 +65,8 @@
       type(map_patches_for_1patch) :: map_e1
       real(kind = kreal), parameter                                     &
      &                   :: black(4) = (/zero,zero,zero,one/)
+      real(kind = kreal), parameter                                     &
+     &                   :: white(4) = (/one,one,one,one/)
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -124,7 +126,7 @@
      &        map_data%xmin_frame, map_data%xmax_frame,                 &
      &        map_data%ymin_frame, map_data%ymax_frame,                 &
      &        pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        zero, black, pvr_rgb%rgba_real_gl, map_e1)
+     &        zero, white, pvr_rgb%rgba_real_gl, map_e1)
 !          call draw_zeroline                                           &
 !     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),            &
 !     &        color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
@@ -202,6 +204,8 @@
       type(map_patches_for_1patch) :: map_e1
       real(kind = kreal), parameter                                     &
      &                   :: black(4) = (/zero,zero,zero,one/)
+      real(kind = kreal), parameter                                     &
+     &                   :: white(4) = (/one,one,one,one/)
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -231,21 +235,25 @@
       end if
 !
       if(map_data%num_line .gt. 0) then
-        call alloc_map_patch_from_1patch(map_e1)
         call sel_scalar_on_xyz_plane                                    &
      &     (psf_nod, psf_ele, psf_phys%d_fld(1,2),                      &
      &      map_data, pvr_rgb, map_e1)
-        call dealloc_map_patch_from_1patch(map_e1)
 !
-        call draw_isolines                                              &
-     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
-     &      map_data, color_param, pvr_rgb%rgba_real_gl)
+        call draw_xyz_plane_isolines                                    &
+     &     (psf_nod, psf_ele, psf_phys%d_fld(1,2), map_data,            &
+     &      color_param, pvr_rgb, map_e1)
+!        call draw_isolines                                             &
+!     &     (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),              &
+!     &      map_data, color_param, pvr_rgb%rgba_real_gl)
 !
         if(map_data%flag_zeroline                                       &
      &        .and. (map_data%fill_flag.eqv. .FALSE.)) then
-          call draw_zeroline                                            &
-     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
-     &        color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
+          call sel_draw_isoline_on_xyz_plane                            &
+     &       (psf_nod, psf_ele, psf_phys%d_fld(1,1), 3, 0,              &
+     &        map_data, zero, white, pvr_rgb, map_e1)
+!          call draw_zeroline                                            &
+!     &       (pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),             &
+!     &        color_param, map_data%d_map, pvr_rgb%rgba_real_gl)
         end if
       end if
 !
