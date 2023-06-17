@@ -75,7 +75,9 @@
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
-!
+!$omp parallel workshare
+      pvr_rgb%rgba_real_gl(1:4,1:pvr_rgb%num_pixel_actual) = 0.0d0
+!$omp end parallel workshare
 !
       pi = four*atan(one)
       call alloc_map_patch_from_1patch(map_e1)
@@ -181,9 +183,11 @@
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
+!$omp parallel workshare
+      pvr_rgb%rgba_real_gl(1:4,1:pvr_rgb%num_pixel_actual) = 0.0d0
+!$omp end parallel workshare
 !
       call alloc_map_patch_from_1patch(map_e1)
-!
       if(map_data%fill_flag) then
         call sel_scalar_on_xyz_plane                                    &
      &     (color_param, psf_nod, psf_ele, psf_phys%d_fld(1,1),         &
