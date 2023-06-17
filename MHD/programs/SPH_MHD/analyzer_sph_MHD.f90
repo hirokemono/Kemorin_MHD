@@ -202,8 +202,8 @@
 !*
 !*  ----------- Zonal means --------------
 !*
-          if(SNAPs%MHD_step%viz_step%istep_psf .ge. 0                   &
-     &        .or. SNAPs%MHD_step%viz_step%istep_map .ge. 0) then
+          if(SSMHDs%MHD_step%viz_step%istep_psf .ge. 0                  &
+     &        .or. SSMHDs%MHD_step%viz_step%istep_map .ge. 0) then
             call SGS_MHD_zmean_sections(SSMHDs%MHD_step%viz_step,       &
      &          SSMHDs%MHD_step%time_d, SSMHDs%SPH_MHD%sph,             &
      &          SVIZ_m%FEM_DAT%geofem, SSMHDs%SPH_WK%trns_WK,           &
