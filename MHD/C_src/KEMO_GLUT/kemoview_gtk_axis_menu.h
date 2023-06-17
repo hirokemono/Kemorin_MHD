@@ -29,6 +29,6 @@
 
 /*  prototypes */
 
-GtkWidget * make_axis_menu_box(void);
+GtkWidget * make_axis_menu_box(GtkWidget *window);
 
 #endif

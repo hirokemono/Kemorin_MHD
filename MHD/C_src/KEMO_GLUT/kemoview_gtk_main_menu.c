@@ -634,7 +634,7 @@ void make_gtk_main_menu_box(int *iflag_fast_draw, struct main_buttons *mbot,
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
 	
-    GtkWidget *hbox_axis = make_axis_menu_box();
+    GtkWidget *hbox_axis = make_axis_menu_box(window_main);
     GtkWidget *expander_rot = init_rotation_menu_expander(mbot->rot_gmenu, window_main);
     GtkWidget *expander_quilt = init_quilt_menu_expander(mbot->quilt_gmenu, window_main);
     GtkWidget *expander_view = init_viewmatrix_menu_expander(iflag_fast_draw, mbot->view_menu,
