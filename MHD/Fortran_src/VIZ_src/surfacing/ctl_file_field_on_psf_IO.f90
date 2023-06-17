@@ -51,14 +51,6 @@
 !
       implicit  none
 !
-!
-      character(len=kchara), parameter                                  &
-     &             :: hd_section_ctl = 'cross_section_ctl'
-!      Deprecated labels
-      character(len=kchara), parameter                                  &
-     &             :: hd_psf_ctl = 'surface_rendering'
-      private :: hd_section_ctl, hd_psf_ctl
-!
 !   --------------------------------------------------------------------
 !
       contains
@@ -116,7 +108,7 @@
 !
       do
         call load_one_line_from_control(id_control, c_buf1)
-        call read_fld_on_psf_control(id_control, hd_psf_ctl,            &
+        call read_fld_on_psf_control(id_control, hd_block,              &
      &      fld_on_psf_c, c_buf1)
         if(fld_on_psf_c%i_iso_result .gt. 0) exit
       end do
