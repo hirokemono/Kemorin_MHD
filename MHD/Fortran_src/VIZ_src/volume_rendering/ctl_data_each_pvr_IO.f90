@@ -335,6 +335,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
 !
+      write(*,'(2a)', ADVANCE='NO') '!  ', trim(hd_view_transform)
       call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &
      &    pvr_ctl%fname_mat_ctl, pvr_ctl%mat, level)
       call write_pvr_render_area_ctl(id_control, hd_plot_area,          &

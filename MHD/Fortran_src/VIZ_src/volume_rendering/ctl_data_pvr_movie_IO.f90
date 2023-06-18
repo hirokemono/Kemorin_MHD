@@ -195,9 +195,11 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_movie_rot_axis, movie%rotation_axis_ctl)
 !
+      write(*,'(2a)', ADVANCE='NO') '!  ', trim(hd_start_view_control)
       call sel_write_ctl_modelview_file                                 &
      &   (id_control, hd_start_view_control,                            &
      &    movie%fname_view_start_ctl, movie%view_start_ctl, level)
+      write(*,'(2a)', ADVANCE='NO') '!  ', trim(hd_end_view_control)
       call sel_write_ctl_modelview_file                                 &
      &   (id_control, hd_end_view_control,                              &
      &    movie%fname_view_end_ctl, movie%view_end_ctl, level)

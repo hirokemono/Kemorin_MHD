@@ -289,6 +289,8 @@
      &                               pvr%render_area_c, level)
       call write_lic_control_data(id_control, hd_lic_control,           &
      &                            lic_ctl, level)
+!
+      write(*,'(2a)', ADVANCE='NO') '!  ', trim(hd_view_transform)
       call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &
      &    pvr%fname_mat_ctl, pvr%mat, level)
 !

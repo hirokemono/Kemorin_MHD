@@ -210,6 +210,7 @@
 !
 !
       if(cmp_no_case(file_name, 'NO_FILE')) then
+        write(*,'(a)') ' is included.'
         call write_psf_control_data(id_control, hd_block,               &
      &                              psf_ctl_struct, level)
       else if(id_control .eq. id_monitor) then

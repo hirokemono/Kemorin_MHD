@@ -176,6 +176,7 @@
 !
 !
       if(cmp_no_case(fname_lic_ctl, 'NO_FILE')) then
+        write(*,'(a)') ' is included.'
         call write_lic_pvr_ctl(id_control, hd_lic_ctl,                  &
      &                         pvr_ctl_type, lic_ctl_type, level)
       else if(id_control .eq. id_monitor) then
