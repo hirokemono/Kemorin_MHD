@@ -110,6 +110,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
         open(id_control, file = fname_ctl_tave_s_vs_r, status='old')
         do

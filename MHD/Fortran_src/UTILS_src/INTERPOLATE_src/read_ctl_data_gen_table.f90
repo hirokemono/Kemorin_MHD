@@ -55,6 +55,8 @@
 !
 !
       if(my_rank .eq. 0) then
+!
+        c_buf1%level = 0
         open(table_ctl_file_code, file=fname_table_ctl, status='old')
         do
           call load_one_line_from_control(table_ctl_file_code, c_buf1)
@@ -79,6 +81,8 @@
 !
 !
       if(my_rank .eq. 0) then
+!
+        c_buf1%level = 0
         open(table_ctl_file_code, file=fname_itp_ctl, status='old')
         do
           call load_one_line_from_control(table_ctl_file_code, c_buf1)

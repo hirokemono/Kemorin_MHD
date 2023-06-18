@@ -72,6 +72,9 @@
       subroutine sel_read_ctl_file_vol_repart(id_control, hd_block,     &
      &          file_name, viz_repart_c, c_buf)
 !
+      use write_control_elements
+      use write_control_items
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       character(len=kchara), intent(inout) :: file_name
@@ -80,13 +83,15 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        write(*,'(3a)', ADVANCE='NO')                                   &
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(3a)', ADVANCE='NO')                          &
      &          'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
         call read_ctl_file_vol_repart((id_control+1), file_name,        &
      &                                hd_block, viz_repart_c)
       else if(check_begin_flag(c_buf, hd_block)) then
-        write(*,*)  'Repartioning control is included'
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(a)')  'Repartioning control is included'
         file_name = 'NO_FILE'
         call read_control_vol_repart(id_control, hd_block,              &
      &                               viz_repart_c, c_buf)
@@ -113,8 +118,9 @@
 !
 !
       if(my_rank .ne. 0) return
-      write(*,*) 're-partition control: ', trim(file_name)
-        open(id_control, file=file_name, status='old')
+!
+      c_buf1%level = 0
+      open(id_control, file=file_name, status='old')
 !
       do
         call load_one_line_from_control(id_control, c_buf1)

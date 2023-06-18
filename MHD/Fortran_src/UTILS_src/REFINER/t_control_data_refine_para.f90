@@ -93,6 +93,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open (ctl_refine_code, file = ctl_refine_file_name)
 !
       do

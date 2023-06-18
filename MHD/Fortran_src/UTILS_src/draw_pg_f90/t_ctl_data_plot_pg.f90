@@ -220,6 +220,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(pg_ctl_file_code, file=fname_pgplot_ctl)
 !
       do
@@ -241,6 +242,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(pg_ctl_file_code, file=fname_drmed_grp_ctl)
 !
       do

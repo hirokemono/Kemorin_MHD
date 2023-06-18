@@ -85,8 +85,8 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       write(*,*) 'read file ', trim(fname_pvr_ctl)
-!
       open(id_control, file=fname_pvr_ctl, status='old')
       do
         call load_one_line_from_control(id_control, c_buf1)
@@ -114,6 +114,8 @@
       type(buffer_for_control) :: c_buf1
 !
       if(fname_pvr_ctl .eq. 'NO_FILE') return
+!
+      c_buf1%level = 0
       open(id_control, file=fname_pvr_ctl, status='old')
       pvr_ctl_type%i_pvr_ctl = 0
 !

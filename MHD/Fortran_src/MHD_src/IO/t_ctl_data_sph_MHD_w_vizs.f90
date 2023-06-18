@@ -115,6 +115,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(id_control_file, file = file_name, status='old' )
 !
       do

@@ -105,6 +105,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
         open(id_control, file = fname_ctl_psf_compare, status='old')
         do

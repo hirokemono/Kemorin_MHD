@@ -147,6 +147,8 @@
       subroutine sel_read_ctl_pvr_colormap_file                         &
      &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
 !
+      use write_control_elements
+      use write_control_items
       use ctl_data_pvr_colorbar_IO
       use ctl_data_pvr_colormap_IO
 !
@@ -159,7 +161,8 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        write(*,'(3a)', ADVANCE='NO')                                   &
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(3a)', ADVANCE='NO')                          &
      &            'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
         call read_control_pvr_colormap_file                             &
@@ -195,6 +198,7 @@
         return
       end if
 !
+      c_buf1%level = 0
       write(*,*) 'Colormap control file:', trim(file_name)
       open(id_control, file = file_name, status='old')
 !

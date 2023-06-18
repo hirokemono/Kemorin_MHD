@@ -207,6 +207,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(ctl_file_code, file=name_ctl_shell)
 !
       do

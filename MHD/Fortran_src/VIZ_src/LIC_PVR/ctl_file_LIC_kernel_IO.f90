@@ -73,6 +73,8 @@
       subroutine sel_read_LIC_kernel_ctl_file                           &
      &         (id_control, hd_block, file_name, kernel_ctl, c_buf)
 !
+      use write_control_elements
+      use write_control_items
       use t_read_control_elements
       use skip_comment_f
 !
@@ -86,14 +88,16 @@
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        write(*,'(a)', ADVANCE='NO') trim(hd_block),                    &
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(a)', ADVANCE='NO') trim(hd_block),           &
      &                            ' is read file from ... '
         call read_LIC_kernel_control_file((id_control+2), file_name,    &
      &                                    hd_block, kernel_ctl)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
-        write(*,*) trim(hd_block), ' is included'
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(a)') trim(hd_block), ' is included'
         call read_kernel_control_data(id_control, hd_block,             &
      &                                kernel_ctl, c_buf)
       end if
@@ -115,8 +119,8 @@
 !
       if(file_name .eq. 'NO_FILE') return
 !
+      c_buf1%level = 0
       write(*,*) 'LIC noise control file: ', trim(file_name)
-!
       open(id_control, file=file_name, status='old')
       do
         call load_one_line_from_control(id_control, c_buf1)

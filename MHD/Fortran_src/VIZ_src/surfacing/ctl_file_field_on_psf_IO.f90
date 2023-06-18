@@ -61,6 +61,9 @@
      &          file_name, fld_on_psf_c, c_buf)
 !
       use t_read_control_elements
+!
+      use write_control_elements
+      use write_control_items
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -73,14 +76,16 @@
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        write(*,'(2a)', ADVANCE='NO') trim(hd_block),                   &
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(2a)', ADVANCE='NO') trim(hd_block),          &
      &                             ' is read file from ... '
         call read_ctl_field_on_psf_file((id_control+2), file_name,      &
      &                               hd_block, fld_on_psf_c)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
-        write(*,*) trim(hd_block), ' is included'
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(a)') trim(hd_block), ' is included'
         call read_fld_on_psf_control(id_control, hd_block,              &
      &                               fld_on_psf_c, c_buf)
       end if
@@ -103,6 +108,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       write(*,'(a)') trim(file_name)
       open(id_control, file=file_name, status='old')
 !

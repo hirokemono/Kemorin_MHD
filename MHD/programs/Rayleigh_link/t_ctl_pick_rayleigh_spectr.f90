@@ -121,6 +121,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(id_control, file = control_name)
       call load_one_line_from_control(id_control, c_buf1)
       call read_pick_rayleigh_ctl(id_control, hd_pick_sph_ctl,          &

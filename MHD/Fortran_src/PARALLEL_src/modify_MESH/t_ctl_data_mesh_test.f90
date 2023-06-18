@@ -75,6 +75,8 @@
 !
 !
       if(my_rank .eq. 0) then
+!
+        c_buf1%level = 0
         open(mest_ctl_file_code,file=fname_test_mesh_ctl,status='old')
 !
         do

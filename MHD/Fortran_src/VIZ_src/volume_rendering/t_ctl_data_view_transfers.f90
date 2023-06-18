@@ -106,6 +106,8 @@
 !
       use ctl_file_pvr_modelview_IO
       use ctl_data_view_transfer_IO
+      use write_control_elements
+      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -125,8 +127,10 @@
         if(check_file_flag(c_buf, hd_block)                             &
      &        .or. check_begin_flag(c_buf, hd_block)) then
           call append_mul_view_trans_ctl(mul_mats_c)
-          write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block),              &
-     &                           ' No. ', mul_mats_c%num_modelviews_c
+!
+          call write_space_4_parse(id_monitor, c_buf%level)
+          write(id_monitor,'(3a,i4)', ADVANCE='NO')                     &
+     &       ' No. ', mul_mats_c%num_modelviews_c, ' of '
 !
           call sel_read_ctl_modelview_file(id_control, hd_block,        &
      &        mul_mats_c%fname_mat_ctl(mul_mats_c%num_modelviews_c),    &

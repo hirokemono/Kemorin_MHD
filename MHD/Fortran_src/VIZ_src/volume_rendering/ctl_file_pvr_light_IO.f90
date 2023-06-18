@@ -69,6 +69,8 @@
       subroutine sel_read_ctl_pvr_light_file                            &
      &         (id_control, hd_block, file_name, light, c_buf)
 !
+      use write_control_elements
+      use write_control_items
       use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -79,13 +81,17 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        write(*,'(3a)', ADVANCE='NO')                                   &
+!
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(3a)', ADVANCE='NO')                          &
      &          'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
         call read_control_pvr_light_file(id_control+1, file_name,       &
      &                                   hd_block, light)
       else if(check_begin_flag(c_buf, hd_block)) then
-        write(*,*)  'Lighting control is included'
+!
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(a)')  'Lighting control is included'
         file_name = 'NO_FILE'
         call read_lighting_ctl(id_control, hd_block, light, c_buf)
       end if
@@ -140,6 +146,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       write(*,*) 'Lighting control: ', trim(file_name)
       open(id_control, file = file_name, status='old')
 !

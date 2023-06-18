@@ -20,7 +20,7 @@
 !!      logical function check_end_flag(c_buf, label)
 !!      logical function check_array_flag(c_buf, label)
 !!      logical function check_end_array_flag(c_buf, label)
-!!        type(buffer_for_control), intent(in)  :: c_buf
+!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
 !!      subroutine monitor_read_control_label(c_buf)
 !!      subroutine monitor_read_control_buffer(c_buf)
@@ -49,6 +49,8 @@
          character(len = kchara) :: header_chara
 !>     temporal character for reading line
          character(len = 255) :: ctl_buffer
+!>     nesting level of control blocks
+         integer(kind = kint) :: level = 0
       end type buffer_for_control
 !
 !   --------------------------------------------------------------------
@@ -125,13 +127,15 @@
 !
       use skip_comment_f
 !
-      type(buffer_for_control), intent(in)  :: c_buf
+      type(buffer_for_control), intent(inout)  :: c_buf
       character(len=kchara), intent(in) :: label
 !
 !
       check_begin_flag = .FALSE.
-      if(cmp_no_case(first_word(c_buf), hd_begin)) then
-        check_begin_flag = cmp_no_case(second_word(c_buf), label)
+      if(cmp_no_case(first_word(c_buf), hd_begin)                       &
+     &   .and. cmp_no_case(second_word(c_buf), label)) then
+        check_begin_flag = .TRUE.
+        c_buf%level = c_buf%level + 1
       end if
 !
       end function check_begin_flag
@@ -159,13 +163,15 @@
 !
       use skip_comment_f
 !
-      type(buffer_for_control), intent(in)  :: c_buf
+      type(buffer_for_control), intent(inout)  :: c_buf
       character(len=kchara), intent(in) :: label
 !
 !
       check_end_flag = .FALSE.
-      if(cmp_no_case(first_word(c_buf), hd_end)) then
-        check_end_flag = cmp_no_case(second_word(c_buf), label)
+      if(cmp_no_case(first_word(c_buf), hd_end)                         &
+     &     .and. cmp_no_case(second_word(c_buf), label)) then
+        check_end_flag = .TRUE.
+        c_buf%level = c_buf%level - 1
       end if
 !
       end function check_end_flag
@@ -176,7 +182,7 @@
 !
       use skip_comment_f
 !
-      type(buffer_for_control), intent(in)  :: c_buf
+      type(buffer_for_control), intent(inout)  :: c_buf
       character(len=kchara), intent(in) :: label
 !
       character(len=kchara)  :: tmpchara
@@ -190,7 +196,10 @@
       if(ntmp .eq. 0) return
 !
   99  continue
-      check_array_flag = cmp_no_case(second_word(c_buf), label)
+      if(cmp_no_case(second_word(c_buf), label)) then
+        check_array_flag = .TRUE.
+        c_buf%level = c_buf%level + 1
+      end if
 !
       end function check_array_flag
 !
@@ -200,15 +209,16 @@
 !
       use skip_comment_f
 !
-      type(buffer_for_control), intent(in)  :: c_buf
+      type(buffer_for_control), intent(inout)  :: c_buf
       character(len=kchara), intent(in) :: label
 !
 !
       check_end_array_flag = .FALSE.
-      if(cmp_no_case(first_word(c_buf), hd_end)) then
-        if(cmp_no_case(second_word(c_buf), hd_array)) then
-          check_end_array_flag = cmp_no_case(third_word(c_buf), label)
-        end if
+      if(cmp_no_case(first_word(c_buf), hd_end)                         &
+     &    .and. cmp_no_case(second_word(c_buf), hd_array)               &
+     &    .and. cmp_no_case(third_word(c_buf), label)) then
+        check_end_array_flag = .TRUE.
+        c_buf%level = c_buf%level - 1
       end if
 !
       end function check_end_array_flag

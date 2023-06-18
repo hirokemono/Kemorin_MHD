@@ -97,6 +97,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open ( grp_ctl_file_code, file=fname_grp_data_ctl)
       do
         call load_one_line_from_control(grp_ctl_file_code, c_buf1)

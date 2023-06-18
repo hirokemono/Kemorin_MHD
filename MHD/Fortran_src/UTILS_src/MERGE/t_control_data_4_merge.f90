@@ -127,6 +127,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open (control_file_code, file = control_file_name)
 !
       do
@@ -148,6 +149,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open (control_file_code, file = ctl_assemble_sph_name)
 !
       do

@@ -83,6 +83,9 @@
       subroutine sel_read_ctl_gen_shell_grids                           &
      &         (id_control, hd_block, file_name, psph_ctl, c_buf)
 !
+      use write_control_elements
+      use write_control_items
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
@@ -95,12 +98,17 @@
      &                                                  .gt. 0) return
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(3a)') trim(hd_block),                        &
+     &                   ' is read from file... ', trim(file_name)
         psph_ctl%ifile_sph_shell = 1
         call read_ctl_file_gen_shell_grids(id_control+2, file_name,     &
      &                                     hd_block, psph_ctl)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
-        write(*,*) 'resolution data is included'
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(3a)') 'resolution data ', trim(hd_block),    &
+     &                           ' is included'
         call read_parallel_shell_ctl                                    &
      &     (id_control, hd_block, psph_ctl, c_buf)
       end if
@@ -120,8 +128,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      write(*,*) 'Spherical shell resolution file: ',                   &
-     &          trim(file_name)
+      c_buf1%level = 0
       open(id_control, file = file_name)
 !
       do
@@ -136,7 +143,6 @@
       end do
 !
       close(id_control)
-      write(*,*) 'Spherical shell resolution file end'
 !
       end subroutine read_ctl_file_gen_shell_grids
 !

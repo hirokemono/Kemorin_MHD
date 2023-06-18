@@ -61,6 +61,8 @@
       use t_read_control_elements
       use skip_comment_f
       use ctl_data_field_line_IO
+      use write_control_elements
+      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -81,7 +83,8 @@
      &        .or. check_begin_flag(c_buf, hd_block)) then
           call append_new_fline_control(fline_ctls)
 !
-          write(*,'(2a,i4,a)', ADVANCE='NO')                            &
+          call write_space_4_parse(id_monitor, c_buf%level)
+          write(id_monitor,'(2a,i4,a)', ADVANCE='NO')                   &
      &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
           call sel_read_fline_control(id_control, hd_block,             &
      &        fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl),     &
@@ -115,7 +118,7 @@
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
-        write(*,*) ' is included'
+        write(*,'(a)') ' is included'
         call s_read_field_line_ctl(id_control, hd_block,                &
      &                             fline_ctl_struct, c_buf)
       end if
@@ -137,6 +140,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       write(*,*) 'Control file: ', trim(file_name)
       call reset_fline_control_flags(fline_ctl_struct)
       open(id_control, file=file_name, status='old')

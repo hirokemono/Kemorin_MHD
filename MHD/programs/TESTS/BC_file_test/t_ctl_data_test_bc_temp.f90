@@ -99,6 +99,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(test_mest_ctl_file_code, file = file_name, status='old')
       do
         call load_one_line_from_control                                 &
