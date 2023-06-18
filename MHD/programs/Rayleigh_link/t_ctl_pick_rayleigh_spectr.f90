@@ -123,7 +123,8 @@
 !
       c_buf1%level = 0
       open(id_control, file = control_name)
-      call load_one_line_from_control(id_control, c_buf1)
+      call load_one_line_from_control                                   &
+     &   (id_control, hd_pick_sph_ctl, c_buf1)
       call read_pick_rayleigh_ctl(id_control, hd_pick_sph_ctl,          &
      &                            pick_ctl, c_buf1)
       close(id_control)
@@ -146,7 +147,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pick_ctl%i_pick_rayleigh_spectr .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !

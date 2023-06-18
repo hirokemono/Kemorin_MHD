@@ -206,7 +206,10 @@
         c_buf1%level = 0
         open(table_ctl_file_code, file=fname_dist_itp_ctl,status='old')
         do
-          call load_one_line_from_control(table_ctl_file_code, c_buf1)
+          call load_one_line_from_control                               &
+     &       (table_ctl_file_code, hd_distribute_itp, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
+!
           call read_control_dist_itp_data                               &
      &       (table_ctl_file_code, hd_distribute_itp, gtbl_ctl, c_buf1)
           if(gtbl_ctl%i_distribute_itp .gt. 0) exit
@@ -233,7 +236,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_distribute_itp .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -287,7 +291,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_distribute_itp .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -330,7 +335,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_itp_files .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
@@ -384,7 +390,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_itp_model .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_phys_data_control                                     &
@@ -424,7 +431,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_iteration_ctl.gt.0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_i_r(id_control,                         &
@@ -472,7 +480,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_element_hash .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !

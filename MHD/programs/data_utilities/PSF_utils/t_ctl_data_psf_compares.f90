@@ -82,7 +82,9 @@
       if(my_rank .eq. 0) then
         open(id_control, file = fname_ctl_psf_compare, status='old')
         do
-          call load_one_line_from_control(id_control, c_buf1)
+          call load_one_line_from_control                               &
+     &       (id_control, hd_compare_psf_file, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
 !
           call read_ctl_data_psf_compares                               &
      &       (id_control, hd_compare_psf_file, psf_compares, c_buf1)
@@ -113,7 +115,8 @@
       call alloc_psf_compares_ctl(psf_compares)
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_array_flag(c_buf, hd_block)) exit
 !
         if(check_begin_flag(c_buf, hd_block)) then

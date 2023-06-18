@@ -113,7 +113,9 @@
       open(id_control, file=file_name, status='old')
 !
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_fld_on_psf_control(id_control, hd_block,              &
      &      fld_on_psf_c, c_buf1)
         if(fld_on_psf_c%i_iso_result .gt. 0) exit

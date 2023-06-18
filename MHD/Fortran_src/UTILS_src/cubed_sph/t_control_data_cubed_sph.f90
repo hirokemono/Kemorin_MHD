@@ -211,7 +211,10 @@
       open(ctl_file_code, file=name_ctl_shell)
 !
       do
-        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call load_one_line_from_control                                 &
+     &     (ctl_file_code, hd_shell_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_control_data_4_shell                                  &
      &     (ctl_file_code, hd_shell_ctl, cubed_sph_c, c_buf1)
         if(cubed_sph_c%i_shell_ctl .gt. 0) exit
@@ -272,7 +275,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubed_sph_c%i_shell_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_ctl_4_shell_def                                       &
@@ -302,7 +306,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubed_sph_c%i_cubed_sph_def .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_i_r(id_control,                         &
@@ -346,7 +351,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubed_sph_c%i_boundaries .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_ctl_nod_bc_4_shell                                    &
@@ -381,7 +387,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubed_sph_c%i_node_grp_def .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c_i(id_control,                         &
@@ -408,7 +415,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubed_sph_c%i_ele_grp_def .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c_i(id_control,                         &
@@ -435,7 +443,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubed_sph_c%i_surf_grp_def .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c_i(id_control,                         &
@@ -462,7 +471,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cubed_sph_c%i_coarse_shell .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_i2(id_control, hd_num_level_coarse,     &

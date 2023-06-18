@@ -221,7 +221,9 @@
       open(id_control, file = file_name, status='old')
 !
       do 
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_view_transfer_ctl(id_control, hd_block, mat, c_buf1)
         if(mat%i_view_transform .gt. 0) exit
       end do

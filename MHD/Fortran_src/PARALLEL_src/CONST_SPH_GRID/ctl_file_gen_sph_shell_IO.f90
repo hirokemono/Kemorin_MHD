@@ -133,7 +133,8 @@
 !
       do
         if(psph_ctl%iflag_sph_shell .gt. 0) exit
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
         if(check_end_flag(c_buf1, hd_block)) exit
 !
         call read_parallel_shell_ctl(id_control, hd_block,              &

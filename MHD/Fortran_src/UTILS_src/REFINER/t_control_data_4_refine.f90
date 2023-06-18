@@ -108,7 +108,10 @@
       open (control_file_code, file = control_file_name)
 !
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
+        call load_one_line_from_control(control_file_code,              &
+     &                                  hd_refine_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_refine_control_data                                   &
      &     (control_file_code, hd_refine_ctl, refine_ctl, c_buf1)
         if(refine_ctl%i_refine_ctl .gt. 0) exit
@@ -154,7 +157,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(refine_ctl%i_refine_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -186,7 +190,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(refine_ctl%i_single_refine_files .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_course_to_fine_ctl,          &
@@ -218,7 +223,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(refine_ctl%i_refine_param .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c2(id_control,                          &

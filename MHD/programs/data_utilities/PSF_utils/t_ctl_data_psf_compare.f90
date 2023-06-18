@@ -109,7 +109,10 @@
       if(my_rank .eq. 0) then
         open(id_control, file = fname_ctl_psf_compare, status='old')
         do
-          call load_one_line_from_control(id_control, c_buf1)
+          call load_one_line_from_control                               &
+     &       (id_control, hd_compare_psf_file, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
+!
           call read_ctl_data_psf_compare                                &
      &       (id_control, hd_compare_psf_file, psf_cmp_ctl, c_buf1)
           if(psf_cmp_ctl%i_psf_compare_control .gt. 0) exit
@@ -137,7 +140,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(psf_cmp_ctl%i_psf_compare_control .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_ctl_data_psf_file                                     &
@@ -206,7 +210,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(first_psf%i_psf_file_control .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_surface_file_prefix,         &

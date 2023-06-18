@@ -82,7 +82,8 @@
       call alloc_iso_ctl_stract(iso_ctls)
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_array_flag(c_buf, hd_block)) exit
 !
         if(check_file_flag(c_buf, hd_block)                             &
@@ -154,7 +155,9 @@
       open(id_control, file=file_name, status='old')
 !
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call s_read_iso_control_data                                    &
      &     (id_control, hd_block, iso_ctl_struct, c_buf1)
         call s_read_iso_control_data                                    &

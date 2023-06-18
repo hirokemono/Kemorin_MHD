@@ -97,7 +97,10 @@
       open (ctl_refine_code, file = ctl_refine_file_name)
 !
       do
-        call load_one_line_from_control(ctl_refine_code, c_buf1)
+        call load_one_line_from_control(ctl_refine_code,                &
+     &                                  hd_para_refine_tbl_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_ref_para_itp_ctl_data                                 &
      &     (ctl_refine_code, hd_para_refine_tbl_ctl,                    &
      &      para__refine_c, c_buf1)
@@ -125,7 +128,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(para__refine_c%i_para_refine_tbl_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms(id_control, hd_platform,            &
@@ -157,7 +161,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(p_refine_ctl%i_course_mesh_para_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_integer_ctl_type(c_buf, hd_num_course_subdomain,      &

@@ -119,7 +119,10 @@
       open(id_control_file, file = file_name, status='old' )
 !
       do
-        call load_one_line_from_control(id_control_file, c_buf1)
+        call load_one_line_from_control(id_control_file, hd_mhd_ctl,    &
+     &                                  c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_sph_mhd_ctl_w_vizs(id_control_file, hd_mhd_ctl,       &
      &      MHD_ctl, add_VMHD_ctl, c_buf1)
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
@@ -184,7 +187,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(MHD_ctl%i_mhd_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !

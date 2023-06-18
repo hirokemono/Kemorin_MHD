@@ -203,7 +203,9 @@
       open(id_control, file = file_name, status='old')
 !
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_pvr_cmap_cbar(id_control, hd_block,                   &
      &      cmap_cbar_c, c_buf1)
         call read_pvr_cmap_cbar(id_control, hd_colormap_file,           &
@@ -233,7 +235,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cmap_cbar_c%i_cmap_cbar .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_pvr_colordef_ctl(id_control, hd_colormap,             &

@@ -100,7 +100,10 @@
       c_buf1%level = 0
       open ( grp_ctl_file_code, file=fname_grp_data_ctl)
       do
-        call load_one_line_from_control(grp_ctl_file_code, c_buf1)
+        call load_one_line_from_control                                 &
+     &     (grp_ctl_file_code, hd_udt_ele_grp, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_ctl_data_ele_grp_udt                                  &
      &     (grp_ctl_file_code, hd_udt_ele_grp, egrp_udt_ctl, c_buf1)
         if(egrp_udt_ctl%i_ele_grp_udt .gt. 0) exit
@@ -128,7 +131,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(egrp_udt_ctl%i_ele_grp_udt .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_time_step_data                                &
@@ -158,7 +162,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(egrp_udt_ctl%i_grouping_plot .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_group_mesh_head,             &

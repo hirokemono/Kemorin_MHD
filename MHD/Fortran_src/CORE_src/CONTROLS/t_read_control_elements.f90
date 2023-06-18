@@ -8,6 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine load_one_line_from_control(id_control, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: label
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
 !!      character(len = kchara) function first_word(c_buf)
@@ -61,15 +63,23 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine load_one_line_from_control(id_control, c_buf)
+      subroutine load_one_line_from_control(id_control, label, c_buf)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: label
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
       call skip_comment(id_control, c_buf%ctl_buffer, c_buf%iend)
+!
+      if(c_buf%iend .gt. 0) then
+        write(*,*) 'End of file is detected in reading ',               &
+     &            trim(label), ' block.'
+        return
+      end if
+!
       c_buf%header_chara = first_word(c_buf)
 !
       end subroutine load_one_line_from_control

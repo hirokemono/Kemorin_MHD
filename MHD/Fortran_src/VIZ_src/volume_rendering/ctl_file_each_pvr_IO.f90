@@ -89,7 +89,9 @@
       write(*,*) 'read file ', trim(fname_pvr_ctl)
       open(id_control, file=fname_pvr_ctl, status='old')
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_pvr_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_pvr_ctl(id_control, hd_pvr_ctl,                       &
      &                    pvr_ctl_type, c_buf1)
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
@@ -120,7 +122,9 @@
       pvr_ctl_type%i_pvr_ctl = 0
 !
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_pvr_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_pvr_update_flag                                       &
      &     (id_control, hd_pvr_ctl, pvr_ctl_type, c_buf1)
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit

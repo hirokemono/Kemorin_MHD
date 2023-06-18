@@ -123,7 +123,9 @@
       open(id_control, file=file_name, status='old')
 !
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_control_vol_repart                                    &
      &     (id_control, hd_block, viz_repart_c, c_buf1)
         if(viz_repart_c%i_viz_repartition_ctl .gt. 0) exit

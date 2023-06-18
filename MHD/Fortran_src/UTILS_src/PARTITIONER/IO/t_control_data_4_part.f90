@@ -222,8 +222,11 @@
       open(control_file_code, file = control_file_name)
 !
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
-        call read_part_control_data(control_file_code, hd_part_ctl,  &
+        call load_one_line_from_control(control_file_code,              &
+     &                                  hd_part_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
+        call read_part_control_data(control_file_code, hd_part_ctl,     &
      &      part_ctl, c_buf1)
         if(part_ctl%i_part_ctl .gt. 0) exit
       end do
@@ -250,7 +253,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_part_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -290,7 +294,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_decomp_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c_i(id_control,                         &
@@ -370,7 +375,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_part_ghost_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
@@ -412,7 +418,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_ele_ordering_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c1(id_control, hd_nele_grp_ordering,    &

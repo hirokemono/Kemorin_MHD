@@ -115,7 +115,8 @@
       call alloc_lic_ctl_struct(lic_ctls)
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_lic_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_array_flag(c_buf, hd_lic_ctl)) exit
 !
         if(check_file_flag(c_buf, hd_lic_ctl)                           &

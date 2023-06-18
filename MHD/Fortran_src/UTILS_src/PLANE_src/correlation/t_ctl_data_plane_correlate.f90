@@ -116,7 +116,10 @@
       open (control_file_code, file = control_file_name)
 !
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
+        call load_one_line_from_control(control_file_code,              &
+     &                                  hd_cor_plane_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_cor_plane_control_data                                &
      &     (control_file_code, hd_cor_plane_ctl, pcor_c, c_buf1)
         if(pcor_c%i_cor_plane_ctl .gt. 0) exit
@@ -141,7 +144,8 @@
       if(pcor_c%i_cor_plane_ctl .gt. 0) return
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_correlate_file_heads                                  &
@@ -178,7 +182,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pcor_c%i_hard .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
@@ -214,7 +219,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pcor_c%i_model .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_phys_data_control                                     &
@@ -241,7 +247,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pcor_c%i_control .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_time_step_data                                &

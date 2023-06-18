@@ -81,8 +81,11 @@
       open(control_file_code, file = file_name, status='old')
 !
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
-        call read_sph_shell_define_ctl                                &
+        call load_one_line_from_control(control_file_code, hd_mhd_ctl,  &
+     &                                  c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
+        call read_sph_shell_define_ctl                                  &
      &     (control_file_code, hd_mhd_ctl, gen_SPH_ctl, c_buf1)
         if(gen_SPH_ctl%i_sph_mesh_ctl .gt. 0) exit
       end do
@@ -135,7 +138,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gen_SPH_ctl%i_sph_mesh_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &

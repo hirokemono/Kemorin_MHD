@@ -77,7 +77,10 @@
       c_buf1%level = 0
         open (control_file_code, file = file_name)
         do
-          call load_one_line_from_control(control_file_code, c_buf1)
+          call load_one_line_from_control                               &
+     &       (control_file_code, hd_control_d_sph, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
+!
           call read_spectr_util_control                                 &
      &       (control_file_code, hd_control_d_sph, ctl, c_buf1)
           if(ctl%iflag .gt. 0) exit
@@ -135,7 +138,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(ctl%iflag .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &

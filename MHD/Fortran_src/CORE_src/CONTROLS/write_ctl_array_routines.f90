@@ -133,7 +133,8 @@
 !!        call alloc_control_array_crii(ctl_array)
 !!  !
 !!        do
-!!          call load_one_line_from_control(id_file, c_buf)
+!!          call load_one_line_from_control(id_file, label, c_buf)
+!!          if(c_buf%iend .gt. 0) exit
 !!          if(check_end_array_flag(c_buf, label)) exit
 !!  !
 !!          if(c_buf%header_chara.eq.label) then
@@ -562,9 +563,11 @@
       write(id_file,'(a)')                                              &
      &     '      do'
       write(id_file,'(2a)') '        call ',                            &
-     &                    'load_one_line_from_control(id_file, c_buf)'
+     &            'load_one_line_from_control(id_file, label, c_buf)'
       write(id_file,'(2a)') '        if',                               &
-     &                     '(check_end_array_flag(c_buf, label)) exit'
+     &            '(c_buf%iend .gt. 0) exit'
+      write(id_file,'(2a)') '        if',                               &
+     &            '(check_end_array_flag(c_buf, label)) exit'
       write(id_file,'(a)')  '!'
       write(id_file,'(2a)') '        if',                               &
      &                     '(c_buf%header_chara.eq.label) then'

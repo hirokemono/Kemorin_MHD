@@ -112,8 +112,10 @@
       open(id_control, file = fname_sect_ctl, status='old')
 !
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
         if(check_end_flag(c_buf1, hd_block)) exit
+!
         call read_section_def_control(id_control, hd_block,             &
      &                                psf_def_c, c_buf1)
         if(psf_def_c%i_surface_define .gt. 0) exit
