@@ -176,11 +176,15 @@
 !
 !
       if(cmp_no_case(fname_lic_ctl, 'NO_FILE')) then
-        write(*,'(a)') ' is included'
+        call write_lic_pvr_ctl(id_control, hd_lic_ctl,                  &
+     &                         pvr_ctl_type, lic_ctl_type, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(2a)') ' should be written to... ',                    &
+     &                  trim(fname_lic_ctl)
         call write_lic_pvr_ctl(id_control, hd_lic_ctl,                  &
      &                         pvr_ctl_type, lic_ctl_type, level)
       else
-        write(*,'(a)', ADVANCE='NO') ' is written to...'
+        write(*,'(2a)') ' is written to... ', trim(fname_lic_ctl)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_lic_ctl, fname_lic_ctl)
         call write_control_lic_pvr_file(id_control+2, fname_lic_ctl,    &
@@ -204,7 +208,6 @@
 !
       integer(kind = kint) :: level
 !
-      write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
       level = 0
       open(id_control, file=fname_lic_ctl, status='old')
       call write_lic_pvr_ctl(id_control, hd_lic_ctl,                    &

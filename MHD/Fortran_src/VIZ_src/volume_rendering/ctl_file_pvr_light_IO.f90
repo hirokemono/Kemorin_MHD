@@ -108,11 +108,14 @@
 !
 !
       if(cmp_no_case(file_name, 'NO_FILE')) then
-        write(*,*)  'Lighting control is included'
+        call write_lighting_ctl(id_control, hd_block, light, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
+     &        ' should be written to file ... ', trim(file_name)
         call write_lighting_ctl(id_control, hd_block, light, level)
       else
-        write(*,'(3a)', ADVANCE='NO')                                   &
-     &          'Write file for ', trim(hd_block), '... '
+        write(*,'(4a)') 'Write file for ', trim(hd_block),              &
+     &                  ' ... ', trim(file_name)
         call write_control_pvr_light_file(id_control+1, file_name,      &
      &                                    hd_block, light)
         call write_file_name_for_ctl_line(id_control, level,            &
@@ -162,7 +165,6 @@
       integer(kind = kint) :: level
 !
 !
-      write(*,*) 'Lighting control: ', trim(file_name)
       open(id_control, file = file_name)
 !
       level = 0

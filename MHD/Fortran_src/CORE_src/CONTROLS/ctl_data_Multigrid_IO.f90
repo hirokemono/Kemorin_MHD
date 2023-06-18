@@ -237,7 +237,6 @@
       maxlen = max(maxlen, len_trim(hd_MG_mesh_file_fmt))
       maxlen = max(maxlen, len_trim(hd_MG_tbl_file_fmt))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
         call write_chara_ctl_type(id_control, level, maxlen,            &

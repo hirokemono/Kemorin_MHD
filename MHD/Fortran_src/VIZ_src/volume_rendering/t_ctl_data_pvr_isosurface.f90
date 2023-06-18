@@ -122,16 +122,13 @@
       maxlen = max(maxlen, len_trim(hd_isosurf_value))
       maxlen = max(maxlen, len_trim(hd_pvr_opacity))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_iso_direction, pvr_iso_ctl%isosurf_type_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_isosurf_value, pvr_iso_ctl%iso_value_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_isosurface_ctl

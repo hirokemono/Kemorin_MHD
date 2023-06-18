@@ -301,9 +301,7 @@
       maxlen = max(maxlen, len_trim(hd_diff_lm_spectr_switch))
       maxlen = max(maxlen, len_trim(hd_axis_spectr_switch))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_voume_ave_head, smonitor_ctl%volume_average_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -312,7 +310,6 @@
      &    hd_diff_lm_spectr_switch,                                     &
      &    smonitor_ctl%volume_pwr_spectr_format)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &   hd_degree_spectr_switch, smonitor_ctl%degree_v_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -325,18 +322,14 @@
 !
       call write_volume_spectr_ctl(id_control, hd_vol_spec_block,       &
      &                             smonitor_ctl, level)
-      write(id_control,'(a1)') '!'
       call write_layerd_spectr_ctl(id_control, hd_layer_spec_block,     &
      &                             smonitor_ctl%lp_ctl, level)
 !
-      write(id_control,'(a1)') '!'
       call write_pickup_spectr_ctl(id_control, hd_pick_sph_ctl,         &
      &                             smonitor_ctl%pspec_ctl, level)
-      write(id_control,'(a1)') '!'
       call write_gauss_spectr_ctl(id_control, hd_gauss_spec_block,      &
      &                            smonitor_ctl%g_pwr, level)
 !
-      write(id_control,'(a1)') '!'
       call write_sph_dipolarity_ctl(id_control,                         &
      &    hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, level)
 !
@@ -392,11 +385,9 @@
 !
       if(smonitor_ctl%num_vspec_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, smonitor_ctl%num_vspec_ctl
-        write(id_control,'(a1)') '!'
-        call write_each_vol_spectr_ctl(id_control, hd_block,            &
+          call write_each_vol_spectr_ctl(id_control, hd_block,          &
      &     smonitor_ctl%v_pwr(i), level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level, hd_block)

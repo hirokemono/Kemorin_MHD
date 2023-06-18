@@ -222,7 +222,6 @@
 !
 !
       if(array_c3%num .le. 0) return
-      write(id_control,'(a1)') '!'
 !
       maxlen(0) = len_trim(label)
       maxlen(1) = max_len_of_charaarray(array_c3%num, array_c3%c1_tbl)

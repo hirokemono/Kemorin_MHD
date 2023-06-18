@@ -218,16 +218,12 @@
       maxlen = max(maxlen, len_trim(hd_colormap_mode))
       maxlen = max(maxlen, len_trim(hd_background_color))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_colormap_mode, color%colormap_mode_ctl)
       call write_real3_ctl_type(id_control, level, maxlen,              &
      &    hd_background_color, color%background_color_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_lic_color_fld, color%lic_color_fld_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -237,7 +233,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_lic_opacity_comp, color%lic_opacity_comp_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_data_mapping, color%data_mapping_ctl)
       call write_control_array_r2(id_control, level,                    &
@@ -251,7 +246,6 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_constant_opacity, color%fix_opacity_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_pvr_range_min, color%range_min_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

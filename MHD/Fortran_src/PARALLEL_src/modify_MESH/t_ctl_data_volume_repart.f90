@@ -152,9 +152,7 @@
 !
       if(viz_repart_c%i_viz_repartition_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_platforms                                      &
      &   (id_control, hd_viz_platform, viz_repart_c%viz_plt, level)
 !

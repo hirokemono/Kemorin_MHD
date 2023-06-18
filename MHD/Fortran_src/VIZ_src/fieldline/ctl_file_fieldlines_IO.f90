@@ -166,11 +166,12 @@
 !
       integer(kind = kint) :: i
 !
-      write(id_control,'(a1)') '!'
+      if(fline_ctls%num_fline_ctl .le. 0) return
+!
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, fline_ctls%num_fline_ctl
-        write(*,'(2a,i4,a)', ADVANCE='NO')                              &
-     &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
+        write(*,'(3a,i4,a)', ADVANCE='NO') '!  ', trim(hd_block),       &
+     &        ' No. ', fline_ctls%num_fline_ctl
         call sel_write_fline_control                                    &
      &     (id_control, hd_block, fline_ctls%fname_fline_ctl(i),        &
      &      fline_ctls%fline_ctl_struct(i), level)
@@ -196,11 +197,14 @@
 !
 !
       if(cmp_no_case(file_name, 'NO_FILE')) then
-        write(*,*) ' is included'
+        call write_field_line_ctl(id_control, hd_block,                 &
+     &                            fline_ctl_struct, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(2a)') 'shuld be written to ', trim(file_name)
         call write_field_line_ctl(id_control, hd_block,                 &
      &                            fline_ctl_struct, level)
       else
-        write(*,'(3a,i4,a)', ADVANCE='NO') 'is write to '
+        write(*,'(2a)') 'is written to ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_fline_control_file((id_control+2), file_name,        &
@@ -225,7 +229,6 @@
 !
 !
       level = 0
-      write(*,*) 'write fieldline control file: ',  trim(file_name)
       open(id_control, file=file_name)
       call write_field_line_ctl(id_control, hd_block,                   &
      &                          fline_ctl_struct, level)

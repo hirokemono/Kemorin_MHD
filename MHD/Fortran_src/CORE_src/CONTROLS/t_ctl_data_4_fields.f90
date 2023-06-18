@@ -187,9 +187,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c3                                       &
      &   (id_control, level, hd_field_list, fld_ctl%field_ctl)
 !

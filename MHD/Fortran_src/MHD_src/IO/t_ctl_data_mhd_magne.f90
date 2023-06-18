@@ -149,9 +149,7 @@
       maxlen = len_trim(hd_magneto_cv)
       maxlen = max(maxlen, len_trim(hd_filetered_induction))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_magneto_cv, mcv_ctl%magneto_cv)
       call write_chara_ctl_type(id_control, level, maxlen,              &

@@ -176,9 +176,7 @@
       maxlen = max(maxlen, len_trim(hd_dbench_spectr_prefix))
       maxlen = max(maxlen, len_trim(hd_nphi_mid_eq))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_dbench_prefix, dbench_ctl%dynamobench_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &

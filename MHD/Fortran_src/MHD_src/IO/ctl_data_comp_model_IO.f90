@@ -174,16 +174,13 @@
       maxlen = max(maxlen, len_trim(hd_start_ctl))
       maxlen = max(maxlen, len_trim(hd_ref_field_file))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_filterd_advection, refc_ctl%filterd_advect_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_diffusivity_reduction,                                     &
      &    refc_ctl%ICB_diffuse_reduction_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_ref_comp, refc_ctl%reference_ctl)
       call write_ref_comp_ctl                                           &
@@ -191,7 +188,6 @@
       call write_ref_comp_ctl                                           &
      &   (id_control, hd_high_comp, refc_ctl%high_ctl, level)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_start_ctl, refc_ctl%stratified_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -250,9 +246,7 @@
       maxlen = len_trim(hd_position)
       maxlen = max(maxlen, len_trim(hd_comp_value))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_position, ref_ctl%depth)
       call write_real_ctl_type(id_control, level, maxlen,               &

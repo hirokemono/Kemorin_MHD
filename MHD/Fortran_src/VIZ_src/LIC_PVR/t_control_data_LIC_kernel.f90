@@ -174,9 +174,7 @@
       maxlen = max(maxlen, len_trim(hd_half_length))
       maxlen = max(maxlen, len_trim(hd_trace_count))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_kernel_grid_size, kernel_ctl%kernel_resolution_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -184,7 +182,6 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_kernel_sigma, kernel_ctl%kernel_sigma_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_trace_type, kernel_ctl%trace_length_mode_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

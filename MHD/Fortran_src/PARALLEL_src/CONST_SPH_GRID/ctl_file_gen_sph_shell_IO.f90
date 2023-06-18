@@ -159,8 +159,14 @@
       if(cmp_no_case(file_name, 'NO_FILE')) then
         call write_parallel_shell_ctl(id_control, hd_block,             &
      &                                psph_ctl, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
+     &           ' should be written to file ... ', trim(file_name)
+        call write_parallel_shell_ctl(id_control, hd_block,             &
+     &                                psph_ctl, level)
       else
-        write(*,'(a)', ADVANCE='NO') ' is write file to ... '
+        write(*,'(3a)') trim(hd_block),                                 &
+     &           ' is written to file ... ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_ctl_file_gen_shell_grids((id_control+2), file_name,  &
@@ -189,7 +195,6 @@
         read(*,*)
       end if
 !
-      write(*,*) 'Spherical shell resolution file: ', trim(file_name)
       level = 0
       open(id_control, file = file_name)
       call write_parallel_shell_ctl(id_control, hd_block,               &

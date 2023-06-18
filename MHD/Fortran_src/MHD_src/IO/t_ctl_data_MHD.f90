@@ -224,9 +224,7 @@
 !
       if(MHD_ctl%i_mhd_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_platforms                                      &
      &   (id_control, hd_platform, MHD_ctl%plt, level)
       call write_control_platforms                                      &

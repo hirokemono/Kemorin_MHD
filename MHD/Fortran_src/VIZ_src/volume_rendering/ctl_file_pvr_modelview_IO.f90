@@ -181,9 +181,13 @@
       if(cmp_no_case(file_name, 'NO_FILE')) then
         write(*,*)  'Modelview control is included'
         call write_view_transfer_ctl(id_control, hd_block, mat, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
+     &        ' should be written to file ... ', trim(file_name)
+        call write_view_transfer_ctl(id_control, hd_block, mat, level)
       else
-        write(*,'(3a)', ADVANCE='NO')                                   &
-     &          'Write file for ', trim(hd_block), '... '
+        write(*,'(4a)') 'Write file for ', trim(hd_block),              &
+     &                  '... ', trim(file_name)
         call write_control_modelview_file(id_control+1, file_name,      &
      &                                    hd_block, mat)
         call write_file_name_for_ctl_line(id_control, level,            &
@@ -209,7 +213,6 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      write(*,*) trim(file_name)
       open(id_control, file = file_name, status='old')
 !
       do 

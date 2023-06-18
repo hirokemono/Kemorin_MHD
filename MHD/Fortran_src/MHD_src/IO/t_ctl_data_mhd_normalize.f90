@@ -184,9 +184,7 @@
 !
       if(eqs_ctl%i_coef_term_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_thermal_ctl                                            &
      &   (id_control, hd_thermal, eqs_ctl%heat_ctl, level)
       call write_momentum_ctl                                           &

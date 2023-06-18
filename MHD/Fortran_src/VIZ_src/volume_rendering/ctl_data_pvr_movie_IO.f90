@@ -186,15 +186,12 @@
       maxlen = max(maxlen, len_trim(hd_apature_range))
       maxlen = max(maxlen, len_trim(hd_LIC_kernel_peak))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_movie_mode, movie%movie_mode_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_movie_num_frame, movie%num_frames_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_movie_rot_axis, movie%rotation_axis_ctl)
 !
@@ -208,14 +205,12 @@
       call write_mul_view_transfer_ctl                                  &
      &   (id_control, hd_mview_transform, movie%mul_mmats_c, level)
 !
-      write(id_control,'(a1)') '!'
       call write_real2_ctl_type(id_control, level, maxlen,              &
      &    hd_angle_range, movie%angle_range_ctl)
       call write_real2_ctl_type(id_control, level, maxlen,              &
      &    hd_apature_range, movie%apature_range_ctl)
       call write_real2_ctl_type(id_control, level, maxlen,              &
      &    hd_LIC_kernel_peak, movie%LIC_kernel_peak_range_ctl)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_rotation_ctl

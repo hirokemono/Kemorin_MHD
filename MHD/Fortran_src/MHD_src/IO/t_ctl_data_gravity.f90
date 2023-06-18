@@ -133,9 +133,7 @@
       maxlen = len_trim(hd_FEM_gravity_mode)
       maxlen = max(maxlen, len_trim(hd_gravity_type))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_FEM_gravity_mode, g_ctl%FEM_gravity_model)
       call write_chara_ctl_type(id_control, level, maxlen,              &

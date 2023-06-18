@@ -144,11 +144,10 @@
 !
       if(pvr_ctls%num_pvr_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_pvr_ctl)
       do i = 1, pvr_ctls%num_pvr_ctl
-        write(*,'(3a,i4)', ADVANCE='NO')                                &
-     &          'Control for ', trim(hd_pvr_ctl), ' No. ', i
+        write(*,'(3a,i4,a)', ADVANCE='NO') '!  ', trim(hd_pvr_ctl),     &
+     &                                     ' No. ', i
         call sel_write_control_pvr(id_control, hd_pvr_ctl,              &
      &      pvr_ctls%fname_pvr_ctl(i), pvr_ctls%pvr_ctl_type(i), level)
       end do

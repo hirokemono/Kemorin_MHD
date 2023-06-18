@@ -106,14 +106,11 @@
 !
       integer(kind = kint), intent(inout) :: level
 !
-      integer(kind = kint) :: maxlen = 0
 !
       if(frc_ctl%i_forces_ctl .le. 0) return
-      maxlen = len_trim(hd_num_forces)
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-      call write_control_array_c1(id_control, maxlen,                   &
+      call write_control_array_c1(id_control, level,                    &
      &                            hd_num_forces, frc_ctl%force_names)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

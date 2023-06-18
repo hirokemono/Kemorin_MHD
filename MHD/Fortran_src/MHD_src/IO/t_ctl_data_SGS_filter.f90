@@ -183,15 +183,12 @@
       maxlen = max(maxlen, len_trim(hd_1st_reference))
       maxlen = max(maxlen, len_trim(hd_2nd_reference))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_sph_filter_type, sphf_ctl%sph_filter_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_radial_filter_type, sphf_ctl%radial_filter_type_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_max_mom, sphf_ctl%maximum_moments_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -199,7 +196,6 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_sphere_filter_w, sphf_ctl%sphere_filter_width_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_1st_reference, sphf_ctl%first_reference_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

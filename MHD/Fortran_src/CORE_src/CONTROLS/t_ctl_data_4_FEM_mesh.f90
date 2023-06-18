@@ -129,9 +129,7 @@
       maxlen = max(maxlen, len_trim(hd_FEM_surf_output))
       maxlen = max(maxlen, len_trim(hd_FEM_viewer_output))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_mem_conserve, Fmesh_ctl%memory_conservation_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &

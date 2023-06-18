@@ -203,9 +203,7 @@
 !
       if(heat_ctl%i_diff_adv .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c_r(id_control, level,                   &
      &      hd_n_thermal, heat_ctl%coef_4_adv_flux)
       call write_control_array_c_r(id_control, level,                   &
@@ -234,9 +232,7 @@
 !
       if(comp_ctl%i_diff_adv .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c_r(id_control, level,                   &
      &      hd_n_dscalar, comp_ctl%coef_4_adv_flux)
       call write_control_array_c_r(id_control, level,                   &

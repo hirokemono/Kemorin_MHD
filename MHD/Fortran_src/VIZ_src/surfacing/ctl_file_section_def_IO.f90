@@ -136,7 +136,14 @@
       if(cmp_no_case(fname_sect_ctl,'NO_FILE')) then
         call write_section_def_control(id_control, hd_block,            &
      &                                 psf_def_c, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
+     &         ' should be written to file ... ', trim(fname_sect_ctl)
+        call write_section_def_control(id_control, hd_block,            &
+     &                                 psf_def_c, level)
       else
+        write(*,'(3a)', ADVANCE='NO')  trim(hd_block),                  &
+     &         ' is written to file ... ', trim(fname_sect_ctl)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, fname_sect_ctl)
         call write_ctl_file_pvr_section_def                             &

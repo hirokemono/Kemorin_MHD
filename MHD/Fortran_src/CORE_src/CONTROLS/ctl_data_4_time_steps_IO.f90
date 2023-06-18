@@ -392,20 +392,15 @@
       maxlen = max(maxlen, len_trim(hd_end_rst_step))
       maxlen = max(maxlen, len_trim(hd_flexible_step))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
-!
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_elapsed_time, tctl%elapsed_time_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_i_step_init, tctl%i_step_init_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_i_finish_number, tctl%i_step_number_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_i_step_check, tctl%i_step_check_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -429,13 +424,11 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_i_step_monitor, tctl%i_step_monitor_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_dt, tctl%dt_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_time_init, tctl%time_init_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_min_delta_t, tctl%min_delta_t_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -445,7 +438,6 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_min_eps_to_expand, tctl%min_eps_to_expand_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_check, tctl%delta_t_check_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -465,7 +457,6 @@
      &    hd_delta_t_lic, tctl%delta_t_lic_ctl)
 !
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_ucd, tctl%delta_t_field_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -491,7 +482,6 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_end_rst_step, tctl%end_rst_step_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_flexible_step, tctl%flexible_step_ctl)
 !

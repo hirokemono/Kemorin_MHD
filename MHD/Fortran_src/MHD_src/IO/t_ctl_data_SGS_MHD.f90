@@ -20,7 +20,9 @@
 !!        type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_file_sph_SGS_MHD(file_name, MHD_ctl,   &
-!!     &                                          add_SSMHD_ctl)
+!!     &                                          add_SSMHD_ctl
+!!      subroutine write_sph_mhd_control_data(id_control, hd_block,     &
+!!     &          MHD_ctl, add_SSMHD_ctl, level)
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -100,7 +102,7 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
 !
-      private :: read_sph_mhd_control_data, write_sph_mhd_control_data
+      private :: read_sph_mhd_control_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -249,9 +251,8 @@
 !
 !
       if(MHD_ctl%i_mhd_ctl .le. 0) return
-      write(id_control,'(a1)') '!'
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_platforms                                      &
      &   (id_control, hd_platform, MHD_ctl%plt, level)
       call write_control_platforms                                      &

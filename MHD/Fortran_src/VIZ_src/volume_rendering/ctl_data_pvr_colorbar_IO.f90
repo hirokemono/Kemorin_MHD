@@ -163,7 +163,6 @@
       maxlen = max(maxlen, len_trim(hd_mapgrid_switch))
       maxlen = max(maxlen, len_trim(hd_cbar_range))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -182,7 +181,6 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_pvr_numgrid_cbar, cbar_ctl%ngrid_cbar_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_axis_switch, cbar_ctl%axis_switch_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &

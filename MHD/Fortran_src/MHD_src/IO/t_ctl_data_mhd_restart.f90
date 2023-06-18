@@ -118,7 +118,6 @@
       if(mr_ctl%i_restart_file .le. 0) return
       maxlen = len_trim(hd_rst_flag)
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &      hd_rst_flag, mr_ctl%restart_flag_ctl)

@@ -146,9 +146,7 @@
       maxlen = max(maxlen, len_trim(hd_eye_sep_angle))
       maxlen = max(maxlen, len_trim(hd_eye_step_mode))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_focaldistance, streo%focalpoint_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

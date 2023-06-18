@@ -175,7 +175,6 @@
       maxlen = max(maxlen, len_trim(hd_noise_cube_size))
       maxlen = max(maxlen, len_trim(hd_noise_delta_x))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -185,13 +184,11 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_noise_file_fmt, noise_ctl%noise_file_format_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_noise_grid_size, noise_ctl%noise_resolution_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_noise_stepping, noise_ctl%noise_stepping_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_noise_cube_size, noise_ctl%noise_cube_size_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

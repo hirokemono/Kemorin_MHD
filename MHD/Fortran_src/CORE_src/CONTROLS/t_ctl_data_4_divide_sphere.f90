@@ -242,7 +242,6 @@
       maxlen = max(maxlen, len_trim(hd_num_radial_domain))
       maxlen = max(maxlen, len_trim(hd_num_horiz_domain))
 !
-      write(id_file,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_file, level, hd_block)
 !
       call write_chara_ctl_type(id_file, level, maxlen,                 &

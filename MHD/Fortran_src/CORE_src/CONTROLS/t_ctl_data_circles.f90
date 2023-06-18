@@ -116,7 +116,6 @@
 !
       integer(kind = kint) :: i
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, circ_ctls%num_circ_ctl
         write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i

@@ -132,8 +132,7 @@
       maxlen = max(maxlen, len_trim(hd_sleeve_size))
       maxlen = max(maxlen, len_trim(hd_reference_vector))
 !
-      write(id_file,'(a)') '!'
-!
+      level =  write_begin_flag_for_ctl(id_file, level, hd_block)
       call write_chara_ctl_type                                         &
      &   (id_file, level, maxlen, hd_sleeve_extension_mode,             &
      &    sleeve_ctl%sleeve_extension_mode_ctl)

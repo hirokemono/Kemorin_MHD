@@ -135,9 +135,7 @@
 !
       if(nmtr_ctl%i_monitor_data .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c1(id_control, level,                   &
      &    hd_monitor_grp, nmtr_ctl%group_4_monitor_ctl)
       call write_control_array_r3(id_control, level,                   &

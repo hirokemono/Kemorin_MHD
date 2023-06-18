@@ -123,9 +123,7 @@
       maxlen = len_trim(hd_x_pixel)
       maxlen = max(maxlen, len_trim(hd_y_pixel))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &   hd_x_pixel, pixel%num_xpixel_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

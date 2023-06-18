@@ -113,9 +113,7 @@
       maxlen = max(maxlen, len_trim(hd_org_filter_elen_head))
       maxlen = max(maxlen, len_trim(hd_org_filter_moms_head))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_org_filter_head, org_fil_files_ctl%org_filter_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &

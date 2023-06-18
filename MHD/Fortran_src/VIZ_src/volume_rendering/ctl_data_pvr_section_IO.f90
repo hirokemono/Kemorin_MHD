@@ -172,13 +172,10 @@
       maxlen = max(maxlen,len_trim(hd_tcyl_inner))
       maxlen = max(maxlen,len_trim(hd_tcyl_outer))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call sel_write_ctl_pvr_section_def(id_control, hd_surface_define, &
      &    pvr_sect_ctl%fname_sect_ctl, pvr_sect_ctl%psf_def_c, level)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -194,7 +191,6 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_grid_width, pvr_sect_ctl%grid_width_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type                                         &
      &   (id_control, level, maxlen, hd_tangent_cylinder,               &
      &    pvr_sect_ctl%tan_cyl_switch_ctl)

@@ -185,9 +185,7 @@
       maxlen = max(maxlen, len_trim(hd_diff_lm_spectr_switch))
       maxlen = max(maxlen, len_trim(hd_axis_spectr_switch))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_i1(id_control, level,                    &
      &    hd_spctr_layer, lp_ctl%idx_spec_layer_ctl)
       call write_control_array_r1(id_control, level,                    &
@@ -206,7 +204,6 @@
      &    hd_diff_lm_spectr_switch, lp_ctl%diff_lm_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_axis_spectr_switch, lp_ctl%axis_power_switch)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_layerd_spectr_ctl

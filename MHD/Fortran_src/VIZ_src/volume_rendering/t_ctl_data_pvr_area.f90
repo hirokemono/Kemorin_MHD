@@ -119,9 +119,7 @@
 !
       if(render_area_c%i_plot_area .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c1(id_control, level,                    &
      &    hd_plot_grp, render_area_c%pvr_area_ctl)
       call write_control_array_c2_r(id_control, level,                  &

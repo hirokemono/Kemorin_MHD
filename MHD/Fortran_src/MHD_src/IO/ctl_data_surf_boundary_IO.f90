@@ -204,9 +204,7 @@
 !
       if(sbc_ctl%i_bc_4_surf .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c2_r(id_control, level,                  &
      &    hd_n_bc_hf, sbc_ctl%surf_bc_HF_ctl)
       call write_control_array_c2_r(id_control, level,                  &

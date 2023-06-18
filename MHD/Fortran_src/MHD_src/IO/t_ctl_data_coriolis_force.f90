@@ -133,9 +133,7 @@
       maxlen = len_trim(hd_FEM_Coriolis_model)
       maxlen = max(maxlen, len_trim(hd_FEM_Coriolis_imp))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_FEM_Coriolis_model, cor_ctl%FEM_coriolis_model)
       call write_chara_ctl_type(id_control, level, maxlen,              &

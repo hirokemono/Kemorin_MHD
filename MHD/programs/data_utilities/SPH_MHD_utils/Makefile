@@ -20,6 +20,8 @@ TARGET_SPH_BACK_TRANS =    sph_backward_transform
 TARGET_SPH_ALL_CORRELATE = sph_all_correlate
 TARGET_SPH_ALL_RMS_RATIO = sph_all_rms_ratio
 
+TARGET_CONTROL_MHD_CHECK = check_control_mhd
+
 LIBS_SPH_UTILS =  \
 '$$(LIB_MHD)'     \
 '$$(LIB_VIZ)'     \
@@ -123,6 +125,9 @@ SPH_analyzer_back_trans.o \
 back_sph_trans_4_all_field.o \
 cal_correlations_by_spectr.o
 
+MOD_CONTROL_MHD_CHECK = \
+main_control_MHD_check.o
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -139,9 +144,10 @@ target_list:
 	@echo 'TARGET_SPH_SNAP_NOVIZ = $$(BUILDDIR)/$(TARGET_SPH_SNAP_NOVIZ)'>> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP_BADBOY = $$(BUILDDIR)/$(TARGET_SPH_SNAP_BADBOY)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_FORWARD_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_FORWARD_TRANS)' >> $(MAKENAME)
-	@echo 'TARGET_SPH_BACK_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_BACK_TRANS)' >> $(MAKENAME)
+	@echo 'TARGET_SPH_BACK_TRANS =     $$(BUILDDIR)/$(TARGET_SPH_BACK_TRANS)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_ALL_CORRELATE =  $$(BUILDDIR)/$(TARGET_SPH_ALL_CORRELATE)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_ALL_RMS_RATIO =  $$(BUILDDIR)/$(TARGET_SPH_ALL_RMS_RATIO)' >> $(MAKENAME)
+	@echo 'TARGET_CONTROL_MHD_CHECK =  $$(BUILDDIR)/$(TARGET_CONTROL_MHD_CHECK)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -156,7 +162,8 @@ target_task:
 	 '$$(TARGET_SPH_FORWARD_TRANS)'  \
 	 '$$(TARGET_SPH_BACK_TRANS)'  \
 	 '$$(TARGET_SPH_ALL_CORRELATE)' \
-	 '$$(TARGET_SPH_ALL_RMS_RATIO)'  >> $(MAKENAME)
+	 '$$(TARGET_SPH_ALL_RMS_RATIO)' \
+	 '$$(TARGET_CONTROL_MHD_CHECK)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_SNAP):  $$(MOD_SPH_SNAP_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
 	>> $(MAKENAME)
@@ -231,6 +238,12 @@ target_task:
 	-o '$$(TARGET_SPH_ALL_RMS_RATIO)' '$$(MOD_SPH_ALL_RMS_RATIO)' \
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_CONTROL_MHD_CHECK):  $$(MOD_CONTROL_MHD_CHECK)  $$(LIB_FILES_SPH_UTILS)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CONTROL_MHD_CHECK)' '$$(MOD_CONTROL_MHD_CHECK)' \
+	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -264,6 +277,8 @@ mod_list:
 	@echo  $(MOD_SPH_ALL_CORRELATE) >> $(MAKENAME)
 	@echo  MOD_SPH_ALL_RMS_RATIO=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_ALL_RMS_RATIO) >> $(MAKENAME)
+	@echo  MOD_CONTROL_MHD_CHECK=  \\ >> $(MAKENAME)
+	@echo  $(MOD_CONTROL_MHD_CHECK) >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 

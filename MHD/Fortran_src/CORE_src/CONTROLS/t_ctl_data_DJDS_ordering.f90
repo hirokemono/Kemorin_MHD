@@ -124,9 +124,7 @@
       maxlen = max(maxlen, len_trim(hd_mc_color))
       maxlen = max(maxlen, len_trim(hd_order_method))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_min_color, DJDS_ctl%min_color_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

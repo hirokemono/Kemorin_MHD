@@ -207,9 +207,7 @@
 !
       if(nbc_ctl%i_bc_4_node .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c2_r(id_control, level,                  &
      &    hd_n_bc_temp, nbc_ctl%node_bc_T_ctl)
       call write_control_array_c2_r(id_control, level,                  &

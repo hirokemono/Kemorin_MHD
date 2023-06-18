@@ -145,8 +145,14 @@
       if(cmp_no_case(file_name, 'NO_FILE')) then
         call write_cube_noise_control_data(id_control, hd_block,        &
      &                                     noise_ctl, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
+     &                 ' should be written to ... ', trim(file_name)
+        call write_cube_noise_control_data(id_control, hd_block,        &
+     &                                     noise_ctl, level)
       else
-        write(*,'(a)', ADVANCE='NO') ' is write file to ... '
+        write(*,'(3a)') trim(hd_block),                                 &
+     &                 ' is written file to ... ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_cube_noise_control_file((id_control+2), file_name,   &
@@ -168,7 +174,6 @@
       integer(kind = kint) :: level
 !
       level = 0
-      write(*,*) 'Write LIC noise control file: ', trim(file_name)
       open(id_control, file=file_name)
       call write_cube_noise_control_data                                &
      &     (id_control, hd_block, noise_ctl, level)

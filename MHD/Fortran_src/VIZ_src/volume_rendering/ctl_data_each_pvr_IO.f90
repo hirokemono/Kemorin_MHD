@@ -312,13 +312,10 @@
       maxlen = max(maxlen, len_trim(hd_output_field_def))
       maxlen = max(maxlen, len_trim(hd_output_comp_def))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_updated, pvr_ctl%updated_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_file_prefix, pvr_ctl%file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -326,7 +323,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_monitor, pvr_ctl%monitoring_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_streo, pvr_ctl%streo_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -334,19 +330,16 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_quilt_3d, pvr_ctl%quilt_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_output_field_def, pvr_ctl%pvr_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
 !
-      write(id_control,'(a1)') '!'
       call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &
      &    pvr_ctl%fname_mat_ctl, pvr_ctl%mat, level)
       call write_pvr_render_area_ctl(id_control, hd_plot_area,          &
      &    pvr_ctl%render_area_c, level)
 !
-      write(id_control,'(a1)') '!'
       call sel_write_ctl_pvr_colormap_file                              &
      &   (id_control, hd_colormap_file, pvr_ctl%fname_cmap_cbar_c,      &
      &    pvr_ctl%cmap_cbar_c, level)
@@ -354,7 +347,6 @@
      &   (id_control, hd_pvr_lighting, pvr_ctl%fname_pvr_light_c,       &
      &    pvr_ctl%light, level)
 !
-      write(id_control,'(a1)') '!'
       call write_pvr_sections_ctl(id_control, hd_pvr_sections,          &
      &    pvr_ctl%pvr_scts_c, level)
       call write_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,           &
@@ -363,7 +355,6 @@
      &    pvr_ctl%quilt_c, level)
       call write_pvr_rotation_ctl(id_control, hd_snapshot_movie,        &
      &    pvr_ctl%movie, level)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_ctl

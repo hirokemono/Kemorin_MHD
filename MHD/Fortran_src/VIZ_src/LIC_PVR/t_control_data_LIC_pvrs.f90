@@ -151,9 +151,10 @@
 !
       if(lic_ctls%num_lic_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_lic_ctl)
       do i = 1, lic_ctls%num_lic_ctl
+        write(*,'(3a,i4,a)', ADVANCE='NO') '!  ', trim(hd_lic_ctl),     &
+     &                                     ' No. ', i
         call sel_write_control_lic_pvr                                  &
      &     (id_control, hd_lic_ctl, lic_ctls%fname_lic_ctl(i),          &
      &      lic_ctls%pvr_ctl_type(i), lic_ctls%lic_ctl_type(i), level)

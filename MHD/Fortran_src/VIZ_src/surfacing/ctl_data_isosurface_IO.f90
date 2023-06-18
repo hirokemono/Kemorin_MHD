@@ -177,9 +177,7 @@
       maxlen = len_trim(hd_isosurf_prefix)
       maxlen = max(maxlen, len_trim(hd_iso_out_type))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_isosurf_prefix, iso_c%iso_file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -189,7 +187,6 @@
      &                           iso_c%iso_def_c, level)
       call sel_write_ctl_field_on_psf_file(id_control, hd_field_on_iso, &
      &    iso_c%fname_fld_on_iso, iso_c%fld_on_iso_c, level)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_iso_control_data

@@ -118,9 +118,8 @@
 !
 !
       if(smctl_ctl%i_control .le. 0) return
-      write(id_control,'(a1)') '!'
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_time_step_data                                 &
      &   (id_control, hd_time_step, smctl_ctl%tctl, level)
       call write_restart_ctl                                            &

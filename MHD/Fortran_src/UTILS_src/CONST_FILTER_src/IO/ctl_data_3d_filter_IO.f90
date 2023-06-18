@@ -107,9 +107,7 @@
 !
       if(fil3_ctl%i_filter_area_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c1(id_control, level,                    &
      &   hd_filter_area, fil3_ctl%filter_area_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
@@ -164,7 +162,6 @@
 !
       maxlen = len_trim(hd_mass_matrix_type)
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_dx_solver_param_ctl                                    &
@@ -240,7 +237,6 @@
       maxlen = max(maxlen, len_trim(hd_sigma_diag_esize))
       maxlen = max(maxlen, len_trim(hd_itr_esize))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -248,7 +244,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_precond_esize, fil3_ctl%precond_esize_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_eps_esize, fil3_ctl%eps_esize_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

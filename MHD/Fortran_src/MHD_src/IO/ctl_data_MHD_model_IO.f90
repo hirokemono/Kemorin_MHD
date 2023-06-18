@@ -139,7 +139,6 @@
 !
       if(model_ctl%i_model .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_sph_mhd_model_items(id_control, model_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)

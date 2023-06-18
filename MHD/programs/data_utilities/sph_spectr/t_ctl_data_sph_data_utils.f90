@@ -181,7 +181,6 @@
       maxlen = max(maxlen, len_trim(hd_sub_field_format))
       maxlen = max(maxlen, len_trim(hd_out_field_format))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_org_field_prefix, file_list%org_field_head_ctl)
@@ -260,7 +259,6 @@
 !
       if(field_list%iflag .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c2(id_control, level,                    &
      &    hd_field_to_rename, field_list%field_to_rename_ctl)

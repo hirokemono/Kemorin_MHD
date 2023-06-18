@@ -213,7 +213,6 @@
 !
 !
       if(array_ir%num .le. 0) return
-      write(id_control,'(a1)') '!'
 !
       level = write_array_flag_for_ctl(id_control, level, label)
       do i = 1, array_ir%num

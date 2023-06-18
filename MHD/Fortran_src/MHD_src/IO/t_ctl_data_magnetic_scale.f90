@@ -110,9 +110,7 @@
 !
       if(bscale_ctl%i_bscale_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c_r(id_control, level,                   &
      &    hd_mag_to_kin_ratio, bscale_ctl%mag_to_kin_energy_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)

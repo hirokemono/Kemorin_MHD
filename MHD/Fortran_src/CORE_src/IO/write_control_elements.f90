@@ -96,6 +96,9 @@
 !
       implicit none
 !
+!>   file ID to output on screen
+       integer(kind = kint), parameter :: id_monitor = 6
+!
 !>   Label to start a control block
        character(len=kchara), parameter  :: hd_begin = 'begin'
 !>   Label to end a control block

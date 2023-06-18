@@ -115,12 +115,12 @@
         type(masking_by_field_ctl), allocatable :: mask_ctl(:)
 !
 !>         File name for noise control block
-        character(len = kchara) :: fname_LIC_noise_ctl
+        character(len = kchara) :: fname_LIC_noise_ctl = 'NO_FILE'
 !>        structure of noise control
         type(cube_noise_ctl) :: noise_ctl
 !
 !>        File name for kernel control block
-        character(len = kchara) :: fname_LIC_kernel_ctl
+        character(len = kchara) :: fname_LIC_kernel_ctl = 'NO_FILE'
 !>        structure of kernel control
         type(lic_kernel_ctl) :: kernel_ctl
 !
@@ -131,7 +131,7 @@
         type(read_real_item) ::      normalization_value_ctl
 !
 !>         File name for repartition control block
-        character(len = kchara) :: fname_vol_repart_ctl
+        character(len = kchara) :: fname_vol_repart_ctl = 'NO_FILE'
 !>         structure for repartition
         type(viz_repartition_ctl) :: repart_ctl
 !
@@ -227,7 +227,6 @@
       integer(kind = kint) :: i
 !
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, lic_ctl%num_masking_ctl
         call write_masking_ctl_data(id_control, hd_block,               &

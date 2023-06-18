@@ -120,9 +120,7 @@
       maxlen = max(maxlen, len_trim(hd_intg_point_poisson))
       maxlen = max(maxlen, len_trim(hd_intg_point_t_evo))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_intgration_points, fint_ctl%integration_points_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

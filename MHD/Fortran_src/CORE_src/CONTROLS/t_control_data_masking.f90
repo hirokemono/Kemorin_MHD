@@ -149,7 +149,6 @@
       maxlen = max(maxlen, len_trim(hd_masking_field))
       maxlen = max(maxlen, len_trim(hd_masking_comp))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_masking_type, mask_ctl%mask_type_ctl)

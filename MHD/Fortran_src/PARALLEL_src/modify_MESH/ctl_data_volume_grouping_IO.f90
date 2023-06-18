@@ -205,9 +205,7 @@
       maxlen = max(maxlen, len_trim(hd_masking_switch))
       maxlen = max(maxlen, len_trim(hd_masking_weight))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_repart_table_head, new_part_ctl%repart_table_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -218,11 +216,9 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_ratio_divide, new_part_ctl%ratio_of_grouping_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_sleeve_level, new_part_ctl%sleeve_level_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_part_ref, new_part_ctl%partition_reference_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -230,19 +226,16 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_trace_count_fmt, new_part_ctl%trace_count_fmt_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_weight_to_prev, new_part_ctl%weight_to_previous_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_power_of_volume, new_part_ctl%power_of_volume_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_masking_switch, new_part_ctl%masking_switch_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_masking_weight, new_part_ctl%masking_weight_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_repart_masking_ctl_array(id_control,                   &
      &    hd_masking_ctl, new_part_ctl, level)
 !
@@ -298,7 +291,6 @@
       integer(kind = kint) :: i
 !
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, new_part_ctl%num_masking_ctl
         call write_masking_ctl_data(id_control, hd_block,               &

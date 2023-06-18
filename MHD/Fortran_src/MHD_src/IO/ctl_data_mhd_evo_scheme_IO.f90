@@ -266,9 +266,7 @@
       maxlen = max(maxlen, len_trim(hd_sph_transform_mode))
       maxlen = max(maxlen, len_trim(hd_legendre_vect_len))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_iflag_supg,   mevo_ctl%iflag_supg_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -280,7 +278,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_iflag_c_supg, mevo_ctl%iflag_supg_c_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_num_multi_pass, mevo_ctl%num_multi_pass_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -294,7 +291,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_diff_correct, mevo_ctl%diffuse_correct)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_coef_imp_v,  mevo_ctl%coef_imp_v_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -312,7 +308,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_precond_4_crank, mevo_ctl%precond_4_CN)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_import_mode, mevo_ctl%import_mode)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -321,7 +316,6 @@
      &    hd_sph_transform_mode, mevo_ctl%Legendre_trans_type)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_legendre_vect_len, mevo_ctl%leg_vector_len)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_time_loop_ctl

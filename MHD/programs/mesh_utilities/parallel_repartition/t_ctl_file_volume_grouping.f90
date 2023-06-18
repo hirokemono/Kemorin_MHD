@@ -192,9 +192,7 @@
 !
       if(part_tctl%i_mesh_test_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_platforms                                      &
      &   (id_control, hd_platform, part_tctl%plt, level)
       call write_control_time_step_data                                 &

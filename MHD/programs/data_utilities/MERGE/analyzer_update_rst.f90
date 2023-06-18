@@ -92,7 +92,7 @@
      &   (nprocs, mgd_ctl_f, asbl_param_f, ierr)
       if(ierr_MPI .gt. 0) then
         write(e_message,'(a)')                                          &
-     &     'No. of processes and targed sub domain shold be the same.'
+     &     'No. of processes and targed sub domain should be the same.'
         call calypso_mpi_abort(ierr_mesh, e_message)
       end if
 !

@@ -177,7 +177,6 @@
 !
       integer(kind = kint) :: i
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, iso_ctls%num_iso_ctl
         write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
@@ -209,8 +208,14 @@
       if(cmp_no_case(file_name, 'NO_FILE')) then
         call write_iso_control_data(id_control, hd_block,               &
      &                              iso_ctl_struct, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(2a)', ADVANCE='NO')                                   &
+     &            ' should be written to file ... ', trim(file_name)
+        call write_iso_control_data(id_control, hd_block,               &
+     &                              iso_ctl_struct, level)
       else
-        write(*,'(a)', ADVANCE='NO') ' is write file to ... '
+        write(*,'(3a)', ADVANCE='NO')  trim(hd_block),                  &
+     &            ' is written to file ... ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_control_4_iso_file((id_control+2), file_name,        &
@@ -237,7 +242,6 @@
 !
 !
       level = 0
-      write(*,*) 'Isosurface control file: ', trim(file_name)
       open(id_control, file=file_name)
       call write_iso_control_data                                       &
      &   (id_control, hd_block, iso_ctl_struct, level)

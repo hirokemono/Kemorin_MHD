@@ -279,13 +279,11 @@
       maxlen = max(maxlen, len_trim(hd_map_isoline_field))
       maxlen = max(maxlen, len_trim(hd_map_isoline_comp))
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_map_image_prefix, map_c%map_image_prefix_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_map_image_format, map_c%map_image_fmt_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_map_output_field, map_c%map_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &

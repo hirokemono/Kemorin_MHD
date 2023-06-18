@@ -164,9 +164,7 @@
       maxlen = len_trim(hd_buo_ratio)
       maxlen = max(maxlen, len_trim(hd_thermal_buo))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_phys_data_control                                      &
      &   (id_control, hd_phys_values, spu_ctl%fld_ctl, level)
       call write_control_time_step_data                                 &
@@ -250,9 +248,7 @@
       maxlen = max(maxlen, len_trim(hd_zm_sph_spec_file))
       maxlen = max(maxlen, len_trim(hd_tsph_esp_file))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_ene_spec_head, spu_ctl%ene_spec_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &

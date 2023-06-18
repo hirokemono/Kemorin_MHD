@@ -226,7 +226,7 @@
       maxlen = len_trim(hd_psf_file_prefix)
       maxlen = max(maxlen, len_trim(hd_psf_out_type))
 !
-      write(id_control,'(a1)') '!'
+      level =  write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_psf_file_prefix, psf_c%psf_file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &

@@ -134,7 +134,6 @@
 !
       if(earea_ctl%i_layers_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c1(id_control, level,                    &
      &    hd_fluid_grp, earea_ctl%evo_fluid_group_ctl)

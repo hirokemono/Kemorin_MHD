@@ -232,13 +232,11 @@
       maxlen = max(maxlen, len_trim(hd_normalization_type))
       maxlen = max(maxlen, len_trim(hd_normalization_value))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_sub_elapse_dump, lic_ctl%subdomain_elapsed_dump_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_LIC_field, lic_ctl%LIC_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -260,13 +258,11 @@
      &   (id_control, hd_kernel, lic_ctl%fname_LIC_kernel_ctl,          &
      &    lic_ctl%kernel_ctl, level)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_step_size, lic_ctl%step_size_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_normalization_type, lic_ctl%normalization_type_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

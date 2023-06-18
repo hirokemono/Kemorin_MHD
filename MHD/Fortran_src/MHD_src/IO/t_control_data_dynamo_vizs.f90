@@ -160,9 +160,7 @@
 !
       if(zm_ctls%i_viz_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_crustal_filtering_ctl(id_control,                      &
      &    hd_crustal_filtering, zm_ctls%crust_filter_ctl, level)
 !

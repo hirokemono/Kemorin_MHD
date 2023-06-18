@@ -152,12 +152,10 @@
 !
       integer(kind = kint) :: i
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, mul_mats_c%num_modelviews_c
         write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
 !
-        write(id_control,'(a1)') '!'
         call sel_write_ctl_modelview_file(id_control, hd_block,         &
      &      mul_mats_c%fname_mat_ctl(i), mul_mats_c%matrices(i), level)
       end do

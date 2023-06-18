@@ -145,16 +145,20 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      write(id_control,'(a1)') '!'
       if(cmp_no_case(fname_pvr_ctl, 'NO_FILE')) then
         write(*,'(a)') ' is included.'
-        call write_pvr_ctl(id_control, hd_pvr_ctl,                    &
+        call write_pvr_ctl(id_control, hd_pvr_ctl,                      &
+     &                     pvr_ctl_type, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(2a)') ' should be written to file ... ',              &
+     &                trim(fname_pvr_ctl)
+        call write_pvr_ctl(id_control, hd_pvr_ctl,                      &
      &                     pvr_ctl_type, level)
       else
-        write(*,'(a)') ' is written file...'
-        call write_file_name_for_ctl_line(id_control, level,          &
+        write(*,'(2a)') ' is written to file...', trim(fname_pvr_ctl)
+        call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_pvr_ctl, fname_pvr_ctl)
-        call write_control_pvr_file(id_control+2, fname_pvr_ctl,      &
+        call write_control_pvr_file(id_control+2, fname_pvr_ctl,        &
      &                              hd_pvr_ctl,  pvr_ctl_type)
       end if
 !
@@ -175,7 +179,6 @@
        integer(kind = kint) :: level
 !
 !
-      write(*,*) 'Write PVR control:  ', trim(fname_pvr_ctl)
       level = 0
       open(id_control, file=fname_pvr_ctl)
       call write_pvr_ctl(id_control, hd_pvr_ctl, pvr_ctl_type, level)

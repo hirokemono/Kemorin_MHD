@@ -189,9 +189,7 @@
       maxlen = max(maxlen, len_trim(hd_gauss_coefs_head))
       maxlen = max(maxlen, len_trim(hd_gauss_coefs_fmt))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_i2(id_control, level,                    &
      &    hd_pick_gauss_lm, g_pwr%idx_gauss_ctl)
       call write_control_array_i1(id_control, level,                    &

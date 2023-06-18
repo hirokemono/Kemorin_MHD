@@ -135,9 +135,7 @@
 !
       if(fmctl_ctl%i_control .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_time_step_data                                 &
      &   (id_control, hd_time_step, fmctl_ctl%tctl, level)
       call write_restart_ctl                                            &
@@ -149,7 +147,6 @@
      &   (id_control, hd_solver_ctl, fmctl_ctl%CG_ctl, level)
       call write_time_loop_ctl                                          &
      &   (id_control, hd_time_loop, fmctl_ctl%mevo_ctl, level)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_fem_mhd_control

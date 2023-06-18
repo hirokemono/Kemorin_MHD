@@ -159,9 +159,7 @@
       maxlen = max(maxlen, len_trim(hd_horizontal_range))
       maxlen = max(maxlen, len_trim(hd_vertical_range))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_perspect_angle, proj%perspective_angle_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

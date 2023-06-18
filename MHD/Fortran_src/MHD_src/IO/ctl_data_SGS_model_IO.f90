@@ -377,9 +377,7 @@
       maxlen = max(maxlen, len_trim(hd_r_ave_area_ctl))
       maxlen = max(maxlen, len_trim(hd_med_ave_area_ctl))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_SGS_model, sgs_ctl%SGS_model_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -393,11 +391,9 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_SGS_marging, sgs_ctl%SGS_marging_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_control_4_SGS_filters                                  &
      &   (id_control, hd_sph_filter, sgs_ctl, level)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_SGS_buo_Csim_usage, sgs_ctl%SGS_buo_Csim_usage_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -411,11 +407,9 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_SGS_uxb_factor, sgs_ctl%SGS_uxb_factor_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_filter_fnames_control                                  &
      &   (id_control, hd_filter_fnames, sgs_ctl%ffile_ctl, level)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_istep_dynamic, sgs_ctl%istep_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -425,7 +419,6 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_med_ave_area_ctl, sgs_ctl%ngrp_med_ave_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_min_step_dynamic, sgs_ctl%min_step_dynamic_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -436,7 +429,6 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_extend_dynamic, sgs_ctl%delta_to_extend_dynamic_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_control_array_c1(id_control, level,                    &
      &    hd_SGS_terms, sgs_ctl%SGS_terms_ctl)
       call write_control_array_c1(id_control, level,                    &
@@ -446,11 +438,9 @@
       call write_ele_layers_control(id_control, hd_dynamic_layers,      &
      &                              sgs_ctl%elayer_ctl, level)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_SGS_perturbation_ctl, sgs_ctl%SGS_perturbation_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_model_coef_type_ctl, sgs_ctl%SGS_model_coef_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -464,10 +454,8 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_uxb_csim_type_ctl, sgs_ctl%uxb_csim_type_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_model_coef_coord_ctl, sgs_ctl%SGS_model_coef_coord_ctl)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sgs_ctl

@@ -214,17 +214,13 @@
       maxlen = max(maxlen, len_trim(hd_radius))
       maxlen = max(maxlen, len_trim(hd_group_name))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_c1(id_control, level,                    &
      &    hd_psf_area, psf_def_c%psf_area_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_section_method, psf_def_c%section_method_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_control_array_c_r(id_control, level,                   &
      &    hd_coefs_ctl, psf_def_c%psf_coefs_ctl)
 !
@@ -240,7 +236,6 @@
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_group_name, psf_def_c%psf_group_name_ctl)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_section_def_control

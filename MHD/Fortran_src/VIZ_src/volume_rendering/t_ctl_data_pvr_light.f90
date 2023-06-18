@@ -141,9 +141,7 @@
       maxlen = max(maxlen, len_trim(hd_diffuse))
       maxlen = max(maxlen, len_trim(hd_specular))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_array_r3(id_control, level,                    &
      &    hd_light_param, light%light_position_ctl)
 !
@@ -153,7 +151,6 @@
      &    hd_diffuse, light%diffuse_coef_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_specular, light%specular_coef_ctl)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_lighting_ctl

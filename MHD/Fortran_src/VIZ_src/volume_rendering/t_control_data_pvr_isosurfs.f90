@@ -113,7 +113,6 @@
 !
       if(pvr_isos_c%num_pvr_iso_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, pvr_isos_c%num_pvr_iso_ctl
         call write_pvr_isosurface_ctl(id_control, hd_block,             &

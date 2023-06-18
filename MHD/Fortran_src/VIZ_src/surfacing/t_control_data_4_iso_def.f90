@@ -223,9 +223,7 @@
       maxlen = max(maxlen, len_trim(hd_iso_comp))
       maxlen = max(maxlen, len_trim(hd_iso_value))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_iso_field, iso_def_c%isosurf_data_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -234,10 +232,8 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_iso_value, iso_def_c%isosurf_value_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_control_array_c1(id_control, level,                    &
      &    hd_iso_area, iso_def_c%iso_area_ctl)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_iso_define_data

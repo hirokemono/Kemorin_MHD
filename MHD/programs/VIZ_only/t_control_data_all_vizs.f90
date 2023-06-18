@@ -196,9 +196,7 @@
 !
       if(vizs_ctl%i_viz_only_file .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_platforms                                      &
      &   (id_control, hd_platform, vizs_ctl%viz_plt, level)
       call write_control_time_step_data                                 &
