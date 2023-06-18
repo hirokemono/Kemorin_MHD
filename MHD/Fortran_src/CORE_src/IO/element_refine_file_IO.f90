@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine read_element_refine_file(id_rank, ifile_type,        &
-!!    &           IO_itp_org, IO_itp_dest, e_ref_IO)
+!!    &           IO_itp_org, IO_itp_dest, e_ref_IO, ierr)
 !!      subroutine write_element_refine_file(id_rank, ifile_type,       &
 !!     &          IO_itp_org, IO_itp_dest, e_ref_IO, ierr)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
@@ -43,7 +43,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_element_refine_file(id_rank, ifile_type,          &
-    &           IO_itp_org, IO_itp_dest, e_ref_IO)
+    &           IO_itp_org, IO_itp_dest, e_ref_IO, ierr)
 !
       use binary_IO
       use itp_table_org_data_IO
@@ -57,6 +57,7 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: nrank_ref
       character(len = kchara) :: refine_fname
@@ -90,19 +91,30 @@
 !
   99    continue
         call close_binary_file(bbuf_rfin)
-        if(bbuf_rfin%ierr_bin .ne. 0) stop "Reading error"
+        if(bbuf_rfin%ierr_bin .ne. 0) then
+          ierr = 99
+          return
+        end if
       else
         write(*,*) 'element refine information: ',                      &
      &            trim(refine_fname)
         open (id_refine_table,file = refine_fname)
 !
-        call read_interpolate_table_dest(id_refine_table, IO_itp_dest)
+        call read_interpolate_table_dest(id_refine_table,               &
+     &                                   IO_itp_dest, ierr)
+        if(ierr .gt. 0) return
         call read_interpolate_domain_org                                &
-     &     (id_refine_table, nrank_ref, IO_itp_org)
-        call read_interpolate_table_org(id_refine_table, IO_itp_org)
-        call read_interpolate_coefs_org(id_refine_table, IO_itp_org)
+     &     (id_refine_table, nrank_ref, IO_itp_org, ierr)
+        if(ierr .gt. 0) return
+        call read_interpolate_table_org(id_refine_table,                &
+     &                                  IO_itp_org, ierr)
+        if(ierr .gt. 0) return
+        call read_interpolate_coefs_org(id_refine_table,                &
+     &                                  IO_itp_org, ierr)
+        if(ierr .gt. 0) return
 !
-        call read_element_refine_data(id_refine_table, e_ref_IO)
+        call read_element_refine_data(id_refine_table, e_ref_IO, ierr)
+        if(ierr .gt. 0) return
         close(id_refine_table)
       end if
 !

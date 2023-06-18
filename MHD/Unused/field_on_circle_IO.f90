@@ -13,7 +13,7 @@
 !!     &         (i_step, time, ierr, circle, d_circle)
 !!
 !!      subroutine open_read_field_data_on_circle                       &
-!!     &         (my_rank, sph_rtp, sph_rj, circle, d_circle)
+!!     &         (my_rank, sph_rtp, sph_rj, circle, d_circle. iend)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(circle_parameters), intent(inout) :: circle
@@ -232,7 +232,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine open_read_field_data_on_circle                         &
-     &         (my_rank, sph_rtp, sph_rj, circle, d_circle)
+     &         (my_rank, sph_rtp, sph_rj, circle, d_circle, iend)
 !
       use skip_comment_f
 !
@@ -245,6 +245,7 @@
 !
       type(circle_parameters), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
+      integer(kind = kint), intent(inout) :: iend
 !
       character(len=255) :: tmpchara
       character(len=kchara) :: phi_name
@@ -254,15 +255,22 @@
       open(id_circ_sq,  file=circle%fname_circle_mag)
       open(id_circ_ph,  file=circle%fname_circle_phs)
 !
-      call skip_comment(tmpchara, id_circ_fid)
+      call skip_comment(id_circ_fid, tmpchara, iend)
+      if(iend .gt. 0) return
       read(tmpchara,*) circle%s_circle, circle%z_circle
-      call skip_comment(tmpchara, id_circ_fid)
+!
+      call skip_comment(id_circ_fid, tmpchara, iend)
+      if(iend .gt. 0) return
       read(tmpchara,*) circle%mphi_circle, d_circle%ntot_phys_viz
 !
-      call skip_comment(tmpchara, id_circ_sq)
-      call skip_comment(tmpchara, id_circ_ph)
-      call skip_comment(tmpchara, id_circ_sq)
-      call skip_comment(tmpchara, id_circ_ph)
+      call skip_comment(id_circ_sq, tmpchara, iend)
+      if(iend .gt. 0) return
+      call skip_comment(id_circ_ph, tmpchara, iend)
+      if(iend .gt. 0) return
+      call skip_comment(id_circ_sq, tmpchara, iend)
+      if(iend .gt. 0) return
+      call skip_comment(id_circ_ph, tmpchara, iend)
+      if(iend .gt. 0) return
 !
       d_circle%num_phys_viz = d_circle%ntot_phys_viz
       d_circle%num_phys =     d_circle%ntot_phys_viz

@@ -9,8 +9,8 @@
 !!      subroutine write_each_same_filter_coef                          &
 !!     &         (file_name, inod, fil_coef, ierr)
 !!        type(each_filter_coef), intent(in) :: fil_coef
-!!
-!!      subroutine read_each_filter_stack_coef(id_file, fil_coef, bbuf)
+!!      subroutine read_each_filter_stack_coef                          &
+!!     &         (id_file, fil_coef, bbuf, ierr)
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !
@@ -145,7 +145,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_each_filter_stack_coef(id_file, fil_coef, bbuf)
+      subroutine read_each_filter_stack_coef                            &
+     &         (id_file, fil_coef, bbuf, ierr)
 !
       use t_binary_IO_buffer
       use skip_comment_f
@@ -155,10 +156,11 @@
 !
       type(each_filter_coef), intent(inout) :: fil_coef
       type(binary_IO_buffer), intent(inout) :: bbuf
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
-        call read_filter_coef_4_each(id_file, fil_coef)
+        call read_filter_coef_4_each(id_file, fil_coef, ierr)
       else if (ifmt_3d_filter .eq. iflag_bin) then
         call read_filter_coef_4_each_b(bbuf, fil_coef)
       end if

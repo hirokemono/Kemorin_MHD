@@ -7,11 +7,12 @@
 !     modified by H. Matsui on May, 2008
 !
 !!      subroutine s_read_filtering_data(SGS_param, filter_param,       &
-!!     &          node, ele, FEM_filters, wk_filter)
+!!     &          node, ele, FEM_filters, wk_filter, ierr)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        integer(kind = kint), intent(inout) :: ierr
 !
       module read_filtering_data
 !
@@ -202,8 +203,11 @@
 !
       if        (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
      &      .or. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
-        call read_line_filter_data_a(filter_file_code, numnod, fil_l)
-      end if
+        call read_line_filter_data_a(filter_file_code, numnod,          &
+     &                               fil_l, ierr)
+        if(ierr .gt. 0) call calypso_MPI_abort(ierr,                    &
+     &                                         'Read file error.')
+     end if
       close(filter_file_code)
 !
 !

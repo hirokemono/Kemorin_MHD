@@ -68,7 +68,8 @@
       use input_old_file_sel_4_zlib
       use bcast_4_assemble_sph_ctl
 !
-      integer(kind = kint) :: ierr, istep_in
+      integer(kind = kint) :: ierr = 0
+      integer(kind = kint) :: istep_in
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -129,7 +130,10 @@
         istep_in = asbl_param_f%istep_start                             &
      &            / asbl_param_f%increment_step
         call sel_read_rst_comps(0, istep_in, asbl_param_f%org_fld_file, &
-     &      t_IO_m, fld_IO_m)
+     &      t_IO_m, fld_IO_m, ierr)
+        if(ierr .gt. 0) call calypso_MPI_abort(ierr,                    &
+     &                 'Read file error in sel_read_rst_comps')
+!
         call init_field_name_by_restart(fld_IO_m, new_fld)
 !
         call dealloc_phys_data_IO(fld_IO_m)

@@ -102,18 +102,25 @@
 !
 !
       call read_interpolate_domain_dest                                 &
-     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_dest)
+     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_dest, ierr)
+      if(ierr .gt. 0) return
 !        write(*,*) 'read_interpolate_table_dest'
       call read_interpolate_table_dest                                  &
-     &    (id_tbl_file, itp_tbl_IO%tbl_dest)
+     &    (id_tbl_file, itp_tbl_IO%tbl_dest, ierr)
+      if(ierr .gt. 0) return
 !
 !        write(*,*) 'read_interpolate_domain_org'
       call read_interpolate_domain_org                                  &
-     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_org)
+     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_org, ierr)
+      if(ierr .gt. 0) return
 !        write(*,*) 'read_interpolate_table_org'
-      call read_interpolate_table_org(id_tbl_file, itp_tbl_IO%tbl_org)
+      call read_interpolate_table_org(id_tbl_file,                      &
+     &                                itp_tbl_IO%tbl_org, ierr)
+      if(ierr .gt. 0) return
 !        write(*,*) 'read_interpolate_coefs_org'
-      call read_interpolate_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
+      call read_interpolate_coefs_org(id_tbl_file,                      &
+     &                                itp_tbl_IO%tbl_org, ierr)
+      if(ierr .gt. 0) return
 !
       if(n_rank_file .ne. id_rank) ierr = n_rank_file
 !
@@ -137,18 +144,25 @@
 !
 !
       call read_interpolate_domain_dest                                 &
-     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_dest)
+     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_dest, ierr)
+      if(ierr .gt. 0) return
 !        write(*,*) 'read_interpolate_table_dest'
       call read_interpolate_table_dest                                  &
-     &    (id_tbl_file, itp_tbl_IO%tbl_dest)
+     &    (id_tbl_file, itp_tbl_IO%tbl_dest, ierr)
+      if(ierr .gt. 0) return
 !
 !        write(*,*) 'read_interpolate_domain_org'
       call read_interpolate_domain_org                                  &
-     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_org)
+     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_org, ierr)
+      if(ierr .gt. 0) return
 !        write(*,*) 'read_interpolate_table_org'
-      call read_interpolate_table_org(id_tbl_file, itp_tbl_IO%tbl_org)
+      call read_interpolate_table_org(id_tbl_file,                      &
+     &                                itp_tbl_IO%tbl_org, ierr)
+      if(ierr .gt. 0) return
 !        write(*,*) 'read_interpolate_idx_org'
-      call read_interpolate_idx_org(id_tbl_file, itp_tbl_IO%tbl_org)
+      call read_interpolate_idx_org(id_tbl_file,                        &
+     &                              itp_tbl_IO%tbl_org, ierr)
+      if(ierr .gt. 0) return
 !
       if(n_rank_file .ne. id_rank) ierr = n_rank_file
 !

@@ -4,9 +4,10 @@
 !     Written by Kemorin
 !
 !!      subroutine read_z_filter_info                                   &
-!!     &         (cube_p, c_size, nf_type, cube_fil)
+!!     &         (cube_p, c_size, nf_type, cube_fil, iend)
 !!         type(ctl_param_plane_mesh), intent(in) :: cube_p
 !!         type(size_of_cube), intent(in) :: c_size
+!!         integer(kind = kint), intent(inout) :: iend
 !!      subroutine alloc_filter_4_plane                                 &
 !!     &         (ndepth, nz_all, nf_type, cube_fil)
 !
@@ -17,7 +18,7 @@
 !
       implicit none
 !
-      integer (kind= kint), parameter, private :: filter_id = 17
+      integer (kind= kint), parameter, private :: id_filter = 17
 !
       type filter_data_4_plane
         integer (kind= kint) :: iwidth_1d
@@ -169,7 +170,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_z_filter_info                                     &
-     &         (cube_p, c_size, nf_type, cube_fil)
+     &         (cube_p, c_size, nf_type, cube_fil, iend)
 !
       use t_size_of_cube
 !
@@ -181,6 +182,7 @@
       integer(kind = kint), intent(in) :: nf_type
 !
       type(filter_data_4_plane), intent(inout) :: cube_fil
+      integer(kind = kint), intent(inout) :: iend
 !
       integer (kind = kint) :: kf, ifil, ifil0, i, j, itmp
 !
@@ -197,9 +199,10 @@
          fname_tmp =    add_int_suffix(ifil0, cube_p%z_filter_prefix)
          filtername = add_dat_extension(fname_tmp)
          write(*,*) 'filter filte name: ', filtername
-         open (filter_id, file=filtername)
+         open (id_filter, file=filtername)
 !
-         call skip_comment(tmpchara,filter_id)
+         call skip_comment(id_filter, tmpchara, iend)
+         if(iend .gt. 0) go to 99
          read(tmpchara,*) (numnod_f(i), i=1, 3)
          if ( numnod_f(1) .ne. c_size%nx_all                            &
      &   .or. numnod_f(2) .ne. c_size%ny_all                            &
@@ -210,7 +213,8 @@
           stop
          end if
 !
-         call skip_comment(tmpchara,filter_id)
+         call skip_comment(id_filter, tmpchara, iend)
+         if(iend .gt. 0) go to 99
          read(tmpchara,*) (size_f(i), i=1, 3)
          if ( size_f(1) .ne. c_size%xsize                               &
      &   .or. size_f(2) .ne. c_size%ysize                               &
@@ -219,7 +223,8 @@
           stop
          end if
 !
-         call skip_comment(tmpchara,filter_id)
+         call skip_comment(id_filter, tmpchara, iend)
+         if(iend .gt. 0) go to 99
          read(tmpchara,*) i_grid
          if ( i_grid .ne. cube_p%iflag_ztype) then
           write(*,*) 'check grid spacing'
@@ -227,7 +232,8 @@
           stop
          end if
 !
-         call skip_comment(tmpchara,filter_id)
+         call skip_comment(id_filter, tmpchara, iend)
+         if(iend .gt. 0) go to 99
          read(tmpchara,*) cube_fil%inod_width(1:3)
          if ( cube_fil%inod_width(1) .ne. cube_fil%iwidth_1d            &
      &   .or. cube_fil%inod_width(2) .ne. cube_fil%iwidth_1d            &
@@ -236,71 +242,91 @@
           stop
          end if
 !
-         call skip_comment(tmpchara,filter_id)
+         call skip_comment(id_filter, tmpchara, iend)
+         if(iend .gt. 0) go to 99
          read(tmpchara,*) cube_fil%filtertype_h(ifil)
-         call skip_comment(tmpchara,filter_id)
+!
+         call skip_comment(id_filter, tmpchara, iend)
+         if(iend .gt. 0) go to 99
          read(tmpchara,*) cube_fil%filtertype_z(ifil)
-         call skip_comment(tmpchara,filter_id)
+!
+         call skip_comment(id_filter, tmpchara, iend)
+         if(iend .gt. 0) go to 99
          read(tmpchara,*) cube_fil%width_f(ifil)
-         call skip_comment(tmpchara,filter_id)
+!
+         call skip_comment(id_filter, tmpchara, iend)
+         if(iend .gt. 0) go to 99
          read(tmpchara,*)  cube_fil%mom_1d_o(0:2,1,ifil)
-         read(filter_id,*) cube_fil%mom_1d_o(0:2,2,ifil)
-         read(filter_id,*) cube_fil%mom_1d_o(0:2,3,ifil)
+         read(id_filter,*) cube_fil%mom_1d_o(0:2,2,ifil)
+         read(id_filter,*) cube_fil%mom_1d_o(0:2,3,ifil)
 !
          do i = 1, cube_fil%iwidth_1d
-           call skip_comment(tmpchara,filter_id)
+           call skip_comment(id_filter, tmpchara, iend)
+           if(iend .gt. 0) go to 99
            read(tmpchara,*) itmp, cube_fil%coef_nod_x(i,0:2,ifil)
          end do
 !
          do i = 1, cube_fil%iwidth_1d
-           call skip_comment(tmpchara,filter_id)
+           call skip_comment(id_filter, tmpchara, iend)
+           if(iend .gt. 0) go to 99
            read(tmpchara,*) itmp, cube_fil%coef_nod_y(i,0:2,ifil)
          end do
 !
          do i = 1, c_size%nz_all
-           call skip_comment(tmpchara,filter_id)
+           call skip_comment(id_filter, tmpchara, iend)
+           if(iend .gt. 0) go to 99
            read(tmpchara,*) itmp,                                       &
      &           cube_fil%z_filter(i), cube_fil%delta_z(i),             &
      &           cube_fil%diff_deltaz(i), cube_fil%d2_deltaz(i)
          end do
 !
          do i = 1, c_size%nz_all-1
-           call skip_comment(tmpchara,filter_id)
+           call skip_comment(id_filter, tmpchara, iend)
+           if(iend .gt. 0) go to 99
            read(tmpchara,*) itmp, itmp, itmp, cube_fil%delta_z_e(i),    &
      &           cube_fil%diff_deltaz_e(i), cube_fil%d2_deltaz_e(i)
          end do
 !
          do i = 1, c_size%nz_all
-           call skip_comment(tmpchara,filter_id)
+           call skip_comment(id_filter, tmpchara, iend)
+           if(iend .gt. 0) go to 99
            read(tmpchara,*) itmp, cube_fil%nneib_z(i,1:2,ifil),         &
      &                cube_fil%ineib_z(i,1:cube_fil%inod_width(3),ifil)
          end do
 !
          do i = 1, c_size%nz_all
-           call skip_comment(tmpchara,filter_id)
+           call skip_comment(id_filter, tmpchara, iend)
+           if(iend .gt. 0) go to 99
            read(tmpchara,*) itmp,                                       &
      &           cube_fil%coef_4_filter(i,1:cube_fil%iwidth_1d,ifil)
          end do
 !
          do i = 1, c_size%nz_all
-           call skip_comment(tmpchara,filter_id)
+           call skip_comment(id_filter, tmpchara, iend)
+           if(iend .gt. 0) go to 99
            read(tmpchara,*) itmp, cube_fil%mom_1d_z(i,0:2,ifil)
          end do
 !
          do i = 1, c_size%nz_all
-           call skip_comment(tmpchara,filter_id)
+           call skip_comment(id_filter, tmpchara, iend)
+           if(iend .gt. 0) go to 99
            read(tmpchara,*) itmp, cube_fil%dmom_1d_z(i,0:2,ifil)
          end do
 !
          do kf = 0, 2
-          read(filter_id,*) 
+          read(id_filter,*) 
           do i = 1, c_size%nz_all
-           read(filter_id,*) itmp, itmp,                                &
+           read(id_filter,*) itmp, itmp,                                &
      &         cube_fil%coef_nod_z(i,1:cube_fil%inod_width(3),kf,ifil)
           end do
          end do
 !
-         close (filter_id)
+  99     continue
+         close(id_filter)
+         if(iend .gt. 0) then
+           write(*,*) 'Read file error in read_z_filter_info No. ',ifil
+           return
+         end if
 !
        end do
 !

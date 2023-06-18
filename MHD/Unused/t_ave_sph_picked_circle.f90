@@ -17,7 +17,8 @@
 !
       implicit none
 !
-      integer(kind = kint) :: ist, ied, ierr
+      integer(kind = kint) :: ierr = 0
+      integer(kind = kint) :: ist, ied
       integer(kind = kint) :: icou, istep
       real(kind = kreal) :: time
 !
@@ -33,7 +34,8 @@
       write(*,*) 'open_read_field_data_on_circle'
       call open_read_field_data_on_circle                               &
      &   (0, sph_c%sph_rtp, sph_c%sph_rj,                               &
-     &    cdat_a%circle, cdat_a%d_circle)
+     &    cdat_a%circle, cdat_a%d_circle, iend)
+      if(ierr .gt. 0) stop 'Read file error'
       call allocate_tave_circle_field(cdat_a%circle, cdat_a%d_circle)
 !
       icou = 0
@@ -65,7 +67,8 @@
 !
       call open_read_field_data_on_circle                               &
      &   (0, sph_c%sph_rtp, sph_c%sph_rj,                               &
-     &    cdat_a%circle, cdat_a%d_circle)
+     &    cdat_a%circle, cdat_a%d_circle, iend)
+      if(ierr .gt. 0) stop 'Read file error'
 !
       icou = 0
       do

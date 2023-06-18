@@ -87,11 +87,15 @@
         fil_gen%nmax_nod_near_all_w = 0
         call read_filter_neib_4_sort(filter_coef_code, filter_node,     &
      &      fil_gen%whole_area, whole_fil_sort,                         &
-     &      fil_gen%nmax_nod_near_all_w)
+     &      fil_gen%nmax_nod_near_all_w, ierr)
+        if(ierr .ne. 0) goto 97
         call read_filter_neib_4_sort(filter_coef_code, filter_node,     &
      &      fil_gen%fluid_area, fluid_fil_sort,                         &
-     &      fil_gen%nmax_nod_near_all_w)
+     &      fil_gen%nmax_nod_near_all_w, ierr)
+!
+  97    continue
         close(filter_coef_code)
+        if(ierr .gt. 0) stop "Error reading"
       else if( ifile_type .eq. 1) then
         bbuf_flt%id_binary = id_read_filter
         call open_read_binary_file(file_name, id_rank, bbuf_flt)
@@ -111,11 +115,10 @@
         if(bbuf_flt%ierr_bin .gt. 0) go to 99
         call read_filter_neib_4_sort_b(filter_node, fil_gen%fluid_area, &
      &      fluid_fil_sort, fil_gen%nmax_nod_near_all_w, bbuf_flt)
-        if(bbuf_flt%ierr_bin .gt. 0) go to 99
 !
   99    continue
         call close_binary_file(bbuf_flt)
-        if(bbuf_flt%ierr_bin .gt. 0) stop "Error rading"
+        if(bbuf_flt%ierr_bin .gt. 0) stop "Error reading"
       end if
 !
 !
@@ -161,8 +164,9 @@
         write(*,*) 'read_filter_coef_4_sort'
         call read_filter_coef_4_sort(filter_coef_code, filter_node,     &
      &      fil_gen%whole_area, fil_gen%fluid_area,                     &
-     &      fil_gen%fil_coef, fil_gen%fil_sorted)
+     &      fil_gen%fil_coef, fil_gen%fil_sorted, ierr)
         close(filter_coef_code)
+        if(ierr .gt. 0) stop "Error reading"
       else if( ifile_type .eq. 1) then
         bbuf_flt%id_binary = id_read_filter
         call open_read_binary_file(file_name, id_rank, bbuf_flt)
@@ -188,7 +192,7 @@
 !
   98    continue
         call close_binary_file(bbuf_flt)
-        if(bbuf_flt%ierr_bin .gt. 0) stop "Error rading"
+        if(bbuf_flt%ierr_bin .gt. 0) stop "Error reading"
       end if
 !
       call dealloc_node_geometry_base(nod_IO)

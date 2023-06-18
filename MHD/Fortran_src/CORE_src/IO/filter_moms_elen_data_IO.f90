@@ -10,9 +10,9 @@
 !!
 !!@verbatim
 !!      subroutine read_ref_filter_param(id_file, nf_type, filter_type, &
-!!     &          f_width, xmom_1d_org)
+!!     &                                 f_width, xmom_1d_org, iend)
 !!      subroutine write_ref_filter_param(id_file, nf_type, filter_type,&
-!!     &          f_width, xmom_1d_org)
+!!     &                                  f_width, xmom_1d_org)
 !!
 !!      subroutine read_elens_ele(id_file, nele,                        &
 !!     &         e_x2_ele, e_y2_ele, e_z2_ele,                          &
@@ -20,7 +20,7 @@
 !!     &         e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,                 &
 !!     &         e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,                 &
 !!     &         e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,              &
-!!     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
+!!     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2, iend)
 !!      subroutine write_elens_ele(id_file, nele,                       &
 !!     &         e_x2_ele, e_y2_ele, e_z2_ele,                          &
 !!     &         e_xy_ele, e_yz_ele, e_zx_ele,                          &
@@ -43,7 +43,7 @@
 !!     &         f_x_ele_dx,  f_y_ele_dx,  f_z_ele_dx,                  &
 !!     &         f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2,              &
 !!     &         f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,              &
-!!     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2)
+!!     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2, iend)
 !!      subroutine write_filter_moms_ele(id_file, nele,                 &
 !!     &         f_x2_ele, f_y2_ele, f_z2_ele,                          &
 !!     &         f_xy_ele, f_yz_ele, f_zx_ele,                          &
@@ -71,7 +71,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_ref_filter_param(id_file, nf_type, filter_type,   &
-     &          f_width, xmom_1d_org)
+     &                                 f_width, xmom_1d_org, iend)
 !
       use skip_comment_f
 !
@@ -81,21 +81,25 @@
       character(len=kchara), intent(inout) :: filter_type(nf_type)
       real(kind=kreal), intent(inout) :: f_width(nf_type)
       real(kind=kreal), intent(inout) :: xmom_1d_org(nf_type,0:2)
+      integer(kind = kint), intent(inout) :: iend
 !
       integer (kind=kint) :: itmp, ifil
 !
 !
       do ifil = 1, nf_type
-        call skip_comment(character_4_read,id_file)
+        call skip_comment(id_file, character_4_read, iend)
+        if(iend .gt. 0) return
         read(character_4_read,*) itmp, filter_type(ifil)
       end do
 !
-      call skip_comment(character_4_read,id_file)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) f_width(1:nf_type)
 !
 !
       do ifil = 1, nf_type
-        call skip_comment(character_4_read,id_file)
+        call skip_comment(id_file, character_4_read, iend)
+        if(iend .gt. 0) return
         read(character_4_read,*) itmp, xmom_1d_org(ifil,0:2)
       end do
 !
@@ -140,7 +144,7 @@
      &         e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,                   &
      &         e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,                   &
      &         e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,                &
-     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
+     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2, iend)
 !
       use filter_moments_IO
 !
@@ -169,20 +173,28 @@
       real(kind = kreal), intent(inout) :: e_xy_ele_dx2(nele,3)
       real(kind = kreal), intent(inout) :: e_yz_ele_dx2(nele,3)
       real(kind = kreal), intent(inout) :: e_zx_ele_dx2(nele,3)
+      integer(kind = kint), intent(inout) :: iend
 !
 !
-        call read_elength(id_file, nele, e_x2_ele, e_y2_ele, e_z2_ele )
-        call read_elength(id_file, nele, e_xy_ele, e_yz_ele, e_zx_ele )
+        call read_elength                                               &
+     &     (id_file, nele, e_x2_ele, e_y2_ele, e_z2_ele, iend)
+        if(iend .gt. 0) return
+        call read_elength                                               &
+     &     (id_file, nele, e_xy_ele, e_yz_ele, e_zx_ele, iend)
+        if(iend .gt. 0) return
 !
         call read_mom_coefs_dx(id_file, nele,                           &
-     &      e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx)
+     &      e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx, iend)
+        if(iend .gt. 0) return
         call read_mom_coefs_dx(id_file, nele,                           &
-     &      e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx)
+     &      e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx, iend)
+        if(iend .gt. 0) return
 !
         call read_mom_coefs_dx(id_file, nele,                           &
-     &      e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2)
+     &      e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2, iend)
+        if(iend .gt. 0) return
         call read_mom_coefs_dx(id_file, nele,                           &
-     &      e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
+     &      e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2, iend)
 !
       end subroutine read_elens_ele
 !
@@ -327,7 +339,7 @@
      &         f_x_ele_dx,  f_y_ele_dx,  f_z_ele_dx,                    &
      &         f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2,                &
      &         f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,                &
-     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2)
+     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2, iend)
 !
       use filter_moments_IO
 !
@@ -368,27 +380,38 @@
       real(kind = kreal), intent(inout) :: f_x_ele_dx2(nele,3)
       real(kind = kreal), intent(inout) :: f_y_ele_dx2(nele,3)
       real(kind = kreal), intent(inout) :: f_z_ele_dx2(nele,3)
+      integer(kind = kint), intent(inout) :: iend
 !
 !
-      call read_elength(id_file, nele, f_x2_ele, f_y2_ele, f_z2_ele )
-      call read_elength(id_file, nele, f_xy_ele, f_yz_ele, f_zx_ele )
-      call read_elength(id_file, nele, f_x_ele, f_y_ele, f_z_ele )
+      call read_elength                                                 &
+     &     (id_file, nele, f_x2_ele, f_y2_ele, f_z2_ele, iend)
+      if(iend .gt. 0) return
+      call read_elength                                                 &
+     &     (id_file, nele, f_xy_ele, f_yz_ele, f_zx_ele, iend)
+      if(iend .gt. 0) return
+      call read_elength(id_file, nele, f_x_ele, f_y_ele, f_z_ele, iend)
+      if(iend .gt. 0) return
 !
 !
       call read_mom_coefs_dx(id_file, nele,                             &
-     &    f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx )
+     &    f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx, iend)
+      if(iend .gt. 0) return
       call read_mom_coefs_dx(id_file, nele,                             &
-     &    f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx )
+     &    f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx, iend)
+      if(iend .gt. 0) return
       call read_mom_coefs_dx(id_file, nele,                             &
-     &    f_x_ele_dx, f_y_ele_dx, f_z_ele_dx )
+     &    f_x_ele_dx, f_y_ele_dx, f_z_ele_dx, iend)
+      if(iend .gt. 0) return
 !
 !
       call read_mom_coefs_dx(id_file, nele,                             &
-     &    f_x2_ele_dx2, f_y2_ele_dx2,f_z2_ele_dx2 )
+     &    f_x2_ele_dx2, f_y2_ele_dx2,f_z2_ele_dx2, iend)
+      if(iend .gt. 0) return
       call read_mom_coefs_dx(id_file, nele,                             &
-     &    f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2 )
+     &    f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2, iend)
+      if(iend .gt. 0) return
       call read_mom_coefs_dx(id_file, nele,                             &
-     &    f_x_ele_dx2, f_y_ele_dx2, f_z_ele_dx2 )
+     &    f_x_ele_dx2, f_y_ele_dx2, f_z_ele_dx2, iend)
 !
       end subroutine read_filter_moms_ele
 !

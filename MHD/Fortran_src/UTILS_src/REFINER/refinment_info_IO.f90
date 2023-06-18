@@ -10,7 +10,7 @@
 !!        type(element_refine_table), intent(inout) :: refine_tbl
 !!
 !!      subroutine read_refinement_table                                &
-!!     &         (refine_info_head, ele, refine_tbl)
+!!     &         (refine_info_head, ele, refine_tbl, ierr)
 !!        type(element_data), intent(in) :: ele
 !!        type(element_refine_table), intent(inout) :: refine_tbl
 !
@@ -107,18 +107,19 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_refinement_table                                  &
-     &         (refine_info_head, ele, refine_tbl)
+     &         (refine_info_head, ele, refine_tbl, ierr)
 !
       use element_refine_file_IO
 !
       character(len = kchara), intent(in) :: refine_info_head
       type(element_data), intent(in) :: ele
       type(element_refine_table), intent(inout) :: refine_tbl
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       IO_e_ref%file_head = refine_info_head
       call read_element_refine_file                                     &
-     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref)
+     &   (0, izero, IO_itp_e_org, IO_itp_e_dest, IO_e_ref, ierr)
 !
       call dealloc_itp_num_org(IO_itp_e_org)
       call dealloc_itp_table_org(IO_itp_e_org)

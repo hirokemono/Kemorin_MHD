@@ -158,7 +158,7 @@
       type(mesh_geometry), save :: mesh1
       type(mesh_groups), save :: group1
 !
-      integer(kind=kint)  ::  ipe, jpe, kpe, pe_id
+      integer(kind=kint)  ::  ipe, jpe, kpe, pe_id, ierr
 !
 !
       call set_plane_range_w_sleeve(elm_type, c_size)
@@ -183,7 +183,8 @@
       call alloc_filter_4_plane(c_size%ndepth, c_size%nz_all,           &
      &    FEM_elen_c%filter_conf%nf_type, cube_fil1)
       call read_z_filter_info(cube_p, c_size,                           &
-     &    FEM_elen_c%filter_conf%nf_type, cube_fil1)
+     &    FEM_elen_c%filter_conf%nf_type, cube_fil1, ierr)
+      if(ierr .gt. 0) stop 'Read file error'
 !
 ! **********   domain loop for each pe   **********
 !

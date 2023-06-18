@@ -66,7 +66,8 @@
 !
       if(refine_p1%iflag_read_old_refine_file .gt. 0) then
         call read_refinement_table(refine_p1%refine_tbl_IO%file_prefix, &
-     &      org_fem%mesh%ele, refine_tbl)
+     &      org_fem%mesh%ele, refine_tbl, ierr)
+        if(ierr .gt. 0) stop 'read_refinement_table failed!!'
       else
         call alloc_old_refine_level(org_fem%mesh%ele, refine_tbl)
       end if

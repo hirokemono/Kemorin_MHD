@@ -238,11 +238,12 @@
 ! ----------------------------------------------------------------------
 !
       integer(kind = kint)                                              &
-     &      function check_gauss_coefs_4_monitor(gauss)
+     &      function check_gauss_coefs_4_monitor(gauss, iend)
 !
       use skip_comment_f
 !
       type(picked_spectrum_data), intent(in) :: gauss
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: nmode_read
       real(kind = kreal) :: radius_read
@@ -250,7 +251,8 @@
       character(len=255) :: tmpchara
 !
 !
-      call skip_comment(tmpchara,id_gauss_coef)
+      call skip_comment(id_gauss_coef, tmpchara, iend)
+      if(iend .gt. 0) return
       read(id_gauss_coef,*) nmode_read, radius_read
 !      write(*,*) 'num_mode', gauss%num_sph_mode, nmode_read
 !      write(*,*) 'radius_gauss', gauss%radius_gl(1,1), radius_read

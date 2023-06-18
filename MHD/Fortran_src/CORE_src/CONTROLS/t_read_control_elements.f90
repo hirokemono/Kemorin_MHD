@@ -51,6 +51,8 @@
          character(len = 255) :: ctl_buffer
 !>     nesting level of control blocks
          integer(kind = kint) :: level = 0
+!>     flag for end of file
+         integer(kind = kint) :: iend = 0
       end type buffer_for_control
 !
 !   --------------------------------------------------------------------
@@ -67,7 +69,7 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      call skip_comment(c_buf%ctl_buffer, id_control)
+      call skip_comment(id_control, c_buf%ctl_buffer, c_buf%iend)
       c_buf%header_chara = first_word(c_buf)
 !
       end subroutine load_one_line_from_control

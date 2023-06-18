@@ -30,6 +30,7 @@
       module grouping_for_partition
 !
       use m_precision
+      use calypso_mpi
 !
       implicit  none
 !

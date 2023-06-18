@@ -110,11 +110,17 @@
 !
       open (id_tbl_file, file = file_name, form = 'formatted')
       call read_interpolate_domain_dest                                 &
-     &   (id_tbl_file, n_rank_file, IO_itp_dest)
-      call read_interpolate_table_dest(id_tbl_file, IO_itp_dest)
+     &   (id_tbl_file, n_rank_file, IO_itp_dest, ierr)
+      if(ierr .gt. 0) go to 99
+      call read_interpolate_table_dest                                  &
+     &   (id_tbl_file, IO_itp_dest, ierr)
+      if(ierr .gt. 0) go to 99
       call read_interpolate_coefs_dest                                  &
-     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest)
+     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest, ierr)
+!
+  99  continue
       close(id_tbl_file)
+      if(ierr .gt. 0) write(*,*) 'Read file error'
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -140,11 +146,17 @@
 !
       open (id_tbl_file, file = file_name, form = 'formatted')
       call read_interpolate_domain_dest                                 &
-     &   (id_tbl_file, n_rank_file, IO_itp_dest)
-      call read_interpolate_table_dest(id_tbl_file, IO_itp_dest)
+     &   (id_tbl_file, n_rank_file, IO_itp_dest, ierr)
+      if(ierr .gt. 0) go to 99
+      call read_interpolate_table_dest                                  &
+     &   (id_tbl_file, IO_itp_dest, ierr)
+      if(ierr .gt. 0) go to 99
       call read_interpolate_idx_dest                                    &
-     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest)
+     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest, ierr)
+!
+  99  continue
       close(id_tbl_file)
+      if(ierr .gt. 0) write(*,*) 'Read file error'
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -169,8 +181,11 @@
 !
       open (id_tbl_file, file = file_name, form = 'formatted')
       call read_interpolate_domain_dest                                 &
-     &   (id_tbl_file, n_rank_file, IO_itp_dest)
-      call read_interpolate_table_dest(id_tbl_file, IO_itp_dest)
+     &   (id_tbl_file, n_rank_file, IO_itp_dest, ierr)
+      if(ierr .gt. 0) return
+      call read_interpolate_table_dest                                  &
+     &    (id_tbl_file, IO_itp_dest, ierr)
+      if(ierr .gt. 0) return
       close(id_tbl_file)
 !
       ierr = 0
@@ -196,7 +211,8 @@
 !
       open (id_tbl_file, file = file_name, form = 'formatted')
       call read_interpolate_domain_dest                                 &
-     &   (id_tbl_file, n_rank_file, IO_itp_dest)
+     &   (id_tbl_file, n_rank_file, IO_itp_dest, ierr)
+      if(ierr .gt. 0) return
       close(id_tbl_file)
 !
       ierr = 0

@@ -81,8 +81,9 @@
         filter_node%internal_node = nod_IO%internal_node
         call read_filter_coef_4_newdomain                               &
      &     (id_org_filter_coef, filter_node, fil_coef,                  &
-     &      whole_fil_sort, fluid_fil_sort)
+     &      whole_fil_sort, fluid_fil_sort, ierr)
         close(id_org_filter_coef)
+        if(ierr .gt. 0) stop "Error rading"
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
         bbuf_flt%id_binary = id_read_filter
