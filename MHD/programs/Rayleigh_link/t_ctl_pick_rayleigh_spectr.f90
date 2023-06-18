@@ -123,10 +123,15 @@
 !
       c_buf1%level = 0
       open(id_control, file = control_name)
-      call load_one_line_from_control                                   &
-     &   (id_control, hd_pick_sph_ctl, c_buf1)
-      call read_pick_rayleigh_ctl(id_control, hd_pick_sph_ctl,          &
+      do
+        call load_one_line_from_control                                 &
+     &     (id_control, hd_pick_sph_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
+        call read_pick_rayleigh_ctl(id_control, hd_pick_sph_ctl,        &
      &                            pick_ctl, c_buf1)
+        if(pick_ctl%i_pick_rayleigh_spectr .gt. 0) exit
+      end do
       close(id_control)
 !
       end subroutine read_rayleigh_pick_mode_ctl
