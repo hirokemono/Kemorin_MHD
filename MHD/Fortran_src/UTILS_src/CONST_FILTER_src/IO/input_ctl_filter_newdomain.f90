@@ -38,6 +38,7 @@
       subroutine s_input_ctl_filter_newdomain                           &
      &         (ctl_file_name, nprocs_2nd, newfil_p)
 !
+      use t_read_control_elements
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: ctl_file_name
@@ -46,14 +47,17 @@
 !
       type(ctl_data_newdomain_filter) :: newd_fil_ctl
       integer(kind = kint) :: ierr
+      type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_filter_newdomain(ctl_file_name, newd_fil_ctl)
+        call read_control_filter_newdomain(ctl_file_name,               &
+     &                                     newd_fil_ctl, c_buf1)
       end if
       call bcast_ctl_filter_newdomain_data(newd_fil_ctl)
 !
-      if(newd_fil_ctl%i_filter_newdomain_ctl.ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(newd_fil_ctl%i_filter_newdomain_ctl,     &
      &                         trim(ctl_file_name))
       end if

@@ -37,6 +37,7 @@
       use calypso_mpi
       use m_machine_parameter
       use t_ctl_data_comm_test
+      use t_read_control_elements
 !
       use bcast_ctl_data_comm_test
       use set_surface_data_4_IO
@@ -45,14 +46,18 @@
       type(comm_test_control), intent(inout) :: comm_tctl
       type(comm_test_files_param), intent(inout) ::  T_files
 !
+      type(buffer_for_control) :: c_buf1
 !
+!
+      c_buf1%level = 0
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_comm_test'
       if(my_rank .eq. 0) then
-        call read_control_4_comm_test(fname_test_mesh_ctl, comm_tctl)
+        call read_control_4_comm_test(fname_test_mesh_ctl,              &
+     &                                comm_tctl, c_buf1)
       end if
       call bcast_test_comm_ctl_data(comm_tctl)
 !
-      if(comm_tctl%i_mesh_test_ctl .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(comm_tctl%i_mesh_test_ctl,               &
      &                             'control file is broken')
       end if

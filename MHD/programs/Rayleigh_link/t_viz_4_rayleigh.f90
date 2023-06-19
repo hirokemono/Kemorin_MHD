@@ -59,6 +59,8 @@
       subroutine input_conrol_rayleigh_viz(ctl_file_name,               &
      &          rayleigh_vctl, FEM_Rayleigh, t_viz_param)
 !
+      use t_read_control_elements
+!
       character(len = kchara), intent(in) :: ctl_file_name
       type(control_data_rayleigh_vizs), intent(inout)                   &
      &                                 :: rayleigh_vctl
@@ -67,14 +69,17 @@
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
       integer(kind = kint) :: ierr = 0
+      type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_ctl_file_rayleigh_viz(ctl_file_name, rayleigh_vctl)
+        call read_ctl_file_rayleigh_viz(ctl_file_name,                  &
+     &                                  rayleigh_vctl, c_buf1)
       end if
       call bcast_rayleigh_vizs_ctl_data(rayleigh_vctl)
 !
-      if(rayleigh_vctl%i_viz_only_file .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(rayleigh_vctl%i_viz_only_file,           &
      &                             'control file is broken')
       end if

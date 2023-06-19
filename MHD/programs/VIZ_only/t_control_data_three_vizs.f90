@@ -7,7 +7,8 @@
 !>@brief Control data for visualization without repartitioning
 !!
 !!@verbatim
-!!      subroutine read_control_file_three_vizs(file_name, viz3_c)
+!!      subroutine read_control_file_three_vizs(file_name,              &
+!!     &                                        viz3_c, c_buf)
 !!      subroutine write_control_file_three_vizs(file_name, viz3_c)
 !!      subroutine dealloc_three_vizs_control_data(viz3_c)
 !!        character(len = kchara), intent(in) :: file_name
@@ -86,29 +87,31 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_file_three_vizs(file_name, viz3_c)
+      subroutine read_control_file_three_vizs(file_name,                &
+     &                                        viz3_c, c_buf)
 !
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: file_name
       type(control_data_three_vizs), intent(inout) :: viz3_c
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open (viz_ctl_file_code, file=file_name, status='old')
       do
         call load_one_line_from_control(viz_ctl_file_code,              &
-     &                                  hd_viz_only_file, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &                                  hd_viz_only_file, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_three_vizs_control_data                               &
-     &     (viz_ctl_file_code, hd_viz_only_file, viz3_c, c_buf1)
+     &     (viz_ctl_file_code, hd_viz_only_file, viz3_c, c_buf)
         if(viz3_c%i_viz_only_file .gt. 0) exit
       end do
       close(viz_ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0) viz3_c%i_viz_only_file = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       call viz3_step_ctls_to_time_ctl(viz3_c%viz3_ctl,                  &
      &                                viz3_c%t_viz_ctl)

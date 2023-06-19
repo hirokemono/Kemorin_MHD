@@ -12,7 +12,7 @@
 !!
 !!@verbatim
 !!      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl,       &
-!!     &                                      add_SSMHD_ctl)
+!!     &                                      add_SSMHD_ctl, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -111,7 +111,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl,         &
-     &                                      add_SSMHD_ctl)
+     &                                      add_SSMHD_ctl, c_buf)
 !
       use t_ctl_data_SPH_MHD_control
       use viz_step_ctls_to_time_ctl
@@ -119,28 +119,25 @@
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(id_control_file, file = file_name, status='old' )
 !
       do
         call load_one_line_from_control(id_control_file, hd_mhd_ctl,    &
-     &                                  c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &                                  c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_sph_mhd_control_data(id_control_file, hd_mhd_ctl,     &
-     &      MHD_ctl, add_SSMHD_ctl, c_buf1)
+     &      MHD_ctl, add_SSMHD_ctl, c_buf)
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(id_control_file)
 !
-      if(c_buf1%iend .gt. 0) then
-        MHD_ctl%i_mhd_ctl = c_buf1%iend
-        return
-      end if
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)

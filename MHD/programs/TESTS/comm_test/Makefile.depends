@@ -6,7 +6,7 @@ bcast_ctl_data_comm_test.o: $(COMM_TEST_DIR)/bcast_ctl_data_comm_test.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 hybrid_test.o: $(COMM_TEST_DIR)/hybrid_test.f90
 	$(F90) -c $(F90OPTFLAGS) $<
-input_ctl_filter_comm_test.o: $(COMM_TEST_DIR)/input_ctl_filter_comm_test.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_filter_file_data.o t_filtering_data.o t_ctl_data_filter_comm_test.o m_machine_parameter.o m_filter_file_names.o filter_coefs_file_IO.o copy_mesh_structures.o m_file_format_switch.o t_ctl_data_filter_files.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o
+input_ctl_filter_comm_test.o: $(COMM_TEST_DIR)/input_ctl_filter_comm_test.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_filter_file_data.o t_filtering_data.o t_ctl_data_filter_comm_test.o t_read_control_elements.o m_machine_parameter.o m_filter_file_names.o filter_coefs_file_IO.o copy_mesh_structures.o m_file_format_switch.o t_ctl_data_filter_files.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_comm_test.o: $(COMM_TEST_DIR)/main_comm_test.f90 m_precision.o calypso_mpi.o analyzer_comm_test.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -16,7 +16,7 @@ mesh_send_recv_test.o: $(COMM_TEST_DIR)/mesh_send_recv_test.f90 m_work_time.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 send_recv_loop_tests.o: $(COMM_TEST_DIR)/send_recv_loop_tests.f90 m_precision.o m_constants.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_param_comm_test.o: $(COMM_TEST_DIR)/t_control_param_comm_test.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_machine_parameter.o t_ctl_data_comm_test.o bcast_ctl_data_comm_test.o set_surface_data_4_IO.o set_edge_data_4_IO.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o set_control_platform_item.o set_control_platform_data.o
+t_control_param_comm_test.o: $(COMM_TEST_DIR)/t_control_param_comm_test.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_machine_parameter.o t_ctl_data_comm_test.o t_read_control_elements.o bcast_ctl_data_comm_test.o set_surface_data_4_IO.o set_edge_data_4_IO.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o set_control_platform_item.o set_control_platform_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_comm_test.o: $(COMM_TEST_DIR)/t_ctl_data_comm_test.f90 m_precision.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_read_control_elements.o skip_comment_f.o ctl_data_platforms_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

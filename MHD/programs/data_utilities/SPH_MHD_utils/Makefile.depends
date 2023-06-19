@@ -40,7 +40,7 @@ initialize_sph_snap_noviz.o: $(SPH_SNAPSHOT_DIR)/initialize_sph_snap_noviz.f90 m
 	$(F90) -c $(F90OPTFLAGS) $<
 main_control_MHD_check.o: $(SPH_SNAPSHOT_DIR)/main_control_MHD_check.f90 m_precision.o t_ctl_data_MHD.o t_ctl_data_SGS_MHD.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-main_control_MHD_psf_check.o: $(SPH_SNAPSHOT_DIR)/main_control_MHD_psf_check.f90 m_precision.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_psf.o write_control_elements.o
+main_control_MHD_psf_check.o: $(SPH_SNAPSHOT_DIR)/main_control_MHD_psf_check.f90 m_precision.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_psf.o t_read_control_elements.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_control_MHD_viz_check.o: $(SPH_SNAPSHOT_DIR)/main_control_MHD_viz_check.f90 m_precision.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_vizs.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

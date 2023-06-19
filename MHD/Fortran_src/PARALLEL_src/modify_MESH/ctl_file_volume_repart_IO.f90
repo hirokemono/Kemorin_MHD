@@ -9,8 +9,6 @@
 !!@verbatim
 !!      subroutine sel_read_ctl_file_vol_repart(id_control, hd_block,   &
 !!     &          file_name, viz_repart_c, c_buf)
-!!      subroutine read_ctl_file_vol_repart(id_control, file_name,      &
-!!     &                                    hd_block, viz_repart_c)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        character(len=kchara), intent(inout) :: file_name
@@ -63,6 +61,8 @@
 !
       implicit  none
 !
+      private :: read_ctl_file_vol_repart
+!
 !   --------------------------------------------------------------------
 !
       contains
@@ -87,8 +87,7 @@
         call write_one_ctl_file_message                                 &
      &     (hd_block, c_buf%level, file_name)
         call read_ctl_file_vol_repart((id_control+1), file_name,        &
-     &                                hd_block, viz_repart_c)
-        c_buf%iend = viz_repart_c%i_viz_repartition_ctl
+     &                                hd_block, viz_repart_c, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
@@ -102,7 +101,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_ctl_file_vol_repart(id_control, file_name,        &
-     &                                    hd_block, viz_repart_c)
+     &          hd_block, viz_repart_c, c_buf)
 !
       use calypso_mpi
       use skip_comment_f
@@ -113,27 +112,24 @@
       character(len=kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
       type(viz_repartition_ctl), intent(inout) :: viz_repart_c
-!
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
       if(my_rank .ne. 0) return
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(id_control, file=file_name, status='old')
       do
-        call load_one_line_from_control(id_control, hd_block, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_control_vol_repart                                    &
-     &     (id_control, hd_block, viz_repart_c, c_buf1)
+     &     (id_control, hd_block, viz_repart_c, c_buf)
         if(viz_repart_c%i_viz_repartition_ctl .gt. 0) exit
       end do
       close(id_control)
 !
-      if(c_buf1%iend .gt. 0) then
-        viz_repart_c%i_viz_repartition_ctl = c_buf1%iend
-      end if
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_ctl_file_vol_repart
 !

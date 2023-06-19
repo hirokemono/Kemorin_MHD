@@ -92,6 +92,7 @@
       use t_ctl_data_FEM_MHD
       use t_ctl_data_SGS_model
       use t_control_data_vizs
+      use t_read_control_elements
       use bcast_control_FEM_MHD
       use bcast_ctl_SGS_MHD_model
       use bcast_control_data_vizs
@@ -101,19 +102,22 @@
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
 !
+      type(buffer_for_control) :: c_buf1
 !
+!
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
         call read_control_4_fem_MHD(file_name,                          &
-     &      FEM_MHD_ctl, sgs_ctl, viz_ctls)
+     &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf1)
+      end if
+!
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(FEM_MHD_ctl%i_mhd_ctl, trim(file_name))
       end if
 !
       call bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
       call bcast_sgs_ctl(sgs_ctl)
       call bcast_viz_controls(viz_ctls)
-!
-      if(FEM_MHD_ctl%i_mhd_ctl .ne. 1) then
-        call calypso_MPI_abort(FEM_MHD_ctl%i_mhd_ctl, trim(file_name))
-      end if
 !
       end subroutine load_control_4_fem_MHD
 !

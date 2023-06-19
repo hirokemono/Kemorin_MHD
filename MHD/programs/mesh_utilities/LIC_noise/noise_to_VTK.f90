@@ -16,6 +16,7 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_mesh_SR
+      use t_read_control_elements
       use m_file_format_switch
       use m_spheric_constants
 !
@@ -48,14 +49,14 @@
       type(mesh_SR), save :: m_SR_n
 !
       integer(kind = kint) :: inod, ierr
-!
+      type(buffer_for_control) :: c_buf1
 !
       iflag_debug = 0
 !
+      c_buf1%level = 0
       call  read_cube_noise_control_file(id_control, ctl_file_name,     &
-     &                                   hd_cube_noise, noise_c1)
-      if(noise_c1%i_cube_noise_control .ne. 1)                          &
-     &                          stop 'control file is broken'
+     &    hd_cube_noise, noise_c1, c_buf1)
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       call set_control_3d_cube_noise(noise_c1, noise_t1)
       call sel_const_3d_cube_noise(noise_t1)

@@ -57,14 +57,17 @@
       character(len=kchara), intent(in) :: control_file_name
       type(spectr_data_util_ctl), intent(inout) :: ctl
 !
+      type(buffer_for_control) :: c_buf1
 !
+!
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_file_sph_util(control_file_name, ctl)
+        call read_control_file_sph_util(control_file_name, ctl, c_buf1)
       end if
 !
       call bcast_spectr_util_control(ctl)
 !
-      if(ctl%iflag .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(ctl%iflag, 'control file is broken')
       end if
 !

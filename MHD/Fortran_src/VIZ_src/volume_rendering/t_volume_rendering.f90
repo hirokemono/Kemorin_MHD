@@ -214,15 +214,17 @@
       integer(kind = kint), intent(inout) :: iflag_failed
 !
       integer(kind = kint) :: i_pvr
+      type(buffer_for_control) :: c_buf1
 !
 !
       iflag_failed = 0
       if(my_rank .ne. 0) return
+      c_buf1%level = 0
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
         if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE') then
           call read_control_pvr_file                                    &
      &     (id_control, pvr_ctls%fname_pvr_ctl(i_pvr), hd_pvr_ctl,      &
-     &      pvr_ctls%pvr_ctl_type(i_pvr))
+     &      pvr_ctls%pvr_ctl_type(i_pvr), c_buf1)
           iflag_failed = pvr_ctls%pvr_ctl_type(i_pvr)%i_pvr_ctl
         end if
       end do

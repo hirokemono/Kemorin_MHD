@@ -7,7 +7,7 @@
 !>@brief Control data for visualization without repartitioning
 !!
 !!@verbatim
-!!      subroutine read_control_file_four_vizs(file_name, viz4_c)
+!!      subroutine read_control_file_four_vizs(file_name, viz4_c, c_buf)
 !!      subroutine write_control_file_four_vizs(file_name, viz4_c)
 !!      subroutine dealloc_four_vizs_control_data(viz4_c)
 !!        character(len = kchara), intent(in) :: file_name
@@ -86,30 +86,31 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_file_four_vizs(file_name, viz4_c)
+      subroutine read_control_file_four_vizs(file_name, viz4_c, c_buf)
 !
       use skip_comment_f
       use viz4_step_ctls_to_time_ctl
 !
       character(len = kchara), intent(in) :: file_name
       type(control_data_four_vizs), intent(inout) :: viz4_c
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open (viz_ctl_file_code, file=file_name, status='old')
       do
         call load_one_line_from_control(viz_ctl_file_code,              &
-     &                                  hd_viz_only_file, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &                                  hd_viz_only_file, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_four_vizs_control_data                                &
-     &     (viz_ctl_file_code, hd_viz_only_file, viz4_c, c_buf1)
+     &     (viz_ctl_file_code, hd_viz_only_file, viz4_c, c_buf)
         if(viz4_c%i_viz_only_file .gt. 0) exit
       end do
       close(viz_ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0) viz4_c%i_viz_only_file = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       call s_viz4_step_ctls_to_time_ctl                                 &
      &   (viz4_c%viz4_ctl, viz4_c%t_viz_ctl)

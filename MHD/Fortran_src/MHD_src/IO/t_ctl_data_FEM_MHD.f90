@@ -12,11 +12,12 @@
 !!
 !!@verbatim
 !!      subroutine read_control_4_fem_MHD                               &
-!!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
+!!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
+!!        type(buffer_for_control), intent(inout) :: c_buf
 !!      subroutine write_control_4_fem_MHD                              &
 !!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !!        character(len=kchara), intent(in) :: file_name
@@ -107,7 +108,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_control_4_fem_MHD                                 &
-     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
+     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
 !
       use t_ctl_data_SGS_model
       use viz_step_ctls_to_time_ctl
@@ -116,28 +117,25 @@
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(ctl_file_code, file = file_name, status='old' )
 !
       do
         call load_one_line_from_control(ctl_file_code,                  &
-     &                                  hd_mhd_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &                                  hd_mhd_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,       &
-     &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf1)
+     &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
         if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0) then
-        FEM_MHD_ctl%i_mhd_ctl = c_buf1%iend
-        return
-      end if
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (viz_ctls, FEM_MHD_ctl%fmctl_ctl%tctl)

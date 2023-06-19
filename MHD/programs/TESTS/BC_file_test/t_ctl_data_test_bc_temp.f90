@@ -4,7 +4,8 @@
 !      Written by H. Matsui on July, 2006
 !      Mmodified by H. Matsui on June, 2007
 !
-!!      subroutine read_control_4_bc_temp(file_name, bc_temp_test_ctl)
+!!      subroutine read_control_4_bc_temp(file_name,                    &
+!!     &                                  bc_temp_test_ctl, c_buf)
 !!      subroutine reset_test_mesh_ctl_data(bc_temp_test_ctl)
 !!        type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
 !!
@@ -90,30 +91,31 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_bc_temp(file_name, bc_temp_test_ctl)
+      subroutine read_control_4_bc_temp(file_name,                      &
+     &                                  bc_temp_test_ctl, c_buf)
 !
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: file_name
       type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(test_mest_ctl_file_code, file = file_name, status='old')
       do
         call load_one_line_from_control                                 &
-     &     (test_mest_ctl_file_code, hd_mesh_test_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (test_mest_ctl_file_code, hd_mesh_test_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_test_mesh_ctl_data(test_mest_ctl_file_code,           &
-     &      hd_mesh_test_ctl, bc_temp_test_ctl, c_buf1)
+     &      hd_mesh_test_ctl, bc_temp_test_ctl, c_buf)
         if(bc_temp_test_ctl%i_mesh_test_ctl .gt. 0) exit
       end do
       close(test_mest_ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0)                                            &
-     &              bc_temp_test_ctl%i_mesh_test_ctl = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       end subroutine read_control_4_bc_temp
 !

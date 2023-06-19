@@ -38,6 +38,7 @@
       subroutine s_input_control_solver_test                            &
      &         (ctl_file_name, mat_crs, CG_param, DJDS_param)
 !
+      use t_read_control_elements
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: ctl_file_name
@@ -47,13 +48,17 @@
 !
       type(ctl_data_solver_test) :: solvertest_c
 !
+      type(buffer_for_control) :: c_buf1
 !
+!
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_4_solver_test(ctl_file_name, solvertest_c)
+        call read_control_4_solver_test(ctl_file_name,                  &
+     &                                  solvertest_c, c_buf1)
       end if
       call bcast_ctl_data_test(solvertest_c)
 !
-      if(solvertest_c%i_solver_test_ctl .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(solvertest_c%i_solver_test_ctl,          &
      &                             'control file is broken')
       end if
