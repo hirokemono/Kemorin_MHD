@@ -89,6 +89,8 @@
           if(z_filter_ctl%i_filter_control .gt. 0) exit
         end do
         close(filter_ctl_file_code)
+        if(c_buf1%iend .gt. 0)                                            &
+     &     z_filter_ctl%i_filter_control = c_buf1%iend
 !
       end subroutine read_control_4_z_filter
 !

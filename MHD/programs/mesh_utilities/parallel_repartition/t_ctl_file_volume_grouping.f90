@@ -109,6 +109,9 @@
       end do
       close(part_ctl_file_code)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              part_tctl%i_mesh_test_ctl = c_buf1%iend
+!
       end subroutine read_ctl_file_new_partition
 !
 !   --------------------------------------------------------------------

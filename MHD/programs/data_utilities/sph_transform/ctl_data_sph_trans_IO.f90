@@ -99,6 +99,9 @@
       end do
       close(control_file_code)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              spt_ctl%i_sph_trans_ctl = c_buf1%iend
+!
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (spt_ctl%viz_ctls, spt_ctl%t_ctl)
       call add_fields_4_vizs_to_fld_ctl(spt_ctl%viz_ctls,               &

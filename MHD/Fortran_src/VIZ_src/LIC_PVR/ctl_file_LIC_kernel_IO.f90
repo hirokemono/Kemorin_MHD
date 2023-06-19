@@ -89,15 +89,17 @@
         file_name = third_word(c_buf)
 !
         call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(a)', ADVANCE='NO') trim(hd_block),           &
-     &                            ' is read file from ... '
+        write(id_monitor,'(3a)', ADVANCE='NO') trim(hd_block),          &
+     &        ' is read file from ... ', trim(file_name)
         call read_LIC_kernel_control_file((id_control+2), file_name,    &
      &                                    hd_block, kernel_ctl)
+        if(kernel_ctl%i_kernel_control .ne. 1)                          &
+     &                         c_buf%iend = kernel_ctl%i_kernel_control
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
         call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(a)') trim(hd_block), ' is included'
+        write(id_monitor,'(2a)') trim(hd_block), ' is included'
         call read_kernel_control_data(id_control, hd_block,             &
      &                                kernel_ctl, c_buf)
       end if
@@ -120,7 +122,6 @@
       if(file_name .eq. 'NO_FILE') return
 !
       c_buf1%level = 0
-      write(*,*) 'LIC noise control file: ', trim(file_name)
       open(id_control, file=file_name, status='old')
       do
         call load_one_line_from_control(id_control, hd_block, c_buf1)
@@ -131,6 +132,8 @@
         if(kernel_ctl%i_kernel_control .gt. 0) exit
       end do
       close(id_control)
+!
+      if(c_buf1%iend .gt. 0) kernel_ctl%i_kernel_control = c_buf1%iend
 !
       end subroutine read_LIC_kernel_control_file
 !

@@ -114,6 +114,8 @@
       end do
       close(viz_ctl_file_code)
 !
+      if(c_buf1%iend .gt. 0) sec_viz_ctl%i_viz_only_file = c_buf1%iend
+!
       call section_step_ctls_to_time_ctl                                &
      &   (sec_viz_ctl%surfacing_ctls, sec_viz_ctl%t_sect_ctl)
 !

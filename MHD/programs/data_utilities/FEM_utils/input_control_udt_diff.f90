@@ -83,6 +83,11 @@
 !
       call bcast_diff_control_data(diff_udt_c)
 !
+      if(diff_udt_c%i_diff_control .ne. 1) then
+        call calypso_MPI_abort(diff_udt_c%i_diff_control,               &
+     &                             'control file is broken')
+      end if
+!
       end subroutine laod_control_4_diff_udt
 !
 !  ---------------------------------------------------------------------

@@ -119,6 +119,8 @@
         end do
         close(id_control)
       end if
+      if(c_buf1%iend .gt. 0)                                            &
+     &              psf_cmp_ctl%i_psf_compare_control = c_buf1%iend
 !
       end subroutine read_control_file_psf_compare
 !

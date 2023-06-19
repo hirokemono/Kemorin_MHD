@@ -123,6 +123,8 @@
         write(*,'(a)', ADVANCE='NO') ' is read file from ... '
         call read_control_4_iso_file((id_control+2), file_name,         &
      &                               hd_block, iso_ctl_struct)
+        if(iso_ctl_struct%i_iso_ctl .ne. 1)                             &
+     &                         c_buf%iend = iso_ctl_struct%i_iso_ctl
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
@@ -167,6 +169,7 @@
         if(iso_ctl_struct%i_iso_ctl .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) iso_ctl_struct%i_iso_ctl = c_buf1%iend
 !
       end subroutine read_control_4_iso_file
 !

@@ -109,6 +109,8 @@
       end do
       close(viz_ctl_file_code)
 !
+      if(c_buf1%iend .gt. 0) viz4_c%i_viz_only_file = c_buf1%iend
+!
       call s_viz4_step_ctls_to_time_ctl                                 &
      &   (viz4_c%viz4_ctl, viz4_c%t_viz_ctl)
 !

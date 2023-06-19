@@ -81,11 +81,13 @@
      &                             ' is read file from ... '
         call read_ctl_field_on_psf_file((id_control+2), file_name,      &
      &                               hd_block, fld_on_psf_c)
+        if(fld_on_psf_c%i_iso_result .ne. 1)                            &
+     &                         c_buf%iend = fld_on_psf_c%i_iso_result
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
         call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(a)') trim(hd_block), ' is included'
+        write(id_monitor,'(2a)') trim(hd_block), ' is included'
         call read_fld_on_psf_control(id_control, hd_block,              &
      &                               fld_on_psf_c, c_buf)
       end if
@@ -121,6 +123,7 @@
         if(fld_on_psf_c%i_iso_result .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) fld_on_psf_c%i_iso_result = c_buf1%iend
 !
       end subroutine read_ctl_field_on_psf_file
 !

@@ -116,6 +116,8 @@
         write(*,'(3a,i4,a)', ADVANCE='NO') 'is read from '
         call read_fline_control_file((id_control+2), file_name,         &
      &                               hd_block, fline_ctl_struct)
+        if(fline_ctl_struct%i_vr_fline_ctl .ne. 1)                      &
+     &              c_buf%iend = fline_ctl_struct%i_vr_fline_ctl
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
@@ -155,6 +157,10 @@
         if(fline_ctl_struct%i_vr_fline_ctl .gt. 0) exit
       end do
       close(id_control)
+!
+      if(c_buf1%iend .gt. 0) then
+        fline_ctl_struct%i_vr_fline_ctl = c_buf1%iend
+      end if
 !
       end subroutine read_fline_control_file
 !

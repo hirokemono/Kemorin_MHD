@@ -132,6 +132,9 @@
       end do
       close(viz_ctl_file_code)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              rayleigh_vizs_ctl%i_viz_only_file = c_buf1%iend
+!
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (rayleigh_vizs_ctl%viz_ctl_v, rayleigh_vizs_ctl%t_viz_ctl)
       call add_fields_4_vizs_to_fld_ctl(rayleigh_vizs_ctl%viz_ctl_v,    &

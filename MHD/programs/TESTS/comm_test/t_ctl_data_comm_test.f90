@@ -89,6 +89,9 @@
       end do
       close(test_mest_ctl_file_code)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              comm_tctl%i_mesh_test_ctl = c_buf1%iend
+!
       end subroutine read_control_4_comm_test
 !
 !   --------------------------------------------------------------------

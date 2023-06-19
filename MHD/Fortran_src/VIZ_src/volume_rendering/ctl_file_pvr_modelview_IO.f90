@@ -151,12 +151,14 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(3a)', ADVANCE='NO')                          &
-     &          'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
+        call write_space_4_parse(id_monitor, c_buf%level)
+        write(id_monitor,'(4a)') 'Read file for ', trim(hd_block),      &
+     &                           '... ', trim(file_name)
         call read_control_modelview_file(id_control+1, file_name,       &
      &                                   hd_block, mat)
+        if(mat%i_view_transform .ne. 1)                                 &
+     &                         c_buf%iend = mat%i_view_transform
       else if(check_begin_flag(c_buf, hd_block)) then
         call write_space_4_parse(id_monitor, c_buf%level)
         write(id_monitor,'(2a)')  trim(hd_block), ' is included'
@@ -228,6 +230,7 @@
         if(mat%i_view_transform .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) mat%i_view_transform = c_buf1%iend
 !
       end subroutine read_control_modelview_file
 !

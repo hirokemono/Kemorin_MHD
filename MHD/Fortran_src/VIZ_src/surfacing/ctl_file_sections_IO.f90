@@ -68,6 +68,8 @@
 !
       use t_read_control_elements
       use ctl_data_section_IO
+      use write_control_elements
+      use write_control_items
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -89,7 +91,9 @@
         if(check_file_flag(c_buf, hd_block)                             &
      &      .or. check_begin_flag(c_buf, hd_block)) then
           call append_new_section_control(psf_ctls)
-          write(*,'(3a,i4)', ADVANCE='NO') 'Control for ',              &
+!
+          call write_space_4_parse(id_monitor, c_buf%level)
+          write(id_monitor,'(3a,i4)', ADVANCE='NO') 'Control for ',     &
      &        trim(hd_block), ' No. ',  psf_ctls%num_psf_ctl
           call sel_read_control_4_psf_file(id_control, hd_block,        &
      &        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),             &
@@ -121,6 +125,8 @@
         write(*,'(a)', ADVANCE='NO') ' is read file from ... '
         call read_control_4_psf_file((id_control+2), file_name,         &
      &                               hd_block, psf_ctl_struct)
+        if(psf_ctl_struct%i_psf_ctl .ne. 1)                             &
+     &                         c_buf%iend = psf_ctl_struct%i_psf_ctl
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
@@ -166,6 +172,7 @@
         if(psf_ctl_struct%i_psf_ctl .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) psf_ctl_struct%i_psf_ctl = c_buf1%iend
 !
       end subroutine read_control_4_psf_file
 !

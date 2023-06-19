@@ -91,6 +91,8 @@
         if(filter3d_ctl%i_filter_control .gt. 0) exit
       end do
       close(filter_ctl_file_code)
+      if(c_buf1%iend .gt. 0)                                            &
+     &     filter3d_ctl%i_filter_control = c_buf1%iend
 !
       end subroutine read_control_4_gen_filter
 !
@@ -117,6 +119,8 @@
         if(filter3d_ctl%i_filter_control .gt. 0) exit
       end do
       close(filter_ctl_file_code)
+      if(c_buf1%iend .gt. 0)                                            &
+     &     filter3d_ctl%i_filter_control = c_buf1%iend
 !
       end subroutine read_control_4_sort_filter
 !

@@ -167,6 +167,8 @@
         file_name = third_word(c_buf)
         call read_control_pvr_colormap_file                             &
      &     (id_control+1, file_name, hd_block, cmap_cbar_c)
+        if(cmap_cbar_c%i_cmap_cbar .ne. 1)                              &
+     &                         c_buf%iend = cmap_cbar_c%i_cmap_cbar
       else if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
         file_name = 'NO_FILE'
         call read_pvr_colordef_ctl(id_control, hd_colormap_file,        &
@@ -213,6 +215,7 @@
         if(cmap_cbar_c%i_cmap_cbar .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) cmap_cbar_c%i_cmap_cbar = c_buf1%iend
 !
       end subroutine read_control_pvr_colormap_file
 !

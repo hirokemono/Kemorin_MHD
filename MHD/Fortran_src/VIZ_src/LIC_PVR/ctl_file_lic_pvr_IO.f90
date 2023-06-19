@@ -115,6 +115,8 @@
         write(*,'(a)', ADVANCE='NO') ' is read from file: '
         call read_control_lic_pvr_file(id_control+2, fname_lic_ctl,     &
      &      hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
+        if(pvr_ctl_type%i_pvr_ctl .ne. 1)                               &
+     &                         c_buf%iend = pvr_ctl_type%i_pvr_ctl
       else if(check_begin_flag(c_buf, hd_lic_ctl)) then
           fname_lic_ctl = 'NO_FILE'
 !
@@ -155,6 +157,7 @@
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) pvr_ctl_type%i_pvr_ctl = c_buf1%iend
 !
       end subroutine read_control_lic_pvr_file
 !

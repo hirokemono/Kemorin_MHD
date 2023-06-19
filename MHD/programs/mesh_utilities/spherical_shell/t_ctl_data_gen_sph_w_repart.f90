@@ -107,8 +107,10 @@
      &     (control_file_code, hd_mhd_ctl, gen_SPH_wP_c, c_buf1)
         if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) exit
       end do
-!
       close(control_file_code)
+!
+      if(c_buf1%iend .gt. 0)                                            &
+     &              gen_SPH_wP_c%i_sph_mesh_ctl = c_buf1%iend
 !
       end subroutine read_ctl_file_gen_sph_w_repart
 !

@@ -29,7 +29,10 @@
 !  ===========
 ! . for local 
 !  ===========
-
+!
+      character (len = kchara), parameter                               &
+     &                         :: control_file_name = 'ctl_fft'
+!
       type(ctl_data_plane_fft), save :: pfft_c1
       type(plane_spectr_by_ispack), save :: plane_fft_wk1
       type(field_IO_params), save ::  plane_mesh_file, ucd_file_param
@@ -58,7 +61,10 @@
 !  set parameters for results
 !
       write(*,*) 'read_control_data_fft_plane'
-      call read_control_data_fft_plane(pfft_c1)
+      call read_control_data_fft_plane(control_file_name, pfft_c1)
+      if(pfft_c1%i_fft_plane_ctl .ne. 1) then
+        stop 'control file is broken'
+      end if
 !
 !     read outline of mesh
 !

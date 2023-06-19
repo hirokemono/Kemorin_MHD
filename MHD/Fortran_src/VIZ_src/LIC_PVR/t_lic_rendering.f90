@@ -155,6 +155,7 @@
           call read_control_lic_pvr_file                                &
      &     (id_control, lic_ctls%fname_lic_ctl(i_lic), hd_lic_ctl,      &
      &      lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic))
+          if(lic_ctls%pvr_ctl_type(i_lic)%i_pvr_ctl .ne. 1) exit
         end if
       end do
 !

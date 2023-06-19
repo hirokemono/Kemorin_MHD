@@ -54,6 +54,9 @@
 !
       call  read_cube_noise_control_file(id_control, ctl_file_name,     &
      &                                   hd_cube_noise, noise_c1)
+      if(noise_c1%i_cube_noise_control .ne. 1)                          &
+     &                          stop 'control file is broken'
+!
       call set_control_3d_cube_noise(noise_c1, noise_t1)
       call sel_const_3d_cube_noise(noise_t1)
       call finalize_kemo_mt_stream

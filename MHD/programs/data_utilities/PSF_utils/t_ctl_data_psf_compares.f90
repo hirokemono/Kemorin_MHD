@@ -93,6 +93,7 @@
         end do
         close(id_control)
       end if
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       end subroutine read_ctl_file_psf_compares
 !
@@ -102,6 +103,8 @@
      &         (id_control, hd_block, psf_compares, c_buf)
 !
       use skip_comment_f
+      use write_control_elements
+      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -122,7 +125,8 @@
         if(check_begin_flag(c_buf, hd_block)) then
           call append_ctl_data_psf_compare(psf_compares)
 !
-          write(*,*) 'Control for ', trim(hd_block), ' No. ',           &
+          call write_space_4_parse(id_monitor, c_buf%level)
+          write(id_monitor,*) 'Control for ', trim(hd_block), ' No. ',  &
      &              psf_compares%num_psf_cmp, ' is reading'
           call read_ctl_data_psf_compare(id_control, hd_block,          &
      &        psf_compares%psf_cmp_ctls(psf_compares%num_psf_cmp),      &

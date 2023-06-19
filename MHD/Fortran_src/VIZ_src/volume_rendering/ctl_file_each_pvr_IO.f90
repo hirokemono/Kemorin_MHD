@@ -61,6 +61,8 @@
         write(*,'(a)', ADVANCE='NO') ' is ... '
         call read_control_pvr_file(id_control+2, fname_pvr_ctl,         &
      &                             hd_pvr_ctl, pvr_ctl_type)
+        if(pvr_ctl_type%i_pvr_ctl .ne. 1)                               &
+     &                         c_buf%iend = pvr_ctl_type%i_pvr_ctl
       else if(check_begin_flag(c_buf, hd_pvr_ctl)) then
         fname_pvr_ctl = 'NO_FILE'
 !
@@ -91,13 +93,13 @@
       do
         call load_one_line_from_control(id_control, hd_pvr_ctl, c_buf1)
         if(c_buf1%iend .gt. 0) exit
-        write(*,*) 'c_buf1', c_buf1%ctl_buffer
 !
         call read_pvr_ctl(id_control, hd_pvr_ctl,                       &
      &                    pvr_ctl_type, c_buf1)
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) pvr_ctl_type%i_pvr_ctl = c_buf1%iend
 !
       end subroutine read_control_pvr_file
 !
@@ -133,6 +135,10 @@
       close(id_control)
 !
       call bcast_pvr_update_flag(pvr_ctl_type)
+!
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(c_buf1%iend, 'control file is broken')
+      end if
 !
       end subroutine read_control_pvr_update
 !

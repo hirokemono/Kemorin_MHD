@@ -52,6 +52,10 @@
       integer :: i
 !
       call read_ctl_file_tave_stable_rev(0, tave_svsr_ctl)
+      if(tave_svsr_ctl%i_tave_stable_reverse .ne. 1) then
+        stop 'control file is broken'
+      end if
+!
       call set_control_ave_gauss(tave_svsr_ctl, start_time, end_time,   &
      &    vave_file_name, vpwr_file_name, gauss_file_name,              &
      &    border_g10)

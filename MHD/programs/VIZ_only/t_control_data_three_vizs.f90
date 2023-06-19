@@ -108,6 +108,8 @@
       end do
       close(viz_ctl_file_code)
 !
+      if(c_buf1%iend .gt. 0) viz3_c%i_viz_only_file = c_buf1%iend
+!
       call viz3_step_ctls_to_time_ctl(viz3_c%viz3_ctl,                  &
      &                                viz3_c%t_viz_ctl)
 !

@@ -98,6 +98,7 @@
         if(add_mtr_ctl%i_add_sph_monitor .gt. 0) exit
       end do
       close(ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       end subroutine read_ctl_file_add_sph_mntr
 !

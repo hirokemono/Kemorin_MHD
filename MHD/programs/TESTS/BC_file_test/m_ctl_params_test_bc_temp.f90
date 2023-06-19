@@ -41,6 +41,12 @@
       end if
 !
       call bcast_test_mesh_ctl_data(bc_temp_test_ctl)
+!
+      if(bc_temp_test_ctl%i_mesh_test_ctl .ne. 1) then
+        call calypso_MPI_abort(bc_temp_test_ctl%i_mesh_test_ctl,        &
+     &                             'control file is broken')
+      end if
+!
       call set_ctl_params_sph_bc_temp(bc_temp_test_ctl, mesh_file)
 !
       end subroutine input_control_bc_temp

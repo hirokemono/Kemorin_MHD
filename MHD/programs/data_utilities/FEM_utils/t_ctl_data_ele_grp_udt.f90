@@ -109,6 +109,7 @@
         if(egrp_udt_ctl%i_ele_grp_udt .gt. 0) exit
       end do
       close(grp_ctl_file_code)
+      if(c_buf1%iend .gt. 0) egrp_udt_ctl%i_ele_grp_udt = c_buf1%iend
 !
       end subroutine read_control_ele_grp_udt
 !

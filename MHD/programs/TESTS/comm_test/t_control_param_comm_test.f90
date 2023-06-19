@@ -52,6 +52,11 @@
       end if
       call bcast_test_comm_ctl_data(comm_tctl)
 !
+      if(comm_tctl%i_mesh_test_ctl .ne. 1) then
+        call calypso_MPI_abort(comm_tctl%i_mesh_test_ctl,               &
+     &                             'control file is broken')
+      end if
+!
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
       call set_ctl_params_4_comm_test                                   &
      &  (comm_tctl%plt, comm_tctl%Fmesh_ctl, T_files)

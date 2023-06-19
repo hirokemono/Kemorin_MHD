@@ -118,6 +118,8 @@
       end do
       close(control_file_code)
 !
+      if(c_buf1%iend .gt. 0) stop 'control file is broken.'
+!
       end subroutine read_control_data_4_refiner
 !
 ! -----------------------------------------------------------------------

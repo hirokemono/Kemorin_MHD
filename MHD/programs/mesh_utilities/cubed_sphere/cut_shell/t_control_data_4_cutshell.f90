@@ -109,6 +109,9 @@
       end do
       close(control_file_code)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              cutshell_ctl%i_cutshell_ctl = c_buf1%iend
+!
       end subroutine read_control_data_4_cutshell
 !
 ! -----------------------------------------------------------------------

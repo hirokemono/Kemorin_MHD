@@ -112,6 +112,11 @@
       end if
       call bcast_const_filter_ctl_data(filter3d_ctl1)
 !
+      if(filter3d_ctl1%i_filter_control .ne. 1) then
+        call calypso_MPI_abort(filter3d_ctl1%i_filter_control,          &
+     &                             'control file is broken')
+      end if
+!
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
       call set_controls_gen_3dfilter(filter3d_ctl1, FEM_elen_f,         &
      &    mesh_filter_file, gfil_p1, newfil_p1, ref_m1, f_matrices1)

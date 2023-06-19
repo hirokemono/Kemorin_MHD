@@ -150,6 +150,7 @@
         if(diff_udt_c%i_diff_control .gt. 0) exit
       end do
       close(diff_ctl_file_code)
+      if(c_buf1%iend .gt. 0) diff_udt_c%i_diff_control = c_buf1%iend
 !
       end subroutine read_control_4_diff_udt
 !

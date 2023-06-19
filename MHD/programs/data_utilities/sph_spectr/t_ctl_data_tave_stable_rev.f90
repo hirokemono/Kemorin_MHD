@@ -125,6 +125,9 @@
         close(id_control)
       end if
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              tave_svsr_ctl%i_tave_stable_reverse = c_buf1%iend
+!
       end subroutine read_ctl_file_tave_stable_rev
 !
 ! -----------------------------------------------------------------------

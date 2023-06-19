@@ -94,6 +94,9 @@
       end do
       close(stest_ctl_file_code)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              solvertest_c%i_solver_test_ctl = c_buf1%iend
+!
       end subroutine read_control_4_solver_test
 !
 !  ---------------------------------------------------------------------

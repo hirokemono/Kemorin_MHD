@@ -134,6 +134,9 @@
       end do
       close(id_control)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              pick_ctl%i_pick_rayleigh_spectr = c_buf1%iend
+!
       end subroutine read_rayleigh_pick_mode_ctl
 !
 ! -----------------------------------------------------------------------

@@ -120,6 +120,9 @@
       end do
       close(control_file_code)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              addgrp_c%i_add_ele_grp_ctl = c_buf1%iend
+!
       end subroutine read_control_add_elegrp
 !
 ! -----------------------------------------------------------------------

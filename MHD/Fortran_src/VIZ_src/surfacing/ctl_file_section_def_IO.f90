@@ -81,6 +81,8 @@
         fname_sect_ctl = third_word(c_buf)
         call read_ctl_file_pvr_section_def(id_control+2,                &
      &      fname_sect_ctl, hd_block, psf_def_c)
+        if(psf_def_c%i_surface_define .ne. 1)                           &
+     &                         c_buf%iend = psf_def_c%i_surface_define
       else if(check_begin_flag(c_buf, hd_block)) then
 !
         call write_space_4_parse(id_monitor, c_buf%level)
@@ -122,6 +124,7 @@
       end do
 !
       close(id_control)
+      if(c_buf1%iend .gt. 0) psf_def_c%i_surface_define = c_buf1%iend
 !
       end subroutine read_ctl_file_pvr_section_def
 !

@@ -54,6 +54,12 @@
         call read_ctl_file_new_partition(ctl_file_name, part_tctl)
       end if
       call bcast_control_new_partition(part_tctl)
+!
+      if(part_tctl%i_mesh_test_ctl .ne. 1) then
+        call calypso_MPI_abort(part_tctl%i_mesh_test_ctl,               &
+     &                             'control file is broken')
+      end if
+!
       call set_control_param_repartition(part_tctl, part_prog_p)
       call dealloc_control_new_partition(part_tctl)
 !
@@ -78,6 +84,12 @@
         call read_ctl_file_new_partition(ctl_file_name, part_tctl)
       end if
       call bcast_control_new_partition(part_tctl)
+!
+      if(part_tctl%i_mesh_test_ctl .ne. 1) then
+        call calypso_MPI_abort(part_tctl%i_mesh_test_ctl,               &
+     &                             'control file is broken')
+      end if
+!
       call set_control_param_repartition(part_tctl, part_prog_p)
 !
       call set_fixed_t_step_params_w_viz                                &

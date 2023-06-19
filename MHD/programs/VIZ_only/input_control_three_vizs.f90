@@ -64,6 +64,11 @@
       end if
       call bcast_three_vizs_control_data(viz3_c)
 !
+      if(viz3_c%i_viz_only_file .ne. 1) then
+        call calypso_MPI_abort(viz3_c%i_viz_only_file,                  &
+     &                             'control file is broken')
+      end if
+!
 !       set control data
       call set_ctl_params_three_vizs(viz3_c, FEM_viz,                   &
      &                               t_viz_param, ierr)

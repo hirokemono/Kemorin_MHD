@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_ctl_data_4_part(part_ctl)
-!!      subroutine read_control_data_4_part(part_ctl)
+!!      subroutine read_control_data_4_part(ctl_file_name, part_ctl)
 !!@endverbatim
 !
       module t_control_data_4_part
@@ -27,8 +27,6 @@
       implicit    none
 !
       integer (kind = kint), parameter :: control_file_code = 11
-      character (len = kchara), parameter                               &
-     &         :: control_file_name = 'ctl_part'
 !
 !
       type control_data_4_partitioner
@@ -175,7 +173,6 @@
      &         :: hd_fmt_itp_tbl = 'interpolate_table_format_ctl'
 !
 !
-      private :: control_file_name
       private :: hd_part_ctl
       private :: hd_org_f_ctl, hd_platform, hd_org_data, hd_FEM_mesh
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
@@ -212,14 +209,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_4_part(part_ctl)
+      subroutine read_control_data_4_part(ctl_file_name, part_ctl)
 !
+      character (len = kchara), intent(in) :: ctl_file_name
       type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
       type(buffer_for_control)  :: c_buf1
 !
 !
-      open(control_file_code, file = control_file_name)
+      open(control_file_code, file = ctl_file_name)
 !
       do
         call load_one_line_from_control(control_file_code,              &
@@ -232,6 +230,7 @@
       end do
 !
       close(control_file_code)
+      if(c_buf1%iend .gt. 0) part_ctl%i_part_ctl = c_buf1%iend
 !
       end subroutine read_control_data_4_part
 !

@@ -93,6 +93,11 @@
 !
       call bcast_MG_test_data_ctl(test_MG_ctl)
 !
+      if(c_buf1%iend .ne. 1) then
+        call calypso_MPI_abort(c_buf1%iend,                             &
+     &                             'control file is broken')
+      end if
+!
       end subroutine read_control_4_MG_test
 !
 !   --------------------------------------------------------------------

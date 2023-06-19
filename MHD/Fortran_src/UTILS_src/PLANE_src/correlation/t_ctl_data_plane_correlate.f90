@@ -125,6 +125,7 @@
         if(pcor_c%i_cor_plane_ctl .gt. 0) exit
       end do
       close(control_file_code)
+      if(c_buf1%iend .gt. 0) stop 'control file is broken.'
 !
       end subroutine read_control_data_cor_plane
 !

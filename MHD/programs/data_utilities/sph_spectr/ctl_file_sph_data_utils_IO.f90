@@ -86,6 +86,7 @@
           if(ctl%iflag .gt. 0) exit
         end do
         close(control_file_code)
+      if(c_buf1%iend .gt. 0) ctl%iflag = c_buf1%iend
 !
       end subroutine read_control_file_sph_util
 !

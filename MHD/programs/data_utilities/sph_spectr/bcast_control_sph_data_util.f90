@@ -64,6 +64,10 @@
 !
       call bcast_spectr_util_control(ctl)
 !
+      if(ctl%iflag .ne. 1) then
+        call calypso_MPI_abort(ctl%iflag, 'control file is broken')
+      end if
+!
       end subroutine load_control_file_sph_util
 !
 ! -----------------------------------------------------------------------

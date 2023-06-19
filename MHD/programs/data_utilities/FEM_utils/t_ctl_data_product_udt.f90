@@ -130,6 +130,7 @@
         if(prod_udt_c%i_prod_control .gt. 0) exit
       end do
       close(prod_ctl_file_code)
+      if(c_buf1%iend .gt. 0) prod_udt_c%i_prod_control = c_buf1%iend
 !
       end subroutine read_control_4_prod_udt
 !

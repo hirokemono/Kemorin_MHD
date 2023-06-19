@@ -84,6 +84,9 @@
       end do
       close(control_file_code)
 !
+      if(c_buf1%iend .gt. 0)                                            &
+     &              spu_ctl%i_sph_trans_ctl = c_buf1%iend
+!
       end subroutine read_control_data_sph_utils
 !
 ! -----------------------------------------------------------------------

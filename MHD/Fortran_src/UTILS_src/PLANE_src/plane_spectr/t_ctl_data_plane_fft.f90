@@ -1,7 +1,7 @@
 !
 !      module t_ctl_data_plane_fft
 !
-!       subroutine read_control_data_fft_plane(pfft_c)
+!       subroutine read_control_data_fft_plane(control_file_name, pfft_c)
 !
 !      Written by Kemorin
 !
@@ -21,7 +21,6 @@
       implicit    none
 !
       integer (kind = kint) :: control_file_code = 11
-      character (len = kchara) :: control_file_name='ctl_fft'
 !
       type ctl_data_plane_fft
         type(platform_data_control) :: new_p_plt
@@ -108,8 +107,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_fft_plane(pfft_c)
+      subroutine read_control_data_fft_plane(control_file_name, pfft_c)
 !
+      character (len = kchara), intent(in) :: control_file_name
       type(ctl_data_plane_fft), intent(inout) :: pfft_c
 !
       type(buffer_for_control) :: c_buf1
@@ -127,6 +127,8 @@
         if (pfft_c%i_fft_plane_ctl .gt. 0) exit
       end do
       close(control_file_code)
+!
+       if(c_buf1%iend .gt. 0) pfft_c%i_fft_plane_ctl = c_buf1%iend
 !
       end subroutine read_control_data_fft_plane
 !

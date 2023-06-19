@@ -68,6 +68,11 @@
       end if
       call bcast_ctl_data_gen_z_filter(z_filter_ctl1)
 !
+      if(z_filter_ctl1%i_filter_control .ne. 1) then
+        call calypso_MPI_abort(z_filter_ctl1%i_filter_control,          &
+     &                             'control file is broken')
+      end if
+!
       call set_ctl_params_4_gen_z_filter                                &
      &   (z_filter_ctl1, mat_crs, CG_param, DJDS_param)
       call dealloc_ctl_data_gen_z_filter(z_filter_ctl1)

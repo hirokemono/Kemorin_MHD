@@ -107,6 +107,7 @@
         if(para__refine_c%i_para_refine_tbl_ctl .gt. 0) exit
       end do
       close(ctl_refine_code)
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       end subroutine read_control_data_ref_para_itp
 !

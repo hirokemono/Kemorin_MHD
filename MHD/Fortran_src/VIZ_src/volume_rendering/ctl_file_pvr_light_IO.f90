@@ -88,6 +88,8 @@
         file_name = third_word(c_buf)
         call read_control_pvr_light_file(id_control+1, file_name,       &
      &                                   hd_block, light)
+        if(light%i_pvr_lighting .ne. 1)                                 &
+     &                         c_buf%iend = light%i_pvr_lighting
       else if(check_begin_flag(c_buf, hd_block)) then
 !
         call write_space_4_parse(id_monitor, c_buf%level)
@@ -158,6 +160,7 @@
         if(light%i_pvr_lighting .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) light%i_pvr_lighting = c_buf1%iend
 !
       end subroutine read_control_pvr_light_file
 !

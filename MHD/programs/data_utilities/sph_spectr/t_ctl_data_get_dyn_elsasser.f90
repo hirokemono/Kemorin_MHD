@@ -162,6 +162,7 @@
         end do
         close(id_control)
       end if
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       end subroutine read_ctl_file_get_dyn_elsasser 
 !
