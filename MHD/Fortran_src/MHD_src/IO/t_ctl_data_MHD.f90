@@ -131,6 +131,11 @@
       end do
       close(id_control_file)
 !
+      if(c_buf1%iend .gt. 0) then
+        MHD_ctl%i_mhd_ctl = c_buf1%iend
+        return
+      end if
+!
       end subroutine read_control_4_sph_MHD_noviz
 !
 ! ----------------------------------------------------------------------

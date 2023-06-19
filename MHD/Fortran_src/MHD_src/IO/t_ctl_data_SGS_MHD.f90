@@ -137,6 +137,11 @@
       end do
       close(id_control_file)
 !
+      if(c_buf1%iend .gt. 0) then
+        MHD_ctl%i_mhd_ctl = c_buf1%iend
+        return
+      end if
+!
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)
       call add_fields_4_vizs_to_fld_ctl                                 &

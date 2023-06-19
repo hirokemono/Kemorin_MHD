@@ -68,9 +68,16 @@
           if(gtbl_ctl%i_table_control .gt. 0) exit
         end do
         close(table_ctl_file_code)
+!
+        if(c_buf1%iend .gt. 0) gtbl_ctl%i_table_control = c_buf1%iend
       end if
 !
       call bcast_const_itp_tbl_ctl_data(gtbl_ctl)
+!
+      if(gtbl_ctl%i_table_control .ne. 1) then
+        call calypso_MPI_abort(gtbl_ctl%i_table_control,                &
+     &                         trim(fname_table_ctl))
+      end if
 !
       end subroutine read_control_4_gen_itp_table
 !
@@ -97,9 +104,15 @@
           if(gtbl_ctl%i_table_control .gt. 0) exit
         end do
         close(table_ctl_file_code)
+        if(c_buf1%iend .gt. 0) gtbl_ctl%i_table_control = c_buf1%iend
       end if
 !
       call bcast_const_itp_tbl_ctl_data(gtbl_ctl)
+!
+      if(gtbl_ctl%i_table_control .ne. 1) then
+        call calypso_MPI_abort(gtbl_ctl%i_table_control,                &
+     &                         trim(fname_table_ctl))
+      end if
 !
       end subroutine read_control_4_interpolate
 !

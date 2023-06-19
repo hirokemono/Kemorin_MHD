@@ -7,7 +7,7 @@
 !>@brief  Control data for merge program
 !!
 !!@verbatim
-!!       subroutine read_control_4_merge(mgd_ctl)
+!!       subroutine read_control_4_merge(ctl_file_name, mgd_ctl)
 !!       subroutine read_control_assemble_sph(mgd_ctl)
 !!       subroutine reset_merge_control_data(mgd_ctl)
 !!        type(control_data_4_merge), intent(inout) :: mgd_ctl
@@ -29,11 +29,6 @@
       implicit none
 !
       integer (kind = kint), parameter :: control_file_code = 13
-      character (len = kchara), parameter                               &
-     &         :: control_file_name =     'control_merge'
-      character (len = kchara), parameter                               &
-     &         :: ctl_assemble_sph_name = 'control_assemble_sph'
-!
 !
 !>        Structure for merged program control
       type control_data_4_merge
@@ -103,7 +98,6 @@
      &      :: hd_magnetic_field_ratio =  'magnetic_field_ratio_ctl'
 !
       private :: control_file_code
-      private :: ctl_assemble_sph_name, control_file_name
       private :: hd_assemble
       private :: hd_platform, hd_new_data, hd_model, hd_control
       private :: hd_phys_values, hd_time_step, hd_new_time_step
@@ -120,15 +114,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_control_4_merge(mgd_ctl)
+      subroutine read_control_4_merge(file_name, mgd_ctl)
 !
+      character (len = kchara), intent(in) :: file_name
       type(control_data_4_merge), intent(inout) :: mgd_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
 !
       c_buf1%level = 0
-      open (control_file_code, file = control_file_name)
+      open (control_file_code, file = file_name)
 !
       do
         call load_one_line_from_control(control_file_code,              &
@@ -141,19 +136,22 @@
       end do
       close(control_file_code)
 !
+      if(c_buf1%iend .gt. 0) mgd_ctl%i_assemble = c_buf1%iend
+!
       end subroutine read_control_4_merge
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_control_assemble_sph(mgd_ctl)
+      subroutine read_control_assemble_sph(file_name, mgd_ctl)
 !
+      character (len = kchara), intent(in) :: file_name
       type(control_data_4_merge), intent(inout) :: mgd_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
 !
       c_buf1%level = 0
-      open (control_file_code, file = ctl_assemble_sph_name)
+      open (control_file_code, file = file_name)
 !
       do
         call load_one_line_from_control(control_file_code,              &
@@ -161,10 +159,12 @@
         if(c_buf1%iend .gt. 0) exit
 !
       call read_merge_control_data(control_file_code, hd_assemble,      &
-     &      mgd_ctl, c_buf1)
+     &                             mgd_ctl, c_buf1)
         if(mgd_ctl%i_assemble .gt. 0) exit
       end do
       close(control_file_code)
+!
+      if(c_buf1%iend .gt. 0) mgd_ctl%i_assemble = c_buf1%iend
 !
       end subroutine read_control_assemble_sph
 !

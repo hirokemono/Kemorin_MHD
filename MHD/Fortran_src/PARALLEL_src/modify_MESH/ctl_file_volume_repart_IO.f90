@@ -89,6 +89,7 @@
         file_name = third_word(c_buf)
         call read_ctl_file_vol_repart((id_control+1), file_name,        &
      &                                hd_block, viz_repart_c)
+        c_buf%iend = viz_repart_c%i_viz_repartition_ctl
       else if(check_begin_flag(c_buf, hd_block)) then
         call write_space_4_parse(id_monitor, c_buf%level)
         write(id_monitor,'(a)')  'Repartioning control is included'
@@ -131,6 +132,10 @@
         if(viz_repart_c%i_viz_repartition_ctl .gt. 0) exit
       end do
       close(id_control)
+!
+      if(c_buf1%iend .gt. 0) then
+        viz_repart_c%i_viz_repartition_ctl = c_buf1%iend
+      end if
 !
       end subroutine read_ctl_file_vol_repart
 !

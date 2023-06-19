@@ -134,6 +134,11 @@
       end do
       close(ctl_file_code)
 !
+      if(c_buf1%iend .gt. 0) then
+        FEM_MHD_ctl%i_mhd_ctl = c_buf1%iend
+        return
+      end if
+!
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (viz_ctls, FEM_MHD_ctl%fmctl_ctl%tctl)
       call add_fields_4_vizs_to_fld_ctl(viz_ctls,                       &

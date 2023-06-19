@@ -233,6 +233,7 @@
         if(pg_ctl%i_draw_pgplot .gt. 0) exit
       end do
       close(pg_ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'read control file error'
 !
       end subroutine read_control_draw_pg
 !
@@ -258,6 +259,7 @@
         if(pg_ctl%i_drmed_grp .gt. 0) exit
       end do
       close(pg_ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'read control file error'
 !
       end subroutine read_control_drmed_grp_pg
 !

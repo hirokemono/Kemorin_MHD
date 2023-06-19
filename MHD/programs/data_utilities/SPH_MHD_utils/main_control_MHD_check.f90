@@ -30,6 +30,7 @@
       read(*,*) MHD_ctl_name
       call read_control_4_sph_SGS_MHD(MHD_ctl_name,                     &
      &                                MHD_ctl1, add_SSMHD_ctl1)
+      if(MHD_ctl1%i_mhd_ctl .ne. 1) stop 'Error in control file'
 !
       call write_sph_mhd_control_data(6, hd_mhd_ctl,                    &
      &                                MHD_ctl1, add_SSMHD_ctl1, level1)

@@ -89,6 +89,11 @@
       end do
       close(id_filter_ctl_file)
 !
+      if(c_buf1%iend .gt. 0) then
+        newd_fil_ctl%i_filter_newdomain_ctl = c_buf1%iend
+        return
+      end if
+!
       end subroutine read_control_filter_newdomain
 !
 !   --------------------------------------------------------------------

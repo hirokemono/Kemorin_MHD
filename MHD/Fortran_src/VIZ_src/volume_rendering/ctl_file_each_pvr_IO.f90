@@ -91,6 +91,7 @@
       do
         call load_one_line_from_control(id_control, hd_pvr_ctl, c_buf1)
         if(c_buf1%iend .gt. 0) exit
+        write(*,*) 'c_buf1', c_buf1%ctl_buffer
 !
         call read_pvr_ctl(id_control, hd_pvr_ctl,                       &
      &                    pvr_ctl_type, c_buf1)

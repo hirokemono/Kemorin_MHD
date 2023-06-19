@@ -203,18 +203,19 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-        c_buf1%level = 0
-        open(table_ctl_file_code, file=fname_dist_itp_ctl,status='old')
-        do
-          call load_one_line_from_control                               &
-     &       (table_ctl_file_code, hd_distribute_itp, c_buf1)
-          if(c_buf1%iend .gt. 0) exit
+      c_buf1%level = 0
+      open(table_ctl_file_code, file=fname_dist_itp_ctl,status='old')
+      do
+        call load_one_line_from_control                                 &
+     &     (table_ctl_file_code, hd_distribute_itp, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
 !
-          call read_control_dist_itp_data                               &
-     &       (table_ctl_file_code, hd_distribute_itp, gtbl_ctl, c_buf1)
-          if(gtbl_ctl%i_distribute_itp .gt. 0) exit
-        end do
-        close(table_ctl_file_code)
+        call read_control_dist_itp_data                                 &
+     &     (table_ctl_file_code, hd_distribute_itp, gtbl_ctl, c_buf1)
+        if(gtbl_ctl%i_distribute_itp .gt. 0) exit
+      end do
+      close(table_ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'Failed control file reading'
 !
       end subroutine read_control_4_distribute_itp
 !

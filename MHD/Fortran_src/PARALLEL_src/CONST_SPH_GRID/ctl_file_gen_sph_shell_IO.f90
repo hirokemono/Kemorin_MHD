@@ -94,16 +94,15 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if((psph_ctl%iflag_sph_shell + psph_ctl%ifile_sph_shell)          &
-     &                                                  .gt. 0) return
+      if(psph_ctl%iflag_sph_shell .gt. 0) return
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
         call write_space_4_parse(id_monitor, c_buf%level)
         write(id_monitor,'(3a)') trim(hd_block),                        &
      &                   ' is read from file... ', trim(file_name)
-        psph_ctl%ifile_sph_shell = 1
         call read_ctl_file_gen_shell_grids(id_control+2, file_name,     &
      &                                     hd_block, psph_ctl)
+        c_buf%iend = psph_ctl%iflag_sph_shell
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
         call write_space_4_parse(id_monitor, c_buf%level)
@@ -141,9 +140,15 @@
      &                               psph_ctl, c_buf1)
         call read_parallel_shell_ctl(id_control, hd_sph_shell,          &
      &                               psph_ctl, c_buf1)
+        if(psph_ctl%iflag_sph_shell .gt. 0) exit
       end do
 !
       close(id_control)
+!
+      if(c_buf1%iend .gt. 0) then
+        psph_ctl%iflag_sph_shell = c_buf1%iend
+        return
+      end if
 !
       end subroutine read_ctl_file_gen_shell_grids
 !

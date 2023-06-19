@@ -94,6 +94,10 @@
       call bcast_ctl_data_4_platform(mesh_tctl%plt)
       call bcast_FEM_mesh_control(mesh_tctl%Fmesh_ctl)
 !
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(c_buf1%iend, trim(fname_test_mesh_ctl))
+      end if
+!
       end subroutine read_control_4_mesh_test
 !
 !   --------------------------------------------------------------------

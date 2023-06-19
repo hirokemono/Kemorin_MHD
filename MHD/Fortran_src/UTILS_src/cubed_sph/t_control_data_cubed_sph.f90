@@ -221,6 +221,7 @@
       end do
 !
       close(ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'read control file error'
 !
       end subroutine read_control_4_shell
 !

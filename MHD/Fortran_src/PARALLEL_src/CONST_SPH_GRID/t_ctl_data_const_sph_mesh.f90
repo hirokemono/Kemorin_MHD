@@ -92,6 +92,11 @@
 !
       close(control_file_code)
 !
+      if(c_buf1%iend .gt. 0) then
+        gen_SPH_ctl%i_sph_mesh_ctl = c_buf1%iend
+        return
+      end if
+!
       end subroutine read_control_4_const_shell
 !
 ! ----------------------------------------------------------------------

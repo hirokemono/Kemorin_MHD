@@ -53,6 +53,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter                               &
+     &         :: ctl_file_name = 'control_merge'
+!
       type(ctl_param_partitioner), save :: part_p1
       type(control_data_4_partitioner), save :: part_ctl1
       type(control_data_4_merge), save :: mgd_ctl_p
@@ -127,7 +130,8 @@
 !
 !  ========= Read global field data for load balance partition =======
       write(*,*) 'read control_merge'
-      call read_control_4_merge(mgd_ctl_p)
+      call read_control_4_merge(ctl_file_name, mgd_ctl_p)
+      if(mgd_ctl_p%i_assemble .ne. 1) stop 'Wrong control file reading'
 !
       call set_control_4_merge(mgd_ctl_p, asbl_param_p, num_pe)
       call set_assemble_step_4_ucd(mgd_ctl_p%t_mge_ctl, asbl_param_p)

@@ -79,8 +79,6 @@
 !
 !>        Integer flag to defined spherical shell
         integer (kind=kint) :: iflag_sph_shell = 0
-!>        Integer flag to read spherical shell control file
-        integer (kind=kint) :: ifile_sph_shell = 0
       end type parallel_sph_shell_control
 !
 !   Labels
@@ -174,7 +172,6 @@
 !
 !
       psph_ctl%iflag_sph_shell = 0
-      psph_ctl%ifile_sph_shell = 0
 !
       call reset_FEM_mesh_control(psph_ctl%Fmesh_ctl)
       call dealloc_control_shell_define(psph_ctl%spctl)

@@ -34,6 +34,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter, private                      &
+     &         :: ctl_file_name = 'control_merge'
+!
       integer, save :: ndomain_org
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
@@ -81,8 +84,13 @@
 !
 !   read control data
 !
-      if(my_rank .eq. 0) call read_control_4_merge(mgd_ctl_u)
+      if(my_rank .eq. 0) call read_control_4_merge(ctl_file_name,       &
+     &                                             mgd_ctl_u)
       call bcast_merge_control_data(mgd_ctl_u)
+      if(mgd_ctl_u%i_assemble .ne. 1) then
+        call calypso_MPI_abort(mgd_ctl_u%i_assemble,                    &
+     &                         trim(ctl_file_name))
+      end if
 !
       call set_control_4_merge(mgd_ctl_u, asbl_param_u, ndomain_org)
       call set_control_4_newudt                                         &
