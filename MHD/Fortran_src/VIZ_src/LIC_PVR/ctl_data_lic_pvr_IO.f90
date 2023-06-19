@@ -160,6 +160,7 @@
       use ctl_data_pvr_colormap_IO
       use ctl_file_pvr_light_IO
       use ctl_data_pvr_movie_IO
+      use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -173,11 +174,18 @@
       if(pvr%i_pvr_ctl .gt. 0) return
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        call sel_read_ctl_modelview_file(id_control, hd_view_transform, &
-     &      pvr%fname_mat_ctl, pvr%mat, c_buf)
+        if(check_file_flag(c_buf, hd_view_transform)                    &
+     &        .or. check_begin_flag(c_buf, hd_view_transform)) then
+          call write_multi_ctl_file_message                             &
+     &       (hd_view_transform, izero, c_buf%level)
+          call sel_read_ctl_modelview_file(id_control,                  &
+     &        hd_view_transform, pvr%fname_mat_ctl, pvr%mat, c_buf)
+        end if
+!
         call sel_read_ctl_pvr_colormap_file                             &
      &     (id_control, hd_lic_colordef, pvr%fname_cmap_cbar_c,         &
      &      pvr%cmap_cbar_c, c_buf)
@@ -266,13 +274,11 @@
       maxlen = max(maxlen, len_trim(hd_pvr_streo))
       maxlen = max(maxlen, len_trim(hd_pvr_quilt_3d))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_updated, pvr%updated_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_lic_file_head, pvr%file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -280,7 +286,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_monitor, pvr%monitoring_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_streo, pvr%streo_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -288,15 +293,15 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_quilt_3d, pvr%quilt_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_pvr_render_area_ctl(id_control, hd_plot_area,          &
      &                               pvr%render_area_c, level)
       call write_lic_control_data(id_control, hd_lic_control,           &
      &                            lic_ctl, level)
+!
+      write(*,'(2a)', ADVANCE='NO') '!  ', trim(hd_view_transform)
       call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &
      &    pvr%fname_mat_ctl, pvr%mat, level)
 !
-      write(id_control,'(a1)') '!'
       call sel_write_ctl_pvr_colormap_file                              &
      &   (id_control, hd_lic_colordef, pvr%fname_cmap_cbar_c,           &
      &    pvr%cmap_cbar_c, level)
@@ -312,13 +317,11 @@
      &   (id_control, hd_pvr_lighting, pvr%fname_pvr_light_c,           &
      &    pvr%light, level)
 !
-      write(id_control,'(a1)') '!'
       call write_pvr_sections_ctl(id_control, hd_pvr_sections,          &
      &                            pvr%pvr_scts_c, level)
       call write_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,           &
      &                            pvr%pvr_isos_c, level)
 !
-      write(id_control,'(a1)') '!'
       call write_quilt_image_ctl(id_control, hd_quilt_image,            &
      &                           pvr%quilt_c, level)
       call write_pvr_rotation_ctl(id_control, hd_snapshot_movie,        &

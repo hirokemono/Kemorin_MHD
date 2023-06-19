@@ -4,7 +4,7 @@ analyzer_sleeve_extend.o: $(PART_MAINDIR)/analyzer_sleeve_extend.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 distribute_para_itp_table.o: $(PART_MAINDIR)/distribute_para_itp_table.f90 t_mesh_data.o t_interpolate_table.o t_file_IO_parameter.o t_ctl_data_gen_table.o t_work_ditribute_itp.o m_interpolate_table_IO.o distribute_itp_tbl_4_para.o set_parallel_mesh_in_1pe.o m_file_format_switch.o m_default_file_prefix.o set_control_platform_item.o
 	$(F90) -c $(F90OPTFLAGS) $<
-grouping_for_partition.o: $(PART_MAINDIR)/grouping_for_partition.f90 m_precision.o m_constants.o m_error_IDs.o t_ctl_param_partitioner.o t_domain_group_4_partition.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o t_group_connects.o t_metis_IO.o t_subdomain_table_IO.o recursive_bisection.o node_equaly_sectioning.o divide_by_spherical_coord.o set_domain_and_org_id.o set_partition_by_fine_mesh.o error_exit_4_part.o
+grouping_for_partition.o: $(PART_MAINDIR)/grouping_for_partition.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o t_ctl_param_partitioner.o t_domain_group_4_partition.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o t_group_connects.o t_metis_IO.o t_subdomain_table_IO.o recursive_bisection.o node_equaly_sectioning.o divide_by_spherical_coord.o set_domain_and_org_id.o set_partition_by_fine_mesh.o error_exit_4_part.o
 	$(F90) -c $(F90OPTFLAGS) $<
 intelligent_partition.o: $(PART_MAINDIR)/intelligent_partition.f90 m_precision.o m_constants.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_domain_group_4_partition.o cal_fline_in_cube.o cal_field_on_surf_viz.o quicksort_okuda.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<

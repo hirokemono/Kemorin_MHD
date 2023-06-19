@@ -125,7 +125,8 @@
       if(noise_ctl%i_cube_noise_control .gt. 0) return
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
@@ -175,7 +176,6 @@
       maxlen = max(maxlen, len_trim(hd_noise_cube_size))
       maxlen = max(maxlen, len_trim(hd_noise_delta_x))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -185,13 +185,11 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_noise_file_fmt, noise_ctl%noise_file_format_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_noise_grid_size, noise_ctl%noise_resolution_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_noise_stepping, noise_ctl%noise_stepping_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_noise_cube_size, noise_ctl%noise_cube_size_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

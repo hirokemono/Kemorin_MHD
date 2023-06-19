@@ -61,6 +61,7 @@
       use t_read_control_elements
       use skip_comment_f
       use ctl_data_field_line_IO
+      use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -74,15 +75,16 @@
       call alloc_fline_ctl_struct(fline_ctls)
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_array_flag(c_buf, hd_block)) exit
 !
         if(check_file_flag(c_buf, hd_block)                             &
      &        .or. check_begin_flag(c_buf, hd_block)) then
           call append_new_fline_control(fline_ctls)
 !
-          write(*,'(2a,i4,a)', ADVANCE='NO')                            &
-     &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
+          call write_multi_ctl_file_message                             &
+     &       (hd_block, fline_ctls%num_fline_ctl, c_buf%level)
           call sel_read_fline_control(id_control, hd_block,             &
      &        fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl),     &
      &        fline_ctls%fline_ctl_struct(fline_ctls%num_fline_ctl),    &
@@ -112,10 +114,12 @@
         write(*,'(3a,i4,a)', ADVANCE='NO') 'is read from '
         call read_fline_control_file((id_control+2), file_name,         &
      &                               hd_block, fline_ctl_struct)
+        if(fline_ctl_struct%i_vr_fline_ctl .ne. 1)                      &
+     &              c_buf%iend = fline_ctl_struct%i_vr_fline_ctl
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
-        write(*,*) ' is included'
+        write(*,'(a)') ' is included'
         call s_read_field_line_ctl(id_control, hd_block,                &
      &                             fline_ctl_struct, c_buf)
       end if
@@ -137,17 +141,24 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       write(*,*) 'Control file: ', trim(file_name)
       call reset_fline_control_flags(fline_ctl_struct)
       open(id_control, file=file_name, status='old')
 !
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call s_read_field_line_ctl(id_control, hd_block,                &
      &      fline_ctl_struct, c_buf1)
         if(fline_ctl_struct%i_vr_fline_ctl .gt. 0) exit
       end do
       close(id_control)
+!
+      if(c_buf1%iend .gt. 0) then
+        fline_ctl_struct%i_vr_fline_ctl = c_buf1%iend
+      end if
 !
       end subroutine read_fline_control_file
 !
@@ -166,11 +177,12 @@
 !
       integer(kind = kint) :: i
 !
-      write(id_control,'(a1)') '!'
+      if(fline_ctls%num_fline_ctl .le. 0) return
+!
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, fline_ctls%num_fline_ctl
-        write(*,'(2a,i4,a)', ADVANCE='NO')                              &
-     &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
+        write(*,'(3a,i4,a)', ADVANCE='NO') '!  ', trim(hd_block),       &
+     &        ' No. ', fline_ctls%num_fline_ctl
         call sel_write_fline_control                                    &
      &     (id_control, hd_block, fline_ctls%fname_fline_ctl(i),        &
      &      fline_ctls%fline_ctl_struct(i), level)
@@ -196,11 +208,15 @@
 !
 !
       if(cmp_no_case(file_name, 'NO_FILE')) then
-        write(*,*) ' is included'
+        write(*,'(a)') ' is included.'
+        call write_field_line_ctl(id_control, hd_block,                 &
+     &                            fline_ctl_struct, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(2a)') 'shuld be written to ', trim(file_name)
         call write_field_line_ctl(id_control, hd_block,                 &
      &                            fline_ctl_struct, level)
       else
-        write(*,'(3a,i4,a)', ADVANCE='NO') 'is write to '
+        write(*,'(2a)') 'is written to ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_fline_control_file((id_control+2), file_name,        &
@@ -225,7 +241,6 @@
 !
 !
       level = 0
-      write(*,*) 'write fieldline control file: ',  trim(file_name)
       open(id_control, file=file_name)
       call write_field_line_ctl(id_control, hd_block,                   &
      &                          fline_ctl_struct, level)

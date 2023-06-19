@@ -56,6 +56,11 @@
       end if
       call bcast_control_data_sph_utils(spu_ctl)
 !
+      if(spu_ctl%i_sph_trans_ctl .ne. 1) then
+        call calypso_MPI_abort(spu_ctl%i_sph_trans_ctl,                 &
+     &                             'control file is broken')
+      end if
+!
       call set_ctl_data_4_sph_utils(spu_ctl, time_SHR, rj_fld, pwr)
 !
       end subroutine s_input_control_sph_utils

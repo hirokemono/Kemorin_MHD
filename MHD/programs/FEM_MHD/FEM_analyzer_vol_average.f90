@@ -117,8 +117,6 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: iflag
-!
 !     ---- Load field data --- 
 !
       if (my_rank.eq.0) write(*,*) 'step: ', i_step

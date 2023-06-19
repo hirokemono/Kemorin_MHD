@@ -34,6 +34,9 @@
       implicit    none
 !
 !
+      character (len = kchara), parameter                               &
+     &                         :: control_file_name = 'ctl_fft'
+!
       type(ctl_data_plane_fft), save :: pfft_c1
       type(plane_spectr_by_ispack), save :: plane_fft_wk1
       type(new_plane_spectr), save :: npl_spec1
@@ -79,7 +82,11 @@
 !  set parameters for FFT
 !
       write(*,*) 'read_control_data_fft_plane'
-      call read_control_data_fft_plane(pfft_c1)
+      call read_control_data_fft_plane(control_file_name, pfft_c1)
+      if(pfft_c1%i_fft_plane_ctl .ne. 1) then
+        call calypso_MPI_abort(pfft_c1%i_fft_plane_ctl,                 &
+     &                         trim(control_file_name))
+      end if
 !
       call set_para_plane_spectr_file_def(pfft_c1, plane_mesh_file)
       call set_parameters_rst_by_spec                                   &

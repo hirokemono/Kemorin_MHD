@@ -51,6 +51,11 @@
 !
       call bcast_prod_control_data(prod_udt_c)
 !
+      if(prod_udt_c%i_prod_control .ne. 1) then
+        call calypso_MPI_abort(prod_udt_c%i_prod_control,               &
+     &                             'control file is broken')
+      end if
+!
 !  Set control data
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt(prod_udt_c%pu_plt,                   &

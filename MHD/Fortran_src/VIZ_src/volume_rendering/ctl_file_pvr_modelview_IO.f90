@@ -149,14 +149,17 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        write(*,'(3a)', ADVANCE='NO')                                   &
-     &          'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
+!
+        write(*,'(2a)') ' is read from ... ', trim(file_name)
         call read_control_modelview_file(id_control+1, file_name,       &
      &                                   hd_block, mat)
+        if(mat%i_view_transform .ne. 1)                                 &
+     &                         c_buf%iend = mat%i_view_transform
       else if(check_begin_flag(c_buf, hd_block)) then
-        write(*,'(2a)')  trim(hd_block), ' is included'
         file_name = 'NO_FILE'
+!
+        write(*,'(a)') ' is included'
         call read_view_transfer_ctl(id_control, hd_block, mat, c_buf)
       end if
 !
@@ -179,11 +182,15 @@
 !
 !
       if(cmp_no_case(file_name, 'NO_FILE')) then
-        write(*,*)  'Modelview control is included'
+        write(*,*)  ' is included'
+        call write_view_transfer_ctl(id_control, hd_block, mat, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
+     &        ' should be written to file ... ', trim(file_name)
         call write_view_transfer_ctl(id_control, hd_block, mat, level)
       else
-        write(*,'(3a)', ADVANCE='NO')                                   &
-     &          'Write file for ', trim(hd_block), '... '
+        write(*,'(4a)') 'Write file for ', trim(hd_block),              &
+     &                  '... ', trim(file_name)
         call write_control_modelview_file(id_control+1, file_name,      &
      &                                    hd_block, mat)
         call write_file_name_for_ctl_line(id_control, level,            &
@@ -209,15 +216,18 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      write(*,*) trim(file_name)
+      c_buf1%level = 0
       open(id_control, file = file_name, status='old')
 !
       do 
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_view_transfer_ctl(id_control, hd_block, mat, c_buf1)
         if(mat%i_view_transform .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) mat%i_view_transform = c_buf1%iend
 !
       end subroutine read_control_modelview_file
 !

@@ -44,6 +44,9 @@
 !
 !
       call read_control_data_4_cutshell(cutshell_ctl1)
+      if(cutshell_ctl1%i_cutshell_ctl .ne. 1)                            &
+     &                   stop 'control file is broken'
+!
       call s_set_control_4_cutshell(cutshell_ctl1, iflag_reduce_type1,  &
      &    original_mesh_file1, modified_mesh_file1)
 !

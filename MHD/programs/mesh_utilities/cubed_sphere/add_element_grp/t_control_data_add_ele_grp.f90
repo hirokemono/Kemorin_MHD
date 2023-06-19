@@ -107,14 +107,21 @@
 !
       type(buffer_for_control) :: c_buf1
 !
+      c_buf1%level = 0
       open(control_file_code, file = file_name)
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
+        call load_one_line_from_control                                 &
+     &     (control_file_code, hd_add_ele_grp_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_control_4_add_egrp_data                               &
      &     (control_file_code, hd_add_ele_grp_ctl, addgrp_c, c_buf1)
         if(addgrp_c%i_add_ele_grp_ctl .gt. 0) exit
       end do
       close(control_file_code)
+!
+      if(c_buf1%iend .gt. 0)                                            &
+     &              addgrp_c%i_add_ele_grp_ctl = c_buf1%iend
 !
       end subroutine read_control_add_elegrp
 !
@@ -136,7 +143,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(addgrp_c%i_add_ele_grp_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -183,7 +191,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(addgrp_c%i_add_ele_grp_para .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c_r2(id_control,                        &

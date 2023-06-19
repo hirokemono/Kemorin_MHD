@@ -96,14 +96,21 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open (control_file_code, file = control_file_name)
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
+        call load_one_line_from_control                                 &
+     &     (control_file_code, hd_cutshell_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_cutshell_control_data                                 &
      &     (control_file_code, hd_cutshell_ctl, cutshell_ctl, c_buf1)
         if(cutshell_ctl%i_cutshell_ctl .gt. 0) exit
       end do
       close(control_file_code)
+!
+      if(c_buf1%iend .gt. 0)                                            &
+     &              cutshell_ctl%i_cutshell_ctl = c_buf1%iend
 !
       end subroutine read_control_data_4_cutshell
 !
@@ -123,9 +130,9 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cutshell_ctl%i_cutshell_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
-!
 !
         call read_ctl_data_4_cutshell_mesh                              &
      &     (id_control, hd_files_ctl, cutshell_ctl, c_buf)
@@ -152,7 +159,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cutshell_ctl%i_files_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
@@ -182,7 +190,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cutshell_ctl%i_cutshell_param .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &

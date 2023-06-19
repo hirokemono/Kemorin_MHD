@@ -112,13 +112,15 @@
 !
       if(check_file_flag(c_buf, hd_lic_ctl)) then
         fname_lic_ctl = third_word(c_buf)
-        write(*,'(a)', ADVANCE='NO') 'read from file: '
+        write(*,'(a)', ADVANCE='NO') ' is read from ... '
         call read_control_lic_pvr_file(id_control+2, fname_lic_ctl,     &
      &      hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
+        if(pvr_ctl_type%i_pvr_ctl .ne. 1)                               &
+     &                         c_buf%iend = pvr_ctl_type%i_pvr_ctl
       else if(check_begin_flag(c_buf, hd_lic_ctl)) then
           fname_lic_ctl = 'NO_FILE'
 !
-        write(*,'(a)') ' included'
+        write(*,'(a)') ' is included'
         call read_lic_pvr_ctl(id_control, hd_lic_ctl,                   &
      &                        pvr_ctl_type, lic_ctl_type, c_buf)
       end if
@@ -143,16 +145,19 @@
 !
       if(fname_lic_ctl .eq. 'NO_FILE') return
 !
+      c_buf1%level = 0
       write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
-!
       open(id_control, file=fname_lic_ctl, status='old')
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_lic_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_lic_pvr_ctl                                           &
      &     (id_control, hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf1)
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) pvr_ctl_type%i_pvr_ctl = c_buf1%iend
 !
       end subroutine read_control_lic_pvr_file
 !
@@ -176,11 +181,16 @@
 !
 !
       if(cmp_no_case(fname_lic_ctl, 'NO_FILE')) then
-        write(*,'(a)') ' is included'
+        write(*,'(a)') ' is included.'
+        call write_lic_pvr_ctl(id_control, hd_lic_ctl,                  &
+     &                         pvr_ctl_type, lic_ctl_type, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(2a)') ' should be written to... ',                    &
+     &                  trim(fname_lic_ctl)
         call write_lic_pvr_ctl(id_control, hd_lic_ctl,                  &
      &                         pvr_ctl_type, lic_ctl_type, level)
       else
-        write(*,'(a)', ADVANCE='NO') ' is written to...'
+        write(*,'(2a)') ' is written to... ', trim(fname_lic_ctl)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_lic_ctl, fname_lic_ctl)
         call write_control_lic_pvr_file(id_control+2, fname_lic_ctl,    &
@@ -204,7 +214,6 @@
 !
       integer(kind = kint) :: level
 !
-      write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
       level = 0
       open(id_control, file=fname_lic_ctl, status='old')
       call write_lic_pvr_ctl(id_control, hd_lic_ctl,                    &

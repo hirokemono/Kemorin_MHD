@@ -23,6 +23,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter                               &
+     &                         :: control_file_name = 'ctl_fft'
+!
       type(ctl_data_plane_fft), save :: pfft_c1
       type(field_IO_params), save ::  plane_mesh_file
       type(merged_mesh), save :: mgd_mesh_pm
@@ -88,7 +91,11 @@
 !     read outline of mesh
 !
       write(*,*) 'read_control_data_fft_plane'
-      call read_control_data_fft_plane(pfft_c1)
+      call read_control_data_fft_plane(control_file_name, pfft_c1)
+      if(pfft_c1%i_fft_plane_ctl .ne. 1) then
+        stop 'control file is broken'
+      end if
+!
       write(*,*) 's_set_plane_spectr_file_head'
       call s_set_plane_spectr_file_head(pfft_c1, plane_mesh_file)
       call set_parameters_plane_ene                                     &

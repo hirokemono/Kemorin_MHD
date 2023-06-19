@@ -60,6 +60,11 @@
       end if
       call bcast_ctl_data_gen_sph_w_repart(gen_SPH_wP_c)
 !
+      if(gen_SPH_wP_c%i_sph_mesh_ctl .ne. 1) then
+        call calypso_MPI_abort(gen_SPH_wP_c%i_sph_mesh_ctl,             &
+     &                             'control file is broken')
+      end if
+!
 !       set control data
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, gen_SPH_wP_c%plt, gen_SPH_wP_c%psph_ctl,             &

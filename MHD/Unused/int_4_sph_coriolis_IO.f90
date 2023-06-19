@@ -74,10 +74,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_int_4_sph_coriolis
+      subroutine read_int_4_sph_coriolis(iend)
 !
       use m_int_4_sph_coriolis_IO
       use skip_comment_f
+!
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: j3, j1, j2, itmp
       character(len=255) :: character_4_read
@@ -87,14 +89,16 @@
      & 'Read integrals for coriolis: ', trim(sph_cor_file_name)
       open(id_sph_cor,file=sph_cor_file_name)
 !
-      call skip_comment(character_4_read,id_sph_cor)
+      call skip_comment(id_sph_cor, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) ltr_cor_IO
 !
 !
       call allocate_int_sph_cor_IO
 !
       j1 = 2
-      call skip_comment(character_4_read,id_sph_cor)
+      call skip_comment(id_sph_cor, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) itmp, jgl_kcor_IO(1,1,j1), itmp,         &
      &                gk_cor_IO(1,1,j1)
       read(id_sph_cor,*) itmp, jgl_kcor_IO(1,2,j1), itmp,               &
@@ -106,7 +110,8 @@
         end do
       end do
 !
-      call skip_comment(character_4_read,id_sph_cor)
+      call skip_comment(id_sph_cor, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) itmp, jgl_lcor_IO(1,1,j1), itmp,         &
      &                el_cor_IO(1,1,j1)
       do j3 = 2 ,jmax_cor_IO
@@ -116,7 +121,8 @@
 !*
 !
       do j1 = 1, 3, 2
-        call skip_comment(character_4_read,id_sph_cor)
+        call skip_comment(id_sph_cor, character_4_read, iend)
+        if(iend .gt. 0) return
         read(character_4_read,*) itmp, jgl_kcor_IO(1,1,j1), itmp,       &
      &                          gk_cor_IO(1,1,j1)
         do j2 = 2, 4
@@ -130,7 +136,8 @@
           end do
         end do
 !*
-        call skip_comment(character_4_read,id_sph_cor)
+        call skip_comment(id_sph_cor, character_4_read, iend)
+        if(iend .gt. 0) return
         read(character_4_read,*) itmp, jgl_lcor_IO(1,1,j1), itmp,       &
      &                el_cor_IO(1,1,j1)
         read(id_sph_cor,*) itmp, jgl_lcor_IO(1,2,j1), itmp,             &

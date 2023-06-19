@@ -72,6 +72,8 @@
       subroutine sel_read_ctl_file_vol_repart(id_control, hd_block,     &
      &          file_name, viz_repart_c, c_buf)
 !
+      use write_control_elements
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       character(len=kchara), intent(inout) :: file_name
@@ -80,14 +82,17 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        write(*,'(3a)', ADVANCE='NO')                                   &
-     &          'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
+!
+        call write_one_ctl_file_message                                 &
+     &     (hd_block, c_buf%level, file_name)
         call read_ctl_file_vol_repart((id_control+1), file_name,        &
      &                                hd_block, viz_repart_c)
+        c_buf%iend = viz_repart_c%i_viz_repartition_ctl
       else if(check_begin_flag(c_buf, hd_block)) then
-        write(*,*)  'Repartioning control is included'
         file_name = 'NO_FILE'
+!
+        call write_included_message(hd_block, c_buf%level)
         call read_control_vol_repart(id_control, hd_block,              &
      &                               viz_repart_c, c_buf)
       end if
@@ -113,16 +118,22 @@
 !
 !
       if(my_rank .ne. 0) return
-      write(*,*) 're-partition control: ', trim(file_name)
-        open(id_control, file=file_name, status='old')
 !
+      c_buf1%level = 0
+      open(id_control, file=file_name, status='old')
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_control_vol_repart                                    &
      &     (id_control, hd_block, viz_repart_c, c_buf1)
         if(viz_repart_c%i_viz_repartition_ctl .gt. 0) exit
       end do
       close(id_control)
+!
+      if(c_buf1%iend .gt. 0) then
+        viz_repart_c%i_viz_repartition_ctl = c_buf1%iend
+      end if
 !
       end subroutine read_ctl_file_vol_repart
 !
@@ -141,12 +152,16 @@
 !
 !
       if(cmp_no_case(file_name,'NO_FILE')) then
-        write(*,*)  'Repartioning control is included'
+        call write_control_vol_repart(id_control, hd_block,             &
+     &                                viz_repart_c, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
+     &       'should be written to file ... ', trim(file_name)
         call write_control_vol_repart(id_control, hd_block,             &
      &                                viz_repart_c, level)
       else
-        write(*,'(3a)', ADVANCE='NO')                                   &
-     &          'Read file for ', trim(hd_block), '... '
+        write(*,'(3a)') trim(hd_block),                                 &
+     &       'is written to file ... ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_ctl_file_vol_repart((id_control+1), file_name,       &
@@ -176,7 +191,6 @@
       if(my_rank .ne. 0) return
 !
       level = 0
-      write(*,*) 're-partition control: ',  trim(file_name)
       open(id_control, file=file_name)
       call write_control_vol_repart                                     &
      &   (id_control, hd_block, viz_repart_c, level)

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_ctl_data_4_part(part_ctl)
-!!      subroutine read_control_data_4_part(part_ctl)
+!!      subroutine read_control_data_4_part(ctl_file_name, part_ctl)
 !!@endverbatim
 !
       module t_control_data_4_part
@@ -27,8 +27,6 @@
       implicit    none
 !
       integer (kind = kint), parameter :: control_file_code = 11
-      character (len = kchara), parameter                               &
-     &         :: control_file_name = 'ctl_part'
 !
 !
       type control_data_4_partitioner
@@ -175,7 +173,6 @@
      &         :: hd_fmt_itp_tbl = 'interpolate_table_format_ctl'
 !
 !
-      private :: control_file_name
       private :: hd_part_ctl
       private :: hd_org_f_ctl, hd_platform, hd_org_data, hd_FEM_mesh
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
@@ -212,23 +209,28 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_4_part(part_ctl)
+      subroutine read_control_data_4_part(ctl_file_name, part_ctl)
 !
+      character (len = kchara), intent(in) :: ctl_file_name
       type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
       type(buffer_for_control)  :: c_buf1
 !
 !
-      open(control_file_code, file = control_file_name)
+      open(control_file_code, file = ctl_file_name)
 !
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
-        call read_part_control_data(control_file_code, hd_part_ctl,  &
+        call load_one_line_from_control(control_file_code,              &
+     &                                  hd_part_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
+        call read_part_control_data(control_file_code, hd_part_ctl,     &
      &      part_ctl, c_buf1)
         if(part_ctl%i_part_ctl .gt. 0) exit
       end do
 !
       close(control_file_code)
+      if(c_buf1%iend .gt. 0) part_ctl%i_part_ctl = c_buf1%iend
 !
       end subroutine read_control_data_4_part
 !
@@ -250,7 +252,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_part_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -290,7 +293,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_decomp_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c_i(id_control,                         &
@@ -370,7 +374,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_part_ghost_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
@@ -412,7 +417,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_ele_ordering_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c1(id_control, hd_nele_grp_ordering,    &

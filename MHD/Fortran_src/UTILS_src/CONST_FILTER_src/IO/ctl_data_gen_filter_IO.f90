@@ -112,7 +112,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gen_f_ctl%i_filter_param_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
@@ -215,9 +216,7 @@
       maxlen = max(maxlen, len_trim(hd_solver_type))
       maxlen = max(maxlen, len_trim(hd_nele_filtering))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_tgt_filter_type, gen_f_ctl%tgt_filter_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -237,7 +236,6 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_maximum_rms, gen_f_ctl%maximum_rms_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_filter_corection, gen_f_ctl%filter_correction_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -247,19 +245,16 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_err_level_commute, gen_f_ctl%ilevel_filter_error_info)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_start_node_ctl, gen_f_ctl%start_node_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_end_node_ctl, gen_f_ctl%end_node_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_start_nfree_mat, gen_f_ctl%ist_num_free_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_end_nfree_mat, gen_f_ctl%ied_num_free_ctl)
 !
-      write(id_control,'(a1)') '!'
       call write_control_array_c_r(id_control, level,                   &
      &    hd_ref_filter, gen_f_ctl%reference_filter_ctl)
       call write_control_array_i_c_r(id_control, level,                 &
@@ -269,7 +264,6 @@
       call write_CG_solver_param_ctl(id_control,                        &
      &    hd_solver_ctl, gen_f_ctl%CG_filter_ctl, level)
 !
-      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_nele_filtering, gen_f_ctl%num_ele_4_filter_ctl)
       call write_control_array_c_r(id_control, level,                   &

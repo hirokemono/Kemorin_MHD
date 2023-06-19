@@ -41,6 +41,11 @@
       end if
       call bcast_control_add_elegrp(addgrp_c)
 !
+      if(addgrp_c%i_add_ele_grp_ctl .ne. 1) then
+        call calypso_MPI_abort(addgrp_c%i_add_ele_grp_ctl,              &
+     &                             'control file is broken')
+      end if
+!
       call set_control_add_2d_egrp(addgrp_c, add_egrp_param)
       call dealloc_control_add_elegrp(addgrp_c)
 !

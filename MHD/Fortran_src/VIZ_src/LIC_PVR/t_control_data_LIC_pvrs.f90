@@ -99,6 +99,7 @@
       use t_read_control_elements
       use ctl_file_lic_pvr_IO
       use skip_comment_f
+      use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_lic_ctl
@@ -113,14 +114,16 @@
       call alloc_lic_ctl_struct(lic_ctls)
 !
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_lic_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_array_flag(c_buf, hd_lic_ctl)) exit
 !
         if(check_file_flag(c_buf, hd_lic_ctl)                           &
      &        .or. check_begin_flag(c_buf, hd_lic_ctl)) then
           call append_new_lic_ctl_struct(lic_ctls)
-          write(*,'(3a,i4,a)',ADVANCE='NO') 'Control for ',             &
-     &       trim(hd_lic_ctl), ' No. ', lic_ctls%num_lic_ctl, ' is ...'
+!
+          call write_multi_ctl_file_message                             &
+     &       (hd_lic_ctl, lic_ctls%num_lic_ctl, c_buf%level)
           call sel_read_control_lic_pvr(id_control, hd_lic_ctl,         &
      &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl),             &
      &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &
@@ -151,9 +154,10 @@
 !
       if(lic_ctls%num_lic_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_lic_ctl)
       do i = 1, lic_ctls%num_lic_ctl
+        write(*,'(3a,i4,a)', ADVANCE='NO') '!  ', trim(hd_lic_ctl),     &
+     &                                     ' No. ', i
         call sel_write_control_lic_pvr                                  &
      &     (id_control, hd_lic_ctl, lic_ctls%fname_lic_ctl(i),          &
      &      lic_ctls%pvr_ctl_type(i), lic_ctls%lic_ctl_type(i), level)

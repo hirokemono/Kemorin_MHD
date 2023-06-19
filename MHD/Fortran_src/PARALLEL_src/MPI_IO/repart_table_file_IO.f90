@@ -75,7 +75,8 @@
      &    ierr)
       if(ierr .ne. 0) goto 99
 !
-      call skip_comment(character_4_read, id_file_code)
+      call skip_comment(id_file_code, character_4_read, ierr)
+      if(ierr .ne. 0) goto 99
       read(character_4_read,*) repart_IOs%new_numele
       call read_calypso_comm_tbl(id_file_code, id_rank,                 &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export,   &

@@ -57,6 +57,11 @@
       end if
       call bcast_filter_comm_test_data(fc_test_ctl)
 !
+      if(fc_test_ctl%i_filter_test_ctl .ne. 1) then
+        call calypso_MPI_abort(fc_test_ctl%i_filter_test_ctl,           &
+     &                             'control file is broken')
+      end if
+!
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
       call set_ctl_param_filter_comm_test(fc_test_ctl%ffile_ctest_ctl)
 !

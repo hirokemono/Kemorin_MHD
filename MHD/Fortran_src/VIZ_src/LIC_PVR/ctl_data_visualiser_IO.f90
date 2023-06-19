@@ -183,7 +183,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(viz_ctls%i_viz_control .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call sel_read_ctl_file_vol_repart(id_control, hd_viz_partition, &
@@ -290,12 +291,10 @@
       maxlen = max(maxlen, len_trim(hd_i_step_ucd))
       maxlen = max(maxlen, len_trim(hd_output_fld_file_fmt))
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call sel_write_ctl_file_vol_repart(id_control, hd_viz_partition,  &
      &    viz_ctls%fname_vol_repart_ctl, viz_ctls%repart_ctl, level)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_section, viz_ctls%delta_t_psf_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -303,7 +302,6 @@
       call write_files_4_psf_ctl(id_control, hd_section_ctl,            &
      &                           viz_ctls%psf_ctls, level)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_isosurf, viz_ctls%delta_t_iso_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -311,7 +309,6 @@
       call write_files_4_iso_ctl(id_control, hd_isosurf_ctl,            &
      &                           viz_ctls%iso_ctls, level)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_map_projection, viz_ctls%delta_t_map_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -319,7 +316,6 @@
       call write_files_4_map_ctl(id_control, hd_map_rendering,          &
      &                           viz_ctls%map_ctls, level)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_pvr, viz_ctls%delta_t_pvr_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -327,7 +323,6 @@
       call write_files_4_pvr_ctl(id_control, hd_pvr_ctl,                &
      &                           viz_ctls%pvr_ctls, level)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_lic, viz_ctls%delta_t_lic_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -335,7 +330,6 @@
       call write_files_4_lic_ctl(id_control, hd_lic_ctl,                &
      &                           viz_ctls%lic_ctls, level)
 !
-      write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_fline, viz_ctls%delta_t_fline_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

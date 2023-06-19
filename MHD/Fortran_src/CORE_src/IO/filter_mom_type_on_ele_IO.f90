@@ -7,23 +7,28 @@
 !> @brief Filter moment data IO on elements using structure
 !!
 !!@verbatim
-!!      subroutine read_base_filter_info_type(id_file, filter_conf)
+!!      subroutine read_base_filter_info_type                           &
+!!     &         (id_file, filter_conf, iend)
 !!      subroutine write_base_filter_info_type(id_file, filter_conf)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(filter_config_type), intent(inout) ::  filter_conf
 !!
-!!      subroutine read_elen_ele_type(id_file, nele_fmom, elen_ele)
+!!      subroutine read_elen_ele_type                                   &
+!!     &         (id_file, nele_fmom, elen_ele, iend)
 !!      subroutine write_elen_ele_type(id_file, nele_fmom, elen_ele)
 !!        integer (kind = kint), intent(in)  :: nele_fmom
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(elen_ele_diffs_type), intent(inout)  :: elen_ele
+!!        integer(kind = kint), intent(inout) :: iend
 !!
-!!      subroutine read_filter_moms_ele_type(id_file, nele_fmom, mom_ele)
+!!      subroutine read_filter_moms_ele_type                            &
+!!     &         (id_file, nele_fmom, mom_ele, iend)
 !!      subroutine write_filter_moms_ele_type(id_file,                  &
 !!     &          nele_fmom, mom_ele)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        integer (kind = kint), intent(in) :: nele_fmom
 !!        type(ele_mom_diffs_type), intent(inout) :: mom_ele
+!!        integer(kind = kint), intent(inout) :: iend
 !!@endverbatim
 !
       module filter_mom_type_on_ele_IO
@@ -38,7 +43,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_base_filter_info_type(id_file, filter_conf)
+      subroutine read_base_filter_info_type                             &
+     &         (id_file, filter_conf, iend)
 !
       use t_filter_elength
       use skip_comment_f
@@ -46,11 +52,12 @@
 !
       integer(kind = kint), intent(in) :: id_file
       type(filter_config_type), intent(inout) ::  filter_conf
+      integer(kind = kint), intent(inout) :: iend
 !
 !
       call read_ref_filter_param(id_file, filter_conf%nf_type,          &
      &    filter_conf%filter_type,  filter_conf%f_width,                &
-     &    filter_conf%xmom_1d_org)
+     &    filter_conf%xmom_1d_org, iend)
 !
       end subroutine read_base_filter_info_type
 !
@@ -74,7 +81,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_elen_ele_type(id_file, nele_fmom, elen_ele)
+      subroutine read_elen_ele_type                                     &
+     &         (id_file, nele_fmom, elen_ele, iend)
 !
       use t_filter_elength
       use filter_moms_elen_data_IO
@@ -82,6 +90,7 @@
       integer (kind = kint), intent(in)  :: nele_fmom
       integer(kind = kint), intent(in) :: id_file
       type(elen_ele_diffs_type), intent(inout)  :: elen_ele
+      integer(kind = kint), intent(inout) :: iend
 !
 !
       call read_elens_ele(id_file, nele_fmom,                           &
@@ -92,7 +101,7 @@
      &    elen_ele%diff%df_yz, elen_ele%diff%df_zx,                     &
      &    elen_ele%diff2%df_x2, elen_ele%diff2%df_y2,                   &
      &    elen_ele%diff2%df_z2, elen_ele%diff2%df_xy,                   &
-     &    elen_ele%diff2%df_yz, elen_ele%diff2%df_zx)
+     &    elen_ele%diff2%df_yz, elen_ele%diff2%df_zx, iend)
 !
       end subroutine read_elen_ele_type
 !
@@ -124,7 +133,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_moms_ele_type(id_file, nele_fmom, mom_ele)
+      subroutine read_filter_moms_ele_type                              &
+     &         (id_file, nele_fmom, mom_ele, iend)
 !
       use t_filter_moments
       use filter_moms_elen_data_IO
@@ -132,6 +142,7 @@
       integer(kind = kint), intent(in) :: id_file
       integer (kind = kint), intent(in) :: nele_fmom
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
+      integer(kind = kint), intent(inout) :: iend
 !
 !
       call read_filter_moms_ele(id_file, nele_fmom,                     &
@@ -143,7 +154,8 @@
      &   mom_ele%diff%df_x, mom_ele%diff%df_y, mom_ele%diff%df_z,       &
      &   mom_ele%diff2%df_x2, mom_ele%diff2%df_y2, mom_ele%diff2%df_z2, &
      &   mom_ele%diff2%df_xy, mom_ele%diff2%df_yz, mom_ele%diff2%df_zx, &
-     &   mom_ele%diff2%df_x, mom_ele%diff2%df_y, mom_ele%diff2%df_z)
+     &   mom_ele%diff2%df_x, mom_ele%diff2%df_y, mom_ele%diff2%df_z,    &
+     &   iend)
 !
       end subroutine read_filter_moms_ele_type
 !

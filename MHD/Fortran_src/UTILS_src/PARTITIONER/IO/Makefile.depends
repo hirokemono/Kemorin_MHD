@@ -1,6 +1,6 @@
 bcast_control_data_4_part.o: $(PART_IODIR)/bcast_control_data_4_part.f90 m_precision.o calypso_mpi.o t_control_data_4_part.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_ctl_data_vol_repart.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
-error_exit_4_part.o: $(PART_IODIR)/error_exit_4_part.f90 m_precision.o m_error_IDs.o
+error_exit_4_part.o: $(PART_IODIR)/error_exit_4_part.f90 m_precision.o m_error_IDs.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_elapsed_labels_4_PART.o: $(PART_IODIR)/m_elapsed_labels_4_PART.f90 m_precision.o m_work_time.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -16,7 +16,7 @@ t_ctl_param_partitioner.o: $(PART_IODIR)/t_ctl_param_partitioner.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 t_metis_IO.o: $(PART_IODIR)/t_metis_IO.f90 m_precision.o t_edge_data.o t_geometry_graph.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_subdomain_table_IO.o: $(PART_IODIR)/t_subdomain_table_IO.f90 m_precision.o m_constants.o t_geometry_data.o t_domain_group_4_partition.o m_error_IDs.o error_exit_4_part.o skip_comment_f.o
+t_subdomain_table_IO.o: $(PART_IODIR)/t_subdomain_table_IO.f90 m_precision.o m_constants.o calypso_mpi.o t_geometry_data.o t_domain_group_4_partition.o m_error_IDs.o error_exit_4_part.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 work_nod_comm_table_IO.o: $(PART_IODIR)/work_nod_comm_table_IO.f90 m_precision.o t_partitioner_comm_table.o t_comm_table.o
 	$(F90) -c $(F90OPTFLAGS) $<

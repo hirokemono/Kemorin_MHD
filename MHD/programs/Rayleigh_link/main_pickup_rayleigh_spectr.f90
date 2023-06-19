@@ -41,7 +41,11 @@
      &     (id_control, control_name, pick_ctl_s)
       end if
       call bcast_pick_rayleigh_ctl(pick_ctl_s)
-!      call check_pick_rayleigh_ctl(my_rank, pick_ctl_s)
+!
+      if(pick_ctl_s%i_pick_rayleigh_spectr .ne. 1) then
+        call calypso_MPI_abort(pick_ctl_s%i_pick_rayleigh_spectr,       &
+     &                             'control file is broken')
+      end if
 !
       call init_picked_rayleigh_param(pick_ctl_s, pick_ra_param_s)
       ra_rst_s%i_version = pick_ctl_s%Rayleigh_version_ctl%intvalue(1)

@@ -110,16 +110,23 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
         open(id_control, file = fname_ctl_tave_s_vs_r, status='old')
         do
-          call load_one_line_from_control(id_control, c_buf1)
+          call load_one_line_from_control                               &
+     &       (id_control, hd_tave_stable_rev, c_buf1)
+          if(c_buf1%iend .gt. 0) exit
+!
           call read_ctl_tave_stable_rev                                 &
      &       (id_control, hd_tave_stable_rev, tave_svsr_ctl, c_buf1)
           if(tave_svsr_ctl%i_tave_stable_reverse .gt. 0) exit
         end do
         close(id_control)
       end if
+!
+      if(c_buf1%iend .gt. 0)                                            &
+     &              tave_svsr_ctl%i_tave_stable_reverse = c_buf1%iend
 !
       end subroutine read_ctl_file_tave_stable_rev
 !
@@ -139,7 +146,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(tave_svsr_ctl%i_tave_stable_reverse  .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_real_ctl_type                                         &

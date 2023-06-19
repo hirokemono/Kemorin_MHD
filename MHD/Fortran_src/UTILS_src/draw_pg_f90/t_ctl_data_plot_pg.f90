@@ -220,15 +220,20 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(pg_ctl_file_code, file=fname_pgplot_ctl)
 !
       do
-        call load_one_line_from_control(pg_ctl_file_code, c_buf1)
+        call load_one_line_from_control(pg_ctl_file_code,               &
+     &                                  hd_draw_pgplot, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_ctl_data_draw_pgplot                                  &
      &     (pg_ctl_file_code, hd_draw_pgplot, pg_ctl, c_buf1)
         if(pg_ctl%i_draw_pgplot .gt. 0) exit
       end do
       close(pg_ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'read control file error'
 !
       end subroutine read_control_draw_pg
 !
@@ -241,15 +246,20 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(pg_ctl_file_code, file=fname_drmed_grp_ctl)
 !
       do
-        call load_one_line_from_control(pg_ctl_file_code, c_buf1)
+        call load_one_line_from_control(pg_ctl_file_code,               &
+     &                                  hd_drmed_grp, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_ctl_data_draw_grped_pg                                &
      &     (pg_ctl_file_code, hd_drmed_grp, pg_ctl, c_buf1)
         if(pg_ctl%i_drmed_grp .gt. 0) exit
       end do
       close(pg_ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'read control file error'
 !
       end subroutine read_control_drmed_grp_pg
 !
@@ -283,7 +293,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pg_ctl%i_draw_pgplot .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_time_step_data                                &
@@ -317,7 +328,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pg_ctl%i_drmed_grp .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_ctl_data_4_pgplot_param                               &
@@ -345,7 +357,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pg_panel_ctl%i_pgplot_param .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
@@ -375,7 +388,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pg_fld_ctl%i_sf_plotting .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c3(id_control,                          &
@@ -413,7 +427,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pg_section_ctl%i_z_plane_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
@@ -444,7 +459,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pg_map_ctl%i_sphere_map_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &

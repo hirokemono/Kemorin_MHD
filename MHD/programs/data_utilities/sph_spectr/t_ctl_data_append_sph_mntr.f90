@@ -86,14 +86,19 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(ctl_file_code, file = file_name, status='old' )
       do
-        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call load_one_line_from_control                                 &
+     &     (ctl_file_code, hd_monitor_data_connect, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_ctl_data_add_sph_mntr(ctl_file_code,                  &
      &      hd_monitor_data_connect, add_mtr_ctl, c_buf1)
         if(add_mtr_ctl%i_add_sph_monitor .gt. 0) exit
       end do
       close(ctl_file_code)
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       end subroutine read_ctl_file_add_sph_mntr
 !
@@ -115,7 +120,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(add_mtr_ctl%i_add_sph_monitor  .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_folder_to_read_ctl,          &

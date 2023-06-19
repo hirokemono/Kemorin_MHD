@@ -56,6 +56,11 @@
 !
       call bcast_sph_trans_control_data(spt_ctl)
 !
+      if(spt_ctl%i_sph_trans_ctl .ne. 1) then
+        call calypso_MPI_abort(spt_ctl%i_sph_trans_ctl,                 &
+     &                             'control file is broken')
+      end if
+!
       end subroutine load_control_data_sph_trans
 !
 ! -----------------------------------------------------------------------

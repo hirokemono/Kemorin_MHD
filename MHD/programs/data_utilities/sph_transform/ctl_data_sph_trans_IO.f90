@@ -86,14 +86,21 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open (control_file_code, file = file_name)
       do
-        call load_one_line_from_control(control_file_code, c_buf1)
+        call load_one_line_from_control                                 &
+     &     (control_file_code, hd_sph_trans_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_sph_trans_control_data                                &
      &     (control_file_code, hd_sph_trans_ctl, spt_ctl, c_buf1)
         if(spt_ctl%i_sph_trans_ctl .gt. 0) exit
       end do
       close(control_file_code)
+!
+      if(c_buf1%iend .gt. 0)                                            &
+     &              spt_ctl%i_sph_trans_ctl = c_buf1%iend
 !
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (spt_ctl%viz_ctls, spt_ctl%t_ctl)
@@ -148,7 +155,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(spt_ctl%i_sph_trans_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &
@@ -191,9 +199,7 @@
 !
       if(spt_ctl%i_sph_trans_ctl .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_platforms                                      &
      &   (id_control, hd_platform, spt_ctl%plt, level)
       call write_control_platforms                                      &
@@ -252,7 +258,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(spt_ctl%i_sph_trans_model .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_phys_data_control                                     &
@@ -280,9 +287,7 @@
 !
       if(spt_ctl%i_sph_trans_model .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_phys_data_control                                      &
      &   (id_control, hd_phys_values, spt_ctl%fld_ctl, level)
       call write_control_time_step_data                                 &

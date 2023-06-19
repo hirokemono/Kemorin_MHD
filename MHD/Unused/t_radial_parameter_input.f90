@@ -121,12 +121,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_radial_parameter_file(r_file)
+      subroutine read_radial_parameter_file(r_file, iend)
 !
       use m_machine_parameter
       use skip_comment_f
 !
       type(radial_parameter_file), intent(inout) :: r_file
+      integer(kind = kint), intent(inout) :: iend
 !
       integer(kind = kint) :: igrp
       character(len=255) :: tmpchara
@@ -136,15 +137,20 @@
      &                      trim(r_file%sph_radial_data_name)
       open(id_radial_file, file = r_file%sph_radial_data_name)
 !
-      call skip_comment(tmpchara,id_radial_file)
+      call skip_comment(id_radial_file, tmpchara, iend)
+      if(iend .gt. 0) go to 99
       read(tmpchara,*) r_file%num_r_param_ctl
 !
       call alloc_r_params_ctl(r_file)
 !
       do igrp = 1, r_file%num_r_param_ctl
         call read_radial_parameter_data(r_file%rfld_ctls(igrp))
+        if(iend .gt. 0) go to 99
       end do
+
+  99  continue
       close(id_radial_file)
+      if(iend .gt. 0) stop 'read error in read_radial_parameter_file'
 !
       end subroutine read_radial_parameter_file
 !
@@ -242,15 +248,18 @@
       character(len=255) :: tmpchara
 !
 !
-      call skip_comment(tmpchara,id_radial_file)
+      call skip_comment(id_radial_file, tmpchara, iend)
+      if(iend .gt. 0) return
       read(tmpchara,*)  rfld%r_param_name
-      call skip_comment(tmpchara,id_radial_file)
+      call skip_comment(id_radial_file, tmpchara, iend)
+      if(iend .gt. 0) return
       read(tmpchara,*) rfld%nri_param
 !
       call alloc_each_r_param_ctl(rfld)
 !
       do inum = 1, rfld%nri_param
-        call skip_comment(tmpchara,id_radial_file)
+        call skip_comment(id_radial_file, tmpchara, iend)
+        if(iend .gt. 0) return
         read(tmpchara,*) rfld%kr_param(inum),                           &
      &                   rfld%r_param(inum,1:rfld%ncomp_r_param)
       end do

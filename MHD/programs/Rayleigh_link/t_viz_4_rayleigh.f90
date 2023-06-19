@@ -74,6 +74,11 @@
       end if
       call bcast_rayleigh_vizs_ctl_data(rayleigh_vctl)
 !
+      if(rayleigh_vctl%i_viz_only_file .ne. 1) then
+        call calypso_MPI_abort(rayleigh_vctl%i_viz_only_file,           &
+     &                             'control file is broken')
+      end if
+!
       call set_ctl_params_rayleigh_viz(rayleigh_vctl,                   &
      &    t_viz_param, FEM_Rayleigh, ierr)
 !

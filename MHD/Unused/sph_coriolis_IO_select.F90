@@ -39,6 +39,7 @@ use gz_int_4_sph_coriolis_IO
       use int_4_sph_coriolis_IO
       use int_4_sph_coriolis_IO_b
 !
+      integer(kind = kint) :: ierr_IO
 !
       if (ifmt_cor_int_file .eq. id_binary_file_fmt) then
         call read_int_4_sph_coriolis_b
@@ -49,8 +50,10 @@ use gz_int_4_sph_coriolis_IO
 #endif
 !
       else
-        call read_int_4_sph_coriolis
+        call read_int_4_sph_coriolis(ierr_IO)
       end if
+!
+      if(ierr_IO .gt. 0)  stop 'Read file error'
 !
       end subroutine sel_read_int_4_sph_coriolis
 !

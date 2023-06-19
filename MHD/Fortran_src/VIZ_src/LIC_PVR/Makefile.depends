@@ -30,9 +30,9 @@ ctl_data_lic_pvr_IO.o: $(LIC_DIR)/ctl_data_lic_pvr_IO.f90 m_precision.o calypso_
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_data_visualiser_IO.o: $(LIC_DIR)/ctl_data_visualiser_IO.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_data_vizs.o t_control_data_sections.o t_control_data_isosurfaces.o t_control_data_pvrs.o t_control_data_flines.o t_control_data_LIC_pvrs.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_ctl_data_FEM_sleeve_size.o t_read_control_elements.o ctl_file_sections_IO.o ctl_file_isosurfaces_IO.o ctl_file_map_renderings_IO.o ctl_file_fieldlines_IO.o ctl_file_volume_repart_IO.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ctl_file_LIC_kernel_IO.o: $(LIC_DIR)/ctl_file_LIC_kernel_IO.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_LIC_kernel.o skip_comment_f.o ctl_file_LIC_noise_IO.o write_control_elements.o
+ctl_file_LIC_kernel_IO.o: $(LIC_DIR)/ctl_file_LIC_kernel_IO.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_LIC_kernel.o skip_comment_f.o write_control_elements.o ctl_file_LIC_noise_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ctl_file_LIC_noise_IO.o: $(LIC_DIR)/ctl_file_LIC_noise_IO.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_LIC_noise.o skip_comment_f.o ctl_data_isosurface_IO.o write_control_elements.o
+ctl_file_LIC_noise_IO.o: $(LIC_DIR)/ctl_file_LIC_noise_IO.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_LIC_noise.o skip_comment_f.o write_control_elements.o ctl_data_isosurface_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_file_lic_pvr_IO.o: $(LIC_DIR)/ctl_file_lic_pvr_IO.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_pvr.o t_control_data_LIC.o skip_comment_f.o ctl_data_lic_pvr_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

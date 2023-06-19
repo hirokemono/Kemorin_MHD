@@ -52,6 +52,12 @@
         call read_control_4_solver_test(ctl_file_name, solvertest_c)
       end if
       call bcast_ctl_data_test(solvertest_c)
+!
+      if(solvertest_c%i_solver_test_ctl .ne. 1) then
+        call calypso_MPI_abort(solvertest_c%i_solver_test_ctl,          &
+     &                             'control file is broken')
+      end if
+!
       call set_ctl_params_4_solver_test                                 &
      &   (solvertest_c, mat_crs, CG_param, DJDS_param)
 !

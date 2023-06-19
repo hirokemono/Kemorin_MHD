@@ -26,6 +26,7 @@
 !
       call read_control_4_sph_SGS_MHD(MHD_ctl_name,                     &
      &    MHD_ctl_C, add_SSMHD_ctl_C)
+      if(MHD_ctl_C%i_mhd_ctl .ne. 1) stop 'Error in control file'
 !
       end subroutine c_read_control_sph_SGS_MHD
 !

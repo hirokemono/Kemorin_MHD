@@ -77,6 +77,10 @@
       call bcast_viz3_controls(add_VMHD_ctl%viz3_ctls)
       call s_bcast_dynamo_viz_control(add_VMHD_ctl%zm_ctls)
 !
+      if(MHD_ctl%i_mhd_ctl .ne. 1) then
+        call calypso_MPI_abort(MHD_ctl%i_mhd_ctl, trim(file_name))
+      end if
+!
       end subroutine load_control_4_sph_MHD_w_vizs
 !
 ! ----------------------------------------------------------------------

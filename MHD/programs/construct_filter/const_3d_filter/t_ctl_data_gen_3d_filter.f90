@@ -78,15 +78,21 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(filter_ctl_file_code, file=file_name, status='old')
 !
       do
-        call load_one_line_from_control(filter_ctl_file_code, c_buf1)
+        call load_one_line_from_control(filter_ctl_file_code,           &
+     &      hd_filter_control, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_const_filter_ctl_data(filter_ctl_file_code,           &
      &      hd_filter_control, filter3d_ctl, c_buf1)
         if(filter3d_ctl%i_filter_control .gt. 0) exit
       end do
       close(filter_ctl_file_code)
+      if(c_buf1%iend .gt. 0)                                            &
+     &     filter3d_ctl%i_filter_control = c_buf1%iend
 !
       end subroutine read_control_4_gen_filter
 !
@@ -100,15 +106,21 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(filter_ctl_file_code, file=file_name, status='old')
 !
       do
-        call load_one_line_from_control(filter_ctl_file_code, c_buf1)
+        call load_one_line_from_control(filter_ctl_file_code,           &
+     &                                  hd_filter_control, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_const_filter_ctl_data(filter_ctl_file_code,           &
      &      hd_filter_control, filter3d_ctl, c_buf1)
         if(filter3d_ctl%i_filter_control .gt. 0) exit
       end do
       close(filter_ctl_file_code)
+      if(c_buf1%iend .gt. 0)                                            &
+     &     filter3d_ctl%i_filter_control = c_buf1%iend
 !
       end subroutine read_control_4_sort_filter
 !
@@ -132,7 +144,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(filter3d_ctl%i_filter_control .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
@@ -175,9 +188,7 @@
 !
       if(filter3d_ctl%i_filter_control .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_control_platforms(id_control, hd_platform,             &
      &   filter3d_ctl%gen_filter_plt, level)
 !

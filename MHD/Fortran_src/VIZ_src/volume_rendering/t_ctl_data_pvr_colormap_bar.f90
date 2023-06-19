@@ -147,6 +147,7 @@
       subroutine sel_read_ctl_pvr_colormap_file                         &
      &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
 !
+      use write_control_elements
       use ctl_data_pvr_colorbar_IO
       use ctl_data_pvr_colormap_IO
 !
@@ -159,13 +160,17 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        write(*,'(3a)', ADVANCE='NO')                                   &
-     &            'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
+!
+        call write_one_ctl_file_message                                 &
+     &     (hd_block, c_buf%level, file_name)
         call read_control_pvr_colormap_file                             &
      &     (id_control+1, file_name, hd_block, cmap_cbar_c)
+        if(cmap_cbar_c%i_cmap_cbar .ne. 1)                              &
+     &                         c_buf%iend = cmap_cbar_c%i_cmap_cbar
       else if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
         file_name = 'NO_FILE'
+!
         call read_pvr_colordef_ctl(id_control, hd_colormap_file,        &
      &      cmap_cbar_c%color, c_buf)
         call read_pvr_colordef_ctl(id_control, hd_colormap,             &
@@ -195,11 +200,13 @@
         return
       end if
 !
-      write(*,*) 'Colormap control file:', trim(file_name)
+      c_buf1%level = 0
       open(id_control, file = file_name, status='old')
 !
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_pvr_cmap_cbar(id_control, hd_block,                   &
      &      cmap_cbar_c, c_buf1)
         call read_pvr_cmap_cbar(id_control, hd_colormap_file,           &
@@ -207,6 +214,7 @@
         if(cmap_cbar_c%i_cmap_cbar .gt. 0) exit
       end do
       close(id_control)
+      if(c_buf1%iend .gt. 0) cmap_cbar_c%i_cmap_cbar = c_buf1%iend
 !
       end subroutine read_control_pvr_colormap_file
 !
@@ -229,7 +237,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cmap_cbar_c%i_cmap_cbar .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_pvr_colordef_ctl(id_control, hd_colormap,             &
@@ -265,7 +274,14 @@
      &      cmap_cbar_c%color, level)
         call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,        &
      &      cmap_cbar_c%cbar_ctl, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                           &
+     &        ' should be written to file ... ', trim(file_name)
+        call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,        &
+     &      cmap_cbar_c%cbar_ctl, level)
       else
+        write(*,'(3a)') trim(hd_block),                                 &
+     &        ' is written to file ... ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_control_pvr_colormap_file                            &
@@ -289,7 +305,6 @@
 !
       if(file_name .eq. 'NO_FILE') return
 !
-      write(*,*) 'Colormap control file:', trim(file_name)
       level = 0
       open(id_control, file = file_name)
       call write_pvr_cmap_cbar(id_control, hd_block,                    &
@@ -316,14 +331,11 @@
 !
       if(cmap_cbar_c%i_cmap_cbar .le. 0) return
 !
-      write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
       call write_pvr_colordef_ctl(id_control, hd_colormap,              &
      &    cmap_cbar_c%color, level)
       call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,          &
      &    cmap_cbar_c%cbar_ctl, level)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_cmap_cbar

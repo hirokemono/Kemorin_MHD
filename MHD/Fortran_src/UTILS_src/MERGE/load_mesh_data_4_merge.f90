@@ -109,14 +109,17 @@
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO(num_pe)
 !
+      integer(kind = kint) :: ierr_IO = 0
       integer :: id_rank, ip, iloop
 !
 !
       do iloop = 0, (num_pe-1) / nprocs
         id_rank = my_rank + iloop * nprocs
         ip = id_rank + 1
-        call sel_read_rst_file                                          &
-     &     (id_rank, istep_fld, fld_IO_param, t_IO, fld_IO(ip))
+        call sel_read_rst_file(id_rank, istep_fld, fld_IO_param,        &
+     &                         t_IO, fld_IO(ip), ierr_IO)
+        if(ierr_IO .gt. 0) call calypso_MPI_abort(ierr_IO,              &
+     &                 'Read file error in sel_read_rst_file')
       end do
 !
       end subroutine load_old_FEM_restart_4_merge

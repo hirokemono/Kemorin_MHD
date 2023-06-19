@@ -111,6 +111,10 @@
       call bcast_sgs_ctl(sgs_ctl)
       call bcast_viz_controls(viz_ctls)
 !
+      if(FEM_MHD_ctl%i_mhd_ctl .ne. 1) then
+        call calypso_MPI_abort(FEM_MHD_ctl%i_mhd_ctl, trim(file_name))
+      end if
+!
       end subroutine load_control_4_fem_MHD
 !
 ! ----------------------------------------------------------------------

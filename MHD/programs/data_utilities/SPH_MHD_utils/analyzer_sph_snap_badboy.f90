@@ -80,7 +80,7 @@
 !>        Additional structures for spherical SGS MHD dynamo
       type(add_sgs_sph_mhd_ctl), save :: add_SSMHD_ctl1
 !
-      integer(kind = kint) :: iflag_redraw
+      integer(kind = kint) :: iflag_redraw, iflag_failed
       real(kind = kreal) :: total_time
 !
 !     ---------------------
@@ -160,8 +160,14 @@
           end if
 !
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
-          call read_ctl_pvr_files_4_update                              &
-     &       (id_ctl_file, add_SSMHD_ctl1%viz_ctls%pvr_ctls)
+          call read_ctl_pvr_files_4_update(id_ctl_file,                 &
+     &        add_SSMHD_ctl1%viz_ctls%pvr_ctls, iflag_failed)
+!
+          if(iflag_failed .ne. 1) then
+            call calypso_MPI_abort(iflag_failed,                        &
+     &                             'control file is broken')
+          end if
+!
           call PVR_initialize(SSNAPs%MHD_step%viz_step%PVR_t%increment, &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
      &        add_SSMHD_ctl1%viz_ctls%pvr_ctls,                         &

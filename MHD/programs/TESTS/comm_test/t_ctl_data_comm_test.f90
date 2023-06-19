@@ -76,15 +76,21 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       open(test_mest_ctl_file_code, file = file_name, status='old')
       do
-        call load_one_line_from_control                               &
-     &     (test_mest_ctl_file_code, c_buf1)
+        call load_one_line_from_control                                 &
+     &     (test_mest_ctl_file_code, hd_mesh_test_ctl, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_test_comm_ctl_data(test_mest_ctl_file_code,         &
      &      hd_mesh_test_ctl, comm_tctl, c_buf1)
         if(comm_tctl%i_mesh_test_ctl .gt. 0) exit
       end do
       close(test_mest_ctl_file_code)
+!
+      if(c_buf1%iend .gt. 0)                                            &
+     &              comm_tctl%i_mesh_test_ctl = c_buf1%iend
 !
       end subroutine read_control_4_comm_test
 !
@@ -107,7 +113,8 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(comm_tctl%i_mesh_test_ctl .gt. 0) return
       do
-        call load_one_line_from_control(id_control, c_buf)
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_platforms                                     &

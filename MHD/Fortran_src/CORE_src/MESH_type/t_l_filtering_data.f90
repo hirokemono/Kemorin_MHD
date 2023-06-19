@@ -7,8 +7,11 @@
 !!      subroutine alloc_l_filtering_smp(fil_l, fil_l_smp)
 !!      subroutine dealloc_l_filtering_data(fil_l)
 !!
-!!      subroutine read_line_filter_data_a(file_code, numnod, fil_l)
-!!      subroutine write_line_filter_data_a(file_code, fil_l)
+!!      subroutine read_line_filter_data_a(id_file, numnod, fil_l, iend)
+!!      subroutine write_line_filter_data_a(id_file, fil_l)
+!!        integer (kind = kint), intent(in) :: id_file, numnod
+!!        type(line_filtering_type), intent(inout) :: fil_l
+!!        integer(kind = kint), intent(inout) :: iend
 !!
 !!      subroutine check_istack_l_filter(id_rank, fil_l)
 !!      subroutine check_istack_l_filter_smp                            &
@@ -126,12 +129,13 @@
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_line_filter_data_a(file_code, numnod, fil_l)
+      subroutine read_line_filter_data_a(id_file, numnod, fil_l, iend)
 !
       use skip_comment_f
 !
-      integer (kind = kint), intent(in) :: file_code, numnod
+      integer (kind = kint), intent(in) :: id_file, numnod
       type(line_filtering_type), intent(inout) :: fil_l
+      integer(kind = kint), intent(inout) :: iend
 !
       integer (kind = kint) :: nd, inod
 !
@@ -140,37 +144,41 @@
       character (len = kchara) :: tmpchara
 !
 !
-      call skip_comment(character_4_read,file_code)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) ndepth, nfilter
 !
       do nd = 1, 3
-        call skip_comment(character_4_read,file_code)
+        call skip_comment(id_file, character_4_read, iend)
+        if(iend .gt. 0) return
         read(character_4_read,*) itmp,                                  &
      &           fil_l%nmax_lf(nd), fil_l%nmin_lf(nd)
       end do
 !
-      call skip_comment(character_4_read,file_code)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) (fil_l%num_lf(nd), nd=1,3)
 !
 !
       call alloc_l_filtering_data(numnod, ndepth, nfilter, fil_l)
 !
-      call skip_comment(character_4_read,file_code)
+      call skip_comment(id_file, character_4_read, iend)
+      if(iend .gt. 0) return
       read(character_4_read,*) fil_l%inod_lf(1,1:3),                    &
      &                          fil_l%istack_lf(1,1:3)
       do inod = 2, fil_l%nnod_lf
-        read(file_code,*) fil_l%inod_lf(inod,1:3),                      &
-     &                    fil_l%istack_lf(inod,1:3)
+        read(id_file,*) fil_l%inod_lf(inod,1:3),                        &
+     &                  fil_l%istack_lf(inod,1:3)
       end do
 !
       do nd = 1, 3
-        read(file_code,*) tmpchara
-        read(file_code,*) fil_l%item_lf(1:fil_l%num_lf(nd),nd)
+        read(id_file,*) tmpchara
+        read(id_file,*) fil_l%item_lf(1:fil_l%num_lf(nd),nd)
       end do
 !
       do nd = 1, 3
-        read(file_code,*) tmpchara
-        read(file_code,*) fil_l%coef_l(1:fil_l%num_lf(nd),nd)
+        read(id_file,*) tmpchara
+        read(id_file,*) fil_l%coef_l(1:fil_l%num_lf(nd),nd)
       end do
 !
       end subroutine read_line_filter_data_a
@@ -178,53 +186,53 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_line_filter_data_a(file_code, fil_l)
+      subroutine write_line_filter_data_a(id_file, fil_l)
 !
       type(line_filtering_type), intent(in) :: fil_l
 !
-      integer (kind = kint) :: file_code
+      integer (kind = kint) :: id_file
       integer (kind = kint) :: inod, nd
 !
 !
-       write(file_code,'(a)')                                           &
+       write(id_file,'(a)')                                             &
      &        '! num_depth, max. number of node for filtering cube: '
-       write(file_code,'(2i16)') fil_l%ndepth_lf, fil_l%num_filter_l
-       write(file_code,'(a)')                                           &
+       write(id_file,'(2i16)') fil_l%ndepth_lf, fil_l%num_filter_l
+       write(id_file,'(a)')                                             &
      &     '! num_depth, max. and min. number of node for filtering: '
        do nd = 1, 3
-         write(file_code,'(3i16)') nd, fil_l%nmax_lf(nd),               &
-     &                                 fil_l%nmin_lf(nd)
+         write(id_file,'(3i16)') nd, fil_l%nmax_lf(nd),                 &
+     &                               fil_l%nmin_lf(nd)
        end do
-       write(file_code,'(a)') '! total number of filtering data '
-       write(file_code,'(3i16)') fil_l%num_lf(1:3)
+       write(id_file,'(a)') '! total number of filtering data '
+       write(id_file,'(3i16)') fil_l%num_lf(1:3)
 !
 !
-       write(file_code,'(a)') '! orderind ID for filtering'
-       write(file_code,'(a)')                                           &
+       write(id_file,'(a)') '! orderind ID for filtering'
+       write(id_file,'(a)')                                             &
      &     '! and stack for filtering for each direction'
        do inod = 1, fil_l%nnod_lf
-          write(file_code,'(6i16)')  fil_l%inod_lf(inod,1:3),           &
-      &                              fil_l%istack_lf(inod,1:3)
+          write(id_file,'(6i16)')  fil_l%inod_lf(inod,1:3),             &
+      &                            fil_l%istack_lf(inod,1:3)
        enddo
 !
-          write(file_code,'(a)') '! node ID for x-filtering'
-          write(file_code,'(8i16)') fil_l%item_lf(1:fil_l%num_lf(1),1)
-          write(file_code,'(a)') '! node ID for y-filtering'
-          write(file_code,'(8i16)') fil_l%item_lf(1:fil_l%num_lf(2),2)
-          write(file_code,'(a)') '! node ID for z-filtering'
-          write(file_code,'(8i16)') fil_l%item_lf(1:fil_l%num_lf(3),3)
+          write(id_file,'(a)') '! node ID for x-filtering'
+          write(id_file,'(8i16)') fil_l%item_lf(1:fil_l%num_lf(1),1)
+          write(id_file,'(a)') '! node ID for y-filtering'
+          write(id_file,'(8i16)') fil_l%item_lf(1:fil_l%num_lf(2),2)
+          write(id_file,'(a)') '! node ID for z-filtering'
+          write(id_file,'(8i16)') fil_l%item_lf(1:fil_l%num_lf(3),3)
 !
-          write(file_code,'(a)')                                        &
+          write(id_file,'(a)')                                          &
      &          '! filter coefficients for x'
-          write(file_code,'(1p4E25.15e3)')                              &
+          write(id_file,'(1p4E25.15e3)')                                &
      &           fil_l%coef_l(1:fil_l%num_lf(1),1)
-          write(file_code,'(a)')                                        &
+          write(id_file,'(a)')                                          &
      &          '! filter coefficients for y'
-          write(file_code,'(1p4E25.15e3)')                              &
+          write(id_file,'(1p4E25.15e3)')                                &
      &           fil_l%coef_l(1:fil_l%num_lf(2),2)
-          write(file_code,'(a)')                                        &
+          write(id_file,'(a)')                                          &
      &          '! filter coefficients for z'
-          write(file_code,'(1p4E25.15e3)')                              &
+          write(id_file,'(1p4E25.15e3)')                                &
      &           fil_l%coef_l(1:fil_l%num_lf(3),3)
 !
 !

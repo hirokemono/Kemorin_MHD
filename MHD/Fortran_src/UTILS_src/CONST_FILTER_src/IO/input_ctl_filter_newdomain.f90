@@ -53,6 +53,11 @@
       end if
       call bcast_ctl_filter_newdomain_data(newd_fil_ctl)
 !
+      if(newd_fil_ctl%i_filter_newdomain_ctl.ne. 1) then
+        call calypso_MPI_abort(newd_fil_ctl%i_filter_newdomain_ctl,     &
+     &                         trim(ctl_file_name))
+      end if
+!
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       call set_control_filter_newdomain                                 &
      &   (nprocs_2nd, newd_fil_ctl%org_filter_plt,                      &

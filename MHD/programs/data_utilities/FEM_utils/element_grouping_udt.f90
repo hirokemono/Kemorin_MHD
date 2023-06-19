@@ -36,6 +36,9 @@
 !
 !
       call read_control_ele_grp_udt(egrp_udt_ctl1)
+      if(egrp_udt_ctl1%i_ele_grp_udt .ne. 1)                            &
+     &                      stop 'control file is broken'
+
       call set_control_ele_grp_udt(egrp_udt_ctl1)
 !
       call read_med_grouping_patch(layerd_mesh_head, e_grp,             &

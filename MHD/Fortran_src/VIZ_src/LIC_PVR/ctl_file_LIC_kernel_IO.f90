@@ -73,6 +73,7 @@
       subroutine sel_read_LIC_kernel_ctl_file                           &
      &         (id_control, hd_block, file_name, kernel_ctl, c_buf)
 !
+      use write_control_elements
       use t_read_control_elements
       use skip_comment_f
 !
@@ -86,14 +87,16 @@
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        write(*,'(a)', ADVANCE='NO') trim(hd_block),                    &
-     &                            ' is read file from ... '
+        call write_one_ctl_file_message                                 &
+     &     (hd_block, c_buf%level, file_name)
         call read_LIC_kernel_control_file((id_control+2), file_name,    &
      &                                    hd_block, kernel_ctl)
+        if(kernel_ctl%i_kernel_control .ne. 1)                          &
+     &                         c_buf%iend = kernel_ctl%i_kernel_control
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
-        write(*,*) trim(hd_block), ' is included'
+        call write_included_message(hd_block, c_buf%level)
         call read_kernel_control_data(id_control, hd_block,             &
      &                                kernel_ctl, c_buf)
       end if
@@ -115,16 +118,19 @@
 !
       if(file_name .eq. 'NO_FILE') return
 !
-      write(*,*) 'LIC noise control file: ', trim(file_name)
-!
+      c_buf1%level = 0
       open(id_control, file=file_name, status='old')
       do
-        call load_one_line_from_control(id_control, c_buf1)
+        call load_one_line_from_control(id_control, hd_block, c_buf1)
+        if(c_buf1%iend .gt. 0) exit
+!
         call read_kernel_control_data                                   &
      &     (id_control, hd_block, kernel_ctl, c_buf1)
         if(kernel_ctl%i_kernel_control .gt. 0) exit
       end do
       close(id_control)
+!
+      if(c_buf1%iend .gt. 0) kernel_ctl%i_kernel_control = c_buf1%iend
 !
       end subroutine read_LIC_kernel_control_file
 !
@@ -148,8 +154,14 @@
       if(cmp_no_case(file_name, 'NO_FILE')) then
         call write_kernel_control_data(id_control, hd_block,            &
      &                                  kernel_ctl, level)
+      else if(id_control .eq. id_monitor) then
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
+     &             ' should be written file to ... ',  trim(file_name)
+        call write_kernel_control_data(id_control, hd_block,            &
+     &                                  kernel_ctl, level)
       else
-        write(*,'(a)', ADVANCE='NO') ' is write file to ... '
+        write(*,'(3a)') trim(hd_block),                                 &
+     &              ' is written file to ... ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &      hd_block, file_name)
         call write_LIC_kernel_control_file((id_control+2), file_name,   &
@@ -171,7 +183,6 @@
       integer(kind = kint) :: level
 !
       level = 0
-      write(*,*) 'Write LIC noise control file: ', trim(file_name)
       open(id_control, file=file_name)
       call write_kernel_control_data                                    &
      &     (id_control, hd_block, kernel_ctl, level)

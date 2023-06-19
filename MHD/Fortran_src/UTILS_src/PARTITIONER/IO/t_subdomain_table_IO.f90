@@ -27,6 +27,7 @@
 !
       use m_precision
       use m_constants
+      use calypso_mpi
 !
       use t_geometry_data
       use t_domain_group_4_partition
@@ -61,9 +62,13 @@
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       integer(kind = kint), intent(inout) :: num_domain
 !
+      integer(kind = kint) :: ierr
       type(subdomain_table_IO) :: sub_IO
 !
-      call read_group_4_partition(file_name, sub_IO)
+      call read_group_4_partition(file_name, sub_IO, ierr)
+      if (ierr .gt. 0) call calypso_MPI_abort(ierr,                     &
+     &                'Read file error in read_group_4_partition')
+!
       call copy_domain_list_from_IO(node%numnod, node%internal_node,    &
      &    sub_IO, nod_d_grp, num_domain)
       call dealloc_domain_group_IO(sub_IO)
@@ -105,10 +110,14 @@
       type(finer_domain_group), intent(inout) :: nod_f_grp
       integer(kind = kint), intent(inout) :: num_domain
 !
+      integer(kind = kint) :: ierr
       type(subdomain_table_IO) :: sub_IO
 !
 !
-      call read_group_4_partition(file_name, sub_IO)
+      call read_group_4_partition(file_name, sub_IO, ierr)
+      if (ierr .gt. 0) call calypso_MPI_abort(ierr,                     &
+     &                'Read file error in read_group_4_partition')
+!
       call copy_finer_domain_list_from_IO                               &
      &   (sub_IO, new_node, nod_f_grp, num_domain)
       call dealloc_domain_group_IO(sub_IO)
@@ -162,28 +171,32 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_group_4_partition(file_name, sub_IO)
+      subroutine read_group_4_partition(file_name, sub_IO, iend)
 !
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: file_name
       type(subdomain_table_IO), intent(inout) :: sub_IO
+      integer(kind = kint), intent(inout) :: iend
 !
       character(len=255) :: character_4_read
 !
 !
       open(id_subdomain,file = file_name)
 !
-      call skip_comment(character_4_read, id_subdomain)
+      call skip_comment(id_subdomain, character_4_read, iend)
+      if(iend .gt. 0) go to 99
       read(character_4_read,*) sub_IO%nproc_group_IO
 !
-      call skip_comment(character_4_read, id_subdomain)
+      call skip_comment(id_subdomain, character_4_read, iend)
+      if(iend .gt. 0) go to 99
       read(character_4_read,*)                                          &
      &      sub_IO%nnod_group_IO, sub_IO%internod_group_IO
 !
       call alloc_domain_group_IO(sub_IO)
       read(id_subdomain,*) sub_IO%IGROUP_IO(1:sub_IO%nnod_group_IO)
 !
+  99  continue
       close(id_subdomain)
 !
       end subroutine read_group_4_partition

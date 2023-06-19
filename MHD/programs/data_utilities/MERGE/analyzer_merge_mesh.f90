@@ -30,6 +30,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter, private                      &
+     &         :: ctl_file_name = 'control_merge'
+!
       type(control_data_4_merge), save :: mgd_ctl_m
       type(control_param_assemble), save :: asbl_param_m
       type(mesh_SR), save :: m_SR_a
@@ -64,8 +67,13 @@
 !
 !   read control data
 !
-      if(my_rank .eq. 0) call read_control_4_merge(mgd_ctl_m)
+      if(my_rank .eq. 0) call read_control_4_merge(ctl_file_name,       &
+     &                                             mgd_ctl_m)
       call bcast_merge_control_data(mgd_ctl_m)
+      if(mgd_ctl_m%i_assemble .ne. 1) then
+        call calypso_MPI_abort(mgd_ctl_m%i_assemble,                    &
+     &                         trim(ctl_file_name))
+      end if
 !
       call set_control_4_merge(mgd_ctl_m, asbl_param_m, ndomain_org)
       call set_ctl_parallel_file_w_def(def_new_mesh_head,               &
