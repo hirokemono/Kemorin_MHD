@@ -152,12 +152,12 @@
      &                                viz_repart_c, level)
       else if(id_control .eq. id_monitor) then
         write(*,'(4a)') '!  ', trim(hd_block),                          &
-     &       'should be written to file ... ', trim(file_name)
+     &       ' should be written to file ... ', trim(file_name)
         call write_control_vol_repart(id_control, hd_block,             &
      &                                viz_repart_c, level)
       else
         write(*,'(3a)') trim(hd_block),                                 &
-     &       'is written to file ... ', trim(file_name)
+     &       ' is written to file ... ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_ctl_file_vol_repart((id_control+1), file_name,       &
