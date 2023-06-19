@@ -160,7 +160,6 @@
       use ctl_data_pvr_colormap_IO
       use ctl_file_pvr_light_IO
       use ctl_data_pvr_movie_IO
-      use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -178,13 +177,8 @@
         if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        if(check_file_flag(c_buf, hd_view_transform)                    &
-     &        .or. check_begin_flag(c_buf, hd_view_transform)) then
-          call write_multi_ctl_file_message                             &
-     &       (hd_view_transform, izero, c_buf%level)
-          call sel_read_ctl_modelview_file(id_control,                  &
-     &        hd_view_transform, pvr%fname_mat_ctl, pvr%mat, c_buf)
-        end if
+        call sel_read_ctl_modelview_file(id_control, hd_view_transform, &
+     &      izero, pvr%fname_mat_ctl, pvr%mat, c_buf)
 !
         call sel_read_ctl_pvr_colormap_file                             &
      &     (id_control, hd_lic_colordef, pvr%fname_cmap_cbar_c,         &
