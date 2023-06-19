@@ -49,17 +49,20 @@
       character(len = kchara), intent(in) :: ctl_file_name
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !
+      type(buffer_for_control) :: c_buf1
 !
+!
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_data_sph_trans(ctl_file_name, spt_ctl)
+        call read_control_data_sph_trans(ctl_file_name,                 &
+     &                                   spt_ctl, c_buf1)
       end if
-!
-      call bcast_sph_trans_control_data(spt_ctl)
-!
-      if(spt_ctl%i_sph_trans_ctl .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(spt_ctl%i_sph_trans_ctl,                 &
      &                             'control file is broken')
       end if
+!
+      call bcast_sph_trans_control_data(spt_ctl)
 !
       end subroutine load_control_data_sph_trans
 !

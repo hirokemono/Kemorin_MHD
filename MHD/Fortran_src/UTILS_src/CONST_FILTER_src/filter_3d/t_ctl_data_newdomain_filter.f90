@@ -8,9 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine read_control_filter_newdomain(file_name,             &
-!!     &                                         newd_fil_ctl)
+!!     &                                         newd_fil_ctl, c_buf)
 !!      subroutine write_control_filter_newdomain(file_name,            &
 !!     &                                          newd_fil_ctl)
+!!        character(len = kchara), intent(in) :: file_name
+!!        type(ctl_data_newdomain_filter), intent(inout) :: newd_fil_ctl
+!!        type(buffer_for_control), intent(inout) :: c_buf
 !!@endverbatim
 !
       module t_ctl_data_newdomain_filter
@@ -65,34 +68,30 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_filter_newdomain(file_name,               &
-     &                                         newd_fil_ctl)
+     &                                         newd_fil_ctl, c_buf)
 !
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: file_name
       type(ctl_data_newdomain_filter), intent(inout) :: newd_fil_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(id_filter_ctl_file, file=file_name, status='old')
 !
       do
         call load_one_line_from_control                                 &
-     &     (id_filter_ctl_file, hd_filter_newdomain_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (id_filter_ctl_file, hd_filter_newdomain_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_ctl_filter_newdomain_data(id_filter_ctl_file,         &
-     &      hd_filter_newdomain_ctl, newd_fil_ctl, c_buf1)
+     &      hd_filter_newdomain_ctl, newd_fil_ctl, c_buf)
         if(newd_fil_ctl%i_filter_newdomain_ctl .gt. 0) exit
       end do
       close(id_filter_ctl_file)
 !
-      if(c_buf1%iend .gt. 0) then
-        newd_fil_ctl%i_filter_newdomain_ctl = c_buf1%iend
-        return
-      end if
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_control_filter_newdomain
 !

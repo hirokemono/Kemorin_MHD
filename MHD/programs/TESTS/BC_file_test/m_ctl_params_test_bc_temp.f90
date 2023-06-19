@@ -28,6 +28,7 @@
 !
       subroutine input_control_bc_temp(ctl_file_name, mesh_file)
 !
+      use t_read_control_elements
       use bcast_ctl_data_test_bc_temp
 !
       character(len = kchara), intent(in) :: ctl_file_name
@@ -35,14 +36,19 @@
 !
       type(ctl_data_bc_temp_test) :: bc_temp_test_ctl
 !
+      integer(kind = kint) :: ierr = 0
+      type(buffer_for_control) :: c_buf1
 !
+!
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_4_bc_temp(ctl_file_name, bc_temp_test_ctl)
+        call read_control_4_bc_temp(ctl_file_name,                      &
+     &                              bc_temp_test_ctl, c_buf1)
       end if
 !
       call bcast_test_mesh_ctl_data(bc_temp_test_ctl)
 !
-      if(bc_temp_test_ctl%i_mesh_test_ctl .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(bc_temp_test_ctl%i_mesh_test_ctl,        &
      &                             'control file is broken')
       end if

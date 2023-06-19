@@ -9,8 +9,6 @@
 !!@verbatim
 !!      subroutine sel_read_ctl_pvr_colormap_file                       &
 !!     &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
-!!      subroutine read_control_pvr_colormap_file                       &
-!!     &         (id_control, file_name, hd_block, cmap_cbar_c)
 !!      subroutine read_pvr_cmap_cbar                                   &
 !!     &         (id_control, hd_block, cmap_cbar_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -138,6 +136,8 @@
       private :: hd_colormap, hd_pvr_colorbar, n_label_pvr_cmap_bar
       private :: hd_colormap_file
 !
+      private ::  read_control_pvr_colormap_file
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -165,9 +165,7 @@
         call write_one_ctl_file_message                                 &
      &     (hd_block, c_buf%level, file_name)
         call read_control_pvr_colormap_file                             &
-     &     (id_control+1, file_name, hd_block, cmap_cbar_c)
-        if(cmap_cbar_c%i_cmap_cbar .ne. 1)                              &
-     &                         c_buf%iend = cmap_cbar_c%i_cmap_cbar
+     &     (id_control+1, file_name, hd_block, cmap_cbar_c, c_buf)
       else if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
         file_name = 'NO_FILE'
 !
@@ -185,14 +183,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_pvr_colormap_file                         &
-     &         (id_control, file_name, hd_block, cmap_cbar_c)
+     &         (id_control, file_name, hd_block, cmap_cbar_c, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
       type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
-!
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
       if(file_name .eq. 'NO_FILE') then
@@ -200,21 +197,23 @@
         return
       end if
 !
-      c_buf1%level = 0
+!
+      c_buf%level = c_buf%level + 1
       open(id_control, file = file_name, status='old')
 !
       do
-        call load_one_line_from_control(id_control, hd_block, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_pvr_cmap_cbar(id_control, hd_block,                   &
-     &      cmap_cbar_c, c_buf1)
+     &      cmap_cbar_c, c_buf)
         call read_pvr_cmap_cbar(id_control, hd_colormap_file,           &
-     &      cmap_cbar_c, c_buf1)
+     &      cmap_cbar_c, c_buf)
         if(cmap_cbar_c%i_cmap_cbar .gt. 0) exit
       end do
       close(id_control)
-      if(c_buf1%iend .gt. 0) cmap_cbar_c%i_cmap_cbar = c_buf1%iend
+!
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_control_pvr_colormap_file
 !

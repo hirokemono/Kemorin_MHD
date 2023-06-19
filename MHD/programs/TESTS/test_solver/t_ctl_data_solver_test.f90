@@ -7,7 +7,8 @@
 !>@brief  Structure for reading parameters for MGCG
 !!
 !!@verbatim
-!!      subroutine read_control_4_solver_test
+!!      subroutine read_control_4_solver_test(file_name,                &
+!!     &                                      solvertest_c, c_buf)
 !!@endverbatim
 !
       module t_ctl_data_solver_test
@@ -70,32 +71,33 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_solver_test(file_name, solvertest_c)
+      subroutine read_control_4_solver_test(file_name,                  &
+     &                                      solvertest_c, c_buf)
 !
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: file_name
       type(ctl_data_solver_test), intent(inout) :: solvertest_c
 !
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(stest_ctl_file_code, file=file_name, status='old')
 !
       do
         call load_one_line_from_control                                 &
-     &     (stest_ctl_file_code, hd_solver_test_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (stest_ctl_file_code, hd_solver_test_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_ctl_data_test(stest_ctl_file_code,                    &
-     &      hd_solver_test_ctl, solvertest_c, c_buf1)
+     &      hd_solver_test_ctl, solvertest_c, c_buf)
         if(solvertest_c%i_solver_test_ctl .gt. 0) exit
       end do
       close(stest_ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0)                                            &
-     &              solvertest_c%i_solver_test_ctl = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       end subroutine read_control_4_solver_test
 !

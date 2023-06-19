@@ -4,7 +4,7 @@ analyzer_test_djds.o: $(SOLVERTEST_DIR)/analyzer_test_djds.f90 m_precision.o t_g
 	$(F90) -c $(F90OPTFLAGS) $<
 crs_matrix_io.o: $(SOLVERTEST_DIR)/crs_matrix_io.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_crs_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
-input_control_solver_test.o: $(SOLVERTEST_DIR)/input_control_solver_test.f90 m_precision.o m_machine_parameter.o t_ctl_data_solver_test.o t_crs_matrix.o t_iccg_parameter.o calypso_mpi.o skip_comment_f.o calypso_mpi_int.o bcast_4_solver_ctl.o bcast_control_arrays.o crs_matrix_io.o set_parallel_file_name.o
+input_control_solver_test.o: $(SOLVERTEST_DIR)/input_control_solver_test.f90 m_precision.o m_machine_parameter.o t_ctl_data_solver_test.o t_crs_matrix.o t_iccg_parameter.o calypso_mpi.o t_read_control_elements.o skip_comment_f.o calypso_mpi_int.o bcast_4_solver_ctl.o bcast_control_arrays.o crs_matrix_io.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_sample_matrices.o: $(SOLVERTEST_DIR)/m_sample_matrices.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

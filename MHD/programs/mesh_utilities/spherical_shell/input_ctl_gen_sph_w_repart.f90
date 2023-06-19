@@ -44,6 +44,7 @@
       use t_ctl_params_gen_sph_shell
       use t_sph_grid_maker_in_sim
       use t_control_param_vol_grping
+      use t_read_control_elements
       use m_error_IDs
 !
       character(len=kchara), intent(in) :: file_name
@@ -53,14 +54,17 @@
       type(volume_partioning_param), intent(inout) :: repart_p
 !
       integer(kind = kint) :: ierr = 0
+      type(buffer_for_control) :: c_buf1
 !
-!       load control file
+!
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_ctl_file_gen_sph_w_repart(file_name, gen_SPH_wP_c)
+        call read_ctl_file_gen_sph_w_repart(file_name,                  &
+     &                                      gen_SPH_wP_c, c_buf1)
       end if
       call bcast_ctl_data_gen_sph_w_repart(gen_SPH_wP_c)
 !
-      if(gen_SPH_wP_c%i_sph_mesh_ctl .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(gen_SPH_wP_c%i_sph_mesh_ctl,             &
      &                             'control file is broken')
       end if

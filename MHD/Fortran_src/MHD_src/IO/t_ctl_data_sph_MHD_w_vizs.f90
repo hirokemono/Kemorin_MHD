@@ -12,7 +12,7 @@
 !!
 !!@verbatim
 !!      subroutine read_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,    &
-!!     &                                         add_VMHD_ctl)
+!!     &                                         add_VMHD_ctl, c_buf)
 !!      subroutine read_sph_mhd_ctl_w_vizs(id_control, hd_block,        &
 !!     &                                  MHD_ctl, add_VMHD_ctl, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
@@ -106,33 +106,30 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,      &
-     &                                         add_VMHD_ctl)
+     &                                         add_VMHD_ctl, c_buf)
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(add_vizs_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(id_control_file, file = file_name, status='old' )
 !
       do
         call load_one_line_from_control(id_control_file, hd_mhd_ctl,    &
-     &                                  c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &                                  c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_sph_mhd_ctl_w_vizs(id_control_file, hd_mhd_ctl,       &
-     &      MHD_ctl, add_VMHD_ctl, c_buf1)
+     &      MHD_ctl, add_VMHD_ctl, c_buf)
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(id_control_file)
 !
-      if(c_buf1%iend .gt. 0) then
-        MHD_ctl%i_mhd_ctl = c_buf1%iend
-        return
-      end if
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0)  return
 !
       call viz3_step_ctls_to_time_ctl(add_VMHD_ctl%viz3_ctls,           &
      &                                MHD_ctl%smctl_ctl%tctl)

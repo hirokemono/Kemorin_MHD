@@ -115,9 +115,12 @@
         if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
+        if(check_file_flag(c_buf, hd_surface_define)                    &
+     &        .or. check_begin_flag(c_buf, hd_surface_define)) then
           call sel_read_ctl_pvr_section_def(id_control,                 &
      &        hd_surface_define, pvr_sect_ctl%fname_sect_ctl,           &
      &        pvr_sect_ctl%psf_def_c, c_buf)
+        end if
 !
         call read_real_ctl_type                                         &
      &     (c_buf, hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)

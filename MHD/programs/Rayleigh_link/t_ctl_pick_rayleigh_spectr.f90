@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine dealloc_pick_rayleigh_spectr(g_pwr)
 !!      subroutine read_rayleigh_pick_mode_ctl                          &
-!!     &         (id_control, control_name, pick_ctl)
+!!     &         (id_control, control_name, pick_ctl, c_buf)
 !!
 !! -----------------------------------------------------------------
 !!
@@ -111,31 +111,31 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_rayleigh_pick_mode_ctl                            &
-     &         (id_control, control_name, pick_ctl)
+     &         (id_control, control_name, pick_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: control_name
 !
       type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
+      if(c_buf%iend .gt. 0) return
       open(id_control, file = control_name)
       do
         call load_one_line_from_control                                 &
-     &     (id_control, hd_pick_sph_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (id_control, hd_pick_sph_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_pick_rayleigh_ctl(id_control, hd_pick_sph_ctl,        &
-     &                            pick_ctl, c_buf1)
+     &                            pick_ctl, c_buf)
         if(pick_ctl%i_pick_rayleigh_spectr .gt. 0) exit
       end do
       close(id_control)
 !
-      if(c_buf1%iend .gt. 0)                                            &
-     &              pick_ctl%i_pick_rayleigh_spectr = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       end subroutine read_rayleigh_pick_mode_ctl
 !

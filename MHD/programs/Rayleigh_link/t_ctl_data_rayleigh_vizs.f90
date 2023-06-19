@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine read_ctl_file_rayleigh_viz(file_name,                &
-!!     &                                      rayleigh_vizs_ctl)
+!!     &                                      rayleigh_vizs_ctl, c_buf)
 !!      subroutine write_ctl_file_rayleigh_viz(file_name,               &
 !!     &                                       rayleigh_vizs_ctl)
 !!      subroutine dealloc_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
@@ -107,7 +107,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_ctl_file_rayleigh_viz(file_name,                  &
-     &                                      rayleigh_vizs_ctl)
+     &                                      rayleigh_vizs_ctl, c_buf)
 !
       use skip_comment_f
       use viz_step_ctls_to_time_ctl
@@ -115,25 +115,25 @@
       character(len = kchara), intent(in) :: file_name
       type(control_data_rayleigh_vizs), intent(inout)                   &
      &                         :: rayleigh_vizs_ctl
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open (viz_ctl_file_code, file=file_name, status='old')
       do
         call load_one_line_from_control                                 &
-     &     (viz_ctl_file_code, hd_rayleigh_viz, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (viz_ctl_file_code, hd_rayleigh_viz, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_rayleigh_vizs_ctl_data                                &
      &     (viz_ctl_file_code, hd_rayleigh_viz,                         &
-     &      rayleigh_vizs_ctl, c_buf1)
+     &      rayleigh_vizs_ctl, c_buf)
         if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) exit
       end do
       close(viz_ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0)                                            &
-     &              rayleigh_vizs_ctl%i_viz_only_file = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (rayleigh_vizs_ctl%viz_ctl_v, rayleigh_vizs_ctl%t_viz_ctl)

@@ -7,7 +7,8 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
-!!      subroutine read_control_data_sph_trans(file_name, spt_ctl)
+!!      subroutine read_control_data_sph_trans(file_name,               &
+!!     &                                       spt_ctl, c_buf)
 !!      subroutine write_control_data_sph_trans(file_name, spt_ctl)
 !!      subroutine dealloc_sph_trans_control_data(spt_ctl)
 !!        character(len = kchara), intent(in) :: file_name
@@ -76,31 +77,31 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_sph_trans(file_name, spt_ctl)
+      subroutine read_control_data_sph_trans(file_name,                 &
+     &                                       spt_ctl, c_buf)
 !
       use viz_step_ctls_to_time_ctl
 !
       character(len = kchara), intent(in) :: file_name
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open (control_file_code, file = file_name)
       do
         call load_one_line_from_control                                 &
-     &     (control_file_code, hd_sph_trans_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (control_file_code, hd_sph_trans_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_sph_trans_control_data                                &
-     &     (control_file_code, hd_sph_trans_ctl, spt_ctl, c_buf1)
+     &     (control_file_code, hd_sph_trans_ctl, spt_ctl, c_buf)
         if(spt_ctl%i_sph_trans_ctl .gt. 0) exit
       end do
       close(control_file_code)
 !
-      if(c_buf1%iend .gt. 0)                                            &
-     &              spt_ctl%i_sph_trans_ctl = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       call s_viz_step_ctls_to_time_ctl                                  &
      &   (spt_ctl%viz_ctls, spt_ctl%t_ctl)

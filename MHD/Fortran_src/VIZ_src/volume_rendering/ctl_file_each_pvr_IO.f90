@@ -9,9 +9,9 @@
 !!      subroutine sel_read_control_pvr(id_control, hd_pvr_ctl,         &
 !!     &          fname_pvr_ctl, pvr_ctl_type, c_buf)
 !!      subroutine read_control_pvr_file(id_control, fname_pvr_ctl,     &
-!!     &          hd_pvr_ctl, pvr_ctl_type)
-!!      subroutine read_control_pvr_update                              &
-!!     &         (id_control, fname_pvr_ctl, hd_pvr_ctl, pvr_ctl_type)
+!!     &          hd_pvr_ctl, pvr_ctl_type, c_buf)
+!!      subroutine read_control_pvr_update(id_control, fname_pvr_ctl,   &
+!!     &                                   hd_pvr_ctl, pvr_ctl_type)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: hd_pvr_ctl
 !!        character(len = kchara), intent(inout) :: fname_pvr_ctl
@@ -60,9 +60,7 @@
 !
         write(*,'(2a)') ' is read from ', trim(fname_pvr_ctl)
         call read_control_pvr_file(id_control+2, fname_pvr_ctl,         &
-     &                             hd_pvr_ctl, pvr_ctl_type)
-        if(pvr_ctl_type%i_pvr_ctl .ne. 1)                               &
-     &                         c_buf%iend = pvr_ctl_type%i_pvr_ctl
+     &                             hd_pvr_ctl, pvr_ctl_type, c_buf)
       else if(check_begin_flag(c_buf, hd_pvr_ctl)) then
         fname_pvr_ctl = 'NO_FILE'
 !
@@ -75,7 +73,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_pvr_file(id_control, fname_pvr_ctl,       &
-     &          hd_pvr_ctl, pvr_ctl_type)
+     &          hd_pvr_ctl, pvr_ctl_type, c_buf)
 !
       use ctl_data_each_pvr_IO
 !
@@ -83,29 +81,29 @@
       character(len = kchara), intent(in) :: fname_pvr_ctl
       character(len = kchara), intent(in) :: hd_pvr_ctl
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(id_control, file=fname_pvr_ctl, status='old')
       do
-        call load_one_line_from_control(id_control, hd_pvr_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+        call load_one_line_from_control(id_control, hd_pvr_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_pvr_ctl(id_control, hd_pvr_ctl,                       &
-     &                    pvr_ctl_type, c_buf1)
+     &                    pvr_ctl_type, c_buf)
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)
-      if(c_buf1%iend .gt. 0) pvr_ctl_type%i_pvr_ctl = c_buf1%iend
+!
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_control_pvr_file
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_pvr_update                                &
-     &         (id_control, fname_pvr_ctl, hd_pvr_ctl, pvr_ctl_type)
+      subroutine read_control_pvr_update(id_control, fname_pvr_ctl,     &
+     &                                   hd_pvr_ctl, pvr_ctl_type)
 !
       use ctl_data_each_pvr_IO
       use bcast_control_data_4_pvr

@@ -7,7 +7,8 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine read_ctl_file_new_partition(file_name, part_tctl)
+!!      subroutine read_ctl_file_new_partition(file_name,               &
+!!     &                                       part_tctl, c_buf)
 !!      subroutine write_ctl_file_new_partition(file_name, part_tctl)
 !!      subroutine dealloc_control_new_partition(part_tctl)
 !!        type(new_patition_test_control), intent(inout) :: part_tctl
@@ -82,7 +83,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_file_new_partition(file_name, part_tctl)
+      subroutine read_ctl_file_new_partition(file_name,                 &
+     &                                       part_tctl, c_buf)
 !
       use skip_comment_f
       use bcast_4_platform_ctl
@@ -90,27 +92,25 @@
 !
       character(len=kchara), intent(in) :: file_name
       type(new_patition_test_control), intent(inout) :: part_tctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(part_ctl_file_code, file=file_name,status='old')
 !
       do
         call load_one_line_from_control                                 &
-     &     (part_ctl_file_code, hd_repartition_test_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (part_ctl_file_code, hd_repartition_test_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_control_new_partition                                 &
      &     (part_ctl_file_code, hd_repartition_test_ctl,                &
-     &      part_tctl, c_buf1)
+     &      part_tctl, c_buf)
         if(part_tctl%i_mesh_test_ctl .gt. 0) exit
       end do
       close(part_ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0)                                            &
-     &              part_tctl%i_mesh_test_ctl = c_buf1%iend
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_ctl_file_new_partition
 !

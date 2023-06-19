@@ -55,14 +55,16 @@
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
       integer(kind = kint) :: ierr = 0
+      type(buffer_for_control) :: c_buf1
 !
-!       load control file
+!
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_control_file_vizs(ctl_file_name, vizs_ctl)
+        call read_control_file_vizs(ctl_file_name, vizs_ctl, c_buf1)
       end if
       call bcast_vizs_control_data(vizs_ctl)
 !
-      if(vizs_ctl%i_viz_only_file .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(vizs_ctl%i_viz_only_file,                &
      &                             'control file is broken')
       end if

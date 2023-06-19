@@ -10,7 +10,7 @@
 !!      subroutine sel_read_control_lic_pvr(id_control, hd_lic_ctl,     &
 !!     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
 !!      subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl, &
-!!     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
+!!     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: hd_lic_ctl
 !!        character(len = kchara), intent(inout) :: fname_lic_ctl
@@ -114,9 +114,7 @@
         fname_lic_ctl = third_word(c_buf)
         write(*,'(a)', ADVANCE='NO') ' is read from ... '
         call read_control_lic_pvr_file(id_control+2, fname_lic_ctl,     &
-     &      hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
-        if(pvr_ctl_type%i_pvr_ctl .ne. 1)                               &
-     &                         c_buf%iend = pvr_ctl_type%i_pvr_ctl
+     &      hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
       else if(check_begin_flag(c_buf, hd_lic_ctl)) then
           fname_lic_ctl = 'NO_FILE'
 !
@@ -130,7 +128,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl,   &
-     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
+     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
 !
       use ctl_data_lic_pvr_IO
 !
@@ -139,25 +137,25 @@
       character(len = kchara), intent(in) :: fname_lic_ctl
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
       type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
-!
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
       if(fname_lic_ctl .eq. 'NO_FILE') return
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
       open(id_control, file=fname_lic_ctl, status='old')
       do
-        call load_one_line_from_control(id_control, hd_lic_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+        call load_one_line_from_control(id_control, hd_lic_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_lic_pvr_ctl                                           &
-     &     (id_control, hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf1)
+     &     (id_control, hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)
-      if(c_buf1%iend .gt. 0) pvr_ctl_type%i_pvr_ctl = c_buf1%iend
+!
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_control_lic_pvr_file
 !

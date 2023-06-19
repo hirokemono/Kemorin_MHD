@@ -4,6 +4,9 @@
 !      Written by H. Matsui on May, 2008
 !
 !
+!
+!!      subroutine read_control_filter_comm_test(file_name,             &
+!!     &                                         fc_test_ctl, c_buf)
 !!   --------------------------------------------------------------------
 !!    Example of control block
 !!
@@ -66,30 +69,31 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_filter_comm_test(file_name, fc_test_ctl)
+      subroutine read_control_filter_comm_test(file_name,               &
+     &                                         fc_test_ctl, c_buf)
 !
       character(len=kchara), intent(in) :: file_name
       type(ctl_data_filter_comm_test), intent(inout) :: fc_test_ctl
 !
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(test_mest_ctl_file_code, file = file_name, status='old')
 !
       do
         call load_one_line_from_control                                 &
-     &     (test_mest_ctl_file_code, hd_filter_test_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (test_mest_ctl_file_code, hd_filter_test_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_filter_comm_test_data(test_mest_ctl_file_code,        &
-     &      hd_filter_test_ctl, fc_test_ctl, c_buf1)
+     &      hd_filter_test_ctl, fc_test_ctl, c_buf)
         if(fc_test_ctl%i_filter_test_ctl.gt.0) exit
       end do
       close(test_mest_ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0)                                            &
-     &              fc_test_ctl%i_filter_test_ctl = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       end subroutine read_control_filter_comm_test
 !

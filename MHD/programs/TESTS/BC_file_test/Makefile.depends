@@ -4,7 +4,7 @@ bcast_ctl_data_test_bc_temp.o: $(BC_FILE_TEST_DIR)/bcast_ctl_data_test_bc_temp.f
 	$(F90) -c $(F90OPTFLAGS) $<
 const_sph_boundary_temp.o: $(BC_FILE_TEST_DIR)/const_sph_boundary_temp.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_schmidt_polynomial.o t_spherical_harmonics.o calypso_mpi.o m_ctl_params_test_bc_temp.o t_boundary_field_IO.o spherical_harmonics.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_ctl_params_test_bc_temp.o: $(BC_FILE_TEST_DIR)/m_ctl_params_test_bc_temp.f90 m_precision.o t_file_IO_parameter.o bcast_ctl_data_test_bc_temp.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o t_ctl_data_test_bc_temp.o set_control_platform_data.o
+m_ctl_params_test_bc_temp.o: $(BC_FILE_TEST_DIR)/m_ctl_params_test_bc_temp.f90 m_precision.o t_file_IO_parameter.o t_read_control_elements.o bcast_ctl_data_test_bc_temp.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o t_ctl_data_test_bc_temp.o set_control_platform_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_bc_temp.o: $(BC_FILE_TEST_DIR)/main_sph_bc_temp.f90 m_precision.o calypso_mpi.o analyzer_sph_bc_temp.o
 	$(F90) -c $(F90OPTFLAGS) $<

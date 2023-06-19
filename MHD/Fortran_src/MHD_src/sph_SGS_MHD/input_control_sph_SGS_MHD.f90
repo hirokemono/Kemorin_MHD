@@ -78,20 +78,23 @@
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !
+      type(buffer_for_control) :: c_buf1
 !
+!
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
         call read_control_4_sph_SGS_MHD(file_name,                      &
-     &                                  MHD_ctl, add_SSMHD_ctl)
+     &      MHD_ctl, add_SSMHD_ctl, c_buf1)
+      end if
+!
+      if(c_buf1%iend .gt. 0) then
+        call calypso_MPI_abort(MHD_ctl%i_mhd_ctl, trim(file_name))
       end if
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
       call bcast_sgs_ctl(add_SSMHD_ctl%sgs_ctl)
       call bcast_viz_controls(add_SSMHD_ctl%viz_ctls)
       call s_bcast_dynamo_viz_control(add_SSMHD_ctl%zm_ctls)
-!
-      if(MHD_ctl%i_mhd_ctl .ne. 1) then
-        call calypso_MPI_abort(MHD_ctl%i_mhd_ctl, trim(file_name))
-      end if
 !
       end subroutine load_control_sph_SGS_MHD
 !

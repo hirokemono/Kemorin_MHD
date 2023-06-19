@@ -16,13 +16,6 @@
 !!        type(modeview_ctl), intent(in) :: mat
 !!        character(len = kchara), intent(inout) :: file_name
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine read_control_modelview_file(id_control, file_name,   &
-!!     &                                       hd_block, mat)
-!!        integer(kind = kint), intent(in) :: id_control
-!!        character(len = kchara), intent(in) :: file_name
-!!        character(len=kchara), intent(in) :: hd_block
-!!        type(modeview_ctl), intent(inout) :: mat
-!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_modelview_file(id_control, file_name,  &
 !!     &                                        hd_block, mat)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -130,6 +123,8 @@
 !
       implicit  none
 !
+      private :: read_control_modelview_file
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -153,9 +148,7 @@
 !
         write(*,'(2a)') ' is read from ... ', trim(file_name)
         call read_control_modelview_file(id_control+1, file_name,       &
-     &                                   hd_block, mat)
-        if(mat%i_view_transform .ne. 1)                                 &
-     &                         c_buf%iend = mat%i_view_transform
+     &                                   hd_block, mat, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
@@ -203,7 +196,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_modelview_file(id_control, file_name,     &
-     &                                       hd_block, mat)
+     &                                       hd_block, mat, c_buf)
 !
       use skip_comment_f
       use ctl_data_view_transfer_IO
@@ -212,22 +205,22 @@
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
       type(modeview_ctl), intent(inout) :: mat
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(id_control, file = file_name, status='old')
 !
       do 
-        call load_one_line_from_control(id_control, hd_block, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
-        call read_view_transfer_ctl(id_control, hd_block, mat, c_buf1)
+        call read_view_transfer_ctl(id_control, hd_block, mat, c_buf)
         if(mat%i_view_transform .gt. 0) exit
       end do
       close(id_control)
-      if(c_buf1%iend .gt. 0) mat%i_view_transform = c_buf1%iend
+!
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_control_modelview_file
 !

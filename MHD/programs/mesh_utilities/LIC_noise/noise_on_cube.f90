@@ -6,6 +6,7 @@
       use m_machine_parameter
       use t_3d_noise
       use t_control_data_LIC_noise
+      use t_read_control_elements
       use ctl_file_LIC_noise_IO
       use cal_3d_noise
 !
@@ -18,12 +19,13 @@
       type(noise_cube) :: noise_t1
       type(cube_noise_ctl) :: noise_c1
       integer(kind = kint) :: ierr
+      type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       call read_cube_noise_control_file(id_control, ctl_file_name,      &
-     &                                  hd_cube_noise, noise_c1)
-      if(noise_c1%i_cube_noise_control .ne. 1)                          &
-     &                          stop 'control file is broken'
+     &    hd_cube_noise, noise_c1, c_buf1)
+      if(c_buf1%iend .gt. 0) stop 'control file is broken'
 !
       call set_control_3d_cube_noise(noise_c1, noise_t1)
       call sel_const_3d_cube_noise(noise_t1)

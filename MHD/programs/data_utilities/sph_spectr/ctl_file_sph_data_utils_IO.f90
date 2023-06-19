@@ -7,7 +7,7 @@
 !>@brief  control data to take difference of psectr data
 !!
 !!@verbatim
-!!      subroutine read_control_file_sph_util(file_name, ctl)
+!!      subroutine read_control_file_sph_util(file_name, ctl, c_buf)
 !!      subroutine write_control_file_sph_util(file_name, ctl)
 !!
 !!  begin spectr_dat_util_ctl
@@ -65,28 +65,29 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine read_control_file_sph_util(file_name, ctl)
+      subroutine read_control_file_sph_util(file_name, ctl, c_buf)
 !
       character(len=kchara), intent(in) :: file_name
       type(spectr_data_util_ctl), intent(inout) :: ctl
 !
+      type(buffer_for_control), intent(inout) :: c_buf
       integer(kind = kint), parameter :: control_file_code = 11
-      type(buffer_for_control) :: c_buf1
 !
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
         open (control_file_code, file = file_name)
         do
           call load_one_line_from_control                               &
-     &       (control_file_code, hd_control_d_sph, c_buf1)
-          if(c_buf1%iend .gt. 0) exit
+     &       (control_file_code, hd_control_d_sph, c_buf)
+          if(c_buf%iend .gt. 0) exit
 !
           call read_spectr_util_control                                 &
-     &       (control_file_code, hd_control_d_sph, ctl, c_buf1)
+     &       (control_file_code, hd_control_d_sph, ctl, c_buf)
           if(ctl%iflag .gt. 0) exit
         end do
         close(control_file_code)
-      if(c_buf1%iend .gt. 0) ctl%iflag = c_buf1%iend
+!
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_control_file_sph_util
 !

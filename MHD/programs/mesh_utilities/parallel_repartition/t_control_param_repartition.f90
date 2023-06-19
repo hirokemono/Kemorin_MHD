@@ -22,6 +22,7 @@
       use t_file_IO_parameter
       use t_control_param_vol_grping
       use t_ctl_file_volume_grouping
+      use t_read_control_elements
 !
       implicit none
 !
@@ -48,14 +49,17 @@
       type(vol_partion_prog_param), intent(inout) :: part_prog_p
 !
       type(new_patition_test_control) :: part_tctl
+      type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_ctl_file_new_partition(ctl_file_name, part_tctl)
+        call read_ctl_file_new_partition(ctl_file_name,                 &
+     &                                   part_tctl, c_buf1)
       end if
       call bcast_control_new_partition(part_tctl)
 !
-      if(part_tctl%i_mesh_test_ctl .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(part_tctl%i_mesh_test_ctl,               &
      &                             'control file is broken')
       end if
@@ -78,14 +82,17 @@
 !
       type(new_patition_test_control) :: part_tctl
       integer(kind = kint) :: ierr
+      type(buffer_for_control) :: c_buf1
 !
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
-        call read_ctl_file_new_partition(ctl_file_name, part_tctl)
+        call read_ctl_file_new_partition(ctl_file_name,                 &
+     &                                    part_tctl, c_buf1)
       end if
       call bcast_control_new_partition(part_tctl)
 !
-      if(part_tctl%i_mesh_test_ctl .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(part_tctl%i_mesh_test_ctl,               &
      &                             'control file is broken')
       end if

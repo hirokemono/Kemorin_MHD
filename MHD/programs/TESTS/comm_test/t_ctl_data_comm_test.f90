@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!!      subroutine read_control_4_comm_test(comm_tctl)
+!!      subroutine read_control_4_comm_test(comm_tctl, c_buf)
 !!      subroutine reset_test_comm_ctl_data(comm_tctl)
 !!        type(comm_test_control), intent(inout) :: comm_tctl
 !!
@@ -66,31 +66,30 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_comm_test(file_name, comm_tctl)
+      subroutine read_control_4_comm_test(file_name, comm_tctl, c_buf)
 !
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: file_name
       type(comm_test_control), intent(inout) :: comm_tctl
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(test_mest_ctl_file_code, file = file_name, status='old')
       do
         call load_one_line_from_control                                 &
-     &     (test_mest_ctl_file_code, hd_mesh_test_ctl, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+     &     (test_mest_ctl_file_code, hd_mesh_test_ctl, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_test_comm_ctl_data(test_mest_ctl_file_code,         &
-     &      hd_mesh_test_ctl, comm_tctl, c_buf1)
+     &      hd_mesh_test_ctl, comm_tctl, c_buf)
         if(comm_tctl%i_mesh_test_ctl .gt. 0) exit
       end do
       close(test_mest_ctl_file_code)
 !
-      if(c_buf1%iend .gt. 0)                                            &
-     &              comm_tctl%i_mesh_test_ctl = c_buf1%iend
+      c_buf%level = c_buf%level - 1
+      if(c_buf%iend .gt. 0) return
 !
       end subroutine read_control_4_comm_test
 !

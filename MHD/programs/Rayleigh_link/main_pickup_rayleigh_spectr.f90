@@ -33,16 +33,20 @@
       type(picked_rayleigh_spectr) :: ra_picked_s
       type(field_IO) :: fld_IO_s
 !
+      integer(kind = kint) :: ierr = 0
+      type(buffer_for_control) :: c_buf1
+!
 !
       call calypso_MPI_init
 !
+      c_buf1%level = 0
       if(my_rank .eq. 0) then
         call read_rayleigh_pick_mode_ctl                                &
-     &     (id_control, control_name, pick_ctl_s)
+     &     (id_control, control_name, pick_ctl_s, c_buf1)
       end if
       call bcast_pick_rayleigh_ctl(pick_ctl_s)
 !
-      if(pick_ctl_s%i_pick_rayleigh_spectr .ne. 1) then
+      if(c_buf1%iend .gt. 0) then
         call calypso_MPI_abort(pick_ctl_s%i_pick_rayleigh_spectr,       &
      &                             'control file is broken')
       end if

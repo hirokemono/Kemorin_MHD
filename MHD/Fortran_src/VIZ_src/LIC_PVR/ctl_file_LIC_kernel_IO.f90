@@ -10,8 +10,6 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      subroutine sel_read_LIC_kernel_ctl_file                         &
 !!     &         (id_control, file_name, hd_block, kernel_ctl, c_buf)
-!!      subroutine read_LIC_kernel_control_file(id_control, file_name,  &
-!!     &                                        hd_block, kernel_ctl)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        character(len = kchara), intent(inout) :: file_name
@@ -64,6 +62,8 @@
 !
 !      character(len=kchara) :: hd_kernel =      'kernel_ctl'
 !
+      private :: read_LIC_kernel_control_file
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -90,9 +90,7 @@
         call write_one_ctl_file_message                                 &
      &     (hd_block, c_buf%level, file_name)
         call read_LIC_kernel_control_file((id_control+2), file_name,    &
-     &                                    hd_block, kernel_ctl)
-        if(kernel_ctl%i_kernel_control .ne. 1)                          &
-     &                         c_buf%iend = kernel_ctl%i_kernel_control
+     &                                    hd_block, kernel_ctl, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
@@ -106,31 +104,31 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_LIC_kernel_control_file(id_control, file_name,    &
-     &                                        hd_block, kernel_ctl)
+     &          hd_block, kernel_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len = kchara), intent(in) :: hd_block
       type(lic_kernel_ctl), intent(inout) :: kernel_ctl
 !
-      type(buffer_for_control) :: c_buf1
+      type(buffer_for_control), intent(inout) :: c_buf
 !
 !
       if(file_name .eq. 'NO_FILE') return
 !
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       open(id_control, file=file_name, status='old')
       do
-        call load_one_line_from_control(id_control, hd_block, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call read_kernel_control_data                                   &
-     &     (id_control, hd_block, kernel_ctl, c_buf1)
+     &     (id_control, hd_block, kernel_ctl, c_buf)
         if(kernel_ctl%i_kernel_control .gt. 0) exit
       end do
       close(id_control)
 !
-      if(c_buf1%iend .gt. 0) kernel_ctl%i_kernel_control = c_buf1%iend
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_LIC_kernel_control_file
 !

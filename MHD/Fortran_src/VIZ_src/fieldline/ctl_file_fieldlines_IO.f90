@@ -10,8 +10,6 @@
 !!     &         (id_control, hd_block, fline_ctls, c_buf)
 !!      subroutine sel_read_fline_control(id_control, hd_block,         &
 !!     &          file_name, fline_ctl_struct, c_buf)
-!!      subroutine read_fline_control_file(id_control, file_name,       &
-!!     &                                   hd_block, fline_ctl_struct)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        character(len = kchara), intent(inout) :: file_name
@@ -48,6 +46,8 @@
       use t_control_data_flines
 !
       implicit  none
+!
+      private :: read_fline_control_file
 !
 !   --------------------------------------------------------------------
 !
@@ -113,9 +113,7 @@
 !
         write(*,'(3a,i4,a)', ADVANCE='NO') 'is read from '
         call read_fline_control_file((id_control+2), file_name,         &
-     &                               hd_block, fline_ctl_struct)
-        if(fline_ctl_struct%i_vr_fline_ctl .ne. 1)                      &
-     &              c_buf%iend = fline_ctl_struct%i_vr_fline_ctl
+     &                               hd_block, fline_ctl_struct, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
@@ -129,7 +127,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_fline_control_file(id_control, file_name,         &
-     &                                   hd_block, fline_ctl_struct)
+     &          hd_block, fline_ctl_struct, c_buf)
 !
       use ctl_data_field_line_IO
 !
@@ -137,28 +135,25 @@
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
       type(fline_ctl), intent(inout)  :: fline_ctl_struct
+      type(buffer_for_control), intent(inout) :: c_buf
 !
-      type(buffer_for_control) :: c_buf1
 !
-!
-      c_buf1%level = 0
+      c_buf%level = c_buf%level + 1
       write(*,*) 'Control file: ', trim(file_name)
       call reset_fline_control_flags(fline_ctl_struct)
       open(id_control, file=file_name, status='old')
 !
       do
-        call load_one_line_from_control(id_control, hd_block, c_buf1)
-        if(c_buf1%iend .gt. 0) exit
+        call load_one_line_from_control(id_control, hd_block, c_buf)
+        if(c_buf%iend .gt. 0) exit
 !
         call s_read_field_line_ctl(id_control, hd_block,                &
-     &      fline_ctl_struct, c_buf1)
+     &      fline_ctl_struct, c_buf)
         if(fline_ctl_struct%i_vr_fline_ctl .gt. 0) exit
       end do
       close(id_control)
 !
-      if(c_buf1%iend .gt. 0) then
-        fline_ctl_struct%i_vr_fline_ctl = c_buf1%iend
-      end if
+      c_buf%level = c_buf%level - 1
 !
       end subroutine read_fline_control_file
 !
