@@ -63,8 +63,6 @@
      &          fname_sect_ctl, psf_def_c, c_buf)
 !
       use ctl_data_section_def_IO
-      use write_control_elements
-      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -74,20 +72,17 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-!
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(2a)', ADVANCE='NO')                          &
-     &                 trim(hd_block), ' is read from file... '
         fname_sect_ctl = third_word(c_buf)
+!
+        write(*,'(2a)') ' is read from ... ', trim(fname_sect_ctl)
         call read_ctl_file_pvr_section_def(id_control+2,                &
      &      fname_sect_ctl, hd_block, psf_def_c)
         if(psf_def_c%i_surface_define .ne. 1)                           &
      &                         c_buf%iend = psf_def_c%i_surface_define
       else if(check_begin_flag(c_buf, hd_block)) then
-!
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(2a)') trim(hd_block), ' is included.'
         fname_sect_ctl = 'NO_FILE'
+!
+        write(*,'(a)') ' is included.'
         call read_section_def_control(id_control, hd_block,             &
      &                                psf_def_c, c_buf)
       end if
@@ -110,7 +105,6 @@
 !
 !
       c_buf1%level = 0
-      write(*,*) trim(fname_sect_ctl)
       open(id_control, file = fname_sect_ctl, status='old')
 !
       do

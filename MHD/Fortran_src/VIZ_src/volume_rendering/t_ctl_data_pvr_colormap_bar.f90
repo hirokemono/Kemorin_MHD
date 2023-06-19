@@ -148,7 +148,6 @@
      &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
 !
       use write_control_elements
-      use write_control_items
       use ctl_data_pvr_colorbar_IO
       use ctl_data_pvr_colormap_IO
 !
@@ -161,16 +160,17 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(3a)', ADVANCE='NO')                          &
-     &            'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
+!
+        call write_one_ctl_file_message                                 &
+     &     (hd_block, c_buf%level, file_name)
         call read_control_pvr_colormap_file                             &
      &     (id_control+1, file_name, hd_block, cmap_cbar_c)
         if(cmap_cbar_c%i_cmap_cbar .ne. 1)                              &
      &                         c_buf%iend = cmap_cbar_c%i_cmap_cbar
       else if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
         file_name = 'NO_FILE'
+!
         call read_pvr_colordef_ctl(id_control, hd_colormap_file,        &
      &      cmap_cbar_c%color, c_buf)
         call read_pvr_colordef_ctl(id_control, hd_colormap,             &
@@ -201,7 +201,6 @@
       end if
 !
       c_buf1%level = 0
-      write(*,*) 'Colormap control file:', trim(file_name)
       open(id_control, file = file_name, status='old')
 !
       do

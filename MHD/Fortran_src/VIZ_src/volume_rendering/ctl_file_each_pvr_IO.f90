@@ -58,7 +58,7 @@
       if(check_file_flag(c_buf, hd_pvr_ctl)) then
         fname_pvr_ctl = third_word(c_buf)
 !
-        write(*,'(a)', ADVANCE='NO') ' is ... '
+        write(*,'(2a)') ' is read from ', trim(fname_pvr_ctl)
         call read_control_pvr_file(id_control+2, fname_pvr_ctl,         &
      &                             hd_pvr_ctl, pvr_ctl_type)
         if(pvr_ctl_type%i_pvr_ctl .ne. 1)                               &
@@ -88,7 +88,6 @@
 !
 !
       c_buf1%level = 0
-      write(*,*) 'read file ', trim(fname_pvr_ctl)
       open(id_control, file=fname_pvr_ctl, status='old')
       do
         call load_one_line_from_control(id_control, hd_pvr_ctl, c_buf1)

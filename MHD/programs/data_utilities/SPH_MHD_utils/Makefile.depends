@@ -38,7 +38,11 @@ initialization_sph_SGS_snap.o: $(SPH_SNAPSHOT_DIR)/initialization_sph_SGS_snap.f
 	$(F90) -c $(F90OPTFLAGS) $<
 initialize_sph_snap_noviz.o: $(SPH_SNAPSHOT_DIR)/initialize_sph_snap_noviz.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o t_spherical_MHD.o t_FEM_mesh_field_data.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_psf.o init_sph_MHD_elapsed_label.o input_control_sph_MHD.o parallel_FEM_mesh_init.o FEM_analyzer_sph_MHD.o SPH_analyzer_snap_w_vizs.o
 	$(F90) -c $(F90OPTFLAGS) $<
-main_control_MHD_check.o: $(SPH_SNAPSHOT_DIR)/main_control_MHD_check.f90 m_precision.o t_ctl_data_MHD.o t_ctl_data_SGS_MHD.o
+main_control_MHD_check.o: $(SPH_SNAPSHOT_DIR)/main_control_MHD_check.f90 m_precision.o t_ctl_data_MHD.o t_ctl_data_SGS_MHD.o write_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
+main_control_MHD_psf_check.o: $(SPH_SNAPSHOT_DIR)/main_control_MHD_psf_check.f90 m_precision.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_psf.o write_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
+main_control_MHD_viz_check.o: $(SPH_SNAPSHOT_DIR)/main_control_MHD_viz_check.f90 m_precision.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_vizs.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_all_correlate.o: $(SPH_SNAPSHOT_DIR)/main_sph_all_correlate.f90 m_precision.o calypso_mpi.o analyzer_sph_all_correlate.o
 	$(F90) -c $(F90OPTFLAGS) $<

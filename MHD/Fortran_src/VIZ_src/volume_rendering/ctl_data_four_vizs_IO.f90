@@ -86,8 +86,6 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_ctl = 'volume_rendering'
       character(len=kchara), parameter, private                         &
-     &             :: hd_lic_ctl = 'LIC_rendering'
-      character(len=kchara), parameter, private                         &
      &             :: hd_fline_ctl =  'fieldline'
 !
       character(len=kchara), parameter, private                         &

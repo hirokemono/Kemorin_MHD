@@ -84,7 +84,6 @@
      &         (id_control, hd_block, file_name, psph_ctl, c_buf)
 !
       use write_control_elements
-      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -97,17 +96,16 @@
       if(psph_ctl%iflag_sph_shell .gt. 0) return
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(3a)') trim(hd_block),                        &
-     &                   ' is read from file... ', trim(file_name)
+!
+        call write_one_ctl_file_message                                 &
+     &     (hd_block, c_buf%level, file_name)
         call read_ctl_file_gen_shell_grids(id_control+2, file_name,     &
      &                                     hd_block, psph_ctl)
         c_buf%iend = psph_ctl%iflag_sph_shell
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(3a)') 'resolution data ', trim(hd_block),    &
-     &                           ' is included'
+!
+        call write_included_message(hd_block, c_buf%level)
         call read_parallel_shell_ctl                                    &
      &     (id_control, hd_block, psph_ctl, c_buf)
       end if

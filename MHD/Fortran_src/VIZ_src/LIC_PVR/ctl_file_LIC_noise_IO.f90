@@ -73,7 +73,6 @@
       use t_read_control_elements
 !
       use write_control_elements
-      use write_control_items
       use ctl_data_isosurface_IO
       use skip_comment_f
 !
@@ -87,9 +86,8 @@
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(3a)') trim(hd_block),                        &
-     &         ' is read file from ... ', trim(file_name)
+        call write_one_ctl_file_message                                 &
+     &     (hd_block, c_buf%level, file_name)
         call read_cube_noise_control_file((id_control+2), file_name,    &
      &                                    hd_block, noise_ctl)
         if(noise_ctl%i_cube_noise_control .ne. 1)                       &
@@ -97,8 +95,7 @@
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(2a)') trim(hd_block), ' is included'
+        call write_included_message(hd_block, c_buf%level)
         call read_cube_noise_control_data(id_control, hd_block,         &
      &                                    noise_ctl, c_buf)
       end if

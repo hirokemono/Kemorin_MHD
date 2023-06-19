@@ -140,8 +140,6 @@
      &         (id_control, hd_block, file_name, mat, c_buf)
 !
       use ctl_data_view_transfer_IO
-      use write_control_elements
-      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -152,17 +150,16 @@
 !
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(4a)') 'Read file for ', trim(hd_block),      &
-     &                           '... ', trim(file_name)
+!
+        write(*,'(2a)') ' is read from ... ', trim(file_name)
         call read_control_modelview_file(id_control+1, file_name,       &
      &                                   hd_block, mat)
         if(mat%i_view_transform .ne. 1)                                 &
      &                         c_buf%iend = mat%i_view_transform
       else if(check_begin_flag(c_buf, hd_block)) then
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(2a)')  trim(hd_block), ' is included'
         file_name = 'NO_FILE'
+!
+        write(*,'(a)') ' is included'
         call read_view_transfer_ctl(id_control, hd_block, mat, c_buf)
       end if
 !

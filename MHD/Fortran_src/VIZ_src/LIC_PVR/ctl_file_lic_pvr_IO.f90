@@ -112,7 +112,7 @@
 !
       if(check_file_flag(c_buf, hd_lic_ctl)) then
         fname_lic_ctl = third_word(c_buf)
-        write(*,'(a)', ADVANCE='NO') ' is read from file: '
+        write(*,'(a)', ADVANCE='NO') ' is read from ... '
         call read_control_lic_pvr_file(id_control+2, fname_lic_ctl,     &
      &      hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
         if(pvr_ctl_type%i_pvr_ctl .ne. 1)                               &

@@ -73,7 +73,6 @@
      &          file_name, viz_repart_c, c_buf)
 !
       use write_control_elements
-      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -83,17 +82,17 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(3a)', ADVANCE='NO')                          &
-     &          'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
+!
+        call write_one_ctl_file_message                                 &
+     &     (hd_block, c_buf%level, file_name)
         call read_ctl_file_vol_repart((id_control+1), file_name,        &
      &                                hd_block, viz_repart_c)
         c_buf%iend = viz_repart_c%i_viz_repartition_ctl
       else if(check_begin_flag(c_buf, hd_block)) then
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(a)')  'Repartioning control is included'
         file_name = 'NO_FILE'
+!
+        call write_included_message(hd_block, c_buf%level)
         call read_control_vol_repart(id_control, hd_block,              &
      &                               viz_repart_c, c_buf)
       end if
@@ -122,7 +121,6 @@
 !
       c_buf1%level = 0
       open(id_control, file=file_name, status='old')
-!
       do
         call load_one_line_from_control(id_control, hd_block, c_buf1)
         if(c_buf1%iend .gt. 0) exit

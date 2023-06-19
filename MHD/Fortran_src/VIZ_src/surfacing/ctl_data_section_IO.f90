@@ -170,6 +170,7 @@
 !
       use ctl_file_section_def_IO
       use ctl_file_field_on_psf_IO
+      use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -185,9 +186,14 @@
         if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        call sel_read_ctl_pvr_section_def                               &
-     &     (id_control, hd_surface_define, psf_c%fname_section_ctl,     &
-     &      psf_c%psf_def_c, c_buf)
+        if(check_file_flag(c_buf, hd_surface_define)                    &
+     &        .or. check_begin_flag(c_buf, hd_block)) then
+          call write_multi_ctl_file_message                             &
+     &       (hd_surface_define, izero, c_buf%level)
+          call sel_read_ctl_pvr_section_def(id_control,                 &
+     &        hd_surface_define, psf_c%fname_section_ctl,               &
+     &        psf_c%psf_def_c, c_buf)
+        end if
 !
         call sel_read_ctl_field_on_psf_file                             &
      &     (id_control, hd_output_field, psf_c%fname_fld_on_psf,        &

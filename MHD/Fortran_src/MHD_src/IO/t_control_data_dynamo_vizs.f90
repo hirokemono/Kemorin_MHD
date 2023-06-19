@@ -205,7 +205,6 @@
       use ctl_file_sections_IO
       use skip_comment_f
       use write_control_elements
-      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_section
@@ -220,9 +219,8 @@
         psf_ctls%num_psf_ctl = 1
         call alloc_psf_ctl_stract(psf_ctls)
 !
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(2a)', ADVANCE='NO') 'Control for ',          &
-     &                                         trim(hd_section)
+        call write_multi_ctl_file_message                               &
+     &     (hd_section, psf_ctls%num_psf_ctl, c_buf%level)
         call sel_read_control_4_psf_file(id_control, hd_section,        &
      &      psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),               &
      &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)

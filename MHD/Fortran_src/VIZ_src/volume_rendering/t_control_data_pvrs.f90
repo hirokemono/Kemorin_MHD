@@ -94,7 +94,6 @@
       use t_read_control_elements
       use skip_comment_f
       use write_control_elements
-      use write_control_items
       use ctl_file_each_pvr_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -118,9 +117,8 @@
      &     .or. check_begin_flag(c_buf, hd_pvr_ctl)) then
           call append_new_pvr_ctl_struct(pvr_ctls)
 !
-          call write_space_4_parse(id_monitor, c_buf%level)
-          write(id_monitor,'(3a,i4)', ADVANCE='NO') 'Control for ',     &
-     &                 trim(hd_pvr_ctl), ' No. ', pvr_ctls%num_pvr_ctl
+          call write_multi_ctl_file_message                             &
+     &       (hd_pvr_ctl, pvr_ctls%num_pvr_ctl, c_buf%level)
           call sel_read_control_pvr(id_control, hd_pvr_ctl,             &
      &        pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl),             &
      &        pvr_ctls%pvr_ctl_type(pvr_ctls%num_pvr_ctl), c_buf)

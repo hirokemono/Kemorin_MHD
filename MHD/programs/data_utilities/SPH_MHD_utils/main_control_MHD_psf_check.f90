@@ -1,5 +1,5 @@
-!>@file   main_control_MHD_check.f90
-!!@brief  program kemorin_control_SGS_MHD_check
+!>@file   main_control_MHD_psf_check.f90
+!!@brief  program control_MHD_w_psf_check
 !!
 !!@author H. Matsui
 !!@date Programmed by by H. Matsui in July 2023
@@ -8,12 +8,12 @@
 !!         with visualizers
 !!         Input ontrol file: control_snapshot
 !
-      program kemorin_control_SGS_MHD_check
+      program control_MHD_w_psf_check
 !
       use m_precision
 !
       use t_ctl_data_MHD
-      use t_ctl_data_SGS_MHD
+      use t_ctl_data_sph_MHD_w_psf
       use write_control_elements
 !
       implicit none
@@ -24,7 +24,7 @@
      &                    :: hd_mhd_ctl = 'MHD_control'
 !
       type(mhd_simulation_control) :: MHD_ctl1
-      type(add_sgs_sph_mhd_ctl) :: add_SSMHD_ctl1
+      type(add_psf_sph_mhd_ctl) :: add_SMHD_ctl1
       integer(kind = kint) :: level1 = 0
 !
 !
@@ -34,16 +34,16 @@
       end if
       call getarg_k(1, MHD_ctl_name)
 !
-      call read_control_4_sph_SGS_MHD(MHD_ctl_name,                     &
-     &                                MHD_ctl1, add_SSMHD_ctl1)
+      call read_control_4_sph_MHD_w_psf(MHD_ctl_name,                   &
+     &                                  MHD_ctl1, add_SMHD_ctl1)
       if(MHD_ctl1%i_mhd_ctl .ne. 1) stop 'Error in control file'
 !
 !
       write(id_monitor,'(a)') '!  '
       write(id_monitor,'(a)') '!  Checked control data'
       write(id_monitor,'(a)') '!  '
-      call write_sph_mhd_control_data(id_monitor, hd_mhd_ctl,           &
-     &                                MHD_ctl1, add_SSMHD_ctl1, level1)
+      call write_sph_mhd_ctl_w_psf(id_monitor, hd_mhd_ctl,              &
+     &                             MHD_ctl1, add_SMHD_ctl1, level1)
 !
       stop '***** program finished *****'
 !
@@ -81,4 +81,4 @@
 !
 !   --------------------------------------------------------------------
 !
-      end program kemorin_control_SGS_MHD_check
+      end program control_MHD_w_psf_check

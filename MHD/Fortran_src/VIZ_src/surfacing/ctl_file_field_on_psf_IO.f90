@@ -63,7 +63,6 @@
       use t_read_control_elements
 !
       use write_control_elements
-      use write_control_items
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -76,9 +75,8 @@
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(2a)', ADVANCE='NO') trim(hd_block),          &
-     &                             ' is read file from ... '
+        call write_one_ctl_file_message                                 &
+     &     (hd_block, c_buf%level, file_name)
         call read_ctl_field_on_psf_file((id_control+2), file_name,      &
      &                               hd_block, fld_on_psf_c)
         if(fld_on_psf_c%i_iso_result .ne. 1)                            &
@@ -86,8 +84,7 @@
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
-        call write_space_4_parse(id_monitor, c_buf%level)
-        write(id_monitor,'(2a)') trim(hd_block), ' is included'
+        call write_included_message(hd_block, c_buf%level)
         call read_fld_on_psf_control(id_control, hd_block,              &
      &                               fld_on_psf_c, c_buf)
       end if

@@ -79,8 +79,6 @@
      &             :: hd_map_rendering = 'map_rendering_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_ctl = 'volume_rendering'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_lic_ctl = 'LIC_rendering'
 !
       character(len=kchara), parameter, private                         &
      &       :: hd_i_step_section =        'i_step_sectioning_ctl'
@@ -90,8 +88,6 @@
      &       :: hd_i_step_map_projection = 'i_step_map_projection_ctl'
       character(len=kchara), parameter, private                         &
      &       :: hd_i_step_pvr =            'i_step_pvr_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_i_step_lic =            'i_step_LIC_ctl'
 !
       character(len=kchara), parameter, private                         &
      &       :: hd_i_step_ucd =       'i_step_field_ctl'
@@ -105,8 +101,6 @@
      &      :: hd_delta_t_map_projection = 'delta_t_map_projection_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_delta_t_pvr =            'delta_t_pvr_ctl'
-      character(len=kchara), parameter, private                         &
-     &      :: hd_delta_t_lic =            'delta_t_LIC_ctl'
 !
       character(len=kchara), parameter, private                         &
      &       :: hd_delta_t_ucd =       'delta_t_field_ctl'

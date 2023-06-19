@@ -97,8 +97,6 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
 !
-      private :: read_sph_mhd_ctl_w_psf, write_sph_mhd_ctl_w_psf
-!
 ! ----------------------------------------------------------------------
 !
       contains

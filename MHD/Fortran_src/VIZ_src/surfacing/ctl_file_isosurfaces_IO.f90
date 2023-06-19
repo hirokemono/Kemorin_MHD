@@ -69,7 +69,6 @@
       use ctl_data_isosurface_IO
       use skip_comment_f
       use write_control_elements
-      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -90,9 +89,8 @@
      &      .or. check_begin_flag(c_buf, hd_block)) then
           call append_new_isosurface_control(iso_ctls)
 !
-          call write_space_4_parse(id_monitor, c_buf%level)
-          write(id_monitor,'(3a,i4)', ADVANCE='NO') 'Control for ',     &
-     &        trim(hd_block), ' No. ',  iso_ctls%num_iso_ctl
+          call write_multi_ctl_file_message                             &
+     &       (hd_block, iso_ctls%num_iso_ctl, c_buf%level)
           call sel_read_control_4_iso_file(id_control, hd_block,        &
      &        iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl),             &
      &        iso_ctls%iso_ctl_struct(iso_ctls%num_iso_ctl), c_buf)
@@ -120,7 +118,7 @@
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        write(*,'(a)', ADVANCE='NO') ' is read file from ... '
+        write(*,'(a)', ADVANCE='NO') ' is read from file... '
         call read_control_4_iso_file((id_control+2), file_name,         &
      &                               hd_block, iso_ctl_struct)
         if(iso_ctl_struct%i_iso_ctl .ne. 1)                             &

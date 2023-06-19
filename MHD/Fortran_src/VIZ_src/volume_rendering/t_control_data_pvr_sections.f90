@@ -112,7 +112,6 @@
 !
       use ctl_data_pvr_section_IO
       use write_control_elements
-      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -133,9 +132,8 @@
         if(check_begin_flag(c_buf, hd_block)) then
           call append_new_pvr_section_ctl(pvr_scts_c)
 !
-          call write_space_4_parse(id_monitor, c_buf%level)
-          write(id_monitor,'(2a,i4,a)', ADVANCE='NO') trim(hd_block),   &
-     &         ' No. ', pvr_scts_c%num_pvr_sect_ctl, ' of '
+          call write_multi_ctl_file_message                             &
+     &       (hd_block, pvr_scts_c%num_pvr_sect_ctl, c_buf%level)
           call read_pvr_section_ctl(id_control, hd_block,               &
      &        pvr_scts_c%pvr_sect_ctl(pvr_scts_c%num_pvr_sect_ctl),     &
      &        c_buf)

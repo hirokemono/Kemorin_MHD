@@ -62,7 +62,6 @@
       use skip_comment_f
       use ctl_data_field_line_IO
       use write_control_elements
-      use write_control_items
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -84,9 +83,8 @@
      &        .or. check_begin_flag(c_buf, hd_block)) then
           call append_new_fline_control(fline_ctls)
 !
-          call write_space_4_parse(id_monitor, c_buf%level)
-          write(id_monitor,'(2a,i4,a)', ADVANCE='NO')                   &
-     &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
+          call write_multi_ctl_file_message                             &
+     &       (hd_block, fline_ctls%num_fline_ctl, c_buf%level)
           call sel_read_fline_control(id_control, hd_block,             &
      &        fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl),     &
      &        fline_ctls%fline_ctl_struct(fline_ctls%num_fline_ctl),    &
