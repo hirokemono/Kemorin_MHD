@@ -7,30 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		181FFB67249D42C800BB1E52 /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB66249D42C800BB1E52 /* libgtk-3.dylib */; };
-		181FFB69249D430F00BB1E52 /* libgdk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB68249D430F00BB1E52 /* libgdk-3.0.dylib */; };
-		181FFB6C249D43E100BB1E52 /* libpango-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB6A249D43E100BB1E52 /* libpango-1.0.dylib */; };
-		181FFB6D249D43E100BB1E52 /* libpangocairo-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB6B249D43E100BB1E52 /* libpangocairo-1.0.dylib */; };
-		181FFB6F249D440F00BB1E52 /* libcairo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB6E249D440F00BB1E52 /* libcairo.dylib */; };
-		181FFB71249D441E00BB1E52 /* libcairo-gobject.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB70249D441E00BB1E52 /* libcairo-gobject.dylib */; };
-		181FFB73249D443A00BB1E52 /* libatk-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB72249D443A00BB1E52 /* libatk-1.0.dylib */; };
-		181FFB75249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB74249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib */; };
-		181FFB77249D445700BB1E52 /* libgio-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB76249D445700BB1E52 /* libgio-2.0.dylib */; };
-		181FFB79249D446D00BB1E52 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB78249D446C00BB1E52 /* libgobject-2.0.dylib */; };
-		181FFB7B249D448D00BB1E52 /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB7A249D448D00BB1E52 /* libglib-2.0.dylib */; };
 		181FFBD3249D480100BB1E52 /* skip_comment_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBD1249D480100BB1E52 /* skip_comment_c.c */; };
 		181FFBD9249D48EF00BB1E52 /* calypso_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBD7249D48EE00BB1E52 /* calypso_param_c.c */; };
 		181FFBDC249D491400BB1E52 /* set_rgb_colors_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBDA249D491400BB1E52 /* set_rgb_colors_c.c */; };
 		181FFBE2249D49B500BB1E52 /* quicksort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBE0249D49B500BB1E52 /* quicksort_c.c */; };
 		181FFBE4249D4FF000BB1E52 /* file_dialog.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBE3249D4FF000BB1E52 /* file_dialog.c */; };
-		181FFBEF249D57B800BB1E52 /* libkemo_viz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFBEE249D57B800BB1E52 /* libkemo_viz.a */; };
-		181FFBF1249D599E00BB1E52 /* libkemo_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFBF0249D599E00BB1E52 /* libkemo_core.a */; };
-		18788E5F24A2AA2E00BA0C62 /* libkemo_parallel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18788E5E24A2AA2E00BA0C62 /* libkemo_parallel.a */; };
-		18788E6124A2AA3300BA0C62 /* libkemo_solver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18788E6024A2AA3300BA0C62 /* libkemo_solver.a */; };
-		18788E6424A2AD8100BA0C62 /* libgfortran.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18788E6324A2AD8100BA0C62 /* libgfortran.a */; };
-		18788E6624A2ADD200BA0C62 /* libgomp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18788E6524A2ADD200BA0C62 /* libgomp.a */; };
-		18788E6824A2AE3600BA0C62 /* libmpi_mpifh.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18788E6724A2AE3600BA0C62 /* libmpi_mpifh.dylib */; };
-		18788E6A24A2AE4000BA0C62 /* libmpi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18788E6924A2AE4000BA0C62 /* libmpi.dylib */; };
 		18788EA224A2AEBF00BA0C62 /* ctl_panel_platforms_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788E6E24A2AEB900BA0C62 /* ctl_panel_platforms_GTK.c */; };
 		18788EA324A2AEBF00BA0C62 /* calypso_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788E6F24A2AEB900BA0C62 /* calypso_GTK.c */; };
 		18788EA424A2AEBF00BA0C62 /* control_panel_4_coefs_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788E7224A2AEB900BA0C62 /* control_panel_4_coefs_GTK.c */; };
@@ -123,7 +104,26 @@
 		18788F8B24A2AEF400BA0C62 /* t_ctl_data_4_time_steps_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F3F24A2AEF200BA0C62 /* t_ctl_data_4_time_steps_c.c */; };
 		18788F8C24A2AEF400BA0C62 /* t_control_data_pvr_section_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F4124A2AEF200BA0C62 /* t_control_data_pvr_section_list.c */; };
 		18788F8D24A2AEF400BA0C62 /* t_control_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 18788F4724A2AEF300BA0C62 /* t_control_int2_IO.c */; };
-		18788F8F24A2AF8500BA0C62 /* libkemo_MHD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18788F8E24A2AF8500BA0C62 /* libkemo_MHD.a */; };
+		18CF36122A4212F900143CCC /* libgdk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36112A4212F900143CCC /* libgdk-3.dylib */; };
+		18CF36142A42130500143CCC /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36132A42130500143CCC /* libgtk-3.dylib */; };
+		18CF36172A42133000143CCC /* libpango-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36152A42133000143CCC /* libpango-1.0.dylib */; };
+		18CF36182A42133000143CCC /* libpangocairo-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36162A42133000143CCC /* libpangocairo-1.0.dylib */; };
+		18CF361B2A42134C00143CCC /* libcairo-gobject.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36192A42134C00143CCC /* libcairo-gobject.2.dylib */; };
+		18CF361C2A42134C00143CCC /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF361A2A42134C00143CCC /* libcairo.2.dylib */; };
+		18CF361E2A42135A00143CCC /* libatk-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF361D2A42135A00143CCC /* libatk-1.0.dylib */; };
+		18CF36202A42136B00143CCC /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF361F2A42136B00143CCC /* libgdk_pixbuf-2.0.dylib */; };
+		18CF36232A42138600143CCC /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36212A42138600143CCC /* libgobject-2.0.dylib */; };
+		18CF36242A42138600143CCC /* libgio-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36222A42138600143CCC /* libgio-2.0.dylib */; };
+		18CF36262A42139700143CCC /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36252A42139700143CCC /* libglib-2.0.dylib */; };
+		18CF362C2A4213CA00143CCC /* libkemo_solver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36272A4213CA00143CCC /* libkemo_solver.a */; };
+		18CF362D2A4213CA00143CCC /* libkemo_parallel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36282A4213CA00143CCC /* libkemo_parallel.a */; };
+		18CF362E2A4213CA00143CCC /* libkemo_MHD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36292A4213CA00143CCC /* libkemo_MHD.a */; };
+		18CF362F2A4213CA00143CCC /* libkemo_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF362A2A4213CA00143CCC /* libkemo_core.a */; };
+		18CF36302A4213CA00143CCC /* libkemo_viz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF362B2A4213CA00143CCC /* libkemo_viz.a */; };
+		18CF36322A4213F400143CCC /* libgfortran.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36312A4213F400143CCC /* libgfortran.dylib */; };
+		18CF36342A4213FE00143CCC /* libgomp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36332A4213FE00143CCC /* libgomp.dylib */; };
+		18CF36372A42141800143CCC /* libmpi_mpifh.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36352A42141800143CCC /* libmpi_mpifh.dylib */; };
+		18CF36382A42141800143CCC /* libmpi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CF36362A42141800143CCC /* libmpi.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -131,6 +131,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.llvm.clang.1_0;
 			fileType = sourcecode.c;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -151,17 +153,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		181FFB66249D42C800BB1E52 /* libgtk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.dylib"; path = "../../../../../../../opt/local/lib/libgtk-3.dylib"; sourceTree = "<group>"; };
-		181FFB68249D430F00BB1E52 /* libgdk-3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.0.dylib"; path = "../../../../../../../opt/local/lib/libgdk-3.0.dylib"; sourceTree = "<group>"; };
-		181FFB6A249D43E100BB1E52 /* libpango-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpango-1.0.dylib"; path = "../../../../../../../opt/local/lib/libpango-1.0.dylib"; sourceTree = "<group>"; };
-		181FFB6B249D43E100BB1E52 /* libpangocairo-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpangocairo-1.0.dylib"; path = "../../../../../../../opt/local/lib/libpangocairo-1.0.dylib"; sourceTree = "<group>"; };
-		181FFB6E249D440F00BB1E52 /* libcairo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.dylib; path = ../../../../../../../opt/local/lib/libcairo.dylib; sourceTree = "<group>"; };
-		181FFB70249D441E00BB1E52 /* libcairo-gobject.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcairo-gobject.dylib"; path = "../../../../../../../opt/local/lib/libcairo-gobject.dylib"; sourceTree = "<group>"; };
-		181FFB72249D443A00BB1E52 /* libatk-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libatk-1.0.dylib"; path = "../../../../../../../opt/local/lib/libatk-1.0.dylib"; sourceTree = "<group>"; };
-		181FFB74249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.dylib"; path = "../../../../../../../opt/local/lib/libgdk_pixbuf-2.0.dylib"; sourceTree = "<group>"; };
-		181FFB76249D445700BB1E52 /* libgio-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgio-2.0.dylib"; path = "../../../../../../../opt/local/lib/libgio-2.0.dylib"; sourceTree = "<group>"; };
-		181FFB78249D446C00BB1E52 /* libgobject-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.dylib"; path = "../../../../../../../opt/local/lib/libgobject-2.0.dylib"; sourceTree = "<group>"; };
-		181FFB7A249D448D00BB1E52 /* libglib-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.dylib"; path = "../../../../../../../opt/local/lib/libglib-2.0.dylib"; sourceTree = "<group>"; };
 		181FFBD1249D480100BB1E52 /* skip_comment_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = skip_comment_c.c; path = ../../C_src/CORE_C/skip_comment_c.c; sourceTree = "<group>"; };
 		181FFBD2249D480100BB1E52 /* skip_comment_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = skip_comment_c.h; path = ../../C_src/CORE_C/skip_comment_c.h; sourceTree = "<group>"; };
 		181FFBD7249D48EE00BB1E52 /* calypso_param_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = calypso_param_c.c; path = ../../C_src/CORE_C/calypso_param_c.c; sourceTree = "<group>"; };
@@ -171,14 +162,6 @@
 		181FFBE0249D49B500BB1E52 /* quicksort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = quicksort_c.c; path = ../../C_src/CORE_C/quicksort_c.c; sourceTree = "<group>"; };
 		181FFBE1249D49B500BB1E52 /* quicksort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quicksort_c.h; path = ../../C_src/CORE_C/quicksort_c.h; sourceTree = "<group>"; };
 		181FFBE3249D4FF000BB1E52 /* file_dialog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_dialog.c; path = ../../programs/TESTS/GTK3_test/file_dialog.c; sourceTree = "<group>"; };
-		181FFBEE249D57B800BB1E52 /* libkemo_viz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_viz.a; path = ../../../../../src_kemo/work/libkemo_viz.a; sourceTree = "<group>"; };
-		181FFBF0249D599E00BB1E52 /* libkemo_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_core.a; path = ../../../../../src_kemo/work/libkemo_core.a; sourceTree = "<group>"; };
-		18788E5E24A2AA2E00BA0C62 /* libkemo_parallel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_parallel.a; path = ../../../../../src_kemo/work/libkemo_parallel.a; sourceTree = "<group>"; };
-		18788E6024A2AA3300BA0C62 /* libkemo_solver.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_solver.a; path = ../../../../../src_kemo/work/libkemo_solver.a; sourceTree = "<group>"; };
-		18788E6324A2AD8100BA0C62 /* libgfortran.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgfortran.a; path = ../../../../../../../opt/local/lib/gcc8/libgfortran.a; sourceTree = "<group>"; };
-		18788E6524A2ADD200BA0C62 /* libgomp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgomp.a; path = ../../../../../../../opt/local/lib/gcc8/libgomp.a; sourceTree = "<group>"; };
-		18788E6724A2AE3600BA0C62 /* libmpi_mpifh.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpi_mpifh.dylib; path = "../../../../../../../opt/local/lib/openmpi-gcc8/libmpi_mpifh.dylib"; sourceTree = "<group>"; };
-		18788E6924A2AE4000BA0C62 /* libmpi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpi.dylib; path = "../../../../../../../opt/local/lib/openmpi-gcc8/libmpi.dylib"; sourceTree = "<group>"; };
 		18788E6E24A2AEB900BA0C62 /* ctl_panel_platforms_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ctl_panel_platforms_GTK.c; path = ../../C_src/GTK/ctl_panel_platforms_GTK.c; sourceTree = "<group>"; };
 		18788E6F24A2AEB900BA0C62 /* calypso_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = calypso_GTK.c; path = ../../C_src/GTK/calypso_GTK.c; sourceTree = "<group>"; };
 		18788E7024A2AEB900BA0C62 /* control_panel_4_dimless_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_panel_4_dimless_GTK.h; path = ../../C_src/GTK/control_panel_4_dimless_GTK.h; sourceTree = "<group>"; };
@@ -363,8 +346,27 @@
 		18788F4524A2AEF300BA0C62 /* control_elements_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_c.h; path = ../../C_src/CONTROLS/control_elements_IO_c.h; sourceTree = "<group>"; };
 		18788F4624A2AEF300BA0C62 /* t_control_data_4_pvr_movie_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_pvr_movie_c.h; path = ../../C_src/CONTROLS/t_control_data_4_pvr_movie_c.h; sourceTree = "<group>"; };
 		18788F4724A2AEF300BA0C62 /* t_control_int2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int2_IO.c; path = ../../C_src/CONTROLS/t_control_int2_IO.c; sourceTree = "<group>"; };
-		18788F8E24A2AF8500BA0C62 /* libkemo_MHD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_MHD.a; path = ../../../../../src_kemo/work/libkemo_MHD.a; sourceTree = "<group>"; };
 		18812AE8211EB5B000BF714B /* GTK_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GTK_test; sourceTree = BUILT_PRODUCTS_DIR; };
+		18CF36112A4212F900143CCC /* libgdk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.dylib"; path = "../../../../../../../opt/homebrew/lib/libgdk-3.dylib"; sourceTree = "<group>"; };
+		18CF36132A42130500143CCC /* libgtk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.dylib"; path = "../../../../../../../opt/homebrew/lib/libgtk-3.dylib"; sourceTree = "<group>"; };
+		18CF36152A42133000143CCC /* libpango-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpango-1.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libpango-1.0.dylib"; sourceTree = "<group>"; };
+		18CF36162A42133000143CCC /* libpangocairo-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpangocairo-1.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libpangocairo-1.0.dylib"; sourceTree = "<group>"; };
+		18CF36192A42134C00143CCC /* libcairo-gobject.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcairo-gobject.2.dylib"; path = "../../../../../../../opt/homebrew/lib/libcairo-gobject.2.dylib"; sourceTree = "<group>"; };
+		18CF361A2A42134C00143CCC /* libcairo.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.2.dylib; path = ../../../../../../../opt/homebrew/lib/libcairo.2.dylib; sourceTree = "<group>"; };
+		18CF361D2A42135A00143CCC /* libatk-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libatk-1.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libatk-1.0.dylib"; sourceTree = "<group>"; };
+		18CF361F2A42136B00143CCC /* libgdk_pixbuf-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libgdk_pixbuf-2.0.dylib"; sourceTree = "<group>"; };
+		18CF36212A42138600143CCC /* libgobject-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libgobject-2.0.dylib"; sourceTree = "<group>"; };
+		18CF36222A42138600143CCC /* libgio-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgio-2.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libgio-2.0.dylib"; sourceTree = "<group>"; };
+		18CF36252A42139700143CCC /* libglib-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.dylib"; path = "../../../../../../../opt/homebrew/lib/libglib-2.0.dylib"; sourceTree = "<group>"; };
+		18CF36272A4213CA00143CCC /* libkemo_solver.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_solver.a; path = ../../../../../../../Users/matsui/src_kemo/work/libkemo_solver.a; sourceTree = "<group>"; };
+		18CF36282A4213CA00143CCC /* libkemo_parallel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_parallel.a; path = ../../../../../../../Users/matsui/src_kemo/work/libkemo_parallel.a; sourceTree = "<group>"; };
+		18CF36292A4213CA00143CCC /* libkemo_MHD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_MHD.a; path = ../../../../../../../Users/matsui/src_kemo/work/libkemo_MHD.a; sourceTree = "<group>"; };
+		18CF362A2A4213CA00143CCC /* libkemo_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_core.a; path = ../../../../../../../Users/matsui/src_kemo/work/libkemo_core.a; sourceTree = "<group>"; };
+		18CF362B2A4213CA00143CCC /* libkemo_viz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_viz.a; path = ../../../../../../../Users/matsui/src_kemo/work/libkemo_viz.a; sourceTree = "<group>"; };
+		18CF36312A4213F400143CCC /* libgfortran.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgfortran.dylib; path = ../../../../../../../opt/homebrew/Cellar/gcc/13.1.0/lib/gcc/current/libgfortran.dylib; sourceTree = "<group>"; };
+		18CF36332A4213FE00143CCC /* libgomp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgomp.dylib; path = ../../../../../../../opt/homebrew/Cellar/gcc/13.1.0/lib/gcc/current/libgomp.dylib; sourceTree = "<group>"; };
+		18CF36352A42141800143CCC /* libmpi_mpifh.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpi_mpifh.dylib; path = ../../../../../../../opt/homebrew/lib/libmpi_mpifh.dylib; sourceTree = "<group>"; };
+		18CF36362A42141800143CCC /* libmpi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpi.dylib; path = ../../../../../../../opt/homebrew/lib/libmpi.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -372,26 +374,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				181FFB75249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
-				181FFB77249D445700BB1E52 /* libgio-2.0.dylib in Frameworks */,
-				181FFB79249D446D00BB1E52 /* libgobject-2.0.dylib in Frameworks */,
-				18788E6A24A2AE4000BA0C62 /* libmpi.dylib in Frameworks */,
-				181FFB6C249D43E100BB1E52 /* libpango-1.0.dylib in Frameworks */,
-				18788E5F24A2AA2E00BA0C62 /* libkemo_parallel.a in Frameworks */,
-				181FFB7B249D448D00BB1E52 /* libglib-2.0.dylib in Frameworks */,
-				18788E6824A2AE3600BA0C62 /* libmpi_mpifh.dylib in Frameworks */,
-				18788E6424A2AD8100BA0C62 /* libgfortran.a in Frameworks */,
-				181FFB67249D42C800BB1E52 /* libgtk-3.dylib in Frameworks */,
-				181FFB69249D430F00BB1E52 /* libgdk-3.0.dylib in Frameworks */,
-				18788E6124A2AA3300BA0C62 /* libkemo_solver.a in Frameworks */,
-				18788E6624A2ADD200BA0C62 /* libgomp.a in Frameworks */,
-				181FFBEF249D57B800BB1E52 /* libkemo_viz.a in Frameworks */,
-				181FFB6F249D440F00BB1E52 /* libcairo.dylib in Frameworks */,
-				18788F8F24A2AF8500BA0C62 /* libkemo_MHD.a in Frameworks */,
-				181FFB71249D441E00BB1E52 /* libcairo-gobject.dylib in Frameworks */,
-				181FFB6D249D43E100BB1E52 /* libpangocairo-1.0.dylib in Frameworks */,
-				181FFB73249D443A00BB1E52 /* libatk-1.0.dylib in Frameworks */,
-				181FFBF1249D599E00BB1E52 /* libkemo_core.a in Frameworks */,
+				18CF36122A4212F900143CCC /* libgdk-3.dylib in Frameworks */,
+				18CF36182A42133000143CCC /* libpangocairo-1.0.dylib in Frameworks */,
+				18CF362C2A4213CA00143CCC /* libkemo_solver.a in Frameworks */,
+				18CF36382A42141800143CCC /* libmpi.dylib in Frameworks */,
+				18CF36232A42138600143CCC /* libgobject-2.0.dylib in Frameworks */,
+				18CF36172A42133000143CCC /* libpango-1.0.dylib in Frameworks */,
+				18CF36372A42141800143CCC /* libmpi_mpifh.dylib in Frameworks */,
+				18CF36342A4213FE00143CCC /* libgomp.dylib in Frameworks */,
+				18CF362F2A4213CA00143CCC /* libkemo_core.a in Frameworks */,
+				18CF361B2A42134C00143CCC /* libcairo-gobject.2.dylib in Frameworks */,
+				18CF36202A42136B00143CCC /* libgdk_pixbuf-2.0.dylib in Frameworks */,
+				18CF362E2A4213CA00143CCC /* libkemo_MHD.a in Frameworks */,
+				18CF36322A4213F400143CCC /* libgfortran.dylib in Frameworks */,
+				18CF361C2A42134C00143CCC /* libcairo.2.dylib in Frameworks */,
+				18CF36142A42130500143CCC /* libgtk-3.dylib in Frameworks */,
+				18CF362D2A4213CA00143CCC /* libkemo_parallel.a in Frameworks */,
+				18CF36262A42139700143CCC /* libglib-2.0.dylib in Frameworks */,
+				18CF361E2A42135A00143CCC /* libatk-1.0.dylib in Frameworks */,
+				18CF36302A4213CA00143CCC /* libkemo_viz.a in Frameworks */,
+				18CF36242A42138600143CCC /* libgio-2.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,26 +403,26 @@
 		181FFB65249D426F00BB1E52 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				181FFB66249D42C800BB1E52 /* libgtk-3.dylib */,
-				181FFB68249D430F00BB1E52 /* libgdk-3.0.dylib */,
-				181FFB6A249D43E100BB1E52 /* libpango-1.0.dylib */,
-				181FFB6B249D43E100BB1E52 /* libpangocairo-1.0.dylib */,
-				181FFB70249D441E00BB1E52 /* libcairo-gobject.dylib */,
-				181FFB6E249D440F00BB1E52 /* libcairo.dylib */,
-				181FFB72249D443A00BB1E52 /* libatk-1.0.dylib */,
-				181FFB74249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib */,
-				181FFB76249D445700BB1E52 /* libgio-2.0.dylib */,
-				181FFB78249D446C00BB1E52 /* libgobject-2.0.dylib */,
-				181FFB7A249D448D00BB1E52 /* libglib-2.0.dylib */,
-				18788F8E24A2AF8500BA0C62 /* libkemo_MHD.a */,
-				181FFBEE249D57B800BB1E52 /* libkemo_viz.a */,
-				181FFBF0249D599E00BB1E52 /* libkemo_core.a */,
-				18788E5E24A2AA2E00BA0C62 /* libkemo_parallel.a */,
-				18788E6024A2AA3300BA0C62 /* libkemo_solver.a */,
-				18788E6324A2AD8100BA0C62 /* libgfortran.a */,
-				18788E6524A2ADD200BA0C62 /* libgomp.a */,
-				18788E6724A2AE3600BA0C62 /* libmpi_mpifh.dylib */,
-				18788E6924A2AE4000BA0C62 /* libmpi.dylib */,
+				18CF36132A42130500143CCC /* libgtk-3.dylib */,
+				18CF36112A4212F900143CCC /* libgdk-3.dylib */,
+				18CF361F2A42136B00143CCC /* libgdk_pixbuf-2.0.dylib */,
+				18CF36152A42133000143CCC /* libpango-1.0.dylib */,
+				18CF36162A42133000143CCC /* libpangocairo-1.0.dylib */,
+				18CF36192A42134C00143CCC /* libcairo-gobject.2.dylib */,
+				18CF361A2A42134C00143CCC /* libcairo.2.dylib */,
+				18CF361D2A42135A00143CCC /* libatk-1.0.dylib */,
+				18CF36222A42138600143CCC /* libgio-2.0.dylib */,
+				18CF36212A42138600143CCC /* libgobject-2.0.dylib */,
+				18CF36252A42139700143CCC /* libglib-2.0.dylib */,
+				18CF362A2A4213CA00143CCC /* libkemo_core.a */,
+				18CF36292A4213CA00143CCC /* libkemo_MHD.a */,
+				18CF36282A4213CA00143CCC /* libkemo_parallel.a */,
+				18CF36272A4213CA00143CCC /* libkemo_solver.a */,
+				18CF362B2A4213CA00143CCC /* libkemo_viz.a */,
+				18CF36312A4213F400143CCC /* libgfortran.dylib */,
+				18CF36332A4213FE00143CCC /* libgomp.dylib */,
+				18CF36352A42141800143CCC /* libmpi_mpifh.dylib */,
+				18CF36362A42141800143CCC /* libmpi.dylib */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -990,34 +992,35 @@
 				HEADER_SEARCH_PATHS = (
 					/Users/matsui/src_kemo/work,
 					/usr/X11/include,
-					/opt/local/include/libpng16,
-					/opt/local/include,
+					/opt/homebrew/include/libpng16,
+					/opt/homebrew/include,
 					/usr/local/include,
-					"/opt/local/include/gtk-3.0",
-					"/opt/local/include/at-spi2-atk/2.0",
-					"/opt/local/include/at-spi-2.0",
-					"/opt/local/include/dbus-1.0",
-					"/opt/local/lib/dbus-1.0/include",
-					"/opt/local/include/gtk-3.0",
-					"/opt/local/include/gio-unix-2.0/",
-					/opt/local/include,
-					/opt/local/include/cairo,
-					"/opt/local/include/pango-1.0",
-					/opt/local/include/harfbuzz,
-					/opt/local/include/fribidi,
-					"/opt/local/include/atk-1.0",
-					"/opt/local/include/pixman-1",
-					/opt/local/include/ossp,
-					"/opt/local/lib/glib-2.0/include",
-					"/opt/local/include/glib-2.0",
-					"/opt/local/include/gdk-pixbuf-2.0",
+					"/opt/homebrew/include/gtk-3.0",
+					"/opt/homebrew/include/at-spi2-atk/2.0",
+					"/opt/homebrew/include/at-spi-2.0",
+					"/opt/homebrew/include/dbus-1.0",
+					"/opt/homebrew/lib/dbus-1.0/include",
+					"/opt/homebrew/include/gtk-3.0",
+					"/opt/homebrew/include/gio-unix-2.0/",
+					/opt/homebrew/include/cairo,
+					"/opt/homebrew/include/pango-1.0",
+					/opt/homebrew/include/harfbuzz,
+					/opt/homebrew/include/fribidi,
+					"/opt/homebrew/include/atk-1.0",
+					"/opt/homebrew/include/pixman-1",
+					/opt/homebrew/include/ossp,
+					"/opt/homebrew/lib/glib-2.0/include",
+					"/opt/homebrew/include/glib-2.0",
+					"/opt/homebrew/include/gdk-pixbuf-2.0",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/opt/local/lib,
+					"/opt/local/lib/**",
 					/Users/matsui/src_kemo/work,
-					/opt/local/lib/gcc8,
-					"/opt/local/lib/openmpi-gcc8",
+					/opt/homebrew/lib/gcc,
+					/opt/homebrew/lib/openmpi,
+					"/opt/homebrew/lib/**",
+					/opt/homebrew/Cellar/gcc/13.1.0/lib/gcc/current,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1030,10 +1033,12 @@
 				GCC_VERSION = "";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/opt/local/lib,
+					"/opt/local/lib/**",
 					/Users/matsui/src_kemo/work,
-					/opt/local/lib/gcc8,
-					"/opt/local/lib/openmpi-gcc8",
+					/opt/homebrew/lib/gcc,
+					/opt/homebrew/lib/openmpi,
+					"/opt/homebrew/lib/**",
+					/opt/homebrew/Cellar/gcc/13.1.0/lib/gcc/current,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

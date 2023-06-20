@@ -8,6 +8,7 @@
 
 #include "control_elements_IO_GTK.h"
 #include "control_combobox_GTK.h"
+#include "control_panel_4_field_GTK.h"
 #include "t_control_data_4_iso_c.h"
 #include "kemoview_gtk_routines.h"
 #include "tree_view_chara_GTK.h"
@@ -328,15 +329,15 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 2]), 
 			 400, 200, window, vbox_2[2]);
     gtk_box_pack_start(GTK_BOX(vbox_1), expander, FALSE, FALSE, 0);
-	GtkWidget *expander = wrap_into_expanded_frame_gtk
+	GtkWidget *expander1 = wrap_into_expanded_frame_gtk
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 3]), 
 			 400, 500, window, vbox_2[3]);
-    gtk_box_pack_start(GTK_BOX(vbox_1), expander, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_1), expander1, FALSE, FALSE, 0);
 	c_label = isosurface_control_head();
     
-	GtkWidget *expander = wrap_into_expanded_frame_gtk(duplicate_underscore(c_label), 
+	GtkWidget *expander2 = wrap_into_expanded_frame_gtk(duplicate_underscore(c_label),
 								 400, 600, window, vbox_1);
-    gtk_box_pack_start(GTK_BOX(vbox0), expander, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox0), expander2, FALSE, FALSE, 0);
 	return;
 };
 
