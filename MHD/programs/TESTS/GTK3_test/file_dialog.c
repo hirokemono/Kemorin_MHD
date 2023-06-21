@@ -1,5 +1,6 @@
 
 #include <string.h>
+#include <unistd.h>
 #include <gtk/gtk.h>
 #include "control_elements_IO_c.h"
 #include "t_control_int_IO.h"
@@ -13,6 +14,8 @@
 #include "kemoview_gtk_routines.h"
 #include "tree_view_chara_GTK.h"
 #include "tree_view_4_field_GTK.h"
+
+extern void c_read_control_sph_SGS_MHD();
 
 void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c *iso_c);
 
@@ -98,12 +101,30 @@ static void cb_Open(GtkButton *button, gpointer data)
 		g_print( "File is selecting \n");
 		/* Get file name  */
 		read_file_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		/* Get Foulder name */
-		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
+											read_file_name);
 		g_print( "file name: %s\n", read_file_name);
-		g_print( "folder name: %s\n", folder);
-		g_free(folder);
-    /* Show file name in entry */ 
+		
+		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
+		if ((folder == NULL)) {
+			int length = strlen(read_file_name);
+			char *stripped_filehead = (char *) calloc(length+1, sizeof(char));
+			char *stripped_dir = (char *) calloc(length+1, sizeof(char));
+			split_dir_and_file_name_c((char *) read_file_name, 
+									  stripped_dir, stripped_filehead);
+			printf("Folder %s\n", stripped_dir);
+			chdir(stripped_dir);
+		} else {
+			g_print( "folder name: %s\n", folder);
+			chdir(folder);
+		}
+		/* Get Folder name */
+		
+		
+		c_read_control_sph_SGS_MHD();
+		
+		
+		/* Show file name in entry */ 
 		gtk_entry_set_text(entry, read_file_name);
 		
 		if((iso_GTK0 = (struct iso_ctl_GTK *) malloc(sizeof(struct iso_ctl_GTK))) == NULL) {

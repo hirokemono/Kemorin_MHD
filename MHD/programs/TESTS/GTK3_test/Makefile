@@ -12,6 +12,7 @@ OPTFLAGS = -O3 -Wall -g  -D__APPLE__
 CXXFLAGS =  -D__APPLE__
 
 KEMO_INCLUDE = -I. \
+-I$(WORKDIR) \
 -I$(SRCDIR)/MHD/C_src/CORE_C \
 -I$(SRCDIR)/MHD/C_src/GTK \
 -I$(SRCDIR)/MHD/C_src/CONTROLS
@@ -30,14 +31,18 @@ GTK3_LIBS =    -L/opt/homebrew/Cellar/gtk+3/3.24.37/lib -L/opt/homebrew/Cellar/p
 
 all: control_GTK
 
-control_GTK: file_dialog.o
-	mpif90 -O3 -Wall -g -fopenmp  -D_REENTRANT $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
-	-o control_GTK file_dialog.o $(KEMO_LIBS) $(GTK3_LIBS)
+control_GTK: file_dialog.o read_mhd_control_4_c.o
+	$(F90) $(F90OPTFLAGS) $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	-o control_GTK file_dialog.o read_mhd_control_4_c.o $(KEMO_LIBS) $(GTK3_LIBS)
 
 
 file_dialog.o: file_dialog.c
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
-	/Users/matsui/git/Kemorin_MHD/MHD/programs/TESTS/GTK3_test/file_dialog.c
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/file_dialog.c
+
+read_mhd_control_4_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/read_mhd_control_4_c.f90
+	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/Fortran_src/Fortran2003/read_mhd_control_4_c.f90
 
 clean:
 	rm -f *.o *.mod *~
