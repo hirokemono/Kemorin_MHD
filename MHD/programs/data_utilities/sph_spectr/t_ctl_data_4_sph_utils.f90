@@ -252,13 +252,13 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_ene_spec_head, spu_ctl%ene_spec_head_ctl)
+     &    spu_ctl%ene_spec_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_vol_ene_spec_head, spu_ctl%vol_ene_spec_head_ctl)
+     &    spu_ctl%vol_ene_spec_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_zm_sph_spec_file, spu_ctl%zm_spec_file_head_ctl)
+     &    spu_ctl%zm_spec_file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_tsph_esp_file, spu_ctl%tave_ene_spec_head_ctl)
+     &    spu_ctl%tave_ene_spec_head_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_trans_params_ctl

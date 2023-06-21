@@ -188,12 +188,12 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_movie_mode, movie%movie_mode_ctl)
+     &    movie%movie_mode_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_movie_num_frame, movie%num_frames_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_movie_rot_axis, movie%rotation_axis_ctl)
+     &    movie%rotation_axis_ctl)
 !
       write(*,'(2a)', ADVANCE='NO') '!  ', trim(hd_start_view_control)
       call sel_write_ctl_modelview_file                                 &

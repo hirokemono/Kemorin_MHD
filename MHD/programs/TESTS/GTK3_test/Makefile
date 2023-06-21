@@ -28,11 +28,15 @@ KEMO_LIBS = -L/Users/matsui/src_kemo/work \
 GTK3_CFLAGS = $(shell pkg-config --cflags gtk+-3.0)
 GTK3_LIBS =   $(shell pkg-config --libs gtk+-3.0)
 
+MODULES = \
+read_mhd_control_4_c.o \
+ctl_data_platforms_to_c.o
+
 all: control_GTK
 
-control_GTK: file_dialog.o read_mhd_control_4_c.o
+control_GTK: file_dialog.o $(MODULES)
 	$(F90) $(F90OPTFLAGS) $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
-	-o control_GTK file_dialog.o read_mhd_control_4_c.o $(KEMO_LIBS) $(GTK3_LIBS)
+	-o control_GTK file_dialog.o $(MODULES) $(KEMO_LIBS) $(GTK3_LIBS)
 
 
 file_dialog.o: file_dialog.c
@@ -42,6 +46,10 @@ file_dialog.o: file_dialog.c
 read_mhd_control_4_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/read_mhd_control_4_c.f90
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/Fortran_src/Fortran2003/read_mhd_control_4_c.f90
+
+ctl_data_platforms_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_data_platforms_to_c.f90
+	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_data_platforms_to_c.f90
 
 clean:
 	rm -f *.o *.mod *~

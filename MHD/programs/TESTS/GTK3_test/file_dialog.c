@@ -29,7 +29,6 @@ extern void * c_MHD_smctl_ctl(void *f_MHD_ctl);
 extern void * c_MHD_smonitor_ctl(void *f_MHD_ctl);
 extern void * c_MHD_nmtr_ctl(void *f_MHD_ctl);
 
-
 extern void * c_plt_block_name(void *f_plt);
 extern void * c_plt_iflag(void *f_plt);
 extern void * c_plt_ndomain_ctl(void *f_plt);
@@ -60,7 +59,7 @@ struct f_platform_control{
 	void * f_self;
 	
 	char * f_block_name;
-	void * f_iflag;
+	int * f_iflag;
 	
 	void * f_ndomain_ctl;
 	void * f_num_smp_ctl;
@@ -91,7 +90,8 @@ struct f_MHD_control{
 	void * f_self;
 	
 	char * f_block_name;
-	void * f_iflag;
+	int * f_iflag;
+	
 	struct f_platform_control *f_plt;
 	void * f_org_plt;
 	void * f_new_plt;
@@ -152,6 +152,43 @@ boolean_to_text (GBinding *binding,
 }
 */
 
+struct f_platform_control * init_f_platform_control(void *f_self)
+{
+	struct f_platform_control *f_plt = (struct f_platform_control *) malloc(sizeof(struct f_platform_control));
+	if(f_plt == NULL){
+		printf("malloc error for f_plt\n");
+		exit(0);
+	};
+	f_plt->f_self =  c_MHD_plt(f_self);
+	f_plt->f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
+	f_plt->f_iflag =       (int *)  c_plt_iflag(f_plt->f_self);
+	
+	f_plt->f_ndomain_ctl =               c_plt_ndomain_ctl(f_plt->f_self);
+	f_plt->f_num_smp_ctl =               c_plt_num_smp_ctl(f_plt->f_self);
+	f_plt->f_debug_flag_ctl =            c_plt_debug_flag_ctl(f_plt->f_self);
+	f_plt->f_sph_file_prefix =           c_plt_sph_file_prefix(f_plt->f_self);
+	f_plt->f_mesh_file_prefix =          c_plt_mesh_file_prefix(f_plt->f_self);
+	f_plt->f_restart_file_prefix =       c_plt_restart_file_prefix(f_plt->f_self);
+	f_plt->f_field_file_prefix =         c_plt_field_file_prefix(f_plt->f_self);
+	f_plt->f_spectr_field_file_prefix =  c_plt_spectr_field_file_prefix(f_plt->f_self);
+	f_plt->f_coriolis_int_file_name =    c_plt_coriolis_int_file_name(f_plt->f_self);
+	f_plt->f_bc_data_file_name_ctl =     c_plt_bc_data_file_name_ctl(f_plt->f_self);
+	f_plt->f_radial_data_file_name_ctl = c_plt_radial_data_file_name_ctl(f_plt->f_self);
+	f_plt->f_interpolate_sph_to_fem =    c_plt_interpolate_sph_to_fem(f_plt->f_self);
+	f_plt->f_interpolate_fem_to_sph =    c_plt_interpolate_fem_to_sph(f_plt->f_self);
+	f_plt->f_rayleigh_spectr_dir =       c_plt_rayleigh_spectr_dir(f_plt->f_self);
+	f_plt->f_rayleigh_field_dir =        c_plt_rayleigh_field_dir(f_plt->f_self);
+	f_plt->f_sph_file_fmt_ctl =          c_plt_sph_file_fmt_ctl(f_plt->f_self);
+	f_plt->f_mesh_file_fmt_ctl =         c_plt_mesh_file_fmt_ctl(f_plt->f_self);
+	f_plt->f_restart_file_fmt_ctl =      c_plt_restart_file_fmt_ctl(f_plt->f_self);
+	f_plt->f_field_file_fmt_ctl =        c_plt_field_file_fmt_ctl(f_plt->f_self);
+	f_plt->f_spectr_field_fmt_ctl =      c_plt_spectr_field_fmt_ctl(f_plt->f_self);
+	f_plt->f_itp_file_fmt_ctl =          c_plt_itp_file_fmt_ctl(f_plt->f_self);
+	f_plt->f_coriolis_file_fmt_ctl =     c_plt_coriolis_file_fmt_ctl(f_plt->f_self);
+	f_plt->f_del_org_data_ctl =          c_plt_del_org_data_ctl(f_plt->f_self);
+	return f_plt;
+}
+
 static void cb_View(GtkButton *button, gpointer data)
 {
 	c_view_control_sph_SGS_MHD();
@@ -211,40 +248,9 @@ static void cb_Open(GtkButton *button, gpointer data)
 		f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD((char *) read_file_name);
 		
 		f_MHD_ctl->f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_iflag =        c_MHD_iflag(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_iflag =        (int *) c_MHD_iflag(f_MHD_ctl->f_self);
 		
-		f_MHD_ctl->f_plt = (struct f_platform_control *) malloc(sizeof(struct f_platform_control));
-		if(f_MHD_ctl->f_plt == NULL){
-			printf("malloc error for f_MHD_ctl->f_plt\n");
-			exit(0);
-		};
-		f_MHD_ctl->f_plt->f_self =  c_MHD_plt(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_plt->f_block_name =  (char *) c_plt_block_name(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_iflag =       c_plt_iflag(f_MHD_ctl->f_plt->f_self);
-		
-		f_MHD_ctl->f_plt->f_ndomain_ctl =               c_plt_ndomain_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_num_smp_ctl =               c_plt_num_smp_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_debug_flag_ctl =            c_plt_debug_flag_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_sph_file_prefix =           c_plt_sph_file_prefix(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_mesh_file_prefix =          c_plt_mesh_file_prefix(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_restart_file_prefix =       c_plt_restart_file_prefix(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_field_file_prefix =         c_plt_field_file_prefix(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_spectr_field_file_prefix =  c_plt_spectr_field_file_prefix(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_coriolis_int_file_name =    c_plt_coriolis_int_file_name(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_bc_data_file_name_ctl =     c_plt_bc_data_file_name_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_radial_data_file_name_ctl = c_plt_radial_data_file_name_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_interpolate_sph_to_fem =    c_plt_interpolate_sph_to_fem(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_interpolate_fem_to_sph =    c_plt_interpolate_fem_to_sph(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_rayleigh_spectr_dir =       c_plt_rayleigh_spectr_dir(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_rayleigh_field_dir =        c_plt_rayleigh_field_dir(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_sph_file_fmt_ctl =          c_plt_sph_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_mesh_file_fmt_ctl =         c_plt_mesh_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_restart_file_fmt_ctl =      c_plt_restart_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_field_file_fmt_ctl =        c_plt_field_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_spectr_field_fmt_ctl =      c_plt_spectr_field_fmt_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_itp_file_fmt_ctl =          c_plt_itp_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_coriolis_file_fmt_ctl =     c_plt_coriolis_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
-		f_MHD_ctl->f_plt->f_del_org_data_ctl =          c_plt_del_org_data_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt = init_f_platform_control(f_MHD_ctl->f_self);
 		
 		f_MHD_ctl->f_org_plt =      c_MHD_org_plt(f_MHD_ctl->f_self);
 		f_MHD_ctl->f_new_plt =      c_MHD_new_plt(f_MHD_ctl->f_self);

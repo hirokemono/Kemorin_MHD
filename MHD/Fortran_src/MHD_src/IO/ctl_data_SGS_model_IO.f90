@@ -380,23 +380,23 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_model, sgs_ctl%SGS_model_name_ctl)
+     &    sgs_ctl%SGS_model_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_filter, sgs_ctl%SGS_filter_name_ctl)
+     &    sgs_ctl%SGS_filter_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_DIFF_coefs, sgs_ctl%DIFF_model_coef_ctl)
+     &    sgs_ctl%DIFF_model_coef_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_clips, sgs_ctl%SGS_negative_clip_ctl)
+     &    sgs_ctl%SGS_negative_clip_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_SGS_clip_limit, sgs_ctl%clipping_limit_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_marging, sgs_ctl%SGS_marging_ctl)
+     &    sgs_ctl%SGS_marging_ctl)
 !
       call write_control_4_SGS_filters                                  &
      &   (id_control, hd_sph_filter, sgs_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_buo_Csim_usage, sgs_ctl%SGS_buo_Csim_usage_ctl)
+     &    sgs_ctl%SGS_buo_Csim_usage_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_SGS_hf_factor, sgs_ctl%SGS_hf_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -431,32 +431,32 @@
      &    hd_delta_extend_dynamic, sgs_ctl%delta_to_extend_dynamic_ctl)
 !
       call write_control_array_c1(id_control, level,                    &
-     &    hd_SGS_terms, sgs_ctl%SGS_terms_ctl)
+     &    sgs_ctl%SGS_terms_ctl)
       call write_control_array_c1(id_control, level,                    &
-     &    hd_commutation_fld, sgs_ctl%commutate_fld_ctl)
+     &    sgs_ctl%commutate_fld_ctl)
       call write_3d_filtering_ctl                                       &
      &   (id_control, hd_3d_filtering, sgs_ctl%s3df_ctl, level)
       call write_ele_layers_control(id_control, hd_dynamic_layers,      &
      &                              sgs_ctl%elayer_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_perturbation_ctl, sgs_ctl%SGS_perturbation_ctl)
+     &    sgs_ctl%SGS_perturbation_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_model_coef_type_ctl, sgs_ctl%SGS_model_coef_type_ctl)
+     &    sgs_ctl%SGS_model_coef_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_hf_csim_type_ctl, sgs_ctl%heat_flux_csim_type_ctl)
+     &    sgs_ctl%heat_flux_csim_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_cf_csim_type_ctl, sgs_ctl%comp_flux_csim_type_ctl)
+     &    sgs_ctl%comp_flux_csim_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_mf_csim_type_ctl, sgs_ctl%mom_flux_csim_type_ctl)
+     &    sgs_ctl%mom_flux_csim_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_mxwl_csim_type_ctl, sgs_ctl%maxwell_csim_type_ctl)
+     &    sgs_ctl%maxwell_csim_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_uxb_csim_type_ctl, sgs_ctl%uxb_csim_type_ctl)
+     &    sgs_ctl%uxb_csim_type_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_model_coef_coord_ctl, sgs_ctl%SGS_model_coef_coord_ctl)
+     &    sgs_ctl%SGS_model_coef_coord_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sgs_ctl

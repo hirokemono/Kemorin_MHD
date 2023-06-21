@@ -179,11 +179,11 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_noise_type, noise_ctl%noise_type_ctl)
+     &    noise_ctl%noise_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_noise_file_head, noise_ctl%noise_file_name_ctl)
+     &    noise_ctl%noise_file_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_noise_file_fmt, noise_ctl%noise_file_format_ctl)
+     &    noise_ctl%noise_file_format_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_noise_grid_size, noise_ctl%noise_resolution_ctl)

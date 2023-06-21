@@ -241,9 +241,9 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
         call write_chara_ctl_type(id_control, level, maxlen,            &
-     &      hd_MG_METHOD, MG_ctl%MG_METHOD_ctl)
+     &      MG_ctl%MG_METHOD_ctl)
         call write_chara_ctl_type(id_control, level, maxlen,            &
-     &      hd_MG_PRECOND, MG_ctl%MG_PRECOND_ctl)
+     &      MG_ctl%MG_PRECOND_ctl)
 !
         call write_real_ctl_type(id_control, level, maxlen,             &
      &      hd_MG_residual, MG_ctl%MG_residual_ctl)
@@ -261,19 +261,19 @@
      &      hd_num_MG_subdomain, MG_ctl%num_MG_subdomain_ctl)
 !
         call write_control_array_c1(id_control, level,                  &
-     &      hd_MG_mesh_header, MG_ctl%MG_mesh_prefix_ctl)
+     &      MG_ctl%MG_mesh_prefix_ctl)
 !
         call write_control_array_c1(id_control, level,                  &
-     &      hd_MG_fine_2_coarse_tbl, MG_ctl%MG_fine_2_coarse_tbl)
+     &      MG_ctl%MG_fine_2_coarse_tbl)
         call write_control_array_c1(id_control, level,                  &
-     &      hd_MG_coarse_2_fine_tbl, MG_ctl%MG_coarse_2_fine_tbl)
+     &      MG_ctl%MG_coarse_2_fine_tbl)
         call write_control_array_c1(id_control, level,                  &
-     &      hd_MG_f2c_ele_tbl, MG_ctl%MG_f2c_ele_tbl_ctl)
+     &      MG_ctl%MG_f2c_ele_tbl_ctl)
 !
         call write_control_array_c1(id_control, level,                  &
-     &      hd_MG_mesh_file_fmt, MG_ctl%MG_mesh_fmt_ctl)
+     &      MG_ctl%MG_mesh_fmt_ctl)
         call write_control_array_c1(id_control, level,                  &
-     &      hd_MG_tbl_file_fmt, MG_ctl%MG_table_fmt_ctl)
+     &      MG_ctl%MG_table_fmt_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

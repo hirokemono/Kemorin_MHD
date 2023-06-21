@@ -134,15 +134,14 @@
       maxlen = max(maxlen, len_trim(hd_reference_vector))
 !
       level =  write_begin_flag_for_ctl(id_file, level, hd_block)
-      call write_chara_ctl_type                                         &
-     &   (id_file, level, maxlen, hd_sleeve_extension_mode,             &
+      call write_chara_ctl_type(id_file, level, maxlen,                 &
      &    sleeve_ctl%sleeve_extension_mode_ctl)
       call write_integer_ctl_type(id_file, level, maxlen,               &
      &    hd_sleeve_level, sleeve_ctl%sleeve_level_ctl)
       call write_real_ctl_type(id_file, level, maxlen,                  &
      &    hd_sleeve_size, sleeve_ctl%sleeve_size_ctl)
       call write_chara_ctl_type(id_file, level, maxlen,                 &
-     &    hd_reference_vector, sleeve_ctl%ref_vector_ctl)
+     &    sleeve_ctl%ref_vector_ctl)
 !
       level =  write_end_flag_for_ctl(id_file, level, hd_block)
 !

@@ -282,18 +282,18 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_map_image_prefix, map_c%map_image_prefix_ctl)
+     &    map_c%map_image_prefix_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_map_image_format, map_c%map_image_fmt_ctl)
+     &    map_c%map_image_fmt_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_map_output_field, map_c%map_field_ctl)
+     &    map_c%map_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_map_output_comp, map_c%map_comp_ctl)
+     &    map_c%map_comp_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_map_isoline_field, map_c%isoline_field_ctl)
+     &    map_c%isoline_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_map_isoline_comp, map_c%isoline_comp_ctl)
+     &    map_c%isoline_comp_ctl)
 !
       call write_pvr_section_ctl(id_control, hd_section_ctl,            &
      &                           map_c%map_define_ctl, level)

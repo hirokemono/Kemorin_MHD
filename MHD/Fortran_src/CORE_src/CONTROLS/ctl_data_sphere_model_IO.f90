@@ -292,9 +292,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sph_c_type, spctl%sph_coef_type_ctl)
+     &    spctl%sph_coef_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sph_g_type, spctl%sph_grid_type_ctl)
+     &    spctl%sph_grid_type_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_sph_truncate, spctl%ltr_ctl)
@@ -306,7 +306,7 @@
      &    hd_nphi_shell, spctl%ngrid_azimuth_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_r_grid_type, spctl%radial_grid_type_ctl)
+     &    spctl%radial_grid_type_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_n_fluid_grid, spctl%num_fluid_grid_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

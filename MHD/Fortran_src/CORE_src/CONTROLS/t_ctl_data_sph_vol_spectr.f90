@@ -248,21 +248,21 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_vol_pwr, v_pwr%volume_spec_file_ctl)
+     &    v_pwr%volume_spec_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_vol_fmt, v_pwr%volume_spec_format_ctl)
+     &    v_pwr%volume_spec_format_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_degree_spectr_switch, v_pwr%degree_v_spectra_switch)
+     &    v_pwr%degree_v_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_order_spectr_switch, v_pwr%order_v_spectra_switch)
+     &    v_pwr%order_v_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_diff_lm_spectr_switch, v_pwr%diff_v_lm_spectra_switch)
+     &    v_pwr%diff_v_lm_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_axis_spectr_switch, v_pwr%axis_v_power_switch)
+     &    v_pwr%axis_v_power_switch)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_vol_ave, v_pwr%volume_ave_file_ctl)
+     &    v_pwr%volume_ave_file_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_inner_r, v_pwr%inner_radius_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

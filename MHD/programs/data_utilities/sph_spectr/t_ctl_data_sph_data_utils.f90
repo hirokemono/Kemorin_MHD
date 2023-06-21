@@ -184,17 +184,17 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_org_field_prefix, file_list%org_field_head_ctl)
+     &    file_list%org_field_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sub_field_prefix, file_list%sub_field_head_ctl)
+     &    file_list%sub_field_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_out_field_prefix, file_list%out_field_head_ctl)
+     &    file_list%out_field_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_org_field_format, file_list%org_spec_file_fmt_ctl)
+     &    file_list%org_spec_file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sub_field_format, file_list%sub_spec_file_fmt_ctl)
+     &    file_list%sub_spec_file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_out_field_format, file_list%out_spec_file_fmt_ctl)
+     &    file_list%out_spec_file_fmt_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_diff_spectr_file_control

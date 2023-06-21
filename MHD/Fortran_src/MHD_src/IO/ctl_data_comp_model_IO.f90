@@ -177,22 +177,22 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filterd_advection, refc_ctl%filterd_advect_ctl)
+     &    refc_ctl%filterd_advect_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_diffusivity_reduction,                                     &
      &    refc_ctl%ICB_diffuse_reduction_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_ref_comp, refc_ctl%reference_ctl)
+     &    refc_ctl%reference_ctl)
       call write_ref_comp_ctl                                           &
      &   (id_control, hd_low_comp, refc_ctl%low_ctl, level)
       call write_ref_comp_ctl                                           &
      &   (id_control, hd_high_comp, refc_ctl%high_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_start_ctl, refc_ctl%stratified_ctl)
+     &    refc_ctl%stratified_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_ref_field_file, refc_ctl%ref_file_ctl)
+     &    refc_ctl%ref_file_ctl)
       call write_takepiro_ctl(id_control, hd_takepiro_ctl,              &
      &    refc_ctl%takepiro_ctl, level)
 !

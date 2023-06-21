@@ -201,9 +201,9 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_gauss_coefs_r, g_pwr%gauss_coefs_radius_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_gauss_coefs_head, g_pwr%gauss_coefs_prefix)
+     &    g_pwr%gauss_coefs_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_gauss_coefs_fmt, g_pwr%gauss_coefs_format)
+     &    g_pwr%gauss_coefs_format)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

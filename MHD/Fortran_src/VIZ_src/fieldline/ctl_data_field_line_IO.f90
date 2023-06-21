@@ -221,32 +221,32 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_fline_file_prefix, fln%fline_file_head_ctl)
+     &    fln%fline_file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_fline_output_format, fln%fline_output_type_ctl)
+     &    fln%fline_output_type_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_field_line_field, fln%fline_field_ctl)
+     &    fln%fline_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_coloring_field, fln%fline_color_field_ctl)
+     &    fln%fline_color_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_coloring_comp, fln%fline_color_comp_ctl)
+     &    fln%fline_color_comp_ctl)
 !
       call write_control_array_c1(id_control, level,                    &
-     &    hd_fline_grp, fln%fline_area_grp_ctl)
+     &    fln%fline_area_grp_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_line_direction, fln%line_direction_ctl)
+     &    fln%line_direction_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_max_line_stepping, fln%max_line_stepping_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_starting_type, fln%starting_type_ctl)
+     &    fln%starting_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_start_surf_grp, fln%start_surf_grp_ctl)
+     &    fln%start_surf_grp_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_num_fieldline, fln%num_fieldline_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_selection_type, fln%selection_type_ctl)
+     &    fln%selection_type_ctl)
 !
       call write_control_array_r3(id_control, level,                    &
      &    hd_xx_start_point, fln%seed_point_ctl)

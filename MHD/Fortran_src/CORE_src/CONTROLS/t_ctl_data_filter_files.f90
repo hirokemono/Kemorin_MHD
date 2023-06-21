@@ -215,31 +215,30 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_head_ctl, ffile_ctl%filter_head_ctl)
+     &    ffile_ctl%filter_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_coef_head_ctl, ffile_ctl%filter_coef_head_ctl)
+     &    ffile_ctl%filter_coef_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_elen_head_ctl, ffile_ctl%filter_elen_head_ctl)
+     &    ffile_ctl%filter_elen_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_moms_head_ctl, ffile_ctl%filter_moms_head_ctl)
+     &    ffile_ctl%filter_moms_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_wide_head, ffile_ctl%filter_wide_head_ctl)
+     &    ffile_ctl%filter_wide_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_model_coef_ini_head, ffile_ctl%model_coef_ini_head_ctl)
+     &    ffile_ctl%model_coef_ini_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_commute_coef_ini_head,               &
      &                          ffile_ctl%commute_coef_ini_head_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_elen_fmt, ffile_ctl%filter_elen_format)
+     &    ffile_ctl%filter_elen_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_3d_fmt, ffile_ctl%filter_3d_format)
+     &    ffile_ctl%filter_3d_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_wide_fmt, ffile_ctl%filter_wide_format)
+     &    ffile_ctl%filter_wide_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_model_coef_rst_format, ffile_ctl%model_coef_rst_format)
+     &    ffile_ctl%model_coef_rst_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_commute_c_rst_format, ffile_ctl%commute_coef_rst_format)
+     &    ffile_ctl%commute_coef_rst_format)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_filter_fnames_control

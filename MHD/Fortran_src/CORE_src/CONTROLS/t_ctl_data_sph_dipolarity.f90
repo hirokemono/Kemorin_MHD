@@ -137,9 +137,9 @@
       call write_control_array_i1(id_control, level,                    &
      &    hd_fdip_truncation, fdip_ctl%fdip_truncation_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_fdip_file_prefix,fdip_ctl%fdip_file_prefix_ctl)
+     &    fdip_ctl%fdip_file_prefix_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_fdip_file_format, fdip_ctl%fdip_file_format_ctl)
+     &    fdip_ctl%fdip_file_format_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_dipolarity_ctl

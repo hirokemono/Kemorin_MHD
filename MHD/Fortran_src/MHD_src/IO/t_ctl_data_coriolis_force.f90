@@ -136,9 +136,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_FEM_Coriolis_model, cor_ctl%FEM_coriolis_model)
+     &    cor_ctl%FEM_coriolis_model)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_FEM_Coriolis_imp, cor_ctl%FEM_coriolis_implicit)
+     &    cor_ctl%FEM_coriolis_implicit)
 !
       call write_control_array_c_r(id_control, level,                   &
      &    hd_rotation_vec, cor_ctl%system_rotation)

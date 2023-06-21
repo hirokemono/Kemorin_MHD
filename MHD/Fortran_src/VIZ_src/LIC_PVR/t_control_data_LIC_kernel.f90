@@ -184,7 +184,7 @@
      &    hd_kernel_sigma, kernel_ctl%kernel_sigma_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_trace_type, kernel_ctl%trace_length_mode_ctl)
+     &    kernel_ctl%trace_length_mode_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_half_length, kernel_ctl%half_length_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

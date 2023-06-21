@@ -179,15 +179,15 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_dbench_prefix, dbench_ctl%dynamobench_file_ctl)
+     &    dbench_ctl%dynamobench_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_dbench_format, dbench_ctl%dynamobench_format_ctl)
+     &    dbench_ctl%dynamobench_format_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_dbench_detail_prefix, dbench_ctl%detailed_dbench_file_ctl)
+     &    dbench_ctl%detailed_dbench_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_dbench_field_prefix, dbench_ctl%dbench_field_file_ctl)
+     &    dbench_ctl%dbench_field_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_dbench_spectr_prefix, dbench_ctl%dbench_spectr_file_ctl)
+     &    dbench_ctl%dbench_spectr_file_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_nphi_mid_eq, dbench_ctl%nphi_mid_eq_ctl)
 !

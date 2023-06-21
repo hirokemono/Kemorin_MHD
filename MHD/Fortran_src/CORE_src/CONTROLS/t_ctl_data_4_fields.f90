@@ -193,7 +193,7 @@
      &   (id_control, level, hd_field_list, fld_ctl%field_ctl)
 !
       call write_control_array_c1                                       &
-     &   (id_control, level, hd_quad_field, fld_ctl%quad_phys)
+     &   (id_control, level, fld_ctl%quad_phys)
 !
       call write_control_array_c_i                                      &
      &   (id_control, level, hd_scalar_field, fld_ctl%scalar_phys)

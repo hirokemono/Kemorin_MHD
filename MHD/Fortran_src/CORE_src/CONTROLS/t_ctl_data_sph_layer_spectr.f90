@@ -193,18 +193,18 @@
      &    hd_spctr_radius, lp_ctl%layer_radius_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_layer_rms_head, lp_ctl%layered_pwr_spectr_prefix)
+     &    lp_ctl%layered_pwr_spectr_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_layer_rms_fmt, lp_ctl%layered_pwr_spectr_format)
+     &    lp_ctl%layered_pwr_spectr_format)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_degree_spectr_switch, lp_ctl%degree_spectra_switch)
+     &    lp_ctl%degree_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_order_spectr_switch, lp_ctl%order_spectra_switch)
+     &    lp_ctl%order_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_diff_lm_spectr_switch, lp_ctl%diff_lm_spectra_switch)
+     &    lp_ctl%diff_lm_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_axis_spectr_switch, lp_ctl%axis_power_switch)
+     &    lp_ctl%axis_power_switch)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_layerd_spectr_ctl

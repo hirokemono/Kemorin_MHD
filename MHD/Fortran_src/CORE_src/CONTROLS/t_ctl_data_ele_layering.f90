@@ -215,7 +215,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c1(id_control, level,                    &
-     &    hd_ntotal_layer_grp_ctl, elayer_ctl%layer_grp_name_ctl)
+     &    elayer_ctl%layer_grp_name_ctl)
 !
       call write_control_array_i1(id_control, level,                    &
      &    hd_num_layer_grp_ctl, elayer_ctl%igrp_stack_layer_ctl)
@@ -229,12 +229,10 @@
      &    hd_ngrp_SGS_on_sphere, elayer_ctl%ngrp_SGS_on_sphere_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_layering_data_ctl, elayer_ctl%layering_grp_type_ctl)
+     &    elayer_ctl%layering_grp_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_start_SGS_ele_grp_name,              &
      &                          elayer_ctl%start_layering_grp_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_start_SGS_fluid_grp_name,            &
      &                          elayer_ctl%start_fl_layer_grp_name_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

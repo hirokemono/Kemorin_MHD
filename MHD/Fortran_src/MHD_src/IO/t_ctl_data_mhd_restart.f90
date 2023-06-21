@@ -121,7 +121,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &      hd_rst_flag, mr_ctl%restart_flag_ctl)
+     &    mr_ctl%restart_flag_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_restart_ctl

@@ -256,9 +256,9 @@
      &    hd_itr, CG_ctl%itr_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_method, CG_ctl%method_ctl)
+     &    CG_ctl%method_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_precond, CG_ctl%precond_ctl)
+     &    CG_ctl%precond_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

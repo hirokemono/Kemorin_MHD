@@ -246,7 +246,7 @@
       level = write_begin_flag_for_ctl(id_file, level, hd_block)
 !
       call write_chara_ctl_type(id_file, level, maxlen,                 &
-     &    hd_inner_decomp, sdctl%inner_decomp_ctl)
+     &    sdctl%inner_decomp_ctl)
 !
       call write_integer_ctl_type(id_file, level, maxlen,               &
      &    hd_num_radial_domain, sdctl%num_radial_domain_ctl)

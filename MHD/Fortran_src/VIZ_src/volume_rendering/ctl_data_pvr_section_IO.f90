@@ -186,9 +186,9 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_sec_zeroline, pvr_sect_ctl%zeroline_switch_ctl)
+     &    pvr_sect_ctl%zeroline_switch_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_isoline_color, pvr_sect_ctl%isoline_color_mode)
+     &    pvr_sect_ctl%isoline_color_mode)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_isoline_number, pvr_sect_ctl%isoline_number_ctl)
       call write_real2_ctl_type(id_control, level, maxlen,              &
@@ -198,8 +198,7 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_grid_width, pvr_sect_ctl%grid_width_ctl)
 !
-      call write_chara_ctl_type                                         &
-     &   (id_control, level, maxlen, hd_tangent_cylinder,               &
+      call write_chara_ctl_type(id_control, level, maxlen,              &
      &    pvr_sect_ctl%tan_cyl_switch_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_tcyl_inner, pvr_sect_ctl%tangent_cylinder_inner_ctl)

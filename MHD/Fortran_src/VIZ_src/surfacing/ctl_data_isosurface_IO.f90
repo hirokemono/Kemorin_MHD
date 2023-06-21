@@ -180,9 +180,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_isosurf_prefix, iso_c%iso_file_head_ctl)
+     &    iso_c%iso_file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iso_out_type, iso_c%iso_output_type_ctl)
+     &    iso_c%iso_output_type_ctl)
 !
       call write_iso_define_data(id_control, hd_iso_define,             &
      &                           iso_c%iso_def_c, level)

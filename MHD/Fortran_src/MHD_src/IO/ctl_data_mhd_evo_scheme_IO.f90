@@ -269,15 +269,15 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iflag_supg,   mevo_ctl%iflag_supg_ctl)
+     &    mevo_ctl%iflag_supg_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iflag_v_supg, mevo_ctl%iflag_supg_v_ctl)
+     &    mevo_ctl%iflag_supg_v_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iflag_t_supg, mevo_ctl%iflag_supg_t_ctl)
+     &    mevo_ctl%iflag_supg_t_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iflag_b_supg, mevo_ctl%iflag_supg_b_ctl)
+     &    mevo_ctl%iflag_supg_b_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iflag_c_supg, mevo_ctl%iflag_supg_c_ctl)
+     &    mevo_ctl%iflag_supg_c_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_num_multi_pass, mevo_ctl%num_multi_pass_ctl)
@@ -288,9 +288,9 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_eps_4_magne, mevo_ctl%eps_4_magne_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_scheme, mevo_ctl%scheme_ctl)
+     &    mevo_ctl%scheme_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_diff_correct, mevo_ctl%diffuse_correct)
+     &    mevo_ctl%diffuse_correct)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_coef_imp_v,  mevo_ctl%coef_imp_v_ctl)
@@ -305,16 +305,16 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_eps_B_crank, mevo_ctl%eps_B_crank_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_method_4_velo, mevo_ctl%method_4_CN)
+     &    mevo_ctl%method_4_CN)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_precond_4_crank, mevo_ctl%precond_4_CN)
+     &    mevo_ctl%precond_4_CN)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_import_mode, mevo_ctl%import_mode)
+     &    mevo_ctl%import_mode)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_FFT_package, mevo_ctl%FFT_library)
+     &    mevo_ctl%FFT_library)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sph_transform_mode, mevo_ctl%Legendre_trans_type)
+     &    mevo_ctl%Legendre_trans_type)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_legendre_vect_len, mevo_ctl%leg_vector_len)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)

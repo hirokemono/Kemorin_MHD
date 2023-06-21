@@ -13,6 +13,8 @@
 !!@verbatim
 !!      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl,       &
 !!     &                                      add_SSMHD_ctl, c_buf)
+!!      subroutine read_control_file_sph_SGS_MHD(file_name, MHD_ctl,    &
+!!     &                                      add_SSMHD_ctl, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -121,6 +123,31 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
+      call read_control_file_sph_SGS_MHD(file_name, MHD_ctl,            &
+     &                                   add_SSMHD_ctl, c_buf)
+      if(c_buf%iend .gt. 0) return
+!
+      call s_viz_step_ctls_to_time_ctl                                  &
+     &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)
+      call add_fields_4_vizs_to_fld_ctl                                 &
+     &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%model_ctl%fld_ctl%field_ctl)
+!
+      end subroutine read_control_4_sph_SGS_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine read_control_file_sph_SGS_MHD(file_name, MHD_ctl,      &
+     &                                      add_SSMHD_ctl, c_buf)
+!
+      use t_ctl_data_SPH_MHD_control
+      use viz_step_ctls_to_time_ctl
+!
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
+      type(buffer_for_control), intent(inout) :: c_buf
+!
+!
       c_buf%level = c_buf%level + 1
       open(id_control_file, file = file_name, status='old' )
 !
@@ -134,16 +161,9 @@
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(id_control_file)
-!
       c_buf%level = c_buf%level - 1
-      if(c_buf%iend .gt. 0) return
 !
-      call s_viz_step_ctls_to_time_ctl                                  &
-     &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)
-      call add_fields_4_vizs_to_fld_ctl                                 &
-     &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%model_ctl%fld_ctl%field_ctl)
-!
-      end subroutine read_control_4_sph_SGS_MHD
+      end subroutine read_control_file_sph_SGS_MHD
 !
 ! ----------------------------------------------------------------------
 !

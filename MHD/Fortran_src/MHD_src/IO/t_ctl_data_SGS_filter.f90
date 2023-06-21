@@ -186,9 +186,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sph_filter_type, sphf_ctl%sph_filter_type_ctl)
+     &    sphf_ctl%sph_filter_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_radial_filter_type, sphf_ctl%radial_filter_type_ctl)
+     &    sphf_ctl%radial_filter_type_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_max_mom, sphf_ctl%maximum_moments_ctl)

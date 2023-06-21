@@ -271,21 +271,21 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_updated, pvr%updated_ctl)
+     &    pvr%updated_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_lic_file_head, pvr%file_head_ctl)
+     &    pvr%file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_lic_out_format, pvr%file_fmt_ctl)
+     &    pvr%file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_monitor, pvr%monitoring_ctl)
+     &    pvr%monitoring_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_streo, pvr%streo_ctl)
+     &    pvr%streo_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_anaglyph_switch, pvr%anaglyph_ctl)
+     &    pvr%anaglyph_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_quilt_3d, pvr%quilt_ctl)
+     &    pvr%quilt_ctl)
 !
       call write_pvr_render_area_ctl(id_control, hd_plot_area,          &
      &                               pvr%render_area_c, level)

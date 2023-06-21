@@ -112,7 +112,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c1(id_control, level,                    &
-     &                            hd_num_forces, frc_ctl%force_names)
+     &                            frc_ctl%force_names)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_forces_ctl

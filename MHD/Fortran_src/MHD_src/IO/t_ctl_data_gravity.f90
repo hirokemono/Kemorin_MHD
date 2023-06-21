@@ -136,9 +136,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_FEM_gravity_mode, g_ctl%FEM_gravity_model)
+     &    g_ctl%FEM_gravity_model)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_gravity_type, g_ctl%gravity)
+     &    g_ctl%gravity)
 !
       call write_control_array_c_r(id_control, level,                 &
      &    hd_gravity_vect, g_ctl%gravity_vector)

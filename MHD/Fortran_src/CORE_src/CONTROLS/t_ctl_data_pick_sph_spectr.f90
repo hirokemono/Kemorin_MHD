@@ -230,9 +230,9 @@
      &    hd_pick_sph_m, pspec_ctl%idx_pick_sph_m_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_picked_mode_head, pspec_ctl%picked_mode_head_ctl)
+     &    pspec_ctl%picked_mode_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_picked_mode_format, pspec_ctl%picked_mode_fmt_ctl)
+     &    pspec_ctl%picked_mode_fmt_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

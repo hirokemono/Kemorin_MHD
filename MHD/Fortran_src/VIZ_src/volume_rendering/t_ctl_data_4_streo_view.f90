@@ -156,7 +156,7 @@
      &    hd_eye_sep_angle, streo%eye_sep_angle_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_eye_step_mode, streo%step_eye_sep_angle_ctl)
+     &    streo%step_eye_sep_angle_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_stereo_view_ctl

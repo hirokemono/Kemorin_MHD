@@ -484,7 +484,7 @@
      &    hd_end_rst_step, tctl%end_rst_step_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_flexible_step, tctl%flexible_step_ctl)
+     &    tctl%flexible_step_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

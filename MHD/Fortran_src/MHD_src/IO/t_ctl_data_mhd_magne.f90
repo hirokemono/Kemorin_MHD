@@ -152,9 +152,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_magneto_cv, mcv_ctl%magneto_cv)
+     &    mcv_ctl%magneto_cv)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filetered_induction, mcv_ctl%filterd_induction_ctl)
+     &    mcv_ctl%filterd_induction_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_magneto_cv_ctl

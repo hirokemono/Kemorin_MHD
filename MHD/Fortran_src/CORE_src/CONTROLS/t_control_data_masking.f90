@@ -152,11 +152,11 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_masking_type, mask_ctl%mask_type_ctl)
+     &    mask_ctl%mask_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_masking_field, mask_ctl%field_name_ctl)
+     &    mask_ctl%field_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_masking_comp, mask_ctl%component_ctl)
+     &    mask_ctl%component_ctl)
 !
       call write_control_array_r2(id_control, level,                    &
      &    hd_masking_range, mask_ctl%mask_range_ctl)

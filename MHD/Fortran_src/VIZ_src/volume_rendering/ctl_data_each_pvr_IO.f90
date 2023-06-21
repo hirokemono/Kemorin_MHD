@@ -316,26 +316,26 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_updated, pvr_ctl%updated_ctl)
+     &    pvr_ctl%updated_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_file_prefix, pvr_ctl%file_head_ctl)
+     &    pvr_ctl%file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_out_format, pvr_ctl%file_fmt_ctl)
+     &    pvr_ctl%file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_monitor, pvr_ctl%monitoring_ctl)
+     &    pvr_ctl%monitoring_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_streo, pvr_ctl%streo_ctl)
+     &    pvr_ctl%streo_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_anaglyph_switch, pvr_ctl%anaglyph_ctl)
+     &    pvr_ctl%anaglyph_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_quilt_3d, pvr_ctl%quilt_ctl)
+     &    pvr_ctl%quilt_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_output_field_def, pvr_ctl%pvr_field_ctl)
+     &    pvr_ctl%pvr_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
+     &    pvr_ctl%pvr_comp_ctl)
 !
       call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &
      &    pvr_ctl%fname_mat_ctl, pvr_ctl%mat, level)

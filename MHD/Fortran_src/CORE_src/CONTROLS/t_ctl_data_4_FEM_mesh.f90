@@ -132,13 +132,13 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_mem_conserve, Fmesh_ctl%memory_conservation_ctl)
+     &    Fmesh_ctl%memory_conservation_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_FEM_mesh_output, Fmesh_ctl%FEM_mesh_output_switch)
+     &    Fmesh_ctl%FEM_mesh_output_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_FEM_surf_output, Fmesh_ctl%FEM_surface_output_switch)
+     &    Fmesh_ctl%FEM_surface_output_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_FEM_viewer_output, Fmesh_ctl%FEM_viewer_output_switch)
+     &    Fmesh_ctl%FEM_viewer_output_switch)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

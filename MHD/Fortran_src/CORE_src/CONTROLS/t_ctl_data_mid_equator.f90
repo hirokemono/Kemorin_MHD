@@ -216,14 +216,14 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_fld_on_circ_prefix, meq_ctl%circle_field_file_ctl)
+     &    meq_ctl%circle_field_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_spec_on_circ_prefix, meq_ctl%circle_spectr_file_ctl)
+     &    meq_ctl%circle_spectr_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_fld_on_circ_format, meq_ctl%circle_file_format_ctl)
+     &    meq_ctl%circle_file_format_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_circle_coord, meq_ctl%pick_circle_coord_ctl)
+     &    meq_ctl%pick_circle_coord_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_pick_s_ctl, meq_ctl%pick_s_ctl)

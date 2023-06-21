@@ -236,18 +236,18 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sub_elapse_dump, lic_ctl%subdomain_elapsed_dump_ctl)
+     &    lic_ctl%subdomain_elapsed_dump_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_LIC_field, lic_ctl%LIC_field_ctl)
+     &    lic_ctl%LIC_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_color_field, lic_ctl%color_field_ctl)
+     &    lic_ctl%color_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_color_component, lic_ctl%color_component_ctl)
+     &    lic_ctl%color_component_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_opacity_field, lic_ctl%opacity_field_ctl)
+     &    lic_ctl%opacity_field_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_opacity_component, lic_ctl%opacity_component_ctl)
+     &    lic_ctl%opacity_component_ctl)
 !
       call sel_write_ctl_file_vol_repart(id_control, hd_lic_partition,  &
      &   lic_ctl%fname_vol_repart_ctl, lic_ctl%repart_ctl, level)
@@ -260,12 +260,12 @@
      &    lic_ctl%kernel_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
+     &    lic_ctl%vr_sample_mode_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_step_size, lic_ctl%step_size_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_normalization_type, lic_ctl%normalization_type_ctl)
+     &    lic_ctl%normalization_type_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_normalization_value, lic_ctl%normalization_value_ctl)
 !

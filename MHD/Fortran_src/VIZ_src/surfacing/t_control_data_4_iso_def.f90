@@ -226,15 +226,15 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iso_field, iso_def_c%isosurf_data_ctl)
+     &    iso_def_c%isosurf_data_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iso_comp, iso_def_c%isosurf_comp_ctl)
+     &    iso_def_c%isosurf_comp_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_iso_value, iso_def_c%isosurf_value_ctl)
 !
       call write_control_array_c1(id_control, level,                    &
-     &    hd_iso_area, iso_def_c%iso_area_ctl)
+     &    iso_def_c%iso_area_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_iso_define_data

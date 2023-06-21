@@ -208,9 +208,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_repart_table_head, new_part_ctl%repart_table_head_ctl)
+     &    new_part_ctl%repart_table_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_repart_table_fmt, new_part_ctl%repart_table_fmt_ctl)
+     &    new_part_ctl%repart_table_fmt_ctl)
 !
       call write_control_array_c_i(id_control, level,                   &
      &    hd_num_es, new_part_ctl%ndomain_section_ctl)
@@ -221,11 +221,11 @@
      &    hd_sleeve_level, new_part_ctl%sleeve_level_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_part_ref, new_part_ctl%partition_reference_ctl)
+     &    new_part_ctl%partition_reference_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_trace_cnt_prefix, new_part_ctl%trace_count_head_ctl)
+     &    new_part_ctl%trace_count_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_trace_count_fmt, new_part_ctl%trace_count_fmt_ctl)
+     &    new_part_ctl%trace_count_fmt_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_weight_to_prev, new_part_ctl%weight_to_previous_ctl)
@@ -233,7 +233,7 @@
      &    hd_power_of_volume, new_part_ctl%power_of_volume_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_masking_switch, new_part_ctl%masking_switch_ctl)
+     &    new_part_ctl%masking_switch_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_masking_weight, new_part_ctl%masking_weight_ctl)
 !

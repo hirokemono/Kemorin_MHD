@@ -11,7 +11,7 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_character_item), intent(inout) :: chara_item
 !!      subroutine write_chara_ctl_type                                 &
-!!     &         (id_file, level, maxlen, label, chara_item)
+!!     &         (id_file, level, maxlen, chara_item)
 !!        type(read_character_item), intent(in) :: chara_item
 !!      subroutine copy_chara_ctl(org_c1, new_c1)
 !!        type(read_character_item), intent(in) :: org_c1
@@ -24,7 +24,7 @@
 !!        type(ctl_array_chara), intent(inout) :: array_chara
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!      subroutine write_control_array_c1                               &
-!!     &         (id_control, level, label, array_chara)
+!!     &         (id_control, level, array_chara)
 !!        type(ctl_array_chara), intent(in) :: array_chara
 !!
 !!      subroutine append_control_array_c1(read_c1, array_c1)
@@ -49,6 +49,8 @@
 !
 !>        structure of control character item
       type read_character_item
+!>        Item name
+        character(len=kchara) :: item_name = 'Chara_item'
 !>        read flag (If item is read iflag = 1)
         integer(kind = kint) ::  iflag = 0
 !>        array for read character item
@@ -57,6 +59,8 @@
 !
 !>  Structure for character control array 
       type ctl_array_chara
+!>        Item name
+        character(len=kchara) :: array_name = 'Chara_item'
 !>     number of array items
         integer(kind=kint) :: num = 0
 !>     array counter
@@ -84,6 +88,7 @@
 !
       if(chara_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
 !
+      write(chara_item%item_name,'(a,a1)') trim(label), char(0)
       read(c_buf%ctl_buffer,*) tmpchara, chara_item%charavalue
       if (iflag_debug .gt. 0)  write(*,*) trim(c_buf%header_chara),     &
      &                       ': ', trim(chara_item%charavalue)
@@ -94,19 +99,18 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_chara_ctl_type                                   &
-     &         (id_file, level, maxlen, label, chara_item)
+     &         (id_file, level, maxlen, chara_item)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file, level
       integer(kind = kint), intent(in) :: maxlen
-      character(len=kchara), intent(in) :: label
       type(read_character_item), intent(in) :: chara_item
 !
 !
       if(chara_item%iflag .eq. 0) return
-      call write_character_ctl_item                                     &
-     &   (id_file, level, maxlen, label, chara_item%charavalue)
+      call write_character_ctl_item(id_file, level, maxlen,             &
+     &    chara_item%item_name, chara_item%charavalue)
 !
       end subroutine write_chara_ctl_type
 !
@@ -170,6 +174,7 @@
       read_c1%iflag = 0
       array_chara%num =  0
       call alloc_control_array_chara(array_chara)
+      write(array_chara%array_name,'(a,a1)') trim(label), char(0)
 !
       do
         call load_one_line_from_control(id_control, label, c_buf)
@@ -187,13 +192,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_control_array_c1                                 &
-     &         (id_control, level, label, array_chara)
+     &         (id_control, level, array_chara)
 !
       use skip_comment_f
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: label
       type(ctl_array_chara), intent(in) :: array_chara
 !
       integer(kind = kint), intent(inout) :: level
@@ -203,13 +207,15 @@
 !
       if(array_chara%num .le. 0) return
 !
-      level = write_array_flag_for_ctl(id_control, level, label)
+      level = write_array_flag_for_ctl(id_control, level,               &
+     &                                 array_chara%array_name)
       do i = 1, array_chara%num
-        length = len_trim(label)
+        length = len_trim(array_chara%array_name)
         call write_character_ctl_item(id_control, level, length,        &
-     &      label, array_chara%c_tbl(i))
+     &      array_chara%array_name, array_chara%c_tbl(i))
       end do
-      level = write_end_array_flag_for_ctl(id_control, level, label)
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                                     array_chara%array_name)
 !
       end subroutine write_control_array_c1
 !

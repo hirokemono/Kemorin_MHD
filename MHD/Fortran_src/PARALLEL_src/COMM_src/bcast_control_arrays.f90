@@ -146,6 +146,8 @@
 !
       call calypso_mpi_bcast_one_int(chara_item%iflag, 0)
       call calypso_mpi_bcast_character                                  &
+     &   (chara_item%item_name, cast_long(kchara), 0)
+      call calypso_mpi_bcast_character                                  &
      &   (chara_item%charavalue, cast_long(kchara), 0)
 !
       end subroutine bcast_ctl_type_c1
@@ -440,6 +442,8 @@
 !
       call calypso_mpi_bcast_one_int(array_chara%num,  0)
       call calypso_mpi_bcast_one_int(array_chara%icou, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_chara%array_name, cast_long(kchara), 0)
 !
       if(my_rank .ne. 0) call alloc_control_array_chara(array_chara)
 !

@@ -235,9 +235,9 @@
 !
       level =  write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_psf_file_prefix, psf_c%psf_file_head_ctl)
+     &    psf_c%psf_file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_psf_out_type, psf_c%psf_output_type_ctl)
+     &    psf_c%psf_output_type_ctl)
 !
       call sel_write_ctl_pvr_section_def(id_control, hd_surface_define, &
      &    psf_c%fname_section_ctl, psf_c%psf_def_c, level)

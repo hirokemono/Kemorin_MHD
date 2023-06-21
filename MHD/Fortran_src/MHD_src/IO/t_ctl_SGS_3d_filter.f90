@@ -174,18 +174,18 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c1(id_control, level,                    &
-     &    hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl)
+     &    s3df_ctl%whole_filter_grp_ctl)
       call write_control_array_c1(id_control, level,                    &
-     &    hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl)
+     &    s3df_ctl%fluid_filter_grp_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_momentum_filter_ctl, s3df_ctl%momentum_filter_ctl)
+     &    s3df_ctl%momentum_filter_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_heat_filter_ctl, s3df_ctl%heat_filter_ctl)
+     &    s3df_ctl%heat_filter_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_induction_filter_ctl, s3df_ctl%induction_filter_ctl)
+     &    s3df_ctl%induction_filter_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_comp_filter_ctl, s3df_ctl%compostion_filter_ctl)
+     &    s3df_ctl%compostion_filter_ctl)
       level = write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_3d_filtering_ctl

@@ -342,7 +342,7 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_i_step_ucd, viz_ctls%i_step_ucd_v_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_output_fld_file_fmt, viz_ctls%output_field_file_fmt_ctl)
+     &    viz_ctls%output_field_file_fmt_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

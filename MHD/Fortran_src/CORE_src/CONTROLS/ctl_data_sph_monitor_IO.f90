@@ -305,22 +305,20 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_voume_ave_head, smonitor_ctl%volume_average_prefix)
+     &    smonitor_ctl%volume_average_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_voume_rms_head, smonitor_ctl%volume_pwr_spectr_prefix)
+     &    smonitor_ctl%volume_pwr_spectr_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_diff_lm_spectr_switch,                                     &
      &    smonitor_ctl%volume_pwr_spectr_format)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &   hd_degree_spectr_switch, smonitor_ctl%degree_v_spectra_switch)
+     &    smonitor_ctl%degree_v_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &   hd_order_spectr_switch, smonitor_ctl%order_v_spectra_switch)
+     &    smonitor_ctl%order_v_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_diff_lm_spectr_switch,                                     &
      &    smonitor_ctl%diff_v_lm_spectra_switch)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_axis_spectr_switch, smonitor_ctl%axis_v_power_switch)
+     &    smonitor_ctl%axis_v_power_switch)
 !
       call write_volume_spectr_ctl(id_control, hd_vol_spec_block,       &
      &                             smonitor_ctl, level)
@@ -336,28 +334,22 @@
      &    hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_Nusselt_file_head, smonitor_ctl%heat_Nusselt_file_prefix)
+     &    smonitor_ctl%heat_Nusselt_file_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_Nusselt_file_fmt, smonitor_ctl%heat_Nusselt_file_format)
+     &    smonitor_ctl%heat_Nusselt_file_format)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_heat_Nusselt_file_head,              &
      &                          smonitor_ctl%heat_Nusselt_file_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_heat_Nusselt_file_fmt,               &
      &                          smonitor_ctl%heat_Nusselt_file_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_comp_Nusselt_file_head,              &
      &                          smonitor_ctl%comp_Nusselt_file_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_comp_Nusselt_file_fmt,               &
      &                          smonitor_ctl%comp_Nusselt_file_format)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_typ_scale_file_head,                 &
      &                          smonitor_ctl%typ_scale_file_prefix_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_typ_scale_file_format,               &
      &                          smonitor_ctl%typ_scale_file_format_ctl)
 !
       call write_ctl_data_dynamobench(id_control,                       &

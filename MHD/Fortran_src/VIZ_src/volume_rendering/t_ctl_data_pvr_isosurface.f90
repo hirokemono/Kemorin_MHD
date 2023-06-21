@@ -124,7 +124,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_iso_direction, pvr_iso_ctl%isosurf_type_ctl)
+     &    pvr_iso_ctl%isosurf_type_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_isosurf_value, pvr_iso_ctl%iso_value_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

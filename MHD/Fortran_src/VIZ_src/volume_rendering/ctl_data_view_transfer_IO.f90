@@ -259,7 +259,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_projection_type, mat%projection_type_ctl)
+     &    mat%projection_type_ctl)
       call write_projection_mat_ctl                                     &
      &   (id_control, hd_project_mat, mat%proj, level)
       call write_image_size_ctl                                         &

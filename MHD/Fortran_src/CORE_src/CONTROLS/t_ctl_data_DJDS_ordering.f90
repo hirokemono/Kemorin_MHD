@@ -132,7 +132,7 @@
      &    hd_mc_color, DJDS_ctl%mc_color_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_order_method, DJDS_ctl%order_method_ctl)
+     &    DJDS_ctl%order_method_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

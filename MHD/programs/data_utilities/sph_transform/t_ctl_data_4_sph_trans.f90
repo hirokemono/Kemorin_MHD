@@ -181,22 +181,22 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_zm_sph_spec_file, spt_ctl%zm_spec_file_head_ctl)
+     &    spt_ctl%zm_spec_file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_zm_field_file, spt_ctl%zonal_udt_head_ctl)
+     &    spt_ctl%zonal_udt_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_gauss_file_name, spt_ctl%gauss_sph_fhead_ctl)
+     &    spt_ctl%gauss_sph_fhead_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_icb_grp, spt_ctl%icb_radial_grp_ctl)
+     &    spt_ctl%icb_radial_grp_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_cmb_grp, spt_ctl%cmb_radial_grp_ctl)
+     &    spt_ctl%cmb_radial_grp_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_import_mode, spt_ctl%import_mode_ctl)
+     &    spt_ctl%import_mode_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_FFT_package, spt_ctl%FFT_lib_ctl)
+     &    spt_ctl%FFT_lib_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sph_transform_mode, spt_ctl%Legendre_trans_loop_ctl)
+     &    spt_ctl%Legendre_trans_loop_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_legendre_vect_len, spt_ctl%legendre_vector_len_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)

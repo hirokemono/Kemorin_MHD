@@ -221,25 +221,25 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_colormap_mode, color%colormap_mode_ctl)
+     &    color%colormap_mode_ctl)
       call write_real3_ctl_type(id_control, level, maxlen,              &
      &    hd_background_color, color%background_color_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_lic_color_fld, color%lic_color_fld_ctl)
+     &    color%lic_color_fld_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_lic_color_comp, color%lic_color_comp_ctl)
+     &    color%lic_color_comp_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_lic_opacity_fld, color%lic_opacity_fld_ctl)
+     &    color%lic_opacity_fld_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_lic_opacity_comp, color%lic_opacity_comp_ctl)
+     &    color%lic_opacity_comp_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_data_mapping, color%data_mapping_ctl)
+     &    color%data_mapping_ctl)
       call write_control_array_r2(id_control, level,                    &
      &    hd_colortable, color%colortbl_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_opacity_style, color%opacity_style_ctl)
+     &    color%opacity_style_ctl)
       call write_control_array_r2(id_control, level,                    &
      &    hd_linear_opacity, color%linear_opacity_ctl)
       call write_control_array_r3(id_control, level,                    &

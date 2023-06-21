@@ -205,7 +205,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_result_type, fld_on_psf_c%output_type_ctl)
+     &    fld_on_psf_c%output_type_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_result_value, fld_on_psf_c%output_value_ctl)

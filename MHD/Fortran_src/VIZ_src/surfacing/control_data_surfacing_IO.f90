@@ -188,7 +188,7 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_i_step_ucd, surfacing_ctls%i_step_ucd_s_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_output_fld_file_fmt, surfacing_ctls%output_ucd_fmt_s_ctl)
+     &    surfacing_ctls%output_ucd_fmt_s_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

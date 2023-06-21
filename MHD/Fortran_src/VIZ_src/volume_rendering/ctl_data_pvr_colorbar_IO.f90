@@ -167,13 +167,13 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_colorbar_switch, cbar_ctl%colorbar_switch_ctl)
+     &    cbar_ctl%colorbar_switch_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_colorbar_scale, cbar_ctl%colorbar_scale_ctl)
+     &    cbar_ctl%colorbar_scale_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_cbar_position, cbar_ctl%colorbar_position_ctl)
+     &    cbar_ctl%colorbar_position_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_zeromarker_flag, cbar_ctl%zeromarker_flag_ctl)
+     &    cbar_ctl%zeromarker_flag_ctl)
       call write_real2_ctl_type(id_control, level, maxlen,              &
      &    hd_cbar_range, cbar_ctl%cbar_range_ctl)
 !
@@ -183,11 +183,11 @@
      &    hd_pvr_numgrid_cbar, cbar_ctl%ngrid_cbar_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_axis_switch, cbar_ctl%axis_switch_ctl)
+     &    cbar_ctl%axis_switch_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_time_switch, cbar_ctl%time_switch_ctl)
+     &    cbar_ctl%time_switch_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_mapgrid_switch, cbar_ctl%mapgrid_switch_ctl)
+     &    cbar_ctl%mapgrid_switch_ctl)
 !
       level = write_end_flag_for_ctl(id_control, level, hd_block)
 !
