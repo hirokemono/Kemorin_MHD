@@ -26,7 +26,7 @@ void read_field_names(FILE *fp, int num, char **data_name, int *id_coord);
 int count_comps_by_comma_c(FILE *fp);
 void read_multi_field_name(FILE *fp, char **data_name);
 
-void strngcopy(char *chara_out, const char *chara_in);
+int strngcopy(char *chara_out, const char *chara_in);
 int compare_string(int length, const char *string1, const char *string2);
 int cmp_no_case_c(const char *string1, const char *string2);
 int check_cautation_require(const char *string);

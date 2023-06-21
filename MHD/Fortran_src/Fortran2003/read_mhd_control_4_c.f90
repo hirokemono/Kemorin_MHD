@@ -13,23 +13,25 @@
       type(add_psf_sph_mhd_ctl), save :: add_SMHD_ctl_C
       integer(kind = kint), parameter :: id_ctl = 11
 !
+      private :: load_chara_from_cc
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      character(len = kchara) function load_chara_from_c(c_in)
+      character(len = kchara) function load_chara_from_cc(c_in)
         character(C_char) :: c_in(kchara)
         integer :: i
         do i = 1, kchara
-          load_chara_from_c(i:i) = c_in(i)
+          load_chara_from_cc(i:i) = c_in(i)
           if(c_in(i) .eq. char(0)) then
-            load_chara_from_c(i:kchara) = char(32)
+            load_chara_from_cc(i:kchara) = char(32)
             exit
           end if
         end do
-      end function load_chara_from_c
+      end function load_chara_from_cc
 !
 !  ---------------------------------------------------------------------
 !
@@ -156,7 +158,7 @@
       character(C_char), pointer ::  name_f(:)
 !
       call c_f_pointer(names_c, name_f, [len+1])
-      MHD_ctl_name = load_chara_from_c(name_f)
+      MHD_ctl_name = load_chara_from_cc(name_f)
 !
       c_buf1%level = 0
       call read_control_file_sph_SGS_MHD(MHD_ctl_name,                  &

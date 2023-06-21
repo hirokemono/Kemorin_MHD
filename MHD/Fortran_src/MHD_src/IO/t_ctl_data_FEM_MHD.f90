@@ -197,8 +197,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) return
+      write(FEM_MHD_ctl%block_name,'(a,a1)')  trim(hd_block), char(0)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -220,7 +221,6 @@
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           viz_ctls, c_buf)
       end do
-      FEM_MHD_ctl%block_name = hd_Fmhd_ctl
       FEM_MHD_ctl%i_mhd_ctl = 1
 !
       end subroutine read_fem_mhd_control_data

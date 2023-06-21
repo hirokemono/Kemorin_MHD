@@ -186,7 +186,7 @@ void read_multi_field_name(FILE *fp, char **data_name){
 };
 
 
-void strngcopy(char *chara_out, const char *chara_in){
+int strngcopy(char *chara_out, const char *chara_in){
 	int j;
 	
 	int len_chara = (int) strlen(chara_in);
@@ -200,7 +200,7 @@ void strngcopy(char *chara_out, const char *chara_in){
 	};
 	chara_out[len_chara] = '\0';
 	/*printf("output %s \n",chara_out);*/
-	return;
+	return len_chara;
 }
 
 int compare_string(int length, const char *string1, const char *string2){

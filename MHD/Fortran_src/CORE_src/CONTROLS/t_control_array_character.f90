@@ -86,9 +86,10 @@
       character(len=kchara) :: tmpchara
 !
 !
-      if(chara_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
-!
+      if(chara_item%iflag .gt. 0) return
       write(chara_item%item_name,'(a,a1)') trim(label), char(0)
+      if(c_buf%header_chara.ne.label) return
+!
       read(c_buf%ctl_buffer,*) tmpchara, chara_item%charavalue
       if (iflag_debug .gt. 0)  write(*,*) trim(c_buf%header_chara),     &
      &                       ': ', trim(chara_item%charavalue)
@@ -168,13 +169,13 @@
       type(read_character_item) :: read_c1
 !
 !
-      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
       if(array_chara%icou .gt. 0) return
+      write(array_chara%array_name,'(a,a1)') trim(label), char(0)
+      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
 !
       read_c1%iflag = 0
       array_chara%num =  0
       call alloc_control_array_chara(array_chara)
-      write(array_chara%array_name,'(a,a1)') trim(label), char(0)
 !
       do
         call load_one_line_from_control(id_control, label, c_buf)

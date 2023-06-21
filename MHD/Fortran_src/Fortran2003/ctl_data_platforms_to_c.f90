@@ -19,6 +19,24 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine  load_chara_from_c(c_ctl)         &
+     &          bind(C, NAME = 'load_chara_from_c')
+      type(c_ptr), value, intent(in) :: c_ctl
+      character(C_char), pointer :: c_in(:)
+      integer :: i
+!
+      call c_f_pointer(c_ctl, c_in, [kchara])
+!
+      do i = 1, kchara
+        if(c_in(i) .eq. char(0)) then
+          c_in(i:kchara) = char(32)
+          exit
+        end if
+      end do
+      end subroutine load_chara_from_c
+!
+!  ---------------------------------------------------------------------
+!
       type(c_ptr) function c_chara_item_block_name(c_ctl)               &
      &          bind(C, NAME = 'c_chara_item_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
@@ -38,6 +56,18 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_chara_item_iflag = C_loc(f_ctl%iflag)
       end function c_chara_item_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine c_chara_item_clength(c_ctl, length_c)                  &
+     &          bind(C, NAME = 'c_chara_item_clength')
+      type(c_ptr), value, intent(in) :: c_ctl
+      integer(C_int), intent(inout) :: length_c
+      type(read_character_item), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      length_c = len_trim(f_ctl%charavalue)
+      end subroutine c_chara_item_clength
 !
 !  ---------------------------------------------------------------------
 !
@@ -74,7 +104,7 @@
       type(platform_data_control), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_plt_iflag = C_loc(f_ctl%ndomain_ctl)
+      c_plt_iflag = C_loc(f_ctl%i_platform)
       end function c_plt_iflag
 !
 !  ---------------------------------------------------------------------
@@ -85,7 +115,7 @@
       type(platform_data_control), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_plt_ndomain_ctl = C_loc(f_ctl%num_smp_ctl)
+      c_plt_ndomain_ctl = C_loc(f_ctl%ndomain_ctl)
       end function c_plt_ndomain_ctl
 !
 !  ---------------------------------------------------------------------
@@ -96,7 +126,7 @@
       type(platform_data_control), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_plt_num_smp_ctl = C_loc(f_ctl%debug_flag_ctl)
+      c_plt_num_smp_ctl = C_loc(f_ctl%num_smp_ctl)
       end function c_plt_num_smp_ctl
 !
 !  ---------------------------------------------------------------------
@@ -107,7 +137,7 @@
       type(platform_data_control), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_plt_debug_flag_ctl = C_loc(f_ctl%sph_file_prefix)
+      c_plt_debug_flag_ctl = C_loc(f_ctl%debug_flag_ctl)
       end function c_plt_debug_flag_ctl
 !
 !  ---------------------------------------------------------------------
@@ -118,7 +148,7 @@
       type(platform_data_control), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_plt_sph_file_prefix = C_loc(f_ctl%mesh_file_prefix)
+      c_plt_sph_file_prefix = C_loc(f_ctl%sph_file_prefix)
       end function c_plt_sph_file_prefix
 !
 !  ---------------------------------------------------------------------
@@ -129,7 +159,7 @@
       type(platform_data_control), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_plt_mesh_file_prefix = C_loc(f_ctl%restart_file_prefix)
+      c_plt_mesh_file_prefix = C_loc(f_ctl%mesh_file_prefix)
       end function c_plt_mesh_file_prefix
 !
 !  ---------------------------------------------------------------------
