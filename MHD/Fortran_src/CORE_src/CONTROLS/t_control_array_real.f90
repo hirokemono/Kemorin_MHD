@@ -48,6 +48,8 @@
 !
 !>        structure of control real item
       type read_real_item
+!>        Item name
+        character(len=kchara) :: item_name = 'Real_item'
 !>        read flag (If item is read iflag = 1)
         integer(kind = kint) ::  iflag = 0
 !>        array for read real item

@@ -87,7 +87,7 @@
 !
 !
       if(chara_item%iflag .gt. 0) return
-      write(chara_item%item_name,'(a,a1)') trim(label), char(0)
+      chara_item%item_name = trim(label)
       if(c_buf%header_chara.ne.label) return
 !
       read(c_buf%ctl_buffer,*) tmpchara, chara_item%charavalue
@@ -170,7 +170,7 @@
 !
 !
       if(array_chara%icou .gt. 0) return
-      write(array_chara%array_name,'(a,a1)') trim(label), char(0)
+      array_chara%array_name = trim(label)
       if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
 !
       read_c1%iflag = 0

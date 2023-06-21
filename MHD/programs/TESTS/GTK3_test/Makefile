@@ -34,12 +34,16 @@ ctl_data_platforms_to_c.o
 
 all: control_GTK
 
-control_GTK: file_dialog.o $(MODULES)
+control_GTK: file_dialog.o ctl_data_platforms_GTK.o $(MODULES)
 	$(F90) $(F90OPTFLAGS) $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
-	-o control_GTK file_dialog.o $(MODULES) $(KEMO_LIBS) $(GTK3_LIBS)
+	-o control_GTK file_dialog.o ctl_data_platforms_GTK.o $(MODULES) $(KEMO_LIBS) $(GTK3_LIBS)
 
 
-file_dialog.o: file_dialog.c
+ctl_data_platforms_GTK.o: ctl_data_platforms_GTK.c ctl_data_platforms_GTK.h
+	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/ctl_data_platforms_GTK.c
+
+file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/file_dialog.c
 
