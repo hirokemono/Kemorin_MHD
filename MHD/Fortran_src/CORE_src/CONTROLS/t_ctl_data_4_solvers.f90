@@ -253,7 +253,7 @@
      &    hd_sigma_diag, CG_ctl%sigma_diag_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_itr, CG_ctl%itr_ctl)
+     &    CG_ctl%itr_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    CG_ctl%method_ctl)

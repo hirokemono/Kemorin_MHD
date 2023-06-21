@@ -123,11 +123,11 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_intgration_points, fint_ctl%integration_points_ctl)
+     &    fint_ctl%integration_points_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_intg_point_poisson, fint_ctl%intg_point_poisson_ctl)
+     &    fint_ctl%intg_point_poisson_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_intg_point_t_evo, fint_ctl%intg_point_t_evo_ctl)
+     &    fint_ctl%intg_point_t_evo_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

@@ -398,32 +398,32 @@
      &    hd_elapsed_time, tctl%elapsed_time_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_init, tctl%i_step_init_ctl)
+     &    tctl%i_step_init_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_finish_number, tctl%i_step_number_ctl)
+     &    tctl%i_step_number_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_check, tctl%i_step_check_ctl)
+     &    tctl%i_step_check_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_rst, tctl%i_step_rst_ctl)
+     &    tctl%i_step_rst_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_section, tctl%i_step_psf_ctl)
+     &    tctl%i_step_psf_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_isosurf,  tctl%i_step_iso_ctl)
+     &     tctl%i_step_iso_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_map_projection, tctl%i_step_map_ctl)
+     &    tctl%i_step_map_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_pvr, tctl%i_step_pvr_ctl)
+     &    tctl%i_step_pvr_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_fline, tctl%i_step_fline_ctl)
+     &    tctl%i_step_fline_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_lic, tctl%i_step_lic_ctl)
+     &    tctl%i_step_lic_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_ucd, tctl%i_step_ucd_ctl)
+     &    tctl%i_step_ucd_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_monitor, tctl%i_step_monitor_ctl)
+     &    tctl%i_step_monitor_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_dt, tctl%dt_ctl)
@@ -471,17 +471,17 @@
      &    hd_ratio_to_cfl, tctl%ratio_to_cfl_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_sgs_coefs, tctl%i_step_sgs_coefs_ctl)
+     &    tctl%i_step_sgs_coefs_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_boundary, tctl%i_step_boundary_ctl)
+     &    tctl%i_step_boundary_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_diff_steps, tctl%i_diff_steps_ctl)
+     &    tctl%i_diff_steps_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_start_rst_step, tctl%start_rst_step_ctl)
+     &    tctl%start_rst_step_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_end_rst_step, tctl%end_rst_step_ctl)
+     &    tctl%end_rst_step_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    tctl%flexible_step_ctl)

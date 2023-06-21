@@ -250,7 +250,7 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_eps_esize, fil3_ctl%eps_esize_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_itr_esize, fil3_ctl%itr_esize_ctl)
+     &    fil3_ctl%itr_esize_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_sigma_esize, fil3_ctl%sigma_esize_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

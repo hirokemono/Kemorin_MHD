@@ -257,9 +257,9 @@
      &    plt%debug_flag_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_subdomain, plt%ndomain_ctl)
+     &    plt%ndomain_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_smp, plt%num_smp_ctl)
+     &    plt%num_smp_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    plt%mesh_file_prefix)

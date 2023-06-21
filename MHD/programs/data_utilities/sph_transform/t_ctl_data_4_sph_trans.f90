@@ -198,7 +198,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    spt_ctl%Legendre_trans_loop_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_legendre_vect_len, spt_ctl%legendre_vector_len_ctl)
+     &    spt_ctl%legendre_vector_len_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_trans_params_ctl

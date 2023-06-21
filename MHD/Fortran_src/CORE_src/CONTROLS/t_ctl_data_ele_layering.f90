@@ -218,15 +218,15 @@
      &    elayer_ctl%layer_grp_name_ctl)
 !
       call write_control_array_i1(id_control, level,                    &
-     &    hd_num_layer_grp_ctl, elayer_ctl%igrp_stack_layer_ctl)
+     &    elayer_ctl%igrp_stack_layer_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_SGS_ele_grp, elayer_ctl%num_layering_grp_ctl)
+     &    elayer_ctl%num_layering_grp_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_SGS_fluid_grp, elayer_ctl%num_fl_layer_grp_ctl)
+     &    elayer_ctl%num_fl_layer_grp_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_ngrp_SGS_on_sphere, elayer_ctl%ngrp_SGS_on_sphere_ctl)
+     &    elayer_ctl%ngrp_SGS_on_sphere_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    elayer_ctl%layering_grp_type_ctl)

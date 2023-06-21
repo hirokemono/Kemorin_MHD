@@ -249,9 +249,9 @@
      &    sdctl%inner_decomp_ctl)
 !
       call write_integer_ctl_type(id_file, level, maxlen,               &
-     &    hd_num_radial_domain, sdctl%num_radial_domain_ctl)
+     &    sdctl%num_radial_domain_ctl)
       call write_integer_ctl_type(id_file, level, maxlen,               &
-     &    hd_num_horiz_domain, sdctl%num_horiz_domain_ctl)
+     &    sdctl%num_horiz_domain_ctl)
 !
       call write_control_array_c_i(id_file, level,                      &
      &    hd_ndomain_rtp, sdctl%ndomain_sph_grid_ctl)

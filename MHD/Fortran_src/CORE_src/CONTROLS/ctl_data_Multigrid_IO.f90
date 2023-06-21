@@ -249,16 +249,16 @@
      &      hd_MG_residual, MG_ctl%MG_residual_ctl)
 !
         call write_integer_ctl_type(id_control, level, maxlen,          &
-     &      hd_maxiter_mid, MG_ctl%maxiter_mid_ctl)
+     &      MG_ctl%maxiter_mid_ctl)
         call write_integer_ctl_type(id_control, level, maxlen,          &
-     &      hd_maxiter_coarsest, MG_ctl%maxiter_coarsest_ctl)
+     &      MG_ctl%maxiter_coarsest_ctl)
 !
         call write_integer_ctl_type(id_control, level, maxlen,          &
-     &      hd_num_MG_level, MG_ctl%num_multigrid_level_ctl)
+     &      MG_ctl%num_multigrid_level_ctl)
 !
 !
         call write_control_array_i1(id_control, level,                  &
-     &      hd_num_MG_subdomain, MG_ctl%num_MG_subdomain_ctl)
+     &      MG_ctl%num_MG_subdomain_ctl)
 !
         call write_control_array_c1(id_control, level,                  &
      &      MG_ctl%MG_mesh_prefix_ctl)

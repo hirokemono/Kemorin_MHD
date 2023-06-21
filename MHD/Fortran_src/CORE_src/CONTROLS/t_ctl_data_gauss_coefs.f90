@@ -194,9 +194,9 @@
       call write_control_array_i2(id_control, level,                    &
      &    hd_pick_gauss_lm, g_pwr%idx_gauss_ctl)
       call write_control_array_i1(id_control, level,                    &
-     &    hd_pick_gauss_l, g_pwr%idx_gauss_l_ctl)
+     &    g_pwr%idx_gauss_l_ctl)
       call write_control_array_i1(id_control, level,                    &
-     &    hd_pick_gauss_m, g_pwr%idx_gauss_m_ctl)
+     &    g_pwr%idx_gauss_m_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_gauss_coefs_r, g_pwr%gauss_coefs_radius_ctl)

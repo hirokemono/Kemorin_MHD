@@ -11,7 +11,7 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_integer_item), intent(inout) :: int_item
 !!      subroutine write_integer_ctl_type                               &
-!!     &         (id_file, level, maxlen, label, int_item)
+!!     &         (id_file, level, maxlen, int_item)
 !!        type(read_integer_item), intent(in) :: int_item
 !!      subroutine copy_integer_ctl(org_i1, new_i1)
 !!        type(read_integer_item), intent(in) :: org_i1
@@ -24,7 +24,7 @@
 !!        type(ctl_array_int), intent(inout) :: array_int
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_array_i1                               &
-!!     &         (id_control, level, label, array_int)
+!!     &         (id_control, level, array_int)
 !!        type(ctl_array_int), intent(in) :: array_int
 !!
 !!      subroutine append_control_array_int(read_i1, array_i1)
@@ -48,6 +48,8 @@
 !
 !>        structure of control integer item
       type read_integer_item
+!>        Item name
+        character(len=kchara) :: item_name = 'Integer_item'
 !>        read flag (If item is read iflag = 1)
         integer(kind = kint) ::  iflag = 0
 !>        array for read integer item
@@ -56,6 +58,8 @@
 !
 !>  Structure for integer control array 
       type ctl_array_int
+!>        Item name
+        character(len=kchara) :: array_name = 'Integer_array'
 !>     number of array items
         integer(kind=kint) :: num = 0
 !>     array counter
@@ -81,7 +85,9 @@
       character(len=kchara) :: tmpchara
 !
 !
-      if(int_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+      if(int_item%iflag .gt. 0) return
+      write(int_item%item_name,'(a,a1)') trim(label), char(0)
+      if(c_buf%header_chara.ne.label) return
 !
       read(c_buf%ctl_buffer,*) tmpchara, int_item%intvalue
       if (iflag_debug .gt. 0)  write(*,*) trim(c_buf%header_chara),     &
@@ -93,19 +99,18 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_integer_ctl_type                                 &
-     &         (id_file, level, maxlen, label, int_item)
+     &         (id_file, level, maxlen, int_item)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file, level
       integer(kind = kint), intent(in) :: maxlen
-      character(len=kchara), intent(in) :: label
       type(read_integer_item), intent(in) :: int_item
 !
 !
       if(int_item%iflag .eq. 0) return
-      call write_integer_ctl_item                                       &
-     &   (id_file, level, maxlen, label, int_item%intvalue)
+      call write_integer_ctl_item(id_file, level, maxlen,               &
+     &                           int_item%item_name, int_item%intvalue)
 !
        end subroutine write_integer_ctl_type
 !
@@ -166,8 +171,9 @@
       type(read_integer_item) :: read_i1
 !
 !
-      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
       if(array_int%icou .gt. 0) return
+      write(array_int%array_name,'(a,a1)') trim(label), char(0)
+      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
 !
       read_i1%iflag = 0
       array_int%num =  0
@@ -189,13 +195,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_control_array_i1                                 &
-     &         (id_control, level, label, array_int)
+     &         (id_control, level, array_int)
 !
       use skip_comment_f
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: label
       type(ctl_array_int), intent(in) :: array_int
 !
       integer(kind = kint), intent(inout) :: level
@@ -205,13 +210,15 @@
 !
       if(array_int%num .le. 0) return
 !
-      level = write_array_flag_for_ctl(id_control, level, label)
+      level = write_array_flag_for_ctl(id_control, level,               &
+     &                                 array_int%array_name)
       do i = 1, array_int%num
-        length = len_trim(label)
+        length = len_trim(array_int%array_name)
         call write_integer_ctl_item(id_control, level, length,          &
-     &      label, array_int%ivec(i))
+     &      array_int%array_name, array_int%ivec(i))
       end do
-      level = write_end_array_flag_for_ctl(id_control, level, label)
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                                     array_int%array_name)
 !
       end subroutine write_control_array_i1
 !

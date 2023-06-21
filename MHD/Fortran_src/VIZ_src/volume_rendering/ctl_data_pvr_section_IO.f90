@@ -190,7 +190,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    pvr_sect_ctl%isoline_color_mode)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_isoline_number, pvr_sect_ctl%isoline_number_ctl)
+     &    pvr_sect_ctl%isoline_number_ctl)
       call write_real2_ctl_type(id_control, level, maxlen,              &
      &    hd_isoline_range, pvr_sect_ctl%isoline_range_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

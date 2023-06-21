@@ -215,33 +215,33 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_section, viz3_ctls%delta_t_psf_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_section, viz3_ctls%i_step_psf_v_ctl)
+     &    viz3_ctls%i_step_psf_v_ctl)
       call write_files_4_psf_ctl(id_control, hd_section_ctl,            &
      &                             viz3_ctls%psf_ctls, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_isosurf, viz3_ctls%delta_t_iso_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_isosurf, viz3_ctls%i_step_iso_v_ctl)
+     &    viz3_ctls%i_step_iso_v_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_map_projection, viz3_ctls%delta_t_map_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_map_projection, viz3_ctls%i_step_map_v_ctl)
+     &    viz3_ctls%i_step_map_v_ctl)
       call write_files_4_map_ctl(id_control, hd_map_rendering,          &
      &                           viz3_ctls%map_ctls, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_pvr, viz3_ctls%delta_t_pvr_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_pvr, viz3_ctls%i_step_pvr_v_ctl)
+     &    viz3_ctls%i_step_pvr_v_ctl)
       call write_files_4_pvr_ctl(id_control, hd_pvr_ctl,                &
      &                           viz3_ctls%pvr_ctls, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_ucd, viz3_ctls%delta_t_ucd_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_i_step_ucd, viz3_ctls%i_step_ucd_v_ctl)
+     &    viz3_ctls%i_step_ucd_v_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    viz3_ctls%output_field_file_fmt_ctl)
 !

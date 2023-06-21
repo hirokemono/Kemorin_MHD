@@ -186,9 +186,9 @@
      &    noise_ctl%noise_file_format_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_noise_grid_size, noise_ctl%noise_resolution_ctl)
+     &    noise_ctl%noise_resolution_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_noise_stepping, noise_ctl%noise_stepping_ctl)
+     &    noise_ctl%noise_stepping_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_noise_cube_size, noise_ctl%noise_cube_size_ctl)

@@ -188,7 +188,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_i1(id_control, level,                    &
-     &    hd_spctr_layer, lp_ctl%idx_spec_layer_ctl)
+     &    lp_ctl%idx_spec_layer_ctl)
       call write_control_array_r1(id_control, level,                    &
      &    hd_spctr_radius, lp_ctl%layer_radius_ctl)
 !

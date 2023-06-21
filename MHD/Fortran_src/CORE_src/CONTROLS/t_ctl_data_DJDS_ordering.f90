@@ -127,9 +127,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_min_color, DJDS_ctl%min_color_ctl)
+     &    DJDS_ctl%min_color_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_mc_color, DJDS_ctl%mc_color_ctl)
+     &    DJDS_ctl%mc_color_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    DJDS_ctl%order_method_ctl)

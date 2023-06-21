@@ -177,7 +177,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_kernel_grid_size, kernel_ctl%kernel_resolution_ctl)
+     &    kernel_ctl%kernel_resolution_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_kernel_peak, kernel_ctl%kernel_peak_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -188,7 +188,7 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_half_length, kernel_ctl%half_length_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_trace_count, kernel_ctl%max_trace_count_ctl)
+     &    kernel_ctl%max_trace_count_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_kernel_control_data

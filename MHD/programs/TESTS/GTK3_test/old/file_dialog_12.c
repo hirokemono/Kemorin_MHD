@@ -653,25 +653,24 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	GtkWidget *expander1 = wrap_into_expanded_frame_gtk
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 3]), 
 			 400, 500, window, vbox_2[3]);
+    gtk_box_pack_start(GTK_BOX(vbox_1), vbox_plt, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_1), expander1, FALSE, FALSE, 0);
 	c_label = isosurface_control_head();
     
+    GtkWidget *evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	GtkWidget *expander2 = wrap_into_expanded_frame_gtk(duplicate_underscore(c_label),
+								 400, 600, window, vbox_1);
+	gtk_box_pack_start(GTK_BOX(evo_box), expander2, FALSE, FALSE, 0);
 	
 	int iflag_ptr[1];
 	iflag_ptr[0] = 0;
-    GtkWidget *evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget *expand_PLT = draw_control_block(f_MHD_ctl->f_plt->f_block_name, 
 											   f_MHD_ctl->f_plt->f_iflag,
-											   560, 320, window, evo_box);
-    gtk_box_pack_start(GTK_BOX(evo_box), vbox_plt, FALSE, FALSE, 0);
+											   360, 240, window, evo_box);
 	GtkWidget *expand_MHD = draw_control_block(f_MHD_ctl->f_block_name, 
 											   f_MHD_ctl->f_iflag,
-											   560, 600, window, expand_PLT);
+											   360, 240, window, expand_PLT);
 	gtk_box_pack_start(GTK_BOX(vbox0), expand_MHD, FALSE, FALSE, 0);
-	
-	GtkWidget *expander2 = wrap_into_expanded_frame_gtk(duplicate_underscore(c_label),
-								 560, 600, window, vbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox0), expander2, FALSE, FALSE, 0);
 	return;
 };
 

@@ -238,13 +238,13 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    fln%line_direction_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_max_line_stepping, fln%max_line_stepping_ctl)
+     &    fln%max_line_stepping_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    fln%starting_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    fln%start_surf_grp_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_fieldline, fln%num_fieldline_ctl)
+     &    fln%num_fieldline_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    fln%selection_type_ctl)
 !

@@ -280,9 +280,9 @@
      &    mevo_ctl%iflag_supg_c_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_multi_pass, mevo_ctl%num_multi_pass_ctl)
+     &    mevo_ctl%num_multi_pass_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_maxiter, mevo_ctl%maxiter_ctl)
+     &    mevo_ctl%maxiter_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_eps_4_velo,  mevo_ctl%eps_4_velo_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -316,7 +316,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    mevo_ctl%Legendre_trans_type)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_legendre_vect_len, mevo_ctl%leg_vector_len)
+     &    mevo_ctl%leg_vector_len)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_time_loop_ctl

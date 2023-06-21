@@ -231,7 +231,7 @@
      &    hd_pick_z_ctl, meq_ctl%pick_z_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_nphi_mid_eq, meq_ctl%nphi_mid_eq_ctl)
+     &    meq_ctl%nphi_mid_eq_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

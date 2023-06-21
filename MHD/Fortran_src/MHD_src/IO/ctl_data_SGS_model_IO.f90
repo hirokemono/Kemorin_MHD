@@ -412,18 +412,18 @@
      &   (id_control, hd_filter_fnames, sgs_ctl%ffile_ctl, level)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_istep_dynamic, sgs_ctl%istep_dynamic_ctl)
+     &    sgs_ctl%istep_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_stabilize_weight, sgs_ctl%stabilize_weight_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_r_ave_area_ctl, sgs_ctl%ngrp_radial_ave_ctl)
+     &    sgs_ctl%ngrp_radial_ave_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_med_ave_area_ctl, sgs_ctl%ngrp_med_ave_ctl)
+     &    sgs_ctl%ngrp_med_ave_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_min_step_dynamic, sgs_ctl%min_step_dynamic_ctl)
+     &    sgs_ctl%min_step_dynamic_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_max_step_dynamic, sgs_ctl%max_step_dynamic_ctl)
+     &    sgs_ctl%max_step_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_shrink_dynamic,                                      &
      &    sgs_ctl%delta_to_shrink_dynamic_ctl)

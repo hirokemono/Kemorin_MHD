@@ -297,20 +297,20 @@
      &    spctl%sph_grid_type_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_sph_truncate, spctl%ltr_ctl)
+     &    spctl%ltr_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_phi_symmetry, spctl%phi_symmetry_ctl)
+     &    spctl%phi_symmetry_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_ntheta_shell, spctl%ngrid_elevation_ctl)
+     &    spctl%ngrid_elevation_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_nphi_shell, spctl%ngrid_azimuth_ctl)
+     &    spctl%ngrid_azimuth_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    spctl%radial_grid_type_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_n_fluid_grid, spctl%num_fluid_grid_ctl)
+     &    spctl%num_fluid_grid_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_cheby_increment, spctl%increment_cheby_ctl)
+     &    spctl%increment_cheby_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_shell_size, spctl%fluid_core_size_ctl)
@@ -334,9 +334,9 @@
      &    hd_bc_sph, spctl%radial_grp_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_radial_grp, spctl%num_radial_layer_ctl)
+     &    spctl%num_radial_layer_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_med_grp, spctl%num_med_layer_ctl)
+     &    spctl%num_med_layer_ctl)
 !
       call write_control_array_i2(id_control, level,                    &
      &    hd_list_radial_grp, spctl%radial_layer_list_ctl)

@@ -190,7 +190,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    movie%movie_mode_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_movie_num_frame, movie%num_frames_ctl)
+     &    movie%num_frames_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    movie%rotation_axis_ctl)

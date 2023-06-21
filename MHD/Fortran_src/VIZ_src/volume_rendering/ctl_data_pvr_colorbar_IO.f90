@@ -178,9 +178,9 @@
      &    hd_cbar_range, cbar_ctl%cbar_range_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_pvr_font_size, cbar_ctl%font_size_ctl)
+     &    cbar_ctl%font_size_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_pvr_numgrid_cbar, cbar_ctl%ngrid_cbar_ctl)
+     &    cbar_ctl%ngrid_cbar_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    cbar_ctl%axis_switch_ctl)

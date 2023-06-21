@@ -126,9 +126,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &   hd_x_pixel, pixel%num_xpixel_ctl)
+     &    pixel%num_xpixel_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &   hd_y_pixel, pixel%num_ypixel_ctl)
+     &    pixel%num_ypixel_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_image_size_ctl
