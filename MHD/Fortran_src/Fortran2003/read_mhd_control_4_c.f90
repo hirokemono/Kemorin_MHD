@@ -32,6 +32,10 @@
      &    MHD_ctl_C, add_SSMHD_ctl_C, c_buf1)
       if(c_buf1%iend .gt. 0) stop 'Error in control file'
 !
+      len = len_trim(MHD_ctl_C%hd_mhd_ctl) + 1
+      write(MHD_ctl_C%hd_mhd_ctl(len:len),'(a1)') char(0)
+      call c_f_pointer(names_c, name_f, [len+1])
+!
       end subroutine c_read_control_sph_SGS_MHD
 !
 !  ---------------------------------------------------------------------
@@ -46,22 +50,9 @@
       character(len=kchara), parameter                                  &
      &                      :: MHD_ctl_name = 'control_MHD_dup'
 !
-      character(len=kchara) :: hd_block1 = "Aho"
-      character(len=kchara) :: hd_block2 = "Baka"
-      character(len=kchara) :: hd_block3 = "Manu"
 !
-      integer(kind = kint) :: level = 0
-!
-      open(id_ctl, file = MHD_ctl_name)
-      call write_control_platforms                                      &
-     &   (id_ctl, hd_block1, MHD_ctl%plt, level)
-      call write_phys_data_control                                      &
-     &   (id_ctl, hd_block2, MHD_ctl%model_ctl%fld_ctl, level)
-      call write_control_time_step_data                                 &
-     &   (id_ctl, hd_block3, MHD_ctl%smctl_ctl%tctl, level)
-      close(id_ctl)
-!
-      call calypso_MPI_finalize
+      call write_control_file_sph_SGS_MHD(MHD_ctl_name, MHD_ctl_C,      &
+     &                                    add_SSMHD_ctl_C)
 !
       end subroutine c_write_control_sph_SGS_MHD
 !
@@ -70,16 +61,13 @@
       subroutine c_read_control_sph_MHD()                               &
      &          bind(C, NAME = 'c_read_control_sph_MHD')
 !
-      use calypso_mpi
       use bcast_control_sph_MHD
 !
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
+      type(buffer_for_control) :: c_buf1
 !
-      call calypso_MPI_init
-!
-      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, MHD_ctl_C,        &
-     &                                  add_SMHD_ctl_C)
-      call calypso_MPI_finalize
+      call read_control_4_sph_MHD_w_psf(MHD_ctl_name, MHD_ctl_C,        &
+     &                                  add_SMHD_ctl_C, c_buf1)
 !
       end subroutine c_read_control_sph_MHD
 !

@@ -37,6 +37,9 @@
       integer(kind=kint), parameter, private :: control_file_code = 11
 !
       type ctl_data_gen_sph_w_repart
+!>        Block name
+        character(len=kchara) :: hd_gen_sph_w_repart = 'MHD_control'
+!
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !
@@ -53,12 +56,6 @@
         integer(kind=kint) :: i_sph_mesh_ctl = 0
         integer(kind=kint) :: i_viz_control =  0
       end type ctl_data_gen_sph_w_repart
-!
-!
-!   Top level of label
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_mhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -99,11 +96,12 @@
 !
       do
         call load_one_line_from_control(control_file_code,              &
-     &                                  hd_mhd_ctl, c_buf)
+     &      gen_SPH_wP_c%hd_gen_sph_w_repart, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
         call read_ctl_data_gen_sph_w_repart                             &
-     &     (control_file_code, hd_mhd_ctl, gen_SPH_wP_c, c_buf)
+     &     (control_file_code, gen_SPH_wP_c%hd_gen_sph_w_repart,        &
+     &      gen_SPH_wP_c, c_buf)
         if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) exit
       end do
       close(control_file_code)
@@ -135,7 +133,8 @@
       level1 = 0
       open(control_file_code, file = file_name, status='old' )
       call write_ctl_data_gen_sph_w_repart                              &
-     &   (control_file_code, hd_mhd_ctl, gen_SPH_wP_c, level1)
+     &   (control_file_code, gen_SPH_wP_c%hd_gen_sph_w_repart,          &
+     &    gen_SPH_wP_c, level1)
       close(control_file_code)
 !
       end subroutine write_ctl_file_gen_sph_w_repart

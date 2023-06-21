@@ -37,6 +37,9 @@
       integer(kind=kint), parameter, private :: control_file_code = 11
 !
       type sph_mesh_generation_ctl
+!>        Block name
+        character(len=kchara) :: hd_mesh_generation = 'MHD_control'
+!
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !
@@ -47,12 +50,6 @@
 !
         integer(kind=kint) :: i_sph_mesh_ctl = 0
       end type sph_mesh_generation_ctl
-!
-!
-!   Top level of label
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_mhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -82,12 +79,13 @@
       open(control_file_code, file = file_name, status='old')
 !
       do
-        call load_one_line_from_control(control_file_code, hd_mhd_ctl,  &
-     &                                  c_buf)
+        call load_one_line_from_control                                 &
+     &     (control_file_code, gen_SPH_ctl%hd_mesh_generation, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
         call read_sph_shell_define_ctl                                  &
-     &     (control_file_code, hd_mhd_ctl, gen_SPH_ctl, c_buf)
+     &     (control_file_code, gen_SPH_ctl%hd_mesh_generation,          &
+     &      gen_SPH_ctl, c_buf)
         if(gen_SPH_ctl%i_sph_mesh_ctl .gt. 0) exit
       end do
 !
@@ -117,7 +115,8 @@
       write(*,*) 'Write control file: ', trim(file_name)
       open(control_file_code, file = file_name, status='old' )
       call write_sph_shell_define_ctl                                   &
-     &   (control_file_code, hd_mhd_ctl, gen_SPH_ctl, level1)
+     &   (control_file_code, gen_SPH_ctl%hd_mesh_generation,            &
+     &    gen_SPH_ctl, level1)
       close(control_file_code)
 !
       end subroutine write_control_4_const_shell

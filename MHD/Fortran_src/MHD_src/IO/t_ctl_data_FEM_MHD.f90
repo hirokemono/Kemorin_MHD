@@ -51,6 +51,9 @@
       integer(kind=kint), parameter :: ctl_file_code = 11
 !
       type fem_mhd_control
+!>        Block name
+        character(len=kchara) :: hd_Fmhd_ctl = 'MHD_control'
+!
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !>        Control structure for orginal file informations
@@ -70,11 +73,6 @@
 !
         integer(kind = kint) :: i_mhd_ctl = 0
       end type fem_mhd_control
-!
-!   Top level of label
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_mhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -125,10 +123,11 @@
 !
       do
         call load_one_line_from_control(ctl_file_code,                  &
-     &                                  hd_mhd_ctl, c_buf)
+     &                                  FEM_MHD_ctl%hd_Fmhd_ctl, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
-        call read_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,       &
+        call read_fem_mhd_control_data                                  &
+     &     (ctl_file_code, FEM_MHD_ctl%hd_Fmhd_ctl,                     &
      &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
         if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
@@ -168,7 +167,8 @@
       write(*,*) 'Write MHD control file: ', trim(file_name)
       level1 = 0
       open(ctl_file_code, file = file_name)
-      call write_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,        &
+      call write_fem_mhd_control_data                                   &
+     &   (ctl_file_code, FEM_MHD_ctl%hd_Fmhd_ctl,                       &
      &    FEM_MHD_ctl, sgs_ctl, viz_ctls, level1)
       close(ctl_file_code)
 !

@@ -23,11 +23,10 @@
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,   &
 !!     &                                          add_VMHD_ctl)
-!!      subroutine write_sph_mhd_ctl_w_vizs(id_control, hd_block,       &
+!!      subroutine write_sph_mhd_ctl_w_vizs(id_control,                 &
 !!     &                                   MHD_ctl, add_VMHD_ctl, level)
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(in) :: MHD_ctl
 !!        type(add_vizs_sph_mhd_ctl), intent(in) :: add_VMHD_ctl
 !!        integer(kind = kint), intent(inout) :: level
@@ -89,10 +88,6 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
 !
-!   Top level of label
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_mhd_ctl = 'MHD_control'
-!
 !>      Here is the old label
       character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
@@ -118,12 +113,12 @@
       open(id_control_file, file = file_name, status='old' )
 !
       do
-        call load_one_line_from_control(id_control_file, hd_mhd_ctl,    &
-     &                                  c_buf)
+        call load_one_line_from_control(id_control_file,                &
+     &                                  MHD_ctl%hd_mhd_ctl, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
-        call read_sph_mhd_ctl_w_vizs(id_control_file, hd_mhd_ctl,       &
-     &      MHD_ctl, add_VMHD_ctl, c_buf)
+        call read_sph_mhd_ctl_w_vizs(id_control_file,                   &
+     &      MHD_ctl%hd_mhd_ctl, MHD_ctl, add_VMHD_ctl, c_buf)
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(id_control_file)
@@ -160,8 +155,8 @@
       write(*,*) 'Write MHD control file: ', trim(file_name)
       open(id_control_file, file = file_name)
       level1 = 0
-      call write_sph_mhd_ctl_w_vizs(id_control_file, hd_mhd_ctl,        &
-     &                             MHD_ctl, add_VMHD_ctl, level1)
+      call write_sph_mhd_ctl_w_vizs(id_control_file,                    &
+     &                              MHD_ctl, add_VMHD_ctl, level1)
       close(id_control_file)
 !
       end subroutine write_control_4_sph_MHD_w_vizs
@@ -226,7 +221,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_sph_mhd_ctl_w_vizs(id_control, hd_block,         &
+      subroutine write_sph_mhd_ctl_w_vizs(id_control,                   &
      &                                   MHD_ctl, add_VMHD_ctl, level)
 !
       use ctl_data_platforms_IO
@@ -238,7 +233,6 @@
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(mhd_simulation_control), intent(in) :: MHD_ctl
       type(add_vizs_sph_mhd_ctl), intent(in) :: add_VMHD_ctl
 !
@@ -247,7 +241,8 @@
 !
       if(MHD_ctl%i_mhd_ctl .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 MHD_ctl%hd_mhd_ctl)
       call write_control_platforms                                      &
      &   (id_control, hd_platform, MHD_ctl%plt, level)
       call write_control_platforms                                      &
@@ -271,7 +266,8 @@
 !
       call write_dynamo_viz_control                                     &
      &   (id_control, hd_dynamo_viz_ctl, add_VMHD_ctl%zm_ctls, level)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                MHD_ctl%hd_mhd_ctl)
 !
       end subroutine write_sph_mhd_ctl_w_vizs
 !
