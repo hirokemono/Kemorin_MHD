@@ -186,21 +186,29 @@ void read_multi_field_name(FILE *fp, char **data_name){
 };
 
 
+int strngcopy_w_length(char *chara_out, const int len_chara, const char *chara_in){
+    int j;
+    
+    for (j = 0; j < len_chara; j++) {
+        if (chara_in[j] == ' ' || chara_in[j] == '\0') {
+            
+            return j;
+        }
+        else{
+            chara_out[j] = chara_in[j];
+        };
+    };
+    chara_out[len_chara] = '\0';
+    /*printf("output %s \n",chara_out);*/
+    return len_chara;
+}
+
 int strngcopy(char *chara_out, const char *chara_in){
-	int j;
-	
-	int len_chara = (int) strlen(chara_in);
-	for (j = 0; j < len_chara; j++) {
-		if (chara_in[j] == ' ' || chara_in[j] == '\0') {
-			break;
-		}
-		else{
-			chara_out[j] = chara_in[j];
-		};
-	};
-	chara_out[len_chara] = '\0';
-	/*printf("output %s \n",chara_out);*/
-	return len_chara;
+    int j;
+    
+    int len_chara = (int) strlen(chara_in);
+    j = strngcopy_w_length(chara_out, len_chara, chara_in);
+    return j;
 }
 
 int compare_string(int length, const char *string1, const char *string2){

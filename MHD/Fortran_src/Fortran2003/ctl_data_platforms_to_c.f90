@@ -37,6 +37,19 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine c_chara_item_clength(c_ctl, length_c)                  &
+     &          bind(C, NAME = 'c_chara_item_clength')
+      type(c_ptr), value, intent(in) :: c_ctl
+      integer(C_int), intent(inout) :: length_c
+      character(len=kchara), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      length_c = len_trim(f_ctl)
+      write(*,*) 'length_c', length_c
+      end subroutine c_chara_item_clength
+!
+!  ---------------------------------------------------------------------
+!
       type(c_ptr) function c_chara_item_block_name(c_ctl)               &
      &          bind(C, NAME = 'c_chara_item_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
@@ -56,18 +69,6 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_chara_item_iflag = C_loc(f_ctl%iflag)
       end function c_chara_item_iflag
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine c_chara_item_clength(c_ctl, length_c)                  &
-     &          bind(C, NAME = 'c_chara_item_clength')
-      type(c_ptr), value, intent(in) :: c_ctl
-      integer(C_int), intent(inout) :: length_c
-      type(read_character_item), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      length_c = len_trim(f_ctl%charavalue)
-      end subroutine c_chara_item_clength
 !
 !  ---------------------------------------------------------------------
 !

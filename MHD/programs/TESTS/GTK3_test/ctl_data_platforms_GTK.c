@@ -19,13 +19,17 @@ struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_par
 	f_citem->f_block_name =  (char *)  c_chara_item_block_name(f_citem->f_self);
 	f_citem->f_iflag =        (int *)   c_chara_item_iflag(f_citem->f_self);
 	f_citem->f_charavalue =  (char *)  c_chara_item_charavalue(f_citem->f_self);
-	c_chara_item_clength(f_citem->f_self, f_citem->f_clength);
+	c_chara_item_clength(f_citem->f_block_name, f_citem->f_namelength);
+	c_chara_item_clength(f_citem->f_charavalue, f_citem->f_clength);
+	
+	f_citem->c_block_name = alloc_string((long) f_citem->f_namelength[0]);
+	int n = strngcopy_w_length(f_citem->c_block_name, f_citem->f_namelength[0], 
+					   f_citem->f_block_name);
 	
 	printf("f_citem->f_self %p \n", f_citem->f_self);
-	printf("f_citem->f_block_name %s \n", f_citem->f_block_name);
+	printf("f_citem->c_block_name %s \n", f_citem->c_block_name);
 	printf("f_citem->f_charavalue %d %s \n", 
 		   f_citem->f_iflag[0], f_citem->f_charavalue);
-		   
 	return f_citem;
 }
 
@@ -39,6 +43,14 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 	f_plt->f_self =  c_load_self(f_parent);
 	f_plt->f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
 	f_plt->f_iflag =       (int *)  c_plt_iflag(f_plt->f_self);
+	c_chara_item_clength(f_plt->f_block_name, f_plt->f_namelength);
+	
+	f_plt->c_block_name = alloc_string((long) f_plt->f_namelength[0]);
+	strngcopy_w_length(f_plt->c_block_name, f_plt->f_namelength[0], 
+					   f_plt->f_block_name);
+	printf("f_plt->f_block_name %d %s\n", f_plt->f_namelength, f_plt->f_block_name);
+	printf("f_plt->c_block_name %s\n", f_plt->c_block_name);
+	
 	
 	f_plt->f_ndomain_ctl =               c_plt_ndomain_ctl(f_plt->f_self);
 	f_plt->f_num_smp_ctl =               c_plt_num_smp_ctl(f_plt->f_self);
@@ -131,7 +143,7 @@ GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWid
 	}
 	g_signal_connect(G_OBJECT(checkbox), "toggled", 
                      G_CALLBACK(cb_check_toggle), (gpointer) f_citem->f_iflag);
-	GtkWidget *label = gtk_label_new(f_citem->f_block_name);
+	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
 	
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_entry_new();
@@ -167,9 +179,9 @@ GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidg
 	GtkWidget *hbox_c10 = draw_chara_item_entry_hbox(f_plt->f_spectr_field_file_prefix, window);
 	GtkWidget *hbox_c11 = draw_chara_item_entry_hbox(f_plt->f_spectr_field_fmt_ctl, window);
 	GtkWidget *hbox_c12 = draw_chara_item_entry_hbox(f_plt->f_coriolis_int_file_name, window);
-	GtkWidget *hbox_c13 = draw_chara_item_entry_hbox(f_plt->f_coriolis_int_file_name, window);
+	GtkWidget *hbox_c13 = draw_chara_item_entry_hbox(f_plt->f_coriolis_file_fmt_ctl, window);
 	*/
-	GtkWidget *hbox_c14 = draw_chara_item_entry_hbox(f_plt->f_coriolis_file_fmt_ctl, window);
+	GtkWidget *hbox_c14 = draw_chara_item_entry_hbox(f_plt->f_bc_data_file_name_ctl, window);
 	GtkWidget *hbox_c15 = draw_chara_item_entry_hbox(f_plt->f_radial_data_file_name_ctl, window);
 	/*
 	GtkWidget *hbox_c16 = draw_chara_item_entry_hbox(f_plt->f_interpolate_sph_to_fem, window);
@@ -195,7 +207,7 @@ GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidg
     gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_c20, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_c21, FALSE, FALSE, 0);
 	
-	GtkWidget *expand_PLT = draw_control_block(f_plt->f_block_name, f_plt->f_iflag,
+	GtkWidget *expand_PLT = draw_control_block(f_plt->c_block_name, f_plt->f_iflag,
 											   560, 280, window, vbox_plt);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand_PLT, FALSE, FALSE, 0);
 	return vbox_out;

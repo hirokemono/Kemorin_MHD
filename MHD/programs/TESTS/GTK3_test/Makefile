@@ -56,4 +56,4 @@ ctl_data_platforms_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_data_platfo
 	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_data_platforms_to_c.f90
 
 clean:
-	rm -f *.o *.mod *~
+	rm -f *.o *.mod *~ control_GTK

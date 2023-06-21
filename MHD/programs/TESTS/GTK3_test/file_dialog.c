@@ -37,6 +37,9 @@ struct f_MHD_control{
 	char * f_block_name;
 	int * f_iflag;
 	
+	int f_namelength[1];
+	char * c_block_name;
+	
 	struct f_platform_control *f_plt;
 	void * f_org_plt;
 	void * f_new_plt;
@@ -156,6 +159,14 @@ static void cb_Open(GtkButton *button, gpointer data)
 		f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD((char *) read_file_name);
 		f_MHD_ctl->f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
 		f_MHD_ctl->f_iflag =        (int *) c_MHD_iflag(f_MHD_ctl->f_self);
+		
+		c_chara_item_clength(f_MHD_ctl->f_block_name, f_MHD_ctl->f_namelength);
+		f_MHD_ctl->c_block_name = alloc_string((long) f_MHD_ctl->f_namelength[0]);
+		strngcopy_w_length(f_MHD_ctl->c_block_name, f_MHD_ctl->f_namelength[0], 
+					   f_MHD_ctl->f_block_name);
+		
+		printf("f_MHD_ctl->f_block_name %d %s\n", f_MHD_ctl->f_namelength, f_MHD_ctl->f_block_name);
+		printf("f_MHD_ctl->c_block_name %s\n", f_MHD_ctl->c_block_name);
 		
 		f_MHD_ctl->f_plt = init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
 		
@@ -408,7 +419,7 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	iflag_ptr[0] = 0;
 	
 	GtkWidget * vbox_plt = draw_platform_control_vbox(f_MHD_ctl->f_plt, window);
-	GtkWidget *expand_MHD = draw_control_block(f_MHD_ctl->f_block_name, 
+	GtkWidget *expand_MHD = draw_control_block(f_MHD_ctl->c_block_name, 
 											   f_MHD_ctl->f_iflag,
 											   560, 600, window, vbox_plt);
 	gtk_box_pack_start(GTK_BOX(vbox0), expand_MHD, FALSE, FALSE, 0);

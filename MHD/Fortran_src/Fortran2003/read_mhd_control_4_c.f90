@@ -157,7 +157,7 @@
 !
       character(C_char), pointer ::  name_f(:)
 !
-      call c_f_pointer(names_c, name_f, [len+1])
+      call c_f_pointer(names_c, name_f, [kchara+1])
       MHD_ctl_name = load_chara_from_cc(name_f)
 !
       c_buf1%level = 0
