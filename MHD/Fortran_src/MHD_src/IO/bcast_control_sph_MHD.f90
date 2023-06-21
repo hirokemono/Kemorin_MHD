@@ -68,7 +68,10 @@
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
       call calypso_mpi_bcast_character                                  &
-     &   (MHD_ctl%fname_psph_ctl, cast_long(kchara), 0)
+     &   (MHD_ctl%fname_psph, cast_long(kchara), 0)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (MHD_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(MHD_ctl%i_mhd_ctl, 0)
 !
       end subroutine bcast_sph_mhd_control_data

@@ -53,7 +53,7 @@
 !
       call calypso_mpi_bcast_one_int(spt_ctl%i_sph_trans_ctl, 0)
       call calypso_mpi_bcast_character                                  &
-     &   (spt_ctl%fname_psph_ctl, cast_long(kchara), 0)
+     &   (spt_ctl%fname_psph, cast_long(kchara), 0)
 !
       end subroutine bcast_sph_trans_control_data
 !

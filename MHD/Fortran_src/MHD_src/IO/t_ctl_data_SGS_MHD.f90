@@ -69,6 +69,10 @@
         type(sph_dynamo_viz_controls) :: zm_ctls
       end type add_sgs_sph_mhd_ctl
 !
+!
+      character(len=kchara), parameter, private                         &
+     &                                 :: hd_mhd_ctl = 'MHD_control'
+!
 !   2nd level for MHD
 !
       character(len=kchara), parameter, private                         &
@@ -122,11 +126,11 @@
 !
       do
         call load_one_line_from_control(id_control_file,                &
-     &                                  MHD_ctl%hd_mhd_ctl, c_buf)
+     &                                  hd_mhd_ctl, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
         call read_sph_mhd_control_data(id_control_file,                 &
-     &      MHD_ctl%hd_mhd_ctl, MHD_ctl, add_SSMHD_ctl, c_buf)
+     &      hd_mhd_ctl, MHD_ctl, add_SSMHD_ctl, c_buf)
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(id_control_file)
@@ -206,7 +210,7 @@
      &     (id_control, hd_new_data, MHD_ctl%new_plt, c_buf)
 !
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, c_buf)
+     &      MHD_ctl%fname_psph, MHD_ctl%psph_ctl, c_buf)
 !
         call read_sph_sgs_mhd_model(id_control, hd_model,               &
      &      MHD_ctl%model_ctl, add_SSMHD_ctl%sgs_ctl, c_buf)
@@ -226,6 +230,7 @@
         call read_dynamo_viz_control(id_control, hd_zm_viz_ctl,         &
      &                               add_SSMHD_ctl%zm_ctls, c_buf)
       end do
+      write(MHD_ctl%block_name,'(a,a1)')  trim(hd_block), char(0)
       MHD_ctl%i_mhd_ctl = 1
 !
       end subroutine read_sph_mhd_control_data
@@ -254,7 +259,7 @@
       if(MHD_ctl%i_mhd_ctl .le. 0) return
 !
       level = write_begin_flag_for_ctl(id_control, level,               &
-     &                                 MHD_ctl%hd_mhd_ctl)
+     &                                 MHD_ctl%block_name)
       call write_control_platforms                                      &
      &   (id_control, hd_platform, MHD_ctl%plt, level)
       call write_control_platforms                                      &
@@ -263,7 +268,7 @@
      &   (id_control, hd_new_data, MHD_ctl%new_plt, level)
 !
       call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
-     &    MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, level)
+     &    MHD_ctl%fname_psph, MHD_ctl%psph_ctl, level)
 !
       call write_sph_sgs_mhd_model(id_control, hd_model,                &
      &    MHD_ctl%model_ctl, add_SSMHD_ctl%sgs_ctl, level)
@@ -280,7 +285,7 @@
       call write_dynamo_viz_control                                     &
      &   (id_control, hd_dynamo_viz_ctl, add_SSMHD_ctl%zm_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level,                &
-     &                                MHD_ctl%hd_mhd_ctl)
+     &                                MHD_ctl%block_name)
 !
       end subroutine write_sph_mhd_control_data
 !

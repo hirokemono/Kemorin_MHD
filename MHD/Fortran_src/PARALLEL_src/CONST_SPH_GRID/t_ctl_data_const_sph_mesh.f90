@@ -44,7 +44,7 @@
         type(platform_data_control) :: plt
 !
 !>        file name for parallel spherical shell control
-        character(len = kchara) :: fname_psph_ctl
+        character(len = kchara) :: fname_psph = 'NO_FILE'
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
 !
@@ -147,7 +147,7 @@
         call read_control_platforms                                     &
      &     (id_control, hd_platform, gen_SPH_ctl%plt, c_buf)
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      gen_SPH_ctl%fname_psph_ctl, gen_SPH_ctl%psph_ctl, c_buf)
+     &      gen_SPH_ctl%fname_psph, gen_SPH_ctl%psph_ctl, c_buf)
       end do
       gen_SPH_ctl%i_sph_mesh_ctl = 1
 !
@@ -174,7 +174,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, gen_SPH_ctl%plt, level)
       call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
-     &    gen_SPH_ctl%fname_psph_ctl, gen_SPH_ctl%psph_ctl, level)
+     &    gen_SPH_ctl%fname_psph, gen_SPH_ctl%psph_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_shell_define_ctl

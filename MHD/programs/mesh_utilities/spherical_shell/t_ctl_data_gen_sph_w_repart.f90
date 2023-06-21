@@ -44,12 +44,12 @@
         type(platform_data_control) :: plt
 !
 !>        File name to read spherical shell control file
-        character (len = kchara) :: fname_psph_ctl
+        character (len = kchara) :: fname_psph = 'NO_FILE'
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
 !
 !>         File name for repartition control block
-        character(len = kchara) :: fname_vol_repart_ctl
+        character(len = kchara) :: fname_vol_repart_ctl = 'NO_FILE'
 !>        Structure for new partitioning controls
         type(viz_repartition_ctl) :: repart_ctl
 !
@@ -165,7 +165,7 @@
         call read_control_platforms                                     &
      &     (id_control, hd_platform, gen_SPH_wP_c%plt, c_buf)
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      gen_SPH_wP_c%fname_psph_ctl, gen_SPH_wP_c%psph_ctl, c_buf)
+     &      gen_SPH_wP_c%fname_psph, gen_SPH_wP_c%psph_ctl, c_buf)
         call read_viz_repart_ctl_only(id_control, hd_viz_control,       &
      &                                gen_SPH_wP_c, c_buf)
       end do
@@ -194,7 +194,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, gen_SPH_wP_c%plt, level)
       call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
-     &    gen_SPH_wP_c%fname_psph_ctl, gen_SPH_wP_c%psph_ctl, level)
+     &    gen_SPH_wP_c%fname_psph, gen_SPH_wP_c%psph_ctl, level)
       call write_viz_repart_ctl_only(id_control, hd_viz_control,        &
      &                               gen_SPH_wP_c, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)

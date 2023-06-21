@@ -27,8 +27,10 @@
       subroutine bcast_ctl_data_4_platform(plt)
 !
       use t_ctl_data_4_platforms
+      use transfer_to_long_integers
       use bcast_control_arrays
       use calypso_mpi_int
+      use calypso_mpi_char
 !
       type(platform_data_control), intent(inout) :: plt
 !
@@ -51,8 +53,8 @@
       call bcast_ctl_type_c1(plt%rayleigh_spectr_dir)
       call bcast_ctl_type_c1(plt%rayleigh_field_dir)
 !
-      call bcast_ctl_type_c1(plt%interpolate_sph_to_fem_ctl)
-      call bcast_ctl_type_c1(plt%interpolate_fem_to_sph_ctl)
+      call bcast_ctl_type_c1(plt%interpolate_sph_to_fem)
+      call bcast_ctl_type_c1(plt%interpolate_fem_to_sph)
 !
       call bcast_ctl_type_c1(plt%mesh_file_fmt_ctl)
       call bcast_ctl_type_c1(plt%restart_file_fmt_ctl)
@@ -66,6 +68,8 @@
 !
       call bcast_ctl_type_c1(plt%del_org_data_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (plt%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(plt%i_platform, 0)
 !
       end subroutine bcast_ctl_data_4_platform

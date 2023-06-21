@@ -49,7 +49,7 @@
         type(FEM_mesh_control) :: Fmesh_ctl
 !
 !>        File name to read spherical shell control file
-        character (len = kchara) :: fname_psph_ctl
+        character (len = kchara) :: fname_psph = 'NO_FILE'
 !>        structure of parallel spherical shell data
         type(parallel_sph_shell_control) :: psph_ctl
 !

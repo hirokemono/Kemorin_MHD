@@ -15,9 +15,95 @@
 #include "tree_view_chara_GTK.h"
 #include "tree_view_4_field_GTK.h"
 
-extern void c_read_control_sph_SGS_MHD();
+extern void c_view_control_sph_SGS_MHD();
+extern void * c_read_control_sph_SGS_MHD(char *file_name);
+extern void * c_MHD_block_name(void *f_MHD_ctl);
+extern void * c_MHD_iflag(void *f_MHD_ctl);
+extern void * c_MHD_plt(void *f_MHD_ctl);
+extern void * c_MHD_org_plt(void *f_MHD_ctl);
+extern void * c_MHD_new_plt(void *f_MHD_ctl);
+extern void * c_MHD_fname_psph(void *f_MHD_ctl);
+extern void * c_MHD_psph_ctl(void *f_MHD_ctl);
+extern void * c_MHD_model_ctl(void *f_MHD_ctl);
+extern void * c_MHD_smctl_ctl(void *f_MHD_ctl);
+extern void * c_MHD_smonitor_ctl(void *f_MHD_ctl);
+extern void * c_MHD_nmtr_ctl(void *f_MHD_ctl);
 
-void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c *iso_c);
+
+extern void * c_plt_block_name(void *f_plt);
+extern void * c_plt_iflag(void *f_plt);
+extern void * c_plt_ndomain_ctl(void *f_plt);
+extern void * c_plt_num_smp_ctl(void *f_plt);
+extern void * c_plt_debug_flag_ctl(void *f_plt);
+extern void * c_plt_sph_file_prefix(void *f_plt);
+extern void * c_plt_mesh_file_prefix(void *f_plt);
+extern void * c_plt_restart_file_prefix(void *f_plt);
+extern void * c_plt_field_file_prefix(void *f_plt);
+extern void * c_plt_spectr_field_file_prefix(void *f_plt);
+extern void * c_plt_coriolis_int_file_name(void *f_plt);
+extern void * c_plt_bc_data_file_name_ctl(void *f_plt);
+extern void * c_plt_radial_data_file_name_ctl(void *f_plt);
+extern void * c_plt_interpolate_sph_to_fem(void *f_plt);
+extern void * c_plt_interpolate_fem_to_sph(void *f_plt);
+extern void * c_plt_rayleigh_spectr_dir(void *f_plt);
+extern void * c_plt_rayleigh_field_dir(void *f_plt);
+extern void * c_plt_sph_file_fmt_ctl(void *f_plt);
+extern void * c_plt_mesh_file_fmt_ctl(void *f_plt);
+extern void * c_plt_restart_file_fmt_ctl(void *f_plt);
+extern void * c_plt_field_file_fmt_ctl(void *f_plt);
+extern void * c_plt_spectr_field_fmt_ctl(void *f_plt);
+extern void * c_plt_itp_file_fmt_ctl(void *f_plt);
+extern void * c_plt_coriolis_file_fmt_ctl(void *f_plt);
+extern void * c_plt_del_org_data_ctl(void *f_plt);
+
+struct f_platform_control{
+	void * f_self;
+	
+	char * f_block_name;
+	void * f_iflag;
+	
+	void * f_ndomain_ctl;
+	void * f_num_smp_ctl;
+	void * f_debug_flag_ctl;
+	void * f_sph_file_prefix;
+	void * f_mesh_file_prefix;
+	void * f_restart_file_prefix;
+	void * f_field_file_prefix;
+	void * f_spectr_field_file_prefix;
+	void * f_coriolis_int_file_name;
+	void * f_bc_data_file_name_ctl;
+	void * f_radial_data_file_name_ctl;
+	void * f_interpolate_sph_to_fem;
+	void * f_interpolate_fem_to_sph;
+	void * f_rayleigh_spectr_dir;
+	void * f_rayleigh_field_dir;
+	void * f_sph_file_fmt_ctl;
+	void * f_mesh_file_fmt_ctl;
+	void * f_restart_file_fmt_ctl;
+	void * f_field_file_fmt_ctl;
+	void * f_spectr_field_fmt_ctl;
+	void * f_itp_file_fmt_ctl;
+	void * f_coriolis_file_fmt_ctl;
+	void * f_del_org_data_ctl;
+};
+
+struct f_MHD_control{
+	void * f_self;
+	
+	char * f_block_name;
+	void * f_iflag;
+	struct f_platform_control *f_plt;
+	void * f_org_plt;
+	void * f_new_plt;
+	void * f_fname_psph;
+	void * f_psph_ctl;
+	void * f_model_ctl;
+	void * f_smctl_ctl;
+	void * f_smonitor_ctl;
+	void * f_nmtr_ctl;
+};
+
+void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_control *f_MHD_ctl, struct iso_ctl_c *iso_c);
 
 int iflag_read_iso = 0;
 
@@ -47,6 +133,8 @@ char *ctest = "ahahahaha";
 struct chara_ctl_item item_test = {55, "tako_tako"};
 struct chara_ctl_item *ptem_test;
 
+void *MHD_ctl_C;
+
 /*
 static gboolean
 boolean_to_text (GBinding *binding,
@@ -64,10 +152,9 @@ boolean_to_text (GBinding *binding,
 }
 */
 
-static void cb_New(GtkButton *button, gpointer data)
+static void cb_View(GtkButton *button, gpointer data)
 {
-	draw_MHD_control_list(window, vbox_0, iso_GTK0->iso_c);
-	gtk_widget_show_all(window);
+	c_view_control_sph_SGS_MHD();
 }
 static void cb_Open(GtkButton *button, gpointer data)
 {
@@ -87,6 +174,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 	
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	
+	struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) g_object_get_data(G_OBJECT(data), "MHD_ctl");
 	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
 	entry = GTK_ENTRY(data);
 
@@ -119,10 +207,53 @@ static void cb_Open(GtkButton *button, gpointer data)
 			chdir(folder);
 		}
 		/* Get Folder name */
+		printf("f_MHD_ctl %p\n", f_MHD_ctl);
+		f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD((char *) read_file_name);
 		
+		f_MHD_ctl->f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_iflag =        c_MHD_iflag(f_MHD_ctl->f_self);
 		
-		c_read_control_sph_SGS_MHD();
+		f_MHD_ctl->f_plt = (struct f_platform_control *) malloc(sizeof(struct f_platform_control));
+		if(f_MHD_ctl->f_plt == NULL){
+			printf("malloc error for f_MHD_ctl->f_plt\n");
+			exit(0);
+		};
+		f_MHD_ctl->f_plt->f_self =  c_MHD_plt(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_plt->f_block_name =  (char *) c_plt_block_name(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_iflag =       c_plt_iflag(f_MHD_ctl->f_plt->f_self);
 		
+		f_MHD_ctl->f_plt->f_ndomain_ctl =               c_plt_ndomain_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_num_smp_ctl =               c_plt_num_smp_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_debug_flag_ctl =            c_plt_debug_flag_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_sph_file_prefix =           c_plt_sph_file_prefix(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_mesh_file_prefix =          c_plt_mesh_file_prefix(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_restart_file_prefix =       c_plt_restart_file_prefix(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_field_file_prefix =         c_plt_field_file_prefix(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_spectr_field_file_prefix =  c_plt_spectr_field_file_prefix(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_coriolis_int_file_name =    c_plt_coriolis_int_file_name(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_bc_data_file_name_ctl =     c_plt_bc_data_file_name_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_radial_data_file_name_ctl = c_plt_radial_data_file_name_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_interpolate_sph_to_fem =    c_plt_interpolate_sph_to_fem(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_interpolate_fem_to_sph =    c_plt_interpolate_fem_to_sph(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_rayleigh_spectr_dir =       c_plt_rayleigh_spectr_dir(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_rayleigh_field_dir =        c_plt_rayleigh_field_dir(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_sph_file_fmt_ctl =          c_plt_sph_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_mesh_file_fmt_ctl =         c_plt_mesh_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_restart_file_fmt_ctl =      c_plt_restart_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_field_file_fmt_ctl =        c_plt_field_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_spectr_field_fmt_ctl =      c_plt_spectr_field_fmt_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_itp_file_fmt_ctl =          c_plt_itp_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_coriolis_file_fmt_ctl =     c_plt_coriolis_file_fmt_ctl(f_MHD_ctl->f_plt->f_self);
+		f_MHD_ctl->f_plt->f_del_org_data_ctl =          c_plt_del_org_data_ctl(f_MHD_ctl->f_plt->f_self);
+		
+		f_MHD_ctl->f_org_plt =      c_MHD_org_plt(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_new_plt =      c_MHD_new_plt(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_fname_psph =   c_MHD_fname_psph(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_psph_ctl =     c_MHD_psph_ctl(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_model_ctl =    c_MHD_model_ctl(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_smctl_ctl =    c_MHD_smctl_ctl(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_smonitor_ctl = c_MHD_smonitor_ctl(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_nmtr_ctl =     c_MHD_nmtr_ctl(f_MHD_ctl->f_self);
 		
 		/* Show file name in entry */ 
 		gtk_entry_set_text(entry, read_file_name);
@@ -141,7 +272,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		printf("iso_output_type_ctl modified %s\n", iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
 		
 		
-		draw_MHD_control_list(window, vbox_0, iso_GTK0->iso_c);
+		draw_MHD_control_list(window, vbox_0, f_MHD_ctl, iso_GTK0->iso_c);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -321,8 +452,40 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	return vbox_1;
 };
 
+static void cb_check_toggle(GtkWidget *widget, gpointer iflag_ptr){
+	int *iflag_block = (int *) iflag_ptr;
+	
+	if(gtk_toggle_button_get_active(widget) == TRUE){
+		*iflag_block = 1;
+	}else{
+		*iflag_block = 0;
+	};
+	printf("*iflag_block %d \n", *iflag_block);
+	return;
+}
 
-void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c *iso_c){
+
+GtkWidget * draw_control_block(const char * title, int *iflag_ptr, 
+							   int width, int height,
+							   GtkWidget *window, GtkWidget *box_in)
+{
+	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *checkbox = gtk_check_button_new();
+	g_signal_connect(G_OBJECT(checkbox), "toggled", 
+                     G_CALLBACK(cb_check_toggle), (gpointer) iflag_ptr);
+	
+	GtkWidget *expander = wrap_into_expanded_frame_gtk
+			(duplicate_underscore(title), width, height, window, box_in);
+	gtk_box_pack_start(GTK_BOX(vbox0), checkbox, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, FALSE, 0);
+	return hbox0;
+};
+
+
+
+void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_control *f_MHD_ctl, struct iso_ctl_c *iso_c){
 	GtkWidget *vbox_1;
 	GtkWidget *vbox_2[iso_c->label_iso_ctl_w_dpl->num_labels];
 	
@@ -346,6 +509,7 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c
 	
 	vbox_2[2] = iso_define_ctl_list_box(iso_c->iso_def_c);
 	vbox_2[3] = iso_field_ctl_list_box(iso_c->iso_fld_c);
+	
 	GtkWidget *expander = wrap_into_expanded_frame_gtk
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 2]), 
 			 400, 200, window, vbox_2[2]);
@@ -356,47 +520,64 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c
     gtk_box_pack_start(GTK_BOX(vbox_1), expander1, FALSE, FALSE, 0);
 	c_label = isosurface_control_head();
     
+    GtkWidget *evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget *expander2 = wrap_into_expanded_frame_gtk(duplicate_underscore(c_label),
 								 400, 600, window, vbox_1);
-    gtk_box_pack_start(GTK_BOX(vbox0), expander2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(evo_box), expander2, FALSE, FALSE, 0);
+	
+	int iflag_ptr[1];
+	iflag_ptr[0] = 0;
+	GtkWidget *expand_PLT = draw_control_block(f_MHD_ctl->f_plt->f_block_name, 
+											   f_MHD_ctl->f_plt->f_iflag,
+											   360, 240, window, evo_box);
+	GtkWidget *expand_MHD = draw_control_block(f_MHD_ctl->f_block_name, 
+											   f_MHD_ctl->f_iflag,
+											   360, 240, window, expand_PLT);
+	gtk_box_pack_start(GTK_BOX(vbox0), expand_MHD, FALSE, FALSE, 0);
 	return;
 };
 
 
 void draw_MHD_control_bottuns(GtkWidget *vbox0){
-	GtkWidget *button_N, *button_O, *button_S, *button_Q;
-	GtkWidget *hbox;
-	GtkWidget *label;
-	GtkWidget *entry;
+	struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) malloc(sizeof(struct f_MHD_control));
+		printf("f_MHD_ctl %p\n", f_MHD_ctl);
+	if(f_MHD_ctl == NULL){
+		printf("malloc error for f_MHD_ctl\n");
+		exit(0);
+	};
 	
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	label = gtk_label_new("File:");
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *label = gtk_label_new("File:");
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	/* Generate file entry  */
-	entry = gtk_entry_new();
+	GtkWidget *entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)window);
+	g_object_set_data(G_OBJECT(entry), "MHD_ctl", (gpointer)f_MHD_ctl);
 	
 	/* Generate Bottuns */
-	button_N = gtk_button_new_with_label("New");
-	button_O = gtk_button_new_with_label("Open");
-	button_S = gtk_button_new_with_label("Save");
-	button_Q = gtk_button_new_with_label("Quit");
+	GtkWidget *button_O = gtk_button_new_with_label("Open");
+	GtkWidget *button_V = gtk_button_new_with_label("View");
+	GtkWidget *button_S = gtk_button_new_with_label("Save");
+	GtkWidget *button_Q = gtk_button_new_with_label("Quit");
 	
-	g_signal_connect(G_OBJECT(button_N), "clicked", G_CALLBACK(cb_New), (gpointer)entry);
+	
+	
 	g_signal_connect(G_OBJECT(button_O), "clicked", G_CALLBACK(cb_Open), (gpointer)entry);
+	g_signal_connect(G_OBJECT(button_V), "clicked", G_CALLBACK(cb_View), (gpointer)entry);
 	g_signal_connect(G_OBJECT(button_S), "clicked", G_CALLBACK(cb_Save), (gpointer)entry);
 	g_signal_connect(G_OBJECT(button_Q), "clicked", G_CALLBACK(gtk_main_quit), NULL);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), button_N, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), button_O, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), button_V, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), button_S, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), button_Q, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, FALSE, 0);
 	
 }
+
 
 
 int main(int argc, char** argv)
@@ -408,7 +589,7 @@ int main(int argc, char** argv)
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-
+	
 //	GtkWidget *scroll_window = gtk_scrolled_window_new(NULL, NULL);
 //	gtk_box_pack_start(GTK_BOX(vbox_0), scroll_window, TRUE, TRUE, 0);
 	

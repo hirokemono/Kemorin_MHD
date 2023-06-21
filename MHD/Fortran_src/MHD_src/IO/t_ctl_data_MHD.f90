@@ -55,7 +55,7 @@
 !
       type mhd_simulation_control
 !>        Block name
-        character(len=kchara) :: hd_mhd_ctl = 'MHD_control'
+        character(len=kchara) :: block_name = 'MHD_control'
 !
 !>        Structure for file settings
         type(platform_data_control) :: plt
@@ -65,7 +65,7 @@
         type(platform_data_control) :: new_plt
 !
 !>        file name for parallel spherical shell control
-        character(len = kchara) :: fname_psph_ctl
+        character(len = kchara) :: fname_psph = 'NO_FILE'
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
 !
@@ -81,6 +81,10 @@
 !
         integer (kind=kint) :: i_mhd_ctl = 0
       end type mhd_simulation_control
+!
+!
+      character(len=kchara), parameter, private                         &
+     &                                 :: hd_mhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -120,15 +124,14 @@
 !
       do
         call load_one_line_from_control(id_control_file,                &
-     &                                  MHD_ctl%hd_mhd_ctl, c_buf)
+     &                                  hd_mhd_ctl, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
         call read_sph_mhd_ctl_noviz                                     &
-     &     (id_control_file, MHD_ctl%hd_mhd_ctl, MHD_ctl, c_buf)
+     &     (id_control_file, hd_mhd_ctl, MHD_ctl, c_buf)
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(id_control_file)
-!
       c_buf%level = c_buf%level - 1
 !
       end subroutine read_control_4_sph_MHD_noviz
@@ -155,7 +158,7 @@
       open(id_control_file, file = file_name)
       level1 = 0
       call write_sph_mhd_ctl_noviz                                      &
-     &   (id_control_file, MHD_ctl%hd_mhd_ctl, MHD_ctl, level1)
+     &   (id_control_file, MHD_ctl%block_name, MHD_ctl, level1)
       close(id_control_file)
 !
       end subroutine write_control_4_sph_MHD_noviz
@@ -192,7 +195,7 @@
      &     (id_control, hd_org_data, MHD_ctl%org_plt, c_buf)
 !
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, c_buf)
+     &      MHD_ctl%fname_psph, MHD_ctl%psph_ctl, c_buf)
 !
         call read_sph_mhd_model                                         &
      &     (id_control, hd_model, MHD_ctl%model_ctl, c_buf)
@@ -204,6 +207,7 @@
         call read_sph_monitoring_ctl                                    &
      &     (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, c_buf)
       end do
+      write(MHD_ctl%block_name,'(a,a1)')  trim(hd_block), char(0)
       MHD_ctl%i_mhd_ctl = 1
 !
       end subroutine read_sph_mhd_ctl_noviz
@@ -236,7 +240,7 @@
      &   (id_control, hd_org_data, MHD_ctl%org_plt, level)
 !
       call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
-     &    MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, level)
+     &    MHD_ctl%fname_psph, MHD_ctl%psph_ctl, level)
 !
       call write_sph_mhd_model                                          &
      &   (id_control, hd_model, MHD_ctl%model_ctl, level)

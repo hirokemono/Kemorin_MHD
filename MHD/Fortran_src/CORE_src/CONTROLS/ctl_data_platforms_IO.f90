@@ -175,9 +175,9 @@
      &      plt%radial_data_file_name_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_itp_sph_to_fem,              &
-     &      plt%interpolate_sph_to_fem_ctl)
+     &      plt%interpolate_sph_to_fem)
         call read_chara_ctl_type(c_buf, hd_itp_fem_to_sph,              &
-     &      plt%interpolate_fem_to_sph_ctl)
+     &      plt%interpolate_fem_to_sph)
 !
         call read_chara_ctl_type(c_buf, hd_rayleigh_spectr_dir,         &
      &       plt%rayleigh_spectr_dir)
@@ -205,6 +205,7 @@
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_del_org_data, plt%del_org_data_ctl)
        end do
+       write(plt%block_name,'(a,a1)')  trim(hd_block), char(0)
        plt%i_platform = 1
 !
       end subroutine read_control_platforms
@@ -250,7 +251,8 @@
       maxlen = max(maxlen, len_trim(hd_coriolis_file_fmt))
       maxlen = max(maxlen, len_trim(hd_del_org_data))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 plt%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_debug_flag_ctl, plt%debug_flag_ctl)
 !
@@ -296,9 +298,9 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_coriolis_tri_int_name, plt%coriolis_int_file_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_itp_sph_to_fem, plt%interpolate_sph_to_fem_ctl)
+     &    hd_itp_sph_to_fem, plt%interpolate_sph_to_fem)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_itp_fem_to_sph, plt%interpolate_fem_to_sph_ctl)
+     &    hd_itp_fem_to_sph, plt%interpolate_fem_to_sph)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_coriolis_file_fmt, plt%coriolis_file_fmt_ctl)
@@ -308,7 +310,8 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_del_org_data, plt%del_org_data_ctl)
 !
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                plt%block_name)
 !
       end subroutine write_control_platforms
 !

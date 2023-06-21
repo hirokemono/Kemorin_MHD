@@ -52,7 +52,7 @@
 !
       type fem_mhd_control
 !>        Block name
-        character(len=kchara) :: hd_Fmhd_ctl = 'MHD_control'
+        character(len=kchara) :: block_name = 'MHD_control'
 !
 !>        Structure for file settings
         type(platform_data_control) :: plt
@@ -73,6 +73,9 @@
 !
         integer(kind = kint) :: i_mhd_ctl = 0
       end type fem_mhd_control
+!
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_Fmhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -123,11 +126,10 @@
 !
       do
         call load_one_line_from_control(ctl_file_code,                  &
-     &                                  FEM_MHD_ctl%hd_Fmhd_ctl, c_buf)
+     &                                  hd_Fmhd_ctl, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
-        call read_fem_mhd_control_data                                  &
-     &     (ctl_file_code, FEM_MHD_ctl%hd_Fmhd_ctl,                     &
+        call read_fem_mhd_control_data(ctl_file_code, hd_Fmhd_ctl,      &
      &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
         if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
@@ -168,7 +170,7 @@
       level1 = 0
       open(ctl_file_code, file = file_name)
       call write_fem_mhd_control_data                                   &
-     &   (ctl_file_code, FEM_MHD_ctl%hd_Fmhd_ctl,                       &
+     &   (ctl_file_code, FEM_MHD_ctl%block_name,                        &
      &    FEM_MHD_ctl, sgs_ctl, viz_ctls, level1)
       close(ctl_file_code)
 !
@@ -218,6 +220,7 @@
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           viz_ctls, c_buf)
       end do
+      FEM_MHD_ctl%block_name = hd_Fmhd_ctl
       FEM_MHD_ctl%i_mhd_ctl = 1
 !
       end subroutine read_fem_mhd_control_data

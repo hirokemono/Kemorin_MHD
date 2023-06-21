@@ -15,3 +15,13 @@ void delete_file_c(const char *txt_file_name)
 	};
 	return;
 }
+
+void chdir_c(char path_name[513]){
+    int i = chdir(path_name);
+    return;
+};
+
+void getcwd_c(char path_name[513]){
+    char *ptr = getcwd(path_name, 512);
+    return;
+};
