@@ -258,7 +258,7 @@
       call write_control_array_c_r(id_control, level,                   &
      &    gen_f_ctl%reference_filter_ctl)
       call write_control_array_i_c_r(id_control, level,                 &
-     &    hd_order_moments, gen_f_ctl%ref_filter_mom_ctl)
+     &    gen_f_ctl%ref_filter_mom_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    gen_f_ctl%f_solver_type_ctl)
       call write_CG_solver_param_ctl(id_control,                        &

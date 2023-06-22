@@ -326,12 +326,12 @@
      &    spctl%Max_radius_ctl)
 !
       call write_control_array_i_r(id_control, level,                   &
-     &    hd_numlayer_shell, spctl%radius_ctl)
+     &    spctl%radius_ctl)
       call write_control_array_r1(id_control, level,                    &
      &    spctl%add_ext_layer_ctl)
 !
       call write_control_array_c_i(id_control, level,                   &
-     &    hd_bc_sph, spctl%radial_grp_ctl)
+     &    spctl%radial_grp_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    spctl%num_radial_layer_ctl)

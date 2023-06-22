@@ -124,7 +124,7 @@
       call write_control_array_c1(id_control, level,                    &
      &    render_area_c%pvr_area_ctl)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_sf_enhanse, render_area_c%surf_enhanse_ctl)
+     &    render_area_c%surf_enhanse_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_render_area_ctl

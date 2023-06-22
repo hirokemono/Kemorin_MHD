@@ -254,11 +254,11 @@
      &    sdctl%num_horiz_domain_ctl)
 !
       call write_control_array_c_i(id_file, level,                      &
-     &    hd_ndomain_rtp, sdctl%ndomain_sph_grid_ctl)
+     &    sdctl%ndomain_sph_grid_ctl)
       call write_control_array_c_i(id_file, level,                      &
-     &    hd_ndomain_rtm, sdctl%ndomain_legendre_ctl)
+     &    sdctl%ndomain_legendre_ctl)
       call write_control_array_c_i(id_file, level,                      &
-     &    hd_ndomain_rj, sdctl%ndomain_spectr_ctl)
+     &    sdctl%ndomain_spectr_ctl)
 !
       level =  write_end_flag_for_ctl(id_file, level, hd_block)
 !

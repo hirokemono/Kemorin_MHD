@@ -213,7 +213,7 @@
      &    new_part_ctl%repart_table_fmt_ctl)
 !
       call write_control_array_c_i(id_control, level,                   &
-     &    hd_num_es, new_part_ctl%ndomain_section_ctl)
+     &    new_part_ctl%ndomain_section_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    new_part_ctl%ratio_of_grouping_ctl)
 !

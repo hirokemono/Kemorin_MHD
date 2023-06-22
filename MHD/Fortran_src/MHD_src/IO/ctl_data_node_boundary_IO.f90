@@ -210,21 +210,21 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_n_bc_temp, nbc_ctl%node_bc_T_ctl)
+     &    nbc_ctl%node_bc_T_ctl)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_n_bc_velo, nbc_ctl%node_bc_U_ctl)
+     &    nbc_ctl%node_bc_U_ctl)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_n_bc_press, nbc_ctl%node_bc_P_ctl)
+     &    nbc_ctl%node_bc_P_ctl)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_n_bc_composit, nbc_ctl%node_bc_C_ctl)
+     &    nbc_ctl%node_bc_C_ctl)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_n_bc_magne, nbc_ctl%node_bc_B_ctl)
+     &    nbc_ctl%node_bc_B_ctl)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_n_bc_mag_p, nbc_ctl%node_bc_MP_ctl)
+     &    nbc_ctl%node_bc_MP_ctl)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_n_bc_vect_p, nbc_ctl%node_bc_A_ctl)
+     &    nbc_ctl%node_bc_A_ctl)
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_n_bc_currect, nbc_ctl%node_bc_J_ctl)
+     &    nbc_ctl%node_bc_J_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_bc_4_node_ctl

@@ -282,7 +282,7 @@
      &    mat%viewpt_in_viewer_ctl)
 !
       call write_control_array_c2_r(id_control, level,                  &
-     &    hd_model_mat, mat%modelview_mat_ctl)
+     &    mat%modelview_mat_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    mat%view_rotation_deg_ctl)

@@ -11,7 +11,7 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara_int3_item), intent(inout) :: ci3_item
 !!      subroutine write_charaint3_ctl_type                             &
-!!     &         (id_file, level, maxlen, label, ci3_item)
+!!     &         (id_file, level, maxlen, ci3_item)
 !!        type(read_chara_int3_item), intent(in) :: ci3_item
 !!      subroutine copy_charaint3_ctl(org_ci3, new_ci3)
 !!        type(read_chara_int3_item), intent(in) :: org_ci3
@@ -24,7 +24,7 @@
 !!        type(ctl_array_ci3), intent(inout) :: array_ci3
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!      subroutine write_control_array_c_i3                             &
-!!     &         (id_control, level, label, array_ci3)
+!!     &         (id_control, level, array_ci3)
 !!        type(ctl_array_ci3), intent(in) :: array_ci3
 !!
 !!      subroutine append_control_array_c_i3(read_ci3, array_ci3)
@@ -48,6 +48,8 @@
 !
 !>        structure of control item with character and three integers
       type read_chara_int3_item
+!>        Item name
+        character(len=kchara) :: item_name = 'chara_item'
 !>        read flag (If item is read iflag = 1)
         integer(kind = kint) ::  iflag = 0
 !>        array for read character items
@@ -58,6 +60,8 @@
 !
 !>  Structure for charactor and integer control array 
       type ctl_array_ci3
+!>        Item name
+        character(len=kchara) :: array_name = 'chara_array'
 !>     number of array items
         integer(kind=kint) :: num = 0
 !>     array counter
@@ -89,7 +93,9 @@
        character(len=kchara) :: tmpchara
 !
 !
-      if(ci3_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+      if(ci3_item%iflag.gt.0) return
+      ci3_item%item_name = trim(label)
+      if(c_buf%header_chara.ne.label) return
 !
       read(c_buf%ctl_buffer,*) tmpchara, ci3_item%charavalue,           &
      &                         ci3_item%intvalue(1:3)
@@ -105,18 +111,18 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_charaint3_ctl_type                               &
-     &         (id_file, level, maxlen, label, ci3_item)
+     &         (id_file, level, maxlen, ci3_item)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file, level, maxlen
-      character(len=kchara), intent(in) :: label
       type(read_chara_int3_item), intent(in) :: ci3_item
 !
 !
       if(ci3_item%iflag .eq. 0) return
 !
-      call write_chara_int3_ctl_item(id_file, level, maxlen, label,     &
+      call write_chara_int3_ctl_item                                    &
+     &   (id_file, level, maxlen, ci3_item%item_name,                   &
      &    ci3_item%charavalue, ci3_item%intvalue(1),                    &
      &    ci3_item%intvalue(2), ci3_item%intvalue(3))
 !
@@ -186,8 +192,9 @@
       type(read_chara_int3_item) :: read_ci3
 !
 !
-      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
       if(array_ci3%icou .gt. 0) return
+      array_ci3%array_name = trim(label)
+      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
 !
       read_ci3%iflag = 0
       array_ci3%num =  0
@@ -209,13 +216,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_control_array_c_i3                               &
-     &         (id_control, level, label, array_ci3)
+     &         (id_control, level, array_ci3)
 !
       use skip_comment_f
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: label
       type(ctl_array_ci3), intent(in) :: array_ci3
 !
       integer(kind = kint), intent(inout) :: level
@@ -225,14 +231,16 @@
 !
       if(array_ci3%num .le. 0) return
 !
-      level = write_array_flag_for_ctl(id_control, level, label)
+      level = write_array_flag_for_ctl(id_control, level,               &
+     &                                 array_ci3%array_name)
       do i = 1, array_ci3%num
-        call write_chara_int3_ctl_item                                  &
-     &    (id_control, level, len_trim(label), label,                   &
-     &     array_ci3%c_tbl(i), array_ci3%ivec1(i),                      &
-     &     array_ci3%ivec2(i), array_ci3%ivec3(i))
+        call write_chara_int3_ctl_item(id_control, level,               &
+     &      len_trim(array_ci3%array_name), array_ci3%array_name,       &
+     &      array_ci3%c_tbl(i), array_ci3%ivec1(i),                     &
+     &      array_ci3%ivec2(i), array_ci3%ivec3(i))
       end do
-      level = write_end_array_flag_for_ctl(id_control, level, label)
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                                     array_ci3%array_name)
 !
       end subroutine write_control_array_c_i3
 !

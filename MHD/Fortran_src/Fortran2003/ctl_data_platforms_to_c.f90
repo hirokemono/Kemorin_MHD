@@ -65,7 +65,8 @@
       type(C_ptr), value :: fmt_names_c
       character(len=1), pointer :: fmt_names(:)
 !
-      call c_f_pointer(fmt_names_c, fmt_names, [kchara*num_label_file_fmt()])
+      call c_f_pointer(fmt_names_c, fmt_names,                          &
+     &                 [kchara*num_label_file_fmt()])
       call set_label_file_fmt(fmt_names)
       end subroutine set_file_fmt_items_f
 !
@@ -104,9 +105,51 @@
       end function c_chara_item_charavalue
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_chara_array_block_namem(c_ctl)             &
+     &          bind(C, NAME = 'c_chara_array_block_namem')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(ctl_array_chara), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      c_chara_array_block_namem = C_loc(f_ctl%array_name)
+      end function c_chara_array_block_namem
 !
 !  ---------------------------------------------------------------------
 !
+      type(c_ptr) function c_chara_array_num(c_ctl)                     &
+     &          bind(C, NAME = 'c_chara_array_num')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(ctl_array_chara), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      c_chara_array_num = C_loc(f_ctl%num)
+      end function c_chara_array_num
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_chara_array_icou(c_ctl)                    &
+     &          bind(C, NAME = 'c_chara_array_icou')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(ctl_array_chara), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      c_chara_array_icou = C_loc(f_ctl%num)
+      end function c_chara_array_icou
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_chara_array_c_tbl(c_ctl)                   &
+     &          bind(C, NAME = 'c_chara_array_c_tbl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(ctl_array_chara), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      c_chara_array_c_tbl = C_loc(f_ctl%c_tbl)
+      end function c_chara_array_c_tbl
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !

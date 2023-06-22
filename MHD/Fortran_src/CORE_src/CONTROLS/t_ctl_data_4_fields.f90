@@ -196,9 +196,9 @@
      &   (id_control, level, fld_ctl%quad_phys)
 !
       call write_control_array_c_i                                      &
-     &   (id_control, level, hd_scalar_field, fld_ctl%scalar_phys)
+     &   (id_control, level, fld_ctl%scalar_phys)
       call write_control_array_c_i3                                     &
-     &   (id_control, level, hd_vector_field, fld_ctl%vector_phys)
+     &   (id_control, level, fld_ctl%vector_phys)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
