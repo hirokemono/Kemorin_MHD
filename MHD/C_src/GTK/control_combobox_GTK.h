@@ -20,8 +20,8 @@
 /*  prototype */
 
 GtkWidget * create_control_flags_tree_view(struct control_labels_f *flag_list);
-void add_control_combobox_vbox(char *ctl_label, struct chara_ctl_item *char_ctl, 
-							   struct control_labels_f *flag_list, 
+void add_control_combobox_vbox(char *f_charavalue, char *c_charavalue,
+                               struct control_labels_f *flag_list,
 							   GtkWidget *ctl_flags_tree_view, GtkWidget *vbox_out);
 
 

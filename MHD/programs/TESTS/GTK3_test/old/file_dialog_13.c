@@ -353,7 +353,7 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 			= create_control_flags_tree_view(iso_fld_c->flag_iso_color);
 	
 	add_control_combobox_vbox(iso_fld_c->label_fld_on_iso_ctl->label[ 0], 
-							  iso_fld_c->output_type_ctl, 
+							  iso_fld_c->output_type_ctl->c_tbl, 
 							  iso_fld_c->flag_iso_color, 
 							  color_flags_tree_view, vbox_1);
 	printf("%le\n", iso_fld_c->output_value_ctl->r_data);
@@ -385,7 +385,7 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 
 	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
 	add_control_combobox_vbox(iso_c->label_iso_ctl_w_dpl->label[ 1], 
-							  iso_c->iso_output_type_ctl, 
+							  iso_c->iso_output_type_ctl->c_tbl, 
 							  iso_c->flag_iso_format, 
 							  file_fmt_flags_tree_view, vbox_1);
 	
