@@ -223,7 +223,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    color%colormap_mode_ctl)
       call write_real3_ctl_type(id_control, level, maxlen,              &
-     &    hd_background_color, color%background_color_ctl)
+     &    color%background_color_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    color%lic_color_fld_ctl)
@@ -243,7 +243,7 @@
       call write_control_array_r2(id_control, level,                    &
      &    color%linear_opacity_ctl)
       call write_control_array_r3(id_control, level,                    &
-     &    hd_opacity_def, color%step_opacity_ctl)
+     &    color%step_opacity_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    color%fix_opacity_ctl)
 !

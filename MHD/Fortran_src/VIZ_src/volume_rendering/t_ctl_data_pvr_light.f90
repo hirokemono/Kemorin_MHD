@@ -144,7 +144,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_r3(id_control, level,                    &
-     &    hd_light_param, light%light_position_ctl)
+     &    light%light_position_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    light%ambient_coef_ctl )

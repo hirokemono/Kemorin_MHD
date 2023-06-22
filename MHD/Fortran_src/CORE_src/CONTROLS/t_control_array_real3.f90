@@ -11,7 +11,7 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_real3_item), intent(inout) :: real3_item
 !!      subroutine write_real3_ctl_type                                 &
-!!     &         (id_file, level, maxlen, label, real3_item)
+!!     &         (id_file, level, maxlen, real3_item)
 !!        type(read_real3_item), intent(in) :: real3_item
 !!      subroutine copy_real3_ctl(org_r3, new_r3)
 !!        type(read_real3_item), intent(in) :: org_r3
@@ -24,7 +24,7 @@
 !!        type(ctl_array_r3), intent(inout) :: array_r3
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!      subroutine write_control_array_r3                               &
-!!     &         (id_control, level, label, array_r3)
+!!     &         (id_control, level, array_r3)
 !!        type(ctl_array_r3), intent(in) :: array_r3
 !!
 !!      subroutine append_control_array_r3(read_r3, array_r3)
@@ -51,6 +51,8 @@
 !
 !>        structure of control item with three reals
       type read_real3_item
+!>        Item name
+        character(len=kchara) :: item_name = 'Real_item'
 !>        read flag (If item is read iflag = 1)
         integer(kind = kint) ::  iflag = 0
 !>        array for read real items
@@ -59,6 +61,8 @@
 !
 !>  Structure for three reals control array 
       type ctl_array_r3
+!>        Item name
+        character(len=kchara) :: array_name = 'Real_array'
 !>     number of array items
         integer(kind=kint) :: num = 0
 !>     array counter
@@ -88,7 +92,9 @@
        character(len=kchara) :: tmpchara
 !
 !
-      if(real3_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+      if(real3_item%iflag.gt.0) return
+      real3_item%item_name = trim(label)
+      if(c_buf%header_chara.ne.label) return
 !
       read(c_buf%ctl_buffer,*) tmpchara, real3_item%realvalue(1:3)
       if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
@@ -100,20 +106,19 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_real3_ctl_type                                   &
-     &         (id_file, level, maxlen, label, real3_item)
+     &         (id_file, level, maxlen, real3_item)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file, level
       integer(kind = kint), intent(in) :: maxlen
-      character(len=kchara), intent(in) :: label
       type(read_real3_item), intent(in) :: real3_item
 !
 !
       if(real3_item%iflag .eq. 0) return
-      call write_real3_ctl_item(id_file, level, maxlen, label,          &
-     &    real3_item%realvalue(1), real3_item%realvalue(2),             &
-     &    real3_item%realvalue(3))
+      call write_real3_ctl_item(id_file, level, maxlen,                 &
+     &    real3_item%item_name, real3_item%realvalue(1),                &
+     &    real3_item%realvalue(2), real3_item%realvalue(3))
 !
        end subroutine write_real3_ctl_type
 !
@@ -178,8 +183,9 @@
       type(read_real3_item) :: read_r3
 !
 !
-      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
       if(array_r3%icou .gt. 0) return
+      array_r3%array_name = trim(label)
+      if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
 !
       read_r3%iflag = 0
       array_r3%num =  0
@@ -201,13 +207,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_control_array_r3                                 &
-     &         (id_control, level, label, array_r3)
+     &         (id_control, level, array_r3)
 !
       use skip_comment_f
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: label
       type(ctl_array_r3), intent(in) :: array_r3
 !
       integer(kind = kint), intent(inout) :: level
@@ -217,13 +222,16 @@
 !
       if(array_r3%num .le. 0) return
 !
-      level = write_array_flag_for_ctl(id_control, level, label)
+      level = write_array_flag_for_ctl(id_control, level,               &
+     &                                 array_r3%array_name)
       do i = 1, array_r3%num
         call write_real3_ctl_item                                       &
-     &     (id_control, level, len_trim(label), label,                  &
-     &      array_r3%vec1(i), array_r3%vec2(i), array_r3%vec3(i))
+     &     (id_control, level, len_trim(array_r3%array_name),           &
+     &      array_r3%array_name, array_r3%vec1(i),                      &
+     &      array_r3%vec2(i), array_r3%vec3(i))
       end do
-      level = write_end_array_flag_for_ctl(id_control, level, label)
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                                     array_r3%array_name)
 !
       end subroutine write_control_array_r3
 !

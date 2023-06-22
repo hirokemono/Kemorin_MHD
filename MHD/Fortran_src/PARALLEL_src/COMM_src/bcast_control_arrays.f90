@@ -190,6 +190,7 @@
       use t_control_array_real3
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_char
       use transfer_to_long_integers
 !
       type(read_real3_item), intent(inout) :: real3_item
@@ -198,6 +199,8 @@
       if(nprocs .eq. 1) return
 !
       call calypso_mpi_bcast_one_int(real3_item%iflag, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (real3_item%item_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_real                                       &
      &   (real3_item%realvalue, cast_long(3), 0)
 !
@@ -348,6 +351,7 @@
       use transfer_to_long_integers
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_char
 !
       type(ctl_array_r3), intent(inout) :: array_r3
 !
@@ -356,6 +360,8 @@
 !
       call calypso_mpi_bcast_one_int(array_r3%num,  0)
       call calypso_mpi_bcast_one_int(array_r3%icou, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_r3%array_name, cast_long(kchara), 0)
 !
       if(my_rank .ne. 0) call alloc_control_array_r3(array_r3)
 !

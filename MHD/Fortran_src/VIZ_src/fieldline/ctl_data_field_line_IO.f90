@@ -249,7 +249,7 @@
      &    fln%selection_type_ctl)
 !
       call write_control_array_r3(id_control, level,                    &
-     &    hd_xx_start_point, fln%seed_point_ctl)
+     &    fln%seed_point_ctl)
       call write_control_array_i2 (id_control, level,                   &
      &    hd_start_global_surf, fln%seed_surface_ctl)
 !

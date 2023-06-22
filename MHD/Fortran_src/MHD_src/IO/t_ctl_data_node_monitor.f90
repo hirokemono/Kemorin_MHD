@@ -140,7 +140,7 @@
       call write_control_array_c1(id_control, level,                   &
      &    nmtr_ctl%group_4_monitor_ctl)
       call write_control_array_r3(id_control, level,                   &
-     &    hd_monitor_position, nmtr_ctl%xx_4_monitor_ctl)
+     &    nmtr_ctl%xx_4_monitor_ctl)
       call write_control_array_i2(id_control, level,                   &
      &    hd_monitor_node, nmtr_ctl%node_4_monitor_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
