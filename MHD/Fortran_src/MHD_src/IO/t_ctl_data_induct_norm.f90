@@ -53,6 +53,8 @@
 !
 !>      Structure for coefficients of magnetic induction equation
       type induction_equation_control
+!>        Block name
+        character(len=kchara) :: block_name = 'induction'
 !>        Structure for number and power to construct
 !!               evolution of magnetic field term
 !!@n        coef_4_magne_evo%c_tbl:  Name of number 
@@ -108,8 +110,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(induct_ctl%i_induct_ctl .gt. 0) return
+      induct_ctl%block_name = trim(hd_block)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -130,15 +133,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_induction_ctl                                    &
-     &         (id_control, hd_block, induct_ctl, level)
+      subroutine write_induction_ctl(id_control, induct_ctl, level)
 !
       use t_read_control_elements
       use write_control_elements
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(induction_equation_control), intent(in) :: induct_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -146,16 +147,18 @@
 !
       if(induct_ctl%i_induct_ctl .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
-      call write_control_array_c_r(id_control, level,                 &
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 induct_ctl%block_name)
+      call write_control_array_c_r(id_control, level,                   &
      &    induct_ctl%coef_4_magne_evo)
-      call write_control_array_c_r(id_control, level,                 &
+      call write_control_array_c_r(id_control, level,                   &
      &    induct_ctl%coef_4_mag_potential)
-      call write_control_array_c_r(id_control, level,                 &
+      call write_control_array_c_r(id_control, level,                   &
      &    induct_ctl%coef_4_mag_diffuse)
-      call write_control_array_c_r(id_control, level,                 &
+      call write_control_array_c_r(id_control, level,                   &
      &    induct_ctl%coef_4_induction)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                induct_ctl%block_name)
 !
       end subroutine write_induction_ctl
 !

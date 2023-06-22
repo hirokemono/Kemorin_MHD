@@ -10,8 +10,7 @@
 !!@verbatim
 !!      subroutine read_coef_term_ctl                                   &
 !!     &         (id_control, hd_block, eqs_ctl, c_buf)
-!!      subroutine write_coef_term_ctl                                  &
-!!     &         (id_control, hd_block, eqs_ctl, level)
+!!      subroutine write_coef_term_ctl(id_control, eqs_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(equations_control), intent(in) :: eqs_ctl
@@ -110,6 +109,8 @@
 !
 !>      Structure for coefficients of governing equations
       type equations_control
+!>        Block name
+        character(len=kchara) :: block_name = 'model'
 !>        Structure for coefficients of momentum equation
         type(momentum_equation_control) :: mom_ctl
 !>        Structure for coefficients of magnetic induction equation
@@ -149,8 +150,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(eqs_ctl%i_coef_term_ctl .gt. 0) return
+      eqs_ctl%block_name = trim(hd_block)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -171,13 +173,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_coef_term_ctl                                    &
-     &         (id_control, hd_block, eqs_ctl, level)
+      subroutine write_coef_term_ctl(id_control, eqs_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(equations_control), intent(in) :: eqs_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -185,16 +185,15 @@
 !
       if(eqs_ctl%i_coef_term_ctl .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
-      call write_thermal_ctl                                            &
-     &   (id_control, hd_thermal, eqs_ctl%heat_ctl, level)
-      call write_momentum_ctl                                           &
-     &   (id_control, hd_momentum, eqs_ctl%mom_ctl, level)
-      call write_induction_ctl                                          &
-     &   (id_control, hd_induction, eqs_ctl%induct_ctl, level)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 eqs_ctl%block_name)
+      call write_thermal_ctl(id_control, eqs_ctl%heat_ctl, level)
+      call write_momentum_ctl(id_control, eqs_ctl%mom_ctl, level)
+      call write_induction_ctl(id_control, eqs_ctl%induct_ctl, level)
       call write_composition_eq_ctl                                     &
-     &   (id_control, hd_dsc_diff_adv, eqs_ctl%comp_ctl, level)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+     &   (id_control, eqs_ctl%comp_ctl, level)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                eqs_ctl%block_name)
 !
       end subroutine write_coef_term_ctl
 !

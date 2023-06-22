@@ -35,7 +35,9 @@
 !
       subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
 !
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
@@ -54,6 +56,8 @@
 !
       call bcast_node_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (FEM_MHD_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(FEM_MHD_ctl%i_mhd_ctl, 0)
 !
       end subroutine bcast_fem_mhd_ctl_data

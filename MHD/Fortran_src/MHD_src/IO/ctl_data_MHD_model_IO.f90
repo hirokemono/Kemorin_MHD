@@ -235,10 +235,8 @@
      &                         model_ctl%sbc_ctl, level)
 !
       call write_forces_ctl(id_control, model_ctl%frc_ctl, level)
-      call write_dimless_ctl                                            &
-     &   (id_control, model_ctl%dless_ctl, level)
-      call write_coef_term_ctl                                          &
-     &   (id_control, hd_coef_term_ctl, model_ctl%eqs_ctl, level)
+      call write_dimless_ctl(id_control, model_ctl%dless_ctl, level)
+      call write_coef_term_ctl(id_control, model_ctl%eqs_ctl, level)
 !
       call write_gravity_ctl                                            &
      &   (id_control, hd_gravity_ctl, model_ctl%g_ctl, level)

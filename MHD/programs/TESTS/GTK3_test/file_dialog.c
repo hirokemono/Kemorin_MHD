@@ -55,6 +55,36 @@ extern void * c_MHD_forces_block_name(void *f_frc_ctl);
 extern void * c_MHD_forces_iflag(void *f_frc_ctl);
 extern void * c_MHD_forces_array(void *f_frc_ctl);
 
+extern void * c_MHD_eqs_block_name(void *f_eqs_ctl);
+extern void * c_MHD_eqs_iflag(void *f_eqs_ctl);
+extern void * c_MHD_eqs_mom_ctl(void *f_eqs_ctl);
+extern void * c_MHD_eqs_induct_ctl(void *f_eqs_ctl);
+extern void * c_MHD_eqs_heat_ctl(void *f_eqs_ctl);
+extern void * c_MHD_eqs_comp_ctl(void *f_eqs_ctl);
+
+extern void * c_MHD_momentum_eq_block_name(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_iflag(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_viscous(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_inertia(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_grad_p(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_t_buoyancy(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_c_buoyancy(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_coriolis(void *f_mom_eq_ctl);
+extern void * c_MHD_momentum_eq_lorentz(void *f_mom_eq_ctl);
+
+extern void * c_MHD_induction_block_name(void *f_induct_ctl);
+extern void * c_MHD_induction_iflag(void *f_induct_ctl);
+extern void * c_MHD_induction_evo(void *f_induct_ctl);
+extern void * c_MHD_induction_diffuse(void *f_induct_ctl);
+extern void * c_MHD_induction_potential(void *f_induct_ctl);
+extern void * c_MHD_induction_uxb(void *f_induct_ctl);
+
+extern void * c_MHD_heat_block_name(void *f_heat_ctl);
+extern void * c_MHD_heat_iflag(void *f_heat_ctl);
+extern void * c_MHD_heat_advect(void *f_heat_ctl);
+extern void * c_MHD_heat_diffuse(void *f_heat_ctl);
+extern void * c_MHD_heat_source(void *f_heat_ctl);
+
 
 struct f_MHD_forces_control{
 	void * f_self;
@@ -67,6 +97,82 @@ struct f_MHD_forces_control{
 	
 	struct f_ctl_chara_array * f_force_names;
 	struct c_array_views * f_force_vws;
+};
+
+struct f_MHD_mom_eq_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	struct f_ctl_chara_array * f_coef_4_viscous;
+	struct c_array_views * vws_coef_4_viscous;
+	struct f_ctl_chara_array * f_coef_4_intertia;
+	struct c_array_views * vws_coef_4_intertia;
+	struct f_ctl_chara_array * f_coef_4_grad_p;
+	struct c_array_views * vws_coef_4_grad_p;
+	struct f_ctl_chara_array * f_coef_4_termal_buo;
+	struct c_array_views * vws_coef_4_termal_buo;
+	struct f_ctl_chara_array * f_coef_4_comp_buo;
+	struct c_array_views * vws_coef_4_comp_buo;
+	struct f_ctl_chara_array * f_coef_4_Coriolis;
+	struct c_array_views * vws_coef_4_Coriolis;
+	struct f_ctl_chara_array * f_coef_4_Lorentz;
+	struct c_array_views * vws_coef_4_Lorentz;
+};
+
+struct f_MHD_induct_eq_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	struct f_ctl_chara_array * f_coef_4_magne_evo;
+	struct c_array_views * vws_coef_4_magne_evo;
+	struct f_ctl_chara_array * f_coef_4_mag_diffuse;
+	struct c_array_views * vws_coef_4_mag_diffuse;
+	struct f_ctl_chara_array * f_coef_4_mag_potential;
+	struct c_array_views * vws_coef_4_mag_potential;
+	struct f_ctl_chara_array * f_coef_4_induction;
+	struct c_array_views * vws_coef_4_induction;
+};
+
+struct f_MHD_heat_eq_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	struct f_ctl_chara_array * f_coef_4_adv_flux;
+	struct c_array_views * vws_coef_4_adv_flux;
+	struct f_ctl_chara_array * f_coef_4_diffuse;
+	struct c_array_views * vws_coef_4_diffuse;
+	struct f_ctl_chara_array * f_coef_4_source;
+	struct c_array_views * vws_coef_4_source;
+};
+
+struct f_MHD_equations_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	struct f_MHD_mom_eq_control *    f_mom_ctl;
+	struct f_MHD_induct_eq_control * f_induct_ctl;
+	struct f_MHD_heat_eq_control *   f_heat_ctl;
+	struct f_MHD_heat_eq_control *   f_comp_ctl;
 };
 
 struct f_MHD_model_control{
@@ -85,7 +191,7 @@ struct f_MHD_model_control{
 	void * f_sbc_ctl;
 	struct f_MHD_forces_control *f_frc_ctl;
 	struct f_MHD_dimless_control * f_dless_ctl;
-	void * f_eqs_ctl;
+	struct f_MHD_equations_control * f_eqs_ctl;
 	void * f_g_ctl;
 	void * f_cor_ctl;
 	void * f_mcv_ctl;
@@ -186,10 +292,135 @@ struct f_MHD_forces_control * init_f_MHD_forces_ctl(void *(*c_load_self)(void *f
 	f_frc_ctl->f_force_names = init_f_ctl_chara_array(c_MHD_forces_array, f_frc_ctl->f_self);
 	f_frc_ctl->f_force_vws =   init_c_array_views(f_frc_ctl->f_force_names);
 	
-	
-	
 	return f_frc_ctl;
 };
+
+struct f_MHD_mom_eq_control * init_f_MHD_mom_eq_ctl(void *(*c_load_self)(void *f_parent),
+													void *f_parent)
+{
+	struct f_MHD_mom_eq_control *f_mom_eq_ctl
+			= (struct f_MHD_mom_eq_control *) malloc(sizeof(struct f_MHD_mom_eq_control));
+	if(f_mom_eq_ctl == NULL){
+		printf("malloc error for f_mom_eq_ctl\n");
+		exit(0);
+	};
+	
+	f_mom_eq_ctl->f_self =  c_load_self(f_parent);
+	
+	f_mom_eq_ctl->f_block_name =   (char *) c_MHD_momentum_eq_block_name(f_mom_eq_ctl->f_self);
+	f_mom_eq_ctl->f_iflag =        (int *)  c_MHD_momentum_eq_iflag(f_mom_eq_ctl->f_self);
+	
+	c_chara_item_clength(f_mom_eq_ctl->f_block_name, f_mom_eq_ctl->f_namelength);
+	f_mom_eq_ctl->c_block_name = alloc_string((long) f_mom_eq_ctl->f_namelength[0]);
+	strngcopy_w_length(f_mom_eq_ctl->c_block_name, f_mom_eq_ctl->f_namelength[0], 
+					   f_mom_eq_ctl->f_block_name);
+	
+	f_mom_eq_ctl->f_coef_4_viscous = init_f_ctl_chara_array(c_MHD_momentum_eq_viscous, f_mom_eq_ctl->f_self);
+	f_mom_eq_ctl->vws_coef_4_viscous =   init_c_array_views(f_mom_eq_ctl->f_coef_4_viscous);
+	f_mom_eq_ctl->f_coef_4_intertia = init_f_ctl_chara_array(c_MHD_momentum_eq_inertia, f_mom_eq_ctl->f_self);
+	f_mom_eq_ctl->vws_coef_4_intertia =   init_c_array_views(f_mom_eq_ctl->f_coef_4_intertia);
+	f_mom_eq_ctl->f_coef_4_grad_p = init_f_ctl_chara_array(c_MHD_momentum_eq_grad_p, f_mom_eq_ctl->f_self);
+	f_mom_eq_ctl->vws_coef_4_grad_p =   init_c_array_views(f_mom_eq_ctl->f_coef_4_grad_p);
+	f_mom_eq_ctl->f_coef_4_termal_buo = init_f_ctl_chara_array(c_MHD_momentum_eq_t_buoyancy, f_mom_eq_ctl->f_self);
+	f_mom_eq_ctl->vws_coef_4_termal_buo =   init_c_array_views(f_mom_eq_ctl->f_coef_4_termal_buo);
+	f_mom_eq_ctl->f_coef_4_comp_buo = init_f_ctl_chara_array(c_MHD_momentum_eq_c_buoyancy, f_mom_eq_ctl->f_self);
+	f_mom_eq_ctl->vws_coef_4_comp_buo =   init_c_array_views(f_mom_eq_ctl->f_coef_4_comp_buo);
+	f_mom_eq_ctl->f_coef_4_Coriolis = init_f_ctl_chara_array(c_MHD_momentum_eq_coriolis, f_mom_eq_ctl->f_self);
+	f_mom_eq_ctl->vws_coef_4_Coriolis =   init_c_array_views(f_mom_eq_ctl->f_coef_4_Coriolis);
+	f_mom_eq_ctl->f_coef_4_Lorentz = init_f_ctl_chara_array(c_MHD_momentum_eq_lorentz, f_mom_eq_ctl->f_self);
+	f_mom_eq_ctl->vws_coef_4_Lorentz =   init_c_array_views(f_mom_eq_ctl->f_coef_4_Lorentz);
+	
+	return f_mom_eq_ctl;
+};
+
+struct f_MHD_induct_eq_control * init_f_MHD_induction_eq_ctl(void *(*c_load_self)(void *f_parent),
+															 void *f_parent)
+{
+	struct f_MHD_induct_eq_control *f_induct_ctl
+			= (struct f_MHD_induct_eq_control *) malloc(sizeof(struct f_MHD_induct_eq_control));
+	if(f_induct_ctl == NULL){
+		printf("malloc error for f_induct_ctl\n");
+		exit(0);
+	};
+	
+	f_induct_ctl->f_self =  c_load_self(f_parent);
+	
+	f_induct_ctl->f_block_name =   (char *) c_MHD_induction_block_name(f_induct_ctl->f_self);
+	f_induct_ctl->f_iflag =        (int *)  c_MHD_induction_iflag(f_induct_ctl->f_self);
+	
+	c_chara_item_clength(f_induct_ctl->f_block_name, f_induct_ctl->f_namelength);
+	f_induct_ctl->c_block_name = alloc_string((long) f_induct_ctl->f_namelength[0]);
+	strngcopy_w_length(f_induct_ctl->c_block_name, f_induct_ctl->f_namelength[0], 
+					   f_induct_ctl->f_block_name);
+	
+	f_induct_ctl->f_coef_4_magne_evo = init_f_ctl_chara_array(c_MHD_induction_evo, f_induct_ctl->f_self);
+	f_induct_ctl->vws_coef_4_magne_evo =   init_c_array_views(f_induct_ctl->f_coef_4_magne_evo);
+	f_induct_ctl->f_coef_4_mag_diffuse = init_f_ctl_chara_array(c_MHD_induction_diffuse, f_induct_ctl->f_self);
+	f_induct_ctl->vws_coef_4_mag_diffuse =   init_c_array_views(f_induct_ctl->f_coef_4_mag_diffuse);
+	f_induct_ctl->f_coef_4_mag_potential = init_f_ctl_chara_array(c_MHD_induction_potential, f_induct_ctl->f_self);
+	f_induct_ctl->vws_coef_4_mag_potential =   init_c_array_views(f_induct_ctl->f_coef_4_mag_potential);
+	f_induct_ctl->f_coef_4_induction = init_f_ctl_chara_array(c_MHD_induction_uxb, f_induct_ctl->f_self);
+	f_induct_ctl->vws_coef_4_induction =   init_c_array_views(f_induct_ctl->f_coef_4_induction);
+	
+	return f_induct_ctl;
+};
+
+struct f_MHD_heat_eq_control * init_f_MHD_heat_eq_ctl(void *(*c_load_self)(void *f_parent),
+															 void *f_parent)
+{
+	struct f_MHD_heat_eq_control *f_heat_ctl
+			= (struct f_MHD_heat_eq_control *) malloc(sizeof(struct f_MHD_heat_eq_control));
+	if(f_heat_ctl == NULL){
+		printf("malloc error for f_heat_ctl\n");
+		exit(0);
+	};
+	
+	f_heat_ctl->f_self =  c_load_self(f_parent);
+	
+	f_heat_ctl->f_block_name =   (char *) c_MHD_heat_block_name(f_heat_ctl->f_self);
+	f_heat_ctl->f_iflag =        (int *)  c_MHD_heat_iflag(f_heat_ctl->f_self);
+	
+	c_chara_item_clength(f_heat_ctl->f_block_name, f_heat_ctl->f_namelength);
+	f_heat_ctl->c_block_name = alloc_string((long) f_heat_ctl->f_namelength[0]);
+	strngcopy_w_length(f_heat_ctl->c_block_name, f_heat_ctl->f_namelength[0], 
+					   f_heat_ctl->f_block_name);
+	
+	f_heat_ctl->f_coef_4_adv_flux = init_f_ctl_chara_array(c_MHD_heat_advect, f_heat_ctl->f_self);
+	f_heat_ctl->vws_coef_4_adv_flux =   init_c_array_views(f_heat_ctl->f_coef_4_adv_flux);
+	f_heat_ctl->f_coef_4_diffuse = init_f_ctl_chara_array(c_MHD_heat_diffuse, f_heat_ctl->f_self);
+	f_heat_ctl->vws_coef_4_diffuse =   init_c_array_views(f_heat_ctl->f_coef_4_diffuse);
+	f_heat_ctl->f_coef_4_source = init_f_ctl_chara_array(c_MHD_heat_source, f_heat_ctl->f_self);
+	f_heat_ctl->vws_coef_4_source =   init_c_array_views(f_heat_ctl->f_coef_4_source);
+	
+	return f_heat_ctl;
+};
+
+struct f_MHD_equations_control * init_f_MHD_equations_ctl(void *(*c_load_self)(void *f_parent), void *f_parent)
+{
+	struct f_MHD_equations_control *f_eqs_ctl 
+			= (struct f_MHD_equations_control *) malloc(sizeof(struct f_MHD_equations_control));
+	if(f_eqs_ctl == NULL){
+		printf("malloc error for f_eqs_ctl\n");
+		exit(0);
+	};
+	
+	f_eqs_ctl->f_self =  c_load_self(f_parent);
+	
+	f_eqs_ctl->f_block_name =   (char *) c_MHD_eqs_block_name(f_eqs_ctl->f_self);
+	f_eqs_ctl->f_iflag =        (int *) c_MHD_eqs_iflag(f_eqs_ctl->f_self);
+	
+	c_chara_item_clength(f_eqs_ctl->f_block_name, f_eqs_ctl->f_namelength);
+	f_eqs_ctl->c_block_name = alloc_string((long) f_eqs_ctl->f_namelength[0]);
+	strngcopy_w_length(f_eqs_ctl->c_block_name, f_eqs_ctl->f_namelength[0], 
+					   f_eqs_ctl->f_block_name);
+	
+	f_eqs_ctl->f_mom_ctl =    init_f_MHD_mom_eq_ctl(c_MHD_eqs_mom_ctl, f_eqs_ctl->f_self);
+	f_eqs_ctl->f_induct_ctl = init_f_MHD_induction_eq_ctl(c_MHD_eqs_induct_ctl, f_eqs_ctl->f_self);
+	f_eqs_ctl->f_heat_ctl =   init_f_MHD_heat_eq_ctl(c_MHD_eqs_heat_ctl, f_eqs_ctl->f_self);
+	f_eqs_ctl->f_comp_ctl =   init_f_MHD_heat_eq_ctl(c_MHD_eqs_comp_ctl, f_eqs_ctl->f_self);
+	return f_eqs_ctl;
+}
+
 
 struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
@@ -217,7 +448,7 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	f_model_ctl->f_sbc_ctl =    c_MHD_mdl_sbc_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_frc_ctl =    init_f_MHD_forces_ctl(c_MHD_mdl_frc_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_dless_ctl =  init_f_MHD_dimless_ctl(c_MHD_mdl_dless_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_eqs_ctl =    c_MHD_mdl_eqs_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_eqs_ctl =    init_f_MHD_equations_ctl(c_MHD_mdl_eqs_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_g_ctl =      c_MHD_mdl_g_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_cor_ctl =    c_MHD_mdl_cor_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_mcv_ctl =    c_MHD_mdl_mcv_ctl(f_model_ctl->f_self);
@@ -562,9 +793,34 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 //						   f_MHD_ctl->f_model_ctl->f_dless_ctl->f_dimless_vws);
 	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl, window);
 	
+	
+	GtkWidget *expand_MHD_mom = draw_control_block(f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_mom_ctl->c_block_name, 
+													 f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_mom_ctl->f_iflag,
+													 560, 400, window, vbox_test);
+	GtkWidget *expand_MHD_magne = draw_control_block(f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_induct_ctl->c_block_name, 
+													 f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_induct_ctl->f_iflag,
+													 560, 400, window, vbox_test);
+	GtkWidget *expand_MHD_heat = draw_control_block(f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_heat_ctl->c_block_name, 
+													 f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_heat_ctl->f_iflag,
+													 560, 400, window, vbox_test);
+	GtkWidget *expand_MHD_light = draw_control_block(f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_comp_ctl->c_block_name, 
+													 f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_comp_ctl->f_iflag,
+													 560, 400, window, vbox_test);
+	
+	GtkWidget *vbox_eqs = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_eqs), expand_MHD_mom, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_eqs), expand_MHD_magne, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_eqs), expand_MHD_heat, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_eqs), expand_MHD_light, FALSE, FALSE, 0);
+	
+	GtkWidget *expand_MHD_eqs = draw_control_block(f_MHD_ctl->f_model_ctl->f_eqs_ctl->c_block_name, 
+													 f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_iflag,
+													 560, 400, window, vbox_eqs);
+	
 	GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_force, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_dimless, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);
 	GtkWidget *expand_MHD_model = draw_control_block(f_MHD_ctl->f_model_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_iflag,
 													 560, 500, window, vbox_m);

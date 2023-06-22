@@ -45,12 +45,17 @@
       subroutine bcast_forces_ctl(frc_ctl)
 !
       use t_ctl_data_mhd_forces
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
 !
       type(forces_control), intent(inout) :: frc_ctl
 !
       call bcast_ctl_array_c1(frc_ctl%force_names)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (frc_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(frc_ctl%i_forces_ctl, 0)
 !
       end subroutine bcast_forces_ctl

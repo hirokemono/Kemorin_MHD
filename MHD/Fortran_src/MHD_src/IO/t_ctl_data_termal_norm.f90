@@ -18,11 +18,10 @@
 !!        type(heat_equation_control), intent(inout) :: comp_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_thermal_ctl                                    &
-!!     &         (id_control, hd_block, heat_ctl, level)
+!!     &         (id_control, heat_ctl, level)
 !!      subroutine write_composition_eq_ctl                             &
-!!     &         (id_control, hd_block, comp_ctl, level)
+!!     &         (id_control, comp_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len=kchara), intent(in) :: hd_block
 !!        type(heat_equation_control), intent(in) :: heat_ctl
 !!        type(heat_equation_control), intent(in) :: comp_ctl
 !!        integer(kind = kint), intent(inout) :: level
@@ -80,6 +79,8 @@
 !
 !>      Structure for coefficients of heat and composition equation
       type heat_equation_control
+!>        Block name
+        character(len=kchara) :: block_name = 'scalar'
 !>        Structure for number and power to construct heat flux
 !!@n        coef_4_adv_flux%c_tbl:  Name of number 
 !!@n        coef_4_adv_flux%vect:   Power of the number
@@ -135,8 +136,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(heat_ctl%i_diff_adv .gt. 0) return
+      heat_ctl%block_name = trim(hd_block)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -168,8 +170,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(comp_ctl%i_diff_adv .gt. 0) return
+      comp_ctl%block_name = trim(hd_block)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -189,15 +192,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine write_thermal_ctl                                      &
-     &         (id_control, hd_block, heat_ctl, level)
+      subroutine write_thermal_ctl(id_control, heat_ctl, level)
 !
       use t_read_control_elements
       use skip_comment_f
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(heat_equation_control), intent(in) :: heat_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -205,28 +206,28 @@
 !
       if(heat_ctl%i_diff_adv .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 heat_ctl%block_name)
       call write_control_array_c_r(id_control, level,                   &
      &      heat_ctl%coef_4_adv_flux)
       call write_control_array_c_r(id_control, level,                   &
      &      heat_ctl%coef_4_diffuse)
       call write_control_array_c_r(id_control, level,                   &
      &      heat_ctl%coef_4_source)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                heat_ctl%block_name)
 !
       end subroutine write_thermal_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_composition_eq_ctl                               &
-     &         (id_control, hd_block, comp_ctl, level)
+      subroutine write_composition_eq_ctl(id_control, comp_ctl, level)
 !
       use t_read_control_elements
       use skip_comment_f
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(heat_equation_control), intent(in) :: comp_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -234,14 +235,16 @@
 !
       if(comp_ctl%i_diff_adv .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 comp_ctl%block_name)
       call write_control_array_c_r(id_control, level,                   &
      &    comp_ctl%coef_4_adv_flux)
       call write_control_array_c_r(id_control, level,                   &
      &    comp_ctl%coef_4_diffuse)
       call write_control_array_c_r(id_control, level,                   &
      &    comp_ctl%coef_4_source)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                comp_ctl%block_name)
 !
       end subroutine write_composition_eq_ctl
 !

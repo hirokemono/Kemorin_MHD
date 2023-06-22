@@ -7,6 +7,8 @@
 
 #include "control_panel_4_dimless_GTK.h"
 
+extern int lengthchara_f();
+
 extern void * c_chara_item_clength(void *f_ctl, int *length);
 extern void * c_MHD_dimless_block_name(void *f_dimless_ctl);
 extern void * c_MHD_dimless_iflag(void *f_dimless_ctl);
@@ -102,13 +104,14 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
 		exit(0);
 	}
 	char *ctmp;
-	int flen = 255;
+	int flen = lengthchara_f();
 	for(i=0;i<num_tmp;i++){
 		ctmp = chara_real_clist_at_index(i, f_dless_ctl->f_dimless_vws->cr_clist)->c_tbl;
 		f_dless_ctl->f_dimess_names->f_clength[i] = strlen(ctmp);
 		f_dless_ctl->f_dimess_names->c_charavalue[i] = alloc_string((long) f_dless_ctl->f_dimess_names->f_clength[i]);
 		strngcopy_w_length(f_dless_ctl->f_dimess_names->c_charavalue[i], f_dless_ctl->f_dimess_names->f_clength[i], ctmp);
 	};
+	
 	for(i=0;i<num_tmp;i++){
 		printf("%d f_dless_ctl->f_dimess_names->c_charavalue %d %s %le\n", i, 
 			   f_dless_ctl->f_dimess_names->f_clength[i], f_dless_ctl->f_dimess_names->c_charavalue[i],

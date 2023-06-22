@@ -20,7 +20,7 @@
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine dealloc_gravity_ctl(g_ctl)
-!!        type(forces_control), intent(inout) :: g_ctl
+!!        type(gravity_control), intent(inout) :: g_ctl
 !!
 !! !!!! gravity_type !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      0: constant

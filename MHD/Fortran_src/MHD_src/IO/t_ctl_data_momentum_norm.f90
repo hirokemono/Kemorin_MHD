@@ -14,10 +14,8 @@
 !!         character(len=kchara), intent(in) :: hd_block
 !!         type(momentum_equation_control), intent(inout) :: mom_ctl
 !!         type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_momentum_ctl                                   &
-!!     &         (id_control, hd_block, mom_ctl, level)
+!!      subroutine write_momentum_ctl(id_control, mom_ctl, level)
 !!         integer(kind = kint), intent(in) :: id_control
-!!         character(len=kchara), intent(in) :: hd_block
 !!         type(momentum_equation_control), intent(in) :: mom_ctl
 !!         integer(kind = kint), intent(inout) :: level
 !!      subroutine dealloc_momentum_ctl(mom_ctl)
@@ -70,6 +68,8 @@
 !
 !>      Structure for coefficients of momentum equation
       type momentum_equation_control
+!>        Block name
+        character(len=kchara) :: block_name = 'momentum'
 !>        Structure for number and power to construct viscousity term
 !!@n        coef_4_viscous%c_tbl:  Name of number 
 !!@n        coef_4_viscous%vect:   Power of the number
@@ -139,8 +139,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(mom_ctl%i_momentum .gt. 0) return
+      mom_ctl%block_name = trim(hd_block)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -168,15 +169,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_momentum_ctl                                     &
-     &         (id_control, hd_block, mom_ctl, level)
+      subroutine write_momentum_ctl(id_control, mom_ctl, level)
 !
       use t_read_control_elements
       use skip_comment_f
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(momentum_equation_control), intent(in) :: mom_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -184,7 +183,8 @@
 !
       if(mom_ctl%i_momentum .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 mom_ctl%block_name)
       call write_control_array_c_r(id_control, level,                   &
      &    mom_ctl%coef_4_intertia)
       call write_control_array_c_r(id_control, level,                   &
@@ -200,7 +200,8 @@
      &    mom_ctl%coef_4_Coriolis)
       call write_control_array_c_r(id_control, level,                   &
      &    mom_ctl%coef_4_Lorentz)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                mom_ctl%block_name)
 !
       end subroutine write_momentum_ctl
 !
