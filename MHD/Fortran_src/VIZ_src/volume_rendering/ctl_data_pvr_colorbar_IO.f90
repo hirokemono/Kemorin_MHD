@@ -175,7 +175,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    cbar_ctl%zeromarker_flag_ctl)
       call write_real2_ctl_type(id_control, level, maxlen,              &
-     &    hd_cbar_range, cbar_ctl%cbar_range_ctl)
+     &    cbar_ctl%cbar_range_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    cbar_ctl%font_size_ctl)

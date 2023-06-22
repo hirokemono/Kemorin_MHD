@@ -208,11 +208,11 @@
      &   (id_control, hd_mview_transform, movie%mul_mmats_c, level)
 !
       call write_real2_ctl_type(id_control, level, maxlen,              &
-     &    hd_angle_range, movie%angle_range_ctl)
+     &    movie%angle_range_ctl)
       call write_real2_ctl_type(id_control, level, maxlen,              &
-     &    hd_apature_range, movie%apature_range_ctl)
+     &    movie%apature_range_ctl)
       call write_real2_ctl_type(id_control, level, maxlen,              &
-     &    hd_LIC_kernel_peak, movie%LIC_kernel_peak_range_ctl)
+     &    movie%LIC_kernel_peak_range_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_rotation_ctl

@@ -237,11 +237,11 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    color%data_mapping_ctl)
       call write_control_array_r2(id_control, level,                    &
-     &    hd_colortable, color%colortbl_ctl)
+     &    color%colortbl_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    color%opacity_style_ctl)
       call write_control_array_r2(id_control, level,                    &
-     &    hd_linear_opacity, color%linear_opacity_ctl)
+     &    color%linear_opacity_ctl)
       call write_control_array_r3(id_control, level,                    &
      &    hd_opacity_def, color%step_opacity_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &

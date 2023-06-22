@@ -102,6 +102,8 @@
       use t_control_array_real
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(read_real_item), intent(inout) :: real_item
 !
@@ -109,6 +111,8 @@
       if(nprocs .eq. 1) return
 !
       call calypso_mpi_bcast_one_int(real_item%iflag, 0)
+      call calypso_mpi_bcast_character                                  &
+      &   (real_item%item_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_real(real_item%realvalue, 0)
 !
       end subroutine bcast_ctl_type_r1
@@ -119,6 +123,8 @@
 !
       use t_control_array_integer
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(read_integer_item), intent(inout) :: int_item
 !
@@ -126,6 +132,8 @@
       if(nprocs .eq. 1) return
 !
       call calypso_mpi_bcast_one_int(int_item%iflag, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (int_item%item_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(int_item%intvalue, 0)
 !
       end subroutine bcast_ctl_type_i1
@@ -159,6 +167,7 @@
       use t_control_array_real2
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_char
       use transfer_to_long_integers
 !
       type(read_real2_item), intent(inout) :: real2_item
@@ -167,6 +176,8 @@
       if(nprocs .eq. 1) return
 !
       call calypso_mpi_bcast_one_int(real2_item%iflag, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (real2_item%item_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_real                                       &
      &   (real2_item%realvalue, cast_long(2), 0)
 !
@@ -281,6 +292,7 @@
       use transfer_to_long_integers
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_char
 !
       type(ctl_array_real), intent(inout) :: array_real
 !
@@ -289,6 +301,8 @@
 !
       call calypso_mpi_bcast_one_int(array_real%num,  0)
       call calypso_mpi_bcast_one_int(array_real%icou, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_real%array_name, cast_long(kchara), 0)
 !
       if(my_rank .ne. 0) call alloc_control_array_real(array_real)
 !
@@ -305,6 +319,7 @@
       use transfer_to_long_integers
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_char
 !
       type(ctl_array_r2), intent(inout) :: array_r2
 !
@@ -313,6 +328,8 @@
 !
       call calypso_mpi_bcast_one_int(array_r2%num,  0)
       call calypso_mpi_bcast_one_int(array_r2%icou, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_r2%array_name, cast_long(kchara), 0)
 !
       if(my_rank .ne. 0) call alloc_control_array_r2(array_r2)
 !
@@ -356,6 +373,7 @@
       subroutine bcast_ctl_array_i1(array_int)
 !
       use calypso_mpi_int
+      use calypso_mpi_char
       use t_control_array_integer
       use transfer_to_long_integers
 !
@@ -366,6 +384,8 @@
 !
       call calypso_mpi_bcast_one_int(array_int%num,  0)
       call calypso_mpi_bcast_one_int(array_int%icou, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (array_int%array_name, cast_long(kchara), 0)
 !
       if(my_rank .ne. 0) call alloc_control_array_int(array_int)
 !

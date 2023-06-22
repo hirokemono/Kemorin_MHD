@@ -159,7 +159,7 @@
      &    mask_ctl%component_ctl)
 !
       call write_control_array_r2(id_control, level,                    &
-     &    hd_masking_range, mask_ctl%mask_range_ctl)
+     &    mask_ctl%mask_range_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_masking_ctl_data
