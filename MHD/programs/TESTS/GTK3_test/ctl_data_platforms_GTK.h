@@ -6,9 +6,11 @@
 */
 
 #include <string.h>
+#include <stdio.h>
 #include <gtk/gtk.h>
 
 #include "skip_comment_c.h"
+#include "t_control_chara_IO.h"
 #include "t_control_label_from_f.h"
 #include "control_combobox_GTK.h"
 #include "kemoview_gtk_routines.h"
@@ -42,26 +44,105 @@ extern void * c_plt_itp_file_fmt_ctl(void *f_plt);
 extern void * c_plt_coriolis_file_fmt_ctl(void *f_plt);
 extern void * c_plt_del_org_data_ctl(void *f_plt);
 
-extern void * c_chara_item_block_name(void *f_plt);
-extern void * c_chara_item_iflag(void *f_plt);
-extern void * c_chara_item_clength(void *f_plt, int *length);
-extern void * c_chara_item_charavalue(void *f_plt);
+extern void * c_chara_item_clength(void *f_ctl, int *length);
+
+extern void * c_chara_item_block_name(void *f_ctl);
+extern void * c_chara_item_iflag(void *f_ctl);
+extern void * c_chara_item_charavalue(void *f_ctl);
+
+extern void * c_chara_array_block_name(void *f_ctl);
+extern void * c_chara_array_num(void *f_ctl);
+extern void * c_chara_array_icou(void *f_ctl);
+extern void * c_chara_array_c_tbl(void *f_ctl);
+
+
+extern void * c_chara_real_item_block_name(void *f_ctl);
+extern void * c_chara_real_item_iflag(void *f_ctl);
+extern void * c_chara_real_item_charavalue(void *f_ctl);
+extern void * c_chara_real_item_realvalue(void *f_ctl);
+
+extern void * c_chara_real_array_block_name(void *f_ctl);
+extern void * c_chara_real_array_num(void *f_ctl);
+extern void * c_chara_real_array_icou(void *f_ctl);
+extern void * c_chara_real_array_c_tbl(void *f_ctl);
+extern void * c_chara_real_array_r_tbl(void *f_ctl);
+
+
 
 extern void load_chara_from_c(void *c_ctl);
 
 struct f_ctl_chara_item{
 	void * f_self;
 	char * f_block_name;
+	int * f_iflag;
+	char * f_charavalue;
 	
 	int f_namelength[1];
 	char * c_block_name;
 	
 	int f_clength[1];
 	char * c_charavalue;
+};
+
+struct f_ctl_chara_array{
+	void * f_self;
+	char * f_block_name;
+	int * f_num;
+	int * f_icou;
+	char * f_cctls;
 	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	int * f_clength;
+	char ** c_charavalue;
+};
+
+struct c_array_views{
+    int index_c_array;
+    GtkWidget *c_array_tree_view;
+    GtkWidget *c_array_default_view;
+    
+    struct chara_clist *c_array_clist;
+};
+
+struct f_ctl_cr_item{
+	void * f_self;
+	char * f_block_name;
 	int * f_iflag;
 	char * f_charavalue;
+	double * f_realvalue;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	int f_clength[1];
+	char * c_charavalue;
 };
+
+struct f_ctl_cr_array{
+	void * f_self;
+	char * f_block_name;
+	int * f_num;
+	int * f_icou;
+	char * f_cctls;
+	double * f_rctls;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	int * f_clength;
+	char ** c_charavalue;
+};
+
+struct cr_array_views{
+    int index_cr_array;
+    GtkWidget *cr_array_tree_view;
+    GtkWidget *cr_array_default_view;
+    
+    struct cr_clist *cr_array_clist;
+};
+
 
 struct f_platform_control{
 	void * f_self;
@@ -99,9 +180,30 @@ struct f_platform_control{
 	struct control_labels_f *label_file_format_list;
 };
 
-struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent);
+struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent),
+												void *f_parent);
+void dealloc_f_ctl_chara_item(struct f_ctl_chara_item *f_citem);
+
+struct f_ctl_chara_array * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent),
+												  void *f_parent);
+void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray);
+
+struct c_array_views * init_c_array_views(struct f_ctl_chara_array *f_carray);
+void dealloc_c_array_views(struct c_array_views *c_array_vws);
+
+
+
+struct f_ctl_cr_item * init_f_ctl_cr_item(void *(*c_load_self)(void *f_parent), 
+											 void *f_parent);
+void dealloc_f_ctl_cr_item(struct f_ctl_cr_item *f_cr_item);
+
+struct f_ctl_cr_array * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent), 
+											void *f_parent);
+void dealloc_f_ctl_cr_array(struct f_ctl_cr_array *f_cr_array);
+
 
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
+void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray);
 
 void cb_chara_ctl_item(GtkEntry *entry, gpointer data);
 void cb_check_toggle(GtkWidget *widget, gpointer iflag_ptr);

@@ -257,8 +257,7 @@
       call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
      &    MHD_ctl%fname_psph, MHD_ctl%psph_ctl, level)
 !
-      call write_sph_mhd_model                                          &
-     &   (id_control, hd_model, MHD_ctl%model_ctl, level)
+      call write_sph_mhd_model(id_control, MHD_ctl%model_ctl, level)
       call write_sph_mhd_control                                        &
      &   (id_control, hd_control, MHD_ctl%smctl_ctl, level)
 !

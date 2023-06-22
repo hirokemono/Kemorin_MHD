@@ -18,6 +18,7 @@
 #include "ctl_data_platforms_GTK.h"
 
 extern void c_view_control_sph_SGS_MHD();
+
 extern void * c_read_control_sph_SGS_MHD(char *file_name);
 extern void * c_MHD_block_name(void *f_MHD_ctl);
 extern void * c_MHD_iflag(void *f_MHD_ctl);
@@ -30,6 +31,83 @@ extern void * c_MHD_model_ctl(void *f_MHD_ctl);
 extern void * c_MHD_smctl_ctl(void *f_MHD_ctl);
 extern void * c_MHD_smonitor_ctl(void *f_MHD_ctl);
 extern void * c_MHD_nmtr_ctl(void *f_MHD_ctl);
+
+extern void * c_MHD_mdl_block_name(void *f_model_ctl);
+extern void * c_MHD_mdl_iflag(void *f_model_ctl);
+extern void * c_MHD_mdl_fld_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_evo_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_earea_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_nbc_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_sbc_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_dless_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_eqs_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_frc_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_g_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_cor_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_mcv_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_bscale_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_reft_ctl(void *f_model_ctl);
+extern void * c_MHD_mdl_refc_ctl(void *f_model_ctl);
+
+extern void * c_MHD_forces_block_name(void *f_frc_ctl);
+extern void * c_MHD_forces_iflag(void *f_frc_ctl);
+extern void * c_MHD_forces_array(void *f_frc_ctl);
+
+extern void * c_MHD_dimless_block_name(void *f_dimless_ctl);
+extern void * c_MHD_dimless_iflag(void *f_dimless_ctl);
+extern void * c_MHD_dimless_array(void *f_dimless_ctl);
+
+
+struct f_MHD_forces_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	struct f_ctl_chara_array * f_force_names;
+	struct c_array_views * f_force_vws;
+};
+
+struct f_MHD_dimless_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	struct f_ctl_cr_array * f_dimess_names;
+	struct cr_array_views * f_dimless_vws;
+};
+
+struct f_MHD_model_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	void * f_fld_ctl;
+	void * f_evo_ctl;
+	void * f_earea_ctl;
+	void * f_nbc_ctl;
+	void * f_sbc_ctl;
+	struct f_MHD_forces_control *f_frc_ctl;
+	struct f_MHD_dimless_control * f_dless_ctl;
+	void * f_eqs_ctl;
+	void * f_g_ctl;
+	void * f_cor_ctl;
+	void * f_mcv_ctl;
+	void * f_bscale_ctl;
+	void * f_reft_ctl;
+	void * f_refc_ctl;
+};
 
 struct f_MHD_control{
 	void * f_self;
@@ -45,7 +123,7 @@ struct f_MHD_control{
 	void * f_new_plt;
 	void * f_fname_psph;
 	void * f_psph_ctl;
-	void * f_model_ctl;
+	struct f_MHD_model_control *f_model_ctl;
 	void * f_smctl_ctl;
 	void * f_smonitor_ctl;
 	void * f_nmtr_ctl;
@@ -99,6 +177,121 @@ boolean_to_text (GBinding *binding,
 	return TRUE;
 }
 */
+
+struct f_MHD_forces_control * init_f_MHD_forces_ctl(void *(*c_load_self)(void *f_parent),
+													void *f_parent)
+{
+	struct f_MHD_forces_control *f_frc_ctl
+			= (struct f_MHD_forces_control *) malloc(sizeof(struct f_MHD_forces_control));
+	if(f_frc_ctl == NULL){
+		printf("malloc error for f_frc_ctl\n");
+		exit(0);
+	};
+	
+	f_frc_ctl->f_self =  c_load_self(f_parent);
+	
+	f_frc_ctl->f_block_name =   (char *) c_MHD_forces_block_name(f_frc_ctl->f_self);
+	f_frc_ctl->f_iflag =        (int *)  c_MHD_forces_iflag(f_frc_ctl->f_self);
+	
+	c_chara_item_clength(f_frc_ctl->f_block_name, f_frc_ctl->f_namelength);
+	f_frc_ctl->c_block_name = alloc_string((long) f_frc_ctl->f_namelength[0]);
+	strngcopy_w_length(f_frc_ctl->c_block_name, f_frc_ctl->f_namelength[0], 
+					   f_frc_ctl->f_block_name);
+	
+	f_frc_ctl->f_force_names = init_f_ctl_chara_array(c_MHD_forces_array, f_frc_ctl->f_self);
+	f_frc_ctl->f_force_vws =   init_c_array_views(f_frc_ctl->f_force_names);
+	
+	
+	
+	return f_frc_ctl;
+};
+
+struct f_MHD_dimless_control * init_f_MHD_dimless_ctl(void *(*c_load_self)(void *f_parent),
+													 void *f_parent)
+{
+	struct f_MHD_dimless_control *f_dimless_ctl
+			= (struct f_MHD_dimless_control *) malloc(sizeof(struct f_MHD_dimless_control));
+	if(f_dimless_ctl == NULL){
+		printf("malloc error for f_dimless_ctl\n");
+		exit(0);
+	};
+	
+	f_dimless_ctl->f_self =  c_load_self(f_parent);
+	
+	f_dimless_ctl->f_block_name =   (char *) c_MHD_dimless_block_name(f_dimless_ctl->f_self);
+	f_dimless_ctl->f_iflag =        (int *)  c_MHD_dimless_iflag(f_dimless_ctl->f_self);
+	
+	c_chara_item_clength(f_dimless_ctl->f_block_name, f_dimless_ctl->f_namelength);
+	f_dimless_ctl->c_block_name = alloc_string((long) f_dimless_ctl->f_namelength[0]);
+	strngcopy_w_length(f_dimless_ctl->c_block_name, f_dimless_ctl->f_namelength[0], 
+					   f_dimless_ctl->f_block_name);
+	
+	f_dimless_ctl->f_dimess_names = init_f_ctl_cr_array(c_MHD_dimless_array, f_dimless_ctl->f_self);
+//	f_dimless_ctl->f_dimless_vws =   init_cr_array_views(f_dimless_ctl->f_dimess_names);
+	
+	return f_dimless_ctl;
+};
+
+struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), void *f_parent)
+{
+	struct f_MHD_model_control *f_model_ctl 
+			= (struct f_MHD_model_control *) malloc(sizeof(struct f_MHD_model_control));
+	if(f_model_ctl == NULL){
+		printf("malloc error for f_model_ctl\n");
+		exit(0);
+	};
+	
+	f_model_ctl->f_self =  c_load_self(f_parent);
+	
+	f_model_ctl->f_block_name =   (char *) c_MHD_mdl_block_name(f_model_ctl->f_self);
+	f_model_ctl->f_iflag =        (int *) c_MHD_mdl_iflag(f_model_ctl->f_self);
+	
+	c_chara_item_clength(f_model_ctl->f_block_name, f_model_ctl->f_namelength);
+	f_model_ctl->c_block_name = alloc_string((long) f_model_ctl->f_namelength[0]);
+	strngcopy_w_length(f_model_ctl->c_block_name, f_model_ctl->f_namelength[0], 
+					   f_model_ctl->f_block_name);
+	
+	f_model_ctl->f_fld_ctl =    c_MHD_mdl_fld_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_evo_ctl =    c_MHD_mdl_evo_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_earea_ctl =  c_MHD_mdl_earea_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_nbc_ctl =    c_MHD_mdl_nbc_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_sbc_ctl =    c_MHD_mdl_sbc_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_frc_ctl =    init_f_MHD_forces_ctl(c_MHD_mdl_frc_ctl, f_model_ctl->f_self);
+	f_model_ctl->f_dless_ctl =  init_f_MHD_dimless_ctl(c_MHD_mdl_dless_ctl, f_model_ctl->f_self);
+	f_model_ctl->f_eqs_ctl =    c_MHD_mdl_eqs_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_g_ctl =      c_MHD_mdl_g_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_cor_ctl =    c_MHD_mdl_cor_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_mcv_ctl =    c_MHD_mdl_mcv_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_bscale_ctl = c_MHD_mdl_bscale_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_reft_ctl =   c_MHD_mdl_reft_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_refc_ctl =   c_MHD_mdl_refc_ctl(f_model_ctl->f_self);
+	return f_model_ctl;
+}
+
+
+static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
+{
+		f_MHD_ctl->f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_iflag =        (int *) c_MHD_iflag(f_MHD_ctl->f_self);
+		
+		c_chara_item_clength(f_MHD_ctl->f_block_name, f_MHD_ctl->f_namelength);
+		f_MHD_ctl->c_block_name = alloc_string((long) f_MHD_ctl->f_namelength[0]);
+		strngcopy_w_length(f_MHD_ctl->c_block_name, f_MHD_ctl->f_namelength[0], 
+						   f_MHD_ctl->f_block_name);
+		
+		f_MHD_ctl->f_plt = init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
+		
+		f_MHD_ctl->f_org_plt =      c_MHD_org_plt(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_new_plt =      c_MHD_new_plt(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_fname_psph =   c_MHD_fname_psph(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_psph_ctl =     c_MHD_psph_ctl(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_model_ctl =    init_f_MHD_model_ctl(c_MHD_model_ctl, f_MHD_ctl->f_self);
+		f_MHD_ctl->f_smctl_ctl =    c_MHD_smctl_ctl(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_smonitor_ctl = c_MHD_smonitor_ctl(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_nmtr_ctl =     c_MHD_nmtr_ctl(f_MHD_ctl->f_self);
+		return;
+}
+
 
 static void cb_View(GtkButton *button, gpointer data)
 {
@@ -157,27 +350,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		/* Get Folder name */
 		printf("f_MHD_ctl %p\n", f_MHD_ctl);
 		f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD((char *) read_file_name);
-		f_MHD_ctl->f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_iflag =        (int *) c_MHD_iflag(f_MHD_ctl->f_self);
-		
-		c_chara_item_clength(f_MHD_ctl->f_block_name, f_MHD_ctl->f_namelength);
-		f_MHD_ctl->c_block_name = alloc_string((long) f_MHD_ctl->f_namelength[0]);
-		strngcopy_w_length(f_MHD_ctl->c_block_name, f_MHD_ctl->f_namelength[0], 
-					   f_MHD_ctl->f_block_name);
-		
-		printf("f_MHD_ctl->f_block_name %d %s\n", f_MHD_ctl->f_namelength, f_MHD_ctl->f_block_name);
-		printf("f_MHD_ctl->c_block_name %s\n", f_MHD_ctl->c_block_name);
-		
-		f_MHD_ctl->f_plt = init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
-		
-		f_MHD_ctl->f_org_plt =      c_MHD_org_plt(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_new_plt =      c_MHD_new_plt(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_fname_psph =   c_MHD_fname_psph(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_psph_ctl =     c_MHD_psph_ctl(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_model_ctl =    c_MHD_model_ctl(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_smctl_ctl =    c_MHD_smctl_ctl(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_smonitor_ctl = c_MHD_smonitor_ctl(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_nmtr_ctl =     c_MHD_nmtr_ctl(f_MHD_ctl->f_self);
+		set_f_MHD_control(f_MHD_ctl);
 		
 		/* Show file name in entry */ 
 		gtk_entry_set_text(entry, read_file_name);
@@ -417,6 +590,23 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	iflag_ptr[0] = 0;
 	
 	GtkWidget * vbox_plt = draw_platform_control_vbox(f_MHD_ctl->f_plt, window);
+	GtkWidget *vbox_test = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_force = draw_control_block(f_MHD_ctl->f_model_ctl->f_frc_ctl->c_block_name, 
+													 f_MHD_ctl->f_model_ctl->f_frc_ctl->f_iflag,
+													 560, 240, window, vbox_test);
+	GtkWidget *expand_MHD_dimless = draw_control_block(f_MHD_ctl->f_model_ctl->f_dless_ctl->c_block_name, 
+													 f_MHD_ctl->f_model_ctl->f_dless_ctl->f_iflag,
+													 560, 240, window, vbox_test);
+	
+	GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_force, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_dimless, FALSE, FALSE, 0);
+	GtkWidget *expand_MHD_model = draw_control_block(f_MHD_ctl->f_model_ctl->c_block_name, 
+													 f_MHD_ctl->f_model_ctl->f_iflag,
+													 560, 500, window, vbox_m);
+	
+	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_model, FALSE, FALSE, 0);
+	
 	GtkWidget *expand_MHD = draw_control_block(f_MHD_ctl->c_block_name, 
 											   f_MHD_ctl->f_iflag,
 											   560, 600, window, vbox_plt);
@@ -466,7 +656,7 @@ void draw_MHD_control_bottuns(GtkWidget *vbox0){
 	gtk_box_pack_start(GTK_BOX(hbox), button_Q, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, FALSE, 0);
-	
+	return;
 }
 
 

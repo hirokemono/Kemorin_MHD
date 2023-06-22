@@ -34,6 +34,7 @@
       end function load_chara_from_cc
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_MHD_block_name(c_ctl)                      &
      &          bind(C, NAME = 'c_MHD_block_name')
@@ -142,6 +143,229 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_MHD_nmtr_ctl = C_loc(f_ctl%nmtr_ctl)
       end function c_MHD_nmtr_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_block_name(c_ctl)                  &
+     &          bind(C, NAME = 'c_MHD_mdl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_block_name = C_loc(f_ctl%block_name)
+      end function c_MHD_mdl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_iflag(c_ctl)                       &
+     &          bind(C, NAME = 'c_MHD_mdl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_iflag = C_loc(f_ctl%i_model)
+      end function c_MHD_mdl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_fld_ctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_MHD_mdl_fld_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_fld_ctl = C_loc(f_ctl%fld_ctl)
+      end function c_MHD_mdl_fld_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_evo_ctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_MHD_mdl_evo_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_evo_ctl = C_loc(f_ctl%evo_ctl)
+      end function c_MHD_mdl_evo_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_earea_ctl(c_ctl)                   &
+     &          bind(C, NAME = 'c_MHD_mdl_earea_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_earea_ctl = C_loc(f_ctl%earea_ctl)
+      end function c_MHD_mdl_earea_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_nbc_ctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_MHD_mdl_nbc_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_nbc_ctl = C_loc(f_ctl%nbc_ctl)
+      end function c_MHD_mdl_nbc_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_sbc_ctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_MHD_mdl_sbc_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_sbc_ctl = C_loc(f_ctl%sbc_ctl)
+      end function c_MHD_mdl_sbc_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_dless_ctl(c_ctl)                   &
+     &          bind(C, NAME = 'c_MHD_mdl_dless_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_dless_ctl = C_loc(f_ctl%dless_ctl)
+      end function c_MHD_mdl_dless_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_eqs_ctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_MHD_mdl_eqs_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_eqs_ctl = C_loc(f_ctl%eqs_ctl)
+      end function c_MHD_mdl_eqs_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_frc_ctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_MHD_mdl_frc_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_frc_ctl = C_loc(f_ctl%frc_ctl)
+      end function c_MHD_mdl_frc_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_g_ctl(c_ctl)                       &
+     &          bind(C, NAME = 'c_MHD_mdl_g_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_g_ctl = C_loc(f_ctl%g_ctl)
+      end function c_MHD_mdl_g_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_cor_ctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_MHD_mdl_cor_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_cor_ctl = C_loc(f_ctl%cor_ctl)
+      end function c_MHD_mdl_cor_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_mcv_ctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_MHD_mdl_mcv_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_mcv_ctl = C_loc(f_ctl%mcv_ctl)
+      end function c_MHD_mdl_mcv_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_bscale_ctl(c_ctl)                  &
+     &          bind(C, NAME = 'c_MHD_mdl_bscale_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_bscale_ctl = C_loc(f_ctl%bscale_ctl)
+      end function c_MHD_mdl_bscale_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_reft_ctl(c_ctl)                    &
+     &          bind(C, NAME = 'c_MHD_mdl_reft_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_reft_ctl = C_loc(f_ctl%reft_ctl)
+      end function c_MHD_mdl_reft_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_mdl_refc_ctl(c_ctl)                    &
+     &          bind(C, NAME = 'c_MHD_mdl_refc_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_mdl_refc_ctl = C_loc(f_ctl%refc_ctl)
+      end function c_MHD_mdl_refc_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_forces_block_name(c_ctl)               &
+     &          bind(C, NAME = 'c_MHD_forces_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(forces_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_forces_block_name = C_loc(f_ctl%block_name)
+      end function c_MHD_forces_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_forces_iflag(c_ctl)                    &
+     &          bind(C, NAME = 'c_MHD_forces_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(forces_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_forces_iflag = C_loc(f_ctl%i_forces_ctl)
+      end function c_MHD_forces_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_forces_array(c_ctl)                    &
+     &          bind(C, NAME = 'c_MHD_forces_array')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(forces_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_forces_array = C_loc(f_ctl%force_names)
+      end function c_MHD_forces_array
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_dimless_block_name(c_ctl)              &
+     &          bind(C, NAME = 'c_MHD_dimless_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dimless_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_dimless_block_name = C_loc(f_ctl%block_name)
+      end function c_MHD_dimless_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_dimless_iflag(c_ctl)                   &
+     &          bind(C, NAME = 'c_MHD_dimless_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dimless_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_dimless_iflag = C_loc(f_ctl%i_dimless_ctl)
+      end function c_MHD_dimless_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_dimless_array(c_ctl)                   &
+     &          bind(C, NAME = 'c_MHD_dimless_array')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dimless_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_dimless_array = C_loc(f_ctl%dimless)
+      end function c_MHD_dimless_array
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

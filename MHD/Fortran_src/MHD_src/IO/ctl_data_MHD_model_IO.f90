@@ -19,7 +19,7 @@
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_sph_mhd_model                                  &
-!!     &         (id_control, hd_block, model_ctl, level)
+!!     &         (id_control, model_ctl, level)
 !!      subroutine write_sph_mhd_model_items                            &
 !!     &         (id_control, model_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -111,8 +111,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(model_ctl%i_model .gt. 0) return
+      model_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -127,12 +128,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_sph_mhd_model                                    &
-     &         (id_control, hd_block, model_ctl, level)
+     &         (id_control, model_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(mhd_model_control), intent(in) :: model_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -140,9 +140,11 @@
 !
       if(model_ctl%i_model .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 model_ctl%block_name)
       call write_sph_mhd_model_items(id_control, model_ctl, level)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                model_ctl%block_name)
 !
       end subroutine write_sph_mhd_model
 !
@@ -232,10 +234,9 @@
       call write_bc_4_surf_ctl(id_control, hd_bc_4_surf,                &
      &                         model_ctl%sbc_ctl, level)
 !
-      call write_forces_ctl                                             &
-     &   (id_control, hd_forces_ctl, model_ctl%frc_ctl, level)
+      call write_forces_ctl(id_control, model_ctl%frc_ctl, level)
       call write_dimless_ctl                                            &
-     &   (id_control, hd_dimless_ctl, model_ctl%dless_ctl, level)
+     &   (id_control, model_ctl%dless_ctl, level)
       call write_coef_term_ctl                                          &
      &   (id_control, hd_coef_term_ctl, model_ctl%eqs_ctl, level)
 !

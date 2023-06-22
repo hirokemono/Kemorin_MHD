@@ -18,36 +18,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine  load_chara_from_c(c_ctl)         &
-     &          bind(C, NAME = 'load_chara_from_c')
-      type(c_ptr), value, intent(in) :: c_ctl
-      character(C_char), pointer :: c_in(:)
-      integer :: i
-!
-      call c_f_pointer(c_ctl, c_in, [kchara])
-!
-      do i = 1, kchara
-        if(c_in(i) .eq. char(0)) then
-          c_in(i:kchara) = char(32)
-          exit
-        end if
-      end do
-      end subroutine load_chara_from_c
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine c_chara_item_clength(c_ctl, length_c)                  &
-     &          bind(C, NAME = 'c_chara_item_clength')
-      type(c_ptr), value, intent(in) :: c_ctl
-      integer(C_int), intent(inout) :: length_c
-      character(len=kchara), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      length_c = len_trim(f_ctl)
-      write(*,*) 'length_c', length_c
-      end subroutine c_chara_item_clength
-!
 !  ---------------------------------------------------------------------
 !
       integer(C_int) function num_file_fmt_items_f()                    &
@@ -71,90 +41,10 @@
       end subroutine set_file_fmt_items_f
 !
 ! ----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_chara_item_block_name(c_ctl)               &
-     &          bind(C, NAME = 'c_chara_item_block_name')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(read_character_item), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_chara_item_block_name = C_loc(f_ctl%item_name)
-      end function c_chara_item_block_name
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_chara_item_iflag(c_ctl)                    &
-     &          bind(C, NAME = 'c_chara_item_iflag')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(read_character_item), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_chara_item_iflag = C_loc(f_ctl%iflag)
-      end function c_chara_item_iflag
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_chara_item_charavalue(c_ctl)               &
-     &          bind(C, NAME = 'c_chara_item_charavalue')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(read_character_item), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_chara_item_charavalue = C_loc(f_ctl%charavalue)
-      end function c_chara_item_charavalue
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_chara_array_block_namem(c_ctl)             &
-     &          bind(C, NAME = 'c_chara_array_block_namem')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(ctl_array_chara), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_chara_array_block_namem = C_loc(f_ctl%array_name)
-      end function c_chara_array_block_namem
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_chara_array_num(c_ctl)                     &
-     &          bind(C, NAME = 'c_chara_array_num')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(ctl_array_chara), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_chara_array_num = C_loc(f_ctl%num)
-      end function c_chara_array_num
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_chara_array_icou(c_ctl)                    &
-     &          bind(C, NAME = 'c_chara_array_icou')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(ctl_array_chara), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_chara_array_icou = C_loc(f_ctl%num)
-      end function c_chara_array_icou
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_chara_array_c_tbl(c_ctl)                   &
-     &          bind(C, NAME = 'c_chara_array_c_tbl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(ctl_array_chara), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_chara_array_c_tbl = C_loc(f_ctl%c_tbl)
-      end function c_chara_array_c_tbl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       type(c_ptr) function c_plt_block_name(c_ctl)                      &
-     &          bind(C, NAME = 'c_plt_block_name')
+     &           bind(C, NAME = 'c_plt_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
       type(platform_data_control), pointer :: f_ctl
 !

@@ -48,10 +48,12 @@
       subroutine bcast_ctl_data_mhd_model(model_ctl)
 !
       use t_ctl_data_MHD_model
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_4_field_ctl
       use bcast_ctl_data_mhd_evo
       use bcast_ctl_data_mhd_forces
+      use transfer_to_long_integers
 !
       type(mhd_model_control), intent(inout) :: model_ctl
 !
@@ -73,6 +75,8 @@
       call bcast_ref_scalar_ctl(model_ctl%reft_ctl)
       call bcast_ref_scalar_ctl(model_ctl%refc_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (model_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(model_ctl%i_model, 0)
 !
       end subroutine bcast_ctl_data_mhd_model
