@@ -223,15 +223,15 @@
      &    psf_def_c%section_method_ctl)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_coefs_ctl, psf_def_c%psf_coefs_ctl)
+     &    psf_def_c%psf_coefs_ctl)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_normal_ctl, psf_def_c%psf_normal_ctl)
+     &    psf_def_c%psf_normal_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_axis_ctl, psf_def_c%psf_axis_ctl)
+     &    psf_def_c%psf_axis_ctl)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_center_ctl, psf_def_c%psf_center_ctl)
+     &    psf_def_c%psf_center_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    psf_def_c%radius_psf_ctl)
 !

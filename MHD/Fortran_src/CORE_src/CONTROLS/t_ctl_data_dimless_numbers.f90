@@ -123,7 +123,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_dimless, dless_ctl%dimless)
+     &    dless_ctl%dimless)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_dimless_ctl

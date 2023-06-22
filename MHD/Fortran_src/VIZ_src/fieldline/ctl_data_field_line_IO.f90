@@ -251,7 +251,7 @@
       call write_control_array_r3(id_control, level,                    &
      &    fln%seed_point_ctl)
       call write_control_array_i2 (id_control, level,                   &
-     &    hd_start_global_surf, fln%seed_surface_ctl)
+     &    fln%seed_surface_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

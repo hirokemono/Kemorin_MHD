@@ -141,7 +141,7 @@
      &    g_ctl%gravity)
 !
       call write_control_array_c_r(id_control, level,                 &
-     &    hd_gravity_vect, g_ctl%gravity_vector)
+     &    g_ctl%gravity_vector)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_gravity_ctl

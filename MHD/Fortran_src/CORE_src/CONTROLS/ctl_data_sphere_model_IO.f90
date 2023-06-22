@@ -339,9 +339,9 @@
      &    spctl%num_med_layer_ctl)
 !
       call write_control_array_i2(id_control, level,                    &
-     &    hd_list_radial_grp, spctl%radial_layer_list_ctl)
+     &    spctl%radial_layer_list_ctl)
       call write_control_array_i2(id_control, level,                    &
-     &    hd_list_med_grp, spctl%med_layer_list_ctl)
+     &    spctl%med_layer_list_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_shell_define

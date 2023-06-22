@@ -207,11 +207,11 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c_r(id_control, level,                   &
-     &      hd_n_thermal, heat_ctl%coef_4_adv_flux)
+     &      heat_ctl%coef_4_adv_flux)
       call write_control_array_c_r(id_control, level,                   &
-     &      hd_n_t_diff, heat_ctl%coef_4_diffuse)
+     &      heat_ctl%coef_4_diffuse)
       call write_control_array_c_r(id_control, level,                   &
-     &      hd_n_h_src, heat_ctl%coef_4_source)
+     &      heat_ctl%coef_4_source)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_thermal_ctl
@@ -236,11 +236,11 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c_r(id_control, level,                   &
-     &      hd_n_dscalar, comp_ctl%coef_4_adv_flux)
+     &    comp_ctl%coef_4_adv_flux)
       call write_control_array_c_r(id_control, level,                   &
-     &      hd_n_dsc_diff, comp_ctl%coef_4_diffuse)
+     &    comp_ctl%coef_4_diffuse)
       call write_control_array_c_r(id_control, level,                   &
-     &      hd_n_dsc_src, comp_ctl%coef_4_source)
+     &    comp_ctl%coef_4_source)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_composition_eq_ctl

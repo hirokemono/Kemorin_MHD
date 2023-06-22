@@ -141,7 +141,7 @@
      &    cor_ctl%FEM_coriolis_implicit)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_rotation_vec, cor_ctl%system_rotation)
+     &    cor_ctl%system_rotation)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_coriolis_ctl

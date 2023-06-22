@@ -211,7 +211,7 @@
      &    fld_on_psf_c%output_value_ctl)
 !
       call write_control_array_c2(id_control, level,                    &
-     &    hd_iso_result_field, fld_on_psf_c%field_output_ctl)
+     &    fld_on_psf_c%field_output_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_fld_on_psf_control

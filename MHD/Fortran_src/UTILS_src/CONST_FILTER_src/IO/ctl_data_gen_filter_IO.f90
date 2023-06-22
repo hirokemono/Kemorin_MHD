@@ -256,7 +256,7 @@
      &    gen_f_ctl%ied_num_free_ctl)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_ref_filter, gen_f_ctl%reference_filter_ctl)
+     &    gen_f_ctl%reference_filter_ctl)
       call write_control_array_i_c_r(id_control, level,                 &
      &    hd_order_moments, gen_f_ctl%ref_filter_mom_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -267,7 +267,7 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    gen_f_ctl%num_ele_4_filter_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_horiz_filter, gen_f_ctl%horizontal_filter_ctl)
+     &    gen_f_ctl%horizontal_filter_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_filter_param_ctl

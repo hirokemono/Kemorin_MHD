@@ -268,18 +268,18 @@
      &   (id_control, hd_stereo_view, mat%streo, level)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_look_point, mat%lookpoint_ctl)
+     &    mat%lookpoint_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_eye_position, mat%viewpoint_ctl)
+     &    mat%viewpoint_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_up_dir, mat%up_dir_ctl)
+     &    mat%up_dir_ctl)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_view_rot_dir, mat%view_rot_vec_ctl)
+     &    mat%view_rot_vec_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_scale_fac_dir, mat%scale_vector_ctl)
+     &    mat%scale_vector_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_eye_in_view, mat%viewpt_in_viewer_ctl)
+     &    mat%viewpt_in_viewer_ctl)
 !
       call write_control_array_c2_r(id_control, level,                  &
      &    hd_model_mat, mat%modelview_mat_ctl)

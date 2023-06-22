@@ -148,13 +148,13 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c_r(id_control, level,                 &
-     &    hd_n_magne, induct_ctl%coef_4_magne_evo)
+     &    induct_ctl%coef_4_magne_evo)
       call write_control_array_c_r(id_control, level,                 &
-     &    hd_n_mag_p, induct_ctl%coef_4_mag_potential)
+     &    induct_ctl%coef_4_mag_potential)
       call write_control_array_c_r(id_control, level,                 &
-     &    hd_n_m_diff, induct_ctl%coef_4_mag_diffuse)
+     &    induct_ctl%coef_4_mag_diffuse)
       call write_control_array_c_r(id_control, level,                 &
-     &    hd_n_induct, induct_ctl%coef_4_induction)
+     &    induct_ctl%coef_4_induction)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_induction_ctl

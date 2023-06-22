@@ -263,7 +263,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c2(id_control, level,                    &
-     &    hd_field_to_rename, field_list%field_to_rename_ctl)
+     &    field_list%field_to_rename_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_rename_spectr_control

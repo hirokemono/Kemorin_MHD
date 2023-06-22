@@ -186,20 +186,20 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_n_mom, mom_ctl%coef_4_intertia)
+     &    mom_ctl%coef_4_intertia)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_n_press, mom_ctl%coef_4_grad_p)
+     &    mom_ctl%coef_4_grad_p)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_n_v_diff, mom_ctl%coef_4_viscous)
+     &    mom_ctl%coef_4_viscous)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_n_buo, mom_ctl%coef_4_termal_buo)
+     &    mom_ctl%coef_4_termal_buo)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_n_c_buo, mom_ctl%coef_4_comp_buo)
+     &    mom_ctl%coef_4_comp_buo)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_n_cor, mom_ctl%coef_4_Coriolis)
+     &    mom_ctl%coef_4_Coriolis)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_n_lor, mom_ctl%coef_4_Lorentz)
+     &    mom_ctl%coef_4_Lorentz)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_momentum_ctl

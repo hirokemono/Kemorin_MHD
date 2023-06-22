@@ -192,7 +192,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_i2(id_control, level,                    &
-     &    hd_pick_gauss_lm, g_pwr%idx_gauss_ctl)
+     &    g_pwr%idx_gauss_ctl)
       call write_control_array_i1(id_control, level,                    &
      &    g_pwr%idx_gauss_l_ctl)
       call write_control_array_i1(id_control, level,                    &
