@@ -268,6 +268,42 @@ void dealloc_f_ctl_cr_array(struct f_ctl_cr_array *f_cr_array)
 }
 
 
+struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array)
+{
+    int i;
+    struct cr_array_views *cr_array_vws = (struct cr_array_views *) malloc(sizeof(struct cr_array_views));
+    if(cr_array_vws == NULL){
+        printf("malloc error for cr_array_views\n");
+        exit(0);
+    };
+    
+    cr_array_vws->cr_array_clist = init_chara_real_clist();
+    for(i=0;i<f_cr_array->f_num[0];i++){
+        append_chara_real_clist(f_cr_array->c_charavalue[i], f_cr_array->f_rctls[i],
+                                cr_array_vws->cr_array_clist);
+    }
+    
+    
+    printf("count_chara_clist %d\n", count_chara_real_clist(cr_array_vws->cr_array_clist));
+    for(i=0;i<f_cr_array->f_num[0];i++){
+        printf("item %d %s %le\n", i,
+               chara_real_clist_at_index(i, cr_array_vws->cr_array_clist)->c_tbl,
+               chara_real_clist_at_index(i, cr_array_vws->cr_array_clist)->r_data);
+    }
+    return cr_array_vws;
+}
+
+void dealloc_cr_array_views(struct cr_array_views *cr_array_vws)
+{
+    dealloc_chara_real_clist(cr_array_vws->cr_array_clist);
+    return;
+}
+
+
+
+
+
+
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_platform_control *f_plt = (struct f_platform_control *) malloc(sizeof(struct f_platform_control));

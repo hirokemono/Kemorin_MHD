@@ -11,7 +11,7 @@ F90DLLFLAGS = -fPIC $(F90OPTFLAGS)
 OPTFLAGS = -O3 -Wall -g  -D__APPLE__
 CXXFLAGS =  -D__APPLE__
 
-KEMO_INCLUDE = -I. \
+KEMO_INCLUDE = -I. -I./GTK \
 -I$(WORKDIR) \
 -I$(SRCDIR)/MHD/C_src/CORE_C \
 -I$(SRCDIR)/MHD/C_src/GTK \
@@ -30,7 +30,10 @@ GTK3_LIBS =   $(shell pkg-config --libs gtk+-3.0)
 
 OBJECTS = \
 file_dialog.o \
-ctl_data_platforms_GTK.o
+ctl_data_platforms_GTK.o \
+\
+control_panel_4_dimless_GTK.o
+
 
 MODULES = \
 read_mhd_control_4_c.o \
@@ -44,11 +47,15 @@ control_GTK: $(OBJECTS) $(MODULES)
 	-o control_GTK $(OBJECTS) $(MODULES) $(KEMO_LIBS) $(GTK3_LIBS)
 
 
+control_panel_4_dimless_GTK.o: GTK/control_panel_4_dimless_GTK.c GTK/control_panel_4_dimless_GTK.h
+	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panel_4_dimless_GTK.c
+
 ctl_data_platforms_GTK.o: ctl_data_platforms_GTK.c ctl_data_platforms_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/ctl_data_platforms_GTK.c
 
-file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o
+file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/file_dialog.c
 

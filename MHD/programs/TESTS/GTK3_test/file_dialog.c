@@ -14,8 +14,10 @@
 #include "kemoview_gtk_routines.h"
 #include "tree_view_chara_GTK.h"
 #include "tree_view_4_field_GTK.h"
+#include "tree_view_4_force_GTK.h"
 
 #include "ctl_data_platforms_GTK.h"
+#include "control_panel_4_dimless_GTK.h"
 
 extern void c_view_control_sph_SGS_MHD();
 
@@ -81,7 +83,7 @@ struct f_MHD_dimless_control{
 	char * c_block_name;
 	
 	struct f_ctl_cr_array * f_dimess_names;
-	struct cr_array_views * f_dimless_vws;
+	struct dimless_views * f_dimless_vws;
 };
 
 struct f_MHD_model_control{
@@ -227,7 +229,16 @@ struct f_MHD_dimless_control * init_f_MHD_dimless_ctl(void *(*c_load_self)(void 
 					   f_dimless_ctl->f_block_name);
 	
 	f_dimless_ctl->f_dimess_names = init_f_ctl_cr_array(c_MHD_dimless_array, f_dimless_ctl->f_self);
-//	f_dimless_ctl->f_dimless_vws =   init_cr_array_views(f_dimless_ctl->f_dimess_names);
+//	f_dimless_ctl->f_dimless_vws =  init_cr_array_views(f_dimless_ctl->f_dimess_names);
+	
+    f_dimless_ctl->f_dimless_vws = (struct dimless_views *) malloc(sizeof(struct dimless_views));
+	int i;
+    f_dimless_ctl->f_dimless_vws->cr_clist = init_chara_real_clist();
+    for(i=0;i<f_dimless_ctl->f_dimess_names->f_num[0];i++){
+		append_chara_real_clist(f_dimless_ctl->f_dimess_names->c_charavalue[i], 
+								f_dimless_ctl->f_dimess_names->f_rctls[i],
+                                f_dimless_ctl->f_dimless_vws->cr_clist);
+    }
 	
 	return f_dimless_ctl;
 };
@@ -594,9 +605,18 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	GtkWidget *expand_MHD_force = draw_control_block(f_MHD_ctl->f_model_ctl->f_frc_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_frc_ctl->f_iflag,
 													 560, 240, window, vbox_test);
+	
+	GtkWidget *vbox_dimless = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	
+	f_MHD_ctl->f_model_ctl->f_dless_ctl->f_dimless_vws->dimless_tree_view = gtk_tree_view_new();
+    init_dimless_tree_view(f_MHD_ctl->f_model_ctl->f_dless_ctl->f_dimless_vws);
+    create_used_dimless_tree_views(f_MHD_ctl->f_model_ctl->f_dless_ctl->f_dimless_vws);
+//	init_dimless_views_GTK(f_MHD_ctl->f_model_ctl->f_dless_ctl->f_dimless_vws->cr_clist, 
+//						   f_MHD_ctl->f_model_ctl->f_dless_ctl->f_dimless_vws);
+	add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl->f_dimless_vws, vbox_dimless);
 	GtkWidget *expand_MHD_dimless = draw_control_block(f_MHD_ctl->f_model_ctl->f_dless_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_dless_ctl->f_iflag,
-													 560, 240, window, vbox_test);
+													 560, 240, window, vbox_dimless);
 	
 	GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_force, FALSE, FALSE, 0);

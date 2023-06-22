@@ -448,4 +448,20 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine c_realloc_chara_real_array(num_c, c_ctl)               &
+     &          bind(C, NAME = 'c_realloc_chara_real_array')
+      integer(C_int), intent(in) :: num_c
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(ctl_array_cr), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call dealloc_control_array_c_r(f_ctl)
+      f_ctl%num = num_c
+      f_ctl%icou = num_c
+      call alloc_control_array_c_r(f_ctl)
+
+      end subroutine c_realloc_chara_real_array
+!
+!  ---------------------------------------------------------------------
+!
       end module ctl_array_singles_to_c

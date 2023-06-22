@@ -248,10 +248,6 @@ static void set_from_chara_ctl_list_at_index(int index, struct chara_ctl_list *h
 	if(head != NULL) set_from_chara_ctl_item_c(head->c_item, c_out);
 	return;
 };
-static struct chara_ctl_item *chara_ctl_list_at_index(int index, struct chara_ctl_list *head){
-    struct chara_ctl_list *tmp_list = find_c_ctl_list_item_by_index(index, head);
-    return tmp_list->c_item;
-};
 
 
 static void add_chara_ctl_list_before_c_tbl(char *ref, char *c_in,
@@ -347,8 +343,10 @@ void set_from_chara_clist_at_index(int index, struct chara_clist *c_clst, char *
     set_from_chara_ctl_list_at_index(index, &c_clst->c_item_head, c_out);
     return;
 };
+
 struct chara_ctl_item *chara_clist_at_index(int index, struct chara_clist *c_clst){
-    return chara_ctl_list_at_index(index, &c_clst->c_item_head);
+    struct chara_ctl_list *tmp_list = find_c_ctl_list_item_by_index(index, &c_clst->c_item_head);
+    return tmp_list->c_item;
 }
 
 void add_chara_clist_before_c_tbl(char *ref, char *c_in, struct chara_clist *c_clst){

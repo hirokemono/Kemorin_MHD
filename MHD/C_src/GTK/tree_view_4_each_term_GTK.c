@@ -71,17 +71,6 @@ static void cb_add_thermal_buo_coef(GtkComboBox *combobox_add, gpointer user_dat
     return;
 }
 
-static void cb_add_thermal_buo_coef_new(GtkButton *button, gpointer user_data)
-{
-    struct momentum_coefs_view *mom_vws = (struct momentum_coefs_view *) user_data;
-    
-    mom_vws->index_coefs = add_cr_list_by_bottun_GTK(mom_vws->index_coefs, 
-                                                   mom_vws->coefs_tree_view,
-                                                   mom_vws->mom_ctl_gtk->coef_4_termal_buo_list);
-    write_chara_real_clist(stdout, 0, "buoyancy coeffient added", mom_vws->mom_ctl_gtk->coef_4_termal_buo_list);
-    return;
-}
-
 void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
     GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
     GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();
@@ -103,16 +92,14 @@ void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
 void add_thermal_buo_selection_box(struct momentum_coefs_view *mom_vws, GtkWidget *vbox)
 {
     GtkTreeModel *model_default =  gtk_tree_view_get_model(GTK_TREE_VIEW(mom_vws->dimless_tree_view));
-    GtkWidget *button_add = gtk_button_new_with_label("Add");
+    GtkWidget *label_add = gtk_label_new("Add: ");
     GtkWidget *combobox_add = gtk_combo_box_new_with_model(model_default);
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
 	
 	add_chara_real_list_box_w_combobox(mom_vws->coefs_tree_view,
-				button_add, combobox_add, button_delete, vbox);
+                                       label_add, combobox_add, button_delete, vbox);
 	
     /* Add callbacks */
-    g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(cb_add_thermal_buo_coef_new), (gpointer) mom_vws);
     g_signal_connect(G_OBJECT(combobox_add), "changed", 
                      G_CALLBACK(cb_add_thermal_buo_coef), (gpointer) mom_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 

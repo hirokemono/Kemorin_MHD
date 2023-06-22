@@ -11,6 +11,7 @@
 
 #include "skip_comment_c.h"
 #include "t_control_chara_IO.h"
+#include "t_control_chara_real_IO.h"
 #include "t_control_label_from_f.h"
 #include "control_combobox_GTK.h"
 #include "kemoview_gtk_routines.h"
@@ -140,7 +141,7 @@ struct cr_array_views{
     GtkWidget *cr_array_tree_view;
     GtkWidget *cr_array_default_view;
     
-    struct cr_clist *cr_array_clist;
+    struct chara_real_clist *cr_array_clist;
 };
 
 
@@ -190,6 +191,9 @@ void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray);
 
 struct c_array_views * init_c_array_views(struct f_ctl_chara_array *f_carray);
 void dealloc_c_array_views(struct c_array_views *c_array_vws);
+
+struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array);
+void dealloc_cr_array_views(struct cr_array_views *cr_array_vws);
 
 
 
