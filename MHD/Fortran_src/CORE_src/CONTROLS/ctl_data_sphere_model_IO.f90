@@ -313,22 +313,22 @@
      &    spctl%increment_cheby_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_shell_size, spctl%fluid_core_size_ctl)
+     &    spctl%fluid_core_size_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_shell_ratio, spctl%ICB_to_CMB_ratio_ctl)
+     &    spctl%ICB_to_CMB_ratio_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_Min_radius, spctl%Min_radius_ctl)
+     &    spctl%Min_radius_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_ICB_radius, spctl%ICB_radius_ctl)
+     &    spctl%ICB_radius_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_CMB_radius, spctl%CMB_radius_ctl)
+     &    spctl%CMB_radius_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_Max_radius, spctl%Max_radius_ctl)
+     &    spctl%Max_radius_ctl)
 !
       call write_control_array_i_r(id_control, level,                   &
      &    hd_numlayer_shell, spctl%radius_ctl)
       call write_control_array_r1(id_control, level,                    &
-     &    hd_add_external_layer, spctl%add_ext_layer_ctl)
+     &    spctl%add_ext_layer_ctl)
 !
       call write_control_array_c_i(id_control, level,                   &
      &    hd_bc_sph, spctl%radial_grp_ctl)

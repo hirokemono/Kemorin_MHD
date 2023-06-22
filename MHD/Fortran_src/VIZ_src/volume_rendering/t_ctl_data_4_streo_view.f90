@@ -149,11 +149,11 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_focaldistance, streo%focalpoint_ctl)
+     &    streo%focalpoint_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eye_separation, streo%eye_separation_ctl)
+     &    streo%eye_separation_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eye_sep_angle, streo%eye_sep_angle_ctl)
+     &    streo%eye_sep_angle_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    streo%step_eye_sep_angle_ctl)

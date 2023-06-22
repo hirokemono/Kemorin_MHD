@@ -395,7 +395,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_elapsed_time, tctl%elapsed_time_ctl)
+     &    tctl%elapsed_time_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    tctl%i_step_init_ctl)
@@ -426,49 +426,49 @@
      &    tctl%i_step_monitor_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_dt, tctl%dt_ctl)
+     &    tctl%dt_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_time_init, tctl%time_init_ctl)
+     &    tctl%time_init_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_min_delta_t, tctl%min_delta_t_ctl)
+     &    tctl%min_delta_t_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_max_delta_t, tctl%max_delta_t_ctl)
+     &    tctl%max_delta_t_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_max_eps_to_shrink, tctl%max_eps_to_shrink_ctl)
+     &    tctl%max_eps_to_shrink_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_min_eps_to_expand, tctl%min_eps_to_expand_ctl)
+     &    tctl%min_eps_to_expand_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_check, tctl%delta_t_check_ctl)
+     &    tctl%delta_t_check_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_rst, tctl%delta_t_rst_ctl)
+     &    tctl%delta_t_rst_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_section, tctl%delta_t_psf_ctl)
+     &    tctl%delta_t_psf_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_isosurf, tctl%delta_t_iso_ctl)
+     &    tctl%delta_t_iso_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_map_projection, tctl%delta_t_map_ctl)
+     &    tctl%delta_t_map_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_pvr, tctl%delta_t_pvr_ctl)
+     &    tctl%delta_t_pvr_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_fline, tctl%delta_t_fline_ctl)
+     &    tctl%delta_t_fline_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_lic, tctl%delta_t_lic_ctl)
+     &    tctl%delta_t_lic_ctl)
 !
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_ucd, tctl%delta_t_field_ctl)
+     &    tctl%delta_t_field_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_monitor, tctl%delta_t_monitor_ctl)
+     &    tctl%delta_t_monitor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_sgs_coefs, tctl%delta_t_sgs_coefs_ctl)
+     &    tctl%delta_t_sgs_coefs_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_boundary, tctl%delta_t_boundary_ctl)
+     &    tctl%delta_t_boundary_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_ratio_to_cfl, tctl%ratio_to_cfl_ctl)
+     &    tctl%ratio_to_cfl_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    tctl%i_step_sgs_coefs_ctl)

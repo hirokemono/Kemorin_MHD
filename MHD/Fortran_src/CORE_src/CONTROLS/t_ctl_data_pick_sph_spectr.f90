@@ -220,7 +220,7 @@
       call write_control_array_i1(id_control, level,                    &
      &    pspec_ctl%idx_pick_layer_ctl)
       call write_control_array_r1(id_control, level,                    &
-     &    hd_pick_radius, pspec_ctl%pick_radius_ctl)
+     &    pspec_ctl%pick_radius_ctl)
 !
       call write_control_array_i2(id_control, level,                    &
      &    hd_pick_sph_lm, pspec_ctl%idx_pick_sph_ctl)

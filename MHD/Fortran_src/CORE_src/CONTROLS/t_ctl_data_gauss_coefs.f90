@@ -199,7 +199,7 @@
      &    g_pwr%idx_gauss_m_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_gauss_coefs_r, g_pwr%gauss_coefs_radius_ctl)
+     &    g_pwr%gauss_coefs_radius_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    g_pwr%gauss_coefs_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &

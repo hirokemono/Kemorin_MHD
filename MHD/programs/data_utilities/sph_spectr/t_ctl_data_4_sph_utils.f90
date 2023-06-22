@@ -172,9 +172,9 @@
      &   (id_control, hd_time_step, spu_ctl%tstep_ctl, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_buo_ratio, spu_ctl%buoyancy_ratio_ctl)
+     &    spu_ctl%buoyancy_ratio_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_thermal_buo, spu_ctl%thermal_buoyancy_ctl)
+     &    spu_ctl%thermal_buoyancy_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_trans_model_ctl

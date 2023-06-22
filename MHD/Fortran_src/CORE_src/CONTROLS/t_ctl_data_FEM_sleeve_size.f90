@@ -139,7 +139,7 @@
       call write_integer_ctl_type(id_file, level, maxlen,               &
      &    sleeve_ctl%sleeve_level_ctl)
       call write_real_ctl_type(id_file, level, maxlen,                  &
-     &    hd_sleeve_size, sleeve_ctl%sleeve_size_ctl)
+     &    sleeve_ctl%sleeve_size_ctl)
       call write_chara_ctl_type(id_file, level, maxlen,                 &
      &    sleeve_ctl%ref_vector_ctl)
 !

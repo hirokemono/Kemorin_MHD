@@ -147,11 +147,11 @@
      &    hd_light_param, light%light_position_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_ambient, light%ambient_coef_ctl )
+     &    light%ambient_coef_ctl )
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_diffuse, light%diffuse_coef_ctl)
+     &    light%diffuse_coef_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_specular, light%specular_coef_ctl)
+     &    light%specular_coef_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_lighting_ctl

@@ -191,9 +191,9 @@
      &    noise_ctl%noise_stepping_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_noise_cube_size, noise_ctl%noise_cube_size_ctl)
+     &    noise_ctl%noise_cube_size_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_noise_delta_x, noise_ctl%noise_deltax_ctl)
+     &    noise_ctl%noise_deltax_ctl)
       level = write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_cube_noise_control_data

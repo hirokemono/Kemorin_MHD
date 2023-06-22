@@ -285,9 +285,9 @@
      &    hd_model_mat, mat%modelview_mat_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_view_rot_deg, mat%view_rotation_deg_ctl)
+     &    mat%view_rotation_deg_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_scale_factor, mat%scale_factor_ctl)
+     &    mat%scale_factor_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_view_transfer_ctl

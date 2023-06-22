@@ -226,15 +226,15 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    gen_f_ctl%maximum_neighbour_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_omitted_ratio, gen_f_ctl%omitted_ratio_ctl)
+     &    gen_f_ctl%omitted_ratio_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    gen_f_ctl%minimum_comp_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    gen_f_ctl%ordering_list_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_minimum_det, gen_f_ctl%minimum_det_ctl)
+     &    gen_f_ctl%minimum_det_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_maximum_rms, gen_f_ctl%maximum_rms_ctl)
+     &    gen_f_ctl%maximum_rms_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    gen_f_ctl%filter_correction_ctl)

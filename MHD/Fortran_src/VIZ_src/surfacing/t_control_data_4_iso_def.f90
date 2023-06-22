@@ -231,7 +231,7 @@
      &    iso_def_c%isosurf_comp_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_iso_value, iso_def_c%isosurf_value_ctl)
+     &    iso_def_c%isosurf_value_ctl)
 !
       call write_control_array_c1(id_control, level,                    &
      &    iso_def_c%iso_area_ctl)

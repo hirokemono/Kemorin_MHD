@@ -264,9 +264,9 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    v_pwr%volume_ave_file_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_inner_r, v_pwr%inner_radius_ctl)
+     &    v_pwr%inner_radius_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_outer_r, v_pwr%outer_radius_ctl)
+     &    v_pwr%outer_radius_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_each_vol_spectr_ctl

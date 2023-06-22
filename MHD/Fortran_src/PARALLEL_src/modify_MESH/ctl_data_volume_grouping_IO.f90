@@ -228,14 +228,14 @@
      &    new_part_ctl%trace_count_fmt_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_weight_to_prev, new_part_ctl%weight_to_previous_ctl)
+     &    new_part_ctl%weight_to_previous_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_power_of_volume, new_part_ctl%power_of_volume_ctl)
+     &    new_part_ctl%power_of_volume_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    new_part_ctl%masking_switch_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_masking_weight, new_part_ctl%masking_weight_ctl)
+     &    new_part_ctl%masking_weight_ctl)
 !
       call write_repart_masking_ctl_array(id_control,                   &
      &    hd_masking_ctl, new_part_ctl, level)

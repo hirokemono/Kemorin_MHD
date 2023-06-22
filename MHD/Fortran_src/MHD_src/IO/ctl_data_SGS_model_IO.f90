@@ -388,7 +388,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    sgs_ctl%SGS_negative_clip_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_clip_limit, sgs_ctl%clipping_limit_ctl)
+     &    sgs_ctl%clipping_limit_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    sgs_ctl%SGS_marging_ctl)
 !
@@ -398,15 +398,15 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    sgs_ctl%SGS_buo_Csim_usage_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_hf_factor, sgs_ctl%SGS_hf_factor_ctl)
+     &    sgs_ctl%SGS_hf_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_cf_factor, sgs_ctl%SGS_cf_factor_ctl)
+     &    sgs_ctl%SGS_cf_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_mf_factor, sgs_ctl%SGS_mf_factor_ctl)
+     &    sgs_ctl%SGS_mf_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_mxwl_factor, sgs_ctl%SGS_mxwl_factor_ctl)
+     &    sgs_ctl%SGS_mxwl_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_uxb_factor, sgs_ctl%SGS_uxb_factor_ctl)
+     &    sgs_ctl%SGS_uxb_factor_ctl)
 !
       call write_filter_fnames_control                                  &
      &   (id_control, hd_filter_fnames, sgs_ctl%ffile_ctl, level)
@@ -414,7 +414,7 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    sgs_ctl%istep_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_stabilize_weight, sgs_ctl%stabilize_weight_ctl)
+     &    sgs_ctl%stabilize_weight_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    sgs_ctl%ngrp_radial_ave_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
@@ -425,10 +425,9 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    sgs_ctl%max_step_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_shrink_dynamic,                                      &
      &    sgs_ctl%delta_to_shrink_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_extend_dynamic, sgs_ctl%delta_to_extend_dynamic_ctl)
+     &    sgs_ctl%delta_to_extend_dynamic_ctl)
 !
       call write_control_array_c1(id_control, level,                    &
      &    sgs_ctl%SGS_terms_ctl)

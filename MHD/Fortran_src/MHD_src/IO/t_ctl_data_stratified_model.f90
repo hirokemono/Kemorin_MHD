@@ -128,11 +128,11 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_strat_sigma, takepiro_ctl%stratified_sigma_ctl)
+     &    takepiro_ctl%stratified_sigma_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_strat_width, takepiro_ctl%stratified_width_ctl)
+     &    takepiro_ctl%stratified_width_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_strat_outer, takepiro_ctl%stratified_outer_r_ctl)
+     &    takepiro_ctl%stratified_outer_r_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_takepiro_ctl

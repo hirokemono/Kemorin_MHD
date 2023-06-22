@@ -179,7 +179,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    refc_ctl%filterd_advect_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_diffusivity_reduction,                                     &
      &    refc_ctl%ICB_diffuse_reduction_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -250,9 +249,9 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_position, ref_ctl%depth)
+     &    ref_ctl%depth)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_comp_value, ref_ctl%value)
+     &    ref_ctl%value)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_ref_comp_ctl

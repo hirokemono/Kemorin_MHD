@@ -246,11 +246,11 @@
      &    CG_ctl%MG_ctl, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eps, CG_ctl%eps_ctl)
+     &    CG_ctl%eps_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sigma, CG_ctl%sigma_ctl)
+     &    CG_ctl%sigma_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sigma_diag, CG_ctl%sigma_diag_ctl)
+     &    CG_ctl%sigma_diag_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    CG_ctl%itr_ctl)

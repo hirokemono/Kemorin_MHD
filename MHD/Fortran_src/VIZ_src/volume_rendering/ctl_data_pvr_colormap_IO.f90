@@ -245,12 +245,12 @@
       call write_control_array_r3(id_control, level,                    &
      &    hd_opacity_def, color%step_opacity_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_constant_opacity, color%fix_opacity_ctl)
+     &    color%fix_opacity_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_pvr_range_min, color%range_min_ctl)
+     &    color%range_min_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_pvr_range_max, color%range_max_ctl)
+     &    color%range_max_ctl)
 !
       level = write_end_flag_for_ctl(id_control, level, hd_block)
 !

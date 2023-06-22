@@ -284,26 +284,26 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    mevo_ctl%maxiter_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eps_4_velo,  mevo_ctl%eps_4_velo_ctl)
+     &    mevo_ctl%eps_4_velo_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eps_4_magne, mevo_ctl%eps_4_magne_ctl)
+     &    mevo_ctl%eps_4_magne_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    mevo_ctl%scheme_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    mevo_ctl%diffuse_correct)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_coef_imp_v,  mevo_ctl%coef_imp_v_ctl)
+     &    mevo_ctl%coef_imp_v_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_coef_imp_t,  mevo_ctl%coef_imp_t_ctl)
+     &    mevo_ctl%coef_imp_t_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_coef_imp_b,  mevo_ctl%coef_imp_b_ctl)
+     &    mevo_ctl%coef_imp_b_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_coef_imp_c,  mevo_ctl%coef_imp_c_ctl)
+     &    mevo_ctl%coef_imp_c_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eps_crank, mevo_ctl%eps_crank_ctl)
+     &    mevo_ctl%eps_crank_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eps_B_crank, mevo_ctl%eps_B_crank_ctl)
+     &    mevo_ctl%eps_B_crank_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    mevo_ctl%method_4_CN)
       call write_chara_ctl_type(id_control, level, maxlen,              &

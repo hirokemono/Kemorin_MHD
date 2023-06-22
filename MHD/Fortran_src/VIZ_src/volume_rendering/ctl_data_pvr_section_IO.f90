@@ -184,7 +184,7 @@
      &    pvr_sect_ctl%fname_sect_ctl, pvr_sect_ctl%psf_def_c, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
+     &    pvr_sect_ctl%opacity_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    pvr_sect_ctl%zeroline_switch_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -194,16 +194,16 @@
       call write_real2_ctl_type(id_control, level, maxlen,              &
      &    hd_isoline_range, pvr_sect_ctl%isoline_range_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_isoline_width, pvr_sect_ctl%isoline_width_ctl)
+     &    pvr_sect_ctl%isoline_width_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_grid_width, pvr_sect_ctl%grid_width_ctl)
+     &    pvr_sect_ctl%grid_width_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    pvr_sect_ctl%tan_cyl_switch_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_tcyl_inner, pvr_sect_ctl%tangent_cylinder_inner_ctl)
+     &    pvr_sect_ctl%tangent_cylinder_inner_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_tcyl_outer, pvr_sect_ctl%tangent_cylinder_outer_ctl)
+     &    pvr_sect_ctl%tangent_cylinder_outer_ctl)
       level = write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_section_ctl

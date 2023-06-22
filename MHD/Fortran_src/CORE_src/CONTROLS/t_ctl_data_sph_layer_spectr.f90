@@ -190,7 +190,7 @@
       call write_control_array_i1(id_control, level,                    &
      &    lp_ctl%idx_spec_layer_ctl)
       call write_control_array_r1(id_control, level,                    &
-     &    hd_spctr_radius, lp_ctl%layer_radius_ctl)
+     &    lp_ctl%layer_radius_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    lp_ctl%layered_pwr_spectr_prefix)

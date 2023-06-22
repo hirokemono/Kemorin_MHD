@@ -248,13 +248,13 @@
      &    fil3_ctl%precond_esize_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eps_esize, fil3_ctl%eps_esize_ctl)
+     &    fil3_ctl%eps_esize_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    fil3_ctl%itr_esize_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sigma_esize, fil3_ctl%sigma_esize_ctl)
+     &    fil3_ctl%sigma_esize_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sigma_diag_esize, fil3_ctl%sigma_diag_esize_ctl)
+     &    fil3_ctl%sigma_diag_esize_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_dx_solver_param_ctl

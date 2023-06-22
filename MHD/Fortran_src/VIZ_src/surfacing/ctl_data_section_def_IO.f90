@@ -233,7 +233,7 @@
       call write_control_array_c_r(id_control, level,                   &
      &    hd_center_ctl, psf_def_c%psf_center_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_radius, psf_def_c%radius_psf_ctl)
+     &    psf_def_c%radius_psf_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    psf_def_c%psf_group_name_ctl)

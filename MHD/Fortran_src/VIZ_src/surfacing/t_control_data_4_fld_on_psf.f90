@@ -208,7 +208,7 @@
      &    fld_on_psf_c%output_type_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_result_value, fld_on_psf_c%output_value_ctl)
+     &    fld_on_psf_c%output_value_ctl)
 !
       call write_control_array_c2(id_control, level,                    &
      &    hd_iso_result_field, fld_on_psf_c%field_output_ctl)

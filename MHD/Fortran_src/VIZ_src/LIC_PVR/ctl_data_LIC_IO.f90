@@ -262,12 +262,12 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    lic_ctl%vr_sample_mode_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_step_size, lic_ctl%step_size_ctl)
+     &    lic_ctl%step_size_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    lic_ctl%normalization_type_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_normalization_value, lic_ctl%normalization_value_ctl)
+     &    lic_ctl%normalization_value_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

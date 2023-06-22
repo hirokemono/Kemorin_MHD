@@ -226,9 +226,9 @@
      &    meq_ctl%pick_circle_coord_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_pick_s_ctl, meq_ctl%pick_s_ctl)
+     &    meq_ctl%pick_s_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_pick_z_ctl, meq_ctl%pick_z_ctl)
+     &    meq_ctl%pick_z_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    meq_ctl%nphi_mid_eq_ctl)

@@ -246,7 +246,7 @@
      &      MG_ctl%MG_PRECOND_ctl)
 !
         call write_real_ctl_type(id_control, level, maxlen,             &
-     &      hd_MG_residual, MG_ctl%MG_residual_ctl)
+     &      MG_ctl%MG_residual_ctl)
 !
         call write_integer_ctl_type(id_control, level, maxlen,          &
      &      MG_ctl%maxiter_mid_ctl)

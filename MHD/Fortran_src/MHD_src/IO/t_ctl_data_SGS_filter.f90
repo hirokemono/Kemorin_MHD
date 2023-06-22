@@ -193,9 +193,9 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    sphf_ctl%maximum_moments_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_radial_filter_w, sphf_ctl%radial_filter_width_ctl)
+     &    sphf_ctl%radial_filter_width_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sphere_filter_w, sphf_ctl%sphere_filter_width_ctl)
+     &    sphf_ctl%sphere_filter_width_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    sphf_ctl%first_reference_ctl)

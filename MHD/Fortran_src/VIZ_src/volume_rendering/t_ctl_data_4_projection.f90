@@ -162,13 +162,13 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_perspect_angle, proj%perspective_angle_ctl)
+     &    proj%perspective_angle_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_perspect_xy, proj%perspective_xy_ratio_ctl)
+     &    proj%perspective_xy_ratio_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_perspect_near, proj%perspective_near_ctl)
+     &    proj%perspective_near_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_perspect_far, proj%perspective_far_ctl)
+     &    proj%perspective_far_ctl)
 !
       call write_real2_ctl_type(id_control, level, maxlen,              &
      &    hd_horizontal_range, proj%horizontal_range_ctl)

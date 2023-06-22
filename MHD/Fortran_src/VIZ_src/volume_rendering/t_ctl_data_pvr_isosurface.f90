@@ -126,9 +126,9 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    pvr_iso_ctl%isosurf_type_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_isosurf_value, pvr_iso_ctl%iso_value_ctl)
+     &    pvr_iso_ctl%iso_value_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
+     &    pvr_iso_ctl%opacity_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_isosurface_ctl

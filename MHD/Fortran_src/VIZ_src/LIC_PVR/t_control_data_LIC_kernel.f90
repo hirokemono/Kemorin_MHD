@@ -179,14 +179,14 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    kernel_ctl%kernel_resolution_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_kernel_peak, kernel_ctl%kernel_peak_ctl)
+     &    kernel_ctl%kernel_peak_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_kernel_sigma, kernel_ctl%kernel_sigma_ctl)
+     &    kernel_ctl%kernel_sigma_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    kernel_ctl%trace_length_mode_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_half_length, kernel_ctl%half_length_ctl)
+     &    kernel_ctl%half_length_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    kernel_ctl%max_trace_count_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
