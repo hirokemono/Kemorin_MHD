@@ -206,8 +206,6 @@
 !
       subroutine dup_pvr_ctl_struct(num_pvr, org_pvrs_c, new_pvrs_c)
 !
-      use bcast_control_data_4_pvr
-!
       integer(kind = kint), intent(in) :: num_pvr
       type(volume_rendering_controls), intent(in) :: org_pvrs_c
       type(volume_rendering_controls), intent(inout) :: new_pvrs_c

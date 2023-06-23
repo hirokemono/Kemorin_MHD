@@ -76,7 +76,7 @@
 !
 !>        Structure for spectr monitoring control
         type(sph_monitor_control) :: smonitor_ctl
-!>        Structure for monitoring plave list
+!>        Structure for monitoring node list
         type(node_monitor_control) :: nmtr_ctl
 !
         integer (kind=kint) :: i_mhd_ctl = 0
@@ -249,7 +249,7 @@
       call write_monitor_data_ctl                                       &
      &   (id_control, hd_monitor_data, MHD_ctl%nmtr_ctl, level)
       call write_sph_monitoring_ctl                                     &
-     &   (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, level)
+     &   (id_control, MHD_ctl%smonitor_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_mhd_ctl_noviz

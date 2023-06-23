@@ -169,8 +169,8 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pvr%i_pvr_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -289,8 +289,7 @@
 !
       call write_pvr_render_area_ctl(id_control, hd_plot_area,          &
      &                               pvr%render_area_c, level)
-      call write_lic_control_data(id_control, hd_lic_control,           &
-     &                            lic_ctl, level)
+      call write_lic_control_data(id_control, lic_ctl, level)
 !
       write(*,'(2a)', ADVANCE='NO') '!  ', trim(hd_view_transform)
       call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &

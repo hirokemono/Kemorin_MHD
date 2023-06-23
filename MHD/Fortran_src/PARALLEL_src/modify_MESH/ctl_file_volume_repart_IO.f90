@@ -103,9 +103,7 @@
       subroutine read_ctl_file_vol_repart(id_control, file_name,        &
      &          hd_block, viz_repart_c, c_buf)
 !
-      use calypso_mpi
       use skip_comment_f
-      use bcast_4_platform_ctl
       use t_read_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -114,8 +112,6 @@
       type(viz_repartition_ctl), intent(inout) :: viz_repart_c
       type(buffer_for_control), intent(inout) :: c_buf
 !
-!
-      if(my_rank .ne. 0) return
 !
       c_buf%level = c_buf%level + 1
       open(id_control, file=file_name, status='old')
@@ -171,9 +167,7 @@
       subroutine write_ctl_file_vol_repart(id_control, file_name,       &
      &                                     hd_block, viz_repart_c)
 !
-      use calypso_mpi
       use skip_comment_f
-      use bcast_4_platform_ctl
       use t_read_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -182,9 +176,6 @@
       type(viz_repartition_ctl), intent(in) :: viz_repart_c
 !
       integer(kind = kint) :: level
-!
-!
-      if(my_rank .ne. 0) return
 !
       level = 0
       open(id_control, file=file_name)

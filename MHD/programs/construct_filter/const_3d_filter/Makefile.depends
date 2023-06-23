@@ -10,7 +10,7 @@ analyzer_sorting_3dfilter.o: $(CONST_FILTER_3D_DIR)/analyzer_sorting_3dfilter.f9
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_trans_filter_coef.o: $(CONST_FILTER_3D_DIR)/analyzer_trans_filter_coef.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o m_work_time.o t_ctl_param_newdom_filter.o t_ctl_data_newdomain_filter.o t_domain_group_4_partition.o input_ctl_filter_newdomain.o bcast_nodes_for_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bcast_ctl_data_gen_3d_filter.o: $(CONST_FILTER_3D_DIR)/bcast_ctl_data_gen_3d_filter.f90 m_precision.o calypso_mpi.o t_ctl_data_gen_3d_filter.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o bcast_ctl_data_3d_filter.o bcast_ctl_data_gen_filter.o
+bcast_ctl_data_gen_3d_filter.o: $(CONST_FILTER_3D_DIR)/bcast_ctl_data_gen_3d_filter.f90 m_precision.o calypso_mpi.o t_ctl_data_gen_3d_filter.o skip_comment_f.o calypso_mpi_char.o calypso_mpi_int.o bcast_control_arrays.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o bcast_ctl_data_3d_filter.o bcast_ctl_data_gen_filter.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_nodes_for_trans.o: $(CONST_FILTER_3D_DIR)/bcast_nodes_for_trans.f90 m_precision.o calypso_mpi.o m_constants.o m_work_time.o t_internal_4_partitioner.o t_file_IO_parameter.o t_domain_group_4_partition.o const_domain_tbl_by_file.o calypso_mpi_int.o transfer_to_long_integers.o set_filters_4_new_domains.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<

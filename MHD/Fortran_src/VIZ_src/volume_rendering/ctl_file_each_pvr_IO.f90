@@ -31,7 +31,6 @@
       module ctl_file_each_pvr_IO
 !
       use m_precision
-      use calypso_mpi
 !
       use t_control_data_4_pvr
 !
@@ -106,7 +105,6 @@
      &                                   hd_pvr_ctl, pvr_ctl_type)
 !
       use ctl_data_each_pvr_IO
-      use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in)  :: fname_pvr_ctl
@@ -130,12 +128,7 @@
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)
-!
-      call bcast_pvr_update_flag(pvr_ctl_type)
-!
-      if(c_buf1%iend .gt. 0) then
-        call calypso_MPI_abort(c_buf1%iend, 'control file is broken')
-      end if
+      if(c_buf1%iend .gt. 0) pvr_ctl_type%i_pvr_ctl = - c_buf1%iend
 !
       end subroutine read_control_pvr_update
 !

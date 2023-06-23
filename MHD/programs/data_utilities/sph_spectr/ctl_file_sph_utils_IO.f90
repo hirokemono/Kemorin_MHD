@@ -189,7 +189,7 @@
      &   (id_control, hd_sph_trans_params, spu_ctl, level)
 !
       call write_sph_monitoring_ctl                                     &
-     &   (id_control, hd_pick_sph, spu_ctl%smonitor_ctl, level)
+     &   (id_control, spu_ctl%smonitor_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_utils_control_data

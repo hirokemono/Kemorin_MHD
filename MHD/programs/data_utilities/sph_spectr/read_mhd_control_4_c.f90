@@ -405,6 +405,243 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      type(c_ptr) function c_sph_monitor_ctl_block_name(c_ctl)          &
+     &          bind(C, NAME = 'c_sph_monitor_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_sph_monitor_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_ctl_iflag(c_ctl)               &
+     &          bind(C, NAME = 'c_sph_monitor_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_ctl_iflag = C_loc(f_ctl%i_sph_monitor)
+      end function c_sph_monitor_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_num_vspec_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_sph_monitor_num_vspec_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_num_vspec_ctl = C_loc(f_ctl%num_vspec_ctl)
+      end function c_sph_monitor_num_vspec_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_v_pwr(c_ctl)                   &
+     &          bind(C, NAME = 'c_sph_monitor_v_pwr')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_v_pwr = C_loc(f_ctl%v_pwr)
+      end function c_sph_monitor_v_pwr
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_lp_ctl(c_ctl)                  &
+     &          bind(C, NAME = 'c_sph_monitor_lp_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_lp_ctl = C_loc(f_ctl%lp_ctl)
+      end function c_sph_monitor_lp_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_g_pwr(c_ctl)                   &
+     &          bind(C, NAME = 'c_sph_monitor_g_pwr')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_g_pwr = C_loc(f_ctl%g_pwr)
+      end function c_sph_monitor_g_pwr
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_pspec_ctl(c_ctl)               &
+     &          bind(C, NAME = 'c_sph_monitor_pspec_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_pspec_ctl = C_loc(f_ctl%pspec_ctl)
+      end function c_sph_monitor_pspec_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_circ_ctls(c_ctl)               &
+     &          bind(C, NAME = 'c_sph_monitor_circ_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_circ_ctls = C_loc(f_ctl%circ_ctls)
+      end function c_sph_monitor_circ_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_dbench_ctl(c_ctl)              &
+     &          bind(C, NAME = 'c_sph_monitor_dbench_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_dbench_ctl = C_loc(f_ctl%dbench_ctl)
+      end function c_sph_monitor_dbench_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_fdip_ctl(c_ctl)                &
+     &          bind(C, NAME = 'c_sph_monitor_fdip_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_fdip_ctl = C_loc(f_ctl%fdip_ctl)
+      end function c_sph_monitor_fdip_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_vave_spectr_prefix(c_ctl)         &
+     &          bind(C, NAME = 'c_sph_mntr_vave_spectr_prefix')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_vave_spectr_prefix= C_loc(f_ctl%volume_average_prefix)
+      end function c_sph_mntr_vave_spectr_prefix
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_v_pwr_spectr_prefix(c_ctl)        &
+     &          bind(C, NAME = 'c_sph_mntr_v_pwr_spectr_prefix')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_v_pwr_spectr_prefix                                    &
+     &      = C_loc(f_ctl%volume_pwr_spectr_prefix)
+      end function c_sph_mntr_v_pwr_spectr_prefix
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_v_pwr_spectr_fmt(c_ctl)           &
+     &          bind(C, NAME = 'c_sph_mntr_v_pwr_spectr_fmt')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_v_pwr_spectr_fmt                                       &
+     &        = C_loc(f_ctl%volume_pwr_spectr_format)
+      end function c_sph_mntr_v_pwr_spectr_fmt
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_l_v_pwr_switch(c_ctl)             &
+     &          bind(C, NAME = 'c_sph_mntr_l_v_pwr_switch')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_l_v_pwr_switch = C_loc(f_ctl%degree_v_spectra_switch)
+      end function c_sph_mntr_l_v_pwr_switch
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_m_v_pwr_switch(c_ctl)             &
+     &          bind(C, NAME = 'c_sph_mntr_m_v_pwr_switch')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_m_v_pwr_switch                                         &
+     &      = C_loc(f_ctl%order_v_spectra_switch)
+      end function c_sph_mntr_m_v_pwr_switch
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_diff_lm_vpwr_switch(c_ctl)        &
+     &          bind(C, NAME = 'c_sph_mntr_diff_lm_vpwr_switch')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_diff_lm_vpwr_switch                                    &
+     &      = C_loc(f_ctl%diff_v_lm_spectra_switch)
+      end function c_sph_mntr_diff_lm_vpwr_switch
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_axis_v_power_switch(c_ctl)        &
+     &          bind(C, NAME = 'c_sph_mntr_axis_v_power_switch')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_axis_v_power_switch = C_loc(f_ctl%axis_v_power_switch)
+      end function c_sph_mntr_axis_v_power_switch
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_heat_Nusselt_file_prefix(c_ctl)            &
+     &          bind(C, NAME = 'c_heat_Nusselt_file_prefix')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_heat_Nusselt_file_prefix= C_loc(f_ctl%heat_Nusselt_file_prefix)
+      end function c_heat_Nusselt_file_prefix
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_comp_Nusselt_file_prefix(c_ctl)            &
+     &          bind(C, NAME = 'c_comp_Nusselt_file_prefix')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_comp_Nusselt_file_prefix= C_loc(f_ctl%comp_Nusselt_file_prefix)
+      end function c_comp_Nusselt_file_prefix
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_heat_Nusselt_file_fmt(c_ctl)               &
+     &          bind(C, NAME = 'c_heat_Nusselt_file_fmt')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_heat_Nusselt_file_fmt = C_loc(f_ctl%heat_Nusselt_file_format)
+      end function c_heat_Nusselt_file_fmt
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_comp_Nusselt_file_fmt(c_ctl)               &
+     &          bind(C, NAME = 'c_comp_Nusselt_file_fmt')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_comp_Nusselt_file_fmt = C_loc(f_ctl%comp_Nusselt_file_format)
+      end function c_comp_Nusselt_file_fmt
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_typ_scale_file_prefix(c_ctl)           &
+     &          bind(C, NAME = 'c_sph_typ_scale_file_prefix')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_typ_scale_file_prefix                                       &
+     &      = C_loc(f_ctl%typ_scale_file_prefix_ctl)
+      end function c_sph_typ_scale_file_prefix
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_typ_scale_file_fmt_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_sph_typ_scale_file_fmt_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_typ_scale_file_fmt_ctl                                      &
+     &                     = C_loc(f_ctl%typ_scale_file_format_ctl)
+      end function c_sph_typ_scale_file_fmt_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       type(c_ptr) function c_MHD_mdl_block_name(c_ctl)                  &
      &          bind(C, NAME = 'c_MHD_mdl_block_name')
       type(c_ptr), value, intent(in) :: c_ctl

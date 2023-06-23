@@ -15,9 +15,8 @@
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_sph_monitoring_ctl                             &
-!!     &         (id_control, hd_block, smonitor_ctl, level)
+!!     &         (id_control, smonitor_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len=kchara), intent(in) :: hd_block
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!      subroutine dealloc_sph_monitoring_ctl(smonitor_ctl)
@@ -171,8 +170,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
+      if(smonitor_ctl%i_sph_monitor .gt. 0) return
+      smonitor_ctl%block_name = trim(hd_block)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(smonitor_ctl%i_sph_monitor  .gt. 0) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -273,12 +273,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_sph_monitoring_ctl                               &
-     &         (id_control, hd_block, smonitor_ctl, level)
+     &         (id_control, smonitor_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(sph_monitor_control), intent(in) :: smonitor_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -303,7 +302,8 @@
       maxlen = max(maxlen, len_trim(hd_diff_lm_spectr_switch))
       maxlen = max(maxlen, len_trim(hd_axis_spectr_switch))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 smonitor_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    smonitor_ctl%volume_average_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -357,7 +357,8 @@
       call write_data_on_circles_ctl(id_control,                        &
      &    hd_field_on_circle_ctl, smonitor_ctl%circ_ctls, level)
 !
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                smonitor_ctl%block_name)
 !
       end subroutine write_sph_monitoring_ctl
 !

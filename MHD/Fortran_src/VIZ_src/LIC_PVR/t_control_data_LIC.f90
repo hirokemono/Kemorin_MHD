@@ -103,6 +103,9 @@
 !
 !
       type lic_parameter_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'LIC_ctl'
+!
         type(read_character_item) :: LIC_field_ctl
         type(read_character_item) :: subdomain_elapsed_dump_ctl
 !
@@ -340,8 +343,6 @@
       use t_control_data_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
-!
-      use bcast_ctl_data_LIC_noise
 !
       type(lic_parameter_ctl), intent(in) :: org_lic_c
       type(lic_parameter_ctl), intent(inout) :: new_lic_c

@@ -49,6 +49,28 @@ extern void * c_visualizations_lic_ctls(void *f_viz_ctls);
 extern void * c_visualizations_repart_ctl(void *f_viz_ctls);
 extern void * c_visualizations_fname_vrepart(void *f_viz_ctls);
 
+extern void * c_sph_monitor_ctl_block_name(void *f_smonitor_ctl);
+extern void * c_sph_monitor_ctl_iflag(void *f_smonitor_ctl);
+extern void * c_sph_monitor_v_pwr(void *f_smonitor_ctl);
+extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_g_pwr(void *f_smonitor_ctl);
+extern void * c_sph_monitor_pspec_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_circ_ctls(void *f_smonitor_ctl);
+extern void * c_sph_monitor_dbench_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_fdip_ctl(void *f_smonitor_ctl);
+extern void * c_sph_mntr_vave_spectr_prefix(void *f_smonitor_ctl);
+extern void * c_sph_mntr_v_pwr_spectr_prefix(void *f_smonitor_ctl);
+extern void * c_sph_mntr_v_pwr_spectr_fmt(void *f_smonitor_ctl);
+extern void * c_sph_mntr_l_v_pwr_switch(void *f_smonitor_ctl);
+extern void * c_sph_mntr_m_v_pwr_switch(void *f_smonitor_ctl);
+extern void * c_sph_mntr_diff_lm_vpwr_switch(void *f_smonitor_ctl);
+extern void * c_sph_mntr_axis_v_power_switch(void *f_smonitor_ctl);
+extern void * c_heat_Nusselt_file_prefix(void *f_smonitor_ctl);
+extern void * c_comp_Nusselt_file_prefix(void *f_smonitor_ctl);
+extern void * c_heat_Nusselt_file_fmt(void *f_smonitor_ctl);
+extern void * c_comp_Nusselt_file_fmt(void *f_smonitor_ctl);
+extern void * c_sph_typ_scale_file_prefix(void *f_smonitor_ctl);
+extern void * c_sph_typ_scale_file_fmt_ctl(void *f_smonitor_ctl);
 
 extern void * c_dynamo_vizs_block_name(void *f_zm_ctls);
 extern void * c_dynamo_vizs_iflag(void *f_zm_ctls);

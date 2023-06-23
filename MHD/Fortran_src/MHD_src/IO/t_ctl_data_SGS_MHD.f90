@@ -298,7 +298,7 @@
       call write_monitor_data_ctl                                       &
      &   (id_control, hd_monitor_data, MHD_ctl%nmtr_ctl, level)
       call write_sph_monitoring_ctl                                     &
-     &   (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, level)
+     &   (id_control, MHD_ctl%smonitor_ctl, level)
 !
       call write_viz_controls(id_control,                               &
      &                        add_SSMHD_ctl%viz_ctls, level)

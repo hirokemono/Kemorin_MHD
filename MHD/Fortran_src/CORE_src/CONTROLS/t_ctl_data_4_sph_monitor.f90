@@ -88,6 +88,10 @@
 !
 !
       type sph_monitor_control
+!>        Block name
+        character(len=kchara) :: block_name = 'sph_monitor_ctl'
+!
+!
         integer(kind = kint) :: num_vspec_ctl = 0
         type(volume_spectr_control), allocatable :: v_pwr(:)
 !

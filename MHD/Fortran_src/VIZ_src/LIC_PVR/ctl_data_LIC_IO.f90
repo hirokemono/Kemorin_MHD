@@ -14,10 +14,8 @@
 !!        character(len = kchara), intent(in) :: hd_block
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_lic_control_data                               &
-!!     &         (id_control, hd_block, lic_ctl, level)
+!!      subroutine write_lic_control_data(id_control, lic_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len = kchara), intent(in) :: hd_block
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
@@ -154,8 +152,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(lic_ctl%i_lic_control .gt. 0) return
+      lic_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -203,8 +202,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_lic_control_data                                 &
-     &         (id_control, hd_block, lic_ctl, level)
+      subroutine write_lic_control_data(id_control, lic_ctl, level)
 !
       use ctl_file_LIC_kernel_IO
       use ctl_file_LIC_noise_IO
@@ -213,7 +211,6 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_block
       type(lic_parameter_ctl), intent(in) :: lic_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -233,7 +230,8 @@
       maxlen = max(maxlen, len_trim(hd_normalization_type))
       maxlen = max(maxlen, len_trim(hd_normalization_value))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 lic_ctl%block_name)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    lic_ctl%subdomain_elapsed_dump_ctl)
@@ -269,7 +267,8 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    lic_ctl%normalization_value_ctl)
 !
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                lic_ctl%block_name)
 !
       end subroutine write_lic_control_data
 !

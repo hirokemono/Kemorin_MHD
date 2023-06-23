@@ -68,6 +68,7 @@
       implicit  none
 !
       private :: bcast_kernel_control_data
+      private :: bcast_cube_noise_control_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -91,7 +92,6 @@
       use calypso_mpi_char
       use bcast_ctl_data_vol_repart
       use bcast_control_arrays
-      use bcast_ctl_data_LIC_noise
       use transfer_to_long_integers
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
@@ -100,6 +100,8 @@
 !
 !
       call calypso_mpi_bcast_one_int(lic_ctl%i_lic_control, 0)
+      call calypso_mpi_bcast_character(lic_ctl%block_name,              &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_character(lic_ctl%fname_LIC_kernel_ctl,    &
      &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_character(lic_ctl%fname_LIC_noise_ctl,     &
@@ -158,6 +160,35 @@
       call bcast_ctl_type_r1(kernel_ctl%half_length_ctl)
 !
       end subroutine bcast_kernel_control_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine bcast_cube_noise_control_data(noise_ctl)
+!
+      use t_control_data_LIC_noise
+      use calypso_mpi_char
+      use calypso_mpi_int
+      use bcast_control_arrays
+      use transfer_to_long_integers
+!
+      type(cube_noise_ctl), intent(inout) :: noise_ctl
+!
+!
+      call calypso_mpi_bcast_one_int(noise_ctl%i_cube_noise_control, 0)
+      call calypso_mpi_bcast_character(noise_ctl%block_name,            &
+     &                                 cast_long(kchara), 0)
+!
+      call bcast_ctl_type_c1(noise_ctl%noise_type_ctl)
+      call bcast_ctl_type_c1(noise_ctl%noise_file_name_ctl)
+      call bcast_ctl_type_c1(noise_ctl%noise_file_format_ctl)
+!
+      call bcast_ctl_type_i1(noise_ctl%noise_resolution_ctl)
+      call bcast_ctl_type_i1(noise_ctl%noise_stepping_ctl)
+!
+      call bcast_ctl_type_r1(noise_ctl%noise_cube_size_ctl)
+      call bcast_ctl_type_r1(noise_ctl%noise_deltax_ctl)
+!
+      end subroutine bcast_cube_noise_control_data
 !
 !  ---------------------------------------------------------------------
 !

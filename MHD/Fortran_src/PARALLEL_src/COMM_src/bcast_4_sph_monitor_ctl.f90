@@ -36,12 +36,16 @@
 !
       subroutine bcast_sph_monitoring_ctl(smonitor_ctl)
 !
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
 !
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (smonitor_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(smonitor_ctl%i_sph_monitor, 0)
 !
       call bcast_ctl_type_c1(smonitor_ctl%volume_average_prefix)

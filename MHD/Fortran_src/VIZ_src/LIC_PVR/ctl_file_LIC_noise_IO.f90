@@ -147,12 +147,12 @@
 !
 !
       if(cmp_no_case(file_name, 'NO_FILE')) then
-        call write_cube_noise_control_data(id_control, hd_block,        &
+        call write_cube_noise_control_data(id_control,                  &
      &                                     noise_ctl, level)
       else if(id_control .eq. id_monitor) then
         write(*,'(4a)') '!  ', trim(hd_block),                          &
      &                 ' should be written to ... ', trim(file_name)
-        call write_cube_noise_control_data(id_control, hd_block,        &
+        call write_cube_noise_control_data(id_control,                  &
      &                                     noise_ctl, level)
       else
         write(*,'(3a)') trim(hd_block),                                 &
@@ -180,7 +180,7 @@
       level = 0
       open(id_control, file=file_name)
       call write_cube_noise_control_data                                &
-     &     (id_control, hd_block, noise_ctl, level)
+     &     (id_control, noise_ctl, level)
       close(id_control)
 !
       end subroutine write_cube_noise_control_file
