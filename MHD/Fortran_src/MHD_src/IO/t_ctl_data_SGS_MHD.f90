@@ -300,10 +300,10 @@
       call write_sph_monitoring_ctl                                     &
      &   (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, level)
 !
-      call write_viz_controls(id_control, hd_viz_ctl,                   &
+      call write_viz_controls(id_control,                               &
      &                        add_SSMHD_ctl%viz_ctls, level)
       call write_dynamo_viz_control                                     &
-     &   (id_control, hd_dynamo_viz_ctl, add_SSMHD_ctl%zm_ctls, level)
+     &   (id_control, add_SSMHD_ctl%zm_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level,                &
      &                                MHD_ctl%block_name)
 !

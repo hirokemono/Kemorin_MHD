@@ -269,7 +269,7 @@
      &   (id_control, hd_viz_ctl, add_VMHD_ctl%viz3_ctls, level)
 !
       call write_dynamo_viz_control                                     &
-     &   (id_control, hd_dynamo_viz_ctl, add_VMHD_ctl%zm_ctls, level)
+     &   (id_control, add_VMHD_ctl%zm_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level,                &
      &                                MHD_ctl%block_name)
 !

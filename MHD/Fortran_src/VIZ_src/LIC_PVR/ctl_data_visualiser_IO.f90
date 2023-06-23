@@ -12,8 +12,7 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_viz_controls                                  &
-!!     &         (id_control, hd_block, viz_ctls, level)
+!!      subroutine write_viz_controls(id_control, viz_ctls, level)
 !!        integer(kind = kint), intent(in) :: id_control 
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(visualization_controls), intent(in) :: viz_ctls
@@ -180,8 +179,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(viz_ctls%i_viz_control .gt. 0) return
+      viz_ctls%block_name = trim(hd_block)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -253,8 +253,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_viz_controls                                    &
-     &         (id_control, hd_block, viz_ctls, level)
+      subroutine write_viz_controls(id_control, viz_ctls, level)
 !
       use t_read_control_elements
       use ctl_file_sections_IO
@@ -266,7 +265,6 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control 
-      character(len=kchara), intent(in) :: hd_block
       type(visualization_controls), intent(in) :: viz_ctls
       integer(kind = kint), intent(inout) :: level
 !
@@ -291,7 +289,8 @@
       maxlen = max(maxlen, len_trim(hd_i_step_ucd))
       maxlen = max(maxlen, len_trim(hd_output_fld_file_fmt))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 viz_ctls%block_name)
       call sel_write_ctl_file_vol_repart(id_control, hd_viz_partition,  &
      &    viz_ctls%fname_vol_repart_ctl, viz_ctls%repart_ctl, level)
 !
@@ -344,7 +343,8 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    viz_ctls%output_field_file_fmt_ctl)
 !
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                             viz_ctls%block_name)
 !
       end subroutine write_viz_controls
 !

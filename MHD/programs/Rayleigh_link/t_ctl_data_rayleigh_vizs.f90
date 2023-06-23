@@ -244,7 +244,7 @@
       call write_control_shell_domain                                   &
      &   (id_control, hd_domains_sph, rayleigh_vizs_ctl%sdctl, level)
 !
-      call write_viz_controls(id_control, hd_viz_control,               &
+      call write_viz_controls(id_control,                               &
      &                        rayleigh_vizs_ctl%viz_ctl_v, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

@@ -9,7 +9,7 @@
       implicit none
 !
       type(mhd_simulation_control), save, target :: MHD_ctl_C
-      type(add_sgs_sph_mhd_ctl), save, private :: add_SSMHD_ctl_C
+      type(add_sgs_sph_mhd_ctl), save, target, private :: add_SSMHD_ctl_C
       type(add_psf_sph_mhd_ctl), save :: add_SMHD_ctl_C
       integer(kind = kint), parameter :: id_ctl = 11
 !
@@ -36,6 +36,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      type(c_ptr) function c_add_sgs_sph_mhd_ctl()                      &
+     &          bind(C, NAME = 'c_add_sgs_sph_mhd_ctl')
+      c_add_sgs_sph_mhd_ctl = C_loc(add_SSMHD_ctl_C)
+      end function c_add_sgs_sph_mhd_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       type(c_ptr) function c_MHD_block_name(c_ctl)                      &
      &          bind(C, NAME = 'c_MHD_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
@@ -54,6 +62,7 @@
       c_MHD_iflag = C_loc(f_ctl%i_mhd_ctl)
       end function c_MHD_iflag
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_MHD_plt(c_ctl)                             &
@@ -143,6 +152,255 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_MHD_nmtr_ctl = C_loc(f_ctl%nmtr_ctl)
       end function c_MHD_nmtr_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_sgs_ctl(c_ctl)                         &
+     &          bind(C, NAME = 'c_MHD_sgs_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(add_sgs_sph_mhd_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_sgs_ctl = C_loc(f_ctl%sgs_ctl)
+      end function c_MHD_sgs_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_viz_ctls(c_ctl)                        &
+     &          bind(C, NAME = 'c_MHD_viz_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(add_sgs_sph_mhd_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_viz_ctls = C_loc(f_ctl%viz_ctls)
+      end function c_MHD_viz_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_zm_ctls(c_ctl)                         &
+     &          bind(C, NAME = 'c_MHD_zm_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(add_sgs_sph_mhd_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_zm_ctls = C_loc(f_ctl%zm_ctls)
+      end function c_MHD_zm_ctls
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_viz3_ctls(c_ctl)                       &
+     &          bind(C, NAME = 'c_MHD_viz3_ctls')
+      use t_ctl_data_sph_MHD_w_vizs
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(add_vizs_sph_mhd_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_viz3_ctls = C_loc(f_ctl%viz3_ctls)
+      end function c_MHD_viz3_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_zm_ctls3(c_ctl)                        &
+     &          bind(C, NAME = 'c_MHD_zm_ctls3')
+      use t_ctl_data_sph_MHD_w_vizs
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(add_vizs_sph_mhd_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_zm_ctls3 = C_loc(f_ctl%zm_ctls)
+      end function c_MHD_zm_ctls3
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_surfacing_ctls(c_ctl)                  &
+     &          bind(C, NAME = 'c_MHD_surfacing_ctls')
+      use t_ctl_data_sph_MHD_w_psf
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(add_psf_sph_mhd_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_surfacing_ctls = C_loc(f_ctl%surfacing_ctls)
+      end function c_MHD_surfacing_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_zm_sects(c_ctl)                        &
+     &          bind(C, NAME = 'c_MHD_zm_sects')
+      use t_ctl_data_sph_MHD_w_psf
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(add_psf_sph_mhd_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_zm_sects = C_loc(f_ctl%zm_sects)
+      end function c_MHD_zm_sects
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamo_vizs_block_name(c_ctl)              &
+     &          bind(C, NAME = 'c_dynamo_vizs_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_dynamo_viz_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamo_vizs_block_name = C_loc(f_ctl%block_name)
+      end function c_dynamo_vizs_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamo_vizs_iflag(c_ctl)                   &
+     &          bind(C, NAME = 'c_dynamo_vizs_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_dynamo_viz_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamo_vizs_iflag = C_loc(f_ctl%i_viz_ctl)
+      end function c_dynamo_vizs_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamo_vizs_crust_filter_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_dynamo_vizs_crust_filter_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_dynamo_viz_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamo_vizs_crust_filter_ctl = C_loc(f_ctl%crust_filter_ctl)
+      end function c_dynamo_vizs_crust_filter_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamo_vizs_zm_psf_ctls(c_ctl)             &
+     &          bind(C, NAME = 'c_dynamo_vizs_zm_psf_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_dynamo_viz_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamo_vizs_zm_psf_ctls = C_loc(f_ctl%zm_psf_ctls)
+      end function c_dynamo_vizs_zm_psf_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamo_vizs_zRMS_psf_ctls(c_ctl)           &
+     &          bind(C, NAME = 'c_dynamo_vizs_zRMS_psf_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_dynamo_viz_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamo_vizs_zRMS_psf_ctls = C_loc(f_ctl%zRMS_psf_ctls)
+      end function c_dynamo_vizs_zRMS_psf_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamo_vizs_zm_map_ctls(c_ctl)             &
+     &          bind(C, NAME = 'c_dynamo_vizs_zm_map_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_dynamo_viz_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamo_vizs_zm_map_ctls = C_loc(f_ctl%zm_map_ctls)
+      end function c_dynamo_vizs_zm_map_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamo_vizs_zRMS_map_ctls(c_ctl)           &
+     &          bind(C, NAME = 'c_dynamo_vizs_zRMS_map_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_dynamo_viz_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamo_vizs_zRMS_map_ctls = C_loc(f_ctl%zRMS_map_ctls)
+      end function c_dynamo_vizs_zRMS_map_ctls
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_block_name(c_ctl)           &
+     &          bind(C, NAME = 'c_visualizations_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_block_name = C_loc(f_ctl%block_name)
+      end function c_visualizations_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_iflag(c_ctl)                &
+     &          bind(C, NAME = 'c_visualizations_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_iflag = C_loc(f_ctl%i_viz_control)
+      end function c_visualizations_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_psf_ctls(c_ctl)             &
+     &          bind(C, NAME = 'c_visualizations_psf_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_psf_ctls = C_loc(f_ctl%psf_ctls)
+      end function c_visualizations_psf_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_iso_ctls(c_ctl)             &
+     &          bind(C, NAME = 'c_visualizations_iso_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_iso_ctls = C_loc(f_ctl%iso_ctls)
+      end function c_visualizations_iso_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_map_ctls(c_ctl)             &
+     &          bind(C, NAME = 'c_visualizations_map_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_map_ctls = C_loc(f_ctl%map_ctls)
+      end function c_visualizations_map_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_pvr_ctls(c_ctl)             &
+     &          bind(C, NAME = 'c_visualizations_pvr_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_pvr_ctls = C_loc(f_ctl%pvr_ctls)
+      end function c_visualizations_pvr_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_fline_ctls(c_ctl)           &
+     &          bind(C, NAME = 'c_visualizations_fline_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_fline_ctls = C_loc(f_ctl%fline_ctls)
+      end function c_visualizations_fline_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_lic_ctls(c_ctl)             &
+     &          bind(C, NAME = 'c_visualizations_lic_ctls')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_lic_ctls = C_loc(f_ctl%lic_ctls)
+      end function c_visualizations_lic_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_repart_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_visualizations_repart_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_repart_ctl = C_loc(f_ctl%repart_ctl)
+      end function c_visualizations_repart_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_visualizations_fname_vrepart(c_ctl)        &
+     &          bind(C, NAME = 'c_visualizations_fname_vrepart')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(visualization_controls), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_visualizations_fname_vrepart= C_loc(f_ctl%fname_vol_repart_ctl)
+      end function c_visualizations_fname_vrepart
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -630,6 +888,10 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_MHD_heat_source = C_loc(f_ctl%coef_4_source)
       end function c_MHD_heat_source
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

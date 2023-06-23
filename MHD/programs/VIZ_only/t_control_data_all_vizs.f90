@@ -210,7 +210,7 @@
       call write_control_time_step_data                                 &
      &   (id_control, hd_time_step, vizs_ctl%t_viz_ctl, level)
 !
-      call write_viz_controls(id_control, hd_viz_control,               &
+      call write_viz_controls(id_control,                               &
      &                        vizs_ctl%viz_ctl_v, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

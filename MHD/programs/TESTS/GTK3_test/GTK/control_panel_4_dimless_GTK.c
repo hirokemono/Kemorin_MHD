@@ -141,6 +141,11 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
 GtkWidget * add_dimless_selection_box(struct f_MHD_dimless_control *f_dless_ctl, GtkWidget *window)
 {
 	GtkWidget *vbox_dimless = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	
+	f_dless_ctl->f_dimless_vws->dimless_tree_view = gtk_tree_view_new();
+    init_dimless_tree_view(f_dless_ctl->f_dimless_vws);
+    create_used_dimless_tree_views(f_dless_ctl->f_dimless_vws);
+	
     GtkTreeModel *model_default =  gtk_tree_view_get_model(GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->default_dless_view));
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *combobox_add = gtk_combo_box_new_with_model(model_default);

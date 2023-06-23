@@ -217,8 +217,7 @@
       call write_sph_trans_params_ctl                                   &
      &   (id_control, hd_sph_trans_params, spt_ctl, level)
 !
-      call write_viz_controls(id_control, hd_viz_control,               &
-     &                         spt_ctl%viz_ctls, level)
+      call write_viz_controls(id_control, spt_ctl%viz_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_trans_control_data

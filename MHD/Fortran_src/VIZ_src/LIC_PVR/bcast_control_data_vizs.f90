@@ -70,9 +70,12 @@
 !
       call bcast_ctl_type_c1(viz_ctls%output_field_file_fmt_ctl)
 !
-      call calypso_mpi_bcast_one_int(viz_ctls%i_viz_control, 0)
       call calypso_mpi_bcast_character(viz_ctls%fname_vol_repart_ctl,   &
      &                                 cast_long(kchara), 0)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (viz_ctls%block_name, cast_long(kchara), 0)
+      call calypso_mpi_bcast_one_int(viz_ctls%i_viz_control, 0)
 !
       end subroutine bcast_viz_controls
 !
