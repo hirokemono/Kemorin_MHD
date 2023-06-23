@@ -61,9 +61,9 @@ file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GT
 
 
 
-read_mhd_control_4_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/read_mhd_control_4_c.f90
+read_mhd_control_4_c.o: $(SRCDIR)/MHD/programs/data_utilities/sph_spectr/read_mhd_control_4_c.f90 
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
-	$(SRCDIR)/MHD/Fortran_src/Fortran2003/read_mhd_control_4_c.f90
+	$(SRCDIR)/MHD/programs/data_utilities/sph_spectr/read_mhd_control_4_c.f90 
 
 ctl_array_singles_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_singles_to_c.f90
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \

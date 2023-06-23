@@ -242,7 +242,7 @@
      &    rayleigh_vizs_ctl%fld_ctl, level)
 !
       call write_control_shell_domain                                   &
-     &   (id_control, hd_domains_sph, rayleigh_vizs_ctl%sdctl, level)
+     &   (id_control, rayleigh_vizs_ctl%sdctl, level)
 !
       call write_viz_controls(id_control,                               &
      &                        rayleigh_vizs_ctl%viz_ctl_v, level)

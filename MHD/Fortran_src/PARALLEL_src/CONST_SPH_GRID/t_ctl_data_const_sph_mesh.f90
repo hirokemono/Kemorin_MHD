@@ -173,7 +173,7 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_platforms                                      &
      &   (id_control, hd_platform, gen_SPH_ctl%plt, level)
-      call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
+      call sel_write_ctl_gen_shell_grids(id_control,                    &
      &    gen_SPH_ctl%fname_psph, gen_SPH_ctl%psph_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

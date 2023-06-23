@@ -209,8 +209,7 @@
      &   (id_control, hd_FEM_mesh, spt_ctl%Fmesh_ctl, level)
 !
       call sel_write_ctl_gen_shell_grids                                &
-     &   (id_control, hd_sph_shell, spt_ctl%fname_psph,                 &
-     &    spt_ctl%psph_ctl, level)
+     &   (id_control, spt_ctl%fname_psph, spt_ctl%psph_ctl, level)
 !
       call write_sph_trans_model_ctl                                    &
      &   (id_control, hd_sph_trans_model, spt_ctl, level)

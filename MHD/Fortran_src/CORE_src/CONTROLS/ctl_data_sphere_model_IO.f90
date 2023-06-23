@@ -13,10 +13,8 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_control_shell_define                           &
-!!     &         (id_control, hd_block, spctl, level)
+!!      subroutine write_control_shell_define(id_control, spctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len=kchara), intent(in) :: hd_block
 !!        type(sphere_data_control), intent(in) :: spctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
@@ -179,8 +177,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(spctl%i_shell_def .gt. 0) return
+      spctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -247,8 +246,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_shell_define                             &
-     &         (id_control, hd_block, spctl, level)
+      subroutine write_control_shell_define(id_control, spctl, level)
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -256,7 +254,6 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(sphere_data_control), intent(in) :: spctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -290,7 +287,8 @@
       maxlen = max(maxlen, len_trim(hd_num_radial_grp))
       maxlen = max(maxlen, len_trim(hd_num_med_grp))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 spctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    spctl%sph_coef_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -342,7 +340,8 @@
      &    spctl%radial_layer_list_ctl)
       call write_control_array_i2(id_control, level,                    &
      &    spctl%med_layer_list_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                spctl%block_name)
 !
       end subroutine write_control_shell_define
 !

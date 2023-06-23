@@ -435,12 +435,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_sph_monitor_v_pwr(c_ctl)                   &
+      type(c_ptr) function c_sph_monitor_v_pwr(i, c_ctl)                &
      &          bind(C, NAME = 'c_sph_monitor_v_pwr')
+      integer(c_int), intent(in) :: i
       type(c_ptr), value, intent(in) :: c_ctl
       type(sph_monitor_control), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_sph_monitor_v_pwr = C_loc(f_ctl%v_pwr)
+      c_sph_monitor_v_pwr = C_loc(f_ctl%v_pwr(i))
       end function c_sph_monitor_v_pwr
 !
 !  ---------------------------------------------------------------------
@@ -1129,6 +1130,53 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      type(c_ptr) function c_smctl_ctl_block_name(c_ctl)                &
+     &          bind(C, NAME = 'c_smctl_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_mhd_control_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_smctl_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_smctl_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_smctl_ctl_iflag(c_ctl)                     &
+     &          bind(C, NAME = 'c_smctl_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_mhd_control_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_smctl_ctl_iflag = C_loc(f_ctl%i_control)
+      end function c_smctl_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_smctl_ctl_tctl(c_ctl)                      &
+     &          bind(C, NAME = 'c_smctl_ctl_tctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_mhd_control_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_smctl_ctl_tctl = C_loc(f_ctl%tctl)
+      end function c_smctl_ctl_tctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_smctl_mrst_ctl(c_ctl)                      &
+     &          bind(C, NAME = 'c_smctl_mrst_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_mhd_control_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_smctl_mrst_ctl = C_loc(f_ctl%mrst_ctl)
+      end function c_smctl_mrst_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_smctl_mevo_ctl(c_ctl)                      &
+     &          bind(C, NAME = 'c_smctl_mevo_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_mhd_control_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_smctl_mevo_ctl = C_loc(f_ctl%mevo_ctl)
+      end function c_smctl_mevo_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

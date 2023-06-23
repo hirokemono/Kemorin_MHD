@@ -287,16 +287,14 @@
       call write_control_platforms                                      &
      &   (id_control, hd_new_data, MHD_ctl%new_plt, level)
 !
-      call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
+      call sel_write_ctl_gen_shell_grids(id_control,                    &
      &    MHD_ctl%fname_psph, MHD_ctl%psph_ctl, level)
 !
       call write_sph_sgs_mhd_model(id_control, hd_model,                &
      &    MHD_ctl%model_ctl, add_SSMHD_ctl%sgs_ctl, level)
-      call write_sph_mhd_control                                        &
-     &   (id_control, hd_control, MHD_ctl%smctl_ctl, level)
+      call write_sph_mhd_control(id_control, MHD_ctl%smctl_ctl, level)
 !
-      call write_monitor_data_ctl                                       &
-     &   (id_control, hd_monitor_data, MHD_ctl%nmtr_ctl, level)
+      call write_monitor_data_ctl(id_control, MHD_ctl%nmtr_ctl, level)
       call write_sph_monitoring_ctl                                     &
      &   (id_control, MHD_ctl%smonitor_ctl, level)
 !

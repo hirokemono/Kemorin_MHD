@@ -12,8 +12,8 @@
 !!      subroutine read_control_shell_domain                            &
 !!     &         (id_control, hd_block, sdctl, c_buf)
 !!        type(sphere_domain_control), intent(inout) :: sdctl
-!!      subroutine write_control_shell_domain                           &
-!!     &         (id_file, hd_block, sdctl, level)
+!!      subroutine write_control_shell_domain(id_file, sdctl, level)
+!!        type(sphere_domain_control), intent(in) :: sdctl
 !!
 !!  ---------------------------------------------------------------------
 !!    example of control data
@@ -67,6 +67,8 @@
 !
 !>      control data structure for spherical shell parallelization
       type sphere_domain_control
+!>        Block name
+        character(len=kchara) :: block_name = 'num_domain_ctl'
 !>        Orsering set control
         type(read_character_item) :: indices_ordering_set
 !
@@ -177,8 +179,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(sdctl%i_domains_sph .gt. 0) return
+      sdctl%block_name =hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -222,14 +225,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_control_shell_domain                             &
-     &         (id_file, hd_block, sdctl, level)
+      subroutine write_control_shell_domain(id_file, sdctl, level)
 !
       use t_read_control_elements
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file
-      character(len=kchara), intent(in) :: hd_block
       type(sphere_domain_control), intent(in) :: sdctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -243,7 +244,7 @@
       maxlen = max(maxlen, len_trim(hd_num_radial_domain))
       maxlen = max(maxlen, len_trim(hd_num_horiz_domain))
 !
-      level = write_begin_flag_for_ctl(id_file, level, hd_block)
+      level = write_begin_flag_for_ctl(id_file, level,sdctl%block_name)
 !
       call write_chara_ctl_type(id_file, level, maxlen,                 &
      &    sdctl%inner_decomp_ctl)
@@ -260,7 +261,7 @@
       call write_control_array_c_i(id_file, level,                      &
      &    sdctl%ndomain_spectr_ctl)
 !
-      level =  write_end_flag_for_ctl(id_file, level, hd_block)
+      level =  write_end_flag_for_ctl(id_file, level, sdctl%block_name)
 !
       end subroutine write_control_shell_domain
 !

@@ -51,7 +51,8 @@ extern void * c_visualizations_fname_vrepart(void *f_viz_ctls);
 
 extern void * c_sph_monitor_ctl_block_name(void *f_smonitor_ctl);
 extern void * c_sph_monitor_ctl_iflag(void *f_smonitor_ctl);
-extern void * c_sph_monitor_v_pwr(void *f_smonitor_ctl);
+extern void * c_sph_monitor_num_vspec_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_v_pwr(int i, void *f_smonitor_ctl);
 extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
 extern void * c_sph_monitor_g_pwr(void *f_smonitor_ctl);
 extern void * c_sph_monitor_pspec_ctl(void *f_smonitor_ctl);
@@ -132,6 +133,11 @@ extern void * c_MHD_heat_advect(void *f_heat_ctl);
 extern void * c_MHD_heat_diffuse(void *f_heat_ctl);
 extern void * c_MHD_heat_source(void *f_heat_ctl);
 
+extern void * c_smctl_ctl_block_name(void *f_smctl_ctl);
+extern void * c_smctl_ctl_iflag(void *f_smctl_ctl);
+extern void * c_smctl_ctl_tctl(void *f_smctl_ctl);
+extern void * c_smctl_mrst_ctl(void *f_smctl_ctl);
+extern void * c_smctl_mevo_ctl(void *f_smctl_ctl);
 
 struct f_MHD_forces_control{
 	void * f_self;
@@ -247,6 +253,52 @@ struct f_MHD_model_control{
 	void * f_refc_ctl;
 };
 
+struct f_MHD_control_ctls{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	void * f_tctl;
+	void * f_mrst_ctl;
+	void * f_mevo_ctl;
+};
+
+struct f_MHD_sph_monitor_ctls{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	int * f_num_vspec_ctl;
+	void ** f_v_pwr;
+	void * f_lp_ctl;
+	void * f_g_pwr;
+	void * f_pspec_ctl;
+	void * f_circ_ctls;
+	void * f_dbench_ctl;
+	void * f_fdip_ctl;
+	void * f_volume_average_prefix;
+	void * f_volume_pwr_spectr_prefix;
+	void * f_volume_pwr_spectr_format;
+	void * f_degree_v_spectra_switch;
+	void * f_order_v_spectra_switch;
+	void * f_diff_v_lm_spectra_switch;
+	void * f_axis_v_power_switch;
+	void * f_heat_Nusselt_file_prefix;
+	void * f_comp_Nusselt_file_prefix;
+	void * f_heat_Nusselt_file_format;
+	void * f_comp_Nusselt_file_format;
+	void * f_typ_scale_file_prefix_ctl;
+	void * f_typ_scale_file_format_ctl;
+};
+
 
 struct f_MHD_viz_ctls{
 	void * f_self;
@@ -294,13 +346,13 @@ struct f_MHD_control{
 	char * c_block_name;
 	
 	struct f_platform_control *f_plt;
-	void * f_org_plt;
-	void * f_new_plt;
+	struct f_platform_control * f_org_plt;
+	struct f_platform_control * f_new_plt;
 	void * f_fname_psph;
 	void * f_psph_ctl;
 	struct f_MHD_model_control *f_model_ctl;
-	void * f_smctl_ctl;
-	void * f_smonitor_ctl;
+	struct f_MHD_control_ctls * f_smctl_ctl;
+	struct f_MHD_sph_monitor_ctls * f_smonitor_ctl;
 	void * f_nmtr_ctl;
 	
 	void * f_sgs_ctl;
@@ -546,6 +598,90 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
+struct f_MHD_control_ctls * init_f_MHD_control_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
+{
+	struct f_MHD_control_ctls *f_smctl_ctl 
+			= (struct f_MHD_control_ctls *) malloc(sizeof(struct f_MHD_control_ctls));
+	if(f_smctl_ctl == NULL){
+		printf("malloc error for f_smctl_ctl\n");
+		exit(0);
+	};
+	
+	f_smctl_ctl->f_self =  c_load_self(f_parent);
+	printf("f_self %p\n", f_smctl_ctl->f_self);
+	
+	f_smctl_ctl->f_block_name =   (char *) c_smctl_ctl_block_name(f_smctl_ctl->f_self);
+	f_smctl_ctl->f_iflag =        (int *) c_smctl_ctl_iflag(f_smctl_ctl->f_self);
+	c_chara_item_clength(f_smctl_ctl->f_block_name, f_smctl_ctl->f_namelength);
+	f_smctl_ctl->c_block_name = alloc_string((long) f_smctl_ctl->f_namelength[0]);
+	strngcopy_w_length(f_smctl_ctl->c_block_name, f_smctl_ctl->f_namelength[0], 
+					   f_smctl_ctl->f_block_name);
+	
+	f_smctl_ctl->f_tctl =     c_smctl_ctl_tctl(f_smctl_ctl->f_self);
+	f_smctl_ctl->f_mrst_ctl = c_smctl_mrst_ctl(f_smctl_ctl->f_self);
+	f_smctl_ctl->f_mevo_ctl = c_smctl_mevo_ctl(f_smctl_ctl->f_self);
+	return f_smctl_ctl;
+}
+
+struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
+{
+	struct f_MHD_sph_monitor_ctls *f_smonitor_ctl 
+			= (struct f_MHD_sph_monitor_ctls *) malloc(sizeof(struct f_MHD_sph_monitor_ctls));
+	if(f_smonitor_ctl == NULL){
+		printf("malloc error for f_smonitor_ctl\n");
+		exit(0);
+	};
+	
+	f_smonitor_ctl->f_self =  c_load_self(f_parent);
+	printf("f_self %p\n", f_smonitor_ctl->f_self);
+	
+	f_smonitor_ctl->f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_iflag =        (int *) c_sph_monitor_ctl_iflag(f_smonitor_ctl->f_self);
+	c_chara_item_clength(f_smonitor_ctl->f_block_name, f_smonitor_ctl->f_namelength);
+	f_smonitor_ctl->c_block_name = alloc_string((long) f_smonitor_ctl->f_namelength[0]);
+	strngcopy_w_length(f_smonitor_ctl->c_block_name, f_smonitor_ctl->f_namelength[0], 
+					   f_smonitor_ctl->f_block_name);
+	
+	f_smonitor_ctl->f_num_vspec_ctl = c_sph_monitor_num_vspec_ctl(f_smonitor_ctl->f_self);
+	
+	f_smonitor_ctl->f_v_pwr = (void **) malloc(f_smonitor_ctl->f_num_vspec_ctl[0] * sizeof(void *));
+	if(f_smonitor_ctl->f_v_pwr == NULL){
+		printf("malloc error for f_smonitor_ctl->f_v_pwr\n");
+		exit(0);
+	};
+	
+	int i;
+	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl[0];i++){
+		f_smonitor_ctl->f_v_pwr[i] = (void *) malloc(sizeof(void));
+		if(f_smonitor_ctl->f_v_pwr[i] == NULL){
+			printf("malloc error for %d -th f_smonitor_ctl->f_v_pwr\n", i);
+			exit(0);
+		};
+		f_smonitor_ctl->f_v_pwr[i] = c_sph_monitor_v_pwr(i, f_smonitor_ctl->f_self);
+	}
+	
+	f_smonitor_ctl->f_lp_ctl =     c_sph_monitor_lp_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_g_pwr =     c_sph_monitor_g_pwr(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_pspec_ctl =     c_sph_monitor_pspec_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_circ_ctls =     c_sph_monitor_circ_ctls(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_dbench_ctl =     c_sph_monitor_dbench_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_fdip_ctl =     c_sph_monitor_fdip_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_volume_average_prefix =     c_sph_mntr_vave_spectr_prefix(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_volume_pwr_spectr_prefix =     c_sph_mntr_v_pwr_spectr_prefix(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_volume_pwr_spectr_format =     c_sph_mntr_v_pwr_spectr_fmt(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_degree_v_spectra_switch =     c_sph_mntr_l_v_pwr_switch(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_order_v_spectra_switch =     c_sph_mntr_m_v_pwr_switch(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_diff_v_lm_spectra_switch =  c_sph_mntr_diff_lm_vpwr_switch(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_axis_v_power_switch =       c_sph_mntr_axis_v_power_switch(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_heat_Nusselt_file_prefix =  c_heat_Nusselt_file_prefix(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_comp_Nusselt_file_prefix =  c_comp_Nusselt_file_prefix(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_heat_Nusselt_file_format =  c_heat_Nusselt_file_fmt(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_comp_Nusselt_file_format =  c_comp_Nusselt_file_fmt(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_typ_scale_file_prefix_ctl = c_sph_typ_scale_file_prefix(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_typ_scale_file_format_ctl = c_sph_typ_scale_file_fmt_ctl(f_smonitor_ctl->f_self);
+	return f_smonitor_ctl;
+}
+
 struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_MHD_viz_ctls *f_viz_ctls 
@@ -614,20 +750,18 @@ static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
 		strngcopy_w_length(f_MHD_ctl->c_block_name, f_MHD_ctl->f_namelength[0], 
 						   f_MHD_ctl->f_block_name);
 		
-		f_MHD_ctl->f_plt = init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
-		
-		f_MHD_ctl->f_org_plt =      c_MHD_org_plt(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_new_plt =      c_MHD_new_plt(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_plt =          init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
+//		f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);
+//		f_MHD_ctl->f_new_plt =      init_f_platform_control(c_MHD_new_plt, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_fname_psph =   c_MHD_fname_psph(f_MHD_ctl->f_self);
 		f_MHD_ctl->f_psph_ctl =     c_MHD_psph_ctl(f_MHD_ctl->f_self);
 		f_MHD_ctl->f_model_ctl =    init_f_MHD_model_ctl(c_MHD_model_ctl, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_smctl_ctl =    c_MHD_smctl_ctl(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_smonitor_ctl = c_MHD_smonitor_ctl(f_MHD_ctl->f_self);
+//		f_MHD_ctl->f_smctl_ctl =    init_f_MHD_control_ctls(c_MHD_smctl_ctl, f_MHD_ctl->f_self);
+//		f_MHD_ctl->f_smonitor_ctl = init_f_MHD_sph_monitor_ctls(c_MHD_smonitor_ctl, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_nmtr_ctl =     c_MHD_nmtr_ctl(f_MHD_ctl->f_self);
 		f_MHD_ctl->f_sgs_ctl =      c_MHD_sgs_ctl(f_MHD_ctl->f_addition);
 		f_MHD_ctl->f_viz_ctls =     init_f_MHD_viz_ctls(c_MHD_viz_ctls, f_MHD_ctl->f_addition);
 		f_MHD_ctl->f_zm_ctls =      init_f_MHD_zm_ctls(c_MHD_zm_ctls, f_MHD_ctl->f_addition);
-	printf("f_zm_ctls %s %d\n", f_MHD_ctl->f_zm_ctls->c_block_name, f_MHD_ctl->f_zm_ctls->f_iflag);
 	return;
 }
 

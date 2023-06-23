@@ -17,8 +17,7 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(sph_mhd_control_control), intent(inout) :: smctl_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_sph_mhd_control                                &
-!!     &         (id_control, hd_block, smctl_ctl, level)
+!!      subroutine write_sph_mhd_control(id_control, smctl_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(sph_mhd_control_control), intent(in) :: smctl_ctl
@@ -43,6 +42,8 @@
       implicit none
 !
       type sph_mhd_control_control
+!>        Block name
+        character(len=kchara) :: block_name = 'control'
 !>        Structure for time stepping control
         type(time_data_control) :: tctl
 !>        Structure for restart flag
@@ -82,8 +83,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(smctl_ctl%i_control .gt. 0) return
+      smctl_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -104,15 +106,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_sph_mhd_control                                  &
-     &         (id_control, hd_block, smctl_ctl, level)
+      subroutine write_sph_mhd_control(id_control, smctl_ctl, level)
 !
       use ctl_data_mhd_evo_scheme_IO
       use ctl_data_4_time_steps_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(sph_mhd_control_control), intent(in) :: smctl_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -120,7 +120,8 @@
 !
       if(smctl_ctl%i_control .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 smctl_ctl%block_name)
       call write_control_time_step_data                                 &
      &   (id_control, hd_time_step, smctl_ctl%tctl, level)
       call write_restart_ctl                                            &
@@ -128,7 +129,8 @@
 !
       call write_time_loop_ctl                                          &
      &   (id_control, hd_time_loop, smctl_ctl%mevo_ctl, level)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                smctl_ctl%block_name)
 !
       end subroutine write_sph_mhd_control
 !

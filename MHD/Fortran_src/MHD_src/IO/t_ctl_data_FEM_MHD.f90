@@ -259,7 +259,7 @@
       call write_fem_mhd_control                                        &
      &   (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, level)
 !
-      call write_monitor_data_ctl(id_control, hd_monitor_data,          &
+      call write_monitor_data_ctl(id_control,                           &
      &                            FEM_MHD_ctl%nmtr_ctl, level)
       call write_viz_controls(id_control, viz_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)

@@ -163,7 +163,7 @@
       level = write_begin_flag_for_ctl(id_control, level,               &
      &                                 zm_ctls%block_name)
       call write_crustal_filtering_ctl(id_control,                      &
-     &    hd_crustal_filtering, zm_ctls%crust_filter_ctl, level)
+     &    zm_ctls%crust_filter_ctl, level)
 !
       call write_single_section_ctl(id_control, hd_zm_section,          &
      &    zm_ctls%zm_psf_ctls, level)
