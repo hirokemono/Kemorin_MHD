@@ -429,21 +429,29 @@
      &          bind(C, NAME = 'c_sph_monitor_num_vspec_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
       type(sph_monitor_control), pointer :: f_ctl
+      integer :: j
       call c_f_pointer(c_ctl, f_ctl)
       c_sph_monitor_num_vspec_ctl = C_loc(f_ctl%num_vspec_ctl)
+      
+      do j = 1, f_ctl%num_vspec_ctl
+        write(*,*) j, 'MHD_ctl_C%smonitor_ctl%v_pwr',  &
+     &       C_loc(f_ctl%v_pwr(j))
+      end do
       end function c_sph_monitor_num_vspec_ctl
 !
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_sph_monitor_v_pwr(i, c_ctl)                &
      &          bind(C, NAME = 'c_sph_monitor_v_pwr')
-      integer(c_int), intent(in) :: i
+      integer(c_int), value, intent(in) :: i
       type(c_ptr), value, intent(in) :: c_ctl
       type(sph_monitor_control), pointer :: f_ctl
+!
       call c_f_pointer(c_ctl, f_ctl)
       c_sph_monitor_v_pwr = C_loc(f_ctl%v_pwr(i))
       end function c_sph_monitor_v_pwr
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_sph_monitor_lp_ctl(c_ctl)                  &

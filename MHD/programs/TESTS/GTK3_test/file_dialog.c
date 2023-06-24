@@ -649,7 +649,7 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 		printf("malloc error for f_smonitor_ctl->f_v_pwr\n");
 		exit(0);
 	};
-	
+	printf("f_smonitor_ctl->f_num_vspec_ctl[0] %d\n", f_smonitor_ctl->f_num_vspec_ctl[0]);
 	int i;
 	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl[0];i++){
 		f_smonitor_ctl->f_v_pwr[i] = (void *) malloc(sizeof(void));
@@ -657,9 +657,8 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 			printf("malloc error for %d -th f_smonitor_ctl->f_v_pwr\n", i);
 			exit(0);
 		};
-		f_smonitor_ctl->f_v_pwr[i] = c_sph_monitor_v_pwr(i, f_smonitor_ctl->f_self);
+		f_smonitor_ctl->f_v_pwr[i] = c_sph_monitor_v_pwr((i+1), f_smonitor_ctl->f_self);
 	}
-	
 	f_smonitor_ctl->f_lp_ctl =     c_sph_monitor_lp_ctl(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_g_pwr =     c_sph_monitor_g_pwr(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_pspec_ctl =     c_sph_monitor_pspec_ctl(f_smonitor_ctl->f_self);
@@ -751,13 +750,13 @@ static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
 						   f_MHD_ctl->f_block_name);
 		
 		f_MHD_ctl->f_plt =          init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
-//		f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);
-//		f_MHD_ctl->f_new_plt =      init_f_platform_control(c_MHD_new_plt, f_MHD_ctl->f_self);
+		f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);
+		f_MHD_ctl->f_new_plt =      init_f_platform_control(c_MHD_new_plt, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_fname_psph =   c_MHD_fname_psph(f_MHD_ctl->f_self);
 		f_MHD_ctl->f_psph_ctl =     c_MHD_psph_ctl(f_MHD_ctl->f_self);
 		f_MHD_ctl->f_model_ctl =    init_f_MHD_model_ctl(c_MHD_model_ctl, f_MHD_ctl->f_self);
-//		f_MHD_ctl->f_smctl_ctl =    init_f_MHD_control_ctls(c_MHD_smctl_ctl, f_MHD_ctl->f_self);
-//		f_MHD_ctl->f_smonitor_ctl = init_f_MHD_sph_monitor_ctls(c_MHD_smonitor_ctl, f_MHD_ctl->f_self);
+		f_MHD_ctl->f_smctl_ctl =    init_f_MHD_control_ctls(c_MHD_smctl_ctl, f_MHD_ctl->f_self);
+		f_MHD_ctl->f_smonitor_ctl = init_f_MHD_sph_monitor_ctls(c_MHD_smonitor_ctl, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_nmtr_ctl =     c_MHD_nmtr_ctl(f_MHD_ctl->f_self);
 		f_MHD_ctl->f_sgs_ctl =      c_MHD_sgs_ctl(f_MHD_ctl->f_addition);
 		f_MHD_ctl->f_viz_ctls =     init_f_MHD_viz_ctls(c_MHD_viz_ctls, f_MHD_ctl->f_addition);
