@@ -176,7 +176,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         write(*,'(3a)')  '!  ', trim(hd_block),  ' is included'
         call write_view_transfer_ctl(id_control, hd_block, mat, level)
       else if(id_control .eq. id_monitor) then

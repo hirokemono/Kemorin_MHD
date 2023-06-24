@@ -143,7 +143,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name,'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         call write_control_vol_repart(id_control, hd_block,             &
      &                                viz_repart_c, level)
       else if(id_control .eq. id_monitor) then

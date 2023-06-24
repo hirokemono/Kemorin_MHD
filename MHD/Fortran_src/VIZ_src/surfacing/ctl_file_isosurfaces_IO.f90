@@ -212,7 +212,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         write(*,'(a)') ' is included.'
         call write_iso_control_data(id_control, hd_block,               &
      &                              iso_ctl_struct, level)

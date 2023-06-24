@@ -106,6 +106,8 @@
       subroutine read_LIC_kernel_control_file(id_control, file_name,    &
      &          hd_block, kernel_ctl, c_buf)
 !
+      use skip_comment_f
+!
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len = kchara), intent(in) :: hd_block
@@ -114,7 +116,7 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(file_name .eq. 'NO_FILE') return
+      if(no_file_flag(file_name)) return
 !
       c_buf%level = c_buf%level + 1
       open(id_control, file=file_name, status='old')
@@ -140,6 +142,7 @@
 !
       use ctl_file_LIC_noise_IO
       use write_control_elements
+      use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
@@ -149,7 +152,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         call write_kernel_control_data(id_control, hd_block,            &
      &                                  kernel_ctl, level)
       else if(id_control .eq. id_monitor) then

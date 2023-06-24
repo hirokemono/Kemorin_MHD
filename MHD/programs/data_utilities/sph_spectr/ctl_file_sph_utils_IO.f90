@@ -181,7 +181,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_org_data, spu_ctl%org_plt, level)
       call write_FEM_mesh_control                                       &
-     &   (id_control, hd_FEM_mesh, spu_ctl%Fmesh_ctl, level)
+     &   (id_control, spu_ctl%Fmesh_ctl, level)
 !
       call write_sph_trans_model_ctl                                    &
      &   (id_control, hd_sph_trans_model, spu_ctl, level)

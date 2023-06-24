@@ -158,7 +158,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         call write_parallel_shell_ctl(id_control, psph_ctl, level)
       else if(id_control .eq. id_monitor) then
         write(*,'(4a)') '!  ', trim(psph_ctl%block_name),               &

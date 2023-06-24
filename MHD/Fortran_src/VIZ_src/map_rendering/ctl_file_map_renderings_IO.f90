@@ -211,7 +211,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         call write_map_control_data(id_control, hd_block,               &
      &                              map_ctl_struct, level)
       else if(id_control .eq. id_monitor) then

@@ -208,6 +208,10 @@ void cb_check_toggle(GtkWidget *widget, gpointer iflag_ptr);
 GtkWidget * draw_control_block(const char * title, int *iflag_ptr, 
 							   int width, int height,
 							   GtkWidget *window, GtkWidget *box_in);
+GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, 
+							   char *file_name, int width, int height,
+							   GtkWidget *window, GtkWidget *box_in);
+
 GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWidget *window);
 GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidget *window);
 

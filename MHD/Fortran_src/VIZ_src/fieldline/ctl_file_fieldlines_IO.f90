@@ -202,7 +202,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         write(*,'(a)') ' is included.'
         call write_field_line_ctl(id_control, hd_block,                 &
      &                            fline_ctl_struct, level)

@@ -158,7 +158,7 @@
      &   (id_control, hd_viz_platform, viz_repart_c%viz_plt, level)
 !
       call write_FEM_mesh_control                                       &
-     &   (id_control, hd_FEM_mesh, viz_repart_c%Fmesh_ctl, level)
+     &   (id_control, viz_repart_c%Fmesh_ctl, level)
       call write_ctl_data_new_partition(id_control, hd_new_partition,   &
      &    viz_repart_c%new_part_ctl, level)
       call write_FEM_sleeve_control                                     &

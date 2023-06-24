@@ -7,10 +7,10 @@
 
 #include "ctl_data_platforms_GTK.h"
 
-int lengthchara_f();
+extern int lengthchara_f();
+extern int c_no_file_flag(const char *file_name);
 extern int num_file_fmt_items_f();
 extern void set_file_fmt_items_f(char *fmt_names_c);
-
 
 char * strngcopy_from_f(char * f_char)
 {
@@ -347,6 +347,36 @@ void cb_check_toggle(GtkWidget *widget, gpointer iflag_ptr){
 	return;
 }
 
+void cb_file_switch(GtkWidget *widget, gpointer data){
+	GtkSwitch *file_switch = GTK_SWITCH(widget);
+	GtkEntry *file_entry = GTK_ENTRY(g_object_get_data(G_OBJECT(widget), "entry"));
+	char *f_file_name = (char *) g_object_get_data(G_OBJECT(widget), "file_name");
+	
+	if(gtk_switch_get_active(file_switch) == FALSE){
+		sprintf(f_file_name, "%s", "NO_FILE");
+		load_chara_from_c(f_file_name);
+	}else{
+		if(c_no_file_flag(f_file_name)){
+			sprintf(f_file_name, "%s", "SET_FILE_NAME");
+			gtk_entry_set_text(GTK_ENTRY(file_entry), f_file_name);
+			load_chara_from_c(f_file_name);
+		};
+	};
+	return;
+}
+
+void cb_file_name(GtkEntry *widget, gpointer data)
+{
+	GtkEntry *file_entry = GTK_ENTRY(widget);
+	char *f_file_name = (char *) g_object_get_data(G_OBJECT(widget), "file_name");
+	char *input_text = (char *) gtk_entry_get_text(file_entry);
+	if(input_text != NULL) {
+		sprintf(f_file_name, "%s", input_text);
+		load_chara_from_c(f_file_name);
+	};
+	return;
+}
+
 
 GtkWidget * draw_control_block(const char * title, int *iflag_ptr, 
 							   int width, int height,
@@ -365,6 +395,60 @@ GtkWidget * draw_control_block(const char * title, int *iflag_ptr,
 	
 	GtkWidget *expander = wrap_into_expanded_frame_gtk
 			(duplicate_underscore(title), width, height, window, box_in);
+	gtk_box_pack_start(GTK_BOX(vbox0), checkbox, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, FALSE, 0);
+	return hbox0;
+};
+
+GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, 
+							   char *f_file_name, int width, int height,
+							   GtkWidget *window, GtkWidget *box_in)
+{
+	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *checkbox = gtk_check_button_new();
+	if(iflag_ptr[0] == 0){
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), FALSE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), TRUE);
+	}
+	g_signal_connect(G_OBJECT(checkbox), "toggled", 
+                     G_CALLBACK(cb_check_toggle), (gpointer) iflag_ptr);
+	
+	GtkWidget *file_entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(file_entry), strngcopy_from_f(f_file_name));
+	g_object_set_data(G_OBJECT(file_entry), "file_name", (gpointer) f_file_name);
+	g_signal_connect(G_OBJECT(file_entry), "notify::text",
+					 G_CALLBACK(cb_file_name), (gpointer) NULL);
+	
+	GtkWidget *file_switch = gtk_switch_new();
+	g_object_set_data(G_OBJECT(file_switch), "entry", (gpointer) file_entry);
+	g_object_set_data(G_OBJECT(file_switch), "file_name", (gpointer) f_file_name);
+	if(c_no_file_flag(f_file_name) == 0){
+		gtk_switch_set_active(GTK_SWITCH(file_switch), TRUE);
+	} else {
+		gtk_switch_set_active(GTK_SWITCH(file_switch), FALSE);
+	};
+	g_signal_connect(G_OBJECT(file_switch), "notify::active",
+					 G_CALLBACK(cb_file_switch), (gpointer) NULL);
+	
+	GtkWidget *vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox2), file_switch, FALSE, TRUE, 0);
+	
+	GtkWidget *file_label = gtk_label_new("File_name: ");
+	
+	GtkWidget *hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	gtk_box_pack_start(GTK_BOX(hbox1), file_label, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), vbox2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), file_entry, FALSE, TRUE, 0);
+	
+	GtkWidget *vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox1), box_in, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, TRUE, 0);
+	
+	GtkWidget *expander = wrap_into_expanded_frame_gtk
+			(duplicate_underscore(title), width, height, window, vbox1);
 	gtk_box_pack_start(GTK_BOX(vbox0), checkbox, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, FALSE, 0);

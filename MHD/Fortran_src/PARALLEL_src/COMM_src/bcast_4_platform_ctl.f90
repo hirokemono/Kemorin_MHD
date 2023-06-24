@@ -81,6 +81,8 @@
       use t_ctl_data_4_FEM_mesh
       use bcast_control_arrays
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(FEM_mesh_control), intent(inout) :: Fmesh_ctl
 !
@@ -90,6 +92,8 @@
       call bcast_ctl_type_c1(Fmesh_ctl%FEM_surface_output_switch)
       call bcast_ctl_type_c1(Fmesh_ctl%FEM_viewer_output_switch)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (Fmesh_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(Fmesh_ctl%i_FEM_mesh, 0)
 !
       end subroutine bcast_FEM_mesh_control

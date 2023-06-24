@@ -131,6 +131,7 @@
      &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf)
 !
       use ctl_data_lic_pvr_IO
+      use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_lic_ctl
@@ -140,7 +141,7 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(fname_lic_ctl .eq. 'NO_FILE') return
+      if(no_file_flag(fname_lic_ctl)) return
 !
       c_buf%level = c_buf%level + 1
       write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
@@ -178,7 +179,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(fname_lic_ctl, 'NO_FILE')) then
+      if(no_file_flag(fname_lic_ctl)) then
         write(*,'(a)') ' is included.'
         call write_lic_pvr_ctl(id_control, hd_lic_ctl,                  &
      &                         pvr_ctl_type, lic_ctl_type, level)

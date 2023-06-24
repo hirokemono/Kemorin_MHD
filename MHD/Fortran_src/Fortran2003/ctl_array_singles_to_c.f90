@@ -14,6 +14,11 @@
 !!     &          bind(C, NAME = 'c_chara_item_clength')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!        integer(C_int), intent(inout) :: length_c
+!!      integer(C_int) function c_yes_flag(c_ctl)                       &
+!!     &          bind(C, NAME = 'c_yes_flag')
+!!      integer(C_int) function c_no_file_flag(c_ctl)                   &
+!!     &          bind(C, NAME = 'c_no_file_flag')
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!
 !!      type(c_ptr) function c_chara_item_block_name(c_ctl)             &
 !!     &          bind(C, NAME = 'c_chara_item_block_name')
@@ -107,6 +112,32 @@
       call c_f_pointer(c_ctl, f_ctl)
       length_c = len_trim(f_ctl)
       end subroutine c_chara_item_clength
+!
+!  ---------------------------------------------------------------------
+!
+      integer(C_int) function c_yes_flag(c_ctl)                         &
+     &          bind(C, NAME = 'c_yes_flag')
+      use skip_comment_f
+      type(c_ptr), value, intent(in) :: c_ctl
+      character(len=kchara), pointer :: f_ctl
+!
+      c_yes_flag = 0
+      call c_f_pointer(c_ctl, f_ctl)
+      if(yes_flag(f_ctl)) c_yes_flag = 1
+      end function c_yes_flag
+!
+!  ---------------------------------------------------------------------
+!
+      integer(C_int) function c_no_file_flag(c_ctl)                     &
+     &          bind(C, NAME = 'c_no_file_flag')
+      use skip_comment_f
+      type(c_ptr), value, intent(in) :: c_ctl
+      character(len=kchara), pointer :: f_ctl
+!
+      c_no_file_flag = 0
+      call c_f_pointer(c_ctl, f_ctl)
+      if(no_file_flag(f_ctl)) c_no_file_flag = 1
+      end function c_no_file_flag
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

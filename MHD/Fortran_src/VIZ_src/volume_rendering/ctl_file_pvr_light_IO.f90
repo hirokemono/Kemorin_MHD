@@ -105,7 +105,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         call write_lighting_ctl(id_control, hd_block, light, level)
       else if(id_control .eq. id_monitor) then
         write(*,'(4a)') '!  ', trim(hd_block),                          &

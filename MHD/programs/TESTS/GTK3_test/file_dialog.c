@@ -214,6 +214,28 @@ extern void * c_sphere_data_n_med_layer_ctl(void *f_spctl);
 extern void * c_sphere_data_r_layer_list_ctl(void *f_spctl);
 extern void * c_sphere_data_med_list_ctl(void *f_spctl);
 
+extern void * c_sph_domain_ctl_block_name(void *f_sdctl);
+extern void * c_sph_domain_ctl_iflag(void *f_sdctl);
+extern void * c_sph_inner_decomp_ctl(void *f_sdctl);
+extern void * c_sph_rj_inner_loop_ctl(void *f_sdctl);
+extern void * c_sph_rlm_inner_loop_ctl(void *f_sdctl);
+extern void * c_sph_rtm_inner_loop_ctl(void *f_sdctl);
+extern void * c_sph_rtp_inner_loop_ctl(void *f_sdctl);
+extern void * c_sph_domain_rlm_distr_ctl(void *f_sdctl);
+extern void * c_sph_domain_smpl_r_decomp_ctl(void *f_sdctl);
+extern void * c_sph_num_radial_domain_ctl(void *f_sdctl);
+extern void * c_sph_num_horiz_domain_ctl(void *f_sdctl);
+extern void * c_sph_ndomain_sph_grid_ctl(void *f_sdctl);
+extern void * c_sph_ndomain_legendre_ctl(void *f_sdctl);
+extern void * c_sph_ndomain_spectr_ctl(void *f_sdctl);
+
+extern void * c_FEM_mesh_FILE_ctl_block_name(void *f_Fmesh_ctl);
+extern void * c_FEM_mesh_FILE_ctl_iflag(void *f_Fmesh_ctl);
+extern void * c_FEM_mesh_mem_conserve_ctl(void *f_Fmesh_ctl);
+extern void * c_FEM_mesh_output_switch(void *f_Fmesh_ctl);
+extern void * c_FEM_surface_output_switch(void *f_Fmesh_ctl);
+extern void * c_FEM_viewer_output_switch(void *f_Fmesh_ctl);
+
 
 struct f_MHD_forces_control{
 	void * f_self;
@@ -331,6 +353,42 @@ struct f_MHD_sph_resolution_control{
 	void *f_med_layer_list_ctl;
 };
 
+struct f_MHD_sph_domain_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	void *f_inner_decomp_ctl;
+	void *f_rj_inner_loop_ctl;
+	void *f_rlm_inner_loop_ctl;
+	void *f_rtm_inner_loop_ctl;
+	void *f_rtp_inner_loop_ctl;
+	void *f_rlm_distibution_ctl;
+	void *f_simple_r_decomp_ctl;
+	void *f_num_radial_domain_ctl;
+	void *f_num_horiz_domain_ctl;
+	void *f_ndomain_sph_grid_ctl;
+	void *f_ndomain_legendre_ctl;
+	void *f_ndomain_spectr_ctl;
+};
+
+struct f_FEM_mesh_FILE_ctl{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	void *f_memory_conservation_ctl;
+	void *f_FEM_mesh_output_switch;
+	void *f_FEM_surface_output_switch;
+	void *f_FEM_viewer_output_switch;
+};
+
 struct f_MHD_sph_shell_control{
 	void * f_self;
 	
@@ -339,9 +397,9 @@ struct f_MHD_sph_shell_control{
 	
 	char * c_block_name;
 	
-	void *f_Fmesh_ctl;
+	struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl;
+	struct f_MHD_sph_domain_control *f_sdctl;
 	struct f_MHD_sph_resolution_control *f_spctl;
-	void *f_sdctl;
 };
 
 struct f_MHD_SGS_model_control{
@@ -751,6 +809,60 @@ struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*
 	return f_spctl;
 };
 
+struct f_MHD_sph_domain_control * init_f_MHD_sph_domain_control(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_sph_domain_control *f_sdctl 
+			= (struct f_MHD_sph_domain_control *) malloc(sizeof(struct f_MHD_sph_domain_control));
+	if(f_sdctl == NULL){
+		printf("malloc error for f_sdctl\n");
+		exit(0);
+	};
+	
+	f_sdctl->f_self =  c_load_self(f_parent);
+	
+	f_sdctl->f_iflag =        (int *) c_sph_domain_ctl_block_name(f_sdctl->f_self);
+	f_sdctl->f_block_name =   (char *) c_sph_domain_ctl_iflag(f_sdctl->f_self);
+	f_sdctl->c_block_name = strngcopy_from_f(f_sdctl->f_block_name);
+	
+	f_sdctl->f_inner_decomp_ctl = c_sph_inner_decomp_ctl(f_sdctl->f_self);
+	f_sdctl->f_rj_inner_loop_ctl = c_sph_rj_inner_loop_ctl(f_sdctl->f_self);
+	f_sdctl->f_rlm_inner_loop_ctl = c_sph_rlm_inner_loop_ctl(f_sdctl->f_self);
+	f_sdctl->f_rtm_inner_loop_ctl = c_sph_rtm_inner_loop_ctl(f_sdctl->f_self);
+	f_sdctl->f_rtp_inner_loop_ctl = c_sph_rtp_inner_loop_ctl(f_sdctl->f_self);
+	f_sdctl->f_rlm_distibution_ctl = c_sph_domain_rlm_distr_ctl(f_sdctl->f_self);
+	f_sdctl->f_simple_r_decomp_ctl = c_sph_domain_smpl_r_decomp_ctl(f_sdctl->f_self);
+	f_sdctl->f_num_radial_domain_ctl = c_sph_num_radial_domain_ctl(f_sdctl->f_self);
+	f_sdctl->f_num_horiz_domain_ctl = c_sph_num_horiz_domain_ctl(f_sdctl->f_self);
+	f_sdctl->f_ndomain_sph_grid_ctl = c_sph_ndomain_sph_grid_ctl(f_sdctl->f_self);
+	f_sdctl->f_ndomain_legendre_ctl = c_sph_ndomain_legendre_ctl(f_sdctl->f_self);
+	f_sdctl->f_ndomain_spectr_ctl = c_sph_ndomain_spectr_ctl(f_sdctl->f_self);
+	return f_sdctl;
+}
+
+struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self)(void *f_parent), 
+													  void *f_parent)
+{
+	struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl 
+			= (struct f_FEM_mesh_FILE_ctl *) malloc(sizeof(struct f_FEM_mesh_FILE_ctl));
+	if(f_Fmesh_ctl == NULL){
+		printf("malloc error for f_Fmesh_ctl\n");
+		exit(0);
+	};
+	
+	f_Fmesh_ctl->f_self =  c_load_self(f_parent);
+	
+	f_Fmesh_ctl->f_iflag =        (int *) c_FEM_mesh_FILE_ctl_block_name(f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->f_block_name =   (char *) c_FEM_mesh_FILE_ctl_iflag(f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->c_block_name = strngcopy_from_f(f_Fmesh_ctl->f_block_name);
+	
+	f_Fmesh_ctl->f_memory_conservation_ctl =   c_FEM_mesh_mem_conserve_ctl(f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->f_FEM_mesh_output_switch =    c_FEM_mesh_output_switch(f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->f_FEM_surface_output_switch = c_FEM_surface_output_switch(f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->f_FEM_viewer_output_switch =  c_FEM_viewer_output_switch(f_Fmesh_ctl->f_self);
+	return f_Fmesh_ctl;
+}
+
 struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(void *f_parent), 
 														  void *f_parent)
 {
@@ -767,9 +879,9 @@ struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(v
 	f_psph_ctl->f_block_name =   (char *) c_sph_shell_ctl_block_name(f_psph_ctl->f_self);
 	f_psph_ctl->c_block_name = strngcopy_from_f(f_psph_ctl->f_block_name);
 	
-	f_psph_ctl->f_Fmesh_ctl = c_sph_shell_Fmesh_ctl(f_psph_ctl->f_self);
+	f_psph_ctl->f_Fmesh_ctl = init_f_FEM_mesh_FILE_ctl(c_sph_shell_Fmesh_ctl, f_psph_ctl->f_self);
+	f_psph_ctl->f_sdctl =     init_f_MHD_sph_domain_control(c_sph_shell_sdctl, f_psph_ctl->f_self);
 	f_psph_ctl->f_spctl =     init_f_MHD_sph_resolution_control(c_sph_shell_spctl, f_psph_ctl->f_self);
-	f_psph_ctl->f_sdctl =     c_sph_shell_sdctl(f_psph_ctl->f_self);
 	return f_psph_ctl;
 };
 
@@ -1397,9 +1509,10 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	
 	GtkWidget *vbox_sph_shell = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), expand_sph_resolution, FALSE, FALSE, 0);
-	GtkWidget *expand_sph_shell = draw_control_block(f_MHD_ctl->f_psph_ctl->c_block_name, 
-													 f_MHD_ctl->f_psph_ctl->f_iflag,
-													 560, 500, window, vbox_sph_shell);
+	GtkWidget *expand_sph_shell = draw_control_block_w_file_switch(f_MHD_ctl->f_psph_ctl->c_block_name, 
+																   f_MHD_ctl->f_psph_ctl->f_iflag,
+																   f_MHD_ctl->f_fname_psph,
+																   560, 500, window, vbox_sph_shell);
 	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_sph_shell, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_MHD_model = draw_control_block(f_MHD_ctl->f_model_ctl->c_block_name, 

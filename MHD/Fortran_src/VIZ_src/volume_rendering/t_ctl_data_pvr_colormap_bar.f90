@@ -185,6 +185,8 @@
       subroutine read_control_pvr_colormap_file                         &
      &         (id_control, file_name, hd_block, cmap_cbar_c, c_buf)
 !
+      use skip_comment_f
+!
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
@@ -192,7 +194,7 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(file_name .eq. 'NO_FILE') then
+      if(no_file_flag(file_name)) then
         write(*,*)  'Colormap control is included'
         return
       end if
@@ -302,7 +304,7 @@
       integer(kind = kint) :: level
 !
 !
-      if(file_name .eq. 'NO_FILE') return
+      if(no_file_flag(file_name)) return
 !
       level = 0
       open(id_control, file = file_name)

@@ -139,7 +139,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         call write_fld_on_psf_control(id_control, hd_block,             &
      &                              fld_on_psf_c, level)
       else if(id_control .eq. id_monitor) then

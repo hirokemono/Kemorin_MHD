@@ -206,7 +206,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_org_data, spt_ctl%org_plt, level)
       call write_FEM_mesh_control                                       &
-     &   (id_control, hd_FEM_mesh, spt_ctl%Fmesh_ctl, level)
+     &   (id_control, spt_ctl%Fmesh_ctl, level)
 !
       call sel_write_ctl_gen_shell_grids                                &
      &   (id_control, spt_ctl%fname_psph, spt_ctl%psph_ctl, level)
