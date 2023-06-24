@@ -73,6 +73,13 @@ extern void * c_comp_Nusselt_file_fmt(void *f_smonitor_ctl);
 extern void * c_sph_typ_scale_file_prefix(void *f_smonitor_ctl);
 extern void * c_sph_typ_scale_file_fmt_ctl(void *f_smonitor_ctl);
 
+extern void * c_node_monitor_ctl_block_name(void *f_nmtr_ctl);
+extern void * c_node_monitor_ctl_iflag(void *f_nmtr_ctl);
+extern void * c_node_monitor_xx_monitor_ctl(void *f_nmtr_ctl);
+extern void * c_node_monitor_node_mntr_ctl(void *f_nmtr_ctl);
+extern void * c_node_monitor_group_mntr_ctl(void *f_nmtr_ctl);
+
+
 extern void * c_dynamo_vizs_block_name(void *f_zm_ctls);
 extern void * c_dynamo_vizs_iflag(void *f_zm_ctls);
 extern void * c_dynamo_vizs_crust_filter_ctl(void *f_zm_ctls);
@@ -81,6 +88,11 @@ extern void * c_dynamo_vizs_zRMS_psf_ctls(void *f_zm_ctls);
 extern void * c_dynamo_vizs_zm_map_ctls(void *f_zm_ctls);
 extern void * c_dynamo_vizs_zRMS_map_ctls(void *f_zm_ctls);
 
+extern void * c_sph_shell_ctl_block_name(void *f_psph_ctl);
+extern void * c_sph_shell_ctl_iflag(void *f_psph_ctl);
+extern void * c_sph_shell_Fmesh_ctl(void *f_psph_ctl);
+extern void * c_sph_shell_spctl(void *f_psph_ctl);
+extern void * c_sph_shell_sdctl(void *f_psph_ctl);
 
 extern void * c_MHD_mdl_block_name(void *f_model_ctl);
 extern void * c_MHD_mdl_iflag(void *f_model_ctl);
@@ -138,6 +150,44 @@ extern void * c_smctl_ctl_iflag(void *f_smctl_ctl);
 extern void * c_smctl_ctl_tctl(void *f_smctl_ctl);
 extern void * c_smctl_mrst_ctl(void *f_smctl_ctl);
 extern void * c_smctl_mevo_ctl(void *f_smctl_ctl);
+
+extern void * c_SGS_model_ctl_block_name(void *f_sgs_ctl);
+extern void * c_SGS_model_ctl_iflag(void *f_sgs_ctl);
+extern void * c_SGS_model_SGS_model_name_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_filter_name_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_DIFF_model_c_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_negative_clip_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_SGS_marging_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_perturbation_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_m_coef_type_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_hflux_csim_type(void *f_sgs_ctl);
+extern void * c_SGS_model_cflux_csim_type(void *f_sgs_ctl);
+extern void * c_SGS_model_mflux_csim_type(void *f_sgs_ctl);
+extern void * c_SGS_model_maxwell_csim_type(void *f_sgs_ctl);
+extern void * c_SGS_model_uxb_csim_type_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_coef_coord_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_SGS_buo_Csim_usage(void *f_sgs_ctl);
+extern void * c_SGS_model_istep_dynamic_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_min_step_dynamic(void *f_sgs_ctl);
+extern void * c_SGS_model_max_step_dynamic(void *f_sgs_ctl);
+extern void * c_SGS_model_stabilize_weight(void *f_sgs_ctl);
+extern void * c_SGS_model_del_shrink_dynamic(void *f_sgs_ctl);
+extern void * c_SGS_model_del_extend_dynamic(void *f_sgs_ctl);
+extern void * c_SGS_model_ngrp_radial_ave(void *f_sgs_ctl);
+extern void * c_SGS_model_ngrp_med_ave_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_clipping_limit_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_SGS_hf_factor_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_SGS_cf_factor_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_SGS_mf_factor_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_mxwl_factor_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_SGS_uxb_factor_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_SGS_terms_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_commutate_fld_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_ffile_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_elayer_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_s3df_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_num_sph_filter_ctl(void *f_sgs_ctl);
+extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
 struct f_MHD_forces_control{
 	void * f_self;
@@ -226,6 +276,66 @@ struct f_MHD_equations_control{
 	struct f_MHD_induct_eq_control * f_induct_ctl;
 	struct f_MHD_heat_eq_control *   f_heat_ctl;
 	struct f_MHD_heat_eq_control *   f_comp_ctl;
+};
+
+struct f_MHD_sph_shell_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	void *f_Fmesh_ctl;
+	void *f_spctl;
+	void *f_sdctl;
+};
+
+struct f_MHD_SGS_model_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	void *f_SGS_model_name_ctl;
+	void *f_SGS_filter_name_ctl;
+	void *f_DIFF_model_coef_ctl;
+	void *f_SGS_negative_clip_ctl;
+	void *f_SGS_marging_ctl;
+	void *f_SGS_perturbation_ctl;
+	void *f_SGS_model_coef_type_ctl;
+	void *f_heat_flux_csim_type_ctl;
+	void *f_comp_flux_csim_type_ctl;
+	void *f_mom_flux_csim_type_ctl;
+	void *f_maxwell_csim_type_ctl;
+	void *f_uxb_csim_type_ctl;
+	void *f_SGS_model_coef_coord_ctl;
+	void *f_SGS_buo_Csim_usage_ctl;
+	void *f_istep_dynamic_ctl;
+	void *f_min_step_dynamic_ctl;
+	void *f_max_step_dynamic_ctl;
+	void *f_stabilize_weight_ctl;
+	void *f_delta_to_shrink_dynamic_ctl;
+	void *f_delta_to_extend_dynamic_ctl;
+	void *f_ngrp_radial_ave_ctl;
+	void *f_ngrp_med_ave_ctl;
+	void *f_clipping_limit_ctl;
+	void *f_SGS_hf_factor_ctl;
+	void *f_SGS_cf_factor_ctl;
+	void *f_SGS_mf_factor_ctl;
+	void *f_SGS_mxwl_factor_ctl;
+	void *f_SGS_uxb_factor_ctl;
+	void *f_SGS_terms_ctl;
+	void *f_commutate_fld_ctl;
+	void *f_ffile_ctl;
+	void *f_elayer_ctl;
+	void *f_s3df_ctl;
+	int  *f_num_sph_filter_ctl;
+	void **f_sph_filter_ctl;
 };
 
 struct f_MHD_model_control{
@@ -335,6 +445,21 @@ struct f_MHD_zm_ctls{
 	void * f_zRMS_map_ctls;
 };
 
+struct f_MHD_node_monitor_ctl{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	void * f_xx_4_monitor_ctl;
+	void * f_node_4_monitor_ctl;
+	void * f_group_4_monitor_ctl;
+};
+
+
 struct f_MHD_control{
 	void * f_self;
 	void * f_addition;
@@ -348,14 +473,14 @@ struct f_MHD_control{
 	struct f_platform_control *f_plt;
 	struct f_platform_control * f_org_plt;
 	struct f_platform_control * f_new_plt;
-	void * f_fname_psph;
-	void * f_psph_ctl;
+	char * f_fname_psph;
+	struct f_MHD_sph_shell_control * f_psph_ctl;
 	struct f_MHD_model_control *f_model_ctl;
 	struct f_MHD_control_ctls * f_smctl_ctl;
 	struct f_MHD_sph_monitor_ctls * f_smonitor_ctl;
-	void * f_nmtr_ctl;
+	struct f_MHD_node_monitor_ctl * f_nmtr_ctl;
 	
-	void * f_sgs_ctl;
+	struct f_MHD_SGS_model_control * f_sgs_ctl;
 	struct f_MHD_viz_ctls * f_viz_ctls;
 	struct f_MHD_zm_ctls * f_zm_ctls;
 };
@@ -561,6 +686,104 @@ struct f_MHD_equations_control * init_f_MHD_equations_ctl(void *(*c_load_self)(v
 	return f_eqs_ctl;
 }
 
+struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_sph_shell_control *f_psph_ctl 
+			= (struct f_MHD_sph_shell_control *) malloc(sizeof(struct f_MHD_sph_shell_control));
+	if(f_psph_ctl == NULL){
+		printf("malloc error for f_psph_ctl\n");
+		exit(0);
+	};
+	
+	f_psph_ctl->f_self =  c_load_self(f_parent);
+	
+	f_psph_ctl->f_block_name =   (char *) c_sph_shell_ctl_block_name(f_psph_ctl->f_self);
+	f_psph_ctl->f_iflag =        (int *) c_sph_shell_ctl_iflag(f_psph_ctl->f_self);
+	
+	c_chara_item_clength(f_psph_ctl->f_block_name, f_psph_ctl->f_namelength);
+	f_psph_ctl->c_block_name = alloc_string((long) f_psph_ctl->f_namelength[0]);
+	strngcopy_w_length(f_psph_ctl->c_block_name, f_psph_ctl->f_namelength[0], 
+					   f_psph_ctl->f_block_name);
+	
+	f_psph_ctl->f_Fmesh_ctl = c_sph_shell_Fmesh_ctl(f_psph_ctl->f_self);
+	f_psph_ctl->f_spctl =     c_sph_shell_spctl(f_psph_ctl->f_self);
+	f_psph_ctl->f_sdctl =     c_sph_shell_sdctl(f_psph_ctl->f_self);
+	return f_psph_ctl;
+};
+
+struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_self)(void *f_parent), 
+															  void *f_parent)
+{
+	struct f_MHD_SGS_model_control *f_sgs_ctl 
+			= (struct f_MHD_SGS_model_control *) malloc(sizeof(struct f_MHD_SGS_model_control));
+	if(f_sgs_ctl == NULL){
+		printf("malloc error for f_sgs_ctl\n");
+		exit(0);
+	};
+	
+	f_sgs_ctl->f_self =  c_load_self(f_parent);
+	
+	f_sgs_ctl->f_block_name =   (char *) c_SGS_model_ctl_block_name(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_iflag =        (int *) c_SGS_model_ctl_iflag(f_sgs_ctl->f_self);
+	
+	c_chara_item_clength(f_sgs_ctl->f_block_name, f_sgs_ctl->f_namelength);
+	f_sgs_ctl->c_block_name = alloc_string((long) f_sgs_ctl->f_namelength[0]);
+	strngcopy_w_length(f_sgs_ctl->c_block_name, f_sgs_ctl->f_namelength[0], 
+					   f_sgs_ctl->f_block_name);
+	
+	f_sgs_ctl->f_SGS_model_name_ctl = c_SGS_model_SGS_model_name_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_filter_name_ctl = c_SGS_model_filter_name_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_DIFF_model_coef_ctl = c_SGS_model_DIFF_model_c_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_negative_clip_ctl = c_SGS_model_negative_clip_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_marging_ctl = c_SGS_model_SGS_marging_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_perturbation_ctl = c_SGS_model_perturbation_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_model_coef_type_ctl = c_SGS_model_m_coef_type_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_heat_flux_csim_type_ctl = c_SGS_model_hflux_csim_type(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_comp_flux_csim_type_ctl = c_SGS_model_cflux_csim_type(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_mom_flux_csim_type_ctl = c_SGS_model_mflux_csim_type(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_maxwell_csim_type_ctl = c_SGS_model_maxwell_csim_type(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_uxb_csim_type_ctl = c_SGS_model_uxb_csim_type_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_model_coef_coord_ctl = c_SGS_model_coef_coord_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_buo_Csim_usage_ctl = c_SGS_model_SGS_buo_Csim_usage(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_istep_dynamic_ctl = c_SGS_model_istep_dynamic_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_min_step_dynamic_ctl = c_SGS_model_min_step_dynamic(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_max_step_dynamic_ctl = c_SGS_model_max_step_dynamic(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_stabilize_weight_ctl = c_SGS_model_stabilize_weight(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_delta_to_shrink_dynamic_ctl = c_SGS_model_del_shrink_dynamic(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_delta_to_extend_dynamic_ctl = c_SGS_model_del_extend_dynamic(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_ngrp_radial_ave_ctl = c_SGS_model_ngrp_radial_ave(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_ngrp_med_ave_ctl = c_SGS_model_ngrp_med_ave_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_clipping_limit_ctl = c_SGS_model_clipping_limit_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_hf_factor_ctl = c_SGS_model_SGS_hf_factor_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_cf_factor_ctl = c_SGS_model_SGS_cf_factor_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_mf_factor_ctl = c_SGS_model_SGS_mf_factor_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_mxwl_factor_ctl = c_SGS_model_mxwl_factor_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_uxb_factor_ctl = c_SGS_model_SGS_uxb_factor_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_SGS_terms_ctl = c_SGS_model_SGS_terms_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_commutate_fld_ctl = c_SGS_model_commutate_fld_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_ffile_ctl = c_SGS_model_ffile_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_elayer_ctl = c_SGS_model_elayer_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_s3df_ctl = c_SGS_model_s3df_ctl(f_sgs_ctl->f_self);
+	f_sgs_ctl->f_num_sph_filter_ctl = (int *) c_SGS_model_num_sph_filter_ctl(f_sgs_ctl->f_self);
+	
+	f_sgs_ctl->f_sph_filter_ctl = (void **) malloc(f_sgs_ctl->f_num_sph_filter_ctl[0] * sizeof(void *));
+	if(f_sgs_ctl->f_sph_filter_ctl == NULL){
+		printf("malloc error for f_sgs_ctl->f_sph_filter_ctl\n");
+		exit(0);
+	};
+	printf("f_sgs_ctl->f_num_sph_filter_ctl[0] %d\n", f_sgs_ctl->f_num_sph_filter_ctl[0]);
+	int i;
+	for(i=0;i<f_sgs_ctl->f_num_sph_filter_ctl[0];i++){
+		f_sgs_ctl->f_sph_filter_ctl[i] = (void *) malloc(sizeof(void));
+		if(f_sgs_ctl->f_sph_filter_ctl[i] == NULL){
+			printf("malloc error for %d -th f_sgs_ctl->f_sph_filter_ctl\n", i);
+			exit(0);
+		};
+		f_sgs_ctl->f_sph_filter_ctl[i] = c_SGS_model_sph_filter_ctl((i+1), f_sgs_ctl->f_self);
+	}
+	return f_sgs_ctl;
+};
 
 struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
@@ -738,6 +961,31 @@ struct f_MHD_zm_ctls * init_f_MHD_zm_ctls(void *(*c_load_self)(void *f_parent), 
 	return f_zm_ctls;
 }
 
+struct f_MHD_node_monitor_ctl * init_f_MHD_node_monitor_ctl(void *(*c_load_self)(void *f_parent),
+															void *f_parent)
+{
+	struct f_MHD_node_monitor_ctl *f_nmtr_ctl 
+			= (struct f_MHD_node_monitor_ctl *) malloc(sizeof(struct f_MHD_node_monitor_ctl));
+	if(f_nmtr_ctl == NULL){
+		printf("malloc error for f_nmtr_ctl\n");
+		exit(0);
+	};
+	
+	f_nmtr_ctl->f_self =  c_load_self(f_parent);
+	
+	f_nmtr_ctl->f_block_name =   (char *) c_node_monitor_ctl_block_name(f_nmtr_ctl->f_self);
+	f_nmtr_ctl->f_iflag =        (int *) c_node_monitor_ctl_iflag(f_nmtr_ctl->f_self);
+	
+	c_chara_item_clength(f_nmtr_ctl->f_block_name, f_nmtr_ctl->f_namelength);
+	f_nmtr_ctl->c_block_name = alloc_string((long) f_nmtr_ctl->f_namelength[0]);
+	strngcopy_w_length(f_nmtr_ctl->c_block_name, f_nmtr_ctl->f_namelength[0], 
+					   f_nmtr_ctl->f_block_name);
+	
+	f_nmtr_ctl->f_xx_4_monitor_ctl =    c_node_monitor_xx_monitor_ctl(f_nmtr_ctl->f_self);
+	f_nmtr_ctl->f_node_4_monitor_ctl =  c_node_monitor_node_mntr_ctl(f_nmtr_ctl->f_self);
+	f_nmtr_ctl->f_group_4_monitor_ctl = c_node_monitor_group_mntr_ctl(f_nmtr_ctl->f_self);
+	return f_nmtr_ctl;
+}
 
 static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
 {
@@ -752,13 +1000,13 @@ static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
 		f_MHD_ctl->f_plt =          init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_new_plt =      init_f_platform_control(c_MHD_new_plt, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_fname_psph =   c_MHD_fname_psph(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_psph_ctl =     c_MHD_psph_ctl(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_fname_psph =   (char *) c_MHD_fname_psph(f_MHD_ctl->f_self);
+		f_MHD_ctl->f_psph_ctl =     init_f_MHD_sph_shell_ctl(c_MHD_psph_ctl, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_model_ctl =    init_f_MHD_model_ctl(c_MHD_model_ctl, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_smctl_ctl =    init_f_MHD_control_ctls(c_MHD_smctl_ctl, f_MHD_ctl->f_self);
 		f_MHD_ctl->f_smonitor_ctl = init_f_MHD_sph_monitor_ctls(c_MHD_smonitor_ctl, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_nmtr_ctl =     c_MHD_nmtr_ctl(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_sgs_ctl =      c_MHD_sgs_ctl(f_MHD_ctl->f_addition);
+		f_MHD_ctl->f_nmtr_ctl =     init_f_MHD_node_monitor_ctl(c_MHD_nmtr_ctl, f_MHD_ctl->f_self);
+		f_MHD_ctl->f_sgs_ctl =      init_f_MHD_SGS_model_control(c_MHD_sgs_ctl, f_MHD_ctl->f_addition);
 		f_MHD_ctl->f_viz_ctls =     init_f_MHD_viz_ctls(c_MHD_viz_ctls, f_MHD_ctl->f_addition);
 		f_MHD_ctl->f_zm_ctls =      init_f_MHD_zm_ctls(c_MHD_zm_ctls, f_MHD_ctl->f_addition);
 	return;

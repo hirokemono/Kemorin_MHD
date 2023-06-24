@@ -405,6 +405,108 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      type(c_ptr) function c_sph_shell_ctl_block_name(c_ctl)            &
+     &          bind(C, NAME = 'c_sph_shell_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(parallel_sph_shell_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_shell_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_sph_shell_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_shell_ctl_iflag(c_ctl)                 &
+     &          bind(C, NAME = 'c_sph_shell_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(parallel_sph_shell_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_shell_ctl_iflag = C_loc(f_ctl%iflag_sph_shell)
+      end function c_sph_shell_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_shell_Fmesh_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_sph_shell_Fmesh_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(parallel_sph_shell_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_shell_Fmesh_ctl = C_loc(f_ctl%Fmesh_ctl)
+      end function c_sph_shell_Fmesh_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_shell_spctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_sph_shell_spctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(parallel_sph_shell_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_shell_spctl = C_loc(f_ctl%spctl)
+      end function c_sph_shell_spctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_shell_sdctl(c_ctl)                     &
+     &          bind(C, NAME = 'c_sph_shell_sdctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(parallel_sph_shell_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_shell_sdctl = C_loc(f_ctl%sdctl)
+      end function c_sph_shell_sdctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_node_monitor_ctl_block_name(c_ctl)         &
+     &          bind(C, NAME = 'c_node_monitor_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(node_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_node_monitor_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_node_monitor_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_node_monitor_ctl_iflag(c_ctl)              &
+     &          bind(C, NAME = 'c_node_monitor_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(node_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_node_monitor_ctl_iflag = C_loc(f_ctl%i_monitor_data)
+      end function c_node_monitor_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_node_monitor_xx_monitor_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_node_monitor_xx_monitor_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(node_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_node_monitor_xx_monitor_ctl = C_loc(f_ctl%xx_4_monitor_ctl)
+      end function c_node_monitor_xx_monitor_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_node_monitor_node_mntr_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_node_monitor_node_mntr_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(node_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_node_monitor_node_mntr_ctl = C_loc(f_ctl%node_4_monitor_ctl)
+      end function c_node_monitor_node_mntr_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_node_monitor_group_mntr_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_node_monitor_group_mntr_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(node_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_node_monitor_group_mntr_ctl = C_loc(f_ctl%group_4_monitor_ctl)
+      end function c_node_monitor_group_mntr_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       type(c_ptr) function c_sph_monitor_ctl_block_name(c_ctl)          &
      &          bind(C, NAME = 'c_sph_monitor_ctl_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
@@ -429,14 +531,8 @@
      &          bind(C, NAME = 'c_sph_monitor_num_vspec_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
       type(sph_monitor_control), pointer :: f_ctl
-      integer :: j
       call c_f_pointer(c_ctl, f_ctl)
       c_sph_monitor_num_vspec_ctl = C_loc(f_ctl%num_vspec_ctl)
-      
-      do j = 1, f_ctl%num_vspec_ctl
-        write(*,*) j, 'MHD_ctl_C%smonitor_ctl%v_pwr',  &
-     &       C_loc(f_ctl%v_pwr(j))
-      end do
       end function c_sph_monitor_num_vspec_ctl
 !
 !  ---------------------------------------------------------------------
@@ -451,7 +547,6 @@
       c_sph_monitor_v_pwr = C_loc(f_ctl%v_pwr(i))
       end function c_sph_monitor_v_pwr
 !
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_sph_monitor_lp_ctl(c_ctl)                  &

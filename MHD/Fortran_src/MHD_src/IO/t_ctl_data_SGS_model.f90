@@ -87,6 +87,9 @@
 !
 !
       type SGS_model_control
+!>        Block name
+        character(len=kchara) :: block_name = 'SGS_control'
+!
         type(read_character_item) :: SGS_model_name_ctl
         type(read_character_item) :: SGS_filter_name_ctl
         type(read_character_item) :: DIFF_model_coef_ctl

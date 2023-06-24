@@ -14,7 +14,7 @@
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_4_SGS_filters                          &
-!!     &         (id_control, hd_block, sgs_ctl, level)
+!!     &         (id_control, sgs_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
@@ -76,12 +76,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_control_4_SGS_filters                            &
-     &         (id_control, hd_block, sgs_ctl, level)
+     &          (id_control, sgs_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(SGS_model_control), intent(in) :: sgs_ctl
       integer(kind = kint), intent(inout) :: level
 !
@@ -89,12 +88,14 @@
 !
       if(sgs_ctl%num_sph_filter_ctl .le. 0) return
 !
-      level = write_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_array_flag_for_ctl(id_control, level,               &
+     &                            sgs_ctl%sph_filter_ctl(1)%block_name)
       do i = 1, sgs_ctl%num_sph_filter_ctl
-        call write_control_4_SGS_filter(id_control, hd_block,           &
+        call write_control_4_SGS_filter(id_control,                     &
      &      sgs_ctl%sph_filter_ctl(i), level)
       end do
-      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                            sgs_ctl%sph_filter_ctl(1)%block_name)
 !
       end subroutine write_control_4_SGS_filters
 !

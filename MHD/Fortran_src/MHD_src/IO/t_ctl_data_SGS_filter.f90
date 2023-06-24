@@ -12,7 +12,7 @@
 !!        type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_4_SGS_filter                           &
-!!     &         (id_control, hd_block, sphf_ctl, level)
+!!     &         (id_control, sphf_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(sph_filter_ctl_type), intent(in) :: sphf_ctl
@@ -77,6 +77,8 @@
 !
 !>        Structure for spherical shell filter
       type sph_filter_ctl_type
+!>        Block name
+        character(len=kchara) :: block_name = 'sph_filter_ctl'
 !>        Structure of sphere filter type
         type(read_character_item) :: sph_filter_type_ctl
 !>        Structure of radial filter type
@@ -130,8 +132,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(sphf_ctl%i_sph_filter_ctl .gt. 0) return
+      sphf_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -161,12 +164,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_control_4_SGS_filter                             &
-     &         (id_control, hd_block, sphf_ctl, level)
+     &         (id_control, sphf_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(sph_filter_ctl_type), intent(in) :: sphf_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -184,7 +186,8 @@
       maxlen = max(maxlen, len_trim(hd_1st_reference))
       maxlen = max(maxlen, len_trim(hd_2nd_reference))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                sphf_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    sphf_ctl%sph_filter_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -202,7 +205,8 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    sphf_ctl%second_reference_ctl)
 !
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                sphf_ctl%block_name)
 !
       end subroutine write_control_4_SGS_filter
 !

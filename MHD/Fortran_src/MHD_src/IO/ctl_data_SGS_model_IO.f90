@@ -12,7 +12,7 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_sgs_ctl(id_control, hd_block, sgs_ctl, level)
+!!      subroutine write_sgs_ctl(id_control, sgs_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
@@ -238,8 +238,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(sgs_ctl%i_sgs_ctl .gt. 0) return
+      sgs_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -332,14 +333,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_sgs_ctl(id_control, hd_block, sgs_ctl, level)
+      subroutine write_sgs_ctl(id_control, sgs_ctl, level)
 !
       use t_control_array_real
       use ctl_data_SGS_filters_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(SGS_model_control), intent(in) :: sgs_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -378,7 +378,8 @@
       maxlen = max(maxlen, len_trim(hd_r_ave_area_ctl))
       maxlen = max(maxlen, len_trim(hd_med_ave_area_ctl))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 sgs_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    sgs_ctl%SGS_model_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -392,8 +393,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    sgs_ctl%SGS_marging_ctl)
 !
-      call write_control_4_SGS_filters                                  &
-     &   (id_control, hd_sph_filter, sgs_ctl, level)
+      call write_control_4_SGS_filters(id_control, sgs_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    sgs_ctl%SGS_buo_Csim_usage_ctl)
@@ -433,8 +433,7 @@
      &    sgs_ctl%SGS_terms_ctl)
       call write_control_array_c1(id_control, level,                    &
      &    sgs_ctl%commutate_fld_ctl)
-      call write_3d_filtering_ctl                                       &
-     &   (id_control, hd_3d_filtering, sgs_ctl%s3df_ctl, level)
+      call write_3d_filtering_ctl(id_control, sgs_ctl%s3df_ctl, level)
       call write_ele_layers_control(id_control, hd_dynamic_layers,      &
      &                              sgs_ctl%elayer_ctl, level)
 !
@@ -456,7 +455,8 @@
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    sgs_ctl%SGS_model_coef_coord_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                 sgs_ctl%block_name)
 !
       end subroutine write_sgs_ctl
 !
