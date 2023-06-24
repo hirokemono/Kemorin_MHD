@@ -189,6 +189,32 @@ extern void * c_SGS_model_s3df_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_num_sph_filter_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
+extern void * c_sphere_data_ctl_block_name(void *f_spctl);
+extern void * c_sphere_data_ctl_iflag(void *f_spctl);
+extern void * c_sphere_data_ltr_ctl(void *f_spctl);
+extern void * c_sphere_data_phi_symmetry_ctl(void *f_spctl);
+extern void * c_sphere_data_sph_grd_tpe_ctl(void *f_spctl);
+extern void * c_sphere_data_coef_type_ctl(void *f_spctl);
+extern void * c_sphere_data_n_elevation_ctl(void *f_spctl);
+extern void * c_sphere_data_ngrid_azmth_ctl(void *f_spctl);
+extern void * c_sphere_data_radius_ctl(void *f_spctl);
+extern void * c_sphere_data_radial_grp_ctl(void *f_spctl);
+extern void * c_sphere_data_add_ext_ctl(void *f_spctl);
+extern void * c_sphere_data_r_grid_type_ctl(void *f_spctl);
+extern void * c_sphere_data_num_fld_grid_ctl(void *f_spctl);
+extern void * c_sphere_data_icrmnt_cheby_ctl(void *f_spctl);
+extern void * c_sphere_data_Min_radius_ctl(void *f_spctl);
+extern void * c_sphere_data_ICB_radius_ctl(void *f_spctl);
+extern void * c_sphere_data_CMB_radius_ctl(void *f_spctl);
+extern void * c_sphere_data_Max_radius_ctl(void *f_spctl);
+extern void * c_sphere_data_fld_core_sze_ctl(void *f_spctl);
+extern void * c_sphere_data_ICB_CMB_ratio_ctl(void *f_spctl);
+extern void * c_sphere_data_num_r_layer_ctl(void *f_spctl);
+extern void * c_sphere_data_n_med_layer_ctl(void *f_spctl);
+extern void * c_sphere_data_r_layer_list_ctl(void *f_spctl);
+extern void * c_sphere_data_med_list_ctl(void *f_spctl);
+
+
 struct f_MHD_forces_control{
 	void * f_self;
 	
@@ -278,6 +304,39 @@ struct f_MHD_equations_control{
 	struct f_MHD_heat_eq_control *   f_comp_ctl;
 };
 
+struct f_MHD_sph_resolution_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	int f_namelength[1];
+	char * c_block_name;
+	
+	void *f_ltr_ctl;
+	void *f_phi_symmetry_ctl;
+	void *f_sph_grid_type_ctl;
+	void *f_sph_coef_type_ctl;
+	void *f_ngrid_elevation_ctl;
+	void *f_ngrid_azimuth_ctl;
+	void *f_radius_ctl;
+	void *f_radial_grp_ctl;
+	void *f_add_ext_layer_ctl;
+	void *f_radial_grid_type_ctl;
+	void *f_num_fluid_grid_ctl;
+	void *f_increment_cheby_ctl;
+	void *f_Min_radius_ctl;
+	void *f_ICB_radius_ctl;
+	void *f_CMB_radius_ctl;
+	void *f_Max_radius_ctl;
+	void *f_fluid_core_size_ctl;
+	void *f_ICB_to_CMB_ratio_ctl;
+	void *f_num_radial_layer_ctl;
+	void *f_num_med_layer_ctl;
+	void *f_radial_layer_list_ctl;
+	void *f_med_layer_list_ctl;
+};
+
 struct f_MHD_sph_shell_control{
 	void * f_self;
 	
@@ -288,7 +347,7 @@ struct f_MHD_sph_shell_control{
 	char * c_block_name;
 	
 	void *f_Fmesh_ctl;
-	void *f_spctl;
+	struct f_MHD_sph_resolution_control *f_spctl;
 	void *f_sdctl;
 };
 
@@ -361,6 +420,7 @@ struct f_MHD_model_control{
 	void * f_bscale_ctl;
 	void * f_reft_ctl;
 	void * f_refc_ctl;
+	struct f_MHD_SGS_model_control * f_sgs_ctl;
 };
 
 struct f_MHD_control_ctls{
@@ -480,7 +540,6 @@ struct f_MHD_control{
 	struct f_MHD_sph_monitor_ctls * f_smonitor_ctl;
 	struct f_MHD_node_monitor_ctl * f_nmtr_ctl;
 	
-	struct f_MHD_SGS_model_control * f_sgs_ctl;
 	struct f_MHD_viz_ctls * f_viz_ctls;
 	struct f_MHD_zm_ctls * f_zm_ctls;
 };
@@ -686,6 +745,51 @@ struct f_MHD_equations_control * init_f_MHD_equations_ctl(void *(*c_load_self)(v
 	return f_eqs_ctl;
 }
 
+struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_sph_resolution_control *f_spctl 
+			= (struct f_MHD_sph_resolution_control *) malloc(sizeof(struct f_MHD_sph_resolution_control));
+	if(f_spctl == NULL){
+		printf("malloc error for f_spctl\n");
+		exit(0);
+	};
+	
+	f_spctl->f_self =  c_load_self(f_parent);
+	
+	f_spctl->f_block_name =   (char *) c_sphere_data_ctl_block_name(f_spctl->f_self);
+	f_spctl->f_iflag =        (int *) c_sphere_data_ctl_iflag(f_spctl->f_self);
+	
+	c_chara_item_clength(f_spctl->f_block_name, f_spctl->f_namelength);
+	f_spctl->c_block_name = alloc_string((long) f_spctl->f_namelength[0]);
+	strngcopy_w_length(f_spctl->c_block_name, f_spctl->f_namelength[0], 
+					   f_spctl->f_block_name);
+	
+	f_spctl->f_ltr_ctl =               c_sphere_data_ltr_ctl(f_spctl->f_self);
+	f_spctl->f_phi_symmetry_ctl =      c_sphere_data_phi_symmetry_ctl(f_spctl->f_self);
+	f_spctl->f_sph_grid_type_ctl =     c_sphere_data_sph_grd_tpe_ctl(f_spctl->f_self);
+	f_spctl->f_sph_coef_type_ctl =     c_sphere_data_coef_type_ctl(f_spctl->f_self);
+	f_spctl->f_ngrid_elevation_ctl =   c_sphere_data_n_elevation_ctl(f_spctl->f_self);
+	f_spctl->f_ngrid_azimuth_ctl =     c_sphere_data_ngrid_azmth_ctl(f_spctl->f_self);
+	f_spctl->f_radius_ctl =            c_sphere_data_radius_ctl(f_spctl->f_self);
+	f_spctl->f_radial_grp_ctl =        c_sphere_data_radial_grp_ctl(f_spctl->f_self);
+	f_spctl->f_add_ext_layer_ctl =     c_sphere_data_add_ext_ctl(f_spctl->f_self);
+	f_spctl->f_radial_grid_type_ctl =  c_sphere_data_r_grid_type_ctl(f_spctl->f_self);
+	f_spctl->f_num_fluid_grid_ctl =    c_sphere_data_num_fld_grid_ctl(f_spctl->f_self);
+	f_spctl->f_increment_cheby_ctl =   c_sphere_data_icrmnt_cheby_ctl(f_spctl->f_self);
+	f_spctl->f_Min_radius_ctl =        c_sphere_data_Min_radius_ctl(f_spctl->f_self);
+	f_spctl->f_ICB_radius_ctl =        c_sphere_data_ICB_radius_ctl(f_spctl->f_self);
+	f_spctl->f_CMB_radius_ctl =        c_sphere_data_CMB_radius_ctl(f_spctl->f_self);
+	f_spctl->f_Max_radius_ctl =        c_sphere_data_Max_radius_ctl(f_spctl->f_self);
+	f_spctl->f_fluid_core_size_ctl =   c_sphere_data_fld_core_sze_ctl(f_spctl->f_self);
+	f_spctl->f_ICB_to_CMB_ratio_ctl =  c_sphere_data_ICB_CMB_ratio_ctl(f_spctl->f_self);
+	f_spctl->f_num_radial_layer_ctl =  c_sphere_data_num_r_layer_ctl(f_spctl->f_self);
+	f_spctl->f_num_med_layer_ctl =     c_sphere_data_n_med_layer_ctl(f_spctl->f_self);
+	f_spctl->f_radial_layer_list_ctl = c_sphere_data_r_layer_list_ctl(f_spctl->f_self);
+	f_spctl->f_med_layer_list_ctl =    c_sphere_data_med_list_ctl(f_spctl->f_self);
+	return f_spctl;
+};
+
 struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(void *f_parent), 
 														  void *f_parent)
 {
@@ -707,7 +811,7 @@ struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(v
 					   f_psph_ctl->f_block_name);
 	
 	f_psph_ctl->f_Fmesh_ctl = c_sph_shell_Fmesh_ctl(f_psph_ctl->f_self);
-	f_psph_ctl->f_spctl =     c_sph_shell_spctl(f_psph_ctl->f_self);
+	f_psph_ctl->f_spctl =     init_f_MHD_sph_resolution_control(c_sph_shell_spctl, f_psph_ctl->f_self);
 	f_psph_ctl->f_sdctl =     c_sph_shell_sdctl(f_psph_ctl->f_self);
 	return f_psph_ctl;
 };
@@ -785,7 +889,8 @@ struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_sel
 	return f_sgs_ctl;
 };
 
-struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), void *f_parent)
+struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), 
+												  void *f_parent, void *f_addition)
 {
 	struct f_MHD_model_control *f_model_ctl 
 			= (struct f_MHD_model_control *) malloc(sizeof(struct f_MHD_model_control));
@@ -818,6 +923,7 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	f_model_ctl->f_bscale_ctl = c_MHD_mdl_bscale_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_reft_ctl =   c_MHD_mdl_reft_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_refc_ctl =   c_MHD_mdl_refc_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_sgs_ctl =    init_f_MHD_SGS_model_control(c_MHD_sgs_ctl, f_addition);
 	return f_model_ctl;
 }
 
@@ -989,26 +1095,26 @@ struct f_MHD_node_monitor_ctl * init_f_MHD_node_monitor_ctl(void *(*c_load_self)
 
 static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
 {
-		f_MHD_ctl->f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_iflag =        (int *) c_MHD_iflag(f_MHD_ctl->f_self);
-		
-		c_chara_item_clength(f_MHD_ctl->f_block_name, f_MHD_ctl->f_namelength);
-		f_MHD_ctl->c_block_name = alloc_string((long) f_MHD_ctl->f_namelength[0]);
-		strngcopy_w_length(f_MHD_ctl->c_block_name, f_MHD_ctl->f_namelength[0], 
-						   f_MHD_ctl->f_block_name);
-		
-		f_MHD_ctl->f_plt =          init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_new_plt =      init_f_platform_control(c_MHD_new_plt, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_fname_psph =   (char *) c_MHD_fname_psph(f_MHD_ctl->f_self);
-		f_MHD_ctl->f_psph_ctl =     init_f_MHD_sph_shell_ctl(c_MHD_psph_ctl, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_model_ctl =    init_f_MHD_model_ctl(c_MHD_model_ctl, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_smctl_ctl =    init_f_MHD_control_ctls(c_MHD_smctl_ctl, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_smonitor_ctl = init_f_MHD_sph_monitor_ctls(c_MHD_smonitor_ctl, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_nmtr_ctl =     init_f_MHD_node_monitor_ctl(c_MHD_nmtr_ctl, f_MHD_ctl->f_self);
-		f_MHD_ctl->f_sgs_ctl =      init_f_MHD_SGS_model_control(c_MHD_sgs_ctl, f_MHD_ctl->f_addition);
-		f_MHD_ctl->f_viz_ctls =     init_f_MHD_viz_ctls(c_MHD_viz_ctls, f_MHD_ctl->f_addition);
-		f_MHD_ctl->f_zm_ctls =      init_f_MHD_zm_ctls(c_MHD_zm_ctls, f_MHD_ctl->f_addition);
+	f_MHD_ctl->f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
+	f_MHD_ctl->f_iflag =        (int *) c_MHD_iflag(f_MHD_ctl->f_self);
+	
+	c_chara_item_clength(f_MHD_ctl->f_block_name, f_MHD_ctl->f_namelength);
+	f_MHD_ctl->c_block_name = alloc_string((long) f_MHD_ctl->f_namelength[0]);
+	strngcopy_w_length(f_MHD_ctl->c_block_name, f_MHD_ctl->f_namelength[0], 
+					   f_MHD_ctl->f_block_name);
+	
+	f_MHD_ctl->f_plt =          init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
+	f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);
+	f_MHD_ctl->f_new_plt =      init_f_platform_control(c_MHD_new_plt, f_MHD_ctl->f_self);
+	f_MHD_ctl->f_fname_psph =   (char *) c_MHD_fname_psph(f_MHD_ctl->f_self);
+	f_MHD_ctl->f_psph_ctl =     init_f_MHD_sph_shell_ctl(c_MHD_psph_ctl, f_MHD_ctl->f_self);
+	f_MHD_ctl->f_model_ctl =    init_f_MHD_model_ctl(c_MHD_model_ctl, f_MHD_ctl->f_self,
+													 f_MHD_ctl->f_addition);
+	f_MHD_ctl->f_smctl_ctl =    init_f_MHD_control_ctls(c_MHD_smctl_ctl, f_MHD_ctl->f_self);
+	f_MHD_ctl->f_smonitor_ctl = init_f_MHD_sph_monitor_ctls(c_MHD_smonitor_ctl, f_MHD_ctl->f_self);
+	f_MHD_ctl->f_nmtr_ctl =     init_f_MHD_node_monitor_ctl(c_MHD_nmtr_ctl, f_MHD_ctl->f_self);
+	f_MHD_ctl->f_viz_ctls =     init_f_MHD_viz_ctls(c_MHD_viz_ctls, f_MHD_ctl->f_addition);
+	f_MHD_ctl->f_zm_ctls =      init_f_MHD_zm_ctls(c_MHD_zm_ctls, f_MHD_ctl->f_addition);
 	return;
 }
 
@@ -1310,7 +1416,6 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	int iflag_ptr[1];
 	iflag_ptr[0] = 0;
 	
-	GtkWidget * vbox_plt = draw_platform_control_vbox(f_MHD_ctl->f_plt, window);
 	GtkWidget *vbox_test = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	GtkWidget *expand_MHD_force = draw_control_block(f_MHD_ctl->f_model_ctl->f_frc_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_frc_ctl->f_iflag,
@@ -1347,47 +1452,68 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_force, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_dimless, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);
+	
+	
+	GtkWidget * vbox_plt = draw_platform_control_vbox(f_MHD_ctl->f_plt, window);
+	/*
+	GtkWidget * vbox_plt_o = draw_platform_control_vbox(f_MHD_ctl->f_org_plt, window);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), vbox_plt_o, FALSE, FALSE, 0);
+	GtkWidget * vbox_plt_n = draw_platform_control_vbox(f_MHD_ctl->f_new_plt, window);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), vbox_plt_n, FALSE, FALSE, 0);
+	*/
+	
+	GtkWidget *vbox_sph_resolution = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_sph_resolution = draw_control_block(f_MHD_ctl->f_psph_ctl->f_spctl->c_block_name, 
+														  f_MHD_ctl->f_psph_ctl->f_spctl->f_iflag,
+														  560, 500, window, vbox_sph_resolution);
+	
+	GtkWidget *vbox_sph_shell = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), expand_sph_resolution, FALSE, FALSE, 0);
+	GtkWidget *expand_sph_shell = draw_control_block(f_MHD_ctl->f_psph_ctl->c_block_name, 
+													 f_MHD_ctl->f_psph_ctl->f_iflag,
+													 560, 500, window, vbox_sph_shell);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_sph_shell, FALSE, FALSE, 0);
+	
 	GtkWidget *expand_MHD_model = draw_control_block(f_MHD_ctl->f_model_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_iflag,
 													 560, 500, window, vbox_m);
-	
 	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_model, FALSE, FALSE, 0);
 	
+	
+	
+	GtkWidget *vbox_control = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_control = draw_control_block(f_MHD_ctl->f_smctl_ctl->c_block_name, 
+													 f_MHD_ctl->f_smctl_ctl->f_iflag,
+													 560, 500, window, vbox_control);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_control, FALSE, FALSE, 0);
+	
+	GtkWidget *vbox_smonitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_smonitor = draw_control_block(f_MHD_ctl->f_smonitor_ctl->c_block_name, 
+													 f_MHD_ctl->f_smonitor_ctl->f_iflag,
+													 560, 500, window, vbox_smonitor);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_smonitor, FALSE, FALSE, 0);
+	
 	/*
-	GtkWidget *expand_MHD_org_plt = draw_control_block(f_MHD_ctl->c_block_name, 
-											   f_MHD_ctl->f_iflag,
-											   560, 200, window, vbox_test);
-	GtkWidget *expand_MHD_new_plt = draw_control_block(f_MHD_ctl->c_block_name, 
-											   f_MHD_ctl->f_iflag,
-											   560, 200, window, vbox_test);
-	GtkWidget *expand_MHD_fname_psph = draw_control_block(f_MHD_ctl->c_block_name, 
-											   f_MHD_ctl->f_iflag,
-											   560, 200, window, vbox_test);
-	GtkWidget *expand_MHD_psph_ctl = draw_control_block(f_MHD_ctl->c_block_name, 
-											   f_MHD_ctl->f_iflag,
-											   560, 200, window, vbox_test);
-	GtkWidget *expand_MHD_smctl_ctl = draw_control_block(f_MHD_ctl->c_block_name, 
-											   f_MHD_ctl->f_iflag,
-											   560, 200, window, vbox_test);
-	GtkWidget *expand_MHD_smonitor_ctl = draw_control_block(f_MHD_ctl->c_block_name, 
-											   f_MHD_ctl->f_iflag,
-											   560, 200, window, vbox_test);
-	GtkWidget *expand_MHD_nmtr_ctl = draw_control_block(f_MHD_ctl->c_block_name, 
-											   f_MHD_ctl->f_iflag,
-											   560, 200, window, vbox_test);
-	GtkWidget *expand_MHD_sgs_ctl = draw_control_block(f_MHD_ctl->c_block_name, 
-											   f_MHD_ctl->f_iflag,
-											   560, 200, window, vbox_test);
-	 */
-
-	GtkWidget *expand_MHD_viz_ctls = draw_control_block(f_MHD_ctl->f_viz_ctls->c_block_name, 
-											   f_MHD_ctl->f_viz_ctls->f_iflag,
-											   560, 200, window, vbox_test);
-	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_viz_ctls, FALSE, FALSE, 0);
-	GtkWidget *expand_MHD_zm_ctls = draw_control_block(f_MHD_ctl->f_zm_ctls->c_block_name, 
-											   f_MHD_ctl->f_zm_ctls->f_iflag,
-											   560, 200, window, vbox_test);
-	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_zm_ctls, FALSE, FALSE, 0);
+	GtkWidget *vbox_node_monitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_node_monitor = draw_control_block(f_MHD_ctl->f_nmtr_ctl->c_block_name, 
+													 f_MHD_ctl->f_nmtr_ctl->f_iflag,
+													 560, 500, window, _node_monitor);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_node_monitor, FALSE, FALSE, 0);
+	*/
+	
+	GtkWidget *vbox_viz = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_viz = draw_control_block(f_MHD_ctl->f_viz_ctls->c_block_name, 
+													 f_MHD_ctl->f_viz_ctls->f_iflag,
+													 560, 500, window, vbox_viz);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_viz, FALSE, FALSE, 0);
+	
+	GtkWidget *vbox_zm = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_zm = draw_control_block(f_MHD_ctl->f_zm_ctls->c_block_name, 
+													 f_MHD_ctl->f_zm_ctls->f_iflag,
+													 560, 500, window, vbox_zm);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_zm, FALSE, FALSE, 0);
+	
+	
 	
 	GtkWidget *expand_MHD = draw_control_block(f_MHD_ctl->c_block_name, 
 											   f_MHD_ctl->f_iflag,
