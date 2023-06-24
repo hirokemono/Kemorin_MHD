@@ -12,6 +12,16 @@ extern int num_file_fmt_items_f();
 extern void set_file_fmt_items_f(char *fmt_names_c);
 
 
+char * strngcopy_from_f(char * f_char)
+{
+	char *c_char;
+	int f_charlength[1];
+	c_chara_item_clength(f_char, f_charlength);
+	c_char = alloc_string((long) f_charlength[0]);
+	strngcopy_w_length(c_char, f_charlength[0], f_char);
+	return c_char;
+}
+
 struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), 
 												void *f_parent)
 {
@@ -22,25 +32,13 @@ struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_par
 	};
 	f_citem->f_self =  c_load_self(f_parent);
 	
-	f_citem->f_block_name =  (char *) c_chara_item_block_name(f_citem->f_self);
 	f_citem->f_iflag =        (int *) c_chara_item_iflag(f_citem->f_self);
+	f_citem->f_block_name =  (char *) c_chara_item_block_name(f_citem->f_self);
+	f_citem->c_block_name = strngcopy_from_f(f_citem->f_block_name);
+	
 	f_citem->f_charavalue =  (char *) c_chara_item_charavalue(f_citem->f_self);
+	f_citem->c_charavalue = strngcopy_from_f(f_citem->f_charavalue);
 	
-	c_chara_item_clength(f_citem->f_block_name, f_citem->f_namelength);
-	f_citem->c_block_name = alloc_string((long) f_citem->f_namelength[0]);
-	strngcopy_w_length(f_citem->c_block_name, f_citem->f_namelength[0], 
-					   f_citem->f_block_name);
-	
-	c_chara_item_clength(f_citem->f_charavalue, f_citem->f_clength);
-	f_citem->c_charavalue = alloc_string((long) f_citem->f_clength[0]);
-	strngcopy_w_length(f_citem->c_charavalue, f_citem->f_clength[0], 
-					   f_citem->f_charavalue);
-	/*
-	printf("f_citem->f_self %p \n", f_citem->f_self);
-	printf("f_citem->c_block_name %s \n", f_citem->c_block_name);
-	printf("f_citem->c_charavalue %d %s \n", 
-		   f_citem->f_iflag[0], f_citem->c_charavalue);
-	*/
 	return f_citem;
 }
 
@@ -67,42 +65,32 @@ struct f_ctl_chara_array * init_f_ctl_chara_array(void *(*c_load_self)(void *f_p
 	};
 	f_carray->f_self =  c_load_self(f_parent);
 	
-	f_carray->f_block_name =  (char *) c_chara_array_block_name(f_carray->f_self);
 	f_carray->f_num =         (int *)  c_chara_array_num(f_carray->f_self);
 	f_carray->f_icou =        (int *)  c_chara_array_icou(f_carray->f_self);
-	f_carray->f_cctls =       (char *) c_chara_array_c_tbl(f_carray->f_self);
+	f_carray->f_block_name =  (char *) c_chara_array_block_name(f_carray->f_self);
+	f_carray->c_block_name = strngcopy_from_f(f_carray->f_block_name);
 	
-	c_chara_item_clength(f_carray->f_block_name, f_carray->f_namelength);
-	f_carray->c_block_name = alloc_string((long) f_carray->f_namelength[0]);
-	strngcopy_w_length(f_carray->c_block_name, f_carray->f_namelength[0], 
-					   f_carray->f_block_name);
+	f_carray->f_cctls =       (char *) c_chara_array_c_tbl(f_carray->f_self);
 	
 	f_carray->c_charavalue = (char **) malloc(f_carray->f_num[0] * sizeof(char *));
 	if(f_carray->c_charavalue == NULL){
 		printf("malloc error for f_carray->c_charavalue \n");
 		exit(0);
 	};
-	if((f_carray->f_clength = (int *) calloc(f_carray->f_num[0], sizeof(int))) == NULL){
-		printf("malloc error for f_carray->f_clength\n");
-		exit(0);
-	}
 	
 	int i;
 	int flen = 255;
 	for(i=0;i<f_carray->f_num[0];i++){
-		c_chara_item_clength(&f_carray->f_cctls[i*flen], &f_carray->f_clength[i]);
-		f_carray->c_charavalue[i] = alloc_string((long) f_carray->f_clength[i]);
-		strngcopy_w_length(f_carray->c_charavalue[i], f_carray->f_clength[i], 
-						   &f_carray->f_cctls[i*flen]);
+		f_carray->c_charavalue[i] = strngcopy_from_f(&f_carray->f_cctls[i*flen]);
 	};
-	
+	/*
 	printf("f_carray->f_self %p \n", f_carray->f_self);
 	printf("f_carray->c_block_name %s %d\n", f_carray->c_block_name, f_carray->f_num[0]);
 	for(i=0;i<f_carray->f_num[0];i++){
-		printf("%d f_carray->c_charavalue %d %p %s \n", i, 
-			   f_carray->f_clength[i], f_carray->c_charavalue[i], f_carray->c_charavalue[i]);
+		printf("%d f_carray->c_charavalue %p %s \n", i, 
+			   f_carray->c_charavalue[i], f_carray->c_charavalue[i]);
 	}
-	
+	*/
 	return f_carray;
 }
 
@@ -111,7 +99,6 @@ void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray)
 	int i;
 	for(i=0;i<f_carray->f_num[0];i++){free(f_carray->c_charavalue[i]);};
 	free(f_carray->c_charavalue);
-	free(f_carray->f_clength);
 	free(f_carray->c_block_name);
 	
 	f_carray->f_cctls = NULL;
@@ -161,20 +148,14 @@ struct f_ctl_cr_item * init_f_ctl_cr_item(void *(*c_load_self)(void *f_parent),
 	};
 	f_cr_item->f_self =  c_load_self(f_parent);
 	
-	f_cr_item->f_block_name =  (char *) c_chara_real_item_block_name(f_cr_item->f_self);
 	f_cr_item->f_iflag =        (int *) c_chara_real_item_iflag(f_cr_item->f_self);
-	f_cr_item->f_charavalue =  (char *) c_chara_real_item_charavalue(f_cr_item->f_self);
+	f_cr_item->f_block_name =  (char *) c_chara_real_item_block_name(f_cr_item->f_self);
+	f_cr_item->c_block_name = strngcopy_from_f(f_cr_item->f_block_name);
+	
 	f_cr_item->f_realvalue =  (double *) c_chara_real_item_realvalue(f_cr_item->f_self);
+	f_cr_item->f_charavalue =  (char *) c_chara_real_item_charavalue(f_cr_item->f_self);
+	f_cr_item->c_charavalue = strngcopy_from_f(f_cr_item->f_charavalue);
 	
-	c_chara_item_clength(f_cr_item->f_block_name, f_cr_item->f_namelength);
-	f_cr_item->c_block_name = alloc_string((long) f_cr_item->f_namelength[0]);
-	strngcopy_w_length(f_cr_item->c_block_name, f_cr_item->f_namelength[0], 
-					   f_cr_item->f_block_name);
-	
-	c_chara_item_clength(f_cr_item->f_charavalue, f_cr_item->f_clength);
-	f_cr_item->c_charavalue = alloc_string((long) f_cr_item->f_clength[0]);
-	strngcopy_w_length(f_cr_item->c_charavalue, f_cr_item->f_clength[0], 
-					   f_cr_item->f_charavalue);
 	/*
 	printf("f_cr_item->f_self %p \n", f_cr_item->f_self);
 	printf("f_cr_item->c_block_name %s \n", f_cr_item->c_block_name);
@@ -208,41 +189,30 @@ struct f_ctl_cr_array * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent)
 	};
 	f_cr_array->f_self =  c_load_self(f_parent);
 	
-	f_cr_array->f_block_name =  (char *) c_chara_real_array_block_name(f_cr_array->f_self);
 	f_cr_array->f_num =         (int *)  c_chara_real_array_num(f_cr_array->f_self);
 	f_cr_array->f_icou =        (int *)  c_chara_real_array_icou(f_cr_array->f_self);
-	f_cr_array->f_cctls =       (char *) c_chara_real_array_c_tbl(f_cr_array->f_self);
-	f_cr_array->f_rctls =       (double *) c_chara_real_array_r_tbl(f_cr_array->f_self);
+	f_cr_array->f_block_name =  (char *) c_chara_real_array_block_name(f_cr_array->f_self);
+	f_cr_array->c_block_name = strngcopy_from_f(f_cr_array->f_block_name);
 	
-	c_chara_item_clength(f_cr_array->f_block_name, f_cr_array->f_namelength);
-	f_cr_array->c_block_name = alloc_string((long) f_cr_array->f_namelength[0]);
-	strngcopy_w_length(f_cr_array->c_block_name, f_cr_array->f_namelength[0], 
-					   f_cr_array->f_block_name);
+	f_cr_array->f_rctls =       (double *) c_chara_real_array_r_tbl(f_cr_array->f_self);
+	f_cr_array->f_cctls =       (char *) c_chara_real_array_c_tbl(f_cr_array->f_self);
 	
 	f_cr_array->c_charavalue = (char **) malloc(f_cr_array->f_num[0] * sizeof(char *));
 	if(f_cr_array->c_charavalue == NULL){
 		printf("malloc error for f_cr_array->c_charavalue \n");
 		exit(0);
 	};
-	if((f_cr_array->f_clength = (int *) calloc(f_cr_array->f_num[0], sizeof(int))) == NULL){
-		printf("malloc error for f_cr_array->f_clength\n");
-		exit(0);
-	}
 	
 	int i;
 	int flen = 255;
 	for(i=0;i<f_cr_array->f_num[0];i++){
-		c_chara_item_clength(&f_cr_array->f_cctls[i*flen], &f_cr_array->f_clength[i]);
-		f_cr_array->c_charavalue[i] = alloc_string((long) f_cr_array->f_clength[i]);
-		strngcopy_w_length(f_cr_array->c_charavalue[i], f_cr_array->f_clength[i], 
-						   &f_cr_array->f_cctls[i*flen]);
+		f_cr_array->c_charavalue[i] = strngcopy_from_f(&f_cr_array->f_cctls[i*flen]);
 	};
 	
 	printf("f_cr_array->f_self %p \n", f_cr_array->f_self);
 	printf("f_cr_array->c_block_name %s %d\n", f_cr_array->c_block_name, f_cr_array->f_num[0]);
 	for(i=0;i<f_cr_array->f_num[0];i++){
-		printf("%d f_cr_array->c_charavalue %d %p %s %le\n", i, 
-			   f_cr_array->f_clength[i], f_cr_array->c_charavalue[i],
+		printf("%d f_cr_array->c_charavalue %s %le\n", i,
 			   f_cr_array->c_charavalue[i], f_cr_array->f_rctls[i]);
 	}
 	
@@ -255,7 +225,6 @@ void dealloc_f_ctl_cr_array(struct f_ctl_cr_array *f_cr_array)
 	int i;
 	for(i=0;i<f_cr_array->f_num[0];i++){free(f_cr_array->c_charavalue[i]);};
 	free(f_cr_array->c_charavalue);
-	free(f_cr_array->f_clength);
 	free(f_cr_array->c_block_name);
 	
 	f_cr_array->f_rctls = NULL;
@@ -312,16 +281,10 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 		exit(0);
 	};
 	f_plt->f_self =  c_load_self(f_parent);
-	f_plt->f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
+	
 	f_plt->f_iflag =       (int *)  c_plt_iflag(f_plt->f_self);
-	c_chara_item_clength(f_plt->f_block_name, f_plt->f_namelength);
-	
-	f_plt->c_block_name = alloc_string((long) f_plt->f_namelength[0]);
-	strngcopy_w_length(f_plt->c_block_name, f_plt->f_namelength[0], 
-					   f_plt->f_block_name);
-	printf("f_plt->f_block_name %d %s\n", f_plt->f_namelength[0], f_plt->f_block_name);
-	printf("f_plt->c_block_name %s\n", f_plt->c_block_name);
-	
+	f_plt->f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
+	f_plt->c_block_name = strngcopy_from_f(f_plt->f_block_name);
 	
 	f_plt->f_ndomain_ctl =               c_plt_ndomain_ctl(f_plt->f_self);
 	f_plt->f_num_smp_ctl =               c_plt_num_smp_ctl(f_plt->f_self);
@@ -359,11 +322,12 @@ void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 {
 	struct f_ctl_chara_item *f_citem = (struct f_ctl_chara_item *) data;
 	char * input_text;
+	int f_clength;
 	
 	if(f_citem->f_self != NULL) {
 /*		f_citem->f_iflag[0] = 1; */
 		input_text = (char *) gtk_entry_get_text(entry);
-		f_citem->f_clength[0] = strngcopy(f_citem->f_charavalue, (char *) input_text);
+		f_clength = strngcopy(f_citem->f_charavalue, (char *) input_text);
 		load_chara_from_c(f_citem->f_charavalue);
 	};
 	return;

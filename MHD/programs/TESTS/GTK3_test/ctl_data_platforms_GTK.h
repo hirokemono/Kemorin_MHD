@@ -78,10 +78,8 @@ struct f_ctl_chara_item{
 	int * f_iflag;
 	char * f_charavalue;
 	
-	int f_namelength[1];
 	char * c_block_name;
 	
-	int f_clength[1];
 	char * c_charavalue;
 };
 
@@ -92,10 +90,8 @@ struct f_ctl_chara_array{
 	int * f_icou;
 	char * f_cctls;
 	
-	int f_namelength[1];
 	char * c_block_name;
 	
-	int * f_clength;
 	char ** c_charavalue;
 };
 
@@ -114,10 +110,8 @@ struct f_ctl_cr_item{
 	char * f_charavalue;
 	double * f_realvalue;
 	
-	int f_namelength[1];
 	char * c_block_name;
 	
-	int f_clength[1];
 	char * c_charavalue;
 };
 
@@ -129,10 +123,7 @@ struct f_ctl_cr_array{
 	char * f_cctls;
 	double * f_rctls;
 	
-	int f_namelength[1];
 	char * c_block_name;
-	
-	int * f_clength;
 	char ** c_charavalue;
 };
 
@@ -151,7 +142,6 @@ struct f_platform_control{
 	char * f_block_name;
 	int * f_iflag;
 	
-	int f_namelength[1];
 	char * c_block_name;
 	
 	void * f_ndomain_ctl;
@@ -180,6 +170,9 @@ struct f_platform_control{
 	
 	struct control_labels_f *label_file_format_list;
 };
+
+char * strngcopy_from_f(char * f_char);
+
 
 struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent),
 												void *f_parent);

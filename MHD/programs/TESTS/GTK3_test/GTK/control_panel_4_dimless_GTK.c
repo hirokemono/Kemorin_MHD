@@ -30,13 +30,9 @@ struct f_MHD_dimless_control * init_f_MHD_dimless_ctl(void *(*c_load_self)(void 
 	
 	f_dimless_ctl->f_self =  c_load_self(f_parent);
 	
-	f_dimless_ctl->f_block_name =   (char *) c_MHD_dimless_block_name(f_dimless_ctl->f_self);
 	f_dimless_ctl->f_iflag =        (int *)  c_MHD_dimless_iflag(f_dimless_ctl->f_self);
-	
-	c_chara_item_clength(f_dimless_ctl->f_block_name, f_dimless_ctl->f_namelength);
-	f_dimless_ctl->c_block_name = alloc_string((long) f_dimless_ctl->f_namelength[0]);
-	strngcopy_w_length(f_dimless_ctl->c_block_name, f_dimless_ctl->f_namelength[0], 
-					   f_dimless_ctl->f_block_name);
+	f_dimless_ctl->f_block_name =   (char *) c_MHD_dimless_block_name(f_dimless_ctl->f_self);
+	f_dimless_ctl->c_block_name = strngcopy_from_f(f_dimless_ctl->f_block_name);
 	
 	f_dimless_ctl->f_dimess_names = init_f_ctl_cr_array(c_MHD_dimless_array, f_dimless_ctl->f_self);
 //	f_dimless_ctl->f_dimless_vws =  init_cr_array_views(f_dimless_ctl->f_dimess_names);
@@ -92,29 +88,22 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
 	int i;
 	for(i=0;i<f_dless_ctl->f_dimess_names->f_num[0];i++){free(f_dless_ctl->f_dimess_names->c_charavalue[i]);};
 	free(f_dless_ctl->f_dimess_names->c_charavalue);
-	free(f_dless_ctl->f_dimess_names->f_clength);
 	
 	f_dless_ctl->f_dimess_names->c_charavalue = (char **) malloc(num_tmp * sizeof(char *));
 	if(f_dless_ctl->f_dimess_names->c_charavalue == NULL){
 		printf("malloc error for f_dless_ctl->f_dimess_names->c_charavalue \n");
 		exit(0);
 	};
-	if((f_dless_ctl->f_dimess_names->f_clength = (int *) calloc(num_tmp, sizeof(int))) == NULL){
-		printf("malloc error for f_dless_ctl->f_dimess_names->f_clength\n");
-		exit(0);
-	}
 	char *ctmp;
 	int flen = lengthchara_f();
 	for(i=0;i<num_tmp;i++){
 		ctmp = chara_real_clist_at_index(i, f_dless_ctl->f_dimless_vws->cr_clist)->c_tbl;
-		f_dless_ctl->f_dimess_names->f_clength[i] = strlen(ctmp);
-		f_dless_ctl->f_dimess_names->c_charavalue[i] = alloc_string((long) f_dless_ctl->f_dimess_names->f_clength[i]);
-		strngcopy_w_length(f_dless_ctl->f_dimess_names->c_charavalue[i], f_dless_ctl->f_dimess_names->f_clength[i], ctmp);
+		f_dless_ctl->f_dimess_names->c_charavalue[i] = strngcopy_from_f(ctmp);
 	};
 	
 	for(i=0;i<num_tmp;i++){
-		printf("%d f_dless_ctl->f_dimess_names->c_charavalue %d %s %le\n", i, 
-			   f_dless_ctl->f_dimess_names->f_clength[i], f_dless_ctl->f_dimess_names->c_charavalue[i],
+		printf("%d f_dless_ctl->f_dimess_names->c_charavalue %s %le\n", i, 
+			   f_dless_ctl->f_dimess_names->c_charavalue[i],
 			   chara_real_clist_at_index(i, f_dless_ctl->f_dimless_vws->cr_clist)->r_data);
 	}
 	
