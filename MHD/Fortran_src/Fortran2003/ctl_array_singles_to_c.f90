@@ -42,8 +42,8 @@
 !!     &          bind(C, NAME = 'c_int_item_iflag')
 !!      type(c_ptr) function c_int_item_intvalue(c_ctl)                 &
 !!     &          bind(C, NAME = 'c_int_item_intvalue')
-!!      type(c_ptr) function c_int_array_block_namem(c_ctl)             &
-!!     &          bind(C, NAME = 'c_int_array_block_namem')
+!!      type(c_ptr) function c_int_array_block_name(c_ctl)              &
+!!     &          bind(C, NAME = 'c_int_array_block_name')
 !!      type(c_ptr) function c_int_array_num(c_ctl)                     &
 !!     &          bind(C, NAME = 'c_int_array_num')
 !!      type(c_ptr) function c_int_array_icou(c_ctl)                    &
@@ -255,14 +255,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_int_array_block_namem(c_ctl)               &
-     &          bind(C, NAME = 'c_int_array_block_namem')
+      type(c_ptr) function c_int_array_block_name(c_ctl)                &
+     &          bind(C, NAME = 'c_int_array_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_int), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_int_array_block_namem = C_loc(f_ctl%array_name)
-      end function c_int_array_block_namem
+      c_int_array_block_name = C_loc(f_ctl%array_name)
+      end function c_int_array_block_name
 !
 !  ---------------------------------------------------------------------
 !

@@ -68,6 +68,24 @@ extern void * c_chara_real_array_icou(void *f_ctl);
 extern void * c_chara_real_array_c_tbl(void *f_ctl);
 extern void * c_chara_real_array_r_tbl(void *f_ctl);
 
+extern void * c_real_item_block_name(void *f_ctl);
+extern void * c_real_item_iflag(void *f_ctl);
+extern void * c_real_item_realvalue(void *f_ctl);
+
+extern void * c_real_array_block_name(void *f_ctl);
+extern void * c_real_array_num(void *f_ctl);
+extern void * c_real_array_icou(void *f_ctl);
+extern void * c_real_array_r_tbl(void *f_ctl);
+
+extern void * c_int_item_block_name(void *f_ctl);
+extern void * c_int_item_iflag(void *f_ctl);
+extern void * c_int_item_intvalue(void *f_ctl);
+
+extern void * c_int_array_block_name(void *f_ctl);
+extern void * c_int_array_num(void *f_ctl);
+extern void * c_int_array_icou(void *f_ctl);
+extern void * c_int_array_i_tbl(void *f_ctl);
+
 
 
 extern void load_chara_from_c(void *c_ctl);
@@ -91,8 +109,45 @@ struct f_ctl_chara_array{
 	char * f_cctls;
 	
 	char * c_block_name;
-	
 	char ** c_charavalue;
+};
+
+struct f_ctl_real_item{
+	void * f_self;
+	char * f_block_name;
+	int * f_iflag;
+	double * f_realvalue;
+	
+	char * c_block_name;
+};
+
+struct f_ctl_real_array{
+	void * f_self;
+	char * f_block_name;
+	int * f_num;
+	int * f_icou;
+	double * f_rctls;
+	
+	char * c_block_name;
+};
+
+struct f_ctl_int_item{
+	void * f_self;
+	char * f_block_name;
+	int * f_iflag;
+	int * f_intvalue;
+	
+	char * c_block_name;
+};
+
+struct f_ctl_int_array{
+	void * f_self;
+	char * f_block_name;
+	int * f_num;
+	int * f_icou;
+	int * f_ictls;
+	
+	char * c_block_name;
 };
 
 struct c_array_views{
@@ -144,8 +199,8 @@ struct f_platform_control{
 	
 	char * c_block_name;
 	
-	void * f_ndomain_ctl;
-	void * f_num_smp_ctl;
+	struct f_ctl_int_item * f_ndomain_ctl;
+	struct f_ctl_int_item * f_num_smp_ctl;
 	struct f_ctl_chara_item * f_debug_flag_ctl;
 	struct f_ctl_chara_item * f_sph_file_prefix;
 	struct f_ctl_chara_item * f_mesh_file_prefix;
@@ -212,7 +267,7 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 							   char *file_name, int width, int height,
 							   GtkWidget *window, GtkWidget *box_in);
 
-GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWidget *window);
+GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem);
 GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidget *window);
 
 #endif    /* CTL_DATA_PLATFORMS_GTK_ */

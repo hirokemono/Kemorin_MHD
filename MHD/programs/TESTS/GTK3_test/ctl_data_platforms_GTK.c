@@ -8,6 +8,7 @@
 #include "ctl_data_platforms_GTK.h"
 
 extern int lengthchara_f();
+extern int c_yes_flag(const char *text);
 extern int c_no_file_flag(const char *file_name);
 extern int num_file_fmt_items_f();
 extern void set_file_fmt_items_f(char *fmt_names_c);
@@ -108,6 +109,146 @@ void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray)
 	f_carray->f_self = NULL;
 	return;
 }
+
+struct f_ctl_real_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_parent), 
+												void *f_parent)
+{
+	struct f_ctl_real_item *f_ritem = (struct f_ctl_real_item *) malloc(sizeof(struct f_ctl_real_item));
+	if(f_ritem == NULL){
+		printf("malloc error for f_ctl_real_item\n");
+		exit(0);
+	};
+	f_ritem->f_self =  c_load_self(f_parent);
+	
+	f_ritem->f_iflag =        (int *) c_real_item_iflag(f_ritem->f_self);
+	f_ritem->f_block_name =  (char *) c_real_item_block_name(f_ritem->f_self);
+	f_ritem->c_block_name = strngcopy_from_f(f_ritem->f_block_name);
+	
+	f_ritem->f_realvalue =  (double *) c_real_item_realvalue(f_ritem->f_self);
+	return f_ritem;
+}
+
+
+void dealloc_f_ctl_real_item(struct f_ctl_real_item *f_ritem)
+{
+	free(f_ritem->c_block_name);
+	
+	f_ritem->f_realvalue = NULL;
+	f_ritem->f_iflag = NULL;
+	f_ritem->f_block_name = NULL;
+	f_ritem->f_self = NULL;
+	return;
+}
+
+struct f_ctl_real_array * init_f_ctl_real_array(void *(*c_load_self)(void *f_parent), 
+												  void *f_parent)
+{
+	struct f_ctl_real_array *f_rarray = (struct f_ctl_real_array *) malloc(sizeof(struct f_ctl_real_array));
+	if(f_rarray == NULL){
+		printf("malloc error for f_ctl_real_array\n");
+		exit(0);
+	};
+	f_rarray->f_self =  c_load_self(f_parent);
+	
+	f_rarray->f_num =         (int *)  c_real_array_num(f_rarray->f_self);
+	f_rarray->f_icou =        (int *)  c_real_array_icou(f_rarray->f_self);
+	f_rarray->f_block_name =  (char *) c_real_array_block_name(f_rarray->f_self);
+	f_rarray->c_block_name = strngcopy_from_f(f_rarray->f_block_name);
+	
+	f_rarray->f_rctls =       (double *) c_real_array_r_tbl(f_rarray->f_self);
+	
+	/*
+	printf("f_rarray->f_self %p \n", f_rarray->f_self);
+	printf("f_rarray->c_block_name %s %d\n", f_rarray->c_block_name, f_rarray->f_num[0]);
+	for(i=0;i<f_rarray->f_num[0];i++){
+		printf("%d f_rarray->f_rctls %p %s \n", i,	f_rarray->f_rctls[i]);
+	}
+	*/
+	return f_rarray;
+}
+
+void dealloc_f_ctl_real_array(struct f_ctl_real_array *f_rarray)
+{
+	free(f_rarray->c_block_name);
+	
+	f_rarray->f_rctls = NULL;
+	f_rarray->f_icou = NULL;
+	f_rarray->f_num = NULL;
+	f_rarray->f_block_name = NULL;
+	f_rarray->f_self = NULL;
+	return;
+}
+
+struct f_ctl_int_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent), 
+												void *f_parent)
+{
+	struct f_ctl_int_item *f_iitem = (struct f_ctl_int_item *) malloc(sizeof(struct f_ctl_int_item));
+	if(f_iitem == NULL){
+		printf("malloc error for f_ctl_int_item\n");
+		exit(0);
+	};
+	f_iitem->f_self =  c_load_self(f_parent);
+	
+	f_iitem->f_iflag =        (int *) c_int_item_iflag(f_iitem->f_self);
+	f_iitem->f_block_name =  (char *) c_int_item_block_name(f_iitem->f_self);
+	f_iitem->c_block_name = strngcopy_from_f(f_iitem->f_block_name);
+	
+	f_iitem->f_intvalue =  (int *) c_int_item_intvalue(f_iitem->f_self);
+	return f_iitem;
+}
+
+
+void dealloc_f_ctl_int_item(struct f_ctl_int_item *f_ritem)
+{
+	free(f_ritem->c_block_name);
+	
+	f_ritem->f_intvalue = NULL;
+	f_ritem->f_iflag = NULL;
+	f_ritem->f_block_name = NULL;
+	f_ritem->f_self = NULL;
+	return;
+}
+
+struct f_ctl_int_array * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent), 
+												  void *f_parent)
+{
+	struct f_ctl_int_array *f_iarray = (struct f_ctl_int_array *) malloc(sizeof(struct f_ctl_int_array));
+	if(f_iarray == NULL){
+		printf("malloc error for f_ctl_int_array\n");
+		exit(0);
+	};
+	f_iarray->f_self =  c_load_self(f_parent);
+	
+	f_iarray->f_num =         (int *)  c_int_array_num(f_iarray->f_self);
+	f_iarray->f_icou =        (int *)  c_int_array_icou(f_iarray->f_self);
+	f_iarray->f_block_name =  (char *) c_int_array_block_name(f_iarray->f_self);
+	f_iarray->c_block_name = strngcopy_from_f(f_iarray->f_block_name);
+	
+	f_iarray->f_ictls =       (int *) c_int_array_i_tbl(f_iarray->f_self);
+	
+	/*
+	printf("f_iarray->f_self %p \n", f_iarray->f_self);
+	printf("f_iarray->c_block_name %s %d\n", f_iarray->c_block_name, f_iarray->f_num[0]);
+	for(i=0;i<f_iarray->f_num[0];i++){
+		printf("%d f_iarray->f_ictls %p %d \n", i,	f_iarray->f_ictls[i]);
+	}
+	*/
+	return f_iarray;
+}
+
+void dealloc_f_ctl_int_array(struct f_ctl_int_array *f_iarray)
+{
+	free(f_iarray->c_block_name);
+	
+	f_iarray->f_ictls = NULL;
+	f_iarray->f_icou = NULL;
+	f_iarray->f_num = NULL;
+	f_iarray->f_block_name = NULL;
+	f_iarray->f_self = NULL;
+	return;
+}
+
+
 
 struct c_array_views * init_c_array_views(struct f_ctl_chara_array *f_carray)
 {
@@ -286,9 +427,8 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 	f_plt->f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
 	f_plt->c_block_name = strngcopy_from_f(f_plt->f_block_name);
 	
-	f_plt->f_ndomain_ctl =               c_plt_ndomain_ctl(f_plt->f_self);
-	f_plt->f_num_smp_ctl =               c_plt_num_smp_ctl(f_plt->f_self);
-	
+	f_plt->f_ndomain_ctl =               init_f_ctl_int_item(c_plt_ndomain_ctl, f_plt->f_self);
+	f_plt->f_num_smp_ctl =               init_f_ctl_int_item(c_plt_num_smp_ctl, f_plt->f_self);
 	
 	f_plt->f_debug_flag_ctl =            init_f_ctl_chara_item(c_plt_debug_flag_ctl, f_plt->f_self);
 	f_plt->f_sph_file_prefix =           init_f_ctl_chara_item(c_plt_sph_file_prefix, f_plt->f_self);
@@ -362,6 +502,19 @@ void cb_file_switch(GtkWidget *widget, gpointer data){
 			load_chara_from_c(f_file_name);
 		};
 	};
+	return;
+}
+
+void cb_char_switch(GtkWidget *widget, gpointer data){
+	GtkSwitch *text_switch = GTK_SWITCH(widget);
+	char *f_text = (char *) g_object_get_data(G_OBJECT(widget), "file_name");
+	
+	if(gtk_switch_get_active(text_switch) == FALSE){
+		sprintf(f_text, "%s", "Off");
+	}else{
+		sprintf(f_text, "%s", "On");
+	};
+	load_chara_from_c(f_text);
 	return;
 }
 
@@ -455,7 +608,38 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 	return hbox0;
 };
 
-GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWidget *window)
+
+GtkWidget * draw_chara_switch_entry_hbox(struct f_ctl_chara_item * f_citem)
+{
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *checkbox = gtk_check_button_new();
+	if(f_citem->f_iflag[0] == 0){
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), FALSE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), TRUE);
+	}
+	g_signal_connect(G_OBJECT(checkbox), "toggled", 
+                     G_CALLBACK(cb_check_toggle), (gpointer) f_citem->f_iflag);
+	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
+	
+	GtkWidget *char_switch = gtk_switch_new();
+	g_object_set_data(G_OBJECT(char_switch), "file_name", (gpointer) f_citem->f_charavalue);
+	if(c_yes_flag(f_citem->f_charavalue) == 0){
+		gtk_switch_set_active(GTK_SWITCH(char_switch), FALSE);
+	} else {
+		gtk_switch_set_active(GTK_SWITCH(char_switch), TRUE);
+	};
+	g_signal_connect(G_OBJECT(char_switch), "notify::active",
+					 G_CALLBACK(cb_char_switch), (gpointer) NULL);
+	
+	
+	gtk_box_pack_start(GTK_BOX(hbox), checkbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), char_switch, FALSE, FALSE, 0);
+	return hbox;
+}
+
+GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem)
 {
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *checkbox = gtk_check_button_new();
@@ -470,9 +654,8 @@ GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWid
 	
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_entry_new();
-	gtk_entry_set_max_width_chars(GTK_ENTRY(entry), 80);
+	gtk_entry_set_max_width_chars(GTK_ENTRY(entry), 32);
 	gtk_entry_set_text(GTK_ENTRY(entry), f_citem->f_charavalue);
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window);
 	g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(cb_chara_ctl_item), 
 					 (gpointer) f_citem);
 	
@@ -508,46 +691,91 @@ GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_for
 	return hbox;
 }
 
+static void cb_int_ctl_item(GtkSpinButton *spinner, gpointer data)
+{
+	int *i_data = (int *) data;
+	
+	if(data != NULL) {
+		i_data[0] = gtk_spin_button_get_value_as_int(spinner);
+/*		printf("New value: %d\n", i_data); */
+	};
+	return;
+}
+
+GtkWidget *draw_int_item_entry_hbox(struct f_ctl_int_item *f_iitem){
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkAdjustment *adjust = gtk_adjustment_new(f_iitem->f_intvalue[0], 0, 2147483648, 1,
+                    100, 21474836);
+	
+	GtkWidget *checkbox = gtk_check_button_new();
+	if(f_iitem->f_iflag[0] == 0){
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), FALSE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), TRUE);
+	}
+	g_signal_connect(G_OBJECT(checkbox), "toggled", 
+                     G_CALLBACK(cb_check_toggle), (gpointer) f_iitem->f_iflag);
+	GtkWidget *label = gtk_label_new(strngcopy_from_f(f_iitem->f_block_name));
+	
+	/* Generate file entry  */
+	GtkWidget *entry = gtk_spin_button_new(adjust, 1, 0);
+	g_signal_connect(G_OBJECT(entry), "value-changed",
+				G_CALLBACK(cb_int_ctl_item), (gpointer) f_iitem->f_intvalue);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry), f_iitem->f_intvalue[0]);
+	
+	gtk_widget_set_halign(checkbox, GTK_ALIGN_START);
+	gtk_widget_set_halign(label, GTK_ALIGN_START);
+	gtk_widget_set_halign(entry, GTK_ALIGN_START);
+	gtk_box_pack_start(GTK_BOX(hbox), checkbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+	return hbox;
+}
+
 
 GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidget *window){
     GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
-	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_plt->f_debug_flag_ctl, window);
-	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_plt->f_sph_file_prefix, window);
+	GtkWidget *hbox_c1 = draw_chara_switch_entry_hbox(f_plt->f_debug_flag_ctl);
+	GtkWidget *hbox_i1 = draw_int_item_entry_hbox(f_plt->f_ndomain_ctl);
+	GtkWidget *hbox_i2 = draw_int_item_entry_hbox(f_plt->f_num_smp_ctl);
+	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_plt->f_sph_file_prefix);
 	GtkWidget *hbox_c3 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
 													  f_plt->f_sph_file_fmt_ctl, window);
 	/*
-	GtkWidget *hbox_c4 = draw_chara_item_entry_hbox(f_plt->f_mesh_file_prefix, window);
-	GtkWidget *hbox_c5 = draw_chara_item_entry_hbox(f_plt->f_mesh_file_fmt_ctl, window);
+	GtkWidget *hbox_c4 = draw_chara_item_entry_hbox(f_plt->f_mesh_file_prefix);
+	GtkWidget *hbox_c5 = draw_chara_item_entry_hbox(f_plt->f_mesh_file_fmt_ctl);
 	*/
-	GtkWidget *hbox_c6 = draw_chara_item_entry_hbox(f_plt->f_restart_file_prefix, window);
+	GtkWidget *hbox_c6 = draw_chara_item_entry_hbox(f_plt->f_restart_file_prefix);
 	GtkWidget *hbox_c7 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
 													  f_plt->f_restart_file_fmt_ctl, window);
-	GtkWidget *hbox_c8 = draw_chara_item_entry_hbox(f_plt->f_field_file_prefix, window);
+	GtkWidget *hbox_c8 = draw_chara_item_entry_hbox(f_plt->f_field_file_prefix);
 	GtkWidget *hbox_c9 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
 													  f_plt->f_field_file_fmt_ctl, window);
 	/*
- 	GtkWidget *hbox_c10 = draw_chara_item_entry_hbox(f_plt->f_spectr_field_file_prefix, window);
+ 	GtkWidget *hbox_c10 = draw_chara_item_entry_hbox(f_plt->f_spectr_field_file_prefix);
 	GtkWidget *hbox_c11 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
 													  f_plt->f_spectr_field_fmt_ctl, window);
-	GtkWidget *hbox_c12 = draw_chara_item_entry_hbox(f_plt->f_coriolis_int_file_name, window);
-	GtkWidget *hbox_c13 = draw_chara_item_entry_hbox(f_plt->f_coriolis_file_fmt_ctl, window);
+	GtkWidget *hbox_c12 = draw_chara_item_entry_hbox(f_plt->f_coriolis_int_file_name);
+	GtkWidget *hbox_c13 = draw_chara_item_entry_hbox(f_plt->f_coriolis_file_fmt_ctl);
 	*/
-	GtkWidget *hbox_c14 = draw_chara_item_entry_hbox(f_plt->f_bc_data_file_name_ctl, window);
-	GtkWidget *hbox_c15 = draw_chara_item_entry_hbox(f_plt->f_radial_data_file_name_ctl, window);
+	GtkWidget *hbox_c14 = draw_chara_item_entry_hbox(f_plt->f_bc_data_file_name_ctl);
+	GtkWidget *hbox_c15 = draw_chara_item_entry_hbox(f_plt->f_radial_data_file_name_ctl);
 	/*
-	GtkWidget *hbox_c16 = draw_chara_item_entry_hbox(f_plt->f_interpolate_sph_to_fem, window);
-	GtkWidget *hbox_c17 = draw_chara_item_entry_hbox(f_plt->f_interpolate_fem_to_sph, window);
+	GtkWidget *hbox_c16 = draw_chara_item_entry_hbox(f_plt->f_interpolate_sph_to_fem);
+	GtkWidget *hbox_c17 = draw_chara_item_entry_hbox(f_plt->f_interpolate_fem_to_sph);
 	GtkWidget *hbox_c18 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
 													  f_plt->f_itp_file_fmt_ctl, window);
 	*/
-	GtkWidget *hbox_c19 = draw_chara_item_entry_hbox(f_plt->f_rayleigh_spectr_dir, window);
-	GtkWidget *hbox_c20 = draw_chara_item_entry_hbox(f_plt->f_rayleigh_field_dir, window);
+	GtkWidget *hbox_c19 = draw_chara_item_entry_hbox(f_plt->f_rayleigh_spectr_dir);
+	GtkWidget *hbox_c20 = draw_chara_item_entry_hbox(f_plt->f_rayleigh_field_dir);
 	
-	GtkWidget *hbox_c21 = draw_chara_item_entry_hbox(f_plt->f_del_org_data_ctl, window);
+	GtkWidget *hbox_c21 = draw_chara_item_entry_hbox(f_plt->f_del_org_data_ctl);
 	
 	GtkWidget *vbox_plt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_c1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_i1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_i2, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_c2, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_c3, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_c6, FALSE, FALSE, 0);
@@ -565,3 +793,43 @@ GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidg
     gtk_box_pack_start(GTK_BOX(vbox_out), expand_PLT, FALSE, FALSE, 0);
 	return vbox_out;
 };
+
+
+static void cb_real_ctl_item(GtkEntry *spinner, gpointer data)
+{
+	double *r_data = (double *) data;
+	
+	if(data != NULL) {
+		r_data[0] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
+/*		printf("New value: %le\n", r_data); */
+	};
+	return;
+}
+
+GtkWidget *draw_real_item_entry_hbox(struct f_ctl_real_item * f_ritem){
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkAdjustment *adjust = gtk_adjustment_new(f_ritem->f_realvalue[0],
+				-1.0e30, 1.0e30, 0.1, 100, 21474836);
+	
+	GtkWidget *checkbox = gtk_check_button_new();
+	if(f_ritem->f_iflag[0] == 0){
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), FALSE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), TRUE);
+	}
+	g_signal_connect(G_OBJECT(checkbox), "toggled", 
+                     G_CALLBACK(cb_check_toggle), (gpointer) f_ritem->f_iflag);
+	GtkWidget *label = gtk_label_new(f_ritem->c_block_name);
+	
+	/* Generate file entry  */
+	GtkWidget *entry = gtk_spin_button_new(adjust, 1, 0);
+	g_signal_connect(G_OBJECT(entry), "value-changed",
+				G_CALLBACK(cb_real_ctl_item), (gpointer) f_ritem->f_realvalue);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry), f_ritem->f_realvalue[0]);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), checkbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+	return hbox;
+}
+

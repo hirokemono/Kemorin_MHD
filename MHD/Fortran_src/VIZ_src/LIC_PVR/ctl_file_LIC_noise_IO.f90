@@ -19,10 +19,9 @@
 !!      subroutine sel_write_cube_noise_ctl_file                        &
 !!     &         (id_control, hd_block, file_name, noise_ctl, level)
 !!      subroutine write_cube_noise_control_file(id_control, file_name, &
-!!     &                                         hd_block, noise_ctl)
+!!     &                                         noise_ctl)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: file_name
-!!        character(len = kchara), intent(in) :: hd_block
 !!        type(cube_noise_ctl), intent(in) :: noise_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -163,7 +162,7 @@
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_cube_noise_control_file((id_control+2), file_name,   &
-     &                                     hd_block, noise_ctl)
+     &                                     noise_ctl)
       end if
 !
       end subroutine sel_write_cube_noise_ctl_file
@@ -171,11 +170,10 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_cube_noise_control_file(id_control, file_name,   &
-     &                                         hd_block, noise_ctl)
+     &                                         noise_ctl)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
-      character(len = kchara), intent(in) :: hd_block
       type(cube_noise_ctl), intent(in) :: noise_ctl
 !
       integer(kind = kint) :: level
