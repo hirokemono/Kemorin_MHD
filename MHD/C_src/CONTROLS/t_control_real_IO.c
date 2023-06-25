@@ -214,12 +214,24 @@ static void set_from_real_ctl_list_at_index(int index, struct real_ctl_list *hea
 };
 
 
-static void add_real_ctl_list_before_c_tbl(double ref, double r1_in,
-			struct real_ctl_list *head){
+static double set_real_ctl_list_by_midvalue(struct real_ctl_list *current){
+	double ave;
+	if(current->_prev->r_item == NULL){
+        ave = current->_next->r_item->r_data;
+	}else if(current->_next->r_item == NULL){
+        ave = current->_prev->r_item->r_data;
+	}else{
+        ave = 0.5 * (current->_prev->r_item->r_data + current->_next->r_item->r_data);
+	};
+	return ave;
+};
+
+static void add_real_ctl_list_before_c_tbl(double ref, struct real_ctl_list *head){
 	head = find_r_ctl_list_item_by_value(ref, head);
 	if(head == NULL) return;
 	head = add_real_ctl_list_before(head);
-	update_real_ctl_item_c(r1_in, head->r_item);
+	double ave = set_real_ctl_list_by_midvalue(head);
+	update_real_ctl_item_c(ave, head->r_item);
 	return;
 };
 static void add_real_ctl_list_after_c_tbl(double ref, double r1_in,
@@ -324,8 +336,8 @@ void set_from_real_clist_at_index(int index, struct real_clist *r_clst, double *
     return;
 };
 
-void add_real_clist_before_c_tbl(double ref, double r1_in, struct real_clist *r_clst){
-    add_real_ctl_list_before_c_tbl(ref, r1_in, &r_clst->r_item_head);
+void add_real_clist_before_c_tbl(double ref, struct real_clist *r_clst){
+    add_real_ctl_list_before_c_tbl(ref, &r_clst->r_item_head);
     return;
 };
 void add_real_clist_after_c_tbl(double ref, double r1_in, struct real_clist *r_clst){

@@ -247,6 +247,7 @@ static void set_real2_ctl_list_by_midvalue(struct real2_ctl_list *current, doubl
 	};
 	return;
 };
+
 static void add_real2_ctl_list_before_c_tbl(double ref_1, double ref_2, 
 			struct real2_ctl_list *head){
 	double ave[2];

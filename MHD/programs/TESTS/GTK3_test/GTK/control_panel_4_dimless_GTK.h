@@ -23,11 +23,8 @@ struct f_MHD_dimless_control{
 	char * f_block_name;
 	int * f_iflag;
 	
-	int f_namelength[1];
-	char * c_block_name;
-	
 	struct f_ctl_cr_array * f_dimess_names;
-	struct dimless_views * f_dimless_vws;
+	struct dimless_views *  f_dimless_vws;
 };
 
 

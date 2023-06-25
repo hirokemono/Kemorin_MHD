@@ -222,20 +222,40 @@ static void set_from_int_real_ctl_list_at_index(int index, struct int_real_ctl_l
 };
 
 
+static void set_int_real_ctl_list_by_midvalue(struct int_real_ctl_list *current, int *iave, double *rave){
+	if(current->_prev->ir_item == NULL){
+        *iave = current->_next->ir_item->i_data;
+        *rave = current->_next->ir_item->r_data;
+	}else if(current->_next->ir_item == NULL){
+        *iave = current->_next->ir_item->i_data;
+        *rave = current->_next->ir_item->r_data;
+	}else{
+        *iave = 0.5 * (current->_prev->ir_item->i_data + current->_next->ir_item->i_data);
+        *rave = 0.5 * (current->_prev->ir_item->r_data + current->_next->ir_item->r_data);
+	};
+	return;
+};
+
 static void add_int_real_ctl_list_before_c_tbl(int iref_1, double ref_2,
-			int i1_in, double r2_in, struct int_real_ctl_list *head){
+                                               struct int_real_ctl_list *head){
+    int iave;
+    double rave;
 	head = find_ir_ctl_list_item_by_value(iref_1, ref_2, head);
 	if(head == NULL) return;
 	head = add_int_real_ctl_list_before(head);
-	update_int_real_ctl_item_c(i1_in, r2_in, head->ir_item);
+	set_int_real_ctl_list_by_midvalue(head, &iave, &rave);
+	update_int_real_ctl_item_c(iave, rave, head->ir_item);
 	return;
 };
 static void add_int_real_ctl_list_after_c_tbl(int iref_1, double ref_2,
-			int i1_in, double r2_in, struct int_real_ctl_list *head){
+                                              struct int_real_ctl_list *head){
+    int iave;
+    double rave;
 	head = find_ir_ctl_list_item_by_value(iref_1, ref_2, head);
 	if(head == NULL) return;
 	head = add_int_real_ctl_list_after(head);
-	update_int_real_ctl_item_c(i1_in, r2_in, head->ir_item);
+	set_int_real_ctl_list_by_midvalue(head, &iave, &rave);
+	update_int_real_ctl_item_c(iave, rave, head->ir_item);
 	return;
 };
 static void del_int_real_ctl_list_by_c_tbl(int iref_1, double ref_2, struct int_real_ctl_list *head){
@@ -340,16 +360,12 @@ void set_from_int_real_clist_at_index(int index, struct int_real_clist *ir_clst,
     return;
 };
 
-void add_int_real_clist_before_c_tbl(int iref_1, double ref_2, 
-            int i1_in, double r2_in, struct int_real_clist *ir_clst){
-    add_int_real_ctl_list_before_c_tbl(iref_1, ref_2,
-            i1_in, r2_in, &ir_clst->ir_item_head);
+void add_int_real_clist_before_c_tbl(int iref_1, double ref_2, struct int_real_clist *ir_clst){
+    add_int_real_ctl_list_before_c_tbl(iref_1, ref_2, &ir_clst->ir_item_head);
     return;
 };
-void add_int_real_clist_after_c_tbl(int iref_1, double ref_2, 
-            int i1_in, double r2_in, struct int_real_clist *ir_clst){
-    add_int_real_ctl_list_after_c_tbl(iref_1, ref_2,
-            i1_in, r2_in, &ir_clst->ir_item_head);
+void add_int_real_clist_after_c_tbl(int iref_1, double ref_2, struct int_real_clist *ir_clst){
+    add_int_real_ctl_list_after_c_tbl(iref_1, ref_2, &ir_clst->ir_item_head);
     return;
 };
 void del_int_real_clist_by_c_tbl(int iref_1, double ref_2,
