@@ -24,28 +24,6 @@ struct r_clist_view{
 
 /* prototypes */
 
-void init_r_clist_views(struct real_clist *r_clist, struct r_clist_view *cmap_vws);
-int append_r_item_to_tree(int index, double r1_data, GtkTreeModel *child_model);
-int append_r_list_from_ctl(int index, struct real_ctl_list *head, 
-			GtkTreeView *r_tree_view);
-
-
-void r_tree_value1_edited(gchar *path_str, gchar *new_text,
-			 GtkTreeView *r_tree_view, struct real_clist *r_clist);
-
-int add_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist);
-void delete_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist);
-
-void create_real_tree_view(GtkTreeView *r_tree_view, struct real_clist *r_clist, 
-                            GtkCellRenderer *renderer_spin1);
-void r_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-			gchar *new_text, gpointer user_data);
-void add_r_list_items_cb(GtkButton *button, gpointer user_data);
-void delete_r_list_items_cb(GtkButton *button, gpointer user_data);
-
-
-void init_real_tree_view(struct f_ctl_real_array *f_r_array, struct r_clist_view *r_vws);
 GtkWidget * real_array_vbox_w_addbottun(struct f_ctl_real_array *f_rarray, struct r_clist_view *r_vws);
-
 
 #endif /* TREE_VIEW_REAL_GTK_H_ */

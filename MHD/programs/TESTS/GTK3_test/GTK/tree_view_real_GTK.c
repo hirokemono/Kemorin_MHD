@@ -7,11 +7,6 @@
 
 #include "tree_view_real_GTK.h"
 
-void init_r_clist_views(struct real_clist *r_clist, struct r_clist_view *cmap_vws){
-	cmap_vws->r_clist_gtk = r_clist;
-	return;
-};
-
 static void copy_f_ctl_r_array_by_r_list(struct real_clist *r_clist,
 										  struct f_ctl_real_array *f_r_array)
 {
@@ -33,7 +28,6 @@ void update_f_ctl_r_array_by_r_list(struct real_clist *r_clist,
 void reflesh_f_ctl_r_array_by_r_list(struct real_clist *r_clist,
 									   struct f_ctl_real_array *f_r_array)
 {
-	int i;
 /*	c_check_real_array(f_r_array->f_self);*/
 	int num_array = count_real_clist(r_clist);
 	reflesh_f_ctl_real_array(num_array, f_r_array);
@@ -43,7 +37,7 @@ void reflesh_f_ctl_r_array_by_r_list(struct real_clist *r_clist,
 }
 
 /* Append new data at the end of list */
-int append_r_item_to_tree(int index, double r1_data, GtkTreeModel *child_model){
+static int append_r_item_to_tree(int index, double r1_data, GtkTreeModel *child_model){
     GtkTreeIter iter;
     
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
@@ -53,7 +47,7 @@ int append_r_item_to_tree(int index, double r1_data, GtkTreeModel *child_model){
     return index + 1;
 }
 
-int append_r_list_from_ctl(int index, struct real_ctl_list *head, 
+static int append_r_list_from_ctl(int index, struct real_ctl_list *head, 
 						   GtkTreeView *r_tree_view){
     GtkTreeModel *model = gtk_tree_view_get_model (r_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
@@ -122,7 +116,7 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data){
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column_id, order);
 }
 
-int add_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
+static int add_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
 	GtkTreeModel *model_to_add;
     GtkTreeModel *child_model_to_add;
     GtkTreeSelection *selection;
@@ -184,7 +178,7 @@ int add_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
 	return index;
 }
 
-void delete_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
+static void delete_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
     GtkTreeSelection *selection;
@@ -242,20 +236,7 @@ void delete_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
     g_list_free(reference_list);
 }
 
-static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *path_str,
-											 gchar *new_text, gpointer user_data){
-	int i = 0;
-	printf("TAko %d\n", i);
-};
-
-static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *path_str,
-											  gchar *new_text, gpointer user_data){
-	int i = 1;
-	printf("TAko %d\n", i);
-};
-
-
-void create_real_tree_view(GtkTreeView *r_tree_view, struct real_clist *r_clist, 
+static void create_real_tree_view(GtkTreeView *r_tree_view, struct real_clist *r_clist,
 			GtkCellRenderer *renderer_spin1){
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     
@@ -346,9 +327,6 @@ GtkWidget *hbox_with_array_checkbox(struct f_ctl_real_array *f_r_array, struct r
 static void add_real_list_box(struct f_ctl_real_array *f_r_array, struct r_clist_view *r_vws,
 			GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox){
 	GtkWidget *expander, *Frame_1;
-    GtkWidget *hbox_1, *vbox_1;
-    
-    GtkWidget *label;
     GtkWidget *scrolled_window;
 	
     GtkTreeSelection *selection;
@@ -356,11 +334,7 @@ static void add_real_list_box(struct f_ctl_real_array *f_r_array, struct r_clist
     GtkTreeModel *child_model;
     GList *list;
     
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
-    
-	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     
     /* Pack bottuns */
     gtk_box_pack_start(GTK_BOX(hbox_1), button_add, FALSE, FALSE, 0);
@@ -369,7 +343,7 @@ static void add_real_list_box(struct f_ctl_real_array *f_r_array, struct r_clist
 	GtkWidget *label_1 = gtk_label_new("");
     gtk_box_pack_end(GTK_BOX(hbox_1), label_1, TRUE, TRUE, 0);
 	
-	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_1), hbox_1, FALSE, FALSE, 0);
     
     /* Delete data bottun */
@@ -400,6 +374,7 @@ static void add_real_list_box(struct f_ctl_real_array *f_r_array, struct r_clist
 	gtk_box_pack_start(GTK_BOX(vbox), hbox0, FALSE, TRUE, 0);
 	
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(r_vws->real_array_tree_view));
+	GtkWidget *label = gtk_label_new("Real Value");
     g_object_set_data(G_OBJECT(selection), "label", label);
     
     model = gtk_tree_view_get_model(GTK_TREE_VIEW(r_vws->real_array_tree_view));
@@ -413,7 +388,7 @@ static void add_real_list_box(struct f_ctl_real_array *f_r_array, struct r_clist
 
 
 
-void r_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+static void r_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
 	struct r_clist_view *r_vws = (struct r_clist_view *) user_data;
 	struct f_ctl_real_array *f_r_array = (struct f_ctl_real_array *) g_object_get_data(G_OBJECT(cell), "f_r_array");
@@ -423,7 +398,7 @@ void r_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 /*    write_real_clist(stdout, 0, "value changed", r_vws->r_clist_gtk); */
 };
 
-void add_r_list_items_cb(GtkButton *button, gpointer user_data){
+static void add_r_list_items_cb(GtkButton *button, gpointer user_data){
     struct r_clist_view *r_vws = (struct r_clist_view *) user_data;
 	struct f_ctl_real_array *f_r_array = (struct f_ctl_real_array *) g_object_get_data(G_OBJECT(button), "f_r_array");
 	r_vws->index_bc = add_r_list_items(GTK_TREE_VIEW(r_vws->real_array_tree_view),
@@ -432,7 +407,7 @@ void add_r_list_items_cb(GtkButton *button, gpointer user_data){
 /*    write_real_clist(stdout, 0, "columns added", r_vws->r_clist_gtk); */
 };
 
-void delete_r_list_items_cb(GtkButton *button, gpointer user_data){
+static void delete_r_list_items_cb(GtkButton *button, gpointer user_data){
     struct r_clist_view *r_vws = (struct r_clist_view *) user_data;
 	struct f_ctl_real_array *f_r_array = (struct f_ctl_real_array *) g_object_get_data(G_OBJECT(button), "f_r_array");
 	delete_r_list_items(GTK_TREE_VIEW(r_vws->real_array_tree_view), r_vws->r_clist_gtk);
@@ -440,7 +415,7 @@ void delete_r_list_items_cb(GtkButton *button, gpointer user_data){
 /*    write_real_clist(stdout, 0, "columns deleted", r_vws->r_clist_gtk); */
 };
 
-void init_real_tree_view(struct f_ctl_real_array *f_r_array, struct r_clist_view *r_vws){
+static void init_real_tree_view(struct f_ctl_real_array *f_r_array, struct r_clist_view *r_vws){
 	r_vws->real_array_tree_view = gtk_tree_view_new();
 	GtkCellRenderer *renderer_spin1 = gtk_cell_renderer_text_new();
 	g_object_set_data(G_OBJECT(renderer_spin1), "f_r_array", (gpointer) f_r_array);
