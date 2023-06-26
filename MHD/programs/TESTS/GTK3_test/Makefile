@@ -47,6 +47,7 @@ ctl_array_int_to_c.o \
 ctl_array_real_to_c.o \
 ctl_chara_int_array_to_c.o \
 ctl_chara_real_array_to_c.o \
+ctl_int_real_array_to_c.o \
 ctl_data_platforms_to_c.o
 
 all: control_GTK
@@ -113,6 +114,10 @@ ctl_chara_int_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_int_
 ctl_chara_real_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_real_array_to_c.f90
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_real_array_to_c.f90
+
+ctl_int_real_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_int_real_array_to_c.f90
+	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_int_real_array_to_c.f90
 
 ctl_data_platforms_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_data_platforms_to_c.f90
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \

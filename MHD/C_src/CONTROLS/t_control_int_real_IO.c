@@ -360,6 +360,12 @@ void set_from_int_real_clist_at_index(int index, struct int_real_clist *ir_clst,
     return;
 };
 
+struct int_real_ctl_item *int_real_clist_at_index(int index, struct int_real_clist *ir_clst){
+    struct int_real_ctl_list *ct_tmp = find_ir_ctl_list_item_by_index(index, &ir_clst->ir_item_head);
+    return ct_tmp->ir_item;
+}
+
+
 void add_int_real_clist_before_c_tbl(int iref_1, double ref_2, struct int_real_clist *ir_clst){
     add_int_real_ctl_list_before_c_tbl(iref_1, ref_2, &ir_clst->ir_item_head);
     return;

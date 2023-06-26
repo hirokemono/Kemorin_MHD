@@ -70,7 +70,7 @@ void r_tree_value1_edited(gchar *path_str, gchar *new_text, GtkTreeView *r_tree_
     
     double old_value1, new_value;
     
-    if(sscanf(new_text, "%lf", &new_value) < 1) return;
+	sscanf(new_text, "%lf", &new_value);
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
     
@@ -290,7 +290,7 @@ static void create_real_tree_view(GtkTreeView *r_tree_view, struct real_clist *r
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
-void cb_check_array_toggle(GtkWidget *widget, gpointer user_data){
+void cb_check_r_array_toggle(GtkWidget *widget, gpointer user_data){
 	GtkToggleButton *toggle = GTK_TOGGLE_BUTTON(widget);
 	struct r_clist_view *r_vws = (struct r_clist_view *) g_object_get_data(G_OBJECT(widget), "r_clist_view");
 	struct f_ctl_real_array *f_r_array = (struct f_ctl_real_array *) g_object_get_data(G_OBJECT(widget), "f_r_array");
@@ -304,7 +304,7 @@ void cb_check_array_toggle(GtkWidget *widget, gpointer user_data){
 	return;
 }
 
-GtkWidget *hbox_with_array_checkbox(struct f_ctl_real_array *f_r_array, struct r_clist_view *r_vws){
+GtkWidget *hbox_with_r_array_checkbox(struct f_ctl_real_array *f_r_array, struct r_clist_view *r_vws){
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *checkbox = gtk_check_button_new();
 	g_object_set_data(G_OBJECT(checkbox), "r_clist_view", (gpointer) r_vws);
@@ -317,7 +317,7 @@ GtkWidget *hbox_with_array_checkbox(struct f_ctl_real_array *f_r_array, struct r
 	}
 	
 	g_signal_connect(G_OBJECT(checkbox), "toggled",
-                     G_CALLBACK(cb_check_array_toggle), NULL);
+                     G_CALLBACK(cb_check_r_array_toggle), NULL);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), checkbox, TRUE, TRUE, 0);
 	return hbox;
@@ -363,7 +363,7 @@ static void add_real_list_box(struct f_ctl_real_array *f_r_array, struct r_clist
 	expander = gtk_expander_new_with_mnemonic(duplicate_underscore(ctmp));
 	gtk_container_add(GTK_CONTAINER(expander), Frame_1);
 	
-	GtkWidget * hbox1 = hbox_with_array_checkbox(f_r_array, r_vws);
+	GtkWidget * hbox1 = hbox_with_r_array_checkbox(f_r_array, r_vws);
 	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox1, FALSE, TRUE, 0);
 	
@@ -432,8 +432,6 @@ static void init_real_tree_view(struct f_ctl_real_array *f_r_array, struct r_cli
 
 GtkWidget * real_array_vbox_w_addbottun(struct f_ctl_real_array *f_r_array, struct r_clist_view *r_vws){
 	GtkWidget * vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	
-	r_vws->real_array_tree_view = gtk_tree_view_new();
 	init_real_tree_view(f_r_array, r_vws);
 	
     GtkWidget *button_add = gtk_button_new_with_label("Add");

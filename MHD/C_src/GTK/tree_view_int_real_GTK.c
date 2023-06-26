@@ -7,19 +7,46 @@
 
 #include "tree_view_int_real_GTK.h"
 
-void init_ir_clist_views(struct int_real_clist *ir_clist_gtk, struct ir_clist_view *ir_vws){
-	ir_vws->ir_clist_gtk = ir_clist_gtk;
-	return;
-};
+static void copy_f_ctl_ir_array_by_r_list(struct int_real_clist *ir_clist,
+										  struct f_ctl_ir_array *f_ir_array)
+{
+	int i;
+	for(i=0;i<f_ir_array->f_num[0];i++){
+		f_ir_array->f_ictls[i] = int_real_clist_at_index(i, ir_clist)->i_data;
+		f_ir_array->f_rctls[i] = int_real_clist_at_index(i, ir_clist)->r_data;
+	}
+    return;
+}
+
+void update_f_ctl_ir_array_by_r_list(struct int_real_clist *ir_clist,
+									   struct f_ctl_ir_array *f_ir_array)
+{
+/*	c_check_int_real_array(f_ir_array->f_self);*/
+	copy_f_ctl_ir_array_by_r_list(ir_clist, f_ir_array);
+/*	c_check_int_real_array(f_ir_array->f_self);*/
+    return;
+}
+void reflesh_f_ctl_ir_array_by_r_list(struct int_real_clist *ir_clist,
+									   struct f_ctl_ir_array *f_ir_array)
+{
+/*	c_check_int_real_array(f_ir_array->f_self);*/
+	int num_array = count_int_real_clist(ir_clist);
+	reflesh_f_ctl_ir_array(num_array, f_ir_array);
+	copy_f_ctl_ir_array_by_r_list(ir_clist, f_ir_array);
+/*	c_check_int_real_array(f_ir_array->f_self);*/
+    return;
+}
+
 
 /* Append new data at the end of list */
-int append_ir_item_to_tree(int index, double r1_data, double r2_data, 
+static int append_ir_item_to_tree(const int index, const int i1_data, const double r2_data, 
 			GtkTreeModel *child_model){
     GtkTreeIter iter;
     
+		printf("append_ir_item_to_tree %d %le\n ", i1_data, r2_data);
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_INDEX, r1_data,
+                       COLUMN_FIELD_INDEX, i1_data,
                        COLUMN_FIELD_NAME,  r2_data,
                        -1);
     return index + 1;
@@ -30,7 +57,7 @@ int append_ir_list_from_ctl(int index, struct int_real_ctl_list *head,
     GtkTreeModel *model = gtk_tree_view_get_model (ir_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
-    while (head != NULL){
+	while (head != NULL){
 		index = append_ir_item_to_tree(index, head->ir_item->i_data, 
 					head->ir_item->r_data, child_model);
         head = head->_next;
@@ -47,37 +74,39 @@ void ir_tree_value1_edited(gchar *path_str, gchar *new_text,
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
     GtkTreeIter iter;
     
-    double old_value1, old_value2, new_value;
+	double old_value2;
+	int old_int, new_int;
     
-    if(sscanf(new_text, "%lf", &new_value) < 1) return;
+    if(sscanf(new_text, "%d", &new_int) < 1) return;
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
-	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_int, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
     
-    printf("Change %lf to %lf\n", old_value1, new_value);
+    printf("Change %d to %d\n", old_int, new_int);
     
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_INDEX, new_value, -1);
+                       COLUMN_FIELD_INDEX, new_int, -1);
     gtk_tree_path_free(child_path);
     gtk_tree_path_free(path);
     
-	update_int_real_clist_by_c_tbl(old_value1, old_value2, 
-				new_value, old_value2, ir_clist_gtk);
+	update_int_real_clist_by_c_tbl(old_int, old_value2, 
+								   new_int, old_value2, ir_clist_gtk);
 };
 
 void ir_tree_value2_edited(gchar *path_str, gchar *new_text,
-			 GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_gtk){
-	GtkTreeModel *model = gtk_tree_view_get_model (ir_tree_view);  
+						   GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_gtk){
+	GtkTreeModel *model = gtk_tree_view_get_model (ir_tree_view);
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
     GtkTreeIter iter;
     
-    double old_value1, old_value2, new_value;
+    double old_value2, new_value;
+	int old_int;
     
-    if(sscanf(new_text, "%lf", &new_value) < 1) return;
+	sscanf(new_text, "%lf", &new_value);
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
-	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_int, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
     
     printf("Change %lf to %lf\n", old_value2, new_value);
@@ -86,8 +115,11 @@ void ir_tree_value2_edited(gchar *path_str, gchar *new_text,
                        COLUMN_FIELD_NAME, new_value, -1);
     gtk_tree_path_free(child_path);
     gtk_tree_path_free(path);
-    
-    update_int_real_clist_by_c_tbl(old_value1, old_value2, old_value1, new_value, ir_clist_gtk);
+	
+	printf("%d %le %le\n", old_int, old_value2, new_value);
+	
+	update_int_real_clist_by_c_tbl(old_int, old_value2, 
+								   old_int, new_value, ir_clist_gtk);
 }
 
 static void column_clicked(GtkTreeViewColumn *column, gpointer user_data){
@@ -257,7 +289,7 @@ void create_ir_tree_view(GtkTreeView *ir_tree_view, struct int_real_clist *ir_cl
     /* GtkAdjustment *adjust; */
     
     /* Construct empty list storage */
-    child_model = gtk_list_store_new(2, G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+    child_model = gtk_list_store_new(2, G_TYPE_INT, G_TYPE_DOUBLE);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* Construct model for sorting and set to tree view */
@@ -268,15 +300,12 @@ void create_ir_tree_view(GtkTreeView *ir_tree_view, struct int_real_clist *ir_cl
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(ir_tree_view, column);
     gtk_tree_view_column_set_title(column, ir_clist_gtk->i1_name);
-	/*
-    adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
+    GtkAdjustment *adjust = gtk_adjustment_new(10, -32768, 32768, 1,
                                 100, 21474836);
     g_object_set(G_OBJECT(renderer_spin1), 
-				"adjustment", adjust,
-				"climb-rate", 0.5,
-				"digits", 3, NULL);
-	*/
-    g_object_set(G_OBJECT(renderer_spin1), 
+                 "adjustment", adjust,
+                 "climb-rate", 1,
+                 "digits", 0, 
                  "editable", TRUE, 
                  "width", (gint)70, NULL);
     
@@ -315,33 +344,62 @@ void create_ir_tree_view(GtkTreeView *ir_tree_view, struct int_real_clist *ir_cl
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
-void add_ir_list_box(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_gtk, 
+
+void cb_check_ir_array_toggle(GtkWidget *widget, gpointer user_data){
+	GtkToggleButton *toggle = GTK_TOGGLE_BUTTON(widget);
+	struct ir_clist_view *ir_vws = (struct ir_clist_view *) g_object_get_data(G_OBJECT(widget), "ir_clist_view");
+	struct f_ctl_ir_array *f_ir_array = (struct f_ctl_ir_array *) g_object_get_data(G_OBJECT(widget), "f_ir_array");
+	
+	if(gtk_toggle_button_get_active(toggle) == TRUE){
+		reflesh_f_ctl_ir_array(count_int_real_clist(ir_vws->ir_clist_gtk), f_ir_array);
+		copy_f_ctl_ir_array_by_r_list(ir_vws->ir_clist_gtk, f_ir_array);
+	}else{
+		reflesh_f_ctl_ir_array(0, f_ir_array);
+	};
+	return;
+}
+
+GtkWidget *hbox_with_ir_array_checkbox(struct f_ctl_ir_array *f_ir_array, struct ir_clist_view *ir_vws){
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *checkbox = gtk_check_button_new();
+	g_object_set_data(G_OBJECT(checkbox), "ir_clist_view", (gpointer) ir_vws);
+	g_object_set_data(G_OBJECT(checkbox), "f_ir_array", (gpointer) f_ir_array);
+	
+	if(f_ir_array->f_num[0] == 0){
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), FALSE);
+	} else {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), TRUE);
+	}
+	
+	g_signal_connect(G_OBJECT(checkbox), "toggled",
+                     G_CALLBACK(cb_check_ir_array_toggle), NULL);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), checkbox, TRUE, TRUE, 0);
+	return hbox;
+}
+
+
+
+static void add_ir_list_box(struct f_ctl_ir_array *f_ir_array, struct ir_clist_view *ir_vws, 
 			GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox){
 	GtkWidget *expander, *Frame_1;
-    GtkWidget *hbox_1, *vbox_1;
     
-    GtkWidget *label;
     GtkWidget *scrolled_window;
-	
     GtkTreeSelection *selection;
     GtkTreeModel *model;
     GtkTreeModel *child_model;
     GList *list;
     
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
-    
-	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     
     /* Pack bottuns */
     gtk_box_pack_start(GTK_BOX(hbox_1), button_add, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), button_delete, FALSE, FALSE, 0);
 	
-	label = gtk_label_new("");
-    gtk_box_pack_end(GTK_BOX(hbox_1), label, TRUE, TRUE, 0);
+	GtkWidget *label_1 = gtk_label_new("");
+    gtk_box_pack_end(GTK_BOX(hbox_1), label_1, TRUE, TRUE, 0);
 	
-	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_1), hbox_1, FALSE, FALSE, 0);
     
     /* Delete data bottun */
@@ -350,22 +408,32 @@ void add_ir_list_box(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 140, 140);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(ir_tree_view));
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(ir_vws->ir_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, FALSE, TRUE, 0);
     
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
 	
-	expander = gtk_expander_new_with_mnemonic(ir_clist_gtk->clist_name);
+	char * ctmp = strngcopy_from_f(f_ir_array->f_block_name);
+	expander = gtk_expander_new_with_mnemonic(duplicate_underscore(ctmp));
 	gtk_container_add(GTK_CONTAINER(expander), Frame_1);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, FALSE, TRUE, 0);
 	
+	GtkWidget * hbox1 = hbox_with_ir_array_checkbox(f_ir_array, ir_vws);
+	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox0), hbox1, FALSE, TRUE, 0);
 	
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ir_tree_view));
+	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, TRUE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(vbox), hbox0, FALSE, TRUE, 0);
+	
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ir_vws->ir_tree_view));
+ 	GtkWidget *label = gtk_label_new("Values");   
     g_object_set_data(G_OBJECT(selection), "label", label);
     
-    model = gtk_tree_view_get_model(GTK_TREE_VIEW(ir_tree_view));
+    model = gtk_tree_view_get_model(GTK_TREE_VIEW(ir_vws->ir_tree_view));
     child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     list = g_object_get_data(G_OBJECT(child_model), "selection_list");
     list = g_list_append(list, selection);
@@ -376,41 +444,48 @@ void add_ir_list_box(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_
 
 
 
-void ir_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+static void ir_tree_value1_edited_cb(GtkCellRenderer *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
     struct ir_clist_view *ir_vws = (struct ir_clist_view *) user_data;
+	struct f_ctl_ir_array *f_ir_array = (struct f_ctl_ir_array *) g_object_get_data(G_OBJECT(cell), "f_ir_array");
     ir_tree_value1_edited(path_str, new_text, GTK_TREE_VIEW(ir_vws->ir_tree_view), ir_vws->ir_clist_gtk);
-    write_int_real_clist(stdout, 0, "ivalue changed", ir_vws->ir_clist_gtk);
+	update_f_ctl_ir_array_by_r_list(ir_vws->ir_clist_gtk, f_ir_array);
 };
 
-void ir_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+static void ir_tree_value2_edited_cb(GtkCellRenderer *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data)
 {
     struct ir_clist_view *ir_vws = (struct ir_clist_view *) user_data;
+	struct f_ctl_ir_array *f_ir_array = (struct f_ctl_ir_array *) g_object_get_data(G_OBJECT(cell), "f_ir_array");
     ir_tree_value2_edited(path_str, new_text, GTK_TREE_VIEW(ir_vws->ir_tree_view), ir_vws->ir_clist_gtk);
-    write_int_real_clist(stdout, 0, "real value changed", ir_vws->ir_clist_gtk);
+	update_f_ctl_ir_array_by_r_list(ir_vws->ir_clist_gtk, f_ir_array);
 };
 
 void add_ir_list_items_cb(GtkButton *button, gpointer user_data){
     struct ir_clist_view *ir_vws = (struct ir_clist_view *) user_data;
+	struct f_ctl_ir_array *f_ir_array = (struct f_ctl_ir_array *) g_object_get_data(G_OBJECT(button), "f_ir_array");
 	ir_vws->index_bc = add_ir_list_items(GTK_TREE_VIEW(ir_vws->ir_tree_view), ir_vws->ir_clist_gtk);
-    write_int_real_clist(stdout, 0, "columns added", ir_vws->ir_clist_gtk);
+	reflesh_f_ctl_ir_array_by_r_list(ir_vws->ir_clist_gtk, f_ir_array);
 };
 
 void delete_ir_list_items_cb(GtkButton *button, gpointer user_data){
     struct ir_clist_view *ir_vws = (struct ir_clist_view *) user_data;
+	struct f_ctl_ir_array *f_ir_array = (struct f_ctl_ir_array *) g_object_get_data(G_OBJECT(button), "f_ir_array");
 	delete_ir_list_items(GTK_TREE_VIEW(ir_vws->ir_tree_view), ir_vws->ir_clist_gtk);
-    write_int_real_clist(stdout, 0, "columns deleted", ir_vws->ir_clist_gtk);
+	reflesh_f_ctl_ir_array_by_r_list(ir_vws->ir_clist_gtk, f_ir_array);
 };
 
 
-void init_ir_tree_view(struct ir_clist_view *ir_vws){
+static void init_ir_tree_view(struct f_ctl_ir_array *f_ir_array, struct ir_clist_view *ir_vws){
 	GtkCellRenderer *renderer_spin1;
 	GtkCellRenderer *renderer_spin2;
 	
 	ir_vws->ir_tree_view = gtk_tree_view_new();
 	renderer_spin1 = gtk_cell_renderer_text_new();
 	renderer_spin2 = gtk_cell_renderer_text_new();
+	g_object_set_data(G_OBJECT(renderer_spin1), "f_ir_array", (gpointer) f_ir_array);
+	g_object_set_data(G_OBJECT(renderer_spin2), "f_ir_array", (gpointer) f_ir_array);
+	
 	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
 					 G_CALLBACK(ir_tree_value1_edited_cb), (gpointer) ir_vws);
 	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
@@ -423,17 +498,22 @@ void init_ir_tree_view(struct ir_clist_view *ir_vws){
 				&ir_vws->ir_clist_gtk->ir_item_head, GTK_TREE_VIEW(ir_vws->ir_tree_view));
 };
 
-void add_ir_list_box_w_addbottun(struct ir_clist_view *ir_vws, GtkWidget *vbox){
+GtkWidget *  add_ir_list_box_w_addbottun(struct f_ctl_ir_array *f_ir_array, 
+										 struct ir_clist_view *ir_vws){
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	init_ir_tree_view(f_ir_array, ir_vws);
+	
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
+	g_object_set_data(G_OBJECT(button_add), "f_ir_array", (gpointer) f_ir_array);
+	g_object_set_data(G_OBJECT(button_delete), "f_ir_array", (gpointer) f_ir_array);
 	
-	add_ir_list_box(GTK_TREE_VIEW(ir_vws->ir_tree_view), ir_vws->ir_clist_gtk,
-				button_add, button_delete, vbox);
+	add_ir_list_box(f_ir_array, ir_vws, button_add, button_delete, vbox);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 
                      G_CALLBACK(add_ir_list_items_cb), (gpointer) ir_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
                      G_CALLBACK(delete_ir_list_items_cb), (gpointer) ir_vws);
-    
+	return vbox;
 };
 

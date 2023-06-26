@@ -7,10 +7,6 @@
 
 extern void * c_chara_item_clength(void *f_plt, int *length);
 
-extern void c_alloc_int_real_array(void *f_ctl);
-extern void c_dealloc_int_real_array(void *f_ctl);
-extern void c_check_int_real_array(void *f_ctl);
-
 extern void * c_int_real_item_block_name(void *f_ctl);
 extern void * c_int_real_item_iflag(void *f_ctl);
 extern void * c_int_real_item_intvalue(void *f_ctl);

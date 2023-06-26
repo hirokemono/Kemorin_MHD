@@ -12,6 +12,7 @@
 
 #include "calypso_GTK.h"
 #include "t_control_int_real_IO.h"
+#include "t_ctl_array_int_real_items_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 
 struct ir_clist_view{
@@ -23,9 +24,6 @@ struct ir_clist_view{
 
 /* prototypes */
 
-void init_ir_clist_views(struct int_real_clist *ir_clist_gtk, struct ir_clist_view *ir_vws);
-int append_ir_item_to_tree(int index, double r1_data, double r2_data, 
-			GtkTreeModel *child_model);
 int append_ir_list_from_ctl(int index, struct int_real_ctl_list *head, GtkTreeView *ir_tree_view);
 
 
@@ -41,19 +39,13 @@ void delete_ir_list_items(GtkTreeView *ir_tree_view, struct int_real_clist *ir_c
 
 void create_ir_tree_view(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_gtk, 
                             GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2);
-void add_ir_list_box(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_gtk, 
-			GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox);
 
-void ir_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-			gchar *new_text, gpointer user_data);
-void ir_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-			gchar *new_text, gpointer user_data);
 void add_ir_list_items_cb(GtkButton *button, gpointer user_data);
 void delete_ir_list_items_cb(GtkButton *button, gpointer user_data);
 
 
-void init_ir_tree_view(struct ir_clist_view *ir_vws);
-void add_ir_list_box_w_addbottun(struct ir_clist_view *ir_vws, GtkWidget *vbox);
+GtkWidget * add_ir_list_box_w_addbottun(struct f_ctl_ir_array *f_ir_array,
+										struct ir_clist_view *ir_vws);
 
 
 #endif /* TREE_VIEW_INT_REAL_GTK_H_ */

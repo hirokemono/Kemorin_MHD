@@ -37,6 +37,10 @@ struct f_ctl_ir_array{
 
 /*  Prototypes */
 
+extern void c_alloc_int_real_array(void *f_ctl);
+extern void c_dealloc_int_real_array(void *f_ctl);
+extern void c_check_int_real_array(void *f_ctl);
+
 struct f_ctl_ir_item * init_f_ctl_ir_item(void *(*c_load_self)(void *f_parent), 
 											 void *f_parent);
 void dealloc_f_ctl_ir_item(struct f_ctl_ir_item *f_ir_item);
