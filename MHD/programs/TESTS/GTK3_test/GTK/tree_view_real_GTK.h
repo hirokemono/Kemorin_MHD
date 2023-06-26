@@ -12,6 +12,7 @@
 
 #include "calypso_GTK.h"
 #include "t_control_real_IO.h"
+#include "t_ctl_array_single_items_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 
 struct r_clist_view{
@@ -37,17 +38,14 @@ void delete_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist);
 
 void create_real_tree_view(GtkTreeView *r_tree_view, struct real_clist *r_clist, 
                             GtkCellRenderer *renderer_spin1);
-void add_real_list_box(GtkTreeView *r_tree_view, struct real_clist *r_clist, 
-			GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox);
-
 void r_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data);
 void add_r_list_items_cb(GtkButton *button, gpointer user_data);
 void delete_r_list_items_cb(GtkButton *button, gpointer user_data);
 
 
-void init_real_tree_view(struct r_clist_view *r_vws);
-GtkWidget * real_array_vbox_w_addbottun(struct r_clist_view *r_vws);
+void init_real_tree_view(struct f_ctl_real_array *f_r_array, struct r_clist_view *r_vws);
+GtkWidget * real_array_vbox_w_addbottun(struct f_ctl_real_array *f_rarray, struct r_clist_view *r_vws);
 
 
 #endif /* TREE_VIEW_REAL_GTK_H_ */

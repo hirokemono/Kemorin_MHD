@@ -336,6 +336,13 @@ void set_from_real_clist_at_index(int index, struct real_clist *r_clst, double *
     return;
 };
 
+struct real_ctl_item *real_clist_at_index(int index, struct real_clist *r_clst){
+    struct real_ctl_list *ct_tmp = find_r_ctl_list_item_by_index(index, &r_clst->r_item_head);
+    return ct_tmp->r_item;
+}
+
+
+
 void add_real_clist_before_c_tbl(double ref, struct real_clist *r_clst){
     add_real_ctl_list_before_c_tbl(ref, &r_clst->r_item_head);
     return;

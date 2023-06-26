@@ -77,6 +77,18 @@ extern int lengthchara_f();
 extern char * strngcopy_from_f(char * f_char);
 extern void load_chara_from_c(char *c_ctl);
 
+extern void * c_dealloc_chara_array(void *f_ctl);
+extern void * c_alloc_chara_array(void *f_ctl);
+extern void * c_check_chara_array(void *f_ctl);
+
+extern void * c_dealloc_real_array(void *f_ctl);
+extern void * c_alloc_real_array(void *f_ctl);
+extern void * c_check_real_array(void *f_ctl);
+
+extern void * c_dealloc_int_array(void *f_ctl);
+extern void * c_alloc_int_array(void *f_ctl);
+extern void * c_check_int_array(void *f_ctl);
+
 
 struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent),
 												void *f_parent);

@@ -62,6 +62,9 @@ void del_real_clist_by_index(int index, struct real_clist *r_clst);
 void update_real_clist_by_index(int index, double r1_in, struct real_clist *r_clst);
 void set_from_real_clist_at_index(int index, struct real_clist *r_clst, double *r1_out);
 
+struct real_ctl_item *real_clist_at_index(int index, struct real_clist *r_clst);
+
+
 void add_real_clist_before_c_tbl(double ref, struct real_clist *r_clst);
 void add_real_clist_after_c_tbl(double ref, double r1_in, struct real_clist *r_clst);
 void del_real_clist_by_c_tbl(double ref, struct real_clist *r_clst);

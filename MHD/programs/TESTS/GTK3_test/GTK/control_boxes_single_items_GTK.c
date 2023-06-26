@@ -9,7 +9,6 @@
 
 extern int c_yes_flag(const char *text);
 extern int c_no_file_flag(const char *file_name);
-extern void load_chara_from_c(void *c_ctl);
 
 void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 {

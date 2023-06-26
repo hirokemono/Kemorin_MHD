@@ -7,8 +7,6 @@
 
 #include "ctl_data_platforms_GTK.h"
 
-extern void load_chara_from_c(char *c_ctl);
-
 
 struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent)
 {

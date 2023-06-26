@@ -1317,6 +1317,10 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	return vbox_1;
 };
 
+struct f_MHD_tree_views{
+	struct f_MHD_sph_resolution_views *f_spctl_vws;
+};
+struct f_MHD_tree_views *f_MHD_vws;
 
 
 void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_control *f_MHD_ctl, struct iso_ctl_c *iso_c){
@@ -1417,7 +1421,20 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 														  560, 500, window, vbox_sph_domains);
 	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), expand_sph_domains, FALSE, FALSE, 0);
 	
-	GtkWidget * vbox_sph_resolution = draw_sph_resolution_vbox(f_MHD_ctl->f_psph_ctl->f_spctl, window);
+	
+	f_MHD_vws = (struct f_MHD_tree_views *) malloc(sizeof(struct f_MHD_tree_views));
+	if(f_MHD_vws == NULL){
+		printf("malloc error for f_MHD_tree_views\n");
+		exit(0);
+	};
+	f_MHD_vws->f_spctl_vws
+			= (struct f_MHD_sph_resolution_views *) malloc(sizeof(struct f_MHD_sph_resolution_views));
+	if(f_MHD_vws->f_spctl_vws == NULL){
+		printf("malloc error for f_MHD_sph_resolution_views\n");
+		exit(0);
+	};
+	GtkWidget * vbox_sph_resolution = draw_sph_resolution_vbox(f_MHD_ctl->f_psph_ctl->f_spctl,
+															   f_MHD_vws->f_spctl_vws, window);
 	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_resolution, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_sph_shell = draw_control_block_w_file_switch(f_MHD_ctl->f_psph_ctl->c_block_name, 

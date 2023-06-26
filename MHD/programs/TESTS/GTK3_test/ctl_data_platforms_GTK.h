@@ -10,6 +10,7 @@
 #include <gtk/gtk.h>
 
 #include "skip_comment_c.h"
+#include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
 #include "t_control_chara_real_IO.h"
 #include "t_control_label_from_f.h"
@@ -18,6 +19,7 @@
 #include "t_ctl_array_single_items_c.h"
 #include "t_ctl_array_chara_real_items_c.h"
 #include "control_boxes_single_items_GTK.h"
+#include "tree_view_real_GTK.h"
 
 
 #ifndef CTL_DATA_PLATFORMS_GTK_
@@ -128,7 +130,7 @@ struct f_MHD_sph_resolution_control{
 	struct f_ctl_int_item *f_ngrid_azimuth_ctl;
 	void *f_radius_ctl;
 	void *f_radial_grp_ctl;
-	void *f_add_ext_layer_ctl;
+	struct f_ctl_real_array *f_add_ext_layer_ctl;
 	struct f_ctl_chara_item *f_radial_grid_type_ctl;
 	struct f_ctl_int_item *f_num_fluid_grid_ctl;
 	struct f_ctl_int_item *f_increment_cheby_ctl;
@@ -144,6 +146,9 @@ struct f_MHD_sph_resolution_control{
 	void *f_med_layer_list_ctl;
 };
 
+struct f_MHD_sph_resolution_views{
+	struct r_clist_view *f_add_ext_layer_vws;
+};
 
 struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array);
 void dealloc_cr_array_views(struct cr_array_views *cr_array_vws);
@@ -159,8 +164,8 @@ GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidg
 
 struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*c_load_self)(void *f_parent), 
 																		void *f_parent);
-GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl, 
-									 GtkWidget *window);
+GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl,
+									 struct f_MHD_sph_resolution_views *f_spctl_vws, GtkWidget *window);
 
 
 #endif    /* CTL_DATA_PLATFORMS_GTK_ */

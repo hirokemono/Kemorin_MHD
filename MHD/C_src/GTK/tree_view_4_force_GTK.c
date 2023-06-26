@@ -17,15 +17,13 @@ void dealloc_dimless_views_GTK(struct dimless_views *dless_vws){
     return;
 }
 
-void update_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
+static void copy_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 									   struct f_ctl_cr_array *f_cr_array)
 {
 	char *ctmp;
 	int i;
-	c_check_chara_real_array(f_cr_array->f_self);
 	
 	for(i=0;i<f_cr_array->f_num[0];i++){
-        free(f_cr_array->c_charavalue[i]);
 		ctmp = chara_real_clist_at_index(i, cr_clist)->c_tbl;
 		f_cr_array->c_charavalue[i] = strngcopy_from_f(ctmp);
 	};
@@ -36,16 +34,25 @@ void update_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 		load_chara_from_c(&f_cr_array->f_cctls[i*flen]);
 		f_cr_array->f_rctls[i] = chara_real_clist_at_index(i, cr_clist)->r_data;
 	}
-	c_check_chara_real_array(f_cr_array->f_self);
+    return;
+}
+
+void update_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
+									   struct f_ctl_cr_array *f_cr_array)
+{
+	int i;
+/*	c_check_chara_real_array(f_cr_array->f_self);*/
+	for(i=0;i<f_cr_array->f_num[0];i++){free(f_cr_array->c_charavalue[i]);}
+	copy_f_ctl_cr_array_by_cr_list(cr_clist, f_cr_array);
+/*	c_check_chara_real_array(f_cr_array->f_self);*/
     return;
 }
 
 void reflesh_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 									   struct f_ctl_cr_array *f_cr_array)
 {
-	char *ctmp;
 	int i;
-	c_check_chara_real_array(f_cr_array->f_self);
+/*	c_check_chara_real_array(f_cr_array->f_self);*/
 	for(i=0;i<f_cr_array->f_num[0];i++){free(f_cr_array->c_charavalue[i]);};
 	free(f_cr_array->c_charavalue);
 	
@@ -58,18 +65,8 @@ void reflesh_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 		exit(0);
 	};
 	
-	for(i=0;i<num_array;i++){
-		ctmp = chara_real_clist_at_index(i, cr_clist)->c_tbl;
-		f_cr_array->c_charavalue[i] = strngcopy_from_f(ctmp);
-	};
-	
-	int flen = lengthchara_f();
-	for(i=0;i<f_cr_array->f_num[0];i++){
-		strngcopy(&f_cr_array->f_cctls[i*flen], f_cr_array->c_charavalue[i]);
-		load_chara_from_c(&f_cr_array->f_cctls[i*flen]);
-		f_cr_array->f_rctls[i] = chara_real_clist_at_index(i, cr_clist)->r_data;
-	}
-	c_check_chara_real_array(f_cr_array->f_self);
+	copy_f_ctl_cr_array_by_cr_list(cr_clist, f_cr_array);
+/*	c_check_chara_real_array(f_cr_array->f_self);*/
     return;
 }
 
@@ -92,7 +89,7 @@ static void dimless_name_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data)
 {
 	struct dimless_views *dless_vws = (struct dimless_views *) user_data;
-	struct f_ctl_cr_array *f_cr_array = g_object_get_data(G_OBJECT(cell), "f_cr_array");
+	struct f_ctl_cr_array *f_cr_array = (struct f_ctl_cr_array *) g_object_get_data(G_OBJECT(cell), "f_cr_array");
 	
 	cr_tree_name_edited(path_str, new_text, GTK_TREE_VIEW(dless_vws->dimless_tree_view),
 				dless_vws->cr_clist);

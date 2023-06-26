@@ -245,7 +245,7 @@ struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*
 	f_spctl->f_ngrid_azimuth_ctl =     init_f_ctl_int_item(c_sphere_data_ngrid_azmth_ctl, f_spctl->f_self);
 	f_spctl->f_radius_ctl =            c_sphere_data_radius_ctl(f_spctl->f_self);
 	f_spctl->f_radial_grp_ctl =        c_sphere_data_radial_grp_ctl(f_spctl->f_self);
-	f_spctl->f_add_ext_layer_ctl =     c_sphere_data_add_ext_ctl(f_spctl->f_self);
+	f_spctl->f_add_ext_layer_ctl =     init_f_ctl_real_array(c_sphere_data_add_ext_ctl, f_spctl->f_self);
 	f_spctl->f_radial_grid_type_ctl =  init_f_ctl_chara_item(c_sphere_data_r_grid_type_ctl, f_spctl->f_self);
 	f_spctl->f_num_fluid_grid_ctl =    init_f_ctl_int_item(c_sphere_data_num_fld_grid_ctl, f_spctl->f_self);
 	f_spctl->f_increment_cheby_ctl =   init_f_ctl_int_item(c_sphere_data_icrmnt_cheby_ctl, f_spctl->f_self);
@@ -262,7 +262,21 @@ struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*
 	return f_spctl;
 };
 
-GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl, GtkWidget *window){
+GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl, 
+									 struct f_MHD_sph_resolution_views *f_spctl_vws, GtkWidget *window){
+	int i;
+	f_spctl_vws->f_add_ext_layer_vws = (struct r_clist_view *) malloc(sizeof(struct r_clist_view));
+	if(f_spctl_vws->f_add_ext_layer_vws == NULL){
+		printf("malloc error for f_add_ext_layer_vws\n");
+		exit(0);
+	};
+	f_spctl_vws->f_add_ext_layer_vws->r_clist_gtk = init_real_clist();
+    for(i=0;i<f_spctl->f_add_ext_layer_ctl->f_num[0];i++){
+		append_real_clist(f_spctl->f_add_ext_layer_ctl->f_rctls[i], 
+						f_spctl_vws->f_add_ext_layer_vws->r_clist_gtk);
+    }
+	
+	
 	GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
 	GtkWidget *hbox_i1 = draw_int_item_entry_hbox(f_spctl->f_ltr_ctl);
@@ -274,6 +288,8 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
 	GtkWidget *hbox_i3 = draw_int_item_entry_hbox(f_spctl->f_ngrid_elevation_ctl);
 	GtkWidget *hbox_i4 = draw_int_item_entry_hbox(f_spctl->f_ngrid_azimuth_ctl);
 	
+	GtkWidget *hbox_d3 = real_array_vbox_w_addbottun(f_spctl->f_add_ext_layer_ctl,
+													 f_spctl_vws->f_add_ext_layer_vws);
 	GtkWidget *hbox_c3 = draw_chara_item_entry_hbox(f_spctl->f_radial_grid_type_ctl);
 	
 	GtkWidget *hbox_i5 = draw_int_item_entry_hbox(f_spctl->f_num_fluid_grid_ctl);
@@ -294,6 +310,7 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c2, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i3, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i4, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d3, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c3, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i5, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i6, FALSE, FALSE, 0);
