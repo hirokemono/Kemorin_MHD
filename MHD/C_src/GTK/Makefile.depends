@@ -237,6 +237,13 @@ kemoview_gtk_routines.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
+t_ctl_array_chara_real_items_c.o: \
+  $(C_SRCDIR)/GTK/t_ctl_array_chara_real_items_c.c \
+  $(C_SRCDIR)/GTK/t_ctl_array_chara_real_items_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h
+	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 tree_view_4_colormap.o: \
   $(C_SRCDIR)/GTK/tree_view_4_colormap.c \
   $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
