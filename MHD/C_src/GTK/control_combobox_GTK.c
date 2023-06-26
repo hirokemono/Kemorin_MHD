@@ -7,7 +7,7 @@
 
 #include "control_combobox_GTK.h"
 
-extern void load_chara_from_c(char *f_plt);
+extern void load_chara_from_c(char *c_ctl);
 
 static void set_current_name(char *c_charavalue,
 							 struct control_labels_f *flag_list, 

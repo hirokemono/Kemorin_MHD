@@ -43,7 +43,11 @@ c_link_ctl_data_sph_shell.o \
 c_link_ctl_data_divide_sph.o \
 c_link_ctl_data_SGS_model.o \
 read_mhd_control_4_c.o \
-ctl_array_singles_to_c.o \
+ctl_array_chara_to_c.o \
+ctl_array_int_to_c.o \
+ctl_array_real_to_c.o \
+ctl_chara_int_array_to_c.o \
+ctl_chara_real_array_to_c.o \
 ctl_data_platforms_to_c.o
 
 all: control_GTK
@@ -95,9 +99,25 @@ c_link_ctl_data_SGS_model.o: $(SRCDIR)/MHD/programs/TESTS/GTK3_test/c_link_ctl_d
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/c_link_ctl_data_SGS_model.f90
 
-ctl_array_singles_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_singles_to_c.f90
+ctl_array_chara_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_chara_to_c.f90
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
-	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_singles_to_c.f90
+	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_chara_to_c.f90
+
+ctl_array_int_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_int_to_c.f90
+	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_int_to_c.f90
+
+ctl_array_real_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_real_to_c.f90
+	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_real_to_c.f90
+
+ctl_chara_int_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_int_array_to_c.f90
+	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_int_array_to_c.f90
+
+ctl_chara_real_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_real_array_to_c.f90
+	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_real_array_to_c.f90
 
 ctl_data_platforms_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_data_platforms_to_c.f90
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \

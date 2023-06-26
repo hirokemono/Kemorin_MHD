@@ -56,7 +56,7 @@ void cr_tree_name_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value, -1);
     
-    printf("Change %s to %s\n", old_text, new_text);
+    printf("Change AAAAAA   %s to %s\n", old_text, new_text);
 
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                        COLUMN_FIELD_NAME, new_text, -1);
@@ -93,7 +93,6 @@ void cr_tree_value_edited(gchar *path_str, gchar *new_text,
     gtk_tree_path_free(path);  
     
     update_chara_real_clist_by_c_tbl(old_text, old_text, new_value, cr_clist);
- 
 }
 
 static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)

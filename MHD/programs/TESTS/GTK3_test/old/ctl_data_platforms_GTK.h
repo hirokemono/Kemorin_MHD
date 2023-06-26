@@ -45,8 +45,6 @@ extern void * c_chara_item_iflag(void *f_plt);
 extern void * c_chara_item_clength(void *f_plt, int *length);
 extern void * c_chara_item_charavalue(void *f_plt);
 
-extern void load_chara_from_c(void *c_ctl);
-
 struct f_ctl_chara_item{
 	void * f_self;
 	

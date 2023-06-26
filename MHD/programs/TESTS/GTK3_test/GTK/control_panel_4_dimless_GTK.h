@@ -14,6 +14,7 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "t_control_chara_real_IO.h"
 #include "t_ctl_data_4_fields_c.h"
+#include "t_ctl_array_chara_real_items_c.h"
 #include "tree_view_4_force_GTK.h"
 #include "ctl_data_platforms_GTK.h"
 

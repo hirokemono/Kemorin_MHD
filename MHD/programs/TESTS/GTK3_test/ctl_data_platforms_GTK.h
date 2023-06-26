@@ -16,6 +16,7 @@
 #include "control_combobox_GTK.h"
 #include "kemoview_gtk_routines.h"
 #include "t_ctl_array_single_items_c.h"
+#include "t_ctl_array_chara_real_items_c.h"
 #include "control_boxes_single_items_GTK.h"
 
 
@@ -59,40 +60,12 @@ extern void * c_chara_real_array_icou(void *f_ctl);
 extern void * c_chara_real_array_c_tbl(void *f_ctl);
 extern void * c_chara_real_array_r_tbl(void *f_ctl);
 
-
-
-extern void load_chara_from_c(void *c_ctl);
-
 struct c_array_views{
     int index_c_array;
     GtkWidget *c_array_tree_view;
     GtkWidget *c_array_default_view;
     
     struct chara_clist *c_array_clist;
-};
-
-struct f_ctl_cr_item{
-	void * f_self;
-	char * f_block_name;
-	int * f_iflag;
-	char * f_charavalue;
-	double * f_realvalue;
-	
-	char * c_block_name;
-	
-	char * c_charavalue;
-};
-
-struct f_ctl_cr_array{
-	void * f_self;
-	char * f_block_name;
-	int * f_num;
-	int * f_icou;
-	char * f_cctls;
-	double * f_rctls;
-	
-	char * c_block_name;
-	char ** c_charavalue;
 };
 
 struct cr_array_views{
@@ -174,16 +147,6 @@ struct f_MHD_sph_resolution_control{
 
 struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array);
 void dealloc_cr_array_views(struct cr_array_views *cr_array_vws);
-
-
-
-struct f_ctl_cr_item * init_f_ctl_cr_item(void *(*c_load_self)(void *f_parent), 
-											 void *f_parent);
-void dealloc_f_ctl_cr_item(struct f_ctl_cr_item *f_cr_item);
-
-struct f_ctl_cr_array * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent), 
-											void *f_parent);
-void dealloc_f_ctl_cr_array(struct f_ctl_cr_array *f_cr_array);
 
 
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
