@@ -247,7 +247,7 @@ void delete_ir_list_items(GtkTreeView *ir_tree_view, struct int_real_clist *ir_c
 }
 
 void create_ir_tree_view(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_gtk, 
-			GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2){
+			GtkCellRenderer *renderer_value1, GtkCellRenderer *renderer_value2){
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     
     GtkTreeModel *model;
@@ -269,17 +269,10 @@ void create_ir_tree_view(GtkTreeView *ir_tree_view, struct int_real_clist *ir_cl
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(ir_tree_view, column);
     gtk_tree_view_column_set_title(column, ir_clist_gtk->i1_name);
-    GtkAdjustment *adjust = gtk_adjustment_new(10, -32768, 32768, 1,
-                                100, 21474836);
-    g_object_set(G_OBJECT(renderer_spin1), 
-                 "adjustment", adjust,
-                 "climb-rate", 1,
-                 "digits", 0, 
-                 "editable", TRUE, 
-                 "width", (gint)70, NULL);
-    
-    gtk_tree_view_column_pack_start(column, renderer_spin1, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin1, "text", COLUMN_FIELD_INDEX, NULL);
+    g_object_set(G_OBJECT(renderer_value1), "editable", TRUE, NULL);
+    g_object_set(renderer_value1, "width", (gint)70, NULL);
+    gtk_tree_view_column_pack_start(column, renderer_value1, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer_value1, "text", COLUMN_FIELD_INDEX, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
@@ -290,12 +283,10 @@ void create_ir_tree_view(GtkTreeView *ir_tree_view, struct int_real_clist *ir_cl
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(ir_tree_view, column);
     gtk_tree_view_column_set_title(column, ir_clist_gtk->r1_name);
-    g_object_set(G_OBJECT(renderer_spin2), 
-                 "editable", TRUE, 
-                 "width", (gint)70, NULL);
-    
-    gtk_tree_view_column_pack_start(column, renderer_spin2, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin2, "text", COLUMN_FIELD_NAME, NULL);
+    g_object_set(G_OBJECT(renderer_value2), "editable", TRUE, NULL);
+    g_object_set(renderer_value2, "width", (gint)70, NULL);
+    gtk_tree_view_column_pack_start(column, renderer_value2, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer_value2, "text", COLUMN_FIELD_NAME, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));

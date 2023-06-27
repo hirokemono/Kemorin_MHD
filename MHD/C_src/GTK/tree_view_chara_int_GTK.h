@@ -34,7 +34,7 @@ void delete_ci_list_items_GTK(GtkTreeView *tree_view_to_del,
 
 
 void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci_tree_view,
-			GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_spin);
+							   GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_value);
 
 GtkWidget *ci_list_box_expander(char * array_name_c, GtkTreeView *ci_tree_view, 
 								GtkWidget *button_add, GtkWidget *button_delete);

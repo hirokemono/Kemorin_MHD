@@ -320,7 +320,7 @@ void delete_ci_list_items_GTK(GtkTreeView *tree_view_to_del,
 
 
 void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci_tree_view,
-			GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_spin)
+			GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_value)
 {
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
 	
@@ -330,8 +330,6 @@ void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci
     GtkTreeSelection *selection;
     
     GtkListStore *child_model;
-
-    GtkAdjustment *adjust;
     
 	/* Construct empty list storage */
     child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_INT);
@@ -373,17 +371,10 @@ void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(ci_tree_view, column);
     gtk_tree_view_column_set_title(column, ci_clist->i1_name);
-    adjust = gtk_adjustment_new(10, -32768, 32768, 1,
-                                100, 21474836);
-    g_object_set(G_OBJECT(renderer_spin), 
-                 "adjustment", adjust,
-                 "climb-rate", 1,
-                 "digits", 0, 
-                 "editable", TRUE, 
-                 "width", (gint)150, NULL);
-
-    gtk_tree_view_column_pack_start(column, renderer_spin, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIELD_MATH, NULL);
+    g_object_set(G_OBJECT(renderer_value), "editable", TRUE, NULL);
+    gtk_tree_view_column_pack_start(column, renderer_value, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer_value, "text", COLUMN_FIELD_MATH, NULL);
+    g_object_set(renderer_value, "width", (gint)80, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_MATH));
@@ -407,7 +398,7 @@ GtkWidget *ci_list_box_expander(char * array_name_c, GtkTreeView *ci_tree_view,
 {
 	GtkWidget *expander;
     
-    hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     
     /* Pack bottuns */
     gtk_box_pack_start(GTK_BOX(hbox_1), button_add, FALSE, FALSE, 0);
@@ -422,7 +413,7 @@ GtkWidget *ci_list_box_expander(char * array_name_c, GtkTreeView *ci_tree_view,
 	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 240, 140);
+    gtk_widget_set_size_request(scrolled_window, 320, 140);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(ci_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, FALSE, TRUE, 0);
 	

@@ -188,7 +188,7 @@ int add_cr_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMod
 }
 
 int add_cr_list_items_GTK(GtkTreeView *tree_view_to_add,
-			struct chara_real_clist *cr_clist)
+						  struct chara_real_clist *cr_clist)
 {
     GtkTreeModel *model_to_add;
     GtkTreeModel *child_model_to_add;

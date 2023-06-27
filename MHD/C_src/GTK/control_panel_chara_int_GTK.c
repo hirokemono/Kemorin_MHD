@@ -64,7 +64,7 @@ void cb_check_ci_array_toggle(GtkWidget *widget, gpointer user_data){
 static void add_ci_list_items_cb(GtkButton *button, gpointer user_data){
     struct ci_clist_view *ci_vws = (struct ci_clist_view *) user_data;
 	struct f_ctl_ci_array *f_ci_array = (struct f_ctl_ci_array *) g_object_get_data(G_OBJECT(button), "f_ci_array");
-	ci_vws->index_bc = add_ci_list_by_bottun_GTK(GTK_TREE_VIEW(ci_vws->ci_tree_view), ci_vws->ci_clist_gtk);
+	ci_vws->index_bc = add_ci_list_items_GTK(GTK_TREE_VIEW(ci_vws->ci_tree_view), ci_vws->ci_clist_gtk);
 	reflesh_f_ctl_ci_array_by_r_list(ci_vws->ci_clist_gtk, f_ci_array);
 };
 
@@ -116,21 +116,21 @@ GtkWidget *hbox_with_ci_array_checkbox(struct f_ctl_ci_array *f_ci_array, struct
 
 static void init_ci_tree_view(struct f_ctl_ci_array *f_ci_array, struct ci_clist_view *ci_vws){
 	GtkCellRenderer *renderer_text;
-	GtkCellRenderer *renderer_spin;
+	GtkCellRenderer *renderer_value;
 	
 	ci_vws->ci_tree_view = gtk_tree_view_new();
-	renderer_text = gtk_cell_renderer_text_new();
-	renderer_spin = gtk_cell_renderer_text_new();
+	renderer_text =  gtk_cell_renderer_text_new();
+	renderer_value = gtk_cell_renderer_text_new();
 	g_object_set_data(G_OBJECT(renderer_text), "f_ci_array", (gpointer) f_ci_array);
-	g_object_set_data(G_OBJECT(renderer_spin), "f_ci_array", (gpointer) f_ci_array);
+	g_object_set_data(G_OBJECT(renderer_value), "f_ci_array", (gpointer) f_ci_array);
 	
 	g_signal_connect(G_OBJECT(renderer_text), "edited", 
 					 G_CALLBACK(ci_tree_value1_edited_cb), (gpointer) ci_vws);
-	g_signal_connect(G_OBJECT(renderer_spin), "edited", 
+	g_signal_connect(G_OBJECT(renderer_value), "edited", 
 					 G_CALLBACK(ci_tree_value2_edited_cb), (gpointer) ci_vws);
 	
-	create_text_int_tree_view(GTK_TREE_VIEW(ci_vws->ci_tree_view), ci_vws->ci_clist_gtk, 
-							  renderer_text, renderer_spin);
+	create_text_int_tree_view(ci_vws->ci_clist_gtk, GTK_TREE_VIEW(ci_vws->ci_tree_view), 
+							  renderer_text, renderer_value);
 	
 	ci_vws->index_bc = append_ci_list_from_ctl(ci_vws->index_bc,
 				&ci_vws->ci_clist_gtk->ci_item_head, GTK_TREE_VIEW(ci_vws->ci_tree_view));
@@ -154,7 +154,7 @@ GtkWidget *  add_ci_list_box_w_addbottun(struct f_ctl_ci_array *f_ci_array,
 	
 	char * ctmp = strngcopy_from_f(f_ci_array->f_block_name);
 	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
-	GtkWidget *expander = ci_list_box_expander(ctmp, ci_vws->ci_tree_view, 
+	GtkWidget *expander = ci_list_box_expander(ctmp, GTK_TREE_VIEW(ci_vws->ci_tree_view), 
 											   button_add, button_delete);
 	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox0, FALSE, TRUE, 0);

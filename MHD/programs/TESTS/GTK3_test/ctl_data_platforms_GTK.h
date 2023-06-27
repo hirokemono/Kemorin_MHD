@@ -12,6 +12,7 @@
 #include "skip_comment_c.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
+#include "t_control_chara_int_IO.h"
 #include "t_control_chara_real_IO.h"
 #include "t_control_label_from_f.h"
 #include "control_combobox_GTK.h"
@@ -23,6 +24,7 @@
 #include "control_boxes_single_items_GTK.h"
 #include "control_panel_real_GTK.h"
 #include "control_panel_int_real_GTK.h"
+#include "control_panel_chara_int_GTK.h"
 #include "tree_view_real_GTK.h"
 
 
@@ -152,7 +154,8 @@ struct f_MHD_sph_resolution_control{
 
 struct f_MHD_sph_resolution_views{
 	struct ir_clist_view *f_radius_ctl_vws;
-	struct r_clist_view *f_add_ext_layer_vws;
+	struct r_clist_view  *f_add_ext_layer_vws;
+	struct ci_clist_view *f_radial_grp_ctl_vws;
 };
 
 struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array);

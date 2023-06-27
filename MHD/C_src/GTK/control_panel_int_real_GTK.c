@@ -106,22 +106,20 @@ GtkWidget *hbox_with_ir_array_checkbox(struct f_ctl_ir_array *f_ir_array, struct
 
 
 static void init_ir_tree_view(struct f_ctl_ir_array *f_ir_array, struct ir_clist_view *ir_vws){
-	GtkCellRenderer *renderer_spin1;
-	GtkCellRenderer *renderer_spin2;
 	
 	ir_vws->ir_tree_view = gtk_tree_view_new();
-	renderer_spin1 = gtk_cell_renderer_text_new();
-	renderer_spin2 = gtk_cell_renderer_text_new();
-	g_object_set_data(G_OBJECT(renderer_spin1), "f_ir_array", (gpointer) f_ir_array);
-	g_object_set_data(G_OBJECT(renderer_spin2), "f_ir_array", (gpointer) f_ir_array);
+	GtkCellRenderer *renderer_value1 = gtk_cell_renderer_text_new();
+	GtkCellRenderer *renderer_value2 = gtk_cell_renderer_text_new();
+	g_object_set_data(G_OBJECT(renderer_value1), "f_ir_array", (gpointer) f_ir_array);
+	g_object_set_data(G_OBJECT(renderer_value2), "f_ir_array", (gpointer) f_ir_array);
 	
-	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
+	g_signal_connect(G_OBJECT(renderer_value1), "edited", 
 					 G_CALLBACK(ir_tree_value1_edited_cb), (gpointer) ir_vws);
-	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
+	g_signal_connect(G_OBJECT(renderer_value2), "edited", 
 					 G_CALLBACK(ir_tree_value2_edited_cb), (gpointer) ir_vws);
 	
 	create_ir_tree_view(GTK_TREE_VIEW(ir_vws->ir_tree_view), ir_vws->ir_clist_gtk, 
-                           renderer_spin1, renderer_spin2);
+                           renderer_value1, renderer_value2);
 	
 	ir_vws->index_bc = append_ir_list_from_ctl(ir_vws->index_bc,
 				&ir_vws->ir_clist_gtk->ir_item_head, GTK_TREE_VIEW(ir_vws->ir_tree_view));

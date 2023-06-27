@@ -28,7 +28,7 @@ int add_ir_list_items(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist
 void delete_ir_list_items(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_gtk);
 
 void create_ir_tree_view(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist_gtk, 
-                            GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2);
+						 GtkCellRenderer *renderer_value1, GtkCellRenderer *renderer_value2);
 GtkWidget * ir_list_box_expander(char *array_name_c, GtkWidget *ir_tree_view, 
 								 GtkWidget *button_add, GtkWidget *button_delete);
 
