@@ -734,6 +734,13 @@ t_control_real_IO.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+t_ctl_array_chara_int_items_c.o: \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.c \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_chara_real_items_c.o: \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_real_items_c.c \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_real_items_c.h \

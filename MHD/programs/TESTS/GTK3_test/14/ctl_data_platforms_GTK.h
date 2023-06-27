@@ -11,6 +11,7 @@
 #include "skip_comment_c.h"
 #include "t_control_label_from_f.h"
 #include "control_combobox_GTK.h"
+#include "control_panel_int_real_GTK.h"
 #include "kemoview_gtk_routines.h"
 
 #ifndef CTL_DATA_PLATFORMS_GTK_

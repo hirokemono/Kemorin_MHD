@@ -18,9 +18,11 @@
 #include "kemoview_gtk_routines.h"
 #include "t_ctl_array_single_items_c.h"
 #include "t_ctl_array_chara_real_items_c.h"
+#include "t_ctl_array_chara_int_items_c.h"
 #include "t_ctl_array_int_real_items_c.h"
 #include "control_boxes_single_items_GTK.h"
-#include "tree_view_int_real_GTK.h"
+#include "control_panel_real_GTK.h"
+#include "control_panel_int_real_GTK.h"
 #include "tree_view_real_GTK.h"
 
 
@@ -131,7 +133,7 @@ struct f_MHD_sph_resolution_control{
 	struct f_ctl_int_item *f_ngrid_elevation_ctl;
 	struct f_ctl_int_item *f_ngrid_azimuth_ctl;
 	struct f_ctl_ir_array *f_radius_ctl;
-	void *f_radial_grp_ctl;
+	struct f_ctl_ci_array *f_radial_grp_ctl;
 	struct f_ctl_real_array *f_add_ext_layer_ctl;
 	struct f_ctl_chara_item *f_radial_grid_type_ctl;
 	struct f_ctl_int_item *f_num_fluid_grid_ctl;

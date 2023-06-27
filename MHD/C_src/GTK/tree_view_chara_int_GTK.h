@@ -36,9 +36,8 @@ void delete_ci_list_items_GTK(GtkTreeView *tree_view_to_del,
 void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci_tree_view,
 			GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_spin);
 
-void add_chara_int_list_box_w_addbottun(GtkTreeView *ci_tree_view, 
-			GtkWidget *button_add, GtkWidget *button_delete, 
-			GtkWidget *vbox);
+GtkWidget *ci_list_box_expander(char * array_name_c, GtkTreeView *ci_tree_view, 
+								GtkWidget *button_add, GtkWidget *button_delete);
 void add_chara_int_list_box_w_combobox(GtkTreeView *ci_tree_view, 
 			GtkWidget *button_add, GtkWidget *combobox_add, GtkWidget *button_delete, 
 			GtkWidget *vbox);

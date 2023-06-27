@@ -33,8 +33,7 @@ file_dialog.o \
 ctl_data_platforms_GTK.o \
 \
 control_boxes_single_items_GTK.o \
-control_panel_4_dimless_GTK.o \
-tree_view_real_GTK.o
+control_panel_4_dimless_GTK.o
 
 
 MODULES = \
@@ -65,9 +64,6 @@ control_panel_4_dimless_GTK.o: GTK/control_panel_4_dimless_GTK.c GTK/control_pan
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panel_4_dimless_GTK.c
 
-tree_view_real_GTK.o: GTK/tree_view_real_GTK.c GTK/tree_view_real_GTK.h
-	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
-	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/tree_view_real_GTK.c
 
 ctl_data_platforms_GTK.o: ctl_data_platforms_GTK.c ctl_data_platforms_GTK.h GTK/control_boxes_single_items_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \

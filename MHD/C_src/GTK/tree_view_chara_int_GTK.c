@@ -402,34 +402,38 @@ void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci
 }
 
 
-void add_chara_int_list_box_w_addbottun(GtkTreeView *ci_tree_view, 
-			GtkWidget *button_add, GtkWidget *button_delete, 
-			GtkWidget *vbox)
+GtkWidget *ci_list_box_expander(char * array_name_c, GtkTreeView *ci_tree_view, 
+								GtkWidget *button_add, GtkWidget *button_delete)
 {
-    GtkWidget *hbox;
-    GtkWidget *scrolled_window;
+	GtkWidget *expander;
     
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
-    
-    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+    hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     
     /* Pack bottuns */
-    gtk_box_pack_start(GTK_BOX(hbox), button_add, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), button_delete, FALSE, FALSE, 0);
-
-    /* Delete data bottun */
-    
-    scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_box_pack_start(GTK_BOX(hbox_1), button_add, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_1), button_delete, FALSE, FALSE, 0);
+	
+	GtkWidget *label_1 = gtk_label_new("");
+    gtk_box_pack_end(GTK_BOX(hbox_1), label_1, TRUE, TRUE, 0);
+	
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_1), hbox_1, FALSE, FALSE, 0);
+	
+	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 400, 300);
+    gtk_widget_set_size_request(scrolled_window, 240, 140);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(ci_tree_view));
-    gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-    
-    add_sorting_signal_w_label(ci_tree_view, hbox);
+    gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, FALSE, TRUE, 0);
+	
+	GtkWidget *Frame_1 = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
+	
+	expander = gtk_expander_new_with_mnemonic(duplicate_underscore(array_name_c));
+	gtk_container_add(GTK_CONTAINER(expander), Frame_1);
+	
+	return expander;
 };
 
 void add_chara_int_list_box_w_combobox(GtkTreeView *ci_tree_view, 
