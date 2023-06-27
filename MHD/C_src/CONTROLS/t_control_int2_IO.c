@@ -339,6 +339,12 @@ void set_from_int2_clist_at_index(int index, struct int2_clist *i2_clst,
     return;
 };
 
+struct int2_ctl_item *int2_clist_at_index(int index, struct int2_clist *i2_clst){
+    struct int2_ctl_list *ct_tmp = find_i2_ctl_list_item_by_index(index, &i2_clst->i2_item_head);
+    return ct_tmp->i2_item;
+}
+
+
 void add_int2_clist_before_c_tbl(int iref_1, int iref_2, 
             int i1_in, int i2_in, struct int2_clist *i2_clst){
     add_int2_ctl_list_before_c_tbl(iref_1, iref_2,

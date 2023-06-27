@@ -21,9 +21,11 @@
 #include "t_ctl_array_chara_real_items_c.h"
 #include "t_ctl_array_chara_int_items_c.h"
 #include "t_ctl_array_int_real_items_c.h"
+#include "t_ctl_array_int2_items_c.h"
 #include "control_boxes_single_items_GTK.h"
 #include "control_panel_real_GTK.h"
 #include "control_panel_int_real_GTK.h"
+#include "control_panel_int2_GTK.h"
 #include "control_panel_chara_int_GTK.h"
 #include "tree_view_real_GTK.h"
 
@@ -148,14 +150,16 @@ struct f_MHD_sph_resolution_control{
 	struct f_ctl_real_item *f_Max_radius_ctl;
 	struct f_ctl_int_item *f_num_radial_layer_ctl;
 	struct f_ctl_int_item *f_num_med_layer_ctl;
-	void *f_radial_layer_list_ctl;
-	void *f_med_layer_list_ctl;
+	struct f_ctl_i2_array *f_radial_layer_list_ctl;
+	struct f_ctl_i2_array *f_med_layer_list_ctl;
 };
 
 struct f_MHD_sph_resolution_views{
 	struct ir_clist_view *f_radius_ctl_vws;
 	struct r_clist_view  *f_add_ext_layer_vws;
 	struct ci_clist_view *f_radial_grp_ctl_vws;
+	struct i2_clist_view *f_radial_layer_list_ctl_vws;
+	struct i2_clist_view *f_med_layer_list_ctl_vws;
 };
 
 struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array);

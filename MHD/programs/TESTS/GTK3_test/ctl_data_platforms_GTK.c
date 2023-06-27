@@ -257,8 +257,8 @@ struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*
 	f_spctl->f_ICB_to_CMB_ratio_ctl =  init_f_ctl_real_item(c_sphere_data_ICB_CMB_ratio_ctl, f_spctl->f_self);
 	f_spctl->f_num_radial_layer_ctl =  init_f_ctl_int_item(c_sphere_data_num_r_layer_ctl, f_spctl->f_self);
 	f_spctl->f_num_med_layer_ctl =     init_f_ctl_int_item(c_sphere_data_n_med_layer_ctl, f_spctl->f_self);
-	f_spctl->f_radial_layer_list_ctl = c_sphere_data_r_layer_list_ctl(f_spctl->f_self);
-	f_spctl->f_med_layer_list_ctl =    c_sphere_data_med_list_ctl(f_spctl->f_self);
+	f_spctl->f_radial_layer_list_ctl = init_f_ctl_i2_array(c_sphere_data_r_layer_list_ctl, f_spctl->f_self);
+	f_spctl->f_med_layer_list_ctl =    init_f_ctl_i2_array(c_sphere_data_med_list_ctl, f_spctl->f_self);
 	return f_spctl;
 };
 
@@ -300,6 +300,28 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
 						f_spctl_vws->f_add_ext_layer_vws->r_clist_gtk);
     }
 	
+	f_spctl_vws->f_radial_layer_list_ctl_vws = (struct i2_clist_view *) malloc(sizeof(struct i2_clist_view));
+	if(f_spctl_vws->f_radial_layer_list_ctl_vws == NULL){
+		printf("malloc error for f_radial_layer_list_ctl_vws\n");
+		exit(0);
+	};
+	f_spctl_vws->f_radial_layer_list_ctl_vws->i2_clist_gtk = init_int2_clist();
+    for(i=0;i<f_spctl->f_radial_layer_list_ctl->f_num[0];i++){
+		append_int2_clist(f_spctl->f_radial_layer_list_ctl->f_i1ctls[i], 
+						  f_spctl->f_radial_layer_list_ctl->f_i2ctls[i], 
+						  f_spctl_vws->f_radial_layer_list_ctl_vws->i2_clist_gtk);
+    }
+	f_spctl_vws->f_med_layer_list_ctl_vws = (struct i2_clist_view *) malloc(sizeof(struct i2_clist_view));
+	if(f_spctl_vws->f_med_layer_list_ctl_vws == NULL){
+		printf("malloc error for f_med_layer_list_ctl_vws\n");
+		exit(0);
+	};
+	f_spctl_vws->f_med_layer_list_ctl_vws->i2_clist_gtk = init_int2_clist();
+    for(i=0;i<f_spctl->f_med_layer_list_ctl->f_num[0];i++){
+		append_int2_clist(f_spctl->f_med_layer_list_ctl->f_i1ctls[i],
+						  f_spctl->f_med_layer_list_ctl->f_i2ctls[i], 
+						  f_spctl_vws->f_med_layer_list_ctl_vws->i2_clist_gtk);
+    }
 	
 	GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
@@ -330,9 +352,15 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
 	GtkWidget *hbox_r6 = draw_real_item_entry_hbox(f_spctl->f_Max_radius_ctl);
 	
 	GtkWidget *hbox_i7 = draw_int_item_entry_hbox(f_spctl->f_num_radial_layer_ctl);
+	GtkWidget *hbox_d4 = add_i2_list_box_w_addbottun(f_spctl->f_radial_layer_list_ctl,
+													 f_spctl_vws->f_radial_layer_list_ctl_vws);
+	
 	GtkWidget *hbox_i8 = draw_int_item_entry_hbox(f_spctl->f_num_med_layer_ctl);
+	GtkWidget *hbox_d5 = add_i2_list_box_w_addbottun(f_spctl->f_med_layer_list_ctl,
+													 f_spctl_vws->f_med_layer_list_ctl_vws);
+	
 	GtkWidget *vbox_sph = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i1, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i2, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c1, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c2, FALSE, FALSE, 0);
@@ -352,6 +380,8 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_r6, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i7, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i8, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d4, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d5, FALSE, FALSE, 0);
 	GtkWidget *expand = draw_control_block(f_spctl->c_block_name, f_spctl->f_iflag,
 										   480, 320, window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);

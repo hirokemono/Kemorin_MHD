@@ -39,7 +39,7 @@ void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
 
 
 void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *cr_tree_view,
-                                GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_spin);
+                                GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_value);
 
 void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view, 
 			GtkWidget *button_add, GtkWidget *button_delete, 
