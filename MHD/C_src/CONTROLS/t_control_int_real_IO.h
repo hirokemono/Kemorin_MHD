@@ -38,6 +38,8 @@ struct int_real_clist{
     char *clist_name;
     char *i1_name;
     char *r1_name;
+
+    int index_bc;
 };
 
 

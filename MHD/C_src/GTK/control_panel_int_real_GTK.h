@@ -16,14 +16,9 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_int_real_GTK.h"
 
-struct ir_clist_view{
-    int index_bc;
-    GtkWidget *ir_tree_view;
-};
-
 /* prototypes */
 
-GtkWidget *  add_ir_list_box_w_addbottun(struct int_real_clist *ir_clist_gtk, 
-										 struct ir_clist_view *ir_vws);
+GtkWidget *  add_ir_list_box_w_addbottun(struct int_real_clist *ir_clist_gtk,
+										 GtkWidget *ir_tree_view);
 
 #endif /* CONTROL_PANEL_INT_REAL_GTK_H_ */
