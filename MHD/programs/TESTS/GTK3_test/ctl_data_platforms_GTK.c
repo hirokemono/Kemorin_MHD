@@ -270,12 +270,6 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
 		printf("malloc error for f_radius_ctl_vws\n");
 		exit(0);
 	};
-	f_spctl_vws->f_radius_ctl_vws->ir_clist_gtk = init_int_real_clist();
-    for(i=0;i<f_spctl->f_radius_ctl->f_num[0];i++){
-		append_int_real_clist(f_spctl->f_radius_ctl->f_ictls[i], 
-							  f_spctl->f_radius_ctl->f_rctls[i], 
-							  f_spctl_vws->f_radius_ctl_vws->ir_clist_gtk);
-    }
 	
 	f_spctl_vws->f_radial_grp_ctl_vws = (struct ci_clist_view *) malloc(sizeof(struct ci_clist_view));
 	if(f_spctl_vws->f_radial_grp_ctl_vws == NULL){

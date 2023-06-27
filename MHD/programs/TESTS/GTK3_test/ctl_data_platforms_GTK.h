@@ -155,7 +155,7 @@ struct f_MHD_sph_resolution_control{
 };
 
 struct f_MHD_sph_resolution_views{
-	struct ir_clist_view *f_radius_ctl_vws;
+	struct int_real_clist *f_radius_ctl_vws;
 	struct r_clist_view  *f_add_ext_layer_vws;
 	struct ci_clist_view *f_radial_grp_ctl_vws;
 	struct i2_clist_view *f_radial_layer_list_ctl_vws;

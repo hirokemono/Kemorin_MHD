@@ -13,6 +13,10 @@
 !!     &          bind(C, NAME = 'c_int2_item_iflag')
 !!      subroutine c_int2_item_intvalue(c_ctl)                          &
 !!     &          bind(C, NAME = 'c_int2_item_intvalue')
+!!      subroutine c_store_int2_items(c_ctl, i_in)                      &
+!!     &          bind(C, NAME = 'c_store_int2_items')
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!        integer(C_int), intent(in) :: i_in(2)
 !!
 !!      type(c_ptr) function c_int2_array_block_name(c_ctl)             &
 !!     &          bind(C, NAME = 'c_int2_array_block_name')
@@ -82,6 +86,19 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_int2_item_intvalue = C_loc(f_ctl%intvalue)
       end function c_int2_item_intvalue
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine c_store_int2_items(c_ctl, i_in)                        &
+     &          bind(C, NAME = 'c_store_int2_items')
+!
+      type(c_ptr), value, intent(in) :: c_ctl
+      integer(C_int), intent(in) :: i_in(2)
+      type(read_int2_item), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      f_ctl%intvalue(1:2) = i_in(1:2)
+      end subroutine c_store_int2_items
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
