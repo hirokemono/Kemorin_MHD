@@ -53,9 +53,9 @@ struct int2_clist * init_f_ctl_i2_array(void *(*c_load_self)(void *f_parent),
 {
     struct int2_clist *i2_clst = init_int2_clist();
 	i2_clst->f_self =  c_load_self(f_parent);
-	
+	int i;
 	char *ctmp = c_int2_array_block_name(i2_clst->f_self);
-	sprintf(f_spctl_vws->f_radial_layer_list_ctl_vws->i2_clist_gtk->clist_name,"%s", strngcopy_from_f(ctmp));
+	sprintf(i2_clst->clist_name,"%s", strngcopy_from_f(ctmp));
     for(i=0;i<c_int2_array_num(i2_clst->f_self);i++){
 		append_int2_clist(c_int2_array_i1_tbl(i2_clst->f_self, i),
 						  c_int2_array_i2_tbl(i2_clst->f_self, i), i2_clst);

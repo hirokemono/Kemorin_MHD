@@ -153,12 +153,10 @@
      &                                 psph_ctl%block_name)
       call write_FEM_mesh_control                                       &
      &   (id_control, psph_ctl%Fmesh_ctl, level)
-      call write_control_shell_define                                   &
-     &   (id_control, psph_ctl%spctl, level)
-!
       call write_control_shell_domain                                   &
      &   (id_control, psph_ctl%sdctl, level)
-!
+      call write_control_shell_define                                   &
+     &   (id_control, psph_ctl%spctl, level)
       level =  write_end_flag_for_ctl(id_control, level,                &
      &                                psph_ctl%block_name)
 !

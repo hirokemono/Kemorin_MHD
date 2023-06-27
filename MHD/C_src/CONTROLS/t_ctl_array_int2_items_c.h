@@ -37,6 +37,6 @@ void dealloc_f_ctl_i2_item(struct f_ctl_i2_item *f_i2_item);
 
 struct int2_clist * init_f_ctl_i2_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent);
-void reflesh_f_ctl_i2_array(int num_array, struct f_ctl_i2_array *f_i2_array);
+void reflesh_f_ctl_i2_array(int num_array, struct int2_clist *i2_clst);
 
 #endif /* T_CTL_ARRAY_INT2_ITEMS_C_H_ */

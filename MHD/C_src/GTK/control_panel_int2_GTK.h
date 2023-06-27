@@ -19,12 +19,10 @@
 struct i2_clist_view{
     int index_bc;
     GtkWidget *i2_tree_view;
-    
-    struct int2_clist *i2_clist_gtk;
 };
 
 /* prototypes */
 
-GtkWidget * add_i2_list_box_w_addbottun(struct i2_clist_view *i2_vws);
+GtkWidget *  add_i2_list_box_w_addbottun(struct int2_clist *i2_clist_gtk, struct i2_clist_view *i2_vws);
 
 #endif /* CONTROL_PANEL_INT2_GTK_H_ */
