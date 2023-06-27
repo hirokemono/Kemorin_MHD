@@ -37,6 +37,8 @@ struct int2_clist{
     char *clist_name;
     char *i1_name;
     char *i2_name;
+
+    int index_bc;
 };
 
 

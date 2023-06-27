@@ -294,17 +294,6 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
 						f_spctl_vws->f_add_ext_layer_vws->r_clist_gtk);
     }
 	
-	f_spctl_vws->f_radial_layer_list_ctl_vws = (struct i2_clist_view *) malloc(sizeof(struct i2_clist_view));
-	if(f_spctl_vws->f_radial_layer_list_ctl_vws == NULL){
-		printf("malloc error for f_radial_layer_list_ctl_vws\n");
-		exit(0);
-	};
-	f_spctl_vws->f_med_layer_list_ctl_vws = (struct i2_clist_view *) malloc(sizeof(struct i2_clist_view));
-	if(f_spctl_vws->f_med_layer_list_ctl_vws == NULL){
-		printf("malloc error for f_med_layer_list_ctl_vws\n");
-		exit(0);
-	};
-	
 	GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
 	GtkWidget *hbox_i1 = draw_int_item_entry_hbox(f_spctl->f_ltr_ctl);
@@ -335,11 +324,11 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
 	
 	GtkWidget *hbox_i7 = draw_int_item_entry_hbox(f_spctl->f_num_radial_layer_ctl);
 	GtkWidget *hbox_d4 = add_i2_list_box_w_addbottun(f_spctl->f_radial_layer_list_ctl, 
-													 f_spctl_vws->f_radial_layer_list_ctl_vws);
+													 f_spctl_vws->f_radial_layer_list_ctl_tree);
 	
 	GtkWidget *hbox_i8 = draw_int_item_entry_hbox(f_spctl->f_num_med_layer_ctl);
 	GtkWidget *hbox_d5 = add_i2_list_box_w_addbottun(f_spctl->f_med_layer_list_ctl, 
-													 f_spctl_vws->f_med_layer_list_ctl_vws);
+													 f_spctl_vws->f_med_layer_list_ctl_tree);
 	
 	GtkWidget *vbox_sph = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i1, FALSE, FALSE, 0);

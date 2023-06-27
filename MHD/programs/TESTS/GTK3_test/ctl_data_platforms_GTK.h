@@ -158,8 +158,8 @@ struct f_MHD_sph_resolution_views{
 	struct int_real_clist *f_radius_ctl_vws;
 	struct r_clist_view  *f_add_ext_layer_vws;
 	struct ci_clist_view *f_radial_grp_ctl_vws;
-	struct i2_clist_view *f_radial_layer_list_ctl_vws;
-	struct i2_clist_view *f_med_layer_list_ctl_vws;
+	GtkWidget *f_radial_layer_list_ctl_tree;
+	GtkWidget *f_med_layer_list_ctl_tree;
 };
 
 struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array);
