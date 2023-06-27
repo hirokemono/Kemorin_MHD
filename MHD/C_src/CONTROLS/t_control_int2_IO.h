@@ -32,6 +32,8 @@ struct int2_ctl_list{
 struct int2_clist{
 	struct int2_ctl_list i2_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *i1_name;
     char *i2_name;

@@ -25,7 +25,6 @@ struct i2_clist_view{
 
 /* prototypes */
 
-GtkWidget * add_i2_list_box_w_addbottun(struct f_ctl_i2_array *f_i2_array,
-										struct i2_clist_view *i2_vws);
+GtkWidget * add_i2_list_box_w_addbottun(struct i2_clist_view *i2_vws);
 
 #endif /* CONTROL_PANEL_INT2_GTK_H_ */

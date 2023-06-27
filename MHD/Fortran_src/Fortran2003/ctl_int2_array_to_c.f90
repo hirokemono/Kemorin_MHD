@@ -14,23 +14,28 @@
 !!      subroutine c_int2_item_intvalue(c_ctl)                          &
 !!     &          bind(C, NAME = 'c_int2_item_intvalue')
 !!
-!!      subroutine c_int2_array_block_name(c_ctl)                       &
+!!      type(c_ptr) function c_int2_array_block_name(c_ctl)             &
 !!     &          bind(C, NAME = 'c_int2_array_block_name')
-!!      subroutine c_int2_array_num(c_ctl)                              &
+!!      integer(c_int) function c_int2_array_num(c_ctl)                 &
 !!     &          bind(C, NAME = 'c_int2_array_num')
-!!      subroutine c_int2_array_icou(c_ctl)                             &
-!!     &          bind(C, NAME = 'c_int2_array_icou')
-!!      subroutine c_int2_array_i1_tbl(c_ctl)                           &
+!!      integer(c_int) function c_int2_array_i1_tbl(c_ctl, idx_in)      &
 !!     &          bind(C, NAME = 'c_int2_array_i1_tbl')
-!!      subroutine c_int2_array_i2_tbl(c_ctl)                           &
+!!      integer(c_int) function c_int2_array_i2_tbl(c_ctl, idx_in)      &
 !!     &          bind(C, NAME = 'c_int2_array_i2_tbl')
+!!      subroutine c_store_int2_array(c_ctl, idx_in, i1_in, i2_in)      &
+!!     &          bind(C, NAME = 'c_store_chara_real_array')
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!        integer(C_int), value, intent(in) :: idx_in, i1_in, i2_in
+!!        character(C_char), value, intent(in) :: c_in(kchara)
+!!        integer(C_double), value, intent(in) :: v_in
 !!
 !!      subroutine c_dealloc_int2_array(c_ctl)                          &
 !!     &          bind(C, NAME = 'c_dealloc_int2_array')
-!!      subroutine c_alloc_int2_array(c_ctl)                            &
+!!      subroutine c_alloc_int2_array(num, c_ctl)                       &
 !!     &          bind(C, NAME = 'c_alloc_int2_array')
 !!      subroutine c_check_int2_array(c_ctl)                            &
 !!     &          bind(C, NAME = 'c_check_int2_array')
+!!        integer(C_int), value, intent(in) :: num
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module ctl_int2_array_to_c
@@ -92,47 +97,52 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_int2_array_num(c_ctl)                      &
+      integer(c_int) function c_int2_array_num(c_ctl)                   &
      &          bind(C, NAME = 'c_int2_array_num')
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_i2), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_int2_array_num = C_loc(f_ctl%num)
+      c_int2_array_num = f_ctl%num
       end function c_int2_array_num
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_int2_array_icou(c_ctl)                     &
-     &          bind(C, NAME = 'c_int2_array_icou')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(ctl_array_i2), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_int2_array_icou = C_loc(f_ctl%icou)
-      end function c_int2_array_icou
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_int2_array_i1_tbl(c_ctl)                   &
+      integer(c_int) function c_int2_array_i1_tbl(c_ctl, idx_in)        &
      &          bind(C, NAME = 'c_int2_array_i1_tbl')
       type(c_ptr), value, intent(in) :: c_ctl
+      integer(C_int), value, intent(in) :: idx_in
       type(ctl_array_i2), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_int2_array_i1_tbl = C_loc(f_ctl%int1)
+      c_int2_array_i1_tbl = f_ctl%int1(idx_in+1)
       end function c_int2_array_i1_tbl
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_int2_array_i2_tbl(c_ctl)                   &
+      integer(c_int) function c_int2_array_i2_tbl(c_ctl, idx_in)        &
      &          bind(C, NAME = 'c_int2_array_i2_tbl')
       type(c_ptr), value, intent(in) :: c_ctl
+      integer(C_int), value, intent(in) :: idx_in
       type(ctl_array_i2), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_int2_array_i2_tbl = C_loc(f_ctl%int2)
+      c_int2_array_i2_tbl = f_ctl%int2(idx_in+1)
       end function c_int2_array_i2_tbl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine c_store_int2_array(c_ctl, idx_in, i1_in, i2_in)        &
+     &          bind(C, NAME = 'c_store_int2_array')
+!
+      type(c_ptr), value, intent(in) :: c_ctl
+      integer(C_int), value, intent(in) :: idx_in, i1_in, i2_in
+      type(ctl_array_i2), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      f_ctl%int1(idx_in+1) = i1_in
+      f_ctl%int2(idx_in+1) = i2_in
+      end subroutine c_store_int2_array
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -148,12 +158,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine c_alloc_int2_array(c_ctl)                              &
+      subroutine c_alloc_int2_array(num, c_ctl)                         &
      &          bind(C, NAME = 'c_alloc_int2_array')
+      integer(C_int), value, intent(in) :: num
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_i2), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
+      f_ctl%num =  num
+      f_ctl%icou = num
       call alloc_control_array_i2(f_ctl)
       end subroutine c_alloc_int2_array
 !

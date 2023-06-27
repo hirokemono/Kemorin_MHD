@@ -302,6 +302,8 @@ void dealloc_int2_clist(struct int2_clist *i2_clst){
     free(i2_clst->i1_name);
     free(i2_clst->i2_name);
     
+    i2_clst->f_self = NULL;
+    
     free(i2_clst);
     return;
 };

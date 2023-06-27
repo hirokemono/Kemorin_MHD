@@ -150,8 +150,8 @@ struct f_MHD_sph_resolution_control{
 	struct f_ctl_real_item *f_Max_radius_ctl;
 	struct f_ctl_int_item *f_num_radial_layer_ctl;
 	struct f_ctl_int_item *f_num_med_layer_ctl;
-	struct f_ctl_i2_array *f_radial_layer_list_ctl;
-	struct f_ctl_i2_array *f_med_layer_list_ctl;
+	struct int2_clist *f_radial_layer_list_ctl;
+	struct int2_clist *f_med_layer_list_ctl;
 };
 
 struct f_MHD_sph_resolution_views{
