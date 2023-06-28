@@ -136,6 +136,7 @@
       type(read_int_chara_real_item), intent(inout) :: new_icr
 !
 !
+      new_icr%item_name =   org_icr%item_name
       new_icr%iflag =       org_icr%iflag
       new_icr%intvalue =    org_icr%intvalue
       new_icr%charavalue =  org_icr%charavalue
@@ -277,6 +278,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_icr%array_name = tgt_icr%array_name
       tgt_icr%icou = org_icr%icou
       tgt_icr%ivec(1:num_copy) =  org_icr%ivec(1:num_copy)
       tgt_icr%c_tbl(1:num_copy) = org_icr%c_tbl(1:num_copy)

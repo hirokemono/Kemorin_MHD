@@ -127,6 +127,7 @@
       type(read_real2_item), intent(inout) :: new_r2
 !
 !
+      new_r2%item_name  =     org_r2%item_name
       new_r2%iflag =          org_r2%iflag
       new_r2%realvalue(1:2) = org_r2%realvalue(1:2)
 !
@@ -279,6 +280,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_r2%array_name = org_r2%array_name
       tgt_r2%icou = org_r2%icou
       tgt_r2%vec1(1:num_copy) = org_r2%vec1(1:num_copy)
       tgt_r2%vec2(1:num_copy) = org_r2%vec2(1:num_copy)

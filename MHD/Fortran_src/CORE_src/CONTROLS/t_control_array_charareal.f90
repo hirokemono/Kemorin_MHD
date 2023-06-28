@@ -135,6 +135,7 @@
       type(read_chara_real_item), intent(inout) :: new_cr
 !
 !
+      new_cr%item_name =   org_cr%item_name
       new_cr%iflag =       org_cr%iflag
       new_cr%charavalue =  org_cr%charavalue
       new_cr%realvalue =   org_cr%realvalue
@@ -291,6 +292,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_cr%array_name = tgt_cr%array_name
       tgt_cr%icou = org_cr%icou
       tgt_cr%c_tbl(1:num_copy) = org_cr%c_tbl(1:num_copy)
       tgt_cr%vect(1:num_copy) =  org_cr%vect(1:num_copy)

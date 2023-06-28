@@ -133,6 +133,7 @@
       type(read_int2_real_item), intent(inout) :: new_i2r
 !
 !
+      new_i2r%item_name =     org_i2r%item_name
       new_i2r%iflag =         org_i2r%iflag
       new_i2r%intvalue(1:2) = org_i2r%intvalue(1:2)
       new_i2r%realvalue =     org_i2r%realvalue
@@ -274,6 +275,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_i2r%array_name = tgt_i2r%array_name
       tgt_i2r%icou = org_i2r%icou
       tgt_i2r%int1(1:num_copy) = org_i2r%int1(1:num_copy)
       tgt_i2r%int2(1:num_copy) = org_i2r%int2(1:num_copy)

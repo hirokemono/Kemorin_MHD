@@ -131,6 +131,7 @@
       type(read_chara_int_item), intent(inout) :: new_ci
 !
 !
+      new_ci%item_name =   org_ci%item_name
       new_ci%iflag =       org_ci%iflag
       new_ci%charavalue =  org_ci%charavalue
       new_ci%intvalue =    org_ci%intvalue
@@ -283,6 +284,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_ci%array_name = tgt_ci%array_name
       tgt_ci%icou = org_ci%icou
       tgt_ci%c_tbl(1:num_copy) = org_ci%c_tbl(1:num_copy)
       tgt_ci%ivec(1:num_copy) =  org_ci%ivec(1:num_copy)

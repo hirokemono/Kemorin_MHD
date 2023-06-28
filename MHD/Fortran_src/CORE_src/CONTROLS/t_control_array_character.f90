@@ -123,6 +123,7 @@
       type(read_character_item), intent(inout) :: new_c1
 !
 !
+      new_c1%item_name = org_c1%item_name
       new_c1%iflag =      org_c1%iflag
       new_c1%charavalue = org_c1%charavalue
 !
@@ -270,6 +271,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_c1%array_name = tgt_c1%array_name
       tgt_c1%icou = org_c1%icou
       tgt_c1%c_tbl(1:num_copy) = org_c1%c_tbl(1:num_copy)
 !

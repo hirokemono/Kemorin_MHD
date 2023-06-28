@@ -139,6 +139,7 @@
       type(read_chara2_real_item), intent(inout) :: new_c2r
 !
 !
+      new_c2r%item_name =        org_c2r%item_name
       new_c2r%iflag =            org_c2r%iflag
       new_c2r%charavalue(1:2) =  org_c2r%charavalue(1:2)
       new_c2r%realvalue =        org_c2r%realvalue
@@ -292,7 +293,8 @@
 !
 !
       if(num_copy .le. 0) return
-      tgt_c2r%icou = org_c2r%icou
+      tgt_c2r%array_name = tgt_c2r%array_name
+      tgt_c2r%icou =       org_c2r%icou
       tgt_c2r%c1_tbl(1:num_copy) = org_c2r%c1_tbl(1:num_copy)
       tgt_c2r%c2_tbl(1:num_copy) = org_c2r%c2_tbl(1:num_copy)
       tgt_c2r%vect(1:num_copy) =   org_c2r%vect(1:num_copy)

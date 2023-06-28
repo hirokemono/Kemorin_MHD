@@ -129,6 +129,7 @@
       type(read_int_real_item), intent(inout) :: new_ir
 !
 !
+      new_ir%item_name = org_ir%item_name
       new_ir%iflag =     org_ir%iflag
       new_ir%intvalue =  org_ir%intvalue
       new_ir%realvalue = org_ir%realvalue
@@ -268,6 +269,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_ir%array_name = org_ir%array_name
       tgt_ir%icou = org_ir%icou
       tgt_ir%ivec(1:num_copy) = org_ir%ivec(1:num_copy)
       tgt_ir%vect(1:num_copy) = org_ir%vect(1:num_copy)
