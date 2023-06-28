@@ -123,8 +123,9 @@
       type(read_integer_item), intent(inout) :: new_i1
 !
 !
-      new_i1%iflag =    org_i1%iflag
-      new_i1%intvalue = org_i1%intvalue
+       new_i1%item_name = org_i1%item_name
+       new_i1%iflag =      org_i1%iflag
+       new_i1%intvalue =   org_i1%intvalue
 !
        end subroutine copy_integer_ctl
 !
@@ -258,6 +259,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_i1%array_name = org_i1%array_name
       tgt_i1%icou = org_i1%icou
       tgt_i1%ivec(1:num_copy) = org_i1%ivec(1:num_copy)
 !

@@ -128,6 +128,7 @@
       type(read_int2_item), intent(in) :: org_i2
       type(read_int2_item), intent(inout) :: new_i2
 !
+      new_i2%item_name =     org_i2%item_name
       new_i2%iflag =         org_i2%iflag
       new_i2%intvalue(1:2) = org_i2%intvalue(1:2)
 !
@@ -280,6 +281,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_i2%array_name = org_i2%array_name
       tgt_i2%icou = org_i2%icou
       tgt_i2%int1(1:num_copy) = org_i2%int1(1:num_copy)
       tgt_i2%int2(1:num_copy) = org_i2%int2(1:num_copy)

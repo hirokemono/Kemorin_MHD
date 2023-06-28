@@ -320,8 +320,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    smonitor_ctl%axis_v_power_switch)
 !
-      call write_volume_spectr_ctl(id_control, hd_vol_spec_block,       &
-     &                             smonitor_ctl, level)
+      call write_volume_spectr_ctl(id_control, smonitor_ctl, level)
       call write_layerd_spectr_ctl(id_control, hd_layer_spec_block,     &
      &                             smonitor_ctl%lp_ctl, level)
 !
@@ -365,12 +364,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_volume_spectr_ctl                                &
-     &         (id_control, hd_block, smonitor_ctl, level)
+     &         (id_control, smonitor_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(sph_monitor_control), intent(in) :: smonitor_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -380,12 +378,14 @@
 !
       if(smonitor_ctl%num_vspec_ctl .le. 0) return
 !
-      level = write_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_array_flag_for_ctl(id_control, level,               &
+     &                                smonitor_ctl%v_pwr(1)%block_name)
       do i = 1, smonitor_ctl%num_vspec_ctl
-          call write_each_vol_spectr_ctl(id_control, hd_block,          &
-     &     smonitor_ctl%v_pwr(i), level)
+          call write_each_vol_spectr_ctl                                &
+     &       (id_control, smonitor_ctl%v_pwr(i), level)
       end do
-      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                                smonitor_ctl%v_pwr(1)%block_name)
 !
       end subroutine write_volume_spectr_ctl
 !

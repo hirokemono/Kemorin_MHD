@@ -30,9 +30,9 @@
 !!      subroutine append_control_array_c_i3(read_ci3, array_ci3)
 !!        type(read_chara_int3_item), intent(inout) ::    read_ci3
 !!        type(ctl_array_ci3), intent(inout) :: array_ci3
-!!      subroutine copy_control_array_c_i3(num_copy, org_ci, tgt_ci)
-!!        type(ctl_array_ci3), intent(in) ::    org_ci
-!!        type(ctl_array_ci3), intent(inout) :: tgt_ci
+!!      subroutine copy_control_array_c_i3(num_copy, org_ci3, tgt_ci3)
+!!        type(ctl_array_ci3), intent(in) ::    org_ci3
+!!        type(ctl_array_ci3), intent(inout) :: tgt_ci3
 !!      subroutine append_control_item_c_i3(read_ci3, array_ci3)
 !!        type(read_chara_int3_item), intent(in) ::    read_ci3
 !!        type(ctl_array_ci3), intent(inout) :: array_ci3
@@ -136,6 +136,7 @@
       type(read_chara_int3_item), intent(inout) :: new_ci3
 !
 !
+      new_ci3%item_name =      new_ci3%item_name
       new_ci3%iflag =          org_ci3%iflag
       new_ci3%charavalue =     org_ci3%charavalue
       new_ci3%intvalue(1:3) =  org_ci3%intvalue(1:3)
@@ -272,19 +273,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_control_array_c_i3(num_copy, org_ci, tgt_ci)
+      subroutine copy_control_array_c_i3(num_copy, org_ci3, tgt_ci3)
 !
       integer(kind = kint), intent(in) ::  num_copy
-      type(ctl_array_ci3), intent(in) ::    org_ci
-      type(ctl_array_ci3), intent(inout) :: tgt_ci
+      type(ctl_array_ci3), intent(in) ::    org_ci3
+      type(ctl_array_ci3), intent(inout) :: tgt_ci3
 !
 !
       if(num_copy .le. 0) return
-      tgt_ci%icou = org_ci%icou
-      tgt_ci%c_tbl(1:num_copy) = org_ci%c_tbl(1:num_copy)
-      tgt_ci%ivec1(1:num_copy) = org_ci%ivec1(1:num_copy)
-      tgt_ci%ivec2(1:num_copy) = org_ci%ivec2(1:num_copy)
-      tgt_ci%ivec3(1:num_copy) = org_ci%ivec3(1:num_copy)
+      tgt_ci3%array_name = tgt_ci3%array_name
+      tgt_ci3%icou = org_ci3%icou
+      tgt_ci3%c_tbl(1:num_copy) = org_ci3%c_tbl(1:num_copy)
+      tgt_ci3%ivec1(1:num_copy) = org_ci3%ivec1(1:num_copy)
+      tgt_ci3%ivec2(1:num_copy) = org_ci3%ivec2(1:num_copy)
+      tgt_ci3%ivec3(1:num_copy) = org_ci3%ivec3(1:num_copy)
 !
       end subroutine copy_control_array_c_i3
 !

@@ -126,6 +126,7 @@
       type(read_int3_item), intent(in) :: org_i3
       type(read_int3_item), intent(inout) :: new_i3
 !
+      new_i3%item_name =     org_i3%item_name
       new_i3%iflag =         org_i3%iflag
       new_i3%intvalue(1:3) = org_i3%intvalue(1:3)
 !
@@ -279,6 +280,7 @@
 !
 !
       if(num_copy .le. 0) return
+      tgt_i3%array_name = org_i3%array_name
       tgt_i3%icou = org_i3%icou
       tgt_i3%int1(1:num_copy) = org_i3%int1(1:num_copy)
       tgt_i3%int2(1:num_copy) = org_i3%int2(1:num_copy)

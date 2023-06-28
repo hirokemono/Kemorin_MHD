@@ -130,6 +130,7 @@
       type(read_real3_item), intent(inout) :: new_r3
 !
 !
+      new_r3%item_name =      org_r3%item_name
       new_r3%iflag =          org_r3%iflag
       new_r3%realvalue(1:3) = org_r3%realvalue(1:3)
 !
@@ -285,7 +286,8 @@
 !
 !
       if(num_copy .le. 0) return
-      tgt_r3%icou = org_r3%icou
+      tgt_r3%array_name = org_r3%array_name
+      tgt_r3%icou =       org_r3%icou
       tgt_r3%vec1(1:num_copy) = org_r3%vec1(1:num_copy)
       tgt_r3%vec2(1:num_copy) = org_r3%vec2(1:num_copy)
       tgt_r3%vec3(1:num_copy) = org_r3%vec3(1:num_copy)
@@ -300,7 +302,7 @@
       type(ctl_array_r3), intent(inout) :: array_r3
 !
 !
-      array_r3%icou = array_r3%icou + read_r3%iflag
+      array_r3%icou =       array_r3%icou + read_r3%iflag
       array_r3%vec1(array_r3%num) = read_r3%realvalue(1)
       array_r3%vec2(array_r3%num) = read_r3%realvalue(2)
       array_r3%vec3(array_r3%num) = read_r3%realvalue(3)

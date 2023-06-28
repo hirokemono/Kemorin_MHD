@@ -348,6 +348,7 @@
       type(lic_parameter_ctl), intent(inout) :: new_lic_c
 !
 !
+      new_lic_c%block_name =    org_lic_c%block_name
       new_lic_c%i_lic_control = org_lic_c%i_lic_control
       new_lic_c%fname_LIC_kernel_ctl = org_lic_c%fname_LIC_kernel_ctl
       new_lic_c%fname_LIC_noise_ctl =  org_lic_c%fname_LIC_noise_ctl
