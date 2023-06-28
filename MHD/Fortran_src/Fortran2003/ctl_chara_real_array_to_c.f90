@@ -16,23 +16,28 @@
 !!      subroutine c_chara_real_item_realvalue(c_ctl)                   &
 !!     &          bind(C, NAME = 'c_chara_real_item_realvalue')
 !!
-!!      subroutine c_chara_real_array_block_name(c_ctl)                 &
+!!      type(c_ptr) function c_chara_real_array_block_name(c_ctl)       &
 !!     &          bind(C, NAME = 'c_chara_real_array_block_name')
-!!      subroutine c_chara_real_array_num(c_ctl)                        &
+!!      integer(C_int) function c_chara_real_array_num(c_ctl)           &
 !!     &          bind(C, NAME = 'c_chara_real_array_num')
-!!      subroutine c_chara_real_array_icou(c_ctl)                       &
-!!     &          bind(C, NAME = 'c_chara_real_array_icou')
-!!      subroutine c_chara_real_array_c_tbl(c_ctl)                      &
+!!      type(c_ptr) function c_chara_real_array_c_tbl(idx_in, c_ctl)    &
 !!     &          bind(C, NAME = 'c_chara_real_array_c_tbl')
-!!      subroutine c_chara_real_array_r_tbl(c_ctl)                      &
+!!      real(C_double) function c_chara_real_array_r_tbl(idx_in, c_ctl) &
 !!     &          bind(C, NAME = 'c_chara_real_array_r_tbl')
+!!      subroutine c_store_chara_real_array(c_ctl, idx_in, c_in, r_in)  &
+!!     &          bind(C, NAME = 'c_store_chara_real_array')
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!        integer(C_int), value, intent(in) :: idx_in
+!!        character(C_char), intent(in) :: c_in(*)
+!!        real(c_double), value, intent(in) :: r_in
 !!
 !!      subroutine c_dealloc_chara_real_array(c_ctl)                    &
 !!     &          bind(C, NAME = 'c_dealloc_chara_real_array')
-!!      subroutine c_alloc_chara_real_array(c_ctl)                      &
+!!      subroutine c_alloc_chara_real_array(num, c_ctl)                 &
 !!     &          bind(C, NAME = 'c_alloc_chara_real_array')
 !!      subroutine c_check_chara_real_array(c_ctl)                      &
 !!     &          bind(C, NAME = 'c_check_chara_real_array')
+!!        integer(C_int), value, intent(in) :: num
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module ctl_chara_real_array_to_c
@@ -40,6 +45,7 @@
       use m_precision
       use iso_c_binding
       use t_control_array_charareal
+      use ctl_array_chara_to_c
 !
       implicit none
 !
@@ -116,17 +122,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_chara_real_array_icou(c_ctl)               &
-     &          bind(C, NAME = 'c_chara_real_array_icou')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(ctl_array_cr), pointer :: f_ctl
-!
-      call c_f_pointer(c_ctl, f_ctl)
-      c_chara_real_array_icou = C_loc(f_ctl%icou)
-      end function c_chara_real_array_icou
-!
-!  ---------------------------------------------------------------------
-!
       type(c_ptr) function c_chara_real_array_c_tbl(c_ctl)              &
      &          bind(C, NAME = 'c_chara_real_array_c_tbl')
       type(c_ptr), value, intent(in) :: c_ctl
@@ -148,6 +143,22 @@
       end function c_chara_real_array_r_tbl
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine c_store_chara_real_array(c_ctl, idx_in, c_in, r_in)    &
+     &          bind(C, NAME = 'c_store_chara_real_array')
+!
+      type(c_ptr), value, intent(in) :: c_ctl
+      integer(C_int), value, intent(in) :: idx_in
+      character(C_char), intent(in) :: c_in(*)
+      real(C_double), value, intent(in) :: r_in
+      type(ctl_array_cr), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      f_ctl%c_tbl(idx_in+1) = copy_char_from_c(c_in)
+      f_ctl%vect(idx_in+1) = r_in
+      end subroutine c_store_chara_real_array
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine c_dealloc_chara_real_array(c_ctl)                      &
@@ -161,12 +172,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine c_alloc_chara_real_array(c_ctl)                        &
+      subroutine c_alloc_chara_real_array(num, c_ctl)                   &
      &          bind(C, NAME = 'c_alloc_chara_real_array')
+      integer(C_int), value, intent(in) :: num
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_cr), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
+      f_ctl%num =  num
+      f_ctl%icou = num
       call alloc_control_array_c_r(f_ctl)
       end subroutine c_alloc_chara_real_array
 !

@@ -9,19 +9,10 @@
 
 extern void * c_chara_item_clength(void *f_plt, int *length);
 
-extern void c_alloc_chara_real_array(void *f_ctl);
-extern void c_dealloc_chara_real_array(void *f_ctl);
-
 extern void * c_chara_real_item_block_name(void *f_ctl);
 extern void * c_chara_real_item_iflag(void *f_ctl);
 extern void * c_chara_real_item_charavalue(void *f_ctl);
 extern void * c_chara_real_item_realvalue(void *f_ctl);
-
-extern void * c_chara_real_array_block_name(void *f_ctl);
-extern void * c_chara_real_array_num(void *f_ctl);
-extern void * c_chara_real_array_icou(void *f_ctl);
-extern void * c_chara_real_array_c_tbl(void *f_ctl);
-extern void * c_chara_real_array_r_tbl(void *f_ctl);
 
 struct f_ctl_cr_item * init_f_ctl_cr_item(void *(*c_load_self)(void *f_parent),
 										  void *f_parent)
@@ -75,7 +66,6 @@ struct f_ctl_cr_array * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent)
 	f_cr_array->f_self =  c_load_self(f_parent);
 	
 	f_cr_array->f_num =         (int *)  c_chara_real_array_num(f_cr_array->f_self);
-	f_cr_array->f_icou =        (int *)  c_chara_real_array_icou(f_cr_array->f_self);
 	f_cr_array->f_block_name =  (char *) c_chara_real_array_block_name(f_cr_array->f_self);
 	f_cr_array->c_block_name = strngcopy_from_f(f_cr_array->f_block_name);
 	
@@ -107,9 +97,7 @@ struct f_ctl_cr_array * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent)
 void reflesh_f_ctl_cr_array(int num_array, struct f_ctl_cr_array *f_cr_array)
 {
 	c_dealloc_chara_real_array(f_cr_array->f_self);
-	f_cr_array->f_num[0] = num_array;
-	f_cr_array->f_icou[0] = num_array;
-	c_alloc_chara_real_array(f_cr_array->f_self);
+	c_alloc_chara_real_array(num_array, f_cr_array->f_self);
 	
 	f_cr_array->f_cctls =       (char *) c_chara_real_array_c_tbl(f_cr_array->f_self);
 	f_cr_array->f_rctls =       (double *) c_chara_real_array_r_tbl(f_cr_array->f_self);

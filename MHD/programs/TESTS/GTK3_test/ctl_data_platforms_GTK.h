@@ -64,12 +64,6 @@ extern void * c_chara_real_item_iflag(void *f_ctl);
 extern void * c_chara_real_item_charavalue(void *f_ctl);
 extern void * c_chara_real_item_realvalue(void *f_ctl);
 
-extern void * c_chara_real_array_block_name(void *f_ctl);
-extern void * c_chara_real_array_num(void *f_ctl);
-extern void * c_chara_real_array_icou(void *f_ctl);
-extern void * c_chara_real_array_c_tbl(void *f_ctl);
-extern void * c_chara_real_array_r_tbl(void *f_ctl);
-
 struct c_array_views{
     int index_c_array;
     GtkWidget *c_array_tree_view;

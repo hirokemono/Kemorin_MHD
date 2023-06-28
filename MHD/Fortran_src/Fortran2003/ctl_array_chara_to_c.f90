@@ -58,6 +58,22 @@
 !
 !  ---------------------------------------------------------------------
 !
+      character(len = kchara) function copy_char_from_c(c_in)
+!
+      character(C_char), intent(in) :: c_in(*)
+      integer :: i
+!
+      do i = 1, kchara
+        copy_char_from_c(i:i) = c_in(i)
+        if(c_in(i) .eq. char(0)) then
+          copy_char_from_c(i:kchara) = char(32)
+          exit
+        end if
+      end do
+      end function copy_char_from_c
+!
+!  ---------------------------------------------------------------------
+!
       subroutine load_chara_from_c(c_ctl)                               &
      &          bind(C, NAME = 'load_chara_from_c')
       type(c_ptr), value, intent(in) :: c_ctl

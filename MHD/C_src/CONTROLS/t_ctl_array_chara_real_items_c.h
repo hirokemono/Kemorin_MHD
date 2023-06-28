@@ -39,6 +39,13 @@ struct f_ctl_cr_array{
 
 /*  Prototypes */
 
+extern void * c_chara_real_array_block_name(void *f_ctl);
+extern void * c_chara_real_array_num(void *f_ctl);
+extern void * c_chara_real_array_c_tbl(void *f_ctl);
+extern void * c_chara_real_array_r_tbl(void *f_ctl);
+
+extern void c_alloc_chara_real_array(int num_array, void *f_ctl);
+extern void c_dealloc_chara_real_array(void *f_ctl);
 extern void c_check_chara_real_array(void *f_cr_array);
 
 struct f_ctl_cr_item * init_f_ctl_cr_item(void *(*c_load_self)(void *f_parent), 

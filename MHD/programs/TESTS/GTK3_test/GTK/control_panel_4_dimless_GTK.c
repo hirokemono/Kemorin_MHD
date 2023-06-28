@@ -14,9 +14,6 @@ extern void * c_MHD_dimless_block_name(void *f_dimless_ctl);
 extern void * c_MHD_dimless_iflag(void *f_dimless_ctl);
 extern void * c_MHD_dimless_array(void *f_dimless_ctl);
 
-extern void c_dealloc_chara_real_array(void *f_dimless_ctl);
-extern void c_alloc_chara_real_array(void *f_dimless_ctl);
-
 struct f_MHD_dimless_control * init_f_MHD_dimless_ctl(void *(*c_load_self)(void *f_parent),
 													 void *f_parent)
 {

@@ -45,6 +45,7 @@
       use m_precision
       use iso_c_binding
       use t_control_array_charaint
+      use ctl_array_chara_to_c
 !
       implicit none
 !
@@ -160,7 +161,7 @@
      &          bind(C, NAME = 'c_store_chara_int_array')
 !
       type(c_ptr), value, intent(in) :: c_ctl
-      character(C_char), intent(in) :: c_in(kchara)
+      character(C_char), intent(in) :: c_in(*)
       integer(C_int), value, intent(in) :: idx_in, i_in
       type(ctl_array_ci), pointer :: f_ctl
 !
@@ -168,22 +169,6 @@
       f_ctl%c_tbl(idx_in+1) = copy_char_from_c(c_in)
       f_ctl%ivec(idx_in+1) = i_in
       end subroutine c_store_chara_int_array
-!
-!  ---------------------------------------------------------------------
-!
-      character(len = kchara) function copy_char_from_c(c_in)
-!
-      character(C_char), intent(in) :: c_in(kchara)
-      integer :: i
-!
-      do i = 1, kchara
-        copy_char_from_c(i:i) = c_in(i)
-        if(c_in(i) .eq. char(0)) then
-          copy_char_from_c(i:kchara) = char(32)
-          exit
-        end if
-      end do
-      end function copy_char_from_c
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
