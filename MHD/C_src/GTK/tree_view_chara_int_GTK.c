@@ -241,7 +241,6 @@ int add_ci_list_items_GTK(GtkTreeView *tree_view_to_add,
 	}
     g_list_free(reference_list);
 	
-	printf("AAAAAA %d\n", index);
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
 	append_ci_list_from_ctl(index, &ci_clist->ci_item_head, tree_view_to_add);
     /* Release the block of changed signal */

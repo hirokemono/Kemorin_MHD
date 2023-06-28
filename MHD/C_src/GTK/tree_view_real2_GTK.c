@@ -159,25 +159,25 @@ int add_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
     }
     g_list_free(list);
     
-    /* Add */
-	
-	GtkTreePath *tree_path;
 	GtkTreeIter iter;
 	cur = g_list_first(reference_list);
-	tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
-	gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
-	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_INDEX, &value1, -1);
-	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &value2, -1);
-    for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
-        
-        /* Add */
-		add_real2_clist_before_c_tbl(value1, value2, r2_clist);
+	if(cur == NULL){
+		append_real2_clist(value1, value2, r2_clist);
+		index = count_real2_clist(r2_clist);
+	} else {
+		GtkTreePath *tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
+		gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_INDEX, &value1, -1);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &value2, -1);
 		
-		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
-		
-	}
+		for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
+			/* Add */
+			add_real2_clist_before_c_tbl(value1, value2, r2_clist);
+			gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
+		}
+		gtk_tree_path_free(tree_path);
+	};
 	
-	gtk_tree_path_free(tree_path);
     g_list_free(reference_list);
 	
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));

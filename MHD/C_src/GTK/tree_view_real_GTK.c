@@ -94,7 +94,7 @@ int add_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
     GList *list;
     GList *reference_list;
     GList *cur;
-    double value;
+    double value = 0.0;
 	int index = 0;
     
     /* Get path of selected raw */
@@ -126,23 +126,23 @@ int add_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
     
     /* Add */
 	
-	GtkTreePath *tree_path;
 	GtkTreeIter iter;
 	cur = g_list_first(reference_list);
-	tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
-	gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
-	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_INDEX, &value, -1);
-    for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
-        
-        /* Add */
-		add_real_clist_before_c_tbl(value, r_clist);
-		
-		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
-		
-	}
-	
-	gtk_tree_path_free(tree_path);
-    g_list_free(reference_list);
+	if(cur == NULL){
+		append_real_clist(value, r_clist);
+		index = count_real_clist(r_clist);
+	} else {
+		GtkTreePath *tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
+		gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_INDEX, &value, -1);
+		gtk_tree_path_free(tree_path);
+		for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
+			/* Add */
+			add_real_clist_before_c_tbl(value, r_clist);
+			gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
+		}
+	};
+	g_list_free(reference_list);
 	
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
 	index = append_r_list_from_ctl(index, &r_clist->r_item_head, r_tree_view);

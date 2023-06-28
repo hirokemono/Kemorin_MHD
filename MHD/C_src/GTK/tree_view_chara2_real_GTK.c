@@ -203,19 +203,66 @@ int add_c2r_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMo
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
+	GList *list;
+    GList *reference_list;
+    GList *cur;
+	
+    /* Get path of selected raw */
+    /* The path is for tree_model_sort */
+        
+    GtkTreeSelection *selection = gtk_tree_view_get_selection(tree_view_to_add);
+    list = gtk_tree_selection_get_selected_rows(selection, NULL);
+    /* Make reference from path */
+    /* After deleting data, obtained path would not be valied */
+    reference_list = NULL;
+    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
+        GtkTreePath *child_path;
+        GtkTreeRowReference *child_reference;
+        /* Convert tree model sort path into tree model path */
+        child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model_to_add), 
+                                                                    (GtkTreePath *)cur->data);
+        
+        child_reference = gtk_tree_row_reference_new(child_model_to_add, child_path);
+        reference_list = g_list_append(reference_list, child_reference);
+        
+        gtk_tree_path_free(child_path);
+        gtk_tree_path_free((GtkTreePath *)cur->data);
+    }
+    g_list_free(list);
+	
+    /* Temporary block the changed signal of GtkTreeSelection */
+    block_changed_signal(G_OBJECT(child_model_to_add));
     
-    GtkTreeIter iter;
-    
-    gchar *row_string;
-    gchar *second_string;
-    double value = 1.0;
-    
-    gtk_tree_model_get_iter(tree_model, &iter, path);  
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
-    
-    index = append_c2r_item_to_tree(index, row_string, second_string, value, child_model_to_add);
-    append_chara2_real_clist(row_string, second_string, value, c2r_clst);
+    /* Return reference into path and delete reference */
+	
+	GtkTreeIter iter;
+	gchar row_string[30] = "New_number";
+	gchar second_string[30] = "New_direction";
+	double value = 0.0;
+ 	cur = g_list_first(reference_list);
+	if(cur == NULL){
+		append_chara2_real_clist(row_string, second_string, value, c2r_clst);
+		index = count_chara2_real_clist(c2r_clst);
+	} else {
+		GtkTreePath *tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
+		gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_MATH, &second_string, -1);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FORTH, &value, -1);
+		gtk_tree_path_free(tree_path);
+	/* Add */
+		for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
+			add_chara2_real_clist_before_c_tbl(row_string, second_string, 
+											   row_string, second_string, value, c2r_clst);
+			gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
+		}
+	}
+    g_list_free(reference_list);
+	
+	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
+	append_c2r_list_from_ctl(index, &c2r_clst->c2r_item_head, tree_view_to_add);
+    /* Release the block of changed signal */
+    unblock_changed_signal(G_OBJECT(child_model_to_add));
     return index;
 }
 
@@ -506,12 +553,7 @@ void add_chara2_real_list_box_w_addbottun(GtkTreeView *c2r_tree_view,
                                          GtkWidget *vbox)
 {
     GtkWidget *hbox;
-    
     GtkWidget *scrolled_window;
-    
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -541,10 +583,6 @@ void add_chara2_real_list_box_w_combobox(GtkTreeView *c2r_tree_view,
     GtkCellRenderer *column_add;
     
     GtkWidget *scrolled_window;
-    
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);

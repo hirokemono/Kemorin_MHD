@@ -302,25 +302,25 @@ int add_ci3_list_items_GTK(GtkTreeView *tree_view_to_add,
     
     /* Return reference into path and delete reference */
 	
-	GtkTreePath *tree_path;
+	gchar row_string[30] = "new_number";
+	ivalue = 0;
 	GtkTreeIter iter;
 	cur = g_list_first(reference_list);
-	tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
-	gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
-	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &field_name, -1);
-    for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
-        
-        /* Add */
-		gchar row_string[30] = "new_number";
-		ivalue = 0;
-		add_chara_int3_clist_before_c_tbl(field_name, row_string, 
-					ivalue, ivalue, ivalue, ci3_clist);
-		
-        gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
-		
+	if(cur == NULL){
+		append_chara_int3_clist(row_string, ivalue, ivalue, ivalue, ci3_clist);
+		index = count_chara_int3_clist(ci3_clist);
+	} else {
+		GtkTreePath *tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
+		gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &field_name, -1);
+		for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
+			/* Add */
+			add_chara_int3_clist_before_c_tbl(field_name, row_string, 
+											  ivalue, ivalue, ivalue, ci3_clist);
+			gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
+		};
+		gtk_tree_path_free(tree_path);
 	}
-	
-	gtk_tree_path_free(tree_path);
     g_list_free(reference_list);
 	
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
@@ -534,10 +534,6 @@ void add_chara_int3_list_box_w_addbottun(GtkTreeView *ci3_tree_view,
     GtkWidget *hbox;
     GtkWidget *scrolled_window;
     
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
-    
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
@@ -564,10 +560,6 @@ void add_chara_int3_list_box_w_combobox(GtkTreeView *ci3_tree_view,
     GtkWidget *hbox;
     GtkCellRenderer *column_add;
     GtkWidget *scrolled_window;
-    
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
