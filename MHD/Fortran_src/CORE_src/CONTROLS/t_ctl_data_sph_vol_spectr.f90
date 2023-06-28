@@ -21,10 +21,8 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(volume_spectr_control), intent(inout) :: v_pwr
 !!        type(buffer_for_control), intent(inout) :: c_buf
-!!      subroutine write_each_vol_spectr_ctl                            &
-!!     &         (id_control, hd_block, v_pwr, level)
+!!      subroutine write_each_vol_spectr_ctl(id_control, v_pwr, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len=kchara), intent(in) :: hd_block
 !!        type(volume_spectr_control), intent(in) :: v_pwr
 !!        integer(kind = kint), intent(inout) :: level
 !!      subroutine reset_volume_spectr_control(v_pwr)
@@ -76,6 +74,8 @@
 !
 !
       type volume_spectr_control
+!>        Block name
+        character(len=kchara) :: block_name = 'volume_spectrum_ctl'
 !>        file name for volume mean square
         type(read_character_item) :: volume_spec_file_ctl
 !>        file name for volume average
@@ -172,6 +172,9 @@
       call copy_real_ctl(org_vpwr%outer_radius_ctl,                     &
      &    new_vpwr%outer_radius_ctl)
 !
+      new_vpwr%i_vol_spectr_ctl = org_vpwr%i_vol_spectr_ctl
+      new_vpwr%block_name = org_vpwr%block_name
+!
       end subroutine copy_volume_spectr_control
 !
 ! -----------------------------------------------------------------------
@@ -186,8 +189,9 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(v_pwr%i_vol_spectr_ctl .gt. 0) return
+      v_pwr%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -220,13 +224,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_each_vol_spectr_ctl                              &
-     &         (id_control, hd_block, v_pwr, level)
+      subroutine write_each_vol_spectr_ctl(id_control, v_pwr, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(volume_spectr_control), intent(in) :: v_pwr
 !
       integer(kind = kint), intent(inout) :: level
@@ -246,7 +248,8 @@
       maxlen = max(maxlen, len_trim(hd_diff_lm_spectr_switch))
       maxlen = max(maxlen, len_trim(hd_axis_spectr_switch))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 v_pwr%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    v_pwr%volume_spec_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -267,7 +270,8 @@
      &    v_pwr%inner_radius_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    v_pwr%outer_radius_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                v_pwr%block_name)
 !
       end subroutine write_each_vol_spectr_ctl
 !

@@ -237,6 +237,7 @@
      &                     new_s3df_c%compostion_filter_ctl)
 !
       new_s3df_c%i_SGS_3d_filter_ctl = org_s3df_c%i_SGS_3d_filter_ctl
+      new_s3df_c%block_name = org_s3df_c%block_name
 !
       end subroutine copy_3d_filtering_ctl
 !

@@ -271,6 +271,7 @@
      &                    new_plt%del_org_data_ctl)
 !
       new_plt%i_platform = org_plt%i_platform
+      new_plt%block_name = org_plt%block_name
 !
       end subroutine copy_ctl_data_4_platform
 !
