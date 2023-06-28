@@ -38,6 +38,22 @@ extern void * c_sphere_data_n_med_layer_ctl(void *f_spctl);
 extern void * c_sphere_data_r_layer_list_ctl(void *f_spctl);
 extern void * c_sphere_data_med_list_ctl(void *f_spctl);
 
+extern void * c_sph_indices_ordering_set(void *f_sdctl);
+extern void * c_sph_domain_ctl_block_name(void *f_sdctl);
+extern void * c_sph_domain_ctl_iflag(void *f_sdctl);
+extern void * c_sph_inner_decomp_ctl(void *f_sdctl);
+extern void * c_sph_rj_inner_loop_ctl(void *f_sdctl);
+extern void * c_sph_rlm_inner_loop_ctl(void *f_sdctl);
+extern void * c_sph_rtm_inner_loop_ctl(void *f_sdctl);
+extern void * c_sph_rtp_inner_loop_ctl(void *f_sdctl);
+extern void * c_sph_domain_rlm_distr_ctl(void *f_sdctl);
+extern void * c_sph_domain_smpl_r_decomp_ctl(void *f_sdctl);
+extern void * c_sph_num_radial_domain_ctl(void *f_sdctl);
+extern void * c_sph_num_horiz_domain_ctl(void *f_sdctl);
+extern void * c_sph_ndomain_sph_grid_ctl(void *f_sdctl);
+extern void * c_sph_ndomain_legendre_ctl(void *f_sdctl);
+extern void * c_sph_ndomain_spectr_ctl(void *f_sdctl);
+
 
 struct c_array_views * init_c_array_views(struct f_ctl_chara_array *f_carray)
 {
@@ -110,6 +126,7 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 	check_control_labels_f(f_plt->label_file_format_list);
 	return f_plt;
 }
+
 
 GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_format_list, 
 										 struct f_ctl_chara_item * f_citem, GtkWidget *window){
@@ -231,10 +248,47 @@ struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*
 	return f_spctl;
 };
 
+struct f_MHD_sph_subdomain_control * init_f_MHD_sph_domain_control(void *(*c_load_self)(void *f_parent), 
+																   void *f_parent)
+{
+	struct f_MHD_sph_subdomain_control *f_sdctl 
+			= (struct f_MHD_sph_subdomain_control *) malloc(sizeof(struct f_MHD_sph_subdomain_control));
+	if(f_sdctl == NULL){
+		printf("malloc error for f_sdctl\n");
+		exit(0);
+	};
+	
+	f_sdctl->f_self =  c_load_self(f_parent);
+	
+	f_sdctl->f_iflag =        (int *) c_sph_domain_ctl_iflag(f_sdctl->f_self);
+	f_sdctl->f_block_name =   (char *) c_sph_domain_ctl_block_name(f_sdctl->f_self);
+	f_sdctl->c_block_name = strngcopy_from_f(f_sdctl->f_block_name);
+	
+	f_sdctl->f_indices_ordering_set = init_f_ctl_chara_item(c_sph_indices_ordering_set, f_sdctl->f_self);
+	f_sdctl->f_inner_decomp_ctl =     init_f_ctl_chara_item(c_sph_inner_decomp_ctl, f_sdctl->f_self);
+	f_sdctl->f_rj_inner_loop_ctl =    init_f_ctl_chara_item(c_sph_rj_inner_loop_ctl, f_sdctl->f_self);
+	f_sdctl->f_rlm_inner_loop_ctl =   init_f_ctl_chara_item(c_sph_rlm_inner_loop_ctl, f_sdctl->f_self);
+	f_sdctl->f_rtm_inner_loop_ctl =   init_f_ctl_chara_item(c_sph_rtm_inner_loop_ctl, f_sdctl->f_self);
+	f_sdctl->f_rtp_inner_loop_ctl =   init_f_ctl_chara_item(c_sph_rtp_inner_loop_ctl, f_sdctl->f_self);
+	f_sdctl->f_rlm_distibution_ctl =  init_f_ctl_chara_item(c_sph_domain_rlm_distr_ctl, f_sdctl->f_self);
+	f_sdctl->f_simple_r_decomp_ctl =  init_f_ctl_chara_item(c_sph_domain_smpl_r_decomp_ctl, f_sdctl->f_self);
+	f_sdctl->f_num_radial_domain_ctl = init_f_ctl_int_item(c_sph_num_radial_domain_ctl, f_sdctl->f_self);
+	f_sdctl->f_num_horiz_domain_ctl =  init_f_ctl_int_item(c_sph_num_horiz_domain_ctl, f_sdctl->f_self);
+	f_sdctl->f_ndomain_sph_grid_ctl =  init_f_ctl_ci_array(c_sph_ndomain_sph_grid_ctl, f_sdctl->f_self);
+	f_sdctl->f_ndomain_legendre_ctl =  init_f_ctl_ci_array(c_sph_ndomain_legendre_ctl, f_sdctl->f_self);
+	f_sdctl->f_ndomain_spectr_ctl =    init_f_ctl_ci_array(c_sph_ndomain_spectr_ctl, f_sdctl->f_self);
+	return f_sdctl;
+}
+
 GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl, 
 									 struct f_MHD_sph_resolution_views *f_spctl_vws, GtkWidget *window){
-	int i;
 	GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	
+	f_spctl_vws = (struct f_MHD_sph_resolution_views *) malloc(sizeof(struct f_MHD_sph_resolution_views));
+	if(f_spctl_vws == NULL){
+		printf("malloc error for f_MHD_sph_resolution_views\n");
+		exit(0);
+	};
 	
 	GtkWidget *hbox_i1 = draw_int_item_entry_hbox(f_spctl->f_ltr_ctl);
 	GtkWidget *hbox_i2 = draw_int_item_entry_hbox(f_spctl->f_phi_symmetry_ctl);
@@ -294,6 +348,61 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d4, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d5, FALSE, FALSE, 0);
 	GtkWidget *expand = draw_control_block(f_spctl->c_block_name, f_spctl->f_iflag,
+										   480, 320, window, vbox_sph);
+    gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
+	return vbox_out;
+};
+
+
+GtkWidget * draw_sph_subdomain_vbox(struct f_MHD_sph_subdomain_control *f_sdctl, 
+									struct f_MHD_sph_subdomain_views *f_sdctl_vws, GtkWidget *window){
+	GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	
+	f_sdctl_vws = (struct f_MHD_sph_subdomain_views *) malloc(sizeof(struct f_MHD_sph_subdomain_views));
+	if(f_sdctl_vws == NULL){
+		printf("malloc error for f_MHD_sph_subdomain_views\n");
+		exit(0);
+	};
+	
+	GtkWidget *hbox_i1 = draw_int_item_entry_hbox(f_sdctl->f_num_radial_domain_ctl);
+	GtkWidget *hbox_i2 = draw_int_item_entry_hbox(f_sdctl->f_num_horiz_domain_ctl);
+	
+	GtkWidget *hbox_d1 = add_ci_list_box_w_addbottun(f_sdctl->f_ndomain_sph_grid_ctl,
+													 f_sdctl_vws->f_ndomain_sph_grid_tree);
+	GtkWidget *hbox_d2 = add_ci_list_box_w_addbottun(f_sdctl->f_ndomain_legendre_ctl,
+													 f_sdctl_vws->f_ndomain_legendre_tree);
+	GtkWidget *hbox_d3 = add_ci_list_box_w_addbottun(f_sdctl->f_ndomain_spectr_ctl,
+													 f_sdctl_vws->f_ndomain_spectr_tree);
+	
+	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_sdctl->f_indices_ordering_set);
+	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_sdctl->f_inner_decomp_ctl);
+	GtkWidget *hbox_c3 = draw_chara_item_entry_hbox(f_sdctl->f_rj_inner_loop_ctl);
+	GtkWidget *hbox_c4 = draw_chara_item_entry_hbox(f_sdctl->f_rlm_inner_loop_ctl);
+	GtkWidget *hbox_c5 = draw_chara_item_entry_hbox(f_sdctl->f_rtm_inner_loop_ctl);
+	GtkWidget *hbox_c6 = draw_chara_item_entry_hbox(f_sdctl->f_rtp_inner_loop_ctl);
+	GtkWidget *hbox_c7 = draw_chara_item_entry_hbox(f_sdctl->f_rlm_distibution_ctl);
+	GtkWidget *hbox_c8 = draw_chara_item_entry_hbox(f_sdctl->f_simple_r_decomp_ctl);
+	
+	
+	GtkWidget *vbox_sph = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_i2, FALSE, FALSE, 0);
+	
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d3, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c3, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c4, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c5, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c6, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c7, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c8, FALSE, FALSE, 0);
+	
+	GtkWidget *expand = draw_control_block(f_sdctl->c_block_name, f_sdctl->f_iflag,
 										   480, 320, window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;

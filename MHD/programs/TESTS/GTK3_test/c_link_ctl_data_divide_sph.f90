@@ -11,6 +11,8 @@
 !!      type(c_ptr) function c_sph_domain_ctl_iflag(c_ctl)              &
 !!     &          bind(C, NAME = 'c_sph_domain_ctl_iflag')
 !!
+!!      type(c_ptr) function c_sph_indices_ordering_set(c_ctl)          &
+!!     &          bind(C, NAME = 'c_sph_indices_ordering_set')
 !!      type(c_ptr) function c_sph_inner_decomp_ctl(c_ctl)              &
 !!     &          bind(C, NAME = 'c_sph_inner_decomp_ctl')
 !!      type(c_ptr) function c_sph_rj_inner_loop_ctl(c_ctl)             &
@@ -84,6 +86,16 @@
       end function c_sph_domain_ctl_iflag
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_indices_ordering_set(c_ctl)            &
+     &          bind(C, NAME = 'c_sph_indices_ordering_set')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sphere_domain_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_indices_ordering_set = C_loc(f_ctl%indices_ordering_set)
+      end function c_sph_indices_ordering_set
+!
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_sph_inner_decomp_ctl(c_ctl)                &

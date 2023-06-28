@@ -147,6 +147,41 @@ struct f_MHD_sph_resolution_views{
 	GtkWidget *f_med_layer_list_ctl_tree;
 };
 
+struct f_MHD_sph_subdomain_control{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_int_item *f_num_radial_domain_ctl;
+	struct f_ctl_int_item *f_num_horiz_domain_ctl;
+	
+	struct chara_int_clist *f_ndomain_sph_grid_ctl;
+	struct chara_int_clist *f_ndomain_legendre_ctl;
+	struct chara_int_clist *f_ndomain_spectr_ctl;
+	
+	struct f_ctl_chara_item *f_indices_ordering_set;
+	struct f_ctl_chara_item *f_inner_decomp_ctl;
+	
+	struct f_ctl_chara_item *f_rj_inner_loop_ctl;
+	struct f_ctl_chara_item *f_rlm_inner_loop_ctl;
+	struct f_ctl_chara_item *f_rtm_inner_loop_ctl;
+	struct f_ctl_chara_item *f_rtp_inner_loop_ctl;
+	
+	struct f_ctl_chara_item *f_rlm_distibution_ctl;
+	struct f_ctl_chara_item *f_simple_r_decomp_ctl;
+};
+
+struct f_MHD_sph_subdomain_views{
+	GtkWidget *f_ndomain_sph_grid_tree;
+	GtkWidget *f_ndomain_legendre_tree;
+	GtkWidget *f_ndomain_spectr_tree;
+};
+
+
+
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
 void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray);
 
@@ -157,8 +192,12 @@ GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidg
 
 struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*c_load_self)(void *f_parent), 
 																		void *f_parent);
+struct f_MHD_sph_subdomain_control * init_f_MHD_sph_domain_control(void *(*c_load_self)(void *f_parent), 
+																   void *f_parent);
 GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl,
 									 struct f_MHD_sph_resolution_views *f_spctl_vws, GtkWidget *window);
+GtkWidget * draw_sph_subdomain_vbox(struct f_MHD_sph_subdomain_control *f_sdctl, 
+									struct f_MHD_sph_subdomain_views *f_sdctl_vws, GtkWidget *window);
 
 
 #endif    /* CTL_DATA_PLATFORMS_GTK_ */
