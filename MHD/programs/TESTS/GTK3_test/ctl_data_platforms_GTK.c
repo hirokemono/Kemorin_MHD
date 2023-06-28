@@ -61,6 +61,12 @@ extern void * c_FEM_mesh_output_switch(void *f_Fmesh_ctl);
 extern void * c_FEM_surface_output_switch(void *f_Fmesh_ctl);
 extern void * c_FEM_viewer_output_switch(void *f_Fmesh_ctl);
 
+extern void * c_sph_shell_ctl_block_name(void *f_psph_ctl);
+extern void * c_sph_shell_ctl_iflag(void *f_psph_ctl);
+extern void * c_sph_shell_Fmesh_ctl(void *f_psph_ctl);
+extern void * c_sph_shell_spctl(void *f_psph_ctl);
+extern void * c_sph_shell_sdctl(void *f_psph_ctl);
+
 
 struct c_array_views * init_c_array_views(struct f_ctl_chara_array *f_carray)
 {
@@ -457,3 +463,51 @@ GtkWidget * draw_sph_FEM_mesh_file_vbox(struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl,
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;
 };
+
+struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_sph_shell_control *f_psph_ctl 
+			= (struct f_MHD_sph_shell_control *) malloc(sizeof(struct f_MHD_sph_shell_control));
+	if(f_psph_ctl == NULL){
+		printf("malloc error for f_psph_ctl\n");
+		exit(0);
+	};
+	
+	f_psph_ctl->f_self =  c_load_self(f_parent);
+	
+	f_psph_ctl->f_iflag =        (int *) c_sph_shell_ctl_iflag(f_psph_ctl->f_self);
+	f_psph_ctl->f_block_name =   (char *) c_sph_shell_ctl_block_name(f_psph_ctl->f_self);
+	f_psph_ctl->c_block_name = strngcopy_from_f(f_psph_ctl->f_block_name);
+	
+	f_psph_ctl->f_Fmesh_ctl = init_f_FEM_mesh_FILE_ctl(c_sph_shell_Fmesh_ctl, f_psph_ctl->f_self);
+	f_psph_ctl->f_sdctl =     init_f_MHD_sph_domain_control(c_sph_shell_sdctl, f_psph_ctl->f_self);
+	f_psph_ctl->f_spctl =     init_f_MHD_sph_resolution_control(c_sph_shell_spctl, f_psph_ctl->f_self);
+	return f_psph_ctl;
+};
+
+GtkWidget *MHD_sph_shell_ctl_expander(GtkWidget *window, struct f_MHD_sph_shell_control * f_psph_ctl, 
+									  char * f_fname_psph, struct f_sph_shell_views *f_psph_vws){
+	GtkWidget *expand_sph_shell;
+	
+	f_psph_vws = (struct f_sph_shell_views *) malloc(sizeof(struct f_sph_shell_views));
+	if(f_psph_vws == NULL){
+		printf("malloc error for f_sph_shell_views\n");
+		exit(0);
+	};
+	
+	GtkWidget * vbox_sph_FEM_output = draw_sph_FEM_mesh_file_vbox(f_psph_ctl->f_Fmesh_ctl,
+																  window);
+	GtkWidget * vbox_sph_subdomain = draw_sph_subdomain_vbox(f_psph_ctl->f_sdctl,
+															 f_psph_vws->f_sdctl_vws, window);
+	GtkWidget * vbox_sph_resolution = draw_sph_resolution_vbox(f_psph_ctl->f_spctl,
+															   f_psph_vws->f_spctl_vws, window);
+	GtkWidget *vbox_sph_shell = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_FEM_output, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_subdomain, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_resolution, FALSE, FALSE, 0);
+	
+	expand_sph_shell = draw_control_block_w_file_switch(f_psph_ctl->c_block_name, f_psph_ctl->f_iflag,
+														f_fname_psph, 560, 500, window, vbox_sph_shell);
+	return expand_sph_shell;
+}
