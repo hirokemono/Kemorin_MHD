@@ -75,10 +75,13 @@ struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array)
         printf("malloc error for cr_array_views\n");
         exit(0);
     };
-    
+	
+	char *ctmp;
     cr_array_vws->cr_array_clist = init_chara_real_clist();
-    for(i=0;i<f_cr_array->f_num[0];i++){
-        append_chara_real_clist(f_cr_array->c_charavalue[i], f_cr_array->f_rctls[i],
+	for(i=0;i<f_cr_array->f_num[0];i++){
+		ctmp = c_chara_real_array_c_tbl(i, f_cr_array->f_self);
+		append_chara_real_clist(strngcopy_from_f(ctmp), 
+								c_chara_real_array_r_tbl(i, f_cr_array->f_self),
                                 cr_array_vws->cr_array_clist);
     }
     

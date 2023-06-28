@@ -122,24 +122,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_chara_real_array_c_tbl(c_ctl)              &
+      type(c_ptr) function c_chara_real_array_c_tbl(idx_in, c_ctl)      &
      &          bind(C, NAME = 'c_chara_real_array_c_tbl')
+      integer(C_int), value, intent(in) :: idx_in
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_cr), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_chara_real_array_c_tbl = C_loc(f_ctl%c_tbl)
+      c_chara_real_array_c_tbl = C_loc(f_ctl%c_tbl(idx_in+1))
       end function c_chara_real_array_c_tbl
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_chara_real_array_r_tbl(c_ctl)              &
+      real(c_double) function c_chara_real_array_r_tbl(idx_in, c_ctl)   &
      &          bind(C, NAME = 'c_chara_real_array_r_tbl')
+      integer(C_int), value, intent(in) :: idx_in
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_cr), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_chara_real_array_r_tbl = C_loc(f_ctl%vect)
+      c_chara_real_array_r_tbl = f_ctl%vect(idx_in+1)
       end function c_chara_real_array_r_tbl
 !
 !  ---------------------------------------------------------------------

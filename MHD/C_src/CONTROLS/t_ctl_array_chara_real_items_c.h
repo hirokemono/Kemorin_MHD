@@ -29,20 +29,17 @@ struct f_ctl_cr_array{
 	void * f_self;
 	char * f_block_name;
 	int * f_num;
-	int * f_icou;
-	char * f_cctls;
-	double * f_rctls;
 	
 	char * c_block_name;
-	char ** c_charavalue;
 };
 
 /*  Prototypes */
 
 extern void * c_chara_real_array_block_name(void *f_ctl);
 extern void * c_chara_real_array_num(void *f_ctl);
-extern void * c_chara_real_array_c_tbl(void *f_ctl);
-extern void * c_chara_real_array_r_tbl(void *f_ctl);
+extern void * c_chara_real_array_c_tbl(int idx, void *f_ctl);
+extern double c_chara_real_array_r_tbl(int idx, void *f_ctl);
+extern void   c_store_chara_real_array(void *f_ctl, int idx, char *c_in, double r_in);
 
 extern void c_alloc_chara_real_array(int num_array, void *f_ctl);
 extern void c_dealloc_chara_real_array(void *f_ctl);

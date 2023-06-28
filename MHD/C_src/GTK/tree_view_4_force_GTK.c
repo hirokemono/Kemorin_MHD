@@ -22,17 +22,10 @@ static void copy_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 {
 	char *ctmp;
 	int i;
-	
-	for(i=0;i<f_cr_array->f_num[0];i++){
+	for(i=0;i<count_chara_real_clist(cr_clist);i++){
 		ctmp = chara_real_clist_at_index(i, cr_clist)->c_tbl;
-		f_cr_array->c_charavalue[i] = strngcopy_from_f(ctmp);
-	};
-	
-	int flen = lengthchara_f();
-	for(i=0;i<f_cr_array->f_num[0];i++){
-		strngcopy(&f_cr_array->f_cctls[i*flen], f_cr_array->c_charavalue[i]);
-		load_chara_from_c(&f_cr_array->f_cctls[i*flen]);
-		f_cr_array->f_rctls[i] = chara_real_clist_at_index(i, cr_clist)->r_data;
+		c_store_chara_real_array(f_cr_array->f_self, i, ctmp,
+								 chara_real_clist_at_index(i, cr_clist)->r_data);
 	}
     return;
 }
@@ -42,7 +35,6 @@ void update_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 {
 	int i;
 /*	c_check_chara_real_array(f_cr_array->f_self);*/
-	for(i=0;i<f_cr_array->f_num[0];i++){free(f_cr_array->c_charavalue[i]);}
 	copy_f_ctl_cr_array_by_cr_list(cr_clist, f_cr_array);
 /*	c_check_chara_real_array(f_cr_array->f_self);*/
     return;
@@ -53,18 +45,9 @@ void reflesh_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 {
 	int i;
 /*	c_check_chara_real_array(f_cr_array->f_self);*/
-	for(i=0;i<f_cr_array->f_num[0];i++){free(f_cr_array->c_charavalue[i]);};
-	free(f_cr_array->c_charavalue);
 	
 	int num_array = count_chara_real_clist(cr_clist);
 	reflesh_f_ctl_cr_array(num_array, f_cr_array);
-	
-	f_cr_array->c_charavalue = (char **) malloc(num_array * sizeof(char *));
-	if(f_cr_array->c_charavalue == NULL){
-		printf("malloc error for f_cr_array->c_charavalue \n");
-		exit(0);
-	};
-	
 	copy_f_ctl_cr_array_by_cr_list(cr_clist, f_cr_array);
 /*	c_check_chara_real_array(f_cr_array->f_self);*/
     return;
