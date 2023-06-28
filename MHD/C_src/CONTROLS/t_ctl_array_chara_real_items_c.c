@@ -56,27 +56,25 @@ void dealloc_f_ctl_cr_item(struct f_ctl_cr_item *f_cr_item)
 }
 
 
-struct f_ctl_cr_array * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent), 
+struct chara_real_clist * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent)
 {
-	struct f_ctl_cr_array *f_cr_array = (struct f_ctl_cr_array *) malloc(sizeof(struct f_ctl_cr_array));
-	if(f_cr_array == NULL){
-		printf("malloc error for f_ctl_cr_array\n");
-		exit(0);
-	};
-	f_cr_array->f_self =  c_load_self(f_parent);
-	return f_cr_array;
+	struct chara_real_clist *cr_clst = init_chara_real_clist();
+	cr_clst->f_self =  c_load_self(f_parent);
+	int i;
+	char * ctmp = (char *) c_chara_real_array_block_name(cr_clst->f_self);
+	cr_clst->clist_name = strngcopy_from_f(ctmp);
+	for(i=0;i<c_chara_real_array_num(cr_clst->f_self);i++){
+		ctmp = (char *) c_chara_real_array_c_tbl(i, cr_clst->f_self);
+		append_chara_real_clist(strngcopy_from_f(ctmp), 
+							   c_chara_real_array_r_tbl(i, cr_clst->f_self), cr_clst);
+    }
+	return cr_clst;
 }
 
-void reflesh_f_ctl_cr_array(int num_array, struct f_ctl_cr_array *f_cr_array)
+void reflesh_f_ctl_cr_array(int num_array, struct chara_real_clist *cr_clst)
 {
-	c_dealloc_chara_real_array(f_cr_array->f_self);
-	c_alloc_chara_real_array(num_array, f_cr_array->f_self);
-	return;
-}
-
-void dealloc_f_ctl_cr_array(struct f_ctl_cr_array *f_cr_array)
-{
-	f_cr_array->f_self = NULL;
+	c_dealloc_chara_real_array(cr_clst->f_self);
+	c_alloc_chara_real_array(num_array, cr_clst->f_self);
 	return;
 }

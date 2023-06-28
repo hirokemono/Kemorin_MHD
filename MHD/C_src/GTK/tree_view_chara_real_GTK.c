@@ -386,7 +386,7 @@ void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *
     gtk_tree_view_append_column(cr_tree_view, column);
     gtk_tree_view_column_set_title(column, cr_clist->r1_name);
     g_object_set(G_OBJECT(renderer_value), "editable", TRUE, NULL);
-    g_object_set(renderer_value, "width", (gint)70, NULL);
+    g_object_set(renderer_value, "width", (gint)150, NULL);
     gtk_tree_view_column_pack_start(column, renderer_value, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer_value, "text", COLUMN_FORTH, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);

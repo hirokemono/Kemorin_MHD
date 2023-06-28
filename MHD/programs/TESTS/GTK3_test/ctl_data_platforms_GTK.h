@@ -72,15 +72,6 @@ struct c_array_views{
     struct chara_clist *c_array_clist;
 };
 
-struct cr_array_views{
-    int index_cr_array;
-    GtkWidget *cr_array_tree_view;
-    GtkWidget *cr_array_default_view;
-    
-    struct chara_real_clist *cr_array_clist;
-};
-
-
 struct f_platform_control{
 	void * f_self;
 	
@@ -155,10 +146,6 @@ struct f_MHD_sph_resolution_views{
 	GtkWidget *f_radial_layer_list_ctl_tree;
 	GtkWidget *f_med_layer_list_ctl_tree;
 };
-
-struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array);
-void dealloc_cr_array_views(struct cr_array_views *cr_array_vws);
-
 
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
 void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray);

@@ -17,7 +17,7 @@ void init_momentum_views_GTK(struct chara_real_clist *cr_clist,
 
 void init_coefs_views_GTK(struct mhd_model_control_c *model_ctl, struct coefs_view *coef_vws){
     coef_vws->dless_vws = (struct dimless_views *) malloc(sizeof(struct dimless_views));
-    init_dimless_views_GTK(model_ctl->dless_ctl->dimless_list, coef_vws->dless_vws);
+//    init_dimless_views_GTK(model_ctl->dless_ctl->dimless_list, coef_vws->dless_vws);
     
     coef_vws->mom_vws = (struct momentum_coefs_view *) malloc(sizeof(struct momentum_coefs_view));
     init_momentum_views_GTK(model_ctl->eqs_ctl->mom_ctl_c->coef_4_termal_buo_list,

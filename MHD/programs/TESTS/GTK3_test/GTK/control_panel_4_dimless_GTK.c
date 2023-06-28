@@ -30,19 +30,9 @@ struct f_MHD_dimless_control * init_f_MHD_dimless_ctl(void *(*c_load_self)(void 
 	f_dimless_ctl->f_block_name =   (char *) c_MHD_dimless_block_name(f_dimless_ctl->f_self);
 	
 	f_dimless_ctl->f_dimess_names = init_f_ctl_cr_array(c_MHD_dimless_array, f_dimless_ctl->f_self);
-//	f_dimless_ctl->f_dimless_vws =  init_cr_array_views(f_dimless_ctl->f_dimess_names);
 	
     f_dimless_ctl->f_dimless_vws = (struct dimless_views *) malloc(sizeof(struct dimless_views));
 	int i;
-	char *ctmp;
-    f_dimless_ctl->f_dimless_vws->cr_clist = init_chara_real_clist();
-    for(i=0;i<c_chara_real_array_num(f_dimless_ctl->f_dimess_names->f_self);i++){
-		ctmp = c_chara_real_array_c_tbl(i, f_dimless_ctl->f_dimess_names->f_self);
-		append_chara_real_clist(strngcopy_from_f(ctmp), 
-								c_chara_real_array_r_tbl(i, f_dimless_ctl->f_dimess_names->f_self),
-                                f_dimless_ctl->f_dimless_vws->cr_clist);
-    }
-	
 	return f_dimless_ctl;
 };
 
@@ -52,18 +42,16 @@ static void cb_delete_dimless_lists(GtkButton *button, gpointer user_data)
 {
     struct f_MHD_dimless_control *f_dless_ctl = (struct f_MHD_dimless_control *) user_data;
     
-    delete_cr_list_items_GTK(GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view), f_dless_ctl->f_dimless_vws->cr_clist);
-	reflesh_f_ctl_cr_array_by_cr_list(f_dless_ctl->f_dimless_vws->cr_clist,
-									  f_dless_ctl->f_dimess_names);
+    delete_cr_list_items_GTK(GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view), f_dless_ctl->f_dimess_names);
+	reflesh_f_ctl_cr_array_by_cr_list(f_dless_ctl->f_dimess_names);
 }
 
 static void cb_add_dimless_new(GtkButton *button, gpointer user_data)
 {
     struct f_MHD_dimless_control *f_dless_ctl = (struct f_MHD_dimless_control *) user_data;
-    f_dless_ctl->f_dimless_vws->cr_clist->index_bc = add_cr_list_items_GTK(GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view),
-                                                   f_dless_ctl->f_dimless_vws->cr_clist);
-	reflesh_f_ctl_cr_array_by_cr_list(f_dless_ctl->f_dimless_vws->cr_clist,
-									  f_dless_ctl->f_dimess_names);
+    f_dless_ctl->f_dimess_names->index_bc = add_cr_list_items_GTK(GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view),
+                                                   f_dless_ctl->f_dimess_names);
+	reflesh_f_ctl_cr_array_by_cr_list(f_dless_ctl->f_dimess_names);
     return;
 }
 
@@ -76,10 +64,9 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
     if(idx < 0) return;
     
     GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-	f_dless_ctl->f_dimless_vws->cr_clist->index_bc = add_cr_list_from_combobox_GTK(f_dless_ctl->f_dimless_vws->cr_clist->index_bc,
-				path, model_comp, GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view), f_dless_ctl->f_dimless_vws->cr_clist);
-	reflesh_f_ctl_cr_array_by_cr_list(f_dless_ctl->f_dimless_vws->cr_clist,
-									  f_dless_ctl->f_dimess_names);
+	f_dless_ctl->f_dimess_names->index_bc = add_cr_list_from_combobox_GTK(f_dless_ctl->f_dimess_names->index_bc,
+				path, model_comp, GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view), f_dless_ctl->f_dimess_names);
+	reflesh_f_ctl_cr_array_by_cr_list(f_dless_ctl->f_dimess_names);
     return;
 }
 
