@@ -33,7 +33,6 @@ static void copy_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 void update_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 									   struct f_ctl_cr_array *f_cr_array)
 {
-	int i;
 /*	c_check_chara_real_array(f_cr_array->f_self);*/
 	copy_f_ctl_cr_array_by_cr_list(cr_clist, f_cr_array);
 /*	c_check_chara_real_array(f_cr_array->f_self);*/
@@ -43,7 +42,6 @@ void update_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 void reflesh_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 									   struct f_ctl_cr_array *f_cr_array)
 {
-	int i;
 /*	c_check_chara_real_array(f_cr_array->f_self);*/
 	
 	int num_array = count_chara_real_clist(cr_clist);
@@ -59,11 +57,11 @@ void reflesh_f_ctl_cr_array_by_cr_list(struct chara_real_clist *cr_clist,
 void append_default_coefs_label(GtkWidget *label_tree){
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-    int i, j;
+    int i;
     for(i=0;i<NUM_DEFAULT_COEF_DEF;i++){
-        j = append_cr_item_to_tree(i, default_coefs_def[i].flag_name,
-                            default_coefs_def[i].flag_math, 
-                            default_coefs_def[i].value, child_model);
+        append_cr_item_to_tree(i, default_coefs_def[i].flag_name,
+							   default_coefs_def[i].flag_math, 
+							   default_coefs_def[i].value, child_model);
     }
     
 }

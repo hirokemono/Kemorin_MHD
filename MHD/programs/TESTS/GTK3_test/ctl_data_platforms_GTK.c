@@ -78,7 +78,7 @@ struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array)
 	
 	char *ctmp;
     cr_array_vws->cr_array_clist = init_chara_real_clist();
-	for(i=0;i<f_cr_array->f_num[0];i++){
+	for(i=0;i<c_chara_real_array_num(f_cr_array->f_self);i++){
 		ctmp = c_chara_real_array_c_tbl(i, f_cr_array->f_self);
 		append_chara_real_clist(strngcopy_from_f(ctmp), 
 								c_chara_real_array_r_tbl(i, f_cr_array->f_self),
@@ -87,7 +87,7 @@ struct cr_array_views * init_cr_array_views(struct f_ctl_cr_array *f_cr_array)
     
     
     printf("count_chara_clist %d\n", count_chara_real_clist(cr_array_vws->cr_array_clist));
-    for(i=0;i<f_cr_array->f_num[0];i++){
+    for(i=0;i<count_chara_real_clist(cr_array_vws->cr_array_clist);i++){
         printf("item %d %s %le\n", i,
                chara_real_clist_at_index(i, cr_array_vws->cr_array_clist)->c_tbl,
                chara_real_clist_at_index(i, cr_array_vws->cr_array_clist)->r_data);

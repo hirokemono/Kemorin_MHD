@@ -36,7 +36,7 @@ struct f_MHD_dimless_control * init_f_MHD_dimless_ctl(void *(*c_load_self)(void 
 	int i;
 	char *ctmp;
     f_dimless_ctl->f_dimless_vws->cr_clist = init_chara_real_clist();
-    for(i=0;i<f_dimless_ctl->f_dimess_names->f_num[0];i++){
+    for(i=0;i<c_chara_real_array_num(f_dimless_ctl->f_dimess_names->f_self);i++){
 		ctmp = c_chara_real_array_c_tbl(i, f_dimless_ctl->f_dimess_names->f_self);
 		append_chara_real_clist(strngcopy_from_f(ctmp), 
 								c_chara_real_array_r_tbl(i, f_dimless_ctl->f_dimess_names->f_self),

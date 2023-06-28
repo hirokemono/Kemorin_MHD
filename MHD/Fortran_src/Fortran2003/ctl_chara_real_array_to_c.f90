@@ -111,13 +111,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_chara_real_array_num(c_ctl)                &
+      integer(C_int) function c_chara_real_array_num(c_ctl)             &
      &          bind(C, NAME = 'c_chara_real_array_num')
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_cr), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_chara_real_array_num = C_loc(f_ctl%num)
+      c_chara_real_array_num = f_ctl%num
       end function c_chara_real_array_num
 !
 !  ---------------------------------------------------------------------

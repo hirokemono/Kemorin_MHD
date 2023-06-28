@@ -65,14 +65,6 @@ struct f_ctl_cr_array * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent)
 		exit(0);
 	};
 	f_cr_array->f_self =  c_load_self(f_parent);
-	
-	f_cr_array->f_num =         (int *)  c_chara_real_array_num(f_cr_array->f_self);
-	f_cr_array->f_block_name =  (char *) c_chara_real_array_block_name(f_cr_array->f_self);
-	f_cr_array->c_block_name = strngcopy_from_f(f_cr_array->f_block_name);
-	
-	printf("f_cr_array->f_self %p \n", f_cr_array->f_self);
-	printf("f_cr_array->c_block_name %s %d\n", f_cr_array->c_block_name, f_cr_array->f_num[0]);
-	
 	return f_cr_array;
 }
 
@@ -85,11 +77,6 @@ void reflesh_f_ctl_cr_array(int num_array, struct f_ctl_cr_array *f_cr_array)
 
 void dealloc_f_ctl_cr_array(struct f_ctl_cr_array *f_cr_array)
 {
-	int i;
-	free(f_cr_array->c_block_name);
-	
-	f_cr_array->f_num = NULL;
-	f_cr_array->f_block_name = NULL;
 	f_cr_array->f_self = NULL;
 	return;
 }
