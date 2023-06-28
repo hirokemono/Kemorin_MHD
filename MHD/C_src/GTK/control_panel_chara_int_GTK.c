@@ -51,10 +51,13 @@ void cb_check_ci_array_toggle(GtkWidget *widget, gpointer user_data){
 }
 
 static void add_ci_list_items_cb(GtkButton *button, gpointer user_data){
-    GtkWidget *ci_tree_view = GTK_WIDGET(user_data);
+	GtkWidget *ci_tree_view = GTK_WIDGET(user_data);
 	struct chara_int_clist *ci_clist = (struct chara_int_clist *) g_object_get_data(G_OBJECT(button), "ci_clist");
+	printf("ci_clist %p %p \n",ci_clist, ci_tree_view);
 	ci_clist->index_bc = add_ci_list_items_GTK(GTK_TREE_VIEW(ci_tree_view), ci_clist);
+	printf("ci_clist->index_bc %d \n", ci_clist->index_bc);
 	reflesh_f_ctl_ci_array_by_r_list(ci_clist);
+	printf("ci_clist %p \n",ci_clist->f_self);
 };
 
 static void delete_ci_list_items_cb(GtkButton *button, gpointer user_data){
