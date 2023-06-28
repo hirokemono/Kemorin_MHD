@@ -33,10 +33,14 @@ struct chara_int_ctl_list{
 struct chara_int_clist{
 	struct chara_int_ctl_list ci_item_head;
 
+    void *f_self;
+
     int iflag_use;
     char *clist_name;
     char *c1_name;
     char *i1_name;
+    
+    int index_bc;
 };
 
 

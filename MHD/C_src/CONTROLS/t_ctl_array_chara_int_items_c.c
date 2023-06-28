@@ -14,12 +14,6 @@ extern void * c_chara_int_item_iflag(void *f_ctl);
 extern void * c_chara_int_item_charavalue(void *f_ctl);
 extern void * c_chara_int_item_intvalue(void *f_ctl);
 
-extern void * c_chara_int_array_block_name(void *f_ctl);
-extern void * c_chara_int_array_num(void *f_ctl);
-extern void * c_chara_int_array_icou(void *f_ctl);
-extern void * c_chara_int_array_c_tbl(void *f_ctl);
-extern void * c_chara_int_array_i_tbl(void *f_ctl);
-
 struct f_ctl_ci_item * init_f_ctl_ci_item(void *(*c_load_self)(void *f_parent),
 										  void *f_parent)
 {
@@ -61,70 +55,25 @@ void dealloc_f_ctl_ci_item(struct f_ctl_ci_item *f_ci_item)
 }
 
 
-struct f_ctl_ci_array * init_f_ctl_ci_array(void *(*c_load_self)(void *f_parent), 
+struct chara_int_clist * init_f_ctl_ci_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent)
 {
-	struct f_ctl_ci_array *f_ci_array = (struct f_ctl_ci_array *) malloc(sizeof(struct f_ctl_ci_array));
-	if(f_ci_array == NULL){
-		printf("malloc error for f_ctl_ci_array\n");
-		exit(0);
-	};
-	f_ci_array->f_self =  c_load_self(f_parent);
-	
-	f_ci_array->f_num =         (int *)  c_chara_int_array_num(f_ci_array->f_self);
-	f_ci_array->f_icou =        (int *)  c_chara_int_array_icou(f_ci_array->f_self);
-	f_ci_array->f_block_name =  (char *) c_chara_int_array_block_name(f_ci_array->f_self);
-	f_ci_array->c_block_name = strngcopy_from_f(f_ci_array->f_block_name);
-	
-	f_ci_array->f_ictls =       (int *) c_chara_int_array_i_tbl(f_ci_array->f_self);
-	f_ci_array->f_cctls =       (char *) c_chara_int_array_c_tbl(f_ci_array->f_self);
-	
-	f_ci_array->c_charavalue = (char **) malloc(f_ci_array->f_num[0] * sizeof(char *));
-	if(f_ci_array->c_charavalue == NULL){
-		printf("malloc error for f_ci_array->c_charavalue \n");
-		exit(0);
-	};
-	
+	struct chara_int_clist * ci_clist = init_chara_int_clist();
+	ci_clist->f_self =  c_load_self(f_parent);
 	int i;
-	int flen = 255;
-	for(i=0;i<f_ci_array->f_num[0];i++){
-		f_ci_array->c_charavalue[i] = strngcopy_from_f(&f_ci_array->f_cctls[i*flen]);
-	};
-	
-	printf("f_ci_array->f_self %p \n", f_ci_array->f_self);
-	printf("f_ci_array->c_block_name %s %d\n", f_ci_array->c_block_name, f_ci_array->f_num[0]);
-	for(i=0;i<f_ci_array->f_num[0];i++){
-		printf("%d f_ci_array->c_charavalue %s %d\n", i,
-			   f_ci_array->c_charavalue[i], f_ci_array->f_ictls[i]);
-	}
-	
-	return f_ci_array;
+	char * ctmp = (char *) c_chara_int_array_block_name(ci_clist->f_self);
+	ci_clist->clist_name = strngcopy_from_f(ctmp);
+	for(i=0;i<c_chara_int_array_num(ci_clist->f_self);i++){
+		ctmp = (char *) c_chara_int_array_c_tbl(i, ci_clist->f_self);
+		append_chara_int_clist(strngcopy_from_f(ctmp), 
+							   c_chara_int_array_i_tbl(i, ci_clist->f_self), ci_clist);
+    }
+	return ci_clist;
 }
 
-void reflesh_f_ctl_ci_array(int num_array, struct f_ctl_ci_array *f_ci_array)
+void reflesh_f_ctl_ci_array(int num_array, struct chara_int_clist *ci_clist)
 {
-	c_dealloc_chara_int_array(f_ci_array->f_self);
-	f_ci_array->f_num[0] = num_array;
-	f_ci_array->f_icou[0] = num_array;
-	c_alloc_chara_int_array(f_ci_array->f_self);
-	
-	f_ci_array->f_cctls =       (char *) c_chara_int_array_c_tbl(f_ci_array->f_self);
-	f_ci_array->f_ictls =       (int *) c_chara_int_array_i_tbl(f_ci_array->f_self);
-	return;
-}
-
-void dealloc_f_ctl_ci_array(struct f_ctl_ci_array *f_ci_array)
-{
-	int i;
-	for(i=0;i<f_ci_array->f_num[0];i++){free(f_ci_array->c_charavalue[i]);};
-	free(f_ci_array->c_charavalue);
-	free(f_ci_array->c_block_name);
-	
-	f_ci_array->f_ictls = NULL;
-	f_ci_array->f_cctls = NULL;
-	f_ci_array->f_icou = NULL;
-	f_ci_array->f_num = NULL;
-	f_ci_array->f_block_name = NULL;
-	f_ci_array->f_self = NULL;
+	c_dealloc_chara_int_array(ci_clist->f_self);
+	c_alloc_chara_int_array(num_array, ci_clist->f_self);
 	return;
 }

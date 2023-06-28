@@ -25,7 +25,7 @@ struct ci_clist_view{
 
 /* prototypes */
 
-GtkWidget * add_ci_list_box_w_addbottun(struct f_ctl_ci_array *f_ci_array,
-										struct ci_clist_view *ci_vws);
+GtkWidget * add_ci_list_box_w_addbottun(struct chara_int_clist *ci_clist_gtk,
+                                        GtkWidget *ci_tree_view);
 
 #endif /* CONTROL_PANEL_CHARA_INT_GTK_H_ */

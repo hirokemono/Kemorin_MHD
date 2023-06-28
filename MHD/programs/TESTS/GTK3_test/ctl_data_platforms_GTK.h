@@ -136,8 +136,8 @@ struct f_MHD_sph_resolution_control{
 	struct f_ctl_chara_item *f_sph_coef_type_ctl;
 	struct f_ctl_int_item *f_ngrid_elevation_ctl;
 	struct f_ctl_int_item *f_ngrid_azimuth_ctl;
-	struct f_ctl_ir_array *f_radius_ctl;
-	struct f_ctl_ci_array *f_radial_grp_ctl;
+	struct int_real_clist *f_radius_ctl;
+	struct chara_int_clist *f_radial_grp_ctl;
 	struct f_ctl_real_array *f_add_ext_layer_ctl;
 	struct f_ctl_chara_item *f_radial_grid_type_ctl;
 	struct f_ctl_int_item *f_num_fluid_grid_ctl;
@@ -157,7 +157,7 @@ struct f_MHD_sph_resolution_control{
 struct f_MHD_sph_resolution_views{
 	GtkWidget *f_radius_ctl_tree;
 	struct r_clist_view  *f_add_ext_layer_vws;
-	struct ci_clist_view *f_radial_grp_ctl_vws;
+	GtkWidget *f_radial_grp_ctl_tree;
 	GtkWidget *f_radial_layer_list_ctl_tree;
 	GtkWidget *f_med_layer_list_ctl_tree;
 };

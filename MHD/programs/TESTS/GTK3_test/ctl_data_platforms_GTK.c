@@ -265,18 +265,6 @@ struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*
 GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl, 
 									 struct f_MHD_sph_resolution_views *f_spctl_vws, GtkWidget *window){
 	int i;
-	f_spctl_vws->f_radial_grp_ctl_vws = (struct ci_clist_view *) malloc(sizeof(struct ci_clist_view));
-	if(f_spctl_vws->f_radial_grp_ctl_vws == NULL){
-		printf("malloc error for f_radial_grp_ctl_vws\n");
-		exit(0);
-	};
-	f_spctl_vws->f_radial_grp_ctl_vws->ci_clist_gtk = init_chara_int_clist();
-    for(i=0;i<f_spctl->f_radial_grp_ctl->f_num[0];i++){
-		append_chara_int_clist(f_spctl->f_radial_grp_ctl->c_charavalue[i], 
-							  f_spctl->f_radial_grp_ctl->f_ictls[i], 
-							  f_spctl_vws->f_radial_grp_ctl_vws->ci_clist_gtk);
-    }
-	
 	f_spctl_vws->f_add_ext_layer_vws = (struct r_clist_view *) malloc(sizeof(struct r_clist_view));
 	if(f_spctl_vws->f_add_ext_layer_vws == NULL){
 		printf("malloc error for f_add_ext_layer_vws\n");
@@ -302,7 +290,7 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
 	GtkWidget *hbox_d1 = add_ir_list_box_w_addbottun(f_spctl->f_radius_ctl,
 													 f_spctl_vws->f_radius_ctl_tree);
 	GtkWidget *hbox_d2 = add_ci_list_box_w_addbottun(f_spctl->f_radial_grp_ctl,
-													 f_spctl_vws->f_radial_grp_ctl_vws);
+													 f_spctl_vws->f_radial_grp_ctl_tree);
 	GtkWidget *hbox_d3 = real_array_vbox_w_addbottun(f_spctl->f_add_ext_layer_ctl,
 													 f_spctl_vws->f_add_ext_layer_vws);
 	GtkWidget *hbox_c3 = draw_chara_item_entry_hbox(f_spctl->f_radial_grid_type_ctl);

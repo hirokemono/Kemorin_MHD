@@ -7,100 +7,88 @@
 
 #include "control_panel_chara_int_GTK.h"
 
-static void copy_f_ctl_ci_array_by_r_list(struct chara_int_clist *ci_clist,
-										  struct f_ctl_ci_array *f_ci_array)
+static void copy_f_ctl_ci_array_by_r_list(struct chara_int_clist *ci_clist)
 {
 	char *ctmp;
 	int i;
 	
-	for(i=0;i<f_ci_array->f_num[0];i++){
+	for(i=0;i<count_chara_int_clist(ci_clist);i++){
 		ctmp = chara_int_clist_at_index(i, ci_clist)->c_tbl;
-		f_ci_array->c_charavalue[i] = strngcopy_from_f(ctmp);
-	};
-	
-	int flen = lengthchara_f();
-	for(i=0;i<f_ci_array->f_num[0];i++){
-		strngcopy(&f_ci_array->f_cctls[i*flen], f_ci_array->c_charavalue[i]);
-		load_chara_from_c(&f_ci_array->f_cctls[i*flen]);
-		f_ci_array->f_ictls[i] = chara_int_clist_at_index(i, ci_clist)->i_data;
+		c_store_chara_int_array(ci_clist->f_self, i, ctmp,
+								chara_int_clist_at_index(i, ci_clist)->i_data);
 	}
     return;
 }
 
-static void update_f_ctl_ci_array_by_r_list(struct chara_int_clist *ci_clist,
-											struct f_ctl_ci_array *f_ci_array)
+static void update_f_ctl_ci_array_by_r_list(struct chara_int_clist *ci_clist)
 {
-/*	c_check_chara_int_array(f_ci_array->f_self);*/
-	copy_f_ctl_ci_array_by_r_list(ci_clist, f_ci_array);
-/*	c_check_chara_int_array(f_ci_array->f_self);*/
+/*	c_check_chara_int_array(ci_clist->f_self);*/
+	copy_f_ctl_ci_array_by_r_list(ci_clist);
+/*	c_check_chara_int_array(ci_clist->f_self);*/
     return;
 }
-static void reflesh_f_ctl_ci_array_by_r_list(struct chara_int_clist *ci_clist,
-											 struct f_ctl_ci_array *f_ci_array)
+static void reflesh_f_ctl_ci_array_by_r_list(struct chara_int_clist *ci_clist)
 {
-/*	c_check_chara_int_array(f_ci_array->f_self);*/
+/*	c_check_chara_int_array(ci_clist->f_self);*/
 	int num_array = count_chara_int_clist(ci_clist);
-	reflesh_f_ctl_ci_array(num_array, f_ci_array);
-	copy_f_ctl_ci_array_by_r_list(ci_clist, f_ci_array);
-/*	c_check_chara_int_array(f_ci_array->f_self);*/
+	reflesh_f_ctl_ci_array(num_array, ci_clist);
+	copy_f_ctl_ci_array_by_r_list(ci_clist);
+/*	c_check_chara_int_array(ci_clist->f_self);*/
     return;
 }
 
 
 void cb_check_ci_array_toggle(GtkWidget *widget, gpointer user_data){
 	GtkToggleButton *toggle = GTK_TOGGLE_BUTTON(widget);
-	struct ci_clist_view *ci_vws = (struct ci_clist_view *) g_object_get_data(G_OBJECT(widget), "ci_clist_view");
-	struct f_ctl_ci_array *f_ci_array = (struct f_ctl_ci_array *) g_object_get_data(G_OBJECT(widget), "f_ci_array");
-	
+	struct chara_int_clist *ci_clist = (struct chara_int_clist *) g_object_get_data(G_OBJECT(widget), "ci_clist");
 	if(gtk_toggle_button_get_active(toggle) == TRUE){
-		reflesh_f_ctl_ci_array(count_chara_int_clist(ci_vws->ci_clist_gtk), f_ci_array);
-		copy_f_ctl_ci_array_by_r_list(ci_vws->ci_clist_gtk, f_ci_array);
+		reflesh_f_ctl_ci_array(count_chara_int_clist(ci_clist), ci_clist);
+		copy_f_ctl_ci_array_by_r_list(ci_clist);
 	}else{
-		reflesh_f_ctl_ci_array(0, f_ci_array);
+		reflesh_f_ctl_ci_array(0, ci_clist);
 	};
 	return;
 }
 
 static void add_ci_list_items_cb(GtkButton *button, gpointer user_data){
-    struct ci_clist_view *ci_vws = (struct ci_clist_view *) user_data;
-	struct f_ctl_ci_array *f_ci_array = (struct f_ctl_ci_array *) g_object_get_data(G_OBJECT(button), "f_ci_array");
-	ci_vws->index_bc = add_ci_list_items_GTK(GTK_TREE_VIEW(ci_vws->ci_tree_view), ci_vws->ci_clist_gtk);
-	reflesh_f_ctl_ci_array_by_r_list(ci_vws->ci_clist_gtk, f_ci_array);
+    GtkWidget *ci_tree_view = GTK_WIDGET(user_data);
+	struct chara_int_clist *ci_clist = (struct chara_int_clist *) g_object_get_data(G_OBJECT(button), "ci_clist");
+	ci_clist->index_bc = add_ci_list_items_GTK(GTK_TREE_VIEW(ci_tree_view), ci_clist);
+	reflesh_f_ctl_ci_array_by_r_list(ci_clist);
 };
 
 static void delete_ci_list_items_cb(GtkButton *button, gpointer user_data){
-    struct ci_clist_view *ci_vws = (struct ci_clist_view *) user_data;
-	struct f_ctl_ci_array *f_ci_array = (struct f_ctl_ci_array *) g_object_get_data(G_OBJECT(button), "f_ci_array");
-	delete_ci_list_items_GTK(GTK_TREE_VIEW(ci_vws->ci_tree_view), ci_vws->ci_clist_gtk);
-	reflesh_f_ctl_ci_array_by_r_list(ci_vws->ci_clist_gtk, f_ci_array);
+    GtkWidget *ci_tree_view = GTK_WIDGET(user_data);
+	struct chara_int_clist *ci_clist = (struct chara_int_clist *) g_object_get_data(G_OBJECT(button), "ci_clist");
+	delete_ci_list_items_GTK(GTK_TREE_VIEW(ci_tree_view), ci_clist);
+	reflesh_f_ctl_ci_array_by_r_list(ci_clist);
 };
 
 
 static void ci_tree_value1_edited_cb(GtkCellRenderer *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
-    struct ci_clist_view *ci_vws = (struct ci_clist_view *) user_data;
-	struct f_ctl_ci_array *f_ci_array = (struct f_ctl_ci_array *) g_object_get_data(G_OBJECT(cell), "f_ci_array");
-    ci_tree_name_edited(path_str, new_text, GTK_TREE_VIEW(ci_vws->ci_tree_view), ci_vws->ci_clist_gtk);
-	update_f_ctl_ci_array_by_r_list(ci_vws->ci_clist_gtk, f_ci_array);
+    GtkWidget *ci_tree_view = GTK_WIDGET(user_data);
+	struct chara_int_clist *ci_clist = (struct chara_int_clist *) g_object_get_data(G_OBJECT(cell), "ci_clist");
+    ci_tree_name_edited(path_str, new_text, GTK_TREE_VIEW(ci_tree_view), ci_clist);
+	update_f_ctl_ci_array_by_r_list(ci_clist);
 };
 
 static void ci_tree_value2_edited_cb(GtkCellRenderer *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data)
 {
-    struct ci_clist_view *ci_vws = (struct ci_clist_view *) user_data;
-	struct f_ctl_ci_array *f_ci_array = (struct f_ctl_ci_array *) g_object_get_data(G_OBJECT(cell), "f_ci_array");
-    ci_tree_value_edited(path_str, new_text, GTK_TREE_VIEW(ci_vws->ci_tree_view), ci_vws->ci_clist_gtk);
-	update_f_ctl_ci_array_by_r_list(ci_vws->ci_clist_gtk, f_ci_array);
+    GtkWidget *ci_tree_view = GTK_WIDGET(user_data);
+	struct chara_int_clist *ci_clist = (struct chara_int_clist *) g_object_get_data(G_OBJECT(cell), "ci_clist");
+    ci_tree_value_edited(path_str, new_text, GTK_TREE_VIEW(ci_tree_view), ci_clist);
+	update_f_ctl_ci_array_by_r_list(ci_clist);
 };
 
 
-GtkWidget *hbox_with_ci_array_checkbox(struct f_ctl_ci_array *f_ci_array, struct ci_clist_view *ci_vws){
+GtkWidget *hbox_with_ci_array_checkbox(struct chara_int_clist *ci_clist){
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *checkbox = gtk_check_button_new();
-	g_object_set_data(G_OBJECT(checkbox), "ci_clist_view", (gpointer) ci_vws);
-	g_object_set_data(G_OBJECT(checkbox), "f_ci_array", (gpointer) f_ci_array);
+	g_object_set_data(G_OBJECT(checkbox), "ci_clist", (gpointer) ci_clist);
 	
-	if(f_ci_array->f_num[0] == 0){
+	if(count_chara_int_clist(ci_clist) == 0){
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), FALSE);
 	} else {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), TRUE);
@@ -114,55 +102,55 @@ GtkWidget *hbox_with_ci_array_checkbox(struct f_ctl_ci_array *f_ci_array, struct
 }
 
 
-static void init_ci_tree_view(struct f_ctl_ci_array *f_ci_array, struct ci_clist_view *ci_vws){
+static void init_ci_tree_view(struct chara_int_clist *ci_clist, GtkWidget *ci_tree_view){
 	GtkCellRenderer *renderer_text;
 	GtkCellRenderer *renderer_value;
 	
-	ci_vws->ci_tree_view = gtk_tree_view_new();
 	renderer_text =  gtk_cell_renderer_text_new();
 	renderer_value = gtk_cell_renderer_text_new();
-	g_object_set_data(G_OBJECT(renderer_text), "f_ci_array", (gpointer) f_ci_array);
-	g_object_set_data(G_OBJECT(renderer_value), "f_ci_array", (gpointer) f_ci_array);
+	g_object_set_data(G_OBJECT(renderer_text), "ci_clist", (gpointer) ci_clist);
+	g_object_set_data(G_OBJECT(renderer_value), "ci_clist", (gpointer) ci_clist);
 	
 	g_signal_connect(G_OBJECT(renderer_text), "edited", 
-					 G_CALLBACK(ci_tree_value1_edited_cb), (gpointer) ci_vws);
+					 G_CALLBACK(ci_tree_value1_edited_cb), (gpointer) ci_tree_view);
 	g_signal_connect(G_OBJECT(renderer_value), "edited", 
-					 G_CALLBACK(ci_tree_value2_edited_cb), (gpointer) ci_vws);
+					 G_CALLBACK(ci_tree_value2_edited_cb), (gpointer) ci_tree_view);
 	
-	create_text_int_tree_view(ci_vws->ci_clist_gtk, GTK_TREE_VIEW(ci_vws->ci_tree_view), 
+	create_text_int_tree_view(ci_clist, GTK_TREE_VIEW(ci_tree_view), 
 							  renderer_text, renderer_value);
 	
-	ci_vws->index_bc = append_ci_list_from_ctl(ci_vws->index_bc,
-				&ci_vws->ci_clist_gtk->ci_item_head, GTK_TREE_VIEW(ci_vws->ci_tree_view));
+	ci_clist->index_bc = append_ci_list_from_ctl(ci_clist->index_bc, &ci_clist->ci_item_head, 
+												 GTK_TREE_VIEW(ci_tree_view));
 };
 
-GtkWidget *  add_ci_list_box_w_addbottun(struct f_ctl_ci_array *f_ci_array, 
-										 struct ci_clist_view *ci_vws){
+GtkWidget * add_ci_list_box_w_addbottun(struct chara_int_clist *ci_clist,
+                                        GtkWidget *ci_tree_view){
 	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	init_ci_tree_view(f_ci_array, ci_vws);
+	ci_tree_view = gtk_tree_view_new();
+	init_ci_tree_view(ci_clist, ci_tree_view);
 	
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
-	g_object_set_data(G_OBJECT(button_add), "f_ci_array", (gpointer) f_ci_array);
-	g_object_set_data(G_OBJECT(button_delete), "f_ci_array", (gpointer) f_ci_array);
+	g_object_set_data(G_OBJECT(button_add), "ci_clist", (gpointer) ci_clist);
+	g_object_set_data(G_OBJECT(button_delete), "ci_clist", (gpointer) ci_clist);
 	
-	GtkWidget * hbox1 = hbox_with_ci_array_checkbox(f_ci_array, ci_vws);
+	GtkWidget * hbox1 = hbox_with_ci_array_checkbox(ci_clist);
 	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox1, FALSE, TRUE, 0);
 	
 	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	
-	char * ctmp = strngcopy_from_f(f_ci_array->f_block_name);
+	char * ctmp = strngcopy_from_f(c_chara_int_array_block_name(ci_clist->f_self));
 	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
-	GtkWidget *expander = ci_list_box_expander(ctmp, GTK_TREE_VIEW(ci_vws->ci_tree_view), 
+	GtkWidget *expander = ci_list_box_expander(ctmp, GTK_TREE_VIEW(ci_tree_view), 
 											   button_add, button_delete);
 	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox0, FALSE, TRUE, 0);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(add_ci_list_items_cb), (gpointer) ci_vws);
+                     G_CALLBACK(add_ci_list_items_cb), (gpointer) ci_tree_view);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(delete_ci_list_items_cb), (gpointer) ci_vws);
+                     G_CALLBACK(delete_ci_list_items_cb), (gpointer) ci_tree_view);
 	return vbox;
 };
 
