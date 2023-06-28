@@ -60,7 +60,7 @@ static void cb_delete_dimless_lists(GtkButton *button, gpointer user_data)
 static void cb_add_dimless_new(GtkButton *button, gpointer user_data)
 {
     struct f_MHD_dimless_control *f_dless_ctl = (struct f_MHD_dimless_control *) user_data;
-    f_dless_ctl->f_dimless_vws->index_dless = add_cr_list_items_GTK(GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view),
+    f_dless_ctl->f_dimless_vws->cr_clist->index_bc = add_cr_list_items_GTK(GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view),
                                                    f_dless_ctl->f_dimless_vws->cr_clist);
 	reflesh_f_ctl_cr_array_by_cr_list(f_dless_ctl->f_dimless_vws->cr_clist,
 									  f_dless_ctl->f_dimess_names);
@@ -76,7 +76,7 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
     if(idx < 0) return;
     
     GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-	f_dless_ctl->f_dimless_vws->index_dless = add_cr_list_from_combobox_GTK(f_dless_ctl->f_dimless_vws->index_dless, 
+	f_dless_ctl->f_dimless_vws->cr_clist->index_bc = add_cr_list_from_combobox_GTK(f_dless_ctl->f_dimless_vws->cr_clist->index_bc,
 				path, model_comp, GTK_TREE_VIEW(f_dless_ctl->f_dimless_vws->dimless_tree_view), f_dless_ctl->f_dimless_vws->cr_clist);
 	reflesh_f_ctl_cr_array_by_cr_list(f_dless_ctl->f_dimless_vws->cr_clist,
 									  f_dless_ctl->f_dimess_names);

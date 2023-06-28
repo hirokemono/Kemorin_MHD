@@ -107,7 +107,7 @@ static void create_dimless_tree_view(struct f_ctl_cr_array *f_cr_array, struct d
 
 void init_dimless_tree_view(struct f_ctl_cr_array *f_cr_array, struct dimless_views *dless_vws){
     create_dimless_tree_view(f_cr_array, dless_vws);
-    dless_vws->index_dless = append_cr_list_from_ctl(dless_vws->index_dless,
+    dless_vws->cr_clist->index_bc = append_cr_list_from_ctl(dless_vws->cr_clist->index_bc,
 				&dless_vws->cr_clist->cr_item_head, GTK_TREE_VIEW(dless_vws->dimless_tree_view));
 }
 

@@ -17,11 +17,8 @@
 #include "tree_view_chara_real_GTK.h"
 
 struct dimless_views{
-    int index_dless;
     GtkWidget *dimless_tree_view;
-    
     GtkWidget *default_dless_view;
-    
     struct chara_real_clist *cr_clist;
 };
 
