@@ -189,13 +189,6 @@ extern void * c_SGS_model_s3df_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_num_sph_filter_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
-extern void * c_FEM_mesh_FILE_ctl_block_name(void *f_Fmesh_ctl);
-extern void * c_FEM_mesh_FILE_ctl_iflag(void *f_Fmesh_ctl);
-extern void * c_FEM_mesh_mem_conserve_ctl(void *f_Fmesh_ctl);
-extern void * c_FEM_mesh_output_switch(void *f_Fmesh_ctl);
-extern void * c_FEM_surface_output_switch(void *f_Fmesh_ctl);
-extern void * c_FEM_viewer_output_switch(void *f_Fmesh_ctl);
-
 
 struct f_MHD_forces_control{
 	void * f_self;
@@ -279,20 +272,6 @@ struct f_MHD_equations_control{
 	struct f_MHD_induct_eq_control * f_induct_ctl;
 	struct f_MHD_heat_eq_control *   f_heat_ctl;
 	struct f_MHD_heat_eq_control *   f_comp_ctl;
-};
-
-struct f_FEM_mesh_FILE_ctl{
-	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	void *f_memory_conservation_ctl;
-	void *f_FEM_mesh_output_switch;
-	void *f_FEM_surface_output_switch;
-	void *f_FEM_viewer_output_switch;
 };
 
 struct f_MHD_sph_shell_control{
@@ -674,29 +653,6 @@ struct f_MHD_equations_control * init_f_MHD_equations_ctl(void *(*c_load_self)(v
 	return f_eqs_ctl;
 }
 
-
-struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self)(void *f_parent), 
-													  void *f_parent)
-{
-	struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl 
-			= (struct f_FEM_mesh_FILE_ctl *) malloc(sizeof(struct f_FEM_mesh_FILE_ctl));
-	if(f_Fmesh_ctl == NULL){
-		printf("malloc error for f_Fmesh_ctl\n");
-		exit(0);
-	};
-	
-	f_Fmesh_ctl->f_self =  c_load_self(f_parent);
-	
-	f_Fmesh_ctl->f_iflag =        (int *) c_FEM_mesh_FILE_ctl_iflag(f_Fmesh_ctl->f_self);
-	f_Fmesh_ctl->f_block_name =   (char *) c_FEM_mesh_FILE_ctl_block_name(f_Fmesh_ctl->f_self);
-	f_Fmesh_ctl->c_block_name = strngcopy_from_f(f_Fmesh_ctl->f_block_name);
-	
-	f_Fmesh_ctl->f_memory_conservation_ctl =   c_FEM_mesh_mem_conserve_ctl(f_Fmesh_ctl->f_self);
-	f_Fmesh_ctl->f_FEM_mesh_output_switch =    c_FEM_mesh_output_switch(f_Fmesh_ctl->f_self);
-	f_Fmesh_ctl->f_FEM_surface_output_switch = c_FEM_surface_output_switch(f_Fmesh_ctl->f_self);
-	f_Fmesh_ctl->f_FEM_viewer_output_switch =  c_FEM_viewer_output_switch(f_Fmesh_ctl->f_self);
-	return f_Fmesh_ctl;
-}
 
 struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(void *f_parent), 
 														  void *f_parent)
@@ -1342,25 +1298,21 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	gtk_box_pack_start(GTK_BOX(vbox_plt), vbox_plt_n, FALSE, FALSE, 0);
 	*/
 	
-	GtkWidget *vbox_sph_shell = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *vbox_sph_FEM_output = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *expand_sph_FEM_output = draw_control_block(f_MHD_ctl->f_psph_ctl->f_Fmesh_ctl->c_block_name, 
-														  f_MHD_ctl->f_psph_ctl->f_Fmesh_ctl->f_iflag,
-														  560, 500, window, vbox_sph_FEM_output);
-	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), expand_sph_FEM_output, FALSE, FALSE, 0);
-	
 	f_MHD_vws = (struct f_MHD_tree_views *) malloc(sizeof(struct f_MHD_tree_views));
 	if(f_MHD_vws == NULL){
 		printf("malloc error for f_MHD_tree_views\n");
 		exit(0);
 	};
 	
+	GtkWidget * vbox_sph_FEM_output = draw_sph_FEM_mesh_file_vbox(f_MHD_ctl->f_psph_ctl->f_Fmesh_ctl,
+																  window);
 	GtkWidget * vbox_sph_subdomain = draw_sph_subdomain_vbox(f_MHD_ctl->f_psph_ctl->f_sdctl,
 															 f_MHD_vws->f_sdctl_vws, window);
-	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_subdomain, FALSE, FALSE, 0);
-	
 	GtkWidget * vbox_sph_resolution = draw_sph_resolution_vbox(f_MHD_ctl->f_psph_ctl->f_spctl,
 															   f_MHD_vws->f_spctl_vws, window);
+	GtkWidget *vbox_sph_shell = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_FEM_output, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_subdomain, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_resolution, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_sph_shell = draw_control_block_w_file_switch(f_MHD_ctl->f_psph_ctl->c_block_name, 

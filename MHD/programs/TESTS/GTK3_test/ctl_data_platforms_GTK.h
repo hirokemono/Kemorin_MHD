@@ -139,6 +139,20 @@ struct f_MHD_sph_resolution_control{
 	struct int2_clist *f_med_layer_list_ctl;
 };
 
+struct f_FEM_mesh_FILE_ctl{
+	void * f_self;
+	
+	char * f_block_name;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_FEM_mesh_output_switch;
+	struct f_ctl_chara_item *f_FEM_surface_output_switch;
+	struct f_ctl_chara_item *f_FEM_viewer_output_switch;
+	struct f_ctl_chara_item *f_memory_conservation_ctl;
+};
+
 struct f_MHD_sph_resolution_views{
 	GtkWidget *f_radius_ctl_tree;
 	GtkWidget *f_add_ext_layer_tree;
@@ -194,10 +208,14 @@ struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*
 																		void *f_parent);
 struct f_MHD_sph_subdomain_control * init_f_MHD_sph_domain_control(void *(*c_load_self)(void *f_parent), 
 																   void *f_parent);
+struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self)(void *f_parent), 
+													  void *f_parent);
+
 GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl,
 									 struct f_MHD_sph_resolution_views *f_spctl_vws, GtkWidget *window);
 GtkWidget * draw_sph_subdomain_vbox(struct f_MHD_sph_subdomain_control *f_sdctl, 
 									struct f_MHD_sph_subdomain_views *f_sdctl_vws, GtkWidget *window);
+GtkWidget * draw_sph_FEM_mesh_file_vbox(struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl, GtkWidget *window);
 
 
 #endif    /* CTL_DATA_PLATFORMS_GTK_ */

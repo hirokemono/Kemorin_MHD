@@ -54,6 +54,13 @@ extern void * c_sph_ndomain_sph_grid_ctl(void *f_sdctl);
 extern void * c_sph_ndomain_legendre_ctl(void *f_sdctl);
 extern void * c_sph_ndomain_spectr_ctl(void *f_sdctl);
 
+extern void * c_FEM_mesh_FILE_ctl_block_name(void *f_Fmesh_ctl);
+extern void * c_FEM_mesh_FILE_ctl_iflag(void *f_Fmesh_ctl);
+extern void * c_FEM_mesh_mem_conserve_ctl(void *f_Fmesh_ctl);
+extern void * c_FEM_mesh_output_switch(void *f_Fmesh_ctl);
+extern void * c_FEM_surface_output_switch(void *f_Fmesh_ctl);
+extern void * c_FEM_viewer_output_switch(void *f_Fmesh_ctl);
+
 
 struct c_array_views * init_c_array_views(struct f_ctl_chara_array *f_carray)
 {
@@ -280,6 +287,29 @@ struct f_MHD_sph_subdomain_control * init_f_MHD_sph_domain_control(void *(*c_loa
 	return f_sdctl;
 }
 
+struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self)(void *f_parent), 
+													  void *f_parent)
+{
+	struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl 
+			= (struct f_FEM_mesh_FILE_ctl *) malloc(sizeof(struct f_FEM_mesh_FILE_ctl));
+	if(f_Fmesh_ctl == NULL){
+		printf("malloc error for f_Fmesh_ctl\n");
+		exit(0);
+	};
+	
+	f_Fmesh_ctl->f_self =  c_load_self(f_parent);
+	
+	f_Fmesh_ctl->f_iflag =        (int *) c_FEM_mesh_FILE_ctl_iflag(f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->f_block_name =   (char *) c_FEM_mesh_FILE_ctl_block_name(f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->c_block_name = strngcopy_from_f(f_Fmesh_ctl->f_block_name);
+	
+	f_Fmesh_ctl->f_memory_conservation_ctl =   init_f_ctl_chara_item(c_FEM_mesh_mem_conserve_ctl, f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->f_FEM_mesh_output_switch =    init_f_ctl_chara_item(c_FEM_mesh_output_switch, f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->f_FEM_surface_output_switch = init_f_ctl_chara_item(c_FEM_surface_output_switch, f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->f_FEM_viewer_output_switch =  init_f_ctl_chara_item(c_FEM_viewer_output_switch, f_Fmesh_ctl->f_self);
+	return f_Fmesh_ctl;
+}
+
 GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spctl, 
 									 struct f_MHD_sph_resolution_views *f_spctl_vws, GtkWidget *window){
 	GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -390,9 +420,8 @@ GtkWidget * draw_sph_subdomain_vbox(struct f_MHD_sph_subdomain_control *f_sdctl,
 	
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d1, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d2, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d3, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c1, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d3, FALSE, FALSE, 0);
+	
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c1, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c2, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c3, FALSE, FALSE, 0);
@@ -403,6 +432,27 @@ GtkWidget * draw_sph_subdomain_vbox(struct f_MHD_sph_subdomain_control *f_sdctl,
 	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c8, FALSE, FALSE, 0);
 	
 	GtkWidget *expand = draw_control_block(f_sdctl->c_block_name, f_sdctl->f_iflag,
+										   480, 320, window, vbox_sph);
+    gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
+	return vbox_out;
+};
+
+GtkWidget * draw_sph_FEM_mesh_file_vbox(struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl, GtkWidget *window){
+	GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	
+	GtkWidget *hbox_c1 = draw_chara_switch_entry_hbox(f_Fmesh_ctl->f_FEM_mesh_output_switch);
+	GtkWidget *hbox_c2 = draw_chara_switch_entry_hbox(f_Fmesh_ctl->f_FEM_viewer_output_switch);
+	GtkWidget *hbox_c3 = draw_chara_switch_entry_hbox(f_Fmesh_ctl->f_FEM_surface_output_switch);
+	GtkWidget *hbox_c4 = draw_chara_switch_entry_hbox(f_Fmesh_ctl->f_memory_conservation_ctl);
+	
+	
+	GtkWidget *vbox_sph = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c3, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c4, FALSE, FALSE, 0);
+	
+	GtkWidget *expand = draw_control_block(f_Fmesh_ctl->c_block_name, f_Fmesh_ctl->f_iflag,
 										   480, 320, window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;
