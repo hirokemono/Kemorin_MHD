@@ -27,7 +27,8 @@ struct f_MHD_dimless_control * init_f_MHD_dimless_ctl(void *(*c_load_self)(void 
 	f_dimless_ctl->f_self =  c_load_self(f_parent);
 	
 	f_dimless_ctl->f_iflag =        (int *)  c_MHD_dimless_iflag(f_dimless_ctl->f_self);
-	f_dimless_ctl->f_block_name =   (char *) c_MHD_dimless_block_name(f_dimless_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_dimless_block_name(f_dimless_ctl->f_self);
+	f_dimless_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_dimless_ctl->f_dimess_names = init_f_ctl_cr_array(c_MHD_dimless_array, f_dimless_ctl->f_self);
 	
@@ -95,7 +96,7 @@ GtkWidget * add_dimless_selection_box(struct f_MHD_dimless_control *f_dless_ctl,
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
 					 G_CALLBACK(cb_delete_dimless_lists), (gpointer) f_dless_ctl);
 	
-	GtkWidget *expand_MHD_dimless = draw_control_block(strngcopy_from_f(f_dless_ctl->f_block_name),
+	GtkWidget *expand_MHD_dimless = draw_control_block(strngcopy_from_f(f_dless_ctl->c_block_name),
 													   f_dless_ctl->f_iflag,
 													   400, 240, window, vbox_dimless);
 	return expand_MHD_dimless;

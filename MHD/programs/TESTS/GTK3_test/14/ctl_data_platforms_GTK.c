@@ -21,15 +21,15 @@ struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_par
 	};
 	f_citem->f_self =  c_load_self(f_parent);
 	
-	f_citem->f_block_name =  (char *)  c_chara_item_block_name(f_citem->f_self);
+	char *f_block_name =  (char *)  c_chara_item_block_name(f_citem->f_self);
 	f_citem->f_iflag =        (int *)   c_chara_item_iflag(f_citem->f_self);
 	f_citem->f_charavalue =  (char *)  c_chara_item_charavalue(f_citem->f_self);
-	c_chara_item_clength(f_citem->f_block_name, f_citem->f_namelength);
+	c_chara_item_clength(f_block_name, f_citem->f_namelength);
 	c_chara_item_clength(f_citem->f_charavalue, f_citem->f_clength);
 	
 	f_citem->c_block_name = alloc_string((long) f_citem->f_namelength[0]);
 	strngcopy_w_length(f_citem->c_block_name, f_citem->f_namelength[0], 
-					   f_citem->f_block_name);
+					   f_block_name);
 	f_citem->c_charavalue = alloc_string((long) f_citem->f_clength[0]);
 	strngcopy_w_length(f_citem->c_charavalue, f_citem->f_clength[0], 
 					   f_citem->f_charavalue);
@@ -48,14 +48,14 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 		exit(0);
 	};
 	f_plt->f_self =  c_load_self(f_parent);
-	f_plt->f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
+	char *f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
 	f_plt->f_iflag =       (int *)  c_plt_iflag(f_plt->f_self);
-	c_chara_item_clength(f_plt->f_block_name, f_plt->f_namelength);
+	c_chara_item_clength(f_block_name, f_plt->f_namelength);
 	
 	f_plt->c_block_name = alloc_string((long) f_plt->f_namelength[0]);
 	strngcopy_w_length(f_plt->c_block_name, f_plt->f_namelength[0], 
-					   f_plt->f_block_name);
-	printf("f_plt->f_block_name %d %s\n", f_plt->f_namelength[0], f_plt->f_block_name);
+					   f_block_name);
+	printf("f_block_name %d %s\n", f_plt->f_namelength[0], f_block_name);
 	printf("f_plt->c_block_name %s\n", f_plt->c_block_name);
 	
 	

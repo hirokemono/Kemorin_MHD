@@ -186,9 +186,7 @@ extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
 struct f_MHD_forces_control{
 	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
+    int * f_iflag;
 	
 	char * c_block_name;
 	
@@ -198,8 +196,6 @@ struct f_MHD_forces_control{
 
 struct f_MHD_mom_eq_control{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -222,8 +218,6 @@ struct f_MHD_mom_eq_control{
 
 struct f_MHD_induct_eq_control{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -240,8 +234,6 @@ struct f_MHD_induct_eq_control{
 
 struct f_MHD_heat_eq_control{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -256,8 +248,6 @@ struct f_MHD_heat_eq_control{
 
 struct f_MHD_equations_control{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -270,8 +260,6 @@ struct f_MHD_equations_control{
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -315,8 +303,6 @@ struct f_MHD_SGS_model_control{
 
 struct f_MHD_model_control{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -340,8 +326,6 @@ struct f_MHD_model_control{
 
 struct f_MHD_control_ctls{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -353,8 +337,6 @@ struct f_MHD_control_ctls{
 
 struct f_MHD_sph_monitor_ctls{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -385,8 +367,6 @@ struct f_MHD_sph_monitor_ctls{
 
 struct f_MHD_viz_ctls{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -403,8 +383,6 @@ struct f_MHD_viz_ctls{
 
 struct f_MHD_zm_ctls{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -418,8 +396,6 @@ struct f_MHD_zm_ctls{
 
 struct f_MHD_node_monitor_ctl{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -433,8 +409,6 @@ struct f_MHD_node_monitor_ctl{
 struct f_MHD_control{
 	void * f_self;
 	void * f_addition;
-	
-	char * f_block_name;
 	int * f_iflag;
 	
 	char * c_block_name;
@@ -515,8 +489,8 @@ struct f_MHD_forces_control * init_f_MHD_forces_ctl(void *(*c_load_self)(void *f
 	f_frc_ctl->f_self =  c_load_self(f_parent);
 	
 	f_frc_ctl->f_iflag =        (int *)  c_MHD_forces_iflag(f_frc_ctl->f_self);
-	f_frc_ctl->f_block_name =   (char *) c_MHD_forces_block_name(f_frc_ctl->f_self);
-	f_frc_ctl->c_block_name = strngcopy_from_f(f_frc_ctl->f_block_name);
+	char *f_block_name =   (char *) c_MHD_forces_block_name(f_frc_ctl->f_self);
+	f_frc_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_frc_ctl->f_force_names = init_f_ctl_chara_array(c_MHD_forces_array, f_frc_ctl->f_self);
 	f_frc_ctl->f_force_vws =   init_c_array_views(f_frc_ctl->f_force_names);
@@ -536,9 +510,9 @@ struct f_MHD_mom_eq_control * init_f_MHD_mom_eq_ctl(void *(*c_load_self)(void *f
 	
 	f_mom_eq_ctl->f_self =  c_load_self(f_parent);
 	
-	f_mom_eq_ctl->f_block_name =   (char *) c_MHD_momentum_eq_block_name(f_mom_eq_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_momentum_eq_block_name(f_mom_eq_ctl->f_self);
 	f_mom_eq_ctl->f_iflag =        (int *)  c_MHD_momentum_eq_iflag(f_mom_eq_ctl->f_self);
-	f_mom_eq_ctl->c_block_name = strngcopy_from_f(f_mom_eq_ctl->f_block_name);
+	f_mom_eq_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_mom_eq_ctl->f_coef_4_viscous = init_f_ctl_chara_array(c_MHD_momentum_eq_viscous, f_mom_eq_ctl->f_self);
 	f_mom_eq_ctl->vws_coef_4_viscous =   init_c_array_views(f_mom_eq_ctl->f_coef_4_viscous);
@@ -571,8 +545,8 @@ struct f_MHD_induct_eq_control * init_f_MHD_induction_eq_ctl(void *(*c_load_self
 	f_induct_ctl->f_self =  c_load_self(f_parent);
 	
 	f_induct_ctl->f_iflag =        (int *)  c_MHD_induction_iflag(f_induct_ctl->f_self);
-	f_induct_ctl->f_block_name =   (char *) c_MHD_induction_block_name(f_induct_ctl->f_self);
-	f_induct_ctl->c_block_name = strngcopy_from_f(f_induct_ctl->f_block_name);
+	char *f_block_name =   (char *) c_MHD_induction_block_name(f_induct_ctl->f_self);
+	f_induct_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_induct_ctl->f_coef_4_magne_evo = init_f_ctl_chara_array(c_MHD_induction_evo, f_induct_ctl->f_self);
 	f_induct_ctl->vws_coef_4_magne_evo =   init_c_array_views(f_induct_ctl->f_coef_4_magne_evo);
@@ -599,8 +573,8 @@ struct f_MHD_heat_eq_control * init_f_MHD_heat_eq_ctl(void *(*c_load_self)(void 
 	f_heat_ctl->f_self =  c_load_self(f_parent);
 	
 	f_heat_ctl->f_iflag =        (int *)  c_MHD_heat_iflag(f_heat_ctl->f_self);
-	f_heat_ctl->f_block_name =   (char *) c_MHD_heat_block_name(f_heat_ctl->f_self);
-	f_heat_ctl->c_block_name = strngcopy_from_f(f_heat_ctl->f_block_name);
+	char *f_block_name =   (char *) c_MHD_heat_block_name(f_heat_ctl->f_self);
+	f_heat_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_heat_ctl->f_coef_4_adv_flux = init_f_ctl_chara_array(c_MHD_heat_advect, f_heat_ctl->f_self);
 	f_heat_ctl->vws_coef_4_adv_flux =   init_c_array_views(f_heat_ctl->f_coef_4_adv_flux);
@@ -624,8 +598,8 @@ struct f_MHD_equations_control * init_f_MHD_equations_ctl(void *(*c_load_self)(v
 	f_eqs_ctl->f_self =  c_load_self(f_parent);
 	
 	f_eqs_ctl->f_iflag =        (int *) c_MHD_eqs_iflag(f_eqs_ctl->f_self);
-	f_eqs_ctl->f_block_name =   (char *) c_MHD_eqs_block_name(f_eqs_ctl->f_self);
-	f_eqs_ctl->c_block_name = strngcopy_from_f(f_eqs_ctl->f_block_name);
+	char *f_block_name =   (char *) c_MHD_eqs_block_name(f_eqs_ctl->f_self);
+	f_eqs_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_eqs_ctl->f_mom_ctl =    init_f_MHD_mom_eq_ctl(c_MHD_eqs_mom_ctl, f_eqs_ctl->f_self);
 	f_eqs_ctl->f_induct_ctl = init_f_MHD_induction_eq_ctl(c_MHD_eqs_induct_ctl, f_eqs_ctl->f_self);
@@ -648,8 +622,8 @@ struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_sel
 	f_sgs_ctl->f_self =  c_load_self(f_parent);
 	
 	f_sgs_ctl->f_iflag =        (int *) c_SGS_model_ctl_iflag(f_sgs_ctl->f_self);
-	f_sgs_ctl->f_block_name =   (char *) c_SGS_model_ctl_block_name(f_sgs_ctl->f_self);
-	f_sgs_ctl->c_block_name = strngcopy_from_f(f_sgs_ctl->f_block_name);
+	char *f_block_name =   (char *) c_SGS_model_ctl_block_name(f_sgs_ctl->f_self);
+	f_sgs_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_sgs_ctl->f_SGS_model_name_ctl = c_SGS_model_SGS_model_name_ctl(f_sgs_ctl->f_self);
 	f_sgs_ctl->f_SGS_filter_name_ctl = c_SGS_model_filter_name_ctl(f_sgs_ctl->f_self);
@@ -717,8 +691,8 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	f_model_ctl->f_self =  c_load_self(f_parent);
 	
 	f_model_ctl->f_iflag =        (int *) c_MHD_mdl_iflag(f_model_ctl->f_self);
-	f_model_ctl->f_block_name =   (char *) c_MHD_mdl_block_name(f_model_ctl->f_self);
-	f_model_ctl->c_block_name = strngcopy_from_f(f_model_ctl->f_block_name);
+	char *f_block_name =   (char *) c_MHD_mdl_block_name(f_model_ctl->f_self);
+	f_model_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_model_ctl->f_fld_ctl =    c_MHD_mdl_fld_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_evo_ctl =    c_MHD_mdl_evo_ctl(f_model_ctl->f_self);
@@ -751,8 +725,8 @@ struct f_MHD_control_ctls * init_f_MHD_control_ctls(void *(*c_load_self)(void *f
 	printf("f_self %p\n", f_smctl_ctl->f_self);
 	
 	f_smctl_ctl->f_iflag =        (int *) c_smctl_ctl_iflag(f_smctl_ctl->f_self);
-	f_smctl_ctl->f_block_name =   (char *) c_smctl_ctl_block_name(f_smctl_ctl->f_self);
-	f_smctl_ctl->c_block_name = strngcopy_from_f(f_smctl_ctl->f_block_name);
+	char *f_block_name =   (char *) c_smctl_ctl_block_name(f_smctl_ctl->f_self);
+	f_smctl_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_smctl_ctl->f_tctl =     c_smctl_ctl_tctl(f_smctl_ctl->f_self);
 	f_smctl_ctl->f_mrst_ctl = c_smctl_mrst_ctl(f_smctl_ctl->f_self);
@@ -773,8 +747,8 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	printf("f_self %p\n", f_smonitor_ctl->f_self);
 	
 	f_smonitor_ctl->f_iflag =        (int *) c_sph_monitor_ctl_iflag(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->c_block_name = strngcopy_from_f(f_smonitor_ctl->f_block_name);
+	char *f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_smonitor_ctl->f_num_vspec_ctl = c_sph_monitor_num_vspec_ctl(f_smonitor_ctl->f_self);
 	
@@ -828,8 +802,8 @@ struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent)
 	printf("f_self %p\n", f_viz_ctls->f_self);
 	
 	f_viz_ctls->f_iflag =        (int *) c_visualizations_iflag(f_viz_ctls->f_self);
-	f_viz_ctls->f_block_name =   (char *) c_visualizations_block_name(f_viz_ctls->f_self);
-	f_viz_ctls->c_block_name = strngcopy_from_f(f_viz_ctls->f_block_name);
+	char *f_block_name =   (char *) c_visualizations_block_name(f_viz_ctls->f_self);
+	f_viz_ctls->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_viz_ctls->f_psf_ctls =    c_visualizations_psf_ctls(f_viz_ctls->f_self);
 	f_viz_ctls->f_iso_ctls =    c_visualizations_iso_ctls(f_viz_ctls->f_self);
@@ -854,8 +828,8 @@ struct f_MHD_zm_ctls * init_f_MHD_zm_ctls(void *(*c_load_self)(void *f_parent), 
 	f_zm_ctls->f_self =  c_load_self(f_parent);
 	
 	f_zm_ctls->f_iflag =        (int *) c_dynamo_vizs_iflag(f_zm_ctls->f_self);
-	f_zm_ctls->f_block_name =   (char *) c_dynamo_vizs_block_name(f_zm_ctls->f_self);
-	f_zm_ctls->c_block_name = strngcopy_from_f(f_zm_ctls->f_block_name);
+	char *f_block_name =   (char *) c_dynamo_vizs_block_name(f_zm_ctls->f_self);
+	f_zm_ctls->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_zm_ctls->f_crust_filter_ctl =    c_dynamo_vizs_crust_filter_ctl(f_zm_ctls->f_self);
 	f_zm_ctls->f_zm_psf_ctls =    c_dynamo_vizs_zm_psf_ctls(f_zm_ctls->f_self);
@@ -878,8 +852,8 @@ struct f_MHD_node_monitor_ctl * init_f_MHD_node_monitor_ctl(void *(*c_load_self)
 	f_nmtr_ctl->f_self =  c_load_self(f_parent);
 	
 	f_nmtr_ctl->f_iflag =        (int *) c_node_monitor_ctl_iflag(f_nmtr_ctl->f_self);
-	f_nmtr_ctl->f_block_name =   (char *) c_node_monitor_ctl_block_name(f_nmtr_ctl->f_self);
-	f_nmtr_ctl->c_block_name = strngcopy_from_f(f_nmtr_ctl->f_block_name);
+	char *f_block_name =   (char *) c_node_monitor_ctl_block_name(f_nmtr_ctl->f_self);
+	f_nmtr_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_nmtr_ctl->f_xx_4_monitor_ctl =    c_node_monitor_xx_monitor_ctl(f_nmtr_ctl->f_self);
 	f_nmtr_ctl->f_node_4_monitor_ctl =  c_node_monitor_node_mntr_ctl(f_nmtr_ctl->f_self);
@@ -890,8 +864,8 @@ struct f_MHD_node_monitor_ctl * init_f_MHD_node_monitor_ctl(void *(*c_load_self)
 static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
 {
 	f_MHD_ctl->f_iflag =        (int *) c_MHD_iflag(f_MHD_ctl->f_self);
-	f_MHD_ctl->f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
-	f_MHD_ctl->c_block_name = strngcopy_from_f(f_MHD_ctl->f_block_name);
+	char *f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
+	f_MHD_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_MHD_ctl->f_plt =          init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
 	f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);

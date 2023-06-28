@@ -25,8 +25,8 @@ struct f_ctl_ir_item * init_f_ctl_ir_item(void *(*c_load_self)(void *f_parent),
 	f_ir_item->f_self =  c_load_self(f_parent);
 	
 	f_ir_item->f_iflag =        (int *) c_int_real_item_iflag(f_ir_item->f_self);
-	f_ir_item->f_block_name =  (char *) c_int_real_item_block_name(f_ir_item->f_self);
-	f_ir_item->c_block_name = strngcopy_from_f(f_ir_item->f_block_name);
+	char *f_block_name =  (char *) c_int_real_item_block_name(f_ir_item->f_self);
+	f_ir_item->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_ir_item->f_intvalue =   (int *)    c_int_real_item_intvalue(f_ir_item->f_self);
 	f_ir_item->f_realvalue =  (double *) c_int_real_item_realvalue(f_ir_item->f_self);
@@ -41,7 +41,6 @@ void dealloc_f_ctl_ir_item(struct f_ctl_ir_item *f_ir_item)
 	f_ir_item->f_realvalue = NULL;
 	f_ir_item->f_intvalue = NULL;
 	f_ir_item->f_iflag = NULL;
-	f_ir_item->f_block_name = NULL;
 	f_ir_item->f_self = NULL;
 	return;
 }

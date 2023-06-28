@@ -16,7 +16,6 @@
 
 struct f_ctl_cr_item{
 	void * f_self;
-	char * f_block_name;
 	int * f_iflag;
 	char * f_charavalue;
 	double * f_realvalue;

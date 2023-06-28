@@ -42,8 +42,8 @@ struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_par
 	f_citem->f_self =  c_load_self(f_parent);
 	
 	f_citem->f_iflag =        (int *) c_chara_item_iflag(f_citem->f_self);
-	f_citem->f_block_name =  (char *) c_chara_item_block_name(f_citem->f_self);
-	f_citem->c_block_name = strngcopy_from_f(f_citem->f_block_name);
+	char *f_block_name =  (char *) c_chara_item_block_name(f_citem->f_self);
+	f_citem->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_citem->f_charavalue =  (char *) c_chara_item_charavalue(f_citem->f_self);
 	f_citem->c_charavalue = strngcopy_from_f(f_citem->f_charavalue);
@@ -59,7 +59,6 @@ void dealloc_f_ctl_chara_item(struct f_ctl_chara_item *f_citem)
 	
 	f_citem->f_charavalue = NULL;
 	f_citem->f_iflag = NULL;
-	f_citem->f_block_name = NULL;
 	f_citem->f_self = NULL;
 	return;
 }
@@ -76,8 +75,8 @@ struct f_ctl_chara_array * init_f_ctl_chara_array(void *(*c_load_self)(void *f_p
 	
 	f_carray->f_num =         (int *)  c_chara_array_num(f_carray->f_self);
 	f_carray->f_icou =        (int *)  c_chara_array_icou(f_carray->f_self);
-	f_carray->f_block_name =  (char *) c_chara_array_block_name(f_carray->f_self);
-	f_carray->c_block_name = strngcopy_from_f(f_carray->f_block_name);
+	char *f_block_name =  (char *) c_chara_array_block_name(f_carray->f_self);
+	f_carray->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_carray->f_cctls =       (char *) c_chara_array_c_tbl(f_carray->f_self);
 	
@@ -137,7 +136,6 @@ void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray)
 	f_carray->f_cctls = NULL;
 	f_carray->f_icou = NULL;
 	f_carray->f_num = NULL;
-	f_carray->f_block_name = NULL;
 	f_carray->f_self = NULL;
 	return;
 }
@@ -153,8 +151,8 @@ struct f_ctl_real_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_paren
 	f_ritem->f_self =  c_load_self(f_parent);
 	
 	f_ritem->f_iflag =        (int *) c_real_item_iflag(f_ritem->f_self);
-	f_ritem->f_block_name =  (char *) c_real_item_block_name(f_ritem->f_self);
-	f_ritem->c_block_name = strngcopy_from_f(f_ritem->f_block_name);
+	char *f_block_name =  (char *) c_real_item_block_name(f_ritem->f_self);
+	f_ritem->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_ritem->f_realvalue =  (double *) c_real_item_realvalue(f_ritem->f_self);
 	return f_ritem;
@@ -167,7 +165,6 @@ void dealloc_f_ctl_real_item(struct f_ctl_real_item *f_ritem)
 	
 	f_ritem->f_realvalue = NULL;
 	f_ritem->f_iflag = NULL;
-	f_ritem->f_block_name = NULL;
 	f_ritem->f_self = NULL;
 	return;
 }
@@ -204,8 +201,8 @@ struct f_ctl_int_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent)
 	f_iitem->f_self =  c_load_self(f_parent);
 	
 	f_iitem->f_iflag =        (int *) c_int_item_iflag(f_iitem->f_self);
-	f_iitem->f_block_name =  (char *) c_int_item_block_name(f_iitem->f_self);
-	f_iitem->c_block_name = strngcopy_from_f(f_iitem->f_block_name);
+    char *f_block_name =  (char *) c_int_item_block_name(f_iitem->f_self);
+	f_iitem->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_iitem->f_intvalue =  (int *) c_int_item_intvalue(f_iitem->f_self);
 	return f_iitem;
@@ -218,7 +215,6 @@ void dealloc_f_ctl_int_item(struct f_ctl_int_item *f_ritem)
 	
 	f_ritem->f_intvalue = NULL;
 	f_ritem->f_iflag = NULL;
-	f_ritem->f_block_name = NULL;
 	f_ritem->f_self = NULL;
 	return;
 }
@@ -235,8 +231,8 @@ struct f_ctl_int_array * init_f_ctl_int_array(void *(*c_load_self)(void *f_paren
 	
 	f_iarray->f_num =         (int *)  c_int_array_num(f_iarray->f_self);
 	f_iarray->f_icou =        (int *)  c_int_array_icou(f_iarray->f_self);
-	f_iarray->f_block_name =  (char *) c_int_array_block_name(f_iarray->f_self);
-	f_iarray->c_block_name = strngcopy_from_f(f_iarray->f_block_name);
+	char *f_block_name =  (char *) c_int_array_block_name(f_iarray->f_self);
+	f_iarray->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_iarray->f_ictls =       (int *) c_int_array_i_tbl(f_iarray->f_self);
 	
@@ -267,7 +263,6 @@ void dealloc_f_ctl_int_array(struct f_ctl_int_array *f_iarray)
 	f_iarray->f_ictls = NULL;
 	f_iarray->f_icou = NULL;
 	f_iarray->f_num = NULL;
-	f_iarray->f_block_name = NULL;
 	f_iarray->f_self = NULL;
 	return;
 }

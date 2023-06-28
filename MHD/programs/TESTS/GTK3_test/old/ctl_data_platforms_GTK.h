@@ -47,18 +47,14 @@ extern void * c_chara_item_charavalue(void *f_plt);
 
 struct f_ctl_chara_item{
 	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
+    int * f_iflag;
 	int f_clength[1];
 	char * f_charavalue;
 };
 
 struct f_platform_control{
 	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
+    int * f_iflag;
 	
 	void * f_ndomain_ctl;
 	void * f_num_smp_ctl;

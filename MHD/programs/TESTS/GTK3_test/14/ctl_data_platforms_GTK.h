@@ -52,7 +52,6 @@ extern void load_chara_from_c(void *c_ctl);
 
 struct f_ctl_chara_item{
 	void * f_self;
-	char * f_block_name;
 	
 	int f_namelength[1];
 	char * c_block_name;
@@ -67,7 +66,6 @@ struct f_ctl_chara_item{
 struct f_platform_control{
 	void * f_self;
 	
-	char * f_block_name;
 	int * f_iflag;
 	
 	int f_namelength[1];

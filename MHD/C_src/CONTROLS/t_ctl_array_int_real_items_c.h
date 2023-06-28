@@ -17,7 +17,6 @@
 
 struct f_ctl_ir_item{
 	void * f_self;
-	char * f_block_name;
 	int * f_iflag;
 	int    *f_intvalue;
 	double *f_realvalue;

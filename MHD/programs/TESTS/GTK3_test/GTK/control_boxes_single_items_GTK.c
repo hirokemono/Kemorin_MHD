@@ -14,12 +14,11 @@ void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 {
 	struct f_ctl_chara_item *f_citem = (struct f_ctl_chara_item *) data;
 	char * input_text;
-	int f_clength;
 	
 	if(f_citem->f_self != NULL) {
 /*		f_citem->f_iflag[0] = 1; */
 		input_text = (char *) gtk_entry_get_text(entry);
-		f_clength = strngcopy(f_citem->f_charavalue, (char *) input_text);
+		strngcopy(f_citem->f_charavalue, (char *) input_text);
 		load_chara_from_c(f_citem->f_charavalue);
 	};
 	return;
@@ -228,7 +227,7 @@ GtkWidget *draw_int_item_entry_hbox(struct f_ctl_int_item *f_iitem){
                     100, 21474836);
 	
 	GtkWidget *hbox = hbox_with_block_checkbox(f_iitem->f_iflag);
-	GtkWidget *label = gtk_label_new(strngcopy_from_f(f_iitem->f_block_name));
+	GtkWidget *label = gtk_label_new(strngcopy_from_f(f_iitem->c_block_name));
 	
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_spin_button_new(adjust, 1, 0);

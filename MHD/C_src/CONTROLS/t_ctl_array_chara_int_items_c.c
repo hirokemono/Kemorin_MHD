@@ -25,8 +25,8 @@ struct f_ctl_ci_item * init_f_ctl_ci_item(void *(*c_load_self)(void *f_parent),
 	f_ci_item->f_self =  c_load_self(f_parent);
 	
 	f_ci_item->f_iflag =        (int *) c_chara_int_item_iflag(f_ci_item->f_self);
-	f_ci_item->f_block_name =  (char *) c_chara_int_item_block_name(f_ci_item->f_self);
-	f_ci_item->c_block_name = strngcopy_from_f(f_ci_item->f_block_name);
+	char *f_block_name =  (char *) c_chara_int_item_block_name(f_ci_item->f_self);
+	f_ci_item->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_ci_item->f_intvalue =  (int *) c_chara_int_item_intvalue(f_ci_item->f_self);
 	f_ci_item->f_charavalue =  (char *) c_chara_int_item_charavalue(f_ci_item->f_self);
@@ -49,7 +49,6 @@ void dealloc_f_ctl_ci_item(struct f_ctl_ci_item *f_ci_item)
 	f_ci_item->f_intvalue = NULL;
 	f_ci_item->f_charavalue = NULL;
 	f_ci_item->f_iflag = NULL;
-	f_ci_item->f_block_name = NULL;
 	f_ci_item->f_self = NULL;
 	return;
 }

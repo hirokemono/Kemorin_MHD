@@ -16,7 +16,6 @@
 
 struct f_ctl_i2_item{
 	void * f_self;
-	char * f_block_name;
 	int * f_iflag;
 	int *f_intvalue;
 	

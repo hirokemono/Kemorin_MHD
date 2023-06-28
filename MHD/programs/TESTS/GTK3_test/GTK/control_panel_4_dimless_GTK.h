@@ -20,9 +20,8 @@
 
 struct f_MHD_dimless_control{
 	void * f_self;
-	
-	char * f_block_name;
 	int * f_iflag;
+    char * c_block_name;
 	
 	struct chara_real_clist * f_dimess_names;
 	struct dimless_views *  f_dimless_vws;

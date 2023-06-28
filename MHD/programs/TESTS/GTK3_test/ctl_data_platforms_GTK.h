@@ -74,9 +74,7 @@ struct c_array_views{
 
 struct f_platform_control{
 	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
+    int * f_iflag;
 	
 	char * c_block_name;
 	
@@ -109,9 +107,7 @@ struct f_platform_control{
 
 struct f_MHD_sph_resolution_control{
 	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
+    int * f_iflag;
 	
 	char * c_block_name;
 	
@@ -141,9 +137,7 @@ struct f_MHD_sph_resolution_control{
 
 struct f_FEM_mesh_FILE_ctl{
 	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
+    int * f_iflag;
 	
 	char * c_block_name;
 	
@@ -163,9 +157,7 @@ struct f_MHD_sph_resolution_views{
 
 struct f_MHD_sph_subdomain_control{
 	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
+    int * f_iflag;
 	
 	char * c_block_name;
 	
@@ -201,9 +193,7 @@ struct f_sph_shell_views{
 
 struct f_MHD_sph_shell_control{
 	void * f_self;
-	
-	char * f_block_name;
-	int * f_iflag;
+    int * f_iflag;
 	
 	char * c_block_name;
 	

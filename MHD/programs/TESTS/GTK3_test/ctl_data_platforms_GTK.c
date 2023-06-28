@@ -106,8 +106,8 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 	f_plt->f_self =  c_load_self(f_parent);
 	
 	f_plt->f_iflag =       (int *)  c_plt_iflag(f_plt->f_self);
-	f_plt->f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
-	f_plt->c_block_name = strngcopy_from_f(f_plt->f_block_name);
+	char *f_block_name =  (char *) c_plt_block_name(f_plt->f_self);
+	f_plt->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_plt->f_ndomain_ctl =               init_f_ctl_int_item(c_plt_ndomain_ctl, f_plt->f_self);
 	f_plt->f_num_smp_ctl =               init_f_ctl_int_item(c_plt_num_smp_ctl, f_plt->f_self);
@@ -233,8 +233,8 @@ struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*
 	f_spctl->f_self =  c_load_self(f_parent);
 	
 	f_spctl->f_iflag =        (int *) c_sphere_data_ctl_iflag(f_spctl->f_self);
-	f_spctl->f_block_name =   (char *) c_sphere_data_ctl_block_name(f_spctl->f_self);
-	f_spctl->c_block_name = strngcopy_from_f(f_spctl->f_block_name);
+	char *f_block_name =   (char *) c_sphere_data_ctl_block_name(f_spctl->f_self);
+	f_spctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_spctl->f_ltr_ctl =               init_f_ctl_int_item(c_sphere_data_ltr_ctl, f_spctl->f_self);
 	f_spctl->f_phi_symmetry_ctl =      init_f_ctl_int_item(c_sphere_data_phi_symmetry_ctl, f_spctl->f_self);
@@ -274,8 +274,8 @@ struct f_MHD_sph_subdomain_control * init_f_MHD_sph_domain_control(void *(*c_loa
 	f_sdctl->f_self =  c_load_self(f_parent);
 	
 	f_sdctl->f_iflag =        (int *) c_sph_domain_ctl_iflag(f_sdctl->f_self);
-	f_sdctl->f_block_name =   (char *) c_sph_domain_ctl_block_name(f_sdctl->f_self);
-	f_sdctl->c_block_name = strngcopy_from_f(f_sdctl->f_block_name);
+	char *f_block_name =   (char *) c_sph_domain_ctl_block_name(f_sdctl->f_self);
+	f_sdctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_sdctl->f_indices_ordering_set = init_f_ctl_chara_item(c_sph_indices_ordering_set, f_sdctl->f_self);
 	f_sdctl->f_inner_decomp_ctl =     init_f_ctl_chara_item(c_sph_inner_decomp_ctl, f_sdctl->f_self);
@@ -306,8 +306,8 @@ struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self)(void 
 	f_Fmesh_ctl->f_self =  c_load_self(f_parent);
 	
 	f_Fmesh_ctl->f_iflag =        (int *) c_FEM_mesh_FILE_ctl_iflag(f_Fmesh_ctl->f_self);
-	f_Fmesh_ctl->f_block_name =   (char *) c_FEM_mesh_FILE_ctl_block_name(f_Fmesh_ctl->f_self);
-	f_Fmesh_ctl->c_block_name = strngcopy_from_f(f_Fmesh_ctl->f_block_name);
+	char *f_block_name =   (char *) c_FEM_mesh_FILE_ctl_block_name(f_Fmesh_ctl->f_self);
+	f_Fmesh_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_Fmesh_ctl->f_memory_conservation_ctl =   init_f_ctl_chara_item(c_FEM_mesh_mem_conserve_ctl, f_Fmesh_ctl->f_self);
 	f_Fmesh_ctl->f_FEM_mesh_output_switch =    init_f_ctl_chara_item(c_FEM_mesh_output_switch, f_Fmesh_ctl->f_self);
@@ -477,8 +477,8 @@ struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(v
 	f_psph_ctl->f_self =  c_load_self(f_parent);
 	
 	f_psph_ctl->f_iflag =        (int *) c_sph_shell_ctl_iflag(f_psph_ctl->f_self);
-	f_psph_ctl->f_block_name =   (char *) c_sph_shell_ctl_block_name(f_psph_ctl->f_self);
-	f_psph_ctl->c_block_name = strngcopy_from_f(f_psph_ctl->f_block_name);
+	char *f_block_name =   (char *) c_sph_shell_ctl_block_name(f_psph_ctl->f_self);
+	f_psph_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_psph_ctl->f_Fmesh_ctl = init_f_FEM_mesh_FILE_ctl(c_sph_shell_Fmesh_ctl, f_psph_ctl->f_self);
 	f_psph_ctl->f_sdctl =     init_f_MHD_sph_domain_control(c_sph_shell_sdctl, f_psph_ctl->f_self);

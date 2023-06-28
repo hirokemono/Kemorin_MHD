@@ -16,7 +16,6 @@
 
 struct f_ctl_chara_item{
 	void * f_self;
-	char * f_block_name;
 	int * f_iflag;
 	char * f_charavalue;
 	
@@ -27,7 +26,6 @@ struct f_ctl_chara_item{
 
 struct f_ctl_chara_array{
 	void * f_self;
-	char * f_block_name;
 	int * f_num;
 	int * f_icou;
 	char * f_cctls;
@@ -38,7 +36,6 @@ struct f_ctl_chara_array{
 
 struct f_ctl_real_item{
 	void * f_self;
-	char * f_block_name;
 	int * f_iflag;
 	double * f_realvalue;
 	
@@ -47,7 +44,6 @@ struct f_ctl_real_item{
 
 struct f_ctl_int_item{
 	void * f_self;
-	char * f_block_name;
 	int * f_iflag;
 	int * f_intvalue;
 	
@@ -56,7 +52,6 @@ struct f_ctl_int_item{
 
 struct f_ctl_int_array{
 	void * f_self;
-	char * f_block_name;
 	int * f_num;
 	int * f_icou;
 	int * f_ictls;
