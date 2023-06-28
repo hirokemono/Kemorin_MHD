@@ -115,6 +115,9 @@ control_panel_chara_int_GTK.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
@@ -130,6 +133,9 @@ control_panel_int2_GTK.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_int2_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
@@ -145,6 +151,9 @@ control_panel_int_real_GTK.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_int_real_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
@@ -159,6 +168,8 @@ control_panel_real_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
@@ -420,6 +431,9 @@ tree_view_4_force_GTK.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_real_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
@@ -619,6 +633,8 @@ tree_view_real_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h

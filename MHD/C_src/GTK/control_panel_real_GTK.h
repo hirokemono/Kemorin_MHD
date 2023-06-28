@@ -25,7 +25,7 @@ struct r_clist_view{
 
 /* prototypes */
 
-GtkWidget * real_array_vbox_w_addbottun(struct f_ctl_real_array *f_r_array, 
-										struct r_clist_view *r_vws);
+GtkWidget * real_array_vbox_w_addbottun(struct real_clist *r_clist_gtk, 
+										GtkWidget *real_array_tree_view);
 
 #endif /* CONTROL_PANEL_REAL_GTK_H_ */
