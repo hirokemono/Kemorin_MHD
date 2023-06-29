@@ -412,7 +412,7 @@ GtkWidget *ci_list_box_expander(char * array_name_c, GtkTreeView *ci_tree_view,
 	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 320, 140);
+    gtk_widget_set_size_request(scrolled_window, 320, 240);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(ci_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, FALSE, TRUE, 0);
 	

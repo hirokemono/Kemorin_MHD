@@ -16,13 +16,6 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_int_GTK.h"
 
-struct ci_clist_view{
-    int index_bc;
-    GtkWidget *ci_tree_view;
-    
-    struct chara_int_clist *ci_clist_gtk;
-};
-
 /* prototypes */
 
 GtkWidget * add_ci_list_box_w_addbottun(struct chara_int_clist *ci_clist_gtk,

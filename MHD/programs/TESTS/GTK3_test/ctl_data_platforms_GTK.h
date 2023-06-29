@@ -26,6 +26,7 @@
 #include "control_panel_real_GTK.h"
 #include "control_panel_int_real_GTK.h"
 #include "control_panel_int2_GTK.h"
+#include "control_panel_chara_real_GTK.h"
 #include "control_panel_chara_int_GTK.h"
 #include "tree_view_real_GTK.h"
 
@@ -204,6 +205,90 @@ struct f_MHD_sph_shell_control{
 
 
 
+
+struct f_MHD_mom_eq_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct chara_real_clist * f_coef_4_intertia;
+	struct chara_real_clist * f_coef_4_grad_p;
+	struct chara_real_clist * f_coef_4_viscous;
+	struct chara_real_clist * f_coef_4_termal_buo;
+	struct chara_real_clist * f_coef_4_comp_buo;
+	struct chara_real_clist * f_coef_4_Coriolis;
+	struct chara_real_clist * f_coef_4_Lorentz;
+};
+
+struct f_MHD_induct_eq_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct chara_real_clist * f_coef_4_magne_evo;
+	struct chara_real_clist * f_coef_4_mag_diffuse;
+	struct chara_real_clist * f_coef_4_mag_potential;
+	struct chara_real_clist * f_coef_4_induction;
+};
+
+struct f_MHD_heat_eq_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct chara_real_clist * f_coef_4_adv_flux;
+	struct chara_real_clist * f_coef_4_diffuse;
+	struct chara_real_clist * f_coef_4_source;
+};
+
+struct f_MHD_equations_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_MHD_mom_eq_control *    f_mom_eq_ctl;
+	struct f_MHD_induct_eq_control * f_induct_ctl;
+	struct f_MHD_heat_eq_control *   f_heat_ctl;
+	struct f_MHD_heat_eq_control *   f_comp_ctl;
+};
+
+struct f_MHD_mom_eq_views{
+	GtkWidget * f_coef_4_intertia_tree;
+	GtkWidget * f_coef_4_grad_p_tree;
+	GtkWidget * f_coef_4_viscous_tree;
+	GtkWidget * f_coef_4_termal_buo_tree;
+	GtkWidget * f_coef_4_comp_buo_tree;
+	GtkWidget * f_coef_4_Coriolis_tree;
+	GtkWidget * f_coef_4_Lorentz_tree;
+};
+
+struct f_MHD_induct_eq_views{
+	GtkWidget * f_coef_4_magne_evo_tree;
+	GtkWidget * f_coef_4_mag_diffuse_tree;
+	GtkWidget * f_coef_4_mag_potential_tree;
+	GtkWidget * f_coef_4_induction_tree;
+};
+
+struct f_MHD_heat_eq_views{
+	GtkWidget * f_coef_4_adv_flux_tree;
+	GtkWidget * f_coef_4_diffuse_tree;
+	GtkWidget * f_coef_4_source_tree;
+};
+
+struct f_MHD_equations_views{
+	struct f_MHD_mom_eq_views    *f_mom_eq_vws;
+	struct f_MHD_induct_eq_views *f_induct_vws;
+	struct f_MHD_heat_eq_views   *f_heat_vws;
+	struct f_MHD_heat_eq_views   *f_comp_vws;
+};
+
+
+
+
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
 void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray);
 
@@ -223,5 +308,26 @@ struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(v
 														  void *f_parent);
 GtkWidget *MHD_sph_shell_ctl_expander(GtkWidget *window, struct f_MHD_sph_shell_control * f_psph_ctl, 
 									  char * f_fname_psph, struct f_sph_shell_views *f_psph_vws);
+
+
+
+struct f_MHD_mom_eq_control * init_f_MHD_mom_eq_ctl(void *(*c_load_self)(void *f_parent),
+													void *f_parent);
+struct f_MHD_induct_eq_control * init_f_MHD_induction_eq_ctl(void *(*c_load_self)(void *f_parent),
+															 void *f_parent);
+struct f_MHD_heat_eq_control * init_f_MHD_heat_eq_ctl(void *(*c_load_self)(void *f_parent),
+													  void *f_parent);
+struct f_MHD_equations_control * init_f_MHD_equations_ctl(void *(*c_load_self)(void *f_parent), void *f_parent);
+
+
+GtkWidget * draw_momentum_equation_vbox(struct f_MHD_mom_eq_control *f_mom_eq_ctl, 
+										struct f_MHD_mom_eq_views *f_mom_eq_vws, GtkWidget *window);
+GtkWidget * draw_induction_equation_vbox(struct f_MHD_induct_eq_control *f_induct_ctl, 
+										 struct f_MHD_induct_eq_views *f_induct_vws, GtkWidget *window);
+GtkWidget * draw_heat_equation_vbox(struct f_MHD_heat_eq_control *f_heat_ctl, 
+									struct f_MHD_heat_eq_views *f_heat_vws, GtkWidget *window);
+GtkWidget * draw_MHD_equations_vbox(struct f_MHD_equations_control *f_eqs_ctl, 
+									struct f_MHD_equations_views *f_eqs_vws, GtkWidget *window);
+
 
 #endif    /* CTL_DATA_PLATFORMS_GTK_ */
