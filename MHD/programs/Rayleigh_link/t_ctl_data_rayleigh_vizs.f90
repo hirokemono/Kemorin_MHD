@@ -235,7 +235,7 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_platforms                                      &
      &   (id_control, hd_platform, rayleigh_vizs_ctl%viz_plt, level)
-      call write_control_time_step_data(id_control, hd_time_step,       &
+      call write_control_time_step_data(id_control,                     &
      &    rayleigh_vizs_ctl%t_viz_ctl, level)
 !
       call write_phys_data_control(id_control, hd_phys_values,          &

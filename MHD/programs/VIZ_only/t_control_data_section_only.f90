@@ -214,7 +214,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, sec_viz_ctl%sect_plt, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, sec_viz_ctl%t_sect_ctl, level)
+     &   (id_control, sec_viz_ctl%t_sect_ctl, level)
 !
       call write_surfacing_controls                                     &
      &   (id_control, hd_viz_ctl, sec_viz_ctl%surfacing_ctls, level)

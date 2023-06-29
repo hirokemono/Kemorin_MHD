@@ -12,8 +12,7 @@
 !!      subroutine read_control_time_step_data                          &
 !!     &         (id_control, hd_block, tctl, c_buf)
 !!        type(time_data_control), intent(inout) :: tctl
-!!      subroutine write_control_time_step_data                         &
-!!     &         (id_control, hd_block, tctl, level)
+!!      subroutine write_control_time_step_data(id_control, tctl, level)
 !!        type(time_data_control), intent(in) :: tctl
 !!
 !!      integer(kind = kint) function num_label_time_step_ctl()
@@ -219,8 +218,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(tctl%i_tstep .gt. 0) return
+      tctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -334,14 +334,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_time_step_data                           &
-     &         (id_control, hd_block, tctl, level)
+      subroutine write_control_time_step_data(id_control, tctl, level)
 !
       use t_read_control_elements
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(time_data_control), intent(in) :: tctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -393,7 +391,8 @@
       maxlen = max(maxlen, len_trim(hd_end_rst_step))
       maxlen = max(maxlen, len_trim(hd_flexible_step))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 tctl%block_name)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    tctl%elapsed_time_ctl)
 !
@@ -486,7 +485,8 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    tctl%flexible_step_ctl)
 !
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                tctl%block_name)
 !
       end subroutine write_control_time_step_data
 !

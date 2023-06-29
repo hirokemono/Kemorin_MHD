@@ -123,7 +123,7 @@
       level = write_begin_flag_for_ctl(id_control, level,               &
      &                                 smctl_ctl%block_name)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, smctl_ctl%tctl, level)
+     &   (id_control, smctl_ctl%tctl, level)
       call write_restart_ctl                                            &
      &   (id_control, hd_restart_file, smctl_ctl%mrst_ctl, level)
 !

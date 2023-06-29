@@ -207,7 +207,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, viz4_c%viz_plt, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, viz4_c%t_viz_ctl, level)
+     &   (id_control, viz4_c%t_viz_ctl, level)
 !
       call write_viz4_controls(id_control, hd_viz_control,              &
      &                         viz4_c%viz4_ctl, level)

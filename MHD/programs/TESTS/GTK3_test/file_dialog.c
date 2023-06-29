@@ -149,6 +149,53 @@ extern void * c_SGS_model_s3df_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_num_sph_filter_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
+extern void * c_time_steps_ctl_block_name(void *f_tctl);
+extern void * c_time_steps_ctl_iflag(void *f_tctl);
+extern void * c_time_steps_i_step_init_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_number(void *f_tctl);
+extern void * c_time_steps_elapsed_time_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_check_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_rst_ctl(void *f_tctl);
+
+extern void * c_time_steps_i_step_pvr_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_psf_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_map_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_iso_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_lic_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_fline_ctl(void *f_tctl);
+
+extern void * c_time_steps_i_step_ucd_ctl(void *f_tctl);
+extern void * c_time_steps_i_step_monitor(void *f_tctl);
+extern void * c_time_steps_i_step_sgs_coef(void *f_tctl);
+extern void * c_time_steps_i_step_boundary(void *f_tctl);
+
+extern void * c_time_steps_dt_ctl(void *f_tctl);
+extern void * c_time_steps_time_init_ctl(void *f_tctl);
+
+extern void * c_time_steps_i_diff_steps_ctl(void *f_tctl);
+extern void * c_time_steps_flexible_step(void *f_tctl);
+
+extern void * c_time_steps_ratio_to_cfl(void *f_tctl);
+extern void * c_time_steps_start_rst_step(void *f_tctl);
+extern void * c_time_steps_end_rst_step(void *f_tctl);
+extern void * c_time_steps_min_delta_t_ctl(void *f_tctl);
+extern void * c_time_steps_max_delta_t_ctl(void *f_tctl);
+extern void * c_time_steps_max_eps_shrink(void *f_tctl);
+extern void * c_time_steps_min_eps_expand(void *f_tctl);
+extern void * c_time_steps_delta_t_check(void *f_tctl);
+
+extern void * c_time_steps_delta_t_rst_ctl(void *f_tctl);
+extern void * c_time_steps_delta_t_psf_ctl(void *f_tctl);
+extern void * c_time_steps_delta_t_iso_ctl(void *f_tctl);
+extern void * c_time_steps_delta_t_map_ctl(void *f_tctl);
+extern void * c_time_steps_delta_t_pvr_ctl(void *f_tctl);
+extern void * c_time_steps_delta_t_fline(void *f_tctl);
+extern void * c_time_steps_delta_t_lic_ctl(void *f_tctl);
+
+extern void * c_time_steps_delta_t_field(void *f_tctl);
+extern void * c_time_steps_delta_t_monitor(void *f_tctl);
+extern void * c_time_steps_dt_sgs_coef_ctl(void *f_tctl);
+extern void * c_time_steps_dt_boundary_ctl(void *f_tctl);
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
@@ -214,6 +261,60 @@ struct f_MHD_model_control{
 	void * f_reft_ctl;
 	void * f_refc_ctl;
 	struct f_MHD_SGS_model_control * f_sgs_ctl;
+};
+
+struct f_time_step_control_ctls{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_int_item *f_i_step_init_ctl;
+	struct f_ctl_int_item *f_i_step_number_ctl;
+	struct f_ctl_real_item *f_elapsed_time_ctl;
+	
+	struct f_ctl_int_item *f_i_step_check_ctl;
+	struct f_ctl_int_item *f_i_step_rst_ctl;
+	struct f_ctl_int_item *f_i_step_pvr_ctl;
+	struct f_ctl_int_item *f_i_step_psf_ctl;
+	struct f_ctl_int_item *f_i_step_map_ctl;
+	struct f_ctl_int_item *f_i_step_iso_ctl;
+	struct f_ctl_int_item *f_i_step_lic_ctl;
+	struct f_ctl_int_item *f_i_step_fline_ctl;
+	
+	struct f_ctl_int_item *f_i_step_ucd_ctl;
+	struct f_ctl_int_item *f_i_step_monitor_ctl;
+	struct f_ctl_int_item *f_i_step_sgs_coefs_ctl;
+	struct f_ctl_int_item *f_i_step_boundary_ctl;
+	
+	struct f_ctl_real_item *f_dt_ctl;
+	struct f_ctl_real_item *f_time_init_ctl;
+	
+	struct f_ctl_int_item *f_i_diff_steps_ctl;
+	struct f_ctl_chara_item *f_flexible_step_ctl;
+	
+	struct f_ctl_real_item *f_ratio_to_cfl_ctl;
+	struct f_ctl_int_item *f_start_rst_step_ctl;
+	struct f_ctl_int_item *f_end_rst_step_ctl;
+	struct f_ctl_real_item *f_min_delta_t_ctl;
+	struct f_ctl_real_item *f_max_delta_t_ctl;
+	struct f_ctl_real_item *f_max_eps_to_shrink_ctl;
+	struct f_ctl_real_item *f_min_eps_to_expand_ctl;
+	
+	struct f_ctl_real_item *f_delta_t_check_ctl;
+	struct f_ctl_real_item *f_delta_t_rst_ctl;
+	
+	struct f_ctl_real_item *f_delta_t_psf_ctl;
+	struct f_ctl_real_item *f_delta_t_iso_ctl;
+	struct f_ctl_real_item *f_delta_t_map_ctl;
+	struct f_ctl_real_item *f_delta_t_pvr_ctl;
+	struct f_ctl_real_item *f_delta_t_fline_ctl;
+	struct f_ctl_real_item *f_delta_t_lic_ctl;
+	
+	struct f_ctl_real_item *f_delta_t_field_ctl;
+	struct f_ctl_real_item *f_delta_t_monitor_ctl;
+	struct f_ctl_real_item *f_delta_t_sgs_coefs_ctl;
+	struct f_ctl_real_item *f_delta_t_boundary_ctl;
 };
 
 struct f_MHD_control_ctls{
@@ -473,6 +574,72 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
+struct f_time_step_control_ctls * init_f_time_step_control_ctls(void *(*c_load_self)(void *f_parent), 
+															  void *f_parent)
+{
+	struct f_time_step_control_ctls *f_tctl 
+			= (struct f_time_step_control_ctls *) malloc(sizeof(struct f_time_step_control_ctls));
+	if(f_tctl == NULL){
+		printf("malloc error for f_tctl\n");
+		exit(0);
+	};
+	
+	f_tctl->f_self =  c_load_self(f_parent);
+	
+	f_tctl->f_iflag =        (int *) c_time_steps_ctl_iflag(f_tctl->f_self);
+	char *f_block_name =   (char *)  c_time_steps_ctl_block_name(f_tctl->f_self);
+	f_tctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_tctl->f_i_step_init_ctl =   init_f_ctl_int_item(c_time_steps_i_step_init_ctl, f_tctl->f_self);
+	f_tctl->f_i_step_number_ctl = init_f_ctl_int_item(c_time_steps_i_step_number, f_tctl->f_self);
+	f_tctl->f_elapsed_time_ctl =  init_f_ctl_real_item(c_time_steps_elapsed_time_ctl, f_tctl->f_self);
+	
+	f_tctl->f_i_step_check_ctl = init_f_ctl_int_item(c_time_steps_i_step_check_ctl, f_tctl->f_self);
+	f_tctl->f_i_step_rst_ctl =   init_f_ctl_int_item(c_time_steps_i_step_rst_ctl, f_tctl->f_self);
+	
+	f_tctl->f_i_step_pvr_ctl =   init_f_ctl_int_item(c_time_steps_i_step_pvr_ctl, f_tctl->f_self);
+	f_tctl->f_i_step_psf_ctl =   init_f_ctl_int_item(c_time_steps_i_step_psf_ctl, f_tctl->f_self);
+	f_tctl->f_i_step_map_ctl =   init_f_ctl_int_item(c_time_steps_i_step_map_ctl, f_tctl->f_self);
+	f_tctl->f_i_step_iso_ctl =   init_f_ctl_int_item(c_time_steps_i_step_iso_ctl, f_tctl->f_self);
+	f_tctl->f_i_step_lic_ctl =   init_f_ctl_int_item(c_time_steps_i_step_lic_ctl, f_tctl->f_self);
+	f_tctl->f_i_step_fline_ctl = init_f_ctl_int_item(c_time_steps_i_step_fline_ctl, f_tctl->f_self);
+	
+	f_tctl->f_i_step_ucd_ctl =       init_f_ctl_int_item(c_time_steps_i_step_ucd_ctl, f_tctl->f_self);
+	f_tctl->f_i_step_monitor_ctl =   init_f_ctl_int_item(c_time_steps_i_step_monitor, f_tctl->f_self);
+	f_tctl->f_i_step_sgs_coefs_ctl = init_f_ctl_int_item(c_time_steps_i_step_sgs_coef, f_tctl->f_self);
+	f_tctl->f_i_step_boundary_ctl =  init_f_ctl_int_item(c_time_steps_i_step_boundary, f_tctl->f_self);
+	
+	f_tctl->f_dt_ctl =        init_f_ctl_real_item(c_time_steps_dt_ctl, f_tctl->f_self);
+	f_tctl->f_time_init_ctl = init_f_ctl_real_item(c_time_steps_time_init_ctl, f_tctl->f_self);
+	
+	f_tctl->f_i_diff_steps_ctl =  init_f_ctl_int_item(c_time_steps_i_diff_steps_ctl, f_tctl->f_self);
+	f_tctl->f_flexible_step_ctl = init_f_ctl_chara_item(c_time_steps_flexible_step, f_tctl->f_self);
+	
+	f_tctl->f_ratio_to_cfl_ctl =      init_f_ctl_real_item(c_time_steps_ratio_to_cfl, f_tctl->f_self);
+	f_tctl->f_start_rst_step_ctl =    init_f_ctl_int_item(c_time_steps_start_rst_step, f_tctl->f_self);
+	f_tctl->f_end_rst_step_ctl =      init_f_ctl_int_item(c_time_steps_end_rst_step, f_tctl->f_self);
+	f_tctl->f_min_delta_t_ctl =       init_f_ctl_real_item(c_time_steps_min_delta_t_ctl, f_tctl->f_self);
+	f_tctl->f_max_delta_t_ctl =       init_f_ctl_real_item(c_time_steps_max_delta_t_ctl, f_tctl->f_self);
+	f_tctl->f_max_eps_to_shrink_ctl = init_f_ctl_real_item(c_time_steps_max_eps_shrink, f_tctl->f_self);
+	f_tctl->f_min_eps_to_expand_ctl = init_f_ctl_real_item(c_time_steps_min_eps_expand, f_tctl->f_self);
+	
+	f_tctl->f_delta_t_check_ctl = init_f_ctl_real_item(c_time_steps_delta_t_check, f_tctl->f_self);
+	f_tctl->f_delta_t_rst_ctl =   init_f_ctl_real_item(c_time_steps_delta_t_rst_ctl, f_tctl->f_self);
+	f_tctl->f_delta_t_psf_ctl =   init_f_ctl_real_item(c_time_steps_delta_t_psf_ctl, f_tctl->f_self);
+	f_tctl->f_delta_t_iso_ctl =   init_f_ctl_real_item(c_time_steps_delta_t_iso_ctl, f_tctl->f_self);
+	f_tctl->f_delta_t_map_ctl =   init_f_ctl_real_item(c_time_steps_delta_t_map_ctl, f_tctl->f_self);
+	f_tctl->f_delta_t_pvr_ctl =   init_f_ctl_real_item(c_time_steps_delta_t_pvr_ctl, f_tctl->f_self);
+	f_tctl->f_delta_t_lic_ctl =   init_f_ctl_real_item(c_time_steps_delta_t_lic_ctl, f_tctl->f_self);
+	f_tctl->f_delta_t_fline_ctl = init_f_ctl_real_item(c_time_steps_delta_t_fline, f_tctl->f_self);
+	
+	f_tctl->f_delta_t_field_ctl =     init_f_ctl_real_item(c_time_steps_delta_t_field, f_tctl->f_self);
+	f_tctl->f_delta_t_monitor_ctl =   init_f_ctl_real_item(c_time_steps_delta_t_monitor, f_tctl->f_self);
+	f_tctl->f_delta_t_sgs_coefs_ctl = init_f_ctl_real_item(c_time_steps_dt_sgs_coef_ctl, f_tctl->f_self);
+	f_tctl->f_delta_t_boundary_ctl =  init_f_ctl_real_item(c_time_steps_dt_boundary_ctl, f_tctl->f_self);
+	return f_tctl;
+};
+
+
 struct f_MHD_control_ctls * init_f_MHD_control_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_MHD_control_ctls *f_smctl_ctl 
@@ -489,7 +656,7 @@ struct f_MHD_control_ctls * init_f_MHD_control_ctls(void *(*c_load_self)(void *f
 	char *f_block_name =   (char *) c_smctl_ctl_block_name(f_smctl_ctl->f_self);
 	f_smctl_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_smctl_ctl->f_tctl =     c_smctl_ctl_tctl(f_smctl_ctl->f_self);
+	f_smctl_ctl->f_tctl =     init_f_time_step_control_ctls(c_smctl_ctl_tctl, f_smctl_ctl->f_self);
 	f_smctl_ctl->f_mrst_ctl = c_smctl_mrst_ctl(f_smctl_ctl->f_self);
 	f_smctl_ctl->f_mevo_ctl = c_smctl_mevo_ctl(f_smctl_ctl->f_self);
 	return f_smctl_ctl;
@@ -891,6 +1058,105 @@ struct f_MHD_tree_views{
 struct f_MHD_tree_views *f_MHD_vws;
 
 
+
+GtkWidget * draw_time_step_control_vbox(struct f_time_step_control_ctls *f_tctl, GtkWidget *window){
+    GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	
+	GtkWidget *hbox_1 = draw_int_item_entry_hbox(f_tctl->f_i_step_init_ctl);
+	GtkWidget *hbox_2 = draw_int_item_entry_hbox(f_tctl->f_i_step_number_ctl);
+	GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_tctl->f_elapsed_time_ctl);
+	
+	GtkWidget *hbox_4 = draw_int_item_entry_hbox(f_tctl->f_i_step_check_ctl);
+	GtkWidget *hbox_5 = draw_int_item_entry_hbox(f_tctl->f_i_step_rst_ctl);
+	GtkWidget *hbox_6 =  draw_int_item_entry_hbox(f_tctl->f_i_step_ucd_ctl);
+	GtkWidget *hbox_7 =  draw_int_item_entry_hbox(f_tctl->f_i_step_monitor_ctl);
+	
+	GtkWidget *hbox_8 =  draw_int_item_entry_hbox(f_tctl->f_i_step_psf_ctl);
+	GtkWidget *hbox_9 =  draw_int_item_entry_hbox(f_tctl->f_i_step_iso_ctl);
+	GtkWidget *hbox_10 = draw_int_item_entry_hbox(f_tctl->f_i_step_map_ctl);
+	GtkWidget *hbox_11 = draw_int_item_entry_hbox(f_tctl->f_i_step_pvr_ctl);
+	GtkWidget *hbox_12 = draw_int_item_entry_hbox(f_tctl->f_i_step_lic_ctl);
+	GtkWidget *hbox_13 = draw_int_item_entry_hbox(f_tctl->f_i_step_fline_ctl);
+	
+	GtkWidget *hbox_14 =  draw_int_item_entry_hbox(f_tctl->f_i_step_sgs_coefs_ctl);
+	GtkWidget *hbox_15 =  draw_int_item_entry_hbox(f_tctl->f_i_step_boundary_ctl);
+	
+	GtkWidget *hbox_16 =  draw_real_item_entry_hbox(f_tctl->f_dt_ctl);
+	GtkWidget *hbox_17 =  draw_real_item_entry_hbox(f_tctl->f_time_init_ctl);
+	
+	
+	GtkWidget *hbox_18 =  draw_int_item_entry_hbox(f_tctl->f_i_diff_steps_ctl);
+	GtkWidget *hbox_19 =  draw_chara_item_entry_hbox(f_tctl->f_flexible_step_ctl);
+	
+	GtkWidget *hbox_20 =  draw_real_item_entry_hbox(f_tctl->f_ratio_to_cfl_ctl);
+	GtkWidget *hbox_21 =  draw_int_item_entry_hbox(f_tctl->f_start_rst_step_ctl);
+	GtkWidget *hbox_22 =  draw_int_item_entry_hbox(f_tctl->f_end_rst_step_ctl);
+	GtkWidget *hbox_23 =  draw_real_item_entry_hbox(f_tctl->f_min_delta_t_ctl);
+	GtkWidget *hbox_24 =  draw_real_item_entry_hbox(f_tctl->f_max_delta_t_ctl);
+	GtkWidget *hbox_25 =  draw_real_item_entry_hbox(f_tctl->f_max_eps_to_shrink_ctl);
+	GtkWidget *hbox_26 =  draw_real_item_entry_hbox(f_tctl->f_min_eps_to_expand_ctl);
+	GtkWidget *hbox_27 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_field_ctl);
+	GtkWidget *hbox_28 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_monitor_ctl);
+	
+	GtkWidget *hbox_29 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_check_ctl);
+	GtkWidget *hbox_30 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_rst_ctl);
+	GtkWidget *hbox_31 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_psf_ctl);
+	GtkWidget *hbox_32 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_iso_ctl);
+	GtkWidget *hbox_33 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_map_ctl);
+	GtkWidget *hbox_34 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_pvr_ctl);
+	GtkWidget *hbox_35 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_lic_ctl);
+	GtkWidget *hbox_36 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_fline_ctl);
+	
+	GtkWidget *hbox_37 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_sgs_coefs_ctl);
+	GtkWidget *hbox_38 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_boundary_ctl);
+	
+	GtkWidget *vbox_step = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_9,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_10, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_11, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_13, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_14, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_15, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_16, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_17, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_18, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_19, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_20, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_21, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_22, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_23, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_24, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_25, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_26, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_27, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_28, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_29, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_30, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_31, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_32, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_33, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_34, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_35, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_36, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_37, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_38, FALSE, FALSE, 0);
+	
+	GtkWidget *expand_step = draw_control_block(f_tctl->c_block_name, f_tctl->f_iflag,
+											   480, 320, window, vbox_step);
+    gtk_box_pack_start(GTK_BOX(vbox_out), expand_step, FALSE, FALSE, 0);
+	return vbox_out;
+};
+
+
 void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_control *f_MHD_ctl, struct iso_ctl_c *iso_c){
 	GtkWidget *vbox_1;
 	GtkWidget *vbox_2[iso_c->label_iso_ctl_w_dpl->num_labels];
@@ -973,8 +1239,11 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_model, FALSE, FALSE, 0);
 	
 	
+	GtkWidget * vbox_tstep = draw_time_step_control_vbox(f_MHD_ctl->f_smctl_ctl->f_tctl, window);
 	
 	GtkWidget *vbox_control = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_tstep, FALSE, FALSE, 0);
+	
 	GtkWidget *expand_MHD_control = draw_control_block(f_MHD_ctl->f_smctl_ctl->c_block_name, 
 													 f_MHD_ctl->f_smctl_ctl->f_iflag,
 													 560, 500, window, vbox_control);
@@ -1088,3 +1357,4 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+

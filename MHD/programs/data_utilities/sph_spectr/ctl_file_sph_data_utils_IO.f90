@@ -178,7 +178,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, ctl%plt, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, ctl%tctl, level)
+     &   (id_control, ctl%tctl, level)
       call write_diff_spectr_file_control                               &
      &   (id_control, hd_file_def, ctl%file_list, level)
       call write_rename_spectr_control                                  &

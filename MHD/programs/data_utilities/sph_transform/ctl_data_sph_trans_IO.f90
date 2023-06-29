@@ -290,7 +290,7 @@
       call write_phys_data_control                                      &
      &   (id_control, hd_phys_values, spt_ctl%fld_ctl, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, spt_ctl%t_ctl, level)
+     &   (id_control, spt_ctl%t_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_trans_model_ctl

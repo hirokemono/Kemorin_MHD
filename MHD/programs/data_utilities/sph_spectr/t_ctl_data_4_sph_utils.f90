@@ -169,7 +169,7 @@
       call write_phys_data_control                                      &
      &   (id_control, hd_phys_values, spu_ctl%fld_ctl, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, spu_ctl%tstep_ctl, level)
+     &   (id_control, spu_ctl%tstep_ctl, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    spu_ctl%buoyancy_ratio_ctl)

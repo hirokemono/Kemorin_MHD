@@ -204,7 +204,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, part_tctl%plt, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, part_tctl%t_viz_ctl, level)
+     &   (id_control, part_tctl%t_viz_ctl, level)
 !
       call sel_write_ctl_file_vol_repart(id_control, hd_viz_partition,  &
      &   part_tctl%fname_vol_repart_ctl, part_tctl%viz_repart_c, level)
