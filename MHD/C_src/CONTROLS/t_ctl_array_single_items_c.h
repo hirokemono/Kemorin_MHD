@@ -24,16 +24,6 @@ struct f_ctl_chara_item{
 	char * c_charavalue;
 };
 
-struct f_ctl_chara_array{
-	void * f_self;
-	int * f_num;
-	int * f_icou;
-	char * f_cctls;
-	
-	char * c_block_name;
-	char ** c_charavalue;
-};
-
 struct f_ctl_real_item{
 	void * f_self;
 	int * f_iflag;
@@ -66,17 +56,16 @@ extern char * strngcopy_from_f(char * f_char);
 extern void load_chara_from_c(char *c_ctl);
 
 extern void * c_chara_array_block_name(void *f_ctl);
-extern void * c_chara_array_num(void *f_ctl);
-extern void * c_chara_array_icou(void *f_ctl);
-extern void * c_chara_array_c_tbl(void *f_ctl);
+extern int    c_chara_array_num(void *f_ctl);
+extern void * c_chara_array_c_tbl(int idx, void *f_ctl);
+extern void   c_store_chara_array(void *f_ctl, int idx, char *c_in);
 
 extern void * c_dealloc_chara_array(void *f_ctl);
-extern void * c_alloc_chara_array(void *f_ctl);
+extern void * c_alloc_chara_array(int num_array, void *f_ctl);
 extern void * c_check_chara_array(void *f_ctl);
 
 extern void * c_real_array_block_name(void *f_ctl);
 extern int    c_real_array_num(void *f_ctl);
-extern void * c_real_array_icou(void *f_ctl);
 extern double c_real_array_r_tbl(int idx, void *f_ctl);
 extern void c_store_real_array(void *f_ctl, int idx, double r_in);
 
@@ -97,13 +86,9 @@ extern void * c_check_int_array(void *f_ctl);
 struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent),
 												void *f_parent);
 void dealloc_f_ctl_chara_item(struct f_ctl_chara_item *f_citem);
-struct f_ctl_chara_array * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent),
-												  void *f_parent);
-void reflesh_f_ctl_chara_array(int num_array, struct f_ctl_chara_array *f_carray);
-void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray);
-
-struct c_array_views * init_c_array_views(struct f_ctl_chara_array *f_carray);
-void dealloc_c_array_views(struct c_array_views *c_array_vws);
+struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent),
+											void *f_parent);
+void reflesh_f_ctl_chara_array(int num_array, struct chara_clist *c_clist);
 
 struct f_ctl_int_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent), 
 	void *f_parent);

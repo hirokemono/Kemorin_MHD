@@ -98,34 +98,6 @@ extern void * c_MHD_eqs_heat_ctl(void *f_eqs_ctl);
 extern void * c_MHD_eqs_comp_ctl(void *f_eqs_ctl);
 
 
-struct c_array_views * init_c_array_views(struct f_ctl_chara_array *f_carray)
-{
-	int i;
-	struct c_array_views *c_array_vws = (struct c_array_views *) malloc(sizeof(struct c_array_views));
-	if(c_array_vws == NULL){
-		printf("malloc error for c_array_views\n");
-		exit(0);
-	};
-	
-	c_array_vws->c_array_clist = init_chara_clist();
-	for(i=0;i<f_carray->f_num[0];i++){
-		append_chara_clist(f_carray->c_charavalue[i], c_array_vws->c_array_clist);
-	}
-	
-	
-	printf("count_chara_clist %d\n", count_chara_clist(c_array_vws->c_array_clist));
-	for(i=0;i<f_carray->f_num[0];i++){
-		printf("item %d %s\n", i, chara_clist_at_index(i, c_array_vws->c_array_clist)->c_tbl);
-	}
-	return c_array_vws;
-}
-
-void dealloc_c_array_views(struct c_array_views *c_array_vws)
-{
-	dealloc_chara_clist(c_array_vws->c_array_clist);
-	return;
-}
-
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_platform_control *f_plt = (struct f_platform_control *) malloc(sizeof(struct f_platform_control));
@@ -544,6 +516,26 @@ GtkWidget *MHD_sph_shell_ctl_expander(GtkWidget *window, struct f_MHD_sph_shell_
 
 
 
+struct f_MHD_forces_control * init_f_MHD_forces_ctl(void *(*c_load_self)(void *f_parent),
+													void *f_parent)
+{
+	struct f_MHD_forces_control *f_frc_ctl
+			= (struct f_MHD_forces_control *) malloc(sizeof(struct f_MHD_forces_control));
+	if(f_frc_ctl == NULL){
+		printf("malloc error for f_frc_ctl\n");
+		exit(0);
+	};
+	
+	f_frc_ctl->f_self =  c_load_self(f_parent);
+	
+	f_frc_ctl->f_iflag =        (int *)  c_MHD_forces_iflag(f_frc_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_forces_block_name(f_frc_ctl->f_self);
+	f_frc_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_frc_ctl->f_force_names = init_f_ctl_chara_array(c_MHD_forces_array, f_frc_ctl->f_self);
+	return f_frc_ctl;
+};
+
 
 
 struct f_MHD_mom_eq_control * init_f_MHD_mom_eq_ctl(void *(*c_load_self)(void *f_parent),
@@ -777,7 +769,7 @@ void draw_heat_equaiton(struct f_MHD_heat_eq_control *f_heat_ctl, cairo_t *cr)
 	cairo_select_font_face( cr, FONT_NAME, CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL );
 	cairo_move_to( cr, ist, 50 );
 	draw_coef_and_power(f_heat_ctl->f_coef_4_adv_flux, def_size, cr);
-	cairo_show_text( cr, " D ω ∇ Ω" );
+	cairo_show_text( cr, " D ω Ω" );
 	
 	cairo_set_font_size(cr, (int) ((double) def_size*2./3.));
 	cairo_show_text( cr, "t" );

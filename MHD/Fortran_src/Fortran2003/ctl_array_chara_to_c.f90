@@ -28,20 +28,23 @@
 !!     &          bind(C, NAME = 'c_chara_item_charavalue')
 !!      type(c_ptr) function c_chara_array_block_name(c_ctl)            &
 !!     &          bind(C, NAME = 'c_chara_array_block_name')
-!!      type(c_ptr) function c_chara_array_num(c_ctl)                   &
+!!      integer(c_int) function c_chara_array_num(c_ctl)                &
 !!     &          bind(C, NAME = 'c_chara_array_num')
-!!      type(c_ptr) function c_chara_array_icou(c_ctl)                  &
-!!     &          bind(C, NAME = 'c_chara_array_icou')
-!!      type(c_ptr) function c_chara_array_c_tbl(c_ctl)                 &
+!!      type(c_ptr) function c_chara_array_c_tbl(idx_in, c_ctl)         &
 !!     &          bind(C, NAME = 'c_chara_array_c_tbl')
+!!      subroutine c_store_chara_array(c_ctl, idx_in, c_in)             &
+!!     &          bind(C, NAME = 'c_store_chara_array')
 !!        type(c_ptr), value, intent(in) :: c_ctl
+!!        integer(C_int), value, intent(in) :: idx_in
+!!        character(C_char), intent(in) :: c_in(*)
 !!
-!!      subroutine c_dealloc_chara_array(c_ctl)                     &
+!!      subroutine c_dealloc_chara_array(c_ctl)                         &
 !!     &          bind(C, NAME = 'c_dealloc_chara_array')
-!!      subroutine c_alloc_chara_array(c_ctl)                       &
+!!      subroutine c_alloc_chara_array(num, c_ctl)                      &
 !!     &          bind(C, NAME = 'c_alloc_chara_array')
-!!      subroutine c_check_chara_array(c_ctl)                       &
+!!      subroutine c_check_chara_array(c_ctl)                           &
 !!     &          bind(C, NAME = 'c_check_chara_array')
+!!        integer(C_int), value, intent(in) :: num
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module ctl_array_chara_to_c
@@ -176,36 +179,40 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_chara_array_num(c_ctl)                     &
+      integer(c_int) function c_chara_array_num(c_ctl)                  &
      &          bind(C, NAME = 'c_chara_array_num')
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_chara), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_chara_array_num = C_loc(f_ctl%num)
+      c_chara_array_num = f_ctl%num
       end function c_chara_array_num
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_chara_array_icou(c_ctl)                    &
-     &          bind(C, NAME = 'c_chara_array_icou')
+      type(c_ptr) function c_chara_array_c_tbl(idx_in, c_ctl)           &
+     &          bind(C, NAME = 'c_chara_array_c_tbl')
+      integer(C_int), value, intent(in) :: idx_in
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_chara), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_chara_array_icou = C_loc(f_ctl%icou)
-      end function c_chara_array_icou
+      c_chara_array_c_tbl = C_loc(f_ctl%c_tbl(idx_in+1))
+      end function c_chara_array_c_tbl
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_chara_array_c_tbl(c_ctl)                   &
-     &          bind(C, NAME = 'c_chara_array_c_tbl')
+      subroutine c_store_chara_array(c_ctl, idx_in, c_in)               &
+     &          bind(C, NAME = 'c_store_chara_array')
+!
       type(c_ptr), value, intent(in) :: c_ctl
+      integer(C_int), value, intent(in) :: idx_in
+      character(C_char), intent(in) :: c_in(*)
       type(ctl_array_chara), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_chara_array_c_tbl = C_loc(f_ctl%c_tbl)
-      end function c_chara_array_c_tbl
+      f_ctl%c_tbl(idx_in+1) = copy_char_from_c(c_in)
+      end subroutine c_store_chara_array
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -221,12 +228,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine c_alloc_chara_array(c_ctl)                             &
+      subroutine c_alloc_chara_array(num, c_ctl)                        &
      &          bind(C, NAME = 'c_alloc_chara_array')
+      integer(C_int), value, intent(in) :: num
       type(c_ptr), value, intent(in) :: c_ctl
       type(ctl_array_chara), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
+      f_ctl%num =  num
+      f_ctl%icou = num
       call alloc_control_array_chara(f_ctl)
       end subroutine c_alloc_chara_array
 !

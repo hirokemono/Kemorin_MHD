@@ -28,6 +28,7 @@
 #include "control_panel_int2_GTK.h"
 #include "control_panel_chara_real_GTK.h"
 #include "control_panel_chara_int_GTK.h"
+#include "control_panel_chara_GTK.h"
 #include "tree_view_real_GTK.h"
 
 
@@ -65,13 +66,9 @@ extern void * c_chara_real_item_iflag(void *f_ctl);
 extern void * c_chara_real_item_charavalue(void *f_ctl);
 extern void * c_chara_real_item_realvalue(void *f_ctl);
 
-struct c_array_views{
-    int index_c_array;
-    GtkWidget *c_array_tree_view;
-    GtkWidget *c_array_default_view;
-    
-    struct chara_clist *c_array_clist;
-};
+extern void * c_MHD_forces_block_name(void *f_frc_ctl);
+extern void * c_MHD_forces_iflag(void *f_frc_ctl);
+extern void * c_MHD_forces_array(void *f_frc_ctl);
 
 struct f_platform_control{
 	void * f_self;
@@ -204,6 +201,14 @@ struct f_MHD_sph_shell_control{
 };
 
 
+struct f_MHD_forces_control{
+	void * f_self;
+    int * f_iflag;
+	char * c_block_name;
+	
+	struct chara_clist * f_force_names;
+};
+
 
 
 struct f_MHD_mom_eq_control{
@@ -290,7 +295,6 @@ struct f_MHD_equations_views{
 
 
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
-void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray);
 
 void cb_chara_ctl_item(GtkEntry *entry, gpointer data);
 void cb_check_toggle(GtkWidget *widget, gpointer iflag_ptr);
@@ -309,6 +313,9 @@ struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(v
 GtkWidget *MHD_sph_shell_ctl_expander(GtkWidget *window, struct f_MHD_sph_shell_control * f_psph_ctl, 
 									  char * f_fname_psph, struct f_sph_shell_views *f_psph_vws);
 
+
+struct f_MHD_forces_control * init_f_MHD_forces_ctl(void *(*c_load_self)(void *f_parent),
+													void *f_parent);
 
 
 struct f_MHD_mom_eq_control * init_f_MHD_mom_eq_ctl(void *(*c_load_self)(void *f_parent),

@@ -63,80 +63,26 @@ void dealloc_f_ctl_chara_item(struct f_ctl_chara_item *f_citem)
 	return;
 }
 
-struct f_ctl_chara_array * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent), 
-												  void *f_parent)
+struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent), 
+											void *f_parent)
 {
-	struct f_ctl_chara_array *f_carray = (struct f_ctl_chara_array *) malloc(sizeof(struct f_ctl_chara_array));
-	if(f_carray == NULL){
-		printf("malloc error for f_ctl_chara_array\n");
-		exit(0);
-	};
-	f_carray->f_self =  c_load_self(f_parent);
+	struct chara_clist *c_clist = init_chara_clist();
+	c_clist->f_self =  c_load_self(f_parent);
 	
-	f_carray->f_num =         (int *)  c_chara_array_num(f_carray->f_self);
-	f_carray->f_icou =        (int *)  c_chara_array_icou(f_carray->f_self);
-	char *f_block_name =  (char *) c_chara_array_block_name(f_carray->f_self);
-	f_carray->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_carray->f_cctls =       (char *) c_chara_array_c_tbl(f_carray->f_self);
-	
-	f_carray->c_charavalue = (char **) malloc(f_carray->f_num[0] * sizeof(char *));
-	if(f_carray->c_charavalue == NULL){
-		printf("malloc error for f_carray->c_charavalue \n");
-		exit(0);
-	};
-	
+	char *ctmp =  (char *) c_chara_array_block_name(c_clist->f_self);
+	c_clist->clist_name = strngcopy_from_f(ctmp);
 	int i;
-	int flen = 255;
-	for(i=0;i<f_carray->f_num[0];i++){
-		f_carray->c_charavalue[i] = strngcopy_from_f(&f_carray->f_cctls[i*flen]);
+	for(i=0;i<c_chara_array_num(c_clist->f_self);i++){
+		ctmp = (char *) c_chara_array_c_tbl(i, c_clist->f_self);
+		append_chara_clist(strngcopy_from_f(ctmp), c_clist);
 	};
-	/*
-	printf("f_carray->f_self %p \n", f_carray->f_self);
-	printf("f_carray->c_block_name %s %d\n", f_carray->c_block_name, f_carray->f_num[0]);
-	for(i=0;i<f_carray->f_num[0];i++){
-		printf("%d f_carray->c_charavalue %p %s \n", i, 
-			   f_carray->c_charavalue[i], f_carray->c_charavalue[i]);
-	}
-	*/
-	return f_carray;
+	return c_clist;
 }
 
-void reflesh_f_ctl_chara_array(int num_array, struct f_ctl_chara_array *f_carray)
+void reflesh_f_ctl_chara_array(int num_array, struct chara_clist *c_clist)
 {
-	c_dealloc_chara_array(f_carray->f_self);
-	f_carray->f_num[0] = num_array;
-	f_carray->f_icou[0] = num_array;
-	c_alloc_chara_array(f_carray->f_self);
-	
-	f_carray->f_cctls =       (char *) c_chara_array_c_tbl(f_carray->f_self);
-	
-	f_carray->c_charavalue = (char **) malloc(f_carray->f_num[0] * sizeof(char *));
-	if(f_carray->c_charavalue == NULL){
-		printf("malloc error for f_carray->c_charavalue \n");
-		exit(0);
-	};
-	
-	int i;
-	int flen = 255;
-	for(i=0;i<f_carray->f_num[0];i++){
-		f_carray->c_charavalue[i] = strngcopy_from_f(&f_carray->f_cctls[i*flen]);
-	};
-/*	c_check_chara_array(f_carray->f_self); */
-	return;
-}
-
-void dealloc_f_ctl_chara_array(struct f_ctl_chara_array *f_carray)
-{
-	int i;
-	for(i=0;i<f_carray->f_num[0];i++){free(f_carray->c_charavalue[i]);};
-	free(f_carray->c_charavalue);
-	free(f_carray->c_block_name);
-	
-	f_carray->f_cctls = NULL;
-	f_carray->f_icou = NULL;
-	f_carray->f_num = NULL;
-	f_carray->f_self = NULL;
+	c_dealloc_chara_array(c_clist->f_self);
+	c_alloc_chara_array(num_array, c_clist->f_self);
 	return;
 }
 

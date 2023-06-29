@@ -318,7 +318,7 @@ GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
 	GtkWidget *c_tree_view = gtk_tree_view_new();
     GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
 
-    create_text_tree_view(c_tree_view, renderer_text, iso_def_c->iso_area_list);
+    create_text_tree_view(c_tree_view, renderer_text);
     index = append_c_list_from_ctl(index, &iso_def_c->iso_area_list->c_item_head, c_tree_view);
     g_signal_connect(G_OBJECT(renderer_text), "edited", 
                      G_CALLBACK(cb_edited_egrp), (gpointer) iso_def_c);
@@ -333,7 +333,7 @@ GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
 					 (gpointer) c_tree_view);
 	g_signal_connect(G_OBJECT(button_D), "clicked", G_CALLBACK(cb_delete),
 					 (gpointer) c_tree_view);
-	add_chara_list_box_w_addbottun(c_tree_view, 
+	add_chara_list_box_w_addbottun(c_tree_view,
 								   button_A, button_D, vbox_1);
 	return vbox_1;
 };

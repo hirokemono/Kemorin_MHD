@@ -105,10 +105,6 @@ extern void * c_MHD_mdl_bscale_ctl(void *f_model_ctl);
 extern void * c_MHD_mdl_reft_ctl(void *f_model_ctl);
 extern void * c_MHD_mdl_refc_ctl(void *f_model_ctl);
 
-extern void * c_MHD_forces_block_name(void *f_frc_ctl);
-extern void * c_MHD_forces_iflag(void *f_frc_ctl);
-extern void * c_MHD_forces_array(void *f_frc_ctl);
-
 extern void * c_smctl_ctl_block_name(void *f_smctl_ctl);
 extern void * c_smctl_ctl_iflag(void *f_smctl_ctl);
 extern void * c_smctl_ctl_tctl(void *f_smctl_ctl);
@@ -153,16 +149,6 @@ extern void * c_SGS_model_s3df_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_num_sph_filter_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
-
-struct f_MHD_forces_control{
-	void * f_self;
-    int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct f_ctl_chara_array * f_force_names;
-	struct c_array_views * f_force_vws;
-};
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
@@ -381,28 +367,6 @@ boolean_to_text (GBinding *binding,
 	return TRUE;
 }
 */
-
-struct f_MHD_forces_control * init_f_MHD_forces_ctl(void *(*c_load_self)(void *f_parent),
-													void *f_parent)
-{
-	struct f_MHD_forces_control *f_frc_ctl
-			= (struct f_MHD_forces_control *) malloc(sizeof(struct f_MHD_forces_control));
-	if(f_frc_ctl == NULL){
-		printf("malloc error for f_frc_ctl\n");
-		exit(0);
-	};
-	
-	f_frc_ctl->f_self =  c_load_self(f_parent);
-	
-	f_frc_ctl->f_iflag =        (int *)  c_MHD_forces_iflag(f_frc_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_forces_block_name(f_frc_ctl->f_self);
-	f_frc_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_frc_ctl->f_force_names = init_f_ctl_chara_array(c_MHD_forces_array, f_frc_ctl->f_self);
-	f_frc_ctl->f_force_vws =   init_c_array_views(f_frc_ctl->f_force_names);
-	
-	return f_frc_ctl;
-};
 
 
 
@@ -874,28 +838,10 @@ GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
 							   iso_def_c->isosurf_value_ctl);
 	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
 	
-	printf("iso_area_list %d\n", count_chara_clist(iso_def_c->iso_area_list));
-	int index = 0;
-	GtkWidget *c_tree_view = gtk_tree_view_new();
-    GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
-
-    create_text_tree_view(c_tree_view, renderer_text, iso_def_c->iso_area_list);
-    index = append_c_list_from_ctl(index, &iso_def_c->iso_area_list->c_item_head, c_tree_view);
-    g_signal_connect(G_OBJECT(renderer_text), "edited", 
-                     G_CALLBACK(cb_edited_egrp), (gpointer) iso_def_c);
-    
-    
-	printf("index %d\n", index);
-	GtkWidget *button_A = gtk_button_new_with_label("Add");
-	GtkWidget *button_D = gtk_button_new_with_label("Delete");
-	g_object_set_data(G_OBJECT(c_tree_view), "chara_list",
-					  (gpointer) iso_def_c->iso_area_list);
-	g_signal_connect(G_OBJECT(button_A), "clicked", G_CALLBACK(cb_add),
-					 (gpointer) c_tree_view);
-	g_signal_connect(G_OBJECT(button_D), "clicked", G_CALLBACK(cb_delete),
-					 (gpointer) c_tree_view);
-	add_chara_list_box_w_addbottun(c_tree_view, 
-								   button_A, button_D, vbox_1);
+	GtkWidget *c_tree_view = NULL;
+    GtkWidget *expand = add_c_list_box_w_addbottun(iso_def_c->iso_area_list,
+                                                   c_tree_view);
+	gtk_box_pack_start(GTK_BOX(vbox_1), expand, FALSE, FALSE, 0);
 	return vbox_1;
 };
 
@@ -938,6 +884,9 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 struct f_MHD_tree_views{
 	struct f_sph_shell_views *f_psph_vws;
 	struct f_MHD_equations_views *f_eqs_vws;
+	
+	GtkWidget *f_force_tree_view;
+	GtkWidget *f_force_default_view;
 };
 struct f_MHD_tree_views *f_MHD_vws;
 
@@ -981,10 +930,6 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	int iflag_ptr[1];
 	iflag_ptr[0] = 0;
 	
-	GtkWidget *vbox_test = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *expand_MHD_force = draw_control_block(f_MHD_ctl->f_model_ctl->f_frc_ctl->c_block_name, 
-													 f_MHD_ctl->f_model_ctl->f_frc_ctl->f_iflag,
-													 560, 240, window, vbox_test);
 	
 	
 	f_MHD_vws = (struct f_MHD_tree_views *) malloc(sizeof(struct f_MHD_tree_views));
@@ -993,6 +938,8 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 		exit(0);
 	};
 	
+	GtkWidget *vbox_MHD_force = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names, 
+														   f_MHD_vws->f_force_tree_view);
 	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl, window);
 	
 	
@@ -1003,7 +950,7 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 													 560, 400, window, vbox_eqs);
 	
 	GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_force, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m), vbox_MHD_force, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_dimless, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);
 	

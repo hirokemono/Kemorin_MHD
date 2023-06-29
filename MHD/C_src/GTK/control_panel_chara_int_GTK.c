@@ -143,9 +143,8 @@ GtkWidget * add_ci_list_box_w_addbottun(struct chara_int_clist *ci_clist,
 	
 	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	
-	char * ctmp = strngcopy_from_f(c_chara_int_array_block_name(ci_clist->f_self));
 	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
-	GtkWidget *expander = ci_list_box_expander(ctmp, GTK_TREE_VIEW(ci_tree_view), 
+	GtkWidget *expander = ci_list_box_expander(ci_clist->clist_name, GTK_TREE_VIEW(ci_tree_view), 
 											   button_add, button_delete);
 	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox0, FALSE, TRUE, 0);
