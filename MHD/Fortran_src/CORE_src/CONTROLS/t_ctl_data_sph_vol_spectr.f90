@@ -8,9 +8,6 @@
 !> @brief control date for volume averaged spectr data
 !!
 !!@verbatim
-!!      subroutine copy_volume_spectr_ctls(num_ctl, org_vpwr, new_vpwr)
-!!        type(volume_spectr_control), intent(in) :: org_vpwr(num_ctl)
-!!        type(volume_spectr_control), intent(inout) :: new_vpwr(num_ctl)
 !!      subroutine copy_volume_spectr_control(org_vpwr, new_vpwr)
 !!        type(volume_spectr_control), intent(in) :: org_vpwr
 !!        type(volume_spectr_control), intent(inout) :: new_vpwr
@@ -126,22 +123,6 @@
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine copy_volume_spectr_ctls(num_ctl, org_vpwr, new_vpwr)
-!
-      integer(kind = kint), intent(in) :: num_ctl
-      type(volume_spectr_control), intent(in) :: org_vpwr(num_ctl)
-      type(volume_spectr_control), intent(inout) :: new_vpwr(num_ctl)
-!
-      integer(kind = kint) :: i
-!
-      do i = 1, num_ctl
-        call copy_volume_spectr_control(org_vpwr(i), new_vpwr(i))
-      end do
-!
-      end subroutine copy_volume_spectr_ctls
 !
 ! -----------------------------------------------------------------------
 !

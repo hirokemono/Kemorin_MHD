@@ -42,6 +42,7 @@ c_link_ctl_data_divide_sph.o \
 c_link_ctl_data_SGS_model.o \
 c_link_ctl_data_time_steps.o \
 c_link_mhd_evo_scheme_ctl.o \
+c_link_sph_monitor_control.o \
 read_mhd_control_4_c.o \
 ctl_array_chara_to_c.o \
 ctl_array_int_to_c.o \
@@ -93,6 +94,10 @@ c_link_ctl_data_divide_sph.o: $(SRCDIR)/MHD/programs/TESTS/GTK3_test/c_link_ctl_
 c_link_mhd_evo_scheme_ctl.o: $(SRCDIR)/MHD/programs/TESTS/GTK3_test/c_link_mhd_evo_scheme_ctl.f90
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/c_link_mhd_evo_scheme_ctl.f90
+
+c_link_sph_monitor_control.o: $(SRCDIR)/MHD/programs/TESTS/GTK3_test/c_link_sph_monitor_control.f90
+	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/c_link_sph_monitor_control.f90
 
 c_link_ctl_data_time_steps.o: $(SRCDIR)/MHD/programs/TESTS/GTK3_test/c_link_ctl_data_time_steps.f90
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \

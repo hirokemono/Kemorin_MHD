@@ -8,7 +8,10 @@
 !> @brief Monitoring section IO for Control data
 !!
 !!@verbatim
-!!      subroutine append_volume_spectr_ctls(add_vpwr, smonitor_ctl)
+!!      subroutine append_volume_spectr_ctls(idx_in, add_vpwr,          &
+!!     &                                     smonitor_ctl)
+!!      subroutine delete_volume_spectr_ctls(idx_in, smonitor_ctl)
+!!        integer(kind = kint), intent(in) :: idx_in
 !!        type(volume_spectr_control), intent(inout) :: add_vpwr
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!      subroutine dealloc_sph_monitoring_ctl(smonitor_ctl)
@@ -197,33 +200,79 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine append_volume_spectr_ctls(add_vpwr, smonitor_ctl)
+      subroutine append_volume_spectr_ctls(idx_in, add_vpwr,            &
+     &                                     smonitor_ctl)
 !
+      integer(kind = kint), intent(in) :: idx_in
       type(volume_spectr_control), intent(inout) :: add_vpwr
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
-      integer(kind = kint) :: num_tmp = 0
       type(volume_spectr_control), allocatable :: tmp_vpwr(:)
+      integer(kind = kint) :: i
 !
 !
-      num_tmp = smonitor_ctl%num_vspec_ctl
-      allocate(tmp_vpwr(num_tmp))
-      call copy_volume_spectr_ctls                                      &
-     &   (num_tmp, smonitor_ctl%v_pwr, tmp_vpwr)
+      if(idx_in.lt.0 .or. idx_in.gt.smonitor_ctl%num_vspec_ctl) return
+!
+      allocate(tmp_vpwr(smonitor_ctl%num_vspec_ctl))
+      do i = 1, smonitor_ctl%num_vspec_ctl
+        call copy_volume_spectr_control(smonitor_ctl%v_pwr(i),          &
+     &                                  tmp_vpwr(i))
+      end do
 !
       call dealloc_volume_spectr_control(smonitor_ctl)
-      smonitor_ctl%num_vspec_ctl = num_tmp + 1
+      smonitor_ctl%num_vspec_ctl = smonitor_ctl%num_vspec_ctl + 1
       call alloc_volume_spectr_control(smonitor_ctl)
 !
-      call copy_volume_spectr_ctls                                      &
-     &   (num_tmp, tmp_vpwr, smonitor_ctl%v_pwr(1))
+      do i = 1, idx_in
+        call copy_volume_spectr_control(tmp_vpwr(i),                    &
+     &                                  smonitor_ctl%v_pwr(i))
+      end do
+      call copy_volume_spectr_control                                   &
+     &   (add_vpwr, smonitor_ctl%v_pwr(idx_in+1))
+      do i = idx_in+1, smonitor_ctl%num_vspec_ctl-1
+        call copy_volume_spectr_control(tmp_vpwr(i),                    &
+     &                                  smonitor_ctl%v_pwr(i+1))
+      end do
       deallocate(tmp_vpwr)
 !
-      call copy_volume_spectr_control                                   &
-     &   (add_vpwr, smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))
       call reset_volume_spectr_control(add_vpwr)
 !
       end subroutine append_volume_spectr_ctls
+!
+! -----------------------------------------------------------------------
+!
+      subroutine delete_volume_spectr_ctls(idx_in, smonitor_ctl)
+!
+      integer(kind = kint), intent(in) :: idx_in
+      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!
+      type(volume_spectr_control), allocatable :: tmp_vpwr(:)
+      integer(kind = kint) :: i
+!
+!
+      if(idx_in.le.0 .or. idx_in.gt.smonitor_ctl%num_vspec_ctl) return
+
+      allocate(tmp_vpwr(smonitor_ctl%num_vspec_ctl))
+      do i = 1, smonitor_ctl%num_vspec_ctl
+        call copy_volume_spectr_control(smonitor_ctl%v_pwr(i),          &
+     &                                  tmp_vpwr(i))
+      end do
+!
+      call dealloc_volume_spectr_control(smonitor_ctl)
+      smonitor_ctl%num_vspec_ctl = smonitor_ctl%num_vspec_ctl - 1
+      call alloc_volume_spectr_control(smonitor_ctl)
+!
+      do i = 1, idx_in-1
+        call copy_volume_spectr_control(tmp_vpwr(i),                    &
+     &                                  smonitor_ctl%v_pwr(i))
+      end do
+      do i = idx_in, smonitor_ctl%num_vspec_ctl
+        call copy_volume_spectr_control(tmp_vpwr(i+1),                  &
+     &                                  smonitor_ctl%v_pwr(i))
+      end do
+      deallocate(tmp_vpwr)
+!
+      end subroutine delete_volume_spectr_ctls
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -53,6 +53,8 @@
 !
 !>        Structure for dipolarity setting
       type sph_dipolarity_control
+!>        Block name
+        character(len=kchara) :: block_name = 'sph_dipolarity_ctl'
 !>        Structure for truncation lavel for dipolarity
         type(ctl_array_int) :: fdip_truncation_ctl
 !
@@ -93,8 +95,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(fdip_ctl%i_dipolarity_ctl  .gt. 0) return
+      fdip_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -113,13 +116,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_sph_dipolarity_ctl                               &
-     &         (id_control, hd_block, fdip_ctl, level)
+      subroutine write_sph_dipolarity_ctl(id_control, fdip_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(sph_dipolarity_control), intent(in) :: fdip_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -133,14 +134,16 @@
       maxlen = max(maxlen, len_trim(hd_fdip_file_prefix))
       maxlen = max(maxlen, len_trim(hd_fdip_file_format))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 fdip_ctl%block_name)
       call write_control_array_i1(id_control, level,                    &
      &    fdip_ctl%fdip_truncation_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    fdip_ctl%fdip_file_prefix_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    fdip_ctl%fdip_file_format_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                fdip_ctl%block_name)
 !
       end subroutine write_sph_dipolarity_ctl
 !

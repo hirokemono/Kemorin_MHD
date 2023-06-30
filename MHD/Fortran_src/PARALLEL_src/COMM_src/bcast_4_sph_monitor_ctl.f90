@@ -95,7 +95,9 @@
 !
       subroutine bcast_pickup_spectr_ctl(pspec_ctl)
 !
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
 !
       type(pick_spectr_control), intent(inout) :: pspec_ctl
@@ -110,6 +112,9 @@
 !
       call bcast_ctl_type_c1(pspec_ctl%picked_mode_head_ctl)
       call bcast_ctl_type_c1(pspec_ctl%picked_mode_fmt_ctl)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (pspec_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(pspec_ctl%i_pick_sph, 0)
 !
       end subroutine bcast_pickup_spectr_ctl
@@ -119,7 +124,9 @@
       subroutine bcast_gauss_spectr_ctl(g_pwr)
 !
       use t_ctl_data_gauss_coefs
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
 !
       type(gauss_spectr_control), intent(inout) :: g_pwr
@@ -132,6 +139,9 @@
       call bcast_ctl_type_r1(g_pwr%gauss_coefs_radius_ctl)
       call bcast_ctl_type_c1(g_pwr%gauss_coefs_prefix)
       call bcast_ctl_type_c1(g_pwr%gauss_coefs_format)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (g_pwr%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(g_pwr%i_gauss_coef_ctl, 0)
 !
       end subroutine bcast_gauss_spectr_ctl
@@ -172,7 +182,9 @@
 !
       subroutine bcast_layerd_spectr_ctl(lp_ctl)
 !
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
       use t_ctl_data_sph_layer_spectr
 !
@@ -189,6 +201,9 @@
       call bcast_ctl_type_c1(lp_ctl%order_spectra_switch)
       call bcast_ctl_type_c1(lp_ctl%diff_lm_spectra_switch)
       call bcast_ctl_type_c1(lp_ctl%axis_power_switch)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (lp_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(lp_ctl%i_layer_spectr_ctl, 0)
 !
       end subroutine bcast_layerd_spectr_ctl
@@ -197,7 +212,9 @@
 !
       subroutine bcast_sph_dipolarity_ctl(fdip_ctl)
 !
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
       use t_ctl_data_sph_dipolarity
 !
@@ -207,6 +224,9 @@
       call bcast_ctl_array_i1(fdip_ctl%fdip_truncation_ctl)
       call bcast_ctl_type_c1(fdip_ctl%fdip_file_prefix_ctl)
       call bcast_ctl_type_c1(fdip_ctl%fdip_file_format_ctl)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (fdip_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(fdip_ctl%i_dipolarity_ctl, 0)
 !
       end subroutine bcast_sph_dipolarity_ctl
@@ -216,7 +236,9 @@
 !
       subroutine bcast_data_on_circles_ctl(circ_ctls)
 !
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
       use t_ctl_data_circles
 !
@@ -224,7 +246,10 @@
       integer(kind = kint) :: i
 !
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (circ_ctls%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(circ_ctls%num_circ_ctl, 0)
+!
       if(my_rank .ne. 0) call alloc_data_on_circles_ctl(circ_ctls)
 !
       do i = 1, circ_ctls%num_circ_ctl
@@ -237,7 +262,9 @@
 !
       subroutine bcast_mid_eq_monitor_ctl(meq_ctl)
 !
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
       use t_ctl_data_mid_equator
 !
@@ -254,6 +281,9 @@
       call bcast_ctl_type_c1(meq_ctl%circle_field_file_ctl)
       call bcast_ctl_type_c1(meq_ctl%circle_spectr_file_ctl)
       call bcast_ctl_type_c1(meq_ctl%circle_file_format_ctl)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (meq_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(meq_ctl%i_mid_equator_ctl, 0)
 !
       end subroutine bcast_mid_eq_monitor_ctl
@@ -262,7 +292,9 @@
 !
       subroutine bcast_ctl_data_dynamobench(dbench_ctl)
 !
+      use transfer_to_long_integers
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
       use t_ctl_data_dynamobench
 !
@@ -277,6 +309,8 @@
       call bcast_ctl_type_c1(dbench_ctl%dbench_field_file_ctl)
       call bcast_ctl_type_c1(dbench_ctl%dbench_spectr_file_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (dbench_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(dbench_ctl%i_dynamobench_ctl, 0)
 !
       end subroutine bcast_ctl_data_dynamobench

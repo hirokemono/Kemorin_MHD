@@ -17,9 +17,8 @@
 !!        type(dynamobench_control), intent(inout) :: dbench_ctl
 !!        type(buffer_for_control), intent(inout) :: c_buf
 !!      subroutine write_ctl_data_dynamobench                           &
-!!     &         (id_control, hd_block, dbench_ctl, level)
+!!     &         (id_control, dbench_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len=kchara), intent(in) :: hd_block
 !!        type(dynamobench_control), intent(in) :: dbench_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
@@ -54,6 +53,10 @@
       implicit  none
 !
       type dynamobench_control
+!>        Block name
+        character(len=kchara) :: block_name                             &
+     &                          = 'dynamo_benchmark_data_ctl'
+!
 !>        Structure for dynanmo benchmark data file prefix
         type(read_character_item) :: dynamobench_file_ctl
 !>        Structure for dynanmo benchmark data file prefix
@@ -126,8 +129,9 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(dbench_ctl%i_dynamobench_ctl .gt. 0) return
+      dbench_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -155,12 +159,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_ctl_data_dynamobench                             &
-     &         (id_control, hd_block, dbench_ctl, level)
+     &         (id_control, dbench_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(dynamobench_control), intent(in) :: dbench_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -177,7 +180,8 @@
       maxlen = max(maxlen, len_trim(hd_dbench_spectr_prefix))
       maxlen = max(maxlen, len_trim(hd_nphi_mid_eq))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 dbench_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    dbench_ctl%dynamobench_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -191,7 +195,8 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    dbench_ctl%nphi_mid_eq_ctl)
 !
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                dbench_ctl%block_name)
 !
       end subroutine write_ctl_data_dynamobench
 !

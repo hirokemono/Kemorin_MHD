@@ -15,9 +15,8 @@
 !!        type(data_on_circles_ctl), intent(inout) :: circ_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_data_on_circles_ctl                            &
-!!     &         (id_control, hd_block, circ_ctls, level)
+!!     &         (id_control, circ_ctls, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len=kchara), intent(in) :: hd_block
 !!        type(data_on_circles_ctl), intent(in) :: circ_ctls
 !!        integer(kind = kint), intent(inout) :: level
 !!
@@ -56,6 +55,9 @@
       implicit  none
 !
       type data_on_circles_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'fields_on_circle_ctl'
+!
         integer(kind = kint) :: num_circ_ctl = 0
 !>        Structure for data on circle
         type(mid_equator_control), allocatable :: meq_ctl(:)
@@ -85,6 +87,7 @@
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(circ_ctls%meq_ctl)) return
       circ_ctls%num_circ_ctl = 0
+      circ_ctls%block_name = hd_block
       call alloc_data_on_circles_ctl(circ_ctls)
 !
       do
@@ -106,24 +109,26 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_data_on_circles_ctl                              &
-     &         (id_control, hd_block, circ_ctls, level)
+     &         (id_control, circ_ctls, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(data_on_circles_ctl), intent(in) :: circ_ctls
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: i
 !
-      level = write_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_array_flag_for_ctl(id_control, level,               &
+     &                                 circ_ctls%block_name)
       do i = 1, circ_ctls%num_circ_ctl
-        write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
-        call write_mid_eq_monitor_ctl(id_control, hd_block,             &
+        write(*,'(2a,i4)', ADVANCE='NO')                                &
+     &          trim(circ_ctls%block_name), ' No. ', i
+        call write_mid_eq_monitor_ctl(id_control,                       &
      &                                circ_ctls%meq_ctl(i), level)
       end do
-      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                                     circ_ctls%block_name)
 !
       end subroutine write_data_on_circles_ctl
 !

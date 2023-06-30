@@ -15,8 +15,7 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(gauss_spectr_control), intent(inout) :: g_pwr
 !!        type(buffer_for_control), intent(inout) :: c_buf
-!!      subroutine write_gauss_spectr_ctl                               &
-!!     &         (id_control, hd_block, g_pwr, level)
+!!      subroutine write_gauss_spectr_ctl(id_control, g_pwr, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(gauss_spectr_control), intent(in) :: g_pwr
@@ -65,6 +64,8 @@
 !
 !
       type gauss_spectr_control
+!>        Block name
+        character(len=kchara) :: block_name = 'gauss_coefficient_ctl'
 !>        Structure for gauss coefficient file prefix
         type(read_character_item) :: gauss_coefs_prefix
 !>        Structure for gauss coefficient file format
@@ -142,8 +143,9 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(g_pwr%i_gauss_coef_ctl .gt. 0) return
+      g_pwr%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -170,13 +172,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_gauss_spectr_ctl                                 &
-     &         (id_control, hd_block, g_pwr, level)
+      subroutine write_gauss_spectr_ctl(id_control, g_pwr, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
 !
       type(gauss_spectr_control), intent(in) :: g_pwr
       integer(kind = kint), intent(inout) :: level
@@ -190,7 +190,8 @@
       maxlen = max(maxlen, len_trim(hd_gauss_coefs_head))
       maxlen = max(maxlen, len_trim(hd_gauss_coefs_fmt))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 g_pwr%block_name)
       call write_control_array_i2(id_control, level,                    &
      &    g_pwr%idx_gauss_ctl)
       call write_control_array_i1(id_control, level,                    &
@@ -205,7 +206,8 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    g_pwr%gauss_coefs_format)
 !
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                g_pwr%block_name)
 !
       end subroutine write_gauss_spectr_ctl
 !

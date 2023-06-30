@@ -145,6 +145,31 @@ extern void * c_SGS_model_s3df_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_num_sph_filter_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
+extern void * c_sph_monitor_ctl_block_name(void *f_smonitor_ctl);
+extern void * c_sph_monitor_ctl_iflag(void *f_smonitor_ctl);
+extern int    c_sph_monitor_num_vspec_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_vspec_ctl(int idx, void *f_smonitor_ctl);
+extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_g_pwr(void *f_smonitor_ctl);
+extern void * c_sph_monitor_pspec_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_circ_ctls(void *f_smonitor_ctl);
+extern void * c_sph_monitor_dbench_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_fdip_ctl(void *f_smonitor_ctl);
+extern void * c_sph_monitor_vol_ave_prefix(void *f_smonitor_ctl);
+extern void * c_sph_monitor_vol_pspec_prefix(void *f_smonitor_ctl);
+extern void * c_sph_mntr_v_pwr_spectr_fmt(void *f_smonitor_ctl);
+extern void * c_sph_mntr_degree_v_spectra_ctl(void *f_smonitor_ctl);
+extern void * c_sph_mntr_order_v_spectra_ctl(void *f_smonitor_ctl);
+extern void * c_sph_mntr_diff_v_lm_spectr_ctl(void *f_smonitor_ctl);
+extern void * c_sph_mntr_axis_v_power_switch(void *f_smonitor_ctl);
+extern void * c_sph_mntr_h_Nusselt_file_pfx(void *f_smonitor_ctl);
+extern void * c_sph_mntr_c_Nusselt_file_pfx(void *f_smonitor_ctl);
+extern void * c_sph_mntr_h_Nusselt_file_fmt(void *f_smonitor_ctl);
+extern void * c_sph_mntr_c_Nusselt_file_fmt(void *f_smonitor_ctl);
+extern void * c_sph_mntr_lscale_file_pfix_ctl(void *f_smonitor_ctl);
+extern void * c_sph_mntr_lscale_file_fmt_ctl(void *f_smonitor_ctl);
+
+
 
 struct f_MHD_SGS_model_control{
 	void * f_self;

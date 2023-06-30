@@ -262,7 +262,8 @@
         call read_each_vol_spectr_ctl(id_control, hd_block,             &
      &                                read_vpwr, c_buf)
         if(read_vpwr%i_vol_spectr_ctl .gt. 0) then
-          call append_volume_spectr_ctls(read_vpwr, smonitor_ctl)
+          call append_volume_spectr_ctls(smonitor_ctl%num_vspec_ctl,    &
+     &                                   read_vpwr, smonitor_ctl)
           read_vpwr%i_vol_spectr_ctl = 0
         end if
       end do
@@ -321,16 +322,16 @@
      &    smonitor_ctl%axis_v_power_switch)
 !
       call write_volume_spectr_ctl(id_control, smonitor_ctl, level)
-      call write_layerd_spectr_ctl(id_control, hd_layer_spec_block,     &
+      call write_layerd_spectr_ctl(id_control,                          &
      &                             smonitor_ctl%lp_ctl, level)
 !
-      call write_pickup_spectr_ctl(id_control, hd_pick_sph_ctl,         &
+      call write_pickup_spectr_ctl(id_control,                          &
      &                             smonitor_ctl%pspec_ctl, level)
-      call write_gauss_spectr_ctl(id_control, hd_gauss_spec_block,      &
+      call write_gauss_spectr_ctl(id_control,                           &
      &                            smonitor_ctl%g_pwr, level)
 !
       call write_sph_dipolarity_ctl(id_control,                         &
-     &    hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, level)
+     &                              smonitor_ctl%fdip_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    smonitor_ctl%heat_Nusselt_file_prefix)
@@ -352,9 +353,9 @@
      &                          smonitor_ctl%typ_scale_file_format_ctl)
 !
       call write_ctl_data_dynamobench(id_control,                       &
-     &    hd_dynamobench_ctl, smonitor_ctl%dbench_ctl, level)
+     &                                smonitor_ctl%dbench_ctl, level)
       call write_data_on_circles_ctl(id_control,                        &
-     &    hd_field_on_circle_ctl, smonitor_ctl%circ_ctls, level)
+     &                               smonitor_ctl%circ_ctls, level)
 !
       level =  write_end_flag_for_ctl(id_control, level,                &
      &                                smonitor_ctl%block_name)
