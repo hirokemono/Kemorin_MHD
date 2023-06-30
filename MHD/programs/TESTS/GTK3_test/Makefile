@@ -109,11 +109,11 @@ ctl_array_real_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_real_to_c
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_array_real_to_c.f90
 
-ctl_chara_int_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_int_array_to_c.f90
+ctl_chara_int_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_int_array_to_c.f90 ctl_array_chara_to_c.o
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_int_array_to_c.f90
 
-ctl_chara_real_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_real_array_to_c.f90
+ctl_chara_real_array_to_c.o: $(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_real_array_to_c.f90 ctl_array_chara_to_c.o
 	$(F90) $(F90OPTFLAGS) -c $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/Fortran_src/Fortran2003/ctl_chara_real_array_to_c.f90
 

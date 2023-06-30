@@ -139,8 +139,7 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_time_step_data                                 &
      &   (id_control, fmctl_ctl%tctl, level)
-      call write_restart_ctl                                            &
-     &   (id_control, hd_restart_file, fmctl_ctl%mrst_ctl, level)
+      call write_restart_ctl(id_control, fmctl_ctl%mrst_ctl, level)
       call write_control_fem_int_points                                 &
      &   (id_control, hd_int_points, fmctl_ctl%fint_ctl, level)
 !

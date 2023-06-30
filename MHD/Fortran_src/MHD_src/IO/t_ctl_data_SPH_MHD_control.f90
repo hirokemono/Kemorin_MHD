@@ -124,8 +124,7 @@
      &                                 smctl_ctl%block_name)
       call write_control_time_step_data                                 &
      &   (id_control, smctl_ctl%tctl, level)
-      call write_restart_ctl                                            &
-     &   (id_control, hd_restart_file, smctl_ctl%mrst_ctl, level)
+      call write_restart_ctl(id_control, smctl_ctl%mrst_ctl, level)
 !
       call write_time_loop_ctl                                          &
      &   (id_control, hd_time_loop, smctl_ctl%mevo_ctl, level)

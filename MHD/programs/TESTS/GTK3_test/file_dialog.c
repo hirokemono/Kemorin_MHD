@@ -197,6 +197,12 @@ extern void * c_time_steps_delta_t_monitor(void *f_tctl);
 extern void * c_time_steps_dt_sgs_coef_ctl(void *f_tctl);
 extern void * c_time_steps_dt_boundary_ctl(void *f_tctl);
 
+
+extern void * c_MHD_restart_ctl_block_name(void *f_tctl);
+extern void * c_MHD_restart_ctl_iflag(void *f_tctl);
+extern void * c_MHD_restart_flag_ctl(void *f_tctl);
+
+
 struct f_MHD_SGS_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -262,6 +268,16 @@ struct f_MHD_model_control{
 	void * f_refc_ctl;
 	struct f_MHD_SGS_model_control * f_sgs_ctl;
 };
+
+struct f_MHD_restart_controls{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_restart_flag_ctl;
+};
+
 
 struct f_time_step_control_ctls{
 	void * f_self;
@@ -574,6 +590,27 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
+struct f_MHD_restart_controls * init_f_MHD_restart_controls(void *(*c_load_self)(void *f_parent), 
+															  void *f_parent)
+{
+	struct f_MHD_restart_controls *f_mrst_ctl 
+			= (struct f_MHD_restart_controls *) malloc(sizeof(struct f_MHD_restart_controls));
+	if(f_mrst_ctl == NULL){
+		printf("malloc error for f_mrst_ctl\n");
+		exit(0);
+	};
+	
+	f_mrst_ctl->f_self =  c_load_self(f_parent);
+	
+	f_mrst_ctl->f_iflag =        (int *) c_MHD_restart_ctl_iflag(f_mrst_ctl->f_self);
+	char *f_block_name =   (char *)  c_MHD_restart_ctl_block_name(f_mrst_ctl->f_self);
+	f_mrst_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_mrst_ctl->f_restart_flag_ctl =   init_f_ctl_chara_item(c_MHD_restart_flag_ctl, f_mrst_ctl->f_self);
+	return f_mrst_ctl;
+};
+
+
 struct f_time_step_control_ctls * init_f_time_step_control_ctls(void *(*c_load_self)(void *f_parent), 
 															  void *f_parent)
 {
@@ -657,7 +694,7 @@ struct f_MHD_control_ctls * init_f_MHD_control_ctls(void *(*c_load_self)(void *f
 	f_smctl_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_smctl_ctl->f_tctl =     init_f_time_step_control_ctls(c_smctl_ctl_tctl, f_smctl_ctl->f_self);
-	f_smctl_ctl->f_mrst_ctl = c_smctl_mrst_ctl(f_smctl_ctl->f_self);
+	f_smctl_ctl->f_mrst_ctl = init_f_MHD_restart_controls(c_smctl_mrst_ctl, f_smctl_ctl->f_self);
 	f_smctl_ctl->f_mevo_ctl = c_smctl_mevo_ctl(f_smctl_ctl->f_self);
 	return f_smctl_ctl;
 }
@@ -1057,7 +1094,18 @@ struct f_MHD_tree_views{
 };
 struct f_MHD_tree_views *f_MHD_vws;
 
-
+GtkWidget * draw_MHD_restart_control_vbox(struct f_MHD_restart_controls *f_mrst_ctl, GtkWidget *window){
+    GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	
+	GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_mrst_ctl->f_restart_flag_ctl);
+	GtkWidget *vbox_step = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_1,  FALSE, FALSE, 0);
+	
+	GtkWidget *expand_rst = draw_control_block(f_mrst_ctl->c_block_name, f_mrst_ctl->f_iflag,
+											   480, 64, window, vbox_step);
+    gtk_box_pack_start(GTK_BOX(vbox_out), expand_rst, FALSE, FALSE, 0);
+	return vbox_out;
+};
 
 GtkWidget * draw_time_step_control_vbox(struct f_time_step_control_ctls *f_tctl, GtkWidget *window){
     GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -1221,13 +1269,14 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);
 	
 	
-	GtkWidget * vbox_plt = draw_platform_control_vbox(f_MHD_ctl->f_plt, window);
-	/*
+	GtkWidget *vbox_plt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget * vbox_plt_c =     draw_platform_control_vbox(f_MHD_ctl->f_plt, window);
 	GtkWidget * vbox_plt_o = draw_platform_control_vbox(f_MHD_ctl->f_org_plt, window);
-	gtk_box_pack_start(GTK_BOX(vbox_plt), vbox_plt_o, FALSE, FALSE, 0);
 	GtkWidget * vbox_plt_n = draw_platform_control_vbox(f_MHD_ctl->f_new_plt, window);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), vbox_plt_c, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), vbox_plt_o, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_plt), vbox_plt_n, FALSE, FALSE, 0);
-	*/
+	
 	GtkWidget *expand_sph_shell = MHD_sph_shell_ctl_expander(window, f_MHD_ctl->f_psph_ctl,
 															 f_MHD_ctl->f_fname_psph, 
 															 f_MHD_vws->f_psph_vws);
@@ -1239,10 +1288,12 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_model, FALSE, FALSE, 0);
 	
 	
-	GtkWidget * vbox_tstep = draw_time_step_control_vbox(f_MHD_ctl->f_smctl_ctl->f_tctl, window);
+	GtkWidget * vbox_tstep =   draw_time_step_control_vbox(f_MHD_ctl->f_smctl_ctl->f_tctl, window);
+	GtkWidget * vbox_restart = draw_MHD_restart_control_vbox(f_MHD_ctl->f_smctl_ctl->f_mrst_ctl, window);
 	
 	GtkWidget *vbox_control = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_tstep, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_restart, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_MHD_control = draw_control_block(f_MHD_ctl->f_smctl_ctl->c_block_name, 
 													 f_MHD_ctl->f_smctl_ctl->f_iflag,
