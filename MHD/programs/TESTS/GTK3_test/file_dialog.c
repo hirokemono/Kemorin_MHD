@@ -197,10 +197,40 @@ extern void * c_time_steps_delta_t_monitor(void *f_tctl);
 extern void * c_time_steps_dt_sgs_coef_ctl(void *f_tctl);
 extern void * c_time_steps_dt_boundary_ctl(void *f_tctl);
 
-
 extern void * c_MHD_restart_ctl_block_name(void *f_tctl);
 extern void * c_MHD_restart_ctl_iflag(void *f_tctl);
 extern void * c_MHD_restart_flag_ctl(void *f_tctl);
+
+
+extern void * c_mhd_evo_scheme_ctl_block_name(void *f_mevo_ctl);
+extern void * c_mhd_evo_scheme_ctl_iflag(void *f_mevo_ctl);
+extern void * c_evo_scheme_coef_implicit_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_coef_imp_v_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_coef_imp_t_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_coef_imp_b_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_coef_imp_c_ctl(void *f_mevo_ctl);
+
+extern void * c_evo_scheme_iflag_supg_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_iflag_supg_v_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_iflag_supg_t_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_iflag_supg_b_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_iflag_supg_c_ctl(void *f_mevo_ctl);
+
+extern void * c_evo_scheme_num_multi_pass(void *f_mevo_ctl);
+extern void * c_evo_scheme_maxiter_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_eps_4_velo_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_eps_4_magne_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_eps_crank_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_eps_B_crank_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_scheme_ctl(void *f_mevo_ctl);
+extern void * c_evo_scheme_diffuse_correct(void *f_mevo_ctl);
+extern void * c_evo_scheme_method_4_CN(void *f_mevo_ctl);
+extern void * c_evo_scheme_precond_4_CN(void *f_mevo_ctl);
+
+extern void * c_evo_scheme_Leg_trans_type(void *f_mevo_ctl);
+extern void * c_evo_scheme_FFT_library(void *f_mevo_ctl);
+extern void * c_evo_scheme_import_mode(void *f_mevo_ctl);
+extern void * c_evo_scheme_leg_vector_len(void *f_mevo_ctl);
 
 
 struct f_MHD_SGS_model_control{
@@ -267,6 +297,43 @@ struct f_MHD_model_control{
 	void * f_reft_ctl;
 	void * f_refc_ctl;
 	struct f_MHD_SGS_model_control * f_sgs_ctl;
+};
+
+struct f_MHD_evo_scheme_controls{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_scheme_ctl;
+	
+	struct f_ctl_real_item *f_coef_implicit_ctl;
+	struct f_ctl_real_item *f_coef_imp_v_ctl;
+	struct f_ctl_real_item *f_coef_imp_t_ctl;
+	struct f_ctl_real_item *f_coef_imp_b_ctl;
+	struct f_ctl_real_item *f_coef_imp_c_ctl;
+	
+	struct f_ctl_chara_item *f_iflag_supg_ctl;
+	struct f_ctl_chara_item *f_iflag_supg_v_ctl;
+	struct f_ctl_chara_item *f_iflag_supg_t_ctl;
+	struct f_ctl_chara_item *f_iflag_supg_b_ctl;
+	struct f_ctl_chara_item *f_iflag_supg_c_ctl;
+	
+	struct f_ctl_int_item *f_num_multi_pass_ctl;
+	struct f_ctl_int_item *f_maxiter_ctl;
+	struct f_ctl_real_item *f_eps_4_velo_ctl;
+	struct f_ctl_real_item *f_eps_4_magne_ctl;
+	struct f_ctl_real_item *f_eps_crank_ctl;
+	struct f_ctl_real_item *f_eps_B_crank_ctl;
+	
+	struct f_ctl_chara_item *f_diffuse_correct;
+	
+	struct f_ctl_chara_item *f_method_4_CN;
+	struct f_ctl_chara_item *f_precond_4_CN;
+	struct f_ctl_chara_item *f_Legendre_trans_type;
+	struct f_ctl_chara_item *f_FFT_library;
+	struct f_ctl_chara_item *f_import_mode;
+	struct f_ctl_int_item *f_leg_vector_len;
 };
 
 struct f_MHD_restart_controls{
@@ -590,6 +657,54 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
+struct f_MHD_evo_scheme_controls * init_f_MHD_evo_scheme_controls(void *(*c_load_self)(void *f_parent), 
+															  void *f_parent)
+{
+	struct f_MHD_evo_scheme_controls *f_mevo_ctl 
+			= (struct f_MHD_evo_scheme_controls *) malloc(sizeof(struct f_MHD_evo_scheme_controls));
+	if(f_mevo_ctl == NULL){
+		printf("malloc error for f_mevo_ctl\n");
+		exit(0);
+	};
+	
+	f_mevo_ctl->f_self =  c_load_self(f_parent);
+	
+	f_mevo_ctl->f_iflag =        (int *) c_mhd_evo_scheme_ctl_iflag(f_mevo_ctl->f_self);
+	char *f_block_name =   (char *)  c_mhd_evo_scheme_ctl_block_name(f_mevo_ctl->f_self);
+	f_mevo_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_mevo_ctl->f_scheme_ctl =         init_f_ctl_chara_item(c_evo_scheme_scheme_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_coef_implicit_ctl =  init_f_ctl_real_item(c_evo_scheme_coef_implicit_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_coef_imp_v_ctl =     init_f_ctl_real_item(c_evo_scheme_coef_imp_v_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_coef_imp_t_ctl =     init_f_ctl_real_item(c_evo_scheme_coef_imp_t_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_coef_imp_b_ctl =     init_f_ctl_real_item(c_evo_scheme_coef_imp_b_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_coef_imp_c_ctl =     init_f_ctl_real_item(c_evo_scheme_coef_imp_c_ctl, f_mevo_ctl->f_self);
+	
+	f_mevo_ctl->f_Legendre_trans_type = init_f_ctl_chara_item(c_evo_scheme_Leg_trans_type, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_FFT_library =         init_f_ctl_chara_item(c_evo_scheme_FFT_library, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_import_mode =         init_f_ctl_chara_item(c_evo_scheme_import_mode, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_leg_vector_len =      init_f_ctl_int_item(c_evo_scheme_leg_vector_len, f_mevo_ctl->f_self);
+	
+	f_mevo_ctl->f_iflag_supg_ctl =     init_f_ctl_chara_item(c_evo_scheme_iflag_supg_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_iflag_supg_v_ctl =   init_f_ctl_chara_item(c_evo_scheme_iflag_supg_v_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_iflag_supg_t_ctl =   init_f_ctl_chara_item(c_evo_scheme_iflag_supg_t_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_iflag_supg_b_ctl =   init_f_ctl_chara_item(c_evo_scheme_iflag_supg_b_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_iflag_supg_c_ctl =   init_f_ctl_chara_item(c_evo_scheme_iflag_supg_c_ctl, f_mevo_ctl->f_self);
+	
+	f_mevo_ctl->f_method_4_CN =        init_f_ctl_chara_item(c_evo_scheme_method_4_CN, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_precond_4_CN =       init_f_ctl_chara_item(c_evo_scheme_precond_4_CN, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_num_multi_pass_ctl = init_f_ctl_int_item(c_evo_scheme_num_multi_pass, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_maxiter_ctl =        init_f_ctl_int_item(c_evo_scheme_maxiter_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_eps_4_velo_ctl =     init_f_ctl_real_item(c_evo_scheme_eps_4_velo_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_eps_4_magne_ctl =    init_f_ctl_real_item(c_evo_scheme_eps_4_magne_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_eps_crank_ctl =      init_f_ctl_real_item(c_evo_scheme_eps_crank_ctl, f_mevo_ctl->f_self);
+	f_mevo_ctl->f_eps_B_crank_ctl =    init_f_ctl_real_item(c_evo_scheme_eps_B_crank_ctl, f_mevo_ctl->f_self);
+	
+	f_mevo_ctl->f_diffuse_correct =    init_f_ctl_chara_item(c_evo_scheme_diffuse_correct, f_mevo_ctl->f_self);
+	return f_mevo_ctl;
+};
+
+
 struct f_MHD_restart_controls * init_f_MHD_restart_controls(void *(*c_load_self)(void *f_parent), 
 															  void *f_parent)
 {
@@ -695,7 +810,7 @@ struct f_MHD_control_ctls * init_f_MHD_control_ctls(void *(*c_load_self)(void *f
 	
 	f_smctl_ctl->f_tctl =     init_f_time_step_control_ctls(c_smctl_ctl_tctl, f_smctl_ctl->f_self);
 	f_smctl_ctl->f_mrst_ctl = init_f_MHD_restart_controls(c_smctl_mrst_ctl, f_smctl_ctl->f_self);
-	f_smctl_ctl->f_mevo_ctl = c_smctl_mevo_ctl(f_smctl_ctl->f_self);
+	f_smctl_ctl->f_mevo_ctl = init_f_MHD_evo_scheme_controls(c_smctl_mevo_ctl, f_smctl_ctl->f_self);
 	return f_smctl_ctl;
 }
 
@@ -1094,6 +1209,71 @@ struct f_MHD_tree_views{
 };
 struct f_MHD_tree_views *f_MHD_vws;
 
+GtkWidget * draw_MHD_evo_scheme_control_vbox(struct f_MHD_evo_scheme_controls *f_mevo_ctl, GtkWidget *window){
+    GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	
+	GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_mevo_ctl->f_scheme_ctl);
+	
+	GtkWidget *hbox_2 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_implicit_ctl);
+	GtkWidget *hbox_3 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_imp_v_ctl);
+	GtkWidget *hbox_4 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_imp_t_ctl);
+	GtkWidget *hbox_5 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_imp_b_ctl);
+	GtkWidget *hbox_6 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_imp_c_ctl);
+	
+	GtkWidget *hbox_7 =  draw_chara_item_entry_hbox(f_mevo_ctl->f_Legendre_trans_type);
+	GtkWidget *hbox_8 =  draw_chara_item_entry_hbox(f_mevo_ctl->f_FFT_library);
+	GtkWidget *hbox_9 =  draw_chara_item_entry_hbox(f_mevo_ctl->f_import_mode);
+	GtkWidget *hbox_10 = draw_int_item_entry_hbox(f_mevo_ctl->f_leg_vector_len);
+	
+	GtkWidget *hbox_11 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_ctl);
+	GtkWidget *hbox_12 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_v_ctl);
+	GtkWidget *hbox_13 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_t_ctl);
+	GtkWidget *hbox_14 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_b_ctl);
+	GtkWidget *hbox_15 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_c_ctl);
+	
+	GtkWidget *hbox_16 = draw_chara_item_entry_hbox(f_mevo_ctl->f_method_4_CN);
+	GtkWidget *hbox_17 = draw_chara_item_entry_hbox(f_mevo_ctl->f_precond_4_CN);
+	GtkWidget *hbox_18 = draw_int_item_entry_hbox(f_mevo_ctl->f_num_multi_pass_ctl);
+	GtkWidget *hbox_19 = draw_int_item_entry_hbox(f_mevo_ctl->f_maxiter_ctl);
+	GtkWidget *hbox_20 = draw_real_item_entry_hbox(f_mevo_ctl->f_eps_4_velo_ctl);
+	GtkWidget *hbox_21 = draw_real_item_entry_hbox(f_mevo_ctl->f_eps_4_magne_ctl);
+	GtkWidget *hbox_22 = draw_real_item_entry_hbox(f_mevo_ctl->f_eps_crank_ctl);
+	GtkWidget *hbox_23 = draw_real_item_entry_hbox(f_mevo_ctl->f_eps_B_crank_ctl);
+	
+	GtkWidget *hbox_24 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_diffuse_correct);
+	
+	GtkWidget *vbox_step = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_1,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_2,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_3,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_4,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_5,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_6,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_7,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_8,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_9,  FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_10, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_11, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_12, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_13, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_14, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_15, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_16, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_17, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_18, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_19, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_20, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_21, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_22, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_23, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_24, FALSE, FALSE, 0);
+	
+	GtkWidget *expand_rst = draw_control_block(f_mevo_ctl->c_block_name, f_mevo_ctl->f_iflag,
+											   480, 320, window, vbox_step);
+    gtk_box_pack_start(GTK_BOX(vbox_out), expand_rst, FALSE, FALSE, 0);
+	return vbox_out;
+};
+
 GtkWidget * draw_MHD_restart_control_vbox(struct f_MHD_restart_controls *f_mrst_ctl, GtkWidget *window){
     GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
@@ -1288,12 +1468,14 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_model, FALSE, FALSE, 0);
 	
 	
-	GtkWidget * vbox_tstep =   draw_time_step_control_vbox(f_MHD_ctl->f_smctl_ctl->f_tctl, window);
-	GtkWidget * vbox_restart = draw_MHD_restart_control_vbox(f_MHD_ctl->f_smctl_ctl->f_mrst_ctl, window);
+	GtkWidget * vbox_tstep =      draw_time_step_control_vbox(f_MHD_ctl->f_smctl_ctl->f_tctl, window);
+	GtkWidget * vbox_restart =    draw_MHD_restart_control_vbox(f_MHD_ctl->f_smctl_ctl->f_mrst_ctl, window);
+	GtkWidget * vbox_evo_scheme = draw_MHD_evo_scheme_control_vbox(f_MHD_ctl->f_smctl_ctl->f_mevo_ctl, window);
 	
 	GtkWidget *vbox_control = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_tstep, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_restart, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_tstep,      FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_restart,    FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_evo_scheme, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_MHD_control = draw_control_block(f_MHD_ctl->f_smctl_ctl->c_block_name, 
 													 f_MHD_ctl->f_smctl_ctl->f_iflag,

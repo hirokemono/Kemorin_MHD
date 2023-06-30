@@ -61,6 +61,7 @@
 !!      eps_4_magne_ctl          5.0e-1
 !!      scheme_ctl              Crank_Nicolson
 !!      diffuse_correct_ctl     On
+!!      coef_implicit_ctl       5.0e-1
 !!      coef_imp_v_ctl          5.0e-1
 !!      coef_imp_t_ctl          5.0e-1
 !!      coef_imp_b_ctl          5.0e-1
@@ -118,6 +119,8 @@
      &      :: hd_diff_correct =   'diffuse_correct_ctl'
 !
       character(len=kchara), parameter, private                         &
+     &      :: hd_coef_implicit =  'coef_implicit_ctl'
+      character(len=kchara), parameter, private                         &
      &      :: hd_coef_imp_v =     'coef_imp_v_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_coef_imp_t =     'coef_imp_t_ctl'
@@ -162,8 +165,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(mevo_ctl%i_time_loop .gt. 0) return
+      mevo_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -188,6 +192,8 @@
      &     (c_buf, hd_eps_4_velo,  mevo_ctl%eps_4_velo_ctl)
         call read_real_ctl_type                                         &
      &     (c_buf, hd_eps_4_magne, mevo_ctl%eps_4_magne_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf, hd_coef_implicit,  mevo_ctl%coef_implicit_ctl)
         call read_real_ctl_type                                         &
      &     (c_buf, hd_coef_imp_v,  mevo_ctl%coef_imp_v_ctl)
         call read_real_ctl_type                                         &
@@ -225,15 +231,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_time_loop_ctl                                    &
-     &         (id_control, hd_block, mevo_ctl, level)
+      subroutine write_time_loop_ctl(id_control, mevo_ctl, level)
 !
       use t_read_control_elements
       use skip_comment_f
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -254,6 +258,7 @@
       maxlen = max(maxlen, len_trim(hd_eps_4_magne))
       maxlen = max(maxlen, len_trim(hd_scheme))
       maxlen = max(maxlen, len_trim(hd_diff_correct))
+      maxlen = max(maxlen, len_trim(hd_coef_implicit))
       maxlen = max(maxlen, len_trim(hd_coef_imp_v))
       maxlen = max(maxlen, len_trim(hd_coef_imp_t))
       maxlen = max(maxlen, len_trim(hd_coef_imp_b))
@@ -267,7 +272,8 @@
       maxlen = max(maxlen, len_trim(hd_sph_transform_mode))
       maxlen = max(maxlen, len_trim(hd_legendre_vect_len))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 mevo_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    mevo_ctl%iflag_supg_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -293,6 +299,8 @@
      &    mevo_ctl%diffuse_correct)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
+     &    mevo_ctl%coef_implicit_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
      &    mevo_ctl%coef_imp_v_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    mevo_ctl%coef_imp_t_ctl)
@@ -317,7 +325,8 @@
      &    mevo_ctl%Legendre_trans_type)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    mevo_ctl%leg_vector_len)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                mevo_ctl%block_name)
 !
       end subroutine write_time_loop_ctl
 !

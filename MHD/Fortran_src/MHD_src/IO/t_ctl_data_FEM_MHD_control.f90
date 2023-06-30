@@ -145,8 +145,7 @@
 !
       call write_CG_solver_param_ctl                                    &
      &   (id_control, hd_solver_ctl, fmctl_ctl%CG_ctl, level)
-      call write_time_loop_ctl                                          &
-     &   (id_control, hd_time_loop, fmctl_ctl%mevo_ctl, level)
+      call write_time_loop_ctl(id_control, fmctl_ctl%mevo_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_fem_mhd_control

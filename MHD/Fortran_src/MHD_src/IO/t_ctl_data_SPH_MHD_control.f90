@@ -56,7 +56,7 @@
 !
 !    label for entry of group
       character(len=kchara), parameter                                  &
-     &      :: hd_time_step = 'time_step_ctl'
+     &      :: hd_time_step =      'time_step_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_restart_file =   'restart_file_ctl'
       character(len=kchara), parameter                                  &
@@ -126,8 +126,7 @@
      &   (id_control, smctl_ctl%tctl, level)
       call write_restart_ctl(id_control, smctl_ctl%mrst_ctl, level)
 !
-      call write_time_loop_ctl                                          &
-     &   (id_control, hd_time_loop, smctl_ctl%mevo_ctl, level)
+      call write_time_loop_ctl(id_control, smctl_ctl%mevo_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level,                &
      &                                smctl_ctl%block_name)
 !
