@@ -94,12 +94,16 @@
 !>        Block name
         character(len=kchara) :: block_name = 'sph_monitor_ctl'
 !
-!
+!>        array name for volume_spectr_control
+        character(len=kchara) :: v_pwr_name = 'volume_spectrum_ctl'
+!>        number of volume_spectr_control
         integer(kind = kint) :: num_vspec_ctl = 0
+!>        array for volume_spectr_control
         type(volume_spectr_control), allocatable :: v_pwr(:)
 !
         type(layerd_spectr_control) :: lp_ctl
 !
+!>        Structure for Gauss coefficient
         type(gauss_spectr_control) :: g_pwr
 !
 !>        Structure for spectr data pickup
@@ -207,20 +211,23 @@
       type(volume_spectr_control), intent(inout) :: add_vpwr
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
+      integer(kind = kint) :: num_tmp
       type(volume_spectr_control), allocatable :: tmp_vpwr(:)
       integer(kind = kint) :: i
 !
 !
       if(idx_in.lt.0 .or. idx_in.gt.smonitor_ctl%num_vspec_ctl) return
 !
-      allocate(tmp_vpwr(smonitor_ctl%num_vspec_ctl))
-      do i = 1, smonitor_ctl%num_vspec_ctl
+      num_tmp = smonitor_ctl%num_vspec_ctl
+      allocate(tmp_vpwr(num_tmp))
+      do i = 1, num_tmp
         call copy_volume_spectr_control(smonitor_ctl%v_pwr(i),          &
      &                                  tmp_vpwr(i))
       end do
 !
       call dealloc_volume_spectr_control(smonitor_ctl)
-      smonitor_ctl%num_vspec_ctl = smonitor_ctl%num_vspec_ctl + 1
+      smonitor_ctl%num_vspec_ctl = num_tmp + 1
+      write(*,*) 'append re', idx_in, smonitor_ctl%num_vspec_ctl
       call alloc_volume_spectr_control(smonitor_ctl)
 !
       do i = 1, idx_in
@@ -229,12 +236,13 @@
       end do
       call copy_volume_spectr_control                                   &
      &   (add_vpwr, smonitor_ctl%v_pwr(idx_in+1))
-      do i = idx_in+1, smonitor_ctl%num_vspec_ctl-1
+      do i = idx_in+1, num_tmp
         call copy_volume_spectr_control(tmp_vpwr(i),                    &
      &                                  smonitor_ctl%v_pwr(i+1))
       end do
       deallocate(tmp_vpwr)
 !
+      write(*,*) 'append ed', idx_in, smonitor_ctl%num_vspec_ctl
       call reset_volume_spectr_control(add_vpwr)
 !
       end subroutine append_volume_spectr_ctls

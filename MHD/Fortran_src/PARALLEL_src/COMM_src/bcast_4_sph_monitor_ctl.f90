@@ -74,6 +74,8 @@
       call bcast_ctl_data_dynamobench(smonitor_ctl%dbench_ctl)
 !
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (smonitor_ctl%v_pwr_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(smonitor_ctl%num_vspec_ctl, 0)
       if(smonitor_ctl%num_vspec_ctl .gt. 0 .and. my_rank .gt. 0) then
         allocate(smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl))

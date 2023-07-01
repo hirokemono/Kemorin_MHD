@@ -248,8 +248,9 @@
       type(volume_spectr_control) :: read_vpwr
 !
 !
-      if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(smonitor_ctl%num_vspec_ctl .gt. 0) return
+      smonitor_ctl%v_pwr_name = hd_block
+      if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       read_vpwr%i_vol_spectr_ctl = 0
       smonitor_ctl%num_vspec_ctl = 0
       call alloc_volume_spectr_control(smonitor_ctl)
@@ -380,13 +381,13 @@
       if(smonitor_ctl%num_vspec_ctl .le. 0) return
 !
       level = write_array_flag_for_ctl(id_control, level,               &
-     &                                smonitor_ctl%v_pwr(1)%block_name)
+     &                                 smonitor_ctl%v_pwr_name)
       do i = 1, smonitor_ctl%num_vspec_ctl
           call write_each_vol_spectr_ctl                                &
      &       (id_control, smonitor_ctl%v_pwr(i), level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level,           &
-     &                                smonitor_ctl%v_pwr(1)%block_name)
+     &                                     smonitor_ctl%v_pwr_name)
 !
       end subroutine write_volume_spectr_ctl
 !

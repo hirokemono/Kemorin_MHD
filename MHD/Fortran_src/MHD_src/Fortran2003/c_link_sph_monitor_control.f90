@@ -11,6 +11,8 @@
 !!      type(c_ptr) function c_sph_monitor_ctl_iflag(c_ctl)             &
 !!     &          bind(C, NAME = 'c_sph_monitor_ctl_iflag')
 !!
+!!      type(c_ptr) function c_sph_monitor_ctl_v_pwr_name(c_ctl)        &
+!!     &          bind(C, NAME = 'c_sph_monitor_ctl_v_pwr_name')
 !!      integer(c_int) function c_sph_monitor_num_vspec_ctl(c_ctl)      &
 !!     &          bind(C, NAME = 'c_sph_monitor_num_vspec_ctl')
 !!      type(c_ptr) function c_sph_monitor_vspec_ctl(idx_in, c_ctl)     &
@@ -89,6 +91,16 @@
       end function c_sph_monitor_ctl_iflag
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_monitor_ctl_v_pwr_name(c_ctl)          &
+     &          bind(C, NAME = 'c_sph_monitor_ctl_v_pwr_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_monitor_ctl_v_pwr_name = C_loc(f_ctl%v_pwr_name)
+      end function c_sph_monitor_ctl_v_pwr_name
+!
 !  ---------------------------------------------------------------------
 !
       integer(c_int) function c_sph_monitor_num_vspec_ctl(c_ctl)        &
