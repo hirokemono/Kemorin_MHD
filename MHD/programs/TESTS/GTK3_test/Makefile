@@ -3,7 +3,7 @@ SHELL = /bin/sh
 SRCDIR = /Users/matsui/src_kemo
 WORKDIR = $(SRCDIR)/work
 CC=gcc
-F90=mpif90
+F90=gfortran
 
 F90OPTFLAGS = -O3 -Wall -g -fopenmp  $(F_INCLUDE)
 F90CPPFLAGS =  -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -DBLAS -DHDF5_IO -DGLFW3
