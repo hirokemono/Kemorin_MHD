@@ -17,11 +17,10 @@ KEMO_INCLUDE = -I. -I./GTK \
 -I$(SRCDIR)/MHD/C_src/GTK \
 -I$(SRCDIR)/MHD/C_src/CONTROLS
 
-KEMO_LIBS = -L/Users/matsui/src_kemo/work \
--lkemo_MHD \
--lkemo_viz \
--lkemo_parallel \
--lkemo_solver \
+KEMO_LIBS = \
+-L/Users/matsui/src_kemo/MHD/pythons \
+-lcalypso_to_pythons \
+-L/Users/matsui/src_kemo/work \
 -lkemo_core \
 -lkemo_c
 
@@ -37,21 +36,7 @@ control_panel_4_dimless_GTK.o
 
 
 MODULES = \
-c_link_ctl_data_sph_shell.o \
-c_link_ctl_data_divide_sph.o \
-c_link_ctl_data_SGS_model.o \
-c_link_ctl_data_time_steps.o \
-c_link_mhd_evo_scheme_ctl.o \
-c_link_sph_monitor_control.o \
-read_mhd_control_4_c.o \
-ctl_array_chara_to_c.o \
-ctl_array_int_to_c.o \
-ctl_array_real_to_c.o \
-ctl_chara_int_array_to_c.o \
-ctl_chara_real_array_to_c.o \
-ctl_int_real_array_to_c.o \
-ctl_int2_array_to_c.o \
-ctl_data_platforms_to_c.o
+read_mhd_control_4_c.o
 
 all: control_GTK
 

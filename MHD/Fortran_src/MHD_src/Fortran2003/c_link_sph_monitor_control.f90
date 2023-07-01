@@ -28,10 +28,11 @@
 !!     &          bind(C, NAME = 'c_sph_monitor_dbench_ctl')
 !!      type(c_ptr) function c_sph_monitor_fdip_ctl(c_ctl)              &
 !!     &          bind(C, NAME = 'c_sph_monitor_fdip_ctl')
-!!      type(c_ptr) function c_sph_monitor_vol_ave_prefix(c_ctl)        &
-!!     &          bind(C, NAME = 'c_sph_monitor_vol_ave_prefix')
-!!      type(c_ptr) function c_sph_monitor_vol_pspec_prefix(c_ctl)      &
-!!     &          bind(C, NAME = 'c_sph_monitor_vol_pspec_prefix')
+!!
+!!      type(c_ptr) function c_sph_mntr_vol_ave_prefix(c_ctl)           &
+!!     &          bind(C, NAME = 'c_sph_mntr_vol_ave_prefix')
+!!      type(c_ptr) function c_sph_mntr_vol_pspec_prefix(c_ctl)         &
+!!     &          bind(C, NAME = 'c_sph_mntr_vol_pspec_prefix')
 !!      type(c_ptr) function c_sph_mntr_v_pwr_spectr_fmt(c_ctl)         &
 !!     &          bind(C, NAME = 'c_sph_mntr_v_pwr_spectr_fmt')
 !!      type(c_ptr) function c_sph_mntr_degree_v_spectra_ctl(c_ctl)     &
@@ -59,7 +60,7 @@
       module c_link_sph_monitor_control
 !
       use iso_c_binding
-      use t_ctl_data_mhd_evo_scheme
+      use t_ctl_data_4_sph_monitor
 !
       implicit none
 !
@@ -172,24 +173,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_sph_monitor_vol_ave_prefix(c_ctl)          &
-     &          bind(C, NAME = 'c_sph_monitor_vol_ave_prefix')
+      type(c_ptr) function c_sph_mntr_vol_ave_prefix(c_ctl)             &
+     &          bind(C, NAME = 'c_sph_mntr_vol_ave_prefix')
       type(c_ptr), value, intent(in) :: c_ctl
       type(sph_monitor_control), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_sph_monitor_vol_ave_prefix = C_loc(f_ctl%volume_average_prefix)
-      end function c_sph_monitor_vol_ave_prefix
+      c_sph_mntr_vol_ave_prefix = C_loc(f_ctl%volume_average_prefix)
+      end function c_sph_mntr_vol_ave_prefix
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_sph_monitor_vol_pspec_prefix(c_ctl)        &
-     &          bind(C, NAME = 'c_sph_monitor_vol_pspec_prefix')
+      type(c_ptr) function c_sph_mntr_vol_pspec_prefix(c_ctl)           &
+     &          bind(C, NAME = 'c_sph_mntr_vol_pspec_prefix')
       type(c_ptr), value, intent(in) :: c_ctl
       type(sph_monitor_control), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_sph_monitor_vol_pspec_prefix                                    &
+      c_sph_mntr_vol_pspec_prefix                                       &
      &                     = C_loc(f_ctl%volume_pwr_spectr_prefix)
-      end function c_sph_monitor_vol_pspec_prefix
+      end function c_sph_mntr_vol_pspec_prefix
 !
 !  ---------------------------------------------------------------------
 !

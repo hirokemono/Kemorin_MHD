@@ -363,7 +363,7 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	GtkWidget *color_flags_tree_view
 			= create_control_flags_tree_view(iso_fld_c->flag_iso_color);
 	
-	add_control_combobox_vbox(iso_fld_c->output_type_ctl, iso_fld_c->output_type_ctl,
+	add_control_combobox_vbox(iso_fld_c->output_type_ctl->c_tbl, iso_fld_c->output_type_ctl->c_tbl,
 							  iso_fld_c->flag_iso_color, 
 							  color_flags_tree_view, vbox_1);
 	printf("%le\n", iso_fld_c->output_value_ctl->r_data);

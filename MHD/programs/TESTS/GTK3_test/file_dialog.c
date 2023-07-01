@@ -51,30 +51,6 @@ extern void * c_visualizations_lic_ctls(void *f_viz_ctls);
 extern void * c_visualizations_repart_ctl(void *f_viz_ctls);
 extern void * c_visualizations_fname_vrepart(void *f_viz_ctls);
 
-extern void * c_sph_monitor_ctl_block_name(void *f_smonitor_ctl);
-extern void * c_sph_monitor_ctl_iflag(void *f_smonitor_ctl);
-extern void * c_sph_monitor_num_vspec_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_v_pwr(int i, void *f_smonitor_ctl);
-extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_g_pwr(void *f_smonitor_ctl);
-extern void * c_sph_monitor_pspec_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_circ_ctls(void *f_smonitor_ctl);
-extern void * c_sph_monitor_dbench_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_fdip_ctl(void *f_smonitor_ctl);
-extern void * c_sph_mntr_vave_spectr_prefix(void *f_smonitor_ctl);
-extern void * c_sph_mntr_v_pwr_spectr_prefix(void *f_smonitor_ctl);
-extern void * c_sph_mntr_v_pwr_spectr_fmt(void *f_smonitor_ctl);
-extern void * c_sph_mntr_l_v_pwr_switch(void *f_smonitor_ctl);
-extern void * c_sph_mntr_m_v_pwr_switch(void *f_smonitor_ctl);
-extern void * c_sph_mntr_diff_lm_vpwr_switch(void *f_smonitor_ctl);
-extern void * c_sph_mntr_axis_v_power_switch(void *f_smonitor_ctl);
-extern void * c_heat_Nusselt_file_prefix(void *f_smonitor_ctl);
-extern void * c_comp_Nusselt_file_prefix(void *f_smonitor_ctl);
-extern void * c_heat_Nusselt_file_fmt(void *f_smonitor_ctl);
-extern void * c_comp_Nusselt_file_fmt(void *f_smonitor_ctl);
-extern void * c_sph_typ_scale_file_prefix(void *f_smonitor_ctl);
-extern void * c_sph_typ_scale_file_fmt_ctl(void *f_smonitor_ctl);
-
 extern void * c_node_monitor_ctl_block_name(void *f_nmtr_ctl);
 extern void * c_node_monitor_ctl_iflag(void *f_nmtr_ctl);
 extern void * c_node_monitor_xx_monitor_ctl(void *f_nmtr_ctl);
@@ -155,8 +131,8 @@ extern void * c_sph_monitor_pspec_ctl(void *f_smonitor_ctl);
 extern void * c_sph_monitor_circ_ctls(void *f_smonitor_ctl);
 extern void * c_sph_monitor_dbench_ctl(void *f_smonitor_ctl);
 extern void * c_sph_monitor_fdip_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_vol_ave_prefix(void *f_smonitor_ctl);
-extern void * c_sph_monitor_vol_pspec_prefix(void *f_smonitor_ctl);
+extern void * c_sph_mntr_vol_ave_prefix(void *f_smonitor_ctl);
+extern void * c_sph_mntr_vol_pspec_prefix(void *f_smonitor_ctl);
 extern void * c_sph_mntr_v_pwr_spectr_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_degree_v_spectra_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_order_v_spectra_ctl(void *f_smonitor_ctl);
@@ -244,7 +220,7 @@ struct f_MHD_sph_monitor_ctls{
 	
 	char * c_block_name;
 	
-	int * f_num_vspec_ctl;
+	int f_num_vspec_ctl;
 	void ** f_v_pwr;
 	void * f_lp_ctl;
 	void * f_g_pwr;
@@ -252,19 +228,20 @@ struct f_MHD_sph_monitor_ctls{
 	void * f_circ_ctls;
 	void * f_dbench_ctl;
 	void * f_fdip_ctl;
-	void * f_volume_average_prefix;
-	void * f_volume_pwr_spectr_prefix;
-	void * f_volume_pwr_spectr_format;
-	void * f_degree_v_spectra_switch;
-	void * f_order_v_spectra_switch;
-	void * f_diff_v_lm_spectra_switch;
-	void * f_axis_v_power_switch;
-	void * f_heat_Nusselt_file_prefix;
-	void * f_comp_Nusselt_file_prefix;
-	void * f_heat_Nusselt_file_format;
-	void * f_comp_Nusselt_file_format;
-	void * f_typ_scale_file_prefix_ctl;
-	void * f_typ_scale_file_format_ctl;
+	
+	struct f_ctl_chara_item * f_volume_average_prefix;
+	struct f_ctl_chara_item * f_volume_pwr_spectr_prefix;
+	struct f_ctl_chara_item * f_volume_pwr_spectr_format;
+	struct f_ctl_chara_item * f_degree_v_spectra_switch;
+	struct f_ctl_chara_item * f_order_v_spectra_switch;
+	struct f_ctl_chara_item * f_diff_v_lm_spectra_switch;
+	struct f_ctl_chara_item * f_axis_v_power_switch;
+	struct f_ctl_chara_item * f_heat_Nusselt_file_prefix;
+	struct f_ctl_chara_item * f_comp_Nusselt_file_prefix;
+	struct f_ctl_chara_item * f_heat_Nusselt_file_format;
+	struct f_ctl_chara_item * f_comp_Nusselt_file_format;
+	struct f_ctl_chara_item * f_typ_scale_file_prefix_ctl;
+	struct f_ctl_chara_item * f_typ_scale_file_format_ctl;
 };
 
 
@@ -502,40 +479,41 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	
 	f_smonitor_ctl->f_num_vspec_ctl = c_sph_monitor_num_vspec_ctl(f_smonitor_ctl->f_self);
 	
-	f_smonitor_ctl->f_v_pwr = (void **) malloc(f_smonitor_ctl->f_num_vspec_ctl[0] * sizeof(void *));
+	f_smonitor_ctl->f_v_pwr = (void **) malloc(f_smonitor_ctl->f_num_vspec_ctl * sizeof(void *));
 	if(f_smonitor_ctl->f_v_pwr == NULL){
 		printf("malloc error for f_smonitor_ctl->f_v_pwr\n");
 		exit(0);
 	};
-	printf("f_smonitor_ctl->f_num_vspec_ctl[0] %d\n", f_smonitor_ctl->f_num_vspec_ctl[0]);
+	printf("f_smonitor_ctl->f_num_vspec_ctl %d\n", f_smonitor_ctl->f_num_vspec_ctl);
 	int i;
-	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl[0];i++){
+	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl;i++){
 		f_smonitor_ctl->f_v_pwr[i] = (void *) malloc(sizeof(void));
 		if(f_smonitor_ctl->f_v_pwr[i] == NULL){
 			printf("malloc error for %d -th f_smonitor_ctl->f_v_pwr\n", i);
 			exit(0);
 		};
-		f_smonitor_ctl->f_v_pwr[i] = c_sph_monitor_v_pwr((i+1), f_smonitor_ctl->f_self);
+		f_smonitor_ctl->f_v_pwr[i] = c_sph_monitor_vspec_ctl((i), f_smonitor_ctl->f_self);
 	}
 	f_smonitor_ctl->f_lp_ctl =     c_sph_monitor_lp_ctl(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_g_pwr =     c_sph_monitor_g_pwr(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_pspec_ctl =     c_sph_monitor_pspec_ctl(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_circ_ctls =     c_sph_monitor_circ_ctls(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_dbench_ctl =     c_sph_monitor_dbench_ctl(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_fdip_ctl =     c_sph_monitor_fdip_ctl(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_volume_average_prefix =     c_sph_mntr_vave_spectr_prefix(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_volume_pwr_spectr_prefix =     c_sph_mntr_v_pwr_spectr_prefix(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_volume_pwr_spectr_format =     c_sph_mntr_v_pwr_spectr_fmt(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_degree_v_spectra_switch =     c_sph_mntr_l_v_pwr_switch(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_order_v_spectra_switch =     c_sph_mntr_m_v_pwr_switch(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_diff_v_lm_spectra_switch =  c_sph_mntr_diff_lm_vpwr_switch(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_axis_v_power_switch =       c_sph_mntr_axis_v_power_switch(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_heat_Nusselt_file_prefix =  c_heat_Nusselt_file_prefix(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_comp_Nusselt_file_prefix =  c_comp_Nusselt_file_prefix(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_heat_Nusselt_file_format =  c_heat_Nusselt_file_fmt(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_comp_Nusselt_file_format =  c_comp_Nusselt_file_fmt(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_typ_scale_file_prefix_ctl = c_sph_typ_scale_file_prefix(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_typ_scale_file_format_ctl = c_sph_typ_scale_file_fmt_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_g_pwr =      c_sph_monitor_g_pwr(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_pspec_ctl =  c_sph_monitor_pspec_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_circ_ctls =  c_sph_monitor_circ_ctls(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_dbench_ctl = c_sph_monitor_dbench_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_fdip_ctl =   c_sph_monitor_fdip_ctl(f_smonitor_ctl->f_self);
+	
+	f_smonitor_ctl->f_volume_average_prefix =     init_f_ctl_chara_item(c_sph_mntr_vol_ave_prefix, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_volume_pwr_spectr_prefix =  init_f_ctl_chara_item(c_sph_mntr_vol_pspec_prefix, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_volume_pwr_spectr_format =  init_f_ctl_chara_item(c_sph_mntr_v_pwr_spectr_fmt, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_degree_v_spectra_switch =   init_f_ctl_chara_item(c_sph_mntr_degree_v_spectra_ctl, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_order_v_spectra_switch =    init_f_ctl_chara_item(c_sph_mntr_order_v_spectra_ctl, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_diff_v_lm_spectra_switch =  init_f_ctl_chara_item(c_sph_mntr_diff_v_lm_spectr_ctl, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_axis_v_power_switch =       init_f_ctl_chara_item(c_sph_mntr_axis_v_power_switch, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_heat_Nusselt_file_prefix =  init_f_ctl_chara_item(c_sph_mntr_h_Nusselt_file_pfx, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_comp_Nusselt_file_prefix =  init_f_ctl_chara_item(c_sph_mntr_c_Nusselt_file_pfx, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_heat_Nusselt_file_format =  init_f_ctl_chara_item(c_sph_mntr_h_Nusselt_file_fmt, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_comp_Nusselt_file_format =  init_f_ctl_chara_item(c_sph_mntr_c_Nusselt_file_fmt, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_typ_scale_file_prefix_ctl = init_f_ctl_chara_item(c_sph_mntr_lscale_file_pfix_ctl, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_typ_scale_file_format_ctl = init_f_ctl_chara_item(c_sph_mntr_lscale_file_fmt_ctl, f_smonitor_ctl->f_self);
 	return f_smonitor_ctl;
 }
 
@@ -675,7 +653,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		g_print( "file name: %s\n", read_file_name);
 		
 		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
-		if ((folder == NULL)) {
+		if (folder == NULL) {
 			int length = strlen(read_file_name);
 			char *stripped_filehead = (char *) calloc(length+1, sizeof(char));
 			char *stripped_dir = (char *) calloc(length+1, sizeof(char));
@@ -702,7 +680,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		}
 		
 		iso_GTK0->iso_c = init_iso_ctl_c();        
-		int iflag = read_iso_ctl_file_c(read_file_name, buf, iso_GTK0->iso_c);
+		read_iso_ctl_file_c(read_file_name, buf, iso_GTK0->iso_c);
 		iflag_read_iso = 1;
 		g_free(read_file_name);
 		printf("iso_output_type_ctl original %s\n", iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
@@ -776,26 +754,6 @@ void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer
 	gtk_widget_show_all(window);
 };
 
-static void cb_edited_egrp(GtkCellRendererText *cell, gchar *path_str, 
-                           gchar *new_text, gpointer user_data){
-    printf("path_str %s\n", path_str);
-    printf("new_text %s\n", new_text);
-}
-
-static void cb_add(GtkButton *button, gpointer user_data)
-{
-	GtkWidget *c_tree_view = GTK_WIDGET(user_data);
-	struct chara_clist *iso_area_list
-			= (struct chara_clist *) g_object_get_data(G_OBJECT(user_data), "chara_list");
-	add_c_list_items_GTK(GTK_TREE_VIEW(c_tree_view), iso_area_list);
-}
-static void cb_delete(GtkButton *button, gpointer user_data)
-{
-	GtkWidget *c_tree_view = GTK_WIDGET(user_data);
-	struct chara_clist *iso_area_list
-			= (struct chara_clist *) g_object_get_data(G_OBJECT(user_data), "chara_list");
-	delete_c_list_items_GTK(GTK_TREE_VIEW(c_tree_view), iso_area_list);
-}
 
 GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
@@ -859,7 +817,7 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	GtkWidget *color_flags_tree_view
 			= create_control_flags_tree_view(iso_fld_c->flag_iso_color);
 	
-	add_control_combobox_vbox(iso_fld_c->output_type_ctl, iso_fld_c->output_type_ctl,
+	add_control_combobox_vbox(iso_fld_c->output_type_ctl->c_tbl, iso_fld_c->output_type_ctl->c_tbl,
 							  iso_fld_c->flag_iso_color, 
 							  color_flags_tree_view, vbox_1);
 	printf("%le\n", iso_fld_c->output_value_ctl->r_data);

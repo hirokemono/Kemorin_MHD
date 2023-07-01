@@ -97,7 +97,9 @@ write_snap_pick_sph_spectr.o \
 time_ave_picked_sph_spectr.o \
 time_ave_sph_volume_mean.o \
 time_ave_sph_monitor_data.o \
-\
+
+
+MOD_MHD_CTL_DLL = \
 read_mhd_control_4_c.o \
 t_control_data_vizs.o \
 t_ctl_data_node_monitor.o \
@@ -141,8 +143,10 @@ ctl_data_comp_model_IO.o \
 ctl_data_mhd_evo_scheme_IO.o \
 ctl_data_node_boundary_IO.o \
 ctl_data_surf_boundary_IO.o \
-ctl_data_temp_model_IO.o \
-\
+ctl_data_temp_model_IO.o
+
+
+MOD_VIZ_CTL_DLL = \
 t_control_data_4_pvr.o \
 t_control_data_pvr_isosurfs.o \
 t_control_data_pvr_sections.o \
@@ -221,6 +225,20 @@ t_ctl_data_volume_repart.o \
 ctl_file_gen_sph_shell_IO.o \
 ctl_data_volume_grouping_IO.o \
 ctl_file_volume_repart_IO.o \
+\
+m_force_control_labels.o \
+m_section_coef_flags.o \
+pvr_surface_enhancement.o \
+set_position_pvr_screen.o \
+t_control_params_4_fline.o \
+t_control_params_4_iso.o \
+set_coefs_of_sections.o \
+set_cross_section_coefs.o \
+set_sections_file_ctl.o \
+set_isosurface_file_ctl.o \
+set_field_comp_for_viz.o \
+t_psf_patch_data.o \
+set_area_4_viz.o
 
 
 
@@ -766,6 +784,10 @@ lib_name:
 mod_list:
 	@echo  MOD_SPH_UTIL_DLL=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_UTIL_DLL)       >> $(MAKENAME)
+	@echo  MOD_MHD_CTL_DLL=  \\      >> $(MAKENAME)
+	@echo  $(MOD_MHD_CTL_DLL)        >> $(MAKENAME)
+	@echo  MOD_VIZ_CTL_DLL=  \\      >> $(MAKENAME)
+	@echo  $(MOD_VIZ_CTL_DLL)        >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 	@echo  MOD_SPH_ENE_SPEC=  \\        >> $(MAKENAME)
 	@echo  $(MOD_SPH_ENE_SPEC)          >> $(MAKENAME)
