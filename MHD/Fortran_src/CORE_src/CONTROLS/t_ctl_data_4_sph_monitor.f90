@@ -227,7 +227,6 @@
 !
       call dealloc_volume_spectr_control(smonitor_ctl)
       smonitor_ctl%num_vspec_ctl = num_tmp + 1
-      write(*,*) 'append re', idx_in, smonitor_ctl%num_vspec_ctl
       call alloc_volume_spectr_control(smonitor_ctl)
 !
       do i = 1, idx_in
@@ -242,7 +241,6 @@
       end do
       deallocate(tmp_vpwr)
 !
-      write(*,*) 'append ed', idx_in, smonitor_ctl%num_vspec_ctl
       call reset_volume_spectr_control(add_vpwr)
 !
       end subroutine append_volume_spectr_ctls
