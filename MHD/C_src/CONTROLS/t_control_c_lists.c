@@ -9,21 +9,26 @@
 
 
 static void init_void_ctl_list(struct void_ctl_list *head){
-    head->void_item = NULL;
+    head->void_item =  NULL;
+    head->list_label = alloc_string(KCHARA_C);
     head->_prev = NULL;
     head->_next = NULL;
     return;
 };
 
-static struct void_ctl_list *add_void_ctl_list_before(void *void_in, struct void_ctl_list *current){
+static struct void_ctl_list *add_void_ctl_list_before(char *clist_name, int *icount, 
+													  void *void_in, struct void_ctl_list *current){
     struct void_ctl_list *added;
     struct void_ctl_list *old_prev;
     
     if ((added = (struct void_ctl_list *) malloc(sizeof(struct void_ctl_list))) == NULL) {
         printf("malloc error\n");
         exit(0);
-    }
+	}
+	init_void_ctl_list(added);
 	added->void_item = void_in;
+	icount[0] = icount[0] +1;
+	sprintf(added->list_label,"%s_%d", clist_name, icount[0]);
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -35,7 +40,8 @@ static struct void_ctl_list *add_void_ctl_list_before(void *void_in, struct void
     return added;
 };
 
-static struct void_ctl_list *add_void_ctl_list_after(void *void_in, struct void_ctl_list *current){
+static struct void_ctl_list *add_void_ctl_list_after(char *clist_name, int *icount, 
+													 void *void_in, struct void_ctl_list *current){
     struct void_ctl_list *added;
     struct void_ctl_list *old_next;
     
@@ -43,7 +49,10 @@ static struct void_ctl_list *add_void_ctl_list_after(void *void_in, struct void_
         printf("malloc error\n");
         exit(0);
     }
+	init_void_ctl_list(added);
 	added->void_item = void_in;
+	icount[0] = icount[0] + 1;
+	sprintf(added->list_label,"%s_%d", clist_name, icount[0]);
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
@@ -92,22 +101,25 @@ static struct void_ctl_list *find_v_ctl_list_item_by_index(int index, struct voi
     return head;
 };
 
-static void append_void_ctl_list(void *void_in, struct void_ctl_list *head){
+static void append_void_ctl_list(char *clist_name, int *icount, 
+								 void *void_in, struct void_ctl_list *head){
     int num = count_void_ctl_list(head);
     if(num > 0) head = find_v_ctl_list_item_by_index(num-1, head);
-	head = add_void_ctl_list_after(void_in, head);
+	head = add_void_ctl_list_after(clist_name, icount, void_in, head);
     return;
 };
 
-static void add_void_ctl_list_before_index(int index, void *void_in, struct void_ctl_list *head){
+static void add_void_ctl_list_before_index(int index, char *clist_name, int *icount, 
+										   void *void_in, struct void_ctl_list *head){
 	head = find_v_ctl_list_item_by_index(index, head);
-	head = add_void_ctl_list_before(void_in, head);
+	head = add_void_ctl_list_before(clist_name, icount, void_in, head);
 	return;
 };
 
-static void add_void_ctl_list_after_index(int index, void *void_in, struct void_ctl_list *head){
+static void add_void_ctl_list_after_index(int index, char *clist_name, int *icount, 
+										  void *void_in, struct void_ctl_list *head){
 	head = find_v_ctl_list_item_by_index(index, head);
-	head = add_void_ctl_list_after(void_in, head);
+	head = add_void_ctl_list_after(clist_name, icount, void_in, head);
 	return;
 };
 
@@ -120,16 +132,19 @@ static void del_void_ctl_list_by_index(int index, struct void_ctl_list *head){
 
 
 
-struct void_clist * init_void_clist(void){
+struct void_clist * init_void_clist(char *label){
     struct void_clist *v_clist;
     if((v_clist = (struct void_clist *) malloc(sizeof(struct void_clist))) == NULL) {
         printf("malloc error for void_clist\n");
         exit(0);
     }
     init_void_ctl_list(&v_clist->c_item_head);
-
+	
     v_clist->iflag_use = 0;
-    v_clist->clist_name = (char *)calloc(32,sizeof(char));
+	v_clist->icount = 0;
+	
+	v_clist->clist_name = alloc_string(KCHARA_C);
+	sprintf(v_clist->clist_name, "%s", label);
     return v_clist;
 };
 void dealloc_void_clist(struct void_clist *v_clist){
@@ -146,15 +161,17 @@ int count_void_clist(struct void_clist *v_clist){
 };
 
 void append_void_clist(void *void_in, struct void_clist *v_clist){
-    append_void_ctl_list(void_in, &v_clist->c_item_head);
+    append_void_ctl_list(v_clist->clist_name, &v_clist->icount, void_in, &v_clist->c_item_head);
     return;
 };
 void add_void_clist_before_index(int index, void *void_in, struct void_clist *v_clist){
-    add_void_ctl_list_before_index(index, void_in, &v_clist->c_item_head);
+	add_void_ctl_list_before_index(index, v_clist->clist_name, &v_clist->icount, 
+								   void_in, &v_clist->c_item_head);
     return;
 };
 void add_void_clist_after_index(int index, void *void_in, struct void_clist *v_clist){
-    add_void_ctl_list_after_index(index, void_in, &v_clist->c_item_head);
+	add_void_ctl_list_after_index(index, v_clist->clist_name, &v_clist->icount, 
+								  void_in, &v_clist->c_item_head);
     return;
 };
 void del_void_clist_by_index(int index, struct void_clist *v_clist){
@@ -165,4 +182,9 @@ void del_void_clist_by_index(int index, struct void_clist *v_clist){
 void * void_clist_at_index(int index, struct void_clist *v_clist){
     struct void_ctl_list *tmp_list = find_v_ctl_list_item_by_index(index, &v_clist->c_item_head);
     return tmp_list->void_item;
+}
+
+char * void_clist_label_at_index(int index, struct void_clist *v_clist){
+    struct void_ctl_list *tmp_list = find_v_ctl_list_item_by_index(index, &v_clist->c_item_head);
+    return tmp_list->list_label;
 }

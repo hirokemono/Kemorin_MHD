@@ -16,7 +16,8 @@
 
 
 struct void_ctl_list{
-    void *void_item;
+	void *void_item;
+	char *list_label;
     
     struct void_ctl_list *_prev;
     struct void_ctl_list *_next;
@@ -29,14 +30,15 @@ struct void_clist{
     
     int iflag_use;
     char *clist_name;
-    
+	int icount;
+	
     int index_bc;
 };
 
 
 /* prototypes */
 
-struct void_clist * init_void_clist(void);
+struct void_clist * init_void_clist(char *label);
 void dealloc_void_clist(struct void_clist *v_clist);
 int count_void_clist(struct void_clist *v_clist);
 
@@ -46,5 +48,6 @@ void add_void_clist_after_index(int index, void *void_in, struct void_clist *v_c
 void del_void_clist_by_index(int index, struct void_clist *v_clist);
 
 void * void_clist_at_index(int index, struct void_clist *v_clist);
+char * void_clist_label_at_index(int index, struct void_clist *v_clist);
 
 #endif /* T_CONTROL_C_LISTS_H_ */
