@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read control arrays
 !!
 !!@verbatim
+!!      subroutine init_int_ctl_item_label(label, int_item)
 !!      subroutine read_integer_ctl_type(c_buf, label, int_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_integer_item), intent(inout) :: int_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_int(array_int)
 !!      subroutine dealloc_control_array_int(array_int)
+!!      subroutine init_int_ctl_array_label(label, array_int)
 !!      subroutine read_control_array_i1                                &
 !!     &         (id_control, label, array_int, c_buf)
 !!        type(ctl_array_int), intent(inout) :: array_int
@@ -74,6 +76,15 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine init_int_ctl_item_label(label, int_item)
+      character(len=kchara), intent(in) :: label
+      type(read_integer_item), intent(inout) :: int_item
+!
+      int_item%item_name = trim(label)
+      end subroutine init_int_ctl_item_label
+!
+!   --------------------------------------------------------------------
+!
       subroutine read_integer_ctl_type(c_buf, label, int_item)
 !
       use t_read_control_elements
@@ -86,7 +97,7 @@
 !
 !
       if(int_item%iflag .gt. 0) return
-      int_item%item_name = trim(label)
+      call init_int_ctl_item_label(label, int_item)
       if(c_buf%header_chara.ne.label) return
 !
       read(c_buf%ctl_buffer,*) tmpchara, int_item%intvalue
@@ -94,7 +105,7 @@
      &                        int_item%intvalue
       int_item%iflag = 1
 !
-       end subroutine read_integer_ctl_type
+      end subroutine read_integer_ctl_type
 !
 !   --------------------------------------------------------------------
 !
@@ -159,6 +170,15 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
+      subroutine init_int_ctl_array_label(label, array_int)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_int), intent(inout) :: array_int
+!
+      array_int%array_name = trim(label)
+      end subroutine init_int_ctl_array_label
+!
+!   --------------------------------------------------------------------
+!
       subroutine read_control_array_i1                                  &
      &         (id_control, label, array_int, c_buf)
 !
@@ -173,7 +193,7 @@
 !
 !
       if(array_int%icou .gt. 0) return
-      array_int%array_name = trim(label)
+      call init_int_ctl_array_label(label, array_int)
       if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
 !
       read_i1%iflag = 0

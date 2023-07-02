@@ -144,15 +144,14 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 
 
 GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_format_list, 
-										 struct f_ctl_chara_item * f_citem, GtkWidget *window){
+										 struct f_ctl_chara_item *f_citem, GtkWidget *window){
 	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
 	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
 	
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget *file_formats_tree_view
 			= create_control_flags_tree_view(label_file_format_list);
-	add_control_combobox_vbox(f_citem->f_charavalue, f_citem->c_charavalue, 
-							  label_file_format_list, 
+	add_control_combobox_vbox(f_citem, label_file_format_list,
 							  file_formats_tree_view, vbox);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);

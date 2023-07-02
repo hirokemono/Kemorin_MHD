@@ -122,6 +122,8 @@
       character(len=kchara), parameter, private                         &
      &       :: hd_del_org_data =       'delete_original_data_flag'
 !
+      private :: init_platforms_labels
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -142,7 +144,9 @@
 !
 !
       if(plt%i_platform .gt. 0) return
+      call init_platforms_labels(plt)
       plt%block_name = trim(hd_block)
+!
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -314,6 +318,71 @@
      &                                plt%block_name)
 !
       end subroutine write_control_platforms
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_platforms_labels(plt)
+!
+      type(platform_data_control), intent(inout) :: plt
+!
+!
+        call init_int_ctl_item_label                                    &
+     &     (hd_num_subdomain, plt%ndomain_ctl)
+        call init_int_ctl_item_label(hd_num_smp, plt%num_smp_ctl)
+!
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_mesh_header, plt%mesh_file_prefix)
+!
+        call init_chara_ctl_item_label(hd_udt_header,                   &
+     &      plt%field_file_prefix)
+        call init_chara_ctl_item_label(hd_rst_header,                   &
+     &      plt%restart_file_prefix)
+        call init_chara_ctl_item_label(hd_spectr_header,                &
+     &      plt%spectr_field_file_prefix)
+!
+        call init_chara_ctl_item_label(hd_sph_files_header,             &
+     &       plt%sph_file_prefix)
+!
+        call init_chara_ctl_item_label(hd_coriolis_tri_int_name,        &
+     &      plt%coriolis_int_file_name)
+        call init_chara_ctl_item_label(hd_bc_data_file_name,            &
+     &      plt%bc_data_file_name_ctl)
+        call init_chara_ctl_item_label(hd_radial_data_file_name,        &
+     &      plt%radial_data_file_name_ctl)
+!
+        call init_chara_ctl_item_label(hd_itp_sph_to_fem,               &
+     &      plt%interpolate_sph_to_fem)
+        call init_chara_ctl_item_label(hd_itp_fem_to_sph,               &
+     &      plt%interpolate_fem_to_sph)
+!
+        call init_chara_ctl_item_label(hd_rayleigh_spectr_dir,          &
+     &       plt%rayleigh_spectr_dir)
+        call init_chara_ctl_item_label(hd_rayleigh_field_dir,           &
+     &       plt%rayleigh_field_dir)
+!
+        call init_chara_ctl_item_label(hd_mesh_file_fmt,                &
+     &      plt%mesh_file_fmt_ctl)
+        call init_chara_ctl_item_label(hd_rst_files_fmt,                &
+     &      plt%restart_file_fmt_ctl)
+        call init_chara_ctl_item_label(hd_udt_files_fmt,                &
+     &      plt%field_file_fmt_ctl)
+        call init_chara_ctl_item_label(hd_sph_files_fmt,                &
+     &      plt%sph_file_fmt_ctl)
+        call init_chara_ctl_item_label(hd_itp_files_fmt,                &
+     &      plt%itp_file_fmt_ctl)
+        call init_chara_ctl_item_label(hd_spect_field_fmt,              &
+     &      plt%spectr_field_fmt_ctl)
+        call init_chara_ctl_item_label(hd_coriolis_file_fmt,            &
+     &      plt%coriolis_file_fmt_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_debug_flag_ctl, plt%debug_flag_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_del_org_data, plt%del_org_data_ctl)
+!
+      end subroutine init_platforms_labels
 !
 !  ---------------------------------------------------------------------
 !

@@ -42,11 +42,11 @@ struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_par
 	f_citem->f_self =  c_load_self(f_parent);
 	
 	f_citem->f_iflag =        (int *) c_chara_item_iflag(f_citem->f_self);
-	char *f_block_name =  (char *) c_chara_item_block_name(f_citem->f_self);
-	f_citem->c_block_name = strngcopy_from_f(f_block_name);
+	char *f_charavalue =  (char *) c_chara_item_block_name(f_citem->f_self);
+	f_citem->c_block_name = strngcopy_from_f(f_charavalue);
 	
-	f_citem->f_charavalue =  (char *) c_chara_item_charavalue(f_citem->f_self);
-	f_citem->c_charavalue = strngcopy_from_f(f_citem->f_charavalue);
+	f_charavalue =  (char *) c_chara_item_charavalue(f_citem->f_self);
+	f_citem->c_charavalue = strngcopy_from_f(f_charavalue);
 	
 	return f_citem;
 }
@@ -57,7 +57,6 @@ void dealloc_f_ctl_chara_item(struct f_ctl_chara_item *f_citem)
 	free(f_citem->c_charavalue);
 	free(f_citem->c_block_name);
 	
-	f_citem->f_charavalue = NULL;
 	f_citem->f_iflag = NULL;
 	f_citem->f_self = NULL;
 	return;

@@ -7,6 +7,7 @@
 
 #include "calypso_GTK.h"
 #include "skip_comment_c.h"
+#include "t_ctl_array_single_items_c.h"
 #include "t_control_chara_IO.h"
 #include "t_control_label_from_f.h"
 #include "tree_views_4_fixed_lists_GTK.h"
@@ -20,7 +21,11 @@
 /*  prototype */
 
 GtkWidget * create_control_flags_tree_view(struct control_labels_f *flag_list);
-void add_control_combobox_vbox(char *f_charavalue, char *c_charavalue,
+void add_control_combobox_vbox_old(char *c_charavalue,
+                               struct control_labels_f *flag_list,
+							   GtkWidget *ctl_flags_tree_view, GtkWidget *vbox_out);
+
+void add_control_combobox_vbox(struct f_ctl_chara_item *f_citem,
                                struct control_labels_f *flag_list,
 							   GtkWidget *ctl_flags_tree_view, GtkWidget *vbox_out);
 

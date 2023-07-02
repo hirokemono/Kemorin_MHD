@@ -17,10 +17,7 @@
 struct f_ctl_chara_item{
 	void * f_self;
 	int * f_iflag;
-	char * f_charavalue;
-	
 	char * c_block_name;
-	
 	char * c_charavalue;
 };
 
@@ -28,7 +25,6 @@ struct f_ctl_real_item{
 	void * f_self;
 	int * f_iflag;
 	double c_realvalue;
-	
 	char * c_block_name;
 };
 

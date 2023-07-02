@@ -22,7 +22,7 @@ struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_par
 	f_citem->f_self =  c_load_self(f_parent);
 	
 	char *f_block_name =  (char *)  c_chara_item_block_name(f_citem->f_self);
-	f_citem->f_iflag =        (int *)   c_chara_item_iflag(f_citem->f_self);
+	f_citem->f_iflag =       (int *)   c_chara_item_iflag(f_citem->f_self);
 	f_citem->f_charavalue =  (char *)  c_chara_item_charavalue(f_citem->f_self);
 	c_chara_item_clength(f_block_name, f_citem->f_namelength);
 	c_chara_item_clength(f_citem->f_charavalue, f_citem->f_clength);

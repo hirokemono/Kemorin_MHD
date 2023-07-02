@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read character control arrays
 !!
 !!@verbatim
+!!      subroutine init_chara_ctl_item_label(label, chara_item)
 !!      subroutine read_chara_ctl_type(c_buf, label, chara_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_character_item), intent(inout) :: chara_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_chara(array_chara)
 !!      subroutine dealloc_control_array_chara(array_chara)
+!!      subroutine init_chara_ctl_array_label(label, array_chara)
 !!      subroutine read_control_array_c1                                &
 !!     &         (id_control, label, array_chara, c_buf)
 !!        type(ctl_array_chara), intent(inout) :: array_chara
@@ -75,6 +77,15 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine init_chara_ctl_item_label(label, chara_item)
+      character(len=kchara), intent(in) :: label
+      type(read_character_item), intent(inout) :: chara_item
+!
+      chara_item%item_name = trim(label)
+      end subroutine init_chara_ctl_item_label
+!
+!   --------------------------------------------------------------------
+!
       subroutine read_chara_ctl_type(c_buf, label, chara_item)
 !
       use t_read_control_elements
@@ -87,7 +98,7 @@
 !
 !
       if(chara_item%iflag .gt. 0) return
-      chara_item%item_name = trim(label)
+      call init_chara_ctl_item_label(label, chara_item)
       if(c_buf%header_chara.ne.label) return
 !
       read(c_buf%ctl_buffer,*) tmpchara, chara_item%charavalue
@@ -157,6 +168,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+      subroutine init_chara_ctl_array_label(label, array_chara)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_chara), intent(inout) :: array_chara
+!
+      array_chara%array_name = trim(label)
+      end subroutine init_chara_ctl_array_label
+!
+!   --------------------------------------------------------------------
+!
       subroutine read_control_array_c1                                  &
      &         (id_control, label, array_chara, c_buf)
 !
@@ -171,7 +191,7 @@
 !
 !
       if(array_chara%icou .gt. 0) return
-      array_chara%array_name = trim(label)
+      call init_chara_ctl_array_label(label, array_chara)
       if(check_array_flag(c_buf, label) .eqv. .FALSE.) return
 !
       read_c1%iflag = 0
