@@ -32,7 +32,9 @@ file_dialog.o \
 ctl_data_platforms_GTK.o \
 \
 control_boxes_single_items_GTK.o \
-control_panel_4_dimless_GTK.o
+control_panel_4_dimless_GTK.o \
+control_panels_MHD_control_GTK.o
+
 
 
 MODULES = \
@@ -53,12 +55,16 @@ control_panel_4_dimless_GTK.o: GTK/control_panel_4_dimless_GTK.c GTK/control_pan
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panel_4_dimless_GTK.c
 
+control_panels_MHD_control_GTK.o: GTK/control_panels_MHD_control_GTK.c GTK/control_panels_MHD_control_GTK.h
+	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panels_MHD_control_GTK.c
+
 
 ctl_data_platforms_GTK.o: ctl_data_platforms_GTK.c ctl_data_platforms_GTK.h GTK/control_boxes_single_items_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/ctl_data_platforms_GTK.c
 
-file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o
+file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o GTK/control_panels_MHD_control_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/file_dialog.c
 

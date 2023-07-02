@@ -13,7 +13,7 @@ extern void * c_chara_item_charavalue(void *f_ctl);
 
 extern void * c_real_item_block_name(void *f_ctl);
 extern void * c_real_item_iflag(void *f_ctl);
-extern void * c_real_item_realvalue(void *f_ctl);
+extern double c_real_item_realvalue(void *f_ctl);
 
 extern void * c_int_item_block_name(void *f_ctl);
 extern void * c_int_item_iflag(void *f_ctl);
@@ -100,7 +100,7 @@ struct f_ctl_real_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_paren
 	char *f_block_name =  (char *) c_real_item_block_name(f_ritem->f_self);
 	f_ritem->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_ritem->f_realvalue =  (double *) c_real_item_realvalue(f_ritem->f_self);
+	f_ritem->c_realvalue = c_real_item_realvalue(f_ritem->f_self);
 	return f_ritem;
 }
 
@@ -109,7 +109,6 @@ void dealloc_f_ctl_real_item(struct f_ctl_real_item *f_ritem)
 {
 	free(f_ritem->c_block_name);
 	
-	f_ritem->f_realvalue = NULL;
 	f_ritem->f_iflag = NULL;
 	f_ritem->f_self = NULL;
 	return;

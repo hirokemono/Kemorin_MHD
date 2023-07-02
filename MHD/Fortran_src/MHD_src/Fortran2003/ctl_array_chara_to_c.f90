@@ -26,6 +26,11 @@
 !!     &          bind(C, NAME = 'c_chara_item_iflag')
 !!      type(c_ptr) function c_chara_item_charavalue(c_ctl)             &
 !!     &          bind(C, NAME = 'c_chara_item_charavalue')
+!!      subroutine c_store_chara_item_charavalue(c_ctl, c_in)           &
+!!     &          bind(C, NAME = 'c_store_chara_item_charavalue')
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!        character(C_char), intent(in) :: c_in(*)
+!!
 !!      type(c_ptr) function c_chara_array_block_name(c_ctl)            &
 !!     &          bind(C, NAME = 'c_chara_array_block_name')
 !!      integer(c_int) function c_chara_array_num(c_ctl)                &
@@ -164,6 +169,18 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_chara_item_charavalue = C_loc(f_ctl%charavalue)
       end function c_chara_item_charavalue
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine c_store_chara_item_charavalue(c_ctl, c_in)             &
+     &          bind(C, NAME = 'c_store_chara_item_charavalue')
+      type(c_ptr), value, intent(in) :: c_ctl
+      character(C_char), intent(in) :: c_in(*)
+      type(read_character_item), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      f_ctl%charavalue = copy_char_from_c(c_in)
+      end subroutine c_store_chara_item_charavalue
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

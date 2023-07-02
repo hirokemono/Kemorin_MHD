@@ -27,7 +27,7 @@ struct f_ctl_chara_item{
 struct f_ctl_real_item{
 	void * f_self;
 	int * f_iflag;
-	double * f_realvalue;
+	double c_realvalue;
 	
 	char * c_block_name;
 };
@@ -54,6 +54,11 @@ struct f_ctl_int_array{
 extern int lengthchara_f();
 extern char * strngcopy_from_f(char * f_char);
 extern void load_chara_from_c(char *c_ctl);
+
+
+
+extern void   c_store_chara_item_charavalue(void *f_ctl, char *c_in);
+extern void   c_store_real_item_realvalue(void *f_ctl, double r_in);
 
 extern void * c_chara_array_block_name(void *f_ctl);
 extern int    c_chara_array_num(void *f_ctl);

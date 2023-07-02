@@ -227,6 +227,12 @@ t_control_MHD_controls.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+t_control_c_lists.o: \
+  $(C_SRCDIR)/CONTROLS/t_control_c_lists.c \
+  $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara2_IO.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.c \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \

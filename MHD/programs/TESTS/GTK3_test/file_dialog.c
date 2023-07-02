@@ -4,10 +4,10 @@
 #include <gtk/gtk.h>
 
 #include "control_elements_IO_c.h"
+#include "t_control_c_lists.h"
 #include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
-#include "t_control_MHD_controls.h"
 
 #include "control_elements_IO_GTK.h"
 #include "control_combobox_GTK.h"
@@ -20,6 +20,7 @@
 
 #include "ctl_data_platforms_GTK.h"
 #include "control_panel_4_dimless_GTK.h"
+#include "control_panels_MHD_control_GTK.h"
 
 extern void c_view_control_sph_SGS_MHD();
 
@@ -123,9 +124,12 @@ extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
 extern void * c_sph_monitor_ctl_block_name(void *f_smonitor_ctl);
 extern void * c_sph_monitor_ctl_iflag(void *f_smonitor_ctl);
+
+extern void * c_sph_monitor_ctl_v_pwr_name(void *f_smonitor_ctl);
 extern int    c_sph_monitor_num_vspec_ctl(void *f_smonitor_ctl);
 extern void * c_sph_monitor_vspec_ctl(int idx, void *f_smonitor_ctl);
 extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
+
 extern void * c_sph_monitor_g_pwr(void *f_smonitor_ctl);
 extern void * c_sph_monitor_pspec_ctl(void *f_smonitor_ctl);
 extern void * c_sph_monitor_circ_ctls(void *f_smonitor_ctl);
@@ -145,6 +149,17 @@ extern void * c_sph_mntr_c_Nusselt_file_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_pfix_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_fmt_ctl(void *f_smonitor_ctl);
 
+extern void * c_sph_v_spectr_ctl_block_name(void *f_v_pwr_item);
+extern void * c_sph_v_spectr_ctl_iflag(void *f_v_pwr_item);
+extern void * c_sph_volume_spec_file_ctl(void *f_v_pwr_item);
+extern void * c_sph_volume_ave_file_ctl(void *f_v_pwr_item);
+extern void * c_sph_volume_spec_format_ctl(void *f_v_pwr_item);
+extern void * c_sph_degree_v_spectra_switch(void *f_v_pwr_item);
+extern void * c_sph_order_v_spectra_switch(void *f_v_pwr_item);
+extern void * c_sph_diff_v_lm_spectra_switch(void *f_v_pwr_item);
+extern void * c_sph_axis_v_power_switch(void *f_v_pwr_item);
+extern void * c_sph_v_spec_inner_radius_ctl(void *f_v_pwr_item);
+extern void * c_sph_v_spec_outer_radius_ctl(void *f_v_pwr_item);
 
 
 struct f_MHD_SGS_model_control{
@@ -213,6 +228,22 @@ struct f_MHD_model_control{
 	struct f_MHD_SGS_model_control * f_sgs_ctl;
 };
 
+struct f_sph_vol_spectr_ctls{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_volume_spec_file_ctl;
+	struct f_ctl_chara_item *f_volume_ave_file_ctl;
+	struct f_ctl_chara_item *f_volume_spec_format_ctl;
+	struct f_ctl_chara_item *f_degree_v_spectra_switch;
+	struct f_ctl_chara_item *f_order_v_spectra_switch;
+	struct f_ctl_chara_item *f_diff_v_lm_spectra_switch;
+	struct f_ctl_chara_item *f_axis_v_power_switch;
+	struct f_ctl_real_item *f_inner_radius_ctl;
+	struct f_ctl_real_item *f_outer_radius_ctl;
+};
 
 struct f_MHD_sph_monitor_ctls{
 	void * f_self;
@@ -220,8 +251,9 @@ struct f_MHD_sph_monitor_ctls{
 	
 	char * c_block_name;
 	
+	char * c_v_pwr_name;
 	int f_num_vspec_ctl;
-	void ** f_v_pwr;
+	struct void_clist *f_v_pwr;
 	void * f_lp_ctl;
 	void * f_g_pwr;
 	void * f_pspec_ctl;
@@ -461,6 +493,34 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
+struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(void *(*c_load_self)(int idx, void *f_parent),
+														  int idx, void *f_parent)
+{
+	struct f_sph_vol_spectr_ctls *f_v_pwr_item 
+			= (struct f_sph_vol_spectr_ctls *) malloc(sizeof(struct f_sph_vol_spectr_ctls));
+	if(f_v_pwr_item == NULL){
+		printf("malloc error for f_v_pwr_item\n");
+		exit(0);
+	};
+	
+	f_v_pwr_item->f_self =  c_load_self(idx, f_parent);
+	
+	f_v_pwr_item->f_iflag = (int *) c_sph_v_spectr_ctl_iflag(f_v_pwr_item->f_self);
+	char *f_block_name =   (char *) c_sph_v_spectr_ctl_block_name(f_v_pwr_item->f_self);
+	f_v_pwr_item->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_v_pwr_item->f_volume_spec_file_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_file_ctl, f_v_pwr_item->f_self);
+	f_v_pwr_item->f_volume_ave_file_ctl =  init_f_ctl_chara_item(c_sph_volume_ave_file_ctl, f_v_pwr_item->f_self);
+	f_v_pwr_item->f_volume_spec_format_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_format_ctl, f_v_pwr_item->f_self);
+	f_v_pwr_item->f_degree_v_spectra_switch =  init_f_ctl_chara_item(c_sph_degree_v_spectra_switch, f_v_pwr_item->f_self);
+	f_v_pwr_item->f_order_v_spectra_switch =  init_f_ctl_chara_item(c_sph_order_v_spectra_switch, f_v_pwr_item->f_self);
+	f_v_pwr_item->f_diff_v_lm_spectra_switch =  init_f_ctl_chara_item(c_sph_diff_v_lm_spectra_switch, f_v_pwr_item->f_self);
+	f_v_pwr_item->f_axis_v_power_switch =  init_f_ctl_chara_item(c_sph_axis_v_power_switch, f_v_pwr_item->f_self);
+	f_v_pwr_item->f_inner_radius_ctl =  init_f_ctl_real_item(c_sph_v_spec_inner_radius_ctl, f_v_pwr_item->f_self);
+	f_v_pwr_item->f_outer_radius_ctl =  init_f_ctl_real_item(c_sph_v_spec_outer_radius_ctl, f_v_pwr_item->f_self);
+	return f_v_pwr_item;
+}
+
 struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_MHD_sph_monitor_ctls *f_smonitor_ctl 
@@ -473,26 +533,20 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	f_smonitor_ctl->f_self =  c_load_self(f_parent);
 	printf("f_self %p\n", f_smonitor_ctl->f_self);
 	
-	f_smonitor_ctl->f_iflag =        (int *) c_sph_monitor_ctl_iflag(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_iflag = (int *) c_sph_monitor_ctl_iflag(f_smonitor_ctl->f_self);
 	char *f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
+    f_block_name =   (char *) c_sph_monitor_ctl_v_pwr_name(f_smonitor_ctl->f_self);
+    f_smonitor_ctl->c_v_pwr_name = strngcopy_from_f(f_block_name);
 	f_smonitor_ctl->f_num_vspec_ctl = c_sph_monitor_num_vspec_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_v_pwr = init_void_clist();
 	
-	f_smonitor_ctl->f_v_pwr = (void **) malloc(f_smonitor_ctl->f_num_vspec_ctl * sizeof(void *));
-	if(f_smonitor_ctl->f_v_pwr == NULL){
-		printf("malloc error for f_smonitor_ctl->f_v_pwr\n");
-		exit(0);
-	};
 	printf("f_smonitor_ctl->f_num_vspec_ctl %d\n", f_smonitor_ctl->f_num_vspec_ctl);
 	int i;
 	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl;i++){
-		f_smonitor_ctl->f_v_pwr[i] = (void *) malloc(sizeof(void));
-		if(f_smonitor_ctl->f_v_pwr[i] == NULL){
-			printf("malloc error for %d -th f_smonitor_ctl->f_v_pwr\n", i);
-			exit(0);
-		};
-		f_smonitor_ctl->f_v_pwr[i] = c_sph_monitor_vspec_ctl((i), f_smonitor_ctl->f_self);
+		append_void_clist((void *) init_f_sph_vol_spectr_ctls(c_sph_monitor_vspec_ctl, i, f_smonitor_ctl->f_self), 
+						  f_smonitor_ctl->f_v_pwr);
 	}
 	f_smonitor_ctl->f_lp_ctl =     c_sph_monitor_lp_ctl(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_g_pwr =      c_sph_monitor_g_pwr(f_smonitor_ctl->f_self);
@@ -837,179 +891,160 @@ struct f_MHD_tree_views{
 };
 struct f_MHD_tree_views *f_MHD_vws;
 
-GtkWidget * draw_MHD_evo_scheme_control_vbox(struct f_MHD_evo_scheme_controls *f_mevo_ctl, GtkWidget *window){
+void store_each_vspec_ctl_to_F(struct f_sph_vol_spectr_ctls *f_v_pwr_item)
+{
+	c_store_chara_item_charavalue(f_v_pwr_item->f_volume_ave_file_ctl->f_self, 
+								  f_v_pwr_item->f_volume_ave_file_ctl->c_charavalue);
+	c_store_chara_item_charavalue(f_v_pwr_item->f_volume_spec_file_ctl->f_self, 
+								  f_v_pwr_item->f_volume_spec_file_ctl->c_charavalue);
+	c_store_chara_item_charavalue(f_v_pwr_item->f_volume_spec_format_ctl->f_self, 
+								  f_v_pwr_item->f_volume_spec_format_ctl->c_charavalue);
+	c_store_chara_item_charavalue(f_v_pwr_item->f_degree_v_spectra_switch->f_self, 
+								  f_v_pwr_item->f_degree_v_spectra_switch->c_charavalue);
+	c_store_chara_item_charavalue(f_v_pwr_item->f_order_v_spectra_switch->f_self, 
+								  f_v_pwr_item->f_order_v_spectra_switch->c_charavalue);
+	c_store_chara_item_charavalue(f_v_pwr_item->f_diff_v_lm_spectra_switch->f_self, 
+								  f_v_pwr_item->f_diff_v_lm_spectra_switch->c_charavalue);
+	c_store_chara_item_charavalue(f_v_pwr_item->f_axis_v_power_switch->f_self, 
+								  f_v_pwr_item->f_axis_v_power_switch->c_charavalue);
+	c_store_real_item_realvalue(f_v_pwr_item->f_inner_radius_ctl->f_self, 
+								f_v_pwr_item->f_inner_radius_ctl->c_realvalue);
+	c_store_real_item_realvalue(f_v_pwr_item->f_outer_radius_ctl->f_self, 
+								f_v_pwr_item->f_outer_radius_ctl->c_realvalue);
+	return;
+}
+
+static GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_v_pwr_item, GtkWidget *window){
     GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_ave_file_ctl);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_spec_file_ctl);
+    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_spec_format_ctl);
+    GtkWidget *hbox_4 = draw_real_item_entry_hbox(f_v_pwr_item->f_inner_radius_ctl);
+    GtkWidget *hbox_5 = draw_real_item_entry_hbox(f_v_pwr_item->f_outer_radius_ctl);
+    GtkWidget *hbox_6 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_degree_v_spectra_switch);
+    GtkWidget *hbox_7 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_order_v_spectra_switch);
+    GtkWidget *hbox_8 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_diff_v_lm_spectra_switch);
+    GtkWidget *hbox_9 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_axis_v_power_switch);
 	
-	GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_mevo_ctl->f_scheme_ctl);
-	
-	GtkWidget *hbox_2 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_implicit_ctl);
-	GtkWidget *hbox_3 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_imp_v_ctl);
-	GtkWidget *hbox_4 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_imp_t_ctl);
-	GtkWidget *hbox_5 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_imp_b_ctl);
-	GtkWidget *hbox_6 =  draw_real_item_entry_hbox(f_mevo_ctl->f_coef_imp_c_ctl);
-	
-	GtkWidget *hbox_7 =  draw_chara_item_entry_hbox(f_mevo_ctl->f_Legendre_trans_type);
-	GtkWidget *hbox_8 =  draw_chara_item_entry_hbox(f_mevo_ctl->f_FFT_library);
-	GtkWidget *hbox_9 =  draw_chara_item_entry_hbox(f_mevo_ctl->f_import_mode);
-	GtkWidget *hbox_10 = draw_int_item_entry_hbox(f_mevo_ctl->f_leg_vector_len);
-	
-	GtkWidget *hbox_11 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_ctl);
-	GtkWidget *hbox_12 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_v_ctl);
-	GtkWidget *hbox_13 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_t_ctl);
-	GtkWidget *hbox_14 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_b_ctl);
-	GtkWidget *hbox_15 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_iflag_supg_c_ctl);
-	
-	GtkWidget *hbox_16 = draw_chara_item_entry_hbox(f_mevo_ctl->f_method_4_CN);
-	GtkWidget *hbox_17 = draw_chara_item_entry_hbox(f_mevo_ctl->f_precond_4_CN);
-	GtkWidget *hbox_18 = draw_int_item_entry_hbox(f_mevo_ctl->f_num_multi_pass_ctl);
-	GtkWidget *hbox_19 = draw_int_item_entry_hbox(f_mevo_ctl->f_maxiter_ctl);
-	GtkWidget *hbox_20 = draw_real_item_entry_hbox(f_mevo_ctl->f_eps_4_velo_ctl);
-	GtkWidget *hbox_21 = draw_real_item_entry_hbox(f_mevo_ctl->f_eps_4_magne_ctl);
-	GtkWidget *hbox_22 = draw_real_item_entry_hbox(f_mevo_ctl->f_eps_crank_ctl);
-	GtkWidget *hbox_23 = draw_real_item_entry_hbox(f_mevo_ctl->f_eps_B_crank_ctl);
-	
-	GtkWidget *hbox_24 = draw_chara_switch_entry_hbox(f_mevo_ctl->f_diffuse_correct);
-	
-	GtkWidget *vbox_step = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_1,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_2,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_3,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_4,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_5,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_6,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_7,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_8,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_9,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_10, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_11, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_12, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_13, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_14, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_15, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_16, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_17, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_18, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_19, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_20, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_21, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_22, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_23, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_step), hbox_24, FALSE, FALSE, 0);
-	
-	GtkWidget *expand_rst = draw_control_block(f_mevo_ctl->c_block_name, f_mevo_ctl->f_iflag,
-											   480, 320, window, vbox_step);
-    gtk_box_pack_start(GTK_BOX(vbox_out), expand_rst, FALSE, FALSE, 0);
-	return vbox_out;
+	GtkWidget *vbox_v_pwr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_9,  FALSE, FALSE, 0);
+	GtkWidget *expand_v_pwr = wrap_into_expanded_frame_gtk(duplicate_underscore(f_v_pwr_item->c_block_name),
+														   480, 240, window, vbox_v_pwr);
+    gtk_box_pack_start(GTK_BOX(vbox_out), expand_v_pwr, FALSE, FALSE, 0);
+    return vbox_out;
 };
 
-GtkWidget * draw_MHD_restart_control_vbox(struct f_MHD_restart_controls *f_mrst_ctl, GtkWidget *window){
+static GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, GtkWidget *window){
     GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	
-	GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_mrst_ctl->f_restart_flag_ctl);
-	GtkWidget *vbox_step = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_1,  FALSE, FALSE, 0);
-	
-	GtkWidget *expand_rst = draw_control_block(f_mrst_ctl->c_block_name, f_mrst_ctl->f_iflag,
-											   480, 64, window, vbox_step);
-    gtk_box_pack_start(GTK_BOX(vbox_out), expand_rst, FALSE, FALSE, 0);
-	return vbox_out;
+	int i;
+	for(i=0;i<count_void_clist(f_v_pwr);i++){
+		void *v_pwr = void_clist_at_index(i, (void *) f_v_pwr);
+		GtkWidget *vbox_z = draw_sph_each_vspec_ctl_vbox((struct f_sph_vol_spectr_ctls *) v_pwr, window);
+		gtk_box_pack_start(GTK_BOX(vbox_out), vbox_z,  FALSE, FALSE, 0);
+	}
+   return vbox_out;
 };
 
-GtkWidget * draw_time_step_control_vbox(struct f_time_step_control_ctls *f_tctl, GtkWidget *window){
+
+static GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ctl, GtkWidget *window){
     GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	int i;
 	
-	GtkWidget *hbox_1 = draw_int_item_entry_hbox(f_tctl->f_i_step_init_ctl);
-	GtkWidget *hbox_2 = draw_int_item_entry_hbox(f_tctl->f_i_step_number_ctl);
-	GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_tctl->f_elapsed_time_ctl);
+	int itmp[1];
+	itmp[0] = f_smonitor_ctl->f_num_vspec_ctl;
+	GtkWidget *vbox_smontr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *vbox_p11 = draw_sph_vol_spectr_ctl_vbox(f_smonitor_ctl->f_v_pwr, window);
+    GtkWidget *expand_vpwrs = draw_control_block(f_smonitor_ctl->c_v_pwr_name, itmp,
+												 480, 440, window, vbox_p11);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_vpwrs, FALSE, FALSE, 0);
 	
-	GtkWidget *hbox_4 = draw_int_item_entry_hbox(f_tctl->f_i_step_check_ctl);
-	GtkWidget *hbox_5 = draw_int_item_entry_hbox(f_tctl->f_i_step_rst_ctl);
-	GtkWidget *hbox_6 =  draw_int_item_entry_hbox(f_tctl->f_i_step_ucd_ctl);
-	GtkWidget *hbox_7 =  draw_int_item_entry_hbox(f_tctl->f_i_step_monitor_ctl);
+	/*
+    GtkWidget *vbox_p11 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_zm = draw_control_block(f_smonitor_ctl->f_lp_ctl->c_block_name,
+                                                     f_smonitor_ctl->f_lp_ctl->f_iflag,
+                                                     560, 500, window, vbox_p11);
+    
+    GtkWidget *vbox_p1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_zm = draw_control_block(f_smonitor_ctl->f_g_pwr->c_block_name,
+                                                     f_smonitor_ctl->f_g_pwr->f_iflag,
+                                                     560, 500, window, vbox_p1);
+    
+    GtkWidget *vbox_p2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_zm = draw_control_block(f_smonitor_ctl->f_pspec_ctl->c_block_name,
+                                                     f_smonitor_ctl->f_pspec_ctl->f_iflag,
+                                                     560, 500, window, vbox_p2);
+    
+    GtkWidget *vbox_p3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_zm = draw_control_block(f_smonitor_ctl->f_circ_ctls->c_block_name,
+                                                     f_smonitor_ctl->f_circ_ctls->f_iflag,
+                                                     560, 500, window, vbox_p3);
+    
+    GtkWidget *vbox_p4 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_zm = draw_control_block(f_smonitor_ctl->f_dbench_ctl->c_block_name,
+                                                     f_smonitor_ctl->f_dbench_ctl->f_iflag,
+                                                     560, 500, window, vbox_p4);
+    
+    GtkWidget *vbox_p5 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_zm = draw_control_block(f_smonitor_ctl->f_fdip_ctl->c_block_name,
+                                                     f_smonitor_ctl->f_fdip_ctl->f_iflag,
+                                                     560, 500, window, vbox_p5);
+    */
+
+    
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_volume_average_prefix);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_volume_pwr_spectr_prefix);
+	GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_volume_pwr_spectr_format);
 	
-	GtkWidget *hbox_8 =  draw_int_item_entry_hbox(f_tctl->f_i_step_psf_ctl);
-	GtkWidget *hbox_9 =  draw_int_item_entry_hbox(f_tctl->f_i_step_iso_ctl);
-	GtkWidget *hbox_10 = draw_int_item_entry_hbox(f_tctl->f_i_step_map_ctl);
-	GtkWidget *hbox_11 = draw_int_item_entry_hbox(f_tctl->f_i_step_pvr_ctl);
-	GtkWidget *hbox_12 = draw_int_item_entry_hbox(f_tctl->f_i_step_lic_ctl);
-	GtkWidget *hbox_13 = draw_int_item_entry_hbox(f_tctl->f_i_step_fline_ctl);
+    GtkWidget *hbox_4 = draw_chara_switch_entry_hbox(f_smonitor_ctl->f_degree_v_spectra_switch);
+    GtkWidget *hbox_5 = draw_chara_switch_entry_hbox(f_smonitor_ctl->f_order_v_spectra_switch);
+    GtkWidget *hbox_6 = draw_chara_switch_entry_hbox(f_smonitor_ctl->f_diff_v_lm_spectra_switch);
+	GtkWidget *hbox_7 = draw_chara_switch_entry_hbox(f_smonitor_ctl->f_axis_v_power_switch);
 	
-	GtkWidget *hbox_14 =  draw_int_item_entry_hbox(f_tctl->f_i_step_sgs_coefs_ctl);
-	GtkWidget *hbox_15 =  draw_int_item_entry_hbox(f_tctl->f_i_step_boundary_ctl);
+    GtkWidget *hbox_8 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_heat_Nusselt_file_prefix);
+	GtkWidget *hbox_9 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_heat_Nusselt_file_format);
 	
-	GtkWidget *hbox_16 =  draw_real_item_entry_hbox(f_tctl->f_dt_ctl);
-	GtkWidget *hbox_17 =  draw_real_item_entry_hbox(f_tctl->f_time_init_ctl);
+    GtkWidget *hbox_10 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_comp_Nusselt_file_prefix);
+	GtkWidget *hbox_11 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_comp_Nusselt_file_format);
 	
+    GtkWidget *hbox_12 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_typ_scale_file_prefix_ctl);
+    GtkWidget *hbox_13 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_typ_scale_file_format_ctl);
 	
-	GtkWidget *hbox_18 =  draw_int_item_entry_hbox(f_tctl->f_i_diff_steps_ctl);
-	GtkWidget *hbox_19 =  draw_chara_item_entry_hbox(f_tctl->f_flexible_step_ctl);
-	
-	GtkWidget *hbox_20 =  draw_real_item_entry_hbox(f_tctl->f_ratio_to_cfl_ctl);
-	GtkWidget *hbox_21 =  draw_int_item_entry_hbox(f_tctl->f_start_rst_step_ctl);
-	GtkWidget *hbox_22 =  draw_int_item_entry_hbox(f_tctl->f_end_rst_step_ctl);
-	GtkWidget *hbox_23 =  draw_real_item_entry_hbox(f_tctl->f_min_delta_t_ctl);
-	GtkWidget *hbox_24 =  draw_real_item_entry_hbox(f_tctl->f_max_delta_t_ctl);
-	GtkWidget *hbox_25 =  draw_real_item_entry_hbox(f_tctl->f_max_eps_to_shrink_ctl);
-	GtkWidget *hbox_26 =  draw_real_item_entry_hbox(f_tctl->f_min_eps_to_expand_ctl);
-	GtkWidget *hbox_27 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_field_ctl);
-	GtkWidget *hbox_28 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_monitor_ctl);
-	
-	GtkWidget *hbox_29 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_check_ctl);
-	GtkWidget *hbox_30 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_rst_ctl);
-	GtkWidget *hbox_31 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_psf_ctl);
-	GtkWidget *hbox_32 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_iso_ctl);
-	GtkWidget *hbox_33 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_map_ctl);
-	GtkWidget *hbox_34 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_pvr_ctl);
-	GtkWidget *hbox_35 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_lic_ctl);
-	GtkWidget *hbox_36 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_fline_ctl);
-	
-	GtkWidget *hbox_37 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_sgs_coefs_ctl);
-	GtkWidget *hbox_38 =  draw_real_item_entry_hbox(f_tctl->f_delta_t_boundary_ctl);
-	
-	GtkWidget *vbox_step = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_4,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_5,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_7,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_8,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_9,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_10, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_11, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_12, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_13, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_14, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_15, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_16, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_17, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_18, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_19, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_20, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_21, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_22, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_23, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_24, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_25, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_26, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_27, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_28, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_29, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_30, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_31, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_32, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_33, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_34, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_35, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_36, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_37, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_step), hbox_38, FALSE, FALSE, 0);
-	
-	GtkWidget *expand_step = draw_control_block(f_tctl->c_block_name, f_tctl->f_iflag,
-											   480, 320, window, vbox_step);
-    gtk_box_pack_start(GTK_BOX(vbox_out), expand_step, FALSE, FALSE, 0);
-	return vbox_out;
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_9,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_10, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_11, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_13, FALSE, FALSE, 0);
+    /*
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p10, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p11, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p3, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p4, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p5, FALSE, FALSE, 0);
+*/
+    GtkWidget *expand_smntr = draw_control_block(f_smonitor_ctl->c_block_name, f_smonitor_ctl->f_iflag,
+                                               480, 240, window, vbox_smontr);
+    gtk_box_pack_start(GTK_BOX(vbox_out), expand_smntr, FALSE, FALSE, 0);
+    return vbox_out;
 };
 
 
@@ -1096,25 +1131,11 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_model, FALSE, FALSE, 0);
 	
 	
-	GtkWidget * vbox_tstep =      draw_time_step_control_vbox(f_MHD_ctl->f_smctl_ctl->f_tctl, window);
-	GtkWidget * vbox_restart =    draw_MHD_restart_control_vbox(f_MHD_ctl->f_smctl_ctl->f_mrst_ctl, window);
-	GtkWidget * vbox_evo_scheme = draw_MHD_evo_scheme_control_vbox(f_MHD_ctl->f_smctl_ctl->f_mevo_ctl, window);
-	
-	GtkWidget *vbox_control = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_tstep,      FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_restart,    FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_control), vbox_evo_scheme, FALSE, FALSE, 0);
-	
-	GtkWidget *expand_MHD_control = draw_control_block(f_MHD_ctl->f_smctl_ctl->c_block_name, 
-													 f_MHD_ctl->f_smctl_ctl->f_iflag,
-													 560, 500, window, vbox_control);
+    GtkWidget *expand_MHD_control = draw_MHD_control_expand(window, f_MHD_ctl->f_smctl_ctl);
 	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_control, FALSE, FALSE, 0);
 	
-	GtkWidget *vbox_smonitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *expand_MHD_smonitor = draw_control_block(f_MHD_ctl->f_smonitor_ctl->c_block_name, 
-													 f_MHD_ctl->f_smonitor_ctl->f_iflag,
-													 560, 500, window, vbox_smonitor);
-	gtk_box_pack_start(GTK_BOX(vbox_plt), expand_MHD_smonitor, FALSE, FALSE, 0);
+	GtkWidget *vbox_smonitor = draw_MHD_sph_monitor_ctls_vbox(f_MHD_ctl->f_smonitor_ctl, window);
+	gtk_box_pack_start(GTK_BOX(vbox_plt), vbox_smonitor, FALSE, FALSE, 0);
 	
 	/*
 	GtkWidget *vbox_node_monitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

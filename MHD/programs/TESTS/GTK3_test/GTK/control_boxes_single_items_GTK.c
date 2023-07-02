@@ -167,21 +167,16 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 static void cb_int_ctl_item(GtkSpinButton *spinner, gpointer data)
 {
 	int *i_data = (int *) data;
-	
-	if(data != NULL) {
-		i_data[0] = gtk_spin_button_get_value_as_int(spinner);
-/*		printf("New value: %d\n", i_data); */
-	};
+    if(data == NULL) return;
+    i_data[0] = gtk_spin_button_get_value_as_int(spinner);
 	return;
 }
 static void cb_real_ctl_item(GtkEntry *spinner, gpointer data)
 {
-	double *r_data = (double *) data;
-	
-	if(data != NULL) {
-		r_data[0] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
-/*		printf("New value: %le\n", r_data); */
-	};
+    struct f_ctl_real_item *f_ritem = (struct f_ctl_real_item *) data;
+    if(f_ritem->f_self == NULL) return;
+    f_ritem->c_realvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
+    c_store_real_item_realvalue(f_ritem->f_self, f_ritem->c_realvalue);
 	return;
 }
 
@@ -243,7 +238,7 @@ GtkWidget *draw_int_item_entry_hbox(struct f_ctl_int_item *f_iitem){
 }
 
 GtkWidget *draw_real_item_entry_hbox(struct f_ctl_real_item * f_ritem){
-	GtkAdjustment *adjust = gtk_adjustment_new(f_ritem->f_realvalue[0],
+	GtkAdjustment *adjust = gtk_adjustment_new(f_ritem->c_realvalue,
 				-1.0e30, 1.0e30, 0.1, 100, 21474836);
 	GtkWidget *hbox = hbox_with_block_checkbox(f_ritem->f_iflag);
 	GtkWidget *label = gtk_label_new(f_ritem->c_block_name);
@@ -251,9 +246,9 @@ GtkWidget *draw_real_item_entry_hbox(struct f_ctl_real_item * f_ritem){
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_spin_button_new(adjust, 1, 0);
 	gtk_spin_button_set_digits(GTK_SPIN_BUTTON(entry), 9);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry), f_ritem->f_realvalue[0]);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry), f_ritem->c_realvalue);
 	g_signal_connect(G_OBJECT(entry), "value-changed",
-				G_CALLBACK(cb_real_ctl_item), (gpointer) f_ritem->f_realvalue);
+				G_CALLBACK(cb_real_ctl_item), (gpointer) f_ritem);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
