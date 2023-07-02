@@ -24,25 +24,15 @@ struct f_ctl_chara_item{
 struct f_ctl_real_item{
 	void * f_self;
 	int * f_iflag;
-	double c_realvalue;
 	char * c_block_name;
+	double c_realvalue;
 };
 
 struct f_ctl_int_item{
 	void * f_self;
 	int * f_iflag;
-	int * f_intvalue;
-	
 	char * c_block_name;
-};
-
-struct f_ctl_int_array{
-	void * f_self;
-	int * f_num;
-	int * f_icou;
-	int * f_ictls;
-	
-	char * c_block_name;
+	int c_intvalue;
 };
 
 /*  Prototypes */
@@ -55,6 +45,7 @@ extern void load_chara_from_c(char *c_ctl);
 
 extern void   c_store_chara_item_charavalue(void *f_ctl, char *c_in);
 extern void   c_store_real_item_realvalue(void *f_ctl, double r_in);
+extern void   c_store_int_item_intvalue(void *f_ctl, int i_in);
 
 extern void * c_chara_array_block_name(void *f_ctl);
 extern int    c_chara_array_num(void *f_ctl);
@@ -75,12 +66,12 @@ extern void c_alloc_real_array(int num_array, void *f_ctl);
 extern void c_check_real_array(void *f_ctl);
 
 extern void * c_int_array_block_name(void *f_ctl);
-extern void * c_int_array_num(void *f_ctl);
-extern void * c_int_array_icou(void *f_ctl);
-extern void * c_int_array_i_tbl(void *f_ctl);
+extern int    c_int_array_num(void *f_ctl);
+extern int    c_int_array_i_tbl(int idx, void *f_ctl);
+extern void c_store_int_array(void *f_ctl, int idx, int i_in);
 
 extern void * c_dealloc_int_array(void *f_ctl);
-extern void * c_alloc_int_array(void *f_ctl);
+extern void * c_alloc_int_array(int num_array, void *f_ctl);
 extern void * c_check_int_array(void *f_ctl);
 
 
@@ -94,10 +85,9 @@ void reflesh_f_ctl_chara_array(int num_array, struct chara_clist *c_clist);
 struct f_ctl_int_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent), 
 	void *f_parent);
 void dealloc_f_ctl_int_item(struct f_ctl_int_item *f_ritem);
-struct f_ctl_int_array * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent), 
-	void *f_parent);
-void reflesh_f_ctl_int_array(int num_array, struct f_ctl_int_array *f_iarray);
-void dealloc_f_ctl_int_array(struct f_ctl_int_array *f_iarray);
+struct int_clist * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent), 
+										void *f_parent);
+void reflesh_f_ctl_int_array(int num_array, struct int_clist *i_clist);
 
 
 struct f_ctl_real_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_parent), 

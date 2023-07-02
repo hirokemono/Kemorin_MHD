@@ -31,8 +31,12 @@ struct int_ctl_list{
 struct int_clist{
 	struct int_ctl_list i_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *i1_name;
+    
+    int index_bc;
 };
 
 

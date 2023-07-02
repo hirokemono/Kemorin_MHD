@@ -17,7 +17,7 @@ extern double c_real_item_realvalue(void *f_ctl);
 
 extern void * c_int_item_block_name(void *f_ctl);
 extern void * c_int_item_iflag(void *f_ctl);
-extern void * c_int_item_intvalue(void *f_ctl);
+extern int c_int_item_intvalue(void *f_ctl);
 
 extern void * c_chara_item_clength(void *f_ctl, int *length);
 
@@ -148,7 +148,7 @@ struct f_ctl_int_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent)
     char *f_block_name =  (char *) c_int_item_block_name(f_iitem->f_self);
 	f_iitem->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_iitem->f_intvalue =  (int *) c_int_item_intvalue(f_iitem->f_self);
+	f_iitem->c_intvalue = c_int_item_intvalue(f_iitem->f_self);
 	return f_iitem;
 }
 
@@ -156,57 +156,28 @@ struct f_ctl_int_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent)
 void dealloc_f_ctl_int_item(struct f_ctl_int_item *f_ritem)
 {
 	free(f_ritem->c_block_name);
-	
-	f_ritem->f_intvalue = NULL;
-	f_ritem->f_iflag = NULL;
+    f_ritem->f_iflag = NULL;
 	f_ritem->f_self = NULL;
 	return;
 }
 
-struct f_ctl_int_array * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent), 
+struct int_clist * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent), 
 												  void *f_parent)
 {
-	struct f_ctl_int_array *f_iarray = (struct f_ctl_int_array *) malloc(sizeof(struct f_ctl_int_array));
-	if(f_iarray == NULL){
-		printf("malloc error for f_ctl_int_array\n");
-		exit(0);
-	};
-	f_iarray->f_self =  c_load_self(f_parent);
-	
-	f_iarray->f_num =         (int *)  c_int_array_num(f_iarray->f_self);
-	f_iarray->f_icou =        (int *)  c_int_array_icou(f_iarray->f_self);
-	char *f_block_name =  (char *) c_int_array_block_name(f_iarray->f_self);
-	f_iarray->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_iarray->f_ictls =       (int *) c_int_array_i_tbl(f_iarray->f_self);
-	
-	/*
-	printf("f_iarray->f_self %p \n", f_iarray->f_self);
-	printf("f_iarray->c_block_name %s %d\n", f_iarray->c_block_name, f_iarray->f_num[0]);
-	for(i=0;i<f_iarray->f_num[0];i++){
-		printf("%d f_iarray->f_ictls %p %d \n", i,	f_iarray->f_ictls[i]);
-	}
-	*/
-	return f_iarray;
+	struct int_clist *i_clist = init_int_clist();
+	i_clist->f_self =  c_load_self(f_parent);
+	int i;
+	char *ctmp =  (char *) c_int_array_block_name(i_clist->f_self);
+	sprintf(i_clist->clist_name,"%s", strngcopy_from_f(ctmp));
+    for(i=0;i<c_int_array_num(i_clist->f_self);i++){
+		append_int_clist(c_int_array_i_tbl(i,i_clist->f_self), i_clist);
+    }
+	return i_clist;
 }
 
-void reflesh_f_ctl_int_array(int num_array, struct f_ctl_int_array *f_iarray)
+void reflesh_f_ctl_int_array(int num_array, struct int_clist *i_clist)
 {
-	c_dealloc_int_array(f_iarray->f_self);
-	f_iarray->f_num[0] = num_array;
-	f_iarray->f_icou[0] = num_array;
-	c_alloc_int_array(f_iarray->f_self);
-	f_iarray->f_ictls = (int *) c_int_array_i_tbl(f_iarray->f_self);
-/*	c_check_int_array(f_iarray->f_self); */
-	return;
-}
-void dealloc_f_ctl_int_array(struct f_ctl_int_array *f_iarray)
-{
-	free(f_iarray->c_block_name);
-	
-	f_iarray->f_ictls = NULL;
-	f_iarray->f_icou = NULL;
-	f_iarray->f_num = NULL;
-	f_iarray->f_self = NULL;
+	c_dealloc_int_array(i_clist->f_self);
+	c_alloc_int_array(num_array, i_clist->f_self);
 	return;
 }
