@@ -363,10 +363,11 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     gtk_tree_view_column_set_resizable(column_1st, TRUE);
     gtk_tree_view_column_set_clickable(column_1st, TRUE);
 	g_object_set_data(G_OBJECT(column_1st), "column_id", 
-				GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+					  GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+	/*
     g_signal_connect(G_OBJECT(column_1st), "clicked", 
 				G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
-    
+    */
     /* Second row */
     column_2nd = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_2nd);
@@ -382,10 +383,11 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     gtk_tree_view_column_set_resizable(column_2nd, TRUE);
     gtk_tree_view_column_set_clickable(column_2nd, TRUE);
 	g_object_set_data(G_OBJECT(column_2nd), "column_id", 
-				GINT_TO_POINTER(COLUMN_FIELD_NAME));
+					  GINT_TO_POINTER(COLUMN_FIELD_NAME));
+	/*
     g_signal_connect(G_OBJECT(column_2nd), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
-    
+    */
     /* Third row */
     column_3rd = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_3rd);
@@ -400,10 +402,11 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     gtk_tree_view_column_set_resizable(column_3rd, TRUE);
     gtk_tree_view_column_set_clickable(column_3rd, TRUE);
 	g_object_set_data(G_OBJECT(column_3rd), "column_id", 
-				GINT_TO_POINTER(COLUMN_FIELD_MATH));
+					  GINT_TO_POINTER(COLUMN_FIELD_MATH));
+	/*
     g_signal_connect(G_OBJECT(column_3rd), "clicked", 
 				G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
-    
+    */
     /* 選択モード */
     selection = gtk_tree_view_get_selection(r3_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);

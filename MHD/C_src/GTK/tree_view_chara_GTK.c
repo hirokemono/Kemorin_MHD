@@ -153,8 +153,7 @@ int add_c_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMode
     return index;
 }
 
-int add_c_list_items_GTK(GtkTreeView *tree_view_to_add,
-			struct chara_clist *c_clist)
+int add_c_list_items_GTK(GtkTreeView *tree_view_to_add, struct chara_clist *c_clist)
 {
     GtkTreeModel *model_to_add;
     GtkTreeModel *child_model_to_add;
@@ -223,8 +222,7 @@ int add_c_list_items_GTK(GtkTreeView *tree_view_to_add,
 	return index;
 }
 
-void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del,
-			struct chara_clist *c_clist)
+void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del, struct chara_clist *c_clist)
 {
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
@@ -314,9 +312,11 @@ void create_text_tree_view(GtkTreeView *c_tree_view, GtkCellRenderer *renderer_t
     gtk_tree_view_column_set_resizable(column_1st, TRUE);
     gtk_tree_view_column_set_clickable(column_1st, TRUE);
     g_object_set_data(G_OBJECT(column_1st), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
+	/*
     g_signal_connect(G_OBJECT(column_1st), "clicked", 
 					 G_CALLBACK(column_clicked), (gpointer) c_tree_view);
-    
+	*/
+	
     gtk_tree_view_column_pack_start(column_1st, renderer_text, TRUE);
     gtk_tree_view_column_set_attributes(column_1st, renderer_text, "text", COLUMN_FIELD_NAME, NULL);
 	g_object_set(renderer_text, "width", (gint)120, NULL);

@@ -230,26 +230,18 @@ void create_real_tree_view(GtkTreeView *r_tree_view, struct real_clist *r_clist,
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r_tree_view, column);
     gtk_tree_view_column_set_title(column, r_clist->r1_name);
-	/*
-    adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
-                                100, 21474836);
     g_object_set(G_OBJECT(renderer_spin1), 
-				"adjustment", adjust,
-				"climb-rate", 0.5,
-				"digits", 3, NULL);
-	*/
-    g_object_set(G_OBJECT(renderer_spin1), 
-                 "editable", TRUE, 
-                 "width", (gint)70, NULL);
+                 "editable", TRUE, "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin1, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer_spin1, "text", COLUMN_FIELD_INDEX, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+	g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+	/*
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) r_tree_view);
-    
+    */
     /* 選択モード */
     selection = gtk_tree_view_get_selection(r_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);

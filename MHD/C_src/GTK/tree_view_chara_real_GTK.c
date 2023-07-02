@@ -364,10 +364,11 @@ void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *
     g_object_set(renderer, "width", (gint)60, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+	g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+	/*
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) cr_tree_view);
-    
+    */
     /* Second row */
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(cr_tree_view, column);
@@ -378,10 +379,11 @@ void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *
     gtk_tree_view_column_set_attributes(column, renderer_text, "text", COLUMN_FIELD_NAME, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
+	g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
+	/*
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) cr_tree_view);
-    
+    */
     /* Third row */
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(cr_tree_view, column);
@@ -392,10 +394,11 @@ void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *
     gtk_tree_view_column_set_attributes(column, renderer_value, "text", COLUMN_FORTH, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FORTH));
+	g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FORTH));
+	/*
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) cr_tree_view);
-    
+    */
     /* 選択モード */
     selection = gtk_tree_view_get_selection(cr_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
