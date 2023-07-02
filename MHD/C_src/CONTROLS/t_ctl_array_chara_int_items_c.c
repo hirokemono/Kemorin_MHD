@@ -12,7 +12,7 @@ extern void * c_chara_item_clength(void *f_plt, int *length);
 extern void * c_chara_int_item_block_name(void *f_ctl);
 extern void * c_chara_int_item_iflag(void *f_ctl);
 extern void * c_chara_int_item_charavalue(void *f_ctl);
-extern void * c_chara_int_item_intvalue(void *f_ctl);
+extern int    c_chara_int_item_intvalue(void *f_ctl);
 
 struct f_ctl_ci_item * init_f_ctl_ci_item(void *(*c_load_self)(void *f_parent),
 										  void *f_parent)
@@ -28,10 +28,10 @@ struct f_ctl_ci_item * init_f_ctl_ci_item(void *(*c_load_self)(void *f_parent),
 	char *f_block_name =  (char *) c_chara_int_item_block_name(f_ci_item->f_self);
 	f_ci_item->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_ci_item->f_intvalue =  (int *) c_chara_int_item_intvalue(f_ci_item->f_self);
-	f_ci_item->f_charavalue =  (char *) c_chara_int_item_charavalue(f_ci_item->f_self);
-	f_ci_item->c_charavalue = strngcopy_from_f(f_ci_item->f_charavalue);
-	
+	char * ctmp =  (char *) c_chara_int_item_charavalue(f_ci_item->f_self);
+	f_ci_item->c_charavalue = strngcopy_from_f(ctmp);
+    f_ci_item->c_intvalue =  c_chara_int_item_intvalue(f_ci_item->f_self);
+
 	/*
 	printf("f_ci_item->f_self %p \n", f_ci_item->f_self);
 	printf("f_ci_item->c_block_name %s \n", f_ci_item->c_block_name);
@@ -46,8 +46,6 @@ void dealloc_f_ctl_ci_item(struct f_ctl_ci_item *f_ci_item)
 	free(f_ci_item->c_charavalue);
 	free(f_ci_item->c_block_name);
 	
-	f_ci_item->f_intvalue = NULL;
-	f_ci_item->f_charavalue = NULL;
 	f_ci_item->f_iflag = NULL;
 	f_ci_item->f_self = NULL;
 	return;

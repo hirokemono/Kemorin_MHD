@@ -31,17 +31,16 @@ struct f_ctl_i2_item * init_f_ctl_i2_item(void *(*c_load_self)(void *f_parent),
 	char *f_block_name =  (char *) c_int2_item_block_name(f_i2_item->f_self);
 	f_i2_item->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_i2_item->f_intvalue =   (int *)    c_int2_item_intvalue(f_i2_item->f_self);
-	
+	int *f_intvalue =   (int *) c_int2_item_intvalue(f_i2_item->f_self);
+    f_i2_item->c_intvalue[0] = f_intvalue[0];
+    f_i2_item->c_intvalue[1] = f_intvalue[1];
 	return f_i2_item;
 }
 
 void dealloc_f_ctl_i2_item(struct f_ctl_i2_item *f_i2_item)
 {
 	free(f_i2_item->c_block_name);
-	
-	f_i2_item->f_intvalue = NULL;
-	f_i2_item->f_iflag = NULL;
+    f_i2_item->f_iflag = NULL;
 	f_i2_item->f_self = NULL;
 	return;
 }

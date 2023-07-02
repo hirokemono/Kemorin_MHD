@@ -11,9 +11,9 @@
 !!     &          bind(C, NAME = 'c_int_real_item_block_name')
 !!      subroutine c_int_real_item_iflag(c_ctl)                         &
 !!     &          bind(C, NAME = 'c_int_real_item_iflag')
-!!      subroutine c_int_real_item_intvalue(c_ctl)                      &
+!!      integer(c_int) function c_int_real_item_intvalue(c_ctl)         &
 !!     &          bind(C, NAME = 'c_int_real_item_intvalue')
-!!      subroutine c_int_real_item_realvalue(c_ctl)                     &
+!!      real(c_double) function c_int_real_item_realvalue(c_ctl)        &
 !!     &          bind(C, NAME = 'c_int_real_item_realvalue')
 !!      subroutine c_store_int_real_items(c_ctl, i_in, r_in)            &
 !!     &          bind(C, NAME = 'c_store_int_real_items')
@@ -79,24 +79,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_int_real_item_intvalue(c_ctl)              &
+      integer(c_int) function c_int_real_item_intvalue(c_ctl)           &
      &          bind(C, NAME = 'c_int_real_item_intvalue')
       type(c_ptr), value, intent(in) :: c_ctl
       type(read_int_real_item), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_int_real_item_intvalue = C_loc(f_ctl%intvalue)
+      c_int_real_item_intvalue = f_ctl%intvalue
       end function c_int_real_item_intvalue
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_int_real_item_realvalue(c_ctl)             &
+      real(c_double) function c_int_real_item_realvalue(c_ctl)          &
      &          bind(C, NAME = 'c_int_real_item_realvalue')
       type(c_ptr), value, intent(in) :: c_ctl
       type(read_int_real_item), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_int_real_item_realvalue = C_loc(f_ctl%realvalue)
+      c_int_real_item_realvalue = f_ctl%realvalue
       end function c_int_real_item_realvalue
 !
 !  ---------------------------------------------------------------------

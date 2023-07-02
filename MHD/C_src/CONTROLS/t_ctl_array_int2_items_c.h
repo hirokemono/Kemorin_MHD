@@ -17,9 +17,8 @@
 struct f_ctl_i2_item{
 	void * f_self;
 	int * f_iflag;
-	int *f_intvalue;
-	
 	char * c_block_name;
+	int c_intvalue[2];
 };
 
 /*  Prototypes */
@@ -29,6 +28,8 @@ extern int c_int2_array_num(void *f_ctl);
 extern int c_int2_array_i1_tbl(void *f_ctl, int idx_in);
 extern int c_int2_array_i2_tbl(void *f_ctl, int idx_in);
 extern void c_store_int2_array(void *f_ctl, int idx_in, int i1_in, int i2_in);
+extern void c_store_int2_items(void *f_ctl, int i1_in, int i2_in);
+
 
 struct f_ctl_i2_item * init_f_ctl_i2_item(void *(*c_load_self)(void *f_parent), 
 											 void *f_parent);

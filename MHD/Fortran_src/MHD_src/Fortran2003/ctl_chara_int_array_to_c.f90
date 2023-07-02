@@ -13,8 +13,13 @@
 !!     &          bind(C, NAME = 'c_chara_int_item_iflag')
 !!      subroutine c_chara_int_item_charavalue(c_ctl)                   &
 !!     &          bind(C, NAME = 'c_chara_int_item_charavalue')
-!!      subroutine c_chara_int_item_intvalue(c_ctl)                     &
+!!      integer(c_int) function c_chara_int_item_intvalue(c_ctl)        &
 !!     &          bind(C, NAME = 'c_chara_int_item_intvalue')
+!!      subroutine c_store_chara_int_items(c_ctl, c_in, i_in)           &
+!!     &          bind(C, NAME = 'c_store_chara_int_items')
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!        character(C_char), intent(in) :: c_in(*)
+!!        integer(C_int), intent(in), value :: i_in
 !!
 !!      subroutine c_chara_int_array_block_name(c_ctl)                  &
 !!     &          bind(C, NAME = 'c_chara_int_array_block_name')
@@ -88,14 +93,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_chara_int_item_intvalue(c_ctl)             &
+      integer(c_int) function c_chara_int_item_intvalue(c_ctl)          &
      &          bind(C, NAME = 'c_chara_int_item_intvalue')
       type(c_ptr), value, intent(in) :: c_ctl
       type(read_chara_int_item), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-      c_chara_int_item_intvalue = C_loc(f_ctl%intvalue)
+      c_chara_int_item_intvalue = f_ctl%intvalue
       end function c_chara_int_item_intvalue
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine c_store_chara_int_items(c_ctl, c_in, i_in)             &
+     &          bind(C, NAME = 'c_store_chara_int_items')
+      type(c_ptr), value, intent(in) :: c_ctl
+      character(C_char), intent(in) :: c_in(*)
+      integer(C_int), intent(in), value :: i_in
+      type(read_chara_int_item), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      f_ctl%charavalue = copy_char_from_c(c_in)
+      f_ctl%intvalue =  i_in
+      end subroutine c_store_chara_int_items
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

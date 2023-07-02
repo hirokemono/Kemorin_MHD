@@ -11,8 +11,8 @@ extern void * c_chara_item_clength(void *f_plt, int *length);
 
 extern void * c_int_real_item_block_name(void *f_ctl);
 extern void * c_int_real_item_iflag(void *f_ctl);
-extern void * c_int_real_item_intvalue(void *f_ctl);
-extern void * c_int_real_item_realvalue(void *f_ctl);
+extern int    c_int_real_item_intvalue(void *f_ctl);
+extern double c_int_real_item_realvalue(void *f_ctl);
 
 struct f_ctl_ir_item * init_f_ctl_ir_item(void *(*c_load_self)(void *f_parent),
 										  void *f_parent)
@@ -28,8 +28,8 @@ struct f_ctl_ir_item * init_f_ctl_ir_item(void *(*c_load_self)(void *f_parent),
 	char *f_block_name =  (char *) c_int_real_item_block_name(f_ir_item->f_self);
 	f_ir_item->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_ir_item->f_intvalue =   (int *)    c_int_real_item_intvalue(f_ir_item->f_self);
-	f_ir_item->f_realvalue =  (double *) c_int_real_item_realvalue(f_ir_item->f_self);
+	f_ir_item->c_intvalue =  c_int_real_item_intvalue(f_ir_item->f_self);
+	f_ir_item->c_realvalue = c_int_real_item_realvalue(f_ir_item->f_self);
 	
 	return f_ir_item;
 }
@@ -38,8 +38,6 @@ void dealloc_f_ctl_ir_item(struct f_ctl_ir_item *f_ir_item)
 {
 	free(f_ir_item->c_block_name);
 	
-	f_ir_item->f_realvalue = NULL;
-	f_ir_item->f_intvalue = NULL;
 	f_ir_item->f_iflag = NULL;
 	f_ir_item->f_self = NULL;
 	return;

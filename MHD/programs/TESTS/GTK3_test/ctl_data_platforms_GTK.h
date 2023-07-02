@@ -61,11 +61,6 @@ extern void * c_plt_itp_file_fmt_ctl(void *f_plt);
 extern void * c_plt_coriolis_file_fmt_ctl(void *f_plt);
 extern void * c_plt_del_org_data_ctl(void *f_plt);
 
-extern void * c_chara_real_item_block_name(void *f_ctl);
-extern void * c_chara_real_item_iflag(void *f_ctl);
-extern void * c_chara_real_item_charavalue(void *f_ctl);
-extern void * c_chara_real_item_realvalue(void *f_ctl);
-
 extern void * c_MHD_forces_block_name(void *f_frc_ctl);
 extern void * c_MHD_forces_iflag(void *f_frc_ctl);
 extern void * c_MHD_forces_array(void *f_frc_ctl);

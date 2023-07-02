@@ -16,13 +16,10 @@
 
 struct f_ctl_ci_item{
 	void * f_self;
-	int * f_iflag;
-	char * f_charavalue;
-	int * f_intvalue;
-	
+	int * f_iflag;	
 	char * c_block_name;
-	
 	char * c_charavalue;
+	int c_intvalue;
 };
 
 /*  Prototypes */
@@ -37,6 +34,7 @@ extern void *c_chara_int_array_icou(void *f_ctl);
 extern void *c_chara_int_array_c_tbl(int idx_in, void *f_ctl);
 extern int   c_chara_int_array_i_tbl(int idx_in, void *f_ctl);
 extern void  c_store_chara_int_array(void *f_ctl, int idx_in, char *c_in, int i_in);
+extern void  c_store_chara_int_items(void *f_ctl, char *c_in, int i_in);
 
 
 struct f_ctl_ci_item * init_f_ctl_ci_item(void *(*c_load_self)(void *f_parent), 
