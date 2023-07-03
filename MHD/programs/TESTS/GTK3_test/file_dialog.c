@@ -327,15 +327,6 @@ struct iso_ctl_GTK *iso_GTK0;
 
 // struct SGS_MHD_control_c *mhd_ctl;
 GtkWidget *window;
-GtkWidget *vbox_0;
-
-GtkWidget *entry_3, *entry_4, *entry_5;
-
-double rtest = 2.5;
-int ntest = 66;
-char *ctest = "ahahahaha";
-struct chara_ctl_item item_test = {55, "tako_tako"};
-struct chara_ctl_item *ptem_test;
 
 void *MHD_ctl_C;
 
@@ -613,9 +604,9 @@ static void cb_View(GtkButton *button, gpointer data)
 }
 static void cb_Open(GtkButton *button, gpointer data)
 {
-  GtkWidget *dialog;
-  GtkWidget *parent;
-  GtkEntry *entry;
+	GtkWidget *dialog;
+	GtkWidget *parent;
+	GtkEntry *entry;
 	
   /* Four selections for GtkFileChooserAction */
 	GtkFileChooserAction action[] = {GTK_FILE_CHOOSER_ACTION_OPEN,
@@ -629,6 +620,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 	
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	
+	GtkWidget *main_box = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "main_box"));
 	struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) g_object_get_data(G_OBJECT(data), "MHD_ctl");
 	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
 	entry = GTK_ENTRY(data);
@@ -683,8 +675,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		set_primary_iso_format_flag_c(iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
 		printf("iso_output_type_ctl modified %s\n", iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
 		
-		
-		draw_MHD_control_list(window, vbox_0, f_MHD_ctl, iso_GTK0->iso_c);
+		draw_MHD_control_list(window, main_box, f_MHD_ctl, iso_GTK0->iso_c);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -831,6 +822,71 @@ struct f_MHD_tree_views{
 	GtkWidget *f_force_default_view;
 };
 struct f_MHD_tree_views *f_MHD_vws;
+
+
+static void add_block_list_items_cb(GtkButton *button, gpointer user_data){
+	GtkWidget *v_tree_view = GTK_WIDGET(user_data);
+	struct void_clist *v_clist_gtk = (struct void_clist *) g_object_get_data(G_OBJECT(button), "v_clist_gtk");
+	GtkWidget *vbox_out = (GtkWidget *) g_object_get_data(G_OBJECT(button), "vbox_out");
+	
+	printf("New number pre %d %d\n", c_sph_monitor_num_vspec_ctl(v_clist_gtk->f_parent),
+		   count_void_clist(v_clist_gtk));
+	v_clist_gtk->index_bc = add_void_list_items_GTK(GTK_TREE_VIEW(v_tree_view),
+													c_append_sph_mntr_vspec_ctl, 
+													(void *) init_f_sph_vol_spectr_ctls, 
+													dealloc_f_sph_vol_spectr_ctls, 
+													v_clist_gtk);
+	gtk_main_iteration();
+	
+};
+
+static void delete_block_list_items_cb(GtkButton *button, gpointer user_data){
+    GtkWidget *v_tree_view = GTK_WIDGET(user_data);
+	struct void_clist *v_clist_gtk = (struct void_clist *) g_object_get_data(G_OBJECT(button), "v_clist_gtk");
+	GtkWidget *vbox_out = (GtkWidget *) g_object_get_data(G_OBJECT(button), "vbox_out");
+	delete_void_list_items_GTK(GTK_TREE_VIEW(v_tree_view), 
+							   c_delete_sph_mntr_vspec_ctl, 
+							   (void *) init_f_sph_vol_spectr_ctls, 
+							   dealloc_f_sph_vol_spectr_ctls, 
+							   v_clist_gtk);
+	gtk_widget_queue_draw(vbox_out);
+};
+
+
+GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, GtkWidget *window){
+    GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	int i;
+	GtkWidget *v_pwr_tree_view = NULL;
+	
+	
+	
+    GtkWidget *button_add =    gtk_button_new_with_label("Add");
+    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
+	g_object_set_data(G_OBJECT(button_add),    "v_clist_gtk",       (gpointer) f_v_pwr);
+	g_object_set_data(G_OBJECT(button_add),    "vbox_out",          (gpointer) vbox_out);
+	g_object_set_data(G_OBJECT(button_delete), "v_clist_gtk",       (gpointer) f_v_pwr);
+	g_object_set_data(G_OBJECT(button_delete), "vbox_out",          (gpointer) vbox_out);
+	
+    g_signal_connect(G_OBJECT(button_add), "clicked", 
+                     G_CALLBACK(add_block_list_items_cb), (gpointer) v_pwr_tree_view);
+    g_signal_connect(G_OBJECT(button_delete), "clicked", 
+                     G_CALLBACK(delete_block_list_items_cb), (gpointer) v_pwr_tree_view);
+	
+	
+	
+	GtkWidget *vbox_tbl = add_block_list_box_w_addbottun(f_v_pwr, v_pwr_tree_view, 
+														 button_add, button_delete, vbox_out);
+	gtk_box_pack_start(GTK_BOX(vbox_out), vbox_tbl,  FALSE, FALSE, 0);
+	for(i=0;i<count_void_clist(f_v_pwr);i++){
+		void *ctmp =  void_clist_label_at_index(i, (void *) f_v_pwr);
+		void *v_pwr = void_clist_at_index(i, (void *) f_v_pwr);
+		GtkWidget *vbox_z = draw_sph_each_vspec_ctl_vbox((struct f_sph_vol_spectr_ctls *) v_pwr, window);
+		GtkWidget *expand_v_pwr = wrap_into_expanded_frame_gtk(duplicate_underscore(ctmp),
+															   480, 480, window, vbox_z);
+		gtk_box_pack_start(GTK_BOX(vbox_out), expand_v_pwr,  FALSE, FALSE, 0);
+	}
+   return vbox_out;
+};
 
 
 static GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ctl, GtkWidget *window){
@@ -1048,7 +1104,9 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct f_MHD_con
 };
 
 
-void draw_MHD_control_bottuns(GtkWidget *vbox0){
+GtkWidget * MHD_control_bottuns_hbox(GtkWidget *main_Vbox){
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	
 	struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) malloc(sizeof(struct f_MHD_control));
 		printf("f_MHD_ctl %p\n", f_MHD_ctl);
 	if(f_MHD_ctl == NULL){
@@ -1056,15 +1114,15 @@ void draw_MHD_control_bottuns(GtkWidget *vbox0){
 		exit(0);
 	};
 	
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *label = gtk_label_new("File:");
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)window);
-	g_object_set_data(G_OBJECT(entry), "MHD_ctl", (gpointer)f_MHD_ctl);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window);
+	g_object_set_data(G_OBJECT(entry), "MHD_ctl", (gpointer) f_MHD_ctl);
+	g_object_set_data(G_OBJECT(entry), "main_box", (gpointer) main_Vbox);
 	
 	/* Generate Bottuns */
 	GtkWidget *button_O = gtk_button_new_with_label("Open");
@@ -1084,11 +1142,13 @@ void draw_MHD_control_bottuns(GtkWidget *vbox0){
 	gtk_box_pack_start(GTK_BOX(hbox), button_S, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), button_Q, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, FALSE, 0);
-	return;
+	return hbox;
 }
 
-
+struct main_widgets{
+	GtkWidget *main_Vbox;
+	GtkWidget *open_Hbox;
+};
 
 int main(int argc, char** argv)
 {
@@ -1099,17 +1159,17 @@ int main(int argc, char** argv)
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
+	struct main_widgets *mWidets = (struct main_widgets *) malloc(sizeof(struct main_widgets));
+		printf("mWidets %p\n", mWidets);
+	if(mWidets == NULL){
+		printf("malloc error for mWidets\n");
+		exit(0);
+	};
 	
-//	GtkWidget *scroll_window = gtk_scrolled_window_new(NULL, NULL);
-//	gtk_box_pack_start(GTK_BOX(vbox_0), scroll_window, TRUE, TRUE, 0);
-	
-			ptem_test = init_chara_ctl_item_c();
-			ptem_test->iflag = 111;
-			ptem_test->c_tbl = "gggg";
-	
-	vbox_0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	draw_MHD_control_bottuns(vbox_0);
-	gtk_container_add(GTK_CONTAINER(window), vbox_0);
+	mWidets->main_Vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	mWidets->open_Hbox = MHD_control_bottuns_hbox(mWidets->main_Vbox);
+	gtk_box_pack_start(GTK_BOX(mWidets->main_Vbox), mWidets->open_Hbox, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(window), mWidets->main_Vbox);
 	
 	gtk_widget_show_all(window);
 	gtk_main();

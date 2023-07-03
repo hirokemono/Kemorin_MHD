@@ -52,38 +52,6 @@ void * dealloc_f_sph_vol_spectr_ctls(void *f_item){
 	return NULL;
 }
 
-static void add_block_list_items_cb(GtkButton *button, gpointer user_data){
-	GtkWidget *v_tree_view = GTK_WIDGET(user_data);
-	struct void_clist *v_clist_gtk = (struct void_clist *) g_object_get_data(G_OBJECT(button), "v_clist_gtk");
-	GtkWidget *vbox_out = (GtkWidget *) g_object_get_data(G_OBJECT(button), "vbox_out");
-	
-	printf("New number pre %d %d\n", c_sph_monitor_num_vspec_ctl(v_clist_gtk->f_parent),
-		   count_void_clist(v_clist_gtk));
-	v_clist_gtk->index_bc = add_void_list_items_GTK(GTK_TREE_VIEW(v_tree_view),
-													c_append_sph_mntr_vspec_ctl, 
-													(void *) init_f_sph_vol_spectr_ctls, 
-													dealloc_f_sph_vol_spectr_ctls, 
-													v_clist_gtk);
-	printf("New number %d %d\n", c_sph_monitor_num_vspec_ctl(v_clist_gtk->f_parent),
-		   count_void_clist(v_clist_gtk));
-	gtk_main_iteration();
-	
-};
-
-static void delete_block_list_items_cb(GtkButton *button, gpointer user_data){
-    GtkWidget *v_tree_view = GTK_WIDGET(user_data);
-	struct void_clist *v_clist_gtk = (struct void_clist *) g_object_get_data(G_OBJECT(button), "v_clist_gtk");
-	GtkWidget *vbox_out = (GtkWidget *) g_object_get_data(G_OBJECT(button), "vbox_out");
-	delete_void_list_items_GTK(GTK_TREE_VIEW(v_tree_view), 
-							   c_delete_sph_mntr_vspec_ctl, 
-							   (void *) init_f_sph_vol_spectr_ctls, 
-							   dealloc_f_sph_vol_spectr_ctls, 
-							   v_clist_gtk);
-	printf("New number %d %d\n", c_sph_monitor_num_vspec_ctl(v_clist_gtk->f_parent),
-		   count_void_clist(v_clist_gtk));
-	gtk_widget_queue_draw(vbox_out);
-};
-
 GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
 										   GtkWidget *button_add, GtkWidget *button_delete,
 										   GtkWidget *vbox_out){
@@ -107,7 +75,7 @@ GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWi
 	return vbox;
 };
 
-static GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_v_pwr_item, GtkWidget *window){
+GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_v_pwr_item, GtkWidget *window){
 	GtkWidget *vbox_v_pwr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_ave_file_ctl);
@@ -132,38 +100,3 @@ static GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_
     return vbox_v_pwr;
 };
 
-
-GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, GtkWidget *window){
-    GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	int i;
-	GtkWidget *v_pwr_tree_view = NULL;
-	
-	
-	
-    GtkWidget *button_add =    gtk_button_new_with_label("Add");
-    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
-	g_object_set_data(G_OBJECT(button_add),    "v_clist_gtk",       (gpointer) v_clist_gtk);
-	g_object_set_data(G_OBJECT(button_add),    "vbox_out",          (gpointer) vbox_out);
-	g_object_set_data(G_OBJECT(button_delete), "v_clist_gtk",       (gpointer) v_clist_gtk);
-	g_object_set_data(G_OBJECT(button_delete), "vbox_out",          (gpointer) vbox_out);
-	
-    g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(add_block_list_items_cb), (gpointer) v_tree_view);
-    g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(delete_block_list_items_cb), (gpointer) v_tree_view);
-	
-	
-	
-	GtkWidget *vbox_tbl = add_block_list_box_w_addbottun(f_v_pwr, v_pwr_tree_view, 
-														 button_add, button_delete, vbox_out);
-	gtk_box_pack_start(GTK_BOX(vbox_out), vbox_tbl,  FALSE, FALSE, 0);
-	for(i=0;i<count_void_clist(f_v_pwr);i++){
-		void *ctmp =  void_clist_label_at_index(i, (void *) f_v_pwr);
-		void *v_pwr = void_clist_at_index(i, (void *) f_v_pwr);
-		GtkWidget *vbox_z = draw_sph_each_vspec_ctl_vbox((struct f_sph_vol_spectr_ctls *) v_pwr, window);
-		GtkWidget *expand_v_pwr = wrap_into_expanded_frame_gtk(duplicate_underscore(ctmp),
-															   480, 480, window, vbox_z);
-		gtk_box_pack_start(GTK_BOX(vbox_out), expand_v_pwr,  FALSE, FALSE, 0);
-	}
-   return vbox_out;
-};

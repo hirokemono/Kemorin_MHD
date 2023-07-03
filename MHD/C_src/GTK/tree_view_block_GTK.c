@@ -230,7 +230,7 @@ void create_block_tree_view(GtkTreeView *v_tree_view, GtkCellRenderer *renderer_
     */
     gtk_tree_view_column_pack_start(column_1st, renderer_text, TRUE);
     gtk_tree_view_column_set_attributes(column_1st, renderer_text, "text", COLUMN_FIELD_NAME, NULL);
-	g_object_set(renderer_text, "width", (gint)70, NULL);
+	g_object_set(renderer_text, "width", (gint)240, NULL);
 	
     /* 選択モード */
     selection = gtk_tree_view_get_selection(v_tree_view);

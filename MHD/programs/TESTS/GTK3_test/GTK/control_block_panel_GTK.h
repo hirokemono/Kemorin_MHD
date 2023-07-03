@@ -58,9 +58,12 @@ extern void * c_sph_v_spec_outer_radius_ctl(void *f_v_pwr_item);
 /* prototypes */
 
 struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *f_parent);
+void * dealloc_f_sph_vol_spectr_ctls(void *f_item);
 
-GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk,
-										   GtkWidget *v_tree_view, GtkWidget *vbox_out);
-GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, GtkWidget *window);
+GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_v_pwr_item, GtkWidget *window);
+
+GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
+										   GtkWidget *button_add, GtkWidget *button_delete,
+										   GtkWidget *vbox_out);
 
 #endif /* CONTROL_BLOCK_PANEL_GTK_H_ */
