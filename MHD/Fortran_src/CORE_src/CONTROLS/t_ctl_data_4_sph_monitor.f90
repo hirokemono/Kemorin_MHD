@@ -216,6 +216,7 @@
       integer(kind = kint) :: i
 !
 !
+      write(*,*) 'append after ', idx_in,smonitor_ctl%num_vspec_ctl
       if(idx_in.lt.0 .or. idx_in.gt.smonitor_ctl%num_vspec_ctl) return
 !
       num_tmp = smonitor_ctl%num_vspec_ctl
@@ -252,20 +253,22 @@
       integer(kind = kint), intent(in) :: idx_in
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
+      integer(kind = kint) :: num_tmp
       type(volume_spectr_control), allocatable :: tmp_vpwr(:)
       integer(kind = kint) :: i
 !
 !
       if(idx_in.le.0 .or. idx_in.gt.smonitor_ctl%num_vspec_ctl) return
 
-      allocate(tmp_vpwr(smonitor_ctl%num_vspec_ctl))
-      do i = 1, smonitor_ctl%num_vspec_ctl
+      num_tmp = smonitor_ctl%num_vspec_ctl
+      allocate(tmp_vpwr(num_tmp))
+      do i = 1, num_tmp
         call copy_volume_spectr_control(smonitor_ctl%v_pwr(i),          &
      &                                  tmp_vpwr(i))
       end do
 !
       call dealloc_volume_spectr_control(smonitor_ctl)
-      smonitor_ctl%num_vspec_ctl = smonitor_ctl%num_vspec_ctl - 1
+      smonitor_ctl%num_vspec_ctl = num_tmp - 1
       call alloc_volume_spectr_control(smonitor_ctl)
 !
       do i = 1, idx_in-1

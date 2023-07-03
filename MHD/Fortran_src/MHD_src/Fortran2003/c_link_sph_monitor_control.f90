@@ -18,6 +18,14 @@
 !!      type(c_ptr) function c_sph_monitor_vspec_ctl(idx_in, c_ctl)     &
 !!     &          bind(C, NAME = 'c_sph_monitor_vspec_ctl')
 !!
+!!      type(c_ptr) function c_append_sph_mntr_vspec_ctl                &
+!!     &                   (idx, c_name, c_ctl)                         &
+!!     &                   bind(C, NAME = 'c_append_sph_mntr_vspec_ctl')
+!!      type(c_ptr) function c_delete_sph_mntr_vspec_ctl(idx, c_ctl)    &
+!!     &                   bind(C, NAME = 'c_delete_sph_mntr_vspec_ctl')
+!!        integer(c_int), value, intent(in) :: num
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!
 !!      type(c_ptr) function c_sph_monitor_lp_ctl(c_ctl)                &
 !!     &          bind(C, NAME = 'c_sph_monitor_lp_ctl')
 !!      type(c_ptr) function c_sph_monitor_g_pwr(c_ctl)                 &
@@ -63,6 +71,7 @@
 !
       use iso_c_binding
       use t_ctl_data_4_sph_monitor
+      use ctl_array_chara_to_c
 !
       implicit none
 !
@@ -121,6 +130,41 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_sph_monitor_vspec_ctl = C_loc(f_ctl%v_pwr(idx_in+1))
       end function c_sph_monitor_vspec_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_append_sph_mntr_vspec_ctl                  &
+     &                   (idx, c_name, c_ctl)                           &
+     &                   bind(C, NAME = 'c_append_sph_mntr_vspec_ctl')
+      integer(c_int), value, intent(in) :: idx
+      character(C_char), intent(in) :: c_name(*)
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      type(volume_spectr_control) :: add_vpwr
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call reset_volume_spectr_control(add_vpwr)
+      add_vpwr%block_name = copy_char_from_c(c_name)
+
+      call append_volume_spectr_ctls((idx+1), add_vpwr, f_ctl)
+      c_append_sph_mntr_vspec_ctl = C_loc(f_ctl%v_pwr)
+!
+      end function c_append_sph_mntr_vspec_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_delete_sph_mntr_vspec_ctl(idx, c_ctl)      &
+     &                   bind(C, NAME = 'c_delete_sph_mntr_vspec_ctl')
+      integer(c_int), value, intent(in) :: idx
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call delete_volume_spectr_ctls((idx+1), f_ctl)
+      c_delete_sph_mntr_vspec_ctl = C_loc(f_ctl%v_pwr)
+      write(*,*) 'f_ctl%num_vspec_ctl', f_ctl%num_vspec_ctl, size(f_ctl%v_pwr)
+!
+      end function c_delete_sph_mntr_vspec_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

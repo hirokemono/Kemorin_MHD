@@ -21,6 +21,7 @@
 #include "ctl_data_platforms_GTK.h"
 #include "control_panel_4_dimless_GTK.h"
 #include "control_panels_MHD_control_GTK.h"
+#include "control_block_panel_GTK.h"
 
 extern void c_view_control_sph_SGS_MHD();
 
@@ -125,11 +126,8 @@ extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 extern void * c_sph_monitor_ctl_block_name(void *f_smonitor_ctl);
 extern void * c_sph_monitor_ctl_iflag(void *f_smonitor_ctl);
 
-extern void * c_sph_monitor_ctl_v_pwr_name(void *f_smonitor_ctl);
-extern int    c_sph_monitor_num_vspec_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_vspec_ctl(int idx, void *f_smonitor_ctl);
-extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
 
+extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
 extern void * c_sph_monitor_g_pwr(void *f_smonitor_ctl);
 extern void * c_sph_monitor_pspec_ctl(void *f_smonitor_ctl);
 extern void * c_sph_monitor_circ_ctls(void *f_smonitor_ctl);
@@ -148,18 +146,6 @@ extern void * c_sph_mntr_h_Nusselt_file_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_c_Nusselt_file_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_pfix_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_fmt_ctl(void *f_smonitor_ctl);
-
-extern void * c_sph_v_spectr_ctl_block_name(void *f_v_pwr_item);
-extern void * c_sph_v_spectr_ctl_iflag(void *f_v_pwr_item);
-extern void * c_sph_volume_spec_file_ctl(void *f_v_pwr_item);
-extern void * c_sph_volume_ave_file_ctl(void *f_v_pwr_item);
-extern void * c_sph_volume_spec_format_ctl(void *f_v_pwr_item);
-extern void * c_sph_degree_v_spectra_switch(void *f_v_pwr_item);
-extern void * c_sph_order_v_spectra_switch(void *f_v_pwr_item);
-extern void * c_sph_diff_v_lm_spectra_switch(void *f_v_pwr_item);
-extern void * c_sph_axis_v_power_switch(void *f_v_pwr_item);
-extern void * c_sph_v_spec_inner_radius_ctl(void *f_v_pwr_item);
-extern void * c_sph_v_spec_outer_radius_ctl(void *f_v_pwr_item);
 
 
 struct f_MHD_SGS_model_control{
@@ -226,23 +212,6 @@ struct f_MHD_model_control{
 	void * f_reft_ctl;
 	void * f_refc_ctl;
 	struct f_MHD_SGS_model_control * f_sgs_ctl;
-};
-
-struct f_sph_vol_spectr_ctls{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct f_ctl_chara_item *f_volume_spec_file_ctl;
-	struct f_ctl_chara_item *f_volume_ave_file_ctl;
-	struct f_ctl_chara_item *f_volume_spec_format_ctl;
-	struct f_ctl_chara_item *f_degree_v_spectra_switch;
-	struct f_ctl_chara_item *f_order_v_spectra_switch;
-	struct f_ctl_chara_item *f_diff_v_lm_spectra_switch;
-	struct f_ctl_chara_item *f_axis_v_power_switch;
-	struct f_ctl_real_item *f_inner_radius_ctl;
-	struct f_ctl_real_item *f_outer_radius_ctl;
 };
 
 struct f_MHD_sph_monitor_ctls{
@@ -492,33 +461,6 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
-struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(void *(*c_load_self)(int idx, void *f_parent),
-														  int idx, void *f_parent)
-{
-	struct f_sph_vol_spectr_ctls *f_v_pwr_item 
-			= (struct f_sph_vol_spectr_ctls *) malloc(sizeof(struct f_sph_vol_spectr_ctls));
-	if(f_v_pwr_item == NULL){
-		printf("malloc error for f_v_pwr_item\n");
-		exit(0);
-	};
-	
-	f_v_pwr_item->f_self =  c_load_self(idx, f_parent);
-	
-	f_v_pwr_item->f_iflag = (int *) c_sph_v_spectr_ctl_iflag(f_v_pwr_item->f_self);
-	char *f_block_name =   (char *) c_sph_v_spectr_ctl_block_name(f_v_pwr_item->f_self);
-	f_v_pwr_item->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_v_pwr_item->f_volume_spec_file_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_file_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_volume_ave_file_ctl =  init_f_ctl_chara_item(c_sph_volume_ave_file_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_volume_spec_format_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_format_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_degree_v_spectra_switch =  init_f_ctl_chara_item(c_sph_degree_v_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_order_v_spectra_switch =  init_f_ctl_chara_item(c_sph_order_v_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_diff_v_lm_spectra_switch =  init_f_ctl_chara_item(c_sph_diff_v_lm_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_axis_v_power_switch =  init_f_ctl_chara_item(c_sph_axis_v_power_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_inner_radius_ctl =  init_f_ctl_real_item(c_sph_v_spec_inner_radius_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_outer_radius_ctl =  init_f_ctl_real_item(c_sph_v_spec_outer_radius_ctl, f_v_pwr_item->f_self);
-	return f_v_pwr_item;
-}
 
 struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
@@ -538,13 +480,15 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	
     f_block_name =   (char *) c_sph_monitor_ctl_v_pwr_name(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_num_vspec_ctl = c_sph_monitor_num_vspec_ctl(f_smonitor_ctl->f_self);
+	
 	f_smonitor_ctl->f_v_pwr = init_void_clist(strngcopy_from_f(f_block_name));
+	f_smonitor_ctl->f_v_pwr->f_parent =  f_smonitor_ctl->f_self;
 	
 	printf("f_smonitor_ctl->f_num_vspec_ctl %d\n", f_smonitor_ctl->f_num_vspec_ctl);
 	int i;
 	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl;i++){
-		append_void_clist((void *) init_f_sph_vol_spectr_ctls(c_sph_monitor_vspec_ctl, i, f_smonitor_ctl->f_self), 
-						  f_smonitor_ctl->f_v_pwr);
+        struct f_sph_vol_spectr_ctls *void_in = init_f_sph_vol_spectr_ctls(i, f_smonitor_ctl->f_self);
+		append_void_clist((void *) void_in, f_smonitor_ctl->f_v_pwr);
 	}
 	f_smonitor_ctl->f_lp_ctl =     c_sph_monitor_lp_ctl(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_g_pwr =      c_sph_monitor_g_pwr(f_smonitor_ctl->f_self);
@@ -887,68 +831,6 @@ struct f_MHD_tree_views{
 	GtkWidget *f_force_default_view;
 };
 struct f_MHD_tree_views *f_MHD_vws;
-
-void store_each_vspec_ctl_to_F(struct f_sph_vol_spectr_ctls *f_v_pwr_item)
-{
-	c_store_chara_item_charavalue(f_v_pwr_item->f_volume_ave_file_ctl->f_self, 
-								  f_v_pwr_item->f_volume_ave_file_ctl->c_charavalue);
-	c_store_chara_item_charavalue(f_v_pwr_item->f_volume_spec_file_ctl->f_self, 
-								  f_v_pwr_item->f_volume_spec_file_ctl->c_charavalue);
-	c_store_chara_item_charavalue(f_v_pwr_item->f_volume_spec_format_ctl->f_self, 
-								  f_v_pwr_item->f_volume_spec_format_ctl->c_charavalue);
-	c_store_chara_item_charavalue(f_v_pwr_item->f_degree_v_spectra_switch->f_self, 
-								  f_v_pwr_item->f_degree_v_spectra_switch->c_charavalue);
-	c_store_chara_item_charavalue(f_v_pwr_item->f_order_v_spectra_switch->f_self, 
-								  f_v_pwr_item->f_order_v_spectra_switch->c_charavalue);
-	c_store_chara_item_charavalue(f_v_pwr_item->f_diff_v_lm_spectra_switch->f_self, 
-								  f_v_pwr_item->f_diff_v_lm_spectra_switch->c_charavalue);
-	c_store_chara_item_charavalue(f_v_pwr_item->f_axis_v_power_switch->f_self, 
-								  f_v_pwr_item->f_axis_v_power_switch->c_charavalue);
-	c_store_real_item_realvalue(f_v_pwr_item->f_inner_radius_ctl->f_self, 
-								f_v_pwr_item->f_inner_radius_ctl->c_realvalue);
-	c_store_real_item_realvalue(f_v_pwr_item->f_outer_radius_ctl->f_self, 
-								f_v_pwr_item->f_outer_radius_ctl->c_realvalue);
-	return;
-}
-
-static GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_v_pwr_item, GtkWidget *window){
-	GtkWidget *vbox_v_pwr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    
-    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_ave_file_ctl);
-    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_spec_file_ctl);
-    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_spec_format_ctl);
-    GtkWidget *hbox_4 = draw_real_item_entry_hbox(f_v_pwr_item->f_inner_radius_ctl);
-    GtkWidget *hbox_5 = draw_real_item_entry_hbox(f_v_pwr_item->f_outer_radius_ctl);
-    GtkWidget *hbox_6 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_degree_v_spectra_switch);
-    GtkWidget *hbox_7 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_order_v_spectra_switch);
-    GtkWidget *hbox_8 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_diff_v_lm_spectra_switch);
-    GtkWidget *hbox_9 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_axis_v_power_switch);
-	
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_4,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_5,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_7,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_8,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_9,  FALSE, FALSE, 0);
-    return vbox_v_pwr;
-};
-
-static GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, GtkWidget *window){
-    GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	int i;
-	for(i=0;i<count_void_clist(f_v_pwr);i++){
-		void *ctmp =  void_clist_label_at_index(i, (void *) f_v_pwr);
-		void *v_pwr = void_clist_at_index(i, (void *) f_v_pwr);
-		GtkWidget *vbox_z = draw_sph_each_vspec_ctl_vbox((struct f_sph_vol_spectr_ctls *) v_pwr, window);
-		GtkWidget *expand_v_pwr = wrap_into_expanded_frame_gtk(duplicate_underscore(ctmp),
-															   480, 480, window, vbox_z);
-		gtk_box_pack_start(GTK_BOX(vbox_out), expand_v_pwr,  FALSE, FALSE, 0);
-	}
-   return vbox_out;
-};
 
 
 static GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ctl, GtkWidget *window){

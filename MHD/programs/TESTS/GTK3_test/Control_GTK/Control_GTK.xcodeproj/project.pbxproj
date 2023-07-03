@@ -33,6 +33,7 @@
 		189625272A50852E002F377F /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 189625262A50852E002F377F /* libz.tbd */; };
 		189625292A5085AC002F377F /* libcalypso_to_pythons.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 189625282A5085AC002F377F /* libcalypso_to_pythons.dylib */; };
 		189625332A51DDB1002F377F /* control_panels_MHD_control_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 189625322A51DDB1002F377F /* control_panels_MHD_control_GTK.c */; };
+		189625362A534036002F377F /* control_block_panel_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 189625352A534036002F377F /* control_block_panel_GTK.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -81,6 +82,8 @@
 		1896252A2A508696002F377F /* Control_GTK.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Control_GTK.entitlements; sourceTree = "<group>"; };
 		189625312A51DDB1002F377F /* control_panels_MHD_control_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_panels_MHD_control_GTK.h; path = ../../GTK/control_panels_MHD_control_GTK.h; sourceTree = "<group>"; };
 		189625322A51DDB1002F377F /* control_panels_MHD_control_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_panels_MHD_control_GTK.c; path = ../../GTK/control_panels_MHD_control_GTK.c; sourceTree = "<group>"; };
+		189625342A534036002F377F /* control_block_panel_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_block_panel_GTK.h; path = ../../GTK/control_block_panel_GTK.h; sourceTree = "<group>"; };
+		189625352A534036002F377F /* control_block_panel_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_block_panel_GTK.c; path = ../../GTK/control_block_panel_GTK.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				1896252A2A508696002F377F /* Control_GTK.entitlements */,
+				189625352A534036002F377F /* control_block_panel_GTK.c */,
+				189625342A534036002F377F /* control_block_panel_GTK.h */,
 				189624F52A507ECE002F377F /* control_boxes_single_items_GTK.c */,
 				189624F02A507ECE002F377F /* control_boxes_single_items_GTK.h */,
 				189624F22A507ECE002F377F /* control_panel_4_coefs_GTK.c */,
@@ -244,6 +249,7 @@
 			files = (
 				189624F72A507ECE002F377F /* control_panel_4_dimless_GTK.c in Sources */,
 				189624FC2A507EE0002F377F /* ctl_data_platforms_GTK.c in Sources */,
+				189625362A534036002F377F /* control_block_panel_GTK.c in Sources */,
 				189625332A51DDB1002F377F /* control_panels_MHD_control_GTK.c in Sources */,
 				189624FD2A507EE0002F377F /* file_dialog.c in Sources */,
 				189624F62A507ECE002F377F /* control_panel_4_coefs_GTK.c in Sources */,

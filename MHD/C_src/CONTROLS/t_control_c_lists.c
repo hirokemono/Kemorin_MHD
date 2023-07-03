@@ -100,6 +100,24 @@ static struct void_ctl_list *find_v_ctl_list_item_by_index(int index, struct voi
     for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
+static struct void_ctl_list *find_v_ctl_list_item_by_c_tbl(char *ref, struct void_ctl_list *head){
+    head = head->_next;
+    while (head != NULL){
+		if(cmp_no_case_c(head->list_label, ref)) return head;
+        head = head->_next;
+    };
+    return head;
+};
+int find_v_ctl_index_by_c_tbl(char *ref, struct void_ctl_list *head){
+    int icou = 0;
+    head = head->_next;
+    while (head != NULL){
+		if(cmp_no_case_c(head->list_label, ref)) return icou;
+        head = head->_next;
+		icou = icou + 1;
+    };
+    return icou;
+};
 
 static void append_void_ctl_list(char *clist_name, int *icount, 
 								 void *void_in, struct void_ctl_list *head){
@@ -108,28 +126,43 @@ static void append_void_ctl_list(char *clist_name, int *icount,
 	head = add_void_ctl_list_after(clist_name, icount, void_in, head);
     return;
 };
-
 static void add_void_ctl_list_before_index(int index, char *clist_name, int *icount, 
 										   void *void_in, struct void_ctl_list *head){
 	head = find_v_ctl_list_item_by_index(index, head);
 	head = add_void_ctl_list_before(clist_name, icount, void_in, head);
 	return;
 };
-
 static void add_void_ctl_list_after_index(int index, char *clist_name, int *icount, 
 										  void *void_in, struct void_ctl_list *head){
 	head = find_v_ctl_list_item_by_index(index, head);
 	head = add_void_ctl_list_after(clist_name, icount, void_in, head);
 	return;
 };
-
 static void del_void_ctl_list_by_index(int index, struct void_ctl_list *head){
 	head = find_v_ctl_list_item_by_index(index, head);
 	if(head != NULL) delete_void_ctl_list(head);
 	return;
 };
 
-
+static void add_void_ctl_list_before_c_tbl(char *ref, char *clist_name, int *icount, 
+										  void *void_in, struct void_ctl_list *head){
+	head = find_v_ctl_list_item_by_c_tbl(ref, head);
+	if(head == NULL) return;
+	head = add_void_ctl_list_before(clist_name, icount, void_in, head);
+	return;
+};
+static void add_void_ctl_list_after_c_tbl(char *ref, char *clist_name, int *icount, 
+										  void *void_in, struct void_ctl_list *head){
+	head = find_v_ctl_list_item_by_c_tbl(ref, head);
+	if(head == NULL) return;
+	head = add_void_ctl_list_after(clist_name, icount, void_in, head);
+	return;
+};
+void del_void_ctl_list_by_c_tbl(char *ref, struct void_ctl_list *head){
+	head = find_v_ctl_list_item_by_c_tbl(ref, head);
+	if(head != NULL) delete_void_ctl_list(head);
+	return;
+};
 
 
 struct void_clist * init_void_clist(char *label){
@@ -164,6 +197,7 @@ void append_void_clist(void *void_in, struct void_clist *v_clist){
     append_void_ctl_list(v_clist->clist_name, &v_clist->icount, void_in, &v_clist->c_item_head);
     return;
 };
+
 void add_void_clist_before_index(int index, void *void_in, struct void_clist *v_clist){
 	add_void_ctl_list_before_index(index, v_clist->clist_name, &v_clist->icount, 
 								   void_in, &v_clist->c_item_head);
@@ -179,8 +213,38 @@ void del_void_clist_by_index(int index, struct void_clist *v_clist){
     return;
 };
 
+
+void add_void_clist_before_c_tbl(char *ref, void *void_in, struct void_clist *v_clist){
+    add_void_ctl_list_before_c_tbl(ref, v_clist->clist_name, &v_clist->icount, 
+								   void_in, &v_clist->c_item_head);
+    return;
+};
+void add_void_clist_after_c_tbl(char *ref, void *void_in, struct void_clist *v_clist){
+    add_void_ctl_list_after_c_tbl(ref, v_clist->clist_name, &v_clist->icount, 
+								  void_in, &v_clist->c_item_head);
+    return;
+};
+void del_void_clist_by_c_tbl(char *ref, struct void_clist *v_clist){
+    del_void_ctl_list_by_c_tbl(ref, &v_clist->c_item_head);
+    return;
+};
+
+
+int find_void_clist_index_by_c_tbl(char *ref, struct void_clist *v_clist){
+    return find_v_ctl_index_by_c_tbl(ref, &v_clist->c_item_head);
+};
+
+
+void replace_void_clist_at_index(int index, void *void_in, struct void_clist *v_clist){
+	struct void_ctl_list *tmp_list 
+			= find_v_ctl_list_item_by_index(index, &v_clist->c_item_head);
+	tmp_list->void_item = void_in;
+    return;
+}
+
 void * void_clist_at_index(int index, struct void_clist *v_clist){
-    struct void_ctl_list *tmp_list = find_v_ctl_list_item_by_index(index, &v_clist->c_item_head);
+	struct void_ctl_list *tmp_list 
+			= find_v_ctl_list_item_by_index(index, &v_clist->c_item_head);
     return tmp_list->void_item;
 }
 

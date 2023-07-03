@@ -29,6 +29,7 @@ GTK3_LIBS =   $(shell pkg-config --libs gtk+-3.0)
 
 OBJECTS = \
 file_dialog.o \
+control_block_panel_GTK.o \
 ctl_data_platforms_GTK.o \
 \
 control_boxes_single_items_GTK.o \
@@ -51,6 +52,10 @@ control_boxes_single_items_GTK.o: GTK/control_boxes_single_items_GTK.c GTK/contr
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_boxes_single_items_GTK.c
 
+control_block_panel_GTK.o: GTK/control_block_panel_GTK.c GTK/control_block_panel_GTK.h
+	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_block_panel_GTK.c
+
 control_panel_4_dimless_GTK.o: GTK/control_panel_4_dimless_GTK.c GTK/control_panel_4_dimless_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panel_4_dimless_GTK.c
@@ -64,7 +69,7 @@ ctl_data_platforms_GTK.o: ctl_data_platforms_GTK.c ctl_data_platforms_GTK.h GTK/
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/ctl_data_platforms_GTK.c
 
-file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o GTK/control_panels_MHD_control_GTK.h
+file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o GTK/control_panels_MHD_control_GTK.h GTK/control_block_panel_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/file_dialog.c
 
