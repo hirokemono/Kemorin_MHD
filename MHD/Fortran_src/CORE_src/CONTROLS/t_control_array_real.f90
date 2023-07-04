@@ -20,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_real(array_real)
 !!      subroutine dealloc_control_array_real(array_real)
+!!      subroutine init_real_ctl_array_label(label, array_real)
 !!      subroutine read_control_array_r1                                &
 !!     &         (id_control, label, array_real, c_buf)
 !!        type(ctl_array_real), intent(inout) :: array_real
@@ -167,6 +168,15 @@
       end subroutine dealloc_control_array_real
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_real_ctl_array_label(label, array_real)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_real), intent(inout) :: array_real
+!
+      array_real%array_name = trim(label)
+      end subroutine init_real_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_r1                                  &

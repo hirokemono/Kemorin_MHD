@@ -118,6 +118,7 @@ struct real_clist * init_f_ctl_real_array(void *(*c_load_self)(void *f_parent),
 {
 	struct real_clist *r_clist = init_real_clist();
 	r_clist->f_self =  c_load_self(f_parent);
+    printf("f_self %d\n", r_clist->f_self);
 	int i;
 	char *ctmp = c_real_array_block_name(r_clist->f_self);
 	sprintf(r_clist->clist_name,"%s", strngcopy_from_f(ctmp));

@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read control arrays
 !!
 !!@verbatim
+!!      subroutine init_integer2_ctl_item_label(label, int2_item)
 !!      subroutine read_integer2_ctl_type(c_buf, label, int2_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int2_item), intent(inout) :: int2_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_i2(array_i2)
 !!      subroutine dealloc_control_array_i2(array_i2)
+!!      subroutine init_int2_ctl_array_label(label, array_i2)
 !!      subroutine read_control_array_i2                                &
 !!     &         (id_control, label, array_i2, c_buf)
 !!        type(ctl_array_i2), intent(inout) :: array_i2
@@ -77,6 +79,15 @@
 !   --------------------------------------------------------------------
 !
       contains
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_integer2_ctl_item_label(label, int2_item)
+      character(len=kchara), intent(in) :: label
+      type(read_int2_item), intent(inout) :: int2_item
+!
+      int2_item%item_name = trim(label)
+      end subroutine init_integer2_ctl_item_label
 !
 !   --------------------------------------------------------------------
 !
@@ -165,6 +176,15 @@
       end subroutine dealloc_control_array_i2
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_int2_ctl_array_label(label, array_i2)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_i2), intent(inout) :: array_i2
+!
+      array_i2%array_name = trim(label)
+      end subroutine init_int2_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_i2                                  &

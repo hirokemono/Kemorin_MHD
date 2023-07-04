@@ -14,7 +14,7 @@
 !!      integer(c_int) function c_int_item_intvalue(c_ctl)              &
 !!     &          bind(C, NAME = 'c_int_item_intvalue')
 !!      subroutine c_store_int_item_intvalue(c_ctl, i_in)               &
-!!     &          bind(C, NAME = 'c_store_real_item_realvalue')
+!!     &          bind(C, NAME = 'c_store_int_item_intvalue')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!        integer(C_int), value, intent(in) :: i_in
 !!

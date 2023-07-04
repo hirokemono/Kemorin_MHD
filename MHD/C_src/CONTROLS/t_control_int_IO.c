@@ -322,6 +322,11 @@ void set_from_int_clist_at_index(int index, struct int_clist *i_clst, int *i1_ou
     return;
 };
 
+struct int_ctl_item *int_clist_at_index(int index, struct int_clist *i_clst){
+    struct int_ctl_list *ct_tmp = find_i_ctl_list_item_by_index(index, &i_clst->i_item_head);
+    return ct_tmp->i_item;
+}
+
 void add_int_clist_before_c_tbl(int i_ref, int i1_in, struct int_clist *i_clst){
     add_int_ctl_list_before_c_tbl(i_ref, i1_in, &i_clst->i_item_head);
     return;

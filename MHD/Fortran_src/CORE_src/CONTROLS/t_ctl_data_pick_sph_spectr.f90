@@ -9,6 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_pick_spectr_control(pspec_ctl)
+!!      subroutine init_pickup_spectr_ctl_labels(pspec_ctl)
 !!      subroutine read_pickup_spectr_ctl                               &
 !!     &         (id_control, hd_block, pspec_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -169,6 +170,7 @@
 !
       if(pspec_ctl%i_pick_sph .gt. 0) return
       pspec_ctl%block_name = hd_block
+      call init_pickup_spectr_ctl_labels(pspec_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -239,6 +241,31 @@
      &                                pspec_ctl%block_name)
 !
       end subroutine write_pickup_spectr_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_pickup_spectr_ctl_labels(pspec_ctl)
+!
+      type(pick_spectr_control), intent(inout) :: pspec_ctl
+!
+        call init_int_ctl_array_label                                   &
+     &     (hd_pick_layer, pspec_ctl%idx_pick_layer_ctl)
+        call init_real_ctl_array_label                                  &
+     &     (hd_pick_radius, pspec_ctl%pick_radius_ctl)
+!
+        call init_int2_ctl_array_label                                  &
+     &     (hd_pick_sph_lm, pspec_ctl%idx_pick_sph_ctl)
+        call init_int_ctl_array_label                                   &
+     &     (hd_pick_sph_l, pspec_ctl%idx_pick_sph_l_ctl)
+        call init_int_ctl_array_label                                   &
+     &     (hd_pick_sph_m, pspec_ctl%idx_pick_sph_m_ctl)
+!
+        call init_chara_ctl_item_label(hd_picked_mode_head,             &
+     &      pspec_ctl%picked_mode_head_ctl)
+        call init_chara_ctl_item_label(hd_picked_mode_format,           &
+     &      pspec_ctl%picked_mode_fmt_ctl)
+!
+      end subroutine  init_pickup_spectr_ctl_labels
 !
 ! -----------------------------------------------------------------------
 !

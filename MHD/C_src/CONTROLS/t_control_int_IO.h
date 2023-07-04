@@ -65,6 +65,7 @@ void append_int_clist(int i1_in, struct int_clist *i_clst);
 void del_int_clist_by_index(int index, struct int_clist *i_clst);
 void update_int_clist_by_index(int index, int i1_in, struct int_clist *i_clst);
 void set_from_int_clist_at_index(int index, struct int_clist *i_clst, int *i1_out);
+struct int_ctl_item *int_clist_at_index(int index, struct int_clist *i_clst);
 
 void add_int_clist_before_c_tbl(int i_ref, int i1_in, struct int_clist *i_clst);
 void add_int_clist_after_c_tbl(int i_ref, int i1_in, struct int_clist *i_clst);
