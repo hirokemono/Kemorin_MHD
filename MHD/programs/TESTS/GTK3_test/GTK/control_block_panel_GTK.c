@@ -57,7 +57,6 @@ GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWi
 										   GtkWidget *vbox_out){
 	printf("f_parent in add_block_list_box_w_addbottun %p\n", v_clist_gtk->f_parent);
 	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	v_tree_view = gtk_tree_view_new();
 	
 	GtkCellRenderer *renderer_text =  gtk_cell_renderer_text_new();
 	create_block_tree_view(GTK_TREE_VIEW(v_tree_view), renderer_text);
