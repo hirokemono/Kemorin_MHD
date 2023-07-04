@@ -8,6 +8,7 @@
 !> @brief control date for volume averaged spectr data
 !!
 !!@verbatim
+!!      subroutine init_layerd_spectr_ctl_labels(lp_ctl)
 !!      subroutine read_layerd_spectr_ctl                               &
 !!     &         (id_control, hd_block, lp_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -132,6 +133,7 @@
 !
       if (lp_ctl%i_layer_spectr_ctl .gt. 0) return
       lp_ctl%block_name = hd_block
+      call init_layerd_spectr_ctl_labels(lp_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -210,6 +212,34 @@
      &                                lp_ctl%block_name)
 !
       end subroutine write_layerd_spectr_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_layerd_spectr_ctl_labels(lp_ctl)
+!
+      type(layerd_spectr_control), intent(inout) :: lp_ctl
+!
+!
+        call init_int_ctl_array_label                                   &
+     &     (hd_spctr_layer, lp_ctl%idx_spec_layer_ctl)
+        call init_real_ctl_array_label                                  &
+     &     (hd_spctr_radius, lp_ctl%layer_radius_ctl)
+!
+        call init_chara_ctl_item_label(hd_layer_rms_head,               &
+     &      lp_ctl%layered_pwr_spectr_prefix)
+        call init_chara_ctl_item_label(hd_layer_rms_fmt,                &
+     &      lp_ctl%layered_pwr_spectr_format)
+!
+        call init_chara_ctl_item_label(hd_degree_spectr_switch,         &
+     &      lp_ctl%degree_spectra_switch)
+        call init_chara_ctl_item_label(hd_order_spectr_switch,          &
+     &      lp_ctl%order_spectra_switch)
+        call init_chara_ctl_item_label(hd_diff_lm_spectr_switch,        &
+     &      lp_ctl%diff_lm_spectra_switch)
+        call init_chara_ctl_item_label(hd_axis_spectr_switch,           &
+     &      lp_ctl%axis_power_switch)
+!
+      end subroutine init_layerd_spectr_ctl_labels
 !
 ! -----------------------------------------------------------------------
 !
