@@ -144,10 +144,12 @@
 !
       call c_f_pointer(c_ctl, f_ctl)
       call reset_volume_spectr_control(add_vpwr)
+      call init_each_vol_spectr_labels(add_vpwr)
       add_vpwr%block_name = copy_char_from_c(c_name)
 
       call append_volume_spectr_ctls((idx+1), add_vpwr, f_ctl)
       c_append_sph_mntr_vspec_ctl = C_loc(f_ctl%v_pwr)
+      f_ctl%v_pwr(idx+2)%i_vol_spectr_ctl = 1
 !
       end function c_append_sph_mntr_vspec_ctl
 !
@@ -162,7 +164,6 @@
       call c_f_pointer(c_ctl, f_ctl)
       call delete_volume_spectr_ctls((idx+1), f_ctl)
       c_delete_sph_mntr_vspec_ctl = C_loc(f_ctl%v_pwr)
-      write(*,*) 'f_ctl%num_vspec_ctl', f_ctl%num_vspec_ctl, size(f_ctl%v_pwr)
 !
       end function c_delete_sph_mntr_vspec_ctl
 !

@@ -136,14 +136,10 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
     
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
-		printf("TAko f %p \n", tree_view_to_del);
     model_to_del = gtk_tree_view_get_model(tree_view_to_del);
-		printf("TAko g\n");
-   child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
+    child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
         
-		printf("TAko h\n");
     selection = gtk_tree_view_get_selection(tree_view_to_del);
-		printf("TAko i\n");
     list = gtk_tree_selection_get_selected_rows(selection, NULL);
     
     /* Make reference from path */
@@ -156,7 +152,6 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
         child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model_to_del), 
                                                                     (GtkTreePath *)cur->data);
         
-		printf("TAko j\n");
         child_reference = gtk_tree_row_reference_new(child_model_to_del, child_path);
         reference_list = g_list_append(reference_list, child_reference);
         
@@ -171,32 +166,26 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 	/* Return reference into path and delete reference */
 	int i, idx;
     for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
-		printf("TAko e\n");
         GtkTreePath *tree_path;
         GtkTreeIter iter;
         tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
         gtk_tree_model_get_iter(child_model_to_del, &iter, tree_path);
-		printf("TAko d\n");
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_NAME, &old_strng, -1);
         
         /* Delete */
         gtk_list_store_remove(GTK_LIST_STORE(child_model_to_del), &iter);
-		printf("TAko c\n");
 
         gtk_tree_path_free(tree_path);
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
-		printf("TAko b\n");
         
 		/* Update control data */
 		idx = find_void_clist_index_by_c_tbl(old_strng, v_clist);
 		delete_ctl_block_F(idx, v_clist->f_parent);
-		printf("TAko a\n");
 		
 		for(i=0;i<count_void_clist(v_clist);i++){
 			dealloc_ctl_block_F(void_clist_at_index(i, v_clist));
 		};
 		del_void_clist_by_index(idx, v_clist);
-		printf("TAko y\n");
 		
 		for(i=0;i<count_void_clist(v_clist);i++){
 			void *void_in = init_ctl_block_F(i, v_clist->f_parent);
@@ -204,7 +193,6 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 		};
 	}
     g_list_free(reference_list);
-	printf("TAko z\n");
     /* Release the block of changed signal */
 	unblock_changed_signal(G_OBJECT(child_model_to_del));
 }

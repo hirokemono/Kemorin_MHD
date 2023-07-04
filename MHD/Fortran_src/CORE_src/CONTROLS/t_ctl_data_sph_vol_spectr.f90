@@ -12,6 +12,8 @@
 !!        type(volume_spectr_control), intent(in) :: org_vpwr
 !!        type(volume_spectr_control), intent(inout) :: new_vpwr
 !!
+!!      subroutine init_each_vol_spectr_labels(v_pwr)
+!!        type(volume_spectr_control), intent(inout) :: v_pwr
 !!      subroutine read_each_vol_spectr_ctl                             &
 !!     &         (id_control, hd_block, v_pwr, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -172,6 +174,7 @@
 !
       if(v_pwr%i_vol_spectr_ctl .gt. 0) return
       v_pwr%block_name = hd_block
+      call init_each_vol_spectr_labels(v_pwr)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -255,6 +258,38 @@
      &                                v_pwr%block_name)
 !
       end subroutine write_each_vol_spectr_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_each_vol_spectr_labels(v_pwr)
+!
+      use write_control_elements
+!
+      type(volume_spectr_control), intent(inout) :: v_pwr
+!
+!
+        call init_chara_ctl_item_label(hd_vol_pwr,                      &
+     &      v_pwr%volume_spec_file_ctl)
+        call init_chara_ctl_item_label(hd_vol_fmt,                      &
+     &      v_pwr%volume_spec_format_ctl)
+!
+        call init_chara_ctl_item_label(hd_degree_spectr_switch,         &
+     &      v_pwr%degree_v_spectra_switch)
+        call init_chara_ctl_item_label(hd_order_spectr_switch,          &
+     &      v_pwr%order_v_spectra_switch)
+        call init_chara_ctl_item_label(hd_diff_lm_spectr_switch,        &
+     &      v_pwr%diff_v_lm_spectra_switch)
+        call init_chara_ctl_item_label(hd_axis_spectr_switch,           &
+     &      v_pwr%axis_v_power_switch)
+!
+        call init_chara_ctl_item_label(hd_vol_ave,                      &
+     &      v_pwr%volume_ave_file_ctl)
+        call init_real_ctl_item_label(hd_inner_r,                       &
+     &      v_pwr%inner_radius_ctl)
+        call init_real_ctl_item_label(hd_outer_r,                       &
+     &      v_pwr%outer_radius_ctl)
+!
+      end subroutine init_each_vol_spectr_labels
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -149,7 +149,7 @@
      &    :: hd_comp_Nusselt_file_fmt = 'comp_Nusselt_number_format'
 !
 !     Deprecated labels
-       character(len=kchara), parameter, private                         &
+       character(len=kchara), parameter, private                        &
      &            :: hd_mid_eq_monitor_ctl = 'mid_equator_monitor_ctl'
 !
       private :: read_volume_spectr_ctl, write_volume_spectr_ctl

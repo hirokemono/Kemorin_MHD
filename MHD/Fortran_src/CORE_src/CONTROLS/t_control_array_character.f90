@@ -84,7 +84,7 @@
       chara_item%item_name = trim(label)
       end subroutine init_chara_ctl_item_label
 !
-!   --------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine read_chara_ctl_type(c_buf, label, chara_item)
 !

@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read control arrays
 !!
 !!@verbatim
+!!      subroutine init_real_ctl_item_label(label, real_item)
 !!      subroutine read_real_ctl_type(c_buf, label, real_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_real_item), intent(inout) :: real_item
@@ -73,6 +74,15 @@
       contains
 !
 !   --------------------------------------------------------------------
+!
+      subroutine init_real_ctl_item_label(label, real_item)
+      character(len=kchara), intent(in) :: label
+      type(read_real_item), intent(inout) :: real_item
+!
+      real_item%item_name = trim(label)
+      end subroutine init_real_ctl_item_label
+!
+! ----------------------------------------------------------------------
 !
       subroutine read_real_ctl_type(c_buf, label, real_item)
 !
