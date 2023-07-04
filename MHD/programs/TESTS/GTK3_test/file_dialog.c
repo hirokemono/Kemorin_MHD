@@ -315,8 +315,8 @@ struct main_widgets{
 	
 	GtkWidget *vbox_vpwr_items;
     GtkWidget *vbox_vpwr;
-	GtkWidget *expand_vpwrs;
-	GtkWidget *expand_smntr;
+//	GtkWidget *expand_vpwrs;
+//	GtkWidget *expand_smntr;
 	
 	GtkWidget *v_pwr_tree_view;
 	struct void_clist * expand_v_pwr_list;
@@ -915,7 +915,7 @@ static void delete_block_list_items_cb(GtkButton *button, gpointer user_data){
 };
 
 
-void draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, struct f_MHD_control *f_MHD_ctl, 
+GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, struct f_MHD_control *f_MHD_ctl,
 								  struct main_widgets *mWidgets, GtkWidget *window){
     mWidgets->vbox_vpwr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
@@ -943,13 +943,13 @@ void draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, struct f_MHD_contr
 	gtk_container_add(GTK_CONTAINER(mWidgets->vbox_vpwr), mWidgets->vbox_vpwr_items);
 	
 	int itmp = 1;
-	mWidgets->expand_vpwrs = draw_control_block(f_v_pwr->clist_name, &itmp,
+	GtkWidget *expand_vpwrs = draw_control_block(f_v_pwr->clist_name, &itmp,
 												480, 440, window, mWidgets->vbox_vpwr);
-	return;
+	return expand_vpwrs;
 };
 
 
-void draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ctl, 
+GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ctl,
 									struct f_MHD_control *f_MHD_ctl, 
 									struct main_widgets *mWidgets, GtkWidget *window){
     GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -958,8 +958,9 @@ void draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ct
 	int itmp[1];
 	itmp[0] = f_smonitor_ctl->f_num_vspec_ctl;
 	GtkWidget *vbox_smontr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	draw_sph_vol_spectr_ctl_vbox(f_smonitor_ctl->f_v_pwr, f_MHD_ctl, mWidgets, window);
-	gtk_container_add(GTK_CONTAINER(vbox_smontr), mWidgets->expand_vpwrs);
+	GtkWidget *expand_vpwrs = draw_sph_vol_spectr_ctl_vbox(f_smonitor_ctl->f_v_pwr,
+                                                           f_MHD_ctl, mWidgets, window);
+	gtk_container_add(GTK_CONTAINER(vbox_smontr), expand_vpwrs);
 	
 	/*
     GtkWidget *vbox_p11 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
@@ -1035,9 +1036,9 @@ void draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ct
     gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p4, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p5, FALSE, FALSE, 0);
 */
-    mWidgets->expand_smntr = draw_control_block(f_smonitor_ctl->c_block_name, f_smonitor_ctl->f_iflag,
-                                               480, 240, window, vbox_smontr);
-    return;
+    GtkWidget *expand_smntr = draw_control_block(f_smonitor_ctl->c_block_name, f_smonitor_ctl->f_iflag,
+                                                 480, 240, window, vbox_smontr);
+    return expand_smntr;
 };
 
 
@@ -1127,8 +1128,8 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     GtkWidget *expand_MHD_control = draw_MHD_control_expand(window, f_MHD_ctl->f_smctl_ctl);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_control, FALSE, FALSE, 0);
 	
-	draw_MHD_sph_monitor_ctls_vbox(f_MHD_ctl->f_smonitor_ctl, f_MHD_ctl, mWidgets, window);
-	gtk_container_add(GTK_CONTAINER(mWidgets->ctl_MHD_inner_box), mWidgets->expand_smntr);
+	GtkWidget *expand_smntr = draw_MHD_sph_monitor_ctls_vbox(f_MHD_ctl->f_smonitor_ctl, f_MHD_ctl, mWidgets, window);
+	gtk_container_add(GTK_CONTAINER(mWidgets->ctl_MHD_inner_box), expand_smntr);
 	
 	/*
 	GtkWidget *vbox_node_monitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
