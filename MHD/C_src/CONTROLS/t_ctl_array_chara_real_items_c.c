@@ -57,10 +57,14 @@ struct chara_real_clist * init_f_ctl_cr_array(void *(*c_load_self)(void *f_paren
 {
 	struct chara_real_clist *cr_clst = init_chara_real_clist();
 	cr_clst->f_self =  c_load_self(f_parent);
-	int i;
 	char * ctmp = (char *) c_chara_real_array_block_name(cr_clst->f_self);
 	cr_clst->clist_name = strngcopy_from_f(ctmp);
-	for(i=0;i<c_chara_real_array_num(cr_clst->f_self);i++){
+	
+	int i, num;
+    num = c_chara_real_array_num(cr_clst->f_self);
+    if(num == 0) {c_alloc_chara_real_array(num, cr_clst->f_self);};
+	
+	for(i=0;i<num;i++){
 		ctmp = (char *) c_chara_real_array_c_tbl(i, cr_clst->f_self);
 		append_chara_real_clist(strngcopy_from_f(ctmp), 
 							   c_chara_real_array_r_tbl(i, cr_clst->f_self), cr_clst);

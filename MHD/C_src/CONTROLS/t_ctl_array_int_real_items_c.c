@@ -49,10 +49,14 @@ struct int_real_clist * init_f_ctl_ir_array(void *(*c_load_self)(void *f_parent)
 {
     struct int_real_clist *ir_clst = init_int_real_clist();
 	ir_clst->f_self =  c_load_self(f_parent);
-	int i;
 	char *ctmp = c_int_real_array_block_name(ir_clst->f_self);
 	sprintf(ir_clst->clist_name,"%s", strngcopy_from_f(ctmp));
-    for(i=0;i<c_int_real_array_num(ir_clst->f_self);i++){
+	
+	int i, num;
+    num = c_int_real_array_num(ir_clst->f_self);
+    if(num == 0) {c_alloc_int_real_array(num, ir_clst->f_self);};
+	
+	for(i=0;i<num;i++){
 		append_int_real_clist(c_int_real_array_i_tbl(i, ir_clst->f_self),
 							  c_int_real_array_r_tbl(i, ir_clst->f_self), ir_clst);
     }

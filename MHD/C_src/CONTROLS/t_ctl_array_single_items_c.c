@@ -70,8 +70,12 @@ struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent)
 	
 	char *ctmp =  (char *) c_chara_array_block_name(c_clist->f_self);
 	c_clist->clist_name = strngcopy_from_f(ctmp);
-	int i;
-	for(i=0;i<c_chara_array_num(c_clist->f_self);i++){
+	
+	int i, num;
+    num = c_chara_array_num(c_clist->f_self);
+    if(num == 0) {c_alloc_chara_array(num, c_clist->f_self);};
+	
+	for(i=0;i<num;i++){
 		ctmp = (char *) c_chara_array_c_tbl(i, c_clist->f_self);
 		append_chara_clist(strngcopy_from_f(ctmp), c_clist);
 	};
@@ -125,7 +129,7 @@ struct real_clist * init_f_ctl_real_array(void *(*c_load_self)(void *f_parent),
 	int i, num;
     num = c_real_array_num(r_clist->f_self);
     if(num == 0) {c_alloc_real_array(num, r_clist->f_self);};
-    for(i=0;i<c_real_array_num(r_clist->f_self);i++){
+    for(i=0;i<num;i++){
 		append_real_clist(c_real_array_r_tbl(i,r_clist->f_self), r_clist);
     }
 	return r_clist;
@@ -170,10 +174,14 @@ struct int_clist * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent),
 {
 	struct int_clist *i_clist = init_int_clist();
 	i_clist->f_self =  c_load_self(f_parent);
-	int i;
 	char *ctmp =  (char *) c_int_array_block_name(i_clist->f_self);
 	sprintf(i_clist->clist_name,"%s", strngcopy_from_f(ctmp));
-    for(i=0;i<c_int_array_num(i_clist->f_self);i++){
+	
+	int i, num;
+    num = c_int_array_num(i_clist->f_self);
+    if(num == 0) {c_alloc_int_array(num, i_clist->f_self);};
+	
+	for(i=0;i<c_int_array_num(i_clist->f_self);i++){
 		append_int_clist(c_int_array_i_tbl(i,i_clist->f_self), i_clist);
     }
 	return i_clist;

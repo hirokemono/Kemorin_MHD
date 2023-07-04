@@ -57,10 +57,14 @@ struct chara_int_clist * init_f_ctl_ci_array(void *(*c_load_self)(void *f_parent
 {
 	struct chara_int_clist * ci_clist = init_chara_int_clist();
 	ci_clist->f_self =  c_load_self(f_parent);
-	int i;
 	char * ctmp = (char *) c_chara_int_array_block_name(ci_clist->f_self);
 	ci_clist->clist_name = strngcopy_from_f(ctmp);
-	for(i=0;i<c_chara_int_array_num(ci_clist->f_self);i++){
+	
+	int i, num;
+    num = c_chara_int_array_num(ci_clist->f_self);
+    if(num == 0) {c_alloc_chara_int_array(num, ci_clist->f_self);};
+	
+	for(i=0;i<num;i++){
 		ctmp = (char *) c_chara_int_array_c_tbl(i, ci_clist->f_self);
 		append_chara_int_clist(strngcopy_from_f(ctmp), 
 							   c_chara_int_array_i_tbl(i, ci_clist->f_self), ci_clist);
