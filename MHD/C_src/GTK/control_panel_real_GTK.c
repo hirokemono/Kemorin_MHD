@@ -28,7 +28,9 @@ void reflesh_f_ctl_r_array_by_r_list(struct real_clist *r_clist)
 {
 /*	c_check_real_array(r_clist->f_self);*/
 	int num_array = count_real_clist(r_clist);
+    printf("num_array %d \n", num_array);
 	reflesh_f_ctl_real_array(num_array, r_clist);
+    printf("reflesh_f_ctl_real_array %d \n", num_array);
 	copy_f_ctl_r_array_by_r_list(r_clist);
 /*	c_check_real_array(r_clist->f_self);*/
     return;
@@ -99,7 +101,6 @@ static void init_real_tree_view(struct real_clist *r_clist_gtk, GtkWidget *real_
 	
 	create_real_tree_view(GTK_TREE_VIEW(real_array_tree_view), r_clist_gtk, 
                            renderer_spin1);
-	
 	r_clist_gtk->index_bc = append_r_list_from_ctl(r_clist_gtk->index_bc, &r_clist_gtk->r_item_head,
 												   GTK_TREE_VIEW(real_array_tree_view));
 };

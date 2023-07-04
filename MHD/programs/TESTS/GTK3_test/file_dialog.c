@@ -149,15 +149,15 @@ extern void * c_sph_mntr_c_Nusselt_file_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_pfix_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_fmt_ctl(void *f_smonitor_ctl);
 
-extern void * c_pick_spectr_ctl_block_name(void *f_lp_ctl);
-extern void * c_pick_spectr_ctl_iflag(void *f_lp_ctl);
-extern void * c_sph_picked_mode_head_ctl(void *f_lp_ctl);
-extern void * c_sph_picked_mode_fmt_ctl(void *f_lp_ctl);
-extern void * c_sph_idx_pick_layer_ctl(void *f_lp_ctl);
-extern void * c_sph_pick_radius_ctl(void *f_lp_ctl);
-extern void * c_sph_idx_pick_sph_ctl(void *f_lp_ctl);
-extern void * c_sph_idx_pick_sph_l_ctl(void *f_lp_ctl);
-extern void * c_sph_idx_pick_sph_m_ctl(void *f_lp_ctl);
+extern void * c_pick_spectr_ctl_block_name(void *f_pspec_ctl);
+extern void * c_pick_spectr_ctl_iflag(void *f_pspec_ctl);
+extern void * c_sph_picked_mode_head_ctl(void *f_pspec_ctl);
+extern void * c_sph_picked_mode_fmt_ctl(void *f_pspec_ctl);
+extern void * c_sph_idx_pick_layer_ctl(void *f_pspec_ctl);
+extern void * c_sph_pick_radius_ctl(void *f_pspec_ctl);
+extern void * c_sph_idx_pick_sph_ctl(void *f_pspec_ctl);
+extern void * c_sph_idx_pick_sph_l_ctl(void *f_pspec_ctl);
+extern void * c_sph_idx_pick_sph_m_ctl(void *f_pspec_ctl);
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
@@ -248,9 +248,9 @@ struct f_MHD_sph_monitor_ctls{
 	
 	int f_num_vspec_ctl;
 	struct void_clist *f_v_pwr;
-	struct f_MHD_sph_pick_mode_ctls * f_lp_ctl;
+	void * f_lp_ctl;
 	void * f_g_pwr;
-	void * f_pspec_ctl;
+	struct f_MHD_sph_pick_mode_ctls * f_pspec_ctl;
 	void * f_circ_ctls;
 	void * f_dbench_ctl;
 	void * f_fdip_ctl;
@@ -498,28 +498,29 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 
 struct f_MHD_sph_pick_mode_ctls * init_f_MHD_sph_pick_mode_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
-	struct f_MHD_sph_pick_mode_ctls *f_lp_ctl 
+	struct f_MHD_sph_pick_mode_ctls *f_pspec_ctl 
 			= (struct f_MHD_sph_pick_mode_ctls *) malloc(sizeof(struct f_MHD_sph_pick_mode_ctls));
-	if(f_lp_ctl == NULL){
-		printf("malloc error for f_lp_ctl\n");
+	if(f_pspec_ctl == NULL){
+		printf("malloc error for f_pspec_ctl\n");
 		exit(0);
 	};
 	
-	f_lp_ctl->f_self =  c_load_self(f_parent);
+	f_pspec_ctl->f_self =  c_load_self(f_parent);
+	printf("f_pspec_ctl->f_self %p\n", f_pspec_ctl->f_self);
 	
-	f_lp_ctl->f_iflag = (int *) c_pick_spectr_ctl_iflag(f_lp_ctl->f_self);
-	char *f_block_name =   (char *) c_pick_spectr_ctl_block_name(f_lp_ctl->f_self);
-	f_lp_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	f_pspec_ctl->f_iflag = (int *) c_pick_spectr_ctl_iflag(f_pspec_ctl->f_self);
+	char *f_block_name =   (char *) c_pick_spectr_ctl_block_name(f_pspec_ctl->f_self);
+	f_pspec_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_lp_ctl->f_picked_mode_head_ctl = init_f_ctl_chara_item(c_sph_picked_mode_head_ctl, f_lp_ctl->f_self);
-	f_lp_ctl->f_picked_mode_fmt_ctl =  init_f_ctl_chara_item(c_sph_picked_mode_fmt_ctl, f_lp_ctl->f_self);
-	f_lp_ctl->f_idx_pick_layer_ctl =   init_f_ctl_int_array(c_sph_idx_pick_layer_ctl, f_lp_ctl->f_self);
-    printf("pointers %p %p \n", f_lp_ctl->f_self, c_sph_pick_radius_ctl);
-	f_lp_ctl->f_pick_radius_ctl =      init_f_ctl_real_array(c_sph_pick_radius_ctl, f_lp_ctl->f_self);
-	f_lp_ctl->f_idx_pick_sph_ctl =     init_f_ctl_i2_array(c_sph_idx_pick_sph_ctl, f_lp_ctl->f_self);
-	f_lp_ctl->f_idx_pick_sph_l_ctl =   init_f_ctl_int_array(c_sph_idx_pick_sph_l_ctl, f_lp_ctl->f_self);
-	f_lp_ctl->f_idx_pick_sph_m_ctl =   init_f_ctl_int_array(c_sph_idx_pick_sph_m_ctl, f_lp_ctl->f_self);
-	return f_lp_ctl;
+	f_pspec_ctl->f_picked_mode_head_ctl = init_f_ctl_chara_item(c_sph_picked_mode_head_ctl, f_pspec_ctl->f_self);
+	f_pspec_ctl->f_picked_mode_fmt_ctl =  init_f_ctl_chara_item(c_sph_picked_mode_fmt_ctl, f_pspec_ctl->f_self);
+	f_pspec_ctl->f_idx_pick_layer_ctl =   init_f_ctl_int_array(c_sph_idx_pick_layer_ctl, f_pspec_ctl->f_self);
+    printf("pointers %p %p \n", f_pspec_ctl->f_self, c_sph_pick_radius_ctl);
+	f_pspec_ctl->f_pick_radius_ctl =      init_f_ctl_real_array(c_sph_pick_radius_ctl, f_pspec_ctl->f_self);
+	f_pspec_ctl->f_idx_pick_sph_ctl =     init_f_ctl_i2_array(c_sph_idx_pick_sph_ctl, f_pspec_ctl->f_self);
+	f_pspec_ctl->f_idx_pick_sph_l_ctl =   init_f_ctl_int_array(c_sph_idx_pick_sph_l_ctl, f_pspec_ctl->f_self);
+	f_pspec_ctl->f_idx_pick_sph_m_ctl =   init_f_ctl_int_array(c_sph_idx_pick_sph_m_ctl, f_pspec_ctl->f_self);
+	return f_pspec_ctl;
 }
 
 
@@ -533,7 +534,7 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	};
 	
 	f_smonitor_ctl->f_self =  c_load_self(f_parent);
-	printf("f_self %p\n", f_smonitor_ctl->f_self);
+	printf("f_smonitor_ctl->f_self %p\n", f_smonitor_ctl->f_self);
 	
 	f_smonitor_ctl->f_iflag = (int *) c_sph_monitor_ctl_iflag(f_smonitor_ctl->f_self);
 	char *f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
@@ -551,9 +552,9 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
         struct f_sph_vol_spectr_ctls *void_in = init_f_sph_vol_spectr_ctls(i, f_smonitor_ctl->f_self);
 		append_void_clist((void *) void_in, f_smonitor_ctl->f_v_pwr);
 	}
-	f_smonitor_ctl->f_lp_ctl =     init_f_MHD_sph_pick_mode_ctls(c_sph_monitor_lp_ctl, f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_lp_ctl =     c_sph_monitor_lp_ctl(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_g_pwr =      c_sph_monitor_g_pwr(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_pspec_ctl =  c_sph_monitor_pspec_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_pspec_ctl =  init_f_MHD_sph_pick_mode_ctls(c_sph_monitor_pspec_ctl, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_circ_ctls =  c_sph_monitor_circ_ctls(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_dbench_ctl = c_sph_monitor_dbench_ctl(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_fdip_ctl =   c_sph_monitor_fdip_ctl(f_smonitor_ctl->f_self);
@@ -584,7 +585,7 @@ struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent)
 	};
 	
 	f_viz_ctls->f_self =  c_load_self(f_parent);
-	printf("f_self %p\n", f_viz_ctls->f_self);
+	printf("f_viz_ctls->f_self %p\n", f_viz_ctls->f_self);
 	
 	f_viz_ctls->f_iflag =        (int *) c_visualizations_iflag(f_viz_ctls->f_self);
 	char *f_block_name =   (char *) c_visualizations_block_name(f_viz_ctls->f_self);
@@ -985,7 +986,8 @@ GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, struct f_MH
 	mWidgets->v_pwr_tree_view = gtk_tree_view_new();
 	GtkWidget *vbox_tbl = add_block_list_box_w_addbottun(f_v_pwr, mWidgets->v_pwr_tree_view, 
 														 button_add, button_delete, mWidgets->vbox_vpwr);
-    g_signal_connect(G_OBJECT(button_add), "clicked", 
+
+    g_signal_connect(G_OBJECT(button_add), "clicked",
                      G_CALLBACK(add_block_list_items_cb), (gpointer) mWidgets->v_pwr_tree_view);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
                      G_CALLBACK(delete_block_list_items_cb), (gpointer) mWidgets->v_pwr_tree_view);
@@ -1011,21 +1013,21 @@ struct f_MHD_sph_pick_mode_views{
 };
 
 
-GtkWidget * draw_sph_pick_mode_ctls_vbox(struct f_MHD_sph_pick_mode_ctls *f_lp_ctl, struct f_MHD_sph_pick_mode_views *f_lp_ctl_vws,
+GtkWidget * draw_sph_pick_mode_ctls_vbox(struct f_MHD_sph_pick_mode_ctls *f_pspec_ctl, struct f_MHD_sph_pick_mode_views *f_lp_ctl_vws,
 										 GtkWidget *window){
 	
-	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_lp_ctl->f_picked_mode_head_ctl);
-	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_lp_ctl->f_picked_mode_fmt_ctl);
+	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_pspec_ctl->f_picked_mode_head_ctl);
+	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_pspec_ctl->f_picked_mode_fmt_ctl);
 	
-	GtkWidget *hbox_a1 = real_array_vbox_w_addbottun(f_lp_ctl->f_pick_radius_ctl, 
+	GtkWidget *hbox_a1 = real_array_vbox_w_addbottun(f_pspec_ctl->f_pick_radius_ctl,
 													 f_lp_ctl_vws->f_pick_radius_ctl_tree);
-	GtkWidget *hbox_a2 = add_int_list_box_w_addbottun(f_lp_ctl->f_idx_pick_layer_ctl, 
+	GtkWidget *hbox_a2 = add_int_list_box_w_addbottun(f_pspec_ctl->f_idx_pick_layer_ctl,
 													  f_lp_ctl_vws->f_idx_pick_layer_ctl_tree);
-	GtkWidget *hbox_a3 = add_i2_list_box_w_addbottun(f_lp_ctl->f_idx_pick_sph_ctl, 
+	GtkWidget *hbox_a3 = add_i2_list_box_w_addbottun(f_pspec_ctl->f_idx_pick_sph_ctl,
 													 f_lp_ctl_vws->f_idx_pick_sph_ctl_tree);
-	GtkWidget *hbox_a4 = add_int_list_box_w_addbottun(f_lp_ctl->f_idx_pick_sph_l_ctl, 
+	GtkWidget *hbox_a4 = add_int_list_box_w_addbottun(f_pspec_ctl->f_idx_pick_sph_l_ctl,
 													  f_lp_ctl_vws->f_idx_pick_sph_l_ctl_tree);
-	GtkWidget *hbox_a5 = add_int_list_box_w_addbottun(f_lp_ctl->f_idx_pick_sph_m_ctl, 
+	GtkWidget *hbox_a5 = add_int_list_box_w_addbottun(f_pspec_ctl->f_idx_pick_sph_m_ctl,
 													  f_lp_ctl_vws->f_idx_pick_sph_m_ctl_tree);
 	
 	GtkWidget *vbox_pick = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
@@ -1037,7 +1039,7 @@ GtkWidget * draw_sph_pick_mode_ctls_vbox(struct f_MHD_sph_pick_mode_ctls *f_lp_c
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a4, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a5, FALSE, FALSE, 0);
 	
-	GtkWidget *expand_vpwrs = draw_control_block(f_lp_ctl->c_block_name, f_lp_ctl->f_iflag,
+	GtkWidget *expand_vpwrs = draw_control_block(f_pspec_ctl->c_block_name, f_pspec_ctl->f_iflag,
 												 480, 440, window, vbox_pick);
 	return expand_vpwrs;
 };
@@ -1065,7 +1067,7 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
 	};
 	
 	
-	GtkWidget *expand_pick_mode = draw_sph_pick_mode_ctls_vbox(f_smonitor_ctl->f_lp_ctl->c_block_name, f_lp_vws, window);
+	GtkWidget *expand_pick_mode = draw_sph_pick_mode_ctls_vbox(f_smonitor_ctl->f_pspec_ctl, f_lp_vws, window);
      gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_pick_mode,  FALSE, FALSE, 0);
 	
 	/*

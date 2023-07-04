@@ -55,21 +55,15 @@ void * dealloc_f_sph_vol_spectr_ctls(void *f_item){
 GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
 										   GtkWidget *button_add, GtkWidget *button_delete,
 										   GtkWidget *vbox_out){
-	printf("f_parent in add_block_list_box_w_addbottun %p\n", v_clist_gtk->f_parent);
 	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	
 	GtkCellRenderer *renderer_text =  gtk_cell_renderer_text_new();
 	create_block_tree_view(GTK_TREE_VIEW(v_tree_view), renderer_text);
-	v_clist_gtk->index_bc = append_void_list_from_ctl(v_clist_gtk->index_bc, &v_clist_gtk->c_item_head, 
+	v_clist_gtk->index_bc = append_void_list_from_ctl(v_clist_gtk->index_bc, &v_clist_gtk->c_item_head,
 													  GTK_TREE_VIEW(v_tree_view));
-	
-	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(hbox0), button_add, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox0), button_delete, FALSE, TRUE, 0);
-	
-	GtkWidget *expander = block_list_box_expander(v_clist_gtk->clist_name, GTK_TREE_VIEW(v_tree_view), 
+
+	GtkWidget *expander = block_list_box_expander(v_clist_gtk->clist_name, GTK_TREE_VIEW(v_tree_view),
 												  button_add, button_delete);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox0, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), expander, FALSE, TRUE, 0);
 	return vbox;
 };

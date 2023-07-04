@@ -10,13 +10,12 @@
 
 /* Append new data at the end of list */
 static int append_int_item_to_tree(const int index, const int i1_data, 
-								   const int i2_data, GtkTreeModel *child_model){
+                                   GtkTreeModel *child_model){
     GtkTreeIter iter;
     
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                        COLUMN_FIELD_INDEX, i1_data,
-                       COLUMN_FIELD_NAME,  i2_data,
                        -1);
     return index + 1;
 }
@@ -27,8 +26,7 @@ int append_int_list_from_ctl(int index, struct int_ctl_list *head,
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
 	while (head != NULL){
-		index = append_int_item_to_tree(index, head->i_item->i_data, 
-										head->i_item->i_data, child_model);
+		index = append_int_item_to_tree(index, head->i_item->i_data, child_model);
         head = head->_next;
     };
     return index;

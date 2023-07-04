@@ -26,7 +26,6 @@ int append_void_list_from_ctl(int index, struct void_ctl_list *head,
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
-        printf("Aho %s\n", head->list_label);
         index = append_void_item_to_tree(index, head->list_label, child_model);
         head = head->_next;
     };
@@ -236,10 +235,10 @@ void create_block_tree_view(GtkTreeView *v_tree_view, GtkCellRenderer *renderer_
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
     /* sort */
-    column = gtk_tree_view_get_column(v_tree_view, COLUMN_FIELD_NAME);
+    column = gtk_tree_view_get_column(v_tree_view, COLUMN_FIELD_INDEX);
     gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
-    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_NAME, GTK_SORT_ASCENDING);
+    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
 

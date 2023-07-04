@@ -13,7 +13,6 @@ static int append_i2_item_to_tree(const int index, const int i1_data, const int 
 			GtkTreeModel *child_model){
     GtkTreeIter iter;
     
-		printf("append_i2_item_to_tree %d %d\n ", i1_data, i2_data);
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                        COLUMN_FIELD_INDEX, i1_data,

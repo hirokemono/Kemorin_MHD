@@ -1064,6 +1064,14 @@
      &    MHD_ctl_C, add_SSMHD_ctl_C, c_buf1)
       if(c_buf1%iend .gt. 0) stop 'Error in control file'
 !
+      write(*,*) 'smonitor_ctl%pspec_ctl%pick_radius_ctl', &
+      &  MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl%num, &
+      &  allocated(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl%vect)
+      
+      write(*,'(a,z16)') 'smonitor_ctl', c_loc(MHD_ctl_C%smonitor_ctl)
+      write(*,'(a,z16)') 'pspec_ctl', c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl)
+      write(*,'(a,z16)') 'pick_radius_ctl', c_loc(MHD_ctl_C%smonitor_ctl%pspec_ctl%pick_radius_ctl)
+
       len = len_trim(MHD_ctl_C%block_name) + 1
       write(MHD_ctl_C%block_name(len:len),'(a1)') char(0)
       c_read_control_sph_SGS_MHD = C_loc(MHD_ctl_C)

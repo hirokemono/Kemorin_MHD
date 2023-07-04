@@ -118,10 +118,13 @@ struct real_clist * init_f_ctl_real_array(void *(*c_load_self)(void *f_parent),
 {
 	struct real_clist *r_clist = init_real_clist();
 	r_clist->f_self =  c_load_self(f_parent);
-    printf("f_self %d\n", r_clist->f_self);
-	int i;
-	char *ctmp = c_real_array_block_name(r_clist->f_self);
-	sprintf(r_clist->clist_name,"%s", strngcopy_from_f(ctmp));
+
+    char *ctmp = c_real_array_block_name(r_clist->f_self);
+    sprintf(r_clist->clist_name,"%s", strngcopy_from_f(ctmp));
+
+	int i, num;
+    num = c_real_array_num(r_clist->f_self);
+    if(num == 0) {c_alloc_real_array(num, r_clist->f_self);};
     for(i=0;i<c_real_array_num(r_clist->f_self);i++){
 		append_real_clist(c_real_array_r_tbl(i,r_clist->f_self), r_clist);
     }
@@ -145,7 +148,7 @@ struct f_ctl_int_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent)
 	};
 	f_iitem->f_self =  c_load_self(f_parent);
 	
-	f_iitem->f_iflag =        (int *) c_int_item_iflag(f_iitem->f_self);
+	f_iitem->f_iflag =    (int *) c_int_item_iflag(f_iitem->f_self);
     char *f_block_name =  (char *) c_int_item_block_name(f_iitem->f_self);
 	f_iitem->c_block_name = strngcopy_from_f(f_block_name);
 	
