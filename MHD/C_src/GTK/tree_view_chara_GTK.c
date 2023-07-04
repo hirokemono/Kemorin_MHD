@@ -165,6 +165,13 @@ int add_c_list_items_GTK(GtkTreeView *tree_view_to_add, struct chara_clist *c_cl
     gchar *old_strng;
 	int index = 0;
     
+   	if(count_chara_clist(c_clist) == 0){
+		append_chara_clist("  ", c_clist);
+		index = count_chara_clist(c_clist);
+        index = append_c_list_from_ctl(index, &c_clist->c_item_head, tree_view_to_add);
+        return index;
+    };
+	
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(tree_view_to_add);

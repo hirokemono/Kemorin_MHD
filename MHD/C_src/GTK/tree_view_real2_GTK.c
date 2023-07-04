@@ -129,10 +129,17 @@ int add_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
     GList *list;
     GList *reference_list;
     GList *cur;
-    double value1, value2;
+    double value1 = 0.0, value2 = 0.0;
 	int index = 0;
     
-    /* Get path of selected raw */
+   	if(count_real2_clist(r2_clist) == 0){
+		append_real2_clist(value1, value2, r2_clist);
+		index = count_real2_clist(r2_clist);
+		index = append_r2_list_from_ctl(index, &r2_clist->r2_item_head, r2_tree_view);
+        return index;
+    };
+	
+	/* Get path of selected raw */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(r2_tree_view);
     child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));

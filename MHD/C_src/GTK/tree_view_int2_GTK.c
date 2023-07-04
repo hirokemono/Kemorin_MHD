@@ -130,6 +130,14 @@ int add_i2_list_items(GtkTreeView *i2_tree_view, struct int2_clist *i2_clist_gtk
     int   i1value = 0, i2value = 0;
 	int index = 0;
     
+    
+   	if(count_int2_clist(i2_clist_gtk) == 0){
+		append_int2_clist(i1value, i2value, i2_clist_gtk);
+		index = count_int2_clist(i2_clist_gtk);
+    	index = append_i2_list_from_ctl(index, &i2_clist_gtk->i2_item_head, i2_tree_view);
+        return index;
+    };
+	
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(i2_tree_view);

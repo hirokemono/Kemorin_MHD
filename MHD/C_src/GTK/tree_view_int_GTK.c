@@ -99,6 +99,13 @@ int add_int_list_items(GtkTreeView *int_tree_view, struct int_clist *i_clist_gtk
     int   i1value = 0;
 	int index = 0;
     
+   	if(count_int_clist(i_clist_gtk) == 0){
+		append_int_clist(i1value, i_clist_gtk);
+		index = count_int_clist(i_clist_gtk);
+        index = append_int_list_from_ctl(index, &i_clist_gtk->i_item_head, int_tree_view);
+        return index;
+    };
+	
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(int_tree_view);

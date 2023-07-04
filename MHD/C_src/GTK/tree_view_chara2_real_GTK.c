@@ -206,6 +206,14 @@ int add_c2r_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMo
 	GList *list;
     GList *reference_list;
     GList *cur;
+	double value = 0.0;
+	
+   	if(count_chara2_real_clist(c2r_clst) == 0){
+		append_chara2_real_clist("  ", "  ", value, c2r_clst);
+		index = count_chara2_real_clist(c2r_clst);
+	    index = append_c2r_list_from_ctl(index, &c2r_clst->c2r_item_head, tree_view_to_add);
+        return index;
+    };
 	
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
@@ -238,7 +246,6 @@ int add_c2r_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMo
 	GtkTreeIter iter;
 	gchar row_string[30] = "New_number";
 	gchar second_string[30] = "New_direction";
-	double value = 0.0;
  	cur = g_list_first(reference_list);
 	if(cur == NULL){
 		append_chara2_real_clist(row_string, second_string, value, c2r_clst);

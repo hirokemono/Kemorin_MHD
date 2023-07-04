@@ -268,9 +268,16 @@ int add_ci3_list_items_GTK(GtkTreeView *tree_view_to_add,
     GList *cur;
     
     gchar *field_name;
-    int ivalue;
+    int ivalue = 0;
 	int index = 0;
     
+   	if(count_chara_int3_clist(ci3_clist) == 0){
+		append_chara_int3_clist("  ", ivalue, ivalue, ivalue, ci3_clist);
+		index = count_chara_int3_clist(ci3_clist);
+        index = append_ci3_list_from_ctl(index, &ci3_clist->ci3_item_head, tree_view_to_add);
+        return index;
+    };
+	
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(tree_view_to_add);

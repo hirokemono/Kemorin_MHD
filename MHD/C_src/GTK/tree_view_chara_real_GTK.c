@@ -199,7 +199,15 @@ int add_cr_list_items_GTK(GtkTreeView *tree_view_to_add,
     
     gchar *field_name;
 	int index = 0;
+	double value = 0.0;
     
+   	if(count_chara_real_clist(cr_clist) == 0){
+		append_chara_real_clist("   ", value, cr_clist);
+		index = count_chara_real_clist(cr_clist);
+     	index = append_cr_list_from_ctl(index, &cr_clist->cr_item_head, tree_view_to_add);
+        return index;
+    };
+	
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(tree_view_to_add);
@@ -232,7 +240,6 @@ int add_cr_list_items_GTK(GtkTreeView *tree_view_to_add,
     /* Return reference into path and delete reference */
 	
 	gchar row_string[30] = "new_number";
-	double value = 0.0;
 	GtkTreeIter iter;
 	cur = g_list_first(reference_list);
 	if(cur == NULL){

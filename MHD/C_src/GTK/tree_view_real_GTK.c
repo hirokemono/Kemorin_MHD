@@ -103,7 +103,7 @@ int add_r_list_items(GtkTreeView *r_tree_view, struct real_clist *r_clist){
         index = append_r_list_from_ctl(index, &r_clist->r_item_head, r_tree_view);
         return index;
     };
- 
+	
     
     /* Get path of selected raw */
     /* The path is for tree_model_sort */

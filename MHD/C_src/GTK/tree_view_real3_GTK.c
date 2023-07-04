@@ -202,8 +202,17 @@ int add_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist){
     GList *list;
     GList *reference_list;
     GList *cur;
-    double value1, value2, value3;
+    double value1 = 0.0, value2 = 0.0, value3 = 0.0;
 	int index = 0;
+	
+	
+   	if(count_real3_clist(r3_clist) == 0){
+		append_real3_clist(value1, value2, value3, r3_clist);
+		index = count_real3_clist(r3_clist);
+		index = append_r3_list_from_ctl(index, &r3_clist->r3_item_head, r3_tree_view);
+        return index;
+    };
+	
     /* Get path of selected raw  */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(r3_tree_view);

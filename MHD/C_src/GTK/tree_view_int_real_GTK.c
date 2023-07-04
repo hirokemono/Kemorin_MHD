@@ -130,10 +130,17 @@ int add_ir_list_items(GtkTreeView *ir_tree_view, struct int_real_clist *ir_clist
     GList *list;
     GList *reference_list;
     GList *cur;
-    int   ivalue;
-    double rvalue;
+    int   ivalue = 0;
+    double rvalue = 0.0;
 	int index = 0;
     
+   	if(count_int_real_clist(ir_clist_gtk) == 0){
+		append_int_real_clist(ivalue, rvalue, ir_clist_gtk);
+		index = count_int_real_clist(ir_clist_gtk);
+        index = append_ir_list_from_ctl(index, &ir_clist_gtk->ir_item_head, ir_tree_view);
+        return index;
+    };
+	
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(ir_tree_view);
