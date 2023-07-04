@@ -317,7 +317,6 @@ struct main_widgets{
     GtkWidget *vbox_vpwr;
 	GtkWidget *expand_vpwrs;
 	GtkWidget *expand_smntr;
-    GtkWidget *vbox_smontr;
 	
 	GtkWidget *v_pwr_tree_view;
 	struct void_clist * expand_v_pwr_list;
@@ -958,9 +957,9 @@ void draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ct
 	
 	int itmp[1];
 	itmp[0] = f_smonitor_ctl->f_num_vspec_ctl;
-	mWidgets->vbox_smontr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *vbox_smontr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	draw_sph_vol_spectr_ctl_vbox(f_smonitor_ctl->f_v_pwr, f_MHD_ctl, mWidgets, window);
-	gtk_container_add(GTK_CONTAINER(mWidgets->vbox_smontr), mWidgets->expand_vpwrs);
+	gtk_container_add(GTK_CONTAINER(vbox_smontr), mWidgets->expand_vpwrs);
 	
 	/*
     GtkWidget *vbox_p11 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
@@ -1014,30 +1013,30 @@ void draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ct
     GtkWidget *hbox_12 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_typ_scale_file_prefix_ctl);
     GtkWidget *hbox_13 = draw_chara_item_entry_hbox(f_smonitor_ctl->f_typ_scale_file_format_ctl);
 	
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_4,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_5,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_7,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_8,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_9,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_10, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_11, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_12, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), hbox_13, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_9,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_10, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_11, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_13, FALSE, FALSE, 0);
     /*
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), vbox_p10, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), vbox_p11, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), vbox_p1, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), vbox_p2, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), vbox_p3, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), vbox_p4, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(mWidgets->vbox_smontr), vbox_p5, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p10, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p11, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p3, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p4, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_smontr), vbox_p5, FALSE, FALSE, 0);
 */
     mWidgets->expand_smntr = draw_control_block(f_smonitor_ctl->c_block_name, f_smonitor_ctl->f_iflag,
-                                               480, 240, window, mWidgets->vbox_smontr);
+                                               480, 240, window, vbox_smontr);
     return;
 };
 
