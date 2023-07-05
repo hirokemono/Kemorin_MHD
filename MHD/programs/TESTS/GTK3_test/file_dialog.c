@@ -179,6 +179,11 @@ extern void * c_sph_idx_gauss_ctl(void *f_g_pwr);
 extern void * c_sph_idx_gauss_l_ctl(void *f_g_pwr);
 extern void * c_sph_idx_gauss_m_ctl(void *f_g_pwr);
 
+extern void * c_dipolarity_ctl_block_name(void *f_fdip_ctl);
+extern void * c_dipolarity_ctl_iflag(void *f_fdip_ctl);
+extern void * c_dipolarity_file_prefix_ctl(void *f_fdip_ctl);
+extern void * c_dipolarity_file_format_ctl(void *f_fdip_ctl);
+extern void * c_dipolarity_truncation_ctl(void *f_fdip_ctl);
 
 
 struct f_MHD_SGS_model_control{
@@ -276,6 +281,17 @@ struct f_MHD_sph_gauss_coefs_ctls{
 	struct int_clist  *f_idx_gauss_m_ctl;
 };
 
+struct f_MHD_sph_dipolarity_ctls{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_fdip_file_prefix_ctl;
+	struct f_ctl_chara_item *f_fdip_file_format_ctl;
+	struct int_clist  *f_fdip_truncation_ctl;
+};
+
 struct f_MHD_sph_layer_spectr_ctls{
 	void * f_self;
 	int * f_iflag;
@@ -307,7 +323,7 @@ struct f_MHD_sph_monitor_ctls{
 	struct f_MHD_sph_pick_mode_ctls    *f_pspec_ctl;
 	void * f_circ_ctls;
 	void * f_dbench_ctl;
-	void * f_fdip_ctl;
+	struct f_MHD_sph_dipolarity_ctls *f_fdip_ctl;
 	
 	struct f_ctl_chara_item * f_volume_average_prefix;
 	struct f_ctl_chara_item * f_volume_pwr_spectr_prefix;
@@ -599,6 +615,27 @@ struct f_MHD_sph_gauss_coefs_ctls * init_f_MHD_sph_gauss_coefs_ctls(void *(*c_lo
 	return f_g_pwr;
 }
 
+struct f_MHD_sph_dipolarity_ctls * init_f_MHD_sph_dipolarity_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
+{
+	struct f_MHD_sph_dipolarity_ctls *f_fdip_ctl 
+			= (struct f_MHD_sph_dipolarity_ctls *) malloc(sizeof(struct f_MHD_sph_dipolarity_ctls));
+	if(f_fdip_ctl == NULL){
+		printf("malloc error for f_fdip_ctl\n");
+		exit(0);
+	};
+	f_fdip_ctl->f_self =  c_load_self(f_parent);
+	
+	f_fdip_ctl->f_iflag = (int *) c_dipolarity_ctl_iflag(f_fdip_ctl->f_self);
+	char *f_block_name =   (char *) c_dipolarity_ctl_block_name(f_fdip_ctl->f_self);
+	f_fdip_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_fdip_ctl->f_fdip_file_prefix_ctl = init_f_ctl_chara_item(c_dipolarity_file_prefix_ctl, f_fdip_ctl->f_self);
+	f_fdip_ctl->f_fdip_file_format_ctl =  init_f_ctl_chara_item(c_dipolarity_file_format_ctl, f_fdip_ctl->f_self);
+	f_fdip_ctl->f_fdip_truncation_ctl =   init_f_ctl_int_array(c_dipolarity_truncation_ctl, f_fdip_ctl->f_self);
+	return f_fdip_ctl;
+}
+
+
 struct f_MHD_sph_layer_spectr_ctls * init_f_MHD_sph_layer_spectr_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_MHD_sph_layer_spectr_ctls *f_lp_ctl 
@@ -608,7 +645,6 @@ struct f_MHD_sph_layer_spectr_ctls * init_f_MHD_sph_layer_spectr_ctls(void *(*c_
 		exit(0);
 	};
 	f_lp_ctl->f_self =  c_load_self(f_parent);
-	printf("f_lp_ctl->f_self %p\n", f_lp_ctl->f_self);
 	
 	f_lp_ctl->f_iflag = (int *) c_sph_l_spectr_ctl_iflag(f_lp_ctl->f_self);
 	char *f_block_name =   (char *) c_sph_l_spectr_ctl_block_name(f_lp_ctl->f_self);
@@ -657,7 +693,7 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	f_smonitor_ctl->f_pspec_ctl =  init_f_MHD_sph_pick_mode_ctls(c_sph_monitor_pspec_ctl, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_circ_ctls =  c_sph_monitor_circ_ctls(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_dbench_ctl = c_sph_monitor_dbench_ctl(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_fdip_ctl =   c_sph_monitor_fdip_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_fdip_ctl =   init_f_MHD_sph_dipolarity_ctls(c_sph_monitor_fdip_ctl, f_smonitor_ctl->f_self);
 	
 	f_smonitor_ctl->f_volume_average_prefix =     init_f_ctl_chara_item(c_sph_mntr_vol_ave_prefix, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_volume_pwr_spectr_prefix =  init_f_ctl_chara_item(c_sph_mntr_vol_pspec_prefix, f_smonitor_ctl->f_self);
@@ -1117,6 +1153,8 @@ struct f_MHD_sph_monitor_views{
 	
 	GtkWidget *f_layer_radius_ctl_tree;
 	GtkWidget *f_idx_spec_layer_ctl_tree;
+	
+	GtkWidget *f_fdip_truncation_ctl_tree;
 };
 
 
@@ -1180,6 +1218,26 @@ GtkWidget * draw_sph_gauss_coef_ctls_vbox(struct f_MHD_sph_gauss_coefs_ctls *f_g
 	GtkWidget *expand_vpwrs = draw_control_block(f_g_pwr->c_block_name, f_g_pwr->f_iflag,
 												 480, 440, window, vbox_pick);
 	return expand_vpwrs;
+};
+
+GtkWidget * draw_sph_dipolarity_ctls_vbox(struct f_MHD_sph_dipolarity_ctls *f_fdip_ctl, 
+										  struct f_MHD_sph_monitor_views *f_sph_monitor_vws,
+										  GtkWidget *window){
+	
+	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_fdip_ctl->f_fdip_file_prefix_ctl);
+	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_fdip_ctl->f_fdip_file_format_ctl);
+	
+	GtkWidget *hbox_a3 = add_int_list_box_w_addbottun(f_fdip_ctl->f_fdip_truncation_ctl,
+													  f_sph_monitor_vws->f_fdip_truncation_ctl_tree);
+	
+	GtkWidget *vbox_pick = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a3, FALSE, FALSE, 0);
+	
+	GtkWidget *expand_fdip = draw_control_block(f_fdip_ctl->c_block_name, f_fdip_ctl->f_iflag,
+												480, 440, window, vbox_pick);
+	return expand_fdip;
 };
 
 GtkWidget * draw_sph_layer_spectr_ctls_vbox(struct f_MHD_sph_layer_spectr_ctls *f_lp_ctl, 
@@ -1247,6 +1305,9 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
 															   f_lp_vws, window);
 	gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_gauss_c,  FALSE, FALSE, 0);
 	
+	GtkWidget *expand_dipolarity_c = draw_sph_dipolarity_ctls_vbox(f_smonitor_ctl->f_fdip_ctl, 
+																   f_lp_vws, window);
+	gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_dipolarity_c,  FALSE, FALSE, 0);
 	/*
     GtkWidget *vbox_p1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     GtkWidget *expand_MHD_zm = draw_control_block(f_smonitor_ctl->f_g_pwr->c_block_name,

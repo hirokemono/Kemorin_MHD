@@ -410,6 +410,8 @@
      &                                   smonitor_ctl%pspec_ctl)
       call init_layerd_spectr_ctl_labels(hd_layer_spec_block,           &
      &                                   smonitor_ctl%lp_ctl)
+      call init_sph_dipolarity_ctl_label(hd_sph_dipolarity_ctl,         &
+     &                                   smonitor_ctl%fdip_ctl)
 !
       end subroutine init_sph_monitoring_labels
 !
