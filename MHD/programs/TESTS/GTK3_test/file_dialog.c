@@ -185,6 +185,15 @@ extern void * c_dipolarity_file_prefix_ctl(void *f_fdip_ctl);
 extern void * c_dipolarity_file_format_ctl(void *f_fdip_ctl);
 extern void * c_dipolarity_truncation_ctl(void *f_fdip_ctl);
 
+extern void * c_dynamobench_ctl_block_name(void *f_dbench_ctl);
+extern void * c_dynamobench_ctl_iflag(void *f_dbench_ctl);
+extern void * c_sph_dynamobench_file_ctl(void *f_dbench_ctl);
+extern void * c_sph_dynamobench_format_ctl(void *f_dbench_ctl);
+extern void * c_sph_detailed_dbench_file_ctl(void *f_dbench_ctl);
+extern void * c_sph_dbench_field_file_ctl(void *f_dbench_ctl);
+extern void * c_sph_dbench_spectr_file_ctl(void *f_dbench_ctl);
+extern void * c_sph_dbench_nphi_mid_eq_ctl(void *f_dbench_ctl);
+
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
@@ -292,6 +301,20 @@ struct f_MHD_sph_dipolarity_ctls{
 	struct int_clist  *f_fdip_truncation_ctl;
 };
 
+struct f_MHD_sph_dynamobench_ctls{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_dynamobench_file_ctl;
+	struct f_ctl_chara_item *f_dynamobench_format_ctl;
+	struct f_ctl_chara_item *f_detailed_dbench_file_ctl;
+	struct f_ctl_chara_item *f_dbench_field_file_ctl;
+	struct f_ctl_chara_item *f_dbench_spectr_file_ctl;
+	struct f_ctl_int_item   *f_nphi_mid_eq_ctl;
+};
+
 struct f_MHD_sph_layer_spectr_ctls{
 	void * f_self;
 	int * f_iflag;
@@ -322,8 +345,8 @@ struct f_MHD_sph_monitor_ctls{
 	struct f_MHD_sph_gauss_coefs_ctls  *f_g_pwr;
 	struct f_MHD_sph_pick_mode_ctls    *f_pspec_ctl;
 	void * f_circ_ctls;
-	void * f_dbench_ctl;
-	struct f_MHD_sph_dipolarity_ctls *f_fdip_ctl;
+	struct f_MHD_sph_dynamobench_ctls  *f_dbench_ctl;
+	struct f_MHD_sph_dipolarity_ctls   *f_fdip_ctl;
 	
 	struct f_ctl_chara_item * f_volume_average_prefix;
 	struct f_ctl_chara_item * f_volume_pwr_spectr_prefix;
@@ -615,6 +638,29 @@ struct f_MHD_sph_gauss_coefs_ctls * init_f_MHD_sph_gauss_coefs_ctls(void *(*c_lo
 	return f_g_pwr;
 }
 
+struct f_MHD_sph_dynamobench_ctls * init_f_MHD_sph_dynamobench_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
+{
+	struct f_MHD_sph_dynamobench_ctls *f_dbench_ctl 
+			= (struct f_MHD_sph_dynamobench_ctls *) malloc(sizeof(struct f_MHD_sph_dynamobench_ctls));
+	if(f_dbench_ctl == NULL){
+		printf("malloc error for f_dbench_ctl\n");
+		exit(0);
+	};
+	f_dbench_ctl->f_self =  c_load_self(f_parent);
+	
+	f_dbench_ctl->f_iflag = (int *) c_dynamobench_ctl_iflag(f_dbench_ctl->f_self);
+	char *f_block_name =   (char *) c_dynamobench_ctl_block_name(f_dbench_ctl->f_self);
+	f_dbench_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_dbench_ctl->f_dynamobench_file_ctl = init_f_ctl_chara_item(c_sph_dynamobench_file_ctl, f_dbench_ctl->f_self);
+	f_dbench_ctl->f_dynamobench_format_ctl =  init_f_ctl_chara_item(c_sph_dynamobench_format_ctl, f_dbench_ctl->f_self);
+	f_dbench_ctl->f_detailed_dbench_file_ctl =  init_f_ctl_chara_item(c_sph_detailed_dbench_file_ctl, f_dbench_ctl->f_self);
+	f_dbench_ctl->f_dbench_field_file_ctl =  init_f_ctl_chara_item(c_sph_dbench_field_file_ctl, f_dbench_ctl->f_self);
+	f_dbench_ctl->f_dbench_spectr_file_ctl =  init_f_ctl_chara_item(c_sph_dbench_spectr_file_ctl, f_dbench_ctl->f_self);
+	f_dbench_ctl->f_nphi_mid_eq_ctl =  init_f_ctl_int_item(c_sph_dbench_nphi_mid_eq_ctl, f_dbench_ctl->f_self);
+	return f_dbench_ctl;
+}
+
 struct f_MHD_sph_dipolarity_ctls * init_f_MHD_sph_dipolarity_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_MHD_sph_dipolarity_ctls *f_fdip_ctl 
@@ -692,7 +738,7 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	f_smonitor_ctl->f_g_pwr =      init_f_MHD_sph_gauss_coefs_ctls(c_sph_monitor_g_pwr, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_pspec_ctl =  init_f_MHD_sph_pick_mode_ctls(c_sph_monitor_pspec_ctl, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_circ_ctls =  c_sph_monitor_circ_ctls(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_dbench_ctl = c_sph_monitor_dbench_ctl(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_dbench_ctl = init_f_MHD_sph_dynamobench_ctls(c_sph_monitor_dbench_ctl, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_fdip_ctl =   init_f_MHD_sph_dipolarity_ctls(c_sph_monitor_fdip_ctl, f_smonitor_ctl->f_self);
 	
 	f_smonitor_ctl->f_volume_average_prefix =     init_f_ctl_chara_item(c_sph_mntr_vol_ave_prefix, f_smonitor_ctl->f_self);
@@ -1240,6 +1286,29 @@ GtkWidget * draw_sph_dipolarity_ctls_vbox(struct f_MHD_sph_dipolarity_ctls *f_fd
 	return expand_fdip;
 };
 
+GtkWidget * draw_sph_dynamobench_ctls_vbox(struct f_MHD_sph_dynamobench_ctls *f_dbench_ctl, 
+										   GtkWidget *window){
+	
+	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_dbench_ctl->f_dynamobench_file_ctl);
+	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_dbench_ctl->f_dynamobench_format_ctl);
+	GtkWidget *hbox_c3 = draw_chara_item_entry_hbox(f_dbench_ctl->f_detailed_dbench_file_ctl);
+	GtkWidget *hbox_c4 = draw_chara_item_entry_hbox(f_dbench_ctl->f_dbench_field_file_ctl);
+	GtkWidget *hbox_c5 = draw_chara_item_entry_hbox(f_dbench_ctl->f_dbench_spectr_file_ctl);
+	GtkWidget *hbox_c6 = draw_int_item_entry_hbox(f_dbench_ctl->f_nphi_mid_eq_ctl);
+	
+	GtkWidget *vbox_pick = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c3, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c4, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c5, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c6, FALSE, FALSE, 0);
+	
+	GtkWidget *expand_dbench = draw_control_block(f_dbench_ctl->c_block_name, f_dbench_ctl->f_iflag,
+												480, 440, window, vbox_pick);
+	return expand_dbench;
+};
+
 GtkWidget * draw_sph_layer_spectr_ctls_vbox(struct f_MHD_sph_layer_spectr_ctls *f_lp_ctl, 
 											struct f_MHD_sph_monitor_views *f_sph_monitor_vws,
 											GtkWidget *window){
@@ -1308,6 +1377,10 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
 	GtkWidget *expand_dipolarity_c = draw_sph_dipolarity_ctls_vbox(f_smonitor_ctl->f_fdip_ctl, 
 																   f_lp_vws, window);
 	gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_dipolarity_c,  FALSE, FALSE, 0);
+	
+	GtkWidget *expand_dbench_c = draw_sph_dynamobench_ctls_vbox(f_smonitor_ctl->f_dbench_ctl, 
+																    window);
+	gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_dbench_c,  FALSE, FALSE, 0);
 	/*
     GtkWidget *vbox_p1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     GtkWidget *expand_MHD_zm = draw_control_block(f_smonitor_ctl->f_g_pwr->c_block_name,

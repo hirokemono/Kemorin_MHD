@@ -412,6 +412,8 @@
      &                                   smonitor_ctl%lp_ctl)
       call init_sph_dipolarity_ctl_label(hd_sph_dipolarity_ctl,         &
      &                                   smonitor_ctl%fdip_ctl)
+      call init_ctl_data_dynamobench_label(hd_dynamobench_ctl,          &
+     &                                     smonitor_ctl%dbench_ctl)
 !
       end subroutine init_sph_monitoring_labels
 !

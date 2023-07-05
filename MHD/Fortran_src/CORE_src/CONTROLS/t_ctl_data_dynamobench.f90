@@ -10,6 +10,7 @@
 !!@verbatim
 !!      subroutine reset_ctl_data_dynamobench(dbench_ctl)
 !!        type(dynamobench_control), intent(inout) :: dbench_ctl
+!!      subroutine init_ctl_data_dynamobench_label(hd_block, dbench_ctl)
 !!      subroutine read_ctl_data_dynamobench                            &
 !!     &         (id_control, hd_block, dbench_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -199,6 +200,31 @@
      &                                dbench_ctl%block_name)
 !
       end subroutine write_ctl_data_dynamobench
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_ctl_data_dynamobench_label(hd_block, dbench_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(dynamobench_control), intent(inout) :: dbench_ctl
+!
+      dbench_ctl%block_name = hd_block
+        call init_chara_ctl_item_label(hd_dbench_prefix,                &
+     &      dbench_ctl%dynamobench_file_ctl)
+        call init_chara_ctl_item_label(hd_dbench_format,                &
+     &      dbench_ctl%dynamobench_format_ctl)
+!
+        call init_chara_ctl_item_label(hd_dbench_detail_prefix,         &
+     &      dbench_ctl%detailed_dbench_file_ctl)
+        call init_chara_ctl_item_label(hd_dbench_field_prefix,          &
+     &      dbench_ctl%dbench_field_file_ctl)
+        call init_chara_ctl_item_label(hd_dbench_spectr_prefix,         &
+     &      dbench_ctl%dbench_spectr_file_ctl)
+!
+        call init_int_ctl_item_label(hd_nphi_mid_eq,                    &
+     &      dbench_ctl%nphi_mid_eq_ctl)
+!
+      end subroutine init_ctl_data_dynamobench_label
 !
 ! -----------------------------------------------------------------------
 !

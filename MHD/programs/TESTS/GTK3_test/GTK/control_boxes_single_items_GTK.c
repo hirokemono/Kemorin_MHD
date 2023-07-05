@@ -165,7 +165,7 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 static void cb_int_ctl_item(GtkSpinButton *spinner, gpointer data)
 {
 	struct f_ctl_int_item *f_iitem = (struct f_ctl_int_item *) g_object_get_data(G_OBJECT(spinner), "f_ctl_int_item");
-    if(data == NULL) return;
+    if(f_iitem->f_self == NULL) return;
     f_iitem->c_intvalue = gtk_spin_button_get_value_as_int(spinner);
     c_store_int_item_intvalue(f_iitem->f_self, f_iitem->c_intvalue);
 	return;

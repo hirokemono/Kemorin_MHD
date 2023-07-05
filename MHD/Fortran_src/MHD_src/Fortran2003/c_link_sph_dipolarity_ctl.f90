@@ -18,11 +18,31 @@
 !!      type(c_ptr) function c_dipolarity_file_format_ctl(c_ctl)        &
 !!     &          bind(C, NAME = 'c_dipolarity_file_format_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
+!!
+!!      type(c_ptr) function c_dynamobench_ctl_block_name(c_ctl)        &
+!!     &          bind(C, NAME = 'c_dynamobench_ctl_block_name')
+!!      type(c_ptr) function c_dynamobench_ctl_iflag(c_ctl)             &
+!!     &          bind(C, NAME = 'c_dynamobench_ctl_iflag')
+!!
+!!      type(c_ptr) function c_sph_dynamobench_file_ctl(c_ctl)          &
+!!     &          bind(C, NAME = 'c_sph_dynamobench_file_ctl')
+!!      type(c_ptr) function c_sph_dynamobench_format_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_sph_dynamobench_format_ctl')
+!!      type(c_ptr) function c_sph_detailed_dbench_file_ctl(c_ctl)      &
+!!     &          bind(C, NAME = 'c_sph_detailed_dbench_file_ctl')
+!!      type(c_ptr) function c_sph_dbench_field_file_ctl(c_ctl)         &
+!!     &          bind(C, NAME = 'c_sph_dbench_field_file_ctl')
+!!      type(c_ptr) function c_sph_dbench_spectr_file_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_sph_dbench_spectr_file_ctl')
+!!      type(c_ptr) function c_sph_dbench_nphi_mid_eq_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_sph_dbench_nphi_mid_eq_ctl')
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module c_link_sph_dipolarity_ctl
 !
       use iso_c_binding
       use t_ctl_data_sph_dipolarity
+      use t_ctl_data_dynamobench
 !
       implicit none
 !
@@ -80,6 +100,89 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_dipolarity_file_format_ctl = C_loc(f_ctl%fdip_file_format_ctl)
       end function c_dipolarity_file_format_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamobench_ctl_block_name(c_ctl)          &
+     &          bind(C, NAME = 'c_dynamobench_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dynamobench_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamobench_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_dynamobench_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dynamobench_ctl_iflag(c_ctl)               &
+     &          bind(C, NAME = 'c_dynamobench_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dynamobench_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dynamobench_ctl_iflag = C_loc(f_ctl%i_dynamobench_ctl)
+      end function c_dynamobench_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_dynamobench_file_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_sph_dynamobench_file_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dynamobench_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_dynamobench_file_ctl = C_loc(f_ctl%dynamobench_file_ctl)
+      end function c_sph_dynamobench_file_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_dynamobench_format_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_sph_dynamobench_format_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dynamobench_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_dynamobench_format_ctl= C_loc(f_ctl%dynamobench_format_ctl)
+      end function c_sph_dynamobench_format_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_detailed_dbench_file_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_sph_detailed_dbench_file_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dynamobench_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_detailed_dbench_file_ctl                                    &
+     &            = C_loc(f_ctl%detailed_dbench_file_ctl)
+      end function c_sph_detailed_dbench_file_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_dbench_field_file_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_sph_dbench_field_file_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dynamobench_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_dbench_field_file_ctl = C_loc(f_ctl%dbench_field_file_ctl)
+      end function c_sph_dbench_field_file_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_dbench_spectr_file_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_sph_dbench_spectr_file_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dynamobench_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_dbench_spectr_file_ctl= C_loc(f_ctl%dbench_spectr_file_ctl)
+      end function c_sph_dbench_spectr_file_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_dbench_nphi_mid_eq_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_sph_dbench_nphi_mid_eq_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(dynamobench_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_dbench_nphi_mid_eq_ctl = C_loc(f_ctl%nphi_mid_eq_ctl)
+      end function c_sph_dbench_nphi_mid_eq_ctl
 !
 !  ---------------------------------------------------------------------
 !
