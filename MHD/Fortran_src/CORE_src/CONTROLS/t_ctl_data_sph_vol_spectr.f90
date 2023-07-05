@@ -12,7 +12,7 @@
 !!        type(volume_spectr_control), intent(in) :: org_vpwr
 !!        type(volume_spectr_control), intent(inout) :: new_vpwr
 !!
-!!      subroutine init_each_vol_spectr_labels(v_pwr)
+!!      subroutine init_each_vol_spectr_labels(hd_block, v_pwr)
 !!        type(volume_spectr_control), intent(inout) :: v_pwr
 !!      subroutine read_each_vol_spectr_ctl                             &
 !!     &         (id_control, hd_block, v_pwr, c_buf)
@@ -173,8 +173,6 @@
 !
 !
       if(v_pwr%i_vol_spectr_ctl .gt. 0) return
-      v_pwr%block_name = hd_block
-      call init_each_vol_spectr_labels(v_pwr)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -261,13 +259,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_each_vol_spectr_labels(v_pwr)
+      subroutine init_each_vol_spectr_labels(hd_block, v_pwr)
 !
       use write_control_elements
 !
+      character(len=kchara), intent(in) :: hd_block
       type(volume_spectr_control), intent(inout) :: v_pwr
 !
 !
+      v_pwr%block_name = hd_block
         call init_chara_ctl_item_label(hd_vol_pwr,                      &
      &      v_pwr%volume_spec_file_ctl)
         call init_chara_ctl_item_label(hd_vol_fmt,                      &

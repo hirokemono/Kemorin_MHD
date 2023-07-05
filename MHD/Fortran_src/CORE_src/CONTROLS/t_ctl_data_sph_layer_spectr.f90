@@ -8,7 +8,7 @@
 !> @brief control date for volume averaged spectr data
 !!
 !!@verbatim
-!!      subroutine init_layerd_spectr_ctl_labels(lp_ctl)
+!!      subroutine init_layerd_spectr_ctl_labels(hd_block, lp_ctl)
 !!      subroutine read_layerd_spectr_ctl                               &
 !!     &         (id_control, hd_block, lp_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -132,8 +132,6 @@
 !
 !
       if (lp_ctl%i_layer_spectr_ctl .gt. 0) return
-      lp_ctl%block_name = hd_block
-      call init_layerd_spectr_ctl_labels(lp_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -215,11 +213,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_layerd_spectr_ctl_labels(lp_ctl)
+      subroutine init_layerd_spectr_ctl_labels(hd_block, lp_ctl)
 !
+      character(len=kchara), intent(in) :: hd_block
       type(layerd_spectr_control), intent(inout) :: lp_ctl
 !
 !
+      lp_ctl%block_name = hd_block
         call init_int_ctl_array_label                                   &
      &     (hd_spctr_layer, lp_ctl%idx_spec_layer_ctl)
         call init_real_ctl_array_label                                  &

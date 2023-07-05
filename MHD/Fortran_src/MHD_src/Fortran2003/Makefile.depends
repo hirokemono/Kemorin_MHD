@@ -6,6 +6,8 @@ c_link_ctl_data_sph_shell.o: $(MHD_F2003_DIR)/c_link_ctl_data_sph_shell.f90 t_ct
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_time_steps.o: $(MHD_F2003_DIR)/c_link_ctl_data_time_steps.f90 t_ctl_data_4_time_steps.o t_ctl_data_mhd_restart.o
 	$(F90) -c $(F90OPTFLAGS) $<
+c_link_gauss_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_gauss_spectr_ctl.f90 t_ctl_data_gauss_coefs.o
+	$(F90) -c $(F90OPTFLAGS) $<
 c_link_layerd_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_layerd_spectr_ctl.f90 t_ctl_data_sph_layer_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_mhd_evo_scheme_ctl.o: $(MHD_F2003_DIR)/c_link_mhd_evo_scheme_ctl.f90 t_ctl_data_mhd_evo_scheme.o

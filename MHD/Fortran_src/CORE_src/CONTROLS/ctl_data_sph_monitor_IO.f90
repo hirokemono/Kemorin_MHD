@@ -8,6 +8,7 @@
 !> @brief Monitoring section IO for Control data
 !!
 !!@verbatim
+!!      subroutine init_sph_monitoring_labels(hd_block, smonitor_ctl)
 !!      subroutine read_sph_monitoring_ctl                              &
 !!     &         (id_control, hd_block, smonitor_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -154,6 +155,8 @@
 !
       private :: read_volume_spectr_ctl, write_volume_spectr_ctl
 !
+      type(volume_spectr_control), save, private :: read_vpwr
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -171,7 +174,8 @@
 !
 !
       if(smonitor_ctl%i_sph_monitor .gt. 0) return
-      smonitor_ctl%block_name = trim(hd_block)
+      call init_sph_monitoring_labels(hd_block, smonitor_ctl)
+!
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -245,11 +249,8 @@
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
-      type(volume_spectr_control) :: read_vpwr
-!
 !
       if(smonitor_ctl%num_vspec_ctl .gt. 0) return
-      smonitor_ctl%v_pwr_name = hd_block
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       read_vpwr%i_vol_spectr_ctl = 0
       smonitor_ctl%num_vspec_ctl = 0
@@ -390,6 +391,27 @@
      &                                     smonitor_ctl%v_pwr_name)
 !
       end subroutine write_volume_spectr_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_sph_monitoring_labels(hd_block, smonitor_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!
+!
+      smonitor_ctl%block_name = trim(hd_block)
+      smonitor_ctl%v_pwr_name = hd_vol_spec_block
+      call init_each_vol_spectr_labels(hd_vol_spec_block, read_vpwr)
+      call init_gauss_spectr_ctl_labels(hd_gauss_spec_block,            &
+     &                                  smonitor_ctl%g_pwr)
+      call init_pickup_spectr_ctl_labels(hd_pick_sph_ctl,               &
+     &                                   smonitor_ctl%pspec_ctl)
+      call init_layerd_spectr_ctl_labels(hd_layer_spec_block,           &
+     &                                   smonitor_ctl%lp_ctl)
+!
+      end subroutine init_sph_monitoring_labels
 !
 !  ---------------------------------------------------------------------
 !

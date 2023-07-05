@@ -170,6 +170,16 @@ extern void * c_sph_l_spec_axis_power_switch(void *f_lp_ctl);
 extern void * c_sph_l_spectr_r_idx_ctl(void *f_lp_ctl);
 extern void * c_sph_l_spectr_radius_ctl(void *f_lp_ctl);
 
+extern void * c_sph_gauss_c_ctl_block_name(void *f_g_pwr);
+extern void * c_sph_gauss_c_ctl_iflag(void *f_g_pwr);
+extern void * c_sph_gauss_coefs_prefix(void *f_g_pwr);
+extern void * c_sph_gauss_coefs_format(void *f_g_pwr);
+extern void * c_sph_gauss_coefs_radius_ctl(void *f_g_pwr);
+extern void * c_sph_idx_gauss_ctl(void *f_g_pwr);
+extern void * c_sph_idx_gauss_l_ctl(void *f_g_pwr);
+extern void * c_sph_idx_gauss_m_ctl(void *f_g_pwr);
+
+
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
@@ -252,6 +262,20 @@ struct f_MHD_sph_pick_mode_ctls{
 	struct int_clist  *f_idx_pick_sph_m_ctl;
 };
 
+struct f_MHD_sph_gauss_coefs_ctls{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_gauss_coefs_prefix;
+	struct f_ctl_chara_item *f_gauss_coefs_format;
+	struct f_ctl_real_item *f_gauss_coefs_radius_ctl;
+	struct int2_clist *f_idx_gauss_ctl;
+	struct int_clist  *f_idx_gauss_l_ctl;
+	struct int_clist  *f_idx_gauss_m_ctl;
+};
+
 struct f_MHD_sph_layer_spectr_ctls{
 	void * f_self;
 	int * f_iflag;
@@ -277,9 +301,10 @@ struct f_MHD_sph_monitor_ctls{
 	
 	int f_num_vspec_ctl;
 	struct void_clist *f_v_pwr;
-	struct f_MHD_sph_layer_spectr_ctls * f_lp_ctl;
-	void * f_g_pwr;
-	struct f_MHD_sph_pick_mode_ctls * f_pspec_ctl;
+	
+	struct f_MHD_sph_layer_spectr_ctls *f_lp_ctl;
+	struct f_MHD_sph_gauss_coefs_ctls  *f_g_pwr;
+	struct f_MHD_sph_pick_mode_ctls    *f_pspec_ctl;
 	void * f_circ_ctls;
 	void * f_dbench_ctl;
 	void * f_fdip_ctl;
@@ -550,6 +575,30 @@ struct f_MHD_sph_pick_mode_ctls * init_f_MHD_sph_pick_mode_ctls(void *(*c_load_s
 	return f_pspec_ctl;
 }
 
+struct f_MHD_sph_gauss_coefs_ctls * init_f_MHD_sph_gauss_coefs_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
+{
+	struct f_MHD_sph_gauss_coefs_ctls *f_g_pwr 
+			= (struct f_MHD_sph_gauss_coefs_ctls *) malloc(sizeof(struct f_MHD_sph_gauss_coefs_ctls));
+	if(f_g_pwr == NULL){
+		printf("malloc error for f_g_pwr\n");
+		exit(0);
+	};
+	
+	f_g_pwr->f_self =  c_load_self(f_parent);
+	
+	f_g_pwr->f_iflag = (int *)      c_sph_gauss_c_ctl_iflag(f_g_pwr->f_self);
+	char *f_block_name =   (char *) c_sph_gauss_c_ctl_block_name(f_g_pwr->f_self);
+	f_g_pwr->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_g_pwr->f_gauss_coefs_prefix = init_f_ctl_chara_item(c_sph_gauss_coefs_prefix, f_g_pwr->f_self);
+	f_g_pwr->f_gauss_coefs_format =  init_f_ctl_chara_item(c_sph_gauss_coefs_format, f_g_pwr->f_self);
+	f_g_pwr->f_gauss_coefs_radius_ctl = init_f_ctl_real_item(c_sph_gauss_coefs_radius_ctl, f_g_pwr->f_self);
+	f_g_pwr->f_idx_gauss_ctl =     init_f_ctl_i2_array(c_sph_idx_gauss_ctl, f_g_pwr->f_self);
+	f_g_pwr->f_idx_gauss_l_ctl =   init_f_ctl_int_array(c_sph_idx_gauss_l_ctl, f_g_pwr->f_self);
+	f_g_pwr->f_idx_gauss_m_ctl =   init_f_ctl_int_array(c_sph_idx_gauss_m_ctl, f_g_pwr->f_self);
+	return f_g_pwr;
+}
+
 struct f_MHD_sph_layer_spectr_ctls * init_f_MHD_sph_layer_spectr_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_MHD_sph_layer_spectr_ctls *f_lp_ctl 
@@ -587,7 +636,6 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	};
 	
 	f_smonitor_ctl->f_self =  c_load_self(f_parent);
-	printf("f_smonitor_ctl->f_self %p\n", f_smonitor_ctl->f_self);
 	
 	f_smonitor_ctl->f_iflag = (int *) c_sph_monitor_ctl_iflag(f_smonitor_ctl->f_self);
 	char *f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
@@ -599,14 +647,13 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	f_smonitor_ctl->f_v_pwr = init_void_clist(strngcopy_from_f(f_block_name));
 	f_smonitor_ctl->f_v_pwr->f_parent =  f_smonitor_ctl->f_self;
 	
-	printf("f_smonitor_ctl->f_num_vspec_ctl %d\n", f_smonitor_ctl->f_num_vspec_ctl);
 	int i;
 	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl;i++){
         struct f_sph_vol_spectr_ctls *void_in = init_f_sph_vol_spectr_ctls(i, f_smonitor_ctl->f_self);
 		append_void_clist((void *) void_in, f_smonitor_ctl->f_v_pwr);
 	}
 	f_smonitor_ctl->f_lp_ctl =     init_f_MHD_sph_layer_spectr_ctls(c_sph_monitor_lp_ctl, f_smonitor_ctl->f_self);
-	f_smonitor_ctl->f_g_pwr =      c_sph_monitor_g_pwr(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->f_g_pwr =      init_f_MHD_sph_gauss_coefs_ctls(c_sph_monitor_g_pwr, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_pspec_ctl =  init_f_MHD_sph_pick_mode_ctls(c_sph_monitor_pspec_ctl, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_circ_ctls =  c_sph_monitor_circ_ctls(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_dbench_ctl = c_sph_monitor_dbench_ctl(f_smonitor_ctl->f_self);
@@ -1064,12 +1111,17 @@ struct f_MHD_sph_monitor_views{
 	GtkWidget *f_idx_pick_sph_l_ctl_tree;
 	GtkWidget *f_idx_pick_sph_m_ctl_tree;
 	
+	GtkWidget *f_idx_gauss_ctl_tree;
+	GtkWidget *f_idx_gauss_l_ctl_tree;
+	GtkWidget *f_idx_gauss_m_ctl_tree;
+	
 	GtkWidget *f_layer_radius_ctl_tree;
 	GtkWidget *f_idx_spec_layer_ctl_tree;
 };
 
 
-GtkWidget * draw_sph_pick_mode_ctls_vbox(struct f_MHD_sph_pick_mode_ctls *f_pspec_ctl, struct f_MHD_sph_monitor_views *f_sph_monitor_vws,
+GtkWidget * draw_sph_pick_mode_ctls_vbox(struct f_MHD_sph_pick_mode_ctls *f_pspec_ctl,
+										 struct f_MHD_sph_monitor_views *f_sph_monitor_vws,
 										 GtkWidget *window){
 	
 	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_pspec_ctl->f_picked_mode_head_ctl);
@@ -1100,30 +1152,52 @@ GtkWidget * draw_sph_pick_mode_ctls_vbox(struct f_MHD_sph_pick_mode_ctls *f_pspe
 	return expand_vpwrs;
 };
 
+GtkWidget * draw_sph_gauss_coef_ctls_vbox(struct f_MHD_sph_gauss_coefs_ctls *f_g_pwr, 
+										  struct f_MHD_sph_monitor_views *f_sph_monitor_vws,
+										  GtkWidget *window){
+	
+	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_g_pwr->f_gauss_coefs_prefix);
+	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_g_pwr->f_gauss_coefs_format);
+	GtkWidget *hbox_r1 = draw_real_item_entry_hbox(f_g_pwr->f_gauss_coefs_radius_ctl);
+	
+	GtkWidget *hbox_a3 = add_i2_list_box_w_addbottun(f_g_pwr->f_idx_gauss_ctl,
+													 f_sph_monitor_vws->f_idx_gauss_ctl_tree);
+	printf("box f_idx_gauss_l_ctl\n");
+	GtkWidget *hbox_a4 = add_int_list_box_w_addbottun(f_g_pwr->f_idx_gauss_l_ctl,
+													  f_sph_monitor_vws->f_idx_gauss_l_ctl_tree);
+	printf("box f_idx_gauss_m_ctl\n");
+	GtkWidget *hbox_a5 = add_int_list_box_w_addbottun(f_g_pwr->f_idx_gauss_m_ctl,
+													  f_sph_monitor_vws->f_idx_gauss_m_ctl_tree);
+	
+	GtkWidget *vbox_pick = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_r1, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a3, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a4, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a5, FALSE, FALSE, 0);
+	
+	GtkWidget *expand_vpwrs = draw_control_block(f_g_pwr->c_block_name, f_g_pwr->f_iflag,
+												 480, 440, window, vbox_pick);
+	return expand_vpwrs;
+};
+
 GtkWidget * draw_sph_layer_spectr_ctls_vbox(struct f_MHD_sph_layer_spectr_ctls *f_lp_ctl, 
 											struct f_MHD_sph_monitor_views *f_sph_monitor_vws,
 											GtkWidget *window){
 	
 	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_lp_ctl->f_layered_pwr_spectr_prefix);
 	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_lp_ctl->f_layered_pwr_spectr_format);
-	printf("hbox_c2 start \n");
 	GtkWidget *hbox_a1 = real_array_vbox_w_addbottun(f_lp_ctl->f_layer_radius_ctl,
 													 f_sph_monitor_vws->f_layer_radius_ctl_tree);
-	printf("hbox_a1 start \n");
 	GtkWidget *hbox_a2 = add_int_list_box_w_addbottun(f_lp_ctl->f_idx_spec_layer_ctl,
 													  f_sph_monitor_vws->f_idx_spec_layer_ctl_tree);
-	printf("hbox_a2 end \n");
     GtkWidget *hbox_c3 = draw_chara_switch_entry_hbox(f_lp_ctl->f_degree_spectra_switch);
-	printf("hbox_c3 end \n");
     GtkWidget *hbox_c4 = draw_chara_switch_entry_hbox(f_lp_ctl->f_order_spectra_switch);
-	printf("hbox_c4 end \n");
     GtkWidget *hbox_c5 = draw_chara_switch_entry_hbox(f_lp_ctl->f_diff_lm_spectra_switch);
-	printf("hbox_c5 end \n");
     GtkWidget *hbox_c6 = draw_chara_switch_entry_hbox(f_lp_ctl->f_axis_power_switch);
 	
-	printf("hbox_c6 end \n");
 	GtkWidget *vbox_pick = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	printf("vbox_pick end \n");
 	
 	gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c1, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c2, FALSE, FALSE, 0);
@@ -1168,6 +1242,10 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
 	GtkWidget *expand_pick_mode = draw_sph_pick_mode_ctls_vbox(f_smonitor_ctl->f_pspec_ctl, 
 															   f_lp_vws, window);
 	gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_pick_mode,  FALSE, FALSE, 0);
+	
+	GtkWidget *expand_gauss_c = draw_sph_gauss_coef_ctls_vbox(f_smonitor_ctl->f_g_pwr, 
+															   f_lp_vws, window);
+	gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_gauss_c,  FALSE, FALSE, 0);
 	
 	/*
     GtkWidget *vbox_p1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

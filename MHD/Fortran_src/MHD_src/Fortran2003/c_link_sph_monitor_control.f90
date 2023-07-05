@@ -144,7 +144,6 @@
 !
       call c_f_pointer(c_ctl, f_ctl)
       call reset_volume_spectr_control(add_vpwr)
-      call init_each_vol_spectr_labels(add_vpwr)
       add_vpwr%block_name = copy_char_from_c(c_name)
 
       call append_volume_spectr_ctls((idx+1), add_vpwr, f_ctl)

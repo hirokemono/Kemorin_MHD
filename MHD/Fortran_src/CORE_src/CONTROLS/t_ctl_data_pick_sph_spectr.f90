@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_pick_spectr_control(pspec_ctl)
-!!      subroutine init_pickup_spectr_ctl_labels(pspec_ctl)
+!!      subroutine init_pickup_spectr_ctl_labels(hd_block, pspec_ctl)
 !!      subroutine read_pickup_spectr_ctl                               &
 !!     &         (id_control, hd_block, pspec_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -169,8 +169,6 @@
 !
 !
       if(pspec_ctl%i_pick_sph .gt. 0) return
-      pspec_ctl%block_name = hd_block
-      call init_pickup_spectr_ctl_labels(pspec_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -244,9 +242,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_pickup_spectr_ctl_labels(pspec_ctl)
+      subroutine init_pickup_spectr_ctl_labels(hd_block, pspec_ctl)
 !
+      character(len=kchara), intent(in) :: hd_block
       type(pick_spectr_control), intent(inout) :: pspec_ctl
+!
+      pspec_ctl%block_name = hd_block
 !
         call init_int_ctl_array_label                                   &
      &     (hd_pick_layer, pspec_ctl%idx_pick_layer_ctl)
