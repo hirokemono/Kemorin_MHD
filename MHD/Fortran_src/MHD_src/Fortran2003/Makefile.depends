@@ -6,6 +6,8 @@ c_link_ctl_data_sph_shell.o: $(MHD_F2003_DIR)/c_link_ctl_data_sph_shell.f90 t_ct
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_time_steps.o: $(MHD_F2003_DIR)/c_link_ctl_data_time_steps.f90 t_ctl_data_4_time_steps.o t_ctl_data_mhd_restart.o
 	$(F90) -c $(F90OPTFLAGS) $<
+c_link_data_on_circles_ctl.o: $(MHD_F2003_DIR)/c_link_data_on_circles_ctl.f90 t_ctl_data_circles.o t_ctl_data_mid_equator.o ctl_array_chara_to_c.o
+	$(F90) -c $(F90OPTFLAGS) $<
 c_link_gauss_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_gauss_spectr_ctl.f90 t_ctl_data_gauss_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_layerd_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_layerd_spectr_ctl.f90 t_ctl_data_sph_layer_spectr.o
@@ -15,6 +17,8 @@ c_link_mhd_evo_scheme_ctl.o: $(MHD_F2003_DIR)/c_link_mhd_evo_scheme_ctl.f90 t_ct
 c_link_pick_sph_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_pick_sph_spectr_ctl.f90 t_ctl_data_pick_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_sph_dipolarity_ctl.o: $(MHD_F2003_DIR)/c_link_sph_dipolarity_ctl.f90 t_ctl_data_sph_dipolarity.o t_ctl_data_dynamobench.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_sph_mntr_ctl_arrays.o: $(MHD_F2003_DIR)/c_link_sph_mntr_ctl_arrays.f90 t_ctl_data_4_sph_monitor.o ctl_array_chara_to_c.o ctl_data_volume_spectr_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_sph_monitor_control.o: $(MHD_F2003_DIR)/c_link_sph_monitor_control.f90 t_ctl_data_4_sph_monitor.o ctl_array_chara_to_c.o
 	$(F90) -c $(F90OPTFLAGS) $<

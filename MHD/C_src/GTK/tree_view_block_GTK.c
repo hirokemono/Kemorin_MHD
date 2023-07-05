@@ -98,7 +98,7 @@ int add_void_list_items_GTK(GtkTreeView *tree_view_to_add,
     
 	/* Return reference into path and delete reference */
 	void *void_in = NULL;
-	int idx = count_void_clist(v_clist)-1;
+	int idx = count_void_clist(v_clist);
 	append_ctl_block_F(idx, v_clist->clist_name, v_clist->f_parent);
 	
 	for(idx=0;idx<count_void_clist(v_clist);idx++){

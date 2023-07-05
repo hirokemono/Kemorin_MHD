@@ -10,6 +10,7 @@
 !!@verbatim
 !!      subroutine reset_mid_equator_control(meq_ctl)
 !!        type(mid_equator_control), intent(inout) :: meq_ctl
+!!      subroutine init_mid_eq_monitor_ctl_label(hd_block, meq_ctl)
 !!      subroutine read_mid_eq_monitor_ctl                              &
 !!     &         (id_control, hd_block, meq_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -162,7 +163,6 @@
 !
 !
       if(meq_ctl%i_mid_equator_ctl .gt. 0) return
-      meq_ctl%block_name = hd_block
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -239,6 +239,35 @@
      &                                 meq_ctl%block_name)
 !
       end subroutine write_mid_eq_monitor_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_mid_eq_monitor_ctl_label(hd_block, meq_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(mid_equator_control), intent(inout) :: meq_ctl
+!
+!
+      meq_ctl%block_name = hd_block
+        call init_chara_ctl_item_label(hd_fld_on_circ_prefix,           &
+     &      meq_ctl%circle_field_file_ctl)
+        call init_chara_ctl_item_label(hd_spec_on_circ_prefix,          &
+     &      meq_ctl%circle_spectr_file_ctl)
+        call init_chara_ctl_item_label(hd_fld_on_circ_format,           &
+     &      meq_ctl%circle_file_format_ctl)
+!
+        call init_real_ctl_item_label                                   &
+     &     (hd_pick_s_ctl, meq_ctl%pick_s_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_pick_z_ctl, meq_ctl%pick_z_ctl)
+!
+        call init_int_ctl_item_label(hd_nphi_mid_eq,                    &
+     &      meq_ctl%nphi_mid_eq_ctl)
+!
+        call init_chara_ctl_item_label(hd_circle_coord,                 &
+     &      meq_ctl%pick_circle_coord_ctl)
+!
+      end subroutine init_mid_eq_monitor_ctl_label
 !
 ! -----------------------------------------------------------------------
 !

@@ -24,6 +24,7 @@
 #include "control_block_panel_GTK.h"
 #include "control_panel_int_GTK.h"
 #include "control_panel_int2_GTK.h"
+#include "sph_data_on_circles_block_panel_GTK.h"
 
 extern void c_view_control_sph_SGS_MHD();
 
@@ -341,10 +342,12 @@ struct f_MHD_sph_monitor_ctls{
 	int f_num_vspec_ctl;
 	struct void_clist *f_v_pwr;
 	
+	int f_num_circ_ctls;
+	struct void_clist * f_circ_ctls;
+
 	struct f_MHD_sph_layer_spectr_ctls *f_lp_ctl;
 	struct f_MHD_sph_gauss_coefs_ctls  *f_g_pwr;
 	struct f_MHD_sph_pick_mode_ctls    *f_pspec_ctl;
-	void * f_circ_ctls;
 	struct f_MHD_sph_dynamobench_ctls  *f_dbench_ctl;
 	struct f_MHD_sph_dipolarity_ctls   *f_fdip_ctl;
 	
@@ -723,9 +726,8 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 	char *f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
-    f_block_name =   (char *) c_sph_monitor_ctl_v_pwr_name(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_num_vspec_ctl = c_sph_monitor_num_vspec_ctl(f_smonitor_ctl->f_self);
-	
+    f_block_name =   (char *) c_sph_monitor_ctl_v_pwr_name(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_v_pwr = init_void_clist(strngcopy_from_f(f_block_name));
 	f_smonitor_ctl->f_v_pwr->f_parent =  f_smonitor_ctl->f_self;
 	
@@ -734,6 +736,17 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
         struct f_sph_vol_spectr_ctls *void_in = init_f_sph_vol_spectr_ctls(i, f_smonitor_ctl->f_self);
 		append_void_clist((void *) void_in, f_smonitor_ctl->f_v_pwr);
 	}
+ 
+	f_smonitor_ctl->f_num_circ_ctls = c_data_on_circles_num(f_smonitor_ctl->f_self);
+    f_block_name =   (char *) c_data_on_circles_block_name(f_smonitor_ctl->f_self);
+ 	f_smonitor_ctl->f_circ_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_smonitor_ctl->f_v_pwr->f_parent =  f_smonitor_ctl->f_self;
+	for(i=0;i<f_smonitor_ctl->f_num_circ_ctls;i++){
+        struct f_sph_field_on_circle_ctls *void_in = init_f_sph_field_on_circle_ctls(i, f_smonitor_ctl->f_self);
+		append_void_clist((void *) void_in, f_smonitor_ctl->f_circ_ctls);
+	}
+
+ 
 	f_smonitor_ctl->f_lp_ctl =     init_f_MHD_sph_layer_spectr_ctls(c_sph_monitor_lp_ctl, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_g_pwr =      init_f_MHD_sph_gauss_coefs_ctls(c_sph_monitor_g_pwr, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_pspec_ctl =  init_f_MHD_sph_pick_mode_ctls(c_sph_monitor_pspec_ctl, f_smonitor_ctl->f_self);

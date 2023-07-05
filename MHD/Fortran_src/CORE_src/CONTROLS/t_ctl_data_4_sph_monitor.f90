@@ -8,15 +8,13 @@
 !> @brief Monitoring section IO for Control data
 !!
 !!@verbatim
-!!      subroutine append_volume_spectr_ctls(idx_in, add_vpwr,          &
-!!     &                                     smonitor_ctl)
-!!      subroutine delete_volume_spectr_ctls(idx_in, smonitor_ctl)
-!!        integer(kind = kint), intent(in) :: idx_in
-!!        type(volume_spectr_control), intent(inout) :: add_vpwr
-!!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!      subroutine dealloc_sph_monitoring_ctl(smonitor_ctl)
+!!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!!
 !!      subroutine alloc_volume_spectr_control(smonitor_ctl)
-!!      subroutine dealloc_volume_spectr_control(smonitor_ctl)
+!!      subroutine alloc_data_on_circles_ctl(smonitor_ctl)
+!!      subroutine dealloc_sph_monitoring_ctl(smonitor_ctl)
+!!      subroutine dealloc_data_on_circles_ctl(smonitor_ctl)
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!
 !! -----------------------------------------------------------------
@@ -82,7 +80,7 @@
       use t_ctl_data_sph_layer_spectr
       use t_ctl_data_pick_sph_spectr
       use t_ctl_data_gauss_coefs
-      use t_ctl_data_circles
+      use t_ctl_data_mid_equator
       use t_ctl_data_dynamobench
       use t_ctl_data_sph_dipolarity
       use skip_comment_f
@@ -101,6 +99,14 @@
 !>        array for volume_spectr_control
         type(volume_spectr_control), allocatable :: v_pwr(:)
 !
+!>        array name for fields_on_circle_ctl
+        character(len=kchara) :: d_circ_name = 'fields_on_circle_ctl'
+!         Nunber of circle data
+        integer(kind = kint) :: num_circ_ctl = 0
+!>        Structure for data on circle
+        type(mid_equator_control), allocatable :: meq_ctl(:)
+!
+!         Structure for layerd spectr
         type(layerd_spectr_control) :: lp_ctl
 !
 !>        Structure for Gauss coefficient
@@ -108,9 +114,6 @@
 !
 !>        Structure for spectr data pickup
         type(pick_spectr_control) :: pspec_ctl
-!
-!>        Structure for data on a surface
-        type(data_on_circles_ctl) :: circ_ctls
 !
 !>        Structure for dynamo benchmark output
         type(dynamobench_control) :: dbench_ctl
@@ -172,7 +175,6 @@
       call dealloc_num_spec_layer_ctl(smonitor_ctl%lp_ctl)
       call dealloc_pick_spectr_control(smonitor_ctl%pspec_ctl)
       call dealloc_gauss_spectr_control(smonitor_ctl%g_pwr)
-      call dealloc_data_on_circles_ctl(smonitor_ctl%circ_ctls)
       call reset_ctl_data_dynamobench(smonitor_ctl%dbench_ctl)
       call dealloc_sph_dipolarity_ctl(smonitor_ctl%fdip_ctl)
 !
@@ -192,98 +194,19 @@
       smonitor_ctl%typ_scale_file_prefix_ctl%iflag = 0
       smonitor_ctl%typ_scale_file_format_ctl%iflag = 0
 !
-      if(smonitor_ctl%num_vspec_ctl .le. 0) return
-!
       do i = 1, smonitor_ctl%num_vspec_ctl
        call reset_volume_spectr_control(smonitor_ctl%v_pwr(i))
       end do
       call dealloc_volume_spectr_control(smonitor_ctl)
 !
+      do i = 1, smonitor_ctl%num_circ_ctl
+        call reset_mid_equator_control(smonitor_ctl%meq_ctl(i))
+      end do
+      call dealloc_data_on_circles_ctl(smonitor_ctl)
+!
       end subroutine dealloc_sph_monitoring_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine append_volume_spectr_ctls(idx_in, add_vpwr,            &
-     &                                     smonitor_ctl)
-!
-      integer(kind = kint), intent(in) :: idx_in
-      type(volume_spectr_control), intent(inout) :: add_vpwr
-      type(sph_monitor_control), intent(inout) :: smonitor_ctl
-!
-      integer(kind = kint) :: num_tmp
-      type(volume_spectr_control), allocatable :: tmp_vpwr(:)
-      integer(kind = kint) :: i
-!
-!
-      write(*,*) 'append after ', idx_in,smonitor_ctl%num_vspec_ctl
-      if(idx_in.lt.0 .or. idx_in.gt.smonitor_ctl%num_vspec_ctl) return
-!
-      num_tmp = smonitor_ctl%num_vspec_ctl
-      allocate(tmp_vpwr(num_tmp))
-      do i = 1, num_tmp
-        call copy_volume_spectr_control(smonitor_ctl%v_pwr(i),          &
-     &                                  tmp_vpwr(i))
-      end do
-!
-      call dealloc_volume_spectr_control(smonitor_ctl)
-      smonitor_ctl%num_vspec_ctl = num_tmp + 1
-      call alloc_volume_spectr_control(smonitor_ctl)
-!
-      do i = 1, idx_in
-        call copy_volume_spectr_control(tmp_vpwr(i),                    &
-     &                                  smonitor_ctl%v_pwr(i))
-      end do
-      call copy_volume_spectr_control                                   &
-     &   (add_vpwr, smonitor_ctl%v_pwr(idx_in+1))
-      do i = idx_in+1, num_tmp
-        call copy_volume_spectr_control(tmp_vpwr(i),                    &
-     &                                  smonitor_ctl%v_pwr(i+1))
-      end do
-      deallocate(tmp_vpwr)
-!
-      call reset_volume_spectr_control(add_vpwr)
-!
-      end subroutine append_volume_spectr_ctls
-!
-! -----------------------------------------------------------------------
-!
-      subroutine delete_volume_spectr_ctls(idx_in, smonitor_ctl)
-!
-      integer(kind = kint), intent(in) :: idx_in
-      type(sph_monitor_control), intent(inout) :: smonitor_ctl
-!
-      integer(kind = kint) :: num_tmp
-      type(volume_spectr_control), allocatable :: tmp_vpwr(:)
-      integer(kind = kint) :: i
-!
-!
-      if(idx_in.le.0 .or. idx_in.gt.smonitor_ctl%num_vspec_ctl) return
-
-      num_tmp = smonitor_ctl%num_vspec_ctl
-      allocate(tmp_vpwr(num_tmp))
-      do i = 1, num_tmp
-        call copy_volume_spectr_control(smonitor_ctl%v_pwr(i),          &
-     &                                  tmp_vpwr(i))
-      end do
-!
-      call dealloc_volume_spectr_control(smonitor_ctl)
-      smonitor_ctl%num_vspec_ctl = num_tmp - 1
-      call alloc_volume_spectr_control(smonitor_ctl)
-!
-      do i = 1, idx_in-1
-        call copy_volume_spectr_control(tmp_vpwr(i),                    &
-     &                                  smonitor_ctl%v_pwr(i))
-      end do
-      do i = idx_in, smonitor_ctl%num_vspec_ctl
-        call copy_volume_spectr_control(tmp_vpwr(i+1),                  &
-     &                                  smonitor_ctl%v_pwr(i))
-      end do
-      deallocate(tmp_vpwr)
-!
-      end subroutine delete_volume_spectr_ctls
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_volume_spectr_control(smonitor_ctl)
@@ -296,6 +219,19 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine alloc_data_on_circles_ctl(smonitor_ctl)
+!
+      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+      integer(kind = kint) :: i
+!
+!
+      allocate(smonitor_ctl%meq_ctl(smonitor_ctl%num_circ_ctl))
+!
+      end subroutine alloc_data_on_circles_ctl
+!
+!  ---------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine dealloc_volume_spectr_control(smonitor_ctl)
 !
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
@@ -306,5 +242,18 @@
       end subroutine dealloc_volume_spectr_control
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine dealloc_data_on_circles_ctl(smonitor_ctl)
+!
+      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!
+!
+      if(allocated(smonitor_ctl%meq_ctl))                               &
+     &                    deallocate(smonitor_ctl%meq_ctl)
+      smonitor_ctl%num_circ_ctl = 0
+!
+      end subroutine dealloc_data_on_circles_ctl
+!
+!  ---------------------------------------------------------------------
 !
       end module t_ctl_data_4_sph_monitor
