@@ -37,7 +37,8 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 
 void create_block_tree_view(GtkTreeView *v_tree_view, GtkCellRenderer *renderer_text);
 
-GtkWidget *block_list_box_expander(char *array_name_c, GtkTreeView *v_tree_view, 
-								   GtkWidget *button_add, GtkWidget *button_delete);
+GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
+										   GtkWidget *button_add, GtkWidget *button_delete,
+										   GtkWidget *vbox_out);
 
 #endif /* TREE_VIEW_BLOCK_GTK_H_ */

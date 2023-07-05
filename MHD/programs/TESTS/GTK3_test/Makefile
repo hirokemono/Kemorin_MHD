@@ -36,8 +36,8 @@ control_boxes_single_items_GTK.o \
 control_panel_4_dimless_GTK.o \
 control_panels_MHD_control_GTK.o \
 \
-c_ctl_data_4_sph_monitor.o
-
+c_ctl_data_4_sph_monitor.o \
+sph_data_on_circles_block_panel_GTK.o
 
 
 MODULES = \
@@ -70,12 +70,16 @@ c_ctl_data_4_sph_monitor.o: GTK/c_ctl_data_4_sph_monitor.c GTK/c_ctl_data_4_sph_
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_ctl_data_4_sph_monitor.c
 
+sph_data_on_circles_block_panel_GTK.o: GTK/sph_data_on_circles_block_panel_GTK.c GTK/sph_data_on_circles_block_panel_GTK.h
+	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/sph_data_on_circles_block_panel_GTK.c
+
 
 ctl_data_platforms_GTK.o: ctl_data_platforms_GTK.c ctl_data_platforms_GTK.h GTK/control_boxes_single_items_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/ctl_data_platforms_GTK.c
 
-file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o GTK/control_panels_MHD_control_GTK.h GTK/control_block_panel_GTK.h GTK/c_ctl_data_4_sph_monitor.h
+file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o GTK/control_panels_MHD_control_GTK.h GTK/control_block_panel_GTK.h GTK/c_ctl_data_4_sph_monitor.h GTK/sph_data_on_circles_block_panel_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/file_dialog.c
 

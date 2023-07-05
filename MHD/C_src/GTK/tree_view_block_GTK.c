@@ -242,9 +242,17 @@ void create_block_tree_view(GtkTreeView *v_tree_view, GtkCellRenderer *renderer_
 }
 
 
-GtkWidget *block_list_box_expander(char *array_name_c, GtkTreeView *v_tree_view, 
-								   GtkWidget *button_add, GtkWidget *button_delete)
-{
+GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
+										   GtkWidget *button_add, GtkWidget *button_delete,
+										   GtkWidget *vbox_out){
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	
+	GtkCellRenderer *renderer_text =  gtk_cell_renderer_text_new();
+	create_block_tree_view(GTK_TREE_VIEW(v_tree_view), renderer_text);
+	v_clist_gtk->index_bc = append_void_list_from_ctl(v_clist_gtk->index_bc,
+													  &v_clist_gtk->c_item_head,
+													  GTK_TREE_VIEW(v_tree_view));
+
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	
     /* Pack bottuns */
@@ -253,11 +261,11 @@ GtkWidget *block_list_box_expander(char *array_name_c, GtkTreeView *v_tree_view,
 	gtk_box_pack_start(GTK_BOX(hbox_1), button_delete, FALSE, FALSE, 0);
 	
     gtk_box_pack_start(GTK_BOX(vbox_1), hbox_1, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_1), GTK_WIDGET(v_tree_view), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_1), v_tree_view, TRUE, TRUE, 0);
 	
 	GtkWidget *Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
-	return Frame_1;
+	gtk_box_pack_start(GTK_BOX(vbox), Frame_1, FALSE, TRUE, 0);
+	return vbox;
 };
-

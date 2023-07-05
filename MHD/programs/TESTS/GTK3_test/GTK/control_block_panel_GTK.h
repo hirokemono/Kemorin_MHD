@@ -20,12 +20,17 @@
 #include "control_boxes_single_items_GTK.h"
 #include "c_ctl_data_4_sph_monitor.h"
 
+struct sph_vspectr_widgets{
+	struct void_clist * expand_v_pwr_list;
+	GtkWidget *vbox_vpwr_items;
+	GtkWidget *v_pwr_tree_view;
+    GtkWidget *vbox_vpwr;
+};
+
 /* prototypes */
 
-GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_v_pwr_item, GtkWidget *window);
-
-GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
-										   GtkWidget *button_add, GtkWidget *button_delete,
-										   GtkWidget *vbox_out);
+GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, 
+										 struct sph_vspectr_widgets *vpwr_Widgets,
+										 GtkWidget *window);
 
 #endif /* CONTROL_BLOCK_PANEL_GTK_H_ */

@@ -20,12 +20,17 @@
 #include "control_boxes_single_items_GTK.h"
 #include "c_ctl_data_4_sph_monitor.h"
 
+struct sph_d_circle_widgets{
+	struct void_clist * expand_dcirc_list;
+	GtkWidget *vbox_dcirc_items;
+	GtkWidget *d_circ_tree_view;
+    GtkWidget *vbox_dcirc;
+};
+
 /* prototypes */
 
-GtkWidget * draw_sph_each_fld_on_circle_ctl_vbox(struct f_sph_field_on_circle_ctls *f_circ_ctls, GtkWidget *window);
-
-GtkWidget * add_fld_on_circle_ctl_vbox(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
-										   GtkWidget *button_add, GtkWidget *button_delete,
-										   GtkWidget *vbox_out);
+GtkWidget * draw_sph_d_circle_ctl_vbox(struct void_clist *f_circ_ctls,
+									   struct sph_d_circle_widgets *dcirc_Widgets,
+									   GtkWidget *window);
 
 #endif /* SPH_DATA_ON_CIRCLES_BLOCK_PANEL_GTK_H_ */
