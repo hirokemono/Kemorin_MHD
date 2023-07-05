@@ -105,6 +105,12 @@ static void delete_d_circle_ctl_block_cb(GtkButton *button, gpointer user_data){
 GtkWidget * draw_sph_d_circle_ctl_vbox(struct void_clist *f_circ_ctls,
 									   struct sph_d_circle_widgets *dcirc_Widgets,
 									   GtkWidget *window){
+	dcirc_Widgets = (struct sph_d_circle_widgets *) malloc(sizeof(struct sph_d_circle_widgets));
+	if(dcirc_Widgets == NULL){
+		printf("malloc error for dcirc_Widgets\n");
+		exit(0);
+	};
+	
     dcirc_Widgets->vbox_dcirc = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
 	GtkWidget *button_add =    gtk_button_new_with_label("Add");
