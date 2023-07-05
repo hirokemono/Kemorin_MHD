@@ -7,51 +7,6 @@
 
 #include "control_block_panel_GTK.h"
 
-struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *f_parent)
-{
-	struct f_sph_vol_spectr_ctls *f_v_pwr_item 
-			= (struct f_sph_vol_spectr_ctls *) malloc(sizeof(struct f_sph_vol_spectr_ctls));
-	if(f_v_pwr_item == NULL){
-		printf("malloc error for f_v_pwr_item\n");
-		exit(0);
-	};
-	f_v_pwr_item->f_self =  c_sph_monitor_vspec_ctl(idx, f_parent);
-	
-	f_v_pwr_item->f_iflag = (int *) c_sph_v_spectr_ctl_iflag(f_v_pwr_item->f_self);
-	char *f_block_name =   (char *) c_sph_v_spectr_ctl_block_name(f_v_pwr_item->f_self);
-	f_v_pwr_item->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_v_pwr_item->f_volume_spec_file_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_file_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_volume_ave_file_ctl =  init_f_ctl_chara_item(c_sph_volume_ave_file_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_volume_spec_format_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_format_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_degree_v_spectra_switch =  init_f_ctl_chara_item(c_sph_degree_v_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_order_v_spectra_switch =  init_f_ctl_chara_item(c_sph_order_v_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_diff_v_lm_spectra_switch =  init_f_ctl_chara_item(c_sph_diff_v_lm_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_axis_v_power_switch =  init_f_ctl_chara_item(c_sph_axis_v_power_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_inner_radius_ctl =  init_f_ctl_real_item(c_sph_v_spec_inner_radius_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_outer_radius_ctl =  init_f_ctl_real_item(c_sph_v_spec_outer_radius_ctl, f_v_pwr_item->f_self);
-	return f_v_pwr_item;
-}
-
-void * dealloc_f_sph_vol_spectr_ctls(void *f_item){
-	struct f_sph_vol_spectr_ctls *f_v_pwr_item = (struct f_sph_vol_spectr_ctls *) f_item;
-	f_v_pwr_item->f_self = NULL;
-	f_v_pwr_item->f_iflag = NULL;
-	free(f_v_pwr_item->c_block_name);
-	
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_spec_file_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_ave_file_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_spec_format_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_degree_v_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_order_v_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_diff_v_lm_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_axis_v_power_switch);
-	dealloc_f_ctl_real_item(f_v_pwr_item->f_inner_radius_ctl);
-	dealloc_f_ctl_real_item(f_v_pwr_item->f_outer_radius_ctl);
-	free(f_v_pwr_item);
-	return NULL;
-}
-
 GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
 										   GtkWidget *button_add, GtkWidget *button_delete,
 										   GtkWidget *vbox_out){
