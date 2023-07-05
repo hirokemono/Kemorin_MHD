@@ -112,8 +112,6 @@
       level = write_array_flag_for_ctl(id_control, level,               &
      &                                 smonitor_ctl%d_circ_name)
       do i = 1, smonitor_ctl%num_circ_ctl
-        write(*,'(2a,i4)', ADVANCE='NO')                                &
-     &          trim(smonitor_ctl%d_circ_name), ' No. ', i
         call write_mid_eq_monitor_ctl(id_control,                       &
      &                                smonitor_ctl%meq_ctl(i), level)
       end do
