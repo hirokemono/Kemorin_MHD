@@ -18,7 +18,7 @@
 #include "t_ctl_array_single_items_c.h"
 #include "kemoview_gtk_routines.h"
 #include "control_boxes_single_items_GTK.h"
-#include "c_ctl_data_4_sph_monitor.h"
+#include "c_ctl_data_sph_monitor_arrays.h"
 
 struct sph_d_circle_widgets{
 	struct void_clist * expand_dcirc_list;

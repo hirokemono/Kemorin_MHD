@@ -7,34 +7,6 @@
 
 #include "c_ctl_data_4_sph_monitor.h"
 
-extern void * c_sph_monitor_ctl_v_pwr_name(void *f_smonitor_ctl);
-
-extern void * c_sph_v_spectr_ctl_block_name(void *f_v_pwr_item);
-extern void * c_sph_v_spectr_ctl_iflag(void *f_v_pwr_item);
-extern void * c_sph_volume_spec_file_ctl(void *f_v_pwr_item);
-extern void * c_sph_volume_ave_file_ctl(void *f_v_pwr_item);
-extern void * c_sph_volume_spec_format_ctl(void *f_v_pwr_item);
-extern void * c_sph_degree_v_spectra_switch(void *f_v_pwr_item);
-extern void * c_sph_order_v_spectra_switch(void *f_v_pwr_item);
-extern void * c_sph_diff_v_lm_spectra_switch(void *f_v_pwr_item);
-extern void * c_sph_axis_v_power_switch(void *f_v_pwr_item);
-extern void * c_sph_v_spec_inner_radius_ctl(void *f_v_pwr_item);
-extern void * c_sph_v_spec_outer_radius_ctl(void *f_v_pwr_item);
-
-
-extern void * c_data_on_circles_block_name(void *f_circ_ctls);
-
-extern void * c_data_on_circle_block_name(void *f_circ_ctls);
-extern void * c_data_on_circle_iflag(void *f_circ_ctls);
-extern void * c_data_on_circle_field_file(void *f_circ_ctls);
-extern void * c_data_on_circle_spectr_file(void *f_circ_ctls);
-extern void * c_data_on_circle_file_fmt_ctl(void *f_circ_ctls);
-extern void * c_data_on_circle_coord_ctl(void *f_circ_ctls);
-extern void * c_data_on_circle_nphi_ctl(void *f_circ_ctls);
-extern void * c_data_on_circle_pick_s_ctl(void *f_circ_ctls);
-extern void * c_data_on_circle_pick_z_ctl(void *f_circ_ctls);
-
-
 extern void * c_sph_monitor_ctl_block_name(void *f_smonitor_ctl);
 extern void * c_sph_monitor_ctl_iflag(void *f_smonitor_ctl);
 extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
@@ -56,6 +28,9 @@ extern void * c_sph_mntr_h_Nusselt_file_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_c_Nusselt_file_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_pfix_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_lscale_file_fmt_ctl(void *f_smonitor_ctl);
+
+extern void * c_sph_monitor_ctl_v_pwr_name(void *f_smonitor_ctl);
+extern void * c_data_on_circles_block_name(void *f_circ_ctls);
 
 extern void * c_pick_spectr_ctl_block_name(void *f_pspec_ctl);
 extern void * c_pick_spectr_ctl_iflag(void *f_pspec_ctl);
@@ -101,103 +76,6 @@ extern void * c_sph_detailed_dbench_file_ctl(void *f_dbench_ctl);
 extern void * c_sph_dbench_field_file_ctl(void *f_dbench_ctl);
 extern void * c_sph_dbench_spectr_file_ctl(void *f_dbench_ctl);
 extern void * c_sph_dbench_nphi_mid_eq_ctl(void *f_dbench_ctl);
-
-
-struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *f_parent)
-{
-	struct f_sph_vol_spectr_ctls *f_v_pwr_item 
-			= (struct f_sph_vol_spectr_ctls *) malloc(sizeof(struct f_sph_vol_spectr_ctls));
-	if(f_v_pwr_item == NULL){
-		printf("malloc error for f_v_pwr_item\n");
-		exit(0);
-	};
-	f_v_pwr_item->f_self =  c_sph_monitor_vspec_ctl(idx, f_parent);
-	
-	f_v_pwr_item->f_iflag = (int *) c_sph_v_spectr_ctl_iflag(f_v_pwr_item->f_self);
-	char *f_block_name =   (char *) c_sph_v_spectr_ctl_block_name(f_v_pwr_item->f_self);
-	f_v_pwr_item->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_v_pwr_item->f_volume_spec_file_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_file_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_volume_ave_file_ctl =  init_f_ctl_chara_item(c_sph_volume_ave_file_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_volume_spec_format_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_format_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_degree_v_spectra_switch =  init_f_ctl_chara_item(c_sph_degree_v_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_order_v_spectra_switch =  init_f_ctl_chara_item(c_sph_order_v_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_diff_v_lm_spectra_switch =  init_f_ctl_chara_item(c_sph_diff_v_lm_spectra_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_axis_v_power_switch =  init_f_ctl_chara_item(c_sph_axis_v_power_switch, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_inner_radius_ctl =  init_f_ctl_real_item(c_sph_v_spec_inner_radius_ctl, f_v_pwr_item->f_self);
-	f_v_pwr_item->f_outer_radius_ctl =  init_f_ctl_real_item(c_sph_v_spec_outer_radius_ctl, f_v_pwr_item->f_self);
-	return f_v_pwr_item;
-}
-
-void * dealloc_f_sph_vol_spectr_ctls(void *f_item){
-	struct f_sph_vol_spectr_ctls *f_v_pwr_item = (struct f_sph_vol_spectr_ctls *) f_item;
-	f_v_pwr_item->f_self = NULL;
-	f_v_pwr_item->f_iflag = NULL;
-	free(f_v_pwr_item->c_block_name);
-	
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_spec_file_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_ave_file_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_spec_format_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_degree_v_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_order_v_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_diff_v_lm_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_axis_v_power_switch);
-	dealloc_f_ctl_real_item(f_v_pwr_item->f_inner_radius_ctl);
-	dealloc_f_ctl_real_item(f_v_pwr_item->f_outer_radius_ctl);
-	free(f_v_pwr_item);
-	return NULL;
-}
-
-
-struct f_sph_field_on_circle_ctls * init_f_sph_field_on_circle_ctls(int idx, void *f_parent)
-{
-	struct f_sph_field_on_circle_ctls *f_circ_ctls 
-			= (struct f_sph_field_on_circle_ctls *) malloc(sizeof(struct f_sph_field_on_circle_ctls));
-	if(f_circ_ctls == NULL){
-		printf("malloc error for f_circ_ctls\n");
-		exit(0);
-	};
-	f_circ_ctls->f_self =  c_data_on_circles_meq_ctl(idx, f_parent);
-	
-	f_circ_ctls->f_iflag = (int *) c_data_on_circle_iflag(f_circ_ctls->f_self);
-	char *f_block_name =   (char *) c_data_on_circle_block_name(f_circ_ctls->f_self);
-	f_circ_ctls->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_circ_ctls->f_circle_field_file_ctl =  init_f_ctl_chara_item(c_data_on_circle_field_file,
-																  f_circ_ctls->f_self);
-	f_circ_ctls->f_circle_spectr_file_ctl =  init_f_ctl_chara_item(c_data_on_circle_spectr_file, 
-																   f_circ_ctls->f_self);
-	f_circ_ctls->f_circle_file_format_ctl =  init_f_ctl_chara_item(c_data_on_circle_file_fmt_ctl, 
-																   f_circ_ctls->f_self);
-	f_circ_ctls->f_pick_circle_coord_ctl =  init_f_ctl_chara_item(c_data_on_circle_coord_ctl, 
-																  f_circ_ctls->f_self);
-	
-	f_circ_ctls->f_nphi_mid_eq_ctl = init_f_ctl_int_item(c_data_on_circle_nphi_ctl, 
-														 f_circ_ctls->f_self);
-	f_circ_ctls->f_pick_s_ctl =  init_f_ctl_real_item(c_data_on_circle_pick_s_ctl, 
-													  f_circ_ctls->f_self);
-	f_circ_ctls->f_pick_z_ctl =  init_f_ctl_real_item(c_data_on_circle_pick_z_ctl, 
-													  f_circ_ctls->f_self);
-	return f_circ_ctls;
-}
-
-void * dealloc_f_sph_field_on_circle_ctls(void *f_item){
-	struct f_sph_field_on_circle_ctls *f_circ_ctls = (struct f_sph_field_on_circle_ctls *) f_item;
-	f_circ_ctls->f_self = NULL;
-	f_circ_ctls->f_iflag = NULL;
-	free(f_circ_ctls->c_block_name);
-	
-	dealloc_f_ctl_chara_item(f_circ_ctls->f_circle_field_file_ctl);
-	dealloc_f_ctl_chara_item(f_circ_ctls->f_circle_spectr_file_ctl);
-	dealloc_f_ctl_chara_item(f_circ_ctls->f_circle_file_format_ctl);
-	dealloc_f_ctl_chara_item(f_circ_ctls->f_pick_circle_coord_ctl);
-	dealloc_f_ctl_int_item(f_circ_ctls->f_nphi_mid_eq_ctl);
-	dealloc_f_ctl_real_item(f_circ_ctls->f_pick_s_ctl);
-	dealloc_f_ctl_real_item(f_circ_ctls->f_pick_z_ctl);
-	free(f_circ_ctls);
-	return NULL;
-}
-
 
 
 static struct f_MHD_sph_layer_spectr_ctls * init_f_MHD_sph_layer_spectr_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
@@ -341,25 +219,10 @@ static struct f_MHD_sph_dipolarity_ctls * init_f_MHD_sph_dipolarity_ctls(void *(
 	return f_fdip_ctl;
 }
 
-
-struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)(void *f_parent),
-															void *f_parent)
+static void init_f_MHD_sph_monitor_arrays(struct f_MHD_sph_monitor_ctls *f_smonitor_ctl)
 {
-	struct f_MHD_sph_monitor_ctls *f_smonitor_ctl 
-			= (struct f_MHD_sph_monitor_ctls *) malloc(sizeof(struct f_MHD_sph_monitor_ctls));
-	if(f_smonitor_ctl == NULL){
-		printf("malloc error for f_smonitor_ctl\n");
-		exit(0);
-	};
-	
-	f_smonitor_ctl->f_self =  c_load_self(f_parent);
-	
-	f_smonitor_ctl->f_iflag = (int *) c_sph_monitor_ctl_iflag(f_smonitor_ctl->f_self);
-	char *f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
-	f_smonitor_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
 	f_smonitor_ctl->f_num_vspec_ctl = c_sph_monitor_num_vspec_ctl(f_smonitor_ctl->f_self);
-    f_block_name =   (char *) c_sph_monitor_ctl_v_pwr_name(f_smonitor_ctl->f_self);
+    char *f_block_name =   (char *) c_sph_monitor_ctl_v_pwr_name(f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_v_pwr = init_void_clist(strngcopy_from_f(f_block_name));
 	f_smonitor_ctl->f_v_pwr->f_parent =  f_smonitor_ctl->f_self;
 	
@@ -377,8 +240,27 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
         struct f_sph_field_on_circle_ctls *void_in = init_f_sph_field_on_circle_ctls(i, f_smonitor_ctl->f_self);
 		append_void_clist((void *) void_in, f_smonitor_ctl->f_circ_ctls);
 	}
+	return;
+}
 
- 
+struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)(void *f_parent),
+															void *f_parent)
+{
+	struct f_MHD_sph_monitor_ctls *f_smonitor_ctl 
+			= (struct f_MHD_sph_monitor_ctls *) malloc(sizeof(struct f_MHD_sph_monitor_ctls));
+	if(f_smonitor_ctl == NULL){
+		printf("malloc error for f_smonitor_ctl\n");
+		exit(0);
+	};
+	
+	f_smonitor_ctl->f_self =  c_load_self(f_parent);
+	
+	f_smonitor_ctl->f_iflag = (int *) c_sph_monitor_ctl_iflag(f_smonitor_ctl->f_self);
+	char *f_block_name =   (char *) c_sph_monitor_ctl_block_name(f_smonitor_ctl->f_self);
+	f_smonitor_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	init_f_MHD_sph_monitor_arrays(f_smonitor_ctl);
+	
 	f_smonitor_ctl->f_lp_ctl =     init_f_MHD_sph_layer_spectr_ctls(c_sph_monitor_lp_ctl,
 																	f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_g_pwr =      init_f_MHD_sph_gauss_coefs_ctls(c_sph_monitor_g_pwr, 
