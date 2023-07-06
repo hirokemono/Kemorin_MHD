@@ -142,6 +142,13 @@ extern void * c_isosurf_ctls_iso_ctl(int idx, void *f_iso_ctls);
 extern void * c_append_viz_isosurf_ctls(int idx, char *block_name, void *f_iso_ctls);
 extern void * c_delete_viz_isosurf_ctls(int idx, void *f_iso_ctls);
 
+extern void * c_map_render_ctls_block_name(void *f_map_ctls);
+extern int    c_map_render_ctls_num_map_ctl(void *f_map_ctls);
+extern char * c_map_render_ctls_fname(int idx, void *f_map_ctls);
+extern void * c_map_render_ctls_map_ctl(int idx, void *f_map_ctls);
+extern void * c_append_viz_map_render_ctls(int idx, char *block_name, void *f_map_ctls);
+extern void * c_delete_viz_map_render_ctls(int idx, void *f_map_ctls);
+
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
@@ -221,7 +228,9 @@ struct f_MHD_viz_ctls{
 	int f_num_iso_ctl;
 	struct void_file_clist *f_iso_ctls;
 	
-	void * f_map_ctls;
+	int f_num_map_ctl;
+	struct void_file_clist *f_map_ctls;
+	
 	void * f_pvr_ctls;
 	void * f_fline_ctls;
 	void * f_lic_ctls;
@@ -466,6 +475,22 @@ struct void_file_clist * init_f_VIZ_iso_ctls(void *f_viz_ctls_self, int *f_num_i
 	return f_iso_ctls;
 }
 
+struct void_file_clist * init_f_VIZ_map_ctls(void *f_viz_ctls_self, int *f_num_map_ctl)
+{
+    char *f_block_name =   (char *) c_map_render_ctls_block_name(f_viz_ctls_self);
+	struct void_file_clist *f_map_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
+	f_map_ctls->f_parent =  c_visualizations_map_ctls(f_viz_ctls_self);
+	*f_num_map_ctl = c_map_render_ctls_num_map_ctl(f_map_ctls->f_parent);
+	
+	int i;
+	for(i=0;i<*f_num_map_ctl;i++){
+        f_block_name = c_map_render_ctls_fname(i, f_map_ctls->f_parent);
+        void *void_in =  c_map_render_ctls_map_ctl(i, f_map_ctls->f_parent);
+		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) void_in, f_map_ctls);
+	}
+	return f_map_ctls;
+}
+
 struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_MHD_viz_ctls *f_viz_ctls 
@@ -484,7 +509,7 @@ struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent)
 	
 	f_viz_ctls->f_psf_ctls = init_f_VIZ_psf_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_psf_ctl);
 	f_viz_ctls->f_iso_ctls = init_f_VIZ_iso_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_iso_ctl);
-	f_viz_ctls->f_map_ctls =    c_visualizations_map_ctls(f_viz_ctls->f_self);
+	f_viz_ctls->f_map_ctls = init_f_VIZ_map_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_map_ctl);
 	f_viz_ctls->f_pvr_ctls =    c_visualizations_pvr_ctls(f_viz_ctls->f_self);
 	f_viz_ctls->f_fline_ctls =    c_visualizations_fline_ctls(f_viz_ctls->f_self);
 	f_viz_ctls->f_lic_ctls =    c_visualizations_lic_ctls(f_viz_ctls->f_self);
