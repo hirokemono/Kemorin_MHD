@@ -7,6 +7,7 @@
 !>@brief  control ID data for surfacing module
 !!
 !!@verbatim
+!!      subroutine init_psf_ctl_stract(psf_c)
 !!      subroutine s_read_psf_control_data                              &
 !!     &         (id_control, hd_block, psf_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -249,6 +250,17 @@
       end subroutine write_psf_control_data
 !
 !   --------------------------------------------------------------------
+!
+      subroutine init_psf_ctl_stract(psf_c)
+!
+      type(psf_ctl), intent(inout) :: psf_c
+!
+      call init_psf_def_ctl_stract(psf_c%psf_def_c)
+      call init_fld_on_psf_control(hd_output_field, psf_c%fld_on_psf_c)
+!
+      end subroutine init_psf_ctl_stract
+!
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       integer(kind = kint) function num_label_psf_ctl()

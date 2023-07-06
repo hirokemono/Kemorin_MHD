@@ -6,7 +6,7 @@
 !>@brief control data for each isosurface
 !!
 !!@verbatim
-!!      subroutine init_iso_define_control(iso_def_c)
+!!      subroutine init_iso_define_control(hd_block, iso_def_c)
 !!      subroutine dealloc_iso_define_control(iso_def_c)
 !!        type(iso_define_ctl), intent(inout) :: iso_def_c
 !!      subroutine dup_iso_define_control(org_iso_def_c, new_iso_def_c)
@@ -82,6 +82,9 @@
 !
 !>      Structure of isosurface define control
       type iso_define_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'isosurf_define'
+!
 !>        Structure for field name for isosurface
         type(read_character_item) :: isosurf_data_ctl
 !>        Structure for component name for isosurface
@@ -119,13 +122,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_iso_define_control(iso_def_c)
+      subroutine init_iso_define_control(hd_block, iso_def_c)
 !
+      character(len=kchara), intent(in) :: hd_block
       type(iso_define_ctl), intent(inout) :: iso_def_c
 !
 !
       iso_def_c%isosurf_value_ctl%realvalue =    0.0d0
       iso_def_c%iso_area_ctl%num =      0
+!
+      iso_def_c%block_name = hd_block
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iso_field, iso_def_c%isosurf_data_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iso_comp, iso_def_c%isosurf_comp_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_iso_value, iso_def_c%isosurf_value_ctl)
+        call init_chara_ctl_array_label                                 &
+     &     (hd_iso_area, iso_def_c%iso_area_ctl)
 !
       end subroutine init_iso_define_control
 !

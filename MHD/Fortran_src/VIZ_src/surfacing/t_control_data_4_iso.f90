@@ -6,7 +6,6 @@
 !>@brief control data for each isosurface
 !!
 !!@verbatim
-!!      subroutine init_iso_ctl_stract(iso_c)
 !!      subroutine dealloc_cont_dat_4_iso(iso_c)
 !!        type(iso_ctl), intent(inout) :: iso_c
 !!      subroutine dup_control_4_iso(org_iso_c, new_iso_c)
@@ -83,6 +82,9 @@
       implicit  none
 !
       type iso_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'isosurface_ctl'
+!
 !>        Structure of isosurface define control
         type(iso_define_ctl) :: iso_def_c
 !>        file name for fields on isosurface control
@@ -102,18 +104,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine init_iso_ctl_stract(iso_c)
-!
-      type(iso_ctl), intent(inout) :: iso_c
-!
-!
-      call init_iso_define_control(iso_c%iso_def_c)
-      call init_fld_on_psf_control(iso_c%fld_on_iso_c)
-!
-      end subroutine init_iso_ctl_stract
 !
 !  ---------------------------------------------------------------------
 !

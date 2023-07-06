@@ -121,9 +121,9 @@
       subroutine bcast_iso_control_data(iso_c)
 !
       use t_control_data_4_iso
+      use bcast_control_arrays
       use calypso_mpi_int
       use calypso_mpi_char
-      use bcast_control_arrays
       use transfer_to_long_integers
 !
       type(iso_ctl), intent(inout) :: iso_c
@@ -148,8 +148,10 @@
       subroutine bcast_fld_on_psf_control(fld_on_psf_c)
 !
       use t_control_data_4_fld_on_psf
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
 !
@@ -158,6 +160,8 @@
       call bcast_ctl_type_c1(fld_on_psf_c%output_type_ctl)
       call bcast_ctl_array_c2(fld_on_psf_c%field_output_ctl)
 !
+      call calypso_mpi_bcast_character(fld_on_psf_c%block_name,         &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(fld_on_psf_c%i_iso_result, 0)
 !
       end subroutine bcast_fld_on_psf_control
@@ -194,8 +198,10 @@
       subroutine bcast_iso_define_control(iso_def_c)
 !
       use t_control_data_4_iso_def
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(iso_define_ctl), intent(inout) :: iso_def_c
 !
@@ -205,6 +211,8 @@
       call bcast_ctl_type_r1(iso_def_c%isosurf_value_ctl)
       call bcast_ctl_type_c1(iso_def_c%isosurf_data_ctl)
 !
+      call calypso_mpi_bcast_character(iso_def_c%block_name,            &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(iso_def_c%i_iso_define, 0)
 !
       end subroutine bcast_iso_define_control

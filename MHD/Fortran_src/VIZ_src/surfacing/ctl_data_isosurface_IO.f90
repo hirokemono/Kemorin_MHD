@@ -6,6 +6,7 @@
 !>@brief control data for each isosurface
 !!
 !!@verbatim
+!!      subroutine init_iso_ctl_stract(hd_block, iso_c)
 !!      subroutine s_read_iso_control_data                              &
 !!     &         (id_control, hd_block, iso_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -193,6 +194,27 @@
       end subroutine write_iso_control_data
 !
 !   --------------------------------------------------------------------
+!
+      subroutine init_iso_ctl_stract(hd_block, iso_c)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(iso_ctl), intent(inout) :: iso_c
+!
+!
+      iso_c%block_name = hd_block
+      call init_iso_define_control(hd_iso_define, iso_c%iso_def_c)
+      call init_fld_on_psf_control(hd_field_on_iso, iso_c%fld_on_iso_c)
+!
+        call init_chara_ctl_item_label(hd_isosurf_prefix,               &
+     &      iso_c%iso_file_head_ctl)
+        call init_chara_ctl_item_label(hd_iso_file_head,                &
+     &      iso_c%iso_file_head_ctl)
+        call init_chara_ctl_item_label(hd_iso_out_type,                 &
+     &      iso_c%iso_output_type_ctl)
+!
+      end subroutine init_iso_ctl_stract
+!
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       integer(kind = kint) function num_label_iso_ctl()

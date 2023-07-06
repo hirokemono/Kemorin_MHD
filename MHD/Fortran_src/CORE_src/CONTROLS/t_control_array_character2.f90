@@ -19,6 +19,7 @@
 !!
 !!      subroutine alloc_control_array_c2(array_c2)
 !!      subroutine dealloc_control_array_c2(array_c2)
+!!      subroutine init_chara2_ctl_array_label(label, array_c2)
 !!      subroutine read_control_array_c2                                &
 !!     &         (id_control, label, array_c2, c_buf)
 !!        type(ctl_array_c2), intent(inout) :: array_c2
@@ -167,6 +168,15 @@
       end subroutine dealloc_control_array_c2
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_chara2_ctl_array_label(label, array_c2)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_c2), intent(inout) :: array_c2
+!
+      array_c2%array_name = trim(label)
+      end subroutine init_chara2_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_c2                                  &

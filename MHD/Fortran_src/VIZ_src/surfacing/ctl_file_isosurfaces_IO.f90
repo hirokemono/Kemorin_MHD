@@ -89,7 +89,7 @@
         if(check_file_flag(c_buf, hd_block)                             &
      &      .or. check_begin_flag(c_buf, hd_block)) then
           n_append = iso_ctls%num_iso_ctl
-          call append_isosurface_control(n_append, iso_ctls)
+          call append_isosurface_control(n_append, hd_block, iso_ctls)
 !
           call write_multi_ctl_file_message                             &
      &       (hd_block, iso_ctls%num_iso_ctl, c_buf%level)
