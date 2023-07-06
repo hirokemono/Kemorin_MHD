@@ -151,6 +151,8 @@
 !
       if(filter3d_ctl%i_filter_control .gt. 0) return
       filter3d_ctl%block_name = hd_block
+      call init_platforms_labels(hd_platform,                           &
+     &                           filter3d_ctl%gen_filter_plt)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

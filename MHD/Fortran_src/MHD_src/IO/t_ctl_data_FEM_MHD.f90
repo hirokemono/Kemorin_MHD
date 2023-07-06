@@ -199,6 +199,8 @@
 !
       if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) return
       FEM_MHD_ctl%block_name = trim(hd_block)
+      call init_platforms_labels(hd_platform, FEM_MHD_ctl%plt)
+      call init_platforms_labels(hd_org_data, FEM_MHD_ctl%org_plt)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

@@ -183,6 +183,10 @@
 !
       if(MHD_ctl%i_mhd_ctl .gt. 0) return
       MHD_ctl%block_name = trim(hd_block)
+      call init_platforms_labels(hd_platform, MHD_ctl%plt)
+      call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
+      call init_sph_monitoring_labels(hd_pick_sph,                      &
+     &                                MHD_ctl%smonitor_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

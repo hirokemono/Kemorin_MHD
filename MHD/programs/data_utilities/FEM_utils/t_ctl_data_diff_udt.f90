@@ -169,8 +169,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(diff_udt_c%i_diff_control .gt. 0) return
+      call init_platforms_labels(hd_platform, diff_udt_c%d_plt)
+      call init_platforms_labels(hd_org_data, diff_udt_c%org_d_plt)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

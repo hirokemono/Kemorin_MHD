@@ -4,7 +4,7 @@ ctl_data_Multigrid_IO.o: $(CTL_DIR)/ctl_data_Multigrid_IO.f90 m_precision.o m_ma
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_data_platforms_IO.o: $(CTL_DIR)/ctl_data_platforms_IO.f90 m_precision.o m_machine_parameter.o t_control_array_character.o t_control_array_integer.o t_ctl_data_4_platforms.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ctl_data_sph_monitor_IO.o: $(CTL_DIR)/ctl_data_sph_monitor_IO.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_ctl_data_sph_vol_spectr.o t_ctl_data_sph_layer_spectr.o t_ctl_data_pick_sph_spectr.o t_ctl_data_gauss_coefs.o t_ctl_data_mid_equator.o t_ctl_data_sph_dipolarity.o t_ctl_data_4_sph_monitor.o skip_comment_f.o ctl_data_volume_spectr_IO.o write_control_elements.o
+ctl_data_sph_monitor_IO.o: $(CTL_DIR)/ctl_data_sph_monitor_IO.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_ctl_data_sph_vol_spectr.o t_ctl_data_sph_layer_spectr.o t_ctl_data_pick_sph_spectr.o t_ctl_data_gauss_coefs.o t_ctl_data_mid_equator.o t_ctl_data_sph_dipolarity.o t_ctl_data_4_sph_monitor.o skip_comment_f.o ctl_data_volume_spectr_IO.o t_ctl_data_circles.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_data_sphere_model_IO.o: $(CTL_DIR)/ctl_data_sphere_model_IO.f90 m_precision.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_charaint.o t_control_array_integer2.o t_control_array_intreal.o t_ctl_data_4_sphere_model.o m_machine_parameter.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

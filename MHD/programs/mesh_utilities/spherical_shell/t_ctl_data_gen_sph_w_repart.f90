@@ -155,8 +155,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) return
+      call init_platforms_labels(hd_platform, gen_SPH_wP_c%plt)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

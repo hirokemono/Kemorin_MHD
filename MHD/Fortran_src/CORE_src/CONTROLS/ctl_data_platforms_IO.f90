@@ -7,6 +7,7 @@
 !> @brief Control input routine for data file headers
 !!
 !!@verbatim
+!!      subroutine init_platforms_labels(hd_block, plt)
 !!      subroutine read_control_platforms                               &
 !!     &         (id_control, hd_block, plt, c_buf)
 !!        type(platform_data_control), intent(inout) :: plt
@@ -122,8 +123,6 @@
       character(len=kchara), parameter, private                         &
      &       :: hd_del_org_data =       'delete_original_data_flag'
 !
-      private :: init_platforms_labels
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -144,8 +143,7 @@
 !
 !
       if(plt%i_platform .gt. 0) return
-      call init_platforms_labels(plt)
-      plt%block_name = trim(hd_block)
+      call init_platforms_labels(hd_block, plt)
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
@@ -321,11 +319,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_platforms_labels(plt)
+      subroutine init_platforms_labels(hd_block, plt)
 !
+      character(len=kchara), intent(in) :: hd_block
       type(platform_data_control), intent(inout) :: plt
 !
 !
+      plt%block_name = trim(hd_block)
         call init_int_ctl_item_label                                    &
      &     (hd_num_subdomain, plt%ndomain_ctl)
         call init_int_ctl_item_label(hd_num_smp, plt%num_smp_ctl)
