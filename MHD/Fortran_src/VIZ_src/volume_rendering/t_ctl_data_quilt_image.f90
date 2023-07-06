@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine init_quilt_image_ctl_label(hd_block, quilt_c)
 !!      subroutine read_quilt_image_ctl                                 &
 !!     &         (id_control, hd_block, quilt_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -62,6 +63,9 @@
 !
 !>       Structure of quilt image controls
       type quilt_image_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'quilt_image_ctl'
+!
 !>        Structure of number of columns and row of image
         type(read_int2_item) :: num_column_row_ctl
 !>        Structure of number of row and columns of image
@@ -103,8 +107,8 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if (quilt_c%i_quilt_image.gt.0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -157,6 +161,27 @@
       end subroutine write_quilt_image_ctl
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine init_quilt_image_ctl_label(hd_block, quilt_c)
+!
+      use ctl_file_pvr_modelview_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(quilt_image_ctl), intent(inout) :: quilt_c
+!
+!
+      quilt_c%block_name = hd_block
+      call init_multi_modeview_ctl(hd_qview_transform,                  &
+     &                             quilt_c%mul_qmats_c)
+!
+        call init_integer2_ctl_item_label(hd_column_row,                &
+     &      quilt_c%num_column_row_ctl)
+        call init_integer2_ctl_item_label(hd_row_column,                &
+     &      quilt_c%num_row_column_ctl)
+!
+      end subroutine init_quilt_image_ctl_label
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dup_quilt_image_ctl(org_quilt, new_quilt)
@@ -174,6 +199,7 @@
      &                       new_quilt%num_row_column_ctl)
 !
       new_quilt%i_quilt_image = org_quilt%i_quilt_image
+      new_quilt%block_name =    org_quilt%block_name
 !
       end subroutine dup_quilt_image_ctl
 !

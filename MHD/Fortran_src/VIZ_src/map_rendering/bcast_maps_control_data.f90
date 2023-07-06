@@ -73,6 +73,8 @@
       type(map_ctl), intent(inout) :: map_c
 !
 !
+      call calypso_mpi_bcast_character(map_c%block_name,                &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(map_c%i_map_ctl, 0)
       call calypso_mpi_bcast_one_int(map_c%i_output_field, 0)
       call calypso_mpi_bcast_character(map_c%fname_mat_ctl,             &

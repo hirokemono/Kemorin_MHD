@@ -57,7 +57,7 @@
         character(len=kchara) :: block_name = 'surface_define'
 !
 !>        File name of control file to define surface
-        character(len = kchara) :: fname_sect_ctl
+        character(len = kchara) :: fname_sect_ctl = 'NO_FILE'
 !>        Structure to define surface
         type(psf_define_ctl) :: psf_def_c
 !>        Structure to define opacity of surface

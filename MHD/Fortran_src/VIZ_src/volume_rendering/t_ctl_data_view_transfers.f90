@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine alloc_multi_modeview_ctl(mul_mats_c)
 !!      subroutine dealloc_multi_modeview_ctl(mul_mats_c)
+!!      subroutine init_multi_modeview_ctl(hd_block, mul_mats_c)
+!!
 !!      subroutine read_mul_view_transfer_ctl                           &
 !!     &         (id_control, hd_block, mul_mats_c, c_buf)
 !!        type(multi_modeview_ctl), intent(inout) :: mul_mats_c
@@ -20,14 +22,14 @@
 !!        type(multi_modeview_ctl), intent(in) :: mul_mats_c
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine append_mul_view_trans_ctl(mul_mats_c)
+!!      subroutine append_mul_view_trans_ctl(idx_in, hd_block,          &
+!!     &                                     mul_mats_c)
+!!      subroutine delete_mul_view_trans_ctl(idx_in, mul_mats_c)
+!!        integer(kind = kint), intent(in) :: idx_in
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(multi_modeview_ctl), intent(inout) :: mul_mats_c
 !!      subroutine dup_mul_view_trans_ctl(org_mul_mats_c,               &
 !!     &                                  new_mul_mats_c)
-!!        type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
-!!        type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
-!!       subroutine copy_mul_view_trans_ctl                             &
-!!       &         (num_mat, org_mul_mats_c, new_mul_mats_c)
 !!        type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
 !!        type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -57,6 +59,9 @@
 !
 !>        Structure of modelview parameters or file names to load
       type multi_modeview_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'isosurface_ctl'
+!
 !>         Number of modelview parameter block
         integer(kind = kint) :: num_modelviews_c = 0
 !>        File name for external control file
@@ -99,6 +104,19 @@
       end subroutine alloc_multi_modeview_ctl
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine init_multi_modeview_ctl(hd_block, mul_mats_c)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+!
+!
+      mul_mats_c%block_name =       hd_block
+      mul_mats_c%num_modelviews_c = 0
+!
+      end subroutine init_multi_modeview_ctl
+!
+! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine read_mul_view_transfer_ctl                             &
@@ -112,10 +130,11 @@
       type(multi_modeview_ctl), intent(inout) :: mul_mats_c
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer(kind = kint) :: n_append
+!
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(mul_mats_c%matrices)) return
-      mul_mats_c%num_modelviews_c = 0
       call alloc_multi_modeview_ctl(mul_mats_c)
 !
       do
@@ -125,10 +144,10 @@
 !
         if(check_file_flag(c_buf, hd_block)                             &
      &        .or. check_begin_flag(c_buf, hd_block)) then
-          call append_mul_view_trans_ctl(mul_mats_c)
+          n_append = mul_mats_c%num_modelviews_c
+          call append_mul_view_trans_ctl(n_append, hd_block,            &
+     &                                   mul_mats_c)
 !
-          call init_view_transfer_ctl_label(hd_block,                   &
-     &        mul_mats_c%matrices(mul_mats_c%num_modelviews_c))
           call sel_read_ctl_modelview_file                              &
      &       (id_control, hd_block, mul_mats_c%num_modelviews_c,        &
      &        mul_mats_c%fname_mat_ctl(mul_mats_c%num_modelviews_c),    &
@@ -169,29 +188,94 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine append_mul_view_trans_ctl(mul_mats_c)
+      subroutine append_mul_view_trans_ctl(idx_in, hd_block,            &
+     &                                     mul_mats_c)
 !
+      use ctl_data_view_transfer_IO
+!
+      integer(kind = kint), intent(in) :: idx_in
+      character(len=kchara), intent(in) :: hd_block
       type(multi_modeview_ctl), intent(inout) :: mul_mats_c
 !
       type(multi_modeview_ctl) :: tmp_mul_qmats
+      integer(kind = kint) :: i
 !
+!
+      if(idx_in.lt.0 .or. idx_in.gt.mul_mats_c%num_modelviews_c) return
 !
       tmp_mul_qmats%num_modelviews_c = mul_mats_c%num_modelviews_c
       call alloc_multi_modeview_ctl(tmp_mul_qmats)
-      call copy_mul_view_trans_ctl(tmp_mul_qmats%num_modelviews_c,      &
-     &                             mul_mats_c, tmp_mul_qmats)
+!
+      do i = 1, tmp_mul_qmats%num_modelviews_c
+        call dup_view_transfer_ctl(mul_mats_c%matrices(i),              &
+     &                             tmp_mul_qmats%matrices(i))
+        tmp_mul_qmats%fname_mat_ctl(i) = mul_mats_c%fname_mat_ctl(i)
+      end do
 !
       call dealloc_multi_modeview_ctl(mul_mats_c)
-!
       mul_mats_c%num_modelviews_c = tmp_mul_qmats%num_modelviews_c + 1
       call alloc_multi_modeview_ctl(mul_mats_c)
 !
-      call copy_mul_view_trans_ctl(tmp_mul_qmats%num_modelviews_c,      &
-     &                             tmp_mul_qmats, mul_mats_c)
+      do i = 1, idx_in
+        call dup_view_transfer_ctl(tmp_mul_qmats%matrices(i),           &
+     &                             mul_mats_c%matrices(i))
+        mul_mats_c%fname_mat_ctl(i) = tmp_mul_qmats%fname_mat_ctl(i)
+      end do
+!
+      call init_view_transfer_ctl_label(hd_block,                       &
+     &                                  mul_mats_c%matrices(idx_in+1))
+      mul_mats_c%fname_mat_ctl(idx_in+1) = 'NO_FILE'
+!
+      do i = idx_in+1, tmp_mul_qmats%num_modelviews_c
+        call dup_view_transfer_ctl(tmp_mul_qmats%matrices(i),           &
+     &                             mul_mats_c%matrices(i+1))
+        mul_mats_c%fname_mat_ctl(i+1) = tmp_mul_qmats%fname_mat_ctl(i)
+      end do
 !
       call dealloc_multi_modeview_ctl(tmp_mul_qmats)
 !
       end subroutine append_mul_view_trans_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine delete_mul_view_trans_ctl(idx_in, mul_mats_c)
+!
+      integer(kind = kint), intent(in) :: idx_in
+      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+!
+      type(multi_modeview_ctl) :: tmp_mul_qmats
+      integer(kind = kint) :: i
+!
+!
+      if(idx_in.le.0 .or. idx_in.gt.mul_mats_c%num_modelviews_c) return
+!
+      tmp_mul_qmats%num_modelviews_c = mul_mats_c%num_modelviews_c
+      call alloc_multi_modeview_ctl(tmp_mul_qmats)
+!
+      do i = 1, tmp_mul_qmats%num_modelviews_c
+        call dup_view_transfer_ctl(mul_mats_c%matrices(i),              &
+     &                             tmp_mul_qmats%matrices(i))
+        tmp_mul_qmats%fname_mat_ctl(i) = mul_mats_c%fname_mat_ctl(i)
+      end do
+!
+      call dealloc_multi_modeview_ctl(mul_mats_c)
+      mul_mats_c%num_modelviews_c = tmp_mul_qmats%num_modelviews_c + 1
+      call alloc_multi_modeview_ctl(mul_mats_c)
+!
+      do i = 1, idx_in-1
+        call dup_view_transfer_ctl(tmp_mul_qmats%matrices(i),           &
+     &                             mul_mats_c%matrices(i))
+        mul_mats_c%fname_mat_ctl(i) = tmp_mul_qmats%fname_mat_ctl(i)
+      end do
+      do i = idx_in, mul_mats_c%num_modelviews_c
+        call dup_view_transfer_ctl(tmp_mul_qmats%matrices(i+1),         &
+     &                             mul_mats_c%matrices(i))
+        mul_mats_c%fname_mat_ctl(i) = tmp_mul_qmats%fname_mat_ctl(i+1)
+      end do
+!
+      call dealloc_multi_modeview_ctl(tmp_mul_qmats)
+!
+      end subroutine delete_mul_view_trans_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -201,34 +285,21 @@
       type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
       type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
 !
+      integer(kind = kint) :: i
 !
+      new_mul_mats_c%block_name = org_mul_mats_c%block_name
       new_mul_mats_c%num_modelviews_c                                   &
      &     = org_mul_mats_c%num_modelviews_c
       call alloc_multi_modeview_ctl(new_mul_mats_c)
-      call copy_mul_view_trans_ctl(new_mul_mats_c%num_modelviews_c,     &
-     &                             org_mul_mats_c, new_mul_mats_c)
 !
-      end subroutine dup_mul_view_trans_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_mul_view_trans_ctl                                &
-     &         (num_mat, org_mul_mats_c, new_mul_mats_c)
-!
-      integer(kind = kint), intent(in) :: num_mat
-      type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
-      type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
-!
-      integer(kind = kint) :: i
-!
-      do i = 1, num_mat
+      do i = 1, new_mul_mats_c%num_modelviews_c
         call dup_view_transfer_ctl(org_mul_mats_c%matrices(i),          &
      &                             new_mul_mats_c%matrices(i))
+        new_mul_mats_c%fname_mat_ctl(i)                                 &
+     &     = org_mul_mats_c%fname_mat_ctl(i)
       end do
-      new_mul_mats_c%fname_mat_ctl(1:num_mat)                           &
-     &     = org_mul_mats_c%fname_mat_ctl(1:num_mat)
 !
-      end subroutine copy_mul_view_trans_ctl
+      end subroutine dup_mul_view_trans_ctl
 !
 !  ---------------------------------------------------------------------
 !

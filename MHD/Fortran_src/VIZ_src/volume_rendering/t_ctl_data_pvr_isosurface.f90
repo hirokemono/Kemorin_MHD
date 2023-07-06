@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine init_pvr_isosurface_ctl_label(hd_block, pvr_iso_ctl)
 !!      subroutine read_pvr_isosurface_ctl                              &
 !!     &         (id_control, hd_block, pvr_iso_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -53,6 +54,9 @@
 !
 !
       type pvr_isosurf_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'isosurface_ctl'
+!
         type(read_character_item) :: isosurf_type_ctl
         type(read_real_item) :: iso_value_ctl
         type(read_real_item) :: opacity_ctl
@@ -132,6 +136,24 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_isosurface_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_pvr_isosurface_ctl_label(hd_block, pvr_iso_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
+!
+!
+      pvr_iso_ctl%block_name = hd_block
+        call init_chara_ctl_item_label(hd_iso_direction,                &
+     &      pvr_iso_ctl%isosurf_type_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_isosurf_value, pvr_iso_ctl%iso_value_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
+!
+      end subroutine init_pvr_isosurface_ctl_label
 !
 !  ---------------------------------------------------------------------
 ! -----------------------------------------------------------------------

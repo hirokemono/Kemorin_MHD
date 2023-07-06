@@ -153,7 +153,7 @@
       do i = idx_in+1, tmp_iso_c%num_iso_ctl
         call dup_control_4_iso(tmp_iso_c%iso_ctl_struct(i),             &
      &                         iso_ctls%iso_ctl_struct(i+1))
-        iso_ctls%fname_iso_ctl(i) = tmp_iso_c%fname_iso_ctl(i+1)
+        iso_ctls%fname_iso_ctl(i+1) = tmp_iso_c%fname_iso_ctl(i)
       end do
 !
       call dealloc_iso_ctl_stract(tmp_iso_c)

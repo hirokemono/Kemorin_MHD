@@ -56,6 +56,8 @@
 !
 !
       call calypso_mpi_bcast_one_int(movie%i_pvr_rotation, 0)
+      call calypso_mpi_bcast_character(movie%block_name,                &
+     &                                 cast_long(kchara), 0)
 !
       call bcast_ctl_type_c1(movie%movie_mode_ctl)
       call bcast_ctl_type_i1(movie%num_frames_ctl)
@@ -90,6 +92,8 @@
 !
 !
       call calypso_mpi_bcast_one_int(quilt_c%i_quilt_image, 0)
+      call calypso_mpi_bcast_character(quilt_c%block_name,              &
+     &                                 cast_long(kchara), 0)
 !
       call bcast_ctl_type_i2(quilt_c%num_column_row_ctl)
       call bcast_ctl_type_i2(quilt_c%num_row_column_ctl)
@@ -114,6 +118,9 @@
 !
 !
       call calypso_mpi_bcast_one_int(mul_mats_c%num_modelviews_c, 0)
+      call calypso_mpi_bcast_character(mul_mats_c%block_name,           &
+     &                                 cast_long(kchara), 0)
+!
       if(mul_mats_c%num_modelviews_c .gt. 0 .and. my_rank .gt. 0) then
         num = mul_mats_c%num_modelviews_c
         call alloc_multi_modeview_ctl(mul_mats_c)

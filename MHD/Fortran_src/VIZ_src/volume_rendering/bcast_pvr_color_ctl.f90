@@ -132,12 +132,16 @@
       subroutine bcast_pvr_render_area_ctl(render_area_c)
 !
       use t_ctl_data_pvr_area
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(pvr_render_area_ctl), intent(inout) :: render_area_c
 !
 !
+      call calypso_mpi_bcast_character(render_area_c%block_name,        &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(render_area_c%i_plot_area, 0)
 !
       call bcast_ctl_array_c1(render_area_c%pvr_area_ctl)

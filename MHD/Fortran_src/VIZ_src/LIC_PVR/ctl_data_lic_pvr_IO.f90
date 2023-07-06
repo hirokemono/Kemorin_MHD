@@ -171,9 +171,14 @@
 !
 !
       if(pvr%i_pvr_ctl .gt. 0) return
+      call int_pvr_render_area_ctl(hd_plot_area, pvr%render_area_c)
       call init_pvr_cmap_cbar_label(hd_lic_colordef, pvr%cmap_cbar_c)
       call init_view_transfer_ctl_label(hd_view_transform, pvr%mat)
       call init_lighting_ctl_label(hd_pvr_lighting, pvr%light)
+      call init_pvr_sections_ctl(hd_pvr_sections, pvr%pvr_scts_c)
+      call init_pvr_isosurfs_ctl(hd_pvr_isosurf, pvr%pvr_isos_c)
+      call init_quilt_image_ctl_label(hd_quilt_image, pvr%quilt_c)
+      call init_pvr_rotation_ctl_label(hd_snapshot_movie, pvr%movie)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do

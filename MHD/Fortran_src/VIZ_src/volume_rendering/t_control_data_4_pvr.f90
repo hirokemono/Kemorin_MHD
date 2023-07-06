@@ -106,6 +106,9 @@
 !
 !>  Structure of control data for PVR rendering
       type pvr_parameter_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'volume_rendering'
+!
 !>     file name for modelview matrix
         character(len=kchara) :: fname_mat_ctl = 'NO_FILE'
 !>     Structure for modelview marices
@@ -236,6 +239,7 @@
       type(pvr_parameter_ctl), intent(inout) :: new_pvr
 !
 !
+      new_pvr%block_name =        org_pvr%block_name
       new_pvr%i_pvr_ctl =         org_pvr%i_pvr_ctl
       new_pvr%fname_mat_ctl =     org_pvr%fname_mat_ctl
       new_pvr%fname_cmap_cbar_c = org_pvr%fname_cmap_cbar_c

@@ -65,6 +65,9 @@
 !
 !
       type pvr_movie_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'snapshot_movie_ctl'
+!
 !>        Structure of movie mode control
         type(read_character_item) :: movie_mode_ctl
 !>        Structure of number of flame control
@@ -135,6 +138,7 @@
      &    new_movie%view_end_ctl)
 !
       new_movie%i_pvr_rotation = org_movie%i_pvr_rotation
+      new_movie%block_name =     org_movie%block_name
 !
       end subroutine dup_pvr_movie_control_flags
 !

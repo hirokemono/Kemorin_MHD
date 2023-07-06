@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine init_pvr_rotation_ctl_label(hd_block, movie)
 !!      subroutine read_pvr_rotation_ctl                                &
 !!     &         (id_control, hd_block, movie, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -127,10 +128,6 @@
 !
 !
       if (movie%i_pvr_rotation.gt.0) return
-      call init_view_transfer_ctl_label(hd_start_view_control,          &
-     &                                  movie%view_start_ctl)
-      call init_view_transfer_ctl_label(hd_end_view_control,            &
-     &                                  movie%view_end_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -221,6 +218,42 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_rotation_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_pvr_rotation_ctl_label(hd_block, movie)
+!
+      use ctl_file_pvr_modelview_IO
+      use ctl_data_view_transfer_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_movie_ctl), intent(inout) :: movie
+!
+!
+      movie%block_name = hd_block
+      call init_view_transfer_ctl_label(hd_start_view_control,          &
+     &                                  movie%view_start_ctl)
+      call init_view_transfer_ctl_label(hd_end_view_control,            &
+     &                                  movie%view_end_ctl)
+      call init_multi_modeview_ctl(hd_mview_transform,                  &
+     &                             movie%mul_mmats_c)
+!
+        call init_chara_ctl_item_label(hd_movie_mode,                   &
+     &      movie%movie_mode_ctl)
+!
+        call init_int_ctl_item_label(hd_movie_num_frame,                &
+     &      movie%num_frames_ctl)
+        call init_chara_ctl_item_label(hd_movie_rot_axis,               &
+     &      movie%rotation_axis_ctl)
+!
+        call init_real2_ctl_item_label(hd_angle_range,                  &
+     &      movie%angle_range_ctl)
+        call init_real2_ctl_item_label(hd_apature_range,                &
+     &      movie%apature_range_ctl)
+        call init_real2_ctl_item_label(hd_LIC_kernel_peak,              &
+     &      movie%LIC_kernel_peak_range_ctl)
+!
+      end subroutine init_pvr_rotation_ctl_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

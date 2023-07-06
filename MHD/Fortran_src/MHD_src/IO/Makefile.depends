@@ -24,7 +24,7 @@ bcast_ctl_data_mhd_forces.o: $(MHD_IO_DIR)/bcast_ctl_data_mhd_forces.f90 m_preci
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_ctl_data_mhd_time_rst.o: $(MHD_IO_DIR)/bcast_ctl_data_mhd_time_rst.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_ctl_data_mhd_evo_scheme.o transfer_to_long_integers.o calypso_mpi_char.o calypso_mpi_int.o bcast_control_arrays.o t_ctl_data_mhd_restart.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bcast_dynamo_sect_control.o: $(MHD_IO_DIR)/bcast_dynamo_sect_control.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_control_data_dynamo_sects.o calypso_mpi_int.o bcast_control_arrays.o bcast_section_control_data.o bcast_control_sph_MHD.o
+bcast_dynamo_sect_control.o: $(MHD_IO_DIR)/bcast_dynamo_sect_control.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_control_data_dynamo_sects.o bcast_control_arrays.o bcast_section_control_data.o bcast_control_sph_MHD.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_dynamo_viz_control.o: $(MHD_IO_DIR)/bcast_dynamo_viz_control.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_control_data_dynamo_vizs.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o bcast_section_control_data.o bcast_maps_control_data.o bcast_control_sph_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine int_pvr_render_area_ctl(hd_block, render_area_c)
 !!      subroutine read_pvr_render_area_ctl                             &
 !!     &         (id_control, hd_block, render_area_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -58,6 +59,9 @@
 !
 !
       type pvr_render_area_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'plot_area_ctl'
+!
         type(ctl_array_chara) :: pvr_area_ctl
         type(ctl_array_c2r) :: surf_enhanse_ctl
 !
@@ -130,6 +134,22 @@
       end subroutine write_pvr_render_area_ctl
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine int_pvr_render_area_ctl(hd_block, render_area_c)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_render_area_ctl), intent(inout) :: render_area_c
+!
+!
+      render_area_c%block_name = hd_block
+        call init_chara_ctl_array_label(hd_plot_grp,                    &
+     &      render_area_c%pvr_area_ctl)
+        call init_c2_r_ctl_array_label(hd_sf_enhanse,                   &
+     &      render_area_c%surf_enhanse_ctl)
+!
+      end subroutine int_pvr_render_area_ctl
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dup_pvr_render_area_ctl(org_rarea_c, new_rarea_c)
@@ -144,6 +164,7 @@
      &                            new_rarea_c%surf_enhanse_ctl)
 !
       new_rarea_c%i_plot_area = org_rarea_c%i_plot_area
+      new_rarea_c%block_name = org_rarea_c%block_name
 !
       end subroutine dup_pvr_render_area_ctl
 !
