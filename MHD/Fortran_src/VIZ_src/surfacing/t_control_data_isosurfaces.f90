@@ -12,6 +12,11 @@
 !!       subroutine add_fields_4_isos_to_fld_ctl(iso_ctls, field_ctl)
 !!        type(isosurf_controls), intent(in) :: iso_ctls
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!
+!!      subroutine append_isosurface_control(idx_in, iso_ctls)
+!!      subroutine delete_isosurface_control(idx_in, iso_ctls)
+!!        type(isosurf_controls), intent(inout) :: iso_ctls
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array isosurface_ctl     2
 !!      file   isosurface_ctl   'ctl_iso_p_n1e4'
@@ -37,9 +42,6 @@
 !>        Structure for isosurface control
         type(iso_ctl), allocatable :: iso_ctl_struct(:)
       end type isosurf_controls
-!
-!
-      private :: dup_control_4_isos
 !
 !   --------------------------------------------------------------------
 !
@@ -84,51 +86,85 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine append_new_isosurface_control(iso_ctls)
+      subroutine append_isosurface_control(idx_in, iso_ctls)
 !
+      integer(kind = kint), intent(in) :: idx_in
       type(isosurf_controls), intent(inout) :: iso_ctls
 !
       type(isosurf_controls) :: tmp_iso_c
+      integer(kind = kint) :: i
 !
+!
+      if(idx_in.lt.0 .or. idx_in.gt.iso_ctls%num_iso_ctl) return
 !
       tmp_iso_c%num_iso_ctl = iso_ctls%num_iso_ctl
       call alloc_iso_ctl_stract(tmp_iso_c)
-      call dup_control_4_isos                                           &
-     &    (tmp_iso_c%num_iso_ctl, iso_ctls, tmp_iso_c)
+      do i = 1, iso_ctls%num_iso_ctl
+        call dup_control_4_iso(iso_ctls%iso_ctl_struct(i),              &
+     &                         tmp_iso_c%iso_ctl_struct(i))
+        tmp_iso_c%fname_iso_ctl(i) = iso_ctls%fname_iso_ctl(i)
+      end do
 !
       call dealloc_iso_ctl_stract(iso_ctls)
-!
       iso_ctls%num_iso_ctl = tmp_iso_c%num_iso_ctl + 1
       call alloc_iso_ctl_stract(iso_ctls)
 !
-      call dup_control_4_isos                                           &
-     &   (tmp_iso_c%num_iso_ctl, tmp_iso_c, iso_ctls)
+      do i = 1, idx_in
+        call dup_control_4_iso(tmp_iso_c%iso_ctl_struct(i),             &
+                               iso_ctls%iso_ctl_struct(i))
+        iso_ctls%fname_iso_ctl(i) = tmp_iso_c%fname_iso_ctl(i)
+      end do
+      do i = idx_in+1, tmp_iso_c%num_iso_ctl
+        call dup_control_4_iso(tmp_iso_c%iso_ctl_struct(i),             &
+     &                         iso_ctls%iso_ctl_struct(i+1))
+        iso_ctls%fname_iso_ctl(i) = tmp_iso_c%fname_iso_ctl(i+1)
+      end do
 !
       call dealloc_iso_ctl_stract(tmp_iso_c)
 !
-      end subroutine append_new_isosurface_control
+      end subroutine append_isosurface_control
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dup_control_4_isos                                     &
-     &         (num_iso, org_iso_ctls, new_iso_ctls)
+      subroutine delete_isosurface_control(idx_in, iso_ctls)
 !
-      integer(kind = kint), intent(in) :: num_iso
-      type(isosurf_controls), intent(in) :: org_iso_ctls
-      type(isosurf_controls), intent(inout) :: new_iso_ctls
+      integer(kind = kint), intent(in) :: idx_in
+      type(isosurf_controls), intent(inout) :: iso_ctls
 !
+      type(isosurf_controls) :: tmp_iso_c
       integer(kind = kint) :: i
 !
-      do i = 1, num_iso
-        call dup_control_4_iso(org_iso_ctls%iso_ctl_struct(i),          &
-            new_iso_ctls%iso_ctl_struct(i))
+!
+      if(idx_in.le.0 .or. idx_in.gt.iso_ctls%num_iso_ctl) return
+!
+      tmp_iso_c%num_iso_ctl = iso_ctls%num_iso_ctl
+      call alloc_iso_ctl_stract(tmp_iso_c)
+      do i = 1, iso_ctls%num_iso_ctl
+        call dup_control_4_iso(iso_ctls%iso_ctl_struct(i),              &
+     &                         tmp_iso_c%iso_ctl_struct(i))
+        tmp_iso_c%fname_iso_ctl(i) = iso_ctls%fname_iso_ctl(i)
       end do
-      new_iso_ctls%fname_iso_ctl(1:num_iso)                             &
-     &      = org_iso_ctls%fname_iso_ctl(1:num_iso)
 !
-      end subroutine dup_control_4_isos
+      call dealloc_iso_ctl_stract(iso_ctls)
+      iso_ctls%num_iso_ctl = tmp_iso_c%num_iso_ctl - 1
+      call alloc_iso_ctl_stract(iso_ctls)
 !
-!  ---------------------------------------------------------------------
+      do i = 1, idx_in-1
+        call dup_control_4_iso(tmp_iso_c%iso_ctl_struct(i),             &
+     &                         iso_ctls%iso_ctl_struct(i))
+        iso_ctls%fname_iso_ctl(i) = tmp_iso_c%fname_iso_ctl(i)
+      end do
+      do i = idx_in, iso_ctls%num_iso_ctl
+        call dup_control_4_iso(tmp_iso_c%iso_ctl_struct(i+1),           &
+     &                         iso_ctls%iso_ctl_struct(i))
+        iso_ctls%fname_iso_ctl(i+1) = tmp_iso_c%fname_iso_ctl(i)
+      end do
+!
+      call dealloc_iso_ctl_stract(tmp_iso_c)
+!
+      end subroutine delete_isosurface_control
+!
+! -----------------------------------------------------------------------
 !
       subroutine alloc_iso_ctl_stract(iso_ctls)
 !

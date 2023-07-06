@@ -119,14 +119,10 @@
       character(C_char), intent(in) :: c_name(*)
       type(c_ptr), value, intent(in) :: c_ctl
       type(sph_monitor_control), pointer :: f_ctl
-      type(volume_spectr_control) :: add_vpwr
 !
       call c_f_pointer(c_ctl, f_ctl)
-      call reset_volume_spectr_control(add_vpwr)
-      call init_each_vol_spectr_labels(copy_char_from_c(c_name),        &
-     &                                 add_vpwr)
-
-      call append_volume_spectr_ctls(idx, add_vpwr, f_ctl)
+      call append_volume_spectr_ctls(idx, copy_char_from_c(c_name),     &
+     &                               f_ctl)
       c_append_sph_mntr_vspec_ctl = C_loc(f_ctl%v_pwr)
       f_ctl%v_pwr(idx+1)%i_vol_spectr_ctl = 1
 !
@@ -195,12 +191,10 @@
       type(sph_monitor_control), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)
-
-      call append_data_on_circles_ctl(idx, f_ctl)
+      call append_data_on_circles_ctl(idx, copy_char_from_c(c_name),    &
+     &                                f_ctl)
       c_append_circles_meq_ctl = C_loc(f_ctl%meq_ctl)
 
-      call init_mid_eq_monitor_ctl_label(copy_char_from_c(c_name),      &
-     &                                   f_ctl%meq_ctl(idx+1))
       f_ctl%meq_ctl(idx+1)%i_mid_equator_ctl = 1
 !
       end function c_append_circles_meq_ctl

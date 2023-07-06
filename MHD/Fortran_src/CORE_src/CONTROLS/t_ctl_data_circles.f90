@@ -20,7 +20,8 @@
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine append_data_on_circles_ctl(idx_in, smonitor_ctl)
+!!      subroutine append_data_on_circles_ctl(idx_in, hd_block,         &
+!!     &                                      smonitor_ctl)
 !!      subroutine delete_data_on_circles_ctl(idx_in, smonitor_ctl)
 !!        integer(kind = kint), intent(in) :: idx_in
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
@@ -72,6 +73,7 @@
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer(kind = kint) :: n_append
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(smonitor_ctl%meq_ctl)) return
@@ -85,7 +87,8 @@
         if(check_end_array_flag(c_buf, hd_block)) exit
 !
         if(check_begin_flag(c_buf, hd_block)) then
-          call append_data_on_circles_ctl(smonitor_ctl%num_circ_ctl,    &
+          n_append = smonitor_ctl%num_circ_ctl
+          call append_data_on_circles_ctl(n_append, hd_block,           &
      &                                    smonitor_ctl)
           write(*,'(3a,i4,a)') 'Control for ', trim(hd_block), ' No. ', &
      &        smonitor_ctl%num_circ_ctl, ' is included'
@@ -123,9 +126,11 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine append_data_on_circles_ctl(idx_in, smonitor_ctl)
+      subroutine append_data_on_circles_ctl(idx_in, hd_block,           &
+     &                                      smonitor_ctl)
 !
       integer(kind = kint), intent(in) :: idx_in
+      character(len=kchara), intent(in) :: hd_block
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
       type(mid_equator_control), allocatable :: tmp_meq_c(:)
@@ -147,6 +152,8 @@
         call dup_mid_equator_control(tmp_meq_c(i),                      &
      &                               smonitor_ctl%meq_ctl(i))
       end do
+      call init_mid_eq_monitor_ctl_label(hd_block,                      &
+     &    smonitor_ctl%meq_ctl(idx_in+1))
       do i = idx_in+1, num_tmp
         call dup_mid_equator_control(tmp_meq_c(i),                      &
      &                               smonitor_ctl%meq_ctl(i+1))

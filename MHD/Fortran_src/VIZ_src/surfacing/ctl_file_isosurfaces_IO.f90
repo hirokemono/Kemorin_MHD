@@ -75,6 +75,7 @@
       type(isosurf_controls), intent(inout) :: iso_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer(kind = kint) :: n_append
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       iso_ctls%num_iso_ctl = 0
@@ -87,7 +88,8 @@
 !
         if(check_file_flag(c_buf, hd_block)                             &
      &      .or. check_begin_flag(c_buf, hd_block)) then
-          call append_new_isosurface_control(iso_ctls)
+          n_append = iso_ctls%num_iso_ctl
+          call append_isosurface_control(n_append, iso_ctls)
 !
           call write_multi_ctl_file_message                             &
      &       (hd_block, iso_ctls%num_iso_ctl, c_buf%level)

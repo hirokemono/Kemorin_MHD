@@ -17,11 +17,11 @@
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
-!!      subroutine append_volume_spectr_ctls(idx_in, add_vpwr,          &
+!!      subroutine append_volume_spectr_ctls(idx_in, hd_block,          &
 !!     &                                     smonitor_ctl)
 !!      subroutine delete_volume_spectr_ctls(idx_in, smonitor_ctl)
 !!         integer(kind = kint), intent(in) :: idx_in
-!!         type(volume_spectr_control), intent(inout) :: add_vpwr
+!!        character(len=kchara), intent(in) :: hd_block
 !!         type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!
 !! -----------------------------------------------------------------
@@ -60,12 +60,11 @@
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
-      type(volume_spectr_control) :: read_vpwr
+      integer(kind = kint) :: n_append
+!
 !
       if(smonitor_ctl%num_vspec_ctl .gt. 0) return
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      call init_each_vol_spectr_labels(hd_block, read_vpwr)
-      read_vpwr%i_vol_spectr_ctl = 0
       smonitor_ctl%num_vspec_ctl = 0
       call alloc_volume_spectr_control(smonitor_ctl)
 !
@@ -74,12 +73,12 @@
         if(c_buf%iend .gt. 0) exit
         if(check_end_array_flag(c_buf, hd_block)) exit
 !
-        call read_each_vol_spectr_ctl(id_control, hd_block,             &
-     &                                read_vpwr, c_buf)
-        if(read_vpwr%i_vol_spectr_ctl .gt. 0) then
-          call append_volume_spectr_ctls(smonitor_ctl%num_vspec_ctl,    &
-     &                                   read_vpwr, smonitor_ctl)
-          read_vpwr%i_vol_spectr_ctl = 0
+        if(check_begin_flag(c_buf, hd_block)) then
+          n_append = smonitor_ctl%num_vspec_ctl
+          call append_volume_spectr_ctls(n_append, hd_block,            &
+     &                                   smonitor_ctl)
+          call read_each_vol_spectr_ctl(id_control, hd_block,           &
+     &        smonitor_ctl%v_pwr(smonitor_ctl%num_vspec_ctl), c_buf)
         end if
       end do
 !
@@ -117,19 +116,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine append_volume_spectr_ctls(idx_in, add_vpwr,            &
+      subroutine append_volume_spectr_ctls(idx_in, hd_block,            &
      &                                     smonitor_ctl)
 !
       integer(kind = kint), intent(in) :: idx_in
-      type(volume_spectr_control), intent(inout) :: add_vpwr
+      character(len=kchara), intent(in) :: hd_block
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !
-      integer(kind = kint) :: num_tmp
       type(volume_spectr_control), allocatable :: tmp_vpwr(:)
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, num_tmp
 !
 !
-      write(*,*) 'append after ', idx_in,smonitor_ctl%num_vspec_ctl
       if(idx_in.lt.0 .or. idx_in.gt.smonitor_ctl%num_vspec_ctl) return
 !
       num_tmp = smonitor_ctl%num_vspec_ctl
@@ -147,15 +144,13 @@
         call copy_volume_spectr_control(tmp_vpwr(i),                    &
      &                                  smonitor_ctl%v_pwr(i))
       end do
-      call copy_volume_spectr_control                                   &
-     &   (add_vpwr, smonitor_ctl%v_pwr(idx_in+1))
+      call init_each_vol_spectr_labels(hd_block,                        &
+     &                                 smonitor_ctl%v_pwr(idx_in+1))
       do i = idx_in+1, num_tmp
         call copy_volume_spectr_control(tmp_vpwr(i),                    &
      &                                  smonitor_ctl%v_pwr(i+1))
       end do
       deallocate(tmp_vpwr)
-!
-      call reset_volume_spectr_control(add_vpwr)
 !
       end subroutine append_volume_spectr_ctls
 !
