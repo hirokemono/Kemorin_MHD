@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read control arrays
 !!
 !!@verbatim
+!!      subroutine init_real3_ctl_item_label(label, real3_item)
 !!      subroutine read_real3_ctl_type(c_buf, label, real3_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_real3_item), intent(inout) :: real3_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_r3(array_r3)
 !!      subroutine dealloc_control_array_r3(array_r3)
+!!      subroutine init_r3_ctl_array_label(label, array_r3)
 !!      subroutine read_control_array_r3                                &
 !!     &         (id_control, label, array_r3, c_buf)
 !!        type(ctl_array_r3), intent(inout) :: array_r3
@@ -80,6 +82,15 @@
       contains
 !
 !   --------------------------------------------------------------------
+!
+      subroutine init_real3_ctl_item_label(label, real3_item)
+      character(len=kchara), intent(in) :: label
+      type(read_real3_item), intent(inout) :: real3_item
+!
+      real3_item%item_name = trim(label)
+      end subroutine init_real3_ctl_item_label
+!
+! ----------------------------------------------------------------------
 !
       subroutine read_real3_ctl_type(c_buf, label, real3_item)
 !
@@ -169,6 +180,15 @@
       end subroutine dealloc_control_array_r3
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_r3_ctl_array_label(label, array_r3)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_r3), intent(inout) :: array_r3
+!
+      array_r3%array_name = trim(label)
+      end subroutine init_r3_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_r3                                  &

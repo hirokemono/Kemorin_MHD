@@ -7,6 +7,7 @@
 !>@brief Control inputs for PVR projection and streo parameter
 !!
 !!@verbatim
+!!      subroutine init_projection_mat_ctl_label(hd_block, proj)
 !!      subroutine read_projection_mat_ctl                              &
 !!     &         (id_control, hd_block, proj, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -60,6 +61,8 @@
 !
 !>      Structure of projection parameters
       type projection_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'projection_matrix_ctl'
 !>        Structure of perspective view angle
         type(read_real_item) :: perspective_angle_ctl
 !>        Structure of aspect ration of screen
@@ -180,6 +183,32 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine init_projection_mat_ctl_label(hd_block, proj)
+!
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(projection_ctl), intent(inout) :: proj
+!
+!
+      proj%block_name = hd_block
+        call init_real_ctl_item_label(hd_perspect_angle,                &
+     &      proj%perspective_angle_ctl)
+        call init_real_ctl_item_label(hd_perspect_xy,                   &
+     &      proj%perspective_xy_ratio_ctl)
+        call init_real_ctl_item_label(hd_perspect_near,                 &
+     &      proj%perspective_near_ctl)
+        call init_real_ctl_item_label(hd_perspect_far,                  &
+     &      proj%perspective_far_ctl)
+!
+        call init_real2_ctl_item_label(hd_horizontal_range,             &
+     &      proj%horizontal_range_ctl)
+        call init_real2_ctl_item_label(hd_vertical_range,               &
+     &      proj%vertical_range_ctl)
+!
+      end subroutine init_projection_mat_ctl_label
+!
+!  ---------------------------------------------------------------------
+!
       subroutine reset_projection_view_ctl(proj)
 !
       type(projection_ctl), intent(inout) :: proj
@@ -204,6 +233,7 @@
       type(projection_ctl), intent(inout) :: new_proj
 !
 !
+      new_proj%block_name =    org_proj%block_name
       new_proj%i_project_mat = org_proj%i_project_mat
 !
       call copy_real_ctl(org_proj%perspective_angle_ctl,                &

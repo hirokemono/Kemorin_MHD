@@ -35,12 +35,16 @@
       subroutine bcast_pvr_colordef_ctl(color)
 !
       use t_ctl_data_pvr_colormap
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(pvr_colormap_ctl), intent(inout) :: color
 !
 !
+      call calypso_mpi_bcast_character(color%block_name,                &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(color%i_pvr_colordef, 0)
 !
       call bcast_ctl_array_r2(color%colortbl_ctl)
@@ -90,12 +94,16 @@
       subroutine bcast_pvr_colorbar_ctl(cbar_ctl)
 !
       use t_ctl_data_pvr_colorbar
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !
 !
+      call calypso_mpi_bcast_character(cbar_ctl%block_name,             &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(cbar_ctl%i_pvr_colorbar, 0)
 !
       call bcast_ctl_type_i1(cbar_ctl%font_size_ctl)

@@ -7,6 +7,7 @@
 !> @brief colormap control data for parallel volume rendering
 !!
 !!@verbatim
+!!      subroutine init_pvr_colorbar_ctl_label(hd_block, cbar_ctl)
 !!      subroutine read_pvr_colorbar_ctl                                &
 !!     &          (id_control, hd_block, cbar_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -192,6 +193,41 @@
       level = write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_colorbar_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_pvr_colorbar_ctl_label(hd_block, cbar_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
+!
+!
+        call init_int_ctl_item_label                                    &
+     &     (hd_pvr_font_size, cbar_ctl%font_size_ctl)
+        call init_int_ctl_item_label(hd_pvr_numgrid_cbar,               &
+     &      cbar_ctl%ngrid_cbar_ctl)
+!
+!
+        call init_chara_ctl_item_label(hd_colorbar_switch,              &
+     &      cbar_ctl%colorbar_switch_ctl)
+        call init_chara_ctl_item_label(hd_colorbar_scale,               &
+     &      cbar_ctl%colorbar_scale_ctl)
+        call init_chara_ctl_item_label(hd_cbar_position,                &
+     &      cbar_ctl%colorbar_position_ctl)
+        call init_chara_ctl_item_label(hd_zeromarker_flag,              &
+     &      cbar_ctl%zeromarker_flag_ctl)
+!
+        call init_chara_ctl_item_label(hd_axis_switch,                  &
+     &      cbar_ctl%axis_switch_ctl)
+        call init_chara_ctl_item_label(hd_time_switch,                  &
+     &      cbar_ctl%time_switch_ctl)
+        call init_chara_ctl_item_label(hd_mapgrid_switch,               &
+     &      cbar_ctl%mapgrid_switch_ctl)
+!
+        call init_real2_ctl_item_label                                  &
+     &     (hd_cbar_range, cbar_ctl%cbar_range_ctl)
+!
+      end subroutine init_pvr_colorbar_ctl_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

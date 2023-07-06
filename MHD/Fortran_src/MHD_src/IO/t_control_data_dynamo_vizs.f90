@@ -120,6 +120,12 @@
 !
       if(zm_ctls%i_viz_ctl .gt. 0) return
       zm_ctls%block_name = trim(hd_block)
+      call init_psf_ctls_labels(hd_zm_section,   zm_ctls%zm_psf_ctls)
+      call init_psf_ctls_labels(hd_zRMS_section,                        &
+     &                          zm_ctls%zRMS_psf_ctls)
+      call init_map_ctls_labels(hd_zm_rendering, zm_ctls%zm_map_ctls)
+      call init_map_ctls_labels(hd_zRMS_rendering,                      &
+     &                          zm_ctls%zRMS_map_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -219,6 +225,9 @@
      &     .or.  check_begin_flag(c_buf, hd_section)) then
         psf_ctls%num_psf_ctl = 1
         call alloc_psf_ctl_stract(psf_ctls)
+        call init_psf_ctl_stract(hd_section,                            &
+     &                           psf_ctls%psf_ctl_struct(1))
+        psf_ctls%fname_psf_ctl(1) = 'NO_FILE'
 !
         call write_multi_ctl_file_message                               &
      &     (hd_section, psf_ctls%num_psf_ctl, c_buf%level)

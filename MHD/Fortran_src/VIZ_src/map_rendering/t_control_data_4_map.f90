@@ -174,6 +174,9 @@
 !
 !
       type map_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'cross_section_ctl'
+!
 !>        Structure of cross section definition
         type(pvr_section_ctl) :: map_define_ctl
 !
@@ -268,6 +271,7 @@
       new_map_c%fname_mat_ctl =     org_map_c%fname_mat_ctl
       new_map_c%fname_cmap_cbar_c = org_map_c%fname_cmap_cbar_c
 !
+      new_map_c%block_name =       org_map_c%block_name
       new_map_c%i_map_ctl =        org_map_c%i_map_ctl
       new_map_c%i_output_field =   org_map_c%i_output_field
 !

@@ -157,6 +157,8 @@
 !
       subroutine bcast_each_vol_spectr_ctl(num_vspec_ctl, v_pwr)
 !
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
       use t_ctl_data_sph_vol_spectr
@@ -179,6 +181,8 @@
 !
         call bcast_ctl_type_r1(v_pwr(i)%inner_radius_ctl)
         call bcast_ctl_type_r1(v_pwr(i)%outer_radius_ctl)
+        call calypso_mpi_bcast_character                                &
+     &     (v_pwr(i)%block_name, cast_long(kchara), 0)
         call calypso_mpi_bcast_one_int(v_pwr(i)%i_vol_spectr_ctl, 0)
       end do
 !

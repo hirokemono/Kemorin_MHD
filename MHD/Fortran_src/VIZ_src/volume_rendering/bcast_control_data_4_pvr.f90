@@ -55,6 +55,9 @@
       call bcast_pvr_sections_ctl(pvr%pvr_scts_c)
 !
       call bcast_lighting_ctl(pvr%light)
+      
+      call calypso_mpi_bcast_character(pvr%cmap_cbar_c%block_name,      &
+     &                                 cast_long(kchara), 0)
       call bcast_pvr_colorbar_ctl(pvr%cmap_cbar_c%cbar_ctl)
       call bcast_pvr_colordef_ctl(pvr%cmap_cbar_c%color)
 !

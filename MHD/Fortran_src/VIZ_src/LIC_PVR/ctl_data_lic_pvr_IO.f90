@@ -160,6 +160,7 @@
       use ctl_data_pvr_colormap_IO
       use ctl_file_pvr_light_IO
       use ctl_data_pvr_movie_IO
+      use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -170,6 +171,8 @@
 !
 !
       if(pvr%i_pvr_ctl .gt. 0) return
+      call init_pvr_cmap_cbar_label(hd_lic_colordef, pvr%cmap_cbar_c)
+      call init_view_transfer_ctl_label(hd_view_transform, pvr%mat)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do

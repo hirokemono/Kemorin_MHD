@@ -7,6 +7,7 @@
 !>@brief Control inputs for PVR streo parameter
 !!
 !!@verbatim
+!!      subroutine init_stereo_view_ctl_label(hd_block, streo)
 !!      subroutine read_stereo_view_ctl                                 &
 !!     &         (id_control, hd_block, streo, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -56,6 +57,9 @@
 !
 !>      Structure of streo view parameters
       type streo_view_ctl
+!>        Control block name
+        character(len = kchara) :: block_name                           &
+     &                         = 'stereo_view_parameter_ctl'
 !>        Structure of focal point
         type(read_real_item) :: focalpoint_ctl
 !>        Structure of eye separation
@@ -163,6 +167,30 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine init_stereo_view_ctl_label(hd_block, streo)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(streo_view_ctl), intent(inout) :: streo
+!
+!
+      streo%block_name = hd_block
+        call init_real_ctl_item_label(hd_focaldistance,                 &
+     &      streo%focalpoint_ctl)
+        call init_real_ctl_item_label(hd_focalpoint,                    &
+     &      streo%focalpoint_ctl)
+!
+        call init_real_ctl_item_label(hd_eye_separation,                &
+     &      streo%eye_separation_ctl)
+        call init_real_ctl_item_label(hd_eye_sep_angle,                 &
+     &      streo%eye_sep_angle_ctl)
+!
+        call init_chara_ctl_item_label(hd_eye_step_mode,                &
+     &      streo%step_eye_sep_angle_ctl)
+!
+      end subroutine init_stereo_view_ctl_label
+!
+!  ---------------------------------------------------------------------
+!
       subroutine reset_stereo_view_ctl(streo)
 !
       type(streo_view_ctl), intent(inout) :: streo
@@ -185,6 +213,7 @@
       type(streo_view_ctl), intent(inout) :: new_streo
 !
 !
+      new_streo%block_name =    org_streo%block_name
       new_streo%i_stereo_view = org_streo%i_stereo_view
 !
       call copy_real_ctl(org_streo%focalpoint_ctl,                      &

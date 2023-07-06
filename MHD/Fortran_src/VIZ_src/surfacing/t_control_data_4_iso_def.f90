@@ -179,7 +179,8 @@
       call copy_chara_ctl(org_iso_def_c%isosurf_data_ctl,               &
      &                    new_iso_def_c%isosurf_data_ctl)
 !
-      new_iso_def_c%i_iso_define =    org_iso_def_c%i_iso_define
+      new_iso_def_c%block_name =   org_iso_def_c%block_name
+      new_iso_def_c%i_iso_define = org_iso_def_c%i_iso_define
 !
       end subroutine dup_iso_define_control
 !

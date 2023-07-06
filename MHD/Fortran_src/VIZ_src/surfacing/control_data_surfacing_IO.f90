@@ -106,7 +106,10 @@
 !
 !
       if(surfacing_ctls%i_surfacing_control .gt. 0) return
-      surfacing_ctls%iso_s_ctls%block_name = hd_isosurf_ctl
+      call init_psf_ctls_labels(hd_section_ctl,                         &
+     &                          surfacing_ctls%psf_s_ctls)
+      call init_iso_ctls_labels(hd_isosurf_ctl,                         &
+     &                          surfacing_ctls%iso_s_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

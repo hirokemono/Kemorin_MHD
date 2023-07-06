@@ -115,6 +115,8 @@
 !
       if(no_file_flag(file_name)) return
 !
+      call init_cube_noise_ctl_label(hd_block, noise_ctl)
+!
       c_buf%level = c_buf%level + 1
       open(id_control, file=file_name, status='old')
       do

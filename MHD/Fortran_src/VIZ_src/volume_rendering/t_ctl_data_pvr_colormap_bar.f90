@@ -7,6 +7,7 @@
 !> @brief colormap control data for parallel volume rendering
 !!
 !!@verbatim
+!!      subroutine init_pvr_cmap_cbar_label(hd_block, cmap_cbar_c)
 !!      subroutine sel_read_ctl_pvr_colormap_file                       &
 !!     &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
 !!      subroutine read_pvr_cmap_cbar                                   &
@@ -117,9 +118,11 @@
 !
 !>  Structure of control data for PVR colormap and colorbar
       type pvr_colormap_bar_ctl
-!>    Structure for colormap
+!>        Control block name
+        character(len = kchara) :: block_name = 'pvr_color_ctl'
+!>        Structure for colormap
         type(pvr_colormap_ctl) :: color
-!>    Structure for colorbar
+!>        Structure for colorbar
         type(pvr_colorbar_ctl) :: cbar_ctl
 !
         integer (kind=kint) :: i_cmap_cbar = 0
@@ -235,8 +238,8 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(cmap_cbar_c%i_cmap_cbar .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -250,6 +253,25 @@
       cmap_cbar_c%i_cmap_cbar = 1
 !
       end subroutine read_pvr_cmap_cbar
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_pvr_cmap_cbar_label(hd_block, cmap_cbar_c)
+!
+      use ctl_data_pvr_colorbar_IO
+      use ctl_data_pvr_colormap_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
+!
+!
+      cmap_cbar_c%block_name = hd_block
+      call init_pvr_colordef_ctl_labels(hd_colormap,                    &
+     &                                  cmap_cbar_c%color)
+      call init_pvr_colorbar_ctl_label(hd_pvr_colorbar,                 &
+     &                                 cmap_cbar_c%cbar_ctl)
+!
+      end subroutine init_pvr_cmap_cbar_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -276,7 +298,7 @@
         call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,        &
      &      cmap_cbar_c%cbar_ctl, level)
       else if(id_control .eq. id_monitor) then
-        write(*,'(4a)') '!  ', trim(hd_block),                           &
+        write(*,'(4a)') '!  ', trim(hd_block),                          &
      &        ' should be written to file ... ', trim(file_name)
         call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,        &
      &      cmap_cbar_c%cbar_ctl, level)
@@ -364,6 +386,7 @@
       type(pvr_colormap_bar_ctl), intent(inout) :: new_cmap_cbar_c
 !
 !
+      new_cmap_cbar_c%block_name = org_cmap_cbar_c%block_name
       new_cmap_cbar_c%i_cmap_cbar = org_cmap_cbar_c%i_cmap_cbar
 !
       call dup_pvr_colordef_ctl(org_cmap_cbar_c%color,                  &

@@ -132,12 +132,16 @@
       subroutine bcast_view_transfer_ctl(mat)
 !
       use t_ctl_data_4_view_transfer
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(modeview_ctl), intent(inout) :: mat
 !
 !
+      call calypso_mpi_bcast_character(mat%block_name,                  &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(mat%i_view_transform, 0)
 !
       call bcast_ctl_array_cr(mat%lookpoint_ctl)
@@ -167,12 +171,16 @@
       subroutine bcast_image_size_ctl(pixel)
 !
       use t_ctl_data_4_screen_pixel
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(screen_pixel_ctl), intent(inout) :: pixel
 !
 !
+      call calypso_mpi_bcast_character(pixel%block_name,                &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(pixel%i_image_size, 0)
 !
       call bcast_ctl_type_i1(pixel%num_xpixel_ctl)
@@ -185,12 +193,16 @@
       subroutine bcast_projection_mat_ctl(proj)
 !
       use t_ctl_data_4_projection
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(projection_ctl), intent(inout) :: proj
 !
 !
+      call calypso_mpi_bcast_character(proj%block_name,                 &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(proj%i_project_mat, 0)
 !
       call bcast_ctl_type_r1(proj%perspective_angle_ctl)
@@ -208,12 +220,16 @@
       subroutine bcast_stereo_view_ctl(streo)
 !
       use t_ctl_data_4_streo_view
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(streo_view_ctl), intent(inout) :: streo
 !
 !
+      call calypso_mpi_bcast_character(streo%block_name,                &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(streo%i_stereo_view, 0)
 !
       call bcast_ctl_type_r1(streo%focalpoint_ctl)

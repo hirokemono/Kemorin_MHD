@@ -127,6 +127,8 @@
      &        .or. check_begin_flag(c_buf, hd_block)) then
           call append_mul_view_trans_ctl(mul_mats_c)
 !
+          call init_view_transfer_ctl_label(hd_block,                   &
+     &        mul_mats_c%matrices(mul_mats_c%num_modelviews_c))
           call sel_read_ctl_modelview_file                              &
      &       (id_control, hd_block, mul_mats_c%num_modelviews_c,        &
      &        mul_mats_c%fname_mat_ctl(mul_mats_c%num_modelviews_c),    &

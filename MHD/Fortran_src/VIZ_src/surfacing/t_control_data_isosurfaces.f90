@@ -6,7 +6,10 @@
 !>@brief control data for isosurfaces
 !!
 !!@verbatim
+!!      subroutine alloc_iso_ctl_stract(iso_ctls)
 !!      subroutine dealloc_iso_ctl_stract(iso_ctls)
+!!      subroutine init_iso_ctls_labels(hd_block, iso_ctls)
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(isosurf_controls), intent(inout) :: iso_ctls
 !!
 !!       subroutine add_fields_4_isos_to_fld_ctl(iso_ctls, field_ctl)
@@ -52,6 +55,17 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_iso_ctl_stract(iso_ctls)
+!
+      type(isosurf_controls), intent(inout) :: iso_ctls
+!
+      allocate(iso_ctls%iso_ctl_struct(iso_ctls%num_iso_ctl))
+      allocate(iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl))
+!
+      end subroutine alloc_iso_ctl_stract
+!
+!  ---------------------------------------------------------------------
+!
       subroutine dealloc_iso_ctl_stract(iso_ctls)
 !
       type(isosurf_controls), intent(inout) :: iso_ctls
@@ -68,6 +82,19 @@
 !
       end subroutine dealloc_iso_ctl_stract
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine init_iso_ctls_labels(hd_block, iso_ctls)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(isosurf_controls), intent(inout) :: iso_ctls
+!
+      iso_ctls%num_iso_ctl = 0
+      iso_ctls%block_name = hd_block
+!
+      end subroutine init_iso_ctls_labels
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine add_fields_4_isos_to_fld_ctl(iso_ctls, field_ctl)
@@ -174,16 +201,5 @@
       end subroutine delete_isosurface_control
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine alloc_iso_ctl_stract(iso_ctls)
-!
-      type(isosurf_controls), intent(inout) :: iso_ctls
-!
-      allocate(iso_ctls%iso_ctl_struct(iso_ctls%num_iso_ctl))
-      allocate(iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl))
-!
-      end subroutine alloc_iso_ctl_stract
-!
-!  ---------------------------------------------------------------------
 !
       end module t_control_data_isosurfaces

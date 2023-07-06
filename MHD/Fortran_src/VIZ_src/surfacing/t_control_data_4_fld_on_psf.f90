@@ -160,7 +160,8 @@
       call dup_control_array_c2(org_fld_on_iso_c%field_output_ctl,      &
      &                          new_fld_on_iso_c%field_output_ctl)
 !
-      new_fld_on_iso_c%i_iso_result =    org_fld_on_iso_c%i_iso_result
+      new_fld_on_iso_c%block_name =   org_fld_on_iso_c%block_name
+      new_fld_on_iso_c%i_iso_result = org_fld_on_iso_c%i_iso_result
 !
       end subroutine dup_fld_on_psf_control
 !

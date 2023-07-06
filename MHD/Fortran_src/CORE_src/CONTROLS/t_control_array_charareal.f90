@@ -156,15 +156,6 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine init_c_r_ctl_array_label(label, array_cr)
-      character(len=kchara), intent(in) :: label
-      type(ctl_array_cr), intent(inout) :: array_cr
-!
-      array_cr%array_name = trim(label)
-      end subroutine init_c_r_ctl_array_label
-!
-!   --------------------------------------------------------------------
-!
       subroutine alloc_control_array_c_r(array_cr)
 !
       type(ctl_array_cr), intent(inout) :: array_cr
@@ -192,6 +183,15 @@
       end subroutine dealloc_control_array_c_r
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_c_r_ctl_array_label(label, array_cr)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_cr), intent(inout) :: array_cr
+!
+      array_cr%array_name = trim(label)
+      end subroutine init_c_r_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_c_r                                 &

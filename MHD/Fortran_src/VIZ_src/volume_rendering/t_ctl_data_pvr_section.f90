@@ -98,6 +98,7 @@
       type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c
 !
 !
+      new_pvr_sect_c%block_name =     org_pvr_sect_c%block_name
       new_pvr_sect_c%i_pvr_sect_ctl = org_pvr_sect_c%i_pvr_sect_ctl
       new_pvr_sect_c%fname_sect_ctl = org_pvr_sect_c%fname_sect_ctl
       call dup_control_4_psf_def                                        &

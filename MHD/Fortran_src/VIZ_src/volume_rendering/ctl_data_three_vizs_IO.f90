@@ -131,7 +131,9 @@
 !
 !
       if(viz3_ctls%i_viz_control .gt. 0) return
-      viz3_ctls%iso_ctls%block_name = hd_isosurf_ctl
+      call init_psf_ctls_labels(hd_section_ctl, viz3_ctls%psf_ctls)
+      call init_iso_ctls_labels(hd_isosurf_ctl, viz3_ctls%iso_ctls)
+      call init_map_ctls_labels(hd_map_rendering, viz3_ctls%map_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

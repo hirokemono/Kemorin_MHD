@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine init_cube_noise_ctl_label(hd_block, noise_ctl)
 !!      subroutine read_cube_noise_control_data                         &
 !!     &         (id_control, hd_block, noise_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -126,7 +127,6 @@
 !
 !
       if(noise_ctl%i_cube_noise_control .gt. 0) return
-      noise_ctl%block_name = hd_block
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do
@@ -205,6 +205,35 @@
       end subroutine write_cube_noise_control_data
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine init_cube_noise_ctl_label(hd_block, noise_ctl)
+!
+      character(len = kchara), intent(in) :: hd_block
+!
+      type(cube_noise_ctl), intent(inout) :: noise_ctl
+!
+!
+      noise_ctl%block_name = hd_block
+        call init_chara_ctl_item_label                                  &
+     &     (hd_noise_type, noise_ctl%noise_type_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_noise_file_head, noise_ctl%noise_file_name_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_noise_file_fmt, noise_ctl%noise_file_format_ctl)
+!
+        call init_int_ctl_item_label                                    &
+     &     (hd_noise_grid_size, noise_ctl%noise_resolution_ctl)
+        call init_int_ctl_item_label                                    &
+     &     (hd_noise_stepping, noise_ctl%noise_stepping_ctl)
+!
+        call init_real_ctl_item_label                                   &
+     &     (hd_noise_cube_size, noise_ctl%noise_cube_size_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_noise_delta_x, noise_ctl%noise_deltax_ctl)
+!
+      end subroutine init_cube_noise_ctl_label
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine reset_cube_noise_control_data(noise_ctl)
@@ -232,6 +261,7 @@
       type(cube_noise_ctl), intent(inout) :: new_noise_c
 !
 !
+      new_noise_c%block_name = org_noise_c%block_name
       new_noise_c%i_cube_noise_control                                  &
      &     = org_noise_c%i_cube_noise_control
 !

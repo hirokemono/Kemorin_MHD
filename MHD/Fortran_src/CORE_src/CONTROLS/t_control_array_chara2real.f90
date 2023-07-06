@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read char-char-real control arrays
 !!
 !!@verbatim
+!!      subroutine init_chara2real_ctl_item_label(label, c2r_item)
 !!      subroutine read_char2real_ctl_type(c_buf, label, c2r_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara2_real_item), intent(inout) :: c2r_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_c2_r(array_c2r)
 !!      subroutine dealloc_control_array_c2_r(array_c2r)
+!!      subroutine init_c2_r_ctl_array_label(label, array_c2r)
 !!      subroutine read_control_array_c2_r                              &
 !!     &         (id_control, label, array_c2r, c_buf)
 !!        type(ctl_array_c2r), intent(inout) :: array_c2r
@@ -83,6 +85,15 @@
       contains
 !
 !   --------------------------------------------------------------------
+!
+      subroutine init_chara2real_ctl_item_label(label, c2r_item)
+      character(len=kchara), intent(in) :: label
+      type(read_chara2_real_item), intent(inout) :: c2r_item
+!
+      c2r_item%item_name = trim(label)
+      end subroutine init_chara2real_ctl_item_label
+!
+! ----------------------------------------------------------------------
 !
       subroutine read_char2real_ctl_type(c_buf, label, c2r_item)
 !
@@ -177,6 +188,15 @@
       end subroutine dealloc_control_array_c2_r
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_c2_r_ctl_array_label(label, array_c2r)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_c2r), intent(inout) :: array_c2r
+!
+      array_c2r%array_name = trim(label)
+      end subroutine init_c2_r_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_c2_r                                &

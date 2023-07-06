@@ -197,6 +197,7 @@
 !
       new_psf_c%fname_section_ctl = org_psf_c%fname_section_ctl
       new_psf_c%fname_fld_on_psf =  org_psf_c%fname_fld_on_psf
+      new_psf_c%block_name =        org_psf_c%block_name
       new_psf_c%i_psf_ctl =         org_psf_c%i_psf_ctl
       new_psf_c%i_output_field =    org_psf_c%i_output_field
 !

@@ -128,6 +128,8 @@
 !
 !>    Structure for modelview marices
       type modeview_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'view_transform_ctl'
 !>        File name for external control file
         character(len=kchara) :: mat_ctl_fname
 !
@@ -246,6 +248,7 @@
       type(modeview_ctl), intent(inout) :: new_mat
 !
 !
+      new_mat%block_name =       org_mat%block_name
       new_mat%i_view_transform = org_mat%i_view_transform
 !
       call dup_control_array_c_r(org_mat%lookpoint_ctl,                 &

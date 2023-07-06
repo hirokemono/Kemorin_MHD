@@ -8,6 +8,9 @@
 !!@verbatim
 !!      subroutine alloc_psf_ctl_stract(psf_ctls)
 !!      subroutine dealloc_psf_ctl_stract(psf_ctls)
+!!      subroutine init_psf_ctls_labels(hd_block, psf_ctls)
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(section_controls), intent(inout) :: psf_ctls
 !!
 !!      subroutine append_section_control(idx_in, hd_block, psf_ctls)
 !!      subroutine delete_section_control(idx_in, psf_ctls)
@@ -61,7 +64,6 @@
       end subroutine alloc_psf_ctl_stract
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
       subroutine dealloc_psf_ctl_stract(psf_ctls)
 !
@@ -81,7 +83,19 @@
       end subroutine dealloc_psf_ctl_stract
 !
 !  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
+!
+      subroutine init_psf_ctls_labels(hd_block, psf_ctls)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(section_controls), intent(inout) :: psf_ctls
+!
+      psf_ctls%num_psf_ctl = 0
+      psf_ctls%block_name = hd_block
+!
+      end subroutine init_psf_ctls_labels
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine add_fields_4_psfs_to_fld_ctl(psf_ctls, field_ctl)
 !
@@ -140,7 +154,7 @@
       do i = idx_in+1, tmp_psf_c%num_psf_ctl
         call dup_control_4_psf(tmp_psf_c%psf_ctl_struct(i),             &
      &                         psf_ctls%psf_ctl_struct(i+1))
-        psf_ctls%fname_psf_ctl(i) = tmp_psf_c%fname_psf_ctl(i+1)
+        psf_ctls%fname_psf_ctl(i+1) = tmp_psf_c%fname_psf_ctl(i)
       end do
 !
       call dealloc_psf_ctl_stract(tmp_psf_c)
@@ -180,7 +194,7 @@
       do i = idx_in, psf_ctls%num_psf_ctl
         call dup_control_4_psf(tmp_psf_c%psf_ctl_struct(i+1),           &
      &                         psf_ctls%psf_ctl_struct(i))
-        psf_ctls%fname_psf_ctl(i+1) = tmp_psf_c%fname_psf_ctl(i)
+        psf_ctls%fname_psf_ctl(i) = tmp_psf_c%fname_psf_ctl(i+1)
       end do
 !
       call dealloc_psf_ctl_stract(tmp_psf_c)

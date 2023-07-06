@@ -118,6 +118,7 @@
 !
       use ctl_file_pvr_modelview_IO
       use write_control_elements
+      use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -125,8 +126,12 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if (movie%i_pvr_rotation.gt.0) return
+      call init_view_transfer_ctl_label(hd_start_view_control,          &
+     &                                  movie%view_start_ctl)
+      call init_view_transfer_ctl_label(hd_end_view_control,            &
+     &                                  movie%view_end_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

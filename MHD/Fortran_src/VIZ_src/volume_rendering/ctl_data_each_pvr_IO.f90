@@ -185,6 +185,7 @@
       use ctl_file_pvr_modelview_IO
       use ctl_file_pvr_light_IO
       use ctl_data_pvr_movie_IO
+      use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -193,8 +194,11 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pvr_ctl%i_pvr_ctl .gt. 0) return
+      call init_pvr_cmap_cbar_label(hd_colormap_file,                   &
+     &                              pvr_ctl%cmap_cbar_c)
+      call init_view_transfer_ctl_label(hd_view_transform, pvr_ctl%mat)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

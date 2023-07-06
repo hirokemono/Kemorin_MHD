@@ -7,6 +7,7 @@
 !>@brief Control inputs for PVR projection and streo parameter
 !!
 !!@verbatim
+!!      subroutine init_image_size_ctl_label(hd_block, pixel)
 !!      subroutine read_image_size_ctl                                  &
 !!     &         (id_control, hd_block, pixel, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -54,6 +55,8 @@
 !
 !>      Structure of screen resolution
       type screen_pixel_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'image_size_ctl'
 !>        Structure of number of horizontal pixels
         type(read_integer_item) :: num_xpixel_ctl
 !>        Structure of number of vertical pixels
@@ -135,6 +138,20 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine init_image_size_ctl_label(hd_block, pixel)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(screen_pixel_ctl), intent(inout) :: pixel
+!
+!
+      pixel%block_name = hd_block
+      call init_int_ctl_item_label(hd_x_pixel, pixel%num_xpixel_ctl)
+      call init_int_ctl_item_label(hd_y_pixel, pixel%num_ypixel_ctl)
+!
+      end subroutine init_image_size_ctl_label
+!
+!  ---------------------------------------------------------------------
+!
       subroutine reset_image_size_ctl(pixel)
 !
       type(screen_pixel_ctl), intent(inout) :: pixel
@@ -155,6 +172,7 @@
       type(screen_pixel_ctl), intent(inout) :: new_pixel
 !
 !
+      new_pixel%block_name =   org_pixel%block_name
       new_pixel%i_image_size = org_pixel%i_image_size
 !
       call copy_integer_ctl(org_pixel%num_xpixel_ctl,                   &

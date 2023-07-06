@@ -7,7 +7,7 @@
 !>@brief  control ID data for surfacing module
 !!
 !!@verbatim
-!!      subroutine init_map_ctl_stract(map_c)
+!!      subroutine init_map_control_label(hd_block, map_c)
 !!      subroutine s_read_map_control_data                              &
 !!     &         (id_control, hd_block, map_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -204,24 +204,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_map_ctl_stract(map_c)
-      use ctl_data_section_def_IO
-!
-      type(map_ctl), intent(inout) :: map_c
-!
-      call init_psf_def_ctl_stract(hd_section_ctl,                      &
-     &                             map_c%map_define_ctl%psf_def_c)
-!
-      end subroutine init_map_ctl_stract
-!
-!  ---------------------------------------------------------------------
-!
       subroutine s_read_map_control_data                                &
      &         (id_control, hd_block, map_c, c_buf)
 !
       use t_ctl_data_pvr_colormap_bar
       use ctl_file_pvr_modelview_IO
       use ctl_data_pvr_section_IO
+      use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -231,8 +220,6 @@
 !
 !
       if(map_c%i_map_ctl .gt. 0) return
-      call init_pvr_section_ctl_label(hd_section_ctl,                   &
-     &                                map_c%map_define_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -322,6 +309,43 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_map_control_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_map_control_label(hd_block, map_c)
+!
+      use t_ctl_data_pvr_colormap_bar
+      use ctl_file_pvr_modelview_IO
+      use ctl_data_pvr_section_IO
+      use ctl_data_view_transfer_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(map_ctl), intent(inout) :: map_c
+!
+!
+      map_c%block_name = hd_block
+      call init_pvr_section_ctl_label(hd_section_ctl,                   &
+     &                                map_c%map_define_ctl)
+      call init_pvr_cmap_cbar_label(hd_map_colormap_file,               &
+     &                              map_c%cmap_cbar_c)
+      call init_view_transfer_ctl_label(hd_map_projection, map_c%mat)
+!
+        call init_chara_ctl_item_label(hd_map_image_prefix,             &
+     &      map_c%map_image_prefix_ctl)
+        call init_chara_ctl_item_label(hd_map_image_format,             &
+     &      map_c%map_image_fmt_ctl)
+!
+        call init_chara_ctl_item_label(hd_map_output_field,             &
+     &      map_c%map_field_ctl)
+        call init_chara_ctl_item_label(hd_map_output_comp,              &
+     &      map_c%map_comp_ctl)
+!
+        call init_chara_ctl_item_label(hd_map_isoline_field,            &
+     &      map_c%isoline_field_ctl)
+        call init_chara_ctl_item_label(hd_map_isoline_comp,             &
+     &      map_c%isoline_comp_ctl)
+!
+      end subroutine init_map_control_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

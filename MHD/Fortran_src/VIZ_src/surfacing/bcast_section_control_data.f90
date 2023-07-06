@@ -47,6 +47,8 @@
       integer (kind=kint) :: i_psf
 !
 !
+      call calypso_mpi_bcast_character(psf_ctls%block_name,             &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(psf_ctls%num_psf_ctl, 0)
       if(psf_ctls%num_psf_ctl .le. 0) return
 !

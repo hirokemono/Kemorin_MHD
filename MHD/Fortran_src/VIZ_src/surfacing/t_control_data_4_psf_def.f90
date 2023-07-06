@@ -220,6 +220,7 @@
       type(psf_define_ctl), intent(inout) :: new_psf_def_c
 !
 !
+      new_psf_def_c%block_name =       org_psf_def_c%block_name
       new_psf_def_c%i_surface_define = org_psf_def_c%i_surface_define
 !
       call copy_chara_ctl(org_psf_def_c%section_method_ctl,             &

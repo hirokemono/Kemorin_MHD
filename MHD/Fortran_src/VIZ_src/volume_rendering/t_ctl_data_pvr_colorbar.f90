@@ -48,6 +48,9 @@
       implicit  none
 !
       type pvr_colorbar_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'colorbar_ctl'
+!
         type(read_character_item) :: colorbar_switch_ctl
         type(read_character_item) :: colorbar_scale_ctl
         type(read_character_item) :: colorbar_position_ctl

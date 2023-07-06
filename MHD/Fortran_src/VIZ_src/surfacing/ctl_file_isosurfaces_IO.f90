@@ -78,7 +78,6 @@
       integer(kind = kint) :: n_append
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      iso_ctls%num_iso_ctl = 0
       call alloc_iso_ctl_stract(iso_ctls)
 !
       do

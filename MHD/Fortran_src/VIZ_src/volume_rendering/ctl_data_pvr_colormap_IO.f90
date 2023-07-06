@@ -7,6 +7,7 @@
 !> @brief colormap control data for parallel volume rendering
 !!
 !!@verbatim
+!!      subroutine init_pvr_colordef_ctl_labels(hd_block, color)
 !!      subroutine read_pvr_colordef_ctl                                &
 !!     &         (id_control, hd_block, color, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -255,6 +256,50 @@
       level = write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_colordef_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_pvr_colordef_ctl_labels(hd_block, color)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_colormap_ctl), intent(inout) :: color
+!
+!
+      color%block_name = hd_block
+        call init_r2_ctl_array_label(hd_colortable,                     &
+     &      color%colortbl_ctl)
+        call init_r2_ctl_array_label(hd_linear_opacity,                 &
+     &      color%linear_opacity_ctl)
+!
+        call init_r3_ctl_array_label(hd_opacity_def,                    &
+     &      color%step_opacity_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_lic_color_fld, color%lic_color_fld_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_lic_color_comp, color%lic_color_comp_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_lic_opacity_fld, color%lic_opacity_fld_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_lic_opacity_comp, color%lic_opacity_comp_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_colormap_mode, color%colormap_mode_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_data_mapping, color%data_mapping_ctl)
+        call init_chara_ctl_item_label(hd_opacity_style,                &
+     &      color%opacity_style_ctl)
+!
+        call init_real_ctl_item_label(hd_pvr_range_min,                 &
+     &      color%range_min_ctl)
+        call init_real_ctl_item_label(hd_pvr_range_max,                 &
+     &      color%range_max_ctl)
+        call init_real_ctl_item_label(hd_constant_opacity,              &
+     &      color%fix_opacity_ctl)
+        call init_real3_ctl_item_label                                  &
+     &     (hd_background_color, color%background_color_ctl)
+!
+      end subroutine init_pvr_colordef_ctl_labels
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

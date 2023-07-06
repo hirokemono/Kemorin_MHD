@@ -79,6 +79,9 @@
 !
 !
       type pvr_colormap_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'colormap_ctl'
+!!
         type(read_character_item) :: lic_color_fld_ctl
         type(read_character_item) :: lic_color_comp_ctl
         type(read_character_item) :: lic_opacity_fld_ctl
@@ -173,6 +176,7 @@
       type(pvr_colormap_ctl), intent(inout) :: new_color
 !
 !
+      new_color%block_name =     org_color%block_name
       new_color%i_pvr_colordef = org_color%i_pvr_colordef
 !
       call dup_control_array_r2(org_color%colortbl_ctl,                 &

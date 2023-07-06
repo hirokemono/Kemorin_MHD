@@ -136,6 +136,7 @@
      &                    new_iso_c%iso_output_type_ctl)
 !
       new_iso_c%i_iso_ctl =        org_iso_c%i_iso_ctl
+      new_iso_c%block_name =       org_iso_c%block_name
       new_iso_c%fname_fld_on_iso = org_iso_c%fname_fld_on_iso
 !
       call dup_iso_define_control                                       &
