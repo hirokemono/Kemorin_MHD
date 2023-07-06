@@ -7,6 +7,7 @@
 !> @brief Control data structure for zonal mean visualization controls
 !!
 !!@verbatim
+!!      subroutine init_crustal_filtering_ctl(hd_block, crust_filter_c)
 !!      subroutine read_crustal_filtering_ctl                           &
 !!     &         (id_control, hd_block, crust_filter_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -124,6 +125,20 @@
 !
       end subroutine write_crustal_filtering_ctl
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine init_crustal_filtering_ctl(hd_block, crust_filter_c)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(clust_filtering_ctl), intent(inout) :: crust_filter_c
+!
+      crust_filter_c%block_name = hd_block
+      call init_int_ctl_item_label(hd_crustal_truncation,               &
+     &    crust_filter_c%crust_truncation_ctl)
+!
+      end subroutine init_crustal_filtering_ctl
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine reset_crustal_filtering_ctl(crust_filter_c)

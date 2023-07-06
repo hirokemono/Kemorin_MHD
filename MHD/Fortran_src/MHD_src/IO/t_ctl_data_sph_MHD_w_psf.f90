@@ -192,6 +192,8 @@
       call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
       call init_sph_monitoring_labels(hd_pick_sph,                      &
      &                                MHD_ctl%smonitor_ctl)
+      call init_dynamo_sects_ctl_label(hd_dynamo_viz_ctl,               &
+     &                                 add_SMHD_ctl%zm_sects)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

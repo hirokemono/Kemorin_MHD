@@ -7,6 +7,7 @@
 !> @brief Control data structure for zonal mean visualization controls
 !!
 !!@verbatim
+!!      subroutine init_dynamo_viz_control(hd_block, zm_ctls)
 !!      subroutine read_dynamo_viz_control                              &
 !!     &         (id_control, hd_block, zm_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -119,13 +120,6 @@
 !
 !
       if(zm_ctls%i_viz_ctl .gt. 0) return
-      zm_ctls%block_name = trim(hd_block)
-      call init_psf_ctls_labels(hd_zm_section,   zm_ctls%zm_psf_ctls)
-      call init_psf_ctls_labels(hd_zRMS_section,                        &
-     &                          zm_ctls%zRMS_psf_ctls)
-      call init_map_ctls_labels(hd_zm_rendering, zm_ctls%zm_map_ctls)
-      call init_map_ctls_labels(hd_zRMS_rendering,                      &
-     &                          zm_ctls%zRMS_map_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -184,6 +178,28 @@
      &                                 zm_ctls%block_name)
 !
       end subroutine write_dynamo_viz_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_dynamo_viz_control(hd_block, zm_ctls)
+!
+      use ctl_file_map_renderings_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+!
+!
+      zm_ctls%block_name = trim(hd_block)
+      call init_crustal_filtering_ctl(hd_crustal_filtering,             &
+     &                                zm_ctls%crust_filter_ctl)
+      call init_psf_ctls_labels(hd_zm_section,   zm_ctls%zm_psf_ctls)
+      call init_psf_ctls_labels(hd_zRMS_section,                        &
+     &                          zm_ctls%zRMS_psf_ctls)
+      call init_map_ctls_labels(hd_zm_rendering, zm_ctls%zm_map_ctls)
+      call init_map_ctls_labels(hd_zRMS_rendering,                      &
+     &                          zm_ctls%zRMS_map_ctls)
+!
+      end subroutine init_dynamo_viz_control
 !
 !   --------------------------------------------------------------------
 !
