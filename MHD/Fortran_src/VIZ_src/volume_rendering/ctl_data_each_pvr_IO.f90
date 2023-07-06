@@ -198,6 +198,7 @@
       call init_pvr_cmap_cbar_label(hd_colormap_file,                   &
      &                              pvr_ctl%cmap_cbar_c)
       call init_view_transfer_ctl_label(hd_view_transform, pvr_ctl%mat)
+      call init_lighting_ctl_label(hd_pvr_lighting, pvr_ctl%light)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do

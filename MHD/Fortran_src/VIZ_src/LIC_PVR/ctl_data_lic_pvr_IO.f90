@@ -173,6 +173,7 @@
       if(pvr%i_pvr_ctl .gt. 0) return
       call init_pvr_cmap_cbar_label(hd_lic_colordef, pvr%cmap_cbar_c)
       call init_view_transfer_ctl_label(hd_view_transform, pvr%mat)
+      call init_lighting_ctl_label(hd_pvr_lighting, pvr%light)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do

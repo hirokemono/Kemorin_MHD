@@ -73,12 +73,16 @@
       subroutine bcast_lighting_ctl(light)
 !
       use t_ctl_data_pvr_light
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(pvr_light_ctl), intent(inout) :: light
 !
 !
+      call calypso_mpi_bcast_character(light%block_name,                &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(light%i_pvr_lighting, 0)
 !
       call bcast_ctl_array_r3(light%light_position_ctl)

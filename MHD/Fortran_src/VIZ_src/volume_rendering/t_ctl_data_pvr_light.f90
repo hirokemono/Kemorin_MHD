@@ -7,6 +7,7 @@
 !> @brief colormap control data for parallel volume rendering
 !!
 !!@verbatim
+!!      subroutine init_lighting_ctl_label(hd_block, light)
 !!      subroutine read_lighting_ctl(id_control, hd_block, light, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -58,6 +59,9 @@
 !
 !
       type pvr_light_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'lighting_ctl'
+!
         type(read_real_item) :: ambient_coef_ctl
         type(read_real_item) :: diffuse_coef_ctl
         type(read_real_item) :: specular_coef_ctl
@@ -157,6 +161,27 @@
       end subroutine write_lighting_ctl
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine init_lighting_ctl_label(hd_block, light)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_light_ctl), intent(inout) :: light
+!
+!
+      light%block_name = hd_block
+        call init_r3_ctl_array_label                                    &
+     &     (hd_light_param, light%light_position_ctl)
+!
+        call init_real_ctl_item_label                                   &
+     &     (hd_ambient, light%ambient_coef_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_diffuse, light%diffuse_coef_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_specular, light%specular_coef_ctl)
+!
+      end subroutine init_lighting_ctl_label
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine reset_pvr_light_flags(light)
@@ -192,6 +217,7 @@
       type(pvr_light_ctl), intent(inout) :: new_light
 !
 !
+      new_light%block_name =     org_light%block_name
       new_light%i_pvr_lighting = org_light%i_pvr_lighting
 !
       call dup_control_array_r3(org_light%light_position_ctl,           &
