@@ -7,6 +7,7 @@
 !>@brief  control ID data for surfacing module
 !!
 !!@verbatim
+!!      subroutine init_map_ctl_stract(map_c)
 !!      subroutine s_read_map_control_data                              &
 !!     &         (id_control, hd_block, map_c, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -203,6 +204,18 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine init_map_ctl_stract(map_c)
+      use ctl_data_section_def_IO
+!
+      type(map_ctl), intent(inout) :: map_c
+!
+      call init_psf_def_ctl_stract(hd_section_ctl,                      &
+     &                             map_c%map_define_ctl%psf_def_c)
+!
+      end subroutine init_map_ctl_stract
+!
+!  ---------------------------------------------------------------------
+!
       subroutine s_read_map_control_data                                &
      &         (id_control, hd_block, map_c, c_buf)
 !
@@ -217,8 +230,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(map_c%i_map_ctl .gt. 0) return
+      call init_pvr_section_ctl_label(hd_section_ctl,                   &
+     &                                map_c%map_define_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

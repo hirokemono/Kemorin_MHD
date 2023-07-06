@@ -49,6 +49,8 @@
 !
       subroutine alloc_map_ctl_stract(map_ctls)
 !
+      use ctl_data_map_rendering_IO
+!
       type(map_rendering_controls), intent(inout) :: map_ctls
       integer(kind = kint) :: i
 !

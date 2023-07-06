@@ -36,6 +36,9 @@
 !
 !
       type isosurf_controls
+!>        Control block name
+        character(len = kchara) :: block_name = 'isosurface_ctl'
+!>        # of Structure for isosurface control
         integer(kind = kint) :: num_iso_ctl = 0
 !>        file name for isosurface control
         character(len = kchara), allocatable :: fname_iso_ctl(:)
@@ -88,6 +91,8 @@
 !
       subroutine append_isosurface_control(idx_in, hd_block, iso_ctls)
 !
+      use ctl_data_isosurface_IO
+!
       integer(kind = kint), intent(in) :: idx_in
       character(len=kchara), intent(in) :: hd_block
       type(isosurf_controls), intent(inout) :: iso_ctls
@@ -117,6 +122,7 @@
       end do
       call init_iso_ctl_stract(hd_block,                                &
      &                         iso_ctls%iso_ctl_struct(idx_in+1))
+      iso_ctls%fname_iso_ctl(idx_in+1) = 'NO_FILE'
       do i = idx_in+1, tmp_iso_c%num_iso_ctl
         call dup_control_4_iso(tmp_iso_c%iso_ctl_struct(i),             &
      &                         iso_ctls%iso_ctl_struct(i+1))

@@ -114,6 +114,8 @@
 !
       call calypso_mpi_bcast_one_int(pvr_scts_c%i_pvr_sect_ctl, 0)
       call calypso_mpi_bcast_character                                  &
+     &   (pvr_scts_c%block_name, cast_long(kchara), 0)
+      call calypso_mpi_bcast_character                                  &
      &   (pvr_scts_c%fname_sect_ctl, cast_long(kchara), 0)
 !
       call bcast_section_def_control(pvr_scts_c%psf_def_c)

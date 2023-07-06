@@ -130,6 +130,8 @@
 !
         if(check_begin_flag(c_buf, hd_block)) then
           call append_new_pvr_section_ctl(pvr_scts_c)
+          call init_pvr_section_ctl_label(hd_block,                     &
+     &        pvr_scts_c%pvr_sect_ctl(pvr_scts_c%num_pvr_sect_ctl))
 !
           call read_pvr_section_ctl                                     &
      &       (id_control, hd_block, pvr_scts_c%num_pvr_sect_ctl,        &

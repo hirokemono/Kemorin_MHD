@@ -13,7 +13,6 @@
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        character(len = kchara), intent(inout) :: file_name
-!!        type(section_controls), intent(inout) :: psf_ctls
 !!        type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
@@ -24,7 +23,6 @@
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: file_name
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(section_controls), intent(in) :: psf_ctls
 !!        type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
 !!        integer(kind = kint), intent(inout) :: level
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -47,7 +45,6 @@
 !
       use m_machine_parameter
       use t_control_data_4_fld_on_psf
-      use t_control_data_sections
 !
       implicit  none
 !

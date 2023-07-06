@@ -74,6 +74,8 @@
       integer (kind=kint) :: i_iso
 !
 !
+      call calypso_mpi_bcast_character(iso_ctls%block_name,             &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(iso_ctls%num_iso_ctl, 0)
       if(iso_ctls%num_iso_ctl .le. 0) return
 !
@@ -171,12 +173,16 @@
       subroutine bcast_section_def_control(psf_def_c)
 !
       use t_control_data_4_psf_def
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(psf_define_ctl), intent(inout) :: psf_def_c
 !
 !
+      call calypso_mpi_bcast_character(psf_def_c%block_name,            &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(psf_def_c%i_surface_define, 0)
 !
       call bcast_ctl_array_cr(psf_def_c%psf_coefs_ctl)

@@ -53,6 +53,9 @@
       implicit  none
 !
       type pvr_section_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'surface_define'
+!
 !>        File name of control file to define surface
         character(len = kchara) :: fname_sect_ctl
 !>        Structure to define surface

@@ -105,8 +105,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(surfacing_ctls%i_surfacing_control .gt. 0) return
+      surfacing_ctls%iso_s_ctls%block_name = hd_isosurf_ctl
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

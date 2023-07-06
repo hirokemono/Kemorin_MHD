@@ -181,6 +181,7 @@
 !
       if(viz_ctls%i_viz_control .gt. 0) return
       viz_ctls%block_name = trim(hd_block)
+      viz_ctls%iso_ctls%block_name = hd_isosurf_ctl
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

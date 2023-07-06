@@ -132,6 +132,9 @@
 !
 !
       type psf_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'cross_section_ctl'
+!
 !>        file name for surface definision
         character(len=kchara) :: fname_section_ctl
 !>        Structure of cross section definition

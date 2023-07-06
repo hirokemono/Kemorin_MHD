@@ -180,8 +180,8 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(psf_c%i_psf_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -251,12 +251,22 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine init_psf_ctl_stract(psf_c)
+      subroutine init_psf_ctl_stract(hd_block, psf_c)
 !
+      use ctl_data_section_def_IO
+!
+      character(len=kchara), intent(in) :: hd_block
       type(psf_ctl), intent(inout) :: psf_c
 !
-      call init_psf_def_ctl_stract(psf_c%psf_def_c)
+!
+      psf_c%block_name = hd_block
+      call init_psf_def_ctl_stract(hd_surface_define, psf_c%psf_def_c)
       call init_fld_on_psf_control(hd_output_field, psf_c%fld_on_psf_c)
+!
+        call init_chara_ctl_item_label(hd_psf_file_prefix,              &
+     &      psf_c%psf_file_head_ctl)
+        call init_chara_ctl_item_label(hd_psf_out_type,                 &
+     &      psf_c%psf_output_type_ctl)
 !
       end subroutine init_psf_ctl_stract
 !

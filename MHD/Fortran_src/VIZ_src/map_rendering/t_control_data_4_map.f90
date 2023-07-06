@@ -7,7 +7,6 @@
 !>@brief  control ID data for surfacing module
 !!
 !!@verbatim
-!!      subroutine init_map_ctl_stract(map_c)
 !!      subroutine dealloc_cont_dat_4_map(map_c)
 !!        type(map_ctl), intent(inout) :: map_c
 !!      subroutine dup_control_4_map(org_map_c, new_map_c)
@@ -212,16 +211,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine init_map_ctl_stract(map_c)
-!
-      type(map_ctl), intent(inout) :: map_c
-!
-      call init_psf_def_ctl_stract(map_c%map_define_ctl%psf_def_c)
-!
-      end subroutine init_map_ctl_stract
 !
 !  ---------------------------------------------------------------------
 !

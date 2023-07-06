@@ -8,6 +8,7 @@
 #include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
+#include "t_control_c_lists_w_file.h"
 
 #include "control_elements_IO_GTK.h"
 #include "control_combobox_GTK.h"
@@ -127,74 +128,19 @@ extern void * c_SGS_model_s3df_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_num_sph_filter_ctl(void *f_sgs_ctl);
 extern void * c_SGS_model_sph_filter_ctl(int i, void *f_sgs_ctl);
 
-extern void * c_sph_monitor_ctl_block_name(void *f_smonitor_ctl);
-extern void * c_sph_monitor_ctl_iflag(void *f_smonitor_ctl);
+extern void * c_section_ctls_block_name(void *f_psf_ctls);
+extern int    c_section_ctls_num_psf_ctl(void *f_psf_ctls);
+extern char * c_section_ctls_fname(int idx, void *f_psf_ctls);
+extern void * c_section_ctls_psf_ctl(int idx, void *f_psf_ctls);
+extern void * c_append_viz_section_ctls(int idx, char *block_name, void *f_psf_ctls);
+extern void * c_delete_viz_section_ctls(int idx, void *f_psf_ctls);
 
-
-extern void * c_sph_monitor_lp_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_g_pwr(void *f_smonitor_ctl);
-extern void * c_sph_monitor_pspec_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_circ_ctls(void *f_smonitor_ctl);
-extern void * c_sph_monitor_dbench_ctl(void *f_smonitor_ctl);
-extern void * c_sph_monitor_fdip_ctl(void *f_smonitor_ctl);
-extern void * c_sph_mntr_vol_ave_prefix(void *f_smonitor_ctl);
-extern void * c_sph_mntr_vol_pspec_prefix(void *f_smonitor_ctl);
-extern void * c_sph_mntr_v_pwr_spectr_fmt(void *f_smonitor_ctl);
-extern void * c_sph_mntr_degree_v_spectra_ctl(void *f_smonitor_ctl);
-extern void * c_sph_mntr_order_v_spectra_ctl(void *f_smonitor_ctl);
-extern void * c_sph_mntr_diff_v_lm_spectr_ctl(void *f_smonitor_ctl);
-extern void * c_sph_mntr_axis_v_power_switch(void *f_smonitor_ctl);
-extern void * c_sph_mntr_h_Nusselt_file_pfx(void *f_smonitor_ctl);
-extern void * c_sph_mntr_c_Nusselt_file_pfx(void *f_smonitor_ctl);
-extern void * c_sph_mntr_h_Nusselt_file_fmt(void *f_smonitor_ctl);
-extern void * c_sph_mntr_c_Nusselt_file_fmt(void *f_smonitor_ctl);
-extern void * c_sph_mntr_lscale_file_pfix_ctl(void *f_smonitor_ctl);
-extern void * c_sph_mntr_lscale_file_fmt_ctl(void *f_smonitor_ctl);
-
-extern void * c_pick_spectr_ctl_block_name(void *f_pspec_ctl);
-extern void * c_pick_spectr_ctl_iflag(void *f_pspec_ctl);
-extern void * c_sph_picked_mode_head_ctl(void *f_pspec_ctl);
-extern void * c_sph_picked_mode_fmt_ctl(void *f_pspec_ctl);
-extern void * c_sph_idx_pick_layer_ctl(void *f_pspec_ctl);
-extern void * c_sph_pick_radius_ctl(void *f_pspec_ctl);
-extern void * c_sph_idx_pick_sph_ctl(void *f_pspec_ctl);
-extern void * c_sph_idx_pick_sph_l_ctl(void *f_pspec_ctl);
-extern void * c_sph_idx_pick_sph_m_ctl(void *f_pspec_ctl);
-
-extern void * c_sph_l_spectr_ctl_block_name(void *f_lp_ctl);
-extern void * c_sph_l_spectr_ctl_iflag(void *f_lp_ctl);
-extern void * c_sph_layer_pwr_spectr_prefix(void *f_lp_ctl);
-extern void * c_sph_layer_pwr_spectr_format(void *f_lp_ctl);
-extern void * c_sph_l_spec_degree_switch(void *f_lp_ctl);
-extern void * c_sph_l_spec_order_switch(void *f_lp_ctl);
-extern void * c_sph_l_spec_diff_lm_switch(void *f_lp_ctl);
-extern void * c_sph_l_spec_axis_power_switch(void *f_lp_ctl);
-extern void * c_sph_l_spectr_r_idx_ctl(void *f_lp_ctl);
-extern void * c_sph_l_spectr_radius_ctl(void *f_lp_ctl);
-
-extern void * c_sph_gauss_c_ctl_block_name(void *f_g_pwr);
-extern void * c_sph_gauss_c_ctl_iflag(void *f_g_pwr);
-extern void * c_sph_gauss_coefs_prefix(void *f_g_pwr);
-extern void * c_sph_gauss_coefs_format(void *f_g_pwr);
-extern void * c_sph_gauss_coefs_radius_ctl(void *f_g_pwr);
-extern void * c_sph_idx_gauss_ctl(void *f_g_pwr);
-extern void * c_sph_idx_gauss_l_ctl(void *f_g_pwr);
-extern void * c_sph_idx_gauss_m_ctl(void *f_g_pwr);
-
-extern void * c_dipolarity_ctl_block_name(void *f_fdip_ctl);
-extern void * c_dipolarity_ctl_iflag(void *f_fdip_ctl);
-extern void * c_dipolarity_file_prefix_ctl(void *f_fdip_ctl);
-extern void * c_dipolarity_file_format_ctl(void *f_fdip_ctl);
-extern void * c_dipolarity_truncation_ctl(void *f_fdip_ctl);
-
-extern void * c_dynamobench_ctl_block_name(void *f_dbench_ctl);
-extern void * c_dynamobench_ctl_iflag(void *f_dbench_ctl);
-extern void * c_sph_dynamobench_file_ctl(void *f_dbench_ctl);
-extern void * c_sph_dynamobench_format_ctl(void *f_dbench_ctl);
-extern void * c_sph_detailed_dbench_file_ctl(void *f_dbench_ctl);
-extern void * c_sph_dbench_field_file_ctl(void *f_dbench_ctl);
-extern void * c_sph_dbench_spectr_file_ctl(void *f_dbench_ctl);
-extern void * c_sph_dbench_nphi_mid_eq_ctl(void *f_dbench_ctl);
+extern void * c_isosurf_ctls_block_name(void *f_iso_ctls);
+extern int    c_isosurf_ctls_num_iso_ctl(void *f_iso_ctls);
+extern char * c_isosurf_ctls_fname(int idx, void *f_iso_ctls);
+extern void * c_isosurf_ctls_iso_ctl(int idx, void *f_iso_ctls);
+extern void * c_append_viz_isosurf_ctls(int idx, char *block_name, void *f_iso_ctls);
+extern void * c_delete_viz_isosurf_ctls(int idx, void *f_iso_ctls);
 
 
 struct f_MHD_SGS_model_control{
@@ -263,15 +209,18 @@ struct f_MHD_model_control{
 	struct f_MHD_SGS_model_control * f_sgs_ctl;
 };
 
-
 struct f_MHD_viz_ctls{
 	void * f_self;
 	int * f_iflag;
 	
 	char * c_block_name;
 	
-	void * f_psf_ctls;
-	void * f_iso_ctls;
+	int f_num_psf_ctl;
+	struct void_file_clist *f_psf_ctls;
+	
+	int f_num_iso_ctl;
+	struct void_file_clist *f_iso_ctls;
+	
 	void * f_map_ctls;
 	void * f_pvr_ctls;
 	void * f_fline_ctls;
@@ -485,6 +434,37 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
+struct void_file_clist * init_f_VIZ_psf_ctls(void *f_viz_ctls_self, int *f_num_psf_ctl)
+{
+    char *f_block_name =   (char *) c_section_ctls_block_name(f_viz_ctls_self);
+	struct void_file_clist *f_psf_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
+	f_psf_ctls->f_parent =  c_visualizations_psf_ctls(f_viz_ctls_self);
+	*f_num_psf_ctl = c_section_ctls_num_psf_ctl(f_psf_ctls->f_parent);
+	
+	int i;
+	for(i=0;i<*f_num_psf_ctl;i++){
+        f_block_name = c_section_ctls_fname(i, f_psf_ctls->f_parent);
+        void *void_in =  c_section_ctls_psf_ctl(i, f_psf_ctls->f_parent);
+		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) void_in, f_psf_ctls);
+	}
+	return f_psf_ctls;
+}
+
+struct void_file_clist * init_f_VIZ_iso_ctls(void *f_viz_ctls_self, int *f_num_iso_ctl)
+{
+    char *f_block_name =   (char *) c_isosurf_ctls_block_name(f_viz_ctls_self);
+	struct void_file_clist *f_iso_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
+	f_iso_ctls->f_parent =  c_visualizations_iso_ctls(f_viz_ctls_self);
+	*f_num_iso_ctl = c_isosurf_ctls_num_iso_ctl(f_iso_ctls->f_parent);
+	
+	int i;
+	for(i=0;i<*f_num_iso_ctl;i++){
+        f_block_name = c_isosurf_ctls_fname(i, f_iso_ctls->f_parent);
+        void *void_in =  c_isosurf_ctls_iso_ctl(i, f_iso_ctls->f_parent);
+		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) void_in, f_iso_ctls);
+	}
+	return f_iso_ctls;
+}
 
 struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
@@ -502,8 +482,8 @@ struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent)
 	char *f_block_name =   (char *) c_visualizations_block_name(f_viz_ctls->f_self);
 	f_viz_ctls->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_viz_ctls->f_psf_ctls =    c_visualizations_psf_ctls(f_viz_ctls->f_self);
-	f_viz_ctls->f_iso_ctls =    c_visualizations_iso_ctls(f_viz_ctls->f_self);
+	f_viz_ctls->f_psf_ctls = init_f_VIZ_psf_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_psf_ctl);
+	f_viz_ctls->f_iso_ctls = init_f_VIZ_iso_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_iso_ctl);
 	f_viz_ctls->f_map_ctls =    c_visualizations_map_ctls(f_viz_ctls->f_self);
 	f_viz_ctls->f_pvr_ctls =    c_visualizations_pvr_ctls(f_viz_ctls->f_self);
 	f_viz_ctls->f_fline_ctls =    c_visualizations_fline_ctls(f_viz_ctls->f_self);

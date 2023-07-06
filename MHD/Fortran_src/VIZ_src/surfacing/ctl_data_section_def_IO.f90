@@ -7,6 +7,7 @@
 !>@brief  control ID data for surfacing module
 !!
 !!@verbatim
+!!      subroutine init_psf_def_ctl_stract(hd_block, psf_def_c)
 !!      subroutine read_section_def_control                             &
 !!     &         (id_control, hd_block, psf_def_c, psf_def_c)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -240,6 +241,40 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_section_def_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_psf_def_ctl_stract(hd_block, psf_def_c)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(psf_define_ctl), intent(inout) :: psf_def_c
+!
+!
+      psf_def_c%radius_psf_ctl%realvalue = 0.0d0
+      psf_def_c%psf_area_ctl%num =      0
+      psf_def_c%block_name = hd_block
+!
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_coefs_ctl, psf_def_c%psf_coefs_ctl)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_center_ctl, psf_def_c%psf_center_ctl)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_normal_ctl, psf_def_c%psf_normal_ctl)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_axis_ctl, psf_def_c%psf_axis_ctl)
+!
+        call init_chara_ctl_array_label                                 &
+     &     (hd_psf_area, psf_def_c%psf_area_ctl)
+!
+        call init_real_ctl_item_label                                   &
+     &     (hd_radius, psf_def_c%radius_psf_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_section_method, psf_def_c%section_method_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_group_name, psf_def_c%psf_group_name_ctl)
+!
+      end subroutine init_psf_def_ctl_stract
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

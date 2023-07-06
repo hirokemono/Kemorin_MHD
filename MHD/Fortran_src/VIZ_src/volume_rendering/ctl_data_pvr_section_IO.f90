@@ -7,6 +7,7 @@
 !> @brief control data for parallel volume rendering
 !!
 !!@verbatim
+!!      subroutine init_pvr_section_ctl_label(hd_block, pvr_sect_ctl)
 !!      subroutine read_pvr_section_ctl                                 &
 !!     &         (id_control, hd_block, icou, pvr_sect_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -109,8 +110,8 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pvr_sect_ctl%i_pvr_sect_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -207,6 +208,43 @@
       level = write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_pvr_section_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_pvr_section_ctl_label(hd_block, pvr_sect_ctl)
+!
+      use ctl_data_section_def_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
+!
+      pvr_sect_ctl%block_name = hd_block
+      call init_psf_def_ctl_stract                                      &
+     &   (hd_surface_define, pvr_sect_ctl%psf_def_c)
+!
+        call init_real_ctl_item_label                                   &
+     &     (hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
+        call init_chara_ctl_item_label(hd_pvr_sec_zeroline,             &
+     &      pvr_sect_ctl%zeroline_switch_ctl)
+        call init_chara_ctl_item_label(hd_pvr_isoline_color,            &
+     &      pvr_sect_ctl%isoline_color_mode)
+        call init_int_ctl_item_label(hd_isoline_number,                 &
+     &      pvr_sect_ctl%isoline_number_ctl)
+        call init_real2_ctl_item_label(hd_isoline_range,                &
+     &      pvr_sect_ctl%isoline_range_ctl)
+        call init_real_ctl_item_label(hd_isoline_width,                 &
+     &      pvr_sect_ctl%isoline_width_ctl)
+        call init_real_ctl_item_label(hd_grid_width,                    &
+     &      pvr_sect_ctl%grid_width_ctl)
+!
+        call init_chara_ctl_item_label(hd_tangent_cylinder,             &
+     &      pvr_sect_ctl%tan_cyl_switch_ctl)
+        call init_real_ctl_item_label(hd_tcyl_inner,                    &
+     &      pvr_sect_ctl%tangent_cylinder_inner_ctl)
+        call init_real_ctl_item_label(hd_tcyl_outer,                    &
+     &      pvr_sect_ctl%tangent_cylinder_outer_ctl)
+!
+      end subroutine init_pvr_section_ctl_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

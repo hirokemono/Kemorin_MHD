@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read char-real control arrays
 !!
 !!@verbatim
+!!      subroutine init_charareal_ctl_item_label(label, cr_item)
 !!      subroutine read_charareal_ctl_type(c_buf, label, cr_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara_real_item), intent(inout) :: cr_item
@@ -17,6 +18,7 @@
 !!        type(read_chara_real_item), intent(in) :: org_cr
 !!        type(read_chara_real_item), intent(inout) :: new_cr
 !!
+!!      subroutine init_c_r_ctl_array_label(label, array_cr)
 !!      subroutine alloc_control_array_c_r(array_cr)
 !!      subroutine dealloc_control_array_c_r(array_cr)
 !!      subroutine read_control_array_c_r                               &
@@ -78,6 +80,15 @@
       contains
 !
 !   --------------------------------------------------------------------
+!
+      subroutine init_charareal_ctl_item_label(label, cr_item)
+      character(len=kchara), intent(in) :: label
+      type(read_chara_real_item), intent(inout) :: cr_item
+!
+      cr_item%item_name = trim(label)
+      end subroutine init_charareal_ctl_item_label
+!
+! ----------------------------------------------------------------------
 !
       subroutine read_charareal_ctl_type(c_buf, label, cr_item)
 !
@@ -143,6 +154,15 @@
        end subroutine copy_charareal_ctl
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_c_r_ctl_array_label(label, array_cr)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_cr), intent(inout) :: array_cr
+!
+      array_cr%array_name = trim(label)
+      end subroutine init_c_r_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine alloc_control_array_c_r(array_cr)

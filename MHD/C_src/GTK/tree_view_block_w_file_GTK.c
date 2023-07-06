@@ -1,14 +1,15 @@
 /*
-//  tree_view_block_GTK.c
+//  tree_view_block_w_file_GTK.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/08/21.
 */
 
-#include "tree_view_block_GTK.h"
+#include "tree_view_block_w_file_GTK.h"
 
 /* Append new data at the end of list */
-int append_void_item_to_tree(int index, const char *label, GtkTreeModel *child_model){
+int append_void_file_item_to_tree(int index, const char *label,
+								  GtkTreeModel *child_model){
     GtkTreeIter iter;
     
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
@@ -19,14 +20,14 @@ int append_void_item_to_tree(int index, const char *label, GtkTreeModel *child_m
     return index + 1;
 }
 
-int append_void_list_from_ctl(int index, struct void_ctl_list *head, 
-							  GtkTreeView *v_tree_view)
+int append_void_file_list_from_ctl(int index, struct void_file_ctl_list *head, 
+								   GtkTreeView *v_tree_view)
 {
     GtkTreeModel *model = gtk_tree_view_get_model (v_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
-        index = append_void_item_to_tree(index, head->list_label, child_model);
+        index = append_void_file_item_to_tree(index, head->list_label, child_model);
         head = head->_next;
     };
     return index;
@@ -65,24 +66,26 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column_id, order);
 }
 
-int add_void_list_by_bottun_GTK(int index, void *void_in, GtkTreeView *tree_view_to_add, 
-								struct void_clist *v_clist)
+int add_void_file_list_by_bottun_GTK(int index, void *void_in, GtkTreeView *tree_view_to_add, 
+									 struct void_file_clist *vf_clist)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
         
-	append_void_clist(void_in, v_clist);
-	index = count_void_clist(v_clist);
-    index = append_void_item_to_tree(index, void_clist_label_at_index(index,v_clist), child_model_to_add);
+	append_void_file_clist("NO_FILE", void_in, vf_clist);
+	index = count_void_file_clist(vf_clist);
+	index = append_void_file_item_to_tree(index, void_file_clist_label_at_index(index,vf_clist),
+										  child_model_to_add);
 	
     return index;
 }
 
-int add_void_list_items_GTK(GtkTreeView *tree_view_to_add, 
-							void *(*append_ctl_block_F)(int idx, char *block_name, void *f_parent), 
-							void *(*init_ctl_block_F)(int idx, void *f_parent), 
-							void *(*dealloc_ctl_block_F)(void *f_block), 
-							struct void_clist *v_clist)
+int add_void_file_list_items_GTK(GtkTreeView *tree_view_to_add, 
+								 void *(*append_ctl_block_F)(int idx, char *block_name, void *f_parent), 
+								 void *(*init_ctl_block_F)(int idx, void *f_parent), 
+								 void *(*init_ctl_block_file_F)(int idx, void *f_parent), 
+								 void *(*dealloc_ctl_block_F)(void *f_block), 
+								 struct void_file_clist *vf_clist)
 {
     GtkTreeModel *model_to_add;
     GtkTreeModel *child_model_to_add;
@@ -98,32 +101,34 @@ int add_void_list_items_GTK(GtkTreeView *tree_view_to_add,
     
 	/* Return reference into path and delete reference */
 	void *void_in = NULL;
-	int num = count_void_clist(v_clist);
-	append_ctl_block_F(num, v_clist->clist_name, v_clist->f_parent);
+	int num = count_void_file_clist(vf_clist);
+	append_ctl_block_F(num, vf_clist->clist_name, vf_clist->f_parent);
 	
 	int idx;
-	for(idx=0;idx<count_void_clist(v_clist);idx++){
-		dealloc_ctl_block_F(void_clist_at_index(idx, v_clist));
+	for(idx=0;idx<count_void_file_clist(vf_clist);idx++){
+		dealloc_ctl_block_F(void_file_clist_at_index(idx, vf_clist));
 	};
-	append_void_clist(void_in, v_clist);
+	append_void_file_clist("NO_FILE", void_in, vf_clist);
 	
-	for(idx=0;idx<count_void_clist(v_clist);idx++){
-		void *void_in = init_ctl_block_F(idx, v_clist->f_parent);
-		replace_void_clist_at_index(idx, void_in, v_clist);
+	for(idx=0;idx<count_void_file_clist(vf_clist);idx++){
+		void *void_in = init_ctl_block_F(idx, vf_clist->f_parent);
+		char *file_in = init_ctl_block_file_F(idx, vf_clist->f_parent);
+		replace_void_file_clist_at_index(idx, file_in, void_in, vf_clist);
 	};
 	
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
-	int index = append_void_list_from_ctl(num, &v_clist->c_item_head, tree_view_to_add);
+	int index = append_void_file_list_from_ctl(num, &vf_clist->c_item_head, tree_view_to_add);
     /* Release the block of changed signal */
 	unblock_changed_signal(G_OBJECT(child_model_to_add));
 	return index;
 }
 
-void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
-								void *(*delete_ctl_block_F)(int idx, void *f_parent), 
-							void *(*init_ctl_block_F)(int idx, void *f_parent), 
-							void *(*dealloc_ctl_block_F)(void *f_block), 
-								struct void_clist *v_clist)
+void delete_void_file_list_items_GTK(GtkTreeView *tree_view_to_del,
+									 void *(*delete_ctl_block_F)(int idx, void *f_parent), 
+									 void *(*init_ctl_block_F)(int idx, void *f_parent), 
+									 void *(*init_ctl_block_file_F)(int idx, void *f_parent), 
+									 void *(*dealloc_ctl_block_F)(void *f_block), 
+									 struct void_file_clist *vf_clist)
 {
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
@@ -179,17 +184,18 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
 		/* Update control data */
-		idx = find_void_clist_index_by_c_tbl(old_strng, v_clist);
-		delete_ctl_block_F(idx, v_clist->f_parent);
+		idx = find_void_file_clist_index_by_c_tbl(old_strng, vf_clist);
+		delete_ctl_block_F(idx, vf_clist->f_parent);
 		
-		for(i=0;i<count_void_clist(v_clist);i++){
-			dealloc_ctl_block_F(void_clist_at_index(i, v_clist));
+		for(i=0;i<count_void_file_clist(vf_clist);i++){
+			dealloc_ctl_block_F(void_file_clist_at_index(i, vf_clist));
 		};
-		del_void_clist_by_index(idx, v_clist);
+		del_void_file_clist_by_index(idx, vf_clist);
 		
-		for(i=0;i<count_void_clist(v_clist);i++){
-			void *void_in = init_ctl_block_F(i, v_clist->f_parent);
-			replace_void_clist_at_index(i, void_in, v_clist);
+		for(i=0;i<count_void_file_clist(vf_clist);i++){
+			void *void_in = init_ctl_block_F(i, vf_clist->f_parent);
+			char *file_in = init_ctl_block_file_F(i, vf_clist->f_parent);
+			replace_void_file_clist_at_index(i, file_in, void_in, vf_clist);
 		};
 	}
     g_list_free(reference_list);
@@ -197,7 +203,7 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 	unblock_changed_signal(G_OBJECT(child_model_to_del));
 }
 
-void create_block_tree_view(GtkTreeView *v_tree_view, GtkCellRenderer *renderer_text)
+void create_file_block_tree_view(GtkTreeView *v_tree_view, GtkCellRenderer *renderer_text)
 {
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
 	
@@ -243,16 +249,16 @@ void create_block_tree_view(GtkTreeView *v_tree_view, GtkCellRenderer *renderer_
 }
 
 
-GtkWidget * add_block_list_box_w_addbottun(struct void_clist *v_clist_gtk, GtkWidget *v_tree_view, 
+GtkWidget * add_file_block_box_w_addbottun(struct void_file_clist *vf_clist_gtk, GtkWidget *v_tree_view, 
 										   GtkWidget *button_add, GtkWidget *button_delete,
 										   GtkWidget *vbox_out){
 	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	
 	GtkCellRenderer *renderer_text =  gtk_cell_renderer_text_new();
-	create_block_tree_view(GTK_TREE_VIEW(v_tree_view), renderer_text);
-	v_clist_gtk->index_bc = append_void_list_from_ctl(v_clist_gtk->index_bc,
-													  &v_clist_gtk->c_item_head,
-													  GTK_TREE_VIEW(v_tree_view));
+	create_file_block_tree_view(GTK_TREE_VIEW(v_tree_view), renderer_text);
+	vf_clist_gtk->index_bc = append_void_file_list_from_ctl(vf_clist_gtk->index_bc,
+															&vf_clist_gtk->c_item_head,
+															GTK_TREE_VIEW(v_tree_view));
 
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	
