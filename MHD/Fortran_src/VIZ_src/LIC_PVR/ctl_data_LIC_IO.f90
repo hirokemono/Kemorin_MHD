@@ -155,6 +155,8 @@
       if(lic_ctl%i_lic_control .gt. 0) return
       lic_ctl%block_name = hd_block
       call init_cube_noise_ctl_label(hd_cube_noise, lic_ctl%noise_ctl)
+      call init_kernel_control_label(hd_kernel, lic_ctl%kernel_ctl)
+      lic_ctl%num_masking_ctl = 0
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do

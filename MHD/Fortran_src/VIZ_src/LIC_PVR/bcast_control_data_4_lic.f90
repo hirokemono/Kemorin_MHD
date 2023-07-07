@@ -141,6 +141,8 @@
       subroutine bcast_kernel_control_data(kernel_ctl)
 !
       use t_control_data_LIC_kernel
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
 !
@@ -148,6 +150,8 @@
 !
 !
       call calypso_mpi_bcast_one_int(kernel_ctl%i_kernel_control, 0)
+      call calypso_mpi_bcast_character(kernel_ctl%block_name,           &
+     &                                 cast_long(kchara), 0)
 !
       call bcast_ctl_type_c1(kernel_ctl%kernel_type_ctl)
       call bcast_ctl_type_c1(kernel_ctl%trace_length_mode_ctl)
@@ -166,10 +170,10 @@
       subroutine bcast_cube_noise_control_data(noise_ctl)
 !
       use t_control_data_LIC_noise
+      use transfer_to_long_integers
       use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
-      use transfer_to_long_integers
 !
       type(cube_noise_ctl), intent(inout) :: noise_ctl
 !

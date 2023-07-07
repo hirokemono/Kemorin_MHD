@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine init_kernel_control_label(hd_block, kernel_ctl)
 !!      subroutine read_kernel_control_data                             &
 !!     &         (id_control, hd_block, kernel_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -63,6 +64,8 @@
 !
 !
       type lic_kernel_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'kernel_ctl'
 !>         Kernel type name
         type(read_character_item) :: kernel_type_ctl
 !
@@ -194,6 +197,35 @@
       end subroutine write_kernel_control_data
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine init_kernel_control_label(hd_block, kernel_ctl)
+!
+      character(len = kchara), intent(in) :: hd_block
+      type(lic_kernel_ctl), intent(inout) :: kernel_ctl
+!
+!
+      kernel_ctl%block_name = hd_block
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_kernel_type, kernel_ctl%kernel_type_ctl)
+        call init_chara_ctl_item_label(hd_trace_type,                   &
+     &      kernel_ctl%trace_length_mode_ctl)
+!
+        call init_int_ctl_item_label(hd_kernel_grid_size,               &
+     &      kernel_ctl%kernel_resolution_ctl)
+        call init_int_ctl_item_label(hd_trace_count,                    &
+     &      kernel_ctl%max_trace_count_ctl)
+!
+        call init_real_ctl_item_label                                   &
+     &     (hd_kernel_sigma, kernel_ctl%kernel_sigma_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_kernel_peak, kernel_ctl%kernel_peak_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_half_length, kernel_ctl%half_length_ctl)
+!
+      end subroutine init_kernel_control_label
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine reset_kernel_control_data(kernel_ctl)
@@ -222,6 +254,7 @@
       type(lic_kernel_ctl), intent(inout) :: new_kernel_c
 !
 !
+      new_kernel_c%block_name =       org_kernel_c%block_name
       new_kernel_c%i_kernel_control = org_kernel_c%i_kernel_control
 !
       call copy_chara_ctl(org_kernel_c%kernel_type_ctl,                 &

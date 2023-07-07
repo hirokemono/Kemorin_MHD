@@ -59,6 +59,8 @@
 !
       use t_ctl_data_volume_grouping
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
 !
       type(new_patition_control), intent(inout) :: new_part_ctl
@@ -85,6 +87,8 @@
         call bcast_masking_ctl_data(new_part_ctl%mask_ctl(i))
       end do
 !
+      call calypso_mpi_bcast_character(new_part_ctl%block_name,         &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int                                    &
      &   (new_part_ctl%i_new_patition_ctl, 0)
 !
@@ -116,8 +120,10 @@
       subroutine bcast_masking_ctl_data(mask_ctl)
 !
       use t_control_data_masking
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(masking_by_field_ctl), intent(inout) :: mask_ctl
 !
@@ -127,6 +133,8 @@
       call bcast_ctl_type_c1(mask_ctl%component_ctl)
       call bcast_ctl_array_r2(mask_ctl%mask_range_ctl)
 !
+      call calypso_mpi_bcast_character(mask_ctl%block_name,              &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(mask_ctl%i_mask_control, 0)
 !
       end subroutine bcast_masking_ctl_data

@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read char-int control arrays
 !!
 !!@verbatim
+!!      subroutine init_charaint_ctl_item_label(label, ci_item)
 !!      subroutine read_charaint_ctl_type(c_buf, label, ci_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara_int_item), intent(inout) :: ci_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_c_i(array_ci)
 !!      subroutine dealloc_control_array_c_i(array_ci)
+!!      subroutine init_c_i_array_label(label, array_ci)
 !!      subroutine read_control_array_c_i                               &
 !!     &         (id_control, label, array_ci, c_buf)
 !!        type(ctl_array_ci), intent(inout) :: array_ci
@@ -76,6 +78,15 @@
 !   --------------------------------------------------------------------
 !
       contains
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_charaint_ctl_item_label(label, ci_item)
+      character(len=kchara), intent(in) :: label
+      type(read_chara_int_item), intent(inout) :: ci_item
+!
+      ci_item%item_name = trim(label)
+      end subroutine init_charaint_ctl_item_label
 !
 !   --------------------------------------------------------------------
 !
@@ -168,6 +179,15 @@
       end subroutine dealloc_control_array_c_i
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_c_i_array_label(label, array_ci)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_ci), intent(inout) :: array_ci
+!
+      array_ci%array_name = trim(label)
+      end subroutine init_c_i_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_c_i                                 &

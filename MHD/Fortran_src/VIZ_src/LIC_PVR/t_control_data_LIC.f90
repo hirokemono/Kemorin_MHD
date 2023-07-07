@@ -33,6 +33,11 @@
 !!      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
 !!        type(lic_parameter_ctl), intent(in) :: org_lic_c
 !!        type(lic_parameter_ctl), intent(inout) :: new_lic_c
+!!
+!!      subroutine append_lic_masking_ctl(idx_in, hd_block, lic_ctl)
+!!        integer(kind = kint), intent(in) :: idx_in
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags
 !!
@@ -143,7 +148,6 @@
       end type lic_parameter_ctl
 !
       private :: dealloc_lic_masking_ctl
-      private :: append_new_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -195,10 +199,11 @@
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer(kind=kint) :: n_append
+!
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(lic_ctl%mask_ctl)) return
-      lic_ctl%num_masking_ctl = 0
       call alloc_lic_masking_ctl(lic_ctl)
 !
       do
@@ -207,7 +212,8 @@
         if (check_end_array_flag(c_buf, hd_block)) exit
 !
         if(check_begin_flag(c_buf, hd_block)) then
-          call append_new_lic_masking_ctl(lic_ctl)
+          n_append = lic_ctl%num_masking_ctl
+          call append_lic_masking_ctl(n_append, hd_block, lic_ctl)
           call read_masking_ctl_data(id_control, hd_block,              &
      &        lic_ctl%mask_ctl(lic_ctl%num_masking_ctl), c_buf)
         end if
@@ -279,31 +285,85 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine append_new_lic_masking_ctl(lic_ctl)
+      subroutine append_lic_masking_ctl(idx_in, hd_block, lic_ctl)
 !
+      integer(kind = kint), intent(in) :: idx_in
+      character(len=kchara), intent(in) :: hd_block
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !
-      integer(kind=kint) :: ntmp_masking
+      integer(kind=kint) :: num_tmp
       type(masking_by_field_ctl), allocatable :: tmp_mask_c(:)
 !
+      integer(kind = kint) :: i
 !
-      ntmp_masking = lic_ctl%num_masking_ctl
-      allocate(tmp_mask_c(ntmp_masking))
-      call dup_masking_ctls(ntmp_masking, lic_ctl%mask_ctl, tmp_mask_c)
+      if(idx_in.lt.0 .or. idx_in.gt.lic_ctl%num_masking_ctl) return
+!
+      num_tmp = lic_ctl%num_masking_ctl
+      allocate(tmp_mask_c(num_tmp))
+      do i = 1, num_tmp
+        call dup_masking_ctl_data(lic_ctl%mask_ctl(i), tmp_mask_c(i))
+      end do
 !
       call dealloc_masking_ctls                                         &
      &   (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
       call dealloc_lic_masking_ctl(lic_ctl)
-!
-      lic_ctl%num_masking_ctl = ntmp_masking + 1
+      lic_ctl%num_masking_ctl = num_tmp + 1
       call alloc_lic_masking_ctl(lic_ctl)
-      call dup_masking_ctls                                             &
-     &   (ntmp_masking, tmp_mask_c, lic_ctl%mask_ctl(1))
 !
-      call dealloc_masking_ctls(ntmp_masking, tmp_mask_c)
+      do i = 1, idx_in
+        call dup_masking_ctl_data(tmp_mask_c(i),                        &
+     &                            lic_ctl%mask_ctl(i))
+      end do
+      call init_masking_ctl_label(hd_block,                             &
+     &                            lic_ctl%mask_ctl(idx_in+1))
+      do i = idx_in+1, num_tmp
+        call dup_masking_ctl_data(tmp_mask_c(i),                        &
+     &                            lic_ctl%mask_ctl(i+1))
+      end do
+!
+      call dealloc_masking_ctls(num_tmp, tmp_mask_c)
       deallocate(tmp_mask_c)
 !
-      end subroutine append_new_lic_masking_ctl
+      end subroutine append_lic_masking_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine delete_lic_masking_ctl(idx_in, lic_ctl)
+!
+      integer(kind = kint), intent(in) :: idx_in
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+      integer(kind=kint) :: num_tmp
+      type(masking_by_field_ctl), allocatable :: tmp_mask_c(:)
+!
+      integer(kind = kint) :: i
+!
+      if(idx_in.le.0                                                    &
+     &      .or. idx_in.gt.lic_ctl%num_masking_ctl) return
+!
+      num_tmp = lic_ctl%num_masking_ctl
+      allocate(tmp_mask_c(num_tmp))
+      do i = 1, num_tmp
+        call dup_masking_ctl_data(lic_ctl%mask_ctl(i), tmp_mask_c(i))
+      end do
+!
+      call dealloc_masking_ctls                                         &
+     &   (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
+      call dealloc_lic_masking_ctl(lic_ctl)
+      lic_ctl%num_masking_ctl = num_tmp - 1
+      call alloc_lic_masking_ctl(lic_ctl)
+!
+      do i = 1, idx_in-1
+        call dup_masking_ctl_data(tmp_mask_c(i), lic_ctl%mask_ctl(i))
+      end do
+      do i = idx_in+1, lic_ctl%num_masking_ctl
+        call dup_masking_ctl_data(tmp_mask_c(i+1), lic_ctl%mask_ctl(i))
+      end do
+!
+      call dealloc_masking_ctls(num_tmp, tmp_mask_c)
+      deallocate(tmp_mask_c)
+!
+      end subroutine delete_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -347,6 +407,7 @@
       type(lic_parameter_ctl), intent(in) :: org_lic_c
       type(lic_parameter_ctl), intent(inout) :: new_lic_c
 !
+      integer(kind = kint) :: i
 !
       new_lic_c%block_name =    org_lic_c%block_name
       new_lic_c%i_lic_control = org_lic_c%i_lic_control
@@ -388,8 +449,10 @@
       new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
       if(new_lic_c%num_masking_ctl .gt. 0) then
         allocate(new_lic_c%mask_ctl(new_lic_c%num_masking_ctl))
-        call dup_masking_ctls(org_lic_c%num_masking_ctl,                &
-     &      org_lic_c%mask_ctl, new_lic_c%mask_ctl)
+        do i = 1, org_lic_c%num_masking_ctl
+          call dup_masking_ctl_data(org_lic_c%mask_ctl(i),              &
+     &                              new_lic_c%mask_ctl(i))
+        end do
       end if
 !
       end subroutine dup_lic_control_data

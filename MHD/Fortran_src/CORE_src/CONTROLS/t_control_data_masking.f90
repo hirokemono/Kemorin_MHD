@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine init_masking_ctl_label(hd_block, mask_ctl)
 !!      subroutine read_masking_ctl_data                                &
 !!     &         (id_control, hd_block, mask_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -25,10 +26,6 @@
 !!        type(masking_by_field_ctl), intent(inout) :: mask_ctl(num_ctl)
 !!      subroutine dealloc_masking_ctl_flags(mask_ctl)
 !!
-!!      subroutine dup_masking_ctls(num_ctl, org_mask_c, new_mask_c)
-!!        type(masking_by_field_ctl), intent(in) :: org_mask_c(num_ctl)
-!!        type(masking_by_field_ctl), intent(inout)                     &
-!!     &                                         :: new_mask_c(num_ctl)
 !!      subroutine dup_masking_ctl_data(org_mask_c, new_mask_c)
 !!        type(masking_by_field_ctl), intent(in) :: org_mask_c
 !!        type(masking_by_field_ctl), intent(inout) :: new_mask_c
@@ -70,6 +67,9 @@
 !
 !
       type masking_by_field_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'kernel_ctl'
+!
         type(read_character_item) :: mask_type_ctl
         type(read_character_item) :: field_name_ctl
         type(read_character_item) :: component_ctl
@@ -165,6 +165,27 @@
       end subroutine write_masking_ctl_data
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine init_masking_ctl_label(hd_block, mask_ctl)
+!
+      character(len = kchara), intent(in) :: hd_block
+      type(masking_by_field_ctl), intent(inout) :: mask_ctl
+!
+!
+      mask_ctl%block_name = hd_block
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_masking_type, mask_ctl%mask_type_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_masking_field, mask_ctl%field_name_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_masking_comp, mask_ctl%component_ctl)
+        call init_r2_ctl_array_label                                    &
+     &     (hd_masking_range, mask_ctl%mask_range_ctl)
+!
+      end subroutine init_masking_ctl_label
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_masking_ctls(num_ctl, mask_ctl)
@@ -203,28 +224,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine dup_masking_ctls(num_ctl, org_mask_c, new_mask_c)
-!
-      integer(kind = kint) :: num_ctl
-      type(masking_by_field_ctl), intent(in) :: org_mask_c(num_ctl)
-      type(masking_by_field_ctl), intent(inout) :: new_mask_c(num_ctl)
-!
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, num_ctl
-        call dup_masking_ctl_data(org_mask_c(i), new_mask_c(i))
-      end do
-!
-      end subroutine dup_masking_ctls
-!
-!  ---------------------------------------------------------------------
-!
       subroutine dup_masking_ctl_data(org_mask_c, new_mask_c)
 !
       type(masking_by_field_ctl), intent(in) :: org_mask_c
       type(masking_by_field_ctl), intent(inout) :: new_mask_c
 !
+!
+      new_mask_c%block_name =     org_mask_c%block_name
+      new_mask_c%i_mask_control = org_mask_c%i_mask_control
 !
       call copy_chara_ctl(org_mask_c%mask_type_ctl,                     &
      &                    new_mask_c%mask_type_ctl)

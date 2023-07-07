@@ -114,6 +114,8 @@
 !
       if(viz_repart_c%i_viz_repartition_ctl .gt. 0) return
       call init_platforms_labels(hd_viz_platform, viz_repart_c%viz_plt)
+      call init_ctl_label_new_partition(hd_new_partition,                &
+     &                                  viz_repart_c%new_part_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

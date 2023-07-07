@@ -7,6 +7,7 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
+!!      subroutine init_ctl_label_new_partition(hd_block, new_part_ctl)
 !!      subroutine read_ctl_data_new_partition                          &
 !!     &         (id_control, hd_block, new_part_ctl, c_buf)
 !!         integer(kind = kint), intent(in) :: id_control
@@ -133,6 +134,8 @@
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
+      new_part_ctl%block_name = hd_masking_ctl
+      new_part_ctl%num_masking_ctl = 0
       if(new_part_ctl%i_new_patition_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -245,6 +248,49 @@
       end subroutine write_ctl_data_new_partition
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine init_ctl_label_new_partition(hd_block, new_part_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(new_patition_control), intent(inout) :: new_part_ctl
+!
+!
+      new_part_ctl%block_name = hd_block
+      new_part_ctl%num_masking_ctl = 0
+!
+        call init_c_i_array_label                                       &
+     &     (hd_num_es, new_part_ctl%ndomain_section_ctl)
+!
+        call init_int_ctl_item_label                                    &
+     &     (hd_sleeve_level, new_part_ctl%sleeve_level_ctl)
+        call init_int_ctl_item_label                                    &
+     &     (hd_ratio_divide, new_part_ctl%ratio_of_grouping_ctl)
+!
+        call init_chara_ctl_item_label(hd_repart_table_head,            &
+     &                           new_part_ctl%repart_table_head_ctl)
+        call init_chara_ctl_item_label(hd_repart_table_fmt,             &
+     &                           new_part_ctl%repart_table_fmt_ctl)
+!
+        call init_chara_ctl_item_label(hd_part_ref,                     &
+     &                           new_part_ctl%partition_reference_ctl)
+        call init_chara_ctl_item_label(hd_trace_cnt_prefix,             &
+     &                           new_part_ctl%trace_count_head_ctl)
+        call init_chara_ctl_item_label(hd_trace_count_fmt,              &
+     &                           new_part_ctl%trace_count_fmt_ctl)
+!
+        call init_chara_ctl_item_label(hd_masking_switch,               &
+     &                           new_part_ctl%masking_switch_ctl)
+!
+        call init_real_ctl_item_label(hd_power_of_volume,               &
+     &                          new_part_ctl%power_of_volume_ctl)
+        call init_real_ctl_item_label(hd_masking_weight,                &
+     &                          new_part_ctl%masking_weight_ctl)
+        call init_real_ctl_item_label(hd_weight_to_prev,                &
+     &      new_part_ctl%weight_to_previous_ctl)
+!
+      end subroutine init_ctl_label_new_partition
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_repart_masking_ctl_array                          &
@@ -256,10 +302,11 @@
       type(new_patition_control), intent(inout) :: new_part_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer(kind=kint) :: n_append
+!
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(new_part_ctl%mask_ctl)) return
-      new_part_ctl%num_masking_ctl = 0
       call alloc_repart_masking_ctl(new_part_ctl)
 !
       do
@@ -268,7 +315,9 @@
         if (check_end_array_flag(c_buf, hd_block)) exit
 !
         if(check_begin_flag(c_buf, hd_block)) then
-          call append_repart_masking_ctl(new_part_ctl)
+          n_append = new_part_ctl%num_masking_ctl
+          call append_repart_masking_ctl(n_append, hd_block,            &
+     &                                   new_part_ctl)
           call read_masking_ctl_data(id_control, hd_block,              &
      &        new_part_ctl%mask_ctl(new_part_ctl%num_masking_ctl),      &
      &        c_buf)
