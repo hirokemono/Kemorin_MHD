@@ -123,6 +123,7 @@
       if(mesh_tctl%i_mesh_test_ctl .gt. 0) return
       mesh_tctl%block_name = hd_block
       call init_platforms_labels(hd_platform, mesh_tctl%plt)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, mesh_tctl%Fmesh_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

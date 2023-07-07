@@ -68,7 +68,7 @@
 !
       type masking_by_field_ctl
 !>        Block name
-        character(len=kchara) :: block_name = 'kernel_ctl'
+        character(len=kchara) :: block_name = 'masking_control'
 !
         type(read_character_item) :: mask_type_ctl
         type(read_character_item) :: field_name_ctl

@@ -37,6 +37,8 @@
 !
       use t_ctl_data_volume_repart
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_4_platform_ctl
 !
       type(viz_repartition_ctl), intent(inout) :: viz_repart_c
@@ -50,6 +52,8 @@
 !
       call calypso_mpi_bcast_one_int                                    &
      &   (viz_repart_c%i_viz_repartition_ctl, 0)
+      call calypso_mpi_bcast_character(viz_repart_c%block_name,         &
+     &                                 cast_long(kchara), 0)
 !
       end subroutine bcast_control_vol_repart
 !
@@ -101,6 +105,8 @@
       use t_ctl_data_FEM_sleeve_size
       use bcast_control_arrays
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(FEM_sleeve_control), intent(inout) :: sleeve_ctl
 !
@@ -111,6 +117,8 @@
       call bcast_ctl_type_r1(sleeve_ctl%sleeve_size_ctl)
 !
       call calypso_mpi_bcast_one_int(sleeve_ctl%i_FEM_sleeve_ctl, 0)
+      call calypso_mpi_bcast_character(sleeve_ctl%block_name,           &
+     &                                 cast_long(kchara), 0)
 !
       end subroutine bcast_FEM_sleeve_control
 !

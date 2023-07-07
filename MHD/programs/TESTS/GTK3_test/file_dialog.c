@@ -156,6 +156,14 @@ extern void * c_pvr_render_ctls_pvr_ctl(int idx, void *f_pvr_ctls);
 extern void * c_append_viz_pvr_render_ctls(int idx, char *block_name, void *f_pvr_ctls);
 extern void * c_delete_viz_pvr_render_ctls(int idx, void *f_pvr_ctls);
 
+extern void * c_lic_render_ctls_block_name(void *f_lic_ctls);
+extern int    c_lic_render_ctls_num_lic_ctl(void *f_lic_ctls);
+extern char * c_lic_render_ctls_fname(int idx, void *f_lic_ctls);
+extern void * c_lic_render_ctls_pvr_ctl(int idx, void *f_lic_ctls);
+extern void * c_lic_render_ctls_lic_ctl(int idx, void *f_lic_ctls);
+extern void * c_append_viz_lic_render_ctls(int idx, char *block_name, void *f_lic_ctls);
+extern void * c_delete_viz_lic_render_ctls(int idx, void *f_lic_ctls);
+
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
@@ -223,6 +231,12 @@ struct f_MHD_model_control{
 	struct f_MHD_SGS_model_control * f_sgs_ctl;
 };
 
+struct f_VIZ_LIC_ctls{
+	void *f_lic_pvr_ctl;
+	void *f_lic_lic_ctl;
+
+};
+
 struct f_MHD_viz_ctls{
 	void * f_self;
 	int * f_iflag;
@@ -239,10 +253,12 @@ struct f_MHD_viz_ctls{
 	struct void_file_clist *f_map_ctls;
 	
 	int f_num_pvr_ctl;
-	void * f_pvr_ctls;
+	struct void_file_clist *f_pvr_ctls;
+	
+	int f_num_lic_ctl;
+	struct void_file_clist *f_lic_ctls;
 	
 	void * f_fline_ctls;
-	void * f_lic_ctls;
 	void * f_repart_ctl;
 	void * f_fname_vol_repart_ctl;
 };
@@ -516,6 +532,30 @@ struct void_file_clist * init_f_VIZ_pvr_ctls(void *f_viz_ctls_self, int *f_num_p
 	return f_pvr_ctls;
 }
 
+struct void_file_clist * init_f_VIZ_lic_ctls(void *f_viz_ctls_self, int *f_num_lic_ctl)
+{
+    char *f_block_name =   (char *) c_lic_render_ctls_block_name(f_viz_ctls_self);
+	struct void_file_clist *f_lic_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
+	f_lic_ctls->f_parent =  c_visualizations_lic_ctls(f_viz_ctls_self);
+	*f_num_lic_ctl = c_lic_render_ctls_num_lic_ctl(f_lic_ctls->f_parent);
+	
+	
+	int i;
+	for(i=0;i<*f_num_lic_ctl;i++){
+		struct f_VIZ_LIC_ctls *f_lic_ctl_tmp
+				= (struct f_VIZ_LIC_ctls *) malloc(sizeof(struct f_VIZ_LIC_ctls));
+		if(f_lic_ctl_tmp == NULL){
+			printf("malloc error for f_viz_ctls\n");
+			exit(0);
+		};
+        f_block_name = c_lic_render_ctls_fname(i, f_lic_ctls->f_parent);
+        f_lic_ctl_tmp->f_lic_pvr_ctl =  c_lic_render_ctls_pvr_ctl(i, f_lic_ctls->f_parent);
+        f_lic_ctl_tmp->f_lic_lic_ctl =  c_lic_render_ctls_lic_ctl(i, f_lic_ctls->f_parent);
+		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) f_lic_ctl_tmp, f_lic_ctls);
+	}
+	return f_lic_ctls;
+}
+
 struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
 	struct f_MHD_viz_ctls *f_viz_ctls 
@@ -536,8 +576,8 @@ struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent)
 	f_viz_ctls->f_iso_ctls = init_f_VIZ_iso_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_iso_ctl);
 	f_viz_ctls->f_map_ctls = init_f_VIZ_map_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_map_ctl);
 	f_viz_ctls->f_pvr_ctls = init_f_VIZ_pvr_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_pvr_ctl);
+	f_viz_ctls->f_lic_ctls = init_f_VIZ_lic_ctls(f_viz_ctls->f_self, &f_viz_ctls->f_num_lic_ctl);
 	f_viz_ctls->f_fline_ctls =    c_visualizations_fline_ctls(f_viz_ctls->f_self);
-	f_viz_ctls->f_lic_ctls =    c_visualizations_lic_ctls(f_viz_ctls->f_self);
 	f_viz_ctls->f_repart_ctl =    c_visualizations_repart_ctl(f_viz_ctls->f_self);
 	f_viz_ctls->f_fname_vol_repart_ctl = c_visualizations_fname_vrepart(f_viz_ctls->f_self);
 	return f_viz_ctls;

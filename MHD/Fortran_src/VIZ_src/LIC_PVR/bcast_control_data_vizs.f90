@@ -92,6 +92,8 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (lic_ctls%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(lic_ctls%num_lic_ctl, 0)
       if(lic_ctls%num_lic_ctl .le. 0) return
 !

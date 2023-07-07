@@ -24,7 +24,7 @@ c_link_sph_monitor_control.o: $(MHD_F2003_DIR)/c_link_sph_monitor_control.f90 t_
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_sph_vol_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_sph_vol_spectr_ctl.f90 t_ctl_data_sph_vol_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
-c_link_viz_PVR_ctl_arrays.o: $(MHD_F2003_DIR)/c_link_viz_PVR_ctl_arrays.f90 t_control_data_maps.o t_control_data_pvrs.o ctl_array_chara_to_c.o ctl_data_volume_spectr_IO.o
+c_link_viz_PVR_ctl_arrays.o: $(MHD_F2003_DIR)/c_link_viz_PVR_ctl_arrays.f90 t_control_data_maps.o t_control_data_pvrs.o t_control_data_LIC_pvrs.o ctl_array_chara_to_c.o ctl_data_volume_spectr_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_viz_surf_ctl_arrays.o: $(MHD_F2003_DIR)/c_link_viz_surf_ctl_arrays.f90 t_control_data_sections.o t_control_data_isosurfaces.o ctl_array_chara_to_c.o ctl_data_volume_spectr_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

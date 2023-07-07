@@ -7,6 +7,7 @@
 !> @brief control data for parallel volume rendering
 !!
 !!@verbatim
+!!      subroutine init_lic_pvr_ctl_label(hd_block, pvr, lic_ctl)
 !!      subroutine read_lic_pvr_ctl                                     &
 !!     &         (id_control, hd_block, pvr, lic_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -171,6 +172,7 @@
 !
 !
       if(pvr%i_pvr_ctl .gt. 0) return
+      lic_ctl%block_name = hd_block
       call int_pvr_render_area_ctl(hd_plot_area, pvr%render_area_c)
       call init_pvr_cmap_cbar_label(hd_lic_colordef, pvr%cmap_cbar_c)
       call init_view_transfer_ctl_label(hd_view_transform, pvr%mat)
@@ -179,6 +181,7 @@
       call init_pvr_isosurfs_ctl(hd_pvr_isosurf, pvr%pvr_isos_c)
       call init_quilt_image_ctl_label(hd_quilt_image, pvr%quilt_c)
       call init_pvr_rotation_ctl_label(hd_snapshot_movie, pvr%movie)
+      call init_lic_control_label(hd_lic_control, lic_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do
@@ -332,6 +335,57 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_lic_pvr_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_lic_pvr_ctl_label(hd_block, pvr, lic_ctl)
+!
+      use ctl_data_LIC_IO
+      use ctl_file_pvr_modelview_IO
+      use ctl_data_pvr_colorbar_IO
+      use ctl_data_pvr_colormap_IO
+      use ctl_file_pvr_light_IO
+      use ctl_data_pvr_movie_IO
+      use ctl_data_view_transfer_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(pvr_parameter_ctl), intent(inout) :: pvr
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+!
+      lic_ctl%block_name = hd_block
+      call int_pvr_render_area_ctl(hd_plot_area, pvr%render_area_c)
+      call init_pvr_cmap_cbar_label(hd_lic_colordef, pvr%cmap_cbar_c)
+      call init_view_transfer_ctl_label(hd_view_transform, pvr%mat)
+      call init_lighting_ctl_label(hd_pvr_lighting, pvr%light)
+      call init_pvr_sections_ctl(hd_pvr_sections, pvr%pvr_scts_c)
+      call init_pvr_isosurfs_ctl(hd_pvr_isosurf, pvr%pvr_isos_c)
+      call init_quilt_image_ctl_label(hd_quilt_image, pvr%quilt_c)
+      call init_pvr_rotation_ctl_label(hd_snapshot_movie, pvr%movie)
+      call init_lic_control_label(hd_lic_control, lic_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_pvr_updated, pvr%updated_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_lic_file_head, pvr%file_head_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_lic_out_format, pvr%file_fmt_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_lic_out_type, pvr%file_fmt_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_pvr_monitor, pvr%monitoring_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_pvr_streo, pvr%streo_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_anaglyph_switch, pvr%anaglyph_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_pvr_quilt_3d, pvr%quilt_ctl)
+!
+      end subroutine init_lic_pvr_ctl_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

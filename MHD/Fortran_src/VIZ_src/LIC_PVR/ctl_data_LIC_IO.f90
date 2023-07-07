@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine init_lic_control_label(hd_block, lic_ctl)
 !!      subroutine s_read_lic_control_data                              &
 !!     &         (id_control, hd_block, lic_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -153,10 +154,6 @@
 !
 !
       if(lic_ctl%i_lic_control .gt. 0) return
-      lic_ctl%block_name = hd_block
-      call init_cube_noise_ctl_label(hd_cube_noise, lic_ctl%noise_ctl)
-      call init_kernel_control_label(hd_kernel, lic_ctl%kernel_ctl)
-      lic_ctl%num_masking_ctl = 0
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
 !
       do
@@ -274,6 +271,51 @@
      &                                lic_ctl%block_name)
 !
       end subroutine write_lic_control_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_lic_control_label(hd_block, lic_ctl)
+!
+      use ctl_file_LIC_kernel_IO
+      use ctl_file_LIC_noise_IO
+      use ctl_file_volume_repart_IO
+!
+      character(len = kchara), intent(in) :: hd_block
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+!
+      lic_ctl%block_name = hd_block
+      lic_ctl%num_masking_ctl = 0
+      call init_cube_noise_ctl_label(hd_cube_noise, lic_ctl%noise_ctl)
+      call init_kernel_control_label(hd_kernel, lic_ctl%kernel_ctl)
+      call init_control_vol_repart_label(hd_lic_partition,              &
+     &                                   lic_ctl%repart_ctl)
+!
+        call init_chara_ctl_item_label(hd_LIC_field,                    &
+     &                           lic_ctl%LIC_field_ctl)
+        call init_chara_ctl_item_label(hd_sub_elapse_dump,              &
+     &                           lic_ctl%subdomain_elapsed_dump_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_color_field, lic_ctl%color_field_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_color_component, lic_ctl%color_component_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_opacity_field, lic_ctl%opacity_field_ctl)
+        call init_chara_ctl_item_label(hd_opacity_component,            &
+     &      lic_ctl%opacity_component_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_step_size, lic_ctl%step_size_ctl)
+!
+        call init_chara_ctl_item_label(hd_normalization_type,           &
+     &      lic_ctl%normalization_type_ctl)
+        call init_real_ctl_item_label(hd_normalization_value,           &
+     &      lic_ctl%normalization_value_ctl)
+!
+      end subroutine init_lic_control_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

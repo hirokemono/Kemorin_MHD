@@ -114,6 +114,7 @@
 !
       if(psph_ctl%iflag_sph_shell .gt. 0) return
       psph_ctl%block_name = trim(hd_block)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, psph_ctl%Fmesh_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

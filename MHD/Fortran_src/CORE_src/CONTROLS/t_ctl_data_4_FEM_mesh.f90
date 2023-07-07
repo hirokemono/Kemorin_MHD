@@ -7,6 +7,7 @@
 !> @brief Control input routine for data file headers
 !!
 !!@verbatim
+!!      subroutine init_FEM_mesh_ctl_label(hd_block, Fmesh_ctl)
 !!      subroutine read_FEM_mesh_control                                &
 !!     &         (id_control, hd_block, Fmesh_ctl, c_buf)
 !!      subroutine write_FEM_mesh_control(id_control, Fmesh_ctl, level)
@@ -146,6 +147,27 @@
      &                                Fmesh_ctl%block_name)
 !
       end subroutine write_FEM_mesh_control
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_FEM_mesh_ctl_label(hd_block, Fmesh_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(FEM_mesh_control), intent(inout) :: Fmesh_ctl
+!
+!
+      Fmesh_ctl%block_name = hd_block
+!
+        call init_chara_ctl_item_label(hd_mem_conserve,                 &
+     &      Fmesh_ctl%memory_conservation_ctl)
+        call init_chara_ctl_item_label(hd_FEM_mesh_output,              &
+     &      Fmesh_ctl%FEM_mesh_output_switch)
+        call init_chara_ctl_item_label(hd_FEM_surf_output,              &
+     &      Fmesh_ctl%FEM_surface_output_switch)
+        call init_chara_ctl_item_label(hd_FEM_viewer_output,            &
+     &      Fmesh_ctl%FEM_viewer_output_switch)
+!
+      end subroutine init_FEM_mesh_ctl_label
 !
 !  ---------------------------------------------------------------------
 !

@@ -156,6 +156,7 @@
       if(spt_ctl%i_sph_trans_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, spt_ctl%plt)
       call init_platforms_labels(hd_org_data, spt_ctl%org_plt)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, spt_ctl%Fmesh_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

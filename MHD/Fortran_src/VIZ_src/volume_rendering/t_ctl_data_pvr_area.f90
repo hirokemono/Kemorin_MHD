@@ -60,7 +60,7 @@
 !
       type pvr_render_area_ctl
 !>        Control block name
-        character(len = kchara) :: block_name = 'plot_area_ctl'
+        character(len = kchara) :: block_name = 'FEM_sleeve_ctl'
 !
         type(ctl_array_chara) :: pvr_area_ctl
         type(ctl_array_c2r) :: surf_enhanse_ctl

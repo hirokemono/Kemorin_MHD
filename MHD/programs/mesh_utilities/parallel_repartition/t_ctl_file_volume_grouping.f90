@@ -48,6 +48,9 @@
       integer(kind = kint), parameter :: part_ctl_file_code = 11
 !
       type new_patition_test_control
+!>        Control block name
+        character(len = kchara) :: block_name = 'viz_repartition_ctl'
+!
 !>        Structure for file controls
         type(platform_data_control) :: plt
 !
@@ -162,6 +165,8 @@
 !
       if(part_tctl%i_mesh_test_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, part_tctl%plt)
+      call init_control_vol_repart_label(hd_viz_partition,              &
+     &                                   part_tctl%viz_repart_c)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
