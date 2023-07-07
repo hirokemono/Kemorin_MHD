@@ -6,6 +6,7 @@
 !>@brief control data for each field line
 !!
 !!@verbatim
+!!      subroutine init_field_line_ctl_label(hd_block, fln)
 !!      subroutine s_read_field_line_ctl(id_control, hd_block,          &
 !!     &                                 fln, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -256,6 +257,56 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_field_line_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_field_line_ctl_label(hd_block, fln)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(fline_ctl), intent(inout) :: fln
+!
+!
+      fln%block_name = hd_block
+!
+        call init_chara_ctl_array_label                                 &
+     &     (hd_fline_grp, fln%fline_area_grp_ctl)
+!
+        call init_r3_ctl_array_label                                    &
+     &     (hd_xx_start_point, fln%seed_point_ctl)
+        call init_int2_ctl_array_label                                  &
+     &     (hd_start_global_surf, fln%seed_surface_ctl)
+!
+        call init_chara_ctl_item_label(hd_fline_file_prefix,            &
+     &      fln%fline_file_head_ctl)
+        call init_chara_ctl_item_label(hd_fline_file_head,              &
+     &      fln%fline_file_head_ctl)
+!
+        call init_chara_ctl_item_label(hd_fline_output_format,          &
+     &      fln%fline_output_type_ctl)
+        call init_chara_ctl_item_label(hd_fline_output_type,            &
+     &      fln%fline_output_type_ctl)
+!
+        call init_chara_ctl_item_label(hd_field_line_field,             &
+     &      fln%fline_field_ctl )
+        call init_chara_ctl_item_label(hd_coloring_field,               &
+     &      fln%fline_color_field_ctl )
+        call init_chara_ctl_item_label(hd_coloring_comp,                &
+     &      fln%fline_color_comp_ctl )
+        call init_chara_ctl_item_label(hd_starting_type,                &
+     &      fln%starting_type_ctl )
+        call init_chara_ctl_item_label(hd_start_surf_grp,               &
+     &      fln%start_surf_grp_ctl )
+        call init_chara_ctl_item_label(hd_selection_type,               &
+     &      fln%selection_type_ctl )
+        call init_chara_ctl_item_label(hd_line_direction,               &
+     &      fln%line_direction_ctl )
+!
+        call init_int_ctl_item_label(hd_num_fieldline,                  &
+     &      fln%num_fieldline_ctl )
+        call init_int_ctl_item_label(hd_max_line_stepping,              &
+     &      fln%max_line_stepping_ctl)
+!
+      end subroutine init_field_line_ctl_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

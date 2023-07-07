@@ -36,7 +36,7 @@ start_surface_by_gl_table.o: $(FIELDLINE_DIR)/start_surface_by_gl_table.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 start_surface_in_volume.o: $(FIELDLINE_DIR)/start_surface_in_volume.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_phys_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_params_4_fline.o t_source_of_filed_line.o calypso_mpi_real.o extend_field_line.o cal_field_on_surf_viz.o set_fline_start_surface.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_flines.o: $(FIELDLINE_DIR)/t_control_data_flines.f90 m_precision.o m_constants.o m_machine_parameter.o t_ctl_data_field_line.o t_control_array_character3.o
+t_control_data_flines.o: $(FIELDLINE_DIR)/t_control_data_flines.f90 m_precision.o m_constants.o m_machine_parameter.o t_ctl_data_field_line.o ctl_data_field_line_IO.o t_control_array_character3.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_params_4_fline.o: $(FIELDLINE_DIR)/t_control_params_4_fline.f90 m_precision.o t_geometry_data.o t_read_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

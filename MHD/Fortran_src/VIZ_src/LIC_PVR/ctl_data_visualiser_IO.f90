@@ -188,6 +188,7 @@
       call init_lic_ctls_labels(hd_lic_ctl, viz_ctls%lic_ctls)
       call init_control_vol_repart_label(hd_viz_partition,              &
      &                                   viz_ctls%repart_ctl)
+      call init_fline_ctl_struct(hd_fline_ctl, viz_ctls%fline_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
