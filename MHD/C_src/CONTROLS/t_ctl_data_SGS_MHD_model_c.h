@@ -31,7 +31,7 @@ struct mhd_model_control_c{
     int iflag_use;
 	int maxlen;
 	
-	struct field_ctl_c *fld_ctl;
+	struct f_MHD_fields_control *fld_ctl;
 	struct mhd_evolution_ctl_c *evo_ctl;
 	struct mhd_evo_area_ctl_c *earea_ctl;
 	struct MHD_boundary_ctl_c *nbc_ctl;

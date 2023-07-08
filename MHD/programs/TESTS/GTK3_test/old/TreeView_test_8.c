@@ -6,7 +6,7 @@
 
 struct all_field_ctl_c *all_fld_list;
 struct SGS_MHD_control_c *mhd_ctl;
-char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
+char file_name[LENGTHBUF] = "/Users/matsui/Desktop/tako/control_MHD";
 char buf[LENGTHBUF];      /* character buffer for reading line */
 
 static GtkWidget *main_window = NULL;
@@ -192,7 +192,7 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
 		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model), &iter);
 		delete_field_in_ctl(index_field, all_fld_list, 
-							&mhd_ctl->model_ctl->fld_ctl->field_list);
+							mhd_ctl->model_ctl->fld_ctl);
 
 		gtk_tree_path_free(tree_path);
 		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
@@ -433,8 +433,8 @@ int main(int argc, char **argv)
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-    load_field_from_ctl(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
-	
+    return 1;
+    load_field_from_ctl(mhd_ctl->model_ctl->fld_ctl, all_fld_list);
 	
 	gtk_init(&argc, &argv);
 

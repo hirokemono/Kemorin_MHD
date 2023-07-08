@@ -21,7 +21,7 @@
 
 #include "m_field_name_from_f.h"
 
-struct field_ctl_c{
+struct f_MHD_fields_control{
     void * f_self;
     int * f_iflag;
     
@@ -48,8 +48,8 @@ struct all_field_ctl_c{
 /* prototype */
 void get_label_field_ctl(int index, char *label);
 
-struct field_ctl_c * init_field_ctl_c();
-void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl);
+struct f_MHD_fields_control * init_field_ctl_c();
+void dealloc_field_ctl_c(struct f_MHD_fields_control *fld_ctl);
 
 void set_viz_flags_to_text(struct chara_int2_ctl_item *field_item,
                            struct chara3_ctl_item *tmp_fld_item);
@@ -58,28 +58,35 @@ void set_viz_flags_from_text(struct chara3_ctl_item *tmp_fld_item,
 
 
 void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct field_ctl_c *fld_ctl);
-int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl);
+			struct f_MHD_fields_control *fld_ctl);
+int write_field_ctl_c(FILE *fp, int level, const char *label,
+                      struct f_MHD_fields_control *fld_ctl);
 
 
 struct all_field_ctl_c * init_all_field_ctl_c();
 void dealloc_all_field_ctl_c(struct all_field_ctl_c *all_fld_list);
 
+void delete_field_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
+                         struct chara_int2_clist *f_field_ctl);
+void load_field_from_ctl(struct chara_int2_clist *f_field_ctl,
+                         struct all_field_ctl_c *all_fld_list);
+
+
 void add_field_wqflag_to_ctl(int i_fld, struct all_field_ctl_c *all_fld_list, 
-			struct field_ctl_c *fld_ctl);
+                             struct f_MHD_fields_control *fld_ctl);
 void delete_field_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
-			struct field_ctl_c *fld_ctl);
+                                struct f_MHD_fields_control *fld_ctl);
 void update_field_flag_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list, 
-			struct field_ctl_c *fld_ctl);
+                                     struct f_MHD_fields_control *fld_ctl);
 
-void load_field_w_qflag_from_ctl(struct field_ctl_c *fld_ctl, 
-			struct all_field_ctl_c *all_fld_list);
+void load_field_w_qflag_from_ctl(struct f_MHD_fields_control *fld_ctl,
+                                 struct all_field_ctl_c *all_fld_list);
 void load_field_w_qflag_to_ctl(struct all_field_ctl_c *all_fld_list, 
-			struct field_ctl_c *fld_ctl);
+                               struct f_MHD_fields_control *fld_ctl);
 void reflesh_field_ctl_list(struct all_field_ctl_c *all_fld_list, 
-			struct field_ctl_c *fld_ctl);
+                            struct f_MHD_fields_control *fld_ctl);
 
-void check_field_ctl_list(struct field_ctl_c *fld_ctl);
-void check_field_and_comp_ctl_list(struct field_ctl_c *fld_ctl);
+void check_field_ctl_list(struct f_MHD_fields_control *fld_ctl);
+void check_field_and_comp_ctl_list(struct f_MHD_fields_control *fld_ctl);
 
 #endif /* t_ctl_data_4_fields_c_h_ */

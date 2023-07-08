@@ -30,12 +30,12 @@ struct kemoview_mesh_ctl_c{
 
 /* prototype */
 
-void alloc_field_ctl_c(struct field_ctl_c *fld_ctl);
-void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl);
+void alloc_field_ctl_c(struct f_MHD_fields_control *fld_ctl);
+void dealloc_field_ctl_c(struct f_MHD_fields_control *fld_ctl);
 void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct field_ctl_c *fld_ctl);
-int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl);
+			struct f_MHD_fields_control *fld_ctl);
+int write_field_ctl_c(FILE *fp, int level, const char *label, struct f_MHD_fields_control *fld_ctl);
 
-void check_field_ctl_list(struct field_ctl_c *fld_ctl);
+void check_field_ctl_list(struct f_MHD_fields_control *fld_ctl);
 
 #endif /* t_ctl_data_4_kemoview_mesh_c */

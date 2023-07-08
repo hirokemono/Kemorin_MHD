@@ -627,17 +627,17 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_energy_fluxes_w_symmetry_f() bind(c)
+      integer(c_int) function num_energy_fluxes_w_sym_org_f() bind(c)
 !
       use m_energy_flux_w_sym_labels
 !
-      num_energy_fluxes_w_symmetry_f = num_ene_fluxes_w_symmetry()
+      num_energy_fluxes_w_sym_org_f = num_ene_fluxes_w_symmetry()
       return
-      end function num_energy_fluxes_w_symmetry_f
+      end function num_energy_fluxes_w_sym_org_f
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ene_flux_w_sym_labels_f                            &
+      subroutine set_ene_flux_w_sym_labels_org_f                        &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
       use m_energy_flux_w_sym_labels
@@ -654,6 +654,39 @@
       call c_f_pointer(field_math_c, math,                              &
      &                 [num_ene_fluxes_w_symmetry()])
       call set_ene_flux_w_symmetry_names(n_comps_c(1), field, math)
+!
+      end subroutine set_ene_flux_w_sym_labels_org_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_energy_fluxes_w_symmetry_f() bind(c)
+!
+      use m_sym_ene_flux_labels
+!
+      num_energy_fluxes_w_symmetry_f = num_sym_ene_fluxes()
+      return
+      end function num_energy_fluxes_w_symmetry_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_ene_flux_w_sym_labels_f                            &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use m_sym_ene_flux_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      type(C_ptr), value :: field_name_c
+      type(C_ptr), value :: field_math_c
+!
+      character(len=kchara), pointer :: field(:)
+      character(len=kchara), pointer :: math(:)
+!
+      call c_f_pointer(field_name_c, field,                             &
+     &                 [num_sym_ene_fluxes()])
+      call c_f_pointer(field_math_c, math,                              &
+     &                 [num_sym_ene_fluxes()])
+      call set_sym_ene_flux_labels(n_comps_c(1), field, math)
 !
       end subroutine set_ene_flux_w_sym_labels_f
 !

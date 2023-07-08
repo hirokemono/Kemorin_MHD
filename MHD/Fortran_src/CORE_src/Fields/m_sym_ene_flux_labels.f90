@@ -11,7 +11,7 @@
 !!      logical function check_filter_enegy_fluxes(field_name)
 !!
 !!      integer(kind = kint) function num_sym_ene_fluxes()
-!!      subroutine set_sym_ene_flax_labels(n_comps, names, maths)
+!!      subroutine set_sym_ene_flux_labels(n_comps, names, maths)
 !!
 !! !!!!!  List of energy flux by SGS terms  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -153,7 +153,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-        subroutine set_sym_ene_flax_labels(n_comps, names, maths)
+        subroutine set_sym_ene_flux_labels(n_comps, names, maths)
 !
         integer(kind = kint_4b), intent(inout)                            &
         &                        :: n_comps(neflux_w_sym)
@@ -184,7 +184,7 @@
         call set_field_labels(mns_ua_d_wa_x_ua,                &
         &    n_comps( 10), names( 10), maths( 10))
 ! 
-        end subroutine set_sym_ene_flax_labels
+        end subroutine set_sym_ene_flux_labels
 !
 ! ----------------------------------------------------------------------
 !

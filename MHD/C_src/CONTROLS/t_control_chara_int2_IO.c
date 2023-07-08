@@ -153,6 +153,20 @@ static struct chara_int2_ctl_list *find_ci2_ctl_list_item_by_c_tbl(char *ref, st
     if(head == NULL) printf("array item %s does not exist.\n", ref);
     return head;
 };
+int find_ci2_ctl_list_index_by_c_tbl(char *ref, struct chara_int2_ctl_list *head){
+    int idx = 0;
+    head = head->_next;
+    while (head != NULL){
+        if(cmp_no_case_c(head->ci2_item->c_tbl, ref)) break;
+        head = head->_next;
+        idx = idx + 1;
+    };
+    if(head == NULL){
+        printf("array item %s does not exist.\n", ref);
+        idx = -1;
+    };
+    return idx;
+};
 
 
 static void append_chara_int2_ctl_list(struct chara_int2_ctl_item *ci2_input,
@@ -262,6 +276,9 @@ struct chara_int2_ctl_item *find_chara_int2_ctl_item_by_cref(char *ref,
 	struct chara_int2_ctl_list *head
             = find_ci2_ctl_list_item_by_c_tbl(ref, &ci2_clst->ci2_item_head);
     return head->ci2_item;
+};
+int find_chara_int2_ctl_index_by_cref(char *ref, struct chara_int2_clist *ci2_clst){
+    return find_ci2_ctl_list_index_by_c_tbl(ref, &ci2_clst->ci2_item_head);
 };
 
 

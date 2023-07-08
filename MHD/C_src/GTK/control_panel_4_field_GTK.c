@@ -8,6 +8,15 @@
 #include "control_panel_4_field_GTK.h"
 
 
+static void reflesh_field_ctl_f(struct chara_int2_clist *f_field_ctl){
+    c_dealloc_chara3_array(f_field_ctl->f_self);
+    c_alloc_chara3_array(count_chara_int2_clist(f_field_ctl),
+                         f_field_ctl->f_self);
+    update_field_ctl_f(f_field_ctl);
+    return;
+}
+
+
 static void remove_field_to_use(GtkButton *button, gpointer user_data)
 {
     gchar *field_name;
@@ -104,7 +113,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
 		
 		/* Update control data */
-		printf("Delete field list \n");
+		printf("Delete field list %d %d\n", index_field, &iter);
 		delete_field_wqflag_in_ctl(index_field, fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
 	}
 	g_list_free(reference_list);
@@ -120,6 +129,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
     /*
     check_field_ctl_list(fields_vws->fld_ctl_gtk);
      */
+    reflesh_field_ctl_f(fields_vws->fld_ctl_gtk->f_field_ctl);
 	return;
 }
 
@@ -131,8 +141,8 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 			= GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "used_tree"));
 	struct all_field_ctl_c *all_fld_list 
 			= (struct all_field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "all_fields");
-	struct field_ctl_c *fld_ctl_gtk
-			= (struct field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
+	struct f_MHD_fields_control *fld_ctl_gtk
+			= (struct f_MHD_fields_control *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
 	
     gchar *field_name;
     gchar *field_math;
@@ -216,6 +226,7 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
     /*
     check_field_ctl_list(fld_ctl_gtk);
 	 */
+    reflesh_field_ctl_f(fld_ctl_gtk->f_field_ctl);
 	return;
 }
 
@@ -429,7 +440,7 @@ void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox_out
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), column_field,
 				"text", COLUMN_FIELD_NAME, NULL);
 	
-	g_signal_connect(G_OBJECT(combobox_comp), "changed", 
+	g_signal_connect(G_OBJECT(combobox_comp), "changed",
 				G_CALLBACK(cb_set_component_name), fields_vws);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), column_comp, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), column_comp,

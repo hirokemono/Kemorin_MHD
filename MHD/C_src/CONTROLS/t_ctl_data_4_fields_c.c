@@ -18,11 +18,11 @@ void get_label_field_ctl(int index, char *label){
 };
 
 
-struct field_ctl_c * init_field_ctl_c(){
+struct f_MHD_fields_control * init_field_ctl_c(){
 	int i;
-    struct field_ctl_c *fld_ctl;
-    if((fld_ctl = (struct field_ctl_c *) malloc(sizeof(struct field_ctl_c))) == NULL) {
-        printf("malloc error for field_ctl_c \n");
+    struct f_MHD_fields_control *fld_ctl;
+    if((fld_ctl = (struct f_MHD_fields_control *) malloc(sizeof(struct f_MHD_fields_control))) == NULL) {
+        printf("malloc error for f_MHD_fields_control \n");
         exit(0);
     }
     
@@ -39,7 +39,7 @@ struct field_ctl_c * init_field_ctl_c(){
 	return fld_ctl;
 };
 
-void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
+void dealloc_field_ctl_c(struct f_MHD_fields_control *fld_ctl){
     dealloc_chara_int2_clist(fld_ctl->f_field_ctl);
     dealloc_chara_clist(fld_ctl->f_quad_phys);
 	
@@ -138,7 +138,7 @@ static int write_field_ctl_list(FILE *fp, int level, const char *label,
 };
 
 void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-                      struct field_ctl_c *fld_ctl){
+                      struct f_MHD_fields_control *fld_ctl){
     if(fld_ctl->iflag_read > 0) return;
     
 	while(find_control_end_flag_c(buf, label) == 0){
@@ -152,7 +152,7 @@ void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return;
 };
 
-int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl){
+int write_field_ctl_c(FILE *fp, int level, const char *label, struct f_MHD_fields_control *fld_ctl){
     if(fld_ctl->iflag_read == 0) return level;
     
 	level = write_begin_flag_for_ctl_c(fp, level, label);
@@ -226,8 +226,8 @@ static void add_field_to_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
 	return;
 }
 
-static void delete_field_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
-                                struct chara_int2_clist *f_field_ctl){
+void delete_field_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
+                         struct chara_int2_clist *f_field_ctl){
 	set_no_use_all_field_ctl_c(i_fld, all_fld_list);
     del_chara_int2_clist_by_c_tbl(all_fld_list->fld_list->field_name[i_fld], f_field_ctl);
 	return;
@@ -243,8 +243,8 @@ static void update_field_flag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_
 }
 
 
-static void load_field_from_ctl(struct chara_int2_clist *f_field_ctl,
-                                struct all_field_ctl_c *all_fld_list){
+void load_field_from_ctl(struct chara_int2_clist *f_field_ctl,
+                         struct all_field_ctl_c *all_fld_list){
     int i, j, idx;
     int jst = 0;
     struct chara_int2_ctl_item *ci2_item;
@@ -281,12 +281,13 @@ static void load_field_to_ctl(struct all_field_ctl_c *all_fld_list,
 };
 
 static void set_quadrature_flag_from_ctl(struct chara_clist *f_quad_phys,
-			struct all_field_ctl_c *all_fld_list){
+                                         struct all_field_ctl_c *all_fld_list){
 	int i, j, idx;
 	int jst = 0;
 	
 	for (j=0;j<all_fld_list->fld_list->ntot_fields;j++){all_fld_list->iflag_quad[j] = 0;}
-	
+    if(f_quad_phys == NULL) return;
+    if(f_quad_phys->f_self == NULL) return;
     for(idx=0;idx<count_chara_clist(f_quad_phys);idx++){
 		for (j=0;j<all_fld_list->fld_list->ntot_fields;j++){
 			i = (j+jst) % all_fld_list->fld_list->ntot_fields;
@@ -316,7 +317,8 @@ static void load_quadrature_field_to_ctl(struct all_field_ctl_c *all_fld_list,
 static void check_field_in_list(struct chara_int2_clist *f_field_ctl){
     int idx;
     for(idx=0;idx<count_chara_int2_clist(f_field_ctl);idx++){
-        printf("Field in the list: %s\n", find_chara_int2_ctl_item_by_index(idx,f_field_ctl)->c_tbl);
+        printf("Field in the list: %s\n",
+               find_chara_int2_ctl_item_by_index(idx,f_field_ctl)->c_tbl);
    };
 	return;	
 };
@@ -331,13 +333,13 @@ static void check_field_in_quad_list(struct chara_clist *f_quad_phys){
 
 
 void add_field_wqflag_to_ctl(int i_fld, struct all_field_ctl_c *all_fld_list, 
-			struct field_ctl_c *fld_ctl){
+                             struct f_MHD_fields_control *fld_ctl){
 	add_field_to_ctl(i_fld, all_fld_list, fld_ctl->f_field_ctl);
 	return;
 }
 
 void delete_field_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
-			struct field_ctl_c *fld_ctl){
+                                struct f_MHD_fields_control *fld_ctl){
 	set_no_use_all_field_ctl_c(i_fld, all_fld_list);
     del_chara_clist_by_c_tbl(all_fld_list->fld_list->field_name[i_fld],
                              fld_ctl->f_quad_phys);
@@ -346,7 +348,7 @@ void delete_field_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
 }
 
 void update_field_flag_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list, 
-			struct field_ctl_c *fld_ctl){
+                                     struct f_MHD_fields_control *fld_ctl){
 	
     update_field_flag_in_ctl(i_fld, all_fld_list, fld_ctl->f_field_ctl);
 	
@@ -361,22 +363,22 @@ void update_field_flag_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_
 	return;
 };
 
-void load_field_w_qflag_from_ctl(struct field_ctl_c *fld_ctl, 
-			struct all_field_ctl_c *all_fld_list){
+void load_field_w_qflag_from_ctl(struct f_MHD_fields_control *fld_ctl,
+                                 struct all_field_ctl_c *all_fld_list){
 	load_field_from_ctl(fld_ctl->f_field_ctl, all_fld_list);
 	set_quadrature_flag_from_ctl(fld_ctl->f_quad_phys, all_fld_list);
 	return;
 };
 
 void load_field_w_qflag_to_ctl(struct all_field_ctl_c *all_fld_list, 
-			struct field_ctl_c *fld_ctl){
+                               struct f_MHD_fields_control *fld_ctl){
 	load_field_to_ctl(all_fld_list, fld_ctl->f_field_ctl);
 	load_quadrature_field_to_ctl(all_fld_list, fld_ctl->f_quad_phys);
 	return;
 };
 
 void reflesh_field_ctl_list(struct all_field_ctl_c *all_fld_list, 
-			struct field_ctl_c *fld_ctl){
+                            struct f_MHD_fields_control *fld_ctl){
     dealloc_chara_int2_clist(fld_ctl->f_field_ctl);
     dealloc_chara_clist(fld_ctl->f_quad_phys);
 	load_field_w_qflag_to_ctl(all_fld_list, fld_ctl);
@@ -384,13 +386,13 @@ void reflesh_field_ctl_list(struct all_field_ctl_c *all_fld_list,
 };
 
 
-void check_field_ctl_list(struct field_ctl_c *fld_ctl){
+void check_field_ctl_list(struct f_MHD_fields_control *fld_ctl){
 	check_field_in_list(fld_ctl->f_field_ctl);
 	check_field_in_quad_list(fld_ctl->f_quad_phys);
 	return;	
 };
 
-void check_field_and_comp_ctl_list(struct field_ctl_c *fld_ctl){
+void check_field_and_comp_ctl_list(struct f_MHD_fields_control *fld_ctl){
     check_field_in_list(fld_ctl->f_field_ctl);
     return;
 };

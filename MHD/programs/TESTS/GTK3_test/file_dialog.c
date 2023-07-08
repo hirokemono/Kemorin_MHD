@@ -225,18 +225,6 @@ struct f_MHD_SGS_model_control{
 	void **f_sph_filter_ctl;
 };
 
-struct f_MHD_fields_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_int2_clist *f_field_ctl;
-	struct chara_clist       *f_quad_phys;
-	struct chara_int_clist  *f_scalar_phys;
-	struct chara_int3_clist *f_vector_phys;
-};
-
 struct f_MHD_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -1039,6 +1027,20 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 		exit(0);
 	};
 	
+    struct field_views *fields_vws = init_field_views_GTK(f_MHD_ctl->f_model_ctl->f_fld_ctl);
+	fields_vws->used_tree_view = create_field_tree_view(fields_vws->all_fld_list,
+														fields_vws->fld_ctl_gtk);
+    fields_vws->unused_field_tree_view = create_unused_field_tree_views(fields_vws->all_fld_list);
+    fields_vws->field_group_tree_view = create_field_group_tree_view(fields_vws->all_fld_list);
+    fields_vws->all_field_tree_view = create_all_field_tree_views(fields_vws->all_fld_list);
+    create_direction_tree_views(fields_vws);
+	GtkWidget *vbox_MHD_fields = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    add_field_selection_box(fields_vws, window, vbox_MHD_fields);
+    GtkWidget *expand_MHD_fields = draw_control_block(f_MHD_ctl->f_model_ctl->f_fld_ctl->c_block_name,
+                                                      f_MHD_ctl->f_model_ctl->f_fld_ctl->f_iflag,
+                                                      560, 500, window, vbox_MHD_fields);
+
+	
 	GtkWidget *vbox_MHD_force = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names, 
 														   f_MHD_vws->f_force_tree_view);
 	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl, window);
@@ -1051,6 +1053,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 													 560, 400, window, vbox_eqs);
 	
 	GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_fields, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), vbox_MHD_force, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_dimless, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);

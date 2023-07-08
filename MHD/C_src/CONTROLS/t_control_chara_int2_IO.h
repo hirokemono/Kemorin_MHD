@@ -67,6 +67,7 @@ struct chara_int2_ctl_item *find_chara_int2_ctl_item_by_index(int index,
                                                               struct chara_int2_clist *ci2_clst);
 struct chara_int2_ctl_item *find_chara_int2_ctl_item_by_cref(char *ref,
                                                              struct chara_int2_clist *ci2_clst);
+int find_chara_int2_ctl_index_by_cref(char *ref, struct chara_int2_clist *ci2_clst);
 
 void add_chara_int2_clist_before_c_tbl(char *ref, struct chara_int2_ctl_item *ci2_input,
                                        struct chara_int2_clist *ci2_clst);

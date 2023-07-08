@@ -7,7 +7,7 @@
 
 #include "tree_view_4_field_GTK.h"
 
-struct field_views * init_field_views_GTK(struct field_ctl_c *fld_ctl_ref){
+struct field_views * init_field_views_GTK(struct f_MHD_fields_control *fld_ctl_ref){
     struct field_views *fields_vws;
 	if((fields_vws = (struct field_views *) malloc(sizeof(struct field_views))) == NULL){
 		printf("malloc error for field_views\n");
@@ -27,6 +27,20 @@ void dealloc_field_views_GTK(struct field_views *fields_vws){
 	dealloc_component_flags_f(fields_vws->comp_flags);
 	free(fields_vws);
 	return;
+}
+
+void update_field_ctl_f(struct chara_int2_clist *f_field_ctl){
+    struct chara3_ctl_item *tmp_fld_ctl = init_chara3_ctl_item_c();
+    struct chara_int2_ctl_item *ci2_item;
+    int idx;
+    for(idx=0;idx<count_chara_int2_clist(f_field_ctl);idx++){
+        ci2_item = find_chara_int2_ctl_item_by_index(idx, f_field_ctl);
+        set_viz_flags_to_text(ci2_item, tmp_fld_ctl);
+        c_store_chara3_array(f_field_ctl->f_self, idx, ci2_item->c_tbl,
+                             tmp_fld_ctl->c2_tbl, tmp_fld_ctl->c3_tbl);
+    };
+    dealloc_chara3_ctl_item_c(tmp_fld_ctl);
+    return;
 }
 
 
@@ -52,8 +66,8 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
 			gchar *path_str, gpointer user_data){
 	struct all_field_ctl_c *all_fld_list 
 			= (struct all_field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "all_fields");
-	struct field_ctl_c *fld_ctl_gtk
-			= (struct field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
+	struct f_MHD_fields_control *fld_ctl_gtk
+			= (struct f_MHD_fields_control *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
 	
 	GtkWidget *used_tree_view = GTK_WIDGET(user_data);
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(GTK_TREE_VIEW(used_tree_view)));  
@@ -82,13 +96,15 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     
     all_fld_list->iflag_viz[index_field] = index_for_toggle;
 	update_field_flag_wqflag_in_ctl(index_field, all_fld_list, fld_ctl_gtk);
+    
+    update_field_ctl_f(fld_ctl_gtk->f_field_ctl);
 }
 
 static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
 	struct all_field_ctl_c *all_fld_list 
 			= (struct all_field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "all_fields");
-	struct field_ctl_c *fld_ctl_gtk
-			= (struct field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
+	struct f_MHD_fields_control *fld_ctl_gtk
+			= (struct f_MHD_fields_control *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
 	
 	GtkWidget *used_tree_view = GTK_WIDGET(user_data);
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(used_tree_view));  
@@ -116,6 +132,8 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     
     all_fld_list->iflag_monitor[index_field] = index_for_toggle;
 	update_field_flag_wqflag_in_ctl(index_field, all_fld_list, fld_ctl_gtk);
+    
+    update_field_ctl_f(fld_ctl_gtk->f_field_ctl);
 }
 
 
@@ -124,8 +142,8 @@ static void create_field_tree_columns(GtkWidget *used_tree_view)
     GtkCellRenderer *textRenderer1;
     GtkCellRenderer *textRenderer2;
     GtkCellRenderer *textRenderer3;
-    GtkCellRenderer *toggleRenderer1;
-    GtkCellRenderer *toggleRenderer2;
+    GtkCellRenderer *vizToggleRenderer;
+    GtkCellRenderer *mntrToggleRenderer;
 	
 	GtkTreeViewColumn *column_1st;
     GtkTreeViewColumn *column_2nd;
@@ -147,18 +165,19 @@ static void create_field_tree_columns(GtkWidget *used_tree_view)
     
     /* Forth row */
 	column_4th = create_each_field_column(used_tree_view, "Field output", COLUMN_FORTH);
-	toggleRenderer1 = create_each_toggle_renderer(column_4th, 60, COLUMN_FORTH);
-	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
+    vizToggleRenderer = create_each_toggle_renderer(column_4th, 60, COLUMN_FORTH);
+	g_signal_connect(G_OBJECT(vizToggleRenderer), "toggled",
 				G_CALLBACK(toggle_viz_switch), (gpointer) used_tree_view);
     
     /* Fifth row */
 	column_5th = create_each_field_column(used_tree_view, "Monitor output", COLUMN_FIFTH);
-	toggleRenderer2 = create_each_toggle_renderer(column_5th, 60, COLUMN_FIFTH);
-	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
+    mntrToggleRenderer = create_each_toggle_renderer(column_5th, 60, COLUMN_FIFTH);
+	g_signal_connect(G_OBJECT(mntrToggleRenderer), "toggled",
 				G_CALLBACK(toggle_monitor_switch), (gpointer) used_tree_view);
 };
 
-GtkWidget * create_field_tree_view(struct all_field_ctl_c *all_fld_list, struct field_ctl_c *fld_ctl_gtk)
+GtkWidget * create_field_tree_view(struct all_field_ctl_c *all_fld_list,
+                                   struct f_MHD_fields_control *fld_ctl_gtk)
 {
 	GtkWidget *used_tree_view = gtk_tree_view_new();
 	
