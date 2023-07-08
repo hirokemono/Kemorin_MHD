@@ -8,7 +8,7 @@
 #ifndef t_ctl_data_4_fields_c_h_
 #define t_ctl_data_4_fields_c_h_
 
-#define NLBL_FIELD_CTL 3
+#define NLBL_FIELD_CTL 2
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,11 +22,18 @@
 #include "m_field_name_from_f.h"
 
 struct field_ctl_c{
-    int iflag_use;
-	int maxlen;
-	
-	struct chara_int2_ctl_list field_list;
-	struct chara_clist *quad_phys_clist;
+    void * f_self;
+    int * f_iflag;
+    
+    char * c_block_name;
+
+	struct chara_int2_clist *f_field_ctl;
+	struct chara_clist      *f_quad_phys;
+    struct chara_int_clist  *f_scalar_phys;
+    struct chara_int3_clist *f_vector_phys;
+    
+    int iflag_read;
+    int maxlen;
 };
 
 struct all_field_ctl_c{

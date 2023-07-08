@@ -8,7 +8,7 @@
 #ifndef T_CTL_DATA_4_KEMOVIEW_MESH_C_
 #define T_CTL_DATA_4_KEMOVIEW_MESH_C_
 
-#define NLBL_FIELD_CTL 3
+#define NLBL_FIELD_CTL 2
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +29,6 @@ struct kemoview_mesh_ctl_c{
 };
 
 /* prototype */
-void get_label_field_ctl(int index, char *label);
 
 void alloc_field_ctl_c(struct field_ctl_c *fld_ctl);
 void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl);

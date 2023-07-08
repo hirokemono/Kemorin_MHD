@@ -28,7 +28,7 @@ GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd, struct mhd_model_contro
     add_field_selection_box(fields_vws, window, vbox_3);
     
 	get_label_mhd_model_ctl(0, c_label);
-	hbox_3[0] = make_expand_ctl_hbox(c_label, &model_ctl->fld_ctl->iflag_use,
+	hbox_3[0] = make_expand_ctl_hbox(c_label, &model_ctl->fld_ctl->iflag_read,
                                      700, vbox_3);
 	
 	get_label_mhd_model_ctl(1, c_label);

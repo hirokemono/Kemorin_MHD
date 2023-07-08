@@ -123,16 +123,6 @@ begin fluid_control
         quad_field_name_ctl  maxwell_tensor        end
         quad_field_name_ctl  vecp_induction        end
       end array
-!
-      array linear_field_name_ctl    7
-        linear_field_name_ctl  velocity              end
-        linear_field_name_ctl  pressure              end
-        linear_field_name_ctl  vorticity             end
-        linear_field_name_ctl  temperature           end
-        linear_field_name_ctl  magnetic_field        end
-        linear_field_name_ctl  current_density       end
-        linear_field_name_ctl  magnetic_potential    end
-      end array
     end phys_values_ctl
 !
 !!!!!  physical values for time evolution !!!!!!!!!!!!!!!!!!
