@@ -41,7 +41,6 @@ struct field_ctl_c * init_field_ctl_c(){
 	
 	init_chara_int2_ctl_list(&fld_ctl->field_list);
 	init_chara_ctl_list(&fld_ctl->quad_phys_list);
-    init_chara_ctl_list(&fld_ctl->viz_comp_list);
 	
 	return fld_ctl;
 };
@@ -52,7 +51,6 @@ void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	
 	clear_chara_int2_ctl_list(&fld_ctl->field_list);
 	clear_chara_ctl_list(&fld_ctl->quad_phys_list);
-    clear_chara_ctl_list(&fld_ctl->viz_comp_list);
 	
     free(fld_ctl);
 	return;
@@ -107,7 +105,8 @@ static int read_field_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label) == 0){
-        head = add_chara_int2_ctl_list_after(head);
+        head = add_chara_int2_ctl_list_after(init_chara_int2_ctl_item_c(),
+                                             head);
         iflag = read_chara3_ctl_item_c(buf, label, tmp_fld_item);
 		set_viz_flags_from_text(tmp_fld_item, head->ci2_item);
 		tmp_fld_item->iflag = 0;
@@ -232,7 +231,8 @@ static void add_field_to_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
 	for (i=0;i<count_chara_int2_ctl_list(field_list_head);i++){
 		field_list_head = field_list_head->_next;
 	};
-	field_list_head = add_chara_int2_ctl_list_after(field_list_head);
+	field_list_head = add_chara_int2_ctl_list_after(init_chara_int2_ctl_item_c(),
+                                                    field_list_head);
 	update_chara_int2_ctl_item_c(all_fld_list->fld_list->field_name[i_fld], 0, 0,  
 				field_list_head->ci2_item);
 	return;
@@ -284,7 +284,8 @@ static void load_field_to_ctl(struct all_field_ctl_c *all_fld_list,
 	int i;
 	for (i=0;i<all_fld_list->fld_list->ntot_fields;i++){
 		if(all_fld_list->iflag_use[i] > 0){
-			field_list_head = add_chara_int2_ctl_list_after(field_list_head);
+			field_list_head = add_chara_int2_ctl_list_after(init_chara_int2_ctl_item_c(),
+                                                            field_list_head);
 			update_chara_int2_ctl_item_c(all_fld_list->fld_list->field_name[i], 
 						all_fld_list->iflag_viz[i], all_fld_list->iflag_monitor[i], 
 						field_list_head->ci2_item);
@@ -347,15 +348,6 @@ static void check_field_in_quad_list(struct chara_ctl_list *quad_phys_list){
         quad_phys_list = quad_phys_list->_next;
    };
 	return;	
-};
-
-static void check_field_in_component_list(struct chara_ctl_list *viz_comp_list){
-    viz_comp_list = viz_comp_list->_next;
-    while (viz_comp_list != NULL){
-        printf("Component in the field list: %s\n", viz_comp_list->c_item->c_tbl); 
-        viz_comp_list = viz_comp_list->_next;
-    };
-    return;    
 };
 
 
@@ -422,6 +414,5 @@ void check_field_ctl_list(struct field_ctl_c *fld_ctl){
 
 void check_field_and_comp_ctl_list(struct field_ctl_c *fld_ctl){
     check_field_in_list(&fld_ctl->field_list);
-    check_field_in_component_list(&fld_ctl->viz_comp_list);
-    return;    
+    return;
 };

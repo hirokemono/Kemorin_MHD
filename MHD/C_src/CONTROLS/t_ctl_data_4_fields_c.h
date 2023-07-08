@@ -29,7 +29,6 @@ struct field_ctl_c{
 	struct chara_int2_ctl_list field_list;
 	
 	struct chara_ctl_list quad_phys_list;
-    struct chara_ctl_list viz_comp_list;
 };
 
 struct all_field_ctl_c{

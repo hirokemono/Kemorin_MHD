@@ -487,8 +487,8 @@ struct chara_int2_clist * init_f_ctl_field_array(void *(*c_load_self)(void *f_pa
     if(num == 0) {c_alloc_chara_int3_array(num, f_field_ctl->f_self);};
 	
 	struct chara3_ctl_item     *tmp_fld_ctl =  init_chara3_ctl_item_c();
-	struct chara_int2_ctl_item *tmp_fld_item = init_chara_int2_ctl_item_c();
 	for(i=0;i<c_chara3_array_num(f_field_ctl->f_self);i++){
+        struct chara_int2_ctl_item *tmp_fld_item = init_chara_int2_ctl_item_c();
 		ctmp1 = (char *) c_chara3_array_c1_tbl(i, f_field_ctl->f_self);
 		tmp_fld_ctl->c1_tbl = strngcopy_from_f(ctmp1);
 		ctmp1 = (char *) c_chara3_array_c2_tbl(i, f_field_ctl->f_self);
@@ -496,10 +496,8 @@ struct chara_int2_clist * init_f_ctl_field_array(void *(*c_load_self)(void *f_pa
 		ctmp1 = (char *) c_chara3_array_c3_tbl(i, f_field_ctl->f_self);
 		tmp_fld_ctl->c3_tbl = strngcopy_from_f(ctmp1);
 		set_viz_flags_from_text(tmp_fld_ctl, tmp_fld_item);
-		append_chara_int2_clist(tmp_fld_ctl->c1_tbl, tmp_fld_item->i_data[0],
-								tmp_fld_item->i_data[1], f_field_ctl);
+		append_chara_int2_clist(tmp_fld_item, f_field_ctl);
 	};
-	dealloc_chara_int2_ctl_item_c(tmp_fld_item);
 	dealloc_chara3_ctl_item_c(tmp_fld_ctl);
 	return f_field_ctl;
 }
