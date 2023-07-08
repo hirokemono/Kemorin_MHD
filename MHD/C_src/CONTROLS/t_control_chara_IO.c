@@ -153,10 +153,8 @@ void delete_chara_ctl_list(struct chara_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
     return;
 };
-void clear_chara_ctl_list(struct chara_ctl_list *head){
-    while (head->_next != NULL) {
-        delete_chara_ctl_list(head->_next);
-	}
+static void clear_chara_ctl_list(struct chara_ctl_list *head){
+    while (head->_next != NULL) {delete_chara_ctl_list(head->_next);}
     return;
 };
 
@@ -294,8 +292,8 @@ struct chara_clist * init_chara_clist(void){
     init_chara_ctl_list(&c_clst->c_item_head);
 
     c_clst->iflag_use = 0;
-    c_clst->clist_name = (char *)calloc(32,sizeof(char));
-    c_clst->c1_name = (char *)calloc(32,sizeof(char));
+    c_clst->clist_name = (char *)calloc(KCHARA_C,sizeof(char));
+    c_clst->c1_name = (char *)calloc(KCHARA_C,sizeof(char));
     return c_clst;
 };
 void dealloc_chara_clist(struct chara_clist *c_clst){

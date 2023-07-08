@@ -28,7 +28,7 @@ struct field_ctl_c{
 	struct chara3_ctl_item *tmp_fld_item;
 	struct chara_int2_ctl_list field_list;
 	
-	struct chara_ctl_list quad_phys_list;
+	struct chara_clist *quad_phys_list;
 };
 
 struct all_field_ctl_c{
