@@ -36,20 +36,14 @@ struct field_ctl_c * init_field_ctl_c(){
 			fld_ctl->maxlen = (int) strlen(label_field_ctl[i]);
 		};
 	};
-	
-	fld_ctl->tmp_fld_item = init_chara3_ctl_item_c();
-	
 	init_chara_int2_ctl_list(&fld_ctl->field_list);
 	
 	return fld_ctl;
 };
 
 void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
-	
-	dealloc_chara3_ctl_item_c(fld_ctl->tmp_fld_item);
-	
-	clear_chara_int2_ctl_list(&fld_ctl->field_list);
-    dealloc_chara_clist(fld_ctl->quad_phys_list);
+    clear_chara_int2_ctl_list(&fld_ctl->field_list);
+    dealloc_chara_clist(fld_ctl->quad_phys_clist);
 	
     free(fld_ctl);
 	return;
@@ -95,13 +89,14 @@ void set_viz_flags_to_text(struct chara_int2_ctl_item *field_item,
 };
 
 static int read_field_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
-                      struct chara3_ctl_item *tmp_fld_item, struct chara_int2_ctl_list *head){
+                               struct chara_int2_ctl_list *head){
     int iflag = 0;
     int icou = 0;
     
     if(find_control_array_flag_c(buf, label) == 0) return 0;
     if(head->ci2_item != NULL) return 0;
     
+    struct chara3_ctl_item *tmp_fld_item = init_chara3_ctl_item_c();
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label) == 0){
         head = add_chara_int2_ctl_list_after(init_chara_int2_ctl_item_c(),
@@ -112,11 +107,12 @@ static int read_field_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
     };
+    dealloc_chara3_ctl_item_c(tmp_fld_item);
     return icou;
 };
 
 static int write_field_ctl_list(FILE *fp, int level, const char *label, 
-                       struct chara3_ctl_item *tmp_fld_item, struct chara_int2_ctl_list *head){
+                                struct chara_int2_ctl_list *head){
 	int mlen2[2];
 	int maxlen[3];
 	
@@ -130,12 +126,14 @@ static int write_field_ctl_list(FILE *fp, int level, const char *label,
     level = write_array_flag_for_ctl_c(fp, level, label);
     head = head->_next;
     
+    struct chara3_ctl_item *tmp_fld_item = init_chara3_ctl_item_c();
 	while (head != NULL) {    /* Go through null pointer*/
 		set_viz_flags_to_text(head->ci2_item, tmp_fld_item);
         level = write_chara3_ctl_item_c(fp, level, maxlen,
                                      label, tmp_fld_item);
         head = head->_next;
     }
+    dealloc_chara3_ctl_item_c(tmp_fld_item);
     level = write_end_array_flag_for_ctl_c(fp, level, label);
     return level;
 };
@@ -148,9 +146,8 @@ void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
         read_field_ctl_list(fp, buf, label_field_ctl[ 0],
-					fld_ctl->tmp_fld_item, &fld_ctl->field_list);
-		
-		read_chara_ctl_list(fp, buf, label_field_ctl[ 1], &fld_ctl->quad_phys_list->c_item_head);
+                            &fld_ctl->field_list);
+        read_chara_clist(fp, buf, label_field_ctl[ 1], fld_ctl->quad_phys_clist);
 	};
     fld_ctl->iflag_use = 1;
 	return;
@@ -161,10 +158,8 @@ int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c
     
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_field_ctl_list(fp, level, label_field_ctl[0], 
-				fld_ctl->tmp_fld_item, &fld_ctl->field_list);
-	
-	write_chara_ctl_list(fp, level, label_field_ctl[1], &fld_ctl->quad_phys_list->c_item_head);
+	write_field_ctl_list(fp, level, label_field_ctl[0], &fld_ctl->field_list);
+    write_chara_clist(fp, level, label_field_ctl[1], fld_ctl->quad_phys_clist);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -293,35 +288,33 @@ static void load_field_to_ctl(struct all_field_ctl_c *all_fld_list,
 	return;
 };
 
-static void set_quadrature_flag_from_ctl(struct chara_ctl_list *quad_phys_head, 
+static void set_quadrature_flag_from_ctl(struct chara_clist *quad_phys_clist,
 			struct all_field_ctl_c *all_fld_list){
-	int i, j;
+	int i, j, idx;
 	int jst = 0;
 	
 	for (j=0;j<all_fld_list->fld_list->ntot_fields;j++){all_fld_list->iflag_quad[j] = 0;}
 	
-	quad_phys_head = quad_phys_head->_next;
-	while (quad_phys_head != NULL){
+    for(idx=0;idx<count_chara_clist(quad_phys_clist);idx++){
 		for (j=0;j<all_fld_list->fld_list->ntot_fields;j++){
 			i = (j+jst) % all_fld_list->fld_list->ntot_fields;
-			if(cmp_no_case_c(quad_phys_head->c_item->c_tbl,
+			if(cmp_no_case_c(chara_clist_at_index(idx, quad_phys_clist)->c_tbl,
 							 all_fld_list->fld_list->field_name[i])){
 				all_fld_list->iflag_quad[i] = 1;
 				jst = i+1;
 				break;
 			};
 		};
-		quad_phys_head = quad_phys_head->_next;
     };
 	return;
 };
 
 static void load_quadrature_field_to_ctl(struct all_field_ctl_c *all_fld_list, 
-			struct chara_clist *quad_phys_list){
+			struct chara_clist *quad_phys_clist){
 	int i;
 	for (i=0;i<all_fld_list->fld_list->ntot_fields;i++){
 		if(all_fld_list->iflag_quad[i] > 0){
-            append_chara_clist(all_fld_list->fld_list->field_name[i], quad_phys_list);
+            append_chara_clist(all_fld_list->fld_list->field_name[i], quad_phys_clist);
         };
 	};
 	return;
@@ -337,10 +330,10 @@ static void check_field_in_list(struct chara_int2_ctl_list *field_list_head){
 	return;	
 };
 
-static void check_field_in_quad_list(struct chara_clist *quad_phys_list){
+static void check_field_in_quad_list(struct chara_clist *quad_phys_clist){
     int i;
-    for(i=0;i<count_chara_clist(quad_phys_list);i++){
-        printf("Field in the list: %s\n", chara_clist_at_index(i,quad_phys_list)->c_tbl);
+    for(i=0;i<count_chara_clist(quad_phys_clist);i++){
+        printf("Field in the list: %s\n", chara_clist_at_index(i,quad_phys_clist)->c_tbl);
    };
 	return;	
 };
@@ -356,8 +349,8 @@ void add_field_wqflag_to_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
 void delete_field_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_list,
 			struct field_ctl_c *fld_ctl){
 	set_no_use_all_field_ctl_c(i_fld, all_fld_list);
-	del_chara_ctl_list_by_c_tbl(all_fld_list->fld_list->field_name[i_fld],
-								&fld_ctl->quad_phys_list->c_item_head);
+    del_chara_clist_by_c_tbl(all_fld_list->fld_list->field_name[i_fld],
+                             fld_ctl->quad_phys_clist);
 	delete_field_in_ctl(i_fld, all_fld_list, &fld_ctl->field_list);
 	return;
 }
@@ -368,11 +361,11 @@ void update_field_flag_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_
     update_field_flag_in_ctl(i_fld, all_fld_list, &fld_ctl->field_list);
 	
 	if(all_fld_list->iflag_quad[i_fld] == 0){
-		del_chara_ctl_list_by_c_tbl(all_fld_list->fld_list->field_name[i_fld],
-									&fld_ctl->quad_phys_list->c_item_head);
+        del_chara_clist_by_c_tbl(all_fld_list->fld_list->field_name[i_fld],
+                                 fld_ctl->quad_phys_clist);
 	} else {
-		append_chara_ctl_list(all_fld_list->fld_list->field_name[i_fld],
-							  &fld_ctl->quad_phys_list->c_item_head);
+        append_chara_clist(all_fld_list->fld_list->field_name[i_fld],
+                           fld_ctl->quad_phys_clist);
 	} 
 	
 	return;
@@ -381,21 +374,21 @@ void update_field_flag_wqflag_in_ctl(int i_fld, struct all_field_ctl_c *all_fld_
 void load_field_w_qflag_from_ctl(struct field_ctl_c *fld_ctl, 
 			struct all_field_ctl_c *all_fld_list){
 	load_field_from_ctl(&fld_ctl->field_list, all_fld_list);
-	set_quadrature_flag_from_ctl(&fld_ctl->quad_phys_list->c_item_head, all_fld_list);
+	set_quadrature_flag_from_ctl(fld_ctl->quad_phys_clist, all_fld_list);
 	return;
 };
 
 void load_field_w_qflag_to_ctl(struct all_field_ctl_c *all_fld_list, 
 			struct field_ctl_c *fld_ctl){
 	load_field_to_ctl(all_fld_list, &fld_ctl->field_list);
-	load_quadrature_field_to_ctl(all_fld_list, fld_ctl->quad_phys_list);
+	load_quadrature_field_to_ctl(all_fld_list, fld_ctl->quad_phys_clist);
 	return;
 };
 
 void reflesh_field_ctl_list(struct all_field_ctl_c *all_fld_list, 
 			struct field_ctl_c *fld_ctl){
 	clear_chara_int2_ctl_list(&fld_ctl->field_list);
-    dealloc_chara_clist(fld_ctl->quad_phys_list);
+    dealloc_chara_clist(fld_ctl->quad_phys_clist);
 	load_field_w_qflag_to_ctl(all_fld_list, fld_ctl);
 	return;
 };
@@ -403,7 +396,7 @@ void reflesh_field_ctl_list(struct all_field_ctl_c *all_fld_list,
 
 void check_field_ctl_list(struct field_ctl_c *fld_ctl){
 	check_field_in_list(&fld_ctl->field_list);
-	check_field_in_quad_list(fld_ctl->quad_phys_list);
+	check_field_in_quad_list(fld_ctl->quad_phys_clist);
 	return;	
 };
 

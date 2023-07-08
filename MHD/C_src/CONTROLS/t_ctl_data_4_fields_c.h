@@ -25,10 +25,8 @@ struct field_ctl_c{
     int iflag_use;
 	int maxlen;
 	
-	struct chara3_ctl_item *tmp_fld_item;
 	struct chara_int2_ctl_list field_list;
-	
-	struct chara_clist *quad_phys_list;
+	struct chara_clist *quad_phys_clist;
 };
 
 struct all_field_ctl_c{
