@@ -7,6 +7,7 @@
 !> @brief data structure for restart data control block
 !!
 !!@verbatim
+!!      subroutine init_restart_ctl_label(hd_block, mr_ctl)
 !!      subroutine read_restart_ctl(id_control, hd_block, mr_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -127,6 +128,20 @@
      &                                mr_ctl%block_name)
 !
       end subroutine write_restart_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_restart_ctl_label(hd_block, mr_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(mhd_restart_control), intent(inout) :: mr_ctl
+!
+!
+      mr_ctl%block_name = hd_block
+        call init_chara_ctl_item_label(hd_rst_flag,                     &
+     &                           mr_ctl%restart_flag_ctl)
+!
+      end subroutine init_restart_ctl_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

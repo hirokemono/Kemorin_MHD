@@ -139,6 +139,8 @@
 !
       if(gen_SPH_ctl%i_sph_mesh_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, gen_SPH_ctl%plt)
+      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
+     &                                   gen_SPH_ctl%psph_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

@@ -13,6 +13,8 @@
 !!@verbatim
 !!      subroutine read_sph_mhd_model                                   &
 !!     &         (id_control, hd_block, model_ctl, c_buf)
+!!
+!!      subroutine init_sph_mhd_model_label(model_ctl)
 !!      subroutine read_sph_mhd_model_items(id_control, model_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -113,6 +115,7 @@
 !
       if(model_ctl%i_model .gt. 0) return
       model_ctl%block_name = hd_block
+      call init_sph_mhd_model_label(model_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -150,6 +153,17 @@
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
+!
+      subroutine init_sph_mhd_model_label(model_ctl)
+!
+      type(mhd_model_control), intent(inout) :: model_ctl
+!
+      call init_phys_data_ctl_label(hd_phys_values, model_ctl%fld_ctl)
+!
+      end subroutine init_sph_mhd_model_label
+!
+!   --------------------------------------------------------------------
+!
 !
       subroutine read_sph_mhd_model_items(id_control, model_ctl, c_buf)
 !
@@ -222,7 +236,7 @@
 !
 !
       call write_phys_data_control                                      &
-     &   (id_control, hd_phys_values, model_ctl%fld_ctl, level)
+     &   (id_control, model_ctl%fld_ctl, level)
 !
       call write_mhd_time_evo_ctl                                       &
      &   (id_control, hd_time_evo, model_ctl%evo_ctl, level)

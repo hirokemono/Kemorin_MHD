@@ -5,6 +5,7 @@
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
       use t_ctl_data_sph_MHD_w_psf
+      use t_ctl_data_4_fields
 !
       implicit none
 !
@@ -1127,6 +1128,67 @@
      &                                  add_SMHD_ctl_C, c_buf1)
 !
       end subroutine c_read_control_sph_MHD
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_field_ctl_block_name(c_ctl)            &
+     &          bind(C, NAME = 'c_MHD_field_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(field_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_field_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_MHD_field_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_field_ctl_iflag(c_ctl)               &
+     &          bind(C, NAME = 'c_MHD_field_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(field_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_field_ctl_iflag = C_loc(f_ctl%i_phys_values)
+      end function c_MHD_field_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_field_ctl_field_ctl(c_ctl)             &
+     &          bind(C, NAME = 'c_MHD_field_ctl_field_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(field_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_field_ctl_field_ctl = C_loc(f_ctl%field_ctl)
+      end function c_MHD_field_ctl_field_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_field_quad_phys_ctl(c_ctl)             &
+     &          bind(C, NAME = 'c_MHD_field_quad_phys_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(field_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_field_quad_phys_ctl = C_loc(f_ctl%quad_phys)
+      end function c_MHD_field_quad_phys_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_scalar_phys_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_MHD_scalar_phys_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(field_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_scalar_phys_ctl = C_loc(f_ctl%scalar_phys)
+      end function c_MHD_scalar_phys_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_vector_phys_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_MHD_vector_phys_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(field_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_vector_phys_ctl = C_loc(f_ctl%vector_phys)
+      end function c_MHD_vector_phys_ctl
 !
 !  ---------------------------------------------------------------------
 !

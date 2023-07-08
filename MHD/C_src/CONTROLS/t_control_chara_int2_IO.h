@@ -33,10 +33,14 @@ struct chara_int2_ctl_list{
 struct chara_int2_clist{
 	struct chara_int2_ctl_list ci2_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *c1_name;
     char *i1_name;
     char *i2_name;
+    
+    int index_bc;
 };
 
 /* prototypes */
@@ -87,6 +91,11 @@ void update_chara_int2_clist_by_index(int index, char *c_in, int i1_in, int i2_i
 			struct chara_int2_clist *ci2_clst);
 void set_from_chara_int2_clist_at_index(int index, struct chara_int2_clist *ci2_clst,
 			char *c_out, int *i1_out, int *i2_out);
+
+struct chara_int2_ctl_item *find_chara_int2_ctl_item_by_index(int index,
+            struct chara_int2_clist *ci2_clst);
+struct chara_int2_ctl_item *find_chara_int2_ctl_item_by_cref(char *ref,
+            struct chara_int2_clist *ci2_clst);
 
 void add_chara_int2_clist_before_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
 			struct chara_int2_clist *ci2_clst);

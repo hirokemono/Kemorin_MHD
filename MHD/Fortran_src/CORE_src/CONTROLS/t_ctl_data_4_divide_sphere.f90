@@ -9,6 +9,7 @@
 !!@verbatim
 !!      subroutine dealloc_ndomain_rtp_ctl(sdctl)
 !!
+!!      subroutine init_ctl_shell_domain_label(hd_block, sdctl)
 !!      subroutine read_control_shell_domain                            &
 !!     &         (id_control, hd_block, sdctl, c_buf)
 !!        type(sphere_domain_control), intent(inout) :: sdctl
@@ -264,6 +265,49 @@
       level =  write_end_flag_for_ctl(id_file, level, sdctl%block_name)
 !
       end subroutine write_control_shell_domain
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_ctl_shell_domain_label(hd_block, sdctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(sphere_domain_control), intent(inout) :: sdctl
+!
+!
+      sdctl%block_name = hd_block
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_inner_decomp, sdctl%inner_decomp_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_rj_inner_loop,  sdctl%rj_inner_loop_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_rlm_inner_loop, sdctl%rlm_inner_loop_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_rtm_inner_loop, sdctl%rtm_inner_loop_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_rtp_inner_loop, sdctl%rtp_inner_loop_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_indices_ordering_set, sdctl%indices_ordering_set)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_rlm_order_dist, sdctl%rlm_distibution_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_simple_r_decomp, sdctl%simple_r_decomp_ctl)
+!
+        call init_int_ctl_item_label                                    &
+     &     (hd_num_radial_domain, sdctl%num_radial_domain_ctl)
+        call init_int_ctl_item_label                                    &
+     &     (hd_num_horiz_domain, sdctl%num_horiz_domain_ctl)
+!
+        call init_c_i_array_label                                       &
+     &     (hd_ndomain_rtp, sdctl%ndomain_sph_grid_ctl)
+        call init_c_i_array_label                                       &
+     &     (hd_ndomain_rtm, sdctl%ndomain_legendre_ctl)
+        call init_c_i_array_label                                       &
+     &     (hd_ndomain_rj, sdctl%ndomain_spectr_ctl)
+!
+      end subroutine init_ctl_shell_domain_label
 !
 !  ---------------------------------------------------------------------
 !

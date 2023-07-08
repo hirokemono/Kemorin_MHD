@@ -58,8 +58,8 @@ void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	return;
 };
 
-static void set_viz_flags_from_text(struct chara3_ctl_item *tmp_fld_item, 
-			struct chara_int2_ctl_item *field_item){
+void set_viz_flags_from_text(struct chara3_ctl_item *tmp_fld_item,
+                             struct chara_int2_ctl_item *field_item){
 	
 	field_item->iflag = 1;
 	sprintf(field_item->c_tbl, "%s", tmp_fld_item->c1_tbl);
@@ -77,8 +77,8 @@ static void set_viz_flags_from_text(struct chara3_ctl_item *tmp_fld_item,
 	return;
 };
 
-static void set_viz_flags_to_text(struct chara_int2_ctl_item *field_item, 
-			struct chara3_ctl_item *tmp_fld_item){
+void set_viz_flags_to_text(struct chara_int2_ctl_item *field_item,
+                           struct chara3_ctl_item *tmp_fld_item){
 	
 	tmp_fld_item->iflag = 1;
 	sprintf(tmp_fld_item->c1_tbl, "%s", field_item->c_tbl);

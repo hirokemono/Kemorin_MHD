@@ -219,10 +219,14 @@
       call init_platforms_labels(hd_platform, MHD_ctl%plt)
       call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
       call init_platforms_labels(hd_new_data, MHD_ctl%new_plt)
+      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
+     &                                   MHD_ctl%psph_ctl)
+      call init_sph_mhd_control_label(hd_control, MHD_ctl%smctl_ctl)
       call init_sph_monitoring_labels(hd_pick_sph,                      &
      &                                MHD_ctl%smonitor_ctl)
       call init_dynamo_viz_control(hd_dynamo_viz_ctl,                   &
      &                             add_SSMHD_ctl%zm_ctls)
+      call init_viz_ctl_label(hd_viz_ctl, add_SSMHD_ctl%viz_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

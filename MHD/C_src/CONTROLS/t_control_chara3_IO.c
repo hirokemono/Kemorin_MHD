@@ -358,6 +358,20 @@ void set_from_chara3_clist_at_index(int index, struct chara3_clist *c3_clst,
             c1_out, c2_out, c3_out);
 };
 
+
+struct chara3_ctl_item *find_chara3_ctl_item_by_index(int index,
+                                                      struct chara3_clist *c3_clst){
+	struct chara3_ctl_list *head = find_c3_ctl_list_item_by_index(index, &c3_clst->c3_item_head);
+    return head->c3_item;
+};
+struct chara3_ctl_item *find_chara3_ctl_item_by_ref(char *ref1, char *ref2, char *ref3,
+                                                    struct chara3_clist *c3_clst){
+	struct chara3_ctl_list *head = find_c3_ctl_list_item_by_c_tbl(ref1, ref2, ref3,
+                                                                  &c3_clst->c3_item_head);
+    return head->c3_item;
+};
+
+
 void add_chara3_clist_before_c_tbl(char *ref_1, char *ref_2, char *ref_3,
             char *c1_in, char *c2_in, char *c3_in, struct chara3_clist *c3_clst){
     add_chara3_ctl_list_before_c_tbl(ref_1, ref_2, ref_3, c1_in, c2_in, c3_in,

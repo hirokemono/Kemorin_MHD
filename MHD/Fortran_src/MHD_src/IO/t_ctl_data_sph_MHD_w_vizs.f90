@@ -189,6 +189,9 @@
       MHD_ctl%block_name = trim(hd_block)
       call init_platforms_labels(hd_platform, MHD_ctl%plt)
       call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
+      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
+     &                                   MHD_ctl%psph_ctl)
+      call init_sph_mhd_control_label(hd_control, MHD_ctl%smctl_ctl)
       call init_sph_monitoring_labels(hd_pick_sph,                      &
      &                                MHD_ctl%smonitor_ctl)
       call init_dynamo_viz_control(hd_dynamo_viz_ctl,                   &

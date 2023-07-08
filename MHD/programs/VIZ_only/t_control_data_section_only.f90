@@ -173,6 +173,8 @@
 !
       if(sec_viz_ctl%i_viz_only_file .gt. 0) return
       call init_platforms_labels(hd_platform, sec_viz_ctl%sect_plt)
+      call init_ctl_time_step_label(hd_time_step,                       &
+     &                              sec_viz_ctl%t_sect_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

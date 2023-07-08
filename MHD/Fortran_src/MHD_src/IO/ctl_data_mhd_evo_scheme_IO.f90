@@ -7,6 +7,7 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
+!!      subroutine init_time_loop_ctl_label(hd_block, mevo_ctl)
 !!      subroutine read_time_loop_ctl                                   &
 !!     &         (id_control, hd_block, mevo_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -329,6 +330,71 @@
      &                                mevo_ctl%block_name)
 !
       end subroutine write_time_loop_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_time_loop_ctl_label(hd_block, mevo_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(mhd_evo_scheme_control), intent(inout) :: mevo_ctl
+
+!
+      mevo_ctl%block_name = hd_block
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_scheme, mevo_ctl%scheme_ctl)
+        call init_chara_ctl_item_label(hd_diff_correct,                 &
+     &      mevo_ctl%diffuse_correct)
+        call init_chara_ctl_item_label(hd_method_4_velo,                &
+     &      mevo_ctl%method_4_CN)
+        call init_chara_ctl_item_label(hd_precond_4_crank,              &
+     &      mevo_ctl%precond_4_CN)
+        call init_chara_ctl_item_label(hd_sph_transform_mode,           &
+     &      mevo_ctl%Legendre_trans_type)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_FFT_package, mevo_ctl%FFT_library)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_import_mode, mevo_ctl%import_mode)
+!
+        call init_real_ctl_item_label                                   &
+     &     (hd_eps_4_velo,  mevo_ctl%eps_4_velo_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_eps_4_magne, mevo_ctl%eps_4_magne_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_coef_implicit,  mevo_ctl%coef_implicit_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_coef_imp_v,  mevo_ctl%coef_imp_v_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_coef_imp_t,  mevo_ctl%coef_imp_t_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_coef_imp_b,  mevo_ctl%coef_imp_b_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_coef_imp_c,  mevo_ctl%coef_imp_c_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_eps_crank,   mevo_ctl%eps_crank_ctl)
+        call init_real_ctl_item_label                                   &
+     &     (hd_eps_B_crank, mevo_ctl%eps_B_crank_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iflag_supg,   mevo_ctl%iflag_supg_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iflag_v_supg, mevo_ctl%iflag_supg_v_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iflag_t_supg, mevo_ctl%iflag_supg_t_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iflag_b_supg, mevo_ctl%iflag_supg_b_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_iflag_c_supg, mevo_ctl%iflag_supg_c_ctl)
+!
+        call init_int_ctl_item_label(hd_num_multi_pass,                 &
+     &      mevo_ctl%num_multi_pass_ctl)
+        call init_int_ctl_item_label(hd_maxiter,                        &
+     &      mevo_ctl%maxiter_ctl)
+        call init_int_ctl_item_label(hd_legendre_vect_len,              &
+     &      mevo_ctl%leg_vector_len)
+!
+      end subroutine init_time_loop_ctl_label
 !
 !   --------------------------------------------------------------------
 !

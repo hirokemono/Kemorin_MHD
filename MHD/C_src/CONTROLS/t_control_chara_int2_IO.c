@@ -347,6 +347,20 @@ void set_from_chara_int2_clist_at_index(int index, struct chara_int2_clist *ci2_
     return;
 };
 
+struct chara_int2_ctl_item *find_chara_int2_ctl_item_by_index(int index,
+            struct chara_int2_clist *ci2_clst){
+	struct chara_int2_ctl_list *head
+            = find_ci2_ctl_list_item_by_index(index, &ci2_clst->ci2_item_head);
+    return head->ci2_item;
+};
+struct chara_int2_ctl_item *find_chara_int2_ctl_item_by_cref(char *ref,
+            struct chara_int2_clist *ci2_clst){
+	struct chara_int2_ctl_list *head
+            = find_ci2_ctl_list_item_by_c_tbl(ref, &ci2_clst->ci2_item_head);
+    return head->ci2_item;
+};
+
+
 void add_chara_int2_clist_before_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
             struct chara_int2_clist *ci2_clst){
     add_chara_int2_ctl_list_before_c_tbl(ref, c_in, i1_in, i2_in,

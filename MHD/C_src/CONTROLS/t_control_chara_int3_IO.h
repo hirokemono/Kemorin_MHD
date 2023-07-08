@@ -33,11 +33,15 @@ struct chara_int3_ctl_list{
 struct chara_int3_clist{
 	struct chara_int3_ctl_list ci3_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *c1_name;
     char *i1_name;
     char *i2_name;
     char *i3_name;
+    
+    int index_bc;
 };
 
 /* prototypes */

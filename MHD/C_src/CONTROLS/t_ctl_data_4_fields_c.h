@@ -46,6 +46,13 @@ void get_label_field_ctl(int index, char *label);
 
 struct field_ctl_c * init_field_ctl_c();
 void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl);
+
+void set_viz_flags_to_text(struct chara_int2_ctl_item *field_item,
+                           struct chara3_ctl_item *tmp_fld_item);
+void set_viz_flags_from_text(struct chara3_ctl_item *tmp_fld_item,
+                             struct chara_int2_ctl_item *field_item);
+
+
 void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct field_ctl_c *fld_ctl);
 int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl);

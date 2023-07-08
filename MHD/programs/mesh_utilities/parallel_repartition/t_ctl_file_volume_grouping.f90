@@ -165,6 +165,7 @@
 !
       if(part_tctl%i_mesh_test_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, part_tctl%plt)
+      call init_ctl_time_step_label(hd_time_step, part_tctl%t_viz_ctl)
       call init_control_vol_repart_label(hd_viz_partition,              &
      &                                   part_tctl%viz_repart_c)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return

@@ -7,6 +7,7 @@
 !>@brief  Structure of control array input with 3 words
 !!
 !!@verbatim
+!!      subroutine init_chara3_ctl_item_label(label, chara3_item)
 !!      subroutine read_character3_ctl_type(c_buf, label, chara3_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara3_item), intent(inout) :: chara3_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_c3(array_c3)
 !!      subroutine dealloc_control_array_c3(array_c3)
+!!      subroutine init_c3_ctl_array_label(label, array_c3)
 !!      subroutine read_control_array_c3                                &
 !!     &         (id_control, label, array_c3, c_buf)
 !!        type(ctl_array_c3), intent(inout) :: array_c3
@@ -77,6 +79,15 @@
       contains
 !
 !   --------------------------------------------------------------------
+!
+      subroutine init_chara3_ctl_item_label(label, chara3_item)
+      character(len=kchara), intent(in) :: label
+      type(read_chara3_item), intent(inout) :: chara3_item
+!
+      chara3_item%item_name = trim(label)
+      end subroutine init_chara3_ctl_item_label
+!
+! ----------------------------------------------------------------------
 !
       subroutine read_character3_ctl_type(c_buf, label, chara3_item)
 !
@@ -174,6 +185,15 @@
       end subroutine dealloc_control_array_c3
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_c3_ctl_array_label(label, array_c3)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_c3), intent(inout) :: array_c3
+!
+      array_c3%array_name = trim(label)
+      end subroutine init_c3_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_c3                                  &

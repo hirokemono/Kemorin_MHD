@@ -94,8 +94,11 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(fmctl_ctl%i_control .gt. 0) return
+      call init_ctl_time_step_label(hd_time_step, fmctl_ctl%tctl)
+      call init_restart_ctl_label(hd_restart_file, fmctl_ctl%mrst_ctl)
+      call init_time_loop_ctl_label(hd_time_loop, fmctl_ctl%mevo_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

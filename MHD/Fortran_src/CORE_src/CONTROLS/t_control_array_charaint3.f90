@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read char-int-int-int control arrays
 !!
 !!@verbatim
+!!      subroutine init_charaint3_ctl_item_label(label, ci3_item)
 !!      subroutine read_charaint3_ctl_type(c_buf, label, ci3_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara_int3_item), intent(inout) :: ci3_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_c_i3(array_ci3)
 !!      subroutine dealloc_control_array_c_i3(array_ci3)
+!!      subroutine init_c_i3_ctl_array_label(label, array_ci3)
 !!      subroutine read_control_array_c_i3                              &
 !!     &         (id_control, label, array_ci3, c_buf)
 !!        type(ctl_array_ci3), intent(inout) :: array_ci3
@@ -81,6 +83,15 @@
       contains
 !
 !   --------------------------------------------------------------------
+!
+      subroutine init_charaint3_ctl_item_label(label, ci3_item)
+      character(len=kchara), intent(in) :: label
+      type(read_chara_int3_item), intent(inout) :: ci3_item
+!
+      ci3_item%item_name = trim(label)
+      end subroutine init_charaint3_ctl_item_label
+!
+! ----------------------------------------------------------------------
 !
       subroutine read_charaint3_ctl_type(c_buf, label, ci3_item)
 !
@@ -178,6 +189,15 @@
       end subroutine dealloc_control_array_c_i3
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_c_i3_ctl_array_label(label, array_ci3)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_ci3), intent(inout) :: array_ci3
+!
+      array_ci3%array_name = trim(label)
+      end subroutine init_c_i3_ctl_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_c_i3                                &

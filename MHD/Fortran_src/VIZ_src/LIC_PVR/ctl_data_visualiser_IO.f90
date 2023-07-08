@@ -7,6 +7,7 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
+!!      subroutine init_viz_ctl_label(hd_block, viz_ctls)
 !!      subroutine s_read_viz_controls(id_control, viz_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control 
 !!        character(len=kchara), intent(in) :: hd_block
@@ -186,9 +187,9 @@
       call init_map_ctls_labels(hd_map_rendering, viz_ctls%map_ctls)
       call init_pvr_ctls_labels(hd_pvr_ctl, viz_ctls%pvr_ctls)
       call init_lic_ctls_labels(hd_lic_ctl, viz_ctls%lic_ctls)
+      call init_fline_ctl_struct(hd_fline_ctl, viz_ctls%fline_ctls)
       call init_control_vol_repart_label(hd_viz_partition,              &
      &                                   viz_ctls%repart_ctl)
-      call init_fline_ctl_struct(hd_fline_ctl, viz_ctls%fline_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -355,6 +356,65 @@
      &                             viz_ctls%block_name)
 !
       end subroutine write_viz_controls
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_viz_ctl_label(hd_block, viz_ctls)
+!
+      use ctl_file_sections_IO
+      use ctl_file_isosurfaces_IO
+      use ctl_file_map_renderings_IO
+      use ctl_file_fieldlines_IO
+      use ctl_file_volume_repart_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(visualization_controls), intent(inout) :: viz_ctls
+!
+!
+      viz_ctls%block_name = trim(hd_block)
+      call init_psf_ctls_labels(hd_section_ctl, viz_ctls%psf_ctls)
+      call init_iso_ctls_labels(hd_isosurf_ctl, viz_ctls%iso_ctls)
+      call init_map_ctls_labels(hd_map_rendering, viz_ctls%map_ctls)
+      call init_pvr_ctls_labels(hd_pvr_ctl, viz_ctls%pvr_ctls)
+      call init_lic_ctls_labels(hd_lic_ctl, viz_ctls%lic_ctls)
+      call init_fline_ctl_struct(hd_fline_ctl, viz_ctls%fline_ctls)
+      call init_control_vol_repart_label(hd_viz_partition,              &
+     &                                   viz_ctls%repart_ctl)
+!
+        call init_int_ctl_item_label(hd_i_step_section,                 &
+     &                             viz_ctls%i_step_psf_v_ctl)
+        call init_int_ctl_item_label(hd_i_step_isosurf,                 &
+     &                             viz_ctls%i_step_iso_v_ctl)
+        call init_int_ctl_item_label(hd_i_step_map_projection,          &
+     &                             viz_ctls%i_step_map_v_ctl)
+        call init_int_ctl_item_label(hd_i_step_pvr,                     &
+     &                             viz_ctls%i_step_pvr_v_ctl)
+        call init_int_ctl_item_label(hd_i_step_lic,                     &
+     &                             viz_ctls%i_step_lic_v_ctl)
+        call init_int_ctl_item_label(hd_i_step_fline,                   &
+     &                             viz_ctls%i_step_fline_v_ctl)
+        call init_int_ctl_item_label(hd_i_step_ucd,                     &
+     &                             viz_ctls%i_step_ucd_v_ctl)
+!
+        call init_real_ctl_item_label(hd_delta_t_section,               &
+     &                          viz_ctls%delta_t_psf_v_ctl)
+        call init_real_ctl_item_label(hd_delta_t_isosurf,               &
+     &                          viz_ctls%delta_t_iso_v_ctl)
+        call init_real_ctl_item_label(hd_delta_t_map_projection,        &
+     &                          viz_ctls%delta_t_map_v_ctl)
+        call init_real_ctl_item_label(hd_delta_t_pvr,                   &
+     &                          viz_ctls%delta_t_pvr_v_ctl)
+        call init_real_ctl_item_label(hd_delta_t_fline,                 &
+     &                          viz_ctls%delta_t_fline_v_ctl)
+        call init_real_ctl_item_label(hd_delta_t_lic,                   &
+     &                          viz_ctls%delta_t_lic_v_ctl)
+        call init_real_ctl_item_label(hd_delta_t_ucd,                   &
+     &                          viz_ctls%delta_t_ucd_v_ctl)
+!
+        call init_chara_ctl_item_label(hd_output_fld_file_fmt,          &
+     &      viz_ctls%output_field_file_fmt_ctl)
+!
+      end subroutine init_viz_ctl_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -11,6 +11,7 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
+!!      subroutine init_sph_mhd_control_label(hd_block, smctl_ctl)
 !!      subroutine read_sph_mhd_control                                 &
 !!     &         (id_control, hd_block, smctl_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -84,13 +85,11 @@
 !
 !
       if(smctl_ctl%i_control .gt. 0) return
-      smctl_ctl%block_name = hd_block
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
-!
 !
         call read_control_time_step_data                                &
      &     (id_control, hd_time_step, smctl_ctl%tctl, c_buf)
@@ -131,6 +130,24 @@
      &                                smctl_ctl%block_name)
 !
       end subroutine write_sph_mhd_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_sph_mhd_control_label(hd_block, smctl_ctl)
+!
+      use ctl_data_4_time_steps_IO
+      use ctl_data_mhd_evo_scheme_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(sph_mhd_control_control), intent(inout) :: smctl_ctl
+!
+!
+      smctl_ctl%block_name = hd_block
+      call init_ctl_time_step_label(hd_time_step, smctl_ctl%tctl)
+      call init_time_loop_ctl_label(hd_time_loop, smctl_ctl%mevo_ctl)
+      call init_restart_ctl_label(hd_restart_file, smctl_ctl%mrst_ctl)
+!
+      end subroutine init_sph_mhd_control_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

@@ -156,7 +156,10 @@
       if(spt_ctl%i_sph_trans_ctl .gt. 0) return
       call init_platforms_labels(hd_platform, spt_ctl%plt)
       call init_platforms_labels(hd_org_data, spt_ctl%org_plt)
+      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
+     &                                   spt_ctl%psph_ctl)
       call init_FEM_mesh_ctl_label(hd_FEM_mesh, spt_ctl%Fmesh_ctl)
+      call init_viz_ctl_label(hd_viz_control, spt_ctl%viz_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -257,8 +260,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(spt_ctl%i_sph_trans_model .gt. 0) return
+      call init_ctl_time_step_label(hd_time_step, spt_ctl%t_ctl)
+      call init_phys_data_ctl_label(hd_phys_values, spt_ctl%fld_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -291,7 +296,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_phys_data_control                                      &
-     &   (id_control, hd_phys_values, spt_ctl%fld_ctl, level)
+     &   (id_control, spt_ctl%fld_ctl, level)
       call write_control_time_step_data                                 &
      &   (id_control, spt_ctl%t_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)

@@ -7,6 +7,7 @@
 !>@brief  Subroutines to read control arrays
 !!
 !!@verbatim
+!!      subroutine init_intreal_ctl_item_label(label, ir_item)
 !!      subroutine read_intreal_ctl_type(c_buf, label, ir_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int_real_item), intent(inout) :: ir_item
@@ -19,6 +20,7 @@
 !!
 !!      subroutine alloc_control_array_i_r(array_ir)
 !!      subroutine dealloc_control_array_i_r(array_ir)
+!!      subroutine init_i_r_array_label(label, array_ir)
 !!      subroutine read_control_array_i_r                               &
 !!     &         (id_control, label, array_ir, c_buf)
 !!        type(ctl_array_ir), intent(inout) :: array_ir
@@ -75,6 +77,15 @@
 !   --------------------------------------------------------------------
 !
       contains
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_intreal_ctl_item_label(label, ir_item)
+      character(len=kchara), intent(in) :: label
+      type(read_int_real_item), intent(inout) :: ir_item
+!
+      ir_item%item_name = trim(label)
+      end subroutine init_intreal_ctl_item_label
 !
 !   --------------------------------------------------------------------
 !
@@ -167,6 +178,15 @@
       end subroutine dealloc_control_array_i_r
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine init_i_r_array_label(label, array_ir)
+      character(len=kchara), intent(in) :: label
+      type(ctl_array_ir), intent(inout) :: array_ir
+!
+      array_ir%array_name = trim(label)
+      end subroutine init_i_r_array_label
+!
 !   --------------------------------------------------------------------
 !
       subroutine read_control_array_i_r                                 &

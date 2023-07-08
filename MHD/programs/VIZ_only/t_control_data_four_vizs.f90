@@ -166,6 +166,7 @@
 !
       if(viz4_c%i_viz_only_file .gt. 0) return
       call init_platforms_labels(hd_platform, viz4_c%viz_plt)
+      call init_ctl_time_step_label(hd_time_step, viz4_c%t_viz_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

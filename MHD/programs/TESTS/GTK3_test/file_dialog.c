@@ -8,7 +8,11 @@
 #include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
+#include "t_control_chara_int2_IO.h"
 #include "t_control_c_lists_w_file.h"
+#include "t_ctl_array_chara3_items_c.h"
+#include "t_ctl_array_chara_int3_items_c.h"
+#include "t_ctl_data_4_fields_c.h"
 
 #include "control_elements_IO_GTK.h"
 #include "control_combobox_GTK.h"
@@ -171,6 +175,12 @@ extern void * c_fline_ctls_fline_ctl(int idx, void *f_fline_ctls);
 extern void * c_append_viz_fline_ctls(int idx, char *block_name, void *f_fline_ctls);
 extern void * c_delete_viz_fline_ctls(int idx, void *f_fline_ctls);
 
+extern void * c_MHD_field_ctl_block_name(void *f_fld_ctl);
+extern void * c_MHD_field_ctl_iflag(void *f_fld_ctl);
+extern void * c_MHD_field_ctl_field_ctl(void *f_fld_ctl);
+extern void * c_MHD_field_quad_phys_ctl(void *f_fld_ctl);
+extern void * c_MHD_scalar_phys_ctl(void *f_fld_ctl);
+extern void * c_MHD_vector_phys_ctl(void *f_fld_ctl);
 
 struct f_MHD_SGS_model_control{
 	void * f_self;
@@ -215,13 +225,25 @@ struct f_MHD_SGS_model_control{
 	void **f_sph_filter_ctl;
 };
 
+struct f_MHD_fields_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct chara_int2_clist *f_field_ctl;
+	struct chara_clist       *f_quad_phys;
+	struct chara_int_clist  *f_scalar_phys;
+	struct chara_int3_clist *f_vector_phys;
+};
+
 struct f_MHD_model_control{
 	void * f_self;
 	int * f_iflag;
 	
 	char * c_block_name;
 	
-	void * f_fld_ctl;
+	struct f_MHD_fields_control * f_fld_ctl;
 	void * f_evo_ctl;
 	void * f_earea_ctl;
 	void * f_nbc_ctl;
@@ -372,8 +394,6 @@ boolean_to_text (GBinding *binding,
 }
 */
 
-
-
 struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_self)(void *f_parent), 
 															  void *f_parent)
 {
@@ -443,6 +463,71 @@ struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_sel
 	return f_sgs_ctl;
 };
 
+void fld_ctl_to_F_by_idx(int idx, struct chara_int2_clist *f_field_ctl){
+	struct chara3_ctl_item *tmp_fld_item = init_chara3_ctl_item_c();
+	struct chara_int2_ctl_item *f_field_flag = find_chara_int2_ctl_item_by_index(idx, f_field_ctl);
+	set_viz_flags_to_text(f_field_flag, tmp_fld_item);
+    c_store_chara3_array(f_field_ctl->f_self, idx, tmp_fld_item->c1_tbl,
+						 tmp_fld_item->c2_tbl, tmp_fld_item->c3_tbl);
+	dealloc_chara3_ctl_item_c(tmp_fld_item);
+	return;
+}
+
+
+struct chara_int2_clist * init_f_ctl_field_array(void *(*c_load_self)(void *f_parent), 
+											void *f_parent)
+{
+	struct chara_int2_clist * f_field_ctl = init_chara_int2_clist();
+	f_field_ctl->f_self =  c_load_self(f_parent);
+	char * ctmp1 = (char *) c_chara3_array_block_name(f_field_ctl->f_self);
+	f_field_ctl->clist_name = strngcopy_from_f(ctmp1);
+	
+	int i, num;
+    num = c_chara_int_array_num(f_field_ctl->f_self);
+    if(num == 0) {c_alloc_chara_int3_array(num, f_field_ctl->f_self);};
+	
+	struct chara3_ctl_item     *tmp_fld_ctl =  init_chara3_ctl_item_c();
+	struct chara_int2_ctl_item *tmp_fld_item = init_chara_int2_ctl_item_c();
+	for(i=0;i<c_chara3_array_num(f_field_ctl->f_self);i++){
+		ctmp1 = (char *) c_chara3_array_c1_tbl(i, f_field_ctl->f_self);
+		tmp_fld_ctl->c1_tbl = strngcopy_from_f(ctmp1);
+		ctmp1 = (char *) c_chara3_array_c2_tbl(i, f_field_ctl->f_self);
+		tmp_fld_ctl->c2_tbl = strngcopy_from_f(ctmp1);
+		ctmp1 = (char *) c_chara3_array_c3_tbl(i, f_field_ctl->f_self);
+		tmp_fld_ctl->c3_tbl = strngcopy_from_f(ctmp1);
+		set_viz_flags_from_text(tmp_fld_ctl, tmp_fld_item);
+		append_chara_int2_clist(tmp_fld_ctl->c1_tbl, tmp_fld_item->i_data[0],
+								tmp_fld_item->i_data[1], f_field_ctl);
+	};
+	dealloc_chara_int2_ctl_item_c(tmp_fld_item);
+	dealloc_chara3_ctl_item_c(tmp_fld_ctl);
+	return f_field_ctl;
+}
+
+
+struct f_MHD_fields_control * init_f_MHD_fields_control(void *(*c_load_self)(void *f_parent), 
+															  void *f_parent)
+{
+	struct f_MHD_fields_control *f_fld_ctl 
+			= (struct f_MHD_fields_control *) malloc(sizeof(struct f_MHD_fields_control));
+	if(f_fld_ctl == NULL){
+		printf("malloc error for f_fld_ctl\n");
+		exit(0);
+	};
+	
+	f_fld_ctl->f_self =  c_load_self(f_parent);
+	
+	f_fld_ctl->f_iflag =   (int *) c_MHD_field_ctl_iflag(f_fld_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_field_ctl_block_name(f_fld_ctl->f_self);
+	f_fld_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_fld_ctl->f_field_ctl =   init_f_ctl_field_array(c_MHD_field_ctl_field_ctl, f_fld_ctl->f_self);
+	f_fld_ctl->f_quad_phys =   init_f_ctl_chara_array(c_MHD_field_quad_phys_ctl, f_fld_ctl->f_self);
+	f_fld_ctl->f_scalar_phys = init_f_ctl_ci_array(c_MHD_scalar_phys_ctl, f_fld_ctl->f_self);
+	f_fld_ctl->f_vector_phys = init_f_ctl_ci3_array(c_MHD_vector_phys_ctl, f_fld_ctl->f_self);
+	return f_fld_ctl;
+};
+
 struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), 
 												  void *f_parent, void *f_addition)
 {
@@ -459,7 +544,7 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	char *f_block_name =   (char *) c_MHD_mdl_block_name(f_model_ctl->f_self);
 	f_model_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_model_ctl->f_fld_ctl =    c_MHD_mdl_fld_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_fld_ctl =    init_f_MHD_fields_control(c_MHD_mdl_fld_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_evo_ctl =    c_MHD_mdl_evo_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_earea_ctl =  c_MHD_mdl_earea_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_nbc_ctl =    c_MHD_mdl_nbc_ctl(f_model_ctl->f_self);

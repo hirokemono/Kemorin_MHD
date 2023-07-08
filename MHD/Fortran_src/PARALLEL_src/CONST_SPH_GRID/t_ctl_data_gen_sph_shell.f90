@@ -7,6 +7,7 @@
 !>@brief  control data for resolutions of spherical shell
 !!
 !!@verbatim
+!!      subroutine init_parallel_shell_ctl_label(hd_block, psph_ctl)
 !!      subroutine read_parallel_shell_ctl                              &
 !!     &         (id_control, hd_block, psph_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -113,8 +114,6 @@
 !
 !
       if(psph_ctl%iflag_sph_shell .gt. 0) return
-      psph_ctl%block_name = trim(hd_block)
-      call init_FEM_mesh_ctl_label(hd_FEM_mesh, psph_ctl%Fmesh_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -162,6 +161,22 @@
      &                                psph_ctl%block_name)
 !
       end subroutine write_parallel_shell_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_parallel_shell_ctl_label(hd_block, psph_ctl)
+!
+      use ctl_data_sphere_model_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+!
+      psph_ctl%block_name = trim(hd_block)
+      call init_ctl_shell_define_label(hd_sph_def, psph_ctl%spctl)
+      call init_ctl_shell_domain_label(hd_domains_sph, psph_ctl%sdctl)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, psph_ctl%Fmesh_ctl)
+!
+      end subroutine init_parallel_shell_ctl_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

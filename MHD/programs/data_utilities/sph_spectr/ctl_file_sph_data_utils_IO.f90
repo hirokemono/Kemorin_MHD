@@ -139,6 +139,7 @@
 !
       if(ctl%iflag .gt. 0) return
       call init_platforms_labels(hd_platform, ctl%plt)
+      call init_ctl_time_step_label(hd_time_step, ctl%tctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
