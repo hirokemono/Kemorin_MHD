@@ -102,6 +102,8 @@
 !
       use t_ctl_data_surf_boundary
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
 !
       type(surf_bc_control), intent(inout) :: sbc_ctl
@@ -117,6 +119,8 @@
       call bcast_ctl_array_c2r(sbc_ctl%surf_bc_CF_ctl)
       call bcast_ctl_array_c2r(sbc_ctl%surf_bc_INF_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (sbc_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(sbc_ctl%i_bc_4_surf, 0)
 !
       end subroutine bcast_bc_4_surf_ctl

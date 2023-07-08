@@ -1,3 +1,5 @@
+c_link_MHD_boundary_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_boundary_ctl.f90 t_ctl_data_node_boundary.o t_ctl_data_surf_boundary.o
+	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_SGS_model.o: $(MHD_F2003_DIR)/c_link_ctl_data_SGS_model.f90 t_ctl_data_SGS_model.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_divide_sph.o: $(MHD_F2003_DIR)/c_link_ctl_data_divide_sph.f90 t_ctl_data_4_divide_sphere.o t_ctl_data_4_FEM_mesh.o
