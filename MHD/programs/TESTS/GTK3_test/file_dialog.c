@@ -12,6 +12,7 @@
 #include "t_control_c_lists_w_file.h"
 #include "t_ctl_array_chara3_items_c.h"
 #include "t_ctl_array_chara_int3_items_c.h"
+#include "t_ctl_array_chara2_real_items_c.h"
 #include "t_ctl_data_4_fields_c.h"
 
 #include "control_elements_IO_GTK.h"
@@ -175,6 +176,18 @@ extern void * c_fline_ctls_fline_ctl(int idx, void *f_fline_ctls);
 extern void * c_append_viz_fline_ctls(int idx, char *block_name, void *f_fline_ctls);
 extern void * c_delete_viz_fline_ctls(int idx, void *f_fline_ctls);
 
+extern void * c_MHD_node_bc_ctl_block_name(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_ctl_iflag(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_node_bc_T_ctl(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_node_bc_U_ctl(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_node_bc_P_ctl(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_node_bc_C_ctl(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_node_bc_B_ctl(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_node_bc_MP_ctl(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_node_bc_A_ctl(void *f_nbc_ctl);
+extern void * c_MHD_node_bc_node_bc_J_ctl(void *f_nbc_ctl);
+
+
 struct f_MHD_SGS_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -218,6 +231,23 @@ struct f_MHD_SGS_model_control{
 	void **f_sph_filter_ctl;
 };
 
+struct f_MHD_node_bc_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct chara2_real_clist *f_node_bc_T_ctl;
+	struct chara2_real_clist *f_node_bc_U_ctl;
+	struct chara2_real_clist *f_node_bc_P_ctl;
+	struct chara2_real_clist *f_node_bc_C_ctl;
+	struct chara2_real_clist *f_node_bc_B_ctl;
+	struct chara2_real_clist *f_node_bc_MP_ctl;
+	struct chara2_real_clist *f_node_bc_A_ctl;
+	struct chara2_real_clist *f_node_bc_J_ctl;
+};
+
+
 struct f_MHD_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -227,7 +257,7 @@ struct f_MHD_model_control{
 	struct f_MHD_fields_control * f_fld_ctl;
 	void * f_evo_ctl;
 	void * f_earea_ctl;
-	void * f_nbc_ctl;
+	struct f_MHD_node_bc_control * f_nbc_ctl;
 	void * f_sbc_ctl;
 	struct f_MHD_forces_control *f_frc_ctl;
 	struct f_MHD_dimless_control * f_dless_ctl;
@@ -444,15 +474,32 @@ struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_sel
 	return f_sgs_ctl;
 };
 
-void fld_ctl_to_F_by_idx(int idx, struct chara_int2_clist *f_field_ctl){
-	struct chara3_ctl_item *tmp_fld_item = init_chara3_ctl_item_c();
-	struct chara_int2_ctl_item *f_field_flag = find_chara_int2_ctl_item_by_index(idx, f_field_ctl);
-	set_viz_flags_to_text(f_field_flag, tmp_fld_item);
-    c_store_chara3_array(f_field_ctl->f_self, idx, tmp_fld_item->c1_tbl,
-						 tmp_fld_item->c2_tbl, tmp_fld_item->c3_tbl);
-	dealloc_chara3_ctl_item_c(tmp_fld_item);
-	return;
-}
+struct f_MHD_node_bc_control * init_f_MHD_node_bc_control(void *(*c_load_self)(void *f_parent), 
+															  void *f_parent)
+{
+	struct f_MHD_node_bc_control *f_nbc_ctl 
+			= (struct f_MHD_node_bc_control *) malloc(sizeof(struct f_MHD_node_bc_control));
+	if(f_nbc_ctl == NULL){
+		printf("malloc error for f_nbc_ctl\n");
+		exit(0);
+	};
+	
+	f_nbc_ctl->f_self =  c_load_self(f_parent);
+	
+	f_nbc_ctl->f_iflag =        (int *) c_MHD_node_bc_ctl_iflag(f_nbc_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_node_bc_ctl_block_name(f_nbc_ctl->f_self);
+	f_nbc_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_nbc_ctl->f_node_bc_T_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_T_ctl, f_nbc_ctl->f_self);
+	f_nbc_ctl->f_node_bc_U_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_U_ctl, f_nbc_ctl->f_self);
+	f_nbc_ctl->f_node_bc_P_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_P_ctl, f_nbc_ctl->f_self);
+	f_nbc_ctl->f_node_bc_C_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_C_ctl, f_nbc_ctl->f_self);
+	f_nbc_ctl->f_node_bc_B_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_B_ctl, f_nbc_ctl->f_self);
+	f_nbc_ctl->f_node_bc_MP_ctl = init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_MP_ctl, f_nbc_ctl->f_self);
+	f_nbc_ctl->f_node_bc_A_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_A_ctl, f_nbc_ctl->f_self);
+	f_nbc_ctl->f_node_bc_J_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_J_ctl, f_nbc_ctl->f_self);
+	return f_nbc_ctl;
+};
 
 
 
@@ -475,7 +522,7 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	f_model_ctl->f_fld_ctl =    init_f_MHD_fields_control(c_MHD_mdl_fld_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_evo_ctl =    c_MHD_mdl_evo_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_earea_ctl =  c_MHD_mdl_earea_ctl(f_model_ctl->f_self);
-	f_model_ctl->f_nbc_ctl =    c_MHD_mdl_nbc_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_nbc_ctl =    init_f_MHD_node_bc_control(c_MHD_mdl_nbc_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_sbc_ctl =    c_MHD_mdl_sbc_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_frc_ctl =    init_f_MHD_forces_ctl(c_MHD_mdl_frc_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_dless_ctl =  init_f_MHD_dimless_ctl(c_MHD_mdl_dless_ctl, f_model_ctl->f_self);

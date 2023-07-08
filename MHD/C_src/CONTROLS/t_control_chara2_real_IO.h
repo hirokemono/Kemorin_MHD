@@ -33,10 +33,14 @@ struct chara2_real_ctl_list{
 struct chara2_real_clist{
 	struct chara2_real_ctl_list c2r_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *c1_name;
     char *c2_name;
     char *r1_name;
+    
+    int index_bc;
 };
 
 /* prototypes */

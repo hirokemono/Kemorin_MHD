@@ -156,9 +156,13 @@
 !
       subroutine init_sph_mhd_model_label(model_ctl)
 !
+      use ctl_data_node_boundary_IO
+!
       type(mhd_model_control), intent(inout) :: model_ctl
 !
       call init_phys_data_ctl_label(hd_phys_values, model_ctl%fld_ctl)
+      call init_bc_4_node_ctl_label(hd_boundary_condition,              &
+     &                              model_ctl%nbc_ctl)
 !
       end subroutine init_sph_mhd_model_label
 !

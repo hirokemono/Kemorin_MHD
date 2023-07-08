@@ -74,6 +74,8 @@
 !
       use t_ctl_data_node_boundary
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
 !
       type(node_bc_control), intent(inout) :: nbc_ctl
@@ -88,6 +90,8 @@
       call bcast_ctl_array_c2r(nbc_ctl%node_bc_A_ctl)
       call bcast_ctl_array_c2r(nbc_ctl%node_bc_J_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (nbc_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(nbc_ctl%i_bc_4_node, 0)
 !
       end subroutine bcast_bc_4_node_ctl

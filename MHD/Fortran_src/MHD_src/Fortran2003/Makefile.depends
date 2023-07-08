@@ -34,6 +34,8 @@ ctl_array_int_to_c.o: $(MHD_F2003_DIR)/ctl_array_int_to_c.f90 m_precision.o t_co
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_array_real_to_c.o: $(MHD_F2003_DIR)/ctl_array_real_to_c.f90 m_precision.o t_control_array_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
+ctl_chara2_real_array_to_c.o: $(MHD_F2003_DIR)/ctl_chara2_real_array_to_c.f90 m_precision.o t_control_array_chara2real.o ctl_array_chara_to_c.o
+	$(F90) -c $(F90OPTFLAGS) $<
 ctl_chara3_array_to_c.o: $(MHD_F2003_DIR)/ctl_chara3_array_to_c.f90 m_precision.o t_control_array_character3.o ctl_array_chara_to_c.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_chara_int3_array_to_c.o: $(MHD_F2003_DIR)/ctl_chara_int3_array_to_c.f90 m_precision.o t_control_array_charaint3.o ctl_array_chara_to_c.o
