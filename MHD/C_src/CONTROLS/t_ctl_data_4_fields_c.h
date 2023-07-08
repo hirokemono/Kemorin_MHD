@@ -13,11 +13,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "calypso_param_c.h"
+#include "skip_comment_c.h"
 #include "control_elements_IO_c.h"
 #include "t_control_chara_IO.h"
 #include "t_control_chara3_IO.h"
 #include "t_control_chara_int2_IO.h"
+#include "t_ctl_array_single_items_c.h"
+#include "t_ctl_array_chara3_items_c.h"
+#include "t_ctl_array_chara_int_items_c.h"
+#include "t_ctl_array_chara_int3_items_c.h"
 
 #include "m_field_name_from_f.h"
 
@@ -48,8 +54,13 @@ struct all_field_ctl_c{
 /* prototype */
 void get_label_field_ctl(int index, char *label);
 
+struct f_MHD_fields_control * init_f_MHD_fields_control(void *(*c_load_self)(void *f_parent),
+                                                        void *f_parent);
+
+
 struct f_MHD_fields_control * init_field_ctl_c();
 void dealloc_field_ctl_c(struct f_MHD_fields_control *fld_ctl);
+
 
 void set_viz_flags_to_text(struct chara_int2_ctl_item *field_item,
                            struct chara3_ctl_item *tmp_fld_item);
