@@ -100,6 +100,8 @@
       call bcast_ctl_type_i1(sgs_ctl%ngrp_radial_ave_ctl)
       call bcast_ctl_type_i1(sgs_ctl%ngrp_med_ave_ctl)
 !
+      call calypso_mpi_bcast_character(sgs_ctl%sph_filters_name,        &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_character(sgs_ctl%block_name,              &
      &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(sgs_ctl%i_sgs_ctl, 0)

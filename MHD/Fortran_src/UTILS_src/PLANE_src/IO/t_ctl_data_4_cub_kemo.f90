@@ -165,6 +165,8 @@
 !
       if(cubmesh_c%i_plane_mesh .gt. 0) return
       call init_platforms_labels(hd_platform, cubmesh_c%cubmesh_plt)
+      call init_filter_fnames_ctl_label(hd_filter_fnames,               &
+     &                                  cubmesh_c%ffile_cub_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

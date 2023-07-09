@@ -184,7 +184,7 @@
       type(filter_data_4_plane), intent(inout) :: cube_fil
       integer(kind = kint), intent(inout) :: iend
 !
-      integer (kind = kint) :: kf, ifil, ifil0, i, j, itmp
+      integer (kind = kint) :: kf, ifil, ifil0, i, itmp
 !
       character(len=kchara) :: filtername, fname_tmp
       character(len=255) :: tmpchara

@@ -78,7 +78,9 @@
 !!     &          bind(C, NAME = 'c_SGS_model_elayer_ctl')
 !!      type(c_ptr) function c_SGS_model_s3df_ctl(c_ctl)                &
 !!     &          bind(C, NAME = 'c_SGS_model_s3df_ctl')
-!!      type(c_ptr) function c_SGS_model_num_sph_filter_ctl(c_ctl)      &
+!!      type(c_ptr) function c_SGS_model_sph_filter_name(c_ctl)         &
+!!     &          bind(C, NAME = 'c_SGS_model_sph_filter_name')
+!!      integer(c_int) function c_SGS_model_num_sph_filter_ctl(c_ctl)   &
 !!     &          bind(C, NAME = 'c_SGS_model_num_sph_filter_ctl')
 !!      type(c_ptr) function c_SGS_model_sph_filter_ctl(i, c_ctl)       &
 !!     &          bind(C, NAME = 'c_SGS_model_sph_filter_ctl')
@@ -458,12 +460,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_SGS_model_num_sph_filter_ctl(c_ctl)        &
+      type(c_ptr) function c_SGS_model_sph_filter_name(c_ctl)           &
+     &          bind(C, NAME = 'c_SGS_model_sph_filter_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_model_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_model_sph_filter_name = C_loc(f_ctl%sph_filters_name)
+      end function c_SGS_model_sph_filter_name
+!
+!  ---------------------------------------------------------------------
+!
+      integer(c_int) function c_SGS_model_num_sph_filter_ctl(c_ctl)     &
      &          bind(C, NAME = 'c_SGS_model_num_sph_filter_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
       type(SGS_model_control), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_SGS_model_num_sph_filter_ctl = C_loc(f_ctl%num_sph_filter_ctl)
+      c_SGS_model_num_sph_filter_ctl = f_ctl%num_sph_filter_ctl
       end function c_SGS_model_num_sph_filter_ctl
 !
 !  ---------------------------------------------------------------------

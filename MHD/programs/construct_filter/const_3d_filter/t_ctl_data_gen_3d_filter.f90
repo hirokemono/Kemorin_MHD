@@ -153,6 +153,8 @@
       filter3d_ctl%block_name = hd_block
       call init_platforms_labels(hd_platform,                           &
      &                           filter3d_ctl%gen_filter_plt)
+      call init_filter_fnames_ctl_label(hd_filter_fnames,               &
+     &    filter3d_ctl%fil3_ctl%ffile_3d_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

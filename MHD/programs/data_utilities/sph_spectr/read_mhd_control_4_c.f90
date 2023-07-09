@@ -1649,5 +1649,425 @@
       end function c_temp_model_takepiro_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_3d_filter_ctl_block_name(c_ctl)        &
+     &          bind(C, NAME = 'c_SGS_3d_filter_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_3d_filter_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_3d_filter_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_SGS_3d_filter_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_3d_filter_ctl_iflag(c_ctl)             &
+     &          bind(C, NAME = 'c_SGS_3d_filter_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_3d_filter_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_3d_filter_ctl_iflag = C_loc(f_ctl%i_SGS_3d_filter_ctl)
+      end function c_SGS_3d_filter_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_3d_whole_filter_grp_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_SGS_3d_whole_filter_grp_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_3d_filter_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_3d_whole_filter_grp_ctl = C_loc(f_ctl%whole_filter_grp_ctl)
+      end function c_SGS_3d_whole_filter_grp_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_3d_fluid_filter_grp_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_SGS_3d_fluid_filter_grp_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_3d_filter_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_3d_fluid_filter_grp_ctl = C_loc(f_ctl%fluid_filter_grp_ctl)
+      end function c_SGS_3d_fluid_filter_grp_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_3d_momentum_filter_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_SGS_3d_momentum_filter_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_3d_filter_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_3d_momentum_filter_ctl = C_loc(f_ctl%momentum_filter_ctl)
+      end function c_SGS_3d_momentum_filter_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_3d_heat_filter_ctl(c_ctl)              &
+     &          bind(C, NAME = 'c_SGS_3d_heat_filter_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_3d_filter_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_3d_heat_filter_ctl = C_loc(f_ctl%heat_filter_ctl)
+      end function c_SGS_3d_heat_filter_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_3d_induction_filter_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_SGS_3d_induction_filter_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_3d_filter_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_3d_induction_filter_ctl = C_loc(f_ctl%induction_filter_ctl)
+      end function c_SGS_3d_induction_filter_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_3d_comp_filter_ctl(c_ctl)              &
+     &          bind(C, NAME = 'c_SGS_3d_comp_filter_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_3d_filter_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_3d_comp_filter_ctl = C_loc(f_ctl%compostion_filter_ctl)
+      end function c_SGS_3d_comp_filter_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_file_block_name(c_ctl)          &
+     &          bind(C, NAME = 'c_SGS_filter_file_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_file_block_name = C_loc(f_ctl%block_name)
+      end function c_SGS_filter_file_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_file_iflag(c_ctl)               &
+     &          bind(C, NAME = 'c_SGS_filter_file_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_file_iflag = C_loc(f_ctl%i_filter_fnames)
+      end function c_SGS_filter_file_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_head_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_SGS_filter_head_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_head_ctl = C_loc(f_ctl%filter_head_ctl)
+      end function c_SGS_filter_head_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_coef_head_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_SGS_filter_coef_head_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_coef_head_ctl = C_loc(f_ctl%filter_coef_head_ctl)
+      end function c_SGS_filter_coef_head_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_elen_head_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_SGS_filter_elen_head_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_elen_head_ctl = C_loc(f_ctl%filter_elen_head_ctl)
+      end function c_SGS_filter_elen_head_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_moms_head_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_SGS_filter_moms_head_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_moms_head_ctl = C_loc(f_ctl%filter_moms_head_ctl)
+      end function c_SGS_filter_moms_head_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_wide_head_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_SGS_filter_wide_head_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_wide_head_ctl = C_loc(f_ctl%filter_wide_head_ctl)
+      end function c_SGS_filter_wide_head_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_model_coef_ini_head(c_ctl)             &
+     &          bind(C, NAME = 'c_SGS_model_coef_ini_head')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_model_coef_ini_head = C_loc(f_ctl%model_coef_ini_head_ctl)
+      end function c_SGS_model_coef_ini_head
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_commute_coef_ini_head(c_ctl)           &
+     &          bind(C, NAME = 'c_SGS_commute_coef_ini_head')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_commute_coef_ini_head                                       &
+     &            = C_loc(f_ctl%commute_coef_ini_head_ctl)
+      end function c_SGS_commute_coef_ini_head
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_elen_format(c_ctl)              &
+     &          bind(C, NAME = 'c_SGS_filter_elen_format')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_elen_format = C_loc(f_ctl%filter_elen_format)
+      end function c_SGS_filter_elen_format
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_3d_format(c_ctl)                &
+     &          bind(C, NAME = 'c_SGS_filter_3d_format')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_3d_format = C_loc(f_ctl%filter_3d_format)
+      end function c_SGS_filter_3d_format
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_filter_wide_format(c_ctl)              &
+     &          bind(C, NAME = 'c_SGS_filter_wide_format')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_filter_wide_format = C_loc(f_ctl%filter_wide_format)
+      end function c_SGS_filter_wide_format
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_model_coef_rst_format(c_ctl)           &
+     &          bind(C, NAME = 'c_SGS_model_coef_rst_format')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_model_coef_rst_format = C_loc(f_ctl%model_coef_rst_format)
+      end function c_SGS_model_coef_rst_format
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_commute_coef_rst_format(c_ctl)         &
+     &          bind(C, NAME = 'c_SGS_commute_coef_rst_format')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(filter_file_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_commute_coef_rst_format                                     &
+     &              = C_loc(f_ctl%commute_coef_rst_format)
+      end function c_SGS_commute_coef_rst_format
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_layering_ctl_block_name(c_ctl)         &
+     &          bind(C, NAME = 'c_SGS_layering_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_layering_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_SGS_layering_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_layering_ctl_iflag(c_ctl)              &
+     &          bind(C, NAME = 'c_SGS_layering_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_layering_ctl_iflag = C_loc(f_ctl%i_dynamic_layers)
+      end function c_SGS_layering_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_layering_grp_type_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_SGS_layering_grp_type_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_layering_grp_type_ctl = C_loc(f_ctl%layering_grp_type_ctl)
+      end function c_SGS_layering_grp_type_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_layer_grp_name_ctl(c_ctl)              &
+     &          bind(C, NAME = 'c_SGS_layer_grp_name_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_layer_grp_name_ctl = C_loc(f_ctl%layer_grp_name_ctl)
+      end function c_SGS_layer_grp_name_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_igrp_stack_layer_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_SGS_igrp_stack_layer_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_igrp_stack_layer_ctl = C_loc(f_ctl%igrp_stack_layer_ctl)
+      end function c_SGS_igrp_stack_layer_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_num_layering_grp_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_SGS_num_layering_grp_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_num_layering_grp_ctl = C_loc(f_ctl%num_layering_grp_ctl)
+      end function c_SGS_num_layering_grp_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_num_fluid_layer_grp_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_SGS_num_fluid_layer_grp_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_num_fluid_layer_grp_ctl = C_loc(f_ctl%num_fl_layer_grp_ctl)
+      end function c_SGS_num_fluid_layer_grp_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_start_layer_grp_name_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_SGS_start_layer_grp_name_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_start_layer_grp_name_ctl                                    &
+     &          = C_loc(f_ctl%start_layering_grp_name_ctl)
+      end function c_SGS_start_layer_grp_name_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_start_fluid_grp_name_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_SGS_start_fluid_grp_name_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_start_fluid_grp_name_ctl                                    &
+     &          = C_loc(f_ctl%start_fl_layer_grp_name_ctl)
+      end function c_SGS_start_fluid_grp_name_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_ngrp_on_sphere_ctl(c_ctl)              &
+     &          bind(C, NAME = 'c_SGS_ngrp_on_sphere_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layering_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_ngrp_on_sphere_ctl = C_loc(f_ctl%ngrp_SGS_on_sphere_ctl)
+      end function c_SGS_ngrp_on_sphere_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_sph_filter_ctl_block_name(c_ctl)       &
+     &          bind(C, NAME = 'c_SGS_sph_filter_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_sph_filter_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_SGS_sph_filter_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SGS_sph_filter_ctl_iflag(c_ctl)            &
+     &          bind(C, NAME = 'c_SGS_sph_filter_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SGS_sph_filter_ctl_iflag = C_loc(f_ctl%i_sph_filter_ctl)
+      end function c_SGS_sph_filter_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SPH_SGS_sph_filter_type_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_SPH_SGS_sph_filter_type_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SPH_SGS_sph_filter_type_ctl = C_loc(f_ctl%sph_filter_type_ctl)
+      end function c_SPH_SGS_sph_filter_type_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SPH_SGS_r_filter_type_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_SPH_SGS_r_filter_type_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SPH_SGS_r_filter_type_ctl = C_loc(f_ctl%radial_filter_type_ctl)
+      end function c_SPH_SGS_r_filter_type_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SPH_SGS_maximum_moments_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_SPH_SGS_maximum_moments_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SPH_SGS_maximum_moments_ctl = C_loc(f_ctl%maximum_moments_ctl)
+      end function c_SPH_SGS_maximum_moments_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SPH_SGS_sph_filter_width_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_SPH_SGS_sph_filter_width_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SPH_SGS_sph_filter_width_ctl                                    &
+     &            = C_loc(f_ctl%sphere_filter_width_ctl)
+      end function c_SPH_SGS_sph_filter_width_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SPH_SGS_r_filter_width_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_SPH_SGS_r_filter_width_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SPH_SGS_r_filter_width_ctl                                      &
+     &            = C_loc(f_ctl%radial_filter_width_ctl)
+      end function c_SPH_SGS_r_filter_width_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SPH_SGS_first_reference_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_SPH_SGS_first_reference_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SPH_SGS_first_reference_ctl = C_loc(f_ctl%first_reference_ctl)
+      end function c_SPH_SGS_first_reference_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_SPH_SGS_second_reference_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_SPH_SGS_second_reference_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_filter_ctl_type), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_SPH_SGS_second_reference_ctl= C_loc(f_ctl%second_reference_ctl)
+      end function c_SPH_SGS_second_reference_ctl
+!
+!  ---------------------------------------------------------------------
 !
       end module read_mhd_control_4_c

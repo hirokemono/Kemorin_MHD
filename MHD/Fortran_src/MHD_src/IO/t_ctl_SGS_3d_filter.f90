@@ -7,6 +7,7 @@
 !>@brief  Structure for filtering controls
 !!
 !!@verbatim
+!!      subroutine init_3d_filtering_ctl_label(hd_block, s3df_ctl)
 !!      subroutine read_3d_filtering_ctl                                &
 !!     &         (id_control, hd_block, s3df_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -191,6 +192,31 @@
      &                                 s3df_ctl%block_name)
 !
       end subroutine write_3d_filtering_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_3d_filtering_ctl_label(hd_block, s3df_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
+!
+!
+      s3df_ctl%block_name = hd_block
+        call init_chara_ctl_array_label                                 &
+     &     (hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl)
+        call init_chara_ctl_array_label                                 &
+     &     (hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl)
+!
+        call init_chara_ctl_item_label(hd_momentum_filter_ctl,          &
+     &      s3df_ctl%momentum_filter_ctl)
+        call init_chara_ctl_item_label(hd_heat_filter_ctl,              &
+     &      s3df_ctl%heat_filter_ctl)
+        call init_chara_ctl_item_label(hd_induction_filter_ctl,         &
+     &      s3df_ctl%induction_filter_ctl)
+        call init_chara_ctl_item_label(hd_comp_filter_ctl,              &
+     &      s3df_ctl%compostion_filter_ctl)
+!
+      end subroutine init_3d_filtering_ctl_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

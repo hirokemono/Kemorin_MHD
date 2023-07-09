@@ -201,6 +201,8 @@
       FEM_MHD_ctl%block_name = trim(hd_block)
       call init_platforms_labels(hd_platform, FEM_MHD_ctl%plt)
       call init_platforms_labels(hd_org_data, FEM_MHD_ctl%org_plt)
+      call init_sph_sgs_mhd_model(hd_model, FEM_MHD_ctl%model_ctl,      &
+     &                            sgs_ctl)
       call init_viz_ctl_label(hd_viz_control, viz_ctls)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
