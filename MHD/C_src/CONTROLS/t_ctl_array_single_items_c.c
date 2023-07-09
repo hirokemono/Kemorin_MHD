@@ -52,16 +52,6 @@ struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_paren
 }
 
 
-void dealloc_f_ctl_chara_item(struct chara_ctl_item *f_citem)
-{
-	free(f_citem->c_tbl);
-	free(f_citem->c_block_name);
-	
-	f_citem->f_iflag = NULL;
-	f_citem->f_self = NULL;
-	return;
-}
-
 struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent)
 {

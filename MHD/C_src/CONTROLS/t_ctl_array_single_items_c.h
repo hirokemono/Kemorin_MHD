@@ -70,7 +70,6 @@ extern void * c_check_int_array(void *f_ctl);
 
 struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent),
 												void *f_parent);
-void dealloc_f_ctl_chara_item(struct chara_ctl_item *f_citem);
 struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent),
 											void *f_parent);
 void reflesh_f_ctl_chara_array(int num_array, struct chara_clist *c_clist);

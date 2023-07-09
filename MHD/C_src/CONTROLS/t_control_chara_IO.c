@@ -102,7 +102,7 @@ void copy_to_chara_ctl_item(const char *c_data, struct chara_ctl_item *c_item){
 
 
 
-void init_chara_ctl_list(struct chara_ctl_list *head){
+static void init_chara_ctl_list(struct chara_ctl_list *head){
     head->c_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
@@ -129,7 +129,7 @@ struct chara_ctl_list *add_chara_ctl_list_before(struct chara_ctl_list *current)
     return added;
 };
 
-struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
+static struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
     struct chara_ctl_list *added;
     struct chara_ctl_list *old_next;
     
@@ -149,7 +149,7 @@ struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
     return added;
 };
 
-void delete_chara_ctl_list(struct chara_ctl_list *current){
+static void delete_chara_ctl_list(struct chara_ctl_list *current){
     struct chara_ctl_list *old_prev = current->_prev;
     struct chara_ctl_list *old_next = current->_next;
     
@@ -166,7 +166,7 @@ static void clear_chara_ctl_list(struct chara_ctl_list *head){
 };
 
 
-int count_chara_ctl_list(struct chara_ctl_list *head){
+static int count_chara_ctl_list(struct chara_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
@@ -176,13 +176,13 @@ int count_chara_ctl_list(struct chara_ctl_list *head){
     return num;
 };
 
-struct chara_ctl_list *find_c_ctl_list_item_by_index(int index, struct chara_ctl_list *head){
+static struct chara_ctl_list *find_c_ctl_list_item_by_index(int index, struct chara_ctl_list *head){
     int i;
     if(index < 0 || index > count_chara_ctl_list(head)) return NULL;
     for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
-struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl_list *head){
+static struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl_list *head){
     head = head->_next;
     while (head != NULL){
 		if(cmp_no_case_c(head->c_item->c_tbl, ref)) return head;
@@ -191,7 +191,7 @@ struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl
     return head;
 };
 
-int read_chara_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+static int read_chara_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_ctl_list *head){
     int iflag = 0;
     int icou = 0;
@@ -209,7 +209,7 @@ int read_chara_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     return icou;
 };
 
-int write_chara_ctl_list(FILE *fp, int level, const char *label, 
+static int write_chara_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara_ctl_list *head){
     if(count_chara_ctl_list(head) == 0) return level;
     
@@ -227,7 +227,7 @@ int write_chara_ctl_list(FILE *fp, int level, const char *label,
 };
 
 
-void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head){
+static void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head){
     int num = count_chara_ctl_list(head);
     if(num > 0) head = find_c_ctl_list_item_by_index(num-1, head);
 	head = add_chara_ctl_list_after(head);
@@ -271,7 +271,7 @@ static void add_chara_ctl_list_after_c_tbl(char *ref, char *c_in,
 	update_chara_ctl_item_c(c_in, head->c_item);
 	return;
 };
-void del_chara_ctl_list_by_c_tbl(char *ref, struct chara_ctl_list *head){
+static void del_chara_ctl_list_by_c_tbl(char *ref, struct chara_ctl_list *head){
 	head = find_c_ctl_list_item_by_c_tbl(ref, head);
 	if(head != NULL) delete_chara_ctl_list(head);
 	return;

@@ -14,9 +14,12 @@ struct int_ctl_item * init_int_ctl_item_c(void){
         printf("malloc error for int_ctl_item \n");
         exit(0);
     }
+	if((i_item->f_iflag = (int *)calloc(100, sizeof(int))) == NULL) {
+		printf("malloc error for i_item->f_iflag\n");
+		exit(0);
+	}
 
     i_item->i_data = 0;
-	i_item->iflag = 0;
     return i_item;
 };
 
@@ -24,12 +27,12 @@ int read_integer_ctl_item_c(char buf[LENGTHBUF], const char *label,
                           struct int_ctl_item *i_item){
 	char header_chara[KCHARA_C];
 	
-	if(i_item->iflag > 0) return 0;
+	if(i_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %d", header_chara, &i_item->i_data);
-		i_item->iflag = 1;
+		i_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -37,7 +40,7 @@ int read_integer_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_integer_ctl_item_c(FILE *fp, int level, int maxlen, 
                            const char *label, struct int_ctl_item *i_item){
     
-	if(i_item->iflag == 0) return level;
+	if(i_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
 	fprintf(fp,  "%d\n", i_item->i_data);
@@ -45,12 +48,12 @@ int write_integer_ctl_item_c(FILE *fp, int level, int maxlen,
 };
 
 void update_int_ctl_item_c(int index, struct int_ctl_item *i_item){
-	i_item->iflag = 1;
+	i_item->f_iflag[0] = 1;
 	i_item->i_data = index;
 	return;
 };
 int set_from_int_ctl_item_c(struct int_ctl_item *i_item){
-	if(i_item->iflag == 0) return 0.0;
+	if(i_item->f_iflag[0] == 0) return 0.0;
 	return i_item->i_data;
 };
 

@@ -394,7 +394,7 @@ static void cb_int_ctl_item(GtkSpinButton *spinner, gpointer data)
 	struct int_ctl_item *ctl_item = (struct int_ctl_item *) data;
 	
 	if(data != NULL) {
-		ctl_item->iflag = 1;
+		ctl_item->f_iflag[0] = 1;
 		ctl_item->i_data = gtk_spin_button_get_value_as_int(spinner);
 /*		printf("New value: %d\n", ctl_item->i_data); */
 	};
@@ -412,7 +412,7 @@ GtkWidget *make_integer_hbox(int iflag_fix_on, const char *label, struct int_ctl
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "value-changed",
 				G_CALLBACK(cb_int_ctl_item), (gpointer) ctl_item);
 	
-	hbox = make_entry_with_check_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	hbox = make_entry_with_check_hbox(iflag_fix_on, label, ctl_item->f_iflag, tbox_flag);
 	return hbox;
 }
 

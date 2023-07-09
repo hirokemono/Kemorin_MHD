@@ -71,13 +71,13 @@ void * dealloc_f_sph_vol_spectr_ctls(void *f_item){
 	f_v_pwr_item->f_iflag = NULL;
 	free(f_v_pwr_item->c_block_name);
 	
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_spec_file_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_ave_file_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_volume_spec_format_ctl);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_degree_v_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_order_v_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_diff_v_lm_spectra_switch);
-	dealloc_f_ctl_chara_item(f_v_pwr_item->f_axis_v_power_switch);
+	dealloc_chara_ctl_item_c(f_v_pwr_item->f_volume_spec_file_ctl);
+	dealloc_chara_ctl_item_c(f_v_pwr_item->f_volume_ave_file_ctl);
+	dealloc_chara_ctl_item_c(f_v_pwr_item->f_volume_spec_format_ctl);
+	dealloc_chara_ctl_item_c(f_v_pwr_item->f_degree_v_spectra_switch);
+	dealloc_chara_ctl_item_c(f_v_pwr_item->f_order_v_spectra_switch);
+	dealloc_chara_ctl_item_c(f_v_pwr_item->f_diff_v_lm_spectra_switch);
+	dealloc_chara_ctl_item_c(f_v_pwr_item->f_axis_v_power_switch);
 	dealloc_f_ctl_real_item(f_v_pwr_item->f_inner_radius_ctl);
 	dealloc_f_ctl_real_item(f_v_pwr_item->f_outer_radius_ctl);
 	free(f_v_pwr_item);
@@ -123,10 +123,10 @@ void * dealloc_f_sph_field_on_circle_ctls(void *f_item){
 	f_circ_ctls->f_iflag = NULL;
 	free(f_circ_ctls->c_block_name);
 	
-	dealloc_f_ctl_chara_item(f_circ_ctls->f_circle_field_file_ctl);
-	dealloc_f_ctl_chara_item(f_circ_ctls->f_circle_spectr_file_ctl);
-	dealloc_f_ctl_chara_item(f_circ_ctls->f_circle_file_format_ctl);
-	dealloc_f_ctl_chara_item(f_circ_ctls->f_pick_circle_coord_ctl);
+	dealloc_chara_ctl_item_c(f_circ_ctls->f_circle_field_file_ctl);
+	dealloc_chara_ctl_item_c(f_circ_ctls->f_circle_spectr_file_ctl);
+	dealloc_chara_ctl_item_c(f_circ_ctls->f_circle_file_format_ctl);
+	dealloc_chara_ctl_item_c(f_circ_ctls->f_pick_circle_coord_ctl);
 	dealloc_f_ctl_int_item(f_circ_ctls->f_nphi_mid_eq_ctl);
 	dealloc_f_ctl_real_item(f_circ_ctls->f_pick_s_ctl);
 	dealloc_f_ctl_real_item(f_circ_ctls->f_pick_z_ctl);
