@@ -25,8 +25,8 @@ struct f_MHD_sph_pick_mode_ctls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_picked_mode_head_ctl;
-	struct f_ctl_chara_item *f_picked_mode_fmt_ctl;
+	struct chara_ctl_item *f_picked_mode_head_ctl;
+	struct chara_ctl_item *f_picked_mode_fmt_ctl;
 	struct int_clist  *f_idx_pick_layer_ctl;
 	struct real_clist *f_pick_radius_ctl;
 	struct int2_clist *f_idx_pick_sph_ctl;
@@ -40,8 +40,8 @@ struct f_MHD_sph_gauss_coefs_ctls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_gauss_coefs_prefix;
-	struct f_ctl_chara_item *f_gauss_coefs_format;
+	struct chara_ctl_item *f_gauss_coefs_prefix;
+	struct chara_ctl_item *f_gauss_coefs_format;
 	struct f_ctl_real_item *f_gauss_coefs_radius_ctl;
 	struct int2_clist *f_idx_gauss_ctl;
 	struct int_clist  *f_idx_gauss_l_ctl;
@@ -54,8 +54,8 @@ struct f_MHD_sph_dipolarity_ctls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_fdip_file_prefix_ctl;
-	struct f_ctl_chara_item *f_fdip_file_format_ctl;
+	struct chara_ctl_item *f_fdip_file_prefix_ctl;
+	struct chara_ctl_item *f_fdip_file_format_ctl;
 	struct int_clist  *f_fdip_truncation_ctl;
 };
 
@@ -65,11 +65,11 @@ struct f_MHD_sph_dynamobench_ctls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_dynamobench_file_ctl;
-	struct f_ctl_chara_item *f_dynamobench_format_ctl;
-	struct f_ctl_chara_item *f_detailed_dbench_file_ctl;
-	struct f_ctl_chara_item *f_dbench_field_file_ctl;
-	struct f_ctl_chara_item *f_dbench_spectr_file_ctl;
+	struct chara_ctl_item *f_dynamobench_file_ctl;
+	struct chara_ctl_item *f_dynamobench_format_ctl;
+	struct chara_ctl_item *f_detailed_dbench_file_ctl;
+	struct chara_ctl_item *f_dbench_field_file_ctl;
+	struct chara_ctl_item *f_dbench_spectr_file_ctl;
 	struct f_ctl_int_item   *f_nphi_mid_eq_ctl;
 };
 
@@ -79,12 +79,12 @@ struct f_MHD_sph_layer_spectr_ctls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_layered_pwr_spectr_prefix;
-	struct f_ctl_chara_item *f_layered_pwr_spectr_format;
-	struct f_ctl_chara_item *f_degree_spectra_switch;
-	struct f_ctl_chara_item *f_order_spectra_switch;
-	struct f_ctl_chara_item *f_diff_lm_spectra_switch;
-	struct f_ctl_chara_item *f_axis_power_switch;
+	struct chara_ctl_item *f_layered_pwr_spectr_prefix;
+	struct chara_ctl_item *f_layered_pwr_spectr_format;
+	struct chara_ctl_item *f_degree_spectra_switch;
+	struct chara_ctl_item *f_order_spectra_switch;
+	struct chara_ctl_item *f_diff_lm_spectra_switch;
+	struct chara_ctl_item *f_axis_power_switch;
 	
 	struct int_clist  *f_idx_spec_layer_ctl;
 	struct real_clist *f_layer_radius_ctl;
@@ -109,19 +109,19 @@ struct f_MHD_sph_monitor_ctls{
 	struct f_MHD_sph_dynamobench_ctls  *f_dbench_ctl;
 	struct f_MHD_sph_dipolarity_ctls   *f_fdip_ctl;
 	
-	struct f_ctl_chara_item * f_volume_average_prefix;
-	struct f_ctl_chara_item * f_volume_pwr_spectr_prefix;
-	struct f_ctl_chara_item * f_volume_pwr_spectr_format;
-	struct f_ctl_chara_item * f_degree_v_spectra_switch;
-	struct f_ctl_chara_item * f_order_v_spectra_switch;
-	struct f_ctl_chara_item * f_diff_v_lm_spectra_switch;
-	struct f_ctl_chara_item * f_axis_v_power_switch;
-	struct f_ctl_chara_item * f_heat_Nusselt_file_prefix;
-	struct f_ctl_chara_item * f_comp_Nusselt_file_prefix;
-	struct f_ctl_chara_item * f_heat_Nusselt_file_format;
-	struct f_ctl_chara_item * f_comp_Nusselt_file_format;
-	struct f_ctl_chara_item * f_typ_scale_file_prefix_ctl;
-	struct f_ctl_chara_item * f_typ_scale_file_format_ctl;
+	struct chara_ctl_item * f_volume_average_prefix;
+	struct chara_ctl_item * f_volume_pwr_spectr_prefix;
+	struct chara_ctl_item * f_volume_pwr_spectr_format;
+	struct chara_ctl_item * f_degree_v_spectra_switch;
+	struct chara_ctl_item * f_order_v_spectra_switch;
+	struct chara_ctl_item * f_diff_v_lm_spectra_switch;
+	struct chara_ctl_item * f_axis_v_power_switch;
+	struct chara_ctl_item * f_heat_Nusselt_file_prefix;
+	struct chara_ctl_item * f_comp_Nusselt_file_prefix;
+	struct chara_ctl_item * f_heat_Nusselt_file_format;
+	struct chara_ctl_item * f_comp_Nusselt_file_format;
+	struct chara_ctl_item * f_typ_scale_file_prefix_ctl;
+	struct chara_ctl_item * f_typ_scale_file_format_ctl;
 };
 
 /* prototypes */

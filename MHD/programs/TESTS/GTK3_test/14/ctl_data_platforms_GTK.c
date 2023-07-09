@@ -12,11 +12,11 @@ extern int num_file_fmt_items_f();
 extern void set_file_fmt_items_f(char *fmt_names_c);
 
 
-struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent)
+struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
-	struct f_ctl_chara_item *f_citem = (struct f_ctl_chara_item *) malloc(sizeof(struct f_ctl_chara_item));
+	struct chara_ctl_item *f_citem = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	if(f_citem == NULL){
-		printf("malloc error for f_ctl_chara_item\n");
+		printf("malloc error for chara_ctl_item\n");
 		exit(0);
 	};
 	f_citem->f_self =  c_load_self(f_parent);
@@ -30,13 +30,13 @@ struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_par
 	f_citem->c_block_name = alloc_string((long) f_citem->f_namelength[0]);
 	strngcopy_w_length(f_citem->c_block_name, f_citem->f_namelength[0], 
 					   f_block_name);
-	f_citem->c_charavalue = alloc_string((long) f_citem->f_clength[0]);
-	strngcopy_w_length(f_citem->c_charavalue, f_citem->f_clength[0], 
+	f_citem->c_tbl = alloc_string((long) f_citem->f_clength[0]);
+	strngcopy_w_length(f_citem->c_tbl, f_citem->f_clength[0],
 					   f_citem->f_charavalue);
 	printf("f_citem->f_self %p \n", f_citem->f_self);
 	printf("f_citem->c_block_name %s \n", f_citem->c_block_name);
-	printf("f_citem->c_charavalue %d %s \n", 
-		   f_citem->f_iflag[0], f_citem->c_charavalue);
+	printf("f_citem->c_tbl %d %s \n",
+		   f_citem->f_iflag[0], f_citem->c_tbl);
 	return f_citem;
 }
 
@@ -93,7 +93,7 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 
 void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 {
-	struct f_ctl_chara_item *f_citem = (struct f_ctl_chara_item *) data;
+	struct chara_ctl_item *f_citem = (struct chara_ctl_item *) data;
 	char * input_text;
 	
 	if(f_citem->f_self != NULL) {
@@ -143,7 +143,7 @@ GtkWidget * draw_control_block(const char * title, int *iflag_ptr,
 	return hbox0;
 };
 
-GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWidget *window)
+GtkWidget * draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem, GtkWidget *window)
 {
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *checkbox = gtk_check_button_new();
@@ -171,7 +171,7 @@ GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWid
 }
 
 GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_format_list, 
-										 struct f_ctl_chara_item * f_citem, GtkWidget *window){
+										 struct chara_ctl_item * f_citem, GtkWidget *window){
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *checkbox = gtk_check_button_new();
 	if(f_citem->f_iflag[0] == 0){
@@ -186,7 +186,7 @@ GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_for
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget *file_formats_tree_view
 			= create_control_flags_tree_view(label_file_format_list);
-	add_control_combobox_vbox(f_citem->f_charavalue, f_citem->c_charavalue, 
+	add_control_combobox_vbox(f_citem->f_charavalue, f_citem->c_tbl, 
 							  label_file_format_list, 
 							  file_formats_tree_view, vbox);
 	

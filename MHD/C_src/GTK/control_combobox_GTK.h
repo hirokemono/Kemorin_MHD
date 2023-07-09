@@ -25,7 +25,7 @@ void add_control_combobox_vbox_old(char *c_charavalue,
                                struct control_labels_f *flag_list,
 							   GtkWidget *ctl_flags_tree_view, GtkWidget *vbox_out);
 
-void add_control_combobox_vbox(struct f_ctl_chara_item *f_citem,
+void add_control_combobox_vbox(struct chara_ctl_item *f_citem,
                                struct control_labels_f *flag_list,
 							   GtkWidget *ctl_flags_tree_view, GtkWidget *vbox_out);
 

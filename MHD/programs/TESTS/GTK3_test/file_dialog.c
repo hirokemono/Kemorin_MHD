@@ -308,8 +308,8 @@ struct f_MHD_SGS_SPH_filter_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_sph_filter_type_ctl;
-	struct f_ctl_chara_item *f_radial_filter_type_ctl;
+	struct chara_ctl_item *f_sph_filter_type_ctl;
+	struct chara_ctl_item *f_radial_filter_type_ctl;
 	struct f_ctl_int_item *f_maximum_moments_ctl;
 	struct f_ctl_real_item *f_sphere_filter_width_ctl;
 	struct f_ctl_real_item *f_radial_filter_width_ctl;
@@ -325,10 +325,10 @@ struct f_MHD_SGS_3d_filter_control{
 	
 	struct chara_clist *f_whole_filter_grp_ctl;
 	struct chara_clist *f_fluid_filter_grp_ctl;
-	struct f_ctl_chara_item *f_momentum_filter_ctl;
-	struct f_ctl_chara_item *f_heat_filter_ctl;
-	struct f_ctl_chara_item *f_induction_filter_ctl;
-	struct f_ctl_chara_item *f_compostion_filter_ctl;
+	struct chara_ctl_item *f_momentum_filter_ctl;
+	struct chara_ctl_item *f_heat_filter_ctl;
+	struct chara_ctl_item *f_induction_filter_ctl;
+	struct chara_ctl_item *f_compostion_filter_ctl;
 };
 
 struct f_MHD_SGS_layer_control{
@@ -337,13 +337,13 @@ struct f_MHD_SGS_layer_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_layering_grp_type_ctl;
+	struct chara_ctl_item *f_layering_grp_type_ctl;
 	struct chara_clist *f_layer_grp_name_ctl;
 	struct int_clist   *f_igrp_stack_layer_ctl;
 	struct f_ctl_int_item   *f_num_layering_grp_ctl;
 	struct f_ctl_int_item   *f_num_fl_layer_grp_ctl;
-	struct f_ctl_chara_item *f_start_layering_grp_name_ctl;
-	struct f_ctl_chara_item *f_start_fl_layer_grp_name_ctl;
+	struct chara_ctl_item *f_start_layering_grp_name_ctl;
+	struct chara_ctl_item *f_start_fl_layer_grp_name_ctl;
 	struct f_ctl_int_item   *f_ngrp_SGS_on_sphere_ctl;
 };
 
@@ -353,18 +353,18 @@ struct f_MHD_SGS_filter_file_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_filter_head_ctl;
-	struct f_ctl_chara_item *f_filter_coef_head_ctl;
-	struct f_ctl_chara_item *f_filter_elen_head_ctl;
-	struct f_ctl_chara_item *f_filter_moms_head_ctl;
-	struct f_ctl_chara_item *f_filter_wide_head_ctl;
-	struct f_ctl_chara_item *f_model_coef_ini_head_ctl;
-	struct f_ctl_chara_item *f_commute_coef_ini_head_ctl;
-	struct f_ctl_chara_item *f_filter_elen_format;
-	struct f_ctl_chara_item *f_filter_3d_format;
-	struct f_ctl_chara_item *f_filter_wide_format;
-	struct f_ctl_chara_item *f_model_coef_rst_format;
-	struct f_ctl_chara_item *f_commute_coef_rst_format;
+	struct chara_ctl_item *f_filter_head_ctl;
+	struct chara_ctl_item *f_filter_coef_head_ctl;
+	struct chara_ctl_item *f_filter_elen_head_ctl;
+	struct chara_ctl_item *f_filter_moms_head_ctl;
+	struct chara_ctl_item *f_filter_wide_head_ctl;
+	struct chara_ctl_item *f_model_coef_ini_head_ctl;
+	struct chara_ctl_item *f_commute_coef_ini_head_ctl;
+	struct chara_ctl_item *f_filter_elen_format;
+	struct chara_ctl_item *f_filter_3d_format;
+	struct chara_ctl_item *f_filter_wide_format;
+	struct chara_ctl_item *f_model_coef_rst_format;
+	struct chara_ctl_item *f_commute_coef_rst_format;
 };
 
 struct f_MHD_SGS_model_control{
@@ -373,20 +373,20 @@ struct f_MHD_SGS_model_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_SGS_model_name_ctl;
-	struct f_ctl_chara_item *f_SGS_filter_name_ctl;
-	struct f_ctl_chara_item *f_DIFF_model_coef_ctl;
-	struct f_ctl_chara_item *f_SGS_negative_clip_ctl;
-	struct f_ctl_chara_item *f_SGS_marging_ctl;
-	struct f_ctl_chara_item *f_SGS_perturbation_ctl;
-	struct f_ctl_chara_item *f_SGS_model_coef_type_ctl;
-	struct f_ctl_chara_item *f_heat_flux_csim_type_ctl;
-	struct f_ctl_chara_item *f_comp_flux_csim_type_ctl;
-	struct f_ctl_chara_item *f_mom_flux_csim_type_ctl;
-	struct f_ctl_chara_item *f_maxwell_csim_type_ctl;
-	struct f_ctl_chara_item *f_uxb_csim_type_ctl;
-	struct f_ctl_chara_item *f_SGS_model_coef_coord_ctl;
-	struct f_ctl_chara_item *f_SGS_buo_Csim_usage_ctl;
+	struct chara_ctl_item *f_SGS_model_name_ctl;
+	struct chara_ctl_item *f_SGS_filter_name_ctl;
+	struct chara_ctl_item *f_DIFF_model_coef_ctl;
+	struct chara_ctl_item *f_SGS_negative_clip_ctl;
+	struct chara_ctl_item *f_SGS_marging_ctl;
+	struct chara_ctl_item *f_SGS_perturbation_ctl;
+	struct chara_ctl_item *f_SGS_model_coef_type_ctl;
+	struct chara_ctl_item *f_heat_flux_csim_type_ctl;
+	struct chara_ctl_item *f_comp_flux_csim_type_ctl;
+	struct chara_ctl_item *f_mom_flux_csim_type_ctl;
+	struct chara_ctl_item *f_maxwell_csim_type_ctl;
+	struct chara_ctl_item *f_uxb_csim_type_ctl;
+	struct chara_ctl_item *f_SGS_model_coef_coord_ctl;
+	struct chara_ctl_item *f_SGS_buo_Csim_usage_ctl;
 	
 	struct f_ctl_int_item *f_istep_dynamic_ctl;
 	struct f_ctl_int_item *f_min_step_dynamic_ctl;
@@ -476,8 +476,8 @@ struct f_MHD_gravity_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_FEM_gravity_model;
-	struct f_ctl_chara_item *f_gravity;
+	struct chara_ctl_item *f_FEM_gravity_model;
+	struct chara_ctl_item *f_gravity;
 	struct chara_real_clist *f_gravity_vector;
 };
 
@@ -487,8 +487,8 @@ struct f_MHD_Coriolis_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_FEM_coriolis_model;
-	struct f_ctl_chara_item *f_FEM_coriolis_implicit;
+	struct chara_ctl_item *f_FEM_coriolis_model;
+	struct chara_ctl_item *f_FEM_coriolis_implicit;
 	struct chara_real_clist *f_system_rotation;
 };
 
@@ -498,8 +498,8 @@ struct f_MHD_magneto_cv_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_filterd_induction_ctl;
-	struct f_ctl_chara_item *f_magneto_cv;
+	struct chara_ctl_item *f_filterd_induction_ctl;
+	struct chara_ctl_item *f_magneto_cv;
 	struct chara_real_clist *f_ext_magne;
 };
 
@@ -539,10 +539,10 @@ struct f_MHD_temp_model_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_filterd_advect_ctl;
-	struct f_ctl_chara_item *f_reference_ctl;
-	struct f_ctl_chara_item *f_stratified_ctl;
-	struct f_ctl_chara_item *f_ref_file_ctl;
+	struct chara_ctl_item *f_filterd_advect_ctl;
+	struct chara_ctl_item *f_reference_ctl;
+	struct chara_ctl_item *f_stratified_ctl;
+	struct chara_ctl_item *f_ref_file_ctl;
 	struct f_ctl_real_item  *f_ICB_diffuse_reduction_ctl;
 	
 	struct f_MHD_reftemp_point_control  *f_low_ctl;

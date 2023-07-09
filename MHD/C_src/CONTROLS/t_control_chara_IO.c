@@ -14,15 +14,22 @@ struct chara_ctl_item * init_chara_ctl_item_c(void){
         printf("malloc error for chara_ctl_item\n");
         exit(0);
     }
-
+	if((c_item->f_iflag = (int *)calloc(100, sizeof(int))) == NULL) {
+		printf("malloc error for c_item->f_iflag\n");
+		exit(0);
+	}
+	
 	c_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
-	c_item->iflag = 0;
     return c_item;
 };
 
 void dealloc_chara_ctl_item_c(struct chara_ctl_item *c_item){
     free(c_item->c_tbl);
-    free(c_item);
+	c_item->f_self = NULL;
+	c_item->f_iflag = NULL;
+    free(c_item->c_block_name);
+	
+	free(c_item);
     return;
 };
 
@@ -30,13 +37,13 @@ int read_chara_ctl_item_c(char buf[LENGTHBUF], const char *label,
                                struct chara_ctl_item *c_item){
 	char header_chara[KCHARA_C];
 	
-	if(c_item->iflag > 0) return 0;
+	if(c_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %s", header_chara, c_item->c_tbl);
 		strip_cautation_marks(c_item->c_tbl);
-		c_item->iflag = 1;
+		c_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -44,7 +51,7 @@ int read_chara_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_chara_ctl_item_c(FILE *fp, int level, int maxlen, 
                            const char *label, struct chara_ctl_item *c_item){
     
-	if(c_item->iflag == 0) return level;
+	if(c_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
 	write_one_label_w_lf_c(fp, c_item->c_tbl);
@@ -52,12 +59,12 @@ int write_chara_ctl_item_c(FILE *fp, int level, int maxlen,
 };
 
 void update_chara_ctl_item_c(char *c_in, struct chara_ctl_item *c_item){
-	c_item->iflag = 1;
+	c_item->f_iflag[0] = 1;
 	sprintf(c_item->c_tbl,"%s", c_in);
     return;
 };
 void set_from_chara_ctl_item_c(struct chara_ctl_item *c_item, char *c_out){
-	if(c_item->iflag == 0) return;
+	if(c_item->f_iflag[0] == 0) return;
 	sprintf(c_out,"%s", c_item->c_tbl);
     return;
 };
@@ -65,7 +72,7 @@ void set_from_chara_ctl_item_c(struct chara_ctl_item *c_item, char *c_out){
 
 int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item){
     int iflag = 0;
-	if(c_item->iflag == 0) return iflag;
+	if(c_item->f_iflag[0] == 0) return iflag;
 	
 	iflag = cmp_no_case_c(c_item->c_tbl, "ON");
     if(iflag == 0) iflag = cmp_no_case_c(c_item->c_tbl, "YES");
@@ -73,7 +80,7 @@ int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item){
 };
 
 void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item){
-	c_item->iflag = 1;
+	c_item->f_iflag[0] = 1;
     if(iflag > 0){
         sprintf(c_item->c_tbl, "%s", "On");
     } else {
@@ -83,12 +90,12 @@ void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item){
 };
 
 void copy_from_chara_ctl_item(struct chara_ctl_item *c_item, char *c_data){
-	if(c_item->iflag == 0) return;
+	if(c_item->f_iflag[0] == 0) return;
 	sprintf(c_data, "%s", c_item->c_tbl);
 	return;
 };
 void copy_to_chara_ctl_item(const char *c_data, struct chara_ctl_item *c_item){
-	c_item->iflag = 1;
+	c_item->f_iflag[0] = 1;
 	sprintf(c_item->c_tbl, "%s", c_data);
 	return;
 };

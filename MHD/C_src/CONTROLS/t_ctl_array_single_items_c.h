@@ -14,13 +14,6 @@
 #include "t_control_int_IO.h"
 #include "t_control_chara_IO.h"
 
-struct f_ctl_chara_item{
-	void * f_self;
-	int * f_iflag;
-	char * c_block_name;
-	char * c_charavalue;
-};
-
 struct f_ctl_real_item{
 	void * f_self;
 	int * f_iflag;
@@ -75,9 +68,9 @@ extern void * c_alloc_int_array(int num_array, void *f_ctl);
 extern void * c_check_int_array(void *f_ctl);
 
 
-struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent),
+struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent),
 												void *f_parent);
-void dealloc_f_ctl_chara_item(struct f_ctl_chara_item *f_citem);
+void dealloc_f_ctl_chara_item(struct chara_ctl_item *f_citem);
 struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent),
 											void *f_parent);
 void reflesh_f_ctl_chara_array(int num_array, struct chara_clist *c_clist);

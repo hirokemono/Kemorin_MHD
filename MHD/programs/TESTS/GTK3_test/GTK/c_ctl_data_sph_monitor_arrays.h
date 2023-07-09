@@ -23,13 +23,13 @@ struct f_sph_vol_spectr_ctls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_volume_spec_file_ctl;
-	struct f_ctl_chara_item *f_volume_ave_file_ctl;
-	struct f_ctl_chara_item *f_volume_spec_format_ctl;
-	struct f_ctl_chara_item *f_degree_v_spectra_switch;
-	struct f_ctl_chara_item *f_order_v_spectra_switch;
-	struct f_ctl_chara_item *f_diff_v_lm_spectra_switch;
-	struct f_ctl_chara_item *f_axis_v_power_switch;
+	struct chara_ctl_item *f_volume_spec_file_ctl;
+	struct chara_ctl_item *f_volume_ave_file_ctl;
+	struct chara_ctl_item *f_volume_spec_format_ctl;
+	struct chara_ctl_item *f_degree_v_spectra_switch;
+	struct chara_ctl_item *f_order_v_spectra_switch;
+	struct chara_ctl_item *f_diff_v_lm_spectra_switch;
+	struct chara_ctl_item *f_axis_v_power_switch;
 	struct f_ctl_real_item *f_inner_radius_ctl;
 	struct f_ctl_real_item *f_outer_radius_ctl;
 };
@@ -40,10 +40,10 @@ struct f_sph_field_on_circle_ctls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_circle_field_file_ctl;
-	struct f_ctl_chara_item *f_circle_spectr_file_ctl;
-	struct f_ctl_chara_item *f_circle_file_format_ctl;
-	struct f_ctl_chara_item *f_pick_circle_coord_ctl;\
+	struct chara_ctl_item *f_circle_field_file_ctl;
+	struct chara_ctl_item *f_circle_spectr_file_ctl;
+	struct chara_ctl_item *f_circle_file_format_ctl;
+	struct chara_ctl_item *f_pick_circle_coord_ctl;\
 	
 	struct f_ctl_int_item   *f_nphi_mid_eq_ctl;
 	struct f_ctl_real_item  *f_pick_s_ctl;

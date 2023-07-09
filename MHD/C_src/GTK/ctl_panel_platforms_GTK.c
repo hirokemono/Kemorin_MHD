@@ -56,7 +56,7 @@ static void set_file_fmt_cb(GtkComboBox *combobox_cmap, gpointer data)
     gchar *row_string;
     int index_field;
 	
-	if(file_fmt->iflag == 0) gtk_combo_box_set_active(combobox_cmap, -1);
+	if(file_fmt->f_iflag[0] == 0) gtk_combo_box_set_active(combobox_cmap, -1);
 	idx = gtk_combo_box_get_active(combobox_cmap);
 	if(idx < 0) return;
     
@@ -117,7 +117,7 @@ GtkWidget * make_file_format_hbox(int iflag_fix_on, const char *label, struct ch
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "changed", G_CALLBACK(set_file_fmt_cb),
 				(gpointer) ctl_item);
 	
-	hbox = make_entry_with_switch_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	hbox = make_entry_with_switch_hbox(iflag_fix_on, label, ctl_item->f_iflag, tbox_flag);
 	return hbox;
 };
 

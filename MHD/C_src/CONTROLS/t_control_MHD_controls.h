@@ -22,7 +22,7 @@ struct f_MHD_restart_controls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_restart_flag_ctl;
+	struct chara_ctl_item *f_restart_flag_ctl;
 };
 
 
@@ -54,7 +54,7 @@ struct f_time_step_control_ctls{
 	struct f_ctl_real_item *f_time_init_ctl;
 	
 	struct f_ctl_int_item *f_i_diff_steps_ctl;
-	struct f_ctl_chara_item *f_flexible_step_ctl;
+	struct chara_ctl_item *f_flexible_step_ctl;
 	
 	struct f_ctl_real_item *f_ratio_to_cfl_ctl;
 	struct f_ctl_int_item *f_start_rst_step_ctl;
@@ -86,7 +86,7 @@ struct f_MHD_evo_scheme_controls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_scheme_ctl;
+	struct chara_ctl_item *f_scheme_ctl;
 	
 	struct f_ctl_real_item *f_coef_implicit_ctl;
 	struct f_ctl_real_item *f_coef_imp_v_ctl;
@@ -94,11 +94,11 @@ struct f_MHD_evo_scheme_controls{
 	struct f_ctl_real_item *f_coef_imp_b_ctl;
 	struct f_ctl_real_item *f_coef_imp_c_ctl;
 	
-	struct f_ctl_chara_item *f_iflag_supg_ctl;
-	struct f_ctl_chara_item *f_iflag_supg_v_ctl;
-	struct f_ctl_chara_item *f_iflag_supg_t_ctl;
-	struct f_ctl_chara_item *f_iflag_supg_b_ctl;
-	struct f_ctl_chara_item *f_iflag_supg_c_ctl;
+	struct chara_ctl_item *f_iflag_supg_ctl;
+	struct chara_ctl_item *f_iflag_supg_v_ctl;
+	struct chara_ctl_item *f_iflag_supg_t_ctl;
+	struct chara_ctl_item *f_iflag_supg_b_ctl;
+	struct chara_ctl_item *f_iflag_supg_c_ctl;
 	
 	struct f_ctl_int_item *f_num_multi_pass_ctl;
 	struct f_ctl_int_item *f_maxiter_ctl;
@@ -107,13 +107,13 @@ struct f_MHD_evo_scheme_controls{
 	struct f_ctl_real_item *f_eps_crank_ctl;
 	struct f_ctl_real_item *f_eps_B_crank_ctl;
 	
-	struct f_ctl_chara_item *f_diffuse_correct;
+	struct chara_ctl_item *f_diffuse_correct;
 	
-	struct f_ctl_chara_item *f_method_4_CN;
-	struct f_ctl_chara_item *f_precond_4_CN;
-	struct f_ctl_chara_item *f_Legendre_trans_type;
-	struct f_ctl_chara_item *f_FFT_library;
-	struct f_ctl_chara_item *f_import_mode;
+	struct chara_ctl_item *f_method_4_CN;
+	struct chara_ctl_item *f_precond_4_CN;
+	struct chara_ctl_item *f_Legendre_trans_type;
+	struct chara_ctl_item *f_FFT_library;
+	struct chara_ctl_item *f_import_mode;
 	struct f_ctl_int_item *f_leg_vector_len;
 };
 

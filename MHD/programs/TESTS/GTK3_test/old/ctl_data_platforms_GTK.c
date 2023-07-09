@@ -8,11 +8,11 @@
 #include "ctl_data_platforms_GTK.h"
 
 
-struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent)
+struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
-	struct f_ctl_chara_item *f_citem = (struct f_ctl_chara_item *) malloc(sizeof(struct f_ctl_chara_item));
+	struct chara_ctl_item *f_citem = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	if(f_citem == NULL){
-		printf("malloc error for f_ctl_chara_item\n");
+		printf("malloc error for chara_ctl_item\n");
 		exit(0);
 	};
 	f_citem->f_self =  c_load_self(f_parent);
@@ -71,7 +71,7 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 
 void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 {
-	struct f_ctl_chara_item *f_citem = (struct f_ctl_chara_item *) data;
+	struct chara_ctl_item *f_citem = (struct chara_ctl_item *) data;
 	char * input_text;
 	
 	if(f_citem->f_self != NULL) {
@@ -121,7 +121,7 @@ GtkWidget * draw_control_block(const char * title, int *iflag_ptr,
 	return hbox0;
 };
 
-GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWidget *window)
+GtkWidget * draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem, GtkWidget *window)
 {
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *checkbox = gtk_check_button_new();

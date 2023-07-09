@@ -73,27 +73,27 @@ struct f_platform_control{
 	
 	struct f_ctl_int_item * f_ndomain_ctl;
 	struct f_ctl_int_item * f_num_smp_ctl;
-	struct f_ctl_chara_item * f_debug_flag_ctl;
-	struct f_ctl_chara_item * f_sph_file_prefix;
-	struct f_ctl_chara_item * f_mesh_file_prefix;
-	struct f_ctl_chara_item * f_restart_file_prefix;
-	struct f_ctl_chara_item * f_field_file_prefix;
-	struct f_ctl_chara_item * f_spectr_field_file_prefix;
-	struct f_ctl_chara_item * f_coriolis_int_file_name;
-	struct f_ctl_chara_item * f_bc_data_file_name_ctl;
-	struct f_ctl_chara_item * f_radial_data_file_name_ctl;
-	struct f_ctl_chara_item * f_interpolate_sph_to_fem;
-	struct f_ctl_chara_item * f_interpolate_fem_to_sph;
-	struct f_ctl_chara_item * f_rayleigh_spectr_dir;
-	struct f_ctl_chara_item * f_rayleigh_field_dir;
-	struct f_ctl_chara_item * f_sph_file_fmt_ctl;
-	struct f_ctl_chara_item * f_mesh_file_fmt_ctl;
-	struct f_ctl_chara_item * f_restart_file_fmt_ctl;
-	struct f_ctl_chara_item * f_field_file_fmt_ctl;
-	struct f_ctl_chara_item * f_spectr_field_fmt_ctl;
-	struct f_ctl_chara_item * f_itp_file_fmt_ctl;
-	struct f_ctl_chara_item * f_coriolis_file_fmt_ctl;
-	struct f_ctl_chara_item * f_del_org_data_ctl;
+	struct chara_ctl_item * f_debug_flag_ctl;
+	struct chara_ctl_item * f_sph_file_prefix;
+	struct chara_ctl_item * f_mesh_file_prefix;
+	struct chara_ctl_item * f_restart_file_prefix;
+	struct chara_ctl_item * f_field_file_prefix;
+	struct chara_ctl_item * f_spectr_field_file_prefix;
+	struct chara_ctl_item * f_coriolis_int_file_name;
+	struct chara_ctl_item * f_bc_data_file_name_ctl;
+	struct chara_ctl_item * f_radial_data_file_name_ctl;
+	struct chara_ctl_item * f_interpolate_sph_to_fem;
+	struct chara_ctl_item * f_interpolate_fem_to_sph;
+	struct chara_ctl_item * f_rayleigh_spectr_dir;
+	struct chara_ctl_item * f_rayleigh_field_dir;
+	struct chara_ctl_item * f_sph_file_fmt_ctl;
+	struct chara_ctl_item * f_mesh_file_fmt_ctl;
+	struct chara_ctl_item * f_restart_file_fmt_ctl;
+	struct chara_ctl_item * f_field_file_fmt_ctl;
+	struct chara_ctl_item * f_spectr_field_fmt_ctl;
+	struct chara_ctl_item * f_itp_file_fmt_ctl;
+	struct chara_ctl_item * f_coriolis_file_fmt_ctl;
+	struct chara_ctl_item * f_del_org_data_ctl;
 	
 	struct control_labels_f *label_file_format_list;
 };
@@ -106,14 +106,14 @@ struct f_MHD_sph_resolution_control{
 	
 	struct f_ctl_int_item *f_ltr_ctl;
 	struct f_ctl_int_item *f_phi_symmetry_ctl;
-	struct f_ctl_chara_item *f_sph_grid_type_ctl;
-	struct f_ctl_chara_item *f_sph_coef_type_ctl;
+	struct chara_ctl_item *f_sph_grid_type_ctl;
+	struct chara_ctl_item *f_sph_coef_type_ctl;
 	struct f_ctl_int_item *f_ngrid_elevation_ctl;
 	struct f_ctl_int_item *f_ngrid_azimuth_ctl;
 	struct int_real_clist *f_radius_ctl;
 	struct chara_int_clist *f_radial_grp_ctl;
 	struct real_clist *f_add_ext_layer_ctl;
-	struct f_ctl_chara_item *f_radial_grid_type_ctl;
+	struct chara_ctl_item *f_radial_grid_type_ctl;
 	struct f_ctl_int_item *f_num_fluid_grid_ctl;
 	struct f_ctl_int_item *f_increment_cheby_ctl;
 	struct f_ctl_real_item *f_fluid_core_size_ctl;
@@ -134,10 +134,10 @@ struct f_FEM_mesh_FILE_ctl{
 	
 	char * c_block_name;
 	
-	struct f_ctl_chara_item *f_FEM_mesh_output_switch;
-	struct f_ctl_chara_item *f_FEM_surface_output_switch;
-	struct f_ctl_chara_item *f_FEM_viewer_output_switch;
-	struct f_ctl_chara_item *f_memory_conservation_ctl;
+	struct chara_ctl_item *f_FEM_mesh_output_switch;
+	struct chara_ctl_item *f_FEM_surface_output_switch;
+	struct chara_ctl_item *f_FEM_viewer_output_switch;
+	struct chara_ctl_item *f_memory_conservation_ctl;
 };
 
 struct f_MHD_sph_resolution_views{
@@ -161,16 +161,16 @@ struct f_MHD_sph_subdomain_control{
 	struct chara_int_clist *f_ndomain_legendre_ctl;
 	struct chara_int_clist *f_ndomain_spectr_ctl;
 	
-	struct f_ctl_chara_item *f_indices_ordering_set;
-	struct f_ctl_chara_item *f_inner_decomp_ctl;
+	struct chara_ctl_item *f_indices_ordering_set;
+	struct chara_ctl_item *f_inner_decomp_ctl;
 	
-	struct f_ctl_chara_item *f_rj_inner_loop_ctl;
-	struct f_ctl_chara_item *f_rlm_inner_loop_ctl;
-	struct f_ctl_chara_item *f_rtm_inner_loop_ctl;
-	struct f_ctl_chara_item *f_rtp_inner_loop_ctl;
+	struct chara_ctl_item *f_rj_inner_loop_ctl;
+	struct chara_ctl_item *f_rlm_inner_loop_ctl;
+	struct chara_ctl_item *f_rtm_inner_loop_ctl;
+	struct chara_ctl_item *f_rtp_inner_loop_ctl;
 	
-	struct f_ctl_chara_item *f_rlm_distibution_ctl;
-	struct f_ctl_chara_item *f_simple_r_decomp_ctl;
+	struct chara_ctl_item *f_rlm_distibution_ctl;
+	struct chara_ctl_item *f_simple_r_decomp_ctl;
 };
 
 struct f_MHD_sph_subdomain_views{

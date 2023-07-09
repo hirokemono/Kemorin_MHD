@@ -12,7 +12,7 @@ extern int c_no_file_flag(const char *file_name);
 
 void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 {
-	struct f_ctl_chara_item *f_citem = (struct f_ctl_chara_item *) data;
+	struct chara_ctl_item *f_citem = (struct chara_ctl_item *) data;
 	char * input_text;
 	
 	if(f_citem->f_self != NULL) {
@@ -57,7 +57,7 @@ void cb_file_switch(GtkWidget *widget, gpointer data){
 
 void cb_char_switch(GtkWidget *widget, gpointer data){
 	GtkSwitch *text_switch = GTK_SWITCH(widget);
-    struct f_ctl_chara_item *f_citem = g_object_get_data(G_OBJECT(widget), "f_ctl_chara_item");
+    struct chara_ctl_item *f_citem = g_object_get_data(G_OBJECT(widget), "chara_ctl_item");
 	
 	if(gtk_switch_get_active(text_switch) == FALSE){
         c_store_chara_item_charavalue(f_citem->f_self, "Off");
@@ -179,14 +179,14 @@ static void cb_real_ctl_item(GtkEntry *spinner, gpointer data)
 	return;
 }
 
-GtkWidget * draw_chara_switch_entry_hbox(struct f_ctl_chara_item * f_citem)
+GtkWidget * draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem)
 {
 	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
 	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
 	
 	GtkWidget *char_switch = gtk_switch_new();
-	g_object_set_data(G_OBJECT(char_switch), "f_ctl_chara_item", (gpointer) f_citem);
-	if(c_yes_flag(f_citem->c_charavalue) == 0){
+	g_object_set_data(G_OBJECT(char_switch), "chara_ctl_item", (gpointer) f_citem);
+	if(c_yes_flag(f_citem->c_tbl) == 0){
 		gtk_switch_set_active(GTK_SWITCH(char_switch), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(char_switch), TRUE);
@@ -199,7 +199,7 @@ GtkWidget * draw_chara_switch_entry_hbox(struct f_ctl_chara_item * f_citem)
 	return hbox;
 }
 
-GtkWidget *draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem)
+GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem)
 {
 	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
 	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
@@ -207,7 +207,7 @@ GtkWidget *draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem)
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_entry_new();
 	gtk_entry_set_max_width_chars(GTK_ENTRY(entry), 32);
-	gtk_entry_set_text(GTK_ENTRY(entry), f_citem->c_charavalue);
+	gtk_entry_set_text(GTK_ENTRY(entry), f_citem->c_tbl);
 	g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(cb_chara_ctl_item), 
 					 (gpointer) f_citem);
 	

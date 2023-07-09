@@ -91,7 +91,7 @@ void add_control_combobox_vbox_old(char *c_charavalue,
 static void cb_set_selected_name(GtkComboBox *combobox, gpointer user_data)
 {
 	struct control_labels_f *flag_list = (struct control_labels_f *) user_data;
-    struct f_ctl_chara_item *f_citem = g_object_get_data(G_OBJECT(combobox), "f_ctl_chara_item");
+    struct chara_ctl_item *f_citem = g_object_get_data(G_OBJECT(combobox), "chara_ctl_item");
 
 	GtkTreeModel *model_ctl = gtk_combo_box_get_model(combobox);
 	GtkTreeIter iter;
@@ -108,8 +108,8 @@ static void cb_set_selected_name(GtkComboBox *combobox, gpointer user_data)
     gtk_tree_model_get(model_ctl, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
     gtk_tree_model_get(model_ctl, &iter, COLUMN_FIELD_NAME, &row_string, -1);
    
-	strcpy(f_citem->c_charavalue, flag_list->label[index_field]);
-    c_store_chara_item_charavalue(f_citem->f_self, f_citem->c_charavalue);
+	strcpy(f_citem->c_tbl, flag_list->label[index_field]);
+    c_store_chara_item_charavalue(f_citem->f_self, f_citem->c_tbl);
 	/*
     printf("Selected %d %s\n", index_field, row_string);
 	printf("flag_list %s\n", flag_list->label[index_field]);
@@ -119,7 +119,7 @@ static void cb_set_selected_name(GtkComboBox *combobox, gpointer user_data)
 }
 
 
-void add_control_combobox_vbox(struct f_ctl_chara_item *f_citem,
+void add_control_combobox_vbox(struct chara_ctl_item *f_citem,
                                struct control_labels_f *flag_list,
 							   GtkWidget *ctl_flags_tree_view, GtkWidget *vbox_out)
 {
@@ -130,13 +130,13 @@ void add_control_combobox_vbox(struct f_ctl_chara_item *f_citem,
 	GtkWidget *combobox = gtk_combo_box_new_with_model(model_ctl);
 	GtkCellRenderer *column_group = gtk_cell_renderer_text_new();
 	
-	g_object_set_data(G_OBJECT(combobox), "f_ctl_chara_item", f_citem);
+	g_object_set_data(G_OBJECT(combobox), "chara_ctl_item", f_citem);
 	g_signal_connect(G_OBJECT(combobox), "changed",
 				G_CALLBACK(cb_set_selected_name), (gpointer) flag_list);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), column_group, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox), column_group,
 								   "text", COLUMN_FIELD_NAME, NULL);
-	set_current_name(f_citem->c_charavalue, flag_list, combobox);
+	set_current_name(f_citem->c_tbl, flag_list, combobox);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), combobox, FALSE, FALSE, 0);
 	

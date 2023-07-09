@@ -29,10 +29,10 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 											 GtkWidget *window, GtkWidget *box_in);
 
 GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_format_list, 
-										 struct f_ctl_chara_item * f_citem, GtkWidget *window);
+										 struct chara_ctl_item * f_citem, GtkWidget *window);
 
-GtkWidget *draw_chara_switch_entry_hbox(struct f_ctl_chara_item * f_citem);
-GtkWidget *draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem);
+GtkWidget *draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem);
+GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem);
 GtkWidget *draw_int_item_entry_hbox(struct f_ctl_int_item *f_iitem);
 GtkWidget *draw_real_item_entry_hbox(struct f_ctl_real_item * f_ritem);
 

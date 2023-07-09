@@ -144,7 +144,7 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 
 
 GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_format_list, 
-										 struct f_ctl_chara_item *f_citem, GtkWidget *window){
+										 struct chara_ctl_item *f_citem, GtkWidget *window){
 	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
 	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
 	

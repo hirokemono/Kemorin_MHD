@@ -40,7 +40,7 @@ static void set_inner_decomp_cb(GtkComboBox *combobox_cmap, gpointer data)
     gchar *row_string;
     int index_field;
 	
-	if(inner_decomp_c->iflag == 0) gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), -1);
+	if(inner_decomp_c->f_iflag[0] == 0) gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), -1);
 	idx = gtk_combo_box_get_active(combobox_cmap);
 	if(idx < 0) return;
     
@@ -83,7 +83,7 @@ GtkWidget * make_inner_decomp_hbox(int iflag_fix_on, const char *label, struct c
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "changed", G_CALLBACK(set_inner_decomp_cb),
 				(gpointer) ctl_item);
 	
-	hbox = make_entry_with_switch_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	hbox = make_entry_with_switch_hbox(iflag_fix_on, label, ctl_item->f_iflag, tbox_flag);
 	return hbox;
 };
 

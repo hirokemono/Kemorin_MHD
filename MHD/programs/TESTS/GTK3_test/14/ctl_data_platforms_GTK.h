@@ -50,7 +50,7 @@ extern void * c_chara_item_charavalue(void *f_plt);
 
 extern void load_chara_from_c(void *c_ctl);
 
-struct f_ctl_chara_item{
+struct chara_ctl_item{
 	void * f_self;
 	
 	int f_namelength[1];
@@ -73,32 +73,32 @@ struct f_platform_control{
 	
 	void * f_ndomain_ctl;
 	void * f_num_smp_ctl;
-	struct f_ctl_chara_item * f_debug_flag_ctl;
-	struct f_ctl_chara_item * f_sph_file_prefix;
-	struct f_ctl_chara_item * f_mesh_file_prefix;
-	struct f_ctl_chara_item * f_restart_file_prefix;
-	struct f_ctl_chara_item * f_field_file_prefix;
-	struct f_ctl_chara_item * f_spectr_field_file_prefix;
-	struct f_ctl_chara_item * f_coriolis_int_file_name;
-	struct f_ctl_chara_item * f_bc_data_file_name_ctl;
-	struct f_ctl_chara_item * f_radial_data_file_name_ctl;
-	struct f_ctl_chara_item * f_interpolate_sph_to_fem;
-	struct f_ctl_chara_item * f_interpolate_fem_to_sph;
-	struct f_ctl_chara_item * f_rayleigh_spectr_dir;
-	struct f_ctl_chara_item * f_rayleigh_field_dir;
-	struct f_ctl_chara_item * f_sph_file_fmt_ctl;
-	struct f_ctl_chara_item * f_mesh_file_fmt_ctl;
-	struct f_ctl_chara_item * f_restart_file_fmt_ctl;
-	struct f_ctl_chara_item * f_field_file_fmt_ctl;
-	struct f_ctl_chara_item * f_spectr_field_fmt_ctl;
-	struct f_ctl_chara_item * f_itp_file_fmt_ctl;
-	struct f_ctl_chara_item * f_coriolis_file_fmt_ctl;
-	struct f_ctl_chara_item * f_del_org_data_ctl;
+	struct chara_ctl_item * f_debug_flag_ctl;
+	struct chara_ctl_item * f_sph_file_prefix;
+	struct chara_ctl_item * f_mesh_file_prefix;
+	struct chara_ctl_item * f_restart_file_prefix;
+	struct chara_ctl_item * f_field_file_prefix;
+	struct chara_ctl_item * f_spectr_field_file_prefix;
+	struct chara_ctl_item * f_coriolis_int_file_name;
+	struct chara_ctl_item * f_bc_data_file_name_ctl;
+	struct chara_ctl_item * f_radial_data_file_name_ctl;
+	struct chara_ctl_item * f_interpolate_sph_to_fem;
+	struct chara_ctl_item * f_interpolate_fem_to_sph;
+	struct chara_ctl_item * f_rayleigh_spectr_dir;
+	struct chara_ctl_item * f_rayleigh_field_dir;
+	struct chara_ctl_item * f_sph_file_fmt_ctl;
+	struct chara_ctl_item * f_mesh_file_fmt_ctl;
+	struct chara_ctl_item * f_restart_file_fmt_ctl;
+	struct chara_ctl_item * f_field_file_fmt_ctl;
+	struct chara_ctl_item * f_spectr_field_fmt_ctl;
+	struct chara_ctl_item * f_itp_file_fmt_ctl;
+	struct chara_ctl_item * f_coriolis_file_fmt_ctl;
+	struct chara_ctl_item * f_del_org_data_ctl;
 	
 	struct control_labels_f *label_file_format_list;
 };
 
-struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent);
+struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent);
 
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
 
@@ -108,7 +108,7 @@ void cb_check_toggle(GtkWidget *widget, gpointer iflag_ptr);
 GtkWidget * draw_control_block(const char * title, int *iflag_ptr, 
 							   int width, int height,
 							   GtkWidget *window, GtkWidget *box_in);
-GtkWidget * draw_chara_item_entry_hbox(struct f_ctl_chara_item * f_citem, GtkWidget *window);
+GtkWidget * draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem, GtkWidget *window);
 GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidget *window);
 
 #endif    /* CTL_DATA_PLATFORMS_GTK_ */

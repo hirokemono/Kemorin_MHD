@@ -31,12 +31,12 @@ char * strngcopy_from_f(char * f_char)
 	return c_char;
 }
 
-struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), 
+struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent),
 												void *f_parent)
 {
-	struct f_ctl_chara_item *f_citem = (struct f_ctl_chara_item *) malloc(sizeof(struct f_ctl_chara_item));
+	struct chara_ctl_item *f_citem = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	if(f_citem == NULL){
-		printf("malloc error for f_ctl_chara_item\n");
+		printf("malloc error for chara_ctl_item\n");
 		exit(0);
 	};
 	f_citem->f_self =  c_load_self(f_parent);
@@ -46,15 +46,15 @@ struct f_ctl_chara_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_par
 	f_citem->c_block_name = strngcopy_from_f(f_charavalue);
 	
 	f_charavalue =  (char *) c_chara_item_charavalue(f_citem->f_self);
-	f_citem->c_charavalue = strngcopy_from_f(f_charavalue);
+	f_citem->c_tbl = strngcopy_from_f(f_charavalue);
 	
 	return f_citem;
 }
 
 
-void dealloc_f_ctl_chara_item(struct f_ctl_chara_item *f_citem)
+void dealloc_f_ctl_chara_item(struct chara_ctl_item *f_citem)
 {
-	free(f_citem->c_charavalue);
+	free(f_citem->c_tbl);
 	free(f_citem->c_block_name);
 	
 	f_citem->f_iflag = NULL;
