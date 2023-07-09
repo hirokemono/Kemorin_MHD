@@ -191,6 +191,7 @@
       call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
       call init_parallel_shell_ctl_label(hd_sph_shell,                  &
      &                                   MHD_ctl%psph_ctl)
+      call init_sph_mhd_model_label(hd_model, MHD_ctl%model_ctl)
       call init_sph_mhd_control_label(hd_control, MHD_ctl%smctl_ctl)
       call init_sph_monitoring_labels(hd_pick_sph,                      &
      &                                MHD_ctl%smonitor_ctl)

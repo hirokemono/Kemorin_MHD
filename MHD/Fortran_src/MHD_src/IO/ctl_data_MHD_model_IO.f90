@@ -14,7 +14,7 @@
 !!      subroutine read_sph_mhd_model                                   &
 !!     &         (id_control, hd_block, model_ctl, c_buf)
 !!
-!!      subroutine init_sph_mhd_model_label(model_ctl)
+!!      subroutine init_sph_mhd_model_label(hd_block, model_ctl)
 !!      subroutine read_sph_mhd_model_items(id_control, model_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -114,8 +114,6 @@
 !
 !
       if(model_ctl%i_model .gt. 0) return
-      model_ctl%block_name = hd_block
-      call init_sph_mhd_model_label(model_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -154,13 +152,17 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine init_sph_mhd_model_label(model_ctl)
+      subroutine init_sph_mhd_model_label(hd_block, model_ctl)
 !
       use ctl_data_node_boundary_IO
       use ctl_data_surf_boundary_IO
+      use ctl_data_temp_model_IO
+      use ctl_data_comp_model_IO
 !
+      character(len=kchara), intent(in) :: hd_block
       type(mhd_model_control), intent(inout) :: model_ctl
 !
+      model_ctl%block_name = hd_block
       call init_phys_data_ctl_label(hd_phys_values, model_ctl%fld_ctl)
       call init_mhd_time_evo_ctl_label(hd_time_evo, model_ctl%evo_ctl)
       call init_mhd_layer_ctl_label(hd_layers_ctl, model_ctl%earea_ctl)
@@ -172,8 +174,15 @@
       call init_coef_term_ctl_label(hd_coef_term_ctl,                   &
      &                              model_ctl%eqs_ctl)
       call init_forces_ctl_label(hd_forces_ctl, model_ctl%frc_ctl)
+!
       call init_gravity_ctl_label(hd_gravity_ctl, model_ctl%g_ctl)
       call init_coriolis_ctl_label(hd_coriolis_ctl, model_ctl%cor_ctl)
+      call init_magneto_cv_ctl_label(hd_magneto_cv_ctl,                 &
+     &                               model_ctl%mcv_ctl)
+      call init_magnetic_scale_ctl_label(hd_bscale_ctl,                 &
+     &                                   model_ctl%bscale_ctl)
+      call init_temp_model_ctl_label(hd_temp_def, model_ctl%reft_ctl)
+      call init_comp_model_ctl_label(hd_comp_def, model_ctl%refc_ctl)
 !
       end subroutine init_sph_mhd_model_label
 !
@@ -223,9 +232,9 @@
      &     (id_control, hd_magneto_cv_ctl, model_ctl%mcv_ctl, c_buf)
         call read_magnetic_scale_ctl                                    &
      &     (id_control, hd_bscale_ctl, model_ctl%bscale_ctl, c_buf)
-        call read_reftemp_ctl                                           &
+        call read_temp_model_ctl                                        &
      &     (id_control, hd_temp_def, model_ctl%reft_ctl, c_buf)
-        call read_refcomp_ctl                                           &
+        call read_comp_model_ctl                                        &
      &     (id_control, hd_comp_def, model_ctl%refc_ctl, c_buf)
 !
         call read_magneto_cv_ctl                                        &
@@ -275,9 +284,9 @@
      &   (id_control, hd_magneto_cv_ctl, model_ctl%mcv_ctl, level)
       call write_magnetic_scale_ctl                                     &
      &   (id_control, hd_bscale_ctl, model_ctl%bscale_ctl, level)
-      call write_reftemp_ctl                                            &
+      call write_temp_model_ctl                                         &
      &   (id_control, hd_temp_def, model_ctl%reft_ctl, level)
-      call write_refcomp_ctl                                            &
+      call write_comp_model_ctl                                         &
      &   (id_control, hd_comp_def, model_ctl%refc_ctl, level)
 !
       end subroutine write_sph_mhd_model_items

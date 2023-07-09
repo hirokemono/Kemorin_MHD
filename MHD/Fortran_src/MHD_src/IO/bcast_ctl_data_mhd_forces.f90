@@ -107,8 +107,10 @@
       subroutine bcast_magneto_ctl(mcv_ctl)
 !
       use t_ctl_data_mhd_magne
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(magneto_convection_control), intent(inout) :: mcv_ctl
 !
@@ -117,6 +119,8 @@
       call bcast_ctl_type_c1(mcv_ctl%magneto_cv)
       call bcast_ctl_type_c1(mcv_ctl%filterd_induction_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (mcv_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(mcv_ctl%i_magneto_ctl, 0)
 !
       end subroutine bcast_magneto_ctl
@@ -126,13 +130,18 @@
       subroutine bcast_magnetic_scale_ctl(bscale_ctl)
 !
       use t_ctl_data_magnetic_scale
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(magnetic_field_scale_control), intent(inout) :: bscale_ctl
 !
 !
       call bcast_ctl_array_cr(bscale_ctl%mag_to_kin_energy_ctl)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (bscale_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(bscale_ctl%i_bscale_ctl, 0)
 !
       end subroutine bcast_magnetic_scale_ctl
@@ -143,6 +152,8 @@
 !
       use t_ctl_data_temp_model
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
 !
       type(reference_temperature_ctl), intent(inout) :: refs_ctl
@@ -157,6 +168,9 @@
       call bcast_ctl_type_c1(refs_ctl%ref_file_ctl)
       call bcast_ctl_type_c1(refs_ctl%stratified_ctl)
       call bcast_ctl_type_r1(refs_ctl%ICB_diffuse_reduction_ctl)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (refs_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(refs_ctl%i_temp_def, 0)
 !
       end subroutine bcast_ref_scalar_ctl
@@ -167,13 +181,18 @@
       subroutine bcast_ref_value_ctl(ref_ctl)
 !
       use t_ctl_data_temp_model
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(reference_point_control), intent(inout) :: ref_ctl
 !
       call bcast_ctl_type_r1(ref_ctl%depth)
       call bcast_ctl_type_r1(ref_ctl%value)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (ref_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(ref_ctl%i_referenced, 0)
 !
       end subroutine bcast_ref_value_ctl
@@ -183,14 +202,19 @@
       subroutine bcast_takepiro_ctl(takepiro_ctl)
 !
       use t_ctl_data_stratified_model
-      use calypso_mpi_int
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(takepiro_model_control), intent(inout) :: takepiro_ctl
 !
       call bcast_ctl_type_r1(takepiro_ctl%stratified_sigma_ctl)
       call bcast_ctl_type_r1(takepiro_ctl%stratified_width_ctl)
       call bcast_ctl_type_r1(takepiro_ctl%stratified_outer_r_ctl)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (takepiro_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(takepiro_ctl%i_takepiro_t_ctl, 0)
 !
       end subroutine bcast_takepiro_ctl

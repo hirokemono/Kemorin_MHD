@@ -8,6 +8,7 @@
 !> @brief Control data for magnetic field controls
 !!
 !!@verbatim
+!!      subroutine init_magneto_cv_ctl_label(hd_block, mcv_ctl)
 !!      subroutine read_magneto_cv_ctl                                  &
 !!     &         (id_control, hd_block, mcv_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -69,6 +70,8 @@
 !
 !>      Structure for external magnetic field
       type magneto_convection_control
+!>        Block name
+        character(len=kchara) :: block_name = 'Magneto_convection_def'
 !>        Structure for filtered induction flag
         type(read_character_item) :: filterd_induction_ctl
 !>        Structure for magnetoconvection definition
@@ -158,6 +161,22 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_magneto_cv_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_magneto_cv_ctl_label(hd_block, mcv_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(magneto_convection_control), intent(inout) :: mcv_ctl
+!
+      mcv_ctl%block_name = hd_block
+      call init_c_r_ctl_array_label(hd_magne_vect, mcv_ctl%ext_magne)
+!
+      call init_chara_ctl_item_label(hd_magneto_cv, mcv_ctl%magneto_cv)
+      call init_chara_ctl_item_label(hd_filetered_induction,            &
+     &    mcv_ctl%filterd_induction_ctl)
+!
+      end subroutine init_magneto_cv_ctl_label
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
