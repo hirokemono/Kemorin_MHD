@@ -8,6 +8,7 @@
       use t_ctl_data_4_fields
       use t_ctl_data_mhd_evolution
       use t_ctl_data_mhd_evo_area
+      use t_ctl_data_gravity
 !
       implicit none
 !
@@ -1078,6 +1079,8 @@
       len = len_trim(MHD_ctl_C%block_name) + 1
       write(MHD_ctl_C%block_name(len:len),'(a1)') char(0)
       c_read_control_sph_SGS_MHD = C_loc(MHD_ctl_C)
+      write(*,'(a,z16)') 'c_read_control_sph_SGS_MHD in F', &
+     &                  c_read_control_sph_SGS_MHD
 !
       end function c_read_control_sph_SGS_MHD
 !
@@ -1263,6 +1266,108 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_MHD_evo_conduct_group_ctl = C_loc(f_ctl%evo_conduct_group_ctl)
       end function c_MHD_evo_conduct_group_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_gravity_ctl_block_name(c_ctl)          &
+     &          bind(C, NAME = 'c_MHD_gravity_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(gravity_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_gravity_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_MHD_gravity_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_gravity_ctl_iflag(c_ctl)               &
+     &          bind(C, NAME = 'c_MHD_gravity_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(gravity_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_gravity_ctl_iflag = C_loc(f_ctl%i_gravity_ctl)
+      end function c_MHD_gravity_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_FEM_gravity_model(c_ctl)               &
+     &          bind(C, NAME = 'c_MHD_FEM_gravity_model')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(gravity_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_FEM_gravity_model = C_loc(f_ctl%FEM_gravity_model)
+      end function c_MHD_FEM_gravity_model
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_gravity_ctl_gravity(c_ctl)             &
+     &          bind(C, NAME = 'c_MHD_gravity_ctl_gravity')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(gravity_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_gravity_ctl_gravity = C_loc(f_ctl%gravity)
+      end function c_MHD_gravity_ctl_gravity
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_gravity_ctl_vector(c_ctl)              &
+     &          bind(C, NAME = 'c_MHD_gravity_ctl_vector')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(gravity_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_gravity_ctl_vector = C_loc(f_ctl%gravity_vector)
+      end function c_MHD_gravity_ctl_vector
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_coriolis_ctl_block_name(c_ctl)         &
+     &          bind(C, NAME = 'c_MHD_coriolis_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(coriolis_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_coriolis_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_MHD_coriolis_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_coriolis_ctl_iflag(c_ctl)              &
+     &          bind(C, NAME = 'c_MHD_coriolis_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(coriolis_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_coriolis_ctl_iflag = C_loc(f_ctl%i_coriolis_ctl)
+      end function c_MHD_coriolis_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_FEM_coriolis_model(c_ctl)              &
+     &          bind(C, NAME = 'c_MHD_FEM_coriolis_model')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(coriolis_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_FEM_coriolis_model = C_loc(f_ctl%FEM_coriolis_model)
+      end function c_MHD_FEM_coriolis_model
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_FEM_coriolis_implicit(c_ctl)           &
+     &          bind(C, NAME = 'c_MHD_FEM_coriolis_implicit')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(coriolis_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_FEM_coriolis_implicit = C_loc(f_ctl%FEM_coriolis_implicit)
+      end function c_MHD_FEM_coriolis_implicit
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_system_rotation(c_ctl)                 &
+     &          bind(C, NAME = 'c_MHD_system_rotation')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(coriolis_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_system_rotation = C_loc(f_ctl%system_rotation)
+      end function c_MHD_system_rotation
 !
 !  ---------------------------------------------------------------------
 !

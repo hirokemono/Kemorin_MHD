@@ -8,6 +8,7 @@
 !!@n        Modified by H. Matsui on Merch, 2006
 !!
 !!@verbatim
+!!      subroutine init_coef_term_ctl_label(hd_block, eqs_ctl)
 !!      subroutine read_coef_term_ctl                                   &
 !!     &         (id_control, hd_block, eqs_ctl, c_buf)
 !!      subroutine write_coef_term_ctl(id_control, eqs_ctl, level)
@@ -110,7 +111,7 @@
 !>      Structure for coefficients of governing equations
       type equations_control
 !>        Block name
-        character(len=kchara) :: block_name = 'model'
+        character(len=kchara) :: block_name = 'coefficients_ctl'
 !>        Structure for coefficients of momentum equation
         type(momentum_equation_control) :: mom_ctl
 !>        Structure for coefficients of magnetic induction equation
@@ -151,7 +152,6 @@
 !
 !
       if(eqs_ctl%i_coef_term_ctl .gt. 0) return
-      eqs_ctl%block_name = trim(hd_block)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -196,6 +196,22 @@
      &                                eqs_ctl%block_name)
 !
       end subroutine write_coef_term_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_coef_term_ctl_label(hd_block, eqs_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(equations_control), intent(inout) :: eqs_ctl
+!
+      eqs_ctl%block_name = trim(hd_block)
+      call init_momentum_ctl_label(hd_momentum, eqs_ctl%mom_ctl)
+      call init_induction_ctl_label(hd_induction, eqs_ctl%induct_ctl)
+      call init_thermal_ctl_label(hd_thermal, eqs_ctl%heat_ctl)
+      call init_composition_eq_ctl_label(hd_dsc_diff_adv,               &
+     &                                   eqs_ctl%comp_ctl)
+!
+      end subroutine init_coef_term_ctl_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

@@ -8,6 +8,7 @@
 !!@n        Modified by H. Matsui on Merch, 2006
 !!
 !!@verbatim
+!!      subroutine init_induction_ctl_label(hd_block, induct_ctl)
 !!      subroutine read_induction_ctl                                   &
 !!     &         (id_control, hd_block, induct_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -111,7 +112,6 @@
 !
 !
       if(induct_ctl%i_induct_ctl .gt. 0) return
-      induct_ctl%block_name = trim(hd_block)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -161,6 +161,26 @@
      &                                induct_ctl%block_name)
 !
       end subroutine write_induction_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_induction_ctl_label(hd_block, induct_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(induction_equation_control), intent(inout) :: induct_ctl
+!
+      induct_ctl%block_name = trim(hd_block)
+!
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_magne, induct_ctl%coef_4_magne_evo)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_mag_p, induct_ctl%coef_4_mag_potential)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_m_diff, induct_ctl%coef_4_mag_diffuse)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_induct, induct_ctl%coef_4_induction)
+!
+      end subroutine init_induction_ctl_label
 !
 !   --------------------------------------------------------------------
 !

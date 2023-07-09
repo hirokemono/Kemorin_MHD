@@ -18,9 +18,9 @@
 !!        type(read_chara_real_item), intent(in) :: org_cr
 !!        type(read_chara_real_item), intent(inout) :: new_cr
 !!
-!!      subroutine init_c_r_ctl_array_label(label, array_cr)
 !!      subroutine alloc_control_array_c_r(array_cr)
 !!      subroutine dealloc_control_array_c_r(array_cr)
+!!      subroutine init_c_r_ctl_array_label(label, array_cr)
 !!      subroutine read_control_array_c_r                               &
 !!     &         (id_control, label, array_cr, c_buf)
 !!        type(ctl_array_cr), intent(inout) :: array_cr

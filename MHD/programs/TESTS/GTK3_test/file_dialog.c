@@ -210,6 +210,18 @@ extern void * c_MHD_evo_area_ctl_iflag(void *f_earea_ctl);
 extern void * c_MHD_evo_fluid_group_ctl(void *f_earea_ctl);
 extern void * c_MHD_evo_conduct_group_ctl(void *f_earea_ctl);
 
+extern void * c_MHD_gravity_ctl_block_name(void *f_g_ctl);
+extern void * c_MHD_gravity_ctl_iflag(void *f_g_ctl);
+extern void * c_MHD_FEM_gravity_model(void *f_g_ctl);
+extern void * c_MHD_gravity_ctl_gravity(void *f_g_ctl);
+extern void * c_MHD_gravity_ctl_vector(void *f_g_ctl);
+
+extern void * c_MHD_coriolis_ctl_block_name(void *f_cor_ctl);
+extern void * c_MHD_coriolis_ctl_iflag(void *f_cor_ctl);
+extern void * c_MHD_FEM_coriolis_model(void *f_cor_ctl);
+extern void * c_MHD_FEM_coriolis_implicit(void *f_cor_ctl);
+extern void * c_MHD_system_rotation(void *f_cor_ctl);
+
 
 
 struct f_MHD_SGS_model_control{
@@ -307,6 +319,29 @@ struct f_MHD_t_evo_area_control{
 	struct chara_clist *f_evo_conduct_group_ctl;
 };
 
+struct f_MHD_gravity_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_FEM_gravity_model;
+	struct f_ctl_chara_item *f_gravity;
+	struct chara_real_clist *f_gravity_vector;
+};
+
+struct f_MHD_Coriolis_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct f_ctl_chara_item *f_FEM_coriolis_model;
+	struct f_ctl_chara_item *f_FEM_coriolis_implicit;
+	struct chara_real_clist *f_system_rotation;
+};
+
+
 struct f_MHD_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -321,7 +356,7 @@ struct f_MHD_model_control{
 	struct f_MHD_forces_control *f_frc_ctl;
 	struct f_MHD_dimless_control * f_dless_ctl;
 	struct f_MHD_equations_control * f_eqs_ctl;
-	void * f_g_ctl;
+	struct f_MHD_gravity_control * f_g_ctl;
 	void * f_cor_ctl;
 	void * f_mcv_ctl;
 	void * f_bscale_ctl;
@@ -632,6 +667,57 @@ struct f_MHD_t_evo_area_control * init_f_MHD_t_evo_area_control(void *(*c_load_s
 	return f_earea_ctl;
 };
 
+struct f_MHD_gravity_control * init_f_MHD_gravity_control(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_gravity_control *f_g_ctl 
+			= (struct f_MHD_gravity_control *) malloc(sizeof(struct f_MHD_gravity_control));
+	if(f_g_ctl == NULL){
+		printf("malloc error for f_g_ctl\n");
+		exit(0);
+	};
+	
+	f_g_ctl->f_self =  c_load_self(f_parent);
+	
+	f_g_ctl->f_iflag =        (int *) c_MHD_gravity_ctl_iflag(f_g_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_gravity_ctl_block_name(f_g_ctl->f_self);
+	f_g_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_g_ctl->f_FEM_gravity_model = init_f_ctl_chara_item(c_MHD_FEM_gravity_model,
+														 f_g_ctl->f_self);
+	f_g_ctl->f_gravity =           init_f_ctl_chara_item(c_MHD_gravity_ctl_gravity,
+														 f_g_ctl->f_self);
+	f_g_ctl->f_gravity_vector =    init_f_ctl_cr_array(c_MHD_gravity_ctl_vector,
+													   f_g_ctl->f_self);
+	return f_g_ctl;
+};
+
+struct f_MHD_Coriolis_control * init_f_MHD_Coriolis_control(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_Coriolis_control *f_cor_ctl 
+			= (struct f_MHD_Coriolis_control *) malloc(sizeof(struct f_MHD_Coriolis_control));
+	if(f_cor_ctl == NULL){
+		printf("malloc error for f_cor_ctl\n");
+		exit(0);
+	};
+	
+	f_cor_ctl->f_self =  c_load_self(f_parent);
+	
+	f_cor_ctl->f_iflag =        (int *) c_MHD_coriolis_ctl_iflag(f_cor_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_coriolis_ctl_block_name(f_cor_ctl->f_self);
+	f_cor_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_cor_ctl->f_FEM_coriolis_model = init_f_ctl_chara_item(c_MHD_FEM_coriolis_model,
+															f_cor_ctl->f_self);
+	f_cor_ctl->f_FEM_coriolis_implicit = init_f_ctl_chara_item(c_MHD_FEM_coriolis_implicit,
+															   f_cor_ctl->f_self);
+	f_cor_ctl->f_system_rotation = init_f_ctl_cr_array(c_MHD_system_rotation,
+													   f_cor_ctl->f_self);
+	return f_cor_ctl;
+};
+
+
 struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), 
 												  void *f_parent, void *f_addition)
 {
@@ -656,7 +742,7 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	f_model_ctl->f_frc_ctl =    init_f_MHD_forces_ctl(c_MHD_mdl_frc_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_dless_ctl =  init_f_MHD_dimless_ctl(c_MHD_mdl_dless_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_eqs_ctl =    init_f_MHD_equations_ctl(c_MHD_mdl_eqs_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_g_ctl =      c_MHD_mdl_g_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_g_ctl =      init_f_MHD_gravity_control(c_MHD_mdl_g_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_cor_ctl =    c_MHD_mdl_cor_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_mcv_ctl =    c_MHD_mdl_mcv_ctl(f_model_ctl->f_self);
 	f_model_ctl->f_bscale_ctl = c_MHD_mdl_bscale_ctl(f_model_ctl->f_self);

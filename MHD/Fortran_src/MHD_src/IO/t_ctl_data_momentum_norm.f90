@@ -8,6 +8,7 @@
 !!@n        Modified by H. Matsui on Merch, 2006
 !!
 !!@verbatim
+!!      subroutine init_momentum_ctl_label(hd_block, mom_ctl)
 !!      subroutine read_momentum_ctl                                    &
 !!     &         (id_control, hd_block, mom_ctl, c_buf)
 !!         integer(kind = kint), intent(in) :: id_control
@@ -140,7 +141,6 @@
 !
 !
       if(mom_ctl%i_momentum .gt. 0) return
-      mom_ctl%block_name = trim(hd_block)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -204,6 +204,34 @@
      &                                mom_ctl%block_name)
 !
       end subroutine write_momentum_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_momentum_ctl_label(hd_block, mom_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(momentum_equation_control), intent(inout) :: mom_ctl
+!
+!
+      if(mom_ctl%i_momentum .gt. 0) return
+      mom_ctl%block_name = trim(hd_block)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_mom, mom_ctl%coef_4_intertia)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_press, mom_ctl%coef_4_grad_p)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_v_diff, mom_ctl%coef_4_viscous)
+!
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_buo, mom_ctl%coef_4_termal_buo)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_c_buo, mom_ctl%coef_4_comp_buo)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_cor, mom_ctl%coef_4_Coriolis)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_lor, mom_ctl%coef_4_Lorentz)
+!
+      end subroutine init_momentum_ctl_label
 !
 !   --------------------------------------------------------------------
 !

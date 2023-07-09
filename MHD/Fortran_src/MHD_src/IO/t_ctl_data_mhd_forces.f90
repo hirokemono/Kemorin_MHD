@@ -8,6 +8,7 @@
 !> @brief Control data for magnetic field controls
 !!
 !!@verbatim
+!!      subroutine init_forces_ctl_label(hd_block, frc_ctl)
 !!      subroutine read_forces_ctl(id_control, hd_block, frc_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -82,7 +83,6 @@
 !
 !
       if(frc_ctl%i_forces_ctl .gt. 0) return
-      frc_ctl%block_name = hd_block
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -120,6 +120,17 @@
       end subroutine write_forces_ctl
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine init_forces_ctl_label(hd_block, frc_ctl)
+      character(len=kchara), intent(in) :: hd_block
+      type(forces_control), intent(inout) :: frc_ctl
+!
+      frc_ctl%block_name = hd_block
+        call init_chara_ctl_array_label(hd_num_forces,                  &
+     &                                  frc_ctl%force_names)
+      end subroutine init_forces_ctl_label
+!
+!   --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_name_force_ctl(frc_ctl)

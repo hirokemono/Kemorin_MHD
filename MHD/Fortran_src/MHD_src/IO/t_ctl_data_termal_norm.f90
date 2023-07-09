@@ -8,6 +8,8 @@
 !>@brief  Thermal equation parameters to read
 !!
 !!@verbatim
+!!      subroutine init_thermal_ctl_label(hd_block, heat_ctl)
+!!      subroutine init_composition_eq_ctl_label(hd_block, comp_ctl)
 !!      subroutine read_thermal_ctl                                     &
 !!     &         (id_control, hd_block, heat_ctl, c_buf)
 !!      subroutine read_composition_eq_ctl                              &
@@ -137,7 +139,6 @@
 !
 !
       if(heat_ctl%i_diff_adv .gt. 0) return
-      heat_ctl%block_name = trim(hd_block)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -171,7 +172,6 @@
 !
 !
       if(comp_ctl%i_diff_adv .gt. 0) return
-      comp_ctl%block_name = trim(hd_block)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -248,7 +248,41 @@
 !
       end subroutine write_composition_eq_ctl
 !
+!   --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
+!
+      subroutine init_thermal_ctl_label(hd_block, heat_ctl)
+      character(len=kchara), intent(in) :: hd_block
+      type(heat_equation_control), intent(inout) :: heat_ctl
+!
+      heat_ctl%block_name = trim(hd_block)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_thermal, heat_ctl%coef_4_adv_flux)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_t_diff, heat_ctl%coef_4_diffuse)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_h_src, heat_ctl%coef_4_source)
+!
+      end subroutine init_thermal_ctl_label
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_composition_eq_ctl_label(hd_block, comp_ctl)
+      character(len=kchara), intent(in) :: hd_block
+      type(heat_equation_control), intent(inout) :: comp_ctl
+!
+      comp_ctl%block_name = trim(hd_block)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_dscalar, comp_ctl%coef_4_adv_flux)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_dsc_diff, comp_ctl%coef_4_diffuse)
+        call init_c_r_ctl_array_label                                   &
+     &     (hd_n_dsc_src, comp_ctl%coef_4_source)
+!
+      end subroutine init_composition_eq_ctl_label
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
       subroutine dealloc_thermal_ctl(heat_ctl)
 !

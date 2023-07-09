@@ -8,6 +8,7 @@
 !!@n        Modified by H. Matsui on Merch, 2006
 !!
 !!@verbatim
+!!      subroutine init_dimless_ctl_label(hd_block, dless_ctl)
 !!      subroutine read_dimless_ctl                                     &
 !!     &         (id_control, hd_block, dless_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -128,6 +129,16 @@
      &                                dless_ctl%block_name)
 !
       end subroutine write_dimless_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_dimless_ctl_label(hd_block, dless_ctl)
+      character(len=kchara), intent(in) :: hd_block
+      type(dimless_control), intent(inout) :: dless_ctl
+!
+      dless_ctl%block_name = trim(hd_block)
+        call init_c_r_ctl_array_label(hd_dimless, dless_ctl%dimless)
+      end subroutine init_dimless_ctl_label
 !
 !   --------------------------------------------------------------------
 !

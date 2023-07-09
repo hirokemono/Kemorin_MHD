@@ -168,6 +168,12 @@
       call init_bc_4_node_ctl_label(hd_boundary_condition,              &
      &                              model_ctl%nbc_ctl)
       call init_bc_4_surf_ctl_label(hd_bc_4_surf, model_ctl%sbc_ctl)
+      call init_dimless_ctl_label(hd_dimless_ctl, model_ctl%dless_ctl)
+      call init_coef_term_ctl_label(hd_coef_term_ctl,                   &
+     &                              model_ctl%eqs_ctl)
+      call init_forces_ctl_label(hd_forces_ctl, model_ctl%frc_ctl)
+      call init_gravity_ctl_label(hd_gravity_ctl, model_ctl%g_ctl)
+      call init_coriolis_ctl_label(hd_coriolis_ctl, model_ctl%cor_ctl)
 !
       end subroutine init_sph_mhd_model_label
 !

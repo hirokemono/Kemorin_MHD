@@ -66,6 +66,8 @@
 !
       use t_ctl_data_gravity
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
 !
       type(gravity_control), intent(inout) :: g_ctl
@@ -73,6 +75,9 @@
 !
       call bcast_ctl_array_cr(g_ctl%gravity_vector)
       call bcast_ctl_type_c1(g_ctl%gravity)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (g_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(g_ctl%i_gravity_ctl, 0)
 !
       end subroutine bcast_gravity_ctl
@@ -83,11 +88,16 @@
 !
       use t_ctl_data_coriolis_force
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
 !
       type(coriolis_control), intent(inout) :: cor_ctl
 !
       call bcast_ctl_array_cr(cor_ctl%system_rotation)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (cor_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(cor_ctl%i_coriolis_ctl, 0)
 !
       end subroutine bcast_coriolis_ctl
