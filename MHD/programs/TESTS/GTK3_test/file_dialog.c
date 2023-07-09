@@ -310,11 +310,11 @@ struct f_MHD_SGS_SPH_filter_control{
 	
 	struct chara_ctl_item *f_sph_filter_type_ctl;
 	struct chara_ctl_item *f_radial_filter_type_ctl;
-	struct f_ctl_int_item *f_maximum_moments_ctl;
+	struct int_ctl_item *f_maximum_moments_ctl;
 	struct f_ctl_real_item *f_sphere_filter_width_ctl;
 	struct f_ctl_real_item *f_radial_filter_width_ctl;
-	struct f_ctl_int_item *f_first_reference_ctl;
-	struct f_ctl_int_item *f_second_reference_ctl;
+	struct int_ctl_item *f_first_reference_ctl;
+	struct int_ctl_item *f_second_reference_ctl;
 };
 
 struct f_MHD_SGS_3d_filter_control{
@@ -340,11 +340,11 @@ struct f_MHD_SGS_layer_control{
 	struct chara_ctl_item *f_layering_grp_type_ctl;
 	struct chara_clist *f_layer_grp_name_ctl;
 	struct int_clist   *f_igrp_stack_layer_ctl;
-	struct f_ctl_int_item   *f_num_layering_grp_ctl;
-	struct f_ctl_int_item   *f_num_fl_layer_grp_ctl;
+	struct int_ctl_item   *f_num_layering_grp_ctl;
+	struct int_ctl_item   *f_num_fl_layer_grp_ctl;
 	struct chara_ctl_item *f_start_layering_grp_name_ctl;
 	struct chara_ctl_item *f_start_fl_layer_grp_name_ctl;
-	struct f_ctl_int_item   *f_ngrp_SGS_on_sphere_ctl;
+	struct int_ctl_item   *f_ngrp_SGS_on_sphere_ctl;
 };
 
 struct f_MHD_SGS_filter_file_control{
@@ -388,16 +388,16 @@ struct f_MHD_SGS_model_control{
 	struct chara_ctl_item *f_SGS_model_coef_coord_ctl;
 	struct chara_ctl_item *f_SGS_buo_Csim_usage_ctl;
 	
-	struct f_ctl_int_item *f_istep_dynamic_ctl;
-	struct f_ctl_int_item *f_min_step_dynamic_ctl;
-	struct f_ctl_int_item *f_max_step_dynamic_ctl;
+	struct int_ctl_item *f_istep_dynamic_ctl;
+	struct int_ctl_item *f_min_step_dynamic_ctl;
+	struct int_ctl_item *f_max_step_dynamic_ctl;
 	
 	struct f_ctl_real_item *f_stabilize_weight_ctl;
 	struct f_ctl_real_item *f_delta_to_shrink_dynamic_ctl;
 	struct f_ctl_real_item *f_delta_to_extend_dynamic_ctl;
 	
-	struct f_ctl_int_item *f_ngrp_radial_ave_ctl;
-	struct f_ctl_int_item *f_ngrp_med_ave_ctl;
+	struct int_ctl_item *f_ngrp_radial_ave_ctl;
+	struct int_ctl_item *f_ngrp_med_ave_ctl;
 	
 	struct f_ctl_real_item *f_clipping_limit_ctl;
 	struct f_ctl_real_item *f_SGS_hf_factor_ctl;

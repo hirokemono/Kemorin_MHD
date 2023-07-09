@@ -164,10 +164,10 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 
 static void cb_int_ctl_item(GtkSpinButton *spinner, gpointer data)
 {
-	struct f_ctl_int_item *f_iitem = (struct f_ctl_int_item *) g_object_get_data(G_OBJECT(spinner), "f_ctl_int_item");
+	struct int_ctl_item *f_iitem = (struct int_ctl_item *) g_object_get_data(G_OBJECT(spinner), "int_ctl_item");
     if(f_iitem->f_self == NULL) return;
-    f_iitem->c_intvalue = gtk_spin_button_get_value_as_int(spinner);
-    c_store_int_item_intvalue(f_iitem->f_self, f_iitem->c_intvalue);
+    f_iitem->i_data = gtk_spin_button_get_value_as_int(spinner);
+    c_store_int_item_intvalue(f_iitem->f_self, f_iitem->i_data);
 	return;
 }
 static void cb_real_ctl_item(GtkEntry *spinner, gpointer data)
@@ -216,8 +216,8 @@ GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem)
 	return hbox;
 }
 
-GtkWidget *draw_int_item_entry_hbox(struct f_ctl_int_item *f_iitem){
-	GtkAdjustment *adjust = gtk_adjustment_new(f_iitem->c_intvalue, 0, 2147483648, 1,
+GtkWidget *draw_int_item_entry_hbox(struct int_ctl_item *f_iitem){
+	GtkAdjustment *adjust = gtk_adjustment_new(f_iitem->i_data, 0, 2147483648, 1,
                     100, 21474836);
 	
 	GtkWidget *hbox = hbox_with_block_checkbox(f_iitem->f_iflag);
@@ -225,10 +225,10 @@ GtkWidget *draw_int_item_entry_hbox(struct f_ctl_int_item *f_iitem){
 	
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_spin_button_new(adjust, 1, 0);
-	g_object_set_data(G_OBJECT(entry), "f_ctl_int_item", (gpointer) f_iitem);
+	g_object_set_data(G_OBJECT(entry), "int_ctl_item", (gpointer) f_iitem);
 	g_signal_connect(G_OBJECT(entry), "value-changed",
 				G_CALLBACK(cb_int_ctl_item), (gpointer) NULL);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry), f_iitem->c_intvalue);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry), f_iitem->i_data);
 	
 	gtk_widget_set_halign(label, GTK_ALIGN_START);
 	gtk_widget_set_halign(entry, GTK_ALIGN_START);

@@ -33,7 +33,7 @@ GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_for
 
 GtkWidget *draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem);
 GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem);
-GtkWidget *draw_int_item_entry_hbox(struct f_ctl_int_item *f_iitem);
+GtkWidget *draw_int_item_entry_hbox(struct int_ctl_item *f_iitem);
 GtkWidget *draw_real_item_entry_hbox(struct f_ctl_real_item * f_ritem);
 
 #endif /* CONTROL_BOXES_SINGLE_ITEMS_GTK_H_ */

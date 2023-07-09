@@ -189,8 +189,6 @@ void write_SGS_MHD_ctl_subfile_c(struct SGS_MHD_control_c *mhd_ctl){
 
 void read_SGS_MHD_control_file_c(const char *file_name, char buf[LENGTHBUF],
                         struct SGS_MHD_control_c *mhd_ctl){
-    int iflag = 0;
-    
     printf("Read spherical shell dynamo control: %s\n", file_name);
     if ((FP_MHD = fopen(file_name, "r")) == NULL) {
         fprintf(stderr, "Cannot open file: %s\n", file_name);
@@ -199,7 +197,7 @@ void read_SGS_MHD_control_file_c(const char *file_name, char buf[LENGTHBUF],
     
     skip_comment_read_line(FP_MHD, buf);
     if(right_begin_flag_c(buf, label_MHD_control_head) > 0){
-        iflag = read_SGS_MHD_control_c(FP_MHD, buf, label_MHD_control_head, mhd_ctl);
+        read_SGS_MHD_control_c(FP_MHD, buf, label_MHD_control_head, mhd_ctl);
     };
     fclose(FP_MHD);
 	
@@ -209,15 +207,13 @@ void read_SGS_MHD_control_file_c(const char *file_name, char buf[LENGTHBUF],
 };
 
 void write_SGS_MHD_control_file_c(const char *file_name, struct SGS_MHD_control_c *mhd_ctl){
-    int level = 0;
-        
     printf("Write spherical shell dynamo control: %s\n", file_name);
     if ((FP_MHD = fopen(file_name, "w")) == NULL) {
         fprintf(stderr, "Cannot open file!: %s\n", file_name);
         exit (2);                    /* terminate with error message */
     };
     
-    level = write_SGS_MHD_control_c(FP_MHD, 0, label_MHD_control_head, mhd_ctl);
+    write_SGS_MHD_control_c(FP_MHD, 0, label_MHD_control_head, mhd_ctl);
     fclose(FP_MHD);
     
     return;

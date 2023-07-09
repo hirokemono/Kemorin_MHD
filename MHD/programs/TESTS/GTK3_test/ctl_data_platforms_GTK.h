@@ -71,8 +71,8 @@ struct f_platform_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_int_item * f_ndomain_ctl;
-	struct f_ctl_int_item * f_num_smp_ctl;
+	struct int_ctl_item * f_ndomain_ctl;
+	struct int_ctl_item * f_num_smp_ctl;
 	struct chara_ctl_item * f_debug_flag_ctl;
 	struct chara_ctl_item * f_sph_file_prefix;
 	struct chara_ctl_item * f_mesh_file_prefix;
@@ -104,26 +104,26 @@ struct f_MHD_sph_resolution_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_int_item *f_ltr_ctl;
-	struct f_ctl_int_item *f_phi_symmetry_ctl;
+	struct int_ctl_item *f_ltr_ctl;
+	struct int_ctl_item *f_phi_symmetry_ctl;
 	struct chara_ctl_item *f_sph_grid_type_ctl;
 	struct chara_ctl_item *f_sph_coef_type_ctl;
-	struct f_ctl_int_item *f_ngrid_elevation_ctl;
-	struct f_ctl_int_item *f_ngrid_azimuth_ctl;
+	struct int_ctl_item *f_ngrid_elevation_ctl;
+	struct int_ctl_item *f_ngrid_azimuth_ctl;
 	struct int_real_clist *f_radius_ctl;
 	struct chara_int_clist *f_radial_grp_ctl;
 	struct real_clist *f_add_ext_layer_ctl;
 	struct chara_ctl_item *f_radial_grid_type_ctl;
-	struct f_ctl_int_item *f_num_fluid_grid_ctl;
-	struct f_ctl_int_item *f_increment_cheby_ctl;
+	struct int_ctl_item *f_num_fluid_grid_ctl;
+	struct int_ctl_item *f_increment_cheby_ctl;
 	struct f_ctl_real_item *f_fluid_core_size_ctl;
 	struct f_ctl_real_item *f_ICB_to_CMB_ratio_ctl;
 	struct f_ctl_real_item *f_Min_radius_ctl;
 	struct f_ctl_real_item *f_ICB_radius_ctl;
 	struct f_ctl_real_item *f_CMB_radius_ctl;
 	struct f_ctl_real_item *f_Max_radius_ctl;
-	struct f_ctl_int_item *f_num_radial_layer_ctl;
-	struct f_ctl_int_item *f_num_med_layer_ctl;
+	struct int_ctl_item *f_num_radial_layer_ctl;
+	struct int_ctl_item *f_num_med_layer_ctl;
 	struct int2_clist *f_radial_layer_list_ctl;
 	struct int2_clist *f_med_layer_list_ctl;
 };
@@ -154,8 +154,8 @@ struct f_MHD_sph_subdomain_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_int_item *f_num_radial_domain_ctl;
-	struct f_ctl_int_item *f_num_horiz_domain_ctl;
+	struct int_ctl_item *f_num_radial_domain_ctl;
+	struct int_ctl_item *f_num_horiz_domain_ctl;
 	
 	struct chara_int_clist *f_ndomain_sph_grid_ctl;
 	struct chara_int_clist *f_ndomain_legendre_ctl;

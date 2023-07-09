@@ -45,7 +45,7 @@ struct f_sph_field_on_circle_ctls{
 	struct chara_ctl_item *f_circle_file_format_ctl;
 	struct chara_ctl_item *f_pick_circle_coord_ctl;\
 	
-	struct f_ctl_int_item   *f_nphi_mid_eq_ctl;
+	struct int_ctl_item   *f_nphi_mid_eq_ctl;
 	struct f_ctl_real_item  *f_pick_s_ctl;
 	struct f_ctl_real_item  *f_pick_z_ctl;
 };

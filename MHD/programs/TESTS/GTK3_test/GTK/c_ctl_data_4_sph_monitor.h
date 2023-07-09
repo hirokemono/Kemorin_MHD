@@ -70,7 +70,7 @@ struct f_MHD_sph_dynamobench_ctls{
 	struct chara_ctl_item *f_detailed_dbench_file_ctl;
 	struct chara_ctl_item *f_dbench_field_file_ctl;
 	struct chara_ctl_item *f_dbench_spectr_file_ctl;
-	struct f_ctl_int_item   *f_nphi_mid_eq_ctl;
+	struct int_ctl_item   *f_nphi_mid_eq_ctl;
 };
 
 struct f_MHD_sph_layer_spectr_ctls{

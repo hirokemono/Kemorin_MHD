@@ -20,14 +20,14 @@ struct f_ctl_real_item{
 	char * c_block_name;
 	double c_realvalue;
 };
-
-struct f_ctl_int_item{
+/*
+struct int_ctl_item{
 	void * f_self;
 	int * f_iflag;
 	char * c_block_name;
 	int c_intvalue;
 };
-
+*/
 /*  Prototypes */
 
 extern int lengthchara_f();
@@ -74,9 +74,9 @@ struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent)
 											void *f_parent);
 void reflesh_f_ctl_chara_array(int num_array, struct chara_clist *c_clist);
 
-struct f_ctl_int_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent), 
+struct int_ctl_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent),
 	void *f_parent);
-void dealloc_f_ctl_int_item(struct f_ctl_int_item *f_ritem);
+void dealloc_f_ctl_int_item(struct int_ctl_item *f_ritem);
 struct int_clist * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent), 
 										void *f_parent);
 void reflesh_f_ctl_int_array(int num_array, struct int_clist *i_clist);

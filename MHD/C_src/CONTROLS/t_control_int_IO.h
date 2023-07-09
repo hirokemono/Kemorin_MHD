@@ -17,7 +17,6 @@
 
 
 struct int_ctl_item{
-//	int iflag;
 	void * f_self;
 	int * f_iflag;
 	char * c_block_name;

@@ -32,33 +32,33 @@ struct f_time_step_control_ctls{
 	
 	char * c_block_name;
 	
-	struct f_ctl_int_item *f_i_step_init_ctl;
-	struct f_ctl_int_item *f_i_step_number_ctl;
+	struct int_ctl_item *f_i_step_init_ctl;
+	struct int_ctl_item *f_i_step_number_ctl;
 	struct f_ctl_real_item *f_elapsed_time_ctl;
 	
-	struct f_ctl_int_item *f_i_step_check_ctl;
-	struct f_ctl_int_item *f_i_step_rst_ctl;
-	struct f_ctl_int_item *f_i_step_pvr_ctl;
-	struct f_ctl_int_item *f_i_step_psf_ctl;
-	struct f_ctl_int_item *f_i_step_map_ctl;
-	struct f_ctl_int_item *f_i_step_iso_ctl;
-	struct f_ctl_int_item *f_i_step_lic_ctl;
-	struct f_ctl_int_item *f_i_step_fline_ctl;
+	struct int_ctl_item *f_i_step_check_ctl;
+	struct int_ctl_item *f_i_step_rst_ctl;
+	struct int_ctl_item *f_i_step_pvr_ctl;
+	struct int_ctl_item *f_i_step_psf_ctl;
+	struct int_ctl_item *f_i_step_map_ctl;
+	struct int_ctl_item *f_i_step_iso_ctl;
+	struct int_ctl_item *f_i_step_lic_ctl;
+	struct int_ctl_item *f_i_step_fline_ctl;
 	
-	struct f_ctl_int_item *f_i_step_ucd_ctl;
-	struct f_ctl_int_item *f_i_step_monitor_ctl;
-	struct f_ctl_int_item *f_i_step_sgs_coefs_ctl;
-	struct f_ctl_int_item *f_i_step_boundary_ctl;
+	struct int_ctl_item *f_i_step_ucd_ctl;
+	struct int_ctl_item *f_i_step_monitor_ctl;
+	struct int_ctl_item *f_i_step_sgs_coefs_ctl;
+	struct int_ctl_item *f_i_step_boundary_ctl;
 	
 	struct f_ctl_real_item *f_dt_ctl;
 	struct f_ctl_real_item *f_time_init_ctl;
 	
-	struct f_ctl_int_item *f_i_diff_steps_ctl;
+	struct int_ctl_item *f_i_diff_steps_ctl;
 	struct chara_ctl_item *f_flexible_step_ctl;
 	
 	struct f_ctl_real_item *f_ratio_to_cfl_ctl;
-	struct f_ctl_int_item *f_start_rst_step_ctl;
-	struct f_ctl_int_item *f_end_rst_step_ctl;
+	struct int_ctl_item *f_start_rst_step_ctl;
+	struct int_ctl_item *f_end_rst_step_ctl;
 	struct f_ctl_real_item *f_min_delta_t_ctl;
 	struct f_ctl_real_item *f_max_delta_t_ctl;
 	struct f_ctl_real_item *f_max_eps_to_shrink_ctl;
@@ -100,8 +100,8 @@ struct f_MHD_evo_scheme_controls{
 	struct chara_ctl_item *f_iflag_supg_b_ctl;
 	struct chara_ctl_item *f_iflag_supg_c_ctl;
 	
-	struct f_ctl_int_item *f_num_multi_pass_ctl;
-	struct f_ctl_int_item *f_maxiter_ctl;
+	struct int_ctl_item *f_num_multi_pass_ctl;
+	struct int_ctl_item *f_maxiter_ctl;
 	struct f_ctl_real_item *f_eps_4_velo_ctl;
 	struct f_ctl_real_item *f_eps_4_magne_ctl;
 	struct f_ctl_real_item *f_eps_crank_ctl;
@@ -114,7 +114,7 @@ struct f_MHD_evo_scheme_controls{
 	struct chara_ctl_item *f_Legendre_trans_type;
 	struct chara_ctl_item *f_FFT_library;
 	struct chara_ctl_item *f_import_mode;
-	struct f_ctl_int_item *f_leg_vector_len;
+	struct int_ctl_item *f_leg_vector_len;
 };
 
 
