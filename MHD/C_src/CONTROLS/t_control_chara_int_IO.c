@@ -14,15 +14,22 @@ struct chara_int_ctl_item * init_chara_int_ctl_item_c(void){
         printf("malloc error for ci_item\n");
         exit(0);
     }
+	if((ci_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for ci_item->f_iflag\n");
+		exit(0);
+	}
 
     ci_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	ci_item->i_data = 0;
-	ci_item->iflag = 0;
     return ci_item;
 };
 
 void dealloc_chara_int_ctl_item_c(struct chara_int_ctl_item *ci_item){
-    free(ci_item->c_tbl);
+	free(ci_item->c_tbl);
+	if(ci_item->c_block_name != NULL) free(ci_item->c_block_name);
+	
+	ci_item->f_iflag = NULL;
+	ci_item->f_self = NULL;
     free(ci_item);
     return;
 };
@@ -31,14 +38,14 @@ int read_chara_int_ctl_item_c(char buf[LENGTHBUF], const char *label,
                               struct chara_int_ctl_item *ci_item){
 	char header_chara[KCHARA_C];
 	
-	if(ci_item->iflag > 0) return 0;
+	if(ci_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %s %d", header_chara, 
 					ci_item->c_tbl, &ci_item->i_data);
 		strip_cautation_marks(ci_item->c_tbl);
-		ci_item->iflag = 1;
+		ci_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -46,7 +53,7 @@ int read_chara_int_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_chara_int_ctl_item_c(FILE *fp, int level, int maxlen[2], 
                            const char *label, struct chara_int_ctl_item *ci_item){
     
-	if(ci_item->iflag == 0) return level;
+	if(ci_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen[0], label);
 	write_one_label_cont_c(fp, maxlen[1], ci_item->c_tbl);
@@ -56,14 +63,14 @@ int write_chara_int_ctl_item_c(FILE *fp, int level, int maxlen[2],
 
 void update_chara_int_ctl_item_c(const char *c_in, const int i1_in,
                               struct chara_int_ctl_item *ci_item){
-	ci_item->iflag = 1;
+	ci_item->f_iflag[0] = 1;
 	sprintf(ci_item->c_tbl,"%s", c_in);
 	ci_item->i_data = i1_in;
     return;
 };
 void set_from_chara_int_ctl_item_c( struct chara_int_ctl_item *ci_item,
                               char *c_out, int *i1_out){
-	if(ci_item->iflag == 0) return;
+	if(ci_item->f_iflag[0] == 0) return;
 	sprintf(c_out,"%s", ci_item->c_tbl);
 	*i1_out = ci_item->i_data;
     return;

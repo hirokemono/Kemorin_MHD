@@ -15,12 +15,12 @@ extern void * c_chara3_item_charavalue_1(void *f_ctl);
 extern void * c_chara3_item_charavalue_2(void *f_ctl);
 extern void * c_chara3_item_charavalue_3(void *f_ctl);
 
-struct f_ctl_c3_item * init_f_ctl_c3_item(void *(*c_load_self)(void *f_parent),
+struct chara3_ctl_item * init_f_ctl_c3_item(void *(*c_load_self)(void *f_parent),
 										  void *f_parent)
 {
-	struct f_ctl_c3_item *f_c3_item = (struct f_ctl_c3_item *) malloc(sizeof(struct f_ctl_c3_item));
+	struct chara3_ctl_item *f_c3_item = (struct chara3_ctl_item *) malloc(sizeof(struct chara3_ctl_item));
 	if(f_c3_item == NULL){
-		printf("malloc error for f_ctl_c3_item\n");
+		printf("malloc error for chara3_ctl_item\n");
 		exit(0);
 	};
 	f_c3_item->f_self =  c_load_self(f_parent);
@@ -30,34 +30,21 @@ struct f_ctl_c3_item * init_f_ctl_c3_item(void *(*c_load_self)(void *f_parent),
 	f_c3_item->c_block_name = strngcopy_from_f(f_block_name);
 	
 	char * ctmp =  (char *) c_chara3_item_charavalue_1(f_c3_item->f_self);
-	f_c3_item->c_charavalue_1 = strngcopy_from_f(ctmp);
+	f_c3_item->c1_tbl = strngcopy_from_f(ctmp);
 	ctmp =  (char *) c_chara3_item_charavalue_2(f_c3_item->f_self);
-	f_c3_item->c_charavalue_2 = strngcopy_from_f(ctmp);
+	f_c3_item->c2_tbl = strngcopy_from_f(ctmp);
 	ctmp =  (char *) c_chara3_item_charavalue_3(f_c3_item->f_self);
-	f_c3_item->c_charavalue_3 = strngcopy_from_f(ctmp);
+	f_c3_item->c3_tbl = strngcopy_from_f(ctmp);
 
 	/*
 	printf("f_c3_item->f_self %p \n", f_c3_item->f_self);
 	printf("f_c3_item->c_block_name %s \n", f_c3_item->c_block_name);
 	printf("f_c3_item->c_charavalue %d %s %s %s\n", 
-		   f_c3_item->f_iflag[0], f_c3_item->c_charavalue_1,
-		   f_c3_item->c_charavalue_2, f_c3_item->c_charavalue_3);
+		   f_c3_item->f_iflag[0], f_c3_item->c1_tbl,
+		   f_c3_item->c2_tbl, f_c3_item->c3_tbl);
 	*/
 	return f_c3_item;
 }
-
-void dealloc_f_ctl_c3_item(struct f_ctl_c3_item *f_c3_item)
-{
-	free(f_c3_item->c_charavalue_3);
-	free(f_c3_item->c_charavalue_2);
-	free(f_c3_item->c_charavalue_1);
-	free(f_c3_item->c_block_name);
-	
-	f_c3_item->f_iflag = NULL;
-	f_c3_item->f_self = NULL;
-	return;
-}
-
 
 struct chara3_clist * init_f_ctl_c3_array(void *(*c_load_self)(void *f_parent), 
 										  void *f_parent)

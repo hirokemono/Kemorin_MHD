@@ -14,14 +14,6 @@
 #include "t_ctl_array_single_items_c.h"
 #include "t_control_chara_real_IO.h"
 
-struct f_ctl_cr_item{
-	void * f_self;
-	int * f_iflag;
-	char * c_block_name;
-	char * c_charavalue;
-	double c_realvalue;
-};
-
 /*  Prototypes */
 
 extern void c_alloc_chara_real_array(int num_array, void *f_ctl);
@@ -35,9 +27,8 @@ extern double c_chara_real_array_r_tbl(int idx, void *f_ctl);
 extern void   c_store_chara_real_array(void *f_ctl, int idx, char *c_in, double r_in);
 extern void   c_store_chara_real_items(void *f_ctl, char *c_in, double r_in);
 
-struct f_ctl_cr_item * init_f_ctl_cr_item(void *(*c_load_self)(void *f_parent),
+struct chara_real_ctl_item * init_f_ctl_cr_item(void *(*c_load_self)(void *f_parent),
 											 void *f_parent);
-void dealloc_f_ctl_cr_item(struct f_ctl_cr_item *f_cr_item);
 
 struct chara_real_clist * init_f_ctl_cr_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent);

@@ -130,7 +130,7 @@ void set_viz_flags_from_text(struct chara3_ctl_item *tmp_fld_item,
 void set_viz_flags_to_text(struct chara_int2_ctl_item *field_item,
                            struct chara3_ctl_item *tmp_fld_item){
 	
-	tmp_fld_item->iflag = 1;
+	tmp_fld_item->f_iflag[0] = 1;
 	sprintf(tmp_fld_item->c1_tbl, "%s", field_item->c_tbl);
 	
 	if(field_item->i_data[0] == 0){
@@ -164,7 +164,7 @@ static int read_field_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
         fld_item = init_chara_int2_ctl_item_c();
 		set_viz_flags_from_text(tmp_fld_ctl, fld_item);
         append_chara_int2_clist(fld_item, f_field_ctl);
-        tmp_fld_ctl->iflag = 0;
+        tmp_fld_ctl->f_iflag[0] = 0;
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
     };

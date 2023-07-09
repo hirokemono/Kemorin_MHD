@@ -14,7 +14,7 @@ struct chara_ctl_item * init_chara_ctl_item_c(void){
         printf("malloc error for chara_ctl_item\n");
         exit(0);
     }
-	if((c_item->f_iflag = (int *)calloc(100, sizeof(int))) == NULL) {
+	if((c_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
 		printf("malloc error for c_item->f_iflag\n");
 		exit(0);
 	}

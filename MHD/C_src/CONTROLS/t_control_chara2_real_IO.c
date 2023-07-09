@@ -14,16 +14,24 @@ struct chara2_real_ctl_item * init_c2r_ctl_item_c(void){
         printf("malloc error for c2r_item\n");
         exit(0);
     }
+	if((c2r_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for c2r_item->f_iflag\n");
+		exit(0);
+	}
+
 	c2r_item->c1_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c2r_item->c2_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c2r_item->r_data = 0.0;
-	c2r_item->iflag = 0;
     return c2r_item;
 };
 
 void dealloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item){
     free(c2r_item->c1_tbl);
     free(c2r_item->c2_tbl);
+	if(c2r_item->c_block_name !=NULL) free(c2r_item->c_block_name);
+	c2r_item->f_iflag = NULL;
+    
+	c2r_item->f_self = NULL;
     free(c2r_item);
     return;
 };
@@ -32,7 +40,7 @@ int read_c2r_ctl_item_c(char buf[LENGTHBUF], const char *label,
                         struct chara2_real_ctl_item *c2r_item){
 	char header_chara[KCHARA_C];
 	
-	if(c2r_item->iflag > 0) return 0;
+	if(c2r_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
@@ -40,7 +48,7 @@ int read_c2r_ctl_item_c(char buf[LENGTHBUF], const char *label,
 					c2r_item->c1_tbl, c2r_item->c2_tbl, &c2r_item->r_data);
 		strip_cautation_marks(c2r_item->c1_tbl);
 		strip_cautation_marks(c2r_item->c2_tbl);
-		c2r_item->iflag = 1;
+		c2r_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -48,7 +56,7 @@ int read_c2r_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_c2r_ctl_item_c(FILE *fp, int level, int maxlen[3], 
                            const char *label, struct chara2_real_ctl_item *c2r_item){
     
-	if(c2r_item->iflag == 0) return level;
+	if(c2r_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen[0], label);
 	write_one_label_cont_c(fp, maxlen[1], c2r_item->c1_tbl);
@@ -60,7 +68,7 @@ int write_c2r_ctl_item_c(FILE *fp, int level, int maxlen[3],
 
 void update_chara2_real_ctl_item_c(char *c1_in, char *c2_in, double r_in,  
                               struct chara2_real_ctl_item *c2r_item){
-	c2r_item->iflag = 1;
+	c2r_item->f_iflag[0] = 1;
 	sprintf(c2r_item->c1_tbl,"%s", c1_in);
 	sprintf(c2r_item->c2_tbl,"%s", c2_in);
 	c2r_item->r_data = r_in;
@@ -68,7 +76,7 @@ void update_chara2_real_ctl_item_c(char *c1_in, char *c2_in, double r_in,
 };
 void set_from_chara2_real_ctl_item_c(struct chara2_real_ctl_item *c2r_item,
                               char *c1_out, char *c2_out, double *r_out){
-	if(c2r_item->iflag == 0) return;
+	if(c2r_item->f_iflag[0] == 0) return;
 	sprintf(c1_out,"%s", c2r_item->c1_tbl);
 	sprintf(c2_out,"%s", c2r_item->c2_tbl);
 	*r_out = c2r_item->r_data;

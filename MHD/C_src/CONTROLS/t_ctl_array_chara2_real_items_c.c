@@ -15,12 +15,12 @@ extern void * c_chara2_real_item_charavalue1(void *f_ctl);
 extern void * c_chara2_real_item_charavalue2(void *f_ctl);
 extern double c_chara2_real_item_realvalue(void *f_ctl);
 
-struct f_ctl_c2r_item * init_f_ctl_c2r_item(void *(*c_load_self)(void *f_parent),
-										  void *f_parent)
+struct chara2_real_ctl_item * init_f_ctl_c2r_item(void *(*c_load_self)(void *f_parent),
+                                            void *f_parent)
 {
-	struct f_ctl_c2r_item *f_c2r_item = (struct f_ctl_c2r_item *) malloc(sizeof(struct f_ctl_c2r_item));
+	struct chara2_real_ctl_item *f_c2r_item = (struct chara2_real_ctl_item *) malloc(sizeof(struct chara2_real_ctl_item));
 	if(f_c2r_item == NULL){
-		printf("malloc error for f_ctl_c2r_item\n");
+		printf("malloc error for chara2_real_ctl_item\n");
 		exit(0);
 	};
 	f_c2r_item->f_self =  c_load_self(f_parent);
@@ -29,32 +29,20 @@ struct f_ctl_c2r_item * init_f_ctl_c2r_item(void *(*c_load_self)(void *f_parent)
 	char *f_charavalue =  (char *) c_chara2_real_item_block_name(f_c2r_item->f_self);
 	f_c2r_item->c_block_name = strngcopy_from_f(f_charavalue);
 	
-	f_c2r_item->c_realvalue =  c_chara2_real_item_realvalue(f_c2r_item->f_self);
+	f_c2r_item->r_data =  c_chara2_real_item_realvalue(f_c2r_item->f_self);
 	f_charavalue =  (char *) c_chara2_real_item_charavalue1(f_c2r_item->f_self);
-	f_c2r_item->c_charavalue[0] = strngcopy_from_f(f_charavalue);
+	f_c2r_item->c1_tbl = strngcopy_from_f(f_charavalue);
 	f_charavalue =  (char *) c_chara2_real_item_charavalue2(f_c2r_item->f_self);
-	f_c2r_item->c_charavalue[1] = strngcopy_from_f(f_charavalue);
+	f_c2r_item->c2_tbl = strngcopy_from_f(f_charavalue);
 	
 	/*
 	printf("f_c2r_item->f_self %p \n", f_c2r_item->f_self);
 	printf("f_c2r_item->c_block_name %s \n", f_c2r_item->c_block_name);
-	printf("f_c2r_item->c_charavalue %d %s %s %lf\n", f_c2r_item->f_iflag[0], 
-		   f_c2r_item->c_charavalue[0], f_c2r_item->c_charavalue[1],
-		   f_c2r_item->c_realvalue);
+	printf("f_c2r_item %d %s %s %lf\n", f_c2r_item->f_iflag[0],
+		   f_c2r_item->c1_tbl, f_c2r_item->c2_tbl, f_c2r_item->r_data);
 	*/
 	return f_c2r_item;
 }
-
-void dealloc_f_ctl_c2r_item(struct f_ctl_c2r_item *f_c2r_item)
-{
-	free(f_c2r_item->c_charavalue);
-	free(f_c2r_item->c_block_name);
-	f_c2r_item->f_iflag = NULL;
-    
-	f_c2r_item->f_self = NULL;
-	return;
-}
-
 
 struct chara2_real_clist * init_f_ctl_c2r_array(void *(*c_load_self)(void *f_parent),
                                                 void *f_parent)

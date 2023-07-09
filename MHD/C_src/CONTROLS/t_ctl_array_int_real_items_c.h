@@ -14,15 +14,6 @@
 #include "t_ctl_array_single_items_c.h"
 #include "t_control_int_real_IO.h"
 
-
-struct f_ctl_ir_item{
-	void * f_self;
-	int * f_iflag;
-	char * c_block_name;
-	int    c_intvalue;
-	double c_realvalue;
-};
-
 /*  Prototypes */
 
 extern void c_alloc_int_real_array(int num, void *f_ctl);
@@ -37,9 +28,9 @@ extern void   c_store_int_real_array(void *f_ctl, int idx_in, int i_in, double r
 
 extern void c_store_int_real_array(void *f_ctl, int idx_in, int i_in, double r_in);
 
-struct f_ctl_ir_item * init_f_ctl_ir_item(void *(*c_load_self)(void *f_parent), 
+struct int_real_ctl_item * init_f_ctl_ir_item(void *(*c_load_self)(void *f_parent),
 											 void *f_parent);
-void dealloc_f_ctl_ir_item(struct f_ctl_ir_item *f_ir_item);
+void dealloc_f_ctl_ir_item(struct int_real_ctl_item *f_ir_item);
 
 struct int_real_clist * init_f_ctl_ir_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent);

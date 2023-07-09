@@ -13,14 +13,7 @@
 #include "t_control_real_IO.h"
 #include "t_control_int_IO.h"
 #include "t_control_chara_IO.h"
-/*
-struct f_ctl_real_item{
-	void * f_self;
-	int * f_iflag;
-	char * c_block_name;
-	double c_realvalue;
-};
-*/
+
 /*  Prototypes */
 
 extern int lengthchara_f();

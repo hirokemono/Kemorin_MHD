@@ -17,7 +17,10 @@
 
 
 struct chara_int_ctl_item{
-	int iflag;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
+//	int iflag;
 	
 	char *c_tbl;
 	int i_data;

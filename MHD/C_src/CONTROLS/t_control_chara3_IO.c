@@ -14,11 +14,14 @@ struct chara3_ctl_item * init_chara3_ctl_item_c(void){
         printf("malloc error for c3_item\n");
         exit(0);
     }
+	if((c3_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for r_item->f_iflag\n");
+		exit(0);
+	}
 
     c3_item->c1_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c3_item->c2_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c3_item->c3_tbl = (char *)calloc(KCHARA_C, sizeof(char));
-	c3_item->iflag = 0;
     return c3_item;
 };
 
@@ -26,6 +29,11 @@ void dealloc_chara3_ctl_item_c(struct chara3_ctl_item *c3_item){
     free(c3_item->c1_tbl);
     free(c3_item->c2_tbl);
     free(c3_item->c3_tbl);
+	if(c3_item->c_block_name !=NULL) free(c3_item->c_block_name);
+	
+	c3_item->f_iflag = NULL;
+	c3_item->f_self = NULL;
+	
     free(c3_item);
     return;
 };
@@ -34,7 +42,7 @@ int read_chara3_ctl_item_c(char buf[LENGTHBUF], const char *label,
                           struct chara3_ctl_item *c3_item){
 	char header_chara[KCHARA_C];
 	
-	if(c3_item->iflag > 0) return 0;
+	if(c3_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
@@ -43,14 +51,14 @@ int read_chara3_ctl_item_c(char buf[LENGTHBUF], const char *label,
 		strip_cautation_marks(c3_item->c1_tbl);
 		strip_cautation_marks(c3_item->c2_tbl);
 		strip_cautation_marks(c3_item->c3_tbl);
-		c3_item->iflag = 1;
+		c3_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
 
 int write_chara3_ctl_item_c(FILE *fp, int level, int maxlen[3], 
 			const char *label, struct chara3_ctl_item *c3_item){
-	if(c3_item->iflag == 0) return level;
+	if(c3_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen[0], label);
 	write_one_label_cont_c(fp, maxlen[1], c3_item->c1_tbl);
@@ -62,7 +70,7 @@ int write_chara3_ctl_item_c(FILE *fp, int level, int maxlen[3],
 
 void update_chara3_ctl_item_c(char *c1_in, char *c2_in, char *c3_in,  
 			struct chara3_ctl_item *c3_item){
-	c3_item->iflag = 1;
+	c3_item->f_iflag[0] = 1;
 	sprintf(c3_item->c1_tbl,"%s", c1_in);
 	sprintf(c3_item->c2_tbl,"%s", c2_in);
 	sprintf(c3_item->c3_tbl,"%s", c3_in);
@@ -70,7 +78,7 @@ void update_chara3_ctl_item_c(char *c1_in, char *c2_in, char *c3_in,
 };
 void set_from_chara3_ctl_item_c(struct chara3_ctl_item *c3_item,
                               char *c1_out, char *c2_out, char *c3_out){
-	if(c3_item->iflag == 0) return;
+	if(c3_item->f_iflag[0] == 0) return;
 	sprintf(c1_out,"%s", c3_item->c1_tbl);
 	sprintf(c2_out,"%s", c3_item->c2_tbl);
 	sprintf(c3_out,"%s", c3_item->c3_tbl);

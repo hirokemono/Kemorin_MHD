@@ -17,7 +17,9 @@
 
 
 struct int2_ctl_item{
-	int iflag;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
 	
 	int i_data[2];
 };
@@ -45,7 +47,9 @@ struct int2_clist{
 /* prototypes */
 
 struct int2_ctl_item * init_int2_ctl_item_c(void);
-int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+void dealloc_f_ctl_i2_item(struct int2_ctl_item *i2_item);
+
+int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label,
                           struct int2_ctl_item *i2_item);
 int write_int2_ctl_item_c(FILE *fp, int level, int maxlen, 
 			const char *label, struct int2_ctl_item *i2_item);

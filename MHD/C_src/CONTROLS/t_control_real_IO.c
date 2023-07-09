@@ -14,7 +14,7 @@ struct real_ctl_item * init_real_ctl_item_c(void){
         printf("malloc error for real_ctl_item \n");
         exit(0);
     }
-	if((r_item->f_iflag = (int *)calloc(100, sizeof(int))) == NULL) {
+	if((r_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
 		printf("malloc error for r_item->f_iflag\n");
 		exit(0);
 	}

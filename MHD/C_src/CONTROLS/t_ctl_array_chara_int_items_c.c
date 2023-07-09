@@ -14,12 +14,12 @@ extern void * c_chara_int_item_iflag(void *f_ctl);
 extern void * c_chara_int_item_charavalue(void *f_ctl);
 extern int    c_chara_int_item_intvalue(void *f_ctl);
 
-struct f_ctl_ci_item * init_f_ctl_ci_item(void *(*c_load_self)(void *f_parent),
-										  void *f_parent)
+struct chara_int_ctl_item * init_f_ctl_ci_item(void *(*c_load_self)(void *f_parent),
+                                            void *f_parent)
 {
-	struct f_ctl_ci_item *f_ci_item = (struct f_ctl_ci_item *) malloc(sizeof(struct f_ctl_ci_item));
+	struct chara_int_ctl_item *f_ci_item = (struct chara_int_ctl_item *) malloc(sizeof(struct chara_int_ctl_item));
 	if(f_ci_item == NULL){
-		printf("malloc error for f_ctl_ci_item\n");
+		printf("malloc error for chara_int_ctl_item\n");
 		exit(0);
 	};
 	f_ci_item->f_self =  c_load_self(f_parent);
@@ -29,28 +29,17 @@ struct f_ctl_ci_item * init_f_ctl_ci_item(void *(*c_load_self)(void *f_parent),
 	f_ci_item->c_block_name = strngcopy_from_f(f_block_name);
 	
 	char * ctmp =  (char *) c_chara_int_item_charavalue(f_ci_item->f_self);
-	f_ci_item->c_charavalue = strngcopy_from_f(ctmp);
-    f_ci_item->c_intvalue =  c_chara_int_item_intvalue(f_ci_item->f_self);
+	f_ci_item->c_tbl = strngcopy_from_f(ctmp);
+    f_ci_item->i_data =  c_chara_int_item_intvalue(f_ci_item->f_self);
 
 	/*
 	printf("f_ci_item->f_self %p \n", f_ci_item->f_self);
 	printf("f_ci_item->c_block_name %s \n", f_ci_item->c_block_name);
-	printf("f_ci_item->c_charavalue %d %s \n", 
-		   f_ci_item->f_iflag[0], f_ci_item->c_charavalue, f_ci_item->c_charavalue);
+	printf("f_ci_item->c_tbl %d %s %d\n",
+		   f_ci_item->f_iflag[0], f_ci_item->c_tbl, f_ci_item->i_data);
 	*/
 	return f_ci_item;
 }
-
-void dealloc_f_ctl_ci_item(struct f_ctl_ci_item *f_ci_item)
-{
-	free(f_ci_item->c_charavalue);
-	free(f_ci_item->c_block_name);
-	
-	f_ci_item->f_iflag = NULL;
-	f_ci_item->f_self = NULL;
-	return;
-}
-
 
 struct chara_int_clist * init_f_ctl_ci_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent)

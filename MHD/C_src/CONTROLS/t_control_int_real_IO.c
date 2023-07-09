@@ -14,24 +14,36 @@ struct int_real_ctl_item * init_int_real_ctl_item_c(void){
         printf("malloc error for int_real_ctl_item \n");
         exit(0);
     }
+	if((ir_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for ir_item->f_iflag\n");
+		exit(0);
+	}
     
 	ir_item->i_data = 0;
 	ir_item->r_data = 0.0;
-	ir_item->iflag = 0;
     return ir_item;
 };
 
-int read_int_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+void dealloc_f_ctl_ir_item(struct int_real_ctl_item *ir_item)
+{
+	if(ir_item->c_block_name !=NULL) free(ir_item->c_block_name);
+	
+	ir_item->f_iflag = NULL;
+	ir_item->f_self = NULL;
+	return;
+}
+
+int read_int_real_ctl_item_c(char buf[LENGTHBUF], const char *label,
                           struct int_real_ctl_item *ir_item){
 	char header_chara[KCHARA_C];
 	
-	if(ir_item->iflag > 0) return 0;
+	if(ir_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %d %lf", header_chara, 
 					&ir_item->i_data, &ir_item->r_data);
-		ir_item->iflag = 1;
+		ir_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -39,7 +51,7 @@ int read_int_real_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_int_real_ctl_item_c(FILE *fp, int level, int maxlen, 
 			const char *label, struct int_real_ctl_item *ir_item){
     
-	if(ir_item->iflag == 0) return level;
+	if(ir_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
 	fprintf(fp, "%d  %.12e\n", ir_item->i_data, ir_item->r_data);
@@ -49,14 +61,14 @@ int write_int_real_ctl_item_c(FILE *fp, int level, int maxlen,
 
 void update_int_real_ctl_item_c(int i1_in, double r2_in,  
 			struct int_real_ctl_item *ir_item){
-	ir_item->iflag = 1;
+	ir_item->f_iflag[0] = 1;
 	ir_item->i_data = i1_in;
 	ir_item->r_data = r2_in;
     return;
 };
 void set_from_int_real_ctl_item_c(struct int_real_ctl_item *ir_item,
                               int *i1_out, double *r2_out){
-	if(ir_item->iflag == 0) return;
+	if(ir_item->f_iflag[0] == 0) return;
 	*i1_out = ir_item->r_data;
 	*r2_out = ir_item->r_data;
     return;

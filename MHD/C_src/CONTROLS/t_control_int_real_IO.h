@@ -17,7 +17,9 @@
 
 
 struct int_real_ctl_item{
-	int iflag;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
 	
 	int i_data;
 	double r_data;
@@ -46,6 +48,9 @@ struct int_real_clist{
 /* prototypes */
 
 struct int_real_ctl_item * init_int_real_ctl_item_c(void);
+void dealloc_f_ctl_ir_item(struct int_real_ctl_item *ir_item);
+
+
 int read_int_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct int_real_ctl_item *ir_item);
 int write_int_real_ctl_item_c(FILE *fp, int level, int maxlen, 

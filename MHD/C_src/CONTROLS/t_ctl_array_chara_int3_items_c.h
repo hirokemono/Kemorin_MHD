@@ -14,14 +14,6 @@
 #include "t_ctl_array_single_items_c.h"
 #include "t_control_chara_int3_IO.h"
 
-struct f_ctl_ci3_item{
-	void * f_self;
-	int * f_iflag;	
-	char * c_block_name;
-	char * c_charavalue;
-	int c_intvalue[3];
-};
-
 /*  Prototypes */
 
 extern void c_alloc_chara_int3_array(int num, void *f_ctl);
@@ -41,9 +33,8 @@ extern void  c_store_chara_int3_items(void *f_ctl, char *c_in,
 									  int i1_in, int i2_in, int i3_in);
 
 
-struct f_ctl_ci3_item * init_f_ctl_ci3_item(void *(*c_load_self)(void *f_parent), 
+struct chara_int3_ctl_item * init_f_ctl_ci3_item(void *(*c_load_self)(void *f_parent),
 											 void *f_parent);
-void dealloc_f_ctl_ci3_item(struct f_ctl_ci3_item *f_ci3_item);
 
 struct chara_int3_clist * init_f_ctl_ci3_array(void *(*c_load_self)(void *f_parent),
 											void *f_parent);

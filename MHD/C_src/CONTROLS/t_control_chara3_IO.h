@@ -17,8 +17,10 @@
 
 
 struct chara3_ctl_item{
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
 	
-	int iflag;
 	char *c1_tbl;
 	char *c2_tbl;
 	char *c3_tbl;

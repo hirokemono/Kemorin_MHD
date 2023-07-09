@@ -14,14 +14,6 @@
 #include "t_ctl_array_single_items_c.h"
 #include "t_control_chara2_real_IO.h"
 
-struct f_ctl_c2r_item{
-	void * f_self;
-	int * f_iflag;
-	char * c_block_name;
-	char * c_charavalue[2];
-	double c_realvalue;
-};
-
 /*  Prototypes */
 
 extern void c_alloc_chara2_real_array(int num_array, void *f_ctl);
@@ -39,9 +31,8 @@ extern void   c_store2_chara_real_items(void *f_ctl,
 										char *c1_in, char *c2_in, double r_in);
 
 
-struct f_ctl_c2r_item * init_f_ctl_c2r_item(void *(*c_load_self)(void *f_parent),
-											 void *f_parent);
-void dealloc_f_ctl_c2r_item(struct f_ctl_c2r_item *f_c2r_item);
+struct chara2_real_ctl_item * init_f_ctl_c2r_item(void *(*c_load_self)(void *f_parent),
+                                                void *f_parent);
 
 struct chara2_real_clist * init_f_ctl_c2r_array(void *(*c_load_self)(void *f_parent),
                                                 void *f_parent);

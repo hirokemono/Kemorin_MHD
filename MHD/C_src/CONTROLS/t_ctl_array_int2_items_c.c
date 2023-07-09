@@ -17,12 +17,12 @@ extern void * c_int2_item_block_name(void *f_ctl);
 extern void * c_int2_item_iflag(void *f_ctl);
 extern void * c_int2_item_intvalue(void *f_ctl);
 
-struct f_ctl_i2_item * init_f_ctl_i2_item(void *(*c_load_self)(void *f_parent),
+struct int2_ctl_item * init_f_ctl_i2_item(void *(*c_load_self)(void *f_parent),
 										  void *f_parent)
 {
-	struct f_ctl_i2_item *f_i2_item = (struct f_ctl_i2_item *) malloc(sizeof(struct f_ctl_i2_item));
+	struct int2_ctl_item *f_i2_item = (struct int2_ctl_item *) malloc(sizeof(struct int2_ctl_item));
 	if(f_i2_item == NULL){
-		printf("malloc error for f_ctl_i2_item\n");
+		printf("malloc error for int2_ctl_item\n");
 		exit(0);
 	};
 	f_i2_item->f_self =  c_load_self(f_parent);
@@ -32,21 +32,12 @@ struct f_ctl_i2_item * init_f_ctl_i2_item(void *(*c_load_self)(void *f_parent),
 	f_i2_item->c_block_name = strngcopy_from_f(f_block_name);
 	
 	int *f_intvalue =   (int *) c_int2_item_intvalue(f_i2_item->f_self);
-    f_i2_item->c_intvalue[0] = f_intvalue[0];
-    f_i2_item->c_intvalue[1] = f_intvalue[1];
+    f_i2_item->i_data[0] = f_intvalue[0];
+    f_i2_item->i_data[1] = f_intvalue[1];
 	return f_i2_item;
 }
 
-void dealloc_f_ctl_i2_item(struct f_ctl_i2_item *f_i2_item)
-{
-	free(f_i2_item->c_block_name);
-    f_i2_item->f_iflag = NULL;
-	f_i2_item->f_self = NULL;
-	return;
-}
-
-
-struct int2_clist * init_f_ctl_i2_array(void *(*c_load_self)(void *f_parent), 
+struct int2_clist * init_f_ctl_i2_array(void *(*c_load_self)(void *f_parent),
 											void *f_parent)
 {
     struct int2_clist *i2_clst = init_int2_clist();

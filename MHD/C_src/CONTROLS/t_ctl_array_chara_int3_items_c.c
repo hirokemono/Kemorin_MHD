@@ -16,12 +16,12 @@ extern int    c_chara_int3_item_intvalue1(void *f_ctl);
 extern int    c_chara_int3_item_intvalue2(void *f_ctl);
 extern int    c_chara_int3_item_intvalue3(void *f_ctl);
 
-struct f_ctl_ci3_item * init_f_ctl_ci3_item(void *(*c_load_self)(void *f_parent),
+struct chara_int3_ctl_item * init_f_ctl_ci3_item(void *(*c_load_self)(void *f_parent),
 										  void *f_parent)
 {
-	struct f_ctl_ci3_item *f_ci3_item = (struct f_ctl_ci3_item *) malloc(sizeof(struct f_ctl_ci3_item));
+	struct chara_int3_ctl_item *f_ci3_item = (struct chara_int3_ctl_item *) malloc(sizeof(struct chara_int3_ctl_item));
 	if(f_ci3_item == NULL){
-		printf("malloc error for f_ctl_ci3_item\n");
+		printf("malloc error for chara_int3_ctl_item\n");
 		exit(0);
 	};
 	f_ci3_item->f_self =  c_load_self(f_parent);
@@ -31,31 +31,20 @@ struct f_ctl_ci3_item * init_f_ctl_ci3_item(void *(*c_load_self)(void *f_parent)
 	f_ci3_item->c_block_name = strngcopy_from_f(f_block_name);
 	
 	char * ctmp =  (char *) c_chara_int3_item_charavalue(f_ci3_item->f_self);
-	f_ci3_item->c_charavalue = strngcopy_from_f(ctmp);
-    f_ci3_item->c_intvalue[0] =  c_chara_int3_item_intvalue1(f_ci3_item->f_self);
-    f_ci3_item->c_intvalue[1] =  c_chara_int3_item_intvalue2(f_ci3_item->f_self);
-    f_ci3_item->c_intvalue[2] =  c_chara_int3_item_intvalue3(f_ci3_item->f_self);
+	f_ci3_item->c_tbl = strngcopy_from_f(ctmp);
+    f_ci3_item->i_data[0] =  c_chara_int3_item_intvalue1(f_ci3_item->f_self);
+    f_ci3_item->i_data[1] =  c_chara_int3_item_intvalue2(f_ci3_item->f_self);
+    f_ci3_item->i_data[2] =  c_chara_int3_item_intvalue3(f_ci3_item->f_self);
 
 	/*
 	printf("f_ci3_item->f_self %p \n", f_ci3_item->f_self);
 	printf("f_ci3_item->c_block_name %s \n", f_ci3_item->c_block_name);
-	printf("f_ci3_item->c_charavalue %d %s %d %d %d\n", 
-		   f_ci3_item->f_iflag[0], f_ci3_item->c_charavalue, f_ci3_item->c_intvalue[0],
-		   f_ci3_item->c_intvalue[1], f_ci3_item->c_intvalue[2]);
+	printf("f_ci3_item->c_tbl %d %s %d %d %d\n",
+		   f_ci3_item->f_iflag[0], f_ci3_item->c_tbl, f_ci3_item->i_data[0],
+		   f_ci3_item->i_data[1], f_ci3_item->i_data[2]);
 	*/
 	return f_ci3_item;
 }
-
-void dealloc_f_ctl_ci3_item(struct f_ctl_ci3_item *f_ci3_item)
-{
-	free(f_ci3_item->c_charavalue);
-	free(f_ci3_item->c_block_name);
-	
-	f_ci3_item->f_iflag = NULL;
-	f_ci3_item->f_self = NULL;
-	return;
-}
-
 
 struct chara_int3_clist * init_f_ctl_ci3_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent)
