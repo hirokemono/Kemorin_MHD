@@ -1,5 +1,25 @@
 c_link_MHD_boundary_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_boundary_ctl.f90 t_ctl_data_node_boundary.o t_ctl_data_surf_boundary.o
 	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_dimless_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_dimless_ctl.f90 t_ctl_data_dimless_numbers.o t_ctl_data_mhd_normalize.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_field_evolve_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_field_evolve_ctl.f90 t_ctl_data_4_fields.o t_ctl_data_mhd_evolution.o t_ctl_data_mhd_forces.o t_ctl_data_mhd_evo_area.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_force_model_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_force_model_ctl.f90 t_ctl_data_gravity.o t_ctl_data_coriolis_force.o t_ctl_data_mhd_magne.o t_ctl_data_magnetic_scale.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_heat_eq_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_heat_eq_ctl.f90 t_ctl_data_termal_norm.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_induction_eq_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_induction_eq_ctl.f90 t_ctl_data_induct_norm.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_momentum_eq_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_momentum_eq_ctl.f90 t_ctl_data_momentum_norm.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_temp_model_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_temp_model_ctl.f90 t_ctl_data_temp_model.o t_ctl_data_stratified_model.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_SGS_filter_file_ctl.o: $(MHD_F2003_DIR)/c_link_SGS_filter_file_ctl.f90 t_ctl_data_filter_files.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_SGS_layering_ctl.o: $(MHD_F2003_DIR)/c_link_SGS_layering_ctl.f90 t_ctl_data_ele_layering.o t_ctl_SGS_3d_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_SPH_SGS_filter_ctl.o: $(MHD_F2003_DIR)/c_link_SPH_SGS_filter_ctl.f90 t_ctl_data_SGS_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_SGS_model.o: $(MHD_F2003_DIR)/c_link_ctl_data_SGS_model.f90 t_ctl_data_SGS_model.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_divide_sph.o: $(MHD_F2003_DIR)/c_link_ctl_data_divide_sph.f90 t_ctl_data_4_divide_sphere.o t_ctl_data_4_FEM_mesh.o
