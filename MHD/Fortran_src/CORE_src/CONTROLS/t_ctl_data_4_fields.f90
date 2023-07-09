@@ -193,6 +193,8 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
+      if(fld_ctl%i_phys_values .le. 0) return
+!
       level = write_begin_flag_for_ctl(id_control, level,               &
      &                                 fld_ctl%block_name)
       call write_control_array_c3                                       &

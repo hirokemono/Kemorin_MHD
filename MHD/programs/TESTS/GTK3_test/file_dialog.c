@@ -201,6 +201,17 @@ extern void * c_MHD_surf_bc_surf_bc_CF_ctl(void *f_sbc_ctl);
 extern void * c_MHD_surf_bc_surf_bc_INF_ctl(void *f_sbc_ctl);
 
 
+extern void * c_MHD_evolution_ctl_block_name(void *f_evo_ctl);
+extern void * c_MHD_evolution_ctl_iflag(void *f_evo_ctl);
+extern void * c_MHD_t_evo_field_ctl(void *f_evo_ctl);
+
+extern void * c_MHD_evo_area_ctl_block_name(void *f_earea_ctl);
+extern void * c_MHD_evo_area_ctl_iflag(void *f_earea_ctl);
+extern void * c_MHD_evo_fluid_group_ctl(void *f_earea_ctl);
+extern void * c_MHD_evo_conduct_group_ctl(void *f_earea_ctl);
+
+
+
 struct f_MHD_SGS_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -277,6 +288,25 @@ struct f_MHD_surf_bc_control{
 	struct chara2_real_clist *f_surf_bc_INF_ctl;
 };
 
+struct f_MHD_time_evo_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct chara_clist *f_t_evo_field_ctl;
+};
+
+struct f_MHD_t_evo_area_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct chara_clist *f_evo_fluid_group_ctl;
+	struct chara_clist *f_evo_conduct_group_ctl;
+};
+
 struct f_MHD_model_control{
 	void * f_self;
 	int * f_iflag;
@@ -284,8 +314,8 @@ struct f_MHD_model_control{
 	char * c_block_name;
 	
 	struct f_MHD_fields_control * f_fld_ctl;
-	void * f_evo_ctl;
-	void * f_earea_ctl;
+	struct f_MHD_time_evo_control * f_evo_ctl;
+	struct f_MHD_t_evo_area_control * f_earea_ctl;
 	struct f_MHD_node_bc_control * f_nbc_ctl;
 	struct f_MHD_surf_bc_control * f_sbc_ctl;
 	struct f_MHD_forces_control *f_frc_ctl;
@@ -559,6 +589,48 @@ struct f_MHD_surf_bc_control * init_f_MHD_surf_bc_control(void *(*c_load_self)(v
 	return f_sbc_ctl;
 }
 
+struct f_MHD_time_evo_control * init_f_MHD_time_evo_control(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_time_evo_control *f_evo_ctl 
+			= (struct f_MHD_time_evo_control *) malloc(sizeof(struct f_MHD_time_evo_control));
+	if(f_evo_ctl == NULL){
+		printf("malloc error for f_evo_ctl\n");
+		exit(0);
+	};
+	
+	f_evo_ctl->f_self =  c_load_self(f_parent);
+	
+	f_evo_ctl->f_iflag =        (int *) c_MHD_evolution_ctl_iflag(f_evo_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_evolution_ctl_block_name(f_evo_ctl->f_self);
+	f_evo_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_evo_ctl->f_t_evo_field_ctl =  init_f_ctl_chara_array(c_MHD_t_evo_field_ctl, f_evo_ctl->f_self);
+	return f_evo_ctl;
+};
+
+struct f_MHD_t_evo_area_control * init_f_MHD_t_evo_area_control(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_t_evo_area_control *f_earea_ctl 
+			= (struct f_MHD_t_evo_area_control *) malloc(sizeof(struct f_MHD_t_evo_area_control));
+	if(f_earea_ctl == NULL){
+		printf("malloc error for f_earea_ctl\n");
+		exit(0);
+	};
+	
+	f_earea_ctl->f_self =  c_load_self(f_parent);
+	
+	f_earea_ctl->f_iflag =        (int *) c_MHD_evolution_ctl_iflag(f_earea_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_evolution_ctl_block_name(f_earea_ctl->f_self);
+	f_earea_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_earea_ctl->f_evo_fluid_group_ctl =    init_f_ctl_chara_array(c_MHD_evo_fluid_group_ctl,
+																   f_earea_ctl->f_self);
+	f_earea_ctl->f_evo_conduct_group_ctl =  init_f_ctl_chara_array(c_MHD_evo_conduct_group_ctl, 
+																   f_earea_ctl->f_self);
+	return f_earea_ctl;
+};
 
 struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), 
 												  void *f_parent, void *f_addition)
@@ -577,8 +649,8 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	f_model_ctl->c_block_name = strngcopy_from_f(f_block_name);
 	
 	f_model_ctl->f_fld_ctl =    init_f_MHD_fields_control(c_MHD_mdl_fld_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_evo_ctl =    c_MHD_mdl_evo_ctl(f_model_ctl->f_self);
-	f_model_ctl->f_earea_ctl =  c_MHD_mdl_earea_ctl(f_model_ctl->f_self);
+	f_model_ctl->f_evo_ctl =    init_f_MHD_time_evo_control(c_MHD_mdl_evo_ctl, f_model_ctl->f_self);
+	f_model_ctl->f_earea_ctl =  init_f_MHD_t_evo_area_control(c_MHD_mdl_earea_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_nbc_ctl =    init_f_MHD_node_bc_control(c_MHD_mdl_nbc_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_sbc_ctl =    init_f_MHD_surf_bc_control(c_MHD_mdl_sbc_ctl, f_model_ctl->f_self);
 	f_model_ctl->f_frc_ctl =    init_f_MHD_forces_ctl(c_MHD_mdl_frc_ctl, f_model_ctl->f_self);
@@ -1086,6 +1158,29 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                       f_MHD_ctl->f_model_ctl->f_fld_ctl->f_iflag,
                                                       560, 500, window, vbox_MHD_fields);
 
+	GtkWidget *vbox_m1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_time_evo = draw_control_block(f_MHD_ctl->f_model_ctl->f_evo_ctl->c_block_name,
+														f_MHD_ctl->f_model_ctl->f_evo_ctl->f_iflag,
+														560, 500, window, vbox_m1);
+	
+	
+	GtkWidget *vbox_m2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_tevo_area = draw_control_block(f_MHD_ctl->f_model_ctl->f_earea_ctl->c_block_name,
+														 f_MHD_ctl->f_model_ctl->f_earea_ctl->f_iflag,
+														 560, 500, window, vbox_m2);
+	
+	
+	GtkWidget *vbox_m3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_node_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_nbc_ctl->c_block_name,
+                                                      f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_iflag,
+													   560, 500, window, vbox_m3);
+	
+	
+	GtkWidget *vbox_m4 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand_MHD_surf_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_sbc_ctl->c_block_name,
+                                                      f_MHD_ctl->f_model_ctl->f_sbc_ctl->f_iflag,
+                                                      560, 500, window, vbox_m4);
+	
 	
 	GtkWidget *vbox_MHD_force = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names, 
 														   f_MHD_vws->f_force_tree_view);
@@ -1100,6 +1195,10 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	
 	GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_fields, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_time_evo, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_tevo_area, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_node_bc, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_surf_bc, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), vbox_MHD_force, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_dimless, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);

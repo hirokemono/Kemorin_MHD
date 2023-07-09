@@ -6,6 +6,8 @@
       use t_ctl_data_SGS_MHD
       use t_ctl_data_sph_MHD_w_psf
       use t_ctl_data_4_fields
+      use t_ctl_data_mhd_evolution
+      use t_ctl_data_mhd_evo_area
 !
       implicit none
 !
@@ -1189,6 +1191,78 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_MHD_vector_phys_ctl = C_loc(f_ctl%vector_phys)
       end function c_MHD_vector_phys_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_evolution_ctl_block_name(c_ctl)        &
+     &          bind(C, NAME = 'c_MHD_evolution_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_evolution_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_evolution_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_MHD_evolution_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_evolution_ctl_iflag(c_ctl)             &
+     &          bind(C, NAME = 'c_MHD_evolution_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_evolution_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_evolution_ctl_iflag = C_loc(f_ctl%i_time_evo)
+      end function c_MHD_evolution_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_t_evo_field_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_MHD_t_evo_field_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_evolution_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_t_evo_field_ctl = C_loc(f_ctl%t_evo_field_ctl)
+      end function c_MHD_t_evo_field_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_evo_area_ctl_block_name(c_ctl)         &
+     &          bind(C, NAME = 'c_MHD_evo_area_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_evo_area_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_evo_area_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_MHD_evo_area_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_evo_area_ctl_iflag(c_ctl)              &
+     &          bind(C, NAME = 'c_MHD_evo_area_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_evo_area_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_evo_area_ctl_iflag = C_loc(f_ctl%i_layers_ctl)
+      end function c_MHD_evo_area_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_evo_fluid_group_ctl(c_ctl)             &
+     &          bind(C, NAME = 'c_MHD_evo_fluid_group_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_evo_area_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_evo_fluid_group_ctl = C_loc(f_ctl%evo_fluid_group_ctl)
+      end function c_MHD_evo_fluid_group_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MHD_evo_conduct_group_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_MHD_evo_conduct_group_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(mhd_evo_area_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MHD_evo_conduct_group_ctl = C_loc(f_ctl%evo_conduct_group_ctl)
+      end function c_MHD_evo_conduct_group_ctl
 !
 !  ---------------------------------------------------------------------
 !

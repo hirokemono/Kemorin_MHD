@@ -162,6 +162,9 @@
       type(mhd_model_control), intent(inout) :: model_ctl
 !
       call init_phys_data_ctl_label(hd_phys_values, model_ctl%fld_ctl)
+      call init_mhd_time_evo_ctl_label(hd_time_evo, model_ctl%evo_ctl)
+      call init_mhd_layer_ctl_label(hd_layers_ctl, model_ctl%earea_ctl)
+
       call init_bc_4_node_ctl_label(hd_boundary_condition,              &
      &                              model_ctl%nbc_ctl)
       call init_bc_4_surf_ctl_label(hd_bc_4_surf, model_ctl%sbc_ctl)

@@ -38,6 +38,8 @@
 !
       use t_ctl_data_mhd_evolution
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
 !
       type(mhd_evolution_control), intent(inout) :: evo_ctl
@@ -45,6 +47,8 @@
 !
       call bcast_ctl_array_c1(evo_ctl%t_evo_field_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (evo_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(evo_ctl%i_time_evo, 0)
 !
       end subroutine bcast_mhd_time_evo_ctl
@@ -55,6 +59,8 @@
 !
       use t_ctl_data_mhd_evo_area
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
 !
       type(mhd_evo_area_control), intent(inout) :: earea_ctl
@@ -63,6 +69,8 @@
       call bcast_ctl_array_c1(earea_ctl%evo_fluid_group_ctl)
       call bcast_ctl_array_c1(earea_ctl%evo_conduct_group_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (earea_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(earea_ctl%i_layers_ctl, 0)
 !
       end subroutine bcast_mhd_layer_ctl
