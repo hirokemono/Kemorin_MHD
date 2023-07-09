@@ -421,7 +421,7 @@ static void cb_real_ctl_item(GtkEntry *spinner, gpointer data)
 	struct real_ctl_item *ctl_item = (struct real_ctl_item *) data;
 	
 	if(data != NULL) {
-		ctl_item->iflag = 1;
+		ctl_item->f_iflag[0] = 1;
 		ctl_item->r_data = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
 	};
 	return;
@@ -438,7 +438,7 @@ GtkWidget *make_real_hbox(int iflag_fix_on, const char *label, struct real_ctl_i
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "value-changed",
 				G_CALLBACK(cb_real_ctl_item), (gpointer) ctl_item);
 	
-	hbox = make_entry_with_check_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	hbox = make_entry_with_check_hbox(iflag_fix_on, label, ctl_item->f_iflag, tbox_flag);
 	return hbox;
 }
 

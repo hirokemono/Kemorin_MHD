@@ -18,10 +18,19 @@ struct int_ctl_item * init_int_ctl_item_c(void){
 		printf("malloc error for i_item->f_iflag\n");
 		exit(0);
 	}
-
+	
     i_item->i_data = 0;
     return i_item;
 };
+
+void dealloc_int_ctl_item_c(struct int_ctl_item *i_item)
+{
+	if(i_item->c_block_name !=NULL) free(i_item->c_block_name);
+    i_item->f_iflag = NULL;
+	i_item->f_self = NULL;
+	free(i_item);
+	return;
+}
 
 int read_integer_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct int_ctl_item *i_item){

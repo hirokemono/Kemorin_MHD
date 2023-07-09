@@ -311,8 +311,8 @@ struct f_MHD_SGS_SPH_filter_control{
 	struct chara_ctl_item *f_sph_filter_type_ctl;
 	struct chara_ctl_item *f_radial_filter_type_ctl;
 	struct int_ctl_item *f_maximum_moments_ctl;
-	struct f_ctl_real_item *f_sphere_filter_width_ctl;
-	struct f_ctl_real_item *f_radial_filter_width_ctl;
+	struct real_ctl_item *f_sphere_filter_width_ctl;
+	struct real_ctl_item *f_radial_filter_width_ctl;
 	struct int_ctl_item *f_first_reference_ctl;
 	struct int_ctl_item *f_second_reference_ctl;
 };
@@ -392,19 +392,19 @@ struct f_MHD_SGS_model_control{
 	struct int_ctl_item *f_min_step_dynamic_ctl;
 	struct int_ctl_item *f_max_step_dynamic_ctl;
 	
-	struct f_ctl_real_item *f_stabilize_weight_ctl;
-	struct f_ctl_real_item *f_delta_to_shrink_dynamic_ctl;
-	struct f_ctl_real_item *f_delta_to_extend_dynamic_ctl;
+	struct real_ctl_item *f_stabilize_weight_ctl;
+	struct real_ctl_item *f_delta_to_shrink_dynamic_ctl;
+	struct real_ctl_item *f_delta_to_extend_dynamic_ctl;
 	
 	struct int_ctl_item *f_ngrp_radial_ave_ctl;
 	struct int_ctl_item *f_ngrp_med_ave_ctl;
 	
-	struct f_ctl_real_item *f_clipping_limit_ctl;
-	struct f_ctl_real_item *f_SGS_hf_factor_ctl;
-	struct f_ctl_real_item *f_SGS_cf_factor_ctl;
-	struct f_ctl_real_item *f_SGS_mf_factor_ctl;
-	struct f_ctl_real_item *f_SGS_mxwl_factor_ctl;
-	struct f_ctl_real_item *f_SGS_uxb_factor_ctl;
+	struct real_ctl_item *f_clipping_limit_ctl;
+	struct real_ctl_item *f_SGS_hf_factor_ctl;
+	struct real_ctl_item *f_SGS_cf_factor_ctl;
+	struct real_ctl_item *f_SGS_mf_factor_ctl;
+	struct real_ctl_item *f_SGS_mxwl_factor_ctl;
+	struct real_ctl_item *f_SGS_uxb_factor_ctl;
 	
 	struct chara_clist *f_SGS_terms_ctl;
 	struct chara_clist *f_commutate_fld_ctl;
@@ -509,7 +509,7 @@ struct f_MHD_magnetic_scale_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_real_item *f_mag_to_kin_energy_ctl;
+	struct real_ctl_item *f_mag_to_kin_energy_ctl;
 };
 
 struct f_MHD_reftemp_point_control{
@@ -518,8 +518,8 @@ struct f_MHD_reftemp_point_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_real_item *f_value;
-	struct f_ctl_real_item *f_depth;
+	struct real_ctl_item *f_value;
+	struct real_ctl_item *f_depth;
 };
 
 struct f_MHD_takepiro_model_control{
@@ -528,9 +528,9 @@ struct f_MHD_takepiro_model_control{
 	
 	char * c_block_name;
 	
-	struct f_ctl_real_item *f_stratified_sigma_ctl;
-	struct f_ctl_real_item *f_stratified_width_ctl;
-	struct f_ctl_real_item *f_stratified_outer_r_ctl;
+	struct real_ctl_item *f_stratified_sigma_ctl;
+	struct real_ctl_item *f_stratified_width_ctl;
+	struct real_ctl_item *f_stratified_outer_r_ctl;
 };
 
 struct f_MHD_temp_model_control{
@@ -543,7 +543,7 @@ struct f_MHD_temp_model_control{
 	struct chara_ctl_item *f_reference_ctl;
 	struct chara_ctl_item *f_stratified_ctl;
 	struct chara_ctl_item *f_ref_file_ctl;
-	struct f_ctl_real_item  *f_ICB_diffuse_reduction_ctl;
+	struct real_ctl_item  *f_ICB_diffuse_reduction_ctl;
 	
 	struct f_MHD_reftemp_point_control  *f_low_ctl;
 	struct f_MHD_reftemp_point_control  *f_high_ctl;

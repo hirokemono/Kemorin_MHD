@@ -176,8 +176,8 @@ static void copy_color_opacity_to_ctl(struct colormap_params *cmap_s,
 	if(num_color == 2 && num_opacity == 2 && v_cmap[0] == 0.0 && v_cmap[1] == 1.0){
 		iflag_minmax = 1;
 	};
-	cmap_c->range_min_ctl->iflag =   1;
-	cmap_c->range_max_ctl->iflag =   1;
+	cmap_c->range_min_ctl->f_iflag[0] =   1;
+	cmap_c->range_max_ctl->f_iflag[0] =   1;
 	cmap_c->range_min_ctl->r_data = d_cmap[0];
 	cmap_c->range_max_ctl->r_data = d_cmap[1];
 	if(d_omap[0] < d_cmap[0]) cmap_c->range_min_ctl->r_data = d_omap[0];
@@ -253,7 +253,7 @@ static void copy_color_opacity_from_ctl(struct colormap_ctl_c *cmap_c,
 										struct colormap_params *cmap_s){
 	
 	if(compare_string(13, hd_minmax_c, cmap_c->data_mapping_ctl->c_tbl) == 0){
-		if((cmap_c->range_min_ctl->iflag * cmap_c->range_max_ctl->iflag) == 0){
+		if((cmap_c->range_min_ctl->f_iflag[0] * cmap_c->range_max_ctl->f_iflag[0]) == 0){
 			printf("No color range data in colormap file\n)");
 			return;
 		} else{

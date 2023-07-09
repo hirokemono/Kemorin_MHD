@@ -79,12 +79,12 @@ void reflesh_f_ctl_chara_array(int num_array, struct chara_clist *c_clist)
 	return;
 }
 
-struct f_ctl_real_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_parent), 
+struct real_ctl_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_parent), 
 												void *f_parent)
 {
-	struct f_ctl_real_item *f_ritem = (struct f_ctl_real_item *) malloc(sizeof(struct f_ctl_real_item));
+	struct real_ctl_item *f_ritem = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	if(f_ritem == NULL){
-		printf("malloc error for f_ctl_real_item\n");
+		printf("malloc error for real_ctl_item\n");
 		exit(0);
 	};
 	f_ritem->f_self =  c_load_self(f_parent);
@@ -93,19 +93,10 @@ struct f_ctl_real_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_paren
 	char *f_block_name =  (char *) c_real_item_block_name(f_ritem->f_self);
 	f_ritem->c_block_name = strngcopy_from_f(f_block_name);
 	
-	f_ritem->c_realvalue = c_real_item_realvalue(f_ritem->f_self);
+	f_ritem->r_data = c_real_item_realvalue(f_ritem->f_self);
 	return f_ritem;
 }
 
-
-void dealloc_f_ctl_real_item(struct f_ctl_real_item *f_ritem)
-{
-	free(f_ritem->c_block_name);
-	
-	f_ritem->f_iflag = NULL;
-	f_ritem->f_self = NULL;
-	return;
-}
 
 struct real_clist * init_f_ctl_real_array(void *(*c_load_self)(void *f_parent), 
 										  void *f_parent)
@@ -150,14 +141,6 @@ struct int_ctl_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent),
 	return f_iitem;
 }
 
-
-void dealloc_f_ctl_int_item(struct int_ctl_item *f_ritem)
-{
-	free(f_ritem->c_block_name);
-    f_ritem->f_iflag = NULL;
-	f_ritem->f_self = NULL;
-	return;
-}
 
 struct int_clist * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent), 
 												  void *f_parent)

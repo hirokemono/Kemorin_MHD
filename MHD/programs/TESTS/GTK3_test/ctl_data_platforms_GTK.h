@@ -116,12 +116,12 @@ struct f_MHD_sph_resolution_control{
 	struct chara_ctl_item *f_radial_grid_type_ctl;
 	struct int_ctl_item *f_num_fluid_grid_ctl;
 	struct int_ctl_item *f_increment_cheby_ctl;
-	struct f_ctl_real_item *f_fluid_core_size_ctl;
-	struct f_ctl_real_item *f_ICB_to_CMB_ratio_ctl;
-	struct f_ctl_real_item *f_Min_radius_ctl;
-	struct f_ctl_real_item *f_ICB_radius_ctl;
-	struct f_ctl_real_item *f_CMB_radius_ctl;
-	struct f_ctl_real_item *f_Max_radius_ctl;
+	struct real_ctl_item *f_fluid_core_size_ctl;
+	struct real_ctl_item *f_ICB_to_CMB_ratio_ctl;
+	struct real_ctl_item *f_Min_radius_ctl;
+	struct real_ctl_item *f_ICB_radius_ctl;
+	struct real_ctl_item *f_CMB_radius_ctl;
+	struct real_ctl_item *f_Max_radius_ctl;
 	struct int_ctl_item *f_num_radial_layer_ctl;
 	struct int_ctl_item *f_num_med_layer_ctl;
 	struct int2_clist *f_radial_layer_list_ctl;

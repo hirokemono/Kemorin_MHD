@@ -34,7 +34,7 @@ struct f_time_step_control_ctls{
 	
 	struct int_ctl_item *f_i_step_init_ctl;
 	struct int_ctl_item *f_i_step_number_ctl;
-	struct f_ctl_real_item *f_elapsed_time_ctl;
+	struct real_ctl_item *f_elapsed_time_ctl;
 	
 	struct int_ctl_item *f_i_step_check_ctl;
 	struct int_ctl_item *f_i_step_rst_ctl;
@@ -50,34 +50,34 @@ struct f_time_step_control_ctls{
 	struct int_ctl_item *f_i_step_sgs_coefs_ctl;
 	struct int_ctl_item *f_i_step_boundary_ctl;
 	
-	struct f_ctl_real_item *f_dt_ctl;
-	struct f_ctl_real_item *f_time_init_ctl;
+	struct real_ctl_item *f_dt_ctl;
+	struct real_ctl_item *f_time_init_ctl;
 	
 	struct int_ctl_item *f_i_diff_steps_ctl;
 	struct chara_ctl_item *f_flexible_step_ctl;
 	
-	struct f_ctl_real_item *f_ratio_to_cfl_ctl;
+	struct real_ctl_item *f_ratio_to_cfl_ctl;
 	struct int_ctl_item *f_start_rst_step_ctl;
 	struct int_ctl_item *f_end_rst_step_ctl;
-	struct f_ctl_real_item *f_min_delta_t_ctl;
-	struct f_ctl_real_item *f_max_delta_t_ctl;
-	struct f_ctl_real_item *f_max_eps_to_shrink_ctl;
-	struct f_ctl_real_item *f_min_eps_to_expand_ctl;
+	struct real_ctl_item *f_min_delta_t_ctl;
+	struct real_ctl_item *f_max_delta_t_ctl;
+	struct real_ctl_item *f_max_eps_to_shrink_ctl;
+	struct real_ctl_item *f_min_eps_to_expand_ctl;
 	
-	struct f_ctl_real_item *f_delta_t_check_ctl;
-	struct f_ctl_real_item *f_delta_t_rst_ctl;
+	struct real_ctl_item *f_delta_t_check_ctl;
+	struct real_ctl_item *f_delta_t_rst_ctl;
 	
-	struct f_ctl_real_item *f_delta_t_psf_ctl;
-	struct f_ctl_real_item *f_delta_t_iso_ctl;
-	struct f_ctl_real_item *f_delta_t_map_ctl;
-	struct f_ctl_real_item *f_delta_t_pvr_ctl;
-	struct f_ctl_real_item *f_delta_t_fline_ctl;
-	struct f_ctl_real_item *f_delta_t_lic_ctl;
+	struct real_ctl_item *f_delta_t_psf_ctl;
+	struct real_ctl_item *f_delta_t_iso_ctl;
+	struct real_ctl_item *f_delta_t_map_ctl;
+	struct real_ctl_item *f_delta_t_pvr_ctl;
+	struct real_ctl_item *f_delta_t_fline_ctl;
+	struct real_ctl_item *f_delta_t_lic_ctl;
 	
-	struct f_ctl_real_item *f_delta_t_field_ctl;
-	struct f_ctl_real_item *f_delta_t_monitor_ctl;
-	struct f_ctl_real_item *f_delta_t_sgs_coefs_ctl;
-	struct f_ctl_real_item *f_delta_t_boundary_ctl;
+	struct real_ctl_item *f_delta_t_field_ctl;
+	struct real_ctl_item *f_delta_t_monitor_ctl;
+	struct real_ctl_item *f_delta_t_sgs_coefs_ctl;
+	struct real_ctl_item *f_delta_t_boundary_ctl;
 };
 
 struct f_MHD_evo_scheme_controls{
@@ -88,11 +88,11 @@ struct f_MHD_evo_scheme_controls{
 	
 	struct chara_ctl_item *f_scheme_ctl;
 	
-	struct f_ctl_real_item *f_coef_implicit_ctl;
-	struct f_ctl_real_item *f_coef_imp_v_ctl;
-	struct f_ctl_real_item *f_coef_imp_t_ctl;
-	struct f_ctl_real_item *f_coef_imp_b_ctl;
-	struct f_ctl_real_item *f_coef_imp_c_ctl;
+	struct real_ctl_item *f_coef_implicit_ctl;
+	struct real_ctl_item *f_coef_imp_v_ctl;
+	struct real_ctl_item *f_coef_imp_t_ctl;
+	struct real_ctl_item *f_coef_imp_b_ctl;
+	struct real_ctl_item *f_coef_imp_c_ctl;
 	
 	struct chara_ctl_item *f_iflag_supg_ctl;
 	struct chara_ctl_item *f_iflag_supg_v_ctl;
@@ -102,10 +102,10 @@ struct f_MHD_evo_scheme_controls{
 	
 	struct int_ctl_item *f_num_multi_pass_ctl;
 	struct int_ctl_item *f_maxiter_ctl;
-	struct f_ctl_real_item *f_eps_4_velo_ctl;
-	struct f_ctl_real_item *f_eps_4_magne_ctl;
-	struct f_ctl_real_item *f_eps_crank_ctl;
-	struct f_ctl_real_item *f_eps_B_crank_ctl;
+	struct real_ctl_item *f_eps_4_velo_ctl;
+	struct real_ctl_item *f_eps_4_magne_ctl;
+	struct real_ctl_item *f_eps_crank_ctl;
+	struct real_ctl_item *f_eps_B_crank_ctl;
 	
 	struct chara_ctl_item *f_diffuse_correct;
 	

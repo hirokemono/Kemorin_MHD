@@ -13,19 +13,12 @@
 #include "t_control_real_IO.h"
 #include "t_control_int_IO.h"
 #include "t_control_chara_IO.h"
-
+/*
 struct f_ctl_real_item{
 	void * f_self;
 	int * f_iflag;
 	char * c_block_name;
 	double c_realvalue;
-};
-/*
-struct int_ctl_item{
-	void * f_self;
-	int * f_iflag;
-	char * c_block_name;
-	int c_intvalue;
 };
 */
 /*  Prototypes */
@@ -76,15 +69,13 @@ void reflesh_f_ctl_chara_array(int num_array, struct chara_clist *c_clist);
 
 struct int_ctl_item * init_f_ctl_int_item(void *(*c_load_self)(void *f_parent),
 	void *f_parent);
-void dealloc_f_ctl_int_item(struct int_ctl_item *f_ritem);
 struct int_clist * init_f_ctl_int_array(void *(*c_load_self)(void *f_parent), 
 										void *f_parent);
 void reflesh_f_ctl_int_array(int num_array, struct int_clist *i_clist);
 
 
-struct f_ctl_real_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_parent), 
+struct real_ctl_item * init_f_ctl_real_item(void *(*c_load_self)(void *f_parent),
 											  void *f_parent);
-void dealloc_f_ctl_real_item(struct f_ctl_real_item *f_ritem);
 struct real_clist * init_f_ctl_real_array(void *(*c_load_self)(void *f_parent), 
 												void *f_parent);
 void reflesh_f_ctl_real_array(int num_array, struct real_clist *r_clist);

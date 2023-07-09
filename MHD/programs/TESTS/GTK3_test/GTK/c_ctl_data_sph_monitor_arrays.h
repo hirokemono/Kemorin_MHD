@@ -30,8 +30,8 @@ struct f_sph_vol_spectr_ctls{
 	struct chara_ctl_item *f_order_v_spectra_switch;
 	struct chara_ctl_item *f_diff_v_lm_spectra_switch;
 	struct chara_ctl_item *f_axis_v_power_switch;
-	struct f_ctl_real_item *f_inner_radius_ctl;
-	struct f_ctl_real_item *f_outer_radius_ctl;
+	struct real_ctl_item *f_inner_radius_ctl;
+	struct real_ctl_item *f_outer_radius_ctl;
 };
 
 struct f_sph_field_on_circle_ctls{
@@ -46,8 +46,8 @@ struct f_sph_field_on_circle_ctls{
 	struct chara_ctl_item *f_pick_circle_coord_ctl;\
 	
 	struct int_ctl_item   *f_nphi_mid_eq_ctl;
-	struct f_ctl_real_item  *f_pick_s_ctl;
-	struct f_ctl_real_item  *f_pick_z_ctl;
+	struct real_ctl_item  *f_pick_s_ctl;
+	struct real_ctl_item  *f_pick_z_ctl;
 };
 
 /* prototypes */

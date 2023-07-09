@@ -42,7 +42,7 @@ struct f_MHD_sph_gauss_coefs_ctls{
 	
 	struct chara_ctl_item *f_gauss_coefs_prefix;
 	struct chara_ctl_item *f_gauss_coefs_format;
-	struct f_ctl_real_item *f_gauss_coefs_radius_ctl;
+	struct real_ctl_item *f_gauss_coefs_radius_ctl;
 	struct int2_clist *f_idx_gauss_ctl;
 	struct int_clist  *f_idx_gauss_l_ctl;
 	struct int_clist  *f_idx_gauss_m_ctl;
