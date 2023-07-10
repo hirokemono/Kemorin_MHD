@@ -40,7 +40,6 @@ static void draw_sph_vspec_controls_vbox(struct void_clist *f_v_pwr,
     vpwr_Widgets->vbox_vpwr_items = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	int i;
 	
-	vpwr_Widgets->expand_v_pwr_list = init_void_clist("V_spec_expander_list");
 	for(i=0;i<count_void_clist(f_v_pwr);i++){
 		void *ctmp =  void_clist_label_at_index(i, (void *) f_v_pwr);
 		struct f_sph_vol_spectr_ctls *v_pwr 
@@ -48,7 +47,6 @@ static void draw_sph_vspec_controls_vbox(struct void_clist *f_v_pwr,
 		GtkWidget *vbox_z = draw_sph_each_vspec_ctl_vbox(v_pwr, window);
 		GtkWidget *expand_v_pwr = draw_control_block(duplicate_underscore(ctmp), v_pwr->f_iflag,
 													 480, 480, window, vbox_z);
-		append_void_clist((void *) expand_v_pwr, vpwr_Widgets->expand_v_pwr_list);
 		gtk_box_pack_start(GTK_BOX(vpwr_Widgets->vbox_vpwr_items), expand_v_pwr,
 						   FALSE, FALSE, 0);
 	}

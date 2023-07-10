@@ -109,7 +109,7 @@ GtkWidget * draw_control_block(const char * title, int *iflag_ptr,
 			(duplicate_underscore(title), width, height, window, box_in);
 	
 	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox0), expander, TRUE, TRUE, 0);
 	return hbox0;
 };
 

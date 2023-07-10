@@ -9,7 +9,6 @@
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
 #include "t_control_chara_int2_IO.h"
-#include "t_control_c_lists_w_file.h"
 #include "t_ctl_array_chara3_items_c.h"
 #include "t_ctl_array_chara_int3_items_c.h"
 #include "t_ctl_array_chara2_real_items_c.h"
@@ -34,6 +33,15 @@
 
             
 extern void c_view_control_sph_SGS_MHD();
+
+
+extern void * c_pvr_render_ctls_block_name(void *f_pvr_ctls);
+extern int    c_pvr_render_ctls_num_pvr_ctl(void *f_pvr_ctls);
+extern char * c_pvr_render_ctls_fname(int idx, void *f_pvr_ctls);
+extern void * c_pvr_render_ctls_pvr_ctl(int idx, void *f_pvr_ctls);
+extern void * c_append_viz_pvr_render_ctls(int idx, char *block_name, void *f_pvr_ctls);
+extern void * c_delete_viz_pvr_render_ctls(int idx, void *f_pvr_ctls);
+
 
 extern void * c_read_control_sph_SGS_MHD(char *file_name);
 extern void * c_add_sgs_sph_mhd_ctl();
@@ -200,13 +208,6 @@ extern char * c_map_render_ctls_fname(int idx, void *f_map_ctls);
 extern void * c_map_render_ctls_map_ctl(int idx, void *f_map_ctls);
 extern void * c_append_viz_map_render_ctls(int idx, char *block_name, void *f_map_ctls);
 extern void * c_delete_viz_map_render_ctls(int idx, void *f_map_ctls);
-
-extern void * c_pvr_render_ctls_block_name(void *f_pvr_ctls);
-extern int    c_pvr_render_ctls_num_pvr_ctl(void *f_pvr_ctls);
-extern char * c_pvr_render_ctls_fname(int idx, void *f_pvr_ctls);
-extern void * c_pvr_render_ctls_pvr_ctl(int idx, void *f_pvr_ctls);
-extern void * c_append_viz_pvr_render_ctls(int idx, char *block_name, void *f_pvr_ctls);
-extern void * c_delete_viz_pvr_render_ctls(int idx, void *f_pvr_ctls);
 
 extern void * c_lic_render_ctls_block_name(void *f_lic_ctls);
 extern int    c_lic_render_ctls_num_lic_ctl(void *f_lic_ctls);
@@ -574,10 +575,36 @@ struct f_MHD_model_control{
 	struct f_MHD_SGS_model_control      *f_sgs_ctl;
 };
 
+struct f_VIZ_PSF_ctls{
+    char *psf_ctl_file_name;
+	void *f_psf_ctl;
+};
+
+struct f_VIZ_ISO_ctls{
+    char *iso_ctl_file_name;
+	void *f_iso_ctl;
+};
+
+struct f_VIZ_MAP_ctls{
+    char *map_ctl_file_name;
+	void *f_map_ctl;
+};
+
+struct f_VIZ_PVR_ctls{
+    int *f_iflag;
+    char *pvr_ctl_file_name;
+	void *f_pvr_ctl;
+};
+
 struct f_VIZ_LIC_ctls{
+    char *lic_ctl_file_name;
 	void *f_lic_pvr_ctl;
 	void *f_lic_lic_ctl;
+};
 
+struct f_VIZ_FLINE_ctls{
+    char *fline_ctl_file_name;
+	void *f_fline_ctl;
 };
 
 struct f_MHD_viz_ctls{
@@ -587,22 +614,22 @@ struct f_MHD_viz_ctls{
 	char * c_block_name;
 	
 	int f_num_psf_ctl;
-	struct void_file_clist *f_psf_ctls;
+	struct void_clist *f_psf_ctls;
 	
 	int f_num_iso_ctl;
-	struct void_file_clist *f_iso_ctls;
+	struct void_clist *f_iso_ctls;
 	
 	int f_num_map_ctl;
-	struct void_file_clist *f_map_ctls;
+	struct void_clist *f_map_ctls;
 	
 	int f_num_pvr_ctl;
-	struct void_file_clist *f_pvr_ctls;
+	struct void_clist *f_pvr_ctls;
 	
 	int f_num_lic_ctl;
-	struct void_file_clist *f_lic_ctls;
+	struct void_clist *f_lic_ctls;
 	
 	int f_num_fline_ctl;
-	struct void_file_clist *f_fline_ctls;
+	struct void_clist *f_fline_ctls;
 	
 	void * f_repart_ctl;
 	void * f_fname_vol_repart_ctl;
@@ -1242,110 +1269,153 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
-struct void_file_clist * init_f_VIZ_psf_ctls(void *f_viz_ctls_self, int *f_num_psf_ctl)
+struct void_clist * init_f_VIZ_psf_ctls(void *f_viz_ctls_self, int *f_num_psf_ctl)
 {
-    char *f_block_name =   (char *) c_section_ctls_block_name(f_viz_ctls_self);
-	struct void_file_clist *f_psf_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
-	f_psf_ctls->f_parent =  c_visualizations_psf_ctls(f_viz_ctls_self);
+    void *f_parent = c_visualizations_psf_ctls(f_viz_ctls_self);
+    char *f_block_name =   (char *) c_section_ctls_block_name(f_parent);
+	struct void_clist *f_psf_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_psf_ctls->f_parent = f_parent;
 	*f_num_psf_ctl = c_section_ctls_num_psf_ctl(f_psf_ctls->f_parent);
 	
 	int i;
 	for(i=0;i<*f_num_psf_ctl;i++){
+		struct f_VIZ_PSF_ctls *f_ctl_tmp
+				= (struct f_VIZ_PSF_ctls *) malloc(sizeof(struct f_VIZ_PSF_ctls));
+		if(f_ctl_tmp == NULL){
+			printf("malloc error for f_VIZ_PSF_ctls\n");
+			exit(0);
+		};
         f_block_name = c_section_ctls_fname(i, f_psf_ctls->f_parent);
-        void *void_in =  c_section_ctls_psf_ctl(i, f_psf_ctls->f_parent);
-		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) void_in, f_psf_ctls);
+        f_ctl_tmp->psf_ctl_file_name =  strngcopy_from_f(f_block_name);
+        f_ctl_tmp->f_psf_ctl =  c_section_ctls_psf_ctl(i, f_psf_ctls->f_parent);
+		append_void_clist((void *) f_ctl_tmp, f_psf_ctls);
 	}
 	return f_psf_ctls;
 }
 
-struct void_file_clist * init_f_VIZ_iso_ctls(void *f_viz_ctls_self, int *f_num_iso_ctl)
+struct void_clist * init_f_VIZ_iso_ctls(void *f_viz_ctls_self, int *f_num_iso_ctl)
 {
-    char *f_block_name =   (char *) c_isosurf_ctls_block_name(f_viz_ctls_self);
-	struct void_file_clist *f_iso_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
-	f_iso_ctls->f_parent =  c_visualizations_iso_ctls(f_viz_ctls_self);
+    void *f_parent = c_visualizations_iso_ctls(f_viz_ctls_self);
+    char *f_block_name =   (char *) c_isosurf_ctls_block_name(f_parent);
+	struct void_clist *f_iso_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_iso_ctls->f_parent = f_parent;
 	*f_num_iso_ctl = c_isosurf_ctls_num_iso_ctl(f_iso_ctls->f_parent);
 	
 	int i;
 	for(i=0;i<*f_num_iso_ctl;i++){
+		struct f_VIZ_ISO_ctls *f_ctl_tmp
+				= (struct f_VIZ_ISO_ctls *) malloc(sizeof(struct f_VIZ_ISO_ctls));
+		if(f_ctl_tmp == NULL){
+			printf("malloc error for f_VIZ_ISO_ctls\n");
+			exit(0);
+		};
         f_block_name = c_isosurf_ctls_fname(i, f_iso_ctls->f_parent);
-        void *void_in =  c_isosurf_ctls_iso_ctl(i, f_iso_ctls->f_parent);
-		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) void_in, f_iso_ctls);
+        f_ctl_tmp->iso_ctl_file_name =  strngcopy_from_f(f_block_name);
+        f_ctl_tmp->f_iso_ctl =  c_isosurf_ctls_iso_ctl(i, f_iso_ctls->f_parent);
+		append_void_clist((void *) f_ctl_tmp, f_iso_ctls);
 	}
 	return f_iso_ctls;
 }
 
-struct void_file_clist * init_f_VIZ_map_ctls(void *f_viz_ctls_self, int *f_num_map_ctl)
+struct void_clist * init_f_VIZ_map_ctls(void *f_viz_ctls_self, int *f_num_map_ctl)
 {
-    char *f_block_name =   (char *) c_map_render_ctls_block_name(f_viz_ctls_self);
-	struct void_file_clist *f_map_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
-	f_map_ctls->f_parent =  c_visualizations_map_ctls(f_viz_ctls_self);
+    void *f_parent = c_visualizations_map_ctls(f_viz_ctls_self);
+    char *f_block_name =   (char *) c_map_render_ctls_block_name(f_parent);
+	struct void_clist *f_map_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_map_ctls->f_parent = f_parent;
 	*f_num_map_ctl = c_map_render_ctls_num_map_ctl(f_map_ctls->f_parent);
 	
 	int i;
 	for(i=0;i<*f_num_map_ctl;i++){
+		struct f_VIZ_MAP_ctls *f_ctl_tmp
+				= (struct f_VIZ_MAP_ctls *) malloc(sizeof(struct f_VIZ_MAP_ctls));
+		if(f_ctl_tmp == NULL){
+			printf("malloc error for f_VIZ_MAP_ctls\n");
+			exit(0);
+		};
         f_block_name = c_map_render_ctls_fname(i, f_map_ctls->f_parent);
-        void *void_in =  c_map_render_ctls_map_ctl(i, f_map_ctls->f_parent);
-		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) void_in, f_map_ctls);
+        f_ctl_tmp->map_ctl_file_name =  strngcopy_from_f(f_block_name);
+        f_ctl_tmp->f_map_ctl =  c_map_render_ctls_map_ctl(i, f_map_ctls->f_parent);
+		append_void_clist((void *) f_ctl_tmp, f_map_ctls);
 	}
 	return f_map_ctls;
 }
 
-struct void_file_clist * init_f_VIZ_pvr_ctls(void *f_viz_ctls_self, int *f_num_pvr_ctl)
-{
-    char *f_block_name =   (char *) c_pvr_render_ctls_block_name(f_viz_ctls_self);
-	struct void_file_clist *f_pvr_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
-	f_pvr_ctls->f_parent =  c_visualizations_pvr_ctls(f_viz_ctls_self);
-	*f_num_pvr_ctl = c_pvr_render_ctls_num_pvr_ctl(f_pvr_ctls->f_parent);
-	
-	int i;
-	for(i=0;i<*f_num_pvr_ctl;i++){
-        f_block_name = c_pvr_render_ctls_fname(i, f_pvr_ctls->f_parent);
-        void *void_in =  c_pvr_render_ctls_pvr_ctl(i, f_pvr_ctls->f_parent);
-		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) void_in, f_pvr_ctls);
-	}
-	return f_pvr_ctls;
-}
 
-struct void_file_clist * init_f_VIZ_lic_ctls(void *f_viz_ctls_self, int *f_num_lic_ctl)
+struct void_clist * init_f_VIZ_lic_ctls(void *f_viz_ctls_self, int *f_num_lic_ctl)
 {
-    char *f_block_name =   (char *) c_lic_render_ctls_block_name(f_viz_ctls_self);
-	struct void_file_clist *f_lic_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
-	f_lic_ctls->f_parent =  c_visualizations_lic_ctls(f_viz_ctls_self);
+    void *f_parent = c_visualizations_lic_ctls(f_viz_ctls_self);
+    char *f_block_name =   (char *) c_lic_render_ctls_block_name(f_parent);
+	struct void_clist *f_lic_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_lic_ctls->f_parent = f_parent;
 	*f_num_lic_ctl = c_lic_render_ctls_num_lic_ctl(f_lic_ctls->f_parent);
 	
 	
 	int i;
 	for(i=0;i<*f_num_lic_ctl;i++){
-		struct f_VIZ_LIC_ctls *f_lic_ctl_tmp
+		struct f_VIZ_LIC_ctls *f_ctl_tmp
 				= (struct f_VIZ_LIC_ctls *) malloc(sizeof(struct f_VIZ_LIC_ctls));
-		if(f_lic_ctl_tmp == NULL){
-			printf("malloc error for f_viz_ctls\n");
+		if(f_ctl_tmp == NULL){
+			printf("malloc error for f_VIZ_LIC_ctls\n");
 			exit(0);
 		};
         f_block_name = c_lic_render_ctls_fname(i, f_lic_ctls->f_parent);
-        f_lic_ctl_tmp->f_lic_pvr_ctl =  c_lic_render_ctls_pvr_ctl(i, f_lic_ctls->f_parent);
-        f_lic_ctl_tmp->f_lic_lic_ctl =  c_lic_render_ctls_lic_ctl(i, f_lic_ctls->f_parent);
-		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) f_lic_ctl_tmp, f_lic_ctls);
+        f_ctl_tmp->lic_ctl_file_name =  strngcopy_from_f(f_block_name);
+        f_ctl_tmp->f_lic_pvr_ctl =  c_lic_render_ctls_pvr_ctl(i, f_lic_ctls->f_parent);
+        f_ctl_tmp->f_lic_lic_ctl =  c_lic_render_ctls_lic_ctl(i, f_lic_ctls->f_parent);
+		append_void_clist((void *) f_ctl_tmp, f_lic_ctls);
 	}
 	return f_lic_ctls;
 }
 
-struct void_file_clist * init_f_VIZ_fline_ctls(void *f_viz_ctls_self, int *f_num_fline_ctl)
+struct void_clist * init_f_VIZ_fline_ctls(void *f_viz_ctls_self, int *f_num_fline_ctl)
 {
+    void *f_parent = c_visualizations_fline_ctls(f_viz_ctls_self);
     char *f_block_name =   (char *) c_fline_ctls_block_name(f_viz_ctls_self);
-	struct void_file_clist *f_pvr_ctls = init_void_file_clist(strngcopy_from_f(f_block_name));
-	f_pvr_ctls->f_parent =  c_visualizations_fline_ctls(f_viz_ctls_self);
+	struct void_clist *f_pvr_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_pvr_ctls->f_parent = f_parent;
 	*f_num_fline_ctl = c_fline_ctls_num_fline_ctl(f_pvr_ctls->f_parent);
 	
 	int i;
 	for(i=0;i<*f_num_fline_ctl;i++){
+		struct f_VIZ_FLINE_ctls *f_ctl_tmp
+				= (struct f_VIZ_FLINE_ctls *) malloc(sizeof(struct f_VIZ_FLINE_ctls));
+		if(f_ctl_tmp == NULL){
+			printf("malloc error for f_VIZ_FLINE_ctls\n");
+			exit(0);
+		};
         f_block_name = c_fline_ctls_fname(i, f_pvr_ctls->f_parent);
-        void *void_in =  c_fline_ctls_fline_ctl(i, f_pvr_ctls->f_parent);
-		append_void_file_clist(strngcopy_from_f(f_block_name), (void *) void_in, f_pvr_ctls);
+        f_ctl_tmp->fline_ctl_file_name =  strngcopy_from_f(f_block_name);
+        f_ctl_tmp->f_fline_ctl =  c_fline_ctls_fline_ctl(i, f_pvr_ctls->f_parent);
+		append_void_clist((void *) f_ctl_tmp, f_pvr_ctls);
 	}
 	return f_pvr_ctls;
 }
 
+
+struct void_clist * init_f_VIZ_pvr_ctls(void *f_viz_ctls_self, int *f_num_pvr_ctl)
+{
+    void *f_parent = c_visualizations_pvr_ctls(f_viz_ctls_self);
+    char *f_block_name =   (char *) c_pvr_render_ctls_block_name(f_parent);
+	struct void_clist *f_pvr_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_pvr_ctls->f_parent = f_parent;
+	*f_num_pvr_ctl = c_pvr_render_ctls_num_pvr_ctl(f_pvr_ctls->f_parent);
+	
+	int i;
+	for(i=0;i<*f_num_pvr_ctl;i++){
+		struct f_VIZ_PVR_ctls *f_ctl_tmp
+				= (struct f_VIZ_PVR_ctls *) malloc(sizeof(struct f_VIZ_PVR_ctls));
+		if(f_ctl_tmp == NULL){
+			printf("malloc error for f_VIZ_PVR_ctls\n");
+			exit(0);
+		};
+        f_block_name = c_pvr_render_ctls_fname(i, f_pvr_ctls->f_parent);
+        f_ctl_tmp->pvr_ctl_file_name =  strngcopy_from_f(f_block_name);
+        f_ctl_tmp->f_pvr_ctl =  c_pvr_render_ctls_pvr_ctl(i, f_pvr_ctls->f_parent);
+		append_void_clist((void *) f_ctl_tmp, f_pvr_ctls);
+	}
+	return f_pvr_ctls;
+}
 
 struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
 {
@@ -1522,7 +1592,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		
 //		draw_ISO_control_list(window, mWidgets->main_Vbox, iso_GTK0->iso_c);
 		MHD_control_expander(window, f_MHD_ctl, mWidgets);
-		gtk_box_pack_start(GTK_BOX(mWidgets->main_Vbox), mWidgets->ctl_MHD_Vbox, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(mWidgets->main_Vbox), mWidgets->ctl_MHD_Vbox, FALSE, TRUE, 0);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -1814,7 +1884,47 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_node_monitor, FALSE, FALSE, 0);
 	*/
 	
+	GtkWidget *vbox_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_psf = draw_control_block(f_MHD_ctl->f_viz_ctls->f_psf_ctls->clist_name, 
+													 &f_MHD_ctl->f_viz_ctls->f_num_psf_ctl,
+													 560, 500, window, vbox_psf);
+	
+	GtkWidget *vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_iso = draw_control_block(f_MHD_ctl->f_viz_ctls->f_iso_ctls->clist_name, 
+													 &f_MHD_ctl->f_viz_ctls->f_num_iso_ctl,
+													 560, 500, window, vbox_iso);
+	
+	GtkWidget *vbox_map = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_map = draw_control_block(f_MHD_ctl->f_viz_ctls->f_map_ctls->clist_name, 
+													 &f_MHD_ctl->f_viz_ctls->f_num_map_ctl,
+													 560, 500, window, vbox_map);
+	
+	GtkWidget *vbox_pvr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_pvr = draw_control_block(f_MHD_ctl->f_viz_ctls->f_pvr_ctls->clist_name, 
+													 &f_MHD_ctl->f_viz_ctls->f_num_pvr_ctl,
+													 560, 500, window, vbox_pvr);
+	
+	GtkWidget *vbox_lic = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_lic = draw_control_block(f_MHD_ctl->f_viz_ctls->f_lic_ctls->clist_name, 
+													 &f_MHD_ctl->f_viz_ctls->f_num_lic_ctl,
+													 560, 500, window, vbox_lic);
+	
+	GtkWidget *vbox_fline = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_fline = draw_control_block(f_MHD_ctl->f_viz_ctls->f_fline_ctls->clist_name, 
+													 &f_MHD_ctl->f_viz_ctls->f_num_fline_ctl,
+													 560, 500, window, vbox_fline);
+	
+	
 	GtkWidget *vbox_viz = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_viz), expand_MHD_psf, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_viz), expand_MHD_iso, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_viz), expand_MHD_map, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_viz), expand_MHD_pvr, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_viz), expand_MHD_lic, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_viz), expand_MHD_fline, FALSE, FALSE, 0);
+	
+	
+	
 	GtkWidget *expand_MHD_viz = draw_control_block(f_MHD_ctl->f_viz_ctls->c_block_name, 
 													 f_MHD_ctl->f_viz_ctls->f_iflag,
 													 560, 500, window, vbox_viz);

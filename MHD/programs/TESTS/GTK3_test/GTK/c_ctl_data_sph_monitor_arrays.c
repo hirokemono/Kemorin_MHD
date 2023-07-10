@@ -1,9 +1,9 @@
-//
+/*
 //  c_ctl_data_sph_monitor_arrays.c
 //  Control_GTK
 //
 //  Created by Hiroaki Matsui on 7/5/23.
-//
+*/
 
 #include "c_ctl_data_sph_monitor_arrays.h"
 

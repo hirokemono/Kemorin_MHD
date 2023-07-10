@@ -243,12 +243,6 @@ t_control_c_lists.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-t_control_c_lists_w_file.o: \
-  $(C_SRCDIR)/CONTROLS/t_control_c_lists_w_file.c \
-  $(C_SRCDIR)/CONTROLS/t_control_c_lists_w_file.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h
-	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_chara2_IO.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.c \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \

@@ -603,15 +603,6 @@ tree_view_block_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
-tree_view_block_w_file_GTK.o: \
-  $(C_SRCDIR)/GTK/tree_view_block_w_file_GTK.c \
-  $(C_SRCDIR)/GTK/tree_view_block_w_file_GTK.h \
-  $(C_SRCDIR)/GTK/calypso_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_c_lists_w_file.h
-	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 tree_view_chara2_real_GTK.o: \
   $(C_SRCDIR)/GTK/tree_view_chara2_real_GTK.c \
   $(C_SRCDIR)/GTK/tree_view_chara2_real_GTK.h \

@@ -21,7 +21,6 @@
 #include "c_ctl_data_sph_monitor_arrays.h"
 
 struct sph_vspectr_widgets{
-	struct void_clist * expand_v_pwr_list;
 	GtkWidget *vbox_vpwr_items;
 	GtkWidget *v_pwr_tree_view;
     GtkWidget *vbox_vpwr;

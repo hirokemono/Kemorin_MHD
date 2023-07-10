@@ -26,7 +26,6 @@ struct real_ctl_item * init_real_ctl_item_c(void){
 void dealloc_real_ctl_item_c(struct real_ctl_item *r_item)
 {
 	if(r_item->c_block_name !=NULL) free(r_item->c_block_name);
-	free(r_item->c_block_name);
 	
 	r_item->f_iflag = NULL;
 	r_item->f_self = NULL;
