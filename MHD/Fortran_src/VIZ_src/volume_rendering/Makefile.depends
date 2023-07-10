@@ -10,7 +10,7 @@ bcast_ctl_data_pvr_surfaces.o: $(PVR_DIR)/bcast_ctl_data_pvr_surfaces.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_ctl_data_view_trans.o: $(PVR_DIR)/bcast_ctl_data_view_trans.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_ctl_data_pvr_movie.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o bcast_control_arrays.o t_ctl_data_quilt_image.o t_ctl_data_view_transfers.o t_ctl_data_4_view_transfer.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bcast_ctl_data_viz3.o: $(PVR_DIR)/bcast_ctl_data_viz3.f90 m_precision.o m_machine_parameter.o calypso_mpi_int.o t_control_data_viz3.o bcast_control_arrays.o bcast_section_control_data.o bcast_maps_control_data.o bcast_ctl_data_field_line.o bcast_control_data_pvrs.o
+bcast_ctl_data_viz3.o: $(PVR_DIR)/bcast_ctl_data_viz3.f90 m_precision.o m_machine_parameter.o calypso_mpi_int.o t_control_data_viz3.o transfer_to_long_integers.o calypso_mpi_char.o bcast_control_arrays.o bcast_section_control_data.o bcast_maps_control_data.o bcast_ctl_data_field_line.o bcast_control_data_pvrs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_ctl_data_viz4.o: $(PVR_DIR)/bcast_ctl_data_viz4.f90 m_precision.o m_machine_parameter.o calypso_mpi_int.o t_control_data_viz4.o bcast_control_arrays.o bcast_section_control_data.o bcast_maps_control_data.o bcast_ctl_data_field_line.o bcast_control_data_pvrs.o
 	$(F90) -c $(F90OPTFLAGS) $<

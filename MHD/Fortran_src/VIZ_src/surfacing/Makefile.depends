@@ -1,6 +1,6 @@
 FEM_to_PSF_bridge.o: $(PSF_SECTION_DIR)/FEM_to_PSF_bridge.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_phys_data.o t_comm_table.o t_VIZ_step_parameter.o t_mesh_SR.o parallel_FEM_mesh_init.o const_element_comm_tables.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bcast_ctl_data_surfacings.o: $(PSF_SECTION_DIR)/bcast_ctl_data_surfacings.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_data_surfacings.o calypso_mpi_int.o bcast_control_arrays.o bcast_section_control_data.o
+bcast_ctl_data_surfacings.o: $(PSF_SECTION_DIR)/bcast_ctl_data_surfacings.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_data_surfacings.o transfer_to_long_integers.o calypso_mpi_char.o calypso_mpi_int.o bcast_control_arrays.o bcast_section_control_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_section_control_data.o: $(PSF_SECTION_DIR)/bcast_section_control_data.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_control_data_sections.o t_control_data_4_psf.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o t_control_data_isosurfaces.o t_control_data_4_iso.o bcast_control_arrays.o t_control_data_4_fld_on_psf.o t_control_data_4_psf_def.o t_control_data_4_iso_def.o
 	$(F90) -c $(F90OPTFLAGS) $<

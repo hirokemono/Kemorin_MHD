@@ -12,7 +12,7 @@ bcast_3d_noise.o: $(LIC_DIR)/bcast_3d_noise.f90 m_precision.o m_constants.o m_ma
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_control_data_4_lic.o: $(LIC_DIR)/bcast_control_data_4_lic.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_control_data_LIC.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_masking.o t_control_data_LIC_noise.o t_control_data_LIC_kernel.o t_ctl_data_volume_repart.o calypso_mpi_int.o calypso_mpi_char.o bcast_ctl_data_vol_repart.o bcast_control_arrays.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bcast_control_data_vizs.o: $(LIC_DIR)/bcast_control_data_vizs.f90 m_precision.o m_machine_parameter.o t_control_data_vizs.o calypso_mpi.o calypso_mpi_int.o calypso_mpi_char.o bcast_control_arrays.o bcast_section_control_data.o bcast_maps_control_data.o bcast_ctl_data_field_line.o bcast_ctl_data_vol_repart.o bcast_control_data_pvrs.o transfer_to_long_integers.o t_control_data_LIC_pvrs.o bcast_control_data_4_pvr.o
+bcast_control_data_vizs.o: $(LIC_DIR)/bcast_control_data_vizs.f90 m_precision.o m_machine_parameter.o t_control_data_vizs.o calypso_mpi.o transfer_to_long_integers.o calypso_mpi_char.o calypso_mpi_int.o bcast_control_arrays.o bcast_section_control_data.o bcast_maps_control_data.o bcast_ctl_data_field_line.o bcast_ctl_data_vol_repart.o bcast_control_data_pvrs.o t_control_data_LIC_pvrs.o bcast_control_data_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bring_back_rendering_counts.o: $(LIC_DIR)/bring_back_rendering_counts.f90 m_precision.o m_constants.o calypso_mpi.o t_lic_repart_reference.o t_mesh_SR.o t_calypso_comm_table.o calypso_reverse_send_recv.o t_mesh_data.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -13,8 +13,6 @@
 !!@verbatim
 !!      subroutine read_control_4_sph_MHD_w_psf(file_name, MHD_ctl,     &
 !!     &                                        add_SMHD_ctl, c_buf)
-!!      subroutine read_sph_mhd_ctl_w_psf(id_control, hd_block,         &
-!!     &                                  MHD_ctl, add_SMHD_ctl, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -96,6 +94,8 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
 !
+      private :: read_sph_mhd_ctl_w_psf, init_sph_mhd_ctl_w_psf_label
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -105,8 +105,6 @@
       subroutine read_control_4_sph_MHD_w_psf(file_name, MHD_ctl,       &
      &                                        add_SMHD_ctl, c_buf)
 !
-      use t_control_data_surfacings
-!
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
@@ -114,6 +112,8 @@
 !
 !
       c_buf%level = c_buf%level + 1
+      call init_sph_mhd_ctl_w_psf_label(hd_mhd_ctl,                     &
+     &                                  MHD_ctl, add_SMHD_ctl)
       open(id_control_file, file = file_name, status='old' )
 !
       do
@@ -142,7 +142,6 @@
       subroutine write_control_4_sph_MHD_w_psf(file_name, MHD_ctl,      &
      &                                         add_SMHD_ctl)
 !
-      use t_control_data_surfacings
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
@@ -187,17 +186,6 @@
 !
 !
       if(MHD_ctl%i_mhd_ctl .gt. 0) return
-      MHD_ctl%block_name = trim(hd_block)
-      call init_platforms_labels(hd_platform, MHD_ctl%plt)
-      call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
-      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
-     &                                   MHD_ctl%psph_ctl)
-      call init_sph_mhd_model_label(hd_model, MHD_ctl%model_ctl)
-      call init_sph_mhd_control_label(hd_control, MHD_ctl%smctl_ctl)
-      call init_sph_monitoring_labels(hd_pick_sph,                      &
-     &                                MHD_ctl%smonitor_ctl)
-      call init_dynamo_sects_ctl_label(hd_dynamo_viz_ctl,               &
-     &                                 add_SMHD_ctl%zm_sects)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -283,6 +271,40 @@
      &                                MHD_ctl%block_name)
 !
       end subroutine write_sph_mhd_ctl_w_psf
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_sph_mhd_ctl_w_psf_label(hd_block,                 &
+     &                                        MHD_ctl, add_SMHD_ctl)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
+      use control_data_surfacing_IO
+      use ctl_file_gen_sph_shell_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!
+!
+      MHD_ctl%block_name = trim(hd_block)
+      call init_platforms_labels(hd_platform, MHD_ctl%plt)
+      call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
+      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
+     &                                   MHD_ctl%psph_ctl)
+      call init_sph_mhd_model_label(hd_model, MHD_ctl%model_ctl)
+      call init_sph_mhd_control_label(hd_control, MHD_ctl%smctl_ctl)
+      call init_sph_monitoring_labels(hd_pick_sph,                      &
+     &                                MHD_ctl%smonitor_ctl)
+      call init_surfacing_ctl_label(hd_viz_ctl,                         &
+     &                              add_SMHD_ctl%surfacing_ctls)
+      call init_dynamo_sects_ctl_label(hd_dynamo_viz_ctl,               &
+     &                                 add_SMHD_ctl%zm_sects)
+      call init_monitor_data_ctl_label(hd_monitor_data,                 &
+     &                                 MHD_ctl%nmtr_ctl)
+!
+      end subroutine init_sph_mhd_ctl_w_psf_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

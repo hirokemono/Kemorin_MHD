@@ -272,6 +272,8 @@
       call init_phys_data_ctl_label(hd_phys_values, diff_ctl%fld_d_ctl)
       call init_ele_layers_ctl_label(hd_dynamic_layers,                 &
      &                               diff_ctl%elayer_d_ctl)
+      call init_fem_int_points_ctl_label(hd_int_points,                 &
+     &                                   diff_ctl%fint_d_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)

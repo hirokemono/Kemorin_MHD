@@ -116,8 +116,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(solvertest_c%i_solver_test_ctl .gt. 0) return
+      call init_CG_solver_param_ctl_label(hd_solver_ctl,                &
+     &                                    solvertest_c%CG_test_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

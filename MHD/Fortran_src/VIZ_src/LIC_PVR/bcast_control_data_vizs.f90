@@ -30,15 +30,15 @@
 !
       subroutine bcast_viz_controls(viz_ctls)
 !
-      use calypso_mpi_int
+      use transfer_to_long_integers
       use calypso_mpi_char
+      use calypso_mpi_int
       use bcast_control_arrays
       use bcast_section_control_data
       use bcast_maps_control_data
       use bcast_ctl_data_field_line
       use bcast_ctl_data_vol_repart
       use bcast_control_data_pvrs
-      use transfer_to_long_integers
 !
       type(visualization_controls), intent(inout) :: viz_ctls
 !

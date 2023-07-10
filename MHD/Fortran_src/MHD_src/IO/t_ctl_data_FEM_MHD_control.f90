@@ -11,6 +11,7 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
+!!      subroutine init_fem_mhd_ctl_label(hd_block, fmctl_ctl)
 !!      subroutine read_fem_mhd_control                                 &
 !!     &         (id_control, hd_block, fmctl_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -45,6 +46,9 @@
       implicit none
 !
       type fem_mhd_control_control
+!>        Block name
+        character(len=kchara) :: block_name = 'MHD_control'
+!
 !>        Structure for time stepping control
         type(time_data_control) :: tctl
 !>        Structure for restart flag
@@ -95,9 +99,6 @@
 !
 !
       if(fmctl_ctl%i_control .gt. 0) return
-      call init_ctl_time_step_label(hd_time_step, fmctl_ctl%tctl)
-      call init_restart_ctl_label(hd_restart_file, fmctl_ctl%mrst_ctl)
-      call init_time_loop_ctl_label(hd_time_loop, fmctl_ctl%mevo_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -152,6 +153,28 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_fem_mhd_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_fem_mhd_ctl_label(hd_block, fmctl_ctl)
+!
+      use ctl_data_4_time_steps_IO
+      use ctl_data_mhd_evo_scheme_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
+!
+!
+      fmctl_ctl%block_name = hd_block
+      call init_ctl_time_step_label(hd_time_step, fmctl_ctl%tctl)
+      call init_restart_ctl_label(hd_restart_file, fmctl_ctl%mrst_ctl)
+      call init_time_loop_ctl_label(hd_time_loop, fmctl_ctl%mevo_ctl)
+      call init_fem_int_points_ctl_label(hd_int_points,                 &
+     &                                   fmctl_ctl%fint_ctl)
+      call init_CG_solver_param_ctl_label(hd_solver_ctl,                &
+     &                                    fmctl_ctl%CG_ctl)
+!
+      end subroutine init_fem_mhd_ctl_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

@@ -9,16 +9,12 @@
 !!@verbatim
 !!      subroutine dealloc_CG_solver_param_ctl(CG_ctl)
 !!
+!!      subroutine init_CG_solver_param_ctl_label(hd_block, CG_ctl)
 !!      subroutine read_CG_solver_param_ctl                             &
 !!     &         (id_control, hd_block, CG_ctl, c_buf)
-!!        type(solver_control), intent(inout) :: CG_ctl
-!!      subroutine read_control_DJDS_solver(hd_block, iflag, DJDS_ctl)
-!!        type(DJDS_control), intent(inout) :: DJDS_ctl
-!!
 !!      subroutine write_CG_solver_param_ctl                            &
 !!     &         (id_file, hd_block, CG_ctl, level)
-!!      subroutine write_control_DJDS_solver                            &
-!!     &         (id_file, hd_block, DJDS_ctl, level)
+!!        type(solver_control), intent(inout) :: CG_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!  parameter for solver 
@@ -85,7 +81,7 @@
 !!      begin MGCG_parameter_ctl
 !!        ...
 !!      end MGCG_parameter_ctl
-!!    end
+!!    end solver_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
@@ -103,6 +99,9 @@
 !
 !>      Structure for CG solver control
       type solver_control
+!>        Block name
+        character(len=kchara) :: block_name = 'solver_ctl'
+!
 !>        Structure for maximum iteration counts
         type(read_integer_item) :: itr_ctl
 !
@@ -263,6 +262,34 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_CG_solver_param_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_CG_solver_param_ctl_label(hd_block, CG_ctl)
+!
+      use t_read_control_elements
+      use ctl_data_Multigrid_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(solver_control), intent(inout) :: CG_ctl
+!
+!
+      CG_ctl%block_name = hd_block
+      call init_ctl_DJDS_solver_label(hd_DJDS_params, CG_ctl%DJDS_ctl)
+      call init_Multigrid_ctl_label(hd_Multigrid_params, CG_ctl%MG_ctl)
+!
+        call init_real_ctl_item_label(hd_eps, CG_ctl%eps_ctl)
+        call init_real_ctl_item_label(hd_sigma, CG_ctl%sigma_ctl)
+        call init_real_ctl_item_label                                   &
+     &    (hd_sigma_diag, CG_ctl%sigma_diag_ctl)
+!
+        call init_int_ctl_item_label(hd_itr, CG_ctl%itr_ctl)
+!
+        call init_chara_ctl_item_label(hd_method, CG_ctl%method_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_precond, CG_ctl%precond_ctl)
+!
+      end subroutine init_CG_solver_param_ctl_label
 !
 ! -----------------------------------------------------------------------
 !

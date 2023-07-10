@@ -7,6 +7,7 @@
 !>@brief  Structure for reading parameters for MGCG
 !!
 !!@verbatim
+!!      subroutine init_ctl_DJDS_solver_label(hd_block, DJDS_ctl)
 !!      subroutine read_control_DJDS_solver(hd_block, iflag, DJDS_ctl)
 !!      subroutine write_control_DJDS_solver                            &
 !!     &         (id_file, hd_block, DJDS_ctl, level)
@@ -44,6 +45,9 @@
 !
 !>      Structure for DJDS solver control
       type DJDS_control
+!>        Block name
+        character(len=kchara) :: block_name = 'DJDS_solver_ctl'
+!
 !>        Structure for number of MC/RCM colorling
         type(read_integer_item) :: min_color_ctl
 !>        Structure for number of multi colorling
@@ -137,6 +141,24 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_DJDS_solver
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_ctl_DJDS_solver_label(hd_block, DJDS_ctl)
+!
+      type(DJDS_control), intent(inout) :: DJDS_ctl
+      character(len=kchara), intent(in) :: hd_block
+!
+      DJDS_ctl%block_name = hd_block
+        call init_int_ctl_item_label                                    &
+     &     (hd_min_color, DJDS_ctl%min_color_ctl)
+        call init_int_ctl_item_label                                    &
+     &     (hd_mc_color, DJDS_ctl%mc_color_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_order_method, DJDS_ctl%order_method_ctl)
+!
+      end subroutine init_ctl_DJDS_solver_label
 !
 ! -----------------------------------------------------------------------
 !

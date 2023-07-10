@@ -50,6 +50,8 @@
 !
 !>      Structure for visulization program
       type control_data_three_vizs
+!>        Block name
+        character(len=kchara) :: block_name = 'visualizer'
 !>        Structure for file settings
         type(platform_data_control) :: viz_plt
 !>        Structure for time stepping control
@@ -98,6 +100,7 @@
 !
 !
       c_buf%level = c_buf%level + 1
+      call init_three_vizs_control_label(hd_viz_only_file, viz3_c)
       open (viz_ctl_file_code, file=file_name, status='old')
       do
         call load_one_line_from_control(viz_ctl_file_code,              &
@@ -166,8 +169,6 @@
 !
 !
       if(viz3_c%i_viz_only_file .gt. 0) return
-      call init_platforms_labels(hd_platform, viz3_c%viz_plt)
-      call init_ctl_time_step_label(hd_time_step, viz3_c%t_viz_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -217,6 +218,25 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_three_vizs_control_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_three_vizs_control_label(hd_block, viz3_c)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
+      use ctl_data_three_vizs_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(control_data_three_vizs), intent(inout) :: viz3_c
+!
+!
+      viz3_c%block_name = hd_block
+      call init_platforms_labels(hd_platform, viz3_c%viz_plt)
+      call init_ctl_time_step_label(hd_time_step, viz3_c%t_viz_ctl)
+      call init_viz3_ctl_label(hd_viz_control, viz3_c%viz3_ctl)
+!
+      end subroutine init_three_vizs_control_label
 !
 !   --------------------------------------------------------------------
 !

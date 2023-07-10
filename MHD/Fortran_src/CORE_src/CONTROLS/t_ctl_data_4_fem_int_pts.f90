@@ -8,6 +8,7 @@
 !> @brief REad integration points for FEM
 !!
 !!@verbatim
+!!      subroutine init_fem_int_points_ctl_label(hd_block, fint_ctl)
 !!      subroutine read_control_fem_int_points                          &
 !!     &         (id_control, hd_block, fint_ctl, c_buf)
 !!        type(fem_intergration_control), intent(inout) :: fint_ctl
@@ -39,6 +40,9 @@
 !
 !
       type fem_intergration_control
+!>        Block name
+        character(len=kchara) :: block_name = 'MHD_control'
+!
 !>        Structure for read # of integration points
         type(read_integer_item)  :: integration_points_ctl
 !
@@ -132,6 +136,24 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_fem_int_points
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_fem_int_points_ctl_label(hd_block, fint_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(fem_intergration_control), intent(inout) :: fint_ctl
+!
+!
+      fint_ctl%block_name = hd_block
+        call init_int_ctl_item_label(hd_intgration_points,              &
+     &      fint_ctl%integration_points_ctl)
+        call init_int_ctl_item_label(hd_intg_point_poisson,             &
+     &      fint_ctl%intg_point_poisson_ctl)
+        call init_int_ctl_item_label(hd_intg_point_t_evo,               &
+     &      fint_ctl%intg_point_t_evo_ctl)
+!
+      end subroutine init_fem_int_points_ctl_label
 !
 !   --------------------------------------------------------------------
 !

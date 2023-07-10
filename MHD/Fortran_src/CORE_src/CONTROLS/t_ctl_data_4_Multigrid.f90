@@ -101,6 +101,9 @@
 !
 !>        Structure for MGCG control
       type MGCG_control
+!>        Block name
+        character(len=kchara) :: block_name = 'MGCG_parameter_ctl'
+!
 !>        Structure for number of multigrid levels
         type(read_integer_item) ::  num_multigrid_level_ctl
 !

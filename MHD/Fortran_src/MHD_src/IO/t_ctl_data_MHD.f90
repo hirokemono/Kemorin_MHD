@@ -12,8 +12,6 @@
 !!
 !!@verbatim
 !!      subroutine read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
-!!      subroutine read_sph_mhd_ctl_noviz                               &
-!!     &         (id_control, hd_block, MHD_ctl, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
@@ -105,6 +103,8 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_monitor_data = 'monitor_data_ctl'
 !
+      private :: read_sph_mhd_ctl_noviz, init_sph_mhd_ctl_noviz_label
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -120,6 +120,7 @@
 !
 !
       c_buf%level = c_buf%level + 1
+      call init_sph_mhd_ctl_noviz_label(hd_mhd_ctl, MHD_ctl)
       open(id_control_file, file = file_name, status='old' )
 !
       do
@@ -182,15 +183,6 @@
 !
 !
       if(MHD_ctl%i_mhd_ctl .gt. 0) return
-      MHD_ctl%block_name = trim(hd_block)
-      call init_platforms_labels(hd_platform, MHD_ctl%plt)
-      call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
-      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
-     &                                   MHD_ctl%psph_ctl)
-      call init_sph_mhd_model_label(hd_model, MHD_ctl%model_ctl)
-      call init_sph_mhd_control_label(hd_control, MHD_ctl%smctl_ctl)
-      call init_sph_monitoring_labels(hd_pick_sph,                      &
-     &                                MHD_ctl%smonitor_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -259,6 +251,33 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_mhd_ctl_noviz
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_sph_mhd_ctl_noviz_label(hd_block, MHD_ctl)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
+      use ctl_file_gen_sph_shell_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!
+!
+      MHD_ctl%block_name = trim(hd_block)
+      call init_platforms_labels(hd_platform, MHD_ctl%plt)
+      call init_platforms_labels(hd_org_data, MHD_ctl%org_plt)
+      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
+     &                                   MHD_ctl%psph_ctl)
+      call init_sph_mhd_model_label(hd_model, MHD_ctl%model_ctl)
+      call init_sph_mhd_control_label(hd_control, MHD_ctl%smctl_ctl)
+      call init_sph_monitoring_labels(hd_pick_sph,                      &
+     &                                MHD_ctl%smonitor_ctl)
+      call init_monitor_data_ctl_label(hd_monitor_data,                 &
+     &                                 MHD_ctl%nmtr_ctl)
+!
+      end subroutine init_sph_mhd_ctl_noviz_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

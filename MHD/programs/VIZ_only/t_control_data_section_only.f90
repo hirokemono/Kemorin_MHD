@@ -54,6 +54,9 @@
 !
 !>      Structure of control data for sectioning only
       type control_data_section_only
+!>        Control block name
+        character(len = kchara) :: block_name = 'visualizer'
+!
 !>      Structure for file settings
         type(platform_data_control) :: sect_plt
 !>      Structure for time stepping control
@@ -102,6 +105,7 @@
 !
 !
       c_buf%level = c_buf%level + 1
+      call init_section_control_label(hd_viz_only_file, sec_viz_ctl)
       open (viz_ctl_file_code, file=file_name, status='old' )
       do
         call load_one_line_from_control                                 &
@@ -172,9 +176,6 @@
 !
 !
       if(sec_viz_ctl%i_viz_only_file .gt. 0) return
-      call init_platforms_labels(hd_platform, sec_viz_ctl%sect_plt)
-      call init_ctl_time_step_label(hd_time_step,                       &
-     &                              sec_viz_ctl%t_sect_ctl)
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -224,6 +225,28 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_section_control_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_section_control_label(hd_block, sec_viz_ctl)
+!
+      use skip_comment_f
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
+      use control_data_surfacing_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(control_data_section_only), intent(inout) :: sec_viz_ctl
+!
+!
+      sec_viz_ctl%block_name = hd_block
+      call init_platforms_labels(hd_platform, sec_viz_ctl%sect_plt)
+      call init_ctl_time_step_label(hd_time_step,                       &
+     &                              sec_viz_ctl%t_sect_ctl)
+      call init_surfacing_ctl_label(hd_viz_ctl,                         &
+     &                              sec_viz_ctl%surfacing_ctls)
+!
+      end subroutine init_section_control_label
 !
 !   --------------------------------------------------------------------
 !

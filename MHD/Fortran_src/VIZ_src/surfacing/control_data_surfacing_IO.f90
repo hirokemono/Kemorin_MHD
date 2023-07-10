@@ -7,6 +7,7 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
+!!      subroutine init_surfacing_ctl_label(hd_block, surfacing_ctls)
 !!      subroutine s_read_surfacing_controls                            &
 !!     &         (id_control, hd_block, surfacing_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control 
@@ -197,6 +198,42 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_surfacing_controls
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_surfacing_ctl_label(hd_block, surfacing_ctls)
+!
+      use ctl_file_sections_IO
+      use ctl_file_isosurfaces_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(surfacing_controls), intent(inout) :: surfacing_ctls
+!
+!
+      surfacing_ctls%block_name = hd_block
+      call init_psf_ctls_labels(hd_section_ctl,                         &
+     &                          surfacing_ctls%psf_s_ctls)
+      call init_iso_ctls_labels(hd_isosurf_ctl,                         &
+     &                          surfacing_ctls%iso_s_ctls)
+!
+        call init_real_ctl_item_label(hd_delta_t_section,               &
+     &      surfacing_ctls%delta_t_psf_s_ctl)
+        call init_real_ctl_item_label(hd_delta_t_isosurf,               &
+     &      surfacing_ctls%delta_t_iso_s_ctl)
+        call init_real_ctl_item_label(hd_delta_t_ucd,                   &
+     &      surfacing_ctls%delta_t_ucd_s_ctl)
+!
+        call init_int_ctl_item_label(hd_i_step_section,                 &
+     &      surfacing_ctls%i_step_psf_s_ctl)
+        call init_int_ctl_item_label(hd_i_step_isosurf,                 &
+     &      surfacing_ctls%i_step_iso_s_ctl)
+        call init_int_ctl_item_label(hd_i_step_ucd,                     &
+     &      surfacing_ctls%i_step_ucd_s_ctl)
+!
+        call init_chara_ctl_item_label(hd_output_fld_file_fmt,          &
+     &      surfacing_ctls%output_ucd_fmt_s_ctl)
+!
+      end subroutine init_surfacing_ctl_label
 !
 !   --------------------------------------------------------------------
 !  ---------------------------------------------------------------------

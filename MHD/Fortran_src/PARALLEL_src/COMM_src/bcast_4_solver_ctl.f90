@@ -29,6 +29,8 @@
 !
       subroutine bcast_CG_solver_param_ctl(CG_ctl)
 !
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
 !
@@ -48,6 +50,8 @@
       call bcast_ctl_type_c1(CG_ctl%method_ctl)
       call bcast_ctl_type_c1(CG_ctl%precond_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (CG_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(CG_ctl%i_solver_ctl, 0)
 !
       end subroutine bcast_CG_solver_param_ctl
@@ -58,6 +62,8 @@
       subroutine bcast_control_DJDS_solver(DJDS_ctl)
 !
       use t_ctl_data_DJDS_ordering
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
 !
@@ -69,6 +75,8 @@
 !
       call bcast_ctl_type_c1(DJDS_ctl%order_method_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (DJDS_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(DJDS_ctl%i_DJDS_params, 0)
 !
       end subroutine bcast_control_DJDS_solver
@@ -77,6 +85,8 @@
 !
       subroutine bcast_control_Multigrid(MG_ctl)
 !
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
 !
@@ -105,6 +115,8 @@
       call bcast_ctl_array_c1(MG_ctl%MG_mesh_fmt_ctl)
       call bcast_ctl_array_c1(MG_ctl%MG_table_fmt_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (MG_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(MG_ctl%i_Multigrid_params, 0)
 !
       end subroutine bcast_control_Multigrid

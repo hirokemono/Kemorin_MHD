@@ -7,6 +7,7 @@
 !>@brief  Control data of node monitoring
 !!
 !!@verbatim
+!!      subroutine init_monitor_data_ctl_label(hd_block, nmtr_ctl)
 !!      subroutine read_monitor_data_ctl                                &
 !!     &         (id_control, hd_block, nmtr_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -148,6 +149,23 @@
      &                                 nmtr_ctl%block_name)
 !
       end subroutine write_monitor_data_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_monitor_data_ctl_label(hd_block, nmtr_ctl)
+      character(len=kchara), intent(in) :: hd_block
+      type(node_monitor_control), intent(inout) :: nmtr_ctl
+!
+      nmtr_ctl%block_name = hd_block
+!
+        call init_chara_ctl_array_label                                 &
+     &     (hd_monitor_grp, nmtr_ctl%group_4_monitor_ctl)
+        call init_r3_ctl_array_label                                    &
+     &     (hd_monitor_position, nmtr_ctl%xx_4_monitor_ctl)
+        call init_int2_ctl_array_label                                  &
+     &     (hd_monitor_node, nmtr_ctl%node_4_monitor_ctl)
+!
+      end subroutine init_monitor_data_ctl_label
 !
 !   --------------------------------------------------------------------
 !

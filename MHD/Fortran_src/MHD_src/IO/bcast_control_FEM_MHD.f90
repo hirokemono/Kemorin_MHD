@@ -66,6 +66,8 @@
 !
       subroutine bcast_fem_mhd_control_ctl(fmctl_ctl)
 !
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_4_time_step_ctl
       use bcast_4_solver_ctl
@@ -82,6 +84,8 @@
       call bcast_CG_solver_param_ctl(fmctl_ctl%CG_ctl)
       call bcast_control_fem_int_points(fmctl_ctl%fint_ctl)
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (fmctl_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(fmctl_ctl%i_control, 0)
 !
       end subroutine bcast_fem_mhd_control_ctl
