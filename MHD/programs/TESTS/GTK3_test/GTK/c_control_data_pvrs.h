@@ -53,7 +53,7 @@ struct f_VIZ_PVR_ctl{
 
 
 struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(int idx, void *f_parent);
-void dealloc_f_VIZ_PVR_ctl(void *block_item);
+void *dealloc_f_VIZ_PVR_ctl(void *block_item);
 
 
 #endif /* C_CONTROL_DATA_PVRS_H_ */

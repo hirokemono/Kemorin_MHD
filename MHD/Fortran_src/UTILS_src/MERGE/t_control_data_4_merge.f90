@@ -32,6 +32,9 @@
 !
 !>        Structure for merged program control
       type control_data_4_merge
+!>        Block name
+        character(len=kchara) :: block_name = 'assemble_control'
+!
 !>        File name to read original spherical shell control file
         character (len = kchara) :: fname_src_psph_ctl
 !>        Structure for file information for original data

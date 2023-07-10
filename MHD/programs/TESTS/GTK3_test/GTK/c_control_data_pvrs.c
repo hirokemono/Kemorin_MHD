@@ -76,7 +76,7 @@ struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(int idx, void *f_parent)
 	return f_pvr_ctl;
 }
 
-void dealloc_f_VIZ_PVR_ctl(void *block_item){
+void *dealloc_f_VIZ_PVR_ctl(void *block_item){
     struct f_VIZ_PVR_ctl *f_pvr_ctl = (struct f_VIZ_PVR_ctl *) block_item;
     
 	f_pvr_ctl->f_fname_mat_ctl =  NULL;
@@ -99,5 +99,5 @@ void dealloc_f_VIZ_PVR_ctl(void *block_item){
 	dealloc_chara_ctl_item_c(f_pvr_ctl->f_pvr_comp_ctl);
 	f_pvr_ctl->f_pvr_scts_c =     NULL;
 	f_pvr_ctl->f_pvr_isos_c =     NULL;
-	return;
+	return f_pvr_ctl;
 }

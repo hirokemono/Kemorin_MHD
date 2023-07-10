@@ -17,17 +17,15 @@
 
 struct boundary_condition_view{
     int index_bc;
-    GtkTreeView *bc_tree_view;
-    GtkTreeView *bc_type_tree_view;
+    GtkWidget *bc_tree_view;
+    GtkWidget *bc_type_tree_view;
     
     struct chara2_real_clist *bc_T_gtk;
 };
 
 /* prototypes */
 
-void init_temp_bc_views_GTK(struct chara2_real_clist *bc_T_ctl,
-                                    struct boundary_condition_view *bc_vws);
-
+struct boundary_condition_view * init_temp_bc_views_GTK(struct chara2_real_clist *bc_T_ctl);
 void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws);
 
 void add_bc_temp_selection_box(struct boundary_condition_view *bc_vws, GtkWidget *vbox);

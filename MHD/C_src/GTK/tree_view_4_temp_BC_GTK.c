@@ -8,10 +8,16 @@
 #include "tree_view_4_temp_BC_GTK.h"
 
 
-void init_temp_bc_views_GTK(struct chara2_real_clist *bc_T_ctl,
-                                    struct boundary_condition_view *bc_vws){
+struct boundary_condition_view * init_temp_bc_views_GTK(struct chara2_real_clist *bc_T_ctl){
+	struct boundary_condition_view *bc_vws  
+			= (struct boundary_condition_view *) malloc(sizeof(struct boundary_condition_view));
+	if(bc_vws == NULL){
+		printf("malloc error for boundary_condition_view\n");
+		exit(0);
+	};
+	
     bc_vws->bc_T_gtk = bc_T_ctl;
-    return;
+    return bc_vws;
 }
 
 static void thermal_bc_position_edited_cb(GtkCellRendererText *cell, gchar *path_str, 
