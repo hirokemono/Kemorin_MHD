@@ -809,5 +809,226 @@
       end subroutine c_read_control_sph_MHD
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_ctl_block_name(c_ctl)              &
+     &          bind(C, NAME = 'c_VIZ_pvr_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_VIZ_pvr_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_ctl_iflag(c_ctl)                   &
+     &          bind(C, NAME = 'c_VIZ_pvr_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_ctl_iflag = C_loc(f_ctl%i_pvr_ctl)
+      end function c_VIZ_pvr_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_fname_mat_ctl(c_ctl)               &
+     &          bind(C, NAME = 'c_VIZ_pvr_fname_mat_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_fname_mat_ctl = C_loc(f_ctl%fname_mat_ctl)
+      end function c_VIZ_pvr_fname_mat_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_viewmat_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_VIZ_pvr_viewmat_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_viewmat_ctl = C_loc(f_ctl%mat)
+      end function c_VIZ_pvr_viewmat_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_fname_pvr_light_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_VIZ_pvr_fname_pvr_light_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_fname_pvr_light_ctl = C_loc(f_ctl%fname_pvr_light_c)
+      end function c_VIZ_pvr_fname_pvr_light_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_light_ctl(c_ctl)                   &
+     &          bind(C, NAME = 'c_VIZ_pvr_light_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_light_ctl = C_loc(f_ctl%light)
+      end function c_VIZ_pvr_light_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_fname_cmap_cbar_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_VIZ_pvr_fname_cmap_cbar_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_fname_cmap_cbar_ctl = C_loc(f_ctl%fname_cmap_cbar_c)
+      end function c_VIZ_pvr_fname_cmap_cbar_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_cmap_cbar_ctl(c_ctl)               &
+     &          bind(C, NAME = 'c_VIZ_pvr_cmap_cbar_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_cmap_cbar_ctl = C_loc(f_ctl%cmap_cbar_c)
+      end function c_VIZ_pvr_cmap_cbar_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_movie_ctl(c_ctl)                   &
+     &          bind(C, NAME = 'c_VIZ_pvr_movie_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_movie_ctl = C_loc(f_ctl%movie)
+      end function c_VIZ_pvr_movie_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_quilt_c(c_ctl)                     &
+     &          bind(C, NAME = 'c_VIZ_pvr_quilt_c')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_quilt_c = C_loc(f_ctl%quilt_c)
+      end function c_VIZ_pvr_quilt_c
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_updated_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_VIZ_pvr_updated_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_updated_ctl = C_loc(f_ctl%updated_ctl)
+      end function c_VIZ_pvr_updated_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_file_head_ctl(c_ctl)               &
+     &          bind(C, NAME = 'c_VIZ_pvr_file_head_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_file_head_ctl = C_loc(f_ctl%file_head_ctl)
+      end function c_VIZ_pvr_file_head_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_file_fmt_ctl(c_ctl)                &
+     &          bind(C, NAME = 'c_VIZ_pvr_file_fmt_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_file_fmt_ctl = C_loc(f_ctl%file_fmt_ctl)
+      end function c_VIZ_pvr_file_fmt_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_monitoring_ctl(c_ctl)              &
+     &          bind(C, NAME = 'c_VIZ_pvr_monitoring_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_monitoring_ctl = C_loc(f_ctl%monitoring_ctl)
+      end function c_VIZ_pvr_monitoring_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_streo_ctl(c_ctl)                   &
+     &          bind(C, NAME = 'c_VIZ_pvr_streo_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_streo_ctl = C_loc(f_ctl%streo_ctl)
+      end function c_VIZ_pvr_streo_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_anaglyph_ctl(c_ctl)                &
+     &          bind(C, NAME = 'c_VIZ_pvr_anaglyph_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_anaglyph_ctl = C_loc(f_ctl%anaglyph_ctl)
+      end function c_VIZ_pvr_anaglyph_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_quilt_ctl(c_ctl)                   &
+     &          bind(C, NAME = 'c_VIZ_pvr_quilt_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_quilt_ctl = C_loc(f_ctl%quilt_ctl)
+      end function c_VIZ_pvr_quilt_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_render_area_ctl(c_ctl)             &
+     &          bind(C, NAME = 'c_VIZ_pvr_render_area_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_render_area_ctl = C_loc(f_ctl%render_area_c)
+      end function c_VIZ_pvr_render_area_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_field_ctl(c_ctl)                   &
+     &          bind(C, NAME = 'c_VIZ_pvr_field_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_field_ctl = C_loc(f_ctl%pvr_field_ctl)
+      end function c_VIZ_pvr_field_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_comp_ctl(c_ctl)                    &
+     &          bind(C, NAME = 'c_VIZ_pvr_comp_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_comp_ctl = C_loc(f_ctl%pvr_comp_ctl)
+      end function c_VIZ_pvr_comp_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_section_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_VIZ_pvr_section_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_section_ctl = C_loc(f_ctl%pvr_scts_c)
+      end function c_VIZ_pvr_section_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_pvr_isosurf_ctl(c_ctl)                 &
+     &          bind(C, NAME = 'c_VIZ_pvr_isosurf_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_parameter_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_pvr_isosurf_ctl = C_loc(f_ctl%pvr_isos_c)
+      end function c_VIZ_pvr_isosurf_ctl
+!
+!  ---------------------------------------------------------------------
 !
       end module read_mhd_control_4_c

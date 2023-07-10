@@ -8,7 +8,8 @@
 #include "control_block_panel_GTK.h"
 
 
-static GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_v_pwr_item, GtkWidget *window){
+static GtkWidget * draw_sph_each_vspec_ctl_expand(char *label_name, void *block_item, GtkWidget *window){
+	struct f_sph_vol_spectr_ctls *f_v_pwr_item = (struct f_sph_vol_spectr_ctls *) block_item;
 	GtkWidget *vbox_v_pwr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_ave_file_ctl);
@@ -30,24 +31,25 @@ static GtkWidget * draw_sph_each_vspec_ctl_vbox(struct f_sph_vol_spectr_ctls *f_
     gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_7,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_8,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_9,  FALSE, FALSE, 0);
-    return vbox_v_pwr;
+	GtkWidget *expand_v_pwr = draw_control_block(duplicate_underscore(label_name),
+												 f_v_pwr_item->f_iflag,
+												 480, 480, window, vbox_v_pwr);
+    return expand_v_pwr;
 };
 
 
-static void draw_sph_vspec_controls_vbox(struct void_clist *f_v_pwr, 
-										 struct sph_vspectr_widgets *vpwr_Widgets,
-								  GtkWidget *window){
-    vpwr_Widgets->vbox_vpwr_items = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+static void draw_sph_vspec_controls_vbox(void *(*const_each_block_expander)(char *label_name, 
+																			void *block_item,
+																			GtkWidget *window),
+										 struct void_clist *f_array_block, 
+										 GtkWidget *vbox_array_block,
+										 GtkWidget *window){
 	int i;
-	
-	for(i=0;i<count_void_clist(f_v_pwr);i++){
-		void *ctmp =  void_clist_label_at_index(i, (void *) f_v_pwr);
-		struct f_sph_vol_spectr_ctls *v_pwr 
-				= (struct f_sph_vol_spectr_ctls *) void_clist_at_index(i, (void *) f_v_pwr);
-		GtkWidget *vbox_z = draw_sph_each_vspec_ctl_vbox(v_pwr, window);
-		GtkWidget *expand_v_pwr = draw_control_block(duplicate_underscore(ctmp), v_pwr->f_iflag,
-													 480, 480, window, vbox_z);
-		gtk_box_pack_start(GTK_BOX(vpwr_Widgets->vbox_vpwr_items), expand_v_pwr,
+	for(i=0;i<count_void_clist(f_array_block);i++){
+		void *label_name = void_clist_label_at_index(i, (void *) f_array_block);
+		void *block_item = void_clist_at_index(i, (void *) f_array_block);
+		GtkWidget *expand_array_block = const_each_block_expander(label_name, block_item, window);
+		gtk_box_pack_start(GTK_BOX(vbox_array_block), expand_array_block,
 						   FALSE, FALSE, 0);
 	}
    return;
@@ -60,13 +62,19 @@ static void add_vol_spectr_ctl_block_cb(GtkButton *button, gpointer user_data){
 			= (struct void_clist *) g_object_get_data(G_OBJECT(button), "v_clist_gtk");
 	struct sph_vspectr_widgets *vpwr_Widgets 
 			= (struct sph_vspectr_widgets *) g_object_get_data(G_OBJECT(button), "vpwr_Widgets");
+	void * (*c_append_item)(int *idx, void *f_parent)
+			= (void *) g_object_get_data(G_OBJECT(button), "c_append_item");
+	void * (*init_block_item)(int *idx, void *f_parent)
+			= (void *) g_object_get_data(G_OBJECT(button), "init_block_item");
+	void * (*dealloc_block_item)(void *f_item)
+			= (void *) g_object_get_data(G_OBJECT(button), "dealloc_block_item");
+	void * (*const_each_block_expander)(char *label_name, void *block_item, GtkWidget *window)
+			= (void *) g_object_get_data(G_OBJECT(button), "const_each_block_exp");
 	
-	printf("New number pre %d %d\n", c_sph_monitor_num_vspec_ctl(v_clist_gtk->f_parent),
-		   count_void_clist(v_clist_gtk));
 	v_clist_gtk->index_bc = add_void_list_items_GTK(GTK_TREE_VIEW(v_tree_view),
-													c_append_sph_mntr_vspec_ctl, 
-													(void *) init_f_sph_vol_spectr_ctls, 
-													dealloc_f_sph_vol_spectr_ctls, 
+													c_append_item, 
+													init_block_item, 
+													dealloc_block_item, 
 													v_clist_gtk);
 	/*
 	printf("New counts: %d %d \n",
@@ -75,7 +83,9 @@ static void add_vol_spectr_ctl_block_cb(GtkButton *button, gpointer user_data){
 	*/
 	
 	gtk_widget_destroy(vpwr_Widgets->vbox_vpwr_items);
-    draw_sph_vspec_controls_vbox(v_clist_gtk, vpwr_Widgets, window);
+    vpwr_Widgets->vbox_vpwr_items = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	draw_sph_vspec_controls_vbox(const_each_block_expander, v_clist_gtk, 
+								 vpwr_Widgets->vbox_vpwr_items, window);
 	gtk_container_remove(GTK_CONTAINER(vpwr_Widgets->vbox_vpwr), vpwr_Widgets->vbox_vpwr_items);
 	gtk_container_add(GTK_CONTAINER(vpwr_Widgets->vbox_vpwr), vpwr_Widgets->vbox_vpwr_items);
 	gtk_widget_show_all(window);
@@ -88,20 +98,31 @@ static void delete_vol_spectr_ctl_block_cb(GtkButton *button, gpointer user_data
 			= (struct void_clist *) g_object_get_data(G_OBJECT(button), "v_clist_gtk");
 	struct sph_vspectr_widgets *vpwr_Widgets
 			= (struct sph_vspectr_widgets *) g_object_get_data(G_OBJECT(button), "vpwr_Widgets");
+	void * (*c_delete_item)(int *idx, void *f_parent)
+			= (void *) g_object_get_data(G_OBJECT(button), "c_delete_item");
+	void * (*init_block_item)(int *idx, void *f_parent)
+			= (void *) g_object_get_data(G_OBJECT(button), "init_block_item");
+	void * (*dealloc_block_item)(void *f_item)
+			= (void *) g_object_get_data(G_OBJECT(button), "dealloc_block_item");
+	void * (*const_each_block_expander)(char *label_name, void *block_item, GtkWidget *window)
+			= (void *) g_object_get_data(G_OBJECT(button), "const_each_block_exp");
 	
 	printf("delete_void_list_items_GTK v_tree_view %p \n", v_tree_view);
 	delete_void_list_items_GTK(GTK_TREE_VIEW(v_tree_view), 
-							   c_delete_sph_mntr_vspec_ctl, 
-							   (void *) init_f_sph_vol_spectr_ctls, 
-							   dealloc_f_sph_vol_spectr_ctls, 
+							   c_delete_item, 
+							   init_block_item, 
+							   dealloc_block_item, 
 							   v_clist_gtk);
 	/*
 	printf("New counts: %d %d \n", 
 		   c_sph_monitor_num_vspec_ctl(v_clist_gtk->f_parent) , 
 		   count_void_clist(v_clist_gtk));
 	*/
+	
 	gtk_widget_destroy(vpwr_Widgets->vbox_vpwr_items);
-    draw_sph_vspec_controls_vbox(v_clist_gtk, vpwr_Widgets, window);
+    vpwr_Widgets->vbox_vpwr_items = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	draw_sph_vspec_controls_vbox(const_each_block_expander, v_clist_gtk, 
+								 vpwr_Widgets->vbox_vpwr_items, window);
 	gtk_container_remove(GTK_CONTAINER(vpwr_Widgets->vbox_vpwr), vpwr_Widgets->vbox_vpwr_items);
 	gtk_container_add(GTK_CONTAINER(vpwr_Widgets->vbox_vpwr), vpwr_Widgets->vbox_vpwr_items);
 	gtk_widget_show_all(window);
@@ -124,9 +145,26 @@ GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr,
 	g_object_set_data(G_OBJECT(button_add),    "window",       (gpointer) window);
 	g_object_set_data(G_OBJECT(button_add),    "v_clist_gtk",  (gpointer) f_v_pwr);
 	g_object_set_data(G_OBJECT(button_add),    "vpwr_Widgets", (gpointer) vpwr_Widgets);
+	g_object_set_data(G_OBJECT(button_add), "c_append_item",
+					  (gpointer) c_append_sph_mntr_vspec_ctl);
+	g_object_set_data(G_OBJECT(button_add), "init_block_item",
+					  (gpointer) init_f_sph_vol_spectr_ctls);
+	g_object_set_data(G_OBJECT(button_add), "dealloc_block_item",
+					  (gpointer) dealloc_f_sph_vol_spectr_ctls);
+	g_object_set_data(G_OBJECT(button_add), "const_each_block_exp",
+					  (gpointer) draw_sph_each_vspec_ctl_expand);
+	
 	g_object_set_data(G_OBJECT(button_delete), "window",       (gpointer) window);
 	g_object_set_data(G_OBJECT(button_delete), "v_clist_gtk",  (gpointer) f_v_pwr);
 	g_object_set_data(G_OBJECT(button_delete), "vpwr_Widgets", (gpointer) vpwr_Widgets);
+	g_object_set_data(G_OBJECT(button_delete), "c_delete_item",
+					  (gpointer) c_delete_sph_mntr_vspec_ctl);
+	g_object_set_data(G_OBJECT(button_delete), "init_block_item",
+					  (gpointer) init_f_sph_vol_spectr_ctls);
+	g_object_set_data(G_OBJECT(button_delete), "dealloc_block_item",
+					  (gpointer) dealloc_f_sph_vol_spectr_ctls);
+	g_object_set_data(G_OBJECT(button_delete), "const_each_block_exp",
+					  (gpointer) draw_sph_each_vspec_ctl_expand);
 	
 	vpwr_Widgets->v_pwr_tree_view = gtk_tree_view_new();
 	GtkWidget *vbox_tbl = add_block_list_box_w_addbottun(f_v_pwr, vpwr_Widgets->v_pwr_tree_view, 
@@ -141,7 +179,9 @@ GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr,
 					 (gpointer) vpwr_Widgets->v_pwr_tree_view);
 	gtk_box_pack_start(GTK_BOX(vpwr_Widgets->vbox_vpwr), vbox_tbl,  FALSE, FALSE, 0);
 	
-	draw_sph_vspec_controls_vbox(f_v_pwr, vpwr_Widgets, window);
+    vpwr_Widgets->vbox_vpwr_items = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	draw_sph_vspec_controls_vbox(draw_sph_each_vspec_ctl_expand, f_v_pwr, 
+								 vpwr_Widgets->vbox_vpwr_items, window);
 	gtk_container_add(GTK_CONTAINER(vpwr_Widgets->vbox_vpwr), vpwr_Widgets->vbox_vpwr_items);
 	
 	int itmp = 1;

@@ -31,13 +31,14 @@
 #include "control_panel_int2_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
 
+#include "c_control_data_pvrs.h"
+
             
 extern void c_view_control_sph_SGS_MHD();
 
 
 extern void * c_pvr_render_ctls_block_name(void *f_pvr_ctls);
 extern int    c_pvr_render_ctls_num_pvr_ctl(void *f_pvr_ctls);
-extern char * c_pvr_render_ctls_fname(int idx, void *f_pvr_ctls);
 extern void * c_pvr_render_ctls_pvr_ctl(int idx, void *f_pvr_ctls);
 extern void * c_append_viz_pvr_render_ctls(int idx, char *block_name, void *f_pvr_ctls);
 extern void * c_delete_viz_pvr_render_ctls(int idx, void *f_pvr_ctls);
@@ -301,6 +302,7 @@ extern void * c_temp_model_ICB_diffuse_ctl(void *f_reft_ctl);
 extern void * c_temp_model_low_ctl(void *f_reft_ctl);
 extern void * c_temp_model_high_ctl(void *f_reft_ctl);
 extern void * c_temp_model_takepiro_ctl(void *f_reft_ctl);
+
 
 
 struct f_MHD_SGS_SPH_filter_control{
@@ -588,12 +590,6 @@ struct f_VIZ_ISO_ctls{
 struct f_VIZ_MAP_ctls{
     char *map_ctl_file_name;
 	void *f_map_ctl;
-};
-
-struct f_VIZ_PVR_ctls{
-    int *f_iflag;
-    char *pvr_ctl_file_name;
-	void *f_pvr_ctl;
 };
 
 struct f_VIZ_LIC_ctls{
@@ -1174,7 +1170,7 @@ struct f_MHD_reftemp_point_control * init_f_MHD_reftemp_point_control(void *(*c_
 };
 
 struct f_MHD_takepiro_model_control * init_f_MHD_takepiro_model_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
+                                                                        void *f_parent)
 {
 	struct f_MHD_takepiro_model_control *f_bscale_ctl 
 			= (struct f_MHD_takepiro_model_control *) malloc(sizeof(struct f_MHD_takepiro_model_control));
@@ -1372,9 +1368,9 @@ struct void_clist * init_f_VIZ_fline_ctls(void *f_viz_ctls_self, int *f_num_flin
 {
     void *f_parent = c_visualizations_fline_ctls(f_viz_ctls_self);
     char *f_block_name =   (char *) c_fline_ctls_block_name(f_viz_ctls_self);
-	struct void_clist *f_pvr_ctls = init_void_clist(strngcopy_from_f(f_block_name));
-	f_pvr_ctls->f_parent = f_parent;
-	*f_num_fline_ctl = c_fline_ctls_num_fline_ctl(f_pvr_ctls->f_parent);
+	struct void_clist *f_fline_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_fline_ctls->f_parent = f_parent;
+	*f_num_fline_ctl = c_fline_ctls_num_fline_ctl(f_fline_ctls->f_parent);
 	
 	int i;
 	for(i=0;i<*f_num_fline_ctl;i++){
@@ -1384,12 +1380,12 @@ struct void_clist * init_f_VIZ_fline_ctls(void *f_viz_ctls_self, int *f_num_flin
 			printf("malloc error for f_VIZ_FLINE_ctls\n");
 			exit(0);
 		};
-        f_block_name = c_fline_ctls_fname(i, f_pvr_ctls->f_parent);
+        f_block_name = c_fline_ctls_fname(i, f_fline_ctls->f_parent);
         f_ctl_tmp->fline_ctl_file_name =  strngcopy_from_f(f_block_name);
-        f_ctl_tmp->f_fline_ctl =  c_fline_ctls_fline_ctl(i, f_pvr_ctls->f_parent);
-		append_void_clist((void *) f_ctl_tmp, f_pvr_ctls);
+        f_ctl_tmp->f_fline_ctl =  c_fline_ctls_fline_ctl(i, f_fline_ctls->f_parent);
+		append_void_clist((void *) f_ctl_tmp, f_fline_ctls);
 	}
-	return f_pvr_ctls;
+	return f_fline_ctls;
 }
 
 
@@ -1403,15 +1399,8 @@ struct void_clist * init_f_VIZ_pvr_ctls(void *f_viz_ctls_self, int *f_num_pvr_ct
 	
 	int i;
 	for(i=0;i<*f_num_pvr_ctl;i++){
-		struct f_VIZ_PVR_ctls *f_ctl_tmp
-				= (struct f_VIZ_PVR_ctls *) malloc(sizeof(struct f_VIZ_PVR_ctls));
-		if(f_ctl_tmp == NULL){
-			printf("malloc error for f_VIZ_PVR_ctls\n");
-			exit(0);
-		};
-        f_block_name = c_pvr_render_ctls_fname(i, f_pvr_ctls->f_parent);
-        f_ctl_tmp->pvr_ctl_file_name =  strngcopy_from_f(f_block_name);
-        f_ctl_tmp->f_pvr_ctl =  c_pvr_render_ctls_pvr_ctl(i, f_pvr_ctls->f_parent);
+		struct f_VIZ_PVR_ctl *f_ctl_tmp = init_f_VIZ_PVR_ctl(c_pvr_render_ctls_pvr_ctl, 
+															 i, f_pvr_ctls->f_parent);
 		append_void_clist((void *) f_ctl_tmp, f_pvr_ctls);
 	}
 	return f_pvr_ctls;

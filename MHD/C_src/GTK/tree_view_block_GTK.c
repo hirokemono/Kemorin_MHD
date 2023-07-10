@@ -121,8 +121,8 @@ int add_void_list_items_GTK(GtkTreeView *tree_view_to_add,
 
 void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 								void *(*delete_ctl_block_F)(int idx, void *f_parent), 
-							void *(*init_ctl_block_F)(int idx, void *f_parent), 
-							void *(*dealloc_ctl_block_F)(void *f_block), 
+                                void *(*init_ctl_block_F)(int idx, void *f_parent),
+                                void *(*dealloc_ctl_block_F)(void *f_block), 
 								struct void_clist *v_clist)
 {
     GtkTreeModel *model_to_del;
