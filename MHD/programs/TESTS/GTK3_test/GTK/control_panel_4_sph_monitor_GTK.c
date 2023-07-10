@@ -65,9 +65,9 @@ static GtkWidget * draw_sph_pick_mode_ctls_vbox(struct f_MHD_sph_pick_mode_ctls 
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a4, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a5, FALSE, FALSE, 0);
 	
-	GtkWidget *expand_vpwrs = draw_control_block(f_pspec_ctl->c_block_name, f_pspec_ctl->f_iflag,
-												 480, 440, window, vbox_pick);
-	return expand_vpwrs;
+	GtkWidget *expand_vpwr = draw_control_block(f_pspec_ctl->c_block_name, f_pspec_ctl->f_iflag,
+												480, 440, window, vbox_pick);
+	return expand_vpwr;
 };
 
 static GtkWidget * draw_sph_gauss_coef_ctls_vbox(struct f_MHD_sph_gauss_coefs_ctls *f_g_pwr, 
@@ -143,6 +143,59 @@ static GtkWidget * draw_sph_dynamobench_ctls_vbox(struct f_MHD_sph_dynamobench_c
 	return expand_dbench;
 };
 
+static GtkWidget * draw_sph_each_vspec_ctl_expand(char *label_name, void *block_item, GtkWidget *window){
+	struct f_sph_vol_spectr_ctls *f_v_pwr_item = (struct f_sph_vol_spectr_ctls *) block_item;
+	GtkWidget *vbox_v_pwr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_ave_file_ctl);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_spec_file_ctl);
+    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_v_pwr_item->f_volume_spec_format_ctl);
+    GtkWidget *hbox_4 = draw_real_item_entry_hbox(f_v_pwr_item->f_inner_radius_ctl);
+    GtkWidget *hbox_5 = draw_real_item_entry_hbox(f_v_pwr_item->f_outer_radius_ctl);
+    GtkWidget *hbox_6 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_degree_v_spectra_switch);
+    GtkWidget *hbox_7 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_order_v_spectra_switch);
+    GtkWidget *hbox_8 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_diff_v_lm_spectra_switch);
+    GtkWidget *hbox_9 = draw_chara_switch_entry_hbox(f_v_pwr_item->f_axis_v_power_switch);
+	
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_9,  FALSE, FALSE, 0);
+	GtkWidget *expand_v_pwr = draw_control_block(duplicate_underscore(label_name),
+												 f_v_pwr_item->f_iflag,
+												 480, 480, window, vbox_v_pwr);
+    return expand_v_pwr;
+};
+
+static GtkWidget * draw_sph_each_fld_on_circle_ctl_expand(char *label_name, void *block_item, GtkWidget *window){
+	struct f_sph_field_on_circle_ctls *f_circ_ctls = (struct f_sph_field_on_circle_ctls *) block_item;
+	GtkWidget *vbox_dcirc = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_circ_ctls->f_circle_field_file_ctl);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_circ_ctls->f_circle_spectr_file_ctl);
+    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_circ_ctls->f_circle_file_format_ctl);
+    GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_circ_ctls->f_pick_circle_coord_ctl);
+    GtkWidget *hbox_5 = draw_int_item_entry_hbox(f_circ_ctls->f_nphi_mid_eq_ctl);
+    GtkWidget *hbox_6 = draw_real_item_entry_hbox(f_circ_ctls->f_pick_s_ctl);
+    GtkWidget *hbox_7 = draw_real_item_entry_hbox(f_circ_ctls->f_pick_z_ctl);
+	
+    gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_7,  FALSE, FALSE, 0);
+    GtkWidget *expand_dcirc = draw_control_block(duplicate_underscore(label_name), f_circ_ctls->f_iflag,
+                                                 480, 480, window, vbox_dcirc);
+    return expand_dcirc;
+};
+
 
 GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smonitor_ctl,
 										   struct f_sph_monitor_widgets *f_lp_vws,
@@ -154,10 +207,20 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
 	};
 	
 	
-	GtkWidget *expand_vpwrs = draw_sph_vol_spectr_ctl_vbox(f_smonitor_ctl->f_v_pwr,
-                                                           f_lp_vws->vpwr_Widgets, window);
-	GtkWidget *expand_dcirc = draw_sph_d_circle_ctl_vbox(f_smonitor_ctl->f_circ_ctls,
-														 f_lp_vws->dcirc_Widgets, window);
+	GtkWidget *expand_vpwrs = draw_array_block_ctl_vbox(f_smonitor_ctl->f_v_pwr,
+                                                        c_append_sph_mntr_vspec_ctl,
+                                                        c_delete_sph_mntr_vspec_ctl,
+                                                        (void *) init_f_sph_vol_spectr_ctls,
+                                                        dealloc_f_sph_vol_spectr_ctls,
+                                                        (void *) draw_sph_each_vspec_ctl_expand,
+                                                        f_lp_vws->vpwr_Widgets, window);
+	GtkWidget *expand_dcircs = draw_array_block_ctl_vbox(f_smonitor_ctl->f_circ_ctls,
+                                                         c_append_circles_meq_ctl,
+                                                         c_delete_circles_meq_ctl,
+                                                         (void *) init_f_sph_field_on_circle_ctls,
+                                                         dealloc_f_sph_field_on_circle_ctls,
+                                                         (void *) draw_sph_each_fld_on_circle_ctl_expand,
+                                                         f_lp_vws->dcirc_Widgets, window);
 	GtkWidget *vbox_smontr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	
 	
@@ -215,7 +278,7 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
 	gtk_box_pack_start(GTK_BOX(vbox_smontr), hbox_13, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox_smontr), expand_dbench_c,  FALSE, FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(vbox_smontr), expand_dcirc);
+	gtk_container_add(GTK_CONTAINER(vbox_smontr), expand_dcircs);
 	
 	GtkWidget *expand_smntr = draw_control_block(f_smonitor_ctl->c_block_name, f_smonitor_ctl->f_iflag,
                                                  480, 240, window, vbox_smontr);

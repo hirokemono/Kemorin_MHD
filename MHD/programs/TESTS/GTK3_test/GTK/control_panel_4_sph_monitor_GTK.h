@@ -17,11 +17,10 @@
 #include "control_panel_int_GTK.h"
 #include "control_panel_int2_GTK.h"
 #include "control_block_panel_GTK.h"
-#include "sph_data_on_circles_block_panel_GTK.h"
 
 struct f_sph_monitor_widgets{
-	struct sph_d_circle_widgets *dcirc_Widgets;
-	struct sph_vspectr_widgets * vpwr_Widgets;
+	struct block_array_widgets *dcirc_Widgets;
+	struct block_array_widgets * vpwr_Widgets;
 	
 	GtkWidget *f_pick_radius_ctl_tree;
 	GtkWidget *f_idx_pick_layer_ctl_tree;

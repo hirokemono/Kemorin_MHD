@@ -80,8 +80,8 @@ int add_void_list_by_bottun_GTK(int index, void *void_in, GtkTreeView *tree_view
 
 int add_void_list_items_GTK(GtkTreeView *tree_view_to_add, 
 							void *(*append_ctl_block_F)(int idx, char *block_name, void *f_parent), 
-							void *(*init_ctl_block_F)(int idx, void *f_parent), 
-							void *(*dealloc_ctl_block_F)(void *f_block), 
+							void *(*init_block_item)(int idx, void *f_parent),
+							void *(*dealloc_block_item)(void *f_block),
 							struct void_clist *v_clist)
 {
     GtkTreeModel *model_to_add;
@@ -103,12 +103,12 @@ int add_void_list_items_GTK(GtkTreeView *tree_view_to_add,
 	
 	int idx;
 	for(idx=0;idx<count_void_clist(v_clist);idx++){
-		dealloc_ctl_block_F(void_clist_at_index(idx, v_clist));
+        dealloc_block_item(void_clist_at_index(idx, v_clist));
 	};
 	append_void_clist(void_in, v_clist);
 	
 	for(idx=0;idx<count_void_clist(v_clist);idx++){
-		void *void_in = init_ctl_block_F(idx, v_clist->f_parent);
+		void *void_in = init_block_item(idx, v_clist->f_parent);
 		replace_void_clist_at_index(idx, void_in, v_clist);
 	};
 	
@@ -121,8 +121,8 @@ int add_void_list_items_GTK(GtkTreeView *tree_view_to_add,
 
 void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 								void *(*delete_ctl_block_F)(int idx, void *f_parent), 
-                                void *(*init_ctl_block_F)(int idx, void *f_parent),
-                                void *(*dealloc_ctl_block_F)(void *f_block), 
+                                void *(*init_block_item)(int idx, void *f_parent),
+                                void *(*dealloc_block_item)(void *f_block),
 								struct void_clist *v_clist)
 {
     GtkTreeModel *model_to_del;
@@ -183,12 +183,12 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 		delete_ctl_block_F(idx, v_clist->f_parent);
 		
 		for(i=0;i<count_void_clist(v_clist);i++){
-			dealloc_ctl_block_F(void_clist_at_index(i, v_clist));
+            dealloc_block_item(void_clist_at_index(i, v_clist));
 		};
 		del_void_clist_by_index(idx, v_clist);
 		
 		for(i=0;i<count_void_clist(v_clist);i++){
-			void *void_in = init_ctl_block_F(i, v_clist->f_parent);
+			void *void_in = init_block_item(i, v_clist->f_parent);
 			replace_void_clist_at_index(i, void_in, v_clist);
 		};
 	}

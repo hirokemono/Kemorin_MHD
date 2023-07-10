@@ -20,7 +20,7 @@
 #include "control_boxes_single_items_GTK.h"
 #include "c_ctl_data_sph_monitor_arrays.h"
 
-struct sph_vspectr_widgets{
+struct block_array_widgets{
 	GtkWidget *vbox_vpwr_items;
 	GtkWidget *v_pwr_tree_view;
     GtkWidget *vbox_vpwr;
@@ -28,8 +28,15 @@ struct sph_vspectr_widgets{
 
 /* prototypes */
 
-GtkWidget * draw_sph_vol_spectr_ctl_vbox(struct void_clist *f_v_pwr, 
-										 struct sph_vspectr_widgets *vpwr_Widgets,
-										 GtkWidget *window);
+GtkWidget * draw_array_block_ctl_vbox(struct void_clist *f_v_pwr,
+                                      void *(*append_ctl_block_F)(int idx, char *block_name, void *f_parent),
+                                      void *(*delete_ctl_block_F)(int idx, void *f_parent),
+                                      void *(*init_block_item)(int idx, void *f_parent),
+                                      void *(*dealloc_block_item)(void *f_item),
+                                      void *(*const_each_block_expander)(char *label_name,
+                                                                         void *block_item,
+                                                                         GtkWidget *window),
+                                      struct block_array_widgets *array_block_Wgts,
+                                      GtkWidget *window);
 
 #endif /* CONTROL_BLOCK_PANEL_GTK_H_ */

@@ -39,7 +39,6 @@ extern void c_view_control_sph_SGS_MHD();
 
 extern void * c_pvr_render_ctls_block_name(void *f_pvr_ctls);
 extern int    c_pvr_render_ctls_num_pvr_ctl(void *f_pvr_ctls);
-extern void * c_pvr_render_ctls_pvr_ctl(int idx, void *f_pvr_ctls);
 extern void * c_append_viz_pvr_render_ctls(int idx, char *block_name, void *f_pvr_ctls);
 extern void * c_delete_viz_pvr_render_ctls(int idx, void *f_pvr_ctls);
 
@@ -686,6 +685,8 @@ struct main_widgets{
 //	GtkWidget *expand_vpwrs;
 //	GtkWidget *expand_smntr;
 	struct f_sph_monitor_widgets *f_lp_vws;
+	
+	struct block_array_widgets *vpvr_Wgts;
 };
 
 
@@ -1399,8 +1400,7 @@ struct void_clist * init_f_VIZ_pvr_ctls(void *f_viz_ctls_self, int *f_num_pvr_ct
 	
 	int i;
 	for(i=0;i<*f_num_pvr_ctl;i++){
-		struct f_VIZ_PVR_ctl *f_ctl_tmp = init_f_VIZ_PVR_ctl(c_pvr_render_ctls_pvr_ctl, 
-															 i, f_pvr_ctls->f_parent);
+		struct f_VIZ_PVR_ctl *f_ctl_tmp = init_f_VIZ_PVR_ctl(i, f_pvr_ctls->f_parent);
 		append_void_clist((void *) f_ctl_tmp, f_pvr_ctls);
 	}
 	return f_pvr_ctls;
@@ -1772,6 +1772,20 @@ void draw_ISO_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c
 	return;
 }
 
+static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR_ctl *f_pvr_item, GtkWidget *window){
+	GtkWidget *vbox_v_pwr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_pvr_item->f_pvr_field_ctl);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_1,  FALSE, FALSE, 0);
+    GtkWidget *expand_v_pwr = draw_control_block_w_file_switch(duplicate_underscore(label_name),
+															   f_pvr_item->f_iflag,
+															   f_pvr_item->pvr_ctl_file_name,
+															   480, 480, window, vbox_v_pwr);
+    return expand_v_pwr;
+};
+
+
+
 void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
 						  struct main_widgets *mWidgets){
 	f_MHD_vws = (struct f_MHD_tree_views *) malloc(sizeof(struct f_MHD_tree_views));
@@ -1888,10 +1902,14 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 													 &f_MHD_ctl->f_viz_ctls->f_num_map_ctl,
 													 560, 500, window, vbox_map);
 	
-	GtkWidget *vbox_pvr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *expand_MHD_pvr = draw_control_block(f_MHD_ctl->f_viz_ctls->f_pvr_ctls->clist_name, 
-													 &f_MHD_ctl->f_viz_ctls->f_num_pvr_ctl,
-													 560, 500, window, vbox_pvr);
+	
+	GtkWidget *expand_MHD_pvr = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_pvr_ctls,
+                                                          c_append_viz_pvr_render_ctls,
+                                                          c_delete_viz_pvr_render_ctls,
+                                                          (void *) init_f_VIZ_PVR_ctl,
+                                                          dealloc_f_VIZ_PVR_ctl,
+                                                          (void *) draw_viz_each_pvr_ctl_vbox,
+                                                          mWidgets->vpvr_Wgts, window);
 	
 	GtkWidget *vbox_lic = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	GtkWidget *expand_MHD_lic = draw_control_block(f_MHD_ctl->f_viz_ctls->f_lic_ctls->clist_name, 
