@@ -93,7 +93,7 @@ extern void * c_SPH_SGS_second_reference_ctl(void *f_sph_filter_ctl);
 
 
 
-struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_in, void *f_parent)
+static struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_in, void *f_parent)
 {
 	struct f_MHD_SGS_SPH_filter_control *f_sph_filter_ctl 
 			= (struct f_MHD_SGS_SPH_filter_control *) malloc(sizeof(struct f_MHD_SGS_SPH_filter_control));
@@ -126,7 +126,7 @@ struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_
 };
 
 
-struct f_MHD_SGS_3d_filter_control * init_f_MHD_SGS_3d_filter_control(void *(*c_load_self)(void *f_parent), 
+static struct  f_MHD_SGS_3d_filter_control * init_f_MHD_SGS_3d_filter_control(void *(*c_load_self)(void *f_parent), 
 															  void *f_parent)
 {
 	struct f_MHD_SGS_3d_filter_control *f_s3df_ctl 
@@ -157,7 +157,7 @@ struct f_MHD_SGS_3d_filter_control * init_f_MHD_SGS_3d_filter_control(void *(*c_
 	return f_s3df_ctl;
 }
 
-struct f_MHD_SGS_layer_control * init_f_MHD_SGS_layer_control(void *(*c_load_self)(void *f_parent), 
+static struct  f_MHD_SGS_layer_control * init_f_MHD_SGS_layer_control(void *(*c_load_self)(void *f_parent), 
 															  void *f_parent)
 {
 	struct f_MHD_SGS_layer_control *f_elayer_ctl 
@@ -192,7 +192,7 @@ struct f_MHD_SGS_layer_control * init_f_MHD_SGS_layer_control(void *(*c_load_sel
 	return f_elayer_ctl;
 }
 
-struct f_MHD_SGS_filter_file_control * init_f_MHD_SGS_filter_file_control(void *(*c_load_self)(void *f_parent), 
+static struct  f_MHD_SGS_filter_file_control * init_f_MHD_SGS_filter_file_control(void *(*c_load_self)(void *f_parent), 
 															  void *f_parent)
 {
 	struct f_MHD_SGS_filter_file_control *f_ffile_ctl 

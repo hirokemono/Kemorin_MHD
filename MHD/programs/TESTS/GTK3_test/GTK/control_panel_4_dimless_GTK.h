@@ -5,8 +5,8 @@
 //  Created by Hiroaki Matsui on 2018/08/15.
 */
 
-#ifndef control_panel_4_dimless_GTK_h_
-#define control_panel_4_dimless_GTK_h_
+#ifndef CONTROL_PANEL_4_DIMLESS_GTK_H_
+#define CONTROL_PANEL_4_DIMLESS_GTK_H_
 
 #include <stdlib.h>
 
@@ -30,9 +30,8 @@ struct f_MHD_dimless_control{
 
 /* prototypes */
 
-struct f_MHD_dimless_control * init_f_MHD_dimless_ctl(void *(*c_load_self)(void *f_parent),
-													  void *f_parent);
-GtkWidget * add_dimless_selection_box(struct f_MHD_dimless_control *f_dless_ctl, GtkWidget *window);
+GtkWidget * add_dimless_selection_box(struct f_MHD_dimless_control *f_dless_ctl, 
+									  struct dimless_views *f_dimless_vws, GtkWidget *window);
 
 
-#endif /* control_panel_4_dimless_GTK_h */
+#endif /* CONTROL_PANEL_4_DIMLESS_GTK_H_ */
