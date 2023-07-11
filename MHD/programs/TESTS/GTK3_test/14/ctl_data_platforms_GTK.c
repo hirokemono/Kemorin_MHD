@@ -7,8 +7,8 @@
 
 #include "ctl_data_platforms_GTK.h"
 
-int lengthchara_f();
-extern int num_file_fmt_items_f();
+int lengthchara_f(void);
+extern int num_file_fmt_items_f(void);
 extern void set_file_fmt_items_f(char *fmt_names_c);
 
 

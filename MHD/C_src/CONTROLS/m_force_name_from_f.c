@@ -7,7 +7,7 @@
 
 #include "m_force_name_from_f.h"
 
-int lengthchara_f();
+int lengthchara_f(void);
 
 int num_advection_controls_f();
 int num_force_controls_f();

@@ -34,6 +34,7 @@
 
 #include "c_ctl_data_SGS_model.h"
 #include "c_control_data_pvrs.h"
+#include "c_ctl_data_platforms.h"
 
             
 extern void c_view_control_sph_SGS_MHD();
@@ -1306,6 +1307,7 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 struct f_MHD_tree_views{
 	struct f_sph_shell_views *f_psph_vws;
 	struct f_MHD_equations_views *f_eqs_vws;
+    struct dimless_views * f_dimless_vws;
 	
 	GtkWidget *f_force_tree_view;
 	GtkWidget *f_force_default_view;
@@ -1406,8 +1408,10 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	struct boundary_condition_view * bc_temp_vws
 			= init_temp_bc_views_GTK(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_T_ctl);
 	bc_temp_vws->bc_tree_view = gtk_tree_view_new();
+    /*
     init_bc_temp_tree_view(bc_temp_vws);
 	add_bc_temp_selection_box(bc_temp_vws, vbox_m3);
+     */
     GtkWidget *expand_MHD_node_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_nbc_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_iflag,
 													   560, 500, window, vbox_m3);
@@ -1421,7 +1425,8 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	
 	GtkWidget *vbox_MHD_force = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names, 
 														   f_MHD_vws->f_force_tree_view);
-	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl, window);
+	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl,
+                                                              f_MHD_vws->f_dimless_vws, window);
 	
 	
 	GtkWidget *vbox_eqs = draw_MHD_equations_vbox(f_MHD_ctl->f_model_ctl->f_eqs_ctl, 

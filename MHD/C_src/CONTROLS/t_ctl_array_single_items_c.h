@@ -16,7 +16,7 @@
 
 /*  Prototypes */
 
-extern int lengthchara_f();
+extern int lengthchara_f(void);
 extern char * strngcopy_from_f(char * f_char);
 extern void load_chara_from_c(char *c_ctl);
 

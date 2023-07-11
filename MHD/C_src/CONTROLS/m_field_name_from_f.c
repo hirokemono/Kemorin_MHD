@@ -7,7 +7,7 @@
 
 #include "m_field_name_from_f.h"
 
-int lengthchara_f();
+int lengthchara_f(void);
 
 int count_MHD_field_groups_f();
 int count_MHD_sym_field_groups_f();

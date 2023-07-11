@@ -7,7 +7,7 @@
 
 #include "t_control_data_lic_masking_list.h"
 
-int lengthchara_f();
+int lengthchara_f(void);
 int num_ctl_label_masking_f();
 void set_ctl_label_masking_f(char *label_1d);
 

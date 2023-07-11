@@ -7,7 +7,7 @@
 
 #include "t_control_label_from_f.h"
 
-int lengthchara_f();
+int lengthchara_f(void);
 
 struct control_labels_f * init_control_labels_f(int (*num_list_func)(void),
                                                 void (*name_list_func)(char *)){
