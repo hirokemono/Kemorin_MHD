@@ -40,7 +40,6 @@ c_control_data_pvrs.o \
 c_ctl_data_4_sph_monitor.o \
 c_ctl_data_sph_monitor_arrays.o \
 c_ctl_data_SGS_model.o \
-c_ctl_data_platforms.o \
 control_panel_4_sph_monitor_GTK.o
 
 
@@ -70,10 +69,6 @@ control_panels_MHD_control_GTK.o: GTK/control_panels_MHD_control_GTK.c GTK/contr
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panels_MHD_control_GTK.c
 
-c_ctl_data_platforms.o.o: GTK/c_ctl_data_platforms.o.c GTK/c_ctl_data_platforms.h
-	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
-	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_ctl_data_platforms.o.c
-
 c_ctl_data_SGS_model.o: GTK/c_ctl_data_SGS_model.c GTK/c_ctl_data_SGS_model.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_ctl_data_SGS_model.c
@@ -99,7 +94,7 @@ ctl_data_platforms_GTK.o: ctl_data_platforms_GTK.c ctl_data_platforms_GTK.h GTK/
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/ctl_data_platforms_GTK.c
 
-file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o GTK/control_panels_MHD_control_GTK.h GTK/control_block_panel_GTK.h GTK/c_ctl_data_4_sph_monitor.h GTK/control_panel_4_sph_monitor_GTK.h GTK/c_control_data_pvrs.h GTK/c_ctl_data_SGS_model.h GTK/c_ctl_data_platforms.o.h
+file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o control_panel_4_dimless_GTK.o GTK/control_panels_MHD_control_GTK.h GTK/control_block_panel_GTK.h GTK/c_ctl_data_4_sph_monitor.h GTK/control_panel_4_sph_monitor_GTK.h GTK/c_control_data_pvrs.h GTK/c_ctl_data_SGS_model.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/file_dialog.c
 
