@@ -20,6 +20,7 @@
 
 /*  prototype */
 
+GtkWidget * create_fixed_label_tree(struct chara_clist *c1_clist);
 GtkWidget * create_control_flags_tree_view(struct control_labels_f *flag_list);
 void add_control_combobox_vbox_old(char *c_charavalue,
                                struct control_labels_f *flag_list,

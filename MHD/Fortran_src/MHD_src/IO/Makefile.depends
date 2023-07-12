@@ -134,7 +134,7 @@ set_mean_square_array.o: $(MHD_IO_DIR)/set_mean_square_array.f90 m_precision.o t
 	$(F90) -c $(F90OPTFLAGS) $<
 set_node_group_types.o: $(MHD_IO_DIR)/set_node_group_types.f90 m_precision.o m_boundary_condition_IDs.o skip_comment_f.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_surface_group_types.o: $(MHD_IO_DIR)/set_surface_group_types.f90 m_precision.o m_boundary_condition_IDs.o set_node_group_types.o skip_comment_f.o
+set_surface_group_types.o: $(MHD_IO_DIR)/set_surface_group_types.f90 m_precision.o m_boundary_condition_IDs.o set_node_group_types.o skip_comment_f.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_MHD_IO_data.o: $(MHD_IO_DIR)/t_MHD_IO_data.f90 m_precision.o t_MHD_file_parameter.o t_field_data_IO.o t_ucd_data.o t_cal_max_indices.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -52,6 +52,30 @@ static void cb_set_selected_name_old(GtkComboBox *combobox, gpointer user_data)
 	return;
 }
 
+
+GtkWidget * create_fixed_label_tree(struct chara_clist *c1_clist)
+{
+    GtkWidget *ctl_flags_tree_view = gtk_tree_view_new();
+    
+    /* Construct empty list storage */
+    GtkListStore *child_model = gtk_list_store_new(1, G_TYPE_STRING);
+    /* Construct model for sorting and set to tree view */
+    GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
+    /* Append items */
+    int i;
+    GtkTreeIter iter;
+    for(i=0;i<count_chara_clist(c1_clist);i++){
+        gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
+        gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+                           COLUMN_FIELD_INDEX, chara_clist_at_index(i,c1_clist)->c_tbl,
+                           -1);
+    };
+    
+    gtk_tree_view_set_model(GTK_TREE_VIEW(ctl_flags_tree_view), model);
+    return ctl_flags_tree_view;
+};
+
+
 GtkWidget * create_control_flags_tree_view(struct control_labels_f *flag_list)
 {
 	int index = 0;

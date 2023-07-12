@@ -145,7 +145,8 @@ ctl_data_node_boundary_IO.o \
 ctl_data_surf_boundary_IO.o \
 ctl_data_temp_model_IO.o \
 \
-set_node_group_types.o
+set_node_group_types.o \
+set_surface_group_types.o
 
 
 MOD_VIZ_CTL_DLL = \

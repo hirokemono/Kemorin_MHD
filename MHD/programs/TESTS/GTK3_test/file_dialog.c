@@ -225,6 +225,12 @@ extern void *set_label_thermal_bc_f();
 extern void *set_label_momentum_bc_f();
 extern void *set_label_induction_bc_f();
 
+extern void *surf_bc_label_thermal_bc_f();
+extern void *surf_bc_label_momentum_bc_f();
+extern void *surf_bc_label_induction_bc_f();
+extern void *surf_bc_label_infinity_bc_f();
+
+
 struct f_MHD_node_bc_control{
 	void * f_self;
 	int * f_iflag;
@@ -1306,16 +1312,27 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	
 	return vbox_1;
 };
+
+struct f_MHD_BCs_tree_views{
+	struct boundary_condition_view *bc_mom_vws;
+ 	struct boundary_condition_view *bc_induction_vws;
+	struct boundary_condition_view *bc_temp_vws;
+	struct boundary_condition_view *bc_comp_vws;
+	struct boundary_condition_view *bc_infinity_vws;
+	
+	struct boundary_condition_view *bc_press_vws;
+	struct boundary_condition_view *bc_magp_vws;
+	struct boundary_condition_view *f_vecp_bc_type;
+	struct boundary_condition_view *f_current_bc_type;
+};
+
 struct f_MHD_tree_views{
 	struct f_sph_shell_views *f_psph_vws;
 	struct f_MHD_equations_views *f_eqs_vws;
     struct dimless_views * f_dimless_vws;
 
-	struct boundary_condition_view *bc_mom_vws;
- 	struct boundary_condition_view *bc_induction_vws;   
-	struct boundary_condition_view *bc_temp_vws;
-	struct boundary_condition_view *bc_comp_vws;
-
+	struct f_MHD_BCs_tree_views *bc_nod_bc_vws;
+ 	struct f_MHD_BCs_tree_views *bc_surf_bc_vws;
 
 	GtkWidget *f_force_tree_view;
 	GtkWidget *f_force_default_view;
@@ -1365,7 +1382,8 @@ void draw_ISO_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c
 	return;
 }
 
-static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR_ctl *f_pvr_item, GtkWidget *window){
+static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR_ctl *f_pvr_item, 
+											  GtkWidget *window){
 	GtkWidget *vbox_v_pwr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_pvr_item->f_pvr_field_ctl);
@@ -1377,158 +1395,106 @@ static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR
     return expand_v_pwr;
 };
 
-static void load_clist_to_chara2_real_array(struct chara2_real_clist *c2r_clst){
-    int i;
-    for(i=0;i<count_chara2_real_clist(c2r_clst);i++){
-        c_store_chara2_real_array(c2r_clst->f_self, i,
-                                  chara2_real_clist_at_index(i,c2r_clst)->c1_tbl,
-                                  chara2_real_clist_at_index(i,c2r_clst)->c2_tbl,
-                                  chara2_real_clist_at_index(i,c2r_clst)->r_data);
-    }
-    return;
+static GtkWidget * draw_node_bc_ctl_vbox(struct f_MHD_node_bc_control *f_nbc_ctl,
+										 struct f_MHD_BCs_tree_views *bc_nod_bc_vws, 
+										 GtkWidget *window){
+	GtkWidget *vbox_m3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	
+	bc_nod_bc_vws = (struct f_MHD_BCs_tree_views *) malloc(sizeof(struct f_MHD_BCs_tree_views));
+	if(f_MHD_vws == NULL){
+		printf("malloc error for bc_nod_bc_vws\n");
+		exit(0);
+	};
+	
+    struct chara_clist *f_mom_bc_type =  init_f_ctl_chara_array(set_label_momentum_bc_f, 
+																f_nbc_ctl->f_self);
+    struct chara_clist *f_idct_bc_type = init_f_ctl_chara_array(set_label_induction_bc_f, 
+																f_nbc_ctl->f_self);
+    struct chara_clist *f_heat_bc_type = init_f_ctl_chara_array(set_label_thermal_bc_f, 
+																f_nbc_ctl->f_self);
+
+	GtkWidget *expand_MHD_node_bcU = boundary_condition_expander(f_nbc_ctl->f_node_bc_U_ctl, f_mom_bc_type,
+																 bc_nod_bc_vws->bc_mom_vws, window);
+	GtkWidget *expand_MHD_node_bcB = boundary_condition_expander(f_nbc_ctl->f_node_bc_B_ctl, f_idct_bc_type,
+																 bc_nod_bc_vws->bc_induction_vws, window);
+	GtkWidget *expand_MHD_node_bcT = boundary_condition_expander(f_nbc_ctl->f_node_bc_T_ctl, f_heat_bc_type,
+																 bc_nod_bc_vws->bc_temp_vws, window);
+	GtkWidget *expand_MHD_node_bcC = boundary_condition_expander(f_nbc_ctl->f_node_bc_C_ctl, f_heat_bc_type,
+																 bc_nod_bc_vws->bc_comp_vws, window);
+	
+	GtkWidget *expand_MHD_node_bcP = boundary_condition_expander(f_nbc_ctl->f_node_bc_P_ctl, f_heat_bc_type,
+																 bc_nod_bc_vws->bc_press_vws, window);
+	GtkWidget *expand_MHD_node_bcM = boundary_condition_expander(f_nbc_ctl->f_node_bc_MP_ctl, f_heat_bc_type,
+																 bc_nod_bc_vws->bc_magp_vws, window);
+	GtkWidget *expand_MHD_node_bcA = boundary_condition_expander(f_nbc_ctl->f_node_bc_A_ctl, f_heat_bc_type,
+																 bc_nod_bc_vws->f_vecp_bc_type, window);
+	GtkWidget *expand_MHD_node_bcJ = boundary_condition_expander(f_nbc_ctl->f_node_bc_J_ctl, f_heat_bc_type,
+																 bc_nod_bc_vws->f_current_bc_type, window);
+	
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcU, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcB, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcT, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcC, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcP, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcM, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcA, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcJ, FALSE, FALSE, 0);
+	return vbox_m3;
 }
 
-
-
-static void thermal_bc_position_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-			gchar *new_text, gpointer user_data)
-{
-    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
+static GtkWidget * draw_surf_bc_ctl_vbox(struct f_MHD_surf_bc_control *f_sbc_ctl,
+										 struct f_MHD_BCs_tree_views *bc_surf_bc_vws, 
+										 GtkWidget *window){
+	GtkWidget *vbox_m3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	
-	c2r_tree_2nd_text_edited(path_str, new_text, GTK_TREE_VIEW(bc_vws->bc_tree_view),
-                             bc_vws->bc_T_gtk);
-	write_chara2_real_clist(stdout, 0, "bounday location changed", bc_vws->bc_T_gtk);
-    load_clist_to_chara2_real_array(bc_vws->bc_T_gtk);
+	bc_surf_bc_vws = (struct f_MHD_BCs_tree_views *) malloc(sizeof(struct f_MHD_BCs_tree_views));
+	if(f_MHD_vws == NULL){
+		printf("malloc error for bc_surf_bc_vws\n");
+		exit(0);
+	};
+	
+    struct chara_clist *f_mom_bc_type =  init_f_ctl_chara_array(surf_bc_label_momentum_bc_f, 
+																f_sbc_ctl->f_self);
+    struct chara_clist *f_idct_bc_type = init_f_ctl_chara_array(surf_bc_label_induction_bc_f, 
+																f_sbc_ctl->f_self);
+    struct chara_clist *f_heat_bc_type = init_f_ctl_chara_array(surf_bc_label_thermal_bc_f, 
+																f_sbc_ctl->f_self);
+    struct chara_clist *f_infty_bc_type = init_f_ctl_chara_array(surf_bc_label_infinity_bc_f, 
+																f_sbc_ctl->f_self);
+
+	GtkWidget *expand_MHD_node_bcU = boundary_condition_expander(f_sbc_ctl->f_surf_bc_ST_ctl, f_mom_bc_type,
+																 bc_surf_bc_vws->bc_mom_vws, window);
+	GtkWidget *expand_MHD_node_bcB = boundary_condition_expander(f_sbc_ctl->f_surf_bc_BN_ctl, f_idct_bc_type,
+																 bc_surf_bc_vws->bc_induction_vws, window);
+	GtkWidget *expand_MHD_node_bcT = boundary_condition_expander(f_sbc_ctl->f_surf_bc_HF_ctl, f_heat_bc_type,
+																 bc_surf_bc_vws->bc_temp_vws, window);
+	GtkWidget *expand_MHD_node_bcC = boundary_condition_expander(f_sbc_ctl->f_surf_bc_CF_ctl, f_heat_bc_type,
+																 bc_surf_bc_vws->bc_comp_vws, window);
+	GtkWidget *expand_MHD_node_bcF = boundary_condition_expander(f_sbc_ctl->f_surf_bc_INF_ctl, f_infty_bc_type,
+																 bc_surf_bc_vws->bc_infinity_vws, window);
+	
+	GtkWidget *expand_MHD_node_bcP = boundary_condition_expander(f_sbc_ctl->f_surf_bc_PN_ctl, f_heat_bc_type,
+																 bc_surf_bc_vws->bc_press_vws, window);
+	GtkWidget *expand_MHD_node_bcM = boundary_condition_expander(f_sbc_ctl->f_surf_bc_MPN_ctl, f_heat_bc_type,
+																 bc_surf_bc_vws->bc_magp_vws, window);
+	GtkWidget *expand_MHD_node_bcA = boundary_condition_expander(f_sbc_ctl->f_surf_bc_AN_ctl, f_idct_bc_type,
+																 bc_surf_bc_vws->f_vecp_bc_type, window);
+	GtkWidget *expand_MHD_node_bcJ = boundary_condition_expander(f_sbc_ctl->f_surf_bc_JN_ctl, f_idct_bc_type,
+																 bc_surf_bc_vws->f_current_bc_type, window);
+
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcU, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcB, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcT, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcC, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcF, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcP, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcM, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcA, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcJ, FALSE, FALSE, 0);
+	return vbox_m3;
 }
-static void thermal_bc_type_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-			gchar *new_text, gpointer user_data)
-{
-    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
-    
-    c2r_tree_1st_text_edited(path_str, new_text, GTK_TREE_VIEW(bc_vws->bc_tree_view),
-                             bc_vws->bc_T_gtk);
-    write_chara2_real_clist(stdout, 0, "BC type changed", bc_vws->bc_T_gtk);
-    load_clist_to_chara2_real_array(bc_vws->bc_T_gtk);
-}
-static void thermal_bc_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-			gchar *new_text, gpointer user_data)
-{
-    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
-	
-	c2r_tree_value_edited(path_str, new_text, GTK_TREE_VIEW(bc_vws->bc_tree_view),
-                          bc_vws->bc_T_gtk);
-    write_chara2_real_clist(stdout, 0, "buoyancy changed", bc_vws->bc_T_gtk);
-    load_clist_to_chara2_real_array(bc_vws->bc_T_gtk);
-}
-
-
-static void cb_delete_thermal_bc_by_list(GtkButton *button, gpointer user_data)
-{
-    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
-	if(count_chara2_real_clist(bc_vws->bc_T_gtk) < 3) return;
-    
-    delete_c2r_list_items_GTK(GTK_TREE_VIEW(bc_vws->bc_tree_view), bc_vws->bc_T_gtk);
-    write_chara2_real_clist(stdout, 0, "buoyancy coeffient deleted", bc_vws->bc_T_gtk);
-	reflesh_f_ctl_c2r_array(count_chara2_real_clist(bc_vws->bc_T_gtk), bc_vws->bc_T_gtk);
-	load_clist_to_chara2_real_array(bc_vws->bc_T_gtk);
-}
-
-
-static void cb_add_thermal_bc(GtkButton *button, gpointer user_data)
-{
-    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
-	if(count_chara2_real_clist(bc_vws->bc_T_gtk) > 1) return;
-	
-	
-    bc_vws->index_bc = add_c2r_list_by_bottun_GTK(bc_vws->index_bc,
-                                                  GTK_TREE_VIEW(bc_vws->bc_tree_view),
-                                                  bc_vws->bc_T_gtk);
-	write_chara2_real_clist(stdout, 0, "buoyancy coeffient added", bc_vws->bc_T_gtk);
-	reflesh_f_ctl_c2r_array(count_chara2_real_clist(bc_vws->bc_T_gtk), bc_vws->bc_T_gtk);
-	load_clist_to_chara2_real_array(bc_vws->bc_T_gtk);
-    return;
-}
-
-
-void add_bc_temp_selection_box2(struct boundary_condition_view *bc_vws, GtkWidget *vbox)
-{
-    GtkTreeModel *model_default =  gtk_tree_view_get_model(GTK_TREE_VIEW(bc_vws->bc_tree_view));
-    GtkWidget *button_add = gtk_button_new_with_label("Add");
-    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
-	
-	add_chara2_real_list_box_w_addbottun(GTK_TREE_VIEW(bc_vws->bc_tree_view),
-                                            button_add, button_delete, vbox);
-    /* Add callbacks */
-	
-	g_signal_connect(G_OBJECT(button_add), "clicked",
-					 G_CALLBACK(cb_add_thermal_bc), (gpointer) bc_vws);
-	g_signal_connect(G_OBJECT(button_delete), "clicked",
-					 G_CALLBACK(cb_delete_thermal_bc_by_list), (gpointer) bc_vws);
-};
-
-
-GtkWidget * create_fixed_label_tree(struct chara_clist *c1_clist)
-{
-	GtkWidget *ctl_flags_tree_view = gtk_tree_view_new();
-	
-	/* Construct empty list storage */
-    GtkListStore *child_model = gtk_list_store_new(1, G_TYPE_STRING);
-    /* Construct model for sorting and set to tree view */
-    GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
-	/* Append items */
-	int i;
-    GtkTreeIter iter;
-    for(i=0;i<count_chara_clist(c1_clist);i++){
-        gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
-        gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                           COLUMN_FIELD_INDEX, chara_clist_at_index(i,c1_clist)->c_tbl,
-                           -1);
-    };
-	
-    gtk_tree_view_set_model(GTK_TREE_VIEW(ctl_flags_tree_view), model);
-	return ctl_flags_tree_view;
-};
-
-
-void init_bc_temp_tree_view2(struct boundary_condition_view *bc_vws){
-    GtkCellRenderer *renderer_cbox = gtk_cell_renderer_combo_new();
-    GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
-    GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();
-	
-	GtkTreeModel *cbox_model
-			= gtk_tree_view_get_model(GTK_TREE_VIEW(bc_vws->bc_type_tree_view));
-
-    
-	create_cbox_text_real_tree_view(GTK_LIST_STORE(cbox_model), GTK_TREE_VIEW(bc_vws->bc_tree_view),
-                                    renderer_cbox, renderer_text, renderer_spin);
-    g_signal_connect(G_OBJECT(renderer_cbox), "edited",
-                     G_CALLBACK(thermal_bc_type_edited_cb), (gpointer) bc_vws);
-    g_signal_connect(G_OBJECT(renderer_text), "edited",
-                     G_CALLBACK(thermal_bc_position_edited_cb), (gpointer) bc_vws);
-    g_signal_connect(G_OBJECT(renderer_spin), "edited",
-                     G_CALLBACK(thermal_bc_value_edited_cb), (gpointer) bc_vws);
-
-    bc_vws->index_bc = append_c2r_list_from_ctl(bc_vws->index_bc, &bc_vws->bc_T_gtk->c2r_item_head,
-                                                GTK_TREE_VIEW(bc_vws->bc_tree_view));
-}
-
-GtkWidget * boundary_condition_expander(struct chara2_real_clist *f_node_bc_T_ctl, 
-                                        struct chara_clist *bc_types, 
-                                        struct boundary_condition_view *bc_temp_vws,
-                                        GtkWidget *window){
-    bc_temp_vws = init_temp_bc_views_GTK(f_node_bc_T_ctl);
-	bc_temp_vws->bc_tree_view =      gtk_tree_view_new();
-	
-	bc_temp_vws->bc_type_tree_view = create_fixed_label_tree(bc_types);
-    init_bc_temp_tree_view2(bc_temp_vws);
-
-    GtkWidget *vbox_m3t = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	add_bc_temp_selection_box2(bc_temp_vws, vbox_m3t);
-    GtkWidget *expand_MHD_node_bcT = wrap_into_expanded_frame_gtk(duplicate_underscore(f_node_bc_T_ctl->clist_name),
-																  320, 160, window, vbox_m3t);
-	return expand_MHD_node_bcT;
-}
-
 
 void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
 						  struct main_widgets *mWidgets){
@@ -1563,36 +1529,14 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 														 560, 500, window, vbox_m2);
 	
 	
-	GtkWidget *vbox_m3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	
-    struct chara_clist *f_mom_bc_type =  init_f_ctl_chara_array(set_label_momentum_bc_f, 
-                                                               f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_self);
-    struct chara_clist *f_idct_bc_type = init_f_ctl_chara_array(set_label_induction_bc_f, 
-                                                                f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_self);
-    struct chara_clist *f_heat_bc_type = init_f_ctl_chara_array(set_label_thermal_bc_f, 
-                                                               f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_self);
-
-	GtkWidget *expand_MHD_node_bcU = boundary_condition_expander(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_U_ctl,
-                                                                 f_mom_bc_type, f_MHD_vws->bc_mom_vws, window);
-	GtkWidget *expand_MHD_node_bcB = boundary_condition_expander(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_B_ctl,
-                                                                 f_mom_bc_type, f_MHD_vws->bc_induction_vws, window);
-	GtkWidget *expand_MHD_node_bcT = boundary_condition_expander(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_T_ctl,
-                                                                 f_heat_bc_type, f_MHD_vws->bc_temp_vws, window);
-	GtkWidget *expand_MHD_node_bcC = boundary_condition_expander(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_C_ctl,
-                                                                 f_heat_bc_type, f_MHD_vws->bc_comp_vws, window);
-
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcU, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcB, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcT, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcC, FALSE, FALSE, 0);
-
-    
+	GtkWidget *vbox_m3 = draw_node_bc_ctl_vbox(f_MHD_ctl->f_model_ctl->f_nbc_ctl,
+											   f_MHD_vws->bc_nod_bc_vws, window);
     GtkWidget *expand_MHD_node_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_nbc_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_iflag,
 													   560, 500, window, vbox_m3);
 	
-	
-	GtkWidget *vbox_m4 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *vbox_m4 = draw_surf_bc_ctl_vbox(f_MHD_ctl->f_model_ctl->f_sbc_ctl,
+											   f_MHD_vws->bc_surf_bc_vws, window);
     GtkWidget *expand_MHD_surf_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_sbc_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_sbc_ctl->f_iflag,
                                                       560, 500, window, vbox_m4);

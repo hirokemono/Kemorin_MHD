@@ -53,6 +53,11 @@
 !!      type(c_ptr) function set_label_thermal_bc_f(c_ctl)  bind(c)
 !!      type(c_ptr) function set_label_momentum_bc_f(c_ctl)  bind(c)
 !!      type(c_ptr) function set_label_induction_bc_f(c_ctl)  bind(c)
+!!
+!!      type(c_ptr) function surf_bc_label_thermal_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function surf_bc_label_momentum_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function surf_bc_label_induction_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function surf_bc_label_infinity_bc_f(c_ctl)  bind(c)
 !!@endverbatim
       module c_link_MHD_boundary_ctl
 !
@@ -66,6 +71,11 @@
       type(ctl_array_chara), save, target, private :: momentum_bc_type
       type(ctl_array_chara), save, target, private :: induction_bc_type
       type(ctl_array_chara), save, target, private :: thermal_bc_type
+!
+      type(ctl_array_chara), save, target, private :: heat_sf_bc_type
+      type(ctl_array_chara), save, target, private :: mom_sf_bc_type
+      type(ctl_array_chara), save, target, private :: induct_sf_bc_type
+      type(ctl_array_chara), save, target, private :: infinity_bc_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -312,6 +322,47 @@
       call set_label_induction_bc(induction_bc_type)
       set_label_induction_bc_f = C_loc(induction_bc_type)
       end function set_label_induction_bc_f
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function surf_bc_label_thermal_bc_f(c_ctl)  bind(c)
+      use set_surface_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call surf_bc_label_thermal_bc(heat_sf_bc_type)
+      surf_bc_label_thermal_bc_f = C_loc(heat_sf_bc_type)
+      end function surf_bc_label_thermal_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function surf_bc_label_momentum_bc_f(c_ctl)  bind(c)
+      use set_surface_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call surf_bc_label_momentum_bc(mom_sf_bc_type)
+      surf_bc_label_momentum_bc_f = C_loc(mom_sf_bc_type)
+      end function surf_bc_label_momentum_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function surf_bc_label_induction_bc_f(c_ctl)  bind(c)
+      use set_surface_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call surf_bc_label_induction_bc(induct_sf_bc_type)
+      surf_bc_label_induction_bc_f = C_loc(induct_sf_bc_type)
+      end function surf_bc_label_induction_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function surf_bc_label_infinity_bc_f(c_ctl)  bind(c)
+      use set_surface_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call surf_bc_label_infinity_bc(infinity_bc_type)
+      surf_bc_label_infinity_bc_f = C_loc(infinity_bc_type)
+      end function surf_bc_label_infinity_bc_f
 !
 !  ---------------------------------------------------------------------
 !
