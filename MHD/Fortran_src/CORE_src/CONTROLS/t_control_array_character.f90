@@ -43,6 +43,10 @@
 !!      subroutine append_control_item_c1(read_c1, array_c1)
 !!        type(read_character_item), intent(in) ::    read_c1
 !!        type(ctl_array_chara), intent(inout) :: array_c1
+!!
+!!      subroutine append_c_to_ctl_array(chara_in, array_c1)
+!!        character(len = kchara), intent(in) ::  chara_in
+!!        type(ctl_array_chara), intent(inout) :: array_c1
 !!@endverbatim
 !!
 !!
@@ -356,6 +360,22 @@
       array_c1%c_tbl(array_c1%num) = read_c1%charavalue
 !
       end subroutine append_control_item_c1
+!
+! ----------------------------------------------------------------------
+!
+      subroutine append_c_to_ctl_array(chara_in, array_c1)
+!
+      character(len = kchara), intent(in) ::  chara_in
+      type(ctl_array_chara), intent(inout) :: array_c1
+      type(read_character_item) :: read_c1
+!
+      read_c1%item_name = '   '
+      read_c1%iflag =     1
+      read_c1%charavalue = trim(chara_in)
+!
+      call append_control_array_c1(read_c1, array_c1)
+!
+      end subroutine append_c_to_ctl_array
 !
 ! ----------------------------------------------------------------------
 !

@@ -50,23 +50,22 @@
 !!     &          bind(C, NAME = 'c_MHD_surf_bc_surf_bc_INF_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!
-!!      integer(c_int) function num_label_thermal_bc_f() bind(c)
-!!      subroutine set_label_thermal_bc_f(names_c)  bind(c)
-!!        type(C_ptr), value :: names_c
-!!      integer(c_int) function num_label_momentum_bc_f() bind(c)
-!!      subroutine set_label_momentum_bc_f(names_c)  bind(c)
-!!        type(C_ptr), value :: names_c
-!!      integer(c_int) function num_label_induction_bc_f() bind(c)
-!!      subroutine set_label_induction_bc_f(names_c)  bind(c)
-!!        type(C_ptr), value :: names_c
+!!      type(c_ptr) function set_label_thermal_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function set_label_momentum_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function set_label_induction_bc_f(c_ctl)  bind(c)
 !!@endverbatim
       module c_link_MHD_boundary_ctl
 !
       use iso_c_binding
+      use t_control_array_character
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
 !
       implicit none
+!
+      type(ctl_array_chara), save, target, private :: momentum_bc_type
+      type(ctl_array_chara), save, target, private :: induction_bc_type
+      type(ctl_array_chara), save, target, private :: thermal_bc_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -286,73 +285,33 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      integer(c_int) function num_label_thermal_bc_f() bind(c)
-!
+      type(c_ptr) function set_label_thermal_bc_f(c_ctl)  bind(c)
       use set_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_label_thermal_bc_f = num_label_thermal_bc()
-      return
-      end function num_label_thermal_bc_f
+      call set_label_thermal_bc(thermal_bc_type)
+      set_label_thermal_bc_f = C_loc(thermal_bc_type)
+      end function set_label_thermal_bc_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_label_thermal_bc_f(names_c)  bind(c)
-!
+      type(c_ptr) function set_label_momentum_bc_f(c_ctl)  bind(c)
       use set_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      type(C_ptr), value :: names_c
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_thermal_bc()])
-      call set_label_thermal_bc(name_f)
-      end subroutine set_label_thermal_bc_f
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(c_int) function num_label_momentum_bc_f() bind(c)
-!
-      use set_node_group_types
-!
-      num_label_momentum_bc_f = num_label_momentum_bc()
-      return
-      end function num_label_momentum_bc_f
+      call set_label_momentum_bc(momentum_bc_type)
+      set_label_momentum_bc_f = C_loc(momentum_bc_type)
+      end function set_label_momentum_bc_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_label_momentum_bc_f(names_c)  bind(c)
-!
+      type(c_ptr) function set_label_induction_bc_f(c_ctl)  bind(c)
       use set_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      type(C_ptr), value :: names_c
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_momentum_bc_f()])
-      call set_label_momentum_bc(name_f)
-      end subroutine set_label_momentum_bc_f
-!
-!  ---------------------------------------------------------------------
-!
-      integer(c_int) function num_label_induction_bc_f() bind(c)
-!
-      use set_node_group_types
-!
-      num_label_induction_bc_f = num_label_induction_bc()
-      return
-      end function num_label_induction_bc_f
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_induction_bc_f(names_c)  bind(c)
-!
-      use set_node_group_types
-!
-      type(C_ptr), value :: names_c
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_induction_bc_f()])
-      call set_label_induction_bc(name_f)
-      end subroutine set_label_induction_bc_f
+      call set_label_induction_bc(induction_bc_type)
+      set_label_induction_bc_f = C_loc(induction_bc_type)
+      end function set_label_induction_bc_f
 !
 !  ---------------------------------------------------------------------
 !

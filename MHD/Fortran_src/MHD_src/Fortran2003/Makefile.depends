@@ -1,4 +1,4 @@
-c_link_MHD_boundary_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_boundary_ctl.f90 t_ctl_data_node_boundary.o t_ctl_data_surf_boundary.o set_node_group_types.o
+c_link_MHD_boundary_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_boundary_ctl.f90 t_control_array_character.o t_ctl_data_node_boundary.o t_ctl_data_surf_boundary.o set_node_group_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_MHD_dimless_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_dimless_ctl.f90 t_ctl_data_dimless_numbers.o t_ctl_data_mhd_normalize.o
 	$(F90) -c $(F90OPTFLAGS) $<

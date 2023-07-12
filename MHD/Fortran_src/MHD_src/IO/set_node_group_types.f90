@@ -17,14 +17,10 @@
 !!      subroutine set_bc_group_types_sph_magne(bc_type_ctl, ibc_type)
 !!      subroutine set_bc_group_types_fluxes(bc_type_ctl, ibc_type)
 !!
-!!      integer(kind = kint) function num_label_thermal_bc()
 !!      subroutine set_label_thermal_bc(names)
-!!        character(len = kchara), intent(inout)                        &
-!!     &                         :: names(n_label_thermal_bc)
-!!      integer(kind = kint) function num_label_thermal_bc()
-!!      subroutine set_label_thermal_bc(names)
-!!        character(len = kchara), intent(inout)                        &
-!!     &                         :: names(n_label_thermal_bc)
+!!      subroutine set_label_momentum_bc(array_c)
+!!      subroutine set_label_induction_bc(array_c)
+!!        type(ctl_array_chara), intent(inout) :: array_c
 !!@endverbatim
 !
       module set_node_group_types
@@ -121,13 +117,6 @@
 !>      control name for fixed flux by external file
       character(len = kchara), parameter                                &
      &               :: flux_file_bc = 'fixed_flux_file'
-!
-      integer(kind = kint), parameter, private                          &
-     &                                :: n_label_thermal_bc =   6
-      integer(kind = kint), parameter, private                          &
-     &                                :: n_label_momentum_bc =  5
-      integer(kind = kint), parameter, private                          &
-     &                                :: n_label_induction_bc = 3
 !
       private :: fixed_bc, fixed_ctl_bc, fixed_file, fixed_file_bc
       private :: flux_bc, flux_file_bc
@@ -324,79 +313,56 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_label_thermal_bc()
-      num_label_thermal_bc = n_label_thermal_bc
-      return
-      end function num_label_thermal_bc
+      subroutine set_label_thermal_bc(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
 !
-! ----------------------------------------------------------------------
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
 !
-      subroutine set_label_thermal_bc(names)
+      call append_c_to_ctl_array(fixed_bc,      array_c)
+      call append_c_to_ctl_array(fixed_file_bc, array_c)
+      call append_c_to_ctl_array(flux_bc,       array_c)
+      call append_c_to_ctl_array(flux_file_bc,  array_c)
 !
-      use t_read_control_elements
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_thermal_bc)
-!
-!
-      call set_control_labels(fixed_bc,      names( 1))
-      call set_control_labels(fixed_file_bc, names( 2))
-      call set_control_labels(flux_bc,       names( 3))
-      call set_control_labels(flux_file_bc,  names( 4))
-!
-      call set_control_labels(fill_sph_center, names( 5))
-      call set_control_labels(fix_sph_center,  names( 6))
+      call append_c_to_ctl_array(fill_sph_center, array_c)
+      call append_c_to_ctl_array(fix_sph_center,  array_c)
 !
       end subroutine set_label_thermal_bc
 !
-! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_label_momentum_bc()
-      num_label_momentum_bc = n_label_momentum_bc
-      return
-      end function num_label_momentum_bc
+      subroutine set_label_momentum_bc(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
 !
-! ----------------------------------------------------------------------
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
 !
-      subroutine set_label_momentum_bc(names)
+      call append_c_to_ctl_array(non_slip_sph,    array_c)
+      call append_c_to_ctl_array(free_slip_sph,   array_c)
+      call append_c_to_ctl_array(rot_inner_core,  array_c)
 !
-      use t_read_control_elements
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_momentum_bc)
-!
-!
-      call set_control_labels(non_slip_sph,    names( 1))
-      call set_control_labels(free_slip_sph,   names( 2))
-      call set_control_labels(rot_inner_core,  names( 3))
-!
-      call set_control_labels(fill_sph_center, names( 4))
-      call set_control_labels(fix_sph_center,  names( 5))
+      call append_c_to_ctl_array(fill_sph_center, array_c)
+      call append_c_to_ctl_array(fix_sph_center,  array_c)
 !
       end subroutine set_label_momentum_bc
 !
-! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_label_induction_bc()
-      num_label_induction_bc = n_label_induction_bc
-      return
-      end function num_label_induction_bc
+      subroutine set_label_induction_bc(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
 !
-! ----------------------------------------------------------------------
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
 !
-      subroutine set_label_induction_bc(names)
-!
-      use t_read_control_elements
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_induction_bc)
-!
-!
-      call set_control_labels(insulator_sph,     names( 1))
-      call set_control_labels(pseudo_vacuum_sph, names( 2))
-      call set_control_labels(fill_sph_center,   names( 3))
+      call append_c_to_ctl_array(insulator_sph,     array_c)
+      call append_c_to_ctl_array(pseudo_vacuum_sph, array_c)
+      call append_c_to_ctl_array(fill_sph_center,   array_c)
 !
       end subroutine set_label_induction_bc
 !
