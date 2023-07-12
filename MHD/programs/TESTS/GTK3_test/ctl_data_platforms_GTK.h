@@ -11,6 +11,7 @@
 
 #include "skip_comment_c.h"
 #include "t_control_label_from_f.h"
+#include "t_control_chara_real_IO.h"
 #include "control_combobox_GTK.h"
 #include "kemoview_gtk_routines.h"
 #include "c_ctl_data_platforms.h"

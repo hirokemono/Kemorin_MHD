@@ -366,6 +366,12 @@ void set_from_chara2_real_clist_at_index(int index, struct chara2_real_clist *c2
             c1_out, c2_out, r_out);
 };
 
+struct chara2_real_ctl_item *chara2_real_clist_at_index(int index, struct chara2_real_clist *c2r_clst){
+    struct chara2_real_ctl_list *ct_tmp = find_c2r_ctl_list_item_by_index(index, &c2r_clst->c2r_item_head);
+    return ct_tmp->c2r_item;
+}
+
+
 void add_chara2_real_clist_before_c_tbl(char *ref_1, char *ref_2,
             char *c1_in, char *c2_in, double r_in,
             struct chara2_real_clist *c2r_clst){

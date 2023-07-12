@@ -26,14 +26,13 @@ int append_c_list_from_ctl(int index, struct chara_ctl_list *head,
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
-        printf("Aho %s\n", head->c_item->c_tbl);
         index = append_c_item_to_tree(index, head->c_item->c_tbl, child_model);
         head = head->_next;
     };
     return index;
 }
 
-int append_c_list_from_array(int index, int num, char **c_tbl, 
+int append_c_list_from_array(int index, int num, char **c_tbl,
                              GtkTreeView *c_tree_view)
 {
     int i;

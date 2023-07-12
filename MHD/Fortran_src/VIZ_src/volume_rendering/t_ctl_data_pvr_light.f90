@@ -19,6 +19,9 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_light_ctl), intent(in) :: light
 !!        integer(kind = kint), intent(inout) :: level
+!!      logical function cmp_pvr_light_ctl(light1, light2)
+!!        type(pvr_light_ctl), intent(in) :: light1, light2
+!!
 !!      subroutine reset_pvr_light_flags(light)
 !!      subroutine dealloc_pvr_light_crl(light)
 !!        type(pvr_light_ctl), intent(inout) :: light
@@ -182,6 +185,34 @@
       end subroutine init_lighting_ctl_label
 !
 !  ---------------------------------------------------------------------
+!
+      logical function cmp_pvr_light_ctl(light1, light2)
+!
+      type(pvr_light_ctl), intent(in) :: light1, light2
+!
+      cmp_pvr_light_ctl = .FALSE.
+      if(light1%i_pvr_lighting .ne. light2%i_pvr_lighting) return
+      if(cmp_no_case(trim(light1%block_name),                           &
+     &               trim(light2%block_name)) .eqv. .FALSE.) return
+!
+      if(cmp_read_real_item(light1%ambient_coef_ctl,                    &
+     &                      light2%ambient_coef_ctl)                    &
+     &                                            .eqv. .FALSE.) return
+      if(cmp_read_real_item(light1%diffuse_coef_ctl,                    &
+     &                      light2%diffuse_coef_ctl)                    &
+     &                                            .eqv. .FALSE.) return
+      if(cmp_read_real_item(light1%specular_coef_ctl,                   &
+     &                      light2%specular_coef_ctl)                   &
+     &                                            .eqv. .FALSE.) return
+!
+      if(cmp_control_array_r3(light1%light_position_ctl,                &
+     &                        light2%light_position_ctl)                &
+     &                                            .eqv. .FALSE.) return
+      cmp_pvr_light_ctl = .TRUE.
+!
+      end function cmp_pvr_light_ctl
+!
+!   --------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine reset_pvr_light_flags(light)

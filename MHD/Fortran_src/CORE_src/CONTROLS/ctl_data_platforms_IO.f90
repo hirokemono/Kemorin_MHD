@@ -254,7 +254,7 @@
       maxlen = max(maxlen, len_trim(hd_del_org_data))
 !
       level = write_begin_flag_for_ctl(id_control, level,               &
-     &                                 plt%block_name)
+     &                                 hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    plt%debug_flag_ctl)
 !
@@ -313,7 +313,7 @@
      &    plt%del_org_data_ctl)
 !
       level =  write_end_flag_for_ctl(id_control, level,                &
-     &                                plt%block_name)
+     &                                hd_block)
 !
       end subroutine write_control_platforms
 !

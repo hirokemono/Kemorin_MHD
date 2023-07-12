@@ -93,7 +93,7 @@ static void create_dimless_tree_view(struct chara_real_clist *cr_clist, struct d
 void init_dimless_tree_view(struct chara_real_clist *cr_clist, struct dimless_views *dless_vws){
     create_dimless_tree_view(cr_clist, dless_vws);
 	cr_clist->index_bc = append_cr_list_from_ctl(cr_clist->index_bc, &cr_clist->cr_item_head, 
-												 GTK_TREE_VIEW(dless_vws->dimless_tree_view));
+												 GTK_TREE_MODEL(dless_vws->dimless_tree_view));
 }
 
 void create_used_dimless_tree_views(struct dimless_views *dless_vws)

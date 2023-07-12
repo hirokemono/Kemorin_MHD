@@ -85,9 +85,9 @@
         type(read_real2_item) :: LIC_kernel_peak_range_ctl
 !
 !>        file name for start modelview matrix
-        character(len=kchara) :: fname_view_start_ctl
+        character(len=kchara) :: fname_view_start_ctl = 'NO_FILE'
 !>        file name for end modelview matrix
-        character(len=kchara) :: fname_view_end_ctl
+        character(len=kchara) :: fname_view_end_ctl = 'NO_FILE'
 !>    Structure for start modelview marices
         type(modeview_ctl) :: view_start_ctl
 !>    Structure for end modelview marices

@@ -274,5 +274,29 @@
       end function c_MHD_surf_bc_surf_bc_INF_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(c_int) function num_label_thermal_bc_f() bind(c)
+!
+      use set_node_group_types
+!
+      num_label_thermal_bc_f = num_label_thermal_bc()
+      return
+      end function num_label_thermal_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_thermal_bc_f(names_c)  bind(c)
+!
+      use set_node_group_types
+!
+      type(C_ptr), value :: names_c
+      character(len=kchara), pointer :: name_f(:)
+!
+      call c_f_pointer(names_c, name_f, [num_label_thermal_bc()])
+      call set_label_thermal_bc(name_f)
+      end subroutine set_label_thermal_bc_f
+!
+!  ---------------------------------------------------------------------
 !
       end module c_link_MHD_boundary_ctl

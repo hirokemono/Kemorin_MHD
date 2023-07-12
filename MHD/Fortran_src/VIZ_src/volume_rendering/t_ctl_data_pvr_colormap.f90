@@ -13,6 +13,8 @@
 !!      subroutine dup_pvr_colordef_ctl(org_color, new_color)
 !!        type(pvr_colormap_ctl), intent(in) :: org_color
 !!        type(pvr_colormap_ctl), intent(inout) :: new_color
+!!      logical function cmp_pvr_colormap_ctl(color1, color2)
+!!        type(pvr_colormap_ctl), intent(in) :: color1, color2
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of color control for Kemo's volume rendering
 !!
@@ -73,7 +75,6 @@
       use t_control_array_real
       use t_control_array_real2
       use t_control_array_real3
-      use skip_comment_f
 !
       implicit  none
 !
@@ -214,5 +215,68 @@
       end subroutine dup_pvr_colordef_ctl
 !
 !  ---------------------------------------------------------------------
+!
+      logical function cmp_pvr_colormap_ctl(color1, color2)
+!
+      use skip_comment_f
+!
+      type(pvr_colormap_ctl), intent(in) :: color1, color2
+!
+      cmp_pvr_colormap_ctl = .FALSE.
+      if(color1%i_pvr_colordef .ne. color2%i_pvr_colordef) return
+      if(cmp_no_case(trim(color1%block_name),                           &
+     &               trim(color2%block_name)) .eqv. .FALSE.) return
+      if(cmp_read_chara_item(color1%lic_color_fld_ctl,                  &
+     &                       color2%lic_color_fld_ctl)                  &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_chara_item(color1%lic_color_comp_ctl,                 &
+     &                       color2%lic_color_comp_ctl)                 &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_chara_item(color1%lic_opacity_fld_ctl,                &
+     &                       color2%lic_opacity_fld_ctl)                &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_chara_item(color1%lic_opacity_comp_ctl,               &
+     &                       color2%lic_opacity_comp_ctl)               &
+     &                                          .eqv. .FALSE.) return
+!
+      if(cmp_read_chara_item(color1%colormap_mode_ctl,                  &
+     &                       color2%colormap_mode_ctl)                  &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_chara_item(color1%data_mapping_ctl,                   &
+     &                       color2%data_mapping_ctl)                   &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_chara_item(color1%opacity_style_ctl,                  &
+     &                       color2%opacity_style_ctl)                  &
+     &                                          .eqv. .FALSE.) return
+!
+      if(cmp_read_real_item(color1%range_min_ctl,                       &
+     &                      color2%range_min_ctl)                       &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_real_item(color1%range_max_ctl,                       &
+     &                      color2%range_max_ctl)                       &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_real_item(color1%fix_opacity_ctl,                     &
+     &                      color2%fix_opacity_ctl)                     &
+     &                                          .eqv. .FALSE.) return
+!
+      if(cmp_control_array_r2(color1%colortbl_ctl,                      &
+     &                        color2%colortbl_ctl)                      &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_control_array_r2(color1%linear_opacity_ctl,                &
+     &                        color2%linear_opacity_ctl)                &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_control_array_r3(color1%step_opacity_ctl,                  &
+     &                        color2%step_opacity_ctl)                  &
+     &                                          .eqv. .FALSE.) return
+!
+      if(cmp_read_real3_item(color1%background_color_ctl,               &
+     &                       color2%background_color_ctl)               &
+     &                                          .eqv. .FALSE.) return
+!
+      cmp_pvr_colormap_ctl = .TRUE.
+!
+      end function cmp_pvr_colormap_ctl
+!
+!   --------------------------------------------------------------------
 !
       end module t_ctl_data_pvr_colormap

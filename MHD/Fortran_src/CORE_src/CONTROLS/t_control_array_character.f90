@@ -17,6 +17,8 @@
 !!      subroutine copy_chara_ctl(org_c1, new_c1)
 !!        type(read_character_item), intent(in) :: org_c1
 !!        type(read_character_item), intent(inout) :: new_c1
+!!      logical function cmp_read_chara_item(c_item1, c_item2)
+!!        type(read_character_item), intent(in) :: c_item1, c_item2
 !!
 !!      subroutine alloc_control_array_chara(array_chara)
 !!      subroutine dealloc_control_array_chara(array_chara)
@@ -28,6 +30,8 @@
 !!      subroutine write_control_array_c1                               &
 !!     &         (id_control, level, array_chara)
 !!        type(ctl_array_chara), intent(in) :: array_chara
+!!      logical function cmp_control_array_c1(c_array1, c_array2)
+!!        type(ctl_array_chara), intent(in) :: c_array1, c_array2
 !!
 !!      subroutine append_control_array_c1(read_c1, array_c1)
 !!        type(read_character_item), intent(inout) ::    read_c1
@@ -141,6 +145,27 @@
       end subroutine copy_chara_ctl
 !
 ! ----------------------------------------------------------------------
+!
+      logical function cmp_read_chara_item(c_item1, c_item2)
+!
+      use skip_comment_f
+!
+      type(read_character_item), intent(in) :: c_item1, c_item2
+!
+      cmp_read_chara_item = .FALSE.
+      if(cmp_no_case(trim(c_item1%item_name),                           &
+     &               trim(c_item2%item_name)) .eqv. .FALSE.) return
+      if(c_item1%iflag .ne. c_item2%iflag) return
+      if(c_item1%iflag .gt. 0) then
+        if(cmp_no_case(trim(c_item1%charavalue),                        &
+     &                 trim(c_item2%charavalue)) .eqv. .FALSE.) return
+      end if
+!
+      cmp_read_chara_item = .TRUE.
+!
+      end function cmp_read_chara_item
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_control_array_chara(array_chara)
@@ -240,6 +265,28 @@
      &                                     array_chara%array_name)
 !
       end subroutine write_control_array_c1
+!
+! ----------------------------------------------------------------------
+!
+      logical function cmp_control_array_c1(c_array1, c_array2)
+!
+      use skip_comment_f
+!
+      type(ctl_array_chara), intent(in) :: c_array1, c_array2
+      integer(kind = kint) :: i
+!
+      cmp_control_array_c1 = .FALSE.
+      if(cmp_no_case(trim(c_array1%array_name),                         &
+     &               trim(c_array2%array_name)) .eqv. .FALSE.) return
+      if(c_array1%num .ne.  c_array2%num) return
+      if(c_array1%icou .ne. c_array2%icou) return
+      do i = 1, c_array1%num
+        if(cmp_no_case(trim(c_array1%c_tbl(i)),                         &
+     &                 trim(c_array2%c_tbl(i))) .eqv. .FALSE.) return
+      end do
+      cmp_control_array_c1 = .TRUE.
+!
+      end function cmp_control_array_c1
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

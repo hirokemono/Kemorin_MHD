@@ -13,6 +13,7 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_4_temp_BC_GTK.h"
 #include "tree_view_chara2_real_GTK.h"
+#include "tree_view_chara_GTK.h"
 
 
 struct boundary_condition_view{

@@ -149,7 +149,7 @@
 !
         call write_multi_ctl_file_message(hd_block, icou, c_buf%level)
         write(*,'(2a)') ' is read from ... ', trim(file_name)
-        call read_control_modelview_file(id_control+1, file_name,       &
+        call read_control_modelview_file(id_control+2, file_name,       &
      &                                   hd_block, mat, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
@@ -186,7 +186,7 @@
       else
         write(*,'(4a)') 'Write file for ', trim(hd_block),              &
      &                  '... ', trim(file_name)
-        call write_control_modelview_file(id_control+1, file_name,      &
+        call write_control_modelview_file(id_control+2, file_name,      &
      &                                    hd_block, mat)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)

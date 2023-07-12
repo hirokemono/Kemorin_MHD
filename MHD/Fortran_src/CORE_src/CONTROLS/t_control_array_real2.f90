@@ -17,6 +17,8 @@
 !!      subroutine copy_real2_ctl(org_r2, new_r2)
 !!        type(read_real2_item), intent(inout) :: org_r2
 !!        type(read_real2_item), intent(inout) :: new_r2
+!!      logical function cmp_read_real2_item(r2_item1, r2_item2)
+!!        type(read_real2_item), intent(in) :: r2_item1, r2_item2
 !!
 !!      subroutine alloc_control_array_r2(array_r2)
 !!      subroutine dealloc_control_array_r2(array_r2)
@@ -28,6 +30,8 @@
 !!      subroutine write_control_array_r2                               &
 !!     &         (id_control, level, array_r2)
 !!        type(ctl_array_r2), intent(in) :: array_r2
+!!      logical function cmp_control_array_r2(r2_array1, r2_array2)
+!!        type(ctl_array_r2), intent(in) :: r2_array1, r2_array2
 !!
 !!      subroutine append_control_array_r2(read_r2, array_r2)
 !!        type(read_real2_item), intent(inout) ::    read_r2
@@ -145,6 +149,28 @@
        end subroutine copy_real2_ctl
 !
 !   --------------------------------------------------------------------
+!
+      logical function cmp_read_real2_item(r2_item1, r2_item2)
+!
+      use skip_comment_f
+!
+      type(read_real2_item), intent(in) :: r2_item1, r2_item2
+!
+      cmp_read_real2_item = .FALSE.
+      if(cmp_no_case(trim(r2_item1%item_name),                          &
+     &               trim(r2_item2%item_name)) .eqv. .FALSE.) return
+      if(r2_item1%iflag .ne.    r2_item2%iflag) return
+!
+      if(r2_item1%iflag .gt. 0) then
+        if(r2_item1%realvalue(1) .ne. r2_item2%realvalue(1)) return
+        if(r2_item1%realvalue(2) .ne. r2_item2%realvalue(2)) return
+      end if
+!
+      cmp_read_real2_item = .TRUE.
+!
+      end function cmp_read_real2_item
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine alloc_control_array_r2(array_r2)
@@ -249,6 +275,28 @@
      &                                     array_r2%array_name)
 !
       end subroutine write_control_array_r2
+!
+!   --------------------------------------------------------------------
+!
+      logical function cmp_control_array_r2(r2_array1, r2_array2)
+!
+      use skip_comment_f
+!
+      type(ctl_array_r2), intent(in) :: r2_array1, r2_array2
+      integer(kind = kint) :: i
+!
+      cmp_control_array_r2 = .FALSE.
+      if(cmp_no_case(trim(r2_array1%array_name),                        &
+     &               trim(r2_array2%array_name)) .eqv. .FALSE.) return
+      if(r2_array1%num .ne.  r2_array2%num) return
+      if(r2_array1%icou .ne. r2_array2%icou) return
+      do i = 1, r2_array1%num
+        if(r2_array1%vec1(i) .ne. r2_array2%vec1(i)) return
+        if(r2_array1%vec2(i) .ne. r2_array2%vec2(i)) return
+      end do
+      cmp_control_array_r2 = .TRUE.
+!
+      end function cmp_control_array_r2
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

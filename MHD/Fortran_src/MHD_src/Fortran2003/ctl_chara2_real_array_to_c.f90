@@ -35,7 +35,8 @@
 !!     &          bind(C, NAME = 'c_chara2_real_array_c2_tbl')
 !!      real(c_double) function c_chara2_real_array_r_tbl(idx_in, c_ctl)&
 !!     &          bind(C, NAME = 'c_chara2_real_array_r_tbl')
-!!      subroutine c_store_chara2_real_array(c_ctl, idx_in, c_in, i_in) &
+!!      subroutine c_store_chara2_real_array                            &
+!!     &         (c_ctl, idx_in, c1_in, c2_in, r_in)                    &
 !!     &          bind(C, NAME = 'c_store_chara2_real_array')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!        character(C_char), intent(in) :: c_in(kchara)

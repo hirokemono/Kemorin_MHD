@@ -25,9 +25,9 @@ extern int    c_chara2_real_array_num(void *f_ctl);
 extern void * c_chara2_real_array_c1_tbl(int idx, void *f_ctl);
 extern void * c_chara2_real_array_c2_tbl(int idx, void *f_ctl);
 extern double c_chara2_real_array_r_tbl(int idx, void *f_ctl);
-extern void   c_store2_chara_real_array(void *f_ctl, int idx, 
+extern void   c_store_chara2_real_array(void *f_ctl, int idx,
 										char *c1_in, char *c2_in, double r_in);
-extern void   c_store2_chara_real_items(void *f_ctl, 
+extern void   c_store_chara2_real_items(void *f_ctl, 
 										char *c1_in, char *c2_in, double r_in);
 
 

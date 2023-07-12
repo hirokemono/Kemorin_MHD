@@ -93,16 +93,14 @@ void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws){
     GtkCellRenderer *renderer_cbox = gtk_cell_renderer_combo_new();
     GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
     GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();
+
+    GtkTreeModel *cbox_model
+			= gtk_tree_view_get_model(GTK_TREE_VIEW(bc_vws->bc_type_tree_view));
+
     
-    GtkListStore *cbox_child_model = gtk_list_store_new(1, G_TYPE_STRING);
-	
-    int i;
-    int index = 0;
-    
-	create_cbox_text_real_tree_view(cbox_child_model, GTK_TREE_VIEW(bc_vws->bc_tree_view),
-                renderer_cbox, renderer_text, renderer_spin);
-    
-    g_signal_connect(G_OBJECT(renderer_cbox), "edited", 
+	create_cbox_text_real_tree_view(GTK_LIST_STORE(cbox_model), GTK_TREE_VIEW(bc_vws->bc_tree_view),
+                                    renderer_cbox, renderer_text, renderer_spin);
+    g_signal_connect(G_OBJECT(renderer_cbox), "edited",
                      G_CALLBACK(thermal_bc_type_edited_cb), (gpointer) bc_vws);
     g_signal_connect(G_OBJECT(renderer_text), "edited", 
                      G_CALLBACK(thermal_bc_position_edited_cb), (gpointer) bc_vws);
@@ -111,21 +109,17 @@ void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws){
 
     bc_vws->index_bc = append_c2r_list_from_ctl(bc_vws->index_bc, &bc_vws->bc_T_gtk->c2r_item_head,
                                                 GTK_TREE_VIEW(bc_vws->bc_tree_view));
-    for(i=0;i<NUM_BASIC_BC_TYPE_DEF;i++){
-        index = append_c2r_item_to_tree(index, boundary_type_def[i], " ", ZERO,
-                                        GTK_TREE_MODEL(cbox_child_model));
-    };
 }
 
 void add_bc_temp_selection_box(struct boundary_condition_view *bc_vws, GtkWidget *vbox)
 {
-    GtkTreeModel *model_default =  gtk_tree_view_get_model(GTK_TREE_MODEL(bc_vws->bc_tree_view));
+    GtkTreeModel *model_default =  gtk_tree_view_get_model(GTK_TREE_VIEW(bc_vws->bc_tree_view));
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *combobox_add = gtk_combo_box_new_with_model(model_default);
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
 	
-	add_chara2_real_list_box_w_addbottun(bc_vws->bc_tree_view,
-				button_add, button_delete, vbox);
+	add_chara2_real_list_box_w_addbottun(GTK_TREE_VIEW(bc_vws->bc_tree_view),
+                                            button_add, button_delete, vbox);
 	
     /* Add callbacks */
     g_signal_connect(G_OBJECT(button_add), "clicked", 

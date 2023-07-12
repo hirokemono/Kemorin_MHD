@@ -17,6 +17,9 @@
 !!      subroutine copy_char2real_ctl(org_c2r, new_c2r)
 !!        type(read_chara2_real_item), intent(in) :: org_c2r
 !!        type(read_chara2_real_item), intent(inout) :: new_c2r
+!!      logical function cmp_read_char2real_item(c2r_item1, c2r_item2)
+!!        type(read_chara2_real_item), intent(in) :: c2r_item1
+!!        type(read_chara2_real_item), intent(in) :: c2r_item2
 !!
 !!      subroutine alloc_control_array_c2_r(array_c2r)
 !!      subroutine dealloc_control_array_c2_r(array_c2r)
@@ -31,6 +34,8 @@
 !!        character(len=kchara), intent(in) :: label
 !!        type(ctl_array_c2r), intent(in) :: array_c2r
 !!        integer(kind = kint), intent(inout) :: level
+!!      logical function cmp_control_array_c2_r(array1_c2r, array2_c2r)
+!!        type(ctl_array_c2r), intent(in) :: array1_c2r, array2_c2r
 !!
 !!      subroutine append_control_array_c2_r(read_c2r, array_c2r)
 !!        type(read_chara2_real_item), intent(inout) ::    read_c2r
@@ -158,6 +163,31 @@
       end subroutine copy_char2real_ctl
 !
 !   --------------------------------------------------------------------
+!
+      logical function cmp_read_char2real_item(c2r_item1, c2r_item2)
+!
+      use skip_comment_f
+!
+      type(read_chara2_real_item), intent(in) :: c2r_item1
+      type(read_chara2_real_item), intent(in) :: c2r_item2
+!
+      cmp_read_char2real_item = .FALSE.
+      if(cmp_no_case(trim(c2r_item1%item_name),                         &
+     &               trim(c2r_item2%item_name)) .eqv. .FALSE.) return
+      if(c2r_item1%iflag .ne. c2r_item2%iflag) return
+      if(c2r_item1%iflag .gt. 0) then
+        if(cmp_no_case(trim(c2r_item1%charavalue(1)),                   &
+     &             trim(c2r_item2%charavalue(1))) .eqv. .FALSE.) return
+        if(cmp_no_case(trim(c2r_item1%charavalue(2)),                   &
+     &             trim(c2r_item2%charavalue(2))) .eqv. .FALSE.) return
+        if(c2r_item1%realvalue .ne. c2r_item2%realvalue) return
+      end if
+!
+      cmp_read_char2real_item = .TRUE.
+!
+      end function cmp_read_char2real_item
+!
+! ----------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine alloc_control_array_c2_r(array_c2r)
@@ -262,6 +292,31 @@
      &                                     array_c2r%array_name)
 !
       end subroutine write_control_array_c2_r
+!
+!   --------------------------------------------------------------------
+!
+      logical function cmp_control_array_c2_r(array1_c2r, array2_c2r)
+!
+      use skip_comment_f
+!
+      type(ctl_array_c2r), intent(in) :: array1_c2r, array2_c2r
+      integer(kind = kint) :: i
+!
+      cmp_control_array_c2_r = .FALSE.
+      if(cmp_no_case(trim(array1_c2r%array_name),                       &
+     &               trim(array2_c2r%array_name)) .eqv. .FALSE.) return
+      if(array1_c2r%num .ne.  array2_c2r%num) return
+      if(array1_c2r%icou .ne. array2_c2r%icou) return
+      do i = 1, array1_c2r%num
+        if(cmp_no_case(trim(array1_c2r%c1_tbl(i)),                      &
+     &                trim(array2_c2r%c1_tbl(i))) .eqv. .FALSE.) return
+        if(cmp_no_case(trim(array1_c2r%c2_tbl(i)),                      &
+     &                trim(array2_c2r%c2_tbl(i))) .eqv. .FALSE.) return
+        if(array1_c2r%vect(i) .ne. array2_c2r%vect(i)) return
+      end do
+      cmp_control_array_c2_r = .TRUE.
+!
+      end function cmp_control_array_c2_r
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

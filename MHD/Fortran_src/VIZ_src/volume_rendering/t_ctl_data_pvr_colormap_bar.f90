@@ -31,6 +31,11 @@
 !!        type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar_c
 !!        integer(kind = kint), intent(inout) :: level
 !!
+!!      logical function cmp_pvr_colormap_bar_ctl(cmap_cbar1,           &
+!!     &                                          cmap_cbar2)
+!!        type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar1
+!!        type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar2
+!!
 !!      subroutine deallocate_pvr_cmap_cbar(cmap_cbar_c)
 !!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
 !!
@@ -168,7 +173,7 @@
         call write_one_ctl_file_message                                 &
      &     (hd_block, c_buf%level, file_name)
         call read_control_pvr_colormap_file                             &
-     &     (id_control+1, file_name, hd_block, cmap_cbar_c, c_buf)
+     &     (id_control+2, file_name, hd_block, cmap_cbar_c, c_buf)
       else if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
         file_name = 'NO_FILE'
 !
@@ -308,7 +313,7 @@
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_control_pvr_colormap_file                            &
-     &     (id_control+1, file_name, hd_block, cmap_cbar_c)
+     &     (id_control+2, file_name, hd_block, cmap_cbar_c)
       end if
 !
       end subroutine sel_write_ctl_pvr_colormap_file
@@ -364,6 +369,27 @@
       end subroutine write_pvr_cmap_cbar
 !
 !  ---------------------------------------------------------------------
+!
+      logical function cmp_pvr_colormap_bar_ctl(cmap_cbar1,             &
+     &                                          cmap_cbar2)
+!
+      type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar1
+      type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar2
+!
+      cmp_pvr_colormap_bar_ctl = .FALSE.
+      if(cmap_cbar1%i_cmap_cbar .ne. cmap_cbar2%i_cmap_cbar) return
+      if(cmp_no_case(trim(cmap_cbar1%block_name),                       &
+     &               trim(cmap_cbar2%block_name)) .eqv. .FALSE.) return
+      if(cmp_pvr_colormap_ctl(cmap_cbar1%color, cmap_cbar2%color)       &
+     &                                            .eqv. .FALSE.) return
+      if(cmp_pvr_colorbar_ctl(cmap_cbar1%cbar_ctl, cmap_cbar2%cbar_ctl) &
+     &                                            .eqv. .FALSE.) return
+!
+      cmp_pvr_colormap_bar_ctl = .TRUE.
+!
+      end function cmp_pvr_colormap_bar_ctl
+!
+!   --------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_pvr_cmap_cbar(cmap_cbar_c)

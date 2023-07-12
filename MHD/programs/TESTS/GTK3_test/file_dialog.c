@@ -221,7 +221,8 @@ extern void * c_temp_model_low_ctl(void *f_reft_ctl);
 extern void * c_temp_model_high_ctl(void *f_reft_ctl);
 extern void * c_temp_model_takepiro_ctl(void *f_reft_ctl);
 
-
+extern int num_label_thermal_bc_f(void);
+extern void set_label_thermal_bc_f(char *names_c);
 
 struct f_MHD_node_bc_control{
 	void * f_self;
@@ -1308,7 +1309,10 @@ struct f_MHD_tree_views{
 	struct f_sph_shell_views *f_psph_vws;
 	struct f_MHD_equations_views *f_eqs_vws;
     struct dimless_views * f_dimless_vws;
-	
+
+	struct boundary_condition_view *bc_temp_vws;
+
+
 	GtkWidget *f_force_tree_view;
 	GtkWidget *f_force_default_view;
 };
@@ -1369,6 +1373,160 @@ static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR
     return expand_v_pwr;
 };
 
+static void load_clist_to_chara2_real_array(struct chara2_real_clist *c2r_clst){
+    int i;
+    for(i=0;i<count_chara2_real_clist(c2r_clst);i++){
+        c_store_chara2_real_array(c2r_clst->f_self, i,
+                                  chara2_real_clist_at_index(i,c2r_clst)->c1_tbl,
+                                  chara2_real_clist_at_index(i,c2r_clst)->c2_tbl,
+                                  chara2_real_clist_at_index(i,c2r_clst)->r_data);
+    }
+    return;
+}
+
+
+static void thermal_bc_position_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+			gchar *new_text, gpointer user_data)
+{
+    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
+	
+	c2r_tree_2nd_text_edited(path_str, new_text, GTK_TREE_VIEW(bc_vws->bc_tree_view),
+                             bc_vws->bc_T_gtk);
+	write_chara2_real_clist(stdout, 0, "bounday location changed", bc_vws->bc_T_gtk);
+    load_clist_to_chara2_real_array(bc_vws->bc_T_gtk);
+}
+static void thermal_bc_type_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+			gchar *new_text, gpointer user_data)
+{
+    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
+    
+    c2r_tree_1st_text_edited(path_str, new_text, GTK_TREE_VIEW(bc_vws->bc_tree_view),
+                             bc_vws->bc_T_gtk);
+    write_chara2_real_clist(stdout, 0, "BC type changed", bc_vws->bc_T_gtk);
+    load_clist_to_chara2_real_array(bc_vws->bc_T_gtk);
+}
+static void thermal_bc_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+			gchar *new_text, gpointer user_data)
+{
+    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
+	
+	c2r_tree_value_edited(path_str, new_text, GTK_TREE_VIEW(bc_vws->bc_tree_view),
+                          bc_vws->bc_T_gtk);
+    write_chara2_real_clist(stdout, 0, "buoyancy changed", bc_vws->bc_T_gtk);
+    load_clist_to_chara2_real_array(bc_vws->bc_T_gtk);
+}
+
+
+static void cb_delete_thermal_bc_by_list(GtkButton *button, gpointer user_data)
+{
+    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
+    
+    delete_c2r_list_items_GTK(GTK_TREE_VIEW(bc_vws->bc_tree_view), bc_vws->bc_T_gtk);
+    write_chara2_real_clist(stdout, 0, "buoyancy coeffient deleted", bc_vws->bc_T_gtk);
+    
+}
+
+
+static void cb_add_thermal_bc(GtkButton *button, gpointer user_data)
+{
+    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
+    
+    bc_vws->index_bc = add_c2r_list_by_bottun_GTK(bc_vws->index_bc,
+                                                  GTK_TREE_VIEW(bc_vws->bc_tree_view),
+                                                  bc_vws->bc_T_gtk);
+    write_chara2_real_clist(stdout, 0, "buoyancy coeffient added", bc_vws->bc_T_gtk);
+    return;
+}
+
+
+void add_bc_temp_selection_box2(struct boundary_condition_view *bc_vws, GtkWidget *vbox)
+{
+    GtkTreeModel *model_default =  gtk_tree_view_get_model(GTK_TREE_VIEW(bc_vws->bc_tree_view));
+    GtkWidget *button_add = gtk_button_new_with_label("Add");
+    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
+	
+	add_chara2_real_list_box_w_addbottun(GTK_TREE_VIEW(bc_vws->bc_tree_view),
+                                            button_add, button_delete, vbox);
+    /* Add callbacks */
+    if(count_chara2_real_clist(bc_vws->bc_T_gtk) < 2){
+        gtk_widget_hide(GTK_WIDGET(button_add));
+        g_signal_connect(G_OBJECT(button_add), "clicked",
+                         G_CALLBACK(cb_add_thermal_bc), (gpointer) bc_vws);
+    };
+    if(count_chara2_real_clist(bc_vws->bc_T_gtk) > 2){
+        gtk_widget_hide(GTK_WIDGET(button_delete));
+        g_signal_connect(G_OBJECT(button_delete), "clicked",
+                         G_CALLBACK(cb_delete_thermal_bc_by_list), (gpointer) bc_vws);
+    };
+};
+
+int append_c_item_to_tree0(int index, const char *c_tbl, GtkTreeModel *child_model){
+    GtkTreeIter iter;
+    
+    gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
+    gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+                       COLUMN_FIELD_INDEX, c_tbl,
+                       -1);
+    return index + 1;
+}
+int append_c_list_from_array0(int index, int num, char **c_tbl,
+                             GtkTreeView *c_tree_view)
+{
+    int i;
+    GtkTreeModel *model = gtk_tree_view_get_model(c_tree_view);
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    for(i=0;i<num;i++){
+        index = append_c_item_to_tree0(index, c_tbl[i], child_model);
+    };
+    return index;
+}
+GtkWidget * create_fixed_label_w_index_tree0(void){
+    /* Construct empty list storage */
+    GtkListStore *child_model = gtk_list_store_new(1, G_TYPE_STRING);
+    /* Construct model for sorting and set to tree view */
+    GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
+    GtkWidget *label_tree = gtk_tree_view_new();
+
+    gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
+    return label_tree;
+}
+
+GtkWidget * create_control_flags_tree_view0(struct control_labels_f *flag_list)
+{
+	int index = 0;
+	GtkWidget *ctl_flags_tree_view = create_fixed_label_w_index_tree0();
+	index = append_c_list_from_array0(index, flag_list->num_labels, flag_list->label,
+									 GTK_TREE_VIEW(ctl_flags_tree_view));
+	return ctl_flags_tree_view;
+};
+
+
+void init_bc_temp_tree_view2(struct boundary_condition_view *bc_vws){
+    GtkCellRenderer *renderer_cbox = gtk_cell_renderer_combo_new();
+    GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
+    GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();
+    /*
+    GtkListStore *cbox_child_model = gtk_list_store_new(2, G_TYPE_INT, G_TYPE_STRING);
+    GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(cbox_child_model));
+    gtk_tree_view_set_model(GTK_TREE_VIEW(bc_vws->bc_type_tree_view), model);
+    */
+    GtkTreeModel *cbox_model
+			= gtk_tree_view_get_model(GTK_TREE_VIEW(bc_vws->bc_type_tree_view));
+
+    
+	create_cbox_text_real_tree_view(GTK_LIST_STORE(cbox_model), GTK_TREE_VIEW(bc_vws->bc_tree_view),
+                                    renderer_cbox, renderer_text, renderer_spin);
+    g_signal_connect(G_OBJECT(renderer_cbox), "edited",
+                     G_CALLBACK(thermal_bc_type_edited_cb), (gpointer) bc_vws);
+    g_signal_connect(G_OBJECT(renderer_text), "edited",
+                     G_CALLBACK(thermal_bc_position_edited_cb), (gpointer) bc_vws);
+    g_signal_connect(G_OBJECT(renderer_spin), "edited",
+                     G_CALLBACK(thermal_bc_value_edited_cb), (gpointer) bc_vws);
+
+    bc_vws->index_bc = append_c2r_list_from_ctl(bc_vws->index_bc, &bc_vws->bc_T_gtk->c2r_item_head,
+                                                GTK_TREE_VIEW(bc_vws->bc_tree_view));
+}
+
 
 
 void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
@@ -1405,13 +1563,21 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	
 	
 	GtkWidget *vbox_m3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	struct boundary_condition_view * bc_temp_vws
-			= init_temp_bc_views_GTK(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_T_ctl);
-	bc_temp_vws->bc_tree_view = gtk_tree_view_new();
-    /*
-    init_bc_temp_tree_view(bc_temp_vws);
-	add_bc_temp_selection_box(bc_temp_vws, vbox_m3);
-     */
+	f_MHD_vws->bc_temp_vws
+        = init_temp_bc_views_GTK(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_T_ctl);
+	f_MHD_vws->bc_temp_vws->bc_tree_view =      gtk_tree_view_new();
+	f_MHD_vws->bc_temp_vws->bc_type_tree_view = gtk_tree_view_new();
+ 
+ 
+    
+ 	struct control_labels_f *thermal_bc_types
+			= init_control_labels_f(num_label_thermal_bc_f,
+									set_label_thermal_bc_f);
+	f_MHD_vws->bc_temp_vws->bc_type_tree_view
+			= create_control_flags_tree_view0(thermal_bc_types);
+    init_bc_temp_tree_view2(f_MHD_vws->bc_temp_vws);
+	add_bc_temp_selection_box2(f_MHD_vws->bc_temp_vws, vbox_m3);
+
     GtkWidget *expand_MHD_node_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_nbc_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_iflag,
 													   560, 500, window, vbox_m3);

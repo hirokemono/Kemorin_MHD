@@ -17,6 +17,8 @@
 !!      subroutine copy_real_ctl(org_r1, new_r1)
 !!        type(read_real_item), intent(in) :: org_r1
 !!        type(read_real_item), intent(inout) :: new_r1
+!!      logical function cmp_read_real_item(r_item1, r_item2)
+!!        type(read_real_item), intent(in) :: r_item1, r_item2
 !!
 !!      subroutine alloc_control_array_real(array_real)
 !!      subroutine dealloc_control_array_real(array_real)
@@ -140,6 +142,27 @@
       end subroutine copy_real_ctl
 !
 !   --------------------------------------------------------------------
+!
+      logical function cmp_read_real_item(r_item1, r_item2)
+!
+      use skip_comment_f
+!
+      type(read_real_item), intent(in) :: r_item1, r_item2
+!
+      cmp_read_real_item = .FALSE.
+      if(cmp_no_case(trim(r_item1%item_name),                           &
+     &               trim(r_item2%item_name)) .eqv. .FALSE.) return
+      if(r_item1%iflag .ne. r_item2%iflag) return
+!
+      if(r_item1%iflag .gt. 0) then
+        if(r_item1%realvalue .ne. r_item2%realvalue) return
+      end if
+!
+      cmp_read_real_item = .TRUE.
+!
+      end function cmp_read_real_item
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine alloc_control_array_real(array_real)
@@ -242,6 +265,27 @@
      &                                     array_real%array_name)
 !
       end subroutine write_control_array_r1
+!
+!   --------------------------------------------------------------------
+!
+      logical function cmp_control_array_r1(r_array1, r_array2)
+!
+      use skip_comment_f
+!
+      type(ctl_array_real), intent(in) :: r_array1, r_array2
+      integer(kind = kint) :: i
+!
+      cmp_control_array_r1 = .FALSE.
+      if(cmp_no_case(trim(r_array1%array_name),                         &
+     &               trim(r_array2%array_name)) .eqv. .FALSE.) return
+      if(r_array1%num .ne.  r_array2%num) return
+      if(r_array1%icou .ne. r_array2%icou) return
+      do i = 1, r_array1%num
+        if(r_array1%vect(i) .ne. r_array2%vect(i)) return
+      end do
+      cmp_control_array_r1 = .TRUE.
+!
+      end function cmp_control_array_r1
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

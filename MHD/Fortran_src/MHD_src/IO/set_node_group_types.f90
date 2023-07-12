@@ -16,6 +16,11 @@
 !!      subroutine set_bc_group_types_sph_velo(bc_type_ctl, ibc_type)
 !!      subroutine set_bc_group_types_sph_magne(bc_type_ctl, ibc_type)
 !!      subroutine set_bc_group_types_fluxes(bc_type_ctl, ibc_type)
+!!
+!!      integer(kind = kint) function num_label_thermal_bc()
+!!      subroutine set_label_thermal_bc(names)
+!!        character(len = kchara), intent(inout)                        &
+!!     &                         :: names(n_label_thermal_bc)
 !!@endverbatim
 !
       module set_node_group_types
@@ -112,6 +117,9 @@
 !>      control name for fixed flux by external file
       character(len = kchara), parameter                                &
      &               :: flux_file_bc = 'fixed_flux_file'
+!
+      integer(kind = kint), parameter, private                          &
+     &                                :: n_label_thermal_bc = 6
 !
       private :: fixed_bc, fixed_ctl_bc, fixed_file, fixed_file_bc
       private :: flux_bc, flux_file_bc
@@ -306,5 +314,33 @@
       end subroutine set_bc_group_types_fluxes
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_thermal_bc()
+      num_label_thermal_bc = n_label_thermal_bc
+      return
+      end function num_label_thermal_bc
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_thermal_bc(names)
+!
+      use t_read_control_elements
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_thermal_bc)
+!
+!
+      call set_control_labels(fixed_bc,      names( 1))
+      call set_control_labels(fixed_file_bc, names( 2))
+      call set_control_labels(flux_bc,       names( 3))
+      call set_control_labels(flux_file_bc,  names( 4))
+!
+      call set_control_labels(fill_sph_center, names( 5))
+      call set_control_labels(fix_sph_center,  names( 6))
+!
+      end subroutine set_label_thermal_bc
+!
+! ----------------------------------------------------------------------
 !
       end module set_node_group_types

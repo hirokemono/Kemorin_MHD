@@ -123,7 +123,7 @@ static void init_cr_tree_view(struct chara_real_clist *cr_clist_gtk, GtkWidget *
 							  renderer_text, renderer_value);
 	
 	cr_clist_gtk->index_bc = append_cr_list_from_ctl(cr_clist_gtk->index_bc, &cr_clist_gtk->cr_item_head, 
-												 GTK_TREE_VIEW(cr_tree_view));
+												 GTK_TREE_MODEL(cr_tree_view));
 };
 
 GtkWidget * add_cr_list_box_w_addbottun(struct chara_real_clist *cr_clist_gtk,

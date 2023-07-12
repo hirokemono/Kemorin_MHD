@@ -1,4 +1,4 @@
-c_link_MHD_boundary_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_boundary_ctl.f90 t_ctl_data_node_boundary.o t_ctl_data_surf_boundary.o
+c_link_MHD_boundary_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_boundary_ctl.f90 t_ctl_data_node_boundary.o t_ctl_data_surf_boundary.o set_node_group_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_MHD_dimless_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_dimless_ctl.f90 t_ctl_data_dimless_numbers.o t_ctl_data_mhd_normalize.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -71,6 +71,8 @@ ctl_data_platforms_to_c.o: $(MHD_F2003_DIR)/ctl_data_platforms_to_c.f90 m_precis
 ctl_int2_array_to_c.o: $(MHD_F2003_DIR)/ctl_int2_array_to_c.f90 m_precision.o t_control_array_integer2.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_int_real_array_to_c.o: $(MHD_F2003_DIR)/ctl_int_real_array_to_c.f90 m_precision.o t_control_array_intreal.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ctl_modelview_file_cosist.o: $(MHD_F2003_DIR)/ctl_modelview_file_cosist.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_ctl_data_SGS_filter.o t_ctl_data_SGS_model.o t_control_data_maps.o t_control_data_pvrs.o t_control_data_LIC_pvrs.o t_control_data_4_pvr.o t_ctl_data_view_transfers.o t_ctl_data_4_view_transfer.o
 	$(F90) -c $(F90OPTFLAGS) $<
 force_names_to_c.o: $(MHD_F2003_DIR)/force_names_to_c.f90 m_precision.o t_base_field_labels.o m_force_control_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -20,6 +20,9 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(streo_view_ctl), intent(in) :: streo
 !!        integer(kind = kint), intent(inout) :: level
+!!      logical function cmp_streo_view_ctl(streo1, streo2)
+!!        type(streo_view_ctl), intent(in) :: streo1, streo2
+!!
 !!      subroutine reset_stereo_view_ctl(streo)
 !!        type(streo_view_ctl), intent(inout) :: streo
 !!      subroutine copy_stereo_view_ctl(org_streo, new_streo)
@@ -51,7 +54,6 @@
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_real
-      use skip_comment_f
 !
       implicit  none
 !
@@ -96,6 +98,8 @@
 !
       subroutine read_stereo_view_ctl                                   &
      &         (id_control, hd_block, streo, c_buf)
+!
+      use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -190,6 +194,36 @@
       end subroutine init_stereo_view_ctl_label
 !
 !  ---------------------------------------------------------------------
+!
+      logical function cmp_streo_view_ctl(streo1, streo2)
+!
+      use skip_comment_f
+!
+      type(streo_view_ctl), intent(in) :: streo1, streo2
+!
+      cmp_streo_view_ctl = .FALSE.
+      if(streo1%i_stereo_view .ne. streo2%i_stereo_view) return
+      if(cmp_no_case(trim(streo1%block_name),                           &
+     &               trim(streo2%block_name)) .eqv. .FALSE.) return
+!
+      if(cmp_read_real_item(streo1%focalpoint_ctl,                      &
+     &                      streo2%focalpoint_ctl)                      &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_real_item(streo1%eye_separation_ctl,                  &
+     &                      streo2%eye_separation_ctl)                  &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_real_item(streo1%eye_sep_angle_ctl,                   &
+     &                      streo2%eye_sep_angle_ctl)                   &
+     &                                          .eqv. .FALSE.) return
+      if(cmp_read_chara_item(streo1%step_eye_sep_angle_ctl,             &
+     &                       streo2%step_eye_sep_angle_ctl)             &
+     &                                          .eqv. .FALSE.) return
+      cmp_streo_view_ctl = .TRUE.
+!
+      end function cmp_streo_view_ctl
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine reset_stereo_view_ctl(streo)
 !

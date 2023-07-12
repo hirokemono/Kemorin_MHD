@@ -202,6 +202,7 @@
       type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !
 !
+      cbar_ctl%block_name = hd_block
         call init_int_ctl_item_label                                    &
      &     (hd_pvr_font_size, cbar_ctl%font_size_ctl)
         call init_int_ctl_item_label(hd_pvr_numgrid_cbar,               &
