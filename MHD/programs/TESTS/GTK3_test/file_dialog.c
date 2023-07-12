@@ -1563,7 +1563,8 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	
 	
 	GtkWidget *vbox_m3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	f_MHD_vws->bc_temp_vws
+
+    f_MHD_vws->bc_temp_vws
         = init_temp_bc_views_GTK(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_T_ctl);
 	f_MHD_vws->bc_temp_vws->bc_tree_view =      gtk_tree_view_new();
 	f_MHD_vws->bc_temp_vws->bc_type_tree_view = gtk_tree_view_new();
@@ -1576,8 +1577,14 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	f_MHD_vws->bc_temp_vws->bc_type_tree_view
 			= create_control_flags_tree_view0(thermal_bc_types);
     init_bc_temp_tree_view2(f_MHD_vws->bc_temp_vws);
-	add_bc_temp_selection_box2(f_MHD_vws->bc_temp_vws, vbox_m3);
 
+    GtkWidget *vbox_m3t = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	add_bc_temp_selection_box2(f_MHD_vws->bc_temp_vws, vbox_m3t);
+    GtkWidget *expand_MHD_node_bcT = wrap_into_expanded_frame_gtk(duplicate_underscore(f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_node_bc_T_ctl->clist_name),
+                                                       560, 200, window, vbox_m3t);
+    gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcT, FALSE, FALSE, 0);
+
+    
     GtkWidget *expand_MHD_node_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_nbc_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_iflag,
 													   560, 500, window, vbox_m3);
