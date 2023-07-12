@@ -580,7 +580,7 @@ void add_chara2_real_list_box_w_addbottun(GtkTreeView *c2r_tree_view,
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 400, 300);
+//    gtk_widget_set_size_request(scrolled_window, 240, 300);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(c2r_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     

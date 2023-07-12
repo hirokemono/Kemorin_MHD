@@ -21,6 +21,10 @@
 !!      subroutine set_label_thermal_bc(names)
 !!        character(len = kchara), intent(inout)                        &
 !!     &                         :: names(n_label_thermal_bc)
+!!      integer(kind = kint) function num_label_thermal_bc()
+!!      subroutine set_label_thermal_bc(names)
+!!        character(len = kchara), intent(inout)                        &
+!!     &                         :: names(n_label_thermal_bc)
 !!@endverbatim
 !
       module set_node_group_types
@@ -119,7 +123,11 @@
      &               :: flux_file_bc = 'fixed_flux_file'
 !
       integer(kind = kint), parameter, private                          &
-     &                                :: n_label_thermal_bc = 6
+     &                                :: n_label_thermal_bc =   6
+      integer(kind = kint), parameter, private                          &
+     &                                :: n_label_momentum_bc =  5
+      integer(kind = kint), parameter, private                          &
+     &                                :: n_label_induction_bc = 3
 !
       private :: fixed_bc, fixed_ctl_bc, fixed_file, fixed_file_bc
       private :: flux_bc, flux_file_bc
@@ -340,6 +348,57 @@
       call set_control_labels(fix_sph_center,  names( 6))
 !
       end subroutine set_label_thermal_bc
+!
+! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_momentum_bc()
+      num_label_momentum_bc = n_label_momentum_bc
+      return
+      end function num_label_momentum_bc
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_momentum_bc(names)
+!
+      use t_read_control_elements
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_momentum_bc)
+!
+!
+      call set_control_labels(non_slip_sph,    names( 1))
+      call set_control_labels(free_slip_sph,   names( 2))
+      call set_control_labels(rot_inner_core,  names( 3))
+!
+      call set_control_labels(fill_sph_center, names( 4))
+      call set_control_labels(fix_sph_center,  names( 5))
+!
+      end subroutine set_label_momentum_bc
+!
+! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_induction_bc()
+      num_label_induction_bc = n_label_induction_bc
+      return
+      end function num_label_induction_bc
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_induction_bc(names)
+!
+      use t_read_control_elements
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_induction_bc)
+!
+!
+      call set_control_labels(insulator_sph,     names( 1))
+      call set_control_labels(pseudo_vacuum_sph, names( 2))
+      call set_control_labels(fill_sph_center,   names( 3))
+!
+      end subroutine set_label_induction_bc
 !
 ! ----------------------------------------------------------------------
 !
