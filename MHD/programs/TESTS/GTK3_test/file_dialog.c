@@ -198,6 +198,8 @@ extern void * c_temp_model_low_ctl(void *f_reft_ctl);
 extern void * c_temp_model_high_ctl(void *f_reft_ctl);
 extern void * c_temp_model_takepiro_ctl(void *f_reft_ctl);
 
+extern void set_file_fmt_items_f(char *fmt_names_c);
+
 
 struct f_MHD_time_evo_control{
 	void * f_self;
@@ -433,11 +435,12 @@ struct main_widgets{
 	struct f_sph_monitor_widgets *f_lp_vws;
 	
 	struct block_array_widgets *vpvr_Wgts;
+    
+    struct chara_clist *label_file_format_list;
 };
 
 
-void draw_ISO_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c *iso_c);
-void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
+void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 						  struct main_widgets *mWidgets);
 
 int iflag_read_iso = 0;
@@ -1050,7 +1053,6 @@ static void cb_Open(GtkButton *button, gpointer data)
 		set_primary_iso_format_flag_c(iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
 		printf("iso_output_type_ctl modified %s\n", iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
 		
-//		draw_ISO_control_list(window, mWidgets->main_Vbox, iso_GTK0->iso_c);
 		MHD_control_expander(window, f_MHD_ctl, mWidgets);
 		gtk_box_pack_start(GTK_BOX(mWidgets->main_Vbox), mWidgets->ctl_MHD_Vbox, FALSE, TRUE, 0);
 		gtk_widget_show_all(window);
@@ -1157,41 +1159,6 @@ GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
 };
 
 
-GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
-	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *vbox_2[2];
-	
-	char *c_label;
-	
-	iso_GTK0->color_field_ctl = init_field_ctl_c();
-	iso_GTK0->color_fields_vws = init_field_views_GTK(iso_GTK0->color_field_ctl);
-	iso_GTK0->color_fields_vws->used_tree_view 
-			= create_field_tree_view(iso_GTK0->color_fields_vws->all_fld_list,
-									 iso_GTK0->color_fields_vws->fld_ctl_gtk);
-	iso_GTK0->color_fields_vws->unused_field_tree_view
-			= create_unused_field_tree_views(iso_GTK0->color_fields_vws->all_fld_list);
-	
-	iso_GTK0->color_fields_vws->field_group_tree_view
-			= create_field_group_tree_view(iso_GTK0->color_fields_vws->all_fld_list);
-	iso_GTK0->color_fields_vws->all_field_tree_view
-			= create_all_field_tree_views(iso_GTK0->color_fields_vws->all_fld_list);
-	create_direction_tree_views(iso_GTK0->color_fields_vws);
-	
-	
-	GtkWidget *color_flags_tree_view
-			= create_control_flags_tree_view(iso_fld_c->flag_iso_color);
-	
-	add_control_combobox_vbox_old(iso_fld_c->output_type_ctl->c_tbl,
-							  iso_fld_c->flag_iso_color, color_flags_tree_view, vbox_1);
-	printf("%le\n", iso_fld_c->output_value_ctl->r_data);
-	c_label = duplicate_underscore(iso_fld_c->label_fld_on_iso_ctl->label[ 2]);
-	vbox_2[0] = make_real_hbox(1, c_label, iso_fld_c->output_value_ctl);
-	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
-	add_field_selection_box(iso_GTK0->color_fields_vws, window, vbox_1);
-	
-	return vbox_1;
-};
-
 struct f_MHD_tree_views{
 	struct f_sph_shell_views *f_psph_vws;
 	struct f_MHD_equations_views *f_eqs_vws;
@@ -1207,46 +1174,6 @@ struct f_MHD_tree_views *f_MHD_vws;
 
 
 
-
-
-void draw_ISO_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c *iso_c){
-	GtkWidget *vbox_1;
-	GtkWidget *vbox_2[iso_c->label_iso_ctl_w_dpl->num_labels];
-	
-	char *c_label;
-	
-	GtkWidget *file_fmt_flags_tree_view
-			= create_control_flags_tree_view(iso_c->flag_iso_format);
-	
-	/* Generate expander */
-	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	
-	vbox_2[0] = make_text_hbox
-    		(0, duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 0]),
-             iso_c->iso_file_head_ctl);
-
-	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
-	add_control_combobox_vbox_old(iso_c->iso_output_type_ctl->c_tbl,
-							  iso_c->flag_iso_format, file_fmt_flags_tree_view, vbox_1);
-	
-	vbox_2[2] = iso_define_ctl_list_box(iso_c->iso_def_c);
-	vbox_2[3] = iso_field_ctl_list_box(iso_c->iso_fld_c);
-	
-	GtkWidget *expander = wrap_into_expanded_frame_gtk
-			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 2]), 
-			 400, 200, window, vbox_2[2]);
-	
-    gtk_box_pack_start(GTK_BOX(vbox_1), expander, FALSE, FALSE, 0);
-	GtkWidget *expander1 = wrap_into_expanded_frame_gtk
-			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 3]), 
-			 400, 500, window, vbox_2[3]);
-    gtk_box_pack_start(GTK_BOX(vbox_1), expander1, FALSE, FALSE, 0);
-	c_label = isosurface_control_head();
-	GtkWidget *expander2 = wrap_into_expanded_frame_gtk(duplicate_underscore(c_label),
-								 560, 600, window, vbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox0), expander2, FALSE, FALSE, 0);
-	return;
-}
 
 static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR_ctl *f_pvr_item, 
 											  GtkWidget *window){
@@ -1330,10 +1257,19 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);
 	
 	
+    
+    mWidgets->label_file_format_list = init_f_ctl_chara_array(set_file_fmt_items_f,
+                                                              f_MHD_ctl->f_self);
 	mWidgets->ctl_MHD_inner_box =   gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget * vbox_plt_c = draw_platform_control_vbox(f_MHD_ctl->f_plt, window);
-	GtkWidget * vbox_plt_o = draw_platform_control_vbox(f_MHD_ctl->f_org_plt, window);
-	GtkWidget * vbox_plt_n = draw_platform_control_vbox(f_MHD_ctl->f_new_plt, window);
+	GtkWidget * vbox_plt_c = draw_platform_control_vbox(f_MHD_ctl->f_plt,
+                                                        mWidgets->label_file_format_list,
+                                                        window);
+	GtkWidget * vbox_plt_o = draw_platform_control_vbox(f_MHD_ctl->f_org_plt,
+                                                        mWidgets->label_file_format_list,
+                                                        window);
+	GtkWidget * vbox_plt_n = draw_platform_control_vbox(f_MHD_ctl->f_new_plt,
+                                                        mWidgets->label_file_format_list,
+                                                        window);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_c, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_o, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_n, FALSE, FALSE, 0);

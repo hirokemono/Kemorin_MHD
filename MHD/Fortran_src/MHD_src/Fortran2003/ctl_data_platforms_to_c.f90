@@ -13,31 +13,22 @@
 !
       implicit none
 !
+      type(ctl_array_chara), save, target, private :: file_fmt_list
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      integer(C_int) function num_file_fmt_items_f()                    &
-     &         bind(C, NAME = 'num_file_fmt_items_f')
-      use m_file_format_labels
-      num_file_fmt_items_f = num_label_file_fmt()
-      end function num_file_fmt_items_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_file_fmt_items_f(fmt_names_c)                      &
+      type(c_ptr) function set_file_fmt_items_f(c_ctl)                  &
      &          bind(C, NAME = 'set_file_fmt_items_f')
       use m_file_format_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      type(C_ptr), value :: fmt_names_c
-      character(len=1), pointer :: fmt_names(:)
-!
-      call c_f_pointer(fmt_names_c, fmt_names,                          &
-     &                 [kchara*num_label_file_fmt()])
-      call set_label_file_fmt(fmt_names)
-      end subroutine set_file_fmt_items_f
+      call set_label_file_fmt(file_fmt_list)
+      set_file_fmt_items_f = C_loc(file_fmt_list)
+      end function set_file_fmt_items_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

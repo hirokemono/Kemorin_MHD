@@ -28,7 +28,7 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 											 char *f_file_name, int width, int height,
 											 GtkWidget *window, GtkWidget *box_in);
 
-GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_format_list, 
+GtkWidget * draw_file_format_select_hbox(struct chara_clist *label_file_format_list, 
 										 struct chara_ctl_item * f_citem, GtkWidget *window);
 
 GtkWidget *draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem);

@@ -85,7 +85,9 @@ struct f_MHD_equations_views{
 void cb_chara_ctl_item(GtkEntry *entry, gpointer data);
 void cb_check_toggle(GtkWidget *widget, gpointer iflag_ptr);
 
-GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidget *window);
+GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt,
+                                       struct chara_clist *label_file_format_list,
+                                       GtkWidget *window);
 
 
 GtkWidget *MHD_sph_shell_ctl_expander(GtkWidget *window, struct f_MHD_sph_shell_control * f_psph_ctl, 

@@ -10,8 +10,6 @@
 extern int lengthchara_f(void);
 extern int c_yes_flag(const char *text);
 extern int c_no_file_flag(const char *file_name);
-extern int num_file_fmt_items_f(void);
-extern void set_file_fmt_items_f(char *fmt_names_c);
 
 extern void * c_sphere_data_ctl_block_name(void *f_spctl);
 extern void * c_sphere_data_ctl_iflag(void *f_spctl);
@@ -98,16 +96,13 @@ extern void * c_MHD_eqs_heat_ctl(void *f_eqs_ctl);
 extern void * c_MHD_eqs_comp_ctl(void *f_eqs_ctl);
 
 
-GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_format_list, 
+GtkWidget * draw_file_format_select_hbox(struct chara_clist *label_file_format_list,
 										 struct chara_ctl_item *f_citem, GtkWidget *window){
 	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
 	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
 	
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	GtkWidget *file_formats_tree_view
-			= create_control_flags_tree_view(label_file_format_list);
-	add_control_combobox_vbox(f_citem, label_file_format_list,
-							  file_formats_tree_view, vbox);
+	add_control_combobox_vbox(f_citem, label_file_format_list, vbox);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
@@ -115,28 +110,30 @@ GtkWidget * draw_file_format_select_hbox(struct control_labels_f *label_file_for
 }
 
 
-GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidget *window){
+GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt,
+                                       struct chara_clist *label_file_format_list,
+                                       GtkWidget *window){
     GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
 	GtkWidget *hbox_c1 = draw_chara_switch_entry_hbox(f_plt->f_debug_flag_ctl);
 	GtkWidget *hbox_i1 = draw_int_item_entry_hbox(f_plt->f_ndomain_ctl);
 	GtkWidget *hbox_i2 = draw_int_item_entry_hbox(f_plt->f_num_smp_ctl);
 	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_plt->f_sph_file_prefix);
-	GtkWidget *hbox_c3 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
+	GtkWidget *hbox_c3 = draw_file_format_select_hbox(label_file_format_list,
 													  f_plt->f_sph_file_fmt_ctl, window);
 	/*
 	GtkWidget *hbox_c4 = draw_chara_item_entry_hbox(f_plt->f_mesh_file_prefix);
 	GtkWidget *hbox_c5 = draw_chara_item_entry_hbox(f_plt->f_mesh_file_fmt_ctl);
 	*/
 	GtkWidget *hbox_c6 = draw_chara_item_entry_hbox(f_plt->f_restart_file_prefix);
-	GtkWidget *hbox_c7 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
+	GtkWidget *hbox_c7 = draw_file_format_select_hbox(label_file_format_list,
 													  f_plt->f_restart_file_fmt_ctl, window);
 	GtkWidget *hbox_c8 = draw_chara_item_entry_hbox(f_plt->f_field_file_prefix);
-	GtkWidget *hbox_c9 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
+	GtkWidget *hbox_c9 = draw_file_format_select_hbox(label_file_format_list,
 													  f_plt->f_field_file_fmt_ctl, window);
 	/*
  	GtkWidget *hbox_c10 = draw_chara_item_entry_hbox(f_plt->f_spectr_field_file_prefix);
-	GtkWidget *hbox_c11 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
+	GtkWidget *hbox_c11 = draw_file_format_select_hbox(label_file_format_list,
 													  f_plt->f_spectr_field_fmt_ctl, window);
 	GtkWidget *hbox_c12 = draw_chara_item_entry_hbox(f_plt->f_coriolis_int_file_name);
 	GtkWidget *hbox_c13 = draw_chara_item_entry_hbox(f_plt->f_coriolis_file_fmt_ctl);
@@ -146,7 +143,7 @@ GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt, GtkWidg
 	/*
 	GtkWidget *hbox_c16 = draw_chara_item_entry_hbox(f_plt->f_interpolate_sph_to_fem);
 	GtkWidget *hbox_c17 = draw_chara_item_entry_hbox(f_plt->f_interpolate_fem_to_sph);
-	GtkWidget *hbox_c18 = draw_file_format_select_hbox(f_plt->label_file_format_list, 
+	GtkWidget *hbox_c18 = draw_file_format_select_hbox(label_file_format_list, 
 													  f_plt->f_itp_file_fmt_ctl, window);
 	*/
 	GtkWidget *hbox_c19 = draw_chara_item_entry_hbox(f_plt->f_rayleigh_spectr_dir);

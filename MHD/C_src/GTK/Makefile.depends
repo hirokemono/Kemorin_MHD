@@ -337,24 +337,6 @@ ctl_panel_para_sph_shell_GTK.o: \
   $(C_SRCDIR)/GTK/control_elements_IO_GTK.h \
   $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
-ctl_panel_platforms_GTK.o: \
-  $(C_SRCDIR)/GTK/ctl_panel_platforms_GTK.c \
-  $(C_SRCDIR)/GTK/ctl_panel_platforms_GTK.h \
-  $(C_SRCDIR)/GTK/calypso_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_platforms_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
-  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
-  $(C_SRCDIR)/GTK/control_elements_IO_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h
-	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 kemoview_gtk_colorsel.o: \
   $(C_SRCDIR)/GTK/kemoview_gtk_colorsel.c \
   $(C_SRCDIR)/GTK/kemoview_gtk_colorsel.h \

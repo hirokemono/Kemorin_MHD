@@ -83,8 +83,6 @@ struct f_platform_control{
 	struct chara_ctl_item * f_itp_file_fmt_ctl;
 	struct chara_ctl_item * f_coriolis_file_fmt_ctl;
 	struct chara_ctl_item * f_del_org_data_ctl;
-	
-	struct control_labels_f *label_file_format_list;
 };
 
 struct f_MHD_sph_resolution_control{

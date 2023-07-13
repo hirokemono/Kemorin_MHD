@@ -10,8 +10,6 @@
 extern int lengthchara_f(void);
 extern int c_yes_flag(const char *text);
 extern int c_no_file_flag(const char *file_name);
-extern int num_file_fmt_items_f(void);
-extern void set_file_fmt_items_f(char *fmt_names_c);
 
 extern void * c_sphere_data_ctl_block_name(void *f_spctl);
 extern void * c_sphere_data_ctl_iflag(void *f_spctl);
@@ -139,10 +137,6 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 	f_plt->f_itp_file_fmt_ctl =          init_f_ctl_chara_item(c_plt_itp_file_fmt_ctl, f_plt->f_self);
 	f_plt->f_coriolis_file_fmt_ctl =     init_f_ctl_chara_item(c_plt_coriolis_file_fmt_ctl, f_plt->f_self);
 	f_plt->f_del_org_data_ctl =          init_f_ctl_chara_item(c_plt_del_org_data_ctl, f_plt->f_self);
-	
-	f_plt->label_file_format_list = init_control_labels_f(num_file_fmt_items_f, 
-														  set_file_fmt_items_f);
-	check_control_labels_f(f_plt->label_file_format_list);
 	return f_plt;
 }
 

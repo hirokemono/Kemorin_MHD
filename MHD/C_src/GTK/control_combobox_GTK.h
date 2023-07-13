@@ -21,14 +21,9 @@
 /*  prototype */
 
 GtkWidget * create_fixed_label_tree(struct chara_clist *c1_clist);
-GtkWidget * create_control_flags_tree_view(struct control_labels_f *flag_list);
-void add_control_combobox_vbox_old(char *c_charavalue,
-                               struct control_labels_f *flag_list,
-							   GtkWidget *ctl_flags_tree_view, GtkWidget *vbox_out);
 
 void add_control_combobox_vbox(struct chara_ctl_item *f_citem,
-                               struct control_labels_f *flag_list,
-							   GtkWidget *ctl_flags_tree_view, GtkWidget *vbox_out);
+                               struct chara_clist *flag_list, GtkWidget *vbox_out);
 
 
 #endif    /* T_CONTROL_LABEL_FROM_F_ */

@@ -9,7 +9,7 @@
 
 int lengthchara_f(void);
 extern int num_file_fmt_items_f(void);
-extern void set_file_fmt_items_f(char *fmt_names_c);
+extern void *set_file_fmt_items_f(char *fmt_names_c);
 
 
 struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_parent), void *f_parent)
@@ -85,8 +85,7 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 	f_plt->f_coriolis_file_fmt_ctl =     init_f_ctl_chara_item(c_plt_coriolis_file_fmt_ctl, f_plt->f_self);
 	f_plt->f_del_org_data_ctl =          init_f_ctl_chara_item(c_plt_del_org_data_ctl, f_plt->f_self);
 	
-	f_plt->label_file_format_list = init_control_labels_f(num_file_fmt_items_f, 
-														  set_file_fmt_items_f);
+	f_plt->label_file_format_list = init_control_labels_f(set_file_fmt_items_f);
 	check_control_labels_f(f_plt->label_file_format_list);
 	return f_plt;
 }
