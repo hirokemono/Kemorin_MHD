@@ -54,10 +54,23 @@
 !!      type(c_ptr) function set_label_momentum_bc_f(c_ctl)  bind(c)
 !!      type(c_ptr) function set_label_induction_bc_f(c_ctl)  bind(c)
 !!
+!!      type(c_ptr) function set_label_potential_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function set_label_vector_p_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function set_label_current_bc_f(c_ctl)  bind(c)
+!!
+!!      type(c_ptr) function set_label_sph_thermal_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function set_label_sph_momentum_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function set_label_sph_induction_bc_f(c_ctl)  bind(c)
+!!
 !!      type(c_ptr) function surf_bc_label_thermal_bc_f(c_ctl)  bind(c)
 !!      type(c_ptr) function surf_bc_label_momentum_bc_f(c_ctl)  bind(c)
 !!      type(c_ptr) function surf_bc_label_induction_bc_f(c_ctl)  bind(c)
 !!      type(c_ptr) function surf_bc_label_infinity_bc_f(c_ctl)  bind(c)
+!!
+!!      type(c_ptr) function surf_bc_label_potential_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function surf_bc_label_vector_p_bc_f(c_ctl)  bind(c)
+!!      type(c_ptr) function surf_bc_label_current_bc_f(c_ctl)  bind(c)
+!!  v      type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module c_link_MHD_boundary_ctl
 !
@@ -72,10 +85,27 @@
       type(ctl_array_chara), save, target, private :: induction_bc_type
       type(ctl_array_chara), save, target, private :: thermal_bc_type
 !
+      type(ctl_array_chara), save, target, private :: potential_bc_type
+      type(ctl_array_chara), save, target, private :: vector_p_bc_type
+      type(ctl_array_chara), save, target, private :: current_bc_type
+!
+      type(ctl_array_chara), save, target, private                      &
+     &                                    :: sph_thermal_bc_type
+      type(ctl_array_chara), save, target, private                      &
+     &                                    :: sph_momentum_bc_type
+      type(ctl_array_chara), save, target, private                      &
+     &                                    :: sph_induction_bc_type
+!
       type(ctl_array_chara), save, target, private :: heat_sf_bc_type
       type(ctl_array_chara), save, target, private :: mom_sf_bc_type
       type(ctl_array_chara), save, target, private :: induct_sf_bc_type
       type(ctl_array_chara), save, target, private :: infinity_bc_type
+!
+      type(ctl_array_chara), save, target, private                      &
+     &                                    :: potential_sf_bc_type
+      type(ctl_array_chara), save, target, private :: vecp_sf_bc_type
+      type(ctl_array_chara), save, target, private                      &
+     &                                    :: current_sf_bc_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -296,7 +326,7 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_thermal_bc_f(c_ctl)  bind(c)
-      use set_node_group_types
+      use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       call set_label_thermal_bc(thermal_bc_type)
@@ -306,7 +336,7 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_momentum_bc_f(c_ctl)  bind(c)
-      use set_node_group_types
+      use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       call set_label_momentum_bc(momentum_bc_type)
@@ -316,12 +346,73 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_induction_bc_f(c_ctl)  bind(c)
-      use set_node_group_types
+      use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       call set_label_induction_bc(induction_bc_type)
       set_label_induction_bc_f = C_loc(induction_bc_type)
       end function set_label_induction_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function set_label_potential_bc_f(c_ctl)  bind(c)
+      use m_set_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_label_potential_bc(potential_bc_type)
+      set_label_potential_bc_f = C_loc(potential_bc_type)
+      end function set_label_potential_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function set_label_vector_p_bc_f(c_ctl)  bind(c)
+      use m_set_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_label_vector_p_bc(vector_p_bc_type)
+      set_label_vector_p_bc_f = C_loc(vector_p_bc_type)
+      end function set_label_vector_p_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function set_label_current_bc_f(c_ctl)  bind(c)
+      use m_set_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_label_current_bc(current_bc_type)
+      set_label_current_bc_f = C_loc(current_bc_type)
+      end function set_label_current_bc_f
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function set_label_sph_thermal_bc_f(c_ctl)  bind(c)
+      use m_sph_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_label_sph_thermal_bc(sph_thermal_bc_type)
+      set_label_sph_thermal_bc_f = C_loc(sph_thermal_bc_type)
+      end function set_label_sph_thermal_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function set_label_sph_momentum_bc_f(c_ctl)  bind(c)
+      use m_sph_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_label_sph_momentum_bc(sph_momentum_bc_type)
+      set_label_sph_momentum_bc_f = C_loc(sph_momentum_bc_type)
+      end function set_label_sph_momentum_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function set_label_sph_induction_bc_f(c_ctl)  bind(c)
+      use m_sph_node_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_label_sph_induction_bc(sph_induction_bc_type)
+      set_label_sph_induction_bc_f = C_loc(sph_induction_bc_type)
+      end function set_label_sph_induction_bc_f
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -363,6 +454,36 @@
       call surf_bc_label_infinity_bc(infinity_bc_type)
       surf_bc_label_infinity_bc_f = C_loc(infinity_bc_type)
       end function surf_bc_label_infinity_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function surf_bc_label_potential_bc_f(c_ctl)  bind(c)
+      use set_surface_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call surf_bc_label_potential_bc(potential_sf_bc_type)
+      surf_bc_label_potential_bc_f = C_loc(potential_sf_bc_type)
+      end function surf_bc_label_potential_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function surf_bc_label_vector_p_bc_f(c_ctl)  bind(c)
+      use set_surface_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call surf_bc_label_vector_p_bc(vecp_sf_bc_type)
+      surf_bc_label_vector_p_bc_f = C_loc(vecp_sf_bc_type)
+      end function surf_bc_label_vector_p_bc_f
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function surf_bc_label_current_bc_f(c_ctl)  bind(c)
+      use set_surface_group_types
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call surf_bc_label_current_bc(current_sf_bc_type)
+      surf_bc_label_current_bc_f = C_loc(current_sf_bc_type)
+      end function surf_bc_label_current_bc_f
 !
 !  ---------------------------------------------------------------------
 !

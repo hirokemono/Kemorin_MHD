@@ -22,7 +22,12 @@
 #include "tree_view_chara_GTK.h"
 #include "tree_view_4_field_GTK.h"
 #include "tree_view_4_force_GTK.h"
-#include "tree_view_4_temp_BC_GTK.h"
+#include "tree_view_boundary_condition_GTK.h"
+
+#include "c_ctl_data_SGS_model.h"
+#include "c_control_data_pvrs.h"
+#include "c_ctl_data_platforms.h"
+#include "c_ctl_data_MHD_BCs.h"
 
 #include "ctl_data_platforms_GTK.h"
 #include "control_panel_4_dimless_GTK.h"
@@ -31,12 +36,8 @@
 #include "control_panel_int_GTK.h"
 #include "control_panel_int2_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
+#include "control_panel_4_MHD_BCs_GTK.h"
 
-#include "c_ctl_data_SGS_model.h"
-#include "c_control_data_pvrs.h"
-#include "c_ctl_data_platforms.h"
-
-            
 extern void c_view_control_sph_SGS_MHD();
 
 
@@ -143,30 +144,6 @@ extern void * c_fline_ctls_fline_ctl(int idx, void *f_fline_ctls);
 extern void * c_append_viz_fline_ctls(int idx, char *block_name, void *f_fline_ctls);
 extern void * c_delete_viz_fline_ctls(int idx, void *f_fline_ctls);
 
-extern void * c_MHD_node_bc_ctl_block_name(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_ctl_iflag(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_node_bc_T_ctl(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_node_bc_U_ctl(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_node_bc_P_ctl(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_node_bc_C_ctl(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_node_bc_B_ctl(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_node_bc_MP_ctl(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_node_bc_A_ctl(void *f_nbc_ctl);
-extern void * c_MHD_node_bc_node_bc_J_ctl(void *f_nbc_ctl);
-
-
-extern void * c_MHD_surf_bc_ctl_block_name(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_ctl_iflag(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_HF_ctl(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_ST_ctl(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_PN_ctl(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_BN_ctl(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_JN_ctl(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_AN_ctl(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_MPN_ctl(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_CF_ctl(void *f_sbc_ctl);
-extern void * c_MHD_surf_bc_surf_bc_INF_ctl(void *f_sbc_ctl);
-
 
 extern void * c_MHD_evolution_ctl_block_name(void *f_evo_ctl);
 extern void * c_MHD_evolution_ctl_iflag(void *f_evo_ctl);
@@ -221,48 +198,6 @@ extern void * c_temp_model_low_ctl(void *f_reft_ctl);
 extern void * c_temp_model_high_ctl(void *f_reft_ctl);
 extern void * c_temp_model_takepiro_ctl(void *f_reft_ctl);
 
-extern void *set_label_thermal_bc_f();
-extern void *set_label_momentum_bc_f();
-extern void *set_label_induction_bc_f();
-
-extern void *surf_bc_label_thermal_bc_f();
-extern void *surf_bc_label_momentum_bc_f();
-extern void *surf_bc_label_induction_bc_f();
-extern void *surf_bc_label_infinity_bc_f();
-
-
-struct f_MHD_node_bc_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara2_real_clist *f_node_bc_T_ctl;
-	struct chara2_real_clist *f_node_bc_U_ctl;
-	struct chara2_real_clist *f_node_bc_P_ctl;
-	struct chara2_real_clist *f_node_bc_C_ctl;
-	struct chara2_real_clist *f_node_bc_B_ctl;
-	struct chara2_real_clist *f_node_bc_MP_ctl;
-	struct chara2_real_clist *f_node_bc_A_ctl;
-	struct chara2_real_clist *f_node_bc_J_ctl;
-};
-
-struct f_MHD_surf_bc_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara2_real_clist *f_surf_bc_HF_ctl;
-	struct chara2_real_clist *f_surf_bc_ST_ctl;
-	struct chara2_real_clist *f_surf_bc_PN_ctl;
-	struct chara2_real_clist *f_surf_bc_BN_ctl;
-	struct chara2_real_clist *f_surf_bc_JN_ctl;
-	struct chara2_real_clist *f_surf_bc_AN_ctl;
-	struct chara2_real_clist *f_surf_bc_MPN_ctl;
-	struct chara2_real_clist *f_surf_bc_CF_ctl;
-	struct chara2_real_clist *f_surf_bc_INF_ctl;
-};
 
 struct f_MHD_time_evo_control{
 	void * f_self;
@@ -543,62 +478,6 @@ boolean_to_text (GBinding *binding,
 }
 */
 
-
-struct f_MHD_node_bc_control * init_f_MHD_node_bc_control(void *(*c_load_self)(void *f_parent), 
-															  void *f_parent)
-{
-	struct f_MHD_node_bc_control *f_nbc_ctl 
-			= (struct f_MHD_node_bc_control *) malloc(sizeof(struct f_MHD_node_bc_control));
-	if(f_nbc_ctl == NULL){
-		printf("malloc error for f_nbc_ctl\n");
-		exit(0);
-	};
-	
-	f_nbc_ctl->f_self =  c_load_self(f_parent);
-	
-	f_nbc_ctl->f_iflag =        (int *) c_MHD_node_bc_ctl_iflag(f_nbc_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_node_bc_ctl_block_name(f_nbc_ctl->f_self);
-	f_nbc_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_nbc_ctl->f_node_bc_T_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_T_ctl, f_nbc_ctl->f_self);
-	f_nbc_ctl->f_node_bc_U_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_U_ctl, f_nbc_ctl->f_self);
-	f_nbc_ctl->f_node_bc_P_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_P_ctl, f_nbc_ctl->f_self);
-	f_nbc_ctl->f_node_bc_C_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_C_ctl, f_nbc_ctl->f_self);
-	f_nbc_ctl->f_node_bc_B_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_B_ctl, f_nbc_ctl->f_self);
-	f_nbc_ctl->f_node_bc_MP_ctl = init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_MP_ctl, f_nbc_ctl->f_self);
-	f_nbc_ctl->f_node_bc_A_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_A_ctl, f_nbc_ctl->f_self);
-	f_nbc_ctl->f_node_bc_J_ctl =  init_f_ctl_c2r_array(c_MHD_node_bc_node_bc_J_ctl, f_nbc_ctl->f_self);
-	return f_nbc_ctl;
-};
-
-
-struct f_MHD_surf_bc_control * init_f_MHD_surf_bc_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
-{
-	struct f_MHD_surf_bc_control *f_sbc_ctl 
-			= (struct f_MHD_surf_bc_control *) malloc(sizeof(struct f_MHD_surf_bc_control));
-	if(f_sbc_ctl == NULL){
-		printf("malloc error for f_sbc_ctl\n");
-		exit(0);
-	};
-	
-	f_sbc_ctl->f_self =  c_load_self(f_parent);
-	
-	f_sbc_ctl->f_iflag =        (int *) c_MHD_surf_bc_ctl_iflag(f_sbc_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_surf_bc_ctl_block_name(f_sbc_ctl->f_self);
-	f_sbc_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_sbc_ctl->f_surf_bc_HF_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_HF_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_ST_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_ST_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_PN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_PN_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_BN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_BN_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_JN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_JN_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_AN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_AN_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_MPN_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_MPN_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_CF_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_CF_ctl, f_sbc_ctl->f_self);
-	f_sbc_ctl->f_surf_bc_INF_ctl =  init_f_ctl_c2r_array(c_MHD_surf_bc_surf_bc_INF_ctl, f_sbc_ctl->f_self);
-	return f_sbc_ctl;
-}
 
 struct f_MHD_time_evo_control * init_f_MHD_time_evo_control(void *(*c_load_self)(void *f_parent), 
 														  void *f_parent)
@@ -1313,19 +1192,6 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	return vbox_1;
 };
 
-struct f_MHD_BCs_tree_views{
-	struct boundary_condition_view *bc_mom_vws;
- 	struct boundary_condition_view *bc_induction_vws;
-	struct boundary_condition_view *bc_temp_vws;
-	struct boundary_condition_view *bc_comp_vws;
-	struct boundary_condition_view *bc_infinity_vws;
-	
-	struct boundary_condition_view *bc_press_vws;
-	struct boundary_condition_view *bc_magp_vws;
-	struct boundary_condition_view *f_vecp_bc_type;
-	struct boundary_condition_view *f_current_bc_type;
-};
-
 struct f_MHD_tree_views{
 	struct f_sph_shell_views *f_psph_vws;
 	struct f_MHD_equations_views *f_eqs_vws;
@@ -1394,107 +1260,6 @@ static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR
 															   480, 480, window, vbox_v_pwr);
     return expand_v_pwr;
 };
-
-static GtkWidget * draw_node_bc_ctl_vbox(struct f_MHD_node_bc_control *f_nbc_ctl,
-										 struct f_MHD_BCs_tree_views *bc_nod_bc_vws, 
-										 GtkWidget *window){
-	GtkWidget *vbox_m3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	
-	bc_nod_bc_vws = (struct f_MHD_BCs_tree_views *) malloc(sizeof(struct f_MHD_BCs_tree_views));
-	if(f_MHD_vws == NULL){
-		printf("malloc error for bc_nod_bc_vws\n");
-		exit(0);
-	};
-	
-    struct chara_clist *f_mom_bc_type =  init_f_ctl_chara_array(set_label_momentum_bc_f, 
-																f_nbc_ctl->f_self);
-    struct chara_clist *f_idct_bc_type = init_f_ctl_chara_array(set_label_induction_bc_f, 
-																f_nbc_ctl->f_self);
-    struct chara_clist *f_heat_bc_type = init_f_ctl_chara_array(set_label_thermal_bc_f, 
-																f_nbc_ctl->f_self);
-
-	GtkWidget *expand_MHD_node_bcU = boundary_condition_expander(f_nbc_ctl->f_node_bc_U_ctl, f_mom_bc_type,
-																 bc_nod_bc_vws->bc_mom_vws, window);
-	GtkWidget *expand_MHD_node_bcB = boundary_condition_expander(f_nbc_ctl->f_node_bc_B_ctl, f_idct_bc_type,
-																 bc_nod_bc_vws->bc_induction_vws, window);
-	GtkWidget *expand_MHD_node_bcT = boundary_condition_expander(f_nbc_ctl->f_node_bc_T_ctl, f_heat_bc_type,
-																 bc_nod_bc_vws->bc_temp_vws, window);
-	GtkWidget *expand_MHD_node_bcC = boundary_condition_expander(f_nbc_ctl->f_node_bc_C_ctl, f_heat_bc_type,
-																 bc_nod_bc_vws->bc_comp_vws, window);
-	
-	GtkWidget *expand_MHD_node_bcP = boundary_condition_expander(f_nbc_ctl->f_node_bc_P_ctl, f_heat_bc_type,
-																 bc_nod_bc_vws->bc_press_vws, window);
-	GtkWidget *expand_MHD_node_bcM = boundary_condition_expander(f_nbc_ctl->f_node_bc_MP_ctl, f_heat_bc_type,
-																 bc_nod_bc_vws->bc_magp_vws, window);
-	GtkWidget *expand_MHD_node_bcA = boundary_condition_expander(f_nbc_ctl->f_node_bc_A_ctl, f_heat_bc_type,
-																 bc_nod_bc_vws->f_vecp_bc_type, window);
-	GtkWidget *expand_MHD_node_bcJ = boundary_condition_expander(f_nbc_ctl->f_node_bc_J_ctl, f_heat_bc_type,
-																 bc_nod_bc_vws->f_current_bc_type, window);
-	
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcU, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcB, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcT, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcC, FALSE, FALSE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcP, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcM, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcA, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcJ, FALSE, FALSE, 0);
-	return vbox_m3;
-}
-
-static GtkWidget * draw_surf_bc_ctl_vbox(struct f_MHD_surf_bc_control *f_sbc_ctl,
-										 struct f_MHD_BCs_tree_views *bc_surf_bc_vws, 
-										 GtkWidget *window){
-	GtkWidget *vbox_m3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	
-	bc_surf_bc_vws = (struct f_MHD_BCs_tree_views *) malloc(sizeof(struct f_MHD_BCs_tree_views));
-	if(f_MHD_vws == NULL){
-		printf("malloc error for bc_surf_bc_vws\n");
-		exit(0);
-	};
-	
-    struct chara_clist *f_mom_bc_type =  init_f_ctl_chara_array(surf_bc_label_momentum_bc_f, 
-																f_sbc_ctl->f_self);
-    struct chara_clist *f_idct_bc_type = init_f_ctl_chara_array(surf_bc_label_induction_bc_f, 
-																f_sbc_ctl->f_self);
-    struct chara_clist *f_heat_bc_type = init_f_ctl_chara_array(surf_bc_label_thermal_bc_f, 
-																f_sbc_ctl->f_self);
-    struct chara_clist *f_infty_bc_type = init_f_ctl_chara_array(surf_bc_label_infinity_bc_f, 
-																f_sbc_ctl->f_self);
-
-	GtkWidget *expand_MHD_node_bcU = boundary_condition_expander(f_sbc_ctl->f_surf_bc_ST_ctl, f_mom_bc_type,
-																 bc_surf_bc_vws->bc_mom_vws, window);
-	GtkWidget *expand_MHD_node_bcB = boundary_condition_expander(f_sbc_ctl->f_surf_bc_BN_ctl, f_idct_bc_type,
-																 bc_surf_bc_vws->bc_induction_vws, window);
-	GtkWidget *expand_MHD_node_bcT = boundary_condition_expander(f_sbc_ctl->f_surf_bc_HF_ctl, f_heat_bc_type,
-																 bc_surf_bc_vws->bc_temp_vws, window);
-	GtkWidget *expand_MHD_node_bcC = boundary_condition_expander(f_sbc_ctl->f_surf_bc_CF_ctl, f_heat_bc_type,
-																 bc_surf_bc_vws->bc_comp_vws, window);
-	GtkWidget *expand_MHD_node_bcF = boundary_condition_expander(f_sbc_ctl->f_surf_bc_INF_ctl, f_infty_bc_type,
-																 bc_surf_bc_vws->bc_infinity_vws, window);
-	
-	GtkWidget *expand_MHD_node_bcP = boundary_condition_expander(f_sbc_ctl->f_surf_bc_PN_ctl, f_heat_bc_type,
-																 bc_surf_bc_vws->bc_press_vws, window);
-	GtkWidget *expand_MHD_node_bcM = boundary_condition_expander(f_sbc_ctl->f_surf_bc_MPN_ctl, f_heat_bc_type,
-																 bc_surf_bc_vws->bc_magp_vws, window);
-	GtkWidget *expand_MHD_node_bcA = boundary_condition_expander(f_sbc_ctl->f_surf_bc_AN_ctl, f_idct_bc_type,
-																 bc_surf_bc_vws->f_vecp_bc_type, window);
-	GtkWidget *expand_MHD_node_bcJ = boundary_condition_expander(f_sbc_ctl->f_surf_bc_JN_ctl, f_idct_bc_type,
-																 bc_surf_bc_vws->f_current_bc_type, window);
-
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcU, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcB, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcT, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcC, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcF, FALSE, FALSE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcP, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcM, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcA, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m3), expand_MHD_node_bcJ, FALSE, FALSE, 0);
-	return vbox_m3;
-}
 
 void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
 						  struct main_widgets *mWidgets){

@@ -39,7 +39,7 @@
       use t_physical_property
       use t_control_array_chara2real
       use t_bc_data_list
-      use set_node_group_types
+      use m_set_node_group_types
       use set_surface_group_types
 !
       type(conductive_property), intent(in) :: cd_prop
@@ -77,8 +77,10 @@
      &                                    current_nod%bc_magnitude
 !
         do i = 1, current_nod%num_bc
+         call set_bc_group_types_each_dir(node_bc_J_ctl%c1_tbl(i),      &
+     &                                    current_nod%ibc_type(i))
          call set_bc_group_types_vector(node_bc_J_ctl%c1_tbl(i),        &
-     &       current_nod%ibc_type(i))
+     &                                  current_nod%ibc_type(i))
         end do
 !
         if (iflag_debug .ge. iflag_routine_msg) then

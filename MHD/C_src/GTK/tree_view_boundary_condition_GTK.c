@@ -1,11 +1,11 @@
 /*
-//  tree_view_4_temp_BC_GTK.c
+//  tree_view_boundary_condition_GTK.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/08/16.
 */
 
-#include "tree_view_4_temp_BC_GTK.h"
+#include "tree_view_boundary_condition_GTK.h"
 
 
 struct boundary_condition_view * init_boudary_condition_views_GTK(struct chara2_real_clist *bc_ctl,

@@ -1,18 +1,17 @@
 /*
-//  tree_view_4_temp_BC_GTK.h
+//  tree_view_boundary_condition_GTK.h
 //  
 //
 //  Created by Hiroaki Matsui on 2018/08/16.
 */
 
-#ifndef tree_view_4_temp_BC_GTK_h_
-#define tree_view_4_temp_BC_GTK_h_
+#ifndef tree_view_boundary_condition_GTK_h_
+#define tree_view_boundary_condition_GTK_h_
 
 #include "calypso_GTK.h"
 #include "t_control_chara2_real_IO.h"
 #include "t_ctl_array_chara2_real_items_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
-#include "tree_view_4_temp_BC_GTK.h"
 #include "tree_view_chara2_real_GTK.h"
 #include "tree_view_chara_GTK.h"
 #include "control_combobox_GTK.h"
@@ -38,4 +37,4 @@ GtkWidget * boundary_condition_expander(struct chara2_real_clist *f_bc_ctl,
                                         struct boundary_condition_view *bc_vws,
                                         GtkWidget *window);
 
-#endif /* tree_view_4_temp_BC_GTK_h_ */
+#endif /* tree_view_boundary_condition_GTK_h_ */

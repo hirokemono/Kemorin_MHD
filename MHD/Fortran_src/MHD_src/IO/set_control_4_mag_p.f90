@@ -38,11 +38,12 @@
      &          e_potential_nod, e_potential_surf)
 !
       use m_machine_parameter
+      use m_sph_node_group_types
       use calypso_mpi
       use t_physical_property
       use t_control_array_chara2real
       use t_bc_data_list
-      use set_node_group_types
+      use m_set_node_group_types
       use set_surface_group_types
 !
       type(conductive_property), intent(in)  :: cd_prop
