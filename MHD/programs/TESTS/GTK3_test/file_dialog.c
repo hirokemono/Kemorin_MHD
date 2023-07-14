@@ -46,6 +46,14 @@ extern int    c_pvr_render_ctls_num_pvr_ctl(void *f_pvr_ctls);
 extern void * c_append_viz_pvr_render_ctls(int idx, char *block_name, void *f_pvr_ctls);
 extern void * c_delete_viz_pvr_render_ctls(int idx, void *f_pvr_ctls);
 
+extern void * c_map_render_ctls_block_name(void *f_map_ctls);
+extern int    c_map_render_ctls_num_map_ctl(void *f_map_ctls);
+extern char * c_map_render_ctls_fname(int idx, void *f_map_ctls);
+extern void * c_map_render_ctls_map_ctl(int idx, void *f_map_ctls);
+extern void * c_append_viz_map_render_ctls(int idx, char *block_name, void *f_map_ctls);
+extern void * c_delete_viz_map_render_ctls(int idx, void *f_map_ctls);
+
+
 
 extern void * c_read_control_sph_SGS_MHD(char *file_name);
 extern void * c_add_sgs_sph_mhd_ctl();
@@ -121,13 +129,6 @@ extern char * c_isosurf_ctls_fname(int idx, void *f_iso_ctls);
 extern void * c_isosurf_ctls_iso_ctl(int idx, void *f_iso_ctls);
 extern void * c_append_viz_isosurf_ctls(int idx, char *block_name, void *f_iso_ctls);
 extern void * c_delete_viz_isosurf_ctls(int idx, void *f_iso_ctls);
-
-extern void * c_map_render_ctls_block_name(void *f_map_ctls);
-extern int    c_map_render_ctls_num_map_ctl(void *f_map_ctls);
-extern char * c_map_render_ctls_fname(int idx, void *f_map_ctls);
-extern void * c_map_render_ctls_map_ctl(int idx, void *f_map_ctls);
-extern void * c_append_viz_map_render_ctls(int idx, char *block_name, void *f_map_ctls);
-extern void * c_delete_viz_map_render_ctls(int idx, void *f_map_ctls);
 
 extern void * c_lic_render_ctls_block_name(void *f_lic_ctls);
 extern int    c_lic_render_ctls_num_lic_ctl(void *f_lic_ctls);
@@ -322,6 +323,115 @@ struct f_MHD_model_control{
 	struct f_MHD_temp_model_control     *f_reft_ctl;
 	struct f_MHD_temp_model_control     *f_refc_ctl;
 	struct f_MHD_SGS_model_control      *f_sgs_ctl;
+};
+
+
+struct f_VIZ_PSF_ctl{
+    void * f_self;
+    int * f_iflag;
+    
+    char * c_block_name;
+    
+    char *fname_section_ctl;
+    void *psf_def_c;
+    
+    char *fname_fld_on_psf;
+    void *fld_on_psf_c;
+    
+    struct chara_ctl_item *psf_file_head_ctl;
+    struct chara_ctl_item *psf_output_type_ctl;
+};
+
+struct f_VIZ_ISO_ctl{
+    void * f_self;
+    int * f_iflag;
+    
+    char * c_block_name;
+    
+    char *fname_fld_on_iso;
+    void *f_fld_on_iso_c;
+    
+    void *f_iso_def_c;
+    struct chara_ctl_item *f_iso_file_head_ctl;
+    struct chara_ctl_item *f_iso_output_type_ctl;
+};
+
+struct f_VIZ_MAP_ctl{
+    void * f_self;
+    int * f_iflag;
+    
+    char * c_block_name;
+    
+    char *map_ctl_file_name;
+    
+    char *f_fname_mat_ctl;
+    void *f_mat;
+    
+    char *f_fname_cmap_cbar_c;
+    void *f_cmap_cbar_c;
+    
+    void *f_map_define_ctl;
+    struct chara_ctl_item *f_map_image_prefix_ctl;
+    struct chara_ctl_item *f_map_image_fmt_ctl;
+    struct chara_ctl_item *f_map_field_ctl;
+    struct chara_ctl_item *f_map_comp_ctl;
+    struct chara_ctl_item *f_isoline_field_ctl;
+    struct chara_ctl_item *f_isoline_comp_ctl;
+};
+
+struct f_VIZ_LIC_ctl{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+    char *pvr_ctl_file_name;
+	
+	char *f_fname_LIC_noise_ctl;
+	void *f_noise_ctl;
+	char *f_fname_LIC_kernel_ctl;
+	void *f_kernel_ctl;
+	char *f_fname_vol_repart_ctl;
+	void *f_repart_ctl;
+    
+    int f_num_masking_ctl;
+	struct void_clist *f_mask_ctl;
+    
+    struct chara_ctl_item *f_LIC_field_ctl;
+	struct chara_ctl_item *f_subdomain_elapsed_dump_ctl;
+	struct chara_ctl_item *f_color_field_ctl;
+	struct chara_ctl_item *f_color_component_ctl;
+	struct chara_ctl_item *f_opacity_field_ctl;
+	struct chara_ctl_item *f_opacity_component_ctl;
+    
+	struct chara_ctl_item *f_vr_sample_mode_ctl;
+	struct real_ctl_item *f_step_size_ctl;
+	struct chara_ctl_item *f_normalization_type_ctl;
+	struct real_ctl_item *f_normalization_value_ctl;
+};
+
+struct f_VIZ_FLINE_ctl{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+    char *fline_ctl_file_name;
+	
+    struct chara_ctl_item *f_fline_file_head_ctl;
+    struct chara_ctl_item *f_fline_output_type_ctl;
+    struct chara_ctl_item *f_fline_field_ctl;
+    struct chara_ctl_item *f_fline_color_field_ctl;
+    struct chara_ctl_item *f_fline_color_comp_ctl;
+    struct chara_clist    *f_fline_area_grp_ctl;
+    struct chara_ctl_item *f_starting_type_ctl;
+    struct chara_ctl_item *f_selection_type_ctl;
+    struct chara_ctl_item *f_line_direction_ctl;
+    struct chara_ctl_item *f_start_surf_grp_ctl;
+    struct int_ctl_item   *f_num_fieldline_ctl;
+    struct int_ctl_item   *f_max_line_stepping_ctl;
+    struct r3_clist       *f_seed_point_ctl;
+    struct i2_clist       *f_seed_surface_ctl;
 };
 
 struct f_VIZ_PSF_ctls{
