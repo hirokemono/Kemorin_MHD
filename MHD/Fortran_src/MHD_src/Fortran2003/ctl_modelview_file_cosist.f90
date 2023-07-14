@@ -117,7 +117,7 @@
       use t_control_data_pvrs
       use t_control_data_LIC_pvrs
 !
-      type(multi_modeview_ctl), intent(inout) :: ref_mul_mats
+      type(multi_modelview_ctl), intent(inout) :: ref_mul_mats
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(map_rendering_controls), intent(inout) :: map_ctls
       type(lic_rendering_controls), intent(inout) :: lic_ctls
@@ -212,7 +212,7 @@
 !
       character(len=kchara), intent(in) :: ref_fname
       type(modeview_ctl), intent(inout) :: ref_mat
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !
       integer(kind = kint) :: i
 !

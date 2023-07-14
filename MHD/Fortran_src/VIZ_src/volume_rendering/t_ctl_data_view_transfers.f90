@@ -13,13 +13,13 @@
 !!
 !!      subroutine read_mul_view_transfer_ctl                           &
 !!     &         (id_control, hd_block, mul_mats_c, c_buf)
-!!        type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+!!        type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_mul_view_transfer_ctl                          &
 !!     &         (id_control, hd_block, mul_mats_c, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(multi_modeview_ctl), intent(in) :: mul_mats_c
+!!        type(multi_modelview_ctl), intent(in) :: mul_mats_c
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine append_mul_view_trans_ctl(idx_in, hd_block,          &
@@ -27,11 +27,11 @@
 !!      subroutine delete_mul_view_trans_ctl(idx_in, mul_mats_c)
 !!        integer(kind = kint), intent(in) :: idx_in
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+!!        type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !!      subroutine dup_mul_view_trans_ctl(org_mul_mats_c,               &
 !!     &                                  new_mul_mats_c)
-!!        type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
-!!        type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
+!!        type(multi_modelview_ctl), intent(in) :: org_mul_mats_c
+!!        type(multi_modelview_ctl), intent(inout) :: new_mul_mats_c
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array view_transform_ctl
 !!      file  view_transform_ctl  control_view
@@ -58,7 +58,7 @@
 !
 !
 !>        Structure of modelview parameters or file names to load
-      type multi_modeview_ctl
+      type multi_modelview_ctl
 !>        Control block name
         character(len = kchara) :: block_name = 'isosurface_ctl'
 !
@@ -68,7 +68,7 @@
         character(len=kchara), allocatable :: fname_mat_ctl(:)
 !>         Lists of view parameters
         type(modeview_ctl), allocatable :: matrices(:)
-      end type multi_modeview_ctl
+      end type multi_modelview_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -78,7 +78,7 @@
 !
       subroutine dealloc_multi_modeview_ctl(mul_mats_c)
 !
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !
 !
      if(allocated(mul_mats_c%matrices)) then
@@ -95,7 +95,7 @@
 !
       subroutine alloc_multi_modeview_ctl(mul_mats_c)
 !
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !
 !
       allocate(mul_mats_c%matrices(mul_mats_c%num_modelviews_c))
@@ -108,7 +108,7 @@
       subroutine init_multi_modeview_ctl(hd_block, mul_mats_c)
 !
       character(len=kchara), intent(in) :: hd_block
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !
 !
       mul_mats_c%block_name =       hd_block
@@ -127,7 +127,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: mul_mats_c
       type(buffer_for_control), intent(inout)  :: c_buf
 !
       integer(kind = kint) :: n_append
@@ -168,7 +168,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(multi_modeview_ctl), intent(in) :: mul_mats_c
+      type(multi_modelview_ctl), intent(in) :: mul_mats_c
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: i
@@ -195,9 +195,9 @@
 !
       integer(kind = kint), intent(in) :: idx_in
       character(len=kchara), intent(in) :: hd_block
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !
-      type(multi_modeview_ctl) :: tmp_mul_qmats
+      type(multi_modelview_ctl) :: tmp_mul_qmats
       integer(kind = kint) :: i
 !
 !
@@ -241,9 +241,9 @@
       subroutine delete_mul_view_trans_ctl(idx_in, mul_mats_c)
 !
       integer(kind = kint), intent(in) :: idx_in
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !
-      type(multi_modeview_ctl) :: tmp_mul_qmats
+      type(multi_modelview_ctl) :: tmp_mul_qmats
       integer(kind = kint) :: i
 !
 !
@@ -282,8 +282,8 @@
       subroutine dup_mul_view_trans_ctl(org_mul_mats_c,                 &
      &                                  new_mul_mats_c)
 !
-      type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
-      type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
+      type(multi_modelview_ctl), intent(in) :: org_mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: new_mul_mats_c
 !
       integer(kind = kint) :: i
 !

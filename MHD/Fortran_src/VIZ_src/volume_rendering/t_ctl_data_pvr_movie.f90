@@ -94,7 +94,7 @@
         type(modeview_ctl) :: view_end_ctl
 !
 !         Lists of multiple view parameters
-        type(multi_modeview_ctl) :: mul_mmats_c
+        type(multi_modelview_ctl) :: mul_mmats_c
 !
 !     2nd level for volume rendering
         integer (kind=kint) :: i_pvr_rotation = 0

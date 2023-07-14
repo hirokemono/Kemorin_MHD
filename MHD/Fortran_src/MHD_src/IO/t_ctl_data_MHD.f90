@@ -16,8 +16,6 @@
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(surfacing_controls), intent(inout) :: surfacing_ctls
-!!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !!      subroutine write_sph_mhd_ctl_noviz                              &
@@ -26,8 +24,6 @@
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(in) :: MHD_ctl
-!!        type(surfacing_controls), intent(in) :: surfacing_ctls
-!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine dealloc_sph_mhd_ctl_data(MHD_ctl)

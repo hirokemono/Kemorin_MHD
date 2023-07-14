@@ -72,7 +72,7 @@
         type(read_int2_item) :: num_row_column_ctl
 !
 !         Lists of multiple view parameters
-        type(multi_modeview_ctl) :: mul_qmats_c
+        type(multi_modelview_ctl) :: mul_qmats_c
 !
 !         integer flag of used block
         integer (kind=kint) :: i_quilt_image = 0

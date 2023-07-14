@@ -4,6 +4,8 @@ c_link_MHD_boundary_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_boundary_ctl.f90 t_contro
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_MHD_dimless_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_dimless_ctl.f90 t_ctl_data_dimless_numbers.o t_ctl_data_mhd_normalize.o
 	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_dynamo_vizs_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_dynamo_vizs_ctl.f90 t_control_data_dynamo_vizs.o t_ctl_data_crust_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
 c_link_MHD_field_evolve_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_field_evolve_ctl.f90 t_ctl_data_4_fields.o t_ctl_data_mhd_evolution.o t_ctl_data_mhd_forces.o t_ctl_data_mhd_evo_area.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_MHD_force_model_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_force_model_ctl.f90 t_ctl_data_gravity.o t_ctl_data_coriolis_force.o t_ctl_data_mhd_magne.o t_ctl_data_magnetic_scale.o
@@ -15,6 +17,16 @@ c_link_MHD_induction_eq_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_induction_eq_ctl.f90 
 c_link_MHD_momentum_eq_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_momentum_eq_ctl.f90 t_ctl_data_momentum_norm.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_MHD_temp_model_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_temp_model_ctl.f90 t_ctl_data_temp_model.o t_ctl_data_stratified_model.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_PVR_colorbar_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_colorbar_ctl.f90 t_ctl_data_pvr_colormap_bar.o t_ctl_data_pvr_colorbar.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_PVR_colormap_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_colormap_ctl.f90 t_ctl_data_pvr_colormap.o t_ctl_data_pvr_light.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_PVR_movie_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_movie_ctl.f90 t_ctl_data_pvr_movie.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_PVR_quilt_image_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_quilt_image_ctl.f90 t_ctl_data_quilt_image.o t_ctl_data_view_transfers.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_PVR_section_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_section_ctl.f90 t_control_data_pvr_sections.o t_control_data_pvr_isosurfs.o t_ctl_data_pvr_section.o t_ctl_data_pvr_isosurface.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_SGS_filter_file_ctl.o: $(MHD_F2003_DIR)/c_link_SGS_filter_file_ctl.f90 t_ctl_data_filter_files.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -31,6 +43,8 @@ c_link_VIZ_LIC_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_LIC_ctl.f90 t_control_data_LIC
 c_link_VIZ_MAP_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_MAP_ctl.f90 t_control_data_4_map.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_VIZ_PSF_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_PSF_ctl.f90 t_control_data_4_psf.o t_control_data_4_psf_def.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_VIZ_PVR_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_PVR_ctl.f90 t_control_data_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_VIZ_modeview_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_modeview_ctl.f90 t_ctl_data_4_view_transfer.o
 	$(F90) -c $(F90OPTFLAGS) $<

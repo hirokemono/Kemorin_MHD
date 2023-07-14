@@ -12,7 +12,7 @@
 !!      subroutine bcast_quilt_image_ctl(quilt_c)
 !!        type(quilt_image_ctl), intent(inout) :: quilt_c
 !!      subroutine bcast_mul_view_trans_ctl(mul_mats_c)
-!!        type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+!!        type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !!      subroutine bcast_view_transfer_ctl(mat)
 !!        type(modeview_ctl), intent(inout) :: mat
 !!
@@ -112,7 +112,7 @@
       use calypso_mpi_char
       use transfer_to_long_integers
 !
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
+      type(multi_modelview_ctl), intent(inout) :: mul_mats_c
 !
       integer(kind = kint) :: i, num
 !
