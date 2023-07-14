@@ -193,6 +193,136 @@ extern void * c_VIZ_LIC_normalize_value_ctl(void *f_lic_ctl);
 extern void * c_VIZ_LIC_fname_vol_repart_ctl(void *f_lic_ctl);
 extern void * c_VIZ_LIC_repartition_ctl(void *f_lic_ctl);
 
+extern void * c_VIZ_PVR_ctl_block_name(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_ctl_iflag(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_fname_mat_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_viewmat_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_fname_pvr_light_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_light_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_fname_cmap_cbar_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_cmap_cbar_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_movie_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_quilt_image_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_updated_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_file_head_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_file_head_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_file_fmt_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_file_fmt_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_monitoring_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_streo_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_anaglyph_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_quilt_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_render_area_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_field_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_component_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_sections_ctl(void *f_pvr_ctl);
+extern void * c_VIZ_PVR_isosurfaces_ctl(void *f_pvr_ctl);
+
+extern void * c_PVR_cmap_cbar_ctl_block_name(void *f_cmap_cbar_c);
+extern void * c_PVR_cmap_cbar_ctl_iflag(void *f_cmap_cbar_c);
+extern void * c_PVR_cmap_cbar_color_ctl(void *f_cmap_cbar_c);
+extern void * c_PVR_cmap_cbar_cbar_ctl(void *f_cmap_cbar_c);
+
+extern void * c_PVR_colormap_ctl_block_name(void *f_color);
+extern void * c_PVR_colormap_ctl_iflag(void *f_color);
+extern void * c_PVR_cmap_lic_color_comp_ctl(void *f_color);
+extern void * c_PVR_cmap_lic_opacity_fld_ctl(void *f_color);
+extern void * c_PVR_cmap_lic_opacity_comp_ctl(void *f_color);
+extern void * c_PVR_cmap_colormap_mode_ctl(void *f_color);
+extern void * c_PVR_cmap_data_mapping_ctl(void *f_color);
+extern void * c_PVR_cmap_opacity_style_ctl(void *f_color);
+extern void * c_PVR_cmap_range_min_ctl(void *f_color);
+extern void * c_PVR_cmap_range_max_ctl(void *f_color);
+extern void * c_PVR_cmap_fix_opacity_ctl(void *f_color);
+extern void * c_PVR_cmap_colortbl_ctl(void *f_color);
+extern void * c_PVR_cmap_linear_opacity_ctl(void *f_color);
+extern void * c_PVR_cmap_step_opacity_ctl(void *f_color);
+extern void * c_PVR_cmap_background_color_ctl(void *f_color);
+
+extern void * c_PVR_colorbar_ctl_block_name(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_ctl_iflag(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_switch_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_scale_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_position_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_zeromarker_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_font_size_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_ngrid_cbar_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_cbar_range_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_axis_switch_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_time_ctl(void *f_cbar_ctl);
+extern void * c_PVR_colorbar_mapgrid_ctl(void *f_cbar_ctl);
+
+extern void * c_PVR_light_ctl_block_name(void *f_light);
+extern void * c_PVR_light_ctl_iflag(void *f_light);
+extern void * c_PVR_light_ambient_coef_ctl(void *f_light);
+extern void * c_PVR_light_diffuse_coef_ctl(void *f_light);
+extern void * c_PVR_light_specular_coef_ctl(void *f_light);
+extern void * c_PVR_light_position_ctl(void *f_light);
+
+extern void * c_PVR_movie_ctl_block_name(void *f_movie);
+extern void * c_PVR_movie_ctl_iflag(void *f_movie);
+extern void * c_PVR_movie_movie_mode_ctl(void *f_movie);
+extern void * c_PVR_movie_num_frames_ctl(void *f_movie);
+extern void * c_PVR_movie_rotation_axis_ctl(void *f_movie);
+extern void * c_PVR_movie_angle_range_ctl(void *f_movie);
+extern void * c_PVR_movie_apature_range_ctl(void *f_movie);
+extern void * c_PVR_movie_LIC_kernel_rge_ctl(void *f_movie);
+extern void * c_PVR_movie_fname_view_st_ctl(void *f_movie);
+extern void * c_PVR_movie_fname_view_end_ctl(void *f_movie);
+extern void * c_PVR_movie_view_start_ctl(void *f_movie);
+extern void * c_PVR_movie_view_end_ctl(void *f_movie);
+extern void * c_PVR_movie_mul_mmats_c(void *f_movie);
+
+extern void * c_VIZ_mul_mdlvw_ctl_block_name(void *f_mul_mmats_c);
+extern int    c_VIZ_mul_mdlvw_num_mat_c(void *f_mul_mmats_c);
+extern void * c_VIZ_mul_mdlvw_fname_ctl(int idx, void *f_mul_mmats_c);
+extern void * c_VIZ_mul_mdlvw_matrices(int idx, void *f_mul_mmats_c);
+
+extern void * c_PVR_quilt_img_ctl_block_name(void *f_quilt_c);
+extern void * c_PVR_quilt_img_ctl_iflag(void *f_quilt_c);
+extern void * c_PVR_quilt_num_column_row_ctl(void *f_quilt_c);
+extern void * c_PVR_quilt_num_row_column_ctl(void *f_quilt_c);
+extern void * c_PVR_quilt_mul_qmats_ctl(void *f_quilt_c);
+
+extern int    c_VIZ_PVR_num_pvr_sect_ctl(void *f_pvr_scts_c);
+extern void * c_VIZ_PVR_section_ctl(int idx, void *f_pvr_scts_c);
+extern int    c_VIZ_PVR_num_pvr_iso_ctl(void *f_pvr_isos_c);
+extern void * c_VIZ_PVR_isosurface_ctl(int idx, void *f_pvr_isos_c);
+
+extern void * c_PVR_section_ctl_block_name(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_ctl_iflag(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_fname_sect_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_psf_def_c(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_opacity_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_zeroline_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_iso_color_mode(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_iso_number_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_iso_range_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_iso_width_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_grid_width_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_tan_cyl_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_tan_cyl_in_ctl(void *f_pvr_sect_ctl);
+extern void * c_PVR_section_tan_cyl_out_ctl(void *f_pvr_sect_ctl);
+
+extern void * c_PVR_isosurf_ctl_block_name(void *f_pvr_iso_ctl);
+extern void * c_PVR_isosurf_ctl_iflag(void *f_pvr_iso_ctl);
+extern void * c_PVR_isosurf_type_ctl(void *f_pvr_iso_ctl);
+extern void * c_PVR_isosurf_iso_value_ctl(void *f_pvr_iso_ctl);
+extern void * c_PVR_isosurf_opacity_ctl(void *f_pvr_iso_ctl);
+
+
+extern void * c_MHD_dynamo_viz_ctl_block_name(void *f_zm_ctls);
+extern void * c_MHD_dynamo_viz_ctl_iflag(void *f_zm_ctls);
+extern void * c_MHD_dynamo_viz_crust_fil_ctl(void *f_zm_ctls);
+extern void * c_MHD_dynamo_viz_zm_psf_ctls(void *f_zm_ctls);
+extern void * c_MHD_dynamo_viz_zRMS_psf_ctls(void *f_zm_ctls);
+extern void * c_MHD_dynamo_viz_zm_map_ctls(void *f_zm_ctls);
+extern void * c_MHD_dynamo_viz_zRMS_map_ctls(void *f_zm_ctls);
+
+extern void * c_clust_filter_ctl_block_name(void *f_crust_filter_ctl);
+extern void * c_clust_filter_ctl_iflag(void *f_crust_filter_ctl);
+extern void * c_clust_filter_ltr_ctl(void *f_crust_filter_ctl);
+
 
 extern void * c_VIZ_FLINE_ctl_block_name(void *f_fline_ctl);
 extern void * c_VIZ_FLINE_ctl_iflag(void *f_fline_ctl);
