@@ -16,6 +16,8 @@ c_link_MHD_induction_eq_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_induction_eq_ctl.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_MHD_momentum_eq_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_momentum_eq_ctl.f90 t_ctl_data_momentum_norm.o
 	$(F90) -c $(F90OPTFLAGS) $<
+c_link_MHD_node_monitor_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_node_monitor_ctl.f90 t_ctl_data_node_monitor.o
+	$(F90) -c $(F90OPTFLAGS) $<
 c_link_MHD_temp_model_ctl.o: $(MHD_F2003_DIR)/c_link_MHD_temp_model_ctl.f90 t_ctl_data_temp_model.o t_ctl_data_stratified_model.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_PVR_colorbar_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_colorbar_ctl.f90 t_ctl_data_pvr_colormap_bar.o t_ctl_data_pvr_colorbar.o
@@ -50,6 +52,8 @@ c_link_VIZ_modeview_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_modeview_ctl.f90 t_ctl_da
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_VIZ_projection_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_projection_ctl.f90 t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o
 	$(F90) -c $(F90OPTFLAGS) $<
+c_link_VIZ_repartition_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_repartition_ctl.f90 t_ctl_data_volume_repart.o t_ctl_data_FEM_sleeve_size.o
+	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_SGS_model.o: $(MHD_F2003_DIR)/c_link_ctl_data_SGS_model.f90 t_ctl_data_SGS_model.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_divide_sph.o: $(MHD_F2003_DIR)/c_link_ctl_data_divide_sph.f90 t_ctl_data_4_divide_sphere.o t_ctl_data_4_FEM_mesh.o
@@ -67,6 +71,8 @@ c_link_layerd_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_layerd_spectr_ctl.f90 t_ctl_
 c_link_masking_by_field_ctl.o: $(MHD_F2003_DIR)/c_link_masking_by_field_ctl.f90 t_control_data_masking.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_mhd_evo_scheme_ctl.o: $(MHD_F2003_DIR)/c_link_mhd_evo_scheme_ctl.f90 t_ctl_data_mhd_evo_scheme.o
+	$(F90) -c $(F90OPTFLAGS) $<
+c_link_new_patition_ctl.o: $(MHD_F2003_DIR)/c_link_new_patition_ctl.f90 t_ctl_data_volume_grouping.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_pick_sph_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_pick_sph_spectr_ctl.f90 t_ctl_data_pick_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<

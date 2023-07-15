@@ -52,7 +52,8 @@ struct f_VIZ_PVR_ctl{
 /* prototypes */
 
 
-struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(int idx, void *f_parent);
+struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(void *(*c_load_self)(int idx, void *f_parent),
+                                          int idx, void *f_parent);
 void *dealloc_f_VIZ_PVR_ctl(void *block_item);
 
 

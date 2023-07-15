@@ -237,77 +237,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_dynamo_vizs_block_name(c_ctl)              &
-     &          bind(C, NAME = 'c_dynamo_vizs_block_name')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(sph_dynamo_viz_controls), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_dynamo_vizs_block_name = C_loc(f_ctl%block_name)
-      end function c_dynamo_vizs_block_name
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_dynamo_vizs_iflag(c_ctl)                   &
-     &          bind(C, NAME = 'c_dynamo_vizs_iflag')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(sph_dynamo_viz_controls), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_dynamo_vizs_iflag = C_loc(f_ctl%i_viz_ctl)
-      end function c_dynamo_vizs_iflag
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_dynamo_vizs_crust_filter_ctl(c_ctl)        &
-     &          bind(C, NAME = 'c_dynamo_vizs_crust_filter_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(sph_dynamo_viz_controls), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_dynamo_vizs_crust_filter_ctl = C_loc(f_ctl%crust_filter_ctl)
-      end function c_dynamo_vizs_crust_filter_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_dynamo_vizs_zm_psf_ctls(c_ctl)             &
-     &          bind(C, NAME = 'c_dynamo_vizs_zm_psf_ctls')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(sph_dynamo_viz_controls), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_dynamo_vizs_zm_psf_ctls = C_loc(f_ctl%zm_psf_ctls)
-      end function c_dynamo_vizs_zm_psf_ctls
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_dynamo_vizs_zRMS_psf_ctls(c_ctl)           &
-     &          bind(C, NAME = 'c_dynamo_vizs_zRMS_psf_ctls')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(sph_dynamo_viz_controls), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_dynamo_vizs_zRMS_psf_ctls = C_loc(f_ctl%zRMS_psf_ctls)
-      end function c_dynamo_vizs_zRMS_psf_ctls
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_dynamo_vizs_zm_map_ctls(c_ctl)             &
-     &          bind(C, NAME = 'c_dynamo_vizs_zm_map_ctls')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(sph_dynamo_viz_controls), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_dynamo_vizs_zm_map_ctls = C_loc(f_ctl%zm_map_ctls)
-      end function c_dynamo_vizs_zm_map_ctls
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_dynamo_vizs_zRMS_map_ctls(c_ctl)           &
-     &          bind(C, NAME = 'c_dynamo_vizs_zRMS_map_ctls')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(sph_dynamo_viz_controls), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_dynamo_vizs_zRMS_map_ctls = C_loc(f_ctl%zRMS_map_ctls)
-      end function c_dynamo_vizs_zRMS_map_ctls
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       type(c_ptr) function c_visualizations_block_name(c_ctl)           &
      &          bind(C, NAME = 'c_visualizations_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
@@ -456,57 +385,6 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_sph_shell_sdctl = C_loc(f_ctl%sdctl)
       end function c_sph_shell_sdctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_node_monitor_ctl_block_name(c_ctl)         &
-     &          bind(C, NAME = 'c_node_monitor_ctl_block_name')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(node_monitor_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_node_monitor_ctl_block_name = C_loc(f_ctl%block_name)
-      end function c_node_monitor_ctl_block_name
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_node_monitor_ctl_iflag(c_ctl)              &
-     &          bind(C, NAME = 'c_node_monitor_ctl_iflag')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(node_monitor_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_node_monitor_ctl_iflag = C_loc(f_ctl%i_monitor_data)
-      end function c_node_monitor_ctl_iflag
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_node_monitor_xx_monitor_ctl(c_ctl)         &
-     &          bind(C, NAME = 'c_node_monitor_xx_monitor_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(node_monitor_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_node_monitor_xx_monitor_ctl = C_loc(f_ctl%xx_4_monitor_ctl)
-      end function c_node_monitor_xx_monitor_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_node_monitor_node_mntr_ctl(c_ctl)          &
-     &          bind(C, NAME = 'c_node_monitor_node_mntr_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(node_monitor_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_node_monitor_node_mntr_ctl = C_loc(f_ctl%node_4_monitor_ctl)
-      end function c_node_monitor_node_mntr_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_node_monitor_group_mntr_ctl(c_ctl)         &
-     &          bind(C, NAME = 'c_node_monitor_group_mntr_ctl')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(node_monitor_control), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_node_monitor_group_mntr_ctl = C_loc(f_ctl%group_4_monitor_ctl)
-      end function c_node_monitor_group_mntr_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

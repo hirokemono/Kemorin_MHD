@@ -8,7 +8,6 @@
 #include "c_control_data_pvrs.h"
 
 extern char * c_pvr_render_ctls_fname(int idx, void *f_pvr_ctls);
-extern void * c_pvr_render_ctls_pvr_ctl(int idx, void *f_pvr_ctls);
 
 extern void * c_VIZ_pvr_ctl_block_name(void *f_pvr_ctls);
 extern void * c_VIZ_pvr_ctl_iflag(void *f_pvr_ctls);
@@ -35,7 +34,8 @@ extern void * c_VIZ_pvr_isosurf_ctl(void *f_pvr_ctls);
 
 
 
-struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(int idx, void *f_parent)
+struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(void *(*c_load_self)(int idx, void *f_parent),
+                                          int idx, void *f_parent)
 {
 	struct f_VIZ_PVR_ctl *f_pvr_ctl 
 			= (struct f_VIZ_PVR_ctl *) malloc(sizeof(struct f_VIZ_PVR_ctl));
@@ -44,7 +44,7 @@ struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(int idx, void *f_parent)
 		exit(0);
 	};
 	
-	f_pvr_ctl->f_self =  c_pvr_render_ctls_pvr_ctl(idx, f_parent);
+	f_pvr_ctl->f_self =  c_load_self(idx, f_parent);
 	
 	f_pvr_ctl->f_iflag =        (int *) c_VIZ_pvr_ctl_iflag(f_pvr_ctl->f_self);
 	char *f_block_name =   (char *) c_VIZ_pvr_ctl_block_name(f_pvr_ctl->f_self);

@@ -31,7 +31,7 @@ struct real3_ctl_item * init_f_ctl_r3_item(void *(*c_load_self)(void *f_parent),
 	char *f_block_name =  (char *) c_real3_item_block_name(f_r3_item->f_self);
 	f_r3_item->c_block_name = strngcopy_from_f(f_block_name);
 	
-	double *f_realvalue =   (int *) c_real3_item_realvalue(f_r3_item->f_self);
+	double *f_realvalue = (double *) c_real3_item_realvalue(f_r3_item->f_self);
     f_r3_item->r_data[0] = f_realvalue[0];
     f_r3_item->r_data[1] = f_realvalue[1];
     f_r3_item->r_data[2] = f_realvalue[2];

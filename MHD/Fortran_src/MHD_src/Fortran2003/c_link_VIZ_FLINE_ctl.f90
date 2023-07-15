@@ -36,6 +36,10 @@
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_num_fieldline_ctl')
 !!      type(c_ptr) function c_VIZ_FLINE_max_line_step_ctl(c_ctl)       &
 !!     &          bind(C, NAME = 'c_VIZ_FLINE_max_line_step_ctl')
+!!      type(c_ptr) function c_VIZ_FLINE_seed_point_ctl(c_ctl)          &
+!!     &          bind(C, NAME = 'c_VIZ_FLINE_seed_point_ctl')
+!!      type(c_ptr) function c_VIZ_FLINE_seed_surface_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_VIZ_FLINE_seed_surface_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module c_link_VIZ_FLINE_ctl
@@ -189,6 +193,26 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_VIZ_FLINE_max_line_step_ctl= C_loc(f_ctl%max_line_stepping_ctl)
       end function c_VIZ_FLINE_max_line_step_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_FLINE_seed_point_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_VIZ_FLINE_seed_point_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(fline_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_FLINE_seed_point_ctl= C_loc(f_ctl%seed_point_ctl)
+      end function c_VIZ_FLINE_seed_point_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_FLINE_seed_surface_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_VIZ_FLINE_seed_surface_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(fline_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_FLINE_seed_surface_ctl= C_loc(f_ctl%seed_surface_ctl)
+      end function c_VIZ_FLINE_seed_surface_ctl
 !
 !  ---------------------------------------------------------------------
 !
