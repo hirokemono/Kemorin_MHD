@@ -12,6 +12,7 @@
 #include "t_ctl_array_chara3_items_c.h"
 #include "t_ctl_array_chara_int3_items_c.h"
 #include "t_ctl_array_chara2_real_items_c.h"
+#include "t_ctl_array_real3_items_c.h"
 #include "t_ctl_data_4_fields_c.h"
 
 #include "control_elements_IO_GTK.h"
@@ -706,7 +707,6 @@ struct f_VIZ_FLINE_ctl{
 	int * f_iflag;
 	
 	char * c_block_name;
-	
     char *fline_ctl_file_name;
 	
     struct chara_ctl_item *f_fline_file_head_ctl;
@@ -722,23 +722,13 @@ struct f_VIZ_FLINE_ctl{
     struct int_ctl_item   *f_num_fieldline_ctl;
     struct int_ctl_item   *f_max_line_stepping_ctl;
     struct r3_clist       *f_seed_point_ctl;
-    struct i2_clist       *f_seed_surface_ctl;
-};
-
-struct f_VIZ_MAP_ctls{
-    char *map_ctl_file_name;
-	void *f_map_ctl;
+    struct int2_clist     *f_seed_surface_ctl;
 };
 
 struct f_VIZ_LIC_ctls{
     char *lic_ctl_file_name;
 	void *f_lic_pvr_ctl;
 	void *f_lic_lic_ctl;
-};
-
-struct f_VIZ_FLINE_ctls{
-    char *fline_ctl_file_name;
-	void *f_fline_ctl;
 };
 
 struct f_MHD_viz_ctls{
@@ -1307,6 +1297,54 @@ struct void_clist * init_f_VIZ_lic_ctls(void *f_viz_ctls_self, int *f_num_lic_ct
 	return f_lic_ctls;
 }
 
+struct f_VIZ_FLINE_ctl * init_f_VIZ_FLINE_ctl(int idx, void *f_parent)
+{
+	struct f_VIZ_FLINE_ctl *f_fline_ctl 
+			= (struct f_VIZ_FLINE_ctl *) malloc(sizeof(struct f_VIZ_FLINE_ctl));
+	if(f_fline_ctl == NULL){
+		printf("malloc error for f_VIZ_FLINE_ctl\n");
+		exit(0);
+	};
+	
+    char *f_block_name = (char *) c_fline_ctls_fname(idx, f_parent);
+    f_fline_ctl->fline_ctl_file_name =  strngcopy_from_f(f_block_name);
+	f_fline_ctl->f_self =  c_fline_ctls_fline_ctl(idx, f_parent);
+	
+	f_fline_ctl->f_iflag =   (int *) c_VIZ_MAP_ctl_iflag(f_fline_ctl->f_self);
+	f_block_name =   (char *) c_VIZ_MAP_ctl_block_name(f_fline_ctl->f_self);
+	f_fline_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    f_fline_ctl->f_fline_file_head_ctl =   init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_fline_output_type_ctl = init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_fline_field_ctl =       init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_fline_color_field_ctl = init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_fline_color_comp_ctl =  init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_fline_area_grp_ctl =    init_f_ctl_chara_array(c_VIZ_MAP_map_image_prefix_ctl,
+																  f_fline_ctl->f_self);
+    f_fline_ctl->f_starting_type_ctl =     init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_selection_type_ctl =    init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_line_direction_ctl =    init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_start_surf_grp_ctl =    init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+																 f_fline_ctl->f_self);
+    f_fline_ctl->f_num_fieldline_ctl =     init_f_ctl_int_item(c_VIZ_MAP_map_image_prefix_ctl,
+															   f_fline_ctl->f_self);
+    f_fline_ctl->f_max_line_stepping_ctl = init_f_ctl_int_item(c_VIZ_MAP_map_image_prefix_ctl,
+															   f_fline_ctl->f_self);
+    f_fline_ctl->f_seed_point_ctl =        init_f_ctl_r3_array(c_VIZ_MAP_map_image_prefix_ctl,
+															   f_fline_ctl->f_self);
+    f_fline_ctl->f_seed_surface_ctl =      init_f_ctl_i2_array(c_VIZ_MAP_map_image_prefix_ctl,
+															   f_fline_ctl->f_self);
+	return f_fline_ctl;
+}
+
 struct void_clist * init_f_VIZ_fline_ctls(void *f_viz_ctls_self, int *f_num_fline_ctl)
 {
     void *f_parent = c_visualizations_fline_ctls(f_viz_ctls_self);
@@ -1317,15 +1355,7 @@ struct void_clist * init_f_VIZ_fline_ctls(void *f_viz_ctls_self, int *f_num_flin
 	
 	int i;
 	for(i=0;i<*f_num_fline_ctl;i++){
-		struct f_VIZ_FLINE_ctls *f_ctl_tmp
-				= (struct f_VIZ_FLINE_ctls *) malloc(sizeof(struct f_VIZ_FLINE_ctls));
-		if(f_ctl_tmp == NULL){
-			printf("malloc error for f_VIZ_FLINE_ctls\n");
-			exit(0);
-		};
-        f_block_name = c_fline_ctls_fname(i, f_fline_ctls->f_parent);
-        f_ctl_tmp->fline_ctl_file_name =  strngcopy_from_f(f_block_name);
-        f_ctl_tmp->f_fline_ctl =  c_fline_ctls_fline_ctl(i, f_fline_ctls->f_parent);
+		struct f_VIZ_FLINE_ctl *f_ctl_tmp = init_f_VIZ_FLINE_ctl(i, f_fline_ctls->f_parent);
 		append_void_clist((void *) f_ctl_tmp, f_fline_ctls);
 	}
 	return f_fline_ctls;
