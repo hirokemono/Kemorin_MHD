@@ -161,16 +161,16 @@ extern void * c_VIZ_isosurf_area_ctl(void *f_iso_def_ctl);
 extern void * c_VIZ_MAP_ctl_block_name(void *f_map_ctl);
 extern void * c_VIZ_MAP_ctl_iflag(void *f_map_ctl);
 extern void * c_VIZ_MAP_map_define_ctl(void *f_map_ctl);
+extern void * c_VIZ_MAP_fname_mat_ctl(void *f_map_ctl);
+extern void * c_VIZ_MAP_viewmat_ctl(void *f_map_ctl);
+extern void * c_VIZ_MAP_fname_cmap_cbar_c(void *f_map_ctl);
+extern void * c_VIZ_MAP_cmap_cbar_c(void *f_map_ctl);
 extern void * c_VIZ_MAP_map_image_prefix_ctl(void *f_map_ctl);
 extern void * c_VIZ_MAP_map_image_fmt_ctl(void *f_map_ctl);
 extern void * c_VIZ_MAP_map_field_ctl(void *f_map_ctl);
 extern void * c_VIZ_MAP_map_comp_ctl(void *f_map_ctl);
 extern void * c_VIZ_MAP_isoline_field_ctl(void *f_map_ctl);
 extern void * c_VIZ_MAP_isoline_comp_ctl(void *f_map_ctl);
-extern void * c_VIZ_MAP_fname_mat_ctl(void *f_map_ctl);
-extern void * c_VIZ_MAP_viewmat_ctl(void *f_map_ctl);
-extern void * c_VIZ_MAP_fname_cmap_cbar_c(void *f_map_ctl);
-extern void * c_VIZ_MAP_cmap_cbar_c(void *f_map_ctl);
 
 extern void * c_VIZ_LIC_ctl_block_name(void *f_lic_ctl);
 extern void * c_VIZ_LIC_ctl_iflag(void *f_lic_ctl);
@@ -620,23 +620,25 @@ struct f_VIZ_PSF_ctl{
     void * f_self;
     int * f_iflag;
     
-    char * c_block_name;
+    char *c_block_name;
+    char *psf_ctl_file_name;
     
-    char *fname_section_ctl;
-    void *psf_def_c;
+    char *f_fname_section_ctl;
+    void *f_psf_def_c;
     
-    char *fname_fld_on_psf;
-    void *fld_on_psf_c;
+    char *f_fname_fld_on_psf;
+    void *f_fld_on_psf_c;
     
-    struct chara_ctl_item *psf_file_head_ctl;
-    struct chara_ctl_item *psf_output_type_ctl;
+    struct chara_ctl_item *f_psf_file_head_ctl;
+    struct chara_ctl_item *f_psf_output_type_ctl;
 };
 
 struct f_VIZ_ISO_ctl{
     void * f_self;
     int * f_iflag;
     
-    char * c_block_name;
+    char *c_block_name;
+    char *iso_ctl_file_name;
     
     char *fname_fld_on_iso;
     void *f_fld_on_iso_c;
@@ -650,8 +652,7 @@ struct f_VIZ_MAP_ctl{
     void * f_self;
     int * f_iflag;
     
-    char * c_block_name;
-    
+    char *c_block_name;
     char *map_ctl_file_name;
     
     char *f_fname_mat_ctl;
@@ -722,16 +723,6 @@ struct f_VIZ_FLINE_ctl{
     struct int_ctl_item   *f_max_line_stepping_ctl;
     struct r3_clist       *f_seed_point_ctl;
     struct i2_clist       *f_seed_surface_ctl;
-};
-
-struct f_VIZ_PSF_ctls{
-    char *psf_ctl_file_name;
-	void *f_psf_ctl;
-};
-
-struct f_VIZ_ISO_ctls{
-    char *iso_ctl_file_name;
-	void *f_iso_ctl;
 };
 
 struct f_VIZ_MAP_ctls{
@@ -1140,6 +1131,39 @@ struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_p
 	return f_model_ctl;
 }
 
+
+struct f_VIZ_PSF_ctl * init_f_VIZ_PSF_ctl(int idx, void *f_parent)
+{
+	struct f_VIZ_PSF_ctl *f_psf_ctl 
+			= (struct f_VIZ_PSF_ctl *) malloc(sizeof(struct f_VIZ_PSF_ctl));
+	if(f_psf_ctl == NULL){
+		printf("malloc error for f_VIZ_PSF_ctl\n");
+		exit(0);
+	};
+	
+    char *f_block_name = (char *) c_section_ctls_fname(idx, f_parent);
+    f_psf_ctl->psf_ctl_file_name =  strngcopy_from_f(f_block_name);
+	f_psf_ctl->f_self =  c_section_ctls_psf_ctl(idx, f_parent);
+	
+	f_psf_ctl->f_iflag =   (int *) c_VIZ_PSF_ctl_iflag(f_psf_ctl->f_self);
+	f_block_name =   (char *) c_VIZ_PSF_ctl_block_name(f_psf_ctl->f_self);
+	f_psf_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    
+	f_psf_ctl->f_fname_section_ctl = c_VIZ_PSF_fname_section_ctl(f_psf_ctl->f_self);
+	f_psf_ctl->f_psf_def_c =         c_VIZ_PSF_psf_def_c(f_psf_ctl->f_self);
+    
+    f_psf_ctl->f_fname_fld_on_psf =  c_VIZ_PSF_fname_fld_on_psf(f_psf_ctl->f_self);
+    f_psf_ctl->f_fld_on_psf_c =      c_VIZ_PSF_fld_on_psf_c(f_psf_ctl->f_self);
+    
+    f_psf_ctl->f_psf_file_head_ctl =   init_f_ctl_chara_item(c_VIZ_PSF_file_head_ctl,
+                                                             f_psf_ctl->f_self);
+    f_psf_ctl->f_psf_output_type_ctl = init_f_ctl_chara_item(c_VIZ_PSF_output_type_ctl,
+                                                             f_psf_ctl->f_self);
+    return f_psf_ctl;
+};
+
+
 struct void_clist * init_f_VIZ_psf_ctls(void *f_viz_ctls_self, int *f_num_psf_ctl)
 {
     void *f_parent = c_visualizations_psf_ctls(f_viz_ctls_self);
@@ -1148,21 +1172,43 @@ struct void_clist * init_f_VIZ_psf_ctls(void *f_viz_ctls_self, int *f_num_psf_ct
 	f_psf_ctls->f_parent = f_parent;
 	*f_num_psf_ctl = c_section_ctls_num_psf_ctl(f_psf_ctls->f_parent);
 	
-	int i;
+    struct f_VIZ_PSF_ctl *f_ctl_tmp;
+    int i;
 	for(i=0;i<*f_num_psf_ctl;i++){
-		struct f_VIZ_PSF_ctls *f_ctl_tmp
-				= (struct f_VIZ_PSF_ctls *) malloc(sizeof(struct f_VIZ_PSF_ctls));
-		if(f_ctl_tmp == NULL){
-			printf("malloc error for f_VIZ_PSF_ctls\n");
-			exit(0);
-		};
-        f_block_name = c_section_ctls_fname(i, f_psf_ctls->f_parent);
-        f_ctl_tmp->psf_ctl_file_name =  strngcopy_from_f(f_block_name);
-        f_ctl_tmp->f_psf_ctl =  c_section_ctls_psf_ctl(i, f_psf_ctls->f_parent);
+        f_ctl_tmp = init_f_VIZ_PSF_ctl(i, f_psf_ctls->f_parent);
 		append_void_clist((void *) f_ctl_tmp, f_psf_ctls);
 	}
 	return f_psf_ctls;
 }
+
+struct f_VIZ_ISO_ctl * init_f_VIZ_ISO_ctl(int idx, void *f_parent)
+{
+	struct f_VIZ_ISO_ctl *f_iso_ctl 
+			= (struct f_VIZ_ISO_ctl *) malloc(sizeof(struct f_VIZ_ISO_ctl));
+	if(f_iso_ctl == NULL){
+		printf("malloc error for f_VIZ_ISO_ctl\n");
+		exit(0);
+	};
+	
+    char *f_block_name = (char *) c_isosurf_ctls_fname(idx, f_parent);
+    f_iso_ctl->iso_ctl_file_name =  strngcopy_from_f(f_block_name);
+	f_iso_ctl->f_self =  c_isosurf_ctls_iso_ctl(idx, f_parent);
+	
+	f_iso_ctl->f_iflag =   (int *) c_VIZ_ISO_ctl_iflag(f_iso_ctl->f_self);
+	f_block_name =   (char *) c_VIZ_ISO_ctl_block_name(f_iso_ctl->f_self);
+	f_iso_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    f_iso_ctl->fname_fld_on_iso = c_VIZ_ISO_fname_fld_on_iso(f_iso_ctl->f_self);
+    f_iso_ctl->f_fld_on_iso_c =   c_VIZ_ISO_fld_on_iso_c(f_iso_ctl->f_self);
+    f_iso_ctl->f_iso_def_c =      c_VIZ_ISO_iso_def_ctl(f_iso_ctl->f_self);
+    
+    f_iso_ctl->f_iso_file_head_ctl =   init_f_ctl_chara_item(c_VIZ_ISO_file_head_ctl,
+                                                             f_iso_ctl->f_self);
+    f_iso_ctl->f_iso_output_type_ctl = init_f_ctl_chara_item(c_VIZ_ISO_output_type_ctl,
+                                                             f_iso_ctl->f_self);
+    return f_iso_ctl;
+}
+
 
 struct void_clist * init_f_VIZ_iso_ctls(void *f_viz_ctls_self, int *f_num_iso_ctl)
 {
@@ -1174,19 +1220,49 @@ struct void_clist * init_f_VIZ_iso_ctls(void *f_viz_ctls_self, int *f_num_iso_ct
 	
 	int i;
 	for(i=0;i<*f_num_iso_ctl;i++){
-		struct f_VIZ_ISO_ctls *f_ctl_tmp
-				= (struct f_VIZ_ISO_ctls *) malloc(sizeof(struct f_VIZ_ISO_ctls));
-		if(f_ctl_tmp == NULL){
-			printf("malloc error for f_VIZ_ISO_ctls\n");
-			exit(0);
-		};
-        f_block_name = c_isosurf_ctls_fname(i, f_iso_ctls->f_parent);
-        f_ctl_tmp->iso_ctl_file_name =  strngcopy_from_f(f_block_name);
-        f_ctl_tmp->f_iso_ctl =  c_isosurf_ctls_iso_ctl(i, f_iso_ctls->f_parent);
-		append_void_clist((void *) f_ctl_tmp, f_iso_ctls);
+        struct f_VIZ_ISO_ctl *f_ctl_tmp = init_f_VIZ_ISO_ctl(i, f_iso_ctls->f_parent);
+        append_void_clist((void *) f_ctl_tmp, f_iso_ctls);
 	}
 	return f_iso_ctls;
 }
+
+struct f_VIZ_MAP_ctl * init_f_VIZ_MAP_ctl(int idx, void *f_parent)
+{
+	struct f_VIZ_MAP_ctl *f_map_ctl 
+			= (struct f_VIZ_MAP_ctl *) malloc(sizeof(struct f_VIZ_MAP_ctl));
+	if(f_map_ctl == NULL){
+		printf("malloc error for f_VIZ_MAP_ctl\n");
+		exit(0);
+	};
+	
+    char *f_block_name = (char *) c_map_render_ctls_fname(idx, f_parent);
+    f_map_ctl->map_ctl_file_name =  strngcopy_from_f(f_block_name);
+	f_map_ctl->f_self =  c_map_render_ctls_map_ctl(idx, f_parent);
+	
+	f_map_ctl->f_iflag =   (int *) c_VIZ_MAP_ctl_iflag(f_map_ctl->f_self);
+	f_block_name =   (char *) c_VIZ_MAP_ctl_block_name(f_map_ctl->f_self);
+	f_map_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    f_map_ctl->f_map_define_ctl = c_VIZ_MAP_map_define_ctl(f_map_ctl->f_self);
+    f_map_ctl->f_fname_mat_ctl = c_VIZ_MAP_fname_mat_ctl(f_map_ctl->f_self);
+    f_map_ctl->f_mat =           c_VIZ_MAP_viewmat_ctl(f_map_ctl->f_self);
+    f_map_ctl->f_fname_cmap_cbar_c = c_VIZ_MAP_fname_cmap_cbar_c(f_map_ctl->f_self);
+    f_map_ctl->f_cmap_cbar_c =       c_VIZ_MAP_cmap_cbar_c(f_map_ctl->f_self);
+    
+    f_map_ctl->f_map_image_prefix_ctl = init_f_ctl_chara_item(c_VIZ_MAP_map_image_prefix_ctl,
+                                                              f_map_ctl->f_self);
+    f_map_ctl->f_map_image_fmt_ctl =    init_f_ctl_chara_item(c_VIZ_MAP_map_image_fmt_ctl,
+                                                              f_map_ctl->f_self);
+    f_map_ctl->f_map_field_ctl =        init_f_ctl_chara_item(c_VIZ_MAP_map_field_ctl,
+                                                              f_map_ctl->f_self);
+    f_map_ctl->f_map_comp_ctl =         init_f_ctl_chara_item(c_VIZ_MAP_map_comp_ctl,
+                                                              f_map_ctl->f_self);
+    f_map_ctl->f_isoline_field_ctl =    init_f_ctl_chara_item(c_VIZ_MAP_isoline_field_ctl,
+                                                              f_map_ctl->f_self);
+    f_map_ctl->f_isoline_comp_ctl =     init_f_ctl_chara_item(c_VIZ_MAP_isoline_comp_ctl,
+                                                              f_map_ctl->f_self);
+    return f_map_ctl;
+};
 
 struct void_clist * init_f_VIZ_map_ctls(void *f_viz_ctls_self, int *f_num_map_ctl)
 {
@@ -1198,15 +1274,7 @@ struct void_clist * init_f_VIZ_map_ctls(void *f_viz_ctls_self, int *f_num_map_ct
 	
 	int i;
 	for(i=0;i<*f_num_map_ctl;i++){
-		struct f_VIZ_MAP_ctls *f_ctl_tmp
-				= (struct f_VIZ_MAP_ctls *) malloc(sizeof(struct f_VIZ_MAP_ctls));
-		if(f_ctl_tmp == NULL){
-			printf("malloc error for f_VIZ_MAP_ctls\n");
-			exit(0);
-		};
-        f_block_name = c_map_render_ctls_fname(i, f_map_ctls->f_parent);
-        f_ctl_tmp->map_ctl_file_name =  strngcopy_from_f(f_block_name);
-        f_ctl_tmp->f_map_ctl =  c_map_render_ctls_map_ctl(i, f_map_ctls->f_parent);
+        struct f_VIZ_MAP_ctl *f_ctl_tmp = init_f_VIZ_MAP_ctl(i, f_map_ctls->f_parent);
 		append_void_clist((void *) f_ctl_tmp, f_map_ctls);
 	}
 	return f_map_ctls;
