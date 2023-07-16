@@ -363,9 +363,9 @@ GtkWidget * create_field_group_tree_view(struct all_field_ctl_c *all_fld_list)
 {
 	int index = 0;
 	GtkWidget *field_group_tree_view = create_fixed_label_w_index_tree();
-	index = append_c_list_from_array(index, all_fld_list->fld_list->ntot_field_groups, 
-									 all_fld_list->fld_list->field_group_name, 
-									 GTK_TREE_VIEW(field_group_tree_view));
+	index = append_c_list_from_array_w_index(index, all_fld_list->fld_list->ntot_field_groups,
+                                             all_fld_list->fld_list->field_group_name,
+                                             GTK_TREE_VIEW(field_group_tree_view));
 	return field_group_tree_view;
 };
 

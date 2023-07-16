@@ -8,7 +8,7 @@
 #include "tree_view_chara_GTK.h"
 
 /* Append new data at the end of list */
-int append_c_item_to_tree(int index, const char *c_tbl, GtkTreeModel *child_model){
+static int append_c_item_to_tree_w_index(int index, const char *c_tbl, GtkTreeModel *child_model){
     GtkTreeIter iter;
     
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
@@ -19,27 +19,27 @@ int append_c_item_to_tree(int index, const char *c_tbl, GtkTreeModel *child_mode
     return index + 1;
 }
 
-int append_c_list_from_ctl(int index, struct chara_ctl_list *head, 
+int append_c_list_from_ctl_w_index(int index, struct chara_ctl_list *head,
 			GtkTreeView *c_tree_view)
 {
     GtkTreeModel *model = gtk_tree_view_get_model (c_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
-        index = append_c_item_to_tree(index, head->c_item->c_tbl, child_model);
+        index = append_c_item_to_tree_w_index(index, head->c_item->c_tbl, child_model);
         head = head->_next;
     };
     return index;
 }
 
-int append_c_list_from_array(int index, int num, char **c_tbl,
-                             GtkTreeView *c_tree_view)
+int append_c_list_from_array_w_index(int index, int num, char **c_tbl,
+                                     GtkTreeView *c_tree_view)
 {
     int i;
     GtkTreeModel *model = gtk_tree_view_get_model(c_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     for(i=0;i<num;i++){
-        index = append_c_item_to_tree(index, c_tbl[i], child_model);
+        index = append_c_item_to_tree_w_index(index, c_tbl[i], child_model);
     };
     return index;
 }
@@ -110,7 +110,7 @@ int add_c_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add,
         
     gchar row_string[30] = "new";
     
-    index = append_c_item_to_tree(index, row_string, child_model_to_add);
+    index = append_c_item_to_tree_w_index(index, row_string, child_model_to_add);
 	append_chara_clist(row_string, c_clist);
 	
     return index;
@@ -129,7 +129,7 @@ int add_c_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tre
     gtk_tree_model_get_iter(tree_model, &iter, path);  
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     
-    index = append_c_item_to_tree(index, row_string, child_model_to_add);
+    index = append_c_item_to_tree_w_index(index, row_string, child_model_to_add);
     append_chara_clist(row_string, c_clist);
     return index;
 }
@@ -147,7 +147,7 @@ int add_c_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMode
     gtk_tree_model_get_iter(tree_model, &iter, path);  
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     
-    index = append_c_item_to_tree(index, row_string, child_model_to_add);
+    index = append_c_item_to_tree_w_index(index, row_string, child_model_to_add);
     append_chara_clist(row_string, c_clist);
     return index;
 }
@@ -167,7 +167,7 @@ int add_c_list_items_GTK(GtkTreeView *tree_view_to_add, struct chara_clist *c_cl
    	if(count_chara_clist(c_clist) == 0){
 		append_chara_clist("  ", c_clist);
 		index = count_chara_clist(c_clist);
-        index = append_c_list_from_ctl(index, &c_clist->c_item_head, tree_view_to_add);
+        index = append_c_list_from_ctl_w_index(index, &c_clist->c_item_head, tree_view_to_add);
         return index;
     };
 	
@@ -222,7 +222,7 @@ int add_c_list_items_GTK(GtkTreeView *tree_view_to_add, struct chara_clist *c_cl
     g_list_free(reference_list);
 	
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
-	index = append_c_list_from_ctl(index, &c_clist->c_item_head, tree_view_to_add);
+	index = append_c_list_from_ctl_w_index(index, &c_clist->c_item_head, tree_view_to_add);
     /* Release the block of changed signal */
 	unblock_changed_signal(G_OBJECT(child_model_to_add));
 	return index;

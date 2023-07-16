@@ -15,14 +15,6 @@
 #include "control_combobox_GTK.h"
 
 
-struct chara_cbox_table_view{
-    int index_bc;
-    GtkWidget *clist_tree_view;
-    GtkWidget *items_tree_view;
-    
-    struct chara_clist *ctl_clist_gtk;
-};
-
 
 /* prototypes */
 

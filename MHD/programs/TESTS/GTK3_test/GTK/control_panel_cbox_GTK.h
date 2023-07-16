@@ -18,11 +18,19 @@
 #include "tree_view_chara_GTK.h"
 #include "control_combobox_GTK.h"
 
+struct chara_cbox_table_view{
+    int index_bc;
+    GtkWidget *clist_tree_view;
+    GtkWidget *items_tree_view;
+    
+    struct chara_clist *ctl_clist_gtk;
+};
+
 /* prototypes */
 
 GtkWidget * add_c_list_combobox(struct chara_clist *c_clist_gtk,
                                 struct chara_clist *input_list, 
-                                GtkWidget *c_tree_view);
+                                struct chara_cbox_table_view *time_evo_vws);
 
 
 GtkWidget * c_list_combobox_expander(struct chara_clist *c_clist_gtk, 

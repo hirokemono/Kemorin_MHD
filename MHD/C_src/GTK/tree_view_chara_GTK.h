@@ -16,11 +16,10 @@
 
 /* prototypes */
 
-int append_c_item_to_tree(int index, const char *c_tbl, GtkTreeModel *child_model);
-int append_c_list_from_ctl(int index, struct chara_ctl_list *head, 
-			GtkTreeView *c_tree_view);
-int append_c_list_from_array(int index, int num, char **c_tbl,
-                             GtkTreeView *c_tree_view);
+int append_c_list_from_ctl_w_index(int index, struct chara_ctl_list *head,
+                                   GtkTreeView *c_tree_view);
+int append_c_list_from_array_w_index(int index, int num, char **c_tbl,
+                                     GtkTreeView *c_tree_view);
 
 void c_tree_name_edited(gchar *path_str, gchar *new_text,
 			GtkTreeView *c_tree_view, struct chara_clist *c_clist);

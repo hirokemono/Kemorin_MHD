@@ -98,8 +98,8 @@ static void init_c_tree_view(struct chara_clist *c_clist_gtk, GtkWidget *c_tree_
 	
 	create_text_tree_view(GTK_TREE_VIEW(c_tree_view), renderer_text);
 	
-	c_clist_gtk->index_bc = append_c_list_from_ctl(c_clist_gtk->index_bc, &c_clist_gtk->c_item_head, 
-												 GTK_TREE_VIEW(c_tree_view));
+	c_clist_gtk->index_bc = append_c_list_from_ctl_w_index(c_clist_gtk->index_bc, &c_clist_gtk->c_item_head,
+                                                           GTK_TREE_VIEW(c_tree_view));
 };
 
 GtkWidget * add_c_list_box_w_addbottun(struct chara_clist *c_clist_gtk,
