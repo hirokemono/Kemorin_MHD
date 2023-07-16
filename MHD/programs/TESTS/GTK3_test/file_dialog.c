@@ -1903,13 +1903,13 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	
     mWidgets->label_force_list = init_f_ctl_chara_array(c_link_force_list_to_ctl,
                                                         f_MHD_ctl->f_self);
-    GtkWidget *vbox_m5 = c_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names,
+    GtkWidget *vbox_fce = c_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names,
                                                   mWidgets->label_force_list,
                                                   mWidgets->force_vws,
                                                   window);
     GtkWidget *vbox_MHD_force = draw_control_block(f_MHD_ctl->f_model_ctl->f_frc_ctl->c_block_name,
                                                    f_MHD_ctl->f_model_ctl->f_frc_ctl->f_iflag,
-                                                   560, 500, window, vbox_m5);
+                                                   560, 500, window, vbox_fce);
     
 	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl,
                                                               f_MHD_vws->f_dimless_vws, window);
@@ -1920,7 +1920,59 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	GtkWidget *expand_MHD_eqs = draw_control_block(f_MHD_ctl->f_model_ctl->f_eqs_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_iflag,
 													 560, 400, window, vbox_eqs);
-	
+    
+    GtkWidget *vbox_tl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *hbox_tl1 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_low_ctl->f_value);
+    GtkWidget *hbox_tl2 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_low_ctl->f_depth);
+	gtk_box_pack_start(GTK_BOX(vbox_tl), hbox_tl1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tl), hbox_tl2, FALSE, FALSE, 0);
+	GtkWidget *expand_tl = draw_control_block(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_low_ctl->c_block_name, 
+                                              f_MHD_ctl->f_model_ctl->f_reft_ctl->f_low_ctl->f_iflag,
+                                              320, 400, window, vbox_tl);
+    
+    GtkWidget *vbox_th = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *hbox_th1 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_high_ctl->f_value);
+    GtkWidget *hbox_th2 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_high_ctl->f_depth);
+	gtk_box_pack_start(GTK_BOX(vbox_th), hbox_th1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_th), hbox_th2, FALSE, FALSE, 0);
+	GtkWidget *expand_th = draw_control_block(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_high_ctl->c_block_name, 
+                                              f_MHD_ctl->f_model_ctl->f_reft_ctl->f_high_ctl->f_iflag,
+                                              320, 400, window, vbox_th);
+    
+    GtkWidget *vbox_tp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *hbox_tp1 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_takepiro_ctl->f_stratified_sigma_ctl);
+    GtkWidget *hbox_tp2 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_takepiro_ctl->f_stratified_width_ctl);
+    GtkWidget *hbox_tp3 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_takepiro_ctl->f_stratified_outer_r_ctl);
+	gtk_box_pack_start(GTK_BOX(vbox_tp), hbox_tp1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tp), hbox_tp2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tp), hbox_tp3, FALSE, FALSE, 0);
+	GtkWidget *expand_tp = draw_control_block(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_takepiro_ctl->c_block_name, 
+                                              f_MHD_ctl->f_model_ctl->f_reft_ctl->f_takepiro_ctl->f_iflag,
+                                              320, 400, window, vbox_tp);
+    
+    
+    GtkWidget *hbox_t1 = draw_chara_switch_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_filterd_advect_ctl);
+    GtkWidget *hbox_t2 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_reference_ctl);
+    GtkWidget *hbox_t3 = draw_chara_switch_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_stratified_ctl);
+    GtkWidget *hbox_t4 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_ref_file_ctl);
+    GtkWidget *hbox_t5 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_reft_ctl->f_ICB_diffuse_reduction_ctl);
+    
+	GtkWidget *vbox_tt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t4, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_tl, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_th, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t5, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t3, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_tp, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t1, FALSE, FALSE, 0);
+	GtkWidget *expand_t = draw_control_block(f_MHD_ctl->f_model_ctl->f_reft_ctl->c_block_name, 
+                                              f_MHD_ctl->f_model_ctl->f_reft_ctl->f_iflag,
+                                              340, 400, window, vbox_tt);
+    
+    
+    
+    
 	GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_fields, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_time_evo, FALSE, FALSE, 0);
@@ -1930,6 +1982,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	gtk_box_pack_start(GTK_BOX(vbox_m), vbox_MHD_force, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_dimless, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m), expand_t, FALSE, FALSE, 0);
 	
 	
     
