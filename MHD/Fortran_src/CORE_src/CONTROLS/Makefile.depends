@@ -26,6 +26,8 @@ set_orders_of_field.o: $(CTL_DIR)/set_orders_of_field.f90 m_precision.o m_geomet
 	$(F90) -c $(F90OPTFLAGS) $<
 stop_by_missing_zlib.o: $(CTL_DIR)/stop_by_missing_zlib.F90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o m_file_format_switch.o m_field_file_format.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
+t_control_array_chara2int.o: $(CTL_DIR)/t_control_array_chara2int.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_chara2real.o: $(CTL_DIR)/t_control_array_chara2real.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_character.o: $(CTL_DIR)/t_control_array_character.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o

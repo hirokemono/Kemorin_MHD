@@ -34,6 +34,7 @@
 #include "control_panel_4_dimless_GTK.h"
 #include "control_panels_MHD_control_GTK.h"
 #include "control_block_panel_GTK.h"
+#include "control_panel_cbox_GTK.h"
 #include "control_panel_int_GTK.h"
 #include "control_panel_int2_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
@@ -517,6 +518,14 @@ extern void * c_new_repart_num_masking_ctl(void *f_new_part_ctl);
 extern void * c_new_repart_mask_ctl(void *f_new_part_ctl);
 
 
+extern void * c_MHD_evolution_ctl_block_name(void *f_evo_ctl);
+extern void * c_MHD_evolution_ctl_iflag(void *f_evo_ctl);
+extern void * c_MHD_t_evo_field_ctl(void *f_evo_ctl);
+
+
+
+extern void * c_link_base_field_names_to_ctl(void *fld_names_c);
+extern void * c_link_time_evo_list_to_ctl(void *fld_names_c);
 
 extern void * set_file_fmt_items_f(void *fmt_names_c);
 
@@ -609,6 +618,16 @@ struct f_MHD_temp_model_control{
 	struct f_MHD_reftemp_point_control  *f_low_ctl;
 	struct f_MHD_reftemp_point_control  *f_high_ctl;
 	struct f_MHD_takepiro_model_control *f_takepiro_ctl;
+};
+
+
+struct f_MHD_time_evo_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	
+	struct chara_clist *f_t_evo_field_ctl;
 };
 
 
@@ -843,9 +862,10 @@ struct main_widgets{
 	
 	struct block_array_widgets *vpvr_Wgts;
     
+    struct chara_cbox_table_view * time_evo_vws;
+    struct chara_clist *label_time_evo_list;
     struct chara_clist *label_file_format_list;
 };
-
 
 void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 						  struct main_widgets *mWidgets);
@@ -887,6 +907,26 @@ boolean_to_text (GBinding *binding,
 	return TRUE;
 }
 */
+
+struct f_MHD_time_evo_control * init_f_MHD_time_evo_control(void *(*c_load_self)(void *f_parent), 
+														  void *f_parent)
+{
+	struct f_MHD_time_evo_control *f_evo_ctl 
+			= (struct f_MHD_time_evo_control *) malloc(sizeof(struct f_MHD_time_evo_control));
+	if(f_evo_ctl == NULL){
+		printf("malloc error for f_evo_ctl\n");
+		exit(0);
+	};
+	
+	f_evo_ctl->f_self =  c_load_self(f_parent);
+	
+	f_evo_ctl->f_iflag =        (int *) c_MHD_evolution_ctl_iflag(f_evo_ctl->f_self);
+	char *f_block_name =   (char *) c_MHD_evolution_ctl_block_name(f_evo_ctl->f_self);
+	f_evo_ctl->c_block_name = strngcopy_from_f(f_block_name);
+	
+	f_evo_ctl->f_t_evo_field_ctl =  init_f_ctl_chara_array(c_MHD_t_evo_field_ctl, f_evo_ctl->f_self);
+	return f_evo_ctl;
+};
 
 
 struct f_MHD_t_evo_area_control * init_f_MHD_t_evo_area_control(void *(*c_load_self)(void *f_parent), 
@@ -1796,6 +1836,7 @@ static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR
     return expand_v_pwr;
 };
 
+
 void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
 						  struct main_widgets *mWidgets){
 	f_MHD_vws = (struct f_MHD_tree_views *) malloc(sizeof(struct f_MHD_tree_views));
@@ -1816,14 +1857,20 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     GtkWidget *expand_MHD_fields = draw_control_block(f_MHD_ctl->f_model_ctl->f_fld_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_fld_ctl->f_iflag,
                                                       560, 500, window, vbox_MHD_fields);
-    /*
-	GtkWidget *vbox_m1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    
+    
+    
+    mWidgets->label_time_evo_list = init_f_ctl_chara_array(c_link_time_evo_list_to_ctl,
+                                                           f_MHD_ctl->f_self);
+//    init_chara_list_tree_view(mWidgets->time_evo_vws);
+//	GtkWidget *vbox_m1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    GtkWidget *expand = add_c_list_combobox(f_MHD_ctl->f_model_ctl->f_evo_ctl->f_t_evo_field_ctl,
+                                            mWidgets->label_time_evo_list,
+                                            mWidgets->time_evo_vws->clist_tree_view);
     GtkWidget *expand_MHD_time_evo = draw_control_block(f_MHD_ctl->f_model_ctl->f_evo_ctl->c_block_name,
 														f_MHD_ctl->f_model_ctl->f_evo_ctl->f_iflag,
-                                                        560, 500, window, vbox_m1);
-                                                        */
-	GtkWidget *expand_MHD_time_evo = add_MHD_evo_selection_box(f_MHD_ctl->f_model_ctl->f_evo_ctl,
-                                                              f_MHD_vws->f_t_evo_vws, window);
+                                                        560, 500, window, expand);
 	
 	
 	GtkWidget *vbox_m2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

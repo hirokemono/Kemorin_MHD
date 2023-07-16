@@ -66,7 +66,7 @@ static void thermal_bc_value_edited_cb(GtkCellRendererText *cell, gchar *path_st
     load_clist_to_chara2_real_array(bc_vws->bc_clist_gtk);
 }
 
-static void cb_delete_thermal_bc_by_list(GtkButton *button, gpointer user_data)
+static void cb_delete_boundary_by_list(GtkButton *button, gpointer user_data)
 {
     struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
     if(count_chara2_real_clist(bc_vws->bc_clist_gtk) < 3) return;
@@ -78,7 +78,7 @@ static void cb_delete_thermal_bc_by_list(GtkButton *button, gpointer user_data)
 }
 
 
-static void cb_add_thermal_bc(GtkButton *button, gpointer user_data)
+static void cb_add_boundary(GtkButton *button, gpointer user_data)
 {
     struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
     if(count_chara2_real_clist(bc_vws->bc_clist_gtk) > 1) return;
@@ -115,7 +115,7 @@ void init_boundary_condition_tree_view(struct boundary_condition_view *bc_vws){
                                                 GTK_TREE_VIEW(bc_vws->bc_tree_view));
 }
 
-static void add_bc_temp_selection_box(struct boundary_condition_view *bc_vws, GtkWidget *vbox)
+static void add_boundary_selection_box(struct boundary_condition_view *bc_vws, GtkWidget *vbox)
 {
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
@@ -125,9 +125,9 @@ static void add_bc_temp_selection_box(struct boundary_condition_view *bc_vws, Gt
     /* Add callbacks */
     
     g_signal_connect(G_OBJECT(button_add), "clicked",
-                     G_CALLBACK(cb_add_thermal_bc), (gpointer) bc_vws);
+                     G_CALLBACK(cb_add_boundary), (gpointer) bc_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked",
-                     G_CALLBACK(cb_delete_thermal_bc_by_list), (gpointer) bc_vws);
+                     G_CALLBACK(cb_delete_boundary_by_list), (gpointer) bc_vws);
 };
 
 GtkWidget * boundary_condition_expander(struct chara2_real_clist *f_bc_ctl, 
@@ -138,7 +138,7 @@ GtkWidget * boundary_condition_expander(struct chara2_real_clist *f_bc_ctl,
     init_boundary_condition_tree_view(bc_vws);
 
     GtkWidget *vbox_m3t = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    add_bc_temp_selection_box(bc_vws, vbox_m3t);
+    add_boundary_selection_box(bc_vws, vbox_m3t);
     GtkWidget *expand_bc = wrap_into_expanded_frame_gtk(duplicate_underscore(f_bc_ctl->clist_name),
                                                         320, 160, window, vbox_m3t);
     return expand_bc;

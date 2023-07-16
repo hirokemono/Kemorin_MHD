@@ -40,8 +40,4 @@ void create_text_tree_view(GtkTreeView *c_tree_view, GtkCellRenderer *renderer_t
 
 GtkWidget *chara_list_box_expander(char *array_name_c, GtkTreeView *c_tree_view, 
 								   GtkWidget *button_add, GtkWidget *button_delete);
-void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view, 
-			GtkWidget *button_add, GtkWidget *combobox_add, GtkWidget *button_delete, 
-			GtkWidget *vbox);
-
 #endif /* tree_view_chara_GTK_h_ */

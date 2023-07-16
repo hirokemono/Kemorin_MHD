@@ -373,39 +373,3 @@ GtkWidget *chara_list_box_expander(char *array_name_c, GtkTreeView *c_tree_view,
 	
 	return expander;
 };
-
-void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view, 
-			GtkWidget *button_add, GtkWidget *combobox_add, GtkWidget *button_delete, 
-			GtkWidget *vbox)
-{
-    GtkWidget *hbox;
-    GtkCellRenderer *column_add;
-    
-    GtkWidget *scrolled_window;
-    
-    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-    
-    /* Pack bottuns */
-    gtk_box_pack_start(GTK_BOX(hbox), button_add, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), combobox_add, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), button_delete, FALSE, FALSE, 0);
-
-    /* Delete data bottun */
-    
-    column_add = gtk_cell_renderer_text_new();
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_add), column_add, TRUE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_add), column_add,
-                                   "text", COLUMN_FIELD_NAME, NULL);
-	
-	
-    scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 150, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(c_tree_view));
-    gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-    
-	add_sorting_signal_w_label(c_tree_view, hbox);
-};
-

@@ -18,7 +18,10 @@
 !!     &              n_comp = n_vector)
 !!
 !!      subroutine set_field_labels(field, n_comps, field_names, maths)
-!!      logical function cmp_field_no_case(cmp_chara, field)
+!!      subroutine set_field_label_to_ctl(field, array_c2i)
+!!        type(field_def), intent(in) :: field
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
+!!        logical function cmp_field_no_case(cmp_chara, field)
 !!        type(field_def), intent(in) :: field
 !!@endverbatim
 !
@@ -67,6 +70,32 @@
       maths(i+1:i+1) = char(0)
 !
       end subroutine set_field_labels
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_field_label_to_ctl(field, array_c2i)
+!
+      use t_control_array_chara2int
+!
+      type(field_def), intent(in) :: field
+      type(ctl_array_c2i), intent(inout) :: array_c2i
+!
+      character(len = kchara) :: maths, field_names
+      integer(kind = kint) :: i, icou
+!
+      write(field_names, '(a,a1)') trim(field%name) // char(0)
+!
+      icou = 0
+      do i = 1, kchara-1
+        if(field%math(i:i) .eq. '$') icou = icou + 1
+        maths(i:i) = field%math(i:i)
+        if(icou .ge. 2) exit
+      end do
+      maths(i+1:i+1) = char(0)
+      call append_c2i_to_ctl_array(field_names, maths, field%n_comp,    &
+     &                             array_c2i)
+!
+      end subroutine set_field_label_to_ctl
 !
 ! ----------------------------------------------------------------------
 !

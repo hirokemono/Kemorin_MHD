@@ -11,34 +11,23 @@
 #include <stdlib.h>
 
 #include "calypso_GTK.h"
-#include "tree_views_4_fixed_lists_GTK.h"
-#include "t_control_chara_real_IO.h"
-#include "t_ctl_data_4_fields_c.h"
-#include "t_ctl_array_chara_real_items_c.h"
-#include "c_ctl_data_platforms.h"
-#include "tree_view_4_force_GTK.h"
-#include "control_boxes_single_items_GTK.h"
+#include "t_control_chara_IO.h"
+#include "control_combobox_GTK.h"
 
 
-struct f_MHD_time_evo_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_clist *f_t_evo_field_ctl;
+struct chara_cbox_table_view{
+    int index_bc;
+    GtkWidget *clist_tree_view;
+    GtkWidget *items_tree_view;
+    
+    struct chara_clist *ctl_clist_gtk;
 };
 
 
 /* prototypes */
 
-struct f_MHD_time_evo_control * init_f_MHD_time_evo_control(void *(*c_load_self)(void *f_parent), 
-                                                            void *f_parent);
-
-GtkWidget * add_MHD_evo_selection_box(struct f_MHD_time_evo_control *f_evo_ctl,
-                                      struct chara_clist *bc_types, 
-                                      struct boundary_condition_view *bc_vws,
-                                      GtkWidget *window){
+struct chara_cbox_table_view * init_chara_cbox_table_view(struct chara_clist *ctl_clist,
+                                                          struct chara_clist *item_clist);
 
 
 #endif /* CONTROL_PANEL_4_MHD_EVO_GTK_H_ */

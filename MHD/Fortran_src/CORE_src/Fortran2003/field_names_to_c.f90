@@ -13,6 +13,11 @@
 !!      integer(c_int) function num_base_fields_f() bind(c)
 !!      subroutine set_base_field_names_f                               &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!      type(C_ptr) function c_link_base_field_names_to_ctl(c_ctl)      &
+!!     &          bind(C, NAME = 'c_link_base_field_names_to_ctl')
+!!      type(C_ptr) function c_link_time_evo_list_to_ctl(c_ctl)         &
+!!     &          bind(C, NAME = 'c_link_time_evo_list_to_ctl')
+!!      type(c_ptr), value, intent(in) :: c_ctl
 !!
 !!      integer(c_int) function num_base_forces_f() bind(c)
 !!      subroutine set_base_force_labels_f                              &
@@ -175,8 +180,13 @@
       use m_precision
       use ISO_C_BINDING
       use t_base_field_labels
+      use t_control_array_character
+      use t_control_array_chara2int
 !
       implicit none
+!
+      type(ctl_array_c2i), save, private, target :: base_fld_list
+      type(ctl_array_chara), save, private, target :: tevo_fld_list
 !
 ! ----------------------------------------------------------------------
 !
@@ -220,6 +230,28 @@
       call set_base_field_names(n_comps_c(1), field, math)
 !
       end subroutine set_base_field_names_f
+!
+! ----------------------------------------------------------------------
+!
+      type(C_ptr) function c_link_base_field_names_to_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_link_base_field_names_to_ctl')
+      use m_base_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_base_field_names_to_ctl(base_fld_list)
+      c_link_base_field_names_to_ctl = C_loc(base_fld_list)
+      end function c_link_base_field_names_to_ctl
+!
+! ----------------------------------------------------------------------
+!
+      type(C_ptr) function c_link_time_evo_list_to_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_link_time_evo_list_to_ctl')
+      use m_base_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call time_evolution_list_array(tevo_fld_list)
+      c_link_time_evo_list_to_ctl = C_loc(tevo_fld_list)
+      end function c_link_time_evo_list_to_ctl
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

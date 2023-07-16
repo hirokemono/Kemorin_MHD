@@ -32,7 +32,7 @@ m_SGS_model_coef_labels.o: $(FIELDIR)/m_SGS_model_coef_labels.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 m_SGS_term_labels.o: $(FIELDIR)/m_SGS_term_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_base_field_labels.o: $(FIELDIR)/m_base_field_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
+m_base_field_labels.o: $(FIELDIR)/m_base_field_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_control_array_chara2int.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_base_force_labels.o: $(FIELDIR)/m_base_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -150,7 +150,7 @@ t_explicit_term_labels.o: $(FIELDIR)/t_explicit_term_labels.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_field_component_labels.o: $(FIELDIR)/t_field_component_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o m_field_component_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_field_labels.o: $(FIELDIR)/t_field_labels.f90 m_precision.o m_constants.o m_phys_constants.o skip_comment_f.o
+t_field_labels.o: $(FIELDIR)/t_field_labels.f90 m_precision.o m_constants.o m_phys_constants.o t_control_array_chara2int.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_field_product_labels.o: $(FIELDIR)/t_field_product_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o m_field_product_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<

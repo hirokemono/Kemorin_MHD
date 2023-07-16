@@ -14,6 +14,10 @@
 !!      integer(kind = kint) function num_base_fields()
 !!      subroutine set_base_field_names(n_comps, names, maths)
 !!
+!!      subroutine set_base_field_names_to_ctl(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
+!!      subroutine time_evolution_list_array(array_c)
+!!        type(ctl_array_chara), intent(inout) :: array_c
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names 
@@ -311,6 +315,58 @@
      &    n_comps(21), names(21), maths(21))
 !
       end subroutine set_base_field_names
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_base_field_names_to_ctl(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
+!
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
+!
+      call set_field_label_to_ctl(velocity,                 array_c2i)
+      call set_field_label_to_ctl(vorticity,                array_c2i)
+      call set_field_label_to_ctl(pressure,                 array_c2i)
+      call set_field_label_to_ctl(magnetic_field,           array_c2i)
+      call set_field_label_to_ctl(vector_potential,         array_c2i)
+      call set_field_label_to_ctl(current_density,          array_c2i)
+      call set_field_label_to_ctl(background_B,             array_c2i)
+      call set_field_label_to_ctl(magnetic_potential,       array_c2i)
+      call set_field_label_to_ctl(scalar_potential,         array_c2i)
+      call set_field_label_to_ctl(temperature,              array_c2i)
+      call set_field_label_to_ctl(perturbation_temp,        array_c2i)
+      call set_field_label_to_ctl(heat_source,              array_c2i)
+      call set_field_label_to_ctl(composition,              array_c2i)
+      call set_field_label_to_ctl(perturbation_composition, array_c2i)
+      call set_field_label_to_ctl(composition_source,       array_c2i)
+      call set_field_label_to_ctl(entropy,                  array_c2i)
+      call set_field_label_to_ctl(perturbation_entropy,     array_c2i)
+      call set_field_label_to_ctl(entropy_source,           array_c2i)
+      call set_field_label_to_ctl(density,                  array_c2i)
+      call set_field_label_to_ctl(perturbation_density,     array_c2i)
+      call set_field_label_to_ctl(system_Rotation,          array_c2i)
+!
+      end subroutine set_base_field_names_to_ctl
+!
+! ----------------------------------------------------------------------
+!
+      subroutine time_evolution_list_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(velocity%name, array_c)
+      call append_c_to_ctl_array(magnetic_field%name, array_c)
+      call append_c_to_ctl_array(temperature%name, array_c)
+      call append_c_to_ctl_array(composition%name, array_c)
+      call append_c_to_ctl_array(vector_potential%name, array_c)
+!
+      end subroutine time_evolution_list_array
 !
 ! ----------------------------------------------------------------------
 !

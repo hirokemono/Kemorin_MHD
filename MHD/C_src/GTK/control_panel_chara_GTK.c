@@ -9,12 +9,10 @@
 
 static void copy_f_ctl_c_array_by_r_list(struct chara_clist *c_clist)
 {
-	char *ctmp;
 	int i;
-	
 	for(i=0;i<count_chara_clist(c_clist);i++){
-		ctmp = chara_clist_at_index(i, c_clist)->c_tbl;
-		c_store_chara_array(c_clist->f_self, i, ctmp);
+        struct chara_ctl_item *tmp_item = chara_clist_at_index(i, c_clist);
+		c_store_chara_array(c_clist->f_self, i, tmp_item->c_tbl);
 	}
     return;
 }
