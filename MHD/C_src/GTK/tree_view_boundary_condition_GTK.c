@@ -55,7 +55,7 @@ static void bc_type_edited_cb(GtkCellRendererText *cell, gchar *path_str,
     write_chara2_real_clist(stdout, 0, "BC type changed", bc_vws->bc_clist_gtk);
     load_clist_to_chara2_real_array(bc_vws->bc_clist_gtk);
 }
-static void thermal_bc_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+static void bc_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
             gchar *new_text, gpointer user_data)
 {
     struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
@@ -109,7 +109,7 @@ void init_boundary_condition_tree_view(struct boundary_condition_view *bc_vws){
     g_signal_connect(G_OBJECT(renderer_text), "edited",
                      G_CALLBACK(bc_position_edited_cb), (gpointer) bc_vws);
     g_signal_connect(G_OBJECT(renderer_spin), "edited",
-                     G_CALLBACK(thermal_bc_value_edited_cb), (gpointer) bc_vws);
+                     G_CALLBACK(bc_value_edited_cb), (gpointer) bc_vws);
 
     bc_vws->index_bc = append_c2r_list_from_ctl(bc_vws->index_bc, &bc_vws->bc_clist_gtk->c2r_item_head,
                                                 GTK_TREE_VIEW(bc_vws->bc_tree_view));

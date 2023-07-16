@@ -39,7 +39,6 @@
 #include "control_panel_int2_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
 #include "control_panel_4_MHD_BCs_GTK.h"
-#include "control_panel_4_MHD_evo_GTK.h"
 
 
 extern void c_view_control_sph_SGS_MHD();
@@ -1864,13 +1863,13 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     mWidgets->label_time_evo_list = init_f_ctl_chara_array(c_link_time_evo_list_to_ctl,
                                                            f_MHD_ctl->f_self);
 //    init_chara_list_tree_view(mWidgets->time_evo_vws);
-//	GtkWidget *vbox_m1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    GtkWidget *expand = add_c_list_combobox(f_MHD_ctl->f_model_ctl->f_evo_ctl->f_t_evo_field_ctl,
-                                            mWidgets->label_time_evo_list,
-                                            mWidgets->time_evo_vws->clist_tree_view);
+    GtkWidget *vbox_m1 = c_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_evo_ctl->f_t_evo_field_ctl,
+                                                        mWidgets->label_time_evo_list,
+                                                        mWidgets->time_evo_vws,
+                                                        window);
     GtkWidget *expand_MHD_time_evo = draw_control_block(f_MHD_ctl->f_model_ctl->f_evo_ctl->c_block_name,
 														f_MHD_ctl->f_model_ctl->f_evo_ctl->f_iflag,
-                                                        560, 500, window, expand);
+                                                        560, 500, window, vbox_m1);
 	
 	
 	GtkWidget *vbox_m2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

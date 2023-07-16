@@ -6,6 +6,7 @@
 */
 
 #include "control_panel_4_MHD_BCs_GTK.h"
+#include "control_panel_cbox_GTK.h"
 
 GtkWidget * draw_node_bc_ctl_vbox(struct f_MHD_node_bc_control *f_nbc_ctl,
                                   struct f_MHD_BCs_tree_views *bc_nod_bc_vws, 
@@ -41,7 +42,7 @@ GtkWidget * draw_node_bc_ctl_vbox(struct f_MHD_node_bc_control *f_nbc_ctl,
     struct chara_clist *f_current_bc_type = init_f_ctl_chara_array(set_label_current_bc_f, 
 																   f_nbc_ctl->f_self);
 	
-	GtkWidget *expand_MHD_node_bcU = boundary_condition_expander(f_nbc_ctl->f_node_bc_U_ctl,
+    GtkWidget *expand_MHD_node_bcU = boundary_condition_expander(f_nbc_ctl->f_node_bc_U_ctl,
                                                                  f_mom_bc_type,
 																 bc_nod_bc_vws->bc_mom_vws,
                                                                  window);

@@ -8,7 +8,17 @@
 #include "tree_view_chara_GTK.h"
 
 /* Append new data at the end of list */
-static int append_c_item_to_tree_w_index(int index, const char *c_tbl, GtkTreeModel *child_model){
+static int append_c_item_to_tree(int index, const char *c_tbl, GtkTreeModel *child_model){
+    GtkTreeIter iter;
+    
+    gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
+    gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+                       COLUMN_FIELD_INDEX, c_tbl,
+                       -1);
+    return index + 1;
+}
+
+int append_c_item_to_tree_w_index(int index, const char *c_tbl, GtkTreeModel *child_model){
     GtkTreeIter iter;
     
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
@@ -19,8 +29,21 @@ static int append_c_item_to_tree_w_index(int index, const char *c_tbl, GtkTreeMo
     return index + 1;
 }
 
+int append_c_list_from_ctl(int index, struct chara_ctl_list *head,
+                           GtkTreeView *c_tree_view)
+{
+    GtkTreeModel *model = gtk_tree_view_get_model (c_tree_view);
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    head = head->_next;
+    while (head != NULL){
+        index = append_c_item_to_tree(index, head->c_item->c_tbl, child_model);
+        head = head->_next;
+    };
+    return index;
+}
+
 int append_c_list_from_ctl_w_index(int index, struct chara_ctl_list *head,
-			GtkTreeView *c_tree_view)
+                                   GtkTreeView *c_tree_view)
 {
     GtkTreeModel *model = gtk_tree_view_get_model (c_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
