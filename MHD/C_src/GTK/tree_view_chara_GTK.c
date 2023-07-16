@@ -131,7 +131,7 @@ int add_c_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add,
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
         
-    gchar row_string[30] = "new";
+    gchar row_string[30] = "new_item";
     
     index = append_c_item_to_tree_w_index(index, row_string, child_model_to_add);
 	append_chara_clist(row_string, c_clist);
@@ -266,7 +266,7 @@ void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del, struct chara_clist *
     /* The path is for tree_model_sort */
     model_to_del = gtk_tree_view_get_model(tree_view_to_del);
     child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
-        
+    
     selection = gtk_tree_view_get_selection(tree_view_to_del);
     list = gtk_tree_selection_get_selected_rows(selection, NULL);
     

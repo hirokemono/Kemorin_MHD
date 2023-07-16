@@ -13,6 +13,9 @@
 !!      subroutine set_advection_control_labels(n_comps, names, maths)
 !!      subroutine set_force_control_labels(n_comps, names, maths)
 !!
+!!      subroutine set_force_list_array(array_c)
+!!        type(ctl_array_chara), intent(inout) :: array_c
+!!
 !! !!!!! Force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!   Advection names  (Other possible expression)
@@ -83,6 +86,29 @@
       character(len=kchara), parameter                                  &
      &             :: comp_gravity_e6 = 'Composite_buoyancy'
 !
+!
+!>       Filtered thermal buoyancy label
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_gravity_label = 'Filtered_buoyancy'
+!
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_gravity_e1 = 'Filtered_gravity'
+!
+!>       Filtered compositional buoyancy label
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_comp_gravity_label                       &
+     &                        = 'Filtered_compositional_buoyancy'
+!
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_comp_gravity_e1                          &
+     &                        = 'Filtered_compositional_gravity'
+!
+      character(len=kchara), parameter                                  &
+     &             :: hd_filtered_inertia = 'filtered_inertia'
+      character(len=kchara), parameter                                  &
+     &             :: hd_filtered_Lorentz = 'filtered_Lorentz'
+!
+!
 !   --------------------------------------------------------------------
 !
       contains
@@ -146,6 +172,28 @@
      &    n_comps( 4), names( 4), maths( 4))
 !
       end subroutine set_force_control_labels
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_force_list_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(coriolis_e1, array_c)
+      call append_c_to_ctl_array(lorentz_label, array_c)
+      call append_c_to_ctl_array(gravity_label, array_c)
+      call append_c_to_ctl_array(comp_gravity_label, array_c)
+!
+      call append_c_to_ctl_array(Filtered_gravity_label, array_c)
+      call append_c_to_ctl_array(Filtered_comp_gravity_label, array_c)
+      call append_c_to_ctl_array(hd_filtered_inertia, array_c)
+      call append_c_to_ctl_array(hd_filtered_Lorentz, array_c)
+!
+      end subroutine set_force_list_array
 !
 ! ----------------------------------------------------------------------
 !

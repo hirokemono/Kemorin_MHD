@@ -525,6 +525,7 @@ extern void * c_MHD_t_evo_field_ctl(void *f_evo_ctl);
 
 extern void * c_link_base_field_names_to_ctl(void *fld_names_c);
 extern void * c_link_time_evo_list_to_ctl(void *fld_names_c);
+extern void * c_link_force_list_to_ctl(void *fld_names_c);
 
 extern void * set_file_fmt_items_f(void *fmt_names_c);
 
@@ -862,7 +863,9 @@ struct main_widgets{
 	struct block_array_widgets *vpvr_Wgts;
     
     struct chara_cbox_table_view * time_evo_vws;
+    struct chara_cbox_table_view * force_vws;
     struct chara_clist *label_time_evo_list;
+    struct chara_clist *label_force_list;
     struct chara_clist *label_file_format_list;
 };
 
@@ -1814,7 +1817,8 @@ struct f_MHD_tree_views{
 	struct f_MHD_BCs_tree_views *bc_nod_bc_vws;
  	struct f_MHD_BCs_tree_views *bc_surf_bc_vws;
 
-	GtkWidget *f_force_tree_view;
+	GtkWidget *f_fluid_area_tree_view;
+	GtkWidget *f_conduct_area_tree_view;
 	GtkWidget *f_force_default_view;
 };
 struct f_MHD_tree_views *f_MHD_vws;
@@ -1859,10 +1863,8 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     
     
     
-    
     mWidgets->label_time_evo_list = init_f_ctl_chara_array(c_link_time_evo_list_to_ctl,
                                                            f_MHD_ctl->f_self);
-//    init_chara_list_tree_view(mWidgets->time_evo_vws);
     GtkWidget *vbox_m1 = c_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_evo_ctl->f_t_evo_field_ctl,
                                                         mWidgets->label_time_evo_list,
                                                         mWidgets->time_evo_vws,
@@ -1871,12 +1873,20 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 														f_MHD_ctl->f_model_ctl->f_evo_ctl->f_iflag,
                                                         560, 500, window, vbox_m1);
 	
-	
-	GtkWidget *vbox_m2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *expand_MHD_fluid_area = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_earea_ctl->f_evo_fluid_group_ctl, 
+                                                                 f_MHD_vws->f_fluid_area_tree_view);
+    GtkWidget *expand_MHD_conduct_area = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_earea_ctl->f_evo_conduct_group_ctl, 
+                                                                    f_MHD_vws->f_conduct_area_tree_view);
+    
+    GtkWidget *vbox_m2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_m2), expand_MHD_fluid_area, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_m2), expand_MHD_conduct_area, FALSE, FALSE, 0);
+    
     GtkWidget *expand_MHD_tevo_area = draw_control_block(f_MHD_ctl->f_model_ctl->f_earea_ctl->c_block_name,
-														 f_MHD_ctl->f_model_ctl->f_earea_ctl->f_iflag,
-														 560, 500, window, vbox_m2);
-	
+														f_MHD_ctl->f_model_ctl->f_earea_ctl->f_iflag,
+                                                        560, 500, window, vbox_m2);
+    
 	
 	GtkWidget *vbox_m3 = draw_node_bc_ctl_vbox(f_MHD_ctl->f_model_ctl->f_nbc_ctl,
 											   f_MHD_vws->bc_nod_bc_vws, window);
@@ -1891,8 +1901,16 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                       560, 500, window, vbox_m4);
 	
 	
-	GtkWidget *vbox_MHD_force = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names, 
-														   f_MHD_vws->f_force_tree_view);
+    mWidgets->label_force_list = init_f_ctl_chara_array(c_link_force_list_to_ctl,
+                                                        f_MHD_ctl->f_self);
+    GtkWidget *vbox_m5 = c_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names,
+                                                  mWidgets->label_force_list,
+                                                  mWidgets->force_vws,
+                                                  window);
+    GtkWidget *vbox_MHD_force = draw_control_block(f_MHD_ctl->f_model_ctl->f_frc_ctl->c_block_name,
+                                                   f_MHD_ctl->f_model_ctl->f_frc_ctl->f_iflag,
+                                                   560, 500, window, vbox_m5);
+    
 	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl,
                                                               f_MHD_vws->f_dimless_vws, window);
 	

@@ -15,6 +15,11 @@
 !!      integer(c_int) function num_force_controls_f() bind(c)
 !!      subroutine set_force_control_labels_f                           &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
+!!      type(c_ptr) function c_link_force_list_to_ctl(c_ctl)            &
+!!     &           bind(C, NAME='c_link_force_list_to_ctl')
+!!        use m_force_control_labels
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
 !
       module force_names_to_c
@@ -22,8 +27,11 @@
       use m_precision
       use ISO_C_BINDING
       use t_base_field_labels
+      use t_control_array_character
 !
       implicit none
+!
+      type(ctl_array_chara), save, private, target :: force_list
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,6 +97,18 @@
       call set_force_control_labels(n_comps_c(1), field, math)
 !
       end subroutine set_force_control_labels_f
+!
+! ----------------------------------------------------------------------
+!
+      type(c_ptr) function c_link_force_list_to_ctl(c_ctl)              &
+     &           bind(C, NAME='c_link_force_list_to_ctl')
+      use m_force_control_labels
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_force_list_array(force_list)
+      c_link_force_list_to_ctl = C_loc(force_list)
+!
+      end function c_link_force_list_to_ctl
 !
 ! ----------------------------------------------------------------------
 !

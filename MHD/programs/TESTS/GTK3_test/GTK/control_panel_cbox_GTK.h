@@ -18,12 +18,6 @@
 #include "tree_view_chara_GTK.h"
 #include "control_combobox_GTK.h"
 
-#include "t_control_chara2_real_IO.h"
-#include "t_ctl_array_chara2_real_items_c.h"
-#include "tree_view_chara2_real_GTK.h"
-#include "tree_view_boundary_condition_GTK.h"
-
-
 
 
 struct chara_cbox_table_view{
