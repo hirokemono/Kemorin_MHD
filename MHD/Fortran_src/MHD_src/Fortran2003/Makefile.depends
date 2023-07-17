@@ -54,7 +54,7 @@ c_link_VIZ_projection_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_projection_ctl.f90 t_ct
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_VIZ_repartition_ctl.o: $(MHD_F2003_DIR)/c_link_VIZ_repartition_ctl.f90 t_ctl_data_volume_repart.o t_ctl_data_FEM_sleeve_size.o
 	$(F90) -c $(F90OPTFLAGS) $<
-c_link_ctl_data_SGS_model.o: $(MHD_F2003_DIR)/c_link_ctl_data_SGS_model.f90 t_ctl_data_SGS_model.o
+c_link_ctl_data_SGS_model.o: $(MHD_F2003_DIR)/c_link_ctl_data_SGS_model.f90 t_ctl_data_SGS_model.o ctl_data_SGS_filters_IO.o ctl_array_chara_to_c.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_ctl_data_divide_sph.o: $(MHD_F2003_DIR)/c_link_ctl_data_divide_sph.f90 t_ctl_data_4_divide_sphere.o t_ctl_data_4_FEM_mesh.o
 	$(F90) -c $(F90OPTFLAGS) $<

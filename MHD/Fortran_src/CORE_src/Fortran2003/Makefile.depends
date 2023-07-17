@@ -4,7 +4,7 @@ binary_file_access.o: $(F2003DIR)/binary_file_access.f90 m_precision.o t_binary_
 	$(F90) -c $(F90OPTFLAGS) $<
 byte_swap_f.o: $(F2003DIR)/byte_swap_f.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-component_names_to_c.o: $(F2003DIR)/component_names_to_c.f90 m_precision.o t_base_field_labels.o m_component_flags.o m_more_component_flags.o
+component_names_to_c.o: $(F2003DIR)/component_names_to_c.f90 m_precision.o t_base_field_labels.o t_control_array_character.o m_component_flags.o m_more_component_flags.o
 	$(F90) -c $(F90OPTFLAGS) $<
 field_names_to_c.o: $(F2003DIR)/field_names_to_c.f90 m_precision.o t_base_field_labels.o t_control_array_character.o t_control_array_chara2int.o m_base_field_labels.o m_base_force_labels.o m_rot_force_labels.o m_div_force_labels.o m_energy_flux_labels.o m_grad_field_labels.o m_field_product_labels.o m_diffusion_term_labels.o m_explicit_term_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o m_energy_flux_w_sym_labels.o m_sym_ene_flux_labels.o m_field_component_labels.o m_SGS_term_labels.o m_diff_SGS_term_labels.o m_SGS_enegy_flux_labels.o m_SGS_model_coef_labels.o m_filtered_field_labels.o m_grad_filter_field_labels.o m_filtered_force_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_filtered_ene_flux_labels.o m_wide_filter_field_labels.o m_dble_filter_field_labels.o m_diff_vector_labels.o m_diff_filter_vect_labels.o m_wide_SGS_term_labels.o m_force_w_SGS_labels.o m_true_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
