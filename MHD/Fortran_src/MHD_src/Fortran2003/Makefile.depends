@@ -114,6 +114,6 @@ ctl_modelview_file_cosist.o: $(MHD_F2003_DIR)/ctl_modelview_file_cosist.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_real3_array_to_c.o: $(MHD_F2003_DIR)/ctl_real3_array_to_c.f90 m_precision.o t_control_array_real3.o
 	$(F90) -c $(F90OPTFLAGS) $<
-force_names_to_c.o: $(MHD_F2003_DIR)/force_names_to_c.f90 m_precision.o t_base_field_labels.o m_force_control_labels.o
+force_names_to_c.o: $(MHD_F2003_DIR)/force_names_to_c.f90 m_precision.o t_base_field_labels.o t_control_array_character.o m_force_control_labels.o t_reference_scalar_param.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

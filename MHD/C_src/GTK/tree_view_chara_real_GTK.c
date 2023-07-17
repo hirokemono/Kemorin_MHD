@@ -56,7 +56,7 @@ void cr_tree_name_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value, -1);
     
-    printf("Change AAAAAA   %s to %s\n", old_text, new_text);
+    printf("Change CR_array  %s to %s\n", old_text, new_text);
 
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                        COLUMN_FIELD_NAME, new_text, -1);

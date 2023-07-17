@@ -280,8 +280,7 @@
      &   (id_control, hd_gravity_ctl, model_ctl%g_ctl, level)
       call write_coriolis_ctl                                           &
      &   (id_control, hd_coriolis_ctl, model_ctl%cor_ctl, level)
-      call write_magneto_cv_ctl                                         &
-     &   (id_control, hd_magneto_cv_ctl, model_ctl%mcv_ctl, level)
+      call write_magneto_cv_ctl(id_control, model_ctl%mcv_ctl, level)
       call write_magnetic_scale_ctl                                     &
      &   (id_control, hd_bscale_ctl, model_ctl%bscale_ctl, level)
       call write_temp_model_ctl                                         &

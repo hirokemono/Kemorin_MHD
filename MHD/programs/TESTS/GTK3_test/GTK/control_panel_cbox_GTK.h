@@ -20,12 +20,6 @@
 
 
 
-struct chara_cbox_table_view{
-    int index_bc;
-    GtkWidget *clist_tree_view;
-    GtkWidget *items_tree_view;
-};
-
 /* prototypes */
 
 GtkWidget * add_c_list_combobox(struct chara_clist *c_clist_gtk,
@@ -33,7 +27,7 @@ GtkWidget * add_c_list_combobox(struct chara_clist *c_clist_gtk,
                                 struct chara_cbox_table_view *time_evo_vws);
 
 GtkWidget * c_list_combobox_expander(struct chara_clist *ctl_clist,
-                                     struct chara_clist *bc_types,
+                                     struct chara_clist *item_clist,
                                      struct chara_cbox_table_view *chara_tbl_vws,
                                      GtkWidget *window);
 

@@ -42,6 +42,8 @@ set_layers.o: $(MHD_COMMON_DIR)/set_layers.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_layers_4_MHD.o: $(MHD_COMMON_DIR)/set_layers_4_MHD.f90 m_precision.o t_FEM_control_parameter.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_work_4_MHD_layering.o set_layers.o
 	$(F90) -c $(F90OPTFLAGS) $<
+set_reference_scalar_param.o: $(MHD_COMMON_DIR)/set_reference_scalar_param.f90 m_precision.o m_error_IDs.o m_machine_parameter.o t_reference_scalar_param.o t_ctl_data_temp_model.o t_file_IO_parameter.o calypso_mpi.o t_control_array_character.o m_file_format_switch.o delete_data_files.o t_ctl_data_stratified_model.o
+	$(F90) -c $(F90OPTFLAGS) $<
 set_reference_value.o: $(MHD_COMMON_DIR)/set_reference_value.f90 m_precision.o m_constants.o t_reference_scalar_param.o t_geometry_data.o t_phys_data.o t_geometry_data_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_MHD_boundary_data.o: $(MHD_COMMON_DIR)/t_FEM_MHD_boundary_data.f90 m_precision.o m_machine_parameter.o t_bc_data_MHD.o t_surface_bc_data_MHD.o t_time_data.o t_control_parameter.o t_mesh_data.o t_geometry_data_MHD.o t_surface_group_connect.o t_surface_group_normals.o t_phys_data.o t_phys_address.o t_base_field_labels.o t_boundary_field_IO.o t_physical_property.o t_reference_scalar_param.o t_bc_data_list.o set_nodal_bc_id_data.o set_surface_values.o set_normal_field.o
@@ -88,7 +90,7 @@ t_mean_square_values.o: $(MHD_COMMON_DIR)/t_mean_square_values.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_physical_property.o: $(MHD_COMMON_DIR)/t_physical_property.f90 m_precision.o m_constants.o t_control_array_character.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_reference_scalar_param.o: $(MHD_COMMON_DIR)/t_reference_scalar_param.f90 m_precision.o m_error_IDs.o m_machine_parameter.o t_ctl_data_temp_model.o t_file_IO_parameter.o calypso_mpi.o t_control_array_character.o m_file_format_switch.o delete_data_files.o t_ctl_data_stratified_model.o
+t_reference_scalar_param.o: $(MHD_COMMON_DIR)/t_reference_scalar_param.f90 m_precision.o m_error_IDs.o m_machine_parameter.o t_file_IO_parameter.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_work_4_MHD_layering.o: $(MHD_COMMON_DIR)/t_work_4_MHD_layering.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -16,6 +16,7 @@
 #include "kemoview_gtk_routines.h"
 #include "m_base_control_labels_from_f.h"
 #include "t_ctl_array_single_items_c.h"
+#include "control_combobox_GTK.h"
 
 /* prototypes */
 
@@ -28,11 +29,12 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 											 char *f_file_name, int width, int height,
 											 GtkWidget *window, GtkWidget *box_in);
 
-GtkWidget * draw_file_format_select_hbox(struct chara_clist *label_file_format_list, 
-										 struct chara_ctl_item * f_citem, GtkWidget *window);
-
 GtkWidget *draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem);
 GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem);
+GtkWidget *draw_chara_item_combobox_hbox(struct chara_clist *item_list,
+                                         struct chara_ctl_item *f_citem, GtkWidget *window);
+
+
 GtkWidget *draw_int_item_entry_hbox(struct int_ctl_item *f_iitem);
 GtkWidget *draw_real_item_entry_hbox(struct real_ctl_item * f_ritem);
 

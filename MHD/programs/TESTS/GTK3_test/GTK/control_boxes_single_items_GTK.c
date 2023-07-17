@@ -216,6 +216,20 @@ GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem)
 	return hbox;
 }
 
+GtkWidget *draw_chara_item_combobox_hbox(struct chara_clist *item_list,
+                                         struct chara_ctl_item *f_citem, GtkWidget *window){
+    GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
+    GtkWidget *label = gtk_label_new(f_citem->c_block_name);
+    
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    add_control_combobox_vbox(f_citem, item_list, vbox);
+    
+    gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+    return hbox;
+}
+
+
 GtkWidget *draw_int_item_entry_hbox(struct int_ctl_item *f_iitem){
 	GtkAdjustment *adjust = gtk_adjustment_new(f_iitem->i_data, 0, 2147483648, 1,
                     100, 21474836);

@@ -113,7 +113,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
 		
 		/* Update control data */
-		printf("Delete field list %d %d\n", index_field, &iter);
+		printf("Delete field list %d \n", index_field);
 		delete_field_wqflag_in_ctl(index_field, fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
 	}
 	g_list_free(reference_list);

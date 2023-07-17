@@ -147,6 +147,7 @@ ctl_data_temp_model_IO.o \
 \
 m_sph_node_group_types.o \
 m_set_node_group_types.o \
+t_reference_scalar_param.o \
 set_surface_group_types.o
 
 

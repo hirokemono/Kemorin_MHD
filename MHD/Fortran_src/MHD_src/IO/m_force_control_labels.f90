@@ -14,6 +14,7 @@
 !!      subroutine set_force_control_labels(n_comps, names, maths)
 !!
 !!      subroutine set_force_list_array(array_c)
+!!      subroutine set_sph_force_list_array(array_c)
 !!        type(ctl_array_chara), intent(inout) :: array_c
 !!
 !! !!!!! Force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -179,6 +180,21 @@
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !
+      call set_sph_force_list_array(array_c)
+!
+      call append_c_to_ctl_array(Filtered_gravity_label, array_c)
+      call append_c_to_ctl_array(Filtered_comp_gravity_label, array_c)
+      call append_c_to_ctl_array(hd_filtered_inertia, array_c)
+      call append_c_to_ctl_array(hd_filtered_Lorentz, array_c)
+!
+      end subroutine set_force_list_array
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_sph_force_list_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
       array_c%array_name = '  '
       array_c%num =         0
       call alloc_control_array_chara(array_c)
@@ -193,7 +209,7 @@
       call append_c_to_ctl_array(hd_filtered_inertia, array_c)
       call append_c_to_ctl_array(hd_filtered_Lorentz, array_c)
 !
-      end subroutine set_force_list_array
+      end subroutine set_sph_force_list_array
 !
 ! ----------------------------------------------------------------------
 !

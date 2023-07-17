@@ -48,9 +48,25 @@ GtkWidget * create_fixed_label_tree(struct chara_clist *c1_clist)
 };
 
 
+struct chara_cbox_table_view * init_chara_cbox_table_view(struct chara_clist *item_clist){
+    struct chara_cbox_table_view *chara_tbl_vws
+            = (struct chara_cbox_table_view *) malloc(sizeof(struct chara_cbox_table_view));
+    if(chara_tbl_vws == NULL){
+        printf("malloc error for chara_cbox_table_view\n");
+        exit(0);
+    };
+    
+    chara_tbl_vws->clist_tree_view = gtk_tree_view_new();
+    chara_tbl_vws->items_tree_view = create_fixed_label_tree(item_clist);
+    return chara_tbl_vws;
+}
+
+
+
+
 static void cb_set_selected_name(GtkComboBox *combobox, gpointer user_data)
 {
-	struct chara_clist *flag_list = (struct control_labels_f *) user_data;
+	struct chara_clist *flag_list = (struct chara_clist *) user_data;
     struct chara_ctl_item *f_citem = g_object_get_data(G_OBJECT(combobox), "chara_ctl_item");
 
 	GtkTreeModel *model_ctl = gtk_combo_box_get_model(combobox);

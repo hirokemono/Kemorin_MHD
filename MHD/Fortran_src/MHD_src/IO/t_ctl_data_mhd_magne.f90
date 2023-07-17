@@ -15,8 +15,7 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(magneto_convection_control), intent(inout) :: mcv_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_magneto_cv_ctl                                 &
-!!     &         (id_control, hd_block, mcv_ctl, level)
+!!      subroutine write_magneto_cv_ctl(id_control, mcv_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(magneto_convection_control), intent(in) :: mcv_ctl
@@ -134,13 +133,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_magneto_cv_ctl                                   &
-     &         (id_control, hd_block, mcv_ctl, level)
+      subroutine write_magneto_cv_ctl(id_control, mcv_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(magneto_convection_control), intent(in) :: mcv_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -153,12 +150,17 @@
       maxlen = len_trim(hd_magneto_cv)
       maxlen = max(maxlen, len_trim(hd_filetered_induction))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 mcv_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    mcv_ctl%magneto_cv)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    mcv_ctl%filterd_induction_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_array_c_r                                      &
+     &   (id_control, level, mcv_ctl%ext_magne)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                mcv_ctl%block_name)
 !
       end subroutine write_magneto_cv_ctl
 !

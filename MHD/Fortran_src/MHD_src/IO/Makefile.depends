@@ -68,7 +68,7 @@ m_boundary_condition_IDs.o: $(MHD_IO_DIR)/m_boundary_condition_IDs.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 m_fem_mhd_restart.o: $(MHD_IO_DIR)/m_fem_mhd_restart.f90 m_precision.o calypso_mpi.o t_time_data.o t_comm_table.o t_geometry_data.o t_phys_data.o t_file_IO_parameter.o t_field_data_IO.o t_flex_delta_t_parameter.o t_IO_step_parameter.o t_vector_for_solver.o t_solver_SR.o set_field_to_restart.o const_global_element_ids.o field_IO_select.o nod_phys_send_recv.o m_file_format_switch.o cal_num_digits.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_force_control_labels.o: $(MHD_IO_DIR)/m_force_control_labels.f90 m_precision.o t_base_force_labels.o m_base_force_labels.o
+m_force_control_labels.o: $(MHD_IO_DIR)/m_force_control_labels.f90 m_precision.o t_base_force_labels.o m_base_force_labels.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_set_node_group_types.o: $(MHD_IO_DIR)/m_set_node_group_types.f90 m_precision.o m_boundary_condition_IDs.o m_sph_node_group_types.o skip_comment_f.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -104,7 +104,7 @@ set_control_4_mag_p.o: $(MHD_IO_DIR)/set_control_4_mag_p.f90 m_precision.o m_mac
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_magne.o: $(MHD_IO_DIR)/set_control_4_magne.f90 m_precision.o m_machine_parameter.o m_sph_node_group_types.o calypso_mpi.o t_physical_property.o t_control_array_chara2real.o t_bc_data_list.o m_set_node_group_types.o set_surface_group_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_4_model.o: $(MHD_IO_DIR)/set_control_4_model.f90 m_precision.o m_constants.o m_error_IDs.o m_machine_parameter.o t_ctl_data_mhd_evo_scheme.o t_control_parameter.o calypso_mpi.o t_ctl_data_mhd_evolution.o t_ctl_data_temp_model.o t_reference_scalar_param.o m_base_field_labels.o t_control_array_real.o
+set_control_4_model.o: $(MHD_IO_DIR)/set_control_4_model.f90 m_precision.o m_constants.o m_error_IDs.o m_machine_parameter.o t_ctl_data_mhd_evo_scheme.o t_control_parameter.o calypso_mpi.o t_ctl_data_mhd_evolution.o t_ctl_data_temp_model.o t_reference_scalar_param.o m_base_field_labels.o set_reference_scalar_param.o t_control_array_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_press.o: $(MHD_IO_DIR)/set_control_4_press.f90 m_precision.o m_machine_parameter.o m_sph_node_group_types.o calypso_mpi.o t_physical_property.o t_control_array_chara2real.o t_bc_data_list.o m_set_node_group_types.o set_surface_group_types.o
 	$(F90) -c $(F90OPTFLAGS) $<

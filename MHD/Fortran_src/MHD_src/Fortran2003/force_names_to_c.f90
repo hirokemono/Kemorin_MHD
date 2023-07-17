@@ -18,7 +18,12 @@
 !!
 !!      type(c_ptr) function c_link_force_list_to_ctl(c_ctl)            &
 !!     &           bind(C, NAME='c_link_force_list_to_ctl')
-!!        use m_force_control_labels
+!!      type(c_ptr) function c_link_sph_force_list_to_ctl(c_ctl)        &
+!!     &           bind(C, NAME='c_link_sph_force_list_to_ctl')
+!!      type(c_ptr) function c_link_reftemp_list_to_ctl(c_ctl)          &
+!!     &           bind(C, NAME='c_link_reftemp_list_to_ctl')
+!!      type(c_ptr) function c_link_sph_reftemp_list_to_ctl(c_ctl)      &
+!!     &           bind(C, NAME='c_link_sph_reftemp_list_to_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
 !
@@ -32,6 +37,10 @@
       implicit none
 !
       type(ctl_array_chara), save, private, target :: force_list
+      type(ctl_array_chara), save, private, target :: sph_force_list
+!
+      type(ctl_array_chara), save, private, target :: temp_mdl_list
+      type(ctl_array_chara), save, private, target :: sph_temp_mdl_list
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,6 +118,31 @@
       c_link_force_list_to_ctl = C_loc(force_list)
 !
       end function c_link_force_list_to_ctl
+!
+! ----------------------------------------------------------------------
+!
+      type(c_ptr) function c_link_sph_force_list_to_ctl(c_ctl)          &
+     &           bind(C, NAME='c_link_sph_force_list_to_ctl')
+      use m_force_control_labels
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_sph_force_list_array(sph_force_list)
+      c_link_sph_force_list_to_ctl = C_loc(sph_force_list)
+!
+      end function c_link_sph_force_list_to_ctl
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      type(c_ptr) function c_link_reftemp_list_to_ctl(c_ctl)            &
+     &           bind(C, NAME='c_link_reftemp_list_to_ctl')
+      use t_reference_scalar_param
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      call set_reftemp_list_array(temp_mdl_list)
+      c_link_reftemp_list_to_ctl = C_loc(temp_mdl_list)
+!
+      end function c_link_reftemp_list_to_ctl
 !
 ! ----------------------------------------------------------------------
 !

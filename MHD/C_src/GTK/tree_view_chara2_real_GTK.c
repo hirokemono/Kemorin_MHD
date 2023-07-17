@@ -454,8 +454,8 @@ void create_text2_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c2
 }
 
 void create_cbox_text_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c2r_tree_view,
-			GtkCellRenderer *renderer_cbox, GtkCellRenderer *renderer_text, GtkCellRenderer
-			*renderer_spin)
+                                     GtkCellRenderer *renderer_cbox, GtkCellRenderer *renderer_text,
+                                     GtkCellRenderer *renderer_spin)
 {
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     

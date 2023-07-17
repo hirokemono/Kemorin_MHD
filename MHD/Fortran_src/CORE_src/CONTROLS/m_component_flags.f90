@@ -530,5 +530,22 @@
       end subroutine set_flag_asym_tensor_comp
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_xyz_direction_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(V_x%name, array_c)
+      call append_c_to_ctl_array(V_y%name, array_c)
+      call append_c_to_ctl_array(V_z%name, array_c)
+!
+      end subroutine set_xyz_direction_array
+!
+! ----------------------------------------------------------------------
 !
       end module m_component_flags

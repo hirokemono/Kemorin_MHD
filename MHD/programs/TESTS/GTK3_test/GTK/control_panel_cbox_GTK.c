@@ -11,20 +11,6 @@ extern int lengthchara_f(void);
 
 extern void * c_chara_item_clength(void *f_ctl, int *length);
 
-struct chara_cbox_table_view * init_chara_cbox_table_view(struct chara_clist *ctl_clist,
-                                                          struct chara_clist *item_clist){
-	struct chara_cbox_table_view *chara_tbl_vws  
-			= (struct chara_cbox_table_view *) malloc(sizeof(struct chara_cbox_table_view));
-	if(chara_tbl_vws == NULL){
-		printf("malloc error for chara_cbox_table_view\n");
-		exit(0);
-	};
-	
-    chara_tbl_vws->clist_tree_view = gtk_tree_view_new();
-    chara_tbl_vws->items_tree_view =  create_fixed_label_tree(item_clist);
-    return chara_tbl_vws;
-}
-
 static void load_clist_to_chara_array(struct chara_clist *c_clst){
     int i;
     for(i=0;i<count_chara_clist(c_clst);i++){
@@ -79,8 +65,7 @@ void create_cbox_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c_tree_v
     GtkListStore *child_model;
 
 	/* Construct empty list storage */
-    child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
-                                     G_TYPE_DOUBLE);
+    child_model = gtk_list_store_new(2, G_TYPE_INT, G_TYPE_STRING);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* Construct model for sorting and set to tree view */
@@ -111,10 +96,10 @@ void create_cbox_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c_tree_v
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
     /* sort */
-    column = gtk_tree_view_get_column(c_tree_view, COLUMN_FIELD_INDEX);
+    column = gtk_tree_view_get_column(c_tree_view, COLUMN_FIELD_NAME);
     gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
-    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
+    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_NAME, GTK_SORT_ASCENDING);
 }
 
 void init_c_combobox_tree_view(struct chara_clist *ctl_clist,
@@ -177,14 +162,14 @@ static void add_c_list_selection_box(struct chara_clist *ctl_clist, struct chara
 };
 
 GtkWidget * c_list_combobox_expander(struct chara_clist *ctl_clist,
-                                     struct chara_clist *bc_types,
+                                     struct chara_clist *item_clist,
                                      struct chara_cbox_table_view *chara_tbl_vws,
                                      GtkWidget *window){
-    chara_tbl_vws = init_chara_cbox_table_view(ctl_clist, bc_types);
+    chara_tbl_vws = init_chara_cbox_table_view(item_clist);
     init_c_combobox_tree_view(ctl_clist, chara_tbl_vws);
 
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    add_c_list_selection_box(ctl_clist, bc_types, chara_tbl_vws, vbox);
+    add_c_list_selection_box(ctl_clist, item_clist, chara_tbl_vws, vbox);
     GtkWidget *expand_bc = wrap_into_expanded_frame_gtk(duplicate_underscore(ctl_clist->clist_name),
                                                         320, 160, window, vbox);
     return expand_bc;
