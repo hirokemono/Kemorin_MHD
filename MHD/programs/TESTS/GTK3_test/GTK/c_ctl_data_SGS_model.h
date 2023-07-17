@@ -138,7 +138,11 @@ struct f_MHD_SGS_model_control{
 /* prototypes */
 
 
-struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_self)(void *f_parent), 
+struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_in, void *f_parent);
+void *dealloc_f_MHD_SGS_SPH_filter_control(struct f_MHD_SGS_SPH_filter_control *f_sph_filter_ctl);
+
+
+struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_self)(void *f_parent),
 															  void *f_parent);
 
 #endif /* C_CTL_DATA_SGS_MODEL_H_ */

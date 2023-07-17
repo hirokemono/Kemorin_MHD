@@ -82,9 +82,17 @@
 !!     &          bind(C, NAME = 'c_SGS_model_sph_filter_name')
 !!      integer(c_int) function c_SGS_model_num_sph_filter_ctl(c_ctl)   &
 !!     &          bind(C, NAME = 'c_SGS_model_num_sph_filter_ctl')
-!!      type(c_ptr) function c_SGS_model_sph_filter_ctl(i, c_ctl)       &
+!!      type(c_ptr) function c_SGS_model_sph_filter_ctl(idx, c_ctl)     &
 !!     &          bind(C, NAME = 'c_SGS_model_sph_filter_ctl')
-!!        integer(c_int), value, intent(in) :: i
+!!        integer(c_int), value, intent(in) :: idx
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!      type(c_ptr) function c_append_SGS_sph_filter_ctl                &
+!!     &                   (idx, c_name, c_ctl)                         &
+!!     &                   bind(C, NAME = 'c_append_SGS_sph_filter_ctl')
+!!      type(c_ptr) function c_delete_SGS_sph_filter_ctl(idx, c_ctl)    &
+!!     &                   bind(C, NAME = 'c_delete_SGS_sph_filter_ctl')
+!!        integer(c_int), value, intent(in) :: idx
+!!        character(C_char), intent(in) :: c_name(*)
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
 !!
@@ -469,6 +477,7 @@
       end function c_SGS_model_sph_filter_name
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       integer(c_int) function c_SGS_model_num_sph_filter_ctl(c_ctl)     &
      &          bind(C, NAME = 'c_SGS_model_num_sph_filter_ctl')
@@ -480,14 +489,50 @@
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_SGS_model_sph_filter_ctl(i, c_ctl)         &
+      type(c_ptr) function c_SGS_model_sph_filter_ctl(idx, c_ctl)       &
      &          bind(C, NAME = 'c_SGS_model_sph_filter_ctl')
-      integer(c_int), value, intent(in) :: i
+      integer(c_int), value, intent(in) :: idx
       type(c_ptr), value, intent(in) :: c_ctl
       type(SGS_model_control), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_SGS_model_sph_filter_ctl = C_loc(f_ctl%sph_filter_ctl(i))
+      c_SGS_model_sph_filter_ctl = C_loc(f_ctl%sph_filter_ctl(idx+1))
       end function c_SGS_model_sph_filter_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_append_SGS_sph_filter_ctl                  &
+     &                   (idx, c_name, c_ctl)                           &
+     &                   bind(C, NAME = 'c_append_SGS_sph_filter_ctl')
+      use ctl_data_SGS_filters_IO
+      use ctl_array_chara_to_c
+!
+      integer(c_int), value, intent(in) :: idx
+      character(C_char), intent(in) :: c_name(*)
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_model_control), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call append_SGS_filter_ctls(idx, copy_char_from_c(c_name), f_ctl)
+      c_append_SGS_sph_filter_ctl = C_loc(f_ctl)
+      f_ctl%sph_filter_ctl(idx+1)%i_sph_filter_ctl = 1
+!
+      end function c_append_SGS_sph_filter_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_delete_SGS_sph_filter_ctl(idx, c_ctl)      &
+     &                   bind(C, NAME = 'c_delete_SGS_sph_filter_ctl')
+      use ctl_data_SGS_filters_IO
+!
+      integer(c_int), value, intent(in) :: idx
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(SGS_model_control), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call delete_SGS_filter_ctls((idx+1), f_ctl)
+      c_delete_SGS_sph_filter_ctl = C_loc(f_ctl)
+!
+      end function c_delete_SGS_sph_filter_ctl
 !
 !  ---------------------------------------------------------------------
 !

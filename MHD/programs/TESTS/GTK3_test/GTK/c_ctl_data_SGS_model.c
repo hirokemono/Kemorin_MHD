@@ -125,6 +125,22 @@ struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_
 	return f_sph_filter_ctl;
 };
 
+void *dealloc_f_MHD_SGS_SPH_filter_control(struct f_MHD_SGS_SPH_filter_control *f_sph_filter_ctl)
+{
+    dealloc_int_ctl_item_c(f_sph_filter_ctl->f_maximum_moments_ctl);
+    dealloc_int_ctl_item_c(f_sph_filter_ctl->f_first_reference_ctl);
+    dealloc_int_ctl_item_c(f_sph_filter_ctl->f_second_reference_ctl);
+
+    dealloc_real_ctl_item_c(f_sph_filter_ctl->f_sphere_filter_width_ctl);
+    dealloc_real_ctl_item_c(f_sph_filter_ctl->f_radial_filter_width_ctl);
+
+    dealloc_chara_ctl_item_c(f_sph_filter_ctl->f_radial_filter_width_ctl);
+    dealloc_chara_ctl_item_c(f_sph_filter_ctl->f_radial_filter_type_ctl);
+
+    free(f_sph_filter_ctl);
+    return f_sph_filter_ctl;
+}
+
 
 struct f_MHD_SGS_3d_filter_control * init_f_MHD_SGS_3d_filter_control(void *(*c_load_self)(void *f_parent), 
 															  void *f_parent)

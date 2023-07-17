@@ -195,7 +195,7 @@ GtkWidget * draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem)
 					 G_CALLBACK(cb_char_switch), (gpointer) NULL);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), char_switch, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), char_switch, TRUE, FALSE, 0);
 	return hbox;
 }
 
