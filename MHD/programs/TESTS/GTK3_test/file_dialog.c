@@ -1242,7 +1242,8 @@ struct void_clist * init_f_VIZ_psf_ctls(void *f_parent, int *f_num_psf_ctl)
 	struct void_clist *f_psf_ctls = init_void_clist(strngcopy_from_f(f_block_name));
 	f_psf_ctls->f_parent = f_parent;
 	*f_num_psf_ctl = c_section_ctls_num_psf_ctl(f_psf_ctls->f_parent);
-	
+    
+    if(*f_num_psf_ctl == 0){};
     struct f_VIZ_PSF_ctl *f_ctl_tmp;
     int i;
 	for(i=0;i<*f_num_psf_ctl;i++){
@@ -2397,7 +2398,40 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 													 560, 500, window, vbox_viz);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_viz, FALSE, FALSE, 0);
 	
-	GtkWidget *vbox_zm = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    
+    
+    GtkWidget *hbox_d1 = draw_int_item_entry_hbox(f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->f_crust_truncation_ctl);
+	GtkWidget *expand_MHD_zm1 = draw_control_block(f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->c_block_name, 
+                                                   f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->f_iflag,
+                                                   240, 200, window, hbox_d1);
+    
+    void *block_item = void_clist_at_index(0, f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls);
+    GtkWidget *expand_MHD_zm2 = draw_viz_each_psf_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls->clist_name,
+                                                           (struct f_VIZ_PSF_ctl *) block_item,
+                                                            window);
+    
+    block_item = void_clist_at_index(0, f_MHD_ctl->f_zm_ctls->f_zRMS_psf_ctls);
+    GtkWidget *expand_MHD_zm3 = draw_viz_each_psf_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zRMS_psf_ctls->clist_name,
+                                                           (struct f_VIZ_PSF_ctl *) block_item,
+                                                            window);
+    
+    block_item = void_clist_at_index(0, f_MHD_ctl->f_zm_ctls->f_zm_map_ctls);
+	GtkWidget *expand_MHD_zm4 = draw_viz_each_map_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zm_map_ctls->clist_name, 
+                                                           (struct f_VIZ_MAP_ctl *) block_item,
+                                                            window);
+    block_item = void_clist_at_index(0, f_MHD_ctl->f_zm_ctls->f_zRMS_map_ctls);
+	GtkWidget *expand_MHD_zm5 = draw_viz_each_map_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zRMS_map_ctls->clist_name, 
+                                                           (struct f_VIZ_MAP_ctl *) block_item,
+                                                            window);
+    
+    GtkWidget *vbox_zm = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox_zm), expand_MHD_zm1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_zm), expand_MHD_zm2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_zm), expand_MHD_zm3, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_zm), expand_MHD_zm4, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_zm), expand_MHD_zm5, FALSE, FALSE, 0);
+    
 	GtkWidget *expand_MHD_zm = draw_control_block(f_MHD_ctl->f_zm_ctls->c_block_name, 
 													 f_MHD_ctl->f_zm_ctls->f_iflag,
 													 560, 500, window, vbox_zm);
