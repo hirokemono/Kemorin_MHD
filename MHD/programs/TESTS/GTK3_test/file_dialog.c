@@ -40,6 +40,7 @@
 #include "control_panel_int2_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
 #include "control_panel_4_MHD_BCs_GTK.h"
+#include "control_panel_4_SGS_model_GTK.h"
 
 
 extern void c_view_control_sph_SGS_MHD();
@@ -522,9 +523,6 @@ extern void * c_MHD_evolution_ctl_block_name(void *f_evo_ctl);
 extern void * c_MHD_evolution_ctl_iflag(void *f_evo_ctl);
 extern void * c_MHD_t_evo_field_ctl(void *f_evo_ctl);
 
-extern void * c_append_SGS_sph_filter_ctl(int idx, char *block_name, void *f_sph_filter_ctl);
-extern void * c_delete_SGS_sph_filter_ctl(int idx, void *f_sph_filter_ctl);
-
 
 extern void * c_link_base_field_names_to_ctl(void *fld_names_c);
 extern void * c_link_time_evo_list_to_ctl(void *fld_names_c);
@@ -869,13 +867,8 @@ struct main_widgets{
 	struct f_sph_monitor_widgets *f_lp_vws;
 	
 	struct block_array_widgets *vpvr_Wgts;
-    
+    struct f_SGS_model_widgets *SGSWgts;
     GtkWidget * f_magnetic_scale_tree;
-    GtkWidget * f_igrp_stack_layer_tree;
-	GtkWidget *f_layer_grp_name_tree;
-	GtkWidget *f_whole_filter_grp_tree;
-	GtkWidget *f_fluid_filter_grp_tree;
-	struct block_array_widgets * sfilter_Widgets;
     
     struct chara_cbox_table_view * time_evo_vws;
     struct chara_cbox_table_view * force_vws;
@@ -1859,33 +1852,6 @@ static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR
     return expand_v_pwr;
 };
 
-static GtkWidget * draw_MHD_SGS_SPH_filter_expand(char *label_name, struct f_MHD_SGS_SPH_filter_control *f_sph_filter_item, 
-                                                  GtkWidget *window){
-	GtkWidget *vbox_f = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    
-    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_sph_filter_item->f_sph_filter_type_ctl);
-    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_sph_filter_item->f_radial_filter_type_ctl);
-    GtkWidget *hbox_3 = draw_int_item_entry_hbox(f_sph_filter_item->f_maximum_moments_ctl);
-    GtkWidget *hbox_4 = draw_real_item_entry_hbox(f_sph_filter_item->f_sphere_filter_width_ctl);
-    GtkWidget *hbox_5 = draw_real_item_entry_hbox(f_sph_filter_item->f_radial_filter_width_ctl);
-    GtkWidget *hbox_6 = draw_int_item_entry_hbox(f_sph_filter_item->f_first_reference_ctl);
-    GtkWidget *hbox_7 = draw_int_item_entry_hbox(f_sph_filter_item->f_second_reference_ctl);
-    
-    gtk_box_pack_start(GTK_BOX(vbox_f), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_f), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_f), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_f), hbox_4,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_f), hbox_5,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_f), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_f), hbox_7,  FALSE, FALSE, 0);
-    
-    GtkWidget *expand_filter = draw_control_block(duplicate_underscore(label_name),
-                                                  f_sph_filter_item->f_iflag,
-                                                  480, 480, window, vbox_f);
-    return expand_filter;
-};
-
-
 
 GtkWidget * MHD_temperature_model_expander(GtkWidget *window, struct f_MHD_temp_model_control *f_reft_ctl, 
                                     struct chara_clist *label_reftemp_list){
@@ -2081,175 +2047,8 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                  560, 400, window, vbox_c);
     
     
-    GtkWidget *hbox_sf1 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_filter_head_ctl);
-    GtkWidget *hbox_sf2 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_filter_coef_head_ctl);
-    GtkWidget *hbox_sf3 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_filter_elen_head_ctl);
-    GtkWidget *hbox_sf4 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_filter_moms_head_ctl);
-    GtkWidget *hbox_sf5 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_filter_wide_head_ctl);
-    GtkWidget *hbox_sf6 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_model_coef_ini_head_ctl);
-    GtkWidget *hbox_sf7 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_commute_coef_ini_head_ctl);
-    GtkWidget *hbox_sf8 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_filter_elen_format);
-    GtkWidget *hbox_sf9 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_filter_3d_format);
-    GtkWidget *hbox_sf10 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_filter_wide_format);
-    GtkWidget *hbox_sf11 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_model_coef_rst_format);
-    GtkWidget *hbox_sf12 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_commute_coef_rst_format);
-    
-    GtkWidget *vbox_sf1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf3, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf5, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf6, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf7, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf8, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf9, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf10, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf11, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf12, FALSE, FALSE, 0);
-    
-    GtkWidget *expand_SGS_1 = draw_control_block(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->c_block_name, 
-                                                 f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ffile_ctl->f_iflag,
-                                                 560, 400, window, vbox_sf1);
-    
-    
-    GtkWidget *hbox_sl1 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_layering_grp_type_ctl);
-    GtkWidget *hbox_sl2 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_start_layering_grp_name_ctl);
-    GtkWidget *hbox_sl3 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_start_fl_layer_grp_name_ctl);
-    GtkWidget *hbox_sl4 = draw_int_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_ngrp_SGS_on_sphere_ctl);
-    GtkWidget *hbox_sl5 = draw_int_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_num_layering_grp_ctl);
-    GtkWidget *hbox_sl6 = draw_int_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_num_fl_layer_grp_ctl);
-    
-	GtkWidget *hbox_sl21 = add_int_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_igrp_stack_layer_ctl,
-                                                       mWidgets->f_igrp_stack_layer_tree);
-    GtkWidget *hbox_sl22 = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_layer_grp_name_ctl, 
-                                                     mWidgets->f_layer_grp_name_tree);
-    
-    
-    GtkWidget *vbox_sl1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl3, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl4, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl5, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl6, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl21, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl22, FALSE, FALSE, 0);
-	GtkWidget *expand_SGS_2 = draw_control_block(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->c_block_name, 
-                                                 f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_elayer_ctl->f_iflag,
-                                                 560, 400, window, vbox_sl1);
-    
-    
-    GtkWidget *hbox_sd11 = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_s3df_ctl->f_whole_filter_grp_ctl, 
-                                                     mWidgets->f_whole_filter_grp_tree);
-    GtkWidget *hbox_sd12 = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_s3df_ctl->f_fluid_filter_grp_ctl, 
-                                                     mWidgets->f_fluid_filter_grp_tree);
-    
-    GtkWidget *hbox_sd1 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_s3df_ctl->f_momentum_filter_ctl);
-    GtkWidget *hbox_sd2 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_s3df_ctl->f_heat_filter_ctl);
-    GtkWidget *hbox_sd3 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_s3df_ctl->f_induction_filter_ctl);
-    GtkWidget *hbox_sd4 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_s3df_ctl->f_compostion_filter_ctl);
-    
-    
-    GtkWidget *vbox_sd3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_sd3), hbox_sd11, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sd3), hbox_sd12, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sd3), hbox_sd1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sd3), hbox_sd2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sd3), hbox_sd3, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_sd3), hbox_sd4, FALSE, FALSE, 0);
-	GtkWidget *expand_SGS_3 = draw_control_block(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_s3df_ctl->c_block_name, 
-                                                 f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_s3df_ctl->f_iflag,
-                                                 560, 400, window, vbox_sd3);
-    
-    GtkWidget *hbox_s1 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_model_name_ctl);
-    GtkWidget *hbox_s2 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_filter_name_ctl);
-    GtkWidget *hbox_s3 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_DIFF_model_coef_ctl);
-    GtkWidget *hbox_s4 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_negative_clip_ctl);
-    GtkWidget *hbox_s5 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_marging_ctl);
-    GtkWidget *hbox_s6 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_perturbation_ctl);
-    
-    GtkWidget *hbox_s7 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_model_coef_type_ctl);
-    GtkWidget *hbox_s8 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_heat_flux_csim_type_ctl);
-    GtkWidget *hbox_s9 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_comp_flux_csim_type_ctl);
-    GtkWidget *hbox_s10 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_mom_flux_csim_type_ctl);
-    GtkWidget *hbox_s11 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_maxwell_csim_type_ctl);
-    GtkWidget *hbox_s12 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_uxb_csim_type_ctl);
-    GtkWidget *hbox_s13 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_model_coef_coord_ctl);
-    GtkWidget *hbox_s14 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_buo_Csim_usage_ctl);
-    
-    GtkWidget *hbox_s21 = draw_int_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_istep_dynamic_ctl);
-    GtkWidget *hbox_s22 = draw_int_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_min_step_dynamic_ctl);
-    GtkWidget *hbox_s23 = draw_int_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_max_step_dynamic_ctl);
-    
-    GtkWidget *hbox_s24 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_stabilize_weight_ctl);
-    GtkWidget *hbox_s25 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_delta_to_shrink_dynamic_ctl);
-    GtkWidget *hbox_s26 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_delta_to_extend_dynamic_ctl);
-    
-    GtkWidget *hbox_s27 = draw_int_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ngrp_radial_ave_ctl);
-    GtkWidget *hbox_s28 = draw_int_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_ngrp_med_ave_ctl);
-    
-    GtkWidget *hbox_s31 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_clipping_limit_ctl);
-    GtkWidget *hbox_s32 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_hf_factor_ctl);
-    GtkWidget *hbox_s33 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_cf_factor_ctl);
-    GtkWidget *hbox_s34 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_mf_factor_ctl);
-    GtkWidget *hbox_s35 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_mxwl_factor_ctl);
-    GtkWidget *hbox_s36 = draw_real_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_uxb_factor_ctl);
-    
-    GtkWidget *expand_s1 = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_SGS_terms_ctl, 
-                                                      f_MHD_vws->f_fluid_area_tree_view);
-    GtkWidget *expand_s2 = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_commutate_fld_ctl, 
-                                                      f_MHD_vws->f_fluid_area_tree_view);
-    
-	GtkWidget *expand_s3 = draw_array_block_ctl_vbox(f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_sph_filter_ctl,
-                                                     c_append_SGS_sph_filter_ctl,
-                                                     c_delete_SGS_sph_filter_ctl,
-                                                     (void *) init_f_MHD_SGS_SPH_filter_control,
-                                                     dealloc_f_MHD_SGS_SPH_filter_control,
-                                                     (void *) draw_MHD_SGS_SPH_filter_expand,
-                                                     mWidgets->sfilter_Widgets, window);
-    
-    GtkWidget *vbox_s = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_s), expand_s1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), expand_s2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), expand_s3, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s1,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s2,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s3,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s4,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s5,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s6,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s7,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s8,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s9,  FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s10, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s11, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s12, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s13, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s14, FALSE, FALSE, 0);
-    
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s21, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s22, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s23, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s24, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s25, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s26, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s27, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s28, FALSE, FALSE, 0);
-    
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s31, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s32, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s33, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s34, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s35, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_s), hbox_s36, FALSE, FALSE, 0);
-    
-    gtk_box_pack_start(GTK_BOX(vbox_s), expand_SGS_1, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_s), expand_SGS_2, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_s), expand_SGS_3, FALSE, FALSE, 0);
-    
-    GtkWidget *expand_MHD_s = draw_control_block(f_MHD_ctl->f_model_ctl->f_sgs_ctl->c_block_name, 
-                                                 f_MHD_ctl->f_model_ctl->f_sgs_ctl->f_iflag,
-                                                 560, 400, window, vbox_s);
+    GtkWidget *expand_MHD_s = SGS_MHD_model_expander(window, f_MHD_ctl->f_model_ctl->f_sgs_ctl, 
+                                                     mWidgets->SGSWgts);
     
     GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_fields, FALSE, FALSE, 0);

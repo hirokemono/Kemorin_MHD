@@ -125,8 +125,9 @@ struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_
 	return f_sph_filter_ctl;
 };
 
-void *dealloc_f_MHD_SGS_SPH_filter_control(struct f_MHD_SGS_SPH_filter_control *f_sph_filter_ctl)
+void *dealloc_f_MHD_SGS_SPH_filter_control(void *void_in)
 {
+    struct f_MHD_SGS_SPH_filter_control *f_sph_filter_ctl = (struct f_MHD_SGS_SPH_filter_control *) void_in;
     dealloc_int_ctl_item_c(f_sph_filter_ctl->f_maximum_moments_ctl);
     dealloc_int_ctl_item_c(f_sph_filter_ctl->f_first_reference_ctl);
     dealloc_int_ctl_item_c(f_sph_filter_ctl->f_second_reference_ctl);
@@ -134,7 +135,7 @@ void *dealloc_f_MHD_SGS_SPH_filter_control(struct f_MHD_SGS_SPH_filter_control *
     dealloc_real_ctl_item_c(f_sph_filter_ctl->f_sphere_filter_width_ctl);
     dealloc_real_ctl_item_c(f_sph_filter_ctl->f_radial_filter_width_ctl);
 
-    dealloc_chara_ctl_item_c(f_sph_filter_ctl->f_radial_filter_width_ctl);
+    dealloc_chara_ctl_item_c(f_sph_filter_ctl->f_sph_filter_type_ctl);
     dealloc_chara_ctl_item_c(f_sph_filter_ctl->f_radial_filter_type_ctl);
 
     free(f_sph_filter_ctl);
