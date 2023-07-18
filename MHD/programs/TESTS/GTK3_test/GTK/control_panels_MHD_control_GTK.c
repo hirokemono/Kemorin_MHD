@@ -69,7 +69,7 @@ static GtkWidget * draw_MHD_evo_scheme_control_vbox(struct f_MHD_evo_scheme_cont
     gtk_box_pack_start(GTK_BOX(vbox_step), hbox_24, FALSE, FALSE, 0);
     
     GtkWidget *expand_rst = draw_control_block(f_mevo_ctl->c_block_name, f_mevo_ctl->f_iflag,
-                                               480, 320, window, vbox_step);
+                                               window, vbox_step);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand_rst, FALSE, FALSE, 0);
     return vbox_out;
 };
@@ -82,7 +82,7 @@ static GtkWidget * draw_MHD_restart_control_vbox(struct f_MHD_restart_controls *
     gtk_box_pack_start(GTK_BOX(vbox_step), hbox_1,  FALSE, FALSE, 0);
     
     GtkWidget *expand_rst = draw_control_block(f_mrst_ctl->c_block_name, f_mrst_ctl->f_iflag,
-                                               480, 64, window, vbox_step);
+                                               window, vbox_step);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand_rst, FALSE, FALSE, 0);
     return vbox_out;
 };
@@ -179,7 +179,7 @@ static GtkWidget * draw_time_step_control_vbox(struct f_time_step_control_ctls *
     gtk_box_pack_start(GTK_BOX(vbox_step), hbox_38, FALSE, FALSE, 0);
     
     GtkWidget *expand_step = draw_control_block(f_tctl->c_block_name, f_tctl->f_iflag,
-                                               480, 320, window, vbox_step);
+                                                window, vbox_step);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand_step, FALSE, FALSE, 0);
     return vbox_out;
 };
@@ -198,6 +198,6 @@ GtkWidget * draw_MHD_control_expand(GtkWidget *window, struct f_MHD_control_ctls
     gtk_box_pack_start(GTK_BOX(vbox_control), vbox_evo_scheme, FALSE, FALSE, 0);
     
     expand_MHD_control = draw_control_block(f_smctl_ctl->c_block_name, f_smctl_ctl->f_iflag,
-                                            560, 500, window, vbox_control);
+                                            window, vbox_control);
     return expand_MHD_control;
 }

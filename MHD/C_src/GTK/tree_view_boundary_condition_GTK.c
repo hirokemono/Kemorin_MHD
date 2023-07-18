@@ -139,7 +139,7 @@ GtkWidget * boundary_condition_expander(struct chara2_real_clist *f_bc_ctl,
 
     GtkWidget *vbox_m3t = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     add_boundary_selection_box(bc_vws, vbox_m3t);
-    GtkWidget *expand_bc = wrap_into_expanded_frame_gtk(duplicate_underscore(f_bc_ctl->clist_name),
+    GtkWidget *expand_bc = wrap_into_scroll_expansion_gtk(duplicate_underscore(f_bc_ctl->clist_name),
                                                         320, 160, window, vbox_m3t);
     return expand_bc;
 }

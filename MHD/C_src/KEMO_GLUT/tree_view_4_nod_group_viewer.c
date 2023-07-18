@@ -228,7 +228,7 @@ GtkWidget * init_nod_group_draw_expander(GtkWidget *window, struct nod_grp_gtk_m
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_hide, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_node_color, TRUE, FALSE, 0);
     
-    expander_node = wrap_into_expanded_frame_gtk("Node group", 400, 300, window, box_grp);
+    expander_node = wrap_into_scroll_expansion_gtk("Node group", 400, 300, window, box_grp);
     return expander_node;
 };
 

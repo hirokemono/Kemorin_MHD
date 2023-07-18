@@ -373,7 +373,7 @@ GtkWidget * c2_list_cbox_cbox_expander(struct chara2_clist *ctl_clist,
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     add_c2_list_selection_box(ctl_clist, chara2_tbl_vws, vbox);
     GtkWidget *expand_bc = wrap_into_expanded_frame_gtk(duplicate_underscore(ctl_clist->clist_name),
-                                                        320, 160, window, vbox);
+                                                        window, vbox);
     return expand_bc;
 }
 

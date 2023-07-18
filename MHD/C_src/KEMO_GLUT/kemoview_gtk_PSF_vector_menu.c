@@ -276,6 +276,6 @@ GtkWidget * make_gtk_psf_vector_menu(GtkWidget *window, struct psf_vector_gtk_me
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_32, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_22, TRUE, TRUE, 0);
 	
-	expander = wrap_into_expanded_frame_gtk("Vector", 425, 300, window, vbox_vec);
+	expander = wrap_into_scroll_expansion_gtk("Vector", 425, 300, window, vbox_vec);
 	return expander;
 }

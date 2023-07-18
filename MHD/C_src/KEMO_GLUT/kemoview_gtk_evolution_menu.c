@@ -256,6 +256,6 @@ GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct e
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_fileformat, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_save, FALSE, TRUE, 0);
 
-    expand_evo = wrap_into_expanded_frame_gtk("Evolution", 360, 240, window, evo_box);
+    expand_evo = wrap_into_scroll_expansion_gtk("Evolution", 360, 240, window, evo_box);
 	return expand_evo;
 }

@@ -313,6 +313,6 @@ GtkWidget * init_gtk_psf_surface_menu_expander(GtkWidget *window, struct colorma
 	gtk_box_pack_start(GTK_BOX(patch_box), hbox_min_range, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(patch_box), hbox_max_range, TRUE, TRUE, 0);
     
-    expander_surf = wrap_into_expanded_frame_gtk("Surface", 420, 320, window, patch_box);
+    expander_surf = wrap_into_scroll_expansion_gtk("Surface", 420, 320, window, patch_box);
 	return expander_surf;
 }

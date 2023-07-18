@@ -34,7 +34,7 @@ static GtkWidget * draw_sph_layer_spectr_ctls_vbox(struct f_MHD_sph_layer_spectr
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c6, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_lspecs = draw_control_block(f_lp_ctl->c_block_name, f_lp_ctl->f_iflag,
-												  480, 440, window, vbox_pick);
+												  window, vbox_pick);
 	return expand_lspecs;
 };
 
@@ -66,7 +66,7 @@ static GtkWidget * draw_sph_pick_mode_ctls_vbox(struct f_MHD_sph_pick_mode_ctls 
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a5, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_vpwr = draw_control_block(f_pspec_ctl->c_block_name, f_pspec_ctl->f_iflag,
-												480, 440, window, vbox_pick);
+												  window, vbox_pick);
 	return expand_vpwr;
 };
 
@@ -96,7 +96,7 @@ static GtkWidget * draw_sph_gauss_coef_ctls_vbox(struct f_MHD_sph_gauss_coefs_ct
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a5, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_vpwrs = draw_control_block(f_g_pwr->c_block_name, f_g_pwr->f_iflag,
-												 480, 440, window, vbox_pick);
+												  window, vbox_pick);
 	return expand_vpwrs;
 };
 
@@ -116,7 +116,7 @@ static GtkWidget * draw_sph_dipolarity_ctls_vbox(struct f_MHD_sph_dipolarity_ctl
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a3, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_fdip = draw_control_block(f_fdip_ctl->c_block_name, f_fdip_ctl->f_iflag,
-												480, 440, window, vbox_pick);
+												  window, vbox_pick);
 	return expand_fdip;
 };
 
@@ -139,7 +139,7 @@ static GtkWidget * draw_sph_dynamobench_ctls_vbox(struct f_MHD_sph_dynamobench_c
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c6, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_dbench = draw_control_block(f_dbench_ctl->c_block_name, f_dbench_ctl->f_iflag,
-												480, 440, window, vbox_pick);
+												  window, vbox_pick);
 	return expand_dbench;
 };
 
@@ -168,7 +168,7 @@ static GtkWidget * draw_sph_each_vspec_ctl_expand(char *label_name, void *block_
     gtk_box_pack_start(GTK_BOX(vbox_v_pwr), hbox_9,  FALSE, FALSE, 0);
 	GtkWidget *expand_v_pwr = draw_control_block(duplicate_underscore(label_name),
 												 f_v_pwr_item->f_iflag,
-												 480, 480, window, vbox_v_pwr);
+												  window, expand_v_pwr);
     return expand_v_pwr;
 };
 
@@ -192,7 +192,7 @@ static GtkWidget * draw_sph_each_fld_on_circle_ctl_expand(char *label_name, void
     gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_6,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_dcirc), hbox_7,  FALSE, FALSE, 0);
     GtkWidget *expand_dcirc = draw_control_block(duplicate_underscore(label_name), f_circ_ctls->f_iflag,
-                                                 480, 480, window, vbox_dcirc);
+												  window, vbox_dcirc);
     return expand_dcirc;
 };
 
@@ -281,7 +281,7 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
 	gtk_container_add(GTK_CONTAINER(vbox_smontr), expand_dcircs);
 	
 	GtkWidget *expand_smntr = draw_control_block(f_smonitor_ctl->c_block_name, f_smonitor_ctl->f_iflag,
-                                                 480, 240, window, vbox_smontr);
+												  window, vbox_smontr);
     return expand_smntr;
 };
 

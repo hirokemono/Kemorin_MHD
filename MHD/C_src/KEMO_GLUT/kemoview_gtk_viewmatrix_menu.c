@@ -447,7 +447,7 @@ GtkWidget * init_viewmatrix_menu_expander(int *iflag_fast_draw, struct view_widg
 	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_streo, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(box_view), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
-    expander_view = wrap_into_expanded_frame_gtk("View parameters", 240, 480, window, box_view);
+    expander_view = wrap_into_scroll_expansion_gtk("View parameters", 240, 480, window, box_view);
     return expander_view;
 }
 

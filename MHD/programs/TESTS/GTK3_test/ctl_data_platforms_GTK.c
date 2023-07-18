@@ -155,7 +155,7 @@ GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt,
     gtk_box_pack_start(GTK_BOX(vbox_plt), hbox_c21, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_PLT = draw_control_block(f_plt->c_block_name, f_plt->f_iflag,
-											   320, 280, window, vbox_plt);
+											   window, vbox_plt);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand_PLT, FALSE, FALSE, 0);
 	return vbox_out;
 };
@@ -229,7 +229,7 @@ GtkWidget * draw_sph_resolution_vbox(struct f_MHD_sph_resolution_control *f_spct
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d4, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d5, FALSE, FALSE, 0);
 	GtkWidget *expand = draw_control_block(f_spctl->c_block_name, f_spctl->f_iflag,
-										   480, 320, window, vbox_sph);
+                                           window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;
 };
@@ -283,7 +283,7 @@ GtkWidget * draw_sph_subdomain_vbox(struct f_MHD_sph_subdomain_control *f_sdctl,
 	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c8, FALSE, FALSE, 0);
 	
 	GtkWidget *expand = draw_control_block(f_sdctl->c_block_name, f_sdctl->f_iflag,
-										   480, 320, window, vbox_sph);
+                                           window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;
 };
@@ -304,14 +304,14 @@ GtkWidget * draw_sph_FEM_mesh_file_vbox(struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl,
     gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_c4, FALSE, FALSE, 0);
 	
 	GtkWidget *expand = draw_control_block(f_Fmesh_ctl->c_block_name, f_Fmesh_ctl->f_iflag,
-										   480, 320, window, vbox_sph);
+										   window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;
 };
 
 
 GtkWidget *MHD_sph_shell_ctl_expander(GtkWidget *window, struct f_MHD_sph_shell_control * f_psph_ctl, 
-									  char * f_fname_psph, struct f_sph_shell_views *f_psph_vws){
+									  struct f_sph_shell_views *f_psph_vws){
 	GtkWidget *expand_sph_shell;
 	
 	f_psph_vws = (struct f_sph_shell_views *) malloc(sizeof(struct f_sph_shell_views));
@@ -332,7 +332,8 @@ GtkWidget *MHD_sph_shell_ctl_expander(GtkWidget *window, struct f_MHD_sph_shell_
 	gtk_box_pack_start(GTK_BOX(vbox_sph_shell), vbox_sph_resolution, FALSE, FALSE, 0);
 	
 	expand_sph_shell = draw_control_block_w_file_switch(f_psph_ctl->c_block_name, f_psph_ctl->f_iflag,
-														f_fname_psph, 560, 500, window, vbox_sph_shell);
+                                                        f_psph_ctl->fname_sph_shell,
+                                                        window, vbox_sph_shell);
 	return expand_sph_shell;
 }
 
@@ -374,7 +375,7 @@ GtkWidget * draw_momentum_equation_vbox(struct f_MHD_mom_eq_control *f_mom_eq_ct
 	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d7, FALSE, FALSE, 0);
 	
 	GtkWidget *expand = draw_control_block(f_mom_eq_ctl->c_block_name, f_mom_eq_ctl->f_iflag,
-										   480, 320, window, vbox_sph);
+										   window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;
 };
@@ -405,7 +406,7 @@ GtkWidget * draw_induction_equation_vbox(struct f_MHD_induct_eq_control *f_induc
 	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d4, FALSE, FALSE, 0);
 	
 	GtkWidget *expand = draw_control_block(f_induct_ctl->c_block_name, f_induct_ctl->f_iflag,
-										   480, 320, window, vbox_sph);
+										   window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;
 };
@@ -582,7 +583,7 @@ GtkWidget * draw_heat_equation_vbox(struct f_MHD_heat_eq_control *f_heat_ctl,
 	gtk_box_pack_start(GTK_BOX(vbox_sph), hbox_d3, FALSE, FALSE, 0);
 	
 	GtkWidget *expand = draw_control_block(f_heat_ctl->c_block_name, f_heat_ctl->f_iflag,
-										   480, 320, window, vbox_sph);
+										   window, vbox_sph);
     gtk_box_pack_start(GTK_BOX(vbox_out), expand, FALSE, FALSE, 0);
 	return vbox_out;
 };

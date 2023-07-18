@@ -30,7 +30,7 @@ static GtkWidget * draw_MHD_SGS_SPH_filter_expand(char *label_name,
     
     GtkWidget *expand_filter = draw_control_block(duplicate_underscore(label_name),
                                                   f_sph_filter_item->f_iflag,
-                                                  480, 480, window, vbox_f);
+                                                  window, vbox_f);
     return expand_filter;
 };
 
@@ -64,7 +64,7 @@ static GtkWidget * FEM_MHD_SGS_filter_expander(GtkWidget *window,
 	gtk_box_pack_start(GTK_BOX(vbox_sf1), hbox_sf12, FALSE, FALSE, 0);
     
     GtkWidget *expand_SGS_1 = draw_control_block(f_ffile_ctl->c_block_name, f_ffile_ctl->f_iflag,
-                                                 560, 400, window, vbox_sf1);
+                                                  window, vbox_sf1);
     return expand_SGS_1;
 };
 
@@ -95,7 +95,7 @@ static GtkWidget * FEM_MHD_SGS_area_expander(GtkWidget *window,
     gtk_box_pack_start(GTK_BOX(vbox_sl1), hbox_sl22, FALSE, FALSE, 0);
     
 	GtkWidget *expand_SGS_2 = draw_control_block(f_elayer_ctl->c_block_name, f_elayer_ctl->f_iflag,
-                                                 560, 400, window, vbox_sl1);
+                                                  window, vbox_sl1);
     return expand_SGS_2;
 }
 
@@ -122,7 +122,7 @@ static GtkWidget * FEM_MHD_SGS_3Dfilter_expander(GtkWidget *window,
 	gtk_box_pack_start(GTK_BOX(vbox_sd3), hbox_sd4, FALSE, FALSE, 0);
 	GtkWidget *expand_SGS_3 = draw_control_block(f_s3df_ctl->c_block_name, 
                                                  f_s3df_ctl->f_iflag,
-                                                 560, 400, window, vbox_sd3);
+                                                  window, vbox_sd3);
     return expand_SGS_3;
 };
 
@@ -228,6 +228,6 @@ GtkWidget *SGS_MHD_model_expander(GtkWidget *window, struct f_MHD_SGS_model_cont
     
     GtkWidget *expand_MHD_s = draw_control_block(f_sgs_ctl->c_block_name, 
                                                  f_sgs_ctl->f_iflag,
-                                                 560, 400, window, vbox_s);
+                                                 window, vbox_s);
     return expand_MHD_s;
 };

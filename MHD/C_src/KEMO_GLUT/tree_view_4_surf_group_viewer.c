@@ -496,6 +496,6 @@ GtkWidget * init_surf_group_draw_expander(GtkWidget *window, struct group_gtk_me
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_grid_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_node_color, TRUE, FALSE, 0);
     
-    GtkWidget *expander_surf = wrap_into_expanded_frame_gtk("Surface group", 400, 300, window, box_grp);
+    GtkWidget *expander_surf = wrap_into_scroll_expansion_gtk("Surface group", 400, 300, window, box_grp);
 	return box_grp;
 };

@@ -203,7 +203,7 @@ GtkWidget * cr_list_combobox_expander(struct chara_real_clist *ctl_clist,
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     add_cr_list_selection_box(ctl_clist, item_clist, chara_tbl_vws, vbox);
     GtkWidget *expand_bc = wrap_into_expanded_frame_gtk(duplicate_underscore(ctl_clist->clist_name),
-                                                        320, 160, window, vbox);
+                                                        window, vbox);
     return expand_bc;
 }
 

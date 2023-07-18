@@ -202,6 +202,6 @@ GtkWidget * init_rotation_menu_expander(struct rotation_gtk_menu *rot_gmenu, Gtk
 	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_fileformat, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(rot_box), hbox_rotation_save, FALSE, TRUE, 0);
 	
-	expander_rot = wrap_into_expanded_frame_gtk("Rotation", 360, 200, window, rot_box);
+	expander_rot = wrap_into_scroll_expansion_gtk("Rotation", 360, 200, window, rot_box);
 	return expander_rot;
 }

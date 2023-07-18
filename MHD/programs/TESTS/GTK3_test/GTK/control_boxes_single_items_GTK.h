@@ -23,11 +23,9 @@
 GtkWidget *hbox_with_block_checkbox(int *iflag_ptr);
 
 GtkWidget * draw_control_block(const char * title, int *iflag_ptr, 
-							   int width, int height,
 							   GtkWidget *window, GtkWidget *box_in);
-GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, 
-											 char *f_file_name, int width, int height,
-											 GtkWidget *window, GtkWidget *box_in);
+GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, char *f_file_name,
+                                             GtkWidget *window, GtkWidget *box_in);
 
 GtkWidget *draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem);
 GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem);

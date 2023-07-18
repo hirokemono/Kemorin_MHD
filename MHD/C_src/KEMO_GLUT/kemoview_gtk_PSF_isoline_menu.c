@@ -175,6 +175,6 @@ GtkWidget * init_isoline_menu_expander(GtkWidget *window, struct psf_isoline_gtk
 	gtk_box_pack_start(GTK_BOX(isoline_box), hbox_nline, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(isoline_box), hbox_width, FALSE, TRUE, 0);
 	
-	expander_iso = wrap_into_expanded_frame_gtk("Isolines", 425, 220, window, isoline_box);
+	expander_iso = wrap_into_scroll_expansion_gtk("Isolines", 425, 220, window, isoline_box);
 	return expander_iso;
 }

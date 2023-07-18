@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <gtk/gtk.h>
+#include <sys/stat.h>
 
 #include "control_elements_IO_c.h"
 #include "t_control_c_lists.h"
@@ -894,7 +895,6 @@ struct f_MHD_control{
 	struct f_platform_control *f_plt;
 	struct f_platform_control * f_org_plt;
 	struct f_platform_control * f_new_plt;
-	char * f_fname_psph;
 	struct f_MHD_sph_shell_control * f_psph_ctl;
 	struct f_MHD_model_control *f_model_ctl;
 	struct f_MHD_control_ctls * f_smctl_ctl;
@@ -1959,8 +1959,9 @@ static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
 	f_MHD_ctl->f_plt =          init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
 	f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);
 	f_MHD_ctl->f_new_plt =      init_f_platform_control(c_MHD_new_plt, f_MHD_ctl->f_self);
-	f_MHD_ctl->f_fname_psph =   (char *) c_MHD_fname_psph(f_MHD_ctl->f_self);
-	f_MHD_ctl->f_psph_ctl =     init_f_MHD_sph_shell_ctl(c_MHD_psph_ctl, f_MHD_ctl->f_self);
+	f_block_name =              (char *) c_MHD_fname_psph(f_MHD_ctl->f_self);
+	f_MHD_ctl->f_psph_ctl =     init_f_MHD_sph_shell_ctl(strngcopy_from_f(f_block_name),
+                                                         c_MHD_psph_ctl, f_MHD_ctl->f_self);
 	f_MHD_ctl->f_model_ctl =    init_f_MHD_model_ctl(c_MHD_model_ctl, f_MHD_ctl->f_self,
 													 f_MHD_ctl->f_addition);
 	f_MHD_ctl->f_smctl_ctl =    init_f_MHD_control_ctls(c_MHD_smctl_ctl, f_MHD_ctl->f_self);
@@ -2012,8 +2013,6 @@ static void cb_Open(GtkButton *button, gpointer data)
 		g_print( "File is selecting \n");
 		/* Get file name  */
 		read_file_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
-											read_file_name);
 		g_print( "file name: %s\n", read_file_name);
 		
 		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
@@ -2064,15 +2063,19 @@ static void cb_Open(GtkButton *button, gpointer data)
 
 static void cb_Save(GtkButton *button, gpointer data)
 {
-  GtkWidget *dialog;
-  GtkWidget *parent;
-  GtkEntry *entry;
+    struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) g_object_get_data(G_OBJECT(data), "MHD_ctl");
+
+    GtkWidget *dialog;
+    GtkWidget *parent;
+    GtkEntry *entry;
 	
   /* Four selections for GtkFileChooserAction */
 	GtkFileChooserAction action[] = {GTK_FILE_CHOOSER_ACTION_OPEN, GTK_FILE_CHOOSER_ACTION_SAVE,
 			GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER};
-  gint response;
-	gchar *write_file_name;
+    gint response;
+    gchar *write_file_name;
+    gchar *folder;
+    char path_name[LENGTHBUF];
 
   parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
   entry = GTK_ENTRY(data);
@@ -2082,22 +2085,96 @@ static void cb_Save(GtkButton *button, gpointer data)
 				"_Cancel", GTK_RESPONSE_CANCEL, "_Save", GTK_RESPONSE_ACCEPT, NULL);
 	
 	gtk_widget_show_all(dialog);
-	
+    int i;
+    
 	response = gtk_dialog_run(GTK_DIALOG(dialog));
 	if( response == GTK_RESPONSE_ACCEPT ){
 		g_print( "File is selecting \n");
 		/* Get file name */
 		write_file_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		g_print( "Write file name: %s\n", write_file_name);
-		
 		gtk_entry_set_text(entry, write_file_name);
-		
-		write_iso_ctl_file_c(write_file_name, iso_GTK0->iso_c);
-		dealloc_iso_ctl_c(iso_GTK0->iso_c);
-		free(iso_GTK0);
 		g_free(write_file_name);
-		iflag_read_iso = 0;
 		
+		folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
+        g_print( "Write folder name: %s\n", write_file_name);
+        
+        getcwd(path_name, LENGTHBUF);
+        printf("before current dir : %s\n", path_name);
+        chdir(folder);
+        getcwd(path_name, LENGTHBUF);
+        printf("Folder to save: %s\n", path_name);
+        
+        char *stripped_filehead = (char *) calloc(LENGTHBUF+1, sizeof(char));
+        char *stripped_dir = (char *) calloc(LENGTHBUF+1, sizeof(char));
+        struct stat st;
+        
+        split_dir_and_file_name_c(f_MHD_ctl->f_psph_ctl->fname_sph_shell, stripped_dir, stripped_filehead);
+        printf("fname_sph_shell: %s %s, \n", stripped_dir, f_MHD_ctl->f_psph_ctl->fname_sph_shell);
+        if(compare_string(strlen(f_MHD_ctl->f_psph_ctl->fname_sph_shell), 
+                          stripped_dir, f_MHD_ctl->f_psph_ctl->fname_sph_shell) == 0){
+            if(stat(stripped_dir, &st) != 0) {
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            }
+        };
+        
+        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_psf_ctls);i++){
+            struct f_VIZ_PSF_ctl *ctl_tmp 
+                    = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_psf_ctls);
+            split_dir_and_file_name_c(ctl_tmp->psf_ctl_file_name, stripped_dir, stripped_filehead);
+            printf("psf_ctl_file_name %d: %s %s, \n", i, stripped_dir, ctl_tmp->psf_ctl_file_name);
+            if(compare_string(strlen(ctl_tmp->psf_ctl_file_name),
+                              stripped_dir, ctl_tmp->psf_ctl_file_name) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
+        }
+        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_iso_ctls);i++){
+            struct f_VIZ_ISO_ctl *ctl_tmp 
+                    = (struct f_VIZ_ISO_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_iso_ctls);
+            if(compare_string(strlen(ctl_tmp->iso_ctl_file_name),
+                              stripped_dir, ctl_tmp->iso_ctl_file_name) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
+        }
+        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_map_ctls);i++){
+            struct f_VIZ_MAP_ctl *ctl_tmp 
+                    = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_map_ctls);
+            if(compare_string(strlen(ctl_tmp->map_ctl_file_name),
+                              stripped_dir, ctl_tmp->map_ctl_file_name) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
+        }
+        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_pvr_ctls);i++){
+            struct f_VIZ_PVR_ctl *ctl_tmp 
+                    = (struct f_VIZ_PVR_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_pvr_ctls);
+            if(compare_string(strlen(ctl_tmp->pvr_ctl_file_name),
+                              stripped_dir, ctl_tmp->pvr_ctl_file_name) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
+        }
+        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_lic_ctls);i++){
+            struct f_VIZ_LIC_PVR_ctl *ctl_tmp 
+                    = (struct f_VIZ_LIC_PVR_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_lic_ctls);
+            if(compare_string(strlen(ctl_tmp->lic_ctl_file_name),
+                              stripped_dir, ctl_tmp->lic_ctl_file_name) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
+        }
+        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_fline_ctls);i++){
+            struct f_VIZ_FLINE_ctl *ctl_tmp 
+                    = (struct f_VIZ_FLINE_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_fline_ctls);
+            if(compare_string(strlen(ctl_tmp->fline_ctl_file_name),
+                              stripped_dir, ctl_tmp->fline_ctl_file_name) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
+        }
 	} else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
 	} else{
@@ -2192,7 +2269,7 @@ static GtkWidget * draw_psf_fld_ctl_vbox(struct f_VIZ_fld_on_PSF_ctl *f_fld_on_p
     GtkWidget *expand_psf_f = draw_control_block_w_file_switch(duplicate_underscore(f_fld_on_psf_c->c_block_name),
 															   f_fld_on_psf_c->f_iflag,
 															   f_fld_on_psf_c->fname_fld_on_psf,
-															   480, 480, window, vbox_psf_f);
+															   window, vbox_psf_f);
     return expand_psf_f;
 }
 
@@ -2225,7 +2302,7 @@ static GtkWidget * draw_psf_def_ctl_vbox(struct f_VIZ_PSF_def_ctl *f_psf_def_c,
     GtkWidget *expand_psf_d = draw_control_block_w_file_switch(duplicate_underscore(f_psf_def_c->c_block_name),
 															   f_psf_def_c->f_iflag,
 															   f_psf_def_c->psf_def_file_name,
-															   480, 480, window, vbox_psf_d);
+															   window, vbox_psf_d);
     return expand_psf_d;
 };
 
@@ -2263,7 +2340,7 @@ static GtkWidget * draw_viz_each_psf_ctl_vbox(char *label_name, struct f_VIZ_PSF
     GtkWidget *expand_v_psf = draw_control_block_w_file_switch(duplicate_underscore(label_name),
 															   f_psf_item->f_iflag,
 															   f_psf_item->psf_ctl_file_name,
-															   480, 480, window, vbox_v_psf);
+															   window, vbox_v_psf);
     return expand_v_psf;
 };
 
@@ -2278,7 +2355,7 @@ static GtkWidget * draw_viz_each_iso_ctl_vbox(char *label_name, struct f_VIZ_ISO
     GtkWidget *expand_v_iso = draw_control_block_w_file_switch(duplicate_underscore(label_name),
 															   f_iso_item->f_iflag,
 															   f_iso_item->iso_ctl_file_name,
-															   480, 480, window, vbox_v_iso);
+															   window, vbox_v_iso);
     return expand_v_iso;
 };
 
@@ -2291,7 +2368,7 @@ static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP
     GtkWidget *expand_v_map = draw_control_block_w_file_switch(duplicate_underscore(label_name),
 															   f_map_item->f_iflag,
 															   f_map_item->map_ctl_file_name,
-															   480, 480, window, vbox_v_map);
+															   window, vbox_v_map);
     return expand_v_map;
 };
 
@@ -2304,7 +2381,7 @@ static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR
     GtkWidget *expand_v_pwr = draw_control_block_w_file_switch(duplicate_underscore(label_name),
 															   f_pvr_item->f_iflag,
 															   f_pvr_item->pvr_ctl_file_name,
-															   480, 480, window, vbox_v_lic);
+															   window, vbox_v_lic);
     return expand_v_pwr;
 };
 
@@ -2326,7 +2403,7 @@ static GtkWidget * draw_viz_each_lic_lic_ctl_vbox(char *label_name, struct f_VIZ
     
     GtkWidget *expand_v_lic = draw_control_block(duplicate_underscore(label_name),
                                                  f_lic_lic_ctl->f_iflag,
-                                                 480, 480, window, vbox_v_lic);
+                                                 window, vbox_v_lic);
     return expand_v_lic;
 };
 
@@ -2344,7 +2421,7 @@ static GtkWidget * draw_viz_each_lic_ctl_vbox(char *label_name, struct f_VIZ_LIC
     GtkWidget *expand_v_lic = draw_control_block_w_file_switch(duplicate_underscore(label_name),
 															   f_lic_item->f_iflag,
 															   f_lic_item->lic_ctl_file_name,
-															   480, 480, window, vbox_v_lic);
+															   window, vbox_v_lic);
     return expand_v_lic;
 };
 
@@ -2367,7 +2444,7 @@ static GtkWidget * draw_viz_each_fline_ctl_vbox(char *label_name, struct f_VIZ_F
     GtkWidget *expand_v_fline = draw_control_block_w_file_switch(duplicate_underscore(label_name),
                                                                  f_fline_item->f_iflag,
                                                                  f_fline_item->fline_ctl_file_name,
-                                                                 480, 480, window, vbox_v_fline);
+                                                                 window, vbox_v_fline);
     return expand_v_fline;
 };
 
@@ -2380,7 +2457,7 @@ GtkWidget * MHD_temperature_model_expander(GtkWidget *window, struct f_MHD_temp_
 	gtk_box_pack_start(GTK_BOX(vbox_tl), hbox_tl2, FALSE, FALSE, 0);
 	GtkWidget *expand_tl = draw_control_block(f_reft_ctl->f_low_ctl->c_block_name, 
                                               f_reft_ctl->f_low_ctl->f_iflag,
-                                              320, 400, window, vbox_tl);
+                                              window, vbox_tl);
     
     GtkWidget *vbox_th = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     GtkWidget *hbox_th1 = draw_real_item_entry_hbox(f_reft_ctl->f_high_ctl->f_value);
@@ -2389,7 +2466,7 @@ GtkWidget * MHD_temperature_model_expander(GtkWidget *window, struct f_MHD_temp_
 	gtk_box_pack_start(GTK_BOX(vbox_th), hbox_th2, FALSE, FALSE, 0);
 	GtkWidget *expand_th = draw_control_block(f_reft_ctl->f_high_ctl->c_block_name, 
                                               f_reft_ctl->f_high_ctl->f_iflag,
-                                              320, 400, window, vbox_th);
+                                              window, vbox_th);
     
     GtkWidget *vbox_tp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     GtkWidget *hbox_tp1 = draw_real_item_entry_hbox(f_reft_ctl->f_takepiro_ctl->f_stratified_sigma_ctl);
@@ -2400,7 +2477,7 @@ GtkWidget * MHD_temperature_model_expander(GtkWidget *window, struct f_MHD_temp_
 	gtk_box_pack_start(GTK_BOX(vbox_tp), hbox_tp3, FALSE, FALSE, 0);
 	GtkWidget *expand_tp = draw_control_block(f_reft_ctl->f_takepiro_ctl->c_block_name, 
                                               f_reft_ctl->f_takepiro_ctl->f_iflag,
-                                              320, 400, window, vbox_tp);
+                                              window, vbox_tp);
     
     
     
@@ -2420,7 +2497,7 @@ GtkWidget * MHD_temperature_model_expander(GtkWidget *window, struct f_MHD_temp_
 	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_tp, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t1, FALSE, FALSE, 0);
 	GtkWidget *expand_t = draw_control_block(f_reft_ctl->c_block_name, f_reft_ctl->f_iflag,
-                                              340, 400, window, vbox_tt);
+                                             window, vbox_tt);
     return expand_t;
 };
 
@@ -2444,7 +2521,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     add_field_selection_box(fields_vws, window, vbox_MHD_fields);
     GtkWidget *expand_MHD_fields = draw_control_block(f_MHD_ctl->f_model_ctl->f_fld_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_fld_ctl->f_iflag,
-                                                      560, 500, window, vbox_MHD_fields);
+                                                      window, vbox_MHD_fields);
     
     
     
@@ -2455,7 +2532,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                   mWidgets->time_evo_vws, window);
     GtkWidget *expand_MHD_time_evo = draw_control_block(f_MHD_ctl->f_model_ctl->f_evo_ctl->c_block_name,
 														f_MHD_ctl->f_model_ctl->f_evo_ctl->f_iflag,
-                                                        560, 500, window, vbox_m1);
+                                                        window, vbox_m1);
 	
     
     GtkWidget *expand_MHD_fluid_area = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_earea_ctl->f_evo_fluid_group_ctl, 
@@ -2469,20 +2546,20 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     
     GtkWidget *expand_MHD_tevo_area = draw_control_block(f_MHD_ctl->f_model_ctl->f_earea_ctl->c_block_name,
 														f_MHD_ctl->f_model_ctl->f_earea_ctl->f_iflag,
-                                                        560, 500, window, vbox_m2);
+                                                        window, vbox_m2);
     
 	
 	GtkWidget *vbox_m3 = draw_node_bc_ctl_vbox(f_MHD_ctl->f_model_ctl->f_nbc_ctl,
 											   f_MHD_vws->bc_nod_bc_vws, window);
     GtkWidget *expand_MHD_node_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_nbc_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_iflag,
-													   560, 500, window, vbox_m3);
+													   window, vbox_m3);
 	
 	GtkWidget *vbox_m4 = draw_surf_bc_ctl_vbox(f_MHD_ctl->f_model_ctl->f_sbc_ctl,
 											   f_MHD_vws->bc_surf_bc_vws, window);
     GtkWidget *expand_MHD_surf_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_sbc_ctl->c_block_name,
                                                       f_MHD_ctl->f_model_ctl->f_sbc_ctl->f_iflag,
-                                                      560, 500, window, vbox_m4);
+                                                      window, vbox_m4);
 	
 	
     mWidgets->label_force_list = init_f_ctl_chara_array(c_link_force_list_to_ctl,
@@ -2493,7 +2570,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                   window);
     GtkWidget *vbox_MHD_force = draw_control_block(f_MHD_ctl->f_model_ctl->f_frc_ctl->c_block_name,
                                                    f_MHD_ctl->f_model_ctl->f_frc_ctl->f_iflag,
-                                                   560, 500, window, vbox_fce);
+                                                   window, vbox_fce);
     
 	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl,
                                                               f_MHD_vws->f_dimless_vws, window);
@@ -2503,7 +2580,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 												  f_MHD_vws->f_eqs_vws, window);
 	GtkWidget *expand_MHD_eqs = draw_control_block(f_MHD_ctl->f_model_ctl->f_eqs_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_iflag,
-													 560, 400, window, vbox_eqs);
+													 window, vbox_eqs);
     
     mWidgets->label_reftemp_list = init_f_ctl_chara_array(c_link_reftemp_list_to_ctl,
                                                           f_MHD_ctl->f_self);
@@ -2526,14 +2603,14 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	gtk_box_pack_start(GTK_BOX(vbox_mcv), expand_mc, FALSE, FALSE, 0);
 	GtkWidget *expand_MHD_mcv = draw_control_block(f_MHD_ctl->f_model_ctl->f_mcv_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_mcv_ctl->f_iflag,
-													 560, 400, window, vbox_mcv);
+													 window, vbox_mcv);
     
     
     GtkWidget *expand_msc = add_cr_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_bscale_ctl->f_mag_to_kin_energy_ctl, 
                                                         mWidgets->f_magnetic_scale_tree);
 	GtkWidget *expand_MHD_msc = draw_control_block(f_MHD_ctl->f_model_ctl->f_bscale_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_bscale_ctl->f_iflag,
-													 560, 400, window, expand_msc);
+													 window, expand_msc);
     
     
     GtkWidget *hbox_g1 = draw_chara_switch_entry_hbox(f_MHD_ctl->f_model_ctl->f_g_ctl->f_gravity);
@@ -2547,7 +2624,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	gtk_box_pack_start(GTK_BOX(vbox_g), expand_gc, FALSE, FALSE, 0);
 	GtkWidget *expand_MHD_g = draw_control_block(f_MHD_ctl->f_model_ctl->f_g_ctl->c_block_name, 
                                                  f_MHD_ctl->f_model_ctl->f_g_ctl->f_iflag,
-                                                 560, 400, window, vbox_g);
+                                                 window, vbox_g);
     
     
     
@@ -2562,7 +2639,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	gtk_box_pack_start(GTK_BOX(vbox_c), hbox_c2, FALSE, FALSE, 0);
 	GtkWidget *expand_MHD_c = draw_control_block(f_MHD_ctl->f_model_ctl->f_cor_ctl->c_block_name, 
                                                  f_MHD_ctl->f_model_ctl->f_cor_ctl->f_iflag,
-                                                 560, 400, window, vbox_c);
+                                                 window, vbox_c);
     
     
     GtkWidget *expand_MHD_s = SGS_MHD_model_expander(window, f_MHD_ctl->f_model_ctl->f_sgs_ctl, 
@@ -2604,13 +2681,12 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_n, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_sph_shell = MHD_sph_shell_ctl_expander(window, f_MHD_ctl->f_psph_ctl,
-															 f_MHD_ctl->f_fname_psph, 
 															 f_MHD_vws->f_psph_vws);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_sph_shell, FALSE, FALSE, 0);
 	
 	GtkWidget *expand_MHD_model = draw_control_block(f_MHD_ctl->f_model_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_iflag,
-													 560, 500, window, vbox_m);
+													 window, vbox_m);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_model, FALSE, FALSE, 0);
 	
 	
@@ -2625,7 +2701,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	GtkWidget *vbox_node_monitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	GtkWidget *expand_MHD_node_monitor = draw_control_block(f_MHD_ctl->f_nmtr_ctl->c_block_name, 
 													 f_MHD_ctl->f_nmtr_ctl->f_iflag,
-													 560, 500, window, _node_monitor);
+													 window, _node_monitor);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_node_monitor, FALSE, FALSE, 0);
 	*/
 	
@@ -2691,7 +2767,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	
 	GtkWidget *expand_MHD_viz = draw_control_block(f_MHD_ctl->f_viz_ctls->c_block_name, 
 													 f_MHD_ctl->f_viz_ctls->f_iflag,
-													 560, 500, window, vbox_viz);
+													 window, vbox_viz);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_viz, FALSE, FALSE, 0);
 	
     
@@ -2700,7 +2776,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     GtkWidget *hbox_d1 = draw_int_item_entry_hbox(f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->f_crust_truncation_ctl);
 	GtkWidget *expand_MHD_zm1 = draw_control_block(f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->c_block_name, 
                                                    f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->f_iflag,
-                                                   180, 52, window, hbox_d1);
+                                                   window, hbox_d1);
     
     
 	GtkWidget *expand_MHD_zm2 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls,
@@ -2742,13 +2818,13 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     
 	GtkWidget *expand_MHD_zm = draw_control_block(f_MHD_ctl->f_zm_ctls->c_block_name, 
 													 f_MHD_ctl->f_zm_ctls->f_iflag,
-													 560, 500, window, vbox_zm);
+													 window, vbox_zm);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_zm, FALSE, FALSE, 0);
 	
 	
 	
-	mWidgets->ctl_MHD_Vbox = draw_control_block(f_MHD_ctl->c_block_name, f_MHD_ctl->f_iflag,
-												560, 600, window, mWidgets->ctl_MHD_inner_box);
+    mWidgets->ctl_MHD_Vbox = wrap_into_scroll_expansion_gtk(f_MHD_ctl->c_block_name, 560, 640,
+                                                            window, mWidgets->ctl_MHD_inner_box);
 	return;
 };
 

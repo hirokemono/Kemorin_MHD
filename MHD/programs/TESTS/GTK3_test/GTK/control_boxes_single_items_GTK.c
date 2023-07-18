@@ -96,7 +96,6 @@ GtkWidget *hbox_with_block_checkbox(int *iflag_ptr){
 }
 
 GtkWidget * draw_control_block(const char * title, int *iflag_ptr, 
-							   int width, int height,
 							   GtkWidget *window, GtkWidget *box_in)
 {
 	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
@@ -106,16 +105,15 @@ GtkWidget * draw_control_block(const char * title, int *iflag_ptr,
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox1, FALSE, TRUE, 0);
 	
 	GtkWidget *expander = wrap_into_expanded_frame_gtk
-			(duplicate_underscore(title), width, height, window, box_in);
+			(duplicate_underscore(title), window, box_in);
 	
 	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox0), expander, TRUE, TRUE, 0);
 	return hbox0;
 };
 
-GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, 
-							   char *f_file_name, int width, int height,
-							   GtkWidget *window, GtkWidget *box_in)
+GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, char *f_file_name,
+                                             GtkWidget *window, GtkWidget *box_in)
 {
 	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	GtkWidget *hbox1 = hbox_with_block_checkbox(iflag_ptr);
@@ -154,7 +152,7 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 	gtk_box_pack_start(GTK_BOX(vbox1), box_in, FALSE, TRUE, 0);
 	
 	GtkWidget *expander = wrap_into_expanded_frame_gtk
-			(duplicate_underscore(title), width, height, window, vbox1);
+			(duplicate_underscore(title), window, vbox1);
 	
 	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, FALSE, 0);

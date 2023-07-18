@@ -154,6 +154,6 @@ GtkWidget * draw_array_block_ctl_vbox(struct void_clist *f_v_pwr,
 	
 	int itmp = 1;
 	GtkWidget *expand_vpwrs = draw_control_block(f_v_pwr->clist_name, &itmp,
-												480, 440, window, array_block_Wgts->vbox_vpwr);
+												 window, array_block_Wgts->vbox_vpwr);
 	return expand_vpwrs;
 };

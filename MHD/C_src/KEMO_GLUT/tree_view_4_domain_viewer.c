@@ -493,7 +493,7 @@ GtkWidget * init_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *
 	gtk_box_pack_start(GTK_BOX(box_domain), hbox_grid_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_domain), hbox_node_color, TRUE, FALSE, 0);
     
-    expander_domain = wrap_into_expanded_frame_gtk("Domain", 400, 300, window, box_domain);
+    expander_domain = wrap_into_scroll_expansion_gtk("Domain", 400, 300, window, box_domain);
     return expander_domain;
 };
 

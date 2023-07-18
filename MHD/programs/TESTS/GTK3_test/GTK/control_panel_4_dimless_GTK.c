@@ -93,6 +93,6 @@ GtkWidget * add_dimless_selection_box(struct f_MHD_dimless_control *f_dless_ctl,
 	
 	GtkWidget *expand_MHD_dimless = draw_control_block(strngcopy_from_f(f_dless_ctl->c_block_name),
 													   f_dless_ctl->f_iflag,
-													   400, 240, window, vbox_dimless);
+													   window, vbox_dimless);
 	return expand_MHD_dimless;
 };

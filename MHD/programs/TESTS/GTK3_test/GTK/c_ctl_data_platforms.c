@@ -238,7 +238,8 @@ static struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self
 }
 
 
-struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(void *f_parent), 
+struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(char *file_name,
+                                                          void *(*c_load_self)(void *f_parent), 
 														  void *f_parent)
 {
 	struct f_MHD_sph_shell_control *f_psph_ctl 
@@ -253,6 +254,7 @@ struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(v
 	f_psph_ctl->f_iflag =        (int *) c_sph_shell_ctl_iflag(f_psph_ctl->f_self);
 	char *f_block_name =   (char *) c_sph_shell_ctl_block_name(f_psph_ctl->f_self);
 	f_psph_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    f_psph_ctl->fname_sph_shell = file_name;
 	
 	f_psph_ctl->f_Fmesh_ctl = init_f_FEM_mesh_FILE_ctl(c_sph_shell_Fmesh_ctl, f_psph_ctl->f_self);
 	f_psph_ctl->f_sdctl =     init_f_MHD_sph_domain_control(c_sph_shell_sdctl, f_psph_ctl->f_self);

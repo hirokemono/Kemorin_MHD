@@ -24,6 +24,8 @@ struct block_array_widgets{
 	GtkWidget *vbox_vpwr_items;
 	GtkWidget *v_pwr_tree_view;
     GtkWidget *vbox_vpwr;
+    
+	struct void_clist * ctl_gtk_clist;
 };
 
 /* prototypes */

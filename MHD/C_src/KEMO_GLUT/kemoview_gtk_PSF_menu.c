@@ -50,7 +50,7 @@ static GtkWidget * init_gtk_psf_colormap_expander(GtkWidget *window, struct colo
 	gtk_box_pack_start(GTK_BOX(color_box), saveButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(color_box), loadButton, FALSE, FALSE, 0);
 
-    expander_color = wrap_into_expanded_frame_gtk("Color map editor", 420, 450, window, color_box);
+    expander_color = wrap_into_scroll_expansion_gtk("Color map editor", 420, 450, window, color_box);
 	return expander_color;
 }
 

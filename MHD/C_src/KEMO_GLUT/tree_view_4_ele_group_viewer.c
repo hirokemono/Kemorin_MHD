@@ -499,6 +499,6 @@ GtkWidget * init_ele_group_draw_expander(GtkWidget *window, struct group_gtk_men
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_grid_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_node_color, TRUE, FALSE, 0);
     
-    expander_ele = wrap_into_expanded_frame_gtk("Element group", 400, 300, window, box_grp);
+    expander_ele = wrap_into_scroll_expansion_gtk("Element group", 400, 300, window, box_grp);
     return expander_ele;
 };

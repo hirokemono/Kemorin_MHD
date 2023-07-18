@@ -91,7 +91,7 @@ GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt,
 
 
 GtkWidget *MHD_sph_shell_ctl_expander(GtkWidget *window, struct f_MHD_sph_shell_control * f_psph_ctl, 
-									  char * f_fname_psph, struct f_sph_shell_views *f_psph_vws);
+									  struct f_sph_shell_views *f_psph_vws);
 
 
 GtkWidget * draw_momentum_equation_vbox(struct f_MHD_mom_eq_control *f_mom_eq_ctl, 

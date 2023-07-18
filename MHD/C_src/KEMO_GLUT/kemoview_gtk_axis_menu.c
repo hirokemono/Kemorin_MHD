@@ -167,5 +167,5 @@ GtkWidget * make_axis_menu_box(GtkWidget *window){
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_shading, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_surf_dir, TRUE, FALSE, 0);
 
-    return wrap_into_expanded_frame_gtk("Axis and grids", 320, 240, window, vbox);
+    return wrap_into_scroll_expansion_gtk("Axis and grids", 320, 240, window, vbox);
 }

@@ -144,6 +144,6 @@ GtkWidget * init_quilt_menu_expander(struct quilt_gtk_menu *quilt_gmenu, GtkWidg
 	gtk_box_pack_start(GTK_BOX(quilt_box), hbox_num_column, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(quilt_box), hbox_num_raw, FALSE, TRUE, 0);
 	
-	expander_quilt = wrap_into_expanded_frame_gtk("Quilt", 200, 120, window, quilt_box);
+	expander_quilt = wrap_into_scroll_expansion_gtk("Quilt", 200, 120, window, quilt_box);
 	return expander_quilt;
 }

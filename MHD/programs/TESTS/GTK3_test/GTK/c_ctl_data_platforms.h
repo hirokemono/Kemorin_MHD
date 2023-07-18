@@ -157,6 +157,7 @@ struct f_MHD_sph_shell_control{
     int * f_iflag;
 	
 	char * c_block_name;
+	char * fname_sph_shell;
 	
 	struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl;
 	struct f_MHD_sph_subdomain_control *f_sdctl;
@@ -237,7 +238,8 @@ struct f_MHD_dimless_control{
 
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
 
-struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(void *(*c_load_self)(void *f_parent), 
+struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(char *file_name,
+                                                          void *(*c_load_self)(void *f_parent), 
 														  void *f_parent);
 
 struct f_MHD_forces_control * init_f_MHD_forces_ctl(void *(*c_load_self)(void *f_parent),
