@@ -18,6 +18,12 @@
 !!      subroutine set_flag_sym_tensor_comp(n_comps, names, maths)
 !!      subroutine set_flag_asym_tensor_comp(n_comps, names, maths)
 !!
+!!      subroutine set_xyz_direction_array(array_c)
+!!      subroutine set_scalar_direction_array(array_c)
+!!      subroutine set_vector_direction_array(array_c)
+!!      subroutine set_sym_tensor_direction_array(array_c)
+!!      subroutine set_asym_tensor_direction_array(array_c)
+!!
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!    componant label for scalar
@@ -545,6 +551,115 @@
       call append_c_to_ctl_array(V_z%name, array_c)
 !
       end subroutine set_xyz_direction_array
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_scalar_direction_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(scalar%name, array_c)
+!
+      end subroutine set_scalar_direction_array
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_vector_direction_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(vector%name, array_c)
+      call append_c_to_ctl_array(spherical_vector%name, array_c)
+      call append_c_to_ctl_array(cylindrical_vector%name, array_c)
+!
+      call append_c_to_ctl_array(magnitude%name, array_c)
+!
+      call append_c_to_ctl_array(V_x%name, array_c)
+      call append_c_to_ctl_array(V_y%name, array_c)
+      call append_c_to_ctl_array(V_z%name, array_c)
+!
+      call append_c_to_ctl_array(V_r%name, array_c)
+      call append_c_to_ctl_array(V_theta%name, array_c)
+      call append_c_to_ctl_array(V_phi%name, array_c)
+      call append_c_to_ctl_array(V_s%name, array_c)
+!
+      end subroutine set_vector_direction_array
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_sym_tensor_direction_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(sym_tensor%name, array_c)
+      call append_c_to_ctl_array(spherical_sym_tensor%name, array_c)
+      call append_c_to_ctl_array(cylindrical_sym_tensor%name, array_c)
+!
+      call append_c_to_ctl_array(magnitude%name, array_c)
+!
+      call append_c_to_ctl_array(T_xx%name, array_c)
+      call append_c_to_ctl_array(T_xy%name, array_c)
+      call append_c_to_ctl_array(T_xz%name, array_c)
+      call append_c_to_ctl_array(T_yy%name, array_c)
+      call append_c_to_ctl_array(T_yz%name, array_c)
+      call append_c_to_ctl_array(T_zz%name, array_c)
+!
+      call append_c_to_ctl_array(T_rr%name, array_c)
+      call append_c_to_ctl_array(T_rt%name, array_c)
+      call append_c_to_ctl_array(T_rp%name, array_c)
+      call append_c_to_ctl_array(T_tt%name, array_c)
+      call append_c_to_ctl_array(T_tp%name, array_c)
+      call append_c_to_ctl_array(T_pp%name, array_c)
+!
+      call append_c_to_ctl_array(T_ss%name, array_c)
+      call append_c_to_ctl_array(T_sp%name, array_c)
+      call append_c_to_ctl_array(T_sz%name, array_c)
+      call append_c_to_ctl_array(T_pp%name, array_c)
+      call append_c_to_ctl_array(T_pz%name, array_c)
+      call append_c_to_ctl_array(T_zz%name, array_c)
+!
+      end subroutine set_sym_tensor_direction_array
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_asym_tensor_direction_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(asym_tensor%name, array_c)
+      call append_c_to_ctl_array(spherical_asym_tensor%name, array_c)
+      call append_c_to_ctl_array(cylindrical_asym_tensor%name, array_c)
+      call append_c_to_ctl_array(magnitude%name, array_c)
+!
+      call append_c_to_ctl_array(T_xy%name, array_c)
+      call append_c_to_ctl_array(T_xz%name, array_c)
+      call append_c_to_ctl_array(T_yz%name, array_c)
+!
+      call append_c_to_ctl_array(T_rt%name, array_c)
+      call append_c_to_ctl_array(T_rp%name, array_c)
+      call append_c_to_ctl_array(T_tp%name, array_c)
+!
+      call append_c_to_ctl_array(T_sp%name, array_c)
+      call append_c_to_ctl_array(T_sz%name, array_c)
+      call append_c_to_ctl_array(T_pz%name, array_c)
+!
+      end subroutine set_asym_tensor_direction_array
 !
 ! ----------------------------------------------------------------------
 !

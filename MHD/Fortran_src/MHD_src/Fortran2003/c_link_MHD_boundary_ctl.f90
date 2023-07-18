@@ -329,7 +329,8 @@
       use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_thermal_bc(thermal_bc_type)
+      if(.not. allocated(thermal_bc_type%c_tbl))                        &
+     &      call set_label_thermal_bc(thermal_bc_type)
       set_label_thermal_bc_f = C_loc(thermal_bc_type)
       end function set_label_thermal_bc_f
 !
@@ -339,7 +340,8 @@
       use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_momentum_bc(momentum_bc_type)
+      if(.not. allocated(momentum_bc_type%c_tbl))                       &
+     &      call set_label_momentum_bc(momentum_bc_type)
       set_label_momentum_bc_f = C_loc(momentum_bc_type)
       end function set_label_momentum_bc_f
 !
@@ -349,7 +351,8 @@
       use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_induction_bc(induction_bc_type)
+      if(.not. allocated(induction_bc_type%c_tbl))                      &
+     &      call set_label_induction_bc(induction_bc_type)
       set_label_induction_bc_f = C_loc(induction_bc_type)
       end function set_label_induction_bc_f
 !
@@ -359,7 +362,8 @@
       use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_potential_bc(potential_bc_type)
+      if(.not. allocated(potential_bc_type%c_tbl))                      &
+     &      call set_label_potential_bc(potential_bc_type)
       set_label_potential_bc_f = C_loc(potential_bc_type)
       end function set_label_potential_bc_f
 !
@@ -369,7 +373,8 @@
       use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_vector_p_bc(vector_p_bc_type)
+      if(.not. allocated(vector_p_bc_type%c_tbl))                       &
+     &      call set_label_vector_p_bc(vector_p_bc_type)
       set_label_vector_p_bc_f = C_loc(vector_p_bc_type)
       end function set_label_vector_p_bc_f
 !
@@ -379,7 +384,8 @@
       use m_set_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_current_bc(current_bc_type)
+      if(.not. allocated(current_bc_type%c_tbl))                        &
+     &      call set_label_current_bc(current_bc_type)
       set_label_current_bc_f = C_loc(current_bc_type)
       end function set_label_current_bc_f
 !
@@ -390,7 +396,8 @@
       use m_sph_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_sph_thermal_bc(sph_thermal_bc_type)
+      if(.not. allocated(sph_thermal_bc_type%c_tbl))                    &
+     &      call set_label_sph_thermal_bc(sph_thermal_bc_type)
       set_label_sph_thermal_bc_f = C_loc(sph_thermal_bc_type)
       end function set_label_sph_thermal_bc_f
 !
@@ -400,7 +407,8 @@
       use m_sph_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_sph_momentum_bc(sph_momentum_bc_type)
+      if(.not. allocated(sph_momentum_bc_type%c_tbl))                   &
+     &      call set_label_sph_momentum_bc(sph_momentum_bc_type)
       set_label_sph_momentum_bc_f = C_loc(sph_momentum_bc_type)
       end function set_label_sph_momentum_bc_f
 !
@@ -410,7 +418,8 @@
       use m_sph_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_sph_induction_bc(sph_induction_bc_type)
+      if(.not. allocated(sph_induction_bc_type%c_tbl))                  &
+     &      call set_label_sph_induction_bc(sph_induction_bc_type)
       set_label_sph_induction_bc_f = C_loc(sph_induction_bc_type)
       end function set_label_sph_induction_bc_f
 !
@@ -421,7 +430,8 @@
       use set_surface_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call surf_bc_label_thermal_bc(heat_sf_bc_type)
+      if(.not. allocated(heat_sf_bc_type%c_tbl))                        &
+     &      call surf_bc_label_thermal_bc(heat_sf_bc_type)
       surf_bc_label_thermal_bc_f = C_loc(heat_sf_bc_type)
       end function surf_bc_label_thermal_bc_f
 !
@@ -431,7 +441,8 @@
       use set_surface_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call surf_bc_label_momentum_bc(mom_sf_bc_type)
+      if(.not. allocated(mom_sf_bc_type%c_tbl))                         &
+     &      call surf_bc_label_momentum_bc(mom_sf_bc_type)
       surf_bc_label_momentum_bc_f = C_loc(mom_sf_bc_type)
       end function surf_bc_label_momentum_bc_f
 !
@@ -441,7 +452,8 @@
       use set_surface_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call surf_bc_label_induction_bc(induct_sf_bc_type)
+      if(.not. allocated(induct_sf_bc_type%c_tbl))                      &
+    &      call surf_bc_label_induction_bc(induct_sf_bc_type)
       surf_bc_label_induction_bc_f = C_loc(induct_sf_bc_type)
       end function surf_bc_label_induction_bc_f
 !
@@ -451,7 +463,8 @@
       use set_surface_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call surf_bc_label_infinity_bc(infinity_bc_type)
+      if(.not. allocated(infinity_bc_type%c_tbl))                       &
+     &      call surf_bc_label_infinity_bc(infinity_bc_type)
       surf_bc_label_infinity_bc_f = C_loc(infinity_bc_type)
       end function surf_bc_label_infinity_bc_f
 !
@@ -461,7 +474,8 @@
       use set_surface_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call surf_bc_label_potential_bc(potential_sf_bc_type)
+      if(.not. allocated(potential_sf_bc_type%c_tbl))                   &
+     &      call surf_bc_label_potential_bc(potential_sf_bc_type)
       surf_bc_label_potential_bc_f = C_loc(potential_sf_bc_type)
       end function surf_bc_label_potential_bc_f
 !
@@ -471,7 +485,8 @@
       use set_surface_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call surf_bc_label_vector_p_bc(vecp_sf_bc_type)
+      if(.not. allocated(vecp_sf_bc_type%c_tbl))                        &
+     &      call surf_bc_label_vector_p_bc(vecp_sf_bc_type)
       surf_bc_label_vector_p_bc_f = C_loc(vecp_sf_bc_type)
       end function surf_bc_label_vector_p_bc_f
 !
@@ -481,7 +496,8 @@
       use set_surface_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call surf_bc_label_current_bc(current_sf_bc_type)
+      if(.not. allocated(current_sf_bc_type%c_tbl))                     &
+     &      call surf_bc_label_current_bc(current_sf_bc_type)
       surf_bc_label_current_bc_f = C_loc(current_sf_bc_type)
       end function surf_bc_label_current_bc_f
 !

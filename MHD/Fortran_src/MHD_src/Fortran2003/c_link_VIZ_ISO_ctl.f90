@@ -169,6 +169,7 @@
       type(field_on_psf_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
       c_VIZ_fld_on_psf_field_out_ctl = C_loc(f_ctl%field_output_ctl)
+      write(*,*) 'field_output_ctl: ', f_ctl%field_output_ctl%array_name
       end function c_VIZ_fld_on_psf_field_out_ctl
 !
 !  ---------------------------------------------------------------------

@@ -26,7 +26,8 @@
       use m_file_format_labels
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_label_file_fmt(file_fmt_list)
+      if(.not. allocated(file_fmt_list%c_tbl))                          &
+     &            call set_label_file_fmt(file_fmt_list)
       set_file_fmt_items_f = C_loc(file_fmt_list)
       end function set_file_fmt_items_f
 !

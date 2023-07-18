@@ -7,8 +7,6 @@
 
 #include "t_ctl_array_chara2_real_items_c.h"
 
-extern void * c_chara2_item_clength(void *f_plt, int *length);
-
 extern void * c_chara2_real_item_block_name(void *f_ctl);
 extern void * c_chara2_real_item_iflag(void *f_ctl);
 extern void * c_chara2_real_item_charavalue1(void *f_ctl);

@@ -101,8 +101,6 @@
       type(pick_spectr_control), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
       c_sph_pick_radius_ctl = C_loc(f_ctl%pick_radius_ctl)
-      write(*,'(a, Z16)') 'parent', C_loc(f_ctl)
-      write(*,'(a, Z16)') 'c_sph_pick_radius_ctl', c_sph_pick_radius_ctl
       end function c_sph_pick_radius_ctl
 !
 !  ---------------------------------------------------------------------

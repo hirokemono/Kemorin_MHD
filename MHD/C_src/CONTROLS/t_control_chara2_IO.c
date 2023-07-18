@@ -14,9 +14,12 @@ struct chara2_ctl_item * init_chara2_ctl_item_c(void){
         printf("malloc error for c2_item\n");
         exit(0);
     }
+	if((c2_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for c2_item->f_iflag\n");
+		exit(0);
+	}
 	c2_item->c1_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c2_item->c2_tbl = (char *)calloc(KCHARA_C, sizeof(char));
-	c2_item->iflag = 0;
     return c2_item;
 };
 
@@ -31,7 +34,7 @@ int read_chara2_ctl_item_c(char buf[LENGTHBUF], const char *label,
                            struct chara2_ctl_item *c2_item){
 	char header_chara[KCHARA_C];
 	
-	if(c2_item->iflag > 0) return 0;
+	if(c2_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
@@ -39,7 +42,7 @@ int read_chara2_ctl_item_c(char buf[LENGTHBUF], const char *label,
 					c2_item->c1_tbl, c2_item->c2_tbl);
 		strip_cautation_marks(c2_item->c1_tbl);
 		strip_cautation_marks(c2_item->c2_tbl);
-		c2_item->iflag = 1;
+		c2_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -47,7 +50,7 @@ int read_chara2_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_chara2_ctl_item_c(FILE *fp, int level, int maxlen[2], 
                            const char *label, struct chara2_ctl_item *c2_item){
     
-	if(c2_item->iflag == 0) return level;
+	if(c2_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen[0], label);
 	write_one_label_cont_c(fp, maxlen[1], c2_item->c1_tbl);
@@ -58,14 +61,14 @@ int write_chara2_ctl_item_c(FILE *fp, int level, int maxlen[2],
 
 void update_chara2_ctl_item_c(char *c1_in, char *c2_in, 
 			struct chara2_ctl_item *c2_item){
-	c2_item->iflag = 1;
+	c2_item->f_iflag[0] = 1;
 	sprintf(c2_item->c1_tbl,"%s", c1_in);
 	sprintf(c2_item->c2_tbl,"%s", c2_in);
     return;
 };
 void set_from_chara2_ctl_item_c(struct chara2_ctl_item *c2_item,
 			char *c1_out, char *c2_out){
-	if(c2_item->iflag == 0) return;
+	if(c2_item->f_iflag[0] == 0) return;
 	sprintf(c1_out,"%s", c2_item->c1_tbl);
 	sprintf(c2_out,"%s", c2_item->c2_tbl);
     return;
@@ -171,6 +174,7 @@ struct chara2_ctl_list *find_c2_ctl_list_item_by_index(int index, struct chara2_
     for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
+
 static struct chara2_ctl_list *find_c2_ctl_list_item_by_c_tbl(char *ref_1, char *ref_2,
 			struct chara2_ctl_list *head){
     head = head->_next;
@@ -339,6 +343,11 @@ void set_from_chara2_clist_at_index(int index, struct chara2_clist *c2_clst,
     set_from_chara2_ctl_list_at_index(index, &c2_clst->c2_item_head,
             c1_out, c2_out);
 };
+
+struct chara2_ctl_item *chara2_clist_at_index(int index, struct chara2_clist *c2_clst){
+    struct chara2_ctl_list *tmp_list = find_c2_ctl_list_item_by_index(index, &c2_clst->c2_item_head);
+    return tmp_list->c2_item;
+}
 
 void add_chara2_clist_before_c_tbl(char *ref_1, char *ref_2, char *c1_in, char *c2_in,
             struct chara2_clist *c2_clst){

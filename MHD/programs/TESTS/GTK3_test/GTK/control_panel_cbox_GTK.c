@@ -141,10 +141,9 @@ void add_chara_list_box_w_addbottun(GtkTreeView *c_tree_view,
     add_sorting_signal_w_label(c_tree_view, hbox);
 };
 
-static void add_c_list_selection_box(struct chara_clist *ctl_clist, struct chara_clist *item_clist,
-                                     struct chara_cbox_table_view *chara_tbl_vws, GtkWidget *vbox)
+static void add_c_list_selection_box(struct chara_clist *ctl_clist, struct chara_cbox_table_view *chara_tbl_vws,
+                                     GtkWidget *vbox)
 {
-    GtkTreeModel *cbox_model = gtk_tree_view_get_model(GTK_TREE_VIEW(chara_tbl_vws->items_tree_view));
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
     
@@ -169,7 +168,7 @@ GtkWidget * c_list_combobox_expander(struct chara_clist *ctl_clist,
     init_c_combobox_tree_view(ctl_clist, chara_tbl_vws);
 
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    add_c_list_selection_box(ctl_clist, item_clist, chara_tbl_vws, vbox);
+    add_c_list_selection_box(ctl_clist, chara_tbl_vws, vbox);
     GtkWidget *expand_bc = wrap_into_expanded_frame_gtk(duplicate_underscore(ctl_clist->clist_name),
                                                         320, 160, window, vbox);
     return expand_bc;

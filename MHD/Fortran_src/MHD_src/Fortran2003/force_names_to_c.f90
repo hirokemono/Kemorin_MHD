@@ -108,13 +108,15 @@
       end subroutine set_force_control_labels_f
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       type(c_ptr) function c_link_force_list_to_ctl(c_ctl)              &
      &           bind(C, NAME='c_link_force_list_to_ctl')
       use m_force_control_labels
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_force_list_array(force_list)
+      if(.not. allocated(force_list%c_tbl))                             &
+     &          call set_force_list_array(force_list)
       c_link_force_list_to_ctl = C_loc(force_list)
 !
       end function c_link_force_list_to_ctl
@@ -126,12 +128,12 @@
       use m_force_control_labels
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_sph_force_list_array(sph_force_list)
+      if(.not. allocated(sph_force_list%c_tbl))                         &
+     &           call set_sph_force_list_array(sph_force_list)
       c_link_sph_force_list_to_ctl = C_loc(sph_force_list)
 !
       end function c_link_sph_force_list_to_ctl
 !
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       type(c_ptr) function c_link_reftemp_list_to_ctl(c_ctl)            &
@@ -139,10 +141,24 @@
       use t_reference_scalar_param
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_reftemp_list_array(temp_mdl_list)
+      if(.not. allocated(temp_mdl_list%c_tbl))                          &
+     &           call set_reftemp_list_array(temp_mdl_list)
       c_link_reftemp_list_to_ctl = C_loc(temp_mdl_list)
 !
       end function c_link_reftemp_list_to_ctl
+!
+! ----------------------------------------------------------------------
+!
+      type(c_ptr) function c_link_sph_reftemp_list_to_ctl(c_ctl)        &
+     &           bind(C, NAME='c_link_sph_reftemp_list_to_ctl')
+      use t_reference_scalar_param
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      if(.not. allocated(sph_temp_mdl_list%c_tbl))                      &
+     &           call set_sph_reftemp_list_array(sph_temp_mdl_list)
+      c_link_sph_reftemp_list_to_ctl = C_loc(sph_temp_mdl_list)
+!
+      end function c_link_sph_reftemp_list_to_ctl
 !
 ! ----------------------------------------------------------------------
 !

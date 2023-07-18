@@ -51,6 +51,17 @@ struct chara_ctl_item * init_f_ctl_chara_item(void *(*c_load_self)(void *f_paren
 	return f_citem;
 }
 
+void append_f_ctl_chara_array(void *f_append, struct chara_clist *c_clist)
+{
+    char *ctmp;
+    int i;
+	for(i=0;i<c_chara_array_num(f_append);i++){
+		ctmp = (char *) c_chara_array_c_tbl(i, f_append);
+		append_chara_clist(strngcopy_from_f(ctmp), c_clist);
+	};
+	return;
+}
+
 
 struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent), 
 											void *f_parent)
@@ -61,14 +72,9 @@ struct chara_clist * init_f_ctl_chara_array(void *(*c_load_self)(void *f_parent)
 	char *ctmp =  (char *) c_chara_array_block_name(c_clist->f_self);
 	c_clist->clist_name = strngcopy_from_f(ctmp);
 	
-	int i, num;
-    num = c_chara_array_num(c_clist->f_self);
+	int num = c_chara_array_num(c_clist->f_self);
     if(num == 0) {c_alloc_chara_array(num, c_clist->f_self);};
-	
-	for(i=0;i<num;i++){
-		ctmp = (char *) c_chara_array_c_tbl(i, c_clist->f_self);
-		append_chara_clist(strngcopy_from_f(ctmp), c_clist);
-	};
+	append_f_ctl_chara_array(c_clist->f_self, c_clist);
 	return c_clist;
 }
 

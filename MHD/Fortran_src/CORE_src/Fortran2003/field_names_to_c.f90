@@ -238,7 +238,8 @@
       use m_base_field_labels
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call set_base_field_names_to_ctl(base_fld_list)
+      if(.not. allocated(base_fld_list%c1_tbl))                         &
+     &           call set_base_field_names_to_ctl(base_fld_list)
       c_link_base_field_names_to_ctl = C_loc(base_fld_list)
       end function c_link_base_field_names_to_ctl
 !
@@ -249,7 +250,8 @@
       use m_base_field_labels
       type(c_ptr), value, intent(in) :: c_ctl
 !
-      call time_evolution_list_array(tevo_fld_list)
+      if(.not. allocated(tevo_fld_list%c_tbl))                          &
+     &      call time_evolution_list_array(tevo_fld_list)
       c_link_time_evo_list_to_ctl = C_loc(tevo_fld_list)
       end function c_link_time_evo_list_to_ctl
 !
