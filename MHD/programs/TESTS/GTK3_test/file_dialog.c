@@ -2501,15 +2501,8 @@ GtkWidget * MHD_temperature_model_expander(GtkWidget *window, struct f_MHD_temp_
     return expand_t;
 };
 
-
-void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
-						  struct main_widgets *mWidgets){
-	f_MHD_vws = (struct f_MHD_tree_views *) malloc(sizeof(struct f_MHD_tree_views));
-	if(f_MHD_vws == NULL){
-		printf("malloc error for f_MHD_tree_views\n");
-		exit(0);
-	};
-	
+GtkWidget *MHD_model_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
+                                  struct main_widgets *mWidgets){
     struct field_views *fields_vws = init_field_views_GTK(f_MHD_ctl->f_model_ctl->f_fld_ctl);
 	fields_vws->used_tree_view = create_field_tree_view(fields_vws->all_fld_list,
 														fields_vws->fld_ctl_gtk);
@@ -2661,50 +2654,14 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_g, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_c, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_s, FALSE, FALSE, 0);
-	
-	
-    
-    mWidgets->label_file_format_list = init_f_ctl_chara_array(set_file_fmt_items_f,
-                                                              f_MHD_ctl->f_self);
-	mWidgets->ctl_MHD_inner_box =   gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget * vbox_plt_c = draw_platform_control_vbox(f_MHD_ctl->f_plt,
-                                                        mWidgets->label_file_format_list,
-                                                        window);
-	GtkWidget * vbox_plt_o = draw_platform_control_vbox(f_MHD_ctl->f_org_plt,
-                                                        mWidgets->label_file_format_list,
-                                                        window);
-	GtkWidget * vbox_plt_n = draw_platform_control_vbox(f_MHD_ctl->f_new_plt,
-                                                        mWidgets->label_file_format_list,
-                                                        window);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_c, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_o, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_n, FALSE, FALSE, 0);
-	
-	GtkWidget *expand_sph_shell = MHD_sph_shell_ctl_expander(window, f_MHD_ctl->f_psph_ctl,
-															 f_MHD_vws->f_psph_vws);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_sph_shell, FALSE, FALSE, 0);
-	
 	GtkWidget *expand_MHD_model = draw_control_block(f_MHD_ctl->f_model_ctl->c_block_name, 
 													 f_MHD_ctl->f_model_ctl->f_iflag,
-													 window, vbox_m);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_model, FALSE, FALSE, 0);
-	
-	
-    GtkWidget *expand_MHD_control = draw_MHD_control_expand(window, f_MHD_ctl->f_smctl_ctl);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_control, FALSE, FALSE, 0);
-	
-	GtkWidget *expand_smntr = draw_MHD_sph_monitor_ctls_vbox(f_MHD_ctl->f_smonitor_ctl, 
-															 mWidgets->f_lp_vws, window);
-	gtk_container_add(GTK_CONTAINER(mWidgets->ctl_MHD_inner_box), expand_smntr);
-	
-	/*
-	GtkWidget *vbox_node_monitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *expand_MHD_node_monitor = draw_control_block(f_MHD_ctl->f_nmtr_ctl->c_block_name, 
-													 f_MHD_ctl->f_nmtr_ctl->f_iflag,
-													 window, _node_monitor);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_node_monitor, FALSE, FALSE, 0);
-	*/
-	
+                                                     window, vbox_m);
+    return expand_MHD_model;
+}
+
+GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
+                                 struct main_widgets *mWidgets){	
 	GtkWidget *expand_MHD_psf = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_psf_ctls,
                                                           c_append_viz_section_ctls,
                                                           c_delete_viz_section_ctls,
@@ -2712,7 +2669,6 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                           (void *) dealloc_f_VIZ_PSF_ctl,
                                                           (void *) draw_viz_each_psf_ctl_vbox,
                                                           mWidgets->vpsf_Wgts, window);
-	
 	
 	GtkWidget *expand_MHD_iso = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_iso_ctls,
                                                           c_append_viz_isosurf_ctls,
@@ -2767,12 +2723,61 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 	
 	GtkWidget *expand_MHD_viz = draw_control_block(f_MHD_ctl->f_viz_ctls->c_block_name, 
 													 f_MHD_ctl->f_viz_ctls->f_iflag,
-													 window, vbox_viz);
+                                                   window, vbox_viz);
+    return expand_MHD_viz;
+};
+
+void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
+						  struct main_widgets *mWidgets){
+	f_MHD_vws = (struct f_MHD_tree_views *) malloc(sizeof(struct f_MHD_tree_views));
+	if(f_MHD_vws == NULL){
+		printf("malloc error for f_MHD_tree_views\n");
+		exit(0);
+    };
+    
+    
+    mWidgets->label_file_format_list = init_f_ctl_chara_array(set_file_fmt_items_f,
+                                                              f_MHD_ctl->f_self);
+	mWidgets->ctl_MHD_inner_box =   gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget * vbox_plt_c = draw_platform_control_vbox(f_MHD_ctl->f_plt,
+                                                        mWidgets->label_file_format_list,
+                                                        window);
+	GtkWidget * vbox_plt_o = draw_platform_control_vbox(f_MHD_ctl->f_org_plt,
+                                                        mWidgets->label_file_format_list,
+                                                        window);
+	GtkWidget * vbox_plt_n = draw_platform_control_vbox(f_MHD_ctl->f_new_plt,
+                                                        mWidgets->label_file_format_list,
+                                                        window);
+	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_c, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_o, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_n, FALSE, FALSE, 0);
+	
+	GtkWidget *expand_sph_shell = MHD_sph_shell_ctl_expander(window, f_MHD_ctl->f_psph_ctl,
+															 f_MHD_vws->f_psph_vws);
+	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_sph_shell, FALSE, FALSE, 0);
+	
+    GtkWidget *expand_MHD_model = MHD_model_ctl_expander(window, f_MHD_ctl, mWidgets);
+	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_model, FALSE, FALSE, 0);
+	
+	
+    GtkWidget *expand_MHD_control = draw_MHD_control_expand(window, f_MHD_ctl->f_smctl_ctl);
+	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_control, FALSE, FALSE, 0);
+	
+	GtkWidget *expand_smntr = draw_MHD_sph_monitor_ctls_vbox(f_MHD_ctl->f_smonitor_ctl, 
+															 mWidgets->f_lp_vws, window);
+	gtk_container_add(GTK_CONTAINER(mWidgets->ctl_MHD_inner_box), expand_smntr);
+	
+	/*
+	GtkWidget *vbox_node_monitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *expand_MHD_node_monitor = draw_control_block(f_MHD_ctl->f_nmtr_ctl->c_block_name, 
+													 f_MHD_ctl->f_nmtr_ctl->f_iflag,
+													 window, _node_monitor);
+	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_node_monitor, FALSE, FALSE, 0);
+	*/
+	
+    GtkWidget *expand_MHD_viz = MHD_VIZs_ctl_expander(window, f_MHD_ctl, mWidgets);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_viz, FALSE, FALSE, 0);
 	
-    
-    
-    
     GtkWidget *hbox_d1 = draw_int_item_entry_hbox(f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->f_crust_truncation_ctl);
 	GtkWidget *expand_MHD_zm1 = draw_control_block(f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->c_block_name, 
                                                    f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->f_iflag,
