@@ -132,8 +132,6 @@
       type modeview_ctl
 !>        Control block name
         character(len = kchara) :: block_name = 'view_transform_ctl'
-!>        File name for external control file
-        character(len=kchara) :: mat_ctl_fname
 !
 !>        Structure of screen resolution
         type(screen_pixel_ctl) :: pixel

@@ -19,10 +19,18 @@ struct real3_ctl_item * init_real3_ctl_item_c(void){
 		printf("malloc error for r3_item->f_iflag\n");
 		exit(0);
 	}
+    r3_item->c_block_name = alloc_string(KCHARA_C);
 
     for (i=0; i<3; i++) {r3_item->r_data[i] = 0.0;};
     return r3_item;
 };
+
+void dealloc_real3_ctl_item(struct real3_ctl_item *r3_item){
+    free(r3_item->c_block_name);
+    free(r3_item->f_iflag);
+    free(r3_item);
+    return;
+}
 
 int read_real3_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct real3_ctl_item *r3_item){

@@ -14,6 +14,13 @@ extern void * c_chara_real_item_iflag(void *f_ctl);
 extern void * c_chara_real_item_charavalue(void *f_ctl);
 extern double c_chara_real_item_realvalue(void *f_ctl);
 
+extern void * c_real2_item_block_name(void *f_ctl);
+extern void * c_real2_item_iflag(void *f_ctl);
+extern double c_real2_item_realvalue1(void *f_ctl);
+extern double c_real2_item_realvalue2(void *f_ctl);
+
+
+
 struct chara_real_ctl_item * init_f_ctl_cr_item(void *(*c_load_self)(void *f_parent),
                                                 void *f_parent)
 {
@@ -68,3 +75,58 @@ void reflesh_f_ctl_cr_array(int num_array, struct chara_real_clist *cr_clst)
 	c_alloc_chara_real_array(num_array, cr_clst->f_self);
 	return;
 }
+
+
+
+struct real2_ctl_item * init_f_ctl_r2_item(void *(*c_load_self)(void *f_parent),
+                                           void *f_parent)
+{
+	struct real2_ctl_item *f_r2_item = (struct real2_ctl_item *) malloc(sizeof(struct real2_ctl_item));
+	if(f_r2_item == NULL){
+		printf("malloc error for real2_ctl_item\n");
+		exit(0);
+	};
+	f_r2_item->f_self =  c_load_self(f_parent);
+	
+	f_r2_item->f_iflag =        (int *) c_real2_item_iflag(f_r2_item->f_self);
+	char *f_charavalue =  (char *) c_real2_item_block_name(f_r2_item->f_self);
+	f_r2_item->c_block_name = strngcopy_from_f(f_charavalue);
+	
+	f_r2_item->r_data[0] =  c_real2_item_realvalue1(f_r2_item->f_self);
+	f_r2_item->r_data[1] =  c_real2_item_realvalue2(f_r2_item->f_self);
+	
+	/*
+	printf("f_r2_item->f_self %p \n", f_r2_item->f_self);
+	printf("f_r2_item->c_block_name %s \n", f_r2_item->c_block_name);
+	printf("f_r2_item->c_tbl %d %le %le\n",
+		   f_r2_item->f_iflag[0], f_r2_item->r_data[0], f_r2_item->r_data[1]);
+	*/
+	return f_r2_item;
+}
+
+struct real2_clist * init_f_ctl_r2_array(void *(*c_load_self)(void *f_parent), 
+											void *f_parent)
+{
+	struct real2_clist *r2_clst = init_real2_clist();
+	r2_clst->f_self =  c_load_self(f_parent);
+	char * ctmp = (char *) c_real2_array_block_name(r2_clst->f_self);
+	r2_clst->clist_name = strngcopy_from_f(ctmp);
+	
+	int i, num;
+    num = c_real2_array_num(r2_clst->f_self);
+    if(num == 0) {c_alloc_real2_array(num, r2_clst->f_self);};
+	
+	for(i=0;i<num;i++){
+		append_real2_clist(c_real2_array_r1_tbl(i, r2_clst->f_self),
+                           c_real2_array_r2_tbl(i, r2_clst->f_self), r2_clst);
+    }
+	return r2_clst;
+}
+
+void reflesh_f_ctl_r2_array(int num_array, struct real2_clist *r2_clst)
+{
+	c_dealloc_real2_array(r2_clst->f_self);
+	c_alloc_real2_array(num_array, r2_clst->f_self);
+	return;
+}
+

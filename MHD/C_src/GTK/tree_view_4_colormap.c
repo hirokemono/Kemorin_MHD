@@ -9,12 +9,12 @@
 
 void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 
 			struct colormap_view *color_vws){
-	color_vws->colormap_mode_gtk = cmap_c->colormap_mode_ctl;
+	color_vws->colormap_mode_gtk = cmap_c->f_colormap_mode_ctl;
     color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
     color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	
-    init_r2_clist_views(cmap_c->colortbl_list, color_vws->cmap_vws);
-    init_r2_clist_views(cmap_c->linear_opacity_list, color_vws->opacity_vws);
+    init_r2_clist_views(cmap_c->f_colortbl_ctl, color_vws->cmap_vws);
+    init_r2_clist_views(cmap_c->f_linear_opacity_ctl, color_vws->opacity_vws);
     return;
 }
 

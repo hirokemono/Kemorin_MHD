@@ -51,9 +51,9 @@ void set_constant_opacitymap(struct colormap_params *cmap_s,
 			double val_min, double val_max, double opacity);
 void set_full_opacitymap(struct colormap_params *cmap_s, double val_min, double val_max);
 
-void copy_colormap_from_ctl(struct chara_ctl_item *colormap_mode_ctl, 
-			struct real2_clist *colortbl_list, struct colormap_params *cmap_s);
-void copy_opacity_from_ctl(struct real2_clist *linear_opacity_list, 
+void copy_colormap_from_ctl(struct chara_ctl_item *f_colormap_mode_ctl, 
+			struct real2_clist *f_colortbl_ctl, struct colormap_params *cmap_s);
+void copy_opacity_from_ctl(struct real2_clist *f_linear_opacity_ctl, 
 			struct colormap_params *cmap_s);
 
 void check_colormap_control_file_s(const int iflag_draw_time, const int iflag_draw_axis,

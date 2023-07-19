@@ -25,28 +25,32 @@
 #define NLBL_CMAP_CBAR_CTL     2
 
 struct colormap_ctl_c{
-    int iflag_use;
+    void * f_self;
+    int * f_iflag;
+    
+    char *c_block_name;
+
 	int maxlen;
 	
-	struct chara_ctl_item *colormap_mode_ctl;
+	struct chara_ctl_item *f_colormap_mode_ctl;
 	
-	struct chara_ctl_item *lic_color_fld_ctl;
-	struct chara_ctl_item *lic_color_comp_ctl;
-	struct chara_ctl_item *lic_opacity_fld_ctl;
-	struct chara_ctl_item *lic_opacity_comp_ctl;
+	struct chara_ctl_item *f_lic_color_fld_ctl;
+	struct chara_ctl_item *f_lic_color_comp_ctl;
+	struct chara_ctl_item *f_lic_opacity_fld_ctl;
+	struct chara_ctl_item *f_lic_opacity_comp_ctl;
 	
-    struct real3_ctl_item *background_color_ctl;
+    struct real3_ctl_item *f_background_color_ctl;
     
-	struct chara_ctl_item *data_mapping_ctl;
-	struct real2_clist *colortbl_list;
+	struct chara_ctl_item *f_data_mapping_ctl;
+	struct real2_clist    *f_colortbl_ctl;
 
-	struct chara_ctl_item *opacity_style_ctl;
-	struct real_ctl_item *fix_opacity_ctl;
-	struct real2_clist *linear_opacity_list;
-	struct real3_clist *step_opacity_list;
+	struct chara_ctl_item *f_opacity_style_ctl;
+	struct real_ctl_item  *f_fix_opacity_ctl;
+	struct real2_clist    *f_linear_opacity_ctl;
+	struct real3_clist    *f_step_opacity_ctl;
 	
-	struct real_ctl_item *range_min_ctl;
-	struct real_ctl_item *range_max_ctl;
+	struct real_ctl_item *f_range_min_ctl;
+	struct real_ctl_item *f_range_max_ctl;
 };
 
 struct lighting_ctl_c{

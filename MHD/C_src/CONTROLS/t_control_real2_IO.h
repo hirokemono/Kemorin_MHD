@@ -17,8 +17,11 @@
 
 
 struct real2_ctl_item{
-	int iflag;
-	
+    void * f_self;
+    
+    int *f_iflag;
+    char * c_block_name;
+
 	double r_data[2];
 };
 
@@ -32,16 +35,21 @@ struct real2_ctl_list{
 struct real2_clist{
 	struct real2_ctl_list r2_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *r1_name;
     char *r2_name;
+    
+    int index_bc;
 };
 
 
 /* prototypes */
 
 struct real2_ctl_item * init_real2_ctl_item_c(void);
-int read_real2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+void dealloc_real2_ctl_item_c(struct real2_ctl_item *r2_item);
+int read_real2_ctl_item_c(char buf[LENGTHBUF], const char *label,
                           struct real2_ctl_item *r2_item);
 int write_real2_ctl_item_c(FILE *fp, int level, int maxlen, 
 			const char *label, struct real2_ctl_item *r2_item);
@@ -71,6 +79,9 @@ void update_real2_clist_by_index(int index, double r1_in, double r2_in,
 			struct real2_clist *r2_clst);
 void set_from_real2_clist_at_index(int index, struct real2_clist *r2_clst,
 			double *r1_out, double *r2_out);
+
+struct real2_ctl_item *real2_clist_at_index(int index, struct real2_clist *r2_clst);
+
 
 void add_real2_clist_before_c_tbl(double ref_1, double ref_2, 
 			struct real2_clist *r2_clst);

@@ -18,7 +18,7 @@ struct chara_ctl_item * init_chara_ctl_item_c(void){
 		printf("malloc error for c_item->f_iflag\n");
 		exit(0);
 	}
-	
+    c_item->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
 	c_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
     return c_item;
 };

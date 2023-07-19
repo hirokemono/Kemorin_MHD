@@ -40,7 +40,7 @@ void delete_opacity_index_list_s(struct colormap_params *cmap_s, int i_delete);
 void add_color_index_list_s(struct colormap_params *cmap_s, double add_value, double add_color);
 void add_opacity_index_list_s(struct colormap_params *cmap_s, double add_value, double add_opacity);
 
-struct colormap_array * init_colormap_from_list(struct real2_clist *colortbl_list);
+struct colormap_array * init_colormap_from_list(struct real2_clist *f_colortbl_ctl);
 void dealloc_colormap_array(struct colormap_array *cmap);
 
 

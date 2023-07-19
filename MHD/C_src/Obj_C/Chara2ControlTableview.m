@@ -19,7 +19,7 @@
 {
     load_MHD_control_c();
     struct PVR_ctl_list *pvr1 = link_to_pvr_ctl_list();
-    Chara2CtlList = pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->step_opacity_list;
+    Chara2CtlList = pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->f_step_opacity_ctl;
 }
 -(void)createMutablearray
 {

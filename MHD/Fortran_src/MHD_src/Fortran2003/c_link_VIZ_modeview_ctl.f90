@@ -12,8 +12,6 @@
 !!     &          bind(C, NAME = 'c_modeview_ctl_iflag')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!
-!!      type(c_ptr) function c_modeview_mat_ctl_fname(c_ctl)            &
-!!     &          bind(C, NAME = 'c_modeview_mat_ctl_fname')
 !!      type(c_ptr) function c_modeview_ctl_pixel(c_ctl)                &
 !!     &          bind(C, NAME = 'c_modeview_ctl_pixel')
 !!      type(c_ptr) function c_modeview_ctl_proj(c_ctl)                 &
@@ -74,16 +72,6 @@
       end function c_modeview_ctl_iflag
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_modeview_mat_ctl_fname(c_ctl)              &
-     &          bind(C, NAME = 'c_modeview_mat_ctl_fname')
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(modeview_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_modeview_mat_ctl_fname = C_loc(f_ctl%mat_ctl_fname)
-      end function c_modeview_mat_ctl_fname
-!
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_modeview_ctl_pixel(c_ctl)                  &

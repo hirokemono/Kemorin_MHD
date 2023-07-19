@@ -831,7 +831,8 @@ t_ctl_array_chara_real_items_c.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h
+  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_array_int2_items_c.o: \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_int2_items_c.c \

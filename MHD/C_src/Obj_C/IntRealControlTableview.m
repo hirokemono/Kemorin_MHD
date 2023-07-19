@@ -19,7 +19,7 @@
 {
     load_MHD_control_c();
     struct PVR_ctl_list *pvr1 = link_to_pvr_ctl_list();
-    intRealCtlList = pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->colortbl_list;
+    intRealCtlList = pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->f_colortbl_ctl;
 }
 -(void)createMutablearray
 {
