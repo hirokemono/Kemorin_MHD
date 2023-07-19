@@ -11,6 +11,7 @@
 #include "calypso_GTK.h"
 #include "c_ctl_data_MHD_BCs.h"
 #include "tree_view_boundary_condition_GTK.h"
+#include "control_panel_cbox_GTK.h"
 
 struct f_MHD_BCs_tree_views{
 	struct boundary_condition_view *bc_mom_vws;

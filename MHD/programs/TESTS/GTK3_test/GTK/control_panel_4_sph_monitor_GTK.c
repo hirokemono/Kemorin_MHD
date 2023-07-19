@@ -207,18 +207,18 @@ GtkWidget * draw_MHD_sph_monitor_ctls_vbox(struct f_MHD_sph_monitor_ctls *f_smon
 	};
 	
 	
-	GtkWidget *expand_vpwrs = draw_array_block_ctl_vbox(f_smonitor_ctl->f_v_pwr,
+	GtkWidget *expand_vpwrs = draw_array_block_ctl_vbox(f_smonitor_ctl->f_v_pwr, NULL, 
                                                         c_append_sph_mntr_vspec_ctl,
                                                         c_delete_sph_mntr_vspec_ctl,
                                                         (void *) init_f_sph_vol_spectr_ctls,
-                                                        dealloc_f_sph_vol_spectr_ctls,
+                                                        (void *) dealloc_f_sph_vol_spectr_ctls,
                                                         (void *) draw_sph_each_vspec_ctl_expand,
                                                         f_lp_vws->vpwr_Widgets, window);
-	GtkWidget *expand_dcircs = draw_array_block_ctl_vbox(f_smonitor_ctl->f_circ_ctls,
+	GtkWidget *expand_dcircs = draw_array_block_ctl_vbox(f_smonitor_ctl->f_circ_ctls, NULL,
                                                          c_append_circles_meq_ctl,
                                                          c_delete_circles_meq_ctl,
                                                          (void *) init_f_sph_field_on_circle_ctls,
-                                                         dealloc_f_sph_field_on_circle_ctls,
+                                                         (void *) dealloc_f_sph_field_on_circle_ctls,
                                                          (void *) draw_sph_each_fld_on_circle_ctl_expand,
                                                          f_lp_vws->dcirc_Widgets, window);
 	GtkWidget *vbox_smontr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

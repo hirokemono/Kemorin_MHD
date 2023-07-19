@@ -93,7 +93,8 @@ extern void * c_SPH_SGS_second_reference_ctl(void *f_sph_filter_ctl);
 
 
 
-struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_in, void *f_parent)
+struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_in, void *void_in,
+                                                                        void *f_parent)
 {
 	struct f_MHD_SGS_SPH_filter_control *f_sph_filter_ctl 
 			= (struct f_MHD_SGS_SPH_filter_control *) malloc(sizeof(struct f_MHD_SGS_SPH_filter_control));
@@ -321,10 +322,12 @@ struct f_MHD_SGS_model_control * init_f_MHD_SGS_model_control(void *(*c_load_sel
  	f_sgs_ctl->f_sph_filter_ctl = init_void_clist(strngcopy_from_f(f_block_name));
 	f_sgs_ctl->f_sph_filter_ctl->f_parent =  f_sgs_ctl->f_self;
 	f_sgs_ctl->f_num_sph_filter_ctl = c_SGS_model_num_sph_filter_ctl(f_sgs_ctl->f_self);
+    
+    void *void_in = NULL;
 	int i;
 	for(i=0;i<f_sgs_ctl->f_num_sph_filter_ctl;i++){
 		struct f_MHD_SGS_SPH_filter_control *void_in 
-				= init_f_MHD_SGS_SPH_filter_control(i, f_sgs_ctl->f_self);
+				= init_f_MHD_SGS_SPH_filter_control(i, void_in, f_sgs_ctl->f_self);
 		append_void_clist((void *) void_in, f_sgs_ctl->f_sph_filter_ctl);
 	}
 	return f_sgs_ctl;

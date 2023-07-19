@@ -30,10 +30,10 @@ struct block_array_widgets{
 
 /* prototypes */
 
-GtkWidget * draw_array_block_ctl_vbox(struct void_clist *f_v_pwr,
+GtkWidget * draw_array_block_ctl_vbox(struct void_clist *v_clist, void *void_in_gtk,
                                       void *(*append_ctl_block_F)(int idx, char *block_name, void *f_parent),
                                       void *(*delete_ctl_block_F)(int idx, void *f_parent),
-                                      void *(*init_block_item)(int idx, void *f_parent),
+                                      void *(*init_block_item)(int idx, void *f_parent, void *void_in_gtk),
                                       void *(*dealloc_block_item)(void *f_item),
                                       void *(*const_each_block_expander)(char *label_name,
                                                                          void *block_item,

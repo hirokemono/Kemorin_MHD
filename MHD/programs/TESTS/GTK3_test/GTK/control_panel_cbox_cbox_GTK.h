@@ -28,6 +28,13 @@ struct chara2_cbox_table_view{
 
 /* prototypes */
 
+void init_c2_combobox_tree_view(struct chara2_clist *ctl_clist,
+                                struct chara2_cbox_table_view *chara2_tbl_vws);
+
+void add_c2_list_selection_box(struct chara2_clist *ctl_clist, 
+                               struct chara2_cbox_table_view *chara2_tbl_vws,
+                               GtkWidget *vbox);
+
 GtkWidget * c2_list_cbox_cbox_expander(struct chara2_clist *ctl_clist,
                                        struct chara_clist *item1_clist, struct chara_clist *item2_clist,
                                        struct chara2_cbox_table_view *chara2_tbl_vws,

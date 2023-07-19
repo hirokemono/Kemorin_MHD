@@ -226,18 +226,20 @@ static void init_f_MHD_sph_monitor_arrays(struct f_MHD_sph_monitor_ctls *f_smoni
 	f_smonitor_ctl->f_v_pwr = init_void_clist(strngcopy_from_f(f_block_name));
 	f_smonitor_ctl->f_v_pwr->f_parent =  f_smonitor_ctl->f_self;
 	
+    void *void_in = NULL;
 	int i;
 	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl;i++){
-        struct f_sph_vol_spectr_ctls *void_in = init_f_sph_vol_spectr_ctls(i, f_smonitor_ctl->f_self);
+        struct f_sph_vol_spectr_ctls *void_in = init_f_sph_vol_spectr_ctls(i, void_in,
+                                                                           f_smonitor_ctl->f_self);
 		append_void_clist((void *) void_in, f_smonitor_ctl->f_v_pwr);
 	}
- 
 	f_smonitor_ctl->f_num_circ_ctls = c_data_on_circles_num(f_smonitor_ctl->f_self);
     f_block_name =   (char *) c_data_on_circles_block_name(f_smonitor_ctl->f_self);
  	f_smonitor_ctl->f_circ_ctls = init_void_clist(strngcopy_from_f(f_block_name));
 	f_smonitor_ctl->f_circ_ctls->f_parent =  f_smonitor_ctl->f_self;
 	for(i=0;i<f_smonitor_ctl->f_num_circ_ctls;i++){
-        struct f_sph_field_on_circle_ctls *void_in = init_f_sph_field_on_circle_ctls(i, f_smonitor_ctl->f_self);
+        struct f_sph_field_on_circle_ctls *void_in = init_f_sph_field_on_circle_ctls(i, void_in,
+                                                                                     f_smonitor_ctl->f_self);
 		append_void_clist((void *) void_in, f_smonitor_ctl->f_circ_ctls);
 	}
 	return;

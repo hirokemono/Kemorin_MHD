@@ -30,7 +30,7 @@ extern void * c_data_on_circle_nphi_ctl(void *f_circ_ctls);
 extern void * c_data_on_circle_pick_s_ctl(void *f_circ_ctls);
 extern void * c_data_on_circle_pick_z_ctl(void *f_circ_ctls);
 
-struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *f_parent)
+struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *void_in, void *f_parent)
 {
 	struct f_sph_vol_spectr_ctls *f_v_pwr_item 
 			= (struct f_sph_vol_spectr_ctls *) malloc(sizeof(struct f_sph_vol_spectr_ctls));
@@ -65,7 +65,7 @@ struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *f_paren
 	return f_v_pwr_item;
 }
 
-void * dealloc_f_sph_vol_spectr_ctls(void *f_item){
+struct f_sph_vol_spectr_ctls * dealloc_f_sph_vol_spectr_ctls(void *f_item){
 	struct f_sph_vol_spectr_ctls *f_v_pwr_item = (struct f_sph_vol_spectr_ctls *) f_item;
 	f_v_pwr_item->f_self = NULL;
 	f_v_pwr_item->f_iflag = NULL;
@@ -81,11 +81,11 @@ void * dealloc_f_sph_vol_spectr_ctls(void *f_item){
 	dealloc_real_ctl_item_c(f_v_pwr_item->f_inner_radius_ctl);
 	dealloc_real_ctl_item_c(f_v_pwr_item->f_outer_radius_ctl);
 	free(f_v_pwr_item);
-	return NULL;
+	return f_v_pwr_item;
 }
 
 
-struct f_sph_field_on_circle_ctls * init_f_sph_field_on_circle_ctls(int idx, void *f_parent)
+struct f_sph_field_on_circle_ctls * init_f_sph_field_on_circle_ctls(int idx, void *void_in, void *f_parent)
 {
 	struct f_sph_field_on_circle_ctls *f_circ_ctls 
 			= (struct f_sph_field_on_circle_ctls *) malloc(sizeof(struct f_sph_field_on_circle_ctls));
@@ -117,7 +117,7 @@ struct f_sph_field_on_circle_ctls * init_f_sph_field_on_circle_ctls(int idx, voi
 	return f_circ_ctls;
 }
 
-void * dealloc_f_sph_field_on_circle_ctls(void *f_item){
+struct f_sph_field_on_circle_ctls * dealloc_f_sph_field_on_circle_ctls(void *f_item){
 	struct f_sph_field_on_circle_ctls *f_circ_ctls = (struct f_sph_field_on_circle_ctls *) f_item;
 	f_circ_ctls->f_self = NULL;
 	f_circ_ctls->f_iflag = NULL;
@@ -131,5 +131,5 @@ void * dealloc_f_sph_field_on_circle_ctls(void *f_item){
 	dealloc_real_ctl_item_c(f_circ_ctls->f_pick_s_ctl);
 	dealloc_real_ctl_item_c(f_circ_ctls->f_pick_z_ctl);
 	free(f_circ_ctls);
-	return NULL;
+	return f_circ_ctls;
 }

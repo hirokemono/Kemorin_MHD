@@ -64,10 +64,10 @@ extern void * c_append_circles_meq_ctl(int idx, char *c_name, void *f_circ_ctls)
 extern void * c_delete_circles_meq_ctl(int idx, void *f_circ_ctls);
 
 
-struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *f_parent);
-void * dealloc_f_sph_vol_spectr_ctls(void *f_item);
+struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *void_in, void *f_parent);
+struct f_sph_vol_spectr_ctls * dealloc_f_sph_vol_spectr_ctls(void *f_item);
 
-struct f_sph_field_on_circle_ctls * init_f_sph_field_on_circle_ctls(int idx, void *f_parent);
-void * dealloc_f_sph_field_on_circle_ctls(void *f_item);
+struct f_sph_field_on_circle_ctls * init_f_sph_field_on_circle_ctls(int idx, void *void_in, void *f_parent);
+struct f_sph_field_on_circle_ctls * dealloc_f_sph_field_on_circle_ctls(void *f_item);
 
 #endif /* C_CTL_DATA_SPH_MONITOR_ARRAYS_H_ */

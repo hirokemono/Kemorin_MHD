@@ -6,7 +6,6 @@
 */
 
 #include "control_panel_4_MHD_BCs_GTK.h"
-#include "control_panel_cbox_GTK.h"
 
 GtkWidget * draw_node_bc_ctl_vbox(struct f_MHD_node_bc_control *f_nbc_ctl,
                                   struct f_MHD_BCs_tree_views *bc_nod_bc_vws, 

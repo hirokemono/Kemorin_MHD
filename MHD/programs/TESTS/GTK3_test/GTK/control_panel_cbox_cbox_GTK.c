@@ -328,8 +328,9 @@ void add_chara2_list_box_w_addbottun(GtkTreeView *c_tree_view,
     add_sorting_signal_w_label(c_tree_view, hbox);
 };
 
-static void add_c2_list_selection_box(struct chara2_clist *ctl_clist, struct chara2_cbox_table_view *chara2_tbl_vws,
-                                      GtkWidget *vbox)
+void add_c2_list_selection_box(struct chara2_clist *ctl_clist, 
+                               struct chara2_cbox_table_view *chara2_tbl_vws,
+                               GtkWidget *vbox)
 {
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");

@@ -88,7 +88,7 @@
 !>        Structure of isosurface define control
         type(iso_define_ctl) :: iso_def_c
 !>        file name for fields on isosurface control
-        character(len=kchara) :: fname_fld_on_iso
+        character(len=kchara) :: fname_fld_on_iso = 'NO_FILE'
 !>        Structure of fields on isosurface control
         type(field_on_psf_ctl) :: fld_on_iso_c
 !

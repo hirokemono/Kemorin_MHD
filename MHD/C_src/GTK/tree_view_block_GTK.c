@@ -80,9 +80,9 @@ int add_void_list_by_bottun_GTK(int index, void *void_in, GtkTreeView *tree_view
 
 int add_void_list_items_GTK(GtkTreeView *tree_view_to_add, 
 							void *(*append_ctl_block_F)(int idx, char *block_name, void *f_parent), 
-							void *(*init_block_item)(int idx, void *f_parent),
+							void *(*init_block_item)(int idx, void *f_parent, void *void_in_gtk),
 							void *(*dealloc_block_item)(void *f_block),
-							struct void_clist *v_clist)
+                            void *void_in_gtk, struct void_clist *v_clist)
 {
     GtkTreeModel *model_to_add;
     GtkTreeModel *child_model_to_add;
@@ -108,7 +108,7 @@ int add_void_list_items_GTK(GtkTreeView *tree_view_to_add,
 	append_void_clist(void_in, v_clist);
 	
 	for(idx=0;idx<count_void_clist(v_clist);idx++){
-		void *void_in = init_block_item(idx, v_clist->f_parent);
+		void *void_in = init_block_item(idx, v_clist->f_parent, void_in_gtk);
 		replace_void_clist_at_index(idx, void_in, v_clist);
 	};
 	
@@ -121,9 +121,9 @@ int add_void_list_items_GTK(GtkTreeView *tree_view_to_add,
 
 void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 								void *(*delete_ctl_block_F)(int idx, void *f_parent), 
-                                void *(*init_block_item)(int idx, void *f_parent),
+                                void *(*init_block_item)(int idx, void *f_parent, void *void_in_gtk),
                                 void *(*dealloc_block_item)(void *f_block),
-								struct void_clist *v_clist)
+                                void *void_in_gtk, struct void_clist *v_clist)
 {
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
@@ -188,7 +188,7 @@ void delete_void_list_items_GTK(GtkTreeView *tree_view_to_del,
 		del_void_clist_by_index(idx, v_clist);
 		
 		for(i=0;i<count_void_clist(v_clist);i++){
-			void *void_in = init_block_item(i, v_clist->f_parent);
+			void *void_in = init_block_item(i, v_clist->f_parent, void_in_gtk);
 			replace_void_clist_at_index(i, void_in, v_clist);
 		};
 	}

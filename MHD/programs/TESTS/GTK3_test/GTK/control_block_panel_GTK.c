@@ -29,11 +29,12 @@ static void add_array_block_ctl_cb(GtkButton *button, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "window"));
 	struct void_clist *v_clist_gtk 
 			= (struct void_clist *) g_object_get_data(G_OBJECT(user_data), "v_clist_gtk");
+    void *void_in_gtk = (void *) g_object_get_data(G_OBJECT(user_data), "void_in_gtk");
 	struct block_array_widgets *array_block_Wgts
 			= (struct block_array_widgets *) g_object_get_data(G_OBJECT(user_data), "array_block_Wgts");
 	void * (*append_ctl_block_F)(int idx, char *block_name, void *f_parent)
 			= (void *) g_object_get_data(G_OBJECT(user_data), "append_ctl_block_F");
-	void * (*init_block_item)(int idx, void *f_parent)
+	void * (*init_block_item)(int idx, void *f_parent, void *void_in_gtk)
 			= (void *) g_object_get_data(G_OBJECT(user_data), "init_block_item");
 	void * (*dealloc_block_item)(void *f_item)
 			= (void *) g_object_get_data(G_OBJECT(user_data), "dealloc_block_item");
@@ -44,7 +45,7 @@ static void add_array_block_ctl_cb(GtkButton *button, gpointer user_data){
 													append_ctl_block_F, 
 													init_block_item, 
 													dealloc_block_item, 
-													v_clist_gtk);
+                                                    void_in_gtk, v_clist_gtk);
 	/*
 	printf("New counts: %d %d \n",
 		   c_sph_monitor_num_vspec_ctl(v_clist_gtk->f_parent) ,
@@ -65,11 +66,12 @@ static void delete_array_block_ctl_cb(GtkButton *button, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "window"));
 	struct void_clist *v_clist_gtk 
 			= (struct void_clist *) g_object_get_data(G_OBJECT(user_data), "v_clist_gtk");
+    void *void_in_gtk = (void *) g_object_get_data(G_OBJECT(user_data), "void_in_gtk");
 	struct block_array_widgets *array_block_Wgts
 			= (struct block_array_widgets *) g_object_get_data(G_OBJECT(user_data), "array_block_Wgts");
 	void * (*delete_ctl_block_F)(int idx, void *f_parent)
 			= (void *) g_object_get_data(G_OBJECT(user_data), "delete_ctl_block_F");
-	void * (*init_block_item)(int idx, void *f_parent)
+	void * (*init_block_item)(int idx, void *f_parent, void *void_in_gtk)
 			= (void *) g_object_get_data(G_OBJECT(user_data), "init_block_item");
 	void * (*dealloc_block_item)(void *f_item)
 			= (void *) g_object_get_data(G_OBJECT(user_data), "dealloc_block_item");
@@ -81,7 +83,7 @@ static void delete_array_block_ctl_cb(GtkButton *button, gpointer user_data){
 							   delete_ctl_block_F, 
 							   init_block_item, 
 							   dealloc_block_item, 
-							   v_clist_gtk);
+							   void_in_gtk, v_clist_gtk);
 	/*
 	printf("New counts: %d %d \n", 
 		   c_sph_monitor_num_vspec_ctl(v_clist_gtk->f_parent) , 
@@ -98,10 +100,10 @@ static void delete_array_block_ctl_cb(GtkButton *button, gpointer user_data){
 };
 
 
-GtkWidget * draw_array_block_ctl_vbox(struct void_clist *f_v_pwr,
+GtkWidget * draw_array_block_ctl_vbox(struct void_clist *v_clist, void *void_in_gtk,
                                       void *(*append_ctl_block_F)(int idx, char *block_name, void *f_parent),
                                       void *(*delete_ctl_block_F)(int idx, void *f_parent),
-                                      void *(*init_block_item)(int idx, void *f_parent),
+                                      void *(*init_block_item)(int idx, void *f_parent, void *void_in_gtk),
                                       void *(*dealloc_block_item)(void *f_item),
                                       void *(*const_each_block_expander)(char *label_name,
                                                                          void *block_item,
@@ -120,13 +122,14 @@ GtkWidget * draw_array_block_ctl_vbox(struct void_clist *f_v_pwr,
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
 	
 	array_block_Wgts->v_pwr_tree_view = gtk_tree_view_new();
-	GtkWidget *vbox_tbl = add_block_list_box_w_addbottun(f_v_pwr, array_block_Wgts->v_pwr_tree_view, 
+	GtkWidget *vbox_tbl = add_block_list_box_w_addbottun(v_clist, array_block_Wgts->v_pwr_tree_view,
 														 button_add, button_delete, 
 														 array_block_Wgts->vbox_vpwr);
 	
 	g_object_set_data(G_OBJECT(array_block_Wgts->v_pwr_tree_view), "window",       (gpointer) window);
-	g_object_set_data(G_OBJECT(array_block_Wgts->v_pwr_tree_view), "v_clist_gtk",  (gpointer) f_v_pwr);
-	g_object_set_data(G_OBJECT(array_block_Wgts->v_pwr_tree_view), "array_block_Wgts", 
+	g_object_set_data(G_OBJECT(array_block_Wgts->v_pwr_tree_view), "v_clist_gtk",  (gpointer) v_clist);
+    g_object_set_data(G_OBJECT(array_block_Wgts->v_pwr_tree_view), "void_in_gtk",  (gpointer) void_in_gtk);
+	g_object_set_data(G_OBJECT(array_block_Wgts->v_pwr_tree_view), "array_block_Wgts",
 					  (gpointer) array_block_Wgts);
 	g_object_set_data(G_OBJECT(array_block_Wgts->v_pwr_tree_view), "append_ctl_block_F", 
 					  (gpointer) append_ctl_block_F);
@@ -148,12 +151,12 @@ GtkWidget * draw_array_block_ctl_vbox(struct void_clist *f_v_pwr,
 	gtk_box_pack_start(GTK_BOX(array_block_Wgts->vbox_vpwr), vbox_tbl,  FALSE, FALSE, 0);
 	
     array_block_Wgts->vbox_vpwr_items = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	draw_sph_array_block_ctls_vbox(const_each_block_expander, f_v_pwr, 
+	draw_sph_array_block_ctls_vbox(const_each_block_expander, v_clist,
 								   array_block_Wgts->vbox_vpwr_items, window);
 	gtk_container_add(GTK_CONTAINER(array_block_Wgts->vbox_vpwr), array_block_Wgts->vbox_vpwr_items);
 	
 	int itmp = 1;
-	GtkWidget *expand_vpwrs = draw_control_block(f_v_pwr->clist_name, &itmp,
+	GtkWidget *expand_vpwrs = draw_control_block(v_clist->clist_name, &itmp,
 												 window, array_block_Wgts->vbox_vpwr);
 	return expand_vpwrs;
 };

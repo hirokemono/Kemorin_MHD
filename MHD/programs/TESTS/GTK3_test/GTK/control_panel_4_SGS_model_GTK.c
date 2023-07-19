@@ -139,7 +139,7 @@ GtkWidget *SGS_MHD_model_expander(GtkWidget *window, struct f_MHD_SGS_model_cont
     GtkWidget *expand_SGS_2 = FEM_MHD_SGS_area_expander(window, f_sgs_ctl->f_elayer_ctl, SGSWgts);
     GtkWidget *expand_SGS_3 = FEM_MHD_SGS_3Dfilter_expander(window, f_sgs_ctl->f_s3df_ctl, SGSWgts);
     
-	GtkWidget *expand_s3 = draw_array_block_ctl_vbox(f_sgs_ctl->f_sph_filter_ctl,
+	GtkWidget *expand_s3 = draw_array_block_ctl_vbox(f_sgs_ctl->f_sph_filter_ctl, NULL, 
                                                      c_append_SGS_sph_filter_ctl,
                                                      c_delete_SGS_sph_filter_ctl,
                                                      (void *) init_f_MHD_SGS_SPH_filter_control,

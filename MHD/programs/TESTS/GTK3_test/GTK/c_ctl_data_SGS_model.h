@@ -139,7 +139,8 @@ struct f_MHD_SGS_model_control{
 extern void * c_append_SGS_sph_filter_ctl(int idx, char *block_name, void *f_sph_filter_ctl);
 extern void * c_delete_SGS_sph_filter_ctl(int idx, void *f_sph_filter_ctl);
 
-struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_in, void *f_parent);
+struct f_MHD_SGS_SPH_filter_control * init_f_MHD_SGS_SPH_filter_control(int idx_in, void *void_in,
+                                                                        void *f_parent);
 void *dealloc_f_MHD_SGS_SPH_filter_control(void *void_in);
 
 

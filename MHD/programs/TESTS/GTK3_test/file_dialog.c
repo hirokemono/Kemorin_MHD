@@ -31,19 +31,21 @@
 #include "c_control_data_pvrs.h"
 #include "c_ctl_data_platforms.h"
 #include "c_ctl_data_MHD_BCs.h"
+#include "c_ctl_data_MHD_model.h"
 
 #include "ctl_data_platforms_GTK.h"
 #include "control_panel_4_dimless_GTK.h"
 #include "control_panels_MHD_control_GTK.h"
 #include "control_block_panel_GTK.h"
 #include "control_panel_cbox_GTK.h"
-#include "control_panel_cbox_cbox_GTK.h"
 #include "control_panel_cbox_real_GTK.h"
 #include "control_panel_int_GTK.h"
 #include "control_panel_int2_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
 #include "control_panel_4_MHD_BCs_GTK.h"
+#include "control_panels_MHD_model_GTK.h"
 #include "control_panel_4_SGS_model_GTK.h"
+#include "control_panel_fld_on_psf_GTK.h"
 
 
 extern void c_view_control_sph_SGS_MHD();
@@ -77,7 +79,6 @@ extern void * c_MHD_model_ctl(void *f_MHD_ctl);
 extern void * c_MHD_smctl_ctl(void *f_MHD_ctl);
 extern void * c_MHD_smonitor_ctl(void *f_MHD_ctl);
 extern void * c_MHD_nmtr_ctl(void *f_MHD_ctl);
-extern void * c_MHD_sgs_ctl(void *f_MHD_ctl);
 extern void * c_MHD_viz_ctls(void *f_MHD_ctl);
 extern void * c_MHD_zm_ctls(void *f_MHD_ctl);
 
@@ -100,23 +101,6 @@ extern void * c_dynamo_vizs_zm_psf_ctls(void *f_zm_ctls);
 extern void * c_dynamo_vizs_zRMS_psf_ctls(void *f_zm_ctls);
 extern void * c_dynamo_vizs_zm_map_ctls(void *f_zm_ctls);
 extern void * c_dynamo_vizs_zRMS_map_ctls(void *f_zm_ctls);
-
-extern void * c_MHD_mdl_block_name(void *f_model_ctl);
-extern void * c_MHD_mdl_iflag(void *f_model_ctl);
-extern void * c_MHD_mdl_fld_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_evo_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_earea_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_nbc_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_sbc_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_dless_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_eqs_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_frc_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_g_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_cor_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_mcv_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_bscale_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_reft_ctl(void *f_model_ctl);
-extern void * c_MHD_mdl_refc_ctl(void *f_model_ctl);
 
 
 extern void * c_VIZ_PSF_ctl_block_name(void *f_psf_ctl);
@@ -433,55 +417,6 @@ extern void * c_append_viz_fline_ctls(int idx, char *block_name, void *f_fline_c
 extern void * c_delete_viz_fline_ctls(int idx, void *f_fline_ctls);
 
 
-extern void * c_MHD_evo_area_ctl_block_name(void *f_earea_ctl);
-extern void * c_MHD_evo_area_ctl_iflag(void *f_earea_ctl);
-extern void * c_MHD_evo_fluid_group_ctl(void *f_earea_ctl);
-extern void * c_MHD_evo_conduct_group_ctl(void *f_earea_ctl);
-
-extern void * c_MHD_gravity_ctl_block_name(void *f_g_ctl);
-extern void * c_MHD_gravity_ctl_iflag(void *f_g_ctl);
-extern void * c_MHD_FEM_gravity_model(void *f_g_ctl);
-extern void * c_MHD_gravity_ctl_gravity(void *f_g_ctl);
-extern void * c_MHD_gravity_ctl_vector(void *f_g_ctl);
-
-extern void * c_MHD_coriolis_ctl_block_name(void *f_cor_ctl);
-extern void * c_MHD_coriolis_ctl_iflag(void *f_cor_ctl);
-extern void * c_MHD_FEM_coriolis_model(void *f_cor_ctl);
-extern void * c_MHD_FEM_coriolis_implicit(void *f_cor_ctl);
-extern void * c_MHD_system_rotation(void *f_cor_ctl);
-
-extern void * c_MHD_mag_cv_ctl_block_name(void *f_mcv_ctl);
-extern void * c_MHD_mag_cv_ctl_iflag(void *f_mcv_ctl);
-extern void * c_MHD_mag_cv_filterd_ctl(void *f_mcv_ctl);
-extern void * c_MHD_mag_cv_ctl_magneto_cv(void *f_mcv_ctl);
-extern void * c_MHD_mag_cv_ctl_ext_magne(void *f_mcv_ctl);
-
-extern void * c_MHD_B_scale_ctl_block_name(void *f_bscale_ctl);
-extern void * c_MHD_B_scale_ctl_iflag(void *f_bscale_ctl);
-extern void * c_MHD_B_scale_mag_to_kin_ctl(void *f_bscale_ctl);
-
-extern void * c_takepiro_model_ctl_block_name(void *f_takepiro_ctl);
-extern void * c_takepiro_model_ctl_iflag(void *f_takepiro_ctl);
-extern void * c_takepiro_stratified_sigma_ctl(void *f_takepiro_ctl);
-extern void * c_takepiro_stratified_width_ctl(void *f_takepiro_ctl);
-extern void * c_takepiro_stratified_rout_ctl(void *f_takepiro_ctl);
-
-extern void * c_reftemp_point_ctl_block_name(void *f_refs_ctl);
-extern void * c_reftemp_point_ctl_iflag(void *f_refs_ctl);
-extern void * c_reftemp_point_value_ctl(void *f_refs_ctl);
-extern void * c_reftemp_point_depth_ctl(void *f_refs_ctl);
-
-extern void * c_temp_model_ctl_block_name(void *f_reft_ctl);
-extern void * c_temp_model_ctl_iflag(void *f_reft_ctl);
-extern void * c_temp_model_filter_advect_ctl(void *f_reft_ctl);
-extern void * c_temp_model_reference_ctl(void *f_reft_ctl);
-extern void * c_temp_model_stratified_ctl(void *f_reft_ctl);
-extern void * c_temp_model_ref_file_ctl(void *f_reft_ctl);
-extern void * c_temp_model_ICB_diffuse_ctl(void *f_reft_ctl);
-extern void * c_temp_model_low_ctl(void *f_reft_ctl);
-extern void * c_temp_model_high_ctl(void *f_reft_ctl);
-extern void * c_temp_model_takepiro_ctl(void *f_reft_ctl);
-
 extern void * c_node_monitor_ctl_block_name(void *f_nmtr_ctl);
 extern void * c_node_monitor_ctl_iflag(void *f_nmtr_ctl);
 extern void * c_node_monitor_xx_ctl(void *f_nmtr_ctl);
@@ -522,19 +457,6 @@ extern void * c_new_repart_num_masking_ctl(void *f_new_part_ctl);
 extern void * c_new_repart_mask_ctl(void *f_new_part_ctl);
 
 
-extern void * c_MHD_evolution_ctl_block_name(void *f_evo_ctl);
-extern void * c_MHD_evolution_ctl_iflag(void *f_evo_ctl);
-extern void * c_MHD_t_evo_field_ctl(void *f_evo_ctl);
-
-
-extern void * c_link_base_field_names_to_ctl(void *fld_names_c);
-extern void * c_link_time_evo_list_to_ctl(void *fld_names_c);
-extern void * c_link_force_list_to_ctl(void *fld_names_c);
-extern void * c_link_sph_force_list_to_ctl(void *fld_names_c);
-extern void * c_link_reftemp_list_to_ctl(void *fld_names_c);
-extern void * c_link_sph_reftemp_list_to_ctl(void *fld_names_c);
-
-extern void * c_link_xyz_dir_list_to_ctl(void *fld_names_c);
 extern void * c_link_scalar_dir_list_to_ctl(void *fld_names_c);
 extern void * c_link_vector_dir_list_to_ctl(void *fld_names_c);
 extern void * c_link_stensor_dir_list_to_ctl(void *fld_names_c);
@@ -543,129 +465,6 @@ extern void * c_link_atensor_dir_list_to_ctl(void *fld_names_c);
 extern void * set_file_fmt_items_f(void *fmt_names_c);
 
 
-struct f_MHD_t_evo_area_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_clist *f_evo_fluid_group_ctl;
-	struct chara_clist *f_evo_conduct_group_ctl;
-};
-
-struct f_MHD_gravity_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_ctl_item *f_FEM_gravity_model;
-	struct chara_ctl_item *f_gravity;
-	struct chara_real_clist *f_gravity_vector;
-};
-
-struct f_MHD_Coriolis_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_ctl_item *f_FEM_coriolis_model;
-	struct chara_ctl_item *f_FEM_coriolis_implicit;
-	struct chara_real_clist *f_system_rotation;
-};
-
-struct f_MHD_magneto_cv_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_ctl_item *f_filterd_induction_ctl;
-	struct chara_ctl_item *f_magneto_cv;
-	struct chara_real_clist *f_ext_magne;
-};
-
-struct f_MHD_magnetic_scale_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_real_clist *f_mag_to_kin_energy_ctl;
-};
-
-struct f_MHD_reftemp_point_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct real_ctl_item *f_value;
-	struct real_ctl_item *f_depth;
-};
-
-struct f_MHD_takepiro_model_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct real_ctl_item *f_stratified_sigma_ctl;
-	struct real_ctl_item *f_stratified_width_ctl;
-	struct real_ctl_item *f_stratified_outer_r_ctl;
-};
-
-struct f_MHD_temp_model_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_ctl_item *f_filterd_advect_ctl;
-	struct chara_ctl_item *f_reference_ctl;
-	struct chara_ctl_item *f_stratified_ctl;
-	struct chara_ctl_item *f_ref_file_ctl;
-	struct real_ctl_item  *f_ICB_diffuse_reduction_ctl;
-	
-	struct f_MHD_reftemp_point_control  *f_low_ctl;
-	struct f_MHD_reftemp_point_control  *f_high_ctl;
-	struct f_MHD_takepiro_model_control *f_takepiro_ctl;
-};
-
-
-struct f_MHD_time_evo_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct chara_clist *f_t_evo_field_ctl;
-};
-
-
-struct f_MHD_model_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct f_MHD_fields_control         *f_fld_ctl;
-	struct f_MHD_time_evo_control       *f_evo_ctl;
-	struct f_MHD_t_evo_area_control     *f_earea_ctl;
-	struct f_MHD_node_bc_control        *f_nbc_ctl;
-	struct f_MHD_surf_bc_control        *f_sbc_ctl;
-	struct f_MHD_forces_control         *f_frc_ctl;
-	struct f_MHD_dimless_control        *f_dless_ctl;
-	struct f_MHD_equations_control      *f_eqs_ctl;
-	struct f_MHD_gravity_control        *f_g_ctl;
-	struct f_MHD_Coriolis_control       *f_cor_ctl;
-	struct f_MHD_magneto_cv_control     *f_mcv_ctl;
-	struct f_MHD_magnetic_scale_control *f_bscale_ctl;
-	struct f_MHD_temp_model_control     *f_reft_ctl;
-	struct f_MHD_temp_model_control     *f_refc_ctl;
-	struct f_MHD_SGS_model_control      *f_sgs_ctl;
-};
 
 struct f_VIZ_PSF_def_ctl{
     void * f_self;
@@ -711,9 +510,6 @@ struct f_VIZ_PSF_ctl{
     struct chara_ctl_item *f_psf_file_head_ctl;
     struct chara_ctl_item *f_psf_output_type_ctl;
     
-    struct chara_clist *label_field_list;
-    struct chara_clist *label_dir_list;
-    
     void *void_panel;
 };
 
@@ -722,11 +518,10 @@ struct f_VIZ_ISO_def_ctl{
     int * f_iflag;
     
     char *c_block_name;
-    char *iso_def_ctl_file_name;
     
     struct chara_ctl_item *f_isosurf_data_ctl;
     struct chara_ctl_item *f_isosurf_comp_ctl;
-    struct chara_ctl_item *f_isosurf_value_ctl;
+    struct real_ctl_item *f_isosurf_value_ctl;
     struct chara_clist *f_iso_area_ctl;
 };
 
@@ -742,6 +537,8 @@ struct f_VIZ_ISO_ctl{
     
     struct chara_ctl_item *f_iso_file_head_ctl;
     struct chara_ctl_item *f_iso_output_type_ctl;
+    
+    void *void_panel;
 };
 
 struct f_VIZ_MAP_ctl{
@@ -764,6 +561,8 @@ struct f_VIZ_MAP_ctl{
     struct chara_ctl_item *f_map_comp_ctl;
     struct chara_ctl_item *f_isoline_field_ctl;
     struct chara_ctl_item *f_isoline_comp_ctl;
+    
+    void *void_panel;
 };
 
 struct f_VIZ_LIC_ctl{
@@ -816,6 +615,8 @@ struct f_VIZ_FLINE_ctl{
     struct int_ctl_item   *f_max_line_stepping_ctl;
     struct real3_clist    *f_seed_point_ctl;
     struct int2_clist     *f_seed_surface_ctl;
+    
+    void *void_panel;
 };
 
 struct f_VIZ_LIC_PVR_ctl{
@@ -823,6 +624,8 @@ struct f_VIZ_LIC_PVR_ctl{
     char *lic_ctl_file_name;
 	struct f_VIZ_PVR_ctl *f_lic_pvr_ctl;
 	struct f_VIZ_LIC_ctl *f_lic_lic_ctl;
+    
+    void *void_panel;
 };
 
 struct f_MHD_viz_ctls{
@@ -908,10 +711,10 @@ struct f_MHD_control{
 };
 
 
-struct PSF_def_widgets{
-    struct chara_clist *label_xyz_dir_list;
-    struct chara_clist *label_field_list;
+struct PSF_GTK_widgets{
+    struct chara_int2_clist *label_field_list;
     struct chara_clist *label_dir_list;
+    struct chara_clist *label_xyz_dir_list;
     
     struct chara2_cbox_table_view *field_output_vws;
     
@@ -919,6 +722,30 @@ struct PSF_def_widgets{
     struct chara_cbox_table_view * psf_center_vws;
     struct chara_cbox_table_view * psf_normal_vws;
     struct chara_cbox_table_view * psf_axis_vws;
+    GtkWidget * psf_area_view;
+};
+
+struct ISO_GTK_widgets{
+    struct chara_int2_clist *label_field_list;
+    struct chara_clist *label_dir_list;
+    
+    struct chara2_cbox_table_view *field_output_vws;
+    GtkWidget * iso_area_view;
+};
+
+struct MAP_GTK_widgets{
+    GtkWidget * psf_area_view;
+};
+
+struct PVR_GTK_widgets{
+    GtkWidget * psf_area_view;
+};
+
+struct LIC_GTK_widgets{
+    GtkWidget * psf_area_view;
+};
+
+struct FLINE_GTK_widgets{
     GtkWidget * psf_area_view;
 };
 
@@ -944,22 +771,9 @@ struct main_widgets{
 	struct block_array_widgets *zm_map_Wgts;
 	struct block_array_widgets *zrms_map_Wgts;
     
-    struct f_SGS_model_widgets *SGSWgts;
-    GtkWidget * f_magnetic_scale_tree;
-    
-    struct chara_cbox_table_view * time_evo_vws;
-    struct chara_cbox_table_view * force_vws;
-    struct chara_cbox_table_view * ex_magne_vws;
-    struct chara_cbox_table_view * mag_scale_vws;
-    struct chara_cbox_table_view * gravity_vws;
-    
-    struct chara_clist *label_time_evo_list;
-    struct chara_clist *label_force_list;
-    struct chara_clist *label_reftemp_list;
-    struct chara_clist *label_xyz_dir_list;
     struct chara_clist *label_file_format_list;
-    
-    struct PSF_def_widgets *psf_def_vws;
+
+    struct MHD_model_widgets *model_wgts;
 };
 
 void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
@@ -1003,264 +817,9 @@ boolean_to_text (GBinding *binding,
 }
 */
 
-struct f_MHD_time_evo_control * init_f_MHD_time_evo_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
-{
-	struct f_MHD_time_evo_control *f_evo_ctl 
-			= (struct f_MHD_time_evo_control *) malloc(sizeof(struct f_MHD_time_evo_control));
-	if(f_evo_ctl == NULL){
-		printf("malloc error for f_evo_ctl\n");
-		exit(0);
-	};
-	
-	f_evo_ctl->f_self =  c_load_self(f_parent);
-	
-	f_evo_ctl->f_iflag =        (int *) c_MHD_evolution_ctl_iflag(f_evo_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_evolution_ctl_block_name(f_evo_ctl->f_self);
-	f_evo_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_evo_ctl->f_t_evo_field_ctl =  init_f_ctl_chara_array(c_MHD_t_evo_field_ctl, f_evo_ctl->f_self);
-	return f_evo_ctl;
-};
 
 
-struct f_MHD_t_evo_area_control * init_f_MHD_t_evo_area_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
-{
-	struct f_MHD_t_evo_area_control *f_earea_ctl 
-			= (struct f_MHD_t_evo_area_control *) malloc(sizeof(struct f_MHD_t_evo_area_control));
-	if(f_earea_ctl == NULL){
-		printf("malloc error for f_earea_ctl\n");
-		exit(0);
-	};
-	
-	f_earea_ctl->f_self =  c_load_self(f_parent);
-	
-	f_earea_ctl->f_iflag = (int *) c_MHD_evo_area_ctl_iflag(f_earea_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_evo_area_ctl_block_name(f_earea_ctl->f_self);
-	f_earea_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_earea_ctl->f_evo_fluid_group_ctl =    init_f_ctl_chara_array(c_MHD_evo_fluid_group_ctl,
-																   f_earea_ctl->f_self);
-	f_earea_ctl->f_evo_conduct_group_ctl =  init_f_ctl_chara_array(c_MHD_evo_conduct_group_ctl, 
-																   f_earea_ctl->f_self);
-	return f_earea_ctl;
-};
 
-struct f_MHD_gravity_control * init_f_MHD_gravity_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
-{
-	struct f_MHD_gravity_control *f_g_ctl 
-			= (struct f_MHD_gravity_control *) malloc(sizeof(struct f_MHD_gravity_control));
-	if(f_g_ctl == NULL){
-		printf("malloc error for f_g_ctl\n");
-		exit(0);
-	};
-	
-	f_g_ctl->f_self =  c_load_self(f_parent);
-	
-	f_g_ctl->f_iflag =        (int *) c_MHD_gravity_ctl_iflag(f_g_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_gravity_ctl_block_name(f_g_ctl->f_self);
-	f_g_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_g_ctl->f_FEM_gravity_model = init_f_ctl_chara_item(c_MHD_FEM_gravity_model,
-														 f_g_ctl->f_self);
-	f_g_ctl->f_gravity =           init_f_ctl_chara_item(c_MHD_gravity_ctl_gravity,
-														 f_g_ctl->f_self);
-	f_g_ctl->f_gravity_vector =    init_f_ctl_cr_array(c_MHD_gravity_ctl_vector,
-													   f_g_ctl->f_self);
-	return f_g_ctl;
-};
-
-struct f_MHD_Coriolis_control * init_f_MHD_Coriolis_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
-{
-	struct f_MHD_Coriolis_control *f_cor_ctl 
-			= (struct f_MHD_Coriolis_control *) malloc(sizeof(struct f_MHD_Coriolis_control));
-	if(f_cor_ctl == NULL){
-		printf("malloc error for f_cor_ctl\n");
-		exit(0);
-	};
-	
-	f_cor_ctl->f_self =  c_load_self(f_parent);
-	
-	f_cor_ctl->f_iflag =        (int *) c_MHD_coriolis_ctl_iflag(f_cor_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_coriolis_ctl_block_name(f_cor_ctl->f_self);
-	f_cor_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_cor_ctl->f_FEM_coriolis_model = init_f_ctl_chara_item(c_MHD_FEM_coriolis_model,
-															f_cor_ctl->f_self);
-	f_cor_ctl->f_FEM_coriolis_implicit = init_f_ctl_chara_item(c_MHD_FEM_coriolis_implicit,
-															   f_cor_ctl->f_self);
-	f_cor_ctl->f_system_rotation = init_f_ctl_cr_array(c_MHD_system_rotation,
-													   f_cor_ctl->f_self);
-	return f_cor_ctl;
-};
-
-struct f_MHD_magneto_cv_control * init_f_MHD_magneto_cv_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
-{
-	struct f_MHD_magneto_cv_control *f_mcv_ctl 
-			= (struct f_MHD_magneto_cv_control *) malloc(sizeof(struct f_MHD_magneto_cv_control));
-	if(f_mcv_ctl == NULL){
-		printf("malloc error for f_mcv_ctl\n");
-		exit(0);
-	};
-	
-	f_mcv_ctl->f_self =  c_load_self(f_parent);
-	
-	f_mcv_ctl->f_iflag =        (int *) c_MHD_mag_cv_ctl_iflag(f_mcv_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_mag_cv_ctl_block_name(f_mcv_ctl->f_self);
-	f_mcv_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_mcv_ctl->f_filterd_induction_ctl = init_f_ctl_chara_item(c_MHD_mag_cv_filterd_ctl,
-															   f_mcv_ctl->f_self);
-	f_mcv_ctl->f_magneto_cv = init_f_ctl_chara_item(c_MHD_mag_cv_ctl_magneto_cv,
-													f_mcv_ctl->f_self);
-	f_mcv_ctl->f_ext_magne = init_f_ctl_cr_array(c_MHD_mag_cv_ctl_ext_magne,
-												 f_mcv_ctl->f_self);
-	return f_mcv_ctl;
-};
-
-struct f_MHD_magnetic_scale_control * init_f_MHD_magnetic_scale_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
-{
-	struct f_MHD_magnetic_scale_control *f_bscale_ctl 
-			= (struct f_MHD_magnetic_scale_control *) malloc(sizeof(struct f_MHD_magnetic_scale_control));
-	if(f_bscale_ctl == NULL){
-		printf("malloc error for f_bscale_ctl\n");
-		exit(0);
-	};
-	
-	f_bscale_ctl->f_self =  c_load_self(f_parent);
-	
-	f_bscale_ctl->f_iflag =        (int *) c_MHD_B_scale_ctl_iflag(f_bscale_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_B_scale_ctl_block_name(f_bscale_ctl->f_self);
-	f_bscale_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_bscale_ctl->f_mag_to_kin_energy_ctl = init_f_ctl_cr_array(c_MHD_B_scale_mag_to_kin_ctl,
-                                                                  f_bscale_ctl->f_self);
-	return f_bscale_ctl;
-};
-
-struct f_MHD_reftemp_point_control * init_f_MHD_reftemp_point_control(void *(*c_load_self)(void *f_parent), 
-														  void *f_parent)
-{
-	struct f_MHD_reftemp_point_control *f_refs_ctl 
-			= (struct f_MHD_reftemp_point_control *) malloc(sizeof(struct f_MHD_reftemp_point_control));
-	if(f_refs_ctl == NULL){
-		printf("malloc error for f_refs_ctl\n");
-		exit(0);
-	};
-	
-	f_refs_ctl->f_self =  c_load_self(f_parent);
-	
-	f_refs_ctl->f_iflag =        (int *) c_reftemp_point_ctl_iflag(f_refs_ctl->f_self);
-	char *f_block_name =   (char *) c_reftemp_point_ctl_block_name(f_refs_ctl->f_self);
-	f_refs_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_refs_ctl->f_value = init_f_ctl_real_item(c_reftemp_point_value_ctl,
-											   f_refs_ctl->f_self);
-	f_refs_ctl->f_depth = init_f_ctl_real_item(c_reftemp_point_depth_ctl,
-											   f_refs_ctl->f_self);
-	return f_refs_ctl;
-};
-
-struct f_MHD_takepiro_model_control * init_f_MHD_takepiro_model_control(void *(*c_load_self)(void *f_parent), 
-                                                                        void *f_parent)
-{
-	struct f_MHD_takepiro_model_control *f_bscale_ctl 
-			= (struct f_MHD_takepiro_model_control *) malloc(sizeof(struct f_MHD_takepiro_model_control));
-	if(f_bscale_ctl == NULL){
-		printf("malloc error for f_bscale_ctl\n");
-		exit(0);
-	};
-	
-	f_bscale_ctl->f_self =  c_load_self(f_parent);
-	
-	f_bscale_ctl->f_iflag =        (int *) c_takepiro_model_ctl_iflag(f_bscale_ctl->f_self);
-	char *f_block_name =   (char *) c_takepiro_model_ctl_block_name(f_bscale_ctl->f_self);
-	f_bscale_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_bscale_ctl->f_stratified_sigma_ctl = init_f_ctl_real_item(c_takepiro_stratified_sigma_ctl,
-																f_bscale_ctl->f_self);
-	f_bscale_ctl->f_stratified_width_ctl = init_f_ctl_real_item(c_takepiro_stratified_width_ctl,
-																f_bscale_ctl->f_self);
-	f_bscale_ctl->f_stratified_outer_r_ctl = init_f_ctl_real_item(c_takepiro_stratified_rout_ctl,
-																  f_bscale_ctl->f_self);
-	return f_bscale_ctl;
-};
-
-struct f_MHD_temp_model_control * init_f_MHD_temp_model_control(void *(*c_load_self)(void *f_parent), 
-																void *f_parent)
-{
-	struct f_MHD_temp_model_control *f_reft_ctl 
-			= (struct f_MHD_temp_model_control *) malloc(sizeof(struct f_MHD_temp_model_control));
-	if(f_reft_ctl == NULL){
-		printf("malloc error for f_reft_ctl\n");
-		exit(0);
-	};
-	
-	f_reft_ctl->f_self =  c_load_self(f_parent);
-	
-	f_reft_ctl->f_iflag =        (int *) c_temp_model_ctl_iflag(f_reft_ctl->f_self);
-	char *f_block_name =   (char *) c_temp_model_ctl_block_name(f_reft_ctl->f_self);
-	f_reft_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_reft_ctl->f_filterd_advect_ctl = init_f_ctl_chara_item(c_temp_model_filter_advect_ctl,
-															  f_reft_ctl->f_self);
-	f_reft_ctl->f_reference_ctl = init_f_ctl_chara_item(c_temp_model_reference_ctl,
-															  f_reft_ctl->f_self);
-	f_reft_ctl->f_stratified_ctl = init_f_ctl_chara_item(c_temp_model_stratified_ctl,
-															  f_reft_ctl->f_self);
-	f_reft_ctl->f_ref_file_ctl = init_f_ctl_chara_item(c_temp_model_ref_file_ctl,
-															  f_reft_ctl->f_self);
-	f_reft_ctl->f_ICB_diffuse_reduction_ctl = init_f_ctl_real_item(c_temp_model_ICB_diffuse_ctl,
-																   f_reft_ctl->f_self);
-	
-	f_reft_ctl->f_low_ctl = init_f_MHD_reftemp_point_control(c_temp_model_low_ctl,
-															 f_reft_ctl->f_self);
-	f_reft_ctl->f_high_ctl = init_f_MHD_reftemp_point_control(c_temp_model_high_ctl,
-															  f_reft_ctl->f_self);
-	f_reft_ctl->f_takepiro_ctl = init_f_MHD_takepiro_model_control(c_temp_model_takepiro_ctl,
-																   f_reft_ctl->f_self);
-	return f_reft_ctl;
-};
-
-
-struct f_MHD_model_control * init_f_MHD_model_ctl(void *(*c_load_self)(void *f_parent), 
-												  void *f_parent, void *f_addition)
-{
-	struct f_MHD_model_control *f_model_ctl 
-			= (struct f_MHD_model_control *) malloc(sizeof(struct f_MHD_model_control));
-	if(f_model_ctl == NULL){
-		printf("malloc error for f_model_ctl\n");
-		exit(0);
-	};
-	
-	f_model_ctl->f_self =  c_load_self(f_parent);
-	
-	f_model_ctl->f_iflag =        (int *) c_MHD_mdl_iflag(f_model_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_mdl_block_name(f_model_ctl->f_self);
-	f_model_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_model_ctl->f_fld_ctl =    init_f_MHD_fields_control(c_MHD_mdl_fld_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_evo_ctl =    init_f_MHD_time_evo_control(c_MHD_mdl_evo_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_earea_ctl =  init_f_MHD_t_evo_area_control(c_MHD_mdl_earea_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_nbc_ctl =    init_f_MHD_node_bc_control(c_MHD_mdl_nbc_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_sbc_ctl =    init_f_MHD_surf_bc_control(c_MHD_mdl_sbc_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_frc_ctl =    init_f_MHD_forces_ctl(c_MHD_mdl_frc_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_dless_ctl =  init_f_MHD_dimless_ctl(c_MHD_mdl_dless_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_eqs_ctl =    init_f_MHD_equations_ctl(c_MHD_mdl_eqs_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_g_ctl =      init_f_MHD_gravity_control(c_MHD_mdl_g_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_cor_ctl =    init_f_MHD_Coriolis_control(c_MHD_mdl_cor_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_mcv_ctl =    init_f_MHD_magneto_cv_control(c_MHD_mdl_mcv_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_bscale_ctl = init_f_MHD_magnetic_scale_control(c_MHD_mdl_bscale_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_reft_ctl =   init_f_MHD_temp_model_control(c_MHD_mdl_reft_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_refc_ctl =   init_f_MHD_temp_model_control(c_MHD_mdl_refc_ctl, f_model_ctl->f_self);
-	f_model_ctl->f_sgs_ctl =    init_f_MHD_SGS_model_control(c_MHD_sgs_ctl, f_addition);
-	return f_model_ctl;
-}
 
 struct f_VIZ_PSF_def_ctl * init_f_VIZ_PSF_def_ctl(char *file_name,
                                                   void *(*c_load_self)(void *f_parent), 
@@ -1396,10 +955,8 @@ struct f_VIZ_PSF_ctl * init_f_VIZ_PSF_ctl(int idx, void *f_parent)
     return f_psf_ctl;
 };
 
-struct f_VIZ_PSF_ctl * dealloc_f_VIZ_PSF_ctl(void *void_in)
+void dealloc_f_VIZ_PSF_ctl(struct f_VIZ_PSF_ctl *f_psf_ctl)
 {
-    struct f_VIZ_PSF_ctl *f_psf_ctl = (struct f_VIZ_PSF_ctl *) void_in;
-	
     free(f_psf_ctl->psf_ctl_file_name);
 	f_psf_ctl->f_self = NULL;
 	
@@ -1410,7 +967,8 @@ struct f_VIZ_PSF_ctl * dealloc_f_VIZ_PSF_ctl(void *void_in)
     
     dealloc_chara_ctl_item_c(f_psf_ctl->f_psf_file_head_ctl);
     dealloc_chara_ctl_item_c(f_psf_ctl->f_psf_output_type_ctl);
-    return f_psf_ctl;
+    free(f_psf_ctl);
+    return;
 };
 
 
@@ -1449,8 +1007,8 @@ struct f_VIZ_ISO_def_ctl * init_f_VIZ_ISO_def_ctl(void *f_parent)
                                                              f_iso_def_c->f_self);
     f_iso_def_c->f_isosurf_comp_ctl = init_f_ctl_chara_item(c_VIZ_isosurf_comp_ctl,
                                                              f_iso_def_c->f_self);
-    f_iso_def_c->f_isosurf_value_ctl = init_f_ctl_chara_item(c_VIZ_isosurf_value_ctl,
-                                                             f_iso_def_c->f_self);
+    f_iso_def_c->f_isosurf_value_ctl = init_f_ctl_real_item(c_VIZ_isosurf_value_ctl,
+                                                            f_iso_def_c->f_self);
     f_iso_def_c->f_iso_area_ctl = init_f_ctl_chara_array(c_VIZ_isosurf_area_ctl,
                                                          f_iso_def_c->f_self);
     return f_iso_def_c;
@@ -1463,7 +1021,7 @@ void dealloc_f_VIZ_ISO_def_ctl(struct f_VIZ_ISO_def_ctl *f_iso_def_c)
     
     dealloc_chara_ctl_item_c(f_iso_def_c->f_isosurf_data_ctl);
     dealloc_chara_ctl_item_c(f_iso_def_c->f_isosurf_comp_ctl);
-    dealloc_chara_ctl_item_c(f_iso_def_c->f_isosurf_value_ctl);
+    dealloc_real_ctl_item_c(f_iso_def_c->f_isosurf_value_ctl);
     dealloc_chara_clist(f_iso_def_c->f_iso_area_ctl);
     free(f_iso_def_c);
     return;
@@ -1498,9 +1056,8 @@ struct f_VIZ_ISO_ctl * init_f_VIZ_ISO_ctl(int idx, void *f_parent)
     return f_iso_ctl;
 }
 
-struct f_VIZ_ISO_ctl * dealloc_f_VIZ_ISO_ctl(struct f_VIZ_ISO_ctl *f_iso_ctl)
+void dealloc_f_VIZ_ISO_ctl(struct f_VIZ_ISO_ctl *f_iso_ctl)
 {
-	
     free(f_iso_ctl->iso_ctl_file_name);
     f_iso_ctl->f_self = NULL;
     free(f_iso_ctl->c_block_name);
@@ -1510,7 +1067,8 @@ struct f_VIZ_ISO_ctl * dealloc_f_VIZ_ISO_ctl(struct f_VIZ_ISO_ctl *f_iso_ctl)
     
     dealloc_chara_ctl_item_c(f_iso_ctl->f_iso_file_head_ctl);
     dealloc_chara_ctl_item_c(f_iso_ctl->f_iso_output_type_ctl);
-    return f_iso_ctl;
+    free(f_iso_ctl);
+    return;
 }
 
 
@@ -1529,8 +1087,7 @@ struct void_clist * init_f_VIZ_iso_ctls(void *f_parent, int *f_num_iso_ctl)
 	return f_iso_ctls;
 }
 
-struct f_VIZ_MAP_ctl * dealloc_f_VIZ_MAP_ctl(void *void_in){
-    struct f_VIZ_MAP_ctl *f_map_ctl = (struct f_VIZ_MAP_ctl *) void_in;
+void dealloc_f_VIZ_MAP_ctl(struct f_VIZ_MAP_ctl *f_map_ctl){
     
     free(f_map_ctl->c_block_name);
     free(f_map_ctl->map_ctl_file_name);
@@ -1542,7 +1099,8 @@ struct f_VIZ_MAP_ctl * dealloc_f_VIZ_MAP_ctl(void *void_in){
     dealloc_chara_ctl_item_c(f_map_ctl->f_map_comp_ctl);
     dealloc_chara_ctl_item_c(f_map_ctl->f_isoline_field_ctl);
     dealloc_chara_ctl_item_c(f_map_ctl->f_isoline_comp_ctl);
-    return f_map_ctl;
+    free(f_map_ctl);
+    return;
 };
 
 struct f_VIZ_MAP_ctl * init_f_VIZ_MAP_ctl(int idx, void *f_parent)
@@ -1707,16 +1265,13 @@ struct f_VIZ_LIC_PVR_ctl * init_f_VIZ_LIC_PVR_ctl(int idx, void *f_parent)
     f_lic_ctl->f_lic_lic_ctl =  init_f_VIZ_LIC_ctl(idx, f_parent);
     return f_lic_ctl;
 };
-
-struct f_VIZ_LIC_PVR_ctl * dealloc_f_VIZ_LIC_PVR_ctl(void *void_in)
+void dealloc_f_VIZ_LIC_PVR_ctl(struct f_VIZ_LIC_PVR_ctl *f_lic_ctl)
 {
-    struct f_VIZ_LIC_PVR_ctl *f_lic_ctl = (struct f_VIZ_LIC_PVR_ctl *) void_in;
-    
     free(f_lic_ctl->lic_ctl_file_name);
     f_lic_ctl->f_lic_pvr_ctl = dealloc_f_VIZ_PVR_ctl(f_lic_ctl->f_lic_pvr_ctl);
     f_lic_ctl->f_lic_lic_ctl =  dealloc_f_VIZ_LIC_ctl(f_lic_ctl->f_lic_lic_ctl);
     free(f_lic_ctl);
-    return f_lic_ctl;
+    return;
 };
 
 struct void_clist * init_f_VIZ_lic_ctls(void *f_parent, int *f_num_lic_ctl)
@@ -1782,10 +1337,8 @@ struct f_VIZ_FLINE_ctl * init_f_VIZ_FLINE_ctl(int idx, void *f_parent)
 	return f_fline_ctl;
 }
 
-struct f_VIZ_FLINE_ctl * dealloc_f_VIZ_FLINE_ctl(void *void_in)
+void dealloc_f_VIZ_FLINE_ctl(struct f_VIZ_FLINE_ctl *f_fline_ctl)
 {
-    struct f_VIZ_FLINE_ctl *f_fline_ctl = (struct f_VIZ_FLINE_ctl *) void_in;
-	
 	f_fline_ctl->f_self = NULL;
     free(f_fline_ctl->fline_ctl_file_name);
 	free(f_fline_ctl->c_block_name);
@@ -1804,7 +1357,8 @@ struct f_VIZ_FLINE_ctl * dealloc_f_VIZ_FLINE_ctl(void *void_in)
     dealloc_chara_clist(f_fline_ctl->f_fline_area_grp_ctl);
     dealloc_real3_clist(f_fline_ctl->f_seed_point_ctl);
     dealloc_int2_clist(f_fline_ctl->f_seed_surface_ctl);
-	return f_fline_ctl;
+    free(f_fline_ctl);
+	return;
 }
 
 struct void_clist * init_f_VIZ_fline_ctls(void *f_parent, int *f_num_fline_ctl)
@@ -2131,12 +1685,27 @@ static void cb_Save(GtkButton *button, gpointer data)
                 printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
                        mkdir(stripped_dir, 0777));
             };
+            if(compare_string(strlen(ctl_tmp->f_psf_def_c->psf_def_file_name),
+                              stripped_dir, ctl_tmp->f_psf_def_c->psf_def_file_name) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
+            if(compare_string(strlen(ctl_tmp->f_fld_on_psf_c->fname_fld_on_psf),
+                              stripped_dir, ctl_tmp->f_fld_on_psf_c->fname_fld_on_psf) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
         }
         for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_iso_ctls);i++){
             struct f_VIZ_ISO_ctl *ctl_tmp 
                     = (struct f_VIZ_ISO_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_iso_ctls);
             if(compare_string(strlen(ctl_tmp->iso_ctl_file_name),
                               stripped_dir, ctl_tmp->iso_ctl_file_name) == 0){
+                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                       mkdir(stripped_dir, 0777));
+            };
+            if(compare_string(strlen(ctl_tmp->f_fld_on_iso_c->fname_fld_on_psf),
+                              stripped_dir, ctl_tmp->f_fld_on_iso_c->fname_fld_on_psf) == 0){
                 printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
                        mkdir(stripped_dir, 0777));
             };
@@ -2238,30 +1807,20 @@ GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
 
 struct f_MHD_tree_views{
 	struct f_sph_shell_views *f_psph_vws;
-	struct f_MHD_equations_views *f_eqs_vws;
-    struct dimless_views * f_t_evo_vws;
-    struct dimless_views * f_dimless_vws;
-
-	struct f_MHD_BCs_tree_views *bc_nod_bc_vws;
- 	struct f_MHD_BCs_tree_views *bc_surf_bc_vws;
-
-	GtkWidget *f_fluid_area_tree_view;
-	GtkWidget *f_conduct_area_tree_view;
-	GtkWidget *f_force_default_view;
 };
 struct f_MHD_tree_views *f_MHD_vws;
 
 static GtkWidget * draw_psf_fld_ctl_vbox(struct f_VIZ_fld_on_PSF_ctl *f_fld_on_psf_c,
-                                         struct chara2_cbox_table_view *field_output_vws, 
-                                         struct chara_clist *label_field_list,
+                                         struct chara_int2_clist *label_field_list,
                                          struct chara_clist *label_dir_list,
+                                         struct chara2_cbox_table_view *field_output_vws, 
                                          GtkWidget *window){
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_fld_on_psf_c->f_output_type_ctl);
     GtkWidget *hbox_2 = draw_real_item_entry_hbox(f_fld_on_psf_c->f_output_value_ctl);
-    GtkWidget * expand_1 = c2_list_cbox_cbox_expander(f_fld_on_psf_c->f_field_output_ctl,
-                                                      label_field_list, label_dir_list,
-                                                      field_output_vws, window);
+    GtkWidget * expand_1 = c2_list_fld_on_psf_expander(f_fld_on_psf_c->f_field_output_ctl,
+                                                       label_field_list, label_dir_list,
+                                                       field_output_vws, window);
     
     GtkWidget *vbox_psf_f = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_psf_f), hbox_1,  FALSE, FALSE, 0);
@@ -2277,7 +1836,7 @@ static GtkWidget * draw_psf_fld_ctl_vbox(struct f_VIZ_fld_on_PSF_ctl *f_fld_on_p
 
 
 static GtkWidget * draw_psf_def_ctl_vbox(struct f_VIZ_PSF_def_ctl *f_psf_def_c, 
-                                         struct PSF_def_widgets *psf_def_vws, GtkWidget *window){
+                                         struct PSF_GTK_widgets *psf_def_vws, GtkWidget *window){
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_psf_def_c->f_section_method_ctl);
     GtkWidget *hbox_2 = cr_list_combobox_expander(f_psf_def_c->f_psf_coefs_ctl, psf_def_vws->label_xyz_dir_list, 
                                                   psf_def_vws->psf_coefs_vws, window);
@@ -2301,23 +1860,43 @@ static GtkWidget * draw_psf_def_ctl_vbox(struct f_VIZ_PSF_def_ctl *f_psf_def_c,
     gtk_box_pack_start(GTK_BOX(vbox_psf_d), hbox_7,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_psf_d), hbox_8,  FALSE, FALSE, 0);
     
-    GtkWidget *expand_psf_d = draw_control_block_w_file_switch(duplicate_underscore(f_psf_def_c->c_block_name),
+    GtkWidget *expand_psf_d = draw_control_block_w_file_switch(f_psf_def_c->c_block_name,
 															   f_psf_def_c->f_iflag,
 															   f_psf_def_c->psf_def_file_name,
 															   window, vbox_psf_d);
     return expand_psf_d;
 };
 
+static GtkWidget * draw_iso_def_ctl_vbox(struct f_VIZ_ISO_def_ctl *f_iso_def_c, 
+                                         struct ISO_GTK_widgets *iso_vws, GtkWidget *window){
+    GtkWidget *hbox_1 = draw_field_combobox_hbox(iso_vws->label_field_list, 
+                                                 f_iso_def_c->f_isosurf_data_ctl, window);
+    GtkWidget *hbox_2 = draw_chara_item_combobox_hbox(iso_vws->label_dir_list, 
+                                                      f_iso_def_c->f_isosurf_comp_ctl, window);
+    GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_iso_def_c->f_isosurf_value_ctl);
+    GtkWidget *hbox_4 = add_c_list_box_w_addbottun(f_iso_def_c->f_iso_area_ctl, iso_vws->iso_area_view);
+    
+	GtkWidget *vbox_iso_d = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_iso_d), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_iso_d), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_iso_d), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_iso_d), hbox_3,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_iso_d = draw_control_block(f_iso_def_c->c_block_name, f_iso_def_c->f_iflag,
+                                                 window, vbox_iso_d);
+    return expand_iso_d;
+};
+
 static GtkWidget * draw_viz_each_psf_ctl_vbox(char *label_name, struct f_VIZ_PSF_ctl *f_psf_item, 
                                               GtkWidget *window){
-    struct PSF_def_widgets *psf_def_vws = (struct PSF_def_widgets *) f_psf_item->void_panel;
+    struct PSF_GTK_widgets *psf_def_vws = (struct PSF_GTK_widgets *) f_psf_item->void_panel;
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_psf_item->f_psf_file_head_ctl);
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_psf_item->f_psf_output_type_ctl);
     
     GtkWidget *expand_psf_d = draw_psf_def_ctl_vbox(f_psf_item->f_psf_def_c, psf_def_vws, window);
-    GtkWidget *expand_psf_f = draw_psf_fld_ctl_vbox(f_psf_item->f_fld_on_psf_c, psf_def_vws->field_output_vws, 
-                                                    psf_def_vws->label_dir_list, psf_def_vws->label_dir_list,
-                                                    window);
+    GtkWidget *expand_psf_f = draw_psf_fld_ctl_vbox(f_psf_item->f_fld_on_psf_c, 
+                                                    psf_def_vws->label_field_list, psf_def_vws->label_dir_list,
+                                                    psf_def_vws->field_output_vws, window);
     
     GtkWidget *vbox_v_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_v_psf), hbox_1,  FALSE, FALSE, 0);
@@ -2333,12 +1912,20 @@ static GtkWidget * draw_viz_each_psf_ctl_vbox(char *label_name, struct f_VIZ_PSF
 
 static GtkWidget * draw_viz_each_iso_ctl_vbox(char *label_name, struct f_VIZ_ISO_ctl *f_iso_item, 
 											  GtkWidget *window){
+    struct ISO_GTK_widgets *iso_vws = (struct ISO_GTK_widgets *) f_iso_item->void_panel;
 	GtkWidget *vbox_v_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_iso_item->f_iso_file_head_ctl);
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_iso_item->f_iso_output_type_ctl);
+    GtkWidget *expand_iso_d = draw_iso_def_ctl_vbox(f_iso_item->f_iso_def_c, iso_vws, window);
+    GtkWidget *expand_iso_f = draw_psf_fld_ctl_vbox(f_iso_item->f_fld_on_iso_c, 
+                                                    iso_vws->label_field_list, iso_vws->label_dir_list,
+                                                    iso_vws->field_output_vws, window);
+    
     gtk_box_pack_start(GTK_BOX(vbox_v_iso), hbox_1,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_iso), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_iso), expand_iso_d,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_iso), expand_iso_f,  FALSE, FALSE, 0);
     GtkWidget *expand_v_iso = draw_control_block_w_file_switch(duplicate_underscore(label_name),
 															   f_iso_item->f_iflag,
 															   f_iso_item->iso_ctl_file_name,
@@ -2435,249 +2022,184 @@ static GtkWidget * draw_viz_each_fline_ctl_vbox(char *label_name, struct f_VIZ_F
     return expand_v_fline;
 };
 
-GtkWidget * MHD_temperature_model_expander(GtkWidget *window, struct f_MHD_temp_model_control *f_reft_ctl, 
-                                    struct chara_clist *label_reftemp_list){
-    GtkWidget *vbox_tl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    GtkWidget *hbox_tl1 = draw_real_item_entry_hbox(f_reft_ctl->f_low_ctl->f_value);
-    GtkWidget *hbox_tl2 = draw_real_item_entry_hbox(f_reft_ctl->f_low_ctl->f_depth);
-	gtk_box_pack_start(GTK_BOX(vbox_tl), hbox_tl1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tl), hbox_tl2, FALSE, FALSE, 0);
-	GtkWidget *expand_tl = draw_control_block(f_reft_ctl->f_low_ctl->c_block_name, 
-                                              f_reft_ctl->f_low_ctl->f_iflag,
-                                              window, vbox_tl);
-    
-    GtkWidget *vbox_th = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    GtkWidget *hbox_th1 = draw_real_item_entry_hbox(f_reft_ctl->f_high_ctl->f_value);
-    GtkWidget *hbox_th2 = draw_real_item_entry_hbox(f_reft_ctl->f_high_ctl->f_depth);
-	gtk_box_pack_start(GTK_BOX(vbox_th), hbox_th1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_th), hbox_th2, FALSE, FALSE, 0);
-	GtkWidget *expand_th = draw_control_block(f_reft_ctl->f_high_ctl->c_block_name, 
-                                              f_reft_ctl->f_high_ctl->f_iflag,
-                                              window, vbox_th);
-    
-    GtkWidget *vbox_tp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    GtkWidget *hbox_tp1 = draw_real_item_entry_hbox(f_reft_ctl->f_takepiro_ctl->f_stratified_sigma_ctl);
-    GtkWidget *hbox_tp2 = draw_real_item_entry_hbox(f_reft_ctl->f_takepiro_ctl->f_stratified_width_ctl);
-    GtkWidget *hbox_tp3 = draw_real_item_entry_hbox(f_reft_ctl->f_takepiro_ctl->f_stratified_outer_r_ctl);
-	gtk_box_pack_start(GTK_BOX(vbox_tp), hbox_tp1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tp), hbox_tp2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tp), hbox_tp3, FALSE, FALSE, 0);
-	GtkWidget *expand_tp = draw_control_block(f_reft_ctl->f_takepiro_ctl->c_block_name, 
-                                              f_reft_ctl->f_takepiro_ctl->f_iflag,
-                                              window, vbox_tp);
-    
-    
-    
-    GtkWidget *hbox_t1 = draw_chara_switch_entry_hbox(f_reft_ctl->f_filterd_advect_ctl);
-    GtkWidget *hbox_t2 = draw_chara_item_combobox_hbox(label_reftemp_list, f_reft_ctl->f_reference_ctl, window);
-    GtkWidget *hbox_t3 = draw_chara_switch_entry_hbox(f_reft_ctl->f_stratified_ctl);
-    GtkWidget *hbox_t4 = draw_chara_item_entry_hbox(f_reft_ctl->f_ref_file_ctl);
-    GtkWidget *hbox_t5 = draw_real_item_entry_hbox(f_reft_ctl->f_ICB_diffuse_reduction_ctl);
-    
-	GtkWidget *vbox_tt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t4, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_tl, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_th, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t5, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t3, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tt), expand_tp, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_tt), hbox_t1, FALSE, FALSE, 0);
-	GtkWidget *expand_t = draw_control_block(f_reft_ctl->c_block_name, f_reft_ctl->f_iflag,
-                                             window, vbox_tt);
-    return expand_t;
-};
-
-GtkWidget *MHD_model_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
-                                  struct main_widgets *mWidgets){
-    struct field_views *fields_vws = init_field_views_GTK(f_MHD_ctl->f_model_ctl->f_fld_ctl);
-	fields_vws->used_tree_view = create_field_tree_view(fields_vws->all_fld_list,
-														fields_vws->fld_ctl_gtk);
-    fields_vws->unused_field_tree_view = create_unused_field_tree_views(fields_vws->all_fld_list);
-    fields_vws->field_group_tree_view = create_field_group_tree_view(fields_vws->all_fld_list);
-    fields_vws->all_field_tree_view = create_all_field_tree_views(fields_vws->all_fld_list);
-    create_direction_tree_views(fields_vws);
-	GtkWidget *vbox_MHD_fields = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    add_field_selection_box(fields_vws, window, vbox_MHD_fields);
-    GtkWidget *expand_MHD_fields = draw_control_block(f_MHD_ctl->f_model_ctl->f_fld_ctl->c_block_name,
-                                                      f_MHD_ctl->f_model_ctl->f_fld_ctl->f_iflag,
-                                                      window, vbox_MHD_fields);
-    
-    
-    
-    mWidgets->label_time_evo_list = init_f_ctl_chara_array(c_link_time_evo_list_to_ctl,
-                                                           f_MHD_ctl->f_self);
-    GtkWidget *vbox_m1 = c_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_evo_ctl->f_t_evo_field_ctl,
-                                                  mWidgets->label_time_evo_list,
-                                                  mWidgets->time_evo_vws, window);
-    GtkWidget *expand_MHD_time_evo = draw_control_block(f_MHD_ctl->f_model_ctl->f_evo_ctl->c_block_name,
-														f_MHD_ctl->f_model_ctl->f_evo_ctl->f_iflag,
-                                                        window, vbox_m1);
-	
-    
-    GtkWidget *expand_MHD_fluid_area = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_earea_ctl->f_evo_fluid_group_ctl, 
-                                                                 f_MHD_vws->f_fluid_area_tree_view);
-    GtkWidget *expand_MHD_conduct_area = add_c_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_earea_ctl->f_evo_conduct_group_ctl, 
-                                                                    f_MHD_vws->f_conduct_area_tree_view);
-    
-    GtkWidget *vbox_m2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_m2), expand_MHD_fluid_area, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m2), expand_MHD_conduct_area, FALSE, FALSE, 0);
-    
-    GtkWidget *expand_MHD_tevo_area = draw_control_block(f_MHD_ctl->f_model_ctl->f_earea_ctl->c_block_name,
-														f_MHD_ctl->f_model_ctl->f_earea_ctl->f_iflag,
-                                                        window, vbox_m2);
-    
-	
-	GtkWidget *vbox_m3 = draw_node_bc_ctl_vbox(f_MHD_ctl->f_model_ctl->f_nbc_ctl,
-											   f_MHD_vws->bc_nod_bc_vws, window);
-    GtkWidget *expand_MHD_node_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_nbc_ctl->c_block_name,
-                                                      f_MHD_ctl->f_model_ctl->f_nbc_ctl->f_iflag,
-													   window, vbox_m3);
-	
-	GtkWidget *vbox_m4 = draw_surf_bc_ctl_vbox(f_MHD_ctl->f_model_ctl->f_sbc_ctl,
-											   f_MHD_vws->bc_surf_bc_vws, window);
-    GtkWidget *expand_MHD_surf_bc = draw_control_block(f_MHD_ctl->f_model_ctl->f_sbc_ctl->c_block_name,
-                                                      f_MHD_ctl->f_model_ctl->f_sbc_ctl->f_iflag,
-                                                      window, vbox_m4);
-	
-	
-    mWidgets->label_force_list = init_f_ctl_chara_array(c_link_force_list_to_ctl,
-                                                        f_MHD_ctl->f_self);
-    GtkWidget *vbox_fce = c_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_frc_ctl->f_force_names,
-                                                  mWidgets->label_force_list,
-                                                  mWidgets->force_vws,
-                                                  window);
-    GtkWidget *vbox_MHD_force = draw_control_block(f_MHD_ctl->f_model_ctl->f_frc_ctl->c_block_name,
-                                                   f_MHD_ctl->f_model_ctl->f_frc_ctl->f_iflag,
-                                                   window, vbox_fce);
-    
-	GtkWidget *expand_MHD_dimless = add_dimless_selection_box(f_MHD_ctl->f_model_ctl->f_dless_ctl,
-                                                              f_MHD_vws->f_dimless_vws, window);
-	
-	
-	GtkWidget *vbox_eqs = draw_MHD_equations_vbox(f_MHD_ctl->f_model_ctl->f_eqs_ctl, 
-												  f_MHD_vws->f_eqs_vws, window);
-	GtkWidget *expand_MHD_eqs = draw_control_block(f_MHD_ctl->f_model_ctl->f_eqs_ctl->c_block_name, 
-													 f_MHD_ctl->f_model_ctl->f_eqs_ctl->f_iflag,
-													 window, vbox_eqs);
-    
-    mWidgets->label_reftemp_list = init_f_ctl_chara_array(c_link_reftemp_list_to_ctl,
-                                                          f_MHD_ctl->f_self);
-	GtkWidget *expand_t = MHD_temperature_model_expander(window, f_MHD_ctl->f_model_ctl->f_reft_ctl, 
-                                                         mWidgets->label_reftemp_list);
-	GtkWidget *expand_c = MHD_temperature_model_expander(window, f_MHD_ctl->f_model_ctl->f_refc_ctl, 
-                                                         mWidgets->label_reftemp_list);
-    
-    
-    mWidgets->label_xyz_dir_list = init_f_ctl_chara_array(c_link_xyz_dir_list_to_ctl,
-                                                          f_MHD_ctl->f_self);
-    GtkWidget *hbox_mc1 = draw_chara_switch_entry_hbox(f_MHD_ctl->f_model_ctl->f_mcv_ctl->f_filterd_induction_ctl);
-    GtkWidget *hbox_mc2 = draw_chara_switch_entry_hbox(f_MHD_ctl->f_model_ctl->f_mcv_ctl->f_magneto_cv);
-    GtkWidget *expand_mc = cr_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_mcv_ctl->f_ext_magne, 
-                                                     mWidgets->label_xyz_dir_list, mWidgets->ex_magne_vws, window);
-    
-    GtkWidget *vbox_mcv = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_mcv), hbox_mc1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_mcv), hbox_mc2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_mcv), expand_mc, FALSE, FALSE, 0);
-	GtkWidget *expand_MHD_mcv = draw_control_block(f_MHD_ctl->f_model_ctl->f_mcv_ctl->c_block_name, 
-													 f_MHD_ctl->f_model_ctl->f_mcv_ctl->f_iflag,
-													 window, vbox_mcv);
-    
-    
-    GtkWidget *expand_msc = add_cr_list_box_w_addbottun(f_MHD_ctl->f_model_ctl->f_bscale_ctl->f_mag_to_kin_energy_ctl, 
-                                                        mWidgets->f_magnetic_scale_tree);
-	GtkWidget *expand_MHD_msc = draw_control_block(f_MHD_ctl->f_model_ctl->f_bscale_ctl->c_block_name, 
-													 f_MHD_ctl->f_model_ctl->f_bscale_ctl->f_iflag,
-													 window, expand_msc);
-    
-    
-    GtkWidget *hbox_g1 = draw_chara_switch_entry_hbox(f_MHD_ctl->f_model_ctl->f_g_ctl->f_gravity);
-    GtkWidget *hbox_g2 = draw_chara_switch_entry_hbox(f_MHD_ctl->f_model_ctl->f_g_ctl->f_FEM_gravity_model);
-    GtkWidget *expand_gc = cr_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_g_ctl->f_gravity_vector, 
-                                                     mWidgets->label_xyz_dir_list, mWidgets->gravity_vws, window);
-    
-    GtkWidget *vbox_g = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_g), hbox_g1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_g), hbox_g2, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_g), expand_gc, FALSE, FALSE, 0);
-	GtkWidget *expand_MHD_g = draw_control_block(f_MHD_ctl->f_model_ctl->f_g_ctl->c_block_name, 
-                                                 f_MHD_ctl->f_model_ctl->f_g_ctl->f_iflag,
-                                                 window, vbox_g);
-    
-    
-    
-    GtkWidget *expand_cc = cr_list_combobox_expander(f_MHD_ctl->f_model_ctl->f_cor_ctl->f_system_rotation, 
-                                                     mWidgets->label_xyz_dir_list, mWidgets->gravity_vws, window);
-    GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_MHD_ctl->f_model_ctl->f_cor_ctl->f_FEM_coriolis_model);
-    GtkWidget *hbox_c2 = draw_chara_switch_entry_hbox(f_MHD_ctl->f_model_ctl->f_cor_ctl->f_FEM_coriolis_implicit);
-    
-    GtkWidget *vbox_c = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_c), expand_cc, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_c), hbox_c1, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_c), hbox_c2, FALSE, FALSE, 0);
-	GtkWidget *expand_MHD_c = draw_control_block(f_MHD_ctl->f_model_ctl->f_cor_ctl->c_block_name, 
-                                                 f_MHD_ctl->f_model_ctl->f_cor_ctl->f_iflag,
-                                                 window, vbox_c);
-    
-    
-    GtkWidget *expand_MHD_s = SGS_MHD_model_expander(window, f_MHD_ctl->f_model_ctl->f_sgs_ctl, 
-                                                     mWidgets->SGSWgts);
-    
-    GtkWidget *vbox_m = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_fields, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_time_evo, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_tevo_area, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_node_bc, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_surf_bc, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), vbox_MHD_force, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_dimless, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_eqs, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_t, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_c, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_mcv, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_msc, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_g, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_c, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_m), expand_MHD_s, FALSE, FALSE, 0);
-	GtkWidget *expand_MHD_model = draw_control_block(f_MHD_ctl->f_model_ctl->c_block_name, 
-													 f_MHD_ctl->f_model_ctl->f_iflag,
-                                                     window, vbox_m);
-    return expand_MHD_model;
-}
-
-struct PSF_def_widgets * init_PSF_def_widgets(struct f_VIZ_PSF_ctl *f_psf_ctl)
+struct PSF_GTK_widgets * init_PSF_GTK_widgets(struct chara_int2_clist *f_field_ctl)
 {
-	struct PSF_def_widgets *psf_def_vws 
-			= (struct PSF_def_widgets *) malloc(sizeof(struct PSF_def_widgets));
+	struct PSF_GTK_widgets *psf_def_vws 
+			= (struct PSF_GTK_widgets *) malloc(sizeof(struct PSF_GTK_widgets));
 	if(psf_def_vws == NULL){
 		printf("malloc error for psf_def_vws\n");
 		exit(0);
     };
+    psf_def_vws->label_field_list = f_field_ctl;
+    psf_def_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
+    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL),
+                             psf_def_vws->label_dir_list);
+    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
+                             psf_def_vws->label_dir_list);
+    psf_def_vws->label_xyz_dir_list = init_f_ctl_chara_array(c_link_xyz_dir_list_to_ctl, NULL);
     
-    psf_def_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl,
-                                                         f_psf_ctl->f_self);
-    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(f_psf_ctl->f_self),
-                             psf_def_vws->label_dir_list);
-    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(f_psf_ctl->f_self), 
-                             psf_def_vws->label_dir_list);
-    psf_def_vws->label_xyz_dir_list = init_f_ctl_chara_array(c_link_xyz_dir_list_to_ctl,
-                                                             f_psf_ctl->f_self);
     return psf_def_vws;
 };
-void dealloc_PSF_def_widgets(struct PSF_def_widgets *psf_def_vws){
+void dealloc_PSF_GTK_widgets(struct PSF_GTK_widgets *psf_def_vws){
+    dealloc_chara_int2_clist(psf_def_vws->label_field_list);
+    dealloc_chara_clist(psf_def_vws->label_dir_list);
+    dealloc_chara_clist(psf_def_vws->label_xyz_dir_list);
     free(psf_def_vws);
 }
 
-struct f_VIZ_PSF_ctl * init_f_VIZ_PSF_ctl_GTK(int idx, void *f_parent){
+struct ISO_GTK_widgets * init_ISO_GTK_widgets(struct chara_int2_clist *f_field_ctl)
+{
+	struct ISO_GTK_widgets *iso_vws 
+			= (struct ISO_GTK_widgets *) malloc(sizeof(struct ISO_GTK_widgets));
+	if(iso_vws == NULL){
+		printf("malloc error for iso_vws\n");
+		exit(0);
+    };
+    iso_vws->label_field_list = f_field_ctl;
+    iso_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
+    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL), iso_vws->label_dir_list);
+    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), iso_vws->label_dir_list);
+    return iso_vws;
+};
+void dealloc_ISO_GTK_widgets(struct ISO_GTK_widgets *iso_vws){
+    dealloc_chara_int2_clist(iso_vws->label_field_list);
+    dealloc_chara_clist(iso_vws->label_dir_list);
+    free(iso_vws);
+}
+
+struct MAP_GTK_widgets * init_MAP_GTK_widgets()
+{
+	struct MAP_GTK_widgets *map_vws 
+			= (struct MAP_GTK_widgets *) malloc(sizeof(struct MAP_GTK_widgets));
+	if(map_vws == NULL){
+		printf("malloc error for map_vws\n");
+		exit(0);
+    };
+    return map_vws;
+};
+void dealloc_MAP_GTK_widgets(struct MAP_GTK_widgets *map_vws){
+    free(map_vws);
+}
+
+struct PVR_GTK_widgets * init_PVR_GTK_widgets()
+{
+	struct PVR_GTK_widgets *pvr_vws 
+			= (struct PVR_GTK_widgets *) malloc(sizeof(struct PVR_GTK_widgets));
+	if(pvr_vws == NULL){
+		printf("malloc error for pvr_vws\n");
+		exit(0);
+    };
+    return pvr_vws;
+};
+void dealloc_PVR_GTK_widgets(struct PVR_GTK_widgets *pvr_vws){
+    free(pvr_vws);
+}
+
+
+struct LIC_GTK_widgets * init_LIC_GTK_widgets()
+{
+	struct LIC_GTK_widgets *lic_vws 
+			= (struct LIC_GTK_widgets *) malloc(sizeof(struct LIC_GTK_widgets));
+	if(lic_vws == NULL){
+		printf("malloc error for lic_vws\n");
+		exit(0);
+    };
+    return lic_vws;
+};
+void dealloc_LIC_GTK_widgets(struct LIC_GTK_widgets *lic_vws){
+    free(lic_vws);
+}
+
+struct FLINE_GTK_widgets * init_FLINE_GTK_widgets()
+{
+	struct FLINE_GTK_widgets *fline_vws 
+			= (struct FLINE_GTK_widgets *) malloc(sizeof(struct FLINE_GTK_widgets));
+	if(fline_vws == NULL){
+		printf("malloc error for fline_vws\n");
+		exit(0);
+    };
+    return fline_vws;
+};
+void dealloc_FLINE_GTK_widgets(struct FLINE_GTK_widgets *fline_vws){
+    free(fline_vws);
+    return;
+}
+
+
+struct f_VIZ_PSF_ctl * init_f_VIZ_PSF_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
     struct f_VIZ_PSF_ctl *f_psf_ctl = init_f_VIZ_PSF_ctl(idx, f_parent);
-    f_psf_ctl->void_panel = (void *) init_PSF_def_widgets(f_psf_ctl);
+    f_psf_ctl->void_panel = (void *) init_PSF_GTK_widgets(f_fld_ctl->f_field_ctl);
     return f_psf_ctl;
 }
-struct f_VIZ_PSF_ctl * dealloc_f_VIZ_PSF_ctl_GTK(struct f_VIZ_PSF_ctl *f_psf_ctl){
-    dealloc_PSF_def_widgets((struct PSF_def_widgets *) f_psf_ctl->void_panel);
-    return f_psf_ctl;
+void * dealloc_f_VIZ_PSF_ctl_GTK(void *void_in){
+    struct f_VIZ_PSF_ctl *f_psf_ctl = (struct f_VIZ_PSF_ctl *) void_in;
+    dealloc_PSF_GTK_widgets((struct PSF_GTK_widgets *) f_psf_ctl->void_panel);
+    dealloc_f_VIZ_PSF_ctl(f_psf_ctl);
+    return NULL;
+}
+
+struct f_VIZ_ISO_ctl * init_f_VIZ_ISO_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
+    struct f_VIZ_ISO_ctl *f_iso_ctl = init_f_VIZ_ISO_ctl(idx, f_parent);
+    f_iso_ctl->void_panel = (void *) init_ISO_GTK_widgets(f_fld_ctl->f_field_ctl);
+    return f_iso_ctl;
+}
+
+void * dealloc_f_VIZ_ISO_ctl_GTK(void *void_in){
+    struct f_VIZ_ISO_ctl *f_iso_ctl = (struct f_VIZ_ISO_ctl *) void_in;
+    dealloc_ISO_GTK_widgets((struct ISO_GTK_widgets *) f_iso_ctl->void_panel);
+    dealloc_f_VIZ_ISO_ctl(f_iso_ctl);
+    return NULL;
+}
+
+struct f_VIZ_MAP_ctl * init_f_VIZ_MAP_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_VIZ_MAP_ctl *f_map_ctl = init_f_VIZ_MAP_ctl(idx, f_parent);
+    f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets();
+    return f_map_ctl;
+}
+void *dealloc_f_VIZ_MAP_ctl_GTK(void *void_in){
+    struct f_VIZ_MAP_ctl *f_map_ctl = (struct f_VIZ_MAP_ctl *) void_in;
+    dealloc_MAP_GTK_widgets((struct MAP_GTK_widgets *) f_map_ctl->void_panel);
+    dealloc_f_VIZ_MAP_ctl(f_map_ctl);
+    return NULL;
+}
+
+struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_VIZ_PVR_ctl *f_pvr_ctl = init_f_VIZ_PVR_ctl(c_pvr_render_ctls_pvr_ctl, 
+                                                         idx, f_parent);
+    f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets();
+    return f_pvr_ctl;
+}
+void * dealloc_f_VIZ_PVR_ctl_GTK(void *void_in){
+    struct f_VIZ_PVR_ctl *f_pvr_ctl = (struct f_VIZ_PVR_ctl *) void_in;
+    dealloc_PVR_GTK_widgets((struct PVR_GTK_widgets *) f_pvr_ctl->void_panel);
+    dealloc_f_VIZ_PVR_ctl(f_pvr_ctl);
+    return NULL;
+}
+
+struct f_VIZ_LIC_PVR_ctl * init_f_VIZ_LIC_PVR_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_VIZ_LIC_PVR_ctl *f_lic_ctl = init_f_VIZ_LIC_PVR_ctl(idx, f_parent);
+    f_lic_ctl->void_panel = (void *) init_LIC_GTK_widgets();
+    return f_lic_ctl;
+}
+void * dealloc_f_VIZ_LIC_PVR_ctl_GTK(void *void_in){
+    struct f_VIZ_LIC_PVR_ctl *f_lic_ctl = (struct f_VIZ_LIC_PVR_ctl *) void_in;
+    dealloc_LIC_GTK_widgets((struct LIC_GTK_widgets *) f_lic_ctl->void_panel);
+    dealloc_f_VIZ_LIC_PVR_ctl(f_lic_ctl);
+    return NULL;
+}
+
+struct f_VIZ_FLINE_ctl * init_f_VIZ_FLINE_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_VIZ_FLINE_ctl *f_fline_ctl = init_f_VIZ_FLINE_ctl(idx, f_parent);
+    f_fline_ctl->void_panel = (void *) init_FLINE_GTK_widgets();
+    return f_fline_ctl;
+}
+void * dealloc_f_VIZ_FLINE_ctl_GTK(void *void_in){
+    struct f_VIZ_FLINE_ctl *f_fline_ctl = (struct f_VIZ_FLINE_ctl *) void_in;
+    dealloc_FLINE_GTK_widgets((struct FLINE_GTK_widgets *) f_fline_ctl->void_panel);
+    dealloc_f_VIZ_FLINE_ctl(f_fline_ctl);
+    return NULL;
 }
 
 
@@ -2688,11 +2210,17 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
     for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_psf_ctls);i++){
         struct f_VIZ_PSF_ctl *f_psf_ctl
                 = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_psf_ctls);
-        f_psf_ctl->void_panel = (void *) init_PSF_def_widgets(f_psf_ctl);
+        f_psf_ctl->void_panel = (void *) init_PSF_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
+    };
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_iso_ctls);i++){
+        struct f_VIZ_ISO_ctl *f_iso_ctl
+                = (struct f_VIZ_ISO_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_iso_ctls);
+        f_iso_ctl->void_panel = (void *) init_ISO_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
     
     
 	GtkWidget *expand_MHD_psf = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_psf_ctls,
+                                                          (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
                                                           c_append_viz_section_ctls,
                                                           c_delete_viz_section_ctls,
                                                           (void *) init_f_VIZ_PSF_ctl_GTK,
@@ -2701,42 +2229,43 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
                                                           mWidgets->vpsf_Wgts, window);
 	
 	GtkWidget *expand_MHD_iso = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_iso_ctls,
+                                                          (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
                                                           c_append_viz_isosurf_ctls,
                                                           c_delete_viz_isosurf_ctls,
-                                                          (void *) init_f_VIZ_ISO_ctl,
-                                                          (void *) dealloc_f_VIZ_ISO_ctl,
+                                                          (void *) init_f_VIZ_ISO_ctl_GTK,
+                                                          (void *) dealloc_f_VIZ_ISO_ctl_GTK,
                                                           (void *) draw_viz_each_iso_ctl_vbox,
                                                           mWidgets->viso_Wgts, window);
 	
-	GtkWidget *expand_MHD_map = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_map_ctls,
+	GtkWidget *expand_MHD_map = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_map_ctls, NULL,
                                                           c_append_viz_map_render_ctls,
                                                           c_delete_viz_map_render_ctls,
-                                                          (void *) init_f_VIZ_MAP_ctl,
-                                                          (void *) dealloc_f_VIZ_MAP_ctl,
+                                                          (void *) init_f_VIZ_MAP_ctl_GTK,
+                                                          dealloc_f_VIZ_MAP_ctl_GTK,
                                                           (void *) draw_viz_each_map_ctl_vbox,
                                                           mWidgets->vmap_Wgts, window);
 	
-	GtkWidget *expand_MHD_pvr = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_pvr_ctls,
+	GtkWidget *expand_MHD_pvr = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_pvr_ctls, NULL,
                                                           c_append_viz_pvr_render_ctls,
                                                           c_delete_viz_pvr_render_ctls,
-                                                          (void *) init_f_VIZ_PVR_ctl,
-                                                          dealloc_f_VIZ_PVR_ctl,
+                                                          (void *) init_f_VIZ_PVR_ctl_GTK,
+                                                          dealloc_f_VIZ_PVR_ctl_GTK,
                                                           (void *) draw_viz_each_pvr_ctl_vbox,
                                                           mWidgets->vpvr_Wgts, window);
 	
-	GtkWidget *expand_MHD_lic = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_lic_ctls,
+	GtkWidget *expand_MHD_lic = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_lic_ctls, NULL,
                                                           c_append_viz_lic_render_ctls,
                                                           c_delete_viz_lic_render_ctls,
-                                                          (void *) init_f_VIZ_LIC_PVR_ctl,
-                                                          (void *) dealloc_f_VIZ_LIC_PVR_ctl,
+                                                          (void *) init_f_VIZ_LIC_PVR_ctl_GTK,
+                                                          (void *) dealloc_f_VIZ_LIC_PVR_ctl_GTK,
                                                           (void *) draw_viz_each_lic_ctl_vbox,
                                                           mWidgets->vlic_Wgts, window);
 	
-	GtkWidget *expand_MHD_fline = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_fline_ctls,
+	GtkWidget *expand_MHD_fline = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_fline_ctls, NULL,
                                                           c_append_viz_fline_ctls,
                                                           c_delete_viz_fline_ctls,
-                                                          (void *) init_f_VIZ_FLINE_ctl,
-                                                          (void *) dealloc_f_VIZ_FLINE_ctl,
+                                                          (void *) init_f_VIZ_FLINE_ctl_GTK,
+                                                          (void *) dealloc_f_VIZ_FLINE_ctl_GTK,
                                                           (void *) draw_viz_each_fline_ctl_vbox,
                                                           mWidgets->vfline_Wgts, window);
 	
@@ -2786,7 +2315,8 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
 															 f_MHD_vws->f_psph_vws);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_sph_shell, FALSE, FALSE, 0);
 	
-    GtkWidget *expand_MHD_model = MHD_model_ctl_expander(window, f_MHD_ctl, mWidgets);
+    GtkWidget *expand_MHD_model = MHD_model_ctl_expander(f_MHD_ctl->f_self, f_MHD_ctl->f_model_ctl,
+                                                         mWidgets->model_wgts, window);
 	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_model, FALSE, FALSE, 0);
 	
 	
@@ -2817,15 +2347,16 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     for(i=0;i<count_void_clist(f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls);i++){
         struct f_VIZ_PSF_ctl *f_psf_ctl
                 = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i, f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls);
-        f_psf_ctl->void_panel = (void *) init_PSF_def_widgets(f_psf_ctl);
+        f_psf_ctl->void_panel = (void *) init_PSF_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
     for(i=0;i<count_void_clist(f_MHD_ctl->f_zm_ctls->f_zRMS_psf_ctls);i++){
         struct f_VIZ_PSF_ctl *f_psf_ctl
                 = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i, f_MHD_ctl->f_zm_ctls->f_zRMS_psf_ctls);
-        f_psf_ctl->void_panel = (void *) init_PSF_def_widgets(f_psf_ctl);
+        f_psf_ctl->void_panel = (void *) init_PSF_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
     
 	GtkWidget *expand_MHD_zm2 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls,
+                                                          (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
                                                           c_append_viz_section_ctls,
                                                           c_delete_viz_section_ctls,
                                                           (void *) init_f_VIZ_PSF_ctl_GTK,
@@ -2833,6 +2364,7 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                           (void *) draw_viz_each_psf_ctl_vbox,
                                                           mWidgets->zm_psf_Wgts, window);
 	GtkWidget *expand_MHD_zm3 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zRMS_psf_ctls,
+                                                          (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
                                                           c_append_viz_section_ctls,
                                                           c_delete_viz_section_ctls,
                                                           (void *) init_f_VIZ_PSF_ctl_GTK,
@@ -2840,14 +2372,14 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                           (void *) draw_viz_each_psf_ctl_vbox,
                                                           mWidgets->zrms_psf_Wgts, window);
     
-	GtkWidget *expand_MHD_zm4 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zm_map_ctls,
+	GtkWidget *expand_MHD_zm4 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zm_map_ctls, NULL,
                                                           c_append_viz_map_render_ctls,
                                                           c_delete_viz_map_render_ctls,
                                                           (void *) init_f_VIZ_MAP_ctl,
                                                           (void *) dealloc_f_VIZ_MAP_ctl,
                                                           (void *) draw_viz_each_map_ctl_vbox,
                                                           mWidgets->zm_map_Wgts, window);
-	GtkWidget *expand_MHD_zm5 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zRMS_map_ctls,
+	GtkWidget *expand_MHD_zm5 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zRMS_map_ctls, NULL,
                                                           c_append_viz_map_render_ctls,
                                                           c_delete_viz_map_render_ctls,
                                                           (void *) init_f_VIZ_MAP_ctl,

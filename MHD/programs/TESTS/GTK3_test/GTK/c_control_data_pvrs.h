@@ -46,6 +46,8 @@ struct f_VIZ_PVR_ctl{
 	struct chara_ctl_item *f_pvr_comp_ctl;
 	void *f_pvr_scts_c;
 	void *f_pvr_isos_c;
+    
+    void *void_panel;
 };
 
 
