@@ -713,6 +713,8 @@ struct f_VIZ_PSF_ctl{
     
     struct chara_clist *label_field_list;
     struct chara_clist *label_dir_list;
+    
+    void *void_panel;
 };
 
 struct f_VIZ_ISO_def_ctl{
@@ -2308,22 +2310,7 @@ static GtkWidget * draw_psf_def_ctl_vbox(struct f_VIZ_PSF_def_ctl *f_psf_def_c,
 
 static GtkWidget * draw_viz_each_psf_ctl_vbox(char *label_name, struct f_VIZ_PSF_ctl *f_psf_item, 
                                               GtkWidget *window){
-	struct PSF_def_widgets *psf_def_vws 
-			= (struct PSF_def_widgets *) malloc(sizeof(struct PSF_def_widgets));
-	if(psf_def_vws == NULL){
-		printf("malloc error for psf_def_vws\n");
-		exit(0);
-	};
-    psf_def_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl,
-                                            f_psf_item->f_self);
-    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(f_psf_item->f_self),
-                             psf_def_vws->label_dir_list);
-    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(f_psf_item->f_self), 
-                             psf_def_vws->label_dir_list);
-    psf_def_vws->label_xyz_dir_list = init_f_ctl_chara_array(c_link_xyz_dir_list_to_ctl,
-                                            f_psf_item->f_self);
-    
-    
+    struct PSF_def_widgets *psf_def_vws = (struct PSF_def_widgets *) f_psf_item->void_panel;
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_psf_item->f_psf_file_head_ctl);
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_psf_item->f_psf_output_type_ctl);
     
@@ -2660,13 +2647,56 @@ GtkWidget *MHD_model_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD
     return expand_MHD_model;
 }
 
+struct PSF_def_widgets * init_PSF_def_widgets(struct f_VIZ_PSF_ctl *f_psf_ctl)
+{
+	struct PSF_def_widgets *psf_def_vws 
+			= (struct PSF_def_widgets *) malloc(sizeof(struct PSF_def_widgets));
+	if(psf_def_vws == NULL){
+		printf("malloc error for psf_def_vws\n");
+		exit(0);
+    };
+    
+    psf_def_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl,
+                                                         f_psf_ctl->f_self);
+    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(f_psf_ctl->f_self),
+                             psf_def_vws->label_dir_list);
+    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(f_psf_ctl->f_self), 
+                             psf_def_vws->label_dir_list);
+    psf_def_vws->label_xyz_dir_list = init_f_ctl_chara_array(c_link_xyz_dir_list_to_ctl,
+                                                             f_psf_ctl->f_self);
+    return psf_def_vws;
+};
+void dealloc_PSF_def_widgets(struct PSF_def_widgets *psf_def_vws){
+    free(psf_def_vws);
+}
+
+struct f_VIZ_PSF_ctl * init_f_VIZ_PSF_ctl_GTK(int idx, void *f_parent){
+    struct f_VIZ_PSF_ctl *f_psf_ctl = init_f_VIZ_PSF_ctl(idx, f_parent);
+    f_psf_ctl->void_panel = (void *) init_PSF_def_widgets(f_psf_ctl);
+    return f_psf_ctl;
+}
+struct f_VIZ_PSF_ctl * dealloc_f_VIZ_PSF_ctl_GTK(struct f_VIZ_PSF_ctl *f_psf_ctl){
+    dealloc_PSF_def_widgets((struct PSF_def_widgets *) f_psf_ctl->void_panel);
+    return f_psf_ctl;
+}
+
+
+
 GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
-                                 struct main_widgets *mWidgets){	
+                                 struct main_widgets *mWidgets){
+    int i;
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_psf_ctls);i++){
+        struct f_VIZ_PSF_ctl *f_psf_ctl
+                = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_psf_ctls);
+        f_psf_ctl->void_panel = (void *) init_PSF_def_widgets(f_psf_ctl);
+    };
+    
+    
 	GtkWidget *expand_MHD_psf = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_psf_ctls,
                                                           c_append_viz_section_ctls,
                                                           c_delete_viz_section_ctls,
-                                                          (void *) init_f_VIZ_PSF_ctl,
-                                                          (void *) dealloc_f_VIZ_PSF_ctl,
+                                                          (void *) init_f_VIZ_PSF_ctl_GTK,
+                                                          (void *) dealloc_f_VIZ_PSF_ctl_GTK,
                                                           (void *) draw_viz_each_psf_ctl_vbox,
                                                           mWidgets->vpsf_Wgts, window);
 	
@@ -2783,19 +2813,30 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
                                                    f_MHD_ctl->f_zm_ctls->f_crust_filter_ctl->f_iflag,
                                                    window, hbox_d1);
     
+    int i;
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls);i++){
+        struct f_VIZ_PSF_ctl *f_psf_ctl
+                = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i, f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls);
+        f_psf_ctl->void_panel = (void *) init_PSF_def_widgets(f_psf_ctl);
+    };
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_zm_ctls->f_zRMS_psf_ctls);i++){
+        struct f_VIZ_PSF_ctl *f_psf_ctl
+                = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i, f_MHD_ctl->f_zm_ctls->f_zRMS_psf_ctls);
+        f_psf_ctl->void_panel = (void *) init_PSF_def_widgets(f_psf_ctl);
+    };
     
 	GtkWidget *expand_MHD_zm2 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zm_psf_ctls,
                                                           c_append_viz_section_ctls,
                                                           c_delete_viz_section_ctls,
-                                                          (void *) init_f_VIZ_PSF_ctl,
-                                                          (void *) dealloc_f_VIZ_PSF_ctl,
+                                                          (void *) init_f_VIZ_PSF_ctl_GTK,
+                                                          (void *) dealloc_f_VIZ_PSF_ctl_GTK,
                                                           (void *) draw_viz_each_psf_ctl_vbox,
                                                           mWidgets->zm_psf_Wgts, window);
 	GtkWidget *expand_MHD_zm3 = draw_array_block_ctl_vbox(f_MHD_ctl->f_zm_ctls->f_zRMS_psf_ctls,
                                                           c_append_viz_section_ctls,
                                                           c_delete_viz_section_ctls,
-                                                          (void *) init_f_VIZ_PSF_ctl,
-                                                          (void *) dealloc_f_VIZ_PSF_ctl,
+                                                          (void *) init_f_VIZ_PSF_ctl_GTK,
+                                                          (void *) dealloc_f_VIZ_PSF_ctl_GTK,
                                                           (void *) draw_viz_each_psf_ctl_vbox,
                                                           mWidgets->zrms_psf_Wgts, window);
     
