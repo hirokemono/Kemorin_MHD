@@ -20,6 +20,7 @@
 #include "t_control_data_4_pvr_c.h"
 #include "t_control_data_LIC_c.h"
 #include "m_LIC_control_labels_from_f.h"
+#include "ctl_data_pvr_colormap_IO_c.h"
 
 struct LIC_pvr_ctl_c{
 	struct control_labels_f *label_lic_pvr;

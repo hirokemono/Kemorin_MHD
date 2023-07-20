@@ -29,8 +29,6 @@ struct colormap_ctl_c{
     int * f_iflag;
     
     char *c_block_name;
-
-	int maxlen;
 	
 	struct chara_ctl_item *f_colormap_mode_ctl;
 	
@@ -53,24 +51,11 @@ struct colormap_ctl_c{
 	struct real_ctl_item *f_range_max_ctl;
 };
 
-struct lighting_ctl_c{
-    int iflag_use;
-	int maxlen;
-	
-	struct real_ctl_item *ambient_coef_ctl;
-	struct real_ctl_item *diffuse_coef_ctl;
-	struct real_ctl_item *specular_coef_ctl;
-	
-	struct real3_clist *light_position_list;
-};
-
 struct pvr_colorbar_ctl_c{
     void * f_self;
     int * f_iflag;
     
     char *c_block_name;
-
-	int maxlen;
 	
 	struct chara_ctl_item *f_colorbar_switch_ctl;
 	struct chara_ctl_item *f_colorbar_scale_ctl;
@@ -88,46 +73,44 @@ struct pvr_colorbar_ctl_c{
 };
 
 struct pvr_colormap_bar_ctl_c{
-    int iflag_use;
-	int maxlen;
-	
+    void * f_self;
+    int * f_iflag;
+    
+    char *c_block_name;
+    char *cmap_ctl_file_name;
+   
 	struct colormap_ctl_c *cmap_c;
 	struct pvr_colorbar_ctl_c *cbar_c;
 };
 
+
+struct lighting_ctl_c{
+    void * f_self;
+    int * f_iflag;
+    
+    char *c_block_name;
+    char *light_ctl_file_name;
+    
+    struct real_ctl_item *f_ambient_coef_ctl;
+    struct real_ctl_item *f_diffuse_coef_ctl;
+    struct real_ctl_item *f_specular_coef_ctl;
+    
+    struct real3_clist *f_light_position_ctl;
+};
+
+
 /* prototypes */
 struct colormap_ctl_c * init_colormap_ctl_c(void);
 void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c);
-void read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct colormap_ctl_c *cmap_c);
-int write_colormap_ctl_c(FILE *fp, int level, const char *label, 
-			struct colormap_ctl_c *cmap_c);
 
 struct lighting_ctl_c * init_lighting_ctl_c(void);
 void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c);
-void read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct lighting_ctl_c *light_c);
-int write_lighting_ctl_c(FILE *fp, int level, const char *label, 
-			struct lighting_ctl_c *light_c);
 
 struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(void);
 void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
-void read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_colorbar_ctl_c *cbar_c);
-int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_colorbar_ctl_c *cbar_c);
 
 
 struct pvr_colormap_bar_ctl_c * init_colormap_colorbar_ctl_c(void);
 void dealloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
-void read_colormap_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF],
-			const char *label, struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
-int write_colormap_colorbar_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
-
-void read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
-			struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
-void write_colormap_file_c(const char *file_name, 
-			struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
 
 #endif /* t_ctl_data_pvr_colormap_c_h_ */

@@ -10,6 +10,7 @@
 #include "m_color_table_c.h"
 #include "skip_comment_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
+#include "ctl_data_pvr_colormap_IO_c.h"
 
 
 extern const char color_labels[4][KCHARA_C];

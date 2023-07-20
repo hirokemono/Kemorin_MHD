@@ -65,9 +65,9 @@ void copy_vector_to_ctl(double *vector, struct chara_real_clist *vec_clist) {
 };
 
 
-void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_ctl_c *streo_view_c) {
-	update_real_ctl_item_c(view->focal_length, streo_view_c->focalpoint_ctl);
-	update_real_ctl_item_c(view->eye_separation, streo_view_c->eye_separation_ctl);
+void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_ctl_c *f_streo) {
+	update_real_ctl_item_c(view->focal_length, f_streo->f_focalpoint_ctl);
+	update_real_ctl_item_c(view->eye_separation, f_streo->f_eye_separation_ctl);
 }
 
 
@@ -77,39 +77,39 @@ void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modelview
 	double lookat_in_view[3];
     double drotation[3];
 	
-	mat_c->iflag_use = 1;
+	mat_c->f_iflag[0] = 1;
 	
 	for (i = 0; i < 3; i++) viewpt_in_view[i] = -view->shift[i];
 	for (i = 0; i < 3; i++) lookat_in_view[i] = -view->shift[i];
     for (i = 0; i < 3; i++) drotation[i] = view->rotation[i+1];
 	lookat_in_view[2] = view->x_lookat[2];
 	
-	mat_c->img_size_c->iflag_use = 1;
-	update_int_ctl_item_c(view->nx_frame, mat_c->img_size_c->num_xpixel_ctl);
-	update_int_ctl_item_c(view->ny_frame, mat_c->img_size_c->num_ypixel_ctl);
+	mat_c->f_pixel->f_iflag[0] = 1;
+	update_int_ctl_item_c(view->nx_frame, mat_c->f_pixel->f_num_xpixel_ctl);
+	update_int_ctl_item_c(view->ny_frame, mat_c->f_pixel->f_num_ypixel_ctl);
 	
-	copy_vector_to_ctl(viewpt_in_view, mat_c->viewpt_in_viewer_list);
+	copy_vector_to_ctl(viewpt_in_view, mat_c->f_viewpt_in_viewer_ctl);
 	
-	update_real_ctl_item_c(view->iso_scale, mat_c->scale_factor_ctl);
+	update_real_ctl_item_c(view->iso_scale, mat_c->f_scale_factor_ctl);
 	
-	copy_vector_to_ctl(lookat_in_view, mat_c->lookpoint_list);
+	copy_vector_to_ctl(lookat_in_view, mat_c->f_lookpoint_ctl);
 	
-	copy_vector_to_ctl(drotation, mat_c->view_rot_vec_list);
-	update_real_ctl_item_c(view->rotation[0], mat_c->view_rotation_deg_ctl);
+	copy_vector_to_ctl(drotation, mat_c->f_view_rot_vec_ctl);
+	update_real_ctl_item_c(view->rotation[0], mat_c->f_view_rotation_deg_ctl);
 	
-    mat_c->projection_c->iflag_use = 1;
-	update_real_ctl_item_c(view->aperture, mat_c->projection_c->perspective_angle_ctl);
-	update_real_ctl_item_c(view->aspect, mat_c->projection_c->perspective_xy_ratio_ctl);
-	update_real_ctl_item_c(view->near, mat_c->projection_c->perspective_near_ctl);
-	update_real_ctl_item_c(view->far, mat_c->projection_c->perspective_far_ctl);
+    mat_c->f_proj->f_iflag[0] = 1;
+	update_real_ctl_item_c(view->aperture, mat_c->f_proj->f_perspective_angle_ctl);
+	update_real_ctl_item_c(view->aspect, mat_c->f_proj->f_perspective_xy_ratio_ctl);
+	update_real_ctl_item_c(view->near, mat_c->f_proj->f_perspective_near_ctl);
+	update_real_ctl_item_c(view->far, mat_c->f_proj->f_perspective_far_ctl);
 	
 	return;
 }
 
 
-void copy_GL_stereo_params_from_ctl(struct streo_view_ctl_c *streo_view_c, struct view_element *view) {
-    set_from_real_ctl_item_c(streo_view_c->focalpoint_ctl, &view->focal_length);
-    set_from_real_ctl_item_c(streo_view_c->eye_separation_ctl, &view->eye_separation);
+void copy_GL_stereo_params_from_ctl(struct streo_view_ctl_c *f_streo, struct view_element *view) {
+    set_from_real_ctl_item_c(f_streo->f_focalpoint_ctl, &view->focal_length);
+    set_from_real_ctl_item_c(f_streo->f_eye_separation_ctl, &view->eye_separation);
 	return;
 }
 
@@ -119,9 +119,9 @@ void copy_GL_modelview_params_from_ctl(struct modelview_ctl_c *mat_c, struct vie
 	double lookat_in_view[3];
     double drotation[3];
 	
-	if(mat_c->img_size_c->iflag_use > 0){
-		view->nx_frame = set_from_int_ctl_item_c(mat_c->img_size_c->num_xpixel_ctl);
-		view->ny_frame = set_from_int_ctl_item_c(mat_c->img_size_c->num_ypixel_ctl);
+	if(mat_c->f_pixel->f_iflag[0] > 0){
+		view->nx_frame = set_from_int_ctl_item_c(mat_c->f_pixel->f_num_xpixel_ctl);
+		view->ny_frame = set_from_int_ctl_item_c(mat_c->f_pixel->f_num_ypixel_ctl);
 
         if(view->iflag_retina > 0){
             view->nx_window = view->nx_frame / 2;
@@ -132,20 +132,20 @@ void copy_GL_modelview_params_from_ctl(struct modelview_ctl_c *mat_c, struct vie
         }
 	};
 	
-	copy_vector_from_ctl(&mat_c->viewpt_in_viewer_list->cr_item_head, viewpt_in_view);
+	copy_vector_from_ctl(&mat_c->f_viewpt_in_viewer_ctl->cr_item_head, viewpt_in_view);
     
-    set_from_real_ctl_item_c(mat_c->scale_factor_ctl, &view->iso_scale);
+    set_from_real_ctl_item_c(mat_c->f_scale_factor_ctl, &view->iso_scale);
     
-	copy_vector_from_ctl(&mat_c->lookpoint_list->cr_item_head, lookat_in_view);
+	copy_vector_from_ctl(&mat_c->f_lookpoint_ctl->cr_item_head, lookat_in_view);
 	
-	copy_vector_from_ctl(&mat_c->view_rot_vec_list->cr_item_head, drotation);
-    set_from_real_ctl_item_c(mat_c->view_rotation_deg_ctl, &view->rotation[0]);
+	copy_vector_from_ctl(&mat_c->f_view_rot_vec_ctl->cr_item_head, drotation);
+    set_from_real_ctl_item_c(mat_c->f_view_rotation_deg_ctl, &view->rotation[0]);
 	
-    if(mat_c->projection_c->iflag_use > 0){
-        set_from_real_ctl_item_c(mat_c->projection_c->perspective_angle_ctl, &view->aperture);
-        set_from_real_ctl_item_c(mat_c->projection_c->perspective_xy_ratio_ctl, &view->aspect);
-        set_from_real_ctl_item_c(mat_c->projection_c->perspective_near_ctl, &view->near);
-        set_from_real_ctl_item_c(mat_c->projection_c->perspective_far_ctl, &view->far);
+    if(mat_c->f_proj->f_iflag[0] > 0){
+        set_from_real_ctl_item_c(mat_c->f_proj->f_perspective_angle_ctl, &view->aperture);
+        set_from_real_ctl_item_c(mat_c->f_proj->f_perspective_xy_ratio_ctl, &view->aspect);
+        set_from_real_ctl_item_c(mat_c->f_proj->f_perspective_near_ctl, &view->near);
+        set_from_real_ctl_item_c(mat_c->f_proj->f_perspective_far_ctl, &view->far);
     };
 	
     for (i = 0; i < 3; i++) view->rotation[i+1] = drotation[i];
@@ -161,8 +161,8 @@ void write_GL_modelview_file(struct kv_string *filename, struct view_element *vi
 	
 	copy_GL_modelview_params_to_ctl(view, mat_c0);
 	if(view->iflag_view_type == VIEW_STEREO){
-		mat_c0->streo_view_c->iflag_use = 1;
-		copy_GL_stereo_params_to_ctl(view, mat_c0->streo_view_c);
+		mat_c0->f_streo->f_iflag[0] = 1;
+		copy_GL_stereo_params_to_ctl(view, mat_c0->f_streo);
 	};
     
 	write_modelview_file_c(filename->string, mat_c0);
@@ -179,14 +179,14 @@ void read_GL_modelview_file(struct kv_string *filename, struct view_element *vie
 	read_modelview_file_c(filename->string, buf, mat_c0);
     
 	copy_GL_modelview_params_from_ctl(mat_c0, view);
-	if(mat_c0->streo_view_c->iflag_use > 0){
-		copy_GL_stereo_params_from_ctl(mat_c0->streo_view_c, view);
+	if(mat_c0->f_streo->f_iflag[0] > 0){
+		copy_GL_stereo_params_from_ctl(mat_c0->f_streo, view);
 		view->iflag_view_type = VIEW_STEREO;
 	};
 	
 	/*
-	copy_mat44_from_ctl(view->mat_object_2_eye, &mat_c0->modelview_mat_ctl);
-	if(mat_c0->projection_c->iflag_use > 0){
+	copy_mat44_from_ctl(view->mat_object_2_eye, &mat_c0->f_modelview_mat_ctl);
+	if(mat_c0->f_proj->f_iflag[0] > 0){
 		copy_mat44_from_ctl(view->mat_eye_2_clip, &mat_c0->projection_mat_ctl);
 	}
 	*/

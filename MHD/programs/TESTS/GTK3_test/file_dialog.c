@@ -17,6 +17,7 @@
 #include "t_ctl_array_real3_items_c.h"
 #include "t_ctl_data_4_fields_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
+#include "t_ctl_data_4_view_transfer_c.h"
 
 #include "control_elements_IO_GTK.h"
 #include "control_combobox_GTK.h"
@@ -34,6 +35,8 @@
 #include "c_ctl_data_MHD_BCs.h"
 #include "c_ctl_data_MHD_model.h"
 #include "c_ctl_data_PSF_ISOs.h"
+#include "c_ctl_data_PVR_colormap.h"
+#include "c_ctl_data_PVR_view_matrix.h"
 
 #include "ctl_data_platforms_GTK.h"
 #include "control_panel_4_dimless_GTK.h"
@@ -165,48 +168,6 @@ extern void * c_VIZ_PVR_component_ctl(void *f_pvr_ctl);
 extern void * c_VIZ_PVR_sections_ctl(void *f_pvr_ctl);
 extern void * c_VIZ_PVR_isosurfaces_ctl(void *f_pvr_ctl);
 
-extern void * c_PVR_cmap_cbar_ctl_block_name(void *f_cmap_cbar_c);
-extern void * c_PVR_cmap_cbar_ctl_iflag(void *f_cmap_cbar_c);
-extern void * c_PVR_cmap_cbar_color_ctl(void *f_cmap_cbar_c);
-extern void * c_PVR_cmap_cbar_cbar_ctl(void *f_cmap_cbar_c);
-
-extern void * c_PVR_colormap_ctl_block_name(void *f_color);
-extern void * c_PVR_colormap_ctl_iflag(void *f_color);
-extern void * c_PVR_cmap_lic_color_field_ctl(void *f_color);
-extern void * c_PVR_cmap_lic_color_comp_ctl(void *f_color);
-extern void * c_PVR_cmap_lic_opacity_fld_ctl(void *f_color);
-extern void * c_PVR_cmap_lic_opacity_comp_ctl(void *f_color);
-extern void * c_PVR_cmap_colormap_mode_ctl(void *f_color);
-extern void * c_PVR_cmap_data_mapping_ctl(void *f_color);
-extern void * c_PVR_cmap_opacity_style_ctl(void *f_color);
-extern void * c_PVR_cmap_range_min_ctl(void *f_color);
-extern void * c_PVR_cmap_range_max_ctl(void *f_color);
-extern void * c_PVR_cmap_fix_opacity_ctl(void *f_color);
-extern void * c_PVR_cmap_colortbl_ctl(void *f_color);
-extern void * c_PVR_cmap_linear_opacity_ctl(void *f_color);
-extern void * c_PVR_cmap_step_opacity_ctl(void *f_color);
-extern void * c_PVR_cmap_background_color_ctl(void *f_color);
-
-extern void * c_PVR_colorbar_ctl_block_name(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_ctl_iflag(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_switch_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_scale_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_position_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_zeromarker_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_font_size_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_ngrid_cbar_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_cbar_range_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_axis_switch_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_time_ctl(void *f_cbar_ctl);
-extern void * c_PVR_colorbar_mapgrid_ctl(void *f_cbar_ctl);
-
-extern void * c_PVR_light_ctl_block_name(void *f_light);
-extern void * c_PVR_light_ctl_iflag(void *f_light);
-extern void * c_PVR_light_ambient_coef_ctl(void *f_light);
-extern void * c_PVR_light_diffuse_coef_ctl(void *f_light);
-extern void * c_PVR_light_specular_coef_ctl(void *f_light);
-extern void * c_PVR_light_position_ctl(void *f_light);
-
 extern void * c_PVR_movie_ctl_block_name(void *f_movie);
 extern void * c_PVR_movie_ctl_iflag(void *f_movie);
 extern void * c_PVR_movie_movie_mode_ctl(void *f_movie);
@@ -309,44 +270,6 @@ extern void * c_LIC_noise_stepping_ctl(void *f_noise_ctl);
 extern void * c_LIC_noise_cube_size_ctl(void *f_noise_ctl);
 extern void * c_LIC_noise_deltax_ctl(void *f_noise_ctl);
 
-extern void * c_modeview_ctl_block_name(void *f_mat);
-extern void * c_modeview_ctl_iflag(void *f_mat);
-extern void * c_modeview_ctl_pixel(void *f_mat);
-extern void * c_modeview_ctl_proj(void *f_mat);
-extern void * c_modeview_ctl_streo(void *f_mat);
-extern void * c_modeview_modelview_mat_ctl(void *f_mat);
-extern void * c_modeview_lookpoint_ctl(void *f_mat);
-extern void * c_modeview_viewpoint_ctl(void *f_mat);
-extern void * c_modeview_up_dir_ctl(void *f_mat);
-extern void * c_modeview_view_rot_vec_ctl(void *f_mat);
-extern void * c_modeview_rotation_deg_ctl(void *f_mat);
-extern void * c_modeview_scale_factor_ctl(void *f_mat);
-extern void * c_modeview_scale_vector_ctl(void *f_mat);
-extern void * c_modeview_viewpt_in_view_ctl(void *f_mat);
-extern void * c_modeview_projection_type_ctl(void *f_mat);
-
-
-extern void * c_screen_pixel_ctl_block_name(void *f_pixel);
-extern void * c_screen_pixel_ctl_iflag(void *f_pixel);
-extern void * c_screen_num_xpixel_ctl(void *f_pixel);
-extern void * c_screen_num_ypixel_ctl(void *f_pixel);
-
-extern void * c_projection_ctl_block_name(void *f_proj);
-extern void * c_projection_ctl_iflag(void *f_proj);
-extern void * c_projection_perspect_agl_ctl(void *f_proj);
-extern void * c_projection_xy_ratio_ctl(void *f_proj);
-extern void * c_projection_near_ctl(void *f_proj);
-extern void * c_projection_far_ctl(void *f_proj);
-extern void * c_projection_horiz_range_ctl(void *f_proj);
-extern void * c_projection_vert_range_ctl(void *f_proj);
-
-extern void * c_streo_view_ctl_block_name(void *f_streo);
-extern void * c_streo_view_ctl_iflag(void *f_streo);
-extern void * c_streo_view_focalpoint_ctl(void *f_streo);
-extern void * c_streo_view_eye_separate_ctl(void *f_streo);
-extern void * c_streo_view_eye_sep_angle_ctl(void *f_streo);
-extern void * c_streo_view_step_eye_sep_ctl(void *f_streo);
-
 extern void * c_lic_render_ctls_block_name(void *f_lic_ctls);
 extern int    c_lic_render_ctls_num_lic_ctl(void *f_lic_ctls);
 extern char * c_lic_render_ctls_fname(int idx, void *f_lic_ctls);
@@ -405,76 +328,18 @@ extern void * c_new_repart_mask_ctl(void *f_new_part_ctl);
 
 extern void * set_file_fmt_items_f(void *fmt_names_c);
 
-struct f_VIZ_pixels_ctl{
-    void * f_self;
-    int * f_iflag;
-    
-    char *c_block_name;
-    
-    struct int_ctl_item *f_num_xpixel_ctl;
-    struct int_ctl_item *f_num_ypixel_ctl;
-};
-
-struct f_VIZ_projection_ctl{
-    void * f_self;
-    int * f_iflag;
-    
-    char *c_block_name;
-    
-    struct real_ctl_item  *f_perspective_angle_ctl;
-    struct real_ctl_item  *f_perspective_xy_ratio_ctl;
-    struct real_ctl_item  *f_perspective_near_ctl;
-    struct real_ctl_item  *f_perspective_far_ctl;
-    
-    struct real2_ctl_item  *f_horizontal_range_ctl;
-    struct real2_ctl_item  *f_vertical_range_ctl;
-};
-
-struct f_VIZ_stereo_view_ctl{
-    void * f_self;
-    int * f_iflag;
-    
-    char *c_block_name;
-    
-    struct real_ctl_item  *f_focalpoint_ctl;
-    struct real_ctl_item  *f_eye_separation_ctl;
-    struct real_ctl_item  *f_eye_sep_angle_ctl;
-    struct chara_ctl_item *f_step_eye_sep_angle_ctl;
-};
-
-struct f_VIZ_view_matrix_ctl{
-    void * f_self;
-    int * f_iflag;
-    
-    char *c_block_name;
-    char *mat_ctl_file_name;
-    
-    struct f_VIZ_pixels_ctl *f_pixel;
-    struct f_VIZ_projection_ctl *f_proj;
-    struct f_VIZ_stereo_view_ctl *f_streo;
-    
-    struct chara2_real_clist *f_modelview_mat_ctl;
-    struct chara_real_clist *f_lookpoint_ctl;
-    struct chara_real_clist *f_viewpoint_ctl;
-    struct chara_real_clist *f_up_dir_ctl;
-    struct chara_real_clist *f_view_rot_vec_ctl;
-    struct real_ctl_item *f_view_rotation_deg_ctl;
-    struct real_ctl_item *f_scale_factor_ctl;
-    struct chara_real_clist *f_scale_vector_ctl;
-    struct chara_real_clist *f_viewpt_in_viewer_ctl;
-    struct chara_ctl_item *f_projection_type_ctl;
-};
-
-struct f_PVR_colormap_bar_ctl{
+struct f_PVR_section_ctl{
      void * f_self;
      int * f_iflag;
      
     char *c_block_name;
-    char *cmap_ctl_file_name;
+    char *map_ctl_file_name;
     
-    struct colormap_ctl_c     *f_cmap;
-    struct pvr_colorbar_ctl_c *f_cbar;
+    struct f_VIZ_view_matrix_ctl *f_mat;
+    
+    
 };
+
 
 struct f_VIZ_MAP_ctl{
      void * f_self;
@@ -484,7 +349,7 @@ struct f_VIZ_MAP_ctl{
     char *map_ctl_file_name;
     
     struct f_VIZ_view_matrix_ctl *f_mat;
-    struct f_PVR_colormap_bar_ctl *f_cmap_cbar_c;
+    struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c;
     
     void *f_map_define_ctl;
     struct chara_ctl_item *f_map_image_prefix_ctl;
@@ -726,248 +591,6 @@ boolean_to_text (GBinding *binding,
 	return TRUE;
 }
 */
-struct f_VIZ_pixels_ctl * init_f_VIZ_pixels_ctl(void *(*c_load_self)(void *f_parent), 
-                                                void *f_parent){
-	struct f_VIZ_pixels_ctl *f_pixel 
-			= (struct f_VIZ_pixels_ctl *) malloc(sizeof(struct f_VIZ_pixels_ctl));
-	if(f_pixel == NULL){
-		printf("malloc error for f_VIZ_pixels_ctl\n");
-		exit(0);
-    };
-	f_pixel->f_self =  c_load_self(f_parent);
-	f_pixel->f_iflag =   (int *) c_screen_pixel_ctl_iflag(f_pixel->f_self);
-	char *f_block_name = (char *) c_screen_pixel_ctl_block_name(f_pixel->f_self);
-	f_pixel->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_pixel->f_num_xpixel_ctl = init_f_ctl_int_item(c_screen_num_xpixel_ctl, f_pixel->f_self);
-    f_pixel->f_num_ypixel_ctl = init_f_ctl_int_item(c_screen_num_ypixel_ctl, f_pixel->f_self);
-    return f_pixel;
-};
-
-void dealloc_f_VIZ_pixels_ctl(struct f_VIZ_pixels_ctl *f_pixel){
-    dealloc_int_ctl_item_c(f_pixel->f_num_xpixel_ctl);
-    dealloc_int_ctl_item_c(f_pixel->f_num_ypixel_ctl);
-    free(f_pixel->c_block_name);
-    free(f_pixel);
-    return;
-};
-
-
-struct f_VIZ_projection_ctl * init_f_VIZ_projection_ctl(void *(*c_load_self)(void *f_parent), 
-                                                void *f_parent){
-	struct f_VIZ_projection_ctl *f_proj 
-			= (struct f_VIZ_projection_ctl *) malloc(sizeof(struct f_VIZ_projection_ctl));
-	if(f_proj == NULL){
-		printf("malloc error for f_VIZ_projection_ctl\n");
-		exit(0);
-    };
-	f_proj->f_self =  c_load_self(f_parent);
-	f_proj->f_iflag =   (int *) c_projection_ctl_iflag(f_proj->f_self);
-	char *f_block_name = (char *) c_projection_ctl_block_name(f_proj->f_self);
-	f_proj->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_proj->f_perspective_angle_ctl =    init_f_ctl_real_item(c_projection_perspect_agl_ctl, f_proj->f_self);
-    f_proj->f_perspective_xy_ratio_ctl = init_f_ctl_real_item(c_projection_xy_ratio_ctl, f_proj->f_self);
-    f_proj->f_perspective_near_ctl =     init_f_ctl_real_item(c_projection_near_ctl, f_proj->f_self);
-    f_proj->f_perspective_far_ctl =      init_f_ctl_real_item(c_projection_far_ctl, f_proj->f_self);
-    
-    f_proj->f_horizontal_range_ctl = init_f_ctl_r2_item(c_projection_horiz_range_ctl, f_proj->f_self);
-    f_proj->f_vertical_range_ctl =   init_f_ctl_r2_item(c_projection_vert_range_ctl, f_proj->f_self);
-    return f_proj;
-};
-
-void dealloc_f_VIZ_projection_ctl(struct f_VIZ_projection_ctl *f_proj){
-    dealloc_real_ctl_item_c(f_proj->f_perspective_angle_ctl);
-    dealloc_real_ctl_item_c(f_proj->f_perspective_xy_ratio_ctl);
-    dealloc_real_ctl_item_c(f_proj->f_perspective_near_ctl);
-    dealloc_real_ctl_item_c(f_proj->f_perspective_far_ctl);
-    
-    dealloc_real2_ctl_item_c(f_proj->f_horizontal_range_ctl);
-    dealloc_real2_ctl_item_c(f_proj->f_vertical_range_ctl);
-    free(f_proj->c_block_name);
-    free(f_proj);
-    return;
-};
-
-struct f_VIZ_stereo_view_ctl * init_f_VIZ_stereo_view_ctl(void *(*c_load_self)(void *f_parent), 
-                                                          void *f_parent){
-	struct f_VIZ_stereo_view_ctl *f_stereo 
-			= (struct f_VIZ_stereo_view_ctl *) malloc(sizeof(struct f_VIZ_stereo_view_ctl));
-	if(f_stereo == NULL){
-		printf("malloc error for f_VIZ_stereo_view_ctl\n");
-		exit(0);
-    };
-	f_stereo->f_self =  c_load_self(f_parent);
-	f_stereo->f_iflag =   (int *) c_streo_view_ctl_iflag(f_stereo->f_self);
-	char *f_block_name = (char *) c_streo_view_ctl_block_name(f_stereo->f_self);
-	f_stereo->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_stereo->f_focalpoint_ctl =         init_f_ctl_real_item(c_streo_view_focalpoint_ctl, f_stereo->f_self);
-    f_stereo->f_eye_separation_ctl =     init_f_ctl_real_item(c_streo_view_eye_separate_ctl, f_stereo->f_self);
-    f_stereo->f_eye_sep_angle_ctl =      init_f_ctl_real_item(c_streo_view_eye_sep_angle_ctl, f_stereo->f_self);
-    f_stereo->f_step_eye_sep_angle_ctl = init_f_ctl_chara_item(c_streo_view_step_eye_sep_ctl, f_stereo->f_self);
-    return f_stereo;
-};
-
-void dealloc_f_VIZ_stereo_view_ctl(struct f_VIZ_stereo_view_ctl *f_stereo){
-    dealloc_real_ctl_item_c(f_stereo->f_focalpoint_ctl);
-    dealloc_real_ctl_item_c(f_stereo->f_eye_separation_ctl);
-    dealloc_real_ctl_item_c(f_stereo->f_eye_sep_angle_ctl);
-    dealloc_chara_ctl_item_c(f_stereo->f_step_eye_sep_angle_ctl);
-    free(f_stereo->c_block_name);
-    free(f_stereo);
-    return;
-};
-
-
-
-struct f_VIZ_view_matrix_ctl * init_f_VIZ_view_matrix_ctl(char *ctl_file_name,
-                                                          void *(*c_load_self)(void *f_parent), 
-                                                          void *f_parent){
-	struct f_VIZ_view_matrix_ctl *f_mat 
-			= (struct f_VIZ_view_matrix_ctl *) malloc(sizeof(struct f_VIZ_view_matrix_ctl));
-	if(f_mat == NULL){
-		printf("malloc error for f_VIZ_view_matrix_ctl\n");
-		exit(0);
-    };
-	f_mat->f_self =  c_load_self(f_parent);
-	f_mat->f_iflag =   (int *) c_modeview_ctl_iflag(f_mat->f_self);
-	char *f_block_name = (char *) c_modeview_ctl_block_name(f_mat->f_self);
-    f_mat->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_mat->mat_ctl_file_name = ctl_file_name;
-    
-    f_mat->f_pixel = init_f_VIZ_pixels_ctl(c_modeview_ctl_pixel, f_mat->f_self);
-    f_mat->f_proj = init_f_VIZ_projection_ctl(c_modeview_ctl_proj, f_mat->f_self);
-    f_mat->f_streo = init_f_VIZ_stereo_view_ctl(c_modeview_ctl_streo, f_mat->f_self);
-    
-    f_mat->f_modelview_mat_ctl =     init_f_ctl_c2r_array(c_modeview_modelview_mat_ctl, f_mat->f_self);
-    f_mat->f_lookpoint_ctl =         init_f_ctl_cr_array(c_modeview_lookpoint_ctl, f_mat->f_self);
-    f_mat->f_viewpoint_ctl =         init_f_ctl_cr_array(c_modeview_viewpoint_ctl, f_mat->f_self);
-    f_mat->f_up_dir_ctl =            init_f_ctl_cr_array(c_modeview_up_dir_ctl, f_mat->f_self);
-    f_mat->f_view_rot_vec_ctl =      init_f_ctl_cr_array(c_modeview_view_rot_vec_ctl, f_mat->f_self);
-    f_mat->f_view_rotation_deg_ctl = init_f_ctl_real_item(c_modeview_rotation_deg_ctl, f_mat->f_self);
-    f_mat->f_scale_factor_ctl =      init_f_ctl_real_item(c_modeview_scale_factor_ctl, f_mat->f_self);
-    f_mat->f_scale_vector_ctl =      init_f_ctl_cr_array(c_modeview_scale_vector_ctl, f_mat->f_self);
-    f_mat->f_viewpt_in_viewer_ctl =  init_f_ctl_cr_array(c_modeview_viewpt_in_view_ctl, f_mat->f_self);
-    f_mat->f_projection_type_ctl =   init_f_ctl_chara_item(c_modeview_projection_type_ctl, f_mat->f_self);
-    return f_mat;
-};
-
-
-void dealloc_f_VIZ_view_matrix_ctl(struct f_VIZ_view_matrix_ctl *f_mat){
-    return;
-    dealloc_f_VIZ_pixels_ctl(f_mat->f_pixel);
-    dealloc_f_VIZ_projection_ctl(f_mat->f_proj);
-    dealloc_f_VIZ_stereo_view_ctl(f_mat->f_streo);
-    
-    dealloc_chara2_real_clist(f_mat->f_modelview_mat_ctl);
-    dealloc_chara_real_clist(f_mat->f_lookpoint_ctl);
-    dealloc_chara_real_clist(f_mat->f_viewpoint_ctl);
-    dealloc_chara_real_clist(f_mat->f_up_dir_ctl);
-    dealloc_chara_real_clist(f_mat->f_view_rot_vec_ctl);
-    dealloc_real_ctl_item_c(f_mat->f_view_rotation_deg_ctl);
-    dealloc_real_ctl_item_c(f_mat->f_scale_factor_ctl);
-    dealloc_chara_real_clist(f_mat->f_scale_vector_ctl);
-    dealloc_chara_real_clist(f_mat->f_viewpt_in_viewer_ctl);
-    dealloc_chara_ctl_item_c(f_mat->f_projection_type_ctl);
-    
-    free(f_mat->mat_ctl_file_name);
-    free(f_mat->c_block_name);
-    free(f_mat);
-};
-
-struct colormap_ctl_c * init_f_colormap_ctl_c(void *(*c_load_self)(void *f_parent), 
-                                              void *f_parent){
-	struct colormap_ctl_c *f_cmap 
-			= (struct colormap_ctl_c *) malloc(sizeof(struct colormap_ctl_c));
-	if(f_cmap == NULL){
-		printf("malloc error for colormap_ctl_c\n");
-		exit(0);
-    };
-	f_cmap->f_self =  c_load_self(f_parent);
-	f_cmap->f_iflag =   (int *) c_PVR_colormap_ctl_iflag(f_cmap->f_self);
-	char *f_block_name = (char *) c_PVR_colormap_ctl_block_name(f_cmap->f_self);
-    f_cmap->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_cmap->f_lic_color_fld_ctl =    init_f_ctl_chara_item(c_PVR_cmap_lic_color_field_ctl, f_cmap->f_self);
-    f_cmap->f_lic_color_comp_ctl =   init_f_ctl_chara_item(c_PVR_cmap_lic_color_comp_ctl, f_cmap->f_self);
-    f_cmap->f_lic_opacity_fld_ctl =  init_f_ctl_chara_item(c_PVR_cmap_lic_opacity_fld_ctl, f_cmap->f_self);
-    f_cmap->f_lic_opacity_comp_ctl = init_f_ctl_chara_item(c_PVR_cmap_lic_opacity_comp_ctl, f_cmap->f_self);
-    
-    f_cmap->f_colormap_mode_ctl =    init_f_ctl_chara_item(c_PVR_cmap_colormap_mode_ctl, f_cmap->f_self);
-    f_cmap->f_background_color_ctl = init_f_ctl_r3_item(c_PVR_cmap_background_color_ctl, f_cmap->f_self);
-    f_cmap->f_data_mapping_ctl =     init_f_ctl_chara_item(c_PVR_cmap_data_mapping_ctl, f_cmap->f_self);
-    f_cmap->f_colortbl_ctl =         init_f_ctl_r2_array(c_PVR_cmap_colortbl_ctl, f_cmap->f_self);
-    f_cmap->f_opacity_style_ctl =    init_f_ctl_chara_item(c_PVR_cmap_opacity_style_ctl, f_cmap->f_self);
-    f_cmap->f_fix_opacity_ctl =      init_f_ctl_real_item(c_PVR_cmap_fix_opacity_ctl, f_cmap->f_self);
-    f_cmap->f_linear_opacity_ctl =   init_f_ctl_r2_array(c_PVR_cmap_linear_opacity_ctl, f_cmap->f_self);
-    f_cmap->f_step_opacity_ctl =     init_f_ctl_r3_array(c_PVR_cmap_step_opacity_ctl, f_cmap->f_self);
-    f_cmap->f_range_min_ctl =        init_f_ctl_real_item(c_PVR_cmap_range_min_ctl, f_cmap->f_self);
-    f_cmap->f_range_max_ctl =        init_f_ctl_real_item(c_PVR_cmap_range_max_ctl, f_cmap->f_self);
-    return f_cmap;
-};
-
-struct pvr_colorbar_ctl_c * init_f_pvr_colorbar_ctl_c(void *(*c_load_self)(void *f_parent), 
-                                              void *f_parent){
-	struct pvr_colorbar_ctl_c *f_cbar 
-			= (struct pvr_colorbar_ctl_c *) malloc(sizeof(struct pvr_colorbar_ctl_c));
-	if(f_cbar == NULL){
-		printf("malloc error for pvr_colorbar_ctl_c\n");
-		exit(0);
-    };
-	f_cbar->f_self =  c_load_self(f_parent);
-	f_cbar->f_iflag =   (int *) c_PVR_colorbar_ctl_iflag(f_cbar->f_self);
-	char *f_block_name = (char *) c_PVR_colorbar_ctl_block_name(f_cbar->f_self);
-    f_cbar->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_cbar->f_colorbar_switch_ctl =   init_f_ctl_chara_item(c_PVR_colorbar_switch_ctl, f_cbar->f_self);
-    f_cbar->f_colorbar_scale_ctl =    init_f_ctl_chara_item(c_PVR_colorbar_scale_ctl, f_cbar->f_self);
-    f_cbar->f_colorbar_position_ctl = init_f_ctl_chara_item(c_PVR_colorbar_position_ctl, f_cbar->f_self);
-    f_cbar->f_zeromarker_flag_ctl =   init_f_ctl_chara_item(c_PVR_colorbar_zeromarker_ctl, f_cbar->f_self);
-    f_cbar->f_font_size_ctl =         init_f_ctl_int_item(c_PVR_colorbar_font_size_ctl, f_cbar->f_self);
-    f_cbar->f_ngrid_cbar_ctl =        init_f_ctl_int_item(c_PVR_colorbar_ngrid_cbar_ctl, f_cbar->f_self);
-    f_cbar->f_cbar_range_ctl =        init_f_ctl_r2_item(c_PVR_colorbar_cbar_range_ctl, f_cbar->f_self);
-    
-    f_cbar->f_axis_switch_ctl =    init_f_ctl_chara_item(c_PVR_colorbar_axis_switch_ctl, f_cbar->f_self);
-    f_cbar->f_time_switch_ctl =    init_f_ctl_chara_item(c_PVR_colorbar_time_ctl, f_cbar->f_self);
-    f_cbar->f_mapgrid_switch_ctl = init_f_ctl_chara_item(c_PVR_colorbar_mapgrid_ctl, f_cbar->f_self);
-    return f_cbar;
-};
-
-struct f_PVR_colormap_bar_ctl * init_f_PVR_colormap_bar_ctl(char * ctl_file_name, 
-                                                            void *(*c_load_self)(void *f_parent), 
-                                                            void *f_parent)
-{
-	struct f_PVR_colormap_bar_ctl *f_cmap_cbar_c 
-			= (struct f_PVR_colormap_bar_ctl *) malloc(sizeof(struct f_PVR_colormap_bar_ctl));
-	if(f_cmap_cbar_c == NULL){
-		printf("malloc error for f_PVR_colormap_bar_ctl\n");
-		exit(0);
-    };
-    
-	f_cmap_cbar_c->f_self =  c_load_self(f_parent);
-	
-	f_cmap_cbar_c->f_iflag =   (int *) c_PVR_cmap_cbar_ctl_iflag(f_cmap_cbar_c->f_self);
-	char *f_block_name =   (char *) c_PVR_cmap_cbar_ctl_block_name(f_cmap_cbar_c->f_self);
-	f_cmap_cbar_c->c_block_name = strngcopy_from_f(f_block_name);
-    f_cmap_cbar_c->cmap_ctl_file_name =  ctl_file_name;
-    
-    f_cmap_cbar_c->f_cmap = init_f_colormap_ctl_c(c_PVR_cmap_cbar_color_ctl, f_cmap_cbar_c->f_self);
-    f_cmap_cbar_c->f_cbar = init_f_pvr_colorbar_ctl_c(c_PVR_cmap_cbar_cbar_ctl, f_cmap_cbar_c->f_self);
-    return f_cmap_cbar_c;
-};
-
-void dealloc_f_PVR_colormap_bar_ctl(struct f_PVR_colormap_bar_ctl *f_cmap_cbar_c){
-    dealloc_colormap_ctl_c(f_cmap_cbar_c->f_cmap);
-    dealloc_colorbar_ctl_c(f_cmap_cbar_c->f_cbar);
-    free(f_cmap_cbar_c->cmap_ctl_file_name);
-    free(f_cmap_cbar_c->c_block_name);
-    
-    f_cmap_cbar_c->f_self = NULL;
-    free(f_cmap_cbar_c);
-    return;
-};
 
 struct f_VIZ_MAP_ctl * init_f_VIZ_MAP_ctl(int idx, void *f_parent)
 {
@@ -1018,8 +641,8 @@ void dealloc_f_VIZ_MAP_ctl(struct f_VIZ_MAP_ctl *f_map_ctl){
     free(f_map_ctl->map_ctl_file_name);
     f_map_ctl->f_self = NULL;
     
-    dealloc_f_VIZ_view_matrix_ctl(f_map_ctl->f_mat);
-    dealloc_f_PVR_colormap_bar_ctl(f_map_ctl->f_cmap_cbar_c);
+    dealloc_modelview_ctl_c(f_map_ctl->f_mat);
+    dealloc_colormap_colorbar_ctl_c(f_map_ctl->f_cmap_cbar_c);
     
     dealloc_chara_ctl_item_c(f_map_ctl->f_map_image_prefix_ctl);
     dealloc_chara_ctl_item_c(f_map_ctl->f_map_image_fmt_ctl);

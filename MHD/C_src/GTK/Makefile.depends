@@ -98,6 +98,7 @@ control_panel_4_field_GTK.o: \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
@@ -301,6 +302,7 @@ ctl_panel_SPH_MHD_model_GTK.o: \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \

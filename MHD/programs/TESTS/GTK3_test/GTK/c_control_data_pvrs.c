@@ -53,14 +53,23 @@ struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(void *(*c_load_self)(int idx, void *f_
 	f_block_name = c_pvr_render_ctls_fname(idx, f_parent);
 	f_pvr_ctl->pvr_ctl_file_name = strngcopy_from_f(f_block_name);
 	
-	f_pvr_ctl->f_fname_mat_ctl =     (char *) c_VIZ_pvr_fname_mat_ctl(f_pvr_ctl->f_self);
-	f_pvr_ctl->f_mat =               c_VIZ_pvr_viewmat_ctl(f_pvr_ctl->f_self);
-	f_pvr_ctl->f_fname_pvr_light_c = (char *) c_VIZ_pvr_fname_pvr_light_ctl(f_pvr_ctl->f_self);
-	f_pvr_ctl->f_light =             c_VIZ_pvr_light_ctl(f_pvr_ctl->f_self);
-	f_pvr_ctl->f_fname_cmap_cbar_c = (char *) c_VIZ_pvr_fname_cmap_cbar_ctl(f_pvr_ctl->f_self);
-	f_pvr_ctl->f_cmap_cbar_c =       c_VIZ_pvr_cmap_cbar_ctl(f_pvr_ctl->f_self);
+	f_block_name = (char *) c_VIZ_pvr_fname_mat_ctl(f_pvr_ctl->f_self);
+    f_pvr_ctl->f_mat = init_f_VIZ_view_matrix_ctl(strngcopy_from_f(f_block_name),
+                                                  c_VIZ_pvr_viewmat_ctl,
+                                                  f_pvr_ctl->f_self);
+    
+    f_block_name = (char *) c_VIZ_pvr_fname_pvr_light_ctl(f_pvr_ctl->f_self);
+	f_pvr_ctl->f_light =       init_f_PVR_lighting_ctl(strngcopy_from_f(f_block_name),
+                                                       c_VIZ_pvr_light_ctl,
+                                                       f_pvr_ctl->f_self);
+    
+    f_block_name =                   (char *) c_VIZ_pvr_fname_cmap_cbar_ctl(f_pvr_ctl->f_self);
+	f_pvr_ctl->f_cmap_cbar_c = init_f_PVR_colormap_bar_ctl(strngcopy_from_f(f_block_name),
+                                                           c_VIZ_pvr_cmap_cbar_ctl,
+                                                           f_pvr_ctl->f_self);
 	f_pvr_ctl->f_movie =             c_VIZ_pvr_movie_ctl(f_pvr_ctl->f_self);
 	f_pvr_ctl->f_quilt_c =           c_VIZ_pvr_quilt_c(f_pvr_ctl->f_self);
+    
 	f_pvr_ctl->f_updated_ctl =       init_f_ctl_chara_item(c_VIZ_pvr_updated_ctl, f_pvr_ctl->f_self);
 	f_pvr_ctl->f_file_head_ctl =     init_f_ctl_chara_item(c_VIZ_pvr_file_head_ctl, f_pvr_ctl->f_self);
 	f_pvr_ctl->f_file_fmt_ctl =      init_f_ctl_chara_item(c_VIZ_pvr_file_fmt_ctl, f_pvr_ctl->f_self);
@@ -79,12 +88,9 @@ struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(void *(*c_load_self)(int idx, void *f_
 void *dealloc_f_VIZ_PVR_ctl(void *block_item){
     struct f_VIZ_PVR_ctl *f_pvr_ctl = (struct f_VIZ_PVR_ctl *) block_item;
     
-	f_pvr_ctl->f_fname_mat_ctl =  NULL;
 	f_pvr_ctl->f_mat =            NULL;
-	f_pvr_ctl->f_fname_pvr_light_c = NULL;
-	f_pvr_ctl->f_light =          NULL;
-	f_pvr_ctl->f_fname_cmap_cbar_c = NULL;
-	f_pvr_ctl->f_cmap_cbar_c =    NULL;
+    dealloc_lighting_ctl_c(f_pvr_ctl->f_light);
+    dealloc_colormap_colorbar_ctl_c(f_pvr_ctl->f_cmap_cbar_c);
 	f_pvr_ctl->f_movie =          NULL;
 	f_pvr_ctl->f_quilt_c =        NULL;
 	dealloc_chara_ctl_item_c(f_pvr_ctl->f_updated_ctl);

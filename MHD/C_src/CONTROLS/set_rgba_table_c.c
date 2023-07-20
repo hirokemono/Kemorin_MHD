@@ -217,7 +217,7 @@ static void make_colorbar_for_ctl(const int iflag_draw_time, const int iflag_dra
 	set_boolean_by_chara_ctl_item(draw_psf_cbar, cbar_c->f_colorbar_switch_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->f_colorbar_scale_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->f_zeromarker_flag_ctl);
-    cbar_c->f_colorbar_switch_ctl = "side";
+    sprintf(cbar_c->f_colorbar_switch_ctl, "%s", "side");
 	
 	int num = count_real2_clist(cmap_s->colormap);
 	set_from_real2_clist_at_index(0,     cmap_s->colormap, &d_cmap[0], &v_cmap[0]);

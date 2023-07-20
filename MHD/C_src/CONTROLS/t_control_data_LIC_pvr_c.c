@@ -74,7 +74,7 @@ int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			read_modelview_ctl_c(fp, buf, lic_pvr_c->label_lic_pvr->label[10],
 								 lic_pvr_c->pvr_c->mat_c);
 		} else if(right_file_flag_c(buf, lic_pvr_c->label_lic_pvr->label[10])){
-			lic_pvr_c->pvr_c->mat_c->iflag_use
+			lic_pvr_c->pvr_c->mat_c->f_iflag[0]
 					= read_file_flag_c(buf, lic_pvr_c->pvr_c->pvr_modelview_file_name);
 		};
 		
@@ -149,10 +149,10 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
 	level = write_pvr_plot_area_ctl_c(fp, level, lic_pvr_c->label_lic_pvr->label[ 9],
 									  lic_pvr_c->pvr_c->area_c);
 	
-	if(lic_pvr_c->pvr_c->mat_c->iflag_use > 0){
+	if(lic_pvr_c->pvr_c->mat_c->f_iflag[0] > 0){
 		level = write_modelview_ctl_c(fp, level, lic_pvr_c->label_lic_pvr->label[10],
 									  lic_pvr_c->pvr_c->mat_c);
-	} else if(lic_pvr_c->pvr_c->mat_c->iflag_use == -1){
+	} else if(lic_pvr_c->pvr_c->mat_c->f_iflag[0] == -1){
 		write_file_flag_for_ctl_c(fp, level, lic_pvr_c->label_lic_pvr->label[10], 
 								  lic_pvr_c->pvr_c->pvr_modelview_file_name);
 	};

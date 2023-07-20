@@ -12,6 +12,7 @@
 		180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CD1DDFB54700D20198 /* AVFoundation.framework */; };
 		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
 		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
+		181A7E512A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181A7E4F2A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c */; };
 		182174D62492F5640044ECA0 /* calypso_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D22492F5630044ECA0 /* calypso_param_c.c */; };
 		182174D72492F5640044ECA0 /* calypso_zlib_io_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */; };
 		1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1824FD33230FD47300990F41 /* KemoviewerLightingControl.m */; };
@@ -186,6 +187,8 @@
 		180FF7CD1DDFB54700D20198 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		180FF7CF1DDFB55000D20198 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		180FF7D11DDFB55500D20198 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		181A7E4F2A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctl_data_pvr_colormap_IO_c.c; sourceTree = "<group>"; };
+		181A7E502A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ctl_data_pvr_colormap_IO_c.h; sourceTree = "<group>"; };
 		182174D22492F5630044ECA0 /* calypso_param_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = calypso_param_c.c; sourceTree = "<group>"; };
 		182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = calypso_zlib_io_c.c; sourceTree = "<group>"; };
 		182174D42492F5630044ECA0 /* calypso_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = calypso_param_c.h; sourceTree = "<group>"; };
@@ -556,6 +559,8 @@
 			children = (
 				185CB93C212F593C00BB3C0B /* control_elements_IO_c.c */,
 				185CB93D212F593C00BB3C0B /* control_elements_IO_c.h */,
+				181A7E4F2A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c */,
+				181A7E502A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.h */,
 				1852CFB1236B7B780043C983 /* m_color_table_c.c */,
 				1852CFB0236B7B780043C983 /* m_color_table_c.h */,
 				185CB941212F593C00BB3C0B /* t_control_chara2_IO.c */,
@@ -1046,6 +1051,7 @@
 				18B885EB24E617BB0077BA16 /* t_psf_edge_connect_c.c in Sources */,
 				188FFD9F2309B02300F5A0DE /* set_fieldline_to_buf.c in Sources */,
 				18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */,
+				181A7E512A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c in Sources */,
 				18D7E72C1562D359009B05FF /* check_psf_data_viewer_c.c in Sources */,
 				18D7E72D1562D359009B05FF /* check_viewer_mesh_c.c in Sources */,
 				182174D62492F5640044ECA0 /* calypso_param_c.c in Sources */,

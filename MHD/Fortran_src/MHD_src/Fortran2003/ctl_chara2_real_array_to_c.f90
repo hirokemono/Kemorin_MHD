@@ -244,7 +244,8 @@
       call c_f_pointer(c_ctl, f_ctl)
       f_ctl%num =  num
       f_ctl%icou = num
-      call alloc_control_array_c2_r(f_ctl)
+      if(.not. allocated(f_ctl%c1_tbl))                                 &
+     &               call alloc_control_array_c2_r(f_ctl)
       end subroutine c_alloc_chara2_real_array
 !
 !  ---------------------------------------------------------------------

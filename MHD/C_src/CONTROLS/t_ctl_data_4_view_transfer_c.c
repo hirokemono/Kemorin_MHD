@@ -54,60 +54,64 @@ const char label_modeview_ctl[NLBL_MODELVIEW_CTL][KCHARA_C] = {
 const char label_modeview_head[KCHARA_C] = "view_transform_ctl";
 
 struct image_size_ctl_c * init_image_size_ctl_c(void){
-	int i;
-    struct image_size_ctl_c *img_size_c;
-    if((img_size_c = (struct image_size_ctl_c *) malloc(sizeof(struct image_size_ctl_c))) == NULL) {
+    struct image_size_ctl_c *f_pixel;
+    if((f_pixel = (struct image_size_ctl_c *) malloc(sizeof(struct image_size_ctl_c))) == NULL) {
         printf("malloc error for image_size_ctl_c \n");
         exit(0);
     }
+    if((f_pixel->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+        printf("malloc error for f_pixel->f_iflag\n");
+        exit(0);
+    }
+    f_pixel->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
 	
-    /* img_size_c->iflag_use = init_label_pvr_pixels */
-    
-    img_size_c->iflag_use = 0;
-	img_size_c->maxlen = 0;
-	for (i=0;i<NLBL_IMAGE_SIZE_CTL;i++){
-		if(strlen(label_image_size_ctl[i]) > img_size_c->maxlen){
-			img_size_c->maxlen = (int) strlen(label_image_size_ctl[i]);
-		};
-	};
+    f_pixel->f_num_xpixel_ctl = init_int_ctl_item_c();
+    f_pixel->f_num_ypixel_ctl = init_int_ctl_item_c();
 	
-    img_size_c->num_xpixel_ctl = init_int_ctl_item_c();
-    img_size_c->num_ypixel_ctl = init_int_ctl_item_c();
-	
-	return img_size_c;
+	return f_pixel;
 };
 
-void dealloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c){
+void dealloc_image_size_ctl_c(struct image_size_ctl_c *f_pixel){
 	
-	free(img_size_c->num_xpixel_ctl);
-	free(img_size_c->num_ypixel_ctl);
+    dealloc_int_ctl_item_c(f_pixel->f_num_xpixel_ctl);
+    dealloc_int_ctl_item_c(f_pixel->f_num_ypixel_ctl);
 	
-    free(img_size_c);
+    free(f_pixel->c_block_name);
+    free(f_pixel->f_iflag);
+    free(f_pixel);
 	return;
 };
 
 void read_image_size_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct image_size_ctl_c *img_size_c){
+			struct image_size_ctl_c *f_pixel){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
-		read_integer_ctl_item_c(buf, label_image_size_ctl[ 0], img_size_c->num_xpixel_ctl);
-		read_integer_ctl_item_c(buf, label_image_size_ctl[ 1], img_size_c->num_ypixel_ctl);
+		read_integer_ctl_item_c(buf, label_image_size_ctl[ 0], f_pixel->f_num_xpixel_ctl);
+		read_integer_ctl_item_c(buf, label_image_size_ctl[ 1], f_pixel->f_num_ypixel_ctl);
 	};
-	img_size_c->iflag_use = 1;
+    f_pixel->f_iflag[0] = 1;
     return;
 };
 
 int write_image_size_ctl_c(FILE *fp, int level, const char *label, 
-			struct image_size_ctl_c *img_size_c){
-    if(img_size_c->iflag_use == 0) return level;
+			struct image_size_ctl_c *f_pixel){
+    if(f_pixel->f_iflag[0] == 0) return level;
     
+    int maxlen;
+    int i;
+    for (i=0;i<NLBL_IMAGE_SIZE_CTL;i++){
+        if(strlen(label_image_size_ctl[i]) > maxlen){
+            maxlen = (int) strlen(label_image_size_ctl[i]);
+        };
+    };
+
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_integer_ctl_item_c(fp, level, img_size_c->maxlen,
-				label_image_size_ctl[ 0], img_size_c->num_xpixel_ctl);
-	write_integer_ctl_item_c(fp, level, img_size_c->maxlen,
-				label_image_size_ctl[ 1], img_size_c->num_ypixel_ctl);
+	write_integer_ctl_item_c(fp, level, maxlen,
+				label_image_size_ctl[ 0], f_pixel->f_num_xpixel_ctl);
+	write_integer_ctl_item_c(fp, level, maxlen,
+				label_image_size_ctl[ 1], f_pixel->f_num_ypixel_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -116,59 +120,67 @@ int write_image_size_ctl_c(FILE *fp, int level, const char *label,
 
 struct streo_view_ctl_c * init_streo_view_ctl_c(void){
 	int i;
-    struct streo_view_ctl_c *streo_view_c;
-    if((streo_view_c = (struct streo_view_ctl_c *) malloc(sizeof(struct streo_view_ctl_c))) == NULL) {
+    struct streo_view_ctl_c *f_streo;
+    if((f_streo = (struct streo_view_ctl_c *) malloc(sizeof(struct streo_view_ctl_c))) == NULL) {
         printf("malloc error for streo_view_ctl_c \n");
         exit(0);
     }
-	
-	/* streo_view_c->label_pvr_streo = init_label_pvr_streo() */
-	
-    streo_view_c->iflag_use = 0;
-	streo_view_c->maxlen = 0;
-	for (i=0;i<NLBL_STEREO_VIEW_CTL;i++){
-		if(strlen(label_streo_view_ctl[i]) > streo_view_c->maxlen){
-			streo_view_c->maxlen = (int) strlen(label_streo_view_ctl[i]);
-		};
-	};
-	
-    streo_view_c->focalpoint_ctl =     init_real_ctl_item_c();
-    streo_view_c->eye_separation_ctl = init_real_ctl_item_c();	
-	return streo_view_c;
+    if((f_streo->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+        printf("malloc error for f_streo->f_iflag\n");
+        exit(0);
+    }
+    f_streo->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
+    
+    f_streo->f_focalpoint_ctl =         init_real_ctl_item_c();
+    f_streo->f_eye_separation_ctl =     init_real_ctl_item_c();
+    f_streo->f_eye_sep_angle_ctl =      init_real_ctl_item_c();
+    f_streo->f_step_eye_sep_angle_ctl = init_chara_ctl_item_c();
+	return f_streo;
 };
 
-void dealloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c){
+void dealloc_streo_view_ctl_c(struct streo_view_ctl_c *f_streo){
 	
-	free(streo_view_c->focalpoint_ctl);
-	free(streo_view_c->eye_separation_ctl);
-	
-    streo_view_c->iflag_use = 0;
+    dealloc_real_ctl_item_c(f_streo->f_focalpoint_ctl);
+    dealloc_real_ctl_item_c(f_streo->f_eye_separation_ctl);
+    dealloc_real_ctl_item_c(f_streo->f_eye_sep_angle_ctl);
+    dealloc_chara_ctl_item_c(f_streo->f_step_eye_sep_angle_ctl);
+
+    free(f_streo->c_block_name);
+    free(f_streo->f_iflag);
 	return;
 };
 
 void read_streo_view_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct streo_view_ctl_c *streo_view_c){
+			struct streo_view_ctl_c *f_streo){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_real_ctl_item_c(buf, label_streo_view_ctl[ 0], streo_view_c->focalpoint_ctl);
-		read_real_ctl_item_c(buf, label_streo_view_ctl[ 1], streo_view_c->eye_separation_ctl);
+		read_real_ctl_item_c(buf, label_streo_view_ctl[ 0], f_streo->f_focalpoint_ctl);
+		read_real_ctl_item_c(buf, label_streo_view_ctl[ 1], f_streo->f_eye_separation_ctl);
 	};
-	streo_view_c->iflag_use = 1;
+    f_streo->f_iflag[0] = 1;
     return;
 };
 
 int write_streo_view_ctl_c(FILE *fp, int level, const char *label, 
-			struct streo_view_ctl_c *streo_view_c){
-    if(streo_view_c->iflag_use == 0) return level;
+			struct streo_view_ctl_c *f_streo){
+    if(f_streo->f_iflag[0] == 0) return level;
+    
+    int maxlen;
+    int i;
+    for (i=0;i<NLBL_STEREO_VIEW_CTL;i++){
+        if(strlen(label_streo_view_ctl[i]) > maxlen){
+            maxlen = (int) strlen(label_streo_view_ctl[i]);
+        };
+    };
     
     fprintf(fp, "!\n");
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_real_ctl_item_c(fp, level, streo_view_c->maxlen, 
-				label_streo_view_ctl[ 0], streo_view_c->focalpoint_ctl);
-	write_real_ctl_item_c(fp, level, streo_view_c->maxlen, 
-				label_streo_view_ctl[ 1], streo_view_c->eye_separation_ctl);
+	write_real_ctl_item_c(fp, level, maxlen,
+				label_streo_view_ctl[ 0], f_streo->f_focalpoint_ctl);
+	write_real_ctl_item_c(fp, level, maxlen,
+				label_streo_view_ctl[ 1], f_streo->f_eye_separation_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -177,79 +189,84 @@ int write_streo_view_ctl_c(FILE *fp, int level, const char *label,
 
 struct projection_mat_ctl_c * init_projection_mat_ctl_c(void){
 	int i;
-    struct projection_mat_ctl_c *projection_c;
-    if((projection_c = (struct projection_mat_ctl_c *) malloc(sizeof(struct projection_mat_ctl_c))) == NULL) {
+    struct projection_mat_ctl_c *f_proj;
+    if((f_proj = (struct projection_mat_ctl_c *) malloc(sizeof(struct projection_mat_ctl_c))) == NULL) {
         printf("malloc error for projection_mat_ctl_c \n");
         exit(0);
     }
+    if((f_proj->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+        printf("malloc error for f_proj->f_iflag\n");
+        exit(0);
+    }
+    f_proj->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
 	
-	/* 	projection_c->label_pvr_project =   init_label_pvr_project(); */
-	
-	projection_c->iflag_use = 0;
-	projection_c->maxlen = 0;
-	for (i=0;i<NLBL_PROJECTION_MAT_CTL;i++){
-		if(strlen(label_projection_mat_ctl[i]) > projection_c->maxlen){
-			projection_c->maxlen = (int) strlen(label_projection_mat_ctl[i]);
-		};
-	};
-	
-    projection_c->perspective_angle_ctl =    init_real_ctl_item_c();
-    projection_c->perspective_xy_ratio_ctl = init_real_ctl_item_c();
-    projection_c->perspective_near_ctl =     init_real_ctl_item_c();
-    projection_c->perspective_far_ctl =      init_real_ctl_item_c();
-    projection_c->horizontal_range_ctl =     init_real2_ctl_item_c();
-    projection_c->vertical_range_ctl =       init_real2_ctl_item_c();
-	return projection_c;
+    f_proj->f_perspective_angle_ctl =    init_real_ctl_item_c();
+    f_proj->f_perspective_xy_ratio_ctl = init_real_ctl_item_c();
+    f_proj->f_perspective_near_ctl =     init_real_ctl_item_c();
+    f_proj->f_perspective_far_ctl =      init_real_ctl_item_c();
+    f_proj->f_horizontal_range_ctl =     init_real2_ctl_item_c();
+    f_proj->f_vertical_range_ctl =       init_real2_ctl_item_c();
+	return f_proj;
 };
 
-void dealloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c){
+void dealloc_projection_mat_ctl_c(struct projection_mat_ctl_c *f_proj){
 	
-	free(projection_c->perspective_angle_ctl);
-	free(projection_c->perspective_xy_ratio_ctl);
-	free(projection_c->perspective_near_ctl);
-	free(projection_c->perspective_far_ctl);
-    free(projection_c->horizontal_range_ctl);
-    free(projection_c->vertical_range_ctl);
+    dealloc_real_ctl_item_c(f_proj->f_perspective_angle_ctl);
+    dealloc_real_ctl_item_c(f_proj->f_perspective_xy_ratio_ctl);
+    dealloc_real_ctl_item_c(f_proj->f_perspective_near_ctl);
+    dealloc_real_ctl_item_c(f_proj->f_perspective_far_ctl);
+    dealloc_real2_ctl_item_c(f_proj->f_horizontal_range_ctl);
+    dealloc_real2_ctl_item_c(f_proj->f_vertical_range_ctl);
 	
-    projection_c->iflag_use = 0;
+    free(f_proj->f_iflag);
+    free(f_proj->c_block_name);
+    free(f_proj);
 	return;
 };
 
 void read_projection_mat_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct projection_mat_ctl_c *projection_c){
+			struct projection_mat_ctl_c *f_proj){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 0], projection_c->perspective_angle_ctl);
-		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 1], projection_c->perspective_xy_ratio_ctl);
-		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 2], projection_c->perspective_near_ctl);
-		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 3], projection_c->perspective_far_ctl);
-        read_real2_ctl_item_c(buf, label_projection_mat_ctl[ 4], projection_c->horizontal_range_ctl);
-        read_real2_ctl_item_c(buf, label_projection_mat_ctl[ 5], projection_c->vertical_range_ctl);
+		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 0], f_proj->f_perspective_angle_ctl);
+		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 1], f_proj->f_perspective_xy_ratio_ctl);
+		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 2], f_proj->f_perspective_near_ctl);
+		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 3], f_proj->f_perspective_far_ctl);
+        read_real2_ctl_item_c(buf, label_projection_mat_ctl[ 4], f_proj->f_horizontal_range_ctl);
+        read_real2_ctl_item_c(buf, label_projection_mat_ctl[ 5], f_proj->f_vertical_range_ctl);
 	};
-	projection_c->iflag_use = 1;
+    f_proj->f_iflag[0] = 1;
     return;
 };
 
 int write_projection_mat_ctl_c(FILE *fp, int level, const char *label, 
-			struct projection_mat_ctl_c *projection_c){
-    if(projection_c->iflag_use == 0) return level;
+			struct projection_mat_ctl_c *f_proj){
+    if(f_proj->f_iflag[0] == 0) return level;
+    
+    int i;
+    int maxlen = 0;
+    for (i=0;i<NLBL_PROJECTION_MAT_CTL;i++){
+        if(strlen(label_projection_mat_ctl[i]) > maxlen){
+            maxlen = (int) strlen(label_projection_mat_ctl[i]);
+        };
+    };
     
     fprintf(fp, "!\n");
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_real_ctl_item_c(fp, level, projection_c->maxlen, 
-				label_projection_mat_ctl[ 0], projection_c->perspective_angle_ctl);
-	write_real_ctl_item_c(fp, level, projection_c->maxlen, 
-				label_projection_mat_ctl[ 1], projection_c->perspective_xy_ratio_ctl);
-	write_real_ctl_item_c(fp, level, projection_c->maxlen, 
-				label_projection_mat_ctl[ 2], projection_c->perspective_near_ctl);
-	write_real_ctl_item_c(fp, level, projection_c->maxlen, 
-				label_projection_mat_ctl[ 3], projection_c->perspective_far_ctl);
-    write_real2_ctl_item_c(fp, level, projection_c->maxlen, 
-                label_projection_mat_ctl[ 4], projection_c->horizontal_range_ctl);
-    write_real2_ctl_item_c(fp, level, projection_c->maxlen, 
-                label_projection_mat_ctl[ 5], projection_c->vertical_range_ctl);
+	write_real_ctl_item_c(fp, level, maxlen,
+				label_projection_mat_ctl[ 0], f_proj->f_perspective_angle_ctl);
+	write_real_ctl_item_c(fp, level, maxlen,
+				label_projection_mat_ctl[ 1], f_proj->f_perspective_xy_ratio_ctl);
+	write_real_ctl_item_c(fp, level, maxlen,
+				label_projection_mat_ctl[ 2], f_proj->f_perspective_near_ctl);
+	write_real_ctl_item_c(fp, level, maxlen,
+				label_projection_mat_ctl[ 3], f_proj->f_perspective_far_ctl);
+    write_real2_ctl_item_c(fp, level, maxlen,
+                label_projection_mat_ctl[ 4], f_proj->f_horizontal_range_ctl);
+    write_real2_ctl_item_c(fp, level, maxlen,
+                label_projection_mat_ctl[ 5], f_proj->f_vertical_range_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -264,75 +281,74 @@ struct modelview_ctl_c * init_modelview_ctl_c(void){
         exit(0);
     }
 	
-	/* mat_c->label_pvr_modelview = init_label_pvr_modelview(); */
-    mat_c->iflag_use = 0;
-	mat_c->maxlen = 0;
-	for (i=0;i<NLBL_MODELVIEW_CTL;i++){
-		if(strlen(label_modeview_ctl[i]) > mat_c->maxlen){
-			mat_c->maxlen = (int) strlen(label_modeview_ctl[i]);
-		};
-	};
-	
-    mat_c->modelview_mat_ctl = init_chara2_real_clist();
-	
-    mat_c->lookpoint_list =    init_chara_real_clist();
-    mat_c->viewpoint_list =    init_chara_real_clist();
-    mat_c->up_dir_list =       init_chara_real_clist();
-    mat_c->view_rot_vec_list = init_chara_real_clist();
+    if((mat_c->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+        printf("malloc error for mat_c->f_iflag\n");
+        exit(0);
+    }
+    mat_c->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
+    mat_c->mat_ctl_file_name = (char *)calloc(KCHARA_C, sizeof(char));
 
-    sprintf(mat_c->lookpoint_list->c1_name, "Direction");
-    sprintf(mat_c->viewpoint_list->c1_name, "Direction");
-    sprintf(mat_c->up_dir_list->c1_name, "Direction");
-    sprintf(mat_c->view_rot_vec_list->c1_name, "Direction");
-    sprintf(mat_c->lookpoint_list->r1_name, "Value");
-    sprintf(mat_c->viewpoint_list->r1_name, "Value");
-    sprintf(mat_c->up_dir_list->r1_name, "Value");
-    sprintf(mat_c->view_rot_vec_list->r1_name, "Value");
+    mat_c->f_modelview_mat_ctl = init_chara2_real_clist();
 	
-    mat_c->view_rotation_deg_ctl = init_real_ctl_item_c();
-    mat_c->scale_factor_ctl =      init_real_ctl_item_c();
+    mat_c->f_lookpoint_ctl =    init_chara_real_clist();
+    mat_c->f_viewpoint_ctl =    init_chara_real_clist();
+    mat_c->f_up_dir_ctl =       init_chara_real_clist();
+    mat_c->f_view_rot_vec_ctl = init_chara_real_clist();
 
-    mat_c->projection_type_ctl =      init_chara_ctl_item_c();
+    sprintf(mat_c->f_lookpoint_ctl->c1_name, "Direction");
+    sprintf(mat_c->f_viewpoint_ctl->c1_name, "Direction");
+    sprintf(mat_c->f_up_dir_ctl->c1_name, "Direction");
+    sprintf(mat_c->f_view_rot_vec_ctl->c1_name, "Direction");
+    sprintf(mat_c->f_lookpoint_ctl->r1_name, "Value");
+    sprintf(mat_c->f_viewpoint_ctl->r1_name, "Value");
+    sprintf(mat_c->f_up_dir_ctl->r1_name, "Value");
+    sprintf(mat_c->f_view_rot_vec_ctl->r1_name, "Value");
+	
+    mat_c->f_view_rotation_deg_ctl = init_real_ctl_item_c();
+    mat_c->f_scale_factor_ctl =      init_real_ctl_item_c();
+
+    mat_c->f_projection_type_ctl =      init_chara_ctl_item_c();
     
-    mat_c->scale_vector_list =     init_chara_real_clist();
-    mat_c->viewpt_in_viewer_list = init_chara_real_clist();
+    mat_c->f_scale_vector_ctl =     init_chara_real_clist();
+    mat_c->f_viewpt_in_viewer_ctl = init_chara_real_clist();
 
-    sprintf(mat_c->scale_vector_list->c1_name, "Direction");
-    sprintf(mat_c->viewpt_in_viewer_list->r1_name, "Value");
-    sprintf(mat_c->scale_vector_list->c1_name, "Direction");
-    sprintf(mat_c->viewpt_in_viewer_list->r1_name, "Value");
+    sprintf(mat_c->f_scale_vector_ctl->c1_name, "Direction");
+    sprintf(mat_c->f_viewpt_in_viewer_ctl->r1_name, "Value");
+    sprintf(mat_c->f_scale_vector_ctl->c1_name, "Direction");
+    sprintf(mat_c->f_viewpt_in_viewer_ctl->r1_name, "Value");
 	
-	mat_c->img_size_c = init_image_size_ctl_c();
-	mat_c->streo_view_c = init_streo_view_ctl_c();
-	mat_c->projection_c = init_projection_mat_ctl_c();
+	mat_c->f_pixel = init_image_size_ctl_c();
+	mat_c->f_streo = init_streo_view_ctl_c();
+	mat_c->f_proj = init_projection_mat_ctl_c();
 	
 	return mat_c;
 };
 
 void dealloc_modelview_ctl_c(struct modelview_ctl_c *mat_c){
 	
-	dealloc_chara2_real_clist(mat_c->modelview_mat_ctl);
+	dealloc_chara2_real_clist(mat_c->f_modelview_mat_ctl);
 	
-	dealloc_chara_real_clist(mat_c->lookpoint_list);
-	dealloc_chara_real_clist(mat_c->viewpoint_list);
-	dealloc_chara_real_clist(mat_c->up_dir_list);
-	dealloc_chara_real_clist(mat_c->view_rot_vec_list);
+	dealloc_chara_real_clist(mat_c->f_lookpoint_ctl);
+	dealloc_chara_real_clist(mat_c->f_viewpoint_ctl);
+	dealloc_chara_real_clist(mat_c->f_up_dir_ctl);
+	dealloc_chara_real_clist(mat_c->f_view_rot_vec_ctl);
 	
-	free(mat_c->view_rotation_deg_ctl);
-	free(mat_c->scale_factor_ctl);
-    dealloc_chara_ctl_item_c(mat_c->projection_type_ctl);
+    dealloc_real_ctl_item_c(mat_c->f_view_rotation_deg_ctl);
+    dealloc_real_ctl_item_c(mat_c->f_scale_factor_ctl);
+    dealloc_chara_ctl_item_c(mat_c->f_projection_type_ctl);
 	
-	dealloc_chara_real_clist(mat_c->scale_vector_list);
-	dealloc_chara_real_clist(mat_c->viewpt_in_viewer_list);
+	dealloc_chara_real_clist(mat_c->f_scale_vector_ctl);
+	dealloc_chara_real_clist(mat_c->f_viewpt_in_viewer_ctl);
 	
-	dealloc_image_size_ctl_c(mat_c->img_size_c);
-	dealloc_streo_view_ctl_c(mat_c->streo_view_c);
-	dealloc_projection_mat_ctl_c(mat_c->projection_c);
-	free(mat_c->streo_view_c);
-	free(mat_c->projection_c);
-		
-    mat_c->iflag_use = 0;
-	return;
+	dealloc_image_size_ctl_c(mat_c->f_pixel);
+	dealloc_streo_view_ctl_c(mat_c->f_streo);
+	dealloc_projection_mat_ctl_c(mat_c->f_proj);
+
+    free(mat_c->mat_ctl_file_name);
+    free(mat_c->c_block_name);
+    free(mat_c->f_iflag);
+    free(mat_c);
+    return;
 };
 
 void read_modelview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
@@ -340,75 +356,83 @@ void read_modelview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 1], mat_c->lookpoint_list);
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 2], mat_c->viewpoint_list);
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 3], mat_c->up_dir_list);
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 4], mat_c->view_rot_vec_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 1], mat_c->f_lookpoint_ctl);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 2], mat_c->f_viewpoint_ctl);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 3], mat_c->f_up_dir_ctl);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 4], mat_c->f_view_rot_vec_ctl);
 		
-		read_real_ctl_item_c(buf, label_modeview_ctl[ 5], mat_c->view_rotation_deg_ctl);
-		read_real_ctl_item_c(buf, label_modeview_ctl[ 6], mat_c->scale_factor_ctl);
-        read_chara_ctl_item_c(buf, label_modeview_ctl[12], mat_c->projection_type_ctl);
+		read_real_ctl_item_c(buf, label_modeview_ctl[ 5], mat_c->f_view_rotation_deg_ctl);
+		read_real_ctl_item_c(buf, label_modeview_ctl[ 6], mat_c->f_scale_factor_ctl);
+        read_chara_ctl_item_c(buf, label_modeview_ctl[12], mat_c->f_projection_type_ctl);
 		
 		read_chara_real_clist(fp, buf, label_modeview_ctl[ 7],
-							  mat_c->scale_vector_list);
+							  mat_c->f_scale_vector_ctl);
 		read_chara_real_clist(fp, buf, label_modeview_ctl[ 8],
-							  mat_c->viewpt_in_viewer_list);
+							  mat_c->f_viewpt_in_viewer_ctl);
 		
 		read_chara2_real_clist(fp, buf, label_modeview_ctl[10],
-							   mat_c->modelview_mat_ctl);
+							   mat_c->f_modelview_mat_ctl);
 		
 		if(right_begin_flag_c(buf, label_modeview_ctl[ 0]) > 0){
-			read_image_size_ctl_c(fp, buf, label_modeview_ctl[ 0], mat_c->img_size_c);
+			read_image_size_ctl_c(fp, buf, label_modeview_ctl[ 0], mat_c->f_pixel);
 		};
         if(right_begin_flag_c(buf, label_modeview_ctl[ 9]) > 0){
 			read_projection_mat_ctl_c(fp, buf, label_modeview_ctl[ 9],
-									  mat_c->projection_c);
+									  mat_c->f_proj);
         };
 		if(right_begin_flag_c(buf, label_modeview_ctl[11]) > 0){
 			read_streo_view_ctl_c(fp, buf, label_modeview_ctl[11],
-								  mat_c->streo_view_c);
+								  mat_c->f_streo);
 		};
 	};
-	mat_c->iflag_use = 1;
+	mat_c->f_iflag[0] = 1;
     return;
 };
 
 int write_modelview_ctl_c(FILE *fp, int level, const char *label, 
 			struct modelview_ctl_c *mat_c){
-    if(mat_c->iflag_use == 0) return level;
+    if(mat_c->f_iflag[0] == 0) return level;
     
+    int i;
+    int maxlen = 0;
+    for (i=0;i<NLBL_MODELVIEW_CTL;i++){
+        if(strlen(label_modeview_ctl[i]) > maxlen){
+            maxlen = (int) strlen(label_modeview_ctl[i]);
+        };
+    };
+
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	level = write_image_size_ctl_c(fp, level, label_modeview_ctl[ 0],
-								   mat_c->img_size_c);
+								   mat_c->f_pixel);
 	
 	write_chara_real_clist(fp, level, label_modeview_ctl[ 8],
-						   mat_c->viewpt_in_viewer_list);
+						   mat_c->f_viewpt_in_viewer_ctl);
 	
-	write_real_ctl_item_c(fp, level, mat_c->maxlen, 
-				label_modeview_ctl[ 6], mat_c->scale_factor_ctl);
-    write_chara_ctl_item_c(fp, level, mat_c->maxlen, 
-                label_modeview_ctl[12], mat_c->projection_type_ctl);
+	write_real_ctl_item_c(fp, level, maxlen,
+				label_modeview_ctl[ 6], mat_c->f_scale_factor_ctl);
+    write_chara_ctl_item_c(fp, level, maxlen,
+                label_modeview_ctl[12], mat_c->f_projection_type_ctl);
 	
-	write_chara_real_clist(fp, level, label_modeview_ctl[ 1], mat_c->lookpoint_list);
-	write_chara_real_clist(fp, level, label_modeview_ctl[ 2], mat_c->viewpoint_list);
-	write_chara_real_clist(fp, level, label_modeview_ctl[ 3], mat_c->up_dir_list);
-    write_chara_real_clist(fp, level, label_modeview_ctl[ 4], mat_c->view_rot_vec_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 1], mat_c->f_lookpoint_ctl);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 2], mat_c->f_viewpoint_ctl);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 3], mat_c->f_up_dir_ctl);
+    write_chara_real_clist(fp, level, label_modeview_ctl[ 4], mat_c->f_view_rot_vec_ctl);
 	
-	write_real_ctl_item_c(fp, level, mat_c->maxlen, 
-				label_modeview_ctl[ 5], mat_c->view_rotation_deg_ctl);
+	write_real_ctl_item_c(fp, level, maxlen,
+				label_modeview_ctl[ 5], mat_c->f_view_rotation_deg_ctl);
 	
 	write_chara_real_clist(fp, level, label_modeview_ctl[ 7],
-						   mat_c->scale_vector_list);
+						   mat_c->f_scale_vector_ctl);
 	
 	write_chara2_real_clist(fp, level, label_modeview_ctl[10],
-							mat_c->modelview_mat_ctl);
+							mat_c->f_modelview_mat_ctl);
 	
 	level = write_projection_mat_ctl_c(fp, level, label_modeview_ctl[ 9],
-									   mat_c->projection_c);
+									   mat_c->f_proj);
 	level = write_streo_view_ctl_c(fp, level, label_modeview_ctl[11],
-								   mat_c->streo_view_c);
+								   mat_c->f_streo);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -430,7 +454,7 @@ void read_modelview_file_c(const char *file_name, char buf[LENGTHBUF],
 	};
 	fclose(FP_View);
 	
-    mat_c->iflag_use = -1;
+    mat_c->f_iflag[0] = -1;
 	return;
 };
 

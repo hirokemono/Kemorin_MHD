@@ -22,6 +22,7 @@
 #include "t_control_data_pvr_section_list.h"
 #include "t_control_data_pvr_isosurf_list.h"
 #include "m_PVR_control_labels_from_f.h"
+#include "ctl_data_pvr_colormap_IO_c.h"
 
 #define NLBL_PVR_MOVIE_CTL      2
 #define NLBL_PVR_CTL            19

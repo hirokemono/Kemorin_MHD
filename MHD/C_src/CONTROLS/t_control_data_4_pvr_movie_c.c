@@ -61,7 +61,7 @@ void read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			read_modelview_ctl_c(fp, buf, movie_c->label_lic_movie_ctl->label[ 3],
 								 movie_c->view_start_mat_c);
 		} else if(right_file_flag_c(buf, movie_c->label_lic_movie_ctl->label[ 3])){
-			movie_c->view_start_mat_c->iflag_use
+			movie_c->view_start_mat_c->f_iflag[0]
 					= read_file_flag_c(buf, movie_c->start_view_file_name);
 		};
 		
@@ -69,7 +69,7 @@ void read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			read_modelview_ctl_c(fp, buf, movie_c->label_lic_movie_ctl->label[ 4],
 								 movie_c->view_end_mat_c);
 		} else if(right_file_flag_c(buf, movie_c->label_lic_movie_ctl->label[ 4])){
-			movie_c->view_end_mat_c->iflag_use
+			movie_c->view_end_mat_c->f_iflag[0]
 					= read_file_flag_c(buf, movie_c->end_view_file_name);
 		};
 	};
@@ -94,18 +94,18 @@ static int write_pvr_movie_ctl_items_c(FILE *fp, int level,
 						   movie_c->label_lic_movie_ctl->label[ 5], 
 						   movie_c->apature_range_ctl);
 	
-	if(movie_c->view_start_mat_c->iflag_use > 0){
+	if(movie_c->view_start_mat_c->f_iflag[0] > 0){
 		level = write_modelview_ctl_c(fp, level, movie_c->label_lic_movie_ctl->label[ 3], 
 									  movie_c->view_start_mat_c);
-	} else if(movie_c->view_start_mat_c->iflag_use == -1){
+	} else if(movie_c->view_start_mat_c->f_iflag[0] == -1){
 		write_file_flag_for_ctl_c(fp, level, movie_c->label_lic_movie_ctl->label[ 3], 
 								  movie_c->start_view_file_name);
 	};
 	
-	if(movie_c->view_end_mat_c->iflag_use > 0){
+	if(movie_c->view_end_mat_c->f_iflag[0] > 0){
 		level = write_modelview_ctl_c(fp, level, movie_c->label_lic_movie_ctl->label[ 4], 
 									  movie_c->view_end_mat_c);
-	} else if(movie_c->view_end_mat_c->iflag_use == -1){
+	} else if(movie_c->view_end_mat_c->f_iflag[0] == -1){
 		write_file_flag_for_ctl_c(fp, level, movie_c->label_lic_movie_ctl->label[ 4], 
 								  movie_c->end_view_file_name);
 	};

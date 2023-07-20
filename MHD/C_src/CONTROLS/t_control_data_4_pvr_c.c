@@ -178,7 +178,7 @@ void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 		read_modelview_ctl_c(fp, buf, pvr_c->label_pvr_ctl_w_dpl->label[11],
 							 pvr_c->mat_c);
 	} else if(right_file_flag_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[11])){
-		pvr_c->mat_c->iflag_use 
+		pvr_c->mat_c->f_iflag[0]
 				= read_file_flag_c(buf, pvr_c->pvr_modelview_file_name);
 	};
 	
@@ -250,10 +250,10 @@ int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c){
 	level = write_pvr_plot_area_ctl_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->label[10],
 									  pvr_c->area_c);
 	
-	if(pvr_c->mat_c->iflag_use > 0){
+	if(pvr_c->mat_c->f_iflag[0] > 0){
 		level = write_modelview_ctl_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->label[11],
 									  pvr_c->mat_c);
-	} else if(pvr_c->mat_c->iflag_use == -1){
+	} else if(pvr_c->mat_c->f_iflag[0] == -1){
 		write_file_flag_for_ctl_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->label[11],
 								  pvr_c->pvr_modelview_file_name);
 	};
@@ -316,7 +316,7 @@ int write_pvr_ctl_c(FILE *fp, int level, const char *label,
 
 
 void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
-    if(pvr_c->mat_c->iflag_use  ==-1){
+    if(pvr_c->mat_c->f_iflag[0]  ==-1){
         strcat(pvr_c->pvr_modelview_file_name, "_2");
     }
     if(pvr_c->iflag_cmap_cbar_ctl ==-1){
@@ -328,10 +328,10 @@ void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
 }
 
 void read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
-	if(pvr_c->mat_c->iflag_use ==-1){
+	if(pvr_c->mat_c->f_iflag[0] ==-1){
 		read_modelview_file_c(pvr_c->pvr_modelview_file_name, buf, pvr_c->mat_c);
 	};
-	if(pvr_c->cmap_cbar_c->iflag_use ==-1){
+	if(pvr_c->cmap_cbar_c->f_iflag[0] ==-1){
 		read_colormap_file_c(pvr_c->pvr_colormap_file_name, buf, pvr_c->cmap_cbar_c);
 	};
 	
@@ -340,7 +340,7 @@ void read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 };
 
 void write_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
-	if(pvr_c->mat_c->iflag_use ==-1){
+	if(pvr_c->mat_c->f_iflag[0] ==-1){
 		write_modelview_file_c(pvr_c->pvr_modelview_file_name, pvr_c->mat_c);
 	};
 	if(pvr_c->iflag_cmap_cbar_ctl ==-1){

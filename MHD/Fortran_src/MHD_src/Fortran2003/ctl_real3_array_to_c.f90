@@ -204,7 +204,8 @@
       call c_f_pointer(c_ctl, f_ctl)
       f_ctl%num =  num
       f_ctl%icou = num
-      call alloc_control_array_r3(f_ctl)
+      if(.not. allocated(f_ctl%vec1))                                   &
+     &        call alloc_control_array_r3(f_ctl)
       end subroutine c_alloc_real3_array
 !
 !  ---------------------------------------------------------------------

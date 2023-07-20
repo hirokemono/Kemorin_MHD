@@ -5,6 +5,19 @@ control_elements_IO_c.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+ctl_data_pvr_colormap_IO_c.o: \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.c \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 load_MHD_control_c.o: \
   $(C_SRCDIR)/CONTROLS/load_MHD_control_c.c \
   $(C_SRCDIR)/CONTROLS/load_MHD_control_c.h \
@@ -65,6 +78,7 @@ load_MHD_control_c.o: \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
@@ -213,6 +227,7 @@ t_SGS_MHD_control_c.o: \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
@@ -359,7 +374,8 @@ t_control_data_4_pvr_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_psf_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h
+  $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_4_pvr_movie_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_movie_c.c \
@@ -446,6 +462,7 @@ t_control_data_LIC_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_lic_masking_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_noise_c.h \
@@ -502,6 +519,7 @@ t_control_data_LIC_pvr_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_lic_masking_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_noise_c.h \
@@ -559,7 +577,8 @@ t_control_data_PVR_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_psf_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h
+  $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_gen_sph_grid_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_gen_sph_grid_c.c \
@@ -664,6 +683,7 @@ t_control_data_visualizer_c.o: \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
@@ -705,6 +725,7 @@ t_control_data_vizs_c.o: \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_isosurf_list.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_ctl_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
