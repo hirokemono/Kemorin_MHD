@@ -65,21 +65,26 @@ struct lighting_ctl_c{
 };
 
 struct pvr_colorbar_ctl_c{
-    int iflag_use;
+    void * f_self;
+    int * f_iflag;
+    
+    char *c_block_name;
+
 	int maxlen;
 	
-	struct chara_ctl_item *colorbar_switch_ctl;
-	struct chara_ctl_item *colorbar_scale_ctl;
-	struct chara_ctl_item *zeromarker_flag_ctl;
+	struct chara_ctl_item *f_colorbar_switch_ctl;
+	struct chara_ctl_item *f_colorbar_scale_ctl;
+    struct chara_ctl_item *f_colorbar_position_ctl;
+	struct chara_ctl_item *f_zeromarker_flag_ctl;
 	
-	struct int_ctl_item *font_size_ctl;
-	struct int_ctl_item *ngrid_cbar_ctl;
+	struct int_ctl_item *f_font_size_ctl;
+	struct int_ctl_item *f_ngrid_cbar_ctl;
 	
-	struct real2_ctl_item *cbar_range_ctl;
+	struct real2_ctl_item *f_cbar_range_ctl;
 	
-	struct chara_ctl_item *axis_switch_ctl;
-    struct chara_ctl_item *time_switch_ctl;
-    struct chara_ctl_item *mapgrid_switch_ctl;
+	struct chara_ctl_item *f_axis_switch_ctl;
+    struct chara_ctl_item *f_time_switch_ctl;
+    struct chara_ctl_item *f_mapgrid_switch_ctl;
 };
 
 struct pvr_colormap_bar_ctl_c{

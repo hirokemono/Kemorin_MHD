@@ -28,6 +28,8 @@
 !!     &          bind(C, NAME = 'c_PVR_colormap_ctl_iflag')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!
+!!      type(c_ptr) function c_PVR_cmap_lic_color_field_ctl(c_ctl)      &
+!!     &          bind(C, NAME = 'c_PVR_cmap_lic_color_field_ctl')
 !!      type(c_ptr) function c_PVR_cmap_lic_color_comp_ctl(c_ctl)       &
 !!     &          bind(C, NAME = 'c_PVR_cmap_lic_color_comp_ctl')
 !!      type(c_ptr) function c_PVR_cmap_lic_opacity_fld_ctl(c_ctl)      &
@@ -152,6 +154,16 @@
       end function c_PVR_colormap_ctl_iflag
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+
+      type(c_ptr) function c_PVR_cmap_lic_color_field_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_PVR_cmap_lic_color_field_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_colormap_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_PVR_cmap_lic_color_field_ctl = C_loc(f_ctl%lic_color_fld_ctl)
+      end function c_PVR_cmap_lic_color_field_ctl
+!
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_PVR_cmap_lic_color_comp_ctl(c_ctl)         &

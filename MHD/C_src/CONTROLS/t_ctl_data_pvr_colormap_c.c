@@ -289,9 +289,13 @@ struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(void){
         printf("malloc error for pvr_colorbar_ctl_c \n");
         exit(0);
     }
-	/*cbar_c->label_pvr_cbar = init_label_pvr_cbar(); */
-	
-    cbar_c->iflag_use = 0;
+    if((cbar_c->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+        printf("malloc error for cbar_c->f_iflag\n");
+        exit(0);
+    }
+
+    cbar_c->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
+
 	cbar_c->maxlen = 0;
 	for (i=0;i<NLBL_PVR_COLORBAR_CTL;i++){
 		if(strlen(label_colorbar_ctl[i]) > cbar_c->maxlen){
@@ -299,36 +303,40 @@ struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(void){
 		};
 	};
 	
-	cbar_c->colorbar_switch_ctl = init_chara_ctl_item_c();
-	cbar_c->colorbar_scale_ctl =  init_chara_ctl_item_c();
-	cbar_c->zeromarker_flag_ctl = init_chara_ctl_item_c();
+	cbar_c->f_colorbar_switch_ctl =    init_chara_ctl_item_c();
+	cbar_c->f_colorbar_scale_ctl =     init_chara_ctl_item_c();
+    cbar_c->f_colorbar_position_ctl =  init_chara_ctl_item_c();
+	cbar_c->f_zeromarker_flag_ctl =    init_chara_ctl_item_c();
 	
-    cbar_c->font_size_ctl =  init_int_ctl_item_c();
-    cbar_c->ngrid_cbar_ctl = init_int_ctl_item_c();
+    cbar_c->f_font_size_ctl =  init_int_ctl_item_c();
+    cbar_c->f_ngrid_cbar_ctl = init_int_ctl_item_c();
 	
-	cbar_c->cbar_range_ctl = init_real2_ctl_item_c();
+	cbar_c->f_cbar_range_ctl = init_real2_ctl_item_c();
 	
-	cbar_c->axis_switch_ctl = init_chara_ctl_item_c();
-    cbar_c->time_switch_ctl = init_chara_ctl_item_c();
-    cbar_c->mapgrid_switch_ctl = init_chara_ctl_item_c();
+	cbar_c->f_axis_switch_ctl = init_chara_ctl_item_c();
+    cbar_c->f_time_switch_ctl = init_chara_ctl_item_c();
+    cbar_c->f_mapgrid_switch_ctl = init_chara_ctl_item_c();
 	
 	return cbar_c;
 };
 
 void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	
-	dealloc_chara_ctl_item_c(cbar_c->colorbar_switch_ctl);
-	dealloc_chara_ctl_item_c(cbar_c->colorbar_scale_ctl);
-	dealloc_chara_ctl_item_c(cbar_c->zeromarker_flag_ctl);
+	dealloc_chara_ctl_item_c(cbar_c->f_colorbar_switch_ctl);
+	dealloc_chara_ctl_item_c(cbar_c->f_colorbar_scale_ctl);
+    dealloc_chara_ctl_item_c(cbar_c->f_colorbar_position_ctl);
+	dealloc_chara_ctl_item_c(cbar_c->f_zeromarker_flag_ctl);
 	
-	free(cbar_c->font_size_ctl);
-	free(cbar_c->ngrid_cbar_ctl);
+	free(cbar_c->f_font_size_ctl);
+	free(cbar_c->f_ngrid_cbar_ctl);
 	
-	free(cbar_c->cbar_range_ctl);
+	free(cbar_c->f_cbar_range_ctl);
 	
-	dealloc_chara_ctl_item_c(cbar_c->axis_switch_ctl);
-    dealloc_chara_ctl_item_c(cbar_c->time_switch_ctl);
-    dealloc_chara_ctl_item_c(cbar_c->mapgrid_switch_ctl);
+	dealloc_chara_ctl_item_c(cbar_c->f_axis_switch_ctl);
+    dealloc_chara_ctl_item_c(cbar_c->f_time_switch_ctl);
+    dealloc_chara_ctl_item_c(cbar_c->f_mapgrid_switch_ctl);
+    free(cbar_c->c_block_name);
+    free(cbar_c->f_iflag);
     free(cbar_c);
 	return;
 };
@@ -341,50 +349,53 @@ void read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 0], cbar_c->colorbar_switch_ctl);
-		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 1], cbar_c->colorbar_scale_ctl);
+		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 0], cbar_c->f_colorbar_switch_ctl);
+        read_chara_ctl_item_c(buf, cbar_c->f_colorbar_position_ctl->c_block_name, cbar_c->f_colorbar_position_ctl);
+		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 1], cbar_c->f_colorbar_scale_ctl);
 		
-		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 2], cbar_c->font_size_ctl);
-		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 3], cbar_c->ngrid_cbar_ctl);
-		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 4], cbar_c->zeromarker_flag_ctl);
-		read_real2_ctl_item_c(buf, label_colorbar_ctl[ 5], cbar_c->cbar_range_ctl);
+		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 2], cbar_c->f_font_size_ctl);
+		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 3], cbar_c->f_ngrid_cbar_ctl);
+		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 4], cbar_c->f_zeromarker_flag_ctl);
+		read_real2_ctl_item_c(buf, label_colorbar_ctl[ 5], cbar_c->f_cbar_range_ctl);
 		
-		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 6], cbar_c->axis_switch_ctl);
-        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 7], cbar_c->time_switch_ctl);
-        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 8], cbar_c->mapgrid_switch_ctl);
+		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 6], cbar_c->f_axis_switch_ctl);
+        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 7], cbar_c->f_time_switch_ctl);
+        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 8], cbar_c->f_mapgrid_switch_ctl);
 	};
-    cbar_c->iflag_use = 1;
+    cbar_c->f_iflag[0] = 1;
 	return;
 };
 
 int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_colorbar_ctl_c *cbar_c){
-    if(cbar_c->iflag_use == 0) return level;
+    if(cbar_c->f_iflag[0] == 0) return level;
     
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 0],
-						   cbar_c->colorbar_switch_ctl);
+						   cbar_c->f_colorbar_switch_ctl);
+    write_chara_ctl_item_c(fp, level, cbar_c->maxlen, cbar_c->f_colorbar_position_ctl->c_block_name,
+                           cbar_c->f_colorbar_position_ctl);
 	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 1],
-						   cbar_c->colorbar_scale_ctl);
+						   cbar_c->f_colorbar_scale_ctl);
 	
 	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 2],
-							 cbar_c->font_size_ctl);
+							 cbar_c->f_font_size_ctl);
 	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 3],
-							 cbar_c->ngrid_cbar_ctl);
+							 cbar_c->f_ngrid_cbar_ctl);
 	
 	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 4],
-						   cbar_c->zeromarker_flag_ctl);
+						   cbar_c->f_zeromarker_flag_ctl);
 	write_real2_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 5],
-						   cbar_c->cbar_range_ctl);
+						   cbar_c->f_cbar_range_ctl);
 	
 	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 6],
-						   cbar_c->axis_switch_ctl);
+						   cbar_c->f_axis_switch_ctl);
     write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 7],
-                           cbar_c->time_switch_ctl);
+                           cbar_c->f_time_switch_ctl);
     write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 8],
-                           cbar_c->mapgrid_switch_ctl);
+                           cbar_c->f_mapgrid_switch_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
