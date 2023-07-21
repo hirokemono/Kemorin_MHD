@@ -274,9 +274,10 @@
       type(ctl_array_i2r), intent(inout) :: tgt_i2r
 !
 !
+      tgt_i2r%array_name = org_i2r%array_name
+      tgt_i2r%icou =       org_i2r%icou
+!
       if(num_copy .le. 0) return
-      tgt_i2r%array_name = tgt_i2r%array_name
-      tgt_i2r%icou = org_i2r%icou
       tgt_i2r%int1(1:num_copy) = org_i2r%int1(1:num_copy)
       tgt_i2r%int2(1:num_copy) = org_i2r%int2(1:num_copy)
       tgt_i2r%vect(1:num_copy) = org_i2r%vect(1:num_copy)

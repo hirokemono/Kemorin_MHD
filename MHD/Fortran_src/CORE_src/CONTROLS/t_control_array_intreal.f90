@@ -287,10 +287,10 @@
       type(ctl_array_ir), intent(in) ::    org_ir
       type(ctl_array_ir), intent(inout) :: tgt_ir
 !
+      tgt_ir%array_name = org_ir%array_name
+      tgt_ir%icou =       org_ir%icou
 !
       if(num_copy .le. 0) return
-      tgt_ir%array_name = org_ir%array_name
-      tgt_ir%icou = org_ir%icou
       tgt_ir%ivec(1:num_copy) = org_ir%ivec(1:num_copy)
       tgt_ir%vect(1:num_copy) = org_ir%vect(1:num_copy)
 !

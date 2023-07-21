@@ -354,10 +354,10 @@
       type(ctl_array_r3), intent(in) ::    org_r3
       type(ctl_array_r3), intent(inout) :: tgt_r3
 !
-!
-      if(num_copy .le. 0) return
       tgt_r3%array_name = org_r3%array_name
       tgt_r3%icou =       org_r3%icou
+!
+      if(num_copy .le. 0) return
       tgt_r3%vec1(1:num_copy) = org_r3%vec1(1:num_copy)
       tgt_r3%vec2(1:num_copy) = org_r3%vec2(1:num_copy)
       tgt_r3%vec3(1:num_copy) = org_r3%vec3(1:num_copy)

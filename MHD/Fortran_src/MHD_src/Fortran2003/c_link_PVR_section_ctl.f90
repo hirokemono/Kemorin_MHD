@@ -34,22 +34,35 @@
 !!     &          bind(C, NAME = 'c_PVR_section_opacity_ctl')
 !!      type(c_ptr) function c_PVR_section_zeroline_ctl(c_ctl)          &
 !!     &          bind(C, NAME = 'c_PVR_section_zeroline_ctl')
-!!      type(c_ptr) function c_PVR_section_iso_color_mode(c_ctl)        &
-!!     &          bind(C, NAME = 'c_PVR_section_iso_color_mode')
-!!      type(c_ptr) function c_PVR_section_iso_number_ctl(c_ctl)        &
-!!     &          bind(C, NAME = 'c_PVR_section_iso_number_ctl')
-!!      type(c_ptr) function c_PVR_section_iso_range_ctl(c_ctl)         &
-!!     &          bind(C, NAME = 'c_PVR_section_iso_range_ctl')
-!!      type(c_ptr) function c_PVR_section_iso_width_ctl(c_ctl)         &
-!!     &          bind(C, NAME = 'c_PVR_section_iso_width_ctl')
-!!      type(c_ptr) function c_PVR_section_grid_width_ctl(c_ctl)        &
-!!     &          bind(C, NAME = 'c_PVR_section_grid_width_ctl')
-!!      type(c_ptr) function c_PVR_section_tan_cyl_ctl(c_ctl)           &
-!!     &          bind(C, NAME = 'c_PVR_section_tan_cyl_ctl')
-!!      type(c_ptr) function c_PVR_section_tan_cyl_in_ctl(c_ctl)        &
-!!     &          bind(C, NAME = 'c_PVR_section_tan_cyl_in_ctl')
-!!      type(c_ptr) function c_PVR_section_tan_cyl_out_ctl(c_ctl)       &
-!!     &          bind(C, NAME = 'c_PVR_section_tan_cyl_out_ctl')
+!!!!
+!!      type(c_ptr) function c_MAP_section_ctl_block_name(c_ctl)        &
+!!     &          bind(C, NAME = 'c_MAP_section_ctl_block_name')
+!!      type(c_ptr) function c_MAP_section_ctl_iflag(c_ctl)             &
+!!     &          bind(C, NAME = 'c_MAP_section_ctl_iflag')
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!!!
+!!      type(c_ptr) function c_MAP_section_fname_sect_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_MAP_section_fname_sect_ctl')
+!!      type(c_ptr) function c_MAP_section_psf_def_c(c_ctl)             &
+!!     &          bind(C, NAME = 'c_MAP_section_psf_def_c')
+!!      type(c_ptr) function c_MAP_section_zeroline_ctl(c_ctl)          &
+!!     &          bind(C, NAME = 'c_MAP_section_zeroline_ctl')
+!!      type(c_ptr) function c_MAP_section_iso_color_mode(c_ctl)        &
+!!     &          bind(C, NAME = 'c_MAP_section_iso_color_mode')
+!!      type(c_ptr) function c_MAP_section_iso_number_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_MAP_section_iso_number_ctl')
+!!      type(c_ptr) function c_MAP_section_iso_range_ctl(c_ctl)         &
+!!     &          bind(C, NAME = 'c_MAP_section_iso_range_ctl')
+!!      type(c_ptr) function c_MAP_section_iso_width_ctl(c_ctl)         &
+!!     &          bind(C, NAME = 'c_MAP_section_iso_width_ctl')
+!!      type(c_ptr) function c_MAP_section_grid_width_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_MAP_section_grid_width_ctl')
+!!      type(c_ptr) function c_MAP_section_tan_cyl_ctl(c_ctl)           &
+!!     &          bind(C, NAME = 'c_MAP_section_tan_cyl_ctl')
+!!      type(c_ptr) function c_MAP_section_tan_cyl_in_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_MAP_section_tan_cyl_in_ctl')
+!!      type(c_ptr) function c_MAP_section_tan_cyl_out_ctl(c_ctl)       &
+!!     &          bind(C, NAME = 'c_MAP_section_tan_cyl_out_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!!!
 !!      type(c_ptr) function c_PVR_isosurf_ctl_block_name(c_ctl)        &
@@ -71,6 +84,7 @@
       use iso_c_binding
       use t_control_data_pvr_sections
       use t_control_data_pvr_isosurfs
+      use t_ctl_data_map_section
       use t_ctl_data_pvr_section
       use t_ctl_data_pvr_isosurface
 !
@@ -187,86 +201,139 @@
       end function c_PVR_section_zeroline_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_PVR_section_iso_color_mode(c_ctl)          &
-     &          bind(C, NAME = 'c_PVR_section_iso_color_mode')
+      type(c_ptr) function c_MAP_section_ctl_block_name(c_ctl)          &
+     &          bind(C, NAME = 'c_MAP_section_ctl_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
       type(pvr_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_PVR_section_iso_color_mode = C_loc(f_ctl%isoline_color_mode)
-      end function c_PVR_section_iso_color_mode
+      c_MAP_section_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_MAP_section_ctl_block_name
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_PVR_section_iso_number_ctl(c_ctl)          &
-     &          bind(C, NAME = 'c_PVR_section_iso_number_ctl')
+      type(c_ptr) function c_MAP_section_ctl_iflag(c_ctl)               &
+     &          bind(C, NAME = 'c_MAP_section_ctl_iflag')
       type(c_ptr), value, intent(in) :: c_ctl
       type(pvr_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_PVR_section_iso_number_ctl = C_loc(f_ctl%isoline_number_ctl)
-      end function c_PVR_section_iso_number_ctl
+      c_MAP_section_ctl_iflag = C_loc(f_ctl%i_pvr_sect_ctl)
+      end function c_MAP_section_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MAP_section_fname_sect_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_MAP_section_fname_sect_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(map_section_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MAP_section_fname_sect_ctl = C_loc(f_ctl%fname_sect_ctl)
+      end function c_MAP_section_fname_sect_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_PVR_section_iso_range_ctl(c_ctl)           &
-     &          bind(C, NAME = 'c_PVR_section_iso_range_ctl')
+      type(c_ptr) function c_MAP_section_psf_def_c(c_ctl)               &
+     &          bind(C, NAME = 'c_MAP_section_psf_def_c')
       type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_section_ctl), pointer :: f_ctl
+      type(map_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_PVR_section_iso_range_ctl = C_loc(f_ctl%isoline_range_ctl)
-      end function c_PVR_section_iso_range_ctl
+      c_MAP_section_psf_def_c = C_loc(f_ctl%psf_def_c)
+      end function c_MAP_section_psf_def_c
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_PVR_section_iso_width_ctl(c_ctl)           &
-     &          bind(C, NAME = 'c_PVR_section_iso_width_ctl')
+      type(c_ptr) function c_MAP_section_zeroline_ctl(c_ctl)            &
+     &          bind(C, NAME = 'c_MAP_section_zeroline_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_section_ctl), pointer :: f_ctl
+      type(map_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_PVR_section_iso_width_ctl = C_loc(f_ctl%isoline_width_ctl)
-      end function c_PVR_section_iso_width_ctl
+      c_MAP_section_zeroline_ctl = C_loc(f_ctl%zeroline_switch_ctl)
+      end function c_MAP_section_zeroline_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_PVR_section_grid_width_ctl(c_ctl)          &
-     &          bind(C, NAME = 'c_PVR_section_grid_width_ctl')
+      type(c_ptr) function c_MAP_section_iso_color_mode(c_ctl)          &
+     &          bind(C, NAME = 'c_MAP_section_iso_color_mode')
       type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_section_ctl), pointer :: f_ctl
+      type(map_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_PVR_section_grid_width_ctl = C_loc(f_ctl%grid_width_ctl)
-      end function c_PVR_section_grid_width_ctl
+      c_MAP_section_iso_color_mode = C_loc(f_ctl%isoline_color_mode)
+      end function c_MAP_section_iso_color_mode
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_PVR_section_tan_cyl_ctl(c_ctl)             &
-     &          bind(C, NAME = 'c_PVR_section_tan_cyl_ctl')
+      type(c_ptr) function c_MAP_section_iso_number_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_MAP_section_iso_number_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_section_ctl), pointer :: f_ctl
+      type(map_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_PVR_section_tan_cyl_ctl = C_loc(f_ctl%tan_cyl_switch_ctl)
-      end function c_PVR_section_tan_cyl_ctl
+      c_MAP_section_iso_number_ctl = C_loc(f_ctl%isoline_number_ctl)
+      end function c_MAP_section_iso_number_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_PVR_section_tan_cyl_in_ctl(c_ctl)          &
-     &          bind(C, NAME = 'c_PVR_section_tan_cyl_in_ctl')
+      type(c_ptr) function c_MAP_section_iso_range_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_MAP_section_iso_range_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_section_ctl), pointer :: f_ctl
+      type(map_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_PVR_section_tan_cyl_in_ctl                                      &
+      c_MAP_section_iso_range_ctl = C_loc(f_ctl%isoline_range_ctl)
+      end function c_MAP_section_iso_range_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MAP_section_iso_width_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_MAP_section_iso_width_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(map_section_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MAP_section_iso_width_ctl = C_loc(f_ctl%isoline_width_ctl)
+      end function c_MAP_section_iso_width_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MAP_section_grid_width_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_MAP_section_grid_width_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(map_section_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MAP_section_grid_width_ctl = C_loc(f_ctl%grid_width_ctl)
+      end function c_MAP_section_grid_width_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MAP_section_tan_cyl_ctl(c_ctl)             &
+     &          bind(C, NAME = 'c_MAP_section_tan_cyl_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(map_section_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MAP_section_tan_cyl_ctl = C_loc(f_ctl%tan_cyl_switch_ctl)
+      end function c_MAP_section_tan_cyl_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_MAP_section_tan_cyl_in_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_MAP_section_tan_cyl_in_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(map_section_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_MAP_section_tan_cyl_in_ctl                                      &
      &            = C_loc(f_ctl%tangent_cylinder_inner_ctl)
-      end function c_PVR_section_tan_cyl_in_ctl
+      end function c_MAP_section_tan_cyl_in_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      type(c_ptr) function c_PVR_section_tan_cyl_out_ctl(c_ctl)         &
-     &          bind(C, NAME = 'c_PVR_section_tan_cyl_out_ctl')
+      type(c_ptr) function c_MAP_section_tan_cyl_out_ctl(c_ctl)         &
+     &          bind(C, NAME = 'c_MAP_section_tan_cyl_out_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_section_ctl), pointer :: f_ctl
+      type(map_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_PVR_section_tan_cyl_out_ctl                                     &
+      c_MAP_section_tan_cyl_out_ctl                                     &
      &            = C_loc(f_ctl%tangent_cylinder_outer_ctl)
-      end function c_PVR_section_tan_cyl_out_ctl
+      end function c_MAP_section_tan_cyl_out_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

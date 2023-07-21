@@ -128,17 +128,7 @@
 !
       call bcast_section_def_control(pvr_sct_c%psf_def_c)
       call bcast_ctl_type_r1(pvr_sct_c%opacity_ctl)
-!
       call bcast_ctl_type_c1(pvr_sct_c%zeroline_switch_ctl)
-      call bcast_ctl_type_c1(pvr_sct_c%isoline_color_mode)
-      call bcast_ctl_type_i1(pvr_sct_c%isoline_number_ctl)
-      call bcast_ctl_type_r2(pvr_sct_c%isoline_range_ctl)
-      call bcast_ctl_type_r1(pvr_sct_c%isoline_width_ctl)
-      call bcast_ctl_type_r1(pvr_sct_c%grid_width_ctl)
-!
-      call bcast_ctl_type_c1(pvr_sct_c%tan_cyl_switch_ctl)
-      call bcast_ctl_type_r1(pvr_sct_c%tangent_cylinder_inner_ctl)
-      call bcast_ctl_type_r1(pvr_sct_c%tangent_cylinder_outer_ctl)
 !
       end subroutine bcast_pvr_section_ctl
 !

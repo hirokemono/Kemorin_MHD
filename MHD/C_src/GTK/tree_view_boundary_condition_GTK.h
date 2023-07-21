@@ -28,6 +28,9 @@ struct boundary_condition_view{
 
 /* prototypes */
 
+void load_clist_to_chara2_real_array(struct chara2_real_clist *c2r_clst);
+
+
 struct boundary_condition_view * init_boudary_condition_views_GTK(struct chara2_real_clist *bc_ctl,
                                                                   struct chara_clist *bc_types);
 void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws);

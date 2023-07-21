@@ -166,7 +166,7 @@
       use skip_comment_f
       use t_read_control_elements
       use t_control_array_character
-      use t_ctl_data_pvr_section
+      use t_ctl_data_map_section
       use t_ctl_data_4_view_transfer
       use t_ctl_data_pvr_colormap_bar
 !
@@ -178,7 +178,7 @@
         character(len = kchara) :: block_name = 'cross_section_ctl'
 !
 !>        Structure of cross section definition
-        type(pvr_section_ctl) :: map_define_ctl
+        type(map_section_ctl) :: map_define_ctl
 !
 !>        Structure for file prefix
         type(read_character_item) :: map_image_prefix_ctl
@@ -222,7 +222,7 @@
       type(map_ctl), intent(inout) :: map_c
 !
 !
-      call dealloc_pvr_section_ctl(map_c%map_define_ctl)
+      call dealloc_map_section_ctl(map_c%map_define_ctl)
       call dealloc_view_transfer_ctl(map_c%mat)
       call deallocate_pvr_cmap_cbar(map_c%cmap_cbar_c)
 !
@@ -249,7 +249,7 @@
       type(map_ctl), intent(inout) :: new_map_c
 !
 !
-      call dup_pvr_section_ctl(org_map_c%map_define_ctl,                &
+      call dup_map_section_ctl(org_map_c%map_define_ctl,                &
      &                         new_map_c%map_define_ctl)
       call dup_view_transfer_ctl(org_map_c%mat, new_map_c%mat)
       call dup_pvr_cmap_cbar(org_map_c%cmap_cbar_c,                     &

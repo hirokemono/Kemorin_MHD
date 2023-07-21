@@ -23,7 +23,7 @@ struct boundary_condition_view * init_boudary_condition_views_GTK(struct chara2_
     return bc_vws;
 }
 
-static void load_clist_to_chara2_real_array(struct chara2_real_clist *c2r_clst){
+void load_clist_to_chara2_real_array(struct chara2_real_clist *c2r_clst){
     int i;
     for(i=0;i<count_chara2_real_clist(c2r_clst);i++){
         c_store_chara2_real_array(c2r_clst->f_self, i,

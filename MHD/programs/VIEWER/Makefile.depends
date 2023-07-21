@@ -29,6 +29,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/CONTROLS/t_control_real_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_real3_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
@@ -148,6 +149,7 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/CONTROLS/t_control_real_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_real3_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
@@ -269,6 +271,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/CONTROLS/t_control_real_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_real3_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
@@ -388,6 +391,7 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/CONTROLS/t_control_real_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_real3_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \

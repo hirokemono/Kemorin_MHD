@@ -174,6 +174,7 @@ t_ctl_data_pvr_movie.o \
 t_ctl_data_pvr_section.o \
 t_ctl_data_quilt_image.o \
 t_ctl_data_view_transfers.o \
+t_ctl_data_map_section.o \
 ctl_data_each_pvr_IO.o \
 ctl_data_four_vizs_IO.o \
 ctl_data_pvr_colorbar_IO.o \
@@ -185,6 +186,7 @@ ctl_data_view_transfer_IO.o \
 ctl_file_each_pvr_IO.o \
 ctl_file_pvr_light_IO.o \
 ctl_file_pvr_modelview_IO.o \
+ctl_data_map_section_IO.o \
 \
 viz_step_ctls_to_time_ctl.o \
 t_control_data_LIC.o \

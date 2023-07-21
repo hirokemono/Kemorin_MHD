@@ -50,6 +50,7 @@ struct MHD_model_widgets{
 
 /* prototypes */
 extern void * c_link_xyz_dir_list_to_ctl(void *fld_names_c);
+extern void * c_link_xyzw_dir_list_to_ctl(void *fld_names_c);
 
 GtkWidget *MHD_model_ctl_expander(void *f_parent, struct f_MHD_model_control *f_model_ctl,
                                   struct MHD_model_widgets *model_wgts, GtkWidget *window);

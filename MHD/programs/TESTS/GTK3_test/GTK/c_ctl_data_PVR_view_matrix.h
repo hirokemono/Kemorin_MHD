@@ -21,7 +21,8 @@
 #include "t_ctl_array_single_items_c.h"
 #include "t_ctl_array_chara_real_items_c.h"
 #include "t_ctl_array_chara2_items_c.h"
-#include "t_ctl_data_pvr_colormap_c.h"
+#include "t_ctl_array_chara2_real_items_c.h"
+#include "t_ctl_data_4_view_transfer_c.h"
 
 
 
@@ -29,7 +30,7 @@
 
 struct modelview_ctl_c * init_f_VIZ_view_matrix_ctl(char *ctl_file_name,
                                                     void *(*c_load_self)(void *f_parent), 
-                                                    void *f_parent){
+                                                    void *f_parent);
 
 
 #endif /* C_CTL_DATA_PVR_VIEW_MATRIX_H_ */

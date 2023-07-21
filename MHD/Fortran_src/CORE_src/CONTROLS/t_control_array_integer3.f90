@@ -278,10 +278,10 @@
       type(ctl_array_i3), intent(in) ::    org_i3
       type(ctl_array_i3), intent(inout) :: tgt_i3
 !
+      tgt_i3%array_name = org_i3%array_name
+      tgt_i3%icou =       org_i3%icou
 !
       if(num_copy .le. 0) return
-      tgt_i3%array_name = org_i3%array_name
-      tgt_i3%icou = org_i3%icou
       tgt_i3%int1(1:num_copy) = org_i3%int1(1:num_copy)
       tgt_i3%int2(1:num_copy) = org_i3%int2(1:num_copy)
       tgt_i3%int3(1:num_copy) = org_i3%int3(1:num_copy)

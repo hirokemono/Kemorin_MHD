@@ -321,10 +321,10 @@
       type(ctl_array_real), intent(in) ::    org_r1
       type(ctl_array_real), intent(inout) :: tgt_r1
 !
+      tgt_r1%array_name = org_r1%array_name
+      tgt_r1%icou =       org_r1%icou
 !
       if(num_copy .le. 0) return
-      tgt_r1%array_name = org_r1%array_name
-      tgt_r1%icou = org_r1%icou
       tgt_r1%vect(1:num_copy) = org_r1%vect(1:num_copy)
 !
       end subroutine copy_control_array_real

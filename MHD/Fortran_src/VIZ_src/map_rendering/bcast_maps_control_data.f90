@@ -21,7 +21,7 @@
 !
       implicit  none
 !
-      private :: bcast_map_control_data
+      private :: bcast_map_control_data, bcast_map_section_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -85,7 +85,7 @@
       call bcast_view_transfer_ctl(map_c%mat)
       call bcast_pvr_colorbar_ctl(map_c%cmap_cbar_c%cbar_ctl)
       call bcast_pvr_colordef_ctl(map_c%cmap_cbar_c%color)
-      call bcast_pvr_section_ctl(map_c%map_define_ctl)
+      call bcast_map_section_ctl(map_c%map_define_ctl)
 !
       call bcast_ctl_type_c1(map_c%map_image_prefix_ctl)
       call bcast_ctl_type_c1(map_c%map_image_fmt_ctl)
@@ -97,5 +97,40 @@
       end subroutine bcast_map_control_data
 !
 !   --------------------------------------------------------------------
+!
+      subroutine bcast_map_section_ctl(map_sect_ctl)
+!
+      use t_ctl_data_map_section
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
+      use bcast_control_arrays
+      use bcast_section_control_data
+!
+      type(map_section_ctl), intent(inout) :: map_sect_ctl
+!
+!
+      call calypso_mpi_bcast_one_int(map_sect_ctl%i_pvr_sect_ctl, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (map_sect_ctl%block_name, cast_long(kchara), 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (map_sect_ctl%fname_sect_ctl, cast_long(kchara), 0)
+!
+      call bcast_section_def_control(map_sect_ctl%psf_def_c)
+!
+      call bcast_ctl_type_c1(map_sect_ctl%zeroline_switch_ctl)
+      call bcast_ctl_type_c1(map_sect_ctl%isoline_color_mode)
+      call bcast_ctl_type_i1(map_sect_ctl%isoline_number_ctl)
+      call bcast_ctl_type_r2(map_sect_ctl%isoline_range_ctl)
+      call bcast_ctl_type_r1(map_sect_ctl%isoline_width_ctl)
+      call bcast_ctl_type_r1(map_sect_ctl%grid_width_ctl)
+!
+      call bcast_ctl_type_c1(map_sect_ctl%tan_cyl_switch_ctl)
+      call bcast_ctl_type_r1(map_sect_ctl%tangent_cylinder_inner_ctl)
+      call bcast_ctl_type_r1(map_sect_ctl%tangent_cylinder_outer_ctl)
+!
+      end subroutine bcast_map_section_ctl
+!
+! -----------------------------------------------------------------------
 !
       end module bcast_maps_control_data

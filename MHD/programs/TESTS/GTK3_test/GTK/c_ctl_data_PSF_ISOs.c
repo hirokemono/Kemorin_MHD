@@ -61,7 +61,7 @@ extern void * c_isosurf_ctls_iso_ctl(int idx, void *f_iso_ctls);
 
 
 
-static struct f_VIZ_PSF_def_ctl * init_f_VIZ_PSF_def_ctl(char *file_name,
+struct f_VIZ_PSF_def_ctl * init_f_VIZ_PSF_def_ctl(char *file_name,
                                                   void *(*c_load_self)(void *f_parent), 
                                                   void *f_parent)
 {
@@ -98,7 +98,7 @@ static struct f_VIZ_PSF_def_ctl * init_f_VIZ_PSF_def_ctl(char *file_name,
     return f_psf_def_c;
 };
 
-static void dealloc_f_VIZ_PSF_def_ctl(void *void_in)
+void dealloc_f_VIZ_PSF_def_ctl(void *void_in)
 {
     struct f_VIZ_PSF_def_ctl *f_psf_def_c = (struct f_VIZ_PSF_def_ctl *) void_in;
 	

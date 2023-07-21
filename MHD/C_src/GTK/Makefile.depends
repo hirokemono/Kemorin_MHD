@@ -378,6 +378,7 @@ tree_view_4_colormap.o: \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
@@ -526,6 +527,7 @@ tree_view_4_pvr_colormap.o: \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
+  $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \

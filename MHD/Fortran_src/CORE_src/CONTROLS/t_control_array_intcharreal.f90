@@ -277,9 +277,10 @@
       type(ctl_array_icr), intent(inout) :: tgt_icr
 !
 !
+      tgt_icr%array_name = org_icr%array_name
+      tgt_icr%icou =       org_icr%icou
+!
       if(num_copy .le. 0) return
-      tgt_icr%array_name = tgt_icr%array_name
-      tgt_icr%icou = org_icr%icou
       tgt_icr%ivec(1:num_copy) =  org_icr%ivec(1:num_copy)
       tgt_icr%c_tbl(1:num_copy) = org_icr%c_tbl(1:num_copy)
       tgt_icr%vect(1:num_copy) =  org_icr%vect(1:num_copy)

@@ -361,10 +361,10 @@
       type(ctl_array_cr), intent(in) ::    org_cr
       type(ctl_array_cr), intent(inout) :: tgt_cr
 !
+      tgt_cr%array_name = org_cr%array_name
+      tgt_cr%icou =       org_cr%icou
 !
       if(num_copy .le. 0) return
-      tgt_cr%array_name = tgt_cr%array_name
-      tgt_cr%icou = org_cr%icou
       tgt_cr%c_tbl(1:num_copy) = org_cr%c_tbl(1:num_copy)
       tgt_cr%vect(1:num_copy) =  org_cr%vect(1:num_copy)
 !

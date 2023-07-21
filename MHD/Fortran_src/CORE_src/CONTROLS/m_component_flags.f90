@@ -19,10 +19,12 @@
 !!      subroutine set_flag_asym_tensor_comp(n_comps, names, maths)
 !!
 !!      subroutine set_xyz_direction_array(array_c)
+!!      subroutine set_xyzw_direction_array(array_c)
 !!      subroutine set_scalar_direction_array(array_c)
 !!      subroutine set_vector_direction_array(array_c)
 !!      subroutine set_sym_tensor_direction_array(array_c)
 !!      subroutine set_asym_tensor_direction_array(array_c)
+!!        type(ctl_array_chara), intent(inout) :: array_c
 !!
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -176,6 +178,13 @@
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'z',                                       &
      &                math = '$ V_{z} $')
+!
+!>        Field label for w-component
+!!         @f$ V_{w}  @f$
+      type(field_def), parameter :: V_w                                 &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'w',                                       &
+     &                math = '$ V_{w} $')
 !
 !>        Field label for radial component
 !!         @f$ V_{r} @f$
@@ -552,6 +561,24 @@
 !
       end subroutine set_xyz_direction_array
 !
+! ----------------------------------------------------------------------
+!
+      subroutine set_xyzw_direction_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(V_x%name, array_c)
+      call append_c_to_ctl_array(V_y%name, array_c)
+      call append_c_to_ctl_array(V_z%name, array_c)
+      call append_c_to_ctl_array(V_w%name, array_c)
+!
+      end subroutine set_xyzw_direction_array
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_scalar_direction_array(array_c)

@@ -104,6 +104,12 @@ extern void * c_delete_viz_section_ctls(int idx, void *f_psf_ctls);
 extern void * c_append_viz_isosurf_ctls(int idx, char *block_name, void *f_iso_ctls);
 extern void * c_delete_viz_isosurf_ctls(int idx, void *f_iso_ctls);
 
+
+struct f_VIZ_PSF_def_ctl * init_f_VIZ_PSF_def_ctl(char *file_name,
+                                                  void *(*c_load_self)(void *f_parent),
+                                                  void *f_parent);
+void dealloc_f_VIZ_PSF_def_ctl(void *void_in);
+
 struct f_VIZ_PSF_ctl * init_f_VIZ_PSF_ctl(int idx, void *f_parent);
 void dealloc_f_VIZ_PSF_ctl(struct f_VIZ_PSF_ctl *f_psf_ctl);
 struct void_clist * init_f_VIZ_psf_ctls(void *f_parent, int *f_num_psf_ctl);

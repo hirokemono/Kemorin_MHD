@@ -346,10 +346,10 @@
       type(ctl_array_r2), intent(in) ::    org_r2
       type(ctl_array_r2), intent(inout) :: tgt_r2
 !
+      tgt_r2%array_name = org_r2%array_name
+      tgt_r2%icou =       org_r2%icou
 !
       if(num_copy .le. 0) return
-      tgt_r2%array_name = org_r2%array_name
-      tgt_r2%icou = org_r2%icou
       tgt_r2%vec1(1:num_copy) = org_r2%vec1(1:num_copy)
       tgt_r2%vec2(1:num_copy) = org_r2%vec2(1:num_copy)
 !

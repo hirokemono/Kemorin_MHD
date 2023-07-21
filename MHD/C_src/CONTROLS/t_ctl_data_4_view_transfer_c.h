@@ -81,6 +81,8 @@ struct modelview_ctl_c{
 	struct image_size_ctl_c *f_pixel;
 	struct streo_view_ctl_c *f_streo;
 	struct projection_mat_ctl_c *f_proj;
+ 
+    void *void_panel;
 };
 
 /* prototypes */

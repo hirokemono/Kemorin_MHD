@@ -324,9 +324,10 @@
       type(ctl_array_int), intent(inout) :: tgt_i1
 !
 !
-      if(num_copy .le. 0) return
       tgt_i1%array_name = org_i1%array_name
-      tgt_i1%icou = org_i1%icou
+      tgt_i1%icou =       org_i1%icou
+!
+      if(num_copy .le. 0) return
       tgt_i1%ivec(1:num_copy) = org_i1%ivec(1:num_copy)
 !
       end subroutine copy_control_array_int

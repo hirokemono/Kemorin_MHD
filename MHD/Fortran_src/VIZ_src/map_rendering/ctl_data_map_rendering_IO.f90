@@ -209,7 +209,7 @@
 !
       use t_ctl_data_pvr_colormap_bar
       use ctl_file_pvr_modelview_IO
-      use ctl_data_pvr_section_IO
+      use ctl_data_map_section_IO
       use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -232,7 +232,7 @@
      &     (id_control, hd_map_colormap_file, map_c%fname_cmap_cbar_c,  &
      &      map_c%cmap_cbar_c, c_buf)
 !
-        call read_pvr_section_ctl(id_control, hd_section_ctl,           &
+        call read_map_section_ctl(id_control, hd_section_ctl,           &
      &                            izero, map_c%map_define_ctl, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_map_image_prefix,            &
@@ -261,7 +261,7 @@
 !
       use t_ctl_data_pvr_colormap_bar
       use ctl_file_pvr_modelview_IO
-      use ctl_data_pvr_section_IO
+      use ctl_data_map_section_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -297,7 +297,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    map_c%isoline_comp_ctl)
 !
-      call write_pvr_section_ctl(id_control, hd_section_ctl,            &
+      call write_map_section_ctl(id_control, hd_section_ctl,            &
      &                           map_c%map_define_ctl, level)
 !
       call sel_write_ctl_modelview_file(id_control, hd_map_projection,  &
@@ -316,15 +316,15 @@
 !
       use t_ctl_data_pvr_colormap_bar
       use ctl_file_pvr_modelview_IO
-      use ctl_data_pvr_section_IO
       use ctl_data_view_transfer_IO
+      use ctl_data_map_section_IO
 !
       character(len=kchara), intent(in) :: hd_block
       type(map_ctl), intent(inout) :: map_c
 !
 !
       map_c%block_name = hd_block
-      call init_pvr_section_ctl_label(hd_section_ctl,                   &
+      call init_map_section_ctl_label(hd_section_ctl,                   &
      &                                map_c%map_define_ctl)
       call init_pvr_cmap_cbar_label(hd_map_colormap_file,               &
      &                              map_c%cmap_cbar_c)

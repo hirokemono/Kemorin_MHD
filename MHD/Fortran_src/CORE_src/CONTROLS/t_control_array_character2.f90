@@ -296,9 +296,10 @@
       type(ctl_array_c2), intent(inout) :: tgt_c2
 !
 !
+      tgt_c2%array_name = org_c2%array_name
+      tgt_c2%icou =       org_c2%icou
+!
       if(num_copy .le. 0) return
-      tgt_c2%array_name = tgt_c2%array_name
-      tgt_c2%icou = org_c2%icou
       tgt_c2%c1_tbl(1:num_copy) = org_c2%c1_tbl(1:num_copy)
       tgt_c2%c2_tbl(1:num_copy) = org_c2%c2_tbl(1:num_copy)
 !

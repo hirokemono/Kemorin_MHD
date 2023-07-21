@@ -131,8 +131,6 @@
       subroutine read_pvr_sections_ctl                                  &
      &         (id_control, hd_block, pvr_scts_c, c_buf)
 !
-      use ctl_data_pvr_section_IO
-!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
@@ -167,7 +165,6 @@
       subroutine write_pvr_sections_ctl                                 &
      &         (id_control, hd_block, pvr_scts_c, level)
 !
-      use ctl_data_pvr_section_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -195,8 +192,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine append_pvr_section_ctl(idx_in, hd_block, pvr_scts_c)
-!
-      use ctl_data_pvr_section_IO
 !
       integer(kind = kint), intent(in) :: idx_in
       character(len=kchara), intent(in) :: hd_block

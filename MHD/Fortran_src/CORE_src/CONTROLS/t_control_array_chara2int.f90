@@ -373,9 +373,10 @@
       type(ctl_array_c2i), intent(inout) :: tgt_c2i
 !
 !
-      if(num_copy .le. 0) return
-      tgt_c2i%array_name = tgt_c2i%array_name
+      tgt_c2i%array_name = org_c2i%array_name
       tgt_c2i%icou =       org_c2i%icou
+!
+      if(num_copy .le. 0) return
       tgt_c2i%c1_tbl(1:num_copy) = org_c2i%c1_tbl(1:num_copy)
       tgt_c2i%c2_tbl(1:num_copy) = org_c2i%c2_tbl(1:num_copy)
       tgt_c2i%ivec(1:num_copy) =   org_c2i%ivec(1:num_copy)

@@ -366,10 +366,10 @@
       type(ctl_array_c2r), intent(in) ::    org_c2r
       type(ctl_array_c2r), intent(inout) :: tgt_c2r
 !
+      tgt_c2r%array_name = org_c2r%array_name
+      tgt_c2r%icou =       org_c2r%icou
 !
       if(num_copy .le. 0) return
-      tgt_c2r%array_name = tgt_c2r%array_name
-      tgt_c2r%icou =       org_c2r%icou
       tgt_c2r%c1_tbl(1:num_copy) = org_c2r%c1_tbl(1:num_copy)
       tgt_c2r%c2_tbl(1:num_copy) = org_c2r%c2_tbl(1:num_copy)
       tgt_c2r%vect(1:num_copy) =   org_c2r%vect(1:num_copy)

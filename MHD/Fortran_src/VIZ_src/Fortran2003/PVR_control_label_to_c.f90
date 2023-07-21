@@ -354,7 +354,7 @@
 !
       integer(c_int) function num_label_pvr_section_f() bind(c)
 !
-      use ctl_data_pvr_section_IO
+      use t_ctl_data_pvr_section
 !
       num_label_pvr_section_f = num_label_pvr_section()
       return
@@ -364,7 +364,7 @@
 !
       subroutine set_label_pvr_section_f(names_c)  bind(c)
 !
-      use ctl_data_pvr_section_IO
+      use t_ctl_data_pvr_section
 !
       type(C_ptr), value :: names_c
 !

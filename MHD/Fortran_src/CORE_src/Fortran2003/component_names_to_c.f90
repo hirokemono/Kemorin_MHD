@@ -29,6 +29,9 @@
 !!
 !!      type(c_ptr) function c_link_xyz_dir_list_to_ctl(c_ctl)          &
 !!     &           bind(C, NAME='c_link_xyz_dir_list_to_ctl')
+!!      type(c_ptr) function c_link_xyzw_dir_list_to_ctl(c_ctl)         &
+!!     &           bind(C, NAME='c_link_xyzw_dir_list_to_ctl')
+!!
 !!      type(c_ptr) function c_link_scalar_dir_list_to_ctl(c_ctl)       &
 !!     &           bind(C, NAME='c_link_scalar_dir_list_to_ctl')
 !!      type(c_ptr) function c_link_vector_dir_list_to_ctl(c_ctl)       &
@@ -50,6 +53,8 @@
       implicit none
 !
       type(ctl_array_chara), save, private, target :: xyz_dir_list
+      type(ctl_array_chara), save, private, target :: xyzw_dir_list
+!
       type(ctl_array_chara), save, private, target :: scl_dir_list
       type(ctl_array_chara), save, private, target :: vec_dir_list
       type(ctl_array_chara), save, private, target :: str_dir_list
@@ -214,6 +219,19 @@
       c_link_xyz_dir_list_to_ctl = C_loc(xyz_dir_list)
 !
       end function c_link_xyz_dir_list_to_ctl
+!
+! ----------------------------------------------------------------------
+!
+      type(c_ptr) function c_link_xyzw_dir_list_to_ctl(c_ctl)           &
+     &           bind(C, NAME='c_link_xyzw_dir_list_to_ctl')
+      use m_component_flags
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      if(.not. allocated(xyzw_dir_list%c_tbl))                          &
+     &    call set_xyzw_direction_array(xyzw_dir_list)
+      c_link_xyzw_dir_list_to_ctl = C_loc(xyzw_dir_list)
+!
+      end function c_link_xyzw_dir_list_to_ctl
 !
 ! ----------------------------------------------------------------------
 !

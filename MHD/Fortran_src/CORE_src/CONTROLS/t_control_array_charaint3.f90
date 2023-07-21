@@ -300,9 +300,10 @@
       type(ctl_array_ci3), intent(inout) :: tgt_ci3
 !
 !
+      tgt_ci3%array_name = org_ci3%array_name
+      tgt_ci3%icou =       org_ci3%icou
+!
       if(num_copy .le. 0) return
-      tgt_ci3%array_name = tgt_ci3%array_name
-      tgt_ci3%icou = org_ci3%icou
       tgt_ci3%c_tbl(1:num_copy) = org_ci3%c_tbl(1:num_copy)
       tgt_ci3%ivec1(1:num_copy) = org_ci3%ivec1(1:num_copy)
       tgt_ci3%ivec2(1:num_copy) = org_ci3%ivec2(1:num_copy)
