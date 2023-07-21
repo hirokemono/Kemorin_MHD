@@ -7,64 +7,34 @@
 
 #include "tree_view_4_colormap.h"
 
-void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 
-			struct colormap_view *color_vws){
+struct colormap_view * init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c){
+    struct colormap_view *color_vws
+			= (struct colormap_view *) malloc(sizeof(struct colormap_view));
+	if(color_vws == NULL){
+		printf("malloc error for colormap_view\n");
+		exit(0);
+    };
+    color_vws->cmap_param
+			= (struct colormap_params *) malloc(sizeof(struct colormap_params));
+	if(color_vws == NULL){
+		printf("malloc error for colormap_params\n");
+		exit(0);
+    };
+   
 	color_vws->colormap_mode_gtk = cmap_c->f_colormap_mode_ctl;
     color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
     color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	
+    color_vws->cmap_param->colormap = cmap_c->f_colortbl_ctl;
+    color_vws->cmap_param->opacitymap = cmap_c->f_linear_opacity_ctl;
+    color_vws->cmap_param->min_opacity = 0.0;
+    color_vws->cmap_param->max_opacity = 1.0;
+    color_vws->cmap_param->id_color_mode = 0;
+ 
     init_r2_clist_views(cmap_c->f_colortbl_ctl, color_vws->cmap_vws);
     init_r2_clist_views(cmap_c->f_linear_opacity_ctl, color_vws->opacity_vws);
-    return;
+    return color_vws;
 }
-
-void init_colormap_views_4_viewer(struct colormap_view *color_vws){
-	color_vws->cmap_param = (struct colormap_params *) kemoview_link_active_colormap_param();
-	
-	color_vws->colormap_mode_gtk = init_chara_ctl_item_c();
-	
-	color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-	
-	color_vws->cmap_vws->r2_clist_gtk =   init_real2_clist();
-	color_vws->opacity_vws->r2_clist_gtk = init_real2_clist();
-
-	sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
-    sprintf(color_vws->cmap_vws->r2_clist_gtk->r1_name, "data");
-    sprintf(color_vws->cmap_vws->r2_clist_gtk->r2_name, "color");
-    sprintf(color_vws->opacity_vws->r2_clist_gtk->clist_name, "opacity map");
-    sprintf(color_vws->opacity_vws->r2_clist_gtk->r1_name, "data");
-    sprintf(color_vws->opacity_vws->r2_clist_gtk->r2_name, "opacity");
-    
-	int i, num;
-	double value, color;
-	copy_colormap_name_to_ctl(color_vws->cmap_param, 
-				color_vws->colormap_mode_gtk);
-	num = send_color_table_num_s(color_vws->cmap_param);
-	for(i=0;i<num;i++){
-		send_color_table_items_s(color_vws->cmap_param, i, &value, &color);
-		append_real2_clist(value, color, color_vws->cmap_vws->r2_clist_gtk);
-	};
-	
-	num = send_opacity_table_num_s(color_vws->cmap_param);
-	for(i=0;i<num;i++){
-		send_opacity_table_items_s(color_vws->cmap_param, i, &value, &color);
-		append_real2_clist(value, color, color_vws->opacity_vws->r2_clist_gtk);
-	};
-	
-	return;
-};
-
-void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 
-			struct colormap_view *color_vws){
-	int icomp = psf_current_menu->icomp_draw_psf;
-	dup_real2_clist(color_vws->cmap_vws->r2_clist_gtk,
-					psf_current_menu->cmap_psf_comp[icomp]->colormap);
-	dup_real2_clist(color_vws->opacity_vws->r2_clist_gtk,
-					psf_current_menu->cmap_psf_comp[icomp]->opacitymap);
-	return;
-}
-
 
 void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws){
 	free(color_vws->cmap_vws);

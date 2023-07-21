@@ -82,7 +82,6 @@ void read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_real_ctl_item_c(buf, label_colormap_ctl[10], cmap_c->f_fix_opacity_ctl);
 		
 		read_real2_clist(fp, buf, label_colormap_ctl[11], cmap_c->f_linear_opacity_ctl);
-		read_real3_clist(fp, buf, label_colormap_ctl[12], cmap_c->f_step_opacity_ctl);
 		
 		read_real_ctl_item_c(buf, label_colormap_ctl[ 6], cmap_c->f_range_min_ctl);
 		read_real_ctl_item_c(buf, label_colormap_ctl[ 7], cmap_c->f_range_max_ctl);
@@ -123,7 +122,6 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
 	write_real_ctl_item_c(fp, level, maxlen, label_colormap_ctl[10], cmap_c->f_fix_opacity_ctl);
 	
 	write_real2_clist(fp, level, label_colormap_ctl[11], cmap_c->f_linear_opacity_ctl);
-	write_real3_clist(fp, level, label_colormap_ctl[12], cmap_c->f_step_opacity_ctl);
 	
     fprintf(fp, "!\n");
 	write_real_ctl_item_c(fp, level, maxlen, label_colormap_ctl[ 6], cmap_c->f_range_min_ctl);

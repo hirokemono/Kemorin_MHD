@@ -76,16 +76,6 @@
 !!        linear_opacity_ctl   0.85    0.01
 !!        linear_opacity_ctl   0.95    0.001
 !!      end array linear_opacity_ctl
-!!
-!!      array  step_opacity_ctl
-!!        step_opacity_ctl   0.0     0.01    0.01
-!!        step_opacity_ctl   0.01    0.2     0.015
-!!        step_opacity_ctl   0.2     0.35    0.02
-!!        step_opacity_ctl   0.6     0.7     0.04
-!!        step_opacity_ctl   0.7     0.85    0.03
-!!        step_opacity_ctl   0.85    0.95    0.01
-!!        step_opacity_ctl   0.95    1.0     0.001
-!!      end array step_opacity_ctl
 !!      constant_opacity_ctl           0.003
 !!!
 !!      range_min_ctl   0.0

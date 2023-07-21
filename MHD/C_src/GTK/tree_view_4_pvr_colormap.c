@@ -9,7 +9,7 @@
 
 // static cairo_t *cr;
 
-static gboolean pvr_draw_colorabar_CB(GtkWidget *widget, cairo_t *cr, gpointer user_data)
+gboolean pvr_draw_colorabar_CB(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 { 
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
@@ -69,7 +69,7 @@ void delete_pvr_opacity_list_items_CB(GtkButton *button, gpointer user_data){
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
-static void set_pvr_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user_data)
+void set_pvr_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user_data)
 {
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	int index_mode = set_color_mode_CB(combobox_cmap, color_vws);
@@ -77,7 +77,7 @@ static void set_pvr_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user_data
     return;
 }
 
-static void add_pvr_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
+void add_pvr_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkCellRenderer *renderer_spin1;
 	GtkCellRenderer *renderer_spin2;
 	GtkWidget *button_add;
@@ -112,7 +112,7 @@ static void add_pvr_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vb
                      G_CALLBACK(delete_pvr_colormap_list_items_CB), (gpointer) color_vws);
 };
 
-static void add_pvr_omap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
+void add_pvr_omap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkCellRenderer *renderer_spin1;
 	GtkCellRenderer *renderer_spin2;
 	GtkWidget *button_add;
@@ -147,7 +147,7 @@ static void add_pvr_omap_list_box(struct colormap_view *color_vws, GtkWidget *vb
                      G_CALLBACK(delete_pvr_opacity_list_items_CB), (gpointer) color_vws);
 };
 
-void add_pvr_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
+void add_pvr_colormap_list_box_2(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkWidget *Frame_1;
     GtkWidget *vbox_1, *hbox_1;
 	
@@ -172,7 +172,8 @@ void add_pvr_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox)
 	
 	combobox_cmap = gtk_combo_box_new_with_model(child_model);
 	renderer = gtk_cell_renderer_text_new();
-	iflag = kemoview_get_PSF_color_param(ISET_COLORMAP);
+    iflag = 0;
+//	iflag = kemoview_get_PSF_color_param(ISET_COLORMAP);
 	if(iflag == SYM_GRAY_MODE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 3);
 	} else if(iflag == RED_BLUE_MODE){

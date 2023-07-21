@@ -50,8 +50,6 @@
       call bcast_ctl_array_r2(color%colortbl_ctl)
       call bcast_ctl_array_r2(color%linear_opacity_ctl)
 !
-      call bcast_ctl_array_r3(color%step_opacity_ctl)
-!
       call bcast_ctl_type_c1(color%lic_color_fld_ctl)
       call bcast_ctl_type_c1(color%lic_color_comp_ctl)
       call bcast_ctl_type_c1(color%lic_opacity_fld_ctl)

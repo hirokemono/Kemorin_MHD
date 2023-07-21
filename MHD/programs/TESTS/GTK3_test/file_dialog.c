@@ -27,6 +27,8 @@
 #include "tree_view_chara_GTK.h"
 #include "tree_view_4_field_GTK.h"
 #include "tree_view_4_force_GTK.h"
+#include "tree_view_4_colormap.h"
+#include "tree_view_4_pvr_colormap.h"
 #include "tree_view_boundary_condition_GTK.h"
 
 #include "c_ctl_data_SGS_model.h"
@@ -450,6 +452,7 @@ struct f_MHD_control{
 struct MAP_GTK_widgets{
     struct chara_int2_clist *label_field_list;
     struct chara_clist      *label_dir_list;
+    struct colormap_view *color_vws;
     
     struct PSF_GTK_widgets *psf_def_vws;
     GtkWidget * map_area_view;
@@ -1307,11 +1310,10 @@ static GtkWidget * draw_map_define_vbox(struct f_MAP_section_ctl *f_map_define_c
 };
 
 static GtkWidget * draw_viz_colormap_vbox(struct colormap_ctl_c *cmap_c, 
+                                          struct colormap_view *color_vws, 
                                           struct chara_int2_clist *label_field_list, 
                                           struct chara_clist *label_dir_list, 
                                           GtkWidget *window){
-    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(cmap_c->f_colormap_mode_ctl);
-    
     GtkWidget *hbox_2 = draw_field_combobox_hbox(label_field_list, 
                                                  cmap_c->f_lic_color_fld_ctl, window);
     GtkWidget *hbox_3 = draw_chara_item_combobox_hbox(label_dir_list,
@@ -1326,7 +1328,6 @@ static GtkWidget * draw_viz_colormap_vbox(struct colormap_ctl_c *cmap_c,
     GtkWidget *hbox_8 = draw_real_item_entry_hbox(cmap_c->f_fix_opacity_ctl);
     
     GtkWidget *vbox_cbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_1,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_2,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_3,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_4,  FALSE, FALSE, 0);
@@ -1334,6 +1335,8 @@ static GtkWidget * draw_viz_colormap_vbox(struct colormap_ctl_c *cmap_c,
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_6,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_7,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_8,  FALSE, FALSE, 0);
+    
+    add_pvr_colormap_list_box_2(color_vws, vbox_cbox);
     
     GtkWidget *expand_cmap = draw_control_block(cmap_c->c_block_name, cmap_c->f_iflag,
                                                 window, vbox_cbox);
@@ -1373,10 +1376,11 @@ static GtkWidget * draw_viz_colorbar_vbox(struct pvr_colorbar_ctl_c *cbar_c,  Gt
 
 
 static GtkWidget * draw_viz_cmap_cbar_vbox(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
+                                           struct colormap_view *color_vws, 
                                            struct chara_int2_clist *label_field_list, 
                                            struct chara_clist *label_dir_list, 
                                            GtkWidget *window){
-    GtkWidget *expand_cmap =  draw_viz_colormap_vbox(f_cmap_cbar_c->cmap_c, 
+    GtkWidget *expand_cmap =  draw_viz_colormap_vbox(f_cmap_cbar_c->cmap_c, color_vws, 
                                                      label_field_list, label_dir_list, window);
     GtkWidget *expand_cbar =  draw_viz_colorbar_vbox(f_cmap_cbar_c->cbar_c, window);
     
@@ -1411,6 +1415,7 @@ static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP
                                                   map_vws->psf_def_vws, window);
     GtkWidget *expand_vmat = draw_viz_viewmatrix_vbox(f_map_item->f_mat, window);
     GtkWidget *expand_cc =   draw_viz_cmap_cbar_vbox(f_map_item->f_cmap_cbar_c, 
+                                                     map_vws->color_vws, 
                                                      map_vws->label_field_list, 
                                                      map_vws->label_dir_list, window);
     
@@ -1528,7 +1533,8 @@ void dealloc_viewmat_GTK_widgets(struct viewmat_GTK_widgets *viewmatrix_vws){
     free(viewmatrix_vws);
 }
 
-struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct chara_int2_clist *f_field_ctl)
+struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct colormap_ctl_c *cmap_c,
+                                              struct chara_int2_clist *f_field_ctl)
 {
 	struct MAP_GTK_widgets *map_vws 
 			= (struct MAP_GTK_widgets *) malloc(sizeof(struct MAP_GTK_widgets));
@@ -1543,7 +1549,7 @@ struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct chara_int2_clist *f_field_c
                              map_vws->label_dir_list);
     append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
                              map_vws->label_dir_list);
-    
+    map_vws->color_vws = init_colormap_views_4_ctl(cmap_c);
     map_vws->psf_def_vws = init_PSF_GTK_widgets(f_field_ctl);
     return map_vws;
 };
@@ -1602,7 +1608,8 @@ void dealloc_FLINE_GTK_widgets(struct FLINE_GTK_widgets *fline_vws){
 struct f_VIZ_MAP_ctl * init_f_VIZ_MAP_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
     struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
     struct f_VIZ_MAP_ctl *f_map_ctl = init_f_VIZ_MAP_ctl(idx, f_parent);
-    f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_fld_ctl->f_field_ctl);
+    f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c->cmap_c, 
+                                                          f_fld_ctl->f_field_ctl);
     f_map_ctl->f_mat->void_panel = (void *) init_viewmat_GTK_widgets(f_fld_ctl->f_field_ctl);
     return f_map_ctl;
 }
@@ -1669,7 +1676,8 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
     for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_map_ctls);i++){
         struct f_VIZ_MAP_ctl *f_map_ctl
                 = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_map_ctls);
-        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
+        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c->cmap_c, 
+                                                              f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
         f_map_ctl->f_mat->void_panel = (void *) init_viewmat_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
     
@@ -1806,13 +1814,15 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     for(i=0;i<count_void_clist(f_MHD_ctl->f_zm_ctls->f_zm_map_ctls);i++){
         struct f_VIZ_MAP_ctl *f_map_ctl
                 = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i, f_MHD_ctl->f_zm_ctls->f_zm_map_ctls);
-        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
+        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c->cmap_c, 
+                                                              f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
         f_map_ctl->f_mat->void_panel = (void *) init_viewmat_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
     for(i=0;i<count_void_clist(f_MHD_ctl->f_zm_ctls->f_zRMS_map_ctls);i++){
         struct f_VIZ_MAP_ctl *f_map_ctl
                 = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i, f_MHD_ctl->f_zm_ctls->f_zRMS_map_ctls);
-        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
+        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c->cmap_c, 
+                                                              f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
         f_map_ctl->f_mat->void_panel = (void *) init_viewmat_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
     

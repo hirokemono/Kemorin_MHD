@@ -45,7 +45,6 @@ struct colormap_ctl_c{
 	struct chara_ctl_item *f_opacity_style_ctl;
 	struct real_ctl_item  *f_fix_opacity_ctl;
 	struct real2_clist    *f_linear_opacity_ctl;
-	struct real3_clist    *f_step_opacity_ctl;
 	
 	struct real_ctl_item *f_range_min_ctl;
 	struct real_ctl_item *f_range_max_ctl;

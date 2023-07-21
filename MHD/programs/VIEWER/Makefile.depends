@@ -112,6 +112,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
+  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
@@ -232,6 +233,7 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
+  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
@@ -354,6 +356,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
+  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
@@ -474,6 +477,7 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/tree_view_4_surf_group_viewer.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_preference_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_main_menu.h \
+  $(MHDDIR)/C_src/GTK/tree_view_viewer_colormap.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \

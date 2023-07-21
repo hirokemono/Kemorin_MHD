@@ -191,19 +191,7 @@
 !        if     (cmp_no_case(tmpchara, hd_intensity) then
 !          color_param%id_pvr_color(3) = iflag_intense
 !        end if
-        if     (cmp_no_case(tmpchara, hd_pointdelta)) then
-          if( color%step_opacity_ctl%num .gt. 0) then
-            color_param%id_pvr_color(3) = iflag_pointdelta
-            color_param%num_opacity_pnt = color%step_opacity_ctl%num
-          end if
-!
-        else if(cmp_no_case(tmpchara, hd_pointrange)) then
-          if( color%step_opacity_ctl%num .gt. 0) then
-            color_param%id_pvr_color(3) = iflag_pointrange
-            color_param%num_opacity_pnt = color%step_opacity_ctl%num
-          end if
-!
-        else if(cmp_no_case(tmpchara, hd_pointlinear)) then
+        if(cmp_no_case(tmpchara, hd_pointlinear)) then
           if( color%linear_opacity_ctl%num .gt. 0) then
             color_param%id_pvr_color(3) = iflag_pointlinear
             color_param%num_opacity_pnt = color%linear_opacity_ctl%num
@@ -213,21 +201,7 @@
 !
       call alloc_pvr_opacity_list(color_param)
 !
-      if    (color_param%id_pvr_color(3) .eq. iflag_pointdelta          &
-     &  .or. color_param%id_pvr_color(3) .eq. iflag_pointrange) then
-        do i = 1, color_param%num_opacity_pnt
-          color_param%pvr_opacity_param(1,i)                            &
-     &                  = color%step_opacity_ctl%vec1(i)
-          color_param%pvr_opacity_param(2,i)                            &
-     &                  = color%step_opacity_ctl%vec2(i)
-          color_param%pvr_opacity_param(3,i)                            &
-     &                  = color%step_opacity_ctl%vec3(i)
-          color_param%pvr_max_opacity                                   &
-     &       = max(color_param%pvr_max_opacity,                         &
-     &             color_param%pvr_opacity_param(3,i))
-        end do
-!
-      else if(color_param%id_pvr_color(3) .eq. iflag_pointlinear) then
+      if(color_param%id_pvr_color(3) .eq. iflag_pointlinear) then
         do i = 1, color_param%num_opacity_pnt
           color_param%pvr_opacity_param(1,i)                            &
      &                  = color%linear_opacity_ctl%vec1(i)

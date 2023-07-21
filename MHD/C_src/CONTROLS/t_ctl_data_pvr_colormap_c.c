@@ -40,11 +40,6 @@ struct colormap_ctl_c * init_colormap_ctl_c(){
 	cmap_c->f_linear_opacity_ctl = init_real2_clist();
     sprintf(cmap_c->f_linear_opacity_ctl->r1_name, "data");
     sprintf(cmap_c->f_linear_opacity_ctl->r2_name, "opacity");
-
-    cmap_c->f_step_opacity_ctl = init_real3_clist();
-    sprintf(cmap_c->f_step_opacity_ctl->r1_name, "lower_value");
-    sprintf(cmap_c->f_step_opacity_ctl->r2_name, "upper_value");
-    sprintf(cmap_c->f_step_opacity_ctl->r3_name, "opacity");
 	
     cmap_c->f_range_min_ctl = init_real_ctl_item_c();
     cmap_c->f_range_max_ctl = init_real_ctl_item_c();
@@ -70,7 +65,6 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
     dealloc_real_ctl_item_c(cmap_c->f_fix_opacity_ctl);
 	
 	dealloc_real2_clist(cmap_c->f_linear_opacity_ctl);
-	dealloc_real3_clist(cmap_c->f_step_opacity_ctl);
 	
     dealloc_real_ctl_item_c(cmap_c->f_range_min_ctl);
     dealloc_real_ctl_item_c(cmap_c->f_range_max_ctl);

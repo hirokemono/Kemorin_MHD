@@ -55,16 +55,6 @@
 !!      linear_opacity_ctl   0.85    0.01
 !!      linear_opacity_ctl   0.95    0.001
 !!    end array linear_opacity_ctl
-!!
-!!    array  step_opacity_ctl         7
-!!      step_opacity_ctl   0.0     0.01    0.01
-!!      step_opacity_ctl   0.01    0.2     0.015
-!!      step_opacity_ctl   0.2     0.35    0.02
-!!      step_opacity_ctl   0.6     0.7     0.04
-!!      step_opacity_ctl   0.7     0.85    0.03
-!!      step_opacity_ctl   0.85    0.95    0.01
-!!      step_opacity_ctl   0.95    1.0     0.001
-!!    end array step_opacity_ctl
 !!    constant_opacity_ctl           0.003
 !!!
 !!    range_min_ctl   0.0
@@ -121,11 +111,9 @@
      &        :: hd_constant_opacity = 'constant_opacity_ctl'
       character(len=kchara), parameter, private                         &
      &        :: hd_linear_opacity = 'linear_opacity_ctl'
-      character(len=kchara), parameter, private                         &
-     &        :: hd_opacity_def =    'step_opacity_ctl'
 !
-      integer(kind = kint), parameter :: n_label_pvr_colormap = 10
-      integer(kind = kint), parameter :: n_label_lic_colormap = 14
+      integer(kind = kint), parameter :: n_label_pvr_colormap =  9
+      integer(kind = kint), parameter :: n_label_lic_colormap = 13
 !
       private :: n_label_pvr_colormap, n_label_lic_colormap
 !
@@ -157,9 +145,6 @@
      &      color%colortbl_ctl, c_buf)
         call read_control_array_r2(id_control, hd_linear_opacity,       &
      &      color%linear_opacity_ctl, c_buf)
-!
-        call read_control_array_r3(id_control, hd_opacity_def,          &
-     &      color%step_opacity_ctl, c_buf)
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_lic_color_fld, color%lic_color_fld_ctl)
@@ -243,8 +228,6 @@
      &    color%opacity_style_ctl)
       call write_control_array_r2(id_control, level,                    &
      &    color%linear_opacity_ctl)
-      call write_control_array_r3(id_control, level,                    &
-     &    color%step_opacity_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    color%fix_opacity_ctl)
 !
@@ -270,9 +253,6 @@
      &      color%colortbl_ctl)
         call init_r2_ctl_array_label(hd_linear_opacity,                 &
      &      color%linear_opacity_ctl)
-!
-        call init_r3_ctl_array_label(hd_opacity_def,                    &
-     &      color%step_opacity_ctl)
 !
         call init_chara_ctl_item_label                                  &
      &     (hd_lic_color_fld, color%lic_color_fld_ctl)
@@ -334,9 +314,8 @@
       call set_control_labels(hd_opacity_style,    names( 6))
       call set_control_labels(hd_constant_opacity, names( 7))
       call set_control_labels(hd_linear_opacity,   names( 8))
-      call set_control_labels(hd_opacity_def,      names( 9))
 !
-      call set_control_labels(hd_background_color,    names(10))
+      call set_control_labels(hd_background_color,    names(9))
 !
       end subroutine set_label_pvr_colormap
 !
@@ -364,9 +343,8 @@
       call set_control_labels(hd_opacity_style,    names(10))
       call set_control_labels(hd_constant_opacity, names(11))
       call set_control_labels(hd_linear_opacity,   names(12))
-      call set_control_labels(hd_opacity_def,      names(13))
 !
-      call set_control_labels(hd_background_color,    names(14))
+      call set_control_labels(hd_background_color,    names(13))
 !
       end subroutine set_label_LIC_colormap
 !

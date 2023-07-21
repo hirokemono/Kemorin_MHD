@@ -26,7 +26,6 @@ extern void * c_PVR_cmap_range_max_ctl(void *f_color);
 extern void * c_PVR_cmap_fix_opacity_ctl(void *f_color);
 extern void * c_PVR_cmap_colortbl_ctl(void *f_color);
 extern void * c_PVR_cmap_linear_opacity_ctl(void *f_color);
-extern void * c_PVR_cmap_step_opacity_ctl(void *f_color);
 extern void * c_PVR_cmap_background_color_ctl(void *f_color);
 
 extern void * c_PVR_colorbar_ctl_block_name(void *f_cbar_ctl);
@@ -76,7 +75,6 @@ struct colormap_ctl_c * init_f_colormap_ctl_c(void *(*c_load_self)(void *f_paren
     cmap_c->f_opacity_style_ctl =    init_f_ctl_chara_item(c_PVR_cmap_opacity_style_ctl, cmap_c->f_self);
     cmap_c->f_fix_opacity_ctl =      init_f_ctl_real_item(c_PVR_cmap_fix_opacity_ctl, cmap_c->f_self);
     cmap_c->f_linear_opacity_ctl =   init_f_ctl_r2_array(c_PVR_cmap_linear_opacity_ctl, cmap_c->f_self);
-    cmap_c->f_step_opacity_ctl =     init_f_ctl_r3_array(c_PVR_cmap_step_opacity_ctl, cmap_c->f_self);
     cmap_c->f_range_min_ctl =        init_f_ctl_real_item(c_PVR_cmap_range_min_ctl, cmap_c->f_self);
     cmap_c->f_range_max_ctl =        init_f_ctl_real_item(c_PVR_cmap_range_max_ctl, cmap_c->f_self);
     return cmap_c;

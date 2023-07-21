@@ -45,16 +45,6 @@
 !!      linear_opacity_ctl   0.85    0.01
 !!      linear_opacity_ctl   0.95    0.001
 !!    end array linear_opacity_ctl
-!!
-!!    array  step_opacity_ctl         7
-!!      step_opacity_ctl   0.0     0.01    0.01
-!!      step_opacity_ctl   0.01    0.2     0.015
-!!      step_opacity_ctl   0.2     0.35    0.02
-!!      step_opacity_ctl   0.6     0.7     0.04
-!!      step_opacity_ctl   0.7     0.85    0.03
-!!      step_opacity_ctl   0.85    0.95    0.01
-!!      step_opacity_ctl   0.95    1.0     0.001
-!!    end array step_opacity_ctl
 !!    constant_opacity_ctl           0.003
 !!!
 !!    range_min_ctl   0.0
@@ -105,11 +95,6 @@
 !!@n        linear_opacity_ctl%vec1:  field value to define opacity
 !!@n        linear_opacity_ctl%vec3:  Opacity at this point
         type(ctl_array_r2) :: linear_opacity_ctl
-!>        Structure for opacity controls
-!!@n        step_opacity_ctl%vec1:  Minimum value for one opacity
-!!@n        step_opacity_ctl%vec2:  Maximum value for one opacity
-!!@n        step_opacity_ctl%vec3:  Opacity for each level
-        type(ctl_array_r3) :: step_opacity_ctl
 !
 !>        Structure for background color (R,G,B)
         type(read_real3_item) :: background_color_ctl
@@ -155,14 +140,11 @@
 !
 !
       call reset_pvr_colormap_flags(color)
-      call dealloc_control_array_r3(color%step_opacity_ctl)
       call dealloc_control_array_r2(color%linear_opacity_ctl)
       call dealloc_control_array_r2(color%colortbl_ctl)
 !
       color%colortbl_ctl%num =       0
       color%colortbl_ctl%icou = 0
-      color%step_opacity_ctl%num =   0
-      color%step_opacity_ctl%icou =    0
       color%linear_opacity_ctl%num = 0
       color%linear_opacity_ctl%icou =  0
 !
@@ -184,9 +166,6 @@
      &                          new_color%colortbl_ctl)
       call dup_control_array_r2(org_color%linear_opacity_ctl,           &
      &                          new_color%linear_opacity_ctl)
-!
-      call dup_control_array_r3(org_color%step_opacity_ctl,             &
-     &                          new_color%step_opacity_ctl)
 !
       call copy_chara_ctl(org_color%lic_color_fld_ctl,                  &
      &                    new_color%lic_color_fld_ctl)
@@ -264,9 +243,6 @@
      &                                          .eqv. .FALSE.) return
       if(cmp_control_array_r2(color1%linear_opacity_ctl,                &
      &                        color2%linear_opacity_ctl)                &
-     &                                          .eqv. .FALSE.) return
-      if(cmp_control_array_r3(color1%step_opacity_ctl,                  &
-     &                        color2%step_opacity_ctl)                  &
      &                                          .eqv. .FALSE.) return
 !
       if(cmp_read_real3_item(color1%background_color_ctl,               &
