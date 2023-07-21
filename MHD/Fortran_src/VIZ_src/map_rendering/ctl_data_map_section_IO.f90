@@ -100,7 +100,7 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(map_sect_ctl%i_pvr_sect_ctl .gt. 0) return
+      if(map_sect_ctl%i_map_sect_ctl .gt. 0) return
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -136,7 +136,7 @@
         call read_real_ctl_type(c_buf, hd_tcyl_outer,                   &
      &      map_sect_ctl%tangent_cylinder_outer_ctl)
       end do
-      map_sect_ctl%i_pvr_sect_ctl = 1
+      map_sect_ctl%i_map_sect_ctl = 1
 !
       end subroutine read_map_section_ctl
 !
@@ -156,7 +156,7 @@
       integer(kind = kint) :: maxlen = 0
 !
 !
-      if(map_sect_ctl%i_pvr_sect_ctl .le. 0) return
+      if(map_sect_ctl%i_map_sect_ctl .le. 0) return
       maxlen = len_trim(hd_pvr_sec_zeroline)
       maxlen = max(maxlen,len_trim(hd_pvr_isoline_color))
       maxlen = max(maxlen,len_trim(hd_isoline_number))

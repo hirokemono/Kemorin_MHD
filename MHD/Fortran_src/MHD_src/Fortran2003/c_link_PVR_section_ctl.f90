@@ -207,7 +207,7 @@
       type(c_ptr) function c_MAP_section_ctl_block_name(c_ctl)          &
      &          bind(C, NAME = 'c_MAP_section_ctl_block_name')
       type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_section_ctl), pointer :: f_ctl
+      type(map_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
       c_MAP_section_ctl_block_name = C_loc(f_ctl%block_name)
       end function c_MAP_section_ctl_block_name
@@ -217,9 +217,9 @@
       type(c_ptr) function c_MAP_section_ctl_iflag(c_ctl)               &
      &          bind(C, NAME = 'c_MAP_section_ctl_iflag')
       type(c_ptr), value, intent(in) :: c_ctl
-      type(pvr_section_ctl), pointer :: f_ctl
+      type(map_section_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_MAP_section_ctl_iflag = C_loc(f_ctl%i_pvr_sect_ctl)
+      c_MAP_section_ctl_iflag = C_loc(f_ctl%i_map_sect_ctl)
       end function c_MAP_section_ctl_iflag
 !
 !  ---------------------------------------------------------------------

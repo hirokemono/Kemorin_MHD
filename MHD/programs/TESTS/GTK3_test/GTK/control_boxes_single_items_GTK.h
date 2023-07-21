@@ -16,6 +16,8 @@
 #include "kemoview_gtk_routines.h"
 #include "m_base_control_labels_from_f.h"
 #include "t_ctl_array_single_items_c.h"
+#include "t_ctl_array_chara_real_items_c.h"
+#include "t_control_real2_IO.h"
 #include "control_combobox_GTK.h"
 
 /* prototypes */
@@ -35,5 +37,7 @@ GtkWidget *draw_chara_item_combobox_hbox(struct chara_clist *item_list,
 
 GtkWidget *draw_int_item_entry_hbox(struct int_ctl_item *f_iitem);
 GtkWidget *draw_real_item_entry_hbox(struct real_ctl_item * f_ritem);
+
+GtkWidget *draw_real2_item_entry_hbox(struct real2_ctl_item * f_r2item);
 
 #endif /* CONTROL_BOXES_SINGLE_ITEMS_GTK_H_ */

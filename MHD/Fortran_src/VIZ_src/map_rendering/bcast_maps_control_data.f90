@@ -110,7 +110,7 @@
       type(map_section_ctl), intent(inout) :: map_sect_ctl
 !
 !
-      call calypso_mpi_bcast_one_int(map_sect_ctl%i_pvr_sect_ctl, 0)
+      call calypso_mpi_bcast_one_int(map_sect_ctl%i_map_sect_ctl, 0)
       call calypso_mpi_bcast_character                                  &
      &   (map_sect_ctl%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_character                                  &

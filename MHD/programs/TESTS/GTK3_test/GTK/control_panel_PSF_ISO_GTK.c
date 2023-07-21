@@ -26,7 +26,7 @@ struct PSF_GTK_widgets * init_PSF_GTK_widgets(struct chara_int2_clist *f_field_c
     return psf_def_vws;
 };
 
-static void dealloc_PSF_GTK_widgets(struct PSF_GTK_widgets *psf_def_vws){
+void dealloc_PSF_GTK_widgets(struct PSF_GTK_widgets *psf_def_vws){
     dealloc_chara_int2_clist(psf_def_vws->label_field_list);
     dealloc_chara_clist(psf_def_vws->label_dir_list);
     dealloc_chara_clist(psf_def_vws->label_xyz_dir_list);
@@ -108,8 +108,8 @@ static GtkWidget * draw_psf_fld_ctl_vbox(struct f_VIZ_fld_on_PSF_ctl *f_fld_on_p
 }
 
 
-static GtkWidget * draw_psf_def_ctl_vbox(struct f_VIZ_PSF_def_ctl *f_psf_def_c, 
-                                         struct PSF_GTK_widgets *psf_def_vws, GtkWidget *window){
+GtkWidget * draw_psf_def_ctl_vbox(struct f_VIZ_PSF_def_ctl *f_psf_def_c,
+                                  struct PSF_GTK_widgets *psf_def_vws, GtkWidget *window){
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_psf_def_c->f_section_method_ctl);
     GtkWidget *hbox_2 = cr_list_combobox_expander(f_psf_def_c->f_psf_coefs_ctl, psf_def_vws->label_xyz_dir_list, 
                                                   psf_def_vws->psf_coefs_vws, window);
@@ -168,7 +168,8 @@ GtkWidget * draw_viz_each_psf_ctl_vbox(char *label_name, struct f_VIZ_PSF_ctl *f
     
     GtkWidget *expand_psf_d = draw_psf_def_ctl_vbox(f_psf_item->f_psf_def_c, psf_def_vws, window);
     GtkWidget *expand_psf_f = draw_psf_fld_ctl_vbox(f_psf_item->f_fld_on_psf_c, 
-                                                    psf_def_vws->label_field_list, psf_def_vws->label_dir_list,
+                                                    psf_def_vws->label_field_list,
+                                                    psf_def_vws->label_dir_list,
                                                     psf_def_vws->field_output_vws, window);
     
     GtkWidget *vbox_v_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

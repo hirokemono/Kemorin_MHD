@@ -50,6 +50,8 @@ extern void * c_link_atensor_dir_list_to_ctl(void *fld_names_c);
 
 
 struct PSF_GTK_widgets * init_PSF_GTK_widgets(struct chara_int2_clist *f_field_ctl);
+void dealloc_PSF_GTK_widgets(struct PSF_GTK_widgets *psf_def_vws);
+
 struct ISO_GTK_widgets * init_ISO_GTK_widgets(struct chara_int2_clist *f_field_ctl);
 
 struct f_VIZ_PSF_ctl * init_f_VIZ_PSF_ctl_GTK(int idx, void *f_parent, void *void_in_gtk);
@@ -58,7 +60,10 @@ void * dealloc_f_VIZ_PSF_ctl_GTK(void *void_in);
 struct f_VIZ_ISO_ctl * init_f_VIZ_ISO_ctl_GTK(int idx, void *f_parent, void *void_in_gtk);
 void * dealloc_f_VIZ_ISO_ctl_GTK(void *void_in);
 
-GtkWidget * draw_viz_each_psf_ctl_vbox(char *label_name, struct f_VIZ_PSF_ctl *f_psf_item, 
+GtkWidget * draw_psf_def_ctl_vbox(struct f_VIZ_PSF_def_ctl *f_psf_def_c,
+                                  struct PSF_GTK_widgets *psf_def_vws, GtkWidget *window);
+
+GtkWidget * draw_viz_each_psf_ctl_vbox(char *label_name, struct f_VIZ_PSF_ctl *f_psf_item,
                                        GtkWidget *window);
 GtkWidget * draw_viz_each_iso_ctl_vbox(char *label_name, struct f_VIZ_ISO_ctl *f_iso_item, 
                                        GtkWidget *window);

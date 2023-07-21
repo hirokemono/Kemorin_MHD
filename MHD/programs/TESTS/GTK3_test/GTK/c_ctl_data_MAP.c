@@ -67,7 +67,7 @@ static struct f_MAP_section_ctl * init_f_MAP_section_ctl(void *(*c_load_self)(vo
                                                                  f_map_define_ctl->f_self);
     f_map_define_ctl->f_isoline_width_ctl =  init_f_ctl_real_item(c_MAP_section_iso_width_ctl,
                                                                   f_map_define_ctl->f_self);
-    f_map_define_ctl->f_isoline_range_ctl =  init_f_ctl_r2_item(c_VIZ_MAP_map_image_fmt_ctl,
+    f_map_define_ctl->f_isoline_range_ctl =  init_f_ctl_r2_item(c_MAP_section_iso_range_ctl,
                                                                 f_map_define_ctl->f_self);
     f_map_define_ctl->f_grid_width_ctl =     init_f_ctl_real_item(c_MAP_section_grid_width_ctl,
                                                                   f_map_define_ctl->f_self);

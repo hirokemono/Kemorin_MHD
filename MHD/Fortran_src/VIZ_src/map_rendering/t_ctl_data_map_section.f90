@@ -79,7 +79,7 @@
 !>        Structure to define inner bounday radius for tangent cylinder
         type(read_real_item) :: tangent_cylinder_outer_ctl
 !
-        integer(kind = kint) :: i_pvr_sect_ctl = 0
+        integer(kind = kint) :: i_map_sect_ctl = 0
       end type map_section_ctl
 !
 !  ---------------------------------------------------------------------
@@ -95,7 +95,7 @@
 !
 !
       new_map_sect_c%block_name =     org_map_sect_c%block_name
-      new_map_sect_c%i_pvr_sect_ctl = org_map_sect_c%i_pvr_sect_ctl
+      new_map_sect_c%i_map_sect_ctl = org_map_sect_c%i_map_sect_ctl
       new_map_sect_c%fname_sect_ctl = org_map_sect_c%fname_sect_ctl
       call dup_control_4_psf_def                                        &
      &   (org_map_sect_c%psf_def_c, new_map_sect_c%psf_def_c)
@@ -142,7 +142,7 @@
       map_sect_ctl%tangent_cylinder_inner_ctl%iflag =  0
       map_sect_ctl%tangent_cylinder_outer_ctl%iflag =  0
 !
-      map_sect_ctl%i_pvr_sect_ctl =    0
+      map_sect_ctl%i_map_sect_ctl =    0
 !
       end subroutine dealloc_map_section_ctl
 !

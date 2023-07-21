@@ -451,6 +451,7 @@ struct MAP_GTK_widgets{
     struct chara_int2_clist *label_field_list;
     struct chara_clist      *label_dir_list;
     
+    struct PSF_GTK_widgets *psf_def_vws;
     GtkWidget * map_area_view;
 };
 
@@ -1158,10 +1159,68 @@ struct viewmat_GTK_widgets{
     struct chara_cbox_table_view *f_view_rot_vec_vws;
 };
 
+static GtkWidget * draw_viewmatrix_pixels_vbox(struct image_size_ctl_c *f_pixel, 
+                                               GtkWidget *window){
+    GtkWidget *hbox_1 = draw_int_item_entry_hbox(f_pixel->f_num_xpixel_ctl);
+    GtkWidget *hbox_2 = draw_int_item_entry_hbox(f_pixel->f_num_ypixel_ctl);
+    
+    GtkWidget *vbox_v_pix = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pix), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pix), hbox_2,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_pixel = draw_control_block(f_pixel->c_block_name, f_pixel->f_iflag,
+                                                 window, vbox_v_pix);
+    return expand_pixel;
+};
+
+static GtkWidget * draw_viewmatrix_projection_vbox(struct projection_mat_ctl_c *f_proj, 
+                                                   GtkWidget *window){
+    GtkWidget *hbox_1 = draw_real_item_entry_hbox(f_proj->f_perspective_angle_ctl);
+    GtkWidget *hbox_2 = draw_real_item_entry_hbox(f_proj->f_perspective_xy_ratio_ctl);
+    GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_proj->f_perspective_near_ctl);
+    GtkWidget *hbox_4 = draw_real_item_entry_hbox(f_proj->f_perspective_far_ctl);
+    
+    GtkWidget *hbox_5 = draw_real2_item_entry_hbox(f_proj->f_horizontal_range_ctl);
+    GtkWidget *hbox_6 = draw_real2_item_entry_hbox(f_proj->f_vertical_range_ctl);
+    
+    GtkWidget *vbox_v_pix = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pix), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pix), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pix), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pix), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pix), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pix), hbox_6,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_proj = draw_control_block(f_proj->c_block_name, f_proj->f_iflag,
+                                                window, vbox_v_pix);
+    return expand_proj;
+};
+
+static GtkWidget * draw_viewmatrix_stereo_vbox(struct streo_view_ctl_c *f_streo, 
+                                               GtkWidget *window){
+    GtkWidget *hbox_1 = draw_real_item_entry_hbox(f_streo->f_focalpoint_ctl);
+    GtkWidget *hbox_2 = draw_real_item_entry_hbox(f_streo->f_eye_separation_ctl);
+    GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_streo->f_eye_sep_angle_ctl);
+    GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_streo->f_step_eye_sep_angle_ctl);
+    
+    GtkWidget *vbox_s = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_s), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_s), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_s), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_s), hbox_4,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_streo = draw_control_block(f_streo->c_block_name, f_streo->f_iflag,
+                                                 window, vbox_s);
+    return expand_streo;
+};
+
 static GtkWidget * draw_viz_viewmatrix_vbox(struct modelview_ctl_c *f_mat_c, 
                                             GtkWidget *window){
     struct viewmat_GTK_widgets *viewmatrix_vws = (struct viewmat_GTK_widgets *) f_mat_c->void_panel;
-	GtkWidget *vbox_v_map = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *expand_pixel = draw_viewmatrix_pixels_vbox(f_mat_c->f_pixel, window);
+    GtkWidget *expand_proj =  draw_viewmatrix_projection_vbox(f_mat_c->f_proj, window);
+    GtkWidget *expand_streo = draw_viewmatrix_stereo_vbox(f_mat_c->f_streo, window);
     
     GtkWidget *hbox_1 = c2r_list_combobox_expander(f_mat_c->f_modelview_mat_ctl,
                                                    viewmatrix_vws->label_xyzw_dir_list,
@@ -1191,24 +1250,145 @@ static GtkWidget * draw_viz_viewmatrix_vbox(struct modelview_ctl_c *f_mat_c,
                                                   viewmatrix_vws->label_xyz_dir_list,
                                                   viewmatrix_vws->f_viewpt_in_viewer_vws, window);
     
-    
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_4,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_5,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_7,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_8,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_9,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_10,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_1,  FALSE, FALSE, 0);
+	GtkWidget *vbox_v_mat = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), expand_pixel,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_9,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_10,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), expand_proj,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_mat), expand_streo,  FALSE, FALSE, 0);
     
     
     GtkWidget *expand_v_map = draw_control_block_w_file_switch(f_mat_c->c_block_name,
 															   f_mat_c->f_iflag,
 															   f_mat_c->mat_ctl_file_name,
-															   window, vbox_v_map);
+															   window, vbox_v_mat);
     return expand_v_map;
+};
+
+static GtkWidget * draw_map_define_vbox(struct f_MAP_section_ctl *f_map_define_ctl, 
+                                        struct PSF_GTK_widgets *psf_def_vws, GtkWidget *window){
+    GtkWidget *expand_s =  draw_psf_def_ctl_vbox(f_map_define_ctl->f_psf_def_c, 
+                                                 psf_def_vws, window);
+                                                                                                 
+    GtkWidget *hbox_1 = draw_chara_switch_entry_hbox(f_map_define_ctl->f_zeroline_switch_ctl);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_map_define_ctl->f_isoline_color_mode);
+    GtkWidget *hbox_3 = draw_int_item_entry_hbox(f_map_define_ctl->f_isoline_number_ctl);
+    GtkWidget *hbox_4 = draw_real2_item_entry_hbox(f_map_define_ctl->f_isoline_range_ctl);
+    GtkWidget *hbox_5 = draw_real_item_entry_hbox(f_map_define_ctl->f_isoline_width_ctl);
+    GtkWidget *hbox_6 = draw_real_item_entry_hbox(f_map_define_ctl->f_grid_width_ctl);
+    GtkWidget *hbox_7 = draw_chara_switch_entry_hbox(f_map_define_ctl->f_tan_cyl_switch_ctl);
+    GtkWidget *hbox_8 = draw_real_item_entry_hbox(f_map_define_ctl->f_tangent_cylinder_inner_ctl);
+    GtkWidget *hbox_9 = draw_real_item_entry_hbox(f_map_define_ctl->f_tangent_cylinder_outer_ctl);
+    
+    GtkWidget *vbox_map_def = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), expand_s,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_map_def), hbox_9,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_map_def = draw_control_block(f_map_define_ctl->c_block_name, 
+                                                   f_map_define_ctl->f_iflag,
+                                                   window, vbox_map_def);
+    return expand_map_def;
+};
+
+static GtkWidget * draw_viz_colormap_vbox(struct colormap_ctl_c *cmap_c, 
+                                          struct chara_int2_clist *label_field_list, 
+                                          struct chara_clist *label_dir_list, 
+                                          GtkWidget *window){
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(cmap_c->f_colormap_mode_ctl);
+    
+    GtkWidget *hbox_2 = draw_field_combobox_hbox(label_field_list, 
+                                                 cmap_c->f_lic_color_fld_ctl, window);
+    GtkWidget *hbox_3 = draw_chara_item_combobox_hbox(label_dir_list,
+                                                      cmap_c->f_lic_color_comp_ctl, window);
+    GtkWidget *hbox_4 = draw_field_combobox_hbox(label_field_list, 
+                                                 cmap_c->f_lic_opacity_fld_ctl, window);
+    GtkWidget *hbox_5 = draw_chara_item_combobox_hbox(label_dir_list,
+                                                      cmap_c->f_lic_opacity_comp_ctl, window);
+    
+    GtkWidget *hbox_6 = draw_chara_item_entry_hbox(cmap_c->f_data_mapping_ctl);
+    GtkWidget *hbox_7 = draw_chara_item_entry_hbox(cmap_c->f_opacity_style_ctl);
+    GtkWidget *hbox_8 = draw_real_item_entry_hbox(cmap_c->f_fix_opacity_ctl);
+    
+    GtkWidget *vbox_cbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_8,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_cmap = draw_control_block(cmap_c->c_block_name, cmap_c->f_iflag,
+                                                window, vbox_cbox);
+    return expand_cmap;
+}
+static GtkWidget * draw_viz_colorbar_vbox(struct pvr_colorbar_ctl_c *cbar_c,  GtkWidget *window){
+    
+    GtkWidget *hbox_1 = draw_chara_switch_entry_hbox(cbar_c->f_colorbar_switch_ctl);
+    GtkWidget *hbox_2 = draw_chara_switch_entry_hbox(cbar_c->f_colorbar_scale_ctl);
+    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(cbar_c->f_colorbar_position_ctl);
+    GtkWidget *hbox_4 = draw_chara_switch_entry_hbox(cbar_c->f_zeromarker_flag_ctl);
+    
+    GtkWidget *hbox_5 = draw_int_item_entry_hbox(cbar_c->f_font_size_ctl);
+    GtkWidget *hbox_6 = draw_int_item_entry_hbox(cbar_c->f_ngrid_cbar_ctl);
+    GtkWidget *hbox_7 = draw_real2_item_entry_hbox(cbar_c->f_cbar_range_ctl);
+    
+    GtkWidget *hbox_8 = draw_chara_switch_entry_hbox(cbar_c->f_axis_switch_ctl);
+    GtkWidget *hbox_9 = draw_chara_switch_entry_hbox(cbar_c->f_time_switch_ctl);
+    GtkWidget *hbox_10 = draw_chara_switch_entry_hbox(cbar_c->f_mapgrid_switch_ctl);
+    
+    GtkWidget *vbox_cbar = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_9,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_10, FALSE, FALSE, 0);
+    
+    GtkWidget *expand_cbar = draw_control_block(cbar_c->c_block_name, cbar_c->f_iflag,
+                                                window, vbox_cbar);
+    return expand_cbar;
+}
+
+
+static GtkWidget * draw_viz_cmap_cbar_vbox(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
+                                           struct chara_int2_clist *label_field_list, 
+                                           struct chara_clist *label_dir_list, 
+                                           GtkWidget *window){
+    GtkWidget *expand_cmap =  draw_viz_colormap_vbox(f_cmap_cbar_c->cmap_c, 
+                                                     label_field_list, label_dir_list, window);
+    GtkWidget *expand_cbar =  draw_viz_colorbar_vbox(f_cmap_cbar_c->cbar_c, window);
+    
+    GtkWidget *vbox_cc = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_cc), expand_cmap,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_cc), expand_cbar,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_cc = draw_control_block_w_file_switch(f_cmap_cbar_c->c_block_name,
+                                                            f_cmap_cbar_c->f_iflag,
+                                                            f_cmap_cbar_c->cmap_ctl_file_name,
+                                                            window, vbox_cc);
+    return expand_cc;
 };
 
 static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP_ctl *f_map_item, 
@@ -1227,7 +1407,12 @@ static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP
     GtkWidget *hbox_6 = draw_chara_item_combobox_hbox(map_vws->label_dir_list, 
                                                       f_map_item->f_isoline_comp_ctl, window);
     
+    GtkWidget *expand_mdef = draw_map_define_vbox(f_map_item->f_map_define_ctl, 
+                                                  map_vws->psf_def_vws, window);
     GtkWidget *expand_vmat = draw_viz_viewmatrix_vbox(f_map_item->f_mat, window);
+    GtkWidget *expand_cc =   draw_viz_cmap_cbar_vbox(f_map_item->f_cmap_cbar_c, 
+                                                     map_vws->label_field_list, 
+                                                     map_vws->label_dir_list, window);
     
     gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_1,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_2,  FALSE, FALSE, 0);
@@ -1235,7 +1420,9 @@ static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP
     gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_4,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_5,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_map), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_map), expand_vmat,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_map), expand_mdef, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_map), expand_cc,   FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_map), expand_vmat, FALSE, FALSE, 0);
     
     
     GtkWidget *expand_v_map = draw_control_block_w_file_switch(duplicate_underscore(label_name),
@@ -1356,9 +1543,14 @@ struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct chara_int2_clist *f_field_c
                              map_vws->label_dir_list);
     append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
                              map_vws->label_dir_list);
+    
+    map_vws->psf_def_vws = init_PSF_GTK_widgets(f_field_ctl);
     return map_vws;
 };
 void dealloc_MAP_GTK_widgets(struct MAP_GTK_widgets *map_vws){
+    dealloc_PSF_GTK_widgets(map_vws->psf_def_vws);
+    dealloc_chara_int2_clist(map_vws->label_field_list);
+    dealloc_chara_clist(map_vws->label_dir_list);
     free(map_vws);
 }
 

@@ -15,8 +15,8 @@
 !!     &          bind(C, NAME = 'c_real2_item_realvalue1')
 !!      real(c_double) function c_real2_item_realvalue2(c_ctl)          &
 !!     &          bind(C, NAME = 'c_real2_item_realvalue3')
-!!      subroutine c_store_real2_item_realvalue(c_ctl, r1_in, r2_in)    &
-!!     &          bind(C, NAME = 'c_store_real2_item_realvalue')
+!!      subroutine c_store_real2_items(c_ctl, r1_in, r2_in)             &
+!!     &          bind(C, NAME = 'c_store_real2_items')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!        real(C_double), value, intent(in) :: r1_in, r2_in
 !!
@@ -101,8 +101,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine c_store_real2_item_realvalue(c_ctl, r1_in, r2_in)      &
-     &          bind(C, NAME = 'c_store_real2_item_realvalue')
+      subroutine c_store_real2_items(c_ctl, r1_in, r2_in)               &
+     &          bind(C, NAME = 'c_store_real2_items')
       type(c_ptr), value, intent(in) :: c_ctl
       real(C_double), value, intent(in) :: r1_in, r2_in
       type(read_real2_item), pointer :: f_ctl
@@ -110,7 +110,7 @@
       call c_f_pointer(c_ctl, f_ctl)
       f_ctl%realvalue(1) = r1_in
       f_ctl%realvalue(2) = r2_in
-      end subroutine c_store_real2_item_realvalue
+      end subroutine c_store_real2_items
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
