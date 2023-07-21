@@ -96,7 +96,7 @@
      &          bind(C, NAME = 'c_store_real3_items')
 !
       type(c_ptr), value, intent(in) :: c_ctl
-      real(C_double), intent(in) :: r1_in, r2_in, r3_in
+      real(C_double), value, intent(in) :: r1_in, r2_in, r3_in
       type(read_real3_item), pointer :: f_ctl
 !
       call c_f_pointer(c_ctl, f_ctl)

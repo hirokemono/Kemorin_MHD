@@ -112,14 +112,8 @@ GtkWidget * draw_control_block(const char * title, int *iflag_ptr,
 	return hbox0;
 };
 
-GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, char *f_file_name,
-                                             GtkWidget *window, GtkWidget *box_in)
+void append_block_file_switch_hbox(char *f_file_name, GtkWidget *hbox2)
 {
-	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	GtkWidget *hbox1 = hbox_with_block_checkbox(iflag_ptr);
-	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox0), hbox1, FALSE, TRUE, 0);
-	
 	GtkWidget *file_entry = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(file_entry), strngcopy_from_f(f_file_name));
 	g_object_set_data(G_OBJECT(file_entry), "file_name", (gpointer) f_file_name);
@@ -142,10 +136,22 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 	
 	GtkWidget *file_label = gtk_label_new("File_name: ");
 	
-	GtkWidget *hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(hbox2), file_label, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox2), vbox2, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox2), file_entry, FALSE, TRUE, 0);
+	return;
+};
+
+GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, char *f_file_name,
+                                             GtkWidget *window, GtkWidget *box_in)
+{
+	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *hbox1 = hbox_with_block_checkbox(iflag_ptr);
+	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	gtk_box_pack_start(GTK_BOX(vbox0), hbox1, FALSE, TRUE, 0);
+	
+	GtkWidget *hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	append_block_file_switch_hbox(f_file_name, hbox2);
 	
 	GtkWidget *vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox2, FALSE, TRUE, 0);
@@ -312,6 +318,73 @@ GtkWidget *draw_real2_item_entry_hbox(struct real2_ctl_item * f_r2item){
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry1, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry2, TRUE, TRUE, 0);
+	return hbox;
+}
+
+static void cb_real3_1_ctl_item(GtkEntry *spinner, gpointer data)
+{
+    struct real3_ctl_item *f_r3item = (struct real3_ctl_item *) data;
+    if(f_r3item->f_self == NULL) return;
+    f_r3item->r_data[0] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
+    c_store_real3_items(f_r3item->f_self, f_r3item->r_data[0],
+                        f_r3item->r_data[1], f_r3item->r_data[2]);
+	return;
+}
+static void cb_real3_2_ctl_item(GtkEntry *spinner, gpointer data)
+{
+    struct real3_ctl_item *f_r3item = (struct real3_ctl_item *) data;
+    if(f_r3item->f_self == NULL) return;
+    f_r3item->r_data[1] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
+    c_store_real3_items(f_r3item->f_self, f_r3item->r_data[0],
+                        f_r3item->r_data[1], f_r3item->r_data[2]);
+	return;
+}
+static void cb_real3_3_ctl_item(GtkEntry *spinner, gpointer data)
+{
+    struct real3_ctl_item *f_r3item = (struct real3_ctl_item *) data;
+    if(f_r3item->f_self == NULL) return;
+    f_r3item->r_data[2] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
+    c_store_real3_items(f_r3item->f_self, f_r3item->r_data[0],
+                        f_r3item->r_data[1], f_r3item->r_data[2]);
+	return;
+}
+
+GtkWidget *draw_real3_item_entry_hbox(struct real3_ctl_item * f_r3item){
+	GtkAdjustment *adjust1 = gtk_adjustment_new(f_r3item->r_data[0],
+                                               -1.0e30, 1.0e30, 0.1, 100, 21474836);
+	GtkAdjustment *adjust2 = gtk_adjustment_new(f_r3item->r_data[1],
+                                               -1.0e30, 1.0e30, 0.1, 100, 21474836);
+	GtkAdjustment *adjust3 = gtk_adjustment_new(f_r3item->r_data[2],
+                                               -1.0e30, 1.0e30, 0.1, 100, 21474836);
+	GtkWidget *hbox = hbox_with_block_checkbox(f_r3item->f_iflag);
+	GtkWidget *label = gtk_label_new(f_r3item->c_block_name);
+	
+	/* Generate file entry  */
+	GtkWidget *entry1 = gtk_spin_button_new(adjust1, 1, 0);
+	GtkWidget *entry2 = gtk_spin_button_new(adjust2, 1, 0);
+	GtkWidget *entry3 = gtk_spin_button_new(adjust3, 1, 0);
+
+    gtk_entry_set_width_chars(GTK_ENTRY(entry1), (gint) 12);
+    gtk_entry_set_width_chars(GTK_ENTRY(entry2), (gint) 12);
+    gtk_entry_set_width_chars(GTK_ENTRY(entry3), (gint) 12);
+
+	gtk_spin_button_set_digits(GTK_SPIN_BUTTON(entry1), 9);
+	gtk_spin_button_set_digits(GTK_SPIN_BUTTON(entry2), 9);
+	gtk_spin_button_set_digits(GTK_SPIN_BUTTON(entry3), 9);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry1), f_r3item->r_data[0]);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry2), f_r3item->r_data[1]);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry3), f_r3item->r_data[1]);
+	g_signal_connect(G_OBJECT(entry1), "value-changed",
+				G_CALLBACK(cb_real3_1_ctl_item), (gpointer) f_r3item);
+	g_signal_connect(G_OBJECT(entry2), "value-changed",
+				G_CALLBACK(cb_real3_2_ctl_item), (gpointer) f_r3item);
+	g_signal_connect(G_OBJECT(entry3), "value-changed",
+				G_CALLBACK(cb_real3_3_ctl_item), (gpointer) f_r3item);
+	
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry1, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry2, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry3, TRUE, TRUE, 0);
 	return hbox;
 }
 
