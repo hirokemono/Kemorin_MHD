@@ -155,8 +155,7 @@ GtkWidget * draw_array_block_ctl_vbox(struct void_clist *v_clist, void *void_in_
 								   array_block_Wgts->vbox_vpwr_items, window);
 	gtk_container_add(GTK_CONTAINER(array_block_Wgts->vbox_vpwr), array_block_Wgts->vbox_vpwr_items);
 	
-	int itmp = 1;
-	GtkWidget *expand_vpwrs = draw_control_block(v_clist->clist_name, &itmp,
-												 window, array_block_Wgts->vbox_vpwr);
+	GtkWidget *expand_vpwrs = wrap_into_expanded_frame_gtk(v_clist->clist_name,
+                                                           window, array_block_Wgts->vbox_vpwr);
 	return expand_vpwrs;
 };

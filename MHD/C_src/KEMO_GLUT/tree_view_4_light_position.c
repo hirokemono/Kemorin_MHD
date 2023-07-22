@@ -223,8 +223,10 @@ static GtkWidget *init_lightposition_list_box(struct lightparams_view *light_vws
 	create_real3_tree_view(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view), 
                            light_vws->light_rtp_vws->r3_clist_gtk, 
                            renderer_spin1, renderer_spin2, renderer_spin3);
+    /*
 	g_signal_connect(G_OBJECT(light_vws->light_rtp_vws->tree_view), "cursor-changed", 
 					 G_CALLBACK(cursor_chenge_CB), (gpointer) light_vws);
+    */
 	
 	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
                      G_CALLBACK(light_radius_edited_cb), (gpointer) light_vws);

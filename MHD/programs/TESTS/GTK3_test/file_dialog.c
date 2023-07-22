@@ -50,6 +50,7 @@
 #include "control_panel_cbox_cbox_real_GTK.h"
 #include "control_panel_int_GTK.h"
 #include "control_panel_int2_GTK.h"
+#include "control_panel_real3_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
 #include "control_panel_4_MHD_BCs_GTK.h"
 #include "control_panels_MHD_model_GTK.h"
@@ -459,6 +460,11 @@ struct MAP_GTK_widgets{
 };
 
 struct PVR_GTK_widgets{
+    struct chara_int2_clist *label_field_list;
+    struct chara_clist      *label_dir_list;
+    struct colormap_view *color_vws;
+    
+    GtkWidget * lighting_tree_view;
     GtkWidget * psf_area_view;
 };
 
@@ -1445,16 +1451,62 @@ static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP
     return expand_v_map;
 };
 
+
+
+static GtkWidget * draw_pvr_lighting_vbox(struct lighting_ctl_c *lighting_ctl_c,
+                                          GtkWidget *lighting_tree_view, GtkWidget *window){
+    GtkWidget *hbox_1 = draw_real_item_entry_hbox(lighting_ctl_c->f_ambient_coef_ctl);
+    GtkWidget *hbox_2 = draw_real_item_entry_hbox(lighting_ctl_c->f_diffuse_coef_ctl);
+    GtkWidget *hbox_3 = draw_real_item_entry_hbox(lighting_ctl_c->f_specular_coef_ctl);
+    GtkWidget *expand_4 = r3_list_combobox_expander(lighting_ctl_c->f_light_position_ctl,
+                                                    lighting_tree_view, window);
+    
+    GtkWidget *vbox_lgt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_lgt), expand_4,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_lgt = draw_control_block_w_file_switch(lighting_ctl_c->c_block_name,
+                                                             lighting_ctl_c->f_iflag,
+                                                             lighting_ctl_c->light_ctl_file_name,
+                                                             window, vbox_lgt);
+    return expand_lgt;
+}
+
+
 static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR_ctl *f_pvr_item, 
 											  GtkWidget *window){
-	GtkWidget *vbox_v_lic = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    struct PVR_GTK_widgets *pvr_vws = (struct PVR_GTK_widgets *) f_pvr_item->void_panel;
     
-    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_pvr_item->f_pvr_field_ctl);
-    gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_1,  FALSE, FALSE, 0);
+    GtkWidget *vbox_v_pvr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_pvr_item->f_file_head_ctl);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_pvr_item->f_file_fmt_ctl);
+    GtkWidget *hbox_4 = draw_field_combobox_hbox(pvr_vws->label_field_list, 
+                                                 f_pvr_item->f_pvr_field_ctl, window);
+    GtkWidget *hbox_5 = draw_chara_item_combobox_hbox(pvr_vws->label_dir_list,
+                                                      f_pvr_item->f_pvr_comp_ctl, window);
+    
+    GtkWidget *expand_v_lgt = draw_pvr_lighting_vbox(f_pvr_item->f_light,
+                                                     pvr_vws->lighting_tree_view, window);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_5,  FALSE, FALSE, 0);
+    
+    append_viz_cmap_cbar_vbox(f_pvr_item->f_cmap_cbar_c, pvr_vws->color_vws, 
+                              pvr_vws->label_field_list, pvr_vws->label_dir_list, 
+                              window, vbox_v_pvr);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), expand_v_lgt,  FALSE, FALSE, 0);
+    
+    
     GtkWidget *expand_v_pwr = draw_control_block_w_file_switch(duplicate_underscore(label_name),
 															   f_pvr_item->f_iflag,
 															   f_pvr_item->pvr_ctl_file_name,
-															   window, vbox_v_lic);
+															   window, vbox_v_pvr);
     return expand_v_pwr;
 };
 
@@ -1541,7 +1593,7 @@ void dealloc_viewmat_GTK_widgets(struct viewmat_GTK_widgets *viewmatrix_vws){
     free(viewmatrix_vws);
 }
 
-struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct colormap_ctl_c *cmap_c,
+struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
                                               struct chara_int2_clist *f_field_ctl)
 {
 	struct MAP_GTK_widgets *map_vws 
@@ -1557,7 +1609,7 @@ struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct colormap_ctl_c *cmap_c,
                              map_vws->label_dir_list);
     append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
                              map_vws->label_dir_list);
-    map_vws->color_vws = init_colormap_views_4_ctl(cmap_c);
+    map_vws->color_vws = init_colormap_views_4_ctl(f_cmap_cbar_c->cmap_c);
     map_vws->psf_def_vws = init_PSF_GTK_widgets(f_field_ctl);
     return map_vws;
 };
@@ -1565,10 +1617,12 @@ void dealloc_MAP_GTK_widgets(struct MAP_GTK_widgets *map_vws){
     dealloc_PSF_GTK_widgets(map_vws->psf_def_vws);
     dealloc_chara_int2_clist(map_vws->label_field_list);
     dealloc_chara_clist(map_vws->label_dir_list);
+    dealloc_colormap_views_4_viewer(map_vws->color_vws);
     free(map_vws);
 }
 
-struct PVR_GTK_widgets * init_PVR_GTK_widgets()
+struct PVR_GTK_widgets * init_PVR_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
+                                              struct chara_int2_clist *f_field_ctl)
 {
 	struct PVR_GTK_widgets *pvr_vws 
 			= (struct PVR_GTK_widgets *) malloc(sizeof(struct PVR_GTK_widgets));
@@ -1576,9 +1630,19 @@ struct PVR_GTK_widgets * init_PVR_GTK_widgets()
 		printf("malloc error for pvr_vws\n");
 		exit(0);
     };
+    pvr_vws->label_field_list = f_field_ctl;
+    pvr_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
+    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL),
+                             pvr_vws->label_dir_list);
+    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
+                             pvr_vws->label_dir_list);
+    pvr_vws->color_vws = init_colormap_views_4_ctl(f_cmap_cbar_c->cmap_c);
     return pvr_vws;
 };
 void dealloc_PVR_GTK_widgets(struct PVR_GTK_widgets *pvr_vws){
+    dealloc_colormap_views_4_viewer(pvr_vws->color_vws);
+    dealloc_chara_int2_clist(pvr_vws->label_field_list);
+    dealloc_chara_clist(pvr_vws->label_dir_list);
     free(pvr_vws);
 }
 
@@ -1616,23 +1680,25 @@ void dealloc_FLINE_GTK_widgets(struct FLINE_GTK_widgets *fline_vws){
 struct f_VIZ_MAP_ctl * init_f_VIZ_MAP_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
     struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
     struct f_VIZ_MAP_ctl *f_map_ctl = init_f_VIZ_MAP_ctl(idx, f_parent);
-    f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c->cmap_c, 
+    f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c, 
                                                           f_fld_ctl->f_field_ctl);
     f_map_ctl->f_mat->void_panel = (void *) init_viewmat_GTK_widgets(f_fld_ctl->f_field_ctl);
     return f_map_ctl;
 }
 void *dealloc_f_VIZ_MAP_ctl_GTK(void *void_in){
     struct f_VIZ_MAP_ctl *f_map_ctl = (struct f_VIZ_MAP_ctl *) void_in;
-    dealloc_viewmat_GTK_widgets((struct MAP_GTK_widgets *) f_map_ctl->f_mat->void_panel);
+    dealloc_viewmat_GTK_widgets((struct viewmat_GTK_widgets *) f_map_ctl->f_mat->void_panel);
     dealloc_MAP_GTK_widgets((struct MAP_GTK_widgets *) f_map_ctl->void_panel);
     dealloc_f_VIZ_MAP_ctl(f_map_ctl);
     return NULL;
 }
 
 struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
     struct f_VIZ_PVR_ctl *f_pvr_ctl = init_f_VIZ_PVR_ctl(c_pvr_render_ctls_pvr_ctl, 
                                                          idx, f_parent);
-    f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets();
+    f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets(f_pvr_ctl->f_cmap_cbar_c, 
+                                                          f_fld_ctl->f_field_ctl);
     return f_pvr_ctl;
 }
 void * dealloc_f_VIZ_PVR_ctl_GTK(void *void_in){
@@ -1684,11 +1750,16 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
     for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_map_ctls);i++){
         struct f_VIZ_MAP_ctl *f_map_ctl
                 = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_map_ctls);
-        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c->cmap_c, 
+        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c, 
                                                               f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
         f_map_ctl->f_mat->void_panel = (void *) init_viewmat_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
-    
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_pvr_ctls);i++){
+        struct f_VIZ_PVR_ctl *f_pvr_ctl
+                = (struct f_VIZ_PVR_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_pvr_ctls);
+        f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets(f_pvr_ctl->f_cmap_cbar_c, 
+                                                              f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
+    };
     
 	GtkWidget *expand_MHD_psf = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_psf_ctls,
                                                           (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
@@ -1717,7 +1788,8 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
                                                           (void *) draw_viz_each_map_ctl_vbox,
                                                           mWidgets->vmap_Wgts, window);
 	
-	GtkWidget *expand_MHD_pvr = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_pvr_ctls, NULL,
+	GtkWidget *expand_MHD_pvr = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_pvr_ctls,
+                                                          (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
                                                           c_append_viz_pvr_render_ctls,
                                                           c_delete_viz_pvr_render_ctls,
                                                           (void *) init_f_VIZ_PVR_ctl_GTK,
@@ -1822,14 +1894,14 @@ void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
     for(i=0;i<count_void_clist(f_MHD_ctl->f_zm_ctls->f_zm_map_ctls);i++){
         struct f_VIZ_MAP_ctl *f_map_ctl
                 = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i, f_MHD_ctl->f_zm_ctls->f_zm_map_ctls);
-        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c->cmap_c, 
+        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c, 
                                                               f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
         f_map_ctl->f_mat->void_panel = (void *) init_viewmat_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
     for(i=0;i<count_void_clist(f_MHD_ctl->f_zm_ctls->f_zRMS_map_ctls);i++){
         struct f_VIZ_MAP_ctl *f_map_ctl
                 = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i, f_MHD_ctl->f_zm_ctls->f_zRMS_map_ctls);
-        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c->cmap_c, 
+        f_map_ctl->void_panel = (void *) init_MAP_GTK_widgets(f_map_ctl->f_cmap_cbar_c, 
                                                               f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
         f_map_ctl->f_mat->void_panel = (void *) init_viewmat_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };

@@ -293,7 +293,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     g_object_set(G_OBJECT(renderer_spin1), 
 				"adjustment", adjust,
 				"climb-rate", 0.5,
-				"digits", 3, NULL);
+				"digits", 6, NULL);
 	*/
     g_object_set(G_OBJECT(renderer_spin1), 
                  "editable", TRUE, 

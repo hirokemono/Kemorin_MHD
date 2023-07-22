@@ -328,7 +328,7 @@ void delete_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clis
     g_list_free(reference_list);
 }
 
-void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist, 
+void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
                             GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2,
                             GtkCellRenderer *renderer_spin3){
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
@@ -362,8 +362,8 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
 				"climb-rate", 0.5,
 				"digits", 3, NULL);
 	*/
-    g_object_set(G_OBJECT(renderer_spin1), 
-                 "editable", TRUE, 
+    g_object_set(G_OBJECT(renderer_spin1),
+                 "editable", TRUE,
                  "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column_1st, renderer_spin1, TRUE);
@@ -371,10 +371,10 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
 				COLUMN_FIELD_INDEX, NULL);
     gtk_tree_view_column_set_resizable(column_1st, TRUE);
     gtk_tree_view_column_set_clickable(column_1st, TRUE);
-	g_object_set_data(G_OBJECT(column_1st), "column_id", 
+	g_object_set_data(G_OBJECT(column_1st), "column_id",
 					  GINT_TO_POINTER(COLUMN_FIELD_INDEX));
 	/*
-    g_signal_connect(G_OBJECT(column_1st), "clicked", 
+    g_signal_connect(G_OBJECT(column_1st), "clicked",
 				G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
     */
     /* Second row */
@@ -382,8 +382,8 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     gtk_tree_view_append_column(r3_tree_view, column_2nd);
     gtk_tree_view_column_set_title(column_2nd, r3_clist->r2_name);
 	
-    g_object_set(G_OBJECT(renderer_spin2), 
-                 "editable", TRUE, 
+    g_object_set(G_OBJECT(renderer_spin2),
+                 "editable", TRUE,
                  "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column_2nd, renderer_spin2, TRUE);
@@ -391,29 +391,29 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
 				COLUMN_FIELD_NAME, NULL);
     gtk_tree_view_column_set_resizable(column_2nd, TRUE);
     gtk_tree_view_column_set_clickable(column_2nd, TRUE);
-	g_object_set_data(G_OBJECT(column_2nd), "column_id", 
+	g_object_set_data(G_OBJECT(column_2nd), "column_id",
 					  GINT_TO_POINTER(COLUMN_FIELD_NAME));
 	/*
-    g_signal_connect(G_OBJECT(column_2nd), "clicked", 
+    g_signal_connect(G_OBJECT(column_2nd), "clicked",
                      G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
     */
     /* Third row */
     column_3rd = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_3rd);
     gtk_tree_view_column_set_title(column_3rd, r3_clist->r3_name);
-    g_object_set(G_OBJECT(renderer_spin3), 
-                 "editable", TRUE, 
+    g_object_set(G_OBJECT(renderer_spin3),
+                 "editable", TRUE,
                  "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column_3rd, renderer_spin3, TRUE);
-	gtk_tree_view_column_set_attributes(column_3rd, renderer_spin3, "text", 
+	gtk_tree_view_column_set_attributes(column_3rd, renderer_spin3, "text",
 				COLUMN_FIELD_MATH, NULL);
     gtk_tree_view_column_set_resizable(column_3rd, TRUE);
     gtk_tree_view_column_set_clickable(column_3rd, TRUE);
-	g_object_set_data(G_OBJECT(column_3rd), "column_id", 
+	g_object_set_data(G_OBJECT(column_3rd), "column_id",
 					  GINT_TO_POINTER(COLUMN_FIELD_MATH));
 	/*
-    g_signal_connect(G_OBJECT(column_3rd), "clicked", 
+    g_signal_connect(G_OBJECT(column_3rd), "clicked",
 				G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
     */
     /* 選択モード */
@@ -423,11 +423,11 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
 	/* sort */
     gtk_tree_view_column_set_sort_order(column_1st, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column_1st, TRUE);
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model),
 					COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
-void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist, 
+void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
                         GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox){
     GtkWidget *expander, *Frame_1;
     GtkWidget *hbox_1, *vbox_1;
@@ -484,85 +484,5 @@ void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
     g_object_set_data(G_OBJECT(child_model), "selection_list", list);
     
     return;
-};
-
-
-
-void r3_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-                              gchar *new_text, gpointer user_data){
-    struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-	r3_tree_value1_edited(path_str, new_text,
-				GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk);
-    write_real3_clist(stdout, 0, "value1 changed", r3_vws->r3_clist_gtk);
-};
-
-void r3_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-                              gchar *new_text, gpointer user_data)
-{
-    struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-	r3_tree_value2_edited(path_str, new_text, 
-				GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk);
-    write_real3_clist(stdout, 0, "value2 changed", r3_vws->r3_clist_gtk);
-};
-
-void r3_tree_value3_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-                              gchar *new_text, gpointer user_data)
-{
-    struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-	r3_tree_value3_edited(path_str, new_text,
-				GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk);
-    write_real3_clist(stdout, 0, "value3 changed", r3_vws->r3_clist_gtk);
-};
-
-void add_r3_list_items_cb(GtkButton *button, gpointer user_data){
-    struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-    r3_vws->index_bc = add_r3_list_items(GTK_TREE_VIEW(r3_vws->tree_view),
-					r3_vws->r3_clist_gtk);
-    write_real3_clist(stdout, 0, "columns added", r3_vws->r3_clist_gtk);
-};
-
-void delete_r3_list_items_cb(GtkButton *button, gpointer user_data){
-    struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-    delete_r3_list_items(GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk);
-    write_real3_clist(stdout, 0, "columns deleted", r3_vws->r3_clist_gtk);
-};
-
-
-void init_real3_tree_view(struct r3_clist_view *r3_vws){
-    GtkCellRenderer *renderer_spin1;
-    GtkCellRenderer *renderer_spin2;
-    GtkCellRenderer *renderer_spin3;
-    
-    r3_vws->tree_view = gtk_tree_view_new();
-    renderer_spin1 = gtk_cell_renderer_text_new();
-    renderer_spin2 = gtk_cell_renderer_text_new();
-    renderer_spin3 = gtk_cell_renderer_text_new();
-    
-    create_real3_tree_view(GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk, 
-                           renderer_spin1, renderer_spin2, renderer_spin3);
-    
-    g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
-                     G_CALLBACK(r3_tree_value1_edited_cb), (gpointer) r3_vws);
-    g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
-                     G_CALLBACK(r3_tree_value2_edited_cb), (gpointer) r3_vws);
-    g_signal_connect(G_OBJECT(renderer_spin3), "edited", 
-                     G_CALLBACK(r3_tree_value3_edited_cb), (gpointer) r3_vws);
-    
-    r3_vws->index_bc = append_r3_list_from_ctl(r3_vws->index_bc,
-				&r3_vws->r3_clist_gtk->r3_item_head, GTK_TREE_VIEW(r3_vws->tree_view));
-};
-
-void add_real3_list_box_w_addbottun(struct r3_clist_view *r3_vws, GtkWidget *vbox){
-    GtkWidget *button_add = gtk_button_new_with_label("Add");
-    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
-    
-    add_real3_list_box(GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk,
-                       button_add, button_delete, vbox);
-    
-    g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(add_r3_list_items_cb), (gpointer) r3_vws);
-    g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(delete_r3_list_items_cb), (gpointer) r3_vws);
-    
 };
 

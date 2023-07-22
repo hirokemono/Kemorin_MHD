@@ -429,7 +429,7 @@ void create_text2_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c2
     g_object_set(G_OBJECT(renderer_spin), 
                  "adjustment", adjust,
                  "climb-rate", 0.5,
-                 "digits", 3, 
+                 "digits", 6,
                  "editable", TRUE, 
                  "width", (gint)150, NULL);
     
@@ -536,7 +536,7 @@ void create_cbox_text_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView
     g_object_set(G_OBJECT(renderer_spin), 
                  "adjustment", adjust,
                  "climb-rate", 0.5,
-                 "digits", 3, 
+                 "digits", 6, 
                  "editable", TRUE, 
                  "width", (gint)150, NULL);
     
