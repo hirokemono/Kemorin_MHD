@@ -34,7 +34,9 @@ static void mainloop_4_glfw(){
 	while (!glfwWindowShouldClose(glfw_win)){
 		iflag = glfwWindowShouldClose(glfw_win);
 		
-		glfwPollEvents();
+		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) != 0){
+            glfwPollEvents();
+        }
 		
         if(iflag_msg_fade == 1){
 	        delta_t = glfwGetTime() - msg_timer_start;
@@ -66,7 +68,10 @@ static void mainloop_4_glfw(){
 		if(iflag_glfw_end == 1) return;
         set_viewmatrix_value(mbot->view_menu, gtk_win);
 		update_viewmatrix_menu(mbot->view_menu, gtk_win);
-		while (gtk_events_pending()) gtk_main_iteration();
+
+		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
+            while (gtk_events_pending()) gtk_main_iteration();
+        };
 	};
 	return;
 }
