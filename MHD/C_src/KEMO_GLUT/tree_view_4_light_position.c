@@ -24,7 +24,7 @@ struct lightparams_view * init_light_views_4_viewer(struct phong_lights *lights)
 	light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
 	light_vws->light_rtp_vws->r3_clist_gtk = init_real3_clist();
 	
-    sprintf(light_vws->light_rtp_vws->r3_clist_gtk->clist_name, "Ligut position");
+    sprintf(light_vws->light_rtp_vws->r3_clist_gtk->clist_name, "Light position");
     sprintf(light_vws->light_rtp_vws->r3_clist_gtk->r1_name, "radius");
     sprintf(light_vws->light_rtp_vws->r3_clist_gtk->r2_name, "elevation");
 	sprintf(light_vws->light_rtp_vws->r3_clist_gtk->r3_name, "azimuth");

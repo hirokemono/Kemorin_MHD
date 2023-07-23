@@ -354,18 +354,20 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     column_1st = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_1st);
 	gtk_tree_view_column_set_title(column_1st, r3_clist->r1_name);
-	/*
-    adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
-                                100, 21474836);
-    g_object_set(G_OBJECT(renderer_spin1), 
+	
+    GtkAdjustment *adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
+                                               100, 21474836);
+/*
+     g_object_set(G_OBJECT(renderer_spin1),
 				"adjustment", adjust,
-				"climb-rate", 0.5,
-				"digits", 3, NULL);
-	*/
+                "editable", TRUE,
+                "climb-rate", 0.5,
+                "digits", 6,
+                 "width", (gint)80, NULL);
+    */
     g_object_set(G_OBJECT(renderer_spin1),
                  "editable", TRUE,
                  "width", (gint)70, NULL);
-    
     gtk_tree_view_column_pack_start(column_1st, renderer_spin1, TRUE);
 	gtk_tree_view_column_set_attributes(column_1st, renderer_spin1, "text",
 				COLUMN_FIELD_INDEX, NULL);
@@ -381,11 +383,19 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     column_2nd = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_2nd);
     gtk_tree_view_column_set_title(column_2nd, r3_clist->r2_name);
-	
+/*
+
+    g_object_set(G_OBJECT(renderer_spin2),
+				"adjustment", adjust,
+                "editable", TRUE,
+                "climb-rate", 0.5,
+                "digits", 6,
+                 "width", (gint)80, NULL);
+    */
     g_object_set(G_OBJECT(renderer_spin2),
                  "editable", TRUE,
                  "width", (gint)70, NULL);
-    
+
     gtk_tree_view_column_pack_start(column_2nd, renderer_spin2, TRUE);
 	gtk_tree_view_column_set_attributes(column_2nd, renderer_spin2, "text",
 				COLUMN_FIELD_NAME, NULL);
@@ -401,10 +411,17 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     column_3rd = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_3rd);
     gtk_tree_view_column_set_title(column_3rd, r3_clist->r3_name);
+    /*
+    g_object_set(G_OBJECT(renderer_spin3),
+				"adjustment", adjust,
+                "editable", TRUE,
+                "climb-rate", 0.5,
+                "digits", 6,
+                 "width", (gint)80, NULL);
+    */
     g_object_set(G_OBJECT(renderer_spin3),
                  "editable", TRUE,
                  "width", (gint)70, NULL);
-    
     gtk_tree_view_column_pack_start(column_3rd, renderer_spin3, TRUE);
 	gtk_tree_view_column_set_attributes(column_3rd, renderer_spin3, "text",
 				COLUMN_FIELD_MATH, NULL);

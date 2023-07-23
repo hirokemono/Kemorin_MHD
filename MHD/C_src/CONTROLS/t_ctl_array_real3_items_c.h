@@ -18,9 +18,9 @@
 
 extern void *c_real3_array_block_name(void *f_ctl);
 extern int c_real3_array_num(void *f_ctl);
-extern int c_real3_array_r1_tbl(void *f_ctl, int idx_in);
-extern int c_real3_array_r2_tbl(void *f_ctl, int idx_in);
-extern int c_real3_array_r3_tbl(void *f_ctl, int idx_in);
+extern double c_real3_array_r1_tbl(void *f_ctl, int idx_in);
+extern double c_real3_array_r2_tbl(void *f_ctl, int idx_in);
+extern double c_real3_array_r3_tbl(void *f_ctl, int idx_in);
 extern void c_store_real3_array(void *f_ctl, int idx_in,
 								double r1_in, double r2_in, double r3_in);
 extern void c_store_real3_items(void *f_ctl,
