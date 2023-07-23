@@ -106,19 +106,20 @@ int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		iflag = read_pvr_iso_ctl_list(fp, buf, lic_pvr_c->label_lic_pvr->label[16],
 									  &lic_pvr_c->pvr_c->pvr_iso_c_list);
 		
-		lic_pvr_c->pvr_c->iflag_use = 1;
+		lic_pvr_c->pvr_c->f_iflag[0] = 1;
 	};
 	return 1;
 };
 
 int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label, 
 						struct LIC_pvr_ctl_c *lic_pvr_c){
+    int maxlen = 30;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 
-    write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, 
+    write_chara_ctl_item_c(fp, level, maxlen,
                            lic_pvr_c->label_lic_pvr->label[ 1], 
                            lic_pvr_c->pvr_c->file_head_ctl);
-    write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, 
+    write_chara_ctl_item_c(fp, level, maxlen,
                            lic_pvr_c->label_lic_pvr->label[ 2], 
                            lic_pvr_c->pvr_c->file_fmt_ctl);
     
@@ -128,21 +129,21 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
     };
     
     fprintf(fp, "!\n");
-	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen,
+	level = write_chara_ctl_item_c(fp, level, maxlen,
 								   lic_pvr_c->label_lic_pvr->label[ 0],
 								   lic_pvr_c->pvr_c->updated_ctl);
 	
-	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen,
+	level = write_chara_ctl_item_c(fp, level, maxlen,
 								   lic_pvr_c->label_lic_pvr->label[ 3],
 								   lic_pvr_c->pvr_c->monitoring_ctl);
 	
-	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen,
+	level = write_chara_ctl_item_c(fp, level, maxlen,
 								   lic_pvr_c->label_lic_pvr->label[ 6],
 								   lic_pvr_c->pvr_c->streo_ctl);
-    level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen,
+    level = write_chara_ctl_item_c(fp, level, maxlen,
                                    lic_pvr_c->label_lic_pvr->label[ 4],
                                    lic_pvr_c->pvr_c->anaglyph_ctl);
-	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, 
+	level = write_chara_ctl_item_c(fp, level, maxlen, 
 								   lic_pvr_c->label_lic_pvr->label[ 7],
 								   lic_pvr_c->pvr_c->quilt_ctl);
 	

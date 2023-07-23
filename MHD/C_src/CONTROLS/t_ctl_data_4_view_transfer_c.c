@@ -72,12 +72,11 @@ struct image_size_ctl_c * init_image_size_ctl_c(void){
 };
 
 void dealloc_image_size_ctl_c(struct image_size_ctl_c *f_pixel){
-	
     dealloc_int_ctl_item_c(f_pixel->f_num_xpixel_ctl);
     dealloc_int_ctl_item_c(f_pixel->f_num_ypixel_ctl);
 	
     free(f_pixel->c_block_name);
-    free(f_pixel->f_iflag);
+    f_pixel->f_iflag = NULL;
     free(f_pixel);
 	return;
 };
@@ -139,14 +138,13 @@ struct streo_view_ctl_c * init_streo_view_ctl_c(void){
 };
 
 void dealloc_streo_view_ctl_c(struct streo_view_ctl_c *f_streo){
-	
     dealloc_real_ctl_item_c(f_streo->f_focalpoint_ctl);
     dealloc_real_ctl_item_c(f_streo->f_eye_separation_ctl);
     dealloc_real_ctl_item_c(f_streo->f_eye_sep_angle_ctl);
     dealloc_chara_ctl_item_c(f_streo->f_step_eye_sep_angle_ctl);
 
     free(f_streo->c_block_name);
-    free(f_streo->f_iflag);
+    f_streo->f_iflag = NULL;
 	return;
 };
 
@@ -210,16 +208,16 @@ struct projection_mat_ctl_c * init_projection_mat_ctl_c(void){
 };
 
 void dealloc_projection_mat_ctl_c(struct projection_mat_ctl_c *f_proj){
-	
     dealloc_real_ctl_item_c(f_proj->f_perspective_angle_ctl);
     dealloc_real_ctl_item_c(f_proj->f_perspective_xy_ratio_ctl);
     dealloc_real_ctl_item_c(f_proj->f_perspective_near_ctl);
     dealloc_real_ctl_item_c(f_proj->f_perspective_far_ctl);
+    
     dealloc_real2_ctl_item_c(f_proj->f_horizontal_range_ctl);
     dealloc_real2_ctl_item_c(f_proj->f_vertical_range_ctl);
 	
-    free(f_proj->f_iflag);
     free(f_proj->c_block_name);
+    f_proj->f_iflag = NULL;
     free(f_proj);
 	return;
 };
@@ -346,7 +344,7 @@ void dealloc_modelview_ctl_c(struct modelview_ctl_c *mat_c){
 
     free(mat_c->mat_ctl_file_name);
     free(mat_c->c_block_name);
-    free(mat_c->f_iflag);
+    mat_c->f_iflag = NULL;
     free(mat_c);
     return;
 };

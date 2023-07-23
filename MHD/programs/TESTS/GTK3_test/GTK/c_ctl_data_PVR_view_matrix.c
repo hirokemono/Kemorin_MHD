@@ -45,6 +45,11 @@ extern void * c_streo_view_eye_separate_ctl(void *f_streo);
 extern void * c_streo_view_eye_sep_angle_ctl(void *f_streo);
 extern void * c_streo_view_step_eye_sep_ctl(void *f_streo);
 
+extern void * c_VIZ_mul_mdlvw_ctl_block_name(void *f_mul_mmats_c);
+extern int    c_VIZ_mul_mdlvw_num_mat_c(void *f_mul_mmats_c);
+extern void * c_VIZ_mul_mdlvw_fname_ctl(int idx, void *f_mul_mmats_c);
+extern void * c_VIZ_mul_mdlvw_matrices(int idx, void *f_mul_mmats_c);
+
 
 static struct image_size_ctl_c * init_f_VIZ_pixels_ctl(void *(*c_load_self)(void *f_parent),
                                                 void *f_parent){
@@ -64,7 +69,7 @@ static struct image_size_ctl_c * init_f_VIZ_pixels_ctl(void *(*c_load_self)(void
     return f_pixel;
 };
 
-static struct projection_mat_ctl_c * init_f_VIZ_projection_ctl(void *(*c_load_self)(void *f_parent), 
+static struct projection_mat_ctl_c * init_f_VIZ_projection_ctl(void *(*c_load_self)(void *f_parent),
                                                 void *f_parent){
 	struct projection_mat_ctl_c *f_proj 
 			= (struct projection_mat_ctl_c *) malloc(sizeof(struct projection_mat_ctl_c));
@@ -87,7 +92,7 @@ static struct projection_mat_ctl_c * init_f_VIZ_projection_ctl(void *(*c_load_se
     return f_proj;
 };
 
-static struct streo_view_ctl_c * init_f_VIZ_stereo_view_ctl(void *(*c_load_self)(void *f_parent), 
+static struct streo_view_ctl_c * init_f_VIZ_stereo_view_ctl(void *(*c_load_self)(void *f_parent),
                                                           void *f_parent){
 	struct streo_view_ctl_c *f_streo 
 			= (struct streo_view_ctl_c *) malloc(sizeof(struct streo_view_ctl_c));
@@ -107,18 +112,10 @@ static struct streo_view_ctl_c * init_f_VIZ_stereo_view_ctl(void *(*c_load_self)
     return f_streo;
 };
 
-struct modelview_ctl_c * init_f_VIZ_view_matrix_ctl(char *ctl_file_name,
-                                                    void *(*c_load_self)(void *f_parent), 
-                                                    void *f_parent){
-	struct modelview_ctl_c *f_mat 
-			= (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
-	if(f_mat == NULL){
-		printf("malloc error for modelview_ctl_c\n");
-		exit(0);
-    };
-	f_mat->f_self =  c_load_self(f_parent);
-	f_mat->f_iflag =   (int *) c_modeview_ctl_iflag(f_mat->f_self);
-	char *f_block_name = (char *) c_modeview_ctl_block_name(f_mat->f_self);
+
+static void init_f_VIZ_view_matrix_ctl_items(char *ctl_file_name, struct modelview_ctl_c *f_mat){
+    f_mat->f_iflag =   (int *) c_modeview_ctl_iflag(f_mat->f_self);
+    char *f_block_name = (char *) c_modeview_ctl_block_name(f_mat->f_self);
     f_mat->c_block_name = strngcopy_from_f(f_block_name);
     
     f_mat->mat_ctl_file_name = ctl_file_name;
@@ -137,6 +134,65 @@ struct modelview_ctl_c * init_f_VIZ_view_matrix_ctl(char *ctl_file_name,
     f_mat->f_scale_vector_ctl =      init_f_ctl_cr_array(c_modeview_scale_vector_ctl, f_mat->f_self);
     f_mat->f_viewpt_in_viewer_ctl =  init_f_ctl_cr_array(c_modeview_viewpt_in_view_ctl, f_mat->f_self);
     f_mat->f_projection_type_ctl =   init_f_ctl_chara_item(c_modeview_projection_type_ctl, f_mat->f_self);
+    return;
+}
+
+
+struct modelview_ctl_c * init_f_VIZ_view_matrix_ctl(char *ctl_file_name,
+                                                    void *(*c_load_self)(void *f_parent),
+                                                    void *f_parent){
+    struct modelview_ctl_c *f_mat
+            = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
+    if(f_mat == NULL){
+        printf("malloc error for modelview_ctl_c\n");
+        exit(0);
+    };
+    f_mat->f_self =  c_load_self(f_parent);
+    
+    init_f_VIZ_view_matrix_ctl_items(ctl_file_name, f_mat);
     return f_mat;
+};
+
+static struct modelview_ctl_c * init_f_VIZ_mul_view_matrix_ctl(char *ctl_file_name,
+                                                        void *(*c_load_self)(int idx, void *f_parent),
+                                                        int idx, void *f_parent){
+    struct modelview_ctl_c *f_mat
+            = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
+    if(f_mat == NULL){
+        printf("malloc error for modelview_ctl_c\n");
+        exit(0);
+    };
+    f_mat->f_self =  c_load_self(idx, f_parent);
+    
+    init_f_VIZ_view_matrix_ctl_items(ctl_file_name, f_mat);
+    return f_mat;
+};
+
+struct void_clist * init_f_PVR_mul_vmats_ctls(void *f_parent)
+{
+    char *f_block_name =   (char *) c_VIZ_mul_mdlvw_ctl_block_name(f_parent);
+    struct void_clist *f_vmat_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+    f_vmat_ctls->f_parent = f_parent;
+
+    int i;
+    for(i=0;i<c_VIZ_mul_mdlvw_num_mat_c(f_vmat_ctls->f_parent);i++){
+        f_block_name = c_VIZ_mul_mdlvw_fname_ctl(i, f_vmat_ctls->f_parent);
+        struct modelview_ctl_c *f_ctl_tmp = init_f_VIZ_mul_view_matrix_ctl(strngcopy_from_f(f_block_name),
+                                                                           c_VIZ_mul_mdlvw_matrices,
+                                                                           i, f_vmat_ctls->f_parent);
+        append_void_clist((void *) f_ctl_tmp, f_vmat_ctls);
+    }
+    return f_vmat_ctls;
+}
+
+
+void dealloc_f_PVR_mul_vmats_ctls(struct void_clist *f_vmat_ctls){
+    int i;
+    for(i=0;i<count_void_clist(f_vmat_ctls);i++){
+        struct modelview_ctl_c *f_mat = (struct modelview_ctl_c *) void_clist_at_index(i,f_vmat_ctls);
+        dealloc_modelview_ctl_c(f_mat);
+    }
+    dealloc_void_clist(f_vmat_ctls);
+    return;
 };
 

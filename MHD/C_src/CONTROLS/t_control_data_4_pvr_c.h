@@ -24,11 +24,12 @@
 #include "m_PVR_control_labels_from_f.h"
 #include "ctl_data_pvr_colormap_IO_c.h"
 
-#define NLBL_PVR_MOVIE_CTL      2
-#define NLBL_PVR_CTL            19
 
 struct pvr_plot_area_ctl_c{
-    int iflag_use;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
+	
 	struct control_labels_f *label_pvr_area;
 	
 	struct chara_clist *pvr_area_list;
@@ -36,8 +37,10 @@ struct pvr_plot_area_ctl_c{
 };
 
 struct pvr_ctl_c{
-    int iflag_use;
-	int maxlen;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
+	
 	struct control_labels_f *label_pvr_ctl_w_dpl;
 	
 	char *color_file_ctl;
@@ -74,26 +77,8 @@ struct pvr_ctl_c{
 /* prototypes */
 struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c();
 void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c);
-void read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_plot_area_ctl_c *area_c);
-int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_plot_area_ctl_c *area_c);
 
 struct pvr_ctl_c * init_pvr_ctl_c();
 void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c);
-void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c);
-int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c);
-void read_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_ctl_c *pvr_c);
-int write_pvr_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_ctl_c *pvr_c);
-
-void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c);
-void read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c);
-void write_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c);
-
-void read_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
-                        struct pvr_ctl_c *pvr_c);
-int write_pvr_ctl_file_c(const char *file_name, struct pvr_ctl_c *pvr_c);
 
 #endif /* t_control_data_4_pvr_c_h_ */

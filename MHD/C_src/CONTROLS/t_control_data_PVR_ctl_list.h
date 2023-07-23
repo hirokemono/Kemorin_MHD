@@ -14,6 +14,7 @@
 #include "calypso_param_c.h"
 #include "control_elements_IO_c.h"
 #include "t_control_data_4_pvr_c.h"
+#include "ctl_data_pvr_IO_c.h"
 
 struct volume_rendering_ctl_c{
 	char *fname_pvr_ctl;

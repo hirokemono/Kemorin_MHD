@@ -166,17 +166,6 @@ extern void * c_PVR_movie_view_start_ctl(void *f_movie);
 extern void * c_PVR_movie_view_end_ctl(void *f_movie);
 extern void * c_PVR_movie_mul_mmats_c(void *f_movie);
 
-extern void * c_VIZ_mul_mdlvw_ctl_block_name(void *f_mul_mmats_c);
-extern int    c_VIZ_mul_mdlvw_num_mat_c(void *f_mul_mmats_c);
-extern void * c_VIZ_mul_mdlvw_fname_ctl(int idx, void *f_mul_mmats_c);
-extern void * c_VIZ_mul_mdlvw_matrices(int idx, void *f_mul_mmats_c);
-
-extern void * c_PVR_quilt_img_ctl_block_name(void *f_quilt_c);
-extern void * c_PVR_quilt_img_ctl_iflag(void *f_quilt_c);
-extern void * c_PVR_quilt_num_column_row_ctl(void *f_quilt_c);
-extern void * c_PVR_quilt_num_row_column_ctl(void *f_quilt_c);
-extern void * c_PVR_quilt_mul_qmats_ctl(void *f_quilt_c);
-
 extern int    c_VIZ_PVR_num_pvr_sect_ctl(void *f_pvr_scts_c);
 extern void * c_VIZ_PVR_section_ctl(int idx, void *f_pvr_scts_c);
 extern int    c_VIZ_PVR_num_pvr_iso_ctl(void *f_pvr_isos_c);
@@ -545,6 +534,8 @@ boolean_to_text (GBinding *binding,
 	return TRUE;
 }
 */
+
+
 
 struct f_VIZ_LIC_ctl * init_f_VIZ_LIC_ctl(int idx, void *f_parent)
 {

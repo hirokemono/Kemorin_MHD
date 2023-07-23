@@ -32,6 +32,48 @@ extern void * c_VIZ_pvr_comp_ctl(void *f_pvr_ctls);
 extern void * c_VIZ_pvr_section_ctl(void *f_pvr_ctls);
 extern void * c_VIZ_pvr_isosurf_ctl(void *f_pvr_ctls);
 
+extern void * c_PVR_quilt_img_ctl_block_name(void *f_quilt_c);
+extern void * c_PVR_quilt_img_ctl_iflag(void *f_quilt_c);
+extern void * c_PVR_quilt_num_column_row_ctl(void *f_quilt_c);
+extern void * c_PVR_quilt_num_row_column_ctl(void *f_quilt_c);
+extern void * c_PVR_quilt_mul_qmats_ctl(void *f_quilt_c);
+
+
+
+static struct f_PVR_quilt_image_ctl * init_f_PVR_quilt_image_ctl(void *(*c_load_self)(void *f_parent),
+                                                                 void *f_parent)
+{
+    struct f_PVR_quilt_image_ctl *f_quilt_c
+            = (struct f_PVR_quilt_image_ctl *) malloc(sizeof(struct f_PVR_quilt_image_ctl));
+    if(f_quilt_c == NULL){
+        printf("malloc error for f_PVR_quilt_image_ctl\n");
+        exit(0);
+    };
+    f_quilt_c->f_self =  c_load_self(f_parent);
+    
+    f_quilt_c->f_iflag =   (int *) c_PVR_quilt_img_ctl_iflag(f_quilt_c->f_self);
+    char *f_block_name =   (char *) c_PVR_quilt_img_ctl_block_name(f_quilt_c->f_self);
+    f_quilt_c->c_block_name = strngcopy_from_f(f_block_name);
+    
+    
+    f_quilt_c->f_num_column_row_ctl = init_f_ctl_i2_item(c_PVR_quilt_num_column_row_ctl, f_quilt_c->f_self);
+    f_quilt_c->f_num_row_column_ctl = init_f_ctl_i2_item(c_PVR_quilt_num_row_column_ctl, f_quilt_c->f_self);
+    f_quilt_c->f_mul_qmats_c = init_f_PVR_mul_vmats_ctls(c_PVR_quilt_mul_qmats_ctl(f_quilt_c->f_self));
+    return f_quilt_c;
+}
+
+static void dealloc_f_PVR_quilt_image_ctl(struct f_PVR_quilt_image_ctl *f_quilt_c){
+    dealloc_f_PVR_mul_vmats_ctls(f_quilt_c->f_mul_qmats_c);
+    dealloc_f_ctl_i2_item(f_quilt_c->f_num_column_row_ctl);
+    dealloc_f_ctl_i2_item(f_quilt_c->f_num_row_column_ctl);
+    
+    free(f_quilt_c->c_block_name);
+    free(f_quilt_c->f_iflag);
+    f_quilt_c->f_self = NULL;
+    free(f_quilt_c);
+    return;
+};
+
 
 
 struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(void *(*c_load_self)(int idx, void *f_parent),
@@ -68,7 +110,8 @@ struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(void *(*c_load_self)(int idx, void *f_
                                                            c_VIZ_pvr_cmap_cbar_ctl,
                                                            f_pvr_ctl->f_self);
 	f_pvr_ctl->f_movie =             c_VIZ_pvr_movie_ctl(f_pvr_ctl->f_self);
-	f_pvr_ctl->f_quilt_c =           c_VIZ_pvr_quilt_c(f_pvr_ctl->f_self);
+	f_pvr_ctl->f_quilt_c = init_f_PVR_quilt_image_ctl(c_VIZ_pvr_quilt_c,
+                                                      f_pvr_ctl->f_self);
     
 	f_pvr_ctl->f_updated_ctl =       init_f_ctl_chara_item(c_VIZ_pvr_updated_ctl, f_pvr_ctl->f_self);
 	f_pvr_ctl->f_file_head_ctl =     init_f_ctl_chara_item(c_VIZ_pvr_file_head_ctl, f_pvr_ctl->f_self);
@@ -88,11 +131,12 @@ struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl(void *(*c_load_self)(int idx, void *f_
 void *dealloc_f_VIZ_PVR_ctl(void *block_item){
     struct f_VIZ_PVR_ctl *f_pvr_ctl = (struct f_VIZ_PVR_ctl *) block_item;
     
-	f_pvr_ctl->f_mat =            NULL;
+    dealloc_modelview_ctl_c(f_pvr_ctl->f_mat);
     dealloc_lighting_ctl_c(f_pvr_ctl->f_light);
     dealloc_colormap_colorbar_ctl_c(f_pvr_ctl->f_cmap_cbar_c);
 	f_pvr_ctl->f_movie =          NULL;
-	f_pvr_ctl->f_quilt_c =        NULL;
+    dealloc_f_PVR_quilt_image_ctl(f_pvr_ctl->f_quilt_c);
+    
 	dealloc_chara_ctl_item_c(f_pvr_ctl->f_updated_ctl);
 	dealloc_chara_ctl_item_c(f_pvr_ctl->f_file_head_ctl);
 	dealloc_chara_ctl_item_c(f_pvr_ctl->f_file_fmt_ctl);

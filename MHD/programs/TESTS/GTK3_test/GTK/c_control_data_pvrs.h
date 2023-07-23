@@ -16,9 +16,23 @@
 #include "t_control_c_lists.h"
 #include "t_control_chara_IO.h"
 #include "t_ctl_array_single_items_c.h"
+#include "t_ctl_array_int2_items_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "c_ctl_data_PVR_colormap.h"
 #include "c_ctl_data_PVR_view_matrix.h"
+
+
+struct f_PVR_quilt_image_ctl{
+    void * f_self;
+    int * f_iflag;
+    
+    char * c_block_name;
+    
+    struct int2_ctl_item *f_num_column_row_ctl;
+    struct int2_ctl_item *f_num_row_column_ctl;
+    
+    struct void_clist *f_mul_qmats_c;
+};
 
 
 struct f_VIZ_PVR_ctl{
@@ -33,7 +47,7 @@ struct f_VIZ_PVR_ctl{
 	struct lighting_ctl_c *f_light;
 	struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c;
 	void *f_movie;
-	void *f_quilt_c;
+    struct f_PVR_quilt_image_ctl *f_quilt_c;
     
 	struct chara_ctl_item *f_updated_ctl;
 	struct chara_ctl_item *f_file_head_ctl;
@@ -42,7 +56,7 @@ struct f_VIZ_PVR_ctl{
 	struct chara_ctl_item *f_streo_ctl;
 	struct chara_ctl_item *f_anaglyph_ctl;
 	struct chara_ctl_item *f_quilt_ctl;
-	void *f_render_area_c;
+    struct pvr_plot_area_ctl_c *f_render_area_c;
 	struct chara_ctl_item *f_pvr_field_ctl;
 	struct chara_ctl_item *f_pvr_comp_ctl;
 	void *f_pvr_scts_c;
