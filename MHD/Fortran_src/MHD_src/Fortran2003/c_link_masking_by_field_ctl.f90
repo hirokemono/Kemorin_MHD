@@ -95,5 +95,26 @@
       end function c_masking_fld_mask_range_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_alloc_mask_ctl_block_name(c_ctl)           &
+     &          bind(C, NAME = 'c_alloc_mask_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(masking_by_field_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_alloc_mask_ctl_block_name = C_loc(f_ctl%mask_range_ctl)
+      end function c_alloc_mask_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_dealloc_mask_ctl_block_name(c_ctl)         &
+     &          bind(C, NAME = 'c_dealloc_mask_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(masking_by_field_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_dealloc_mask_ctl_block_name = C_loc(f_ctl%mask_range_ctl)
+      end function c_dealloc_mask_ctl_block_name
+!
+!  ---------------------------------------------------------------------
 !
       end module c_link_masking_by_field_ctl

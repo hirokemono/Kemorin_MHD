@@ -255,11 +255,63 @@ extern void * c_new_repart_weight_to_prev_ctl(void *f_new_part_ctl);
 extern void * c_new_repart_mask_switch_ctl(void *f_new_part_ctl);
 extern void * c_new_repart_mask_weight_ctl(void *f_new_part_ctl);
 extern void * c_new_repart_pwr_of_vol_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_num_masking_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_mask_ctl(void *f_new_part_ctl);
+extern int    c_new_repart_num_masking_ctl(void *f_new_part_ctl);
+extern void * c_new_repart_mask_ctl(int idx, void *f_new_part_ctl);
 
 
 extern void * set_file_fmt_items_f(void *fmt_names_c);
+
+struct f_FEM_sleeve_control{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+    
+    struct chara_ctl_item *sleeve_extension_mode_ctl;
+    struct int_ctl_item   *sleeve_level_ctl;
+    struct real_ctl_item  *sleeve_size_ctl;
+    struct chara_ctl_item *ref_vector_ctl;
+};
+
+
+struct f_new_patition_ctl{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+    
+    struct chara_ctl_item *f_repart_table_head_ctl;
+    struct chara_ctl_item *f_repart_table_fmt_ctl;
+    struct chara_ctl_item *f_partition_reference_ctl;
+    struct chara_ctl_item *f_trace_count_head_ctl;
+    struct chara_ctl_item *f_trace_count_fmt_ctl;
+    
+    struct chara_int_clist *f_ndomain_section_ctl;
+    
+    struct int_ctl_item    *f_ratio_of_grouping_ctl;
+    struct int_ctl_item    *f_sleeve_level_ctl;
+    struct real_ctl_item   *f_weight_to_previous_ctl;
+    
+    struct chara_ctl_item *f_masking_switch_ctl;
+    struct real_ctl_item   *f_masking_weight_ctl;
+    struct real_ctl_item   *f_power_of_volume_ctl;
+    
+	struct void_clist *f_mask_ctl;
+};
+
+struct f_VIZ_repartition_ctl{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	char * repart_ctl_file_name;
+    
+    struct f_platform_control *f_viz_plt;
+    struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl;
+    struct f_new_patition_ctl *f_new_part_ctl;
+    struct f_FEM_sleeve_control *f_Fsleeve_ctl;
+};
+
 
 struct f_LIC_noise_ctl{
 	void * f_self;
@@ -313,8 +365,7 @@ struct f_VIZ_LIC_ctl{
     
 	struct f_LIC_noise_ctl *f_noise_ctl;
 	struct f_LIC_kernel_ctl *f_kernel_ctl;
-	char *f_fname_vol_repart_ctl;
-	void *f_repart_ctl;
+	struct f_VIZ_repartition_ctl *f_repart_ctl;
     
 	struct void_clist *f_mask_ctl;
     
@@ -326,7 +377,7 @@ struct f_VIZ_LIC_ctl{
 	struct chara_ctl_item *f_opacity_component_ctl;
     
 	struct chara_ctl_item *f_vr_sample_mode_ctl;
-	struct real_ctl_item *f_step_size_ctl;
+	struct real_ctl_item  *f_step_size_ctl;
 	struct chara_ctl_item *f_normalization_type_ctl;
 	struct real_ctl_item *f_normalization_value_ctl;
 };
@@ -389,8 +440,7 @@ struct f_MHD_viz_ctls{
 	int f_num_fline_ctl;
 	struct void_clist *f_fline_ctls;
 	
-	void * f_repart_ctl;
-	void * f_fname_vol_repart_ctl;
+	struct f_VIZ_repartition_ctl *f_repart_ctl;
 };
 
 struct f_MHD_crust_filter_ctl{
@@ -467,11 +517,28 @@ struct PVR_GTK_widgets{
 };
 
 struct LIC_GTK_widgets{
-    GtkWidget * psf_area_view;
+    struct PVR_GTK_widgets *lic_pvr_vws;
+    struct VIZ_repartition_widgets *f_repart_vws;
+    
+    struct chara_int2_clist *label_field_list;
+    struct chara_clist      *label_dir_list;
 };
 
 struct FLINE_GTK_widgets{
-    GtkWidget * psf_area_view;
+    struct chara_int2_clist *label_field_list;
+    struct chara_clist      *label_dir_list;
+    
+    GtkWidget * fline_area_grp_view;
+    GtkWidget * f_seed_point_vws;
+    GtkWidget * f_seed_surface_vws;
+};
+
+struct VIZ_repartition_widgets{
+    struct chara_int2_clist *label_field_list;
+    struct chara_clist      *label_file_format_list;
+    
+    GtkWidget * fline_area_grp_view;
+    GtkWidget * f_ndomain_section_tree;
 };
 
 struct main_widgets{
@@ -543,6 +610,206 @@ boolean_to_text (GBinding *binding,
 	return TRUE;
 }
 */
+struct f_FEM_sleeve_control * init_f_FEM_sleeve_control(void *(*c_load_self)(void *f_parent),
+                                                        void *f_parent)
+{
+    struct f_FEM_sleeve_control *f_Fsleeve_ctl
+            = (struct f_FEM_sleeve_control *) malloc(sizeof(struct f_FEM_sleeve_control));
+    if(f_Fsleeve_ctl == NULL){
+        printf("malloc error for f_FEM_sleeve_control\n");
+        exit(0);
+    };
+    f_Fsleeve_ctl->f_self =  c_load_self(f_parent);
+    
+    f_Fsleeve_ctl->f_iflag =   (int *) c_FEM_sleeve_ctl_iflag(f_Fsleeve_ctl->f_self);
+    char *f_block_name =   (char *) c_FEM_sleeve_ctl_block_name(f_Fsleeve_ctl->f_self);
+    f_Fsleeve_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    f_Fsleeve_ctl->sleeve_extension_mode_ctl = init_f_ctl_chara_item(c_FEM_sleeve_extension_mode_ctl,
+                                                                     f_Fsleeve_ctl->f_self);
+    f_Fsleeve_ctl->sleeve_level_ctl =          init_f_ctl_int_item(c_FEM_sleeve_sleeve_level_ctl,
+                                                                   f_Fsleeve_ctl->f_self);
+    f_Fsleeve_ctl->sleeve_size_ctl =           init_f_ctl_real_item(c_FEM_sleeve_sleeve_size_ctl,
+                                                                    f_Fsleeve_ctl->f_self);
+    f_Fsleeve_ctl->ref_vector_ctl =            init_f_ctl_chara_item(c_FEM_sleeve_ref_vector_ctl,
+                                                                     f_Fsleeve_ctl->f_self);
+    return f_Fsleeve_ctl;
+}
+
+void dealloc_f_FEM_sleeve_control(struct f_FEM_sleeve_control *f_Fsleeve_ctl){
+    dealloc_chara_ctl_item_c(f_Fsleeve_ctl->sleeve_extension_mode_ctl);
+    dealloc_int_ctl_item_c(f_Fsleeve_ctl->sleeve_level_ctl);
+    dealloc_real_ctl_item_c(f_Fsleeve_ctl->sleeve_size_ctl);
+    dealloc_chara_ctl_item_c(f_Fsleeve_ctl->ref_vector_ctl);
+    
+    free(f_Fsleeve_ctl->c_block_name);
+    f_Fsleeve_ctl->f_iflag = NULL;
+    f_Fsleeve_ctl->f_self = NULL;
+    free(f_Fsleeve_ctl);
+    return;
+}
+
+struct f_LIC_masking_ctl * init_f_LIC_masking_ctl(void *(*c_load_self)(int idx, void *f_parent),
+                                                  int idx, void *f_parent)
+{
+    struct f_LIC_masking_ctl *f_mask_ctl
+            = (struct f_LIC_masking_ctl *) malloc(sizeof(struct f_LIC_masking_ctl));
+    if(f_mask_ctl == NULL){
+        printf("malloc error for f_LIC_masking_ctl\n");
+        exit(0);
+    };
+    f_mask_ctl->f_self =  c_load_self(idx, f_parent);
+    
+    f_mask_ctl->f_iflag =   (int *) c_masking_fld_ctl_iflag(f_mask_ctl->f_self);
+    char *f_block_name =   (char *) c_masking_fld_ctl_block_name(f_mask_ctl->f_self);
+    f_mask_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    f_mask_ctl->f_mask_type_ctl =  init_f_ctl_chara_item(c_masking_fld_mask_type_ctl, f_mask_ctl->f_self);
+    f_mask_ctl->f_field_name_ctl = init_f_ctl_chara_item(c_masking_fld_field_name_ctl, f_mask_ctl->f_self);
+    f_mask_ctl->f_component_ctl =  init_f_ctl_chara_item(c_masking_fld_component_ctl, f_mask_ctl->f_self);
+    f_mask_ctl->f_mask_range_ctl = init_f_ctl_r2_item(c_masking_fld_mask_range_ctl, f_mask_ctl->f_self);
+    return f_mask_ctl;
+}
+
+void dealloc_f_LIC_masking_ctl(struct f_LIC_masking_ctl *f_mask_ctl){
+    dealloc_chara_ctl_item_c(f_mask_ctl->f_mask_type_ctl);
+    dealloc_chara_ctl_item_c(f_mask_ctl->f_field_name_ctl);
+    dealloc_chara_ctl_item_c(f_mask_ctl->f_component_ctl);
+    dealloc_real2_ctl_item_c(f_mask_ctl->f_mask_range_ctl);
+    
+    free(f_mask_ctl->c_block_name);
+    f_mask_ctl->f_iflag = NULL;
+    f_mask_ctl->f_self = NULL;
+    free(f_mask_ctl);
+    return;
+}
+
+struct f_new_patition_ctl * init_f_new_patition_ctl(void *(*c_load_self)(void *f_parent),
+                                                    void *f_parent)
+{
+    struct f_new_patition_ctl *f_new_part_ctl
+            = (struct f_new_patition_ctl *) malloc(sizeof(struct f_new_patition_ctl));
+    if(f_new_part_ctl == NULL){
+        printf("malloc error for f_new_patition_ctl\n");
+        exit(0);
+    };
+    f_new_part_ctl->f_self =  c_load_self(f_parent);
+    
+    f_new_part_ctl->f_iflag =   (int *) c_viz_repart_ctl_iflag(f_new_part_ctl->f_self);
+    char *f_block_name =   (char *) c_viz_repart_ctl_block_name(f_new_part_ctl->f_self);
+    f_new_part_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    f_new_part_ctl->f_repart_table_head_ctl =   init_f_ctl_chara_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_repart_table_fmt_ctl =    init_f_ctl_chara_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_partition_reference_ctl = init_f_ctl_chara_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_trace_count_head_ctl =    init_f_ctl_chara_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_trace_count_fmt_ctl =     init_f_ctl_chara_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_ndomain_section_ctl =     init_f_ctl_ci_array(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_ratio_of_grouping_ctl =   init_f_ctl_int_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_sleeve_level_ctl =        init_f_ctl_int_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_weight_to_previous_ctl =  init_f_ctl_real_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_masking_switch_ctl =      init_f_ctl_chara_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_masking_weight_ctl =      init_f_ctl_real_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    f_new_part_ctl->f_power_of_volume_ctl =     init_f_ctl_real_item(c_LIC_noise_type_ctl,
+                                                                    f_new_part_ctl->f_self);
+    
+    f_new_part_ctl->f_mask_ctl = init_void_clist(strngcopy_from_f(f_block_name));
+	f_new_part_ctl->f_mask_ctl->f_parent = f_new_part_ctl->f_self;
+    int i;
+    for(i=0;i<c_new_repart_num_masking_ctl(f_new_part_ctl->f_self);i++){
+        void *f_ctl_tmp = init_f_LIC_masking_ctl(c_new_repart_mask_ctl, 
+                                                 i, f_new_part_ctl->f_self);
+		append_void_clist((void *) f_ctl_tmp, f_new_part_ctl->f_mask_ctl);
+    };
+    
+    return f_new_part_ctl;
+}
+
+void dealloc_f_new_patition_ctl(struct f_new_patition_ctl *f_new_part_ctl){
+    dealloc_chara_ctl_item_c(f_new_part_ctl->f_repart_table_head_ctl);
+    dealloc_chara_ctl_item_c(f_new_part_ctl->f_repart_table_fmt_ctl);
+    dealloc_chara_ctl_item_c(f_new_part_ctl->f_partition_reference_ctl);
+    dealloc_chara_ctl_item_c(f_new_part_ctl->f_trace_count_head_ctl);
+    dealloc_chara_ctl_item_c(f_new_part_ctl->f_trace_count_fmt_ctl);
+    
+    dealloc_chara_int_clist(f_new_part_ctl->f_ndomain_section_ctl);
+    dealloc_int_ctl_item_c(f_new_part_ctl->f_ratio_of_grouping_ctl);
+    dealloc_int_ctl_item_c(f_new_part_ctl->f_sleeve_level_ctl);
+    dealloc_real_ctl_item_c(f_new_part_ctl->f_weight_to_previous_ctl);
+    dealloc_chara_ctl_item_c(f_new_part_ctl->f_masking_switch_ctl);
+    dealloc_real_ctl_item_c(f_new_part_ctl->f_masking_weight_ctl);
+    dealloc_real_ctl_item_c(f_new_part_ctl->f_power_of_volume_ctl);
+    
+    int i;
+    for(i=0;i<count_void_clist(f_new_part_ctl->f_mask_ctl);i++){
+        void *f_ctl_tmp = void_clist_at_index(i, f_new_part_ctl->f_mask_ctl);
+		dealloc_f_LIC_masking_ctl((struct f_LIC_masking_ctl *) f_ctl_tmp);
+    };
+    dealloc_void_clist(f_new_part_ctl->f_mask_ctl);
+    
+    free(f_new_part_ctl->c_block_name);
+    f_new_part_ctl->f_iflag = NULL;
+    f_new_part_ctl->f_self = NULL;
+    free(f_new_part_ctl);
+    return;
+}
+
+
+struct f_VIZ_repartition_ctl * init_f_VIZ_repartition_ctl(char *ctl_file_name,
+                                                          void *(*c_load_self)(void *f_parent),
+                                                          void *f_parent)
+{
+    struct f_VIZ_repartition_ctl *f_repart_ctl
+            = (struct f_VIZ_repartition_ctl *) malloc(sizeof(struct f_VIZ_repartition_ctl));
+    if(f_repart_ctl == NULL){
+        printf("malloc error for f_VIZ_repartition_ctl\n");
+        exit(0);
+    };
+    f_repart_ctl->f_self =  c_load_self(f_parent);
+    
+    f_repart_ctl->f_iflag =   (int *) c_viz_repart_ctl_iflag(f_repart_ctl->f_self);
+    char *f_block_name =   (char *) c_viz_repart_ctl_block_name(f_repart_ctl->f_self);
+    f_repart_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    f_repart_ctl->repart_ctl_file_name = ctl_file_name;
+    
+    f_repart_ctl->f_viz_plt =    init_f_platform_control(c_viz_repart_viz_plt_ctl,
+                                                         f_repart_ctl->f_self);
+    f_repart_ctl->f_Fmesh_ctl =   init_f_FEM_mesh_FILE_ctl(c_viz_repart_Fmesh_ctl,
+                                                           f_repart_ctl->f_self);
+    f_repart_ctl->f_new_part_ctl = init_f_new_patition_ctl(c_viz_repart_new_part_ctl,
+                                                           f_repart_ctl->f_self);
+    f_repart_ctl->f_Fsleeve_ctl =   init_f_FEM_sleeve_control(c_viz_repart_Fsleeve_ctl,
+                                                              f_repart_ctl->f_self);
+    return f_repart_ctl;
+}
+
+
+void dealloc_f_VIZ_repartition_ctl(struct f_VIZ_repartition_ctl *f_repart_ctl){
+    dealloc_f_platform_control(f_repart_ctl->f_viz_plt);
+    dealloc_f_FEM_mesh_FILE_ctl(f_repart_ctl->f_Fmesh_ctl);
+    dealloc_f_new_patition_ctl(f_repart_ctl->f_new_part_ctl);
+    dealloc_f_FEM_sleeve_control(f_repart_ctl->f_Fsleeve_ctl);
+    
+    free(f_repart_ctl->repart_ctl_file_name);
+    free(f_repart_ctl->c_block_name);
+    f_repart_ctl->f_iflag = NULL;
+    f_repart_ctl->f_self = NULL;
+    free(f_repart_ctl);
+    return;
+}
+
+
 struct f_LIC_noise_ctl * init_f_LIC_noise_ctl(char *ctl_file_name,
                                                void *(*c_load_self)(void *f_parent),
                                                void *f_parent)
@@ -647,41 +914,6 @@ void dealloc_f_LIC_kernel_ctl(struct f_LIC_kernel_ctl *f_kernel_ctl){
     return;
 }
 
-struct f_LIC_masking_ctl * init_f_LIC_masking_ctl(void *(*c_load_self)(int idx, void *f_parent),
-                                                  int idx, void *f_parent)
-{
-    struct f_LIC_masking_ctl *f_mask_ctl
-            = (struct f_LIC_masking_ctl *) malloc(sizeof(struct f_LIC_masking_ctl));
-    if(f_mask_ctl == NULL){
-        printf("malloc error for f_LIC_masking_ctl\n");
-        exit(0);
-    };
-    f_mask_ctl->f_self =  c_load_self(idx, f_parent);
-    
-    f_mask_ctl->f_iflag =   (int *) c_masking_fld_ctl_iflag(f_mask_ctl->f_self);
-    char *f_block_name =   (char *) c_masking_fld_ctl_block_name(f_mask_ctl->f_self);
-    f_mask_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_mask_ctl->f_mask_type_ctl =  init_f_ctl_chara_item(c_masking_fld_mask_type_ctl, f_mask_ctl->f_self);
-    f_mask_ctl->f_field_name_ctl = init_f_ctl_chara_item(c_masking_fld_field_name_ctl, f_mask_ctl->f_self);
-    f_mask_ctl->f_component_ctl =  init_f_ctl_chara_item(c_masking_fld_component_ctl, f_mask_ctl->f_self);
-    f_mask_ctl->f_mask_range_ctl = init_f_ctl_r2_item(c_masking_fld_mask_range_ctl, f_mask_ctl->f_self);
-    return f_mask_ctl;
-}
-
-void dealloc_f_LIC_masking_ctl(struct f_LIC_masking_ctl *f_mask_ctl){
-    dealloc_chara_ctl_item_c(f_mask_ctl->f_mask_type_ctl);
-    dealloc_chara_ctl_item_c(f_mask_ctl->f_field_name_ctl);
-    dealloc_chara_ctl_item_c(f_mask_ctl->f_component_ctl);
-    dealloc_real2_ctl_item_c(f_mask_ctl->f_mask_range_ctl);
-    
-    free(f_mask_ctl->c_block_name);
-    f_mask_ctl->f_iflag = NULL;
-    f_mask_ctl->f_self = NULL;
-    free(f_mask_ctl);
-    return;
-}
-
 struct f_VIZ_LIC_ctl * init_f_VIZ_LIC_ctl(int idx, void *f_parent)
 {
 	struct f_VIZ_LIC_ctl *f_lic_lic_ctl 
@@ -708,8 +940,9 @@ struct f_VIZ_LIC_ctl * init_f_VIZ_LIC_ctl(int idx, void *f_parent)
                                                         f_lic_lic_ctl->f_self);
     
     f_block_name = (char *) c_VIZ_LIC_fname_vol_repart_ctl(f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_fname_vol_repart_ctl = strngcopy_from_f(f_block_name);
-    f_lic_lic_ctl->f_repart_ctl =           c_VIZ_LIC_repartition_ctl(f_lic_lic_ctl->f_self);
+    f_lic_lic_ctl->f_repart_ctl = init_f_VIZ_repartition_ctl(strngcopy_from_f(f_block_name),
+                                                             c_VIZ_LIC_repartition_ctl,
+                                                             f_lic_lic_ctl->f_self);
     
     f_lic_lic_ctl->f_mask_ctl = init_void_clist(strngcopy_from_f(f_block_name));
 	f_lic_lic_ctl->f_mask_ctl->f_parent = f_lic_lic_ctl->f_self;
@@ -752,9 +985,7 @@ struct f_VIZ_LIC_ctl * dealloc_f_VIZ_LIC_ctl(void *void_in)
     
     dealloc_f_LIC_noise_ctl(f_lic_lic_ctl->f_noise_ctl);
     dealloc_f_LIC_kernel_ctl(f_lic_lic_ctl->f_kernel_ctl);
-    
-    free(f_lic_lic_ctl->f_fname_vol_repart_ctl);
-    f_lic_lic_ctl->f_repart_ctl =           c_VIZ_LIC_repartition_ctl(f_lic_lic_ctl->f_self);
+    dealloc_f_VIZ_repartition_ctl(f_lic_lic_ctl->f_repart_ctl);
     
     int i;
     for(i=0;i<count_void_clist(f_lic_lic_ctl->f_mask_ctl);i++){
@@ -949,12 +1180,17 @@ struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent)
                                                    &f_viz_ctls->f_num_lic_ctl);
     f_viz_ctls->f_fline_ctls = init_f_VIZ_fline_ctls(c_visualizations_fline_ctls(f_viz_ctls->f_self),
                                                      &f_viz_ctls->f_num_fline_ctl);
-	f_viz_ctls->f_repart_ctl =    c_visualizations_repart_ctl(f_viz_ctls->f_self);
-	f_viz_ctls->f_fname_vol_repart_ctl = c_visualizations_fname_vrepart(f_viz_ctls->f_self);
+    
+	f_block_name = (char *) c_visualizations_fname_vrepart(f_viz_ctls->f_self);
+    f_viz_ctls->f_repart_ctl = init_f_VIZ_repartition_ctl(strngcopy_from_f(f_block_name),
+                                                          c_visualizations_repart_ctl,
+                                                          f_viz_ctls->f_self);
 	return f_viz_ctls;
 }
 
-
+void dealloc_f_MHD_viz_ctls(struct f_MHD_viz_ctls *f_viz_ctls){
+    return;
+}
 
 struct f_MHD_crust_filter_ctl * init_f_MHD_crust_filter_ctl(void *(*c_load_self)(void *f_parent),
                                                             void *f_parent)
@@ -1649,9 +1885,163 @@ static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR
     return expand_v_pwr;
 };
 
-static GtkWidget * draw_viz_each_lic_lic_ctl_vbox(char *label_name, struct f_VIZ_LIC_ctl *f_lic_lic_ctl, 
-											  GtkWidget *window){
-	GtkWidget *vbox_v_lic = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+static GtkWidget * draw_LIC_noise_ctl_vbox(struct f_LIC_noise_ctl *f_noise_ctl, GtkWidget *window){
+	GtkWidget *vbox_v_nze = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_noise_ctl->f_noise_type_ctl);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_noise_ctl->f_noise_file_name_ctl);
+    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_noise_ctl->f_noise_file_format_ctl);
+    GtkWidget *hbox_4 = draw_int_item_entry_hbox(f_noise_ctl->f_noise_resolution_ctl);
+    GtkWidget *hbox_5 = draw_int_item_entry_hbox(f_noise_ctl->f_noise_stepping_ctl);
+    
+    GtkWidget *hbox_6 = draw_real_item_entry_hbox(f_noise_ctl->f_noise_cube_size_ctl);
+    GtkWidget *hbox_7 = draw_real_item_entry_hbox(f_noise_ctl->f_noise_deltax_ctl);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_v_nze), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_nze), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_nze), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_nze), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_nze), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_nze), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_nze), hbox_7,  FALSE, FALSE, 0);
+    
+    GtkWidget *expander_nze = draw_control_block_w_file_switch(f_noise_ctl->c_block_name,
+                                                               f_noise_ctl->f_iflag,
+                                                               f_noise_ctl->noise_ctl_file_name,
+                                                               window, vbox_v_nze);
+    return expander_nze;
+};
+
+static GtkWidget * draw_LIC_kernel_ctl_vbox(struct f_LIC_kernel_ctl *f_kernel_ctl, GtkWidget *window){
+	GtkWidget *vbox_v_knl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_kernel_ctl->f_kernel_type_ctl);
+    GtkWidget *hbox_2 = draw_int_item_entry_hbox(f_kernel_ctl->f_kernel_resolution_ctl);
+    GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_kernel_ctl->f_kernel_peak_ctl);
+    GtkWidget *hbox_4 = draw_real_item_entry_hbox(f_kernel_ctl->f_kernel_sigma_ctl);
+    GtkWidget *hbox_5 = draw_chara_item_entry_hbox(f_kernel_ctl->f_trace_length_mode_ctl);
+    
+    GtkWidget *hbox_6 = draw_real_item_entry_hbox(f_kernel_ctl->f_half_length_ctl);
+    GtkWidget *hbox_7 = draw_int_item_entry_hbox(f_kernel_ctl->f_max_trace_count_ctl);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_v_knl), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_knl), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_knl), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_knl), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_knl), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_knl), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_knl), hbox_7,  FALSE, FALSE, 0);
+    
+    GtkWidget *expander_knl = draw_control_block_w_file_switch(f_kernel_ctl->c_block_name,
+                                                               f_kernel_ctl->f_iflag,
+                                                               f_kernel_ctl->kernel_ctl_file_name,
+                                                               window, vbox_v_knl);
+    return expander_knl;
+};
+
+static GtkWidget * draw_new_partition_ctl_vbox(struct f_new_patition_ctl *f_new_part_ctl, 
+                                               struct VIZ_repartition_widgets *f_repart_vws,
+                                               GtkWidget *window){
+	GtkWidget *vbox_v_npt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_new_part_ctl->f_repart_table_head_ctl);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_new_part_ctl->f_repart_table_fmt_ctl);
+    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_new_part_ctl->f_partition_reference_ctl);
+    GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_new_part_ctl->f_trace_count_head_ctl);
+    GtkWidget *hbox_5 = draw_chara_item_entry_hbox(f_new_part_ctl->f_trace_count_fmt_ctl);
+    
+    GtkWidget *hbox_6 = add_ci_list_box_w_addbottun(f_new_part_ctl->f_ndomain_section_ctl,
+                                                    f_repart_vws->f_ndomain_section_tree);
+    
+    GtkWidget *hbox_7 = draw_int_item_entry_hbox(f_new_part_ctl->f_ratio_of_grouping_ctl);
+    GtkWidget *hbox_8 = draw_int_item_entry_hbox(f_new_part_ctl->f_sleeve_level_ctl);
+    GtkWidget *hbox_9 = draw_real_item_entry_hbox(f_new_part_ctl->f_weight_to_previous_ctl);
+    
+    GtkWidget *hbox_10 = draw_chara_item_entry_hbox(f_new_part_ctl->f_masking_switch_ctl);
+    GtkWidget *hbox_11 = draw_real_item_entry_hbox(f_new_part_ctl->f_masking_weight_ctl);
+    GtkWidget *hbox_12 = draw_real_item_entry_hbox(f_new_part_ctl->f_power_of_volume_ctl);
+    
+	GtkWidget *expand_mask = draw_array_block_ctl_vbox(f_new_part_ctl->f_mask_ctl,
+                                                       (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
+                                                       c_append_viz_fline_ctls,
+                                                       c_delete_viz_fline_ctls,
+                                                       (void *) init_f_VIZ_FLINE_ctl_GTK,
+                                                       (void *) dealloc_f_VIZ_FLINE_ctl_GTK,
+                                                       (void *) draw_viz_each_fline_ctl_vbox,
+                                                       mWidgets->vfline_Wgts, window);
+	
+//    GtkWidget *hbox_13 = draw_int_item_entry_hbox(f_new_part_ctl->f_mask_ctl);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_4,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_9,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_10, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_11, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_npt), expand_mask, FALSE, FALSE, 0);
+    
+    GtkWidget *expander_npt = draw_control_block(f_new_part_ctl->c_block_name,
+                                                 f_new_part_ctl->f_iflag,
+                                                 window, vbox_v_npt);
+    return expander_npt;
+};
+
+static GtkWidget * draw_FEM_sleeve_control_vbox(struct f_FEM_sleeve_control *f_Fsleeve_ctl, GtkWidget *window){
+    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_Fsleeve_ctl->sleeve_extension_mode_ctl);
+    GtkWidget *hbox_2 = draw_int_item_entry_hbox(f_Fsleeve_ctl->sleeve_level_ctl);
+    GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_Fsleeve_ctl->sleeve_size_ctl);
+    GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_Fsleeve_ctl->ref_vector_ctl);
+    
+	GtkWidget *vbox_v_slv = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_v_slv), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_slv), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_slv), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_slv), hbox_4,  FALSE, FALSE, 0);
+    
+    GtkWidget *expander_slv = draw_control_block(f_Fsleeve_ctl->c_block_name,
+                                                 f_Fsleeve_ctl->f_iflag,
+                                                 window, vbox_v_slv);
+    return expander_slv;
+};
+
+
+static GtkWidget * draw_VIZ_repartition_ctl_vbox(struct f_VIZ_repartition_ctl *f_repart_ctl, 
+                                                 struct VIZ_repartition_widgets *f_repart_vws,
+                                                 GtkWidget *window){
+	GtkWidget *vbox_v_rep = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    
+    GtkWidget *expander_plt =  draw_platform_control_vbox(f_repart_ctl->f_viz_plt, 
+                                                          f_repart_vws->label_file_format_list,
+                                                          window);
+    GtkWidget *expander_fmh =  draw_sph_FEM_mesh_file_vbox(f_repart_ctl->f_Fmesh_ctl, 
+                                                           window);
+    GtkWidget *expander_npt =  draw_new_partition_ctl_vbox(f_repart_ctl->f_new_part_ctl, 
+                                                           f_repart_vws,
+                                                           window);
+    GtkWidget *expander_slv =  draw_FEM_sleeve_control_vbox(f_repart_ctl->f_Fsleeve_ctl, 
+                                                            window);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_v_rep), expander_plt,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_rep), expander_fmh,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_rep), expander_npt,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_rep), expander_slv,  FALSE, FALSE, 0);
+    
+    GtkWidget *expander_rep = draw_control_block_w_file_switch(f_repart_ctl->c_block_name,
+                                                               f_repart_ctl->f_iflag,
+                                                               f_repart_ctl->repart_ctl_file_name,
+                                                               window, vbox_v_rep);
+    return expander_rep;
+};
+
+static GtkWidget * draw_viz_each_lic_lic_ctl_vbox(struct f_VIZ_LIC_ctl *f_lic_lic_ctl,
+                                                  struct VIZ_repartition_widgets *f_repart_vws,
+                                                  GtkWidget *window){
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_lic_lic_ctl->f_LIC_field_ctl);
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_lic_lic_ctl->f_color_field_ctl);
@@ -1659,13 +2049,34 @@ static GtkWidget * draw_viz_each_lic_lic_ctl_vbox(char *label_name, struct f_VIZ
     GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_lic_lic_ctl->f_opacity_field_ctl);
     GtkWidget *hbox_5 = draw_chara_item_entry_hbox(f_lic_lic_ctl->f_opacity_component_ctl);
     
+    GtkWidget *hbox_6 = draw_chara_item_entry_hbox(f_lic_lic_ctl->f_vr_sample_mode_ctl);
+    GtkWidget *hbox_7 = draw_real_item_entry_hbox(f_lic_lic_ctl->f_step_size_ctl);
+    GtkWidget *hbox_8 = draw_chara_item_entry_hbox(f_lic_lic_ctl->f_normalization_type_ctl);
+    GtkWidget *hbox_9 = draw_real_item_entry_hbox(f_lic_lic_ctl->f_normalization_value_ctl);
+    
+    GtkWidget *expander_nze =  draw_LIC_noise_ctl_vbox(f_lic_lic_ctl->f_noise_ctl, window);
+    GtkWidget *expander_knl =  draw_LIC_kernel_ctl_vbox(f_lic_lic_ctl->f_kernel_ctl, 
+                                                       window);
+    GtkWidget *expander_rep =  draw_VIZ_repartition_ctl_vbox(f_lic_lic_ctl->f_repart_ctl, 
+                                                             f_repart_vws, window);
+//    GtkWidget *expander_mask = draw_LIC_masking_ctls_vbox(f_lic_lic_ctl->f_mask_ctl, window);
+    
+	GtkWidget *vbox_v_lic = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_1,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_2,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_3,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_4,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_lic), hbox_9,  FALSE, FALSE, 0);
     
-    GtkWidget *expand_v_lic = draw_control_block(duplicate_underscore(label_name),
+    gtk_box_pack_start(GTK_BOX(vbox_v_lic), expander_nze,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_lic), expander_knl,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_lic), expander_rep,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_v_lic = draw_control_block(duplicate_underscore(f_lic_lic_ctl->c_block_name),
                                                  f_lic_lic_ctl->f_iflag,
                                                  window, vbox_v_lic);
     return expand_v_lic;
@@ -1673,10 +2084,13 @@ static GtkWidget * draw_viz_each_lic_lic_ctl_vbox(char *label_name, struct f_VIZ
 
 static GtkWidget * draw_viz_each_lic_ctl_vbox(char *label_name, struct f_VIZ_LIC_PVR_ctl *f_lic_item, 
 											  GtkWidget *window){
+    struct LIC_GTK_widgets *lic_vws = (struct LIC_GTK_widgets *) f_lic_item->void_panel;
+    
     GtkWidget *expand_lic_pvr = draw_viz_each_pvr_ctl_vbox(f_lic_item->f_lic_pvr_ctl->c_block_name,
                                                            f_lic_item->f_lic_pvr_ctl, window);
-    GtkWidget *expand_lic_lic = draw_viz_each_lic_lic_ctl_vbox(f_lic_item->f_lic_lic_ctl->c_block_name,
-                                                               f_lic_item->f_lic_lic_ctl, window);
+    GtkWidget *expand_lic_lic = draw_viz_each_lic_lic_ctl_vbox(f_lic_item->f_lic_lic_ctl,
+                                                               lic_vws->f_repart_vws,
+                                                               window);
     
 	GtkWidget *vbox_v_lic = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_v_lic), expand_lic_pvr,  FALSE, FALSE, 0);
@@ -1691,7 +2105,9 @@ static GtkWidget * draw_viz_each_lic_ctl_vbox(char *label_name, struct f_VIZ_LIC
 
 static GtkWidget * draw_viz_each_fline_ctl_vbox(char *label_name, struct f_VIZ_FLINE_ctl *f_fline_item, 
 											  GtkWidget *window){
-	GtkWidget *vbox_v_fline = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    struct FLINE_GTK_widgets *fline_vws = (struct FLINE_GTK_widgets *) f_fline_item->void_panel;
+    
+    GtkWidget *vbox_v_fline = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_fline_item->f_fline_file_head_ctl);
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_fline_item->f_fline_output_type_ctl);
@@ -1699,11 +2115,38 @@ static GtkWidget * draw_viz_each_fline_ctl_vbox(char *label_name, struct f_VIZ_F
     GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_fline_item->f_fline_color_field_ctl);
     GtkWidget *hbox_5 = draw_chara_item_entry_hbox(f_fline_item->f_fline_color_comp_ctl);
     
+    GtkWidget *hbox_6 = add_c_list_box_w_addbottun(f_fline_item->f_fline_area_grp_ctl, 
+                                                   fline_vws->fline_area_grp_view);
+    
+    GtkWidget *hbox_7 = draw_chara_item_entry_hbox(f_fline_item->f_starting_type_ctl);
+    GtkWidget *hbox_8 = draw_chara_item_entry_hbox(f_fline_item->f_selection_type_ctl);
+    GtkWidget *hbox_9 = draw_chara_item_entry_hbox(f_fline_item->f_line_direction_ctl);
+    
+    GtkWidget *hbox_10 = draw_chara_item_entry_hbox(f_fline_item->f_start_surf_grp_ctl);
+    
+    GtkWidget *hbox_11 = draw_int_item_entry_hbox(f_fline_item->f_num_fieldline_ctl);
+    GtkWidget *hbox_12 = draw_int_item_entry_hbox(f_fline_item->f_max_line_stepping_ctl);
+    GtkWidget *hbox_13 = r3_list_combobox_expander(f_fline_item->f_seed_point_ctl,
+                                                   fline_vws->f_seed_point_vws, window);
+    
+    GtkWidget *hbox_14 = add_i2_list_box_w_addbottun(f_fline_item->f_seed_surface_ctl,
+                                                     fline_vws->f_seed_surface_vws);
+    
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_1,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_2,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_3,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_4,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_5,  FALSE, FALSE, 0);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_9,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_10, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_11, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_13, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_fline), hbox_14, FALSE, FALSE, 0);
     
     GtkWidget *expand_v_fline = draw_control_block_w_file_switch(duplicate_underscore(label_name),
                                                                  f_fline_item->f_iflag,
@@ -1786,21 +2229,41 @@ void dealloc_PVR_GTK_widgets(struct PVR_GTK_widgets *pvr_vws){
 }
 
 
-struct LIC_GTK_widgets * init_LIC_GTK_widgets()
+struct LIC_GTK_widgets * init_LIC_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
+                                              struct chara_int2_clist *f_field_ctl)
 {
 	struct LIC_GTK_widgets *lic_vws 
 			= (struct LIC_GTK_widgets *) malloc(sizeof(struct LIC_GTK_widgets));
 	if(lic_vws == NULL){
-		printf("malloc error for lic_vws\n");
+		printf("malloc error for LIC_GTK_widgets\n");
 		exit(0);
     };
+	lic_vws->f_repart_vws
+			= (struct VIZ_repartition_widgets *) malloc(sizeof(struct VIZ_repartition_widgets));
+	if(lic_vws->f_repart_vws == NULL){
+		printf("malloc error for VIZ_repartition_widgets\n");
+		exit(0);
+    };
+    
+    lic_vws->lic_pvr_vws = init_PVR_GTK_widgets(f_cmap_cbar_c, f_field_ctl);
+    lic_vws->label_field_list = lic_vws->lic_pvr_vws->label_field_list;
+    lic_vws->label_dir_list = lic_vws->lic_pvr_vws->label_dir_list;
+    
+    lic_vws->f_repart_vws->label_field_list = lic_vws->label_field_list;
+    lic_vws->f_repart_vws->label_file_format_list
+            = init_f_ctl_chara_array(set_file_fmt_items_f, NULL);
     return lic_vws;
 };
 void dealloc_LIC_GTK_widgets(struct LIC_GTK_widgets *lic_vws){
+    lic_vws->label_field_list = NULL;
+    lic_vws->label_dir_list = NULL;
+    
+    dealloc_PVR_GTK_widgets(lic_vws->lic_pvr_vws);
+    free(lic_vws->f_repart_vws);
     free(lic_vws);
 }
 
-struct FLINE_GTK_widgets * init_FLINE_GTK_widgets()
+struct FLINE_GTK_widgets * init_FLINE_GTK_widgets(struct chara_int2_clist *f_field_ctl)
 {
 	struct FLINE_GTK_widgets *fline_vws 
 			= (struct FLINE_GTK_widgets *) malloc(sizeof(struct FLINE_GTK_widgets));
@@ -1808,9 +2271,17 @@ struct FLINE_GTK_widgets * init_FLINE_GTK_widgets()
 		printf("malloc error for fline_vws\n");
 		exit(0);
     };
+    fline_vws->label_field_list = f_field_ctl;
+    fline_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
+    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL),
+                             fline_vws->label_dir_list);
+    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
+                             fline_vws->label_dir_list);
     return fline_vws;
 };
 void dealloc_FLINE_GTK_widgets(struct FLINE_GTK_widgets *fline_vws){
+    dealloc_chara_int2_clist(fline_vws->label_field_list);
+    dealloc_chara_clist(fline_vws->label_dir_list);
     free(fline_vws);
     return;
 }
@@ -1848,8 +2319,12 @@ void * dealloc_f_VIZ_PVR_ctl_GTK(void *void_in){
 }
 
 struct f_VIZ_LIC_PVR_ctl * init_f_VIZ_LIC_PVR_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
     struct f_VIZ_LIC_PVR_ctl *f_lic_ctl = init_f_VIZ_LIC_PVR_ctl(idx, f_parent);
-    f_lic_ctl->void_panel = (void *) init_LIC_GTK_widgets();
+    struct LIC_GTK_widgets *lic_vws = init_LIC_GTK_widgets(f_lic_ctl->f_lic_pvr_ctl->f_cmap_cbar_c, 
+                                                          f_fld_ctl->f_field_ctl);
+    f_lic_ctl->f_lic_pvr_ctl->void_panel = (void *) lic_vws->lic_pvr_vws;
+    f_lic_ctl->void_panel = (void *) lic_vws;
     return f_lic_ctl;
 }
 void * dealloc_f_VIZ_LIC_PVR_ctl_GTK(void *void_in){
@@ -1860,8 +2335,9 @@ void * dealloc_f_VIZ_LIC_PVR_ctl_GTK(void *void_in){
 }
 
 struct f_VIZ_FLINE_ctl * init_f_VIZ_FLINE_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
     struct f_VIZ_FLINE_ctl *f_fline_ctl = init_f_VIZ_FLINE_ctl(idx, f_parent);
-    f_fline_ctl->void_panel = (void *) init_FLINE_GTK_widgets();
+    f_fline_ctl->void_panel = (void *) init_FLINE_GTK_widgets(f_fld_ctl->f_field_ctl);
     return f_fline_ctl;
 }
 void * dealloc_f_VIZ_FLINE_ctl_GTK(void *void_in){
@@ -1898,6 +2374,19 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
                 = (struct f_VIZ_PVR_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_pvr_ctls);
         f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets(f_pvr_ctl->f_cmap_cbar_c, 
                                                               f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
+    };
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_lic_ctls);i++){
+        struct f_VIZ_LIC_PVR_ctl *f_lic_ctl
+                = (struct f_VIZ_LIC_PVR_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_lic_ctls);
+        struct LIC_GTK_widgets *lic_vws = init_LIC_GTK_widgets(f_lic_ctl->f_lic_pvr_ctl->f_cmap_cbar_c, 
+                                                               f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
+        f_lic_ctl->f_lic_pvr_ctl->void_panel = (void *) lic_vws->lic_pvr_vws;
+        f_lic_ctl->void_panel = (void *) lic_vws;
+    };
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_fline_ctls);i++){
+        struct f_VIZ_FLINE_ctl *f_fline_ctl
+                = (struct f_VIZ_FLINE_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_fline_ctls);
+        f_fline_ctl->void_panel = (void *) init_FLINE_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
     
 	GtkWidget *expand_MHD_psf = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_psf_ctls,
@@ -1936,7 +2425,8 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
                                                           (void *) draw_viz_each_pvr_ctl_vbox,
                                                           mWidgets->vpvr_Wgts, window);
 	
-	GtkWidget *expand_MHD_lic = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_lic_ctls, NULL,
+	GtkWidget *expand_MHD_lic = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_lic_ctls,
+                                                          (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
                                                           c_append_viz_lic_render_ctls,
                                                           c_delete_viz_lic_render_ctls,
                                                           (void *) init_f_VIZ_LIC_PVR_ctl_GTK,
@@ -1944,7 +2434,8 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
                                                           (void *) draw_viz_each_lic_ctl_vbox,
                                                           mWidgets->vlic_Wgts, window);
 	
-	GtkWidget *expand_MHD_fline = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_fline_ctls, NULL,
+	GtkWidget *expand_MHD_fline = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_fline_ctls,
+                                                          (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
                                                           c_append_viz_fline_ctls,
                                                           c_delete_viz_fline_ctls,
                                                           (void *) init_f_VIZ_FLINE_ctl_GTK,

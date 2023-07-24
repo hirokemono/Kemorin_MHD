@@ -237,6 +237,11 @@ struct f_MHD_dimless_control{
 
 
 struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f_parent), void *f_parent);
+void dealloc_f_platform_control(struct f_platform_control *f_plt);
+
+struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self)(void *f_parent),
+                                                      void *f_parent);
+void dealloc_f_FEM_mesh_FILE_ctl(struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl);
 
 struct f_MHD_sph_shell_control * init_f_MHD_sph_shell_ctl(char *file_name,
                                                           void *(*c_load_self)(void *f_parent), 

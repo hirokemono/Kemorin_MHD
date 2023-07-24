@@ -11,91 +11,6 @@ extern int lengthchara_f(void);
 extern int c_yes_flag(const char *text);
 extern int c_no_file_flag(const char *file_name);
 
-extern void * c_sphere_data_ctl_block_name(void *f_spctl);
-extern void * c_sphere_data_ctl_iflag(void *f_spctl);
-extern void * c_sphere_data_ltr_ctl(void *f_spctl);
-extern void * c_sphere_data_phi_symmetry_ctl(void *f_spctl);
-extern void * c_sphere_data_sph_grd_tpe_ctl(void *f_spctl);
-extern void * c_sphere_data_coef_type_ctl(void *f_spctl);
-extern void * c_sphere_data_n_elevation_ctl(void *f_spctl);
-extern void * c_sphere_data_ngrid_azmth_ctl(void *f_spctl);
-extern void * c_sphere_data_radius_ctl(void *f_spctl);
-extern void * c_sphere_data_radial_grp_ctl(void *f_spctl);
-extern void * c_sphere_data_add_ext_ctl(void *f_spctl);
-extern void * c_sphere_data_r_grid_type_ctl(void *f_spctl);
-extern void * c_sphere_data_num_fld_grid_ctl(void *f_spctl);
-extern void * c_sphere_data_icrmnt_cheby_ctl(void *f_spctl);
-extern void * c_sphere_data_Min_radius_ctl(void *f_spctl);
-extern void * c_sphere_data_ICB_radius_ctl(void *f_spctl);
-extern void * c_sphere_data_CMB_radius_ctl(void *f_spctl);
-extern void * c_sphere_data_Max_radius_ctl(void *f_spctl);
-extern void * c_sphere_data_fld_core_sze_ctl(void *f_spctl);
-extern void * c_sphere_data_ICB_CMB_ratio_ctl(void *f_spctl);
-extern void * c_sphere_data_num_r_layer_ctl(void *f_spctl);
-extern void * c_sphere_data_n_med_layer_ctl(void *f_spctl);
-extern void * c_sphere_data_r_layer_list_ctl(void *f_spctl);
-extern void * c_sphere_data_med_list_ctl(void *f_spctl);
-
-extern void * c_sph_indices_ordering_set(void *f_sdctl);
-extern void * c_sph_domain_ctl_block_name(void *f_sdctl);
-extern void * c_sph_domain_ctl_iflag(void *f_sdctl);
-extern void * c_sph_inner_decomp_ctl(void *f_sdctl);
-extern void * c_sph_rj_inner_loop_ctl(void *f_sdctl);
-extern void * c_sph_rlm_inner_loop_ctl(void *f_sdctl);
-extern void * c_sph_rtm_inner_loop_ctl(void *f_sdctl);
-extern void * c_sph_rtp_inner_loop_ctl(void *f_sdctl);
-extern void * c_sph_domain_rlm_distr_ctl(void *f_sdctl);
-extern void * c_sph_domain_smpl_r_decomp_ctl(void *f_sdctl);
-extern void * c_sph_num_radial_domain_ctl(void *f_sdctl);
-extern void * c_sph_num_horiz_domain_ctl(void *f_sdctl);
-extern void * c_sph_ndomain_sph_grid_ctl(void *f_sdctl);
-extern void * c_sph_ndomain_legendre_ctl(void *f_sdctl);
-extern void * c_sph_ndomain_spectr_ctl(void *f_sdctl);
-
-extern void * c_FEM_mesh_FILE_ctl_block_name(void *f_Fmesh_ctl);
-extern void * c_FEM_mesh_FILE_ctl_iflag(void *f_Fmesh_ctl);
-extern void * c_FEM_mesh_mem_conserve_ctl(void *f_Fmesh_ctl);
-extern void * c_FEM_mesh_output_switch(void *f_Fmesh_ctl);
-extern void * c_FEM_surface_output_switch(void *f_Fmesh_ctl);
-extern void * c_FEM_viewer_output_switch(void *f_Fmesh_ctl);
-
-extern void * c_sph_shell_ctl_block_name(void *f_psph_ctl);
-extern void * c_sph_shell_ctl_iflag(void *f_psph_ctl);
-extern void * c_sph_shell_Fmesh_ctl(void *f_psph_ctl);
-extern void * c_sph_shell_spctl(void *f_psph_ctl);
-extern void * c_sph_shell_sdctl(void *f_psph_ctl);
-
-extern void * c_MHD_momentum_eq_block_name(void *f_mom_eq_ctl);
-extern void * c_MHD_momentum_eq_iflag(void *f_mom_eq_ctl);
-extern void * c_MHD_momentum_eq_viscous(void *f_mom_eq_ctl);
-extern void * c_MHD_momentum_eq_inertia(void *f_mom_eq_ctl);
-extern void * c_MHD_momentum_eq_grad_p(void *f_mom_eq_ctl);
-extern void * c_MHD_momentum_eq_t_buoyancy(void *f_mom_eq_ctl);
-extern void * c_MHD_momentum_eq_c_buoyancy(void *f_mom_eq_ctl);
-extern void * c_MHD_momentum_eq_coriolis(void *f_mom_eq_ctl);
-extern void * c_MHD_momentum_eq_lorentz(void *f_mom_eq_ctl);
-
-extern void * c_MHD_induction_block_name(void *f_induct_ctl);
-extern void * c_MHD_induction_iflag(void *f_induct_ctl);
-extern void * c_MHD_induction_evo(void *f_induct_ctl);
-extern void * c_MHD_induction_diffuse(void *f_induct_ctl);
-extern void * c_MHD_induction_potential(void *f_induct_ctl);
-extern void * c_MHD_induction_uxb(void *f_induct_ctl);
-
-extern void * c_MHD_heat_block_name(void *f_heat_ctl);
-extern void * c_MHD_heat_iflag(void *f_heat_ctl);
-extern void * c_MHD_heat_advect(void *f_heat_ctl);
-extern void * c_MHD_heat_diffuse(void *f_heat_ctl);
-extern void * c_MHD_heat_source(void *f_heat_ctl);
-
-extern void * c_MHD_eqs_block_name(void *f_eqs_ctl);
-extern void * c_MHD_eqs_iflag(void *f_eqs_ctl);
-extern void * c_MHD_eqs_mom_ctl(void *f_eqs_ctl);
-extern void * c_MHD_eqs_induct_ctl(void *f_eqs_ctl);
-extern void * c_MHD_eqs_heat_ctl(void *f_eqs_ctl);
-extern void * c_MHD_eqs_comp_ctl(void *f_eqs_ctl);
-
-
 
 GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt,
                                        struct chara_clist *label_file_format_list,
@@ -288,7 +203,8 @@ GtkWidget * draw_sph_subdomain_vbox(struct f_MHD_sph_subdomain_control *f_sdctl,
 	return vbox_out;
 };
 
-GtkWidget * draw_sph_FEM_mesh_file_vbox(struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl, GtkWidget *window){
+GtkWidget * draw_sph_FEM_mesh_file_vbox(struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl,
+                                        GtkWidget *window){
 	GtkWidget *vbox_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
 	GtkWidget *hbox_c1 = draw_chara_switch_entry_hbox(f_Fmesh_ctl->f_FEM_mesh_output_switch);

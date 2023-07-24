@@ -212,6 +212,7 @@
       call c_f_pointer(c_ctl, f_ctl)
       f_ctl%num =  num
       f_ctl%icou = num
+      if(.not. allocated(f_ctl%c_tbl))                                  &
       call alloc_control_array_c_i(f_ctl)
       end subroutine c_alloc_chara_int_array
 !

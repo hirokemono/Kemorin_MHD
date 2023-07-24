@@ -140,6 +140,38 @@ struct f_platform_control * init_f_platform_control(void *(*c_load_self)(void *f
 	return f_plt;
 }
 
+void dealloc_f_platform_control(struct f_platform_control *f_plt)
+{
+    dealloc_int_ctl_item_c(f_plt->f_ndomain_ctl);
+    dealloc_int_ctl_item_c(f_plt->f_num_smp_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_debug_flag_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_sph_file_prefix);
+    dealloc_chara_ctl_item_c(f_plt->f_mesh_file_prefix);
+    dealloc_chara_ctl_item_c(f_plt->f_restart_file_prefix);
+    dealloc_chara_ctl_item_c(f_plt->f_field_file_prefix);
+    dealloc_chara_ctl_item_c(f_plt->f_spectr_field_file_prefix);
+    dealloc_chara_ctl_item_c(f_plt->f_coriolis_int_file_name);
+    dealloc_chara_ctl_item_c(f_plt->f_bc_data_file_name_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_radial_data_file_name_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_interpolate_sph_to_fem);
+    dealloc_chara_ctl_item_c(f_plt->f_interpolate_fem_to_sph);
+    dealloc_chara_ctl_item_c(f_plt->f_rayleigh_spectr_dir);
+    dealloc_chara_ctl_item_c(f_plt->f_rayleigh_field_dir);
+    dealloc_chara_ctl_item_c(f_plt->f_sph_file_fmt_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_mesh_file_fmt_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_restart_file_fmt_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_field_file_fmt_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_spectr_field_fmt_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_itp_file_fmt_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_coriolis_file_fmt_ctl);
+    dealloc_chara_ctl_item_c(f_plt->f_del_org_data_ctl);
+    
+    free(f_plt->c_block_name);
+    f_plt->f_iflag = NULL;
+    f_plt->f_self = NULL;
+    free(f_plt);
+    return;
+}
 
 static struct f_MHD_sph_resolution_control * init_f_MHD_sph_resolution_control(void *(*c_load_self)(void *f_parent),
 																		void *f_parent)
@@ -214,7 +246,7 @@ static struct f_MHD_sph_subdomain_control * init_f_MHD_sph_domain_control(void *
 	return f_sdctl;
 }
 
-static struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self)(void *f_parent),
+struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self)(void *f_parent),
 													  void *f_parent)
 {
 	struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl 
@@ -235,6 +267,20 @@ static struct f_FEM_mesh_FILE_ctl * init_f_FEM_mesh_FILE_ctl(void *(*c_load_self
 	f_Fmesh_ctl->f_FEM_surface_output_switch = init_f_ctl_chara_item(c_FEM_surface_output_switch, f_Fmesh_ctl->f_self);
 	f_Fmesh_ctl->f_FEM_viewer_output_switch =  init_f_ctl_chara_item(c_FEM_viewer_output_switch, f_Fmesh_ctl->f_self);
 	return f_Fmesh_ctl;
+}
+
+void dealloc_f_FEM_mesh_FILE_ctl(struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl)
+{
+    dealloc_chara_ctl_item_c(f_Fmesh_ctl->f_memory_conservation_ctl);
+    dealloc_chara_ctl_item_c(f_Fmesh_ctl->f_FEM_mesh_output_switch);
+    dealloc_chara_ctl_item_c(f_Fmesh_ctl->f_FEM_surface_output_switch);
+    dealloc_chara_ctl_item_c(f_Fmesh_ctl->f_FEM_viewer_output_switch);
+    
+    free(f_Fmesh_ctl->c_block_name);
+    f_Fmesh_ctl->f_iflag = NULL;
+    f_Fmesh_ctl->f_self = NULL;
+    free(f_Fmesh_ctl);
+    return;
 }
 
 
