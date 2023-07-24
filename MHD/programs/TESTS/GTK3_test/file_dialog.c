@@ -261,20 +261,61 @@ extern void * c_new_repart_mask_ctl(void *f_new_part_ctl);
 
 extern void * set_file_fmt_items_f(void *fmt_names_c);
 
+struct f_LIC_noise_ctl{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	char * noise_ctl_file_name;
+    
+    struct chara_ctl_item *f_noise_type_ctl;
+    struct chara_ctl_item *f_noise_file_name_ctl;
+    struct chara_ctl_item *f_noise_file_format_ctl;
+    struct int_ctl_item   *f_noise_resolution_ctl;
+    struct int_ctl_item   *f_noise_stepping_ctl;
+    struct real_ctl_item  *f_noise_cube_size_ctl;
+    struct real_ctl_item  *f_noise_deltax_ctl;
+};
+
+struct f_LIC_kernel_ctl{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+	char * kernel_ctl_file_name;
+    
+    struct chara_ctl_item *f_kernel_type_ctl;
+    struct int_ctl_item   *f_kernel_resolution_ctl;
+    struct real_ctl_item  *f_kernel_peak_ctl;
+    struct real_ctl_item  *f_kernel_sigma_ctl;
+    struct chara_ctl_item *f_trace_length_mode_ctl;
+    struct real_ctl_item  *f_half_length_ctl;
+    struct int_ctl_item   *f_max_trace_count_ctl;
+};
+
+struct f_LIC_masking_ctl{
+	void * f_self;
+	int * f_iflag;
+	
+	char * c_block_name;
+    
+    struct chara_ctl_item *f_mask_type_ctl;
+    struct chara_ctl_item *f_field_name_ctl;
+    struct chara_ctl_item *f_component_ctl;
+    struct real2_ctl_item *f_mask_range_ctl;
+};
+
 struct f_VIZ_LIC_ctl{
 	void * f_self;
 	int * f_iflag;
 	
 	char * c_block_name;
     
-	char *f_fname_LIC_noise_ctl;
-	void *f_noise_ctl;
-	char *f_fname_LIC_kernel_ctl;
-	void *f_kernel_ctl;
+	struct f_LIC_noise_ctl *f_noise_ctl;
+	struct f_LIC_kernel_ctl *f_kernel_ctl;
 	char *f_fname_vol_repart_ctl;
 	void *f_repart_ctl;
     
-    int f_num_masking_ctl;
 	struct void_clist *f_mask_ctl;
     
     struct chara_ctl_item *f_LIC_field_ctl;
@@ -502,8 +543,144 @@ boolean_to_text (GBinding *binding,
 	return TRUE;
 }
 */
+struct f_LIC_noise_ctl * init_f_LIC_noise_ctl(char *ctl_file_name,
+                                               void *(*c_load_self)(void *f_parent),
+                                               void *f_parent)
+{
+    struct f_LIC_noise_ctl *f_noise_ctl
+            = (struct f_LIC_noise_ctl *) malloc(sizeof(struct f_LIC_noise_ctl));
+    if(f_noise_ctl == NULL){
+        printf("malloc error for f_LIC_noise_ctl\n");
+        exit(0);
+    };
+    f_noise_ctl->f_self =  c_load_self(f_parent);
+    
+    f_noise_ctl->f_iflag =   (int *) c_LIC_noise_ctl_iflag(f_noise_ctl->f_self);
+    char *f_block_name =   (char *) c_LIC_noise_ctl_block_name(f_noise_ctl->f_self);
+    f_noise_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    f_noise_ctl->noise_ctl_file_name = ctl_file_name;
+    
+    f_noise_ctl->f_noise_type_ctl =        init_f_ctl_chara_item(c_LIC_noise_type_ctl,
+                                                                 f_noise_ctl->f_self);
+    f_noise_ctl->f_noise_file_name_ctl =   init_f_ctl_chara_item(c_LIC_noise_file_name_ctl,
+                                                                f_noise_ctl->f_self);
+    f_noise_ctl->f_noise_file_format_ctl = init_f_ctl_chara_item(c_LIC_noise_file_format_ctl,
+                                                                 f_noise_ctl->f_self);
+    f_noise_ctl->f_noise_resolution_ctl =  init_f_ctl_int_item(c_LIC_noise_resolution_ctl,
+                                                               f_noise_ctl->f_self);
+    f_noise_ctl->f_noise_stepping_ctl =    init_f_ctl_int_item(c_LIC_noise_stepping_ctl,
+                                                               f_noise_ctl->f_self);
+    f_noise_ctl->f_noise_cube_size_ctl =   init_f_ctl_real_item(c_LIC_noise_cube_size_ctl, 
+                                                                f_noise_ctl->f_self);
+    f_noise_ctl->f_noise_deltax_ctl =      init_f_ctl_real_item(c_LIC_noise_deltax_ctl, 
+                                                                f_noise_ctl->f_self);
+    return f_noise_ctl;
+}
 
 
+void dealloc_f_LIC_noise_ctl(struct f_LIC_noise_ctl *f_noise_ctl){
+    dealloc_chara_ctl_item_c(f_noise_ctl->f_noise_type_ctl);
+    dealloc_chara_ctl_item_c(f_noise_ctl->f_noise_file_name_ctl);
+    dealloc_chara_ctl_item_c(f_noise_ctl->f_noise_file_format_ctl);
+    dealloc_int_ctl_item_c(f_noise_ctl->f_noise_resolution_ctl);
+    dealloc_int_ctl_item_c(f_noise_ctl->f_noise_stepping_ctl);
+    dealloc_real_ctl_item_c(f_noise_ctl->f_noise_cube_size_ctl);
+    dealloc_real_ctl_item_c(f_noise_ctl->f_noise_deltax_ctl);
+    
+    free(f_noise_ctl->noise_ctl_file_name);
+    free(f_noise_ctl->c_block_name);
+    f_noise_ctl->f_iflag = NULL;
+    f_noise_ctl->f_self = NULL;
+    free(f_noise_ctl);
+    return;
+}
+
+
+struct f_LIC_kernel_ctl * init_f_LIC_kernel_ctl(char *ctl_file_name,
+                                                void *(*c_load_self)(void *f_parent),
+                                                void *f_parent)
+{
+    struct f_LIC_kernel_ctl *f_kernel_ctl
+            = (struct f_LIC_kernel_ctl *) malloc(sizeof(struct f_LIC_kernel_ctl));
+    if(f_kernel_ctl == NULL){
+        printf("malloc error for f_LIC_kernel_ctl\n");
+        exit(0);
+    };
+    f_kernel_ctl->f_self =  c_load_self(f_parent);
+    
+    f_kernel_ctl->f_iflag =   (int *) c_LIC_kernel_ctl_iflag(f_kernel_ctl->f_self);
+    char *f_block_name =   (char *) c_LIC_kernel_ctl_block_name(f_kernel_ctl->f_self);
+    f_kernel_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    f_kernel_ctl->kernel_ctl_file_name = ctl_file_name;
+    
+    f_kernel_ctl->f_kernel_type_ctl =       init_f_ctl_chara_item(c_LIC_kernel_type_ctl,
+                                                                  f_kernel_ctl->f_self);
+    f_kernel_ctl->f_kernel_resolution_ctl = init_f_ctl_int_item(c_LIC_kernel_resolution_ctl,
+                                                                f_kernel_ctl->f_self);
+    f_kernel_ctl->f_kernel_peak_ctl =       init_f_ctl_real_item(c_LIC_kernel_peak_ctl,
+                                                                 f_kernel_ctl->f_self);
+    f_kernel_ctl->f_kernel_sigma_ctl =      init_f_ctl_real_item(c_LIC_kernel_kernel_sigma_ctl,
+                                                                 f_kernel_ctl->f_self);
+    f_kernel_ctl->f_trace_length_mode_ctl = init_f_ctl_chara_item(c_LIC_kernel_trace_len_mod_ctl,
+                                                                  f_kernel_ctl->f_self);
+    f_kernel_ctl->f_half_length_ctl =       init_f_ctl_real_item(c_LIC_kernel_half_length_ctl, 
+                                                                 f_kernel_ctl->f_self);
+    f_kernel_ctl->f_max_trace_count_ctl =   init_f_ctl_int_item(c_LIC_kernel_max_trace_cnt_ctl, 
+                                                                f_kernel_ctl->f_self);
+    return f_kernel_ctl;
+}
+
+void dealloc_f_LIC_kernel_ctl(struct f_LIC_kernel_ctl *f_kernel_ctl){
+    dealloc_chara_ctl_item_c(f_kernel_ctl->f_kernel_type_ctl);
+    dealloc_int_ctl_item_c(f_kernel_ctl->f_kernel_resolution_ctl);
+    dealloc_real_ctl_item_c(f_kernel_ctl->f_kernel_peak_ctl);
+    dealloc_real_ctl_item_c(f_kernel_ctl->f_kernel_sigma_ctl);
+    dealloc_chara_ctl_item_c(f_kernel_ctl->f_trace_length_mode_ctl);
+    dealloc_real_ctl_item_c(f_kernel_ctl->f_half_length_ctl);
+    dealloc_int_ctl_item_c(f_kernel_ctl->f_max_trace_count_ctl);
+    
+    free(f_kernel_ctl->kernel_ctl_file_name);
+    free(f_kernel_ctl->c_block_name);
+    f_kernel_ctl->f_iflag = NULL;
+    f_kernel_ctl->f_self = NULL;
+    free(f_kernel_ctl);
+    return;
+}
+
+struct f_LIC_masking_ctl * init_f_LIC_masking_ctl(void *(*c_load_self)(int idx, void *f_parent),
+                                                  int idx, void *f_parent)
+{
+    struct f_LIC_masking_ctl *f_mask_ctl
+            = (struct f_LIC_masking_ctl *) malloc(sizeof(struct f_LIC_masking_ctl));
+    if(f_mask_ctl == NULL){
+        printf("malloc error for f_LIC_masking_ctl\n");
+        exit(0);
+    };
+    f_mask_ctl->f_self =  c_load_self(idx, f_parent);
+    
+    f_mask_ctl->f_iflag =   (int *) c_masking_fld_ctl_iflag(f_mask_ctl->f_self);
+    char *f_block_name =   (char *) c_masking_fld_ctl_block_name(f_mask_ctl->f_self);
+    f_mask_ctl->c_block_name = strngcopy_from_f(f_block_name);
+    
+    f_mask_ctl->f_mask_type_ctl =  init_f_ctl_chara_item(c_masking_fld_mask_type_ctl, f_mask_ctl->f_self);
+    f_mask_ctl->f_field_name_ctl = init_f_ctl_chara_item(c_masking_fld_field_name_ctl, f_mask_ctl->f_self);
+    f_mask_ctl->f_component_ctl =  init_f_ctl_chara_item(c_masking_fld_component_ctl, f_mask_ctl->f_self);
+    f_mask_ctl->f_mask_range_ctl = init_f_ctl_r2_item(c_masking_fld_mask_range_ctl, f_mask_ctl->f_self);
+    return f_mask_ctl;
+}
+
+void dealloc_f_LIC_masking_ctl(struct f_LIC_masking_ctl *f_mask_ctl){
+    dealloc_chara_ctl_item_c(f_mask_ctl->f_mask_type_ctl);
+    dealloc_chara_ctl_item_c(f_mask_ctl->f_field_name_ctl);
+    dealloc_chara_ctl_item_c(f_mask_ctl->f_component_ctl);
+    dealloc_real2_ctl_item_c(f_mask_ctl->f_mask_range_ctl);
+    
+    free(f_mask_ctl->c_block_name);
+    f_mask_ctl->f_iflag = NULL;
+    f_mask_ctl->f_self = NULL;
+    free(f_mask_ctl);
+    return;
+}
 
 struct f_VIZ_LIC_ctl * init_f_VIZ_LIC_ctl(int idx, void *f_parent)
 {
@@ -521,23 +698,24 @@ struct f_VIZ_LIC_ctl * init_f_VIZ_LIC_ctl(int idx, void *f_parent)
 	f_lic_lic_ctl->c_block_name = strngcopy_from_f(f_block_name);
     
     f_block_name = (char *) c_VIZ_LIC_fname_noise_ctl(f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_fname_LIC_noise_ctl = strngcopy_from_f(f_block_name);
-    f_lic_lic_ctl->f_noise_ctl =       c_VIZ_LIC_noise_ctl(f_lic_lic_ctl->f_self);
+    f_lic_lic_ctl->f_noise_ctl = init_f_LIC_noise_ctl(strngcopy_from_f(f_block_name), 
+                                                      c_VIZ_LIC_noise_ctl,
+                                                      f_lic_lic_ctl->f_self);
     
     f_block_name = (char *) c_VIZ_LIC_fname_kernel_ctl(f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_fname_LIC_kernel_ctl = strngcopy_from_f(f_block_name);
-    f_lic_lic_ctl->f_kernel_ctl =       c_VIZ_LIC_kernel_ctl(f_lic_lic_ctl->f_self);
+    f_lic_lic_ctl->f_kernel_ctl = init_f_LIC_kernel_ctl(strngcopy_from_f(f_block_name), 
+                                                        c_VIZ_LIC_kernel_ctl, 
+                                                        f_lic_lic_ctl->f_self);
     
     f_block_name = (char *) c_VIZ_LIC_fname_vol_repart_ctl(f_lic_lic_ctl->f_self);
     f_lic_lic_ctl->f_fname_vol_repart_ctl = strngcopy_from_f(f_block_name);
     f_lic_lic_ctl->f_repart_ctl =           c_VIZ_LIC_repartition_ctl(f_lic_lic_ctl->f_self);
     
-    f_lic_lic_ctl->f_num_masking_ctl = c_VIZ_LIC_num_masking_ctl(f_lic_lic_ctl->f_self);
     f_lic_lic_ctl->f_mask_ctl = init_void_clist(strngcopy_from_f(f_block_name));
 	f_lic_lic_ctl->f_mask_ctl->f_parent = f_lic_lic_ctl->f_self;
     int i;
-    for(i=0;i<f_lic_lic_ctl->f_num_masking_ctl;i++){
-        void *f_ctl_tmp = c_VIZ_LIC_mask_ctl(i, f_lic_lic_ctl->f_self);
+    for(i=0;i<c_VIZ_LIC_num_masking_ctl(f_lic_lic_ctl->f_self);i++){
+        void *f_ctl_tmp = init_f_LIC_masking_ctl(c_VIZ_LIC_mask_ctl, i, f_lic_lic_ctl->f_self);
 		append_void_clist((void *) f_ctl_tmp, f_lic_lic_ctl->f_mask_ctl);
     };
     
@@ -572,15 +750,17 @@ struct f_VIZ_LIC_ctl * dealloc_f_VIZ_LIC_ctl(void *void_in)
     f_lic_lic_ctl->f_self = NULL;
 	free(f_lic_lic_ctl->c_block_name);
     
-    free(f_lic_lic_ctl->f_fname_LIC_noise_ctl);
-    f_lic_lic_ctl->f_noise_ctl =       c_VIZ_LIC_noise_ctl(f_lic_lic_ctl->f_self);
-    
-    free(f_lic_lic_ctl->f_fname_LIC_kernel_ctl);
-    f_lic_lic_ctl->f_kernel_ctl =       c_VIZ_LIC_kernel_ctl(f_lic_lic_ctl->f_self);
+    dealloc_f_LIC_noise_ctl(f_lic_lic_ctl->f_noise_ctl);
+    dealloc_f_LIC_kernel_ctl(f_lic_lic_ctl->f_kernel_ctl);
     
     free(f_lic_lic_ctl->f_fname_vol_repart_ctl);
     f_lic_lic_ctl->f_repart_ctl =           c_VIZ_LIC_repartition_ctl(f_lic_lic_ctl->f_self);
     
+    int i;
+    for(i=0;i<count_void_clist(f_lic_lic_ctl->f_mask_ctl);i++){
+        void *f_ctl_tmp = void_clist_at_index(i, f_lic_lic_ctl->f_mask_ctl);
+		dealloc_f_LIC_masking_ctl((struct f_LIC_masking_ctl *) f_ctl_tmp);
+    };
     dealloc_void_clist(f_lic_lic_ctl->f_mask_ctl);
     
     dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_LIC_field_ctl);
