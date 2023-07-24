@@ -152,38 +152,6 @@ extern void * c_VIZ_PVR_component_ctl(void *f_pvr_ctl);
 extern void * c_VIZ_PVR_sections_ctl(void *f_pvr_ctl);
 extern void * c_VIZ_PVR_isosurfaces_ctl(void *f_pvr_ctl);
 
-extern void * c_PVR_movie_ctl_block_name(void *f_movie);
-extern void * c_PVR_movie_ctl_iflag(void *f_movie);
-extern void * c_PVR_movie_movie_mode_ctl(void *f_movie);
-extern void * c_PVR_movie_num_frames_ctl(void *f_movie);
-extern void * c_PVR_movie_rotation_axis_ctl(void *f_movie);
-extern void * c_PVR_movie_angle_range_ctl(void *f_movie);
-extern void * c_PVR_movie_apature_range_ctl(void *f_movie);
-extern void * c_PVR_movie_LIC_kernel_rge_ctl(void *f_movie);
-extern void * c_PVR_movie_fname_view_st_ctl(void *f_movie);
-extern void * c_PVR_movie_fname_view_end_ctl(void *f_movie);
-extern void * c_PVR_movie_view_start_ctl(void *f_movie);
-extern void * c_PVR_movie_view_end_ctl(void *f_movie);
-extern void * c_PVR_movie_mul_mmats_c(void *f_movie);
-
-extern int    c_VIZ_PVR_num_pvr_sect_ctl(void *f_pvr_scts_c);
-extern void * c_VIZ_PVR_section_ctl(int idx, void *f_pvr_scts_c);
-extern int    c_VIZ_PVR_num_pvr_iso_ctl(void *f_pvr_isos_c);
-extern void * c_VIZ_PVR_isosurface_ctl(int idx, void *f_pvr_isos_c);
-
-extern void * c_PVR_section_ctl_block_name(void *f_pvr_sect_ctl);
-extern void * c_PVR_section_ctl_iflag(void *f_pvr_sect_ctl);
-extern void * c_PVR_section_fname_sect_ctl(void *f_pvr_sect_ctl);
-extern void * c_PVR_section_psf_def_c(void *f_pvr_sect_ctl);
-extern void * c_PVR_section_opacity_ctl(void *f_pvr_sect_ctl);
-extern void * c_PVR_section_zeroline_ctl(void *f_pvr_sect_ctl);
-
-extern void * c_PVR_isosurf_ctl_block_name(void *f_pvr_iso_ctl);
-extern void * c_PVR_isosurf_ctl_iflag(void *f_pvr_iso_ctl);
-extern void * c_PVR_isosurf_type_ctl(void *f_pvr_iso_ctl);
-extern void * c_PVR_isosurf_iso_value_ctl(void *f_pvr_iso_ctl);
-extern void * c_PVR_isosurf_opacity_ctl(void *f_pvr_iso_ctl);
-
 
 extern void * c_clust_filter_ctl_block_name(void *f_crust_filter_ctl);
 extern void * c_clust_filter_ctl_iflag(void *f_crust_filter_ctl);

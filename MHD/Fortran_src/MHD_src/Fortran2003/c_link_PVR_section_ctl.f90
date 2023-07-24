@@ -6,6 +6,8 @@
 !
 !>@brief C binding routines for forces control structure
 !!@verbatim
+!!      type(c_ptr) function c_VIZ_PVR_sects_block_name(c_ctl)          &
+!!     &          bind(C, NAME = 'c_VIZ_PVR_sects_block_name')
 !!      integer(c_int) function c_VIZ_PVR_num_pvr_sect_ctl(c_ctl)       &
 !!     &          bind(C, NAME = 'c_VIZ_PVR_num_pvr_sect_ctl')
 !!      type(c_ptr) function c_VIZ_PVR_section_ctl(idx_in, c_ctl)       &
@@ -13,6 +15,8 @@
 !!        integer(c_int), value :: idx_in
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!!!
+!!      type(c_ptr) function c_VIZ_PVR_isos_block_name(c_ctl)           &
+!!     &          bind(C, NAME = 'c_VIZ_PVR_isos_block_name')
 !!      integer(c_int) function c_VIZ_PVR_num_pvr_iso_ctl(c_ctl)        &
 !!     &          bind(C, NAME = 'c_VIZ_PVR_num_pvr_iso_ctl')
 !!      type(c_ptr) function c_VIZ_PVR_isosurface_ctl(idx_in, c_ctl)    &
@@ -96,6 +100,16 @@
 !
 !  ---------------------------------------------------------------------
 !
+      type(c_ptr) function c_VIZ_PVR_sects_block_name(c_ctl)            &
+     &          bind(C, NAME = 'c_VIZ_PVR_sects_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_sections_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_PVR_sects_block_name = c_loc(f_ctl%block_name)
+      end function c_VIZ_PVR_sects_block_name
+!
+!  ---------------------------------------------------------------------
+!
       integer(c_int) function c_VIZ_PVR_num_pvr_sect_ctl(c_ctl)         &
      &          bind(C, NAME = 'c_VIZ_PVR_num_pvr_sect_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
@@ -116,6 +130,16 @@
       end function c_VIZ_PVR_section_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_VIZ_PVR_isos_block_name(c_ctl)             &
+     &          bind(C, NAME = 'c_VIZ_PVR_isos_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_isosurfs_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_VIZ_PVR_isos_block_name = C_loc(f_ctl%block_name)
+      end function c_VIZ_PVR_isos_block_name
+!
 !  ---------------------------------------------------------------------
 !
       integer(c_int) function c_VIZ_PVR_num_pvr_iso_ctl(c_ctl)          &

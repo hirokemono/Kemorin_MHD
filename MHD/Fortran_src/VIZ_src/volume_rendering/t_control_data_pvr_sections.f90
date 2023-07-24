@@ -70,7 +70,7 @@
 !
       type pvr_sections_ctl
 !>        Control block name
-        character(len = kchara) :: block_name = 'isosurface_ctl'
+        character(len = kchara) :: block_name = 'section_ctl'
 !
         integer(kind = kint) :: num_pvr_sect_ctl = 0
         type(pvr_section_ctl), allocatable :: pvr_sect_ctl(:)

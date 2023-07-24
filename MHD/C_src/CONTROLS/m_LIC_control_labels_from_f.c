@@ -73,9 +73,7 @@ struct lic_control_labels * init_lic_control_labels(){
 	lic_ctl_labls->label_lic_modelview = init_label_pvr_modelview();
 	lic_ctl_labls->label_lic_project =   init_label_pvr_project();
 	lic_ctl_labls->label_lic_streo =     init_label_pvr_streo();
-	
-	lic_ctl_labls->label_lic_area = init_label_pvr_area();
-	
+		
 	lic_ctl_labls->label_lic_light =    init_label_pvr_light();
 	lic_ctl_labls->label_lic_cmap =     init_label_LIC_cmap();
 	lic_ctl_labls->label_lic_cbar =     init_label_pvr_cbar();

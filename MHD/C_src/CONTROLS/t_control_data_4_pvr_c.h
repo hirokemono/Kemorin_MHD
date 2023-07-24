@@ -30,10 +30,8 @@ struct pvr_plot_area_ctl_c{
 	int * f_iflag;
 	char * c_block_name;
 	
-	struct control_labels_f *label_pvr_area;
-	
-	struct chara_clist *pvr_area_list;
-	struct chara2_real_clist *surf_enhanse_ctl;
+	struct chara_clist       *f_pvr_area_ctl;
+	struct chara2_real_clist *f_surf_enhanse_ctl;
 };
 
 struct pvr_ctl_c{

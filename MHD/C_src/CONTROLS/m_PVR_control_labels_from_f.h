@@ -68,12 +68,7 @@ ctl_list->num_labels 2
 label[0]   focal_distance_ctl 
 label[1]   eye_separation_ctl 
 
-Check pvr_ctl_labls->label_pvr_area
-ctl_list->num_labels 2 
-label[0]   chosen_ele_grp_ctl 
-label[1]   surface_enhanse_ctl 
-
-Check pvr_ctl_labls->label_pvr_light
+ Check pvr_ctl_labls->label_pvr_light
 ctl_list->num_labels 4 
 label[0]   position_of_lights 
 label[1]   ambient_coef_ctl 
@@ -183,7 +178,6 @@ struct pvr_control_labels{
 	struct control_labels_f *label_pvr_pixels;
 	struct control_labels_f *label_pvr_project;
 	struct control_labels_f *label_pvr_streo;
-	struct control_labels_f *label_pvr_area;
 	struct control_labels_f *label_pvr_light;
 	struct control_labels_f *label_pvr_cmap;
 	struct control_labels_f *label_pvr_cbar;
@@ -212,8 +206,6 @@ struct control_labels_f * init_label_pvr_pixels();
 struct control_labels_f * init_label_pvr_project();
 struct control_labels_f * init_label_pvr_streo();
 struct control_labels_f * init_label_pvr_modelview();
-
-struct control_labels_f * init_label_pvr_area();
 
 struct control_labels_f * init_label_pvr_light();
 struct control_labels_f * init_label_pvr_cmap();

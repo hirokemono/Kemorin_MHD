@@ -83,13 +83,6 @@ struct control_labels_f * init_label_pvr_modelview(){
 	return label_pvr_modelview;
 };
 
-struct control_labels_f * init_label_pvr_area(){
-	struct control_labels_f *label_pvr_area
-			= init_control_labels_f(num_label_pvr_area_f, 
-									set_label_pvr_area_f);
-	return label_pvr_area;
-};
-
 struct control_labels_f * init_label_pvr_light(){
 	struct control_labels_f *label_pvr_light
 			= init_control_labels_f(num_label_pvr_light_f, 
@@ -162,9 +155,7 @@ struct pvr_control_labels * init_pvr_control_labels(){
 	pvr_ctl_labls->label_pvr_modelview = init_label_pvr_modelview();
 	pvr_ctl_labls->label_pvr_project =   init_label_pvr_project();
 	pvr_ctl_labls->label_pvr_streo =     init_label_pvr_streo();
-	
-	pvr_ctl_labls->label_pvr_area = init_label_pvr_area();
-	
+		
 	pvr_ctl_labls->label_pvr_light =    init_label_pvr_light();
 	pvr_ctl_labls->label_pvr_cmap =     init_label_pvr_cmap();
 	pvr_ctl_labls->label_pvr_cbar =     init_label_pvr_cbar();
@@ -195,7 +186,6 @@ void dealloc_pvr_control_labels(struct pvr_control_labels *pvr_ctl_labls){
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_pixels);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_project);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_streo);
-	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_area);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_light);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_cmap);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_cbar);
@@ -225,8 +215,6 @@ void check_pvr_control_labels(struct pvr_control_labels *pvr_ctl_labls){
 	printf("Check pvr_ctl_labls->label_pvr_streo\n");
 	check_control_labels_f(pvr_ctl_labls->label_pvr_streo);
 	
-	printf("Check pvr_ctl_labls->label_pvr_area\n");
-	check_control_labels_f(pvr_ctl_labls->label_pvr_area);
 	printf("Check pvr_ctl_labls->label_pvr_light\n");
 	check_control_labels_f(pvr_ctl_labls->label_pvr_light);
 	printf("Check pvr_ctl_labls->label_pvr_cmap\n");

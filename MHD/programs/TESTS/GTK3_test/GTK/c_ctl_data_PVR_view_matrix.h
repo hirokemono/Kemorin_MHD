@@ -33,7 +33,5 @@ struct modelview_ctl_c * init_f_VIZ_view_matrix_ctl(char *ctl_file_name,
                                                     void *f_parent);
 struct void_clist * init_f_PVR_mul_vmats_ctls(void *f_parent);
 
-void dealloc_f_PVR_mul_vmats_ctls(struct void_clist *f_vmat_ctls);
-
 
 #endif /* C_CTL_DATA_PVR_VIEW_MATRIX_H_ */

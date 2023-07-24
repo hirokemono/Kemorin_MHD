@@ -186,13 +186,3 @@ struct void_clist * init_f_PVR_mul_vmats_ctls(void *f_parent)
 }
 
 
-void dealloc_f_PVR_mul_vmats_ctls(struct void_clist *f_vmat_ctls){
-    int i;
-    for(i=0;i<count_void_clist(f_vmat_ctls);i++){
-        struct modelview_ctl_c *f_mat = (struct modelview_ctl_c *) void_clist_at_index(i,f_vmat_ctls);
-        dealloc_modelview_ctl_c(f_mat);
-    }
-    dealloc_void_clist(f_vmat_ctls);
-    return;
-};
-

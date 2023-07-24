@@ -17,10 +17,10 @@ void read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_clist(fp, buf, area_c->label_pvr_area->label[0], 
-						 area_c->pvr_area_list);
-		read_chara2_real_clist(fp, buf, area_c->label_pvr_area->label[1], 
-							   area_c->surf_enhanse_ctl);
+		read_chara_clist(fp, buf, area_c->f_pvr_area_ctl->clist_name,
+						 area_c->f_pvr_area_ctl);
+		read_chara2_real_clist(fp, buf, area_c->f_surf_enhanse_ctl->clist_name,
+							   area_c->f_surf_enhanse_ctl);
 	};
 	area_c->f_iflag[0] = 1;
     return;
@@ -33,10 +33,10 @@ int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	level = write_chara_clist(fp, level, area_c->label_pvr_area->label[ 0], 
-							  area_c->pvr_area_list);
-	level = write_chara2_real_clist(fp, level, area_c->label_pvr_area->label[ 1], 
-									area_c->surf_enhanse_ctl);
+	level = write_chara_clist(fp, level, area_c->f_pvr_area_ctl->clist_name,
+							  area_c->f_pvr_area_ctl);
+	level = write_chara2_real_clist(fp, level, area_c->f_surf_enhanse_ctl->clist_name,
+									area_c->f_surf_enhanse_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

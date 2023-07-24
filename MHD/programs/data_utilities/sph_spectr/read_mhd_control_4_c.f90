@@ -908,5 +908,46 @@
       end function c_VIZ_pvr_isosurf_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_pvr_area_ctl_block_name(c_ctl)             &
+     &          bind(C, NAME = 'c_pvr_area_ctl_block_name')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_render_area_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_pvr_area_ctl_block_name = C_loc(f_ctl%block_name)
+      end function c_pvr_area_ctl_block_name
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_pvr_area_ctl_iflag(c_ctl)                  &
+     &          bind(C, NAME = 'c_pvr_area_ctl_iflag')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_render_area_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_pvr_area_ctl_iflag = C_loc(f_ctl%i_plot_area)
+      end function c_pvr_area_ctl_iflag
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_pvr_area_pvr_area_ctl(c_ctl)               &
+     &          bind(C, NAME = 'c_pvr_area_pvr_area_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_render_area_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_pvr_area_pvr_area_ctl = C_loc(f_ctl%pvr_area_ctl)
+      end function c_pvr_area_pvr_area_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_pvr_area_surf_enhanse_ctl(c_ctl)           &
+     &          bind(C, NAME = 'c_pvr_area_surf_enhanse_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_render_area_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_pvr_area_surf_enhanse_ctl = C_loc(f_ctl%surf_enhanse_ctl)
+      end function c_pvr_area_surf_enhanse_ctl
+!
+!  ---------------------------------------------------------------------
 !
       end module read_mhd_control_4_c

@@ -19,22 +19,20 @@ struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c(){
 	}
     area_c->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
 	
-	area_c->label_pvr_area =   init_label_pvr_area();
-    area_c->pvr_area_list =    init_chara_clist();
-    area_c->surf_enhanse_ctl = init_chara2_real_clist();
+    area_c->f_pvr_area_ctl =    init_chara_clist();
+    area_c->f_surf_enhanse_ctl = init_chara2_real_clist();
     
-    sprintf(area_c->surf_enhanse_ctl->c1_name, "Group_name");
-    sprintf(area_c->surf_enhanse_ctl->c2_name, "Direction");
-    sprintf(area_c->surf_enhanse_ctl->r1_name, "Opacity");
+    sprintf(area_c->f_surf_enhanse_ctl->c1_name, "Group_name");
+    sprintf(area_c->f_surf_enhanse_ctl->c2_name, "Direction");
+    sprintf(area_c->f_surf_enhanse_ctl->r1_name, "Opacity");
 	
 	return area_c;
 };
 
 void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	
-	dealloc_control_labels_f(area_c->label_pvr_area);
-	dealloc_chara_clist(area_c->pvr_area_list);
-	dealloc_chara2_real_clist(area_c->surf_enhanse_ctl);
+	dealloc_chara_clist(area_c->f_pvr_area_ctl);
+	dealloc_chara2_real_clist(area_c->f_surf_enhanse_ctl);
     
     free(area_c->c_block_name);
     area_c->f_iflag = NULL;
