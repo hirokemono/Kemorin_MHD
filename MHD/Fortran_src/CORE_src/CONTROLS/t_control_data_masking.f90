@@ -15,16 +15,13 @@
 !!        character(len = kchara), intent(in) :: hd_block
 !!  `     type(masking_by_field_ctl), intent(inout) :: mask_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_masking_ctl_data                               &
-!!     &         (id_control, hd_block, mask_ctl, level)
+!!      subroutine write_masking_ctl_data(id_control, mask_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len = kchara), intent(in) :: hd_block
 !!        type(masking_by_field_ctl), intent(in) :: mask_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine dealloc_masking_ctls(num_ctl, mask_ctl)
-!!        type(masking_by_field_ctl), intent(inout) :: mask_ctl(num_ctl)
 !!      subroutine dealloc_masking_ctl_flags(mask_ctl)
+!!        type(masking_by_field_ctl), intent(inout) :: mask_ctl
 !!
 !!      subroutine dup_masking_ctl_data(org_mask_c, new_mask_c)
 !!        type(masking_by_field_ctl), intent(in) :: org_mask_c
@@ -130,13 +127,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_masking_ctl_data                                 &
-     &         (id_control, hd_block, mask_ctl, level)
+      subroutine write_masking_ctl_data(id_control, mask_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_block
       type(masking_by_field_ctl), intent(in) :: mask_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -150,7 +145,8 @@
       maxlen = max(maxlen, len_trim(hd_masking_field))
       maxlen = max(maxlen, len_trim(hd_masking_comp))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 mask_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    mask_ctl%mask_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -160,7 +156,8 @@
 !
       call write_control_array_r2(id_control, level,                    &
      &    mask_ctl%mask_range_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                mask_ctl%block_name)
 !
       end subroutine write_masking_ctl_data
 !
@@ -186,22 +183,6 @@
       end subroutine init_masking_ctl_label
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_masking_ctls(num_ctl, mask_ctl)
-!
-      integer(kind = kint) :: num_ctl
-      type(masking_by_field_ctl), intent(inout) :: mask_ctl(num_ctl)
-!
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, num_ctl
-        call dealloc_masking_ctl_flags(mask_ctl(i))
-      end do
-!
-      end subroutine dealloc_masking_ctls
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_masking_ctl_flags(mask_ctl)

@@ -113,10 +113,6 @@
       character(len=kchara), parameter, private                         &
      &              :: hd_masking_ctl = 'masking_control'
 !
-
-      private :: read_repart_masking_ctl_array
-      private :: write_repart_masking_ctl_array
-!
 !   --------------------------------------------------------------------
 !
       contains
@@ -134,8 +130,6 @@
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      new_part_ctl%block_name = hd_masking_ctl
-      new_part_ctl%num_masking_ctl = 0
       if(new_part_ctl%i_new_patition_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
@@ -172,8 +166,8 @@
         call read_real_ctl_type(c_buf, hd_weight_to_prev,               &
      &      new_part_ctl%weight_to_previous_ctl)
 !
-        call read_repart_masking_ctl_array                              &
-     &     (id_control, hd_masking_ctl, new_part_ctl, c_buf)
+        call read_multi_masking_ctl                                     &
+     &     (id_control, hd_masking_ctl, new_part_ctl%mul_mask_c, c_buf)
       end do
       new_part_ctl%i_new_patition_ctl = 1
 !
@@ -240,8 +234,8 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    new_part_ctl%masking_weight_ctl)
 !
-      call write_repart_masking_ctl_array(id_control,                   &
-     &    hd_masking_ctl, new_part_ctl, level)
+      call write_multi_masking_ctl(id_control,                          &
+     &                             new_part_ctl%mul_mask_c, level)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
@@ -256,7 +250,8 @@
 !
 !
       new_part_ctl%block_name = hd_block
-      new_part_ctl%num_masking_ctl = 0
+      new_part_ctl%mul_mask_c%block_name = hd_masking_ctl
+      new_part_ctl%mul_mask_c%num_masking_ctl = 0
 !
         call init_c_i_array_label                                       &
      &     (hd_num_es, new_part_ctl%ndomain_section_ctl)
@@ -291,66 +286,5 @@
       end subroutine init_ctl_label_new_partition
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine read_repart_masking_ctl_array                          &
-     &         (id_control, hd_block, new_part_ctl, c_buf)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_block
-!
-      type(new_patition_control), intent(inout) :: new_part_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-      integer(kind=kint) :: n_append
-!
-!
-      if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(allocated(new_part_ctl%mask_ctl)) return
-      call alloc_repart_masking_ctl(new_part_ctl)
-!
-      do
-        call load_one_line_from_control(id_control, hd_block, c_buf)
-        if(c_buf%iend .gt. 0) exit
-        if (check_end_array_flag(c_buf, hd_block)) exit
-!
-        if(check_begin_flag(c_buf, hd_block)) then
-          n_append = new_part_ctl%num_masking_ctl
-          call append_repart_masking_ctl(n_append, hd_block,            &
-     &                                   new_part_ctl)
-          call read_masking_ctl_data(id_control, hd_block,              &
-     &        new_part_ctl%mask_ctl(new_part_ctl%num_masking_ctl),      &
-     &        c_buf)
-        end if
-      end do
-!
-      end subroutine read_repart_masking_ctl_array
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine write_repart_masking_ctl_array                         &
-     &         (id_control, hd_block, new_part_ctl, level)
-!
-      use write_control_elements
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_block
-      type(new_patition_control), intent(in) :: new_part_ctl
-!
-      integer(kind = kint), intent(inout) :: level
-!
-      integer(kind = kint) :: i
-!
-!
-      level = write_array_flag_for_ctl(id_control, level, hd_block)
-      do i = 1, new_part_ctl%num_masking_ctl
-        call write_masking_ctl_data(id_control, hd_block,               &
-     &      new_part_ctl%mask_ctl(i), level)
-      end do
-      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
-!
-      end subroutine write_repart_masking_ctl_array
-!
-!  ---------------------------------------------------------------------
 !
       end module ctl_data_volume_grouping_IO

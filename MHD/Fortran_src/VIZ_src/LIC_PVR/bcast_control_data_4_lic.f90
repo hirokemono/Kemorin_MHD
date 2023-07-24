@@ -96,8 +96,6 @@
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !
-      integer(kind = kint) :: i
-!
 !
       call calypso_mpi_bcast_one_int(lic_ctl%i_lic_control, 0)
       call calypso_mpi_bcast_character(lic_ctl%block_name,              &
@@ -123,16 +121,11 @@
       call bcast_ctl_type_c1(lic_ctl%normalization_type_ctl)
       call bcast_ctl_type_r1(lic_ctl%normalization_value_ctl)
 !
-      call calypso_mpi_bcast_one_int(lic_ctl%num_masking_ctl, 0)
-!
       call bcast_cube_noise_control_data(lic_ctl%noise_ctl)
       call bcast_kernel_control_data(lic_ctl%kernel_ctl)
       call bcast_control_vol_repart(lic_ctl%repart_ctl)
 !
-      if(my_rank .ne. 0) call alloc_lic_masking_ctl(lic_ctl)
-      do i = 1, lic_ctl%num_masking_ctl
-        call bcast_masking_ctl_data(lic_ctl%mask_ctl(i))
-      end do
+      call bcast_mul_masking_ctl_data(lic_ctl%mul_mask_c)
 !
       end subroutine bcast_lic_control_data
 !

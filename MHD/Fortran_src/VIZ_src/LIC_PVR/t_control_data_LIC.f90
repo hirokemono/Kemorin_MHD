@@ -11,33 +11,13 @@
 !!      subroutine dealloc_lic_control_flags(lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!
-!!      subroutine read_lic_masking_ctl_array                           &
-!!     &         (id_control, hd_block, lic_ctl, c_buf)
-!!        integer(kind = kint), intent(in) :: id_control
-!!        character(len = kchara), intent(in) :: hd_block
-!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_lic_masking_ctl_array                          &
-!!     &         (id_control, hd_block, lic_ctl, level)
-!!        integer(kind = kint), intent(in) :: id_control
-!!        character(len = kchara), intent(in) :: hd_block
-!!        type(lic_parameter_ctl), intent(in) :: lic_ctl
-!!        integer(kind = kint), intent(inout) :: level
-!!
 !!      subroutine add_fields_4_lic_to_fld_ctl(lic_ctl, field_ctl)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
-!!      subroutine alloc_lic_masking_ctl(lic_ctl)
-!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!
 !!      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
 !!        type(lic_parameter_ctl), intent(in) :: org_lic_c
 !!        type(lic_parameter_ctl), intent(inout) :: new_lic_c
-!!
-!!      subroutine append_lic_masking_ctl(idx_in, hd_block, lic_ctl)
-!!        integer(kind = kint), intent(in) :: idx_in
-!!        character(len=kchara), intent(in) :: hd_block
-!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags
 !!
@@ -98,7 +78,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
-      use t_control_data_masking
+      use t_control_data_maskings
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
       use t_ctl_data_volume_repart
@@ -119,8 +99,7 @@
         type(read_character_item) :: opacity_field_ctl
         type(read_character_item) :: opacity_component_ctl
 !
-        integer(kind = kint) :: num_masking_ctl = 0
-        type(masking_by_field_ctl), allocatable :: mask_ctl(:)
+        type(multi_masking_ctl) :: mul_mask_c
 !
 !>         File name for noise control block
         character(len = kchara) :: fname_LIC_noise_ctl = 'NO_FILE'
@@ -146,8 +125,6 @@
 !     2nd level for volume rendering
         integer (kind=kint) :: i_lic_control = 0
       end type lic_parameter_ctl
-!
-      private :: dealloc_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -178,73 +155,11 @@
       call reset_kernel_control_data(lic_ctl%kernel_ctl)
       call dealloc_control_vol_repart(lic_ctl%repart_ctl)
 !
-      if(lic_ctl%num_masking_ctl .gt. 0) then
-        call dealloc_masking_ctls                                       &
-     &     (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
-      end if
-      call dealloc_lic_masking_ctl(lic_ctl)
+      call dealloc_mul_masking_ctl(lic_ctl%mul_mask_c)
 !
       lic_ctl%i_lic_control = 0
 !
       end subroutine dealloc_lic_control_flags
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_lic_masking_ctl_array                             &
-     &         (id_control, hd_block, lic_ctl, c_buf)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_block
-!
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-      integer(kind=kint) :: n_append
-!
-!
-      if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(allocated(lic_ctl%mask_ctl)) return
-      call alloc_lic_masking_ctl(lic_ctl)
-!
-      do
-        call load_one_line_from_control(id_control, hd_block, c_buf)
-        if(c_buf%iend .gt. 0) exit
-        if (check_end_array_flag(c_buf, hd_block)) exit
-!
-        if(check_begin_flag(c_buf, hd_block)) then
-          n_append = lic_ctl%num_masking_ctl
-          call append_lic_masking_ctl(n_append, hd_block, lic_ctl)
-          call read_masking_ctl_data(id_control, hd_block,              &
-     &        lic_ctl%mask_ctl(lic_ctl%num_masking_ctl), c_buf)
-        end if
-      end do
-!
-      end subroutine read_lic_masking_ctl_array
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine write_lic_masking_ctl_array                            &
-     &         (id_control, hd_block, lic_ctl, level)
-!
-      use write_control_elements
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_block
-      type(lic_parameter_ctl), intent(in) :: lic_ctl
-!
-      integer(kind = kint), intent(inout) :: level
-!
-      integer(kind = kint) :: i
-!
-!
-      level = write_array_flag_for_ctl(id_control, level, hd_block)
-      do i = 1, lic_ctl%num_masking_ctl
-        call write_masking_ctl_data(id_control, hd_block,               &
-     &      lic_ctl%mask_ctl(i), level)
-      end do
-      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
-!
-      end subroutine write_lic_masking_ctl_array
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -275,121 +190,12 @@
      &     (lic_ctl%opacity_field_ctl%charavalue, field_ctl)
       end if
 !
-      do i_fld = 1, lic_ctl%num_masking_ctl
+      do i_fld = 1, lic_ctl%mul_mask_c%num_masking_ctl
         call add_mask_field_to_fld_ctl                                  &
-     &     (lic_ctl%mask_ctl(i_fld), field_ctl)
+     &     (lic_ctl%mul_mask_c%mask_ctl(i_fld), field_ctl)
       end do
 !
       end subroutine add_fields_4_lic_to_fld_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine append_lic_masking_ctl(idx_in, hd_block, lic_ctl)
-!
-      integer(kind = kint), intent(in) :: idx_in
-      character(len=kchara), intent(in) :: hd_block
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!
-      integer(kind=kint) :: num_tmp
-      type(masking_by_field_ctl), allocatable :: tmp_mask_c(:)
-!
-      integer(kind = kint) :: i
-!
-      if(idx_in.lt.0 .or. idx_in.gt.lic_ctl%num_masking_ctl) return
-!
-      num_tmp = lic_ctl%num_masking_ctl
-      allocate(tmp_mask_c(num_tmp))
-      do i = 1, num_tmp
-        call dup_masking_ctl_data(lic_ctl%mask_ctl(i), tmp_mask_c(i))
-      end do
-!
-      call dealloc_masking_ctls                                         &
-     &   (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
-      call dealloc_lic_masking_ctl(lic_ctl)
-      lic_ctl%num_masking_ctl = num_tmp + 1
-      call alloc_lic_masking_ctl(lic_ctl)
-!
-      do i = 1, idx_in
-        call dup_masking_ctl_data(tmp_mask_c(i),                        &
-     &                            lic_ctl%mask_ctl(i))
-      end do
-      call init_masking_ctl_label(hd_block,                             &
-     &                            lic_ctl%mask_ctl(idx_in+1))
-      do i = idx_in+1, num_tmp
-        call dup_masking_ctl_data(tmp_mask_c(i),                        &
-     &                            lic_ctl%mask_ctl(i+1))
-      end do
-!
-      call dealloc_masking_ctls(num_tmp, tmp_mask_c)
-      deallocate(tmp_mask_c)
-!
-      end subroutine append_lic_masking_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine delete_lic_masking_ctl(idx_in, lic_ctl)
-!
-      integer(kind = kint), intent(in) :: idx_in
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!
-      integer(kind=kint) :: num_tmp
-      type(masking_by_field_ctl), allocatable :: tmp_mask_c(:)
-!
-      integer(kind = kint) :: i
-!
-      if(idx_in.le.0                                                    &
-     &      .or. idx_in.gt.lic_ctl%num_masking_ctl) return
-!
-      num_tmp = lic_ctl%num_masking_ctl
-      allocate(tmp_mask_c(num_tmp))
-      do i = 1, num_tmp
-        call dup_masking_ctl_data(lic_ctl%mask_ctl(i), tmp_mask_c(i))
-      end do
-!
-      call dealloc_masking_ctls                                         &
-     &   (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
-      call dealloc_lic_masking_ctl(lic_ctl)
-      lic_ctl%num_masking_ctl = num_tmp - 1
-      call alloc_lic_masking_ctl(lic_ctl)
-!
-      do i = 1, idx_in-1
-        call dup_masking_ctl_data(tmp_mask_c(i), lic_ctl%mask_ctl(i))
-      end do
-      do i = idx_in+1, lic_ctl%num_masking_ctl
-        call dup_masking_ctl_data(tmp_mask_c(i+1), lic_ctl%mask_ctl(i))
-      end do
-!
-      call dealloc_masking_ctls(num_tmp, tmp_mask_c)
-      deallocate(tmp_mask_c)
-!
-      end subroutine delete_lic_masking_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_lic_masking_ctl(lic_ctl)
-!
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!
-!
-      allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
-!
-      end subroutine alloc_lic_masking_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_lic_masking_ctl(lic_ctl)
-!
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!
-!
-      if(allocated(lic_ctl%mask_ctl)) then
-        deallocate(lic_ctl%mask_ctl)
-      end if
-      lic_ctl%num_masking_ctl = 0
-!
-      end subroutine dealloc_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -446,14 +252,8 @@
       call dup_control_vol_repart(org_lic_c%repart_ctl,                 &
      &                            new_lic_c%repart_ctl)
 !
-      new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
-      if(new_lic_c%num_masking_ctl .gt. 0) then
-        allocate(new_lic_c%mask_ctl(new_lic_c%num_masking_ctl))
-        do i = 1, org_lic_c%num_masking_ctl
-          call dup_masking_ctl_data(org_lic_c%mask_ctl(i),              &
-     &                              new_lic_c%mask_ctl(i))
-        end do
-      end if
+      call dup_mul_masking_ctl(org_lic_c%mul_mask_c,                    &
+     &                         new_lic_c%mul_mask_c)
 !
       end subroutine dup_lic_control_data
 !

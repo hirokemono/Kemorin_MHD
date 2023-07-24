@@ -114,8 +114,7 @@ extern void * c_VIZ_LIC_color_field_ctl(void *f_lic_ctl);
 extern void * c_VIZ_LIC_color_comp_ctl(void *f_lic_ctl);
 extern void * c_VIZ_LIC_opacity_field_ctl(void *f_lic_ctl);
 extern void * c_VIZ_LIC_opacity_comp_ctl(void *f_lic_ctl);
-extern int    c_VIZ_LIC_num_masking_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_mask_ctl(int idx, void *f_lic_ctl);
+extern void * c_VIZ_LIC_mul_masking_ctl(void *f_lic_ctl);
 extern void * c_VIZ_LIC_fname_noise_ctl(void *f_lic_ctl);
 extern void * c_VIZ_LIC_noise_ctl(void *f_lic_ctl);
 extern void * c_VIZ_LIC_fname_kernel_ctl(void *f_lic_ctl);
@@ -255,9 +254,11 @@ extern void * c_new_repart_weight_to_prev_ctl(void *f_new_part_ctl);
 extern void * c_new_repart_mask_switch_ctl(void *f_new_part_ctl);
 extern void * c_new_repart_mask_weight_ctl(void *f_new_part_ctl);
 extern void * c_new_repart_pwr_of_vol_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_num_masking_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_mask_ctl(void *f_new_part_ctl);
+extern void * c_new_repart_mul_masking_ctl(void *f_new_part_ctl);
 
+extern void * c_VIZ_multi_masking_ctl_namefdd(void *f_new_part_ctl);
+extern void * c_VIZ_num_multi_masking_ctl(void *f_new_part_ctl);
+extern void * c_VIZ_multi_mask_ctl(int idx, void *f_new_part_ctl);
 
 extern void * set_file_fmt_items_f(void *fmt_names_c);
 
@@ -712,10 +713,11 @@ struct f_VIZ_LIC_ctl * init_f_VIZ_LIC_ctl(int idx, void *f_parent)
     f_lic_lic_ctl->f_repart_ctl =           c_VIZ_LIC_repartition_ctl(f_lic_lic_ctl->f_self);
     
     f_lic_lic_ctl->f_mask_ctl = init_void_clist(strngcopy_from_f(f_block_name));
-	f_lic_lic_ctl->f_mask_ctl->f_parent = f_lic_lic_ctl->f_self;
+	f_lic_lic_ctl->f_mask_ctl->f_parent = c_VIZ_LIC_mul_masking_ctl(f_lic_lic_ctl->f_self);
     int i;
-    for(i=0;i<c_VIZ_LIC_num_masking_ctl(f_lic_lic_ctl->f_self);i++){
-        void *f_ctl_tmp = init_f_LIC_masking_ctl(c_VIZ_LIC_mask_ctl, i, f_lic_lic_ctl->f_self);
+    for(i=0;i<c_VIZ_num_multi_masking_ctl(f_lic_lic_ctl->f_self);i++){
+        void *f_ctl_tmp = init_f_LIC_masking_ctl(c_VIZ_multi_mask_ctl, i, 
+                                                 f_lic_lic_ctl->f_mask_ctl->f_parent);
 		append_void_clist((void *) f_ctl_tmp, f_lic_lic_ctl->f_mask_ctl);
     };
     

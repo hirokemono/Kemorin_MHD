@@ -24,10 +24,8 @@
 !!     &          bind(C, NAME = 'c_VIZ_LIC_opacity_field_ctl')
 !!      type(c_ptr) function c_VIZ_LIC_opacity_comp_ctl(c_ctl)          &
 !!     &          bind(C, NAME = 'c_VIZ_LIC_opacity_comp_ctl')
-!!      integer(c_int) function c_VIZ_LIC_num_masking_ctl(c_ctl)        &
-!!     &          bind(C, NAME = 'c_VIZ_LIC_num_masking_ctl')
-!!      type(c_ptr) function c_VIZ_LIC_mask_ctl(idx_in, c_ctl)          &
-!!     &          bind(C, NAME = 'c_VIZ_LIC_mask_ctl')
+!!      integer(c_int) function c_VIZ_LIC_mul_masking_ctl(c_ctl)        &
+!!     &          bind(C, NAME = 'c_VIZ_LIC_mul_masking_ctl')
 !!      type(c_ptr) function c_VIZ_LIC_fname_noise_ctl(c_ctl)           &
 !!     &          bind(C, NAME = 'c_VIZ_LIC_fname_noise_ctl')
 !!      type(c_ptr) function c_VIZ_LIC_noise_ctl(c_ctl)                 &
@@ -146,24 +144,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(c_int) function c_VIZ_LIC_num_masking_ctl(c_ctl)          &
-     &          bind(C, NAME = 'c_VIZ_LIC_num_masking_ctl')
+      integer(c_int) function c_VIZ_LIC_mul_masking_ctl(c_ctl)          &
+     &          bind(C, NAME = 'c_VIZ_LIC_mul_masking_ctl')
       type(c_ptr), value, intent(in) :: c_ctl
       type(lic_parameter_ctl), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_LIC_num_masking_ctl = f_ctl%num_masking_ctl
-      end function c_VIZ_LIC_num_masking_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      type(c_ptr) function c_VIZ_LIC_mask_ctl(idx_in, c_ctl)            &
-     &          bind(C, NAME = 'c_VIZ_LIC_mask_ctl')
-      integer(c_int), value :: idx_in
-      type(c_ptr), value, intent(in) :: c_ctl
-      type(lic_parameter_ctl), pointer :: f_ctl
-      call c_f_pointer(c_ctl, f_ctl)
-      c_VIZ_LIC_mask_ctl = C_loc(f_ctl%mask_ctl(idx_in+1))
-      end function c_VIZ_LIC_mask_ctl
+      c_VIZ_LIC_mul_masking_ctl = f_ctl%mul_mask_c
+      end function c_VIZ_LIC_mul_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !
