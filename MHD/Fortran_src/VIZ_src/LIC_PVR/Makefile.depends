@@ -68,7 +68,7 @@ t_LIC_re_partition.o: $(LIC_DIR)/t_LIC_re_partition.f90 m_precision.o m_machine_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_LIC_visualizer.o: $(LIC_DIR)/t_LIC_visualizer.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_VIZ_step_parameter.o t_VIZ_mesh_field.o t_time_data.o t_mesh_data.o t_comm_table.o t_phys_data.o t_next_node_ele_4_node.o t_jacobians.o t_control_data_vizs.o t_lic_rendering.o t_mesh_SR.o t_fem_gauss_int_coefs.o t_shape_functions.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_LIC.o: $(LIC_DIR)/t_control_data_LIC.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_masking.o t_control_data_LIC_noise.o t_control_data_LIC_kernel.o t_ctl_data_volume_repart.o skip_comment_f.o write_control_elements.o t_control_array_character3.o add_nodal_fields_ctl.o
+t_control_data_LIC.o: $(LIC_DIR)/t_control_data_LIC.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_maskings.o t_control_data_LIC_noise.o t_control_data_LIC_kernel.o t_ctl_data_volume_repart.o skip_comment_f.o t_control_array_character3.o add_nodal_fields_ctl.o t_control_data_masking.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_LIC_kernel.o: $(LIC_DIR)/t_control_data_LIC_kernel.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

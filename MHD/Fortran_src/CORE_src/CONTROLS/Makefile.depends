@@ -66,6 +66,8 @@ t_control_array_real3.o: $(CTL_DIR)/t_control_array_real3.f90 m_precision.o m_ma
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_masking.o: $(CTL_DIR)/t_control_data_masking.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real2.o skip_comment_f.o write_control_elements.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_maskings.o: $(CTL_DIR)/t_control_data_maskings.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_data_masking.o skip_comment_f.o write_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_FEM_mesh.o: $(CTL_DIR)/t_ctl_data_4_FEM_mesh.f90 m_precision.o t_control_array_character.o t_control_array_integer.o m_machine_parameter.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_Multigrid.o: $(CTL_DIR)/t_ctl_data_4_Multigrid.f90 m_precision.o m_machine_parameter.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o

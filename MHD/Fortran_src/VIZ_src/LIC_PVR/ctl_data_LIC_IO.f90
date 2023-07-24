@@ -193,8 +193,8 @@
         call sel_read_LIC_kernel_ctl_file(id_control, hd_kernel,        &
      &      lic_ctl%fname_LIC_kernel_ctl, lic_ctl%kernel_ctl, c_buf)
 !
-        call read_lic_masking_ctl_array                                 &
-     &     (id_control, hd_masking_ctl, lic_ctl, c_buf)
+        call read_multi_masking_ctl                                     &
+     &     (id_control, hd_masking_ctl, lic_ctl%mul_mask_c, c_buf)
       end do
       lic_ctl%i_lic_control = 1
 !
@@ -249,8 +249,8 @@
 !
       call sel_write_ctl_file_vol_repart(id_control, hd_lic_partition,  &
      &   lic_ctl%fname_vol_repart_ctl, lic_ctl%repart_ctl, level)
-      call write_lic_masking_ctl_array                                  &
-     &   (id_control, hd_masking_ctl, lic_ctl, level)
+      call write_multi_masking_ctl                                      &
+     &   (id_control, lic_ctl%mul_mask_c, level)
       call sel_write_cube_noise_ctl_file(id_control, hd_cube_noise,     &
      &    lic_ctl%fname_LIC_noise_ctl, lic_ctl%noise_ctl, level)
       call sel_write_LIC_kernel_ctl_file                                &
@@ -285,7 +285,8 @@
 !
 !
       lic_ctl%block_name = hd_block
-      lic_ctl%num_masking_ctl = 0
+      lic_ctl%mul_mask_c%block_name = hd_masking_ctl
+      lic_ctl%mul_mask_c%num_masking_ctl = 0
       call init_cube_noise_ctl_label(hd_cube_noise, lic_ctl%noise_ctl)
       call init_kernel_control_label(hd_kernel, lic_ctl%kernel_ctl)
       call init_control_vol_repart_label(hd_lic_partition,              &

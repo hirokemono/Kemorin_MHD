@@ -13,8 +13,8 @@
 !!        type(new_patition_control), intent(inout) :: new_part_ctl
 !!      subroutine bcast_FEM_sleeve_control(sleeve_ctl)
 !!        type(FEM_sleeve_control), intent(inout) :: sleeve_ctl
-!!      subroutine bcast_masking_ctl_data(mask_ctl)
-!!        type(masking_by_field_ctl), intent(inout) :: mask_ctl
+!!      subroutine bcast_mul_masking_ctl_data(mul_mask_c)
+!!        type(multi_masking_ctl), intent(inout) :: mul_mask_c
 !!@endverbatim
       module bcast_ctl_data_vol_repart
 !
@@ -25,7 +25,7 @@
 !
       implicit  none
 !
-      private :: bcast_ctl_data_new_decomp
+      private :: bcast_ctl_data_new_decomp, bcast_masking_ctl_data
 !
 !   --------------------------------------------------------------------
 !
@@ -69,8 +69,6 @@
 !
       type(new_patition_control), intent(inout) :: new_part_ctl
 !
-      integer(kind = kint) :: i
-!
       call bcast_ctl_type_c1(new_part_ctl%repart_table_head_ctl)
       call bcast_ctl_type_c1(new_part_ctl%repart_table_fmt_ctl)
 !
@@ -85,11 +83,7 @@
       call bcast_ctl_type_i1(new_part_ctl%sleeve_level_ctl)
       call bcast_ctl_type_i1(new_part_ctl%ratio_of_grouping_ctl)
 !
-      call calypso_mpi_bcast_one_int(new_part_ctl%num_masking_ctl, 0)
-      if(my_rank .ne. 0) call alloc_repart_masking_ctl(new_part_ctl)
-      do i = 1, new_part_ctl%num_masking_ctl
-        call bcast_masking_ctl_data(new_part_ctl%mask_ctl(i))
-      end do
+      call bcast_mul_masking_ctl_data(new_part_ctl%mul_mask_c)
 !
       call calypso_mpi_bcast_character(new_part_ctl%block_name,         &
      &                                 cast_long(kchara), 0)
@@ -123,6 +117,30 @@
       end subroutine bcast_FEM_sleeve_control
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine bcast_mul_masking_ctl_data(mul_mask_c)
+!
+      use t_control_data_maskings
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
+!
+      type(multi_masking_ctl), intent(inout) :: mul_mask_c
+!
+      integer(kind = kint) :: i
+!
+!
+      call calypso_mpi_bcast_character(mul_mask_c%block_name,           &
+     &                                 cast_long(kchara), 0)
+      call calypso_mpi_bcast_one_int(mul_mask_c%num_masking_ctl, 0)
+      if(my_rank .ne. 0) call alloc_mul_masking_ctl(mul_mask_c)
+      do i = 1, mul_mask_c%num_masking_ctl
+        call bcast_masking_ctl_data(mul_mask_c%mask_ctl(i))
+      end do
+!
+      end subroutine bcast_mul_masking_ctl_data
+!
 !  ---------------------------------------------------------------------
 !
       subroutine bcast_masking_ctl_data(mask_ctl)

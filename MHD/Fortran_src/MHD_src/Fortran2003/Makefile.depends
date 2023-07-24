@@ -72,7 +72,7 @@ c_link_masking_by_field_ctl.o: $(MHD_F2003_DIR)/c_link_masking_by_field_ctl.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_mhd_evo_scheme_ctl.o: $(MHD_F2003_DIR)/c_link_mhd_evo_scheme_ctl.f90 t_ctl_data_mhd_evo_scheme.o
 	$(F90) -c $(F90OPTFLAGS) $<
-c_link_new_patition_ctl.o: $(MHD_F2003_DIR)/c_link_new_patition_ctl.f90 t_ctl_data_volume_grouping.o
+c_link_new_patition_ctl.o: $(MHD_F2003_DIR)/c_link_new_patition_ctl.f90 t_ctl_data_volume_grouping.o t_control_data_maskings.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_pick_sph_spectr_ctl.o: $(MHD_F2003_DIR)/c_link_pick_sph_spectr_ctl.f90 t_ctl_data_pick_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
