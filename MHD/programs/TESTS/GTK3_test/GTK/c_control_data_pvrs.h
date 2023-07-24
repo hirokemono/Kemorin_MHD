@@ -20,7 +20,9 @@
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "c_ctl_data_PVR_colormap.h"
 #include "c_ctl_data_PVR_view_matrix.h"
+#include "c_ctl_data_PVR_sections.h"
 #include "c_ctl_data_PSF_ISOs.h"
+#include "c_control_data_pvrs.h"
 #include "t_control_data_4_pvr_movie_c.h"
 #include "t_control_data_4_pvr_c.h"
 
@@ -36,31 +38,6 @@ struct f_PVR_quilt_image_ctl{
     
     struct void_clist *f_mul_qmats_c;
 };
-
-struct f_PVR_section_ctl{
-     void * f_self;
-     int * f_iflag;
-     
-    char *c_block_name;
-    char *c_fname_sect_ctl;
-    
-    struct f_VIZ_PSF_def_ctl *f_psf_def_c;
-    
-    struct real_ctl_item *f_opacity_ctl;
-    struct chara_ctl_item *f_zeroline_switch_ctl;
-};
-
-struct f_PVR_isosurface_ctl{
-     void * f_self;
-     int * f_iflag;
-     
-    char *c_block_name;
-    
-    struct chara_ctl_item *f_isosurf_type_ctl;
-    struct real_ctl_item  *f_iso_value_ctl;
-    struct real_ctl_item  *f_opacity_ctl;
-};
-
 
 struct f_VIZ_PVR_ctl{
 	void * f_self;

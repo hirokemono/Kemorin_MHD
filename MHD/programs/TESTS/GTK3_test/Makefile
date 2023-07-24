@@ -58,6 +58,7 @@ c_ctl_data_PSF_ISOs.o \
 c_ctl_data_MAP.o \
 c_ctl_data_PVR_colormap.o \
 c_ctl_data_PVR_view_matrix.o \
+c_ctl_data_PVR_sections.o \
 c_ctl_data_SGS_model.o
 
 
@@ -131,6 +132,10 @@ control_panel_PSF_ISO_GTK.o: GTK/control_panel_PSF_ISO_GTK.c GTK/control_panel_P
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panel_PSF_ISO_GTK.c
 
+c_ctl_data_PVR_sections.o: GTK/c_ctl_data_PVR_sections.c GTK/c_ctl_data_PVR_sections.h
+	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_ctl_data_PVR_sections.c
+
 c_ctl_data_PVR_view_matrix.o: GTK/c_ctl_data_PVR_view_matrix.c GTK/c_ctl_data_PVR_view_matrix.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_ctl_data_PVR_view_matrix.c
@@ -171,7 +176,7 @@ c_ctl_data_4_sph_monitor.o: GTK/c_ctl_data_4_sph_monitor.c GTK/c_ctl_data_4_sph_
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_ctl_data_4_sph_monitor.c
 
-c_control_data_pvrs.o: GTK/c_control_data_pvrs.c GTK/c_control_data_pvrs.h GTK/c_ctl_data_sph_monitor_arrays.h
+c_control_data_pvrs.o: GTK/c_control_data_pvrs.c GTK/c_control_data_pvrs.h GTK/c_ctl_data_PVR_view_matrix.h GTK/c_ctl_data_PVR_sections.h GTK/c_ctl_data_sph_monitor_arrays.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/c_control_data_pvrs.c
 
