@@ -329,6 +329,7 @@
       call set_field_label_to_ctl(velocity,                 array_c2i)
       call set_field_label_to_ctl(vorticity,                array_c2i)
       call set_field_label_to_ctl(pressure,                 array_c2i)
+      call set_field_label_to_ctl(system_Rotation,          array_c2i)
       call set_field_label_to_ctl(magnetic_field,           array_c2i)
       call set_field_label_to_ctl(vector_potential,         array_c2i)
       call set_field_label_to_ctl(current_density,          array_c2i)
@@ -346,7 +347,6 @@
       call set_field_label_to_ctl(entropy_source,           array_c2i)
       call set_field_label_to_ctl(density,                  array_c2i)
       call set_field_label_to_ctl(perturbation_density,     array_c2i)
-      call set_field_label_to_ctl(system_Rotation,          array_c2i)
 !
       end subroutine set_base_field_names_to_ctl
 !

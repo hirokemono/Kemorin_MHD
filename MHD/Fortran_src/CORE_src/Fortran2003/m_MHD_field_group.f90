@@ -167,9 +167,12 @@
       use m_energy_flux_labels
       use m_field_product_labels
       use m_explicit_term_labels
+      use field_names_to_c
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
       type(C_ptr), value :: field_group_c
+!
+      type(C_ptr) :: base_fld_c
 !
       character(len=kchara), pointer :: field_grp(:)
 !
@@ -178,7 +181,8 @@
      &   (ngrp_MHD_fields, MHD_field_group, field_grp)
 !
 !
-      nfld_group_c( 1) = num_base_fields()
+      base_fld_c =  c_link_base_field_names_to_ctl(field_group_c)
+      nfld_group_c( 1) = base_fld_list%num
       nfld_group_c( 2) = num_base_forces()
       nfld_group_c( 3) = num_energy_fluxes()
       nfld_group_c( 4) = num_base_diffusions()

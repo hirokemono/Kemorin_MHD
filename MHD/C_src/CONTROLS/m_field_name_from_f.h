@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 #include "t_control_label_from_f.h"
+#include "t_ctl_array_chara2_int_items_c.h"
 
 #ifndef M_FIELD_NAME_FROM_F_
 #define M_FIELD_NAME_FROM_F_

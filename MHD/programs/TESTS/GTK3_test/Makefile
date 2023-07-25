@@ -67,7 +67,7 @@ read_mhd_control_4_c.o
 
 all: control_GTK
 
-control_GTK: $(OBJECTS) $(MODULES)
+control_GTK: $(OBJECTS) $(MODULES) $(SRCDIR)/MHD/pythons/libcalypso_to_pythons.so
 	$(F90) $(F90OPTFLAGS) $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	-o control_GTK $(OBJECTS) $(MODULES) $(KEMO_LIBS) $(GTK3_LIBS)
 

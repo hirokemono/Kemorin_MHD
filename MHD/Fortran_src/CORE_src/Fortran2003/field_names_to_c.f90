@@ -10,7 +10,6 @@
 !!@verbatim
 !!      integer(c_int) function lengthchara_f() bind(c)
 !!
-!!      integer(c_int) function num_base_fields_f() bind(c)
 !!      subroutine set_base_field_names_f                               &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!      type(C_ptr) function c_link_base_field_names_to_ctl(c_ctl)      &
@@ -185,7 +184,7 @@
 !
       implicit none
 !
-      type(ctl_array_c2i), save, private, target :: base_fld_list
+      type(ctl_array_c2i), save, target :: base_fld_list
       type(ctl_array_chara), save, private, target :: tevo_fld_list
 !
 ! ----------------------------------------------------------------------
@@ -201,16 +200,6 @@
       end function lengthchara_f
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_base_fields_f() bind(c)
-!
-      use m_base_field_labels
-!
-      num_base_fields_f = num_base_fields()
-      return
-      end function num_base_fields_f
-!
 ! ----------------------------------------------------------------------
 !
       subroutine set_base_field_names_f                                 &

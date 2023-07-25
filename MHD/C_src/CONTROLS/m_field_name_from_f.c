@@ -69,6 +69,9 @@ void set_flag_asym_tensor_comp_f(int *ncomp1, char *name1, char *math1);
 void set_primary_componnet_flag_f(char *name1);
 
 
+extern void * c_link_base_field_names_to_ctl(void *fld_names_c);
+
+
 static void set_field_groups_from_f(struct field_names_f *fld_list){
 	int i, len;
 	char *packed_name;
@@ -152,7 +155,17 @@ static void set_field_names_from_f(struct field_names_f *fld_list){
 	ist = fld_list->istack_fields[0];
 	set_base_field_names_f(&fld_list->num_comp[ist], 
 		&packed_name[fld_list->len_f * ist], &packed_math[fld_list->len_f * ist]);
-	ist = fld_list->istack_fields[1];
+    
+    struct chara2_int_clist *base_field_name_clist = init_f_ctl_c2i_array(c_link_base_field_names_to_ctl, NULL);
+    struct chara2_int_ctl_item *tmp_item;
+    for(i=0;i<fld_list->istack_fields[1];i++){
+        tmp_item = chara2_int_clist_at_index(i, base_field_name_clist);
+        printf("Field_old %d %s %s %d\n", i, &packed_name[fld_list->len_f * i], &packed_math[fld_list->len_f * i],
+               fld_list->num_comp[i]);
+        printf("Field_neo %d %s %s %d\n", i, tmp_item->c1_tbl, tmp_item->c2_tbl, tmp_item->i_data);
+    }
+    
+    ist = fld_list->istack_fields[1];
 	set_base_force_labels_f(&fld_list->num_comp[ist], 
 		&packed_name[fld_list->len_f * ist], &packed_math[fld_list->len_f * ist]);
 	ist = fld_list->istack_fields[2];
@@ -266,23 +279,11 @@ static void set_field_names_from_f(struct field_names_f *fld_list){
 		printf("malloc error for field_math\n");
 		exit(0);
 	}
-	
 	for(i=0;i<fld_list->ntot_fields;i++){
-		len = strlen(&packed_name[fld_list->len_f * i])+1;
-		if((fld_list->field_name[i]
-				= (char *)calloc(len, sizeof(char))) == NULL){
-			printf("malloc error for field_name[%d]\n", i);
-			exit(0);
-		};
-		
-		len = strlen(&packed_math[fld_list->len_f * i])+1;
-		if((fld_list->field_math[i]
-				= (char *)calloc(len, sizeof(char))) == NULL){
-			printf("malloc error for field_math[%d]\n", i);
-			exit(0);
-		};
-		
-		strcpy(fld_list->field_name[i], &packed_name[fld_list->len_f * i]);
+        fld_list->field_name[i] = alloc_string(strlen(&packed_name[fld_list->len_f * i]));
+        fld_list->field_math[i] = alloc_string(strlen(&packed_math[fld_list->len_f * i]));
+
+        strcpy(fld_list->field_name[i], &packed_name[fld_list->len_f * i]);
 		strcpy(fld_list->field_math[i], &packed_math[fld_list->len_f * i]);
 	}
 	
