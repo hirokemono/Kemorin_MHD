@@ -2470,6 +2470,9 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
                 = (struct f_VIZ_FLINE_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_fline_ctls);
         f_fline_ctl->void_panel = (void *) init_FLINE_GTK_widgets(f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
+    mWidgets->f_repart_vws->label_field_list = f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl;
+    mWidgets->f_repart_vws->label_file_format_list = init_f_ctl_chara_array(set_file_fmt_items_f,
+                                                                            f_MHD_ctl->f_self);
     
 	GtkWidget *expand_MHD_psf = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_psf_ctls,
                                                           (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,

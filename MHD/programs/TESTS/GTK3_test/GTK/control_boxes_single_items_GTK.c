@@ -80,8 +80,8 @@ void cb_file_name(GtkEntry *widget, gpointer data)
 }
 
 
-GtkWidget *hbox_with_block_checkbox(int *iflag_ptr){
-	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+GtkWidget *hbox_with_block_checkbox(int *iflag_ptr, const char *c_block_name){
+    GtkWidget *label = gtk_label_new(c_block_name);
 	GtkWidget *checkbox = gtk_check_button_new();
 	if(*iflag_ptr == 0){
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox), FALSE);
@@ -91,7 +91,15 @@ GtkWidget *hbox_with_block_checkbox(int *iflag_ptr){
 	g_signal_connect(G_OBJECT(checkbox), "toggled", 
                      G_CALLBACK(cb_check_toggle), (gpointer) iflag_ptr);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), checkbox, TRUE, TRUE, 0);
+    GtkWidget *hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), checkbox, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox1), label, TRUE, TRUE, 0);
+    
+    GtkWidget *vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(vbox1), hbox1, TRUE, TRUE, 0);
+
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_box_pack_start(GTK_BOX(hbox), vbox1, TRUE, TRUE, 0);
 	return hbox;
 }
 
@@ -100,7 +108,7 @@ GtkWidget * draw_control_block(const char * title, int *iflag_ptr,
 {
 	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	
-	GtkWidget *hbox1 = hbox_with_block_checkbox(iflag_ptr);
+	GtkWidget *hbox1 = hbox_with_block_checkbox(iflag_ptr, "");
 	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox1, FALSE, TRUE, 0);
 	
@@ -145,8 +153,7 @@ void append_block_file_switch_hbox(char *f_file_name, GtkWidget *hbox2)
 GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr, char *f_file_name,
                                              GtkWidget *window, GtkWidget *box_in)
 {
-	GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	GtkWidget *hbox1 = hbox_with_block_checkbox(iflag_ptr);
+	GtkWidget *hbox1 = hbox_with_block_checkbox(iflag_ptr, "");
 	GtkWidget *vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox1, FALSE, TRUE, 0);
 	
@@ -160,6 +167,7 @@ GtkWidget * draw_control_block_w_file_switch(const char * title, int *iflag_ptr,
 	GtkWidget *expander = wrap_into_expanded_frame_gtk
 			(duplicate_underscore(title), window, vbox1);
 	
+    GtkWidget *hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(hbox0), vbox0, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox0), expander, FALSE, FALSE, 0);
 	return hbox0;
@@ -185,8 +193,7 @@ static void cb_real_ctl_item(GtkEntry *spinner, gpointer data)
 
 GtkWidget * draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem)
 {
-	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
-	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
+	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag, f_citem->c_block_name);
 	
 	GtkWidget *char_switch = gtk_switch_new();
 	g_object_set_data(G_OBJECT(char_switch), "chara_ctl_item", (gpointer) f_citem);
@@ -198,15 +205,13 @@ GtkWidget * draw_chara_switch_entry_hbox(struct chara_ctl_item * f_citem)
 	g_signal_connect(G_OBJECT(char_switch), "notify::active",
 					 G_CALLBACK(cb_char_switch), (gpointer) NULL);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), char_switch, TRUE, FALSE, 0);
 	return hbox;
 }
 
 GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem)
 {
-	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
-	GtkWidget *label = gtk_label_new(f_citem->c_block_name);
+	GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag, f_citem->c_block_name);
 	
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_entry_new();
@@ -215,20 +220,17 @@ GtkWidget *draw_chara_item_entry_hbox(struct chara_ctl_item * f_citem)
 	g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(cb_chara_ctl_item), 
 					 (gpointer) f_citem);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	return hbox;
 }
 
 GtkWidget *draw_chara_item_combobox_hbox(struct chara_clist *item_list,
                                          struct chara_ctl_item *f_citem, GtkWidget *window){
-    GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
-    GtkWidget *label = gtk_label_new(f_citem->c_block_name);
+    GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag, f_citem->c_block_name);
     
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     add_control_combobox_vbox(f_citem, item_list, vbox);
     
-    gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
     return hbox;
 }
@@ -238,8 +240,7 @@ GtkWidget *draw_int_item_entry_hbox(struct int_ctl_item *f_iitem){
 	GtkAdjustment *adjust = gtk_adjustment_new(f_iitem->i_data, 0, 2147483648, 1,
                     100, 21474836);
 	
-	GtkWidget *hbox = hbox_with_block_checkbox(f_iitem->f_iflag);
-	GtkWidget *label = gtk_label_new(strngcopy_from_f(f_iitem->c_block_name));
+	GtkWidget *hbox = hbox_with_block_checkbox(f_iitem->f_iflag, f_iitem->c_block_name);
 	
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_spin_button_new(adjust, 1, 0);
@@ -248,9 +249,7 @@ GtkWidget *draw_int_item_entry_hbox(struct int_ctl_item *f_iitem){
 				G_CALLBACK(cb_int_ctl_item), (gpointer) NULL);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry), f_iitem->i_data);
 	
-	gtk_widget_set_halign(label, GTK_ALIGN_START);
 	gtk_widget_set_halign(entry, GTK_ALIGN_START);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	return hbox;
 }
@@ -258,8 +257,7 @@ GtkWidget *draw_int_item_entry_hbox(struct int_ctl_item *f_iitem){
 GtkWidget *draw_real_item_entry_hbox(struct real_ctl_item * f_ritem){
 	GtkAdjustment *adjust = gtk_adjustment_new(f_ritem->r_data,
                                                -1.0e30, 1.0e30, 0.1, 100, 21474836);
-	GtkWidget *hbox = hbox_with_block_checkbox(f_ritem->f_iflag);
-	GtkWidget *label = gtk_label_new(f_ritem->c_block_name);
+	GtkWidget *hbox = hbox_with_block_checkbox(f_ritem->f_iflag, f_ritem->c_block_name);
 	
 	/* Generate file entry  */
 	GtkWidget *entry = gtk_spin_button_new(adjust, 1, 0);
@@ -268,7 +266,6 @@ GtkWidget *draw_real_item_entry_hbox(struct real_ctl_item * f_ritem){
 	g_signal_connect(G_OBJECT(entry), "value-changed",
 				G_CALLBACK(cb_real_ctl_item), (gpointer) f_ritem);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	return hbox;
 }
@@ -300,8 +297,7 @@ GtkWidget *draw_real2_item_entry_hbox(struct real2_ctl_item * f_r2item){
 	GtkAdjustment *adjust2 = gtk_adjustment_new(f_r2item->r_data[1],
                                                -1.0e30, 1.0e30, 0.1, 100, 21474836);
 
-	GtkWidget *hbox = hbox_with_block_checkbox(f_r2item->f_iflag);
-	GtkWidget *label = gtk_label_new(f_r2item->c_block_name);
+	GtkWidget *hbox = hbox_with_block_checkbox(f_r2item->f_iflag, f_r2item->c_block_name);
 	
 	/* Generate file entry  */
 	GtkWidget *entry1 = gtk_spin_button_new(adjust1, 1, 0);
@@ -315,7 +311,6 @@ GtkWidget *draw_real2_item_entry_hbox(struct real2_ctl_item * f_r2item){
 	g_signal_connect(G_OBJECT(entry2), "value-changed",
 				G_CALLBACK(cb_real2_ctl_item), (gpointer) f_r2item);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry1, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry2, TRUE, TRUE, 0);
 	return hbox;
@@ -356,8 +351,7 @@ GtkWidget *draw_real3_item_entry_hbox(struct real3_ctl_item * f_r3item){
                                                -1.0e30, 1.0e30, 0.1, 100, 21474836);
 	GtkAdjustment *adjust3 = gtk_adjustment_new(f_r3item->r_data[2],
                                                -1.0e30, 1.0e30, 0.1, 100, 21474836);
-	GtkWidget *hbox = hbox_with_block_checkbox(f_r3item->f_iflag);
-	GtkWidget *label = gtk_label_new(f_r3item->c_block_name);
+	GtkWidget *hbox = hbox_with_block_checkbox(f_r3item->f_iflag, f_r3item->c_block_name);
 	
 	/* Generate file entry  */
 	GtkWidget *entry1 = gtk_spin_button_new(adjust1, 1, 0);
@@ -381,7 +375,6 @@ GtkWidget *draw_real3_item_entry_hbox(struct real3_ctl_item * f_r3item){
 	g_signal_connect(G_OBJECT(entry3), "value-changed",
 				G_CALLBACK(cb_real3_3_ctl_item), (gpointer) f_r3item);
 	
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry1, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry2, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), entry3, TRUE, TRUE, 0);

@@ -96,13 +96,10 @@ static void add_field_combobox_vbox(struct chara_ctl_item *f_citem,
 
 GtkWidget *draw_field_combobox_hbox(struct chara_int2_clist *field_list,
                                     struct chara_ctl_item *f_citem, GtkWidget *window){
-    GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag);
-    GtkWidget *label = gtk_label_new(f_citem->c_block_name);
+    GtkWidget *hbox = hbox_with_block_checkbox(f_citem->f_iflag, f_citem->c_block_name);
     
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     add_field_combobox_vbox(f_citem, field_list, vbox);
-    
-    gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
     return hbox;
 }

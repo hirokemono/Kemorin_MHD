@@ -24,7 +24,7 @@
 
 /* prototypes */
 
-GtkWidget *hbox_with_block_checkbox(int *iflag_ptr);
+GtkWidget *hbox_with_block_checkbox(int *iflag_ptr, const char *c_block_name);
 
 GtkWidget * draw_control_block(const char * title, int *iflag_ptr, 
 							   GtkWidget *window, GtkWidget *box_in);
