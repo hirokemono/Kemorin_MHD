@@ -57,7 +57,7 @@
         kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle);
         self.eyeRatio= (CGFloat) kemoview_get_view_parameter(ISET_EYESEP, 0);
     }
-    return self.Quilt_flag;
+    return (int) self.Quilt_flag;
 }
 - (IBAction) SetQuiltRawByInput:(id)sender
 {

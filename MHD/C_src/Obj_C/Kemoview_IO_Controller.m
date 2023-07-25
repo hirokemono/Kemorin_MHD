@@ -54,7 +54,7 @@
     [KemoviewOpenPanelObj setAllowedFileTypes:kemoviewFileTypes];
     [KemoviewOpenPanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger KemoviewOpenInteger){
-	if(KemoviewOpenInteger == NSFileHandlingPanelOKButton){
+	if(KemoviewOpenInteger == NSModalResponseOK){
 		NSString *kemoviewOpenFilename = [[KemoviewOpenPanelObj URL] path];
 		[self OpenKemoviewerFile:kemoviewOpenFilename];
 	};
@@ -66,7 +66,7 @@
 	NSSavePanel *ViewMatrixSavePanelObj	= [NSSavePanel savePanel];
     [ViewMatrixSavePanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger ViewMatrixSaveInt){
-	if(ViewMatrixSaveInt == NSFileHandlingPanelOKButton){
+	if(ViewMatrixSaveInt == NSModalResponseOK){
 		
 		NSString * ViewMatrixFilename = [[ ViewMatrixSavePanelObj URL] path];
 		NSString * ViewMatrixDirectory = [[ ViewMatrixSavePanelObj directoryURL] path];
@@ -91,7 +91,7 @@
 /*    [ViewMatrixOpenPanelObj setAllowedFileTypes:MatrixFileTypes];*/
     [ViewMatrixOpenPanelObj beginSheetModalForWindow:window 
                                  completionHandler:^(NSInteger ViewMatrixOpenInteger){
-    if(ViewMatrixOpenInteger == NSFileHandlingPanelOKButton){
+    if(ViewMatrixOpenInteger == NSModalResponseOK){
 		
 		NSString * ViewMatrixFilename = [[ ViewMatrixOpenPanelObj URL] path];
 		NSString * ViewMatrixDirectory = [[ ViewMatrixOpenPanelObj directoryURL] path];
@@ -151,7 +151,7 @@
 	[ImageSavePanelObj setCanSelectHiddenExtension:YES];
     [ImageSavePanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger ImageSaveInt){
-	if(ImageSaveInt == NSFileHandlingPanelOKButton){
+	if(ImageSaveInt == NSModalResponseOK){
 		
 		NSString * ImageFilename = [[ ImageSavePanelObj URL] path];
         // NSString * ImageDirectory = [ ImageSavePanelObj directory];

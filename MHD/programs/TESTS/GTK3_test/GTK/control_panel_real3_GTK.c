@@ -91,7 +91,7 @@ void init_r3_spins_tree_view(struct real3_clist *ctl_clist, GtkWidget *clist_tre
     g_signal_connect(G_OBJECT(renderer_spin3), "edited",
                      G_CALLBACK(c_spin3_edited_cb), (gpointer) clist_tree_view);
 
-    ctl_clist->index_bc = append_r3_list_from_ctl(ctl_clist->index_bc, &ctl_clist->r3_item_head,
+    ctl_clist->index_bc = append_r3_list_from_ctl(ctl_clist->index_bc, ctl_clist,
                                                   GTK_TREE_VIEW(clist_tree_view));
 }
 

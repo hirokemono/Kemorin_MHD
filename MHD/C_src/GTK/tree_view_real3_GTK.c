@@ -26,10 +26,11 @@ int append_r3_item_to_tree(int index, double r1_data, double r2_data, double r3_
     return index + 1;
 }
 
-int append_r3_list_from_ctl(int index, struct real3_ctl_list *head, 
+int append_r3_list_from_ctl(int index, struct real3_clist *r3_clist, 
                             GtkTreeView *r3_tree_view){
     GtkTreeModel *model = gtk_tree_view_get_model (r3_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    struct real3_ctl_list *head = &r3_clist->r3_item_head;
     head = head->_next;
     while (head != NULL){
         index = append_r3_item_to_tree(index, head->r3_item->r_data[0], head->r3_item->r_data[1],
@@ -209,7 +210,7 @@ int add_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist){
    	if(count_real3_clist(r3_clist) == 0){
 		append_real3_clist(value1, value2, value3, r3_clist);
 		index = count_real3_clist(r3_clist);
-		index = append_r3_list_from_ctl(index, &r3_clist->r3_item_head, r3_tree_view);
+		index = append_r3_list_from_ctl(index, r3_clist, r3_tree_view);
         return index;
     };
 	
@@ -264,7 +265,7 @@ int add_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist){
     g_list_free(reference_list);
     
     gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
-    index = append_r3_list_from_ctl(index, &r3_clist->r3_item_head, r3_tree_view);
+    index = append_r3_list_from_ctl(index, r3_clist, r3_tree_view);
     return index;
 }
 

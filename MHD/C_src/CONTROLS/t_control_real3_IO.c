@@ -223,14 +223,14 @@ void del_real3_ctl_list_by_index(int index, struct real3_ctl_list *head){
 	return;
 };
 
-void update_real3_ctl_list_by_index(int index, double r1_in, double r2_in, double r3_in, 
+static void update_real3_ctl_list_by_index(int index, double r1_in, double r2_in, double r3_in, 
 			struct real3_ctl_list *head){
 	head = find_r3_ctl_list_item_by_index(index, head);
 	if(head != NULL) update_real3_ctl_item_c(r1_in, r2_in, r3_in, head->r3_item);
 	return;
 };
 
-void set_from_real3_ctl_list_at_index(int index, struct real3_ctl_list *head,
+static void set_from_real3_ctl_list_at_index(int index, struct real3_ctl_list *head,
 			double *r1_out, double *r2_out, double *r3_out){
 	head = find_r3_ctl_list_item_by_index(index, head);
 	if(head != NULL) set_from_real3_ctl_item_c(head->r3_item, r1_out, r2_out, r3_out);
@@ -271,7 +271,7 @@ static void add_real3_ctl_list_after_c_tbl(double ref_1, double ref_2, double re
 	update_real3_ctl_item_c(ave[0], ave[1], ave[2], head->r3_item);
 	return;
 };
-void del_real3_ctl_list_by_c_tbl(double ref_1, double ref_2, double ref_3, 
+static void del_real3_ctl_list_by_c_tbl(double ref_1, double ref_2, double ref_3,
 			struct real3_ctl_list *head){
 	head = find_r3_ctl_list_item_by_value(ref_1, ref_2, ref_3, head);
 	if(head != NULL) delete_real3_ctl_list(head);
@@ -382,7 +382,7 @@ void set_from_real3_clist_at_c_tbl(double ref_1, double ref_2, double ref_3,
     return;
 };
 
-void copy_from_real3_ctl_list(struct real3_ctl_list *head, int num,
+static void copy_from_real3_ctl_list(struct real3_ctl_list *head, int num,
 			double *v1, double *v2, double *v3){
 	int i;
     head = head->_next;

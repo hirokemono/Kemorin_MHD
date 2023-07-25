@@ -118,7 +118,6 @@ int write_image_size_ctl_c(FILE *fp, int level, const char *label,
 
 
 struct streo_view_ctl_c * init_streo_view_ctl_c(void){
-	int i;
     struct streo_view_ctl_c *f_streo;
     if((f_streo = (struct streo_view_ctl_c *) malloc(sizeof(struct streo_view_ctl_c))) == NULL) {
         printf("malloc error for streo_view_ctl_c \n");
@@ -186,7 +185,6 @@ int write_streo_view_ctl_c(FILE *fp, int level, const char *label,
 
 
 struct projection_mat_ctl_c * init_projection_mat_ctl_c(void){
-	int i;
     struct projection_mat_ctl_c *f_proj;
     if((f_proj = (struct projection_mat_ctl_c *) malloc(sizeof(struct projection_mat_ctl_c))) == NULL) {
         printf("malloc error for projection_mat_ctl_c \n");
@@ -272,7 +270,6 @@ int write_projection_mat_ctl_c(FILE *fp, int level, const char *label,
 
 
 struct modelview_ctl_c * init_modelview_ctl_c(void){
-	int i;
     struct modelview_ctl_c *mat_c;
     if((mat_c = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c))) == NULL) {
         printf("malloc error for modelview_ctl_c \n");

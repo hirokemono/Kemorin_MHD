@@ -186,7 +186,7 @@
     [flineOpenPanelObj setAllowedFileTypes:flineFileTypes];
     [flineOpenPanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger FlineOpenInteger){
-	if(FlineOpenInteger == NSFileHandlingPanelOKButton){
+	if(FlineOpenInteger == NSModalResponseOK){
 		FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
 		NSString *FlineOpenFilename =  [[flineOpenPanelObj URL] path];
 		// NSLog(@"PSF file directory = %@",FlineOpenDirectory);

@@ -180,7 +180,6 @@ ctl_data_four_vizs_IO.o \
 ctl_data_pvr_colorbar_IO.o \
 ctl_data_pvr_colormap_IO.o \
 ctl_data_pvr_movie_IO.o \
-ctl_data_pvr_section_IO.o \
 ctl_data_three_vizs_IO.o \
 ctl_data_view_transfer_IO.o \
 ctl_file_each_pvr_IO.o \

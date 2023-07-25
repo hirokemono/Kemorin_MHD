@@ -83,7 +83,7 @@ void set_from_chara_int3_ctl_item_c( struct chara_int3_ctl_item *ci3_item,
 };
 
 
-void init_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
+static void init_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
     head->ci3_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
@@ -110,7 +110,7 @@ struct chara_int3_ctl_list *add_chara_int3_ctl_list_before(struct chara_int3_ctl
     return added;
 };
 
-struct chara_int3_ctl_list *add_chara_int3_ctl_list_after(struct chara_int3_ctl_list *current){
+static struct chara_int3_ctl_list *add_chara_int3_ctl_list_after(struct chara_int3_ctl_list *current){
     struct chara_int3_ctl_list *added;
     struct chara_int3_ctl_list *old_next;
     
@@ -130,7 +130,7 @@ struct chara_int3_ctl_list *add_chara_int3_ctl_list_after(struct chara_int3_ctl_
     return added;
 };
 
-void delete_chara_int3_ctl_list(struct chara_int3_ctl_list *current){
+static void delete_chara_int3_ctl_list(struct chara_int3_ctl_list *current){
     struct chara_int3_ctl_list *old_prev = current->_prev;
     struct chara_int3_ctl_list *old_next = current->_next;
     
@@ -141,7 +141,7 @@ void delete_chara_int3_ctl_list(struct chara_int3_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
     return;
 };
-void clear_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
+static void clear_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
     while (head->_next != NULL) {
         delete_chara_int3_ctl_list(head->_next);
 	}
@@ -149,7 +149,7 @@ void clear_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
 };
 
 
-int count_maxlen_chara_int3_ctl_list(const char *label, 
+static int count_maxlen_chara_int3_ctl_list(const char *label, 
 			struct chara_int3_ctl_list *head, int mlen2[2]){
 	int num = 0;
 	mlen2[0] = (int) strlen(label);
@@ -166,7 +166,7 @@ int count_maxlen_chara_int3_ctl_list(const char *label,
     return num;
 };
 
-int count_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
+static int count_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
@@ -176,13 +176,13 @@ int count_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
     return num;
 };
 
-struct chara_int3_ctl_list *find_ci3_ctl_list_item_by_index(int index, struct chara_int3_ctl_list *head){
+static struct chara_int3_ctl_list *find_ci3_ctl_list_item_by_index(int index, struct chara_int3_ctl_list *head){
     int i;
     if(index < 0 || index > count_chara_int3_ctl_list(head)) return NULL;
     for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
-struct chara_int3_ctl_list *find_ci3_ctl_list_item_by_c_tbl(char *ref, struct chara_int3_ctl_list *head){
+static struct chara_int3_ctl_list *find_ci3_ctl_list_item_by_c_tbl(char *ref, struct chara_int3_ctl_list *head){
     head = head->_next;
     while (head != NULL){
 		if(cmp_no_case_c(head->ci3_item->c_tbl, ref)) break;
@@ -192,7 +192,7 @@ struct chara_int3_ctl_list *find_ci3_ctl_list_item_by_c_tbl(char *ref, struct ch
     return head;
 };
 
-int read_chara_int3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+static int read_chara_int3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_int3_ctl_list *head){
     int iflag = 0;
     int icou = 0;
@@ -211,7 +211,7 @@ int read_chara_int3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     return icou;
 };
 
-int write_chara_int3_ctl_list(FILE *fp, int level, const char *label, 
+static int write_chara_int3_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara_int3_ctl_list *head){
     int mlen2[2];
     
@@ -277,7 +277,7 @@ static void add_chara_int3_ctl_list_after_c_tbl(char *ref, char *c_in, int i1_in
 	update_chara_int3_ctl_item_c(c_in, i1_in, i2_in, i3_in, head->ci3_item);
 	return;
 };
-void del_chara_int3_ctl_list_by_c_tbl(char *ref, struct chara_int3_ctl_list *head){
+static void del_chara_int3_ctl_list_by_c_tbl(char *ref, struct chara_int3_ctl_list *head){
 	head = find_ci3_ctl_list_item_by_c_tbl(ref, head);
 	if(head != NULL) delete_chara_int3_ctl_list(head);
 	return;

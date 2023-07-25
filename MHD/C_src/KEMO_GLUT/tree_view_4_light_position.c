@@ -237,7 +237,7 @@ static GtkWidget *init_lightposition_list_box(struct lightparams_view *light_vws
 	
 	light_vws->light_rtp_vws->index_bc
 			= append_r3_list_from_ctl(light_vws->light_rtp_vws->index_bc,
-				&light_vws->light_rtp_vws->r3_clist_gtk->r3_item_head, 
+				light_vws->light_rtp_vws->r3_clist_gtk, 
 				GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view));
 	
 	button_add = gtk_button_new_with_label("Add");

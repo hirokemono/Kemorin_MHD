@@ -37,7 +37,7 @@
 	NSSavePanel *ColormapSavePanelObj	= [NSSavePanel savePanel];
     [ColormapSavePanelObj beginSheetModalForWindow:window 
                                     completionHandler:^(NSInteger ColrmapSaveInt){
-	if(ColrmapSaveInt == NSFileHandlingPanelOKButton){
+	if(ColrmapSaveInt == NSModalResponseOK){
 		
 		NSString * ColormapFilename = [[ ColormapSavePanelObj URL] path];
 		NSString * ColormapDirectory = [[ ColormapSavePanelObj directoryURL] path];
@@ -61,7 +61,7 @@
 /*    [ColormapOpenPanelObj setAllowedFileTypes:ColormapFileTypes]; */
     [ColormapOpenPanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger ColormapOpenInteger){
-                                       if(ColormapOpenInteger == NSFileHandlingPanelOKButton){
+                                       if(ColormapOpenInteger == NSModalResponseOK){
                                            
                                            NSString * ColormapFilename = [[ ColormapOpenPanelObj URL] path];
                                            NSString * ColormapDirectory = [[ ColormapOpenPanelObj directoryURL] path];
