@@ -10,10 +10,9 @@
 !!      logical function check_div_filter_field(field_name)
 !!      logical function check_grad_filter_field(field_name)
 !!
-!!      integer(kind = kint) function num_div_filter_fields()
-!!      integer(kind = kint) function num_grad_filter_fields()
-!!      subroutine set_div_filter_field_labels(n_comps, names, maths)
-!!      subroutine set_grad_filter_field_labels(n_comps, names, maths)
+!!      subroutine set_div_filtered_field_names(array_c2i)
+!!      subroutine set_grad_filtered_field_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
 !! !!!!! gradient of filtered field !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -45,9 +44,6 @@
       use t_field_labels
 !
       implicit none
-!
-      integer(kind = kint), parameter, private :: ndiv_fil_vect = 3
-      integer(kind = kint), parameter, private :: ngrad_fil_scl = 8
 !
 !>        Divergence of velocity
 !!         @f$ \partial_{i} \tilde{u}_{i} @f$
@@ -162,67 +158,44 @@
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-! 
-      integer(kind = kint) function num_div_filter_fields()
-      num_div_filter_fields = ndiv_fil_vect
-      return
-      end function num_div_filter_fields
+!
+      subroutine set_div_filtered_field_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
+!
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
+!
+      call set_field_label_to_ctl(div_filtered_velo, array_c2i)
+      call set_field_label_to_ctl(div_filtered_magne, array_c2i)
+      call set_field_label_to_ctl(div_filtered_vector_potential,        &
+     &                            array_c2i)
+!
+      end subroutine set_div_filtered_field_names
 !
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_grad_filter_fields()
-      num_grad_filter_fields = ngrad_fil_scl
-      return
-      end function num_grad_filter_fields
+      subroutine set_grad_filtered_field_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-! ----------------------------------------------------------------------
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      subroutine set_div_filter_field_labels(n_comps, names, maths)
+      call set_field_label_to_ctl(grad_filtered_temp,      array_c2i)
+      call set_field_label_to_ctl(grad_filtered_pert_temp, array_c2i)
+      call set_field_label_to_ctl(grad_filtered_comp,      array_c2i)
+      call set_field_label_to_ctl(grad_filtered_pert_comp, array_c2i)
+      call set_field_label_to_ctl(grad_filtered_density,   array_c2i)
+      call set_field_label_to_ctl(grad_filtered_pert_density,           &
+     &                            array_c2i)
+      call set_field_label_to_ctl(grad_filtered_entropy, array_c2i)
+      call set_field_label_to_ctl(grad_filtered_pert_entropy,           &
+     &                            array_c2i)
 !
-      integer(kind = kint_4b), intent(inout) :: n_comps(ndiv_fil_vect)
-      character(len = kchara), intent(inout) :: names(ndiv_fil_vect)
-      character(len = kchara), intent(inout) :: maths(ndiv_fil_vect)
-!
-!
-      call set_field_labels(div_filtered_velo,                          &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(div_filtered_magne,                         &
-     &    n_comps( 2), names( 2), maths( 2))
-      call set_field_labels(div_filtered_vector_potential,              &
-     &    n_comps( 3), names( 3), maths( 3))
-!
-      end subroutine set_div_filter_field_labels
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_grad_filter_field_labels(n_comps, names, maths)
-!
-      integer(kind = kint_4b), intent(inout) :: n_comps(ngrad_fil_scl)
-      character(len = kchara), intent(inout) :: names(ngrad_fil_scl)
-      character(len = kchara), intent(inout) :: maths(ngrad_fil_scl)
-!
-!
-      call set_field_labels(grad_filtered_temp,                         &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(grad_filtered_pert_temp,                    &
-     &    n_comps( 2), names( 2), maths( 2))
-!
-      call set_field_labels(grad_filtered_comp,                         &
-     &    n_comps( 3), names( 3), maths( 3))
-      call set_field_labels(grad_filtered_pert_comp,                    &
-     &    n_comps( 4), names( 4), maths( 4))
-!
-      call set_field_labels(grad_filtered_density,                      &
-     &    n_comps( 5), names( 5), maths( 5))
-      call set_field_labels(grad_filtered_pert_density,                 &
-     &    n_comps( 6), names( 6), maths( 6))
-!
-      call set_field_labels(grad_filtered_entropy,                      &
-     &    n_comps( 7), names( 7), maths( 7))
-      call set_field_labels(grad_filtered_pert_entropy,                 &
-     &    n_comps( 8), names( 8), maths( 8))
-!
-      end subroutine set_grad_filter_field_labels
+      end subroutine set_grad_filtered_field_names
 !
 ! ----------------------------------------------------------------------
 !

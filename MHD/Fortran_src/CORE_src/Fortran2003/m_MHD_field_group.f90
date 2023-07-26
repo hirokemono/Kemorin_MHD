@@ -181,19 +181,32 @@
      &   (ngrp_MHD_fields, MHD_field_group, field_grp)
 !
 !
-      base_fld_c =  c_link_base_field_names_to_ctl(field_group_c)
+      base_fld_c =  c_link_base_field_names(field_group_c)
+      base_fld_c =  c_link_base_force_names(field_group_c)
+      base_fld_c =  c_link_energy_flux_names(field_group_c)
+      base_fld_c =  c_link_base_diffusion_names(field_group_c)
+      base_fld_c =  c_link_rot_force_names(field_group_c)
+      base_fld_c =  c_link_div_force_names(field_group_c)
+      base_fld_c =  c_link_field_product_names(field_group_c)
+      base_fld_c =  c_link_gradient_field_names(field_group_c)
+      base_fld_c =  c_link_divergence_field_names(field_group_c)
+      base_fld_c =  c_link_base_diffusivity_names(field_group_c)
+      base_fld_c =  c_link_explicit_work_names(field_group_c)
+      base_fld_c =  c_link_check_fields_names(field_group_c)
+      base_fld_c =  c_link_differnce_vector_names(field_group_c)
       nfld_group_c( 1) = base_fld_list%num
-      nfld_group_c( 2) = num_base_forces()
-      nfld_group_c( 3) = num_energy_fluxes()
-      nfld_group_c( 4) = num_base_diffusions()
-      nfld_group_c( 5) = num_rot_forces()
-      nfld_group_c( 6) = num_div_forces()
-      nfld_group_c( 7) = num_field_products()
-      nfld_group_c( 8) = num_gradient_fields()
-      nfld_group_c( 9) = num_divergence_fields()
-      nfld_group_c(10) = num_base_diffusivities()
-      nfld_group_c(11) = num_work_4_explicit()
-      nfld_group_c(12) = num_check_fields()
+      nfld_group_c( 2) = base_frc_list%num
+      nfld_group_c( 3) = ene_flux_list%num
+      nfld_group_c( 4) = diffusion_list%num
+      nfld_group_c( 5) = rot_frc_list%num
+      nfld_group_c( 6) = div_frc_list%num
+      nfld_group_c( 7) = fld_prod_list%num
+      nfld_group_c( 8) = grad_fld_list%num
+      nfld_group_c( 9) = div_fld_list%num
+      nfld_group_c(10) = diffusivity_list%num
+      nfld_group_c(11) = exp_work_list%num
+      nfld_group_c(12) = chk_fld_list%num
+      nfld_group_c(13) = diff_vect_list%num
 !
       end subroutine MHD_field_groups_f
 !
@@ -203,19 +216,24 @@
      &           bind(C, name = 'MHD_sym_field_groups_f')
 !
       use t_grad_field_labels
+      use field_names_to_c
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
       type(C_ptr), value :: field_group_c
 !
+      type(C_ptr) :: base_fld_c
       character(len=kchara), pointer :: field_grp(:)
 !
       call c_f_pointer(field_group_c, field_grp, [ngrp_MHD_sym_fields])
       call copy_filxed_lengh_chara                                      &
      &   (ngrp_MHD_sym_fields, MHD_sym_field_group, field_grp)
 !
-      nfld_group_c( 1) = num_fields_w_symmetry()
-      nfld_group_c( 2) = num_forces_w_symmetry()
-      nfld_group_c( 3) = num_ene_fluxes_w_symmetry()
+      base_fld_c =  c_link_field_w_symmetry_names(field_group_c)
+      base_fld_c =  c_link_force_w_symmetry_names(field_group_c)
+      base_fld_c =  c_link_sym_ene_flux_names(field_group_c)
+      nfld_group_c( 1) = sym_fld_list%num
+      nfld_group_c( 2) = sym_frc_list%num
+      nfld_group_c( 3) = sym_flux_list%num
 !
       end subroutine MHD_sym_field_groups_f
 !
@@ -228,35 +246,54 @@
       use m_SGS_term_labels
       use m_SGS_model_coef_labels
       use m_SGS_enegy_flux_labels
+      use field_names_to_c
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
       type(C_ptr), value :: field_group_c
 !
+      type(C_ptr) :: base_fld_c
       character(len=kchara), pointer :: field_grp(:)
 !
       call c_f_pointer(field_group_c, field_grp, [ngrp_SGS_MHD_fields])
       call copy_filxed_lengh_chara                                      &
      &   (ngrp_SGS_MHD_fields, SGS_MHD_field_group, field_grp)
 !
-      nfld_group_c( 1) = num_SGS_terms()
-      nfld_group_c( 2) = num_SGS_energy_fluxes()
-      nfld_group_c( 3) = num_diff_SGS_terms()
-      nfld_group_c( 4) = num_SGS_model_coefs()
-      nfld_group_c( 5) = num_filter_fields()
-      nfld_group_c( 6) = num_filter_force()
-      nfld_group_c( 7) = num_filtered_ene_fluxes()
-      nfld_group_c( 8) = num_rot_filtered_forces()
-      nfld_group_c( 9) = num_div_filtered_forces()
-      nfld_group_c(10) = num_grad_filter_fields()
-      nfld_group_c(11) = num_div_filter_fields()
-      nfld_group_c(12) = num_wide_filter_fields()
-      nfld_group_c(13) = num_double_filter_fields()
-      nfld_group_c(14) = num_difference_vector()
-      nfld_group_c(15) = num_diff_filter_vector()
-      nfld_group_c(16) = num_wide_SGS_terms()
-      nfld_group_c(17) = num_force_w_SGS()
-      nfld_group_c(18) = num_true_SGS_terms()
-      nfld_group_c(19) = num_dynamic_SGS_work()
+      base_fld_c =  c_link_SGS_term_names(field_group_c)
+      base_fld_c =  c_link_SGS_energy_flux_names(field_group_c)
+      base_fld_c =  c_link_diff_SGS_term_names(field_group_c)
+      base_fld_c =  c_link_SGS_model_coefs_names(field_group_c)
+      base_fld_c =  c_link_filter_field_names(field_group_c)
+      base_fld_c =  c_link_filter_force_names(field_group_c)
+      base_fld_c =  c_link_filter_eflux_names(field_group_c)
+      base_fld_c =  c_link_rot_filter_force_names(field_group_c)
+      base_fld_c =  c_link_div_filter_force_names(field_group_c)
+      base_fld_c =  c_link_grad_filter_field_names(field_group_c)
+      base_fld_c =  c_link_div_filter_field_names(field_group_c)
+      base_fld_c =  c_link_wide_filter_field_names(field_group_c)
+      base_fld_c =  c_link_dbl_filter_field_names(field_group_c)
+      base_fld_c =  c_link_diff_filter_vect_names(field_group_c)
+      base_fld_c =  c_link_wide_SGS_term_names(field_group_c)
+      base_fld_c =  c_link_force_with_SGS_names(field_group_c)
+      base_fld_c =  c_link_true_SGS_term_names(field_group_c)
+      base_fld_c =  c_link_dynamic_SGS_work_names(field_group_c)
+      nfld_group_c( 1) = SGS_term_list%num
+      nfld_group_c( 2) = SGS_eflux_list%num
+      nfld_group_c( 3) = diff_SGS_list%num
+      nfld_group_c( 4) = SGS_Csim_list%num
+      nfld_group_c( 5) = filter_fld_list%num
+      nfld_group_c( 6) = filter_frc_list%num
+      nfld_group_c( 7) = fil_eflux_list%num
+      nfld_group_c( 8) = fil_rot_frc_list%num
+      nfld_group_c( 9) = fil_div_frc_list%num
+      nfld_group_c(10) = fil_grad_fld_list%num
+      nfld_group_c(11) = fil_div_fld_list%num
+      nfld_group_c(12) = w_fil_fld_list%num
+      nfld_group_c(13) = d_fil_fld_list%num
+      nfld_group_c(14) = diff_fil_vect_list%num
+      nfld_group_c(15) = wide_SGS_term_list%num
+      nfld_group_c(16) = force_w_SGS_list%num
+      nfld_group_c(17) = true_SGS_list%num
+      nfld_group_c(18) = dSGS_work_list%num
 !
       end subroutine SGS_MHD_field_groups_f
 !

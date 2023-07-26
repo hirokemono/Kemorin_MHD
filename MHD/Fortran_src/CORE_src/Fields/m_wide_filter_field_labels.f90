@@ -12,8 +12,8 @@
 !!      logical function check_wide_filter_scalar(field_name)
 !!      logical function check_wide_filter_grad(field_name)
 !!
-!!      integer(kind = kint) function num_wide_filter_fields()
-!!      subroutine set_wide_filter_field_labels(n_comps, names, maths)
+!!      subroutine set_wide_filter_field_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
 !! !!!!!  Wide fitered field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      Field label  [Address]
@@ -49,9 +49,6 @@
 !
       implicit  none
 ! 
-!
-      integer(kind = kint), parameter, private :: nfld_w_filter = 15
-!
 !>        Field label for filtered velocity by wide filtering
 !!         @f$ \overline{u}_{i} @f$
       type(field_def), parameter :: wide_filter_velocity                &
@@ -211,55 +208,33 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_wide_filter_fields()
-      num_wide_filter_fields = nfld_w_filter
-      return
-      end function num_wide_filter_fields
+      subroutine set_wide_filter_field_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-! ----------------------------------------------------------------------
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      subroutine set_wide_filter_field_labels(n_comps, names, maths)
+      call set_field_label_to_ctl(wide_filter_velocity,     array_c2i)
+      call set_field_label_to_ctl(wide_filter_vorticity,    array_c2i)
+      call set_field_label_to_ctl(wide_filter_magne,        array_c2i)
+      call set_field_label_to_ctl(wide_filter_vector_potential,         &
+     &                            array_c2i)
+      call set_field_label_to_ctl(wide_filter_current,      array_c2i)
+      call set_field_label_to_ctl(wide_filter_temp,         array_c2i)
+      call set_field_label_to_ctl(wide_filter_pert_temp,    array_c2i)
+      call set_field_label_to_ctl(wide_filter_composition,  array_c2i)
+      call set_field_label_to_ctl(wide_filter_pert_comp,    array_c2i)
+      call set_field_label_to_ctl(wide_filter_density,      array_c2i)
+      call set_field_label_to_ctl(wide_filter_pert_density, array_c2i)
+      call set_field_label_to_ctl(wide_filter_entropy,      array_c2i)
+      call set_field_label_to_ctl(wide_filter_pert_entropy, array_c2i)
+      call set_field_label_to_ctl(wide_filter_grad_temp, array_c2i)
+      call set_field_label_to_ctl(wide_filter_grad_composition,         &
+     &                            array_c2i)
 !
-      integer(kind = kint_4b), intent(inout) :: n_comps(nfld_w_filter)
-      character(len = kchara), intent(inout) :: names(nfld_w_filter)
-      character(len = kchara), intent(inout) :: maths(nfld_w_filter)
-!
-!
-      call set_field_labels(wide_filter_velocity,                       &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(wide_filter_vorticity,                      &
-     &    n_comps( 2), names( 2), maths( 2))
-!
-      call set_field_labels(wide_filter_magne,                          &
-     &    n_comps( 3), names( 3), maths( 3))
-      call set_field_labels(wide_filter_vector_potential,               &
-     &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(wide_filter_current,                        &
-     &    n_comps( 5), names( 5), maths( 5))
-!
-      call set_field_labels(wide_filter_temp,                           &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(wide_filter_pert_temp,                      &
-     &    n_comps( 7), names( 7), maths( 7))
-      call set_field_labels(wide_filter_composition,                    &
-     &    n_comps( 8), names( 8), maths( 8))
-      call set_field_labels(wide_filter_pert_comp,                      &
-     &    n_comps( 9), names( 9), maths( 9))
-      call set_field_labels(wide_filter_density,                        &
-     &    n_comps(10), names(10), maths(10))
-      call set_field_labels(wide_filter_pert_density,                   &
-     &    n_comps(11), names(11), maths(11))
-      call set_field_labels(wide_filter_entropy,                        &
-     &    n_comps(12), names(12), maths(12))
-      call set_field_labels(wide_filter_pert_entropy,                   &
-     &    n_comps(13), names(13), maths(13))
-!
-      call set_field_labels(wide_filter_grad_temp,                      &
-     &    n_comps(14), names(14), maths(14))
-      call set_field_labels(wide_filter_grad_composition,               &
-     &    n_comps(15), names(15), maths(15))
-!
-      end subroutine set_wide_filter_field_labels
+      end subroutine set_wide_filter_field_names
 !
 ! ----------------------------------------------------------------------
 !

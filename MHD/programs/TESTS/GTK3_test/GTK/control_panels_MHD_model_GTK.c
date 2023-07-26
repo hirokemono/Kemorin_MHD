@@ -7,7 +7,7 @@
 
 #include "control_panels_MHD_model_GTK.h"
 
-extern void * c_link_base_field_names_to_ctl(void *fld_names_c);
+extern void * c_link_base_field_names(void *fld_names_c);
 extern void * c_link_time_evo_list_to_ctl(void *fld_names_c);
 extern void * c_link_force_list_to_ctl(void *fld_names_c);
 extern void * c_link_sph_force_list_to_ctl(void *fld_names_c);

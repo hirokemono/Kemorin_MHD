@@ -34,7 +34,7 @@ m_SGS_term_labels.o: $(FIELDIR)/m_SGS_term_labels.f90 m_precision.o m_phys_const
 	$(F90) -c $(F90OPTFLAGS) $<
 m_base_field_labels.o: $(FIELDIR)/m_base_field_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_control_array_chara2int.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_base_force_labels.o: $(FIELDIR)/m_base_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
+m_base_force_labels.o: $(FIELDIR)/m_base_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_control_array_chara2int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_dble_filter_field_labels.o: $(FIELDIR)/m_dble_filter_field_labels.f90 m_precision.o m_constants.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -44,13 +44,13 @@ m_diff_filter_vect_labels.o: $(FIELDIR)/m_diff_filter_vect_labels.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 m_diff_vector_labels.o: $(FIELDIR)/m_diff_vector_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_diffusion_term_labels.o: $(FIELDIR)/m_diffusion_term_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
+m_diffusion_term_labels.o: $(FIELDIR)/m_diffusion_term_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_control_array_chara2int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_div_filtered_force_labels.o: $(FIELDIR)/m_div_filtered_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_div_force_labels.o: $(FIELDIR)/m_div_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
+m_div_force_labels.o: $(FIELDIR)/m_div_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_control_array_chara2int.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_energy_flux_labels.o: $(FIELDIR)/m_energy_flux_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
+m_energy_flux_labels.o: $(FIELDIR)/m_energy_flux_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_control_array_chara2int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_energy_flux_w_sym_labels.o: $(FIELDIR)/m_energy_flux_w_sym_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_energy_flux_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -78,7 +78,7 @@ m_grad_filter_field_labels.o: $(FIELDIR)/m_grad_filter_field_labels.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 m_rot_filtered_force_labels.o: $(FIELDIR)/m_rot_filtered_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_rot_force_labels.o: $(FIELDIR)/m_rot_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
+m_rot_force_labels.o: $(FIELDIR)/m_rot_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_control_array_chara2int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_sym_ene_flux_labels.o: $(FIELDIR)/m_sym_ene_flux_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<

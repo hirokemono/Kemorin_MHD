@@ -12,10 +12,12 @@
 
 #include "calypso_GTK.h"
 #include "t_control_chara_IO.h"
+#include "t_control_chara2_int_IO.h"
 #include "t_ctl_data_4_fields_c.h"
 #include "tree_view_chara_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "t_ctl_array_chara3_items_c.h"
+
 
 struct field_views{
 	GtkWidget *used_tree_view;

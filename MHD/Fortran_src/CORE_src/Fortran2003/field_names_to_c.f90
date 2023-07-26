@@ -10,70 +10,49 @@
 !!@verbatim
 !!      integer(c_int) function lengthchara_f() bind(c)
 !!
-!!      subroutine set_base_field_names_f                               &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!      type(C_ptr) function c_link_base_field_names_to_ctl(c_ctl)      &
-!!     &          bind(C, NAME = 'c_link_base_field_names_to_ctl')
+!!      type(C_ptr) function c_link_base_field_names(c_ctl)             &
+!!     &          bind(C, NAME = 'c_link_base_field_names')
 !!      type(C_ptr) function c_link_time_evo_list_to_ctl(c_ctl)         &
 !!     &          bind(C, NAME = 'c_link_time_evo_list_to_ctl')
 !!      type(c_ptr), value, intent(in) :: c_ctl
 !!
-!!      integer(c_int) function num_base_forces_f() bind(c)
-!!      subroutine set_base_force_labels_f                              &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!      type(C_ptr) function c_link_base_force_names(c_ctl)             &
+!!     &          bind(C, NAME = 'c_link_base_force_names')
+!!      type(C_ptr) function c_link_rot_force_names(c_ctl)              &
+!!     &          bind(C, NAME = 'c_link_rot_force_names')
+!!      type(C_ptr) function c_link_div_force_names(c_ctl)              &
+!!     &          bind(C, NAME = 'c_link_div_force_names')
 !!
-!!      integer(c_int) function num_rot_forces_f() bind(c)
-!!      subroutine set_rot_force_labels_f                               &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!      type(C_ptr) function c_link_energy_flux_names(c_ctl)            &
+!!     &          bind(C, NAME = 'c_link_energy_flux_names')
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!
-!!      integer(c_int) function num_div_forces_f() bind(c)
-!!      subroutine set_div_force_labels_f                               &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!      type(C_ptr) function c_link_divergence_field_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_divergence_field_names')
+!!      type(C_ptr) function c_link_gradient_field_names(c_ctl)         &
+!!     &          bind(C, NAME = 'c_link_gradient_field_names')
+!!      type(C_ptr) function c_link_field_product_names(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_field_product_names')
+!!      type(C_ptr) function c_link_base_diffusion_names(c_ctl)         &
+!!     &          bind(C, NAME = 'c_link_base_diffusion_names')
+!!      type(C_ptr) function c_link_base_diffusivity_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_base_diffusivity_names')
 !!
-!!      integer(c_int) function num_energy_fluxes_f() bind(c)
-!!      subroutine set_energy_flux_names_f                              &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!      type(C_ptr) function c_link_explicit_work_names(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_explicit_work_names')
+!!      type(C_ptr) function c_link_check_fields_names(c_ctl)           &
+!!     &          bind(C, NAME = 'c_link_check_fields_names')
+!!      type(C_ptr) function c_link_differnce_vector_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_differnce_vector_names')
 !!
-!!      integer(c_int) function num_divergence_fields_f() bind(c)
-!!      subroutine set_divergence_field_labels_f                        &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_gradient_fields_f() bind(c)
-!!      subroutine set_gradient_field_labels_f                          &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_field_products_f() bind(c)
-!!      subroutine set_field_product_labels_f                           &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_base_diffusions_f() bind(c)
-!!      subroutine set_base_diffusion_labels_f                          &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_base_diffusivities_f() bind(c)
-!!      subroutine set_base_diffusivity_labels_f                        &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_work_4_explicit_f() bind(c)
-!!      subroutine set_work_4_explicit_labels_f                         &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_check_fields_f() bind(c)
-!!      subroutine set_check_fields_labels_f                            &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!
-!!      integer(c_int) function num_fieldss_w_symmetry_f() bind(c)
-!!      subroutine set_fields_w_sym_labels_f                            &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_forces_w_symmetry_f() bind(c)
-!!      subroutine set_forces_w_sym_labels_f                            &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_energy_fluxes_w_symmetry_f() bind(c)
-!!      subroutine set_ene_flux_w_sym_labels_f                          &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!      type(C_ptr) function c_link_field_w_symmetry_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_field_w_symmetry_names')
+!!      type(C_ptr) function c_link_force_w_symmetry_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_force_w_symmetry_names')
+!!      type(C_ptr) function c_link_sym_ene_flux_names(c_ctl)           &
+!!     &          bind(C, NAME = 'c_link_sym_ene_flux_names')
+!!      type(C_ptr) function c_link_sym_ene_flux_org_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_sym_ene_flux_org_names')
 !!
 !!      integer(c_int) function num_field_comp_list_f()                 &
 !!     &          bind(c, name="num_field_comp_list_f")
@@ -81,97 +60,45 @@
 !!     &         (n_comps_c, field_name_c, field_math_c)                &
 !!     &          bind(c, name="set_field_component_labels_f")
 !!
-!!      integer(c_int) function num_SGS_terms_f()                       &
-!!     &              bind(c, name="num_SGS_terms_f")
-!!      subroutine set_SGS_term_labels_f                                &
-!!     &         (n_comps_c, field_name_c, field_math_c)                &
-!!     &          bind(c, name="set_SGS_term_labels_f")
+!!      type(C_ptr) function c_link_SGS_term_names(c_ctl)               &
+!!     &          bind(C, NAME = 'c_link_SGS_term_names')
+!!      type(C_ptr) function c_link_SGS_energy_flux_names(c_ctl)        &
+!!     &          bind(C, NAME = 'c_link_SGS_energy_flux_names')
+!!      type(C_ptr) function c_link_diff_SGS_term_names(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_diff_SGS_term_names')
+!!      type(C_ptr) function c_link_SGS_model_coefs_names(c_ctl)        &
+!!     &          bind(C, NAME = 'c_link_SGS_model_coefs_names')
+!!      type(C_ptr) function c_link_dynamic_SGS_work_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_dynamic_SGS_work_names')
+!!      type(C_ptr) function c_link_filter_field_names(c_ctl)           &
+!!     &          bind(C, NAME = 'c_link_filter_field_names')
 !!
-!!      integer(c_int) function num_diff_SGS_terms_f()                  &
-!!     &              bind(c, name="num_diff_SGS_terms_f")
-!!      subroutine set_diff_SGS_term_labels_f                           &
-!!     &         (n_comps_c, field_name_c, field_math_c)                &
-!!     &          bind(c, name="set_diff_SGS_term_labels_f")
+!!      type(C_ptr) function c_link_div_filter_field_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_div_filter_field_names')
+!!      type(C_ptr) function c_link_grad_filter_field_names(c_ctl)      &
+!!     &          bind(C, NAME = 'c_link_grad_filter_field_names')
 !!
-!!      integer(c_int) function num_SGS_energy_fluxes_f()               &
-!!     &              bind(c, name="num_SGS_energy_fluxes_f")
-!!      subroutine set_SGS_energy_flux_labels_f                         &
-!!     &         (n_comps_c, field_name_c, field_math_c)                &
-!!     &          bind(c, name="set_SGS_energy_flux_labels_f")
+!!      type(C_ptr) function c_link_filter_force_names(c_ctl)           &
+!!     &          bind(C, NAME = 'c_link_filter_force_names')
+!!      type(C_ptr) function c_link_rot_filter_force_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_rot_filter_force_names')
+!!      type(C_ptr) function c_link_div_filter_force_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_div_filter_force_names')
+!!      type(C_ptr) function c_link_filter_eflux_names(c_ctl)           &
+!!     &          bind(C, NAME = 'c_link_filter_eflux_names')
+!!      type(C_ptr) function c_link_diff_filter_vect_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_diff_filter_vect_names')
+!!      type(C_ptr) function c_link_wide_SGS_term_names(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_wide_SGS_term_names')
+!!      type(C_ptr) function c_link_force_with_SGS_names(c_ctl)         &
+!!     &          bind(C, NAME = 'c_link_force_with_SGS_names')
+!!      type(C_ptr) function c_link_true_SGS_term_names(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_true_SGS_term_names')
 !!
-!!      integer(c_int) function num_SGS_model_coefs_f()                 &
-!!     &              bind(c, name="num_SGS_model_coefs_f")
-!!      subroutine set_SGS_model_coefs_labels_f                         &
-!!     &         (n_comps_c, field_name_c, field_math_c)                &
-!!     &          bind(c, name="set_SGS_model_coefs_labels_f")
-!!
-!!      integer(c_int) function num_dynamic_SGS_work_f()                &
-!!     &              bind(c, name="num_dynamic_SGS_work_f")
-!!      subroutine set_dynamic_SGS_work_labels_f                        &
-!!     &         (n_comps_c, field_name_c, field_math_c)                &
-!!     &          bind(c, name="set_dynamic_SGS_work_labels_f")
-!!
-!!      integer(c_int) function num_filter_fields_f() bind(c)
-!!      subroutine set_filter_field_labels_f                            &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_div_filter_fields_f() bind(c)
-!!      subroutine set_div_filter_field_labels_f                        &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_grad_filter_fields_f() bind(c)
-!!      subroutine set_grad_filter_field_labels_f                       &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_filter_force_f() bind(c)
-!!      subroutine set_filter_force_labels_f                            &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_rot_filtered_forces_f() bind(c)
-!!      subroutine rot_filtered_force_labels_f                          &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_div_filtered_forces_f() bind(c)
-!!      subroutine div_filtered_force_labels_f                          &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_filtered_ene_fluxes_f() bind(c)
-!!      subroutine set_filtered_ene_flax_labels_f                       &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_wide_filter_fields_f() bind(c)
-!!      subroutine set_wide_filter_field_labels_f                       &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_double_filter_fields_f() bind(c)
-!!      subroutine set_dbl_filter_field_labels_f                        &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_difference_vector_f() bind(c)
-!!      subroutine set_differnce_vector_labels_f                        &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_diff_filter_vector_f() bind(c)
-!!      subroutine set_diff_filter_vect_labels_f                        &
-!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!!
-!!      integer(c_int) function num_wide_SGS_terms_f()                  &
-!!     &          bind(c, name="num_wide_SGS_terms_f")
-!!      subroutine set_wide_SGS_term_labels_f                           &
-!!     &         (n_comps_c, field_name_c, field_math_c)                &
-!!     &          bind(c, name="set_wide_SGS_term_labels_f")
-!!
-!!      integer(c_int) function num_force_w_SGS_f()                     &
-!!     &          bind(c, name="num_force_w_SGS_f")
-!!      subroutine set_force_with_SGS_labels_f                          &
-!!     &         (n_comps_c, field_name_c, field_math_c)                &
-!!     &          bind(c, name="set_force_with_SGS_labels_f")
-!!
-!!      integer(c_int) function num_true_SGS_terms_f()                  &
-!!     &          bind(c, name="num_true_SGS_terms_f")
-!!      subroutine set_true_SGS_term_labels_f                           &
-!!     &         (n_comps_c, field_name_c, field_math_c)                &
-!!     &          bind(c, name="set_true_SGS_term_labels_f")
+!!      type(C_ptr) function c_link_wide_filter_field_names(c_ctl)      &
+!!     &          bind(C, NAME = 'c_link_wide_filter_field_names')
+!!      type(C_ptr) function c_link_dbl_filter_field_names(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_dbl_filter_field_names')
 !!@endverbatim
 !
       module field_names_to_c
@@ -185,6 +112,45 @@
       implicit none
 !
       type(ctl_array_c2i), save, target :: base_fld_list
+      type(ctl_array_c2i), save, target :: grad_fld_list
+      type(ctl_array_c2i), save, target :: div_fld_list
+      type(ctl_array_c2i), save, target :: base_frc_list
+      type(ctl_array_c2i), save, target :: rot_frc_list
+      type(ctl_array_c2i), save, target :: div_frc_list
+      type(ctl_array_c2i), save, target :: ene_flux_list
+      type(ctl_array_c2i), save, target :: fld_prod_list
+      type(ctl_array_c2i), save, target :: diffusion_list
+      type(ctl_array_c2i), save, target :: diffusivity_list
+      type(ctl_array_c2i), save, target :: exp_work_list
+      type(ctl_array_c2i), save, target :: chk_fld_list
+!
+      type(ctl_array_c2i), save, target :: sym_fld_list
+      type(ctl_array_c2i), save, target :: sym_frc_list
+      type(ctl_array_c2i), save, target :: sym_flux_list
+      type(ctl_array_c2i), save, target :: sym_flux_org_list
+!
+      type(ctl_array_c2i), save, target :: SGS_term_list
+      type(ctl_array_c2i), save, target :: SGS_eflux_list
+      type(ctl_array_c2i), save, target :: diff_SGS_list
+      type(ctl_array_c2i), save, target :: SGS_Csim_list
+      type(ctl_array_c2i), save, target :: dSGS_work_list
+      type(ctl_array_c2i), save, target :: filter_fld_list
+      type(ctl_array_c2i), save, target :: fil_grad_fld_list
+      type(ctl_array_c2i), save, target :: fil_div_fld_list
+      type(ctl_array_c2i), save, target :: filter_frc_list
+      type(ctl_array_c2i), save, target :: fil_rot_frc_list
+      type(ctl_array_c2i), save, target :: fil_div_frc_list
+      type(ctl_array_c2i), save, target :: fil_eflux_list
+!
+      type(ctl_array_c2i), save, target :: w_fil_fld_list
+      type(ctl_array_c2i), save, target :: d_fil_fld_list
+!
+      type(ctl_array_c2i), save, target :: diff_vect_list
+      type(ctl_array_c2i), save, target :: diff_fil_vect_list
+      type(ctl_array_c2i), save, target :: wide_SGS_term_list
+      type(ctl_array_c2i), save, target :: force_w_SGS_list
+      type(ctl_array_c2i), save, target :: true_SGS_list
+!
       type(ctl_array_chara), save, private, target :: tevo_fld_list
 !
 ! ----------------------------------------------------------------------
@@ -202,35 +168,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_base_field_names_f                                 &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_base_field_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_base_fields()])
-      call c_f_pointer(field_math_c, math, [num_base_fields()])
-      call set_base_field_names(n_comps_c(1), field, math)
-!
-      end subroutine set_base_field_names_f
-!
-! ----------------------------------------------------------------------
-!
-      type(C_ptr) function c_link_base_field_names_to_ctl(c_ctl)        &
-     &          bind(C, NAME = 'c_link_base_field_names_to_ctl')
+      type(C_ptr) function c_link_base_field_names(c_ctl)               &
+     &          bind(C, NAME = 'c_link_base_field_names')
       use m_base_field_labels
       type(c_ptr), value, intent(in) :: c_ctl
 !
       if(.not. allocated(base_fld_list%c1_tbl))                         &
-     &           call set_base_field_names_to_ctl(base_fld_list)
-      c_link_base_field_names_to_ctl = C_loc(base_fld_list)
-      end function c_link_base_field_names_to_ctl
+     &           call set_base_field_names(base_fld_list)
+      c_link_base_field_names = C_loc(base_fld_list)
+      end function c_link_base_field_names
 !
 ! ----------------------------------------------------------------------
 !
@@ -245,473 +191,190 @@
       end function c_link_time_evo_list_to_ctl
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_base_forces_f() bind(c)
-!
+      type(C_ptr) function c_link_base_force_names(c_ctl)               &
+     &          bind(C, NAME = 'c_link_base_force_names')
       use m_base_force_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_base_forces_f = num_base_forces()
-      return
-      end function num_base_forces_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_base_force_labels_f                                &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_base_force_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_base_forces()])
-      call c_f_pointer(field_math_c, math, [num_base_forces()])
-      call set_base_force_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_base_force_labels_f
+      if(.not. allocated(base_frc_list%c1_tbl))                         &
+     &           call set_base_force_names_to_ctl(base_frc_list)
+      c_link_base_force_names = C_loc(base_frc_list)
+      end function c_link_base_force_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_rot_forces_f() bind(c)
-!
+      type(C_ptr) function c_link_rot_force_names(c_ctl)                &
+     &          bind(C, NAME = 'c_link_rot_force_names')
       use m_rot_force_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_rot_forces_f = num_rot_forces()
-      return
-      end function num_rot_forces_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_rot_force_labels_f                                 &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_rot_force_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_rot_forces()])
-      call c_f_pointer(field_math_c, math, [num_rot_forces()])
-      call set_rot_force_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_rot_force_labels_f
+      if(.not. allocated(rot_frc_list%c1_tbl))                          &
+     &           call set_rot_force_names(rot_frc_list)
+      c_link_rot_force_names = C_loc(rot_frc_list)
+      end function c_link_rot_force_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_div_forces_f() bind(c)
-!
+      type(C_ptr) function c_link_div_force_names(c_ctl)                &
+     &          bind(C, NAME = 'c_link_div_force_names')
       use m_div_force_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_div_forces_f = num_div_forces()
-      return
-      end function num_div_forces_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_div_force_labels_f                                 &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_div_force_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_div_forces()])
-      call c_f_pointer(field_math_c, math, [num_div_forces()])
-      call set_div_force_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_div_force_labels_f
+      if(.not. allocated(div_frc_list%c1_tbl))                          &
+     &           call set_div_force_names(div_frc_list)
+      c_link_div_force_names = C_loc(div_frc_list)
+      end function c_link_div_force_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_energy_fluxes_f() bind(c)
-!
+      type(C_ptr) function c_link_energy_flux_names(c_ctl)              &
+     &          bind(C, NAME = 'c_link_energy_flux_names')
       use m_energy_flux_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_energy_fluxes_f = num_energy_fluxes()
-      return
-      end function num_energy_fluxes_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_energy_flux_names_f                                &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_energy_flux_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_energy_fluxes()])
-      call c_f_pointer(field_math_c, math, [num_energy_fluxes()])
-      call set_energy_flux_names(n_comps_c(1), field, math)
-!
-      end subroutine set_energy_flux_names_f
+      if(.not. allocated(ene_flux_list%c1_tbl))                         &
+     &           call set_energy_flux_names(ene_flux_list)
+      c_link_energy_flux_names = C_loc(ene_flux_list)
+      end function c_link_energy_flux_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_divergence_fields_f() bind(c)
-!
+      type(C_ptr) function c_link_divergence_field_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_divergence_field_names')
       use m_grad_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_divergence_fields_f = num_divergence_fields()
-      return
-      end function num_divergence_fields_f
+      if(.not. allocated(div_fld_list%c1_tbl))                          &
+     &           call set_divergence_field_names(div_fld_list)
+      c_link_divergence_field_names = C_loc(div_fld_list)
+      end function c_link_divergence_field_names
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine set_divergence_field_labels_f                          &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
+      type(C_ptr) function c_link_gradient_field_names(c_ctl)           &
+     &          bind(C, NAME = 'c_link_gradient_field_names')
       use m_grad_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_divergence_fields()])
-      call c_f_pointer(field_math_c, math, [num_divergence_fields()])
-      call set_divergence_field_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_divergence_field_labels_f
+      if(.not. allocated(grad_fld_list%c1_tbl))                         &
+     &           call set_gradient_field_names(grad_fld_list)
+      c_link_gradient_field_names = C_loc(grad_fld_list)
+      end function c_link_gradient_field_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_gradient_fields_f() bind(c)
-!
-      use m_grad_field_labels
-!
-      num_gradient_fields_f = num_gradient_fields()
-      return
-      end function num_gradient_fields_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_gradient_field_labels_f                            &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_grad_field_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_gradient_fields()])
-      call c_f_pointer(field_math_c, math, [num_gradient_fields()])
-      call set_gradient_field_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_gradient_field_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_field_products_f() bind(c)
-!
+      type(C_ptr) function c_link_field_product_names(c_ctl)            &
+     &          bind(C, NAME = 'c_link_field_product_names')
       use m_field_product_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_field_products_f = num_field_products()
-      return
-      end function num_field_products_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_field_product_labels_f                             &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_field_product_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_field_products()])
-      call c_f_pointer(field_math_c, math, [num_field_products()])
-      call set_field_product_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_field_product_labels_f
+      if(.not. allocated(fld_prod_list%c1_tbl))                         &
+     &           call set_field_product_names(fld_prod_list)
+      c_link_field_product_names = C_loc(fld_prod_list)
+      end function c_link_field_product_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_base_diffusions_f() bind(c)
-!
+      type(C_ptr) function c_link_base_diffusion_names(c_ctl)           &
+     &          bind(C, NAME = 'c_link_base_diffusion_names')
       use m_diffusion_term_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_base_diffusions_f = num_base_diffusions()
-      return
-      end function num_base_diffusions_f
+      if(.not. allocated(diffusion_list%c1_tbl))                        &
+     &           call set_base_diffusion_names(diffusion_list)
+      c_link_base_diffusion_names = C_loc(diffusion_list)
+      end function c_link_base_diffusion_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_base_diffusion_labels_f                            &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
+      type(C_ptr) function c_link_base_diffusivity_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_base_diffusivity_names')
       use m_diffusion_term_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_base_diffusions()])
-      call c_f_pointer(field_math_c, math, [num_base_diffusions()])
-      call set_base_diffusion_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_base_diffusion_labels_f
+      if(.not. allocated(diffusivity_list%c1_tbl))                      &
+     &           call set_base_diffusivity_names(diffusivity_list)
+      c_link_base_diffusivity_names = C_loc(diffusivity_list)
+      end function c_link_base_diffusivity_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_base_diffusivities_f() bind(c)
-!
-      use m_diffusion_term_labels
-!
-      num_base_diffusivities_f = num_base_diffusivities()
-      return
-      end function num_base_diffusivities_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_base_diffusivity_labels_f                          &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_diffusion_term_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_base_diffusivities()])
-      call c_f_pointer(field_math_c, math, [num_base_diffusivities()])
-      call set_base_diffusivity_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_base_diffusivity_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_work_4_explicit_f() bind(c)
-!
+      type(C_ptr) function c_link_explicit_work_names(c_ctl)            &
+     &          bind(C, NAME = 'c_link_explicit_work_names')
       use m_explicit_term_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_work_4_explicit_f = num_work_4_explicit()
-      return
-      end function num_work_4_explicit_f
+      if(.not. allocated(exp_work_list%c1_tbl))                         &
+     &           call set_explicit_work_names(exp_work_list)
+      c_link_explicit_work_names = C_loc(exp_work_list)
+      end function c_link_explicit_work_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_work_4_explicit_labels_f                           &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
+      type(C_ptr) function c_link_check_fields_names(c_ctl)             &
+     &          bind(C, NAME = 'c_link_check_fields_names')
       use m_explicit_term_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_work_4_explicit()])
-      call c_f_pointer(field_math_c, math, [num_work_4_explicit()])
-      call set_work_4_explicit_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_work_4_explicit_labels_f
+      if(.not. allocated(chk_fld_list%c1_tbl))                          &
+     &           call set_check_fields_names(chk_fld_list)
+      c_link_check_fields_names = C_loc(chk_fld_list)
+      end function c_link_check_fields_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_check_fields_f() bind(c)
-!
-      use m_explicit_term_labels
-!
-      num_check_fields_f = num_check_fields()
-      return
-      end function num_check_fields_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_check_fields_labels_f                              &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_explicit_term_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_check_fields()])
-      call c_f_pointer(field_math_c, math, [num_check_fields()])
-      call set_check_fields_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_check_fields_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_fieldss_w_symmetry_f() bind(c)
-!
+      type(C_ptr) function c_link_field_w_symmetry_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_field_w_symmetry_names')
       use m_field_w_symmetry_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_fieldss_w_symmetry_f = num_fields_w_symmetry()
-      return
-      end function num_fieldss_w_symmetry_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_fields_w_sym_labels_f                              &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_field_w_symmetry_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_fields_w_symmetry()])
-      call c_f_pointer(field_math_c, math, [num_fields_w_symmetry()])
-      call set_field_w_symmetry_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_fields_w_sym_labels_f
+      if(.not. allocated(sym_fld_list%c1_tbl))                          &
+     &           call set_field_w_symmetry_names(sym_fld_list)
+      c_link_field_w_symmetry_names = C_loc(sym_fld_list)
+      end function c_link_field_w_symmetry_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_forces_w_symmetry_f() bind(c)
-!
+      type(C_ptr) function c_link_force_w_symmetry_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_force_w_symmetry_names')
       use m_force_w_sym_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_forces_w_symmetry_f = num_forces_w_symmetry()
-      return
-      end function num_forces_w_symmetry_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_forces_w_sym_labels_f                              &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_force_w_sym_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_forces_w_symmetry()])
-      call c_f_pointer(field_math_c, math, [num_forces_w_symmetry()])
-      call set_force_w_symmetry_names(n_comps_c(1), field, math)
-!
-      end subroutine set_forces_w_sym_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_energy_fluxes_w_sym_org_f() bind(c)
-!
-      use m_energy_flux_w_sym_labels
-!
-      num_energy_fluxes_w_sym_org_f = num_ene_fluxes_w_symmetry()
-      return
-      end function num_energy_fluxes_w_sym_org_f
+      if(.not. allocated(sym_frc_list%c1_tbl))                          &
+     &           call set_force_w_symmetry_names(sym_frc_list)
+      c_link_force_w_symmetry_names = C_loc(sym_frc_list)
+      end function c_link_force_w_symmetry_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ene_flux_w_sym_labels_org_f                        &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_energy_flux_w_sym_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field,                             &
-     &                 [num_ene_fluxes_w_symmetry()])
-      call c_f_pointer(field_math_c, math,                              &
-     &                 [num_ene_fluxes_w_symmetry()])
-      call set_ene_flux_w_symmetry_names(n_comps_c(1), field, math)
-!
-      end subroutine set_ene_flux_w_sym_labels_org_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_energy_fluxes_w_symmetry_f() bind(c)
-!
+      type(C_ptr) function c_link_sym_ene_flux_names(c_ctl)             &
+     &          bind(C, NAME = 'c_link_sym_ene_flux_names')
       use m_sym_ene_flux_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_energy_fluxes_w_symmetry_f = num_sym_ene_fluxes()
-      return
-      end function num_energy_fluxes_w_symmetry_f
+      if(.not. allocated(sym_flux_list%c1_tbl))                         &
+     &           call set_sym_ene_flux_names(sym_flux_list)
+      c_link_sym_ene_flux_names = C_loc(sym_flux_list)
+      end function c_link_sym_ene_flux_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ene_flux_w_sym_labels_f                            &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+      type(C_ptr) function c_link_sym_ene_flux_org_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_sym_ene_flux_org_names')
+      use m_energy_flux_w_sym_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      use m_sym_ene_flux_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field,                             &
-     &                 [num_sym_ene_fluxes()])
-      call c_f_pointer(field_math_c, math,                              &
-     &                 [num_sym_ene_fluxes()])
-      call set_sym_ene_flux_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_ene_flux_w_sym_labels_f
+      if(.not. allocated(sym_flux_org_list%c1_tbl))                     &
+     &           call set_ene_flux_w_symmetry_names(sym_flux_org_list)
+      c_link_sym_ene_flux_org_names = C_loc(sym_flux_org_list)
+      end function c_link_sym_ene_flux_org_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -749,608 +412,235 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_SGS_terms_f()                         &
-     &              bind(c, name="num_SGS_terms_f")
-!
+      type(C_ptr) function c_link_SGS_term_names(c_ctl)                 &
+     &          bind(C, NAME = 'c_link_SGS_term_names')
       use m_SGS_term_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_SGS_terms_f = num_SGS_terms()
-      return
-      end function num_SGS_terms_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_SGS_term_labels_f                                  &
-     &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_SGS_term_labels_f")
-!
-      use m_SGS_term_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_SGS_terms()])
-      call c_f_pointer(field_math_c, math, [num_SGS_terms()])
-      call set_SGS_term_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_SGS_term_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_diff_SGS_terms_f()                    &
-     &              bind(c, name="num_diff_SGS_terms_f")
-!
-      use m_diff_SGS_term_labels
-!
-      num_diff_SGS_terms_f = num_diff_SGS_terms()
-      return
-      end function num_diff_SGS_terms_f
+      if(.not. allocated(SGS_term_list%c1_tbl))                         &
+     &           call set_SGS_term_names(SGS_term_list)
+      c_link_SGS_term_names = C_loc(SGS_term_list)
+      end function c_link_SGS_term_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_diff_SGS_term_labels_f                             &
-     &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_diff_SGS_term_labels_f")
-!
-      use m_diff_SGS_term_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_diff_SGS_terms()])
-      call c_f_pointer(field_math_c, math, [num_diff_SGS_terms()])
-      call set_diff_SGS_term_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_diff_SGS_term_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_SGS_energy_fluxes_f()                 &
-     &              bind(c, name="num_SGS_energy_fluxes_f")
-!
+      type(C_ptr) function c_link_SGS_energy_flux_names(c_ctl)          &
+     &          bind(C, NAME = 'c_link_SGS_energy_flux_names')
       use m_SGS_enegy_flux_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_SGS_energy_fluxes_f = num_SGS_energy_fluxes()
-      return
-      end function num_SGS_energy_fluxes_f
+      if(.not. allocated(SGS_eflux_list%c1_tbl))                        &
+     &           call set_SGS_energy_flux_names(SGS_eflux_list)
+      c_link_SGS_energy_flux_names = C_loc(SGS_eflux_list)
+      end function c_link_SGS_energy_flux_names
+!
+! ----------------------------------------------------------------------
+!
+      type(C_ptr) function c_link_diff_SGS_term_names(c_ctl)            &
+     &          bind(C, NAME = 'c_link_diff_SGS_term_names')
+      use m_diff_SGS_term_labels
+      type(c_ptr), value, intent(in) :: c_ctl
+!
+      if(.not. allocated(diff_SGS_list%c1_tbl))                         &
+     &           call set_diff_SGS_term_names(diff_SGS_list)
+      c_link_diff_SGS_term_names = C_loc(diff_SGS_list)
+      end function c_link_diff_SGS_term_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_SGS_energy_flux_labels_f                           &
-     &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_SGS_energy_flux_labels_f")
-!
-      use m_SGS_enegy_flux_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_SGS_energy_fluxes()])
-      call c_f_pointer(field_math_c, math, [num_SGS_energy_fluxes()])
-      call set_SGS_energy_flux_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_SGS_energy_flux_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_SGS_model_coefs_f()                   &
-     &              bind(c, name="num_SGS_model_coefs_f")
-!
+      type(C_ptr) function c_link_SGS_model_coefs_names(c_ctl)          &
+     &          bind(C, NAME = 'c_link_SGS_model_coefs_names')
       use m_SGS_model_coef_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_SGS_model_coefs_f = num_SGS_model_coefs()
-      return
-      end function num_SGS_model_coefs_f
+      if(.not. allocated(SGS_Csim_list%c1_tbl))                         &
+     &           call set_SGS_model_coefs_names(SGS_Csim_list)
+      c_link_SGS_model_coefs_names = C_loc(SGS_Csim_list)
+      end function c_link_SGS_model_coefs_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_SGS_model_coefs_labels_f                           &
-     &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_SGS_model_coefs_labels_f")
-!
+      type(C_ptr) function c_link_dynamic_SGS_work_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_dynamic_SGS_work_names')
       use m_SGS_model_coef_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_SGS_model_coefs()])
-      call c_f_pointer(field_math_c, math, [num_SGS_model_coefs()])
-      call set_SGS_model_coefs_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_SGS_model_coefs_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_dynamic_SGS_work_f()                  &
-     &              bind(c, name="num_dynamic_SGS_work_f")
-!
-      use m_SGS_model_coef_labels
-!
-      num_dynamic_SGS_work_f = num_dynamic_SGS_work()
-      return
-      end function num_dynamic_SGS_work_f
+      if(.not. allocated(dSGS_work_list%c1_tbl))                        &
+     &           call set_dynamic_SGS_work_names(dSGS_work_list)
+      c_link_dynamic_SGS_work_names = C_loc(dSGS_work_list)
+      end function c_link_dynamic_SGS_work_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_dynamic_SGS_work_labels_f                          &
-     &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_dynamic_SGS_work_labels_f")
-!
-      use m_SGS_model_coef_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_dynamic_SGS_work()])
-      call c_f_pointer(field_math_c, math, [num_dynamic_SGS_work()])
-      call set_dynamic_SGS_work_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_dynamic_SGS_work_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_filter_fields_f() bind(c)
-!
+      type(C_ptr) function c_link_filter_field_names(c_ctl)             &
+     &          bind(C, NAME = 'c_link_filter_field_names')
       use m_filtered_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_filter_fields_f = num_filter_fields()
-      return
-      end function num_filter_fields_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_filter_field_labels_f                              &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_filtered_field_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_filter_fields()])
-      call c_f_pointer(field_math_c, math, [num_filter_fields()])
-      call set_filter_field_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_filter_field_labels_f
+      if(.not. allocated(filter_fld_list%c1_tbl))                       &
+     &           call set_filter_field_names(filter_fld_list)
+      c_link_filter_field_names = C_loc(filter_fld_list)
+      end function c_link_filter_field_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_div_filter_fields_f() bind(c)
-!
+      type(C_ptr) function c_link_div_filter_field_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_div_filter_field_names')
       use m_grad_filter_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_div_filter_fields_f = num_div_filter_fields()
-      return
-      end function num_div_filter_fields_f
+      if(.not. allocated(fil_div_fld_list%c1_tbl))                      &
+     &           call set_div_filtered_field_names(fil_div_fld_list)
+      c_link_div_filter_field_names = C_loc(fil_div_fld_list)
+      end function c_link_div_filter_field_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_div_filter_field_labels_f                          &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
+      type(C_ptr) function c_link_grad_filter_field_names(c_ctl)        &
+     &          bind(C, NAME = 'c_link_grad_filter_field_names')
       use m_grad_filter_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_div_filter_fields()])
-      call c_f_pointer(field_math_c, math, [num_div_filter_fields()])
-      call set_div_filter_field_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_div_filter_field_labels_f
+      if(.not. allocated(fil_grad_fld_list%c1_tbl))                     &
+     &           call set_grad_filtered_field_names(fil_grad_fld_list)
+      c_link_grad_filter_field_names = C_loc(fil_grad_fld_list)
+      end function c_link_grad_filter_field_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_grad_filter_fields_f() bind(c)
-!
-      use m_grad_filter_field_labels
-!
-      num_grad_filter_fields_f = num_grad_filter_fields()
-      return
-      end function num_grad_filter_fields_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_grad_filter_field_labels_f                         &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_grad_filter_field_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_grad_filter_fields()])
-      call c_f_pointer(field_math_c, math, [num_grad_filter_fields()])
-      call set_grad_filter_field_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_grad_filter_field_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_filter_force_f() bind(c)
-!
+      type(C_ptr) function c_link_filter_force_names(c_ctl)             &
+     &          bind(C, NAME = 'c_link_filter_force_names')
       use m_filtered_force_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_filter_force_f = num_filter_force()
-      return
-      end function num_filter_force_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_filter_force_labels_f                              &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_filtered_force_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_filter_force()])
-      call c_f_pointer(field_math_c, math, [num_filter_force()])
-      call set_filter_force_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_filter_force_labels_f
+      if(.not. allocated(filter_frc_list%c1_tbl))                       &
+     &           call set_filter_force_names(filter_frc_list)
+      c_link_filter_force_names = C_loc(filter_frc_list)
+      end function c_link_filter_force_names
 !
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_rot_filtered_forces_f() bind(c)
-!
+      type(C_ptr) function c_link_rot_filter_force_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_rot_filter_force_names')
       use m_rot_filtered_force_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_rot_filtered_forces_f = num_rot_filtered_forces()
-      return
-      end function num_rot_filtered_forces_f
+      if(.not. allocated(fil_rot_frc_list%c1_tbl))                      &
+     &           call set_rot_filtered_force_names(fil_rot_frc_list)
+      c_link_rot_filter_force_names = C_loc(fil_rot_frc_list)
+      end function c_link_rot_filter_force_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine rot_filtered_force_labels_f                            &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
+      type(C_ptr) function c_link_div_filter_force_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_div_filter_force_names')
       use m_rot_filtered_force_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field,[num_rot_filtered_forces()])
-      call c_f_pointer(field_math_c, math, [num_rot_filtered_forces()])
-      call set_rot_filtered_force_labels(n_comps_c(1), field, math)
-!
-      end subroutine rot_filtered_force_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_div_filtered_forces_f() bind(c)
-!
-      use m_div_filtered_force_labels
-!
-      num_div_filtered_forces_f = num_div_filtered_forces()
-      return
-      end function num_div_filtered_forces_f
+      if(.not. allocated(fil_div_frc_list%c1_tbl))                      &
+     &           call set_rot_filtered_force_names(fil_div_frc_list)
+      c_link_div_filter_force_names = C_loc(fil_div_frc_list)
+      end function c_link_div_filter_force_names
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine div_filtered_force_labels_f                            &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_div_filtered_force_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field,[num_div_filtered_forces()])
-      call c_f_pointer(field_math_c, math, [num_div_filtered_forces()])
-      call set_div_filtered_force_labels(n_comps_c(1), field, math)
-!
-      end subroutine div_filtered_force_labels_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_filtered_ene_fluxes_f() bind(c)
-!
+      type(C_ptr) function c_link_filter_eflux_names(c_ctl)             &
+     &          bind(C, NAME = 'c_link_filter_eflux_names')
       use m_filtered_ene_flux_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_filtered_ene_fluxes_f = num_filtered_ene_fluxes()
-      return
-      end function num_filtered_ene_fluxes_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_filtered_ene_flax_labels_f                         &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_filtered_ene_flux_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field,[num_filtered_ene_fluxes()])
-      call c_f_pointer(field_math_c, math, [num_filtered_ene_fluxes()])
-      call set_filtered_ene_flax_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_filtered_ene_flax_labels_f
+      if(.not. allocated(fil_eflux_list%c1_tbl))                        &
+     &           call set_filtered_ene_flux_names(fil_eflux_list)
+      c_link_filter_eflux_names = C_loc(fil_eflux_list)
+      end function c_link_filter_eflux_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_wide_filter_fields_f() bind(c)
-!
+      type(C_ptr) function c_link_wide_filter_field_names(c_ctl)        &
+     &          bind(C, NAME = 'c_link_wide_filter_field_names')
       use m_wide_filter_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_wide_filter_fields_f = num_wide_filter_fields()
-      return
-      end function num_wide_filter_fields_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_wide_filter_field_labels_f                         &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_wide_filter_field_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_wide_filter_fields()])
-      call c_f_pointer(field_math_c, math, [num_wide_filter_fields()])
-      call set_wide_filter_field_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_wide_filter_field_labels_f
+      if(.not. allocated(w_fil_fld_list%c1_tbl))                        &
+     &           call set_wide_filter_field_names(w_fil_fld_list)
+      c_link_wide_filter_field_names = C_loc(w_fil_fld_list)
+      end function c_link_wide_filter_field_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_double_filter_fields_f() bind(c)
-!
+      type(C_ptr) function c_link_dbl_filter_field_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_dbl_filter_field_names')
       use m_dble_filter_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_double_filter_fields_f = num_double_filter_fields()
-      return
-      end function num_double_filter_fields_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_dbl_filter_field_labels_f                          &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_dble_filter_field_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field,                             &
-     &                 [num_double_filter_fields()])
-      call c_f_pointer(field_math_c, math,                              &
-     &                 [num_double_filter_fields()])
-      call set_double_filter_field_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_dbl_filter_field_labels_f
+      if(.not. allocated(d_fil_fld_list%c1_tbl))                        &
+     &           call set_double_filter_field_names(d_fil_fld_list)
+      c_link_dbl_filter_field_names = C_loc(d_fil_fld_list)
+      end function c_link_dbl_filter_field_names
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_difference_vector_f() bind(c)
-!
+      type(C_ptr) function c_link_differnce_vector_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_differnce_vector_names')
       use m_diff_vector_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_difference_vector_f = num_difference_vector()
-      return
-      end function num_difference_vector_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_differnce_vector_labels_f                          &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_diff_vector_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_difference_vector()])
-      call c_f_pointer(field_math_c, math, [num_difference_vector()])
-      call set_differnce_vector_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_differnce_vector_labels_f
+      if(.not. allocated(diff_vect_list%c1_tbl))                        &
+     &           call set_differnce_vector_names(diff_vect_list)
+      c_link_differnce_vector_names = C_loc(diff_vect_list)
+      end function c_link_differnce_vector_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_diff_filter_vector_f() bind(c)
-!
+      type(C_ptr) function c_link_diff_filter_vect_names(c_ctl)         &
+     &          bind(C, NAME = 'c_link_diff_filter_vect_names')
       use m_diff_filter_vect_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_diff_filter_vector_f = num_diff_filter_vector()
-      return
-      end function num_diff_filter_vector_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_diff_filter_vect_labels_f                          &
-     &         (n_comps_c, field_name_c, field_math_c) bind(c)
-!
-      use m_diff_filter_vect_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_diff_filter_vector()])
-      call c_f_pointer(field_math_c, math, [num_diff_filter_vector()])
-      call set_diff_filter_vect_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_diff_filter_vect_labels_f
+      if(.not. allocated(diff_fil_vect_list%c1_tbl))                    &
+     &           call set_diff_filter_vect_names(diff_fil_vect_list)
+      c_link_diff_filter_vect_names = C_loc(diff_fil_vect_list)
+      end function c_link_diff_filter_vect_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_wide_SGS_terms_f()                    &
-     &          bind(c, name="num_wide_SGS_terms_f")
-!
+      type(C_ptr) function c_link_wide_SGS_term_names(c_ctl)            &
+     &          bind(C, NAME = 'c_link_wide_SGS_term_names')
       use m_wide_SGS_term_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_wide_SGS_terms_f = num_wide_SGS_terms()
-      return
-      end function num_wide_SGS_terms_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_wide_SGS_term_labels_f                             &
-     &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_wide_SGS_term_labels_f")
-!
-      use m_wide_SGS_term_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_wide_SGS_terms()])
-      call c_f_pointer(field_math_c, math, [num_wide_SGS_terms()])
-      call set_wide_SGS_term_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_wide_SGS_term_labels_f
+      if(.not. allocated(wide_SGS_term_list%c1_tbl))                    &
+     &           call set_wide_SGS_term_names(wide_SGS_term_list)
+      c_link_wide_SGS_term_names = C_loc(wide_SGS_term_list)
+      end function c_link_wide_SGS_term_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_force_w_SGS_f()                       &
-     &          bind(c, name="num_force_w_SGS_f")
-!
+      type(C_ptr) function c_link_force_with_SGS_names(c_ctl)           &
+     &          bind(C, NAME = 'c_link_force_with_SGS_names')
       use m_force_w_SGS_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_force_w_SGS_f = num_force_w_SGS()
-      return
-      end function num_force_w_SGS_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_force_with_SGS_labels_f                            &
-     &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_force_with_SGS_labels_f")
-!
-      use m_force_w_SGS_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_force_w_SGS()])
-      call c_f_pointer(field_math_c, math, [num_force_w_SGS()])
-      call set_force_with_SGS_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_force_with_SGS_labels_f
+      if(.not. allocated(force_w_SGS_list%c1_tbl))                      &
+     &           call set_force_with_SGS_names(force_w_SGS_list)
+      c_link_force_with_SGS_names = C_loc(force_w_SGS_list)
+      end function c_link_force_with_SGS_names
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_true_SGS_terms_f()                    &
-     &          bind(c, name="num_true_SGS_terms_f")
-!
+      type(C_ptr) function c_link_true_SGS_term_names(c_ctl)            &
+     &          bind(C, NAME = 'c_link_true_SGS_term_names')
       use m_true_SGS_term_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      num_true_SGS_terms_f = num_true_SGS_terms()
-      return
-      end function num_true_SGS_terms_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_true_SGS_term_labels_f                             &
-     &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_true_SGS_term_labels_f")
-!
-      use m_true_SGS_term_labels
-!
-      integer(c_int), intent(inout) :: n_comps_c(*)
-      type(C_ptr), value :: field_name_c
-      type(C_ptr), value :: field_math_c
-!
-      character(len=kchara), pointer :: field(:)
-      character(len=kchara), pointer :: math(:)
-!
-      call c_f_pointer(field_name_c, field, [num_true_SGS_terms()])
-      call c_f_pointer(field_math_c, math, [num_true_SGS_terms()])
-      call set_true_SGS_term_labels(n_comps_c(1), field, math)
-!
-      end subroutine set_true_SGS_term_labels_f
+      if(.not. allocated(true_SGS_list%c1_tbl))                         &
+     &           call set_true_SGS_term_names(true_SGS_list)
+      c_link_true_SGS_term_names = C_loc(true_SGS_list)
+      end function c_link_true_SGS_term_names
 !
 ! ----------------------------------------------------------------------
 !

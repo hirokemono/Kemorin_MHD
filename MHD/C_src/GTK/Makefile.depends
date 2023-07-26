@@ -70,6 +70,8 @@ control_panel_4_field_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int3_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_sph_grid_c.h \
@@ -268,6 +270,8 @@ ctl_panel_SPH_MHD_model_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
@@ -416,6 +420,8 @@ tree_view_4_each_term_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
@@ -446,6 +452,8 @@ tree_view_4_field_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/GTK/tree_view_chara_GTK.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h

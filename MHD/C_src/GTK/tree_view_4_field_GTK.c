@@ -48,16 +48,19 @@ void update_field_ctl_f(struct chara_int2_clist *f_field_ctl){
 void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_list, 
 			GtkListStore *child_model)
 {
+    struct chara2_int_ctl_item *tmp_item
+        = chara2_int_clist_at_index(index_field, all_fld_list->fld_list->field_label);
+
     GtkTreeIter iter;
     
     gtk_list_store_append(child_model, &iter);
     gtk_list_store_set(child_model, &iter,
                        COLUMN_FIELD_INDEX, index_field,
-                       COLUMN_FIELD_NAME, all_fld_list->fld_list->field_name[index_field],
-                       COLUMN_FIELD_MATH, all_fld_list->fld_list->field_math[index_field],
+                       COLUMN_FIELD_NAME, tmp_item->c1_tbl,
+                       COLUMN_FIELD_MATH, tmp_item->c2_tbl,
                        COLUMN_FORTH, (gboolean) all_fld_list->iflag_viz[index_field],
                        COLUMN_FIFTH, (gboolean) all_fld_list->iflag_monitor[index_field],
-                       COLUMN_NUM_COMP, all_fld_list->fld_list->num_comp[index_field],
+                       COLUMN_NUM_COMP, tmp_item->i_data,
                        COLUMN_QUADRATURE, all_fld_list->iflag_quad[index_field],
                        -1);
 }
@@ -85,8 +88,9 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &index_for_toggle, -1);
     
    
-    printf("toggle_viz_switch %d, %s: %s\n", index_field, row_string,
-            all_fld_list->fld_list->field_name[index_field]);
+    struct chara2_int_ctl_item *tmp_item
+        = chara2_int_clist_at_index(index_field, all_fld_list->fld_list->field_label);
+    printf("toggle_viz_switch %d, %s: %s\n", index_field, row_string, tmp_item->c1_tbl);
     
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
@@ -121,8 +125,9 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIFTH, &index_for_toggle, -1);
     
-    printf("toggle_monitor_switch %d, %s: %s\n", index_field, row_string,
-           all_fld_list->fld_list->field_name[index_field]);
+    struct chara2_int_ctl_item *tmp_item
+        = chara2_int_clist_at_index(index_field, all_fld_list->fld_list->field_label);
+    printf("toggle_monitor_switch %d, %s: %s\n", index_field, row_string, tmp_item->c1_tbl);
 	
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
@@ -395,8 +400,10 @@ void create_direction_tree_views(struct field_views *fields_vws)
 
 int find_field_address(const char *field_in, struct field_names_f *fld_list){
 	int i;
+    struct chara2_int_ctl_item *tmp_item;
 	for(i=0;i<fld_list->ntot_fields;i++){
-		if(cmp_no_case_c(field_in, fld_list->field_name[i]) > 0) {return i;};
+        tmp_item = chara2_int_clist_at_index(i, fld_list->field_label);
+		if(cmp_no_case_c(field_in, tmp_item->c1_tbl) > 0) {return i;};
 	};
 	return -1;
 }
@@ -420,10 +427,12 @@ static int find_each_comp_address(char *comp_in, struct flag_with_math_f *compon
 
 int find_comp_address(char *comp_in, int i_field, struct field_names_f *fld_list,
 					  struct component_flags_f *comp_flags){
+    struct chara2_int_ctl_item *tmp_item
+        = chara2_int_clist_at_index(i_field, fld_list->field_label);
 	int i_comp;
-	if(fld_list->num_comp[i_field] == 6){
+	if(tmp_item->i_data == 6){
 		i_comp = find_each_comp_address(comp_in, comp_flags->sym_tensor_components_flag);
-	}else if(fld_list->num_comp[i_field] == 3){
+	}else if(tmp_item->i_data == 3){
 		i_comp = find_each_comp_address(comp_in, comp_flags->vector_components_flag);
 	}else{
 		i_comp = find_each_comp_address(comp_in, comp_flags->scalar_components_flag);

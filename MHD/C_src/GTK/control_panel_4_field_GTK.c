@@ -83,6 +83,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	};
 	/* Back the reference to path and delete */
 
+    struct chara2_int_ctl_item *tmp_item;
 	for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *tree_path;
 		GtkTreeIter iter;
@@ -96,8 +97,9 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
         gtk_tree_model_get(child_model_for_used, &iter, COLUMN_NUM_COMP, &num_comp, -1);
         gtk_tree_model_get(child_model_for_used, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
         
-        printf("To be moved: %d, %s: %s\n", index_field, field_name,
-               fields_vws->all_fld_list->fld_list->field_name[index_field]);
+        tmp_item = chara2_int_clist_at_index(index_field,
+                                             fields_vws->all_fld_list->fld_list->field_label);
+        printf("To be moved: %d, %s: %s\n", index_field, field_name, tmp_item->c1_tbl);
 		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model_for_used), &iter);
 		
@@ -188,6 +190,7 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 	block_changed_signal(G_OBJECT(child_model_for_used));
 
 	/* Back the reference to path and delete */
+    struct chara2_int_ctl_item *tmp_item;
 	for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *tree_path;
 		GtkTreeIter iter;
@@ -201,8 +204,9 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
         gtk_tree_model_get(current_child_model, &iter, COLUMN_NUM_COMP, &num_comp, -1);
         gtk_tree_model_get(current_child_model, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
         
-        printf("To be moved: %d, %s: %s\n", index_field, field_name,
-               all_fld_list->fld_list->field_name[index_field]);
+        tmp_item = chara2_int_clist_at_index(index_field,
+                                             all_fld_list->fld_list->field_label);
+        printf("To be moved: %d, %s: %s\n", index_field, field_name, tmp_item->c1_tbl);
 		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(current_child_model), &iter);
 		

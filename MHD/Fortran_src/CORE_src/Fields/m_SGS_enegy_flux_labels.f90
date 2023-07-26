@@ -10,8 +10,8 @@
 !!@verbatim
 !!      logical function check_SGS_ene_fluxes(field_name)
 !!
-!!      integer(kind = kint) function num_SGS_energy_fluxes()
-!!      subroutine set_SGS_energy_flux_labels(n_comps, names, maths)
+!!      subroutine set_SGS_energy_flux_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !! !!!!!  energy flux by SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names 
@@ -40,9 +40,6 @@
       use t_field_labels
 !
       implicit  none
-! 
-      integer(kind = kint), parameter, private :: nSGS_e_flux = 7
-!
 !
 !  energy flux by SGS terms
 !>        Field label for work of SGS Reynolds stress
@@ -137,38 +134,23 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_SGS_energy_fluxes()
-      num_SGS_energy_fluxes = nSGS_e_flux
-      return
-      end function num_SGS_energy_fluxes
+      subroutine set_SGS_energy_flux_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-! ----------------------------------------------------------------------
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      subroutine set_SGS_energy_flux_labels(n_comps, names, maths)
+      call set_field_label_to_ctl(Reynolds_work,          array_c2i)
+      call set_field_label_to_ctl(SGS_Lorentz_work,       array_c2i)
+      call set_field_label_to_ctl(SGS_buoyancy_flux,      array_c2i)
+      call set_field_label_to_ctl(SGS_comp_buoyancy_flux, array_c2i)
+      call set_field_label_to_ctl(SGS_mag_induction_flux, array_c2i)
+      call set_field_label_to_ctl(SGS_temp_flux_gen,      array_c2i)
+      call set_field_label_to_ctl(SGS_comp_flux_gen,      array_c2i)
 !
-      integer(kind = kint_4b), intent(inout) :: n_comps(nSGS_e_flux)
-      character(len = kchara), intent(inout) :: names(nSGS_e_flux)
-      character(len = kchara), intent(inout) :: maths(nSGS_e_flux)
-!
-!
-      call set_field_labels(Reynolds_work,                              &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(SGS_Lorentz_work,                           &
-     &    n_comps( 2), names( 2), maths( 2))
-      call set_field_labels(SGS_buoyancy_flux,                          &
-     &    n_comps( 3), names( 3), maths( 3))
-      call set_field_labels(SGS_comp_buoyancy_flux,                     &
-     &    n_comps( 4), names( 4), maths( 4))
-!
-      call set_field_labels(SGS_mag_induction_flux,                     &
-     &    n_comps( 5), names( 5), maths( 5))
-!
-      call set_field_labels(SGS_temp_flux_gen,                          &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(SGS_comp_flux_gen,                          &
-     &    n_comps( 7), names( 7), maths( 7))
-!
-      end subroutine set_SGS_energy_flux_labels
+      end subroutine set_SGS_energy_flux_names
 !
 ! ----------------------------------------------------------------------
 !

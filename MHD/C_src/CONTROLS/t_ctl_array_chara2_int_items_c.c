@@ -64,6 +64,21 @@ struct chara2_int_clist * init_f_ctl_c2i_array(void *(*c_load_self)(void *f_pare
 	return c2i_clst;
 }
 
+void append_f_ctl_c2i_array(void *(*c_load_self)(void *f_parent),
+                            void *f_parent, struct chara2_int_clist *c2i_clst){
+    void *f_self =  c_load_self(f_parent);
+    int i, i_data;
+    char *ctmp1, *ctmp2;
+
+    for(i=0;i<c_chara2_int_array_num(f_self);i++){
+        ctmp1 = (char *) c_chara2_int_array_c1_tbl(i, f_self);
+        ctmp2 = (char *) c_chara2_int_array_c2_tbl(i, f_self);
+        i_data = c_chara2_int_array_i_tbl(i, f_self);
+        append_chara2_int_clist(ctmp1, ctmp2, i_data, c2i_clst);
+    }
+    return;
+}
+
 void reflesh_f_ctl_c2i_array(int num_array, struct chara2_int_clist *c2i_clst)
 {
 	c_dealloc_chara2_int_array(c2i_clst->f_self);

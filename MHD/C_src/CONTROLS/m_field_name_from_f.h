@@ -16,20 +16,18 @@
 #define M_FIELD_NAME_FROM_F_
 
 struct field_names_f{
-	int len_f;
-	
-	int num_field_groups[3];
-	int istack_field_groups[4];
-	int ntot_field_groups;
-	
-	int ntot_fields;
-	int *num_fields;
-	int *istack_fields;
-	char **field_group_name;
-	
-	int *num_comp;
-	char **field_name;
-	char **field_math;
+    int len_f;
+    
+    int num_field_groups[3];
+    int istack_field_groups[4];
+    int ntot_field_groups;
+    
+    int ntot_fields;
+    int *num_fields;
+    int *istack_fields;
+    char **field_group_name;
+    
+    struct chara2_int_clist *field_label;
 };
 
 struct component_flags_f{
