@@ -19,8 +19,12 @@
 /* prototypes */
 
 GtkWidget *create_field_label_tree(struct chara_int2_clist *field_list);
+GtkWidget *create_compoonent_label_tree(struct chara2_int_clist *dir_list);
+
 GtkWidget *draw_field_combobox_hbox(struct chara_int2_clist *field_list,
                                     struct chara_ctl_item *f_citem, GtkWidget *window);
+GtkWidget *draw_component_combobox_hbox(struct chara2_int_clist *dir_list,
+                                        struct chara_ctl_item *f_citem, GtkWidget *window);
 
 
 #endif /* CONTROL_PANEL_FIELD_CBOX_GTK_H_ */

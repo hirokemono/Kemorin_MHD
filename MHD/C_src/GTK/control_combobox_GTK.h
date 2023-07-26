@@ -28,7 +28,6 @@ struct chara_cbox_table_view{
 
 GtkWidget * create_fixed_label_tree(struct chara_clist *c1_clist);
 
-struct chara_cbox_table_view * init_chara_cbox_table_view(struct chara_clist *item_clist);
 void add_control_combobox_vbox(struct chara_ctl_item *f_citem,
                                struct chara_clist *flag_list, GtkWidget *vbox_out);
 

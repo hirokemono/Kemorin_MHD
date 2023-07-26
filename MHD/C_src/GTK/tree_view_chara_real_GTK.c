@@ -350,8 +350,6 @@ void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *
     
     GtkListStore *child_model;
 
-    GtkAdjustment *adjust;
-
 	/* Construct empty list storage */
     child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
                                      G_TYPE_DOUBLE);

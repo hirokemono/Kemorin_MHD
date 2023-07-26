@@ -153,7 +153,7 @@ GtkWidget *MHD_model_ctl_expander(void *f_parent, struct f_MHD_model_control *f_
                                                          model_wgts->label_reftemp_list);
     
     
-    model_wgts->label_xyz_dir_list = init_f_ctl_chara_array(c_link_xyz_dir_list_to_ctl, f_parent);
+    model_wgts->label_xyz_dir_list = init_field_label_array(c_link_xyz_dir_list_to_ctl());
     GtkWidget *hbox_mc1 = draw_chara_switch_entry_hbox(f_model_ctl->f_mcv_ctl->f_filterd_induction_ctl);
     GtkWidget *hbox_mc2 = draw_chara_switch_entry_hbox(f_model_ctl->f_mcv_ctl->f_magneto_cv);
     GtkWidget *expand_mc = cr_list_combobox_expander(f_model_ctl->f_mcv_ctl->f_ext_magne, 

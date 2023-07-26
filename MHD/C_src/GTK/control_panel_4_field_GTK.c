@@ -371,7 +371,9 @@ static void add_unused_field_box(int igrp, struct field_views *fields_vws,
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
 	
-	char *tmpchara = duplicate_underscore(fields_vws->all_fld_list->fld_list->field_group_name[igrp]);
+    struct chara_ctl_item *tmp_grp
+        = chara_clist_at_index(igrp, fields_vws->all_fld_list->fld_list->fld_grp_list);
+	char *tmpchara = duplicate_underscore(tmp_grp->c_tbl);
 	GtkWidget *expander = wrap_into_scroll_expansion_gtk(tmpchara, 250, 200, window, hbox_1);
     gtk_box_pack_start(GTK_BOX(vbox), expander, FALSE, FALSE, 0);
 };

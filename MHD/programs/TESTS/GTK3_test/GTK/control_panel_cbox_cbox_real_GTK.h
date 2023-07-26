@@ -18,6 +18,7 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_boundary_condition_GTK.h"
 #include "control_combobox_GTK.h"
+#include "control_panel_field_cbox_GTK.h"
 
 struct cbox_cbox_table_view{
     int index_bc;
@@ -29,12 +30,12 @@ struct cbox_cbox_table_view{
 
 /* prototypes */
 
-struct cbox_cbox_table_view * init_cbox_cbox_table_view(struct chara_clist *item1_clist,
-                                                        struct chara_clist *item2_clist);
+struct cbox_cbox_table_view * init_cbox_cbox_table_view(struct chara2_int_clist *item1_clist,
+                                                        struct chara2_int_clist *item2_clist);
 
 GtkWidget * c2r_list_combobox_expander(struct chara2_real_clist *ctl_clist,
-                                       struct chara_clist *item1_clist,
-                                       struct chara_clist *item2_clist,
+                                       struct chara2_int_clist *item1_clist,
+                                       struct chara2_int_clist *item2_clist,
                                        struct cbox_cbox_table_view *cbox2_tbl_vws,
                                        GtkWidget *window);
 

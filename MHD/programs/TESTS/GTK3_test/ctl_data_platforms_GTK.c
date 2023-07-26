@@ -9,7 +9,6 @@
 
 extern int lengthchara_f(void);
 extern int c_yes_flag(const char *text);
-extern int c_no_file_flag(const char *file_name);
 
 
 GtkWidget * draw_platform_control_vbox(struct f_platform_control *f_plt,

@@ -10,6 +10,7 @@
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
 #include "t_control_chara_int2_IO.h"
+#include "t_control_chara2_int_IO.h"
 #include "t_ctl_array_chara3_items_c.h"
 #include "t_ctl_array_chara_int3_items_c.h"
 #include "t_ctl_array_chara2_real_items_c.h"
@@ -505,7 +506,7 @@ struct f_MHD_control{
 
 struct MAP_GTK_widgets{
     struct chara_int2_clist *label_field_list;
-    struct chara_clist      *label_dir_list;
+    struct chara2_int_clist *label_dir_list;
     struct colormap_view *color_vws;
     
     struct PSF_GTK_widgets *psf_def_vws;
@@ -514,7 +515,7 @@ struct MAP_GTK_widgets{
 
 struct PVR_GTK_widgets{
     struct chara_int2_clist *label_field_list;
-    struct chara_clist      *label_dir_list;
+    struct chara2_int_clist *label_dir_list;
     struct colormap_view *color_vws;
     
     GtkWidget * lighting_tree_view;
@@ -527,12 +528,12 @@ struct LIC_GTK_widgets{
     struct block_array_widgets *masking_Wgts;
     
     struct chara_int2_clist *label_field_list;
-    struct chara_clist      *label_dir_list;
+    struct chara2_int_clist *label_dir_list;
 };
 
 struct FLINE_GTK_widgets{
     struct chara_int2_clist *label_field_list;
-    struct chara_clist      *label_dir_list;
+    struct chara2_int_clist *label_dir_list;
     
     GtkWidget * fline_area_grp_view;
     GtkWidget * f_seed_point_vws;
@@ -541,7 +542,7 @@ struct FLINE_GTK_widgets{
 
 struct VIZ_masking_GTK_widgets{
     struct chara_int2_clist *label_field_list;
-    struct chara_clist      *label_dir_list;
+    struct chara2_int_clist *label_dir_list;
 };
 
 struct VIZ_repartition_widgets{
@@ -1547,8 +1548,8 @@ void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer
 };
 
 struct viewmat_GTK_widgets{
-    struct chara_clist *label_xyz_dir_list;
-    struct chara_clist *label_xyzw_dir_list;
+    struct chara2_int_clist *label_xyz_dir_list;
+    struct chara2_int_clist *label_xyzw_dir_list;
     
     struct cbox_cbox_table_view *f_map_image_prefix_vws;
     struct chara_cbox_table_view *f_lookpoint_vws;
@@ -1709,16 +1710,16 @@ static GtkWidget * draw_map_define_vbox(struct f_MAP_section_ctl *f_map_define_c
 static GtkWidget * draw_viz_colormap_vbox(struct colormap_ctl_c *cmap_c, 
                                           struct colormap_view *color_vws, 
                                           struct chara_int2_clist *label_field_list, 
-                                          struct chara_clist *label_dir_list, 
+                                          struct chara2_int_clist *label_dir_list,
                                           GtkWidget *window){
     GtkWidget *hbox_2 = draw_field_combobox_hbox(label_field_list, 
                                                  cmap_c->f_lic_color_fld_ctl, window);
-    GtkWidget *hbox_3 = draw_chara_item_combobox_hbox(label_dir_list,
-                                                      cmap_c->f_lic_color_comp_ctl, window);
+    GtkWidget *hbox_3 = draw_component_combobox_hbox(label_dir_list,
+                                                     cmap_c->f_lic_color_comp_ctl, window);
     GtkWidget *hbox_4 = draw_field_combobox_hbox(label_field_list, 
                                                  cmap_c->f_lic_opacity_fld_ctl, window);
-    GtkWidget *hbox_5 = draw_chara_item_combobox_hbox(label_dir_list,
-                                                      cmap_c->f_lic_opacity_comp_ctl, window);
+    GtkWidget *hbox_5 = draw_component_combobox_hbox(label_dir_list,
+                                                     cmap_c->f_lic_opacity_comp_ctl, window);
     
     GtkWidget *hbox_10 = draw_real3_item_entry_hbox(cmap_c->f_background_color_ctl);
     
@@ -1783,7 +1784,7 @@ static GtkWidget * draw_viz_colorbar_vbox(struct pvr_colorbar_ctl_c *cbar_c,  Gt
 void append_viz_cmap_cbar_vbox(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
                                struct colormap_view *color_vws, 
                                struct chara_int2_clist *label_field_list, 
-                               struct chara_clist *label_dir_list, 
+                               struct chara2_int_clist *label_dir_list,
                                GtkWidget *window, GtkWidget *vbox_cc){
     GtkWidget *expand_cmap =  draw_viz_colormap_vbox(f_cmap_cbar_c->cmap_c, color_vws, 
                                                      label_field_list, label_dir_list, window);
@@ -1809,12 +1810,12 @@ static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_map_item->f_map_image_fmt_ctl);
     GtkWidget *hbox_3 = draw_field_combobox_hbox(map_vws->label_field_list, 
                                                  f_map_item->f_map_field_ctl, window);
-    GtkWidget *hbox_4 = draw_chara_item_combobox_hbox(map_vws->label_dir_list,
-                                                f_map_item->f_map_comp_ctl, window);
+    GtkWidget *hbox_4 = draw_component_combobox_hbox(map_vws->label_dir_list,
+                                                     f_map_item->f_map_comp_ctl, window);
     GtkWidget *hbox_5 = draw_field_combobox_hbox(map_vws->label_field_list, 
                                                  f_map_item->f_isoline_field_ctl, window);
-    GtkWidget *hbox_6 = draw_chara_item_combobox_hbox(map_vws->label_dir_list, 
-                                                      f_map_item->f_isoline_comp_ctl, window);
+    GtkWidget *hbox_6 = draw_component_combobox_hbox(map_vws->label_dir_list,
+                                                    f_map_item->f_isoline_comp_ctl, window);
     
     GtkWidget *expand_mdef = draw_map_define_vbox(f_map_item->f_map_define_ctl, 
                                                   map_vws->psf_def_vws, window);
@@ -1874,10 +1875,10 @@ static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_pvr_item->f_file_head_ctl);
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_pvr_item->f_file_fmt_ctl);
-    GtkWidget *hbox_4 = draw_field_combobox_hbox(pvr_vws->label_field_list, 
+    GtkWidget *hbox_4 = draw_field_combobox_hbox(pvr_vws->label_field_list,
                                                  f_pvr_item->f_pvr_field_ctl, window);
-    GtkWidget *hbox_5 = draw_chara_item_combobox_hbox(pvr_vws->label_dir_list,
-                                                      f_pvr_item->f_pvr_comp_ctl, window);
+    GtkWidget *hbox_5 = draw_component_combobox_hbox(pvr_vws->label_dir_list,
+                                                     f_pvr_item->f_pvr_comp_ctl, window);
     
     GtkWidget *expand_v_lgt = draw_pvr_lighting_vbox(f_pvr_item->f_light,
                                                      pvr_vws->lighting_tree_view, window);
@@ -1985,17 +1986,17 @@ struct VIZ_masking_GTK_widgets * init_VIZ_masking_GTK_widgets(struct chara_int2_
         exit(0);
     };
     masking_vws->label_field_list = f_field_ctl;
-    masking_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
-    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL),
+    masking_vws->label_dir_list = init_field_label_array(c_link_scalar_dir_list_to_ctl());
+    append_field_label_array(c_link_vector_dir_list_to_ctl(),
                              masking_vws->label_dir_list);
-    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL),
+    append_field_label_array(c_link_stensor_dir_list_to_ctl(),
                              masking_vws->label_dir_list);
     return masking_vws;
 };
 
 void dealloc_VIZ_masking_GTK_widgets(struct VIZ_masking_GTK_widgets *masking_vws){
     dealloc_chara_int2_clist(masking_vws->label_field_list);
-    dealloc_chara_clist(masking_vws->label_dir_list);
+    dealloc_chara2_int_clist(masking_vws->label_dir_list);
     free(masking_vws);
     return;
 }
@@ -2247,13 +2248,13 @@ struct viewmat_GTK_widgets * init_viewmat_GTK_widgets(struct chara_int2_clist *f
 		exit(0);
     };
     
-    viewmatrix_vws->label_xyz_dir_list =  init_f_ctl_chara_array(c_link_xyz_dir_list_to_ctl,  NULL);
-    viewmatrix_vws->label_xyzw_dir_list = init_f_ctl_chara_array(c_link_xyzw_dir_list_to_ctl, NULL);
+    viewmatrix_vws->label_xyz_dir_list =  init_field_label_array(c_link_xyz_dir_list_to_ctl());
+    viewmatrix_vws->label_xyzw_dir_list = init_field_label_array(c_link_xyzw_dir_list_to_ctl());
     return viewmatrix_vws;
 }
 void dealloc_viewmat_GTK_widgets(struct viewmat_GTK_widgets *viewmatrix_vws){
-    dealloc_chara_clist(viewmatrix_vws->label_xyzw_dir_list);
-    dealloc_chara_clist(viewmatrix_vws->label_xyz_dir_list);
+    dealloc_chara2_int_clist(viewmatrix_vws->label_xyzw_dir_list);
+    dealloc_chara2_int_clist(viewmatrix_vws->label_xyz_dir_list);
     free(viewmatrix_vws);
 }
 
@@ -2268,10 +2269,10 @@ struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_c
     };
     
     map_vws->label_field_list = f_field_ctl;
-    map_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
-    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL),
+    map_vws->label_dir_list = init_field_label_array(c_link_scalar_dir_list_to_ctl());
+    append_field_label_array(c_link_vector_dir_list_to_ctl(),
                              map_vws->label_dir_list);
-    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
+    append_field_label_array(c_link_stensor_dir_list_to_ctl(),
                              map_vws->label_dir_list);
     map_vws->color_vws = init_colormap_views_4_ctl(f_cmap_cbar_c->cmap_c);
     map_vws->psf_def_vws = init_PSF_GTK_widgets(f_field_ctl);
@@ -2280,7 +2281,7 @@ struct MAP_GTK_widgets * init_MAP_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_c
 void dealloc_MAP_GTK_widgets(struct MAP_GTK_widgets *map_vws){
     dealloc_PSF_GTK_widgets(map_vws->psf_def_vws);
     dealloc_chara_int2_clist(map_vws->label_field_list);
-    dealloc_chara_clist(map_vws->label_dir_list);
+    dealloc_chara2_int_clist(map_vws->label_dir_list);
     dealloc_colormap_views_4_viewer(map_vws->color_vws);
     free(map_vws);
 }
@@ -2295,10 +2296,10 @@ struct PVR_GTK_widgets * init_PVR_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_c
 		exit(0);
     };
     pvr_vws->label_field_list = f_field_ctl;
-    pvr_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
-    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL),
+    pvr_vws->label_dir_list = init_field_label_array(c_link_scalar_dir_list_to_ctl());
+    append_field_label_array(c_link_vector_dir_list_to_ctl(),
                              pvr_vws->label_dir_list);
-    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
+    append_field_label_array(c_link_stensor_dir_list_to_ctl(),
                              pvr_vws->label_dir_list);
     pvr_vws->color_vws = init_colormap_views_4_ctl(f_cmap_cbar_c->cmap_c);
     return pvr_vws;
@@ -2306,7 +2307,7 @@ struct PVR_GTK_widgets * init_PVR_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_c
 void dealloc_PVR_GTK_widgets(struct PVR_GTK_widgets *pvr_vws){
     dealloc_colormap_views_4_viewer(pvr_vws->color_vws);
     dealloc_chara_int2_clist(pvr_vws->label_field_list);
-    dealloc_chara_clist(pvr_vws->label_dir_list);
+    dealloc_chara2_int_clist(pvr_vws->label_dir_list);
     free(pvr_vws);
 }
 
@@ -2354,16 +2355,16 @@ struct FLINE_GTK_widgets * init_FLINE_GTK_widgets(struct chara_int2_clist *f_fie
 		exit(0);
     };
     fline_vws->label_field_list = f_field_ctl;
-    fline_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
-    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL),
+    fline_vws->label_dir_list = init_field_label_array(c_link_scalar_dir_list_to_ctl());
+    append_field_label_array(c_link_vector_dir_list_to_ctl(),
                              fline_vws->label_dir_list);
-    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
+    append_field_label_array(c_link_stensor_dir_list_to_ctl(),
                              fline_vws->label_dir_list);
     return fline_vws;
 };
 void dealloc_FLINE_GTK_widgets(struct FLINE_GTK_widgets *fline_vws){
     dealloc_chara_int2_clist(fline_vws->label_field_list);
-    dealloc_chara_clist(fline_vws->label_dir_list);
+    dealloc_chara2_int_clist(fline_vws->label_dir_list);
     free(fline_vws);
     return;
 }

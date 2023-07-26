@@ -173,8 +173,9 @@ void add_cr_list_box_w_addbottun2(GtkTreeView *cr_tree_view,
     add_sorting_signal_w_label(cr_tree_view, hbox);
 };
 
-static void add_cr_list_selection_box(struct chara_real_clist *ctl_clist, struct chara_clist *item_clist,
-                                      struct chara_cbox_table_view *chara_tbl_vws, GtkWidget *vbox)
+static void add_cr_list_selection_box(struct chara_real_clist *ctl_clist,
+                                      struct chara_cbox_table_view *chara_tbl_vws,
+                                      GtkWidget *vbox)
 {
 /*    GtkTreeModel *cbox_model = gtk_tree_view_get_model(GTK_TREE_VIEW(chara_tbl_vws->items_tree_view)); */
     GtkWidget *button_add = gtk_button_new_with_label("Add");
@@ -194,14 +195,22 @@ static void add_cr_list_selection_box(struct chara_real_clist *ctl_clist, struct
 };
 
 GtkWidget * cr_list_combobox_expander(struct chara_real_clist *ctl_clist,
-                                      struct chara_clist *item_clist,
+                                      struct chara2_int_clist *item_math_clist,
                                       struct chara_cbox_table_view *chara_tbl_vws,
                                       GtkWidget *window){
-    chara_tbl_vws = init_chara_cbox_table_view(item_clist);
+    chara_tbl_vws = (struct chara_cbox_table_view *) malloc(sizeof(struct chara_cbox_table_view));
+    if(chara_tbl_vws == NULL){
+        printf("malloc error for chara_cbox_table_view\n");
+        exit(0);
+    };
+    
+    chara_tbl_vws->clist_tree_view = gtk_tree_view_new();
+    chara_tbl_vws->items_tree_view = create_compoonent_label_tree(item_math_clist);
+
     init_cr_combobox_tree_view(ctl_clist, chara_tbl_vws);
 
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    add_cr_list_selection_box(ctl_clist, item_clist, chara_tbl_vws, vbox);
+    add_cr_list_selection_box(ctl_clist, chara_tbl_vws, vbox);
     GtkWidget *expand_bc = wrap_into_expanded_frame_gtk(duplicate_underscore(ctl_clist->clist_name),
                                                         window, vbox);
     return expand_bc;

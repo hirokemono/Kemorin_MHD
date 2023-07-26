@@ -9,7 +9,6 @@
 
 extern int lengthchara_f(void);
 extern int c_yes_flag(const char *text);
-extern int c_no_file_flag(const char *file_name);
 
 extern void * c_sphere_data_ctl_block_name(void *f_spctl);
 extern void * c_sphere_data_ctl_iflag(void *f_spctl);

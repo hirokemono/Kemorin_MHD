@@ -220,8 +220,8 @@ static void add_c2r_list_selection_box(struct chara2_real_clist *ctl_clist,
                      G_CALLBACK(cb_delete_c_item_by_list), (gpointer) cbox2_tbl_vws);
 };
 
-struct cbox_cbox_table_view * init_cbox_cbox_table_view(struct chara_clist *item1_clist,
-                                                        struct chara_clist *item2_clist){
+struct cbox_cbox_table_view * init_cbox_cbox_table_view(struct chara2_int_clist *item1_clist,
+                                                        struct chara2_int_clist *item2_clist){
     struct cbox_cbox_table_view *cbox2_tbl_vws
             = (struct cbox_cbox_table_view *) malloc(sizeof(struct cbox_cbox_table_view));
     if(cbox2_tbl_vws == NULL){
@@ -230,14 +230,14 @@ struct cbox_cbox_table_view * init_cbox_cbox_table_view(struct chara_clist *item
     };
     
     cbox2_tbl_vws->clist_tree_view = gtk_tree_view_new();
-    cbox2_tbl_vws->item1_tree_view = create_fixed_label_tree(item1_clist);
-    cbox2_tbl_vws->item2_tree_view = create_fixed_label_tree(item2_clist);
+    cbox2_tbl_vws->item1_tree_view = create_compoonent_label_tree(item1_clist);
+    cbox2_tbl_vws->item2_tree_view = create_compoonent_label_tree(item2_clist);
     return cbox2_tbl_vws;
 }
 
 GtkWidget * c2r_list_combobox_expander(struct chara2_real_clist *ctl_clist,
-                                       struct chara_clist *item1_clist,
-                                       struct chara_clist *item2_clist,
+                                       struct chara2_int_clist *item1_clist,
+                                       struct chara2_int_clist *item2_clist,
                                        struct cbox_cbox_table_view *cbox2_tbl_vws,
                                        GtkWidget *window){
     cbox2_tbl_vws = init_cbox_cbox_table_view(item1_clist, item2_clist);

@@ -113,7 +113,7 @@ void init_c_combobox_tree_view(struct chara_clist *ctl_clist,
     g_signal_connect(G_OBJECT(renderer_cbox), "edited",
                      G_CALLBACK(c_combobox_edited_cb), (gpointer) chara_tbl_vws);
 
-    chara_tbl_vws->index_bc = append_c_list_from_ctl_w_index(chara_tbl_vws->index_bc, &ctl_clist->c_item_head,
+    chara_tbl_vws->index_bc = append_c_list_from_ctl_w_index(chara_tbl_vws->index_bc, ctl_clist,
                                                        GTK_TREE_VIEW(chara_tbl_vws->clist_tree_view));
 }
 
@@ -164,7 +164,15 @@ GtkWidget * c_list_combobox_expander(struct chara_clist *ctl_clist,
                                      struct chara_clist *item_clist,
                                      struct chara_cbox_table_view *chara_tbl_vws,
                                      GtkWidget *window){
-    chara_tbl_vws = init_chara_cbox_table_view(item_clist);
+    chara_tbl_vws = (struct chara_cbox_table_view *) malloc(sizeof(struct chara_cbox_table_view));
+    if(chara_tbl_vws == NULL){
+        printf("malloc error for chara_cbox_table_view\n");
+        exit(0);
+    };
+    
+    chara_tbl_vws->clist_tree_view = gtk_tree_view_new();
+    chara_tbl_vws->items_tree_view = create_fixed_label_tree(item_clist);
+
     init_c_combobox_tree_view(ctl_clist, chara_tbl_vws);
 
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

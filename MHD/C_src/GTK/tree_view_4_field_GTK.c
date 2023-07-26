@@ -368,9 +368,8 @@ GtkWidget * create_field_group_tree_view(struct all_field_ctl_c *all_fld_list)
 {
 	int index = 0;
 	GtkWidget *field_group_tree_view = create_fixed_label_w_index_tree();
-	index = append_c_list_from_array_w_index(index, all_fld_list->fld_list->ntot_field_groups,
-                                             all_fld_list->fld_list->field_group_name,
-                                             GTK_TREE_VIEW(field_group_tree_view));
+	index = append_c_list_from_ctl_w_index(index, all_fld_list->fld_list->fld_grp_list,
+                                           GTK_TREE_VIEW(field_group_tree_view));
 	return field_group_tree_view;
 };
 
@@ -417,10 +416,12 @@ int find_field_group(const int i_field, struct field_names_f *fld_list){
 	return -1;
 }
 
-static int find_each_comp_address(char *comp_in, struct flag_with_math_f *components_flag){
+static int find_each_comp_address(char *comp_in, struct chara2_int_clist *components_clist){
+    struct chara2_int_ctl_item *tmp_item;
 	int i;
-	for(i=0;i<components_flag->num_flags;i++){
-			if(cmp_no_case_c(comp_in, components_flag->component_name[i]) > 0) {return i;};
+	for(i=0;i<count_chara2_int_clist(components_clist);i++){
+        tmp_item = chara2_int_clist_at_index(i, components_clist);
+        if(cmp_no_case_c(comp_in, tmp_item->c1_tbl) > 0) {return i;};
 	};
 	return -1;
 }

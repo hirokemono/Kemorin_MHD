@@ -8,19 +8,12 @@
 !> @brief Labels and addresses for basic fields
 !!
 !!@verbatim
-!!      integer(c_int) function count_MHD_field_groups_f()              &
-!!     &          bind(C, name = 'count_MHD_field_groups_f')
-!!      integer(c_int) function count_MHD_sym_field_groups_f()          &
-!!     &           bind(C, name = 'count_MHD_sym_field_groups_f')
-!!      integer(c_int) function count_SGS_MHD_field_groups_f()          &
-!!     &           bind(C, name = 'count_SGS_MHD_field_groups_f')
-!!
-!!      subroutine MHD_field_groups_f(nfld_group_c, field_group_c)      &
-!!     &          bind(C, name = 'MHD_field_groups_f')
-!!      subroutine MHD_sym_field_groups_f(nfld_group_c, field_group_c)  &
-!!     &           bind(C, name = 'MHD_sym_field_groups_f')
-!!      subroutine SGS_MHD_field_groups_f(nfld_group_c, field_group_c)  &
-!!     &           bind(C, name = 'SGS_MHD_field_groups_f')
+!!      type(c_ptr) function c_link_MHD_field_groups_f(c_ctl)           &
+!!     &          bind(C, name = 'c_link_MHD_field_groups_f')
+!!      type(c_ptr) function c_link_MHD_sym_field_groups_f()            &
+!!     &           bind(C, name = 'c_link_MHD_sym_field_groups_f')
+!!      type(c_ptr) function c_link_SGS_MHD_field_groups_f()            &
+!!     &           bind(C, name = 'c_link_SGS_MHD_field_groups_f')
 !!@endverbatim
 !!
       module m_MHD_field_group
@@ -28,6 +21,7 @@
       use ISO_C_BINDING
 !
       use m_precision
+      use t_control_array_character
 !
       use t_base_field_labels
       use t_base_force_labels
@@ -70,7 +64,7 @@
 
       implicit  none
 ! 
-      integer(kind = kint), parameter :: ngrp_MHD_fields = 12
+      integer(kind = kint), parameter :: ngrp_MHD_fields = 14
       character(len = kchara), parameter                                &
      &              :: MHD_field_group(ngrp_MHD_fields)                 &
      &                  = (/"Base_fields                 ",             &
@@ -84,7 +78,9 @@
      &                      "Divergence_of_fields        ",             &
      &                      "Diffusivities               ",             &
      &                      "Work_area_for_explicit_terms",             &
-     &                      "Field_Checks                "/)
+     &                      "Field_Checks                ",             &
+     &                      "components_of_U_and_B       ",             &
+     &                      "Diffreenciation_of_vector   "/)
 !
       integer(kind = kint), parameter :: ngrp_MHD_sym_fields = 3
       character(len = kchara), parameter                                &
@@ -93,7 +89,7 @@
      &                      "Forces_w_symmtery       ",                 &
      &                      "Energy_fluxes_w_symmtery"/)
 !
-      integer(kind = kint), parameter :: ngrp_SGS_MHD_fields = 19
+      integer(kind = kint), parameter :: ngrp_SGS_MHD_fields = 18
       character(len = kchara), parameter                                &
      &              :: SGS_MHD_field_group(ngrp_SGS_MHD_fields)         &
      &                  = (/"SGS_terms                         ",       &
@@ -109,12 +105,15 @@
      &                      "Divergence_of_filtered_fields     ",       &
      &                      "Wide_filtered_fields              ",       &
      &                      "Double_filtered_fields            ",       &
-     &                      "Diffreenciation_of_vector         ",       &
      &                      "Diffreenciation_of_filtered_vector",       &
      &                      "SGS_terms_by_wider_filtering      ",       &
      &                      "Forces_including_SGS_term         ",       &
      &                      "True_SGS_terms                    ",       &
      &                      "Work_area_for_SGS_model           "/)
+!
+      type(ctl_array_chara), save, private, target :: MHD_fld_grp_list
+      type(ctl_array_chara), save, private, target :: sym_fld_grp_list
+      type(ctl_array_chara), save, private, target :: SGS_fld_grp_list
 !
 ! ----------------------------------------------------------------------
 !
@@ -122,180 +121,70 @@
 !
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function count_MHD_field_groups_f()                &
-     &          bind(C, name = 'count_MHD_field_groups_f')
+      type(c_ptr) function c_link_MHD_field_groups_f(c_ctl)             &
+     &          bind(C, name = 'c_link_MHD_field_groups_f')
 !
-      use t_grad_field_labels
+      type(c_ptr), value, intent(in) :: c_ctl
+      integer(kind = kint) :: i
 !
+      if(.not. allocated(MHD_fld_grp_list%c_tbl)) then
+        MHD_fld_grp_list%array_name = '  '
+        MHD_fld_grp_list%num =         0
+        call alloc_control_array_chara(MHD_fld_grp_list)
 !
-      count_MHD_field_groups_f = ngrp_MHD_fields
+        do i = 1, ngrp_MHD_fields
+          call append_c_to_ctl_array(MHD_field_group(i),                &
+     &                               MHD_fld_grp_list)
+        end do
+      end if
 !
-      end function count_MHD_field_groups_f
+      c_link_MHD_field_groups_f = C_loc(MHD_fld_grp_list)
 !
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function count_MHD_sym_field_groups_f()            &
-     &           bind(C, name = 'count_MHD_sym_field_groups_f')
-!
-      use t_grad_field_labels
-!
-!
-      count_MHD_sym_field_groups_f = ngrp_MHD_sym_fields
-!
-      end function count_MHD_sym_field_groups_f
-!
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function count_SGS_MHD_field_groups_f()            &
-     &           bind(C, name = 'count_SGS_MHD_field_groups_f')
-!
-!
-      count_SGS_MHD_field_groups_f = ngrp_SGS_MHD_fields
-!
-      end function count_SGS_MHD_field_groups_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine MHD_field_groups_f(nfld_group_c, field_group_c)        &
-     &          bind(C, name = 'MHD_field_groups_f')
-!
-      use m_base_field_labels
-      use m_base_force_labels
-      use m_diffusion_term_labels
-      use m_grad_field_labels
-      use m_energy_flux_labels
-      use m_field_product_labels
-      use m_explicit_term_labels
-      use field_names_to_c
-!
-      integer(c_int), intent(inout) :: nfld_group_c(*)
-      type(C_ptr), value :: field_group_c
-!
-      type(C_ptr) :: base_fld_c
-!
-      character(len=kchara), pointer :: field_grp(:)
-!
-      call c_f_pointer(field_group_c, field_grp, [ngrp_MHD_fields])
-      call copy_filxed_lengh_chara                                      &
-     &   (ngrp_MHD_fields, MHD_field_group, field_grp)
-!
-!
-      base_fld_c =  c_link_base_field_names(field_group_c)
-      base_fld_c =  c_link_base_force_names(field_group_c)
-      base_fld_c =  c_link_energy_flux_names(field_group_c)
-      base_fld_c =  c_link_base_diffusion_names(field_group_c)
-      base_fld_c =  c_link_rot_force_names(field_group_c)
-      base_fld_c =  c_link_div_force_names(field_group_c)
-      base_fld_c =  c_link_field_product_names(field_group_c)
-      base_fld_c =  c_link_gradient_field_names(field_group_c)
-      base_fld_c =  c_link_divergence_field_names(field_group_c)
-      base_fld_c =  c_link_base_diffusivity_names(field_group_c)
-      base_fld_c =  c_link_explicit_work_names(field_group_c)
-      base_fld_c =  c_link_check_fields_names(field_group_c)
-      base_fld_c =  c_link_differnce_vector_names(field_group_c)
-      nfld_group_c( 1) = base_fld_list%num
-      nfld_group_c( 2) = base_frc_list%num
-      nfld_group_c( 3) = ene_flux_list%num
-      nfld_group_c( 4) = diffusion_list%num
-      nfld_group_c( 5) = rot_frc_list%num
-      nfld_group_c( 6) = div_frc_list%num
-      nfld_group_c( 7) = fld_prod_list%num
-      nfld_group_c( 8) = grad_fld_list%num
-      nfld_group_c( 9) = div_fld_list%num
-      nfld_group_c(10) = diffusivity_list%num
-      nfld_group_c(11) = exp_work_list%num
-      nfld_group_c(12) = chk_fld_list%num
-      nfld_group_c(13) = diff_vect_list%num
-!
-      end subroutine MHD_field_groups_f
+      end function c_link_MHD_field_groups_f
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine MHD_sym_field_groups_f(nfld_group_c, field_group_c)    &
-     &           bind(C, name = 'MHD_sym_field_groups_f')
+      type(c_ptr) function c_link_MHD_sym_field_groups_f()              &
+     &           bind(C, name = 'c_link_MHD_sym_field_groups_f')
 !
-      use t_grad_field_labels
-      use field_names_to_c
+      integer(kind = kint) :: i
 !
-      integer(c_int), intent(inout) :: nfld_group_c(*)
-      type(C_ptr), value :: field_group_c
+      if(.not. allocated(sym_fld_grp_list%c_tbl)) then
+        sym_fld_grp_list%array_name = '  '
+        sym_fld_grp_list%num =         0
+        call alloc_control_array_chara(sym_fld_grp_list)
 !
-      type(C_ptr) :: base_fld_c
-      character(len=kchara), pointer :: field_grp(:)
+        do i = 1, ngrp_MHD_sym_fields
+          call append_c_to_ctl_array(MHD_sym_field_group(i),            &
+     &                               sym_fld_grp_list)
+        end do
+      end if
 !
-      call c_f_pointer(field_group_c, field_grp, [ngrp_MHD_sym_fields])
-      call copy_filxed_lengh_chara                                      &
-     &   (ngrp_MHD_sym_fields, MHD_sym_field_group, field_grp)
+      c_link_MHD_sym_field_groups_f = C_loc(sym_fld_grp_list)
 !
-      base_fld_c =  c_link_field_w_symmetry_names(field_group_c)
-      base_fld_c =  c_link_force_w_symmetry_names(field_group_c)
-      base_fld_c =  c_link_sym_ene_flux_names(field_group_c)
-      nfld_group_c( 1) = sym_fld_list%num
-      nfld_group_c( 2) = sym_frc_list%num
-      nfld_group_c( 3) = sym_flux_list%num
-!
-      end subroutine MHD_sym_field_groups_f
+      end function c_link_MHD_sym_field_groups_f
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SGS_MHD_field_groups_f(nfld_group_c, field_group_c)    &
-     &           bind(C, name = 'SGS_MHD_field_groups_f')
+      type(c_ptr) function c_link_SGS_MHD_field_groups_f()              &
+     &           bind(C, name = 'c_link_SGS_MHD_field_groups_f')
 !
-      use m_diff_vector_labels
-      use m_SGS_term_labels
-      use m_SGS_model_coef_labels
-      use m_SGS_enegy_flux_labels
-      use field_names_to_c
+      integer(kind = kint) :: i
 !
-      integer(c_int), intent(inout) :: nfld_group_c(*)
-      type(C_ptr), value :: field_group_c
+      if(.not. allocated(SGS_fld_grp_list%c_tbl)) then
+        SGS_fld_grp_list%array_name = '  '
+        SGS_fld_grp_list%num =         0
+        call alloc_control_array_chara(SGS_fld_grp_list)
 !
-      type(C_ptr) :: base_fld_c
-      character(len=kchara), pointer :: field_grp(:)
+        do i = 1, ngrp_SGS_MHD_fields
+          call append_c_to_ctl_array(SGS_MHD_field_group(i),            &
+     &                               SGS_fld_grp_list)
+        end do
+      end if
 !
-      call c_f_pointer(field_group_c, field_grp, [ngrp_SGS_MHD_fields])
-      call copy_filxed_lengh_chara                                      &
-     &   (ngrp_SGS_MHD_fields, SGS_MHD_field_group, field_grp)
+      c_link_SGS_MHD_field_groups_f = C_loc(SGS_fld_grp_list)
 !
-      base_fld_c =  c_link_SGS_term_names(field_group_c)
-      base_fld_c =  c_link_SGS_energy_flux_names(field_group_c)
-      base_fld_c =  c_link_diff_SGS_term_names(field_group_c)
-      base_fld_c =  c_link_SGS_model_coefs_names(field_group_c)
-      base_fld_c =  c_link_filter_field_names(field_group_c)
-      base_fld_c =  c_link_filter_force_names(field_group_c)
-      base_fld_c =  c_link_filter_eflux_names(field_group_c)
-      base_fld_c =  c_link_rot_filter_force_names(field_group_c)
-      base_fld_c =  c_link_div_filter_force_names(field_group_c)
-      base_fld_c =  c_link_grad_filter_field_names(field_group_c)
-      base_fld_c =  c_link_div_filter_field_names(field_group_c)
-      base_fld_c =  c_link_wide_filter_field_names(field_group_c)
-      base_fld_c =  c_link_dbl_filter_field_names(field_group_c)
-      base_fld_c =  c_link_diff_filter_vect_names(field_group_c)
-      base_fld_c =  c_link_wide_SGS_term_names(field_group_c)
-      base_fld_c =  c_link_force_with_SGS_names(field_group_c)
-      base_fld_c =  c_link_true_SGS_term_names(field_group_c)
-      base_fld_c =  c_link_dynamic_SGS_work_names(field_group_c)
-      nfld_group_c( 1) = SGS_term_list%num
-      nfld_group_c( 2) = SGS_eflux_list%num
-      nfld_group_c( 3) = diff_SGS_list%num
-      nfld_group_c( 4) = SGS_Csim_list%num
-      nfld_group_c( 5) = filter_fld_list%num
-      nfld_group_c( 6) = filter_frc_list%num
-      nfld_group_c( 7) = fil_eflux_list%num
-      nfld_group_c( 8) = fil_rot_frc_list%num
-      nfld_group_c( 9) = fil_div_frc_list%num
-      nfld_group_c(10) = fil_grad_fld_list%num
-      nfld_group_c(11) = fil_div_fld_list%num
-      nfld_group_c(12) = w_fil_fld_list%num
-      nfld_group_c(13) = d_fil_fld_list%num
-      nfld_group_c(14) = diff_fil_vect_list%num
-      nfld_group_c(15) = wide_SGS_term_list%num
-      nfld_group_c(16) = force_w_SGS_list%num
-      nfld_group_c(17) = true_SGS_list%num
-      nfld_group_c(18) = dSGS_work_list%num
-!
-      end subroutine SGS_MHD_field_groups_f
+      end function c_link_SGS_MHD_field_groups_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

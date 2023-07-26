@@ -8,7 +8,6 @@
 #include "control_boxes_single_items_GTK.h"
 
 extern int c_yes_flag(const char *text);
-extern int c_no_file_flag(const char *file_name);
 
 void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 {
@@ -46,7 +45,7 @@ void cb_file_switch(GtkWidget *widget, gpointer data){
 		sprintf(f_file_name, "%s", "NO_FILE");
 		load_chara_from_c(f_file_name);
 	}else{
-		if(c_no_file_flag(f_file_name)){
+		if(cmp_no_case_c(f_file_name, "NO_FILE")){
 			sprintf(f_file_name, "%s", "SET_FILE_NAME");
 			gtk_entry_set_text(GTK_ENTRY(file_entry), f_file_name);
 			load_chara_from_c(f_file_name);
@@ -131,7 +130,7 @@ void append_block_file_switch_hbox(char *f_file_name, GtkWidget *hbox2)
 	GtkWidget *file_switch = gtk_switch_new();
 	g_object_set_data(G_OBJECT(file_switch), "entry", (gpointer) file_entry);
 	g_object_set_data(G_OBJECT(file_switch), "file_name", (gpointer) f_file_name);
-	if(c_no_file_flag(f_file_name) == 0){
+	if(cmp_no_case_c(f_file_name, "NO_FILE") == 0){
 		gtk_switch_set_active(GTK_SWITCH(file_switch), TRUE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(file_switch), FALSE);

@@ -80,6 +80,7 @@ void set_from_chara2_int_clist_at_index(int index, struct chara2_int_clist *c2i_
 			char *c1_out, char *c2_out, double *r_out);
 
 struct chara2_int_ctl_item *chara2_int_clist_at_index(int index, struct chara2_int_clist *c2i_clst);
+struct chara2_int_ctl_item *chara2_int_clist_by_ref1(char *ref1, struct chara2_int_clist *c2i_clst);
 
 void add_chara2_int_clist_before_c_tbl(char *ref_1, char *ref_2,
 			char *c1_in, char *c2_in, int i_in,

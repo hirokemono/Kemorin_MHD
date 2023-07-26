@@ -24,7 +24,7 @@ struct chara_real_ctl_item * init_chara_real_ctl_item_c(void){
 };
 
 void dealloc_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item){
-	if(cr_item->c_block_name !=NULL) free(cr_item->c_block_name);
+	cr_item->c_block_name = NULL;
 	cr_item->f_iflag = NULL;
     
 	cr_item->f_self = NULL;

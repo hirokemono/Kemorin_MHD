@@ -189,6 +189,16 @@ static struct chara2_int_ctl_list *find_c2i_ctl_list_item_by_index(int index,
     return head;
 };
 
+static struct chara2_int_ctl_list *find_c2i_ctl_list_item_by_c1_tbl(char *ref_1,
+                                                                    struct chara2_int_ctl_list *head){
+    head = head->_next;
+    while (head != NULL){
+        if(cmp_no_case_c(head->c2i_item->c1_tbl, ref_1)) return head;
+        head = head->_next;
+    };
+    return head;
+};
+
 static struct chara2_int_ctl_list *find_c2i_ctl_list_item_by_c_tbl(char *ref_1, char *ref_2,
 			struct chara2_int_ctl_list *head){
     head = head->_next;
@@ -368,6 +378,10 @@ void set_from_chara2_int_clist_at_index(int index, struct chara2_int_clist *c2i_
 
 struct chara2_int_ctl_item *chara2_int_clist_at_index(int index, struct chara2_int_clist *c2i_clst){
     struct chara2_int_ctl_list *ct_tmp = find_c2i_ctl_list_item_by_index(index, &c2i_clst->c2i_item_head);
+    return ct_tmp->c2i_item;
+}
+struct chara2_int_ctl_item *chara2_int_clist_by_ref1(char *ref1, struct chara2_int_clist *c2i_clst){
+    struct chara2_int_ctl_list *ct_tmp = find_c2i_ctl_list_item_by_c1_tbl(ref1, &c2i_clst->c2i_item_head);
     return ct_tmp->c2i_item;
 }
 

@@ -25,6 +25,7 @@ ctl_data_pvr_IO_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_psf_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
@@ -77,8 +78,8 @@ load_MHD_control_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_sph_grid_c.h \
@@ -128,7 +129,9 @@ m_FLINE_control_labels_from_f.o: \
   $(C_SRCDIR)/CONTROLS/m_FLINE_control_labels_from_f.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_LIC_control_labels_from_f.o: \
   $(C_SRCDIR)/CONTROLS/m_LIC_control_labels_from_f.c \
@@ -136,6 +139,8 @@ m_LIC_control_labels_from_f.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_PSF_control_labels_from_f.o: \
@@ -143,21 +148,27 @@ m_PSF_control_labels_from_f.o: \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_PVR_control_labels_from_f.o: \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.c \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_base_control_labels_from_f.o: \
   $(C_SRCDIR)/CONTROLS/m_base_control_labels_from_f.c \
   $(C_SRCDIR)/CONTROLS/m_base_control_labels_from_f.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_color_table_c.o: \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.c \
@@ -179,17 +190,13 @@ m_field_name_from_f.o: \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_single_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
-  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
-	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-m_force_name_from_f.o: \
-  $(C_SRCDIR)/CONTROLS/m_force_name_from_f.c \
-  $(C_SRCDIR)/CONTROLS/m_force_name_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 set_rgba_table_c.o: \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.c \
@@ -238,8 +245,8 @@ t_SGS_MHD_control_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_sph_grid_c.h \
@@ -375,7 +382,8 @@ t_control_data_4_fline_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int2_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_FLINE_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_4_iso_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_iso_c.c \
@@ -387,7 +395,8 @@ t_control_data_4_iso_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_4_psf_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_psf_c.c \
@@ -400,7 +409,8 @@ t_control_data_4_psf_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_4_pvr_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_c.c \
@@ -421,6 +431,7 @@ t_control_data_4_pvr_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_psf_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
@@ -443,7 +454,8 @@ t_control_data_4_pvr_movie_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_FLINE_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_FLINE_ctl_list.c \
@@ -457,7 +469,8 @@ t_control_data_FLINE_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int2_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_FLINE_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_ISO_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_ISO_ctl_list.c \
@@ -470,7 +483,8 @@ t_control_data_ISO_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_LIC_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.c \
@@ -486,6 +500,7 @@ t_control_data_LIC_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_noise_c.h \
   $(C_SRCDIR)/CONTROLS/m_LIC_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_LIC_kernel_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
@@ -503,6 +518,7 @@ t_control_data_LIC_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -534,6 +550,7 @@ t_control_data_LIC_kernel_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/m_LIC_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_LIC_noise_c.o: \
@@ -547,6 +564,7 @@ t_control_data_LIC_noise_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/m_LIC_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_LIC_pvr_c.o: \
@@ -562,6 +580,7 @@ t_control_data_LIC_pvr_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -594,7 +613,8 @@ t_control_data_MAP_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_PSF_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_PSF_ctl_list.c \
@@ -609,6 +629,7 @@ t_control_data_PSF_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -644,6 +665,7 @@ t_control_data_PVR_ctl_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_c_lists.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_psf_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
@@ -687,7 +709,8 @@ t_control_data_pvr_isosurf_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_pvr_section_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_data_pvr_section_list.c \
@@ -702,6 +725,7 @@ t_control_data_pvr_section_list.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_data_sph_grid_c.o: \
@@ -737,6 +761,7 @@ t_control_data_visualizer_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h \
@@ -780,6 +805,7 @@ t_control_data_vizs_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_IO_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_data_4_pvr_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -835,7 +861,9 @@ t_control_label_from_f.o: \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.c \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_control_real2_IO.o: \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.c \
@@ -1017,8 +1045,8 @@ t_ctl_data_4_fields_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_ctl_data_4_platforms_c.o: \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_4_platforms_c.c \
@@ -1123,8 +1151,8 @@ t_ctl_data_SGS_MHD_model_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
@@ -1236,6 +1264,7 @@ t_ctl_data_zonal_means_c.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_IO.h \
   $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_crust_filter_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<

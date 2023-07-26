@@ -17,7 +17,6 @@
 !!     &              math = '$u_{i}$',                                 &
 !!     &              n_comp = n_vector)
 !!
-!!      subroutine set_field_labels(field, n_comps, field_names, maths)
 !!      subroutine set_field_label_to_ctl(field, array_c2i)
 !!        type(field_def), intent(in) :: field
 !!        type(ctl_array_c2i), intent(inout) :: array_c2i
@@ -46,30 +45,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_field_labels(field, n_comps, field_names, maths)
-!
-      type(field_def), intent(in) :: field
-      integer(kind = kint_4b), intent(inout) :: n_comps
-      character(len = kchara), intent(inout) :: field_names
-      character(len = kchara), intent(inout) :: maths
-!
-      integer(kind = kint) :: i, icou
-!
-      n_comps = int(field%n_comp,KIND(n_comps))
-      write(field_names, '(a,a1)') trim(field%name) // char(0)
-!
-      icou = 0
-      do i = 1, kchara-1
-        if(field%math(i:i) .eq. '$') icou = icou + 1
-        maths(i:i) = field%math(i:i)
-        if(icou .ge. 2) exit
-      end do
-      maths(i+1:i+1) = char(0)
-!
-      end subroutine set_field_labels
 !
 ! ----------------------------------------------------------------------
 !

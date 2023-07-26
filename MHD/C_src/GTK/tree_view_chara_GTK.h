@@ -20,7 +20,7 @@ int append_c_item_to_tree_w_index(int index, const char *c_tbl, GtkTreeModel *ch
 int append_c_list_from_ctl(int index, struct chara_ctl_list *head,
                            GtkTreeView *c_tree_view);
 
-int append_c_list_from_ctl_w_index(int index, struct chara_ctl_list *head,
+int append_c_list_from_ctl_w_index(int index, struct chara_clist *ctl_clist,
                                    GtkTreeView *c_tree_view);
 int append_c_list_from_array_w_index(int index, int num, char **c_tbl,
                                      GtkTreeView *c_tree_view);

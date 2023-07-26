@@ -24,7 +24,7 @@ GtkWidget * create_fixed_label_w_math_tree(void);
 GtkWidget * create_fixed_label_w_index_tree(void);
 void create_fixed_constant_tree(GtkWidget *label_tree);
 
-void append_vector_componnet_label(struct flag_with_math_f *scalar_components_flag, GtkWidget *label_tree);
+void append_vector_componnet_label(struct chara2_int_clist *components_clist, GtkWidget *label_tree);
 void append_sym_tensor_componnet_label(GtkWidget *label_tree);
 
 void append_xyz_componnet_label(GtkWidget *label_tree);

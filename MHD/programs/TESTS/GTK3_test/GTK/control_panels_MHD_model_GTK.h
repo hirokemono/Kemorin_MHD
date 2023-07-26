@@ -45,12 +45,12 @@ struct MHD_model_widgets{
     struct chara_clist *label_time_evo_list;
     struct chara_clist *label_force_list;
     struct chara_clist *label_reftemp_list;
-    struct chara_clist *label_xyz_dir_list;
+    struct chara2_int_clist *label_xyz_dir_list;
 };
 
 /* prototypes */
-extern void * c_link_xyz_dir_list_to_ctl(void *fld_names_c);
-extern void * c_link_xyzw_dir_list_to_ctl(void *fld_names_c);
+extern void * c_link_xyz_dir_list_to_ctl(void);
+extern void * c_link_xyzw_dir_list_to_ctl(void);
 
 GtkWidget *MHD_model_ctl_expander(void *f_parent, struct f_MHD_model_control *f_model_ctl,
                                   struct MHD_model_widgets *model_wgts, GtkWidget *window);

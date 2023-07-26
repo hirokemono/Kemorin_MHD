@@ -16,20 +16,20 @@ struct PSF_GTK_widgets * init_PSF_GTK_widgets(struct chara_int2_clist *f_field_c
 		exit(0);
     };
     psf_def_vws->label_field_list = f_field_ctl;
-    psf_def_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
-    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL),
+    psf_def_vws->label_dir_list = init_field_label_array(c_link_scalar_dir_list_to_ctl());
+    append_field_label_array(c_link_vector_dir_list_to_ctl(),
                              psf_def_vws->label_dir_list);
-    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), 
+    append_field_label_array(c_link_stensor_dir_list_to_ctl(), 
                              psf_def_vws->label_dir_list);
-    psf_def_vws->label_xyz_dir_list = init_f_ctl_chara_array(c_link_xyz_dir_list_to_ctl, NULL);
+    psf_def_vws->label_xyz_dir_list = init_field_label_array(c_link_xyz_dir_list_to_ctl());
     
     return psf_def_vws;
 };
 
 void dealloc_PSF_GTK_widgets(struct PSF_GTK_widgets *psf_def_vws){
     dealloc_chara_int2_clist(psf_def_vws->label_field_list);
-    dealloc_chara_clist(psf_def_vws->label_dir_list);
-    dealloc_chara_clist(psf_def_vws->label_xyz_dir_list);
+    dealloc_chara2_int_clist(psf_def_vws->label_dir_list);
+    dealloc_chara2_int_clist(psf_def_vws->label_xyz_dir_list);
     free(psf_def_vws);
 }
 
@@ -42,15 +42,15 @@ struct ISO_GTK_widgets * init_ISO_GTK_widgets(struct chara_int2_clist *f_field_c
 		exit(0);
     };
     iso_vws->label_field_list = f_field_ctl;
-    iso_vws->label_dir_list = init_f_ctl_chara_array(c_link_scalar_dir_list_to_ctl, NULL);
-    append_f_ctl_chara_array(c_link_vector_dir_list_to_ctl(NULL), iso_vws->label_dir_list);
-    append_f_ctl_chara_array(c_link_stensor_dir_list_to_ctl(NULL), iso_vws->label_dir_list);
+    iso_vws->label_dir_list = init_field_label_array(c_link_scalar_dir_list_to_ctl());
+    append_field_label_array(c_link_vector_dir_list_to_ctl(), iso_vws->label_dir_list);
+    append_field_label_array(c_link_stensor_dir_list_to_ctl(), iso_vws->label_dir_list);
     return iso_vws;
 };
 
 static void dealloc_ISO_GTK_widgets(struct ISO_GTK_widgets *iso_vws){
     dealloc_chara_int2_clist(iso_vws->label_field_list);
-    dealloc_chara_clist(iso_vws->label_dir_list);
+    dealloc_chara2_int_clist(iso_vws->label_dir_list);
     free(iso_vws);
 }
 
@@ -85,7 +85,7 @@ void * dealloc_f_VIZ_ISO_ctl_GTK(void *void_in){
 
 static GtkWidget * draw_psf_fld_ctl_vbox(struct f_VIZ_fld_on_PSF_ctl *f_fld_on_psf_c,
                                          struct chara_int2_clist *label_field_list,
-                                         struct chara_clist *label_dir_list,
+                                         struct chara2_int_clist *label_dir_list,
                                          struct chara2_cbox_table_view *field_output_vws, 
                                          GtkWidget *window){
     
@@ -111,13 +111,17 @@ static GtkWidget * draw_psf_fld_ctl_vbox(struct f_VIZ_fld_on_PSF_ctl *f_fld_on_p
 GtkWidget * draw_psf_def_ctl_vbox(struct f_VIZ_PSF_def_ctl *f_psf_def_c,
                                   struct PSF_GTK_widgets *psf_def_vws, GtkWidget *window){
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_psf_def_c->f_section_method_ctl);
-    GtkWidget *hbox_2 = cr_list_combobox_expander(f_psf_def_c->f_psf_coefs_ctl, psf_def_vws->label_xyz_dir_list, 
+    GtkWidget *hbox_2 = cr_list_combobox_expander(f_psf_def_c->f_psf_coefs_ctl,
+                                                  psf_def_vws->label_xyz_dir_list,
                                                   psf_def_vws->psf_coefs_vws, window);
-    GtkWidget *hbox_3 = cr_list_combobox_expander(f_psf_def_c->f_psf_center_ctl, psf_def_vws->label_xyz_dir_list, 
+    GtkWidget *hbox_3 = cr_list_combobox_expander(f_psf_def_c->f_psf_center_ctl,
+                                                  psf_def_vws->label_xyz_dir_list,
                                                   psf_def_vws->psf_center_vws, window);
-    GtkWidget *hbox_4 = cr_list_combobox_expander(f_psf_def_c->f_psf_normal_ctl, psf_def_vws->label_xyz_dir_list, 
+    GtkWidget *hbox_4 = cr_list_combobox_expander(f_psf_def_c->f_psf_normal_ctl,
+                                                  psf_def_vws->label_xyz_dir_list,
                                                   psf_def_vws->psf_normal_vws, window);
-    GtkWidget *hbox_5 = cr_list_combobox_expander(f_psf_def_c->f_psf_axis_ctl, psf_def_vws->label_xyz_dir_list, 
+    GtkWidget *hbox_5 = cr_list_combobox_expander(f_psf_def_c->f_psf_axis_ctl,
+                                                  psf_def_vws->label_xyz_dir_list, 
                                                   psf_def_vws->psf_axis_vws, window);
     GtkWidget *hbox_6 = draw_real_item_entry_hbox(f_psf_def_c->f_radius_psf_ctl);
     GtkWidget *hbox_7 = draw_chara_item_entry_hbox(f_psf_def_c->f_psf_group_name_ctl);
@@ -144,8 +148,8 @@ static GtkWidget * draw_iso_def_ctl_vbox(struct f_VIZ_ISO_def_ctl *f_iso_def_c,
                                          struct ISO_GTK_widgets *iso_vws, GtkWidget *window){
     GtkWidget *hbox_1 = draw_field_combobox_hbox(iso_vws->label_field_list, 
                                                  f_iso_def_c->f_isosurf_data_ctl, window);
-    GtkWidget *hbox_2 = draw_chara_item_combobox_hbox(iso_vws->label_dir_list, 
-                                                      f_iso_def_c->f_isosurf_comp_ctl, window);
+    GtkWidget *hbox_2 = draw_component_combobox_hbox(iso_vws->label_dir_list,
+                                                     f_iso_def_c->f_isosurf_comp_ctl, window);
     GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_iso_def_c->f_isosurf_value_ctl);
     GtkWidget *hbox_4 = add_c_list_box_w_addbottun(f_iso_def_c->f_iso_area_ctl, iso_vws->iso_area_view);
     

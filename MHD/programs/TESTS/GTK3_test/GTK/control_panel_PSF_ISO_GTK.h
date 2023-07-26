@@ -13,6 +13,7 @@
 #include "calypso_GTK.h"
 #include "kemoview_gtk_routines.h"
 #include "t_control_chara_int2_IO.h"
+#include "t_control_chara2_int_IO.h"
 #include "t_ctl_array_single_items_c.h"
 #include "c_ctl_data_PSF_ISOs.h"
 #include "control_panel_fld_on_psf_GTK.h"
@@ -22,8 +23,8 @@
 
 struct PSF_GTK_widgets{
     struct chara_int2_clist *label_field_list;
-    struct chara_clist *label_dir_list;
-    struct chara_clist *label_xyz_dir_list;
+    struct chara2_int_clist *label_dir_list;
+    struct chara2_int_clist *label_xyz_dir_list;
     
     struct chara2_cbox_table_view *field_output_vws;
     
@@ -36,17 +37,17 @@ struct PSF_GTK_widgets{
 
 struct ISO_GTK_widgets{
     struct chara_int2_clist *label_field_list;
-    struct chara_clist *label_dir_list;
+    struct chara2_int_clist *label_dir_list;
     
     struct chara2_cbox_table_view *field_output_vws;
     GtkWidget * iso_area_view;
 };
 
 /* prototypes */
-extern void * c_link_scalar_dir_list_to_ctl(void *fld_names_c);
-extern void * c_link_vector_dir_list_to_ctl(void *fld_names_c);
-extern void * c_link_stensor_dir_list_to_ctl(void *fld_names_c);
-extern void * c_link_atensor_dir_list_to_ctl(void *fld_names_c);
+extern void * c_link_scalar_dir_list_to_ctl(void);
+extern void * c_link_vector_dir_list_to_ctl(void);
+extern void * c_link_stensor_dir_list_to_ctl(void);
+extern void * c_link_atensor_dir_list_to_ctl(void);
 
 
 struct PSF_GTK_widgets * init_PSF_GTK_widgets(struct chara_int2_clist *f_field_ctl);

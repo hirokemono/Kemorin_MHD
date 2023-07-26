@@ -36,8 +36,9 @@ struct chara2_int_ctl_item * init_f_ctl_c2i_item(void *(*c_load_self)(void *f_pa
 
 struct chara2_int_clist * init_f_ctl_c2i_array(void *(*c_load_self)(void *f_parent),
                                                 void *f_parent);
-void append_f_ctl_c2i_array(void *(*c_load_self)(void *f_parent),
-                            void *f_parent, struct chara2_int_clist *c2i_clst);
+
+struct chara2_int_clist * init_field_label_array(void *f_self);
+int append_field_label_array(void *f_self, struct chara2_int_clist *c2i_clst);
 
 void reflesh_f_ctl_c2i_array(int num_array, struct chara2_int_clist *c2i_clst);
 

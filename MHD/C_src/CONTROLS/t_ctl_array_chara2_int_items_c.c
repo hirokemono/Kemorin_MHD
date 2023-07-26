@@ -58,15 +58,34 @@ struct chara2_int_clist * init_f_ctl_c2i_array(void *(*c_load_self)(void *f_pare
 	for(i=0;i<num;i++){
 		ctmp1 = (char *) c_chara2_int_array_c1_tbl(i, c2i_clst->f_self);
         ctmp2 = (char *) c_chara2_int_array_c2_tbl(i, c2i_clst->f_self);
-		append_chara2_int_clist(ctmp1, ctmp2, 
+		append_chara2_int_clist(strngcopy_from_f(ctmp1), strngcopy_from_f(ctmp2), 
 								c_chara2_int_array_i_tbl(i, c2i_clst->f_self), c2i_clst);
     }
 	return c2i_clst;
 }
 
-void append_f_ctl_c2i_array(void *(*c_load_self)(void *f_parent),
-                            void *f_parent, struct chara2_int_clist *c2i_clst){
-    void *f_self =  c_load_self(f_parent);
+struct chara2_int_clist * init_field_label_array(void *f_self)
+{
+    struct chara2_int_clist *c2i_clst = init_chara2_int_clist();
+    c2i_clst->f_self =  f_self;
+    char * ctmp1 = (char *) c_chara2_int_array_block_name(c2i_clst->f_self);
+    char * ctmp2;
+    c2i_clst->clist_name = strngcopy_from_f(ctmp1);
+    
+    int i, num;
+    num = c_chara2_int_array_num(c2i_clst->f_self);
+    if(num == 0) {c_alloc_chara2_int_array(num, c2i_clst->f_self);};
+    
+    for(i=0;i<num;i++){
+        ctmp1 = (char *) c_chara2_int_array_c1_tbl(i, c2i_clst->f_self);
+        ctmp2 = (char *) c_chara2_int_array_c2_tbl(i, c2i_clst->f_self);
+        append_chara2_int_clist(ctmp1, ctmp2,
+                                c_chara2_int_array_i_tbl(i, c2i_clst->f_self), c2i_clst);
+    }
+    return c2i_clst;
+}
+
+int append_field_label_array(void *f_self, struct chara2_int_clist *c2i_clst){
     int i, i_data;
     char *ctmp1, *ctmp2;
 
@@ -76,7 +95,7 @@ void append_f_ctl_c2i_array(void *(*c_load_self)(void *f_parent),
         i_data = c_chara2_int_array_i_tbl(i, f_self);
         append_chara2_int_clist(ctmp1, ctmp2, i_data, c2i_clst);
     }
-    return;
+    return count_chara2_int_clist(c2i_clst);
 }
 
 void reflesh_f_ctl_c2i_array(int num_array, struct chara2_int_clist *c2i_clst)
