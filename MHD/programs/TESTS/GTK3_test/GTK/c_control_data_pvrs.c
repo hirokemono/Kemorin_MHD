@@ -7,6 +7,8 @@
 
 #include "c_control_data_pvrs.h"
 
+extern void * c_pvr_render_ctls_block_name(void *f_pvr_ctls);
+extern int    c_pvr_render_ctls_num_pvr_ctl(void *f_pvr_ctls);
 extern char * c_pvr_render_ctls_fname(int idx, void *f_pvr_ctls);
 
 extern void * c_VIZ_pvr_ctl_block_name(void *f_pvr_ctls);
@@ -236,3 +238,21 @@ void *dealloc_f_VIZ_PVR_ctl(void *block_item){
     dealloc_f_PVR_isosurfs_ctl(f_pvr_ctl->f_pvr_isos_c);
 	return f_pvr_ctl;
 }
+
+
+struct void_clist * init_f_VIZ_pvr_ctls(void *f_parent, int *f_num_pvr_ctl)
+{
+    char *f_block_name =   (char *) c_pvr_render_ctls_block_name(f_parent);
+	struct void_clist *f_pvr_ctls = init_void_clist(strngcopy_from_f(f_block_name));
+	f_pvr_ctls->f_parent = f_parent;
+	*f_num_pvr_ctl = c_pvr_render_ctls_num_pvr_ctl(f_pvr_ctls->f_parent);
+	
+	int i;
+	for(i=0;i<*f_num_pvr_ctl;i++){
+		struct f_VIZ_PVR_ctl *f_ctl_tmp = init_f_VIZ_PVR_ctl(c_pvr_render_ctls_pvr_ctl,
+                                                             i, f_pvr_ctls->f_parent);
+		append_void_clist((void *) f_ctl_tmp, f_pvr_ctls);
+	}
+	return f_pvr_ctls;
+}
+

@@ -31,6 +31,8 @@ struct f_PVR_section_ctl{
     
     struct real_ctl_item *f_opacity_ctl;
     struct chara_ctl_item *f_zeroline_switch_ctl;
+    
+    void *void_panel;
 };
 
 struct f_PVR_isosurface_ctl{
@@ -42,9 +44,23 @@ struct f_PVR_isosurface_ctl{
     struct chara_ctl_item *f_isosurf_type_ctl;
     struct real_ctl_item  *f_iso_value_ctl;
     struct real_ctl_item  *f_opacity_ctl;
+    
+    void *void_panel;
 };
 
 /* prototypes */
+extern void * c_append_PVR_sections_ctls(int idx, char *block_name,
+                                         void *f_pvr_scts_c);
+extern void * c_delete_PVR_sections_ctls(int idx, void *f_pvr_scts_c);
+extern void * c_append_PVR_isosurface_ctls(int idx, char *block_name,
+                                           void *f_pvr_isos_c);
+extern void * c_delete_PVR_isosurface_ctls(int idx, void *f_pvr_isos_c);
+
+struct f_PVR_section_ctl * init_f_PVR_section_ctl(int idx, void *f_parent);
+void dealloc_f_PVR_section_ctl(struct f_PVR_section_ctl *f_pvr_sect_ctl);
+
+struct f_PVR_isosurface_ctl * init_f_PVR_isosurface_ctl(int idx, void *f_parent);
+void dealloc_f_PVR_isosurface_ctl(struct f_PVR_isosurface_ctl *f_pvr_iso_ctl);
 
 struct void_clist * init_f_PVR_sections_ctl(void *f_parent);
 void dealloc_f_PVR_sections_ctl(struct void_clist *f_pvr_scts_c);

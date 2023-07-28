@@ -13,7 +13,7 @@
 
 
 #ifndef T_CONTROL_MHD_CONTROLS_H_
-#define T_CONTROL_MHD_CONTROLS_H__
+#define T_CONTROL_MHD_CONTROLS_H_
 
 
 struct f_MHD_restart_controls{
@@ -134,4 +134,4 @@ struct f_MHD_control_ctls{
 struct f_MHD_control_ctls * init_f_MHD_control_ctls(void *(*c_load_self)(void *f_parent), void *f_parent);
 
 
-#endif    /* T_CONTROL_MHD_CONTROLS_H__ */
+#endif    /* T_CONTROL_MHD_CONTROLS_H_ */

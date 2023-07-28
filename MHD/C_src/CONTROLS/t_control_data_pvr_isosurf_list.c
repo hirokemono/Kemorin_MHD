@@ -15,21 +15,21 @@ struct pvr_isosurf_ctl_c * init_pvr_isosurf_ctl_c(){
     }
 	
     pvr_iso_c->label_pvr_isosurf = init_label_pvr_isosurf();
-    pvr_iso_c->iso_value_ctl = init_real_ctl_item_c();
-    pvr_iso_c->opacity_ctl =   init_real_ctl_item_c();
+    pvr_iso_c->f_iso_value_ctl = init_real_ctl_item_c();
+    pvr_iso_c->f_opacity_ctl =   init_real_ctl_item_c();
 	
-	pvr_iso_c->isosurf_type_ctl = init_chara_ctl_item_c();
+	pvr_iso_c->f_isosurf_type_ctl = init_chara_ctl_item_c();
 	
 	return pvr_iso_c;
 };
 
 void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c){
 	
-	free(pvr_iso_c->iso_value_ctl);
-	free(pvr_iso_c->opacity_ctl);
+	free(pvr_iso_c->f_iso_value_ctl);
+	free(pvr_iso_c->f_opacity_ctl);
 	
 	dealloc_control_labels_f(pvr_iso_c->label_pvr_isosurf);
-	dealloc_chara_ctl_item_c(pvr_iso_c->isosurf_type_ctl);
+	dealloc_chara_ctl_item_c(pvr_iso_c->f_isosurf_type_ctl);
     free(pvr_iso_c);
 	return;
 };
@@ -40,11 +40,11 @@ int read_pvr_isosurf_ctl_c(FILE *fp, char buf[LENGTHBUF],
 	skip_comment_read_line(fp, buf);
 	while(find_control_end_flag_c(buf, label) == 0){
 		read_real_ctl_item_c(buf, pvr_iso_c->label_pvr_isosurf->label[ 0],
-							 pvr_iso_c->iso_value_ctl);
+							 pvr_iso_c->f_iso_value_ctl);
 		read_real_ctl_item_c(buf, pvr_iso_c->label_pvr_isosurf->label[ 1],
-							 pvr_iso_c->opacity_ctl);
+							 pvr_iso_c->f_opacity_ctl);
 		read_chara_ctl_item_c(buf, pvr_iso_c->label_pvr_isosurf->label[ 2],
-							  pvr_iso_c->isosurf_type_ctl);
+							  pvr_iso_c->f_isosurf_type_ctl);
 
         skip_comment_read_line(fp, buf);
 	};
@@ -59,13 +59,13 @@ int write_pvr_isosurf_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_real_ctl_item_c(fp, level, pvr_iso_c->label_pvr_isosurf->maxlen,
 						  pvr_iso_c->label_pvr_isosurf->label[ 0],
-						  pvr_iso_c->iso_value_ctl);
+						  pvr_iso_c->f_iso_value_ctl);
 	write_real_ctl_item_c(fp, level, pvr_iso_c->label_pvr_isosurf->maxlen,
 						  pvr_iso_c->label_pvr_isosurf->label[ 1],
-						  pvr_iso_c->opacity_ctl);
+						  pvr_iso_c->f_opacity_ctl);
 	write_chara_ctl_item_c(fp, level, pvr_iso_c->label_pvr_isosurf->maxlen,
 						   pvr_iso_c->label_pvr_isosurf->label[ 2],
-						   pvr_iso_c->isosurf_type_ctl);
+						   pvr_iso_c->f_isosurf_type_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

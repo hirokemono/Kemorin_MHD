@@ -14,6 +14,15 @@
 !!     &          bind(C, NAME = 'c_VIZ_PVR_section_ctl')
 !!        integer(c_int), value :: idx_in
 !!        type(c_ptr), value, intent(in) :: c_ctl
+!!      type(c_ptr) function c_append_PVR_sections_ctls                 &
+!!     &                  (idx, c_name, c_ctl)                          &
+!!     &                  bind(C, NAME = 'c_append_PVR_sections_ctls')
+!!      type(c_ptr) function c_delete_PVR_sections_ctls(idx, c_ctl)     &
+!!     &                  bind(C, NAME = 'c_delete_PVR_sections_ctls')
+!!        integer(c_int), value, intent(in) :: idx
+!!        character(C_char), intent(in) :: c_name(*)
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!        type(pvr_sections_ctl), pointer :: f_ctl
 !!!!
 !!      type(c_ptr) function c_VIZ_PVR_isos_block_name(c_ctl)           &
 !!     &          bind(C, NAME = 'c_VIZ_PVR_isos_block_name')
@@ -22,6 +31,14 @@
 !!      type(c_ptr) function c_VIZ_PVR_isosurface_ctl(idx_in, c_ctl)    &
 !!     &          bind(C, NAME = 'c_VIZ_PVR_isosurface_ctl')
 !!        integer(c_int), value :: idx_in
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!      type(c_ptr) function c_append_PVR_isosurface_ctls               &
+!!     &                  (idx, c_name, c_ctl)                          &
+!!     &                  bind(C, NAME = 'c_append_PVR_isosurface_ctls')
+!!      type(c_ptr) function c_delete_PVR_isosurface_ctls(idx, c_ctl)   &
+!!     &                  bind(C, NAME = 'c_delete_PVR_isosurface_ctls')
+!!        integer(c_int), value, intent(in) :: idx
+!!        character(C_char), intent(in) :: c_name(*)
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!!!
 !!      type(c_ptr) function c_PVR_section_ctl_block_name(c_ctl)        &
@@ -130,6 +147,39 @@
       end function c_VIZ_PVR_section_ctl
 !
 !  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_append_PVR_sections_ctls                   &
+     &                  (idx, c_name, c_ctl)                            &
+     &                  bind(C, NAME = 'c_append_PVR_sections_ctls')
+      use ctl_array_chara_to_c
+!
+      integer(c_int), value, intent(in) :: idx
+      character(C_char), intent(in) :: c_name(*)
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_sections_ctl), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call append_pvr_section_ctl(idx, copy_char_from_c(c_name), f_ctl)
+      c_append_PVR_sections_ctls = C_loc(f_ctl%pvr_sect_ctl)
+      f_ctl%pvr_sect_ctl(idx+1)%i_pvr_sect_ctl = 1
+!
+      end function c_append_PVR_sections_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_delete_PVR_sections_ctls(idx, c_ctl)       &
+     &                  bind(C, NAME = 'c_delete_PVR_sections_ctls')
+      integer(c_int), value, intent(in) :: idx
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_sections_ctl), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call delete_pvr_section_ctl((idx+1), f_ctl)
+      c_delete_PVR_sections_ctls = C_loc(f_ctl%pvr_sect_ctl)
+!
+      end function c_delete_PVR_sections_ctls
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function c_VIZ_PVR_isos_block_name(c_ctl)             &
@@ -160,6 +210,39 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_VIZ_PVR_isosurface_ctl = C_loc(f_ctl%pvr_iso_ctl(idx_in+1))
       end function c_VIZ_PVR_isosurface_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_append_PVR_isosurface_ctls                 &
+     &                  (idx, c_name, c_ctl)                            &
+     &                  bind(C, NAME = 'c_append_PVR_isosurface_ctls')
+      use ctl_array_chara_to_c
+!
+      integer(c_int), value, intent(in) :: idx
+      character(C_char), intent(in) :: c_name(*)
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_isosurfs_ctl), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call append_pvr_isosurf_ctl(idx, copy_char_from_c(c_name), f_ctl)
+      c_append_PVR_isosurface_ctls = C_loc(f_ctl%pvr_iso_ctl)
+      f_ctl%pvr_iso_ctl(idx+1)%i_pvr_isosurf_ctl = 1
+!
+      end function c_append_PVR_isosurface_ctls
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_delete_PVR_isosurface_ctls(idx, c_ctl)     &
+     &                  bind(C, NAME = 'c_delete_PVR_isosurface_ctls')
+      integer(c_int), value, intent(in) :: idx
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_isosurfs_ctl), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call delete_pvr_isosurf_ctl((idx+1), f_ctl)
+      c_delete_PVR_isosurface_ctls = C_loc(f_ctl%pvr_iso_ctl)
+!
+      end function c_delete_PVR_isosurface_ctls
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -48,7 +48,7 @@ struct ISO_GTK_widgets * init_ISO_GTK_widgets(struct chara_int2_clist *f_field_c
     return iso_vws;
 };
 
-static void dealloc_ISO_GTK_widgets(struct ISO_GTK_widgets *iso_vws){
+void dealloc_ISO_GTK_widgets(struct ISO_GTK_widgets *iso_vws){
     dealloc_chara_int2_clist(iso_vws->label_field_list);
     dealloc_chara2_int_clist(iso_vws->label_dir_list);
     free(iso_vws);

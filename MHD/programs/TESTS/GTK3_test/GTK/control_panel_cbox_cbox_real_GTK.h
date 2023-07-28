@@ -21,7 +21,6 @@
 #include "control_panel_field_cbox_GTK.h"
 
 struct cbox_cbox_table_view{
-    int index_bc;
     GtkWidget *clist_tree_view;
     GtkWidget *item1_tree_view;
     GtkWidget *item2_tree_view;

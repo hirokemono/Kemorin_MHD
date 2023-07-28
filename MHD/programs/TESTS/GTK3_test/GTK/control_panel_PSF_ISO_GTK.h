@@ -54,6 +54,7 @@ struct PSF_GTK_widgets * init_PSF_GTK_widgets(struct chara_int2_clist *f_field_c
 void dealloc_PSF_GTK_widgets(struct PSF_GTK_widgets *psf_def_vws);
 
 struct ISO_GTK_widgets * init_ISO_GTK_widgets(struct chara_int2_clist *f_field_ctl);
+void dealloc_ISO_GTK_widgets(struct ISO_GTK_widgets *iso_vws);
 
 struct f_VIZ_PSF_ctl * init_f_VIZ_PSF_ctl_GTK(int idx, void *f_parent, void *void_in_gtk);
 void * dealloc_f_VIZ_PSF_ctl_GTK(void *void_in);

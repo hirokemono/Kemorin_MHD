@@ -29,8 +29,7 @@ extern void * c_PVR_isosurf_iso_value_ctl(void *f_pvr_iso_ctl);
 extern void * c_PVR_isosurf_opacity_ctl(void *f_pvr_iso_ctl);
 
 
-static struct f_PVR_section_ctl * init_f_PVR_section_ctl(void *(*c_load_self)(int idx, void *f_parent),
-                                                         int idx, void *f_parent)
+struct f_PVR_section_ctl * init_f_PVR_section_ctl(int idx, void *f_parent)
 {
     struct f_PVR_section_ctl *f_pvr_sect_ctl
             = (struct f_PVR_section_ctl *) malloc(sizeof(struct f_PVR_section_ctl));
@@ -38,7 +37,7 @@ static struct f_PVR_section_ctl * init_f_PVR_section_ctl(void *(*c_load_self)(in
         printf("malloc error for f_PVR_section_ctl\n");
         exit(0);
     };
-    f_pvr_sect_ctl->f_self =  c_load_self(idx, f_parent);
+    f_pvr_sect_ctl->f_self =  c_VIZ_PVR_section_ctl(idx, f_parent);
     f_pvr_sect_ctl->f_iflag =   (int *) c_PVR_section_ctl_iflag(f_pvr_sect_ctl->f_self);
     char *f_block_name =   (char *) c_PVR_section_ctl_block_name(f_pvr_sect_ctl->f_self);
     f_pvr_sect_ctl->c_block_name = strngcopy_from_f(f_block_name);
@@ -55,7 +54,7 @@ static struct f_PVR_section_ctl * init_f_PVR_section_ctl(void *(*c_load_self)(in
 };
 
 
-static void dealloc_f_PVR_section_ctl(struct f_PVR_section_ctl *f_pvr_sect_ctl){
+void dealloc_f_PVR_section_ctl(struct f_PVR_section_ctl *f_pvr_sect_ctl){
     
 	dealloc_f_VIZ_PSF_def_ctl((void *) f_pvr_sect_ctl->f_psf_def_c);
 	dealloc_chara_ctl_item_c(f_pvr_sect_ctl->f_zeroline_switch_ctl);
@@ -77,8 +76,7 @@ struct void_clist * init_f_PVR_sections_ctl(void *f_parent)
     int num = c_VIZ_PVR_num_pvr_sect_ctl(f_pvr_scts_c->f_parent);
 	int i;
 	for(i=0;i<num;i++){
-        struct f_PVR_section_ctl *f_ctl_tmp = init_f_PVR_section_ctl(c_VIZ_PVR_section_ctl,
-                                                                     i, f_pvr_scts_c->f_parent);
+        struct f_PVR_section_ctl *f_ctl_tmp = init_f_PVR_section_ctl(i, f_pvr_scts_c->f_parent);
 		append_void_clist((void *) f_ctl_tmp, f_pvr_scts_c);
 	}
 	return f_pvr_scts_c;
@@ -99,8 +97,7 @@ void dealloc_f_PVR_sections_ctl(struct void_clist *f_pvr_scts_c)
 	return;
 }
 
-static struct f_PVR_isosurface_ctl * init_f_PVR_isosurface_ctl(void *(*c_load_self)(int idx, void *f_parent),
-                                                               int idx, void *f_parent)
+struct f_PVR_isosurface_ctl * init_f_PVR_isosurface_ctl(int idx, void *f_parent)
 {
     struct f_PVR_isosurface_ctl *f_pvr_iso_ctl
             = (struct f_PVR_isosurface_ctl *) malloc(sizeof(struct f_PVR_isosurface_ctl));
@@ -108,7 +105,7 @@ static struct f_PVR_isosurface_ctl * init_f_PVR_isosurface_ctl(void *(*c_load_se
         printf("malloc error for f_PVR_isosurface_ctl\n");
         exit(0);
     };
-    f_pvr_iso_ctl->f_self =  c_load_self(idx, f_parent);
+    f_pvr_iso_ctl->f_self =  c_VIZ_PVR_isosurface_ctl(idx, f_parent);
     f_pvr_iso_ctl->f_iflag =   (int *) c_PVR_isosurf_ctl_iflag(f_pvr_iso_ctl->f_self);
     char *f_block_name =   (char *) c_PVR_isosurf_ctl_block_name(f_pvr_iso_ctl->f_self);
     f_pvr_iso_ctl->c_block_name = strngcopy_from_f(f_block_name);
@@ -122,7 +119,7 @@ static struct f_PVR_isosurface_ctl * init_f_PVR_isosurface_ctl(void *(*c_load_se
     return f_pvr_iso_ctl;
 };
 
-static void dealloc_f_PVR_isosurface_ctl(struct f_PVR_isosurface_ctl *f_pvr_iso_ctl){
+void dealloc_f_PVR_isosurface_ctl(struct f_PVR_isosurface_ctl *f_pvr_iso_ctl){
     
 	dealloc_chara_ctl_item_c(f_pvr_iso_ctl->f_isosurf_type_ctl);
 	dealloc_real_ctl_item_c(f_pvr_iso_ctl->f_iso_value_ctl);
@@ -143,8 +140,7 @@ struct void_clist * init_f_PVR_isosurfs_ctl(void *f_parent)
     
 	int i;
 	for(i=0;i<c_VIZ_PVR_num_pvr_iso_ctl(f_pvr_isos_c->f_parent);i++){
-        struct f_PVR_isosurface_ctl *f_ctl_tmp = init_f_PVR_isosurface_ctl(c_VIZ_PVR_isosurface_ctl,
-                                                                           i, f_pvr_isos_c->f_parent);
+        struct f_PVR_isosurface_ctl *f_ctl_tmp = init_f_PVR_isosurface_ctl(i, f_pvr_isos_c->f_parent);
 		append_void_clist((void *) f_ctl_tmp, f_pvr_isos_c);
 	}
 	return f_pvr_isos_c;

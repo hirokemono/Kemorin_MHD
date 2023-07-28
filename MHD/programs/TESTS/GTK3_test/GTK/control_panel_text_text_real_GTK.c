@@ -1,49 +1,49 @@
 /*
-//  control_panel_cbox_cbox_real_GTK.c
+//  control_panel_text_text_real_GTK.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/08/17.
 */
 
-#include "control_panel_cbox_cbox_real_GTK.h"
+#include "control_panel_text_text_real_GTK.h"
 
 static void c_combobox1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
                                  gchar *new_text, gpointer user_data)
 {
-    struct cbox_cbox_table_view *cbox2_tbl_vws = (struct cbox_cbox_table_view *) user_data;
+    GtkWidget *clist_tree_view = GTK_WIDGET(user_data);
 	struct chara2_real_clist *ctl_clist = (struct chara2_real_clist *) g_object_get_data(G_OBJECT(cell), "chara2_real_clist");
     
-    c2r_tree_1st_text_edited(path_str, new_text, GTK_TREE_VIEW(cbox2_tbl_vws->clist_tree_view), ctl_clist);
+    c2r_tree_1st_text_edited(path_str, new_text, GTK_TREE_VIEW(clist_tree_view), ctl_clist);
     load_clist_to_chara2_real_array(ctl_clist);
 }
 
 static void c_combobox2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
                                  gchar *new_text, gpointer user_data)
 {
-    struct cbox_cbox_table_view *cbox2_tbl_vws = (struct cbox_cbox_table_view *) user_data;
+    GtkWidget *clist_tree_view = GTK_WIDGET(user_data);
 	struct chara2_real_clist *ctl_clist = (struct chara2_real_clist *) g_object_get_data(G_OBJECT(cell), "chara2_real_clist");
     
-    c2r_tree_2nd_text_edited(path_str, new_text, GTK_TREE_VIEW(cbox2_tbl_vws->clist_tree_view), ctl_clist);
+    c2r_tree_2nd_text_edited(path_str, new_text, GTK_TREE_VIEW(clist_tree_view), ctl_clist);
     load_clist_to_chara2_real_array(ctl_clist);
 }
 
 static void c_spin_edited_cb(GtkCellRendererText *cell, gchar *path_str,
                              gchar *new_text, gpointer user_data)
 {
-    struct cbox_cbox_table_view *cbox2_tbl_vws = (struct cbox_cbox_table_view *) user_data;
+    GtkWidget *clist_tree_view = GTK_WIDGET(user_data);
 	struct chara2_real_clist *ctl_clist = (struct chara2_real_clist *) g_object_get_data(G_OBJECT(cell), "chara2_real_clist");
     
-    c2r_tree_value_edited(path_str, new_text, GTK_TREE_VIEW(cbox2_tbl_vws->clist_tree_view), ctl_clist);
+    c2r_tree_value_edited(path_str, new_text, GTK_TREE_VIEW(clist_tree_view), ctl_clist);
     load_clist_to_chara2_real_array(ctl_clist);
 }
 
 static void cb_add_c_item(GtkButton *button, gpointer user_data)
 {
-    struct cbox_cbox_table_view *cbox2_tbl_vws = (struct cbox_cbox_table_view *) user_data;
+    GtkWidget *clist_tree_view = GTK_WIDGET(user_data);
 	struct chara2_real_clist *ctl_clist = (struct chara2_real_clist *) g_object_get_data(G_OBJECT(button), "chara2_real_clist");
     
     ctl_clist->index_bc = add_c2r_list_by_bottun_GTK(ctl_clist->index_bc,
-                                                     GTK_TREE_VIEW(cbox2_tbl_vws->clist_tree_view),
+                                                     GTK_TREE_VIEW(clist_tree_view),
                                                      ctl_clist);
     reflesh_f_ctl_c2r_array(count_chara2_real_clist(ctl_clist), ctl_clist);
     load_clist_to_chara2_real_array(ctl_clist);
@@ -52,17 +52,16 @@ static void cb_add_c_item(GtkButton *button, gpointer user_data)
 
 static void cb_delete_c_item_by_list(GtkButton *button, gpointer user_data)
 {
-    struct cbox_cbox_table_view *cbox2_tbl_vws = (struct cbox_cbox_table_view *) user_data;
+    GtkWidget *clist_tree_view = GTK_WIDGET(user_data);
 	struct chara2_real_clist *ctl_clist = (struct chara2_real_clist *) g_object_get_data(G_OBJECT(button), "chara2_real_clist");
     
-    delete_c2r_list_items_GTK(GTK_TREE_VIEW(cbox2_tbl_vws->clist_tree_view), ctl_clist);
+    delete_c2r_list_items_GTK(GTK_TREE_VIEW(clist_tree_view), ctl_clist);
     reflesh_f_ctl_c2r_array(count_chara2_real_clist(ctl_clist), ctl_clist);
     load_clist_to_chara2_real_array(ctl_clist);
 }
 
-void create_cbox_cbox_real_tree_view(GtkListStore *cbox_child_model1, GtkListStore *cbox_child_model2, 
-                                     GtkTreeView *cr_tree_view, GtkCellRenderer *renderer_cbox1,
-                                     GtkCellRenderer *renderer_cbox2, GtkCellRenderer *renderer_spin)
+void create_text_text_real_tree_view(GtkTreeView *cr_tree_view, GtkCellRenderer *renderer_text1,
+                                     GtkCellRenderer *renderer_text2, GtkCellRenderer *renderer_spin)
 {
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     
@@ -83,15 +82,12 @@ void create_cbox_cbox_real_tree_view(GtkListStore *cbox_child_model1, GtkListSto
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(cr_tree_view, column);
     gtk_tree_view_column_set_title(column, "Type");
-	g_object_set(G_OBJECT(renderer_cbox1), 
-                 "text-column", FALSE, 
-				"editable", TRUE, 
-				"model", cbox_child_model1,
-				"has-entry", TRUE, 
-				"width", (gint)150, NULL);
-    gtk_tree_view_column_pack_start(column, renderer_cbox1, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_cbox1, "text", COLUMN_FIELD_NAME, NULL);
-    gtk_tree_view_column_set_fixed_width(column, (gint) 160);
+    g_object_set(G_OBJECT(renderer_text1), "editable", TRUE, NULL);
+    g_object_set(renderer_text1, "width", (gint)120, NULL);
+    gtk_tree_view_column_pack_start(column, renderer_text1, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer_text1, "text", COLUMN_FIELD_NAME, NULL);
+    gtk_tree_view_column_set_fixed_width(column, (gint) 120);
+    gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
 	/*
     g_signal_connect(G_OBJECT(column), "clicked", 
@@ -101,15 +97,12 @@ void create_cbox_cbox_real_tree_view(GtkListStore *cbox_child_model1, GtkListSto
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(cr_tree_view, column);
     gtk_tree_view_column_set_title(column, "Type");
-	g_object_set(G_OBJECT(renderer_cbox2), 
-                 "text-column", FALSE, 
-				"editable", TRUE, 
-				"model", cbox_child_model2,
-				"has-entry", TRUE, 
-				"width", (gint)150, NULL);
-    gtk_tree_view_column_pack_start(column, renderer_cbox2, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_cbox2, "text", COLUMN_FIELD_NAME, NULL);
-    gtk_tree_view_column_set_fixed_width(column, (gint) 160);
+    g_object_set(G_OBJECT(renderer_text2), "editable", TRUE, NULL);
+    g_object_set(renderer_text2, "width", (gint)120, NULL);
+    gtk_tree_view_column_pack_start(column, renderer_text2, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer_text2, "text", COLUMN_FIELD_NAME, NULL);
+    gtk_tree_view_column_set_fixed_width(column, (gint) 120);
+    gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
 	/*
     g_signal_connect(G_OBJECT(column), "clicked", 
@@ -149,35 +142,31 @@ void create_cbox_cbox_real_tree_view(GtkListStore *cbox_child_model1, GtkListSto
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_NAME, GTK_SORT_ASCENDING);
 }
 
-void init_c2r_combobox_tree_view(struct chara2_real_clist *ctl_clist,
-                                 struct cbox_cbox_table_view *cbox2_tbl_vws){
+static void init_c2r_combobox_tree_view(struct chara2_real_clist *ctl_clist, GtkWidget *clist_tree_view){
     GtkCellRenderer *renderer_spin =  gtk_cell_renderer_spin_new();
     
-    GtkCellRenderer *renderer_cbox1 = gtk_cell_renderer_combo_new();
-    GtkCellRenderer *renderer_cbox2 = gtk_cell_renderer_combo_new();
-    GtkTreeModel *cbox_model1 = gtk_tree_view_get_model(GTK_TREE_VIEW(cbox2_tbl_vws->item1_tree_view));
-    GtkTreeModel *cbox_model2 = gtk_tree_view_get_model(GTK_TREE_VIEW(cbox2_tbl_vws->item2_tree_view));
-    create_cbox_cbox_real_tree_view(GTK_LIST_STORE(cbox_model1), GTK_LIST_STORE(cbox_model2), 
-                                    GTK_TREE_VIEW(cbox2_tbl_vws->clist_tree_view),
-                                    renderer_cbox1, renderer_cbox2, renderer_spin);
+    GtkCellRenderer *renderer_text1 = gtk_cell_renderer_text_new();
+    GtkCellRenderer *renderer_text2 = gtk_cell_renderer_text_new();
+    create_text_text_real_tree_view(GTK_TREE_VIEW(clist_tree_view),
+                                    renderer_text1, renderer_text2, renderer_spin);
     
-	g_object_set_data(G_OBJECT(renderer_cbox1), "chara2_real_clist", (gpointer) ctl_clist);
-	g_object_set_data(G_OBJECT(renderer_cbox2), "chara2_real_clist", (gpointer) ctl_clist);
+	g_object_set_data(G_OBJECT(renderer_text1), "chara2_real_clist", (gpointer) ctl_clist);
+	g_object_set_data(G_OBJECT(renderer_text2), "chara2_real_clist", (gpointer) ctl_clist);
 	g_object_set_data(G_OBJECT(renderer_spin), "chara2_real_clist", (gpointer) ctl_clist);
 	g_object_set_data(G_OBJECT(renderer_spin), "chara2_real_clist", (gpointer) ctl_clist);
     
-    g_signal_connect(G_OBJECT(renderer_cbox1), "edited",
-                     G_CALLBACK(c_combobox1_edited_cb), (gpointer) cbox2_tbl_vws);
-    g_signal_connect(G_OBJECT(renderer_cbox2), "edited",
-                     G_CALLBACK(c_combobox2_edited_cb), (gpointer) cbox2_tbl_vws);
+    g_signal_connect(G_OBJECT(renderer_text1), "edited",
+                     G_CALLBACK(c_combobox1_edited_cb), (gpointer) clist_tree_view);
+    g_signal_connect(G_OBJECT(renderer_text2), "edited",
+                     G_CALLBACK(c_combobox2_edited_cb), (gpointer) clist_tree_view);
     g_signal_connect(G_OBJECT(renderer_spin), "edited",
-                     G_CALLBACK(c_spin_edited_cb), (gpointer) cbox2_tbl_vws);
+                     G_CALLBACK(c_spin_edited_cb), (gpointer) clist_tree_view);
 
     ctl_clist->index_bc = append_c2r_list_from_ctl(ctl_clist->index_bc, &ctl_clist->c2r_item_head,
-                                                   GTK_TREE_VIEW(cbox2_tbl_vws->clist_tree_view));
+                                                   GTK_TREE_VIEW(clist_tree_view));
 }
 
-void add_c2r_list_box_w_addbottun2(GtkTreeView *cr_tree_view,
+static void add_c2r_list_box_w_addbottun2(GtkTreeView *cr_tree_view,
                                    GtkWidget *button_add, GtkWidget *button_delete, 
                                    GtkWidget *vbox)
 {
@@ -202,12 +191,12 @@ void add_c2r_list_box_w_addbottun2(GtkTreeView *cr_tree_view,
 };
 
 static void add_c2r_list_selection_box(struct chara2_real_clist *ctl_clist,
-                                       struct cbox_cbox_table_view *cbox2_tbl_vws, GtkWidget *vbox)
+                                       GtkWidget *clist_tree_view, GtkWidget *vbox)
 {
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
     
-    add_c2r_list_box_w_addbottun2(GTK_TREE_VIEW(cbox2_tbl_vws->clist_tree_view),
+    add_c2r_list_box_w_addbottun2(GTK_TREE_VIEW(clist_tree_view),
                                    button_add, button_delete, vbox);
     /* Add callbacks */
     
@@ -215,36 +204,18 @@ static void add_c2r_list_selection_box(struct chara2_real_clist *ctl_clist,
 	g_object_set_data(G_OBJECT(button_delete), "chara2_real_clist", (gpointer) ctl_clist);
     
     g_signal_connect(G_OBJECT(button_add), "clicked",
-                     G_CALLBACK(cb_add_c_item), (gpointer) cbox2_tbl_vws);
+                     G_CALLBACK(cb_add_c_item), (gpointer) clist_tree_view);
     g_signal_connect(G_OBJECT(button_delete), "clicked",
-                     G_CALLBACK(cb_delete_c_item_by_list), (gpointer) cbox2_tbl_vws);
+                     G_CALLBACK(cb_delete_c_item_by_list), (gpointer) clist_tree_view);
 };
 
-struct cbox_cbox_table_view * init_cbox_cbox_table_view(struct chara2_int_clist *item1_clist,
-                                                        struct chara2_int_clist *item2_clist){
-    struct cbox_cbox_table_view *cbox2_tbl_vws
-            = (struct cbox_cbox_table_view *) malloc(sizeof(struct cbox_cbox_table_view));
-    if(cbox2_tbl_vws == NULL){
-        printf("malloc error for cbox_cbox_table_view\n");
-        exit(0);
-    };
-    
-    cbox2_tbl_vws->clist_tree_view = gtk_tree_view_new();
-    cbox2_tbl_vws->item1_tree_view = create_compoonent_label_tree(item1_clist);
-    cbox2_tbl_vws->item2_tree_view = create_compoonent_label_tree(item2_clist);
-    return cbox2_tbl_vws;
-}
-
-GtkWidget * c2r_list_combobox_expander(struct chara2_real_clist *ctl_clist,
-                                       struct chara2_int_clist *item1_clist,
-                                       struct chara2_int_clist *item2_clist,
-                                       struct cbox_cbox_table_view *cbox2_tbl_vws,
-                                       GtkWidget *window){
-    cbox2_tbl_vws = init_cbox_cbox_table_view(item1_clist, item2_clist);
-    init_c2r_combobox_tree_view(ctl_clist, cbox2_tbl_vws);
+GtkWidget * c2r_list_text2_expander(struct chara2_real_clist *ctl_clist,
+                                    GtkWidget *clist_tree_view, GtkWidget *window){
+    clist_tree_view = gtk_tree_view_new();
+    init_c2r_combobox_tree_view(ctl_clist, clist_tree_view);
 
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    add_c2r_list_selection_box(ctl_clist, cbox2_tbl_vws, vbox);
+    add_c2r_list_selection_box(ctl_clist, clist_tree_view, vbox);
     GtkWidget *expand_bc = wrap_into_expanded_frame_gtk(duplicate_underscore(ctl_clist->clist_name),
                                                         window, vbox);
     return expand_bc;

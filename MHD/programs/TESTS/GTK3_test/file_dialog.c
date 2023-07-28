@@ -20,6 +20,20 @@
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"
 
+#include "c_ctl_data_SGS_model.h"
+#include "c_control_data_pvrs.h"
+#include "c_ctl_data_platforms.h"
+#include "c_ctl_data_MHD_BCs.h"
+#include "c_ctl_data_MHD_model.h"
+#include "c_ctl_data_PSF_ISOs.h"
+#include "c_ctl_data_MAP.h"
+#include "c_ctl_data_PVR_colormap.h"
+#include "c_ctl_data_PVR_view_matrix.h"
+#include "c_ctl_data_FLINE.h"
+#include "c_ctl_data_LIC.h"
+#include "c_ctl_VIZ_repartition.h"
+#include "c_ctl_data_SGS_MHD.h"
+
 #include "control_elements_IO_GTK.h"
 #include "control_combobox_GTK.h"
 #include "control_panel_4_field_GTK.h"
@@ -32,16 +46,6 @@
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_boundary_condition_GTK.h"
 
-#include "c_ctl_data_SGS_model.h"
-#include "c_control_data_pvrs.h"
-#include "c_ctl_data_platforms.h"
-#include "c_ctl_data_MHD_BCs.h"
-#include "c_ctl_data_MHD_model.h"
-#include "c_ctl_data_PSF_ISOs.h"
-#include "c_ctl_data_MAP.h"
-#include "c_ctl_data_PVR_colormap.h"
-#include "c_ctl_data_PVR_view_matrix.h"
-
 #include "ctl_data_platforms_GTK.h"
 #include "control_panel_4_dimless_GTK.h"
 #include "control_panels_MHD_control_GTK.h"
@@ -49,6 +53,7 @@
 #include "control_panel_cbox_GTK.h"
 #include "control_panel_cbox_real_GTK.h"
 #include "control_panel_cbox_cbox_real_GTK.h"
+#include "control_panel_text_text_real_GTK.h"
 #include "control_panel_int_GTK.h"
 #include "control_panel_int2_GTK.h"
 #include "control_panel_real3_GTK.h"
@@ -58,450 +63,17 @@
 #include "control_panel_4_SGS_model_GTK.h"
 #include "control_panel_fld_on_psf_GTK.h"
 #include "control_panel_PSF_ISO_GTK.h"
+#include "control_panel_VIZ_repartition_GTK.h"
+#include "control_panel_PVR_colormap.h"
+#include "control_panel_VIZ_repartition_GTK.h"
 
 
 extern void c_view_control_sph_SGS_MHD();
 
-
-extern void * c_pvr_render_ctls_block_name(void *f_pvr_ctls);
-extern int    c_pvr_render_ctls_num_pvr_ctl(void *f_pvr_ctls);
-extern void * c_pvr_render_ctls_pvr_ctl(int idx, void *f_pvr_ctls);
-extern void * c_append_viz_pvr_render_ctls(int idx, char *block_name, void *f_pvr_ctls);
-extern void * c_delete_viz_pvr_render_ctls(int idx, void *f_pvr_ctls);
-
-
-
 extern void * c_read_control_sph_SGS_MHD(char *file_name);
-extern void * c_add_sgs_sph_mhd_ctl();
-extern void * c_MHD_block_name(void *f_MHD_ctl);
-extern void * c_MHD_iflag(void *f_MHD_ctl);
-extern void * c_MHD_plt(void *f_MHD_ctl);
-extern void * c_MHD_org_plt(void *f_MHD_ctl);
-extern void * c_MHD_new_plt(void *f_MHD_ctl);
-extern void * c_MHD_fname_psph(void *f_MHD_ctl);
-extern void * c_MHD_psph_ctl(void *f_MHD_ctl);
-extern void * c_MHD_model_ctl(void *f_MHD_ctl);
-extern void * c_MHD_smctl_ctl(void *f_MHD_ctl);
-extern void * c_MHD_smonitor_ctl(void *f_MHD_ctl);
-extern void * c_MHD_nmtr_ctl(void *f_MHD_ctl);
-extern void * c_MHD_viz_ctls(void *f_MHD_ctl);
-extern void * c_MHD_zm_ctls(void *f_MHD_ctl);
-
-extern void * c_visualizations_block_name(void *f_viz_ctls);
-extern void * c_visualizations_iflag(void *f_viz_ctls);
-extern void * c_visualizations_psf_ctls(void *f_viz_ctls);
-extern void * c_visualizations_iso_ctls(void *f_viz_ctls);
-extern void * c_visualizations_map_ctls(void *f_viz_ctls);
-extern void * c_visualizations_pvr_ctls(void *f_viz_ctls);
-extern void * c_visualizations_fline_ctls(void *f_viz_ctls);
-extern void * c_visualizations_lic_ctls(void *f_viz_ctls);
-extern void * c_visualizations_repart_ctl(void *f_viz_ctls);
-extern void * c_visualizations_fname_vrepart(void *f_viz_ctls);
-
-
-extern void * c_dynamo_vizs_block_name(void *f_zm_ctls);
-extern void * c_dynamo_vizs_iflag(void *f_zm_ctls);
-extern void * c_dynamo_vizs_crust_filter_ctl(void *f_zm_ctls);
-extern void * c_dynamo_vizs_zm_psf_ctls(void *f_zm_ctls);
-extern void * c_dynamo_vizs_zRMS_psf_ctls(void *f_zm_ctls);
-extern void * c_dynamo_vizs_zm_map_ctls(void *f_zm_ctls);
-extern void * c_dynamo_vizs_zRMS_map_ctls(void *f_zm_ctls);
-
-extern void * c_VIZ_LIC_ctl_block_name(void *f_lic_ctl);
-extern void * c_VIZ_LIC_ctl_iflag(void *f_lic_ctl);
-extern void * c_VIZ_LIC_LIC_field_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_pe_elapsed_dump_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_color_field_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_color_comp_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_opacity_field_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_opacity_comp_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_mul_masking_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_fname_noise_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_noise_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_fname_kernel_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_kernel_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_vr_sample_mode_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_step_size_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_normalize_type_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_normalize_value_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_fname_vol_repart_ctl(void *f_lic_ctl);
-extern void * c_VIZ_LIC_repartition_ctl(void *f_lic_ctl);
-
-extern void * c_VIZ_PVR_ctl_block_name(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_ctl_iflag(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_fname_mat_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_viewmat_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_fname_pvr_light_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_light_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_fname_cmap_cbar_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_cmap_cbar_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_movie_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_quilt_image_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_updated_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_file_head_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_file_head_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_file_fmt_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_file_fmt_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_monitoring_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_streo_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_anaglyph_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_quilt_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_render_area_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_field_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_component_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_sections_ctl(void *f_pvr_ctl);
-extern void * c_VIZ_PVR_isosurfaces_ctl(void *f_pvr_ctl);
-
-
-extern void * c_clust_filter_ctl_block_name(void *f_crust_filter_ctl);
-extern void * c_clust_filter_ctl_iflag(void *f_crust_filter_ctl);
-extern void * c_clust_filter_ltr_ctl(void *f_crust_filter_ctl);
-
-
-extern void * c_VIZ_FLINE_ctl_block_name(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_ctl_iflag(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_file_head_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_output_type_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_field_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_color_field_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_color_comp_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_area_grp_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_starting_type_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_selection_type_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_line_direction_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_start_surf_grp_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_num_fieldline_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_max_line_step_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_seed_point_ctl(void *f_fline_ctl);
-extern void * c_VIZ_FLINE_seed_surface_ctl(void *f_fline_ctl);
-
-
-extern void * c_masking_fld_ctl_block_name(void *f_mask_ctl);
-extern void * c_masking_fld_ctl_iflag(void *f_mask_ctl);
-extern void * c_masking_fld_mask_type_ctl(void *f_mask_ctl);
-extern void * c_masking_fld_field_name_ctl(void *f_mask_ctl);
-extern void * c_masking_fld_component_ctl(void *f_mask_ctl);
-extern void * c_masking_fld_mask_range_ctl(void *f_mask_ctl);
-
-extern void * c_LIC_kernel_ctl_block_name(void *f_kernel_ctl);
-extern void * c_LIC_kernel_ctl_iflag(void *f_kernel_ctl);
-extern void * c_LIC_kernel_type_ctl(void *f_kernel_ctl);
-extern void * c_LIC_kernel_resolution_ctl(void *f_kernel_ctl);
-extern void * c_LIC_kernel_peak_ctl(void *f_kernel_ctl);
-extern void * c_LIC_kernel_kernel_sigma_ctl(void *f_kernel_ctl);
-extern void * c_LIC_kernel_trace_len_mod_ctl(void *f_kernel_ctl);
-extern void * c_LIC_kernel_half_length_ctl(void *f_kernel_ctl);
-extern void * c_LIC_kernel_max_trace_cnt_ctl(void *f_kernel_ctl);
-
-extern void * c_LIC_noise_ctl_block_name(void *f_noise_ctl);
-extern void * c_LIC_noise_ctl_iflag(void *f_noise_ctl);
-extern void * c_LIC_noise_type_ctl(void *f_noise_ctl);
-extern void * c_LIC_noise_file_name_ctl(void *f_noise_ctl);
-extern void * c_LIC_noise_file_format_ctl(void *f_noise_ctl);
-extern void * c_LIC_noise_resolution_ctl(void *f_noise_ctl);
-extern void * c_LIC_noise_stepping_ctl(void *f_noise_ctl);
-extern void * c_LIC_noise_cube_size_ctl(void *f_noise_ctl);
-extern void * c_LIC_noise_deltax_ctl(void *f_noise_ctl);
-
-extern void * c_lic_render_ctls_block_name(void *f_lic_ctls);
-extern int    c_lic_render_ctls_num_lic_ctl(void *f_lic_ctls);
-extern char * c_lic_render_ctls_fname(int idx, void *f_lic_ctls);
-extern void * c_lic_render_ctls_pvr_ctl(int idx, void *f_lic_ctls);
-extern void * c_lic_render_ctls_lic_ctl(int idx, void *f_lic_ctls);
-extern void * c_append_viz_lic_render_ctls(int idx, char *block_name, void *f_lic_ctls);
-extern void * c_delete_viz_lic_render_ctls(int idx, void *f_lic_ctls);
-
-extern void * c_fline_ctls_block_name(void *f_fline_ctls);
-extern int    c_fline_ctls_num_fline_ctl(void *f_fline_ctls);
-extern char * c_fline_ctls_fname(int idx, void *f_fline_ctls);
-extern void * c_fline_ctls_fline_ctl(int idx, void *f_fline_ctls);
-extern void * c_append_viz_fline_ctls(int idx, char *block_name, void *f_fline_ctls);
-extern void * c_delete_viz_fline_ctls(int idx, void *f_fline_ctls);
-
-
-extern void * c_node_monitor_ctl_block_name(void *f_nmtr_ctl);
-extern void * c_node_monitor_ctl_iflag(void *f_nmtr_ctl);
-extern void * c_node_monitor_xx_ctl(void *f_nmtr_ctl);
-extern void * c_node_monitor_node_ctl(void *f_nmtr_ctl);
-extern void * c_node_monitor_group_ctl(void *f_nmtr_ctl);
-
-extern void * c_viz_repart_ctl_block_name(void *f_viz_repart_c);
-extern void * c_viz_repart_ctl_iflag(void *f_viz_repart_c);
-extern void * c_viz_repart_viz_plt_ctl(void *f_viz_repart_c);
-extern void * c_viz_repart_Fmesh_ctl(void *f_viz_repart_c);
-extern void * c_viz_repart_Fmesh_ctl(void *f_viz_repart_c);
-extern void * c_viz_repart_new_part_ctl(void *f_viz_repart_c);
-extern void * c_viz_repart_Fsleeve_ctl(void *f_viz_repart_c);
-
-extern void * c_FEM_sleeve_ctl_block_name(void *f_Fsleeve_ctl);
-extern void * c_FEM_sleeve_ctl_iflag(void *f_Fsleeve_ctl);
-extern void * c_FEM_sleeve_extension_mode_ctl(void *f_Fsleeve_ctl);
-extern void * c_FEM_sleeve_sleeve_level_ctl(void *f_Fsleeve_ctl);
-extern void * c_FEM_sleeve_sleeve_size_ctl(void *f_Fsleeve_ctl);
-extern void * c_FEM_sleeve_ref_vector_ctl(void *f_Fsleeve_ctl);
-
-
-extern void * c_new_repart_ctl_block_name(void *f_new_part_ctl);
-extern void * c_new_repart_ctl_iflag(void *f_new_part_ctl);
-extern void * c_new_repart_table_head_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_table_fmt_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_partition_ref_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_trace_cnt_head_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_trace_cnt_fmt_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_ndomain_sect_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_ratio_group_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_sleeve_level_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_weight_to_prev_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_mask_switch_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_mask_weight_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_pwr_of_vol_ctl(void *f_new_part_ctl);
-extern void * c_new_repart_mul_masking_ctl(void *f_new_part_ctl);
-
-extern void * c_VIZ_multi_masking_ctl_name(void *f_new_part_ctl);
-extern int    c_VIZ_num_multi_masking_ctl(void *f_new_part_ctl);
-extern void * c_VIZ_multi_mask_ctl(int idx, void *f_new_part_ctl);
-extern void * c_append_multi_mask_ctls(int idx, char *block_name, void *f_new_part_ctl);
-extern void * c_delete_multi_mask_ctls(int idx, void *f_new_part_ctl);
 
 extern void * set_file_fmt_items_f(void *fmt_names_c);
 
-struct f_FEM_sleeve_control{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-    
-    struct chara_ctl_item *sleeve_extension_mode_ctl;
-    struct int_ctl_item   *sleeve_level_ctl;
-    struct real_ctl_item  *sleeve_size_ctl;
-    struct chara_ctl_item *ref_vector_ctl;
-};
-
-
-struct f_new_patition_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-    
-    struct chara_ctl_item *f_repart_table_head_ctl;
-    struct chara_ctl_item *f_repart_table_fmt_ctl;
-    struct chara_ctl_item *f_partition_reference_ctl;
-    struct chara_ctl_item *f_trace_count_head_ctl;
-    struct chara_ctl_item *f_trace_count_fmt_ctl;
-    
-    struct chara_int_clist *f_ndomain_section_ctl;
-    
-    struct int_ctl_item    *f_ratio_of_grouping_ctl;
-    struct int_ctl_item    *f_sleeve_level_ctl;
-    struct real_ctl_item   *f_weight_to_previous_ctl;
-    
-    struct chara_ctl_item *f_masking_switch_ctl;
-    struct real_ctl_item  *f_masking_weight_ctl;
-    struct real_ctl_item  *f_power_of_volume_ctl;
-    
-	struct void_clist *f_mask_ctl;
-};
-
-struct f_VIZ_repartition_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	char * repart_ctl_file_name;
-    
-    struct f_platform_control *f_viz_plt;
-    struct f_FEM_mesh_FILE_ctl *f_Fmesh_ctl;
-    struct f_new_patition_ctl *f_new_part_ctl;
-    struct f_FEM_sleeve_control *f_Fsleeve_ctl;
-};
-
-
-struct f_LIC_noise_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	char * noise_ctl_file_name;
-    
-    struct chara_ctl_item *f_noise_type_ctl;
-    struct chara_ctl_item *f_noise_file_name_ctl;
-    struct chara_ctl_item *f_noise_file_format_ctl;
-    struct int_ctl_item   *f_noise_resolution_ctl;
-    struct int_ctl_item   *f_noise_stepping_ctl;
-    struct real_ctl_item  *f_noise_cube_size_ctl;
-    struct real_ctl_item  *f_noise_deltax_ctl;
-};
-
-struct f_LIC_kernel_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	char * kernel_ctl_file_name;
-    
-    struct chara_ctl_item *f_kernel_type_ctl;
-    struct int_ctl_item   *f_kernel_resolution_ctl;
-    struct real_ctl_item  *f_kernel_peak_ctl;
-    struct real_ctl_item  *f_kernel_sigma_ctl;
-    struct chara_ctl_item *f_trace_length_mode_ctl;
-    struct real_ctl_item  *f_half_length_ctl;
-    struct int_ctl_item   *f_max_trace_count_ctl;
-};
-
-struct f_LIC_masking_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-    
-    struct chara_ctl_item *f_mask_type_ctl;
-    struct chara_ctl_item *f_field_name_ctl;
-    struct chara_ctl_item *f_component_ctl;
-    struct real2_ctl_item *f_mask_range_ctl;
-    
-    void *void_panel;
-};
-
-struct f_VIZ_LIC_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-    
-	struct f_LIC_noise_ctl *f_noise_ctl;
-	struct f_LIC_kernel_ctl *f_kernel_ctl;
-	struct f_VIZ_repartition_ctl *f_repart_ctl;
-    
-	struct void_clist *f_mask_ctl;
-    
-    struct chara_ctl_item *f_LIC_field_ctl;
-	struct chara_ctl_item *f_subdomain_elapsed_dump_ctl;
-	struct chara_ctl_item *f_color_field_ctl;
-	struct chara_ctl_item *f_color_component_ctl;
-	struct chara_ctl_item *f_opacity_field_ctl;
-	struct chara_ctl_item *f_opacity_component_ctl;
-    
-	struct chara_ctl_item *f_vr_sample_mode_ctl;
-	struct real_ctl_item  *f_step_size_ctl;
-	struct chara_ctl_item *f_normalization_type_ctl;
-	struct real_ctl_item *f_normalization_value_ctl;
-};
-
-struct f_VIZ_FLINE_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-    char *fline_ctl_file_name;
-	
-    struct chara_ctl_item *f_fline_file_head_ctl;
-    struct chara_ctl_item *f_fline_output_type_ctl;
-    struct chara_ctl_item *f_fline_field_ctl;
-    struct chara_ctl_item *f_fline_color_field_ctl;
-    struct chara_ctl_item *f_fline_color_comp_ctl;
-    struct chara_clist    *f_fline_area_grp_ctl;
-    struct chara_ctl_item *f_starting_type_ctl;
-    struct chara_ctl_item *f_selection_type_ctl;
-    struct chara_ctl_item *f_line_direction_ctl;
-    struct chara_ctl_item *f_start_surf_grp_ctl;
-    struct int_ctl_item   *f_num_fieldline_ctl;
-    struct int_ctl_item   *f_max_line_stepping_ctl;
-    struct real3_clist    *f_seed_point_ctl;
-    struct int2_clist     *f_seed_surface_ctl;
-    
-    void *void_panel;
-};
-
-struct f_VIZ_LIC_PVR_ctl{
-    int f_iflag[1];
-    char *lic_ctl_file_name;
-	struct f_VIZ_PVR_ctl *f_lic_pvr_ctl;
-	struct f_VIZ_LIC_ctl *f_lic_lic_ctl;
-    
-    void *void_panel;
-};
-
-struct f_MHD_viz_ctls{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	int f_num_psf_ctl;
-	struct void_clist *f_psf_ctls;
-	
-	int f_num_iso_ctl;
-	struct void_clist *f_iso_ctls;
-	
-	int f_num_map_ctl;
-	struct void_clist *f_map_ctls;
-	
-	int f_num_pvr_ctl;
-	struct void_clist *f_pvr_ctls;
-	
-	int f_num_lic_ctl;
-	struct void_clist *f_lic_ctls;
-	
-	int f_num_fline_ctl;
-	struct void_clist *f_fline_ctls;
-	
-	struct f_VIZ_repartition_ctl *f_repart_ctl;
-};
-
-struct f_MHD_crust_filter_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct int_ctl_item *f_crust_truncation_ctl;
-};
-
-struct f_MHD_zm_ctls{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct f_MHD_crust_filter_ctl *f_crust_filter_ctl;
-	struct void_clist * f_zm_psf_ctls;
-	struct void_clist * f_zRMS_psf_ctls;
-	struct void_clist * f_zm_map_ctls;
-	struct void_clist * f_zRMS_map_ctls;
-};
-
-struct f_MHD_node_monitor_ctl{
-	void * f_self;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct real3_clist * f_xx_4_monitor_ctl;
-	struct int2_clist * f_node_4_monitor_ctl;
-	struct chara_clist * f_group_4_monitor_ctl;
-};
-
-
-struct f_MHD_control{
-	void * f_self;
-	void * f_addition;
-	int * f_iflag;
-	
-	char * c_block_name;
-	
-	struct f_platform_control *f_plt;
-	struct f_platform_control * f_org_plt;
-	struct f_platform_control * f_new_plt;
-	struct f_MHD_sph_shell_control * f_psph_ctl;
-	struct f_MHD_model_control *f_model_ctl;
-	struct f_MHD_control_ctls * f_smctl_ctl;
-	struct f_MHD_sph_monitor_ctls * f_smonitor_ctl;
-	struct f_MHD_node_monitor_ctl * f_nmtr_ctl;
-	
-	struct f_MHD_viz_ctls * f_viz_ctls;
-	struct f_MHD_zm_ctls * f_zm_ctls;
-};
 
 
 struct MAP_GTK_widgets{
@@ -513,13 +85,21 @@ struct MAP_GTK_widgets{
     GtkWidget * map_area_view;
 };
 
+struct pvr_area_widgets{
+    GtkWidget *f_pvr_area_tree;
+    GtkWidget *f_surf_enhanse_tree;
+};
+
 struct PVR_GTK_widgets{
     struct chara_int2_clist *label_field_list;
     struct chara2_int_clist *label_dir_list;
     struct colormap_view *color_vws;
     
+    struct block_array_widgets *pvr_psfs_Wgts;
+    struct block_array_widgets *pvr_isos_Wgts;
+    struct pvr_area_widgets * pvr_areaWgts;
+    
     GtkWidget * lighting_tree_view;
-    GtkWidget * psf_area_view;
 };
 
 struct LIC_GTK_widgets{
@@ -538,21 +118,6 @@ struct FLINE_GTK_widgets{
     GtkWidget * fline_area_grp_view;
     GtkWidget * f_seed_point_vws;
     GtkWidget * f_seed_surface_vws;
-};
-
-struct VIZ_masking_GTK_widgets{
-    struct chara_int2_clist *label_field_list;
-    struct chara2_int_clist *label_dir_list;
-};
-
-struct VIZ_repartition_widgets{
-    struct chara_int2_clist *label_field_list;
-    struct chara_clist      *label_file_format_list;
-    
-    struct block_array_widgets *masking_Wgts;
-    
-    GtkWidget * fline_area_grp_view;
-    GtkWidget * f_ndomain_section_tree;
 };
 
 struct main_widgets{
@@ -625,689 +190,7 @@ boolean_to_text (GBinding *binding,
 	return TRUE;
 }
 */
-struct f_FEM_sleeve_control * init_f_FEM_sleeve_control(void *(*c_load_self)(void *f_parent),
-                                                        void *f_parent)
-{
-    struct f_FEM_sleeve_control *f_Fsleeve_ctl
-            = (struct f_FEM_sleeve_control *) malloc(sizeof(struct f_FEM_sleeve_control));
-    if(f_Fsleeve_ctl == NULL){
-        printf("malloc error for f_FEM_sleeve_control\n");
-        exit(0);
-    };
-    f_Fsleeve_ctl->f_self =  c_load_self(f_parent);
-    
-    f_Fsleeve_ctl->f_iflag =   (int *) c_FEM_sleeve_ctl_iflag(f_Fsleeve_ctl->f_self);
-    char *f_block_name =   (char *) c_FEM_sleeve_ctl_block_name(f_Fsleeve_ctl->f_self);
-    f_Fsleeve_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_Fsleeve_ctl->sleeve_extension_mode_ctl = init_f_ctl_chara_item(c_FEM_sleeve_extension_mode_ctl,
-                                                                     f_Fsleeve_ctl->f_self);
-    f_Fsleeve_ctl->sleeve_level_ctl =          init_f_ctl_int_item(c_FEM_sleeve_sleeve_level_ctl,
-                                                                   f_Fsleeve_ctl->f_self);
-    f_Fsleeve_ctl->sleeve_size_ctl =           init_f_ctl_real_item(c_FEM_sleeve_sleeve_size_ctl,
-                                                                    f_Fsleeve_ctl->f_self);
-    f_Fsleeve_ctl->ref_vector_ctl =            init_f_ctl_chara_item(c_FEM_sleeve_ref_vector_ctl,
-                                                                     f_Fsleeve_ctl->f_self);
-    return f_Fsleeve_ctl;
-}
 
-void dealloc_f_FEM_sleeve_control(struct f_FEM_sleeve_control *f_Fsleeve_ctl){
-    dealloc_chara_ctl_item_c(f_Fsleeve_ctl->sleeve_extension_mode_ctl);
-    dealloc_int_ctl_item_c(f_Fsleeve_ctl->sleeve_level_ctl);
-    dealloc_real_ctl_item_c(f_Fsleeve_ctl->sleeve_size_ctl);
-    dealloc_chara_ctl_item_c(f_Fsleeve_ctl->ref_vector_ctl);
-    
-    free(f_Fsleeve_ctl->c_block_name);
-    f_Fsleeve_ctl->f_iflag = NULL;
-    f_Fsleeve_ctl->f_self = NULL;
-    free(f_Fsleeve_ctl);
-    return;
-}
-
-struct f_LIC_masking_ctl * init_f_LIC_masking_ctl(int idx, void *f_parent)
-{
-    struct f_LIC_masking_ctl *f_mask_ctl
-            = (struct f_LIC_masking_ctl *) malloc(sizeof(struct f_LIC_masking_ctl));
-    if(f_mask_ctl == NULL){
-        printf("malloc error for f_LIC_masking_ctl\n");
-        exit(0);
-    };
-    f_mask_ctl->f_self =  c_VIZ_multi_mask_ctl(idx, f_parent);
-    
-    f_mask_ctl->f_iflag =   (int *) c_masking_fld_ctl_iflag(f_mask_ctl->f_self);
-    char *f_block_name =   (char *) c_masking_fld_ctl_block_name(f_mask_ctl->f_self);
-    f_mask_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_mask_ctl->f_mask_type_ctl =  init_f_ctl_chara_item(c_masking_fld_mask_type_ctl, f_mask_ctl->f_self);
-    f_mask_ctl->f_field_name_ctl = init_f_ctl_chara_item(c_masking_fld_field_name_ctl, f_mask_ctl->f_self);
-    f_mask_ctl->f_component_ctl =  init_f_ctl_chara_item(c_masking_fld_component_ctl, f_mask_ctl->f_self);
-    f_mask_ctl->f_mask_range_ctl = init_f_ctl_r2_item(c_masking_fld_mask_range_ctl, f_mask_ctl->f_self);
-    return f_mask_ctl;
-}
-
-void dealloc_f_LIC_masking_ctl(struct f_LIC_masking_ctl *f_mask_ctl){
-    dealloc_chara_ctl_item_c(f_mask_ctl->f_mask_type_ctl);
-    dealloc_chara_ctl_item_c(f_mask_ctl->f_field_name_ctl);
-    dealloc_chara_ctl_item_c(f_mask_ctl->f_component_ctl);
-    dealloc_real2_ctl_item_c(f_mask_ctl->f_mask_range_ctl);
-    
-    free(f_mask_ctl->c_block_name);
-    f_mask_ctl->f_iflag = NULL;
-    f_mask_ctl->f_self = NULL;
-    free(f_mask_ctl);
-    return;
-}
-
-struct f_new_patition_ctl * init_f_new_patition_ctl(void *(*c_load_self)(void *f_parent),
-                                                    void *f_parent)
-{
-    struct f_new_patition_ctl *f_new_part_ctl
-            = (struct f_new_patition_ctl *) malloc(sizeof(struct f_new_patition_ctl));
-    if(f_new_part_ctl == NULL){
-        printf("malloc error for f_new_patition_ctl\n");
-        exit(0);
-    };
-    f_new_part_ctl->f_self =  c_load_self(f_parent);
-    
-    f_new_part_ctl->f_iflag =   (int *) c_viz_repart_ctl_iflag(f_new_part_ctl->f_self);
-    char *f_block_name =   (char *) c_viz_repart_ctl_block_name(f_new_part_ctl->f_self);
-    f_new_part_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_new_part_ctl->f_repart_table_head_ctl =   init_f_ctl_chara_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_repart_table_fmt_ctl =    init_f_ctl_chara_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_partition_reference_ctl = init_f_ctl_chara_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_trace_count_head_ctl =    init_f_ctl_chara_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_trace_count_fmt_ctl =     init_f_ctl_chara_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_ndomain_section_ctl =     init_f_ctl_ci_array(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_ratio_of_grouping_ctl =   init_f_ctl_int_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_sleeve_level_ctl =        init_f_ctl_int_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_weight_to_previous_ctl =  init_f_ctl_real_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_masking_switch_ctl =      init_f_ctl_chara_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_masking_weight_ctl =      init_f_ctl_real_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    f_new_part_ctl->f_power_of_volume_ctl =     init_f_ctl_real_item(c_LIC_noise_type_ctl,
-                                                                    f_new_part_ctl->f_self);
-    
-    void *f_mul_maksing = c_new_repart_mul_masking_ctl(f_new_part_ctl->f_self);
-    f_block_name = c_VIZ_multi_masking_ctl_name(f_mul_maksing);
-    f_new_part_ctl->f_mask_ctl = init_void_clist(strngcopy_from_f(f_block_name));
-	f_new_part_ctl->f_mask_ctl->f_parent = f_mul_maksing;
-    int i;
-    for(i=0;i<c_VIZ_num_multi_masking_ctl(f_mul_maksing);i++){
-        void *f_ctl_tmp = init_f_LIC_masking_ctl(i, f_mul_maksing);
-		append_void_clist((void *) f_ctl_tmp, f_new_part_ctl->f_mask_ctl);
-    };
-    
-    return f_new_part_ctl;
-}
-
-void dealloc_f_new_patition_ctl(struct f_new_patition_ctl *f_new_part_ctl){
-    dealloc_chara_ctl_item_c(f_new_part_ctl->f_repart_table_head_ctl);
-    dealloc_chara_ctl_item_c(f_new_part_ctl->f_repart_table_fmt_ctl);
-    dealloc_chara_ctl_item_c(f_new_part_ctl->f_partition_reference_ctl);
-    dealloc_chara_ctl_item_c(f_new_part_ctl->f_trace_count_head_ctl);
-    dealloc_chara_ctl_item_c(f_new_part_ctl->f_trace_count_fmt_ctl);
-    
-    dealloc_chara_int_clist(f_new_part_ctl->f_ndomain_section_ctl);
-    dealloc_int_ctl_item_c(f_new_part_ctl->f_ratio_of_grouping_ctl);
-    dealloc_int_ctl_item_c(f_new_part_ctl->f_sleeve_level_ctl);
-    dealloc_real_ctl_item_c(f_new_part_ctl->f_weight_to_previous_ctl);
-    dealloc_chara_ctl_item_c(f_new_part_ctl->f_masking_switch_ctl);
-    dealloc_real_ctl_item_c(f_new_part_ctl->f_masking_weight_ctl);
-    dealloc_real_ctl_item_c(f_new_part_ctl->f_power_of_volume_ctl);
-    
-    int i;
-    for(i=0;i<count_void_clist(f_new_part_ctl->f_mask_ctl);i++){
-        void *f_ctl_tmp = void_clist_at_index(i, f_new_part_ctl->f_mask_ctl);
-		dealloc_f_LIC_masking_ctl((struct f_LIC_masking_ctl *) f_ctl_tmp);
-    };
-    dealloc_void_clist(f_new_part_ctl->f_mask_ctl);
-    
-    free(f_new_part_ctl->c_block_name);
-    f_new_part_ctl->f_iflag = NULL;
-    f_new_part_ctl->f_self = NULL;
-    free(f_new_part_ctl);
-    return;
-}
-
-
-struct f_VIZ_repartition_ctl * init_f_VIZ_repartition_ctl(char *ctl_file_name,
-                                                          void *(*c_load_self)(void *f_parent),
-                                                          void *f_parent)
-{
-    struct f_VIZ_repartition_ctl *f_repart_ctl
-            = (struct f_VIZ_repartition_ctl *) malloc(sizeof(struct f_VIZ_repartition_ctl));
-    if(f_repart_ctl == NULL){
-        printf("malloc error for f_VIZ_repartition_ctl\n");
-        exit(0);
-    };
-    f_repart_ctl->f_self =  c_load_self(f_parent);
-    
-    f_repart_ctl->f_iflag =   (int *) c_viz_repart_ctl_iflag(f_repart_ctl->f_self);
-    char *f_block_name =   (char *) c_viz_repart_ctl_block_name(f_repart_ctl->f_self);
-    f_repart_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    f_repart_ctl->repart_ctl_file_name = ctl_file_name;
-    
-    f_repart_ctl->f_viz_plt =    init_f_platform_control(c_viz_repart_viz_plt_ctl,
-                                                         f_repart_ctl->f_self);
-    f_repart_ctl->f_Fmesh_ctl =   init_f_FEM_mesh_FILE_ctl(c_viz_repart_Fmesh_ctl,
-                                                           f_repart_ctl->f_self);
-    f_repart_ctl->f_new_part_ctl = init_f_new_patition_ctl(c_viz_repart_new_part_ctl,
-                                                           f_repart_ctl->f_self);
-    f_repart_ctl->f_Fsleeve_ctl =   init_f_FEM_sleeve_control(c_viz_repart_Fsleeve_ctl,
-                                                              f_repart_ctl->f_self);
-    return f_repart_ctl;
-}
-
-
-void dealloc_f_VIZ_repartition_ctl(struct f_VIZ_repartition_ctl *f_repart_ctl){
-    dealloc_f_platform_control(f_repart_ctl->f_viz_plt);
-    dealloc_f_FEM_mesh_FILE_ctl(f_repart_ctl->f_Fmesh_ctl);
-    dealloc_f_new_patition_ctl(f_repart_ctl->f_new_part_ctl);
-    dealloc_f_FEM_sleeve_control(f_repart_ctl->f_Fsleeve_ctl);
-    
-    free(f_repart_ctl->repart_ctl_file_name);
-    free(f_repart_ctl->c_block_name);
-    f_repart_ctl->f_iflag = NULL;
-    f_repart_ctl->f_self = NULL;
-    free(f_repart_ctl);
-    return;
-}
-
-
-struct f_LIC_noise_ctl * init_f_LIC_noise_ctl(char *ctl_file_name,
-                                               void *(*c_load_self)(void *f_parent),
-                                               void *f_parent)
-{
-    struct f_LIC_noise_ctl *f_noise_ctl
-            = (struct f_LIC_noise_ctl *) malloc(sizeof(struct f_LIC_noise_ctl));
-    if(f_noise_ctl == NULL){
-        printf("malloc error for f_LIC_noise_ctl\n");
-        exit(0);
-    };
-    f_noise_ctl->f_self =  c_load_self(f_parent);
-    
-    f_noise_ctl->f_iflag =   (int *) c_LIC_noise_ctl_iflag(f_noise_ctl->f_self);
-    char *f_block_name =   (char *) c_LIC_noise_ctl_block_name(f_noise_ctl->f_self);
-    f_noise_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    f_noise_ctl->noise_ctl_file_name = ctl_file_name;
-    
-    f_noise_ctl->f_noise_type_ctl =        init_f_ctl_chara_item(c_LIC_noise_type_ctl,
-                                                                 f_noise_ctl->f_self);
-    f_noise_ctl->f_noise_file_name_ctl =   init_f_ctl_chara_item(c_LIC_noise_file_name_ctl,
-                                                                f_noise_ctl->f_self);
-    f_noise_ctl->f_noise_file_format_ctl = init_f_ctl_chara_item(c_LIC_noise_file_format_ctl,
-                                                                 f_noise_ctl->f_self);
-    f_noise_ctl->f_noise_resolution_ctl =  init_f_ctl_int_item(c_LIC_noise_resolution_ctl,
-                                                               f_noise_ctl->f_self);
-    f_noise_ctl->f_noise_stepping_ctl =    init_f_ctl_int_item(c_LIC_noise_stepping_ctl,
-                                                               f_noise_ctl->f_self);
-    f_noise_ctl->f_noise_cube_size_ctl =   init_f_ctl_real_item(c_LIC_noise_cube_size_ctl, 
-                                                                f_noise_ctl->f_self);
-    f_noise_ctl->f_noise_deltax_ctl =      init_f_ctl_real_item(c_LIC_noise_deltax_ctl, 
-                                                                f_noise_ctl->f_self);
-    return f_noise_ctl;
-}
-
-
-void dealloc_f_LIC_noise_ctl(struct f_LIC_noise_ctl *f_noise_ctl){
-    dealloc_chara_ctl_item_c(f_noise_ctl->f_noise_type_ctl);
-    dealloc_chara_ctl_item_c(f_noise_ctl->f_noise_file_name_ctl);
-    dealloc_chara_ctl_item_c(f_noise_ctl->f_noise_file_format_ctl);
-    dealloc_int_ctl_item_c(f_noise_ctl->f_noise_resolution_ctl);
-    dealloc_int_ctl_item_c(f_noise_ctl->f_noise_stepping_ctl);
-    dealloc_real_ctl_item_c(f_noise_ctl->f_noise_cube_size_ctl);
-    dealloc_real_ctl_item_c(f_noise_ctl->f_noise_deltax_ctl);
-    
-    free(f_noise_ctl->noise_ctl_file_name);
-    free(f_noise_ctl->c_block_name);
-    f_noise_ctl->f_iflag = NULL;
-    f_noise_ctl->f_self = NULL;
-    free(f_noise_ctl);
-    return;
-}
-
-
-struct f_LIC_kernel_ctl * init_f_LIC_kernel_ctl(char *ctl_file_name,
-                                                void *(*c_load_self)(void *f_parent),
-                                                void *f_parent)
-{
-    struct f_LIC_kernel_ctl *f_kernel_ctl
-            = (struct f_LIC_kernel_ctl *) malloc(sizeof(struct f_LIC_kernel_ctl));
-    if(f_kernel_ctl == NULL){
-        printf("malloc error for f_LIC_kernel_ctl\n");
-        exit(0);
-    };
-    f_kernel_ctl->f_self =  c_load_self(f_parent);
-    
-    f_kernel_ctl->f_iflag =   (int *) c_LIC_kernel_ctl_iflag(f_kernel_ctl->f_self);
-    char *f_block_name =   (char *) c_LIC_kernel_ctl_block_name(f_kernel_ctl->f_self);
-    f_kernel_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    f_kernel_ctl->kernel_ctl_file_name = ctl_file_name;
-    
-    f_kernel_ctl->f_kernel_type_ctl =       init_f_ctl_chara_item(c_LIC_kernel_type_ctl,
-                                                                  f_kernel_ctl->f_self);
-    f_kernel_ctl->f_kernel_resolution_ctl = init_f_ctl_int_item(c_LIC_kernel_resolution_ctl,
-                                                                f_kernel_ctl->f_self);
-    f_kernel_ctl->f_kernel_peak_ctl =       init_f_ctl_real_item(c_LIC_kernel_peak_ctl,
-                                                                 f_kernel_ctl->f_self);
-    f_kernel_ctl->f_kernel_sigma_ctl =      init_f_ctl_real_item(c_LIC_kernel_kernel_sigma_ctl,
-                                                                 f_kernel_ctl->f_self);
-    f_kernel_ctl->f_trace_length_mode_ctl = init_f_ctl_chara_item(c_LIC_kernel_trace_len_mod_ctl,
-                                                                  f_kernel_ctl->f_self);
-    f_kernel_ctl->f_half_length_ctl =       init_f_ctl_real_item(c_LIC_kernel_half_length_ctl, 
-                                                                 f_kernel_ctl->f_self);
-    f_kernel_ctl->f_max_trace_count_ctl =   init_f_ctl_int_item(c_LIC_kernel_max_trace_cnt_ctl, 
-                                                                f_kernel_ctl->f_self);
-    return f_kernel_ctl;
-}
-
-void dealloc_f_LIC_kernel_ctl(struct f_LIC_kernel_ctl *f_kernel_ctl){
-    dealloc_chara_ctl_item_c(f_kernel_ctl->f_kernel_type_ctl);
-    dealloc_int_ctl_item_c(f_kernel_ctl->f_kernel_resolution_ctl);
-    dealloc_real_ctl_item_c(f_kernel_ctl->f_kernel_peak_ctl);
-    dealloc_real_ctl_item_c(f_kernel_ctl->f_kernel_sigma_ctl);
-    dealloc_chara_ctl_item_c(f_kernel_ctl->f_trace_length_mode_ctl);
-    dealloc_real_ctl_item_c(f_kernel_ctl->f_half_length_ctl);
-    dealloc_int_ctl_item_c(f_kernel_ctl->f_max_trace_count_ctl);
-    
-    free(f_kernel_ctl->kernel_ctl_file_name);
-    free(f_kernel_ctl->c_block_name);
-    f_kernel_ctl->f_iflag = NULL;
-    f_kernel_ctl->f_self = NULL;
-    free(f_kernel_ctl);
-    return;
-}
-
-struct f_VIZ_LIC_ctl * init_f_VIZ_LIC_ctl(int idx, void *f_parent)
-{
-	struct f_VIZ_LIC_ctl *f_lic_lic_ctl 
-			= (struct f_VIZ_LIC_ctl *) malloc(sizeof(struct f_VIZ_LIC_ctl));
-	if(f_lic_lic_ctl == NULL){
-		printf("malloc error for f_VIZ_LIC_ctl\n");
-		exit(0);
-	};
-	
-	f_lic_lic_ctl->f_self =  c_lic_render_ctls_lic_ctl(idx, f_parent);
-	
-	f_lic_lic_ctl->f_iflag =   (int *) c_VIZ_LIC_ctl_iflag(f_lic_lic_ctl->f_self);
-	char *f_block_name =   (char *) c_VIZ_LIC_ctl_block_name(f_lic_lic_ctl->f_self);
-	f_lic_lic_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_block_name = (char *) c_VIZ_LIC_fname_noise_ctl(f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_noise_ctl = init_f_LIC_noise_ctl(strngcopy_from_f(f_block_name), 
-                                                      c_VIZ_LIC_noise_ctl,
-                                                      f_lic_lic_ctl->f_self);
-    
-    f_block_name = (char *) c_VIZ_LIC_fname_kernel_ctl(f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_kernel_ctl = init_f_LIC_kernel_ctl(strngcopy_from_f(f_block_name), 
-                                                        c_VIZ_LIC_kernel_ctl, 
-                                                        f_lic_lic_ctl->f_self);
-    
-    f_block_name = (char *) c_VIZ_LIC_fname_vol_repart_ctl(f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_repart_ctl = init_f_VIZ_repartition_ctl(strngcopy_from_f(f_block_name),
-                                                             c_VIZ_LIC_repartition_ctl,
-                                                             f_lic_lic_ctl->f_self);
-    
-    void *f_mul_maksing = c_VIZ_LIC_mul_masking_ctl(f_lic_lic_ctl->f_self);
-    f_block_name = c_VIZ_multi_masking_ctl_name(f_mul_maksing);
-    f_lic_lic_ctl->f_mask_ctl = init_void_clist(strngcopy_from_f(f_block_name));
-	f_lic_lic_ctl->f_mask_ctl->f_parent = f_mul_maksing;
-    int i;
-    for(i=0;i<c_VIZ_num_multi_masking_ctl(f_mul_maksing);i++){
-        void *f_ctl_tmp = init_f_LIC_masking_ctl(i, f_mul_maksing);
-		append_void_clist((void *) f_ctl_tmp, f_lic_lic_ctl->f_mask_ctl);
-    };
-    
-    f_lic_lic_ctl->f_LIC_field_ctl = init_f_ctl_chara_item(c_VIZ_LIC_LIC_field_ctl,
-                                                           f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_subdomain_elapsed_dump_ctl = init_f_ctl_chara_item(c_VIZ_LIC_pe_elapsed_dump_ctl,
-                                                                        f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_color_field_ctl =       init_f_ctl_chara_item(c_VIZ_LIC_color_field_ctl,
-                                                                   f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_color_component_ctl =   init_f_ctl_chara_item(c_VIZ_LIC_color_comp_ctl,
-                                                                   f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_opacity_field_ctl =     init_f_ctl_chara_item(c_VIZ_LIC_opacity_field_ctl,
-                                                                   f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_opacity_component_ctl = init_f_ctl_chara_item(c_VIZ_LIC_opacity_comp_ctl,
-                                                                   f_lic_lic_ctl->f_self);
-    
-    f_lic_lic_ctl->f_vr_sample_mode_ctl = init_f_ctl_chara_item(c_VIZ_LIC_vr_sample_mode_ctl,
-                                                                f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_step_size_ctl =      init_f_ctl_real_item(c_VIZ_LIC_step_size_ctl,
-                                                               f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_normalization_type_ctl =   init_f_ctl_chara_item(c_VIZ_LIC_normalize_type_ctl,
-                                                                      f_lic_lic_ctl->f_self);
-    f_lic_lic_ctl->f_normalization_value_ctl = init_f_ctl_real_item(c_VIZ_LIC_normalize_value_ctl,
-                                                                    f_lic_lic_ctl->f_self);
-    return f_lic_lic_ctl;
-};
-
-struct f_VIZ_LIC_ctl * dealloc_f_VIZ_LIC_ctl(void *void_in)
-{
-    struct f_VIZ_LIC_ctl *f_lic_lic_ctl = (struct f_VIZ_LIC_ctl *) void_in;
-    
-    f_lic_lic_ctl->f_self = NULL;
-	free(f_lic_lic_ctl->c_block_name);
-    
-    dealloc_f_LIC_noise_ctl(f_lic_lic_ctl->f_noise_ctl);
-    dealloc_f_LIC_kernel_ctl(f_lic_lic_ctl->f_kernel_ctl);
-    dealloc_f_VIZ_repartition_ctl(f_lic_lic_ctl->f_repart_ctl);
-    
-    int i;
-    for(i=0;i<count_void_clist(f_lic_lic_ctl->f_mask_ctl);i++){
-        void *f_ctl_tmp = void_clist_at_index(i, f_lic_lic_ctl->f_mask_ctl);
-		dealloc_f_LIC_masking_ctl((struct f_LIC_masking_ctl *) f_ctl_tmp);
-    };
-    dealloc_void_clist(f_lic_lic_ctl->f_mask_ctl);
-    
-    dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_LIC_field_ctl);
-    dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_subdomain_elapsed_dump_ctl);
-    dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_color_field_ctl);
-    dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_color_component_ctl);
-    dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_opacity_field_ctl);
-    dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_opacity_component_ctl);
-    dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_vr_sample_mode_ctl);
-    dealloc_real_ctl_item_c(f_lic_lic_ctl->f_step_size_ctl);
-    dealloc_chara_ctl_item_c(f_lic_lic_ctl->f_normalization_type_ctl);
-    dealloc_real_ctl_item_c(f_lic_lic_ctl->f_normalization_value_ctl);
-    
-    return f_lic_lic_ctl;
-};
-
-struct f_VIZ_LIC_PVR_ctl * init_f_VIZ_LIC_PVR_ctl(int idx, void *f_parent)
-{
-	struct f_VIZ_LIC_PVR_ctl *f_lic_ctl
-			= (struct f_VIZ_LIC_PVR_ctl *) malloc(sizeof(struct f_VIZ_LIC_PVR_ctl));
-	if(f_lic_ctl == NULL){
-		printf("malloc error for f_VIZ_LIC_PVR_ctl\n");
-		exit(0);
-	};
-    
-    char *f_block_name = c_lic_render_ctls_fname(idx, f_parent);
-    f_lic_ctl->lic_ctl_file_name =  strngcopy_from_f(f_block_name);
-    f_lic_ctl->f_lic_pvr_ctl = init_f_VIZ_PVR_ctl(c_lic_render_ctls_pvr_ctl,
-                                                  idx, f_parent);
-    f_lic_ctl->f_lic_lic_ctl =  init_f_VIZ_LIC_ctl(idx, f_parent);
-    return f_lic_ctl;
-};
-void dealloc_f_VIZ_LIC_PVR_ctl(struct f_VIZ_LIC_PVR_ctl *f_lic_ctl)
-{
-    free(f_lic_ctl->lic_ctl_file_name);
-    f_lic_ctl->f_lic_pvr_ctl = dealloc_f_VIZ_PVR_ctl(f_lic_ctl->f_lic_pvr_ctl);
-    f_lic_ctl->f_lic_lic_ctl =  dealloc_f_VIZ_LIC_ctl(f_lic_ctl->f_lic_lic_ctl);
-    free(f_lic_ctl);
-    return;
-};
-
-struct void_clist * init_f_VIZ_lic_ctls(void *f_parent, int *f_num_lic_ctl)
-{
-    char *f_block_name =   (char *) c_lic_render_ctls_block_name(f_parent);
-	struct void_clist *f_lic_ctls = init_void_clist(strngcopy_from_f(f_block_name));
-	f_lic_ctls->f_parent = f_parent;
-	*f_num_lic_ctl = c_lic_render_ctls_num_lic_ctl(f_lic_ctls->f_parent);
-	
-	int i;
-	for(i=0;i<*f_num_lic_ctl;i++){
-        struct f_VIZ_LIC_PVR_ctl *f_ctl_tmp = init_f_VIZ_LIC_PVR_ctl(i, f_lic_ctls->f_parent);
-		append_void_clist((void *) f_ctl_tmp, f_lic_ctls);
-	}
-	return f_lic_ctls;
-}
-
-struct f_VIZ_FLINE_ctl * init_f_VIZ_FLINE_ctl(int idx, void *f_parent)
-{
-	struct f_VIZ_FLINE_ctl *f_fline_ctl 
-			= (struct f_VIZ_FLINE_ctl *) malloc(sizeof(struct f_VIZ_FLINE_ctl));
-	if(f_fline_ctl == NULL){
-		printf("malloc error for f_VIZ_FLINE_ctl\n");
-		exit(0);
-	};
-	
-    char *f_block_name = (char *) c_fline_ctls_fname(idx, f_parent);
-    f_fline_ctl->fline_ctl_file_name =  strngcopy_from_f(f_block_name);
-	f_fline_ctl->f_self =  c_fline_ctls_fline_ctl(idx, f_parent);
-	
-	f_fline_ctl->f_iflag =   (int *) c_VIZ_FLINE_ctl_iflag(f_fline_ctl->f_self);
-	f_block_name =   (char *) c_VIZ_FLINE_ctl_block_name(f_fline_ctl->f_self);
-	f_fline_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_fline_ctl->f_fline_file_head_ctl =   init_f_ctl_chara_item(c_VIZ_FLINE_file_head_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_output_type_ctl = init_f_ctl_chara_item(c_VIZ_FLINE_output_type_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_field_ctl =       init_f_ctl_chara_item(c_VIZ_FLINE_field_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_color_field_ctl = init_f_ctl_chara_item(c_VIZ_FLINE_color_field_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_color_comp_ctl =  init_f_ctl_chara_item(c_VIZ_FLINE_color_comp_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_fline_area_grp_ctl =    init_f_ctl_chara_array(c_VIZ_FLINE_area_grp_ctl,
-																  f_fline_ctl->f_self);
-    f_fline_ctl->f_starting_type_ctl =     init_f_ctl_chara_item(c_VIZ_FLINE_starting_type_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_selection_type_ctl =    init_f_ctl_chara_item(c_VIZ_FLINE_selection_type_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_line_direction_ctl =    init_f_ctl_chara_item(c_VIZ_FLINE_line_direction_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_start_surf_grp_ctl =    init_f_ctl_chara_item(c_VIZ_FLINE_start_surf_grp_ctl,
-																 f_fline_ctl->f_self);
-    f_fline_ctl->f_num_fieldline_ctl =     init_f_ctl_int_item(c_VIZ_FLINE_num_fieldline_ctl,
-															   f_fline_ctl->f_self);
-    f_fline_ctl->f_max_line_stepping_ctl = init_f_ctl_int_item(c_VIZ_FLINE_max_line_step_ctl,
-															   f_fline_ctl->f_self);
-    f_fline_ctl->f_seed_point_ctl =        init_f_ctl_r3_array(c_VIZ_FLINE_seed_point_ctl,
-															   f_fline_ctl->f_self);
-    f_fline_ctl->f_seed_surface_ctl =      init_f_ctl_i2_array(c_VIZ_FLINE_seed_surface_ctl,
-															   f_fline_ctl->f_self);
-	return f_fline_ctl;
-}
-
-void dealloc_f_VIZ_FLINE_ctl(struct f_VIZ_FLINE_ctl *f_fline_ctl)
-{
-	f_fline_ctl->f_self = NULL;
-    free(f_fline_ctl->fline_ctl_file_name);
-	free(f_fline_ctl->c_block_name);
-    
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_file_head_ctl);
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_output_type_ctl);
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_field_ctl);
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_color_field_ctl);
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_fline_color_comp_ctl);
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_starting_type_ctl);
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_selection_type_ctl);
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_line_direction_ctl);
-    dealloc_chara_ctl_item_c(f_fline_ctl->f_start_surf_grp_ctl);
-    dealloc_int_ctl_item_c(f_fline_ctl->f_num_fieldline_ctl);
-    dealloc_int_ctl_item_c(f_fline_ctl->f_max_line_stepping_ctl);
-    dealloc_chara_clist(f_fline_ctl->f_fline_area_grp_ctl);
-    dealloc_real3_clist(f_fline_ctl->f_seed_point_ctl);
-    dealloc_int2_clist(f_fline_ctl->f_seed_surface_ctl);
-    free(f_fline_ctl);
-	return;
-}
-
-struct void_clist * init_f_VIZ_fline_ctls(void *f_parent, int *f_num_fline_ctl)
-{
-    char *f_block_name =   (char *) c_fline_ctls_block_name(f_parent);
-	struct void_clist *f_fline_ctls = init_void_clist(strngcopy_from_f(f_block_name));
-	f_fline_ctls->f_parent = f_parent;
-	*f_num_fline_ctl = c_fline_ctls_num_fline_ctl(f_fline_ctls->f_parent);
-	
-	int i;
-	for(i=0;i<*f_num_fline_ctl;i++){
-		struct f_VIZ_FLINE_ctl *f_ctl_tmp = init_f_VIZ_FLINE_ctl(i, f_fline_ctls->f_parent);
-		append_void_clist((void *) f_ctl_tmp, f_fline_ctls);
-	}
-	return f_fline_ctls;
-}
-
-
-struct void_clist * init_f_VIZ_pvr_ctls(void *f_parent, int *f_num_pvr_ctl)
-{
-    char *f_block_name =   (char *) c_pvr_render_ctls_block_name(f_parent);
-	struct void_clist *f_pvr_ctls = init_void_clist(strngcopy_from_f(f_block_name));
-	f_pvr_ctls->f_parent = f_parent;
-	*f_num_pvr_ctl = c_pvr_render_ctls_num_pvr_ctl(f_pvr_ctls->f_parent);
-	
-	int i;
-	for(i=0;i<*f_num_pvr_ctl;i++){
-		struct f_VIZ_PVR_ctl *f_ctl_tmp = init_f_VIZ_PVR_ctl(c_pvr_render_ctls_pvr_ctl,
-                                                             i, f_pvr_ctls->f_parent);
-		append_void_clist((void *) f_ctl_tmp, f_pvr_ctls);
-	}
-	return f_pvr_ctls;
-}
-
-struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
-{
-	struct f_MHD_viz_ctls *f_viz_ctls 
-			= (struct f_MHD_viz_ctls *) malloc(sizeof(struct f_MHD_viz_ctls));
-	if(f_viz_ctls == NULL){
-		printf("malloc error for f_viz_ctls\n");
-		exit(0);
-	};
-	
-	f_viz_ctls->f_self =  c_load_self(f_parent);
-	printf("f_viz_ctls->f_self %p\n", f_viz_ctls->f_self);
-	
-	f_viz_ctls->f_iflag =        (int *) c_visualizations_iflag(f_viz_ctls->f_self);
-	char *f_block_name =   (char *) c_visualizations_block_name(f_viz_ctls->f_self);
-	f_viz_ctls->c_block_name = strngcopy_from_f(f_block_name);
-	
-    f_viz_ctls->f_psf_ctls =   init_f_VIZ_psf_ctls(c_visualizations_psf_ctls(f_viz_ctls->f_self),
-                                                   &f_viz_ctls->f_num_psf_ctl);
-    f_viz_ctls->f_iso_ctls =   init_f_VIZ_iso_ctls(c_visualizations_iso_ctls(f_viz_ctls->f_self),
-                                                   &f_viz_ctls->f_num_iso_ctl);
-    f_viz_ctls->f_map_ctls =   init_f_VIZ_map_ctls(c_visualizations_map_ctls(f_viz_ctls->f_self), 
-                                                   &f_viz_ctls->f_num_map_ctl);
-    f_viz_ctls->f_pvr_ctls =   init_f_VIZ_pvr_ctls(c_visualizations_pvr_ctls(f_viz_ctls->f_self),
-                                                   &f_viz_ctls->f_num_pvr_ctl);
-    f_viz_ctls->f_lic_ctls =   init_f_VIZ_lic_ctls(c_visualizations_lic_ctls(f_viz_ctls->f_self),
-                                                   &f_viz_ctls->f_num_lic_ctl);
-    f_viz_ctls->f_fline_ctls = init_f_VIZ_fline_ctls(c_visualizations_fline_ctls(f_viz_ctls->f_self),
-                                                     &f_viz_ctls->f_num_fline_ctl);
-    
-	f_block_name = (char *) c_visualizations_fname_vrepart(f_viz_ctls->f_self);
-    f_viz_ctls->f_repart_ctl = init_f_VIZ_repartition_ctl(strngcopy_from_f(f_block_name),
-                                                          c_visualizations_repart_ctl,
-                                                          f_viz_ctls->f_self);
-	return f_viz_ctls;
-}
-
-void dealloc_f_MHD_viz_ctls(struct f_MHD_viz_ctls *f_viz_ctls){
-    return;
-}
-
-struct f_MHD_crust_filter_ctl * init_f_MHD_crust_filter_ctl(void *(*c_load_self)(void *f_parent),
-                                                            void *f_parent)
-{
-	struct f_MHD_crust_filter_ctl *f_crust_filter_ctl 
-			= (struct f_MHD_crust_filter_ctl *) malloc(sizeof(struct f_MHD_crust_filter_ctl));
-	if(f_crust_filter_ctl == NULL){
-		printf("malloc error for f_MHD_crust_filter_ctl\n");
-		exit(0);
-	};
-	
-	f_crust_filter_ctl->f_self =  c_load_self(f_parent);
-	
-	f_crust_filter_ctl->f_iflag =   (int *) c_clust_filter_ctl_iflag(f_crust_filter_ctl->f_self);
-	char *f_block_name =   (char *) c_clust_filter_ctl_block_name(f_crust_filter_ctl->f_self);
-	f_crust_filter_ctl->c_block_name = strngcopy_from_f(f_block_name);
-    
-    f_crust_filter_ctl->f_crust_truncation_ctl = init_f_ctl_int_item(c_clust_filter_ltr_ctl,
-                                                                     f_crust_filter_ctl->f_self);
-    return f_crust_filter_ctl;
-};
-
-
-struct f_MHD_zm_ctls * init_f_MHD_zm_ctls(void *(*c_load_self)(void *f_parent), void *f_parent)
-{
-	struct f_MHD_zm_ctls *f_zm_ctls 
-			= (struct f_MHD_zm_ctls *) malloc(sizeof(struct f_MHD_zm_ctls));
-	if(f_zm_ctls == NULL){
-		printf("malloc error for f_zm_ctls\n");
-		exit(0);
-	};
-	
-	f_zm_ctls->f_self =  c_load_self(f_parent);
-	
-	f_zm_ctls->f_iflag =        (int *) c_dynamo_vizs_iflag(f_zm_ctls->f_self);
-	char *f_block_name =   (char *) c_dynamo_vizs_block_name(f_zm_ctls->f_self);
-	f_zm_ctls->c_block_name = strngcopy_from_f(f_block_name);
-	
-    f_zm_ctls->f_crust_filter_ctl = init_f_MHD_crust_filter_ctl(c_dynamo_vizs_crust_filter_ctl,
-                                                                f_zm_ctls->f_self);
-    
-    int n_single = 1;
-    f_zm_ctls->f_zm_psf_ctls =   init_f_VIZ_psf_ctls(c_dynamo_vizs_zm_psf_ctls(f_zm_ctls->f_self),
-                                                     &n_single);
-    f_zm_ctls->f_zRMS_psf_ctls = init_f_VIZ_psf_ctls(c_dynamo_vizs_zRMS_psf_ctls(f_zm_ctls->f_self),
-                                                     &n_single);
-    
-    f_zm_ctls->f_zm_map_ctls =   init_f_VIZ_map_ctls(c_dynamo_vizs_zm_map_ctls(f_zm_ctls->f_self),
-                                                     &n_single);
-    f_zm_ctls->f_zRMS_map_ctls = init_f_VIZ_map_ctls(c_dynamo_vizs_zRMS_map_ctls(f_zm_ctls->f_self),
-                                                     &n_single);
-	return f_zm_ctls;
-}
-
-struct f_MHD_node_monitor_ctl * init_f_MHD_node_monitor_ctl(void *(*c_load_self)(void *f_parent),
-															void *f_parent)
-{
-	struct f_MHD_node_monitor_ctl *f_nmtr_ctl 
-			= (struct f_MHD_node_monitor_ctl *) malloc(sizeof(struct f_MHD_node_monitor_ctl));
-	if(f_nmtr_ctl == NULL){
-		printf("malloc error for f_nmtr_ctl\n");
-		exit(0);
-	};
-	
-	f_nmtr_ctl->f_self =  c_load_self(f_parent);
-	
-	f_nmtr_ctl->f_iflag =        (int *) c_node_monitor_ctl_iflag(f_nmtr_ctl->f_self);
-	char *f_block_name =   (char *) c_node_monitor_ctl_block_name(f_nmtr_ctl->f_self);
-	f_nmtr_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-    f_nmtr_ctl->f_xx_4_monitor_ctl =    init_f_ctl_r3_array(c_node_monitor_xx_ctl,
-                                                            f_nmtr_ctl->f_self);
-    f_nmtr_ctl->f_node_4_monitor_ctl =  init_f_ctl_i2_array(c_node_monitor_node_ctl,
-                                                            f_nmtr_ctl->f_self);
-    f_nmtr_ctl->f_group_4_monitor_ctl = init_f_ctl_chara_array(c_node_monitor_group_ctl,
-                                                               f_nmtr_ctl->f_self);
-	return f_nmtr_ctl;
-}
-
-static void set_f_MHD_control(struct f_MHD_control *f_MHD_ctl)
-{
-	f_MHD_ctl->f_iflag =        (int *) c_MHD_iflag(f_MHD_ctl->f_self);
-	char *f_block_name =   (char *) c_MHD_block_name(f_MHD_ctl->f_self);
-	f_MHD_ctl->c_block_name = strngcopy_from_f(f_block_name);
-	
-	f_MHD_ctl->f_plt =          init_f_platform_control(c_MHD_plt, f_MHD_ctl->f_self);
-	f_MHD_ctl->f_org_plt =      init_f_platform_control(c_MHD_org_plt, f_MHD_ctl->f_self);
-	f_MHD_ctl->f_new_plt =      init_f_platform_control(c_MHD_new_plt, f_MHD_ctl->f_self);
-	f_block_name =              (char *) c_MHD_fname_psph(f_MHD_ctl->f_self);
-	f_MHD_ctl->f_psph_ctl =     init_f_MHD_sph_shell_ctl(strngcopy_from_f(f_block_name),
-                                                         c_MHD_psph_ctl, f_MHD_ctl->f_self);
-	f_MHD_ctl->f_model_ctl =    init_f_MHD_model_ctl(c_MHD_model_ctl, f_MHD_ctl->f_self,
-													 f_MHD_ctl->f_addition);
-	f_MHD_ctl->f_smctl_ctl =    init_f_MHD_control_ctls(c_MHD_smctl_ctl, f_MHD_ctl->f_self);
-	f_MHD_ctl->f_smonitor_ctl = init_f_MHD_sph_monitor_ctls(c_MHD_smonitor_ctl, f_MHD_ctl->f_self);
-	f_MHD_ctl->f_nmtr_ctl =     init_f_MHD_node_monitor_ctl(c_MHD_nmtr_ctl, f_MHD_ctl->f_self);
-	f_MHD_ctl->f_viz_ctls =     init_f_MHD_viz_ctls(c_MHD_viz_ctls, f_MHD_ctl->f_addition);
-	f_MHD_ctl->f_zm_ctls =      init_f_MHD_zm_ctls(c_MHD_zm_ctls, f_MHD_ctl->f_addition);
-	return;
-}
 
 
 
@@ -1707,100 +590,6 @@ static GtkWidget * draw_map_define_vbox(struct f_MAP_section_ctl *f_map_define_c
     return expand_map_def;
 };
 
-static GtkWidget * draw_viz_colormap_vbox(struct colormap_ctl_c *cmap_c, 
-                                          struct colormap_view *color_vws, 
-                                          struct chara_int2_clist *label_field_list, 
-                                          struct chara2_int_clist *label_dir_list,
-                                          GtkWidget *window){
-    GtkWidget *hbox_2 = draw_field_combobox_hbox(label_field_list, 
-                                                 cmap_c->f_lic_color_fld_ctl, window);
-    GtkWidget *hbox_3 = draw_component_combobox_hbox(label_dir_list,
-                                                     cmap_c->f_lic_color_comp_ctl, window);
-    GtkWidget *hbox_4 = draw_field_combobox_hbox(label_field_list, 
-                                                 cmap_c->f_lic_opacity_fld_ctl, window);
-    GtkWidget *hbox_5 = draw_component_combobox_hbox(label_dir_list,
-                                                     cmap_c->f_lic_opacity_comp_ctl, window);
-    
-    GtkWidget *hbox_10 = draw_real3_item_entry_hbox(cmap_c->f_background_color_ctl);
-    
-    GtkWidget *hbox_6 = draw_chara_item_entry_hbox(cmap_c->f_data_mapping_ctl);
-    GtkWidget *hbox_7 = draw_chara_item_entry_hbox(cmap_c->f_opacity_style_ctl);
-    GtkWidget *hbox_8 = draw_real_item_entry_hbox(cmap_c->f_fix_opacity_ctl);
-    
-    GtkWidget *hbox_9 =  draw_real_item_entry_hbox(cmap_c->f_range_min_ctl);
-    GtkWidget *hbox_1 = draw_real_item_entry_hbox(cmap_c->f_range_max_ctl);
-    
-    GtkWidget *vbox_cbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_4,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_5,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_7,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_8,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_9,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_10,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_1,  FALSE, FALSE, 0);
-    
-    add_pvr_colormap_list_box_2(color_vws, vbox_cbox);
-    
-    GtkWidget *expand_cmap = draw_control_block(cmap_c->c_block_name, cmap_c->f_iflag,
-                                                window, vbox_cbox);
-    return expand_cmap;
-}
-static GtkWidget * draw_viz_colorbar_vbox(struct pvr_colorbar_ctl_c *cbar_c,  GtkWidget *window){
-    
-    GtkWidget *hbox_1 = draw_chara_switch_entry_hbox(cbar_c->f_colorbar_switch_ctl);
-    GtkWidget *hbox_2 = draw_chara_switch_entry_hbox(cbar_c->f_colorbar_scale_ctl);
-    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(cbar_c->f_colorbar_position_ctl);
-    GtkWidget *hbox_4 = draw_chara_switch_entry_hbox(cbar_c->f_zeromarker_flag_ctl);
-    
-    GtkWidget *hbox_5 = draw_int_item_entry_hbox(cbar_c->f_font_size_ctl);
-    GtkWidget *hbox_6 = draw_int_item_entry_hbox(cbar_c->f_ngrid_cbar_ctl);
-    GtkWidget *hbox_7 = draw_real2_item_entry_hbox(cbar_c->f_cbar_range_ctl);
-    
-    GtkWidget *hbox_8 = draw_chara_switch_entry_hbox(cbar_c->f_axis_switch_ctl);
-    GtkWidget *hbox_9 = draw_chara_switch_entry_hbox(cbar_c->f_time_switch_ctl);
-    GtkWidget *hbox_10 = draw_chara_switch_entry_hbox(cbar_c->f_mapgrid_switch_ctl);
-    
-    GtkWidget *vbox_cbar = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_4,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_5,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_7,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_8,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_9,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cbar), hbox_10, FALSE, FALSE, 0);
-    
-    GtkWidget *expand_cbar = draw_control_block(cbar_c->c_block_name, cbar_c->f_iflag,
-                                                window, vbox_cbar);
-    return expand_cbar;
-}
-
-
-void append_viz_cmap_cbar_vbox(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
-                               struct colormap_view *color_vws, 
-                               struct chara_int2_clist *label_field_list, 
-                               struct chara2_int_clist *label_dir_list,
-                               GtkWidget *window, GtkWidget *vbox_cc){
-    GtkWidget *expand_cmap =  draw_viz_colormap_vbox(f_cmap_cbar_c->cmap_c, color_vws, 
-                                                     label_field_list, label_dir_list, window);
-    GtkWidget *expand_cbar =  draw_viz_colorbar_vbox(f_cmap_cbar_c->cbar_c, window);
-    
-    GtkWidget *label = gtk_label_new(f_cmap_cbar_c->c_block_name);
-	GtkWidget *hbox_cc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(hbox_cc), label, FALSE, TRUE, 0);
-    append_block_file_switch_hbox(f_cmap_cbar_c->cmap_ctl_file_name, hbox_cc);
-    
-    gtk_box_pack_start(GTK_BOX(vbox_cc), hbox_cc,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cc), expand_cmap,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_cc), expand_cbar,  FALSE, FALSE, 0);
-    return;
-};
-
 static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP_ctl *f_map_item, 
 											  GtkWidget *window){
     struct MAP_GTK_widgets *map_vws = (struct MAP_GTK_widgets *) f_map_item->void_panel;
@@ -1844,55 +633,139 @@ static GtkWidget * draw_viz_each_map_ctl_vbox(char *label_name, struct f_VIZ_MAP
 };
 
 
-
-static GtkWidget * draw_pvr_lighting_vbox(struct lighting_ctl_c *lighting_ctl_c,
-                                          GtkWidget *lighting_tree_view, GtkWidget *window){
-    GtkWidget *hbox_1 = draw_real_item_entry_hbox(lighting_ctl_c->f_ambient_coef_ctl);
-    GtkWidget *hbox_2 = draw_real_item_entry_hbox(lighting_ctl_c->f_diffuse_coef_ctl);
-    GtkWidget *hbox_3 = draw_real_item_entry_hbox(lighting_ctl_c->f_specular_coef_ctl);
-    GtkWidget *expand_4 = r3_list_combobox_expander(lighting_ctl_c->f_light_position_ctl,
-                                                    lighting_tree_view, window);
+GtkWidget * draw_pvr_section_vbox(char *label_name, struct f_PVR_section_ctl *f_pvr_psf_c,
+                                  GtkWidget *window){
+    struct PSF_GTK_widgets *psf_def_vws = (struct PSF_GTK_widgets *) f_pvr_psf_c->void_panel;
     
-    GtkWidget *vbox_lgt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_lgt), expand_4,  FALSE, FALSE, 0);
+    GtkWidget *hbox_1 = draw_real_item_entry_hbox(f_pvr_psf_c->f_opacity_ctl);
+    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_pvr_psf_c->f_zeroline_switch_ctl);
+    GtkWidget *expand_s =  draw_psf_def_ctl_vbox(f_pvr_psf_c->f_psf_def_c, 
+                                                 psf_def_vws, window);
     
-    GtkWidget *expand_lgt = draw_control_block_w_file_switch(lighting_ctl_c->c_block_name,
-                                                             lighting_ctl_c->f_iflag,
-                                                             lighting_ctl_c->light_ctl_file_name,
-                                                             window, vbox_lgt);
-    return expand_lgt;
+    GtkWidget *vbox_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_psf), expand_s,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_2,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_psf = draw_control_block(label_name, f_pvr_psf_c->f_iflag,
+                                               window, vbox_psf);
+    return expand_psf;
 }
 
+GtkWidget * draw_pvr_isosurface_vbox(char *label_name, struct f_PVR_isosurface_ctl *f_pvr_iso_ctl,
+                                     GtkWidget *window){
+    GtkWidget *hbox_1 = draw_real_item_entry_hbox(f_pvr_iso_ctl->f_iso_value_ctl);
+    GtkWidget *hbox_2 = draw_real_item_entry_hbox(f_pvr_iso_ctl->f_opacity_ctl);
+    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_pvr_iso_ctl->f_isosurf_type_ctl);
+    
+    GtkWidget *vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_3,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_2,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_iso = draw_control_block(label_name, f_pvr_iso_ctl->f_iflag,
+                                               window, vbox_iso);
+    return expand_iso;
+}
+
+struct f_PVR_section_ctl * init_f_PVR_sections_GTK(int idx, void *f_parent, void *void_in_gtk){
+    struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
+    struct f_PVR_section_ctl *f_pvr_psf_c = init_f_PVR_section_ctl(idx, f_parent);
+    f_pvr_psf_c->void_panel = (void *) init_PSF_GTK_widgets(f_fld_ctl->f_field_ctl);
+    return f_pvr_psf_c;
+}
+static void dealloc_f_PVR_section_GTK(void *void_ctl){
+    struct f_PVR_section_ctl *f_pvr_psf_c = (struct f_PVR_section_ctl *) void_ctl;
+    dealloc_PSF_GTK_widgets((struct PSF_GTK_widgets *) f_pvr_psf_c->void_panel);
+    dealloc_f_PVR_section_ctl(f_pvr_psf_c);
+    return;
+};
+
+static void dealloc_f_PVR_isosurface_GTK(void *void_ctl){
+    struct f_PVR_isosurface_ctl *f_pvr_iso_ctl = ((struct f_PVR_isosurface_ctl *) void_ctl);
+    dealloc_f_PVR_isosurface_ctl(f_pvr_iso_ctl);
+    return;
+};
+
+static GtkWidget * draw_pvr_plot_area_vbox(struct pvr_plot_area_ctl_c *f_area,
+                                           struct pvr_area_widgets *pvr_areaWgts, GtkWidget *window){
+    GtkWidget *expand_s1 = add_c_list_box_w_addbottun(f_area->f_pvr_area_ctl,
+                                                      pvr_areaWgts->f_pvr_area_tree);
+    GtkWidget *expand_s2 = c2r_list_text2_expander(f_area->f_surf_enhanse_ctl,
+                                                   pvr_areaWgts->f_surf_enhanse_tree, window);
+    
+    GtkWidget *vbox_area = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_area), expand_s1,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_area), expand_s2,  FALSE, FALSE, 0);
+    
+    GtkWidget *expand_area = draw_control_block(f_area->c_block_name, f_area->f_iflag,
+                                                 window, vbox_area);
+    return expand_area;
+};
 
 static GtkWidget * draw_viz_each_pvr_ctl_vbox(char *label_name, struct f_VIZ_PVR_ctl *f_pvr_item, 
 											  GtkWidget *window){
     struct PVR_GTK_widgets *pvr_vws = (struct PVR_GTK_widgets *) f_pvr_item->void_panel;
-    
+    printf("PVR_GTK_widgets in %p \n", pvr_vws);
+    int j;
+    for(j=0;j<count_void_clist(f_pvr_item->f_pvr_scts_c);j++){
+         struct f_VIZ_PSF_ctl *f_psf_ctl = void_clist_at_index(j, f_pvr_item->f_pvr_scts_c);
+         printf("%d struct PSF_GTK_widgets *psf_def_vws %p %p \n", j, f_psf_ctl, f_psf_ctl->void_panel);
+     }
+
     GtkWidget *vbox_v_pvr = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_pvr_item->f_file_head_ctl);
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_pvr_item->f_file_fmt_ctl);
-    GtkWidget *hbox_4 = draw_field_combobox_hbox(pvr_vws->label_field_list,
-                                                 f_pvr_item->f_pvr_field_ctl, window);
-    GtkWidget *hbox_5 = draw_component_combobox_hbox(pvr_vws->label_dir_list,
+    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_pvr_item->f_monitoring_ctl);
+    GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_pvr_item->f_streo_ctl);
+    GtkWidget *hbox_5 = draw_chara_item_entry_hbox(f_pvr_item->f_anaglyph_ctl);
+    GtkWidget *hbox_6 = draw_chara_item_entry_hbox(f_pvr_item->f_quilt_ctl);
+    
+    GtkWidget *hbox_7 = draw_field_combobox_hbox(pvr_vws->label_field_list,
+                                                f_pvr_item->f_pvr_field_ctl, window);
+    GtkWidget *hbox_8 = draw_component_combobox_hbox(pvr_vws->label_dir_list,
                                                      f_pvr_item->f_pvr_comp_ctl, window);
+                                                     
+    GtkWidget *hbox_9 = draw_pvr_plot_area_vbox(f_pvr_item->f_render_area_c,
+                                                pvr_vws->pvr_areaWgts, window);
     
     GtkWidget *expand_v_lgt = draw_pvr_lighting_vbox(f_pvr_item->f_light,
                                                      pvr_vws->lighting_tree_view, window);
     
+    GtkWidget *expander_psf = draw_array_block_ctl_vbox(f_pvr_item->f_pvr_scts_c,
+                                                        pvr_vws->label_field_list,
+                                                        c_append_PVR_sections_ctls,
+                                                        c_delete_PVR_sections_ctls,
+                                                        (void *) init_f_PVR_sections_GTK,
+                                                        (void *) dealloc_f_PVR_section_GTK,
+                                                        (void *) draw_pvr_section_vbox,
+                                                        pvr_vws->pvr_psfs_Wgts, window);
+    GtkWidget *expander_iso = draw_array_block_ctl_vbox(f_pvr_item->f_pvr_isos_c, NULL,
+                                                        c_append_PVR_isosurface_ctls,
+                                                        c_delete_PVR_isosurface_ctls,
+                                                        (void *) init_f_PVR_isosurface_ctl,
+                                                        (void *) dealloc_f_PVR_isosurface_GTK,
+                                                        (void *) draw_pvr_isosurface_vbox,
+                                                        pvr_vws->pvr_isos_Wgts, window);
+    
     gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_1,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_2,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_3,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_4,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_5,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_6,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_7,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_8,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), hbox_9,  FALSE, FALSE, 0);
     
     append_viz_cmap_cbar_vbox(f_pvr_item->f_cmap_cbar_c, pvr_vws->color_vws, 
                               pvr_vws->label_field_list, pvr_vws->label_dir_list, 
                               window, vbox_v_pvr);
     
     gtk_box_pack_start(GTK_BOX(vbox_v_pvr), expand_v_lgt,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), expander_psf,  FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_v_pvr), expander_iso,  FALSE, FALSE, 0);
     
     
     GtkWidget *expand_v_pwr = draw_control_block_w_file_switch(duplicate_underscore(label_name),
@@ -1956,162 +829,6 @@ static GtkWidget * draw_LIC_kernel_ctl_vbox(struct f_LIC_kernel_ctl *f_kernel_ct
     return expander_knl;
 };
 
-static GtkWidget * draw_viz_each_masking_vbox(char *label_name, struct f_LIC_masking_ctl *f_mask_ctl, 
-											  GtkWidget *window){
-    struct VIZ_masking_GTK_widgets *masking_vws = (struct VIZ_masking_GTK_widgets *) f_mask_ctl->void_panel;
-    
-    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_mask_ctl->f_mask_type_ctl);
-    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_mask_ctl->f_field_name_ctl);
-    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_mask_ctl->f_component_ctl);
-    GtkWidget *hbox_4 = draw_real2_item_entry_hbox(f_mask_ctl->f_mask_range_ctl);
-    
-    GtkWidget *vbox_mask = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_mask), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_mask), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_mask), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_mask), hbox_4,  FALSE, FALSE, 0);
-    
-    GtkWidget *expand_mask = draw_control_block(duplicate_underscore(label_name),
-                                                f_mask_ctl->f_iflag,
-                                                window, vbox_mask);
-    return expand_mask;
-};
-
-struct VIZ_masking_GTK_widgets * init_VIZ_masking_GTK_widgets(struct chara_int2_clist *f_field_ctl)
-{
-    struct VIZ_masking_GTK_widgets *masking_vws
-            = (struct VIZ_masking_GTK_widgets *) malloc(sizeof(struct VIZ_masking_GTK_widgets));
-    if(masking_vws == NULL){
-        printf("malloc error for masking_vws\n");
-        exit(0);
-    };
-    masking_vws->label_field_list = f_field_ctl;
-    masking_vws->label_dir_list = init_field_label_array(c_link_scalar_dir_list_to_ctl());
-    append_field_label_array(c_link_vector_dir_list_to_ctl(),
-                             masking_vws->label_dir_list);
-    append_field_label_array(c_link_stensor_dir_list_to_ctl(),
-                             masking_vws->label_dir_list);
-    return masking_vws;
-};
-
-void dealloc_VIZ_masking_GTK_widgets(struct VIZ_masking_GTK_widgets *masking_vws){
-    dealloc_chara_int2_clist(masking_vws->label_field_list);
-    dealloc_chara2_int_clist(masking_vws->label_dir_list);
-    free(masking_vws);
-    return;
-}
-
-struct f_LIC_masking_ctl * init_f_VIZ_masking_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
-    struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
-    struct f_LIC_masking_ctl *f_masking_ctl = init_f_LIC_masking_ctl(idx, f_parent);
-    f_masking_ctl->void_panel = (void *) init_VIZ_masking_GTK_widgets(f_fld_ctl->f_field_ctl);
-    return f_masking_ctl;
-}
-void * dealloc_f_VIZ_masking_ctl_GTK(void *void_in){
-    struct f_LIC_masking_ctl *f_masking_ctl = (struct f_LIC_masking_ctl *) void_in;
-    dealloc_VIZ_masking_GTK_widgets((struct VIZ_masking_GTK_widgets *) f_masking_ctl->void_panel);
-    dealloc_f_LIC_masking_ctl(f_masking_ctl);
-    return NULL;
-}
-
-
-static GtkWidget * draw_new_partition_ctl_vbox(struct f_new_patition_ctl *f_new_part_ctl, 
-                                               struct VIZ_repartition_widgets *f_repart_vws,
-                                               GtkWidget *window){
-	GtkWidget *vbox_v_npt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    
-    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_new_part_ctl->f_repart_table_head_ctl);
-    GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_new_part_ctl->f_repart_table_fmt_ctl);
-    GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_new_part_ctl->f_partition_reference_ctl);
-    GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_new_part_ctl->f_trace_count_head_ctl);
-    GtkWidget *hbox_5 = draw_chara_item_entry_hbox(f_new_part_ctl->f_trace_count_fmt_ctl);
-    
-    GtkWidget *hbox_6 = add_ci_list_box_w_addbottun(f_new_part_ctl->f_ndomain_section_ctl,
-                                                    f_repart_vws->f_ndomain_section_tree);
-    
-    GtkWidget *hbox_7 = draw_int_item_entry_hbox(f_new_part_ctl->f_ratio_of_grouping_ctl);
-    GtkWidget *hbox_8 = draw_int_item_entry_hbox(f_new_part_ctl->f_sleeve_level_ctl);
-    GtkWidget *hbox_9 = draw_real_item_entry_hbox(f_new_part_ctl->f_weight_to_previous_ctl);
-    
-    GtkWidget *hbox_10 = draw_chara_item_entry_hbox(f_new_part_ctl->f_masking_switch_ctl);
-    GtkWidget *hbox_11 = draw_real_item_entry_hbox(f_new_part_ctl->f_masking_weight_ctl);
-    GtkWidget *hbox_12 = draw_real_item_entry_hbox(f_new_part_ctl->f_power_of_volume_ctl);
-    
-	GtkWidget *expand_mask = draw_array_block_ctl_vbox(f_new_part_ctl->f_mask_ctl,
-                                                       (void *) f_repart_vws->label_field_list,
-                                                       c_append_multi_mask_ctls,
-                                                       c_delete_multi_mask_ctls,
-                                                       (void *) init_f_VIZ_masking_ctl_GTK,
-                                                       (void *) dealloc_f_VIZ_masking_ctl_GTK,
-                                                       (void *) draw_viz_each_masking_vbox,
-                                                       f_repart_vws->masking_Wgts, window);
-	
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_4,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_5,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_6,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_7,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_8,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_9,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_10, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_11, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), hbox_12, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_npt), expand_mask, FALSE, FALSE, 0);
-    
-    GtkWidget *expander_npt = draw_control_block(f_new_part_ctl->c_block_name,
-                                                 f_new_part_ctl->f_iflag,
-                                                 window, vbox_v_npt);
-    return expander_npt;
-};
-
-static GtkWidget * draw_FEM_sleeve_control_vbox(struct f_FEM_sleeve_control *f_Fsleeve_ctl, GtkWidget *window){
-    GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_Fsleeve_ctl->sleeve_extension_mode_ctl);
-    GtkWidget *hbox_2 = draw_int_item_entry_hbox(f_Fsleeve_ctl->sleeve_level_ctl);
-    GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_Fsleeve_ctl->sleeve_size_ctl);
-    GtkWidget *hbox_4 = draw_chara_item_entry_hbox(f_Fsleeve_ctl->ref_vector_ctl);
-    
-	GtkWidget *vbox_v_slv = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_pack_start(GTK_BOX(vbox_v_slv), hbox_1,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_slv), hbox_2,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_slv), hbox_3,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_slv), hbox_4,  FALSE, FALSE, 0);
-    
-    GtkWidget *expander_slv = draw_control_block(f_Fsleeve_ctl->c_block_name,
-                                                 f_Fsleeve_ctl->f_iflag,
-                                                 window, vbox_v_slv);
-    return expander_slv;
-};
-
-
-static GtkWidget * draw_VIZ_repartition_ctl_vbox(struct f_VIZ_repartition_ctl *f_repart_ctl, 
-                                                 struct VIZ_repartition_widgets *f_repart_vws,
-                                                 GtkWidget *window){
-	GtkWidget *vbox_v_rep = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    
-    GtkWidget *expander_plt =  draw_platform_control_vbox(f_repart_ctl->f_viz_plt, 
-                                                          f_repart_vws->label_file_format_list,
-                                                          window);
-    GtkWidget *expander_fmh =  draw_sph_FEM_mesh_file_vbox(f_repart_ctl->f_Fmesh_ctl, 
-                                                           window);
-    GtkWidget *expander_npt =  draw_new_partition_ctl_vbox(f_repart_ctl->f_new_part_ctl, 
-                                                           f_repart_vws,
-                                                           window);
-    GtkWidget *expander_slv =  draw_FEM_sleeve_control_vbox(f_repart_ctl->f_Fsleeve_ctl, 
-                                                            window);
-    
-    gtk_box_pack_start(GTK_BOX(vbox_v_rep), expander_plt,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_rep), expander_fmh,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_rep), expander_npt,  FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_v_rep), expander_slv,  FALSE, FALSE, 0);
-    
-    GtkWidget *expander_rep = draw_control_block_w_file_switch(f_repart_ctl->c_block_name,
-                                                               f_repart_ctl->f_iflag,
-                                                               f_repart_ctl->repart_ctl_file_name,
-                                                               window, vbox_v_rep);
-    return expander_rep;
-};
 
 static GtkWidget * draw_viz_each_lic_lic_ctl_vbox(struct f_VIZ_LIC_ctl *f_lic_lic_ctl,
                                                   struct LIC_GTK_widgets *lic_vws,
@@ -2286,7 +1003,7 @@ void dealloc_MAP_GTK_widgets(struct MAP_GTK_widgets *map_vws){
     free(map_vws);
 }
 
-struct PVR_GTK_widgets * init_PVR_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
+struct PVR_GTK_widgets * init_PVR_GTK_widgets(struct f_VIZ_PVR_ctl *f_pvr_ctl,
                                               struct chara_int2_clist *f_field_ctl)
 {
 	struct PVR_GTK_widgets *pvr_vws 
@@ -2295,24 +1012,60 @@ struct PVR_GTK_widgets * init_PVR_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_c
 		printf("malloc error for pvr_vws\n");
 		exit(0);
     };
+	pvr_vws->pvr_areaWgts = (struct pvr_area_widgets *) malloc(sizeof(struct pvr_area_widgets));
+	if(pvr_vws->pvr_areaWgts == NULL){
+		printf("malloc error for pvr_area_widgets\n");
+		exit(0);
+    };
+    
+    int i;
+    struct f_PVR_section_ctl *f_pvr_sect_ctl;
+    for(i=0;i<count_void_clist(f_pvr_ctl->f_pvr_scts_c);i++){
+        f_pvr_sect_ctl = void_clist_at_index(i, f_pvr_ctl->f_pvr_scts_c);
+        f_pvr_sect_ctl->void_panel = (void *) init_PSF_GTK_widgets(f_field_ctl);
+        printf("%d struct PSF_GTK_widgets *psf_def_vws %p \n", i, f_pvr_sect_ctl->void_panel);
+    }
+    struct f_PVR_isosurface_ctl *f_pvr_iso_ctl;
+    for(i=0;i<count_void_clist(f_pvr_ctl->f_pvr_isos_c);i++){
+        f_pvr_iso_ctl = void_clist_at_index(i, f_pvr_ctl->f_pvr_isos_c);
+        f_pvr_iso_ctl->void_panel = (void *) init_ISO_GTK_widgets(f_field_ctl);
+    }
+    
     pvr_vws->label_field_list = f_field_ctl;
     pvr_vws->label_dir_list = init_field_label_array(c_link_scalar_dir_list_to_ctl());
     append_field_label_array(c_link_vector_dir_list_to_ctl(),
                              pvr_vws->label_dir_list);
     append_field_label_array(c_link_stensor_dir_list_to_ctl(),
                              pvr_vws->label_dir_list);
-    pvr_vws->color_vws = init_colormap_views_4_ctl(f_cmap_cbar_c->cmap_c);
+    pvr_vws->color_vws = init_colormap_views_4_ctl(f_pvr_ctl->f_cmap_cbar_c->cmap_c);
     return pvr_vws;
 };
-void dealloc_PVR_GTK_widgets(struct PVR_GTK_widgets *pvr_vws){
+void dealloc_PVR_GTK_widgets(struct f_VIZ_PVR_ctl *f_pvr_ctl,
+                             struct PVR_GTK_widgets *pvr_vws){
     dealloc_colormap_views_4_viewer(pvr_vws->color_vws);
     dealloc_chara_int2_clist(pvr_vws->label_field_list);
     dealloc_chara2_int_clist(pvr_vws->label_dir_list);
+    
+    int i;
+    struct PSF_GTK_widgets *psf_def_vws;
+    struct f_PVR_section_ctl *f_pvr_sect_ctl;
+    for(i=0;i<count_void_clist(f_pvr_ctl->f_pvr_scts_c);i++){
+        f_pvr_sect_ctl = void_clist_at_index(i,f_pvr_ctl->f_pvr_scts_c);
+        dealloc_f_VIZ_PSF_ctl_GTK(f_pvr_sect_ctl->void_panel);
+    }
+    
+    struct f_PVR_isosurface_ctl *f_pvr_iso_ctl;
+    for(i=0;i<count_void_clist(f_pvr_ctl->f_pvr_isos_c);i++){
+        f_pvr_iso_ctl = void_clist_at_index(i, f_pvr_ctl->f_pvr_isos_c);
+        dealloc_f_VIZ_ISO_ctl_GTK(f_pvr_iso_ctl->void_panel);
+    }
+    
+    free(pvr_vws->pvr_areaWgts);
     free(pvr_vws);
 }
 
 
-struct LIC_GTK_widgets * init_LIC_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_cmap_cbar_c,
+struct LIC_GTK_widgets * init_LIC_GTK_widgets(struct f_VIZ_PVR_ctl *f_pvr_ctl,
                                               struct chara_int2_clist *f_field_ctl)
 {
 	struct LIC_GTK_widgets *lic_vws 
@@ -2328,7 +1081,7 @@ struct LIC_GTK_widgets * init_LIC_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_c
 		exit(0);
     };
     
-    lic_vws->lic_pvr_vws = init_PVR_GTK_widgets(f_cmap_cbar_c, f_field_ctl);
+    lic_vws->lic_pvr_vws = init_PVR_GTK_widgets(f_pvr_ctl, f_field_ctl);
     lic_vws->label_field_list = lic_vws->lic_pvr_vws->label_field_list;
     lic_vws->label_dir_list = lic_vws->lic_pvr_vws->label_dir_list;
     
@@ -2337,11 +1090,12 @@ struct LIC_GTK_widgets * init_LIC_GTK_widgets(struct pvr_colormap_bar_ctl_c *f_c
             = init_f_ctl_chara_array(set_file_fmt_items_f, NULL);
     return lic_vws;
 };
-void dealloc_LIC_GTK_widgets(struct LIC_GTK_widgets *lic_vws){
+void dealloc_LIC_GTK_widgets(struct f_VIZ_PVR_ctl *f_pvr_ctl,
+                             struct LIC_GTK_widgets *lic_vws){
     lic_vws->label_field_list = NULL;
     lic_vws->label_dir_list = NULL;
     
-    dealloc_PVR_GTK_widgets(lic_vws->lic_pvr_vws);
+    dealloc_PVR_GTK_widgets(f_pvr_ctl, lic_vws->lic_pvr_vws);
     free(lic_vws->f_repart_vws);
     free(lic_vws);
 }
@@ -2390,13 +1144,12 @@ struct f_VIZ_PVR_ctl * init_f_VIZ_PVR_ctl_GTK(int idx, void *f_parent, void *voi
     struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
     struct f_VIZ_PVR_ctl *f_pvr_ctl = init_f_VIZ_PVR_ctl(c_pvr_render_ctls_pvr_ctl, 
                                                          idx, f_parent);
-    f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets(f_pvr_ctl->f_cmap_cbar_c, 
-                                                          f_fld_ctl->f_field_ctl);
+    f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets(f_pvr_ctl, f_fld_ctl->f_field_ctl);
     return f_pvr_ctl;
 }
 void * dealloc_f_VIZ_PVR_ctl_GTK(void *void_in){
     struct f_VIZ_PVR_ctl *f_pvr_ctl = (struct f_VIZ_PVR_ctl *) void_in;
-    dealloc_PVR_GTK_widgets((struct PVR_GTK_widgets *) f_pvr_ctl->void_panel);
+    dealloc_PVR_GTK_widgets(f_pvr_ctl, (struct PVR_GTK_widgets *) f_pvr_ctl->void_panel);
     dealloc_f_VIZ_PVR_ctl(f_pvr_ctl);
     return NULL;
 }
@@ -2404,7 +1157,7 @@ void * dealloc_f_VIZ_PVR_ctl_GTK(void *void_in){
 struct f_VIZ_LIC_PVR_ctl * init_f_VIZ_LIC_PVR_ctl_GTK(int idx, void *f_parent, void *void_in_gtk){
     struct f_MHD_fields_control *f_fld_ctl = (struct f_MHD_fields_control *) void_in_gtk;
     struct f_VIZ_LIC_PVR_ctl *f_lic_ctl = init_f_VIZ_LIC_PVR_ctl(idx, f_parent);
-    struct LIC_GTK_widgets *lic_vws = init_LIC_GTK_widgets(f_lic_ctl->f_lic_pvr_ctl->f_cmap_cbar_c, 
+    struct LIC_GTK_widgets *lic_vws = init_LIC_GTK_widgets(f_lic_ctl->f_lic_pvr_ctl, 
                                                           f_fld_ctl->f_field_ctl);
     f_lic_ctl->f_lic_pvr_ctl->void_panel = (void *) lic_vws->lic_pvr_vws;
     f_lic_ctl->void_panel = (void *) lic_vws;
@@ -2412,7 +1165,8 @@ struct f_VIZ_LIC_PVR_ctl * init_f_VIZ_LIC_PVR_ctl_GTK(int idx, void *f_parent, v
 }
 void * dealloc_f_VIZ_LIC_PVR_ctl_GTK(void *void_in){
     struct f_VIZ_LIC_PVR_ctl *f_lic_ctl = (struct f_VIZ_LIC_PVR_ctl *) void_in;
-    dealloc_LIC_GTK_widgets((struct LIC_GTK_widgets *) f_lic_ctl->void_panel);
+    dealloc_LIC_GTK_widgets(f_lic_ctl->f_lic_pvr_ctl, 
+                            (struct LIC_GTK_widgets *) f_lic_ctl->void_panel);
     dealloc_f_VIZ_LIC_PVR_ctl(f_lic_ctl);
     return NULL;
 }
@@ -2455,13 +1209,15 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
     for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_pvr_ctls);i++){
         struct f_VIZ_PVR_ctl *f_pvr_ctl
                 = (struct f_VIZ_PVR_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_pvr_ctls);
-        f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets(f_pvr_ctl->f_cmap_cbar_c, 
+        f_pvr_ctl->void_panel = (void *) init_PVR_GTK_widgets(f_pvr_ctl, 
                                                               f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
     };
+    
+
     for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_lic_ctls);i++){
         struct f_VIZ_LIC_PVR_ctl *f_lic_ctl
                 = (struct f_VIZ_LIC_PVR_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_lic_ctls);
-        struct LIC_GTK_widgets *lic_vws = init_LIC_GTK_widgets(f_lic_ctl->f_lic_pvr_ctl->f_cmap_cbar_c, 
+        struct LIC_GTK_widgets *lic_vws = init_LIC_GTK_widgets(f_lic_ctl->f_lic_pvr_ctl, 
                                                                f_MHD_ctl->f_model_ctl->f_fld_ctl->f_field_ctl);
         f_lic_ctl->f_lic_pvr_ctl->void_panel = (void *) lic_vws->lic_pvr_vws;
         f_lic_ctl->void_panel = (void *) lic_vws;
@@ -2502,6 +1258,17 @@ GtkWidget *MHD_VIZs_ctl_expander(GtkWidget *window, struct f_MHD_control *f_MHD_
                                                           (void *) draw_viz_each_map_ctl_vbox,
                                                           mWidgets->vmap_Wgts, window);
 	
+    int j;
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_pvr_ctls);i++){
+        struct f_VIZ_PVR_ctl *f_pvr_ctl
+                = (struct f_VIZ_PVR_ctl *) void_clist_at_index(i, f_MHD_ctl->f_viz_ctls->f_pvr_ctls);
+       for(j=0;j<count_void_clist(f_pvr_ctl->f_pvr_scts_c);j++){
+            struct f_PVR_section_ctl *f_psf_ctl = void_clist_at_index(j, f_pvr_ctl->f_pvr_scts_c);
+            printf("%d %d struct PSF_GTK_widgets *psf_def_vws %p %p \n",
+                   i, j, f_psf_ctl, f_psf_ctl->void_panel);
+        }
+        printf("%d f_pvr_ctl->void_panel %p \n", i, f_pvr_ctl->void_panel);
+    }
 	GtkWidget *expand_MHD_pvr = draw_array_block_ctl_vbox(f_MHD_ctl->f_viz_ctls->f_pvr_ctls,
                                                           (void *) f_MHD_ctl->f_model_ctl->f_fld_ctl,
                                                           c_append_viz_pvr_render_ctls,
