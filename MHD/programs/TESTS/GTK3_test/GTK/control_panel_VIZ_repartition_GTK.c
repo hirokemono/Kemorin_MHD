@@ -53,8 +53,6 @@ void * dealloc_f_VIZ_masking_ctl_GTK(void *void_in){
 
 GtkWidget * draw_viz_each_masking_vbox(char *label_name, struct f_LIC_masking_ctl *f_mask_ctl, 
                                        GtkWidget *window){
-    struct VIZ_masking_GTK_widgets *masking_vws = (struct VIZ_masking_GTK_widgets *) f_mask_ctl->void_panel;
-    
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_mask_ctl->f_mask_type_ctl);
     GtkWidget *hbox_2 = draw_chara_item_entry_hbox(f_mask_ctl->f_field_name_ctl);
     GtkWidget *hbox_3 = draw_chara_item_entry_hbox(f_mask_ctl->f_component_ctl);
@@ -124,8 +122,8 @@ static GtkWidget * draw_new_partition_ctl_vbox(struct f_new_patition_ctl *f_new_
     return expander_npt;
 };
 
-static static GtkWidget * draw_FEM_sleeve_control_vbox(struct f_FEM_sleeve_control *f_Fsleeve_ctl,
-                                                       GtkWidget *window){
+static GtkWidget * draw_FEM_sleeve_control_vbox(struct f_FEM_sleeve_control *f_Fsleeve_ctl,
+                                                GtkWidget *window){
     GtkWidget *hbox_1 = draw_chara_item_entry_hbox(f_Fsleeve_ctl->f_sleeve_extension_mode_ctl);
     GtkWidget *hbox_2 = draw_int_item_entry_hbox(f_Fsleeve_ctl->f_sleeve_level_ctl);
     GtkWidget *hbox_3 = draw_real_item_entry_hbox(f_Fsleeve_ctl->f_sleeve_size_ctl);

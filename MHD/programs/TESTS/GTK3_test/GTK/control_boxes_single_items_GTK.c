@@ -271,6 +271,52 @@ GtkWidget *draw_real_item_entry_hbox(struct real_ctl_item * f_ritem){
 
 
 
+static void cb_int1_ctl_item(GtkEntry *spinner, gpointer data)
+{
+    struct int2_ctl_item *f_i2item = (struct int2_ctl_item *) data;
+    if(f_i2item->f_self == NULL) return;
+    f_i2item->i_data[0] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinner));
+    c_store_real2_items(f_i2item->f_self,
+                        f_i2item->i_data[0], f_i2item->i_data[1]);
+    return;
+}
+static void cb_int2_ctl_item(GtkEntry *spinner, gpointer data)
+{
+    struct int2_ctl_item *f_i2item = (struct int2_ctl_item *) data;
+    if(f_i2item->f_self == NULL) return;
+    f_i2item->i_data[1] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinner));
+    c_store_real2_items(f_i2item->f_self,
+                        f_i2item->i_data[0], f_i2item->i_data[1]);
+    return;
+}
+
+GtkWidget *draw_int2_item_entry_hbox(struct int2_ctl_item * f_i2item){
+    GtkAdjustment *adjust1 = gtk_adjustment_new(f_i2item->i_data[0], 0, 2147483648, 1,
+                                                100, 21474836);
+    GtkAdjustment *adjust2 = gtk_adjustment_new(f_i2item->i_data[1], 0, 2147483648, 1,
+                                                100, 21474836);
+
+    GtkWidget *hbox = hbox_with_block_checkbox(f_i2item->f_iflag, f_i2item->c_block_name);
+    
+    /* Generate file entry  */
+    GtkWidget *entry1 = gtk_spin_button_new(adjust1, 1, 0);
+    GtkWidget *entry2 = gtk_spin_button_new(adjust2, 1, 0);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(entry1), 0);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(entry2), 0);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry1), f_i2item->i_data[0]);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(entry2), f_i2item->i_data[1]);
+    g_signal_connect(G_OBJECT(entry1), "value-changed",
+                G_CALLBACK(cb_int1_ctl_item), (gpointer) f_i2item);
+    g_signal_connect(G_OBJECT(entry2), "value-changed",
+                G_CALLBACK(cb_int2_ctl_item), (gpointer) f_i2item);
+    
+    gtk_box_pack_start(GTK_BOX(hbox), entry1, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), entry2, TRUE, TRUE, 0);
+    return hbox;
+}
+
+
+
 static void cb_real1_ctl_item(GtkEntry *spinner, gpointer data)
 {
     struct real2_ctl_item *f_r2item = (struct real2_ctl_item *) data;

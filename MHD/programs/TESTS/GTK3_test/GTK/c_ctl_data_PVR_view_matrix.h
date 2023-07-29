@@ -28,6 +28,10 @@
 
 /* prototypes */
 
+extern void * c_append_mul_mdlvw_mat_ctl(int idx, char *block_name, void *f_mats);
+extern void * c_delete_mul_mdlvw_mat_ctl(int idx, void *f_mats);
+
+
 struct modelview_ctl_c * init_f_VIZ_view_matrix_ctl(char *ctl_file_name,
                                                     void *(*c_load_self)(void *f_parent), 
                                                     void *f_parent);

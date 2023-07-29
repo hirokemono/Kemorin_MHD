@@ -29,6 +29,14 @@
 !!      type(c_ptr) function c_VIZ_mul_mdlvw_matrices(idx_in, c_ctl)    &
 !!     &          bind(C, NAME = 'c_VIZ_mul_mdlvw_matrices')
 !!        type(c_ptr), value, intent(in) :: c_ctl
+!!      type(c_ptr) function c_append_mul_mdlvw_mat_ctl                 &
+!!     &                  (idx, c_name, c_ctl)                          &
+!!     &                  bind(C, NAME = 'c_append_mul_mdlvw_mat_ctl')
+!!      type(c_ptr) function c_delete_mul_mdlvw_mat_ctl(idx, c_ctl)     &
+!!     &                  bind(C, NAME = 'c_delete_mul_mdlvw_mat_ctl')
+!!        integer(c_int), value, intent(in) :: idx
+!!        character(C_char), intent(in) :: c_name(*)
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
       module c_link_PVR_quilt_image_ctl
 !
@@ -136,6 +144,40 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_VIZ_mul_mdlvw_matrices = C_loc(f_ctl%matrices(idx_in+1))
       end function c_VIZ_mul_mdlvw_matrices
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_append_mul_mdlvw_mat_ctl                   &
+     &                  (idx, c_name, c_ctl)                            &
+     &                  bind(C, NAME = 'c_append_mul_mdlvw_mat_ctl')
+      use ctl_array_chara_to_c
+!
+      integer(c_int), value, intent(in) :: idx
+      character(C_char), intent(in) :: c_name(*)
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(multi_modelview_ctl), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call append_mul_view_trans_ctl(idx, copy_char_from_c(c_name),     &
+     &                               f_ctl)
+      c_append_mul_mdlvw_mat_ctl = C_loc(f_ctl%matrices)
+      f_ctl%matrices(idx+1)%i_view_transform = 1
+!
+      end function c_append_mul_mdlvw_mat_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_delete_mul_mdlvw_mat_ctl(idx, c_ctl)       &
+     &                  bind(C, NAME = 'c_delete_mul_mdlvw_mat_ctl')
+      integer(c_int), value, intent(in) :: idx
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(multi_modelview_ctl), pointer :: f_ctl
+!
+      call c_f_pointer(c_ctl, f_ctl)
+      call delete_mul_view_trans_ctl((idx+1), f_ctl)
+      c_delete_mul_mdlvw_mat_ctl = C_loc(f_ctl%matrices)
+!
+      end function c_delete_mul_mdlvw_mat_ctl
 !
 !  ---------------------------------------------------------------------
 !
