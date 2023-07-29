@@ -56,6 +56,7 @@ control_panel_LIC_GTK.o \
 control_panel_MAP_GTK.o \
 control_panel_FLINE_GTK.o \
 control_panel_VIZs_GTK.o \
+control_panel_SGS_MHD_GTK.o \
 \
 c_ctl_data_SGS_MHD.o \
 c_control_data_pvrs.o \
@@ -136,6 +137,10 @@ control_panel_FLINE_GTK.o: GTK/control_panel_FLINE_GTK.c GTK/control_panel_FLINE
 control_panel_VIZs_GTK.o: GTK/control_panel_VIZs_GTK.c GTK/control_panel_VIZs_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panel_VIZs_GTK.c
+
+control_panel_SGS_MHD_GTK.o: GTK/control_panel_SGS_MHD_GTK.c GTK/control_panel_SGS_MHD_GTK.h  GTK/control_panel_VIZs_GTK.h
+	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
+	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/GTK/control_panel_SGS_MHD_GTK.c
 
 control_panel_field_cbox_GTK.o: GTK/control_panel_field_cbox_GTK.c GTK/control_panel_field_cbox_GTK.h GTK/control_panel_cbox_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
@@ -254,7 +259,7 @@ ctl_data_platforms_GTK.o: ctl_data_platforms_GTK.c ctl_data_platforms_GTK.h GTK/
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/ctl_data_platforms_GTK.c
 
-file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o GTK/control_panel_4_dimless_GTK.h GTK/control_panel_cbox_real_GTK.h GTK/control_panel_fld_on_psf_GTK.h GTK/control_panel_cbox_cbox_GTK.h GTK/control_panel_text_text_real_GTK.h GTK/control_panel_cbox_cbox_real_GTK.h GTK/control_panel_cbox_GTK.h GTK/control_panel_real3_GTK.h GTK/control_panel_field_cbox_GTK.h GTK/control_panel_4_MHD_BCs_GTK.h GTK/control_panels_MHD_control_GTK.h GTK/control_panel_4_SGS_model_GTK.h GTK/control_panels_MHD_model_GTK.h GTK/control_panel_PSF_ISO_GTK.h GTK/control_block_panel_GTK.h GTK/c_ctl_data_platforms.h GTK/c_ctl_data_MHD_BCs.h GTK/c_ctl_data_MHD_BCs.h GTK/c_ctl_data_4_sph_monitor.h GTK/control_panel_4_sph_monitor_GTK.h GTK/c_control_data_pvrs.h GTK/c_ctl_data_SGS_model.h GTK/c_ctl_data_SGS_model.h GTK/c_ctl_data_PSF_ISOs.h GTK/c_ctl_data_PVR_colormap.h GTK/c_ctl_data_PVR_colormap.h GTK/c_ctl_data_MAP.h GTK/c_ctl_data_PVR_sections.h GTK/c_ctl_VIZ_repartition.h GTK/c_ctl_data_LIC.h GTK/c_ctl_data_FLINE.h GTK/c_ctl_data_SGS_MHD.h GTK/control_panel_PVR_colormap.h GTK/control_panel_PVR_viewmatrix_GTK.h GTK/control_panel_VIZ_repartition_GTK.h GTK/control_panel_MAP_GTK.h GTK/control_panel_PVR_GTK.h GTK/control_panel_LIC_GTK.h GTK/control_panel_FLINE_GTK.h GTK/control_panel_FLINE_GTK.h
+file_dialog.o: file_dialog.c ctl_data_platforms_GTK.o GTK/control_panel_4_dimless_GTK.h GTK/control_panel_cbox_real_GTK.h GTK/control_panel_fld_on_psf_GTK.h GTK/control_panel_cbox_cbox_GTK.h GTK/control_panel_text_text_real_GTK.h GTK/control_panel_cbox_cbox_real_GTK.h GTK/control_panel_cbox_GTK.h GTK/control_panel_real3_GTK.h GTK/control_panel_field_cbox_GTK.h GTK/control_panel_4_MHD_BCs_GTK.h GTK/control_panels_MHD_control_GTK.h GTK/control_panel_4_SGS_model_GTK.h GTK/control_panels_MHD_model_GTK.h GTK/control_panel_PSF_ISO_GTK.h GTK/control_block_panel_GTK.h GTK/c_ctl_data_platforms.h GTK/c_ctl_data_MHD_BCs.h GTK/c_ctl_data_MHD_BCs.h GTK/c_ctl_data_4_sph_monitor.h GTK/control_panel_4_sph_monitor_GTK.h GTK/c_control_data_pvrs.h GTK/c_ctl_data_SGS_model.h GTK/c_ctl_data_SGS_model.h GTK/c_ctl_data_PSF_ISOs.h GTK/c_ctl_data_PVR_colormap.h GTK/c_ctl_data_PVR_colormap.h GTK/c_ctl_data_MAP.h GTK/c_ctl_data_PVR_sections.h GTK/c_ctl_VIZ_repartition.h GTK/c_ctl_data_LIC.h GTK/c_ctl_data_FLINE.h GTK/c_ctl_data_SGS_MHD.h GTK/control_panel_PVR_colormap.h GTK/control_panel_PVR_viewmatrix_GTK.h GTK/control_panel_VIZ_repartition_GTK.h GTK/control_panel_MAP_GTK.h GTK/control_panel_PVR_GTK.h GTK/control_panel_LIC_GTK.h GTK/control_panel_FLINE_GTK.h GTK/control_panel_FLINE_GTK.h GTK/control_panel_SGS_MHD_GTK.h
 	$(CC) $(OPTFLAGS) -c  $(KEMO_INCLUDE) $(GTK3_CFLAGS) \
 	$(SRCDIR)/MHD/programs/TESTS/GTK3_test/file_dialog.c
 

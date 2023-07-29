@@ -52,43 +52,14 @@
 
 
 extern void c_view_control_sph_SGS_MHD();
-
 extern void * c_read_control_sph_SGS_MHD(char *file_name);
-
-extern void * set_file_fmt_items_f(void *fmt_names_c);
-
-
-
-struct main_widgets{
-	GtkWidget *main_Vbox;
-	GtkWidget *open_Hbox;
-	GtkWidget *ctl_MHD_Vbox;
-    GtkWidget *ctl_MHD_inner_box;
-    struct VIZ_repartition_widgets *f_repart_vws;
-	
-	struct f_sph_shell_views *f_psph_vws;
-    
-	struct f_sph_monitor_widgets *f_lp_vws;
-    
-    struct MHD_model_widgets *model_wgts;
-    struct VIZs_widgets        *vizs_Wgts;
-    struct dynamo_VIZs_widgets *dviz_Wgts;
-    
-    
-    struct chara_clist *label_file_format_list;
-};
-
-void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl,
-						  struct main_widgets *mWidgets);
-
 GtkWidget *window;
-
-void *MHD_ctl_C;
 
 static void cb_View(GtkButton *button, gpointer data)
 {
 	c_view_control_sph_SGS_MHD();
 }
+
 static void cb_Open(GtkButton *button, gpointer data)
 {
 	GtkWidget *dialog;
@@ -100,9 +71,9 @@ static void cb_Open(GtkButton *button, gpointer data)
 									 GTK_FILE_CHOOSER_ACTION_SAVE,
 									 GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 									 GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER};
-  gint response;
-  gchar *read_file_name;
-  gchar *folder;
+    gint response;
+    gchar *read_file_name;
+    gchar *folder;
 	
 	
 	struct main_widgets *mWidgets = (struct main_widgets *) g_object_get_data(G_OBJECT(data), "mWidgets");
@@ -294,81 +265,6 @@ static void cb_Save(GtkButton *button, gpointer data)
 	gtk_widget_destroy(dialog);
 }
 
-void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer user_data){
-	GtkExpander *expander;
-
-	expander = GTK_EXPANDER (object);
-	if (gtk_expander_get_expanded (expander)){
-		printf("Expanded \n");
-	}else{
-		printf("Hided \n");
-	}
-	gtk_widget_show_all(window);
-};
-
-void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
-						  struct main_widgets *mWidgets){
-    mWidgets->label_file_format_list = init_f_ctl_chara_array(set_file_fmt_items_f,
-                                                              f_MHD_ctl->f_self);
-	mWidgets->ctl_MHD_inner_box =   gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget * vbox_plt_c = draw_platform_control_vbox(f_MHD_ctl->f_plt,
-                                                        mWidgets->label_file_format_list,
-                                                        window);
-	GtkWidget * vbox_plt_o = draw_platform_control_vbox(f_MHD_ctl->f_org_plt,
-                                                        mWidgets->label_file_format_list,
-                                                        window);
-	GtkWidget * vbox_plt_n = draw_platform_control_vbox(f_MHD_ctl->f_new_plt,
-                                                        mWidgets->label_file_format_list,
-                                                        window);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_c, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_o, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), vbox_plt_n, FALSE, FALSE, 0);
-	
-	GtkWidget *expand_sph_shell = MHD_sph_shell_ctl_expander(window, f_MHD_ctl->f_psph_ctl,
-															 mWidgets->f_psph_vws);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_sph_shell, FALSE, FALSE, 0);
-	
-    GtkWidget *expand_MHD_model = MHD_model_ctl_expander(f_MHD_ctl->f_self, f_MHD_ctl->f_model_ctl,
-                                                         mWidgets->model_wgts, window);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_model, FALSE, FALSE, 0);
-	
-	
-    GtkWidget *expand_MHD_control = draw_MHD_control_expand(window, f_MHD_ctl->f_smctl_ctl);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_control, FALSE, FALSE, 0);
-	
-	GtkWidget *expand_smntr = draw_MHD_sph_monitor_ctls_vbox(f_MHD_ctl->f_smonitor_ctl, 
-															 mWidgets->f_lp_vws, window);
-	gtk_container_add(GTK_CONTAINER(mWidgets->ctl_MHD_inner_box), expand_smntr);
-	
-	/*
-	GtkWidget *vbox_node_monitor = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	GtkWidget *expand_MHD_node_monitor = draw_control_block(f_MHD_ctl->f_nmtr_ctl->c_block_name, 
-													 f_MHD_ctl->f_nmtr_ctl->f_iflag,
-													 window, _node_monitor);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_node_monitor, FALSE, FALSE, 0);
-	*/
-	
-    mWidgets->vizs_Wgts = init_MHD_VIZs_GTK(f_MHD_ctl->f_viz_ctls,
-                                            f_MHD_ctl->f_model_ctl->f_fld_ctl);
-    mWidgets->dviz_Wgts = init_dynamo_VIZs_GTK(f_MHD_ctl->f_zm_ctls,
-                                               f_MHD_ctl->f_model_ctl->f_fld_ctl);
-    
-    GtkWidget *expand_MHD_viz = MHD_VIZs_ctl_expander(window, f_MHD_ctl->f_viz_ctls,
-                                                      f_MHD_ctl->f_model_ctl->f_fld_ctl,
-                                                      mWidgets->vizs_Wgts);
-    GtkWidget *expand_MHD_zm = MHD_dynamo_VIZs_expander(window, f_MHD_ctl->f_zm_ctls, 
-                                                        f_MHD_ctl->f_model_ctl->f_fld_ctl,
-                                                        mWidgets->dviz_Wgts);
-    
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_viz, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mWidgets->ctl_MHD_inner_box), expand_MHD_zm, FALSE, FALSE, 0);
-	
-    mWidgets->ctl_MHD_Vbox = wrap_into_scroll_expansion_gtk(f_MHD_ctl->c_block_name, 560, 640,
-                                                            window, mWidgets->ctl_MHD_inner_box);
-	return;
-};
-
-
 GtkWidget * MHD_control_bottuns_hbox(struct main_widgets *mWidgets){
 	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	
@@ -419,12 +315,7 @@ int main(int argc, char** argv)
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	struct main_widgets *mWidgets = (struct main_widgets *) malloc(sizeof(struct main_widgets));
-		printf("mWidgets %p\n", mWidgets);
-	if(mWidgets == NULL){
-		printf("malloc error for mWidgets\n");
-		exit(0);
-	};
+    struct main_widgets *mWidgets = init_main_widgets();
 	
 	mWidgets->main_Vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	mWidgets->open_Hbox = MHD_control_bottuns_hbox(mWidgets);

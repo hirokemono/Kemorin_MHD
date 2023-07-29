@@ -9,10 +9,8 @@
 
 
 void load_clist_to_real3_array(struct real3_clist *ctl_clst){
-    struct real3_ctl_item *tmp_clist;
     int i;
     for(i=0;i<count_real3_clist(ctl_clst);i++){
-        tmp_clist = real3_clist_at_index(i,ctl_clst);
         c_store_real3_array(ctl_clst->f_self, i,
                             real3_clist_at_index(i,ctl_clst)->r_data[0],
                             real3_clist_at_index(i,ctl_clst)->r_data[1],
