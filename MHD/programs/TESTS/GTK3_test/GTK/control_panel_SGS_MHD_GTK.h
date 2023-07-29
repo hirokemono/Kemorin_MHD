@@ -15,6 +15,7 @@
 #include "t_control_chara_IO.h"
 #include "ctl_data_platforms_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
+#include "control_panels_MHD_control_GTK.h"
 #include "control_panel_VIZ_repartition_GTK.h"
 #include "control_panel_VIZs_GTK.h"
 
@@ -40,7 +41,7 @@ struct main_widgets{
 
 /* prototypes */
 
-struct main_widgets init_main_widgets();
+struct main_widgets * init_main_widgets();
 
 void MHD_control_expander(GtkWidget *window, struct f_MHD_control *f_MHD_ctl, 
                           struct main_widgets *mWidgets);

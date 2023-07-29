@@ -43,17 +43,92 @@
 #include "control_panel_int2_GTK.h"
 #include "control_panel_real3_GTK.h"
 #include "control_panel_4_sph_monitor_GTK.h"
-#include "control_panel_4_MHD_BCs_GTK.h"
-#include "control_panels_MHD_model_GTK.h"
-#include "control_panel_4_SGS_model_GTK.h"
-#include "control_panel_fld_on_psf_GTK.h"
-#include "control_panel_FLINE_GTK.h"
-#include "control_panel_VIZs_GTK.h"
+#include "control_panel_SGS_MHD_GTK.h"
 
 
 extern void c_view_control_sph_SGS_MHD();
 extern void * c_read_control_sph_SGS_MHD(char *file_name);
 GtkWidget *window;
+
+
+static void check_directory_to_save(char *path_name, char *stripped_dir, 
+                                    char *stripped_filehead,
+                                    struct f_MHD_control *f_MHD_ctl){
+    int i;
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_psf_ctls);i++){
+        struct f_VIZ_PSF_ctl *ctl_tmp 
+                = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_psf_ctls);
+        split_dir_and_file_name_c(ctl_tmp->psf_ctl_file_name, stripped_dir, stripped_filehead);
+        printf("psf_ctl_file_name %d: %s %s, \n", i, stripped_dir, ctl_tmp->psf_ctl_file_name);
+        if(compare_string(strlen(ctl_tmp->psf_ctl_file_name),
+                          stripped_dir, ctl_tmp->psf_ctl_file_name) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+        if(compare_string(strlen(ctl_tmp->f_psf_def_c->psf_def_file_name),
+                          stripped_dir, ctl_tmp->f_psf_def_c->psf_def_file_name) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+        if(compare_string(strlen(ctl_tmp->f_fld_on_psf_c->fname_fld_on_psf),
+                          stripped_dir, ctl_tmp->f_fld_on_psf_c->fname_fld_on_psf) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+    }
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_iso_ctls);i++){
+        struct f_VIZ_ISO_ctl *ctl_tmp 
+                = (struct f_VIZ_ISO_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_iso_ctls);
+        if(compare_string(strlen(ctl_tmp->iso_ctl_file_name),
+                          stripped_dir, ctl_tmp->iso_ctl_file_name) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+        if(compare_string(strlen(ctl_tmp->f_fld_on_iso_c->fname_fld_on_psf),
+                          stripped_dir, ctl_tmp->f_fld_on_iso_c->fname_fld_on_psf) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+    }
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_map_ctls);i++){
+        struct f_VIZ_MAP_ctl *ctl_tmp 
+                = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_map_ctls);
+        if(compare_string(strlen(ctl_tmp->map_ctl_file_name),
+                          stripped_dir, ctl_tmp->map_ctl_file_name) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+    }
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_pvr_ctls);i++){
+        struct f_VIZ_PVR_ctl *ctl_tmp 
+                = (struct f_VIZ_PVR_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_pvr_ctls);
+            if(compare_string(strlen(ctl_tmp->pvr_ctl_file_name),
+                              stripped_dir, ctl_tmp->pvr_ctl_file_name) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+    }
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_lic_ctls);i++){
+        struct f_VIZ_LIC_PVR_ctl *ctl_tmp 
+                = (struct f_VIZ_LIC_PVR_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_lic_ctls);
+        if(compare_string(strlen(ctl_tmp->lic_ctl_file_name),
+                          stripped_dir, ctl_tmp->lic_ctl_file_name) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+    }
+    for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_fline_ctls);i++){
+        struct f_VIZ_FLINE_ctl *ctl_tmp 
+                = (struct f_VIZ_FLINE_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_fline_ctls);
+        if(compare_string(strlen(ctl_tmp->fline_ctl_file_name),
+                          stripped_dir, ctl_tmp->fline_ctl_file_name) == 0){
+            printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
+                   mkdir(stripped_dir, 0777));
+        };
+    }
+    return;
+}
+
 
 static void cb_View(GtkButton *button, gpointer data)
 {
@@ -176,7 +251,8 @@ static void cb_Save(GtkButton *button, gpointer data)
         char *stripped_dir = (char *) calloc(LENGTHBUF+1, sizeof(char));
         struct stat st;
         
-        split_dir_and_file_name_c(f_MHD_ctl->f_psph_ctl->fname_sph_shell, stripped_dir, stripped_filehead);
+        split_dir_and_file_name_c(f_MHD_ctl->f_psph_ctl->fname_sph_shell, 
+                                  stripped_dir, stripped_filehead);
         printf("fname_sph_shell: %s %s, \n", stripped_dir, f_MHD_ctl->f_psph_ctl->fname_sph_shell);
         if(compare_string(strlen(f_MHD_ctl->f_psph_ctl->fname_sph_shell), 
                           stripped_dir, f_MHD_ctl->f_psph_ctl->fname_sph_shell) == 0){
@@ -185,78 +261,9 @@ static void cb_Save(GtkButton *button, gpointer data)
                        mkdir(stripped_dir, 0777));
             }
         };
+    
         
-        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_psf_ctls);i++){
-            struct f_VIZ_PSF_ctl *ctl_tmp 
-                    = (struct f_VIZ_PSF_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_psf_ctls);
-            split_dir_and_file_name_c(ctl_tmp->psf_ctl_file_name, stripped_dir, stripped_filehead);
-            printf("psf_ctl_file_name %d: %s %s, \n", i, stripped_dir, ctl_tmp->psf_ctl_file_name);
-            if(compare_string(strlen(ctl_tmp->psf_ctl_file_name),
-                              stripped_dir, ctl_tmp->psf_ctl_file_name) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-            if(compare_string(strlen(ctl_tmp->f_psf_def_c->psf_def_file_name),
-                              stripped_dir, ctl_tmp->f_psf_def_c->psf_def_file_name) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-            if(compare_string(strlen(ctl_tmp->f_fld_on_psf_c->fname_fld_on_psf),
-                              stripped_dir, ctl_tmp->f_fld_on_psf_c->fname_fld_on_psf) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-        }
-        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_iso_ctls);i++){
-            struct f_VIZ_ISO_ctl *ctl_tmp 
-                    = (struct f_VIZ_ISO_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_iso_ctls);
-            if(compare_string(strlen(ctl_tmp->iso_ctl_file_name),
-                              stripped_dir, ctl_tmp->iso_ctl_file_name) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-            if(compare_string(strlen(ctl_tmp->f_fld_on_iso_c->fname_fld_on_psf),
-                              stripped_dir, ctl_tmp->f_fld_on_iso_c->fname_fld_on_psf) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-        }
-        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_map_ctls);i++){
-            struct f_VIZ_MAP_ctl *ctl_tmp 
-                    = (struct f_VIZ_MAP_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_map_ctls);
-            if(compare_string(strlen(ctl_tmp->map_ctl_file_name),
-                              stripped_dir, ctl_tmp->map_ctl_file_name) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-        }
-        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_pvr_ctls);i++){
-            struct f_VIZ_PVR_ctl *ctl_tmp 
-                    = (struct f_VIZ_PVR_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_pvr_ctls);
-            if(compare_string(strlen(ctl_tmp->pvr_ctl_file_name),
-                              stripped_dir, ctl_tmp->pvr_ctl_file_name) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-        }
-        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_lic_ctls);i++){
-            struct f_VIZ_LIC_PVR_ctl *ctl_tmp 
-                    = (struct f_VIZ_LIC_PVR_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_lic_ctls);
-            if(compare_string(strlen(ctl_tmp->lic_ctl_file_name),
-                              stripped_dir, ctl_tmp->lic_ctl_file_name) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-        }
-        for(i=0;i<count_void_clist(f_MHD_ctl->f_viz_ctls->f_fline_ctls);i++){
-            struct f_VIZ_FLINE_ctl *ctl_tmp 
-                    = (struct f_VIZ_FLINE_ctl *) void_clist_at_index(i,f_MHD_ctl->f_viz_ctls->f_fline_ctls);
-            if(compare_string(strlen(ctl_tmp->fline_ctl_file_name),
-                              stripped_dir, ctl_tmp->fline_ctl_file_name) == 0){
-                printf("%s under %s does not exist. made flag %d\n", stripped_dir, path_name, 
-                       mkdir(stripped_dir, 0777));
-            };
-        }
+        check_directory_to_save(path_name, stripped_dir, stripped_filehead, f_MHD_ctl);
 	} else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
 	} else{

@@ -9,7 +9,7 @@
 
 extern void * set_file_fmt_items_f(void *fmt_names_c);
 
-struct main_widgets init_main_widgets(){
+struct main_widgets * init_main_widgets(){
 	struct main_widgets *mWidgets = (struct main_widgets *) malloc(sizeof(struct main_widgets));
 		printf("mWidgets %p\n", mWidgets);
 	if(mWidgets == NULL){
