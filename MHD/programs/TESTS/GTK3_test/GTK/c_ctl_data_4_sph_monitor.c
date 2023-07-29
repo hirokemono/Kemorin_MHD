@@ -229,7 +229,7 @@ static void init_f_MHD_sph_monitor_arrays(struct f_MHD_sph_monitor_ctls *f_smoni
     void *void_in = NULL;
 	int i;
 	for(i=0;i<f_smonitor_ctl->f_num_vspec_ctl;i++){
-        struct f_sph_vol_spectr_ctls *void_in = init_f_sph_vol_spectr_ctls(i, void_in,
+        struct f_sph_vol_spectr_ctls *void_in = init_f_sph_vol_spectr_ctls(i, NULL,
                                                                            f_smonitor_ctl->f_self);
 		append_void_clist((void *) void_in, f_smonitor_ctl->f_v_pwr);
 	}
