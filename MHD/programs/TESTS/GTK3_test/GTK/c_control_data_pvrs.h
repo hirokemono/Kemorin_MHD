@@ -19,7 +19,6 @@
 #include "t_ctl_array_int2_items_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_control_data_4_pvr_movie_c.h"
-#include "t_control_data_4_pvr_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"
 #include "c_ctl_data_PVR_colormap.h"
 #include "c_ctl_data_PVR_view_matrix.h"
@@ -27,6 +26,15 @@
 #include "c_ctl_data_PSF_ISOs.h"
 #include "c_control_data_pvrs.h"
 
+
+struct pvr_plot_area_ctl_c{
+    void * f_self;
+    int * f_iflag;
+    char * c_block_name;
+    
+    struct chara_clist       *f_pvr_area_ctl;
+    struct chara2_real_clist *f_surf_enhanse_ctl;
+};
 
 struct f_PVR_quilt_image_ctl{
     void * f_self;

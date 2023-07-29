@@ -14,7 +14,7 @@
 #include "kemoview_gtk_routines.h"
 #include "t_ctl_array_chara2_int_items_c.h"
 #include "t_control_chara_int2_IO.h"
-#include "t_ctl_data_SGS_MHD_model_c.h"
+#include "t_ctl_data_4_fields_c.h"
 #include "c_ctl_data_FLINE.h"
 #include "control_block_panel_GTK.h"
 #include "control_boxes_single_items_GTK.h"

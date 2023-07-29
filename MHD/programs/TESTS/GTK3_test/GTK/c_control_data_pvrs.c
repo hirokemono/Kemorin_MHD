@@ -127,6 +127,17 @@ static struct pvr_plot_area_ctl_c * init_f_PVR_plot_area_ctl_c(void *(*c_load_se
     return f_render_area_c;
 }
 
+static void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
+    
+    dealloc_chara_clist(area_c->f_pvr_area_ctl);
+    dealloc_chara2_real_clist(area_c->f_surf_enhanse_ctl);
+    
+    free(area_c->c_block_name);
+    area_c->f_iflag = NULL;
+    free(area_c);
+    return;
+};
+
 static struct f_PVR_quilt_image_ctl * init_f_PVR_quilt_image_ctl(void *(*c_load_self)(void *f_parent),
                                                                  void *f_parent)
 {

@@ -12,7 +12,6 @@
 
 #include "calypso_GTK.h"
 #include "t_ctl_data_4_fields_c.h"
-#include "tree_view_4_each_term_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "control_boxes_single_items_GTK.h"
 

@@ -23,7 +23,6 @@
 #include "control_elements_IO_GTK.h"
 #include "control_combobox_GTK.h"
 #include "control_panel_4_field_GTK.h"
-#include "t_control_data_4_iso_c.h"
 #include "kemoview_gtk_routines.h"
 #include "tree_view_chara_GTK.h"
 #include "tree_view_4_field_GTK.h"
@@ -46,8 +45,6 @@
 #include "control_panel_SGS_MHD_GTK.h"
 
 
-extern void c_view_control_sph_SGS_MHD();
-extern void * c_read_control_sph_SGS_MHD(char *file_name);
 GtkWidget *window;
 
 
@@ -183,7 +180,6 @@ static void cb_Open(GtkButton *button, gpointer data)
 			chdir(folder);
 		}
 		/* Get Folder name */
-		printf("f_MHD_ctl %p\n", f_MHD_ctl);
 		f_MHD_ctl->f_self =     c_read_control_sph_SGS_MHD((char *) read_file_name);
 		f_MHD_ctl->f_addition = c_add_sgs_sph_mhd_ctl();
 		set_f_MHD_control(f_MHD_ctl);

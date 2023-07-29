@@ -26,9 +26,9 @@ c_link_PVR_colormap_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_colormap_ctl.f90 t_ctl_da
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_PVR_movie_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_movie_ctl.f90 t_ctl_data_pvr_movie.o
 	$(F90) -c $(F90OPTFLAGS) $<
-c_link_PVR_quilt_image_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_quilt_image_ctl.f90 t_ctl_data_quilt_image.o t_ctl_data_view_transfers.o
+c_link_PVR_quilt_image_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_quilt_image_ctl.f90 t_ctl_data_quilt_image.o t_ctl_data_view_transfers.o ctl_array_chara_to_c.o
 	$(F90) -c $(F90OPTFLAGS) $<
-c_link_PVR_section_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_section_ctl.f90 t_control_data_pvr_sections.o t_control_data_pvr_isosurfs.o t_ctl_data_map_section.o t_ctl_data_pvr_section.o t_ctl_data_pvr_isosurface.o
+c_link_PVR_section_ctl.o: $(MHD_F2003_DIR)/c_link_PVR_section_ctl.f90 t_control_data_pvr_sections.o t_control_data_pvr_isosurfs.o t_ctl_data_map_section.o t_ctl_data_pvr_section.o t_ctl_data_pvr_isosurface.o ctl_array_chara_to_c.o
 	$(F90) -c $(F90OPTFLAGS) $<
 c_link_SGS_filter_file_ctl.o: $(MHD_F2003_DIR)/c_link_SGS_filter_file_ctl.f90 t_ctl_data_filter_files.o
 	$(F90) -c $(F90OPTFLAGS) $<

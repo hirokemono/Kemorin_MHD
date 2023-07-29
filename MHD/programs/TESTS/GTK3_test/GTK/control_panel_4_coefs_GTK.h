@@ -12,8 +12,15 @@
 
 #include "calypso_GTK.h"
 #include "t_ctl_data_4_fields_c.h"
-#include "tree_view_4_each_term_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
+
+struct momentum_coefs_view{
+    int index_coefs;
+    GtkTreeView *coefs_tree_view;
+    GtkTreeView *dimless_tree_view;
+    
+    struct momentum_equation_ctl_c *mom_ctl_gtk;
+};
 
 /* prototypes */
 

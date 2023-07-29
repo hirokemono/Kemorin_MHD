@@ -399,9 +399,6 @@ void add_field_selection_box(struct field_views *fields_vws,
 	GtkWidget *button;
 	GtkWidget *scrolled_window;
 
-    char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
-	get_label_MHD_control_head(c_label);
-
     /* Delete data bottun */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	button = gtk_button_new_with_label("Remove");

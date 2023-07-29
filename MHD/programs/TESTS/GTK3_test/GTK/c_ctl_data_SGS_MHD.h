@@ -113,6 +113,9 @@ struct f_MHD_control{
 
 
 /* prototypes */
+extern void c_view_control_sph_SGS_MHD();
+extern void * c_read_control_sph_SGS_MHD(char *file_name);
+
 extern void * c_add_sgs_sph_mhd_ctl();
 
 struct f_MHD_viz_ctls * init_f_MHD_viz_ctls(void *(*c_load_self)(void *f_parent), void *f_parent);

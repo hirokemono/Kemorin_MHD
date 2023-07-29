@@ -73,6 +73,9 @@ struct pvr_ctl_c{
 };
 
 /* prototypes */
+
+void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c);
+
 struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c();
 void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c);
 

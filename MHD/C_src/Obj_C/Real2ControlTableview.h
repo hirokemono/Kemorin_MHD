@@ -8,7 +8,7 @@
 #import <Cocoa/Cocoa.h>
 #include "calypso_param_c.h"
 #include "t_control_real2_IO.h"
-#include "load_MHD_control_c.h"
+#include "c_ctl_data_SGS_MHD.h"
 
 @interface Real2ControlTableview : NSObject {
     NSMutableDictionary * real2ControlDictionary;
