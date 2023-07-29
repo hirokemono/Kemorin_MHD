@@ -26,9 +26,6 @@
 !!      subroutine copy_kernel_control_data(org_kernel_c, new_kernel_c)
 !!        type(lic_kernel_ctl), intent(in) :: org_kernel_c
 !!        type(lic_kernel_ctl), intent(inout) :: new_kernel_c
-!!
-!!      integer(kind = kint) function num_ctl_label_LIC_kernel()
-!!      subroutine set_ctl_label_LIC_kernel(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags  (Not used currently)
 !!    kernel_type:             'gaussian' or 'triangle'
@@ -101,9 +98,7 @@
       character(len=kchara) :: hd_half_length = 'half_length_ctl'
       character(len=kchara) :: hd_trace_count = 'max_trace_count'
 !
-      integer(kind = kint), parameter :: n_label_LIC_kernel = 7
-!
-      private :: hd_kernel_type, n_label_LIC_kernel
+      private :: hd_kernel_type
       private :: hd_kernel_grid_size, hd_trace_type, hd_trace_count
       private :: hd_kernel_sigma, hd_kernel_peak, hd_half_length
 !
@@ -275,31 +270,6 @@
      &                   new_kernel_c%half_length_ctl)
 !
       end subroutine copy_kernel_control_data
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_ctl_label_LIC_kernel()
-      num_ctl_label_LIC_kernel = n_label_LIC_kernel
-      return
-      end function num_ctl_label_LIC_kernel
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_ctl_label_LIC_kernel(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_LIC_kernel)
-!
-      call set_control_labels(hd_kernel_type,      names( 1))
-      call set_control_labels(hd_kernel_grid_size, names( 2))
-      call set_control_labels(hd_kernel_sigma,     names( 3))
-      call set_control_labels(hd_kernel_peak,      names( 4))
-      call set_control_labels(hd_trace_type,       names( 5))
-      call set_control_labels(hd_half_length,      names( 6))
-      call set_control_labels(hd_trace_count,      names( 7))
-!
-      end subroutine set_ctl_label_LIC_kernel
 !
 !  ---------------------------------------------------------------------
 !

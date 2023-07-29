@@ -1,5 +1,3 @@
-base_control_labels_to_c.o: $(F2003DIR)/base_control_labels_to_c.f90 m_precision.o ctl_data_4_time_steps_IO.o
-	$(F90) -c $(F90OPTFLAGS) $<
 binary_file_access.o: $(F2003DIR)/binary_file_access.f90 m_precision.o t_binary_IO_buffer.o set_parallel_file_name.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 byte_swap_f.o: $(F2003DIR)/byte_swap_f.f90 m_precision.o

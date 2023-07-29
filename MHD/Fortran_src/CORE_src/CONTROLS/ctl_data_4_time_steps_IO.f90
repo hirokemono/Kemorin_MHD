@@ -14,10 +14,6 @@
 !!        type(time_data_control), intent(inout) :: tctl
 !!      subroutine write_control_time_step_data(id_control, tctl, level)
 !!        type(time_data_control), intent(in) :: tctl
-!!
-!!      integer(kind = kint) function num_label_time_step_ctl()
-!!      integer(kind = kint) function num_label_time_step_ctl_w_dep()
-!!      subroutine set_label_time_step_ctl(names)
 !! ------------------------------------------------------------------
 !!      Example of control parameters for flexible time step
 !!
@@ -193,11 +189,6 @@
      &       :: hd_i_step_psf =       'i_step_psf_ctl'
       character(len=kchara), parameter, private                         &
      &       :: hd_i_step_iso =       'i_step_iso_ctl'
-!
-      integer(kind = kint), parameter, private                          &
-     &                      :: n_label_time_step_ctl =       39
-      integer(kind = kint), parameter, private                          &
-     &                      :: n_label_time_step_ctl_w_dep = 41
 !
 ! -----------------------------------------------------------------------
 !
@@ -604,84 +595,5 @@
       end subroutine init_ctl_time_step_label
 !
 !   --------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_time_step_ctl()
-      num_label_time_step_ctl = n_label_time_step_ctl
-      return
-      end function num_label_time_step_ctl
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_time_step_ctl_w_dep()
-      num_label_time_step_ctl_w_dep = n_label_time_step_ctl_w_dep
-      return
-      end function num_label_time_step_ctl_w_dep
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_time_step_ctl(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_time_step_ctl_w_dep)
-!
-!
-      call set_control_labels(hd_elapsed_time,  names( 1))
-      call set_control_labels(hd_time_init,     names( 2))
-      call set_control_labels(hd_dt,            names( 3))
-!
-      call set_control_labels(hd_i_step_init,     names( 4))
-      call set_control_labels(hd_i_finish_number, names( 5))
-      call set_control_labels(hd_i_step_check,    names( 6))
-      call set_control_labels(hd_i_step_rst,      names( 7))
-!
-      call set_control_labels(hd_i_step_section, names( 8))
-      call set_control_labels(hd_i_step_isosurf, names( 9))
-      call set_control_labels(hd_i_step_isosurf, names(10))
-      call set_control_labels(hd_i_step_pvr,     names(11))
-      call set_control_labels(hd_i_step_fline,   names(12))
-      call set_control_labels(hd_i_step_lic,     names(13))
-!
-      call set_control_labels(hd_i_step_ucd,       names(14))
-      call set_control_labels(hd_i_step_monitor,   names(15))
-      call set_control_labels(hd_i_step_sgs_coefs, names(16))
-      call set_control_labels(hd_i_step_boundary,  names(17))
-      call set_control_labels(hd_i_diff_steps,     names(18))
-!
-!
-      call set_control_labels(hd_flexible_step,      names(19))
-      call set_control_labels(hd_min_delta_t,        names(20))
-      call set_control_labels(hd_max_delta_t,        names(21))
-      call set_control_labels(hd_max_eps_to_shrink,  names(22))
-      call set_control_labels(hd_min_eps_to_expand,  names(23))
-!
-      call set_control_labels(hd_ratio_to_cfl,       names(24))
-
-      call set_control_labels(hd_start_rst_step,     names(25))
-      call set_control_labels(hd_end_rst_step,       names(26))
-!
-      call set_control_labels(hd_delta_t_check,   names(27))
-      call set_control_labels(hd_delta_t_rst,     names(28))
-!
-      call set_control_labels(hd_delta_t_section,        names(29))
-      call set_control_labels(hd_delta_t_isosurf,        names(30))
-      call set_control_labels(hd_delta_t_map_projection, names(31))
-      call set_control_labels(hd_delta_t_pvr,            names(32))
-      call set_control_labels(hd_delta_t_fline,          names(33))
-      call set_control_labels(hd_delta_t_lic,            names(34))
-!
-      call set_control_labels(hd_delta_t_ucd,        names(35))
-      call set_control_labels(hd_delta_t_monitor,    names(36))
-      call set_control_labels(hd_delta_t_sgs_coefs,  names(37))
-      call set_control_labels(hd_delta_t_boundary,   names(38))
-!
-!
-      call set_control_labels(hd_i_step_number,     names(39))
-      call set_control_labels(hd_i_step_psf,        names(40))
-      call set_control_labels(hd_i_step_iso,        names(41))
-!
-      end subroutine set_label_time_step_ctl
-!
-!  ---------------------------------------------------------------------
 !
       end module ctl_data_4_time_steps_IO

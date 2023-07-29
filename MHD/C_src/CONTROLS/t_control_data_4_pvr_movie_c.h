@@ -19,15 +19,12 @@
 #include "t_control_chara_IO.h"
 #include "t_control_real2_IO.h"
 #include "t_ctl_data_4_view_transfer_c.h"
-#include "m_PVR_control_labels_from_f.h"
 
 struct pvr_movie_ctl_c{
     void * f_self;
     int * f_iflag;
     char * c_block_name;
     
-	struct control_labels_f *label_lic_movie_ctl;
-	
 	struct chara_ctl_item *f_movie_mode_ctl;
 	struct int_ctl_item *f_num_frames_ctl;
 	
@@ -49,10 +46,6 @@ struct pvr_movie_ctl_c * init_pvr_movie_ctl_c();
 void dealloc_f_PVR_mul_vmats_ctls(struct void_clist *f_vmat_ctls);
 void dealloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c);
 
-void read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-						  struct pvr_movie_ctl_c *movie_c);
-int write_pvr_movie_ctl_c(FILE *fp, int level, const char *label,
-						  struct pvr_movie_ctl_c *movie_c);
 int write_lic_movie_ctl_c(FILE *fp, int level, const char *label,
 						  struct pvr_movie_ctl_c *movie_c);
 

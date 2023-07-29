@@ -20,10 +20,6 @@
 !!        type(iso_ctl), intent(in) :: iso_c
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      integer(kind = kint) function num_label_iso_ctl()
-!!      integer(kind = kint) function num_label_iso_ctl_w_dpl()
-!!      subroutine set_label_iso_ctl(names)
-!!      subroutine set_label_iso_ctl_w_dpl(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's surface rendering
 !!
@@ -106,11 +102,6 @@
      &             :: hd_iso_file_head = 'iso_file_head'
       character(len=kchara), parameter, private                         &
      &             :: hd_iso_result = 'isosurf_result_define'
-!
-      integer(kind = kint), parameter :: n_label_iso_ctl = 4
-      integer(kind = kint), parameter :: n_label_iso_ctl_w_dpl = 6
-!
-      private :: n_label_iso_ctl, n_label_iso_ctl_w_dpl
 !
 !  ---------------------------------------------------------------------
 !
@@ -213,50 +204,6 @@
      &      iso_c%iso_output_type_ctl)
 !
       end subroutine init_iso_ctl_stract
-!
-!  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_iso_ctl()
-      num_label_iso_ctl = n_label_iso_ctl
-      return
-      end function num_label_iso_ctl
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_iso_ctl_w_dpl()
-      num_label_iso_ctl_w_dpl = n_label_iso_ctl_w_dpl
-      return
-      end function num_label_iso_ctl_w_dpl
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_iso_ctl(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_iso_ctl)
-!
-!
-      call set_control_labels(hd_isosurf_prefix, names( 1))
-      call set_control_labels(hd_iso_out_type,   names( 2))
-      call set_control_labels(hd_iso_define,     names( 3))
-      call set_control_labels(hd_field_on_iso,   names( 4))
-!
-      end subroutine set_label_iso_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_iso_ctl_w_dpl(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_iso_ctl_w_dpl)
-!
-!
-      call set_label_iso_ctl(names(1))
-      call set_control_labels(hd_iso_file_head,  names( 5))
-      call set_control_labels(hd_iso_result,     names( 6))
-!
-      end subroutine set_label_iso_ctl_w_dpl
 !
 !  ---------------------------------------------------------------------
 !

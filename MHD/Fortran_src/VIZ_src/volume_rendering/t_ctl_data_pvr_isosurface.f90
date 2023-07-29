@@ -27,9 +27,6 @@
 !!        type(pvr_isosurf_ctl), intent(inout) :: new_pvr_iso_c
 !!      subroutine reset_pvr_isosurface_ctl(pvr_iso_ctl)
 !!        type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
-!!
-!!      integer(kind = kint) function num_label_pvr_isosurface()
-!!      subroutine set_label_pvr_isosurface(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    begin isosurface_ctl
 !!      isosurf_value       0.3
@@ -69,10 +66,7 @@
       character(len=kchara) :: hd_pvr_opacity =   'opacity_ctl'
       character(len=kchara) :: hd_iso_direction = 'surface_direction'
 !
-      integer(kind = kint), parameter :: n_label_pvr_isosurface =   3
-!
       private :: hd_isosurf_value, hd_pvr_opacity, hd_iso_direction
-      private :: n_label_pvr_isosurface
 !
 !  ---------------------------------------------------------------------
 !
@@ -189,27 +183,5 @@
       end subroutine reset_pvr_isosurface_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_isosurface()
-      num_label_pvr_isosurface = n_label_pvr_isosurface
-      return
-      end function num_label_pvr_isosurface
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_pvr_isosurface(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_isosurface)
-!
-!
-      call set_control_labels(hd_isosurf_value, names( 1))
-      call set_control_labels(hd_pvr_opacity,   names( 2))
-      call set_control_labels(hd_iso_direction, names( 3))
-!
-      end subroutine set_label_pvr_isosurface
-!
-! ----------------------------------------------------------------------
 !
       end module t_ctl_data_pvr_isosurface

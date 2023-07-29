@@ -20,11 +20,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_colormap_ctl), intent(in) :: color
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      integer(kind = kint) function num_label_pvr_colormap()
-!!      integer(kind = kint) function num_label_LIC_colormap()
-!!      subroutine set_label_pvr_colormap(names)
-!!      subroutine set_label_LIC_colormap(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of color control for Kemo's volume rendering
 !!
@@ -111,11 +106,6 @@
      &        :: hd_constant_opacity = 'constant_opacity_ctl'
       character(len=kchara), parameter, private                         &
      &        :: hd_linear_opacity = 'linear_opacity_ctl'
-!
-      integer(kind = kint), parameter :: n_label_pvr_colormap =  9
-      integer(kind = kint), parameter :: n_label_lic_colormap = 13
-!
-      private :: n_label_pvr_colormap, n_label_lic_colormap
 !
 !  ---------------------------------------------------------------------
 !
@@ -280,73 +270,6 @@
      &     (hd_background_color, color%background_color_ctl)
 !
       end subroutine init_pvr_colordef_ctl_labels
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_colormap()
-      num_label_pvr_colormap = n_label_pvr_colormap
-      return
-      end function num_label_pvr_colormap
-!
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_LIC_colormap()
-      num_label_LIC_colormap = n_label_lic_colormap
-      return
-      end function num_label_LIC_colormap
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_pvr_colormap(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_colormap)
-!
-!
-      call set_control_labels(hd_colormap_mode,  names( 1))
-!
-      call set_control_labels(hd_data_mapping,     names( 2))
-      call set_control_labels(hd_pvr_range_min,    names( 3))
-      call set_control_labels(hd_pvr_range_max,    names( 4))
-      call set_control_labels(hd_colortable,       names( 5))
-!
-      call set_control_labels(hd_opacity_style,    names( 6))
-      call set_control_labels(hd_constant_opacity, names( 7))
-      call set_control_labels(hd_linear_opacity,   names( 8))
-!
-      call set_control_labels(hd_background_color,    names(9))
-!
-      end subroutine set_label_pvr_colormap
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_LIC_colormap(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_lic_colormap)
-!
-!
-      call set_control_labels(hd_colormap_mode,  names( 1))
-!
-      call set_control_labels(hd_lic_color_fld,    names( 2))
-      call set_control_labels(hd_lic_color_comp,   names( 3))
-      call set_control_labels(hd_lic_opacity_fld,  names( 4))
-      call set_control_labels(hd_lic_opacity_comp, names( 5))
-!
-!
-      call set_control_labels(hd_data_mapping,     names( 6))
-      call set_control_labels(hd_pvr_range_min,    names( 7))
-      call set_control_labels(hd_pvr_range_max,    names( 8))
-      call set_control_labels(hd_colortable,       names( 9))
-!
-      call set_control_labels(hd_opacity_style,    names(10))
-      call set_control_labels(hd_constant_opacity, names(11))
-      call set_control_labels(hd_linear_opacity,   names(12))
-!
-      call set_control_labels(hd_background_color,    names(13))
-!
-      end subroutine set_label_LIC_colormap
 !
 !  ---------------------------------------------------------------------
 !

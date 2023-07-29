@@ -26,9 +26,6 @@
 !!      subroutine dealloc_lic_count_data(pvr, lic_ctl)
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!!
-!!      integer(kind = kint) function num_ctl_label_LIC_pvr()
-!!      subroutine set_ctl_label_LIC_pvr(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's volume rendering
 !!
@@ -141,10 +138,6 @@
 !   Deprecated labels
       character(len=kchara), parameter, private                         &
      &             :: hd_lic_out_type =    'lic_image_format'
-!
-      integer(kind = kint), parameter :: n_label_LIC_pvr = 18
-!
-      private :: n_label_LIC_pvr
 !
 !  ---------------------------------------------------------------------
 !
@@ -402,46 +395,5 @@
       end subroutine dealloc_lic_count_data
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_ctl_label_LIC_pvr()
-      num_ctl_label_LIC_pvr = n_label_LIC_pvr
-      return
-      end function num_ctl_label_LIC_pvr
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_ctl_label_LIC_pvr(names)
-!
-      character(len = kchara), intent(inout) :: names(n_label_LIC_pvr)
-!
-!
-      call set_control_labels(hd_pvr_updated,    names( 1))
-!
-      call set_control_labels(hd_lic_file_head,  names( 2))
-      call set_control_labels(hd_lic_out_format, names( 3))
-      call set_control_labels(hd_pvr_monitor,    names( 4))
-!
-      call set_control_labels(hd_pvr_streo,       names( 5))
-      call set_control_labels(hd_anaglyph_switch, names( 6))
-      call set_control_labels(hd_pvr_quilt_3d,    names( 7))
-!
-      call set_control_labels(hd_lic_control,    names( 8))
-!
-      call set_control_labels(hd_plot_area,      names( 9))
-      call set_control_labels(hd_view_transform, names(10))
-      call set_control_labels(hd_lic_colordef,   names(11))
-      call set_control_labels(hd_colormap,       names(12))
-      call set_control_labels(hd_pvr_lighting,   names(13))
-      call set_control_labels(hd_pvr_colorbar,   names(14))
-!
-      call set_control_labels(hd_pvr_sections,   names(15))
-      call set_control_labels(hd_pvr_isosurf,    names(16))
-      call set_control_labels(hd_quilt_image,    names(17))
-      call set_control_labels(hd_snapshot_movie, names(18))
-!
-      end subroutine set_ctl_label_LIC_pvr
-!
-! ----------------------------------------------------------------------
 !
       end module ctl_data_lic_pvr_IO

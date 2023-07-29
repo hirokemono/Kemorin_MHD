@@ -27,9 +27,6 @@
 !!        type(projection_ctl), intent(inout) :: new_proj
 !!      logical function cmp_projection_ctl(proj1, proj2)
 !!        type(projection_ctl), intent(in) :: proj1, proj2
-!!
-!!      integer(kind = kint) function num_label_pvr_projection()
-!!      subroutine set_label_pvr_projection(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !!
@@ -82,8 +79,6 @@
       end type projection_ctl
 !
 !     4th level for projection_matrix
-      integer(kind = kint), parameter, private                          &
-     &             :: n_label_pvr_projection = 6
       character(len=kchara), parameter, private                         &
      &             :: hd_perspect_angle = 'perspective_angle_ctl'
       character(len=kchara), parameter, private                         &
@@ -293,31 +288,5 @@
       end subroutine copy_projection_mat_ctl
 !
 !  ---------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_projection()
-      num_label_pvr_projection = n_label_pvr_projection
-      return
-      end function num_label_pvr_projection
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_pvr_projection(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_projection)
-!
-!
-      call set_control_labels(hd_perspect_angle, names( 1))
-      call set_control_labels(hd_perspect_xy,    names( 2))
-      call set_control_labels(hd_perspect_near,  names( 3))
-      call set_control_labels(hd_perspect_far,   names( 4))
-!
-      call set_control_labels(hd_horizontal_range, names( 5))
-      call set_control_labels(hd_vertical_range,   names( 6))
-!
-      end subroutine set_label_pvr_projection
-!
-! ----------------------------------------------------------------------
 !
       end module t_ctl_data_4_projection

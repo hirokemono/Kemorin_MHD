@@ -20,9 +20,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(surfacing_controls), intent(in) :: surfacing_ctls
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      integer(kind = kint) function num_label_surfacings()
-!!      subroutine set_label_surfacings(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin visual_control
 !!    delta_t_sectioning_ctl   1.0e-3
@@ -81,9 +78,6 @@
 !
       character(len=kchara), parameter, private                         &
      &       :: hd_output_fld_file_fmt = 'output_field_file_fmt_ctl'
-!
-      integer(kind = kint), parameter, private                          &
-     &                      :: n_label_surfacings = 9
 !
 !   --------------------------------------------------------------------
 !
@@ -236,35 +230,5 @@
       end subroutine init_surfacing_ctl_label
 !
 !   --------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_surfacings()
-      num_label_surfacings = n_label_surfacings
-      return
-      end function num_label_surfacings
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_surfacings(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_surfacings)
-!
-!
-      call set_control_labels(hd_i_step_section,  names( 1))
-      call set_control_labels(hd_delta_t_section, names( 2))
-      call set_control_labels(hd_section_ctl,     names( 3))
-!
-      call set_control_labels(hd_i_step_isosurf,  names( 4))
-      call set_control_labels(hd_delta_t_isosurf, names( 5))
-      call set_control_labels(hd_isosurf_ctl,     names( 6))
-!
-      call set_control_labels(hd_i_step_ucd,          names( 7))
-      call set_control_labels(hd_delta_t_ucd,         names( 8))
-      call set_control_labels(hd_output_fld_file_fmt, names( 9))
-!
-      end subroutine set_label_surfacings
-!
-!  ---------------------------------------------------------------------
 !
       end module control_data_surfacing_IO

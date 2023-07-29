@@ -42,9 +42,6 @@
 !!      subroutine dup_pvr_cmap_cbar(org_cmap_cbar_c, new_cmap_cbar_c)
 !!        type(pvr_colormap_bar_ctl), intent(in) :: org_cmap_cbar_c
 !!        type(pvr_colormap_bar_ctl), intent(inout) :: new_cmap_cbar_c
-!!
-!!      integer(kind = kint) function num_label_pvr_cmap_bar()
-!!      subroutine set_label_pvr_cmap_bar(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of color control for Kemo's volume rendering
 !!
@@ -129,9 +126,8 @@
 !
       character(len=kchara) :: hd_colormap =      'colormap_ctl'
       character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
-      integer(kind = kint), parameter :: n_label_pvr_cmap_bar = 2
 !
-      private :: hd_colormap, hd_pvr_colorbar, n_label_pvr_cmap_bar
+      private :: hd_colormap, hd_pvr_colorbar
       private :: hd_colormap_file
 !
       private ::  read_control_pvr_colormap_file
@@ -413,26 +409,5 @@
       end subroutine dup_pvr_cmap_cbar
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_cmap_bar()
-      num_label_pvr_cmap_bar = n_label_pvr_cmap_bar
-      return
-      end function num_label_pvr_cmap_bar
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_pvr_cmap_bar(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_cmap_bar)
-!
-!
-      call set_control_labels(hd_colormap,     names( 1))
-      call set_control_labels(hd_pvr_colorbar, names( 2))
-!
-      end subroutine set_label_pvr_cmap_bar
-!
-! ----------------------------------------------------------------------
 !
       end module t_ctl_data_pvr_colormap_bar

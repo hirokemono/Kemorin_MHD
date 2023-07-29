@@ -103,7 +103,6 @@ void light_radius_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				new_value, old_value2, old_value3,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
-	write_real3_clist(stdout, 0, "value1 changed", light_vws->light_rtp_vws->r3_clist_gtk);
 	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
@@ -139,7 +138,6 @@ void light_theta_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				old_value1, new_value, old_value3,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
-	write_real3_clist(stdout, 0, "value2 changed", light_vws->light_rtp_vws->r3_clist_gtk);
 	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
@@ -175,7 +173,6 @@ void light_phi_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				old_value1, old_value2, new_value,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
-	write_real3_clist(stdout, 0, "value3 changed", light_vws->light_rtp_vws->r3_clist_gtk);
 	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
@@ -186,7 +183,6 @@ void add_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
 	light_vws->light_rtp_vws->index_bc
 			= add_r3_list_items(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
 								light_vws->light_rtp_vws->r3_clist_gtk);
-    write_real3_clist(stdout, 0, "columns added", light_vws->light_rtp_vws->r3_clist_gtk);
 	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
@@ -195,7 +191,6 @@ void delete_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
 	
 	delete_r3_list_items(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
 				light_vws->light_rtp_vws->r3_clist_gtk);
-    write_real3_clist(stdout, 0, "columns deleted", light_vws->light_rtp_vws->r3_clist_gtk);
 	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };

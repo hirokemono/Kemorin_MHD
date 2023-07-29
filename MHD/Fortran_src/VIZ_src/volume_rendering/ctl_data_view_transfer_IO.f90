@@ -21,8 +21,6 @@
 !!        type(modeview_ctl), intent(in) :: mat
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      integer(kind = kint) function num_label_pvr_modelview()
-!!      subroutine set_label_pvr_modelview(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !
@@ -166,9 +164,6 @@
      &             :: hd_view_point =  'viewpoint_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_viewpt_in_view = 'viewpoint_in_viewer_ctl'
-!
-      integer(kind = kint), parameter :: n_label_pvr_modelview =  13
-      private :: n_label_pvr_modelview
 !
 !  ---------------------------------------------------------------------
 !
@@ -341,41 +336,5 @@
       end subroutine init_view_transfer_ctl_label
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_modelview()
-      num_label_pvr_modelview = n_label_pvr_modelview
-      return
-      end function num_label_pvr_modelview
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_pvr_modelview(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_modelview)
-!
-!
-      call set_control_labels(hd_image_size,   names( 1))
-!
-      call set_control_labels(hd_look_point,   names( 2))
-      call set_control_labels(hd_eye_position, names( 3))
-      call set_control_labels(hd_up_dir,       names( 4))
-      call set_control_labels(hd_view_rot_dir, names( 5))
-      call set_control_labels(hd_view_rot_deg, names( 6))
-!
-      call set_control_labels(hd_scale_factor,   names( 7))
-      call set_control_labels(hd_scale_fac_dir,  names( 8))
-      call set_control_labels(hd_eye_in_view,    names( 9))
-!
-      call set_control_labels(hd_project_mat, names(10))
-      call set_control_labels(hd_model_mat,   names(11))
-!
-      call set_control_labels(hd_stereo_view, names(12))
-      call set_control_labels(hd_projection_type, names(13))
-!
-      end subroutine set_label_pvr_modelview
-!
-! ----------------------------------------------------------------------
 !
       end module ctl_data_view_transfer_IO

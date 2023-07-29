@@ -6,30 +6,26 @@
 !>@brief control parameter for isuosurfaces
 !!
 !!@verbatim
-!!      integer(c_int) function num_label_iso_ctl_f() bind(c)
-!!      integer(c_int) function num_label_iso_ctl_w_dpl_f() bind(c)
-!!      integer(c_int) function num_label_iso_define_control_f() bind(c)
 !!      integer(c_int) function num_label_iso_type_f() bind(c)
-!!
-!!      subroutine set_label_iso_ctl_w_dpl_f(names_c)  bind(c)
-!!      subroutine set_label_iso_define_control_f(names_c)  bind(c)
 !!      subroutine set_label_iso_type_f(names_c)  bind(c)
 !!
-!!      integer(c_int) function num_label_fld_on_psf_control_f() bind(c)
-!!      integer(c_int) function num_label_psf_define_control_f() bind(c)
-!!      integer(c_int) function num_label_psf_ctl_w_dpl_f() bind(c)
 !!      integer(c_int) function num_label_psf_def_type_f() bind(c)
 !!      integer(c_int) function num_label_psf_def_type_grp_f() bind(c)
 !!      integer(c_int) function num_label_psf_dirs_f() bind(c)
 !!      integer(c_int) function num_label_psf_coefs_f() bind(c)
-!!      subroutine set_label_fld_on_psf_control_f(names_c)  bind(c)
-!!      subroutine set_label_psf_define_control_f(names_c)  bind(c)
-!!      subroutine set_label_psf_ctl_w_dpl_f(names_c)  bind(c)
 !!      subroutine set_label_psf_def_type_grp_f(names_c)  bind(c)
 !!      subroutine set_label_psf_dirs_f(names_c)  bind(c)
 !!      subroutine set_label_psf_coefs_f(names_c)  bind(c)
 !!
 !!      subroutine set_primary_section_coef_flag_f(names_c)  bind(c)
+!!
+!!      integer(c_int) function num_fline_start_flags_f() bind(c)
+!!      integer(c_int) function num_fline_direction_flags_f() bind(c)
+!!      integer(c_int) function num_fline_seeds_flags_f() bind(c)
+!!
+!!      subroutine set_fline_start_flags_f(names_c)  bind(c)
+!!      subroutine set_fline_direction_flags_f(names_c)  bind(c)
+!!      subroutine set_fline_seeds_flags_f(names_c)  bind(c)
 !!@endverbatim
 !
       module PSF_control_label_to_c
@@ -46,36 +42,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(c_int) function num_label_iso_ctl_f() bind(c)
-!
-      use ctl_data_isosurface_IO
-!
-      num_label_iso_ctl_f = num_label_iso_ctl()
-      return
-      end function num_label_iso_ctl_f
-!
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_label_iso_ctl_w_dpl_f() bind(c)
-!
-      use ctl_data_isosurface_IO
-!
-      num_label_iso_ctl_w_dpl_f = num_label_iso_ctl_w_dpl()
-      return
-      end function num_label_iso_ctl_w_dpl_f
-!
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_label_iso_define_control_f() bind(c)
-!
-      use t_control_data_4_iso_def
-!
-      num_label_iso_define_control_f = num_label_iso_define_control()
-      return
-      end function num_label_iso_define_control_f
-!
-! ----------------------------------------------------------------------
-!
       integer(c_int) function num_label_iso_type_f() bind(c)
 !
       use t_control_params_4_iso
@@ -85,36 +51,6 @@
       end function num_label_iso_type_f
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_iso_ctl_w_dpl_f(names_c)  bind(c)
-!
-      use ctl_data_isosurface_IO
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_iso_ctl_w_dpl()])
-      call set_label_iso_ctl_w_dpl(name_f)
-      end subroutine set_label_iso_ctl_w_dpl_f
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_iso_define_control_f(names_c)  bind(c)
-!
-      use t_control_data_4_iso_def
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f,                                 &
-     &                 [num_label_iso_define_control()])
-      call set_label_iso_define_control(name_f)
-      end subroutine set_label_iso_define_control_f
-!
-!  ---------------------------------------------------------------------
 !
       subroutine set_label_iso_type_f(names_c)  bind(c)
 !
@@ -130,37 +66,6 @@
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(c_int) function num_label_fld_on_psf_control_f() bind(c)
-!
-      use t_control_data_4_fld_on_psf
-!
-      num_label_fld_on_psf_control_f = num_label_fld_on_psf_control()
-      return
-      end function num_label_fld_on_psf_control_f
-!
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_label_psf_define_control_f() bind(c)
-!
-      use ctl_data_section_def_IO
-!
-      num_label_psf_define_control_f = num_label_psf_define_control()
-      return
-      end function num_label_psf_define_control_f
-!
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_label_psf_ctl_w_dpl_f() bind(c)
-!
-      use ctl_data_section_IO
-!
-      num_label_psf_ctl_w_dpl_f = num_label_psf_ctl_w_dpl()
-      return
-      end function num_label_psf_ctl_w_dpl_f
-!
-! ----------------------------------------------------------------------
 !
       integer(c_int) function num_label_psf_def_type_f() bind(c)
 !
@@ -202,50 +107,6 @@
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-!
-      subroutine set_label_fld_on_psf_control_f(names_c)  bind(c)
-!
-      use t_control_data_4_fld_on_psf
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f,                                 &
-     &                 [num_label_fld_on_psf_control()])
-      call set_label_fld_on_psf_control(name_f)
-      end subroutine set_label_fld_on_psf_control_f
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_psf_define_control_f(names_c)  bind(c)
-!
-      use ctl_data_section_def_IO
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f,                                 &
-     &                 [num_label_psf_define_control()])
-      call set_label_psf_define_control(name_f)
-      end subroutine set_label_psf_define_control_f
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_psf_ctl_w_dpl_f(names_c)  bind(c)
-!
-      use ctl_data_section_IO
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_psf_ctl_w_dpl()])
-      call set_label_psf_ctl_w_dpl(name_f)
-      end subroutine set_label_psf_ctl_w_dpl_f
-!
-!  ---------------------------------------------------------------------
 !
       subroutine set_label_psf_def_type_grp_f(names_c)  bind(c)
 !
@@ -304,6 +165,80 @@
       call set_primary_section_coef_flag(name_f(1))
 !
       end subroutine set_primary_section_coef_flag_f
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(c_int) function num_fline_start_flags_f() bind(c)
+!
+      use t_control_params_4_fline
+!
+      num_fline_start_flags_f = num_fline_start_flags()
+      return
+      end function num_fline_start_flags_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_fline_start_flags_f(names_c)  bind(c)
+!
+      use t_control_params_4_fline
+!
+      type(C_ptr), value :: names_c
+!
+      character(len=kchara), pointer :: name_f(:)
+!
+      call c_f_pointer(names_c, name_f, [num_fline_start_flags()])
+      call set_fline_start_flags(name_f)
+      end subroutine set_fline_start_flags_f
+!
+!  ---------------------------------------------------------------------
+!
+      integer(c_int) function num_fline_direction_flags_f() bind(c)
+!
+      use t_control_params_4_fline
+!
+      num_fline_direction_flags_f = num_fline_direction_flags()
+      return
+      end function num_fline_direction_flags_f
+!
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_fline_seeds_flags_f() bind(c)
+!
+      use t_control_params_4_fline
+!
+      num_fline_seeds_flags_f = num_fline_seeds_flags()
+      return
+      end function num_fline_seeds_flags_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_fline_direction_flags_f(names_c)  bind(c)
+!
+      use t_control_params_4_fline
+!
+      type(C_ptr), value :: names_c
+!
+      character(len=kchara), pointer :: name_f(:)
+!
+      call c_f_pointer(names_c, name_f, [num_fline_direction_flags()])
+      call set_fline_direction_flags(name_f)
+      end subroutine set_fline_direction_flags_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_fline_seeds_flags_f(names_c)  bind(c)
+!
+      use t_control_params_4_fline
+!
+      type(C_ptr), value :: names_c
+!
+      character(len=kchara), pointer :: name_f(:)
+!
+      call c_f_pointer(names_c, name_f, [num_fline_seeds_flags()])
+      call set_fline_seeds_flags(name_f)
+      end subroutine set_fline_seeds_flags_f
 !
 !  ---------------------------------------------------------------------
 !

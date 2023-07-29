@@ -31,8 +31,6 @@
 !!        type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!
-!!      integer(kind = kint) function num_label_fld_on_psf_control()
-!!      subroutine set_label_fld_on_psf_control(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's surface rendering
 !!
@@ -95,8 +93,6 @@
      &             :: hd_iso_result_field = 'output_field'
       character(len=kchara), parameter                                  &
      &             :: hd_result_value =      'result_value'
-!
-      integer(kind = kint), parameter :: n_label_fld_on_psf_ctl = 3
 !
       private :: hd_result_type, hd_iso_result_field, hd_result_value
 !
@@ -251,28 +247,6 @@
       end do
 !
       end subroutine add_fields_on_psf_to_fld_ctl
-!
-!  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_fld_on_psf_control()
-      num_label_fld_on_psf_control = n_label_fld_on_psf_ctl
-      return
-      end function num_label_fld_on_psf_control
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_fld_on_psf_control(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_fld_on_psf_ctl)
-!
-!
-      call set_control_labels(hd_result_type,      names( 1))
-      call set_control_labels(hd_iso_result_field, names( 2))
-      call set_control_labels(hd_result_value,  names( 3))
-!
-      end subroutine set_label_fld_on_psf_control
 !
 !  ---------------------------------------------------------------------
 !

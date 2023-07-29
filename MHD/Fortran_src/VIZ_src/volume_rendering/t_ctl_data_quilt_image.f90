@@ -26,9 +26,6 @@
 !!        type(quilt_image_ctl), intent(inout) :: new_quilt
 !!      subroutine reset_quilt_image_ctl(quilt_c)
 !!        type(quilt_image_ctl), intent(inout) :: quilt_c
-!!
-!!      integer(kind = kint) function num_label_quilt_image()
-!!      subroutine set_label_quilt_image(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!  begin quilt_image_ctl
@@ -86,9 +83,6 @@
      &             :: hd_row_column =    'num_row_column_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_qview_transform =   'view_transform_ctl'
-!
-      integer(kind = kint), parameter :: n_label_quilt_ctl =   3
-      private :: n_label_quilt_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -220,27 +214,5 @@
       end subroutine reset_quilt_image_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_quilt_image()
-      num_label_quilt_image = n_label_quilt_ctl
-      return
-      end function num_label_quilt_image
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_quilt_image(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_quilt_ctl)
-!
-!
-      call set_control_labels(hd_column_row, names( 1))
-      call set_control_labels(hd_row_column, names( 2))
-      call set_control_labels(hd_qview_transform, names( 3))
-!
-      end subroutine set_label_quilt_image
-!
-! ----------------------------------------------------------------------
 !
       end module t_ctl_data_quilt_image

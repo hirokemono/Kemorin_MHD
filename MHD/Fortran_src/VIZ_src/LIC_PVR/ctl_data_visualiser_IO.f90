@@ -18,10 +18,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(visualization_controls), intent(in) :: viz_ctls
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      integer(kind = kint) function num_label_vizs()
-!!      integer(kind = kint) function num_label_vizs_w_dep()
-!!      subroutine set_label_vizs(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin visual_control
 !!    array  cross_section_ctl
@@ -150,11 +146,6 @@
      &             :: hd_iso_ctl = 'isosurf_rendering'
       character(len=kchara), parameter, private                         &
      &             :: hd_lic_partition = 'LIC_repartition_ctl'
-!
-      integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs = 22
-      integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs_w_dep = 25
 !
 !   --------------------------------------------------------------------
 !
@@ -415,65 +406,6 @@
      &      viz_ctls%output_field_file_fmt_ctl)
 !
       end subroutine init_viz_ctl_label
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_vizs()
-      num_label_vizs = n_label_vizs
-      return
-      end function num_label_vizs
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_vizs_w_dep()
-      num_label_vizs_w_dep = n_label_vizs_w_dep
-      return
-      end function num_label_vizs_w_dep
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_vizs(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_vizs_w_dep)
-!
-!
-      call set_control_labels(hd_i_step_section,  names( 1))
-      call set_control_labels(hd_delta_t_section, names( 2))
-      call set_control_labels(hd_section_ctl,     names( 3))
-!
-      call set_control_labels(hd_i_step_isosurf,  names( 4))
-      call set_control_labels(hd_delta_t_isosurf, names( 5))
-      call set_control_labels(hd_isosurf_ctl,     names( 6))
-!
-      call set_control_labels(hd_i_step_map_projection,  names( 7))
-      call set_control_labels(hd_delta_t_map_projection, names( 8))
-      call set_control_labels(hd_map_rendering,          names( 9))
-!
-      call set_control_labels(hd_i_step_pvr,       names(10))
-      call set_control_labels(hd_delta_t_pvr,      names(11))
-      call set_control_labels(hd_pvr_ctl,          names(12))
-!
-      call set_control_labels(hd_i_step_lic,       names(13))
-      call set_control_labels(hd_delta_t_lic,      names(14))
-      call set_control_labels(hd_lic_ctl,          names(15))
-!
-      call set_control_labels(hd_i_step_fline,     names(16))
-      call set_control_labels(hd_delta_t_fline,    names(17))
-      call set_control_labels(hd_fline_ctl,        names(18))
-!
-      call set_control_labels(hd_i_step_ucd,          names(19))
-      call set_control_labels(hd_delta_t_ucd,         names(20))
-      call set_control_labels(hd_output_fld_file_fmt, names(21))
-!
-      call set_control_labels(hd_viz_partition,       names(22))
-!
-      call set_control_labels(hd_psf_ctl,             names(23))
-      call set_control_labels(hd_iso_ctl,             names(24))
-      call set_control_labels(hd_lic_partition,       names(25))
-!
-      end subroutine set_label_vizs
 !
 !  ---------------------------------------------------------------------
 !

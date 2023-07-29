@@ -28,9 +28,6 @@
 !!      subroutine copy_stereo_view_ctl(org_streo, new_streo)
 !!        type(streo_view_ctl), intent(in) :: org_streo
 !!        type(streo_view_ctl), intent(inout) :: new_streo
-!!
-!!      integer(kind = kint) function num_label_pvr_streo()
-!!      subroutine set_label_pvr_streo(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !!
@@ -75,8 +72,6 @@
       end type streo_view_ctl
 !
 !     4th level for stereo view
-      integer(kind = kint), parameter, private                          &
-     &             :: n_label_pvr_streo =       4
       character(len=kchara), parameter, private                         &
      &             :: hd_focaldistance =  'focal_distance_ctl'
       character(len=kchara), parameter, private                         &
@@ -262,28 +257,5 @@
       end subroutine copy_stereo_view_ctl
 !
 !  ---------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_streo()
-      num_label_pvr_streo = n_label_pvr_streo
-      return
-      end function num_label_pvr_streo
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_pvr_streo(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_streo)
-!
-!
-      call set_control_labels(hd_focaldistance,  names( 1))
-      call set_control_labels(hd_eye_separation, names( 2))
-      call set_control_labels(hd_eye_sep_angle,  names( 3))
-      call set_control_labels(hd_eye_step_mode,  names( 4))
-!
-      end subroutine set_label_pvr_streo
-!
-! ----------------------------------------------------------------------
 !
       end module t_ctl_data_4_streo_view

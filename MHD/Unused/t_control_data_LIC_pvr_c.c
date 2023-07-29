@@ -183,6 +183,21 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
 	return level;
 };
 
+
+int write_lic_movie_ctl_c(FILE *fp, int level, const char *label,
+            struct pvr_movie_ctl_c *movie_c){
+    if(movie_c->f_iflag[0] == 0) return level;
+    
+    fprintf(fp, "!\n");
+    level = write_begin_flag_for_ctl_c(fp, level, label);
+    level = write_pvr_movie_ctl_items_c(fp, level, movie_c);
+    write_real2_ctl_item_c(fp, level, movie_c->label_lic_movie_ctl->maxlen,
+                           movie_c->label_lic_movie_ctl->label[ 6],
+                           movie_c->f_LIC_kernel_peak_range_ctl);
+    level = write_end_flag_for_ctl_c(fp, level, label);
+    return level;
+};
+
 void rename_LIC_pvr_ctl_subfiles(struct LIC_pvr_ctl_c *lic_pvr_c){
     rename_pvr_ctl_subfiles(lic_pvr_c->pvr_c);
     return;

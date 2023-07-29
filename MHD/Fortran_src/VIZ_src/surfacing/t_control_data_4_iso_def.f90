@@ -111,10 +111,7 @@
       character(len=kchara), parameter                                  &
      &             :: hd_iso_area =   'isosurf_area_ctl'
 !
-      integer(kind = kint), parameter :: n_label_iso_define_ctl = 4
-!
       private :: hd_iso_area, hd_iso_value, hd_iso_comp, hd_iso_field
-      private :: n_label_iso_define_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -255,28 +252,5 @@
       end subroutine write_iso_define_data
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_iso_define_control()
-      num_label_iso_define_control = n_label_iso_define_ctl
-      return
-      end function num_label_iso_define_control
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_iso_define_control(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_iso_define_ctl)
-!
-!
-      call set_control_labels(hd_iso_field, names( 1))
-      call set_control_labels(hd_iso_comp,  names( 2))
-      call set_control_labels(hd_iso_value, names( 3))
-      call set_control_labels(hd_iso_area,  names( 4))
-!
-      end subroutine set_label_iso_define_control
-!
-!  ---------------------------------------------------------------------
 !
       end module t_control_data_4_iso_def

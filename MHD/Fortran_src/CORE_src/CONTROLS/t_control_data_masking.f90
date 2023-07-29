@@ -30,11 +30,6 @@
 !!      subroutine add_mask_field_to_fld_ctl(mask_ctl, field_ctl)
 !!        type(masking_by_field_ctl), intent(in) :: mask_ctl
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
-!!
-!!      integer(kind = kint) function num_ctl_label_masking()
-!!      subroutine set_ctl_label_masking(names)
-!!        character(len = kchara), intent(inout)                        &
-!!                                :: names(n_label_masking)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      begin masking_control
 !!        masking_type         field or geometry
@@ -86,8 +81,6 @@
 !
       character(len=kchara), parameter, private                         &
      &                      :: hd_masking_range = 'masking_range'
-!
-      integer(kind = kint), parameter, private :: n_label_masking = 4
 !
 !  ---------------------------------------------------------------------
 !
@@ -244,27 +237,5 @@
       end subroutine add_mask_field_to_fld_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_ctl_label_masking()
-      num_ctl_label_masking = n_label_masking
-      return
-      end function num_ctl_label_masking
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_ctl_label_masking(names)
-!
-      character(len = kchara), intent(inout) :: names(n_label_masking)
-!
-!
-      call set_control_labels(hd_masking_type,  names( 1))
-      call set_control_labels(hd_masking_field, names( 2))
-      call set_control_labels(hd_masking_comp,  names( 3))
-      call set_control_labels(hd_masking_range, names( 4))
-!
-      end subroutine set_ctl_label_masking
-!
-! ----------------------------------------------------------------------
 !
       end module t_control_data_masking

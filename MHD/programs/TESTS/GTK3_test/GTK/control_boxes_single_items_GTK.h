@@ -14,7 +14,6 @@
 #include <gtk/gtk.h>
 
 #include "kemoview_gtk_routines.h"
-#include "m_base_control_labels_from_f.h"
 #include "t_ctl_array_single_items_c.h"
 #include "t_ctl_array_chara_real_items_c.h"
 #include "t_ctl_array_real3_items_c.h"

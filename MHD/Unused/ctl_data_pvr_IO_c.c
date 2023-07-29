@@ -11,6 +11,92 @@ FILE *FP_PVR;
 
 const char label_pvr_head[KCHARA_C] = "volume_rendering";
 
+void read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+            struct pvr_movie_ctl_c *movie_c){
+    while(find_control_end_flag_c(buf, label) == 0){
+        
+        skip_comment_read_line(fp, buf);
+        
+        read_chara_ctl_item_c(buf, movie_c->label_lic_movie_ctl->label[ 0],
+                              movie_c->f_movie_mode_ctl);
+        read_integer_ctl_item_c(buf, movie_c->label_lic_movie_ctl->label[ 1],
+                                movie_c->f_num_frames_ctl);
+        
+        read_chara_ctl_item_c(buf, movie_c->label_lic_movie_ctl->label[ 2],
+                              movie_c->f_rotation_axis_ctl);
+        
+        read_real2_ctl_item_c(buf, movie_c->label_lic_movie_ctl->label[ 5],
+                              movie_c->f_apature_range_ctl);
+        
+        read_real2_ctl_item_c(buf, movie_c->label_lic_movie_ctl->label[ 6],
+                              movie_c->f_LIC_kernel_peak_range_ctl);
+        
+        if(right_begin_flag_c(buf, movie_c->label_lic_movie_ctl->label[ 3]) > 0){
+            read_modelview_ctl_c(fp, buf, movie_c->label_lic_movie_ctl->label[ 3],
+                                 movie_c->f_view_start_ctl);
+        } else if(right_file_flag_c(buf, movie_c->label_lic_movie_ctl->label[ 3])){
+            movie_c->f_view_start_ctl->f_iflag[0]
+                    = read_file_flag_c(buf, movie_c->f_view_start_ctl->mat_ctl_file_name);
+        };
+        
+        if(right_begin_flag_c(buf, movie_c->label_lic_movie_ctl->label[ 4]) > 0){
+            read_modelview_ctl_c(fp, buf, movie_c->label_lic_movie_ctl->label[ 4],
+                                 movie_c->f_view_end_ctl);
+        } else if(right_file_flag_c(buf, movie_c->label_lic_movie_ctl->label[ 4])){
+            movie_c->f_view_end_ctl->f_iflag[0]
+                    = read_file_flag_c(buf, movie_c->f_view_end_ctl->mat_ctl_file_name);
+        };
+    };
+    movie_c->f_iflag[0] = 1;
+    return;
+};
+static int write_pvr_movie_ctl_items_c(FILE *fp, int level,
+                                       struct pvr_movie_ctl_c *movie_c){
+    write_chara_ctl_item_c(fp, level, movie_c->label_lic_movie_ctl->maxlen,
+                           movie_c->label_lic_movie_ctl->label[ 0],
+                           movie_c->f_movie_mode_ctl);
+    write_integer_ctl_item_c(fp, level, movie_c->label_lic_movie_ctl->maxlen,
+                             movie_c->label_lic_movie_ctl->label[ 1],
+                             movie_c->f_num_frames_ctl);
+    
+    write_chara_ctl_item_c(fp, level, movie_c->label_lic_movie_ctl->maxlen,
+                           movie_c->label_lic_movie_ctl->label[ 2],
+                           movie_c->f_rotation_axis_ctl);
+    
+    write_real2_ctl_item_c(fp, level, movie_c->label_lic_movie_ctl->maxlen,
+                           movie_c->label_lic_movie_ctl->label[ 5],
+                           movie_c->f_apature_range_ctl);
+    
+    if(movie_c->f_view_start_ctl->f_iflag[0] > 0){
+        level = write_modelview_ctl_c(fp, level, movie_c->label_lic_movie_ctl->label[ 3],
+                                      movie_c->f_view_start_ctl);
+    } else if(movie_c->f_view_start_ctl->f_iflag[0] == -1){
+        write_file_flag_for_ctl_c(fp, level, movie_c->label_lic_movie_ctl->label[ 3],
+                                  movie_c->f_view_start_ctl->mat_ctl_file_name);
+    };
+    
+    if(movie_c->f_view_end_ctl->f_iflag[0] > 0){
+        level = write_modelview_ctl_c(fp, level, movie_c->label_lic_movie_ctl->label[ 4],
+                                      movie_c->f_view_end_ctl);
+    } else if(movie_c->f_view_end_ctl->f_iflag[0] == -1){
+        write_file_flag_for_ctl_c(fp, level, movie_c->label_lic_movie_ctl->label[ 4],
+                                  movie_c->f_view_end_ctl->mat_ctl_file_name);
+    };
+    return level;
+};
+
+int write_pvr_movie_ctl_c(FILE *fp, int level, const char *label,
+            struct pvr_movie_ctl_c *movie_c){
+    if(movie_c->f_iflag[0] == 0) return level;
+    
+    fprintf(fp, "!\n");
+    level = write_begin_flag_for_ctl_c(fp, level, label);
+    level = write_pvr_movie_ctl_items_c(fp, level, movie_c);
+    level = write_end_flag_for_ctl_c(fp, level, label);
+    return level;
+};
+
+
 void read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_plot_area_ctl_c *area_c){
 	while(find_control_end_flag_c(buf, label) == 0){

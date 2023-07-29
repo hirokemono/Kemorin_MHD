@@ -20,11 +20,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(map_ctl), intent(inout) :: map_c
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      integer(kind = kint) function num_label_map_ctl()
-!!      integer(kind = kint) function num_label_map_ctl_w_dpl()
-!!      subroutine set_label_map_ctl(names)
-!!      subroutine set_label_map_ctl_w_dpl(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!! example of control for Kemo's surface rendering
 !!
@@ -195,9 +190,6 @@
       character(len=kchara), parameter, private                         &
      &                  :: hd_map_colormap_file =  'map_color_ctl'
 !
-      integer(kind = kint), parameter :: n_label_map_ctl = 9
-      private :: n_label_map_ctl
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -348,35 +340,5 @@
       end subroutine init_map_control_label
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_map_ctl()
-      num_label_map_ctl = n_label_map_ctl
-      return
-      end function num_label_map_ctl
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_map_ctl(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_map_ctl)
-!
-!
-      call set_control_labels(hd_map_image_prefix, names( 1))
-      call set_control_labels(hd_map_image_format, names( 2))
-      call set_control_labels(hd_section_ctl,      names( 3))
-!
-      call set_control_labels(hd_map_output_field,   names( 4))
-      call set_control_labels(hd_map_output_comp,    names( 5))
-      call set_control_labels(hd_map_isoline_field,  names( 6))
-      call set_control_labels(hd_map_isoline_comp,   names( 7))
-!
-      call set_control_labels(hd_map_projection,    names( 8))
-      call set_control_labels(hd_map_colormap_file, names( 9))
-!
-      end subroutine set_label_map_ctl
-!
-!  ---------------------------------------------------------------------
 !
       end module ctl_data_map_rendering_IO

@@ -26,9 +26,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      integer(kind = kint) function num_label_pvr_section()
-!!      subroutine set_label_pvr_section(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  array section_ctl
 !!    file surface_define     ctl_psf_eq
@@ -83,9 +80,6 @@
         type(read_character_item) :: zeroline_switch_ctl
         integer(kind = kint) :: i_pvr_sect_ctl = 0
       end type pvr_section_ctl
-!
-      integer(kind = kint), parameter, private                          &
-     &                   :: n_label_pvr_section =  11
 !
       character(len=kchara), parameter, private                         &
      &                  :: hd_surface_define =  'surface_define'
@@ -228,27 +222,5 @@
       end subroutine init_pvr_section_ctl_label
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_section()
-      num_label_pvr_section = n_label_pvr_section
-      return
-      end function num_label_pvr_section
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_pvr_section(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_section)
-!
-!
-      call set_control_labels(hd_surface_define,   names( 1))
-      call set_control_labels(hd_pvr_opacity,      names( 2))
-      call set_control_labels(hd_pvr_sec_zeroline,  names( 3))
-!
-     end subroutine set_label_pvr_section
-!
-! ----------------------------------------------------------------------
 !
       end module t_ctl_data_pvr_section

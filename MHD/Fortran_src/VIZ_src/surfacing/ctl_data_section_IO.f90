@@ -20,11 +20,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(psf_ctl), intent(inout) :: psf_c
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      integer(kind = kint) function num_label_psf_ctl()
-!!      integer(kind = kint) function num_label_psf_ctl_w_dpl()
-!!      subroutine set_label_psf_ctl(names)
-!!      subroutine set_label_psf_ctl_w_dpl(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!! example of control for Kemo's surface rendering
 !!
@@ -155,11 +150,6 @@
       character(len=kchara), parameter                                  &
      &                  :: hd_psf_file_head =   'psf_file_head'
 !
-      integer(kind = kint), parameter :: n_label_psf_ctl = 4
-      integer(kind = kint), parameter :: n_label_psf_ctl_w_dpl = 5
-!
-      private :: n_label_psf_ctl, n_label_psf_ctl_w_dpl
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -269,49 +259,6 @@
      &      psf_c%psf_output_type_ctl)
 !
       end subroutine init_psf_ctl_stract
-!
-!  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_psf_ctl()
-      num_label_psf_ctl = n_label_psf_ctl
-      return
-      end function num_label_psf_ctl
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_psf_ctl_w_dpl()
-      num_label_psf_ctl_w_dpl = n_label_psf_ctl_w_dpl
-      return
-      end function num_label_psf_ctl_w_dpl
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_psf_ctl(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_psf_ctl)
-!
-!
-      call set_control_labels(hd_psf_file_prefix, names( 1))
-      call set_control_labels(hd_psf_out_type,    names( 2))
-      call set_control_labels(hd_surface_define,  names( 3))
-      call set_control_labels(hd_output_field,    names( 4))
-!
-      end subroutine set_label_psf_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_psf_ctl_w_dpl(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_psf_ctl_w_dpl)
-!
-!
-      call set_label_psf_ctl(names(1))
-      call set_control_labels(hd_psf_file_head,  names( 5))
-!
-      end subroutine set_label_psf_ctl_w_dpl
 !
 !  ---------------------------------------------------------------------
 !

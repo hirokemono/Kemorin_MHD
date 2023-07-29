@@ -86,10 +86,7 @@
       character(len=kchara) :: hd_specular = 'specular_coef_ctl'
       character(len=kchara) :: hd_light_param =  'position_of_lights'
 !
-      integer(kind = kint), parameter :: n_label_pvr_light = 4
-!
       private :: hd_ambient, hd_diffuse, hd_specular, hd_light_param
-      private :: n_label_pvr_light
 !
 !  ---------------------------------------------------------------------
 !
@@ -262,29 +259,6 @@
      &                   new_light%specular_coef_ctl)
 !
       end subroutine dup_lighting_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_light()
-      num_label_pvr_light = n_label_pvr_light
-      return
-      end function num_label_pvr_light
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_pvr_light(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_light)
-!
-!
-      call set_control_labels(hd_light_param, names( 1))
-      call set_control_labels(hd_ambient,     names( 2))
-      call set_control_labels(hd_diffuse,     names( 3))
-      call set_control_labels(hd_specular,    names( 4))
-!
-      end subroutine set_label_pvr_light
 !
 !  ---------------------------------------------------------------------
 !

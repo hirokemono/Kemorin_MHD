@@ -26,9 +26,6 @@
 !!      subroutine copy_image_size_ctl(org_pixel, new_pixel)
 !!        type(screen_pixel_ctl), intent(in) :: org_pixel
 !!        type(screen_pixel_ctl), intent(inout) :: new_pixel
-!!
-!!      integer(kind = kint) function num_label_pvr_pixels()
-!!      subroutine set_label_pvr_pixels(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !!
@@ -68,8 +65,6 @@
       end type screen_pixel_ctl
 !
 !     4th level for image size
-      integer(kind = kint), parameter, private                          &
-     &             :: n_label_pvr_pixels = 2
       character(len=kchara), parameter, private                         &
      &             :: hd_x_pixel = 'x_pixel_ctl'
       character(len=kchara), parameter, private                         &
@@ -208,27 +203,6 @@
      &                      new_pixel%num_ypixel_ctl)
 !
       end subroutine copy_image_size_ctl
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_pixels()
-      num_label_pvr_pixels = n_label_pvr_pixels
-      return
-      end function num_label_pvr_pixels
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_pvr_pixels(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_pixels)
-!
-!
-      call set_control_labels(hd_x_pixel, names( 1))
-      call set_control_labels(hd_y_pixel, names( 2))
-!
-      end subroutine set_label_pvr_pixels
 !
 ! ----------------------------------------------------------------------
 !

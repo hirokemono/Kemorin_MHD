@@ -20,9 +20,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_colorbar_ctl), intent(in) :: cbar_ctl
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      integer(kind = kint) function num_label_pvr_colorbar()
-!!      subroutine set_label_pvr_colorbar(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of color control for Kemo's volume rendering
 !!
@@ -81,8 +78,6 @@
      &                  :: hd_time_switch = 'time_label_switch'
       character(len=kchara), parameter, private                         &
      &                  :: hd_mapgrid_switch = 'map_grid_switch'
-!
-      integer(kind = kint), parameter :: n_label_pvr_colorbar = 10
 !
 !  ---------------------------------------------------------------------
 !
@@ -229,36 +224,6 @@
      &     (hd_cbar_range, cbar_ctl%cbar_range_ctl)
 !
       end subroutine init_pvr_colorbar_ctl_label
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_colorbar()
-      num_label_pvr_colorbar = n_label_pvr_colorbar
-      return
-      end function num_label_pvr_colorbar
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_pvr_colorbar(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_colorbar)
-!
-!
-      call set_control_labels(hd_colorbar_switch,  names( 1))
-      call set_control_labels(hd_colorbar_scale,   names( 2))
-      call set_control_labels(hd_cbar_position,    names( 3))
-      call set_control_labels(hd_pvr_font_size,    names( 4))
-      call set_control_labels(hd_pvr_numgrid_cbar, names( 5))
-      call set_control_labels(hd_zeromarker_flag,  names( 6))
-      call set_control_labels(hd_cbar_range,       names( 7))
-!
-      call set_control_labels(hd_axis_switch,      names( 8))
-      call set_control_labels(hd_time_switch,      names( 9))
-      call set_control_labels(hd_mapgrid_switch,   names(10))
-!
-      end subroutine set_label_pvr_colorbar
 !
 !  ---------------------------------------------------------------------
 !

@@ -20,9 +20,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(psf_define_ctl), intent(in) :: psf_def_c
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      integer(kind = kint) function num_label_psf_define_control()
-!!      subroutine set_label_psf_define_control(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!! example of control for Kemo's surface rendering
 !!
@@ -141,12 +138,9 @@
       character(len=kchara), parameter                                  &
      &                  :: hd_psf_area = 'section_area_ctl'
 !
-      integer(kind = kint), parameter :: n_label_psf_define_ctl = 8
-!
       private :: hd_section_method, hd_psf_area
       private :: hd_normal_ctl, hd_center_ctl, hd_axis_ctl
       private :: hd_coefs_ctl, hd_radius, hd_group_name
-      private :: n_label_psf_define_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -277,32 +271,5 @@
       end subroutine init_psf_def_ctl_stract
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_psf_define_control()
-      num_label_psf_define_control = n_label_psf_define_ctl
-      return
-      end function num_label_psf_define_control
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_psf_define_control(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_psf_define_ctl)
-!
-!
-      call set_control_labels(hd_section_method, names( 1))
-      call set_control_labels(hd_coefs_ctl,      names( 2))
-      call set_control_labels(hd_normal_ctl,     names( 3))
-      call set_control_labels(hd_axis_ctl,       names( 4))
-      call set_control_labels(hd_center_ctl,     names( 5))
-      call set_control_labels(hd_radius,         names( 6))
-      call set_control_labels(hd_group_name,     names( 7))
-      call set_control_labels(hd_psf_area,       names( 8))
-!
-      end subroutine set_label_psf_define_control
-!
-!  ---------------------------------------------------------------------
 !
       end module ctl_data_section_def_IO
