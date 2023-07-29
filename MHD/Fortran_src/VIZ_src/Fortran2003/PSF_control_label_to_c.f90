@@ -11,11 +11,7 @@
 !!
 !!      integer(c_int) function num_label_psf_def_type_f() bind(c)
 !!      integer(c_int) function num_label_psf_def_type_grp_f() bind(c)
-!!      integer(c_int) function num_label_psf_dirs_f() bind(c)
-!!      integer(c_int) function num_label_psf_coefs_f() bind(c)
 !!      subroutine set_label_psf_def_type_grp_f(names_c)  bind(c)
-!!      subroutine set_label_psf_dirs_f(names_c)  bind(c)
-!!      subroutine set_label_psf_coefs_f(names_c)  bind(c)
 !!
 !!      subroutine set_primary_section_coef_flag_f(names_c)  bind(c)
 !!
@@ -86,26 +82,6 @@
       end function num_label_psf_def_type_grp_f
 !
 ! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_label_psf_dirs_f() bind(c)
-!
-      use m_section_coef_flags
-!
-      num_label_psf_dirs_f = num_label_psf_dirs()
-      return
-      end function num_label_psf_dirs_f
-!
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_label_psf_coefs_f() bind(c)
-!
-      use m_section_coef_flags
-!
-      num_label_psf_coefs_f = num_label_psf_coefs()
-      return
-      end function num_label_psf_coefs_f
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_label_psf_def_type_grp_f(names_c)  bind(c)
@@ -119,34 +95,6 @@
       call c_f_pointer(names_c, name_f, [num_label_psf_def_type_grp()])
       call set_label_psf_def_type_grp(name_f)
       end subroutine set_label_psf_def_type_grp_f
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_psf_dirs_f(names_c)  bind(c)
-!
-      use m_section_coef_flags
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_psf_dirs()])
-      call set_label_psf_dirs(name_f)
-      end subroutine set_label_psf_dirs_f
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_label_psf_coefs_f(names_c)  bind(c)
-!
-      use m_section_coef_flags
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_psf_coefs()])
-      call set_label_psf_coefs(name_f)
-      end subroutine set_label_psf_coefs_f
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

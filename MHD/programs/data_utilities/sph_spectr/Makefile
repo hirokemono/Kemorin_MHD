@@ -175,6 +175,7 @@ t_ctl_data_pvr_section.o \
 t_ctl_data_quilt_image.o \
 t_ctl_data_view_transfers.o \
 t_ctl_data_map_section.o \
+m_pvr_control_labels.o \
 ctl_data_each_pvr_IO.o \
 ctl_data_four_vizs_IO.o \
 ctl_data_pvr_colorbar_IO.o \

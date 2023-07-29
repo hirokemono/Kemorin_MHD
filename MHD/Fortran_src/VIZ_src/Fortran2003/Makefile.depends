@@ -1,5 +1,5 @@
-PSF_control_label_to_c.o: $(VIZ_F2003_DIR)/PSF_control_label_to_c.f90 m_precision.o t_control_params_4_iso.o set_coefs_of_sections.o m_section_coef_flags.o skip_comment_f.o t_control_params_4_fline.o ctl_data_field_line_IO.o
+PSF_control_label_to_c.o: $(VIZ_F2003_DIR)/PSF_control_label_to_c.f90 m_precision.o t_control_params_4_iso.o set_coefs_of_sections.o skip_comment_f.o m_section_coef_flags.o t_control_params_4_fline.o
 	$(F90) -c $(F90OPTFLAGS) $<
-PVR_control_label_to_c.o: $(VIZ_F2003_DIR)/PVR_control_label_to_c.f90 m_precision.o t_control_params_4_pvr.o pvr_surface_enhancement.o
+PVR_control_label_to_c.o: $(VIZ_F2003_DIR)/PVR_control_label_to_c.f90 m_precision.o t_control_array_character.o m_section_coef_flags.o m_pvr_control_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

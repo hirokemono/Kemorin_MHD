@@ -6,16 +6,26 @@
 !>@brief control parameter for volume rendering
 !!
 !!@verbatim
-!!      integer(c_int) function num_flag_pvr_movie_mode_f() bind(c)
-!!      subroutine set_flag_pvr_movie_mode_f(names_c)  bind(c)
+!!      type(C_ptr) function c_link_psf_coef_label_list(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_psf_coef_label_list')
+!!      type(C_ptr) function c_link_psf_dirs_label_list(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_psf_dirs_label_list')
+!!        use m_pvr_control_labels
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!
-!!      integer(c_int) function num_flag_pvr_isosurf_dir_f() bind(c)
-!!      subroutine set_flag_pvr_isosurf_dir_f(names_c)  bind(c)
-!!!!
-!!      integer(c_int) function num_flag_LIC_movie_mode_f()             &
-!!     &              bind(c, name="num_flag_LIC_movie_mode_f")
-!!      subroutine set_flag_LIC_movie_mode_f(labels_c)                  &
-!!     &          bind(c, name="set_flag_LIC_movie_mode_f")
+!!      type(C_ptr) function c_link_isosurf_dir_list(c_ctl)             &
+!!     &          bind(C, NAME = 'c_link_isosurf_dir_list')
+!!      type(C_ptr) function c_link_surf_enhance_mode_list(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_surf_enhance_mode_list')
+!!        use m_pvr_control_labels
+!!        type(c_ptr), value, intent(in) :: c_ctl
+!!
+!!      type(C_ptr) function c_pvr_movie_mode_list(c_ctl)               &
+!!     &          bind(C, NAME = 'c_pvr_movie_mode_list')
+!!      type(C_ptr) function c_lic_movie_mode_list(c_ctl)               &
+!!     &          bind(C, NAME = 'c_lic_movie_mode_list')
+!!        use m_pvr_control_labels
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
 !
       module PVR_control_label_to_c
@@ -23,8 +33,18 @@
       use ISO_C_BINDING
 !
       use m_precision
+      use t_control_array_character
 !
       implicit  none
+!
+      type(ctl_array_chara), save, private, target :: psf_coef_list
+      type(ctl_array_chara), save, private, target :: psf_dirs_list
+!
+      type(ctl_array_chara), save, private, target :: iso_dir_list
+      type(ctl_array_chara), save, private, target :: enhance_list
+!
+      type(ctl_array_chara), save, private, target :: pvr_mve_list
+      type(ctl_array_chara), save, private, target :: lic_mve_list
 !
 ! -----------------------------------------------------------------------
 !
@@ -32,79 +52,77 @@
 !
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_flag_pvr_movie_mode_f() bind(c)
+      type(C_ptr) function c_link_psf_coef_label_list(c_ctl)            &
+     &          bind(C, NAME = 'c_link_psf_coef_label_list')
+      use m_section_coef_flags
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      use t_control_params_4_pvr
+      if(.not. allocated(psf_coef_list%c_tbl))                          &
+     &      call psf_coef_label_array(psf_coef_list)
+      c_link_psf_coef_label_list = C_loc(psf_coef_list)
+      end function c_link_psf_coef_label_list
 !
-      num_flag_pvr_movie_mode_f = num_flag_pvr_movie_mode()
-      return
-      end function num_flag_pvr_movie_mode_f
+! ----------------------------------------------------------------------
 !
-!  ---------------------------------------------------------------------
+      type(C_ptr) function c_link_psf_dirs_label_list(c_ctl)            &
+     &          bind(C, NAME = 'c_link_psf_dirs_label_list')
+      use m_section_coef_flags
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      subroutine set_flag_pvr_movie_mode_f(names_c)  bind(c)
-!
-      use t_control_params_4_pvr
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_flag_pvr_movie_mode()])
-      call set_flag_pvr_movie_mode(name_f)
-      end subroutine set_flag_pvr_movie_mode_f
+      if(.not. allocated(psf_dirs_list%c_tbl))                          &
+     &      call psf_dirs_label_array(psf_dirs_list)
+      c_link_psf_dirs_label_list = C_loc(psf_dirs_list)
+      end function c_link_psf_dirs_label_list
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_flag_pvr_isosurf_dir_f() bind(c)
+      type(C_ptr) function c_link_isosurf_dir_list(c_ctl)               &
+     &          bind(C, NAME = 'c_link_isosurf_dir_list')
+      use m_pvr_control_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      use pvr_surface_enhancement
+      if(.not. allocated(iso_dir_list%c_tbl))                           &
+     &      call pvr_isosurf_dir_list_array(iso_dir_list)
+      c_link_isosurf_dir_list = C_loc(iso_dir_list)
+      end function c_link_isosurf_dir_list
 !
-      num_flag_pvr_isosurf_dir_f = num_flag_pvr_isosurf_dir()
-      return
-      end function num_flag_pvr_isosurf_dir_f
+! ----------------------------------------------------------------------
 !
-!  ---------------------------------------------------------------------
+      type(C_ptr) function c_link_surf_enhance_mode_list(c_ctl)         &
+     &          bind(C, NAME = 'c_link_surf_enhance_mode_list')
+      use m_pvr_control_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      subroutine set_flag_pvr_isosurf_dir_f(names_c)  bind(c)
-!
-      use pvr_surface_enhancement
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_flag_pvr_isosurf_dir()])
-      call set_flag_pvr_isosurf_dir(name_f)
-      end subroutine set_flag_pvr_isosurf_dir_f
+      if(.not. allocated(enhance_list%c_tbl))                           &
+     &      call pvr_surf_enhance_mode_array(enhance_list)
+      c_link_surf_enhance_mode_list = C_loc(enhance_list)
+      end function c_link_surf_enhance_mode_list
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_flag_LIC_movie_mode_f()               &
-     &              bind(c, name="num_flag_LIC_movie_mode_f")
+      type(C_ptr) function c_pvr_movie_mode_list(c_ctl)                 &
+     &          bind(C, NAME = 'c_pvr_movie_mode_list')
+      use m_pvr_control_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      use t_control_params_4_pvr
+      if(.not. allocated(pvr_mve_list%c_tbl))                           &
+     &      call pvr_movie_mode_list_array(pvr_mve_list)
+      c_pvr_movie_mode_list = C_loc(pvr_mve_list)
+      end function c_pvr_movie_mode_list
 !
-      num_flag_LIC_movie_mode_f = num_flag_LIC_movie_mode()
-      return
-      end function num_flag_LIC_movie_mode_f
+! ----------------------------------------------------------------------
 !
-!  ---------------------------------------------------------------------
+      type(C_ptr) function c_lic_movie_mode_list(c_ctl)                 &
+     &          bind(C, NAME = 'c_lic_movie_mode_list')
+      use m_pvr_control_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      subroutine set_flag_LIC_movie_mode_f(labels_c)                    &
-     &          bind(c, name="set_flag_LIC_movie_mode_f")
-!
-      use t_control_params_4_pvr
-!
-      type(C_ptr), value :: labels_c
-!
-      character(len=kchara), pointer :: labels(:)
-!
-      call c_f_pointer(labels_c, labels, [num_flag_LIC_movie_mode()])
-      call set_flag_LIC_movie_mode(labels)
-      end subroutine set_flag_LIC_movie_mode_f
+      if(.not. allocated(lic_mve_list%c_tbl))                           &
+     &      call lic_movie_mode_list_array(lic_mve_list)
+      c_lic_movie_mode_list = C_loc(lic_mve_list)
+      end function c_lic_movie_mode_list
 !
 ! ----------------------------------------------------------------------
 !

@@ -16,7 +16,7 @@ m_MHD_field_group.o: $(F2003DIR)/m_MHD_field_group.f90 m_precision.o t_control_a
 	$(F90) -c $(F90OPTFLAGS) $<
 m_OMP_FFTW3_counter.o: $(F2003DIR)/m_OMP_FFTW3_counter.F90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
-m_field_file_fmt_list.o: $(F2003DIR)/m_field_file_fmt_list.f90 m_precision.o m_file_format_labels.o t_read_control_elements.o t_multi_flag_labels.o m_field_file_format_labels.o m_merged_field_fmt_labels.o skip_comment_f.o set_sections_file_ctl.o set_isosurface_file_ctl.o m_field_file_format.o
+m_field_file_fmt_list.o: $(F2003DIR)/m_field_file_fmt_list.f90 m_precision.o m_file_format_labels.o t_read_control_elements.o t_multi_flag_labels.o m_field_file_format_labels.o m_merged_field_fmt_labels.o skip_comment_f.o set_sections_file_ctl.o set_isosurface_file_ctl.o m_field_file_format.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_binary_IO_buffer.o: $(F2003DIR)/t_binary_IO_buffer.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

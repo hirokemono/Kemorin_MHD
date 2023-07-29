@@ -18,6 +18,10 @@
 !!
 !!      subroutine set_primary_psf_format_flag_f(name_c)  bind(c)
 !!      subroutine set_primary_iso_format_flag_f(name_c)  bind(c)
+!!
+!!      subroutine iso_file_format_list_array(array_c)
+!!      subroutine psf_file_format_list_array(array_c)
+!!        type(ctl_array_chara), intent(inout) :: array_c
 !!@endverbatim
 !!
 !
@@ -313,5 +317,51 @@
       end subroutine set_ctl_label_iso_format
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine psf_file_format_list_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(hd_udt, array_c)
+      call append_c_to_ctl_array(hd_ucd, array_c)
+      call append_c_to_ctl_array(hd_vtk, array_c)
+      call append_c_to_ctl_array(hd_vtd, array_c)
+      call append_c_to_ctl_array(hd_iso, array_c)
+      call append_c_to_ctl_array(hd_psf, array_c)
+!
+      call append_c_to_ctl_array(hd_udt_gz, array_c)
+      call append_c_to_ctl_array(hd_ucd_gz, array_c)
+      call append_c_to_ctl_array(hd_vtk_gz, array_c)
+      call append_c_to_ctl_array(hd_vtd_gz, array_c)
+      call append_c_to_ctl_array(hd_iso_gz, array_c)
+      call append_c_to_ctl_array(hd_psf_gz, array_c)
+!
+      end subroutine psf_file_format_list_array
+!
+! ----------------------------------------------------------------------
+!
+      subroutine iso_file_format_list_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(hd_ucd,    array_c)
+      call append_c_to_ctl_array(hd_vtk,    array_c)
+      call append_c_to_ctl_array(hd_iso,    array_c)
+      call append_c_to_ctl_array(hd_ucd_gz, array_c)
+      call append_c_to_ctl_array(hd_vtk_gz, array_c)
+      call append_c_to_ctl_array(hd_iso_gz, array_c)
+!
+      end subroutine iso_file_format_list_array
+!
+! ----------------------------------------------------------------------
 !
       end module m_field_file_fmt_list

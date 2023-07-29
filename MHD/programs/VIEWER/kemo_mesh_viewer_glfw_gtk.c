@@ -29,6 +29,8 @@ GtkWidget *gtk_win;
 struct main_buttons *mbot;
 
 static void mainloop_4_glfw(){
+    int icou = 0;
+    int jcou = 0;
 	int iflag;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(glfw_win)){
@@ -36,6 +38,7 @@ static void mainloop_4_glfw(){
 		
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) != 0){
             glfwPollEvents();
+            icou++;
         }
 		
         if(iflag_msg_fade == 1){
@@ -63,6 +66,10 @@ static void mainloop_4_glfw(){
             };
         };
 
+             printf("gtk callback %d %d %d %d \n", icou, jcou, 
+            glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED),
+            (int) gtk_window_is_active(gtk_win));
+
         /* Collect GTK events */
         if(mbot == NULL) return;
 		if(iflag_glfw_end == 1) return;
@@ -71,6 +78,7 @@ static void mainloop_4_glfw(){
 
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
             while (gtk_events_pending()) gtk_main_iteration();
+            jcou++;
         };
 	};
 	return;
