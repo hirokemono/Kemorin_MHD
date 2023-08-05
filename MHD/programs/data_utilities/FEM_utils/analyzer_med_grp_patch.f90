@@ -167,6 +167,7 @@
 !
       subroutine set_med_grp_patch_psf_def_ctl(grp_name, psf_def_c)
 !
+      use m_section_coef_flags
       use t_control_data_4_psf_def
       use set_coefs_of_sections
 !

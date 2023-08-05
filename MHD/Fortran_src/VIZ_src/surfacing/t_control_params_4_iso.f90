@@ -38,13 +38,8 @@
       implicit  none
 !
 !
-      character(len=kchara), parameter :: cflag_const_iso = 'constant'
-      character(len=kchara), parameter :: cflag_field_iso = 'field'
-!
       integer(kind = kint), parameter :: iflag_constant_iso = -1
       integer(kind = kint), parameter :: iflag_field_iso =     1
-!
-      integer(kind = kint), parameter :: n_label_iso_type = 2
 !
       type isosurface_define
         integer(kind = kint) :: id_isosurf_data
@@ -109,6 +104,7 @@
      &          iso_fld, iso_def)
 !
       use m_file_format_switch
+      use m_section_coef_flags
       use set_field_comp_for_viz
       use t_group_data
       use t_file_IO_parameter
@@ -201,29 +197,6 @@
       end if
 !
       end subroutine set_control_4_field_on_iso
-!
-!  ---------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_iso_type()
-      num_label_iso_type = n_label_iso_type
-      return
-      end function num_label_iso_type
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_iso_type(names)
-!
-      use t_read_control_elements
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_iso_type)
-!
-!
-      call set_control_labels(cflag_const_iso, names( 1))
-      call set_control_labels(cflag_field_iso, names( 2))
-!
-      end subroutine set_label_iso_type
 !
 !  ---------------------------------------------------------------------
 !

@@ -21,6 +21,12 @@
 !!        real(kind = kreal), intent(inout) :: vector(3)
 !!      subroutine set_primary_section_coef_flag(dir_ctl)
 !!        character(len=kchara), intent(inout) :: dir_ctl
+!!
+!!      subroutine psf_coef_label_array(array_c)
+!!      subroutine psf_dirs_label_array(array_c)
+!!      subroutine iso_type_label_array(array_c)
+!!      subroutine psf_def_type_label_array(array_c)
+!!        type(ctl_array_chara), intent(inout) :: array_c
 !!@endverbatim
 !
       module m_section_coef_flags
@@ -80,29 +86,18 @@
       type(multi_flag_labels), save :: c_labels
 !
 !
-!>      primary flag for square of X: 'X^2 '
-      character(len=kchara), save :: cflag_x_sq
-!>      primary flag for square of Y: 'Y^2 '
-      character(len=kchara), save :: cflag_y_sq
-!>      primary flag for square of Z: 'Z^2 '
-      character(len=kchara), save :: cflag_z_sq
+      character(len = kchara), parameter :: cflag_eq =  'equation'
+      character(len = kchara), parameter :: cflag_pln = 'plane'
+      character(len = kchara), parameter :: cflag_sph = 'sphere'
+      character(len = kchara), parameter :: cflag_elp = 'ellipsoid'
+      character(len = kchara), parameter :: cflag_hyp = 'hyperboloid'
+      character(len = kchara), parameter :: cflag_prb = 'paraboloid'
+      character(len = kchara), parameter :: cflag_grp = 'group'
 !
-!>      primary flag for xy: 'XY'
-      character(len=kchara), save :: cflag_xy
-!>      primary flag for yz: 'YZ'
-      character(len=kchara), save :: cflag_yz
-!>      primary flag for zx: 'ZX'
-      character(len=kchara), save :: cflag_zx
 !
-!>      primary flag for x: 'X'
-      character(len=kchara), save :: cflag_x
-!>      primary flag for y: 'Y'
-      character(len=kchara), save :: cflag_y
-!>      primary flag for z: 'Z'
-      character(len=kchara), save :: cflag_z
+      character(len=kchara), parameter :: cflag_const_iso = 'constant'
+      character(len=kchara), parameter :: cflag_field_iso = 'field'
 !
-!>      primary flag for Constant: 'Const'
-      character(len=kchara), save :: cflag_const
 !
       private :: x_sq_name, y_sq_name, z_sq_name
       private :: xy_name, yz_name, zx_name
@@ -110,7 +105,6 @@
 !
       private :: init_section_coef_flags, dealloc_section_coef_flags
       private :: set_each_coef_4_psf, set_each_param_2_vector
-      private :: init_primary_section_coef_flag
 !
 !  ---------------------------------------------------------------------
 !
@@ -153,7 +147,6 @@
       integer(kind = kint) :: i
 !
 !
-      call init_primary_section_coef_flag()
       vector(1:3) = zero
       do i = 1, num_vect
         call set_each_param_2_vector(ctl_name(i), vect_ctl(i), vector)
@@ -171,7 +164,6 @@
 !
 !
       call init_section_coef_flags()
-      call init_primary_section_coef_flag()
 !
       if     (check_mul_flags(dir_ctl, x_sq_labels)) then
         prim_name = x_sq_name(3)
@@ -207,19 +199,32 @@
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !
+      character(len=kchara) :: tmpchara
+!
       array_c%array_name = '  '
       array_c%num =         0
       call alloc_control_array_chara(array_c)
 !
-      call append_c_to_ctl_array(x_sq_name(3), array_c)
-      call append_c_to_ctl_array(y_sq_name(3), array_c)
-      call append_c_to_ctl_array(z_sq_name(3), array_c)
-      call append_c_to_ctl_array(xy_name(1), array_c)
-      call append_c_to_ctl_array(yz_name(1), array_c)
-      call append_c_to_ctl_array(zx_name(1), array_c)
-      call append_c_to_ctl_array(y_name(1), array_c)
-      call append_c_to_ctl_array(z_name(1), array_c)
-      call append_c_to_ctl_array(c_name(1), array_c)
+      tmpchara = x_sq_name(3)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = y_sq_name(3)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = z_sq_name(3)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = xy_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = yz_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = zx_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = x_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = y_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = z_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = c_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
 !
       end subroutine psf_coef_label_array
 !
@@ -229,15 +234,35 @@
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !
+      character(len=kchara) :: tmpchara
+!
       array_c%array_name = '  '
       array_c%num =         0
       call alloc_control_array_chara(array_c)
 !
-      call append_c_to_ctl_array(x_name(1), array_c)
-      call append_c_to_ctl_array(y_name(1), array_c)
-      call append_c_to_ctl_array(z_name(1), array_c)
+      tmpchara = x_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = y_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
+      tmpchara = z_name(1)
+      call append_c_to_ctl_array(tmpchara, array_c)
 !
       end subroutine psf_dirs_label_array
+!
+! ----------------------------------------------------------------------
+!
+      subroutine iso_type_label_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(cflag_const_iso, array_c)
+      call append_c_to_ctl_array(cflag_field_iso, array_c)
+!
+      end subroutine iso_type_label_array
 !
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -277,6 +302,26 @@
       end subroutine dealloc_section_coef_flags
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine psf_def_type_label_array(array_c)
+      use t_control_array_character
+      type(ctl_array_chara), intent(inout) :: array_c
+!
+      array_c%array_name = '  '
+      array_c%num =         0
+      call alloc_control_array_chara(array_c)
+!
+      call append_c_to_ctl_array(cflag_eq,  array_c)
+      call append_c_to_ctl_array(cflag_pln, array_c)
+      call append_c_to_ctl_array(cflag_sph, array_c)
+      call append_c_to_ctl_array(cflag_elp, array_c)
+      call append_c_to_ctl_array(cflag_hyp, array_c)
+      call append_c_to_ctl_array(cflag_prb, array_c)
+      call append_c_to_ctl_array(cflag_grp, array_c)
+!
+      end subroutine psf_def_type_label_array
+!
+! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_each_coef_4_psf(dir_ctl, coef_ctl, c_surf)
@@ -332,25 +377,6 @@
       end if
 !
       end subroutine set_each_param_2_vector
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine init_primary_section_coef_flag
-!
-!
-      cflag_x_sq =  x_sq_name(3)
-      cflag_y_sq =  y_sq_name(3)
-      cflag_z_sq =  z_sq_name(3)
-      cflag_xy =    xy_name(1)
-      cflag_yz =    yz_name(1)
-      cflag_zx =    zx_name(1)
-      cflag_x =     x_name(1)
-      cflag_y =     y_name(1)
-      cflag_z =     z_name(1)
-      cflag_const = c_name(1)
-!
-      end subroutine init_primary_section_coef_flag
 !
 !  ---------------------------------------------------------------------
 !

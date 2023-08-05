@@ -1,6 +1,6 @@
 add_direction_labels.o: $(IO_DIR)/add_direction_labels.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_nodal_fields_ctl.o: $(IO_DIR)/add_nodal_fields_ctl.f90 m_precision.o m_machine_parameter.o t_field_labels.o t_control_array_character3.o skip_comment_f.o t_read_control_elements.o
+add_nodal_fields_ctl.o: $(IO_DIR)/add_nodal_fields_ctl.f90 m_precision.o m_machine_parameter.o t_field_labels.o t_control_array_character3.o skip_comment_f.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_sph_file_access.o: $(IO_DIR)/check_sph_file_access.f90 m_precision.o m_file_format_switch.o t_file_IO_parameter.o set_parallel_file_name.o set_mesh_file_names.o delete_data_files.o
 	$(F90) -c $(F90OPTFLAGS) $<

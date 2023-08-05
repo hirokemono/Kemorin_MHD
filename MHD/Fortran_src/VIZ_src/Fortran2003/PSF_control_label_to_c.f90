@@ -6,22 +6,20 @@
 !>@brief control parameter for isuosurfaces
 !!
 !!@verbatim
-!!      integer(c_int) function num_label_iso_type_f() bind(c)
-!!      subroutine set_label_iso_type_f(names_c)  bind(c)
+!!      type(C_ptr) function c_link_psf_def_type_label_list(c_ctl)      &
+!!     &          bind(C, NAME = 'c_link_psf_def_type_label_list')
+!!      type(C_ptr) function c_link_psf_coef_label_list(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_psf_coef_label_list')
+!!      type(C_ptr) function c_link_psf_dirs_label_list(c_ctl)          &
+!!     &          bind(C, NAME = 'c_link_psf_dirs_label_list')
+!!        use m_pvr_control_labels
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!
-!!      integer(c_int) function num_label_psf_def_type_f() bind(c)
-!!      integer(c_int) function num_label_psf_def_type_grp_f() bind(c)
-!!      subroutine set_label_psf_def_type_grp_f(names_c)  bind(c)
-!!
-!!      subroutine set_primary_section_coef_flag_f(names_c)  bind(c)
-!!
-!!      integer(c_int) function num_fline_start_flags_f() bind(c)
-!!      integer(c_int) function num_fline_direction_flags_f() bind(c)
-!!      integer(c_int) function num_fline_seeds_flags_f() bind(c)
-!!
-!!      subroutine set_fline_start_flags_f(names_c)  bind(c)
-!!      subroutine set_fline_direction_flags_f(names_c)  bind(c)
-!!      subroutine set_fline_seeds_flags_f(names_c)  bind(c)
+!!      type(C_ptr) function c_link_isosurf_dir_list(c_ctl)             &
+!!     &          bind(C, NAME = 'c_link_isosurf_dir_list')
+!!      type(C_ptr) function c_link_surf_enhance_mode_list(c_ctl)       &
+!!     &          bind(C, NAME = 'c_link_surf_enhance_mode_list')
+!!        type(c_ptr), value, intent(in) :: c_ctl
 !!@endverbatim
 !
       module PSF_control_label_to_c
@@ -29,8 +27,16 @@
       use ISO_C_BINDING
 !
       use m_precision
+      use t_control_array_character
 !
       implicit  none
+!
+      type(ctl_array_chara), save, private, target :: psf_type_list
+      type(ctl_array_chara), save, private, target :: psf_coef_list
+      type(ctl_array_chara), save, private, target :: psf_dirs_list
+!
+      type(ctl_array_chara), save, private, target :: iso_dir_list
+      type(ctl_array_chara), save, private, target :: enhance_list
 !
 ! -----------------------------------------------------------------------
 !
@@ -38,156 +44,65 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(c_int) function num_label_iso_type_f() bind(c)
-!
-      use t_control_params_4_iso
-!
-      num_label_iso_type_f = num_label_iso_type()
-      return
-      end function num_label_iso_type_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_iso_type_f(names_c)  bind(c)
-!
-      use t_control_params_4_iso
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_iso_type()])
-      call set_label_iso_type(name_f)
-      end subroutine set_label_iso_type_f
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(c_int) function num_label_psf_def_type_f() bind(c)
-!
-      use set_coefs_of_sections
-!
-      num_label_psf_def_type_f = num_label_psf_def_type()
-      return
-      end function num_label_psf_def_type_f
-!
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_label_psf_def_type_grp_f() bind(c)
-!
-      use set_coefs_of_sections
-!
-      num_label_psf_def_type_grp_f = num_label_psf_def_type_grp()
-      return
-      end function num_label_psf_def_type_grp_f
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_psf_def_type_grp_f(names_c)  bind(c)
-!
-      use set_coefs_of_sections
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_label_psf_def_type_grp()])
-      call set_label_psf_def_type_grp(name_f)
-      end subroutine set_label_psf_def_type_grp_f
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine set_primary_section_coef_flag_f(names_c)  bind(c)
-!
-      use skip_comment_f
+      type(C_ptr) function c_link_psf_def_type_label_list(c_ctl)        &
+     &          bind(C, NAME = 'c_link_psf_def_type_label_list')
       use m_section_coef_flags
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [1])
-      name_f(1) = fill_from_null(name_f(1))
-      call set_primary_section_coef_flag(name_f(1))
-!
-      end subroutine set_primary_section_coef_flag_f
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(c_int) function num_fline_start_flags_f() bind(c)
-!
-      use t_control_params_4_fline
-!
-      num_fline_start_flags_f = num_fline_start_flags()
-      return
-      end function num_fline_start_flags_f
+      if(.not. allocated(psf_type_list%c_tbl))                          &
+     &      call psf_def_type_label_array(psf_type_list)
+      c_link_psf_def_type_label_list = C_loc(psf_type_list)
+      end function c_link_psf_def_type_label_list
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_fline_start_flags_f(names_c)  bind(c)
+      type(C_ptr) function c_link_psf_coef_label_list(c_ctl)            &
+     &          bind(C, NAME = 'c_link_psf_coef_label_list')
+      use m_section_coef_flags
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      use t_control_params_4_fline
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_fline_start_flags()])
-      call set_fline_start_flags(name_f)
-      end subroutine set_fline_start_flags_f
-!
-!  ---------------------------------------------------------------------
-!
-      integer(c_int) function num_fline_direction_flags_f() bind(c)
-!
-      use t_control_params_4_fline
-!
-      num_fline_direction_flags_f = num_fline_direction_flags()
-      return
-      end function num_fline_direction_flags_f
+      if(.not. allocated(psf_coef_list%c_tbl))                          &
+     &      call psf_coef_label_array(psf_coef_list)
+      c_link_psf_coef_label_list = C_loc(psf_coef_list)
+      end function c_link_psf_coef_label_list
 !
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_fline_seeds_flags_f() bind(c)
+      type(C_ptr) function c_link_psf_dirs_label_list(c_ctl)            &
+     &          bind(C, NAME = 'c_link_psf_dirs_label_list')
+      use m_section_coef_flags
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      use t_control_params_4_fline
-!
-      num_fline_seeds_flags_f = num_fline_seeds_flags()
-      return
-      end function num_fline_seeds_flags_f
+      if(.not. allocated(psf_dirs_list%c_tbl))                          &
+     &      call psf_dirs_label_array(psf_dirs_list)
+      c_link_psf_dirs_label_list = C_loc(psf_dirs_list)
+      end function c_link_psf_dirs_label_list
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_fline_direction_flags_f(names_c)  bind(c)
+      type(C_ptr) function c_link_isosurf_dir_list(c_ctl)               &
+     &          bind(C, NAME = 'c_link_isosurf_dir_list')
+      use m_pvr_control_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      use t_control_params_4_fline
+      if(.not. allocated(iso_dir_list%c_tbl))                           &
+     &      call pvr_isosurf_dir_list_array(iso_dir_list)
+      c_link_isosurf_dir_list = C_loc(iso_dir_list)
+      end function c_link_isosurf_dir_list
 !
-      type(C_ptr), value :: names_c
+! ----------------------------------------------------------------------
 !
-      character(len=kchara), pointer :: name_f(:)
+      type(C_ptr) function c_link_surf_enhance_mode_list(c_ctl)         &
+     &          bind(C, NAME = 'c_link_surf_enhance_mode_list')
+      use m_pvr_control_labels
+      type(c_ptr), value, intent(in) :: c_ctl
 !
-      call c_f_pointer(names_c, name_f, [num_fline_direction_flags()])
-      call set_fline_direction_flags(name_f)
-      end subroutine set_fline_direction_flags_f
+      if(.not. allocated(enhance_list%c_tbl))                           &
+     &      call pvr_surf_enhance_mode_array(enhance_list)
+      c_link_surf_enhance_mode_list = C_loc(enhance_list)
+      end function c_link_surf_enhance_mode_list
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine set_fline_seeds_flags_f(names_c)  bind(c)
-!
-      use t_control_params_4_fline
-!
-      type(C_ptr), value :: names_c
-!
-      character(len=kchara), pointer :: name_f(:)
-!
-      call c_f_pointer(names_c, name_f, [num_fline_seeds_flags()])
-      call set_fline_seeds_flags(name_f)
-      end subroutine set_fline_seeds_flags_f
-!
-!  ---------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       end module PSF_control_label_to_c
