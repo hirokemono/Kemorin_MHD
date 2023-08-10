@@ -31,14 +31,14 @@ lib_name:
 	@echo  'LIB_MT_STREAM_FILE = $(LIB_MT_STREAM_FILE)' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_MT_STREAM_FILE): $$(MOD_MT_STREAM)'>> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_MT_STREAM)' >> $(MAKENAME)
 
 mod_list:

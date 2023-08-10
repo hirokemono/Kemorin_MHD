@@ -13,7 +13,9 @@ MOD_MG_4_MHD = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MHD_AMG_DIR = $(MHD_AMG_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_MG_4_MHD)' \
 	>> $(MAKENAME)
 

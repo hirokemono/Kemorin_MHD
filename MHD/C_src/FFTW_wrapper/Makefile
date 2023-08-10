@@ -19,7 +19,9 @@ dir_list:
 
 lib_name:
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(OBJ_FFTW_C)' >> $(MAKENAME)
 
 

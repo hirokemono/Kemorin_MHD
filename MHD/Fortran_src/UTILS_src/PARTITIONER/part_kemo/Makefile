@@ -20,7 +20,7 @@ lib_tasks:
 
 libtarget:
 
-lib_archve:
+lib_archve: libtarget
 
 
 mod_list:

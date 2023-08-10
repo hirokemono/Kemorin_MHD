@@ -27,7 +27,9 @@ dir_list:
 	done
 	@echo '#' >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_CRS_SOLVER_S)' >> $(MAKENAME)
 
 

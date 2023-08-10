@@ -13,7 +13,9 @@ MOD_SF_BD = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MHD_SF_BC_DIR = $(MHD_SF_BC_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_SF_BD)' \
 	>> $(MAKENAME)
 

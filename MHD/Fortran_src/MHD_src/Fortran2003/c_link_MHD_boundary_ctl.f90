@@ -326,7 +326,7 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_thermal_bc_f(c_ctl)  bind(c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       if(.not. allocated(thermal_bc_type%c_tbl))                        &
@@ -337,7 +337,7 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_momentum_bc_f(c_ctl)  bind(c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       if(.not. allocated(momentum_bc_type%c_tbl))                       &
@@ -348,7 +348,7 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_induction_bc_f(c_ctl)  bind(c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       if(.not. allocated(induction_bc_type%c_tbl))                      &
@@ -359,7 +359,7 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_potential_bc_f(c_ctl)  bind(c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       if(.not. allocated(potential_bc_type%c_tbl))                      &
@@ -370,7 +370,7 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_vector_p_bc_f(c_ctl)  bind(c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       if(.not. allocated(vector_p_bc_type%c_tbl))                       &
@@ -381,7 +381,7 @@
 !  ---------------------------------------------------------------------
 !
       type(c_ptr) function set_label_current_bc_f(c_ctl)  bind(c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       type(c_ptr), value, intent(in) :: c_ctl
 !
       if(.not. allocated(current_bc_type%c_tbl))                        &

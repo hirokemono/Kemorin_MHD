@@ -28,7 +28,7 @@
 !
       use m_precision
       use m_boundary_condition_IDs
-      use m_set_node_group_types
+      use m_fem_node_group_types
       use skip_comment_f
 !
       implicit none
@@ -252,7 +252,7 @@
 !
       subroutine surf_bc_label_thermal_bc(array_c)
       use m_sph_node_group_types
-      use m_set_node_group_types
+      use m_fem_node_group_types
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !
@@ -272,7 +272,7 @@
 !
       subroutine surf_bc_label_momentum_bc(array_c)
       use m_sph_node_group_types
-      use m_set_node_group_types
+      use m_fem_node_group_types
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !
@@ -294,7 +294,7 @@
 !
       subroutine surf_bc_label_induction_bc(array_c)
       use m_sph_node_group_types
-      use m_set_node_group_types
+      use m_fem_node_group_types
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !
@@ -316,7 +316,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine surf_bc_label_potential_bc(array_c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !
@@ -335,7 +335,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine surf_bc_label_vector_p_bc(array_c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !
@@ -355,7 +355,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine surf_bc_label_current_bc(array_c)
-      use m_set_node_group_types
+      use m_fem_node_group_types
       use t_control_array_character
       type(ctl_array_chara), intent(inout) :: array_c
 !

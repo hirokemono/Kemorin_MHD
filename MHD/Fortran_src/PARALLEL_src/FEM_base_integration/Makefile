@@ -13,7 +13,9 @@ MOD_FEM_INT = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'FEM_INT_DIR = $(FEM_INT_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_FEM_INT)' >> $(MAKENAME)
 
 

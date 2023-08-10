@@ -13,7 +13,9 @@ MOD_GEN_FILTER_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'FILTER_3D_IODIR =  $(FILTER_3D_IODIR)'          >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' \
 	'$$(MOD_GEN_FILTER_IO)' \
 	>> $(MAKENAME)

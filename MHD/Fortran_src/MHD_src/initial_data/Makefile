@@ -13,7 +13,9 @@ MOD_KEMO = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MHD_INI_DIR = $(MHD_INI_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_KEMO)' \
 	>> $(MAKENAME)
 

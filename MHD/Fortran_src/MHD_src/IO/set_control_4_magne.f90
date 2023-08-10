@@ -40,7 +40,7 @@
       use t_physical_property
       use t_control_array_chara2real
       use t_bc_data_list
-      use m_set_node_group_types
+      use m_fem_node_group_types
       use set_surface_group_types
 !
       type(conductive_property), intent(in)  :: cd_prop

@@ -146,7 +146,7 @@ ctl_data_surf_boundary_IO.o \
 ctl_data_temp_model_IO.o \
 \
 m_sph_node_group_types.o \
-m_set_node_group_types.o \
+m_fem_node_group_types.o \
 t_reference_scalar_param.o \
 set_surface_group_types.o
 
@@ -245,7 +245,9 @@ set_sections_file_ctl.o \
 set_isosurface_file_ctl.o \
 set_field_comp_for_viz.o \
 t_psf_patch_data.o \
-set_area_4_viz.o
+set_area_4_viz.o \
+\
+m_control_fline_flags.o
 
 
 

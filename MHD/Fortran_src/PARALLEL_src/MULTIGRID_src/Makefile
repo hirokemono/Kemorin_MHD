@@ -13,7 +13,9 @@ MOD_MULTIGRID = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MG_SRCDIR = $(MG_SRCDIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_MULTIGRID)' >> $(MAKENAME)
 
 

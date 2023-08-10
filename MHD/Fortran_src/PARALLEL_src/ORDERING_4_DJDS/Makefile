@@ -13,7 +13,9 @@ MOD_SOLVER_SET_ORDER = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'DJDS_ORDER_DIR = $(DJDS_ORDER_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SOLVER_SET_ORDER)' >> $(MAKENAME)
 
 

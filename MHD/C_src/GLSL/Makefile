@@ -37,7 +37,9 @@ $(SHADER_PREFIX).c: $(SRC_SHADERS) $(SRC_MAKE_SHADER)
 dir_list: $(SHADER_PREFIX).c
 	@echo 'SHADERDIR = $(SHADERDIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(OBJ_SHADERS)' >> $(MAKENAME)
 
 mod_list:

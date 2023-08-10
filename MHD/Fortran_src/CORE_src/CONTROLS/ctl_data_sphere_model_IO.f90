@@ -24,7 +24,7 @@
 !!
 !!  begin num_grid_sph
 !!! ----------------------------------------------------------------
-!!!   sph_coef_type_ctl:  grid type for spherical harmonics data
+!!!   sph_center_coef_ctl:  grid type for spherical harmonics data
 !!!         no_pole:      Coefficients on spherical shell only
 !!!         with_center:  Add center
 !!!   sph_grid_type_ctl:  grid type for mesh data
@@ -33,8 +33,8 @@
 !!!         with_center:  Add center
 !!! ----------------------------------------------------------------
 !!
-!!    sph_coef_type_ctl       no_pole
-!!    sph_grid_type_ctl       no_pole
+!!    sph_center_coef_ctl       no_pole
+!!    sph_grid_type_ctl         no_pole
 !!    truncation_level_ctl     4
 !!    longitude_symmetry_ctl   2
 !!    ngrid_meridonal_ctl     12
@@ -120,7 +120,7 @@
       character(len=kchara), parameter, private                         &
      &      ::  hd_phi_symmetry = 'longitude_symmetry_ctl'
       character(len=kchara), parameter, private                         &
-     &      ::  hd_sph_c_type =   'sph_coef_type_ctl'
+     &      ::  hd_sph_c_type =   'sph_center_coef_ctl'
       character(len=kchara), parameter, private                         &
      &      ::  hd_sph_g_type =   'sph_grid_type_ctl'
 !
@@ -157,6 +157,13 @@
      &      ::  hd_list_radial_grp = 'radial_layering_ctl'
       character(len=kchara), parameter, private                         &
      &      ::  hd_list_med_grp = 'meridional_layering_ctl'
+!
+!!    Deprecated flags
+!
+      character(len=kchara), parameter, private                         &
+     &      ::  hd_sph_ctl_type =   'sph_coef_type_ctl'
+!
+!
 !
 !  ---------------------------------------------------------------------
 !
@@ -197,6 +204,9 @@
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_sph_c_type, spctl%sph_coef_type_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_sph_ctl_type, spctl%sph_coef_type_ctl)
+!
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_sph_g_type, spctl%sph_grid_type_ctl)
         call read_chara_ctl_type                                        &

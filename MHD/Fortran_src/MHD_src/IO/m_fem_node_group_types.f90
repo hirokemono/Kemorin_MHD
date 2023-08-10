@@ -1,5 +1,5 @@
-!>@file   m_set_node_group_types.f90
-!!@brief  module m_set_node_group_types
+!>@file   m_fem_node_group_types.f90
+!!@brief  module m_fem_node_group_types
 !!
 !!@author H. Matsui and H. Okuda
 !!@date Programmed by H. Matsui in Sep. 2005
@@ -22,7 +22,7 @@
 !!        type(ctl_array_chara), intent(inout) :: array_c
 !!@endverbatim
 !
-      module m_set_node_group_types
+      module m_fem_node_group_types
 !
       use m_precision
       use m_boundary_condition_IDs
@@ -370,4 +370,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module m_set_node_group_types
+      end module m_fem_node_group_types

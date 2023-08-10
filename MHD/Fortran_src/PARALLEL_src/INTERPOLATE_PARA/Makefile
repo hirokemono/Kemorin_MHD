@@ -13,7 +13,9 @@ MOD_ITP_PARA = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'ITP_PARA_DIR = $(ITP_PARA_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_ITP_PARA)' >> $(MAKENAME)
 
 mod_list:

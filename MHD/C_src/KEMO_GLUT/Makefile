@@ -47,7 +47,9 @@ dir_list:
 
 lib_name:
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 
 mod_list:
 	@echo  OBJ_KEMOVIEW_GLUT=  \\ >> $(MAKENAME)
