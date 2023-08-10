@@ -10,9 +10,7 @@ surfacing        \
 fieldline        \
 map_rendering    \
 volume_rendering \
-LIC_PVR          \
-\
-Fortran2003
+LIC_PVR
 
 #
 #  -------------------------------------------------------------------------
