@@ -35,7 +35,7 @@
 !!  lic_output_format    PNG
 !!  monitoring_mode      YES
 !!
-!!  streo_imaging        YES
+!!  stereo_imaging       YES
 !!  anaglyph_switch      NO
 !!  quilt_3d_imaging     YES
 !!!
@@ -105,7 +105,7 @@
      &             :: hd_pvr_monitor =   'monitoring_mode'
 !
       character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_streo =    'streo_imaging'
+     &             :: hd_pvr_stereo =    'stereo_imaging'
       character(len=kchara), parameter, private                         &
      &             :: hd_anaglyph_switch = 'anaglyph_switch'
       character(len=kchara), parameter, private                         &
@@ -138,6 +138,9 @@
 !   Deprecated labels
       character(len=kchara), parameter, private                         &
      &             :: hd_lic_out_type =    'lic_image_format'
+!
+      character(len=kchara), parameter, private                         &
+     &             :: hd_pvr_streo =    'streo_imaging'
 !
 !  ---------------------------------------------------------------------
 !
@@ -230,7 +233,10 @@
      &     (c_buf, hd_pvr_monitor, pvr%monitoring_ctl)
 !
         call read_chara_ctl_type                                        &
+     &     (c_buf, hd_pvr_stereo, pvr%streo_ctl)
+        call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_streo, pvr%streo_ctl)
+!
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_anaglyph_switch, pvr%anaglyph_ctl)
         call read_chara_ctl_type                                        &
@@ -270,7 +276,7 @@
       maxlen = max(maxlen, len_trim(hd_lic_out_format))
       maxlen = max(maxlen, len_trim(hd_pvr_monitor))
       maxlen = max(maxlen, len_trim(hd_anaglyph_switch))
-      maxlen = max(maxlen, len_trim(hd_pvr_streo))
+      maxlen = max(maxlen, len_trim(hd_pvr_stereo))
       maxlen = max(maxlen, len_trim(hd_pvr_quilt_3d))
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
@@ -372,7 +378,7 @@
      &     (hd_pvr_monitor, pvr%monitoring_ctl)
 !
         call init_chara_ctl_item_label                                  &
-     &     (hd_pvr_streo, pvr%streo_ctl)
+     &     (hd_pvr_stereo, pvr%streo_ctl)
         call init_chara_ctl_item_label                                  &
      &     (hd_anaglyph_switch, pvr%anaglyph_ctl)
         call init_chara_ctl_item_label                                  &

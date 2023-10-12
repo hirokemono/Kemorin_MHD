@@ -45,7 +45,8 @@
 !
       type(pvr_colormap_parameter), intent(inout) :: color_param
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, icou
+      real(kind = kreal) :: r, t, p
 !
 !
       if(light%ambient_coef_ctl%iflag .gt. 0) then
@@ -70,16 +71,26 @@
       end if
 !
 !
+      color_param%num_pvr_lights = 0
       if(light%light_position_ctl%num .gt. 0) then
-        color_param%num_pvr_lights = light%light_position_ctl%num
-      else
-        color_param%num_pvr_lights = 1
+        color_param%num_pvr_lights = color_param%num_pvr_lights         &
+     &                              + light%light_position_ctl%num
       end if
+!
+      if(light%light_sph_posi_ctl%num .gt. 0) then
+        color_param%num_pvr_lights = color_param%num_pvr_lights         &
+     &                              + light%light_sph_posi_ctl%num
+      end if
+      if(color_param%num_pvr_lights .eq. 0)                             &
+     &                             color_param%num_pvr_lights = 1
 !
       call alloc_light_posi_in_view(color_param)
 !
+      i = 0
       if(light%light_position_ctl%num .gt. 0) then
-        do i = 1, color_param%num_pvr_lights
+!$omp parallel do private(icou,i)
+        do icou = 1, light%light_position_ctl%num
+          i = icou + 1
           color_param%xyz_pvr_lights(1,i)                               &
      &          = light%light_position_ctl%vec1(i)
           color_param%xyz_pvr_lights(2,i)                               &
@@ -87,6 +98,23 @@
           color_param%xyz_pvr_lights(3,i)                               &
      &          = light%light_position_ctl%vec3(i)
         end do
+!$omp end parallel do
+      end if
+      if(light%light_sph_posi_ctl%num .gt. 0) then
+!$omp parallel do private(icou,i,r,t,p)
+        do icou = 1, light%light_sph_posi_ctl%num
+          i = icou + 1
+          r = light%light_sph_posi_ctl%vec1(i)
+          t = light%light_sph_posi_ctl%vec2(i) * atan(one) / 45.0
+          p = light%light_sph_posi_ctl%vec3(i) * atan(one) / 45.0
+          color_param%xyz_pvr_lights(1,i) = r * sin(t) * cos(p)
+          color_param%xyz_pvr_lights(2,i) = r * sin(t) * sin(p)
+          color_param%xyz_pvr_lights(3,i) = r * cos(t)
+        end do
+!$omp end parallel do
+      end if
+
+      if(i .gt. 0) then
         color_param%iflag_pvr_lights = 1
       else
         color_param%xyz_pvr_lights(1,1) = one

@@ -20,6 +20,8 @@
 !!     &          bind(C, NAME = 'c_PVR_light_specular_coef_ctl')
 !!      type(c_ptr) function c_PVR_light_position_ctl(c_ctl)            &
 !!     &          bind(C, NAME = 'c_PVR_light_position_ctl')
+!!      type(c_ptr) function c_PVR_light_sph_posi_ctl(c_ctl)            &
+!!     &          bind(C, NAME = 'c_PVR_light_sph_posi_ctl')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!!!
 !!      type(c_ptr) function c_PVR_colormap_ctl_block_name(c_ctl)       &
@@ -128,6 +130,16 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_PVR_light_position_ctl = C_loc(f_ctl%light_position_ctl)
       end function c_PVR_light_position_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_PVR_light_sph_posi_ctl(c_ctl)              &
+     &          bind(C, NAME = 'c_PVR_light_sph_posi_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(pvr_light_ctl), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_PVR_light_sph_posi_ctl = C_loc(f_ctl%light_sph_posi_ctl)
+      end function c_PVR_light_sph_posi_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

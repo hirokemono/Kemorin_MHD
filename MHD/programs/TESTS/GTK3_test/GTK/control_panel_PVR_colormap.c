@@ -109,13 +109,16 @@ GtkWidget * draw_pvr_lighting_vbox(struct lighting_ctl_c *light_ctl_c,
     GtkWidget *hbox_3 = draw_real_item_entry_hbox(light_ctl_c->f_specular_coef_ctl);
     GtkWidget *expand_4 = r3_list_combobox_expander(light_ctl_c->f_light_position_ctl,
                                                     lighting_tree_view, window);
-    
+    GtkWidget *expand_5 = r3_list_combobox_expander(light_ctl_c->f_light_sph_posi_ctl,
+                                                    lighting_tree_view, window);
+
     GtkWidget *vbox_lgt = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_1,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_2,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_lgt), hbox_3,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_lgt), expand_4,  FALSE, FALSE, 0);
-    
+    gtk_box_pack_start(GTK_BOX(vbox_lgt), expand_5,  FALSE, FALSE, 0);
+
     GtkWidget *expand_lgt = draw_control_block_w_file_switch(light_ctl_c->c_block_name,
                                                              light_ctl_c->f_iflag,
                                                              light_ctl_c->light_ctl_file_name,

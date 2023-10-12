@@ -47,6 +47,7 @@ extern void * c_PVR_light_ambient_coef_ctl(void *f_light);
 extern void * c_PVR_light_diffuse_coef_ctl(void *f_light);
 extern void * c_PVR_light_specular_coef_ctl(void *f_light);
 extern void * c_PVR_light_position_ctl(void *f_light);
+extern void * c_PVR_light_sph_posi_ctl(void *f_light);
 
 
 
@@ -152,5 +153,6 @@ struct lighting_ctl_c * init_f_PVR_lighting_ctl(char * ctl_file_name,
     f_light_c->f_diffuse_coef_ctl =   init_f_ctl_real_item(c_PVR_light_diffuse_coef_ctl, f_light_c->f_self);
     f_light_c->f_specular_coef_ctl =  init_f_ctl_real_item(c_PVR_light_specular_coef_ctl, f_light_c->f_self);
     f_light_c->f_light_position_ctl = init_f_ctl_r3_array(c_PVR_light_position_ctl, f_light_c->f_self);
+    f_light_c->f_light_sph_posi_ctl = init_f_ctl_r3_array(c_PVR_light_sph_posi_ctl, f_light_c->f_self);
     return f_light_c;
 };

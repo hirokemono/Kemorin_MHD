@@ -28,7 +28,7 @@
 !!    colorbar_switch_ctl    ON
 !!    colorbar_scale_ctl     ON
 !!    colorbar_position_ctl  'side' or 'bottom'
-!!    iflag_zeromarker       ON
+!!    zeromarker_switch      ON
 !!    colorbar_range     0.0   1.0
 !!    font_size_ctl         3
 !!    num_grid_ctl     4
@@ -68,7 +68,7 @@
       character(len=kchara), parameter, private                         &
      &                  :: hd_pvr_numgrid_cbar = 'num_grid_ctl'
       character(len=kchara), parameter, private                         &
-     &                  :: hd_zeromarker_flag = 'iflag_zeromarker'
+     &                  :: hd_zeromarker_switch = 'zeromarker_switch'
       character(len=kchara), parameter, private                         &
      &                  :: hd_cbar_range = 'colorbar_range'
 !
@@ -78,6 +78,10 @@
      &                  :: hd_time_switch = 'time_label_switch'
       character(len=kchara), parameter, private                         &
      &                  :: hd_mapgrid_switch = 'map_grid_switch'
+!
+!      Deprecated label
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_zeromarker_flag = 'iflag_zeromarker'
 !
 !  ---------------------------------------------------------------------
 !
@@ -114,6 +118,9 @@
      &      cbar_ctl%colorbar_scale_ctl)
         call read_chara_ctl_type(c_buf, hd_cbar_position,               &
      &      cbar_ctl%colorbar_position_ctl)
+!
+        call read_chara_ctl_type(c_buf, hd_zeromarker_switch,           &
+     &      cbar_ctl%zeromarker_flag_ctl)
         call read_chara_ctl_type(c_buf, hd_zeromarker_flag,             &
      &      cbar_ctl%zeromarker_flag_ctl)
 !
@@ -154,7 +161,7 @@
       maxlen = max(maxlen, len_trim(hd_pvr_numgrid_cbar))
       maxlen = max(maxlen, len_trim(hd_colorbar_scale))
       maxlen = max(maxlen, len_trim(hd_cbar_position))
-      maxlen = max(maxlen, len_trim(hd_zeromarker_flag))
+      maxlen = max(maxlen, len_trim(hd_zeromarker_switch))
       maxlen = max(maxlen, len_trim(hd_axis_switch))
       maxlen = max(maxlen, len_trim(hd_time_switch))
       maxlen = max(maxlen, len_trim(hd_mapgrid_switch))
@@ -210,7 +217,7 @@
      &      cbar_ctl%colorbar_scale_ctl)
         call init_chara_ctl_item_label(hd_cbar_position,                &
      &      cbar_ctl%colorbar_position_ctl)
-        call init_chara_ctl_item_label(hd_zeromarker_flag,              &
+        call init_chara_ctl_item_label(hd_zeromarker_switch,            &
      &      cbar_ctl%zeromarker_flag_ctl)
 !
         call init_chara_ctl_item_label(hd_axis_switch,                  &

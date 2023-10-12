@@ -95,6 +95,7 @@ struct lighting_ctl_c{
     struct real_ctl_item *f_specular_coef_ctl;
     
     struct real3_clist *f_light_position_ctl;
+    struct real3_clist *f_light_sph_posi_ctl;
 };
 
 

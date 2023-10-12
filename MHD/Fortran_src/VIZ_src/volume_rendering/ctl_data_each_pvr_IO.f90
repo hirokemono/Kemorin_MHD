@@ -31,7 +31,7 @@
 !!  pvr_output_format    PNG
 !!  monitoring_mode      YES
 !!
-!!  streo_imaging        YES
+!!  stereo_imaging       YES
 !!  anaglyph_switch      NO
 !!  quilt_3d_imaging     YES
 !!!
@@ -122,7 +122,7 @@
      &             :: hd_pvr_monitor =     'monitoring_mode'
 !
       character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_streo =    'streo_imaging'
+     &             :: hd_pvr_stereo =    'stereo_imaging'
       character(len=kchara), parameter, private                         &
      &             :: hd_anaglyph_switch = 'anaglyph_switch'
       character(len=kchara), parameter, private                         &
@@ -165,6 +165,8 @@
      &             :: hd_pvr_out_type =    'pvr_output_type'
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_rotation =    'image_rotation_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_pvr_streo =    'streo_imaging'
 !
 !  ---------------------------------------------------------------------
 !
@@ -235,7 +237,10 @@
      &     (c_buf, hd_pvr_monitor, pvr_ctl%monitoring_ctl)
 !
         call read_chara_ctl_type                                        &
+     &     (c_buf, hd_pvr_stereo, pvr_ctl%streo_ctl)
+        call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_streo, pvr_ctl%streo_ctl)
+!
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_anaglyph_switch, pvr_ctl%anaglyph_ctl)
         call read_chara_ctl_type                                        &
@@ -302,7 +307,7 @@
       maxlen = max(maxlen, len_trim(hd_pvr_out_format))
       maxlen = max(maxlen, len_trim(hd_pvr_monitor))
       maxlen = max(maxlen, len_trim(hd_anaglyph_switch))
-      maxlen = max(maxlen, len_trim(hd_pvr_streo))
+      maxlen = max(maxlen, len_trim(hd_pvr_stereo))
       maxlen = max(maxlen, len_trim(hd_pvr_quilt_3d))
       maxlen = max(maxlen, len_trim(hd_output_field_def))
       maxlen = max(maxlen, len_trim(hd_output_comp_def))
@@ -396,7 +401,7 @@
      &     (hd_pvr_monitor, pvr_ctl%monitoring_ctl)
 !
         call init_chara_ctl_item_label                                  &
-     &     (hd_pvr_streo, pvr_ctl%streo_ctl)
+     &     (hd_pvr_stereo, pvr_ctl%streo_ctl)
         call init_chara_ctl_item_label                                  &
      &     (hd_anaglyph_switch, pvr_ctl%anaglyph_ctl)
         call init_chara_ctl_item_label                                  &

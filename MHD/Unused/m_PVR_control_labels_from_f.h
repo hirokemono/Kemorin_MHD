@@ -94,7 +94,7 @@ label[0]   colorbar_switch_ctl
 label[1]   colorbar_scale_ctl 
 label[2]   font_size_ctl 
 label[3]   num_grid_ctl 
-label[4]   iflag_zeromarker 
+label[4]   zeromarker_switch
 label[5]   colorbar_range 
 label[6]   axis_label_switch 
 

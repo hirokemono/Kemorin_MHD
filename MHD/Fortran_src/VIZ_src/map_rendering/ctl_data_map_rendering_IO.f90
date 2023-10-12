@@ -81,7 +81,7 @@
 !!      colorbar_switch_ctl    ON
 !!      colorbar_position_ctl  'left' or 'bottom'
 !!      colorbar_scale_ctl     ON
-!!      iflag_zeromarker       ON
+!!      zeromarker_switch      ON
 !!      colorbar_range     0.0   1.0
 !!      font_size_ctl         3
 !!      num_grid_ctl     4

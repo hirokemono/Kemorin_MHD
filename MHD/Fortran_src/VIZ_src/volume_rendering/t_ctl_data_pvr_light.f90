@@ -40,6 +40,13 @@
 !!      position_of_lights    0.0  10.0    0.0   end
 !!    end array position_of_lights
 !!!
+!!    array sph_position_of_lights
+!!      sph_position_of_lights   10.0   0.0    0.0   end
+!!      sph_position_of_lights   10.0  30.0  -45.0   end
+!!      sph_position_of_lights   10.0  30.0   45.0   end
+!!      sph_position_of_lights   10.0 -45.0  180.0   end
+!!    end array sph_position_of_lights
+!!!
 !!    ambient_coef_ctl              0.5
 !!    diffuse_coef_ctl              5.6
 !!    specular_coef_ctl             0.8
@@ -74,6 +81,11 @@
 !!@n      light_position_ctl%vec2:  Y-component of light position
 !!@n      light_position_ctl%vec3:  Z-component of light position
         type(ctl_array_r3) :: light_position_ctl
+!>      Structure for light positions
+!!@n      light_sph_posi_ctl%vec1:  r-component of light position
+!!@n      light_sph_posi_ctl%vec2:  theta-component of light position
+!!@n      light_sph_posi_ctl%vec3:  phi-component of light position
+        type(ctl_array_r3) :: light_sph_posi_ctl
 !
         integer (kind=kint) :: i_pvr_lighting = 0
       end type pvr_light_ctl
@@ -84,9 +96,11 @@
       character(len=kchara) :: hd_ambient =  'ambient_coef_ctl'
       character(len=kchara) :: hd_diffuse =  'diffuse_coef_ctl'
       character(len=kchara) :: hd_specular = 'specular_coef_ctl'
-      character(len=kchara) :: hd_light_param =  'position_of_lights'
+      character(len=kchara) :: hd_light_xyz =  'position_of_lights'
+      character(len=kchara) :: hd_light_sph =  'sph_position_of_lights'
 !
-      private :: hd_ambient, hd_diffuse, hd_specular, hd_light_param
+      private :: hd_ambient, hd_diffuse, hd_specular,
+      private :: hd_light_xyz, hd_light_sph
 !
 !  ---------------------------------------------------------------------
 !
@@ -111,7 +125,9 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_r3(id_control,                          &
-     &      hd_light_param, light%light_position_ctl, c_buf)
+     &      hd_light_xyz, light%light_position_ctl, c_buf)
+        call read_control_array_r3(id_control,                          &
+     &      hd_light_sph, light%light_sph_posi_ctl, c_buf)
 !
         call read_real_ctl_type                                         &
      &     (c_buf, hd_ambient, light%ambient_coef_ctl )
@@ -149,6 +165,8 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_r3(id_control, level,                    &
      &    light%light_position_ctl)
+      call write_control_array_r3(id_control, level,                    &
+     &    light%light_sph_posi_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    light%ambient_coef_ctl )
@@ -170,7 +188,9 @@
 !
       light%block_name = hd_block
         call init_r3_ctl_array_label                                    &
-     &     (hd_light_param, light%light_position_ctl)
+     &     (hd_light_xyz, light%light_position_ctl)
+        call init_r3_ctl_array_label                                    &
+     &     (hd_light_sph, light%light_sph_posi_ctl)
 !
         call init_real_ctl_item_label                                   &
      &     (hd_ambient, light%ambient_coef_ctl)
@@ -205,6 +225,9 @@
       if(cmp_control_array_r3(light1%light_position_ctl,                &
      &                        light2%light_position_ctl)                &
      &                                            .eqv. .FALSE.) return
+      if(cmp_control_array_r3(light1%light_sph_posi_ctl,                &
+     &                        light2%light_sph_posi_ctl)                &
+     &                                            .eqv. .FALSE.) return
       cmp_pvr_light_ctl = .TRUE.
 !
       end function cmp_pvr_light_ctl
@@ -230,7 +253,10 @@
 !
       type(pvr_light_ctl), intent(inout) :: light
 !
+      call dealloc_control_array_r3(light%light_sph_posi_ctl)
       call dealloc_control_array_r3(light%light_position_ctl)
+      light%light_sph_posi_ctl%num = 0
+      light%light_sph_posi_ctl%icou = 0
       light%light_position_ctl%num = 0
       light%light_position_ctl%icou = 0
 !
@@ -250,6 +276,8 @@
 !
       call dup_control_array_r3(org_light%light_position_ctl,           &
      &                          new_light%light_position_ctl)
+      call dup_control_array_r3(org_light%light_sph_posi_ctl,           &
+     &                          new_light%light_sph_posi_ctl)
 !
       call copy_real_ctl(org_light%ambient_coef_ctl,                    &
      &                   new_light%ambient_coef_ctl)

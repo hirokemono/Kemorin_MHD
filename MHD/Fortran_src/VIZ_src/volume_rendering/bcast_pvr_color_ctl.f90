@@ -84,6 +84,7 @@
       call calypso_mpi_bcast_one_int(light%i_pvr_lighting, 0)
 !
       call bcast_ctl_array_r3(light%light_position_ctl)
+      call bcast_ctl_array_r3(light%light_sph_posi_ctl)
 !
       call bcast_ctl_type_r1(light%ambient_coef_ctl )
       call bcast_ctl_type_r1(light%diffuse_coef_ctl )

@@ -35,7 +35,8 @@ const char label_lighting_ctl[NLBL_LIGHTING_CTL][KCHARA_C] = {
 	
 	/*[ 1]*/	{"ambient_coef_ctl"},
 	/*[ 2]*/	{"diffuse_coef_ctl"},
-	/*[ 3]*/	{"specular_coef_ctl"}
+	/*[ 3]*/	{"specular_coef_ctl"},
+    /*[ 4]*/    {"sph_position_of_lights"}
 };
 
 const char label_colorbar_ctl[NLBL_PVR_COLORBAR_CTL][KCHARA_C] = {
@@ -43,7 +44,7 @@ const char label_colorbar_ctl[NLBL_PVR_COLORBAR_CTL][KCHARA_C] = {
 	/*[ 1]*/	{"colorbar_scale_ctl"},
 	/*[ 2]*/	{"font_size_ctl"},
 	/*[ 3]*/	{"num_grid_ctl"},
-	/*[ 4]*/	{"iflag_zeromarker"},
+	/*[ 4]*/	{"zeromarker_switch"},
 	/*[ 5]*/	{"colorbar_range"},
 	
 	/*[ 6]*/	{"axis_label_switch"},
@@ -137,7 +138,8 @@ void read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		read_real3_clist(fp, buf, label_lighting_ctl[ 0], light_c->f_light_position_ctl);
-		
+        read_real3_clist(fp, buf, label_lighting_ctl[ 4], light_c->f_light_sph_posi_ctl);
+
 		read_real_ctl_item_c(buf, label_lighting_ctl[ 1], light_c->f_ambient_coef_ctl);
 		read_real_ctl_item_c(buf, label_lighting_ctl[ 2], light_c->f_diffuse_coef_ctl);
 		read_real_ctl_item_c(buf, label_lighting_ctl[ 3], light_c->f_specular_coef_ctl);
@@ -163,7 +165,8 @@ int write_lighting_ctl_c(FILE *fp, int level, const char *label,
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_real3_clist(fp, level, label_lighting_ctl[ 0], light_c->f_light_position_ctl);
-	
+    write_real3_clist(fp, level, label_lighting_ctl[ 4], light_c->f_light_sph_posi_ctl);
+
 	write_real_ctl_item_c(fp, level, maxlen, label_lighting_ctl[ 1], light_c->f_ambient_coef_ctl);
 	write_real_ctl_item_c(fp, level, maxlen, label_lighting_ctl[ 2], light_c->f_diffuse_coef_ctl);
 	write_real_ctl_item_c(fp, level, maxlen, label_lighting_ctl[ 3], light_c->f_specular_coef_ctl);
