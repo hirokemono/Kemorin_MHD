@@ -819,13 +819,13 @@ void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i){
 	get_fline_color_data_name(kemo_sgl->kemo_fline->fline_d, colorname, i);
 };
 
-int kemoview_toggle_fline_type(void){return toggle_fline_type(kemo_sgl->kemo_fline->fline_m);};
+long kemoview_toggle_fline_type(void){return toggle_fline_type(kemo_sgl->kemo_fline->fline_m);};
 
 void kemoview_set_fline_field_param(int selected, int input){
 	return set_fline_field_param(selected, input, kemo_sgl->kemo_fline);
 };
 int kemoview_get_fline_field_param(int selected){
-	return get_fline_field_param(selected, kemo_sgl->kemo_fline);
+	return (int) get_fline_field_param(selected, kemo_sgl->kemo_fline);
 };
 
 void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,

@@ -62,7 +62,7 @@
         self.specularMaterial = [[defaults stringForKey:@"materialSpecular"] floatValue];
         self.shinessMaterial =  [[defaults stringForKey:@"materialShineness"] floatValue];
 
-        kemoview_alloc_phong_light_list(self.numLightTable);
+        kemoview_alloc_phong_light_list((int) self.numLightTable);
         kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial);
         kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial);
         kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial);
@@ -76,7 +76,7 @@
 
 - (IBAction)addAtSelectedRow:(id)pId{
 	float r2, t2, p2;
-	int isel = [idlightTableView selectedRow];
+	int isel = (int) [idlightTableView selectedRow];
 	
 	if ([idlightTableView selectedRow] >= 0) {
 		r2 = [[self.radialLightPosition    objectAtIndex:isel  ] floatValue];
@@ -96,7 +96,7 @@
 	int i, n;
 	
 	NSIndexSet *SelectedList = [idlightTableView selectedRowIndexes];
-	n = [self.radialLightPosition count];
+	n = (int) [self.radialLightPosition count];
 	if(n < 1) return;
 	
 	if ([idlightTableView numberOfSelectedRows] > 0) {
@@ -113,7 +113,7 @@
 };
 
 - (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj{
-	return [self.radialLightPosition count];
+	return (int) [self.radialLightPosition count];
 };
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex{
@@ -136,7 +136,7 @@
 	float r0, t0, p0;
 	float r_in, r1, r2;
 	
-	int numberOfRaw = [self.radialLightPosition count];
+	int numberOfRaw = (int) [self.radialLightPosition count];
 	
 	r0 =  [[self.radialLightPosition objectAtIndex:pRowIndex] floatValue];
 	t0 =  [[self.elevationLightPosition objectAtIndex:pRowIndex] floatValue];
@@ -278,7 +278,7 @@
 
 - (IBAction)SetRadialLightPositionAction:(id)sender{
 	float r0, t0, p0, r1, r2;
-	int isel = [idlightTableView selectedRow];
+	int isel = (int) [idlightTableView selectedRow];
 	if(isel < 0 || isel >= self.numLightTable) return;
 	
 	t0 =  [[self.elevationLightPosition objectAtIndex:isel] floatValue];
@@ -310,7 +310,7 @@
 };
 - (IBAction)SetelevationLightPositionAction:(id)sender{
 	float r0, t0, p0;
-	int isel = [idlightTableView selectedRow];
+	int isel = (int) [idlightTableView selectedRow];
 	if(isel < 0 || isel >= self.numLightTable) return;
 	
 	r0 =  [[self.radialLightPosition objectAtIndex:isel] floatValue];
@@ -327,7 +327,7 @@
 };
 - (IBAction)SetAzimuthLightPositionAction:(id)sender{
 	float r0, t0, p0;
-	int isel = [idlightTableView selectedRow];
+	int isel = (int) [idlightTableView selectedRow];
 	if(isel < 0 || isel >= self.numLightTable) return;
 	
 	r0 =  [[self.radialLightPosition objectAtIndex:isel] floatValue];

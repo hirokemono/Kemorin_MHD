@@ -17,6 +17,8 @@ void drawgl_textured_patches_VAO(GLuint *texture_name, struct view_element *view
 								 struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders);
 void drawgl_patch_with_phong(struct view_element *view_s, struct VAO_ids *VAO, 
 			struct kemoview_shaders *kemo_shaders);
+void drawgl_elements_with_phong(struct view_element *view_s, struct VAO_ids *VAO, 
+                                struct kemoview_shaders *kemo_shaders);
 void drawgl_lines(struct view_element *view_s, 
 			struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders);
 

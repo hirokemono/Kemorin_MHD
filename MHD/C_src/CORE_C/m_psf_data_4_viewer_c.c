@@ -306,7 +306,7 @@ void copy_viewer_udt_connect(struct psf_data *viz_copied, struct psf_data *viz_o
 }
 
 void copy_viewer_udt_field_name(struct psf_data *viz_copied, struct psf_data *viz_org){
-	int i, imin_fld;
+	long i, imin_fld;
 	
     imin_fld = viz_org->nfield;
     if (viz_copied->nfield < imin_fld) imin_fld = viz_copied->nfield;
@@ -324,7 +324,7 @@ void copy_viewer_udt_field_name(struct psf_data *viz_copied, struct psf_data *vi
 }
 
 void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org){
-	int i, j, imin_comp, imin_nod;
+    long i, j, imin_comp, imin_nod;
 	
     imin_nod = viz_org->nnod_viz;
     imin_comp = viz_org->ncomptot;
@@ -363,7 +363,7 @@ void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk
     
     last_fld = vtk_list->vtk_fields;
     for (i=0; i<viz_copied->nfield; i++) {
-        ist = viz_copied->istack_comp[i];
+        ist = (int) viz_copied->istack_comp[i];
         for (inod=0; inod<viz_copied->nnod_viz; inod++) {
             for (nd=0; nd<viz_copied->ncomp[i]; nd++) {
                 viz_copied->d_nod[inod][nd+ist] = last_fld->d_vtk[inod][nd];

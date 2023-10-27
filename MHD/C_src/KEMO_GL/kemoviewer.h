@@ -507,7 +507,7 @@ extern "C" {
     int kemoview_get_fline_color_num_comps(int i);
     void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i);
     
-	int kemoview_toggle_fline_type(void);
+	long kemoview_toggle_fline_type(void);
 	
 	void kemoview_set_fline_field_param(int selected, int input);
 	int kemoview_get_fline_field_param(int selected);

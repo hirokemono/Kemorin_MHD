@@ -37,6 +37,21 @@ void drawgl_patch_with_phong(struct view_element *view_s, struct VAO_ids *VAO,
 	return;
 }
 
+void drawgl_elements_with_phong(struct view_element *view_s, struct VAO_ids *VAO, 
+                                struct kemoview_shaders *kemo_shaders){
+    if(VAO->npoint_draw <= 0) return;
+    
+    glUseProgram(kemo_shaders->phong->programId);
+    transfer_matrix_to_shader(kemo_shaders->phong, view_s);
+    set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
+    
+    glBindVertexArray(VAO->id_VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
+    glDrawElements(GL_TRIANGLES, VAO->npoint_draw, GL_UNSIGNED_INT, IZERO);
+    
+    return;
+}
+
 void drawgl_lines(struct view_element *view_s, 
 			struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;

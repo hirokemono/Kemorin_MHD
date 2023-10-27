@@ -23,12 +23,12 @@ struct fline_menu_val{
 
 	int iflag_draw_fline;
 	
-	int if_draw_fline;
-	int ic_draw_fline;
-	int icomp_draw_fline;
+    long if_draw_fline;
+    long ic_draw_fline;
+	long icomp_draw_fline;
 	
 	int fieldline_color;
-	int fieldline_type;
+	long fieldline_type;
 	double fieldline_thick;
 	
 	struct colormap_params *cmap_fline;

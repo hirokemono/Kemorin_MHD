@@ -15,9 +15,9 @@ int XpixelRectView, YpixelRectView;
 
 // single set of interaction flags and states
 double gDollyPanStartPoint[2] = {0.0, 0.0};
-GLboolean gDolly = GL_FALSE;
-GLboolean gPan = GL_FALSE;
-GLboolean gTrackball = GL_FALSE;
+GLboolean gDolly =     FALSE;
+GLboolean gPan =       FALSE;
+GLboolean gTrackball = FALSE;
 KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 @implementation KemoViewerOpenGLView
@@ -342,9 +342,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	else {
 		NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		location.y = YpixelGLWindow - location.y;
-		gDolly = GL_FALSE; // no dolly
-		gPan = GL_FALSE; // no pan
-		gTrackball = GL_TRUE;
+		gDolly =     FALSE; // no dolly
+		gPan =       FALSE; // no pan
+		gTrackball = TRUE;
 		kemoview_startTrackball(location.x, -location.y);
 		gTrackingViewInfo = self;
 	}
@@ -362,9 +362,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		kemoview_drugging_addToRotationTrackball();
 	}
  */
-	gDolly = GL_FALSE; // no dolly
-	gPan = GL_TRUE; 
-	gTrackball = GL_FALSE; // no trackball
+	gDolly =     FALSE; // no dolly
+	gPan =       TRUE; 
+	gTrackball = FALSE; // no trackball
 	gDollyPanStartPoint[0] = (double) location.x;
 	gDollyPanStartPoint[1] = (double) location.y;
 	gTrackingViewInfo = self;
@@ -381,9 +381,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		kemoview_drugging_addToRotationTrackball();
 	}
  */
-	gDolly = GL_TRUE;
-	gPan = GL_FALSE; // no pan
-	gTrackball = GL_FALSE; // no trackball
+	gDolly =     TRUE;
+	gPan =       FALSE; // no pan
+	gTrackball = FALSE; // no trackball
 	gDollyPanStartPoint[0] = (double) location.x;
 	gDollyPanStartPoint[1] = (double) location.y;
 	gTrackingViewInfo = self;
@@ -396,11 +396,11 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     kemoview_set_single_viewer_id(id_window);
 
 	if (gDolly) { // end dolly
-		gDolly = GL_FALSE;
+		gDolly =     FALSE;
 	} else if (gPan) { // end pan
-		gPan = GL_FALSE;
+		gPan =       FALSE;
 	} else if (gTrackball) { // end trackball
-		gTrackball = GL_FALSE;
+		gTrackball = FALSE;
 /*		kemoview_drugging_addToRotationTrackball();*/
 		[_resetview UpdateParameters];
 	} 
