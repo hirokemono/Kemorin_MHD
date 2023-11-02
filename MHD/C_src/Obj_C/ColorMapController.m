@@ -186,6 +186,8 @@
 	[defaults setFloat:((float) rgbaBG[2]) forKey:@"BackGroundBlue"];
 	
 	[_kemoviewer swapbuffer_cocoa];
+    [_metalView updateBackground];
+    [_metalView draw];
 }
 
 - (IBAction)SetColorMode:(id)pId;

@@ -18,7 +18,6 @@
 @interface KemoViewerMetalViewController : NSViewController{
 }
 
--(void) init;
 -(void) awakeFromNib;
 @end
 
