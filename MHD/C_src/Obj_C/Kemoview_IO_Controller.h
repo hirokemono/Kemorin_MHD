@@ -6,7 +6,8 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
+
 #import "KemoViewerOpenGLView.h"
 #import "DomainTableController.h"
 #import "PsfController.h"

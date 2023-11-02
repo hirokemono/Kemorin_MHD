@@ -8,7 +8,8 @@
 #ifndef KemoviewerLightingControl_h__
 #define KemoviewerLightingControl_h__
 
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
+
 #import "KemoViewerOpenGLView.h"
 #import "fillRectView.h"
 

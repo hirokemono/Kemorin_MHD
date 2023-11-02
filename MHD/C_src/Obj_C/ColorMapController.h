@@ -8,7 +8,8 @@
 //
 */
 
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
+
 #import "KemoViewerOpenGLView.h"
 #import "fillRectView.h"
 

@@ -6,7 +6,8 @@
 //  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
+
 #import "Kemoview_IO_Controller.h"
 #include "Kemoviewer.h"
 

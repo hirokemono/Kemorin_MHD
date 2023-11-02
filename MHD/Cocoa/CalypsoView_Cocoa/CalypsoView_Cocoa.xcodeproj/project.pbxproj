@@ -172,6 +172,9 @@
 		18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */; };
 		18E2A550230879E20048A57A /* set_mesh_patch_2_gl_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18E2A54E230879E10048A57A /* set_mesh_patch_2_gl_buf.c */; };
 		18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EE497522E231B0000B1F03 /* m_read_text_to_character.c */; };
+		18F0295D2AF31C4000D37276 /* KemoViewerMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0295C2AF31C4000D37276 /* KemoViewerMetalView.m */; };
+		18F029602AF3EF7600D37276 /* AAPLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0295E2AF3EF7600D37276 /* AAPLRenderer.m */; };
+		18F029632AF3F47200D37276 /* KemoViewerMetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F029622AF3F47200D37276 /* KemoViewerMetalViewController.m */; };
 		18F56FC823720B270029D20D /* m_kemoview_fline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F56FC723720B270029D20D /* m_kemoview_fline_menu.c */; };
 		18F6DAF615D993F7006F4600 /* set_each_psf_parameters.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F6DAF515D993F7006F4600 /* set_each_psf_parameters.c */; };
 		18FC007517EE0B7200B5F684 /* select_read_psf_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18FC007417EE0B7100B5F684 /* select_read_psf_viewer_c.c */; };
@@ -492,6 +495,12 @@
 		18E2A54F230879E10048A57A /* set_mesh_patch_2_gl_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_mesh_patch_2_gl_buf.h; sourceTree = "<group>"; };
 		18EE497522E231B0000B1F03 /* m_read_text_to_character.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m_read_text_to_character.c; sourceTree = "<group>"; };
 		18EE497622E231B0000B1F03 /* m_read_text_to_character.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_read_text_to_character.h; sourceTree = "<group>"; };
+		18F0295B2AF31C0000D37276 /* KemoViewerMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KemoViewerMetalView.h; sourceTree = "<group>"; };
+		18F0295C2AF31C4000D37276 /* KemoViewerMetalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KemoViewerMetalView.m; sourceTree = "<group>"; };
+		18F0295E2AF3EF7600D37276 /* AAPLRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLRenderer.m; sourceTree = "<group>"; };
+		18F0295F2AF3EF7600D37276 /* AAPLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLRenderer.h; sourceTree = "<group>"; };
+		18F029612AF3F45C00D37276 /* KemoViewerMetalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KemoViewerMetalViewController.h; sourceTree = "<group>"; };
+		18F029622AF3F47200D37276 /* KemoViewerMetalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KemoViewerMetalViewController.m; sourceTree = "<group>"; };
 		18F56FC623720B260029D20D /* m_kemoview_fline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoview_fline_menu.h; sourceTree = "<group>"; };
 		18F56FC723720B270029D20D /* m_kemoview_fline_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_fline_menu.c; sourceTree = "<group>"; };
 		18F6DAF515D993F7006F4600 /* set_each_psf_parameters.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_each_psf_parameters.c; sourceTree = "<group>"; };
@@ -873,6 +882,8 @@
 		18D7E6FE1562D359009B05FF /* Obj_C */ = {
 			isa = PBXGroup;
 			children = (
+				18F0295F2AF3EF7600D37276 /* AAPLRenderer.h */,
+				18F0295E2AF3EF7600D37276 /* AAPLRenderer.m */,
 				1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */,
 				1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */,
 				1824FD35230FD49500990F41 /* KemoviewerLightingControl.h */,
@@ -909,6 +920,10 @@
 				18D7E7261562D359009B05FF /* RGBAMapController.m */,
 				18D7E7291562D359009B05FF /* SurfaceGroupTableController.h */,
 				18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */,
+				18F0295B2AF31C0000D37276 /* KemoViewerMetalView.h */,
+				18F0295C2AF31C4000D37276 /* KemoViewerMetalView.m */,
+				18F029612AF3F45C00D37276 /* KemoViewerMetalViewController.h */,
+				18F029622AF3F47200D37276 /* KemoViewerMetalViewController.m */,
 			);
 			path = Obj_C;
 			sourceTree = "<group>";
@@ -1061,6 +1076,7 @@
 				256AC3DA0F4B6AC300CF3369 /* Kemoview_CocoaAppDelegate.m in Sources */,
 				18B885EB24E617BB0077BA16 /* t_psf_edge_connect_c.c in Sources */,
 				188FFD9F2309B02300F5A0DE /* set_fieldline_to_buf.c in Sources */,
+				18F029602AF3EF7600D37276 /* AAPLRenderer.m in Sources */,
 				18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */,
 				181A7E512A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c in Sources */,
 				18D7E72C1562D359009B05FF /* check_psf_data_viewer_c.c in Sources */,
@@ -1090,6 +1106,7 @@
 				185CB9B3212F593D00BB3C0B /* t_control_chara_real_IO.c in Sources */,
 				189F8CCC27037268006FB38F /* write_image_2_bmp.c in Sources */,
 				18D7E73E1562D359009B05FF /* read_image_2_bmp.c in Sources */,
+				18F029632AF3F47200D37276 /* KemoViewerMetalViewController.m in Sources */,
 				1899ACC524B8EEC3004E8F1C /* ElasticMenuWindow.m in Sources */,
 				18D7E7401562D359009B05FF /* read_psf_data_gz_c.c in Sources */,
 				18D7E7411562D359009B05FF /* read_psf_data_viewer_c.c in Sources */,
@@ -1197,6 +1214,7 @@
 				188FFD8D2308B39500F5A0DE /* set_mesh_node_2_gl_buf.c in Sources */,
 				18E2A550230879E20048A57A /* set_mesh_patch_2_gl_buf.c in Sources */,
 				188C9416230CAB2500A4DB14 /* m_kemoview_psf.c in Sources */,
+				18F0295D2AF31C4000D37276 /* KemoViewerMetalView.m in Sources */,
 				185CB9AD212F593D00BB3C0B /* t_control_chara2_IO.c in Sources */,
 				18FC007517EE0B7200B5F684 /* select_read_psf_viewer_c.c in Sources */,
 				18FC007817EF4D6300B5F684 /* read_psf_vtk_data_gz_c.c in Sources */,
@@ -1230,6 +1248,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1257,6 +1276,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;

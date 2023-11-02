@@ -6,8 +6,8 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-/* #import "KemoViewerOpenGLView.h" */
+@import Cocoa;
+
 #include "kemoviewer.h"
 
 

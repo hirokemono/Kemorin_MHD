@@ -1,4 +1,6 @@
-#import <Cocoa/Cocoa.h>
+
+
+@import Cocoa;
 
 #include "kemoviewer.h"
 

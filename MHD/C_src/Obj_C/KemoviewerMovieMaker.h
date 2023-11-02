@@ -6,9 +6,10 @@
 //  Copyright 2011 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import <AVFoundation/AVFoundation.h>
-#import <CoreVideo/CoreVideo.h>
+@import Cocoa;
+@import AVFoundation;
+@import CoreVideo;
+
 #import "KemoViewerOpenGLView.h"
 
 

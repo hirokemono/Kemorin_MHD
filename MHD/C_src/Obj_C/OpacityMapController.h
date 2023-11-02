@@ -5,7 +5,8 @@
 //  Copyright 2011 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
+
 #import "KemoViewerOpenGLView.h"
 #import "fillRectView.h"
 
