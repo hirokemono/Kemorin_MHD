@@ -16,8 +16,6 @@
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 }
 
--(void) init;
-
 -(void)InitBackGroundColor;
 -(void) updateBackground;
 @end

@@ -23,11 +23,15 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     // The current size of the view, used as an input to the vertex shader.
     vector_uint2 _viewportSize;
+    float        _scalechange;
+    
+    NSUInteger _frameNum;
 }
 
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
+    _frameNum = 0;
     self = [super init];
     if(self)
     {
@@ -68,6 +72,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 /// Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
+    _frameNum++;
+    _scalechange = 0.5 + (1.0 + 0.5 * sin(_frameNum * 0.1));
+    
     // Set up a simple MTLBuffer with the vertices, including position and texture coordinates
     static const AAPLVertex quadVertices[] =
     {
@@ -118,6 +125,10 @@ Implementation of a platform independent renderer class, which performs Metal se
         [renderEncoder setVertexBytes:&_viewportSize
                                length:sizeof(_viewportSize)
                               atIndex:AAPLVertexInputIndexViewportSize];
+
+        [renderEncoder setVertexBytes:&_scalechange
+                               length:sizeof(_scalechange)
+                              atIndex:AAPLVertexInputIndexScale];
 
         // Draw the triangle.
         [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
