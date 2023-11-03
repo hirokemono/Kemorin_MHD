@@ -17,8 +17,17 @@
 
 -(void) awakeFromNib
 {
+//    _metalView.enableSetNeedsDisplay = YES;
+/*    viewDidLoad is called by linkning self.viwew to metal view */
+    self.view = _metalView;
+//    printf("TAko0 %d \n", self.viewLoaded);
+    return;
+}
+
+-(void) viewDidLoad
+{
     printf("TAko1 \n");
-    _metalView.enableSetNeedsDisplay = YES;
+    [super viewDidLoad];
     
     printf("TAko2 \n");
     _metalView.device = MTLCreateSystemDefaultDevice();

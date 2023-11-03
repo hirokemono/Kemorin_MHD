@@ -19,6 +19,7 @@
 }
 
 -(void) awakeFromNib;
+-(void) viewDidLoad;
 @end
 
 

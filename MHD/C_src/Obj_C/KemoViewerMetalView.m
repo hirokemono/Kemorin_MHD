@@ -8,6 +8,10 @@
 #import "KemoViewerMetalView.h"
 
 @implementation KemoViewerMetalView
+-(void) init
+{
+    printf("View 0 \n");
+}
 
 -(void)InitBackGroundColor
 {
