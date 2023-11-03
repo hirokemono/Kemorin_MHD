@@ -42,8 +42,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Load all the shader files with a .metal file extension in the project.
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
 
-        id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
-        id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentShader"];
+        id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
+        id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
 
         // Configure a pipeline descriptor that is used to create a pipeline state.
         MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];

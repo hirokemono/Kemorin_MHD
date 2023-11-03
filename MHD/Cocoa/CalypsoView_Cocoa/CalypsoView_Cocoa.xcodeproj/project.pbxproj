@@ -175,7 +175,7 @@
 		18F0295D2AF31C4000D37276 /* KemoViewerMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0295C2AF31C4000D37276 /* KemoViewerMetalView.m */; };
 		18F029602AF3EF7600D37276 /* AAPLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0295E2AF3EF7600D37276 /* AAPLRenderer.m */; };
 		18F029632AF3F47200D37276 /* KemoViewerMetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F029622AF3F47200D37276 /* KemoViewerMetalViewController.m */; };
-		18F029662AF5756500D37276 /* AAPLShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18F029642AF5756500D37276 /* AAPLShaders.metal */; };
+		18F029682AF5A1F700D37276 /* Simple2DfragmentShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18F029672AF5A1F700D37276 /* Simple2DfragmentShader.metal */; };
 		18F56FC823720B270029D20D /* m_kemoview_fline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F56FC723720B270029D20D /* m_kemoview_fline_menu.c */; };
 		18F6DAF615D993F7006F4600 /* set_each_psf_parameters.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F6DAF515D993F7006F4600 /* set_each_psf_parameters.c */; };
 		18FC007517EE0B7200B5F684 /* select_read_psf_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18FC007417EE0B7100B5F684 /* select_read_psf_viewer_c.c */; };
@@ -502,8 +502,8 @@
 		18F0295F2AF3EF7600D37276 /* AAPLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLRenderer.h; sourceTree = "<group>"; };
 		18F029612AF3F45C00D37276 /* KemoViewerMetalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KemoViewerMetalViewController.h; sourceTree = "<group>"; };
 		18F029622AF3F47200D37276 /* KemoViewerMetalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KemoViewerMetalViewController.m; sourceTree = "<group>"; };
-		18F029642AF5756500D37276 /* AAPLShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = AAPLShaders.metal; sourceTree = "<group>"; };
 		18F029652AF5756500D37276 /* AAPLShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLShaderTypes.h; sourceTree = "<group>"; };
+		18F029672AF5A1F700D37276 /* Simple2DfragmentShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Simple2DfragmentShader.metal; sourceTree = "<group>"; };
 		18F56FC623720B260029D20D /* m_kemoview_fline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoview_fline_menu.h; sourceTree = "<group>"; };
 		18F56FC723720B270029D20D /* m_kemoview_fline_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_fline_menu.c; sourceTree = "<group>"; };
 		18F6DAF515D993F7006F4600 /* set_each_psf_parameters.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_each_psf_parameters.c; sourceTree = "<group>"; };
@@ -887,7 +887,7 @@
 			children = (
 				18F0295F2AF3EF7600D37276 /* AAPLRenderer.h */,
 				18F0295E2AF3EF7600D37276 /* AAPLRenderer.m */,
-				18F029642AF5756500D37276 /* AAPLShaders.metal */,
+				18F029672AF5A1F700D37276 /* Simple2DfragmentShader.metal */,
 				18F029652AF5756500D37276 /* AAPLShaderTypes.h */,
 				1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */,
 				1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */,
@@ -1189,6 +1189,7 @@
 				188FFDA52309BE6F00F5A0DE /* set_menu_bottun_to_buf.c in Sources */,
 				18D7E77A1562D359009B05FF /* write_modelview_matrix.c in Sources */,
 				18D7E7831562D359009B05FF /* ColorMapController.m in Sources */,
+				18F029682AF5A1F700D37276 /* Simple2DfragmentShader.metal in Sources */,
 				18D7E7841562D359009B05FF /* DomainTableController.m in Sources */,
 				18D7E7851562D359009B05FF /* ElementGroupTableController.m in Sources */,
 				18D7E7861562D359009B05FF /* fillRectView.m in Sources */,
@@ -1198,7 +1199,6 @@
 				18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */,
 				18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */,
 				18D7E78B1562D359009B05FF /* KemoviewerController.m in Sources */,
-				18F029662AF5756500D37276 /* AAPLShaders.metal in Sources */,
 				18D7E78C1562D359009B05FF /* KemoviewerMovieMaker.m in Sources */,
 				18D7E78E1562D359009B05FF /* KemoViewerOpenGLView.m in Sources */,
 				18D7E7911562D359009B05FF /* NodeGroupTableController.m in Sources */,
