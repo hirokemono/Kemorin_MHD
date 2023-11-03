@@ -72,22 +72,22 @@ Implementation of a platform independent renderer class, which performs Metal se
     static const AAPLVertex quadVertices[] =
     {
         // Pixel positions, Color coordinates
-        { {  250,  -250 },  { 1.f, 0.f, 0.f, 1.f } },
-        { { -250,  -250 },  { 0.f, 1.f, 0.f, 1.f } },
-        { { -250,   250 },  { 0.f, 0.f, 1.f, 1.f } },
+        { {  0.5f,  -0.5f },  { 1.f, 0.f, 0.f, 1.f } },
+        { { -0.5f,  -0.5f },  { 0.f, 1.f, 0.f, 1.f } },
+        { { -0.5f,   0.5f },  { 0.f, 0.f, 1.f, 1.f } },
 
-        { {  250,  -250 },  { 1.f, 0.f, 0.f, 1.f } },
-        { { -250,   250 },  { 0.f, 0.f, 1.f, 1.f } },
-        { {  250,   250 },  { 1.f, 0.f, 1.f, 1.f } },
+        { {  0.5f,  -0.5f },  { 1.f, 0.f, 0.f, 1.f } },
+        { { -0.5f,   0.5f },  { 0.f, 0.f, 1.f, 1.f } },
+        { {  0.5f,   0.5f },  { 1.f, 0.f, 1.f, 1.f } },
     };
     int n_quad_vertex = 6;
 
     static const AAPLVertex triangleVertices[] =
     {
         // 2D positions,    RGBA colors
-        { {  250,  -250 }, { 1, 0, 0, 1 } },
-        { { -250,  -250 }, { 0, 1, 0, 1 } },
-        { {    0,   250 }, { 0, 0, 1, 1 } },
+        { {  0.5f,  -0.5f }, { 1, 0, 0, 1 } },
+        { { -0.5f,  -0.5f }, { 0, 1, 0, 1 } },
+        { {  0.0f,   0.5f }, { 0, 0, 1, 1 } },
     };
     int n_tri_vertex = 3;
 

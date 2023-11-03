@@ -42,12 +42,15 @@ vertexShader(uint vertexID [[vertex_id]],
 
     // Get the viewport size and cast to float.
     vector_float2 viewportSize = vector_float2(*viewportSizePointer);
-    
+    float  aspectRatio = viewportSize.y / viewportSize.x;
+
 
     // To convert from positions in pixel space to positions in clip-space,
     //  divide the pixel coordinates by half the size of the viewport.
 //    out.position2d = vector_float4(0.0, 0.0, 0.0, 1.0);
-    out.position2d.xy = pixelSpacePosition / (viewportSize / 2.0);
+//    out.position2d.xy = pixelSpacePosition / (viewportSize / 2.0);
+    out.position2d.x = pixelSpacePosition.x * aspectRatio;
+    out.position2d.y = pixelSpacePosition.y;
     out.position2d.z = 0.0;
     out.position2d.w = 1.0;
 
