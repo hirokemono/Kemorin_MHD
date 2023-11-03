@@ -6,6 +6,7 @@ Metal shaders used for this sample
 */
 
 #include <metal_stdlib>
+#include <simd/simd.h>
 
 using namespace metal;
 
@@ -18,7 +19,7 @@ struct RasterizerData
     // The [[position]] attribute of this member indicates that this value
     // is the clip space position of the vertex when this structure is
     // returned from the vertex function.
-    float4 position [[position]];
+    float4 position2d [[position]];
 
     // Since this member does not have a special attribute, the rasterizer
     // interpolates its value with the values of the other triangle vertices
@@ -45,8 +46,10 @@ vertexShader(uint vertexID [[vertex_id]],
 
     // To convert from positions in pixel space to positions in clip-space,
     //  divide the pixel coordinates by half the size of the viewport.
-    out.position = vector_float4(0.0, 0.0, 0.0, 1.0);
-    out.position.xy = pixelSpacePosition / (viewportSize / 2.0);
+//    out.position2d = vector_float4(0.0, 0.0, 0.0, 1.0);
+    out.position2d.xy = pixelSpacePosition / (viewportSize / 2.0);
+    out.position2d.z = 0.0;
+    out.position2d.w = 1.0;
 
     // Pass the input color directly to the rasterizer.
     out.color = vertices[vertexID].color;

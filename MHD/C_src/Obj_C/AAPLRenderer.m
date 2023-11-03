@@ -68,6 +68,20 @@ Implementation of a platform independent renderer class, which performs Metal se
 /// Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
+    // Set up a simple MTLBuffer with the vertices, including position and texture coordinates
+    static const AAPLVertex quadVertices[] =
+    {
+        // Pixel positions, Color coordinates
+        { {  250,  -250 },  { 1.f, 0.f, 0.f, 1.f } },
+        { { -250,  -250 },  { 0.f, 1.f, 0.f, 1.f } },
+        { { -250,   250 },  { 0.f, 0.f, 1.f, 1.f } },
+
+        { {  250,  -250 },  { 1.f, 0.f, 0.f, 1.f } },
+        { { -250,   250 },  { 0.f, 0.f, 1.f, 1.f } },
+        { {  250,   250 },  { 1.f, 0.f, 1.f, 1.f } },
+    };
+    int n_quad_vertex = 6;
+
     static const AAPLVertex triangleVertices[] =
     {
         // 2D positions,    RGBA colors
@@ -75,6 +89,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         { { -250,  -250 }, { 0, 1, 0, 1 } },
         { {    0,   250 }, { 0, 0, 1, 1 } },
     };
+    int n_tri_vertex = 3;
 
     // Create a new command buffer for each render pass to the current drawable.
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
@@ -96,8 +111,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         [renderEncoder setRenderPipelineState:_pipelineState];
 
         // Pass in the parameter data.
-        [renderEncoder setVertexBytes:triangleVertices
-                               length:sizeof(triangleVertices)
+        [renderEncoder setVertexBytes:quadVertices
+                               length:sizeof(quadVertices)
                               atIndex:AAPLVertexInputIndexVertices];
         
         [renderEncoder setVertexBytes:&_viewportSize
@@ -107,7 +122,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Draw the triangle.
         [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                           vertexStart:0
-                          vertexCount:3];
+                          vertexCount:n_quad_vertex];
 
         [renderEncoder endEncoding];
 
