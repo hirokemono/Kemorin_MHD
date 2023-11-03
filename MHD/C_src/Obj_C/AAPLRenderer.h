@@ -7,6 +7,8 @@ Header for a platform independent renderer class, which performs Metal setup and
 
 @import MetalKit;
 
+#import "AAPLShaderTypes.h"
+
 @interface AAPLRenderer : NSObject<MTKViewDelegate>
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;

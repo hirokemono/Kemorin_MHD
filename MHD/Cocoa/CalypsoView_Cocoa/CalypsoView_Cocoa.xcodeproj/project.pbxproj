@@ -13,6 +13,7 @@
 		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
 		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
 		181A7E512A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181A7E4F2A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c */; };
+		181D89C72AF55E2700184E99 /* AAPLShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 181D89C52AF55E2600184E99 /* AAPLShaders.metal */; };
 		182174D62492F5640044ECA0 /* calypso_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D22492F5630044ECA0 /* calypso_param_c.c */; };
 		182174D72492F5640044ECA0 /* calypso_zlib_io_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */; };
 		1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1824FD33230FD47300990F41 /* KemoviewerLightingControl.m */; };
@@ -195,6 +196,8 @@
 		180FF7D11DDFB55500D20198 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		181A7E4F2A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctl_data_pvr_colormap_IO_c.c; sourceTree = "<group>"; };
 		181A7E502A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ctl_data_pvr_colormap_IO_c.h; sourceTree = "<group>"; };
+		181D89C52AF55E2600184E99 /* AAPLShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = AAPLShaders.metal; path = ../../../../../../../../Users/matsui/Downloads/UsingARenderPipelineToRenderPrimitives/Renderer/AAPLShaders.metal; sourceTree = "<group>"; };
+		181D89C62AF55E2600184E99 /* AAPLShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AAPLShaderTypes.h; path = ../../../../../../../../Users/matsui/Downloads/UsingARenderPipelineToRenderPrimitives/Renderer/AAPLShaderTypes.h; sourceTree = "<group>"; };
 		182174D22492F5630044ECA0 /* calypso_param_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = calypso_param_c.c; sourceTree = "<group>"; };
 		182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = calypso_zlib_io_c.c; sourceTree = "<group>"; };
 		182174D42492F5630044ECA0 /* calypso_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = calypso_param_c.h; sourceTree = "<group>"; };
@@ -884,6 +887,8 @@
 			children = (
 				18F0295F2AF3EF7600D37276 /* AAPLRenderer.h */,
 				18F0295E2AF3EF7600D37276 /* AAPLRenderer.m */,
+				181D89C52AF55E2600184E99 /* AAPLShaders.metal */,
+				181D89C62AF55E2600184E99 /* AAPLShaderTypes.h */,
 				1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */,
 				1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */,
 				1824FD35230FD49500990F41 /* KemoviewerLightingControl.h */,
@@ -1165,6 +1170,7 @@
 				18D7E76D1562D359009B05FF /* modify_stereo_view_gl.c in Sources */,
 				18D7E76E1562D359009B05FF /* move_draw_objects_gl.c in Sources */,
 				188FFD962308F9B200F5A0DE /* set_PSF_isolines_to_buf.c in Sources */,
+				181D89C72AF55E2700184E99 /* AAPLShaders.metal in Sources */,
 				182174D72492F5640044ECA0 /* calypso_zlib_io_c.c in Sources */,
 				18D7E76F1562D359009B05FF /* psf_data_array_manager.c in Sources */,
 				18D7E7701562D359009B05FF /* rainbow_color_code_c.c in Sources */,
