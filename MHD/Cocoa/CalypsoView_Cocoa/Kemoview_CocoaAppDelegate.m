@@ -8,12 +8,11 @@
 
 #import "Kemoview_CocoaAppDelegate.h"
 
-struct kemoviewer_type *single_kemoview;
 
 @implementation Kemoview_CocoaAppDelegate
 
 - (id) init{
-    single_kemoview = kemoview_allocate_single_viwewer_struct();
+    [_singleKemoView init];
     return self;
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
