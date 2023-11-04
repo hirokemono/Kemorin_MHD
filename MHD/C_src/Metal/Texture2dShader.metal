@@ -19,7 +19,7 @@ struct RasterizerData
     // The [[position]] attribute qualifier of this member indicates this value is
     // the clip space position of the vertex when this structure is returned from
     // the vertex shader
-    float4 position [[position]];
+    float4 position2d [[position]];
 
     // Since this member does not have a special attribute qualifier, the rasterizer
     // will interpolate its value with values of other vertices making up the triangle
@@ -33,8 +33,9 @@ struct RasterizerData
 vertex RasterizerData
 Texture2dVertexShader(uint vertexID [[ vertex_id ]],
              constant AAPLVertexWithTexture *vertexArray [[ buffer(AAPLVertexInputIndexVertices) ]],
-             constant vector_uint2 *viewportSizePointer  [[ buffer(AAPLVertexInputIndexViewportSize) ]])
-
+             constant vector_uint2 *viewportSizePointer  [[ buffer(AAPLVertexInputIndexViewportSize) ]],
+             constant float *viewportScalePointer [[
+                 buffer(AAPLVertexInputIndexScale)]])
 {
 
     RasterizerData out;
@@ -44,14 +45,19 @@ Texture2dVertexShader(uint vertexID [[ vertex_id ]],
     //   the origin)
     float2 pixelSpacePosition = vertexArray[vertexID].position.xy;
 
-    // Get the viewport size and cast to float.
-    float2 viewportSize = float2(*viewportSizePointer);
+    vector_float2 viewportSize = vector_float2(*viewportSizePointer);
+    float  aspectRatio = viewportSize.y / viewportSize.x;
+
+    float  scale = *viewportScalePointer;
 
     // To convert from positions in pixel space to positions in clip-space,
     //  divide the pixel coordinates by half the size of the viewport.
-    // Z is set to 0.0 and w to 1.0 because this is 2D sample.
-    out.position = vector_float4(0.0, 0.0, 0.0, 1.0);
-    out.position.xy = pixelSpacePosition / (viewportSize / 2.0);
+//    out.position2d = vector_float4(0.0, 0.0, 0.0, 1.0);
+//    out.position2d.xy = pixelSpacePosition / (viewportSize / 2.0);
+    out.position2d.x = pixelSpacePosition.x * scale * aspectRatio;
+    out.position2d.y = pixelSpacePosition.y * scale;
+    out.position2d.z = 0.0;
+    out.position2d.w = 1.0;
 
     // Pass the input textureCoordinate straight to the output RasterizerData. This value will be
     //   interpolated with the other textureCoordinate values in the vertices that make up the

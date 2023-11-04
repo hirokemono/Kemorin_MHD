@@ -177,6 +177,8 @@
 		18F029752AF5A49500D37276 /* KemoViewerMetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0296F2AF5A49500D37276 /* KemoViewerMetalViewController.m */; };
 		18F0297E2AF5A65C00D37276 /* Simple2dShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18F0297C2AF5A65B00D37276 /* Simple2dShader.metal */; };
 		18F0297F2AF5A65C00D37276 /* Texture2dShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18F0297D2AF5A65C00D37276 /* Texture2dShader.metal */; };
+		18F029832AF6C23000D37276 /* AAPLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F029812AF6C23000D37276 /* AAPLImage.m */; };
+		18F029842AF6D39100D37276 /* Image.tga in Resources */ = {isa = PBXBuildFile; fileRef = 18F029802AF6B37D00D37276 /* Image.tga */; };
 		18F56FC823720B270029D20D /* m_kemoview_fline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F56FC723720B270029D20D /* m_kemoview_fline_menu.c */; };
 		18F6DAF615D993F7006F4600 /* set_each_psf_parameters.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F6DAF515D993F7006F4600 /* set_each_psf_parameters.c */; };
 		18FC007517EE0B7200B5F684 /* select_read_psf_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18FC007417EE0B7100B5F684 /* select_read_psf_viewer_c.c */; };
@@ -506,6 +508,9 @@
 		18F029712AF5A49500D37276 /* AAPLRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AAPLRenderer.h; path = Metal/AAPLRenderer.h; sourceTree = "<group>"; };
 		18F0297C2AF5A65B00D37276 /* Simple2dShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Simple2dShader.metal; path = Metal/Simple2dShader.metal; sourceTree = "<group>"; };
 		18F0297D2AF5A65C00D37276 /* Texture2dShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Texture2dShader.metal; path = Metal/Texture2dShader.metal; sourceTree = "<group>"; };
+		18F029802AF6B37D00D37276 /* Image.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = Image.tga; sourceTree = SOURCE_ROOT; };
+		18F029812AF6C23000D37276 /* AAPLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AAPLImage.m; path = Metal/AAPLImage.m; sourceTree = "<group>"; };
+		18F029822AF6C23000D37276 /* AAPLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AAPLImage.h; path = Metal/AAPLImage.h; sourceTree = "<group>"; };
 		18F56FC623720B260029D20D /* m_kemoview_fline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoview_fline_menu.h; sourceTree = "<group>"; };
 		18F56FC723720B270029D20D /* m_kemoview_fline_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_fline_menu.c; sourceTree = "<group>"; };
 		18F6DAF515D993F7006F4600 /* set_each_psf_parameters.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_each_psf_parameters.c; sourceTree = "<group>"; };
@@ -931,6 +936,9 @@
 		18F029692AF5A45C00D37276 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
+				18F029802AF6B37D00D37276 /* Image.tga */,
+				18F029822AF6C23000D37276 /* AAPLImage.h */,
+				18F029812AF6C23000D37276 /* AAPLImage.m */,
 				18F029712AF5A49500D37276 /* AAPLRenderer.h */,
 				18F0296A2AF5A49500D37276 /* AAPLRenderer.m */,
 				18F0296C2AF5A49500D37276 /* AAPLShaderTypes.h */,
@@ -1064,6 +1072,7 @@
 				188FFD7923087CCB00F5A0DE /* menu.frag in Resources */,
 				188FFD8A23087CCB00F5A0DE /* simple.frag in Resources */,
 				188FFD8023087CCB00F5A0DE /* simple_texture.vert in Resources */,
+				18F029842AF6D39100D37276 /* Image.tga in Resources */,
 				188FFD8923087CCB00F5A0DE /* dash_lines_3D.frag in Resources */,
 				188FFD8123087CCB00F5A0DE /* simple_texture.frag in Resources */,
 				188FFD8423087CCB00F5A0DE /* menu.vert in Resources */,
@@ -1218,6 +1227,7 @@
 				1852CFB2236B7B790043C983 /* m_color_table_c.c in Sources */,
 				18D7E7921562D359009B05FF /* OpacityMapController.m in Sources */,
 				18D7E7941562D359009B05FF /* PsfController.m in Sources */,
+				18F029832AF6C23000D37276 /* AAPLImage.m in Sources */,
 				18B885EC24E617BB0077BA16 /* t_surf_edge_hash_c.c in Sources */,
 				185CB9CA212F593D00BB3C0B /* t_control_real3_IO.c in Sources */,
 				18D7E7951562D359009B05FF /* ResetViewControll.m in Sources */,
