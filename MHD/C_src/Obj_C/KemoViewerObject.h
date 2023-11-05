@@ -15,6 +15,7 @@
 }
 
 - (id) init;
+- (struct kemoviewer_type *) KemoViewPointer;
 
 @end
 

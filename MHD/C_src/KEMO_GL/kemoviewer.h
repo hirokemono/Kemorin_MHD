@@ -270,6 +270,8 @@ extern "C" {
 
     void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
 	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void);
+    struct kemoviewer_type * kemoview_single_viwewer_struct(void);
+
     void kemoview_allocate_pointers(void);
     void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data);
     

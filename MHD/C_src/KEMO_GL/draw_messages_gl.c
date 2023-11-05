@@ -24,9 +24,8 @@ static void set_message_text_VAO(int iflag_retina, struct msg_work *msg_wk,
 };
 
 void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-					 struct msg_work *msg_wk, struct VAO_ids *msg_VAO){
-	struct gl_strided_buffer *cbar_buf 
-		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+					 struct msg_work *msg_wk, struct VAO_ids *msg_VAO,
+                     struct gl_strided_buffer *cbar_buf){
 	set_buffer_address_4_patch(16, cbar_buf);
 	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
@@ -36,9 +35,6 @@ void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	count_message_text_VAO(msg_VAO);
 	set_message_text_VAO(iflag_retina, msg_wk, msg_VAO, cbar_buf);
-	
-	free(cbar_buf->v_buf);
-	free(cbar_buf);
 	return;
 };
 

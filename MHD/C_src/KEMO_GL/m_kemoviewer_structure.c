@@ -35,7 +35,7 @@ void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, i
 	return;
 }
 
-struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(){
+struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
 	/*! Initialize mesh data*/
 	struct kemoviewer_type *kemoviewer_data 
 		= (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
@@ -48,8 +48,12 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(){
     
 	init_kemoviewer(IZERO, kemo_sgl->kemo_mesh->mesh_d, kemo_sgl->kemo_mesh->mesh_m, kemo_sgl->view_s);
 	init_fline_parameters(kemo_sgl->kemo_fline->fline_m);
-	
+    kemo_sgl = kemoviewer_data;
 	return kemoviewer_data;
+}
+
+struct kemoviewer_type * kemoview_single_viwewer_struct(void){
+    return kemo_sgl;
 }
 
 void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){

@@ -13,5 +13,9 @@
     self->single_kemoview = kemoview_allocate_single_viwewer_struct();
     return self;
 }
+- (struct kemoviewer_type *) KemoViewPointer
+{
+    return self->single_kemoview;
+}
 @end
 

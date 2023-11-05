@@ -275,9 +275,13 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	draw_timelabel_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
 	/* Draw message */
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
+        struct gl_strided_buffer *cbar_buf
+            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	    set_message_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
-                        kemo_mesh->msg_wk, kemo_VAOs->msg_VAO);
+                        kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, cbar_buf);
         draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
+        free(cbar_buf->v_buf);
+        free(cbar_buf);
     };
     /* draw example cube for empty data */
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;

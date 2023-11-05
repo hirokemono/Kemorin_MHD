@@ -5368,6 +5368,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <connections>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="2FT-zh-sSB"/>
+                            <outlet property="_singleKemoView" destination="w8N-Cd-Q0k" id="eR2-mh-xu3"/>
                         </connections>
                     </customView>
                 </subviews>
