@@ -27,8 +27,6 @@
     [self InitBackGroundColor];
 	kemoview_get_background_color(bgcolor);
     self.clearColor = MTLClearColorMake(bgcolor[0], bgcolor[1], bgcolor[2], bgcolor[3]);
-
-    printf("TAkoTako \n");
     return;
 }
 

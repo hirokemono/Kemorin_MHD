@@ -147,7 +147,7 @@ void frustsum_glmat_c(double left, double right, double bottom, double top,
 };
 
 void orthogonal_glmat_c(double left, double right, double bottom, double top,
-			double near, double far, double mat[16]){
+                        double near, double far, double mat[16]){
 	
 	mat[ 0] = TWO / (right-left);
 	mat[ 4] = ZERO;
@@ -236,13 +236,6 @@ static void perspectiveGL(double fovY, double aspect, double zNear, double zFar,
     
 	frustsum_glmat_c(-fW, fW, -fH, fH, zNear, zFar, projection);
 }
-
-void orthogonalGL(double left, double right, double bottom, double top,
-			double near, double far){
-	double orthogonal[16];
-	orthogonal_glmat_c(left, right, bottom, top, near, far, orthogonal);
-	return;
-};
 
 static void Kemo_Translate_view_c(double shift_x, double shift_y, double shift_z, 
 			double model[16]){

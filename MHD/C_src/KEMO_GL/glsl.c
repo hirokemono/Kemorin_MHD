@@ -239,10 +239,6 @@ void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *v
 	int i;
 	
 	
-	int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
-	int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
-	int normalMatLocation = glGetUniformLocation(Shader->programId, "modelNormalMat");
-	
 	cal_inverse_44_matrix_c(view_s->mat_object_2_eye, a_inv);
 	for(i=0;i<16;i++) {model[i] = (GLfloat) view_s->mat_object_2_eye[i];};
 	for(i=0;i<16;i++) {proj[i] = (GLfloat) view_s->mat_eye_2_clip[i];};
@@ -252,40 +248,51 @@ void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *v
 		nrmat[3*i+2] = (GLfloat) a_inv[8+i];
 	};
 	
-	glUniformMatrix4fv(modelMatLocation, 1,   GL_FALSE, model);
+    int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
+    int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
+    int normalMatLocation =  glGetUniformLocation(Shader->programId, "modelNormalMat");
+    
+	glUniformMatrix4fv(modelMatLocation,   1, GL_FALSE, model);
 	glUniformMatrix4fv(projectMatLocation, 1, GL_FALSE, proj);
-	glUniformMatrix3fv(normalMatLocation, 1, GL_FALSE, nrmat);
+	glUniformMatrix3fv(normalMatLocation,  1, GL_FALSE, nrmat);
+};
+
+struct gl_transfer_matrices * dup_transfer_matrices_for_gl(struct transfer_matrices *matrices)
+{
+    int i;
+    struct gl_transfer_matrices *glmat;
+    if((glmat = (struct gl_transfer_matrices *) malloc(sizeof(struct gl_transfer_matrices))) == NULL){
+        printf("malloc error for gl_transfer_matrices\n");
+        exit(0);
+    };
+    
+    for(i=0;i<16;i++) {glmat->model[i] = (GLfloat) matrices->model[i];};
+    for(i=0;i<9;i++)  {glmat->nrmat[i] = (GLfloat) matrices->nrmat[i];};
+    for(i=0;i<16;i++) {glmat->proj[i] =  (GLfloat) matrices->proj[i];};
+    return glmat;
 };
 
 void map_matrix_to_shader(struct shader_ids *Shader, const double *orthogonal){
-	GLfloat model[16], proj[16], nrmat[9];
-	int i;
+    struct transfer_matrices *matrices = plane_transfer_matrices(orthogonal);
+    struct gl_transfer_matrices *glmat = dup_transfer_matrices_for_gl(matrices);
+    free(matrices);
 	
-	
-	int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
-	int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
-	int normalMatLocation = glGetUniformLocation(Shader->programId, "modelNormalMat");
-	
-	for(i=0;i<16;i++) {model[i] = 0.0;};
-	for(i=0;i<9;i++)  {nrmat[i] = 0.0;};
-	for(i=0;i<4;i++) {model[5*i] = 1.0;};
-	for(i=0;i<3;i++) {nrmat[4*i] = 1.0;};
-	for(i=0;i<16;i++) {proj[i] = (GLfloat) orthogonal[i];};
-	
-	glUniformMatrix4fv(modelMatLocation, 1, GL_FALSE, model);
-	glUniformMatrix4fv(projectMatLocation, 1, GL_FALSE, proj);
-	glUniformMatrix3fv(normalMatLocation, 1, GL_FALSE, nrmat);
+    int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
+    int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
+    int normalMatLocation =  glGetUniformLocation(Shader->programId, "modelNormalMat");
+    
+	glUniformMatrix4fv(modelMatLocation,   1, GL_FALSE, glmat->model);
+	glUniformMatrix4fv(projectMatLocation, 1, GL_FALSE, glmat->proj);
+	glUniformMatrix3fv(normalMatLocation,  1, GL_FALSE, glmat->nrmat);
+    free(glmat);
+    return;
 };
 
 void identity_matrix_to_shader(struct shader_ids *Shader){
 	GLfloat model[16], proj[16], nrmat[9];
 	int i;
-	
+
 /*	glUseProgram(Shader->programId);*/
-	
-	int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
-	int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
-	int normalMatLocation = glGetUniformLocation(Shader->programId, "modelNormalMat");
 	
 	for(i=0;i<16;i++) {model[i] = 0.0;};
 	for(i=0;i<16;i++) {proj[i] =  0.0;};
@@ -294,9 +301,13 @@ void identity_matrix_to_shader(struct shader_ids *Shader){
 	for(i=0;i<4;i++) {proj[5*i] =  1.0;};
 	for(i=0;i<3;i++) {nrmat[4*i] = 1.0;};
 	
-	glUniformMatrix4fv(modelMatLocation, 1,   GL_FALSE, model);
+    int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
+    int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
+    int normalMatLocation =  glGetUniformLocation(Shader->programId, "modelNormalMat");
+    
+	glUniformMatrix4fv(modelMatLocation,   1, GL_FALSE, model);
 	glUniformMatrix4fv(projectMatLocation, 1, GL_FALSE, proj);
-	glUniformMatrix3fv(normalMatLocation, 1, GL_FALSE, nrmat);
+	glUniformMatrix3fv(normalMatLocation,  1, GL_FALSE, nrmat);
 };
 
 static struct shader_ids * init_shader_ids(){

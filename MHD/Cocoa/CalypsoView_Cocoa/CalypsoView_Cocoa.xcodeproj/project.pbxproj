@@ -25,6 +25,7 @@
 		1831B9652AE89EBD00118B1E /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B9642AE89EBC00118B1E /* Metal.framework */; };
 		1831B9832AE9B6A700118B1E /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B9822AE9B6A700118B1E /* GLKit.framework */; };
 		1831B9862AE9B71D00118B1E /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1831B9842AE9B71D00118B1E /* MainMenu.xib */; };
+		183F24542AF8014100CD1B6B /* set_transfer_matrices.c in Sources */ = {isa = PBXBuildFile; fileRef = 183F24532AF8014100CD1B6B /* set_transfer_matrices.c */; };
 		184389FE230C6A7D0074FC31 /* set_cube_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 184389FC230C6A7C0074FC31 /* set_cube_to_buf.c */; };
 		18438A04230C910C0074FC31 /* m_kemoview_mesh_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18438A02230C910C0074FC31 /* m_kemoview_mesh_menu.c */; };
 		1852CFAF236B7B5B0043C983 /* m_colorbar_work.c in Sources */ = {isa = PBXBuildFile; fileRef = 1852CFAD236B7B5A0043C983 /* m_colorbar_work.c */; };
@@ -219,6 +220,8 @@
 		1831B9642AE89EBC00118B1E /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		1831B9822AE9B6A700118B1E /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		1831B9852AE9B71D00118B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		183F24522AF8014100CD1B6B /* set_transfer_matrices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = set_transfer_matrices.h; sourceTree = "<group>"; };
+		183F24532AF8014100CD1B6B /* set_transfer_matrices.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = set_transfer_matrices.c; sourceTree = "<group>"; };
 		184389FC230C6A7C0074FC31 /* set_cube_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_cube_to_buf.c; sourceTree = "<group>"; };
 		184389FD230C6A7C0074FC31 /* set_cube_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_cube_to_buf.h; sourceTree = "<group>"; };
 		18438A02230C910C0074FC31 /* m_kemoview_mesh_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_mesh_menu.c; sourceTree = "<group>"; };
@@ -776,6 +779,8 @@
 				18FC007617EE0E9800B5F684 /* select_read_psf_viewer_c.h */,
 				182D091F16C040EC0073D215 /* glsl.c */,
 				182D092016C040ED0073D215 /* glsl.h */,
+				183F24532AF8014100CD1B6B /* set_transfer_matrices.c */,
+				183F24522AF8014100CD1B6B /* set_transfer_matrices.h */,
 				182C32C1233542DC00C6F0B4 /* drawGL_by_VAO.c */,
 				182C32C0233542D600C6F0B4 /* drawGL_by_VAO.h */,
 				18D7E69D1562D359009B05FF /* coastline_c.c */,
@@ -1130,6 +1135,7 @@
 				18D7E73A1562D359009B05FF /* numbers_to_bin_c.c in Sources */,
 				18D7E73B1562D359009B05FF /* projection_patch_to_map.c in Sources */,
 				18D7E73C1562D359009B05FF /* quicksort_c.c in Sources */,
+				183F24542AF8014100CD1B6B /* set_transfer_matrices.c in Sources */,
 				18F029862AF6F76C00D37276 /* KemoViewerObject.m in Sources */,
 				18D7E73D1562D359009B05FF /* read_grouping_mesh_c.c in Sources */,
 				188BA7512305E13100348842 /* invert_small_matrix_c.c in Sources */,

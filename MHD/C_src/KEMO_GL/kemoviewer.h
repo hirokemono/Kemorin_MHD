@@ -284,8 +284,6 @@ extern "C" {
 	
     void kemoview_init_lighting(void);
     
-	void kemoview_orthogonalGL(double left, double right, double bottom, double top,
-							   double near, double far);
 	void kemoview_indentity_projectionmatrix(void);
 	void kemoview_indentity_viewmatrix(void);
 	void kemoview_message_viewmatrix(void);

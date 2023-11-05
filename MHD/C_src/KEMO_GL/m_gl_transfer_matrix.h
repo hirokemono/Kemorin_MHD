@@ -77,8 +77,6 @@ void identity_glmat_c(double mat[16]);
 
 void orthogonal_glmat_c(double left, double right, double bottom, double top,
 						double near, double far, double mat[16]);
-void orthogonalGL(double left, double right, double bottom, double top,
-			double near, double far);
 
 void set_view_by_identity(void);
 void modify_view_by_struct(struct view_element *view);

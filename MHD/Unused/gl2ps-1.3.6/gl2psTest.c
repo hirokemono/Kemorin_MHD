@@ -398,6 +398,19 @@ void draw_single()
 }
 
 /* A more complex drawing function, using 2 separate viewports */
+void orthogonalGL(double left, double right, double bottom, double top,
+            double near, double far){
+    float orthogonal[16];
+    orthogonal_glmat_c(left, right, bottom, top, near, far, orthogonal);
+    return;
+};
+
+void kemoview_orthogonalGL(double left, double right, double bottom, double top,
+                           double near, double far){
+    orthogonalGL(left, right, bottom, top, near, far);
+    return;
+};
+
 void draw_multi()
 {
 	GLdouble modelview[16];

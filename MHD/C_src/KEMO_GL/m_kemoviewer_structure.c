@@ -108,11 +108,6 @@ int kemoview_get_current_viewer_id(void){return kemo_sgl->window_ID;};
 
 /* Routines for draw by OpenGL */
 
-void kemoview_orthogonalGL(double left, double right, double bottom, double top,
-						   double near, double far){
-	orthogonalGL(left, right, bottom, top, near, far);
-	return;
-};
 void kemoview_indentity_projectionmatrix(void){set_projection_by_identity();};
 void kemoview_indentity_viewmatrix(void){set_view_by_identity();};
 void kemoview_message_viewmatrix(void){set_view_for_message(kemo_sgl->view_s);};

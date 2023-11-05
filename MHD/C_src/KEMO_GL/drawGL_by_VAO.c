@@ -79,13 +79,12 @@ void draw_map_objects_VAO(struct view_element *view_s,
 		ywin = 1.7;
 	}
 	
-	orthogonal_glmat_c(-xwin, xwin, -ywin, ywin, -1.0, 1.0, orthogonal);
-	
-	
 	/* set shading mode */
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glUseProgram(kemo_shaders->simple->programId);
+
+    orthogonal_glmat_c(-xwin, xwin, -ywin, ywin, -1.0, 1.0, orthogonal);
 	map_matrix_to_shader(kemo_shaders->simple, orthogonal);
 		
 	for(i=0;i<2;i++){
@@ -153,7 +152,7 @@ void draw_trans_mesh_VAO(struct view_element *view_s,
 	return;
 }
 
-void draw_2D_box_patch_VAO(double orthogonal[16], struct VAO_ids *VAO, 
+void draw_2D_box_patch_VAO(double orthogonal[16], struct VAO_ids *VAO,
 						   struct kemoview_shaders *kemo_shaders){
 	glUseProgram(kemo_shaders->simple->programId);
 	map_matrix_to_shader(kemo_shaders->simple, orthogonal);
