@@ -246,97 +246,19 @@ Implementation of a platform independent renderer class, which performs Metal se
         { { -0.5f,   0.5f },  { 0.f, 0.f, 1.f, 1.f } },
         { {  0.5f,   0.5f },  { 1.f, 0.f, 1.f, 1.f } },
     };
-     const AAPLVertexWithTexture quadTextureVertices[] =
-    {
         // Pixel positions, Color coordinates
-/*      { { -0.7f,  -0.2f, 0.f },  { 0.f, 0.f } },
-        { {  0.7f,  -0.2f, 0.f },  { 1.f, 0.f } },
-        { {  0.7f,   0.2f, 0.f },  { 1.f, 1.f } },
-
-        { {  0.7f,   0.2f, 0.f },  { 1.f, 1.f } },
-        { { -0.7f,   0.2f, 0.f },  { 0.f, 1.f } },
-        { { -0.7f,  -0.2f, 0.f },  { 0.f, 0.f } },
-*/
- // Pixel positions, Color coordinates
-/*
- { { -0.7f,  -0.2f, 0.f },
-   {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {  0.7f,  -0.2f, 0.f  },
-   {cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {  0.7f,   0.2f, 0.f  },
-   {cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-
- { {  0.7f,   0.2f, 0.f  },
-   {cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { { -0.7f,   0.2f, 0.f  },
-   {cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { { -0.7f,  -0.2f, 0.f  },
-   {cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-    };
-*/
-/*
-        { {xyzw[0][0],  xyzw[1][0], xyzw[2][0] },
-          {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-           cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-        { {xyzw[0][1],  xyzw[1][1], xyzw[2][1] },
-          {cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-           cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-        { {xyzw[0][2],  xyzw[1][2], xyzw[2][2] },
-          {cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-           cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-
-        { {xyzw[0][3],  xyzw[1][3], xyzw[2][3] },
-          {cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-           cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-        { {xyzw[0][4],  xyzw[1][4], xyzw[2][4] },
-          {cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-           cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-        { {xyzw[0][5],  xyzw[1][5], xyzw[2][5] },
-          {cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-           cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-           };
-*/
-
- { {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
-   {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
-    cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
-   {cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
-    cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
-   {cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-
- { {cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
-    cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
-   {cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
-    cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
-   {cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
-    cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
-   {cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
-    };
-
     int n_quad_vertex = 6;
+    AAPLVertexWithTexture quadTextureVertices[n_quad_vertex];
+    for(i=0;i<n_quad_vertex;i++){
+        for(int j=0;j<3;j++){
+            quadTextureVertices[i].position[j]
+                = cbar_buf->v_buf[i*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+j];
+        }
+        for(int j=0;j<2;j++){
+            quadTextureVertices[i].textureCoordinate[j]
+                = cbar_buf->v_buf[i*cbar_buf->ncomp_buf+cbar_buf->ist_tex+j];
+        }
+    };
 
     // Create a vertex buffer, and initialize it with the quadVertices array
     _vertices = [_device newBufferWithBytes:quadTextureVertices
