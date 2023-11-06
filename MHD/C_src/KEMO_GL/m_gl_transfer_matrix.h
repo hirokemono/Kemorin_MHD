@@ -5,6 +5,7 @@
 #define M_GL_TRANSFER_MATRIX_
 
 #include<stdio.h>
+#include<stdlib.h>
 #include<math.h>
 
 #include "kemoviewer_param_c.h"
@@ -66,17 +67,15 @@ struct view_element{
 	double rRot_animate[3];
 	double rVel_animate[3];
 	double rAccel_animate[3];
-    
-	GLuint index_modelViewMatrix;
-	GLuint index_ProjectionMatrix;
 };
 
 /* prototypes */
 
 void identity_glmat_c(double mat[16]);
 
-void orthogonal_glmat_c(double left, double right, double bottom, double top,
-						double near, double far, double mat[16]);
+double * orthogonal_projection_mat_c(double left, double right,
+                                     double bottom, double top,
+                                     double near, double far);
 
 void set_view_by_identity(void);
 void modify_view_by_struct(struct view_element *view);

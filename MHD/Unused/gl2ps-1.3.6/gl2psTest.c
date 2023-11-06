@@ -398,19 +398,6 @@ void draw_single()
 }
 
 /* A more complex drawing function, using 2 separate viewports */
-void orthogonalGL(double left, double right, double bottom, double top,
-            double near, double far){
-    float orthogonal[16];
-    orthogonal_glmat_c(left, right, bottom, top, near, far, orthogonal);
-    return;
-};
-
-void kemoview_orthogonalGL(double left, double right, double bottom, double top,
-                           double near, double far){
-    orthogonalGL(left, right, bottom, top, near, far);
-    return;
-};
-
 void draw_multi()
 {
 	GLdouble modelview[16];
@@ -431,7 +418,7 @@ void draw_multi()
   gl2psBeginViewport(viewport);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  kemoview_orthogonalGL(-1.3,1.3, -1.3,1.3, -1.3,1.3);
+  double *orthogonal = orthogonal_projection_mat_c(-1.3,1.3, -1.3,1.3, -1.3,1.3);
   glMatrixMode(GL_MODELVIEW);
 
   objects();
@@ -452,7 +439,7 @@ void draw_multi()
   gl2psBeginViewport(viewport);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  kemoview_orthogonalGL(-1.3,1.3, -1.3,1.3, -1.3,1.3);
+  double *orthogonal = orthogonal_projection_mat_c(-1.3,1.3, -1.3,1.3, -1.3,1.3);
   glMatrixMode(GL_MODELVIEW);
 
   glPushMatrix();

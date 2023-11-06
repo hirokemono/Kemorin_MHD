@@ -9,6 +9,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 @import MetalKit;
 
 #import "AAPLRenderer.h"
+#include "m_gl_transfer_matrix.h"
 #include "draw_messages_gl.h"
 
 // Main class performing the rendering
@@ -148,13 +149,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                cbar_buf->v_buf[i*ncomp_buf+ist_xyz+2]);
     };
 
-    double orthogonal[16];
-    orthogonal_glmat_c(0.0, kemo_sgl->kemo_mesh->msg_wk->xwin,
-                       0.0, kemo_sgl->kemo_mesh->msg_wk->ywin,
-                       -1.0, 1.0, orthogonal);
+    double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_sgl->kemo_mesh->msg_wk->xwin,
+                                                     0.0, kemo_sgl->kemo_mesh->msg_wk->ywin,
+                                                     -1.0, 1.0);
     int i;
     
     struct transfer_matrices *matrices = plane_transfer_matrices(orthogonal);
+    free(orthogonal);
     
     vector_float4   col_wk[4];
     for(i=0;i<4;i++){

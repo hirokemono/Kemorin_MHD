@@ -48,7 +48,7 @@ void destory_shaders(struct shader_ids *shader);
 
 struct gl_transfer_matrices * dup_transfer_matrices_for_gl(struct transfer_matrices *matrices);
 void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *view_s);
-void map_matrix_to_shader(struct shader_ids *Shader, const double *orthogonal);
+void map_matrix_to_GLSL(struct shader_ids *Shader, struct transfer_matrices *matrices);
 void identity_matrix_to_shader(struct shader_ids *Shader);
 
 struct kemoview_shaders * init_kemoview_shaders(void);

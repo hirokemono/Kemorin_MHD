@@ -272,10 +272,8 @@ struct gl_transfer_matrices * dup_transfer_matrices_for_gl(struct transfer_matri
     return glmat;
 };
 
-void map_matrix_to_shader(struct shader_ids *Shader, const double *orthogonal){
-    struct transfer_matrices *matrices = plane_transfer_matrices(orthogonal);
+void map_matrix_to_GLSL(struct shader_ids *Shader, struct transfer_matrices *matrices){
     struct gl_transfer_matrices *glmat = dup_transfer_matrices_for_gl(matrices);
-    free(matrices);
 	
     int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
     int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");

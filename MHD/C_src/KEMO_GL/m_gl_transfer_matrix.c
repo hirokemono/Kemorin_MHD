@@ -146,9 +146,15 @@ void frustsum_glmat_c(double left, double right, double bottom, double top,
 	return;
 };
 
-void orthogonal_glmat_c(double left, double right, double bottom, double top,
-                        double near, double far, double mat[16]){
-	
+double * orthogonal_projection_mat_c(double left, double right,
+                                     double bottom, double top,
+                                     double near, double far){
+    double *mat = (double *) calloc(16,sizeof(double));
+    if(mat == NULL){
+        printf("malloc error for orthogonal_projection_mat\n");
+        exit(0);
+    };
+
 	mat[ 0] = TWO / (right-left);
 	mat[ 4] = ZERO;
 	mat[ 8] = ZERO;
@@ -169,7 +175,7 @@ void orthogonal_glmat_c(double left, double right, double bottom, double top,
 	mat[11] = ZERO;
 	mat[15] = ONE;
 	
-	return;
+	return mat;
 };
 
 void copy_glmat_c(double a[16], double b[16]){

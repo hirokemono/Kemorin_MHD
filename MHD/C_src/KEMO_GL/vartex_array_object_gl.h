@@ -29,24 +29,24 @@ struct gl_strided_buffer{
 	int ist_csurf;
 	int ist_data;
 	
-	GLfloat *v_buf;
+	float *v_buf;
 	
-	GLfloat *x_draw;
-	GLfloat *x_txur;
-	GLfloat *n_draw;
-	GLfloat *c_draw;
-	GLfloat *d_draw;
+    float *x_draw;
+    float *x_txur;
+    float *n_draw;
+    float *c_draw;
+    float *d_draw;
 };
 
 struct VAO_ids{
-	GLuint id_VAO;
+	unsigned int id_VAO;
 	
-	GLuint id_vertex;
-	GLuint id_color;
+    unsigned int id_vertex;
+    unsigned int id_color;
 	
-	GLuint id_index;
+    unsigned int id_index;
 	
-	GLuint npoint_draw;
+    unsigned int npoint_draw;
 };
 
 /* Prototypes */

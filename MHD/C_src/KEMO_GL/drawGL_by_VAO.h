@@ -30,9 +30,9 @@ void draw_solid_mesh_VAO(int polygon_mode, struct view_element *view_s,
 void draw_trans_mesh_VAO(struct view_element *view_s, 
 			struct VAO_ids *mesh_trans_VAO, struct kemoview_shaders *kemo_shaders);
 
-void draw_2D_box_patch_VAO(double orthogonal[16], struct VAO_ids *VAO, 
+void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO, 
 						   struct kemoview_shaders *kemo_shaders);
-void draw_textured_2D_box_VAO(GLuint texture_name, double orthogonal[16],
+void draw_textured_2D_box_VAO(GLuint texture_name, struct transfer_matrices *matrices,
 							  struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders);
 
 #endif

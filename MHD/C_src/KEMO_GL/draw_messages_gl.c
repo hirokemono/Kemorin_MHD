@@ -40,23 +40,16 @@ void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 
 void draw_message_VAO(struct msg_work *msg_wk, 
 			struct VAO_ids *msg_VAO, struct kemoview_shaders *kemo_shaders){
-	double orthogonal[16];
 	if(msg_VAO->npoint_draw <= 0) return;
 	
-	orthogonal_glmat_c(0.0, msg_wk->xwin, 0.0, msg_wk->ywin, -1.0, 1.0, orthogonal);
-	
-	glEnable(GL_BLEND);
-    glDepthMask(GL_FALSE);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glEnable(GL_MULTISAMPLE);
-	
-	draw_textured_2D_box_VAO(msg_wk->id_texture, orthogonal, msg_VAO, kemo_shaders);
-	
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);	
-	
+    double *orthogonal = orthogonal_projection_mat_c(0.0, msg_wk->xwin,
+                                                     0.0, msg_wk->ywin,
+                                                     -1.0, 1.0);
+    struct transfer_matrices *matrices = plane_transfer_matrices(orthogonal);
+    
+	draw_textured_2D_box_VAO(msg_wk->id_texture, matrices, msg_VAO, kemo_shaders);
+    free(matrices);
+    free(orthogonal);
 	return;
 }
 

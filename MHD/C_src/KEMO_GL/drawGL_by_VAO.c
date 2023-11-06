@@ -64,29 +64,21 @@ void drawgl_lines(struct view_element *view_s,
 	return;
 };
 
-
 void draw_map_objects_VAO(struct view_element *view_s, 
 			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders){
-	double xwin, ywin;
-	double orthogonal[16];
 	int i;
-	
-	if(view_s->ny_frame > view_s->nx_frame) {
-		xwin = 2.05;
-		ywin = 2.05 * (double)view_s->ny_frame / (double)view_s->nx_frame;
-	} else{
-		xwin = 1.7 * (double)view_s->nx_frame / (double)view_s->ny_frame;
-		ywin = 1.7;
-	}
-	
+    
+    struct transfer_matrices *matrices
+        = init_projection_matrix_for_map(view_s->nx_frame, view_s->ny_frame);
+
 	/* set shading mode */
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glUseProgram(kemo_shaders->simple->programId);
 
-    orthogonal_glmat_c(-xwin, xwin, -ywin, ywin, -1.0, 1.0, orthogonal);
-	map_matrix_to_shader(kemo_shaders->simple, orthogonal);
-		
+    map_matrix_to_GLSL(kemo_shaders->simple, matrices);
+    free(matrices);
+
 	for(i=0;i<2;i++){
 		if(map_VAO[i]->npoint_draw > 0){
 			glBindVertexArray(map_VAO[i]->id_VAO);
@@ -152,17 +144,16 @@ void draw_trans_mesh_VAO(struct view_element *view_s,
 	return;
 }
 
-void draw_2D_box_patch_VAO(double orthogonal[16], struct VAO_ids *VAO,
+void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
 						   struct kemoview_shaders *kemo_shaders){
-    
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
     glEnable(GL_MULTISAMPLE);
     
 	glUseProgram(kemo_shaders->simple->programId);
-	map_matrix_to_shader(kemo_shaders->simple, orthogonal);
-	
+    map_matrix_to_GLSL(kemo_shaders->simple, matrices);
+
 	glBindVertexArray(VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, VAO->npoint_draw);
 
@@ -173,7 +164,7 @@ void draw_2D_box_patch_VAO(double orthogonal[16], struct VAO_ids *VAO,
     return;
 }
 
-void draw_textured_2D_box_VAO(GLuint texture_name, double orthogonal[16],
+void draw_textured_2D_box_VAO(GLuint texture_name, struct transfer_matrices *matrices,
 							  struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;
     
@@ -183,8 +174,8 @@ void draw_textured_2D_box_VAO(GLuint texture_name, double orthogonal[16],
     glEnable(GL_MULTISAMPLE);
     
 	glUseProgram(kemo_shaders->simple_texure->programId);
-	map_matrix_to_shader(kemo_shaders->simple_texure, orthogonal);
-	
+    map_matrix_to_GLSL(kemo_shaders->simple_texure, matrices);
+
 	glBindVertexArray(VAO->id_VAO);
 	glBindTexture(GL_TEXTURE_2D, texture_name);
 	int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
