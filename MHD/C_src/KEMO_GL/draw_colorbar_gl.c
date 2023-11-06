@@ -4,25 +4,21 @@
 
 #include "draw_colorbar_gl.h"
 
-static void count_colorbar_box_VAO(struct cbar_work *cbar_wk, struct VAO_ids *cbar_VAO){
-	int num_patch;
-	
-	num_patch = 4 * cbar_wk->num_quad;
-	num_patch = num_patch + 2*(cbar_wk->iflag_zero + IFOUR);
-	cbar_VAO->npoint_draw = ITHREE * num_patch;
-	return;
+static int count_colorbar_box_VAO(struct cbar_work *cbar_wk){
+	int num_patch = 4*cbar_wk->num_quad + 2*(cbar_wk->iflag_zero + IFOUR);
+	return (ITHREE * num_patch);
 };
 
-static void count_colorbar_text_VAO(struct cbar_work *cbar_wk,struct VAO_ids *text_VAO){
-	text_VAO->npoint_draw = ITHREE*2*(cbar_wk->iflag_zero + ITWO);
-	return;
+static int count_colorbar_text_VAO(struct cbar_work *cbar_wk){
+    int num_patch = ITHREE*2*(cbar_wk->iflag_zero + ITWO);
+	return num_patch;
 };
 
 static void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_color[4], 
 			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
 			struct VAO_ids *cbar_VAO, struct gl_strided_buffer *cbar_buf){
 	int inum_quad;
-	set_buffer_address_4_patch(cbar_VAO->npoint_draw, cbar_buf);
+    set_buffer_address_4_patch(count_colorbar_box_VAO(cbar_wk), cbar_buf);
 	resize_strided_buffer(cbar_buf);
 	
 	inum_quad = 0;
@@ -30,6 +26,7 @@ static void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloa
 	inum_quad = fade_colorbar_box_to_buf(inum_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
 	inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color, cbar_wk, cbar_buf);
 	
+    cbar_VAO->npoint_draw = cbar_buf->num_nod_buf;
 	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
 	return;
 };
@@ -38,12 +35,13 @@ static void set_colorbar_text_VAO(int iflag_retina,
 								  GLfloat text_color[4], GLfloat bg_color[4], 
 								  struct cbar_work *cbar_wk, struct VAO_ids *text_VAO,
 								  struct gl_strided_buffer *cbar_buf){
-	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
+	set_buffer_address_4_patch(count_colorbar_text_VAO(cbar_wk), cbar_buf);
 	resize_strided_buffer(cbar_buf);
 	
 	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
 	glBindVertexArray(text_VAO->id_VAO);
+    text_VAO->npoint_draw = cbar_buf->num_nod_buf;
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
 	cbar_wk->id_texture = set_texture_to_buffer(cbar_wk->npix_x, 3*cbar_wk->npix_y,
                                                 cbar_wk->numBMP);
@@ -55,12 +53,13 @@ static void set_time_text_VAO(int iflag_retina,
 								  GLfloat text_color[4], GLfloat bg_color[4], 
 								  struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
 								  struct gl_strided_buffer *cbar_buf){
-	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
+	set_buffer_address_4_patch((ITHREE*2), cbar_buf);
 	resize_strided_buffer(cbar_buf);
 	
 	time_mbox_to_buf(iflag_retina, text_color, tlabel_wk, cbar_buf);
 	
 	glBindVertexArray(text_VAO->id_VAO);
+    text_VAO->npoint_draw = cbar_buf->num_nod_buf;
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
 	tlabel_wk->id_texture = set_texture_to_buffer(tlabel_wk->npix_x, 3*tlabel_wk->npix_y,
 												  tlabel_wk->numBMP);
@@ -88,9 +87,7 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk);
 			set_colorbar_text_image(text_color, psf_a->cbar_wk);
 	
-			count_colorbar_box_VAO(psf_a->cbar_wk, cbar_VAO[0]);
-			count_colorbar_text_VAO(psf_a->cbar_wk, cbar_VAO[1]);
-			set_colorbar_box_VAO(iflag_retina, text_color, bg_color, 
+			set_colorbar_box_VAO(iflag_retina, text_color, bg_color,
 						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk, cbar_VAO[0], cbar_buf);
 			set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
 						psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
@@ -122,8 +119,7 @@ void set_timelabel_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			sprintf(psf_a->tlabel_wk->minlabel,"File index: %6d", psf_a->file_step_disp);
 		};
 		set_time_text_image(text_color, psf_a->tlabel_wk);
-		time_VAO->npoint_draw = ITHREE*2;
-		set_time_text_VAO(iflag_retina, text_color, bg_color, 
+		set_time_text_VAO(iflag_retina, text_color, bg_color,
 							  psf_a->tlabel_wk, time_VAO, cbar_buf);
 	};
 	free(cbar_buf->v_buf);

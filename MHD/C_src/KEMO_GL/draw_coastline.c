@@ -4,53 +4,57 @@
 
 #include  "draw_coastline.h"
 
-void set_sph_flame_VBO(double radius, struct VAO_ids *line_VAO,
-			struct gl_strided_buffer *line_buf){
-	line_VAO->npoint_draw = ITWO * count_sph_flame();
+static void set_sph_flame_VBO(double radius, struct VAO_ids *line_VAO,
+                              struct gl_strided_buffer *line_buf){
+	int n_point = ITWO * count_sph_flame();
 	
-	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
+	set_buffer_address_4_patch(n_point, line_buf);
 	resize_strided_buffer(line_buf);
 	set_sph_flame_to_buf(radius, line_buf);
 	
+    line_VAO->npoint_draw = line_buf->num_nod_buf;
 	Const_VAO_4_Simple(line_VAO, line_buf);
 	return;
 };
 
-void set_map_flame_VBO(struct VAO_ids *line_VAO, 
-			struct gl_strided_buffer *line_buf){
-	line_VAO->npoint_draw = ITWO * count_sph_flame();
+static void set_map_flame_VBO(struct VAO_ids *line_VAO,
+                              struct gl_strided_buffer *line_buf){
+    int n_point = ITWO * count_sph_flame();
 	
-	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
+	set_buffer_address_4_patch(n_point, line_buf);
 	resize_strided_buffer(line_buf);
 	set_map_flame_to_buf(line_buf);
 	
+    line_VAO->npoint_draw = line_buf->num_nod_buf;
 	Const_VAO_4_Simple(line_VAO, line_buf);
 	return;
 };
 
 
-void set_coastline_VBO(double radius, struct VAO_ids *line_VAO, 
-			struct gl_strided_buffer *line_buf){
+static void set_coastline_VBO(double radius, struct VAO_ids *line_VAO,
+                              struct gl_strided_buffer *line_buf){
 	int icou;
-	line_VAO->npoint_draw = ITWO * count_coastline_buf();
+    int n_point = ITWO * count_coastline_buf();
 	
-	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
+	set_buffer_address_4_patch(n_point, line_buf);
 	resize_strided_buffer(line_buf);
 	icou = set_coastline_buf(radius, line_buf);
 	
+    line_VAO->npoint_draw = line_buf->num_nod_buf;
 	Const_VAO_4_Simple(line_VAO, line_buf);
 	return;
 };
 
-void set_map_coastline_VBO(struct VAO_ids *line_VAO, 
+static void set_map_coastline_VBO(struct VAO_ids *line_VAO,
 			struct gl_strided_buffer *line_buf){
 	int icou;
-	line_VAO->npoint_draw = ITWO * count_coastline_buf();
+	int n_points = ITWO * count_coastline_buf();
 	
-	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
+	set_buffer_address_4_patch(n_points, line_buf);
 	resize_strided_buffer(line_buf);
 	icou = set_map_coastline_buf(line_buf);
 	
+    line_VAO->npoint_draw = line_buf->num_nod_buf;
 	Const_VAO_4_Simple(line_VAO, line_buf);
 	return;
 };
@@ -68,13 +72,14 @@ void set_axis_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s,
 	
 	struct gl_strided_buffer *axis_buf
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	mesh_VAO->npoint_draw = ITHREE * count_axis_to_buf(ncorner);
+	int n_point = ITHREE * count_axis_to_buf(ncorner);
 	
-	set_buffer_address_4_patch(mesh_VAO->npoint_draw, axis_buf);
+	set_buffer_address_4_patch(n_point, axis_buf);
 	alloc_strided_buffer(axis_buf);
 	
 	icou_patch = set_axis_to_buf(view_s, mesh_m->dist_domains, ncorner, radius, axis_buf);
 	
+    mesh_VAO->npoint_draw = axis_buf->num_nod_buf;
 	Const_VAO_4_Phong(mesh_VAO, axis_buf);
 	
 	free(axis_buf->v_buf);
