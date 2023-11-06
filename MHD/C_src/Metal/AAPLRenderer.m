@@ -30,9 +30,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLTexture> _texture;
     
     // The current size of the view, used as an input to the vertex shader.
-    vector_uint2 _viewportSize;
-    float        _scalechange;
-    
+    vector_uint2    _viewportSize;
+    float           _scalechange;
+    matrix_float4x4 _projection_mat;
+
     NSUInteger _frameNum;
     
     
@@ -151,10 +152,22 @@ Implementation of a platform independent renderer class, which performs Metal se
     orthogonal_glmat_c(0.0, kemo_sgl->kemo_mesh->msg_wk->xwin,
                        0.0, kemo_sgl->kemo_mesh->msg_wk->ywin,
                        -1.0, 1.0, orthogonal);
+    int i;
+    
     struct transfer_matrices *matrices = plane_transfer_matrices(orthogonal);
+    
+    vector_float4   col_wk[4];
+    for(i=0;i<4;i++){
+        col_wk[i].x = matrices->proj[4*i  ];
+        col_wk[i].y = matrices->proj[4*i+1];
+        col_wk[i].z = matrices->proj[4*i+2];
+        col_wk[i].w = matrices->proj[4*i+3];
+    };
+    _projection_mat = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
+//    _projection_mat = simd_matrix_from_rows(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 
     float xyzw[3][cbar_buf->num_nod_buf];
-    for(int i=0;i<cbar_buf->num_nod_buf;i++){
+    for(i=0;i<cbar_buf->num_nod_buf;i++){
         xyzw[0][i] =  matrices->proj[0] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz]
                  + matrices->proj[4] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz+1]
                  + matrices->proj[8] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz+2]
@@ -266,6 +279,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
     };
 */
+/*
         { {xyzw[0][0],  xyzw[1][0], xyzw[2][0] },
           {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
            cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
@@ -286,34 +300,41 @@ Implementation of a platform independent renderer class, which performs Metal se
           {cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
            cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
            };
-/*
+*/
+
  { {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1]},
+    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
+    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
    {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
     cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1]},
+ { {cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
+    cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
+    cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
    {cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
     cbar_buf->v_buf[1*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1]},
+ { {cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
+    cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
+    cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
    {cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
     cbar_buf->v_buf[2*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
 
- { {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1]},
+ { {cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
+    cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
+    cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
    {cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
     cbar_buf->v_buf[3*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1]},
+ { {cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
+    cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
+    cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
    {cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
     cbar_buf->v_buf[4*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
- { {cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
-    cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1]},
+ { {cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_xyz  ],
+    cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+1],
+    cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+2]},
    {cbar_buf->v_buf[5*cbar_buf->ncomp_buf+cbar_buf->ist_tex  ],
     cbar_buf->v_buf[0*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]} },
     };
- */
+
     int n_quad_vertex = 6;
 
     // Create a vertex buffer, and initialize it with the quadVertices array
@@ -355,8 +376,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                                length:sizeof(_scalechange)
                               atIndex:AAPLVertexInputIndexScale];
 
-        [renderEncoder setVertexBytes:orthogonal
-                               length:sizeof(orthogonal)
+        [renderEncoder setVertexBytes:&_projection_mat
+                               length:sizeof(_projection_mat)
                               atIndex:AAPLOrthogonalMatrix];
 
         // Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
