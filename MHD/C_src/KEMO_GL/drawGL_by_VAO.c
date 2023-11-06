@@ -154,18 +154,34 @@ void draw_trans_mesh_VAO(struct view_element *view_s,
 
 void draw_2D_box_patch_VAO(double orthogonal[16], struct VAO_ids *VAO,
 						   struct kemoview_shaders *kemo_shaders){
+    
+    glEnable(GL_BLEND);
+    glDepthMask(GL_FALSE);
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    glEnable(GL_MULTISAMPLE);
+    
 	glUseProgram(kemo_shaders->simple->programId);
 	map_matrix_to_shader(kemo_shaders->simple, orthogonal);
 	
 	glBindVertexArray(VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, VAO->npoint_draw);
-	return;
+
+    glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    glDisable(GL_MULTISAMPLE);
+    return;
 }
 
 void draw_textured_2D_box_VAO(GLuint texture_name, double orthogonal[16],
 							  struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;
-	
+    
+    glEnable(GL_BLEND);
+    glDepthMask(GL_FALSE);
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    glEnable(GL_MULTISAMPLE);
+    
 	glUseProgram(kemo_shaders->simple_texure->programId);
 	map_matrix_to_shader(kemo_shaders->simple_texure, orthogonal);
 	
@@ -176,5 +192,10 @@ void draw_textured_2D_box_VAO(GLuint texture_name, double orthogonal[16],
 	
 	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
 	glDrawArrays(GL_TRIANGLES, 0, VAO->npoint_draw);
+    
+    glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    glDisable(GL_MULTISAMPLE);
 	return;
 }

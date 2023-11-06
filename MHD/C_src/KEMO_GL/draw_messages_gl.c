@@ -46,7 +46,7 @@ void draw_message_VAO(struct msg_work *msg_wk,
 	orthogonal_glmat_c(0.0, msg_wk->xwin, 0.0, msg_wk->ywin, -1.0, 1.0, orthogonal);
 	
 	glEnable(GL_BLEND);
-	glEnable(GL_TRUE);
+    glDepthMask(GL_FALSE);
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glEnable(GL_MULTISAMPLE);
 	

@@ -48,6 +48,7 @@ kemoview_gtk_PSF_isoline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -143,6 +144,7 @@ kemoview_gtk_PSF_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -245,6 +247,7 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -341,6 +344,7 @@ kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -436,6 +440,7 @@ kemoview_gtk_axis_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -528,6 +533,7 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -625,6 +631,7 @@ kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -712,6 +719,7 @@ kemoview_gtk_fline_selectors.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -803,6 +811,7 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -925,6 +934,7 @@ kemoview_gtk_mesh_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -1025,6 +1035,7 @@ kemoview_gtk_preference_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -1123,6 +1134,7 @@ kemoview_gtk_quilt_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -1216,6 +1228,7 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -1308,6 +1321,7 @@ kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_transfer_matrices.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
