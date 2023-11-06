@@ -9,7 +9,7 @@ void set_sph_flame_VBO(double radius, struct VAO_ids *line_VAO,
 	line_VAO->npoint_draw = ITWO * count_sph_flame();
 	
 	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
-	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
+	resize_strided_buffer(line_buf);
 	set_sph_flame_to_buf(radius, line_buf);
 	
 	Const_VAO_4_Simple(line_VAO, line_buf);
@@ -21,7 +21,7 @@ void set_map_flame_VBO(struct VAO_ids *line_VAO,
 	line_VAO->npoint_draw = ITWO * count_sph_flame();
 	
 	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
-	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
+	resize_strided_buffer(line_buf);
 	set_map_flame_to_buf(line_buf);
 	
 	Const_VAO_4_Simple(line_VAO, line_buf);
@@ -35,7 +35,7 @@ void set_coastline_VBO(double radius, struct VAO_ids *line_VAO,
 	line_VAO->npoint_draw = ITWO * count_coastline_buf();
 	
 	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
-	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
+	resize_strided_buffer(line_buf);
 	icou = set_coastline_buf(radius, line_buf);
 	
 	Const_VAO_4_Simple(line_VAO, line_buf);
@@ -48,7 +48,7 @@ void set_map_coastline_VBO(struct VAO_ids *line_VAO,
 	line_VAO->npoint_draw = ITWO * count_coastline_buf();
 	
 	set_buffer_address_4_patch(line_VAO->npoint_draw, line_buf);
-	resize_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
+	resize_strided_buffer(line_buf);
 	icou = set_map_coastline_buf(line_buf);
 	
 	Const_VAO_4_Simple(line_VAO, line_buf);
@@ -71,7 +71,7 @@ void set_axis_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s,
 	mesh_VAO->npoint_draw = ITHREE * count_axis_to_buf(ncorner);
 	
 	set_buffer_address_4_patch(mesh_VAO->npoint_draw, axis_buf);
-	alloc_strided_buffer(axis_buf->num_nod_buf, axis_buf->ncomp_buf, axis_buf);
+	alloc_strided_buffer(axis_buf);
 	
 	icou_patch = set_axis_to_buf(view_s, mesh_m->dist_domains, ncorner, radius, axis_buf);
 	
@@ -86,7 +86,7 @@ void set_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_
 	struct gl_strided_buffer *line_buf
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(3*128, line_buf);
-	alloc_strided_buffer(line_buf->num_nod_buf, line_buf->ncomp_buf, line_buf);
+	alloc_strided_buffer(line_buf);
 	
 	if(mesh_m->iflag_draw_coast != 0){
 		set_coastline_VBO(mesh_m->radius_coast, grid_VAO[0], line_buf);

@@ -17,7 +17,6 @@ Header for a platform independent renderer class, which performs Metal setup and
 
 @interface AAPLRenderer : NSObject<MTKViewDelegate>
 
-- (id<MTLTexture>)loadTextureUsingAAPLImage: (NSURL *) url;
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
 
 @end

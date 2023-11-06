@@ -14,7 +14,7 @@ void set_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
 	set_buffer_address_4_patch(ITHREE*num_patch, fline_buf);
-	resize_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
+	resize_strided_buffer(fline_buf);
 	
 	icou = set_fieldtubes_to_buf(ncorner, fline_s, fline_m, fline_buf);
 	
@@ -33,7 +33,7 @@ void set_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m
 	set_color_code_for_fieldlines(fline_s, fline_m);
 	
 	set_buffer_address_4_patch(ITWO*num_edge, fline_buf);
-	resize_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
+	resize_strided_buffer(fline_buf);
 	
 	icou = set_fieldlines_to_buf(fline_s, fline_m, fline_buf);
 	
@@ -51,7 +51,7 @@ void sel_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m
 	struct gl_strided_buffer *fline_buf 
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(3*128, fline_buf);
-	alloc_strided_buffer(fline_buf->num_nod_buf, fline_buf->ncomp_buf, fline_buf);
+	alloc_strided_buffer(fline_buf);
 	
 	if(fline_m->fieldline_type == IFLAG_PIPE){
 		set_fieldtubes_VAO(fline_s, fline_m, fline_VAO[0], fline_buf);

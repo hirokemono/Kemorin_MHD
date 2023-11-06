@@ -23,7 +23,7 @@ static void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloa
 			struct VAO_ids *cbar_VAO, struct gl_strided_buffer *cbar_buf){
 	int inum_quad;
 	set_buffer_address_4_patch(cbar_VAO->npoint_draw, cbar_buf);
-	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
+	resize_strided_buffer(cbar_buf);
 	
 	inum_quad = 0;
 	inum_quad = solid_colorbar_box_to_buf(inum_quad, cmap_s, cbar_wk, cbar_buf);
@@ -39,7 +39,7 @@ static void set_colorbar_text_VAO(int iflag_retina,
 								  struct cbar_work *cbar_wk, struct VAO_ids *text_VAO,
 								  struct gl_strided_buffer *cbar_buf){
 	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
-	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
+	resize_strided_buffer(cbar_buf);
 	
 	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
@@ -56,7 +56,7 @@ static void set_time_text_VAO(int iflag_retina,
 								  struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
 								  struct gl_strided_buffer *cbar_buf){
 	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
-	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
+	resize_strided_buffer(cbar_buf);
 	
 	time_mbox_to_buf(iflag_retina, text_color, tlabel_wk, cbar_buf);
 	
@@ -77,7 +77,7 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	struct gl_strided_buffer *cbar_buf 
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(16, cbar_buf);
-	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
+	alloc_strided_buffer(cbar_buf);
 		
 	cbar_VAO[1]->npoint_draw = 0;
 	clear_colorbar_text_image(psf_a->cbar_wk);
@@ -108,7 +108,7 @@ void set_timelabel_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	struct gl_strided_buffer *cbar_buf 
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(16, cbar_buf);
-	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
+	alloc_strided_buffer(cbar_buf);
 		
 	time_VAO->npoint_draw = 0;
 	if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){

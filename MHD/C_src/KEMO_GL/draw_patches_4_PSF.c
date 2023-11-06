@@ -18,7 +18,7 @@ void set_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
-	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	resize_strided_buffer(psf_buf);
 	
 	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, 
 								   psf_s, psf_m, psf_a, psf_buf);
@@ -37,7 +37,7 @@ void set_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
-	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	resize_strided_buffer(psf_buf);
 	
 	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, psf_s, psf_m, psf_a, psf_buf);
 	set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
@@ -67,7 +67,7 @@ void set_PSF_arrow_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, str
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
-	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	resize_strided_buffer(psf_buf);
 	
 	inum_buf = 0;
 	for(i=0; i<psf_a->nmax_loaded; i++){
@@ -99,7 +99,7 @@ void set_PSF_isoline_VAO(struct view_element *view_s,
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
-	resize_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	resize_strided_buffer(psf_buf);
 	
 	inum_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
@@ -131,7 +131,7 @@ void set_PSF_solid_objects_VAO(struct view_element *view_s,
 	struct gl_strided_buffer *psf_buf
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(3*128, psf_buf);
-	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	alloc_strided_buffer(psf_buf);
 		
 	set_color_code_for_psfs(psf_s, psf_m, psf_a);
 	
@@ -158,7 +158,7 @@ void set_PSF_trans_objects_VAO(struct view_element *view_s,
 	struct gl_strided_buffer *psf_buf
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(3*128, psf_buf);
-	alloc_strided_buffer(psf_buf->num_nod_buf, psf_buf->ncomp_buf, psf_buf);
+	alloc_strided_buffer(psf_buf);
 	
 	
 	set_PSF_texture_VAO(view_s->shading_mode, 

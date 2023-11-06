@@ -15,7 +15,7 @@ static int set_solid_mesh_patch_VAO(int shading_mode,
 	if(num_patch <= 0) return num_patch;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
-	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+	resize_strided_buffer(mesh_buf);
 	
 	icou = set_solid_mesh_patches_to_buf(shading_mode, mesh_s, mesh_m, mesh_buf);
 	
@@ -42,7 +42,7 @@ void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 
 	if(num_patch > 0){
 		set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
-		alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+		alloc_strided_buffer(mesh_buf);
 	
 		icou = 0;
 		icou = set_transparent_mesh_patches_to_buf(view_s->shading_mode, mesh_s, mesh_m, mesh_buf);
@@ -67,7 +67,7 @@ static int set_mesh_grids_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *
 	if(num_edge <= 0) return num_edge;
 	
 	set_buffer_address_4_patch(ITWO*num_edge, mesh_buf);
-	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+	resize_strided_buffer(mesh_buf);
 	
 	icou = 0;
 	icou = set_mesh_grid_to_buf(mesh_s, mesh_m, mesh_buf);
@@ -85,7 +85,7 @@ static int set_mesh_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_v
 	if(num_patch <= 0) return 0;
 	
 	set_buffer_address_4_patch(3*num_patch, mesh_buf);
-	resize_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+	resize_strided_buffer(mesh_buf);
 	
 	icou = 0;
 	icou = set_mesh_node_to_buf(mesh_s, mesh_m, mesh_buf);
@@ -102,7 +102,7 @@ void set_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	struct gl_strided_buffer *mesh_buf
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(8, mesh_buf);
-	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
+	alloc_strided_buffer(mesh_buf);
 	
 	nedge_mesh = set_mesh_grids_VAO(mesh_s, mesh_m, mesh_VAO[1], mesh_buf);
 	

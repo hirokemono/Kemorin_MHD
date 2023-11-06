@@ -9,37 +9,32 @@
 
 void set_buffer_address_4_patch(int num_points, struct gl_strided_buffer *strided_buf){
 	strided_buf->ist_xyz =    0;
-	strided_buf->ist_data =   3;
 	strided_buf->ist_csurf =  4;
 	strided_buf->ist_norm =   8;
-	strided_buf->ist_tex =   11;
-	
-	strided_buf->ncomp_buf = 13;
+	strided_buf->ist_tex =   12;
+    strided_buf->ist_data =  14;
+
+	strided_buf->ncomp_buf = 15;
 	strided_buf->num_nod_buf = num_points;
-	
+    strided_buf->istride = sizeof(float) * strided_buf->ncomp_buf;
 	return;
 };
 
 void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf){
-	strided_buf->ist_tex =   0;
-	strided_buf->ist_data =   2;
-	strided_buf->ist_csurf =  3;
+    strided_buf->ist_xyz =    0;
+    strided_buf->ist_csurf =  2;
+	strided_buf->ist_data =   6;
 	
-	strided_buf->ist_norm =   0;
-	strided_buf->ist_xyz =    0;
-	
-	strided_buf->ncomp_buf = 7;
+	strided_buf->ist_norm =  -1;
+    strided_buf->ist_tex =   -1;
+
+	strided_buf->ncomp_buf =  7;
 	strided_buf->num_nod_buf = 4 * NPATCH_GL_BUFFER;
 	
 	return;
 };
 
-void alloc_strided_buffer(int num_points, int num_comp, 
-			struct gl_strided_buffer *strided_buf){
-	strided_buf->num_nod_buf = num_points;
-	strided_buf->ncomp_buf = num_comp;
-	strided_buf->istride = sizeof(GLfloat) * strided_buf->ncomp_buf;
-	
+void alloc_strided_buffer(struct gl_strided_buffer *strided_buf){
 	strided_buf->nsize_buf = strided_buf->num_nod_buf * strided_buf->ncomp_buf;
 	if((strided_buf->v_buf = (GLfloat *) malloc(strided_buf->nsize_buf*sizeof(GLfloat))) == NULL){
         printf("malloc error for strided_buf->v_buf\n");
@@ -55,17 +50,12 @@ struct gl_strided_buffer * init_strided_buffer(int num_points){
 	};
 	
 	set_buffer_address_4_patch(4 * NPATCH_GL_BUFFER, strided_buf);
-	alloc_strided_buffer((4*NPATCH_GL_BUFFER), 16, strided_buf);
+	alloc_strided_buffer(strided_buf);
 	return strided_buf;
 };
 
-void resize_strided_buffer(int num_points, int num_comp, 
-			struct gl_strided_buffer *strided_buf){
-	strided_buf->num_nod_buf = num_points;
-	strided_buf->ncomp_buf = num_comp;
-	strided_buf->istride = sizeof(GLfloat) * strided_buf->ncomp_buf;
-	
-	if(num_points*num_comp <= strided_buf->nsize_buf) return;
+void resize_strided_buffer(struct gl_strided_buffer *strided_buf){
+	if((strided_buf->num_nod_buf * strided_buf->ncomp_buf) <= strided_buf->nsize_buf) return;
 	
 	GLfloat *tmp = NULL;
 	strided_buf->nsize_buf = strided_buf->num_nod_buf * strided_buf->ncomp_buf;

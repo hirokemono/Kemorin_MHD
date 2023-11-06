@@ -256,6 +256,7 @@ void drawCube_flat(GLfloat fSize,
 	
 	/* Set Stride for each vertex buffer */
 	set_buffer_address_4_patch(8, strided_buf);
+    alloc_strided_buffer(strided_buf);
 	strided_buf->istride = sizeof(GLfloat)*strided_buf->ncomp_buf;
 	
 	icou = 0;

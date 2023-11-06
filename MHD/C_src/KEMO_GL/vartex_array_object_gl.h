@@ -53,12 +53,10 @@ struct VAO_ids{
 
 void set_buffer_address_4_patch(int num_points, struct gl_strided_buffer *strided_buf);
 void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf);
-void alloc_strided_buffer(int num_points, int num_comp, 
-			struct gl_strided_buffer *strided_buf);
+void alloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 
 struct gl_strided_buffer * init_strided_buffer(int num_points);
-void resize_strided_buffer(int num_points, int num_comp, 
-			struct gl_strided_buffer *strided_buf);
+void resize_strided_buffer(struct gl_strided_buffer *strided_buf);
 void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 
 void set_zero_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);

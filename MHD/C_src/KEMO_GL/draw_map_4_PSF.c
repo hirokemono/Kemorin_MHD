@@ -11,7 +11,7 @@ void set_map_patch_VAO(int ist_psf, int ied_psf,
 	if(num_patch <= 0) return;
 	
 	set_buffer_address_4_patch(ITHREE*num_patch, map_buf);
-	resize_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
+	resize_strided_buffer(map_buf);
 	
 	set_psf_map_to_buf(ist_psf, ied_psf, psf_s, psf_a, map_buf);
 	
@@ -35,7 +35,7 @@ void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf
 	psf_VAO->npoint_draw = ITHREE * num_patch;
 	if(psf_VAO->npoint_draw <= 0) return;
 	set_buffer_address_4_patch(ITHREE*num_patch, map_buf);
-	resize_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
+	resize_strided_buffer(map_buf);
 	
 	inum_patch = 0;
 	for(i=0; i<psf_a->nmax_loaded; i++){
@@ -70,7 +70,7 @@ void set_map_objects_VAO(struct view_element *view_s,
 	struct gl_strided_buffer *map_buf
 				= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(3*128, map_buf);
-	alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
+	alloc_strided_buffer(map_buf);
 	
 	set_map_patch_VAO(IZERO, psf_a->istack_solid_psf_patch, 
 					  psf_s, psf_a, map_VAO[0], map_buf);

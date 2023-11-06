@@ -41,42 +41,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     IBOutlet KemoViewerObject * _singleKemoView;
 }
 
-- (id<MTLTexture>)loadTextureUsingAAPLImage: (NSURL *) url {
-    
-    AAPLImage * image = [[AAPLImage alloc] initWithTGAFileAtLocation:url];
-    
-    NSAssert(image, @"Failed to create the image from %@", url.absoluteString);
-
-    MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
-    
-    // Indicate that each pixel has a blue, green, red, and alpha channel, where each channel is
-    // an 8-bit unsigned normalized value (i.e. 0 maps to 0.0 and 255 maps to 1.0)
-    textureDescriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
-    
-    // Set the pixel dimensions of the texture
-    textureDescriptor.width = image.width;
-    textureDescriptor.height = image.height;
-    
-    // Create the texture from the device by using the descriptor
-    id<MTLTexture> texture = [_device newTextureWithDescriptor:textureDescriptor];
-    
-    // Calculate the number of bytes per row in the image.
-    NSUInteger bytesPerRow = 4 * image.width;
-    
-    MTLRegion region = {
-        { 0, 0, 0 },                   // MTLOrigin
-        {image.width, image.height, 1} // MTLSize
-    };
-    
-    // Copy the bytes from the data object into the texture
-    [texture replaceRegion:region
-                mipmapLevel:0
-                  withBytes:image.data.bytes
-                bytesPerRow:bytesPerRow];
-    return texture;
-}
-
-
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
     _frameNum = 0;
@@ -86,10 +50,6 @@ Implementation of a platform independent renderer class, which performs Metal se
         NSError *error;
 
         _device = mtkView.device;
-
-        NSURL *imageFileLocation = [[NSBundle mainBundle] URLForResource:@"Image"
-                                                           withExtension:@"tga"];
-//        _texture = [self loadTextureUsingAAPLImage: imageFileLocation];
 
         // Load all the shader files with a .metal file extension in the project.
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
@@ -248,6 +208,14 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
         // Pixel positions, Color coordinates
     int n_quad_vertex = 6;
+
+    AAPLVertexWithTexture *quadTextureVertices2;
+    if((quadTextureVertices2 = (AAPLVertexWithTexture *) malloc(n_quad_vertex * sizeof(AAPLVertexWithTexture))) == NULL){
+        printf("malloc error for AAPLVertexWithTexture\n");
+        exit(0);
+    };
+        quadTextureVertices2 = (AAPLVertexWithTexture *) &cbar_buf->v_buf[0];
+
     AAPLVertexWithTexture *quadTextureVertices;
     if((quadTextureVertices = (AAPLVertexWithTexture *) malloc(n_quad_vertex * sizeof(AAPLVertexWithTexture))) == NULL){
         printf("malloc error for AAPLVertexWithTexture\n");
@@ -265,6 +233,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         }
     };
 
+    
     // Create a vertex buffer, and initialize it with the quadVertices array
     _vertices = [_device newBufferWithBytes:quadTextureVertices
                                      length:(n_quad_vertex*sizeof(AAPLVertexWithTexture))

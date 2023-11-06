@@ -41,8 +41,6 @@ typedef struct
 {
     // Positions in pixel space. A value of 100 indicates 100 pixels from the origin/center.
     vector_float3 position;
-    // data value in pixel space. A value of 100 indicates 100 pixels from the origin/center.
-    float         data;
     // RGBA Color in pixel space. A value of 100 indicates 100 pixels from the origin/center.
     vector_float4 color;
     // Normal vector in pixel space. A value of 100 indicates 100 pixels from the origin/center.
@@ -50,6 +48,9 @@ typedef struct
  
     // 2D texture coordinate
     vector_float2 textureCoordinate;
+
+    // data value in pixel space. A value of 100 indicates 100 pixels from the origin/center.
+    float         data;
 } AAPLVertexWithTexture;
 
 #endif /* AAPLShaderTypes_h */

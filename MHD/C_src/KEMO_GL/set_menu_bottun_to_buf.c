@@ -157,7 +157,7 @@ void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf){
 	int num_dot = count_menu_to_buf();
 	
 	set_buffer_address_4_patch(num_dot, strided_buf);
-	resize_strided_buffer(strided_buf->num_nod_buf, strided_buf->ncomp_buf, strided_buf);
+	resize_strided_buffer(strided_buf);
 	
 	menubottun_bitmap(menubottun_bits);
 	set_menu_to_buf(menubottun_bits, strided_buf);

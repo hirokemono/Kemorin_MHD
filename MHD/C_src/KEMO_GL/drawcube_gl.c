@@ -41,7 +41,7 @@ static void light_for_initial_cube(struct kemoview_shaders *kemo_shaders){
 void set_initial_cube_VAO(struct view_element *view_s, struct VAO_ids *cube_VAO){
 	struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(8, cube_buf);
-	alloc_strided_buffer(cube_buf->num_nod_buf, cube_buf->ncomp_buf, cube_buf);
+	alloc_strided_buffer(cube_buf);
 	
 	cube_VAO->npoint_draw = 36;
 	cube_surf_VBO(0.5f, cube_VAO, cube_buf);
@@ -69,7 +69,7 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 	struct gl_strided_buffer *gl_buf
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(8, gl_buf);
-	alloc_strided_buffer(gl_buf->num_nod_buf, gl_buf->ncomp_buf, gl_buf);
+	alloc_strided_buffer(gl_buf);
 	
 	glGenVertexArrays(1, &cube_VAO->id_VAO);
 	glBindVertexArray(cube_VAO->id_VAO);
@@ -96,7 +96,7 @@ void draw_quad_gl3(struct view_element *view_s,
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	
 	set_buffer_address_4_patch(4, quad_buf);
-	alloc_strided_buffer(quad_buf->num_nod_buf, quad_buf->ncomp_buf, quad_buf);
+	alloc_strided_buffer(quad_buf);
 	
 	glGenVertexArrays(1, &quad_VAO->id_VAO);
 	glBindVertexArray(quad_VAO->id_VAO);
