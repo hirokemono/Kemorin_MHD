@@ -248,7 +248,12 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
         // Pixel positions, Color coordinates
     int n_quad_vertex = 6;
-    AAPLVertexWithTexture quadTextureVertices[n_quad_vertex];
+    AAPLVertexWithTexture *quadTextureVertices;
+    if((quadTextureVertices = (AAPLVertexWithTexture *) malloc(n_quad_vertex * sizeof(AAPLVertexWithTexture))) == NULL){
+        printf("malloc error for AAPLVertexWithTexture\n");
+        exit(0);
+    };
+
     for(i=0;i<n_quad_vertex;i++){
         for(int j=0;j<3;j++){
             quadTextureVertices[i].position[j]
@@ -262,7 +267,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     // Create a vertex buffer, and initialize it with the quadVertices array
     _vertices = [_device newBufferWithBytes:quadTextureVertices
-                                     length:sizeof(quadTextureVertices)
+                                     length:(n_quad_vertex*sizeof(AAPLVertexWithTexture))
                                     options:MTLResourceStorageModeShared];
     // Calculate the number of vertices by dividing the byte length by the size of each vertex
     _numVertices = sizeof(AAPLVertexWithTexture) / sizeof(AAPLVertex);
@@ -288,7 +293,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         // Pass in the parameter data.
         [renderEncoder setVertexBytes:quadTextureVertices
-                               length:sizeof(quadTextureVertices)
+                               length:(n_quad_vertex*sizeof(AAPLVertexWithTexture))
                               atIndex:AAPLVertexInputIndexVertices];
         
         [renderEncoder setVertexBytes:&_viewportSize
