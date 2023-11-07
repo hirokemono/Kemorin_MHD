@@ -21,7 +21,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLRenderPipelineState> _pipelineState;
     
     // The command queue used to pass commands to the device.
-    id<MTLCommandQueue> _commandQueue[10];
+    id<MTLCommandQueue> _commandQueue;
     
     // The Metal buffer that holds the vertex data.
     id<MTLBuffer> _vertices;
