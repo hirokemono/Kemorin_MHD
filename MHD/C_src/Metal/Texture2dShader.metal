@@ -33,9 +33,6 @@ struct RasterizerData
 vertex RasterizerData
 Texture2dVertexShader(uint vertexID [[ vertex_id ]],
              constant AAPLVertexWithTexture *vertexArray [[ buffer(AAPLVertexInputIndexVertices) ]],
-             constant vector_uint2 *viewportSizePointer  [[ buffer(AAPLVertexInputIndexViewportSize) ]],
-             constant float *viewportScalePointer [[
-                 buffer(AAPLVertexInputIndexScale)]],
              constant matrix_float4x4 *OrthogonalMatrixPointer [[
                  buffer(AAPLOrthogonalMatrix)]])
 {
@@ -46,18 +43,13 @@ Texture2dVertexShader(uint vertexID [[ vertex_id ]],
     //   Positions are specified in pixel dimensions (i.e. a value of 100 is 100 pixels from
     //   the origin)
     float3 pixelSpacePosition = vertexArray[vertexID].position.xyz;
-
-    vector_float2 viewportSize = vector_float2(*viewportSizePointer);
-    float  aspectRatio = viewportSize.y / viewportSize.x;
-
-    float  scale = *viewportScalePointer;
     matrix_float4x4 OrthogonalMatrix = matrix_float4x4(*OrthogonalMatrixPointer);
 
     // To convert from positions in pixel space to positions in clip-space,
     //  divide the pixel coordinates by half the size of the viewport.
 //    out.position2d = vector_float4(0.0, 0.0, 0.0, 1.0);
 //    out.position2d.xy = pixelSpacePosition / (viewportSize / 2.0);
-    out.position2d.xyz = pixelSpacePosition * scale;
+    out.position2d.xyz = pixelSpacePosition;
     out.position2d.w = 1.0;
     out.position2d = OrthogonalMatrix * out.position2d;
 

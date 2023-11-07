@@ -17,7 +17,7 @@ typedef enum AAPLVertexInputIndex
     AAPLVertexInputIndexVertices =     0,
     AAPLVertexInputIndexViewportSize = 1,
     AAPLVertexInputIndexScale =        2,
-    AAPLOrthogonalMatrix =             3,
+    AAPLOrthogonalMatrix =             1,
 } AAPLVertexInputIndex;
 
 // Texture index values shared between shader and C code to ensure Metal shader buffer inputs match

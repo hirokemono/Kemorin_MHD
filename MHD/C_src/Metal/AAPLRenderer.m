@@ -158,8 +158,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 bytesPerRow:bytesPerRow];
     
     _frameNum++;
-//    _scalechange = 0.2 + (1.0 + 0.2 * sin(_frameNum * 0.1));
-    _scalechange = 1.0;
+    _scalechange = 0.2 + (1.0 + 0.2 * sin(_frameNum * 0.1));
     
     // Set up a simple MTLBuffer with the vertices, including position and texture coordinates
     int n_quad_vertex = 6;
@@ -219,14 +218,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
         
-        [renderEncoder setVertexBytes:&_viewportSize
-                               length:sizeof(_viewportSize)
-                              atIndex:AAPLVertexInputIndexViewportSize];
-
-        [renderEncoder setVertexBytes:&_scalechange
-                               length:sizeof(_scalechange)
-                              atIndex:AAPLVertexInputIndexScale];
-
         [renderEncoder setVertexBytes:&_projection_mat
                                length:sizeof(_projection_mat)
                               atIndex:AAPLOrthogonalMatrix];
@@ -242,6 +233,25 @@ Implementation of a platform independent renderer class, which performs Metal se
                           vertexStart:0
                           vertexCount:n_quad_vertex];
 
+
+/*  Commands to render simple quadrature */
+        [renderEncoder setRenderPipelineState:_pipelineState[0]];
+        [renderEncoder setVertexBuffer:_vertices[0]
+                                 offset:0
+                                atIndex:AAPLVertexInputIndexVertices];
+        [renderEncoder setVertexBytes:&_viewportSize
+                                length:sizeof(_viewportSize)
+                               atIndex:AAPLVertexInputIndexViewportSize];
+        [renderEncoder setVertexBytes:&_scalechange
+                                length:sizeof(_scalechange)
+                               atIndex:AAPLVertexInputIndexScale];
+        [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                           vertexStart:0
+                           vertexCount:n_quad_vertex];
+
+
+
+
         [renderEncoder endEncoding];
 
         // Schedule a present once the framebuffer is complete using the current drawable.
@@ -249,52 +259,9 @@ Implementation of a platform independent renderer class, which performs Metal se
     }
     [commandBuffer  commit];
 
-    id<MTLCommandBuffer> commandBuffer2 = [_commandQueue[0] commandBuffer];
-    commandBuffer2.label = @"MyCommand";
-    MTLRenderPassDescriptor *renderPassDescriptor2 = view.currentRenderPassDescriptor;
-    if(renderPassDescriptor2 != nil){
-        id<MTLRenderCommandEncoder> renderEncoder2 =
-        [commandBuffer2 renderCommandEncoderWithDescriptor:renderPassDescriptor2];
-        renderEncoder2.label = @"MyRenderEncoder2";
-
-        // Set the region of the drawable to draw into.
-        [renderEncoder2 setViewport:(MTLViewport){0.0, 0.0, _viewportSize.x, _viewportSize.y, 0.0, 1.0 }];
-        
-        [renderEncoder2 setRenderPipelineState:_pipelineState[0]];
-
-        // Pass in the parameter data.
-        [renderEncoder2 setVertexBuffer:_vertices[0]
-                                 offset:0
-                                atIndex:AAPLVertexInputIndexVertices];
-        
-        [renderEncoder2 setVertexBytes:&_viewportSize
-                                length:sizeof(_viewportSize)
-                               atIndex:AAPLVertexInputIndexViewportSize];
-
-        [renderEncoder2 setVertexBytes:&_scalechange
-                                length:sizeof(_scalechange)
-                               atIndex:AAPLVertexInputIndexScale];
-/*
-        [renderEncoder setVertexBytes:&_projection_mat
-                               length:sizeof(_projection_mat)
-                              atIndex:AAPLOrthogonalMatrix];
- */
-        // Draw the triangles.
-        [renderEncoder2 drawPrimitives:MTLPrimitiveTypeTriangle
-                           vertexStart:0
-                           vertexCount:n_quad_vertex];
-
-        [renderEncoder2 endEncoding];
-        [commandBuffer2 presentDrawable:view.currentDrawable];
-    }
-
-
     free(matrices);
     free(cbar_buf->v_buf);
     free(cbar_buf);
-
-    // Finalize rendering here & push the command buffer to the GPU.
-    [commandBuffer2 commit];
 }
 
 
