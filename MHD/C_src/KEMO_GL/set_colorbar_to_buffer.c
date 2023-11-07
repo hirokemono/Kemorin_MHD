@@ -356,8 +356,8 @@ void time_mbox_to_buf(int iflag_retina, float *text_color,
 	x4[1] = tlabel_wk->ywin - 16.0 * (iflag_retina + 1);
 	t1[1] = 0.0;
 	t2[1] = 0.0;
-	t3[1] = 1.0 / 3.0;
-	t4[1] = 1.0 / 3.0;
+	t3[1] = 1.0;
+	t4[1] = 1.0;
 	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	set_one_texture_to_buf(0, t1, t2, t3, t4, strided_buf);
 	return;
