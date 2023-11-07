@@ -18,17 +18,20 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDevice> _device;
     
     // The render pipeline generated from the vertex and fragment shaders in the .metal shader file.
-    id<MTLRenderPipelineState> _pipelineState;
+    id<MTLRenderPipelineState> _pipelineState[2];
     
     // The command queue used to pass commands to the device.
-    id<MTLCommandQueue> _commandQueue;
+    id<MTLCommandQueue> _commandQueue[2];
     
+    id<MTLFunction> _vertexFunction[2];
+    id<MTLFunction> _fragmentFunction[2];
+
     // The Metal buffer that holds the vertex data.
-    id<MTLBuffer> _vertices;
+    id<MTLBuffer> _vertices[2];
     // The number of vertices in the vertex buffer.
-    NSUInteger _numVertices;
+    NSUInteger _numVertices[2];
     // The Metal texture object
-    id<MTLTexture> _texture;
+    id<MTLTexture> _texture[2];
     
     // The current size of the view, used as an input to the vertex shader.
     vector_uint2    _viewportSize;
@@ -53,12 +56,12 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         // Load all the shader files with a .metal file extension in the project.
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
-/*
-        id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
-        id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
-*/
-        id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
-        id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
+
+        _vertexFunction[0] = [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
+        _fragmentFunction[0] = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
+
+        _vertexFunction[1] = [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
+        _fragmentFunction[1] = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
 
         // Configure a pipeline descriptor that is used to create a pipeline state.
         MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -66,21 +69,35 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.label = @"Simple Pipeline";
 */
         pipelineStateDescriptor.label = @"Texture Pipeline";
-        pipelineStateDescriptor.vertexFunction = vertexFunction;
-        pipelineStateDescriptor.fragmentFunction = fragmentFunction;
+        pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
+        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
-        _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                 error:&error];
-                
+        _pipelineState[1] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                           error:&error];
+        // Create the command queue
+        _commandQueue[1] = [_device newCommandQueue];
+
         // Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
         //  If the Metal API validation is enabled, you can find out more information about what
         //  went wrong.  (Metal API validation is enabled by default when a debug build is run
         //  from Xcode.)
-        NSAssert(_pipelineState, @"Failed to create pipeline state: %@", error);
+        NSAssert(_pipelineState[1], @"Failed to create pipeline state: %@", error);
+
+
+        pipelineStateDescriptor.label = @"Simple Pipeline";
+        pipelineStateDescriptor.vertexFunction = _vertexFunction[0];
+        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[0];
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+        _pipelineState[0] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                           error:&error];
+        NSAssert(_pipelineState[0], @"Failed to create pipeline state: %@", error);
+
+
 
         // Create the command queue
-        _commandQueue = [_device newCommandQueue];
+        _commandQueue[0] = [_device newCommandQueue];
     }
 
     return self;
@@ -124,7 +141,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     textureDescriptor.height = kemo_sgl->kemo_mesh->msg_wk->npix_y;
 
     // Create the texture from the device by using the descriptor
-    _texture = [_device newTextureWithDescriptor:textureDescriptor];
+    _texture[1] = [_device newTextureWithDescriptor:textureDescriptor];
     
     // Calculate the number of bytes per row in the image.
     NSUInteger bytesPerRow = 4 * textureDescriptor.width;
@@ -135,9 +152,9 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
     
     // Copy the bytes from the data object into the texture
-    [_texture replaceRegion:region
-                mipmapLevel:0
-                  withBytes:kemo_sgl->kemo_mesh->msg_wk->msgBMP
+    [_texture[1] replaceRegion:region
+                   mipmapLevel:0
+                     withBytes:kemo_sgl->kemo_mesh->msg_wk->msgBMP
                 bytesPerRow:bytesPerRow];
     
     _frameNum++;
@@ -145,17 +162,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     _scalechange = 1.0;
     
     // Set up a simple MTLBuffer with the vertices, including position and texture coordinates
-/*
-   static const AAPLVertex triangleVertices[] =
-    {
-        // 2D positions,    RGBA colors
-        { {  0.5f,  -0.5f }, { 1, 0, 0, 1 } },
-        { { -0.5f,  -0.5f }, { 0, 1, 0, 1 } },
-        { {  0.0f,   0.5f }, { 0, 0, 1, 1 } },
-    };
-    int n_tri_vertex = 3;
-*/
-
+    int n_quad_vertex = 6;
     static const AAPLVertex quadVertices[] =
     {
         // Pixel positions, Color coordinates
@@ -167,9 +174,11 @@ Implementation of a platform independent renderer class, which performs Metal se
         { { -0.5f,   0.5f },  { 0.f, 0.f, 1.f, 1.f } },
         { {  0.5f,   0.5f },  { 1.f, 0.f, 1.f, 1.f } },
     };
-        // Pixel positions, Color coordinates
-    int n_quad_vertex = 6;
+    _vertices[0] = [_device newBufferWithBytes:quadVertices
+                                        length:(n_quad_vertex*sizeof(AAPLVertex))
+                                       options:MTLResourceStorageModeShared];
 
+    // Pixel positions, Color coordinates
     AAPLVertexWithTexture *quadTextureVertices;
     if((quadTextureVertices = (AAPLVertexWithTexture *) malloc(n_quad_vertex * sizeof(AAPLVertexWithTexture))) == NULL){
         printf("malloc error for AAPLVertexWithTexture\n");
@@ -179,14 +188,15 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 
     // Create a vertex buffer, and initialize it with the quadVertices array
-    _vertices = [_device newBufferWithBytes:quadTextureVertices
-                                     length:(n_quad_vertex*sizeof(AAPLVertexWithTexture))
-                                    options:MTLResourceStorageModeShared];
+    _vertices[1] = [_device newBufferWithBytes:quadTextureVertices
+                                        length:(n_quad_vertex*sizeof(AAPLVertexWithTexture))
+                                       options:MTLResourceStorageModeShared];
     // Calculate the number of vertices by dividing the byte length by the size of each vertex
-    _numVertices = sizeof(AAPLVertexWithTexture) / sizeof(AAPLVertex);
+    _numVertices[0] = n_quad_vertex;
+    _numVertices[1] = n_quad_vertex;
 
      // Create a new command buffer for each render pass to the current drawable.
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+    id<MTLCommandBuffer> commandBuffer = [_commandQueue[1] commandBuffer];
     commandBuffer.label = @"MyCommand";
 
     // Obtain a renderPassDescriptor generated from the view's drawable textures.
@@ -202,12 +212,12 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Set the region of the drawable to draw into.
         [renderEncoder setViewport:(MTLViewport){0.0, 0.0, _viewportSize.x, _viewportSize.y, 0.0, 1.0 }];
         
-        [renderEncoder setRenderPipelineState:_pipelineState];
+        [renderEncoder setRenderPipelineState:_pipelineState[1]];
 
         // Pass in the parameter data.
-        [renderEncoder setVertexBytes:quadTextureVertices
-                               length:(n_quad_vertex*sizeof(AAPLVertexWithTexture))
-                              atIndex:AAPLVertexInputIndexVertices];
+        [renderEncoder setVertexBuffer:_vertices[1]
+                                offset:0
+                               atIndex:AAPLVertexInputIndexVertices];
         
         [renderEncoder setVertexBytes:&_viewportSize
                                length:sizeof(_viewportSize)
@@ -224,7 +234,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
         ///  to the 'colorMap' argument in the 'samplingShader' function because its
         //   texture attribute qualifier also uses AAPLTextureIndexBaseColor for its index.
-        [renderEncoder setFragmentTexture:_texture
+        [renderEncoder setFragmentTexture:_texture[1]
                                   atIndex:AAPLTextureIndexBaseColor];
 
         // Draw the triangles.
@@ -237,12 +247,54 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Schedule a present once the framebuffer is complete using the current drawable.
         [commandBuffer presentDrawable:view.currentDrawable];
     }
+    [commandBuffer  commit];
+
+    id<MTLCommandBuffer> commandBuffer2 = [_commandQueue[0] commandBuffer];
+    commandBuffer2.label = @"MyCommand";
+    MTLRenderPassDescriptor *renderPassDescriptor2 = view.currentRenderPassDescriptor;
+    if(renderPassDescriptor2 != nil){
+        id<MTLRenderCommandEncoder> renderEncoder2 =
+        [commandBuffer2 renderCommandEncoderWithDescriptor:renderPassDescriptor2];
+        renderEncoder2.label = @"MyRenderEncoder2";
+
+        // Set the region of the drawable to draw into.
+        [renderEncoder2 setViewport:(MTLViewport){0.0, 0.0, _viewportSize.x, _viewportSize.y, 0.0, 1.0 }];
+        
+        [renderEncoder2 setRenderPipelineState:_pipelineState[0]];
+
+        // Pass in the parameter data.
+        [renderEncoder2 setVertexBuffer:_vertices[0]
+                                 offset:0
+                                atIndex:AAPLVertexInputIndexVertices];
+        
+        [renderEncoder2 setVertexBytes:&_viewportSize
+                                length:sizeof(_viewportSize)
+                               atIndex:AAPLVertexInputIndexViewportSize];
+
+        [renderEncoder2 setVertexBytes:&_scalechange
+                                length:sizeof(_scalechange)
+                               atIndex:AAPLVertexInputIndexScale];
+/*
+        [renderEncoder setVertexBytes:&_projection_mat
+                               length:sizeof(_projection_mat)
+                              atIndex:AAPLOrthogonalMatrix];
+ */
+        // Draw the triangles.
+        [renderEncoder2 drawPrimitives:MTLPrimitiveTypeTriangle
+                           vertexStart:0
+                           vertexCount:n_quad_vertex];
+
+        [renderEncoder2 endEncoding];
+        [commandBuffer2 presentDrawable:view.currentDrawable];
+    }
+
+
     free(matrices);
     free(cbar_buf->v_buf);
     free(cbar_buf);
 
     // Finalize rendering here & push the command buffer to the GPU.
-    [commandBuffer commit];
+    [commandBuffer2 commit];
 }
 
 
