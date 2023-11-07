@@ -14,7 +14,7 @@ void set_buffer_address_4_patch(int num_points, struct gl_strided_buffer *stride
 	strided_buf->ist_tex =   12;
     strided_buf->ist_data =  14;
 
-	strided_buf->ncomp_buf = 15;
+	strided_buf->ncomp_buf = 16;
 	strided_buf->num_nod_buf = num_points;
     strided_buf->istride = sizeof(float) * strided_buf->ncomp_buf;
 	return;
@@ -28,7 +28,7 @@ void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf){
 	strided_buf->ist_norm =  -1;
     strided_buf->ist_tex =   -1;
 
-	strided_buf->ncomp_buf =  7;
+	strided_buf->ncomp_buf =  8;
 	strided_buf->num_nod_buf = 4 * NPATCH_GL_BUFFER;
 	
 	return;

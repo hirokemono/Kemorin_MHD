@@ -21,7 +21,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLRenderPipelineState> _pipelineState;
     
     // The command queue used to pass commands to the device.
-    id<MTLCommandQueue> _commandQueue;
+    id<MTLCommandQueue> _commandQueue[10];
     
     // The Metal buffer that holds the vertex data.
     id<MTLBuffer> _vertices;
@@ -94,12 +94,14 @@ Implementation of a platform independent renderer class, which performs Metal se
     struct gl_strided_buffer *cbar_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     const_message_buffer(kemo_sgl->view_s->iflag_retina,
-                    kemo_sgl->view_s->nx_frame,
-                    kemo_sgl->view_s->ny_frame,
-                    kemo_sgl->kemo_mesh->msg_wk, cbar_buf);
+                         kemo_sgl->view_s->nx_frame,
+                         kemo_sgl->view_s->ny_frame,
+                         kemo_sgl->kemo_mesh->msg_wk, cbar_buf);
 
-    double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_sgl->kemo_mesh->msg_wk->xwin,
-                                                     0.0, kemo_sgl->kemo_mesh->msg_wk->ywin,
+    double *orthogonal = orthogonal_projection_mat_c(0.0,
+                                                     kemo_sgl->kemo_mesh->msg_wk->xwin,
+                                                     0.0,
+                                                     kemo_sgl->kemo_mesh->msg_wk->ywin,
                                                      -1.0, 1.0);
     int i;
     
@@ -114,7 +116,6 @@ Implementation of a platform independent renderer class, which performs Metal se
         col_wk[i].w = matrices->proj[4*i+3];
     };
     _projection_mat = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
-//    _projection_mat = simd_matrix_from_rows(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 
   
     MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
@@ -169,31 +170,14 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Pixel positions, Color coordinates
     int n_quad_vertex = 6;
 
-    AAPLVertexWithTexture *quadTextureVertices2;
-    if((quadTextureVertices2 = (AAPLVertexWithTexture *) malloc(n_quad_vertex * sizeof(AAPLVertexWithTexture))) == NULL){
-        printf("malloc error for AAPLVertexWithTexture\n");
-        exit(0);
-    };
-    quadTextureVertices2 = (AAPLVertexWithTexture *) &cbar_buf->v_buf[0];
-
     AAPLVertexWithTexture *quadTextureVertices;
     if((quadTextureVertices = (AAPLVertexWithTexture *) malloc(n_quad_vertex * sizeof(AAPLVertexWithTexture))) == NULL){
         printf("malloc error for AAPLVertexWithTexture\n");
         exit(0);
     };
+    quadTextureVertices = (AAPLVertexWithTexture *) cbar_buf->v_buf;
 
-    for(i=0;i<n_quad_vertex;i++){
-        for(int j=0;j<3;j++){
-            quadTextureVertices[i].position[j]
-                = cbar_buf->v_buf[i*cbar_buf->ncomp_buf+cbar_buf->ist_xyz+j];
-        }
-        for(int j=0;j<2;j++){
-            quadTextureVertices[i].textureCoordinate[j]
-                = cbar_buf->v_buf[i*cbar_buf->ncomp_buf+cbar_buf->ist_tex+j];
-        }
-    };
 
-    
     // Create a vertex buffer, and initialize it with the quadVertices array
     _vertices = [_device newBufferWithBytes:quadTextureVertices
                                      length:(n_quad_vertex*sizeof(AAPLVertexWithTexture))
@@ -243,7 +227,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         [renderEncoder setFragmentTexture:_texture
                                   atIndex:AAPLTextureIndexBaseColor];
 
-        // Draw the triangle.
+        // Draw the triangles.
         [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                           vertexStart:0
                           vertexCount:n_quad_vertex];

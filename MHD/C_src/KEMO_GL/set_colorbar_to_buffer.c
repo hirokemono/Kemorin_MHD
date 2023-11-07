@@ -363,7 +363,7 @@ void time_mbox_to_buf(int iflag_retina, float *text_color,
 	return;
 };
 
-void message_mbox_to_buf(int iflag_retina, struct msg_work *msg_wk,
+void message_mbox_to_buf(const int iflag_retina, const struct msg_work *msg_wk,
 						 struct gl_strided_buffer *strided_buf){
 	float c1[4];
 	float x1[3], x2[3], x3[3], x4[3];
