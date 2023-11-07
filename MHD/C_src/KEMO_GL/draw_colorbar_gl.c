@@ -14,32 +14,8 @@ static int count_colorbar_text_VAO(struct cbar_work *cbar_wk){
 	return num_patch;
 };
 
-static void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_color[4],
-			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
-			struct VAO_ids *cbar_VAO, struct gl_strided_buffer *cbar_buf){
-	int inum_quad;
-    set_buffer_address_4_patch(count_colorbar_box_VAO(cbar_wk), cbar_buf);
-	resize_strided_buffer(cbar_buf);
-	
-	inum_quad = 0;
-	inum_quad = solid_colorbar_box_to_buf(inum_quad, cmap_s, cbar_wk, cbar_buf);
-	inum_quad = fade_colorbar_box_to_buf(inum_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
-	inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color, cbar_wk, cbar_buf);
-	
-    cbar_VAO->npoint_draw = cbar_buf->num_nod_buf;
-	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
-	return;
-};
-
-static void set_colorbar_text_VAO(int iflag_retina, 
-								  GLfloat text_color[4], GLfloat bg_color[4],
-								  struct cbar_work *cbar_wk, struct VAO_ids *text_VAO,
+static void set_colorbar_text_VAO(struct cbar_work *cbar_wk, struct VAO_ids *text_VAO,
 								  struct gl_strided_buffer *cbar_buf){
-	set_buffer_address_4_patch(count_colorbar_text_VAO(cbar_wk), cbar_buf);
-	resize_strided_buffer(cbar_buf);
-	
-	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
-	
 	glBindVertexArray(text_VAO->id_VAO);
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
 	cbar_wk->id_texture = set_texture_to_buffer(cbar_wk->npix_x, 3*cbar_wk->npix_y,
@@ -56,18 +32,6 @@ static void set_time_text_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *tex
 	tlabel_wk->id_texture = set_texture_to_buffer(tlabel_wk->npix_x, tlabel_wk->npix_y,
 												  tlabel_wk->numBMP);
 	glBindVertexArray(0);
-
-    int i, j, icou;
-    icou = 0;
-    for(i=0;i<tlabel_wk->npix_y;i++){
-        printf("line: %d GL Pixels:", i);
-        for(j=0;j<tlabel_wk->npix_x;j++){
-            printf("%d ", (int) tlabel_wk->numBMP[icou]);
-            icou = icou + 1;
-        }
-        printf("\n");
-    }
-
     return;
 };
 
@@ -81,7 +45,7 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(16, cbar_buf);
 	alloc_strided_buffer(cbar_buf);
-		
+
 	cbar_VAO[1]->npoint_draw = 0;
 	clear_colorbar_text_image(psf_a->cbar_wk);
 	for(i=0; i<psf_a->nmax_loaded; i++){
@@ -89,16 +53,43 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
 			icomp = psf_m[i]->icomp_draw_psf;
 			set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, 
 						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk);
-			set_colorbar_text_image(text_color, psf_a->cbar_wk);
 	
-			set_colorbar_box_VAO(iflag_retina, text_color, bg_color,
-						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk, cbar_VAO[0], cbar_buf);
-			set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
-						psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
+            set_buffer_address_4_patch(count_colorbar_box_VAO(psf_a->cbar_wk), cbar_buf);
+            resize_strided_buffer(cbar_buf);
+            
+            int inum_quad = 0;
+            inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
+                                                  psf_a->cbar_wk, cbar_buf);
+            inum_quad = fade_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
+                                                 bg_color, psf_a->cbar_wk, cbar_buf);
+            inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color,
+                                              psf_a->cbar_wk, cbar_buf);
+            
+            cbar_VAO[0]->npoint_draw = cbar_buf->num_nod_buf;
+            Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);
+            break;
 		};
 	};
-	free(cbar_buf->v_buf);
-	free(cbar_buf);
+    free(cbar_buf->v_buf);
+    free(cbar_buf);
+    
+    struct gl_strided_buffer *ctxt_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch(16, ctxt_buf);
+    alloc_strided_buffer(ctxt_buf);
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
+            set_colorbar_text_image(text_color, psf_a->cbar_wk);
+            set_buffer_address_4_patch(count_colorbar_text_VAO(psf_a->cbar_wk), ctxt_buf);
+            resize_strided_buffer(ctxt_buf);
+            colorbar_mbox_to_buf(iflag_retina, text_color, psf_a->cbar_wk, cbar_buf);
+            
+            set_colorbar_text_VAO(psf_a->cbar_wk, cbar_VAO[1], ctxt_buf);
+            break;
+        };
+    };
+    free(ctxt_buf->v_buf);
+    free(ctxt_buf);
 	return;
 };
 
