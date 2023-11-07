@@ -64,7 +64,7 @@ void set_node_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);
 void select_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);
 
 void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
-void Const_VAO_4_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
+void Const_VAO_4_Texture(struct VAO_ids *VAO, const struct gl_strided_buffer *strided_buf);
 void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
 void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
 

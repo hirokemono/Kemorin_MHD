@@ -41,7 +41,6 @@ static void set_colorbar_text_VAO(int iflag_retina,
 	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
 	
 	glBindVertexArray(text_VAO->id_VAO);
-    text_VAO->npoint_draw = cbar_buf->num_nod_buf;
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
 	cbar_wk->id_texture = set_texture_to_buffer(cbar_wk->npix_x, 3*cbar_wk->npix_y,
                                                 cbar_wk->numBMP);
@@ -59,7 +58,6 @@ static void set_time_text_VAO(int iflag_retina,
 	time_mbox_to_buf(iflag_retina, text_color, tlabel_wk, cbar_buf);
 	
 	glBindVertexArray(text_VAO->id_VAO);
-    text_VAO->npoint_draw = cbar_buf->num_nod_buf;
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
 	tlabel_wk->id_texture = set_texture_to_buffer(tlabel_wk->npix_x, 3*tlabel_wk->npix_y,
 												  tlabel_wk->numBMP);

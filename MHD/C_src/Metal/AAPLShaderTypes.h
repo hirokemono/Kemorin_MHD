@@ -53,4 +53,12 @@ typedef struct
     float         data;
 } AAPLVertexWithTexture;
 
+struct VT2{
+    float p4[4];
+    float c4[4];
+    float n4[4];
+    float t2[2];
+    float d1;
+};
+
 #endif /* AAPLShaderTypes_h */

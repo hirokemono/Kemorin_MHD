@@ -91,23 +91,12 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    printf("Pointer %p\n", kemo_sgl->kemo_VAOs->msg_VAO);
     struct gl_strided_buffer *cbar_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_message_VAO(kemo_sgl->view_s->iflag_retina,
+    const_message_buffer(kemo_sgl->view_s->iflag_retina,
                     kemo_sgl->view_s->nx_frame,
                     kemo_sgl->view_s->ny_frame,
-                    kemo_sgl->kemo_mesh->msg_wk,
-                    kemo_sgl->kemo_VAOs->msg_VAO, cbar_buf);
-    int ist_xyz = cbar_buf->ist_xyz;
-    int ist_tex = cbar_buf->ist_tex;
-    int ncomp_buf = cbar_buf->ncomp_buf;
-    for(int i=0;i<cbar_buf->num_nod_buf;i++){
-        printf("Position Buffer: %d %f %f %f \n", i,
-               cbar_buf->v_buf[i*ncomp_buf+ist_xyz  ],
-               cbar_buf->v_buf[i*ncomp_buf+ist_xyz+1],
-               cbar_buf->v_buf[i*ncomp_buf+ist_xyz+2]);
-    };
+                    kemo_sgl->kemo_mesh->msg_wk, cbar_buf);
 
     double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_sgl->kemo_mesh->msg_wk->xwin,
                                                      0.0, kemo_sgl->kemo_mesh->msg_wk->ywin,
@@ -127,36 +116,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     _projection_mat = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 //    _projection_mat = simd_matrix_from_rows(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 
-    float xyzw[3][cbar_buf->num_nod_buf];
-    for(i=0;i<cbar_buf->num_nod_buf;i++){
-        xyzw[0][i] =  matrices->proj[0] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz]
-                 + matrices->proj[4] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz+1]
-                 + matrices->proj[8] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz+2]
-                 + matrices->proj[12];
-        xyzw[1][i] =  matrices->proj[1] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz]
-                 + matrices->proj[5] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz+1]
-                 + matrices->proj[9] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz+2]
-                 + matrices->proj[13];
-        xyzw[2][i] =  matrices->proj[2] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz]
-                 + matrices->proj[6] *  cbar_buf->v_buf[i*ncomp_buf+ist_xyz+1]
-                 + matrices->proj[10] * cbar_buf->v_buf[i*ncomp_buf+ist_xyz+2]
-                 + matrices->proj[14];
-        printf("Position Buffer truns: %d %f %f %f \n", i,
-               xyzw[0][i], xyzw[1][i], xyzw[2][i]);
-    };
-
-    
-/*
- for(int i=0;i<cbar_buf->num_nod_buf;i++){
-     printf("vertex Buffer: %d %f %f \n", i,
-            cbar_buf->v_buf[i*cbar_buf->ncomp_buf+cbar_buf->ist_tex],
-            cbar_buf->v_buf[i*cbar_buf->ncomp_buf+cbar_buf->ist_tex+1]);
- };
-    printf("image Buffer: %d x %d of %d\n",
-           kemo_sgl->kemo_mesh->msg_wk->npix_x,
-           kemo_sgl->kemo_mesh->msg_wk->npix_y,
-           kemo_sgl->kemo_mesh->msg_wk->npixel);
-*/
+  
     MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
     textureDescriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
     textureDescriptor.width = kemo_sgl->kemo_mesh->msg_wk->npix_x;
@@ -214,7 +174,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         printf("malloc error for AAPLVertexWithTexture\n");
         exit(0);
     };
-        quadTextureVertices2 = (AAPLVertexWithTexture *) &cbar_buf->v_buf[0];
+    quadTextureVertices2 = (AAPLVertexWithTexture *) &cbar_buf->v_buf[0];
 
     AAPLVertexWithTexture *quadTextureVertices;
     if((quadTextureVertices = (AAPLVertexWithTexture *) malloc(n_quad_vertex * sizeof(AAPLVertexWithTexture))) == NULL){
