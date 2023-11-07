@@ -39,18 +39,29 @@ typedef struct
 
 typedef struct
 {
-    // Positions in pixel space. A value of 100 indicates 100 pixels from the origin/center.
     vector_float3 position;
-    // RGBA Color in pixel space. A value of 100 indicates 100 pixels from the origin/center.
+/* RGBA Color in pixel space. A value of 100 indicates 100 pixels
+  from the origin/center. */
     vector_float4 color;
-    // Normal vector in pixel space. A value of 100 indicates 100 pixels from the origin/center.
+} KemoView2DVertex;
+
+typedef struct
+{
+/* Positions in pixel space. A value of 100 indicates 100 pixels
+     from the origin/center. */
+    vector_float3 position;
+/* RGBA Color in pixel space. A value of 100 indicates 100 pixels
+      from the origin/center. */
+    vector_float4 color;
+/* Normal vector in pixel space. A value of 100 indicates 100 pixels
+ from the origin/center. */
     vector_float4 normal;
  
-    // 2D texture coordinate
+/*  2D texture coordinate */
     vector_float2 textureCoordinate;
 
-    // data value in pixel space. A value of 100 indicates 100 pixels from the origin/center.
+/* data value in pixel space. */
     vector_float2  data;
-} AAPLVertexWithTexture;
+} KemoViewVertex;
 
 #endif /* AAPLShaderTypes_h */

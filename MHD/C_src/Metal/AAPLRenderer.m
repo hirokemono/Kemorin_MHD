@@ -57,8 +57,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Load all the shader files with a .metal file extension in the project.
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
 
-        _vertexFunction[0] = [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
-        _fragmentFunction[0] = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
+        _vertexFunction[0] = [defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
+        _fragmentFunction[0] = [defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
 
         _vertexFunction[1] = [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
         _fragmentFunction[1] = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
@@ -178,17 +178,17 @@ Implementation of a platform independent renderer class, which performs Metal se
                                        options:MTLResourceStorageModeShared];
 
     // Pixel positions, Color coordinates
-    AAPLVertexWithTexture *quadTextureVertices;
-    if((quadTextureVertices = (AAPLVertexWithTexture *) malloc(n_quad_vertex * sizeof(AAPLVertexWithTexture))) == NULL){
-        printf("malloc error for AAPLVertexWithTexture\n");
+    KemoViewVertex *quadTextureVertices;
+    if((quadTextureVertices = (KemoViewVertex *) malloc(n_quad_vertex * sizeof(KemoViewVertex))) == NULL){
+        printf("malloc error for KemoViewVertex\n");
         exit(0);
     };
-    quadTextureVertices = (AAPLVertexWithTexture *) cbar_buf->v_buf;
+    quadTextureVertices = (KemoViewVertex *) cbar_buf->v_buf;
 
 
     // Create a vertex buffer, and initialize it with the quadVertices array
     _vertices[1] = [_device newBufferWithBytes:quadTextureVertices
-                                        length:(n_quad_vertex*sizeof(AAPLVertexWithTexture))
+                                        length:(n_quad_vertex*sizeof(KemoViewVertex))
                                        options:MTLResourceStorageModeShared];
     // Calculate the number of vertices by dividing the byte length by the size of each vertex
     _numVertices[0] = n_quad_vertex;

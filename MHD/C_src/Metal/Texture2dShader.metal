@@ -32,7 +32,7 @@ struct RasterizerData
 // Vertex Function
 vertex RasterizerData
 Texture2dVertexShader(uint vertexID [[ vertex_id ]],
-             constant AAPLVertexWithTexture *vertexArray [[ buffer(AAPLVertexInputIndexVertices) ]],
+             constant KemoViewVertex *vertexArray [[ buffer(AAPLVertexInputIndexVertices) ]],
              constant matrix_float4x4 *OrthogonalMatrixPointer [[
                  buffer(AAPLOrthogonalMatrix)]])
 {

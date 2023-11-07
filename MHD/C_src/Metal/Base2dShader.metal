@@ -29,39 +29,41 @@ struct RasterizerData
 };
 
 vertex RasterizerData
-Simple2dVertexShader(uint vertexID [[ vertex_id ]],
-             constant KemoViewVertex *vertexArray [[ buffer(AAPLVertexInputIndexVertices) ]],
-             constant matrix_float4x4 *OrthogonalMatrixPointer [[
-                 buffer(AAPLOrthogonalMatrix)]])
+Base2dVertexShader(uint vertexID [[vertex_id]],
+             constant AAPLVertex *vertices [[buffer(AAPLVertexInputIndexVertices)]],
+             constant vector_uint2 *viewportSizePointer [[buffer(AAPLVertexInputIndexViewportSize)]],
+             constant float *viewportScalePointer [[buffer(AAPLVertexInputIndexScale)]])
 {
-
     RasterizerData out;
 
     // Index into the array of positions to get the current vertex.
-    //   Positions are specified in pixel dimensions (i.e. a value of 100 is 100 pixels from
-    //   the origin)
-    float3 pixelSpacePosition = vertexArray[vertexID].position.xyz;
-    matrix_float4x4 OrthogonalMatrix = matrix_float4x4(*OrthogonalMatrixPointer);
+    // The positions are specified in pixel dimensions (i.e. a value of 100
+    // is 100 pixels from the origin).
+    float2 pixelSpacePosition = vertices[vertexID].position.xy;
+
+    // Get the viewport size and cast to float.
+    vector_float2 viewportSize = vector_float2(*viewportSizePointer);
+    float  aspectRatio = viewportSize.y / viewportSize.x;
+
+    float  scale = *viewportScalePointer;
 
     // To convert from positions in pixel space to positions in clip-space,
     //  divide the pixel coordinates by half the size of the viewport.
 //    out.position2d = vector_float4(0.0, 0.0, 0.0, 1.0);
 //    out.position2d.xy = pixelSpacePosition / (viewportSize / 2.0);
-    out.position2d.xyz = pixelSpacePosition;
-    out.position2d.w = 1.0;
-    out.position2d = OrthogonalMatrix * out.position2d;
-
-//    out.position2d.x = out.position2d.x * scale * aspectRatio;
-//    out.position2d.y = out.position2d.y * scale;
-//    out.position2d.xyz =   pixelSpacePosition;
+    out.position2d.x = pixelSpacePosition.x * scale * aspectRatio;
+    out.position2d.y = pixelSpacePosition.y * scale;
     out.position2d.z = 0.0;
     out.position2d.w = 1.0;
+
+    // Pass the input color directly to the rasterizer.
+    out.color = vertices[vertexID].color;
 
     return out;
 }
 
 fragment float4
-Simple2DfragmentShader(RasterizerData in [[stage_in]])
+Base2DfragmentShader(RasterizerData in [[stage_in]])
 {
     // Return the interpolated color.
     return in.color;
