@@ -327,7 +327,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         renderEncoder.label = @"MyRenderEncoder";
 
         // Set the region of the drawable to draw into.
-        [renderEncoder setViewport:(MTLViewport){0.0, 0.0, _viewportSize.x, _viewportSize.y, 0.0, 1.0 }];
+//        [renderEncoder setViewport:(MTLViewport){0.0, 0.0, _viewportSize.x, _viewportSize.y, 0.0, 1.0 }];
         
 /*  Commands to render screen message */
         [renderEncoder setRenderPipelineState:_pipelineState[2]];

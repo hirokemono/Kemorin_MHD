@@ -20,15 +20,19 @@ static void set_colorbar_text_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cb
 	glBindVertexArray(cbar_VAO[1]->id_VAO);
 	Const_VAO_4_Texture(cbar_VAO[1], min_buf);
 	cbar_wk->id_texture[0] = set_texture_to_buffer(cbar_wk->npix_x, cbar_wk->npix_y,
-                                                cbar_wk->minBMP);
+                                                   cbar_wk->minBMP);
+    glBindVertexArray(0);
+    
 	glBindVertexArray(cbar_VAO[2]->id_VAO);
 	Const_VAO_4_Texture(cbar_VAO[2], max_buf);
 	cbar_wk->id_texture[1] = set_texture_to_buffer(cbar_wk->npix_x, cbar_wk->npix_y,
-                                                cbar_wk->maxBMP);
+                                                   cbar_wk->maxBMP);
+    glBindVertexArray(0);
+    
 	glBindVertexArray(cbar_VAO[3]->id_VAO);
 	Const_VAO_4_Texture(cbar_VAO[3], zero_buf);
 	cbar_wk->id_texture[2] = set_texture_to_buffer(cbar_wk->npix_x, cbar_wk->npix_y,
-                                                cbar_wk->zeroBMP);
+                                                   cbar_wk->zeroBMP);
 	glBindVertexArray(0);
 	return;
 };
@@ -160,6 +164,8 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
                            min_buf, max_buf, zero_buf);
     
     cbar_VAO[1]->npoint_draw = min_buf->num_nod_buf;
+    cbar_VAO[2]->npoint_draw = max_buf->num_nod_buf;
+    cbar_VAO[3]->npoint_draw = zero_buf->num_nod_buf;
     if(cbar_VAO[1]->npoint_draw > 0){
         set_colorbar_text_VAO(psf_a->cbar_wk, cbar_VAO, min_buf, max_buf, zero_buf);
     };
@@ -192,7 +198,7 @@ void set_timelabel_VAO(int iflag_retina, int nx_win, int ny_win,
 
 void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders){
-	if(cbar_VAO[1]->npoint_draw <= 0) return;
+	if(cbar_VAO[0]->npoint_draw <= 0) return;
 	
     double *orthogonal = orthogonal_projection_mat_c(0.0, cbar_wk->xwin,
                                                      0.0, cbar_wk->ywin,

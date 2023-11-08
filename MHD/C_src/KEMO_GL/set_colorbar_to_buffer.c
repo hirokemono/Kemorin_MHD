@@ -319,8 +319,8 @@ void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
 	t2[1] = 0.0;
 	t3[1] = 1.0;
 	t4[1] = 1.0;
-	set_one_quad_to_buf(1, x1, x2, x3, x4, c1, c2, c3, c4, max_buf);
-	set_one_texture_to_buf(1, t1, t2, t3, t4, max_buf);
+	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, max_buf);
+	set_one_texture_to_buf(0, t1, t2, t3, t4, max_buf);
 	
 	if(cbar_wk->iflag_zero == 1){
         x1[0] = cbar_wk->xbar_max +   8.0*(iflag_retina + 1);
@@ -339,8 +339,8 @@ void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
 		t2[1] = 0.0;
 		t3[1] = 1.0;
 		t4[1] = 1.0;
-		set_one_quad_to_buf(2, x1, x2, x3, x4, c1, c2, c3, c4, zero_buf);
-		set_one_texture_to_buf(2, t1, t2, t3, t4, zero_buf);
+		set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, zero_buf);
+		set_one_texture_to_buf(0, t1, t2, t3, t4, zero_buf);
 	};
 	return;
 };
