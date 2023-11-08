@@ -108,7 +108,7 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
     struct gl_strided_buffer *ctxt_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     clear_colorbar_text_image(psf_a->cbar_wk);
-    const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a,cbar_buf);
+    const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a, cbar_buf);
     
     cbar_VAO[1]->npoint_draw = ctxt_buf->num_nod_buf;
     if(cbar_VAO[1]->npoint_draw > 0){

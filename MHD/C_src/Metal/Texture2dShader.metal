@@ -47,18 +47,12 @@ Texture2dVertexShader(uint vertexID [[ vertex_id ]],
 
     // To convert from positions in pixel space to positions in clip-space,
     //  divide the pixel coordinates by half the size of the viewport.
-//    out.position2d = vector_float4(0.0, 0.0, 0.0, 1.0);
-//    out.position2d.xy = pixelSpacePosition / (viewportSize / 2.0);
     out.position2d.xyz = pixelSpacePosition;
     out.position2d.w = 1.0;
     out.position2d = OrthogonalMatrix * out.position2d;
 
-//    out.position2d.x = out.position2d.x * scale * aspectRatio;
-//    out.position2d.y = out.position2d.y * scale;
-//    out.position2d.xyz =   pixelSpacePosition;
     out.position2d.z = 0.0;
     out.position2d.w = 1.0;
-//    out.position2d.xy = out.position2d.xy * scale;
 
     // Pass the input textureCoordinate straight to the output RasterizerData. This value will be
     //   interpolated with the other textureCoordinate values in the vertices that make up the
