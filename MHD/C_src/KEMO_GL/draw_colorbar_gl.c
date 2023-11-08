@@ -102,7 +102,8 @@ void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
 
             min_buf->num_nod_buf =  (ITHREE*2);
             max_buf->num_nod_buf =  (ITHREE*2);
-            zero_buf->num_nod_buf = (ITHREE*2);
+            if(psf_a->cbar_wk->iflag_zero == 1) zero_buf->num_nod_buf = (ITHREE*2);
+            
             colorbar_mbox_to_buf(iflag_retina, text_color, psf_a->cbar_wk, 
                                  min_buf, max_buf, zero_buf);
             break;

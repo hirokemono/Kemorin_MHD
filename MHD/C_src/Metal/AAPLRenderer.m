@@ -74,6 +74,15 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.vertexFunction = _vertexFunction[2];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[2];
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        
         _pipelineState[2] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
 /* Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
@@ -89,6 +98,15 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        
         _pipelineState[1] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
         NSAssert(_pipelineState[1], @"Failed to create pipeline state: %@", error);
@@ -100,6 +118,15 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.vertexFunction = _vertexFunction[0];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[0];
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        
         _pipelineState[0] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
         NSAssert(_pipelineState[0], @"Failed to create pipeline state: %@", error);
@@ -222,14 +249,13 @@ Implementation of a platform independent renderer class, which performs Metal se
     NSUInteger bytesPerRow3;
     /* Construct time texture */
     textureDescriptor3.pixelFormat = MTLPixelFormatRGBA8Unorm;
-    textureDescriptor3.width =  kemo_sgl->kemo_psf->psf_a->tlabel_wk->npix_x;
-    textureDescriptor3.height = kemo_sgl->kemo_psf->psf_a->tlabel_wk->npix_y;
+    textureDescriptor3.width =  kemo_sgl->kemo_psf->psf_a->cbar_wk->npix_x;
+    textureDescriptor3.height = kemo_sgl->kemo_psf->psf_a->cbar_wk->npix_y;
 
     // Create the texture from the device by using the descriptor
     _texture[4] = [_device newTextureWithDescriptor:textureDescriptor3];
     _texture[5] = [_device newTextureWithDescriptor:textureDescriptor3];
     _texture[6] = [_device newTextureWithDescriptor:textureDescriptor3];
-    
     // Calculate the number of bytes per row in the image.
     bytesPerRow3 = 4 * textureDescriptor3.width;
     MTLRegion region3 = {

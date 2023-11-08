@@ -15,10 +15,12 @@ struct cbar_work * alloc_colorbar_position(void){
     cbar_wk->npix_x = IWIDTH_TXT;
     cbar_wk->npix_y = IHIGHT_TXT;
     cbar_wk->npixel = cbar_wk->npix_x * cbar_wk->npix_y;
-    cbar_wk->minBMP =  (unsigned char *) calloc((12 * cbar_wk->npixel), sizeof(unsigned char));
-    cbar_wk->maxBMP =  (unsigned char *) calloc((12 * cbar_wk->npixel), sizeof(unsigned char));
-    cbar_wk->zeroBMP = (unsigned char *) calloc((12 * cbar_wk->npixel), sizeof(unsigned char));
+    cbar_wk->minBMP =  (unsigned char *) calloc((4 * cbar_wk->npixel), sizeof(unsigned char));
+    cbar_wk->maxBMP =  (unsigned char *) calloc((4 * cbar_wk->npixel), sizeof(unsigned char));
+    cbar_wk->zeroBMP = (unsigned char *) calloc((4 * cbar_wk->npixel), sizeof(unsigned char));
+/*
     cbar_wk->testBMP = (unsigned char *) calloc((9 * cbar_wk->npixel), sizeof(unsigned char));
+ */
 	return cbar_wk;
 };
 
@@ -26,7 +28,7 @@ void dealloc_colorbar_position(struct cbar_work *cbar_wk){
     free(cbar_wk->minBMP);
     free(cbar_wk->maxBMP);
     free(cbar_wk->zeroBMP);
-    free(cbar_wk->testBMP);
+/*    free(cbar_wk->testBMP); */
     free(cbar_wk);
     return;
 };
@@ -72,14 +74,16 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 void clear_colorbar_text_image(struct cbar_work *cbar_wk){
 	int i;
 	
-	for(i=0;i<12*cbar_wk->npixel;i++){
+	for(i=0;i<4*cbar_wk->npixel;i++){
 		cbar_wk->minBMP[i] =  0;
 		cbar_wk->maxBMP[i] =  0;
 		cbar_wk->zeroBMP[i] = 0;
 	};
+/*
 	for(i=0;i<9*cbar_wk->npixel;i++){
 		cbar_wk->testBMP[i] =  0;
 	};
+*/
 	return;
 };
 
@@ -134,16 +138,16 @@ void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
 									 0, 1, YsFont12x16, 14, 16);
 	};
 	
-	/*
+/*
 	for(i=0;i<3*cbar_wk->npixel;i++){
 		cbar_wk->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) cbar_wk->numBMP[4*i  ]));
 		cbar_wk->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) cbar_wk->numBMP[4*i+1]));
 		cbar_wk->testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) cbar_wk->numBMP[4*i+2]));
 	};
 	pixout_BMP_c("/Users/matsui/Desktop/aho", cbar_wk->npix_x, 3*cbar_wk->npix_y, testBMP);
-	*/
+*/
 	
-	for(i=0;i<3*cbar_wk->npixel;i++){
+	for(i=0;i<cbar_wk->npixel;i++){
 		cbar_wk->minBMP[4*i  ] =  (unsigned char) (text_color3[0] * (float) ((int) cbar_wk->minBMP[4*i  ]));
 		cbar_wk->minBMP[4*i+1] =  (unsigned char) (text_color3[1] * (float) ((int) cbar_wk->minBMP[4*i+1]));
 		cbar_wk->minBMP[4*i+2] =  (unsigned char) (text_color3[2] * (float) ((int) cbar_wk->minBMP[4*i+2]));
@@ -171,13 +175,15 @@ struct tlabel_work * alloc_tlabel_work(void){
     tlabel_wk->npix_y = IHIGHT_TXT;
     tlabel_wk->npixel = tlabel_wk->npix_x * tlabel_wk->npix_y;
     tlabel_wk->numBMP =  (unsigned char *) calloc((4 * tlabel_wk->npixel), sizeof(unsigned char));
+/*
     tlabel_wk->testBMP = (unsigned char *) calloc((3 * tlabel_wk->npixel), sizeof(unsigned char));
+*/
 	return tlabel_wk;
 };
 
 void dealloc_tlabel_work(struct tlabel_work *tlabel_wk){
+/*    free(tlabel_wk->testBMP); */
     free(tlabel_wk->numBMP);
-    free(tlabel_wk->testBMP);
     free(tlabel_wk);
     return;
 };
@@ -188,9 +194,11 @@ void clear_time_text_image(struct tlabel_work *tlabel_wk){
 	for(i=0;i<4*tlabel_wk->npixel;i++){
 		tlabel_wk->numBMP[i] =  0;
 	};
+/*
 	for(i=0;i<3*tlabel_wk->npixel;i++){
 		tlabel_wk->testBMP[i] =  0;
 	};
+*/
 	return;
 };
 
@@ -211,14 +219,14 @@ void set_time_text_image(float text_color3[3], struct tlabel_work *tlabel_wk){
                                  tlabel_wk->numBMP, tlabel_wk->npix_x, tlabel_wk->npix_y,
 								 0, 1, YsFont12x16, 14, 16);
 	
-	/*
+/*
 	for(i=0;i<tlabel_wk->npixel;i++){
 		tlabel_wk->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) tlabel_wk->numBMP[4*i  ]));
 		tlabel_wk->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) tlabel_wk->numBMP[4*i+1]));
 		tlabel_wk->testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) tlabel_wk->numBMP[4*i+2]));
 	};
 	pixout_BMP_c("/Users/matsui/Desktop/aho", tlabel_wk->npix_x, 3*tlabel_wk->npix_y, testBMP);
-	*/
+*/
 	
 	for(i=0;i<tlabel_wk->npixel;i++){
 		tlabel_wk->numBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) tlabel_wk->numBMP[4*i  ]));
@@ -242,13 +250,16 @@ struct msg_work * alloc_message_work(void){
     msg_wk->npix_y = IHIGHT_MSG;
     msg_wk->npixel = msg_wk->npix_x * msg_wk->npix_y;
     msg_wk->msgBMP =  (unsigned char *) calloc((4 * msg_wk->npixel), sizeof(unsigned char));
+/*
     msg_wk->testBMP = (unsigned char *) calloc((3 * msg_wk->npixel), sizeof(unsigned char));
+*/
     return msg_wk;
 };
 
 void dealloc_message_work(struct msg_work *msg_wk){
+/*    free(msg_wk->testBMP); */
+
     free(msg_wk->msgBMP);
-    free(msg_wk->testBMP);
     free(msg_wk);
     return;
 };
@@ -280,11 +291,11 @@ void clear_message_text_image(struct msg_work *msg_wk){
 		msg_wk->msgBMP[4*i+2] =  icolor_mid[2];
 		msg_wk->msgBMP[4*i+3] =  msg_wk->message_opacity;
 	};
-	/*
+/*
 	for(i=0;i<3*msg_wk->npixel;i++){
 		msg_wk->testBMP[i] =  0;
 	};
-	*/
+*/
 	return;
 };
 
