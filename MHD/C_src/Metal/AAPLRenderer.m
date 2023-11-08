@@ -27,7 +27,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLFunction> _fragmentFunction[3];
 
     // The Metal buffer that holds the vertex data.
-    id<MTLBuffer> _vertices[7];
+    id<MTLBuffer> _vertices[12];
     // The Metal texture object
     id<MTLTexture> _texture[7];
     
@@ -145,19 +145,22 @@ Implementation of a platform independent renderer class, which performs Metal se
     double *orthogonal;
     struct transfer_matrices *matrices;
     vector_float4 col_wk[4];
-   if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
-        struct gl_strided_buffer *map_buf
+    
+    struct gl_strided_buffer *map_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    map_buf->num_nod_buf =   0;
+    struct gl_strided_buffer *mline_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    mline_buf->num_nod_buf = 0;
+    if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
         set_map_patch_buffer(IZERO, kemo_sgl->kemo_psf->psf_a->istack_solid_psf_patch,
                              kemo_sgl->kemo_psf->psf_d, kemo_sgl->kemo_psf->psf_m,
                              kemo_sgl->kemo_psf->psf_a, map_buf);
-        struct gl_strided_buffer *mline_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
         set_map_PSF_isolines_buffer(kemo_sgl->kemo_psf->psf_d,
                                     kemo_sgl->kemo_psf->psf_m,
                                     kemo_sgl->kemo_psf->psf_a,
                                     kemo_sgl->view_s, mline_buf);
-        
+
         struct gl_strided_buffer *coast_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
         set_map_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast, coast_buf);
@@ -165,10 +168,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         struct gl_strided_buffer *mflame_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
         set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid, mflame_buf);
-        if(map_buf->num_nod_buf > 0){free(map_buf->v_buf);};
-        free(map_buf);
-        if(mline_buf->num_nod_buf > 0){free(mline_buf->v_buf);};
-        free(mline_buf);
+       
         if(coast_buf->num_nod_buf > 0){free(coast_buf->v_buf);};
         free(coast_buf);
         if(mflame_buf->num_nod_buf > 0){free(mflame_buf->v_buf);};
@@ -184,7 +184,6 @@ Implementation of a platform independent renderer class, which performs Metal se
         };
         _map_proj_mat = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
         free(matrices);
-        free(orthogonal);
     };
 
     
@@ -369,8 +368,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                                             length:(zero_buf->num_nod_buf * sizeof(KemoViewVertex))
                                            options:MTLResourceStorageModeShared];
     };
-    
-     // Create a new command buffer for each render pass to the current drawable.
+
+    // Create a new command buffer for each render pass to the current drawable.
     id<MTLCommandBuffer> commandBuffer = [_commandQueue[2] commandBuffer];
     commandBuffer.label = @"MyCommand";
 
@@ -389,6 +388,38 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         
         if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP){
+/*  Commands to render map projection */
+            if(map_buf->num_nod_buf > 0){
+                _vertices[10] = [_device newBufferWithBytes:((KemoViewVertex *) map_buf->v_buf)
+                                                     length:(map_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                                    options:MTLResourceStorageModeShared];
+                [renderEncoder setRenderPipelineState:_pipelineState[1]];
+                [renderEncoder setVertexBuffer:_vertices[10]
+                                        offset:0
+                                       atIndex:AAPLVertexInputIndexVertices];
+                [renderEncoder setVertexBytes:&_map_proj_mat
+                                       length:sizeof(_map_proj_mat)
+                                      atIndex:AAPLOrthogonalMatrix];
+                [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                                  vertexStart:0
+                                  vertexCount:map_buf->num_nod_buf];
+            };
+/*  Commands to render isolines on map */
+            if(mline_buf->num_nod_buf > 0){
+                _vertices[11] = [_device newBufferWithBytes:((KemoViewVertex *) mline_buf->v_buf)
+                                                     length:(mline_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                                    options:MTLResourceStorageModeShared];
+                [renderEncoder setRenderPipelineState:_pipelineState[1]];
+                [renderEncoder setVertexBuffer:_vertices[11]
+                                        offset:0
+                                       atIndex:AAPLVertexInputIndexVertices];
+                [renderEncoder setVertexBytes:&_map_proj_mat
+                                       length:sizeof(_map_proj_mat)
+                                      atIndex:AAPLOrthogonalMatrix];
+                [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                                  vertexStart:0
+                                  vertexCount:mline_buf->num_nod_buf];
+            };
         } else {
             /*  Commands to render simple quadrature */
             [renderEncoder setRenderPipelineState:_pipelineState[0]];
@@ -405,6 +436,10 @@ Implementation of a platform independent renderer class, which performs Metal se
                               vertexStart:0
                               vertexCount:n_quad_vertex];
         };
+        if(map_buf->num_nod_buf > 0){free(map_buf->v_buf);};
+        free(map_buf);
+        if(mline_buf->num_nod_buf > 0){free(mline_buf->v_buf);};
+        free(mline_buf);
 
 /*  Commands to render screen message */
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
