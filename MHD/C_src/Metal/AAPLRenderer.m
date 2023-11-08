@@ -27,7 +27,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLFunction> _fragmentFunction[3];
 
     // The Metal buffer that holds the vertex data.
-    id<MTLBuffer> _vertices[12];
+    id<MTLBuffer> _vertices[14];
     // The Metal texture object
     id<MTLTexture> _texture[7];
     
@@ -145,13 +145,19 @@ Implementation of a platform independent renderer class, which performs Metal se
     double *orthogonal;
     struct transfer_matrices *matrices;
     vector_float4 col_wk[4];
-    
+
     struct gl_strided_buffer *map_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     map_buf->num_nod_buf =   0;
     struct gl_strided_buffer *mline_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     mline_buf->num_nod_buf = 0;
+    struct gl_strided_buffer *coast_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    coast_buf->num_nod_buf = 0;
+    struct gl_strided_buffer *mflame_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    mflame_buf->num_nod_buf = 0;
     if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
         set_map_patch_buffer(IZERO, kemo_sgl->kemo_psf->psf_a->istack_solid_psf_patch,
                              kemo_sgl->kemo_psf->psf_d, kemo_sgl->kemo_psf->psf_m,
@@ -161,19 +167,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                                     kemo_sgl->kemo_psf->psf_a,
                                     kemo_sgl->view_s, mline_buf);
 
-        struct gl_strided_buffer *coast_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
         set_map_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast, coast_buf);
-        
-        struct gl_strided_buffer *mflame_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
         set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid, mflame_buf);
-       
-        if(coast_buf->num_nod_buf > 0){free(coast_buf->v_buf);};
-        free(coast_buf);
-        if(mflame_buf->num_nod_buf > 0){free(mflame_buf->v_buf);};
-        free(mflame_buf);
-       
+              
         matrices = init_projection_matrix_for_map(kemo_sgl->view_s->nx_frame,
                                                   kemo_sgl->view_s->ny_frame);
         for(i=0;i<4;i++){
@@ -236,7 +232,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                            kemo_sgl->kemo_mesh->mesh_m->text_color,
                            kemo_sgl->kemo_psf->psf_m,
                            kemo_sgl->kemo_psf->psf_a, min_buf, max_buf, zero_buf);
-    
+
     MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
     NSUInteger bytesPerRow;
 /* Construct message texture */
@@ -302,7 +298,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         { 0, 0, 0 },                   // MTLOrigin
         {textureDescriptor3.width, textureDescriptor3.height, 1} // MTLSize
     };
-    
+
     // Copy the bytes from the data object into the texture
     [_texture[4] replaceRegion:region3
                    mipmapLevel:0
@@ -316,7 +312,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                    mipmapLevel:0
                      withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->zeroBMP
                    bytesPerRow:bytesPerRow3];
-
 
     _frameNum++;
     _scalechange = 0.2 + (1.0 + 0.2 * sin(_frameNum * 0.1));
@@ -420,8 +415,41 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   vertexStart:0
                                   vertexCount:mline_buf->num_nod_buf];
             };
+/*  Commands to render Coastline on map */
+            if(coast_buf->num_nod_buf > 0){
+                _vertices[12] = [_device newBufferWithBytes:((KemoViewVertex *) coast_buf->v_buf)
+                                                     length:(coast_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                                    options:MTLResourceStorageModeShared];
+                [renderEncoder setRenderPipelineState:_pipelineState[1]];
+                [renderEncoder setVertexBuffer:_vertices[12]
+                                        offset:0
+                                       atIndex:AAPLVertexInputIndexVertices];
+                [renderEncoder setVertexBytes:&_map_proj_mat
+                                       length:sizeof(_map_proj_mat)
+                                      atIndex:AAPLOrthogonalMatrix];
+                [renderEncoder drawPrimitives:MTLPrimitiveTypeLine
+                                  vertexStart:0
+                                  vertexCount:coast_buf->num_nod_buf];
+            };
+/*  Commands to render grids on map */
+            if(mflame_buf->num_nod_buf > 0){
+                _vertices[13] = [_device newBufferWithBytes:((KemoViewVertex *) mflame_buf->v_buf)
+                                                     length:(mflame_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                                    options:MTLResourceStorageModeShared];
+                [renderEncoder setRenderPipelineState:_pipelineState[1]];
+                [renderEncoder setVertexBuffer:_vertices[12]
+                                        offset:0
+                                       atIndex:AAPLVertexInputIndexVertices];
+                [renderEncoder setVertexBytes:&_map_proj_mat
+                                       length:sizeof(_map_proj_mat)
+                                      atIndex:AAPLOrthogonalMatrix];
+                [renderEncoder drawPrimitives:MTLPrimitiveTypeLine
+                                  vertexStart:0
+                                  vertexCount:mflame_buf->num_nod_buf];
+            };
         } else {
             /*  Commands to render simple quadrature */
+        
             [renderEncoder setRenderPipelineState:_pipelineState[0]];
             [renderEncoder setVertexBuffer:_vertices[0]
                                     offset:0
@@ -436,14 +464,10 @@ Implementation of a platform independent renderer class, which performs Metal se
                               vertexStart:0
                               vertexCount:n_quad_vertex];
         };
-        if(map_buf->num_nod_buf > 0){free(map_buf->v_buf);};
-        free(map_buf);
-        if(mline_buf->num_nod_buf > 0){free(mline_buf->v_buf);};
-        free(mline_buf);
 
 /*  Commands to render screen message */
-            [renderEncoder setRenderPipelineState:_pipelineState[2]];
 
+        [renderEncoder setRenderPipelineState:_pipelineState[2]];
         // Pass in the parameter data.
         [renderEncoder setVertexBuffer:_vertices[1]
                                 offset:0
@@ -542,6 +566,45 @@ Implementation of a platform independent renderer class, which performs Metal se
         [commandBuffer presentDrawable:view.currentDrawable];
     }
     [commandBuffer  commit];
+
+//    [_texture[1] setPurgeableState:MTLPurgeableStateEmpty];
+    [_texture[1] release];
+    [_texture[2] setPurgeableState:MTLPurgeableStateEmpty];
+    [_texture[2] release];
+    [_texture[4] setPurgeableState:MTLPurgeableStateEmpty];
+    [_texture[4] release];
+    [_texture[5] setPurgeableState:MTLPurgeableStateEmpty];
+    [_texture[5] release];
+    [_texture[6] setPurgeableState:MTLPurgeableStateEmpty];
+    [_texture[6] release];
+
+    if(map_buf->num_nod_buf > 0){
+        free(map_buf->v_buf);
+//        [_vertices[10] setPurgeableState:MTLPurgeableStateEmpty];
+        [_vertices[10] release];
+    };
+    free(map_buf);
+
+    if(mline_buf->num_nod_buf > 0){
+        free(mline_buf->v_buf);
+        [_vertices[11] setPurgeableState:MTLPurgeableStateEmpty];
+        [_vertices[11] release];
+    };
+    free(mline_buf);
+
+    if(coast_buf->num_nod_buf > 0){
+        free(coast_buf->v_buf);
+        [_vertices[12] setPurgeableState:MTLPurgeableStateEmpty];
+        [_vertices[12] release];
+    };
+    free(coast_buf);
+
+    if(mflame_buf->num_nod_buf > 0){
+        free(mflame_buf->v_buf);
+        [_vertices[13] setPurgeableState:MTLPurgeableStateEmpty];
+        [_vertices[13] release];
+    };
+    free(mflame_buf);
 
     free(cbar_buf->v_buf);
     free(cbar_buf);
