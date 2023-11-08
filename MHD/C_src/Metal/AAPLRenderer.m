@@ -437,7 +437,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                                      length:(mflame_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
                 [renderEncoder setRenderPipelineState:_pipelineState[1]];
-                [renderEncoder setVertexBuffer:_vertices[12]
+                [renderEncoder setVertexBuffer:_vertices[13]
                                         offset:0
                                        atIndex:AAPLVertexInputIndexVertices];
                 [renderEncoder setVertexBytes:&_map_proj_mat
@@ -579,30 +579,30 @@ Implementation of a platform independent renderer class, which performs Metal se
     [_texture[6] release];
 
     if(map_buf->num_nod_buf > 0){
-        free(map_buf->v_buf);
 //        [_vertices[10] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[10] release];
+        free(map_buf->v_buf);
     };
     free(map_buf);
 
     if(mline_buf->num_nod_buf > 0){
-        free(mline_buf->v_buf);
-        [_vertices[11] setPurgeableState:MTLPurgeableStateEmpty];
+//        [_vertices[11] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[11] release];
+        free(mline_buf->v_buf);
     };
     free(mline_buf);
 
     if(coast_buf->num_nod_buf > 0){
-        free(coast_buf->v_buf);
-        [_vertices[12] setPurgeableState:MTLPurgeableStateEmpty];
+//        [_vertices[12] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[12] release];
+        free(coast_buf->v_buf);
     };
     free(coast_buf);
 
     if(mflame_buf->num_nod_buf > 0){
-        free(mflame_buf->v_buf);
-        [_vertices[13] setPurgeableState:MTLPurgeableStateEmpty];
+//        [_vertices[13] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[13] release];
+        free(mflame_buf->v_buf);
     };
     free(mflame_buf);
 
