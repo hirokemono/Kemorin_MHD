@@ -385,9 +385,14 @@ Implementation of a platform independent renderer class, which performs Metal se
         if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP){
 /*  Commands to render map projection */
             if(map_buf->num_nod_buf > 0){
-                _vertices[10] = [_device newBufferWithBytes:((KemoViewVertex *) map_buf->v_buf)
+                _vertices[10] = [_device newBufferWithBytesNoCopy:map_buf->v_buf
+                                                           length:(map_buf->nsize_buf * sizeof(float))
+                                                          options:MTLResourceStorageModeShared
+                                                      deallocator:nil];
+/*                _vertices[10] = [_device newBufferWithBytes:((KemoViewVertex *) map_buf->v_buf)
                                                      length:(map_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
+*/
                 [renderEncoder setRenderPipelineState:_pipelineState[1]];
                 [renderEncoder setVertexBuffer:_vertices[10]
                                         offset:0
@@ -401,9 +406,14 @@ Implementation of a platform independent renderer class, which performs Metal se
             };
 /*  Commands to render isolines on map */
             if(mline_buf->num_nod_buf > 0){
-                _vertices[11] = [_device newBufferWithBytes:((KemoViewVertex *) mline_buf->v_buf)
+                _vertices[11] = [_device newBufferWithBytesNoCopy:mline_buf->v_buf
+                                                           length:(mline_buf->nsize_buf * sizeof(float))
+                                                          options:MTLResourceStorageModeShared
+                                                      deallocator:nil];
+/*                _vertices[11] = [_device newBufferWithBytes:((KemoViewVertex *) mline_buf->v_buf)
                                                      length:(mline_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
+ */
                 [renderEncoder setRenderPipelineState:_pipelineState[1]];
                 [renderEncoder setVertexBuffer:_vertices[11]
                                         offset:0
@@ -587,7 +597,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     if(mline_buf->num_nod_buf > 0){
 //        [_vertices[11] setPurgeableState:MTLPurgeableStateEmpty];
-        [_vertices[11] release];
+//        [_vertices[11] release];
         free(mline_buf->v_buf);
     };
     free(mline_buf);

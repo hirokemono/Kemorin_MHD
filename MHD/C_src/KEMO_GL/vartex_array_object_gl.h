@@ -16,7 +16,7 @@
 #define NSIZE_GL_BUFFER  32768
 
 struct gl_strided_buffer{
-	int nsize_buf;
+	long nsize_buf;
 	int istride;
 	
 	int ncomp_buf;

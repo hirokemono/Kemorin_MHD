@@ -34,9 +34,14 @@ void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf){
 	return;
 };
 
+long prod_padding_1024floats(int num_nod_buf, int ncomp_buf){
+    int nsize = 1 + (num_nod_buf * ncomp_buf) / 1024;
+    return (1024 * nsize);
+};
+
 void alloc_strided_buffer(struct gl_strided_buffer *strided_buf){
-	strided_buf->nsize_buf = strided_buf->num_nod_buf * strided_buf->ncomp_buf;
-	if((strided_buf->v_buf = (GLfloat *) malloc(strided_buf->nsize_buf*sizeof(GLfloat))) == NULL){
+	strided_buf->nsize_buf = prod_padding_1024floats(strided_buf->num_nod_buf, strided_buf->ncomp_buf);
+	if((strided_buf->v_buf = (float *) malloc(strided_buf->nsize_buf*sizeof(float))) == NULL){
         printf("malloc error for strided_buf->v_buf\n");
         exit(0);
 	};
@@ -55,11 +60,12 @@ struct gl_strided_buffer * init_strided_buffer(int num_points){
 };
 
 void resize_strided_buffer(struct gl_strided_buffer *strided_buf){
-	if((strided_buf->num_nod_buf * strided_buf->ncomp_buf) <= strided_buf->nsize_buf) return;
+    long nsize = prod_padding_1024floats(strided_buf->num_nod_buf, strided_buf->ncomp_buf);
+	if(nsize <= strided_buf->nsize_buf) return;
 	
-	GLfloat *tmp = NULL;
-	strided_buf->nsize_buf = strided_buf->num_nod_buf * strided_buf->ncomp_buf;
-	tmp = (GLfloat *) realloc(strided_buf->v_buf, strided_buf->nsize_buf*sizeof(GLfloat));
+    float *tmp = NULL;
+    strided_buf->nsize_buf = nsize;
+	tmp = (float *) realloc(strided_buf->v_buf, strided_buf->nsize_buf*sizeof(float));
 	if(tmp == NULL){
         printf("reallocation error for strided_buf->v_buf\n");
 		exit(-1);
