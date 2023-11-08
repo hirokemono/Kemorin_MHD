@@ -28,15 +28,14 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     // The Metal buffer that holds the vertex data.
     id<MTLBuffer> _vertices[7];
-    // The number of vertices in the vertex buffer.
-    NSUInteger _numVertices[7];
     // The Metal texture object
     id<MTLTexture> _texture[7];
     
     // The current size of the view, used as an input to the vertex shader.
     vector_uint2    _viewportSize;
     float           _scalechange;
-    matrix_float4x4 _projection_mat[3];
+    matrix_float4x4 _projection_mat;
+    matrix_float4x4 _map_proj_mat;
 
     NSUInteger _frameNum;
     
@@ -143,7 +142,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     int i;
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     
-    if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
+    double *orthogonal;
+    struct transfer_matrices *matrices;
+    vector_float4 col_wk[4];
+   if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
         struct gl_strided_buffer *map_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
         set_map_patch_buffer(IZERO, kemo_sgl->kemo_psf->psf_a->istack_solid_psf_patch,
@@ -171,9 +173,35 @@ Implementation of a platform independent renderer class, which performs Metal se
         free(coast_buf);
         if(mflame_buf->num_nod_buf > 0){free(mflame_buf->v_buf);};
         free(mflame_buf);
+       
+        matrices = init_projection_matrix_for_map(kemo_sgl->view_s->nx_frame,
+                                                  kemo_sgl->view_s->ny_frame);
+        for(i=0;i<4;i++){
+            col_wk[i].x = matrices->proj[4*i  ];
+            col_wk[i].y = matrices->proj[4*i+1];
+            col_wk[i].z = matrices->proj[4*i+2];
+            col_wk[i].w = matrices->proj[4*i+3];
+        };
+        _map_proj_mat = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
+        free(matrices);
+        free(orthogonal);
     };
 
     
+    orthogonal = orthogonal_projection_mat_c( 0.0, kemo_sgl->kemo_mesh->msg_wk->xwin,
+                                              0.0, kemo_sgl->kemo_mesh->msg_wk->ywin,
+                                             -1.0, 1.0);
+    matrices = plane_transfer_matrices(orthogonal);
+    for(i=0;i<4;i++){
+        col_wk[i].x = matrices->proj[4*i  ];
+        col_wk[i].y = matrices->proj[4*i+1];
+        col_wk[i].z = matrices->proj[4*i+2];
+        col_wk[i].w = matrices->proj[4*i+3];
+    };
+    _projection_mat = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
+    free(matrices);
+    free(orthogonal);
+
     struct gl_strided_buffer *msg_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     const_message_buffer(kemo_sgl->view_s->iflag_retina,
@@ -209,25 +237,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                            kemo_sgl->kemo_mesh->mesh_m->text_color,
                            kemo_sgl->kemo_psf->psf_m,
                            kemo_sgl->kemo_psf->psf_a, min_buf, max_buf, zero_buf);
-    
-    double *orthogonal;
-    struct transfer_matrices *matrices;
-    vector_float4 col_wk[4];
-    orthogonal = orthogonal_projection_mat_c( 0.0, kemo_sgl->kemo_mesh->msg_wk->xwin,
-                                              0.0, kemo_sgl->kemo_mesh->msg_wk->ywin,
-                                             -1.0, 1.0);
-    matrices = plane_transfer_matrices(orthogonal);
-    for(i=0;i<4;i++){
-        col_wk[i].x = matrices->proj[4*i  ];
-        col_wk[i].y = matrices->proj[4*i+1];
-        col_wk[i].z = matrices->proj[4*i+2];
-        col_wk[i].w = matrices->proj[4*i+3];
-    };
-    _projection_mat[1] = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
-    _projection_mat[2] = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
-    free(matrices);
-    free(orthogonal);
-    
     
     MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
     NSUInteger bytesPerRow;
@@ -331,15 +340,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                                        options:MTLResourceStorageModeShared];
 
 
-    // Calculate the number of vertices by dividing the byte length by the size of each vertex
-    _numVertices[0] = n_quad_vertex;
-    _numVertices[1] = msg_buf->num_nod_buf;
-    _numVertices[2] = time_buf->num_nod_buf;
-    _numVertices[3] = cbar_buf->num_nod_buf;
-    _numVertices[4] = min_buf->num_nod_buf;
-    _numVertices[5] = max_buf->num_nod_buf;
-    _numVertices[6] = zero_buf->num_nod_buf;
-
     // Create a vertex buffer, and initialize it with the quadVertices array
     _vertices[1] = [_device newBufferWithBytes:((KemoViewVertex *) msg_buf->v_buf)
                                         length:(msg_buf->num_nod_buf * sizeof(KemoViewVertex))
@@ -414,8 +414,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
         
-        [renderEncoder setVertexBytes:&_projection_mat[1]
-                               length:sizeof(_projection_mat[1])
+        [renderEncoder setVertexBytes:&_projection_mat
+                               length:sizeof(_projection_mat)
                               atIndex:AAPLOrthogonalMatrix];
 
         // Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
@@ -427,78 +427,78 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Draw the triangles.
         [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                           vertexStart:0
-                          vertexCount:_numVertices[1]];
+                          vertexCount:msg_buf->num_nod_buf];
 
 /*  Commands to render time label */
-        if(_numVertices[2] > 0){
+        if(time_buf->num_nod_buf > 0){
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
             [renderEncoder setVertexBuffer:_vertices[2]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat[2]
-                                   length:sizeof(_projection_mat[2])
+            [renderEncoder setVertexBytes:&_projection_mat
+                                   length:sizeof(_projection_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder setFragmentTexture:_texture[2]
                                       atIndex:AAPLTextureIndexBaseColor];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:_numVertices[2]];
+                              vertexCount:time_buf->num_nod_buf];
         };
 /*  Commands to render colorbar  box */
-        if(_numVertices[3] > 0){
+        if(cbar_buf->num_nod_buf > 0){
             [renderEncoder setRenderPipelineState:_pipelineState[1]];
             [renderEncoder setVertexBuffer:_vertices[3]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat[2]
-                                   length:sizeof(_projection_mat[2])
+            [renderEncoder setVertexBytes:&_projection_mat
+                                   length:sizeof(_projection_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:_numVertices[3]];
+                              vertexCount:cbar_buf->num_nod_buf];
         };
 /*  Commands to render colorbar  label */
-        if(_numVertices[4] > 0){
+        if(min_buf->num_nod_buf > 0){
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
             [renderEncoder setVertexBuffer:_vertices[4]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat[2]
-                                   length:sizeof(_projection_mat[2])
+            [renderEncoder setVertexBytes:&_projection_mat
+                                   length:sizeof(_projection_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder setFragmentTexture:_texture[4]
                                       atIndex:AAPLTextureIndexBaseColor];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:_numVertices[4]];
+                              vertexCount:min_buf->num_nod_buf];
         };
-        if(_numVertices[5] > 0){
+        if(max_buf->num_nod_buf > 0){
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
             [renderEncoder setVertexBuffer:_vertices[5]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat[2]
-                                   length:sizeof(_projection_mat[2])
+            [renderEncoder setVertexBytes:&_projection_mat
+                                   length:sizeof(_projection_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder setFragmentTexture:_texture[5]
                                       atIndex:AAPLTextureIndexBaseColor];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:_numVertices[5]];
+                              vertexCount:max_buf->num_nod_buf];
         };
-        if(_numVertices[6] > 0){
+        if(zero_buf->num_nod_buf > 0){
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
             [renderEncoder setVertexBuffer:_vertices[6]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat[2]
-                                   length:sizeof(_projection_mat[2])
+            [renderEncoder setVertexBytes:&_projection_mat
+                                   length:sizeof(_projection_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder setFragmentTexture:_texture[6]
                                       atIndex:AAPLTextureIndexBaseColor];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:_numVertices[6]];
+                              vertexCount:zero_buf->num_nod_buf];
         };
 
         [renderEncoder endEncoding];
