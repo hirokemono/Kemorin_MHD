@@ -31,6 +31,7 @@ struct kemoview_VAOs{
 
 	struct VAO_ids **grid_VAO;
 	struct VAO_ids **cbar_VAO;
+    struct VAO_ids *time_VAO;
 
 	struct VAO_ids **map_VAO;
 };

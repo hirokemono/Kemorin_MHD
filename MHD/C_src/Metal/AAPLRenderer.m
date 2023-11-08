@@ -27,11 +27,11 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLFunction> _fragmentFunction[3];
 
     // The Metal buffer that holds the vertex data.
-    id<MTLBuffer> _vertices[5];
+    id<MTLBuffer> _vertices[7];
     // The number of vertices in the vertex buffer.
-    NSUInteger _numVertices[5];
+    NSUInteger _numVertices[7];
     // The Metal texture object
-    id<MTLTexture> _texture[5];
+    id<MTLTexture> _texture[7];
     
     // The current size of the view, used as an input to the vertex shader.
     vector_uint2    _viewportSize;
@@ -140,12 +140,16 @@ Implementation of a platform independent renderer class, which performs Metal se
                           kemo_sgl->kemo_mesh->mesh_m->bg_color,
                           kemo_sgl->kemo_psf->psf_m,
                           kemo_sgl->kemo_psf->psf_a, cbar_buf);
-    struct gl_strided_buffer *ctxt_buf
+    struct gl_strided_buffer *min_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    struct gl_strided_buffer *max_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    struct gl_strided_buffer *zero_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     const_cbar_text_buffer(kemo_sgl->view_s->iflag_retina,
                            kemo_sgl->kemo_mesh->mesh_m->text_color,
                            kemo_sgl->kemo_psf->psf_m,
-                           kemo_sgl->kemo_psf->psf_a, ctxt_buf);
+                           kemo_sgl->kemo_psf->psf_a, min_buf, max_buf, zero_buf);
     
     double *orthogonal;
     struct transfer_matrices *matrices;
@@ -223,6 +227,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     // Create the texture from the device by using the descriptor
     _texture[4] = [_device newTextureWithDescriptor:textureDescriptor3];
+    _texture[5] = [_device newTextureWithDescriptor:textureDescriptor3];
+    _texture[6] = [_device newTextureWithDescriptor:textureDescriptor3];
     
     // Calculate the number of bytes per row in the image.
     bytesPerRow3 = 4 * textureDescriptor3.width;
@@ -232,34 +238,20 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
     
     // Copy the bytes from the data object into the texture
-    [_texture[2] replaceRegion:region3
+    [_texture[4] replaceRegion:region3
                    mipmapLevel:0
-                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->numBMP
+                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->minBMP
+                   bytesPerRow:bytesPerRow3];
+    [_texture[5] replaceRegion:region3
+                   mipmapLevel:0
+                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->maxBMP
+                   bytesPerRow:bytesPerRow3];
+    [_texture[6] replaceRegion:region3
+                   mipmapLevel:0
+                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->zeroBMP
                    bytesPerRow:bytesPerRow3];
 
 
-    int j, icou;
-/*
-    icou = 0;
-    for(i=0;i<kemo_sgl->kemo_mesh->msg_wk->npix_y;i++){
-        printf("line: %d Pixels:", i);
-        for(j=0;j<kemo_sgl->kemo_mesh->msg_wk->npix_x;j++){
-            printf("%d ", (int) kemo_sgl->kemo_mesh->msg_wk->msgBMP[icou]);
-            icou = icou + 1;
-        }
-        printf("\n");
-    }
- */
-    icou = 0;
-    for(i=0;i<kemo_sgl->kemo_psf->psf_a->tlabel_wk->npix_y;i++){
-//        printf("line: %d MTL Pixels:", i);
-        for(j=0;j<kemo_sgl->kemo_psf->psf_a->tlabel_wk->npix_x;j++){
-            kemo_sgl->kemo_psf->psf_a->tlabel_wk->numBMP[icou] = (unsigned char) 255;
-//            printf("%d ", (int) kemo_sgl->kemo_psf->psf_a->tlabel_wk->numBMP[icou]);
-            icou = icou + 1;
-        }
-//        printf("\n");
-    }
     _frameNum++;
     _scalechange = 0.2 + (1.0 + 0.2 * sin(_frameNum * 0.1));
     
@@ -286,7 +278,9 @@ Implementation of a platform independent renderer class, which performs Metal se
     _numVertices[1] = msg_buf->num_nod_buf;
     _numVertices[2] = time_buf->num_nod_buf;
     _numVertices[3] = cbar_buf->num_nod_buf;
-    _numVertices[4] = ctxt_buf->num_nod_buf;
+    _numVertices[4] = min_buf->num_nod_buf;
+    _numVertices[5] = max_buf->num_nod_buf;
+    _numVertices[6] = zero_buf->num_nod_buf;
 
     // Create a vertex buffer, and initialize it with the quadVertices array
     _vertices[1] = [_device newBufferWithBytes:((KemoViewVertex *) msg_buf->v_buf)
@@ -302,9 +296,19 @@ Implementation of a platform independent renderer class, which performs Metal se
                                             length:(cbar_buf->num_nod_buf * sizeof(KemoViewVertex))
                                            options:MTLResourceStorageModeShared];
     }
-    if(ctxt_buf->num_nod_buf > 0){
-        _vertices[4] = [_device newBufferWithBytes:((KemoViewVertex *) ctxt_buf->v_buf)
-                                            length:(ctxt_buf->num_nod_buf * sizeof(KemoViewVertex))
+    if(min_buf->num_nod_buf > 0){
+        _vertices[4] = [_device newBufferWithBytes:((KemoViewVertex *) min_buf->v_buf)
+                                            length:(min_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                           options:MTLResourceStorageModeShared];
+    };
+    if(max_buf->num_nod_buf > 0){
+        _vertices[5] = [_device newBufferWithBytes:((KemoViewVertex *) max_buf->v_buf)
+                                            length:(max_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                           options:MTLResourceStorageModeShared];
+    };
+    if(zero_buf->num_nod_buf > 0){
+        _vertices[6] = [_device newBufferWithBytes:((KemoViewVertex *) zero_buf->v_buf)
+                                            length:(zero_buf->num_nod_buf * sizeof(KemoViewVertex))
                                            options:MTLResourceStorageModeShared];
     };
     
@@ -391,6 +395,34 @@ Implementation of a platform independent renderer class, which performs Metal se
                               vertexStart:0
                               vertexCount:_numVertices[4]];
         };
+        if(_numVertices[5] > 0){
+            [renderEncoder setRenderPipelineState:_pipelineState[2]];
+            [renderEncoder setVertexBuffer:_vertices[5]
+                                    offset:0
+                                   atIndex:AAPLVertexInputIndexVertices];
+            [renderEncoder setVertexBytes:&_projection_mat[2]
+                                   length:sizeof(_projection_mat[2])
+                                  atIndex:AAPLOrthogonalMatrix];
+            [renderEncoder setFragmentTexture:_texture[5]
+                                      atIndex:AAPLTextureIndexBaseColor];
+            [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                              vertexStart:0
+                              vertexCount:_numVertices[5]];
+        };
+        if(_numVertices[6] > 0){
+            [renderEncoder setRenderPipelineState:_pipelineState[2]];
+            [renderEncoder setVertexBuffer:_vertices[6]
+                                    offset:0
+                                   atIndex:AAPLVertexInputIndexVertices];
+            [renderEncoder setVertexBytes:&_projection_mat[2]
+                                   length:sizeof(_projection_mat[2])
+                                  atIndex:AAPLOrthogonalMatrix];
+            [renderEncoder setFragmentTexture:_texture[6]
+                                      atIndex:AAPLTextureIndexBaseColor];
+            [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                              vertexStart:0
+                              vertexCount:_numVertices[6]];
+        };
 
 
 /*  Commands to render simple quadrature */
@@ -415,6 +447,14 @@ Implementation of a platform independent renderer class, which performs Metal se
     }
     [commandBuffer  commit];
 
+    free(cbar_buf->v_buf);
+    free(cbar_buf);
+    free(min_buf->v_buf);
+    free(min_buf);
+    free(max_buf->v_buf);
+    free(max_buf);
+    free(zero_buf->v_buf);
+    free(zero_buf);
     free(time_buf->v_buf);
     free(time_buf);
     free(msg_buf->v_buf);

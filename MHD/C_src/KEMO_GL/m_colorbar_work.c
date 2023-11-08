@@ -15,13 +15,17 @@ struct cbar_work * alloc_colorbar_position(void){
     cbar_wk->npix_x = IWIDTH_TXT;
     cbar_wk->npix_y = IHIGHT_TXT;
     cbar_wk->npixel = cbar_wk->npix_x * cbar_wk->npix_y;
-    cbar_wk->numBMP =  (unsigned char *) calloc((12 * cbar_wk->npixel), sizeof(unsigned char));
+    cbar_wk->minBMP =  (unsigned char *) calloc((12 * cbar_wk->npixel), sizeof(unsigned char));
+    cbar_wk->maxBMP =  (unsigned char *) calloc((12 * cbar_wk->npixel), sizeof(unsigned char));
+    cbar_wk->zeroBMP = (unsigned char *) calloc((12 * cbar_wk->npixel), sizeof(unsigned char));
     cbar_wk->testBMP = (unsigned char *) calloc((9 * cbar_wk->npixel), sizeof(unsigned char));
 	return cbar_wk;
 };
 
 void dealloc_colorbar_position(struct cbar_work *cbar_wk){
-    free(cbar_wk->numBMP);
+    free(cbar_wk->minBMP);
+    free(cbar_wk->maxBMP);
+    free(cbar_wk->zeroBMP);
     free(cbar_wk->testBMP);
     free(cbar_wk);
     return;
@@ -69,7 +73,9 @@ void clear_colorbar_text_image(struct cbar_work *cbar_wk){
 	int i;
 	
 	for(i=0;i<12*cbar_wk->npixel;i++){
-		cbar_wk->numBMP[i] =  0;
+		cbar_wk->minBMP[i] =  0;
+		cbar_wk->maxBMP[i] =  0;
+		cbar_wk->zeroBMP[i] = 0;
 	};
 	for(i=0;i<9*cbar_wk->npixel;i++){
 		cbar_wk->testBMP[i] =  0;
@@ -85,47 +91,47 @@ void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
 	sprintf(cbar_wk->zerolabel,"% 3.2E",ZERO);
 	
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
+                                 cbar_wk->minBMP, cbar_wk->npix_x, cbar_wk->npix_y,
 								 0, 0, YsFont12x16, 14, 16);
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
+                                 cbar_wk->minBMP, cbar_wk->npix_x, cbar_wk->npix_y,
 								 0, 2, YsFont12x16, 14, 16);
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
+                                 cbar_wk->minBMP, cbar_wk->npix_x, cbar_wk->npix_y,
 								 1, 0, YsFont12x16, 14, 16);
 
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 255, 255, 255, 255, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
+                                 cbar_wk->minBMP, cbar_wk->npix_x, cbar_wk->npix_y,
 								 0, 1, YsFont12x16, 14, 16);
 
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->maxlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-								 0, cbar_wk->npix_y, YsFont12x16, 14, 16);
+                                 cbar_wk->maxBMP, cbar_wk->npix_x, cbar_wk->npix_y,
+								 0, 0, YsFont12x16, 14, 16);
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->maxlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-								 0, 2+cbar_wk->npix_y, YsFont12x16, 14, 16);
+                                 cbar_wk->maxBMP, cbar_wk->npix_x, cbar_wk->npix_y,
+								 0, 2, YsFont12x16, 14, 16);
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->maxlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-								 1, cbar_wk->npix_y, YsFont12x16, 14, 16);
+                                 cbar_wk->maxBMP, cbar_wk->npix_x, cbar_wk->npix_y,
+								 1, 0, YsFont12x16, 14, 16);
 	
 	YsGlWriteStringToRGBA8Bitmap(cbar_wk->maxlabel, 255, 255, 255, 255, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y, 
-								 0, 1+cbar_wk->npix_y, YsFont12x16, 14, 16);
+                                 cbar_wk->maxBMP, cbar_wk->npix_x, cbar_wk->npix_y, 
+								 0, 1, YsFont12x16, 14, 16);
 
 	if(cbar_wk->iflag_zero == 1){
 		YsGlWriteStringToRGBA8Bitmap(cbar_wk->zerolabel, 191, 191, 191, 191, 
-                                     cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-									 0, 2*cbar_wk->npix_y, YsFont12x16, 14, 16);
+                                     cbar_wk->zeroBMP, cbar_wk->npix_x, cbar_wk->npix_y,
+									 0, 0, YsFont12x16, 14, 16);
 		YsGlWriteStringToRGBA8Bitmap(cbar_wk->zerolabel, 191, 191, 191, 191, 
-                                     cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-									 0, 2+2*cbar_wk->npix_y, YsFont12x16, 14, 16);
+                                     cbar_wk->zeroBMP, cbar_wk->npix_x, cbar_wk->npix_y,
+									 0, 2, YsFont12x16, 14, 16);
 		YsGlWriteStringToRGBA8Bitmap(cbar_wk->zerolabel, 191, 191, 191, 191, 
-                                     cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-									 1, 2*cbar_wk->npix_y, YsFont12x16, 14, 16);
+                                     cbar_wk->zeroBMP, cbar_wk->npix_x, cbar_wk->npix_y,
+									 1, 0, YsFont12x16, 14, 16);
 	
 		YsGlWriteStringToRGBA8Bitmap(cbar_wk->zerolabel, 255, 255, 255, 255, 
-                                     cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-									 0, 1+2*cbar_wk->npix_y, YsFont12x16, 14, 16);
+                                     cbar_wk->zeroBMP, cbar_wk->npix_x, cbar_wk->npix_y,
+									 0, 1, YsFont12x16, 14, 16);
 	};
 	
 	/*
@@ -138,9 +144,17 @@ void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
 	*/
 	
 	for(i=0;i<3*cbar_wk->npixel;i++){
-		cbar_wk->numBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) cbar_wk->numBMP[4*i  ]));
-		cbar_wk->numBMP[4*i+1] = (unsigned char) (text_color3[1] * (float) ((int) cbar_wk->numBMP[4*i+1]));
-		cbar_wk->numBMP[4*i+2] = (unsigned char) (text_color3[2] * (float) ((int) cbar_wk->numBMP[4*i+2]));
+		cbar_wk->minBMP[4*i  ] =  (unsigned char) (text_color3[0] * (float) ((int) cbar_wk->minBMP[4*i  ]));
+		cbar_wk->minBMP[4*i+1] =  (unsigned char) (text_color3[1] * (float) ((int) cbar_wk->minBMP[4*i+1]));
+		cbar_wk->minBMP[4*i+2] =  (unsigned char) (text_color3[2] * (float) ((int) cbar_wk->minBMP[4*i+2]));
+
+		cbar_wk->maxBMP[4*i  ] =  (unsigned char) (text_color3[0] * (float) ((int) cbar_wk->maxBMP[4*i  ]));
+		cbar_wk->maxBMP[4*i+1] =  (unsigned char) (text_color3[1] * (float) ((int) cbar_wk->maxBMP[4*i+1]));
+		cbar_wk->maxBMP[4*i+2] =  (unsigned char) (text_color3[2] * (float) ((int) cbar_wk->maxBMP[4*i+2]));
+
+		cbar_wk->zeroBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) cbar_wk->zeroBMP[4*i  ]));
+		cbar_wk->zeroBMP[4*i+1] = (unsigned char) (text_color3[1] * (float) ((int) cbar_wk->zeroBMP[4*i+1]));
+		cbar_wk->zeroBMP[4*i+2] = (unsigned char) (text_color3[2] * (float) ((int) cbar_wk->zeroBMP[4*i+2]));
 	};
 	return;
 };

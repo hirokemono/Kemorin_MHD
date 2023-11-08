@@ -41,11 +41,13 @@ struct cbar_work{
 	char maxlabel[20];
 	char zerolabel[20];
 	
-	int id_texture;
+	int id_texture[3];
     int npixel;
     int npix_x;
     int npix_y;
-	unsigned char *numBMP;
+	unsigned char *minBMP;
+	unsigned char *maxBMP;
+	unsigned char *zeroBMP;
 	unsigned char *testBMP;
 };
 

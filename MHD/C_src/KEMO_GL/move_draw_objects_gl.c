@@ -41,9 +41,10 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 	};
 	
 	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids *));
-	for(i=0;i<3;i++){
+	for(i=0;i<5;i++){
 		kemo_VAOs->cbar_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
+    kemo_VAOs->time_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_VAOs->map_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
 	for(i=0;i<4;i++){
@@ -57,39 +58,26 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	free(kemo_VAOs->cube_VAO);
     free(kemo_VAOs->msg_VAO);
 	
-	for(i=0;i<3;i++){
-		free(kemo_VAOs->mesh_solid_VAO[i]);
-	};
+	for(i=0;i<3;i++){free(kemo_VAOs->mesh_solid_VAO[i]);};
 	free(kemo_VAOs->mesh_solid_VAO);
 	free(kemo_VAOs->mesh_trans_VAO);
 	
-	for(i=0;i<2;i++){
-		free(kemo_VAOs->fline_VAO[i]);
-	};
+	for(i=0;i<2;i++){free(kemo_VAOs->fline_VAO[i]);};
 	free(kemo_VAOs->fline_VAO);
 	
-	for(i=0;i<4;i++){
-		free(kemo_VAOs->psf_solid_VAO[i]);
-	};
+	for(i=0;i<4;i++){free(kemo_VAOs->psf_solid_VAO[i]);};
 	free(kemo_VAOs->psf_solid_VAO);
-	for(i=0;i<2;i++){
-		free(kemo_VAOs->psf_trans_VAO[i]);
-	};
+	for(i=0;i<2;i++){free(kemo_VAOs->psf_trans_VAO[i]);};
 	free(kemo_VAOs->psf_trans_VAO);
 
-	for(i=0;i<5;i++){
-		free(kemo_VAOs->grid_VAO[i]);
-	};
+	for(i=0;i<5;i++){free(kemo_VAOs->grid_VAO[i]);};
 	free(kemo_VAOs->grid_VAO);
 
-	for(i=0;i<3;i++){
-		free(kemo_VAOs->cbar_VAO[i]);
-	};
+	for(i=0;i<5;i++){free(kemo_VAOs->cbar_VAO[i]);};
 	free(kemo_VAOs->cbar_VAO);
+	free(kemo_VAOs->time_VAO);
 
-	for(i=0;i<4;i++){
-		free(kemo_VAOs->map_VAO[i]);
-	};
+	for(i=0;i<4;i++){free(kemo_VAOs->map_VAO[i]);};
 	free(kemo_VAOs->map_VAO);
 	return;
 };
@@ -102,7 +90,8 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<3;i++){glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[i]->id_VAO);};
     for(i=0;i<2;i++){glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[i]->id_VAO);};
 	glGenVertexArrays(1, &kemo_VAOs->mesh_trans_VAO->id_VAO);
-    for(i=0;i<3;i++){glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[i]->id_VAO);};
+    for(i=0;i<5;i++){glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[i]->id_VAO);};
+	glGenVertexArrays(1, &kemo_VAOs->time_VAO->id_VAO);
     for(i=0;i<4;i++){glGenVertexArrays(1, &kemo_VAOs->map_VAO[i]->id_VAO);};
     glGenVertexArrays(1, &kemo_VAOs->cube_VAO->id_VAO);
     glGenVertexArrays(1, &kemo_VAOs->msg_VAO->id_VAO);
@@ -117,6 +106,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->psf_trans_VAO[i]);};
 	Destroy_VAO(kemo_VAOs->mesh_trans_VAO);
     for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->cbar_VAO[i]);};
+	Destroy_VAO(kemo_VAOs->time_VAO);
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->map_VAO[i]);};
     Destroy_VAO(kemo_VAOs->cube_VAO);
     Destroy_VAO(kemo_VAOs->msg_VAO);
@@ -170,7 +160,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, &kemo_VAOs->cbar_VAO[0], kemo_shaders);
 	
 	/* Draw time label */
-	draw_timelabel_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
+	draw_timelabel_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->time_VAO, kemo_shaders);
 	
     /* Draw message */
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
@@ -271,8 +261,8 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	set_timelabel_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
 					  kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
 					  kemo_psf->psf_m, kemo_psf->psf_a,
-					  kemo_VAOs->cbar_VAO[2]);
-	draw_timelabel_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
+					  kemo_VAOs->time_VAO);
+	draw_timelabel_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->time_VAO, kemo_shaders);
 	/* Draw message */
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
         struct gl_strided_buffer *cbar_buf
