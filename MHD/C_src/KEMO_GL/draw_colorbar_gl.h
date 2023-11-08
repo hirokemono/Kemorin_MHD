@@ -23,6 +23,9 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            float text_color[4], float bg_color[4],
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                            struct gl_strided_buffer *cbar_buf);
+void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
+                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                            struct gl_strided_buffer *cbar_buf);
 void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
                             float text_color[4], float bg_color[4],
                             struct kemo_array_control *psf_a,

@@ -123,7 +123,6 @@ void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_b
 };
 
 void Const_VAO_4_Texture(struct VAO_ids *VAO, const struct gl_strided_buffer *strided_buf){
-    VAO->npoint_draw = strided_buf->num_nod_buf;
 	glDeleteBuffers(1, &VAO->id_vertex);
 	
 	glGenBuffers(1, &VAO->id_vertex);
