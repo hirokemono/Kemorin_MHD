@@ -127,7 +127,10 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
     /* Draw Solid Objects */
 	if(view_s->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s);
-		draw_map_objects_VAO(view_s, kemo_VAOs->map_VAO, kemo_shaders);
+        struct transfer_matrices *matrices
+            = init_projection_matrix_for_map(view_s->nx_frame, view_s->ny_frame);
+		draw_map_objects_VAO(matrices, kemo_VAOs->map_VAO, kemo_shaders);
+        free(matrices);
 	} else {
         glDisable(GL_CULL_FACE);
 		drawgl_patch_with_phong(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
@@ -187,8 +190,13 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 					kemo_psf->psf_a, view_s);
 		iflag_psf = check_draw_map(kemo_psf->psf_a);
 		set_map_objects_VAO(view_s, kemo_psf->psf_d, 
-					kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, kemo_VAOs->map_VAO);
-		draw_map_objects_VAO(view_s, kemo_VAOs->map_VAO, kemo_shaders);
+                            kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, kemo_VAOs->map_VAO);
+        map_coastline_grid_VBO(kemo_mesh->mesh_m, &kemo_VAOs->map_VAO[2]);
+        
+        struct transfer_matrices *matrices
+            = init_projection_matrix_for_map(view_s->nx_frame, view_s->ny_frame);
+		draw_map_objects_VAO(matrices, kemo_VAOs->map_VAO, kemo_shaders);
+        free(matrices);
 	} else {
 		set_axis_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->grid_VAO[2]);
         glDisable(GL_CULL_FACE);

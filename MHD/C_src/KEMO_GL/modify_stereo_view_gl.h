@@ -5,6 +5,7 @@
 #define MODIFY_STEREO_VIEW_GL_
 
 #include "kemoviewer_param_c.h"
+#include "set_transfer_matrices.h"
 #include "m_gl_transfer_matrix.h"
 #include "move_draw_objects_gl.h"
 

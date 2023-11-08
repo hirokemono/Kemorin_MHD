@@ -142,6 +142,38 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     int i;
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    
+    if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
+        struct gl_strided_buffer *map_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+        set_map_patch_buffer(IZERO, kemo_sgl->kemo_psf->psf_a->istack_solid_psf_patch,
+                             kemo_sgl->kemo_psf->psf_d, kemo_sgl->kemo_psf->psf_m,
+                             kemo_sgl->kemo_psf->psf_a, map_buf);
+        struct gl_strided_buffer *mline_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+        set_map_PSF_isolines_buffer(kemo_sgl->kemo_psf->psf_d,
+                                    kemo_sgl->kemo_psf->psf_m,
+                                    kemo_sgl->kemo_psf->psf_a,
+                                    kemo_sgl->view_s, mline_buf);
+        
+        struct gl_strided_buffer *coast_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+        set_map_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast, coast_buf);
+        
+        struct gl_strided_buffer *mflame_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+        set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid, mflame_buf);
+        if(map_buf->num_nod_buf > 0){free(map_buf->v_buf);};
+        free(map_buf);
+        if(mline_buf->num_nod_buf > 0){free(mline_buf->v_buf);};
+        free(mline_buf);
+        if(coast_buf->num_nod_buf > 0){free(coast_buf->v_buf);};
+        free(coast_buf);
+        if(mflame_buf->num_nod_buf > 0){free(mflame_buf->v_buf);};
+        free(mflame_buf);
+    };
+
+    
     struct gl_strided_buffer *msg_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     const_message_buffer(kemo_sgl->view_s->iflag_retina,
@@ -354,9 +386,28 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         // Set the region of the drawable to draw into.
 //        [renderEncoder setViewport:(MTLViewport){0.0, 0.0, _viewportSize.x, _viewportSize.y, 0.0, 1.0 }];
+
         
+        if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP){
+        } else {
+            /*  Commands to render simple quadrature */
+            [renderEncoder setRenderPipelineState:_pipelineState[0]];
+            [renderEncoder setVertexBuffer:_vertices[0]
+                                    offset:0
+                                   atIndex:AAPLVertexInputIndexVertices];
+            [renderEncoder setVertexBytes:&_viewportSize
+                                   length:sizeof(_viewportSize)
+                                  atIndex:AAPLVertexInputIndexViewportSize];
+            [renderEncoder setVertexBytes:&_scalechange
+                                   length:sizeof(_scalechange)
+                                  atIndex:AAPLVertexInputIndexScale];
+            [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                              vertexStart:0
+                              vertexCount:n_quad_vertex];
+        };
+
 /*  Commands to render screen message */
-        [renderEncoder setRenderPipelineState:_pipelineState[2]];
+            [renderEncoder setRenderPipelineState:_pipelineState[2]];
 
         // Pass in the parameter data.
         [renderEncoder setVertexBuffer:_vertices[1]
@@ -449,22 +500,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                               vertexStart:0
                               vertexCount:_numVertices[6]];
         };
-
-
-/*  Commands to render simple quadrature */
-        [renderEncoder setRenderPipelineState:_pipelineState[0]];
-        [renderEncoder setVertexBuffer:_vertices[0]
-                                 offset:0
-                                atIndex:AAPLVertexInputIndexVertices];
-        [renderEncoder setVertexBytes:&_viewportSize
-                                length:sizeof(_viewportSize)
-                               atIndex:AAPLVertexInputIndexViewportSize];
-        [renderEncoder setVertexBytes:&_scalechange
-                                length:sizeof(_scalechange)
-                               atIndex:AAPLVertexInputIndexScale];
-        [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                           vertexStart:0
-                           vertexCount:n_quad_vertex];
 
         [renderEncoder endEncoding];
 

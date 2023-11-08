@@ -17,20 +17,6 @@ static void set_sph_flame_VBO(double radius, struct VAO_ids *line_VAO,
 	return;
 };
 
-static void set_map_flame_VBO(struct VAO_ids *line_VAO,
-                              struct gl_strided_buffer *line_buf){
-    int n_point = ITWO * count_sph_flame();
-	
-	set_buffer_address_4_patch(n_point, line_buf);
-	resize_strided_buffer(line_buf);
-	set_map_flame_to_buf(line_buf);
-	
-    line_VAO->npoint_draw = line_buf->num_nod_buf;
-	Const_VAO_4_Simple(line_VAO, line_buf);
-	return;
-};
-
-
 static void set_coastline_VBO(double radius, struct VAO_ids *line_VAO,
                               struct gl_strided_buffer *line_buf){
 	int icou;
@@ -45,17 +31,30 @@ static void set_coastline_VBO(double radius, struct VAO_ids *line_VAO,
 	return;
 };
 
-static void set_map_coastline_VBO(struct VAO_ids *line_VAO,
-			struct gl_strided_buffer *line_buf){
-	int icou;
-	int n_points = ITWO * count_coastline_buf();
-	
-	set_buffer_address_4_patch(n_points, line_buf);
-	resize_strided_buffer(line_buf);
-	icou = set_map_coastline_buf(line_buf);
-	
-    line_VAO->npoint_draw = line_buf->num_nod_buf;
-	Const_VAO_4_Simple(line_VAO, line_buf);
+
+void set_map_flame_buffer(int iflag_draw_sph_grid,
+                          struct gl_strided_buffer *mflame_buf){
+    if(iflag_draw_sph_grid != 0){
+        int n_point = ITWO * count_sph_flame();
+        set_buffer_address_4_patch(n_point, mflame_buf);
+        alloc_strided_buffer(mflame_buf);
+        set_map_flame_to_buf(mflame_buf);
+    } else {
+        mflame_buf->num_nod_buf = 0;
+    };
+    return;
+};
+
+void set_map_coastline_buffer(int iflag_draw_coast,
+                              struct gl_strided_buffer *coast_buf){
+    if(iflag_draw_coast != 0){
+        int n_points = ITWO * count_coastline_buf();
+        set_buffer_address_4_patch(n_points, coast_buf);
+        alloc_strided_buffer(coast_buf);
+        set_map_coastline_buf(coast_buf);
+    } else {
+        coast_buf->num_nod_buf = 0;
+    };
 	return;
 };
 
@@ -109,19 +108,28 @@ void set_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_
 	return;
 };
 
-void map_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_VAO,
-			struct gl_strided_buffer *map_buf){
-	
-	if(mesh_m->iflag_draw_coast != 0){
-		set_map_coastline_VBO(grid_VAO[0], map_buf);
-	} else {
-		grid_VAO[0]->npoint_draw = 0;
+void map_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_VAO){
+    struct gl_strided_buffer *coast_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_map_coastline_buffer(mesh_m->iflag_draw_coast, coast_buf);
+
+    struct gl_strided_buffer *mflame_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+	set_map_flame_buffer(mesh_m->iflag_draw_sph_grid, mflame_buf);
+    
+    
+    grid_VAO[0]->npoint_draw = coast_buf->num_nod_buf;
+    if(grid_VAO[0]->npoint_draw > 0){
+        Const_VAO_4_Simple(grid_VAO[0], coast_buf);
+        free(coast_buf->v_buf);
+    };
+    
+    grid_VAO[1]->npoint_draw = mflame_buf->num_nod_buf;
+    if(grid_VAO[1]->npoint_draw > 0){
+        Const_VAO_4_Simple(grid_VAO[1], mflame_buf);
+        free(mflame_buf->v_buf);
 	};
-	
-	if(mesh_m->iflag_draw_sph_grid != 0){
-		set_map_flame_VBO(grid_VAO[1], map_buf);
-	} else {
-		grid_VAO[1]->npoint_draw = 0;
-	};
+    free(coast_buf);
+    free(mflame_buf);
 	return;
 };

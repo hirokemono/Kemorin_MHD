@@ -64,20 +64,15 @@ void drawgl_lines(struct view_element *view_s,
 	return;
 };
 
-void draw_map_objects_VAO(struct view_element *view_s, 
+void draw_map_objects_VAO(struct transfer_matrices *matrices, 
 			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders){
 	int i;
-    
-    struct transfer_matrices *matrices
-        = init_projection_matrix_for_map(view_s->nx_frame, view_s->ny_frame);
-
-	/* set shading mode */
+    /* set shading mode */
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glUseProgram(kemo_shaders->simple->programId);
 
     map_matrix_to_GLSL(kemo_shaders->simple, matrices);
-    free(matrices);
 
 	for(i=0;i<2;i++){
 		if(map_VAO[i]->npoint_draw > 0){

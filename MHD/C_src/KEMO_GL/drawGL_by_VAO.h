@@ -22,7 +22,7 @@ void drawgl_elements_with_phong(struct view_element *view_s, struct VAO_ids *VAO
 void drawgl_lines(struct view_element *view_s, 
 			struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders);
 
-void draw_map_objects_VAO(struct view_element *view_s, 
+void draw_map_objects_VAO(struct transfer_matrices *matrices, 
 			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders);
 
 void draw_solid_mesh_VAO(int polygon_mode, struct view_element *view_s, 
