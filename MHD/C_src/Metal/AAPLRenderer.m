@@ -34,6 +34,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     // The current size of the view, used as an input to the vertex shader.
     vector_uint2    _viewportSize;
     float           _scalechange;
+    
+    matrix_float4x4 _modelview_mat;
     matrix_float4x4 _projection_mat;
     matrix_float4x4 _map_proj_mat;
 
@@ -137,6 +139,17 @@ Implementation of a platform independent renderer class, which performs Metal se
     return self;
 }
 
+- (matrix_float4x4) setMetalViewMatrices:(struct transfer_matrices *) matrices
+{
+    vector_float4 col_wk[4];
+    for(int i=0;i<4;i++){
+        col_wk[i].x = matrices->proj[4*i  ];
+        col_wk[i].y = matrices->proj[4*i+1];
+        col_wk[i].z = matrices->proj[4*i+2];
+        col_wk[i].w = matrices->proj[4*i+3];
+    };
+    return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
+}
 
 /// Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
@@ -146,10 +159,25 @@ Implementation of a platform independent renderer class, which performs Metal se
     int iflag_psf = 0;
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     
-    double *orthogonal;
-    struct transfer_matrices *matrices;
-    vector_float4 col_wk[4];
+    /* Set transfer matrices */
+    double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_sgl->kemo_psf->psf_a->cbar_wk->xwin,
+                                                     0.0, kemo_sgl->kemo_psf->psf_a->cbar_wk->ywin,
+                                                    -1.0, 1.0);
+    struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
+    struct transfer_matrices *view_matrices = transfer_matrix_to_shader(kemo_sgl->view_s);
+    struct transfer_matrices *map_matrices = init_projection_matrix_for_map(kemo_sgl->view_s->nx_frame,
+                                                                            kemo_sgl->view_s->ny_frame);
+    free(orthogonal);
 
+    _projection_mat = [self setMetalViewMatrices:cbar_matrices];
+    _modelview_mat =  [self setMetalViewMatrices:view_matrices];
+    _map_proj_mat =   [self setMetalViewMatrices:map_matrices];
+    free(cbar_matrices);
+    free(view_matrices);
+    free(map_matrices);
+
+    
+    
     struct gl_strided_buffer *map_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     map_buf->num_nod_buf =   0;
@@ -188,33 +216,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                    coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf+3]);
         }
 */
-        matrices = init_projection_matrix_for_map(kemo_sgl->view_s->nx_frame,
-                                                  kemo_sgl->view_s->ny_frame);
-        for(i=0;i<4;i++){
-            col_wk[i].x = matrices->proj[4*i  ];
-            col_wk[i].y = matrices->proj[4*i+1];
-            col_wk[i].z = matrices->proj[4*i+2];
-            col_wk[i].w = matrices->proj[4*i+3];
-        };
-        _map_proj_mat = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
-        free(matrices);
     };
 
     
-    orthogonal = orthogonal_projection_mat_c( 0.0, kemo_sgl->kemo_mesh->msg_wk->xwin,
-                                              0.0, kemo_sgl->kemo_mesh->msg_wk->ywin,
-                                             -1.0, 1.0);
-    matrices = plane_transfer_matrices(orthogonal);
-    for(i=0;i<4;i++){
-        col_wk[i].x = matrices->proj[4*i  ];
-        col_wk[i].y = matrices->proj[4*i+1];
-        col_wk[i].z = matrices->proj[4*i+2];
-        col_wk[i].w = matrices->proj[4*i+3];
-    };
-    _projection_mat = simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
-    free(matrices);
-    free(orthogonal);
-
     struct gl_strided_buffer *msg_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     const_message_buffer(kemo_sgl->view_s->iflag_retina,
@@ -647,6 +651,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         free(mflame_buf->v_buf);
     };
     free(mflame_buf);
+
+//    [_vertices[0] setPurgeableState:MTLPurgeableStateEmpty];
+//    [_vertices[0] release];
 
     free(cbar_buf->v_buf);
     free(cbar_buf);
