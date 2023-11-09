@@ -17,11 +17,20 @@
 #include "glsl.h"
 #include "set_cube_to_buf.h"
 
-/* prototypes */
+struct initial_cube_lighting{
+    int num_light;
+    float lightposition[2][4];
+    float whitelight[3][4];
+    float shine[1];
+};
 
-void set_initial_cube_VAO(struct view_element *view_s, struct VAO_ids *cube_VAO);
-void draw_initial_cube(struct view_element *view_s, struct VAO_ids *cube_VAO, 
-			struct kemoview_shaders *kemo_shaders);
+/* prototypes */
+struct initial_cube_lighting * init_inital_cube_lighting(void);
+void const_initial_cube_buffer(struct gl_strided_buffer *cube_buf);
+
+void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct VAO_ids *cube_VAO);
+void draw_initial_cube(struct view_element *view_s, struct initial_cube_lighting *init_light,
+                       struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders);
 
 void draw_cube_edge_gl3(struct view_element *view_s, 
 			struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders);

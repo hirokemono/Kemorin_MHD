@@ -170,10 +170,8 @@ int flatNodeCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
 
 /* draw simple cube based on current modelview and projection matrices */
 
-void cube_surf_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
+void cube_surf_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 {
-	CubeNode_to_buf(fSize, gl_buf);
-	
 	GLenum ErrorCheckValue = glGetError();
 	
 	Const_VAO_4_Phong(VAO_quad, gl_buf);
@@ -205,10 +203,8 @@ void cube_surf_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buff
 }
 
 
-void cube_edge_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
+void cube_edge_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 {
-	CubeNode_to_buf(fSize, gl_buf);
-	
 	GLenum ErrorCheckValue = glGetError();
 	
 	glDeleteBuffers(1, &VAO_quad->id_vertex);

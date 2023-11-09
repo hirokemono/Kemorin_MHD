@@ -142,6 +142,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
     int i;
+    int iflag;
+    int iflag_psf = 0;
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     
     double *orthogonal;
@@ -161,6 +163,12 @@ Implementation of a platform independent renderer class, which performs Metal se
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     mflame_buf->num_nod_buf = 0;
     if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
+        iflag_psf = sort_by_patch_distance_psfs(kemo_sgl->kemo_psf->psf_d,
+                                                kemo_sgl->kemo_psf->psf_m,
+                                                kemo_sgl->kemo_psf->psf_a,
+                                                kemo_sgl->view_s);
+        iflag_psf = check_draw_map(kemo_sgl->kemo_psf->psf_a);
+
         set_map_patch_buffer(IZERO, kemo_sgl->kemo_psf->psf_a->istack_solid_psf_patch,
                              kemo_sgl->kemo_psf->psf_d, kemo_sgl->kemo_psf->psf_m,
                              kemo_sgl->kemo_psf->psf_a, map_buf);
@@ -243,6 +251,20 @@ Implementation of a platform independent renderer class, which performs Metal se
                            kemo_sgl->kemo_psf->psf_m,
                            kemo_sgl->kemo_psf->psf_a, min_buf, max_buf, zero_buf);
 
+    /* draw example cube for empty data */
+    iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
+               + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
+    struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    cube_buf->num_nod_buf = 0;
+    if(iflag == 0){
+        struct initial_cube_lighting *init_light = init_inital_cube_lighting();
+        const_initial_cube_buffer(cube_buf);
+        free(cube_buf->v_buf);
+    };
+    free(cube_buf);
+
+
+    
     MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
     NSUInteger bytesPerRow;
 /* Construct message texture */

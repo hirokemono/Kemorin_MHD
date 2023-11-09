@@ -232,29 +232,31 @@ void destory_shaders(struct shader_ids *shader)
 	 */
 }
 
+struct transfer_matrices * transfer_matrix_to_shader(struct view_element *view_s){
+    double a_inv[16];
+    int i;
+    
+    struct transfer_matrices *matrices = alloc_transfer_matrices();
+    cal_inverse_44_matrix_c(view_s->mat_object_2_eye, a_inv);
+    for(i=0;i<16;i++) {matrices->model[i] = (GLfloat) view_s->mat_object_2_eye[i];};
+    for(i=0;i<16;i++) {matrices->proj[i] = (GLfloat) view_s->mat_eye_2_clip[i];};
+    for(i=0;i<3;i++) {
+        matrices->nrmat[3*i  ] = (GLfloat) a_inv[  i];
+        matrices->nrmat[3*i+1] = (GLfloat) a_inv[4+i];
+        matrices->nrmat[3*i+2] = (GLfloat) a_inv[8+i];
+    };
+    return matrices;
+};
 
-void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *view_s){
-	double a_inv[16];
-	GLfloat model[16], proj[16], nrmat[9];
-	int i;
-	
-	
-	cal_inverse_44_matrix_c(view_s->mat_object_2_eye, a_inv);
-	for(i=0;i<16;i++) {model[i] = (GLfloat) view_s->mat_object_2_eye[i];};
-	for(i=0;i<16;i++) {proj[i] = (GLfloat) view_s->mat_eye_2_clip[i];};
-	for(i=0;i<3;i++) {
-		nrmat[3*i  ] = (GLfloat) a_inv[  i];
-		nrmat[3*i+1] = (GLfloat) a_inv[4+i];
-		nrmat[3*i+2] = (GLfloat) a_inv[8+i];
-	};
-	
+
+void transfer_matrix_to_GL(struct shader_ids *Shader, struct transfer_matrices *matrices){
     int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
     int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
     int normalMatLocation =  glGetUniformLocation(Shader->programId, "modelNormalMat");
     
-	glUniformMatrix4fv(modelMatLocation,   1, GL_FALSE, model);
-	glUniformMatrix4fv(projectMatLocation, 1, GL_FALSE, proj);
-	glUniformMatrix3fv(normalMatLocation,  1, GL_FALSE, nrmat);
+	glUniformMatrix4fv(modelMatLocation,   1, GL_FALSE, matrices->model);
+	glUniformMatrix4fv(projectMatLocation, 1, GL_FALSE, matrices->proj);
+	glUniformMatrix3fv(normalMatLocation,  1, GL_FALSE, matrices->nrmat);
 };
 
 struct gl_transfer_matrices * dup_transfer_matrices_for_gl(struct transfer_matrices *matrices)

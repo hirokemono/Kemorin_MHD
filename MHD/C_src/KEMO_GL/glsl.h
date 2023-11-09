@@ -38,6 +38,7 @@ struct gl_transfer_matrices{
 };
 
 /* prptotypes */
+struct transfer_matrices * transfer_matrix_to_shader(struct view_element *view_s);
 
 int glslInit(void);
 void LoadShaderFromFile(struct shader_ids *shader,
@@ -47,7 +48,8 @@ void LoadShaderFromStrings(struct shader_ids *shader,
 void destory_shaders(struct shader_ids *shader);
 
 struct gl_transfer_matrices * dup_transfer_matrices_for_gl(struct transfer_matrices *matrices);
-void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *view_s);
+
+void transfer_matrix_to_GL(struct shader_ids *Shader, struct transfer_matrices *matrices);
 void map_matrix_to_GLSL(struct shader_ids *Shader, struct transfer_matrices *matrices);
 void identity_matrix_to_shader(struct shader_ids *Shader);
 
