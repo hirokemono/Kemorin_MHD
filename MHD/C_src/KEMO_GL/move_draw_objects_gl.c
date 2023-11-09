@@ -124,8 +124,8 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
                                struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
 	int iflag_psf = 0;
     /* Set transfer matrices */
-    double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_psf->psf_a->cbar_wk->xwin,
-                                                     0.0, kemo_psf->psf_a->cbar_wk->ywin,
+    double *orthogonal = orthogonal_projection_mat_c(0.0, view_s->nx_frame,
+                                                     0.0, view_s->ny_frame,
                                                      -1.0, 1.0);
     struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
     struct transfer_matrices *view_matrices = transfer_matrix_to_shader(view_s);
@@ -196,8 +196,8 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	int iflag_psf = 0;
 
 /* Set transfer matrices */
-    double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_psf->psf_a->cbar_wk->xwin,
-                                                     0.0, kemo_psf->psf_a->cbar_wk->ywin,
+    double *orthogonal = orthogonal_projection_mat_c(0.0, view_s->nx_frame,
+                                                     0.0, view_s->ny_frame,
                                                      -1.0, 1.0);
     struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
     struct transfer_matrices *view_matrices = transfer_matrix_to_shader(view_s);

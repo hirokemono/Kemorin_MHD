@@ -40,18 +40,15 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 
 	cbar_wk->num_quad = 64;
 	
-	cbar_wk->xwin = (float)nx_win;
-	cbar_wk->ywin = (float)ny_win;
-	
-    if( cbar_wk->xwin >= 640*(iflag_retina+1) ){
-        cbar_wk->xbar_max = cbar_wk->xwin * 0.875;
+    if(nx_win >= 640*(iflag_retina+1) ){
+        cbar_wk->xbar_max = ((float) nx_win) * 0.875;
     } else {
-        cbar_wk->xbar_max = cbar_wk->xwin - (iflag_retina+1) * 80;
+        cbar_wk->xbar_max = ((float) nx_win) - (iflag_retina+1) * 80;
     }
-	cbar_wk->xbar_min = cbar_wk->xbar_max - 0.025 * cbar_wk->xwin;
+	cbar_wk->xbar_min = cbar_wk->xbar_max - 0.025 * ((float) nx_win);
 	cbar_wk->xbar_mid = (cbar_wk->xbar_min + cbar_wk->xbar_max) * 0.5;
-	cbar_wk->ybar_min = 0.05 * cbar_wk->ywin;
-	cbar_wk->ybar_max = 0.25 * cbar_wk->ywin;
+	cbar_wk->ybar_min = 0.05 * ((float) ny_win);
+	cbar_wk->ybar_max = 0.25 * ((float) ny_win);
 	cbar_wk->ydelta =  (cbar_wk->ybar_max - cbar_wk->ybar_min) / ((float) cbar_wk->num_quad);
 	
 	cbar_wk->iflag_zero = 0;
@@ -271,11 +268,8 @@ void set_message_opacity(float opacity, struct msg_work *msg_wk){
 
 void set_message_position(int iflag_retina, int nx_win, int ny_win,
 						  struct msg_work *msg_wk){
-	msg_wk->xwin = (float)nx_win;
-	msg_wk->ywin = (float)ny_win;
-	
-    msg_wk->xbar_max = 0.05 * msg_wk->xwin;
-	msg_wk->ybar_min = 0.92 * msg_wk->ywin;
+    msg_wk->xbar_max = 0.05 * ((float) nx_win);
+	msg_wk->ybar_min = 0.92 * ((float) ny_win);
 	return;
 }
 

@@ -21,9 +21,6 @@
 struct cbar_work{
 	int iflag_zero;
 	
-	float xwin;
-	float ywin;
-	
 	float xbar_min;
 	float xbar_max;
 	float xbar_mid;
@@ -67,8 +64,6 @@ struct tlabel_work{
 
 struct msg_work{
     float message_opacity;
-    float xwin;
-    float ywin;
     
     float xbar_max;
     float ybar_min;

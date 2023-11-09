@@ -160,8 +160,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     
     /* Set transfer matrices */
-    double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_sgl->kemo_psf->psf_a->cbar_wk->xwin,
-                                                     0.0, kemo_sgl->kemo_psf->psf_a->cbar_wk->ywin,
+    double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_sgl->view_s->nx_frame,
+                                                     0.0, kemo_sgl->view_s->ny_frame,
                                                     -1.0, 1.0);
     struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
     struct transfer_matrices *view_matrices = transfer_matrix_to_shader(kemo_sgl->view_s);
