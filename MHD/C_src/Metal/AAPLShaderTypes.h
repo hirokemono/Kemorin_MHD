@@ -17,8 +17,22 @@ typedef enum AAPLVertexInputIndex
     AAPLVertexInputIndexVertices =     0,
     AAPLVertexInputIndexViewportSize = 1,
     AAPLVertexInputIndexScale =        2,
-    AAPLOrthogonalMatrix =             1,
+
+    
+    AAPLModelViewMatrix =   1,
+    AAPLProjectionMatrix =  2,
+    AAPLModelNormalMatrix = 3,
+    
+    AAPLOrthogonalMatrix = 1,
 } AAPLVertexInputIndex;
+
+typedef enum AAPLLightInputIndex
+{
+    AAPLNumLights =      0,
+    AAPLLightsParams =   1,
+    AAPLMaterialParams = 2,
+} AAPLLightInputIndex;
+
 
 // Texture index values shared between shader and C code to ensure Metal shader buffer inputs match
 //   Metal API texture set calls
@@ -26,6 +40,7 @@ typedef enum AAPLTextureIndex
 {
     AAPLTextureIndexBaseColor = 0,
 } AAPLTextureIndex;
+
 
 //  This structure defines the layout of vertices sent to the vertex
 //  shader. This header is shared between the .metal shader and C code, to guarantee that
@@ -63,5 +78,30 @@ typedef struct
 /* data value in pixel space. */
     vector_float2  data;
 } KemoViewVertex;
+
+typedef struct{
+    vector_float4 ambient;              // Aclarri
+    vector_float4 diffuse;              // Dcli
+    vector_float4 specular;             // Scli
+    vector_float4 position;             // Ppli
+    vector_float4 halfVector;           // Derived: Hi
+    vector_float3 spotDirection;        // Sdli
+    float spotExponent;        // Srli
+    float spotCutoff;          // Crli
+    // (range: [0.0,90.0], 180.0)
+    float spotCosCutoff;       // Derived: cos(Crli)
+    // (range: [1.0,0.0],-1.0)
+    float constantAttenuation;   // K0
+    float linearAttenuation;     // K1
+    float quadraticAttenuation;  // K2
+} LightSourceParameters;
+
+typedef struct{
+    vector_float4 emission;    // Ecm
+    vector_float4 ambient;     // Acm
+    vector_float4 diffuse;     // Dcm
+    vector_float4 specular;    // Scm
+    float         shininess;  // Srm
+} MaterialParameters;
 
 #endif /* AAPLShaderTypes_h */

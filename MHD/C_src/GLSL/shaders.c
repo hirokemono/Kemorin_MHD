@@ -553,20 +553,29 @@ char * load_phong_frag(void){
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "\n"\
+        "    vec3 halfway;\n"\
+        "    float product;\n"\
+        "    float fspecular;\n"\
+        "\n"\
+        "    vec3 view =   normalize(position.xyz);\n"\
+        "    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);\n"\
+        "\n"\
         "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
         "	for (int i = 0; i < num_lights; ++i){\n"\
         "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
-        "		diffuse = dot(light, fnormal);\n"\
         "\n"\
-        "		out_Color += ex_Color * frontMaterial.ambient;\n"\
-        "		if (diffuse > 0.0) {\n"\
-        "			vec3 view = normalize(position.xyz);\n"\
-        "			vec3 halfway = normalize(light - view);\n"\
-        "			float product = max(dot(fnormal, halfway), 0.0);\n"\
-        "			float specular = pow(product, frontMaterial.shininess);\n"\
-        "			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
-        "			+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;\n"\
-        "		}\n"\
+        "        halfway =   normalize(light - view);\n"\
+        "        product =   max(dot(fnormal, halfway), 0.0);\n"\
+        "        fspecular = pow(product, frontMaterial.shininess);\n"\
+        "		diffuse =   dot(light, fnormal);\n"\
+        "\n"\
+        "		out_Color += ex_Color * frontMaterial.ambient\n"\
+        "                    + ex_Color * frontMaterial.diffuse * abs(diffuse)\n"\
+        "                    + tmpsp * fspecular;\n"\
+        "//		if (diffuse > 0.0) {\n"\
+        "//			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
+        "//                        + tmpsp * fspecular;\n"\
+        "//		}\n"\
         "	}\n"\
         "}\n"\
         "\n"\
@@ -672,20 +681,25 @@ char * load_phong_1color_frag(void){
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "	\n"\
-        "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
+        "    vec3 halfway;\n"\
+        "    float product;\n"\
+        "    float fspecular;\n"\
+        "\n"\
+        "    vec3 view = normalize(position.xyz);\n"\
+        "    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);\n"\
+        "\n"\
+        "    out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
         "	for (int i = 0; i < num_lights; ++i){\n"\
         "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
+        "\n"\
+        "        halfway = normalize(light - view);\n"\
+        "        product = max(dot(fnormal, halfway), 0.0);\n"\
+        "        fspecular = pow(product, frontMaterial.shininess);\n"\
         "		diffuse = dot(light, fnormal);\n"\
         "		\n"\
-        "		out_Color += SingleColor * frontMaterial.ambient;\n"\
-        "		if (diffuse > 0.0) {\n"\
-        "			vec3 view = normalize(position.xyz);\n"\
-        "			vec3 halfway = normalize(light - view);\n"\
-        "			float product = max(dot(fnormal, halfway), 0.0);\n"\
-        "			float specular = pow(product, frontMaterial.shininess);\n"\
-        "			out_Color += SingleColor * frontMaterial.diffuse * diffuse\n"\
-        "			+ vec4(frontMaterial.specular.xyz, SingleColor.w) * specular;\n"\
-        "		}\n"\
+        "		out_Color += SingleColor * frontMaterial.ambient\n"\
+        "			        + SingleColor * frontMaterial.diffuse * abs(diffuse)\n"\
+        "                    + tmpsp * fspecular;\n"\
         "	}\n"\
         "}\n"\
         "\n"\
@@ -785,22 +799,30 @@ char * load_phong_texture_frag(void){
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "\n"\
+        "    vec3 halfway;\n"\
+        "    float product;\n"\
+        "    float fspecular;\n"\
+        "\n"\
+        "    vec3 view =   normalize(position.xyz);\n"\
+        "    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);\n"\
+        "\n"\
         "	vec4 txColor = texture(image, tex_position);\n"\
         "\n"\
         "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
         "	for (int i = 0; i < num_lights; ++i){\n"\
         "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
-        "		diffuse = dot(light, fnormal);\n"\
+        "        halfway = normalize(light - view);\n"\
+        "        product = max(dot(fnormal, halfway), 0.0);\n"\
+        "        fspecular = pow(product, frontMaterial.shininess);\n"\
         "\n"\
+        "        diffuse = dot(light, fnormal);\n"\
+        "\n"\
+        "//        out_Color += txColor * frontMaterial.ambient;\n"\
+        "//                    + txColor * frontMaterial.diffuse * abs(diffuse)\n"\
+        "//                    + tmpsp * fspecular;\n"\
         "		out_Color += txColor * frontMaterial.ambient;\n"\
-        "		if (diffuse > 0.0) {\n"\
-        "			vec3 view = normalize(position.xyz);\n"\
-        "			vec3 halfway = normalize(light - view);\n"\
-        "			float product = max(dot(fnormal, halfway), 0.0);\n"\
-        "			float specular = pow(product, frontMaterial.shininess);\n"\
-        "			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
-        "			+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;\n"\
-        "		}\n"\
+        "                    + ex_Color * frontMaterial.diffuse * abs(diffuse)\n"\
+        "                    + tmpsp * fspecular;\n"\
         "	}\n"\
         "}\n"\
         "\n"\

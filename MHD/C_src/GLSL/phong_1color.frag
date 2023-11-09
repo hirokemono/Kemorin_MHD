@@ -47,20 +47,25 @@ void main (void)
 	vec3 light;
 	float diffuse;
 	
-	out_Color = vec4(0.0,0.0,0.0,0.0);
+    vec3 halfway;
+    float product;
+    float fspecular;
+    
+    vec3 view = normalize(position.xyz);
+    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);
+
+    out_Color = vec4(0.0,0.0,0.0,0.0);
 	for (int i = 0; i < num_lights; ++i){
 		light = normalize(LightSource[i].position.xyz - position.xyz);
+
+        halfway = normalize(light - view);
+        product = max(dot(fnormal, halfway), 0.0);
+        fspecular = pow(product, frontMaterial.shininess);
 		diffuse = dot(light, fnormal);
 		
-		out_Color += SingleColor * frontMaterial.ambient;
-		if (diffuse > 0.0) {
-			vec3 view = normalize(position.xyz);
-			vec3 halfway = normalize(light - view);
-			float product = max(dot(fnormal, halfway), 0.0);
-			float specular = pow(product, frontMaterial.shininess);
-			out_Color += SingleColor * frontMaterial.diffuse * diffuse
-			+ vec4(frontMaterial.specular.xyz, SingleColor.w) * specular;
-		}
+		out_Color += SingleColor * frontMaterial.ambient
+			        + SingleColor * frontMaterial.diffuse * abs(diffuse)
+                    + tmpsp * fspecular;
 	}
 }
 
