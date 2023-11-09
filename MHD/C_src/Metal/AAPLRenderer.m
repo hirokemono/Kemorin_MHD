@@ -18,10 +18,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDevice> _device;
     
     // The render pipeline generated from the vertex and fragment shaders in the .metal shader file.
-    id<MTLRenderPipelineState> _pipelineState[3];
+    id<MTLRenderPipelineState> _pipelineState[4];
     
     // The command queue used to pass commands to the device.
-    id<MTLCommandQueue> _commandQueue[3];
+    id<MTLCommandQueue> _commandQueue;
     
     id<MTLFunction> _vertexFunction[3];
     id<MTLFunction> _fragmentFunction[3];
@@ -89,11 +89,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 //  went wrong.  (Metal API validation is enabled by default when a debug build is run
 //  from Xcode.) */
         NSAssert(_pipelineState[2], @"Failed to create pipeline state: %@", error);
-/* Create the command queue */
-        _commandQueue[2] = [_device newCommandQueue];
 
 /*  Create pipeline for simple 2D rendering */
-        pipelineStateDescriptor.label = @"2D Simple Pipeline";
+        pipelineStateDescriptor.label = @"2D transpearent Pipeline";
         pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
@@ -109,7 +107,18 @@ Implementation of a platform independent renderer class, which performs Metal se
         _pipelineState[1] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
         NSAssert(_pipelineState[1], @"Failed to create pipeline state: %@", error);
-        _commandQueue[1] = [_device newCommandQueue];
+
+        /*  Create pipeline for simple 2D rendering */
+        pipelineStateDescriptor.label = @"2D Simple Pipeline";
+        pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
+        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = NO;
+        
+        _pipelineState[3] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                           error:&error];
+        NSAssert(_pipelineState[3], @"Failed to create pipeline state: %@", error);
 
 
 /*  Create pipeline for Basic rendering */
@@ -118,20 +127,13 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[0];
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        
         _pipelineState[0] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
         NSAssert(_pipelineState[0], @"Failed to create pipeline state: %@", error);
-        _commandQueue[0] = [_device newCommandQueue];
     }
 
+/* Create the command queue */
+            _commandQueue = [_device newCommandQueue];
     return self;
 }
 
@@ -169,7 +171,15 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         set_map_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast, coast_buf);
         set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid, mflame_buf);
-              
+/*
+        for(i=0;i<coast_buf->num_nod_buf;i++){
+            printf("%d, color %f %f %f %f \n", i,
+                   coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf],
+                   coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf+1],
+                   coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf+2],
+                   coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf+3]);
+        }
+*/
         matrices = init_projection_matrix_for_map(kemo_sgl->view_s->nx_frame,
                                                   kemo_sgl->view_s->ny_frame);
         for(i=0;i<4;i++){
@@ -365,7 +375,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
 
     // Create a new command buffer for each render pass to the current drawable.
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue[2] commandBuffer];
+    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
     commandBuffer.label = @"MyCommand";
 
     // Obtain a renderPassDescriptor generated from the view's drawable textures.
@@ -414,7 +424,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                                      length:(mline_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
  */
-                [renderEncoder setRenderPipelineState:_pipelineState[1]];
+                [renderEncoder setRenderPipelineState:_pipelineState[3]];
                 [renderEncoder setVertexBuffer:_vertices[11]
                                         offset:0
                                        atIndex:AAPLVertexInputIndexVertices];
@@ -430,7 +440,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 _vertices[12] = [_device newBufferWithBytes:((KemoViewVertex *) coast_buf->v_buf)
                                                      length:(coast_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
-                [renderEncoder setRenderPipelineState:_pipelineState[1]];
+                [renderEncoder setRenderPipelineState:_pipelineState[3]];
                 [renderEncoder setVertexBuffer:_vertices[12]
                                         offset:0
                                        atIndex:AAPLVertexInputIndexVertices];
@@ -446,7 +456,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 _vertices[13] = [_device newBufferWithBytes:((KemoViewVertex *) mflame_buf->v_buf)
                                                      length:(mflame_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
-                [renderEncoder setRenderPipelineState:_pipelineState[1]];
+                [renderEncoder setRenderPipelineState:_pipelineState[3]];
                 [renderEncoder setVertexBuffer:_vertices[13]
                                         offset:0
                                        atIndex:AAPLVertexInputIndexVertices];
@@ -579,13 +589,13 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 //    [_texture[1] setPurgeableState:MTLPurgeableStateEmpty];
     [_texture[1] release];
-    [_texture[2] setPurgeableState:MTLPurgeableStateEmpty];
+//    [_texture[2] setPurgeableState:MTLPurgeableStateEmpty];
     [_texture[2] release];
-    [_texture[4] setPurgeableState:MTLPurgeableStateEmpty];
+//    [_texture[4] setPurgeableState:MTLPurgeableStateEmpty];
     [_texture[4] release];
-    [_texture[5] setPurgeableState:MTLPurgeableStateEmpty];
+//    [_texture[5] setPurgeableState:MTLPurgeableStateEmpty];
     [_texture[5] release];
-    [_texture[6] setPurgeableState:MTLPurgeableStateEmpty];
+//    [_texture[6] setPurgeableState:MTLPurgeableStateEmpty];
     [_texture[6] release];
 
     if(map_buf->num_nod_buf > 0){
