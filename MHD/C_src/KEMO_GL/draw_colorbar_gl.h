@@ -41,10 +41,10 @@ void set_timelabel_VAO(int iflag_retina, int nx_win, int ny_win,
                        struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                        struct VAO_ids *time_VAO);
 
-void draw_colorbar_VAO(struct cbar_work *cbar_wk,
-			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders);
-void draw_timelabel_VAO(struct tlabel_work *tlabel_wk,
-			struct VAO_ids *time_VAO, struct kemoview_shaders *kemo_shaders);
+void draw_colorbar_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cbar_VAO,
+                       struct transfer_matrices *matrices, struct kemoview_shaders *kemo_shaders);
+void draw_timelabel_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *time_VAO, 
+                        struct transfer_matrices *matrices, struct kemoview_shaders *kemo_shaders);
 
 #endif
 

@@ -76,14 +76,11 @@ void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct VAO_ids *cu
 	return;
 };
 
-void draw_initial_cube(struct view_element *view_s, struct initial_cube_lighting *init_light,
+void draw_initial_cube(struct transfer_matrices *matrices, struct initial_cube_lighting *init_light,
                        struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders){
-    struct transfer_matrices *matrices = transfer_matrix_to_shader(view_s);
-    
     glUseProgram(kemo_shaders->phong->programId);
     transfer_matrix_to_GL(kemo_shaders->phong, matrices);
 	light_for_initial_cube(init_light, kemo_shaders);
-    free(matrices);
 
 	glBindVertexArray(cube_VAO->id_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);

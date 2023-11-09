@@ -39,18 +39,12 @@ void set_message_VAO(int iflag_retina, int nx_win, int ny_win,
 	return;
 };
 
-void draw_message_VAO(struct msg_work *msg_wk, 
-			struct VAO_ids *msg_VAO, struct kemoview_shaders *kemo_shaders){
+void draw_message_VAO(struct msg_work *msg_wk, struct VAO_ids *msg_VAO, 
+                      struct transfer_matrices *matrices, 
+                      struct kemoview_shaders *kemo_shaders){
 	if(msg_VAO->npoint_draw <= 0) return;
 	
-    double *orthogonal = orthogonal_projection_mat_c(0.0, msg_wk->xwin,
-                                                     0.0, msg_wk->ywin,
-                                                     -1.0, 1.0);
-    struct transfer_matrices *matrices = plane_transfer_matrices(orthogonal);
-    
 	draw_textured_2D_box_VAO(msg_wk->id_texture, matrices, msg_VAO, kemo_shaders);
-    free(matrices);
-    free(orthogonal);
 	return;
 }
 

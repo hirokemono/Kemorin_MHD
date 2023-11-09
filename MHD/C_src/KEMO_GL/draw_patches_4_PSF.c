@@ -175,10 +175,8 @@ void set_PSF_trans_objects_VAO(struct view_element *view_s,
 
 
 void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
-			struct kemo_array_control *psf_a, struct view_element *view_s, 
+			struct kemo_array_control *psf_a, struct transfer_matrices *matrices, 
 			struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders){
-    struct transfer_matrices *matrices = transfer_matrix_to_shader(view_s);
-
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
@@ -186,25 +184,19 @@ void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **p
 	drawgl_textured_patches_VAO(&psf_m[i]->texture_name[0], matrices,
 							  psf_solid_VAO[1], kemo_shaders);
 	drawgl_patch_with_phong(matrices, psf_solid_VAO[0], kemo_shaders);
-    free(matrices);
 	return;
 };
 
-void draw_PSF_isolines_VAO(struct view_element *view_s,  struct VAO_ids **psf_solid_VAO,
+void draw_PSF_isolines_VAO(struct transfer_matrices *matrices,  struct VAO_ids **psf_solid_VAO,
 						   struct kemoview_shaders *kemo_shaders){
-	
-    struct transfer_matrices *matrices = transfer_matrix_to_shader(view_s);
-	drawgl_patch_with_phong(matrices, psf_solid_VAO[2], kemo_shaders);
+    drawgl_patch_with_phong(matrices, psf_solid_VAO[2], kemo_shaders);
 	drawgl_patch_with_phong(matrices, psf_solid_VAO[3], kemo_shaders);
-    free(matrices);
 	return;
 }
 
-void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m,
-			struct kemo_array_control *psf_a, struct view_element *view_s, 
-			struct VAO_ids **psf_trans_VAO, struct kemoview_shaders *kemo_shaders){
-    struct transfer_matrices *matrices = transfer_matrix_to_shader(view_s);
-
+void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
+                                struct transfer_matrices *matrices, struct VAO_ids **psf_trans_VAO,
+                                struct kemoview_shaders *kemo_shaders){
     glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE);
@@ -222,6 +214,5 @@ void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m,
 	glDepthMask(GL_TRUE);
 	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glDisable(GL_MULTISAMPLE);
-    free(matrices);
 	return;
 };

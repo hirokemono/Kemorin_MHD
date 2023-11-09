@@ -23,12 +23,12 @@ void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
                   struct kemoview_shaders *kemo_shaders);
 
 void draw_map_objects_VAO(struct transfer_matrices *matrices, 
-			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders);
+                          struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders);
 
-void draw_solid_mesh_VAO(int polygon_mode, struct view_element *view_s, 
-			struct VAO_ids *mesh_solid_VAO, struct kemoview_shaders *kemo_shaders);
-void draw_trans_mesh_VAO(struct view_element *view_s, 
-			struct VAO_ids *mesh_trans_VAO, struct kemoview_shaders *kemo_shaders);
+void draw_solid_mesh_VAO(int polygon_mode, struct transfer_matrices *matrices, 
+                         struct VAO_ids *mesh_solid_VAO, struct kemoview_shaders *kemo_shaders);
+void draw_trans_mesh_VAO(struct transfer_matrices *matrices, struct VAO_ids *mesh_trans_VAO,
+                         struct kemoview_shaders *kemo_shaders);
 
 void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO, 
 						   struct kemoview_shaders *kemo_shaders);

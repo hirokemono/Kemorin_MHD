@@ -197,14 +197,10 @@ void set_timelabel_VAO(int iflag_retina, int nx_win, int ny_win,
 	return;
 };
 
-void draw_colorbar_VAO(struct cbar_work *cbar_wk,
-			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders){
+void draw_colorbar_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cbar_VAO,
+                       struct transfer_matrices *matrices, struct kemoview_shaders *kemo_shaders){
 	if(cbar_VAO[0]->npoint_draw <= 0) return;
 	
-    double *orthogonal = orthogonal_projection_mat_c(0.0, cbar_wk->xwin,
-                                                     0.0, cbar_wk->ywin,
-                                                     -1.0, 1.0);
-    struct transfer_matrices *matrices = plane_transfer_matrices(orthogonal);
 	draw_2D_box_patch_VAO(matrices, cbar_VAO[0], kemo_shaders);
 	draw_textured_2D_box_VAO(cbar_wk->id_texture[0], matrices,
 							 cbar_VAO[1], kemo_shaders);
@@ -212,22 +208,14 @@ void draw_colorbar_VAO(struct cbar_work *cbar_wk,
                              cbar_VAO[2], kemo_shaders);
     draw_textured_2D_box_VAO(cbar_wk->id_texture[2], matrices,
                              cbar_VAO[3], kemo_shaders);
-    free(matrices);
-    free(orthogonal);
 	return;
 }
 
-void draw_timelabel_VAO(struct tlabel_work *tlabel_wk,
-			struct VAO_ids *time_VAO, struct kemoview_shaders *kemo_shaders){
+void draw_timelabel_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *time_VAO, 
+                        struct transfer_matrices *matrices, struct kemoview_shaders *kemo_shaders){
 	if(time_VAO->npoint_draw <= 0) return;
-    double *orthogonal = orthogonal_projection_mat_c(0.0, tlabel_wk->xwin,
-                                                     0.0, tlabel_wk->ywin,
-                                                     -1.0, 1.0);
-    struct transfer_matrices *matrices = plane_transfer_matrices(orthogonal);
 	draw_textured_2D_box_VAO(tlabel_wk->id_texture, matrices,
 							 time_VAO, kemo_shaders);
-    free(matrices);
-    free(orthogonal);
 	return;
 }
 
