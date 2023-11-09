@@ -51,15 +51,13 @@ void drawgl_elements_with_phong(struct transfer_matrices *matrices, struct VAO_i
     return;
 }
 
-void drawgl_lines(struct view_element *view_s, 
-			struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
+void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
+                  struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;
 	
-    struct transfer_matrices *matrices = transfer_matrix_to_shader(view_s);
 	glDisable(GL_CULL_FACE);
 	glUseProgram(kemo_shaders->simple->programId);
     transfer_matrix_to_GL(kemo_shaders->simple, matrices);
-    free(matrices);
 
     glBindVertexArray(VAO->id_VAO);
 	glDrawArrays(GL_LINES, IZERO, VAO->npoint_draw);

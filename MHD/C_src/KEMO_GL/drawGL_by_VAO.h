@@ -19,8 +19,8 @@ void drawgl_patch_with_phong(struct transfer_matrices *matrices, struct VAO_ids 
                              struct kemoview_shaders *kemo_shaders);
 void drawgl_elements_with_phong(struct transfer_matrices *matrices, struct VAO_ids *VAO, 
                                 struct kemoview_shaders *kemo_shaders);
-void drawgl_lines(struct view_element *view_s, 
-			struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders);
+void drawgl_lines(struct transfer_matrices *matrices, struct VAO_ids *VAO,
+                  struct kemoview_shaders *kemo_shaders);
 
 void draw_map_objects_VAO(struct transfer_matrices *matrices, 
 			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders);
