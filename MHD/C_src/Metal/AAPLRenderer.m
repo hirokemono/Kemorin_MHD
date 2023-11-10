@@ -39,7 +39,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     
     matrix_float4x4 _modelview_mat;
     matrix_float4x4 _projection_mat;
-    matrix_float3x3 _normal_mat;
+    matrix_float4x4 _normal_mat;
 
     matrix_float4x4 _map_proj_mat;
     matrix_float4x4 _cbar_proj_mat;
@@ -178,15 +178,20 @@ Implementation of a platform independent renderer class, which performs Metal se
     return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 }
 
-- (matrix_float3x3) setMetal3x3Matrices:(float *) matrix
+- (matrix_float4x4) setMetal3x3Matrices:(float *) matrix
 {
-    vector_float3 col_wk[3];
+    vector_float4 col_wk[4];
     for(int i=0;i<3;i++){
         col_wk[i].x = matrix[3*i  ];
         col_wk[i].y = matrix[3*i+1];
         col_wk[i].z = matrix[3*i+2];
+        col_wk[i].w = 0.0;
     };
-    return simd_matrix(col_wk[0], col_wk[1], col_wk[2]);
+    col_wk[3].x = 0.0;
+    col_wk[3].y = 0.0;
+    col_wk[3].z = 0.0;
+    col_wk[3].w = 1.0;
+    return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 }
 
 /// Called whenever the view needs to render a frame.
@@ -213,7 +218,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     _modelview_mat =  [self setMetalViewMatrices:view_matrices->model];
     _projection_mat = [self setMetalViewMatrices:view_matrices->proj];
-    _normal_mat =     [self setMetal3x3Matrices:map_matrices->nrmat];
+    _normal_mat =     [self setMetal3x3Matrices:view_matrices->nrmat];
     free(cbar_matrices);
     free(view_matrices);
     free(map_matrices);
@@ -555,7 +560,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                               vertexCount:n_quad_vertex];
 */
             float x, y, z;
-            int numLight;
             MaterialParameters    material[1];
 /*
             material[0].ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
@@ -583,10 +587,10 @@ Implementation of a platform independent renderer class, which performs Metal se
                 lights.position[i].z = init_light->lightposition[i][2];
                 lights.position[i].w = init_light->lightposition[i][3];
             };
-            material[0].ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
-            material[0].diffuse.x = kemoview_get_material_parameter(DIFFUSE_FLAG);
-            material[0].specular.x = kemoview_get_material_parameter(SPECULAR_FLAG);
-            material[0].shininess = init_light->shine[0];
+            material[0].ambient.x = init_light->whitelight[0][0];
+            material[0].diffuse.x = init_light->whitelight[1][0];
+            material[0].specular.x = init_light->whitelight[2][0];
+            material[0].shininess =  init_light->shine[0];
 
             
             material[0].ambient.y = material[0].ambient.x;
@@ -616,7 +620,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                        length:sizeof(matrix_float4x4)
                                       atIndex:AAPLProjectionMatrix];
                 [renderEncoder setVertexBytes:&_normal_mat
-                                       length:sizeof(matrix_float3x3)
+                                       length:sizeof(matrix_float4x4)
                                       atIndex:AAPLModelNormalMatrix];
                 
                 [renderEncoder setFragmentBytes:&lights
@@ -625,13 +629,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                 [renderEncoder setFragmentBytes:material
                                          length:sizeof(MaterialParameters)
                                         atIndex:AAPLMaterialParams];
-
-                [renderEncoder setFragmentBytes:&init_light->lightposition[0]
-                                         length:sizeof(vector_float4)
-                                        atIndex:2];
-                [renderEncoder setFragmentBytes:&init_light->lightposition[1]
-                                         length:sizeof(vector_float4)
-                                        atIndex:3];
 
                 [renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
                                           indexCount:36

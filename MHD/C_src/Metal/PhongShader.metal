@@ -27,8 +27,8 @@ struct RasterizerData
     // fragment in the triangle.
     float4 color;
     
-    float3 normal;
-    float3 pixelSpacePosition;
+    float4 normal;
+    float4 pixelSpacePosition;
 };
 
 // Vertex Function
@@ -37,7 +37,7 @@ PhongVertexShader(uint vertexID [[ vertex_id ]],
                   constant KemoViewVertex *vertexArray [[ buffer(AAPLVertexInputIndexVertices) ]],
                   constant matrix_float4x4 *ModelViewMatrixPointer [[buffer(AAPLModelViewMatrix)]],
                   constant matrix_float4x4 *ProjectionMatrixPointer [[buffer(AAPLProjectionMatrix)]],
-                  constant matrix_float3x3 *ModelNormalMatrixPointer [[buffer(AAPLModelNormalMatrix)]]
+                  constant matrix_float4x4 *ModelNormalMatrixPointer [[buffer(AAPLModelNormalMatrix)]]
                   )
 {
 
@@ -52,15 +52,16 @@ PhongVertexShader(uint vertexID [[ vertex_id ]],
 
     matrix_float4x4 ModelViewMatrix = matrix_float4x4(*ModelViewMatrixPointer);
     matrix_float4x4 ProjectionMatrix = matrix_float4x4(*ProjectionMatrixPointer);
-    matrix_float3x3 ModelNormalMatrix = matrix_float3x3(*ModelNormalMatrixPointer);
+    matrix_float4x4 ModelNormalMatrix = matrix_float4x4(*ModelNormalMatrixPointer);
 
-    out.pixelSpacePosition = pixelSpacePosition;
-    out.position2d.xyz =     pixelSpacePosition;
-    out.position2d.w = 1.0;
-    out.position2d = ModelViewMatrix *  out.position2d;
-    out.position2d = ProjectionMatrix * out.position2d;
+    out.pixelSpacePosition.xyz =     pixelSpacePosition;
+    out.pixelSpacePosition.w =       1.0;
+    out.pixelSpacePosition =         ModelViewMatrix *  out.pixelSpacePosition;
+    out.position2d =                 ProjectionMatrix * out.pixelSpacePosition;
 
-    out.normal = normalize(ModelNormalMatrix * pixelSpaceNormal);
+    out.normal.xyz =     pixelSpaceNormal;
+    out.normal.w =       1.0;
+    out.normal = ModelNormalMatrix * out.normal;
     out.color = pixelSpaceColor;
     return out;
 }
@@ -69,10 +70,7 @@ PhongVertexShader(uint vertexID [[ vertex_id ]],
 fragment float4
 PhongFragmentShader(RasterizerData in [[stage_in]],
                     constant LightSourceParameters *lightsParamsPointer[[buffer(AAPLLightsParams)]],
-                    constant MaterialParameters *frontMaterialParamsPointer[[buffer(AAPLMaterialParams)]],
-                    constant vector_float4 *lightposi1[[buffer(2)]],
-                    constant vector_float4 *lightposi2[[buffer(3)]]
-                    )
+                    constant MaterialParameters *frontMaterialParamsPointer[[buffer(AAPLMaterialParams)]])
 {
     LightSourceParameters lightsParameters = LightSourceParameters(*lightsParamsPointer);
     int numLights = lightsParameters.num_lights;
@@ -81,16 +79,10 @@ PhongFragmentShader(RasterizerData in [[stage_in]],
     float4 materialAmbient =   FrontMaterialParams.ambient;
     float4 materialDiffuse =   FrontMaterialParams.diffuse;
     float4 materialSpecular =  FrontMaterialParams.specular;
-    float  shininess = FrontMaterialParams.shininess;
+    float shininess =          FrontMaterialParams.shininess;
 
-    vector_float4 l1 = vector_float4(*lightposi1);
-    vector_float4 l2 = vector_float4(*lightposi2);
-    vector_float4 lightxyz[2];
-    lightxyz[0] = l1;
-    lightxyz[1] = l2;
-
-    float3 view = normalize(in.pixelSpacePosition.xyz);
-    float3 fnormal = in.normal;
+    float3 view =    normalize(in.pixelSpacePosition.xyz);
+    float3 fnormal = normalize(in.normal.xyz);
     float3 halfway;
     float3 light;
     float diffuseDir;
@@ -103,7 +95,7 @@ PhongFragmentShader(RasterizerData in [[stage_in]],
 
     float4 out_Color = 0.0;
     for (int i=0; i<numLights;i++){
-        light =      normalize(lightxyz[i].xyz - in.pixelSpacePosition);
+        light =      normalize(lightsParameters.position[i].xyz - in.pixelSpacePosition.xyz);
         diffuseDir = dot(light, fnormal);
         halfway =    normalize(light - view);
         product =    max(dot(fnormal, halfway), 0.0);
