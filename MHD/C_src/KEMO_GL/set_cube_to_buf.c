@@ -38,8 +38,27 @@ static GLuint cube_nodes[8] = {3, 2, 1, 0, 4, 5, 6, 7};
 
 /* cube informaiton into VBO */
 
-void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf){
-	int i;
+struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele){
+    struct gl_index_buffer *index_buf;
+    if((index_buf = (struct gl_index_buffer *) malloc(sizeof(struct gl_index_buffer))) == NULL) {
+        printf("malloc error in gl_index_buffer\n");
+        exit(0);
+    }
+    index_buf->num_ele_buf =  numele;
+    index_buf->num_each_ele = nnod_4_ele;
+    index_buf->nsize_buf =    numele * nnod_4_ele;
+    
+    if((index_buf->ie_buf = (unsigned int *) malloc(index_buf->nsize_buf * sizeof(unsigned int))) == NULL){
+        printf("malloc error in index_buf\n");
+        exit(0);
+    }
+    return index_buf;
+}
+
+
+void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
+                     struct gl_index_buffer *index_buf){
+	int i, j;
 	int n_vertex = 8;
 	float radius;
 	
@@ -69,6 +88,11 @@ void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf){
 		strided_buf->c_draw[3] = 1.0;
 	};
 	
+    for(i=0;i<index_buf->num_ele_buf;i++){
+        for(j=0;j<index_buf->num_each_ele;j++){
+            index_buf->ie_buf[i*index_buf->num_each_ele + j] = cube_tri_faces[i][j];
+        };
+    };
 	return;
 }
 
@@ -170,7 +194,8 @@ int flatNodeCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
 
 /* draw simple cube based on current modelview and projection matrices */
 
-void cube_surf_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
+void cube_surf_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf,
+                   struct gl_index_buffer *index_buf)
 {
 	GLenum ErrorCheckValue = glGetError();
 	
@@ -181,8 +206,8 @@ void cube_surf_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 	/* Create index buffer on GPU, and then copy from CPU */
 	glGenBuffers(1, &VAO_quad->id_index);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*36, cube_tri_faces, GL_STATIC_DRAW);
-	
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (36 * sizeof(unsigned int)),
+                 index_buf->ie_buf, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

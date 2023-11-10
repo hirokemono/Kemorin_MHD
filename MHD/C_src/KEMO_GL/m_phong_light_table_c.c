@@ -170,6 +170,14 @@ void send_each_light_rtp(struct phong_lights *lights,
 	*p = lights->light_rtp[3*i_point+2];
 	return;
 }
+void send_each_light_xyz(struct phong_lights *lights,
+                         int i_point, float *x, float *y, float *z){
+    *x = lights->light_xyz[3*i_point  ];
+    *y = lights->light_xyz[3*i_point+1];
+    *z = lights->light_xyz[3*i_point+2];
+    return;
+};
+
 
 void set_matrial_parameter(int itype, float value, struct phong_lights *lights){
     int i;

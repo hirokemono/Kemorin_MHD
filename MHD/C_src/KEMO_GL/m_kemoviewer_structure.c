@@ -285,6 +285,9 @@ int kemoview_get_num_light_position(void){
 void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p){
 	send_each_light_rtp(kemo_sgl->kemo_shaders->lights, i_point, r, t, p);
 };
+void kemoview_get_each_light_xyz(int i_point, float *x, float *y, float *z){
+    send_each_light_xyz(kemo_sgl->kemo_shaders->lights, i_point, x, y, z);
+};
 
 void kemoview_set_material_parameter(int itype, float value){
 	set_matrial_parameter(itype, value, kemo_sgl->kemo_shaders->lights);

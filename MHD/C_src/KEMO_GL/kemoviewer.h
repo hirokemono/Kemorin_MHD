@@ -331,7 +331,8 @@ extern "C" {
 	void kemoview_set_each_light_position(int i_point, float r, float t, float p);
 	int kemoview_get_num_light_position(void);
 	void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p);
-	
+    void kemoview_get_each_light_xyz(int i_point, float *x, float *y, float *z);
+
 	void kemoview_set_material_parameter(int itype, float shiness_in);
 	float kemoview_get_material_parameter(int itype);
 	

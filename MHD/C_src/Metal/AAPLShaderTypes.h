@@ -28,9 +28,8 @@ typedef enum AAPLVertexInputIndex
 
 typedef enum AAPLLightInputIndex
 {
-    AAPLNumLights =      0,
-    AAPLLightsParams =   1,
-    AAPLMaterialParams = 2,
+    AAPLLightsParams =   0,
+    AAPLMaterialParams = 1,
 } AAPLLightInputIndex;
 
 
@@ -80,24 +79,25 @@ typedef struct
 } KemoViewVertex;
 
 typedef struct{
-    vector_float4 ambient;              // Aclarri
-    vector_float4 diffuse;              // Dcli
-    vector_float4 specular;             // Scli
-    vector_float4 position;             // Ppli
-    vector_float4 halfVector;           // Derived: Hi
-    vector_float3 spotDirection;        // Sdli
-    float spotExponent;        // Srli
-    float spotCutoff;          // Crli
+//    vector_float4 ambient[12];              // Aclarri
+//    vector_float4 diffuse[12];              // Dcli
+//    vector_float4 specular[12];             // Scli
+    vector_float4 position[12];             // Ppli
+//    vector_float4 halfVector[12];           // Derived: Hi
+//    vector_float3 spotDirection[12];        // Sdli
+//    float spotExponent[12];        // Srli
+//    float spotCutoff[12];          // Crli
     // (range: [0.0,90.0], 180.0)
-    float spotCosCutoff;       // Derived: cos(Crli)
+//    float spotCosCutoff[12];       // Derived: cos(Crli)
     // (range: [1.0,0.0],-1.0)
-    float constantAttenuation;   // K0
-    float linearAttenuation;     // K1
-    float quadraticAttenuation;  // K2
+//    float constantAttenuation[12];   // K0
+//    float linearAttenuation[12];     // K1
+//    float quadraticAttenuation[12];  // K2
+    int num_lights;
 } LightSourceParameters;
 
 typedef struct{
-    vector_float4 emission;    // Ecm
+//    vector_float4 emission;    // Ecm
     vector_float4 ambient;     // Acm
     vector_float4 diffuse;     // Dcm
     vector_float4 specular;    // Scm

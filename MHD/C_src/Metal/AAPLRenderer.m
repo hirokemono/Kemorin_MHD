@@ -18,26 +18,31 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDevice> _device;
     
     // The render pipeline generated from the vertex and fragment shaders in the .metal shader file.
-    id<MTLRenderPipelineState> _pipelineState[4];
+    id<MTLRenderPipelineState> _pipelineState[5];
     
     // The command queue used to pass commands to the device.
     id<MTLCommandQueue> _commandQueue;
     
-    id<MTLFunction> _vertexFunction[3];
-    id<MTLFunction> _fragmentFunction[3];
+    id<MTLFunction> _vertexFunction[4];
+    id<MTLFunction> _fragmentFunction[4];
 
     // The Metal buffer that holds the vertex data.
-    id<MTLBuffer> _vertices[14];
+    id<MTLBuffer> _vertices[31];
     // The Metal texture object
     id<MTLTexture> _texture[7];
-    
+/*  Index buffer for initial cube */
+    id<MTLBuffer> _index_buffer;
+
     // The current size of the view, used as an input to the vertex shader.
     vector_uint2    _viewportSize;
     float           _scalechange;
     
     matrix_float4x4 _modelview_mat;
     matrix_float4x4 _projection_mat;
+    matrix_float3x3 _normal_mat;
+
     matrix_float4x4 _map_proj_mat;
+    matrix_float4x4 _cbar_proj_mat;
 
     NSUInteger _frameNum;
     
@@ -66,6 +71,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         _vertexFunction[2] =   [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
         _fragmentFunction[2] = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
+
+        _vertexFunction[3] =   [defaultLibrary newFunctionWithName:@"PhongVertexShader"];
+        _fragmentFunction[3] = [defaultLibrary newFunctionWithName:@"PhongFragmentShader"];
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         MTLRenderPipelineDescriptor *pipelineStateDescriptor;
@@ -132,23 +140,53 @@ Implementation of a platform independent renderer class, which performs Metal se
         _pipelineState[0] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
         NSAssert(_pipelineState[0], @"Failed to create pipeline state: %@", error);
-    }
 
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+        pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+        pipelineStateDescriptor.label = @"2D Texture Pipeline";
+        pipelineStateDescriptor.vertexFunction = _vertexFunction[3];
+        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[3];
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+        
+        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+            
+        _pipelineState[4] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                           error:&error];
+        NSAssert(_pipelineState[4], @"Failed to create pipeline state: %@", error);
+    }
 /* Create the command queue */
-            _commandQueue = [_device newCommandQueue];
+    _commandQueue = [_device newCommandQueue];
     return self;
 }
 
-- (matrix_float4x4) setMetalViewMatrices:(struct transfer_matrices *) matrices
+- (matrix_float4x4) setMetalViewMatrices:(float *) matrix
 {
     vector_float4 col_wk[4];
     for(int i=0;i<4;i++){
-        col_wk[i].x = matrices->proj[4*i  ];
-        col_wk[i].y = matrices->proj[4*i+1];
-        col_wk[i].z = matrices->proj[4*i+2];
-        col_wk[i].w = matrices->proj[4*i+3];
+        col_wk[i].x = matrix[4*i  ];
+        col_wk[i].y = matrix[4*i+1];
+        col_wk[i].z = matrix[4*i+2];
+        col_wk[i].w = matrix[4*i+3];
     };
     return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
+}
+
+- (matrix_float3x3) setMetal3x3Matrices:(float *) matrix
+{
+    vector_float3 col_wk[3];
+    for(int i=0;i<3;i++){
+        col_wk[i].x = matrix[3*i  ];
+        col_wk[i].y = matrix[3*i+1];
+        col_wk[i].z = matrix[3*i+2];
+    };
+    return simd_matrix(col_wk[0], col_wk[1], col_wk[2]);
 }
 
 /// Called whenever the view needs to render a frame.
@@ -165,13 +203,17 @@ Implementation of a platform independent renderer class, which performs Metal se
                                                     -1.0, 1.0);
     struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
     struct transfer_matrices *view_matrices = transfer_matrix_to_shader(kemo_sgl->view_s);
-    struct transfer_matrices *map_matrices = init_projection_matrix_for_map(kemo_sgl->view_s->nx_frame,
-                                                                            kemo_sgl->view_s->ny_frame);
+    struct transfer_matrices *map_matrices
+            = init_projection_matrix_for_map(kemo_sgl->view_s->nx_frame,
+                                             kemo_sgl->view_s->ny_frame);
     free(orthogonal);
 
-    _projection_mat = [self setMetalViewMatrices:cbar_matrices];
-    _modelview_mat =  [self setMetalViewMatrices:view_matrices];
-    _map_proj_mat =   [self setMetalViewMatrices:map_matrices];
+    _cbar_proj_mat =  [self setMetalViewMatrices:cbar_matrices->proj];
+    _map_proj_mat =   [self setMetalViewMatrices:map_matrices->proj];
+
+    _modelview_mat =  [self setMetalViewMatrices:view_matrices->model];
+    _projection_mat = [self setMetalViewMatrices:view_matrices->proj];
+    _normal_mat =     [self setMetal3x3Matrices:map_matrices->nrmat];
     free(cbar_matrices);
     free(view_matrices);
     free(map_matrices);
@@ -258,14 +300,11 @@ Implementation of a platform independent renderer class, which performs Metal se
     /* draw example cube for empty data */
     iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
                + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
+    struct gl_index_buffer *cube_index_buf = alloc_gl_index_buffer(12, 3);
     struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     cube_buf->num_nod_buf = 0;
-    if(iflag == 0){
-        struct initial_cube_lighting *init_light = init_inital_cube_lighting();
-        const_initial_cube_buffer(cube_buf);
-        free(cube_buf->v_buf);
-    };
-    free(cube_buf);
+    const_initial_cube_buffer(cube_buf, cube_index_buf);
+    struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 
 
     
@@ -400,6 +439,15 @@ Implementation of a platform independent renderer class, which performs Metal se
                                            options:MTLResourceStorageModeShared];
     };
 
+    if(cube_buf->num_nod_buf > 0){
+        _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) cube_buf->v_buf)
+                                             length:(cube_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                            options:MTLResourceStorageModeShared];
+        _index_buffer = [_device newBufferWithBytes:cube_index_buf->ie_buf
+                                             length:(cube_index_buf->nsize_buf * sizeof(unsigned int))
+                                            options:MTLResourceStorageModeShared];
+    };
+
     // Create a new command buffer for each render pass to the current drawable.
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
     commandBuffer.label = @"MyCommand";
@@ -425,10 +473,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                                            length:(map_buf->nsize_buf * sizeof(float))
                                                           options:MTLResourceStorageModeShared
                                                       deallocator:nil];
-/*                _vertices[10] = [_device newBufferWithBytes:((KemoViewVertex *) map_buf->v_buf)
-                                                     length:(map_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                                    options:MTLResourceStorageModeShared];
-*/
+
                 [renderEncoder setRenderPipelineState:_pipelineState[1]];
                 [renderEncoder setVertexBuffer:_vertices[10]
                                         offset:0
@@ -494,8 +539,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   vertexCount:mflame_buf->num_nod_buf];
             };
         } else {
-            /*  Commands to render simple quadrature */
-        
+/*  Commands to render simple quadrature
             [renderEncoder setRenderPipelineState:_pipelineState[0]];
             [renderEncoder setVertexBuffer:_vertices[0]
                                     offset:0
@@ -509,9 +553,96 @@ Implementation of a platform independent renderer class, which performs Metal se
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
                               vertexCount:n_quad_vertex];
+*/
+            float x, y, z;
+            int numLight;
+            MaterialParameters    material[1];
+/*
+            material[0].ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
+            material[0].diffuse.x = kemoview_get_material_parameter(DIFFUSE_FLAG);
+            material[0].specular.x = kemoview_get_material_parameter(SPECULAR_FLAG);
+            material[0].specular = kemoview_get_material_parameter(SHINENESS_FLAG);
+
+            numLight = kemoview_get_num_light_position();
+            LightSourceParameters *lights
+                = (LightSourceParameters *) malloc(numLight*sizeof(LightSourceParameters));
+
+            for(i=0;i<numLight;i++){
+                kemoview_get_each_light_xyz(i, &x, &y, &z);
+                lights[i].position.x = x;
+                lights[i].position.y = y;
+                lights[i].position.z = z;
+                lights[i].position.w = 1.0;
+            };
+*/
+            LightSourceParameters lights;
+            lights.num_lights = init_light->num_light;
+            for(i=0;i<lights.num_lights;i++){
+                lights.position[i].x = init_light->lightposition[i][0];
+                lights.position[i].y = init_light->lightposition[i][1];
+                lights.position[i].z = init_light->lightposition[i][2];
+                lights.position[i].w = init_light->lightposition[i][3];
+            };
+            material[0].ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
+            material[0].diffuse.x = kemoview_get_material_parameter(DIFFUSE_FLAG);
+            material[0].specular.x = kemoview_get_material_parameter(SPECULAR_FLAG);
+            material[0].shininess = init_light->shine[0];
+
+            
+            material[0].ambient.y = material[0].ambient.x;
+            material[0].ambient.z = material[0].ambient.x;
+            material[0].ambient.w = 1.0;
+            material[0].diffuse.y = material[0].diffuse.x;
+            material[0].diffuse.z = material[0].diffuse.x;
+            material[0].diffuse.w = 1.0;
+            material[0].specular.y = material[0].specular.x;
+            material[0].specular.z = material[0].specular.x;
+            material[0].specular.w = 1.0;
+            
+            if(cube_buf->num_nod_buf > 0){
+                [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
+                [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
+                [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
+                [renderEncoder setCullMode:MTLCullModeBack];
+
+                [renderEncoder setRenderPipelineState:_pipelineState[4]];
+                [renderEncoder setVertexBuffer:_vertices[30]
+                                        offset:0
+                                       atIndex:AAPLVertexInputIndexVertices];
+                [renderEncoder setVertexBytes:&_modelview_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLModelViewMatrix];
+                [renderEncoder setVertexBytes:&_projection_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLProjectionMatrix];
+                [renderEncoder setVertexBytes:&_normal_mat
+                                       length:sizeof(matrix_float3x3)
+                                      atIndex:AAPLModelNormalMatrix];
+                
+                [renderEncoder setFragmentBytes:&lights
+                                         length:(sizeof(LightSourceParameters))
+                                        atIndex:AAPLLightsParams];
+                [renderEncoder setFragmentBytes:material
+                                         length:sizeof(MaterialParameters)
+                                        atIndex:AAPLMaterialParams];
+
+                [renderEncoder setFragmentBytes:&init_light->lightposition[0]
+                                         length:sizeof(vector_float4)
+                                        atIndex:2];
+                [renderEncoder setFragmentBytes:&init_light->lightposition[1]
+                                         length:sizeof(vector_float4)
+                                        atIndex:3];
+
+                [renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
+                                          indexCount:36
+                                           indexType:MTLIndexTypeUInt32
+                                         indexBuffer:_index_buffer
+                                   indexBufferOffset:0];
+            };
+
         };
 
-/*  Commands to render screen message */
+    /*  Commands to render screen message */
 
         [renderEncoder setRenderPipelineState:_pipelineState[2]];
         // Pass in the parameter data.
@@ -519,8 +650,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
         
-        [renderEncoder setVertexBytes:&_projection_mat
-                               length:sizeof(_projection_mat)
+        [renderEncoder setVertexBytes:&_cbar_proj_mat
+                               length:sizeof(_cbar_proj_mat)
                               atIndex:AAPLOrthogonalMatrix];
 
         // Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
@@ -540,8 +671,8 @@ Implementation of a platform independent renderer class, which performs Metal se
             [renderEncoder setVertexBuffer:_vertices[2]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat
-                                   length:sizeof(_projection_mat)
+            [renderEncoder setVertexBytes:&_cbar_proj_mat
+                                   length:sizeof(_cbar_proj_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder setFragmentTexture:_texture[2]
                                       atIndex:AAPLTextureIndexBaseColor];
@@ -555,8 +686,8 @@ Implementation of a platform independent renderer class, which performs Metal se
             [renderEncoder setVertexBuffer:_vertices[3]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat
-                                   length:sizeof(_projection_mat)
+            [renderEncoder setVertexBytes:&_cbar_proj_mat
+                                   length:sizeof(_cbar_proj_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
@@ -568,8 +699,8 @@ Implementation of a platform independent renderer class, which performs Metal se
             [renderEncoder setVertexBuffer:_vertices[4]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat
-                                   length:sizeof(_projection_mat)
+            [renderEncoder setVertexBytes:&_cbar_proj_mat
+                                   length:sizeof(_cbar_proj_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder setFragmentTexture:_texture[4]
                                       atIndex:AAPLTextureIndexBaseColor];
@@ -582,8 +713,8 @@ Implementation of a platform independent renderer class, which performs Metal se
             [renderEncoder setVertexBuffer:_vertices[5]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat
-                                   length:sizeof(_projection_mat)
+            [renderEncoder setVertexBytes:&_cbar_proj_mat
+                                   length:sizeof(_cbar_proj_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder setFragmentTexture:_texture[5]
                                       atIndex:AAPLTextureIndexBaseColor];
@@ -596,8 +727,8 @@ Implementation of a platform independent renderer class, which performs Metal se
             [renderEncoder setVertexBuffer:_vertices[6]
                                     offset:0
                                    atIndex:AAPLVertexInputIndexVertices];
-            [renderEncoder setVertexBytes:&_projection_mat
-                                   length:sizeof(_projection_mat)
+            [renderEncoder setVertexBytes:&_cbar_proj_mat
+                                   length:sizeof(_cbar_proj_mat)
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder setFragmentTexture:_texture[6]
                                       atIndex:AAPLTextureIndexBaseColor];
@@ -654,6 +785,10 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 //    [_vertices[0] setPurgeableState:MTLPurgeableStateEmpty];
 //    [_vertices[0] release];
+    if(cube_buf->num_nod_buf > 0){
+        free(cube_buf->v_buf);
+    };
+    free(cube_buf);
 
     free(cbar_buf->v_buf);
     free(cbar_buf);

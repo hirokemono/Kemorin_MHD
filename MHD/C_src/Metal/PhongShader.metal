@@ -48,6 +48,8 @@ PhongVertexShader(uint vertexID [[ vertex_id ]],
     //   the origin)
     float3 pixelSpacePosition = vertexArray[vertexID].position.xyz;
     float3 pixelSpaceNormal =   vertexArray[vertexID].normal.xyz;
+    float4 pixelSpaceColor =    vertexArray[vertexID].color;
+
     matrix_float4x4 ModelViewMatrix = matrix_float4x4(*ModelViewMatrixPointer);
     matrix_float4x4 ProjectionMatrix = matrix_float4x4(*ProjectionMatrixPointer);
     matrix_float3x3 ModelNormalMatrix = matrix_float3x3(*ModelNormalMatrixPointer);
@@ -58,25 +60,34 @@ PhongVertexShader(uint vertexID [[ vertex_id ]],
     out.position2d = ModelViewMatrix *  out.position2d;
     out.position2d = ProjectionMatrix * out.position2d;
 
-    out.normal =   normalize(ModelNormalMatrix * pixelSpaceNormal);
+    out.normal = normalize(ModelNormalMatrix * pixelSpaceNormal);
+    out.color = pixelSpaceColor;
     return out;
 }
 
 // Fragment function
 fragment float4
 PhongFragmentShader(RasterizerData in [[stage_in]],
-                    constant int *numLightsPointer[[buffer(AAPLNumLights)]],
                     constant LightSourceParameters *lightsParamsPointer[[buffer(AAPLLightsParams)]],
-                    constant MaterialParameters *frontMaterialParamsPointer[[buffer(AAPLMaterialParams)]]
+                    constant MaterialParameters *frontMaterialParamsPointer[[buffer(AAPLMaterialParams)]],
+                    constant vector_float4 *lightposi1[[buffer(2)]],
+                    constant vector_float4 *lightposi2[[buffer(3)]]
                     )
 {
-    int numLights = int(*numLightsPointer);
-    LightSourceParameters lightsParameters;
+    LightSourceParameters lightsParameters = LightSourceParameters(*lightsParamsPointer);
+    int numLights = lightsParameters.num_lights;
+    
     MaterialParameters FrontMaterialParams = MaterialParameters(*frontMaterialParamsPointer);
     float4 materialAmbient =   FrontMaterialParams.ambient;
     float4 materialDiffuse =   FrontMaterialParams.diffuse;
     float4 materialSpecular =  FrontMaterialParams.specular;
     float  shininess = FrontMaterialParams.shininess;
+
+    vector_float4 l1 = vector_float4(*lightposi1);
+    vector_float4 l2 = vector_float4(*lightposi2);
+    vector_float4 lightxyz[2];
+    lightxyz[0] = l1;
+    lightxyz[1] = l2;
 
     float3 view = normalize(in.pixelSpacePosition.xyz);
     float3 fnormal = in.normal;
@@ -92,13 +103,11 @@ PhongFragmentShader(RasterizerData in [[stage_in]],
 
     float4 out_Color = 0.0;
     for (int i=0; i<numLights;i++){
-        lightsParameters = LightSourceParameters(lightsParamsPointer[i]);
-        light = normalize(lightsParameters.position.xyz - in.pixelSpacePosition);
+        light =      normalize(lightxyz[i].xyz - in.pixelSpacePosition);
         diffuseDir = dot(light, fnormal);
-
-        halfway = normalize(light - view);
-        product = max(dot(fnormal, halfway), 0.0);
-        specular = pow(product, shininess);
+        halfway =    normalize(light - view);
+        product =    max(dot(fnormal, halfway), 0.0);
+        specular =   pow(product, shininess);
         
         out_Color = out_Color + in.color * materialAmbient
                               + in.color * materialDiffuse * abs(diffuseDir)

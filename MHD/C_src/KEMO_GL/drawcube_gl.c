@@ -60,19 +60,22 @@ static void light_for_initial_cube(struct initial_cube_lighting *init_light,
 	return;
 };
 
-void const_initial_cube_buffer(struct gl_strided_buffer *cube_buf){
+void const_initial_cube_buffer(struct gl_strided_buffer *cube_buf,
+                               struct gl_index_buffer *index_buf){
     set_buffer_address_4_patch(8, cube_buf);
     alloc_strided_buffer(cube_buf);
-    CubeNode_to_buf(0.5f, cube_buf);
+    CubeNode_to_buf(0.5f, cube_buf, index_buf);
     return;
 };
 
-void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct VAO_ids *cube_VAO){
-	cube_VAO->npoint_draw = 36;
-	cube_surf_VBO(cube_VAO, cube_buf);
+void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
+                          struct VAO_ids *cube_VAO){
+	cube_VAO->npoint_draw = index_buf->nsize_buf;
+	cube_surf_VBO(cube_VAO, cube_buf, index_buf);
 	glBindVertexArray(0);
 	
-	free(cube_buf->v_buf);
+//    free(index_buf->ie_buf);
+//	free(cube_buf->v_buf);
 	return;
 };
 
@@ -96,7 +99,10 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(8, gl_buf);
 	alloc_strided_buffer(gl_buf);
-    CubeNode_to_buf(0.5f, gl_buf);
+    struct gl_index_buffer *index_buf = alloc_gl_index_buffer(12, 3);
+    CubeNode_to_buf(0.5f, gl_buf, index_buf);
+    free(index_buf->ie_buf);
+    free(index_buf);
 
 	glGenVertexArrays(1, &cube_VAO->id_VAO);
 	glBindVertexArray(cube_VAO->id_VAO);
