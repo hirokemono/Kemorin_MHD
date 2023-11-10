@@ -1,11 +1,11 @@
 #version 330
 // phong_texture.vert
 
-layout (location = 0) in vec3  xyz;
-layout (location = 1) in float data;
-layout (location = 2) in vec4  color;
-layout (location = 3) in vec4  norm;
-layout (location = 4) in vec2  txur;
+layout (location = 0) in vec4  xyz;
+layout (location = 1) in vec4  color;
+layout (location = 2) in vec4  norm;
+layout (location = 3) in vec2  txur;
+layout (location = 4) in float data;
 
 
 uniform mat4 projectionMat;
@@ -20,8 +20,11 @@ out vec2 tex_position;
 
 void main(void)
 {
-	position = vec4(modelViewMat * vec4(xyz, 1.0));
-	normal = modelNormalMat * norm;
+    position = xyz;
+    position.w = 1.0;
+    position = modelViewMat * position;
+
+    normal = modelNormalMat * norm;
 	ex_Color = color;
 	tex_position = txur;
 

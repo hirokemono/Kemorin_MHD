@@ -239,16 +239,16 @@ void cube_edge_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
 				 gl_buf->v_buf, GL_STATIC_DRAW);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, gl_buf->istride,
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, gl_buf->istride, 
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, gl_buf->istride, 
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_norm * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
 	
 	glDeleteBuffers(1, &VAO_quad->id_index);
 	
@@ -292,16 +292,16 @@ void cube_flat_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buff
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
 				 gl_buf->v_buf, GL_STATIC_DRAW);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, gl_buf->istride,
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, gl_buf->istride, 
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, gl_buf->istride, 
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_norm * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	/*
@@ -359,7 +359,7 @@ void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
 				 gl_buf->v_buf, GL_STATIC_DRAW);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, gl_buf->istride,
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, gl_buf->istride,
 						  (GLvoid*) (gl_buf->ist_xyz * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, gl_buf->istride, 
 						  (GLvoid*) (gl_buf->ist_csurf * sizeof(GL_FLOAT)));

@@ -40,28 +40,26 @@ PhongVertexShader(uint vertexID [[ vertex_id ]],
                   constant matrix_float4x4 *ModelNormalMatrixPointer [[buffer(AAPLModelNormalMatrix)]]
                   )
 {
-
     RasterizerData out;
 
-    // Index into the array of positions to get the current vertex.
-    //   Positions are specified in pixel dimensions (i.e. a value of 100 is 100 pixels from
-    //   the origin)
-    float3 objectSpacePosition = vertexArray[vertexID].position.xyz;
-    float3 objectSpaceNormal =   vertexArray[vertexID].normal.xyz;
+// Index into the array of positions to get the current vertex.
+    float4 objectSpacePosition = vertexArray[vertexID].position;
+    float4 objectSpaceNormal =   vertexArray[vertexID].normal;
     float4 pixelSpaceColor =     vertexArray[vertexID].color;
 
     matrix_float4x4 modelViewMatrix = matrix_float4x4(*ModelViewMatrixPointer);
     matrix_float4x4 projectionMatrix = matrix_float4x4(*ProjectionMatrixPointer);
     matrix_float4x4 modelNormalMatrix = matrix_float4x4(*ModelNormalMatrixPointer);
 
-    out.pixelSpacePosition.xyz =     objectSpacePosition;
-    out.pixelSpacePosition.w =       1.0;
-    out.pixelSpacePosition =         modelViewMatrix *  out.pixelSpacePosition;
-    out.position2d =                 projectionMatrix * out.pixelSpacePosition;
+    out.pixelSpacePosition =     objectSpacePosition;
+    out.pixelSpacePosition.w =   1.0;
+    out.pixelSpacePosition =     modelViewMatrix *  out.pixelSpacePosition;
+    
+    out.position2d =             projectionMatrix * out.pixelSpacePosition;
 
-    out.pixelSpaceNormal.xyz =  objectSpaceNormal;
-    out.pixelSpaceNormal.w =    1.0;
-    out.pixelSpaceNormal =      modelNormalMatrix * out.pixelSpaceNormal;
+    out.pixelSpaceNormal =   objectSpaceNormal;
+    out.pixelSpaceNormal.w = 1.0;
+    out.pixelSpaceNormal =   modelNormalMatrix * out.pixelSpaceNormal;
     
     out.pixelSpaceColor =   pixelSpaceColor;
     return out;
