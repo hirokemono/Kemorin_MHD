@@ -14,7 +14,7 @@
 struct transfer_matrices{
     float model[16];
     float proj[16];
-    float nrmat[9];
+    float nrmat[16];
 };
 
 struct transfer_matrices * alloc_transfer_matrices(void);

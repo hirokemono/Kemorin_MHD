@@ -218,7 +218,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     _modelview_mat =  [self setMetalViewMatrices:view_matrices->model];
     _projection_mat = [self setMetalViewMatrices:view_matrices->proj];
-    _normal_mat =     [self setMetal3x3Matrices:view_matrices->nrmat];
+    _normal_mat =     [self setMetalViewMatrices:view_matrices->nrmat];
     free(cbar_matrices);
     free(view_matrices);
     free(map_matrices);

@@ -6,7 +6,7 @@
 //
 
 in vec4 position;
-in vec3 normal;
+in vec4 normal;
 out vec4 out_Color;
 
 #define MAX_LIGHTS 10
@@ -43,7 +43,7 @@ uniform vec4 SingleColor;
 
 void main (void)
 {
-	vec3 fnormal = normalize(normal);
+	vec3 fnormal = normalize(normal.xyz);
 	vec3 light;
 	float diffuse;
 	

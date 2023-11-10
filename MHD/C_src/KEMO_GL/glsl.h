@@ -34,7 +34,7 @@ struct kemoview_shaders{
 struct gl_transfer_matrices{
     GLfloat model[16];
     GLfloat proj[16];
-    GLfloat nrmat[9];
+    GLfloat nrmat[16];
 };
 
 /* prptotypes */

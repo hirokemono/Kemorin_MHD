@@ -3,7 +3,7 @@
 
 in vec4 position;
 in vec4 ex_Color;
-in vec3 normal;
+in vec4 normal;
 in vec2 tex_position;
 out vec4 out_Color;
 
@@ -41,7 +41,7 @@ uniform sampler2D image;
 
 void main (void)
 {
-	vec3 fnormal = normalize(normal);
+	vec3 fnormal = normalize(normal.xyz);
 	vec3 light;
 	float diffuse;
 

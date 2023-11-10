@@ -158,7 +158,7 @@ void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_bu
 						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, strided_buf->istride, 
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
 						  (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
@@ -181,7 +181,7 @@ void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *st
 						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, strided_buf->istride, 
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_tex * sizeof(GL_FLOAT)));

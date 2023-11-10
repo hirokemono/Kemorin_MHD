@@ -63,7 +63,7 @@ typedef struct
 {
 /* Positions in pixel space. A value of 100 indicates 100 pixels
      from the origin/center. */
-    vector_float3 position;
+    vector_float4 position;
 /* RGBA Color in pixel space. A value of 100 indicates 100 pixels
       from the origin/center. */
     vector_float4 color;

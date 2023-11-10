@@ -384,7 +384,7 @@ char * load_gouraud_vert(void){
         "layout (location = 0) in vec3  xyz;\n"\
         "layout (location = 1) in float data;\n"\
         "layout (location = 2) in vec4  color;\n"\
-        "layout (location = 3) in vec3  norm;\n"\
+        "layout (location = 3) in vec4  norm;\n"\
         "layout (location = 4) in vec2  txur;\n"\
         "\n"\
         "out vec4 ex_Position;\n"\
@@ -393,7 +393,7 @@ char * load_gouraud_vert(void){
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
-        "uniform mat3 modelNormalMat;\n"\
+        "uniform mat4 modelNormalMat;\n"\
         "\n"\
         "#define MAX_LIGHTS 10\n"\
         "struct LightSourceParameters{\n"\
@@ -429,7 +429,8 @@ char * load_gouraud_vert(void){
         "void main(void)\n"\
         "{\n"\
         "	vec3 position = vec3(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	vec3 normal = normalize(modelNormalMat * norm);\n"\
+        "	vec4 norm4 =  modelNormalMat * norm;\n"\
+        "    vec3 normal = normalize(norm4.xyz);\n"\
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "	\n"\
@@ -514,7 +515,7 @@ char * load_phong_frag(void){
         "\n"\
         "in vec4 position;\n"\
         "in vec4 ex_Color;\n"\
-        "in vec3 normal;\n"\
+        "in vec4 normal;\n"\
         "out vec4 out_Color;\n"\
         "\n"\
         "#define MAX_LIGHTS 10\n"\
@@ -549,7 +550,7 @@ char * load_phong_frag(void){
         "\n"\
         "void main (void)\n"\
         "{\n"\
-        "	vec3 fnormal = normalize(normal);\n"\
+        "	vec3 fnormal = normalize(normal.xyz);\n"\
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "\n"\
@@ -598,23 +599,23 @@ char * load_phong_vert(void){
         "layout (location = 0) in vec3  xyz;\n"\
         "layout (location = 1) in float data;\n"\
         "layout (location = 2) in vec4  color;\n"\
-        "layout (location = 3) in vec3  norm;\n"\
+        "layout (location = 3) in vec4  norm;\n"\
         "layout (location = 4) in vec2  txur;\n"\
         "\n"\
         "\n"\
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
-        "uniform mat3 modelNormalMat;\n"\
+        "uniform mat4 modelNormalMat;\n"\
         "\n"\
         "out vec4 position;\n"\
         "out vec4 ex_Color;\n"\
-        "out vec3 normal;\n"\
+        "out vec4 normal;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
         "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	normal = normalize(modelNormalMat * norm);\n"\
+        "	normal =   modelNormalMat * norm;\n"\
         "	ex_Color = color;\n"\
         "\n"\
         "	gl_Position =  projectionMat * position;\n"\
@@ -640,7 +641,7 @@ char * load_phong_1color_frag(void){
         "//\n"\
         "\n"\
         "in vec4 position;\n"\
-        "in vec3 normal;\n"\
+        "in vec4 normal;\n"\
         "out vec4 out_Color;\n"\
         "\n"\
         "#define MAX_LIGHTS 10\n"\
@@ -677,7 +678,7 @@ char * load_phong_1color_frag(void){
         "\n"\
         "void main (void)\n"\
         "{\n"\
-        "	vec3 fnormal = normalize(normal);\n"\
+        "	vec3 fnormal = normalize(normal.xyz);\n"\
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "	\n"\
@@ -720,21 +721,21 @@ char * load_phong_1color_vert(void){
         "// phong_1color.vert\n"\
         "\n"\
         "layout(location = 0) in vec3  xyz;\n"\
-        "layout(location = 1) in vec3  norm;\n"\
+        "layout(location = 1) in vec4  norm;\n"\
         "\n"\
         "\n"\
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
-        "uniform mat3 modelNormalMat;\n"\
+        "uniform mat4 modelNormalMat;\n"\
         "\n"\
         "out vec4 position;\n"\
-        "out vec3 normal;\n"\
+        "out vec4 normal;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
         "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	normal = normalize(modelNormalMat * norm);\n"\
+        "	normal = modelNormalMat * norm;\n"\
         "	\n"\
         "	gl_Position =  projectionMat * position;\n"\
         "}\n"\
@@ -757,7 +758,7 @@ char * load_phong_texture_frag(void){
         "\n"\
         "in vec4 position;\n"\
         "in vec4 ex_Color;\n"\
-        "in vec3 normal;\n"\
+        "in vec4 normal;\n"\
         "in vec2 tex_position;\n"\
         "out vec4 out_Color;\n"\
         "\n"\
@@ -795,7 +796,7 @@ char * load_phong_texture_frag(void){
         "\n"\
         "void main (void)\n"\
         "{\n"\
-        "	vec3 fnormal = normalize(normal);\n"\
+        "	vec3 fnormal = normalize(normal.xyz);\n"\
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "\n"\
@@ -845,24 +846,24 @@ char * load_phong_texture_vert(void){
         "layout (location = 0) in vec3  xyz;\n"\
         "layout (location = 1) in float data;\n"\
         "layout (location = 2) in vec4  color;\n"\
-        "layout (location = 3) in vec3  norm;\n"\
+        "layout (location = 3) in vec4  norm;\n"\
         "layout (location = 4) in vec2  txur;\n"\
         "\n"\
         "\n"\
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
-        "uniform mat3 modelNormalMat;\n"\
+        "uniform mat4 modelNormalMat;\n"\
         "\n"\
         "out vec4 position;\n"\
         "out vec4 ex_Color;\n"\
-        "out vec3 normal;\n"\
+        "out vec4 normal;\n"\
         "out vec2 tex_position;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
         "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	normal = normalize(modelNormalMat * norm);\n"\
+        "	normal = modelNormalMat * norm;\n"\
         "	ex_Color = color;\n"\
         "	tex_position = txur;\n"\
         "\n"\

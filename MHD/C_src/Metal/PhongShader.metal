@@ -25,9 +25,9 @@ struct RasterizerData
     // interpolates its value with the values of the other triangle vertices
     // and then passes the interpolated value to the fragment shader for each
     // fragment in the triangle.
-    float4 color;
+    float4 pixelSpaceColor;
     
-    float4 normal;
+    float4 pixelSpaceNormal;
     float4 pixelSpacePosition;
 };
 
@@ -46,23 +46,24 @@ PhongVertexShader(uint vertexID [[ vertex_id ]],
     // Index into the array of positions to get the current vertex.
     //   Positions are specified in pixel dimensions (i.e. a value of 100 is 100 pixels from
     //   the origin)
-    float3 pixelSpacePosition = vertexArray[vertexID].position.xyz;
-    float3 pixelSpaceNormal =   vertexArray[vertexID].normal.xyz;
-    float4 pixelSpaceColor =    vertexArray[vertexID].color;
+    float3 objectSpacePosition = vertexArray[vertexID].position.xyz;
+    float3 objectSpaceNormal =   vertexArray[vertexID].normal.xyz;
+    float4 pixelSpaceColor =     vertexArray[vertexID].color;
 
-    matrix_float4x4 ModelViewMatrix = matrix_float4x4(*ModelViewMatrixPointer);
-    matrix_float4x4 ProjectionMatrix = matrix_float4x4(*ProjectionMatrixPointer);
-    matrix_float4x4 ModelNormalMatrix = matrix_float4x4(*ModelNormalMatrixPointer);
+    matrix_float4x4 modelViewMatrix = matrix_float4x4(*ModelViewMatrixPointer);
+    matrix_float4x4 projectionMatrix = matrix_float4x4(*ProjectionMatrixPointer);
+    matrix_float4x4 modelNormalMatrix = matrix_float4x4(*ModelNormalMatrixPointer);
 
-    out.pixelSpacePosition.xyz =     pixelSpacePosition;
+    out.pixelSpacePosition.xyz =     objectSpacePosition;
     out.pixelSpacePosition.w =       1.0;
-    out.pixelSpacePosition =         ModelViewMatrix *  out.pixelSpacePosition;
-    out.position2d =                 ProjectionMatrix * out.pixelSpacePosition;
+    out.pixelSpacePosition =         modelViewMatrix *  out.pixelSpacePosition;
+    out.position2d =                 projectionMatrix * out.pixelSpacePosition;
 
-    out.normal.xyz =     pixelSpaceNormal;
-    out.normal.w =       1.0;
-    out.normal = ModelNormalMatrix * out.normal;
-    out.color = pixelSpaceColor;
+    out.pixelSpaceNormal.xyz =  objectSpaceNormal;
+    out.pixelSpaceNormal.w =    1.0;
+    out.pixelSpaceNormal =      modelNormalMatrix * out.pixelSpaceNormal;
+    
+    out.pixelSpaceColor =   pixelSpaceColor;
     return out;
 }
 
@@ -79,10 +80,10 @@ PhongFragmentShader(RasterizerData in [[stage_in]],
     float4 materialAmbient =   FrontMaterialParams.ambient;
     float4 materialDiffuse =   FrontMaterialParams.diffuse;
     float4 materialSpecular =  FrontMaterialParams.specular;
-    float shininess =          FrontMaterialParams.shininess;
+    float  shininess =         FrontMaterialParams.shininess;
 
     float3 view =    normalize(in.pixelSpacePosition.xyz);
-    float3 fnormal = normalize(in.normal.xyz);
+    float3 fnormal = normalize(in.pixelSpaceNormal.xyz);
     float3 halfway;
     float3 light;
     float diffuseDir;
@@ -91,7 +92,7 @@ PhongFragmentShader(RasterizerData in [[stage_in]],
     
     float4 tmpSpecular;
     tmpSpecular.xyz = materialSpecular.xyz;
-    tmpSpecular.w = in.color.w;
+    tmpSpecular.w = in.pixelSpaceColor.w;
 
     float4 out_Color = 0.0;
     for (int i=0; i<numLights;i++){
@@ -101,8 +102,8 @@ PhongFragmentShader(RasterizerData in [[stage_in]],
         product =    max(dot(fnormal, halfway), 0.0);
         specular =   pow(product, shininess);
         
-        out_Color = out_Color + in.color * materialAmbient
-                              + in.color * materialDiffuse * abs(diffuseDir)
+        out_Color = out_Color + in.pixelSpaceColor * materialAmbient
+                              + in.pixelSpaceColor * materialDiffuse * abs(diffuseDir)
                               + tmpSpecular * specular;
     }
     return out_Color;
