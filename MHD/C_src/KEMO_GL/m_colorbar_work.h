@@ -11,12 +11,28 @@
 #include "m_color_table_c.h"
 #include "ysglfontdata.h"
 
+#define NCHARA_CBOX   20
+#define NCHARA_MSG    26
+
 #define IHIGHT_TXT     20
 #define IWIDTH_TXT    140
 #define IWIDTH_TLABEL 280
 
 #define IHIGHT_MSG 40
 #define IWIDTH_MSG 488
+
+
+struct line_text_image{
+    int len_text;
+    char *texts;
+    
+    int npixel;
+    int npix_img[2];
+    unsigned char *imgBMP;
+    unsigned char *testBMP;
+
+    int npix_box[2];
+};
 
 struct cbar_work{
 	int iflag_zero;
@@ -34,52 +50,36 @@ struct cbar_work{
 	double psf_min;
 	double psf_max;
 	
-	char minlabel[20];
-	char maxlabel[20];
-	char zerolabel[20];
-	
 	int id_texture[3];
-    int npixel;
-    int npix_x;
-    int npix_y;
-	unsigned char *minBMP;
-	unsigned char *maxBMP;
-	unsigned char *zeroBMP;
-	unsigned char *testBMP;
+    struct line_text_image *cbar_min_image;
+    struct line_text_image *cbar_max_image;
+    struct line_text_image *cbar_zero_image;
 };
 
 struct tlabel_work{
 	float xwin;
 	float ywin;
-	
-	char minlabel[20];
-	
-	int id_texture;
-	int npixel;
-	int npix_x;
-	int npix_y;
-	unsigned char *numBMP;
-	unsigned char *testBMP;
+    int id_texture;
+    struct line_text_image *tlabel_image;
 };
 
 struct msg_work{
     float message_opacity;
-    
     float xbar_max;
     float ybar_min;
     
-    char minlabel[26];
-    
     int id_texture;
-    int npixel;
-    int npix_x;
-    int npix_y;
-    unsigned char *msgBMP;
-    unsigned char *testBMP;
+    struct line_text_image *message_image;
 };
 
 
+
 /* prototypes */
+struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_text);
+void dealloc_line_text_image(struct line_text_image *l_txt_img);
+void clear_line_text_image(struct line_text_image *l_txt_img);
+void set_line_text_image(float text_color3[3], struct line_text_image * l_txt_img);
+
 
 struct cbar_work * alloc_colorbar_position(void);
 void dealloc_colorbar_position(struct cbar_work *cbar_wk);

@@ -318,8 +318,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 /* Construct message texture */
 //    textureDescriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
     textureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
-    textureDescriptor.width = kemo_sgl->kemo_mesh->msg_wk->npix_x;
-    textureDescriptor.height = kemo_sgl->kemo_mesh->msg_wk->npix_y;
+    textureDescriptor.width = kemo_sgl->kemo_mesh->msg_wk->message_image->npix_img[0];
+    textureDescriptor.height = kemo_sgl->kemo_mesh->msg_wk->message_image->npix_img[1];
 
     // Create the texture from the device by using the descriptor
     _texture[1] = [_device newTextureWithDescriptor:textureDescriptor];
@@ -335,15 +335,15 @@ Implementation of a platform independent renderer class, which performs Metal se
     // Copy the bytes from the data object into the texture
     [_texture[1] replaceRegion:region
                    mipmapLevel:0
-                     withBytes:kemo_sgl->kemo_mesh->msg_wk->msgBMP
+                     withBytes:kemo_sgl->kemo_mesh->msg_wk->message_image->imgBMP
                    bytesPerRow:bytesPerRow];
 
     MTLTextureDescriptor *textureDescriptor2 = [[MTLTextureDescriptor alloc] init];
     NSUInteger bytesPerRow2;
     /* Construct time texture */
     textureDescriptor2.pixelFormat = MTLPixelFormatRGBA8Unorm;
-    textureDescriptor2.width =  kemo_sgl->kemo_psf->psf_a->tlabel_wk->npix_x;
-    textureDescriptor2.height = kemo_sgl->kemo_psf->psf_a->tlabel_wk->npix_y;
+    textureDescriptor2.width =  kemo_sgl->kemo_psf->psf_a->tlabel_wk->tlabel_image->npix_img[0];
+    textureDescriptor2.height = kemo_sgl->kemo_psf->psf_a->tlabel_wk->tlabel_image->npix_img[1];
 
     // Create the texture from the device by using the descriptor
     _texture[2] = [_device newTextureWithDescriptor:textureDescriptor2];
@@ -358,15 +358,15 @@ Implementation of a platform independent renderer class, which performs Metal se
     // Copy the bytes from the data object into the texture
     [_texture[2] replaceRegion:region2
                    mipmapLevel:0
-                     withBytes:kemo_sgl->kemo_psf->psf_a->tlabel_wk->numBMP
+                     withBytes:kemo_sgl->kemo_psf->psf_a->tlabel_wk->tlabel_image->imgBMP
                    bytesPerRow:bytesPerRow2];
 
     MTLTextureDescriptor *textureDescriptor3 = [[MTLTextureDescriptor alloc] init];
     NSUInteger bytesPerRow3;
     /* Construct time texture */
     textureDescriptor3.pixelFormat = MTLPixelFormatRGBA8Unorm;
-    textureDescriptor3.width =  kemo_sgl->kemo_psf->psf_a->cbar_wk->npix_x;
-    textureDescriptor3.height = kemo_sgl->kemo_psf->psf_a->cbar_wk->npix_y;
+    textureDescriptor3.width =  kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_min_image->npix_img[0];
+    textureDescriptor3.height = kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_min_image->npix_img[1];
 
     // Create the texture from the device by using the descriptor
     _texture[4] = [_device newTextureWithDescriptor:textureDescriptor3];
@@ -382,15 +382,15 @@ Implementation of a platform independent renderer class, which performs Metal se
     // Copy the bytes from the data object into the texture
     [_texture[4] replaceRegion:region3
                    mipmapLevel:0
-                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->minBMP
+                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_min_image->imgBMP
                    bytesPerRow:bytesPerRow3];
     [_texture[5] replaceRegion:region3
                    mipmapLevel:0
-                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->maxBMP
+                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_max_image->imgBMP
                    bytesPerRow:bytesPerRow3];
     [_texture[6] replaceRegion:region3
                    mipmapLevel:0
-                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->zeroBMP
+                     withBytes:kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_zero_image->imgBMP
                    bytesPerRow:bytesPerRow3];
 
     _frameNum++;

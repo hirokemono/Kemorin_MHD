@@ -19,20 +19,23 @@ static void set_colorbar_text_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cb
                                   struct gl_strided_buffer *zero_buf){
 	glBindVertexArray(cbar_VAO[1]->id_VAO);
 	Const_VAO_4_Texture(cbar_VAO[1], min_buf);
-	cbar_wk->id_texture[0] = set_texture_to_buffer(cbar_wk->npix_x, cbar_wk->npix_y,
-                                                   cbar_wk->minBMP);
+	cbar_wk->id_texture[0] = set_texture_to_buffer(cbar_wk->cbar_min_image->npix_img[0],
+                                                   cbar_wk->cbar_min_image->npix_img[1],
+                                                   cbar_wk->cbar_min_image->imgBMP);
     glBindVertexArray(0);
     
 	glBindVertexArray(cbar_VAO[2]->id_VAO);
 	Const_VAO_4_Texture(cbar_VAO[2], max_buf);
-	cbar_wk->id_texture[1] = set_texture_to_buffer(cbar_wk->npix_x, cbar_wk->npix_y,
-                                                   cbar_wk->maxBMP);
+	cbar_wk->id_texture[1] = set_texture_to_buffer(cbar_wk->cbar_max_image->npix_img[0],
+                                                   cbar_wk->cbar_max_image->npix_img[1],
+                                                   cbar_wk->cbar_max_image->imgBMP);
     glBindVertexArray(0);
     
 	glBindVertexArray(cbar_VAO[3]->id_VAO);
 	Const_VAO_4_Texture(cbar_VAO[3], zero_buf);
-	cbar_wk->id_texture[2] = set_texture_to_buffer(cbar_wk->npix_x, cbar_wk->npix_y,
-                                                   cbar_wk->zeroBMP);
+	cbar_wk->id_texture[2] = set_texture_to_buffer(cbar_wk->cbar_zero_image->npix_img[0],
+                                                   cbar_wk->cbar_zero_image->npix_img[1],
+                                                   cbar_wk->cbar_zero_image->imgBMP);
 	glBindVertexArray(0);
 	return;
 };
@@ -41,8 +44,9 @@ static void set_time_text_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *tex
                               struct gl_strided_buffer *cbar_buf){
     glBindVertexArray(text_VAO->id_VAO);
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
-	tlabel_wk->id_texture = set_texture_to_buffer(tlabel_wk->npix_x, tlabel_wk->npix_y,
-												  tlabel_wk->numBMP);
+	tlabel_wk->id_texture = set_texture_to_buffer(tlabel_wk->tlabel_image->npix_img[0],
+                                                  tlabel_wk->tlabel_image->npix_img[1],
+												  tlabel_wk->tlabel_image->imgBMP);
 	glBindVertexArray(0);
     return;
 };
@@ -125,9 +129,9 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
         
         clear_time_text_image(psf_a->tlabel_wk);
         if(psf_a->iflag_draw_time > 0){
-            sprintf(psf_a->tlabel_wk->minlabel,"    t = %5.4E", (float) psf_a->time_disp);
+            sprintf(psf_a->tlabel_wk->tlabel_image->texts,"    t = %5.4E", (float) psf_a->time_disp);
         }else if(psf_a->iflag_draw_file_step > 0){
-            sprintf(psf_a->tlabel_wk->minlabel,"File index: %6d", psf_a->file_step_disp);
+            sprintf(psf_a->tlabel_wk->tlabel_image->texts,"File index: %6d", psf_a->file_step_disp);
         };
         set_time_text_image(text_color, psf_a->tlabel_wk);
         time_mbox_to_buf(iflag_retina, text_color, psf_a->tlabel_wk, cbar_buf);

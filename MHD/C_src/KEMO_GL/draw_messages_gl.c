@@ -9,7 +9,8 @@ static void set_message_text_VAO(struct VAO_ids *text_VAO, struct msg_work *msg_
 	
 	glBindVertexArray(text_VAO->id_VAO);
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
-    msg_wk->id_texture = set_texture_to_buffer(msg_wk->npix_x, msg_wk->npix_y, msg_wk->msgBMP);
+    msg_wk->id_texture = set_texture_to_buffer(msg_wk->message_image->npix_img[0], msg_wk->message_image->npix_img[1],
+                                               msg_wk->message_image->imgBMP);
 	glBindVertexArray(0);
 	return;
 };
