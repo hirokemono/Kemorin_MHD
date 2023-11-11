@@ -205,7 +205,7 @@ void set_colorbar_text_image(float text_color3[3], float value,
                              struct line_text_image *l_txt_img){
     sprintf(l_txt_img->texts, "% 3.2E", value);
     clear_line_text_image(l_txt_img);
-    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, l_txt_img);
+    set_line_text16_image(ICOLOR_FULL, ICOLOR_MID, l_txt_img);
     set_line_text_color(text_color3, l_txt_img);
     /* check_line_text_bitmap(l_txt_img) */
     return;
@@ -234,7 +234,7 @@ void clear_time_text_image(struct tlabel_work *tlabel_wk){
 };
 
 void set_time_text_image(float text_color3[3], struct tlabel_work *tlabel_wk){
-    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, tlabel_wk->tlabel_image);
+    set_line_text16_image(ICOLOR_FULL, ICOLOR_MID, tlabel_wk->tlabel_image);
     set_line_text_color(text_color3, tlabel_wk->tlabel_image);
     /* check_line_text_bitmap(tlabel_wk->tlabel_image) */
     return;

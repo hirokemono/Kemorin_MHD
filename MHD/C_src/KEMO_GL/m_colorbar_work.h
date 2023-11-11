@@ -18,9 +18,9 @@
 #define NCHARA_CBOX   20
 #define NCHARA_MSG    26
 
-#define IHIGHT_TXT     40
-#define IWIDTH_TXT    280
-#define IWIDTH_TLABEL 560
+#define IHIGHT_TXT     20
+#define IWIDTH_TXT    140
+#define IWIDTH_TLABEL 280
 
 #define IHIGHT_MSG 40
 #define IWIDTH_MSG 488
