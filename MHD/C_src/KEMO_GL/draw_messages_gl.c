@@ -18,7 +18,7 @@ static void set_message_text_VAO(struct VAO_ids *text_VAO, struct msg_work *msg_
 void const_message_buffer(int iflag_retina, int nx_win, int ny_win,
                           struct msg_work *msg_wk,
                           struct gl_strided_buffer *cbar_buf){
-    clear_message_text_image(msg_wk);
+    clear_line_text_image(msg_wk->message_image);
     set_message_position(iflag_retina, (int) nx_win, (int) ny_win, msg_wk);
     set_windowsize_image((int) nx_win, (int) ny_win, msg_wk);
     

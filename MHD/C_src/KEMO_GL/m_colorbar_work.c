@@ -22,20 +22,11 @@ struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_t
         printf("malloc error for l_txt_img->imgBMP\n");
         exit(0);
     }
-/*
-    l_txt_img->testBMP = (unsigned char *) calloc((9 * cbar_wk->npixel), sizeof(unsigned char));
-    if(l_txt_img->testBMP == NULL){
-        printf("malloc error for l_txt_img->testBMP\n");
-        exit(0);
-    }
-}
-*/
     return l_txt_img;
 };
 
 void dealloc_line_text_image(struct line_text_image *l_txt_img)
 {
-/*    free(l_txt_img->testBMP); */
     free(l_txt_img->imgBMP);
     free(l_txt_img->texts);
     free(l_txt_img);
@@ -45,24 +36,26 @@ void dealloc_line_text_image(struct line_text_image *l_txt_img)
 void clear_line_text_image(struct line_text_image *l_txt_img){
     int i;
     for(i=0;i<4*l_txt_img->npixel;i++){l_txt_img->imgBMP[i] =  0;};
-/*
-    for(i=0;i<9*l_txt_img->npixel;i++){l_txt_img->testBMP[i] =  0;};
-*/
     return;
 };
 
 void check_line_text_bitmap(struct line_text_image *l_txt_img){
-    for(int i=0;i<l_txt_img->npixel;i++){
-        l_txt_img->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) l_txt_img->imgBMP[4*i  ]));
-        l_txt_img->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) l_txt_img->imgBMP[4*i+1]));
-        l_txt_img->testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) l_txt_img->imgBMP[4*i+2]));
+    unsigned char *testBMP = (unsigned char *) calloc((9 * l_txt_img->npixel), sizeof(unsigned char));
+    if(testBMP == NULL){
+        printf("malloc error for testBMP\n");
+        exit(0);
     };
-    pixout_BMP_c("/Users/matsui/Desktop/linetext", l_txt_img->npix_img[0], 3*l_txt_img->npix_img[1],
-                 l_txt_img->testBMP);
+    for(int i=0;i<l_txt_img->npixel;i++){
+        testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) l_txt_img->imgBMP[4*i  ]));
+        testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) l_txt_img->imgBMP[4*i+1]));
+        testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) l_txt_img->imgBMP[4*i+2]));
+    };
+    pixout_BMP_c("/Users/matsui/Desktop/linetext", l_txt_img->npix_img[0], 3*l_txt_img->npix_img[1], testBMP);
+    free(testBMP);
     return;
 };
 
-void set_line_text24_image(int icolor_txt, int icolor_mid, struct line_text_image *l_txt_img){
+void set_line_text16_image(int icolor_txt, int icolor_mid, struct line_text_image *l_txt_img){
     YsGlWriteStringToRGBA8Bitmap(l_txt_img->texts, icolor_mid, icolor_mid, icolor_mid, icolor_mid,
                                  l_txt_img->imgBMP, l_txt_img->npix_img[0], l_txt_img->npix_img[1],
                                  0, 0, YsFont12x16, 14, 16);
@@ -76,10 +69,6 @@ void set_line_text24_image(int icolor_txt, int icolor_mid, struct line_text_imag
     YsGlWriteStringToRGBA8Bitmap(l_txt_img->texts, icolor_txt, icolor_txt, icolor_txt, icolor_txt,
                                  l_txt_img->imgBMP, l_txt_img->npix_img[0], l_txt_img->npix_img[1],
                                  0, 1, YsFont12x16, 14, 16);
-    
-/*
-    check_line_text_bitmap(l_txt_img);
-*/
     return;
 };
 
@@ -97,17 +86,41 @@ void set_line_text24_image(int icolor_txt, int icolor_mid, struct line_text_imag
     YsGlWriteStringToRGBA8Bitmap(l_txt_img->texts, icolor_txt, icolor_txt, icolor_txt, icolor_txt,
                                  l_txt_img->imgBMP, l_txt_img->npix_img[0], l_txt_img->npix_img[1],
                                  0, 5, YsFont16x24, 20, 24);
-    
-    /*
-    for(i=0;i<l_txt_img->npixel;i++){
-        l_txt_img->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) l_txt_img->imgBMP[4*i  ]));
-        l_txt_img->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) l_txt_img->imgBMP[4*i+1]));
-        l_txt_img->testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) l_txt_img->imgBMP[4*i+2]));
-    };
-    pixout_BMP_c("/Users/matsui/Desktop/aho", l_txt_img->npix_img[0], l_txt_img->npix_img[1],
-                 msg_wk->testBMP);
-*/
     return;
+};
+
+void set_line_msgbox_image(int icolor_txt, int icolor_mid,
+                           struct line_text_image *l_txt_img){
+    int i;
+    /* Draw box in the texture */
+    for(i=0;i<2*l_txt_img->npix_img[0];i++){
+        l_txt_img->imgBMP[4*i  ] = icolor_txt;
+        l_txt_img->imgBMP[4*i+1] = icolor_txt;
+        l_txt_img->imgBMP[4*i+2] = icolor_txt;
+        l_txt_img->imgBMP[4*i+3] = icolor_txt;
+        l_txt_img->imgBMP[4*(l_txt_img->npixel-i-1)  ] = icolor_mid;
+        l_txt_img->imgBMP[4*(l_txt_img->npixel-i-1)+1] = icolor_mid;
+        l_txt_img->imgBMP[4*(l_txt_img->npixel-i-1)+2] = icolor_mid;
+        l_txt_img->imgBMP[4*(l_txt_img->npixel-i-1)+3] = icolor_mid;
+    };
+    for(i=0;i<l_txt_img->npix_img[1];i++){
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i  ] = icolor_txt;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+1] = icolor_txt;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+2] = icolor_txt;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+3] = icolor_txt;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+4] = icolor_txt;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+5] = icolor_txt;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+6] = icolor_txt;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+7] = icolor_txt;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-4] = icolor_mid;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-3] = icolor_mid;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-2] = icolor_mid;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-1] = icolor_mid;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-8] = icolor_mid;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-7] = icolor_mid;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-6] = icolor_mid;
+        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-5] = icolor_mid;
+    };
 };
 
 void set_line_text_color(float text_color3[3], struct line_text_image *l_txt_img){
@@ -188,27 +201,14 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 	return;
 }
 
-void clear_colorbar_text_image(struct cbar_work *cbar_wk){
-    clear_line_text_image(cbar_wk->cbar_min_image);
-    clear_line_text_image(cbar_wk->cbar_max_image);
-    clear_line_text_image(cbar_wk->cbar_zero_image);
-	return;
-};
-
-void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
-    sprintf(cbar_wk->cbar_min_image->texts, "% 3.2E",cbar_wk->psf_min);
-    set_line_text24_image(255, 192, cbar_wk->cbar_min_image);
-    set_line_text_color(text_color3, cbar_wk->cbar_min_image);
-
-    sprintf(cbar_wk->cbar_max_image->texts, "% 3.2E",cbar_wk->psf_max);
-    set_line_text24_image(255, 192, cbar_wk->cbar_max_image);
-    set_line_text_color(text_color3, cbar_wk->cbar_max_image);
-
-	if(cbar_wk->iflag_zero == 1){
-        sprintf(cbar_wk->cbar_zero_image->texts, "% 3.2E", ZERO);
-        set_line_text24_image(255, 192, cbar_wk->cbar_zero_image);
-        set_line_text_color(text_color3, cbar_wk->cbar_zero_image);
-	};
+void set_colorbar_text_image(float text_color3[3], float value,
+                             struct line_text_image *l_txt_img){
+    sprintf(l_txt_img->texts, "% 3.2E", value);
+    clear_line_text_image(l_txt_img);
+    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, l_txt_img);
+    set_line_text_color(text_color3, l_txt_img);
+    /* check_line_text_bitmap(l_txt_img) */
+    return;
 };
 
 
@@ -234,8 +234,9 @@ void clear_time_text_image(struct tlabel_work *tlabel_wk){
 };
 
 void set_time_text_image(float text_color3[3], struct tlabel_work *tlabel_wk){
-    set_line_text24_image(255, 192, tlabel_wk->tlabel_image);
+    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, tlabel_wk->tlabel_image);
     set_line_text_color(text_color3, tlabel_wk->tlabel_image);
+    /* check_line_text_bitmap(tlabel_wk->tlabel_image) */
     return;
 };
 
@@ -248,15 +249,16 @@ struct msg_work * alloc_message_work(void){
 		exit(0);
 	}
     msg_wk->message_image =  alloc_line_text_image(IWIDTH_MSG, IHIGHT_MSG, NCHARA_MSG);
-
     msg_wk->message_opacity = 0.0;
     return msg_wk;
 };
 
 void dealloc_message_work(struct msg_work *msg_wk){
     dealloc_line_text_image(msg_wk->message_image);
+    free(msg_wk);
     return;
 };
+
 
 void set_message_opacity(float opacity, struct msg_work *msg_wk){
     msg_wk->message_opacity = opacity;
@@ -270,55 +272,6 @@ void set_message_position(int iflag_retina, int nx_win, int ny_win,
 	return;
 }
 
-void clear_message_text_image(struct msg_work *msg_wk){
-    clear_line_text_image(msg_wk->message_image);
-	return;
-};
-
-
-static void set_line_msgbox_image(int icolor_txt, int icolor_mid,
-                                  struct line_text_image *l_txt_img){
-    int i;
-    /* Draw box in the texture */
-    for(i=0;i<2*l_txt_img->npix_img[0];i++){
-        l_txt_img->imgBMP[4*i  ] = icolor_txt;
-        l_txt_img->imgBMP[4*i+1] = icolor_txt;
-        l_txt_img->imgBMP[4*i+2] = icolor_txt;
-        l_txt_img->imgBMP[4*i+3] = icolor_txt;
-        l_txt_img->imgBMP[4*(l_txt_img->npixel-i-1)  ] = icolor_mid;
-        l_txt_img->imgBMP[4*(l_txt_img->npixel-i-1)+1] = icolor_mid;
-        l_txt_img->imgBMP[4*(l_txt_img->npixel-i-1)+2] = icolor_mid;
-        l_txt_img->imgBMP[4*(l_txt_img->npixel-i-1)+3] = icolor_mid;
-    };
-    for(i=0;i<l_txt_img->npix_img[1];i++){
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i  ] = icolor_txt;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+1] = icolor_txt;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+2] = icolor_txt;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+3] = icolor_txt;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+4] = icolor_txt;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+5] = icolor_txt;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+6] = icolor_txt;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*i+7] = icolor_txt;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-4] = icolor_mid;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-3] = icolor_mid;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-2] = icolor_mid;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-1] = icolor_mid;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-8] = icolor_mid;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-7] = icolor_mid;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-6] = icolor_mid;
-        l_txt_img->imgBMP[4*l_txt_img->npix_img[0]*(i+1)-5] = icolor_mid;
-    };
-};
-
-static void set_message_image(float text_color3[4], struct msg_work *msg_wk){
-    set_line_msgbox_image(255, 191, msg_wk->message_image);
-    set_line_text24_image(255, 191, msg_wk->message_image);
-    set_line_text_color(text_color3, msg_wk->message_image);
-    set_line_text_opacity(msg_wk->message_opacity, msg_wk->message_image);
-    return;
-};
-
-
 void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk){
 	int i;
 	float text_color3[4];
@@ -327,5 +280,9 @@ void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk){
     text_color3[3] = 1.0;
 	
 	sprintf(msg_wk->message_image->texts, " Window size:(%4d,%4d)", npixel_x, npixel_y);
-	set_message_image(text_color3, msg_wk);
+    set_line_msgbox_image(ICOLOR_FULL, ICOLOR_MID, msg_wk->message_image);
+    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, msg_wk->message_image);
+    set_line_text_color(text_color3, msg_wk->message_image);
+    set_line_text_opacity(msg_wk->message_opacity, msg_wk->message_image);
+    /* check_line_text_bitmap(msg_wk->message_image) */
 };

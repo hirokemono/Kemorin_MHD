@@ -101,13 +101,15 @@ void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
     zero_buf->num_nod_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0){
-            clear_colorbar_text_image(psf_a->cbar_wk);
-            set_colorbar_text_image(text_color, psf_a->cbar_wk);
+            set_colorbar_text_image(text_color, psf_a->cbar_wk->psf_min, psf_a->cbar_wk->cbar_min_image);
+            set_colorbar_text_image(text_color, psf_a->cbar_wk->psf_max, psf_a->cbar_wk->cbar_max_image);
+            if(psf_a->cbar_wk->iflag_zero == 1){
+                set_colorbar_text_image(text_color, ZERO, psf_a->cbar_wk->cbar_zero_image);
+            }
 
             min_buf->num_nod_buf =  (ITHREE*2);
             max_buf->num_nod_buf =  (ITHREE*2);
             if(psf_a->cbar_wk->iflag_zero == 1) zero_buf->num_nod_buf = (ITHREE*2);
-            
             colorbar_mbox_to_buf(iflag_retina, text_color, psf_a->cbar_wk, 
                                  min_buf, max_buf, zero_buf);
             break;
@@ -164,7 +166,6 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     struct gl_strided_buffer *zero_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    clear_colorbar_text_image(psf_a->cbar_wk);
     const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a, 
                            min_buf, max_buf, zero_buf);
     
