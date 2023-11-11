@@ -10,13 +10,14 @@
 #include <math.h>
 #include "m_color_table_c.h"
 #include "ysglfontdata.h"
+#include "write_image_2_bmp.h"
 
 #define NCHARA_CBOX   20
 #define NCHARA_MSG    26
 
-#define IHIGHT_TXT     20
-#define IWIDTH_TXT    140
-#define IWIDTH_TLABEL 280
+#define IHIGHT_TXT     40
+#define IWIDTH_TXT    280
+#define IWIDTH_TLABEL 560
 
 #define IHIGHT_MSG 40
 #define IWIDTH_MSG 488
@@ -78,7 +79,9 @@ struct msg_work{
 struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_text);
 void dealloc_line_text_image(struct line_text_image *l_txt_img);
 void clear_line_text_image(struct line_text_image *l_txt_img);
-void set_line_text_image(float text_color3[3], struct line_text_image * l_txt_img);
+void set_line_text16_image(int icolor_txt, int icolor_mid, struct line_text_image *l_txt_img);
+void set_line_text24_image(int icolor_txt, int icolor_mid, struct line_text_image *l_txt_img);
+void set_line_text_color(float text_color3[3], struct line_text_image *l_txt_img);
 
 
 struct cbar_work * alloc_colorbar_position(void);
