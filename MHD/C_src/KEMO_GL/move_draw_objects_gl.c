@@ -210,10 +210,29 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
 		iflag_psf = check_draw_map(kemo_psf->psf_a);
-		set_map_objects_VAO(view_s, kemo_psf->psf_d, 
-                            kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, kemo_VAOs->map_VAO);
-        map_coastline_grid_VBO(kemo_mesh->mesh_m, &kemo_VAOs->map_VAO[2]);
+
         
+        struct gl_strided_buffer *coast_buf
+            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+        int n_points = ITWO * count_coastline_buf();
+        set_buffer_address_4_patch(n_points, coast_buf);
+        alloc_strided_buffer(coast_buf);
+
+        struct gl_strided_buffer *mflame_buf
+            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+        int n_vertex = ITWO * count_sph_flame();
+        set_buffer_address_4_patch(n_vertex, mflame_buf);
+        alloc_strided_buffer(mflame_buf);
+
+        set_map_coastline_buffer(kemo_mesh->mesh_m->iflag_draw_coast, coast_buf);
+        set_map_flame_buffer(kemo_mesh->mesh_m->iflag_draw_sph_grid, mflame_buf);
+
+        set_map_objects_VAO(view_s, kemo_psf->psf_d,
+                            kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, kemo_VAOs->map_VAO);
+        map_coastline_grid_VBO(coast_buf, mflame_buf, &kemo_VAOs->map_VAO[2]);
+        free(coast_buf);
+        free(mflame_buf);
+
 		draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
 		set_axis_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->grid_VAO[2]);
@@ -293,18 +312,20 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                        cbar_matrices, kemo_shaders);
 
 	/* Draw message */
+    struct gl_strided_buffer *cbar_buf
+        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch((ITHREE*2), cbar_buf);
+    alloc_strided_buffer(cbar_buf);
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
-        struct gl_strided_buffer *cbar_buf
-            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-        set_buffer_address_4_patch((ITHREE*2), cbar_buf);
-        alloc_strided_buffer(cbar_buf);
+        const_message_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
+                             kemo_mesh->msg_wk, cbar_buf);
 	    set_message_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
                         kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, cbar_buf);
         draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO,
                          cbar_matrices, kemo_shaders);
-        free(cbar_buf->v_buf);
-        free(cbar_buf);
     };
+    free(cbar_buf->v_buf);
+    free(cbar_buf);
 
     /* draw example cube for empty data */
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;

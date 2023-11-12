@@ -118,7 +118,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                            error:&error];
         NSAssert(_pipelineState[1], @"Failed to create pipeline state: %@", error);
 
-        /*  Create pipeline for simple 2D rendering */
+        /*  Create pipeline for simple rendering */
         pipelineStateDescriptor.label = @"2D Simple Pipeline";
         pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
@@ -231,12 +231,19 @@ Implementation of a platform independent renderer class, which performs Metal se
     struct gl_strided_buffer *mline_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     mline_buf->num_nod_buf = 0;
+    
+    int n_vertex = ITWO * count_coastline_buf();
     struct gl_strided_buffer *coast_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    coast_buf->num_nod_buf = 0;
+    set_buffer_address_4_patch(n_vertex, coast_buf);
+    alloc_strided_buffer(coast_buf);
+    
+    n_vertex = ITWO * count_sph_flame();
     struct gl_strided_buffer *mflame_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    mflame_buf->num_nod_buf = 0;
+            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch(n_vertex, mflame_buf);
+    alloc_strided_buffer(mflame_buf);
+
     if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
         iflag_psf = sort_by_patch_distance_psfs(kemo_sgl->kemo_psf->psf_d,
                                                 kemo_sgl->kemo_psf->psf_m,
@@ -252,17 +259,17 @@ Implementation of a platform independent renderer class, which performs Metal se
                                     kemo_sgl->kemo_psf->psf_a,
                                     kemo_sgl->view_s, mline_buf);
 
-        set_map_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast, coast_buf);
-        set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid, mflame_buf);
-/*
-        for(i=0;i<coast_buf->num_nod_buf;i++){
-            printf("%d, color %f %f %f %f \n", i,
-                   coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf],
-                   coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf+1],
-                   coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf+2],
-                   coast_buf->v_buf[i*coast_buf->ncomp_buf + coast_buf->ist_csurf+3]);
-        }
-*/
+        set_map_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast,
+                                 coast_buf);
+        set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid,
+                             mflame_buf);
+    } else {
+        set_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast,
+                             kemo_sgl->kemo_mesh->mesh_m->radius_coast,
+                             coast_buf);
+        set_sph_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid,
+                             kemo_sgl->kemo_mesh->mesh_m->radius_coast,
+                             mflame_buf);
     };
 
     
@@ -279,19 +286,14 @@ Implementation of a platform independent renderer class, which performs Metal se
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     set_buffer_address_4_patch((ITHREE*2), time_buf);
     alloc_strided_buffer(time_buf);
-    const_timelabel_buffer(kemo_sgl->view_s->iflag_retina,
-                           kemo_sgl->view_s->nx_frame,
-                           kemo_sgl->view_s->ny_frame,
-                           kemo_sgl->kemo_mesh->mesh_m->text_color,
-                           kemo_sgl->kemo_mesh->mesh_m->bg_color,
-                           kemo_sgl->kemo_psf->psf_a, time_buf);
-    
+
     struct gl_strided_buffer *cbar_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     int num_vertex = count_colorbar_box_VAO(kemo_sgl->kemo_psf->psf_a->cbar_wk->iflag_zero,
                                             kemo_sgl->kemo_psf->psf_a->cbar_wk->num_quad);
     set_buffer_address_4_patch(num_vertex, cbar_buf);
     alloc_strided_buffer(cbar_buf);
+    
     struct gl_strided_buffer *min_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     struct gl_strided_buffer *max_buf
@@ -305,6 +307,12 @@ Implementation of a platform independent renderer class, which performs Metal se
     alloc_strided_buffer(max_buf);
     alloc_strided_buffer(zero_buf);
 
+    const_timelabel_buffer(kemo_sgl->view_s->iflag_retina,
+                           kemo_sgl->view_s->nx_frame,
+                           kemo_sgl->view_s->ny_frame,
+                           kemo_sgl->kemo_mesh->mesh_m->text_color,
+                           kemo_sgl->kemo_mesh->mesh_m->bg_color,
+                           kemo_sgl->kemo_psf->psf_a, time_buf);
     const_colorbar_buffer(kemo_sgl->view_s->iflag_retina,
                           kemo_sgl->view_s->nx_frame,
                           kemo_sgl->view_s->ny_frame,
@@ -317,7 +325,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                            kemo_sgl->kemo_psf->psf_m,
                            kemo_sgl->kemo_psf->psf_a, min_buf, max_buf, zero_buf);
 
-    /* draw example cube for empty data */
+/* draw example cube for empty data */
     iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
                + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
     struct gl_index_buffer *cube_index_buf = alloc_gl_index_buffer(12, 3);
@@ -511,10 +519,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                                                            length:(mline_buf->nsize_buf * sizeof(float))
                                                           options:MTLResourceStorageModeShared
                                                       deallocator:nil];
-/*                _vertices[11] = [_device newBufferWithBytes:((KemoViewVertex *) mline_buf->v_buf)
-                                                     length:(mline_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                                    options:MTLResourceStorageModeShared];
- */
                 [renderEncoder setRenderPipelineState:_pipelineState[3]];
                 [renderEncoder setVertexBuffer:_vertices[11]
                                         offset:0

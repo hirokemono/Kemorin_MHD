@@ -28,9 +28,7 @@ void const_message_buffer(int iflag_retina, int nx_win, int ny_win,
 
 void set_message_VAO(int iflag_retina, int nx_win, int ny_win,
 					 struct msg_work *msg_wk, struct VAO_ids *msg_VAO,
-                     struct gl_strided_buffer *cbar_buf){
-    const_message_buffer(iflag_retina, nx_win, ny_win, msg_wk, cbar_buf);
-    
+                     struct gl_strided_buffer *cbar_buf){    
     msg_VAO->npoint_draw = cbar_buf->num_nod_buf;
     if(msg_VAO->npoint_draw > 0){
         set_message_text_VAO(msg_VAO, msg_wk, cbar_buf);
