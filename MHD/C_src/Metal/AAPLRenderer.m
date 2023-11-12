@@ -297,6 +297,13 @@ Implementation of a platform independent renderer class, which performs Metal se
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     struct gl_strided_buffer *zero_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch((ITHREE*2), min_buf);
+    set_buffer_address_4_patch((ITHREE*2), max_buf);
+    set_buffer_address_4_patch((ITHREE*2), zero_buf);
+    alloc_strided_buffer(min_buf);
+    alloc_strided_buffer(max_buf);
+    alloc_strided_buffer(zero_buf);
+
     const_cbar_text_buffer(kemo_sgl->view_s->iflag_retina,
                            kemo_sgl->kemo_mesh->mesh_m->text_color,
                            kemo_sgl->kemo_psf->psf_m,

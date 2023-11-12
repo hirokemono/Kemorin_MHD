@@ -89,13 +89,6 @@ void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
                             struct gl_strided_buffer *min_buf, struct gl_strided_buffer *max_buf, 
                             struct gl_strided_buffer *zero_buf){
     int i;
-    set_buffer_address_4_patch((ITHREE*2), min_buf);
-    set_buffer_address_4_patch((ITHREE*2), max_buf);
-    set_buffer_address_4_patch((ITHREE*2), zero_buf);
-    alloc_strided_buffer(min_buf);
-    alloc_strided_buffer(max_buf);
-    alloc_strided_buffer(zero_buf);
-
     min_buf->num_nod_buf =  0;
     max_buf->num_nod_buf =  0;
     zero_buf->num_nod_buf = 0;
@@ -166,6 +159,13 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     struct gl_strided_buffer *zero_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch((ITHREE*2), min_buf);
+    set_buffer_address_4_patch((ITHREE*2), max_buf);
+    set_buffer_address_4_patch((ITHREE*2), zero_buf);
+    alloc_strided_buffer(min_buf);
+    alloc_strided_buffer(max_buf);
+    alloc_strided_buffer(zero_buf);
+
     const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a, 
                            min_buf, max_buf, zero_buf);
     
