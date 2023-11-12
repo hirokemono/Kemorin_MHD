@@ -22,8 +22,6 @@ void const_message_buffer(int iflag_retina, int nx_win, int ny_win,
     set_message_position(iflag_retina, (int) nx_win, (int) ny_win, msg_wk);
     set_windowsize_image((int) nx_win, (int) ny_win, msg_wk);
     
-    set_buffer_address_4_patch((ITHREE*2), cbar_buf);
-    alloc_strided_buffer(cbar_buf);
     message_mbox_to_buf(iflag_retina, msg_wk, cbar_buf);
     return;
 }

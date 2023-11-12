@@ -268,6 +268,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     
     struct gl_strided_buffer *msg_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch((ITHREE*2), msg_buf);
+    alloc_strided_buffer(msg_buf);
     const_message_buffer(kemo_sgl->view_s->iflag_retina,
                          kemo_sgl->view_s->nx_frame,
                          kemo_sgl->view_s->ny_frame,
@@ -275,6 +277,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     
     struct gl_strided_buffer *time_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch((ITHREE*2), time_buf);
+    alloc_strided_buffer(time_buf);
     const_timelabel_buffer(kemo_sgl->view_s->iflag_retina,
                            kemo_sgl->view_s->nx_frame,
                            kemo_sgl->view_s->ny_frame,
@@ -284,13 +288,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     
     struct gl_strided_buffer *cbar_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    const_colorbar_buffer(kemo_sgl->view_s->iflag_retina,
-                          kemo_sgl->view_s->nx_frame,
-                          kemo_sgl->view_s->ny_frame,
-                          kemo_sgl->kemo_mesh->mesh_m->text_color,
-                          kemo_sgl->kemo_mesh->mesh_m->bg_color,
-                          kemo_sgl->kemo_psf->psf_m,
-                          kemo_sgl->kemo_psf->psf_a, cbar_buf);
+    int num_vertex = count_colorbar_box_VAO(kemo_sgl->kemo_psf->psf_a->cbar_wk->iflag_zero,
+                                            kemo_sgl->kemo_psf->psf_a->cbar_wk->num_quad);
+    set_buffer_address_4_patch(num_vertex, cbar_buf);
+    alloc_strided_buffer(cbar_buf);
     struct gl_strided_buffer *min_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     struct gl_strided_buffer *max_buf
@@ -304,6 +305,13 @@ Implementation of a platform independent renderer class, which performs Metal se
     alloc_strided_buffer(max_buf);
     alloc_strided_buffer(zero_buf);
 
+    const_colorbar_buffer(kemo_sgl->view_s->iflag_retina,
+                          kemo_sgl->view_s->nx_frame,
+                          kemo_sgl->view_s->ny_frame,
+                          kemo_sgl->kemo_mesh->mesh_m->text_color,
+                          kemo_sgl->kemo_mesh->mesh_m->bg_color,
+                          kemo_sgl->kemo_psf->psf_m,
+                          kemo_sgl->kemo_psf->psf_a, cbar_buf);
     const_cbar_text_buffer(kemo_sgl->view_s->iflag_retina,
                            kemo_sgl->kemo_mesh->mesh_m->text_color,
                            kemo_sgl->kemo_psf->psf_m,

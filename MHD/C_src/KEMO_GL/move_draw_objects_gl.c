@@ -296,6 +296,8 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
         struct gl_strided_buffer *cbar_buf
             = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+        set_buffer_address_4_patch((ITHREE*2), cbar_buf);
+        alloc_strided_buffer(cbar_buf);
 	    set_message_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
                         kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, cbar_buf);
         draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO,

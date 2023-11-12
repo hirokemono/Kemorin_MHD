@@ -19,6 +19,8 @@
 
 
 /* prototypes */
+int count_colorbar_box_VAO(int iflag_zero, int num_quad);
+
 void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            float text_color[4], float bg_color[4],
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,

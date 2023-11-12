@@ -4,8 +4,8 @@
 
 #include "draw_colorbar_gl.h"
 
-static int count_colorbar_box_VAO(struct cbar_work *cbar_wk){
-	int num_patch = 4*cbar_wk->num_quad + 2*(cbar_wk->iflag_zero + IFOUR);
+int count_colorbar_box_VAO(int iflag_zero, int num_quad){
+	int num_patch = 4*num_quad + 2*(iflag_zero + IFOUR);
 	return (ITHREE * num_patch);
 };
 
@@ -58,9 +58,6 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            struct gl_strided_buffer *cbar_buf){
     int i;
     int icomp;
-    set_buffer_address_4_patch(16, cbar_buf);
-    alloc_strided_buffer(cbar_buf);
-
     cbar_buf->num_nod_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
@@ -68,8 +65,8 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
             set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win,
                         psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk);
     
-            set_buffer_address_4_patch(count_colorbar_box_VAO(psf_a->cbar_wk), cbar_buf);
-            resize_strided_buffer(cbar_buf);
+            cbar_buf->num_nod_buf = count_colorbar_box_VAO(psf_a->cbar_wk->iflag_zero,
+                                                           psf_a->cbar_wk->num_quad);
             
             int inum_quad = 0;
             inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
@@ -116,8 +113,6 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
                             float text_color[4], float bg_color[4],
                             struct kemo_array_control *psf_a,
                             struct gl_strided_buffer *cbar_buf){
-    set_buffer_address_4_patch((ITHREE*2), cbar_buf);
-    alloc_strided_buffer(cbar_buf);
     if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){
         psf_a->tlabel_wk->xwin = (float) nx_win;
         psf_a->tlabel_wk->ywin = (float) ny_win;
@@ -142,23 +137,18 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
                       struct VAO_ids **cbar_VAO){
 	struct gl_strided_buffer *cbar_buf
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    const_colorbar_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
-                          psf_m, psf_a, cbar_buf);
-    if(cbar_buf->num_nod_buf > 0){
-        cbar_VAO[0]->npoint_draw = cbar_buf->num_nod_buf;
-        Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);
-    }else{
-        cbar_VAO[0]->npoint_draw = 0;
-    };
-    free(cbar_buf->v_buf);
-    free(cbar_buf);
-    
     struct gl_strided_buffer *min_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     struct gl_strided_buffer *max_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     struct gl_strided_buffer *zero_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+
+    int num_vertex = count_colorbar_box_VAO(psf_a->cbar_wk->iflag_zero,
+                                            psf_a->cbar_wk->num_quad);
+    set_buffer_address_4_patch(num_vertex, cbar_buf);
+    alloc_strided_buffer(cbar_buf);
+
     set_buffer_address_4_patch((ITHREE*2), min_buf);
     set_buffer_address_4_patch((ITHREE*2), max_buf);
     set_buffer_address_4_patch((ITHREE*2), zero_buf);
@@ -166,7 +156,12 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
     alloc_strided_buffer(max_buf);
     alloc_strided_buffer(zero_buf);
 
-    const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a, 
+    const_colorbar_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
+                          psf_m, psf_a, cbar_buf);
+    cbar_VAO[0]->npoint_draw = cbar_buf->num_nod_buf;
+    if(cbar_VAO[0]->npoint_draw > 0) {Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);};
+    
+    const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a,
                            min_buf, max_buf, zero_buf);
     
     cbar_VAO[1]->npoint_draw = min_buf->num_nod_buf;
@@ -175,6 +170,8 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
     if(cbar_VAO[1]->npoint_draw > 0){
         set_colorbar_text_VAO(psf_a->cbar_wk, cbar_VAO, min_buf, max_buf, zero_buf);
     };
+    free(cbar_buf->v_buf);
+    free(cbar_buf);
     free(min_buf->v_buf);
     free(max_buf->v_buf);
     free(zero_buf->v_buf);
@@ -190,6 +187,8 @@ void set_timelabel_VAO(int iflag_retina, int nx_win, int ny_win,
                        struct VAO_ids *time_VAO){
 	struct gl_strided_buffer *cbar_buf 
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch((ITHREE*2), cbar_buf);
+    alloc_strided_buffer(cbar_buf);
     const_timelabel_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
                            psf_a, cbar_buf);
     
