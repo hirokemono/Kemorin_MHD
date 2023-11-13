@@ -60,14 +60,6 @@ static void light_for_initial_cube(struct initial_cube_lighting *init_light,
 	return;
 };
 
-void const_initial_cube_buffer(struct gl_strided_buffer *cube_buf,
-                               struct gl_index_buffer *index_buf){
-    set_buffer_address_4_patch(8, cube_buf);
-    alloc_strided_buffer(cube_buf);
-    CubeNode_to_buf(0.5f, cube_buf, index_buf);
-    return;
-};
-
 void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
                           struct VAO_ids *cube_VAO){
 	cube_VAO->npoint_draw = index_buf->nsize_buf;

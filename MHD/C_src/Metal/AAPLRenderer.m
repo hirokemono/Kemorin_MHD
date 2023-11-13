@@ -341,8 +341,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
     struct gl_index_buffer *cube_index_buf = alloc_gl_index_buffer(12, 3);
     struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    cube_buf->num_nod_buf = 0;
-    const_initial_cube_buffer(cube_buf, cube_index_buf);
+    set_buffer_address_4_patch(8, cube_buf);
+    alloc_strided_buffer(cube_buf);
+    CubeNode_to_buf(0.5f, cube_buf, cube_index_buf);
     struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 
 
