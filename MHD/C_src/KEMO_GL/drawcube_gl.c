@@ -65,9 +65,6 @@ void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_bu
 	cube_VAO->npoint_draw = index_buf->nsize_buf;
 	cube_surf_VBO(cube_VAO, cube_buf, index_buf);
 	glBindVertexArray(0);
-	
-//    free(index_buf->ie_buf);
-//	free(cube_buf->v_buf);
 	return;
 };
 

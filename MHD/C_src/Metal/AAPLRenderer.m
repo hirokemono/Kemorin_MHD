@@ -340,10 +340,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
                + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
     struct gl_index_buffer *cube_index_buf = alloc_gl_index_buffer(12, 3);
-    struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch(8, cube_buf);
-    alloc_strided_buffer(cube_buf);
-    CubeNode_to_buf(0.5f, cube_buf, cube_index_buf);
+    CubeNode_to_buf(0.5f, kemo_sgl->kemo_buffers->cube_buf, cube_index_buf);
     struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 
 
@@ -479,9 +476,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                                            options:MTLResourceStorageModeShared];
     };
 
-    if(cube_buf->num_nod_buf > 0){
-        _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) cube_buf->v_buf)
-                                             length:(cube_buf->num_nod_buf * sizeof(KemoViewVertex))
+    if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
+        _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cube_buf->v_buf)
+                                             length:(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf * sizeof(KemoViewVertex))
                                             options:MTLResourceStorageModeShared];
         _index_buffer = [_device newBufferWithBytes:cube_index_buf->ie_buf
                                              length:(cube_index_buf->nsize_buf * sizeof(unsigned int))
@@ -634,7 +631,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             material[0].specular.z = material[0].specular.x;
             material[0].specular.w = 1.0;
             
-            if(cube_buf->num_nod_buf > 0){
+            if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
                 [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
@@ -813,10 +810,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 //    [_vertices[0] setPurgeableState:MTLPurgeableStateEmpty];
 //    [_vertices[0] release];
-    if(cube_buf->num_nod_buf > 0){
-        free(cube_buf->v_buf);
-    };
-    free(cube_buf);
 
     free(cbar_buf->v_buf);
     free(cbar_buf);

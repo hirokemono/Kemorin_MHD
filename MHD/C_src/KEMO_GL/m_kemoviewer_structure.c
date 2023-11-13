@@ -8,7 +8,9 @@ struct kemoviewer_type *kemo_sgl;
 void kemoview_allocate_pointers(){
 	kemo_sgl->view_s = (struct view_element *)      malloc(sizeof(struct view_element));
 	
-	kemo_sgl->kemo_shaders = init_kemoview_shaders();
+    kemo_sgl->kemo_buffers = init_kemoview_buffers();
+
+    kemo_sgl->kemo_shaders = init_kemoview_shaders();
 	kemo_sgl->kemo_VAOs = init_kemoview_VAOs();
 	kemo_sgl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 
@@ -66,6 +68,7 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	
 	clear_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
 	dealloc_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
+    dealloc_kemoview_buffers(kemoviewer_data->kemo_buffers);
 	return;
 }
 

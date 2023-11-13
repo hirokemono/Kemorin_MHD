@@ -4,6 +4,7 @@
 #ifndef MOVE_DRAW_OBJECT_GL_
 #define MOVE_DRAW_OBJECT_GL_
 
+#include <stdlib.h>
 
 #include "m_kemoviewer_data.h"
 #include "vartex_array_object_gl.h"
@@ -17,6 +18,10 @@
 #include "draw_map_4_PSF.h"
 #include "draw_patch_4_mesh_c.h"
 #include "set_texture_4_psf.h"
+
+struct kemoview_buffers{
+    struct   gl_strided_buffer *cube_buf;
+};
 
 struct kemoview_VAOs{
 	struct VAO_ids *cube_VAO;
@@ -37,7 +42,11 @@ struct kemoview_VAOs{
 };
 
 
-/* prototypes */ 
+/* prototypes */
+struct kemoview_buffers * init_kemoview_buffers(void);
+void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers);
+
+
 struct kemoview_VAOs * init_kemoview_VAOs(void);
 void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);

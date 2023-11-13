@@ -3,6 +3,30 @@
 
 #include "move_draw_objects_gl.h"
 
+struct kemoview_buffers * init_kemoview_buffers(void)
+{
+    struct kemoview_buffers *kemo_buffers = (struct kemoview_buffers *) malloc(sizeof(struct kemoview_buffers));
+    if(kemo_buffers == NULL){
+        printf("malloc error for kemoview_buffers\n");
+        exit(0);
+    }
+    
+    kemo_buffers->cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch(8, kemo_buffers->cube_buf);
+    alloc_strided_buffer(kemo_buffers->cube_buf);
+    return kemo_buffers;
+};
+
+void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
+{
+    if(kemo_buffers->cube_buf->nsize_buf > 0) free(kemo_buffers->cube_buf->v_buf);
+    free(kemo_buffers->cube_buf);
+
+    free(kemo_buffers);
+    return;
+};
+
+
 struct kemoview_VAOs * init_kemoview_VAOs(void){
 	int i;
 	struct kemoview_VAOs *kemo_VAOs
@@ -121,7 +145,9 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
 
 static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
                                struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
-                               struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
+                               struct kemoview_buffers *kemo_buffers,
+                               struct kemoview_VAOs *kemo_VAOs,
+                               struct kemoview_shaders *kemo_shaders){
 	int iflag_psf = 0;
     /* Set transfer matrices */
     double *orthogonal = orthogonal_projection_mat_c(0.0, view_s->nx_frame,
@@ -189,8 +215,10 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 }
 
 static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
-			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
-			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
+                                struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+                                struct kemoview_buffers *kemo_buffers,
+                                struct kemoview_VAOs *kemo_VAOs,
+                                struct kemoview_shaders *kemo_shaders){
     int i;
 	int iflag;
 	int iflag_psf = 0;
@@ -332,14 +360,11 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	if(iflag == 0){
         struct initial_cube_lighting *init_light = init_inital_cube_lighting();
         struct gl_index_buffer *cube_index_buf = alloc_gl_index_buffer(12, 3);
-        struct gl_strided_buffer *cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-        set_buffer_address_4_patch(8, cube_buf);
-        alloc_strided_buffer(cube_buf);
-        CubeNode_to_buf(0.5f, cube_buf, cube_index_buf);
-        set_initial_cube_VAO(cube_buf, cube_index_buf, kemo_VAOs->cube_VAO);
+
+        CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, cube_index_buf);
+        set_initial_cube_VAO(kemo_buffers->cube_buf, cube_index_buf, kemo_VAOs->cube_VAO);
 		draw_initial_cube(view_matrices, init_light, kemo_VAOs->cube_VAO, kemo_shaders);
         free(cube_index_buf);
-        free(cube_buf);
 	} else {
 		kemo_VAOs->cube_VAO->npoint_draw = 0;
 	}
@@ -352,14 +377,14 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 
 void quick_draw_objects_gl3(struct kemoviewer_type *kemoview){
 	quick_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline, 
-				kemoview->kemo_mesh, kemoview->view_s, 
-				kemoview->kemo_VAOs, kemoview->kemo_shaders);
+                       kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
+                       kemoview->kemo_VAOs, kemoview->kemo_shaders);
 	return;
 };
 
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview){
 	update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
-				kemoview->kemo_mesh, kemoview->view_s, 
+				kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
 				kemoview->kemo_VAOs, kemoview->kemo_shaders);
 	return;
 }
