@@ -2,9 +2,8 @@
 See LICENSE folder for this sample’s licensing information.
 
 Abstract:
-Metal shaders used for this sample
+Metal shaders for Phong Shading
 */
-
 #include <metal_stdlib>
 #include <simd/simd.h>
 

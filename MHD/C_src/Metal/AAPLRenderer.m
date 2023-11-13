@@ -178,21 +178,32 @@ Implementation of a platform independent renderer class, which performs Metal se
     return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 }
 
-- (matrix_float4x4) setMetal3x3Matrices:(float *) matrix
+
+- (matrix_float4x4) setMetalModelViewMatrices:(float *) matrix
 {
     vector_float4 col_wk[4];
-    for(int i=0;i<3;i++){
-        col_wk[i].x = matrix[3*i  ];
-        col_wk[i].y = matrix[3*i+1];
-        col_wk[i].z = matrix[3*i+2];
-        col_wk[i].w = 0.0;
-    };
-    col_wk[3].x = 0.0;
-    col_wk[3].y = 0.0;
-    col_wk[3].z = 0.0;
-    col_wk[3].w = 1.0;
+    for(int j=0;j<4;j++){col_wk[0][j] =  matrix[4*0+j];}
+    for(int j=0;j<4;j++){col_wk[1][j] =  matrix[4*1+j];}
+    for(int j=0;j<4;j++){col_wk[2][j] =  matrix[4*2+j];}
+    for(int j=0;j<4;j++){col_wk[3][j] =  matrix[4*3+j];}
+//    for(int j=0;j<4;j++){col_wk[j][2] = -matrix[4*j+2];}
     return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 }
+- (matrix_float4x4) setMetalProjViewMatrices:(float *) matrix
+{
+    vector_float4 col_wk[4];
+    for(int j=0;j<4;j++){col_wk[0][j] =  matrix[4*0+j];}
+    for(int j=0;j<4;j++){col_wk[1][j] =  matrix[4*1+j];}
+    for(int j=0;j<4;j++){col_wk[2][j] =  matrix[4*2+j];}
+    for(int j=0;j<4;j++){col_wk[3][j] =  matrix[4*3+j];}
+/* Shift viewport */
+    col_wk[2][2] = (0.5*matrix[4*2+2] + 0.5*matrix[4*2+3]);
+    col_wk[3][2] = (0.5*matrix[4*3+2] + 0.5*matrix[4*3+3]);
+
+//    for(int j=0;j<4;j++){col_wk[j][2] = -matrix[4*j+2];}
+    return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
+}
+
 
 /// Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
@@ -217,7 +228,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     _map_proj_mat =   [self setMetalViewMatrices:map_matrices->proj];
 
     _modelview_mat =  [self setMetalViewMatrices:view_matrices->model];
-    _projection_mat = [self setMetalViewMatrices:view_matrices->proj];
+    _projection_mat = [self setMetalProjViewMatrices:view_matrices->proj];
     _normal_mat =     [self setMetalViewMatrices:view_matrices->nrmat];
     free(cbar_matrices);
     free(view_matrices);
