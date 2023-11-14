@@ -4,24 +4,22 @@
 
 #include  "draw_coastline.h"
 
-void set_sph_flame_buffer(int iflag_draw_sph_grid, double radius,
-                          struct gl_strided_buffer *mflame_buf){
+int set_sph_flame_buffer(int iflag_draw_sph_grid, double radius, int ist_buf,
+                         struct gl_strided_buffer *mflame_buf){
+    int ied_buf = ist_buf;
     if(iflag_draw_sph_grid > 0){
-        set_sph_flame_to_buf(radius, mflame_buf);
-    }else{
-        mflame_buf->num_nod_buf = 0;
-    }
-	return;
+        ied_buf = set_sph_flame_to_buf(radius, ist_buf, mflame_buf);
+    };
+	return ied_buf;
 };
 
-void set_coastline_buffer(int iflag_draw_coast, double radius,
-                          struct gl_strided_buffer *coast_buf){
+int set_coastline_buffer(int iflag_draw_coast, double radius, int ist_buf,
+                         struct gl_strided_buffer *coast_buf){
+    int ied_buf = ist_buf;
     if(iflag_draw_coast > 0){
-        set_coastline_buf(radius, coast_buf);
-    }else{
-        coast_buf->num_nod_buf = 0;
+        ied_buf = set_coastline_buf(radius, ist_buf, coast_buf);
     }
-	return;
+	return ied_buf;
 };
 
 void set_map_flame_buffer(int iflag_draw_sph_grid,
@@ -78,16 +76,18 @@ void set_coastline_grid_VBO(struct mesh_menu_val *mesh_m, struct VAO_ids **grid_
 			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     set_buffer_address_4_patch(n_vertex, coast_buf);
     alloc_strided_buffer(coast_buf);
-    set_coastline_buffer(mesh_m->iflag_draw_coast,
-                         mesh_m->radius_coast, coast_buf);
+    int ied_buf;
+    ied_buf = set_coastline_buffer(mesh_m->iflag_draw_coast, mesh_m->radius_coast,
+                                    IZERO, coast_buf);
+    coast_buf->num_nod_buf = ied_buf;
 
     n_vertex = ITWO * count_sph_flame();
     struct gl_strided_buffer *mflame_buf
             = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     set_buffer_address_4_patch(n_vertex, mflame_buf);
     alloc_strided_buffer(mflame_buf);
-    set_sph_flame_buffer(mesh_m->iflag_draw_sph_grid,
-                         mesh_m->radius_coast, mflame_buf);
+    ied_buf = set_sph_flame_buffer(mesh_m->iflag_draw_sph_grid, mesh_m->radius_coast,
+                                   IZERO, mflame_buf);
 
     grid_VAO[0]->npoint_draw = coast_buf->num_nod_buf;
     if(grid_VAO[0]->npoint_draw > 0){

@@ -55,6 +55,11 @@ struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele){
     return index_buf;
 }
 
+void dealloc_gl_index_buffer(struct gl_index_buffer *index_buf){
+    if(index_buf->nsize_buf > 0) free(index_buf->ie_buf);
+    free(index_buf);
+    return;
+};
 
 void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
                      struct gl_index_buffer *index_buf){

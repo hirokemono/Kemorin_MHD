@@ -14,11 +14,15 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     set_buffer_address_4_patch(8, kemo_buffers->cube_buf);
     alloc_strided_buffer(kemo_buffers->cube_buf);
+    
+    kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
+
     return kemo_buffers;
 };
 
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 {
+    dealloc_gl_index_buffer(kemo_buffers->cube_index_buf);
     if(kemo_buffers->cube_buf->nsize_buf > 0) free(kemo_buffers->cube_buf->v_buf);
     free(kemo_buffers->cube_buf);
 

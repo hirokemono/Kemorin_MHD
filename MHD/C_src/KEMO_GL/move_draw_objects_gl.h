@@ -20,7 +20,8 @@
 #include "set_texture_4_psf.h"
 
 struct kemoview_buffers{
-    struct   gl_strided_buffer *cube_buf;
+    struct gl_strided_buffer *cube_buf;
+    struct gl_index_buffer *cube_index_buf;
 };
 
 struct kemoview_VAOs{

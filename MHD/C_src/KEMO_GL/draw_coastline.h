@@ -15,10 +15,10 @@
 #define DRAW_COASTLINE_
 
 /* prototypes */
-void set_sph_flame_buffer(int iflag_draw_sph_grid, double radius,
+int set_sph_flame_buffer(int iflag_draw_sph_grid, double radius, int ist_buf,
                           struct gl_strided_buffer *mflame_buf);
-void set_coastline_buffer(int iflag_draw_coast, double radius,
-                          struct gl_strided_buffer *coast_buf);
+int set_coastline_buffer(int iflag_draw_coast, double radius, int ist_buf,
+                         struct gl_strided_buffer *coast_buf);
 
 void set_map_flame_buffer(int iflag_draw_sph_grid,
                           struct gl_strided_buffer *mflame_buf);
@@ -27,7 +27,7 @@ void set_map_coastline_buffer(int iflag_draw_coast,
 
 
 void set_axis_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s,
-			struct VAO_ids *mesh_VAO);
+                  struct VAO_ids *mesh_VAO);
 
 void map_coastline_grid_VBO(struct gl_strided_buffer *coast_buf,
                             struct gl_strided_buffer *mflame_buf,
