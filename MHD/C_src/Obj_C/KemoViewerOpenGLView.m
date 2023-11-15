@@ -186,6 +186,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 	[self swapbuffer_cocoa];
 	[self setNeedsDisplay: YES];
+    
+    [_metalView setNeedsDisplay: YES];
 	return;
 }
 
@@ -201,6 +203,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	
 	[self swapbuffer_cocoa];
 	[self setNeedsDisplay: YES];
+    [_metalView setNeedsDisplay: YES];
     reftime_quick = CFAbsoluteTimeGetCurrent (); //reset time in all cases
 }
 

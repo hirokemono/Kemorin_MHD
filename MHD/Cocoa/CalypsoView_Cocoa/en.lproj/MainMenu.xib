@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -442,6 +441,7 @@
                         <connections>
                             <outlet property="FlineEvolutionProgreessBar" destination="1897" id="3575"/>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3413"/>
+                            <outlet property="_metalView" destination="0Nx-Qx-Xru" id="sNe-HC-Yel"/>
                             <outlet property="_resetview" destination="2679" id="3401"/>
                             <outlet property="evolutionProgreessBar" destination="1897" id="3402"/>
                             <outlet property="mainWindow" destination="371" id="fyQ-2I-tMU"/>
@@ -5358,7 +5358,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="1139" width="480" height="270"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="screenRect" x="0.0" y="900" width="1920" height="1175"/>
             <view key="contentView" id="BeK-5P-Wgc">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                 <autoresizingMask key="autoresizingMask"/>

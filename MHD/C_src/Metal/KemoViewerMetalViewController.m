@@ -17,7 +17,7 @@
 
 -(void) awakeFromNib
 {
-//    _metalView.enableSetNeedsDisplay = YES;
+    _metalView.enableSetNeedsDisplay = YES;
 /*    viewDidLoad is called by linkning self.viwew to metal view */
     self.view = _metalView;
 //    printf("TAko0 %d \n", self.viewLoaded);
