@@ -28,8 +28,9 @@ typedef enum AAPLVertexInputIndex
 
 typedef enum AAPLLightInputIndex
 {
-    AAPLLightsParams =   0,
-    AAPLMaterialParams = 1,
+    AAPLLightsParams =      0,
+    AAPLMaterialParams =    1,
+    AAPLTextureImageIndex = 2,
 } AAPLLightInputIndex;
 
 

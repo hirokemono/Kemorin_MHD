@@ -18,13 +18,13 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDevice> _device;
     
     // The render pipeline generated from the vertex and fragment shaders in the .metal shader file.
-    id<MTLRenderPipelineState> _pipelineState[6];
+    id<MTLRenderPipelineState> _pipelineState[7];
     
     // The command queue used to pass commands to the device.
     id<MTLCommandQueue> _commandQueue;
     
-    id<MTLFunction> _vertexFunction[5];
-    id<MTLFunction> _fragmentFunction[5];
+    id<MTLFunction> _vertexFunction[6];
+    id<MTLFunction> _fragmentFunction[6];
 
     // Combined depth and stencil state object.
     id<MTLDepthStencilState> _depthState;
@@ -83,6 +83,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         _vertexFunction[4] =   [defaultLibrary newFunctionWithName:@"SimpleVertexShader"];
         _fragmentFunction[4] = [defaultLibrary newFunctionWithName:@"SimpleFragmentShader"];
+
+        _vertexFunction[5] =   [defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
+        _fragmentFunction[5] = [defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         MTLRenderPipelineDescriptor *pipelineStateDescriptor;
@@ -185,6 +188,27 @@ Implementation of a platform independent renderer class, which performs Metal se
         _pipelineState[4] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
         NSAssert(_pipelineState[4], @"Failed to create pipeline state: %@", error);
+
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+        pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+        pipelineStateDescriptor.label = @"Phong Shader Pipeline";
+        pipelineStateDescriptor.vertexFunction = _vertexFunction[5];
+        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[5];
+        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+            
+        _pipelineState[6] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                           error:&error];
+        NSAssert(_pipelineState[6], @"Failed to create pipeline state: %@", error);
 
 /* Add Depth buffer description in command */
         MTLDepthStencilDescriptor *depthDescriptor = [MTLDepthStencilDescriptor new];
@@ -581,9 +605,10 @@ Implementation of a platform independent renderer class, which performs Metal se
             };
 /*  Commands to render Coastline on map */
             if(mcoast_buf->num_nod_buf > 0){
-                _vertices[12] = [_device newBufferWithBytes:((KemoViewVertex *) mcoast_buf->v_buf)
-                                                     length:(mcoast_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                                    options:MTLResourceStorageModeShared];
+                _vertices[12] = [_device newBufferWithBytesNoCopy:mcoast_buf->v_buf
+                                                           length:(mcoast_buf->nsize_buf * sizeof(float))
+                                                          options:MTLResourceStorageModeShared
+                                                      deallocator:nil];
                 [renderEncoder setRenderPipelineState:_pipelineState[3]];
                 [renderEncoder setVertexBuffer:_vertices[12]
                                         offset:0
@@ -714,9 +739,10 @@ Implementation of a platform independent renderer class, which performs Metal se
             }
             
             if(coast_buf->num_nod_buf > 0){
-                _vertices[31] = [_device newBufferWithBytes:((KemoViewVertex *) coast_buf->v_buf)
-                                                     length:(coast_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                                    options:MTLResourceStorageModeShared];
+                _vertices[31] = [_device newBufferWithBytesNoCopy:coast_buf->v_buf
+                                                           length:(coast_buf->nsize_buf * sizeof(float))
+                                                          options:MTLResourceStorageModeShared
+                                                      deallocator:nil];
                 [renderEncoder setDepthStencilState:_depthState];
                 [renderEncoder setRenderPipelineState:_pipelineState[5]];
                 [renderEncoder setVertexBuffer:_vertices[31]
