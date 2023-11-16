@@ -319,13 +319,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                              mflame_buf);
     } else {
         int ied_buf;
-        /*
         ied_buf = set_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast,
                                        kemo_sgl->kemo_mesh->mesh_m->radius_coast,
                                        IZERO, coast_buf);
-*/
-        ied_buf = set_coastline_buf(kemo_sgl->kemo_mesh->mesh_m->radius_coast,
-                                    IZERO, coast_buf);
         coast_buf->num_nod_buf = ied_buf;
         ied_buf = set_sph_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid,
                                        kemo_sgl->kemo_mesh->mesh_m->radius_coast,
@@ -682,13 +678,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                 _index_buffer = [_device newBufferWithBytes:cube_index_buf->ie_buf
                                                      length:(cube_index_buf->nsize_buf * sizeof(unsigned int))
                                                     options:MTLResourceStorageModeShared];
-
+                
                 [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
                 [renderEncoder setCullMode:MTLCullModeBack];
                 [renderEncoder setDepthStencilState:_depthState];
-
+                
                 [renderEncoder setRenderPipelineState:_pipelineState[4]];
                 [renderEncoder setVertexBuffer:_vertices[30]
                                         offset:0
@@ -709,13 +705,15 @@ Implementation of a platform independent renderer class, which performs Metal se
                 [renderEncoder setFragmentBytes:material
                                          length:sizeof(MaterialParameters)
                                         atIndex:AAPLMaterialParams];
-
+                
                 [renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
                                           indexCount:36
                                            indexType:MTLIndexTypeUInt32
                                          indexBuffer:_index_buffer
                                    indexBufferOffset:0];
-
+            }
+            
+            if(coast_buf->num_nod_buf > 0){
                 _vertices[31] = [_device newBufferWithBytes:((KemoViewVertex *) coast_buf->v_buf)
                                                      length:(coast_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
@@ -736,7 +734,28 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   vertexCount:coast_buf->num_nod_buf];
             };
 
-        };
+            if(flame_buf->num_nod_buf > 0){
+                _vertices[32] = [_device newBufferWithBytes:((KemoViewVertex *) flame_buf->v_buf)
+                                                     length:(flame_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                                    options:MTLResourceStorageModeShared];
+                [renderEncoder setDepthStencilState:_depthState];
+                [renderEncoder setRenderPipelineState:_pipelineState[5]];
+                [renderEncoder setVertexBuffer:_vertices[32]
+                                        offset:0
+                                       atIndex:AAPLVertexInputIndexVertices];
+                [renderEncoder setVertexBytes:&_modelview_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLModelViewMatrix];
+                [renderEncoder setVertexBytes:&_projection_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLProjectionMatrix];
+                
+                [renderEncoder drawPrimitives:MTLPrimitiveTypeLine
+                                  vertexStart:0
+                                  vertexCount:flame_buf->num_nod_buf];
+            };
+
+         };
 
     /*  Commands to render screen message */
 
