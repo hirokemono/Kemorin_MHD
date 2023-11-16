@@ -26,6 +26,9 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLFunction> _vertexFunction[5];
     id<MTLFunction> _fragmentFunction[5];
 
+    // Combined depth and stencil state object.
+    id<MTLDepthStencilState> _depthState;
+
     // The Metal buffer that holds the vertex data.
     id<MTLBuffer> _vertices[41];
     // The Metal texture object
@@ -60,7 +63,10 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         _device = mtkView.device;
 
-        // Load all the shader files with a .metal file extension in the project.
+// Indicate that each pixel in the depth buffer is a 32-bit floating point value.
+        mtkView.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
+
+         // Load all the shader files with a .metal file extension in the project.
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
 
         _vertexFunction[0] =   [defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
@@ -85,6 +91,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.label = @"2D Texture Pipeline";
         pipelineStateDescriptor.vertexFunction = _vertexFunction[2];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[2];
+        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
@@ -107,6 +114,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.label = @"2D transpearent Pipeline";
         pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
+        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
@@ -125,6 +133,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.label = @"2D Simple Pipeline";
         pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
+        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = NO;
@@ -138,6 +147,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.label = @"Base Pipeline";
         pipelineStateDescriptor.vertexFunction = _vertexFunction[0];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[0];
+        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
         _pipelineState[0] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
@@ -148,6 +158,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.label = @"Simple Shader Pipeline";
         pipelineStateDescriptor.vertexFunction =   _vertexFunction[4];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[4];
+        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
         _pipelineState[5] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
@@ -160,8 +171,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.label = @"Phong Shader Pipeline";
         pipelineStateDescriptor.vertexFunction = _vertexFunction[3];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[3];
+        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-        
+
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
         pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
         pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
@@ -173,6 +185,12 @@ Implementation of a platform independent renderer class, which performs Metal se
         _pipelineState[4] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
         NSAssert(_pipelineState[4], @"Failed to create pipeline state: %@", error);
+
+/* Add Depth buffer description in command */
+        MTLDepthStencilDescriptor *depthDescriptor = [MTLDepthStencilDescriptor new];
+        depthDescriptor.depthCompareFunction = MTLCompareFunctionLessEqual;
+        depthDescriptor.depthWriteEnabled = YES;
+        _depthState = [_device newDepthStencilStateWithDescriptor:depthDescriptor];
     }
 /* Create the command queue */
     _commandQueue = [_device newCommandQueue];
@@ -301,9 +319,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                              mflame_buf);
     } else {
         int ied_buf;
+        /*
         ied_buf = set_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast,
                                        kemo_sgl->kemo_mesh->mesh_m->radius_coast,
                                        IZERO, coast_buf);
+*/
+        ied_buf = set_coastline_buf(kemo_sgl->kemo_mesh->mesh_m->radius_coast,
+                                    IZERO, coast_buf);
         coast_buf->num_nod_buf = ied_buf;
         ied_buf = set_sph_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid,
                                        kemo_sgl->kemo_mesh->mesh_m->radius_coast,
@@ -506,14 +528,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     int num =  kemo_sgl->kemo_buffers->cube_buf->num_nod_buf
              + coast_buf->num_nod_buf + mflame_buf->num_nod_buf;
-    if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
-        _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cube_buf->v_buf)
-                                             length:(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                            options:MTLResourceStorageModeShared];
-        _index_buffer = [_device newBufferWithBytes:cube_index_buf->ie_buf
-                                             length:(cube_index_buf->nsize_buf * sizeof(unsigned int))
-                                            options:MTLResourceStorageModeShared];
-    };
 
     // Create a new command buffer for each render pass to the current drawable.
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
@@ -662,10 +676,18 @@ Implementation of a platform independent renderer class, which performs Metal se
             material[0].specular.w = 1.0;
             
             if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
+                _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cube_buf->v_buf)
+                                                     length:(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                                    options:MTLResourceStorageModeShared];
+                _index_buffer = [_device newBufferWithBytes:cube_index_buf->ie_buf
+                                                     length:(cube_index_buf->nsize_buf * sizeof(unsigned int))
+                                                    options:MTLResourceStorageModeShared];
+
                 [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
                 [renderEncoder setCullMode:MTLCullModeBack];
+                [renderEncoder setDepthStencilState:_depthState];
 
                 [renderEncoder setRenderPipelineState:_pipelineState[4]];
                 [renderEncoder setVertexBuffer:_vertices[30]
@@ -693,6 +715,25 @@ Implementation of a platform independent renderer class, which performs Metal se
                                            indexType:MTLIndexTypeUInt32
                                          indexBuffer:_index_buffer
                                    indexBufferOffset:0];
+
+                _vertices[31] = [_device newBufferWithBytes:((KemoViewVertex *) coast_buf->v_buf)
+                                                     length:(coast_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                                    options:MTLResourceStorageModeShared];
+                [renderEncoder setDepthStencilState:_depthState];
+                [renderEncoder setRenderPipelineState:_pipelineState[5]];
+                [renderEncoder setVertexBuffer:_vertices[31]
+                                        offset:0
+                                       atIndex:AAPLVertexInputIndexVertices];
+                [renderEncoder setVertexBytes:&_modelview_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLModelViewMatrix];
+                [renderEncoder setVertexBytes:&_projection_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLProjectionMatrix];
+                
+                [renderEncoder drawPrimitives:MTLPrimitiveTypeLine
+                                  vertexStart:0
+                                  vertexCount:coast_buf->num_nod_buf];
             };
 
         };
