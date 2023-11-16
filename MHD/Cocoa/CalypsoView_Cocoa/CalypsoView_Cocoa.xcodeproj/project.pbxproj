@@ -46,6 +46,7 @@
 		185CB9C9212F593D00BB3C0B /* t_control_real2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB979212F593C00BB3C0B /* t_control_real2_IO.c */; };
 		185CB9CA212F593D00BB3C0B /* t_control_real3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB97B212F593C00BB3C0B /* t_control_real3_IO.c */; };
 		185CB9CB212F593D00BB3C0B /* t_control_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB97D212F593C00BB3C0B /* t_control_real_IO.c */; };
+		1860DE302B067A6500358654 /* SmpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1860DE2F2B067A6500358654 /* SmpleShader.metal */; };
 		1862C4102311BC6B000306E6 /* set_rgba_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */; };
 		1888414A22E64C090039BA2B /* psf_patch_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 1888414822E64C090039BA2B /* psf_patch_buffer.c */; };
 		188BA7512305E13100348842 /* invert_small_matrix_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA7502305E13100348842 /* invert_small_matrix_c.c */; };
@@ -262,6 +263,7 @@
 		185CB97C212F593C00BB3C0B /* t_control_real3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_real3_IO.h; sourceTree = "<group>"; };
 		185CB97D212F593C00BB3C0B /* t_control_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_real_IO.c; sourceTree = "<group>"; };
 		185CB97E212F593C00BB3C0B /* t_control_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_real_IO.h; sourceTree = "<group>"; };
+		1860DE2F2B067A6500358654 /* SmpleShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = SmpleShader.metal; path = Metal/SmpleShader.metal; sourceTree = "<group>"; };
 		1862C40E2311BC69000306E6 /* set_rgba_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_rgba_table_c.h; sourceTree = "<group>"; };
 		1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_rgba_table_c.c; sourceTree = "<group>"; };
 		1888414822E64C090039BA2B /* psf_patch_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = psf_patch_buffer.c; sourceTree = "<group>"; };
@@ -962,6 +964,7 @@
 				18F0296F2AF5A49500D37276 /* KemoViewerMetalViewController.m */,
 				18263FEA2AFA9DC300AA8E72 /* Base2dShader.metal */,
 				18263FEC2AFCB2E900AA8E72 /* PhongShader.metal */,
+				1860DE2F2B067A6500358654 /* SmpleShader.metal */,
 				18F0297C2AF5A65B00D37276 /* Simple2dShader.metal */,
 				18F0297D2AF5A65C00D37276 /* Texture2dShader.metal */,
 			);
@@ -1237,6 +1240,7 @@
 				18D7E7871562D359009B05FF /* FlineController.m in Sources */,
 				18D7E7891562D359009B05FF /* Kemoview_IO_Controller.m in Sources */,
 				188C941F230DA8C300A4DB14 /* set_each_fline_parameters.c in Sources */,
+				1860DE302B067A6500358654 /* SmpleShader.metal in Sources */,
 				18263FEB2AFA9DC300AA8E72 /* Base2dShader.metal in Sources */,
 				18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */,
 				18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */,

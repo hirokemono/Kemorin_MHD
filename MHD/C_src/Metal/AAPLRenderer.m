@@ -18,16 +18,16 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDevice> _device;
     
     // The render pipeline generated from the vertex and fragment shaders in the .metal shader file.
-    id<MTLRenderPipelineState> _pipelineState[5];
+    id<MTLRenderPipelineState> _pipelineState[6];
     
     // The command queue used to pass commands to the device.
     id<MTLCommandQueue> _commandQueue;
     
-    id<MTLFunction> _vertexFunction[4];
-    id<MTLFunction> _fragmentFunction[4];
+    id<MTLFunction> _vertexFunction[5];
+    id<MTLFunction> _fragmentFunction[5];
 
     // The Metal buffer that holds the vertex data.
-    id<MTLBuffer> _vertices[31];
+    id<MTLBuffer> _vertices[41];
     // The Metal texture object
     id<MTLTexture> _texture[7];
 /*  Index buffer for initial cube */
@@ -74,6 +74,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         _vertexFunction[3] =   [defaultLibrary newFunctionWithName:@"PhongVertexShader"];
         _fragmentFunction[3] = [defaultLibrary newFunctionWithName:@"PhongFragmentShader"];
+
+        _vertexFunction[4] =   [defaultLibrary newFunctionWithName:@"SimpleVertexShader"];
+        _fragmentFunction[4] = [defaultLibrary newFunctionWithName:@"SimpleFragmentShader"];
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         MTLRenderPipelineDescriptor *pipelineStateDescriptor;
@@ -141,10 +144,20 @@ Implementation of a platform independent renderer class, which performs Metal se
                                            error:&error];
         NSAssert(_pipelineState[0], @"Failed to create pipeline state: %@", error);
 
+        /* Configure a pipeline descriptor that is used to create a pipeline state. */
+        pipelineStateDescriptor.label = @"Simple Shader Pipeline";
+        pipelineStateDescriptor.vertexFunction =   _vertexFunction[4];
+        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[4];
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+        _pipelineState[5] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                           error:&error];
+        NSAssert(_pipelineState[5], @"Failed to create pipeline state: %@", error);
+
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
 
-        pipelineStateDescriptor.label = @"2D Texture Pipeline";
+        pipelineStateDescriptor.label = @"Phong Shader Pipeline";
         pipelineStateDescriptor.vertexFunction = _vertexFunction[3];
         pipelineStateDescriptor.fragmentFunction = _fragmentFunction[3];
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
