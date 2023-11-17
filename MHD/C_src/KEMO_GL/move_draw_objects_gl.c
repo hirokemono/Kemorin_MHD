@@ -267,7 +267,25 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 
 		draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
-		set_axis_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->grid_VAO[2]);
+        double axis_radius = 4.0;
+        int ncorner_axis = ISIX;
+        struct gl_strided_buffer *axis_buf
+                = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+        int n_point = ITHREE * count_axis_to_buf(ncorner_axis);
+        set_buffer_address_4_patch(n_point, axis_buf);
+        alloc_strided_buffer(axis_buf);
+
+        if(kemo_mesh->mesh_m->iflag_draw_axis > 0){
+            int icou_patch = set_axis_to_buf(view_s, kemo_mesh->mesh_m->dist_domains,
+                                             ncorner_axis, axis_radius, axis_buf);
+        } else{
+            axis_buf->num_nod_buf = 0;
+        };
+        set_axis_VAO(axis_buf, kemo_VAOs->grid_VAO[2]);
+        free(axis_buf->v_buf);
+        free(axis_buf);
+
+        
         glDisable(GL_CULL_FACE);
 		drawgl_patch_with_phong(view_matrices, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		
@@ -381,14 +399,14 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 
 void quick_draw_objects_gl3(struct kemoviewer_type *kemoview){
 	quick_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline, 
-                       kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
+                       kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_glbufs,
                        kemoview->kemo_VAOs, kemoview->kemo_shaders);
 	return;
 };
 
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview){
 	update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
-				kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
+				kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_glbufs,
 				kemoview->kemo_VAOs, kemoview->kemo_shaders);
 	return;
 }

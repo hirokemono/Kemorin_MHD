@@ -44,29 +44,10 @@ void set_map_coastline_buffer(int iflag_draw_coast,
 
 
 
-void set_axis_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s,
-			struct VAO_ids *mesh_VAO){
-	int ncorner = ISIX;
-	int icou_patch = 0;
-	double radius = 4.0;
+void set_axis_VAO(struct gl_strided_buffer *axis_buf, struct VAO_ids *mesh_VAO){
+	mesh_VAO->npoint_draw = axis_buf->num_nod_buf;
+	if(mesh_VAO->npoint_draw > 0) Const_VAO_4_Phong(mesh_VAO, axis_buf);
 	
-	mesh_VAO->npoint_draw = 0;
-	if(mesh_m->iflag_draw_axis == 0) return;
-	
-	struct gl_strided_buffer *axis_buf
-			= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	int n_point = ITHREE * count_axis_to_buf(ncorner);
-	
-	set_buffer_address_4_patch(n_point, axis_buf);
-	alloc_strided_buffer(axis_buf);
-	
-	icou_patch = set_axis_to_buf(view_s, mesh_m->dist_domains, ncorner, radius, axis_buf);
-	
-    mesh_VAO->npoint_draw = axis_buf->num_nod_buf;
-	Const_VAO_4_Phong(mesh_VAO, axis_buf);
-	
-	free(axis_buf->v_buf);
-	free(axis_buf);
 	return;
 };
 

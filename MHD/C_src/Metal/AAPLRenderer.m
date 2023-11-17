@@ -342,6 +342,10 @@ Implementation of a platform independent renderer class, which performs Metal se
         set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid,
                              mflame_buf);
     } else {
+        iflag_psf = sort_by_patch_distance_psfs(kemo_sgl->kemo_psf->psf_d, kemo_sgl->kemo_psf->psf_m,
+                                                kemo_sgl->kemo_psf->psf_a, kemo_sgl->view_s);
+        iflag_psf = iflag_psf + check_draw_psf(kemo_sgl->kemo_psf->psf_a);
+
         int ied_buf;
         ied_buf = set_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast,
                                        kemo_sgl->kemo_mesh->mesh_m->radius_coast,
@@ -407,14 +411,33 @@ Implementation of a platform independent renderer class, which performs Metal se
                            kemo_sgl->kemo_psf->psf_a, min_buf, max_buf, zero_buf);
 
 /* draw example cube for empty data */
-    iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
-               + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
     struct gl_index_buffer *cube_index_buf = alloc_gl_index_buffer(12, 3);
     CubeNode_to_buf(0.5f, kemo_sgl->kemo_buffers->cube_buf, cube_index_buf);
     struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 
+    iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
+               + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
+    if(iflag > 0){
+        kemo_sgl->kemo_buffers->cube_buf->num_nod_buf = 0;
+    }
 
-    
+
+/* Set Axis data into buffer */
+    double axis_radius = 4.0;
+    int ncorner_axis = ISIX;
+    struct gl_strided_buffer *axis_buf
+            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    int n_point = ITHREE * count_axis_to_buf(ncorner_axis);
+    set_buffer_address_4_patch(n_point, axis_buf);
+    alloc_strided_buffer(axis_buf);
+
+    if(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis > 0){
+        int icou_patch = set_axis_to_buf(kemo_sgl->view_s, kemo_sgl->kemo_mesh->mesh_m->dist_domains,
+                                         ncorner_axis, axis_radius, axis_buf);
+    } else{
+        axis_buf->num_nod_buf = 0;
+    };
+
     MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
     NSUInteger bytesPerRow;
 /* Construct message texture */
@@ -653,49 +676,46 @@ Implementation of a platform independent renderer class, which performs Metal se
                               vertexCount:n_quad_vertex];
 */
             float x, y, z;
-            MaterialParameters    material[1];
-/*
-            material[0].ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
-            material[0].diffuse.x = kemoview_get_material_parameter(DIFFUSE_FLAG);
-            material[0].specular.x = kemoview_get_material_parameter(SPECULAR_FLAG);
-            material[0].specular = kemoview_get_material_parameter(SHINENESS_FLAG);
-
-            numLight = kemoview_get_num_light_position();
-            LightSourceParameters *lights
-                = (LightSourceParameters *) malloc(numLight*sizeof(LightSourceParameters));
-
-            for(i=0;i<numLight;i++){
-                kemoview_get_each_light_xyz(i, &x, &y, &z);
-                lights[i].position.x = x;
-                lights[i].position.y = y;
-                lights[i].position.z = z;
-                lights[i].position.w = 1.0;
-            };
-*/
             LightSourceParameters lights;
-            lights.num_lights = init_light->num_light;
-            for(i=0;i<lights.num_lights;i++){
-                lights.position[i].x = init_light->lightposition[i][0];
-                lights.position[i].y = init_light->lightposition[i][1];
-                lights.position[i].z = init_light->lightposition[i][2];
-                lights.position[i].w = init_light->lightposition[i][3];
-            };
-            material[0].ambient.x = init_light->whitelight[0][0];
-            material[0].diffuse.x = init_light->whitelight[1][0];
-            material[0].specular.x = init_light->whitelight[2][0];
-            material[0].shininess =  init_light->shine[0];
+            MaterialParameters    material;
 
-            
-            material[0].ambient.y = material[0].ambient.x;
-            material[0].ambient.z = material[0].ambient.x;
-            material[0].ambient.w = 1.0;
-            material[0].diffuse.y = material[0].diffuse.x;
-            material[0].diffuse.z = material[0].diffuse.x;
-            material[0].diffuse.w = 1.0;
-            material[0].specular.y = material[0].specular.x;
-            material[0].specular.z = material[0].specular.x;
-            material[0].specular.w = 1.0;
-            
+            if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
+                lights.num_lights = init_light->num_light;
+                for(i=0;i<lights.num_lights;i++){
+                    lights.position[i].x = init_light->lightposition[i][0];
+                    lights.position[i].y = init_light->lightposition[i][1];
+                    lights.position[i].z = init_light->lightposition[i][2];
+                    lights.position[i].w = init_light->lightposition[i][3];
+                };
+                material.ambient.x = init_light->whitelight[0][0];
+                material.diffuse.x = init_light->whitelight[1][0];
+                material.specular.x = init_light->whitelight[2][0];
+                material.shininess =  init_light->shine[0];
+            }else{
+                material.ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
+                material.diffuse.x = kemoview_get_material_parameter(DIFFUSE_FLAG);
+                material.specular.x = kemoview_get_material_parameter(SPECULAR_FLAG);
+                material.specular = kemoview_get_material_parameter(SHINENESS_FLAG);
+                
+                lights.num_lights = kemoview_get_num_light_position();
+                for(i=0;i<lights.num_lights;i++){
+                    kemoview_get_each_light_xyz(i, &x, &y, &z);
+                    lights.position[i].x = x;
+                    lights.position[i].y = y;
+                    lights.position[i].z = z;
+                    lights.position[i].w = 1.0;
+                };
+            };
+            material.ambient.y = material.ambient.x;
+            material.ambient.z = material.ambient.x;
+            material.ambient.w = 1.0;
+            material.diffuse.y = material.diffuse.x;
+            material.diffuse.z = material.diffuse.x;
+            material.diffuse.w = 1.0;
+            material.specular.y = material.specular.x;
+            material.specular.z = material.specular.x;
+            material.specular.w = 1.0;
+
             if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
                 _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cube_buf->v_buf)
                                                      length:(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf * sizeof(KemoViewVertex))
@@ -705,7 +725,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                                                     options:MTLResourceStorageModeShared];
                 
                 [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
-                [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
                 [renderEncoder setCullMode:MTLCullModeBack];
                 [renderEncoder setDepthStencilState:_depthState];
@@ -727,7 +746,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 [renderEncoder setFragmentBytes:&lights
                                          length:(sizeof(LightSourceParameters))
                                         atIndex:AAPLLightsParams];
-                [renderEncoder setFragmentBytes:material
+                [renderEncoder setFragmentBytes:&material
                                          length:sizeof(MaterialParameters)
                                         atIndex:AAPLMaterialParams];
                 
@@ -737,7 +756,33 @@ Implementation of a platform independent renderer class, which performs Metal se
                                          indexBuffer:_index_buffer
                                    indexBufferOffset:0];
             }
-            
+
+            if(axis_buf->num_nod_buf > 0){
+                _vertices[33] = [_device newBufferWithBytes:((KemoViewVertex *) axis_buf->v_buf)
+                                                     length:(axis_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                                    options:MTLResourceStorageModeShared];
+
+                [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
+                [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
+                [renderEncoder setCullMode:MTLCullModeBack];
+                [renderEncoder setDepthStencilState:_depthState];
+                
+                [renderEncoder setRenderPipelineState:_pipelineState[5]];
+                [renderEncoder setVertexBuffer:_vertices[33]
+                                        offset:0
+                                       atIndex:AAPLVertexInputIndexVertices];
+
+                [renderEncoder setVertexBytes:&_modelview_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLModelViewMatrix];
+                [renderEncoder setVertexBytes:&_projection_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLProjectionMatrix];
+
+                [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                                  vertexStart:0
+                                  vertexCount:axis_buf->num_nod_buf];
+            }
             if(coast_buf->num_nod_buf > 0){
                 _vertices[31] = [_device newBufferWithBytesNoCopy:coast_buf->v_buf
                                                            length:(coast_buf->nsize_buf * sizeof(float))
@@ -937,6 +982,13 @@ Implementation of a platform independent renderer class, which performs Metal se
         free(mflame_buf->v_buf);
     };
     free(mflame_buf);
+
+    if(axis_buf->num_nod_buf > 0){
+//        [_vertices[33] setPurgeableState:MTLPurgeableStateEmpty];
+        [_vertices[33] release];
+        free(axis_buf->v_buf);
+    };
+    free(axis_buf);
 
 //    [_vertices[0] setPurgeableState:MTLPurgeableStateEmpty];
 //    [_vertices[0] release];

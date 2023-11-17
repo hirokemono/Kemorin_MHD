@@ -29,7 +29,9 @@ struct kemoviewer_type{
     struct view_element       *view_s;
 
     struct kemoview_buffers   *kemo_buffers;
-	struct kemoview_shaders   *kemo_shaders;
+    struct kemoview_buffers   *kemo_glbufs;
+
+    struct kemoview_shaders   *kemo_shaders;
 	struct kemoview_VAOs      *kemo_VAOs;
 	struct VAO_ids            *menu_VAO;
 	
