@@ -18,7 +18,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDevice> _device;
     
     // The render pipeline generated from the vertex and fragment shaders in the .metal shader file.
-    id<MTLRenderPipelineState> _pipelineState[7];
+    id<MTLRenderPipelineState> _pipelineState[40];
     
     // The command queue used to pass commands to the device.
     id<MTLCommandQueue> _commandQueue;
@@ -188,6 +188,10 @@ Implementation of a platform independent renderer class, which performs Metal se
         _pipelineState[4] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
         NSAssert(_pipelineState[4], @"Failed to create pipeline state: %@", error);
+
+        _pipelineState[14] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                           error:&error];
+        NSAssert(_pipelineState[14], @"Failed to create pipeline state: %@", error);
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -423,7 +427,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 
 /* Set Axis data into buffer */
-    double axis_radius = 4.0;
+    double axis_radius = 16.0;
     int ncorner_axis = ISIX;
     struct gl_strided_buffer *axis_buf
             = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
@@ -695,7 +699,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 material.ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
                 material.diffuse.x = kemoview_get_material_parameter(DIFFUSE_FLAG);
                 material.specular.x = kemoview_get_material_parameter(SPECULAR_FLAG);
-                material.specular = kemoview_get_material_parameter(SHINENESS_FLAG);
+                material.shininess = kemoview_get_material_parameter(SHINENESS_FLAG);
                 
                 lights.num_lights = kemoview_get_num_light_position();
                 for(i=0;i<lights.num_lights;i++){
@@ -715,7 +719,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             material.specular.y = material.specular.x;
             material.specular.z = material.specular.x;
             material.specular.w = 1.0;
-
+/*
             if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
                 _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cube_buf->v_buf)
                                                      length:(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf * sizeof(KemoViewVertex))
@@ -756,7 +760,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                          indexBuffer:_index_buffer
                                    indexBufferOffset:0];
             }
-
+*/
             if(axis_buf->num_nod_buf > 0){
                 _vertices[33] = [_device newBufferWithBytes:((KemoViewVertex *) axis_buf->v_buf)
                                                      length:(axis_buf->num_nod_buf * sizeof(KemoViewVertex))
@@ -765,9 +769,10 @@ Implementation of a platform independent renderer class, which performs Metal se
                 [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
                 [renderEncoder setCullMode:MTLCullModeBack];
+                [renderEncoder setCullMode:MTLCullModeNone];
                 [renderEncoder setDepthStencilState:_depthState];
                 
-                [renderEncoder setRenderPipelineState:_pipelineState[5]];
+                [renderEncoder setRenderPipelineState:_pipelineState[14]];
                 [renderEncoder setVertexBuffer:_vertices[33]
                                         offset:0
                                        atIndex:AAPLVertexInputIndexVertices];
@@ -778,6 +783,17 @@ Implementation of a platform independent renderer class, which performs Metal se
                 [renderEncoder setVertexBytes:&_projection_mat
                                        length:sizeof(matrix_float4x4)
                                       atIndex:AAPLProjectionMatrix];
+
+                [renderEncoder setVertexBytes:&_normal_mat
+                                       length:sizeof(matrix_float4x4)
+                                      atIndex:AAPLModelNormalMatrix];
+                
+                [renderEncoder setFragmentBytes:&lights
+                                         length:(sizeof(LightSourceParameters))
+                                        atIndex:AAPLLightsParams];
+                [renderEncoder setFragmentBytes:&material
+                                         length:sizeof(MaterialParameters)
+                                        atIndex:AAPLMaterialParams];
 
                 [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                                   vertexStart:0
@@ -828,7 +844,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
          };
 
-    /*  Commands to render screen message */
 
         [renderEncoder setRenderPipelineState:_pipelineState[2]];
         // Pass in the parameter data.
