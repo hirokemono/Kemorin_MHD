@@ -104,23 +104,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 }
 
 // ---------------------------------
-
-// move camera in z axis
--(void)mouseDolly: (NSPoint) location
-{
-	kemoview_mousedolly(gDollyPanStartPoint, (double) location.x, (double) location.y);
-}
-	
-// ---------------------------------
-	
-// move camera in x/y plane
-- (void)mousePan: (NSPoint) location
-{
-	kemoview_mousepan(gDollyPanStartPoint, (double) location.x, (double) location.y);
-}
-
-// ---------------------------------
-
 -(id) DrawRotation: (NSInteger) int_degree : (NSInteger)rotationaxis
 {
 	kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
@@ -294,179 +277,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 // ---------------------------------
 
-#pragma mark ---- Method Overrides ----
-
--(void)keyDown:(NSEvent *)theEvent
-{
-    NSString *characters = [theEvent characters];
-    if ([characters length]) {
-        unichar character = [characters characterAtIndex:0];
-		switch (character) {
-			case 'c':
-				// toggle caps
-				fDrawCaps = 1 - fDrawCaps;
-				[self setNeedsDisplay: YES];
-				break;
-		}
-	}
-}
-
-// ---------------------------------
-
-- (void)mouseDown:(NSEvent *)theEvent // trackball
-{
-    if ([theEvent modifierFlags] & NSEventModifierFlagControl) // send to pan
-		[self rightMouseDown:theEvent];
-	else if ([theEvent modifierFlags] & NSEventModifierFlagShift) // send to dolly
-		[self otherMouseDown:theEvent];
-	else if(leftBottunFlag == PAN)
-		[self rightMouseDown:theEvent];
-	else {
-		NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-		location.y = YpixelGLWindow - location.y;
-		gDolly =     FALSE; // no dolly
-		gPan =       FALSE; // no pan
-		gTrackball = TRUE;
-		kemoview_startTrackball(location.x, -location.y);
-		gTrackingViewInfo = self;
-	}
-    [self QuickUpdateImage];
-}
-
-// ---------------------------------
-
-- (void)rightMouseDown:(NSEvent *)theEvent // pan
-{
-	NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	location.y = YpixelGLWindow - location.y;
-/*	
-	if (gTrackball) { // if we are currently tracking, end trackball
-		kemoview_drugging_addToRotationTrackball();
-	}
- */
-	gDolly =     FALSE; // no dolly
-	gPan =       TRUE; 
-	gTrackball = FALSE; // no trackball
-	gDollyPanStartPoint[0] = (double) location.x;
-	gDollyPanStartPoint[1] = (double) location.y;
-	gTrackingViewInfo = self;
-}
-
-// ---------------------------------
-
-- (void)otherMouseDown:(NSEvent *)theEvent //dolly
-{
-	NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	location.y = YpixelGLWindow - location.y;
-/*	
-	if (gTrackball) { // if we are currently tracking, end trackball
-		kemoview_drugging_addToRotationTrackball();
-	}
- */
-	gDolly =     TRUE;
-	gPan =       FALSE; // no pan
-	gTrackball = FALSE; // no trackball
-	gDollyPanStartPoint[0] = (double) location.x;
-	gDollyPanStartPoint[1] = (double) location.y;
-	gTrackingViewInfo = self;
-}
-
-// ---------------------------------
-
-- (void)mouseUp:(NSEvent *)theEvent
-{
-    kemoview_set_single_viewer_id(id_window);
-
-	if (gDolly) { // end dolly
-		gDolly =     FALSE;
-	} else if (gPan) { // end pan
-		gPan =       FALSE;
-	} else if (gTrackball) { // end trackball
-		gTrackball = FALSE;
-/*		kemoview_drugging_addToRotationTrackball();*/
-		[_resetview UpdateParameters];
-	} 
-	gTrackingViewInfo = NULL;
-
-	[self UpdateImage];
-}
-
-// ---------------------------------
-
-- (void)rightMouseUp:(NSEvent *)theEvent
-{
-	[self mouseUp:theEvent];
-}
-
-// ---------------------------------
-
-- (void)otherMouseUp:(NSEvent *)theEvent
-{
-	[self mouseUp:theEvent];
-}
-
-// ---------------------------------
-
-- (void)mouseDragged:(NSEvent *)theEvent
-{
-	NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	location.y = YpixelGLWindow - location.y;
-	if (gTrackball) {
-		kemoview_rollToTrackball (location.x, -location.y);
-		kemoview_drugging_addToRotationTrackball();
-		kemoview_startTrackball(location.x, -location.y);
-	} else if (gDolly) {
-		[self mouseDolly: location];
-	} else if (gPan) {
-		[self mousePan: location];
-	}
-	
-    [self QuickUpdateImage];
-}
-
-// ---------------------------------
-
-- (void)scrollWheel:(NSEvent *)theEvent
-{
-	float wheelDelta = [theEvent deltaX] + [theEvent deltaY] + [theEvent deltaZ];
-	if (wheelDelta)
-	{
-		kemoview_zooming((double) wheelDelta);
-	}
-    [self QuickUpdateImage];
-}
-
-// ---------------------------------
-
-- (void)rightMouseDragged:(NSEvent *)theEvent
-{
-	[self mouseDragged: theEvent];
-}
-
-// ---------------------------------
-
-- (void)otherMouseDragged:(NSEvent *)theEvent
-{
-	[self mouseDragged: theEvent];
-}
-
-// ---------------------------------
-
-- (void)magnifyWithEvent:(NSEvent *)theEvent
-{
-    double newScale = 200.0*[theEvent magnification];
-    kemoview_zooming(newScale);
-    [self QuickUpdateImage];
-}
-
-// ---------------------------------
-
-- (BOOL)acceptsFirstResponder{return YES;}
-- (BOOL)becomeFirstResponder{return YES;}
-- (BOOL)resignFirstResponder{return YES;}
-
-// ---------------------------------
-
 // set initial OpenGL state (current context is set)
 // called after context is created
 - (void) prepareKemoOpenGL
@@ -569,4 +379,10 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     [[NSRunLoop currentRunLoop] addTimer:timer_msg forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize
  }
 
+
+-(void) setFrameSize:(NSSize)newSize
+{
+    [self resizeGL];
+    return;
+}
 @end

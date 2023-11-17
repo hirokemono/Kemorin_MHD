@@ -46,6 +46,14 @@
     return;
 }
 
+- (void) setViewerSize
+{
+    [self setRetinaMode];
+    NSRect rectView_DISP = [self bounds];
+    [_kemoviewer setFrameSize:rectView_DISP.size];
+}
+
+
 -(void) UpdateImage
 {
     [_kemoviewer UpdateImage];
@@ -60,6 +68,51 @@
 }
 
 // ---------------------------------
+#pragma mark ---- Method Overrides ----
+-(void)keyDown:(NSEvent *)theEvent
+{
+    NSString *characters = [theEvent characters];
+    if ([characters length]) {
+        unichar character = [characters characterAtIndex:0];
+        switch (character) {
+            case 'c':
+                // toggle caps
+                fDrawCaps = 1 - fDrawCaps;
+                [self setNeedsDisplay: YES];
+                break;
+        }
+    }
+}
+
+// ---------------------------------
+- (void)mouseDown:(NSEvent *)theEvent // trackball
+{
+    gDolly =     FALSE;
+    gPan =       FALSE;
+    gTrackball = FALSE;
+
+    if ([theEvent modifierFlags] & NSEventModifierFlagControl) // send to pan
+        [self rightMouseDown:theEvent];
+    else if ([theEvent modifierFlags] & NSEventModifierFlagShift) // send to dolly
+        [self otherMouseDown:theEvent];
+    else if(leftBottunFlag == PAN)
+        [self rightMouseDown:theEvent];
+    else {
+        NSRect rectView = [self convertRectToBacking:[self bounds]];
+        CGFloat YpixelGLWindow = rectView.size.height;
+        NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        double xmove = (double) location.x;
+        double ymove = (double) (location.y - YpixelGLWindow);
+        gDolly =     FALSE; // no dolly
+        gPan =       FALSE; // no pan
+        gTrackball = TRUE;
+        kemoview_startTrackball(xmove, ymove);
+//        gTrackingViewInfo = self;
+    }
+    [self QuickUpdateImage];
+    return;
+}
+// ---------------------------------
 - (void)rightMouseDown:(NSEvent *)theEvent // pan
 {
     NSRect rectView = [self convertRectToBacking:[self bounds]];
@@ -72,11 +125,11 @@
         kemoview_drugging_addToRotationTrackball();
     }
  */
-    _gDolly =     FALSE; // no dolly
-    _gPan =       TRUE;
-    _gTrackball = FALSE; // no trackball
-    _gDollyPanStartPoint[0] =  xmove;
-    _gDollyPanStartPoint[1] = -ymove;
+    gDolly =     FALSE; // no dolly
+    gPan =       TRUE;
+    gTrackball = FALSE; // no trackball
+    gDollyPanStartPoint[0] =  xmove;
+    gDollyPanStartPoint[1] = -ymove;
 //    gTrackingViewInfo = self;
 }
 
@@ -93,42 +146,34 @@
         kemoview_drugging_addToRotationTrackball();
     }
  */
-    _gDolly =     TRUE;
-    _gPan =       FALSE; // no pan
-    _gTrackball = FALSE; // no trackball
-    _gDollyPanStartPoint[0] =  xmove;
-    _gDollyPanStartPoint[1] =  ymove;
+    gDolly =     TRUE;
+    gPan =       FALSE; // no pan
+    gTrackball = FALSE; // no trackball
+    gDollyPanStartPoint[0] =  xmove;
+    gDollyPanStartPoint[1] =  ymove;
 //    gTrackingViewInfo = self;
 }
-// ---------------------------------
-- (void)mouseDown:(NSEvent *)theEvent // trackball
-{
-    _gDolly =     FALSE;
-    _gPan =       FALSE;
-    _gTrackball = FALSE;
 
-    if ([theEvent modifierFlags] & NSEventModifierFlagControl) // send to pan
-        [self rightMouseDown:theEvent];
-    else if ([theEvent modifierFlags] & NSEventModifierFlagShift) // send to dolly
-        [self otherMouseDown:theEvent];
-    else if(_leftBottunFlag == PAN)
-        [self rightMouseDown:theEvent];
-    else {
-        NSRect rectView = [self convertRectToBacking:[self bounds]];
-        CGFloat YpixelGLWindow = rectView.size.height;
-        NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        double xmove = (double) location.x;
-        double ymove = (double) (location.y - YpixelGLWindow);
-        _gDolly =     FALSE; // no dolly
-        _gPan =       FALSE; // no pan
-        _gTrackball = TRUE;
-        kemoview_startTrackball(xmove, ymove);
-//        gTrackingViewInfo = self;
+// ---------------------------------
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    kemoview_set_single_viewer_id(id_window);
+
+    if (gDolly) { // end dolly
+        gDolly =     FALSE;
+    } else if (gPan) { // end pan
+        gPan =       FALSE;
+    } else if (gTrackball) { // end trackball
+        gTrackball = FALSE;
+/*        kemoview_drugging_addToRotationTrackball();*/
+        [_resetview UpdateParameters];
     }
-    [self QuickUpdateImage];
-    return;
+//    gTrackingViewInfo = NULL;
+
+    [self UpdateImage];
 }
 
+// ---------------------------------
 - (void)mouseDragged:(NSEvent *)theEvent
 {
     NSRect rectView = [self convertRectToBacking:[self bounds]];
@@ -136,14 +181,14 @@
     NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     double xmove = (double) location.x;
     double ymove = (double) (YpixelGLWindow - location.y);
-    if(_gTrackball) {
+    if(gTrackball) {
         kemoview_rollToTrackball (xmove, -ymove);
         kemoview_drugging_addToRotationTrackball();
         kemoview_startTrackball(xmove, -ymove);
-    } else if (_gDolly) {
-        kemoview_mousedolly(_gDollyPanStartPoint, xmove, ymove);
-    } else if (_gPan) {
-        kemoview_mousepan(_gDollyPanStartPoint, xmove, ymove);
+    } else if (gDolly) {
+        kemoview_mousedolly(gDollyPanStartPoint, xmove, ymove);
+    } else if (gPan) {
+        kemoview_mousepan(gDollyPanStartPoint, xmove, ymove);
     }
     [self QuickUpdateImage];
     return;
@@ -182,5 +227,11 @@
     kemoview_zooming(newScale);
     [self QuickUpdateImage];
 }
+
+// ---------------------------------
+
+- (BOOL)acceptsFirstResponder{return YES;}
+- (BOOL)becomeFirstResponder{return YES;}
+- (BOOL)resignFirstResponder{return YES;}
 
 @end

@@ -97,25 +97,9 @@ typedef struct {
 -(id) DrawRotation: (NSInteger) int_degree : (NSInteger) rotationaxis;
 -(id) DrawQuilt: (NSInteger) int_degree : (NSInteger)rotationaxis;
 
-- (void)keyDown:(NSEvent *)theEvent;
-
-- (void) mouseDown:(NSEvent *)theEvent;
-- (void) rightMouseDown:(NSEvent *)theEvent;
-- (void) otherMouseDown:(NSEvent *)theEvent;
-- (void) mouseUp:(NSEvent *)theEvent;
-- (void) rightMouseUp:(NSEvent *)theEvent;
-- (void) otherMouseUp:(NSEvent *)theEvent;
-- (void) mouseDragged:(NSEvent *)theEvent;
-- (void) scrollWheel:(NSEvent *)theEvent;
-- (void) rightMouseDragged:(NSEvent *)theEvent;
-- (void) otherMouseDragged:(NSEvent *)theEvent;
-- (void) magnifyWithEvent:(NSEvent *)theEvent;
-
-- (BOOL) acceptsFirstResponder;
-- (BOOL) becomeFirstResponder;
-- (BOOL) resignFirstResponder;
-
 - (void) prepareKemoOpenGL;
 - (void) awakeFromNib;
+
+-(void) setFrameSize:(NSSize)newSize;
 
 @end
