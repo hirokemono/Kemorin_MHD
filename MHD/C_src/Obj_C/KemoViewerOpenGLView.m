@@ -37,7 +37,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
         YpixelGLWindow = rectView.size.height;
         XpixelGLWindow = rectView.size.width;
         
-        [_metalView setRetinaMode];
 //        printf("Pixel size %d, %d\n",XpixelGLWindow, YpixelGLWindow);
         
         iflag_updated = 1;
@@ -169,9 +168,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 	[self swapbuffer_cocoa];
 	[self setNeedsDisplay: YES];
-    
-    [_metalView setNeedsDisplay: YES];
-	return;
+    return;
 }
 
 -(void) QuickUpdateImage
@@ -186,7 +183,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	
 	[self swapbuffer_cocoa];
 	[self setNeedsDisplay: YES];
-    [_metalView setNeedsDisplay: YES];
     reftime_quick = CFAbsoluteTimeGetCurrent (); //reset time in all cases
 }
 
@@ -319,9 +315,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void)mouseDown:(NSEvent *)theEvent // trackball
 {
-    if ([theEvent modifierFlags] & NSControlKeyMask) // send to pan
+    if ([theEvent modifierFlags] & NSEventModifierFlagControl) // send to pan
 		[self rightMouseDown:theEvent];
-	else if ([theEvent modifierFlags] & NSAlternateKeyMask) // send to dolly
+	else if ([theEvent modifierFlags] & NSEventModifierFlagShift) // send to dolly
 		[self otherMouseDown:theEvent];
 	else if(leftBottunFlag == PAN)
 		[self rightMouseDown:theEvent];
@@ -513,7 +509,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	glPolygonOffset (1.0f, 1.0f);
 	
 	int iflag_updates = [self getViewSize];
-    [_metalView setRetinaMode];
     
     if(iflag_updates != 0){
         kemoview_set_windowsize(XpixelGLWindow, YpixelGLWindow, 

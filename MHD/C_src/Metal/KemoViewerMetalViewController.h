@@ -20,6 +20,9 @@
 
 -(void) awakeFromNib;
 -(void) viewDidLoad;
+
+-(void) viewDidLayout;
+
 @end
 
 

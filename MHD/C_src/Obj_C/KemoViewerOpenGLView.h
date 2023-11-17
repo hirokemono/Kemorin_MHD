@@ -11,7 +11,6 @@
 #import <OpenGL/glext.h>
 
 #import "ResetViewControll.h"
-#import "KemoViewerMetalView.h"
 
 #include <math.h>
 #include "kemoviewer.h"
@@ -34,8 +33,7 @@ typedef struct {
 @interface KemoViewerOpenGLView : NSOpenGLView {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 	IBOutlet ResetViewControll *  _resetview;
-    IBOutlet KemoViewerMetalView * _metalView;
-    
+
 	IBOutlet NSWindow*  mainWindow;
 	
 	NSOpenGLContext * _context;

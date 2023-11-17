@@ -47,4 +47,10 @@
 
     return;
 }
+
+- (void)viewDidLayout
+{
+    [_metalView setRetinaMode];
+    return;
+};
 @end

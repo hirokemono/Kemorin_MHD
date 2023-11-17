@@ -441,7 +441,6 @@
                         <connections>
                             <outlet property="FlineEvolutionProgreessBar" destination="1897" id="3575"/>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3413"/>
-                            <outlet property="_metalView" destination="0Nx-Qx-Xru" id="sNe-HC-Yel"/>
                             <outlet property="_resetview" destination="2679" id="3401"/>
                             <outlet property="evolutionProgreessBar" destination="1897" id="3402"/>
                             <outlet property="mainWindow" destination="371" id="fyQ-2I-tMU"/>
@@ -5358,7 +5357,7 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="mUS-wv-uCM" userLabel="Metal Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="1139" width="480" height="270"/>
+            <rect key="contentRect" x="197" y="100" width="480" height="270"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" id="BeK-5P-Wgc">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
@@ -5369,6 +5368,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <connections>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="2FT-zh-sSB"/>
+                            <outlet property="_kemoviewer" destination="3373" id="cBx-zT-ySe"/>
                             <outlet property="_singleKemoView" destination="w8N-Cd-Q0k" id="eR2-mh-xu3"/>
                         </connections>
                     </customView>
