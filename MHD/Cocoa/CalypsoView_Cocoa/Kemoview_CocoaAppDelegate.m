@@ -31,7 +31,7 @@
 
 - (void)Tako:(NSNotification *)notification {
 	[_kemoviewer UpdateImage];
-
+    [_metalView  setRetinaMode];
 	/*	
 	// show window position in TextField
 	NSString *st = [NSString stringWithFormat:@"(x, y)=(%.1f, %.1f), (h ,w)=(%.1f, %.1f)",

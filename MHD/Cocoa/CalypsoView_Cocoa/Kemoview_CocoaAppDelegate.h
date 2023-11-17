@@ -16,6 +16,7 @@
     NSWindow *_window;
     IBOutlet KemoViewerObject * _singleKemoView;
 	IBOutlet KemoViewerOpenGLView * _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 }
 
 @property (assign) IBOutlet NSWindow *window;

@@ -14,11 +14,15 @@
 #import "KemoViewerObject.h"
 
 @interface KemoViewerMetalView : MTKView{
-	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
+    IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
     IBOutlet KemoViewerObject * _singleKemoView;
 }
 
 -(void)InitBackGroundColor;
 -(void) updateBackground;
+
+- (void) setRetinaMode;
+
+
 @end
 

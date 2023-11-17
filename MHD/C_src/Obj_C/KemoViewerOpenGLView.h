@@ -73,7 +73,6 @@ typedef struct {
 	struct kemoviewer_type *_kemorin;
 }
 
-- (void) setRetinaMode;
 - (int) getViewSize;
 - (int) KemoviewHorizontalViewSize;
 - (int) KemoviewVerticalViewSize;

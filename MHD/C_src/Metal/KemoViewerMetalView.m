@@ -30,5 +30,21 @@
     return;
 }
 
+- (void) setRetinaMode
+{
+    NSRect rectView = [self convertRectToBacking:[self bounds]];
+    int XpixelGLWindow = rectView.size.width;
+    
+    NSRect rectView_DISP = [self bounds];
+    int XpixelRectView = rectView_DISP.size.width;
+    
+    if(XpixelGLWindow > XpixelRectView){
+        kemoview_set_retinamode(IONE);
+    } else {
+        kemoview_set_retinamode(IZERO);
+    };
+    return;
+}
+
 
 @end

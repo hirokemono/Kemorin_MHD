@@ -457,6 +457,7 @@
         <customObject id="494" customClass="Kemoview_CocoaAppDelegate">
             <connections>
                 <outlet property="_kemoviewer" destination="3373" id="KOh-Q5-k8q"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="xle-bK-LY4"/>
                 <outlet property="_singleKemoView" destination="w8N-Cd-Q0k" id="PLN-2e-Kq1"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
