@@ -54,7 +54,7 @@ struct gl_strided_buffer * init_strided_buffer(int num_points){
         exit(0);
 	};
 	
-	set_buffer_address_4_patch(4 * NPATCH_GL_BUFFER, strided_buf);
+	set_buffer_address_4_patch(num_points, strided_buf);
 	alloc_strided_buffer(strided_buf);
 	return strided_buf;
 };

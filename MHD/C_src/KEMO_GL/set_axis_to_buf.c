@@ -310,8 +310,8 @@ int count_axis_to_buf(int ncorner){
 	return npatch_wall;
 }
 
-int set_axis_to_buf(struct view_element *view_s, double dist, int ncorner, double radius, 
-			struct gl_strided_buffer *strided_buf){
+void set_axis_to_buf(struct view_element *view_s, double dist, int ncorner, double radius,
+                      struct gl_strided_buffer *strided_buf){
 	double x_arrowx[6], x_arrowy[6], x_arrowz[6];
 	double w_ratio[3];
 	double x_charax[12], x_charay[18], x_charaz[18];
@@ -322,5 +322,6 @@ int set_axis_to_buf(struct view_element *view_s, double dist, int ncorner, doubl
 	icou_patch = set_axis_rod_to_buf(ncorner, radius, 
 				x_arrowx, x_arrowy, x_arrowz, x_charax, x_charay, x_charaz,
 				strided_buf);
-	return icou_patch;
+    strided_buf->num_nod_buf =  ITHREE * icou_patch;
+	return;
 };

@@ -22,6 +22,9 @@
 struct kemoview_buffers{
     struct gl_strided_buffer *cube_buf;
     struct gl_index_buffer *cube_index_buf;
+    
+    int ncorner_axis;
+    struct gl_strided_buffer *axis_buf;
 };
 
 struct kemoview_VAOs{

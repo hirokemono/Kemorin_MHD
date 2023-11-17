@@ -5,18 +5,23 @@
 
 struct kemoview_buffers * init_kemoview_buffers(void)
 {
+    int n_point;
+
     struct kemoview_buffers *kemo_buffers = (struct kemoview_buffers *) malloc(sizeof(struct kemoview_buffers));
     if(kemo_buffers == NULL){
         printf("malloc error for kemoview_buffers\n");
         exit(0);
     }
     
-    kemo_buffers->cube_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch(8, kemo_buffers->cube_buf);
-    alloc_strided_buffer(kemo_buffers->cube_buf);
-    
+    kemo_buffers->cube_buf = init_strided_buffer(8);
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
     CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, kemo_buffers->cube_index_buf);
+
+    kemo_buffers->ncorner_axis = ISIX;
+    n_point = ITHREE * count_axis_to_buf(kemo_buffers->ncorner_axis);
+    kemo_buffers->axis_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
+    set_buffer_address_4_patch(n_point, kemo_buffers->axis_buf);
+    alloc_strided_buffer(kemo_buffers->axis_buf);
 
     return kemo_buffers;
 };
@@ -24,8 +29,8 @@ struct kemoview_buffers * init_kemoview_buffers(void)
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 {
     dealloc_gl_index_buffer(kemo_buffers->cube_index_buf);
-    if(kemo_buffers->cube_buf->nsize_buf > 0) free(kemo_buffers->cube_buf->v_buf);
-    free(kemo_buffers->cube_buf);
+    dealloc_strided_buffer(kemo_buffers->cube_buf);
+    dealloc_strided_buffer(kemo_buffers->axis_buf);
 
     free(kemo_buffers);
     return;
@@ -269,23 +274,14 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 		draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
         double axis_radius = 4.0;
-        int ncorner_axis = ISIX;
-        struct gl_strided_buffer *axis_buf
-                = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-        int n_point = ITHREE * count_axis_to_buf(ncorner_axis);
-        set_buffer_address_4_patch(n_point, axis_buf);
-        alloc_strided_buffer(axis_buf);
-
         if(kemo_mesh->mesh_m->iflag_draw_axis > 0){
-            int icou_patch = set_axis_to_buf(view_s, kemo_mesh->mesh_m->dist_domains,
-                                             ncorner_axis, axis_radius, axis_buf);
+            set_axis_to_buf(view_s, kemo_mesh->mesh_m->dist_domains,
+                                    kemo_buffers->ncorner_axis, axis_radius,
+                                    kemo_buffers->axis_buf);
         } else{
-            axis_buf->num_nod_buf = 0;
+            kemo_buffers->axis_buf->num_nod_buf = 0;
         };
-        set_axis_VAO(axis_buf, kemo_VAOs->grid_VAO[2]);
-        free(axis_buf->v_buf);
-        free(axis_buf);
-
+        set_axis_VAO(kemo_buffers->axis_buf, kemo_VAOs->grid_VAO[2]);
         
         glDisable(GL_CULL_FACE);
 		drawgl_patch_with_phong(view_matrices, kemo_VAOs->grid_VAO[2], kemo_shaders);

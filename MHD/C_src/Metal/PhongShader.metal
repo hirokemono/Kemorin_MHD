@@ -57,7 +57,7 @@ PhongVertexShader(uint vertexID [[ vertex_id ]],
     out.position2d =             projectionMatrix * out.pixelSpacePosition;
 
     out.pixelSpaceNormal =   objectSpaceNormal;
-    out.pixelSpaceNormal.w = 1.0;
+    out.pixelSpaceNormal.w = 0.0;
     out.pixelSpaceNormal =   modelNormalMatrix * out.pixelSpaceNormal;
     
     out.pixelSpaceColor =   pixelSpaceColor;
