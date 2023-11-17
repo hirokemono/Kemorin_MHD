@@ -415,8 +415,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                            kemo_sgl->kemo_psf->psf_a, min_buf, max_buf, zero_buf);
 
 /* draw example cube for empty data */
-    struct gl_index_buffer *cube_index_buf = alloc_gl_index_buffer(12, 3);
-    CubeNode_to_buf(0.5f, kemo_sgl->kemo_buffers->cube_buf, cube_index_buf);
     struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 
     iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
@@ -719,13 +717,13 @@ Implementation of a platform independent renderer class, which performs Metal se
             material.specular.y = material.specular.x;
             material.specular.z = material.specular.x;
             material.specular.w = 1.0;
-/*
+
             if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
                 _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cube_buf->v_buf)
                                                      length:(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
-                _index_buffer = [_device newBufferWithBytes:cube_index_buf->ie_buf
-                                                     length:(cube_index_buf->nsize_buf * sizeof(unsigned int))
+                _index_buffer = [_device newBufferWithBytes:kemo_sgl->kemo_buffers->cube_index_buf->ie_buf
+                                                     length:(kemo_sgl->kemo_buffers->cube_index_buf->nsize_buf * sizeof(unsigned int))
                                                     options:MTLResourceStorageModeShared];
                 
                 [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
@@ -760,7 +758,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                          indexBuffer:_index_buffer
                                    indexBufferOffset:0];
             }
-*/
+
             if(axis_buf->num_nod_buf > 0){
                 _vertices[33] = [_device newBufferWithBytes:((KemoViewVertex *) axis_buf->v_buf)
                                                      length:(axis_buf->num_nod_buf * sizeof(KemoViewVertex))
@@ -768,9 +766,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 
                 [renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
                 [renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
-                [renderEncoder setCullMode:MTLCullModeBack];
+//                [renderEncoder setCullMode:MTLCullModeBack];
                 [renderEncoder setCullMode:MTLCullModeNone];
-                [renderEncoder setDepthStencilState:_depthState];
+//                [renderEncoder setDepthStencilState:_depthState];
                 
                 [renderEncoder setRenderPipelineState:_pipelineState[14]];
                 [renderEncoder setVertexBuffer:_vertices[33]

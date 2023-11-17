@@ -16,6 +16,7 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     alloc_strided_buffer(kemo_buffers->cube_buf);
     
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
+    CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, kemo_buffers->cube_index_buf);
 
     return kemo_buffers;
 };
@@ -381,12 +382,9 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
 	if(iflag == 0){
         struct initial_cube_lighting *init_light = init_inital_cube_lighting();
-        struct gl_index_buffer *cube_index_buf = alloc_gl_index_buffer(12, 3);
 
-        CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, cube_index_buf);
-        set_initial_cube_VAO(kemo_buffers->cube_buf, cube_index_buf, kemo_VAOs->cube_VAO);
+        set_initial_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf, kemo_VAOs->cube_VAO);
 		draw_initial_cube(view_matrices, init_light, kemo_VAOs->cube_VAO, kemo_shaders);
-        free(cube_index_buf);
 	} else {
 		kemo_VAOs->cube_VAO->npoint_draw = 0;
 	}
