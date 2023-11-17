@@ -99,7 +99,7 @@
       character(len=kchara) :: hd_light_xyz =  'position_of_lights'
       character(len=kchara) :: hd_light_sph =  'sph_position_of_lights'
 !
-      private :: hd_ambient, hd_diffuse, hd_specular,
+      private :: hd_ambient, hd_diffuse, hd_specular
       private :: hd_light_xyz, hd_light_sph
 !
 !  ---------------------------------------------------------------------

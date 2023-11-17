@@ -362,57 +362,35 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
 
     
-    struct gl_strided_buffer *msg_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch((ITHREE*2), msg_buf);
-    alloc_strided_buffer(msg_buf);
     const_message_buffer(kemo_sgl->view_s->iflag_retina,
                          kemo_sgl->view_s->nx_frame,
                          kemo_sgl->view_s->ny_frame,
-                         kemo_sgl->kemo_mesh->msg_wk, msg_buf);
+                         kemo_sgl->kemo_mesh->msg_wk,
+                         kemo_sgl->kemo_buffers->msg_buf);
     
-    struct gl_strided_buffer *time_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch((ITHREE*2), time_buf);
-    alloc_strided_buffer(time_buf);
-
-    struct gl_strided_buffer *cbar_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    int num_vertex = count_colorbar_box_VAO(kemo_sgl->kemo_psf->psf_a->cbar_wk->iflag_zero,
-                                            kemo_sgl->kemo_psf->psf_a->cbar_wk->num_quad);
-    set_buffer_address_4_patch(num_vertex, cbar_buf);
-    alloc_strided_buffer(cbar_buf);
-    
-    struct gl_strided_buffer *min_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    struct gl_strided_buffer *max_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    struct gl_strided_buffer *zero_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch((ITHREE*2), min_buf);
-    set_buffer_address_4_patch((ITHREE*2), max_buf);
-    set_buffer_address_4_patch((ITHREE*2), zero_buf);
-    alloc_strided_buffer(min_buf);
-    alloc_strided_buffer(max_buf);
-    alloc_strided_buffer(zero_buf);
-
     const_timelabel_buffer(kemo_sgl->view_s->iflag_retina,
                            kemo_sgl->view_s->nx_frame,
                            kemo_sgl->view_s->ny_frame,
                            kemo_sgl->kemo_mesh->mesh_m->text_color,
                            kemo_sgl->kemo_mesh->mesh_m->bg_color,
-                           kemo_sgl->kemo_psf->psf_a, time_buf);
+                           kemo_sgl->kemo_psf->psf_a,
+                           kemo_sgl->kemo_buffers->time_buf);
+    
     const_colorbar_buffer(kemo_sgl->view_s->iflag_retina,
                           kemo_sgl->view_s->nx_frame,
                           kemo_sgl->view_s->ny_frame,
                           kemo_sgl->kemo_mesh->mesh_m->text_color,
                           kemo_sgl->kemo_mesh->mesh_m->bg_color,
                           kemo_sgl->kemo_psf->psf_m,
-                          kemo_sgl->kemo_psf->psf_a, cbar_buf);
+                          kemo_sgl->kemo_psf->psf_a,
+                          kemo_sgl->kemo_buffers->cbar_buf);
     const_cbar_text_buffer(kemo_sgl->view_s->iflag_retina,
                            kemo_sgl->kemo_mesh->mesh_m->text_color,
                            kemo_sgl->kemo_psf->psf_m,
-                           kemo_sgl->kemo_psf->psf_a, min_buf, max_buf, zero_buf);
+                           kemo_sgl->kemo_psf->psf_a,
+                           kemo_sgl->kemo_buffers->min_buf,
+                           kemo_sgl->kemo_buffers->max_buf,
+                           kemo_sgl->kemo_buffers->zero_buf);
 
 /* draw example cube for empty data */
     struct initial_cube_lighting *init_light = init_inital_cube_lighting();
@@ -534,35 +512,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 
     // Create a vertex buffer, and initialize it with the quadVertices array
-    _vertices[1] = [_device newBufferWithBytes:((KemoViewVertex *) msg_buf->v_buf)
-                                        length:(msg_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                       options:MTLResourceStorageModeShared];
-    if(time_buf->num_nod_buf > 0){
-        _vertices[2] = [_device newBufferWithBytes:((KemoViewVertex *) time_buf->v_buf)
-                                            length:(time_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                           options:MTLResourceStorageModeShared];
-    }
-    if(cbar_buf->num_nod_buf > 0){
-        _vertices[3] = [_device newBufferWithBytes:((KemoViewVertex *) cbar_buf->v_buf)
-                                            length:(cbar_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                           options:MTLResourceStorageModeShared];
-    }
-    if(min_buf->num_nod_buf > 0){
-        _vertices[4] = [_device newBufferWithBytes:((KemoViewVertex *) min_buf->v_buf)
-                                            length:(min_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                           options:MTLResourceStorageModeShared];
-    };
-    if(max_buf->num_nod_buf > 0){
-        _vertices[5] = [_device newBufferWithBytes:((KemoViewVertex *) max_buf->v_buf)
-                                            length:(max_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                           options:MTLResourceStorageModeShared];
-    };
-    if(zero_buf->num_nod_buf > 0){
-        _vertices[6] = [_device newBufferWithBytes:((KemoViewVertex *) zero_buf->v_buf)
-                                            length:(zero_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                           options:MTLResourceStorageModeShared];
-    };
-
     int num =  kemo_sgl->kemo_buffers->cube_buf->num_nod_buf
              + coast_buf->num_nod_buf + mflame_buf->num_nod_buf;
 
@@ -835,6 +784,9 @@ Implementation of a platform independent renderer class, which performs Metal se
          };
 
 
+        _vertices[1] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->msg_buf->v_buf)
+                                            length:(kemo_sgl->kemo_buffers->msg_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                           options:MTLResourceStorageModeShared];
         [renderEncoder setRenderPipelineState:_pipelineState[2]];
         // Pass in the parameter data.
         [renderEncoder setVertexBuffer:_vertices[1]
@@ -854,10 +806,13 @@ Implementation of a platform independent renderer class, which performs Metal se
         // Draw the triangles.
         [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                           vertexStart:0
-                          vertexCount:msg_buf->num_nod_buf];
+                          vertexCount:kemo_sgl->kemo_buffers->msg_buf->num_nod_buf];
 
 /*  Commands to render time label */
-        if(time_buf->num_nod_buf > 0){
+        if(kemo_sgl->kemo_buffers->time_buf->num_nod_buf > 0){
+            _vertices[2] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->time_buf->v_buf)
+                                                length:(kemo_sgl->kemo_buffers->time_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                               options:MTLResourceStorageModeShared];
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
             [renderEncoder setVertexBuffer:_vertices[2]
                                     offset:0
@@ -869,10 +824,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                                       atIndex:AAPLTextureIndexBaseColor];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:time_buf->num_nod_buf];
+                              vertexCount:kemo_sgl->kemo_buffers->time_buf->num_nod_buf];
         };
 /*  Commands to render colorbar  box */
-        if(cbar_buf->num_nod_buf > 0){
+        if(kemo_sgl->kemo_buffers->cbar_buf->num_nod_buf > 0){
+            _vertices[3] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cbar_buf->v_buf)
+                                                length:(kemo_sgl->kemo_buffers->cbar_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                               options:MTLResourceStorageModeShared];
             [renderEncoder setRenderPipelineState:_pipelineState[1]];
             [renderEncoder setVertexBuffer:_vertices[3]
                                     offset:0
@@ -882,10 +840,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   atIndex:AAPLOrthogonalMatrix];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:cbar_buf->num_nod_buf];
+                              vertexCount:kemo_sgl->kemo_buffers->cbar_buf->num_nod_buf];
         };
 /*  Commands to render colorbar  label */
-        if(min_buf->num_nod_buf > 0){
+        if(kemo_sgl->kemo_buffers->min_buf->num_nod_buf > 0){
+            _vertices[4] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->min_buf->v_buf)
+                                                length:(kemo_sgl->kemo_buffers->min_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                               options:MTLResourceStorageModeShared];
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
             [renderEncoder setVertexBuffer:_vertices[4]
                                     offset:0
@@ -897,9 +858,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                                       atIndex:AAPLTextureIndexBaseColor];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:min_buf->num_nod_buf];
+                              vertexCount:kemo_sgl->kemo_buffers->min_buf->num_nod_buf];
         };
-        if(max_buf->num_nod_buf > 0){
+        if(kemo_sgl->kemo_buffers->max_buf->num_nod_buf > 0){
+            _vertices[5] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->max_buf->v_buf)
+                                                length:(kemo_sgl->kemo_buffers->max_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                               options:MTLResourceStorageModeShared];
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
             [renderEncoder setVertexBuffer:_vertices[5]
                                     offset:0
@@ -911,9 +875,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                                       atIndex:AAPLTextureIndexBaseColor];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:max_buf->num_nod_buf];
+                              vertexCount:kemo_sgl->kemo_buffers->max_buf->num_nod_buf];
         };
-        if(zero_buf->num_nod_buf > 0){
+        if(kemo_sgl->kemo_buffers->zero_buf->num_nod_buf > 0){
+            _vertices[6] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->zero_buf->v_buf)
+                                                length:(kemo_sgl->kemo_buffers->zero_buf->num_nod_buf * sizeof(KemoViewVertex))
+                                               options:MTLResourceStorageModeShared];
             [renderEncoder setRenderPipelineState:_pipelineState[2]];
             [renderEncoder setVertexBuffer:_vertices[6]
                                     offset:0
@@ -925,7 +892,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                       atIndex:AAPLTextureIndexBaseColor];
             [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                               vertexStart:0
-                              vertexCount:zero_buf->num_nod_buf];
+                              vertexCount:kemo_sgl->kemo_buffers->zero_buf->num_nod_buf];
         };
 
         [renderEncoder endEncoding];
@@ -992,19 +959,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 //    [_vertices[0] setPurgeableState:MTLPurgeableStateEmpty];
 //    [_vertices[0] release];
-
-    free(cbar_buf->v_buf);
-    free(cbar_buf);
-    free(min_buf->v_buf);
-    free(min_buf);
-    free(max_buf->v_buf);
-    free(max_buf);
-    free(zero_buf->v_buf);
-    free(zero_buf);
-    free(time_buf->v_buf);
-    free(time_buf);
-    free(msg_buf->v_buf);
-    free(msg_buf);
 }
 
 

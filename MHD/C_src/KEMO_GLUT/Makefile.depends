@@ -27,6 +27,7 @@ kemoview_gtk_PSF_isoline_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -123,6 +124,7 @@ kemoview_gtk_PSF_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -226,6 +228,7 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -323,6 +326,7 @@ kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -419,6 +423,7 @@ kemoview_gtk_axis_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -512,6 +517,7 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -610,6 +616,7 @@ kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -698,6 +705,7 @@ kemoview_gtk_fline_selectors.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -790,6 +798,7 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -913,6 +922,7 @@ kemoview_gtk_mesh_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -1014,6 +1024,7 @@ kemoview_gtk_preference_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -1113,6 +1124,7 @@ kemoview_gtk_quilt_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -1207,6 +1219,7 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
@@ -1300,6 +1313,7 @@ kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \

@@ -513,6 +513,7 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
