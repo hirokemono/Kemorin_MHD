@@ -39,15 +39,20 @@ void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *solid_PSF_buf,
                                     struct gl_strided_buffer *stxur_PSF_buf);
-
+void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
+                                    struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                                    struct gl_strided_buffer *trns_PSF_buf,
+                                    struct gl_strided_buffer *ttxur_PSF_buf);
+ 
 void set_PSF_solid_objects_VAO(struct view_element *view_s, struct psf_data **psf_s,
                                struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                struct gl_strided_buffer *solid_PSF_buf, struct gl_strided_buffer *stxur_PSF_buf,
                                struct VAO_ids **psf_solid_VAO);
-void set_PSF_trans_objects_VAO(struct view_element *view_s, 
-                               struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                               struct kemo_array_control *psf_a, struct VAO_ids **psf_trans_VAO);
-
+void set_PSF_trans_objects_VAO(struct view_element *view_s, struct psf_data **psf_s,
+                               struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                               struct gl_strided_buffer *trns_PSF_buf, struct gl_strided_buffer *ttxur_PSF_buf,
+                               struct VAO_ids **psf_trans_VAO);
+ 
 void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                 struct kemo_array_control *psf_a, struct transfer_matrices *matrices, 
                                 struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders);

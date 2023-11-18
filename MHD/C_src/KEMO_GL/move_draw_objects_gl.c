@@ -357,8 +357,10 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 		/* Draw Transparent Objects */
 		set_PSF_trans_objects_VAO(view_s, kemo_psf->psf_d, 
                                   kemo_psf->psf_m, kemo_psf->psf_a,
+                                  kemo_buffers->trns_PSF_buf, kemo_buffers->ttxur_PSF_buf,
                                   kemo_VAOs->psf_trans_VAO);
-		draw_PSF_trans_objects_VAO(kemo_psf->psf_m, kemo_psf->psf_a, view_matrices, 
+        
+        draw_PSF_trans_objects_VAO(kemo_psf->psf_m, kemo_psf->psf_a, view_matrices,
                                    kemo_VAOs->psf_trans_VAO, kemo_shaders);
 		
 		if(kemo_mesh->mesh_m->iflag_draw_mesh != 0){
