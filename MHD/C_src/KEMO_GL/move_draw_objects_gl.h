@@ -23,13 +23,17 @@ struct kemoview_buffers{
     struct gl_strided_buffer *cube_buf;
     struct gl_index_buffer *cube_index_buf;
     
-    struct gl_strided_buffer *solid_PSF_buf;
-    struct gl_strided_buffer *trns_PSF_buf;
-    struct gl_strided_buffer *stxur_PSF_buf;
-    struct gl_strided_buffer *ttxur_PSF_buf;
-    struct gl_strided_buffer *arrow_PSF_buf;
-    struct gl_strided_buffer *isoline_PSF_buf;
+    struct gl_strided_buffer *PSF_solid_buf;
+    struct gl_strided_buffer *PSF_trns_buf;
+    struct gl_strided_buffer *PSF_stxur_buf;
+    struct gl_strided_buffer *PSF_ttxur_buf;
+    struct gl_strided_buffer *PSF_arrow_buf;
+    struct gl_strided_buffer *PSF_isoline_buf;
 
+    struct gl_strided_buffer *mesh_solid_buf;
+    struct gl_strided_buffer *mesh_grid_buf;
+    struct gl_strided_buffer *mesh_node_buf;
+    struct gl_strided_buffer *mesh_trns_buf;
 
     int ncorner_axis;
     struct gl_strided_buffer *axis_buf;

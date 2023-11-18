@@ -104,15 +104,15 @@ int check_draw_psf(struct kemo_array_control *psf_a){
 
 void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                                    struct gl_strided_buffer *solid_PSF_buf,
-                                    struct gl_strided_buffer *stxur_PSF_buf,
-                                    struct gl_strided_buffer *isoline_PSF_buf,
-                                    struct gl_strided_buffer *arrow_PSF_buf){
+                                    struct gl_strided_buffer *PSF_solid_buf,
+                                    struct gl_strided_buffer *PSF_stxur_buf,
+                                    struct gl_strided_buffer *PSF_isoline_buf,
+                                    struct gl_strided_buffer *PSF_arrow_buf){
     set_color_code_for_psfs(psf_s, psf_m, psf_a);
     
     const_PSF_texture_buffer(view_s->shading_mode, IZERO, psf_a->istack_solid_psf_txtur,
-                             psf_s, psf_m, psf_a, stxur_PSF_buf);
-    if(stxur_PSF_buf->num_nod_buf > 0){
+                             psf_s, psf_m, psf_a, PSF_stxur_buf);
+    if(PSF_stxur_buf->num_nod_buf > 0){
         int i = psf_a->ipsf_viz_far[IZERO]-1;
         psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
                                                           psf_m[i]->texture_height,
@@ -121,36 +121,34 @@ void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data
 
     const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_solid_psf_txtur,
                            psf_a->istack_solid_psf_patch, psf_s, psf_m, psf_a,
-                           solid_PSF_buf);
-    const_PSF_isoline_buffer(view_s, psf_s, psf_m, psf_a, isoline_PSF_buf);
-    const_PSF_arrow_buffer(psf_s, psf_m, psf_a, arrow_PSF_buf);
+                           PSF_solid_buf);
+    const_PSF_isoline_buffer(view_s, psf_s, psf_m, psf_a, PSF_isoline_buf);
+    const_PSF_arrow_buffer(psf_s, psf_m, psf_a, PSF_arrow_buf);
     return;
 }
 
-void set_PSF_solid_objects_VAO(struct view_element *view_s, struct psf_data **psf_s,
-                               struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                               struct gl_strided_buffer *solid_PSF_buf, struct gl_strided_buffer *stxur_PSF_buf,
-                               struct gl_strided_buffer *isoline_PSF_buf, struct gl_strided_buffer *arrow_PSF_buf,
+void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct gl_strided_buffer *PSF_stxur_buf,
+                               struct gl_strided_buffer *PSF_isoline_buf, struct gl_strided_buffer *PSF_arrow_buf,
                                struct VAO_ids **psf_solid_VAO){
-    psf_solid_VAO[1]->npoint_draw = stxur_PSF_buf->num_nod_buf;
-    if(psf_solid_VAO[1]->npoint_draw > 0){ Const_VAO_4_Phong_Texture(psf_solid_VAO[1], stxur_PSF_buf);};
-    psf_solid_VAO[0]->npoint_draw = solid_PSF_buf->num_nod_buf;
-    if(psf_solid_VAO[0]->npoint_draw) {Const_VAO_4_Phong(psf_solid_VAO[0], solid_PSF_buf);};
-    psf_solid_VAO[2]->npoint_draw = isoline_PSF_buf->num_nod_buf;
-    if(psf_solid_VAO[2]->npoint_draw > 0) {Const_VAO_4_Phong(psf_solid_VAO[2], isoline_PSF_buf);};
-    psf_solid_VAO[3]->npoint_draw = arrow_PSF_buf->num_nod_buf;
-    if(psf_solid_VAO[3]->npoint_draw > 0){ Const_VAO_4_Phong(psf_solid_VAO[3], arrow_PSF_buf); };
+    psf_solid_VAO[1]->npoint_draw = PSF_stxur_buf->num_nod_buf;
+    if(psf_solid_VAO[1]->npoint_draw > 0){ Const_VAO_4_Phong_Texture(psf_solid_VAO[1], PSF_stxur_buf);};
+    psf_solid_VAO[0]->npoint_draw = PSF_solid_buf->num_nod_buf;
+    if(psf_solid_VAO[0]->npoint_draw) {Const_VAO_4_Phong(psf_solid_VAO[0], PSF_solid_buf);};
+    psf_solid_VAO[2]->npoint_draw = PSF_isoline_buf->num_nod_buf;
+    if(psf_solid_VAO[2]->npoint_draw > 0) {Const_VAO_4_Phong(psf_solid_VAO[2], PSF_isoline_buf);};
+    psf_solid_VAO[3]->npoint_draw = PSF_arrow_buf->num_nod_buf;
+    if(psf_solid_VAO[3]->npoint_draw > 0){ Const_VAO_4_Phong(psf_solid_VAO[3], PSF_arrow_buf); };
     return;
 };
 
 void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                                    struct gl_strided_buffer *trns_PSF_buf,
-                                    struct gl_strided_buffer *ttxur_PSF_buf){
+                                    struct gl_strided_buffer *PSF_trns_buf,
+                                    struct gl_strided_buffer *PSF_ttxur_buf){
     const_PSF_texture_buffer(view_s->shading_mode,
                              psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur,
-                             psf_s, psf_m, psf_a, ttxur_PSF_buf);
-    if(ttxur_PSF_buf->num_nod_buf > 0){
+                             psf_s, psf_m, psf_a, PSF_ttxur_buf);
+    if(PSF_ttxur_buf->num_nod_buf > 0){
         int i = psf_a->ipsf_viz_far[psf_a->istack_solid_psf_patch]-1;
         psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
                                                           psf_m[i]->texture_height,
@@ -159,20 +157,16 @@ void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data
     
     const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_trans_psf_txtur,
                            psf_a->ntot_psf_patch, psf_s, psf_m, psf_a,
-                           trns_PSF_buf);
+                           PSF_trns_buf);
 	return;
 };
 
-void set_PSF_trans_objects_VAO(struct view_element *view_s, struct psf_data **psf_s,
-                               struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                               struct gl_strided_buffer *trns_PSF_buf, struct gl_strided_buffer *ttxur_PSF_buf,
+void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_trns_buf, struct gl_strided_buffer *PSF_ttxur_buf,
                                struct VAO_ids **psf_trans_VAO){
-    const_PSF_trans_objects_buffer(view_s, psf_s, psf_m, psf_a, trns_PSF_buf, ttxur_PSF_buf);
-    
-    psf_trans_VAO[0]->npoint_draw = trns_PSF_buf->num_nod_buf;
-    if(psf_trans_VAO[0]->npoint_draw) {Const_VAO_4_Phong(psf_trans_VAO[0], trns_PSF_buf);};
-    psf_trans_VAO[1]->npoint_draw = ttxur_PSF_buf->num_nod_buf;
-    if(psf_trans_VAO[1]->npoint_draw > 0){ Const_VAO_4_Phong_Texture(psf_trans_VAO[1], ttxur_PSF_buf);};
+    psf_trans_VAO[0]->npoint_draw = PSF_trns_buf->num_nod_buf;
+    if(psf_trans_VAO[0]->npoint_draw) {Const_VAO_4_Phong(psf_trans_VAO[0], PSF_trns_buf);};
+    psf_trans_VAO[1]->npoint_draw = PSF_ttxur_buf->num_nod_buf;
+    if(psf_trans_VAO[1]->npoint_draw > 0){ Const_VAO_4_Phong_Texture(psf_trans_VAO[1], PSF_ttxur_buf);};
 	return;
 };
 

@@ -18,9 +18,15 @@
 #include "set_mesh_node_2_gl_buf.h"
 
 /* prototypes */
-void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-			struct view_element *view_s, struct VAO_ids *mesh_trans_VAO);
-void set_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-			struct view_element *view_s, struct VAO_ids **mesh_VAO);
+void const_solid_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m, struct view_element *view_s,
+                             struct gl_strided_buffer *mesh_solid_buf, struct gl_strided_buffer *mesh_grid_buf,
+                             struct gl_strided_buffer *mesh_node_buf);
+void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+                             struct view_element *view_s, struct gl_strided_buffer *mesh_trns_buf);
+
+
+void set_solid_mesh_VAO(struct gl_strided_buffer *mesh_solid_buf, struct gl_strided_buffer *mesh_grid_buf,
+                        struct gl_strided_buffer *mesh_node_buf, struct VAO_ids **mesh_VAO);
+void set_trans_mesh_VAO(struct gl_strided_buffer *mesh_trns_buf, struct VAO_ids *mesh_trans_VAO);
 
 #endif
