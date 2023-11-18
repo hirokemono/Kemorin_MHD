@@ -38,7 +38,9 @@ void const_PSF_texture_buffer(int shading_mode, int ist_psf, int ied_psf,
 void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *solid_PSF_buf,
-                                    struct gl_strided_buffer *stxur_PSF_buf);
+                                    struct gl_strided_buffer *stxur_PSF_buf,
+                                    struct gl_strided_buffer *isoline_PSF_buf,
+                                    struct gl_strided_buffer *arrow_PSF_buf);
 void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *trns_PSF_buf,
@@ -47,6 +49,7 @@ void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data
 void set_PSF_solid_objects_VAO(struct view_element *view_s, struct psf_data **psf_s,
                                struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                struct gl_strided_buffer *solid_PSF_buf, struct gl_strided_buffer *stxur_PSF_buf,
+                               struct gl_strided_buffer *isoline_PSF_buf, struct gl_strided_buffer *arrow_PSF_buf,
                                struct VAO_ids **psf_solid_VAO);
 void set_PSF_trans_objects_VAO(struct view_element *view_s, struct psf_data **psf_s,
                                struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
@@ -56,8 +59,6 @@ void set_PSF_trans_objects_VAO(struct view_element *view_s, struct psf_data **ps
 void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                 struct kemo_array_control *psf_a, struct transfer_matrices *matrices, 
                                 struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders);
-void draw_PSF_isolines_VAO(struct transfer_matrices *matrices,  struct VAO_ids **psf_solid_VAO,
-                           struct kemoview_shaders *kemo_shaders);
 void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                 struct transfer_matrices *matrices, struct VAO_ids **psf_trans_VAO,
                                 struct kemoview_shaders *kemo_shaders);
