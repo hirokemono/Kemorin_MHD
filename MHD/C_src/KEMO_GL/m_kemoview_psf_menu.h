@@ -77,8 +77,8 @@ struct psf_menu_val{
 	int texture_width;
 	int texture_height;
 	int texture_npix;
-	GLuint texture_name[10];
-	GLubyte *texture_rgba;
+	unsigned int texture_name[10];
+	unsigned char  *texture_rgba;
 	
 	struct colormap_params **cmap_psf_comp;
 	struct colormap_params **cmap_psf_fld;

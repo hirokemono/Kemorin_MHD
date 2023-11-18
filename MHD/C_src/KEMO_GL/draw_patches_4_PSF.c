@@ -29,19 +29,8 @@ void const_PSF_texture_buffer(int shading_mode, int ist_psf, int ied_psf,
                               struct psf_data **psf_s, struct psf_menu_val **psf_m,
                               struct kemo_array_control *psf_a,
                               struct gl_strided_buffer *psf_buf){
-	int i;
-	int num_vertex = ITHREE * count_psf_nodes_to_buf(ist_psf, ied_psf);
-	set_buffer_address_4_patch(num_vertex, psf_buf);
-    if(psf_buf->num_nod_buf <= 0) return;
-
-    resize_strided_buffer(psf_buf);
-	
-	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, psf_s, psf_m, psf_a, psf_buf);
-	set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
-		
-	i = psf_a->ipsf_viz_far[ist_psf]-1;
-	psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width, psf_m[i]->texture_height,
-				psf_m[i]->texture_rgba);
+    const_PSF_patch_buffer(shading_mode, ist_psf, ied_psf, psf_s, psf_m, psf_a, psf_buf);
+    if(psf_buf->num_nod_buf > 0) set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
     return;
 }
 
@@ -127,6 +116,12 @@ void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data
     
     const_PSF_texture_buffer(view_s->shading_mode, IZERO, psf_a->istack_solid_psf_txtur,
                              psf_s, psf_m, psf_a, stxur_PSF_buf);
+        int i = psf_a->ipsf_viz_far[IZERO]-1;
+        psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
+                                                          psf_m[i]->texture_height,
+                                                          psf_m[i]->texture_rgba);
+
+
     const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_solid_psf_txtur,
                            psf_a->istack_solid_psf_patch, psf_s, psf_m, psf_a,
                            solid_PSF_buf);
@@ -167,6 +162,10 @@ void set_PSF_trans_objects_VAO(struct view_element *view_s,
     const_PSF_texture_buffer(view_s->shading_mode,
                              psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur,
                              psf_s, psf_m, psf_a, psf_buf);
+        int i = psf_a->ipsf_viz_far[i]-1;
+        psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
+                                                          psf_m[i]->texture_height,
+                                                          psf_m[i]->texture_rgba);
 
     const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_trans_psf_txtur,
                            psf_a->ntot_psf_patch, psf_s, psf_m, psf_a,

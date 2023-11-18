@@ -78,6 +78,6 @@ void Destroy_Phong_Texture_VAO(struct VAO_ids *VAO, GLuint *textures);
 void DestroyVBO(struct VAO_ids *VAO);
 
 GLuint set_texture_to_buffer(const int iwidth, const int iheight, 
-			const unsigned char *rgba);
+                             const unsigned char *rgba);
 
 #endif /* vartex_array_object_gl_h__ */

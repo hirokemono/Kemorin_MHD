@@ -356,7 +356,7 @@ void Destroy_Phong_Texture_VAO(struct VAO_ids *VAO, GLuint *textures)
 }
 
 GLuint set_texture_to_buffer(const int iwidth, const int iheight, 
-			const unsigned char *rgba){
+                             const unsigned char *rgba){
 	/* Preference for resiging texture */
     GLuint textureName;
 	glGenTextures(1, &textureName);

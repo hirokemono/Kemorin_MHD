@@ -114,6 +114,7 @@ PhongTextureFragmentShader(RasterizerData in [[stage_in]],
                               + colorSample * materialDiffuse * abs(diffuseDir)
                               + tmpSpecular * specular;
     }
+    out_Color = colorSample;
     return out_Color;
 }
 
