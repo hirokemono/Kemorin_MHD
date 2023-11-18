@@ -25,6 +25,8 @@ struct kemoview_buffers{
     
     struct gl_strided_buffer *solid_PSF_buf;
     struct gl_strided_buffer *trns_PSF_buf;
+    struct gl_strided_buffer *stxur_PSF_buf;
+    struct gl_strided_buffer *ttxur_PSF_buf;
 
 
     int ncorner_axis;

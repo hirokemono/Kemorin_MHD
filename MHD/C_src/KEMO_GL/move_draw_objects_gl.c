@@ -17,6 +17,12 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
     CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, kemo_buffers->cube_index_buf);
 
+    n_point = 1024;
+    kemo_buffers->solid_PSF_buf = init_strided_buffer(n_point);
+    kemo_buffers->stxur_PSF_buf = init_strided_buffer(n_point);
+    kemo_buffers->trns_PSF_buf =  init_strided_buffer(n_point);
+    kemo_buffers->ttxur_PSF_buf = init_strided_buffer(n_point);
+
     kemo_buffers->ncorner_axis = ISIX;
     n_point = ITHREE * count_axis_to_buf(kemo_buffers->ncorner_axis);
     kemo_buffers->axis_buf = init_strided_buffer(n_point);
@@ -37,6 +43,11 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 {
     dealloc_gl_index_buffer(kemo_buffers->cube_index_buf);
     dealloc_strided_buffer(kemo_buffers->cube_buf);
+
+    dealloc_strided_buffer(kemo_buffers->ttxur_PSF_buf);
+    dealloc_strided_buffer(kemo_buffers->stxur_PSF_buf);
+    dealloc_strided_buffer(kemo_buffers->solid_PSF_buf);
+    dealloc_strided_buffer(kemo_buffers->trns_PSF_buf);
 
     dealloc_strided_buffer(kemo_buffers->cbar_buf);
     dealloc_strided_buffer(kemo_buffers->min_buf);
@@ -312,8 +323,13 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
  		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
                                                 kemo_psf->psf_a, view_s);
 		iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
-		set_PSF_solid_objects_VAO(view_s, kemo_psf->psf_d, kemo_psf->psf_m,
-                                  kemo_psf->psf_a, kemo_VAOs->psf_solid_VAO);
+        const_PSF_solid_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                       kemo_buffers->solid_PSF_buf, kemo_buffers->stxur_PSF_buf);
+		set_PSF_solid_objects_VAO(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                  kemo_buffers->solid_PSF_buf, kemo_buffers->stxur_PSF_buf,
+                                  kemo_VAOs->psf_solid_VAO);
+        
+        
 		draw_PSF_solid_objects_VAO(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, 
                                    view_matrices, kemo_VAOs->psf_solid_VAO, kemo_shaders);
 		draw_PSF_isolines_VAO(view_matrices, kemo_VAOs->psf_solid_VAO, kemo_shaders);
