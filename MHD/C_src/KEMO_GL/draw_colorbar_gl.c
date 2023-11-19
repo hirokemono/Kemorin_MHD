@@ -14,9 +14,10 @@ static int count_colorbar_text_VAO(struct cbar_work *cbar_wk){
 	return num_patch;
 };
 
-static void set_colorbar_text_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cbar_VAO,
-                                  struct gl_strided_buffer *min_buf, struct gl_strided_buffer *max_buf, 
-                                  struct gl_strided_buffer *zero_buf){
+void set_colorbar_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cbar_VAO,
+                      struct gl_strided_buffer *cbar_buf, struct gl_strided_buffer *min_buf,
+                      struct gl_strided_buffer *max_buf, struct gl_strided_buffer *zero_buf){
+    Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);
     const_texture_VBO(cbar_wk->cbar_min_image->npix_img[0],
                       cbar_wk->cbar_min_image->npix_img[1],
                       cbar_wk->cbar_min_image->imgBMP,
@@ -32,8 +33,8 @@ static void set_colorbar_text_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cb
 	return;
 };
 
-static void set_time_text_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
-                              struct gl_strided_buffer *time_buf){
+void set_time_text_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
+                       struct gl_strided_buffer *time_buf){
 	const_texture_VBO(tlabel_wk->tlabel_image->npix_img[0],
                       tlabel_wk->tlabel_image->npix_img[1],
                       tlabel_wk->tlabel_image->imgBMP,
@@ -42,10 +43,10 @@ static void set_time_text_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *tex
 };
 
 
-void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
-                           float text_color[4], float bg_color[4],
-                           struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                           struct gl_strided_buffer *cbar_buf){
+static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
+                                      float text_color[4], float bg_color[4],
+                                      struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                                      struct gl_strided_buffer *cbar_buf){
     int i;
     int icomp;
     cbar_buf->num_nod_buf = 0;
@@ -71,10 +72,10 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
     return;
 };
 
-void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
-                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                            struct gl_strided_buffer *min_buf, struct gl_strided_buffer *max_buf, 
-                            struct gl_strided_buffer *zero_buf){
+static void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
+                                   struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                                   struct gl_strided_buffer *min_buf, struct gl_strided_buffer *max_buf,
+                                   struct gl_strided_buffer *zero_buf){
     int i;
     min_buf->num_nod_buf =  0;
     max_buf->num_nod_buf =  0;
@@ -122,38 +123,14 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
     return;
 };
 
-void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
-                      GLfloat text_color[4], GLfloat bg_color[4],
-                      struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                      struct gl_strided_buffer *cbar_buf, struct gl_strided_buffer *min_buf,
-                      struct gl_strided_buffer *max_buf, struct gl_strided_buffer *zero_buf,
-                      struct VAO_ids **cbar_VAO){
-    const_colorbar_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
-                          psf_m, psf_a, cbar_buf);
-    Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);
-    
+void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
+                           GLfloat text_color[4], GLfloat bg_color[4],
+                           struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                           struct gl_strided_buffer *cbar_buf, struct gl_strided_buffer *min_buf,
+                           struct gl_strided_buffer *max_buf, struct gl_strided_buffer *zero_buf){
+    const_colorbar_box_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
+                              psf_m, psf_a, cbar_buf);
     const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a,
                            min_buf, max_buf, zero_buf);
-    
-    cbar_VAO[1]->npoint_draw = min_buf->num_nod_buf;
-    cbar_VAO[2]->npoint_draw = max_buf->num_nod_buf;
-    cbar_VAO[3]->npoint_draw = zero_buf->num_nod_buf;
-    if(cbar_VAO[1]->npoint_draw > 0){
-        set_colorbar_text_VAO(psf_a->cbar_wk, cbar_VAO, min_buf, max_buf, zero_buf);
-    };
-	return;
-};
-
-void set_timelabel_VAO(int iflag_retina, int nx_win, int ny_win,
-                       float text_color[4], float bg_color[4],
-                       struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                       struct gl_strided_buffer *time_buf, struct VAO_ids *time_VAO){
-    const_timelabel_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
-                           psf_a, time_buf);
-    
-    time_VAO->npoint_draw = time_buf->num_nod_buf;
-    if(time_VAO->npoint_draw > 0){
-        set_time_text_VAO(psf_a->tlabel_wk, time_VAO, time_buf);
-	};
-	return;
+    return;
 };

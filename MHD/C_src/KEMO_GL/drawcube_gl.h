@@ -28,8 +28,8 @@ struct initial_cube_lighting{
 struct initial_cube_lighting * init_inital_cube_lighting(void);
 void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
                           struct VAO_ids *cube_VAO);
-void draw_initial_cube(struct transfer_matrices *matrices, struct initial_cube_lighting *init_light,
-                       struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders);
+void draw_initial_cube(struct transfer_matrices *matrices, struct VAO_ids *cube_VAO,
+                       struct kemoview_shaders *kemo_shaders);
 
 void draw_cube_edge_gl3(struct view_element *view_s, 
 			struct VAO_ids *cube_VAO, struct kemoview_shaders *kemo_shaders);
