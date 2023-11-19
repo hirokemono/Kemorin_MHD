@@ -3,6 +3,15 @@
 
 #include "draw_map_4_PSF.h"
 
+int check_draw_map(struct kemo_array_control *psf_a){
+    int i;
+    int iflag_map = 0;
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        iflag_map = iflag_map + psf_a->iflag_loaded[i];
+    };
+    return iflag_map;
+};
+
 void set_map_patch_buffer(int ist_psf, int ied_psf, struct psf_data **psf_s,
                           struct psf_menu_val **psf_m,
                           struct kemo_array_control *psf_a,
@@ -51,22 +60,3 @@ void set_map_PSF_isolines_buffer(struct psf_data **psf_s, struct psf_menu_val **
     }
     return;
 }
-
-int check_draw_map(struct kemo_array_control *psf_a){
-	int i;
-    int iflag_map = 0;
-	for(i=0; i<psf_a->nmax_loaded; i++){
-		iflag_map = iflag_map + psf_a->iflag_loaded[i];
-	};
-	return iflag_map;
-};
-
-void set_map_objects_VAO(struct gl_strided_buffer *map_buf, struct gl_strided_buffer *mline_buf,
-                         struct VAO_ids **map_VAO){
-    map_VAO[0]->npoint_draw = map_buf->num_nod_buf;
-    if(map_VAO[0]->npoint_draw > 0){Const_VAO_4_Simple(map_VAO[0], map_buf);};
-
-    map_VAO[1]->npoint_draw = mline_buf->num_nod_buf;
-    if(map_VAO[1]->npoint_draw > 0){Const_VAO_4_Simple(map_VAO[1], mline_buf);};
-	return;
-};

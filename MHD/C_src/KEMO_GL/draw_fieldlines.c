@@ -31,15 +31,3 @@ void const_fieldlines_buffer(struct psf_data *fline_s, struct fline_menu_val *fl
     };
 	return;
 }
-
-
-void sel_fieldlines_VAO(struct gl_strided_buffer *FLINE_tube_buf,
-                        struct gl_strided_buffer *FLINE_line_buf,
-                        struct VAO_ids **fline_VAO){
-    fline_VAO[0]->npoint_draw = FLINE_tube_buf->num_nod_buf;
-    if(fline_VAO[0]->npoint_draw > 0){Const_VAO_4_Phong(fline_VAO[0], FLINE_tube_buf);};
-    fline_VAO[1]->npoint_draw = FLINE_line_buf->num_nod_buf;
-    if(fline_VAO[1]->npoint_draw > 0){Const_VAO_4_Simple(fline_VAO[1], FLINE_line_buf);};
-	return;
-};
-

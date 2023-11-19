@@ -17,8 +17,4 @@
 void const_fieldlines_buffer(struct psf_data *fline_s, struct fline_menu_val *fline_m,
                              struct gl_strided_buffer *FLINE_tube_buf,
                              struct gl_strided_buffer *FLINE_line_buf);
-
-void sel_fieldlines_VAO(struct gl_strided_buffer *FLINE_tube_buf,
-                        struct gl_strided_buffer *FLINE_line_buf,
-                        struct VAO_ids **fline_VAO);
 #endif

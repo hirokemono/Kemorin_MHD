@@ -47,37 +47,3 @@ void set_map_coastline_buffer(struct mesh_menu_val *mesh_m,
     };
 	return;
 };
-
-
-
-void set_axis_VAO(struct gl_strided_buffer *axis_buf, struct VAO_ids *mesh_VAO){
-	mesh_VAO->npoint_draw = axis_buf->num_nod_buf;
-	if(mesh_VAO->npoint_draw > 0) Const_VAO_4_Phong(mesh_VAO, axis_buf);
-	return;
-};
-
-void set_coastline_grid_VBO(struct gl_strided_buffer *coast_buf,
-                            struct gl_strided_buffer *grid_buf,
-                            struct VAO_ids **grid_VAO){
-    grid_VAO[0]->npoint_draw = coast_buf->num_nod_buf;
-    if(grid_VAO[0]->npoint_draw > 0){Const_VAO_4_Simple(grid_VAO[0], coast_buf);};
-	
-    grid_VAO[1]->npoint_draw = grid_buf->num_nod_buf;
-	if(grid_VAO[1]->npoint_draw > 0){Const_VAO_4_Simple(grid_VAO[1], grid_buf);};
-	return;
-};
-
-void map_coastline_grid_VBO(struct gl_strided_buffer *coast_buf,
-                            struct gl_strided_buffer *mflame_buf,
-                            struct VAO_ids **grid_VAO){
-    grid_VAO[0]->npoint_draw = coast_buf->num_nod_buf;
-    if(grid_VAO[0]->npoint_draw > 0){
-        Const_VAO_4_Simple(grid_VAO[0], coast_buf);
-    };
-    
-    grid_VAO[1]->npoint_draw = mflame_buf->num_nod_buf;
-    if(grid_VAO[1]->npoint_draw > 0){
-        Const_VAO_4_Simple(grid_VAO[1], mflame_buf);
-	};
-	return;
-};

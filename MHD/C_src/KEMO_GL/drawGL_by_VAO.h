@@ -32,7 +32,7 @@ void draw_trans_mesh_VAO(struct transfer_matrices *matrices, struct VAO_ids *mes
 
 void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO, 
 						   struct kemoview_shaders *kemo_shaders);
-void draw_textured_2D_box_VAO(GLuint texture_name, struct transfer_matrices *matrices,
-							  struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders);
+void draw_textured_2D_box_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
+                              struct kemoview_shaders *kemo_shaders);
 
 #endif

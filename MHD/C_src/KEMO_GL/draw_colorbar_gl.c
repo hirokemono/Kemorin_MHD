@@ -17,37 +17,27 @@ static int count_colorbar_text_VAO(struct cbar_work *cbar_wk){
 static void set_colorbar_text_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cbar_VAO,
                                   struct gl_strided_buffer *min_buf, struct gl_strided_buffer *max_buf, 
                                   struct gl_strided_buffer *zero_buf){
-	glBindVertexArray(cbar_VAO[1]->id_VAO);
-	Const_VAO_4_Texture(cbar_VAO[1], min_buf);
-	cbar_wk->id_texture[0] = set_texture_to_buffer(cbar_wk->cbar_min_image->npix_img[0],
-                                                   cbar_wk->cbar_min_image->npix_img[1],
-                                                   cbar_wk->cbar_min_image->imgBMP);
-    glBindVertexArray(0);
-    
-	glBindVertexArray(cbar_VAO[2]->id_VAO);
-	Const_VAO_4_Texture(cbar_VAO[2], max_buf);
-	cbar_wk->id_texture[1] = set_texture_to_buffer(cbar_wk->cbar_max_image->npix_img[0],
-                                                   cbar_wk->cbar_max_image->npix_img[1],
-                                                   cbar_wk->cbar_max_image->imgBMP);
-    glBindVertexArray(0);
-    
-	glBindVertexArray(cbar_VAO[3]->id_VAO);
-	Const_VAO_4_Texture(cbar_VAO[3], zero_buf);
-	cbar_wk->id_texture[2] = set_texture_to_buffer(cbar_wk->cbar_zero_image->npix_img[0],
-                                                   cbar_wk->cbar_zero_image->npix_img[1],
-                                                   cbar_wk->cbar_zero_image->imgBMP);
-	glBindVertexArray(0);
+    const_texture_VBO(cbar_wk->cbar_min_image->npix_img[0],
+                      cbar_wk->cbar_min_image->npix_img[1],
+                      cbar_wk->cbar_min_image->imgBMP,
+                      cbar_VAO[1], min_buf);
+    const_texture_VBO(cbar_wk->cbar_max_image->npix_img[0],
+                      cbar_wk->cbar_max_image->npix_img[1],
+                      cbar_wk->cbar_max_image->imgBMP,
+                      cbar_VAO[2], max_buf);
+    const_texture_VBO(cbar_wk->cbar_zero_image->npix_img[0],
+                      cbar_wk->cbar_zero_image->npix_img[1],
+                      cbar_wk->cbar_zero_image->imgBMP,
+                      cbar_VAO[3], zero_buf);
 	return;
 };
 
 static void set_time_text_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
                               struct gl_strided_buffer *time_buf){
-    glBindVertexArray(text_VAO->id_VAO);
-	Const_VAO_4_Texture(text_VAO, time_buf);
-	tlabel_wk->id_texture = set_texture_to_buffer(tlabel_wk->tlabel_image->npix_img[0],
-                                                  tlabel_wk->tlabel_image->npix_img[1],
-												  tlabel_wk->tlabel_image->imgBMP);
-	glBindVertexArray(0);
+	const_texture_VBO(tlabel_wk->tlabel_image->npix_img[0],
+                      tlabel_wk->tlabel_image->npix_img[1],
+                      tlabel_wk->tlabel_image->imgBMP,
+                      text_VAO, time_buf);
     return;
 };
 
@@ -140,8 +130,7 @@ void set_colorbar_VAO(int iflag_retina, int nx_win, int ny_win,
                       struct VAO_ids **cbar_VAO){
     const_colorbar_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
                           psf_m, psf_a, cbar_buf);
-    cbar_VAO[0]->npoint_draw = cbar_buf->num_nod_buf;
-    if(cbar_VAO[0]->npoint_draw > 0) {Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);};
+    Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);
     
     const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a,
                            min_buf, max_buf, zero_buf);
@@ -168,26 +157,3 @@ void set_timelabel_VAO(int iflag_retina, int nx_win, int ny_win,
 	};
 	return;
 };
-
-void draw_colorbar_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cbar_VAO,
-                       struct transfer_matrices *matrices, struct kemoview_shaders *kemo_shaders){
-	if(cbar_VAO[0]->npoint_draw <= 0) return;
-	
-	draw_2D_box_patch_VAO(matrices, cbar_VAO[0], kemo_shaders);
-	draw_textured_2D_box_VAO(cbar_wk->id_texture[0], matrices,
-							 cbar_VAO[1], kemo_shaders);
-    draw_textured_2D_box_VAO(cbar_wk->id_texture[1], matrices,
-                             cbar_VAO[2], kemo_shaders);
-    draw_textured_2D_box_VAO(cbar_wk->id_texture[2], matrices,
-                             cbar_VAO[3], kemo_shaders);
-	return;
-}
-
-void draw_timelabel_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *time_VAO, 
-                        struct transfer_matrices *matrices, struct kemoview_shaders *kemo_shaders){
-	if(time_VAO->npoint_draw <= 0) return;
-	draw_textured_2D_box_VAO(tlabel_wk->id_texture, matrices,
-							 time_VAO, kemo_shaders);
-	return;
-}
-

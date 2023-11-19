@@ -130,14 +130,10 @@ void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data
 void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct gl_strided_buffer *PSF_stxur_buf,
                                struct gl_strided_buffer *PSF_isoline_buf, struct gl_strided_buffer *PSF_arrow_buf,
                                struct VAO_ids **psf_solid_VAO){
-    psf_solid_VAO[1]->npoint_draw = PSF_stxur_buf->num_nod_buf;
-    if(psf_solid_VAO[1]->npoint_draw > 0){ Const_VAO_4_Phong_Texture(psf_solid_VAO[1], PSF_stxur_buf);};
-    psf_solid_VAO[0]->npoint_draw = PSF_solid_buf->num_nod_buf;
-    if(psf_solid_VAO[0]->npoint_draw) {Const_VAO_4_Phong(psf_solid_VAO[0], PSF_solid_buf);};
-    psf_solid_VAO[2]->npoint_draw = PSF_isoline_buf->num_nod_buf;
-    if(psf_solid_VAO[2]->npoint_draw > 0) {Const_VAO_4_Phong(psf_solid_VAO[2], PSF_isoline_buf);};
-    psf_solid_VAO[3]->npoint_draw = PSF_arrow_buf->num_nod_buf;
-    if(psf_solid_VAO[3]->npoint_draw > 0){ Const_VAO_4_Phong(psf_solid_VAO[3], PSF_arrow_buf); };
+    Const_VAO_4_Phong_Texture(psf_solid_VAO[1], PSF_stxur_buf);
+    Const_VAO_4_Phong(psf_solid_VAO[0], PSF_solid_buf);
+    Const_VAO_4_Phong(psf_solid_VAO[2], PSF_isoline_buf);
+    Const_VAO_4_Phong(psf_solid_VAO[3], PSF_arrow_buf);
     return;
 };
 
@@ -163,10 +159,8 @@ void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data
 
 void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_trns_buf, struct gl_strided_buffer *PSF_ttxur_buf,
                                struct VAO_ids **psf_trans_VAO){
-    psf_trans_VAO[0]->npoint_draw = PSF_trns_buf->num_nod_buf;
-    if(psf_trans_VAO[0]->npoint_draw) {Const_VAO_4_Phong(psf_trans_VAO[0], PSF_trns_buf);};
-    psf_trans_VAO[1]->npoint_draw = PSF_ttxur_buf->num_nod_buf;
-    if(psf_trans_VAO[1]->npoint_draw > 0){ Const_VAO_4_Phong_Texture(psf_trans_VAO[1], PSF_ttxur_buf);};
+    Const_VAO_4_Phong(psf_trans_VAO[0], PSF_trns_buf);
+    Const_VAO_4_Phong_Texture(psf_trans_VAO[1], PSF_ttxur_buf);
 	return;
 };
 

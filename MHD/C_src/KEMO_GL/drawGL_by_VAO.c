@@ -141,6 +141,8 @@ void draw_trans_mesh_VAO(struct transfer_matrices *matrices, struct VAO_ids *mes
 
 void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
 						   struct kemoview_shaders *kemo_shaders){
+    if(VAO->npoint_draw <= 0) return;
+    
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
@@ -159,8 +161,8 @@ void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *V
     return;
 }
 
-void draw_textured_2D_box_VAO(GLuint texture_name, struct transfer_matrices *matrices,
-							  struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
+void draw_textured_2D_box_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
+                              struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;
     
     glEnable(GL_BLEND);
@@ -172,7 +174,7 @@ void draw_textured_2D_box_VAO(GLuint texture_name, struct transfer_matrices *mat
     map_matrix_to_GLSL(kemo_shaders->simple_texure, matrices);
 
 	glBindVertexArray(VAO->id_VAO);
-	glBindTexture(GL_TEXTURE_2D, texture_name);
+	glBindTexture(GL_TEXTURE_2D, VAO->id_texure);
 	int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
 	glUniform1i(id_textureImage, 0);
 	

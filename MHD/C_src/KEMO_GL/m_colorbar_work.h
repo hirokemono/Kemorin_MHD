@@ -53,7 +53,6 @@ struct cbar_work{
 	double psf_min;
 	double psf_max;
 	
-	int id_texture[3];
     struct line_text_image *cbar_min_image;
     struct line_text_image *cbar_max_image;
     struct line_text_image *cbar_zero_image;
@@ -62,7 +61,6 @@ struct cbar_work{
 struct tlabel_work{
 	float xwin;
 	float ywin;
-    int id_texture;
     struct line_text_image *tlabel_image;
 };
 
@@ -71,7 +69,6 @@ struct msg_work{
     float xbar_max;
     float ybar_min;
     
-    int id_texture;
     struct line_text_image *message_image;
 };
 

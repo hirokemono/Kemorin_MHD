@@ -43,12 +43,6 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
     return;
 };
 
-void set_trans_mesh_VAO(struct gl_strided_buffer *mesh_trns_buf, struct VAO_ids *mesh_trans_VAO){
-    mesh_trans_VAO->npoint_draw = mesh_trns_buf->num_nod_buf;
-    if(mesh_trans_VAO->npoint_draw > 0){Const_VAO_4_Phong(mesh_trans_VAO, mesh_trns_buf);};
-	return;
-};
-
 
 static void const_mesh_grids_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                                     struct gl_strided_buffer *mesh_buf){
@@ -89,15 +83,4 @@ void const_solid_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
     copy_patch_distance_mesh(mesh_s);
     const_solid_mesh_patch_bufffer(view_s->shading_mode, mesh_s, mesh_m, mesh_solid_buf);
     return;
-};
-
-void set_solid_mesh_VAO(struct gl_strided_buffer *mesh_solid_buf, struct gl_strided_buffer *mesh_grid_buf,
-                        struct gl_strided_buffer *mesh_node_buf, struct VAO_ids **mesh_VAO){
-    mesh_VAO[0]->npoint_draw = mesh_solid_buf->num_nod_buf;
-    if(mesh_VAO[0]->npoint_draw > 0){Const_VAO_4_Phong(mesh_VAO[0], mesh_solid_buf);};
-    mesh_VAO[1]->npoint_draw = mesh_grid_buf->num_nod_buf;
-    if(mesh_VAO[1]->npoint_draw > 0){Const_VAO_4_Simple(mesh_VAO[1], mesh_grid_buf);};
-    mesh_VAO[2]->npoint_draw = mesh_node_buf->num_nod_buf;
-    if(mesh_VAO[2]->npoint_draw > 0){Const_VAO_4_Phong(mesh_VAO[2], mesh_node_buf);};
-	return;
 };

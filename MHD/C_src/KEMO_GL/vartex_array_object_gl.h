@@ -43,7 +43,9 @@ struct VAO_ids{
 	
     unsigned int id_vertex;
     unsigned int id_color;
-	
+    
+    unsigned int id_texure;
+
     unsigned int id_index;
 	
     unsigned int npoint_draw;
@@ -79,5 +81,7 @@ void DestroyVBO(struct VAO_ids *VAO);
 
 GLuint set_texture_to_buffer(const int iwidth, const int iheight, 
                              const unsigned char *rgba);
+void const_texture_VBO(const int iwidth, const int iheight, const unsigned char *rgba,
+                       struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
 
 #endif /* vartex_array_object_gl_h__ */

@@ -110,6 +110,9 @@ void select_stride_VBO(int inum, struct gl_strided_buffer *strided_buf){
 }
 
 void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+    VAO->npoint_draw = strided_buf->num_nod_buf;
+    if(VAO->npoint_draw <= 0) return;
+    
 	glBindVertexArray(VAO->id_VAO);
 	glDeleteBuffers(1, &VAO->id_vertex);
 	
@@ -146,6 +149,9 @@ void Const_VAO_4_Texture(struct VAO_ids *VAO, const struct gl_strided_buffer *st
 };
 
 void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+    VAO->npoint_draw = strided_buf->num_nod_buf;
+    if(VAO->npoint_draw <= 0) return;
+    
 	glBindVertexArray(VAO->id_VAO);
 	glDeleteBuffers(1, &VAO->id_vertex);
 
@@ -169,6 +175,9 @@ void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_bu
 };
 
 void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+    VAO->npoint_draw = strided_buf->num_nod_buf;
+    if(VAO->npoint_draw <= 0) return;
+    
 	glBindVertexArray(VAO->id_VAO);
 	glDeleteBuffers(1, &VAO->id_vertex);
 	
@@ -368,4 +377,16 @@ GLuint set_texture_to_buffer(const int iwidth, const int iheight,
 	glTexImage2D(GL_TEXTURE_2D , 0 , GL_RGBA , iwidth, iheight,
 				 0 , GL_RGBA , GL_UNSIGNED_BYTE , rgba);
 	return textureName;
+};
+
+void const_texture_VBO(const int iwidth, const int iheight, const unsigned char *rgba,
+                       struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+    VAO->npoint_draw = strided_buf->num_nod_buf;
+    if(VAO->npoint_draw <= 0) return;
+
+    glBindVertexArray(VAO->id_VAO);
+    Const_VAO_4_Texture(VAO, strided_buf);
+    VAO->id_texure = set_texture_to_buffer(iwidth, iheight, rgba);
+    glBindVertexArray(0);
+    return;
 };
