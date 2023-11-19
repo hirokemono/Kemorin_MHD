@@ -172,9 +172,9 @@ void send_each_light_rtp(struct phong_lights *lights,
 }
 void send_each_light_xyz(struct phong_lights *lights,
                          int i_point, float *x, float *y, float *z){
-    *x = lights->light_xyz[3*i_point  ];
-    *y = lights->light_xyz[3*i_point+1];
-    *z = lights->light_xyz[3*i_point+2];
+    *x = lights->light_xyz[4*i_point  ];
+    *y = lights->light_xyz[4*i_point+1];
+    *z = lights->light_xyz[4*i_point+2];
     return;
 };
 

@@ -5,19 +5,17 @@
 
 struct kemoview_buffers * init_kemoview_buffers(void)
 {
-    int n_point;
+    int n_point = 1024;
 
     struct kemoview_buffers *kemo_buffers = (struct kemoview_buffers *) malloc(sizeof(struct kemoview_buffers));
     if(kemo_buffers == NULL){
         printf("malloc error for kemoview_buffers\n");
         exit(0);
     }
-    
-    kemo_buffers->cube_buf = init_strided_buffer(8);
+    kemo_buffers->cube_buf = init_strided_buffer(n_point);
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
     CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, kemo_buffers->cube_index_buf);
 
-    n_point = 1024;
     kemo_buffers->PSF_solid_buf =   init_strided_buffer(n_point);
     kemo_buffers->PSF_stxur_buf =   init_strided_buffer(n_point);
     kemo_buffers->PSF_trns_buf =    init_strided_buffer(n_point);
@@ -36,13 +34,10 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->mesh_node_buf =  init_strided_buffer(n_point);
     kemo_buffers->mesh_trns_buf =  init_strided_buffer(n_point);
 
-    n_point = ITWO * count_coastline_buf();
-    kemo_buffers->coast_buf =    init_strided_buffer(n_point);
-    n_point = ITWO * count_sph_flame();
+    kemo_buffers->coast_buf =    init_strided_buffer((n_point));
     kemo_buffers->sph_grid_buf = init_strided_buffer(n_point);
     
-    kemo_buffers->ncorner_axis = ISIX;
-    n_point = ITHREE * count_axis_to_buf(kemo_buffers->ncorner_axis);
+    kemo_buffers->ncorner_axis = ISIX*8;
     kemo_buffers->axis_buf = init_strided_buffer(n_point);
 
     n_point = count_colorbar_box_VAO(IONE, 128);

@@ -70,7 +70,7 @@ void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_bu
 
 void draw_initial_cube(struct transfer_matrices *matrices, struct VAO_ids *cube_VAO,
                        struct kemoview_shaders *kemo_shaders){
-    if(cube_VAO->npoint_draw < 0) return;
+    if(cube_VAO->npoint_draw <= 0) return;
 
     struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 

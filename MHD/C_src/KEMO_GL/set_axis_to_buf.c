@@ -319,12 +319,14 @@ void set_axis_to_buf(struct view_element *view_s, int iflag_draw_axis,
 	int icou_patch = 0;
     
     if(iflag_draw_axis > 0){
+        int n_vertex = ITHREE * count_axis_to_buf(ncorner);
+        set_buffer_address_4_patch(n_vertex, strided_buf);
+        resize_strided_buffer(strided_buf);
         set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz,
                              w_ratio, x_charax, x_charay, x_charaz, &radius);
         icou_patch = set_axis_rod_to_buf(ncorner, radius,
                                          x_arrowx, x_arrowy, x_arrowz, x_charax, x_charay, x_charaz,
                                          strided_buf);
-        strided_buf->num_nod_buf =  ITHREE * icou_patch;
     }else{
         strided_buf->num_nod_buf = 0;
     };

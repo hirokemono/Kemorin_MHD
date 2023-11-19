@@ -298,7 +298,9 @@ int set_tube_strided_buffer(int ist_patch, int ncorner, double radius,
 	for (k=0; k<3*npatch_wall; k++) {
 		set_node_stride_VBO((ITHREE*ist_patch+k), strided_buf);
 		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
+        strided_buf->x_draw[3] = 1.0;
 		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
+        strided_buf->n_draw[3] = 1.0;
 		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
 	};
 	

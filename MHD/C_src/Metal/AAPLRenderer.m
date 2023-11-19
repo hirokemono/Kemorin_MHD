@@ -265,18 +265,17 @@ Implementation of a platform independent renderer class, which performs Metal se
     return simd_matrix(col_wk[0], col_wk[1], col_wk[2], col_wk[3]);
 }
 
-- (void)drawSolidObject:(struct gl_strided_buffer *) buf
-                encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
-                 vertex:(id<MTLBuffer> *) _verticess
-                 lights:(LightSourceParameters *) lights
-              materials:(MaterialParameters *) material
-                  sides:(int) iflag_surface
+- (void)drawSolidWithSimple:(struct gl_strided_buffer *) buf
+                    encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
+                     vertex:(id<MTLBuffer> *) _verticess
+                      sides:(int) iflag_surface
+                      solid:(int) iflag_solid
 {
     if(buf->num_nod_buf > 0){
-        _verticess[0] = [_device newBufferWithBytesNoCopy:buf->v_buf
-                                                   length:(buf->nsize_buf * sizeof(float))
-                                                  options:MTLResourceStorageModeShared
-                                              deallocator:nil];
+        *_verticess = [_device newBufferWithBytesNoCopy:buf->v_buf
+                                                 length:(buf->nsize_buf * sizeof(float))
+                                                options:MTLResourceStorageModeShared
+                                            deallocator:nil];
         
 
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
@@ -288,10 +287,57 @@ Implementation of a platform independent renderer class, which performs Metal se
         }else{
             [*renderEncoder setCullMode:MTLCullModeNone];
         }
-        [*renderEncoder setDepthStencilState:_depthState];
+        if(iflag_solid == SMOOTH_SHADE){
+            [*renderEncoder setDepthStencilState:_depthState];
+        }
         
+        [*renderEncoder setRenderPipelineState:_pipelineState[5]];
+        [*renderEncoder setVertexBuffer:*_verticess
+                                 offset:0
+                                atIndex:AAPLVertexInputIndexVertices];
+        [*renderEncoder setVertexBytes:&_modelview_mat
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLModelViewMatrix];
+        [*renderEncoder setVertexBytes:&_projection_mat
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLProjectionMatrix];
+        
+        [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                           vertexStart:0
+                           vertexCount:buf->num_nod_buf];
+    };
+};
+
+- (void)drawSolidWithPhong:(struct gl_strided_buffer *) buf
+                   encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
+                    vertex:(id<MTLBuffer> *) _verticess
+                    lights:(LightSourceParameters *) lights
+                 materials:(MaterialParameters *) material
+                     sides:(int) iflag_surface
+                     solid:(int) iflag_solid
+{
+    if(buf->num_nod_buf > 0){
+        *_verticess = [_device newBufferWithBytesNoCopy:buf->v_buf
+                                                 length:(buf->nsize_buf * sizeof(float))
+                                                options:MTLResourceStorageModeShared
+                                            deallocator:nil];
+        
+
+        [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
+        [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
+        if(iflag_surface == NORMAL_POLYGON){
+            [*renderEncoder setCullMode:MTLCullModeBack];
+        }else if(iflag_surface == REVERSE_POLYGON){
+            [*renderEncoder setCullMode:MTLCullModeFront];
+        }else{
+            [*renderEncoder setCullMode:MTLCullModeNone];
+        }
+        if(iflag_solid == SMOOTH_SHADE){
+            [*renderEncoder setDepthStencilState:_depthState];
+        }
+
         [*renderEncoder setRenderPipelineState:_pipelineState[4]];
-        [*renderEncoder setVertexBuffer:_verticess[0]
+        [*renderEncoder setVertexBuffer:*_verticess
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
         [*renderEncoder setVertexBytes:&_modelview_mat
@@ -317,7 +363,37 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
 };
 
-
+- (void)drawLineObject:(struct gl_strided_buffer *) buf
+               encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
+                vertex:(id<MTLBuffer> *) _verticess
+{
+    if(buf->num_nod_buf > 0){
+        *_verticess = [_device newBufferWithBytesNoCopy:buf->v_buf
+                                                   length:(buf->nsize_buf * sizeof(float))
+                                                  options:MTLResourceStorageModeShared
+                                              deallocator:nil];
+        
+        [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
+        [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
+        [*renderEncoder setCullMode:MTLCullModeBack];
+        [*renderEncoder setDepthStencilState:_depthState];
+        
+        [*renderEncoder setRenderPipelineState:_pipelineState[5]];
+        [*renderEncoder setVertexBuffer:*_verticess
+                                offset:0
+                               atIndex:AAPLVertexInputIndexVertices];
+        [*renderEncoder setVertexBytes:&_modelview_mat
+                               length:sizeof(matrix_float4x4)
+                              atIndex:AAPLModelViewMatrix];
+        [*renderEncoder setVertexBytes:&_projection_mat
+                               length:sizeof(matrix_float4x4)
+                              atIndex:AAPLProjectionMatrix];
+        
+        [*renderEncoder drawPrimitives:MTLPrimitiveTypeLine
+                          vertexStart:0
+                          vertexCount:buf->num_nod_buf];
+    }
+};
 
 
 /// Called whenever the view needs to render a frame.
@@ -376,7 +452,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                              kemo_sgl->kemo_buffers->sph_grid_buf);
     } else {
 /* Set Axis data into buffer */
-        double axis_radius = 16.0;
+        double axis_radius = 4.0;
         set_axis_to_buf(kemo_sgl->view_s, kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis,
                         kemo_sgl->kemo_mesh->mesh_m->dist_domains,
                         kemo_sgl->kemo_buffers->ncorner_axis,
@@ -447,7 +523,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                           kemo_sgl->kemo_buffers->zero_buf);
 
 /* draw example cube for empty data */
-    struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 
     iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
                + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
@@ -646,26 +721,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   vertexCount:kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf];
             };
         } else {
-            /*  Commands to render simple quadrature
-             [_renderEncoder setRenderPipelineState:_pipelineState[0]];
-             [_renderEncoder setVertexBuffer:_vertices[0]
-             offset:0
-             atIndex:AAPLVertexInputIndexVertices];
-             [_renderEncoder setVertexBytes:&_viewportSize
-             length:sizeof(_viewportSize)
-             atIndex:AAPLVertexInputIndexViewportSize];
-             [_renderEncoder setVertexBytes:&_scalechange
-             length:sizeof(_scalechange)
-             atIndex:AAPLVertexInputIndexScale];
-             [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-             vertexStart:0
-             vertexCount:n_quad_vertex];
-             */
             float x, y, z;
             LightSourceParameters lights;
             MaterialParameters    material;
             
             if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
+                struct initial_cube_lighting *init_light = init_inital_cube_lighting();
                 lights.num_lights = init_light->num_light;
                 for(i=0;i<lights.num_lights;i++){
                     lights.position[i].x = init_light->lightposition[i][0];
@@ -677,6 +738,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 material.diffuse.x = init_light->whitelight[1][0];
                 material.specular.x = init_light->whitelight[2][0];
                 material.shininess =  init_light->shine[0];
+                free(init_light);
             }else{
                 material.ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
                 material.diffuse.x = kemoview_get_material_parameter(DIFFUSE_FLAG);
@@ -757,99 +819,67 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   vertexStart:0
                                   vertexCount:kemo_sgl->kemo_buffers->PSF_stxur_buf->num_nod_buf];
             }
-            [self drawSolidObject:kemo_sgl->kemo_buffers->PSF_solid_buf
-                          encoder:&_renderEncoder
-                           vertex:&_vertices[35]
-                           lights:&lights
-                        materials:&material
-                            sides:BOTH_SURFACES];
-            [self drawSolidObject:kemo_sgl->kemo_buffers->PSF_isoline_buf
-                          encoder:&_renderEncoder
-                           vertex:&_vertices[31]
-                           lights:&lights
-                        materials:&material
-                            sides:BOTH_SURFACES];
-            [self drawSolidObject:kemo_sgl->kemo_buffers->PSF_arrow_buf
-                          encoder:&_renderEncoder
-                           vertex:&_vertices[32]
-                           lights:&lights
-                        materials:&material
-                            sides:BOTH_SURFACES];
+
+            [self drawSolidWithSimple:kemo_sgl->kemo_buffers->axis_buf
+                              encoder:&_renderEncoder
+                               vertex:&_vertices[43]
+                                sides:BOTH_SURFACES
+                                solid:SMOOTH_SHADE];
+
+            [self drawSolidWithPhong:kemo_sgl->kemo_buffers->PSF_solid_buf
+                             encoder:&_renderEncoder
+                              vertex:&_vertices[35]
+                              lights:&lights
+                           materials:&material
+                               sides:BOTH_SURFACES
+                               solid:SMOOTH_SHADE];
+            [self drawSolidWithPhong:kemo_sgl->kemo_buffers->PSF_isoline_buf
+                             encoder:&_renderEncoder
+                              vertex:&_vertices[31]
+                              lights:&lights
+                           materials:&material
+                               sides:BOTH_SURFACES
+                               solid:SMOOTH_SHADE];
+            [self drawSolidWithPhong:kemo_sgl->kemo_buffers->PSF_arrow_buf
+                             encoder:&_renderEncoder
+                              vertex:&_vertices[32]
+                              lights:&lights
+                           materials:&material
+                               sides:BOTH_SURFACES
+                               solid:SMOOTH_SHADE];
 
             if(kemo_sgl->kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
-                [self drawSolidObject:kemo_sgl->kemo_buffers->FLINE_tube_buf
-                              encoder:&_renderEncoder
-                               vertex:&_vertices[55]
-                               lights:&lights
-                            materials:&material
-                                sides:BOTH_SURFACES];
+                [self drawSolidWithPhong:kemo_sgl->kemo_buffers->FLINE_tube_buf
+                                 encoder:&_renderEncoder
+                                  vertex:&_vertices[55]
+                                  lights:&lights
+                               materials:&material
+                                   sides:BOTH_SURFACES
+                                   solid:SMOOTH_SHADE];
             }else{
-                if(kemo_sgl->kemo_buffers->FLINE_line_buf->num_nod_buf > 0){
-                    _vertices[56] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->FLINE_line_buf->v_buf
-                                                               length:(kemo_sgl->kemo_buffers->FLINE_line_buf->nsize_buf * sizeof(float))
-                                                              options:MTLResourceStorageModeShared
-                                                          deallocator:nil];
-                    [_renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
-                    [_renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
-                    [_renderEncoder setCullMode:MTLCullModeBack];
-                    [_renderEncoder setDepthStencilState:_depthState];
-                    
-                    [_renderEncoder setRenderPipelineState:_pipelineState[5]];
-                    [_renderEncoder setVertexBuffer:_vertices[56]
-                                            offset:0
-                                           atIndex:AAPLVertexInputIndexVertices];
-                    [_renderEncoder setVertexBytes:&_modelview_mat
-                                           length:sizeof(matrix_float4x4)
-                                          atIndex:AAPLModelViewMatrix];
-                    [_renderEncoder setVertexBytes:&_projection_mat
-                                           length:sizeof(matrix_float4x4)
-                                          atIndex:AAPLProjectionMatrix];
-                    
-                    [_renderEncoder drawPrimitives:MTLPrimitiveTypeLine
-                                      vertexStart:0
-                                      vertexCount:kemo_sgl->kemo_buffers->FLINE_line_buf->num_nod_buf];
-                };
+                [self drawLineObject:kemo_sgl->kemo_buffers->FLINE_line_buf
+                              encoder:&_renderEncoder
+                               vertex:&_vertices[56]];
             };
 
-            [self drawSolidObject:kemo_sgl->kemo_buffers->mesh_node_buf
+            [self drawSolidWithPhong:kemo_sgl->kemo_buffers->mesh_node_buf
+                             encoder:&_renderEncoder
+                              vertex:&_vertices[51]
+                              lights:&lights
+                           materials:&material
+                               sides:BOTH_SURFACES
+                               solid:SMOOTH_SHADE];
+            [self drawLineObject:kemo_sgl->kemo_buffers->mesh_grid_buf
                           encoder:&_renderEncoder
-                           vertex:&_vertices[51]
-                           lights:&lights
-                        materials:&material
-                            sides:BOTH_SURFACES];
-            if(kemo_sgl->kemo_buffers->mesh_grid_buf->num_nod_buf > 0){
-                _vertices[52] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->mesh_grid_buf->v_buf
-                                                           length:(kemo_sgl->kemo_buffers->mesh_grid_buf->nsize_buf * sizeof(float))
-                                                          options:MTLResourceStorageModeShared
-                                                      deallocator:nil];
-                
-                [_renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
-                [_renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
-                [_renderEncoder setCullMode:MTLCullModeBack];
-                [_renderEncoder setDepthStencilState:_depthState];
-                
-                [_renderEncoder setRenderPipelineState:_pipelineState[5]];
-                [_renderEncoder setVertexBuffer:_vertices[52]
-                                        offset:0
-                                       atIndex:AAPLVertexInputIndexVertices];
-                [_renderEncoder setVertexBytes:&_modelview_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelViewMatrix];
-                [_renderEncoder setVertexBytes:&_projection_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLProjectionMatrix];
-                
-                [_renderEncoder drawPrimitives:MTLPrimitiveTypeLine
-                                  vertexStart:0
-                                  vertexCount:kemo_sgl->kemo_buffers->mesh_grid_buf->num_nod_buf];
-            }
-            [self drawSolidObject:kemo_sgl->kemo_buffers->mesh_solid_buf
-                          encoder:&_renderEncoder
-                           vertex:&_vertices[53]
-                           lights:&lights
-                        materials:&material
-                            sides:kemo_sgl->kemo_mesh->mesh_m->polygon_mode];
-            
+                           vertex:&_vertices[52]];
+            [self drawSolidWithPhong:kemo_sgl->kemo_buffers->mesh_solid_buf
+                             encoder:&_renderEncoder
+                              vertex:&_vertices[53]
+                              lights:&lights
+                           materials:&material
+                               sides:kemo_sgl->kemo_mesh->mesh_m->polygon_mode
+                               solid:SMOOTH_SHADE];
+
             if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
                 _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cube_buf->v_buf)
                                                      length:(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf * sizeof(KemoViewVertex))
@@ -891,87 +921,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                                    indexBufferOffset:0];
             }
             
-            if(kemo_sgl->kemo_buffers->axis_buf->num_nod_buf > 0){
-                _vertices[43] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->axis_buf->v_buf)
-                                                     length:(kemo_sgl->kemo_buffers->axis_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                                    options:MTLResourceStorageModeShared];
-                
-                [_renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
-                [_renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
-                //                [_renderEncoder setCullMode:MTLCullModeBack];
-                [_renderEncoder setCullMode:MTLCullModeNone];
-                //                [_renderEncoder setDepthStencilState:_depthState];
-                
-                [_renderEncoder setRenderPipelineState:_pipelineState[4]];
-                [_renderEncoder setVertexBuffer:_vertices[43]
-                                        offset:0
-                                       atIndex:AAPLVertexInputIndexVertices];
-                
-                [_renderEncoder setVertexBytes:&_modelview_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelViewMatrix];
-                [_renderEncoder setVertexBytes:&_projection_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLProjectionMatrix];
-                
-                [_renderEncoder setVertexBytes:&_normal_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelNormalMatrix];
-                
-                [_renderEncoder setFragmentBytes:&lights
-                                         length:(sizeof(LightSourceParameters))
-                                        atIndex:AAPLLightsParams];
-                [_renderEncoder setFragmentBytes:&material
-                                         length:sizeof(MaterialParameters)
-                                        atIndex:AAPLMaterialParams];
-                
-                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                                  vertexStart:0
-                                  vertexCount:kemo_sgl->kemo_buffers->axis_buf->num_nod_buf];
-            }
-            
-            if(kemo_sgl->kemo_buffers->coast_buf->num_nod_buf > 0){
-                _vertices[41] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->coast_buf->v_buf
-                                                           length:(kemo_sgl->kemo_buffers->coast_buf->nsize_buf * sizeof(float))
-                                                          options:MTLResourceStorageModeShared
-                                                      deallocator:nil];
-                [_renderEncoder setDepthStencilState:_depthState];
-                [_renderEncoder setRenderPipelineState:_pipelineState[5]];
-                [_renderEncoder setVertexBuffer:_vertices[41]
-                                        offset:0
-                                       atIndex:AAPLVertexInputIndexVertices];
-                [_renderEncoder setVertexBytes:&_modelview_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelViewMatrix];
-                [_renderEncoder setVertexBytes:&_projection_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLProjectionMatrix];
-                
-                [_renderEncoder drawPrimitives:MTLPrimitiveTypeLine
-                                  vertexStart:0
-                                  vertexCount:kemo_sgl->kemo_buffers->coast_buf->num_nod_buf];
-            };
-            
-            if(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf > 0){
-                _vertices[42] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->sph_grid_buf->v_buf)
-                                                     length:(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                                    options:MTLResourceStorageModeShared];
-                [_renderEncoder setDepthStencilState:_depthState];
-                [_renderEncoder setRenderPipelineState:_pipelineState[5]];
-                [_renderEncoder setVertexBuffer:_vertices[42]
-                                        offset:0
-                                       atIndex:AAPLVertexInputIndexVertices];
-                [_renderEncoder setVertexBytes:&_modelview_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelViewMatrix];
-                [_renderEncoder setVertexBytes:&_projection_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLProjectionMatrix];
-                
-                [_renderEncoder drawPrimitives:MTLPrimitiveTypeLine
-                                  vertexStart:0
-                                  vertexCount:kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf];
-            };
+            [self drawLineObject:kemo_sgl->kemo_buffers->coast_buf
+                          encoder:&_renderEncoder
+                           vertex:&_vertices[41]];
+            [self drawLineObject:kemo_sgl->kemo_buffers->sph_grid_buf
+                          encoder:&_renderEncoder
+                           vertex:&_vertices[42]];
 /*  Draw transparent objects */
             if(kemo_sgl->kemo_buffers->PSF_ttxur_buf->num_nod_buf > 0){
                 _vertices[38] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->PSF_ttxur_buf->v_buf
@@ -1028,82 +983,21 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   vertexStart:0
                                   vertexCount:kemo_sgl->kemo_buffers->PSF_ttxur_buf->num_nod_buf];
             }
-            if(kemo_sgl->kemo_buffers->PSF_trns_buf->num_nod_buf > 0){
-                _vertices[37] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->PSF_trns_buf->v_buf
-                                                           length:(kemo_sgl->kemo_buffers->PSF_trns_buf->nsize_buf * sizeof(float))
-                                                          options:MTLResourceStorageModeShared
-                                                      deallocator:nil];
-                
-                [_renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
-                [_renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
-                [_renderEncoder setCullMode:MTLCullModeNone];
-//                [_renderEncoder setDepthStencilState:_depthState];
-                
-                [_renderEncoder setRenderPipelineState:_pipelineState[4]];
-                [_renderEncoder setVertexBuffer:_vertices[37]
-                                        offset:0
-                                       atIndex:AAPLVertexInputIndexVertices];
-                [_renderEncoder setVertexBytes:&_modelview_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelViewMatrix];
-                [_renderEncoder setVertexBytes:&_projection_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLProjectionMatrix];
-                [_renderEncoder setVertexBytes:&_normal_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelNormalMatrix];
-                
-                [_renderEncoder setFragmentBytes:&lights
-                                         length:(sizeof(LightSourceParameters))
-                                        atIndex:AAPLLightsParams];
-                [_renderEncoder setFragmentBytes:&material
-                                         length:sizeof(MaterialParameters)
-                                        atIndex:AAPLMaterialParams];
-                
-                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                                  vertexStart:0
-                                  vertexCount:kemo_sgl->kemo_buffers->PSF_trns_buf->num_nod_buf];
-            }
+            [self drawSolidWithPhong:kemo_sgl->kemo_buffers->PSF_trns_buf
+                             encoder:&_renderEncoder
+                              vertex:&_vertices[37]
+                              lights:&lights
+                           materials:&material
+                               sides:BOTH_SURFACES
+                               solid:FLAT_SHADE];
             
-            if(kemo_sgl->kemo_buffers->mesh_trns_buf->num_nod_buf > 0){
-                _vertices[54] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->mesh_trns_buf->v_buf
-                                                           length:(kemo_sgl->kemo_buffers->mesh_trns_buf->nsize_buf * sizeof(float))
-                                                          options:MTLResourceStorageModeShared
-                                                      deallocator:nil];
-                
-                [_renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
-                [_renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
-                [_renderEncoder setCullMode:MTLCullModeBack];
-                [_renderEncoder setDepthStencilState:_depthState];
-                
-                [_renderEncoder setRenderPipelineState:_pipelineState[4]];
-                [_renderEncoder setVertexBuffer:_vertices[54]
-                                        offset:0
-                                       atIndex:AAPLVertexInputIndexVertices];
-                [_renderEncoder setVertexBytes:&_modelview_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelViewMatrix];
-                [_renderEncoder setVertexBytes:&_projection_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLProjectionMatrix];
-                [_renderEncoder setVertexBytes:&_normal_mat
-                                       length:sizeof(matrix_float4x4)
-                                      atIndex:AAPLModelNormalMatrix];
-                
-                [_renderEncoder setFragmentBytes:&lights
-                                         length:(sizeof(LightSourceParameters))
-                                        atIndex:AAPLLightsParams];
-                [_renderEncoder setFragmentBytes:&material
-                                         length:sizeof(MaterialParameters)
-                                        atIndex:AAPLMaterialParams];
-                
-                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                                  vertexStart:0
-                                  vertexCount:kemo_sgl->kemo_buffers->mesh_trns_buf->num_nod_buf];
-            }
-            
-
-            
+            [self drawSolidWithPhong:kemo_sgl->kemo_buffers->mesh_trns_buf
+                             encoder:&_renderEncoder
+                              vertex:&_vertices[54]
+                              lights:&lights
+                           materials:&material
+                               sides:BOTH_SURFACES
+                               solid:FLAT_SHADE];
         };
 
 
