@@ -30,6 +30,9 @@ struct kemoview_buffers{
     struct gl_strided_buffer *PSF_arrow_buf;
     struct gl_strided_buffer *PSF_isoline_buf;
 
+    struct gl_strided_buffer *FLINE_line_buf;
+    struct gl_strided_buffer *FLINE_tube_buf;
+
     struct gl_strided_buffer *mesh_solid_buf;
     struct gl_strided_buffer *mesh_grid_buf;
     struct gl_strided_buffer *mesh_node_buf;

@@ -25,6 +25,9 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->PSF_isoline_buf = init_strided_buffer(n_point);
     kemo_buffers->PSF_arrow_buf = init_strided_buffer(n_point);
 
+    kemo_buffers->FLINE_line_buf = init_strided_buffer(n_point);
+    kemo_buffers->FLINE_tube_buf = init_strided_buffer(n_point);
+
     kemo_buffers->mesh_solid_buf = init_strided_buffer(n_point);
     kemo_buffers->mesh_grid_buf = init_strided_buffer(n_point);
     kemo_buffers->mesh_node_buf = init_strided_buffer(n_point);
@@ -55,6 +58,9 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->mesh_grid_buf);
     dealloc_strided_buffer(kemo_buffers->mesh_node_buf);
     dealloc_strided_buffer(kemo_buffers->mesh_trns_buf);
+
+    dealloc_strided_buffer(kemo_buffers->FLINE_line_buf);
+    dealloc_strided_buffer(kemo_buffers->FLINE_tube_buf);
 
     dealloc_strided_buffer(kemo_buffers->PSF_ttxur_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_stxur_buf);
@@ -314,19 +320,19 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 		draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
         double axis_radius = 4.0;
-        if(kemo_mesh->mesh_m->iflag_draw_axis > 0){
-            set_axis_to_buf(view_s, kemo_mesh->mesh_m->dist_domains,
-                                    kemo_buffers->ncorner_axis, axis_radius,
-                                    kemo_buffers->axis_buf);
-        } else{
-            kemo_buffers->axis_buf->num_nod_buf = 0;
-        };
+        set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                        kemo_mesh->mesh_m->dist_domains,
+                        kemo_buffers->ncorner_axis, axis_radius,
+                        kemo_buffers->axis_buf);
         set_axis_VAO(kemo_buffers->axis_buf, kemo_VAOs->grid_VAO[2]);
         
         glDisable(GL_CULL_FACE);
 		drawgl_patch_with_phong(view_matrices, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		
-		sel_fieldlines_VAO(kemo_fline->fline_d, kemo_fline->fline_m, kemo_VAOs->fline_VAO);
+        const_fieldlines_buffer(kemo_fline->fline_d, kemo_fline->fline_m,
+                                kemo_buffers->FLINE_tube_buf, kemo_buffers->FLINE_line_buf);
+        sel_fieldlines_VAO(kemo_buffers->FLINE_tube_buf, kemo_buffers->FLINE_line_buf,
+                           kemo_VAOs->fline_VAO);
 		if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
             glDisable(GL_CULL_FACE);
 			drawgl_patch_with_phong(view_matrices, kemo_VAOs->fline_VAO[0], kemo_shaders);

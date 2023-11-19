@@ -310,18 +310,23 @@ int count_axis_to_buf(int ncorner){
 	return npatch_wall;
 }
 
-void set_axis_to_buf(struct view_element *view_s, double dist, int ncorner, double radius,
-                      struct gl_strided_buffer *strided_buf){
+void set_axis_to_buf(struct view_element *view_s, int iflag_draw_axis,
+                     double dist, int ncorner, double radius,
+                     struct gl_strided_buffer *strided_buf){
 	double x_arrowx[6], x_arrowy[6], x_arrowz[6];
 	double w_ratio[3];
 	double x_charax[12], x_charay[18], x_charaz[18];
 	int icou_patch = 0;
-	
-	set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz, 
-						 w_ratio, x_charax, x_charay, x_charaz, &radius);
-	icou_patch = set_axis_rod_to_buf(ncorner, radius, 
-				x_arrowx, x_arrowy, x_arrowz, x_charax, x_charay, x_charaz,
-				strided_buf);
-    strided_buf->num_nod_buf =  ITHREE * icou_patch;
+    
+    if(iflag_draw_axis > 0){
+        set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz,
+                             w_ratio, x_charax, x_charay, x_charaz, &radius);
+        icou_patch = set_axis_rod_to_buf(ncorner, radius,
+                                         x_arrowx, x_arrowy, x_arrowz, x_charax, x_charay, x_charaz,
+                                         strided_buf);
+        strided_buf->num_nod_buf =  ITHREE * icou_patch;
+    }else{
+        strided_buf->num_nod_buf = 0;
+    };
 	return;
 };
