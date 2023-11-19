@@ -563,7 +563,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="1" width="322" height="176"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="159"/>
@@ -1515,14 +1515,14 @@
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="Normal" imagePosition="left" alignment="left" state="on" inset="2" id="678">
+                                            <buttonCell type="radio" title="Normal" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="678">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                                 <connections>
                                                     <action selector="ChoosePolygontypeAction:" target="964" id="973"/>
                                                 </connections>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="Reverse" imagePosition="left" alignment="left" tag="1" inset="2" id="700">
+                                            <buttonCell type="radio" title="Reverse" imagePosition="left" alignment="left" tag="-1" inset="2" id="700">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                                 <connections>

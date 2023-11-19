@@ -77,6 +77,7 @@ void draw_initial_cube(struct transfer_matrices *matrices, struct VAO_ids *cube_
     glUseProgram(kemo_shaders->phong->programId);
     transfer_matrix_to_GL(kemo_shaders->phong, matrices);
 	light_for_initial_cube(init_light, kemo_shaders);
+    free(init_light);
 
 	glBindVertexArray(cube_VAO->id_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);

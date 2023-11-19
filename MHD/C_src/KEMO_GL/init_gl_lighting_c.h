@@ -11,8 +11,6 @@
 #include "m_phong_light_table_c.h"
 
 /* prototypes */
-struct initial_cube_lighting * init_inital_cube_lighting(void);
-
 void set_bg_color_kemoview(struct mesh_menu_val *mesh_m);
 void init_bg_color_kemoview(struct mesh_menu_val *mesh_m);
 

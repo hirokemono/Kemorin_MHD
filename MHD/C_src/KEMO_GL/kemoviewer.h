@@ -142,8 +142,9 @@
 #define FLAT_SHADE    0
 #define SMOOTH_SHADE  1
 
-#define NORMAL_POLYGON  0
-#define REVERSE_POLYGON 1
+#define NORMAL_POLYGON   1
+#define REVERSE_POLYGON -1
+#define BOTH_SURFACES    0
 
 #define FULL_COMPONENT        0
 #define TANGENTIAL_COMPONENT  1
