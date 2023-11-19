@@ -32,8 +32,7 @@ int count_sph_flame(void){
 	return num_edge;
 }
 
-int set_sph_flame_to_buf(double radius,  int ist_buf,
-                         struct gl_strided_buffer *strided_buf){
+void set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
 	int i, j, nd, inum;
 	double f_color[4];
 	double t_mid, p_mid;
@@ -88,7 +87,7 @@ int set_sph_flame_to_buf(double radius,  int ist_buf,
 			inum = inum + 1;
 		}
 	}
-	return (ist_buf + TWO*inum);
+	return;
 }
 
 int set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
@@ -156,8 +155,7 @@ int count_coastline_buf(void){
 	return get_nedge_coastline();
 };
 
-int set_coastline_buf(double radius, int ist_buf,
-                      struct gl_strided_buffer *strided_buf){
+void set_coastline_buf(double radius, struct gl_strided_buffer *strided_buf){
 	int iedge, k, nd;
 	int nedge_coast;
 	double tp_coast[4], lake[2], f_color[4];
@@ -169,7 +167,7 @@ int set_coastline_buf(double radius, int ist_buf,
 		get_coastline(iedge, tp_coast, lake);
 		
 		for (k = 0; k < 2; k++) {
-			set_node_stride_VBO((ist_buf+ITWO*iedge+k), strided_buf);
+			set_node_stride_VBO((ITWO*iedge+k), strided_buf);
 			strided_buf->x_draw[0] = (GLfloat) (radius * cos(tp_coast[2*k]) * cos(tp_coast[2*k+1]));
 			strided_buf->x_draw[1] = (GLfloat) (radius * cos(tp_coast[2*k]) * sin(tp_coast[2*k+1]));
 			strided_buf->x_draw[2] = (GLfloat) (radius * sin(tp_coast[2*k]));
@@ -179,7 +177,7 @@ int set_coastline_buf(double radius, int ist_buf,
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
 		};
 	};
-	return ist_buf + (ITWO*nedge_coast);
+	return;
 }
 
 int set_map_coastline_buf(struct gl_strided_buffer *strided_buf){

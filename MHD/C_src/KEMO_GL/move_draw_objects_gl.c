@@ -18,21 +18,29 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, kemo_buffers->cube_index_buf);
 
     n_point = 1024;
-    kemo_buffers->PSF_solid_buf = init_strided_buffer(n_point);
-    kemo_buffers->PSF_stxur_buf = init_strided_buffer(n_point);
-    kemo_buffers->PSF_trns_buf =  init_strided_buffer(n_point);
-    kemo_buffers->PSF_ttxur_buf = init_strided_buffer(n_point);
+    kemo_buffers->PSF_solid_buf =   init_strided_buffer(n_point);
+    kemo_buffers->PSF_stxur_buf =   init_strided_buffer(n_point);
+    kemo_buffers->PSF_trns_buf =    init_strided_buffer(n_point);
+    kemo_buffers->PSF_ttxur_buf =   init_strided_buffer(n_point);
     kemo_buffers->PSF_isoline_buf = init_strided_buffer(n_point);
-    kemo_buffers->PSF_arrow_buf = init_strided_buffer(n_point);
+    kemo_buffers->PSF_arrow_buf =   init_strided_buffer(n_point);
+
+    kemo_buffers->MAP_solid_buf =   init_strided_buffer(n_point);
+    kemo_buffers->MAP_isoline_buf = init_strided_buffer(n_point);
 
     kemo_buffers->FLINE_line_buf = init_strided_buffer(n_point);
     kemo_buffers->FLINE_tube_buf = init_strided_buffer(n_point);
 
     kemo_buffers->mesh_solid_buf = init_strided_buffer(n_point);
-    kemo_buffers->mesh_grid_buf = init_strided_buffer(n_point);
-    kemo_buffers->mesh_node_buf = init_strided_buffer(n_point);
-    kemo_buffers->mesh_trns_buf = init_strided_buffer(n_point);
+    kemo_buffers->mesh_grid_buf =  init_strided_buffer(n_point);
+    kemo_buffers->mesh_node_buf =  init_strided_buffer(n_point);
+    kemo_buffers->mesh_trns_buf =  init_strided_buffer(n_point);
 
+    n_point = ITWO * count_coastline_buf();
+    kemo_buffers->coast_buf =    init_strided_buffer(n_point);
+    n_point = ITWO * count_sph_flame();
+    kemo_buffers->sph_grid_buf = init_strided_buffer(n_point);
+    
     kemo_buffers->ncorner_axis = ISIX;
     n_point = ITHREE * count_axis_to_buf(kemo_buffers->ncorner_axis);
     kemo_buffers->axis_buf = init_strided_buffer(n_point);
@@ -45,7 +53,7 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->max_buf =  init_strided_buffer(n_point);
     kemo_buffers->zero_buf = init_strided_buffer(n_point);
     kemo_buffers->time_buf = init_strided_buffer(n_point);
-    kemo_buffers->msg_buf = init_strided_buffer(n_point);
+    kemo_buffers->msg_buf =  init_strided_buffer(n_point);
     return kemo_buffers;
 };
 
@@ -68,6 +76,12 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->PSF_trns_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_isoline_buf);
     dealloc_strided_buffer(kemo_buffers->PSF_arrow_buf);
+
+    dealloc_strided_buffer(kemo_buffers->MAP_solid_buf);
+    dealloc_strided_buffer(kemo_buffers->MAP_isoline_buf);
+
+    dealloc_strided_buffer(kemo_buffers->coast_buf);
+    dealloc_strided_buffer(kemo_buffers->sph_grid_buf);
 
     dealloc_strided_buffer(kemo_buffers->cbar_buf);
     dealloc_strided_buffer(kemo_buffers->min_buf);
@@ -295,27 +309,18 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 					kemo_psf->psf_a, view_s);
 		iflag_psf = check_draw_map(kemo_psf->psf_a);
 
-        
-        struct gl_strided_buffer *coast_buf
-            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-        int n_points = ITWO * count_coastline_buf();
-        set_buffer_address_4_patch(n_points, coast_buf);
-        alloc_strided_buffer(coast_buf);
+        set_map_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
+        set_map_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
 
-        struct gl_strided_buffer *mflame_buf
-            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-        int n_vertex = ITWO * count_sph_flame();
-        set_buffer_address_4_patch(n_vertex, mflame_buf);
-        alloc_strided_buffer(mflame_buf);
+        set_map_patch_buffer(IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
+                             kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                             kemo_buffers->MAP_solid_buf);
+        set_map_PSF_isolines_buffer(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s,
+                                    kemo_buffers->MAP_isoline_buf);
 
-        set_map_coastline_buffer(kemo_mesh->mesh_m->iflag_draw_coast, coast_buf);
-        set_map_flame_buffer(kemo_mesh->mesh_m->iflag_draw_sph_grid, mflame_buf);
-
-        set_map_objects_VAO(view_s, kemo_psf->psf_d,
-                            kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, kemo_VAOs->map_VAO);
-        map_coastline_grid_VBO(coast_buf, mflame_buf, &kemo_VAOs->map_VAO[2]);
-        free(coast_buf);
-        free(mflame_buf);
+        set_map_objects_VAO(kemo_buffers->MAP_solid_buf, kemo_buffers->MAP_isoline_buf,
+                            kemo_VAOs->map_VAO);
+        map_coastline_grid_VBO(kemo_buffers->coast_buf, kemo_buffers->sph_grid_buf, &kemo_VAOs->map_VAO[2]);
 
 		draw_map_objects_VAO(map_matrices, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
@@ -354,9 +359,12 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                                 kemo_buffers->mesh_solid_buf, kemo_buffers->mesh_grid_buf,
                                 kemo_buffers->mesh_node_buf);
         set_solid_mesh_VAO(kemo_buffers->mesh_solid_buf, kemo_buffers->mesh_grid_buf,
-                            kemo_buffers->mesh_node_buf, kemo_VAOs->mesh_solid_VAO);
+                           kemo_buffers->mesh_node_buf, kemo_VAOs->mesh_solid_VAO);
 
-        set_coastline_grid_VBO(kemo_mesh->mesh_m, kemo_VAOs->grid_VAO);
+        set_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
+        set_sph_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
+        set_coastline_grid_VBO(kemo_buffers->coast_buf, kemo_buffers->sph_grid_buf,
+                               kemo_VAOs->grid_VAO);
 
 		/* Draw Transparent Objects */
         const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d,
@@ -369,23 +377,23 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
         const_trans_mesh_buffer(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
                                 kemo_buffers->mesh_trns_buf);
         set_trans_mesh_VAO(kemo_buffers->mesh_trns_buf, kemo_VAOs->mesh_trans_VAO);
+
+        draw_PSF_solid_objects_VAO(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                   view_matrices, kemo_VAOs->psf_solid_VAO, kemo_shaders);
+        drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
+
+        glDisable(GL_CULL_FACE);
+        drawgl_patch_with_phong(view_matrices, kemo_VAOs->mesh_solid_VAO[2], kemo_shaders);
+        draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_matrices,
+                    kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
+
+        drawgl_lines(view_matrices, kemo_VAOs->grid_VAO[0], kemo_shaders);
+        drawgl_lines(view_matrices, kemo_VAOs->grid_VAO[1], kemo_shaders);
+
+        draw_PSF_trans_objects_VAO(kemo_psf->psf_m, kemo_psf->psf_a, view_matrices,
+                                   kemo_VAOs->psf_trans_VAO, kemo_shaders);
+        draw_trans_mesh_VAO(view_matrices, kemo_VAOs->mesh_trans_VAO, kemo_shaders);
 	};
-
-    draw_PSF_solid_objects_VAO(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
-                               view_matrices, kemo_VAOs->psf_solid_VAO, kemo_shaders);
-    drawgl_lines(view_matrices, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
-
-    glDisable(GL_CULL_FACE);
-    drawgl_patch_with_phong(view_matrices, kemo_VAOs->mesh_solid_VAO[2], kemo_shaders);
-    draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_matrices,
-                kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
-
-    drawgl_lines(view_matrices, kemo_VAOs->grid_VAO[0], kemo_shaders);
-    drawgl_lines(view_matrices, kemo_VAOs->grid_VAO[1], kemo_shaders);
-
-    draw_PSF_trans_objects_VAO(kemo_psf->psf_m, kemo_psf->psf_a, view_matrices,
-                               kemo_VAOs->psf_trans_VAO, kemo_shaders);
-    draw_trans_mesh_VAO(view_matrices, kemo_VAOs->mesh_trans_VAO, kemo_shaders);
 
 	
 /* Draw Color bar and time label*/

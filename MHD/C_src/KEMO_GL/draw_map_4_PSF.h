@@ -34,8 +34,6 @@ void set_map_patch_buffer(int ist_psf, int ied_psf, struct psf_data **psf_s,
                           struct kemo_array_control *psf_a,
                           struct gl_strided_buffer *map_buf);
 
-void set_map_objects_VAO(struct view_element *view_s,
-						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
-						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-						 struct VAO_ids **map_VAO);
+void set_map_objects_VAO(struct gl_strided_buffer *map_buf, struct gl_strided_buffer *mline_buf,
+                         struct VAO_ids **map_VAO);
 #endif

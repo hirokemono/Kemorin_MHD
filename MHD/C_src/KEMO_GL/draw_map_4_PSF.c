@@ -10,12 +10,10 @@ void set_map_patch_buffer(int ist_psf, int ied_psf, struct psf_data **psf_s,
     set_color_code_for_psfs(psf_s, psf_m, psf_a);
 
     int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
-    if(num_patch > 0){
-        set_buffer_address_4_patch((ITHREE * num_patch), map_buf);
-        alloc_strided_buffer(map_buf);
+    set_buffer_address_4_patch((ITHREE * num_patch), map_buf);
+    if(map_buf->num_nod_buf > 0){
+        resize_strided_buffer(map_buf);
         set_psf_map_to_buf(ist_psf, ied_psf, psf_s, psf_a, map_buf);
-    } else {
-        map_buf->num_nod_buf = 0;
     }
 	return;
 }
@@ -34,9 +32,9 @@ void set_map_PSF_isolines_buffer(struct psf_data **psf_s, struct psf_menu_val **
 		};
 	};
     
-    if(num_patch > 0){
-        set_buffer_address_4_patch((ITHREE * num_patch), mline_buf);
-        alloc_strided_buffer(mline_buf);
+    set_buffer_address_4_patch((ITHREE * num_patch), mline_buf);
+    if(mline_buf->num_nod_buf > 0){
+        resize_strided_buffer(mline_buf);
         
         inum_patch = 0;
         for(i=0; i<psf_a->nmax_loaded; i++){
@@ -50,8 +48,6 @@ void set_map_PSF_isolines_buffer(struct psf_data **psf_s, struct psf_menu_val **
                                                         psf_m[i], mline_buf);
             };
         };
-    } else {
-        mline_buf->num_nod_buf = 0;
     }
     return;
 }
@@ -65,29 +61,12 @@ int check_draw_map(struct kemo_array_control *psf_a){
 	return iflag_map;
 };
 
-void set_map_objects_VAO(struct view_element *view_s, 
-						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
-						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-						 struct VAO_ids **map_VAO){
-	struct gl_strided_buffer *map_buf
-				= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	set_map_patch_buffer(IZERO, psf_a->istack_solid_psf_patch,
-                         psf_s, psf_m, psf_a, map_buf);
+void set_map_objects_VAO(struct gl_strided_buffer *map_buf, struct gl_strided_buffer *mline_buf,
+                         struct VAO_ids **map_VAO){
     map_VAO[0]->npoint_draw = map_buf->num_nod_buf;
-    if(map_VAO[0]->npoint_draw > 0){
-        Const_VAO_4_Simple(map_VAO[0], map_buf);
-        free(map_buf->v_buf);
-    };
-    free(map_buf);
+    if(map_VAO[0]->npoint_draw > 0){Const_VAO_4_Simple(map_VAO[0], map_buf);};
 
-    struct gl_strided_buffer *mline_buf
-                = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	set_map_PSF_isolines_buffer(psf_s, psf_m, psf_a, view_s, mline_buf);
     map_VAO[1]->npoint_draw = mline_buf->num_nod_buf;
-    if(map_VAO[1]->npoint_draw > 0){
-        Const_VAO_4_Simple(map_VAO[1], mline_buf);
-        free(mline_buf->v_buf);
-    };
-    free(mline_buf);
+    if(map_VAO[1]->npoint_draw > 0){Const_VAO_4_Simple(map_VAO[1], mline_buf);};
 	return;
 };

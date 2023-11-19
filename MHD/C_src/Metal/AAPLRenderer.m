@@ -294,38 +294,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     free(map_matrices);
 
     
-    
-    struct gl_strided_buffer *map_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    map_buf->num_nod_buf =   0;
     struct gl_strided_buffer *mline_buf
         = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
     mline_buf->num_nod_buf = 0;
     
-    int n_vertex = ITWO * count_coastline_buf();
-    struct gl_strided_buffer *coast_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch(n_vertex, coast_buf);
-    alloc_strided_buffer(coast_buf);
-    
-    n_vertex = ITWO * count_sph_flame();
-    struct gl_strided_buffer *flame_buf
-            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch(n_vertex, flame_buf);
-    alloc_strided_buffer(flame_buf);
-
-    n_vertex = ITWO * count_coastline_buf();
-    struct gl_strided_buffer *mcoast_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch(n_vertex, mcoast_buf);
-    alloc_strided_buffer(mcoast_buf);
-    
-    n_vertex = ITWO * count_sph_flame();
-    struct gl_strided_buffer *mflame_buf
-            = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    set_buffer_address_4_patch(n_vertex, mflame_buf);
-    alloc_strided_buffer(mflame_buf);
-
     struct psf_menu_val *psf_stexure;
     struct psf_menu_val *psf_ttexure;
     if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP) {
@@ -337,16 +309,15 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         set_map_patch_buffer(IZERO, kemo_sgl->kemo_psf->psf_a->istack_solid_psf_patch,
                              kemo_sgl->kemo_psf->psf_d, kemo_sgl->kemo_psf->psf_m,
-                             kemo_sgl->kemo_psf->psf_a, map_buf);
-        set_map_PSF_isolines_buffer(kemo_sgl->kemo_psf->psf_d,
-                                    kemo_sgl->kemo_psf->psf_m,
-                                    kemo_sgl->kemo_psf->psf_a,
-                                    kemo_sgl->view_s, mline_buf);
+                             kemo_sgl->kemo_psf->psf_a, kemo_sgl->kemo_buffers->MAP_solid_buf);
+        set_map_PSF_isolines_buffer(kemo_sgl->kemo_psf->psf_d, kemo_sgl->kemo_psf->psf_m,
+                                    kemo_sgl->kemo_psf->psf_a, kemo_sgl->view_s,
+                                    kemo_sgl->kemo_buffers->MAP_isoline_buf);
 
-        set_map_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast,
-                                 mcoast_buf);
-        set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid,
-                             mflame_buf);
+        set_map_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m,
+                                 kemo_sgl->kemo_buffers->coast_buf);
+        set_map_flame_buffer(kemo_sgl->kemo_mesh->mesh_m,
+                             kemo_sgl->kemo_buffers->sph_grid_buf);
     } else {
 /* Set Axis data into buffer */
         double axis_radius = 16.0;
@@ -378,15 +349,10 @@ Implementation of a platform independent renderer class, which performs Metal se
         ipsf_texure = kemo_sgl->kemo_psf->psf_a->ipsf_viz_far[ist_psf]-1;
         psf_ttexure = kemo_sgl->kemo_psf->psf_m[ipsf_texure];
 
-        int ied_buf;
-        ied_buf = set_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast,
-                                       kemo_sgl->kemo_mesh->mesh_m->radius_coast,
-                                       IZERO, coast_buf);
-        coast_buf->num_nod_buf = ied_buf;
-        ied_buf = set_sph_flame_buffer(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid,
-                                       kemo_sgl->kemo_mesh->mesh_m->radius_coast,
-                                       IZERO, flame_buf);
-        flame_buf->num_nod_buf = ied_buf;
+        set_coastline_buffer(kemo_sgl->kemo_mesh->mesh_m,
+                             kemo_sgl->kemo_buffers->coast_buf);
+        set_sph_flame_buffer(kemo_sgl->kemo_mesh->mesh_m,
+                             kemo_sgl->kemo_buffers->sph_grid_buf);
 
         const_fieldlines_buffer(kemo_sgl->kemo_fline->fline_d, kemo_sgl->kemo_fline->fline_m,
                                 kemo_sgl->kemo_buffers->FLINE_tube_buf, kemo_sgl->kemo_buffers->FLINE_line_buf);
@@ -540,7 +506,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     // Create a vertex buffer, and initialize it with the quadVertices array
     int num =  kemo_sgl->kemo_buffers->cube_buf->num_nod_buf
-             + coast_buf->num_nod_buf + mflame_buf->num_nod_buf;
+             + kemo_sgl->kemo_buffers->coast_buf->num_nod_buf
+             + kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf;
 
     // Create a new command buffer for each render pass to the current drawable.
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
@@ -562,9 +529,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         
         if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP){
 /*  Commands to render map projection */
-            if(map_buf->num_nod_buf > 0){
-                _vertices[10] = [_device newBufferWithBytesNoCopy:map_buf->v_buf
-                                                           length:(map_buf->nsize_buf * sizeof(float))
+            if(kemo_sgl->kemo_buffers->MAP_solid_buf->num_nod_buf > 0){
+                _vertices[10] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->MAP_solid_buf->v_buf
+                                                           length:(kemo_sgl->kemo_buffers->MAP_solid_buf->nsize_buf * sizeof(float))
                                                           options:MTLResourceStorageModeShared
                                                       deallocator:nil];
 
@@ -577,12 +544,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                                       atIndex:AAPLOrthogonalMatrix];
                 [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                                   vertexStart:0
-                                  vertexCount:map_buf->num_nod_buf];
+                                  vertexCount:kemo_sgl->kemo_buffers->MAP_solid_buf->num_nod_buf];
             };
 /*  Commands to render isolines on map */
-            if(mline_buf->num_nod_buf > 0){
-                _vertices[11] = [_device newBufferWithBytesNoCopy:mline_buf->v_buf
-                                                           length:(mline_buf->nsize_buf * sizeof(float))
+            if(kemo_sgl->kemo_buffers->MAP_isoline_buf->num_nod_buf > 0){
+                _vertices[11] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->MAP_isoline_buf->v_buf
+                                                           length:(kemo_sgl->kemo_buffers->MAP_isoline_buf->nsize_buf * sizeof(float))
                                                           options:MTLResourceStorageModeShared
                                                       deallocator:nil];
                 [renderEncoder setRenderPipelineState:_pipelineState[3]];
@@ -594,12 +561,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                                       atIndex:AAPLOrthogonalMatrix];
                 [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                                   vertexStart:0
-                                  vertexCount:mline_buf->num_nod_buf];
+                                  vertexCount:kemo_sgl->kemo_buffers->MAP_isoline_buf->num_nod_buf];
             };
 /*  Commands to render Coastline on map */
-            if(mcoast_buf->num_nod_buf > 0){
-                _vertices[12] = [_device newBufferWithBytesNoCopy:mcoast_buf->v_buf
-                                                           length:(mcoast_buf->nsize_buf * sizeof(float))
+            if(kemo_sgl->kemo_buffers->coast_buf->num_nod_buf > 0){
+                _vertices[12] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->coast_buf->v_buf
+                                                           length:(kemo_sgl->kemo_buffers->coast_buf->nsize_buf * sizeof(float))
                                                           options:MTLResourceStorageModeShared
                                                       deallocator:nil];
                 [renderEncoder setRenderPipelineState:_pipelineState[3]];
@@ -611,12 +578,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                                       atIndex:AAPLOrthogonalMatrix];
                 [renderEncoder drawPrimitives:MTLPrimitiveTypeLine
                                   vertexStart:0
-                                  vertexCount:mcoast_buf->num_nod_buf];
+                                  vertexCount:kemo_sgl->kemo_buffers->coast_buf->num_nod_buf];
             };
 /*  Commands to render grids on map */
-            if(mflame_buf->num_nod_buf > 0){
-                _vertices[13] = [_device newBufferWithBytes:((KemoViewVertex *) mflame_buf->v_buf)
-                                                     length:(mflame_buf->num_nod_buf * sizeof(KemoViewVertex))
+            if(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf > 0){
+                _vertices[13] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->sph_grid_buf->v_buf)
+                                                     length:(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
                 [renderEncoder setRenderPipelineState:_pipelineState[3]];
                 [renderEncoder setVertexBuffer:_vertices[13]
@@ -627,7 +594,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                       atIndex:AAPLOrthogonalMatrix];
                 [renderEncoder drawPrimitives:MTLPrimitiveTypeLine
                                   vertexStart:0
-                                  vertexCount:mflame_buf->num_nod_buf];
+                                  vertexCount:kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf];
             };
         } else {
             /*  Commands to render simple quadrature
@@ -1096,9 +1063,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   vertexCount:kemo_sgl->kemo_buffers->axis_buf->num_nod_buf];
             }
             
-            if(coast_buf->num_nod_buf > 0){
-                _vertices[41] = [_device newBufferWithBytesNoCopy:coast_buf->v_buf
-                                                           length:(coast_buf->nsize_buf * sizeof(float))
+            if(kemo_sgl->kemo_buffers->coast_buf->num_nod_buf > 0){
+                _vertices[41] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->coast_buf->v_buf
+                                                           length:(kemo_sgl->kemo_buffers->coast_buf->nsize_buf * sizeof(float))
                                                           options:MTLResourceStorageModeShared
                                                       deallocator:nil];
                 [renderEncoder setDepthStencilState:_depthState];
@@ -1115,12 +1082,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                 
                 [renderEncoder drawPrimitives:MTLPrimitiveTypeLine
                                   vertexStart:0
-                                  vertexCount:coast_buf->num_nod_buf];
+                                  vertexCount:kemo_sgl->kemo_buffers->coast_buf->num_nod_buf];
             };
             
-            if(flame_buf->num_nod_buf > 0){
-                _vertices[42] = [_device newBufferWithBytes:((KemoViewVertex *) flame_buf->v_buf)
-                                                     length:(flame_buf->num_nod_buf * sizeof(KemoViewVertex))
+            if(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf > 0){
+                _vertices[42] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->sph_grid_buf->v_buf)
+                                                     length:(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf * sizeof(KemoViewVertex))
                                                     options:MTLResourceStorageModeShared];
                 [renderEncoder setDepthStencilState:_depthState];
                 [renderEncoder setRenderPipelineState:_pipelineState[5]];
@@ -1136,7 +1103,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 
                 [renderEncoder drawPrimitives:MTLPrimitiveTypeLine
                                   vertexStart:0
-                                  vertexCount:flame_buf->num_nod_buf];
+                                  vertexCount:kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf];
             };
 /*  Draw transparent objects */
             if(kemo_sgl->kemo_buffers->PSF_ttxur_buf->num_nod_buf > 0){
@@ -1402,47 +1369,35 @@ Implementation of a platform independent renderer class, which performs Metal se
 //    [_texture[6] setPurgeableState:MTLPurgeableStateEmpty];
     [_texture[6] release];
 
-    if(map_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->MAP_solid_buf->num_nod_buf > 0){
 //        [_vertices[10] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[10] release];
-        free(map_buf->v_buf);
     };
-    free(map_buf);
 
-    if(mline_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->MAP_isoline_buf->num_nod_buf > 0){
 //        [_vertices[11] setPurgeableState:MTLPurgeableStateEmpty];
 //        [_vertices[11] release];
-        free(mline_buf->v_buf);
     };
-    free(mline_buf);
 
-    if(coast_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->coast_buf->num_nod_buf > 0){
 //        [_vertices[12] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[12] release];
-        free(coast_buf->v_buf);
     };
-    free(coast_buf);
     
-    if(flame_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf > 0){
 //        [_vertices[13] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[13] release];
-        free(flame_buf->v_buf);
     };
-    free(flame_buf);
 
-    if(mcoast_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->coast_buf->num_nod_buf > 0){
 //        [_vertices[12] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[12] release];
-        free(mcoast_buf->v_buf);
     };
-    free(mcoast_buf);
     
-    if(mflame_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf > 0){
 //        [_vertices[13] setPurgeableState:MTLPurgeableStateEmpty];
         [_vertices[13] release];
-        free(mflame_buf->v_buf);
     };
-    free(mflame_buf);
 
     if(kemo_sgl->kemo_buffers->axis_buf->num_nod_buf > 0){[_vertices[43] release];};
 
