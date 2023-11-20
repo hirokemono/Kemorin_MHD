@@ -295,12 +295,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                       solid:(int) iflag_solid
 {
     if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-        
-
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
         [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
         if(iflag_surface == NORMAL_POLYGON){
@@ -339,12 +333,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                        solid:(int) iflag_solid
 {
     if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-        
-
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
         [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
         if(iflag_surface == NORMAL_POLYGON){
@@ -429,11 +417,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                      solid:(int) iflag_solid
 {
     if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-        
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
         [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
         if(iflag_surface == NORMAL_POLYGON){
@@ -484,12 +467,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                       solid:(int) iflag_solid
 {
     if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-        
-
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
         [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
         if(iflag_surface == NORMAL_POLYGON){
@@ -537,11 +514,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                 vertex:(id<MTLBuffer> *)  vertices
 {
     if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-        
         [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
         [*renderEncoder setCullMode:MTLCullModeBack];
@@ -631,6 +603,67 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
 }
 
+- (void)setCubeVertexs:(struct gl_strided_buffer *) buf
+              indexbuf:(struct gl_index_buffer *) index_buf
+                vertex:(id<MTLBuffer> *) vertices
+                 index:(id<MTLBuffer> *) indices
+{
+    if(buf->num_nod_buf > 0){
+        *vertices = [_device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
+                                         length:(buf->num_nod_buf * sizeof(KemoViewVertex))
+                                        options:MTLResourceStorageModeShared];
+        *indices = [_device newBufferWithBytes:index_buf->ie_buf
+                                        length:(index_buf->nsize_buf * sizeof(unsigned int))
+                                       options:MTLResourceStorageModeShared];
+    };
+};
+
+- (void)setMetalVertexs:(struct gl_strided_buffer *) buf
+                 vertex:(id<MTLBuffer> *)  vertices
+{
+    if(buf->num_nod_buf > 0){
+        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
+                                               length:(buf->nsize_buf * sizeof(float))
+                                              options:MTLResourceStorageModeShared
+                                          deallocator:nil];
+    };
+};
+
+- (void)setPSFTexture:(struct gl_strided_buffer *) buf
+                image:(struct psf_menu_val *) img
+                vertex:(id<MTLBuffer> *)  vertices
+                texure:(id<MTLTexture> *) texture
+{
+    if(buf->num_nod_buf > 0){
+        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
+                                               length:(buf->nsize_buf * sizeof(float))
+                                              options:MTLResourceStorageModeShared
+                                          deallocator:nil];
+        
+/* Construct message texture */
+        MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
+        lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
+        lineTextureDescriptor.width =  img->texture_width;
+        lineTextureDescriptor.height = img->texture_height;
+
+/*  Calculate the number of bytes per row in the image. */
+        NSUInteger bytesPerRow = 4 * lineTextureDescriptor.width;
+        MTLRegion region = {
+            { 0, 0, 0 },                   // MTLOrigin
+            {lineTextureDescriptor.width, lineTextureDescriptor.height, 1} // MTLSize
+        };
+        
+/* Create the texture from the device by using the descriptor */
+        *texture = [_device newTextureWithDescriptor:lineTextureDescriptor];
+/* Copy the bytes from the data object into the texture */
+        [*texture replaceRegion:region
+                    mipmapLevel:0
+                      withBytes:img->texture_rgba
+                    bytesPerRow:bytesPerRow];
+    };
+
+}
+
 - (void)setTextBoxTexture:(struct gl_strided_buffer *) buf
                     image:(struct line_text_image *) img
                    vertex:(id<MTLBuffer> *)  vertices
@@ -664,23 +697,75 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
 
 }
-/// Called whenever the view needs to render a frame.
-- (void)drawInMTKView:(nonnull MTKView *)view
+
+- (void)setMetalColorbuffer:(LightSourceParameters *) lights
+                   material:(MaterialParameters *) mats
 {
     int i;
-    int iflag;
-    int iflag_psf = 0;
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    float x, y, z;
     
-    /* Set transfer matrices */
-    double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_sgl->view_s->nx_frame,
-                                                     0.0, kemo_sgl->view_s->ny_frame,
+    mats->ambient[0] =  kemoview_get_material_parameter(AMBIENT_FLAG);
+    mats->diffuse[0] =  kemoview_get_material_parameter(DIFFUSE_FLAG);
+    mats->specular[0] = kemoview_get_material_parameter(SPECULAR_FLAG);
+    mats->shininess =   kemoview_get_material_parameter(SHINENESS_FLAG);
+    
+    lights->num_lights = kemoview_get_num_light_position();
+    for(i=0;i<lights->num_lights;i++){
+        kemoview_get_each_light_xyz(i, &x, &y, &z);
+        lights->position[i][0] = x;
+        lights->position[i][1] = y;
+        lights->position[i][2] = z;
+        lights->position[i][3] = 1.0;
+    };
+    for(i=1;i<3;i++){
+        mats->ambient[i] =  mats->ambient[0];
+        mats->diffuse[i] =  mats->diffuse[0];
+        mats->specular[i] = mats->specular[0];
+    }
+    mats->ambient[3] = 1.0;
+    mats->diffuse[3] = 1.0;
+    mats->specular[3] = 1.0;
+    return;
+};
+
+- (void)setCubeColorbuffer:(LightSourceParameters *) lights
+                  material:(MaterialParameters *) mats
+{
+    int i, j;
+    float x, y, z;
+    
+    struct initial_cube_lighting *init_light = init_inital_cube_lighting();
+    lights->num_lights = init_light->num_light;
+    for(i=0;i<lights->num_lights;i++){
+        for(j=0;j<4;j++){
+            lights->position[i][j] = init_light->lightposition[i][j];
+        };
+    };
+    mats->ambient[0] =  init_light->whitelight[0][0];
+    mats->diffuse[0] =  init_light->whitelight[1][0];
+    mats->specular[0] = init_light->whitelight[2][0];
+    mats->shininess =   init_light->shine[0];
+    for(i=1;i<3;i++){
+        mats->ambient[i] =  mats->ambient[0];
+        mats->diffuse[i] =  mats->diffuse[0];
+        mats->specular[i] = mats->specular[0];
+    }
+    mats->ambient[3] =  1.0;
+    mats->diffuse[3] =  1.0;
+    mats->specular[3] = 1.0;
+    free(init_light);
+    return;
+};
+
+- (void)setTransferMatrices:(struct view_element *) view_s
+{
+    double *orthogonal = orthogonal_projection_mat_c(0.0, view_s->nx_frame,
+                                                     0.0, view_s->ny_frame,
                                                     -1.0, 1.0);
     struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
-    struct transfer_matrices *view_matrices = transfer_matrix_to_shader(kemo_sgl->view_s);
+    struct transfer_matrices *view_matrices = transfer_matrix_to_shader(view_s);
     struct transfer_matrices *map_matrices
-            = init_projection_matrix_for_map(kemo_sgl->view_s->nx_frame,
-                                             kemo_sgl->view_s->ny_frame);
+            = init_projection_matrix_for_map(view_s->nx_frame, view_s->ny_frame);
     free(orthogonal);
 
     _cbar_proj_mat =  [self setMetalViewMatrices:cbar_matrices->proj];
@@ -692,11 +777,19 @@ Implementation of a platform independent renderer class, which performs Metal se
     free(cbar_matrices);
     free(view_matrices);
     free(map_matrices);
+    return;
+};
 
+/// Called whenever the view needs to render a frame.
+- (void)drawInMTKView:(nonnull MTKView *)view
+{
+    int i;
+    int iflag;
+    int iflag_psf = 0;
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     
-    struct gl_strided_buffer *mline_buf
-        = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-    mline_buf->num_nod_buf = 0;
+/* Set transfer matrices */
+    [self setTransferMatrices:kemo_sgl->view_s];
     
     struct psf_menu_val *psf_stexure;
     struct psf_menu_val *psf_ttexure;
@@ -790,14 +883,19 @@ Implementation of a platform independent renderer class, which performs Metal se
     
 /* draw example cube for empty data */
 
+    LightSourceParameters lights;
+    MaterialParameters    material;
     iflag = kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh
                + iflag_psf + kemo_sgl->kemo_fline->fline_m->iflag_draw_fline;
     if(iflag == 0){
         kemo_sgl->kemo_buffers->cube_buf->num_nod_buf = kemo_sgl->kemo_buffers->cube_index_buf->nsize_buf;
+        [self setCubeColorbuffer:&lights
+                        material:&material];
     } else {
         kemo_sgl->kemo_buffers->cube_buf->num_nod_buf = 0;
+        [self setMetalColorbuffer:&lights
+                         material:&material];
     }
-
    _frameNum++;
     
 
@@ -810,88 +908,68 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     if(renderPassDescriptor != nil)
     {
-        float x, y, z;
-        LightSourceParameters lights;
-        MaterialParameters    material;
-        
-        if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
-            struct initial_cube_lighting *init_light = init_inital_cube_lighting();
-            lights.num_lights = init_light->num_light;
-            for(i=0;i<lights.num_lights;i++){
-                lights.position[i].x = init_light->lightposition[i][0];
-                lights.position[i].y = init_light->lightposition[i][1];
-                lights.position[i].z = init_light->lightposition[i][2];
-                lights.position[i].w = init_light->lightposition[i][3];
-            };
-            material.ambient.x = init_light->whitelight[0][0];
-            material.diffuse.x = init_light->whitelight[1][0];
-            material.specular.x = init_light->whitelight[2][0];
-            material.shininess =  init_light->shine[0];
-            free(init_light);
-        }else{
-            material.ambient.x = kemoview_get_material_parameter(AMBIENT_FLAG);
-            material.diffuse.x = kemoview_get_material_parameter(DIFFUSE_FLAG);
-            material.specular.x = kemoview_get_material_parameter(SPECULAR_FLAG);
-            material.shininess = kemoview_get_material_parameter(SHINENESS_FLAG);
-            
-            lights.num_lights = kemoview_get_num_light_position();
-            for(i=0;i<lights.num_lights;i++){
-                kemoview_get_each_light_xyz(i, &x, &y, &z);
-                lights.position[i].x = x;
-                lights.position[i].y = y;
-                lights.position[i].z = z;
-                lights.position[i].w = 1.0;
-            };
-        };
-        material.ambient.y = material.ambient.x;
-        material.ambient.z = material.ambient.x;
-        material.ambient.w = 1.0;
-        material.diffuse.y = material.diffuse.x;
-        material.diffuse.z = material.diffuse.x;
-        material.diffuse.w = 1.0;
-        material.specular.y = material.specular.x;
-        material.specular.z = material.specular.x;
-        material.specular.w = 1.0;
-
-
         // Create a render command encoder.
         _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"MyRenderEncoder";
         
         if(kemo_sgl->view_s->iflag_view_type == VIEW_MAP){
-            /*  Commands to render map projection */
-            if(kemo_sgl->kemo_buffers->MAP_solid_buf->num_nod_buf > 0){
-                _vertices[10] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->MAP_solid_buf->v_buf
-                                                           length:(kemo_sgl->kemo_buffers->MAP_solid_buf->nsize_buf * sizeof(float))
-                                                          options:MTLResourceStorageModeShared
-                                                      deallocator:nil];
-            }
-            if(kemo_sgl->kemo_buffers->MAP_isoline_buf->num_nod_buf > 0){
-                _vertices[11] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->MAP_isoline_buf->v_buf
-                                                           length:(kemo_sgl->kemo_buffers->MAP_isoline_buf->nsize_buf * sizeof(float))
-                                                          options:MTLResourceStorageModeShared
-                                                      deallocator:nil];
-            }
-            if(kemo_sgl->kemo_buffers->coast_buf->num_nod_buf > 0){
-                _vertices[12] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->coast_buf->v_buf
-                                                           length:(kemo_sgl->kemo_buffers->coast_buf->nsize_buf * sizeof(float))
-                                                          options:MTLResourceStorageModeShared
-                                                      deallocator:nil];
-            };
-            if(kemo_sgl->kemo_buffers->sph_grid_buf->num_nod_buf > 0){
-                _vertices[13] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->sph_grid_buf->v_buf
-                                                           length:(kemo_sgl->kemo_buffers->sph_grid_buf->nsize_buf * sizeof(float))
-                                                          options:MTLResourceStorageModeShared
-                                                      deallocator:nil];
-            };
+/*  Commands to render map projection */
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->MAP_solid_buf
+                           vertex:&_vertices[10]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->MAP_isoline_buf
+                           vertex:&_vertices[11]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->coast_buf
+                           vertex:&_vertices[12]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->sph_grid_buf
+                           vertex:&_vertices[13]];
         }else{
+            [self setPSFTexture:kemo_sgl->kemo_buffers->PSF_stxur_buf
+                          image:psf_stexure
+                         vertex:&_vertices[36]
+                         texure:&_texture[11]];
+            
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->axis_buf
+                           vertex:&_vertices[43]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->PSF_solid_buf
+                           vertex:&_vertices[35]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->PSF_isoline_buf
+                           vertex:&_vertices[31]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->PSF_arrow_buf
+                           vertex:&_vertices[32]];
+
+            if(kemo_sgl->kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
+                [self setMetalVertexs:kemo_sgl->kemo_buffers->FLINE_tube_buf
+                               vertex:&_vertices[55]];
+            };
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->FLINE_line_buf
+                           vertex:&_vertices[56]];
+
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->mesh_node_buf
+                           vertex:&_vertices[51]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->mesh_grid_buf
+                           vertex:&_vertices[52]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->mesh_solid_buf
+                           vertex:&_vertices[53]];
+
+/*  Set Cube Vertex buffer */
+            [self setCubeVertexs:kemo_sgl->kemo_buffers->cube_buf
+                        indexbuf:kemo_sgl->kemo_buffers->cube_index_buf
+                          vertex:&_vertices[30]
+                           index:&_index_buffer];
+
+/*  Set transparent vertexs */
+            [self setPSFTexture:kemo_sgl->kemo_buffers->PSF_ttxur_buf
+                          image:psf_ttexure
+                         vertex:&_vertices[38]
+                         texure:&_texture[12]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->PSF_trns_buf
+                           vertex:&_vertices[37]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->mesh_trns_buf
+                           vertex:&_vertices[54]];
         };
-        if(kemo_sgl->kemo_buffers->cbar_buf->num_nod_buf > 0){
-            _vertices[3] = [_device newBufferWithBytesNoCopy:kemo_sgl->kemo_buffers->cbar_buf->v_buf
-                                                      length:(kemo_sgl->kemo_buffers->cbar_buf->nsize_buf * sizeof(float))
-                                                     options:MTLResourceStorageModeShared
-                                                 deallocator:nil];
-        };
+        
+        [self setMetalVertexs:kemo_sgl->kemo_buffers->cbar_buf
+                       vertex:&_vertices[3]];
         [self setTextBoxTexture:kemo_sgl->kemo_buffers->min_buf
                           image:kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_min_image
                          vertex:&_vertices[4]
@@ -936,24 +1014,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                               vertex:&_vertices[13]
                          projection:&_map_proj_mat];
         } else {
-            if(kemo_sgl->kemo_buffers->PSF_stxur_buf->num_nod_buf > 0){
-                /* Construct time texture */
-                MTLTextureDescriptor *textureDescriptor11 = [[MTLTextureDescriptor alloc] init];
-                textureDescriptor11.pixelFormat = MTLPixelFormatRGBA8Unorm;
-                textureDescriptor11.width =  psf_stexure->texture_width;
-                textureDescriptor11.height = psf_stexure->texture_height;
-                NSUInteger bytesPerRow11;
-                bytesPerRow11 = 4 * textureDescriptor11.width;
-                MTLRegion region11 = {
-                    { 0, 0, 0 },                   // MTLOrigin
-                    {textureDescriptor11.width, textureDescriptor11.height, 1} // MTLSize
-                };
-                _texture[11] = [_device newTextureWithDescriptor:textureDescriptor11];
-                [_texture[11] replaceRegion:region11
-                                mipmapLevel:0
-                                  withBytes:psf_stexure->texture_rgba
-                                bytesPerRow:bytesPerRow11];
-            }
             [self drawTexureWithPhong:kemo_sgl->kemo_buffers->PSF_stxur_buf
                               encoder:&_renderEncoder
                                vertex:&_vertices[36]
@@ -999,11 +1059,17 @@ Implementation of a platform independent renderer class, which performs Metal se
                                materials:&material
                                    sides:BOTH_SURFACES
                                    solid:SMOOTH_SHADE];
-            }else{
-                [self drawLineObject:kemo_sgl->kemo_buffers->FLINE_line_buf
-                              encoder:&_renderEncoder
-                               vertex:&_vertices[56]];
             };
+            
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->coast_buf
+                           vertex:&_vertices[41]];
+            [self setMetalVertexs:kemo_sgl->kemo_buffers->sph_grid_buf
+                           vertex:&_vertices[42]];
+
+            
+            [self drawLineObject:kemo_sgl->kemo_buffers->FLINE_line_buf
+                         encoder:&_renderEncoder
+                          vertex:&_vertices[56]];
 
             [self drawSolidWithPhong:kemo_sgl->kemo_buffers->mesh_node_buf
                              encoder:&_renderEncoder
@@ -1023,14 +1089,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                                sides:kemo_sgl->kemo_mesh->mesh_m->polygon_mode
                                solid:SMOOTH_SHADE];
 
-            if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
-                _vertices[30] = [_device newBufferWithBytes:((KemoViewVertex *) kemo_sgl->kemo_buffers->cube_buf->v_buf)
-                                                     length:(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf * sizeof(KemoViewVertex))
-                                                    options:MTLResourceStorageModeShared];
-                _index_buffer = [_device newBufferWithBytes:kemo_sgl->kemo_buffers->cube_index_buf->ie_buf
-                                                     length:(kemo_sgl->kemo_buffers->cube_index_buf->nsize_buf * sizeof(unsigned int))
-                                                    options:MTLResourceStorageModeShared];
-            }
             [self drawCubeWithPhong:kemo_sgl->kemo_buffers->cube_buf
                              encoder:&_renderEncoder
                               vertex:&_vertices[30]
@@ -1045,24 +1103,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                           encoder:&_renderEncoder
                            vertex:&_vertices[42]];
 /*  Draw transparent objects */
-            if(kemo_sgl->kemo_buffers->PSF_ttxur_buf->num_nod_buf > 0){
-/* Construct PSF texture */
-                MTLTextureDescriptor *textureDescriptor12 = [[MTLTextureDescriptor alloc] init];
-                textureDescriptor12.pixelFormat = MTLPixelFormatRGBA8Unorm;
-                textureDescriptor12.width =  psf_ttexure->texture_width;
-                textureDescriptor12.height = psf_ttexure->texture_height;
-                NSUInteger bytesPerRow11;
-                bytesPerRow11 = 4 * textureDescriptor12.width;
-                MTLRegion region12 = {
-                    { 0, 0, 0 },                   // MTLOrigin
-                    {textureDescriptor12.width, textureDescriptor12.height, 1} // MTLSize
-                };
-                _texture[12] = [_device newTextureWithDescriptor:textureDescriptor12];
-                [_texture[12] replaceRegion:region12
-                                mipmapLevel:0
-                                  withBytes:psf_ttexure->texture_rgba
-                                bytesPerRow:bytesPerRow11];
-            }
             [self drawTexureWithPhong:kemo_sgl->kemo_buffers->PSF_ttxur_buf
                               encoder:&_renderEncoder
                                vertex:&_vertices[38]
