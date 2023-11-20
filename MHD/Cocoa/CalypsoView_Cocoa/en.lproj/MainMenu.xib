@@ -546,7 +546,7 @@
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="722">
                 <rect key="frame" x="0.0" y="0.0" width="388" height="604"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="723">
                         <rect key="frame" x="13" y="99" width="362" height="451"/>
@@ -955,9 +955,9 @@
                                         <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="798">
                                             <rect key="frame" x="9" y="185" width="324" height="217"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <clipView key="contentView" ambiguous="YES" id="QVH-ow-4aF">
+                                            <clipView key="contentView" id="QVH-ow-4aF">
                                                 <rect key="frame" x="1" y="1" width="322" height="215"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="823" id="822">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="198"/>
@@ -1027,7 +1027,7 @@
                                                 <rect key="frame" x="299" y="17" width="15" height="99"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <tableHeaderView key="headerView" id="823">
+                                            <tableHeaderView key="headerView" wantsLayer="YES" id="823">
                                                 <rect key="frame" x="0.0" y="0.0" width="322" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
@@ -1180,9 +1180,9 @@
                                         <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="837">
                                             <rect key="frame" x="9" y="185" width="324" height="217"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <clipView key="contentView" ambiguous="YES" id="6Xq-lm-Rc6">
+                                            <clipView key="contentView" id="6Xq-lm-Rc6">
                                                 <rect key="frame" x="1" y="1" width="322" height="215"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="859" id="860">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="198"/>
@@ -1252,7 +1252,7 @@
                                                 <rect key="frame" x="299" y="17" width="15" height="99"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <tableHeaderView key="headerView" id="859">
+                                            <tableHeaderView key="headerView" wantsLayer="YES" id="859">
                                                 <rect key="frame" x="0.0" y="0.0" width="322" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
@@ -1458,7 +1458,7 @@
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="624">
-                                    <rect key="frame" x="32" y="11" width="19" height="23"/>
+                                    <rect key="frame" x="32" y="10" width="19" height="25"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="1" id="694">
                                         <connections>
@@ -1471,7 +1471,7 @@
                                     </connections>
                                 </stepper>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="625">
-                                    <rect key="frame" x="102" y="23" width="15" height="16"/>
+                                    <rect key="frame" x="102" y="21" width="15" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="693">
                                         <font key="font" metaFont="smallSystem"/>

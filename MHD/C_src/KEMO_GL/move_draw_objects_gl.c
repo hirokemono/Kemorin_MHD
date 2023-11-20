@@ -386,12 +386,12 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                          kemo_mesh->msg_wk, kemo_buffers->msg_buf);
     /* draw example cube for empty data */
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
-	if(iflag == 0){
-        kemo_VAOs->cube_VAO->npoint_draw = kemo_buffers->cube_index_buf->nsize_buf;
-	} else {
-		kemo_VAOs->cube_VAO->npoint_draw = 0;
-	}
-    
+    if(iflag == 0){
+        kemo_buffers->cube_buf->num_nod_buf = kemo_buffers->cube_index_buf->nsize_buf;
+    } else {
+        kemo_buffers->cube_buf->num_nod_buf = 0;
+    }
+
     set_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO,
                      kemo_buffers->cbar_buf, kemo_buffers->min_buf,
                      kemo_buffers->max_buf, kemo_buffers->zero_buf);
