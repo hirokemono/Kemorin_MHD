@@ -21,9 +21,10 @@
 /* prototypes */
 
 void const_message_buffer(int iflag_retina, int nx_win, int ny_win,
-                          struct msg_work *msg_wk,
-                          struct gl_strided_buffer *cbar_buf);
-void set_message_VAO(struct msg_work *msg_wk, struct gl_strided_buffer *cbar_buf,
+                          struct gl_strided_buffer *cbar_buf,
+                          struct line_text_image *message_image);
+void set_message_VAO(struct line_text_image *message_image,
+                     struct gl_strided_buffer *cbar_buf,
                      struct VAO_ids *msg_VAO);
 
 #endif

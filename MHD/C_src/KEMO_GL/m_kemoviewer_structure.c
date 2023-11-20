@@ -478,7 +478,7 @@ void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int n
 	update_projection_by_windowsize(kemo_sgl->view_s, npixel_x, npixel_y, nwindow_x, nwindow_y);
 };
 void kemoview_set_message_opacity(float opacity){
-    set_message_opacity(opacity, kemo_sgl->kemo_mesh->msg_wk);
+    kemo_sgl->kemo_buffers->message_image->text_opacity = opacity;
     return;
 }
 

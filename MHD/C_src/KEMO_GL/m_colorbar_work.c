@@ -11,6 +11,7 @@ struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_t
         printf("malloc error for line_text_image\n");
         exit(0);
     }
+    l_txt_img->text_opacity = 0.0;
     l_txt_img->len_text =  len_text;
     l_txt_img->texts = alloc_string(len_text);
 
@@ -136,10 +137,10 @@ void set_line_text_color(float text_color3[3], struct line_text_image *l_txt_img
     return;
 };
 
-static void set_line_text_opacity(float message_opacity, struct line_text_image *l_txt_img){
+static void set_line_text_opacity(struct line_text_image *l_txt_img){
     int i;
     for(i=0;i<l_txt_img->npixel;i++){
-        l_txt_img->imgBMP[4*i+3] = (unsigned char) ((float) 255 * message_opacity);
+        l_txt_img->imgBMP[4*i+3] = (unsigned char) ((float) 255 * l_txt_img->text_opacity);
     };
     return;
 };
@@ -240,49 +241,21 @@ void set_time_text_image(float text_color3[3], struct tlabel_work *tlabel_wk){
     return;
 };
 
+float message_xmax(const int nx_win){return 0.05 * ((float) nx_win);};
+float message_ymin(const int ny_win){return 0.92 * ((float) ny_win);};
 
-
-struct msg_work * alloc_message_work(void){
-	struct msg_work *msg_wk = (struct msg_work *) malloc(sizeof(struct msg_work));
-	if(msg_wk == NULL){
-		printf("malloc error for msg_work\n");
-		exit(0);
-	}
-    msg_wk->message_image =  alloc_line_text_image(IWIDTH_MSG, IHIGHT_MSG, NCHARA_MSG);
-    msg_wk->message_opacity = 0.0;
-    return msg_wk;
-};
-
-void dealloc_message_work(struct msg_work *msg_wk){
-    dealloc_line_text_image(msg_wk->message_image);
-    free(msg_wk);
-    return;
-};
-
-
-void set_message_opacity(float opacity, struct msg_work *msg_wk){
-    msg_wk->message_opacity = opacity;
-    return;
-};
-
-void set_message_position(int iflag_retina, int nx_win, int ny_win,
-						  struct msg_work *msg_wk){
-    msg_wk->xbar_max = 0.05 * ((float) nx_win);
-	msg_wk->ybar_min = 0.92 * ((float) ny_win);
-	return;
-}
-
-void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk){
+void set_windowsize_image(int npixel_x, int npixel_y,
+                          struct line_text_image *message_image){
 	int i;
 	float text_color3[4];
 	
 	for(i=0;i<3;i++){text_color3[i] = 1.0;};
     text_color3[3] = 1.0;
 	
-	sprintf(msg_wk->message_image->texts, " Window size:(%4d,%4d)", npixel_x, npixel_y);
-    set_line_msgbox_image(ICOLOR_FULL, ICOLOR_MID, msg_wk->message_image);
-    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, msg_wk->message_image);
-    set_line_text_color(text_color3, msg_wk->message_image);
-    set_line_text_opacity(msg_wk->message_opacity, msg_wk->message_image);
-    /* check_line_text_bitmap(msg_wk->message_image) */
+	sprintf(message_image->texts, " Window size:(%4d,%4d)", npixel_x, npixel_y);
+    set_line_msgbox_image(ICOLOR_FULL, ICOLOR_MID, message_image);
+    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, message_image);
+    set_line_text_color(text_color3, message_image);
+    set_line_text_opacity(message_image);
+    /* check_line_text_bitmap(message_image) */
 };

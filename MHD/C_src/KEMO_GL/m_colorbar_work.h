@@ -27,6 +27,7 @@
 
 
 struct line_text_image{
+    float text_opacity;
     int len_text;
     char *texts;
     
@@ -64,16 +65,6 @@ struct tlabel_work{
     struct line_text_image *tlabel_image;
 };
 
-struct msg_work{
-    float message_opacity;
-    float xbar_max;
-    float ybar_min;
-    
-    struct line_text_image *message_image;
-};
-
-
-
 /* prototypes */
 struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_text);
 void dealloc_line_text_image(struct line_text_image *l_txt_img);
@@ -99,12 +90,11 @@ void clear_time_text_image(struct tlabel_work *tlabel_wk);
 void set_time_text_image(float text_color3[3], struct tlabel_work *tlabel_wk);
 
 
-struct msg_work * alloc_message_work(void);
-void dealloc_message_work(struct msg_work *msg_wk);
-void set_message_opacity(float opacity, struct msg_work *msg_wk);
-void set_message_position(int iflag_retina, int nx_win, int ny_win,
-						  struct msg_work *msg_wk);
-void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk);
+float message_xmax(const int nx_win);
+float message_ymin(const int ny_win);
+
+void set_windowsize_image(int npixel_x, int npixel_y,
+                          struct line_text_image *message_image);
 
 #endif
 

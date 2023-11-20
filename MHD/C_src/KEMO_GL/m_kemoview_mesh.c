@@ -19,14 +19,12 @@ struct kemoview_mesh * init_kemoview_mesh(void){
 	
     kemo_mesh->mesh_d =  alloc_viewer_mesh();
 	kemo_mesh->mesh_m =  alloc_mesh_menu_val();
-    kemo_mesh->msg_wk =  alloc_message_work();
 	return kemo_mesh;
 };
 
 void dealloc_kemoview_mesh(struct kemoview_mesh *kemo_mesh){
 	free(kemo_mesh->mesh_d);
 	free(kemo_mesh->mesh_m);
-    free(kemo_mesh->msg_wk);
 	free(kemo_mesh);
 	return;
 };

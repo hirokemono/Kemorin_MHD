@@ -29,21 +29,21 @@ struct kemoview_buffers{
     struct gl_strided_buffer *PSF_ttxur_buf;
     struct gl_strided_buffer *PSF_arrow_buf;
     struct gl_strided_buffer *PSF_isoline_buf;
-
+    
     struct gl_strided_buffer *MAP_solid_buf;
     struct gl_strided_buffer *MAP_isoline_buf;
-
+    
     struct gl_strided_buffer *FLINE_line_buf;
     struct gl_strided_buffer *FLINE_tube_buf;
-
+    
     struct gl_strided_buffer *mesh_solid_buf;
     struct gl_strided_buffer *mesh_grid_buf;
     struct gl_strided_buffer *mesh_node_buf;
     struct gl_strided_buffer *mesh_trns_buf;
-
+    
     struct gl_strided_buffer *coast_buf;
     struct gl_strided_buffer *sph_grid_buf;
-
+    
     int ncorner_axis;
     struct gl_strided_buffer *axis_buf;
     
@@ -52,8 +52,14 @@ struct kemoview_buffers{
     struct gl_strided_buffer *max_buf;
     struct gl_strided_buffer *zero_buf;
     struct gl_strided_buffer *time_buf;
-
+    
     struct gl_strided_buffer *msg_buf;
+    
+    struct line_text_image *cbar_min_image;
+    struct line_text_image *cbar_max_image;
+    struct line_text_image *cbar_zero_image;
+    struct line_text_image *tlabel_image;
+    struct line_text_image *message_image;
 };
 
 struct kemoview_VAOs{

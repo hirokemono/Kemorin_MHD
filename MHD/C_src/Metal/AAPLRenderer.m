@@ -878,8 +878,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     const_message_buffer(kemo_sgl->view_s->iflag_retina,
                          kemo_sgl->view_s->nx_frame,
                          kemo_sgl->view_s->ny_frame,
-                         kemo_sgl->kemo_mesh->msg_wk,
-                         kemo_sgl->kemo_buffers->msg_buf);
+                         kemo_sgl->kemo_buffers->msg_buf,
+                         kemo_sgl->kemo_buffers->message_image);
     
 /* draw example cube for empty data */
 
@@ -971,23 +971,23 @@ Implementation of a platform independent renderer class, which performs Metal se
         [self setMetalVertexs:kemo_sgl->kemo_buffers->cbar_buf
                        vertex:&_vertices[3]];
         [self setTextBoxTexture:kemo_sgl->kemo_buffers->min_buf
-                          image:kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_min_image
+                          image:kemo_sgl->kemo_buffers->cbar_min_image
                          vertex:&_vertices[4]
                          texure:&_texture[4]];
         [self setTextBoxTexture:kemo_sgl->kemo_buffers->max_buf
-                          image:kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_max_image
+                          image:kemo_sgl->kemo_buffers->cbar_max_image
                          vertex:&_vertices[5]
                          texure:&_texture[5]];
         [self setTextBoxTexture:kemo_sgl->kemo_buffers->zero_buf
-                          image:kemo_sgl->kemo_psf->psf_a->cbar_wk->cbar_zero_image
+                          image:kemo_sgl->kemo_buffers->cbar_zero_image
                          vertex:&_vertices[6]
                          texure:&_texture[6]];
         [self setTextBoxTexture:kemo_sgl->kemo_buffers->time_buf
-                          image:kemo_sgl->kemo_psf->psf_a->tlabel_wk->tlabel_image
+                          image:kemo_sgl->kemo_buffers->tlabel_image
                          vertex:&_vertices[2]
                          texure:&_texture[2]];
         [self setTextBoxTexture:kemo_sgl->kemo_buffers->msg_buf
-                          image:kemo_sgl->kemo_mesh->msg_wk->message_image
+                          image:kemo_sgl->kemo_buffers->message_image
                          vertex:&_vertices[1]
                          texure:&_texture[1]];
 

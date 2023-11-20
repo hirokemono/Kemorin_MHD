@@ -228,7 +228,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
         [self UpdateImage];
     } else {
         iflag_resize = 0;
-        message_opacity = 0;
+        message_opacity = 0.0;
         [self UpdateImage];
     }
     return;

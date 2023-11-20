@@ -49,11 +49,23 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->zero_buf = init_strided_buffer(n_point);
     kemo_buffers->time_buf = init_strided_buffer(n_point);
     kemo_buffers->msg_buf =  init_strided_buffer(n_point);
+    
+    kemo_buffers->cbar_min_image =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
+    kemo_buffers->cbar_max_image =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
+    kemo_buffers->cbar_zero_image = alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
+    kemo_buffers->tlabel_image =    alloc_line_text_image(IWIDTH_TLABEL, IHIGHT_TXT, NCHARA_CBOX);
+    kemo_buffers->message_image =   alloc_line_text_image(IWIDTH_MSG, IHIGHT_MSG, NCHARA_MSG);
     return kemo_buffers;
 };
 
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 {
+    dealloc_line_text_image(kemo_buffers->message_image);
+    dealloc_line_text_image(kemo_buffers->tlabel_image);
+    dealloc_line_text_image(kemo_buffers->cbar_zero_image);
+    dealloc_line_text_image(kemo_buffers->cbar_max_image);
+    dealloc_line_text_image(kemo_buffers->cbar_min_image);
+
     dealloc_gl_index_buffer(kemo_buffers->cube_index_buf);
     dealloc_strided_buffer(kemo_buffers->cube_buf);
 
@@ -383,7 +395,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                            kemo_psf->psf_a, kemo_buffers->time_buf);
 	/* Draw message */
     const_message_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
-                         kemo_mesh->msg_wk, kemo_buffers->msg_buf);
+                         kemo_buffers->msg_buf, kemo_buffers->message_image);
     /* draw example cube for empty data */
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
     if(iflag == 0){
@@ -398,7 +410,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
     set_time_text_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->time_VAO,
                       kemo_buffers->time_buf);
     
-    set_message_VAO(kemo_mesh->msg_wk, kemo_buffers->msg_buf, kemo_VAOs->msg_VAO);
+    set_message_VAO(kemo_buffers->message_image, kemo_buffers->msg_buf, kemo_VAOs->msg_VAO);
     set_initial_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf, kemo_VAOs->cube_VAO);
 
     
