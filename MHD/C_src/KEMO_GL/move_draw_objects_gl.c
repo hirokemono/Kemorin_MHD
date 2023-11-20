@@ -392,7 +392,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                           kemo_buffers->max_buf, kemo_buffers->zero_buf);
     const_timelabel_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
                            kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color,
-                           kemo_psf->psf_a, kemo_buffers->time_buf);
+                           kemo_psf->psf_a, kemo_buffers->tlabel_image, kemo_buffers->time_buf);
 	/* Draw message */
     const_message_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
                          kemo_buffers->msg_buf, kemo_buffers->message_image);
@@ -407,7 +407,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
     set_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO,
                      kemo_buffers->cbar_buf, kemo_buffers->min_buf,
                      kemo_buffers->max_buf, kemo_buffers->zero_buf);
-    set_time_text_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->time_VAO,
+    set_time_text_VAO(kemo_buffers->tlabel_image, kemo_VAOs->time_VAO,
                       kemo_buffers->time_buf);
     
     set_message_VAO(kemo_buffers->message_image, kemo_buffers->msg_buf, kemo_VAOs->msg_VAO);

@@ -863,6 +863,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                            kemo_sgl->kemo_mesh->mesh_m->text_color,
                            kemo_sgl->kemo_mesh->mesh_m->bg_color,
                            kemo_sgl->kemo_psf->psf_a,
+                           kemo_sgl->kemo_buffers->tlabel_image,
                            kemo_sgl->kemo_buffers->time_buf);
     
     const_colorbar_buffer(kemo_sgl->view_s->iflag_retina,

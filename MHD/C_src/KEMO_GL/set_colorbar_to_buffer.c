@@ -345,17 +345,17 @@ void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
 	return;
 };
 
-void time_mbox_to_buf(int iflag_retina, float *text_color,
-					  struct tlabel_work *tlabel_wk, struct gl_strided_buffer *strided_buf){
+void time_mbox_to_buf(int iflag_retina, float *text_color, float xwin, float ywin,
+					  struct gl_strided_buffer *strided_buf){
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	float t1[2], t2[2], t3[2], t4[2];
 	int nd;
 	
-	x1[0] = tlabel_wk->xwin - 188.0*(iflag_retina + 1);
-	x2[0] = tlabel_wk->xwin -   8.0*(iflag_retina + 1);
-	x3[0] = tlabel_wk->xwin -   8.0*(iflag_retina + 1);
-	x4[0] = tlabel_wk->xwin - 188.0*(iflag_retina + 1);
+	x1[0] = xwin - 188.0*(iflag_retina + 1);
+	x2[0] = xwin -   8.0*(iflag_retina + 1);
+	x3[0] = xwin -   8.0*(iflag_retina + 1);
+	x4[0] = xwin - 188.0*(iflag_retina + 1);
 	x1[2] = 0.001;
 	x2[2] = 0.001;
 	x3[2] = 0.001;
@@ -370,10 +370,10 @@ void time_mbox_to_buf(int iflag_retina, float *text_color,
 	t3[0] = 1.0;
 	t4[0] = 0.0;
 	
-	x1[1] = tlabel_wk->ywin - 32.0 * (iflag_retina + 1);
-	x2[1] = tlabel_wk->ywin - 32.0 * (iflag_retina + 1);
-	x3[1] = tlabel_wk->ywin - 16.0 * (iflag_retina + 1);
-	x4[1] = tlabel_wk->ywin - 16.0 * (iflag_retina + 1);
+	x1[1] = ywin - 32.0 * (iflag_retina + 1);
+	x2[1] = ywin - 32.0 * (iflag_retina + 1);
+	x3[1] = ywin - 16.0 * (iflag_retina + 1);
+	x4[1] = ywin - 16.0 * (iflag_retina + 1);
 	t1[1] = 0.0;
 	t2[1] = 0.0;
 	t3[1] = 1.0;

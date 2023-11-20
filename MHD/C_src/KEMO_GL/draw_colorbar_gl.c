@@ -33,12 +33,10 @@ void set_colorbar_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cbar_VAO,
 	return;
 };
 
-void set_time_text_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
+void set_time_text_VAO(struct line_text_image *tlabel_image, struct VAO_ids *text_VAO,
                        struct gl_strided_buffer *time_buf){
-	const_texture_VBO(tlabel_wk->tlabel_image->npix_img[0],
-                      tlabel_wk->tlabel_image->npix_img[1],
-                      tlabel_wk->tlabel_image->imgBMP,
-                      text_VAO, time_buf);
+	const_texture_VBO(tlabel_image->npix_img[0], tlabel_image->npix_img[1],
+                      tlabel_image->imgBMP, text_VAO, time_buf);
     return;
 };
 
@@ -103,19 +101,17 @@ static void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
 void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
                             float text_color[4], float bg_color[4],
                             struct kemo_array_control *psf_a,
+                            struct line_text_image *tlabel_image,
                             struct gl_strided_buffer *time_buf){
     if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){
-        psf_a->tlabel_wk->xwin = (float) nx_win;
-        psf_a->tlabel_wk->ywin = (float) ny_win;
-        
-        clear_time_text_image(psf_a->tlabel_wk);
+        clear_line_text_image(tlabel_image);
         if(psf_a->iflag_draw_time > 0){
-            sprintf(psf_a->tlabel_wk->tlabel_image->texts,"    t = %5.4E", (float) psf_a->time_disp);
+            sprintf(tlabel_image->texts,"    t = %5.4E", (float) psf_a->time_disp);
         }else if(psf_a->iflag_draw_file_step > 0){
-            sprintf(psf_a->tlabel_wk->tlabel_image->texts,"File index: %6d", psf_a->file_step_disp);
+            sprintf(tlabel_image->texts,"File index: %6d", psf_a->file_step_disp);
         };
-        set_time_text_image(text_color, psf_a->tlabel_wk);
-        time_mbox_to_buf(iflag_retina, text_color, psf_a->tlabel_wk, time_buf);
+        set_time_text_image(text_color, tlabel_image);
+        time_mbox_to_buf(iflag_retina, text_color, (float) nx_win, (float) ny_win, time_buf);
         time_buf->num_nod_buf = TWO * THREE;
    }else{
         time_buf->num_nod_buf = 0;

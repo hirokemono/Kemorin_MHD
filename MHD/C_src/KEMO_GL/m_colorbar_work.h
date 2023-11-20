@@ -59,12 +59,6 @@ struct cbar_work{
     struct line_text_image *cbar_zero_image;
 };
 
-struct tlabel_work{
-	float xwin;
-	float ywin;
-    struct line_text_image *tlabel_image;
-};
-
 /* prototypes */
 struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_text);
 void dealloc_line_text_image(struct line_text_image *l_txt_img);
@@ -84,15 +78,10 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 void set_colorbar_text_image(float text_color3[3], float value,
                              struct line_text_image *l_txt_img);
 
-struct tlabel_work * alloc_tlabel_work(void);
-void dealloc_tlabel_work(struct tlabel_work *tlabel_wk);
-void clear_time_text_image(struct tlabel_work *tlabel_wk);
-void set_time_text_image(float text_color3[3], struct tlabel_work *tlabel_wk);
-
+void set_time_text_image(float text_color3[3], struct line_text_image *tlabel_image);
 
 float message_xmax(const int nx_win);
 float message_ymin(const int ny_win);
-
 void set_windowsize_image(int npixel_x, int npixel_y,
                           struct line_text_image *message_image);
 

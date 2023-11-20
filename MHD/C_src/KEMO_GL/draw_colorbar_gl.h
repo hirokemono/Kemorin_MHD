@@ -24,6 +24,7 @@ int count_colorbar_box_VAO(int iflag_zero, int num_quad);
 void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
                             float text_color[4], float bg_color[4],
                             struct kemo_array_control *psf_a,
+                            struct line_text_image *tlabel_image,
                             struct gl_strided_buffer *time_buf);
 void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            float text_color[4], float bg_color[4],
@@ -31,7 +32,7 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            struct gl_strided_buffer *cbar_buf, struct gl_strided_buffer *min_buf,
                            struct gl_strided_buffer *max_buf, struct gl_strided_buffer *zero_buf);
 
-void set_time_text_VAO(struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
+void set_time_text_VAO(struct line_text_image *tlabel_image, struct VAO_ids *text_VAO,
                        struct gl_strided_buffer *time_buf);
 void set_colorbar_VAO(struct cbar_work *cbar_wk, struct VAO_ids **cbar_VAO,
                       struct gl_strided_buffer *cbar_buf, struct gl_strided_buffer *min_buf,

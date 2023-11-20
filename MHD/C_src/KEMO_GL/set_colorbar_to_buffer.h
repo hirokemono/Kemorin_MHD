@@ -22,8 +22,8 @@ int colorbar_frame_to_buf(int ist_quad, int iflag_retina, float *text_color,
 void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
                           struct cbar_work *cbar_wk, struct gl_strided_buffer *min_buf,
                           struct gl_strided_buffer *max_buf, struct gl_strided_buffer *zero_buf);
-void time_mbox_to_buf(int iflag_retina, float *text_color,
-					  struct tlabel_work *tlabel_wk, struct gl_strided_buffer *strided_buf);
+void time_mbox_to_buf(int iflag_retina, float *text_color, float xwin, float ywin,
+                      struct gl_strided_buffer *strided_buf);
 
 void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
                          const float xbar_max, const float ybar_min,

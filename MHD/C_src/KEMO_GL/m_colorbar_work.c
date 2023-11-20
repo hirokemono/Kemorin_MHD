@@ -212,32 +212,10 @@ void set_colorbar_text_image(float text_color3[3], float value,
     return;
 };
 
-
-struct tlabel_work * alloc_tlabel_work(void){
-	struct tlabel_work *tlabel_wk = (struct tlabel_work *) malloc(sizeof(struct tlabel_work));
-	if(tlabel_wk == NULL){
-		printf("malloc error for tlabel_work\n");
-		exit(0);
-	}
-    tlabel_wk->tlabel_image =  alloc_line_text_image(IWIDTH_TLABEL, IHIGHT_TXT, NCHARA_CBOX);
-    return tlabel_wk;
-};
-
-void dealloc_tlabel_work(struct tlabel_work *tlabel_wk){
-    dealloc_line_text_image(tlabel_wk->tlabel_image);
-    free(tlabel_wk);
-    return;
-};
-
-void clear_time_text_image(struct tlabel_work *tlabel_wk){
-    clear_line_text_image(tlabel_wk->tlabel_image);
-	return;
-};
-
-void set_time_text_image(float text_color3[3], struct tlabel_work *tlabel_wk){
-    set_line_text16_image(ICOLOR_FULL, ICOLOR_MID, tlabel_wk->tlabel_image);
-    set_line_text_color(text_color3, tlabel_wk->tlabel_image);
-    /* check_line_text_bitmap(tlabel_wk->tlabel_image) */
+void set_time_text_image(float text_color3[3], struct line_text_image *tlabel_image){
+    set_line_text16_image(ICOLOR_FULL, ICOLOR_MID, tlabel_image);
+    set_line_text_color(text_color3, tlabel_image);
+    /* check_line_text_bitmap(tlabel_image) */
     return;
 };
 
