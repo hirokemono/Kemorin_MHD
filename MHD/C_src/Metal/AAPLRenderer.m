@@ -44,6 +44,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     matrix_float4x4 _modelview_mat;
     matrix_float4x4 _projection_mat;
     matrix_float4x4 _normal_mat;
+    KemoViewUnites _monoviewmats;
 
     matrix_float4x4 _map_proj_mat;
     matrix_float4x4 _cbar_proj_mat;
@@ -400,7 +401,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   length:sizeof(MaterialParameters)
                                  atIndex:AAPLMaterialParams];
         
-        [_renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
+        [*renderEncoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
                                   indexCount:buf->num_nod_buf
                                    indexType:MTLIndexTypeUInt32
                                  indexBuffer:*indices
@@ -580,6 +581,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                   encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
                    vertex:(id<MTLBuffer> *)  vertices
                    texure:(id<MTLTexture> *) texture
+               projection:(matrix_float4x4 *) projection_mat;
 {
     if(buf->num_nod_buf > 0){
         [*renderEncoder setRenderPipelineState:_pipelineState[2]];
@@ -587,8 +589,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
-        [*renderEncoder setVertexBytes:&_cbar_proj_mat
-                               length:sizeof(_cbar_proj_mat)
+        [*renderEncoder setVertexBytes:projection_mat
+                               length:sizeof(matrix_float4x4)
                               atIndex:AAPLOrthogonalMatrix];
 
 /* Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
@@ -941,199 +943,229 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
-- (void) encodeKemoViewers:(nonnull MTKView *)view
+
+- (void) encodeMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                   buffer:(struct kemoview_buffers *) kemo_buffers
+               projection:(matrix_float4x4 *) map_proj_mat
+{
+/*  Commands to render map projection */
+    [self drawMapSolidObjext:kemo_buffers->MAP_solid_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[10]
+                  projection:map_proj_mat];
+/*  Commands to render isolines on map */
+    [self drawMapSolidObjext:kemo_buffers->MAP_isoline_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[11]
+                  projection:map_proj_mat];
+/*  Commands to render Coastline on map */
+    [self drawMapLineObjext:kemo_buffers->coast_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[12]
+                 projection:map_proj_mat];
+/*  Commands to render grids on map */
+    [self drawMapLineObjext:kemo_buffers->sph_grid_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[13]
+                 projection:map_proj_mat];
+    return;
+}
+
+
+- (void) encode3DObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                  buffer:(struct kemoview_buffers *) kemo_buffers
+               fieldline:(struct kemoview_fline *) kemo_fline
+                    mesh:(struct kemoview_mesh *) kemo_mesh
+                  lights:(LightSourceParameters *) lights
+               materials:(MaterialParameters *) material
+{
+    [self drawTexureWithSimple:kemo_buffers->PSF_stxur_buf
+                       encoder:renderEncoder
+                        vertex:&_vertices[36]
+                        texure:&_texture[11]
+                         sides:BOTH_SURFACES
+                         solid:SMOOTH_SHADE];
+    /*
+     [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
+     encoder:renderEncoder
+     vertex:&_vertices[36]
+     texure:&_texture[11]
+     lights:&lights
+     materials:&material
+     sides:BOTH_SURFACES
+     solid:SMOOTH_SHADE];
+     */
+    [self drawSolidWithSimple:kemo_buffers->axis_buf
+                      encoder:renderEncoder
+                       vertex:&_vertices[43]
+                        sides:BOTH_SURFACES
+                        solid:SMOOTH_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->PSF_solid_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[35]
+                      lights:lights
+                   materials:material
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    [self drawSolidWithPhong:kemo_buffers->PSF_isoline_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[31]
+                      lights:lights
+                   materials:material
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    [self drawSolidWithPhong:kemo_buffers->PSF_arrow_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[32]
+                      lights:lights
+                   materials:material
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+
+    if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
+        [self drawSolidWithPhong:kemo_buffers->FLINE_tube_buf
+                         encoder:renderEncoder
+                          vertex:&_vertices[55]
+                          lights:lights
+                       materials:material
+                           sides:BOTH_SURFACES
+                           solid:SMOOTH_SHADE];
+    };
+
+    [self setMetalVertexs:kemo_buffers->coast_buf
+                   vertex:&_vertices[41]];
+    [self setMetalVertexs:kemo_buffers->sph_grid_buf
+                   vertex:&_vertices[42]];
+
+        
+    [self drawLineObject:kemo_buffers->FLINE_line_buf
+                 encoder:renderEncoder
+                  vertex:&_vertices[56]];
+    
+    [self drawSolidWithPhong:kemo_buffers->mesh_node_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[51]
+                      lights:lights
+                   materials:material
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    [self drawLineObject:kemo_buffers->mesh_grid_buf
+                 encoder:renderEncoder
+                  vertex:&_vertices[52]];
+    [self drawSolidWithPhong:kemo_buffers->mesh_solid_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[53]
+                      lights:lights
+                   materials:material
+                       sides:kemo_mesh->mesh_m->polygon_mode
+                       solid:SMOOTH_SHADE];
+    [self drawCubeWithPhong:kemo_buffers->cube_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[30]
+                      index:&_index_buffer
+                     lights:lights
+                  materials:material];
+
+    [self drawLineObject:kemo_buffers->coast_buf
+                 encoder:renderEncoder
+                  vertex:&_vertices[41]];
+    [self drawLineObject:kemo_buffers->sph_grid_buf
+                 encoder:renderEncoder
+                  vertex:&_vertices[42]];
+
+/*  Draw transparent objects */
+    [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
+                      encoder:renderEncoder
+                       vertex:&_vertices[38]
+                       texure:&_texture[12]
+                       lights:lights
+                    materials:material
+                        sides:BOTH_SURFACES
+                        solid:FLAT_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->PSF_trns_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[37]
+                      lights:lights
+                   materials:material
+                       sides:BOTH_SURFACES
+                       solid:FLAT_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->mesh_trns_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[54]
+                      lights:lights
+                   materials:material
+                       sides:BOTH_SURFACES
+                       solid:FLAT_SHADE];
+    return;
+}
+
+- (void) encodeLabelObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                     buffer:(struct kemoview_buffers *) kemo_buffers
+                 projection:(matrix_float4x4 *) projection_mat
+{
+/*  Commands to render colorbar  box */
+    [self drawMapSolidObjext:kemo_buffers->cbar_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[3]
+                  projection:projection_mat];
+/*  Commands to render colorbar  label */
+    [self drawTextBoxObjext:kemo_buffers->min_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[4]
+                     texure:&_texture[4]
+                 projection:projection_mat];
+    [self drawTextBoxObjext:kemo_buffers->max_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[5]
+                     texure:&_texture[5]
+                 projection:projection_mat];
+    [self drawTextBoxObjext:kemo_buffers->zero_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[6]
+                     texure:&_texture[6]
+                 projection:projection_mat];
+
+/*  Commands to render time label */
+    [self drawTextBoxObjext:kemo_buffers->time_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[2]
+                     texure:&_texture[2]
+                 projection:projection_mat];
+/*  Commands to render colorbar  box */
+    [self drawTextBoxObjext:kemo_buffers->msg_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[1]
+                     texure:&_texture[1]
+                 projection:projection_mat];
+    return;
+}
+
+- (void) encodeKemoViewers:(id<MTLRenderCommandEncoder>  *) renderEncoder
                     buffer:(struct kemoview_buffers *) kemo_buffers
                      views:(struct view_element *) view_s
                  fieldline:(struct kemoview_fline *) kemo_fline
                       mesh:(struct kemoview_mesh *) kemo_mesh
                     lights:(LightSourceParameters *) lights
                  materials:(MaterialParameters *) material
-                  commands:(id<MTLCommandBuffer> *) commandBuffer
 {
-/* Obtain a renderPassDescriptor generated from the view's drawable textures. */
-    MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
-    if(renderPassDescriptor != nil){
-/* Create a render command encoder. */
-            _renderEncoder = [*commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-            _renderEncoder.label = @"MyRenderEncoder";
-            
-
-            if(view_s->iflag_view_type == VIEW_MAP){
-                /*  Commands to render map projection */
-                [self drawMapSolidObjext:kemo_buffers->MAP_solid_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[10]
-                              projection:&_map_proj_mat];
-                /*  Commands to render isolines on map */
-                [self drawMapSolidObjext:kemo_buffers->MAP_isoline_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[11]
-                              projection:&_map_proj_mat];
-                /*  Commands to render Coastline on map */
-                [self drawMapLineObjext:kemo_buffers->coast_buf
-                                encoder:&_renderEncoder
-                                 vertex:&_vertices[12]
-                             projection:&_map_proj_mat];
-                /*  Commands to render grids on map */
-                [self drawMapLineObjext:kemo_buffers->sph_grid_buf
-                                encoder:&_renderEncoder
-                                 vertex:&_vertices[13]
-                             projection:&_map_proj_mat];
-            } else {
-                [self drawTexureWithSimple:kemo_buffers->PSF_stxur_buf
-                                   encoder:&_renderEncoder
-                                    vertex:&_vertices[36]
-                                    texure:&_texture[11]
-                                     sides:BOTH_SURFACES
-                                     solid:SMOOTH_SHADE];
-                /*
-                 [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
-                 encoder:&_renderEncoder
-                 vertex:&_vertices[36]
-                 texure:&_texture[11]
-                 lights:&lights
-                 materials:&material
-                 sides:BOTH_SURFACES
-                 solid:SMOOTH_SHADE];
-                 */
-                [self drawSolidWithSimple:kemo_buffers->axis_buf
-                                  encoder:&_renderEncoder
-                                   vertex:&_vertices[43]
-                                    sides:BOTH_SURFACES
-                                    solid:SMOOTH_SHADE];
-                
-                [self drawSolidWithPhong:kemo_buffers->PSF_solid_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[35]
-                                  lights:lights
-                               materials:material
-                                   sides:BOTH_SURFACES
-                                   solid:SMOOTH_SHADE];
-                [self drawSolidWithPhong:kemo_buffers->PSF_isoline_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[31]
-                                  lights:lights
-                               materials:material
-                                   sides:BOTH_SURFACES
-                                   solid:SMOOTH_SHADE];
-                [self drawSolidWithPhong:kemo_buffers->PSF_arrow_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[32]
-                                  lights:lights
-                               materials:material
-                                   sides:BOTH_SURFACES
-                                   solid:SMOOTH_SHADE];
-                
-                if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
-                    [self drawSolidWithPhong:kemo_buffers->FLINE_tube_buf
-                                     encoder:&_renderEncoder
-                                      vertex:&_vertices[55]
-                                      lights:lights
-                                   materials:material
-                                       sides:BOTH_SURFACES
-                                       solid:SMOOTH_SHADE];
-                };
-                
-                [self setMetalVertexs:kemo_buffers->coast_buf
-                               vertex:&_vertices[41]];
-                [self setMetalVertexs:kemo_buffers->sph_grid_buf
-                               vertex:&_vertices[42]];
-                
-                
-                [self drawLineObject:kemo_buffers->FLINE_line_buf
-                             encoder:&_renderEncoder
-                              vertex:&_vertices[56]];
-                
-                [self drawSolidWithPhong:kemo_buffers->mesh_node_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[51]
-                                  lights:lights
-                               materials:material
-                                   sides:BOTH_SURFACES
-                                   solid:SMOOTH_SHADE];
-                [self drawLineObject:kemo_buffers->mesh_grid_buf
-                             encoder:&_renderEncoder
-                              vertex:&_vertices[52]];
-                [self drawSolidWithPhong:kemo_buffers->mesh_solid_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[53]
-                                  lights:lights
-                               materials:material
-                                   sides:kemo_mesh->mesh_m->polygon_mode
-                                   solid:SMOOTH_SHADE];
-                
-                [self drawCubeWithPhong:kemo_buffers->cube_buf
-                                encoder:&_renderEncoder
-                                 vertex:&_vertices[30]
-                                  index:&_index_buffer
-                                 lights:lights
-                              materials:material];
-                
-                [self drawLineObject:kemo_buffers->coast_buf
-                             encoder:&_renderEncoder
-                              vertex:&_vertices[41]];
-                [self drawLineObject:kemo_buffers->sph_grid_buf
-                             encoder:&_renderEncoder
-                              vertex:&_vertices[42]];
-                /*  Draw transparent objects */
-                [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
-                                  encoder:&_renderEncoder
-                                   vertex:&_vertices[38]
-                                   texure:&_texture[12]
-                                   lights:lights
-                                materials:material
-                                    sides:BOTH_SURFACES
-                                    solid:FLAT_SHADE];
-                
-                [self drawSolidWithPhong:kemo_buffers->PSF_trns_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[37]
-                                  lights:lights
-                               materials:material
-                                   sides:BOTH_SURFACES
-                                   solid:FLAT_SHADE];
-                
-                [self drawSolidWithPhong:kemo_buffers->mesh_trns_buf
-                                 encoder:&_renderEncoder
-                                  vertex:&_vertices[54]
-                                  lights:lights
-                               materials:material
-                                   sides:BOTH_SURFACES
-                                   solid:FLAT_SHADE];
-            };
-            
-            /*  Commands to render colorbar  box */
-            [self drawMapSolidObjext:kemo_buffers->cbar_buf
-                             encoder:&_renderEncoder
-                              vertex:&_vertices[3]
-                          projection:&_cbar_proj_mat];
-            /*  Commands to render colorbar  label */
-            [self drawTextBoxObjext:kemo_buffers->min_buf
-                            encoder:&_renderEncoder
-                             vertex:&_vertices[4]
-                             texure:&_texture[4]];
-            [self drawTextBoxObjext:kemo_buffers->max_buf
-                            encoder:&_renderEncoder
-                             vertex:&_vertices[5]
-                             texure:&_texture[5]];
-            [self drawTextBoxObjext:kemo_buffers->zero_buf
-                            encoder:&_renderEncoder
-                             vertex:&_vertices[6]
-                             texure:&_texture[6]];
-            
-            /*  Commands to render time label */
-            [self drawTextBoxObjext:kemo_buffers->time_buf
-                            encoder:&_renderEncoder
-                             vertex:&_vertices[2]
-                             texure:&_texture[2]];
-            /*  Commands to render colorbar  box */
-            [self drawTextBoxObjext:kemo_buffers->msg_buf
-                            encoder:&_renderEncoder
-                             vertex:&_vertices[1]
-                             texure:&_texture[1]];
-        
-        [_renderEncoder endEncoding];
+    if(view_s->iflag_view_type == VIEW_MAP){
+        [self encodeMapObjects:&_renderEncoder
+                         buffer:kemo_buffers
+                         projection:&_map_proj_mat];
+    } else {
+        [self encode3DObjects:renderEncoder
+                       buffer:kemo_buffers
+                    fieldline:kemo_fline
+                         mesh:kemo_mesh
+                       lights:lights
+                    materials:material];
     };
+    [self encodeLabelObjects:renderEncoder
+                      buffer:kemo_buffers
+                  projection:&_cbar_proj_mat];
     return;
 }
 
@@ -1262,18 +1294,23 @@ void set_kemoviewer_buffers(struct kemoviewer_type *kemo_sgl)
 /* Create a new command buffer for each render pass to the current drawable. */
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
     commandBuffer.label = @"KemoViewerCommands";
-    [self encodeKemoViewers:view
-                     buffer:kemo_sgl->kemo_buffers
-                      views:kemo_sgl->view_s
-                  fieldline:kemo_sgl->kemo_fline
-                       mesh:kemo_sgl->kemo_mesh
-                     lights:&lights
-                  materials:&material
-                   commands:&commandBuffer];
+/* Obtain a renderPassDescriptor generated from the view's drawable textures. */
+    MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
+    if(renderPassDescriptor != nil){
+/* Create a render command encoder. */
+        _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        _renderEncoder.label = @"MyRenderEncoder";
 
+        [self encodeKemoViewers:&_renderEncoder
+                         buffer:kemo_sgl->kemo_buffers
+                          views:kemo_sgl->view_s
+                      fieldline:kemo_sgl->kemo_fline
+                           mesh:kemo_sgl->kemo_mesh
+                         lights:&lights
+                      materials:&material];
+
+        [_renderEncoder endEncoding];
 /*Schedule a present once the framebuffer is complete using the current drawable. */
-    if(view.currentRenderPassDescriptor != nil)
-    {
         [commandBuffer presentDrawable:view.currentDrawable];
     }
     [commandBuffer  commit];

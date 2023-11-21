@@ -17,6 +17,12 @@ Header for a platform independent renderer class, which performs Metal setup and
 #include "vartex_array_object_gl.h"
 
 @interface AAPLRenderer : NSObject<MTKViewDelegate>
+typedef struct
+{
+    matrix_float4x4 _modelview_mat;
+    matrix_float4x4 _projection_mat;
+    matrix_float4x4 _normal_mat;
+} KemoViewUnites;
 
 - (void)setTransferMatrices;
 
