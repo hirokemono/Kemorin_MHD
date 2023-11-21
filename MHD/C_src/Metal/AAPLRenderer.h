@@ -19,9 +19,12 @@ Header for a platform independent renderer class, which performs Metal setup and
 @interface AAPLRenderer : NSObject<MTKViewDelegate>
 typedef struct
 {
-    matrix_float4x4 _modelview_mat;
-    matrix_float4x4 _projection_mat;
-    matrix_float4x4 _normal_mat;
+    matrix_float4x4 modelview_mat;
+    matrix_float4x4 projection_mat;
+    matrix_float4x4 normal_mat;
+    
+    LightSourceParameters lights;
+    MaterialParameters    material;
 } KemoViewUnites;
 
 - (void)setTransferMatrices;
