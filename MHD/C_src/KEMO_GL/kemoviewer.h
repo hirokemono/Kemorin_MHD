@@ -387,6 +387,7 @@ extern "C" {
                                  unsigned char *glimage, unsigned char *fliped_img);
     void kemoview_add_fliped_quilt_img(unsigned char *glimage, unsigned char *fliped_quilt);
 
+    void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl);
 	int kemoview_quick_view(void);
     void kemoview_modify_view(void);
     void kemoview_quilt(void);

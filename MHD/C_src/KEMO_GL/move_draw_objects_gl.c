@@ -103,6 +103,86 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     return;
 };
 
+void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+                            struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+                            struct kemoview_buffers *kemo_buffers)
+{
+    int iflag;
+    int iflag_psf = 0;
+    /* Set transfer matrices */
+    if(view_s->iflag_view_type == VIEW_MAP) {
+        iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
+                                                kemo_psf->psf_a, view_s);
+        iflag_psf = check_draw_map(kemo_psf->psf_a);
+        
+        set_map_patch_buffer(IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
+                             kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                             kemo_buffers->MAP_solid_buf);
+        set_map_PSF_isolines_buffer(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                    view_s, kemo_buffers->MAP_isoline_buf);
+        
+        set_map_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
+        set_map_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
+    } else {
+        /* Set Axis data into buffer */
+        double axis_radius = 4.0;
+        set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis, kemo_mesh->mesh_m->dist_domains,
+                        kemo_buffers->ncorner_axis, axis_radius, kemo_buffers->axis_buf);
+        
+        iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
+                                                kemo_psf->psf_a, view_s);
+        iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
+        
+        const_PSF_solid_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                       kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
+                                       kemo_buffers->PSF_isoline_buf, kemo_buffers->PSF_arrow_buf);
+        int ipsf_texure = kemo_psf->psf_a->ipsf_viz_far[IZERO]-1;
+        kemo_buffers->psf_stexure = kemo_psf->psf_m[ipsf_texure];
+        
+        const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                       kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf);
+        int ist_psf = kemo_psf->psf_a->istack_solid_psf_patch;
+        ipsf_texure = kemo_psf->psf_a->ipsf_viz_far[ist_psf]-1;
+        kemo_buffers->psf_ttexure = kemo_psf->psf_m[ipsf_texure];
+        
+        set_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
+        set_sph_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
+        
+        const_fieldlines_buffer(kemo_fline->fline_d, kemo_fline->fline_m,
+                                kemo_buffers->FLINE_tube_buf, kemo_buffers->FLINE_line_buf);
+        
+        const_solid_mesh_buffer(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
+                                kemo_buffers->mesh_solid_buf, kemo_buffers->mesh_grid_buf,
+                                kemo_buffers->mesh_node_buf);
+        const_trans_mesh_buffer(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
+                                kemo_buffers->mesh_trns_buf);
+        
+    };
+    const_timelabel_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
+                           kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color,
+                           kemo_psf->psf_a, kemo_buffers->tlabel_image, kemo_buffers->time_buf);
+    
+    const_colorbar_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
+                          kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color,
+                          kemo_psf->psf_m, kemo_psf->psf_a,
+                          kemo_buffers->min_buf,  kemo_buffers->cbar_min_image,
+                          kemo_buffers->max_buf,  kemo_buffers->cbar_max_image,
+                          kemo_buffers->zero_buf, kemo_buffers->cbar_zero_image,
+                          kemo_buffers->cbar_buf);
+    
+    const_message_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
+                         kemo_buffers->msg_buf, kemo_buffers->message_image);
+    
+    /* draw example cube for empty data */
+    
+    iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
+    if(iflag == 0){
+        kemo_buffers->cube_buf->num_nod_buf = kemo_buffers->cube_index_buf->nsize_buf;
+    } else {
+        kemo_buffers->cube_buf->num_nod_buf = 0;
+    }
+    return;
+};
 
 struct kemoview_VAOs * init_kemoview_VAOs(void){
 	int i;
@@ -304,54 +384,8 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
     free(orthogonal);
 
 /* Draw Solid Objects */
-	
-	if(view_s->iflag_view_type == VIEW_MAP) {
-		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
-					kemo_psf->psf_a, view_s);
-		iflag_psf = check_draw_map(kemo_psf->psf_a);
+    set_kemoviewer_buffers(kemo_psf, kemo_fline, kemo_mesh, view_s, kemo_buffers);
 
-        set_map_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
-        set_map_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
-
-        set_map_patch_buffer(IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
-                             kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
-                             kemo_buffers->MAP_solid_buf);
-        set_map_PSF_isolines_buffer(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s,
-                                    kemo_buffers->MAP_isoline_buf);
-    } else {
-        double axis_radius = 4.0;
-        set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
-                        kemo_mesh->mesh_m->dist_domains,
-                        kemo_buffers->ncorner_axis, axis_radius,
-                        kemo_buffers->axis_buf);
-        
-        const_fieldlines_buffer(kemo_fline->fline_d, kemo_fline->fline_m,
-                                kemo_buffers->FLINE_tube_buf, kemo_buffers->FLINE_line_buf);
-        
-        
-        iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
-                                                kemo_psf->psf_a, view_s);
-        iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
-        const_PSF_solid_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
-                                       kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
-                                       kemo_buffers->PSF_isoline_buf, kemo_buffers->PSF_arrow_buf);
-        
-        const_solid_mesh_buffer(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
-                                kemo_buffers->mesh_solid_buf, kemo_buffers->mesh_grid_buf,
-                                kemo_buffers->mesh_node_buf);
-        
-        set_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
-        set_sph_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
-        
-        /* Draw Transparent Objects */
-        const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d,
-                                       kemo_psf->psf_m, kemo_psf->psf_a,
-                                       kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf);
-        const_trans_mesh_buffer(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
-                                kemo_buffers->mesh_trns_buf);
-    }
-    
-    
     if(view_s->iflag_view_type == VIEW_MAP){
         Const_VAO_4_Simple(kemo_VAOs->map_VAO[0], kemo_buffers->MAP_solid_buf);
         Const_VAO_4_Simple(kemo_VAOs->map_VAO[1], kemo_buffers->MAP_isoline_buf);
@@ -379,32 +413,6 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                                   kemo_VAOs->psf_trans_VAO);
         Const_VAO_4_Phong(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
 	};
-
-	
-/* Draw Color bar and time label*/
-	for(i=0;i<kemo_psf->psf_a->nmax_loaded; i++){
-		iflag_psf = iflag_psf + kemo_psf->psf_a->iflag_loaded[i];
-	};
-	const_colorbar_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
-                          kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color,
-                          kemo_psf->psf_m, kemo_psf->psf_a,
-                          kemo_buffers->min_buf, kemo_buffers->cbar_min_image,
-                          kemo_buffers->max_buf, kemo_buffers->cbar_max_image,
-                          kemo_buffers->zero_buf, kemo_buffers->cbar_zero_image,
-                          kemo_buffers->cbar_buf);
-    const_timelabel_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
-                           kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color,
-                           kemo_psf->psf_a, kemo_buffers->tlabel_image, kemo_buffers->time_buf);
-	/* Draw message */
-    const_message_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
-                         kemo_buffers->msg_buf, kemo_buffers->message_image);
-    /* draw example cube for empty data */
-	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
-    if(iflag == 0){
-        kemo_buffers->cube_buf->num_nod_buf = kemo_buffers->cube_index_buf->nsize_buf;
-    } else {
-        kemo_buffers->cube_buf->num_nod_buf = 0;
-    }
 
     set_colorbar_VAO(kemo_buffers->min_buf,  kemo_buffers->cbar_min_image,
                      kemo_buffers->max_buf,  kemo_buffers->cbar_max_image,
@@ -461,7 +469,6 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
     free(cbar_matrices);
 	return;
 }
-
 
 void quick_draw_objects_gl3(struct kemoviewer_type *kemoview){
 	quick_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline, 

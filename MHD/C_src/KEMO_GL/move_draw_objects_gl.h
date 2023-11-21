@@ -87,6 +87,9 @@ struct kemoview_VAOs{
 /* prototypes */
 struct kemoview_buffers * init_kemoview_buffers(void);
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers);
+void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+                            struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
+                            struct kemoview_buffers *kemo_buffers);
 
 
 struct kemoview_VAOs * init_kemoview_VAOs(void);

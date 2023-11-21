@@ -452,6 +452,13 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char
 							  width, height, bgra_in);
 };
 
+void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl){
+    set_kemoviewer_buffers(kemo_sgl->kemo_psf, kemo_sgl->kemo_fline,
+                           kemo_sgl->kemo_mesh, kemo_sgl->view_s, kemo_sgl->kemo_buffers);
+    return;
+};
+
+
 int kemoview_quick_view(void){
 	return quick_mono_kemoview(kemo_sgl);
 };
