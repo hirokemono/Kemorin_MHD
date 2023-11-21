@@ -104,29 +104,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 }
 
 // ---------------------------------
--(id) DrawRotation: (NSInteger) int_degree : (NSInteger)rotationaxis
-{
-	kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
-	kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_set_single_viewer_id(id_window);
-    kemoview_modify_view();
-	
-	[self swapbuffer_cocoa];
-	return self;
-}
-
--(id) DrawQuilt: (NSInteger) int_degree : (NSInteger)rotationaxis
-{
-    kemoview_set_single_viewer_id(id_window);
-    kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
-    kemoview_quilt();
-    
-    [self swapbuffer_cocoa];
-    return self;
-}
-
-
 -(id) DrawEvolution:(NSInteger)timeStep
 {	
     kemoview_set_single_viewer_id(id_window);

@@ -11,11 +11,13 @@
 @import CoreVideo;
 
 #import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 
 
 @interface KemoviewerMovieMaker : NSObject {
     IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet NSUserDefaultsController* _movie_defaults_controller;
 
 	NSInteger MovieFormatFlag;

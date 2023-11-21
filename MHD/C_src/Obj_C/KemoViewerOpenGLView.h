@@ -94,8 +94,6 @@ typedef struct {
 -(void) setQuickHelp:(NSInteger)flag;
 
 -(id) DrawEvolution:(NSInteger)timeStep;
--(id) DrawRotation: (NSInteger) int_degree : (NSInteger) rotationaxis;
--(id) DrawQuilt: (NSInteger) int_degree : (NSInteger)rotationaxis;
 
 - (void) prepareKemoOpenGL;
 - (void) awakeFromNib;

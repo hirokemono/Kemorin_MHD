@@ -250,7 +250,7 @@ NSData *SnapshotData;
     
     for(self.CurrentStep = 0;self.CurrentStep<num_step;self.CurrentStep++){
         kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep);
-        [_kemoviewer DrawQuilt:int_degree:rotationaxis];
+        [_metalView DrawQuilt:int_degree:rotationaxis];
 
         kemoview_add_fliped_quilt_img(glimage, [SnapshotBitmapRep bitmapData]);
 
@@ -483,7 +483,7 @@ NSData *SnapshotData;
 	for(icount = 0;icount<ied_deg;icount++){
 		int_degree = (icount * self.RotationIncrement);
         self.CurrentStep = icount;
-		[_kemoviewer DrawRotation:int_degree:RotationAxisID];
+		[_metalView DrawRotation:int_degree:RotationAxisID];
 
         if (CurrentMovieFormat == SAVE_QT_MOVIE && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
             CMTime frameTime = CMTimeMake((int64_t)icount, self.FramePerSecond);
@@ -536,7 +536,7 @@ NSData *SnapshotData;
     [evolutionProgreessBar displayIfNeeded];
     for(self.CurrentStep = 0;self.CurrentStep<num_step;self.CurrentStep++){
         kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep);
-        [_kemoviewer DrawQuilt:IZERO:IONE];
+        [_metalView DrawQuilt:IZERO:IONE];
 
         [evolutionProgreessBar incrementBy:(double) 1.0];
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];

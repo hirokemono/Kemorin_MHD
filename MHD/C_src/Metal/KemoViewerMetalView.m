@@ -67,6 +67,27 @@
     return;
 }
 
+-(id) DrawRotation: (NSInteger) int_degree : (NSInteger)rotationaxis
+{
+    kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
+    kemoview_modify_view();
+    
+    [self setNeedsDisplay: YES];
+    return self;
+}
+
+-(id) DrawQuilt: (NSInteger) int_degree : (NSInteger)rotationaxis
+{
+    kemoview_set_single_viewer_id(id_window);
+    kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
+    kemoview_quilt();
+    
+    [self setNeedsDisplay: YES];
+    return self;
+}
+
 // ---------------------------------
 #pragma mark ---- Method Overrides ----
 -(void)keyDown:(NSEvent *)theEvent

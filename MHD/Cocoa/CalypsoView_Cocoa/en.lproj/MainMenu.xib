@@ -1591,7 +1591,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                     <clipView key="contentView" drawsBackground="NO" id="qPk-6n-CsU">
                                         <rect key="frame" x="1" y="1" width="229" height="708"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2r5-Q1-lji">
                                                 <rect key="frame" x="0.0" y="0.0" width="214" height="695"/>
@@ -2022,16 +2022,6 @@
                                                                         <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="72f-Pc-xFJ"/>
                                                                     </connections>
                                                                 </colorWell>
-                                                                <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hlu-EY-wns">
-                                                                    <rect key="frame" x="88" y="159" width="97" height="21"/>
-                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                    <sliderCell key="cell" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="QJj-Yt-xvf"/>
-                                                                    <connections>
-                                                                        <action selector="SetPSFSingleOpacityAction:" target="1157" id="JPc-8R-96K"/>
-                                                                        <binding destination="1157" name="value" keyPath="self.PSFOpacity" id="EG7-2b-prG"/>
-                                                                        <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="m7L-da-9jh"/>
-                                                                    </connections>
-                                                                </slider>
                                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2497">
                                                                     <rect key="frame" x="85" y="4" width="95" height="16"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -2215,6 +2205,16 @@
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
+                                                                <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hlu-EY-wns">
+                                                                    <rect key="frame" x="88" y="155" width="97" height="28"/>
+                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                    <sliderCell key="cell" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="QJj-Yt-xvf"/>
+                                                                    <connections>
+                                                                        <action selector="SetPSFSingleOpacityAction:" target="1157" id="JPc-8R-96K"/>
+                                                                        <binding destination="1157" name="value" keyPath="self.PSFOpacity" id="EG7-2b-prG"/>
+                                                                        <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="m7L-da-9jh"/>
+                                                                    </connections>
+                                                                </slider>
                                                             </subviews>
                                                         </view>
                                                     </box>
@@ -2677,7 +2677,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Wsi-nh-URc">
                             <rect key="frame" x="1" y="1" width="194" height="665"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3787">
                                     <rect key="frame" x="0.0" y="0.0" width="196" height="661"/>
@@ -5240,6 +5240,7 @@
         <customObject id="2637" customClass="KemoviewerMovieMaker">
             <connections>
                 <outlet property="_kemoviewer" destination="3373" id="3388"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="718-d3-Vwe"/>
                 <outlet property="_movie_defaults_controller" destination="716" id="2654"/>
                 <outlet property="evolutionProgreessBar" destination="1897" id="3708"/>
                 <outlet property="movieFormat_item" destination="2461" id="2641"/>

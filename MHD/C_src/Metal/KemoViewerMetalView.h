@@ -43,6 +43,10 @@
 - (void) setRetinaMode;
 - (void) setViewerSize;
 
+-(id) DrawRotation: (NSInteger) int_degree : (NSInteger) rotationaxis;
+-(id) DrawQuilt: (NSInteger) int_degree : (NSInteger) rotationaxis;
+
+
 - (void) keyDown:(NSEvent *)theEvent;
 - (void) magnifyWithEvent:(NSEvent *)theEvent;
 - (void) scrollWheel:(NSEvent *)theEvent;
