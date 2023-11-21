@@ -23,6 +23,6 @@
 
 /* prototypes */
 
-int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
+int draw_mesh_kemo(void);
 
 #endif

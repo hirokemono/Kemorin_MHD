@@ -161,11 +161,6 @@
 
 #define NMAX_PSF     10
 
-#define SHUTTER_OFF  0
-#define SHUTTER_ON   1
-#define ANAGLYPH_OFF 0
-#define ANAGLYPH_ON  1
-
 #define IFLAG_MESH       99
 #define IFLAG_SURFACES   2
 #define IFLAG_LINES      1
@@ -212,8 +207,6 @@
 #define ISET_PIXEL_Y            1
 #define ISET_ROTATE_AXIS       11
 #define ISET_ROTATE_INCREMENT  12
-#define ISET_SHUTTER           41
-#define ISET_ANAGYLYPH         42
 
 #define AMBIENT_FLAG    0
 #define DIFFUSE_FLAG    1

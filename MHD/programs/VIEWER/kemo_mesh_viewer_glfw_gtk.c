@@ -212,20 +212,13 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 
 /* Main routine for C */
 
-int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
+int draw_mesh_kemo(void) {
 	int narg_glut = 0;
 	char **arg_glut;
 	int iflag_retinamode = 1;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-	kemoview_set_view_integer(ISET_SHUTTER, iflag_streo_shutter);
-	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_OFF);
-	} else {
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_ON);
-	};
 	
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;
@@ -253,12 +246,7 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	glfwWindowHint(GLFW_STENCIL_BITS, 8);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
-	} else{
-		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
-	};
+    glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
 	
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */

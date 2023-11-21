@@ -48,10 +48,6 @@
 
 -(void) awakeFromNib
 {
-	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
-	AnaglyphFlag = [[defaults stringForKey:@"AnaglyphFlag"] intValue];
-	[_streoViewTypeMenu selectItemAtIndex:(1-AnaglyphFlag)];
-
     self.coastlineRadius = kemoview_get_coastline_radius();
     kemoview_set_object_property_flags(TIME_LABEL_AVAIL, (int) self.timeDisplayAccess);
     kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
@@ -170,18 +166,6 @@
 
 - (IBAction) SetViewtypeAction:(id)pSender{
 	[self UpdateViewtype:[_viewtypeItem selectedTag]];
-}
-
-- (IBAction) SetStereoViewType:(id)sender;
-{
-	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
-	
-	AnaglyphFlag = (1-[_streoViewTypeMenu indexOfSelectedItem]);
-	kemoview_set_view_integer(ISET_ANAGYLYPH, (int) AnaglyphFlag);
-	[defaults setInteger:((int) AnaglyphFlag) forKey:@"AnaglyphFlag"];
-
-    printf("AnaglyphFlag %d\n", (int) AnaglyphFlag);
-	[_kemoviewer UpdateImage];
 }
 
 - (void) Set3DView

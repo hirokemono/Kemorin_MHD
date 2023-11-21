@@ -19,12 +19,6 @@
 #include "set_rgba_table_c.h"
 #include "numbers_to_bin_c.h"
 
-
-#define SHUTTER_OFF 0
-#define SHUTTER_ON  1
-#define ANAGLYPH_OFF 0
-#define ANAGLYPH_ON  1
-
 struct mesh_menu_val{
 	struct kv_string *mesh_file_name;
 

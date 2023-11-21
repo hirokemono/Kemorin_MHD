@@ -532,7 +532,6 @@
                 <outlet property="_kemoviewer" destination="3373" id="3394"/>
                 <outlet property="_polygontype_matrix" destination="677" id="968"/>
                 <outlet property="_resetview" destination="2679" id="3543"/>
-                <outlet property="_streoViewTypeMenu" destination="3233" id="3530"/>
                 <outlet property="_surfacetype_matrix" destination="673" id="969"/>
                 <outlet property="_viewtypeItem" destination="1519" id="3481"/>
             </connections>
@@ -3906,14 +3905,14 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="123" y="299" width="299" height="573"/>
+            <rect key="contentRect" x="123" y="299" width="299" height="510"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <view key="contentView" id="2203">
-                <rect key="frame" x="0.0" y="0.0" width="299" height="573"/>
+                <rect key="frame" x="0.0" y="0.0" width="299" height="510"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Color Preference" translatesAutoresizingMaskIntoConstraints="NO" id="640">
-                        <rect key="frame" x="17" y="362" width="265" height="117"/>
+                        <rect key="frame" x="17" y="299" width="265" height="117"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="2yc-C0-chw">
                             <rect key="frame" x="3" y="3" width="259" height="99"/>
@@ -4022,7 +4021,7 @@
                         </view>
                     </box>
                     <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="File Format" translatesAutoresizingMaskIntoConstraints="NO" id="2479">
-                        <rect key="frame" x="17" y="483" width="265" height="90"/>
+                        <rect key="frame" x="17" y="420" width="265" height="90"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="H7o-Az-jrg">
                             <rect key="frame" x="3" y="3" width="259" height="72"/>
@@ -4092,50 +4091,6 @@
                             </subviews>
                         </view>
                     </box>
-                    <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Streo View Preference" translatesAutoresizingMaskIntoConstraints="NO" id="3212">
-                        <rect key="frame" x="17" y="298" width="265" height="60"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <view key="contentView" id="Ef5-Gd-RAE">
-                            <rect key="frame" x="3" y="3" width="259" height="42"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <subviews>
-                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3245">
-                                    <rect key="frame" x="15" y="14" width="115" height="17"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="3D View type:" id="3246">
-                                        <font key="font" metaFont="system"/>
-                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    </textFieldCell>
-                                </textField>
-                                <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3233">
-                                    <rect key="frame" x="148" y="8" width="100" height="26"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <popUpButtonCell key="cell" type="push" title="Anaglyph" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="3237" id="3234">
-                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
-                                        <menu key="menu" title="OtherViews" id="3235">
-                                            <items>
-                                                <menuItem title="Anaglyph" state="on" id="3237">
-                                                    <connections>
-                                                        <action selector="SetStereoViewType:" target="964" id="3527"/>
-                                                    </connections>
-                                                </menuItem>
-                                                <menuItem title="Shutter" tag="1" id="3238">
-                                                    <connections>
-                                                        <action selector="SetStereoViewType:" target="964" id="3528"/>
-                                                    </connections>
-                                                </menuItem>
-                                            </items>
-                                        </menu>
-                                        <connections>
-                                            <action selector="SetStereoViewType:" target="964" id="3526"/>
-                                        </connections>
-                                    </popUpButtonCell>
-                                </popUpButton>
-                            </subviews>
-                        </view>
-                    </box>
                     <box fixedFrame="YES" title="lights" translatesAutoresizingMaskIntoConstraints="NO" id="C9P-vk-EKJ">
                         <rect key="frame" x="17" y="16" width="265" height="278"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -4144,9 +4099,9 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HaE-Ye-h0l">
-                                    <rect key="frame" x="152" y="106" width="70" height="19"/>
+                                    <rect key="frame" x="152" y="106" width="70" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                    <sliderCell key="cell" state="on" alignment="left" minValue="-180" maxValue="180" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="3Qj-LU-gH5">
+                                    <sliderCell key="cell" controlSize="small" state="on" alignment="left" minValue="-180" maxValue="180" doubleValue="50" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="3Qj-LU-gH5">
                                         <connections>
                                             <binding destination="3Oj-aY-RpN" name="value" keyPath="self.azimuthSliderValue" id="NZx-Fu-XHX"/>
                                         </connections>
@@ -4156,9 +4111,9 @@
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uhW-er-oM5">
-                                    <rect key="frame" x="8" y="106" width="70" height="19"/>
+                                    <rect key="frame" x="8" y="106" width="70" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                    <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="20" tickMarkPosition="above" sliderType="linear" id="ogV-EN-2RH">
+                                    <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="100" doubleValue="20" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="ogV-EN-2RH">
                                         <connections>
                                             <binding destination="3Oj-aY-RpN" name="value" keyPath="self.radialSliderValue" id="3TM-cA-kDB"/>
                                         </connections>
@@ -4168,9 +4123,9 @@
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ho1-eH-bxW">
-                                    <rect key="frame" x="70" y="79" width="140" height="19"/>
+                                    <rect key="frame" x="70" y="79" width="140" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                    <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="AAh-cn-oVA">
+                                    <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="AAh-cn-oVA">
                                         <connections>
                                             <binding destination="HzQ-Hh-jyy" name="value" keyPath="selection.self.ambientMaterial" id="Znu-4d-G2a"/>
                                         </connections>
@@ -4180,9 +4135,9 @@
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S5r-T8-Nnz">
-                                    <rect key="frame" x="70" y="56" width="140" height="19"/>
+                                    <rect key="frame" x="70" y="56" width="140" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                    <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="w7w-6x-UCT">
+                                    <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="w7w-6x-UCT">
                                         <connections>
                                             <binding destination="HzQ-Hh-jyy" name="value" keyPath="selection.self.diffuseMaterial" id="m58-zd-Nvm"/>
                                         </connections>
@@ -4192,9 +4147,9 @@
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LMC-58-61k">
-                                    <rect key="frame" x="70" y="33" width="140" height="19"/>
+                                    <rect key="frame" x="70" y="33" width="140" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                    <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" sliderType="linear" id="MiO-x8-9Wt">
+                                    <sliderCell key="cell" controlSize="small" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="MiO-x8-9Wt">
                                         <connections>
                                             <binding destination="HzQ-Hh-jyy" name="value" keyPath="selection.self.specularMaterial" id="4yh-gP-K53"/>
                                         </connections>
@@ -4204,9 +4159,9 @@
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PyB-BB-Ozw">
-                                    <rect key="frame" x="70" y="10" width="140" height="19"/>
+                                    <rect key="frame" x="70" y="10" width="140" height="20"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                    <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="50.587551652892557" tickMarkPosition="above" sliderType="linear" id="Q8U-fQ-6Kc">
+                                    <sliderCell key="cell" controlSize="small" alignment="left" maxValue="100" doubleValue="50.587551652892557" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="Q8U-fQ-6Kc">
                                         <connections>
                                             <binding destination="HzQ-Hh-jyy" name="value" keyPath="selection.self.shinessMaterial" id="zVv-qn-fdc"/>
                                         </connections>
@@ -4332,7 +4287,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
                                         <rect key="frame" x="1" y="1" width="227" height="116"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                 <rect key="frame" x="0.0" y="0.0" width="227" height="93"/>
@@ -4431,9 +4386,9 @@
                                     </connections>
                                 </button>
                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4fh-vB-ROv">
-                                    <rect key="frame" x="80" y="106" width="70" height="19"/>
+                                    <rect key="frame" x="80" y="106" width="70" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                    <sliderCell key="cell" state="on" alignment="left" minValue="-90" maxValue="90" doubleValue="70.943877551020393" tickMarkPosition="above" sliderType="linear" id="6hl-fB-qmH">
+                                    <sliderCell key="cell" controlSize="small" state="on" alignment="left" minValue="-90" maxValue="90" doubleValue="70.943877551020393" tickMarkPosition="above" numberOfTickMarks="1" sliderType="linear" id="6hl-fB-qmH">
                                         <connections>
                                             <binding destination="3Oj-aY-RpN" name="value" keyPath="self.elevationSliderValue" id="EB7-Jz-WdK"/>
                                         </connections>
@@ -4447,7 +4402,7 @@
                     </box>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-305" y="677"/>
+            <point key="canvasLocation" x="-305.5" y="645"/>
         </window>
         <customView autoresizesSubviews="NO" id="2222" userLabel="Viewmatrix Content View">
             <rect key="frame" x="0.0" y="0.0" width="224" height="661"/>

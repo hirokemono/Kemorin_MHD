@@ -83,20 +83,13 @@ void gtk_test_window(struct kemoviewer_type *kemoviewer_data){
 }
 
 
-int draw_gtk_menu_kemo(int iflag_streo_shutter, int iflag_dmesh) {
+int draw_gtk_menu_kemo(void) {
 	int narg_glut = 0;
 	char **arg_glut;
 	int iflag_retinamode = 0;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-	kemoview_set_view_integer(ISET_SHUTTER, iflag_streo_shutter);
-	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_OFF);
-	} else {
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_ON);
-	};
 	
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */
@@ -116,26 +109,7 @@ int draw_gtk_menu_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 };
 
 int main(int argc, char *argv[]){
-	int iflag_streo_shutter = SHUTTER_OFF;
-	int i;
-	
-	/*	printf("Number of arguments %d\n", argc);*/
-	for (i = 0; i < argc; i++) {
-/*		printf("%dth arguments: %s\n", i, argv[i]);*/
-		if(strcmp(argv[i],"-help") == 0){
-			printf("-stereo_shutter: Use streo monitor with shutter\n");
-			return 0;
-		}
-	}
-		
-	for (i = 0; i < argc; i++) {
-		if(strcmp(argv[i],"-stereo_shutter") == 0){
-			printf("shutter ON\n");
-			iflag_streo_shutter = SHUTTER_ON;
-		}
-	}
-	
-	draw_gtk_menu_kemo(iflag_streo_shutter, IZERO);
+    draw_gtk_menu_kemo();
 	return 0;
 };
 

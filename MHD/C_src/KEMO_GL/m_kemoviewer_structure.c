@@ -492,10 +492,6 @@ void kemoview_set_view_integer(int selected, int ivalue){
 		set_gl_animation_rot_axis(kemo_sgl->view_s, ivalue);
 	}else if(selected == ISET_ROTATE_INCREMENT){
 		set_gl_animation_rot_angle(kemo_sgl->view_s, ivalue);
-	}else if(selected == ISET_SHUTTER){
-		kemo_sgl->view_s->iflag_streo_stutter = ivalue;
-	}else if(selected == ISET_ANAGYLYPH){
-		kemo_sgl->view_s->iflag_streo_anaglyph = ivalue;
 	}
 	return;
 };
@@ -550,11 +546,6 @@ int kemoview_get_view_integer(int selected){
         ivalue = send_gl_windowsize_x(kemo_sgl->view_s);
     }else if(selected == ISET_PIXEL_Y){
         ivalue = send_gl_windowsize_y(kemo_sgl->view_s);
-
-    }else if(selected == ISET_SHUTTER){
-        ivalue = kemo_sgl->view_s->iflag_streo_stutter;
-    }else if(selected == ISET_ANAGYLYPH){
-        ivalue = kemo_sgl->view_s->iflag_streo_anaglyph;
     };
     return ivalue;
 };

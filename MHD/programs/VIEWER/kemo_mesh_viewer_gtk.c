@@ -141,20 +141,13 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data, GtkWidget *vb
 
 /* Main routine for C */
 
-int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
+int draw_mesh_kemo(void) {
 	int narg_glut = 0;
 	char **arg_glut;
 	int iflag_retinamode = 0;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-	kemoview_set_view_integer(ISET_SHUTTER, iflag_streo_shutter);
-	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_OFF);
-	} else {
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_ON);
-	};
 	
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */

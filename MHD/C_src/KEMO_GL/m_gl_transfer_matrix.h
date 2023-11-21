@@ -23,8 +23,6 @@
 struct view_element{
 	int iflag_retina;
 	int iflag_view_type;
-	int iflag_streo_stutter;
-	int iflag_streo_anaglyph;
 	int shading_mode;
 	
 	int gl_drawID;

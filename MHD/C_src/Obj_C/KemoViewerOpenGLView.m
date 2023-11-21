@@ -318,12 +318,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     id_window = kemoview_get_current_viewer_id();
     kemoview_set_single_viewer_id(id_window);
 
-	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
-	int anaglyphFlag = [[defaults stringForKey:@"AnaglyphFlag"] intValue];
-	
-	kemoview_set_view_integer(ISET_SHUTTER, SHUTTER_OFF);
-	kemoview_set_view_integer(ISET_ANAGYLYPH, anaglyphFlag);
-	
 	[self prepareKemoOpenGL];
 	
 	kemoviewer_reset_to_init_angle();

@@ -42,7 +42,6 @@
 	IBOutlet id _viewZXItem;
 
 	NSInteger StereoFlag;
-	NSInteger AnaglyphFlag;
 	NSInteger psfTexTureEnable;
 	
 	NSInteger fInfo;
@@ -99,8 +98,6 @@
 
 - (IBAction) ToggleQuiltSwitch:(id)sender;
 - (IBAction) SetViewtypeAction:(id)pSender;
-
-- (IBAction) SetStereoViewType:(id)sender;
 
 - (void) Set3DView;
 - (IBAction) ResetviewAction:(id)sender;

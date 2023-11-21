@@ -104,20 +104,13 @@ static void make_1st_level_menu(){
 
 /* Main routine for C */
 
-void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
+void draw_mesh_kemo(void) {
 	int narg_glut = 0;
 	char **arg_glut;
     GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-	kemoview_set_stereo_shutter(iflag_streo_shutter);
-	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_anaglyph_flag(ANAGLYPH_OFF);
-	} else {
-		kemoview_set_anaglyph_flag(ANAGLYPH_ON);
-	};
 	
 	link_glut_menu_address();
 	glutInit(&narg_glut, arg_glut);
@@ -127,13 +120,8 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	gtk_init (&narg_glut, &arg_glut);
     
 	/*! Initializations with GLUT*/
-	if(iflag_streo_shutter == SHUTTER_ON){
-		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
-					|GLUT_MULTISAMPLE|GLUT_STEREO|GLUT_3_2_CORE_PROFILE);
-		} else {
-		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
-					|GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
-	};
+    glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
+                        |GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
 	/*! Create viewer window*/
     kemoview_set_retinamode(IZERO);
 	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
