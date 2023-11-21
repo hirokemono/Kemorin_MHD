@@ -146,27 +146,6 @@ static void set_line_text_opacity(struct line_text_image *l_txt_img){
 };
 
 
-struct cbar_work * alloc_colorbar_position(void){
-	struct cbar_work *cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
-	if(cbar_wk == NULL){
-		printf("malloc error for cbar_work\n");
-		exit(0);
-	}
-    cbar_wk->cbar_min_image =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
-    cbar_wk->cbar_max_image =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
-    cbar_wk->cbar_zero_image = alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
-    return cbar_wk;
-};
-
-void dealloc_colorbar_position(struct cbar_work *cbar_wk){
-    dealloc_line_text_image(cbar_wk->cbar_min_image);
-    dealloc_line_text_image(cbar_wk->cbar_max_image);
-    dealloc_line_text_image(cbar_wk->cbar_zero_image);
-    free(cbar_wk);
-    return;
-};
-
-
 void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 						   struct colormap_params *cmap_s, struct cbar_work *cbar_wk){
 	int num;

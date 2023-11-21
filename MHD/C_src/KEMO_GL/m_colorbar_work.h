@@ -69,9 +69,6 @@ void set_line_msgbox_image(int icolor_txt, int icolor_mid,
                            struct line_text_image *l_txt_img);
 void set_line_text_color(float text_color3[3], struct line_text_image *l_txt_img);
 
-
-struct cbar_work * alloc_colorbar_position(void);
-void dealloc_colorbar_position(struct cbar_work *cbar_wk);
 void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 						   struct colormap_params *cmap_s, struct cbar_work *cbar_wk);
 

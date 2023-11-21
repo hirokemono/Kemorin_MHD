@@ -12,7 +12,7 @@
 {
     IBOutlet KemoViewerMetalView *_metalView;
 
-    AAPLRenderer *_renderer;
+    IBOutlet AAPLRenderer *_renderer;
 }
 
 -(void) awakeFromNib

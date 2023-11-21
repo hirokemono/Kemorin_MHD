@@ -113,7 +113,7 @@ int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s,
 };
 
 int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, float *bg_color, 
-			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
+                             struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
 	int inum_quad = ist_quad;
 	float y1;
 	float x1[3], x2[3], x3[3], x4[3];

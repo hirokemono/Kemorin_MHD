@@ -42,8 +42,6 @@ struct kemo_array_control{
     int iflag_avail_file_step;
     int iflag_draw_file_step;
     int file_step_disp;
-    
-	struct cbar_work *cbar_wk;
 };
 
 struct psf_menu_val{
