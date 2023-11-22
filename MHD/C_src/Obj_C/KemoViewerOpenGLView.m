@@ -122,7 +122,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(void) QuickUpdateImage
 {
-	[self resizeGL]; // forces projection matrix update (does test for size changes)
 	[_context makeCurrentContext];
 	
 	// move view
@@ -135,15 +134,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	[self setNeedsDisplay: YES];
     reftime_quick = CFAbsoluteTimeGetCurrent (); //reset time in all cases
 }
-
-- (void) drawRectforError:(NSRect)rect
-{		
-	// setup viewport and prespective
-	[self resizeGL]; // forces projection matrix update (does test for size changes)
-	[self updateModelView];  // update model view matrix for object
-	[self swapbuffer_cocoa];
-}
-
 // ---------------------------------
 
 
@@ -289,10 +279,4 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     [[NSRunLoop currentRunLoop] addTimer:timer_msg forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize
  }
 
-
--(void) setFrameSize:(NSSize)newSize
-{
-    [self resizeGL];
-    return;
-}
 @end

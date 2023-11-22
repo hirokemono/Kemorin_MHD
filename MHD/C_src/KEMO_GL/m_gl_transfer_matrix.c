@@ -279,7 +279,7 @@ static void update_projection(double x_lookfrom[2], int nx_frame, int ny_frame, 
 							  double *aspect, double *near, double *far,
 							  double projection[16]){
 	double wd2;
-	double left, right;
+	double left, right, bottom, top;
 	
 	*near = x_lookfrom[2] - object_size * HALF;
 	if (*near < 1.0e-6) *near = 1.0e-6;
@@ -290,10 +290,18 @@ static void update_projection(double x_lookfrom[2], int nx_frame, int ny_frame, 
 	*aspect = ((double) nx_frame) / ((double) ny_frame);
 	wd2 =  *near * tan(aperture*DTOR*HALF);
 	
-	left  = - *aspect * wd2;
-	right =   *aspect * wd2;
-	
-	frustsum_glmat_c(left, right, (-wd2), wd2, *near, *far, projection);
+    if(*aspect < 1.0){
+        left  = - wd2;
+        right =   wd2;
+        bottom = - wd2 / *aspect;
+        top =      wd2 / *aspect;
+    }else{
+        left  = - *aspect * wd2;
+        right =   *aspect * wd2;
+        bottom = -wd2;
+        top =     wd2;
+    };
+    frustsum_glmat_c(left, right, bottom, top, *near, *far, projection);
 	return;
 }
 

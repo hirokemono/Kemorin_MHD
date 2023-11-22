@@ -91,7 +91,4 @@ typedef struct {
 
 - (void) prepareKemoOpenGL;
 - (void) awakeFromNib;
-
--(void) setFrameSize:(NSSize)newSize;
-
 @end

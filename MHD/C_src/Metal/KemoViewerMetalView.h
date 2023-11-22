@@ -31,7 +31,16 @@
     double gDollyPanStartPoint[2];
     NSInteger leftBottunFlag;
     
+    int XpixelGLWindow;
+    int YpixelGLWindow;
+    int XpixelRectView;
+    int YpixelRectView;
     
+    int iflag_resize;
+    float message_opacity;
+
+    CFTimeInterval reftime_msg;
+
     int id_window;
 }
 @property int id_window;

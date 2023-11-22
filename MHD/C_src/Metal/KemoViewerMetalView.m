@@ -38,10 +38,10 @@
 - (void) setRetinaMode
 {
     NSRect rectView = [self convertRectToBacking:[self bounds]];
-    int XpixelGLWindow = rectView.size.width;
+    XpixelGLWindow = rectView.size.width;
     
     NSRect rectView_DISP = [self bounds];
-    int XpixelRectView = rectView_DISP.size.width;
+    XpixelRectView = rectView_DISP.size.width;
     
     if(XpixelGLWindow > XpixelRectView){
         kemoview_set_retinamode(IONE);
@@ -51,11 +51,46 @@
     return;
 }
 
+- (int) getViewSize
+{
+    int iflag_updated = 0;
+    
+//    NSRect rectView = [self bounds];
+    NSRect rectView = [self convertRectToBacking:[self bounds]];
+    
+    // ensure camera knows size changed
+    if ((YpixelGLWindow != rectView.size.height) ||
+        (XpixelGLWindow != rectView.size.width)) {
+        YpixelGLWindow = rectView.size.height;
+        XpixelGLWindow = rectView.size.width;
+        
+//        printf("Pixel size %d, %d\n",XpixelGLWindow, YpixelGLWindow);
+        
+        iflag_updated = 1;
+    }
+    return iflag_updated;
+}
+
+/* handles resizing of GL need context update and if the window dimensions change */
+- (void) resizeMetal
+{
+    // ensure camera knows size changed
+    int iflag_updated = [self getViewSize];
+    if (iflag_updated != 0) {
+        iflag_resize = 1;
+        reftime_msg = CFAbsoluteTimeGetCurrent(); //reset time in all cases
+        kemoview_update_projection_by_viewer_size(XpixelGLWindow, YpixelGLWindow,
+                                                  XpixelRectView, YpixelRectView);
+        kemoview_set_message_opacity(1.0);
+    } else{
+//        kemoview_set_message_opacity(message_opacity);
+    }
+}
+
 - (void) setViewerSize
 {
     [self setRetinaMode];
     NSRect rectView_DISP = [self bounds];
-    [_kemoviewer setFrameSize:rectView_DISP.size];
 }
 
 
