@@ -8,11 +8,13 @@
 @import Cocoa;
 
 #import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 
 @interface KemoviewerController : NSObject {
 
-	IBOutlet ResetViewControll*  _resetview;
+	IBOutlet ResetViewControll*     _resetview;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView*   _metalView;
 
 	IBOutlet id _streoViewTypeMenu;
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
@@ -45,7 +47,6 @@
 	NSInteger psfTexTureEnable;
 	
 	NSInteger fInfo;
-	NSInteger fAnimate;
 	NSInteger fDrawHelp;
 
     
@@ -64,7 +65,6 @@
 @property CGFloat NodeSizeFactor;
 @property CGFloat NodeSizedigits;
 @property NSInteger fInfo;
-@property NSInteger fAnimate;
 @property NSInteger fDrawHelp;
 @property NSInteger StereoFlag;
 @property CGFloat coastlineRadius;
@@ -102,7 +102,6 @@
 - (void) Set3DView;
 - (IBAction) ResetviewAction:(id)sender;
 
--(IBAction) ToggleAnimate: (id) sender;
 -(IBAction) Toggleinfo: (id) sender;
 -(IBAction) ToggleQuickhelp: (id) sender;
 

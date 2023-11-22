@@ -571,7 +571,7 @@ NSData *SnapshotData;
 
     for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){
 		if( ((self.CurrentStep-self.EvolutionStartStep)%self.EvolutionIncrement) == 0) {
-			[_kemoviewer DrawEvolution:self.CurrentStep];
+			[_metalView DrawEvolution:self.CurrentStep];
 
 			if (CurrentMovieFormat == SAVE_QT_MOVIE && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;

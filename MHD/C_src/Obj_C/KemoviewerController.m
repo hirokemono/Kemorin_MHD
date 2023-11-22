@@ -12,7 +12,6 @@
 @synthesize ColorLoopCount;
 @synthesize NodeSizeFactor;
 @synthesize NodeSizedigits;
-@synthesize fAnimate;
 @synthesize fInfo;
 @synthesize fDrawHelp;
 @synthesize StereoFlag;
@@ -42,7 +41,6 @@
     self.axisDrawFlag =      0;
     self.axisDrawAccess =    1;
 	
-	fAnimate = 0;
 	return self;
 }
 
@@ -97,7 +95,7 @@
 	[self SetViewTypeMenu:selected];
 
     kemoview_set_viewtype(selected);
-	[_kemoviewer setViewerType:selected];
+	[_metalView setViewerType:selected];
 	[_kemoviewer updateProjection];
 	[_kemoviewer UpdateImage];
 }
@@ -171,7 +169,7 @@
 - (void) Set3DView
 {
     [self SetViewTypeMenu:VIEW_3D];
-    [_kemoviewer setViewerType:VIEW_3D];
+    [_metalView setViewerType:VIEW_3D];
     kemoview_set_viewtype(VIEW_3D);
 }
 
@@ -186,11 +184,6 @@
 	[_kemoviewer Resetview];
 }
 
--(IBAction) ToggleAnimate: (id) sender
-{
-	fAnimate = 1 - fAnimate;
-	[_kemoviewer setAnimate:fAnimate];
-}
 
 -(IBAction) Toggleinfo: (id) sender
 {

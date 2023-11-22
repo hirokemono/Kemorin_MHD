@@ -46,7 +46,6 @@ typedef struct {
     NSTimer* timer_quick;
     NSTimer* timer_msg;
 
-    bool fAnimate;
 	bool fDrawCaps;
     int iflag_resize;
     int iflag_fast;
@@ -82,18 +81,13 @@ typedef struct {
 - (void) QuickUpdateImage;
 - (void) swapbuffer_cocoa;
 
-- (void) animationTimer:(NSTimer *)timer;
 - (void) fullDrawTimer:(NSTimer *)timer;
 - (void) messageTimer:(NSTimer *)timer;
 
-- (void) setViewerType:(NSInteger) selected;
 - (void) Resetview;
 
--(void) setAnimate:(NSInteger)flag;
 -(void) setInfo:(NSInteger)flag;
 -(void) setQuickHelp:(NSInteger)flag;
-
--(id) DrawEvolution:(NSInteger)timeStep;
 
 - (void) prepareKemoOpenGL;
 - (void) awakeFromNib;

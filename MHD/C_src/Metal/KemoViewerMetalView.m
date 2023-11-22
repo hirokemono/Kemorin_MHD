@@ -9,6 +9,11 @@
 
 @implementation KemoViewerMetalView
 
+- (id)init
+{
+    [super init];
+};
+
 -(void)InitBackGroundColor
 {
     float BgColor4f[4];
@@ -97,6 +102,18 @@
 
     //    kemoview_mono_view();
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+    [self setNeedsDisplay: YES];
+
+    [_kemoviewer swapbuffer_cocoa];
+    return self;
+}
+
+-(id) DrawEvolution:(NSInteger)timeStep
+{
+    kemoview_set_single_viewer_id(id_window);
+    kemoview_viewer_evolution((int) timeStep);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
+    kemoview_full_modify_view();
     [self setNeedsDisplay: YES];
 
     [_kemoviewer swapbuffer_cocoa];
@@ -262,6 +279,19 @@
     double newScale = 200.0*[theEvent magnification];
     kemoview_zooming(newScale);
     [self QuickUpdateImage];
+}
+// ---------------------------------
+#pragma mark ---- IB Actions ----
+
+- (void) setViewerType:(NSInteger) selected
+{
+    if(selected == VIEW_3D
+       || selected == VIEW_STEREO){
+        leftBottunFlag = ROTATE;
+    }
+    else{
+        leftBottunFlag = PAN;
+    };
 }
 
 // ---------------------------------

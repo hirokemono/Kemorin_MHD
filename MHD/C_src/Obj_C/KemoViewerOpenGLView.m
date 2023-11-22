@@ -104,17 +104,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 }
 
 // ---------------------------------
--(id) DrawEvolution:(NSInteger)timeStep
-{	
-    kemoview_set_single_viewer_id(id_window);
-	kemoview_viewer_evolution((int) timeStep);
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_full_modify_view();
-	
-	[self swapbuffer_cocoa];
-	return self;
-}
-
 -(void) UpdateImage
 {
 	[self resizeGL]; // forces projection matrix update (does test for size changes)
@@ -157,30 +146,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 // ---------------------------------
 
-// per-window timer function, basic time based animation preformed here
-- (void)animationTimer:(NSTimer *)timer
-{
-    /*
-	BOOL shouldDraw = NO;
-	if (fAnimate) {
-        CFTimeInterval currentTime = CFAbsoluteTimeGetCurrent ();
-		CFTimeInterval deltaTime = currentTime - time_anime;
-		if (deltaTime > 10.0) // skip pauses
-			return;
-		else {
-			// if we are not rotating with trackball in this window
-			if (!gTrackball || (gTrackingViewInfo != self)) {
-				[_resetview updateObjectRotationForTimeDelta: deltaTime]; // update object rotation
-			}
-			shouldDraw = YES; // force redraw
-		}
-        printf("timer on %f %f %f\n", currentTime, time_anime, deltaTime);
-	}
-	time_anime = CFAbsoluteTimeGetCurrent (); //reset time in all cases
-	// if we have current messages
-	[self drawRectforError:[self bounds]]; // redraw now instead dirty to enable updates during live resize
-     */
-}
 
 - (void)fullDrawTimer:(NSTimer *)timer
 {
@@ -214,22 +179,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 // ---------------------------------
 #pragma mark ---- IB Actions ----
-
-- (void) setViewerType:(NSInteger) selected;
-{
-	if(selected == VIEW_3D
-	   || selected == VIEW_STEREO){
-		leftBottunFlag = ROTATE;
-	}
-	else{
-		leftBottunFlag = PAN;
-	};
-}
-
--(void) setAnimate:(NSInteger)flag
-{
-	fAnimate = flag;
-}
 
 -(void) setInfo:(NSInteger)flag
 {
@@ -324,19 +273,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	kemoviewer_reset_to_init_angle();
 	kemoview_init_lighting();
 
-	// set start values...
-	fAnimate =  0;
-	
     [NSColor setIgnoresAlpha:NO];
 	
-	// start animation timer
-/*
-	time_anime = CFAbsoluteTimeGetCurrent ();  // set animation time start time
-	timer_anime = [NSTimer timerWithTimeInterval:(1.0f/60.0f) target:self selector:@selector(animationTimer:) userInfo:nil repeats:NO];
-	[[NSRunLoop currentRunLoop] addTimer:timer_anime forMode:NSDefaultRunLoopMode];
-	[[NSRunLoop currentRunLoop] addTimer:timer_anime forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize
-  */  
-    
     iflag_fast = 0;
     reftime_quick = CFAbsoluteTimeGetCurrent ();  // set animation time start time
     timer_quick = [NSTimer timerWithTimeInterval:(1.0f/1.0f) target:self selector:@selector(fullDrawTimer:) userInfo:nil repeats:YES];

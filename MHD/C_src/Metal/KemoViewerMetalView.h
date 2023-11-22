@@ -23,14 +23,16 @@
     IBOutlet KemoViewerObject     * _singleKemoView;
     IBOutlet KemoViewerOpenGLView * _kemoviewer;
     IBOutlet ResetViewControll    * _resetview;
-
-    int id_window;
+    
     bool fDrawCaps;
     GLboolean gDolly;
     GLboolean gPan;
     GLboolean gTrackball;
     double gDollyPanStartPoint[2];
     NSInteger leftBottunFlag;
+    
+    
+    int id_window;
 }
 @property int id_window;
 
@@ -45,6 +47,7 @@
 
 -(id) DrawRotation: (NSInteger) int_degree : (NSInteger) rotationaxis;
 -(id) DrawQuilt: (NSInteger) int_degree : (NSInteger) rotationaxis;
+-(id) DrawEvolution:(NSInteger)timeStep;
 
 
 - (void) keyDown:(NSEvent *)theEvent;
@@ -59,6 +62,9 @@
 - (void) mouseDragged:(NSEvent *)theEvent;
 - (void) rightMouseDragged:(NSEvent *)theEvent;
 - (void) otherMouseDragged:(NSEvent *)theEvent;
+
+- (void) setViewerType:(NSInteger) selected;
+
 
 - (BOOL) acceptsFirstResponder;
 - (BOOL) becomeFirstResponder;
