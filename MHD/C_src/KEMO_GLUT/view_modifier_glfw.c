@@ -296,9 +296,16 @@ int draw_fast(){
 
 void draw_full(){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-	kemoview_modify_view();
+    kemoview_full_modify_view();
 	glfwSwapBuffers(glfw_window);
 	return;
+};
+
+void draw_fast(){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
+    kemoview_fast_modify_view();
+    glfwSwapBuffers(glfw_window);
+    return;
 };
 
 void draw_quilt(void){

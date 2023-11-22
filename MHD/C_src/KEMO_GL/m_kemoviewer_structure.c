@@ -459,10 +459,9 @@ void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl){
 };
 
 
-int kemoview_quick_view(void){
-	return quick_mono_kemoview(kemo_sgl);
-};
-void kemoview_modify_view(void){modify_stereo_kemoview(kemo_sgl);};
+int kemoview_quick_view(void){return quick_mono_kemoview(kemo_sgl);};
+void kemoview_full_modify_view(void){modify_stereo_kemoview(FULL_DRAW, kemo_sgl);};
+void kemoview_fast_modify_view(void){modify_stereo_kemoview(FAST_DRAW, kemo_sgl);};
 void kemoview_quilt(void){modify_quilt_kemoview(kemo_sgl);};
 
 void kemoviewer_reset_to_init_angle(void){
@@ -494,14 +493,19 @@ void kemoview_update_distance(void){
 	update_projection_struct(kemo_sgl->view_s);
 };
 
+int kemoview_get_fraw_mode(void){return send_gl_draw_mode(kemo_sgl->view_s);};
+
 void kemoview_set_view_integer(int selected, int ivalue){
 	if(selected == ISET_ROTATE_AXIS){
 		set_gl_animation_rot_axis(kemo_sgl->view_s, ivalue);
 	}else if(selected == ISET_ROTATE_INCREMENT){
 		set_gl_animation_rot_angle(kemo_sgl->view_s, ivalue);
+    }else if(selected == ISET_DRAW_MODE){
+        set_gl_draw_mode(kemo_sgl->view_s, ivalue);
 	}
 	return;
 };
+
 void kemoview_set_view_parameter(int selected, int i, double value){
 	if(selected == ISET_ROTATE){
 		set_gl_rotation_parameter(kemo_sgl->view_s, i, value);

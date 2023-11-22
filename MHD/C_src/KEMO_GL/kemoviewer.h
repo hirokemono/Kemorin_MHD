@@ -30,6 +30,10 @@
 #define TWO_CENT   0.02
 #define TWO_MILI   0.002
 
+#define FULL_DRAW      0
+#define FAST_DRAW      1
+#define SIMPLE_DRAW    2
+
 #define VIEW_3D        0
 #define VIEW_STEREO    1
 #define VIEW_MAP       2
@@ -207,6 +211,7 @@
 #define ISET_PIXEL_Y            1
 #define ISET_ROTATE_AXIS       11
 #define ISET_ROTATE_INCREMENT  12
+#define ISET_DRAW_MODE         20
 
 #define AMBIENT_FLAG    0
 #define DIFFUSE_FLAG    1
@@ -389,7 +394,8 @@ extern "C" {
 
     void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl);
 	int kemoview_quick_view(void);
-    void kemoview_modify_view(void);
+    void kemoview_full_modify_view(void);
+    void kemoview_fast_modify_view(void);
     void kemoview_quilt(void);
 
     void kemoviewer_reset_to_init_angle(void);
@@ -403,7 +409,9 @@ extern "C" {
     
     void kemoview_update_distance(void);
     
+    int kemoview_get_fraw_mode(void);
 	void kemoview_set_view_integer(int selected, int ivalue);
+
 	void kemoview_set_view_parameter(int selected, int i, double value);
     void kemoview_set_stereo_parameter(int selected, double value);
     void kemoview_set_quilt_nums(int selected, int ivalue);

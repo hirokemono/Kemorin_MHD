@@ -30,23 +30,26 @@ static void modify_mono_kemoview(struct kemoviewer_type *kemoview){
 };
 
 int quick_mono_kemoview(struct kemoviewer_type *kemoview){
-	glDrawBuffer(GL_BACK);
+    kemoview->view_s->iflag_draw_mode = SIMPLE_DRAW;
+    glDrawBuffer(GL_BACK);
 	
     set_gl_animation_rot_angle(kemoview->view_s, 0);
 	update_projection_struct(kemoview->view_s);
 	modify_view_by_struct(kemoview->view_s);
 	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	quick_draw_objects_gl3(kemoview);
+    update_draw_objects_gl3(kemoview);
 	return 1;
 };
 
-void modify_stereo_kemoview(struct kemoviewer_type *kemoview){
+void modify_stereo_kemoview(int iflag_draw_mode,
+                            struct kemoviewer_type *kemoview){
+    kemoview->view_s->iflag_draw_mode = iflag_draw_mode;
+    glDrawBuffer(GL_BACK);
+    
     if(kemoview->view_s->iflag_view_type == VIEW_STEREO){
-        glDrawBuffer(GL_BACK);
         modify_stereo_anaglyph(kemoview);
     } else {
-        glDrawBuffer(GL_BACK);
         modify_mono_kemoview(kemoview);
     }
 	return;
@@ -54,6 +57,7 @@ void modify_stereo_kemoview(struct kemoviewer_type *kemoview){
 
 void modify_quilt_kemoview(struct kemoviewer_type *kemoview)
 {
+    kemoview->view_s->iflag_draw_mode = FAST_DRAW;
     update_step_projection_struct(kemoview->view_s);
     modify_step_view_by_struct(kemoview->view_s);
     

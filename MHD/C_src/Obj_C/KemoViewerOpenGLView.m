@@ -70,7 +70,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     [_context makeCurrentContext];
 	
 	// move view
-    kemoview_modify_view();
+    kemoview_full_modify_view();
 	kemoview_reset_animation();
 	[_resetview UpdateParameters];
 }
@@ -109,7 +109,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     kemoview_set_single_viewer_id(id_window);
 	kemoview_viewer_evolution((int) timeStep);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-	kemoview_modify_view();
+    kemoview_full_modify_view();
 	
 	[self swapbuffer_cocoa];
 	return self;
@@ -123,7 +123,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	// move view
 	kemoview_set_single_viewer_id(id_window);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-	kemoview_modify_view();
+    kemoview_full_modify_view();
 	[_resetview UpdateParameters];
 
 	[self swapbuffer_cocoa];

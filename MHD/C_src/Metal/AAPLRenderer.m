@@ -902,8 +902,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                      vertex:&_vertices[36]
                      texure:&_texture[11]];
         
+        [self setMetalVertexs:kemo_buffers->coast_buf
+                       vertex:&_vertices[41]];
+        [self setMetalVertexs:kemo_buffers->sph_grid_buf
+                       vertex:&_vertices[42]];
         [self setMetalVertexs:kemo_buffers->axis_buf
                        vertex:&_vertices[43]];
+
         [self setMetalVertexs:kemo_buffers->PSF_solid_buf
                        vertex:&_vertices[35]];
         [self setMetalVertexs:kemo_buffers->PSF_isoline_buf
@@ -925,13 +930,13 @@ Implementation of a platform independent renderer class, which performs Metal se
         [self setMetalVertexs:kemo_buffers->mesh_solid_buf
                        vertex:&_vertices[53]];
         
-        /*  Set Cube Vertex buffer */
+/*  Set Cube Vertex buffer */
         [self setCubeVertexs:kemo_buffers->cube_buf
                     indexbuf:kemo_buffers->cube_index_buf
                       vertex:&_vertices[30]
                        index:&_index_buffer];
         
-        /*  Set transparent vertexs */
+/*  Set transparent vertexs */
         [self setPSFTexture:kemo_buffers->PSF_ttxur_buf
                       image:kemo_buffers->psf_ttexure
                      vertex:&_vertices[38]
@@ -995,6 +1000,95 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
+- (void) encodeSimpleObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                      buffer:(struct kemoview_buffers *) kemo_buffers
+                        mesh:(struct kemoview_mesh *) kemo_mesh
+                      unites:(KemoViewUnites *) monoViewUnites
+{
+    [self drawTexureWithSimple:kemo_buffers->PSF_stxur_buf
+                       encoder:renderEncoder
+                        vertex:&_vertices[36]
+                        texure:&_texture[11]
+                        unites:monoViewUnites
+                         sides:BOTH_SURFACES
+                         solid:SMOOTH_SHADE];
+    /*
+     [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
+     encoder:renderEncoder
+     vertex:&_vertices[36]
+     texure:&_texture[11]
+     unites:monoViewUnites
+     sides:BOTH_SURFACES
+     solid:SMOOTH_SHADE];
+     */
+    [self drawSolidWithSimple:kemo_buffers->axis_buf
+                      encoder:renderEncoder
+                       vertex:&_vertices[43]
+                       unites:monoViewUnites
+                        sides:BOTH_SURFACES
+                        solid:SMOOTH_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->PSF_solid_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[35]
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+
+    [self drawLineObject:kemo_buffers->FLINE_line_buf
+                 encoder:renderEncoder
+                  vertex:&_vertices[56]
+                  unites:monoViewUnites];
+    
+    [self drawLineObject:kemo_buffers->mesh_grid_buf
+                 encoder:renderEncoder
+                  vertex:&_vertices[52]
+                  unites:monoViewUnites];
+    [self drawSolidWithPhong:kemo_buffers->mesh_solid_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[53]
+                      unites:monoViewUnites
+                       sides:kemo_mesh->mesh_m->polygon_mode
+                       solid:SMOOTH_SHADE];
+    [self drawCubeWithPhong:kemo_buffers->cube_buf
+                    encoder:renderEncoder
+                     vertex:&_vertices[30]
+                      index:&_index_buffer
+                     unites:monoViewUnites];
+
+    [self drawLineObject:kemo_buffers->coast_buf
+                 encoder:renderEncoder
+                  vertex:&_vertices[41]
+                  unites:monoViewUnites];
+    [self drawLineObject:kemo_buffers->sph_grid_buf
+                 encoder:renderEncoder
+                  vertex:&_vertices[42]
+                  unites:monoViewUnites];
+
+/*  Draw transparent objects */
+    [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
+                      encoder:renderEncoder
+                       vertex:&_vertices[38]
+                       texure:&_texture[12]
+                       unites:monoViewUnites
+                        sides:BOTH_SURFACES
+                        solid:SMOOTH_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->PSF_trns_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[37]
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->mesh_trns_buf
+                     encoder:renderEncoder
+                      vertex:&_vertices[54]
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    return;
+}
 
 - (void) encode3DObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                   buffer:(struct kemoview_buffers *) kemo_buffers
@@ -1052,13 +1146,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                            sides:BOTH_SURFACES
                            solid:SMOOTH_SHADE];
     };
-
-    [self setMetalVertexs:kemo_buffers->coast_buf
-                   vertex:&_vertices[41]];
-    [self setMetalVertexs:kemo_buffers->sph_grid_buf
-                   vertex:&_vertices[42]];
-
-        
+       
     [self drawLineObject:kemo_buffers->FLINE_line_buf
                  encoder:renderEncoder
                   vertex:&_vertices[56]
@@ -1198,10 +1286,35 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
+- (void) encodeSimpleView:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                   buffer:(struct kemoview_buffers *) kemo_buffers
+                     mesh:(struct kemoview_mesh *) kemo_mesh
+                   unites:(KemoViewUnites *) monoViewUnites
+{
+    [self encodeSimpleObjects:renderEncoder
+                   buffer:kemo_buffers
+                     mesh:kemo_mesh
+                   unites:monoViewUnites];
+    [self encodeLabelObjects:renderEncoder
+                      buffer:kemo_buffers
+                  projection:&_cbar_proj_mat];
+    return;
+}
+
 - (void)drawKemoMetalView:(nonnull MTKView *)view
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    kemoview_const_buffers(kemo_sgl);
+
+    if(kemoview_get_fraw_mode() == FULL_DRAW){
+        [self releaseKemoViewMetalBuffers:kemo_sgl->kemo_buffers
+                                    views:kemo_sgl->view_s];
+
+        kemoview_const_buffers(kemo_sgl);
+
+        [self setKemoViewMetalBuffers:kemo_sgl->kemo_buffers
+                                views:kemo_sgl->view_s
+                            fieldline:kemo_sgl->kemo_fline];
+    };
 
     [self setKemoViewLightings:kemo_sgl->kemo_buffers->cube_buf
                         unites:&_monoViewUnites];
@@ -1214,10 +1327,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                         unites:&_rightViewUnites];
     [self rightMaterialParams:&(_rightViewUnites.material)];
 
-    [self setKemoViewMetalBuffers:kemo_sgl->kemo_buffers
-                            views:kemo_sgl->view_s
-                        fieldline:kemo_sgl->kemo_fline];
-
 /* Create a new command buffer for each render pass to the current drawable. */
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
     commandBuffer.label = @"KemoViewerCommands";
@@ -1228,23 +1337,27 @@ Implementation of a platform independent renderer class, which performs Metal se
         _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"MyRenderEncoder";
 
-        [self encodeKemoViewers:&_renderEncoder
-                         buffer:kemo_sgl->kemo_buffers
-                          views:kemo_sgl->view_s
-                      fieldline:kemo_sgl->kemo_fline
-                           mesh:kemo_sgl->kemo_mesh
-                         unites:&_monoViewUnites
-                           left:&_leftViewUnites
-                          right:&_rightViewUnites];
+        if(kemoview_get_fraw_mode() == SIMPLE_DRAW){
+            [self encodeSimpleView:&_renderEncoder
+                            buffer:kemo_sgl->kemo_buffers
+                              mesh:kemo_sgl->kemo_mesh
+                            unites:&_monoViewUnites];
+        }else{
+            [self encodeKemoViewers:&_renderEncoder
+                             buffer:kemo_sgl->kemo_buffers
+                              views:kemo_sgl->view_s
+                          fieldline:kemo_sgl->kemo_fline
+                               mesh:kemo_sgl->kemo_mesh
+                             unites:&_monoViewUnites
+                               left:&_leftViewUnites
+                              right:&_rightViewUnites];
+        };
 
         [_renderEncoder endEncoding];
 /*Schedule a present once the framebuffer is complete using the current drawable. */
         [commandBuffer presentDrawable:view.currentDrawable];
     }
     [commandBuffer  commit];
-
-    [self releaseKemoViewMetalBuffers:kemo_sgl->kemo_buffers
-                                views:kemo_sgl->view_s];
     return;
 }
 
@@ -1253,7 +1366,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    
+
     update_left_projection_struct(kemo_sgl->view_s);
     modify_left_view_by_struct(kemo_sgl->view_s);
     [self setTransferMatrices:&_leftViewUnites];

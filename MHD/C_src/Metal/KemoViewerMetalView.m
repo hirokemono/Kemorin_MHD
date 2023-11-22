@@ -56,14 +56,23 @@
 
 -(void) UpdateImage
 {
-    [_kemoviewer UpdateImage];
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
     [self setNeedsDisplay: YES];
+    [_kemoviewer UpdateImage];
+    return;
+}
+-(void) FastUpdateImage
+{
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+    [self setNeedsDisplay: YES];
+    [_kemoviewer UpdateImage];
     return;
 }
 -(void) QuickUpdateImage
 {
-    [_kemoviewer QuickUpdateImage];
+    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW);
     [self setNeedsDisplay: YES];
+    [_kemoviewer QuickUpdateImage];
     return;
 }
 
@@ -71,8 +80,10 @@
 {
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_modify_view();
+    kemoview_fast_modify_view();
     
+    [_kemoviewer UpdateImage];
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [self setNeedsDisplay: YES];
     return self;
 }
@@ -84,6 +95,7 @@
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
     kemoview_quilt();
     
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [self setNeedsDisplay: YES];
     return self;
 }
@@ -99,6 +111,7 @@
             case 'c':
                 // toggle caps
                 fDrawCaps = 1 - fDrawCaps;
+                kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
                 [self setNeedsDisplay: YES];
                 break;
         }
@@ -190,8 +203,7 @@
         [_resetview UpdateParameters];
     }
 //    gTrackingViewInfo = NULL;
-
-    [self UpdateImage];
+    [self FastUpdateImage];
 }
 
 // ---------------------------------
