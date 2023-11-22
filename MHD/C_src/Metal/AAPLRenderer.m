@@ -1366,6 +1366,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    [self setTransferMatrices:&_monoViewUnites];
 
     update_left_projection_struct(kemo_sgl->view_s);
     modify_left_view_by_struct(kemo_sgl->view_s);
@@ -1375,10 +1376,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     modify_right_view_by_struct(kemo_sgl->view_s);
     [self setTransferMatrices:&_rightViewUnites];
     
-    update_projection_struct(kemo_sgl->view_s);
-    modify_view_by_struct(kemo_sgl->view_s);
-    [self setTransferMatrices:&_monoViewUnites];
-
     [self drawKemoMetalView:view];
     return;
 }

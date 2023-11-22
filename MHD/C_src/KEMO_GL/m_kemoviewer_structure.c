@@ -459,10 +459,12 @@ void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl){
 };
 
 
-int kemoview_quick_view(void){return quick_mono_kemoview(kemo_sgl);};
+void kemoview_mono_view(void){modify_mono_kemoview(kemo_sgl);};
 void kemoview_full_modify_view(void){modify_stereo_kemoview(FULL_DRAW, kemo_sgl);};
 void kemoview_fast_modify_view(void){modify_stereo_kemoview(FAST_DRAW, kemo_sgl);};
-void kemoview_quilt(void){modify_quilt_kemoview(kemo_sgl);};
+
+int kemoview_quick_viewmatrix(void){return quick_mono_viewmat(kemo_sgl);};
+void kemoview_quilt_viewmatrix(void){modify_quilt_viewmat(kemo_sgl);};
 
 void kemoviewer_reset_to_init_angle(void){
     reset_all_view_parameter(kemo_sgl->view_s);

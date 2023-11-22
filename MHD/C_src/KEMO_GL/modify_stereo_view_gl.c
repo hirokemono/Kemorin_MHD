@@ -3,7 +3,14 @@
 
 #include "modify_stereo_view_gl.h"
 
-static void modify_stereo_anaglyph(struct kemoviewer_type *kemoview){
+void modify_mono_kemoview(struct kemoviewer_type *kemoview){
+    glDrawBuffer(GL_BACK);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    update_draw_objects_gl3(kemoview);
+    return;
+};
+
+void modify_stereo_anaglyph(struct kemoviewer_type *kemoview){
 	update_left_projection_struct(kemoview->view_s);
     modify_left_view_by_struct(kemoview->view_s);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -20,28 +27,6 @@ static void modify_stereo_anaglyph(struct kemoviewer_type *kemoview){
 	return;
 };
 
-static void modify_mono_kemoview(struct kemoviewer_type *kemoview){
-	update_projection_struct(kemoview->view_s);
-	modify_view_by_struct(kemoview->view_s);
-	
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	update_draw_objects_gl3(kemoview);
-	return;
-};
-
-int quick_mono_kemoview(struct kemoviewer_type *kemoview){
-    kemoview->view_s->iflag_draw_mode = SIMPLE_DRAW;
-    glDrawBuffer(GL_BACK);
-	
-    set_gl_animation_rot_angle(kemoview->view_s, 0);
-	update_projection_struct(kemoview->view_s);
-	modify_view_by_struct(kemoview->view_s);
-	
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    update_draw_objects_gl3(kemoview);
-	return 1;
-};
-
 void modify_stereo_kemoview(int iflag_draw_mode,
                             struct kemoviewer_type *kemoview){
     kemoview->view_s->iflag_draw_mode = iflag_draw_mode;
@@ -55,13 +40,19 @@ void modify_stereo_kemoview(int iflag_draw_mode,
 	return;
 };
 
-void modify_quilt_kemoview(struct kemoviewer_type *kemoview)
+int quick_mono_viewmat(struct kemoviewer_type *kemoview)
+{
+    kemoview->view_s->iflag_draw_mode = SIMPLE_DRAW;
+    set_gl_animation_rot_angle(kemoview->view_s, 0);
+    update_projection_struct(kemoview->view_s);
+    modify_view_by_struct(kemoview->view_s);
+    return 1;
+};
+
+void modify_quilt_viewmat(struct kemoviewer_type *kemoview)
 {
     kemoview->view_s->iflag_draw_mode = FAST_DRAW;
     update_step_projection_struct(kemoview->view_s);
     modify_step_view_by_struct(kemoview->view_s);
-    
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    update_draw_objects_gl3(kemoview);
     return;
 };

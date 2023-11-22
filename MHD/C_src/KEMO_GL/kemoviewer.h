@@ -393,10 +393,12 @@ extern "C" {
     void kemoview_add_fliped_quilt_img(unsigned char *glimage, unsigned char *fliped_quilt);
 
     void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl);
-	int kemoview_quick_view(void);
+    void kemoview_mono_view(void);
     void kemoview_full_modify_view(void);
     void kemoview_fast_modify_view(void);
-    void kemoview_quilt(void);
+
+    int kemoview_quick_viewmatrix(void);
+    void kemoview_quilt_viewmatrix(void);
 
     void kemoviewer_reset_to_init_angle(void);
     

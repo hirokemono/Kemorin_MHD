@@ -11,9 +11,12 @@
 
 /* prototypes */
 
-int quick_mono_kemoview(struct kemoviewer_type *kemoview);
+void modify_mono_kemoview(struct kemoviewer_type *kemoview);
+void modify_stereo_anaglyph(struct kemoviewer_type *kemoview);
 void modify_stereo_kemoview(int iflag_draw_mode,
                             struct kemoviewer_type *kemoview);
-void modify_quilt_kemoview(struct kemoviewer_type *kemoview);
+
+int quick_mono_viewmat(struct kemoviewer_type *kemoview);
+void modify_quilt_viewmat(struct kemoviewer_type *kemoview);
 
 #endif

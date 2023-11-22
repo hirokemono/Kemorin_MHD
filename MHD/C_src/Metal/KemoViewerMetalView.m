@@ -82,21 +82,24 @@
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
     kemoview_fast_modify_view();
     
-    [_kemoviewer UpdateImage];
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [self setNeedsDisplay: YES];
+    [_kemoviewer swapbuffer_cocoa];
     return self;
 }
 
 -(id) DrawQuilt: (NSInteger) int_degree : (NSInteger)rotationaxis
 {
-    kemoview_set_single_viewer_id(id_window);
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_quilt();
-    
+    kemoview_quilt_viewmatrix();
+    kemoview_fast_modify_view();
+
+    //    kemoview_mono_view();
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [self setNeedsDisplay: YES];
+
+    [_kemoviewer swapbuffer_cocoa];
     return self;
 }
 

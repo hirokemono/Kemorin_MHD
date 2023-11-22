@@ -138,7 +138,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	
 	// move view
 	kemoview_set_single_viewer_id(id_window);
-    iflag_fast = kemoview_quick_view();
+    iflag_fast = kemoview_quick_viewmatrix();
+    kemoview_mono_view();
 	[_resetview UpdateParameters];
 	
 	[self swapbuffer_cocoa];
