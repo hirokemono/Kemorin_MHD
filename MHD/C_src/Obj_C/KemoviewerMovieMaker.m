@@ -455,22 +455,19 @@ NSData *SnapshotData;
 {
     BOOL interlaced = NO;
     NSDictionary *properties;
-    
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetGLBitmapToImageRep];
-    
-    NSImage *SnapshotImage = [[NSImage alloc] init];
-    [SnapshotImage addRepresentation:SnapshotBitmapRep];
-    
     properties = [NSDictionary
                   dictionaryWithObject:[NSNumber numberWithBool:interlaced]
                   forKey:NSImageInterlaced];
-    SnapshotData = [SnapshotBitmapRep representationUsingType:NSBitmapImageFileTypeBMP
+
+    NSBitmapImageRep * imageRep = [NSBitmapImageRep alloc];
+    [_metalViewController getRenderedbyMetal:imageRep];
+    
+    SnapshotData = [imageRep representationUsingType:NSBitmapImageFileTypeBMP
                                                    properties:properties];
     
     NSString *filename =  [ImageFilehead stringByAppendingString:@".bmp"];
     [SnapshotData writeToFile:filename atomically:YES];
-    [SnapshotImage release];            
-    [SnapshotBitmapRep release];
+    [imageRep release];
 }
 
 -(void) SaveKemoviewPDFFile:(NSString*)ImageFilehead
@@ -479,23 +476,26 @@ NSData *SnapshotData;
 	NSRect vFrame;
 	NSData *pdfData;
 	
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetGLBitmapToImageRep];
-	
-	NSImage *SnapshotImage = [[NSImage alloc] init];
-	[SnapshotImage addRepresentation:SnapshotBitmapRep];
-	
+    NSBitmapImageRep * imageRep = [NSBitmapImageRep alloc];
+    [_metalViewController getRenderedbyMetal:imageRep];
+    
+    NSImage * image = [[NSImage alloc] init];
+    NSRect rectView = [_metalView convertRectToBacking:[_metalView bounds]];
+    [image initWithSize:NSSizeFromCGSize(rectView.size)];
+    [image addRepresentation:imageRep];
+
 	vFrame = NSZeroRect;
-	vFrame.size = [SnapshotImage size];
+	vFrame.size = [image size];
 	myView = [[NSImageView alloc] initWithFrame:vFrame];
-	[myView setImage:SnapshotImage];
+	[myView setImage:image];
 	pdfData = [myView dataWithPDFInsideRect:vFrame];
 	[pdfData retain];
 
 	NSString *filename =  [ImageFilehead stringByAppendingString:@".pdf"];
 	[pdfData writeToFile:filename atomically:YES];
 	[pdfData release];            
-	[SnapshotBitmapRep release];
-    [SnapshotImage release];
+	[imageRep release];
+    [image release];
 }
 
 
