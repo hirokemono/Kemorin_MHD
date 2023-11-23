@@ -108,7 +108,7 @@
                                  }];
 }
 
--(void) SelectImageFileFormat:(NSString *)ImageFilename
+-(void) SaveImageByFormat:(NSString *)ImageFilename
 {
     NSUserDefaults* defaults = [_user_defaults_controller defaults];
     CurrentImageFormat = [[defaults stringForKey:@"ImageFormatID"] intValue];
@@ -156,7 +156,7 @@
 		NSString * ImageFilename = [[ ImageSavePanelObj URL] path];
         // NSString * ImageDirectory = [ ImageSavePanelObj directory];
         // NSLog(@" ImageDirectory = %@", ImageDirectory);
-        [self SelectImageFileFormat:ImageFilename];
+        [self SaveImageByFormat:ImageFilename];
 	};
                                    }];
 }

@@ -12,12 +12,14 @@
 
 #import "KemoViewerOpenGLView.h"
 #import "KemoViewerMetalView.h"
+#import "KemoViewerMetalViewController.h"
 
 
 @interface KemoviewerMovieMaker : NSObject {
     IBOutlet NSWindow*  window;
 	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
     IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerMetalViewController * _metalViewController;
 	IBOutlet NSUserDefaultsController* _movie_defaults_controller;
 
 	NSInteger MovieFormatFlag;
@@ -70,7 +72,7 @@
 -(void) SaveKemoviewQuiltBMPFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
 -(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
 
-- (IBAction)SendToClipAsPDF:(id)sender;
+- (IBAction)SendToClipAsTIFF:(id)sender;
 
 - (NSInteger) SetImageFileFormatID:(NSString *)FileExtension;
 

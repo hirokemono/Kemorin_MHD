@@ -19,6 +19,7 @@ Header for a platform independent renderer class, which performs Metal setup and
 @interface AAPLRenderer : NSObject<MTKViewDelegate>
 typedef struct
 {
+/*    Texture to render screen to texture */
     matrix_float4x4 modelview_mat;
     matrix_float4x4 projection_mat;
     matrix_float4x4 normal_mat;
@@ -31,5 +32,6 @@ typedef struct
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
 - (void)drawInMTKView:(nonnull MTKView *)view;
+-(nonnull void *) loadImageOutputTextureFromRenderer;
 
 @end

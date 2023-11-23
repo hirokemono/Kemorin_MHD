@@ -91,7 +91,6 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                             struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers);
 
-
 struct kemoview_VAOs * init_kemoview_VAOs(void);
 void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);

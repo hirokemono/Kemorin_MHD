@@ -16,7 +16,12 @@ Implementation of a platform independent renderer class, which performs Metal se
 @implementation AAPLRenderer
 {
     id<MTLDevice> _device;
-    
+
+/*    Texture to render screen to texture */
+    id<MTLTexture> _imageOutputTexture;
+/* Render pass descriptor to draw to the texture */
+    MTLRenderPassDescriptor* _textureRenderPassDescriptor;
+
     // The render pipeline generated from the vertex and fragment shaders in the .metal shader file.
     id<MTLRenderPipelineState> _pipelineState[40];
     
@@ -51,7 +56,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     NSUInteger _frameNum;
     
-    
     IBOutlet KemoViewerObject * _singleKemoView;
 }
 
@@ -70,7 +74,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
          // Load all the shader files with a .metal file extension in the project.
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
-
         _vertexFunction[0] =   [defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
         _fragmentFunction[0] = [defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
 
@@ -194,9 +197,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                                            error:&error];
         NSAssert(_pipelineState[4], @"Failed to create pipeline state: %@", error);
 
-        _pipelineState[14] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+        _pipelineState[15] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                            error:&error];
-        NSAssert(_pipelineState[14], @"Failed to create pipeline state: %@", error);
+        NSAssert(_pipelineState[15], @"Failed to create pipeline state: %@", error);
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -413,6 +416,54 @@ Implementation of a platform independent renderer class, which performs Metal se
                                  indexBuffer:*indices
                            indexBufferOffset:0];
     };
+}
+
+
+-(void) initImageOutputTextures
+{
+/* Initialize texture for screen output */
+    MTLTextureDescriptor *texureDecriptor = [MTLTextureDescriptor new];
+    texureDecriptor.textureType = MTLTextureType2D;
+    texureDecriptor.width =  _viewportSize.x;
+    texureDecriptor.height = _viewportSize.y;
+    texureDecriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
+    texureDecriptor.usage = MTLTextureUsageRenderTarget;
+
+    _imageOutputTexture = [_device newTextureWithDescriptor:texureDecriptor];
+
+/*Setup render pass*/
+    _textureRenderPassDescriptor = [MTLRenderPassDescriptor new];
+    _textureRenderPassDescriptor.colorAttachments[0].texture = _imageOutputTexture;
+    _textureRenderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
+    _textureRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(1, 1, 1, 1);
+    _textureRenderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
+
+    [_textureRenderPassDescriptor release];
+    [_imageOutputTexture release];
+
+
+    NSError *error;
+    MTLRenderPipelineDescriptor *pipelineStateDescriptor;
+    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+    pipelineStateDescriptor.label = @"Offscreen Phong Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   _vertexFunction[3];
+    pipelineStateDescriptor.fragmentFunction = _fragmentFunction[3];
+    pipelineStateDescriptor.depthAttachmentPixelFormat =      _imageOutputTexture.depth;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = _imageOutputTexture.pixelFormat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        
+    _pipelineState[14] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                       error:&error];
+    NSAssert(_pipelineState[14], @"Failed to create pipeline state: %@", error);
+    return;
 }
 
 - (void)drawSolidWithPhong:(struct gl_strided_buffer *) buf
@@ -1305,7 +1356,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
 
-    if(kemoview_get_fraw_mode() == FULL_DRAW){
+    if(kemoview_get_draw_mode() == FULL_DRAW){
         [self releaseKemoViewMetalBuffers:kemo_sgl->kemo_buffers
                                     views:kemo_sgl->view_s];
 
@@ -1337,7 +1388,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"MyRenderEncoder";
 
-        if(kemoview_get_fraw_mode() == SIMPLE_DRAW){
+        if(kemoview_get_draw_mode() == SIMPLE_DRAW){
             [self encodeSimpleView:&_renderEncoder
                             buffer:kemo_sgl->kemo_buffers
                               mesh:kemo_sgl->kemo_mesh
@@ -1353,13 +1404,16 @@ Implementation of a platform independent renderer class, which performs Metal se
                               right:&_rightViewUnites];
         };
 
-        [_renderEncoder endEncoding];
 /*Schedule a present once the framebuffer is complete using the current drawable. */
         [commandBuffer presentDrawable:view.currentDrawable];
+        [_renderEncoder endEncoding];
     }
     [commandBuffer  commit];
+    kemoview_set_view_integer(ISET_CAPTURE_MODE, OFF);
     return;
 }
+
+
 
 
 /// Called whenever the view needs to render a frame.
@@ -1380,7 +1434,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
-
+-(nonnull void *) loadImageOutputTextureFromRenderer
+{
+    return &_imageOutputTexture;
+};
 
 /// Called whenever view changes orientation or is resized
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size

@@ -23,6 +23,7 @@
 struct view_element{
 	int iflag_retina;
     int iflag_draw_mode;
+    int iflag_capture;
 	int iflag_view_type;
 	int shading_mode;
 	
@@ -117,6 +118,8 @@ int send_gl_retinamode(struct view_element *view);
 
 void set_gl_draw_mode(struct view_element *view, int imode);
 int send_gl_draw_mode(struct view_element *view);
+void set_gl_capture_mode(struct view_element *view, int imode);
+int send_gl_capture_mode(struct view_element *view);
 
 void set_gl_rotation_parameter(struct view_element *view, int i, double rot_vect);
 void set_gl_dragging_rotation(struct view_element *view, double rot_vect[4]);

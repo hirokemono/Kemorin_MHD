@@ -93,6 +93,17 @@
     NSRect rectView_DISP = [self bounds];
 }
 
+- (int) getHorizontalViewSize
+{
+    NSRect rectView = [self convertRectToBacking:[self bounds]];
+    return rectView.size.width;
+}
+
+- (int) getVerticalViewSize
+{
+    NSRect rectView = [self convertRectToBacking:[self bounds]];
+    return rectView.size.height;
+}
 
 -(void) UpdateImage
 {

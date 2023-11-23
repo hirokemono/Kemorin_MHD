@@ -211,7 +211,8 @@
 #define ISET_PIXEL_Y            1
 #define ISET_ROTATE_AXIS       11
 #define ISET_ROTATE_INCREMENT  12
-#define ISET_DRAW_MODE         20
+#define ISET_DRAW_MODE         21
+#define ISET_CAPTURE_MODE      22
 
 #define AMBIENT_FLAG    0
 #define DIFFUSE_FLAG    1
@@ -393,6 +394,7 @@ extern "C" {
     void kemoview_add_fliped_quilt_img(unsigned char *glimage, unsigned char *fliped_quilt);
 
     void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl);
+
     void kemoview_mono_view(void);
     void kemoview_full_modify_view(void);
     void kemoview_fast_modify_view(void);
@@ -411,8 +413,10 @@ extern "C" {
     
     void kemoview_update_distance(void);
     
-    int kemoview_get_fraw_mode(void);
-	void kemoview_set_view_integer(int selected, int ivalue);
+    int kemoview_get_draw_mode(void);
+    int kemoview_get_capture_mode(void);
+
+    void kemoview_set_view_integer(int selected, int ivalue);
 
 	void kemoview_set_view_parameter(int selected, int i, double value);
     void kemoview_set_stereo_parameter(int selected, double value);

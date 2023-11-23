@@ -14,6 +14,7 @@
 
 #import "AAPLRenderer.h"
 #import "KemoViewerMetalView.h"
+#include "kemoviewer.h"
 
 @interface KemoViewerMetalViewController : NSViewController{
 }
@@ -22,6 +23,9 @@
 -(void) viewDidLoad;
 
 -(void) viewDidLayout;
+-(nonnull void *) loadImageOutputTexture;
+
+-(void) FastUpdateImageController:(NSImage *) Image;
 
 @end
 

@@ -54,6 +54,13 @@
 - (void) setRetinaMode;
 - (void) setViewerSize;
 
+- (int) getHorizontalViewSize;
+- (int) getVerticalViewSize;
+
+-(void) UpdateImage;
+-(void) FastUpdateImage;
+-(void) QuickUpdateImage;
+
 -(id) DrawRotation: (NSInteger) int_degree : (NSInteger) rotationaxis;
 -(id) DrawQuilt: (NSInteger) int_degree : (NSInteger) rotationaxis;
 -(id) DrawEvolution:(NSInteger)timeStep;
