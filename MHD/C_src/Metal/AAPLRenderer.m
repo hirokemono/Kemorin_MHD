@@ -1409,7 +1409,6 @@ Implementation of a platform independent renderer class, which performs Metal se
         [_renderEncoder endEncoding];
     }
     [commandBuffer  commit];
-    kemoview_set_view_integer(ISET_CAPTURE_MODE, OFF);
     return;
 }
 

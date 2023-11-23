@@ -496,7 +496,6 @@ void kemoview_update_distance(void){
 };
 
 int kemoview_get_draw_mode(void){return send_gl_draw_mode(kemo_sgl->view_s);};
-int kemoview_get_capture_mode(void){return send_gl_capture_mode(kemo_sgl->view_s);};
 
 void kemoview_set_view_integer(int selected, int ivalue){
 	if(selected == ISET_ROTATE_AXIS){
@@ -505,8 +504,6 @@ void kemoview_set_view_integer(int selected, int ivalue){
 		set_gl_animation_rot_angle(kemo_sgl->view_s, ivalue);
     }else if(selected == ISET_DRAW_MODE){
         set_gl_draw_mode(kemo_sgl->view_s, ivalue);
-    }else if(selected == ISET_CAPTURE_MODE){
-        set_gl_capture_mode(kemo_sgl->view_s, ivalue);
 	}
 	return;
 };

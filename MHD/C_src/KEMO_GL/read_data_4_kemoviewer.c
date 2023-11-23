@@ -45,7 +45,6 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
                      struct mesh_menu_val *mesh_m, struct view_element *view){
 	
     view->iflag_draw_mode = FULL_DRAW;
-    view->iflag_capture =   OFF;
     view->iflag_retina =    ON;
 	view->iflag_view_type = VIEW_3D;
 	view->shading_mode =    INIT_SHADING_MODE;

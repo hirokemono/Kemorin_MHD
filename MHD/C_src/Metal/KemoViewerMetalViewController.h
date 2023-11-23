@@ -25,7 +25,7 @@
 -(void) viewDidLayout;
 -(nonnull void *) loadImageOutputTexture;
 
--(void) FastUpdateImageController:(NSImage *) Image;
+-(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep;
 
 @end
 

@@ -62,45 +62,44 @@
     return [_renderer loadImageOutputTextureFromRenderer];
 }
 
--(void) FastUpdateImageController:(NSImage *) Image
+-(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep
 {
-    NSRect rectView = [_metalView convertRectToBacking:[_metalView bounds]];
-    
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [_renderer drawInMTKView:_metalView];
-    
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+
     /*    Texture to render screen to texture */
     id<MTLTexture> _imageOutputTexture = _metalView.currentDrawable.texture;
-    int npix[2];
-    npix[0] = (int) _imageOutputTexture.width;
-    npix[1] = (int) _imageOutputTexture.height;
-    NSUInteger bpRaw = 4 * npix[0];
-    unsigned char *bgra = (unsigned char *) malloc( (npix[1]*bpRaw) * sizeof(unsigned char));
-    
+    NSUInteger height = _imageOutputTexture.height;
+    NSUInteger width =  _imageOutputTexture.width;
+    NSUInteger bpRaw = 4 * _imageOutputTexture.width;
+    NSUInteger num_pixel = _imageOutputTexture.width * _imageOutputTexture.height;
+    NSUInteger i;
+    unsigned char *bgra = (unsigned char *) malloc(4*num_pixel * sizeof(unsigned char));
+    unsigned char rtmp;
+
     [_imageOutputTexture getBytes:bgra
                       bytesPerRow:bpRaw
-                       fromRegion:MTLRegionMake2D(0, 0, (NSUInteger) npix[0], (NSUInteger) npix[1])
+                       fromRegion:MTLRegionMake2D(0, 0, width, height)
                       mipmapLevel:0];
-    unsigned char rtmp;
-    for(int i= 0;i<npix[0]*npix[1];i++){
+//    [_imageOutputTexture release];
+    
+    for(i=0;i<num_pixel;i++){
         rtmp = bgra[4*i];
         bgra[4*i] = bgra[4*i+2];
         bgra[4*i+2] = rtmp;
     }
     
-    
     int bitsPerComponent = 8;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(bgra, npix[0], npix[1], bitsPerComponent,
-                                                 bpRaw, colorSpace,
+    CGContextRef context = CGBitmapContextCreate(bgra, width, height,
+                                                 bitsPerComponent, bpRaw, colorSpace,
                                                  (kCGBitmapAlphaInfoMask & kCGImageAlphaPremultipliedLast));
+    free(bgra);
     CGColorSpaceRelease(colorSpace);
     CGImageRef dstImage = CGBitmapContextCreateImage(context);
     
-    NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithCGImage:dstImage];
-    [Image initWithSize:NSSizeFromCGSize(rectView.size)];
-    [Image addRepresentation:imageRep];
-    [imageRep release];
+    [imageRep initWithCGImage:dstImage];
     return;
 };
 @end

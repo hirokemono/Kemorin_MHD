@@ -719,14 +719,6 @@ void set_gl_draw_mode(struct view_element *view, int imode)
 
 int send_gl_draw_mode(struct view_element *view){return view->iflag_draw_mode;};
 
-void set_gl_capture_mode(struct view_element *view, int imode)
-{
-    view->iflag_capture = imode;
-    return;
-};
-int send_gl_capture_mode(struct view_element *view){return view->iflag_capture;};
-
-
 void set_gl_rotation_parameter(struct view_element *view, int i, double rot_vect)
 {
 	view->rotation[i] = rot_vect;

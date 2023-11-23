@@ -436,39 +436,19 @@ NSData *SnapshotData;
 {
     BOOL interlaced = NO;
     NSDictionary *properties;
-    
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetGLBitmapToImageRep];
-    
-    NSImage *SnapshotImage = [[NSImage alloc] init];
-    [SnapshotImage addRepresentation:SnapshotBitmapRep];
-    
     properties = [NSDictionary
                   dictionaryWithObject:[NSNumber numberWithBool:interlaced]
                   forKey:NSImageInterlaced];
-    SnapshotData = [SnapshotBitmapRep representationUsingType:NSBitmapImageFileTypePNG
-                                                   properties:properties];
+
+    NSBitmapImageRep * imageRep = [NSBitmapImageRep alloc];
+    [_metalViewController getRenderedbyMetal:imageRep];
+    
+    SnapshotData = [imageRep representationUsingType:NSBitmapImageFileTypePNG
+                                          properties:properties];
     
     NSString *filename =  [ImageFilehead stringByAppendingString:@".png"];
     [SnapshotData writeToFile:filename atomically:YES];
-    [SnapshotImage release];
-    [SnapshotBitmapRep release];
-    
-    
-    SnapshotBitmapRep = [self SetMetalBitmapToImageRep];
-    
-    SnapshotImage = [[NSImage alloc] init];
-    [SnapshotImage addRepresentation:SnapshotBitmapRep];
-    
-    properties = [NSDictionary
-                  dictionaryWithObject:[NSNumber numberWithBool:interlaced]
-                  forKey:NSImageInterlaced];
-    SnapshotData = [SnapshotBitmapRep representationUsingType:NSBitmapImageFileTypePNG
-                                        properties:properties];
-    
-    NSString *filename2 =  [ImageFilehead stringByAppendingString:@"_2.png"];
-    [SnapshotData writeToFile:filename2 atomically:YES];
-    [SnapshotImage release];
-    [SnapshotBitmapRep release];
+    [imageRep release];
 }
 
 -(void) SaveKemoviewBMPFile:(NSString*)ImageFilehead
@@ -680,21 +660,19 @@ NSData *SnapshotData;
 
 - (IBAction)SendToClipAsTIFF:(id)sender
 {
-    int npix_xy[2];
-    kemoview_set_view_integer(ISET_CAPTURE_MODE, ON);
-    NSImage * tako = [[NSImage alloc] init];
-    [_metalViewController FastUpdateImageController:tako];
-//    id<MTLTexture> * takoo = (id<MTLTexture> *) [_metalViewController loadImageOutputTexture];
-    npix_xy[0] = [_metalView getHorizontalViewSize];
-    npix_xy[1] = [_metalView getVerticalViewSize];
+    NSBitmapImageRep * imageRep = [NSBitmapImageRep alloc];
+    [_metalViewController getRenderedbyMetal:imageRep];
     
-    NSImage *SnapshotImage = [self InitMetalBitmapToImage];
+    NSImage * image = [[NSImage alloc] init];
+    NSRect rectView = [_metalView convertRectToBacking:[_metalView bounds]];
+    [image initWithSize:NSSizeFromCGSize(rectView.size)];
+    [image addRepresentation:imageRep];
+    [imageRep release];
 
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
 	[pasteboard declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, nil] owner:nil];
-	[pasteboard setData:[tako TIFFRepresentation] forType:NSPasteboardTypeTIFF];
-    
-	[SnapshotImage release];
+	[pasteboard setData:[image TIFFRepresentation] forType:NSPasteboardTypeTIFF];
+    [image release];
 }
 
 // ---------------------------------

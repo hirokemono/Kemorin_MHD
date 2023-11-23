@@ -212,7 +212,6 @@
 #define ISET_ROTATE_AXIS       11
 #define ISET_ROTATE_INCREMENT  12
 #define ISET_DRAW_MODE         21
-#define ISET_CAPTURE_MODE      22
 
 #define AMBIENT_FLAG    0
 #define DIFFUSE_FLAG    1
@@ -414,7 +413,6 @@ extern "C" {
     void kemoview_update_distance(void);
     
     int kemoview_get_draw_mode(void);
-    int kemoview_get_capture_mode(void);
 
     void kemoview_set_view_integer(int selected, int ivalue);
 
