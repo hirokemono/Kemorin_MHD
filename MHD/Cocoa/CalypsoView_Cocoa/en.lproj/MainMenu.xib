@@ -419,7 +419,7 @@
                 <outlet property="window" destination="371" id="c1I-vx-8GJ"/>
             </connections>
         </customObject>
-        <window title="CalypsoView_Cocoa" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" customClass="KemoviewDragDropWindow">
+        <window title="CalypsoView_Cocoa" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenPrimary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -442,9 +442,6 @@
                     </openGLView>
                 </subviews>
             </view>
-            <connections>
-                <outlet property="_kemoviewIOControl" destination="1215" id="3616"/>
-            </connections>
             <point key="canvasLocation" x="560" y="-152"/>
         </window>
         <customObject id="494" customClass="Kemoview_CocoaAppDelegate">
@@ -5302,7 +5299,7 @@
                 <outlet property="_menu_window" destination="1064" id="BYh-Ka-H0S"/>
             </connections>
         </customObject>
-        <window title="CalypoView-Metal" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="mUS-wv-uCM" userLabel="Metal Window">
+        <window title="CalypoView-Metal" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="mUS-wv-uCM" userLabel="Metal Window" customClass="KemoviewDragDropWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="458" y="120" width="960" height="720"/>
@@ -5322,6 +5319,9 @@
                     </customView>
                 </subviews>
             </view>
+            <connections>
+                <outlet property="_kemoviewIOControl" destination="1215" id="ptc-jr-seW"/>
+            </connections>
             <point key="canvasLocation" x="1393" y="-539"/>
         </window>
         <viewController id="QEu-s0-e0C" customClass="KemoViewerMetalViewController">
