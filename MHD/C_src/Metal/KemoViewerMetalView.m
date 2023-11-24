@@ -167,6 +167,38 @@
 }
 
 // ---------------------------------
+/* update the projection matrix based on camera and view info */
+- (void) updateProjection
+{
+    kemoview_update_distance();
+}
+
+// updates the contexts model view matrix for object and camera moves
+- (void) Resetview
+{
+    kemoviewer_reset_to_init_angle();
+
+    [self updateProjection];
+    [self setNeedsDisplay: YES];
+    [_kemoviewer swapbuffer_cocoa];
+}
+
+// ---------------------------------
+#pragma mark ---- IB Actions ----
+
+-(void) setInfo:(NSInteger)flag
+{
+/*    [_cocoaGLMessages setDrawInfoFlag:flag]; */
+    [self setNeedsDisplay: YES];
+}
+
+-(void) setQuickHelp:(NSInteger)flag
+{
+/*    [_cocoaGLMessages  setQuickHelpFlag:flag]; */
+    [self setNeedsDisplay: YES];
+}
+
+// ---------------------------------
 #pragma mark ---- Method Overrides ----
 -(void)keyDown:(NSEvent *)theEvent
 {

@@ -48,9 +48,6 @@
 -(void)InitBackGroundColor;
 -(void) updateBackground;
 
--(void) UpdateImage;
--(void) QuickUpdateImage;
-
 - (void) setRetinaMode;
 - (void) setViewerSize;
 
@@ -65,6 +62,11 @@
 -(id) DrawQuilt: (NSInteger) int_degree : (NSInteger) rotationaxis;
 -(id) DrawEvolution:(NSInteger)timeStep;
 
+- (void) updateProjection;
+- (void) Resetview;
+
+-(void) setInfo:(NSInteger)flag;
+-(void) setQuickHelp:(NSInteger)flag;
 
 - (void) keyDown:(NSEvent *)theEvent;
 - (void) magnifyWithEvent:(NSEvent *)theEvent;

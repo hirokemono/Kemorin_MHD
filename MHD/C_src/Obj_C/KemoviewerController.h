@@ -13,7 +13,6 @@
 @interface KemoviewerController : NSObject {
 
 	IBOutlet ResetViewControll*     _resetview;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
     IBOutlet KemoViewerMetalView*   _metalView;
 
 	IBOutlet id _streoViewTypeMenu;

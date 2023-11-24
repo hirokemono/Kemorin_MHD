@@ -363,6 +363,7 @@ static void update_projection_right(double x_lookfrom[2], int nx_frame, int ny_f
 
 static double each_eye_from_middle_c(int istep, int num_step, double focalLength,
 									 double eye_sep_angle){
+    if(istep <= 0) return ZERO;
 	double pi_180 = FOUR * atan(1.0) / 180.0;
 	double rstep = 0.5 - ((double) istep) / ((double) (num_step-1));
 	double eye_from_middle = focalLength * tan(pi_180 * rstep * eye_sep_angle);

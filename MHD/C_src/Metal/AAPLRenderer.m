@@ -1420,7 +1420,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     [self setTransferMatrices:&_monoViewUnites];
-
+/*
     update_left_projection_struct(kemo_sgl->view_s);
     modify_left_view_by_struct(kemo_sgl->view_s);
     [self setTransferMatrices:&_leftViewUnites];
@@ -1428,7 +1428,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     update_right_projection_struct(kemo_sgl->view_s);
     modify_right_view_by_struct(kemo_sgl->view_s);
     [self setTransferMatrices:&_rightViewUnites];
-    
+  */
     [self drawKemoMetalView:view];
     return;
 }

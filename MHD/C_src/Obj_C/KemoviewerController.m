@@ -64,39 +64,39 @@
 {
 	[_viewtypeItem selectItemAtIndex:selected];
 	
-	[_view3dItem setState:NSOffState];
-	[_viewMapItem setState:NSOffState];
-	[_viewStereoItem setState:NSOffState];
-	[_viewXYItem setState:NSOffState];
-	[_viewYZItem setState:NSOffState];
-	[_viewZXItem setState:NSOffState];
+	[_view3dItem setState:NSControlStateValueOff];
+	[_viewMapItem setState:NSControlStateValueOff];
+	[_viewStereoItem setState:NSControlStateValueOff];
+	[_viewXYItem setState:NSControlStateValueOff];
+	[_viewYZItem setState:NSControlStateValueOff];
+	[_viewZXItem setState:NSControlStateValueOff];
 	
     self.axisDrawAccess = 1;
     self.StereoFlag = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_MODE);
 	psfTexTureEnable = 1;
-	if (selected == VIEW_3D) {[_view3dItem setState:NSOnState];}
+	if (selected == VIEW_3D) {[_view3dItem setState:NSControlStateValueOn];}
 	else if (selected == VIEW_MAP) {
         self.axisDrawAccess = 0;
         self.StereoFlag = 0;
 		psfTexTureEnable = 0;
-		[_viewMapItem setState:NSOnState];
+		[_viewMapItem setState:NSControlStateValueOn];
 	}
 	else if (selected == VIEW_STEREO) {
 		self.StereoFlag = 1;
-		[_viewStereoItem setState:NSOnState];
+		[_viewStereoItem setState:NSControlStateValueOn];
 	}
-	else if (selected == VIEW_XY) {[_viewXYItem setState:NSOnState];}
-	else if (selected == VIEW_YZ) {[_viewYZItem setState:NSOnState];}
-	else if (selected == VIEW_XZ) {[_viewZXItem setState:NSOnState];};
+	else if (selected == VIEW_XY) {[_viewXYItem setState:NSControlStateValueOn];}
+	else if (selected == VIEW_YZ) {[_viewYZItem setState:NSControlStateValueOn];}
+	else if (selected == VIEW_XZ) {[_viewZXItem setState:NSControlStateValueOn];};
 }
 
 - (void)UpdateViewtype:(NSInteger) selected
 {
 	[self SetViewTypeMenu:selected];
 
-    kemoview_set_viewtype(selected);
+    kemoview_set_viewtype((int) selected);
 	[_metalView setViewerType:selected];
-	[_kemoviewer updateProjection];
+	[_metalView updateProjection];
 	[_metalView UpdateImage];
 }
 
@@ -181,20 +181,20 @@
 - (IBAction) ResetviewAction:(id)sender;
 {
 	[self Set3DView];
-	[_kemoviewer Resetview];
+	[_metalView Resetview];
 }
 
 
 -(IBAction) Toggleinfo: (id) sender
 {
 	fInfo = 1 - fInfo;
-	[_kemoviewer setInfo:fInfo];
+	[_metalView setInfo:fInfo];
 }
 
 -(IBAction) ToggleQuickhelp: (id) sender
 {
 	fDrawHelp = 1 - fDrawHelp;
-	[_kemoviewer setQuickHelp:fDrawHelp];
+	[_metalView setQuickHelp:fDrawHelp];
 }
 
 - (void) TimeLabelAvaiability

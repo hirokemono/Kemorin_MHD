@@ -66,16 +66,10 @@ typedef struct {
 	IBOutlet NSProgressIndicator *evolutionProgreessBar;
 	IBOutlet NSProgressIndicator *FlineEvolutionProgreessBar;
 	float	_evolutionProgressValue;
-	
-	struct kemoviewer_type *_kemorin;
 }
 
 - (int) getViewSize;
-- (int) KemoviewHorizontalViewSize;
-- (int) KemoviewVerticalViewSize;
 
-- (void) updateProjection;
-- (void) updateModelView;
 - (void) resizeGL;
 - (void) UpdateImage;
 - (void) QuickUpdateImage;
@@ -83,11 +77,6 @@ typedef struct {
 
 - (void) fullDrawTimer:(NSTimer *)timer;
 - (void) messageTimer:(NSTimer *)timer;
-
-- (void) Resetview;
-
--(void) setInfo:(NSInteger)flag;
--(void) setQuickHelp:(NSInteger)flag;
 
 - (void) prepareKemoOpenGL;
 - (void) awakeFromNib;

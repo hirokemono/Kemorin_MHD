@@ -44,37 +44,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     return iflag_updated;
 }
 
-- (int) KemoviewHorizontalViewSize
-{
-    return XpixelGLWindow;
-}
-
-- (int) KemoviewVerticalViewSize
-{
-    return YpixelGLWindow;
-}
-
-// update the projection matrix based on camera and view info
-- (void) updateProjection
-{
-    [_context makeCurrentContext];
-	// set projection
-	kemoview_update_distance();
-}
-
-// ---------------------------------
-
-// updates the contexts model view matrix for object and camera moves
-- (void) updateModelView
-{
-    [_context makeCurrentContext];
-	
-	// move view
-    kemoview_full_modify_view();
-	kemoview_reset_animation();
-	[_resetview UpdateParameters];
-}
-
 // ---------------------------------
 
 // handles resizing of GL need context update and if the window dimensions change, a
@@ -167,30 +136,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     return;
 }
 
-// ---------------------------------
-#pragma mark ---- IB Actions ----
-
--(void) setInfo:(NSInteger)flag
-{
-//    [_cocoaGLMessages setDrawInfoFlag:flag];
-	[self setNeedsDisplay: YES];
-}
-
--(void) setQuickHelp:(NSInteger)flag
-{
-//	[_cocoaGLMessages  setQuickHelpFlag:flag];
-	[self setNeedsDisplay: YES];
-}
-
-// ---------------------------------
-
-- (void) Resetview
-{
-	kemoviewer_reset_to_init_angle();
-
-	[self updateProjection];
-	[self swapbuffer_cocoa];
-}
 
 // ---------------------------------
 

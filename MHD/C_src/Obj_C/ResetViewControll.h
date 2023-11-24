@@ -12,8 +12,6 @@
 
 
 @interface ResetViewControll : NSObject {
-/*     IBOutlet KemoViewerOpenGLView*  _kemoviewer; */
-
     NSInteger xPixel;
 	NSInteger yPixel;
 	

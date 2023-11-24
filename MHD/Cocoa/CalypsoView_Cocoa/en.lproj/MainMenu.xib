@@ -522,7 +522,6 @@
             <connections>
                 <outlet property="_colormode_matrix" destination="644" id="967"/>
                 <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3529"/>
-                <outlet property="_kemoviewer" destination="3373" id="3394"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="nqb-nZ-vPu"/>
                 <outlet property="_polygontype_matrix" destination="677" id="968"/>
                 <outlet property="_resetview" destination="2679" id="3543"/>
@@ -1451,7 +1450,7 @@
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="624">
-                                    <rect key="frame" x="32" y="10" width="19" height="25"/>
+                                    <rect key="frame" x="32" y="11" width="19" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="1" id="694">
                                         <connections>
@@ -1464,7 +1463,7 @@
                                     </connections>
                                 </stepper>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="625">
-                                    <rect key="frame" x="102" y="21" width="15" height="19"/>
+                                    <rect key="frame" x="102" y="23" width="15" height="16"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="693">
                                         <font key="font" metaFont="smallSystem"/>
@@ -1671,7 +1670,7 @@
                                                                     </connections>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1090">
-                                                                    <rect key="frame" x="163" y="40" width="19" height="21"/>
+                                                                    <rect key="frame" x="163" y="41" width="19" height="19"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="1096">
                                                                         <connections>
@@ -1795,7 +1794,7 @@
                                                                     </connections>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Ts-6J-G5f">
-                                                                    <rect key="frame" x="172" y="20" width="15" height="13"/>
+                                                                    <rect key="frame" x="172" y="22" width="15" height="10"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="3yx-pH-6Xd">
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -1819,7 +1818,7 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Icf-zd-ULQ">
-                                                                    <rect key="frame" x="110" y="7" width="19" height="21"/>
+                                                                    <rect key="frame" x="110" y="8" width="19" height="19"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="wfM-0m-97P">
                                                                         <connections>
@@ -2047,7 +2046,7 @@
                                                                     </connections>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Uo-3n-eZQ">
-                                                                    <rect key="frame" x="108" y="25" width="19" height="21"/>
+                                                                    <rect key="frame" x="108" y="26" width="19" height="19"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="3DZ-3h-THO">
                                                                         <connections>
@@ -2069,7 +2068,7 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JEO-wB-XDf">
-                                                                    <rect key="frame" x="170" y="40" width="15" height="13"/>
+                                                                    <rect key="frame" x="170" y="42" width="15" height="10"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="9fe-XA-fYr">
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -2123,7 +2122,7 @@
                                                                     </connections>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v5r-sW-X2f">
-                                                                    <rect key="frame" x="108" y="56" width="19" height="21"/>
+                                                                    <rect key="frame" x="108" y="57" width="19" height="19"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="gsc-xA-GOF">
                                                                         <connections>
@@ -2145,7 +2144,7 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5YQ-O5-cw8">
-                                                                    <rect key="frame" x="170" y="71" width="15" height="13"/>
+                                                                    <rect key="frame" x="170" y="73" width="15" height="10"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="c5g-wp-gl7">
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -2350,7 +2349,7 @@
                                                                     </connections>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qg8-bp-njZ">
-                                                                    <rect key="frame" x="110" y="5" width="19" height="21"/>
+                                                                    <rect key="frame" x="110" y="6" width="19" height="19"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="7rL-fX-o5O">
                                                                         <connections>
@@ -2363,7 +2362,7 @@
                                                                     </connections>
                                                                 </stepper>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dZe-Qs-fjv">
-                                                                    <rect key="frame" x="172" y="18" width="15" height="13"/>
+                                                                    <rect key="frame" x="172" y="20" width="15" height="10"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="GxN-83-nUT">
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -2417,7 +2416,7 @@
                                                                     </connections>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kWw-Mj-v7v">
-                                                                    <rect key="frame" x="110" y="65" width="19" height="21"/>
+                                                                    <rect key="frame" x="110" y="66" width="19" height="19"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="Fdw-WN-abb">
                                                                         <connections>
@@ -2430,7 +2429,7 @@
                                                                     </connections>
                                                                 </stepper>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Zq-RM-yS4">
-                                                                    <rect key="frame" x="172" y="78" width="15" height="13"/>
+                                                                    <rect key="frame" x="172" y="80" width="15" height="10"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="BL6-Z5-63F">
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -2484,7 +2483,7 @@
                                                                     </connections>
                                                                 </textField>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bbg-kh-zzP">
-                                                                    <rect key="frame" x="110" y="34" width="19" height="21"/>
+                                                                    <rect key="frame" x="110" y="35" width="19" height="19"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="ttV-DU-MkP">
                                                                         <connections>
@@ -2497,7 +2496,7 @@
                                                                     </connections>
                                                                 </stepper>
                                                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pCV-xs-Xq5">
-                                                                    <rect key="frame" x="172" y="47" width="15" height="13"/>
+                                                                    <rect key="frame" x="172" y="49" width="15" height="10"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="gGN-wb-3At">
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -2712,7 +2711,7 @@
                                                         </connections>
                                                     </button>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3645">
-                                                        <rect key="frame" x="148" y="12" width="19" height="21"/>
+                                                        <rect key="frame" x="148" y="13" width="19" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" increment="0.10000000000000001" maxValue="10000" doubleValue="19.499999999999993" id="3646">
                                                             <connections>
@@ -2807,7 +2806,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1117">
-                                                        <rect key="frame" x="145" y="83" width="19" height="21"/>
+                                                        <rect key="frame" x="145" y="84" width="19" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" doubleValue="6" id="1132">
                                                             <connections>
@@ -2820,7 +2819,7 @@
                                                         </connections>
                                                     </stepper>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1116">
-                                                        <rect key="frame" x="145" y="115" width="19" height="21"/>
+                                                        <rect key="frame" x="145" y="116" width="19" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" maxValue="10000000" id="1133">
                                                             <connections>
@@ -2833,7 +2832,7 @@
                                                         </connections>
                                                     </stepper>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1115">
-                                                        <rect key="frame" x="145" y="149" width="19" height="21"/>
+                                                        <rect key="frame" x="145" y="150" width="19" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" maxValue="10000000" doubleValue="1" id="1134">
                                                             <connections>
@@ -2882,7 +2881,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1641">
-                                                        <rect key="frame" x="114" y="53" width="19" height="21"/>
+                                                        <rect key="frame" x="114" y="54" width="19" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="30" doubleValue="1" id="1645">
                                                             <connections>
@@ -3046,7 +3045,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1553">
-                                                        <rect key="frame" x="144" y="68" width="19" height="21"/>
+                                                        <rect key="frame" x="144" y="69" width="19" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="180" doubleValue="1" id="1554">
                                                             <connections>
@@ -3082,7 +3081,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2956">
-                                                        <rect key="frame" x="144" y="40" width="19" height="21"/>
+                                                        <rect key="frame" x="144" y="41" width="19" height="19"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="30" doubleValue="1" id="2960">
                                                             <connections>
@@ -3206,7 +3205,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="woq-qt-83m">
-                                                        <rect key="frame" x="149" y="40" width="19" height="13"/>
+                                                        <rect key="frame" x="149" y="41" width="19" height="11"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="30" doubleValue="1" id="Ygb-Ck-lxH">
                                                             <connections>
@@ -3239,7 +3238,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Z9-Eo-Ar0">
-                                                        <rect key="frame" x="149" y="11" width="19" height="11"/>
+                                                        <rect key="frame" x="149" y="12" width="19" height="9"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="30" doubleValue="1" id="EsE-9T-4nD">
                                                             <connections>
