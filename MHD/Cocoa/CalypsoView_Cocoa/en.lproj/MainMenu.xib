@@ -433,10 +433,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <connections>
-                            <outlet property="FlineEvolutionProgreessBar" destination="1897" id="3575"/>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3413"/>
                             <outlet property="_resetview" destination="2679" id="3401"/>
-                            <outlet property="evolutionProgreessBar" destination="1897" id="3402"/>
                             <outlet property="mainWindow" destination="371" id="fyQ-2I-tMU"/>
                         </connections>
                     </openGLView>

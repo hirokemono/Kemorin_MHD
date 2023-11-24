@@ -23,6 +23,8 @@
 //    printf("TAko0 %d \n", self.viewLoaded);
 
     _metalView.id_window = kemoview_get_current_viewer_id();
+    
+    [_metalView initMessageTimer];
     return;
 }
 

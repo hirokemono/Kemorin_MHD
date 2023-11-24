@@ -15,20 +15,6 @@
 #include <math.h>
 #include "kemoviewer.h"
 
-#define PAN     2
-#define ROTATE  3
-
-typedef struct {
-	double x,y,z;
-} recVec;
-
-typedef struct {
-	recVec viewPos; // View position
-	recVec viewDir; // View direction vector
-	double aperture; // pContextInfo->camera aperture
-} recCamera;
-
-
 
 @interface KemoViewerOpenGLView : NSOpenGLView {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
@@ -37,45 +23,15 @@ typedef struct {
 	IBOutlet NSWindow*  mainWindow;
 	
 	NSOpenGLContext * _context;
-	
-	// image buffer
-	NSBitmapImageRep *bmpRep;
-	// string textures
-	
-	NSTimer* timer_anime;
-    NSTimer* timer_quick;
-    NSTimer* timer_msg;
-
-	bool fDrawCaps;
-    int iflag_resize;
-    int iflag_fast;
     int id_window;
-    float message_opacity;
-	
-    CFTimeInterval reftime_anime;
-    CFTimeInterval reftime_quick;
-    CFTimeInterval reftime_msg;
-
-    CFTimeInterval time_anime;
-    CFTimeInterval time_quick;
-    CFTimeInterval time_msg;
-
-	// left (second) bottun handling
-	NSInteger leftBottunFlag;
-	
-	IBOutlet NSProgressIndicator *evolutionProgreessBar;
-	IBOutlet NSProgressIndicator *FlineEvolutionProgreessBar;
-	float	_evolutionProgressValue;
 }
 
 - (int) getViewSize;
 
-- (void) resizeGL;
 - (void) UpdateImage;
 - (void) QuickUpdateImage;
 - (void) swapbuffer_cocoa;
 
-- (void) fullDrawTimer:(NSTimer *)timer;
 - (void) messageTimer:(NSTimer *)timer;
 
 - (void) prepareKemoOpenGL;

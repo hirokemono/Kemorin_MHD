@@ -196,8 +196,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), quitButton, FALSE, FALSE, 0);
 	
     iflag_fast_prev = 0;
-    iflag_fast_draw = 0;
-	make_gtk_main_menu_box(&iflag_fast_draw, mbot, gtk_win);
+	make_gtk_main_menu_box(mbot, gtk_win);
 	
 	vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);

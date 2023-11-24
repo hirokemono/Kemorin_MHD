@@ -38,6 +38,7 @@
     
     int iflag_resize;
     float message_opacity;
+    NSTimer* timer_msg;
 
     CFTimeInterval reftime_msg;
 
@@ -53,6 +54,9 @@
 
 - (int) getHorizontalViewSize;
 - (int) getVerticalViewSize;
+
+- (void)initMessageTimer;
+- (void)messageTimer:(NSTimer *)timer;
 
 -(void) UpdateImage;
 -(void) FastUpdateImage;

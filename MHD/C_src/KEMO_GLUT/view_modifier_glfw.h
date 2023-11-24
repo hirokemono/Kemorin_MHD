@@ -35,7 +35,7 @@ GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y);
 void glfw_callbacks_init();
 void set_GLFWindowSize(int width, int height);
 
-int draw_fast(void);
+void draw_fast(void);
 void draw_full(void);
 void draw_quilt(void);
 

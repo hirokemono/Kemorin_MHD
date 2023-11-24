@@ -288,13 +288,6 @@ void glfw_callbacks_init(){
 }
 
 
-int draw_fast(){
-    int iflag_fast = kemoview_quick_viewmatrix();
-	int kemoview_mono_view();
-	glfwSwapBuffers(glfw_window);
-	return iflag_fast;
-};
-
 void draw_full(){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     kemoview_full_modify_view();

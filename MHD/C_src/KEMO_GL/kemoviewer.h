@@ -397,7 +397,7 @@ extern "C" {
     void kemoview_full_modify_view(void);
     void kemoview_fast_modify_view(void);
 
-    int kemoview_quick_viewmatrix(void);
+    void kemoview_quick_viewmatrix(void);
     void kemoview_quilt_viewmatrix(void);
 
     void kemoviewer_reset_to_init_angle(void);
