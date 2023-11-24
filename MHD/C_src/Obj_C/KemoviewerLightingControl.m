@@ -86,7 +86,7 @@
 		
 		[self SetLightTable];
 	}
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 	return;
 };
 
@@ -108,7 +108,7 @@
 	}
 	
 	[self SetLightTable];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 	return;
 };
 
@@ -182,7 +182,7 @@
 	self.azimuthSliderValue =   p0;
 
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 	[self SetLightTable];
 } // end tableView:setObjectValue:forTableColumn:row:
 
@@ -251,28 +251,28 @@
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.diffuseMaterial) forKey:@"materialAmbient"];
 	kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 	return;
 };
 - (IBAction)SetDiffuseMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.diffuseMaterial) forKey:@"materialDiffuse"];
 	kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 	return;
 };
 - (IBAction)SetSpecularMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.specularMaterial) forKey:@"materialSpecular"];
 	kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 	return;
 };
 - (IBAction)SetShinenessMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.shinessMaterial) forKey:@"materialShineness"];
 	kemoview_set_material_parameter(SHINENESS_FLAG, self.shinessMaterial);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 	return;
 };
 
@@ -306,7 +306,7 @@
 	self.elevationSliderValue = t0;
 	self.azimuthSliderValue =   p0;
 	[self SetLightTable];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 };
 - (IBAction)SetelevationLightPositionAction:(id)sender{
 	float r0, t0, p0;
@@ -323,7 +323,7 @@
 	self.radialSliderValue =    r0;
 	self.azimuthSliderValue =   p0;
 	[self SetLightTable];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 };
 - (IBAction)SetAzimuthLightPositionAction:(id)sender{
 	float r0, t0, p0;
@@ -341,7 +341,7 @@
 	self.radialSliderValue =    r0;
 	self.elevationSliderValue = t0;
 	[self SetLightTable];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 };
 
 @end

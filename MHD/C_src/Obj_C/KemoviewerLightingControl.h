@@ -10,13 +10,13 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 #import "fillRectView.h"
 
 
 @interface LightTableController : NSObject {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+	IBOutlet KemoViewerMetalView*  _metalView;
 	IBOutlet id _lightTableView;
 
 	IBOutlet NSTableView * idlightTableView;

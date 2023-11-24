@@ -329,23 +329,15 @@ NSData *SnapshotData;
 {
 	// Adds an image for the specified duration to the QTMovie
     NSBitmapImageRep * imageRep = [NSBitmapImageRep alloc];
-    [_metalViewController getRenderedbyMetal:imageRep];
+    CGImageRef dstImage = [_metalViewController getRenderedbyMetalToCGref];
     
-    NSImage * image = [[NSImage alloc] init];
-    NSRect rectView = [_metalView convertRectToBacking:[_metalView bounds]];
-    [image initWithSize:NSSizeFromCGSize(rectView.size)];
-    [image addRepresentation:imageRep];
-
-    CGImageRef CGImage = [image CGImageForProposedRect:nil context:nil hints:nil];
-    CVPixelBufferRef buffer = [self pixelBufferFromCGImage:CGImage];
-
+    CVPixelBufferRef buffer = [self pixelBufferFromCGImage:dstImage];
     // Append Image buffer
     if (![adaptor appendPixelBuffer:buffer withPresentationTime:frameTime]) {
         NSLog(@"Adapter Failure");
     }
-    
-    if (buffer) {CVBufferRelease(buffer);}
-    [image release];
+    if (dstImage) {CGImageRelease(dstImage);};
+    if (buffer) {CVBufferRelease(buffer);};
 }
 
 -(void) AddKemoviewQuiltToMovie:(CMTime)frameTime : (NSInteger) int_degree : (NSInteger)rotationaxis
@@ -783,7 +775,7 @@ NSData *SnapshotData;
 
 - (IBAction)SetFramePerSecond:(id)sender;
 {
-    //    [_kemoviewer swapbuffer_cocoa];
+    [_metalView setNeedsDisplay: YES];
     return;
 }
 
@@ -795,7 +787,7 @@ NSData *SnapshotData;
 };
 
 - (IBAction)SetEvolutionSteps:(id)sender{
-//    [_kemoviewer swapbuffer_cocoa];
+    [_metalView setNeedsDisplay: YES];
     return;
 };
 

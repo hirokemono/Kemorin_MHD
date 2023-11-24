@@ -62,7 +62,7 @@
     return [_renderer loadImageOutputTextureFromRenderer];
 }
 
--(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep
+-(CGImageRef) getRenderedbyMetalToCGref
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [_renderer drawInMTKView:_metalView];
@@ -98,8 +98,14 @@
     free(bgra);
     CGColorSpaceRelease(colorSpace);
     CGImageRef dstImage = CGBitmapContextCreateImage(context);
-    
+    return dstImage;
+};
+
+-(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep
+{
+    CGImageRef dstImage = [self getRenderedbyMetalToCGref];
     [imageRep initWithCGImage:dstImage];
+    if(dstImage) {CGImageRelease(dstImage);};
     return;
 };
 @end

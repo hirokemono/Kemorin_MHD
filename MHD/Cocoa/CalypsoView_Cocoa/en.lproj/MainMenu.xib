@@ -460,8 +460,8 @@
         <customObject id="3Oj-aY-RpN" userLabel="Lighting Controller" customClass="LightTableController">
             <connections>
                 <outlet property="_kemoviewGL_defaults_controller" destination="716" id="I0h-Es-eKv"/>
-                <outlet property="_kemoviewer" destination="3373" id="ICo-Hl-idJ"/>
                 <outlet property="_lightTableView" destination="Gdj-Kb-Y6t" id="78x-GC-typ"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="UN7-9k-hv6"/>
                 <outlet property="idlightTableView" destination="Gdj-Kb-Y6t" id="NKh-RV-Gau"/>
             </connections>
         </customObject>
@@ -5189,7 +5189,6 @@
         <customObject id="2679" customClass="ResetViewControll"/>
         <customObject id="2637" customClass="KemoviewerMovieMaker">
             <connections>
-                <outlet property="_kemoviewer" destination="3373" id="3388"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="718-d3-Vwe"/>
                 <outlet property="_metalViewController" destination="QEu-s0-e0C" id="RKm-dQ-eOX"/>
                 <outlet property="_movie_defaults_controller" destination="716" id="2654"/>
