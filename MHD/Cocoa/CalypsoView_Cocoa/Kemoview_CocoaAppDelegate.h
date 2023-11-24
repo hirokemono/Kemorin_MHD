@@ -10,12 +10,12 @@
 
 #import "KemoViewerObject.h"
 #import "KemoviewDragDropWindow.h"
+#import "KemoViewerMetalView.h"
 #include "kemoviewer.h"
 
 @interface Kemoview_CocoaAppDelegate : NSObject <NSApplicationDelegate> {
     NSWindow *_window;
     IBOutlet KemoViewerObject * _singleKemoView;
-	IBOutlet KemoViewerOpenGLView * _kemoviewer;
     IBOutlet KemoViewerMetalView * _metalView;
 }
 

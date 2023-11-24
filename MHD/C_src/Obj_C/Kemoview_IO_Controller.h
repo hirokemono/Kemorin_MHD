@@ -8,7 +8,7 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 #import "DomainTableController.h"
 #import "PsfController.h"
 #import "FlineController.h"
@@ -20,7 +20,7 @@
 
 	IBOutlet NSUserDefaultsController* _user_defaults_controller;
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet DomainTableController* _domainTableController;
 	IBOutlet PsfController*         _psfController;
 	IBOutlet FlineController*       _flineController;

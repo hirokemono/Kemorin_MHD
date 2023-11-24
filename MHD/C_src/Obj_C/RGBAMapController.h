@@ -8,7 +8,7 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 #import "ColorMapController.h"
 #import "OpacityMapController.h"
 #import "fillRectView.h"
@@ -18,8 +18,8 @@
 @interface RGBAMapController : NSObject {
 
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	
+    IBOutlet KemoViewerMetalView * _metalView;
+
 	IBOutlet ColorMapController*   _colorMapObject;
 	IBOutlet OpacityMapController* _opacityMapObject;
 

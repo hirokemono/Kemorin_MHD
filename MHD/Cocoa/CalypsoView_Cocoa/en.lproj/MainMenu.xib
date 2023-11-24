@@ -412,7 +412,7 @@
                 <outlet property="_ImageFormat_item" destination="1530" id="3583"/>
                 <outlet property="_domainTableController" destination="703" id="3578"/>
                 <outlet property="_flineController" destination="1932" id="3579"/>
-                <outlet property="_kemoviewer" destination="3373" id="3389"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="oW7-4t-FPV"/>
                 <outlet property="_movieMakerController" destination="2637" id="3608"/>
                 <outlet property="_psfController" destination="1157" id="3581"/>
                 <outlet property="_user_defaults_controller" destination="716" id="3619"/>
@@ -449,7 +449,6 @@
         </window>
         <customObject id="494" customClass="Kemoview_CocoaAppDelegate">
             <connections>
-                <outlet property="_kemoviewer" destination="3373" id="KOh-Q5-k8q"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="xle-bK-LY4"/>
                 <outlet property="_singleKemoView" destination="w8N-Cd-Q0k" id="PLN-2e-Kq1"/>
                 <outlet property="window" destination="371" id="532"/>
@@ -5273,7 +5272,7 @@
         <customObject id="2604" userLabel="RGBAMap Controller" customClass="RGBAMapController">
             <connections>
                 <outlet property="_colorMapObject" destination="2610" id="2784"/>
-                <outlet property="_kemoviewer" destination="3373" id="3399"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="z4h-Jg-rK3"/>
                 <outlet property="_opacityMapObject" destination="2618" id="2785"/>
                 <outlet property="window" destination="371" id="QUL-Zy-Tje"/>
             </connections>

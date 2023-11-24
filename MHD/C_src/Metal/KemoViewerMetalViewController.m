@@ -75,7 +75,6 @@
     NSUInteger bpRaw = 4 * _imageOutputTexture.width;
     NSUInteger num_pixel = _imageOutputTexture.width * _imageOutputTexture.height;
     unsigned char *bgra = (unsigned char *) malloc(4*num_pixel * sizeof(unsigned char));
-    unsigned char rtmp;
 
     [_imageOutputTexture getBytes:bgra
                       bytesPerRow:bpRaw

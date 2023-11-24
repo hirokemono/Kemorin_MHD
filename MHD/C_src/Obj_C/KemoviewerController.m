@@ -97,7 +97,7 @@
     kemoview_set_viewtype(selected);
 	[_metalView setViewerType:selected];
 	[_kemoviewer updateProjection];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChoosePolygontypeAction:(id)sender
@@ -105,36 +105,36 @@
 	PolygonMode = [[_polygontype_matrix selectedCell] tag];
 	kemoview_set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChooseSurfcetypeAction:(id)sender
 {
 	ShadingMode = [[_surfacetype_matrix selectedCell] tag];
 	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)AxisSwitchAction:(id)sender;
 {
 	self.axisDrawFlag = kemoview_toggle_object_properties(AXIS_TOGGLE);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)CoastSwitchAction:(id)sender;
 {
 	self.coastLineDrawFlag = kemoview_toggle_object_properties(COASTLINE_SWITCH);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 - (IBAction)SphGridSwitchAction:(id)sender;
 {
 	self.globeGridDrawFlag = kemoview_toggle_object_properties(SPHEREGRID_SWITCH);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 - (IBAction)SphRadiusAction:(id)sender;
 {
 	kemoview_set_coastline_radius((double) coastlineRadius);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChooseColorModeAction:(id)sender
@@ -142,19 +142,19 @@
 	MeshColorMode = [[_colormode_matrix selectedCell] tag];
 	kemoview_set_mesh_color_mode((int) MeshColorMode);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)SetColorLoopCount:(id)pSender {
 	kemoview_set_num_of_color_loop((int) ColorLoopCount);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction) ShowNodeSizeValue:(id)pSender {
 	kemoview_set_node_diamater((double) NodeSizeFactor, (int) NodeSizedigits);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction) ToggleQuiltSwitch:(id)sender
@@ -175,7 +175,7 @@
 
 - (IBAction) UpdateViewByInpit:(id)sender;
 {
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 };
 
 - (IBAction) ResetviewAction:(id)sender;
@@ -212,7 +212,7 @@
         self.fileStepDisplayFlag = 0;
         kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
     };
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 };
 
 - (IBAction)FileStepLabelSwitchAction:(id)sender{
@@ -221,7 +221,7 @@
         self.timeDisplayFlag = 0;
         kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
     };
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 };
 
 
