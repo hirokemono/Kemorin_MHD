@@ -1559,7 +1559,7 @@
                 <outlet property="_FlineFieldMenu" destination="1955" id="2197"/>
                 <outlet property="_flinetype_matrix" destination="3125" id="3157"/>
                 <outlet property="_kemoviewControl" destination="964" id="3542"/>
-                <outlet property="_kemoviewer" destination="3373" id="3395"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="WpY-a9-ua0"/>
                 <outlet property="window" destination="371" id="7lQ-Pq-3tS"/>
             </connections>
         </customObject>
@@ -5266,7 +5266,7 @@
             <connections>
                 <outlet property="_OpacityTableView" destination="2585" id="2621"/>
                 <outlet property="_fillRectView" destination="2560" id="3746"/>
-                <outlet property="_kemoviewer" destination="3373" id="3398"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="uqG-Cc-4eR"/>
                 <outlet property="idOpacityTableView" destination="2585" id="2622"/>
             </connections>
         </customObject>
@@ -5284,7 +5284,6 @@
                 <outlet property="_colorTableView" destination="2596" id="2611"/>
                 <outlet property="_fillRectView" destination="2560" id="3745"/>
                 <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3440"/>
-                <outlet property="_kemoviewer" destination="3373" id="3400"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="VUt-49-dPD"/>
                 <outlet property="backgroundColorWell" destination="2473" id="3441"/>
                 <outlet property="idColorTableView" destination="2596" id="2612"/>

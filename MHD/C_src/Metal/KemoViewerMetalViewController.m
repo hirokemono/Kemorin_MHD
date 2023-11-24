@@ -62,7 +62,7 @@
     return [_renderer loadImageOutputTextureFromRenderer];
 }
 
--(CGImageRef) getRenderedbyMetalToCGref
+-(unsigned char *) getRenderedbyMetalToBGRA
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [_renderer drawInMTKView:_metalView];
@@ -74,7 +74,6 @@
     NSUInteger width =  _imageOutputTexture.width;
     NSUInteger bpRaw = 4 * _imageOutputTexture.width;
     NSUInteger num_pixel = _imageOutputTexture.width * _imageOutputTexture.height;
-    NSUInteger i;
     unsigned char *bgra = (unsigned char *) malloc(4*num_pixel * sizeof(unsigned char));
     unsigned char rtmp;
 
@@ -82,7 +81,20 @@
                       bytesPerRow:bpRaw
                        fromRegion:MTLRegionMake2D(0, 0, width, height)
                       mipmapLevel:0];
-//    [_imageOutputTexture release];
+    return bgra;
+};
+
+-(CGImageRef) getRenderedbyMetalToCGref
+{
+    /*    Texture to render screen to texture */
+    id<MTLTexture> _imageOutputTexture = _metalView.currentDrawable.texture;
+    NSUInteger height = _imageOutputTexture.height;
+    NSUInteger width =  _imageOutputTexture.width;
+    NSUInteger bpRaw = 4 * _imageOutputTexture.width;
+    NSUInteger num_pixel = _imageOutputTexture.width * _imageOutputTexture.height;
+    NSUInteger i;
+    unsigned char *bgra = [self getRenderedbyMetalToBGRA];
+    unsigned char rtmp;
     
     for(i=0;i<num_pixel;i++){
         rtmp = bgra[4*i];

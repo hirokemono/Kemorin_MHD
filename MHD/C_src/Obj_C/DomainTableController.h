@@ -64,7 +64,7 @@
 - (IBAction) ShowAllDomainAction:(id)pId;
 - (IBAction) HideAllDomainAction:(id)pId;
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 
 - (id)tableView:(NSTableView *)aTableView
 objectValueForTableColumn:(NSTableColumn *)aTableColumn

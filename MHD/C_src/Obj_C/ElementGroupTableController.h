@@ -41,7 +41,7 @@
 
 - (void) SetElementGroupLabels;
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 
 - (IBAction) ShowAllElementGroupAction:(id)pId;
 - (IBAction) HideAllElementGroupAction:(id)pId;

@@ -112,8 +112,8 @@
 	return;
 };
 
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj{
-	return (int) [self.radialLightPosition count];
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)pTableViewObj{
+	return  [self.radialLightPosition count];
 };
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex{

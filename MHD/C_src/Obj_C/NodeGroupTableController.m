@@ -63,9 +63,9 @@
 	[_metalView UpdateImage];
 }
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return (int) NumNodeGroup;
+    return NumNodeGroup;
 }
 
 - (id)tableView:(NSTableView *)aTableView

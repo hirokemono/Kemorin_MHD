@@ -10,15 +10,13 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 #import "fillRectView.h"
 #import "AAPLRenderer.h"
-#import "KemoViewerMetalView.h"
 
 
 @interface ColorMapController : NSObject {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
     IBOutlet KemoViewerMetalView *_metalView;
 	IBOutlet id _colorTableView;
 	IBOutlet fillRectView* _fillRectView;
@@ -45,7 +43,7 @@
 - (IBAction)addAtSelectedRow:(id)pId;
 - (IBAction)deleteSelectedRow:(id)pId;
 
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex;
 

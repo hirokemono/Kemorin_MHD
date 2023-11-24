@@ -388,9 +388,8 @@ extern "C" {
     unsigned char * kemoview_alloc_img_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
     void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt);
-    void kemoview_get_fliped_img(int npixel_x, int npixel_y,
-                                 unsigned char *glimage, unsigned char *fliped_img);
-    void kemoview_add_fliped_quilt_img(unsigned char *glimage, unsigned char *fliped_quilt);
+    void kemoview_add_bgra_to_quilt(int npix_x, int npix_y,
+                                    unsigned char *glimage, unsigned char *fliped_quilt);
 
     void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl);
 

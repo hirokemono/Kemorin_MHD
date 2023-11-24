@@ -36,7 +36,7 @@
 	double value, color;
 	double value1, color1;
 	double value2, color2;
-	int isel = [idColorTableView selectedRow];
+	NSInteger isel = [idColorTableView selectedRow];
 	
 	if(isel > 0) {
 		value1 = [[self.ColorTableField objectAtIndex:isel-1] doubleValue];
@@ -49,7 +49,7 @@
 		
 		[self SetColorTables];
 	}
-//	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)deleteSelectedRow:(id)pId {
@@ -59,7 +59,7 @@
 	if([self.ColorTableField count] < 3) return;
 	
 	if ([idColorTableView numberOfSelectedRows] > 0) {
-		for(i = [self.ColorTableField count]-1;i>1;i--){
+		for(i = (int) [self.ColorTableField count]-1;i>1;i--){
 			if([SelectedList containsIndex:i] == TRUE){
 				kemoview_delete_PSF_color_list(i);
 			}
@@ -67,12 +67,12 @@
 	}
 	
 	[self SetColorTables];
-//	[_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 }
 
 
 
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj {
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)pTableViewObj {
 	return [self.ColorTableField count];
 } // end numberOfRowsInTableView
 
@@ -96,7 +96,7 @@
 	double value1;
 	double value2;
 	
-	int numberOfRaw = [self.ColorTableField count];
+	int numberOfRaw = (int) [self.ColorTableField count];
 	
 	value =  [[self.ColorTableField objectAtIndex:pRowIndex] doubleValue];
 	color =  [[self.ColorTableColor objectAtIndex:pRowIndex] doubleValue];
@@ -124,7 +124,7 @@
 	
 	kemoview_set_PSF_color_data(pRowIndex, value, color);
 
-//	[_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 } // end tableView:setObjectValue:forTableColumn:row:
 
 - (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{
@@ -185,15 +185,14 @@
 	[defaults setFloat:((float) rgbaBG[1]) forKey:@"BackGroundGreen"];
 	[defaults setFloat:((float) rgbaBG[2]) forKey:@"BackGroundBlue"];
 	
-	[_kemoviewer swapbuffer_cocoa];
     [_metalView updateBackground];
-    [_metalView draw];
+    [_metalView UpdateImage];
 }
 
 - (IBAction)SetColorMode:(id)pId;
 {
 	kemoview_set_PSF_color_param(ISET_COLORMAP, (int) [ColorModeItem indexOfSelectedItem]);
-	[_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 }
 
 

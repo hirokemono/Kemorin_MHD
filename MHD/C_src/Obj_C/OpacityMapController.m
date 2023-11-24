@@ -27,7 +27,7 @@
 	double value, opacity;
 	double value1, opacity1;
 	double value2, opacity2;
-	int isel = [idOpacityTableView selectedRow];
+	NSInteger isel = [idOpacityTableView selectedRow];
 	
 	if (isel > 0) {
 		value1 =   [[self.OpacityTableField objectAtIndex:isel-1] doubleValue];
@@ -40,30 +40,32 @@
 		
 		[self SetOpacityTables];
 	}
-//	[_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
+    return;
 }
 
 - (IBAction)deleteSelectedRow:(id)pId {
-	int i;
-	
-	NSIndexSet *SelectedList = [idOpacityTableView selectedRowIndexes];
-	if([self.OpacityTableField count] < 3) return;
-	
-	if ([idOpacityTableView numberOfSelectedRows] > 0) {
-		for(i = [self.OpacityTableField count]-1;i>1;i--){
-			if([SelectedList containsIndex:i] == TRUE){
-				kemoview_delete_PSF_opacity_list(i);
-			}
-		}
-	}
-	
-	[self SetOpacityTables];
-//	[_kemoviewer UpdateImage];
+    int i;
+    
+    NSIndexSet *SelectedList = [idOpacityTableView selectedRowIndexes];
+    if([self.OpacityTableField count] < 3) return;
+    
+    if ([idOpacityTableView numberOfSelectedRows] > 0) {
+        for(i = (int) [self.OpacityTableField count]-1;i>1;i--){
+            if([SelectedList containsIndex:i] == TRUE){
+                kemoview_delete_PSF_opacity_list(i);
+            }
+        }
+    }
+    
+    [self SetOpacityTables];
+    [_metalView UpdateImage];
+    return;
 }
 
 
 
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj {
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)pTableViewObj {
 	return [self.OpacityTableField count];
 } // end numberOfRowsInTableView
 
@@ -82,12 +84,12 @@
 	
 } // end tableView:objectValueForTableColumn:row:
 
-- (void)tableView:(NSTableView *)pTableViewObj setObjectValue:(id)pObject forTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex {
+- (void)tableView:(NSTableView *)pTableViewObj setObjectValue:(id)pObject forTableColumn:(NSTableColumn *)pTableColumn row:(NSUInteger)pRowIndex {
 	double value, opacity;
 	double value1;
 	double value2;
 
-	int numberOfRaw = [self.OpacityTableField count];
+	NSUInteger numberOfRaw = [self.OpacityTableField count];
 	
 	value =    [[self.OpacityTableField objectAtIndex:pRowIndex] doubleValue];
 	opacity =  [[self.OpacityTableOpacity objectAtIndex:pRowIndex] doubleValue];
@@ -113,9 +115,9 @@
 										  withObject:[[NSNumber alloc] initWithDouble:opacity]];
 	}
 	
-	kemoview_set_PSF_opacity_data(pRowIndex, value, opacity);
-	
-//	[_kemoviewer UpdateImage];
+	kemoview_set_PSF_opacity_data((int) pRowIndex, value, opacity);
+    [_metalView UpdateImage];
+    return;
 } // end tableView:setObjectValue:forTableColumn:row:
 
 - (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{

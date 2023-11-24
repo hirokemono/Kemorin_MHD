@@ -118,9 +118,9 @@
 }
 
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return (int) NumElementGroup;
+    return NumElementGroup;
 }
 
 - (id)tableView:(NSTableView *)aTableView

@@ -173,9 +173,9 @@
 	[_metalView UpdateImage];
 }
 
- - (int)numberOfRowsInTableView:(NSTableView *)aTableView
+ - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return (int) NumSubDomain;
+    return NumSubDomain;
 }
 
 - (id)tableView:(NSTableView *)aTableView

@@ -25,6 +25,7 @@
 -(void) viewDidLayout;
 -(nonnull void *) loadImageOutputTexture;
 
+-(unsigned char *) getRenderedbyMetalToBGRA;
 -(CGImageRef) getRenderedbyMetalToCGref;
 -(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep;
 

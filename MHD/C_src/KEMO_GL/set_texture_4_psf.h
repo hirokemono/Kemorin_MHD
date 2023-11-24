@@ -13,9 +13,10 @@ void flip_gl_bitmap(int num_x, int num_y,
                     unsigned char *glimage, unsigned char *fliped_img);
 void flip_gl_bitmap_to_img2d(int num_x, int num_y,
                              unsigned char *glimage, unsigned char **img_2d);
-void flip_gl_quilt_bitmap(int n_quilt_column, int n_quilt_raw, int istep_quilt,
-                          int npix_each_x, int npix_each_y, unsigned char *glimage, unsigned char *fliped_quilt);
-void set_gl_quilt_bitmap(int n_quilt_column, int n_quilt_raw, int istep_quilt,
+void quilt_bitmap_by_bgra(int n_quilt_column, int n_quilt_raw, int istep_quilt,
+                          int npix_each_x, int npix_each_y, unsigned char *bgra,
+                          unsigned char *fliped_quilt);
+ void set_gl_quilt_bitmap(int n_quilt_column, int n_quilt_raw, int istep_quilt,
                          int npix_each_x, int npix_each_y, unsigned char *glimage, unsigned char *image_quilt);
 
 

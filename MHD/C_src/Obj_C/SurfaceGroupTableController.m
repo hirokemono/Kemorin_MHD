@@ -116,7 +116,7 @@
 	[_metalView UpdateImage];
 }
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
     return (int) NumSurfaceGroup;
 }

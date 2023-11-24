@@ -431,18 +431,11 @@ void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt){
     return;
 };
 
-void kemoview_get_fliped_img(int npixel_x, int npixel_y,
-                               unsigned char *glimage, unsigned char *fliped_img){
-    get_gl_buffer_to_bmp(npixel_x, npixel_y, glimage);
-    flip_gl_bitmap(npixel_x, npixel_y, glimage, fliped_img);
-    return;
-};
-void kemoview_add_fliped_quilt_img(unsigned char *glimage, unsigned char *fliped_quilt){
-    get_gl_buffer_to_bmp(kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame, glimage);
-    flip_gl_quilt_bitmap(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws,
+void kemoview_add_bgra_to_quilt(int npix_x, int npix_y,
+                                unsigned char *bgra, unsigned char *fliped_quilt){
+    quilt_bitmap_by_bgra(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws,
                          kemo_sgl->view_s->istep_quilt,
-                         kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame,
-                         glimage, fliped_quilt);
+                         npix_x, npix_y, bgra, fliped_quilt);
     return;
 };
 
