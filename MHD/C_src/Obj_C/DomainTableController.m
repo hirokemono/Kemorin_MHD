@@ -65,7 +65,7 @@
     [_eleGrpController UpdateElementTable];
     [_surfGrpController UpdateSurfaceTable];
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (void) ReadMeshFile:(NSString *) MeshOpenFilename
@@ -93,7 +93,7 @@
     [MeshOpenPanelObj setAllowedFileTypes:meshFileTypes];
     [MeshOpenPanelObj beginSheetModalForWindow:window 
                               completionHandler:^(NSInteger MeshOpenInteger){
-	if(MeshOpenInteger == NSFileHandlingPanelOKButton){
+	if(MeshOpenInteger == NSModalResponseOK){
 		NSString *MeshOpenFilename = [[MeshOpenPanelObj URL] path];
 //		NSString *MeshOpenDirectory = [[MeshOpenPanelObj directoryURL] path];
 //      NSLog(@"Mesh file directory = %@",MeshOpenDirectory);
@@ -112,7 +112,7 @@
 	[DomainDisplayWireFlags removeAllObjects];
 	[DomainDisplayNodeFlags removeAllObjects];
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction) ShowAllDomainAction:(id)pId{
@@ -141,7 +141,7 @@
         kemoview_set_mesh_draw_flag(SURFNOD_TOGGLE, IONE);
 	}
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction) HideAllDomainAction:(id)pId
@@ -170,12 +170,12 @@
         kemoview_set_mesh_draw_flag(SURFNOD_TOGGLE, IZERO);
 	}
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
  - (int)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return NumSubDomain;
+    return (int) NumSubDomain;
 }
 
 - (id)tableView:(NSTableView *)aTableView
@@ -226,7 +226,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, rowIndex, iflag);
     }
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn
@@ -244,7 +244,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	NSInteger tag = [[_DomainPatchColorItem selectedCell] tag];
 	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE, (int) tag);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChooseDomainLineColorAction:(id)sender;
@@ -252,7 +252,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	NSInteger tag = [[_DomainLineColorItem selectedCell] tag];
 	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE, (int) tag);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChooseDomainNodeColorAction:(id)sender;
@@ -260,7 +260,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	NSInteger tag = [[_DomainNodeColorItem selectedCell] tag];
 	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE, (int) tag);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 
@@ -276,7 +276,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 - (IBAction)SetDomainLineColorAction:(id)sender
 {
@@ -290,7 +290,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFGRID_TOGGLE, colorcode4);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 - (IBAction)SetDomainNodeColorAction:(id)sender
 {
@@ -304,7 +304,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFNOD_TOGGLE, colorcode4);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 
@@ -316,6 +316,6 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	kemoview_set_domain_distance(dblobjectDistance);
 	kemoview_draw_with_modified_domain_distance();
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 @end

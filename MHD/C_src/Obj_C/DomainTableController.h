@@ -8,7 +8,7 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 #import "ElementGroupTableController.h"
 #import "NodeGroupTableController.h"
 #import "SurfaceGroupTableController.h"
@@ -20,7 +20,7 @@
     IBOutlet ElementGroupTableController* _eleGrpController;
     IBOutlet SurfaceGroupTableController* _surfGrpController;
     
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
     IBOutlet NSWindow*  window;
 	IBOutlet NSWindow* _meshWindow;
 	IBOutlet id _tableView;

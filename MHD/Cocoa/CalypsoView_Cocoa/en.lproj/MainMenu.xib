@@ -476,8 +476,8 @@
                 <outlet property="_DomainNodeColorItem" destination="1721" id="1729"/>
                 <outlet property="_DomainPatchColorItem" destination="1709" id="1730"/>
                 <outlet property="_eleGrpController" destination="905" id="3763"/>
-                <outlet property="_kemoviewer" destination="3373" id="3390"/>
                 <outlet property="_meshWindow" destination="721" id="2988"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="P1T-2B-I3h"/>
                 <outlet property="_nodeGrpController" destination="906" id="3764"/>
                 <outlet property="_surfGrpController" destination="907" id="3765"/>
                 <outlet property="_tableView" destination="761" id="876"/>
@@ -557,7 +557,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="1" width="322" height="176"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="159"/>
@@ -766,9 +766,9 @@
                                             </connections>
                                         </textField>
                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="732">
-                                            <rect key="frame" x="113" y="145" width="162" height="21"/>
+                                            <rect key="frame" x="113" y="149" width="162" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <sliderCell key="cell" alignment="left" maxValue="10" doubleValue="2.8014184397163122" tickMarkPosition="above" sliderType="linear" id="759"/>
+                                            <sliderCell key="cell" controlSize="small" alignment="left" maxValue="10" doubleValue="2.8014184397163122" tickMarkPosition="above" sliderType="linear" id="759"/>
                                             <connections>
                                                 <action selector="SetObjectDistanceAction:" target="703" id="892"/>
                                                 <binding destination="703" name="value" keyPath="self.objectDistance" id="901"/>
@@ -816,9 +816,9 @@
                                         <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="777">
                                             <rect key="frame" x="9" y="185" width="324" height="217"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <clipView key="contentView" ambiguous="YES" id="VN6-s2-786">
+                                            <clipView key="contentView" id="VN6-s2-786">
                                                 <rect key="frame" x="1" y="1" width="322" height="215"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="788" id="787">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="198"/>
@@ -866,7 +866,7 @@
                                                 <rect key="frame" x="299" y="17" width="15" height="99"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
-                                            <tableHeaderView key="headerView" id="788">
+                                            <tableHeaderView key="headerView" wantsLayer="YES" id="788">
                                                 <rect key="frame" x="0.0" y="0.0" width="322" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
@@ -951,7 +951,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="QVH-ow-4aF">
                                                 <rect key="frame" x="1" y="1" width="322" height="215"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" autosaveColumns="NO" headerView="823" id="822">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="198"/>
@@ -1176,7 +1176,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="6Xq-lm-Rc6">
                                                 <rect key="frame" x="1" y="1" width="322" height="215"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="859" id="860">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="198"/>

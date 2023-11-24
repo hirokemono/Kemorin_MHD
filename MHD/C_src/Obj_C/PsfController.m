@@ -537,7 +537,7 @@
     [PsfOpenPanelObj setAllowedFileTypes:psfFileTypes];
     NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
     
-    if(PsfOpenInteger == NSFileHandlingPanelOKButton){
+    if(PsfOpenInteger == NSModalResponseOK){
         PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
         NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
         [self ReadTextureFile:PsfOpenFilename];
@@ -556,7 +556,7 @@
     [PsfOpenPanelObj beginSheetModalForWindow:window 
                                  completionHandler:^(NSInteger PsfOpenInteger){
 	
-	if(PsfOpenInteger == NSFileHandlingPanelOKButton){
+	if(PsfOpenInteger == NSModalResponseOK){
 		NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
         PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
         // NSLog(@"PSF file directory = %@",PsfOpenDirectory);

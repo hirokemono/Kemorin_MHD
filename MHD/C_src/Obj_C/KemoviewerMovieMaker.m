@@ -752,7 +752,7 @@ NSData *SnapshotData;
     NSSavePanel *RotateImageSavePanelObj = [NSSavePanel savePanel];
     [RotateImageSavePanelObj beginSheetModalForWindow:window 
                                     completionHandler:^(NSInteger RotateImageSaveInt){
-        if (RotateImageSaveInt == NSFileHandlingPanelOKButton) {
+        if (RotateImageSaveInt == NSModalResponseOK) {
             NSString *RotateImageFilename = [[ RotateImageSavePanelObj URL] path];
             [RotateImageSavePanelObj orderOut:nil];
             [self SelectRotationMovieFile:RotateImageFilename];
@@ -765,7 +765,7 @@ NSData *SnapshotData;
 	NSSavePanel *EvolutionImageSavePanelObj = [NSSavePanel savePanel];
     [EvolutionImageSavePanelObj beginSheetModalForWindow:window 
                                     completionHandler:^(NSInteger EvolutionImageSaveInt){
-	if(EvolutionImageSaveInt == NSFileHandlingPanelOKButton){
+	if(EvolutionImageSaveInt == NSModalResponseOK){
 		NSString *EvolutionMovieFilename = [[ EvolutionImageSavePanelObj URL] path];
         [EvolutionImageSavePanelObj orderOut:nil];
         [self SelectEvolutionMovieFile:EvolutionMovieFilename];
