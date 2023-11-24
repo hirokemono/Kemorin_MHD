@@ -44,7 +44,7 @@
 	}
 
     [self UpdateNodeTable];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction) HideAllNodeGroupAction:(id)pId
@@ -60,12 +60,12 @@
 	}	
 
     [self UpdateNodeTable];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return NumNodeGroup;
+    return (int) NumNodeGroup;
 }
 
 - (id)tableView:(NSTableView *)aTableView
@@ -94,7 +94,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		[NodeGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
 	}
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn
@@ -131,9 +131,9 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseNodeGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_NodeGrpNodeColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, tag);
+	kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, (int) tag);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 - (IBAction)SetNodeGrpNodeColorAction:(id)sender
 {
@@ -147,6 +147,6 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 @end

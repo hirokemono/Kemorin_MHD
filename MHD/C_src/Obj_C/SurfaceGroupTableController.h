@@ -8,12 +8,12 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 
 
 @interface SurfaceGroupTableController : NSObject {
 	
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet id _surfaceTableView;
 	
 	NSInteger  NumSurfaceGroup;

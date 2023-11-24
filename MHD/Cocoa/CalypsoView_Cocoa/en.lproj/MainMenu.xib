@@ -490,7 +490,7 @@
         <customObject id="906" customClass="NodeGroupTableController">
             <connections>
                 <outlet property="_NodeGrpNodeColorItem" destination="1826" id="1849"/>
-                <outlet property="_kemoviewer" destination="3373" id="3391"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="Fa0-4f-uSJ"/>
                 <outlet property="_nodeTableView" destination="787" id="951"/>
                 <outlet property="nodeGrpNodeColorWell" destination="1827" id="1869"/>
             </connections>
@@ -501,7 +501,7 @@
                 <outlet property="_EleGrpNodeColorItem" destination="1782" id="1812"/>
                 <outlet property="_EleGrpPatchColorItem" destination="1789" id="1813"/>
                 <outlet property="_elementTableView" destination="822" id="933"/>
-                <outlet property="_kemoviewer" destination="3373" id="3392"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="GQq-rb-tZy"/>
                 <outlet property="eleGrpGridColorWell" destination="1783" id="1857"/>
                 <outlet property="eleGrpNodeColorWell" destination="1781" id="1858"/>
                 <outlet property="eleGrpPatchColorWell" destination="1785" id="1859"/>
@@ -512,7 +512,7 @@
                 <outlet property="_SurfGrpLineColorItem" destination="1749" id="1774"/>
                 <outlet property="_SurfGrpNodeColorItem" destination="1751" id="1775"/>
                 <outlet property="_SurfGrpPatchColorItem" destination="1744" id="1776"/>
-                <outlet property="_kemoviewer" destination="3373" id="3393"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="rKQ-TQ-bvm"/>
                 <outlet property="_surfaceTableView" destination="860" id="926"/>
                 <outlet property="surfGrpGridColorWell" destination="1750" id="1863"/>
                 <outlet property="surfGrpNodeColorWell" destination="1752" id="1864"/>

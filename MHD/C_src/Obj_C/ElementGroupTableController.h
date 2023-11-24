@@ -8,12 +8,12 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 
 
 @interface ElementGroupTableController : NSObject {
 	
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet id _elementTableView;
 	
 	NSInteger  NumElementGroup;

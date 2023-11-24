@@ -85,7 +85,7 @@
 	}
     
     [self UpdateElementTable];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction) HideAllElementGroupAction:(id)pId
@@ -114,13 +114,13 @@
 		}
 	}	
     [self UpdateElementTable];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return NumElementGroup;
+    return (int) NumElementGroup;
 }
 
 - (id)tableView:(NSTableView *)aTableView
@@ -166,7 +166,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, rowIndex, [object intValue]);
 		[ElementGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
    }
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn
@@ -209,25 +209,25 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseEleGrpPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpPatchColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, tag);
+	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, (int) tag);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChooseEleGrpLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpLineColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFGRID_TOGGLE, tag);
+	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFGRID_TOGGLE, (int) tag);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChooseEleGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpNodeColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFNOD_TOGGLE, tag);
+	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFNOD_TOGGLE, (int) tag);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)SetEleGrpPatchColorAction:(id)sender
@@ -242,7 +242,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 - (IBAction)SetEleGrpLineColorAction:(id)sender
 {
@@ -256,7 +256,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFGRID_TOGGLE, colorcode4);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 - (IBAction)SetEleGrpNodeColorAction:(id)sender
 {
@@ -270,6 +270,6 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFNOD_TOGGLE, colorcode4);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 @end
