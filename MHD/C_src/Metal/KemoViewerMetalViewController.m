@@ -108,9 +108,9 @@
     CGContextRef context = CGBitmapContextCreate(bgra, width, height,
                                                  bitsPerComponent, bpRaw, colorSpace,
                                                  (kCGBitmapAlphaInfoMask & kCGImageAlphaPremultipliedLast));
-    free(bgra);
     CGColorSpaceRelease(colorSpace);
     CGImageRef dstImage = CGBitmapContextCreateImage(context);
+    free(bgra);
     return dstImage;
 };
 
