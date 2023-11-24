@@ -40,7 +40,8 @@ NSData *SnapshotData;
     
     CVPixelBufferRef pxbuffer = NULL;
     
-    CGFloat width  = CGImageGetWidth(image);
+/*    width is required producs of 16 pixels*/
+    CGFloat width  = 16 * (int) (1 + CGImageGetWidth(image) / 16);
     CGFloat height = CGImageGetHeight(image);
     CVPixelBufferCreate(kCFAllocatorDefault,
                         width,
@@ -148,15 +149,15 @@ NSData *SnapshotData;
 }
 
 -(void) OpenQTMovieFile:(NSString *)movieFileName{
-    NSInteger XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
-    NSInteger YViewsize = [_kemoviewer KemoviewVerticalViewSize];
+    NSInteger XViewsize = [_metalView getHorizontalViewSize];
+    NSInteger YViewsize = [_metalView getVerticalViewSize];
     [self OpenQTMovieFileWithSize:movieFileName: XViewsize : YViewsize];
 }
 -(int) OpenQuiltQTMovieFile:(NSString *)movieFileName{
     int XNumImage = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
     int YNumImage = kemoview_get_quilt_nums(ISET_QUILT_RAW);
-    NSInteger XViewsize = XNumImage * [_kemoviewer KemoviewHorizontalViewSize];
-	NSInteger YViewsize = YNumImage * [_kemoviewer KemoviewVerticalViewSize];
+    NSInteger XViewsize = XNumImage * [_metalView getHorizontalViewSize];
+	NSInteger YViewsize = YNumImage * [_metalView getVerticalViewSize];
 	
 	if((XViewsize*YViewsize) > 35536896){
 		float ratio = (float) (XViewsize*YViewsize) / (float) 35536896;
@@ -207,8 +208,8 @@ NSData *SnapshotData;
                                                                         bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
                                    ];
 /*
-    kemoview_get_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
-                            (int) [_kemoviewer KemoviewVerticalViewSize],
+    kemoview_get_fliped_img((int) [_metalView getHorizontalViewSize],
+                            (int) [_metalView getVerticalViewSize],
                             glimage, [SnapshotBitmapRep bitmapData]);
  */
     free(glimage);
@@ -219,8 +220,8 @@ NSData *SnapshotData;
 {
     NSBitmapImageRep *SnapshotBitmapRep;
     static unsigned char *glimage;
-    int XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
-    int YViewsize = [_kemoviewer KemoviewVerticalViewSize];
+    int XViewsize = [_metalView getHorizontalViewSize];
+    int YViewsize = [_metalView getVerticalViewSize];
     
     glimage = (unsigned char*)calloc(3*XViewsize*XViewsize, sizeof(unsigned char));
     
@@ -238,8 +239,8 @@ NSData *SnapshotData;
                                                                         bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
                                    ];
     
-    kemoview_get_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
-                            (int) [_kemoviewer KemoviewVerticalViewSize],
+    kemoview_get_fliped_img((int) [_metalView getHorizontalViewSize],
+                            (int) [_metalView getVerticalViewSize],
                             glimage, [SnapshotBitmapRep bitmapData]);
     free(glimage);
     return SnapshotBitmapRep;
@@ -250,8 +251,8 @@ NSData *SnapshotData;
     static unsigned char *glimage;
     NSInteger num_step = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_NUM);
 
-    int XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
-    int YViewsize = [_kemoviewer KemoviewVerticalViewSize];
+    int XViewsize = [_metalView getHorizontalViewSize];
+    int YViewsize = [_metalView getVerticalViewSize];
     int XNumImage = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
     int YNumImage = kemoview_get_quilt_nums(ISET_QUILT_RAW);
 
@@ -313,16 +314,6 @@ NSData *SnapshotData;
     return SnapshotImage;
 }
 
-- (NSImage *) InitGLBitmapToImage
-{
-    NSImage *SnapshotImage = [[NSImage alloc] init];
-
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetGLBitmapToImageRep];
-    [SnapshotImage addRepresentation:SnapshotBitmapRep];
-    [SnapshotBitmapRep release];
-    return SnapshotImage;
-}
-
 - (NSImage *) InitGLQuiltBitmapToImage:(NSInteger) int_degree : (NSInteger)rotationaxis
 {
     NSImage *SnapshotImage = [[NSImage alloc] init];
@@ -337,9 +328,15 @@ NSData *SnapshotData;
 -(void) AddKemoviewImageToMovie:(CMTime)frameTime
 {
 	// Adds an image for the specified duration to the QTMovie
-    NSImage *SnapshotImage = [self InitGLBitmapToImage];
+    NSBitmapImageRep * imageRep = [NSBitmapImageRep alloc];
+    [_metalViewController getRenderedbyMetal:imageRep];
     
-    CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
+    NSImage * image = [[NSImage alloc] init];
+    NSRect rectView = [_metalView convertRectToBacking:[_metalView bounds]];
+    [image initWithSize:NSSizeFromCGSize(rectView.size)];
+    [image addRepresentation:imageRep];
+
+    CGImageRef CGImage = [image CGImageForProposedRect:nil context:nil hints:nil];
     CVPixelBufferRef buffer = [self pixelBufferFromCGImage:CGImage];
 
     // Append Image buffer
@@ -348,7 +345,7 @@ NSData *SnapshotData;
     }
     
     if (buffer) {CVBufferRelease(buffer);}
-    [SnapshotImage release];            
+    [image release];
 }
 
 -(void) AddKemoviewQuiltToMovie:(CMTime)frameTime : (NSInteger) int_degree : (NSInteger)rotationaxis
