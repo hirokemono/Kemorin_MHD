@@ -243,7 +243,7 @@
 	self.PSFSelectedField =     IZERO;
 	self.PSFSelectedComponent = IZERO;
     
-	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, self.PSFSelectedField);
+	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField);
     kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent);
     /*   
      int iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
@@ -368,7 +368,7 @@
 	}
 }
 
-- (void) SetPsfComponentMenu:(int)isel{
+- (void) SetPsfComponentMenu:(NSInteger)isel{
 	int iplotted;
 	
 	[_psfComponentMenu removeAllItems];
@@ -470,7 +470,7 @@
     [self SetPsfRanges];
 	
     [_kemoviewControl Set3DView];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 	
 	int num_loaded =  kemoview_get_PSF_loaded_params(NUM_LOADED);
 	int nlimit_load = kemoview_get_PSF_maximum_load();
@@ -487,8 +487,8 @@
 
 - (void) ReadTextureFile:(NSString *) PsfOpenFilename
 {
-    int width, height;
-    int rowBytes, pixelBytes;
+    NSInteger width, height;
+    NSInteger rowBytes, pixelBytes;
     unsigned char *pixels;
     
     
@@ -503,7 +503,7 @@
         pixelBytes = rowBytes / width;
         pixels = (unsigned char *)[imgRep bitmapData];
         
-        kemoview_set_PSF_by_rgba_texture(width, height, pixels);
+        kemoview_set_PSF_by_rgba_texture((int) width, (int) height, pixels);
     }
     [img release];
 }
@@ -581,12 +581,12 @@
     [_kemoviewControl Set3DView];
     [_kemoviewControl TimeLabelAvaiability];
     [_kemoviewControl FileStepLabelAvaiability];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 };
 
 - (IBAction) UpdatePsfAction:(id)sender
 {
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 };
 
 - (IBAction) CurrentPsfAction:(id)sender
@@ -601,14 +601,12 @@
 
 - (IBAction) PsfFieldAction:(id)sender
 {	
-	int isel = self.PSFSelectedField;
-	[self SetPsfComponentMenu:isel];
-    
-	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, isel);
+	[self SetPsfComponentMenu:self.PSFSelectedField];
+    kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField);
 	
 	[self SetPsfRanges];
     
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction) PsfComponentAction:(id)sender
@@ -618,14 +616,14 @@
 	
     [self SetPsfRanges];
     
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 
 - (IBAction)PsfSurfSwitchAction:(id)sender;
 {
 	self.PSFSurfaceSwitch = kemoview_select_PSF_draw_switch(PSFSOLID_TOGGLE);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)PsfLineSwitchAction:(id)sender;
@@ -633,7 +631,7 @@
 	self.PSFIsolineSwitch = kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 	[self UpdateCurrentPsfMenu];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
@@ -641,13 +639,13 @@
 	self.PSFZerolineSwitch = kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 	[self UpdateCurrentPsfMenu];
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)PsfColorbarSwitchAction:(id)sender;
 {
 	self.PSFColorbarSwitch = kemoview_select_PSF_draw_switch(COLORBAR_TOGGLE);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChoosePsfPatchColorAction:(id)sender;
@@ -658,20 +656,20 @@
     else if(self.psfPatchColorTag == SINGLE_COLOR){
         [self SetPSFColorFromColorWell];
     };
-	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, self.psfPatchColorTag);
+	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, (int) self.psfPatchColorTag);
     
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 - (IBAction)ChoosePsfLineColorAction:(id)sender;
 {
-	kemoview_set_PSF_color_param(PSFGRID_TOGGLE, self.psfLineColorTag);
-	[_kemoviewer UpdateImage];
+	kemoview_set_PSF_color_param(PSFGRID_TOGGLE, (int) self.psfLineColorTag);
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChoosePsfVectorColorAction:(id)sender;
 {
 	kemoview_set_PSF_color_param(ISET_VECTOR_COLOR, (int) self.psfVectorColorTag);
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)ChoosePsfVectorModeAction:(id)sender;
@@ -681,24 +679,24 @@
 	} else if (self.psfVectorColorTag == 1) {
 		kemoview_set_PSF_tangential_vec_mode(TANGENTIAL_COMPONENT);
 	}
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction) SetPSFDisplayrange:(id)pSender {
 	
 	kemoview_set_PSF_linear_colormap(self.PsfMinimumRange, (int) self.PsfMinimumDigit,
 									 self.PsfMaximumRange, (int) self.PsfMaximumDigit);
-//	[_kemoviewer UpdateImage];
+//	[_metalView UpdateImage];
 }
 
 - (IBAction) ShowIsolineNumber:(id)pSender {
 	kemoview_set_PSF_color_param(ISET_NLINE, (int) self.IsolineNumber);
-//    [_kemoviewer UpdateImage];
+//    [_metalView UpdateImage];
 }
 
 - (IBAction) SetIsolineWidth:(id)pSender {
 	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, (double) self.IsolineWidth, (int) self.IsolineDigit);
-//	[_kemoviewer UpdateImage];
+//	[_metalView UpdateImage];
 }
 
 - (IBAction)DrawPSFVectorAction:(id)sender;
@@ -708,29 +706,29 @@
 	if(self.DrawPSFVectorFlag == 0) {[_PSFVectorSwitchOutlet setTitle:@"Off"];}
 	else{ [_PSFVectorSwitchOutlet setTitle:@"On"];};
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage];
 }
 
 - (IBAction)SetReferenceVector:(id)pSender {
 	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, (double) self.ScaleVector, (int) self.ScaleDigit);
-//	[_kemoviewer UpdateImage];
+//	[_metalView UpdateImage];
 }
 
 - (IBAction)SetVectorIncrement:(id)pSender {
 	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, (double) self.PSFVectorIncrement, (int) self.PSFVectorIncDigit);
-//	[_kemoviewer UpdateImage];
+//	[_metalView UpdateImage];
 }
 
 - (IBAction)SetVectorThickness:(id)pSender {
     kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, (double) self.VectorThickness, (int) self.VectorDigit);
-//    [_kemoviewer UpdateImage];
+//    [_metalView UpdateImage];
 }
     
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 {
 	self.psfPatchDirectionTag = [[_psfPatchDirMatrix selectedCell] tag];
-	kemoview_set_PSF_polygon_mode(self.psfPatchDirectionTag);
-	[_kemoviewer UpdateImage];
+	kemoview_set_PSF_polygon_mode((int) self.psfPatchDirectionTag);
+	[_metalView UpdateImage];
 }
 
 - (void)SetPSFColorFromColorWell{
@@ -751,7 +749,7 @@
 - (IBAction)SetPSFPatchColorAction:(id)sender
 {
     [self SetPSFColorFromColorWell];
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 }
 
 - (IBAction)SetPSFSingleOpacityAction:(id)sender
@@ -762,7 +760,7 @@
     NSColor *NewWellColor = [OriginalWellColor colorWithAlphaComponent:self.PSFOpacity];
     [PSFPatchColorWell setColor:NewWellColor];
     
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage];
 };
 
 @end

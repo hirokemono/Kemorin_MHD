@@ -5210,7 +5210,7 @@
                 <outlet property="_PsfZeroLineSwitchOutlet" destination="1070" id="1164"/>
                 <outlet property="_currentPsfMenu" destination="2848" id="2866"/>
                 <outlet property="_kemoviewControl" destination="964" id="3541"/>
-                <outlet property="_kemoviewer" destination="3373" id="3397"/>
+                <outlet property="_metalView" destination="0Nx-Qx-Xru" id="qvG-XQ-OXD"/>
                 <outlet property="_psfComponentMenu" destination="1076" id="1158"/>
                 <outlet property="_psfFieldMenu" destination="1074" id="2194"/>
                 <outlet property="_psfLineColorMenu" destination="1871" id="2914"/>

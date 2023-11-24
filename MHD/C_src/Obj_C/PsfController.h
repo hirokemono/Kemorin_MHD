@@ -10,7 +10,7 @@
 
 #include "math.h"
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoviewerMovieMaker.h"
 #import "KemoviewerController.h"
 #import "RGBAMapController.h"
 #import "ElasticMenuWindow.h"
@@ -19,7 +19,7 @@
 @interface PsfController : NSObject {
     
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
     IBOutlet NSPathControl *_psfPathControl;
     IBOutlet NSColorWell *PSFPatchColorWell;
@@ -184,7 +184,7 @@
 - (void) SetPsfFieldMenu;
 - (void) UpdateCurrentPsfMenu;
 - (void) ResetCurrentPsfParam;
-- (void) SetPsfComponentMenu:(int)isel;
+- (void) SetPsfComponentMenu:(NSInteger)isel;
 - (void) SetPsfRanges;
 - (void) DrawPsfFile:(NSString*) PsfOpenFilehead;
 

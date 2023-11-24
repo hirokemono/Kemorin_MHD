@@ -8,13 +8,13 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#import "KemoViewerMetalView.h"
 #import "KemoviewerController.h"
 
 @interface FlineController : NSObject {
 
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
 
 	NSInteger DrawFlineFlag;
@@ -91,7 +91,7 @@
 - (IBAction) FlineComponentAction:(id)sender;
 
 - (void) SetFlineFieldMenu;
-- (void) SetFlineComponentMenu:(int)isel;
+- (void) SetFlineComponentMenu:(NSInteger)isel;
 
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 
