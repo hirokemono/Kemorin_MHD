@@ -28,6 +28,83 @@ typedef struct
     MaterialParameters    material;
 } KemoViewUnites;
 
+typedef struct
+{
+    /*  Vertex buffer for initial cube */
+    id<MTLBuffer> _Nullable cubeVertice;
+    /*  Index buffer for initial cube */
+    id<MTLBuffer> _Nullable cubeIndex;
+    
+    /*  Vertex buffer for PSF solid patch */
+    id<MTLBuffer> _Nullable psfSolidVertice;
+    /*  Vertex buffer for PSF transoarent patch */
+    id<MTLBuffer> _Nullable psfTransVertice;
+    /*  Vertex buffer for PSF with texure patch */
+    id<MTLBuffer> _Nullable psfSTexureVertice;
+    /*  Vertex buffer for PSF with transoarent texure patch */
+    id<MTLBuffer> _Nullable psfTTexureVertice;
+    /*  Vertex buffer for PSF arrows */
+    id<MTLBuffer> _Nullable psfArrowVertice;
+    /*  Vertex buffer for PSF isolines */
+    id<MTLBuffer> _Nullable psfLinesVertice;
+    
+    /*  Texure buffer for PSF with texure */
+    id<MTLTexture> _Nullable psfSolidTexure;
+    /*  Texure buffer for PSF with transparent texure */
+    id<MTLTexture> _Nullable psfTransTexure;
+    
+    /*  Vertex buffer for Map solid patch */
+    id<MTLBuffer> _Nullable mapSolidVertice;
+    /*  Vertex buffer for Map isolines */
+    id<MTLBuffer> _Nullable mapLinesVertice;
+    
+    /*  Vertex buffer for field lines solid patch */
+    id<MTLBuffer> _Nullable fieldTubeVertice;
+    /*  Vertex buffer for field lines  */
+    id<MTLBuffer> _Nullable fieldLineVertice;
+    
+    /*  Vertex buffer for mesh solid patch */
+    id<MTLBuffer> _Nullable meshSolidVertice;
+    /*  Vertex buffer for mesh transoarent patch */
+    id<MTLBuffer> _Nullable meshTransVertice;
+    /*  Vertex buffer for mesh grid */
+    id<MTLBuffer> _Nullable meshGridVertice;
+    /*  Vertex buffer for mesh nodes */
+    id<MTLBuffer> _Nullable meshNodeVertice;
+    
+    /*  Vertex buffer for Coast lines */
+    id<MTLBuffer> _Nullable coastVertice;
+    /*  Vertex buffer for sphere grids */
+    id<MTLBuffer> _Nullable sphGridVertice;
+    /*  Vertex buffer for axis arrows */
+    id<MTLBuffer> _Nullable axisVertice;
+
+    /*  Vertex buffer for  color bar */
+    id<MTLBuffer> _Nullable colorBarVertice;
+    /*  Vertex buffer for min label on color bar */
+    id<MTLBuffer> _Nullable minLabelVertice;
+    /*  Vertex buffer for max label on color bar */
+    id<MTLBuffer> _Nullable maxLabelVertice;
+    /*  Vertex buffer for zero label on color bar */
+    id<MTLBuffer> _Nullable zeroLabelVertice;
+    /*  Vertex buffer for time box */
+    id<MTLBuffer> _Nullable timeLabelVertice;
+    /*  Vertex buffer for message box */
+    id<MTLBuffer> _Nullable messageVertice;
+
+    /*  Texure buffer for min label on color bar */
+    id<MTLTexture> _Nullable minLabelTexure;
+    /*  Texure buffer for max label on color bar */
+    id<MTLTexture> _Nullable maxLabelTexure;
+    /*  Texure buffer for zero label on color bar */
+    id<MTLTexture> _Nullable zeroLabelTexure;
+    /*  Texure buffer for time box */
+    id<MTLTexture> _Nullable timeLabelTexure;
+    /*  Texure buffer for message box */
+    id<MTLTexture> _Nullable messageTexure;
+} KemoViewMetalBuffers;
+
+
 - (void)setTransferMatrices;
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
