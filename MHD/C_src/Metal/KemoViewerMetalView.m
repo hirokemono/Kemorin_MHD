@@ -141,22 +141,36 @@
 -(void) UpdateImage
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
+//    kemoview_quilt_viewmatrix();
+    kemoview_full_modify_view();
+    [_resetview UpdateParameters];
+    
     [self setNeedsDisplay: YES];
-    [_kemoviewer UpdateImage];
+    [_kemoviewer swapbuffer_cocoa];
     return;
 }
 -(void) FastUpdateImage
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
+//    kemoview_quilt_viewmatrix();
+    kemoview_full_modify_view();
+    [_resetview UpdateParameters];
+
     [self setNeedsDisplay: YES];
-    [_kemoviewer UpdateImage];
+    [_kemoviewer swapbuffer_cocoa];
     return;
 }
 -(void) QuickUpdateImage
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW);
+    kemoview_quick_viewmatrix();
+    kemoview_mono_view();
+    [_resetview UpdateParameters];
+
     [self setNeedsDisplay: YES];
-    [_kemoviewer QuickUpdateImage];
+    [_kemoviewer swapbuffer_cocoa];
     return;
 }
 
@@ -164,11 +178,9 @@
 {
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_fast_modify_view();
+    kemoview_quilt_viewmatrix();
     
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
-    [self setNeedsDisplay: YES];
-    [_kemoviewer swapbuffer_cocoa];
     return self;
 }
 

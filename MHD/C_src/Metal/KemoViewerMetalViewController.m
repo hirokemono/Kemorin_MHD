@@ -17,6 +17,9 @@
 
 -(void) awakeFromNib
 {
+    kemoviewer_reset_to_init_angle();
+    kemoview_init_lighting();
+
     _metalView.enableSetNeedsDisplay = YES;
 /*    viewDidLoad is called by linkning self.viwew to metal view */
     self.view = _metalView;
@@ -53,16 +56,17 @@
     return;
 }
 
+- (void) RenderUpdate
+{
+    [_renderer drawInMTKView:_metalView];
+    return;
+};
+
 - (void)viewDidLayout
 {
     [_metalView setViewerSize];
     return;
 };
-
--(nonnull void *) loadImageOutputTexture
-{
-    return [_renderer loadImageOutputTextureFromRenderer];
-}
 
 -(unsigned char *) getRenderedbyMetalToBGRA
 {

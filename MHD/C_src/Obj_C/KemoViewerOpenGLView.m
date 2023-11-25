@@ -17,48 +17,15 @@
 	[self setNeedsDisplay:YES];
 }
 
-// ---------------------------------
--(void) UpdateImage
-{
-	[_context makeCurrentContext];
-	
-	// move view
-	kemoview_set_single_viewer_id(id_window);
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_full_modify_view();
-	[_resetview UpdateParameters];
-
-	[self swapbuffer_cocoa];
-	[self setNeedsDisplay: YES];
-    return;
-}
-
--(void) QuickUpdateImage
-{
-	[_context makeCurrentContext];
-	
-	// move view
-	kemoview_set_single_viewer_id(id_window);
-    kemoview_quick_viewmatrix();
-    kemoview_mono_view();
-	[_resetview UpdateParameters];
-	
-	[self swapbuffer_cocoa];
-	[self setNeedsDisplay: YES];
-}
-// ---------------------------------
-
-
-
-// ---------------------------------
 
 // set initial OpenGL state (current context is set)
 // called after context is created
-- (void) prepareKemoOpenGL
+- (void) awakeFromNib
 {
-	float BgColor4f[4];
+    id_window = kemoview_get_current_viewer_id();
+    kemoview_set_single_viewer_id(id_window);
 
-	static const NSOpenGLPixelFormatAttribute attr[]= {
+    static const NSOpenGLPixelFormatAttribute attr[]= {
 			NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
 			NSOpenGLPFANoRecovery,
 			NSOpenGLPFADoubleBuffer,
@@ -92,29 +59,6 @@
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	glPolygonOffset (1.0f, 1.0f);
-	
-	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
-	BgColor4f[0] = [[defaults stringForKey:@"BackGroundRed"] floatValue];
-	BgColor4f[1] = [[defaults stringForKey:@"BackGroundGreen"] floatValue];
-	BgColor4f[2] = [[defaults stringForKey:@"BackGroundBlue"] floatValue];
-	BgColor4f[3] = 1.0;
-	kemoview_set_background_color(BgColor4f);
-
-}
-
-// ---------------------------------
-
-- (void) awakeFromNib
-{
-    id_window = kemoview_get_current_viewer_id();
-    kemoview_set_single_viewer_id(id_window);
-
-	[self prepareKemoOpenGL];
-	
-	kemoviewer_reset_to_init_angle();
-	kemoview_init_lighting();
-
     [NSColor setIgnoresAlpha:NO];
 }
-
 @end

@@ -22,8 +22,8 @@
 -(void) awakeFromNib;
 -(void) viewDidLoad;
 
--(void) viewDidLayout;
--(nonnull void *) loadImageOutputTexture;
+- (void) RenderUpdate;
+- (void) viewDidLayout;
 
 -(unsigned char *) getRenderedbyMetalToBGRA;
 -(CGImageRef) getRenderedbyMetalToCGref;

@@ -32,6 +32,5 @@ typedef struct
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
 - (void)drawInMTKView:(nonnull MTKView *)view;
--(nonnull void *) loadImageOutputTextureFromRenderer;
 
 @end

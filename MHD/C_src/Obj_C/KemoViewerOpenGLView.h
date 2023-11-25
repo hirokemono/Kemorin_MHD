@@ -26,14 +26,6 @@
     int id_window;
 }
 
-- (int) getViewSize;
-
-- (void) UpdateImage;
-- (void) QuickUpdateImage;
 - (void) swapbuffer_cocoa;
-
-- (void) messageTimer:(NSTimer *)timer;
-
-- (void) prepareKemoOpenGL;
 - (void) awakeFromNib;
 @end

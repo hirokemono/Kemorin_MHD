@@ -1433,11 +1433,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
--(nonnull void *) loadImageOutputTextureFromRenderer
-{
-    return &_imageOutputTexture;
-};
-
 /// Called whenever view changes orientation or is resized
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size
 {
