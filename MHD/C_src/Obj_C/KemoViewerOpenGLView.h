@@ -17,11 +17,6 @@
 
 
 @interface KemoViewerOpenGLView : NSOpenGLView {
-	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
-	IBOutlet ResetViewControll *  _resetview;
-
-	IBOutlet NSWindow*  mainWindow;
-	
 	NSOpenGLContext * _context;
     int id_window;
 }

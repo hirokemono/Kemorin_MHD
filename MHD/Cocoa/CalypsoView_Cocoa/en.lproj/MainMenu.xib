@@ -416,7 +416,7 @@
                 <outlet property="_movieMakerController" destination="2637" id="3608"/>
                 <outlet property="_psfController" destination="1157" id="3581"/>
                 <outlet property="_user_defaults_controller" destination="716" id="3619"/>
-                <outlet property="window" destination="371" id="c1I-vx-8GJ"/>
+                <outlet property="window" destination="mUS-wv-uCM" id="O8P-3o-ArQ"/>
             </connections>
         </customObject>
         <window title="CalypsoView_Cocoa" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
@@ -432,11 +432,6 @@
                     <openGLView autoresizesSubviews="NO" wantsLayer="YES" fixedFrame="YES" depthSize="32bit" antiAliasingType="multisample" samplingRate="8" useAuxiliaryDepthBufferStencil="NO" useDoubleBufferingEnabled="YES" wantsBestResolutionOpenGLSurface="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3373" customClass="KemoViewerOpenGLView">
                         <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <connections>
-                            <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3413"/>
-                            <outlet property="_resetview" destination="2679" id="3401"/>
-                            <outlet property="mainWindow" destination="371" id="fyQ-2I-tMU"/>
-                        </connections>
                     </openGLView>
                 </subviews>
             </view>
@@ -446,7 +441,7 @@
             <connections>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="xle-bK-LY4"/>
                 <outlet property="_singleKemoView" destination="w8N-Cd-Q0k" id="PLN-2e-Kq1"/>
-                <outlet property="window" destination="371" id="532"/>
+                <outlet property="window" destination="mUS-wv-uCM" id="gA9-48-Rvo"/>
             </connections>
         </customObject>
         <customObject id="w8N-Cd-Q0k" customClass="KemoViewerObject"/>
@@ -478,7 +473,7 @@
                 <outlet property="domainGridColorWell" destination="1735" id="1851"/>
                 <outlet property="domainNodeColorWell" destination="1736" id="1852"/>
                 <outlet property="domainPatchColorWell" destination="1734" id="1853"/>
-                <outlet property="window" destination="371" id="4KR-XO-i1m"/>
+                <outlet property="window" destination="mUS-wv-uCM" id="a4A-Gf-jvh"/>
             </connections>
         </customObject>
         <customObject id="906" customClass="NodeGroupTableController">
@@ -1553,7 +1548,7 @@
                 <outlet property="_flinetype_matrix" destination="3125" id="3157"/>
                 <outlet property="_kemoviewControl" destination="964" id="3542"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="WpY-a9-ua0"/>
-                <outlet property="window" destination="371" id="7lQ-Pq-3tS"/>
+                <outlet property="window" destination="mUS-wv-uCM" id="XXk-bq-Vfp"/>
             </connections>
         </customObject>
         <window title="CalypsoView Controler" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="1064">
@@ -5189,7 +5184,7 @@
                 <outlet property="movieFormat_item" destination="2461" id="2641"/>
                 <outlet property="rotateProgreessBar" destination="1898" id="3710"/>
                 <outlet property="rotationAxis" destination="1541" id="2708"/>
-                <outlet property="window" destination="371" id="JnI-YH-Uaj"/>
+                <outlet property="window" destination="mUS-wv-uCM" id="c1P-Gb-hQ7"/>
             </connections>
         </customObject>
         <customObject id="1157" customClass="PsfController">
@@ -5211,7 +5206,7 @@
                 <outlet property="_psfPatchDirMatrix" destination="3170" id="3191"/>
                 <outlet property="_psfPathControl" destination="DCF-qI-TYy" id="oaZ-Mi-ENX"/>
                 <outlet property="_psfVectorColorMenu" destination="3006" id="3110"/>
-                <outlet property="window" destination="371" id="Lq0-53-4gU"/>
+                <outlet property="window" destination="mUS-wv-uCM" id="UWz-ny-qdV"/>
             </connections>
         </customObject>
         <objectController id="2714" userLabel="PSF Object Controller">
@@ -5268,7 +5263,7 @@
                 <outlet property="_colorMapObject" destination="2610" id="2784"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="z4h-Jg-rK3"/>
                 <outlet property="_opacityMapObject" destination="2618" id="2785"/>
-                <outlet property="window" destination="371" id="QUL-Zy-Tje"/>
+                <outlet property="window" destination="mUS-wv-uCM" id="3ab-MV-Gz4"/>
             </connections>
         </customObject>
         <customObject id="2610" customClass="ColorMapController">
