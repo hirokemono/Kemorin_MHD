@@ -28,14 +28,12 @@ Implementation of a platform independent renderer class, which performs Metal se
     // The command queue used to pass commands to the device.
     id<MTLCommandQueue> _commandQueue;
     
-    id<MTLFunction> _vertexFunction[7];
-    id<MTLFunction> _fragmentFunction[7];
-
     // Combined depth and stencil state object.
     id<MTLDepthStencilState> _depthState;
     id<MTLDepthStencilState> _noDepthState;
 
     KemoViewMetalBuffers _kemoViewMetalBuf;
+    KemoViewMetalShaders _kemoViewShaders;
 
     id<MTLRenderCommandEncoder> _renderEncoder;
 
@@ -69,34 +67,34 @@ Implementation of a platform independent renderer class, which performs Metal se
 
          // Load all the shader files with a .metal file extension in the project.
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
-        _vertexFunction[0] =   [defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
-        _fragmentFunction[0] = [defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
+        _kemoViewShaders.base2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
+        _kemoViewShaders.base2DFragmentFunction = [defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
 
-        _vertexFunction[1] =   [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
-        _fragmentFunction[1] = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
+        _kemoViewShaders.simple2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
+        _kemoViewShaders.simple2DFragmentFunction = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
 
-        _vertexFunction[2] =   [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
-        _fragmentFunction[2] = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
+        _kemoViewShaders.texured2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
+        _kemoViewShaders.texured2DFragmentFunction = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
 
-        _vertexFunction[3] =   [defaultLibrary newFunctionWithName:@"PhongVertexShader"];
-        _fragmentFunction[3] = [defaultLibrary newFunctionWithName:@"PhongFragmentShader"];
+        _kemoViewShaders.phongVertexFunction =   [defaultLibrary newFunctionWithName:@"PhongVertexShader"];
+        _kemoViewShaders.phongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongFragmentShader"];
 
-        _vertexFunction[4] =   [defaultLibrary newFunctionWithName:@"SimpleVertexShader"];
-        _fragmentFunction[4] = [defaultLibrary newFunctionWithName:@"SimpleFragmentShader"];
+        _kemoViewShaders.simpleVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleVertexShader"];
+        _kemoViewShaders.simpleFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleFragmentShader"];
 
-        _vertexFunction[5] =   [defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
-        _fragmentFunction[5] = [defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
+        _kemoViewShaders.texuredPhongVertexFunction = [defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
+        _kemoViewShaders.texuredPhongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
 
-        _vertexFunction[6] =   [defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
-        _fragmentFunction[6] = [defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
+        _kemoViewShaders.texuredVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
+        _kemoViewShaders.texuredFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         MTLRenderPipelineDescriptor *pipelineStateDescriptor;
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
 
         pipelineStateDescriptor.label = @"2D Texture Pipeline";
-        pipelineStateDescriptor.vertexFunction = _vertexFunction[2];
-        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[2];
+        pipelineStateDescriptor.vertexFunction =  _kemoViewShaders.texured2DVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.texured2DFragmentFunction;
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
@@ -118,8 +116,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 /*  Create pipeline for simple 2D rendering */
         pipelineStateDescriptor.label = @"2D transpearent Pipeline";
-        pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
-        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
+        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.simple2DVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.simple2DFragmentFunction;
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
@@ -137,8 +135,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         /*  Create pipeline for simple rendering */
         pipelineStateDescriptor.label = @"2D Simple Pipeline";
-        pipelineStateDescriptor.vertexFunction = _vertexFunction[1];
-        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[1];
+        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.simple2DVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.simple2DFragmentFunction;
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
@@ -151,8 +149,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 /*  Create pipeline for Basic rendering */
         pipelineStateDescriptor.label = @"Base Pipeline";
-        pipelineStateDescriptor.vertexFunction = _vertexFunction[0];
-        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[0];
+        pipelineStateDescriptor.vertexFunction = _kemoViewShaders.base2DVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.base2DFragmentFunction;
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
@@ -162,8 +160,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor.label = @"Simple Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction =   _vertexFunction[4];
-        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[4];
+        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.simpleVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.simpleFragmentFunction;
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
@@ -175,8 +173,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
 
         pipelineStateDescriptor.label = @"Phong Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction = _vertexFunction[3];
-        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[3];
+        pipelineStateDescriptor.vertexFunction = _kemoViewShaders.phongVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.phongFragmentFunction;
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
@@ -200,8 +198,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
 
         pipelineStateDescriptor.label = @"Texure Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction = _vertexFunction[6];
-        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[6];
+        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.texuredPhongVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.texuredPhongFragmentFunction;
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
@@ -221,8 +219,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
 
         pipelineStateDescriptor.label = @"Texure Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction = _vertexFunction[6];
-        pipelineStateDescriptor.fragmentFunction = _fragmentFunction[6];
+        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.texuredVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.texuredFragmentFunction;
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
@@ -442,8 +440,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
 
     pipelineStateDescriptor.label = @"Offscreen Phong Shader Pipeline";
-    pipelineStateDescriptor.vertexFunction =   _vertexFunction[3];
-    pipelineStateDescriptor.fragmentFunction = _fragmentFunction[3];
+    pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.phongVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.phongFragmentFunction;
     pipelineStateDescriptor.depthAttachmentPixelFormat =      _imageOutputTexture.depth;
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = _imageOutputTexture.pixelFormat;
 

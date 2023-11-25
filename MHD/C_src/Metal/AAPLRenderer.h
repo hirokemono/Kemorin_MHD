@@ -104,6 +104,36 @@ typedef struct
     id<MTLTexture> _Nullable messageTexure;
 } KemoViewMetalBuffers;
 
+typedef struct
+{
+    /*  Shader functions for simple shader  */
+    id<MTLFunction> _Nonnull simpleVertexFunction;
+    id<MTLFunction> _Nonnull simpleFragmentFunction;
+    
+    /*  Shader functions for textured  shader  */
+    id<MTLFunction> _Nonnull texuredVertexFunction;
+    id<MTLFunction> _Nonnull texuredFragmentFunction;
+    
+    /*  Shader functions for Phong shader  */
+    id<MTLFunction> _Nonnull phongVertexFunction;
+    id<MTLFunction> _Nonnull phongFragmentFunction;
+    
+    /*  Shader functions for textured Phong shader  */
+    id<MTLFunction> _Nonnull texuredPhongVertexFunction;
+    id<MTLFunction> _Nonnull texuredPhongFragmentFunction;
+    
+    /*  Shader functions for simple 2D shader  */
+    id<MTLFunction> _Nonnull simple2DVertexFunction;
+    id<MTLFunction> _Nonnull simple2DFragmentFunction;
+
+    /*  Shader functions for textured 2D shader  */
+    id<MTLFunction> _Nonnull texured2DVertexFunction;
+    id<MTLFunction> _Nonnull texured2DFragmentFunction;
+    
+    /*  Shader functions for original 2D shader  */
+    id<MTLFunction> _Nonnull base2DVertexFunction;
+    id<MTLFunction> _Nonnull base2DFragmentFunction;
+} KemoViewMetalShaders;
 
 - (void)setTransferMatrices;
 
