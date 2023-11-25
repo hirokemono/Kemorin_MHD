@@ -22,9 +22,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 /* Render pass descriptor to draw to the texture */
     MTLRenderPassDescriptor* _textureRenderPassDescriptor;
 
-    // The render pipeline generated from the vertex and fragment shaders in the .metal shader file.
-    id<MTLRenderPipelineState> _pipelineState[40];
-    
     // The command queue used to pass commands to the device.
     id<MTLCommandQueue> _commandQueue;
     
@@ -106,13 +103,13 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
         
-        _pipelineState[2] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                           error:&error];
+        _kemoViewShaders.texured2DPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                           error:&error];
 /* Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
 //  If the Metal API validation is enabled, you can find out more information about what
 //  went wrong.  (Metal API validation is enabled by default when a debug build is run
 //  from Xcode.) */
-        NSAssert(_pipelineState[2], @"Failed to create pipeline state: %@", error);
+        NSAssert(_kemoViewShaders.texured2DPipelineState, @"Failed to create pipeline state: %@", error);
 
 /*  Create pipeline for simple 2D rendering */
         pipelineStateDescriptor.label = @"2D transpearent Pipeline";
@@ -129,9 +126,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
         
-        _pipelineState[1] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                           error:&error];
-        NSAssert(_pipelineState[1], @"Failed to create pipeline state: %@", error);
+        _kemoViewShaders.trans2DPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                        error:&error];
+        NSAssert(_kemoViewShaders.trans2DPipelineState, @"Failed to create pipeline state: %@", error);
 
         /*  Create pipeline for simple rendering */
         pipelineStateDescriptor.label = @"2D Simple Pipeline";
@@ -142,9 +139,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         pipelineStateDescriptor.colorAttachments[0].blendingEnabled = NO;
         
-        _pipelineState[3] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                           error:&error];
-        NSAssert(_pipelineState[3], @"Failed to create pipeline state: %@", error);
+        _kemoViewShaders.simple2DPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                         error:&error];
+        NSAssert(_kemoViewShaders.simple2DPipelineState, @"Failed to create pipeline state: %@", error);
 
 
 /*  Create pipeline for Basic rendering */
@@ -154,9 +151,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
-        _pipelineState[0] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                           error:&error];
-        NSAssert(_pipelineState[0], @"Failed to create pipeline state: %@", error);
+        _kemoViewShaders.base2DPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                       error:&error];
+        NSAssert(_kemoViewShaders.base2DPipelineState, @"Failed to create pipeline state: %@", error);
 
         /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor.label = @"Simple Shader Pipeline";
@@ -165,9 +162,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
-        _pipelineState[5] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                           error:&error];
-        NSAssert(_pipelineState[5], @"Failed to create pipeline state: %@", error);
+        _kemoViewShaders.simplePipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                       error:&error];
+        NSAssert(_kemoViewShaders.simplePipelineState, @"Failed to create pipeline state: %@", error);
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -186,13 +183,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
             
-        _pipelineState[4] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                           error:&error];
-        NSAssert(_pipelineState[4], @"Failed to create pipeline state: %@", error);
-
-        _pipelineState[15] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                           error:&error];
-        NSAssert(_pipelineState[15], @"Failed to create pipeline state: %@", error);
+        _kemoViewShaders.phongPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                      error:&error];
+        NSAssert(_kemoViewShaders.phongPipelineState, @"Failed to create pipeline state: %@", error);
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -211,9 +204,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
             
-        _pipelineState[6] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                           error:&error];
-        NSAssert(_pipelineState[6], @"Failed to create pipeline state: %@", error);
+        _kemoViewShaders.phongTexturedPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                              error:&error];
+        NSAssert(_kemoViewShaders.phongTexturedPipelineState, @"Failed to create pipeline state: %@", error);
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -232,9 +225,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
         pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
         
-        _pipelineState[7] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                       error:&error];
-        NSAssert(_pipelineState[7], @"Failed to create pipeline state: %@", error);
+        _kemoViewShaders.texuredPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                        error:&error];
+        NSAssert(_kemoViewShaders.texuredPipelineState, @"Failed to create pipeline state: %@", error);
 
 /* Add Depth buffer description in command */
         MTLDepthStencilDescriptor *depthDescriptor = [MTLDepthStencilDescriptor new];
@@ -310,7 +303,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setDepthStencilState:_depthState];
         }
         
-        [*renderEncoder setRenderPipelineState:_pipelineState[5]];
+        [*renderEncoder setRenderPipelineState:_kemoViewShaders.simplePipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -349,7 +342,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setDepthStencilState:_depthState];
         }
 
-        [*renderEncoder setRenderPipelineState:_pipelineState[6]];
+        [*renderEncoder setRenderPipelineState:_kemoViewShaders.phongTexturedPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -382,7 +375,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 //        [*renderEncoder setDepthStencilState:_depthState];
         [*renderEncoder setDepthStencilState:_noDepthState];
 
-        [*renderEncoder setRenderPipelineState:_pipelineState[4]];
+        [*renderEncoder setRenderPipelineState:_kemoViewShaders.phongPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -412,53 +405,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 }
 
 
--(void) initImageOutputTextures
-{
-/* Initialize texture for screen output */
-    MTLTextureDescriptor *texureDecriptor = [MTLTextureDescriptor new];
-    texureDecriptor.textureType = MTLTextureType2D;
-    texureDecriptor.width =  _viewportSize.x;
-    texureDecriptor.height = _viewportSize.y;
-    texureDecriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
-    texureDecriptor.usage = MTLTextureUsageRenderTarget;
-
-    _imageOutputTexture = [_device newTextureWithDescriptor:texureDecriptor];
-
-/*Setup render pass*/
-    _textureRenderPassDescriptor = [MTLRenderPassDescriptor new];
-    _textureRenderPassDescriptor.colorAttachments[0].texture = _imageOutputTexture;
-    _textureRenderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
-    _textureRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(1, 1, 1, 1);
-    _textureRenderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
-
-    [_textureRenderPassDescriptor release];
-    [_imageOutputTexture release];
-
-
-    NSError *error;
-    MTLRenderPipelineDescriptor *pipelineStateDescriptor;
-    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-
-    pipelineStateDescriptor.label = @"Offscreen Phong Shader Pipeline";
-    pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.phongVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.phongFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat =      _imageOutputTexture.depth;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = _imageOutputTexture.pixelFormat;
-
-    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        
-    _pipelineState[14] = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                       error:&error];
-    NSAssert(_pipelineState[14], @"Failed to create pipeline state: %@", error);
-    return;
-}
-
 - (void)drawSolidWithPhong:(struct gl_strided_buffer *) buf
                    encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
                     vertex:(id<MTLBuffer> *) vertices
@@ -480,7 +426,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setDepthStencilState:_depthState];
         }
 
-        [*renderEncoder setRenderPipelineState:_pipelineState[4]];
+        [*renderEncoder setRenderPipelineState:_kemoViewShaders.phongPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -529,7 +475,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setDepthStencilState:_depthState];
         }
 
-        [*renderEncoder setRenderPipelineState:_pipelineState[5]];
+        [*renderEncoder setRenderPipelineState:_kemoViewShaders.simplePipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -569,7 +515,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         [*renderEncoder setCullMode:MTLCullModeBack];
         [*renderEncoder setDepthStencilState:_depthState];
         
-        [*renderEncoder setRenderPipelineState:_pipelineState[5]];
+        [*renderEncoder setRenderPipelineState:_kemoViewShaders.simplePipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
@@ -592,7 +538,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 projection:(matrix_float4x4 *) projection_mat;
 {
     if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState:_pipelineState[1]];
+        [*renderEncoder setRenderPipelineState: _kemoViewShaders.trans2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
@@ -612,7 +558,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                projection:(matrix_float4x4 *) projection_mat;
 {
     if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState:_pipelineState[3]];
+        [*renderEncoder setRenderPipelineState:_kemoViewShaders.simple2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
@@ -633,7 +579,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                projection:(matrix_float4x4 *) projection_mat;
 {
     if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState:_pipelineState[2]];
+        [*renderEncoder setRenderPipelineState:_kemoViewShaders.texured2DPipelineState];
 /* Pass in the parameter data. */
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
