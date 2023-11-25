@@ -82,6 +82,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         _kemoViewShaders.texuredPhongVertexFunction = [defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
         _kemoViewShaders.texuredPhongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
 
+        _kemoViewShaders.PhongAnaglyphVertexFunction = [defaultLibrary newFunctionWithName:@"PhongAnagriphVertexShader"];
+        _kemoViewShaders.PhongAnaglyphFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongAnagriphFragmentShader"];
+
         _kemoViewShaders.texuredVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
         _kemoViewShaders.texuredFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
 
@@ -207,6 +210,27 @@ Implementation of a platform independent renderer class, which performs Metal se
         _kemoViewShaders.phongTexturedPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                                                                               error:&error];
         NSAssert(_kemoViewShaders.phongTexturedPipelineState, @"Failed to create pipeline state: %@", error);
+
+        /* Configure a pipeline descriptor that is used to create a pipeline state. */
+        pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+        pipelineStateDescriptor.label = @"Phong Anaglyph Shader Pipeline";
+        pipelineStateDescriptor.vertexFunction = _kemoViewShaders.phongVertexFunction;
+        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.phongFragmentFunction;
+        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorOne;
+        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
+        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
+        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
+            
+        _kemoViewShaders.phongAnaglyphPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                      error:&error];
+        NSAssert(_kemoViewShaders.phongAnaglyphPipelineState, @"Failed to create pipeline state: %@", error);
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
@@ -364,6 +388,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 - (void)drawCubeWithPhong:(struct gl_strided_buffer *) buf
                   encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
+                 pipeline:(id<MTLRenderPipelineState> *) pipeline
                    vertex:(id<MTLBuffer> *) vertices
                     index:(id<MTLBuffer> *) indices
                    unites:(KemoViewUnites *) monoViewUnites
@@ -375,7 +400,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 //        [*renderEncoder setDepthStencilState:_depthState];
         [*renderEncoder setDepthStencilState:_noDepthState];
 
-        [*renderEncoder setRenderPipelineState:_kemoViewShaders.phongPipelineState];
+        [*renderEncoder setRenderPipelineState:*pipeline];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -402,6 +427,28 @@ Implementation of a platform independent renderer class, which performs Metal se
                                  indexBuffer:*indices
                            indexBufferOffset:0];
     };
+}
+
+- (void)drawAnaglyphCubeWithPhong:(struct gl_strided_buffer *) buf
+                          encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
+                           vertex:(id<MTLBuffer> *) vertices
+                            index:(id<MTLBuffer> *) indices
+                           unites:(KemoViewUnites *) monoViewUnites
+                       leftUnites:(KemoViewUnites *) leftViewUnites
+                      rightUnites:(KemoViewUnites *) rightViewUnites
+{
+    [self drawCubeWithPhong:buf
+                    encoder:renderEncoder
+                   pipeline:&_kemoViewShaders.phongAnaglyphPipelineState
+                     vertex:&_kemoViewMetalBuf.cubeVertice
+                      index:&_kemoViewMetalBuf.cubeIndex
+                     unites:leftViewUnites];
+    [self drawCubeWithPhong:buf
+                    encoder:renderEncoder
+                   pipeline:&_kemoViewShaders.phongAnaglyphPipelineState
+                     vertex:&_kemoViewMetalBuf.cubeVertice
+                      index:&_kemoViewMetalBuf.cubeIndex
+                     unites:rightViewUnites];
 }
 
 
@@ -1043,6 +1090,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                        solid:SMOOTH_SHADE];
     [self drawCubeWithPhong:kemo_buffers->cube_buf
                     encoder:renderEncoder
+                   pipeline:&_kemoViewShaders.phongPipelineState
                      vertex:&_kemoViewMetalBuf.cubeVertice
                       index:&_kemoViewMetalBuf.cubeIndex
                      unites:monoViewUnites];
@@ -1161,9 +1209,132 @@ Implementation of a platform independent renderer class, which performs Metal se
                        solid:SMOOTH_SHADE];
     [self drawCubeWithPhong:kemo_buffers->cube_buf
                     encoder:renderEncoder
+                   pipeline:&_kemoViewShaders.phongPipelineState
                      vertex:&_kemoViewMetalBuf.cubeVertice
                       index:&_kemoViewMetalBuf.cubeIndex
                      unites:monoViewUnites];
+
+    [self drawLineObject:kemo_buffers->coast_buf
+                 encoder:renderEncoder
+                  vertex:&_kemoViewMetalBuf.coastVertice
+                  unites:monoViewUnites];
+    [self drawLineObject:kemo_buffers->sph_grid_buf
+                 encoder:renderEncoder
+                  vertex:&_kemoViewMetalBuf.sphGridVertice
+                  unites:monoViewUnites];
+
+/*  Draw transparent objects */
+    [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
+                      encoder:renderEncoder
+                       vertex:&_kemoViewMetalBuf.psfSTexureVertice
+                       texure:&_kemoViewMetalBuf.psfTransTexure
+                       unites:monoViewUnites
+                        sides:BOTH_SURFACES
+                        solid:FLAT_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->PSF_trns_buf
+                     encoder:renderEncoder
+                      vertex:&_kemoViewMetalBuf.psfTransVertice
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:FLAT_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->mesh_trns_buf
+                     encoder:renderEncoder
+                      vertex:&_kemoViewMetalBuf.meshTransVertice
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:FLAT_SHADE];
+    return;
+}
+
+- (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                        buffer:(struct kemoview_buffers *) kemo_buffers
+                     fieldline:(struct kemoview_fline *) kemo_fline
+                          mesh:(struct kemoview_mesh *) kemo_mesh
+                        unites:(KemoViewUnites *) monoViewUnites
+                    leftUnites:(KemoViewUnites *) leftViewUnites
+                   rightUnites:(KemoViewUnites *) rightViewUnites
+{
+    [self drawTexureWithSimple:kemo_buffers->PSF_stxur_buf
+                       encoder:renderEncoder
+                        vertex:&_kemoViewMetalBuf.psfSTexureVertice
+                        texure:&_kemoViewMetalBuf.psfSolidTexure
+                        unites:monoViewUnites
+                         sides:BOTH_SURFACES
+                         solid:SMOOTH_SHADE];
+    /*
+     [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
+     encoder:renderEncoder
+     vertex:&_kemoViewMetalBuf.psfSTexureVertice
+     texure:&_kemoViewMetalBuf.psfSolidTexure
+     unites:monoViewUnites
+     sides:BOTH_SURFACES
+     solid:SMOOTH_SHADE];
+     */
+    [self drawSolidWithSimple:kemo_buffers->axis_buf
+                      encoder:renderEncoder
+                       vertex:&_kemoViewMetalBuf.axisVertice
+                       unites:monoViewUnites
+                        sides:BOTH_SURFACES
+                        solid:SMOOTH_SHADE];
+    
+    [self drawSolidWithPhong:kemo_buffers->PSF_solid_buf
+                     encoder:renderEncoder
+                      vertex:&_kemoViewMetalBuf.psfSolidVertice
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    [self drawSolidWithPhong:kemo_buffers->PSF_isoline_buf
+                     encoder:renderEncoder
+                      vertex:&_kemoViewMetalBuf.psfLinesVertice
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    [self drawSolidWithPhong:kemo_buffers->PSF_arrow_buf
+                     encoder:renderEncoder
+                      vertex:&_kemoViewMetalBuf.psfArrowVertice
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+
+    if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
+        [self drawSolidWithPhong:kemo_buffers->FLINE_tube_buf
+                         encoder:renderEncoder
+                          vertex:&_kemoViewMetalBuf.fieldTubeVertice
+                          unites:monoViewUnites
+                           sides:BOTH_SURFACES
+                           solid:SMOOTH_SHADE];
+    };
+       
+    [self drawLineObject:kemo_buffers->FLINE_line_buf
+                 encoder:renderEncoder
+                  vertex:&_kemoViewMetalBuf.fieldLineVertice
+                  unites:monoViewUnites];
+    
+    [self drawSolidWithPhong:kemo_buffers->mesh_node_buf
+                     encoder:renderEncoder
+                      vertex:&_kemoViewMetalBuf.meshNodeVertice
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    [self drawLineObject:kemo_buffers->mesh_grid_buf
+                 encoder:renderEncoder
+                  vertex:&_kemoViewMetalBuf.meshGridVertice
+                  unites:monoViewUnites];
+    [self drawSolidWithPhong:kemo_buffers->mesh_solid_buf
+                     encoder:renderEncoder
+                      vertex:&_kemoViewMetalBuf.meshSolidVertice
+                      unites:monoViewUnites
+                       sides:kemo_mesh->mesh_m->polygon_mode
+                       solid:SMOOTH_SHADE];
+    [self drawAnaglyphCubeWithPhong:kemo_buffers->cube_buf
+                            encoder:renderEncoder
+                             vertex:&_kemoViewMetalBuf.cubeVertice
+                              index:&_kemoViewMetalBuf.cubeIndex
+                             unites:monoViewUnites
+                         leftUnites:leftViewUnites
+                        rightUnites:rightViewUnites];
 
     [self drawLineObject:kemo_buffers->coast_buf
                  encoder:renderEncoder
@@ -1254,16 +1425,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                         buffer:kemo_buffers
                     projection:&_map_proj_mat];
     } else if(view_s->iflag_view_type == VIEW_STEREO){
-        [self encode3DObjects:renderEncoder
+        [self encodeAnaglyphObjects:renderEncoder
                        buffer:kemo_buffers
                     fieldline:kemo_fline
                          mesh:kemo_mesh
-                       unites:leftViewUnites];
-        [self encode3DObjects:renderEncoder
-                       buffer:kemo_buffers
-                    fieldline:kemo_fline
-                         mesh:kemo_mesh
-                       unites:rightViewUnites];
+                        unites:monoViewUnites
+                         leftUnites:leftViewUnites
+                        rightUnites:rightViewUnites];
     } else {
         [self encode3DObjects:renderEncoder
                        buffer:kemo_buffers
@@ -1360,15 +1528,21 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     [self setTransferMatrices:&_monoViewUnites];
-/*
-    update_left_projection_struct(kemo_sgl->view_s);
-    modify_left_view_by_struct(kemo_sgl->view_s);
-    [self setTransferMatrices:&_leftViewUnites];
 
-    update_right_projection_struct(kemo_sgl->view_s);
-    modify_right_view_by_struct(kemo_sgl->view_s);
-    [self setTransferMatrices:&_rightViewUnites];
-  */
+    int iflag = kemoview_get_view_type_flag();
+    if(iflag == VIEW_STEREO){
+        update_left_projection_struct(kemo_sgl->view_s);
+        modify_left_view_by_struct(kemo_sgl->view_s);
+        [self setTransferMatrices:&_leftViewUnites];
+        
+        update_right_projection_struct(kemo_sgl->view_s);
+        modify_right_view_by_struct(kemo_sgl->view_s);
+        [self setTransferMatrices:&_rightViewUnites];
+        
+        update_projection_struct(kemo_sgl->view_s);
+        modify_view_by_struct(kemo_sgl->view_s);
+    };
+    
     [self drawKemoMetalView:view];
     return;
 }

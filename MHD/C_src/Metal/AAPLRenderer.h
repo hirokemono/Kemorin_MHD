@@ -126,6 +126,11 @@ typedef struct
     id<MTLFunction> _Nonnull texuredPhongVertexFunction;
     id<MTLFunction> _Nonnull texuredPhongFragmentFunction;
     
+    /*  Shader functions for textured Phong anaglyph shader  */
+    id<MTLRenderPipelineState> _Nonnull phongAnaglyphPipelineState;
+    id<MTLFunction> _Nonnull PhongAnaglyphVertexFunction;
+    id<MTLFunction> _Nonnull PhongAnaglyphFragmentFunction;
+    
     /*  Shader functions for simple 2D shader  */
     id<MTLRenderPipelineState> _Nonnull simple2DPipelineState;
     id<MTLRenderPipelineState> _Nonnull trans2DPipelineState;

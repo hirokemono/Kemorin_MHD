@@ -4396,7 +4396,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                         <rect key="frame" x="0.0" y="0.0" width="224" height="545"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3791">
                                 <rect key="frame" x="0.0" y="0.0" width="224" height="585"/>
@@ -4920,7 +4920,7 @@
                     </connections>
                 </button>
             </subviews>
-            <point key="canvasLocation" x="328" y="582"/>
+            <point key="canvasLocation" x="328" y="581.5"/>
         </customView>
         <customView id="2491" userLabel="Colormap Content View">
             <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>
@@ -5307,6 +5307,7 @@
                         <connections>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="2FT-zh-sSB"/>
                             <outlet property="_kemoviewer" destination="3373" id="cBx-zT-ySe"/>
+                            <outlet property="_resetview" destination="2679" id="ed0-h0-BmC"/>
                             <outlet property="_singleKemoView" destination="w8N-Cd-Q0k" id="eR2-mh-xu3"/>
                         </connections>
                     </customView>

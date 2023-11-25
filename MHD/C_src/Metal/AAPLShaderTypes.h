@@ -23,6 +23,14 @@ typedef enum AAPLVertexInputIndex
     AAPLProjectionMatrix =  2,
     AAPLModelNormalMatrix = 3,
     
+    LeftModelViewMatrix =   4,
+    LeftProjectionMatrix =  5,
+    LeftModelNormalMatrix = 6,
+    
+    RightModelViewMatrix =   7,
+    RightProjectionMatrix =  8,
+    RightModelNormalMatrix = 9,
+    
     AAPLOrthogonalMatrix = 1,
 } AAPLVertexInputIndex;
 

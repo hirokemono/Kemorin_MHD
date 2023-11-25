@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1804E5C3125F025100EC8EAA /* CalypsoView.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1804E5C2125F025100EC8EAA /* CalypsoView.icns */; };
 		1804E5E6125F028300EC8EAA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1804E5E3125F028300EC8EAA /* OpenGL.framework */; };
+		180999972B12473E00F83574 /* PhongAnaglyphShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 180999962B12473E00F83574 /* PhongAnaglyphShader.metal */; };
 		180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CD1DDFB54700D20198 /* AVFoundation.framework */; };
 		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
 		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
@@ -201,6 +202,7 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1804E5C2125F025100EC8EAA /* CalypsoView.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = CalypsoView.icns; sourceTree = "<group>"; };
 		1804E5E3125F028300EC8EAA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		180999962B12473E00F83574 /* PhongAnaglyphShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongAnaglyphShader.metal; path = Metal/PhongAnaglyphShader.metal; sourceTree = "<group>"; };
 		180FF7CD1DDFB54700D20198 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		180FF7CF1DDFB55000D20198 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		180FF7D11DDFB55500D20198 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -969,6 +971,7 @@
 				18263FEA2AFA9DC300AA8E72 /* Base2dShader.metal */,
 				18263FEC2AFCB2E900AA8E72 /* PhongShader.metal */,
 				1885C3622B06B81600A6AED5 /* PhongTexureShader.metal */,
+				180999962B12473E00F83574 /* PhongAnaglyphShader.metal */,
 				1860DE2F2B067A6500358654 /* SmpleShader.metal */,
 				18D95C472B0BB745001A801B /* TexureShader.metal */,
 				18F0297C2AF5A65B00D37276 /* Simple2dShader.metal */,
@@ -1202,6 +1205,7 @@
 				188FFD8223087CCB00F5A0DE /* shaders.c in Sources */,
 				18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */,
 				18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */,
+				180999972B12473E00F83574 /* PhongAnaglyphShader.metal in Sources */,
 				185CB9B0212F593D00BB3C0B /* t_control_chara_int2_IO.c in Sources */,
 				18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */,
 				18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */,
