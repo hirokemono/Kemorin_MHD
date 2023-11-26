@@ -363,7 +363,7 @@ static void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
-		kemoview_modify_view();
+		kemoview_full_modify_view();
 		glfwSwapBuffers(glfw_window);
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,

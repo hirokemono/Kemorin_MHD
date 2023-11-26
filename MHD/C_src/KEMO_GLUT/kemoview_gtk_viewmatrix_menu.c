@@ -238,7 +238,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	
 	view_menu->spin_scale = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_scale), 0, 3);
 	g_signal_connect(view_menu->spin_scale, "value-changed", 
-					 G_CALLBACK(scale_CB), );
+					 G_CALLBACK(scale_CB), NULL);
 	view_menu->spin_rotation_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_rotation_x), 0, 3);
 	g_signal_connect(view_menu->spin_rotation_x, "value-changed", 
 					 G_CALLBACK(spin_x_CB), NULL);

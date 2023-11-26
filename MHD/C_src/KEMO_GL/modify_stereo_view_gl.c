@@ -24,8 +24,6 @@ void modify_stereo_anaglyph(struct kemoviewer_type *kemoview){
 	update_draw_objects_gl3(kemoview);
 	
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
-    update_projection_struct(kemoview->view_s);
-    modify_view_by_struct(kemoview->view_s);
 	return;
 };
 
@@ -37,6 +35,8 @@ void modify_stereo_kemoview(int iflag_draw_mode,
     if(kemoview->view_s->iflag_view_type == VIEW_STEREO){
         modify_stereo_anaglyph(kemoview);
     } else {
+        update_projection_struct(kemoview->view_s);
+        modify_view_by_struct(kemoview->view_s);
         modify_mono_kemoview(kemoview);
     }
 	return;
