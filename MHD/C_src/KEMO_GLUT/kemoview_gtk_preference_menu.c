@@ -27,7 +27,10 @@ static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 	GtkWindow *parent = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
 	
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, color);
-	if(iflag_set > 0){kemoview_set_background_color(color);};
+	if(iflag_set > 0){
+        kemoview_set_background_color(color);
+        kemoview_gl_background_color();
+    };
 	
 	draw_full();
 	return;

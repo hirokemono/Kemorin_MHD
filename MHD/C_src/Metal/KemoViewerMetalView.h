@@ -12,7 +12,6 @@
 
 #include "kemoviewer.h"
 #import "KemoViewerObject.h"
-#import "KemoViewerOpenGLView.h"
 #import "ResetViewControll.h"
 
 #define PAN     2
@@ -21,7 +20,6 @@
 @interface KemoViewerMetalView : MTKView{
     IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
     IBOutlet KemoViewerObject     * _singleKemoView;
-    IBOutlet KemoViewerOpenGLView * _kemoviewer;
     IBOutlet ResetViewControll    * _resetview;
     
     bool fDrawCaps;

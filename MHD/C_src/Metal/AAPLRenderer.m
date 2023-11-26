@@ -15,6 +15,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 // Main class performing the rendering
 @implementation AAPLRenderer
 {
+
     id<MTLDevice> _device;
 
 /*    Texture to render screen to texture */
@@ -29,8 +30,15 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDepthStencilState> _depthState;
     id<MTLDepthStencilState> _noDepthState;
 
-    KemoViewMetalBuffers _kemoViewMetalBuf;
-    KemoViewMetalShaders _kemoViewShaders;
+    KemoViewMetalBuffers   _kemoViewMetalBuf;
+    KemoViewMetalShaders   _kemoViewShaders;
+    KemoViewMetalPipelines _kemoViewPipelines;
+
+    /* Texture to render to and then sample from. */
+    id<MTLTexture> _renderLeftTexture;
+    id<MTLTexture> _renderRightTexture;
+    KemoViewMetalPipelines _kemoOffscreenPipelines;
+
 
     id<MTLRenderCommandEncoder> _renderEncoder;
 
@@ -44,14 +52,222 @@ Implementation of a platform independent renderer class, which performs Metal se
     matrix_float4x4 _map_proj_mat;
     matrix_float4x4 _cbar_proj_mat;
 
+    int _icou_lr;
+
     NSUInteger _frameNum;
     
     IBOutlet KemoViewerObject * _singleKemoView;
 }
 
+-(void) loadShaderLibrary: (id<MTLDevice> *) device
+{
+    // Load all the shader files with a .metal file extension in the project.
+   id<MTLLibrary> defaultLibrary = [*device newDefaultLibrary];
+   _kemoViewShaders.base2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
+   _kemoViewShaders.base2DFragmentFunction = [defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
+
+   _kemoViewShaders.simple2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
+   _kemoViewShaders.simple2DFragmentFunction = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
+
+   _kemoViewShaders.texured2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
+   _kemoViewShaders.texured2DFragmentFunction = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
+
+   _kemoViewShaders.phongVertexFunction =   [defaultLibrary newFunctionWithName:@"PhongVertexShader"];
+   _kemoViewShaders.phongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongFragmentShader"];
+
+   _kemoViewShaders.simpleVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleVertexShader"];
+   _kemoViewShaders.simpleFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleFragmentShader"];
+
+   _kemoViewShaders.texuredPhongVertexFunction = [defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
+   _kemoViewShaders.texuredPhongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
+
+   _kemoViewShaders.PhongAnaglyphVertexFunction = [defaultLibrary newFunctionWithName:@"PhongAnagriphVertexShader"];
+   _kemoViewShaders.PhongAnaglyphFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongAnagriphFragmentShader"];
+
+   _kemoViewShaders.texuredVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
+   _kemoViewShaders.texuredFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
+    return;
+}
+
+-(void) initKemoViewPipelines:(nonnull MTKView *)mtkView
+                      shaders:(KemoViewMetalShaders *) kemoViewShaders
+                    pipelines:(KemoViewMetalPipelines *) kemoViewPipelines
+                  targetPixel:(MTLPixelFormat) pixelformat
+{
+    NSError *error;
+    id<MTLDevice> device = mtkView.device;
+
+    MTLRenderPipelineDescriptor *pipelineStateDescriptor;
+    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+    pipelineStateDescriptor.label = @"2D Texture Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->texured2DVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->texured2DFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    
+    kemoViewPipelines->texured2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                       error:&error];
+/* Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
+//  If the Metal API validation is enabled, you can find out more information about what
+//  went wrong.  (Metal API validation is enabled by default when a debug build is run
+//  from Xcode.) */
+    NSAssert(kemoViewPipelines->texured2DPipelineState, @"Failed to create pipeline state: %@", error);
+
+/*  Create pipeline for simple 2D rendering */
+    pipelineStateDescriptor.label = @"2D transpearent Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->simple2DVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->simple2DFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    
+    kemoViewPipelines->trans2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                    error:&error];
+    NSAssert(kemoViewPipelines->trans2DPipelineState, @"Failed to create pipeline state: %@", error);
+
+    /*  Create pipeline for simple rendering */
+    pipelineStateDescriptor.label = @"2D Simple Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->simple2DVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->simple2DFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = NO;
+    
+    kemoViewPipelines->simple2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                     error:&error];
+    NSAssert(kemoViewPipelines->simple2DPipelineState, @"Failed to create pipeline state: %@", error);
+
+
+/*  Create pipeline for Basic rendering */
+    pipelineStateDescriptor.label = @"Base Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->base2DVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->base2DFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    kemoViewPipelines->base2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                   error:&error];
+    NSAssert(kemoViewPipelines->base2DPipelineState, @"Failed to create pipeline state: %@", error);
+
+    /* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor.label = @"Simple Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->simpleVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->simpleFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    kemoViewPipelines->simplePipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                   error:&error];
+    NSAssert(kemoViewPipelines->simplePipelineState, @"Failed to create pipeline state: %@", error);
+
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+    pipelineStateDescriptor.label = @"Phong Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->phongVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->phongFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        
+    kemoViewPipelines->phongPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                  error:&error];
+    NSAssert(kemoViewPipelines->phongPipelineState, @"Failed to create pipeline state: %@", error);
+
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+    pipelineStateDescriptor.label = @"Texure Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->texuredPhongVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->texuredPhongFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+        
+    kemoViewPipelines->phongTexturedPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                          error:&error];
+    NSAssert(kemoViewPipelines->phongTexturedPipelineState, @"Failed to create pipeline state: %@", error);
+
+    /* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+    pipelineStateDescriptor.label = @"Phong Anaglyph Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->phongVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->phongFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
+        
+    kemoViewPipelines->phongAnaglyphPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                  error:&error];
+    NSAssert(kemoViewPipelines->phongAnaglyphPipelineState, @"Failed to create pipeline state: %@", error);
+
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+    pipelineStateDescriptor.label = @"Texure Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->texuredVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->texuredFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    
+    kemoViewPipelines->texuredPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                    error:&error];
+    NSAssert(kemoViewPipelines->texuredPipelineState, @"Failed to create pipeline state: %@", error);
+    return;
+}
+
+
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
     _frameNum = 0;
+    _icou_lr = 0;
     self = [super init];
     if(self)
     {
@@ -62,196 +278,34 @@ Implementation of a platform independent renderer class, which performs Metal se
 // Indicate that each pixel in the depth buffer is a 32-bit floating point value.
         mtkView.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
 
-         // Load all the shader files with a .metal file extension in the project.
-        id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
-        _kemoViewShaders.base2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
-        _kemoViewShaders.base2DFragmentFunction = [defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
-
-        _kemoViewShaders.simple2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
-        _kemoViewShaders.simple2DFragmentFunction = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
-
-        _kemoViewShaders.texured2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
-        _kemoViewShaders.texured2DFragmentFunction = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
-
-        _kemoViewShaders.phongVertexFunction =   [defaultLibrary newFunctionWithName:@"PhongVertexShader"];
-        _kemoViewShaders.phongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongFragmentShader"];
-
-        _kemoViewShaders.simpleVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleVertexShader"];
-        _kemoViewShaders.simpleFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleFragmentShader"];
-
-        _kemoViewShaders.texuredPhongVertexFunction = [defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
-        _kemoViewShaders.texuredPhongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
-
-        _kemoViewShaders.PhongAnaglyphVertexFunction = [defaultLibrary newFunctionWithName:@"PhongAnagriphVertexShader"];
-        _kemoViewShaders.PhongAnaglyphFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongAnagriphFragmentShader"];
-
-        _kemoViewShaders.texuredVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
-        _kemoViewShaders.texuredFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
+/* Load all the shader files with a .metal file extension in the project. */
+        [self loadShaderLibrary:&_device];
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
-        MTLRenderPipelineDescriptor *pipelineStateDescriptor;
-        pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-
-        pipelineStateDescriptor.label = @"2D Texture Pipeline";
-        pipelineStateDescriptor.vertexFunction =  _kemoViewShaders.texured2DVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.texured2DFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        
-        _kemoViewShaders.texured2DPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                           error:&error];
-/* Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
-//  If the Metal API validation is enabled, you can find out more information about what
-//  went wrong.  (Metal API validation is enabled by default when a debug build is run
-//  from Xcode.) */
-        NSAssert(_kemoViewShaders.texured2DPipelineState, @"Failed to create pipeline state: %@", error);
-
-/*  Create pipeline for simple 2D rendering */
-        pipelineStateDescriptor.label = @"2D transpearent Pipeline";
-        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.simple2DVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.simple2DFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        
-        _kemoViewShaders.trans2DPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                        error:&error];
-        NSAssert(_kemoViewShaders.trans2DPipelineState, @"Failed to create pipeline state: %@", error);
-
-        /*  Create pipeline for simple rendering */
-        pipelineStateDescriptor.label = @"2D Simple Pipeline";
-        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.simple2DVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.simple2DFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = NO;
-        
-        _kemoViewShaders.simple2DPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                         error:&error];
-        NSAssert(_kemoViewShaders.simple2DPipelineState, @"Failed to create pipeline state: %@", error);
-
-
-/*  Create pipeline for Basic rendering */
-        pipelineStateDescriptor.label = @"Base Pipeline";
-        pipelineStateDescriptor.vertexFunction = _kemoViewShaders.base2DVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.base2DFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-
-        _kemoViewShaders.base2DPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                       error:&error];
-        NSAssert(_kemoViewShaders.base2DPipelineState, @"Failed to create pipeline state: %@", error);
-
-        /* Configure a pipeline descriptor that is used to create a pipeline state. */
-        pipelineStateDescriptor.label = @"Simple Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.simpleVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.simpleFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-
-        _kemoViewShaders.simplePipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                       error:&error];
-        NSAssert(_kemoViewShaders.simplePipelineState, @"Failed to create pipeline state: %@", error);
-
+        [self initKemoViewPipelines:mtkView
+                            shaders:&_kemoViewShaders
+                          pipelines:&_kemoViewPipelines
+                        targetPixel:mtkView.colorPixelFormat];
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
-        pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
 
-        pipelineStateDescriptor.label = @"Phong Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction = _kemoViewShaders.phongVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.phongFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+//        printf("frame %f %f \n", mtkView.drawableSize.width, mtkView.drawableSize.height);
 
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-            
-        _kemoViewShaders.phongPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                      error:&error];
-        NSAssert(_kemoViewShaders.phongPipelineState, @"Failed to create pipeline state: %@", error);
+        MTLTextureDescriptor *texDescriptor = [MTLTextureDescriptor new];
+        texDescriptor.textureType = MTLTextureType2D;
+        texDescriptor.width =  mtkView.drawableSize.width;
+        texDescriptor.height = mtkView.drawableSize.height;
+        texDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
+        texDescriptor.usage = MTLTextureUsageRenderTarget |
+                              MTLTextureUsageShaderRead;
 
-/* Configure a pipeline descriptor that is used to create a pipeline state. */
-        pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+        _renderLeftTexture =  [_device newTextureWithDescriptor:texDescriptor];
+        _renderRightTexture = [_device newTextureWithDescriptor:texDescriptor];
 
-        pipelineStateDescriptor.label = @"Texure Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.texuredPhongVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.texuredPhongFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+        [self initKemoViewPipelines:mtkView
+                            shaders:&_kemoViewShaders
+                          pipelines:&_kemoOffscreenPipelines
+                        targetPixel:_renderLeftTexture.pixelFormat];
 
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-            
-        _kemoViewShaders.phongTexturedPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                              error:&error];
-        NSAssert(_kemoViewShaders.phongTexturedPipelineState, @"Failed to create pipeline state: %@", error);
-
-        /* Configure a pipeline descriptor that is used to create a pipeline state. */
-        pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-
-        pipelineStateDescriptor.label = @"Phong Anaglyph Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction = _kemoViewShaders.phongVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.phongFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorOne;
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
-            
-        _kemoViewShaders.phongAnaglyphPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                      error:&error];
-        NSAssert(_kemoViewShaders.phongAnaglyphPipelineState, @"Failed to create pipeline state: %@", error);
-
-/* Configure a pipeline descriptor that is used to create a pipeline state. */
-        pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-
-        pipelineStateDescriptor.label = @"Texure Shader Pipeline";
-        pipelineStateDescriptor.vertexFunction =   _kemoViewShaders.texuredVertexFunction;
-        pipelineStateDescriptor.fragmentFunction = _kemoViewShaders.texuredFragmentFunction;
-        pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-        pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-
-        pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-        pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-        pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-        
-        _kemoViewShaders.texuredPipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                        error:&error];
-        NSAssert(_kemoViewShaders.texuredPipelineState, @"Failed to create pipeline state: %@", error);
 
 /* Add Depth buffer description in command */
         MTLDepthStencilDescriptor *depthDescriptor = [MTLDepthStencilDescriptor new];
@@ -327,7 +381,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setDepthStencilState:_depthState];
         }
         
-        [*renderEncoder setRenderPipelineState:_kemoViewShaders.simplePipelineState];
+        [*renderEncoder setRenderPipelineState:_kemoViewPipelines.simplePipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -366,7 +420,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setDepthStencilState:_depthState];
         }
 
-        [*renderEncoder setRenderPipelineState:_kemoViewShaders.phongTexturedPipelineState];
+        [*renderEncoder setRenderPipelineState:_kemoViewPipelines.phongTexturedPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -429,29 +483,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
 }
 
-- (void)drawAnaglyphCubeWithPhong:(struct gl_strided_buffer *) buf
-                          encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
-                           vertex:(id<MTLBuffer> *) vertices
-                            index:(id<MTLBuffer> *) indices
-                           unites:(KemoViewUnites *) monoViewUnites
-                       leftUnites:(KemoViewUnites *) leftViewUnites
-                      rightUnites:(KemoViewUnites *) rightViewUnites
-{
-    [self drawCubeWithPhong:buf
-                    encoder:renderEncoder
-                   pipeline:&_kemoViewShaders.phongAnaglyphPipelineState
-                     vertex:&_kemoViewMetalBuf.cubeVertice
-                      index:&_kemoViewMetalBuf.cubeIndex
-                     unites:leftViewUnites];
-    [self drawCubeWithPhong:buf
-                    encoder:renderEncoder
-                   pipeline:&_kemoViewShaders.phongAnaglyphPipelineState
-                     vertex:&_kemoViewMetalBuf.cubeVertice
-                      index:&_kemoViewMetalBuf.cubeIndex
-                     unites:rightViewUnites];
-}
-
-
 - (void)drawSolidWithPhong:(struct gl_strided_buffer *) buf
                    encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
                     vertex:(id<MTLBuffer> *) vertices
@@ -473,7 +504,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setDepthStencilState:_depthState];
         }
 
-        [*renderEncoder setRenderPipelineState:_kemoViewShaders.phongPipelineState];
+        [*renderEncoder setRenderPipelineState:_kemoViewPipelines.phongPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -522,7 +553,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setDepthStencilState:_depthState];
         }
 
-        [*renderEncoder setRenderPipelineState:_kemoViewShaders.simplePipelineState];
+        [*renderEncoder setRenderPipelineState:_kemoViewPipelines.simplePipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
@@ -562,7 +593,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         [*renderEncoder setCullMode:MTLCullModeBack];
         [*renderEncoder setDepthStencilState:_depthState];
         
-        [*renderEncoder setRenderPipelineState:_kemoViewShaders.simplePipelineState];
+        [*renderEncoder setRenderPipelineState:_kemoViewPipelines.simplePipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
@@ -585,7 +616,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                 projection:(matrix_float4x4 *) projection_mat;
 {
     if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState: _kemoViewShaders.trans2DPipelineState];
+        [*renderEncoder setRenderPipelineState: _kemoViewPipelines.trans2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
@@ -605,7 +636,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                projection:(matrix_float4x4 *) projection_mat;
 {
     if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState:_kemoViewShaders.simple2DPipelineState];
+        [*renderEncoder setRenderPipelineState:_kemoViewPipelines.simple2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
                                atIndex:AAPLVertexInputIndexVertices];
@@ -626,7 +657,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                projection:(matrix_float4x4 *) projection_mat;
 {
     if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState:_kemoViewShaders.texured2DPipelineState];
+        [*renderEncoder setRenderPipelineState:_kemoViewPipelines.texured2DPipelineState];
 /* Pass in the parameter data. */
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
@@ -1090,7 +1121,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                        solid:SMOOTH_SHADE];
     [self drawCubeWithPhong:kemo_buffers->cube_buf
                     encoder:renderEncoder
-                   pipeline:&_kemoViewShaders.phongPipelineState
+                   pipeline:&_kemoViewPipelines.phongPipelineState
                      vertex:&_kemoViewMetalBuf.cubeVertice
                       index:&_kemoViewMetalBuf.cubeIndex
                      unites:monoViewUnites];
@@ -1209,7 +1240,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                        solid:SMOOTH_SHADE];
     [self drawCubeWithPhong:kemo_buffers->cube_buf
                     encoder:renderEncoder
-                   pipeline:&_kemoViewShaders.phongPipelineState
+                   pipeline:&_kemoViewPipelines.phongPipelineState
                      vertex:&_kemoViewMetalBuf.cubeVertice
                       index:&_kemoViewMetalBuf.cubeIndex
                      unites:monoViewUnites];
@@ -1248,127 +1279,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
-- (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                        buffer:(struct kemoview_buffers *) kemo_buffers
-                     fieldline:(struct kemoview_fline *) kemo_fline
-                          mesh:(struct kemoview_mesh *) kemo_mesh
-                        unites:(KemoViewUnites *) monoViewUnites
-                    leftUnites:(KemoViewUnites *) leftViewUnites
-                   rightUnites:(KemoViewUnites *) rightViewUnites
-{
-    [self drawTexureWithSimple:kemo_buffers->PSF_stxur_buf
-                       encoder:renderEncoder
-                        vertex:&_kemoViewMetalBuf.psfSTexureVertice
-                        texure:&_kemoViewMetalBuf.psfSolidTexure
-                        unites:monoViewUnites
-                         sides:BOTH_SURFACES
-                         solid:SMOOTH_SHADE];
-    /*
-     [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
-     encoder:renderEncoder
-     vertex:&_kemoViewMetalBuf.psfSTexureVertice
-     texure:&_kemoViewMetalBuf.psfSolidTexure
-     unites:monoViewUnites
-     sides:BOTH_SURFACES
-     solid:SMOOTH_SHADE];
-     */
-    [self drawSolidWithSimple:kemo_buffers->axis_buf
-                      encoder:renderEncoder
-                       vertex:&_kemoViewMetalBuf.axisVertice
-                       unites:monoViewUnites
-                        sides:BOTH_SURFACES
-                        solid:SMOOTH_SHADE];
-    
-    [self drawSolidWithPhong:kemo_buffers->PSF_solid_buf
-                     encoder:renderEncoder
-                      vertex:&_kemoViewMetalBuf.psfSolidVertice
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
-    [self drawSolidWithPhong:kemo_buffers->PSF_isoline_buf
-                     encoder:renderEncoder
-                      vertex:&_kemoViewMetalBuf.psfLinesVertice
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
-    [self drawSolidWithPhong:kemo_buffers->PSF_arrow_buf
-                     encoder:renderEncoder
-                      vertex:&_kemoViewMetalBuf.psfArrowVertice
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
-
-    if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
-        [self drawSolidWithPhong:kemo_buffers->FLINE_tube_buf
-                         encoder:renderEncoder
-                          vertex:&_kemoViewMetalBuf.fieldTubeVertice
-                          unites:monoViewUnites
-                           sides:BOTH_SURFACES
-                           solid:SMOOTH_SHADE];
-    };
-       
-    [self drawLineObject:kemo_buffers->FLINE_line_buf
-                 encoder:renderEncoder
-                  vertex:&_kemoViewMetalBuf.fieldLineVertice
-                  unites:monoViewUnites];
-    
-    [self drawSolidWithPhong:kemo_buffers->mesh_node_buf
-                     encoder:renderEncoder
-                      vertex:&_kemoViewMetalBuf.meshNodeVertice
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
-    [self drawLineObject:kemo_buffers->mesh_grid_buf
-                 encoder:renderEncoder
-                  vertex:&_kemoViewMetalBuf.meshGridVertice
-                  unites:monoViewUnites];
-    [self drawSolidWithPhong:kemo_buffers->mesh_solid_buf
-                     encoder:renderEncoder
-                      vertex:&_kemoViewMetalBuf.meshSolidVertice
-                      unites:monoViewUnites
-                       sides:kemo_mesh->mesh_m->polygon_mode
-                       solid:SMOOTH_SHADE];
-    [self drawAnaglyphCubeWithPhong:kemo_buffers->cube_buf
-                            encoder:renderEncoder
-                             vertex:&_kemoViewMetalBuf.cubeVertice
-                              index:&_kemoViewMetalBuf.cubeIndex
-                             unites:monoViewUnites
-                         leftUnites:leftViewUnites
-                        rightUnites:rightViewUnites];
-
-    [self drawLineObject:kemo_buffers->coast_buf
-                 encoder:renderEncoder
-                  vertex:&_kemoViewMetalBuf.coastVertice
-                  unites:monoViewUnites];
-    [self drawLineObject:kemo_buffers->sph_grid_buf
-                 encoder:renderEncoder
-                  vertex:&_kemoViewMetalBuf.sphGridVertice
-                  unites:monoViewUnites];
-
-/*  Draw transparent objects */
-    [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
-                      encoder:renderEncoder
-                       vertex:&_kemoViewMetalBuf.psfSTexureVertice
-                       texure:&_kemoViewMetalBuf.psfTransTexure
-                       unites:monoViewUnites
-                        sides:BOTH_SURFACES
-                        solid:FLAT_SHADE];
-    
-    [self drawSolidWithPhong:kemo_buffers->PSF_trns_buf
-                     encoder:renderEncoder
-                      vertex:&_kemoViewMetalBuf.psfTransVertice
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:FLAT_SHADE];
-    
-    [self drawSolidWithPhong:kemo_buffers->mesh_trns_buf
-                     encoder:renderEncoder
-                      vertex:&_kemoViewMetalBuf.meshTransVertice
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:FLAT_SHADE];
-    return;
-}
 
 - (void) encodeLabelObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                      buffer:(struct kemoview_buffers *) kemo_buffers
@@ -1417,21 +1327,11 @@ Implementation of a platform independent renderer class, which performs Metal se
                  fieldline:(struct kemoview_fline *) kemo_fline
                       mesh:(struct kemoview_mesh *) kemo_mesh
                     unites:(KemoViewUnites *) monoViewUnites
-                      left:(KemoViewUnites *) leftViewUnites
-                     right:(KemoViewUnites *) rightViewUnites
 {
     if(view_s->iflag_view_type == VIEW_MAP){
         [self encodeMapObjects:&_renderEncoder
                         buffer:kemo_buffers
                     projection:&_map_proj_mat];
-    } else if(view_s->iflag_view_type == VIEW_STEREO){
-        [self encodeAnaglyphObjects:renderEncoder
-                       buffer:kemo_buffers
-                    fieldline:kemo_fline
-                         mesh:kemo_mesh
-                        unites:monoViewUnites
-                         leftUnites:leftViewUnites
-                        rightUnites:rightViewUnites];
     } else {
         [self encode3DObjects:renderEncoder
                        buffer:kemo_buffers
@@ -1460,31 +1360,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
-- (void)drawKemoMetalView:(nonnull MTKView *)view
+-(void) takoview:(nonnull MTKView *)view
+         eyeflag:(int) iflag_lr
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-
-    if(kemoview_get_draw_mode() == FULL_DRAW){
-        [self releaseKemoViewMetalBuffers:kemo_sgl->kemo_buffers
-                                    views:kemo_sgl->view_s];
-
-        kemoview_const_buffers(kemo_sgl);
-
-        [self setKemoViewMetalBuffers:kemo_sgl->kemo_buffers
-                                views:kemo_sgl->view_s
-                            fieldline:kemo_sgl->kemo_fline];
-    };
-
-    [self setKemoViewLightings:kemo_sgl->kemo_buffers->cube_buf
-                        unites:&_monoViewUnites];
-
-    [self setKemoViewLightings:kemo_sgl->kemo_buffers->cube_buf
-                        unites:&_leftViewUnites];
-    [self leftMaterialParams:&(_leftViewUnites.material)];
-
-    [self setKemoViewLightings:kemo_sgl->kemo_buffers->cube_buf
-                        unites:&_rightViewUnites];
-    [self rightMaterialParams:&(_rightViewUnites.material)];
 
 /* Create a new command buffer for each render pass to the current drawable. */
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
@@ -1507,9 +1386,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                               views:kemo_sgl->view_s
                           fieldline:kemo_sgl->kemo_fline
                                mesh:kemo_sgl->kemo_mesh
-                             unites:&_monoViewUnites
-                               left:&_leftViewUnites
-                              right:&_rightViewUnites];
+                             unites:&_monoViewUnites];
         };
 
 /*Schedule a present once the framebuffer is complete using the current drawable. */
@@ -1520,30 +1397,86 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
+-(unsigned char *) getRenderedbyMetalToBGRA:(nonnull MTKView *)view
+{
+    /*    Texture to render screen to texture */
+    id<MTLTexture> _imageOutputTexture = view.currentDrawable.texture;
+    NSUInteger height = _imageOutputTexture.height;
+    NSUInteger width =  _imageOutputTexture.width;
+    NSUInteger bpRaw = 4 * _imageOutputTexture.width;
+    NSUInteger num_pixel = _imageOutputTexture.width * _imageOutputTexture.height;
+    unsigned char *bgra = (unsigned char *) malloc(4*num_pixel * sizeof(unsigned char));
+
+    [_imageOutputTexture getBytes:bgra
+                      bytesPerRow:bpRaw
+                       fromRegion:MTLRegionMake2D(0, 0, width, height)
+                      mipmapLevel:0];
+    return bgra;
+};
+
+- (void)drawKemoMetalView:(nonnull MTKView *)view
+                  eyeflag:(int) iflag_lr
+{
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    if(kemoview_get_draw_mode() == FULL_DRAW){
+        [self releaseKemoViewMetalBuffers:kemo_sgl->kemo_buffers
+                                    views:kemo_sgl->view_s];
+
+        kemoview_const_buffers(kemo_sgl);
+
+        [self setKemoViewMetalBuffers:kemo_sgl->kemo_buffers
+                                views:kemo_sgl->view_s
+                            fieldline:kemo_sgl->kemo_fline];
+    };
+
+    [self setKemoViewLightings:kemo_sgl->kemo_buffers->cube_buf
+                        unites:&_monoViewUnites];
+
+    int iflag = kemoview_get_view_type_flag();
+    if(iflag == VIEW_STEREO){
+//        [self leftMaterialParams:&_monoViewUnites.material];
+
+        update_left_projection_struct(kemo_sgl->view_s);
+        modify_left_view_by_struct(kemo_sgl->view_s);
+        [self setTransferMatrices:&_monoViewUnites];
+        [self takoview:view eyeflag:-1];
+        unsigned char * leftBGRA =  [self getRenderedbyMetalToBGRA:view];
+
+        update_projection_struct(kemo_sgl->view_s);
+        modify_view_by_struct(kemo_sgl->view_s);
+
+//        [self rightMaterialParams:&_monoViewUnites.material];
+        
+        update_right_projection_struct(kemo_sgl->view_s);
+        modify_right_view_by_struct(kemo_sgl->view_s);
+        [self setTransferMatrices:&_monoViewUnites];
+        [self takoview:view eyeflag:1];
+        unsigned char * rightBGRA =  [self getRenderedbyMetalToBGRA:view];
+
+        update_projection_struct(kemo_sgl->view_s);
+        modify_view_by_struct(kemo_sgl->view_s);
+        
+        for(int i=0;(view.drawableSize.width * view.drawableSize.height);i++){
+            rightBGRA[4*i+2] = leftBGRA[4*i+2];
+            rightBGRA[4*i+3] = leftBGRA[4*i+3];
+        }
+    }else{
+        [self setTransferMatrices:&_monoViewUnites];
+    };
+
+    [self takoview:view eyeflag:0];
+    return;
+}
+
 
 
 
 /// Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    [self setTransferMatrices:&_monoViewUnites];
-
-    int iflag = kemoview_get_view_type_flag();
-    if(iflag == VIEW_STEREO){
-        update_left_projection_struct(kemo_sgl->view_s);
-        modify_left_view_by_struct(kemo_sgl->view_s);
-        [self setTransferMatrices:&_leftViewUnites];
-        
-        update_right_projection_struct(kemo_sgl->view_s);
-        modify_right_view_by_struct(kemo_sgl->view_s);
-        [self setTransferMatrices:&_rightViewUnites];
-        
-        update_projection_struct(kemo_sgl->view_s);
-        modify_view_by_struct(kemo_sgl->view_s);
-    };
-    
-    [self drawKemoMetalView:view];
+    int iflag_lr = 0;
+    [self drawKemoMetalView:view
+                    eyeflag:iflag_lr];
     return;
 }
 

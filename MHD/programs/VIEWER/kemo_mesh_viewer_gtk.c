@@ -80,8 +80,9 @@ static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
 	
 	/* ! set the perspective and lighting */
 	kemoviewer_reset_to_init_angle();
-	kemoview_init_background_color();
+    kemoview_init_gl_background_color();
 	kemoview_init_lighting();
+    kemoview_gl_init_lighting();
 	kemoview_init_phong_light_list();
 	
 	return TRUE;

@@ -419,24 +419,6 @@
                 <outlet property="window" destination="mUS-wv-uCM" id="O8P-3o-ArQ"/>
             </connections>
         </customObject>
-        <window title="CalypsoView_Cocoa" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
-            <windowCollectionBehavior key="collectionBehavior" fullScreenPrimary="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="436" y="157" width="960" height="720"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
-            <view key="contentView" id="372">
-                <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
-                <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <openGLView autoresizesSubviews="NO" wantsLayer="YES" fixedFrame="YES" depthSize="32bit" antiAliasingType="multisample" samplingRate="8" useAuxiliaryDepthBufferStencil="NO" useDoubleBufferingEnabled="YES" wantsBestResolutionOpenGLSurface="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3373" customClass="KemoViewerOpenGLView">
-                        <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    </openGLView>
-                </subviews>
-            </view>
-            <point key="canvasLocation" x="560" y="-152"/>
-        </window>
         <customObject id="494" customClass="Kemoview_CocoaAppDelegate">
             <connections>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="xle-bK-LY4"/>
@@ -5306,7 +5288,6 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <connections>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="2FT-zh-sSB"/>
-                            <outlet property="_kemoviewer" destination="3373" id="cBx-zT-ySe"/>
                             <outlet property="_resetview" destination="2679" id="ed0-h0-BmC"/>
                             <outlet property="_singleKemoView" destination="w8N-Cd-Q0k" id="eR2-mh-xu3"/>
                         </connections>

@@ -107,50 +107,65 @@ typedef struct
 typedef struct
 {
     /*  Shader functions for simple shader  */
-    id<MTLRenderPipelineState> _Nonnull simplePipelineState;
     id<MTLFunction>            _Nonnull simpleVertexFunction;
     id<MTLFunction>            _Nonnull simpleFragmentFunction;
     
     /*  Shader functions for textured  shader  */
-    id<MTLRenderPipelineState> _Nonnull texuredPipelineState;
     id<MTLFunction>            _Nonnull texuredVertexFunction;
     id<MTLFunction>            _Nonnull texuredFragmentFunction;
     
     /*  Shader functions for Phong shader  */
-    id<MTLRenderPipelineState> _Nonnull phongPipelineState;
     id<MTLFunction> _Nonnull phongVertexFunction;
     id<MTLFunction> _Nonnull phongFragmentFunction;
     
     /*  Shader functions for textured Phong shader  */
-    id<MTLRenderPipelineState> _Nonnull phongTexturedPipelineState;
     id<MTLFunction> _Nonnull texuredPhongVertexFunction;
     id<MTLFunction> _Nonnull texuredPhongFragmentFunction;
     
     /*  Shader functions for textured Phong anaglyph shader  */
-    id<MTLRenderPipelineState> _Nonnull phongAnaglyphPipelineState;
     id<MTLFunction> _Nonnull PhongAnaglyphVertexFunction;
     id<MTLFunction> _Nonnull PhongAnaglyphFragmentFunction;
     
     /*  Shader functions for simple 2D shader  */
-    id<MTLRenderPipelineState> _Nonnull simple2DPipelineState;
     id<MTLRenderPipelineState> _Nonnull trans2DPipelineState;
     id<MTLFunction> _Nonnull simple2DVertexFunction;
     id<MTLFunction> _Nonnull simple2DFragmentFunction;
 
     /*  Shader functions for textured 2D shader  */
-    id<MTLRenderPipelineState> _Nonnull texured2DPipelineState;
     id<MTLFunction> _Nonnull texured2DVertexFunction;
     id<MTLFunction> _Nonnull texured2DFragmentFunction;
     
     /*  Shader functions for original 2D shader  */
-    id<MTLRenderPipelineState> _Nonnull base2DPipelineState;
     id<MTLFunction> _Nonnull base2DVertexFunction;
     id<MTLFunction> _Nonnull base2DFragmentFunction;
 } KemoViewMetalShaders;
 
+typedef struct
+{
+    /*  Shader functions for simple shader  */
+    id<MTLRenderPipelineState> _Nonnull simplePipelineState;
+    /*  Shader functions for textured  shader  */
+    id<MTLRenderPipelineState> _Nonnull texuredPipelineState;
+    /*  Shader functions for Phong shader  */
+    id<MTLRenderPipelineState> _Nonnull phongPipelineState;
+    /*  Shader functions for textured Phong shader  */
+    id<MTLRenderPipelineState> _Nonnull phongTexturedPipelineState;
+    /*  Shader functions for textured Phong anaglyph shader  */
+    id<MTLRenderPipelineState> _Nonnull phongAnaglyphPipelineState;
+   /*  Shader functions for simple 2D shader  */
+    id<MTLRenderPipelineState> _Nonnull simple2DPipelineState;
+    id<MTLRenderPipelineState> _Nonnull trans2DPipelineState;
+    /*  Shader functions for textured 2D shader  */
+    id<MTLRenderPipelineState> _Nonnull texured2DPipelineState;
+    /*  Shader functions for original 2D shader  */
+    id<MTLRenderPipelineState> _Nonnull base2DPipelineState;
+} KemoViewMetalPipelines;
+
 - (void)setTransferMatrices;
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
+- (void)drawKemoMetalView:(nonnull MTKView *)view
+                  eyeflag:(int) iflag_lr;
 - (void)drawInMTKView:(nonnull MTKView *)view;
 
 @end

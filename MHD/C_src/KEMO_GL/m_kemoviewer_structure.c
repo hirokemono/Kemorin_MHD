@@ -118,17 +118,35 @@ void kemoview_indentity_projectionmatrix(void){set_projection_by_identity();};
 void kemoview_indentity_viewmatrix(void){set_view_by_identity();};
 void kemoview_message_viewmatrix(void){set_view_for_message(kemo_sgl->view_s);};
 
-void kemoview_init_lighting(){
-	kemo_gl_initial_lighting_c(kemo_sgl->view_s, kemo_sgl->kemo_shaders);
+void kemoview_init_lighting(void){
+    init_kemoview_perspective(kemo_sgl->view_s);
+    init_projection_struct(kemo_sgl->view_s);
+    return;
+}
+void kemoview_gl_init_lighting(void){
+	kemo_gl_initial_lighting_c(kemo_sgl->kemo_shaders);
 	assign_kemoview_VAOs(kemo_sgl->kemo_VAOs);
+    return;
 }
 
-void kemoview_init_background_color(void){init_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);}
+void kemoview_gl_background_color(void){
+    set_gl_bg_color(kemo_sgl->kemo_mesh->mesh_m);
+    return;
+}
+
+void kemoview_init_gl_background_color(void){
+    init_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);
+    set_gl_bg_color(kemo_sgl->kemo_mesh->mesh_m);
+    return;
+};
 void kemoview_set_background_color(float color[4]) {
     copy_rgba_color_c(color, kemo_sgl->kemo_mesh->mesh_m->bg_color);
     set_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);
 };
-void kemoview_get_background_color(float color[4]){copy_rgba_color_c(kemo_sgl->kemo_mesh->mesh_m->bg_color, color);};
+void kemoview_get_background_color(float color[4]){
+    copy_rgba_color_c(kemo_sgl->kemo_mesh->mesh_m->bg_color, color);
+    return;
+};
 
 
 /* Routines for menu selection */

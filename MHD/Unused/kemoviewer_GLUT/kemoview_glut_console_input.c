@@ -331,6 +331,7 @@ void set_background_color_console(){
     
     draw_mesh_keep_menu();
     kemoview_set_background_color(color);
+    kemoview_gl_background_color();
     glClear(GL_COLOR_BUFFER_BIT); 
     return;
 };

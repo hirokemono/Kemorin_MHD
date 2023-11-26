@@ -7,7 +7,6 @@
 
 @import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
 #import "KemoViewerMetalView.h"
 
 @interface KemoviewerController : NSObject {

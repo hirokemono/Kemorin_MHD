@@ -282,12 +282,14 @@ extern "C" {
     int kemoview_get_current_viewer_id(void);
 	
     void kemoview_init_lighting(void);
-    
+    void kemoview_gl_init_lighting(void);
+
 	void kemoview_indentity_projectionmatrix(void);
 	void kemoview_indentity_viewmatrix(void);
 	void kemoview_message_viewmatrix(void);
 	
-    void kemoview_init_background_color(void);
+    void kemoview_gl_background_color(void);
+    void kemoview_init_gl_background_color(void);
     void kemoview_set_background_color(float color[4]);
     void kemoview_get_background_color(float color[4]);
     
