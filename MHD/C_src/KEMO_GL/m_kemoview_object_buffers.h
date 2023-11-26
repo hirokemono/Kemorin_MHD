@@ -23,7 +23,6 @@
 #include "draw_fieldlines.h"
 #include "draw_patch_4_mesh_c.h"
 #include "draw_colorbar_gl.h"
-#include "draw_messages_gl.h"
 #include "draw_coastline.h"
 #include "sort_by_patch_distance.h"
 

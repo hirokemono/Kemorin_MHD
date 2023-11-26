@@ -293,7 +293,10 @@ static void set_draw_objects_to_VAO(struct view_element *view_s,
     const_texture_VBO(kemo_buffers->tlabel_image->npix_img[0], kemo_buffers->tlabel_image->npix_img[1],
                       kemo_buffers->tlabel_image->imgBMP, kemo_VAOs->time_VAO, kemo_buffers->time_buf);
     
-    set_message_VAO(kemo_buffers->message_image, kemo_buffers->msg_buf, kemo_VAOs->msg_VAO);
+    const_texture_VBO(kemo_buffers->message_image->npix_img[0],
+                      kemo_buffers->message_image->npix_img[1],
+                      kemo_buffers->message_image->imgBMP,
+                      kemo_VAOs->msg_VAO, kemo_buffers->msg_buf);
     set_initial_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf, kemo_VAOs->cube_VAO);
     return;
 };

@@ -94,6 +94,7 @@ void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_st
 }
 
 void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix){
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     set_texture_to_psf(img_fmt, image_prefix->string,
                        kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };

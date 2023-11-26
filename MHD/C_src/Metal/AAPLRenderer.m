@@ -10,7 +10,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 #import "AAPLRenderer.h"
 #include "m_gl_transfer_matrix.h"
-#include "draw_messages_gl.h"
+#include "draw_colorbar_gl.h"
 
 // Main class performing the rendering
 @implementation AAPLRenderer

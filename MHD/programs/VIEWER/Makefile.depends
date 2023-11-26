@@ -41,9 +41,9 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/glsl.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
@@ -87,7 +87,6 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/move_draw_objects_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_colorbar_to_buffer.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_messages_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
   $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
@@ -104,6 +103,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
@@ -187,9 +187,9 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/glsl.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
@@ -233,7 +233,6 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/move_draw_objects_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_colorbar_to_buffer.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_messages_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
   $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
@@ -250,6 +249,7 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \
@@ -333,9 +333,9 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/glsl.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
@@ -379,7 +379,6 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/move_draw_objects_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_colorbar_to_buffer.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_messages_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
   $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
@@ -396,6 +395,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
@@ -479,9 +479,9 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/glsl.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
@@ -525,7 +525,6 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/move_draw_objects_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_colorbar_to_buffer.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_messages_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
   $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
@@ -542,6 +541,7 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \

@@ -16,16 +16,9 @@
 #include "vartex_array_object_gl.h"
 #include "glsl.h"
 #include "set_cube_to_buf.h"
-
-struct initial_cube_lighting{
-    int num_light;
-    float lightposition[2][4];
-    float whitelight[3][4];
-    float shine[1];
-};
+#include "draw_colorbar_gl.h"
 
 /* prototypes */
-struct initial_cube_lighting * init_inital_cube_lighting(void);
 void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
                           struct VAO_ids *cube_VAO);
 void draw_initial_cube(struct transfer_matrices *matrices, struct VAO_ids *cube_VAO,

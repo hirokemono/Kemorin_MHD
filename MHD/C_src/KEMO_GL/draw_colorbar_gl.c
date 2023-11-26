@@ -5,6 +5,13 @@
 #include "draw_colorbar_gl.h"
 
 static const float default_background[4] = { 0.9, 0.9, 0.9, 1.0 };
+static const int    num_light = 2;
+static const float  lightposition[4] =  { 1.5, 1.5,-10.0,0.0};
+static const float  light2position[4] = {-1.5,-1.5,-10.0,0.0};
+static const float  white1[4] = {0.4, 0.4, 0.4, 1.0};
+static const float  white2[4] = {0.4, 0.4, 0.4, 1.0};
+static const float  white3[4] = {0.2, 0.2, 0.2, 1.0};
+static const float  shine[1] = {30.0};
 
 void set_bg_color_kemoview(float bg_color[4], float text_color[4]){
     int i;
@@ -24,6 +31,26 @@ void init_bg_color_kemoview(float bg_color[4], float text_color[4]){
     for(i=0;i<3;i++) {bg_color[i] = default_background[i];};
     return;
 }
+
+struct initial_cube_lighting * init_inital_cube_lighting(void){
+    struct initial_cube_lighting *init_light
+        = (struct initial_cube_lighting *) malloc(sizeof(struct initial_cube_lighting));
+    if(init_light == NULL){
+        printf("malloc error for initial_cube_lighting\n");
+        exit(0);
+    }
+    init_light->num_light = num_light;
+    for(int i=0;i<4;i++){
+        init_light->lightposition[0][i] = lightposition[i];
+        init_light->lightposition[1][i] = light2position[i];
+        init_light->whitelight[0][i] = 0.2*white1[i];
+        init_light->whitelight[1][i] = 0.8*white2[i];
+        init_light->whitelight[2][i] = 2*white3[i];
+    };
+    init_light->shine[0] = 10*shine[0];
+
+    return init_light;
+};
 
 int count_colorbar_box_buffer(int iflag_zero, int num_quad){
     int num_patch = 4*num_quad + 2*(iflag_zero + IFOUR);
@@ -129,3 +156,22 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
     free(cbar_wk);
     return;
 };
+
+void const_message_buffer(int iflag_retina, int nx_win, int ny_win,
+                          struct gl_strided_buffer *cbar_buf,
+                          struct line_text_image *message_image){
+    float xbar_max, ybar_min;
+    if(message_image->text_opacity > 0.0){
+        clear_line_text_image(message_image);
+        xbar_max = message_xmax(nx_win);
+        ybar_min = message_ymin(ny_win);
+        set_windowsize_image(nx_win, ny_win, message_image);
+        
+        cbar_buf->num_nod_buf = ITWO * ITHREE;
+        message_mbox_to_buf(iflag_retina, message_image->text_opacity,
+                            xbar_max, ybar_min, cbar_buf);
+    }else{
+        cbar_buf->num_nod_buf = 0;
+    }
+    return;
+}

@@ -9,35 +9,6 @@
 
 #include "drawcube_gl.h"
 
-static const int    num_light = 2;
-static const float  lightposition[4] =  { 1.5, 1.5,-10.0,0.0};
-static const float  light2position[4] = {-1.5,-1.5,-10.0,0.0};
-static const float  white1[4] = {0.4, 0.4, 0.4, 1.0};
-static const float  white2[4] = {0.4, 0.4, 0.4, 1.0};
-static const float  white3[4] = {0.2, 0.2, 0.2, 1.0};
-static const float  shine[1] = {30.0};
-
-
-struct initial_cube_lighting * init_inital_cube_lighting(void){
-    struct initial_cube_lighting *init_light
-        = (struct initial_cube_lighting *) malloc(sizeof(struct initial_cube_lighting));
-    if(init_light == NULL){
-        printf("malloc error for initial_cube_lighting\n");
-        exit(0);
-    }
-    init_light->num_light = num_light;
-    for(int i=0;i<4;i++){
-        init_light->lightposition[0][i] = lightposition[i];
-        init_light->lightposition[1][i] = light2position[i];
-        init_light->whitelight[0][i] = 0.2*white1[i];
-        init_light->whitelight[1][i] = 0.8*white2[i];
-        init_light->whitelight[2][i] = 2*white3[i];
-    };
-    init_light->shine[0] = 10*shine[0];
-
-    return init_light;
-};
-
 static void light_for_initial_cube(struct initial_cube_lighting *init_light,
                                    struct kemoview_shaders *kemo_shaders){
     int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
