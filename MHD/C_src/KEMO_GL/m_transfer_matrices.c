@@ -44,3 +44,20 @@ struct transfer_matrices * init_projection_matrix_for_map(int nx_frame, int ny_f
     free(orthogonal);
     return matrices;
 }
+
+void quick_mono_viewmat(struct view_element *view_s)
+{
+    view_s->iflag_draw_mode = SIMPLE_DRAW;
+    set_gl_animation_rot_angle(view_s, 0);
+    update_projection_struct(view_s);
+    modify_view_by_struct(view_s);
+    return;
+};
+
+void modify_fast_viewmat(struct view_element *view_s)
+{
+    view_s->iflag_draw_mode = FAST_DRAW;
+    update_step_projection_struct(view_s);
+    modify_step_view_by_struct(view_s);
+    return;
+};

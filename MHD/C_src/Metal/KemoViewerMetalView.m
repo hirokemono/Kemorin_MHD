@@ -142,7 +142,6 @@
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-//    kemoview_quilt_viewmatrix();
     [_resetview UpdateParameters];
     
     [self setNeedsDisplay: YES];
@@ -152,7 +151,6 @@
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-//    kemoview_quilt_viewmatrix();
     [_resetview UpdateParameters];
 
     [self setNeedsDisplay: YES];
@@ -172,7 +170,7 @@
 {
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_quilt_viewmatrix();
+    kemoview_fast_viewmatrix();
     
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     return self;
@@ -182,8 +180,8 @@
 {
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_quilt_viewmatrix();
-    kemoview_fast_modify_view();
+    kemoview_fast_viewmatrix();
+//    kemoview_fast_modify_view();
 
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [self setNeedsDisplay: YES];
@@ -195,7 +193,7 @@
     kemoview_set_single_viewer_id(id_window);
     kemoview_viewer_evolution((int) timeStep);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_full_modify_view();
+    kemoview_fast_viewmatrix();
     [self setNeedsDisplay: YES];
     return self;
 }

@@ -394,12 +394,8 @@ extern "C" {
 
     void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl);
 
-    void kemoview_mono_view(void);
-    void kemoview_full_modify_view(void);
-    void kemoview_fast_modify_view(void);
-
     void kemoview_quick_viewmatrix(void);
-    void kemoview_quilt_viewmatrix(void);
+    void kemoview_fast_viewmatrix(void);
 
     void kemoviewer_reset_to_init_angle(void);
     

@@ -900,6 +900,7 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_object_buffers.h \
+  $(C_SRCDIR)/KEMO_GL/modify_stereo_view_gl.h \
   $(C_SRCDIR)/KEMO_GLUT/tree_view_4_light_position.h \
   $(C_SRCDIR)/GTK/tree_view_real3_GTK.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_colorsel.h \
@@ -1127,6 +1128,7 @@ kemoview_gtk_preference_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_object_buffers.h \
+  $(C_SRCDIR)/KEMO_GL/modify_stereo_view_gl.h \
   $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \

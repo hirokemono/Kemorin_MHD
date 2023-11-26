@@ -103,6 +103,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
+  $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
@@ -248,6 +249,7 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
+  $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \
@@ -393,6 +395,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
+  $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
@@ -538,6 +541,7 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
+  $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \

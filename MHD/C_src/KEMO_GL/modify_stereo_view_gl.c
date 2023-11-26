@@ -41,20 +41,3 @@ void modify_stereo_kemoview(int iflag_draw_mode,
     }
 	return;
 };
-
-void quick_mono_viewmat(struct kemoviewer_type *kemoview)
-{
-    kemoview->view_s->iflag_draw_mode = SIMPLE_DRAW;
-    set_gl_animation_rot_angle(kemoview->view_s, 0);
-    update_projection_struct(kemoview->view_s);
-    modify_view_by_struct(kemoview->view_s);
-    return;
-};
-
-void modify_quilt_viewmat(struct kemoviewer_type *kemoview)
-{
-    kemoview->view_s->iflag_draw_mode = FAST_DRAW;
-    update_step_projection_struct(kemoview->view_s);
-    modify_step_view_by_struct(kemoview->view_s);
-    return;
-};

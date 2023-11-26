@@ -540,7 +540,8 @@ kemoviewer_gl.o: $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.c \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
-  $(C_SRCDIR)/KEMO_GL/m_kemoview_object_buffers.h
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_object_buffers.h \
+  $(C_SRCDIR)/KEMO_GL/modify_stereo_view_gl.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 kemoviewer_param_c.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.c \
@@ -1074,9 +1075,6 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
   $(C_SRCDIR)/KEMO_GL/draw_messages_gl.h \
-  $(C_SRCDIR)/KEMO_GL/modify_stereo_view_gl.h \
-  $(C_SRCDIR)/KEMO_GL/move_draw_objects_gl.h \
-  $(C_SRCDIR)/KEMO_GL/drawcube_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(C_SRCDIR)/KEMO_GL/write_modelview_matrix.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_data_4_view_transfer_c.h \
@@ -1084,6 +1082,8 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_real_IO.h \
   $(C_SRCDIR)/KEMO_GL/rotate_animation.h \
   $(C_SRCDIR)/KEMO_GL/write_gl_window_to_file.h \
+  $(C_SRCDIR)/KEMO_GL/move_draw_objects_gl.h \
+  $(C_SRCDIR)/KEMO_GL/drawcube_gl.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_png.h \

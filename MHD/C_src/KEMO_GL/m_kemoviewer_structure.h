@@ -21,7 +21,6 @@
 #include "set_rgba_table_c.h"
 #include "rainbow_color_code_c.h"
 #include "psf_data_array_manager.h"
-#include "modify_stereo_view_gl.h"
 #include "set_kemoviewer_ucd_data.h"
 #include "skip_comment_c.h"
 #include "write_modelview_matrix.h"

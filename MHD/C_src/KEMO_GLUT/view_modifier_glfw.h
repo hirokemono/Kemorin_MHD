@@ -12,7 +12,7 @@
 #endif
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 
 #define ZOOM    1
 #define PAN     2

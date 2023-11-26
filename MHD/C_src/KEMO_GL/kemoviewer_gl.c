@@ -29,6 +29,21 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
     return;
 };
 
+
+void kemoview_mono_view(void){
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    modify_mono_kemoview(kemo_sgl);
+};
+void kemoview_full_modify_view(void){
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    modify_stereo_kemoview(FULL_DRAW, kemo_sgl);
+};
+void kemoview_fast_modify_view(void){
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    modify_stereo_kemoview(FAST_DRAW, kemo_sgl);
+};
+
+
 /*  Old routines */
 
 struct shader_ids sampleShader;

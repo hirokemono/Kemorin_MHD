@@ -9,7 +9,6 @@ void kemoview_allocate_pointers(){
 	kemo_sgl->view_s = (struct view_element *)      malloc(sizeof(struct view_element));
 	
     kemo_sgl->kemo_buffers = init_kemoview_buffers();
-    kemo_sgl->kemo_glbufs = init_kemoview_buffers();
 
     kemo_sgl->kemo_shaders = init_kemoview_shaders();
 	kemo_sgl->kemo_VAOs = init_kemoview_VAOs();
@@ -70,7 +69,6 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	clear_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
 	dealloc_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
 
-    dealloc_kemoview_buffers(kemoviewer_data->kemo_glbufs);
     dealloc_kemoview_buffers(kemoviewer_data->kemo_buffers);
 	return;
 }
@@ -464,12 +462,8 @@ void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl){
 };
 
 
-void kemoview_mono_view(void){modify_mono_kemoview(kemo_sgl);};
-void kemoview_full_modify_view(void){modify_stereo_kemoview(FULL_DRAW, kemo_sgl);};
-void kemoview_fast_modify_view(void){modify_stereo_kemoview(FAST_DRAW, kemo_sgl);};
-
-void kemoview_quick_viewmatrix(void){quick_mono_viewmat(kemo_sgl);};
-void kemoview_quilt_viewmatrix(void){modify_quilt_viewmat(kemo_sgl);};
+void kemoview_quick_viewmatrix(void){quick_mono_viewmat(kemo_sgl->view_s);};
+void kemoview_fast_viewmatrix(void){modify_fast_viewmat(kemo_sgl->view_s);};
 
 void kemoviewer_reset_to_init_angle(void){
     reset_all_view_parameter(kemo_sgl->view_s);

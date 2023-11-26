@@ -24,4 +24,7 @@ struct transfer_matrices * plane_transfer_matrices(const double *orthogonal);
 
 struct transfer_matrices * init_projection_matrix_for_map(int nx_frame, int ny_frame);
 
+void quick_mono_viewmat(struct view_element *view_s);
+void modify_fast_viewmat(struct view_element *view_s);
+
 #endif /* m_transfer_matrices_ */
