@@ -319,7 +319,7 @@ void draw_full(){
 };
 
 static void write_rotate_quilt_views(int iflag_img, struct kv_string *image_prefix, 
-                             int i_axis, int inc_deg) {
+                                     int i_axis, int inc_deg) {
     int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
     int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
@@ -380,7 +380,7 @@ static void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
 
 
 static void write_quilt_evolution_views(int iflag_img, struct kv_string *image_prefix, 
-								int ist_udt, int ied_udt, int inc_udt){
+                                        int ist_udt, int ied_udt, int inc_udt){
     int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
     int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);

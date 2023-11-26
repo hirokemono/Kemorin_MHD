@@ -79,6 +79,7 @@ int draw_glfw_test(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
+    kemoview_allocate_gl_pointers(single_kemoview);
 	
 	/*! Create viewer window*/
 	kemoview_set_retinamode(iflag_retinamode);

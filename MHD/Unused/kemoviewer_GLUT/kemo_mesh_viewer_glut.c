@@ -932,6 +932,7 @@ void draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	kemoview_allocate_single_viwewer_struct(single_kemoview);
+    kemoview_allocate_gl_pointers(single_kemoview);
 	
 	link_glut_menu_address();
 	

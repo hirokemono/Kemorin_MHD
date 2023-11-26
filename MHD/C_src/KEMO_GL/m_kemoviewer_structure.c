@@ -10,30 +10,11 @@ void kemoview_allocate_pointers(){
 	
     kemo_sgl->kemo_buffers = init_kemoview_buffers();
 
-    kemo_sgl->kemo_shaders = init_kemoview_shaders();
-	kemo_sgl->kemo_VAOs = init_kemoview_VAOs();
-	kemo_sgl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-
 	kemo_sgl->kemo_mesh =  init_kemoview_mesh();
 	kemo_sgl->kemo_fline = init_kemoview_fline();
 	kemo_sgl->kemo_psf =   init_kemoview_psf();
 	
 	kemo_sgl->psf_ucd_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
-	return;
-}
-
-void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh){
-	/*! Initialize mesh data*/
-	kemoviewer_data = (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
-    
-    kemo_sgl = kemoviewer_data;
-	kemoview_allocate_pointers();
-	
-	init_kemoview_array(kemo_sgl->kemo_psf->psf_a);
-    
-	init_kemoviewer(iflag_dmesh, kemo_sgl->kemo_mesh->mesh_d, kemo_sgl->kemo_mesh->mesh_m, kemo_sgl->view_s);
-	init_fline_parameters(kemo_sgl->kemo_fline->fline_m);
-	
 	return;
 }
 
@@ -66,9 +47,6 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	dealloc_kemoview_fline(kemoviewer_data->kemo_fline);
 	dealloc_kemoview_psf(kemoviewer_data->kemo_psf);
 	
-	clear_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
-	dealloc_kemoview_VAOs(kemoviewer_data->kemo_VAOs);
-
     dealloc_kemoview_buffers(kemoviewer_data->kemo_buffers);
 	return;
 }
@@ -425,22 +403,6 @@ void kemoview_get_text_color_code(float c_code[4]){copy_rgba_color_c(kemo_sgl->k
 
 
 
-
-unsigned char * kemoview_alloc_img_buffer_to_bmp(int npix_x, int npix_y){
-    unsigned char *image = alloc_img_buffer_to_bmp(npix_x, npix_y);
-    return image;
-};
-void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image){
-    get_gl_buffer_to_bmp(npix_x, npix_y, image);
-};
-void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt){
-    get_gl_buffer_to_bmp(kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame, glimage);
-    set_gl_quilt_bitmap(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws,
-                        kemo_sgl->view_s->istep_quilt,
-                        kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame,
-                        glimage, image_quilt);
-    return;
-};
 
 void kemoview_add_bgra_to_quilt(int npix_x, int npix_y,
                                 unsigned char *bgra, unsigned char *fliped_quilt){
@@ -888,30 +850,3 @@ void kemoview_write_fline_colormap_file(struct kv_string *filename){
 void kemoview_read_fline_colormap_file(struct kv_string *filename){
 	read_fline_colormap_file(filename, kemo_sgl->kemo_fline->fline_m);
 }
-
-
-
-/*  Routines using libpng */
-#ifdef PNG_OUTPUT
-int kemoview_set_image_file_format_id(struct kv_string *image_ext){
-    return set_image_format_id_by_ext(image_ext->string);
-}
-
-void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix,
-                                   int npix_x, int npix_y, unsigned char *image){
-    write_gl_window_to_file(iflag_img, image_prefix->string,
-                            npix_x, npix_y, image);
-}
-void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix,
-                                          int npix_x, int npix_y, unsigned char *image){
-    write_gl_window_step_file(iflag_img, istep, image_prefix->string,
-                              npix_x, npix_y, image);
-}
-
-void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix){
-    set_texture_to_psf(img_fmt, image_prefix->string,
-                       kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-};
-
-#endif
-

@@ -217,6 +217,7 @@ int draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
+    kemoview_allocate_gl_pointers(single_kemoview);
 	
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;

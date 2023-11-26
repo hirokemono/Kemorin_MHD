@@ -12,8 +12,8 @@ Header for a platform independent renderer class, which performs Metal setup and
 #import "KemoViewerObject.h"
 
 #include "m_kemoviewer_data.h"
+#include "m_kemoview_object_buffers.h"
 #include "m_gl_transfer_matrix.h"
-#include "move_draw_objects_gl.h"
 #include "vartex_array_object_gl.h"
 
 @interface AAPLRenderer : NSObject<MTKViewDelegate>

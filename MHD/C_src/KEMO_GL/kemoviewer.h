@@ -268,7 +268,6 @@ extern "C" {
 	struct kv_string* kemoview_init_kvstring_by_string(const char *org_string);
 	void kemoview_free_kvstring(struct kv_string *kvstring);
 
-    void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
 	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void);
     struct kemoviewer_type * kemoview_single_viwewer_struct(void);
 
@@ -386,9 +385,6 @@ extern "C" {
     void kemoview_set_text_color_code(float c_code[4]);
     void kemoview_get_text_color_code(float c_code[4]);
     
-    unsigned char * kemoview_alloc_img_buffer_to_bmp(int npix_x, int npix_y);
-    void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
-    void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt);
     void kemoview_add_bgra_to_quilt(int npix_x, int npix_y,
                                     unsigned char *glimage, unsigned char *fliped_quilt);
 
@@ -537,19 +533,6 @@ extern "C" {
     
     void kemoview_write_fline_colormap_file(struct kv_string *filename);
     void kemoview_read_fline_colormap_file(struct kv_string *filename);
-
-    
-/* Load texture onto current sectioning image */
-    void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix);
-
-/* Set Image file format by ID */
-    int kemoview_set_image_file_format_id(struct kv_string *image_ext);
-/* Write Kemoviwer window image to file without step number */
-    void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix,
-                                       int npix_x, int npix_y, unsigned char *image);
-/* Write Kemoviwer window image to file with step number */
-	void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix,
-                                              int npix_x, int npix_y, unsigned char *image);
 #ifdef __cplusplus
 }
 #endif

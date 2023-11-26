@@ -18,7 +18,6 @@
 	self = [super init];
 	
 //	if (self) {
-//        kemoview_allocate_viwewer_struct(kemoview_s, IZERO);
 //        id_window = kemoview_get_current_viewer_id();
         
 //        NSLog(@"init KemoviewDragDropWindow %d", id_window);

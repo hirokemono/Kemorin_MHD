@@ -18,7 +18,6 @@
 ! -----------------------------------------------------------------------
 !!
 !
-!    void kemoview_allocate_viwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
 !    void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data);
 !    void kemoview_allocate_pointers();
 !    void kemoview_deallocate_pointers();
