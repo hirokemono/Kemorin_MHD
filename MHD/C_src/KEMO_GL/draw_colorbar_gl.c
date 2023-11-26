@@ -4,38 +4,6 @@
 
 #include "draw_colorbar_gl.h"
 
-int count_colorbar_box_VAO(int iflag_zero, int num_quad){
-	int num_patch = 4*num_quad + 2*(iflag_zero + IFOUR);
-	return (ITHREE * num_patch);
-};
-
-static int count_colorbar_text_VAO(struct cbar_work *cbar_wk){
-    int num_patch = ITHREE*2*(cbar_wk->iflag_zero + ITWO);
-	return num_patch;
-};
-
-void set_colorbar_VAO(struct gl_strided_buffer *min_buf,  struct line_text_image *cbar_min_image,
-                      struct gl_strided_buffer *max_buf,  struct line_text_image *cbar_max_image,
-                      struct gl_strided_buffer *zero_buf, struct line_text_image *cbar_zero_image,
-                      struct gl_strided_buffer *cbar_buf, struct VAO_ids **cbar_VAO){
-    Const_VAO_4_Simple(cbar_VAO[0], cbar_buf);
-    const_texture_VBO(cbar_min_image->npix_img[0], cbar_min_image->npix_img[1],
-                      cbar_min_image->imgBMP, cbar_VAO[1], min_buf);
-    const_texture_VBO(cbar_max_image->npix_img[0], cbar_max_image->npix_img[1],
-                      cbar_max_image->imgBMP, cbar_VAO[2], max_buf);
-    const_texture_VBO(cbar_zero_image->npix_img[0], cbar_zero_image->npix_img[1],
-                      cbar_zero_image->imgBMP, cbar_VAO[3], zero_buf);
-	return;
-};
-
-void set_time_text_VAO(struct line_text_image *tlabel_image, struct VAO_ids *text_VAO,
-                       struct gl_strided_buffer *time_buf){
-	const_texture_VBO(tlabel_image->npix_img[0], tlabel_image->npix_img[1],
-                      tlabel_image->imgBMP, text_VAO, time_buf);
-    return;
-};
-
-
 static const float default_background[4] = { 0.9, 0.9, 0.9, 1.0 };
 
 void set_bg_color_kemoview(float bg_color[4], float text_color[4]){
@@ -57,6 +25,11 @@ void init_bg_color_kemoview(float bg_color[4], float text_color[4]){
     return;
 }
 
+int count_colorbar_box_buffer(int iflag_zero, int num_quad){
+    int num_patch = 4*num_quad + 2*(iflag_zero + IFOUR);
+    return (ITHREE * num_patch);
+};
+
 static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
                                       float text_color[4], float bg_color[4],
                                       struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
@@ -70,7 +43,7 @@ static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
             set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win,
                                   psf_m[i]->cmap_psf_comp[icomp], cbar_wk);
     
-            cbar_buf->num_nod_buf = count_colorbar_box_VAO(cbar_wk->iflag_zero, cbar_wk->num_quad);
+            cbar_buf->num_nod_buf = count_colorbar_box_buffer(cbar_wk->iflag_zero, cbar_wk->num_quad);
             
             int inum_quad = 0;
             inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
@@ -136,7 +109,7 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
 };
 
 void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
-                           float text_color[4], float bg_color[4],
+                           GLfloat text_color[4], GLfloat bg_color[4],
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                            struct gl_strided_buffer *min_buf,  struct line_text_image *cbar_min_image,
                            struct gl_strided_buffer *max_buf,  struct line_text_image *cbar_max_image,

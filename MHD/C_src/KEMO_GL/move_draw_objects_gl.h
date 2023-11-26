@@ -14,56 +14,11 @@
 #include "draw_fieldlines.h"
 #include "draw_coastline.h"
 #include "drawcube_gl.h"
-#include "draw_patches_4_PSF.h"
+#include "draw_PSF_patches_by_VAO.h"
 #include "draw_map_4_PSF.h"
 #include "draw_patch_4_mesh_c.h"
 #include "set_texture_4_psf.h"
-
-struct kemoview_buffers{
-    struct gl_strided_buffer *cube_buf;
-    struct gl_index_buffer *cube_index_buf;
-    
-    struct gl_strided_buffer *PSF_solid_buf;
-    struct gl_strided_buffer *PSF_trns_buf;
-    struct gl_strided_buffer *PSF_stxur_buf;
-    struct gl_strided_buffer *PSF_ttxur_buf;
-    struct gl_strided_buffer *PSF_arrow_buf;
-    struct gl_strided_buffer *PSF_isoline_buf;
-    
-    struct psf_menu_val *psf_stexure;
-    struct psf_menu_val *psf_ttexure;
-
-    struct gl_strided_buffer *MAP_solid_buf;
-    struct gl_strided_buffer *MAP_isoline_buf;
-    
-    struct gl_strided_buffer *FLINE_line_buf;
-    struct gl_strided_buffer *FLINE_tube_buf;
-    
-    struct gl_strided_buffer *mesh_solid_buf;
-    struct gl_strided_buffer *mesh_grid_buf;
-    struct gl_strided_buffer *mesh_node_buf;
-    struct gl_strided_buffer *mesh_trns_buf;
-    
-    struct gl_strided_buffer *coast_buf;
-    struct gl_strided_buffer *sph_grid_buf;
-    
-    int ncorner_axis;
-    struct gl_strided_buffer *axis_buf;
-    
-    struct gl_strided_buffer *cbar_buf;
-    struct gl_strided_buffer *min_buf;
-    struct gl_strided_buffer *max_buf;
-    struct gl_strided_buffer *zero_buf;
-    struct gl_strided_buffer *time_buf;
-    
-    struct gl_strided_buffer *msg_buf;
-    
-    struct line_text_image *cbar_min_image;
-    struct line_text_image *cbar_max_image;
-    struct line_text_image *cbar_zero_image;
-    struct line_text_image *tlabel_image;
-    struct line_text_image *message_image;
-};
+#include "m_kemoview_object_buffers.h"
 
 struct kemoview_VAOs{
 	struct VAO_ids *cube_VAO;
@@ -85,12 +40,6 @@ struct kemoview_VAOs{
 
 
 /* prototypes */
-struct kemoview_buffers * init_kemoview_buffers(void);
-void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers);
-void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
-                            struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
-                            struct kemoview_buffers *kemo_buffers);
-
 struct kemoview_VAOs * init_kemoview_VAOs(void);
 void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);

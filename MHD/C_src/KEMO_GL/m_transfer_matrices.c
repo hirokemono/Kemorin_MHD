@@ -1,12 +1,11 @@
-//
-//  set_transfer_matrices.c
+/*
+//  m_transfer_matrices.c
 //  CalypsoView_Cocoa
 //
 //  Created by Hiroaki Matsui on 11/5/23.
-//
+*/
 
-#include "m_gl_transfer_matrix.h"
-#include "set_transfer_matrices.h"
+#include "m_transfer_matrices.h"
 
 struct transfer_matrices * alloc_transfer_matrices(void){
     struct transfer_matrices *matrices;

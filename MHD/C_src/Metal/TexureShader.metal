@@ -41,7 +41,6 @@ SimpleTexureVertexShader(uint vertexID [[ vertex_id ]],
 
 // Index into the array of positions to get the current vertex.
     float4 objectSpacePosition = vertexArray[vertexID].position;
-    float4 objectSpaceNormal =   vertexArray[vertexID].normal;
     float4 pixelSpaceColor =     vertexArray[vertexID].color;
     float2 texurePosition =      vertexArray[vertexID].textureCoordinate;
 

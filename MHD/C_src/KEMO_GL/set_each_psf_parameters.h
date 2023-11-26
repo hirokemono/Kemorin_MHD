@@ -18,8 +18,9 @@
 #include "kemoviewer_base.h"
 #include "set_rgba_table_c.h"
 #include "set_texture_4_psf.h"
-#include "draw_patches_4_PSF.h"
 #include "numbers_to_bin_c.h"
+
+#include "draw_PSF_patches_by_VAO.h"
 
 /* prototypes */
 

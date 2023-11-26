@@ -1,0 +1,37 @@
+/*
+//  draw_PSF_patches_by_VAO.h
+//  
+//
+//  Created by Hiroaki Matsui on 11/26/23.
+*/
+
+#ifndef draw_PSF_patches_by_VAO_h_
+#define draw_PSF_patches_by_VAO_h_
+
+#include <stdio.h>
+
+#include "m_kemoview_psf_menu.h"
+#include "m_psf_data_4_viewer_c.h"
+#include "m_transfer_matrices.h"
+
+#include "glsl.h"
+#include "vartex_array_object_gl.h"
+#include "drawGL_by_VAO.h"
+
+void release_PSF_texture_from_gl(struct psf_menu_val *psf_m);
+
+void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct gl_strided_buffer *PSF_stxur_buf,
+                               struct gl_strided_buffer *PSF_isoline_buf, struct gl_strided_buffer *PSF_arrow_buf,
+                               struct VAO_ids **psf_solid_VAO);
+
+void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_trns_buf, struct gl_strided_buffer *PSF_ttxur_buf,
+                               struct VAO_ids **psf_trans_VAO);
+
+void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                                struct kemo_array_control *psf_a, struct transfer_matrices *matrices,
+                                struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders);
+void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                                struct transfer_matrices *matrices, struct VAO_ids **psf_trans_VAO,
+                                struct kemoview_shaders *kemo_shaders);
+
+#endif /* draw_PSF_patches_by_VAO_h_ */

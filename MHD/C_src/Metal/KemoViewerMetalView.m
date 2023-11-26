@@ -185,7 +185,6 @@
     kemoview_quilt_viewmatrix();
     kemoview_fast_modify_view();
 
-    //    kemoview_mono_view();
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [self setNeedsDisplay: YES];
     return self;
