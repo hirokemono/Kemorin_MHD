@@ -36,6 +36,27 @@ void set_time_text_VAO(struct line_text_image *tlabel_image, struct VAO_ids *tex
 };
 
 
+static const float default_background[4] = { 0.9, 0.9, 0.9, 1.0 };
+
+void set_bg_color_kemoview(float bg_color[4], float text_color[4]){
+    int i;
+    
+    for(i=0;i<3;i++){
+        if(bg_color[i] < 0.5){
+            text_color[i] = 0.9;
+        }else{
+            text_color[i] = 0.1;
+        };
+    }
+    text_color[3] = ONE;
+    return;
+};
+void init_bg_color_kemoview(float bg_color[4], float text_color[4]){
+    int i;
+    for(i=0;i<3;i++) {bg_color[i] = default_background[i];};
+    return;
+}
+
 static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
                                       float text_color[4], float bg_color[4],
                                       struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
@@ -115,7 +136,7 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
 };
 
 void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
-                           GLfloat text_color[4], GLfloat bg_color[4],
+                           float text_color[4], float bg_color[4],
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                            struct gl_strided_buffer *min_buf,  struct line_text_image *cbar_min_image,
                            struct gl_strided_buffer *max_buf,  struct line_text_image *cbar_max_image,

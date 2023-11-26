@@ -159,11 +159,11 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         
     };
     const_timelabel_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
-                           kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color,
+                           kemo_mesh->text_color, kemo_mesh->bg_color,
                            kemo_psf->psf_a, kemo_buffers->tlabel_image, kemo_buffers->time_buf);
     
     const_colorbar_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
-                          kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color,
+                          kemo_mesh->text_color, kemo_mesh->bg_color,
                           kemo_psf->psf_m, kemo_psf->psf_a,
                           kemo_buffers->min_buf,  kemo_buffers->cbar_min_image,
                           kemo_buffers->max_buf,  kemo_buffers->cbar_max_image,

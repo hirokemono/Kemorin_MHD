@@ -957,8 +957,9 @@ void draw_mesh_kemo(void) {
 	view_modifier_init();
 	
 	/* ! set the perspective and lighting */
-    kemoview_init_gl_background_color();
+    kemoview_init_background_color();
 	kemoview_init_lighting();
+    kemoview_gl_background_color();
     kemoview_gl_init_lighting();
 	kemoview_init_phong_light_list();
 	

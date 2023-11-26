@@ -74,9 +74,6 @@ struct mesh_menu_val{
 	double ele_grp_opacity;
 	double surf_grp_opacity;
 	
-	float bg_color[4];
-	float text_color[4];
-	
 	float domain_surface_color_code[4];
 	float ele_surface_color_code[4];
 	float surf_surface_color_code[4];

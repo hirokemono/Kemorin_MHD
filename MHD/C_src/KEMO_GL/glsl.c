@@ -350,13 +350,6 @@ struct kemoview_shaders * init_kemoview_shaders(void){
 		exit(0);
 	};
 	
-	
-	/*
-	LoadShaderFromStrings(sds->gouraud, load_gouraud_vert(), load_gouraud_frag());
-	LoadShaderFromStrings(sds->phong, load_phong_vert(), load_phong_frag());
-	LoadShaderFromStrings(sds->menu, load_menu_vert(), load_menu_frag());
-	LoadShaderFromStrings(sds->simple, load_simple_vert(), load_simple_frag());
-	*/
 	return sds;
 };
 

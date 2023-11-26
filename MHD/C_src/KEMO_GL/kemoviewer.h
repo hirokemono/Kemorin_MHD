@@ -11,6 +11,7 @@
 #include<GL/gl.h>
 #endif
 
+
 #define LENGTHBUF 4096     /* length of text buffer */
 
 #define INBUFSIZ   65536        /*  buffer size for original data (arbitraly) */
@@ -282,17 +283,15 @@ extern "C" {
     int kemoview_get_current_viewer_id(void);
 	
     void kemoview_init_lighting(void);
-    void kemoview_gl_init_lighting(void);
 
 	void kemoview_indentity_projectionmatrix(void);
 	void kemoview_indentity_viewmatrix(void);
 	void kemoview_message_viewmatrix(void);
-	
-    void kemoview_gl_background_color(void);
-    void kemoview_init_gl_background_color(void);
+
+    void kemoview_init_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_set_background_color(float color[4]);
     void kemoview_get_background_color(float color[4]);
-    
+
     void kemoview_viewer_evolution(int istep);
     
     void kemoview_write_modelview_file(struct kv_string *filename);
@@ -544,21 +543,17 @@ extern "C" {
     void kemoview_read_fline_colormap_file(struct kv_string *filename);
 
     
-/** Load texture onto current sectioning image */
+/* Load texture onto current sectioning image */
     void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix);
 
-/** Set Image file format by ID */
+/* Set Image file format by ID */
     int kemoview_set_image_file_format_id(struct kv_string *image_ext);
-/** Write Kemoviwer window image to file without step number */
+/* Write Kemoviwer window image to file without step number */
     void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix,
                                        int npix_x, int npix_y, unsigned char *image);
-/** Write Kemoviwer window image to file with step number */
+/* Write Kemoviwer window image to file with step number */
 	void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix,
                                               int npix_x, int npix_y, unsigned char *image);
-	
-	void kemoview_draw_menu_setup(void);
-	void kemo_Cleanup(void);
-	
 #ifdef __cplusplus
 }
 #endif

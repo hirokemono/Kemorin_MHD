@@ -72,7 +72,7 @@ void gtk_test_window(struct kemoviewer_type *kemoviewer_data){
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
-	make_gtk_main_menu_box(mbot, gtk_win);
+	make_gtk_main_menu_box(mbot, gtk_win, single_kemoview);
 	gtk_box_pack_start(GTK_BOX(vbox), mbot->menuHbox, FALSE, FALSE, 0);
 
 	gtk_widget_show(quitButton);

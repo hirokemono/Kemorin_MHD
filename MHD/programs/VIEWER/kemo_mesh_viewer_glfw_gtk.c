@@ -31,10 +31,9 @@ struct main_buttons *mbot;
 static void mainloop_4_glfw(){
     int icou = 0;
     int jcou = 0;
-	int iflag;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(glfw_win)){
-		iflag = glfwWindowShouldClose(glfw_win);
+		glfwWindowShouldClose(glfw_win);
 		
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) != 0){
             glfwPollEvents();
@@ -196,7 +195,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), quitButton, FALSE, FALSE, 0);
 	
     iflag_fast_prev = 0;
-	make_gtk_main_menu_box(mbot, gtk_win);
+	make_gtk_main_menu_box(mbot, gtk_win, single_kemoview);
 	
 	vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);
@@ -281,9 +280,10 @@ int draw_mesh_kemo(void) {
 	glfwSetWindowCloseCallback(glfw_win, glfwWindowclose_CB);
 	
 	/* ! set the perspective and lighting */
-    kemoview_init_gl_background_color();
+    kemoview_init_background_color(single_kemoview);
 	kemoview_init_lighting();
-    kemoview_gl_init_lighting();
+    kemoview_gl_background_color(single_kemoview);
+    kemoview_gl_init_lighting(single_kemoview);
 	kemoview_init_phong_light_list();
 	
 	iflag_gtk_focus = 1;

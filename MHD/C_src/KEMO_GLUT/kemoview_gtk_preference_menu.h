@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
@@ -45,6 +45,7 @@ struct preference_gtk_menu{
 struct preference_gtk_menu * init_preference_gtk_menu(struct kemoviewer_type *kemoviewer_data);
 void dealloc_preference_gtk_menu(struct preference_gtk_menu *pref_gmenu);
 
-GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, GtkWidget *window);
+GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, GtkWidget *window,
+                                     struct kemoviewer_type *kemoviewer_data);
 
 #endif

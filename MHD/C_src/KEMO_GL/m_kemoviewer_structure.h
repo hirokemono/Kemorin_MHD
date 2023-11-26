@@ -33,8 +33,6 @@
 #include "glsl.h"
 #include "shaders.h"
 
-
-#include "kemoviewer.h"
 #include "write_gl_window_to_file.h"
 
 #ifdef PNG_OUTPUT

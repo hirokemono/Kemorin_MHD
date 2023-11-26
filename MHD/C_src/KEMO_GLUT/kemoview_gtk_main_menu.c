@@ -326,7 +326,7 @@ static GtkWidget * init_current_psf_set_vbox(struct main_buttons *mbot, GtkWidge
 	GtkWidget *box_out;
 	
 	int index = 0;
-	int ipsf, istep;
+	int ipsf;
 	
 	struct kv_string *stripped_filehead;
 	char label_tmp[512];
@@ -354,7 +354,7 @@ static GtkWidget * init_current_psf_set_vbox(struct main_buttons *mbot, GtkWidge
 			if(kemoview_get_PSF_loaded_flag(ipsf) > 0) {
 				kemoview_set_PSF_loaded_params(SET_CURRENT, ipsf);
 				stripped_filehead = kemoview_alloc_kvstring();
-				istep = kemoview_get_PSF_file_prefix(stripped_filehead);
+                kemoview_get_PSF_file_prefix(stripped_filehead);
 				sprintf(label_tmp, "%d: %s", ipsf, stripped_filehead->string);
 				index = append_ci_item_to_tree(index, label_tmp,
 											   ipsf, child_model_psfs);
@@ -544,7 +544,8 @@ void gtk_mesh_menu_box(struct main_buttons *mbot, GtkWidget *window){
 	return;
 }
 
-void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){	
+void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main,
+                            struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *entry_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window_main);
 	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
@@ -637,7 +638,8 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){
     GtkWidget *expander_rot = init_rotation_menu_expander(mbot->rot_gmenu, window_main);
     GtkWidget *expander_quilt = init_quilt_menu_expander(mbot->quilt_gmenu, window_main);
     GtkWidget *expander_view = init_viewmatrix_menu_expander(mbot->view_menu, window_main);
-    GtkWidget *expander_pref = init_preference_expander(mbot->pref_gmenu, window_main);
+    GtkWidget *expander_pref = init_preference_expander(mbot->pref_gmenu, window_main,
+                                                        kemoviewer_data);
 
     
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_open, FALSE, FALSE, 0);

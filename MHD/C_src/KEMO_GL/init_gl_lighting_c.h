@@ -11,10 +11,9 @@
 #include "m_phong_light_table_c.h"
 
 /* prototypes */
-void set_bg_color_kemoview(struct mesh_menu_val *mesh_m);
-void set_gl_bg_color(struct mesh_menu_val *mesh_m);
-
-void init_bg_color_kemoview(struct mesh_menu_val *mesh_m);
+void set_gl_bg_color(float bg_color[4]);
 
 void kemo_gl_initial_lighting_c(struct kemoview_shaders *kemo_shaders);
+void init_gl_menu_setup(struct kemoview_shaders *kemo_shaders);
+
 #endif

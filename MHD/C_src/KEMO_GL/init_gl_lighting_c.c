@@ -4,29 +4,8 @@
 #include "init_gl_lighting_c.h"
 
 
-static const GLfloat default_background[4] = { 0.9, 0.9, 0.9, 1.0 };
-
-void set_bg_color_kemoview(struct mesh_menu_val *mesh_m){
-    int i;
-    
-    for(i=0;i<3;i++){
-        if(mesh_m->bg_color[i] < 0.5) mesh_m->text_color[i] = 0.9;
-        else mesh_m->text_color[i] = 0.1;
-    }
-    mesh_m->text_color[3] = ONE;
-    return;
-};
-void init_bg_color_kemoview(struct mesh_menu_val *mesh_m){
-	int i;
-	for(i=0;i<3;i++) mesh_m->bg_color[i] = default_background[i];
-    
-    set_bg_color_kemoview(mesh_m);
-    return;
-}
-
-void set_gl_bg_color(struct mesh_menu_val *mesh_m){
-    glClearColor(mesh_m->bg_color[0], mesh_m->bg_color[1],
-                 mesh_m->bg_color[2], mesh_m->bg_color[3]);
+void set_gl_bg_color(float bg_color[4]){
+    glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
     return;
 };
 
@@ -46,4 +25,8 @@ void kemo_gl_initial_lighting_c(struct kemoview_shaders *kemo_shaders){
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_DEPTH_TEST);
 	return;
+}
+
+void init_gl_menu_setup(struct kemoview_shaders *kemo_shaders){
+    LoadShaderFromStrings(kemo_shaders->menu, load_menu_vert(), load_menu_frag());
 }

@@ -80,9 +80,10 @@ static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
 	
 	/* ! set the perspective and lighting */
 	kemoviewer_reset_to_init_angle();
-    kemoview_init_gl_background_color();
+    kemoview_init_background_color(single_kemoview);
 	kemoview_init_lighting();
-    kemoview_gl_init_lighting();
+    kemoview_gl_background_color(single_kemoview);
+    kemoview_gl_init_lighting(single_kemoview);
 	kemoview_init_phong_light_list();
 	
 	return TRUE;
@@ -130,7 +131,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data, GtkWidget *vb
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
-	make_gtk_main_menu_box(mbot, gtk_win);
+	make_gtk_main_menu_box(mbot, gtk_win, single_kemoview);
 	gtk_box_pack_start(GTK_BOX(vbox), mbot->menuHbox, FALSE, FALSE, 0);
 	
 	

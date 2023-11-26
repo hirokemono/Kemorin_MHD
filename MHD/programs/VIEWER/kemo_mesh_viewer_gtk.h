@@ -14,7 +14,7 @@
 	#include <gtk/gtk.h>
 #endif
 
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "kemoview_gtk_PSF_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_preference_menu.h"

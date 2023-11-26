@@ -18,6 +18,9 @@
 #include "set_colorbar_to_buffer.h"
 
 /* prototypes */
+void init_bg_color_kemoview(float bg_color[4], float text_color[4]);
+void set_bg_color_kemoview(float bg_color[4], float text_color[4]);
+
 int count_colorbar_box_VAO(int iflag_zero, int num_quad);
 
 void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,

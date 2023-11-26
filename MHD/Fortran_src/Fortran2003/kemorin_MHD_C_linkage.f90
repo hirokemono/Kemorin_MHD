@@ -33,9 +33,9 @@
 !    
 !    void kemoview_draw_objects_c();
 !    void kemoview_init_lighting();
-!    void kemoview_gl_init_lighting();
+!    void kemoview_gl_init_lighting(struct kemoviewer_type *kemoviewer);
 !    
-!    void kemoview_init_gl_background_color(void);
+!    void kemoview_init_background_color(struct kemoviewer_type *kemoviewer);
 !    void kemoview_set_background_color(float color[4]);
 !    void kemoview_get_background_color(float color[4]);
 !    

@@ -143,7 +143,6 @@
 		18D7E7601562D359009B05FF /* drawcube_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B91562D359009B05FF /* drawcube_gl.c */; };
 		18D7E7611562D359009B05FF /* find_isoline_on_patch_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6BB1562D359009B05FF /* find_isoline_on_patch_c.c */; };
 		18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C31562D359009B05FF /* icosahedron_c.c */; };
-		18D7E7661562D359009B05FF /* init_gl_lighting_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C51562D359009B05FF /* init_gl_lighting_c.c */; };
 		18D7E7671562D359009B05FF /* kemoviewer_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C81562D359009B05FF /* kemoviewer_param_c.c */; };
 		18D7E7681562D359009B05FF /* m_gl_transfer_matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6CA1562D359009B05FF /* m_gl_transfer_matrix.c */; };
 		18D7E76A1562D359009B05FF /* m_kemoviewer_structure.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6CE1562D359009B05FF /* m_kemoviewer_structure.c */; };
@@ -169,7 +168,6 @@
 		18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E70E1562D359009B05FF /* KemoviewDragDropWindow.m */; };
 		18D7E78B1562D359009B05FF /* KemoviewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7101562D359009B05FF /* KemoviewerController.m */; };
 		18D7E78C1562D359009B05FF /* KemoviewerMovieMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7121562D359009B05FF /* KemoviewerMovieMaker.m */; };
-		18D7E78E1562D359009B05FF /* KemoViewerOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7161562D359009B05FF /* KemoViewerOpenGLView.m */; };
 		18D7E7911562D359009B05FF /* NodeGroupTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E71C1562D359009B05FF /* NodeGroupTableController.m */; };
 		18D7E7921562D359009B05FF /* OpacityMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E71E1562D359009B05FF /* OpacityMapController.m */; };
 		18D7E7941562D359009B05FF /* PsfController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7221562D359009B05FF /* PsfController.m */; };
@@ -442,8 +440,6 @@
 		18D7E6BC1562D359009B05FF /* find_isoline_on_patch_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = find_isoline_on_patch_c.h; sourceTree = "<group>"; };
 		18D7E6C31562D359009B05FF /* icosahedron_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = icosahedron_c.c; sourceTree = "<group>"; };
 		18D7E6C41562D359009B05FF /* icosahedron_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = icosahedron_c.h; sourceTree = "<group>"; };
-		18D7E6C51562D359009B05FF /* init_gl_lighting_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = init_gl_lighting_c.c; sourceTree = "<group>"; };
-		18D7E6C61562D359009B05FF /* init_gl_lighting_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = init_gl_lighting_c.h; sourceTree = "<group>"; };
 		18D7E6C71562D359009B05FF /* kemoviewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kemoviewer.h; sourceTree = "<group>"; };
 		18D7E6C81562D359009B05FF /* kemoviewer_param_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kemoviewer_param_c.c; sourceTree = "<group>"; };
 		18D7E6C91562D359009B05FF /* kemoviewer_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kemoviewer_param_c.h; sourceTree = "<group>"; };
@@ -496,8 +492,6 @@
 		18D7E7101562D359009B05FF /* KemoviewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KemoviewerController.m; sourceTree = "<group>"; };
 		18D7E7111562D359009B05FF /* KemoviewerMovieMaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KemoviewerMovieMaker.h; sourceTree = "<group>"; };
 		18D7E7121562D359009B05FF /* KemoviewerMovieMaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KemoviewerMovieMaker.m; sourceTree = "<group>"; };
-		18D7E7151562D359009B05FF /* KemoViewerOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KemoViewerOpenGLView.h; sourceTree = "<group>"; };
-		18D7E7161562D359009B05FF /* KemoViewerOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KemoViewerOpenGLView.m; sourceTree = "<group>"; };
 		18D7E71B1562D359009B05FF /* NodeGroupTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeGroupTableController.h; sourceTree = "<group>"; };
 		18D7E71C1562D359009B05FF /* NodeGroupTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NodeGroupTableController.m; sourceTree = "<group>"; };
 		18D7E71D1562D359009B05FF /* OpacityMapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpacityMapController.h; sourceTree = "<group>"; };
@@ -817,8 +811,6 @@
 				18D7E6BC1562D359009B05FF /* find_isoline_on_patch_c.h */,
 				18D7E6C31562D359009B05FF /* icosahedron_c.c */,
 				18D7E6C41562D359009B05FF /* icosahedron_c.h */,
-				18D7E6C51562D359009B05FF /* init_gl_lighting_c.c */,
-				18D7E6C61562D359009B05FF /* init_gl_lighting_c.h */,
 				18D7E6C71562D359009B05FF /* kemoviewer.h */,
 				188C9417230CF87400A4DB14 /* kemoviewer_base.c */,
 				188C9418230CF87500A4DB14 /* kemoviewer_base.h */,
@@ -937,8 +929,6 @@
 				18D7E7101562D359009B05FF /* KemoviewerController.m */,
 				18D7E7111562D359009B05FF /* KemoviewerMovieMaker.h */,
 				18D7E7121562D359009B05FF /* KemoviewerMovieMaker.m */,
-				18D7E7151562D359009B05FF /* KemoViewerOpenGLView.h */,
-				18D7E7161562D359009B05FF /* KemoViewerOpenGLView.m */,
 				18D7E71B1562D359009B05FF /* NodeGroupTableController.h */,
 				18D7E71C1562D359009B05FF /* NodeGroupTableController.m */,
 				18D7E71D1562D359009B05FF /* OpacityMapController.h */,
@@ -1213,7 +1203,6 @@
 				188C941C230CF90A00A4DB14 /* m_kemoview_psf_menu.c in Sources */,
 				18D7E7611562D359009B05FF /* find_isoline_on_patch_c.c in Sources */,
 				18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */,
-				18D7E7661562D359009B05FF /* init_gl_lighting_c.c in Sources */,
 				18D7E7671562D359009B05FF /* kemoviewer_param_c.c in Sources */,
 				18D7E7681562D359009B05FF /* m_gl_transfer_matrix.c in Sources */,
 				18D7E76A1562D359009B05FF /* m_kemoviewer_structure.c in Sources */,
@@ -1258,7 +1247,6 @@
 				18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */,
 				18D7E78B1562D359009B05FF /* KemoviewerController.m in Sources */,
 				18D7E78C1562D359009B05FF /* KemoviewerMovieMaker.m in Sources */,
-				18D7E78E1562D359009B05FF /* KemoViewerOpenGLView.m in Sources */,
 				18D7E7911562D359009B05FF /* NodeGroupTableController.m in Sources */,
 				1852CFB2236B7B790043C983 /* m_color_table_c.c in Sources */,
 				18D7E7921562D359009B05FF /* OpacityMapController.m in Sources */,

@@ -111,7 +111,6 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_each_isoline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_hex_tube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/modify_object_4_viewer_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/init_gl_lighting_c.h \
   $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_c.h \
   $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_gz_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_coastline_to_buf.h \

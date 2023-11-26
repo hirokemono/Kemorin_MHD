@@ -123,35 +123,29 @@ void kemoview_init_lighting(void){
     init_projection_struct(kemo_sgl->view_s);
     return;
 }
-void kemoview_gl_init_lighting(void){
-	kemo_gl_initial_lighting_c(kemo_sgl->kemo_shaders);
-	assign_kemoview_VAOs(kemo_sgl->kemo_VAOs);
-    return;
-}
 
-void kemoview_gl_background_color(void){
-    set_gl_bg_color(kemo_sgl->kemo_mesh->mesh_m);
-    return;
-}
-
-void kemoview_init_gl_background_color(void){
-    init_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);
-    set_gl_bg_color(kemo_sgl->kemo_mesh->mesh_m);
-    return;
+void kemoview_init_background_color(struct kemoviewer_type *kemoviewer){
+    init_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
+                           kemoviewer->kemo_mesh->text_color);
+    set_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
+                          kemoviewer->kemo_mesh->text_color);
 };
 void kemoview_set_background_color(float color[4]) {
-    copy_rgba_color_c(color, kemo_sgl->kemo_mesh->mesh_m->bg_color);
-    set_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);
+    copy_rgba_color_c(color, kemo_sgl->kemo_mesh->bg_color);
+    set_bg_color_kemoview(kemo_sgl->kemo_mesh->bg_color,
+                          kemo_sgl->kemo_mesh->text_color);
 };
 void kemoview_get_background_color(float color[4]){
-    copy_rgba_color_c(kemo_sgl->kemo_mesh->mesh_m->bg_color, color);
+    copy_rgba_color_c(kemo_sgl->kemo_mesh->bg_color, color);
     return;
 };
+
 
 
 /* Routines for menu selection */
 int kemoview_set_data_format_flag(struct kv_string *filename, 
-                                  struct kv_string *stripped_prefix, struct kv_string *stripped_ext){
+                                  struct kv_string *stripped_prefix,
+                                  struct kv_string *stripped_ext){
     alloc_kvstringitem(strlen(filename->string), stripped_prefix);
     alloc_kvstringitem(strlen(filename->string), stripped_ext);
     return set_data_format_flag(filename->string, stripped_prefix->string, stripped_ext->string);
@@ -427,8 +421,8 @@ void kemoview_add_ext_to_file_name(struct kv_string *file_prefix, struct kv_stri
     add_ext_to_file_name_c(file_prefix->string, added_ext->string, file_name->string);
 }
 
-void kemoview_set_text_color_code(float c_code[4]){copy_rgba_color_c(c_code, kemo_sgl->kemo_mesh->mesh_m->text_color);};
-void kemoview_get_text_color_code(float c_code[4]){copy_rgba_color_c(kemo_sgl->kemo_mesh->mesh_m->text_color, c_code);};
+void kemoview_set_text_color_code(float c_code[4]){copy_rgba_color_c(c_code, kemo_sgl->kemo_mesh->text_color);};
+void kemoview_get_text_color_code(float c_code[4]){copy_rgba_color_c(kemo_sgl->kemo_mesh->text_color, c_code);};
 
 
 
@@ -900,19 +894,7 @@ void kemoview_read_fline_colormap_file(struct kv_string *filename){
 	read_fline_colormap_file(filename, kemo_sgl->kemo_fline->fline_m);
 }
 
-/*  Temporal routines */
 
-struct shader_ids sampleShader;
-
-void kemoview_draw_menu_setup(void){
-	LoadShaderFromStrings(kemo_sgl->kemo_shaders->menu, load_menu_vert(), load_menu_frag());
-}
-
-void kemo_Cleanup(void)
-{
-  destory_shaders(kemo_sgl->kemo_shaders->simple);
-  destory_shaders(kemo_sgl->kemo_shaders->simple);
-}
 
 /*  Routines using libpng */
 #ifdef PNG_OUTPUT
@@ -932,8 +914,9 @@ void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_st
 }
 
 void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix){
-    set_texture_to_psf(img_fmt, image_prefix->string, 
-					   kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
+    set_texture_to_psf(img_fmt, image_prefix->string,
+                       kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
+
 #endif
 
