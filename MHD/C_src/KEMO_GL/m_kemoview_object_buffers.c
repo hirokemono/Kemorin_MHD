@@ -16,6 +16,11 @@ struct kemoview_buffers * init_kemoview_buffers(void)
         printf("malloc error for kemoview_buffers\n");
         exit(0);
     }
+    if((kemo_buffers->kemo_lights = (struct phong_lights *) malloc(sizeof(struct phong_lights))) == NULL){
+        printf("malloc error in phong_lights \n");
+        exit(0);
+    };
+
     kemo_buffers->cube_buf = init_strided_buffer(n_point);
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
     CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, kemo_buffers->cube_index_buf);
@@ -103,6 +108,7 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 
     dealloc_strided_buffer(kemo_buffers->axis_buf);
 
+    free(kemo_buffers->kemo_lights);
     free(kemo_buffers);
     return;
 };

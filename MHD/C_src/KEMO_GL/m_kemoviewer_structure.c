@@ -271,45 +271,46 @@ int kemoview_toggle_object_properties(int selected){
 
 
 void kemoview_alloc_phong_light_list(int num){
-	alloc_phong_light_list(kemo_sgl->kemo_shaders->lights, num);
+	alloc_phong_light_list(kemo_sgl->kemo_buffers->kemo_lights, num);
 };
 void kemoview_dealloc_phong_light_list(void){
-	dealloc_phong_light_list(kemo_sgl->kemo_shaders->lights);
+	dealloc_phong_light_list(kemo_sgl->kemo_buffers->kemo_lights);
 };
 void kemoview_realloc_phong_light_list(int num){
-	realloc_phong_light_list(kemo_sgl->kemo_shaders->lights, num);
+	realloc_phong_light_list(kemo_sgl->kemo_buffers->kemo_lights, num);
 };
 
 void kemoview_delete_phong_light_list(int i_delete){
-	delete_phong_light_list(kemo_sgl->kemo_shaders->lights, i_delete);
+	delete_phong_light_list(kemo_sgl->kemo_buffers->kemo_lights, i_delete);
 };
 void kemoview_add_phong_light_list(int i_add, float r, float t, float p){
-	add_phong_light_list(kemo_sgl->view_s, kemo_sgl->kemo_shaders->lights, i_add, r, t, p);
+	add_phong_light_list(kemo_sgl->view_s, kemo_sgl->kemo_buffers->kemo_lights, i_add, r, t, p);
 };
 
 void kemoview_init_phong_light_list(void){
-	init_phong_light_list(kemo_sgl->view_s, kemo_sgl->kemo_shaders->lights);
+	init_phong_light_list(kemo_sgl->view_s, kemo_sgl->kemo_buffers->kemo_lights);
 };
 
 
 void kemoview_set_each_light_position(int i_point, float r, float t, float p){
-	set_each_light_position(kemo_sgl->view_s, kemo_sgl->kemo_shaders->lights, i_point, r, t, p);
+	set_each_light_position(kemo_sgl->view_s, kemo_sgl->kemo_buffers->kemo_lights,
+                            i_point, r, t, p);
 };
 int kemoview_get_num_light_position(void){
-	return send_num_light_position(kemo_sgl->kemo_shaders->lights);
+	return send_num_light_position(kemo_sgl->kemo_buffers->kemo_lights);
 };
 void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p){
-	send_each_light_rtp(kemo_sgl->kemo_shaders->lights, i_point, r, t, p);
+	send_each_light_rtp(kemo_sgl->kemo_buffers->kemo_lights, i_point, r, t, p);
 };
 void kemoview_get_each_light_xyz(int i_point, float *x, float *y, float *z){
-    send_each_light_xyz(kemo_sgl->kemo_shaders->lights, i_point, x, y, z);
+    send_each_light_xyz(kemo_sgl->kemo_buffers->kemo_lights, i_point, x, y, z);
 };
 
 void kemoview_set_material_parameter(int itype, float value){
-	set_matrial_parameter(itype, value, kemo_sgl->kemo_shaders->lights);
+	set_matrial_parameter(itype, value, kemo_sgl->kemo_buffers->kemo_lights);
 };
 float kemoview_get_material_parameter(int itype){
-	return get_matrial_parameter(itype, kemo_sgl->kemo_shaders->lights);
+	return get_matrial_parameter(itype, kemo_sgl->kemo_buffers->kemo_lights);
 };
 
 

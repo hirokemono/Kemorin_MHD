@@ -17,6 +17,7 @@
 #include "m_kemoview_mesh.h"
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
+#include "m_phong_light_table_c.h"
 
 #include "draw_map_4_PSF.h"
 #include "draw_fieldlines.h"
@@ -27,6 +28,8 @@
 #include "sort_by_patch_distance.h"
 
 struct kemoview_buffers{
+    struct phong_lights *kemo_lights;
+    
     struct gl_strided_buffer *cube_buf;
     struct gl_index_buffer *cube_index_buf;
     

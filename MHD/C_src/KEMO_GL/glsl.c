@@ -344,12 +344,6 @@ struct kemoview_shaders * init_kemoview_shaders(void){
 	sds->phong_1color = init_shader_ids();
 	sds->simple_texure = init_shader_ids();
 	sds->simple = init_shader_ids();
-	
-	if((sds->lights = (struct phong_lights *) malloc(sizeof(struct phong_lights))) == NULL){
-		printf("malloc error in phong_lights \n");
-		exit(0);
-	};
-	
 	return sds;
 };
 

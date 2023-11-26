@@ -4,13 +4,16 @@
 
 #include "drawGL_by_VAO.h"
 
-void drawgl_textured_patches_VAO(GLuint *texture_name, struct transfer_matrices *matrices,
-							   struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
+void drawgl_textured_patches_VAO(GLuint *texture_name, 
+                                 struct transfer_matrices *matrices,
+                                 struct phong_lights *lights, 
+                                 struct kemoview_shaders *kemo_shaders,
+                                 struct VAO_ids *VAO){
 	if(VAO->npoint_draw <= 0) return;
 	
 	glUseProgram(kemo_shaders->phong_texure->programId);
     transfer_matrix_to_GL(kemo_shaders->phong_texure, matrices);
-	set_phong_light_list(kemo_shaders->phong_texure, kemo_shaders->lights);
+	set_phong_light_list(kemo_shaders->phong_texure, lights);
 
 	glBindVertexArray(VAO->id_VAO);
 	
@@ -23,13 +26,13 @@ void drawgl_textured_patches_VAO(GLuint *texture_name, struct transfer_matrices 
 	return;
 };
 
-void drawgl_patch_with_phong(struct transfer_matrices *matrices, struct VAO_ids *VAO,
-                             struct kemoview_shaders *kemo_shaders){
+void drawgl_patch_with_phong(struct transfer_matrices *matrices, struct phong_lights *lights, 
+                             struct kemoview_shaders *kemo_shaders, struct VAO_ids *VAO){
 	if(VAO->npoint_draw <= 0) return;
 	
 	glUseProgram(kemo_shaders->phong->programId);
     transfer_matrix_to_GL(kemo_shaders->phong, matrices);
-	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
+	set_phong_light_list(kemo_shaders->phong, lights);
 
 	glBindVertexArray(VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, VAO->npoint_draw);
@@ -37,13 +40,13 @@ void drawgl_patch_with_phong(struct transfer_matrices *matrices, struct VAO_ids 
 	return;
 }
 
-void drawgl_elements_with_phong(struct transfer_matrices *matrices, struct VAO_ids *VAO,
-                                struct kemoview_shaders *kemo_shaders){
+void drawgl_elements_with_phong(struct transfer_matrices *matrices, struct phong_lights *lights, 
+                                struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
     if(VAO->npoint_draw <= 0) return;
     
     glUseProgram(kemo_shaders->phong->programId);
     transfer_matrix_to_GL(kemo_shaders->phong, matrices);
-    set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
+    set_phong_light_list(kemo_shaders->phong, lights);
 
     glBindVertexArray(VAO->id_VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO->id_index);
@@ -91,7 +94,8 @@ void draw_map_objects_VAO(struct transfer_matrices *matrices,
 
 
 void draw_solid_mesh_VAO(int polygon_mode, struct transfer_matrices *matrices, 
-                         struct VAO_ids *mesh_solid_VAO, struct kemoview_shaders *kemo_shaders){
+                         struct phong_lights *lights, struct VAO_ids *mesh_solid_VAO, 
+                         struct kemoview_shaders *kemo_shaders){
 	if(mesh_solid_VAO->npoint_draw <= 0) return;
 	
 	glEnable(GL_CULL_FACE);
@@ -105,14 +109,16 @@ void draw_solid_mesh_VAO(int polygon_mode, struct transfer_matrices *matrices,
 	
 	glUseProgram(kemo_shaders->phong->programId);
     transfer_matrix_to_GL(kemo_shaders->phong, matrices);
-	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
+	set_phong_light_list(kemo_shaders->phong, lights);
 
 	glBindVertexArray(mesh_solid_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (mesh_solid_VAO->npoint_draw));
 	return;
 };
 
-void draw_trans_mesh_VAO(struct transfer_matrices *matrices, struct VAO_ids *mesh_trans_VAO,
+void draw_trans_mesh_VAO(struct transfer_matrices *matrices, 
+                         struct phong_lights *lights, 
+                         struct VAO_ids *mesh_trans_VAO,
                          struct kemoview_shaders *kemo_shaders){
 	if(mesh_trans_VAO->npoint_draw <= 0) return;
 	
@@ -126,7 +132,7 @@ void draw_trans_mesh_VAO(struct transfer_matrices *matrices, struct VAO_ids *mes
 	
 	glUseProgram(kemo_shaders->phong->programId);
     transfer_matrix_to_GL(kemo_shaders->phong, matrices);
-	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
+	set_phong_light_list(kemo_shaders->phong, lights);
 	
 	glBindVertexArray(mesh_trans_VAO->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, (mesh_trans_VAO->npoint_draw));

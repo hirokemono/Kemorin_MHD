@@ -12,7 +12,7 @@
 struct preference_gtk_menu * init_preference_gtk_menu(struct kemoviewer_type *kemoviewer_data){
 	struct preference_gtk_menu *pref_gmenu
 			= (struct preference_gtk_menu *) malloc(sizeof(struct preference_gtk_menu));
-	pref_gmenu->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_shaders->lights);
+	pref_gmenu->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
 	
 	return pref_gmenu;
 };
