@@ -185,7 +185,6 @@ void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m, struct kemo_array_c
                                 struct kemoview_shaders *kemo_shaders){
     glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
-	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_CULL_FACE);
@@ -199,6 +198,5 @@ void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m, struct kemo_array_c
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);
 	return;
 };

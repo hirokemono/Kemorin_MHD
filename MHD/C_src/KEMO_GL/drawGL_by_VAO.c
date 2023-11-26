@@ -118,7 +118,6 @@ void draw_trans_mesh_VAO(struct transfer_matrices *matrices, struct VAO_ids *mes
 	
 	glDisable(GL_CULL_FACE);
 	glDepthMask(GL_FALSE);
-	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -135,7 +134,6 @@ void draw_trans_mesh_VAO(struct transfer_matrices *matrices, struct VAO_ids *mes
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);
 	return;
 }
 
@@ -146,7 +144,6 @@ void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *V
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    glEnable(GL_MULTISAMPLE);
     
 	glUseProgram(kemo_shaders->simple->programId);
     map_matrix_to_GLSL(kemo_shaders->simple, matrices);
@@ -157,7 +154,6 @@ void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *V
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    glDisable(GL_MULTISAMPLE);
     return;
 }
 
@@ -168,7 +164,6 @@ void draw_textured_2D_box_VAO(struct transfer_matrices *matrices, struct VAO_ids
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    glEnable(GL_MULTISAMPLE);
     
 	glUseProgram(kemo_shaders->simple_texure->programId);
     map_matrix_to_GLSL(kemo_shaders->simple_texure, matrices);
@@ -184,6 +179,5 @@ void draw_textured_2D_box_VAO(struct transfer_matrices *matrices, struct VAO_ids
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    glDisable(GL_MULTISAMPLE);
 	return;
 }
