@@ -441,7 +441,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   length:sizeof(MaterialParameters)
                                  atIndex:AAPLMaterialParams];
         
-          [*renderEncoder setFragmentTexture:*texture
+        [*renderEncoder setFragmentTexture:*texture
                                    atIndex:AAPLTextureIndexBaseColor];
 
         [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
@@ -584,7 +584,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   length:sizeof(MaterialParameters)
                                  atIndex:AAPLMaterialParams];
         [*renderEncoder setFragmentTexture:*texture
-                                   atIndex:AAPLTextureImageIndex];
+                                   atIndex:AAPLTextureIndexBaseColor];
 
         [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                            vertexStart:0
@@ -926,7 +926,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         
         /*  Set transparent vertexs */
         if(kemo_buffers->PSF_ttxur_buf->num_nod_buf > 0){
-            [_kemoViewMetalBuf.psfSTexureVertice release];
+            [_kemoViewMetalBuf.psfTTexureVertice release];
             [_kemoViewMetalBuf.psfTransTexure release];
         };
         
@@ -977,7 +977,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                        vertex:&_kemoViewMetalBuf.sphGridVertice];
     }else{
         [self setPSFTexture:kemo_buffers->PSF_stxur_buf
-                      image:kemo_buffers->psf_stexure
+                      image:kemo_buffers->psf_texure
                      vertex:&_kemoViewMetalBuf.psfSTexureVertice
                      texure:&_kemoViewMetalBuf.psfSolidTexure];
         
@@ -1017,8 +1017,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         
 /*  Set transparent vertexs */
         [self setPSFTexture:kemo_buffers->PSF_ttxur_buf
-                      image:kemo_buffers->psf_ttexure
-                     vertex:&_kemoViewMetalBuf.psfSTexureVertice
+                      image:kemo_buffers->psf_texure
+                     vertex:&_kemoViewMetalBuf.psfTTexureVertice
                      texure:&_kemoViewMetalBuf.psfTransTexure];
         [self setMetalVertexs:kemo_buffers->PSF_trns_buf
                        vertex:&_kemoViewMetalBuf.psfTransVertice];
@@ -1091,15 +1091,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                         unites:monoViewUnites
                          sides:BOTH_SURFACES
                          solid:SMOOTH_SHADE];
-    /*
-     [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
-     encoder:renderEncoder
-     vertex:&_kemoViewMetalBuf.psfSTexureVertice
-     texure:&_kemoViewMetalBuf.psfSolidTexure
-     unites:monoViewUnites
-     sides:BOTH_SURFACES
-     solid:SMOOTH_SHADE];
-     */
     [self drawSolidWithSimple:kemo_buffers->axis_buf
                       encoder:renderEncoder
                        vertex:&_kemoViewMetalBuf.axisVertice
@@ -1148,7 +1139,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 /*  Draw transparent objects */
     [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
                       encoder:renderEncoder
-                       vertex:&_kemoViewMetalBuf.psfSTexureVertice
+                       vertex:&_kemoViewMetalBuf.psfTTexureVertice
                        texure:&_kemoViewMetalBuf.psfTransTexure
                        unites:monoViewUnites
                         sides:BOTH_SURFACES
@@ -1183,15 +1174,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                         unites:monoViewUnites
                          sides:BOTH_SURFACES
                          solid:SMOOTH_SHADE];
-    /*
-     [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
-     encoder:renderEncoder
-     vertex:&_kemoViewMetalBuf.psfSTexureVertice
-     texure:&_kemoViewMetalBuf.psfSolidTexure
-     unites:monoViewUnites
-     sides:BOTH_SURFACES
-     solid:SMOOTH_SHADE];
-     */
     [self drawSolidWithSimple:kemo_buffers->axis_buf
                       encoder:renderEncoder
                        vertex:&_kemoViewMetalBuf.axisVertice
@@ -1267,7 +1249,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 /*  Draw transparent objects */
     [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
                       encoder:renderEncoder
-                       vertex:&_kemoViewMetalBuf.psfSTexureVertice
+                       vertex:&_kemoViewMetalBuf.psfTTexureVertice
                        texure:&_kemoViewMetalBuf.psfTransTexure
                        unites:monoViewUnites
                         sides:BOTH_SURFACES

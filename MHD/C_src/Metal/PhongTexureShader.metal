@@ -73,7 +73,7 @@ fragment float4
 PhongTextureFragmentShader(RasterizerData in [[stage_in]],
                            constant LightSourceParameters *lightsParamsPointer[[buffer(AAPLLightsParams)]],
                            constant MaterialParameters *frontMaterialParamsPointer[[buffer(AAPLMaterialParams)]],
-                           texture2d<float> colorTexture [[ texture(AAPLTextureImageIndex) ]])
+                           texture2d<float> colorTexture [[ texture(AAPLTextureIndexBaseColor) ]])
 {
     constexpr sampler textureSampler(mag_filter::linear,
                                      min_filter::linear);

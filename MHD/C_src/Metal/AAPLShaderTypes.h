@@ -38,9 +38,7 @@ typedef enum AAPLLightInputIndex
 {
     AAPLLightsParams =      0,
     AAPLMaterialParams =    1,
-    AAPLTextureImageIndex = 2,
 } AAPLLightInputIndex;
-
 
 // Texture index values shared between shader and C code to ensure Metal shader buffer inputs match
 //   Metal API texture set calls
