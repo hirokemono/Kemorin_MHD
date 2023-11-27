@@ -146,17 +146,9 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         const_PSF_solid_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
                                        kemo_buffers->PSF_isoline_buf, kemo_buffers->PSF_arrow_buf);
-
-        int ipsf_texure = kemo_psf->psf_a->ipsf_viz_far[IZERO]-1;
-        kemo_buffers->psf_texure = kemo_psf->psf_m[ipsf_texure];
-        
         const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf);
 
-        int ist_psf = kemo_psf->psf_a->istack_solid_psf_patch;
-        ipsf_texure = kemo_psf->psf_a->ipsf_viz_far[ist_psf]-1;
-        kemo_buffers->psf_texure = kemo_psf->psf_m[ipsf_texure];
-        
         set_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
         set_sph_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
         
@@ -193,5 +185,23 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     } else {
         kemo_buffers->cube_buf->num_nod_buf = 0;
     }
+    return;
+};
+
+void set_transparent_buffers(struct kemoview_psf *kemo_psf, struct kemoview_mesh *kemo_mesh,
+                             struct view_element *view_s, struct kemoview_buffers *kemo_buffers)
+{
+    int iflag_psf = 0;
+    /* Set transfer matrices */
+    if(view_s->iflag_view_type != VIEW_MAP) {
+        iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
+                                                kemo_psf->psf_a, view_s);
+        iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
+        
+        const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+                                       kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf);
+        const_trans_mesh_buffer(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view_s,
+                                kemo_buffers->mesh_trns_buf);
+    };
     return;
 };
