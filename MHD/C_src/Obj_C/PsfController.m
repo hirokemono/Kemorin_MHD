@@ -651,6 +651,7 @@
 - (IBAction)ChoosePsfPatchColorAction:(id)sender;
 {
 	if(self.psfPatchColorTag == TEXTURED_SURFACE){
+        kemoview_update_PSF_textured_id();
 		[self ChooseTextureFile];
 	}
     else if(self.psfPatchColorTag == SINGLE_COLOR){

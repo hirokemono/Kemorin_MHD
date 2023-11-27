@@ -4,6 +4,40 @@
 
 #include "m_kemoview_psf_menu.h"
 
+struct kemo_PSF_texure * alloc_kemo_PSF_texure(void){
+    struct kemo_PSF_texure *psf_texure = (struct kemo_PSF_texure *) malloc(sizeof(struct kemo_PSF_texure));
+    if (psf_texure == NULL) {
+        printf("Allocation failed for psf_texure \n");
+        exit(1);
+    }
+    psf_texure->ipsf_texured = -1;
+    psf_texure->texure_npix =   0;
+    psf_texure->texure_width =  0;
+    psf_texure->texure_height = 0;
+    return psf_texure;
+}
+void alloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure){
+    psf_texure->texure_npix = psf_texure->texure_width * psf_texure->texure_height;
+    psf_texure->texure_rgba = (GLubyte *) malloc( (4*psf_texure->texure_npix) * sizeof(GLubyte));
+    if ((psf_texure->texure_rgba) == NULL) {
+        printf("Allocation failed for psf_texure->texure_rgba \n");
+        exit(2);
+    }
+    return;
+}
+void dealloc_kemo_PSF_texure(struct kemo_PSF_texure *psf_texure){
+    dealloc_draw_psf_texture(psf_texure);
+    free(psf_texure);
+    return;
+}
+
+
+void dealloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure){
+    if(psf_texure->texure_npix > 0) {free(psf_texure->texure_rgba);};
+    psf_texure->texure_npix = 0;
+    return;
+}
+
 void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
 	if(id_coord == 1){
 		if(ncomp == 3){
@@ -112,20 +146,6 @@ void dealloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	return;
 }
 
-void alloc_draw_psf_texture(struct psf_menu_val *psf_m){
-	
-	psf_m->texture_npix = psf_m->texture_width * psf_m->texture_height;
-	if ((psf_m->texture_rgba = (GLubyte *) malloc( (4*psf_m->texture_npix) * sizeof(GLubyte))) == NULL) {
-		exit(2);
-	}
-	return;
-}
-
-void dealloc_draw_psf_texture(struct psf_menu_val *psf_m){
-	free(psf_m->texture_rgba);
-	return;
-}
-
 void alloc_kemoview_array(struct kemo_array_control *psf_a){
 	psf_a->iflag_loaded = (int *) calloc(psf_a->nlimit_loaded,sizeof(int));
     
@@ -146,11 +166,12 @@ void init_kemoview_array(struct kemo_array_control *psf_a){
 	psf_a->nmax_loaded = 0;
 	psf_a->id_current =  0;
 	alloc_kemoview_array(psf_a);
+    psf_a->psf_texure = alloc_kemo_PSF_texure();
 	return;
 };
 void dealloc_kemoview_array(struct kemo_array_control *psf_a){
     dealloc_psfs_sorting_list(psf_a);
-    
+    dealloc_kemo_PSF_texure(psf_a->psf_texure);
 	free(psf_a->iflag_loaded);
 	return;
 };

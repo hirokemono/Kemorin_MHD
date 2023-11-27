@@ -21,7 +21,7 @@ void quilt_bitmap_by_bgra(int n_quilt_column, int n_quilt_raw, int istep_quilt,
 
 
 void set_texture_4_psf(int width, int height, const unsigned char *bgra_in,
-			struct psf_menu_val *psf_m);
-void release_texture_4_psf(struct psf_menu_val *psf_m);
+                       struct kemo_PSF_texure *psf_texure);
+void release_texture_4_psf(struct kemo_array_control *psf_a);
 
 #endif

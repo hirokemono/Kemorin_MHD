@@ -223,10 +223,25 @@ int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
 	return iflag;
 }
 
+void update_PSF_textured_id(struct kemoview_psf *kemo_psf){
+    int i;
+    int i_current = kemo_psf->psf_a->id_current;
+    for(i=0;i<kemo_psf->psf_a->nmax_loaded;i++){
+        if(kemo_psf->psf_a->iflag_loaded[i] != 0
+           && kemo_psf->psf_m[i]->psf_patch_color == TEXTURED_SURFACE
+           && i != i_current){
+            kemo_psf->psf_m[i]->psf_patch_color == RAINBOW_SURFACE;
+        };
+    };
+    kemo_psf->psf_a->psf_texure->ipsf_texured = i_current;
+    release_texture_4_psf(kemo_psf->psf_a);
+};
+
 void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo_psf){
     int i_current = kemo_psf->psf_a->id_current;
 	if(selected == PSFSOLID_TOGGLE){
-		set_psf_patch_color_mode(kemo_psf->psf_m[i_current], input);
+		set_psf_patch_color_mode(kemo_psf->psf_a,
+                                 kemo_psf->psf_m[i_current], input);
 	}else if(selected == PSFGRID_TOGGLE){
 		set_each_isoline_color(kemo_psf->psf_m[i_current], input);
 	}else if(selected == ISET_NLINE){

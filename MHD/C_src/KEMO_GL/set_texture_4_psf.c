@@ -92,18 +92,18 @@ static void vertical_flip_rgba_c(int ihpixf, int jvpixf, const unsigned char *fl
 }
 
 void set_texture_4_psf(int width, int height, const unsigned char *bgra_in, 
-			struct psf_menu_val *psf_m) {
+                       struct kemo_PSF_texure *psf_texure){
 	
-	psf_m->texture_width =  width;
-	psf_m->texture_height = height;
+    psf_texure->texure_width =  width;
+    psf_texure->texure_height = height;
 	
-	alloc_draw_psf_texture(psf_m);
-    vertical_flip_rgba_c(psf_m->texture_width, psf_m->texture_height,
-                         bgra_in, psf_m->texture_rgba);
+	alloc_draw_psf_texture(psf_texure);
+    vertical_flip_rgba_c(psf_texure->texure_width, psf_texure->texure_height,
+                         bgra_in, psf_texure->texure_rgba);
 	return;
 }
 
-void release_texture_4_psf(struct psf_menu_val *psf_m) {
-	dealloc_draw_psf_texture(psf_m);
+void release_texture_4_psf(struct kemo_array_control *psf_a) {
+	dealloc_draw_psf_texture(psf_a->psf_texure);
 	return;
 }

@@ -63,12 +63,12 @@ void main (void)
 
         diffuse = dot(light, fnormal);
 
-//        out_Color += txColor * frontMaterial.ambient;
-//                    + txColor * frontMaterial.diffuse * abs(diffuse)
-//                    + tmpsp * fspecular;
-		out_Color += txColor * frontMaterial.ambient;
-                    + ex_Color * frontMaterial.diffuse * abs(diffuse)
+        out_Color += txColor * frontMaterial.ambient;
+                    + txColor * frontMaterial.diffuse * abs(diffuse)
                     + tmpsp * fspecular;
+//		out_Color += txColor * frontMaterial.ambient;
+//                    + ex_Color * frontMaterial.diffuse * abs(diffuse)
+//                    + tmpsp * fspecular;
 	}
 }
 

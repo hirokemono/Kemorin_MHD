@@ -404,8 +404,7 @@ void kemoview_add_bgra_to_quilt(int npix_x, int npix_y,
 
 
 void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char *bgra_in){
-    set_texture_psf_from_bgra(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
-							  width, height, bgra_in);
+    set_texture_psf_from_bgra(kemo_sgl->kemo_psf->psf_a, width, height, bgra_in);
 };
 
 void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl){
@@ -654,6 +653,10 @@ int kemoview_get_PSF_draw_flags(int selected){
 	return get_each_PSF_draw_switch(selected, kemo_sgl->kemo_psf);
 }
 
+void kemoview_update_PSF_textured_id(void){
+    update_PSF_textured_id(kemo_sgl->kemo_psf);
+    return;
+};
 void kemoview_set_PSF_color_param(int selected, int input){
 	set_each_PSF_color_param(selected, input, kemo_sgl->kemo_psf);
 	return;

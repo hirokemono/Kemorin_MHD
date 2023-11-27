@@ -456,6 +456,7 @@ extern "C" {
 	int kemoview_select_PSF_draw_switch(int selected);
 	int kemoview_get_PSF_draw_flags(int selected);
 	
+    void kemoview_update_PSF_textured_id(void);
 	void kemoview_set_PSF_color_param(int selected, int input);
 	int kemoview_get_PSF_color_param(int selected);
 	

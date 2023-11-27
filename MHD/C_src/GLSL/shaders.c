@@ -826,12 +826,12 @@ char * load_phong_texture_frag(void){
         "\n"\
         "        diffuse = dot(light, fnormal);\n"\
         "\n"\
-        "//        out_Color += txColor * frontMaterial.ambient;\n"\
-        "//                    + txColor * frontMaterial.diffuse * abs(diffuse)\n"\
-        "//                    + tmpsp * fspecular;\n"\
-        "		out_Color += txColor * frontMaterial.ambient;\n"\
-        "                    + ex_Color * frontMaterial.diffuse * abs(diffuse)\n"\
+        "        out_Color += txColor * frontMaterial.ambient;\n"\
+        "                    + txColor * frontMaterial.diffuse * abs(diffuse)\n"\
         "                    + tmpsp * fspecular;\n"\
+        "//		out_Color += txColor * frontMaterial.ambient;\n"\
+        "//                    + ex_Color * frontMaterial.diffuse * abs(diffuse)\n"\
+        "//                    + tmpsp * fspecular;\n"\
         "	}\n"\
         "}\n"\
         "\n"\

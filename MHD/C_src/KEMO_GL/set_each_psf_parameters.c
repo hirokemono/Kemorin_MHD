@@ -44,9 +44,9 @@ int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu
 	return psf_d->id_coord[id_current];
 };
 
-void set_texture_psf_from_bgra(struct psf_menu_val *psf_menu,
-			int width, int height, const unsigned char *bgra_in){
-    set_texture_4_psf(width, height, bgra_in, psf_menu);
+void set_texture_psf_from_bgra(struct kemo_array_control *psf_a,
+                               int width, int height, const unsigned char *bgra_in){
+    set_texture_4_psf(width, height, bgra_in, psf_a->psf_texure);
 };
 
 void set_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->polygon_mode_psf = iflag;};
@@ -99,12 +99,12 @@ int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){
 	return psf_menu->draw_psf_refv;
 };
 
-void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag){
-	if(psf_menu->psf_patch_color == TEXTURED_SURFACE){
-		release_texture_4_psf(psf_menu);
-	};
-	
+void set_psf_patch_color_mode(struct kemo_array_control *psf_a,
+                              struct psf_menu_val *psf_menu, int iflag){
 	psf_menu->psf_patch_color = iflag;
+    if(iflag != TEXTURED_SURFACE){
+        psf_a->psf_texure->ipsf_texured = -1;
+    };
 	return;
 };
 

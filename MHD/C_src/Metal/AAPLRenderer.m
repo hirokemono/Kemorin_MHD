@@ -715,7 +715,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 };
 
 - (void)setPSFTexture:(struct gl_strided_buffer *) buf
-                image:(struct psf_menu_val *) img
+                image:(struct kemo_PSF_texure *) psf_texure
                 vertex:(id<MTLBuffer> *)  vertices
                 texure:(id<MTLTexture> *) texture
 {
@@ -728,8 +728,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 /* Construct message texture */
         MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
         lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
-        lineTextureDescriptor.width =  img->texture_width;
-        lineTextureDescriptor.height = img->texture_height;
+        lineTextureDescriptor.width =  psf_texure->texure_width;
+        lineTextureDescriptor.height = psf_texure->texure_height;
 
 /*  Calculate the number of bytes per row in the image. */
         NSUInteger bytesPerRow = 4 * lineTextureDescriptor.width;
@@ -743,7 +743,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 /* Copy the bytes from the data object into the texture */
         [*texture replaceRegion:region
                     mipmapLevel:0
-                      withBytes:img->texture_rgba
+                      withBytes:psf_texure->texure_rgba
                     bytesPerRow:bytesPerRow];
     };
 
@@ -963,6 +963,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 - (void) setKemoViewMetalBuffers:(struct kemoview_buffers *) kemo_buffers
                            views:(struct view_element *) view_s
+                            PSFs:(struct kemoview_psf *) kemo_psf
                        fieldline:(struct kemoview_fline *) kemo_fline
 {
     if(view_s->iflag_view_type == VIEW_MAP){
@@ -977,7 +978,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                        vertex:&_kemoViewMetalBuf.sphGridVertice];
     }else{
         [self setPSFTexture:kemo_buffers->PSF_stxur_buf
-                      image:kemo_buffers->psf_texure
+                      image:kemo_psf->psf_a->psf_texure
                      vertex:&_kemoViewMetalBuf.psfSTexureVertice
                      texure:&_kemoViewMetalBuf.psfSolidTexure];
         
@@ -1017,7 +1018,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         
 /*  Set transparent vertexs */
         [self setPSFTexture:kemo_buffers->PSF_ttxur_buf
-                      image:kemo_buffers->psf_texure
+                      image:kemo_psf->psf_a->psf_texure
                      vertex:&_kemoViewMetalBuf.psfTTexureVertice
                      texure:&_kemoViewMetalBuf.psfTransTexure];
         [self setMetalVertexs:kemo_buffers->PSF_trns_buf
@@ -1418,6 +1419,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         [self setKemoViewMetalBuffers:kemo_sgl->kemo_buffers
                                 views:kemo_sgl->view_s
+                                 PSFs:kemo_sgl->kemo_psf
                             fieldline:kemo_sgl->kemo_fline];
     };
 
