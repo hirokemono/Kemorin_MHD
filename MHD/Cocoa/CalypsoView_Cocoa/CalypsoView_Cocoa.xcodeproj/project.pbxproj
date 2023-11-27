@@ -12,8 +12,6 @@
 		180999972B12473E00F83574 /* PhongAnaglyphShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 180999962B12473E00F83574 /* PhongAnaglyphShader.metal */; };
 		180999A02B13C14100F83574 /* m_transfer_matrices.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809999F2B13C14100F83574 /* m_transfer_matrices.c */; };
 		180999A32B13C5CF00F83574 /* m_kemoview_object_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 180999A12B13C5CF00F83574 /* m_kemoview_object_buffers.c */; };
-		180999A62B13CB5700F83574 /* draw_PSF_patches_by_VAO.c in Sources */ = {isa = PBXBuildFile; fileRef = 180999A42B13CB5700F83574 /* draw_PSF_patches_by_VAO.c */; };
-		180999A92B13CC1900F83574 /* drawGL_by_VAO.c in Sources */ = {isa = PBXBuildFile; fileRef = 180999A82B13CC1900F83574 /* drawGL_by_VAO.c */; };
 		180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CD1DDFB54700D20198 /* AVFoundation.framework */; };
 		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
 		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
@@ -203,10 +201,6 @@
 		1809999F2B13C14100F83574 /* m_transfer_matrices.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_transfer_matrices.c; sourceTree = "<group>"; };
 		180999A12B13C5CF00F83574 /* m_kemoview_object_buffers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_object_buffers.c; sourceTree = "<group>"; };
 		180999A22B13C5CF00F83574 /* m_kemoview_object_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_kemoview_object_buffers.h; sourceTree = "<group>"; };
-		180999A42B13CB5700F83574 /* draw_PSF_patches_by_VAO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_PSF_patches_by_VAO.c; path = KEMO_GL/draw_PSF_patches_by_VAO.c; sourceTree = "<group>"; };
-		180999A52B13CB5700F83574 /* draw_PSF_patches_by_VAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = draw_PSF_patches_by_VAO.h; path = KEMO_GL/draw_PSF_patches_by_VAO.h; sourceTree = "<group>"; };
-		180999A72B13CC1900F83574 /* drawGL_by_VAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drawGL_by_VAO.h; path = KEMO_GL/drawGL_by_VAO.h; sourceTree = "<group>"; };
-		180999A82B13CC1900F83574 /* drawGL_by_VAO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = drawGL_by_VAO.c; path = KEMO_GL/drawGL_by_VAO.c; sourceTree = "<group>"; };
 		180FF7CD1DDFB54700D20198 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		180FF7CF1DDFB55000D20198 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		180FF7D11DDFB55500D20198 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -634,10 +628,6 @@
 		188FFD6523087CB900F5A0DE /* GLSL */ = {
 			isa = PBXGroup;
 			children = (
-				180999A42B13CB5700F83574 /* draw_PSF_patches_by_VAO.c */,
-				180999A52B13CB5700F83574 /* draw_PSF_patches_by_VAO.h */,
-				180999A82B13CC1900F83574 /* drawGL_by_VAO.c */,
-				180999A72B13CC1900F83574 /* drawGL_by_VAO.h */,
 				188FFD7723087CCB00F5A0DE /* dash_lines_3D.frag */,
 				188FFD6B23087CCA00F5A0DE /* dash_lines_3D.vert */,
 				188FFD7523087CCB00F5A0DE /* gouraud.frag */,
@@ -1124,7 +1114,6 @@
 				18D7E7361562D359009B05FF /* m_map_data_4_viewer_c.c in Sources */,
 				18D7E7371562D359009B05FF /* m_psf_data_4_viewer_c.c in Sources */,
 				18D7E7381562D359009B05FF /* m_surface_mesh_4_viewer_c.c in Sources */,
-				180999A62B13CB5700F83574 /* draw_PSF_patches_by_VAO.c in Sources */,
 				188C9419230CF87500A4DB14 /* kemoviewer_base.c in Sources */,
 				185CB9C9212F593D00BB3C0B /* t_control_real2_IO.c in Sources */,
 				18D7E73A1562D359009B05FF /* numbers_to_bin_c.c in Sources */,
@@ -1134,7 +1123,6 @@
 				18D7E73D1562D359009B05FF /* read_grouping_mesh_c.c in Sources */,
 				188BA7512305E13100348842 /* invert_small_matrix_c.c in Sources */,
 				18F029732AF5A49500D37276 /* AAPLRenderer.m in Sources */,
-				180999A92B13CC1900F83574 /* drawGL_by_VAO.c in Sources */,
 				185CB9B3212F593D00BB3C0B /* t_control_chara_real_IO.c in Sources */,
 				189F8CCC27037268006FB38F /* write_image_2_bmp.c in Sources */,
 				18D7E73E1562D359009B05FF /* read_image_2_bmp.c in Sources */,

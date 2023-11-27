@@ -15,6 +15,7 @@
 #include "m_colorbar_work.h"
 #include "m_phong_light_table_c.h"
 #include "m_gl_transfer_matrix.h"
+#include "m_transfer_matrices.h"
 #include "m_kemoview_object_buffers.h"
 #include "vartex_array_object_gl.h"
 #include "read_data_4_kemoviewer.h"
@@ -29,8 +30,5 @@
 #include "set_each_fline_parameters.h"
 #include "set_texture_4_psf.h"
 #include "numbers_to_bin_c.h"
-
-#include "glsl.h"
-#include "shaders.h"
 
 #endif

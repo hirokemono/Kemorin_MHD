@@ -1,5 +1,5 @@
 /*
-  glsl.c
+  glsl.h
 */
 
 #ifndef GLSL__
@@ -36,8 +36,6 @@ struct gl_transfer_matrices{
 };
 
 /* prptotypes */
-struct transfer_matrices * transfer_matrix_to_shader(struct view_element *view_s);
-
 int glslInit(void);
 void LoadShaderFromFile(struct shader_ids *shader,
 			const char *fname_vertex, const char *fname_fragment);

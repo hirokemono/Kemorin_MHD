@@ -232,28 +232,6 @@ void destory_shaders(struct shader_ids *shader)
 	 */
 }
 
-struct transfer_matrices * transfer_matrix_to_shader(struct view_element *view_s){
-    double a_inv[16];
-    int i;
-    
-    struct transfer_matrices *matrices = alloc_transfer_matrices();
-    cal_inverse_44_matrix_c(view_s->mat_object_2_eye, a_inv);
-    for(i=0;i<16;i++) {matrices->model[i] = (float) view_s->mat_object_2_eye[i];};
-    for(i=0;i<16;i++) {matrices->proj[i] = (float) view_s->mat_eye_2_clip[i];};
-    
-    for(i=0;i<3;i++) {
-        matrices->nrmat[4*i  ] = (float) a_inv[  i];
-        matrices->nrmat[4*i+1] = (float) a_inv[4+i];
-        matrices->nrmat[4*i+2] = (float) a_inv[8+i];
-        matrices->nrmat[4*i+3] =  0.0;
-
-        matrices->nrmat[4*3+i] =  0.0;
-    };
-    matrices->nrmat[4*3+3] = (float) 1.0;
-    return matrices;
-};
-
-
 void transfer_matrix_to_GL(struct shader_ids *Shader, struct transfer_matrices *matrices){
     int modelMatLocation =   glGetUniformLocation(Shader->programId, "modelViewMat");
     int projectMatLocation = glGetUniformLocation(Shader->programId, "projectionMat");
