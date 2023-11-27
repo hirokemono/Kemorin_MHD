@@ -140,7 +140,7 @@ int flatEdgeCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
 	
 	for(j=0;j<12;j++){
 		for(k=0;k<2;k++){
-			set_node_stride_VBO(icou, strided_buf);
+            set_node_stride_buffer(icou, strided_buf);
 			icou = icou + 1;
 			
 			i = cube_edge[j][k];
@@ -170,7 +170,7 @@ int flatNodeCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
 	float radius;
 	
 	for(j=0;j<8;j++){
-		set_node_stride_VBO(icou, strided_buf);
+        set_node_stride_buffer(icou, strided_buf);
 		icou = icou + 1;
 		
 		i = j;

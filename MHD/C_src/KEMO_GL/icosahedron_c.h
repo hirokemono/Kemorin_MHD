@@ -7,7 +7,7 @@
 #include <math.h>
 
 #include "kemoviewer_param_c.h"
-#include "vartex_array_object_gl.h"
+#include "m_vertex_buffer.h"
 
 /* prototypes */
 void init_icosahedron_c(void);

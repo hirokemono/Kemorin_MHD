@@ -6,7 +6,7 @@
 
 #include "m_psf_data_4_viewer_c.h"
 #include "m_kemoview_fline_menu.h"
-#include "vartex_array_object_gl.h"
+#include "m_vertex_buffer.h"
 #include "rainbow_color_code_c.h"
 #include "set_color_code_on_nodes.h"
 #include "icosahedron_c.h"

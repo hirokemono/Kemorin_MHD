@@ -9,6 +9,7 @@
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_gl_transfer_matrix.h"
+#include "m_vertex_buffer.h"
 #include "vartex_array_object_gl.h"
 #include "sort_by_patch_distance.h"
 #include "rainbow_color_code_c.h"

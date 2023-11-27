@@ -10,6 +10,7 @@
 
 #include "kemoviewer_param_c.h"
 #include "m_gl_transfer_matrix.h"
+#include "m_vertex_buffer.h"
 #include "vartex_array_object_gl.h"
 #include "modify_object_4_viewer_c.h"
 #include "icosahedron_c.h"

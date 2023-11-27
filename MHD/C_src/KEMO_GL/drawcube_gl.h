@@ -13,6 +13,7 @@
 #include <math.h>
 #include "kemoviewer_param_c.h"
 #include "m_gl_transfer_matrix.h"
+#include "m_vertex_buffer.h"
 #include "vartex_array_object_gl.h"
 #include "glsl.h"
 #include "set_cube_to_buf.h"

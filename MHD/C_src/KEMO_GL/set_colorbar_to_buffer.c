@@ -11,27 +11,27 @@ static void set_one_quad_to_buf(int i_quad,
 			struct gl_strided_buffer *strided_buf){
 	int nd;
 	
-	set_node_stride_VBO(6*i_quad, strided_buf);
+    set_node_stride_buffer(6*i_quad, strided_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x1[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
 	
-	set_node_stride_VBO(6*i_quad+1, strided_buf);
+    set_node_stride_buffer(6*i_quad+1, strided_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x2[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c2[nd];};
 		
-	set_node_stride_VBO(6*i_quad+2, strided_buf);
+    set_node_stride_buffer(6*i_quad+2, strided_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x3[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
 		
-	set_node_stride_VBO(6*i_quad+3, strided_buf);
+    set_node_stride_buffer(6*i_quad+3, strided_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x3[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
 		
-	set_node_stride_VBO(6*i_quad+4, strided_buf);
+    set_node_stride_buffer(6*i_quad+4, strided_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x4[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c4[nd];};
 	
-	set_node_stride_VBO(6*i_quad+5, strided_buf);
+    set_node_stride_buffer(6*i_quad+5, strided_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x1[nd];};
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
 	return;
@@ -42,22 +42,22 @@ static void set_one_texture_to_buf(int i_quad,
 			struct gl_strided_buffer *strided_buf){
 	int nd;
 	
-	set_node_stride_VBO(6*i_quad, strided_buf);
+    set_node_stride_buffer(6*i_quad, strided_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t1[nd];}
 	
-	set_node_stride_VBO(6*i_quad+1, strided_buf);
+    set_node_stride_buffer(6*i_quad+1, strided_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t2[nd];}
 		
-	set_node_stride_VBO(6*i_quad+2, strided_buf);
+    set_node_stride_buffer(6*i_quad+2, strided_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t3[nd];}
 		
-	set_node_stride_VBO(6*i_quad+3, strided_buf);
+    set_node_stride_buffer(6*i_quad+3, strided_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t3[nd];}
 		
-	set_node_stride_VBO(6*i_quad+4, strided_buf);
+    set_node_stride_buffer(6*i_quad+4, strided_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t4[nd];}
 	
-	set_node_stride_VBO(6*i_quad+5, strided_buf);
+    set_node_stride_buffer(6*i_quad+5, strided_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t1[nd];};
 	return;
 };

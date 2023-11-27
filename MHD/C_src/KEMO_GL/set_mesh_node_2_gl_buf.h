@@ -7,7 +7,7 @@
 #include "kemoviewer_param_c.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_surface_mesh_4_viewer_c.h"
-#include "vartex_array_object_gl.h"
+#include "m_vertex_buffer.h"
 #include "icosahedron_c.h"
 #include "rainbow_color_code_c.h"
 

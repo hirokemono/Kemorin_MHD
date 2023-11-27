@@ -12,6 +12,7 @@
 
 #include <math.h>
 #include "kemoviewer_param_c.h"
+#include "m_vertex_buffer.h"
 #include "vartex_array_object_gl.h"
 
 struct gl_index_buffer{

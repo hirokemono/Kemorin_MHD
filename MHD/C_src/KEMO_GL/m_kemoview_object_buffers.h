@@ -18,6 +18,7 @@
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_phong_light_table_c.h"
+#include "m_vertex_buffer.h"
 
 #include "draw_map_4_PSF.h"
 #include "draw_fieldlines.h"

@@ -7,7 +7,7 @@
 #include <math.h>
 
 #include "kemoviewer_param_c.h"
-#include "vartex_array_object_gl.h"
+#include "m_vertex_buffer.h"
 #include "coordinate_converter_c.h"
 #include "rainbow_color_code_c.h"
 #include "coastline_c.h"

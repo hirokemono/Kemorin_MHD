@@ -15,6 +15,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
   $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_vertex_buffer.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
@@ -161,6 +162,7 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
   $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_vertex_buffer.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
@@ -307,6 +309,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
   $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_vertex_buffer.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
@@ -453,6 +456,7 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
   $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_vertex_buffer.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \

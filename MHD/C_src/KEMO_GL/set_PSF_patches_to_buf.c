@@ -24,7 +24,7 @@ void set_psf_nodes_to_buf(int ist_psf, int ied_psf, int shading_mode,
 		for (lk = 0; lk < ITHREE; lk++) {
 			inod = psf_s[ipsf]->ie_viz[iele][lk] - 1;
 			
-			set_node_stride_VBO((ITHREE*inum+lk), strided_buf);
+            set_node_stride_buffer((ITHREE*inum+lk), strided_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xx_viz[inod][nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[inod][nd];};
 			if (shading_mode == SMOOTH_SHADE){
@@ -60,7 +60,7 @@ void set_psf_textures_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
 		
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			set_node_stride_VBO((ITHREE*inum+k), strided_buf);
+            set_node_stride_buffer((ITHREE*inum+k), strided_buf);
 			strided_buf->x_txur[0] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
 			strided_buf->x_txur[1] = -rtp_patch[ITHREE*k+1] * ARCPI;
 		};
@@ -87,7 +87,7 @@ void set_psf_map_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
 		
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			set_node_stride_VBO((ITHREE*inum+k), strided_buf);
+            set_node_stride_buffer((ITHREE*inum+k), strided_buf);
 			strided_buf->x_draw[0] = xyz_map[ITHREE*k  ];
 			strided_buf->x_draw[1] = xyz_map[ITHREE*k+1];
 			strided_buf->x_draw[2] = 0.0;
@@ -180,7 +180,7 @@ int set_psf_arrows_to_buf(int ist_patch, int ncorner, struct psf_data *psf_s, st
 							xyz, nor, col);
 				
 				for (i=0; i<3*num_wall; i++) {
-					set_node_stride_VBO((ITHREE*inum_buf+i), strided_buf);
+                    set_node_stride_buffer((ITHREE*inum_buf+i), strided_buf);
 					for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*i+nd];};
 					for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*i+nd];};
 					for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*i+nd];};

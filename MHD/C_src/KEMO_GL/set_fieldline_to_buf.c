@@ -38,7 +38,7 @@ int set_fieldtubes_to_buf(int ncorner,
 								   xyz, nor, col);
 		
 		for (k=0; k<3*num_wall; k++) {
-			set_node_stride_VBO((ITHREE*inum_patch+k), strided_buf);
+            set_node_stride_buffer((ITHREE*inum_patch+k), strided_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
 			for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
@@ -58,7 +58,7 @@ int set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *fline
 	for(iele=0; iele<fline_s->nele_viz; iele++){
 		for(k=0;k<ITWO;k++){
 			inod =fline_s->ie_viz[iele][k] - 1;
-			set_node_stride_VBO((ITWO*iele+k), strided_buf);
+            set_node_stride_buffer((ITWO*iele+k), strided_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = fline_s->xx_viz[inod][nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[inod][nd];};
 		};

@@ -6,6 +6,7 @@
 #include "kemoviewer_param_c.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_gl_transfer_matrix.h"
+#include "m_vertex_buffer.h"
 #include "vartex_array_object_gl.h"
 #include "set_coastline_to_buf.h"
 #include "set_axis_to_buf.h"

@@ -16,7 +16,7 @@ static int add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int
 		k1 = node_quad_2_linear_tri[3*ie_local+kr] - 1;
 		inod = ie_sf_viewer[abs(iele)-1][k1]-1;
 		
-		set_node_stride_VBO((ITHREE*inum_tri+k), strided_buf);
+        set_node_stride_buffer((ITHREE*inum_tri+k), strided_buf);
 		
 		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = xx_draw[inod][nd];};
 		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};

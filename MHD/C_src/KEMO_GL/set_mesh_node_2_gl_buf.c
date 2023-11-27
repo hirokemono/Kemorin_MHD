@@ -39,7 +39,7 @@ const int set_mesh_node_ico_to_buf(int ist_tri, int num_grp, int igrp, int *ista
 				num_ico = set_icosahedron_patch(node_diam, &mesh_s->xx_draw[inod][0],
 												 xyz_patch, norm_patch);
 				for (i=0; i<num_ico; i++) {
-					set_node_stride_VBO((inum_tri+i), mesh_buf);
+                    set_node_stride_buffer((inum_tri+i), mesh_buf);
 					for(nd=0;nd<3;nd++){mesh_buf->x_draw[nd] =  xyz_patch[3*i+nd];};
 					for(nd=0;nd<3;nd++){mesh_buf->n_draw[nd] = norm_patch[3*i+nd];};
 					for(nd=0;nd<4;nd++){mesh_buf->c_draw[nd] = f_color[nd];};

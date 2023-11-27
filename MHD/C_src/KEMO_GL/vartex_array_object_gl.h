@@ -11,32 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "kemoviewer.h"
-
-#define NPATCH_GL_BUFFER  4096
-#define NSIZE_GL_BUFFER  32768
-
-struct gl_strided_buffer{
-	long nsize_buf;
-	int istride;
-	
-	int ncomp_buf;
-	int num_nod_buf;
-	
-	int ist_xyz;
-	int ist_rtp;
-	int ist_norm;
-	int ist_tex;
-	int ist_csurf;
-	int ist_data;
-	
-	float *v_buf;
-	
-    float *x_draw;
-    float *x_txur;
-    float *n_draw;
-    float *c_draw;
-    float *d_draw;
-};
+#include "m_vertex_buffer.h"
 
 struct VAO_ids{
 	unsigned int id_VAO;
@@ -53,17 +28,6 @@ struct VAO_ids{
 
 /* Prototypes */
 
-void set_buffer_address_4_patch(int num_points, struct gl_strided_buffer *strided_buf);
-void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf);
-void alloc_strided_buffer(struct gl_strided_buffer *strided_buf);
-
-struct gl_strided_buffer * init_strided_buffer(int num_points);
-void resize_strided_buffer(struct gl_strided_buffer *strided_buf);
-void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf);
-
-void set_zero_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);
-void set_node_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);
-void select_stride_VBO(int inum, struct gl_strided_buffer *strided_buf);
 
 void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
 void Const_VAO_4_Texture(struct VAO_ids *VAO, const struct gl_strided_buffer *strided_buf);

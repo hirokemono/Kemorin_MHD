@@ -11,7 +11,8 @@
 #define SET_HEX_TUBE_TO_BUF_
 
 #include <math.h>
-#include "vartex_array_object_gl.h"
+#include "calypso_param_c.h"
+#include "m_vertex_buffer.h"
 
 /* prototypes */
 

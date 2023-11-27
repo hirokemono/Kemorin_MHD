@@ -9,13 +9,13 @@ static int set_each_mesh_grid(int iedge, struct viewer_mesh *mesh_s, double f_co
 	
 	for(k1=0;k1<(mesh_s->nnod_4_edge-1);k1++){
 		i1 = mesh_s->ie_edge_viewer[iedge][k1  ]-1;
-		set_node_stride_VBO((ITWO*inum_buf), strided_buf);
+        set_node_stride_buffer((ITWO*inum_buf), strided_buf);
 		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] =  mesh_s->xx_draw[i1][nd];};
 		for(nd=0;nd<3;nd++) {strided_buf->n_draw[nd] =  0.0;};
 		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
 		
 		i2 = mesh_s->ie_edge_viewer[iedge][k1+1]-1;
-		set_node_stride_VBO((ITWO*inum_buf+1), strided_buf);
+        set_node_stride_buffer((ITWO*inum_buf+1), strided_buf);
 		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] =  mesh_s->xx_draw[i2][nd];};
 		for(nd=0;nd<3;nd++) {strided_buf->n_draw[nd] =  0.0;};
 		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};

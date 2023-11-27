@@ -12,6 +12,7 @@
 
 #include <math.h>
 #include "kemoviewer_param_c.h"
+#include "m_vertex_buffer.h"
 
 /* prototypes */
 
