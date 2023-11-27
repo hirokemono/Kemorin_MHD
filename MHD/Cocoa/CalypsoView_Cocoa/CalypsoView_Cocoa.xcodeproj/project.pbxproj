@@ -27,7 +27,6 @@
 		1831B95E2AE8704900118B1E /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B95D2AE8704800118B1E /* MetalKit.framework */; };
 		1831B9632AE89EA600118B1E /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B9622AE89EA600118B1E /* AppKit.framework */; };
 		1831B9652AE89EBD00118B1E /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B9642AE89EBC00118B1E /* Metal.framework */; };
-		1831B9832AE9B6A700118B1E /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B9822AE9B6A700118B1E /* GLKit.framework */; };
 		1831B9862AE9B71D00118B1E /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1831B9842AE9B71D00118B1E /* MainMenu.xib */; };
 		184389FE230C6A7D0074FC31 /* set_cube_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 184389FC230C6A7C0074FC31 /* set_cube_to_buf.c */; };
 		18438A04230C910C0074FC31 /* m_kemoview_mesh_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18438A02230C910C0074FC31 /* m_kemoview_mesh_menu.c */; };
@@ -206,7 +205,6 @@
 		1831B95D2AE8704800118B1E /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		1831B9622AE89EA600118B1E /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1831B9642AE89EBC00118B1E /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
-		1831B9822AE9B6A700118B1E /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		1831B9852AE9B71D00118B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		184389FC230C6A7C0074FC31 /* set_cube_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_cube_to_buf.c; sourceTree = "<group>"; };
 		184389FD230C6A7C0074FC31 /* set_cube_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_cube_to_buf.h; sourceTree = "<group>"; };
@@ -505,7 +503,6 @@
 				180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */,
 				1831B9632AE89EA600118B1E /* AppKit.framework in Frameworks */,
 				1831B95E2AE8704900118B1E /* MetalKit.framework in Frameworks */,
-				1831B9832AE9B6A700118B1E /* GLKit.framework in Frameworks */,
 				18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -929,7 +926,6 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1831B9822AE9B6A700118B1E /* GLKit.framework */,
 				1831B9642AE89EBC00118B1E /* Metal.framework */,
 				1831B9622AE89EA600118B1E /* AppKit.framework */,
 				1831B95D2AE8704800118B1E /* MetalKit.framework */,
