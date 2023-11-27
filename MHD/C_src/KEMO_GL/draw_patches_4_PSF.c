@@ -128,14 +128,3 @@ void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data
 	return;
 };
 
-void const_PSF_gl_texure_name(struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                              int ist_far, struct gl_strided_buffer *PSF_txur_buf){
-    if(PSF_txur_buf->num_nod_buf > 0){
-        int i = psf_a->ipsf_viz_far[ist_far]-1;
-        psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
-                                                          psf_m[i]->texture_height,
-                                                          psf_m[i]->texture_rgba);
-    };
-    return;
-};
-

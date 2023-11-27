@@ -252,7 +252,7 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
 }
 
 
-static void set_draw_objects_to_VAO(struct view_element *view_s,
+static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf, struct view_element *view_s,
                                     struct kemoview_buffers *kemo_buffers,
                                     struct kemoview_VAOs *kemo_VAOs){
     if(view_s->iflag_view_type == VIEW_MAP){
@@ -266,6 +266,8 @@ static void set_draw_objects_to_VAO(struct view_element *view_s,
         Const_VAO_4_Phong(kemo_VAOs->fline_VAO[0], kemo_buffers->FLINE_tube_buf);
         Const_VAO_4_Simple(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
         
+        const_PSF_gl_texure_name(kemo_psf->psf_m, kemo_psf->psf_a, IZERO,
+                                 kemo_buffers->PSF_stxur_buf);
         set_PSF_solid_objects_VAO(kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
                                   kemo_buffers->PSF_isoline_buf, kemo_buffers->PSF_arrow_buf,
                                   kemo_VAOs->psf_solid_VAO);
@@ -278,6 +280,9 @@ static void set_draw_objects_to_VAO(struct view_element *view_s,
         Const_VAO_4_Simple(kemo_VAOs->grid_VAO[1], kemo_buffers->sph_grid_buf);
         
         /* Draw Transparent Objects */
+        int ist_psf = kemo_psf->psf_a->istack_solid_psf_patch;
+        const_PSF_gl_texure_name(kemo_psf->psf_m, kemo_psf->psf_a,
+                                 ist_psf, kemo_buffers->PSF_ttxur_buf);
         set_PSF_trans_objects_VAO(kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf,
                                   kemo_VAOs->psf_trans_VAO);
         Const_VAO_4_Phong(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
@@ -317,7 +322,7 @@ static void set_draw_objects_to_VAO(struct view_element *view_s,
                           kemo_buffers->kemo_lights, kemo_VAOs, kemo_shaders);
     }else{
         set_kemoviewer_buffers(kemo_psf, kemo_fline, kemo_mesh, view_s, kemo_buffers);
-        set_draw_objects_to_VAO(view_s, kemo_buffers, kemo_VAOs);
+        set_draw_objects_to_VAO(kemo_psf, view_s, kemo_buffers, kemo_VAOs);
         full_draw_objects(kemo_psf, kemo_fline, kemo_mesh, view_s,
                           kemo_buffers->kemo_lights, kemo_VAOs, kemo_shaders);
     }
