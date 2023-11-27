@@ -34,9 +34,9 @@ void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **p
                                 struct phong_lights *lights,
                                 struct VAO_ids **psf_solid_VAO,
                                 struct kemoview_shaders *kemo_shaders);
-void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m, 
+void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m,
                                 struct kemo_array_control *psf_a,
-                                struct transfer_matrices *matrices, 
+                                struct transfer_matrices *matrices,
                                 struct phong_lights *lights,
                                 struct VAO_ids **psf_trans_VAO,
                                 struct kemoview_shaders *kemo_shaders);

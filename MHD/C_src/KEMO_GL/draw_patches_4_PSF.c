@@ -56,9 +56,9 @@ void const_PSF_arrow_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m
 }
 
 
-void const_PSF_isoline_buffer(struct view_element *view_s, struct psf_data **psf_s,
-                              struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                              struct gl_strided_buffer *psf_buf){
+static void const_PSF_isoline_buffer(struct view_element *view_s, struct psf_data **psf_s,
+                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                                     struct gl_strided_buffer *psf_buf){
 	double ref_width = 1.5;
 	int i, iflag;
 	int inum_patch;
@@ -107,13 +107,6 @@ void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data
     
     const_PSF_texture_buffer(view_s->shading_mode, IZERO, psf_a->istack_solid_psf_txtur,
                              psf_s, psf_m, psf_a, PSF_stxur_buf);
-    if(PSF_stxur_buf->num_nod_buf > 0){
-        int i = psf_a->ipsf_viz_far[IZERO]-1;
-        psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
-                                                          psf_m[i]->texture_height,
-                                                          psf_m[i]->texture_rgba);
-    };
-
     const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_solid_psf_txtur,
                            psf_a->istack_solid_psf_patch, psf_s, psf_m, psf_a,
                            PSF_solid_buf);
@@ -129,16 +122,20 @@ void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data
     const_PSF_texture_buffer(view_s->shading_mode,
                              psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur,
                              psf_s, psf_m, psf_a, PSF_ttxur_buf);
-    if(PSF_ttxur_buf->num_nod_buf > 0){
-        int i = psf_a->ipsf_viz_far[psf_a->istack_solid_psf_patch]-1;
-        psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
-                                                          psf_m[i]->texture_height,
-                                                          psf_m[i]->texture_rgba);
-    };
-    
     const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_trans_psf_txtur,
                            psf_a->ntot_psf_patch, psf_s, psf_m, psf_a,
                            PSF_trns_buf);
 	return;
+};
+
+void const_PSF_gl_texure_name(struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                              int ist_far, struct gl_strided_buffer *PSF_txur_buf){
+    if(PSF_txur_buf->num_nod_buf > 0){
+        int i = psf_a->ipsf_viz_far[ist_far]-1;
+        psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
+                                                          psf_m[i]->texture_height,
+                                                          psf_m[i]->texture_rgba);
+    };
+    return;
 };
 

@@ -41,4 +41,7 @@ void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_trns_buf,
                                     struct gl_strided_buffer *PSF_ttxur_buf);
+
+void const_PSF_gl_texure_name(struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                              int ist_far, struct gl_strided_buffer *PSF_txur_buf);
 #endif

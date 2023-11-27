@@ -74,8 +74,8 @@ void set_gl_quilt_bitmap(int n_quilt_column, int n_quilt_raw, int istep_quilt,
 
 
 
-static void vart_flip_rgba_c(int ihpixf, int jvpixf, const unsigned char *fliped_img,
-                      unsigned char *image){
+static void vertical_flip_rgba_c(int ihpixf, int jvpixf, const unsigned char *fliped_img,
+                                 unsigned char *image){
 	int i, j, k, l;
     
     for(j=0;j<jvpixf;j++){
@@ -98,8 +98,8 @@ void set_texture_4_psf(int width, int height, const unsigned char *bgra_in,
 	psf_m->texture_height = height;
 	
 	alloc_draw_psf_texture(psf_m);
-	vart_flip_rgba_c(psf_m->texture_width, psf_m->texture_height, bgra_in, 
-			psf_m->texture_rgba);
+    vertical_flip_rgba_c(psf_m->texture_width, psf_m->texture_height,
+                         bgra_in, psf_m->texture_rgba);
 	return;
 }
 

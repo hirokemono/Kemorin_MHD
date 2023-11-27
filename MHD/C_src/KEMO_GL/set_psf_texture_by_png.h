@@ -11,6 +11,7 @@
 
 
 /* Prototypes */
-void set_texture_to_psf(int img_fmt, const char *img_head, struct psf_menu_val *psf_m);
+void set_texture_to_psf(int img_fmt, const char *img_head,
+                        struct psf_menu_val *psf_m, GLuint *texture_name);
 
 #endif
