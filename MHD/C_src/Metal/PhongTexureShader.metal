@@ -100,7 +100,7 @@ PhongTextureFragmentShader(RasterizerData in [[stage_in]],
     
     float4 tmpSpecular;
     tmpSpecular.xyz = materialSpecular.xyz;
-    tmpSpecular.w =   colorSample.w;
+    tmpSpecular.w =   1.0;
 
     float4 out_Color = 0.0;
     for (int i=0; i<numLights;i++){

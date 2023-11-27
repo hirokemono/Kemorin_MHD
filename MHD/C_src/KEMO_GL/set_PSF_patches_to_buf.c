@@ -62,7 +62,7 @@ void set_psf_textures_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
             set_node_stride_buffer((ITHREE*inum+k), strided_buf);
 			strided_buf->x_txur[0] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
-			strided_buf->x_txur[1] = -rtp_patch[ITHREE*k+1] * ARCPI;
+			strided_buf->x_txur[1] = 1.0 - rtp_patch[ITHREE*k+1] * ARCPI;
 		};
 	};
 	return;

@@ -430,8 +430,18 @@ Implementation of a platform independent renderer class, which performs Metal se
         [*renderEncoder setVertexBytes:&(monoViewUnites->projection_mat)
                                 length:sizeof(matrix_float4x4)
                                atIndex:AAPLProjectionMatrix];
+        [*renderEncoder setVertexBytes:&(monoViewUnites->normal_mat)
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLModelNormalMatrix];
+
+        [*renderEncoder setFragmentBytes:&(monoViewUnites->lights)
+                                  length:(sizeof(LightSourceParameters))
+                                 atIndex:AAPLLightsParams];
+        [*renderEncoder setFragmentBytes:&(monoViewUnites->material)
+                                  length:sizeof(MaterialParameters)
+                                 atIndex:AAPLMaterialParams];
         
-        [*renderEncoder setFragmentTexture:*texture
+          [*renderEncoder setFragmentTexture:*texture
                                    atIndex:AAPLTextureIndexBaseColor];
 
         [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
