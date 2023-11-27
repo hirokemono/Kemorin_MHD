@@ -16,6 +16,9 @@
 
 #include "kemoviewer.h"
 
+#include "glsl.h"
+#include "vartex_array_object_gl.h"
+
 #include "m_kemoviewer_data.h"
 #include "init_gl_lighting_c.h"
 #include "move_draw_objects_gl.h"
@@ -32,11 +35,12 @@ extern "C" {
 
 
 /*  OopenGL routines */
+    struct kemoviewer_gl_type * kemoview_single_gl_type(void);
+    struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(void);
+    void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl);
 
-    void kemoview_allocate_gl_pointers(struct kemoviewer_type *kemoviewer);
-    void kemoview_deallocate_gl_pointers(struct kemoviewer_type *kemoviewer);
+    void kemoview_gl_init_lighting(struct kemoviewer_gl_type *kemo_gl);
 
-    void kemoview_gl_init_lighting(struct kemoviewer_type *kemoviewer);
     void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);
 
@@ -62,8 +66,8 @@ extern "C" {
                                               int npix_x, int npix_y, unsigned char *image);
 
 /*  Old routines */
-    void kemoview_draw_menu_setup(struct kemoviewer_type *kemoviewer);
-    void kemo_Cleanup(struct kemoviewer_type *kemoviewer);
+    void kemoview_draw_menu_setup(struct kemoviewer_gl_type *kemo_gl);
+    void kemo_Cleanup(struct kemoviewer_gl_type *kemo_gl);
 #endif
 
 #ifdef __cplusplus

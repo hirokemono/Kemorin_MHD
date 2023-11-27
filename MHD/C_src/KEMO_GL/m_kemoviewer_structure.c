@@ -22,7 +22,6 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
 	/*! Initialize mesh data*/
 	struct kemoviewer_type *kemoviewer_data 
 		= (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
-	kemoviewer_data->window_ID = 0;
     
     kemo_sgl = kemoviewer_data;
 	kemoview_allocate_pointers();
@@ -35,9 +34,7 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
 	return kemoviewer_data;
 }
 
-struct kemoviewer_type * kemoview_single_viwewer_struct(void){
-    return kemo_sgl;
-}
+struct kemoviewer_type * kemoview_single_viwewer_struct(void){return kemo_sgl;};
 
 void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	free(kemoviewer_data->view_s);
@@ -76,18 +73,11 @@ void kemoview_alloc_copy_string(const char *org_string, struct kv_string *kvstri
 /* Routines for Kemoviewer arrays */
 
 
-void kemoview_set_single_viewer_id(int id_window){
-    if(id_window != kemo_sgl->window_ID){printf("Something wrong in window ID \n");};
-    return;
-}
-
 void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array){
     if(id_window > kemoview_array->num_window){printf("Something wrong in window ID \n");};
 	kemoview_array->id_current = id_window;
 	return;
 }
-int kemoview_get_current_viewer_id(void){return kemo_sgl->window_ID;};
-
 /* Routines for draw by OpenGL */
 
 void kemoview_indentity_projectionmatrix(void){set_projection_by_identity();};

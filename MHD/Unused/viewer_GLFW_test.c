@@ -79,8 +79,8 @@ int draw_glfw_test(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-    kemoview_allocate_gl_pointers(single_kemoview);
-	
+    kemo_gl = kemoview_allocate_gl_pointers();
+
 	/*! Create viewer window*/
 	kemoview_set_retinamode(iflag_retinamode);
 	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
@@ -145,7 +145,7 @@ int draw_glfw_test(void) {
 	kemoview_init_background_color();
 	kemoview_init_lighting();
     kemoview_gl_background_color();
-    kemoview_gl_init_lighting();
+    kemoview_gl_init_lighting(kemo_gl);
 	kemoview_init_phong_light_list();
 	
 	glClear(GL_COLOR_BUFFER_BIT);

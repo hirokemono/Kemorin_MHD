@@ -25,10 +25,7 @@
 !    int kemoview_get_PSF_maximum_load();
 !    
 !
-!    void kemoview_set_single_viewer_id(int id_window);
-!
 !     void kemoview_set_current_viewer_id(int id_window, mul_kemoviewer_type *kemoview_array);
-!    int kemoview_get_current_viewer_id(mul_kemoviewer_type *kemoview_array);
 !    
 !    void kemoview_draw_objects_c();
 !    void kemoview_init_lighting();

@@ -111,8 +111,8 @@ void draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-    kemoview_allocate_gl_pointers(single_kemoview);
-	
+    kemo_gl = kemoview_allocate_gl_pointers();
+
 	link_glut_menu_address();
 	glutInit(&narg_glut, arg_glut);
 	
@@ -144,13 +144,13 @@ void draw_mesh_kemo(void) {
     kemoview_init_background_color();
 	kemoview_init_lighting();
     kemoview_gl_background_color();
-    kemoview_gl_init_lighting();
+    kemoview_gl_init_lighting(kemo_gl);
 	kemoview_init_phong_light_list();
 	
 	menu_win = create_kemoview_menu();
 	
 	glutSetWindow(menu_win);
-	kemoview_draw_menu_setup();
+	kemoview_draw_menu_setup(kemo_gl);
 	
 	glutSetWindow(winid);
 	draw_mesh_w_menu();

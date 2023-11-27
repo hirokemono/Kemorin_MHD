@@ -23,10 +23,7 @@
     _metalView.enableSetNeedsDisplay = YES;
 /*    viewDidLoad is called by linkning self.viwew to metal view */
     self.view = _metalView;
-//    printf("TAko0 %d \n", self.viewLoaded);
 
-    _metalView.id_window = kemoview_get_current_viewer_id();
-    
     [_metalView initMessageTimer];
     return;
 }

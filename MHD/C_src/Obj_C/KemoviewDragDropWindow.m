@@ -16,14 +16,6 @@
 - (id)init
 {
 	self = [super init];
-	
-//	if (self) {
-//        id_window = kemoview_get_current_viewer_id();
-        
-//        NSLog(@"init KemoviewDragDropWindow %d", id_window);
-//		[NSBundle loadNibNamed:@"Kemoviewer" owner:self];
-//    }
-	
 	return(self);
 }
 
@@ -68,13 +60,11 @@
 - (void)windowWillClose:(NSNotification *)aNotofication;
 {
 //	NSLog(@"Window %d is closing", id_window);
-//    kemoview_set_single_viewer_id(id_window);
 //	[self release];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotofication;
 {
 //	NSLog(@"Window %d is front", id_window);
-//    kemoview_set_single_viewer_id(id_window);
 }
 @end

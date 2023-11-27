@@ -190,7 +190,6 @@
 
 -(id) DrawEvolution:(NSInteger)timeStep
 {
-    kemoview_set_single_viewer_id(id_window);
     kemoview_viewer_evolution((int) timeStep);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     kemoview_fast_viewmatrix();
@@ -320,8 +319,6 @@
 // ---------------------------------
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    kemoview_set_single_viewer_id(id_window);
-
     if (gDolly) { // end dolly
         gDolly =     FALSE;
     } else if (gPan) { // end pan

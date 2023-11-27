@@ -7,6 +7,7 @@
 #define NPIX_Y  800
 
 struct kemoviewer_type *single_kemoview;
+struct kemoviewer_gl_type *kemo_gl;
 
 int iflag_gtk_focus = 0;
 
@@ -83,7 +84,7 @@ static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
     kemoview_init_background_color(single_kemoview);
 	kemoview_init_lighting();
     kemoview_gl_background_color(single_kemoview);
-    kemoview_gl_init_lighting(single_kemoview);
+    kemoview_gl_init_lighting(kemo_gl);
 	kemoview_init_phong_light_list();
 	
 	return TRUE;
@@ -150,7 +151,7 @@ int draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-    kemoview_allocate_gl_pointers(single_kemoview);
+    kemo_gl = kemoview_allocate_gl_pointers();
 	
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */

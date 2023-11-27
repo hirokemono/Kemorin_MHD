@@ -324,9 +324,10 @@ static void set_draw_objects_to_VAO(struct view_element *view_s,
 	return;
 }
 
-void update_draw_objects_gl3(struct kemoviewer_type *kemoview){
+void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
+                             struct kemoviewer_gl_type *kemo_gl){
 	update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
-				kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
-				kemoview->kemo_VAOs, kemoview->kemo_shaders);
+                        kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
+                        kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
 	return;
 }

@@ -6,8 +6,10 @@
 
 #include <stdlib.h>
 
-#include "m_kemoviewer_data.h"
+#include "glsl.h"
 #include "vartex_array_object_gl.h"
+
+#include "m_kemoviewer_data.h"
 #include "drawGL_by_VAO.h"
 #include "draw_colorbar_gl.h"
 #include "draw_fieldlines.h"
@@ -37,6 +39,12 @@ struct kemoview_VAOs{
 	struct VAO_ids **map_VAO;
 };
 
+struct kemoviewer_gl_type{
+    struct kemoview_shaders   *kemo_shaders;
+    struct kemoview_VAOs      *kemo_VAOs;
+    struct VAO_ids            *menu_VAO;
+};
+
 
 /* prototypes */
 struct kemoview_VAOs * init_kemoview_VAOs(void);
@@ -46,5 +54,6 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
 
-void update_draw_objects_gl3(struct kemoviewer_type *kemoview);
+void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
+                             struct kemoviewer_gl_type *kemo_gl);
 #endif

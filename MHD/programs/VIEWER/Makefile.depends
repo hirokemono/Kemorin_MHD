@@ -4,15 +4,23 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_glfw_gtk.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
+  $(MHDDIR)/C_src/KEMO_GL/glsl.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
+  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
+  $(MHDDIR)/C_src/GLSL/shaders.h \
+  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
+  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
   $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf_menu.h \
-  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
   $(MHDDIR)/C_src/CORE_C/m_psf_data_4_viewer_c.h \
-  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
   $(MHDDIR)/C_src/CORE_C/t_psf_edge_connect_c.h \
   $(MHDDIR)/C_src/CORE_C/t_surf_edge_hash_c.h \
   $(MHDDIR)/C_src/CONTROLS/m_color_table_c.h \
@@ -31,8 +39,6 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
-  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh_menu.h \
   $(MHDDIR)/C_src/KEMO_GL/rainbow_color_code_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_fline_menu.h \
@@ -41,12 +47,6 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
-  $(MHDDIR)/C_src/KEMO_GL/glsl.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
-  $(MHDDIR)/C_src/GLSL/shaders.h \
-  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
   $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
   $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
   $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \
@@ -150,15 +150,23 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
+  $(MHDDIR)/C_src/KEMO_GL/glsl.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
+  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
+  $(MHDDIR)/C_src/GLSL/shaders.h \
+  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
+  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
   $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf_menu.h \
-  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
   $(MHDDIR)/C_src/CORE_C/m_psf_data_4_viewer_c.h \
-  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
   $(MHDDIR)/C_src/CORE_C/t_psf_edge_connect_c.h \
   $(MHDDIR)/C_src/CORE_C/t_surf_edge_hash_c.h \
   $(MHDDIR)/C_src/CONTROLS/m_color_table_c.h \
@@ -177,8 +185,6 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
-  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh_menu.h \
   $(MHDDIR)/C_src/KEMO_GL/rainbow_color_code_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_fline_menu.h \
@@ -187,12 +193,6 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
-  $(MHDDIR)/C_src/KEMO_GL/glsl.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
-  $(MHDDIR)/C_src/GLSL/shaders.h \
-  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
   $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
   $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
   $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \
@@ -296,15 +296,23 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_glfw_gtk.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
+  $(MHDDIR)/C_src/KEMO_GL/glsl.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
+  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
+  $(MHDDIR)/C_src/GLSL/shaders.h \
+  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
+  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
   $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf_menu.h \
-  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
   $(MHDDIR)/C_src/CORE_C/m_psf_data_4_viewer_c.h \
-  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
   $(MHDDIR)/C_src/CORE_C/t_psf_edge_connect_c.h \
   $(MHDDIR)/C_src/CORE_C/t_surf_edge_hash_c.h \
   $(MHDDIR)/C_src/CONTROLS/m_color_table_c.h \
@@ -323,8 +331,6 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
-  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh_menu.h \
   $(MHDDIR)/C_src/KEMO_GL/rainbow_color_code_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_fline_menu.h \
@@ -333,12 +339,6 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
-  $(MHDDIR)/C_src/KEMO_GL/glsl.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
-  $(MHDDIR)/C_src/GLSL/shaders.h \
-  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
   $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
   $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
   $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \
@@ -442,15 +442,23 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
+  $(MHDDIR)/C_src/KEMO_GL/glsl.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
+  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
+  $(MHDDIR)/C_src/GLSL/shaders.h \
+  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
+  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoviewer_data.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
   $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf_menu.h \
-  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
   $(MHDDIR)/C_src/CORE_C/m_psf_data_4_viewer_c.h \
-  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
   $(MHDDIR)/C_src/CORE_C/t_psf_edge_connect_c.h \
   $(MHDDIR)/C_src/CORE_C/t_surf_edge_hash_c.h \
   $(MHDDIR)/C_src/CONTROLS/m_color_table_c.h \
@@ -469,8 +477,6 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
-  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh_menu.h \
   $(MHDDIR)/C_src/KEMO_GL/rainbow_color_code_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_fline_menu.h \
@@ -479,12 +485,6 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/vartex_array_object_gl.h \
-  $(MHDDIR)/C_src/KEMO_GL/glsl.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_transfer_matrices.h \
-  $(MHDDIR)/C_src/GLSL/shaders.h \
-  $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
   $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
   $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
   $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \

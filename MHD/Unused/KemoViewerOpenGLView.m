@@ -20,6 +20,12 @@
 
 // set initial OpenGL state (current context is set)
 // called after context is created
+void kemoview_set_single_viewer_id(int id_window){
+    if(id_window != kemo_sgl->window_ID){printf("Something wrong in window ID \n");};
+    return;
+}
+int kemoview_get_current_viewer_id(void){return kemo_sgl->window_ID;};
+
 - (void) awakeFromNib
 {
     id_window = kemoview_get_current_viewer_id();

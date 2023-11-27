@@ -276,10 +276,7 @@ extern "C" {
     
     int kemoview_get_PSF_maximum_load(void);
     
-    void kemoview_set_single_viewer_id(int id_window);
-
     void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
-    int kemoview_get_current_viewer_id(void);
 	
     void kemoview_init_lighting(void);
 

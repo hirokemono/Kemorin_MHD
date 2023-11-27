@@ -8,34 +8,48 @@
 #include <stdio.h>
 #include "kemoviewer_gl.h"
 
+struct kemoviewer_gl_type *kemo_sgl_gl;
+
 /*  OpenGL routines */
+struct kemoviewer_gl_type * kemoview_single_gl_type(void){return kemo_sgl_gl;};
 
-void kemoview_allocate_gl_pointers(struct kemoviewer_type *kemoviewer){
-    kemoviewer->kemo_shaders = init_kemoview_shaders();
-    kemoviewer->kemo_VAOs = init_kemoview_VAOs();
-    kemoviewer->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(void){
+    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) malloc(sizeof(struct kemoviewer_gl_type));
+    if(kemo_gl == NULL){
+        printf("malloc error for kemoviewer_gl_type\n");
+        exit(0);
+    };
+    kemo_gl->kemo_shaders = init_kemoview_shaders();
+    kemo_gl->kemo_VAOs = init_kemoview_VAOs();
+
+    if((kemo_gl->menu_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids))) == NULL){
+        printf("malloc error for menu_VAO\n");
+        exit(0);
+    };
+    
+    kemo_sgl_gl = kemo_gl;
+    return kemo_sgl_gl;
+}
+
+void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl){
+    free(kemo_gl->menu_VAO);
+    clear_kemoview_VAOs(kemo_gl->kemo_VAOs);
+    dealloc_kemoview_VAOs(kemo_gl->kemo_VAOs);
+    dealloc_kemoview_shaders(kemo_gl->kemo_shaders);
     return;
 }
 
-void kemoview_deallocate_gl_pointers(struct kemoviewer_type *kemoviewer){
-    clear_kemoview_VAOs(kemoviewer->kemo_VAOs);
-    dealloc_kemoview_VAOs(kemoviewer->kemo_VAOs);
-    dealloc_kemoview_shaders(kemoviewer->kemo_shaders);
+void kemoview_gl_init_lighting(struct kemoviewer_gl_type *kemo_gl){
+    kemo_gl_initial_lighting_c(kemo_gl->kemo_shaders);
+    assign_kemoview_VAOs(kemo_gl->kemo_VAOs);
     return;
 }
 
 
-
-void kemoview_gl_init_lighting(struct kemoviewer_type *kemoviewer){
-    kemo_gl_initial_lighting_c(kemoviewer->kemo_shaders);
-    assign_kemoview_VAOs(kemoviewer->kemo_VAOs);
-    return;
-}
 void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer){
     set_gl_bg_color(kemoviewer->kemo_mesh->bg_color);
     return;
 }
-
 void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
     init_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
                            kemoviewer->kemo_mesh->text_color);
@@ -46,16 +60,19 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 
 
 void kemoview_mono_view(void){
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    modify_mono_kemoview(kemo_sgl);
+    struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
+    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
+    modify_mono_kemoview(kemo_sgl, kemo_gl);
 };
 void kemoview_full_modify_view(void){
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    modify_stereo_kemoview(FULL_DRAW, kemo_sgl);
+    struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
+    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
+    modify_stereo_kemoview(FULL_DRAW, kemo_sgl, kemo_gl);
 };
 void kemoview_fast_modify_view(void){
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    modify_stereo_kemoview(FAST_DRAW, kemo_sgl);
+    struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
+    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
+    modify_stereo_kemoview(FAST_DRAW, kemo_sgl, kemo_gl);
 };
 
 unsigned char * kemoview_alloc_img_buffer_to_bmp(int npix_x, int npix_y){
@@ -104,13 +121,12 @@ void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix){
 
 struct shader_ids sampleShader;
 
-void kemoview_draw_menu_setup(struct kemoviewer_type *kemoviewer){
-    init_gl_menu_setup(kemoviewer->kemo_shaders);
+void kemoview_draw_menu_setup(struct kemoviewer_gl_type *kemo_gl){
+    init_gl_menu_setup(kemo_gl->kemo_shaders);
     return;
 };
 
-void kemo_Cleanup(struct kemoviewer_type *kemoviewer)
+void kemo_Cleanup(struct kemoviewer_gl_type *kemo_gl)
 {
-  destory_shaders(kemoviewer->kemo_shaders->simple);
-  destory_shaders(kemoviewer->kemo_shaders->simple);
+  destory_shaders(kemo_gl->kemo_shaders->simple);
 }

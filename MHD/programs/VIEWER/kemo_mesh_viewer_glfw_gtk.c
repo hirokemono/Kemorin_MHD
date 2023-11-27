@@ -8,6 +8,7 @@
 #define NPIX_Y  800
 
 struct kemoviewer_type *single_kemoview;
+struct kemoviewer_gl_type *kemo_gl;
 
 GLFWwindow *glfw_win;
 int iflag_glfw_focus = 0;
@@ -217,7 +218,7 @@ int draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-    kemoview_allocate_gl_pointers(single_kemoview);
+    kemo_gl = kemoview_allocate_gl_pointers();
 	
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;
@@ -284,7 +285,7 @@ int draw_mesh_kemo(void) {
     kemoview_init_background_color(single_kemoview);
 	kemoview_init_lighting();
     kemoview_gl_background_color(single_kemoview);
-    kemoview_gl_init_lighting(single_kemoview);
+    kemoview_gl_init_lighting(kemo_gl);
 	kemoview_init_phong_light_list();
 	
 	iflag_gtk_focus = 1;
