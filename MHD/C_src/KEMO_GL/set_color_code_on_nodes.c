@@ -30,7 +30,7 @@ static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *
             d_patch =  psf_s->d_nod[inod][psf_m->icomp_draw_psf];
             set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf],
                                    d_patch, &psf_s->color_nod[inod][0]);
-            for(nd=0;nd<3;nd++){
+            for(nd=0;nd<2;nd++){
                 psf_s->color_nod[inod][nd] = gray[nd] * psf_s->color_nod[inod][nd];
                 
             };

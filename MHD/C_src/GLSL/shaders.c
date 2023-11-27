@@ -816,8 +816,11 @@ char * load_phong_texture_frag(void){
         "    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);\n"\
         "\n"\
         "	vec4 txColor = texture(image, tex_position);\n"\
+        "    vec4 addColor = vec4(txColor.xyz, ex_Color.w);\n"\
         "\n"\
-        "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
+        "    vec3 out_Color3;\n"\
+        "    float opacity;\n"\
+        "    out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
         "	for (int i = 0; i < num_lights; ++i){\n"\
         "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
         "        halfway = normalize(light - view);\n"\
@@ -826,12 +829,9 @@ char * load_phong_texture_frag(void){
         "\n"\
         "        diffuse = dot(light, fnormal);\n"\
         "\n"\
-        "        out_Color += txColor * frontMaterial.ambient;\n"\
-        "                    + txColor * frontMaterial.diffuse * abs(diffuse)\n"\
-        "                    + tmpsp * fspecular;\n"\
-        "//		out_Color += txColor * frontMaterial.ambient;\n"\
-        "//                    + ex_Color * frontMaterial.diffuse * abs(diffuse)\n"\
-        "//                    + tmpsp * fspecular;\n"\
+        "        out_Color += addColor * frontMaterial.ambient;\n"\
+        "                   + addColor * frontMaterial.diffuse * abs(diffuse)\n"\
+        "                   + tmpsp * fspecular;\n"\
         "	}\n"\
         "}\n"\
         "\n"\

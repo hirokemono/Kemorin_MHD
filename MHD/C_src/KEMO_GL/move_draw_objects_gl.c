@@ -248,6 +248,16 @@ static void full_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fli
 }
 
 
+static void set_transparent_objects_to_VAO(struct kemoview_buffers *kemo_buffers,
+                                           struct kemoview_VAOs *kemo_VAOs,
+                                           struct kemoview_shaders *kemo_shaders){
+/* Set Transparent Objects */
+    set_PSF_trans_objects_VAO(kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf,
+                              kemo_VAOs->psf_trans_VAO);
+    Const_VAO_4_Phong(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
+    return;
+};
+
 static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                                     struct view_element *view_s,
                                     struct kemoview_buffers *kemo_buffers,
@@ -277,9 +287,7 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
         Const_VAO_4_Simple(kemo_VAOs->grid_VAO[1], kemo_buffers->sph_grid_buf);
         
         /* Set Transparent Objects */
-        set_PSF_trans_objects_VAO(kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf,
-                                  kemo_VAOs->psf_trans_VAO);
-        Const_VAO_4_Phong(kemo_VAOs->mesh_trans_VAO, kemo_buffers->mesh_trns_buf);
+        set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
     };
     
     Const_VAO_4_Simple(kemo_VAOs->cbar_VAO[0], kemo_buffers->cbar_buf);
@@ -300,7 +308,8 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
     return;
 };
 
- static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
+
+static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                                 struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                                 struct kemoview_buffers *kemo_buffers,
                                 struct kemoview_VAOs *kemo_VAOs,
@@ -312,6 +321,10 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
                            kemo_VAOs, kemo_shaders);
 
     }else if(view_s->iflag_draw_mode == FAST_DRAW){
+        if(view_s->iflag_view_type != VIEW_MAP){
+            set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
+            set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
+        }
         full_draw_objects(kemo_psf, kemo_fline, kemo_mesh, view_s,
                           kemo_buffers->kemo_lights, kemo_VAOs, kemo_shaders);
     }else{

@@ -103,8 +103,6 @@ void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data
                                     struct gl_strided_buffer *PSF_stxur_buf,
                                     struct gl_strided_buffer *PSF_isoline_buf,
                                     struct gl_strided_buffer *PSF_arrow_buf){
-    set_color_code_for_psfs(psf_s, psf_m, psf_a);
-    
     const_PSF_texture_buffer(view_s->shading_mode, IZERO, psf_a->istack_solid_psf_txtur,
                              psf_s, psf_m, psf_a, PSF_stxur_buf);
     const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_solid_psf_txtur,

@@ -93,6 +93,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/drawcube_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_cube_VAO.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_PSF_patches_by_VAO.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
@@ -240,6 +241,7 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/drawcube_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_cube_VAO.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_PSF_patches_by_VAO.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
@@ -387,6 +389,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/drawcube_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_cube_VAO.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_PSF_patches_by_VAO.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
@@ -534,6 +537,7 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/drawcube_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_cube_VAO.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_PSF_patches_by_VAO.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \

@@ -412,6 +412,11 @@ void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl){
                            kemo_sgl->kemo_mesh, kemo_sgl->view_s, kemo_sgl->kemo_buffers);
     return;
 };
+void kemoview_transparent_buffers(struct kemoviewer_type *kemo_sgl){
+    set_transparent_buffers(kemo_sgl->kemo_psf, kemo_sgl->kemo_mesh,
+                            kemo_sgl->view_s, kemo_sgl->kemo_buffers);
+    return;
+};
 
 
 void kemoview_quick_viewmatrix(void){quick_mono_viewmat(kemo_sgl->view_s);};

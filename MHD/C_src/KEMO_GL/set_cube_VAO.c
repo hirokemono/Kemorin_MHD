@@ -7,6 +7,11 @@
 
 #include "set_cube_VAO.h"
 
+static GLuint cube_edge [12][2] = {
+            {0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6},
+            {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}};
+
+
 /* draw simple cube based on current modelview and projection matrices */
 
 void cube_surf_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf,

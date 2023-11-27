@@ -53,8 +53,11 @@ void main (void)
     vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);
 
 	vec4 txColor = texture(image, tex_position);
+    vec4 addColor = vec4(txColor.xyz, ex_Color.w);
 
-	out_Color = vec4(0.0,0.0,0.0,0.0);
+    vec3 out_Color3;
+    float opacity;
+    out_Color = vec4(0.0,0.0,0.0,0.0);
 	for (int i = 0; i < num_lights; ++i){
 		light = normalize(LightSource[i].position.xyz - position.xyz);
         halfway = normalize(light - view);
@@ -63,12 +66,9 @@ void main (void)
 
         diffuse = dot(light, fnormal);
 
-        out_Color += txColor * frontMaterial.ambient;
-                    + txColor * frontMaterial.diffuse * abs(diffuse)
-                    + tmpsp * fspecular;
-//		out_Color += txColor * frontMaterial.ambient;
-//                    + ex_Color * frontMaterial.diffuse * abs(diffuse)
-//                    + tmpsp * fspecular;
+        out_Color += addColor * frontMaterial.ambient;
+                   + addColor * frontMaterial.diffuse * abs(diffuse)
+                   + tmpsp * fspecular;
 	}
 }
 

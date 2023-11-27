@@ -79,5 +79,7 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers);
 void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline,
                             struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
                             struct kemoview_buffers *kemo_buffers);
+void set_transparent_buffers(struct kemoview_psf *kemo_psf, struct kemoview_mesh *kemo_mesh,
+                             struct view_element *view_s, struct kemoview_buffers *kemo_buffers);
 
 #endif /* m_kemoview_object_buffers_h_ */

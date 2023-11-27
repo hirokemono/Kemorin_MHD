@@ -841,6 +841,19 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 };
 
+- (void) releaseTransparentMetalBuffers:(struct kemoview_buffers *) kemo_buffers
+{
+    /*  Release transparent vertexs */
+    if(kemo_buffers->PSF_ttxur_buf->num_nod_buf > 0){
+        [_kemoViewMetalBuf.psfTTexureVertice release];
+        [_kemoViewMetalBuf.psfTransTexure release];
+    };
+    
+    if(kemo_buffers->PSF_trns_buf->num_nod_buf > 0)  {[_kemoViewMetalBuf.psfTransVertice release];};
+    if(kemo_buffers->mesh_trns_buf->num_nod_buf > 0) {[_kemoViewMetalBuf.meshTransVertice release];};
+    return;
+}
+
 - (void) releaseKemoViewMetalBuffers:(struct kemoview_buffers *) kemo_buffers
                                views:(struct view_element *) view_s
 {
@@ -871,14 +884,8 @@ Implementation of a platform independent renderer class, which performs Metal se
             [_kemoViewMetalBuf.cubeIndex   release];
         };
         
-        /*  Set transparent vertexs */
-        if(kemo_buffers->PSF_ttxur_buf->num_nod_buf > 0){
-            [_kemoViewMetalBuf.psfTTexureVertice release];
-            [_kemoViewMetalBuf.psfTransTexure release];
-        };
-        
-        if(kemo_buffers->PSF_trns_buf->num_nod_buf > 0)  {[_kemoViewMetalBuf.psfTransVertice release];};
-        if(kemo_buffers->mesh_trns_buf->num_nod_buf > 0) {[_kemoViewMetalBuf.meshTransVertice release];};
+        /*  Release transparent vertexs */
+        [self releaseTransparentMetalBuffers:kemo_buffers];
     };
     
     if(kemo_buffers->coast_buf->num_nod_buf > 0)    {[_kemoViewMetalBuf.coastVertice   release];};
@@ -905,6 +912,21 @@ Implementation of a platform independent renderer class, which performs Metal se
         [_kemoViewMetalBuf.messageVertice release];
         [_kemoViewMetalBuf.messageTexure  release];
     };
+    return;
+}
+
+- (void) setTransparentMetalBuffers:(struct kemoview_buffers *) kemo_buffers
+                               PSFs:(struct kemoview_psf *) kemo_psf
+{
+/*  Set transparent vertexs */
+    [self setPSFTexture:kemo_buffers->PSF_ttxur_buf
+                  image:kemo_psf->psf_a->psf_texure
+                 vertex:&_kemoViewMetalBuf.psfTTexureVertice
+                 texure:&_kemoViewMetalBuf.psfTransTexure];
+    [self setMetalVertexs:kemo_buffers->PSF_trns_buf
+                   vertex:&_kemoViewMetalBuf.psfTransVertice];
+    [self setMetalVertexs:kemo_buffers->mesh_trns_buf
+                   vertex:&_kemoViewMetalBuf.meshTransVertice];
     return;
 }
 
@@ -964,14 +986,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                        index:&_kemoViewMetalBuf.cubeIndex];
         
 /*  Set transparent vertexs */
-        [self setPSFTexture:kemo_buffers->PSF_ttxur_buf
-                      image:kemo_psf->psf_a->psf_texure
-                     vertex:&_kemoViewMetalBuf.psfTTexureVertice
-                     texure:&_kemoViewMetalBuf.psfTransTexure];
-        [self setMetalVertexs:kemo_buffers->PSF_trns_buf
-                       vertex:&_kemoViewMetalBuf.psfTransVertice];
-        [self setMetalVertexs:kemo_buffers->mesh_trns_buf
-                       vertex:&_kemoViewMetalBuf.meshTransVertice];
+        [self setTransparentMetalBuffers:kemo_buffers
+                                    PSFs:kemo_psf];
     };
     
     [self setMetalVertexs:kemo_buffers->cbar_buf
@@ -998,7 +1014,6 @@ Implementation of a platform independent renderer class, which performs Metal se
                      texure:&_kemoViewMetalBuf.messageTexure];
     return;
 }
-
 
 - (void) encodeMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                    buffer:(struct kemoview_buffers *) kemo_buffers
@@ -1368,6 +1383,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                                 views:kemo_sgl->view_s
                                  PSFs:kemo_sgl->kemo_psf
                             fieldline:kemo_sgl->kemo_fline];
+    }else if(kemoview_get_draw_mode() == FAST_DRAW){
+        if(kemo_sgl->view_s->iflag_view_type != VIEW_MAP){
+            [self releaseTransparentMetalBuffers:kemo_sgl->kemo_buffers];
+            kemoview_transparent_buffers(kemo_sgl);
+            [self setTransparentMetalBuffers:kemo_sgl->kemo_buffers
+                                        PSFs:kemo_sgl->kemo_psf];
+        };
     };
 
     [self setKemoViewLightings:kemo_sgl->kemo_buffers->cube_buf
