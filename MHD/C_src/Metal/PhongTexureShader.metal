@@ -79,7 +79,8 @@ PhongTextureFragmentShader(RasterizerData in [[stage_in]],
                                      min_filter::linear);
 
 /* Sample the texture to obtain a color */
-    const float4 colorSample = colorTexture.sample(textureSampler, in.texurePosition);
+    float4 colorSample = colorTexture.sample(textureSampler, in.texurePosition);
+    colorSample.a = in.pixelSpaceColor.a;
 
     LightSourceParameters lightsParameters = LightSourceParameters(*lightsParamsPointer);
     int numLights = lightsParameters.num_lights;
@@ -100,7 +101,7 @@ PhongTextureFragmentShader(RasterizerData in [[stage_in]],
     
     float4 tmpSpecular;
     tmpSpecular.xyz = materialSpecular.xyz;
-    tmpSpecular.w =   1.0;
+    tmpSpecular.w =   colorSample.a;
 
     float4 out_Color = 0.0;
     for (int i=0; i<numLights;i++){
