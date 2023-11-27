@@ -9,18 +9,21 @@
 
 
 void const_PSF_gl_texure_name(struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                              int ist_far, struct gl_strided_buffer *PSF_txur_buf){
+                              int ist_far, struct gl_strided_buffer *PSF_txur_buf,
+                              struct kemoview_shaders *kemo_shaders){
     if(PSF_txur_buf->num_nod_buf > 0){
         int i = psf_a->ipsf_viz_far[ist_far]-1;
-        psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width,
-                                                          psf_m[i]->texture_height,
-                                                          psf_m[i]->texture_rgba);
+        kemo_shaders->texture_name = set_texture_to_buffer(psf_m[i]->texture_width,
+                                                           psf_m[i]->texture_height,
+                                                           psf_m[i]->texture_rgba);
     };
     return;
 };
 
-void release_PSF_texture_from_gl(struct psf_menu_val *psf_m){
-    glDeleteTextures(1, &psf_m->texture_name[0]);
+void release_PSF_texture_from_gl(struct psf_menu_val *psf_m, GLuint *texture_name){
+    if(psf_m->psf_patch_color == TEXTURED_SURFACE){
+        glDeleteTextures(1, texture_name);
+    }
     return;
 };
 
@@ -42,17 +45,14 @@ void set_PSF_trans_objects_VAO(struct gl_strided_buffer *PSF_trns_buf, struct gl
 };
 
 
-void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                                struct kemo_array_control *psf_a,
-                                struct transfer_matrices *matrices,
+void draw_PSF_solid_objects_VAO(struct transfer_matrices *matrices,
                                 struct phong_lights *lights,
                                 struct VAO_ids **psf_solid_VAO,
                                 struct kemoview_shaders *kemo_shaders){
     glDisable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
-    int i = psf_a->ipsf_viz_far[IZERO]-1;
-    drawgl_textured_patches_VAO(&psf_m[i]->texture_name[0], matrices,
+    drawgl_textured_patches_VAO(&kemo_shaders->texture_name, matrices,
                                 lights, kemo_shaders, psf_solid_VAO[1]);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[0]);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_solid_VAO[2]);
@@ -60,9 +60,7 @@ void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **p
     return;
 };
 
-void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m, 
-                                struct kemo_array_control *psf_a,
-                                struct transfer_matrices *matrices, 
+void draw_PSF_trans_objects_VAO(struct transfer_matrices *matrices,
                                 struct phong_lights *lights,
                                 struct VAO_ids **psf_trans_VAO,
                                 struct kemoview_shaders *kemo_shaders){
@@ -73,8 +71,7 @@ void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m,
     glDisable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
-    int i = psf_a->ipsf_viz_far[IZERO]-1;
-    drawgl_textured_patches_VAO(&psf_m[i]->texture_name[0], matrices,
+    drawgl_textured_patches_VAO(&kemo_shaders->texture_name, matrices,
                                 lights, kemo_shaders, psf_trans_VAO[1]);
     drawgl_patch_with_phong(matrices, lights, kemo_shaders, psf_trans_VAO[0]);
 

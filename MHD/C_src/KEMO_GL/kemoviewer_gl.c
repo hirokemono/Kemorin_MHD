@@ -95,10 +95,10 @@ void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt){
 
 void kemoview_release_PSF_gl_texture(void){
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
     int i_current = kemo_sgl->kemo_psf->psf_a->id_current;
-    if(kemo_sgl->kemo_psf->psf_m[i_current]->psf_patch_color == TEXTURED_SURFACE){
-        release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_m[i_current]);
-    };
+    release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_m[i_current],
+                                kemo_gl->kemo_shaders->texture_name);
     return;
 };
 
@@ -122,10 +122,11 @@ void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_st
 
 void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix){
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
     int i_psf = kemo_sgl->kemo_psf->psf_a->id_current;
     set_texture_to_psf(img_fmt, image_prefix->string,
                        kemo_sgl->kemo_psf->psf_m[i_psf],
-                       &kemo_sgl->kemo_psf->psf_m[i_psf]->texture_name[0]);
+                       &kemo_gl->kemo_shaders->texture_name);
 };
 #endif
 

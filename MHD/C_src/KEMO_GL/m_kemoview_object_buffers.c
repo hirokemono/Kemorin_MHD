@@ -148,14 +148,14 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                        kemo_buffers->PSF_isoline_buf, kemo_buffers->PSF_arrow_buf);
 
         int ipsf_texure = kemo_psf->psf_a->ipsf_viz_far[IZERO]-1;
-        kemo_buffers->psf_stexure = kemo_psf->psf_m[ipsf_texure];
+        kemo_buffers->psf_texure = kemo_psf->psf_m[ipsf_texure];
         
         const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_trns_buf, kemo_buffers->PSF_ttxur_buf);
 
         int ist_psf = kemo_psf->psf_a->istack_solid_psf_patch;
         ipsf_texure = kemo_psf->psf_a->ipsf_viz_far[ist_psf]-1;
-        kemo_buffers->psf_ttexure = kemo_psf->psf_m[ipsf_texure];
+        kemo_buffers->psf_texure = kemo_psf->psf_m[ipsf_texure];
         
         set_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
         set_sph_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
