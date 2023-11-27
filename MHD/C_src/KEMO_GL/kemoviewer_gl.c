@@ -93,6 +93,16 @@ void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt){
 };
 
 
+void kemoview_release_PSF_gl_texture(void){
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    int i_current = kemo_sgl->kemo_psf->psf_a->id_current;
+    if(kemo_sgl->kemo_psf->psf_m[i_current]->psf_patch_color == TEXTURED_SURFACE){
+        release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_m[i_current]);
+    };
+    return;
+};
+
+
 /*  Routines using libpng */
 #ifdef PNG_OUTPUT
 int kemoview_set_image_file_format_id(struct kv_string *image_ext){

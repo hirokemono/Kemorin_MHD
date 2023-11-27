@@ -224,7 +224,7 @@ int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
 }
 
 void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo_psf){
-	int i_current = kemo_psf->psf_a->id_current;
+    int i_current = kemo_psf->psf_a->id_current;
 	if(selected == PSFSOLID_TOGGLE){
 		set_psf_patch_color_mode(kemo_psf->psf_m[i_current], input);
 	}else if(selected == PSFGRID_TOGGLE){
