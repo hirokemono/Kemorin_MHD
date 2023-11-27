@@ -271,8 +271,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     self = [super init];
     if(self)
     {
-        NSError *error;
-
         _device = mtkView.device;
 
 // Indicate that each pixel in the depth buffer is a 32-bit floating point value.

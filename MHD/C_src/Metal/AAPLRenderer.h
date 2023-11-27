@@ -15,7 +15,6 @@ Header for a platform independent renderer class, which performs Metal setup and
 #include "m_kemoview_object_buffers.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_transfer_matrices.h"
-#include "vartex_array_object_gl.h"
 
 @interface AAPLRenderer : NSObject<MTKViewDelegate>
 typedef struct

@@ -13,7 +13,6 @@
 #include <math.h>
 #include "kemoviewer_param_c.h"
 #include "m_vertex_buffer.h"
-#include "vartex_array_object_gl.h"
 
 struct gl_index_buffer{
     int nsize_buf;
@@ -29,12 +28,5 @@ void dealloc_gl_index_buffer(struct gl_index_buffer * alloc_gl_index_buffer);
 void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
                      struct gl_index_buffer *index_buf);
 
-
-void cube_surf_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf,
-                   struct gl_index_buffer *index_buf);
-void cube_edge_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_flat_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-
-void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
 
 #endif

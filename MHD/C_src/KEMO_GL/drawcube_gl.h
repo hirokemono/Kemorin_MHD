@@ -18,6 +18,7 @@
 #include "glsl.h"
 #include "set_cube_to_buf.h"
 #include "draw_colorbar_gl.h"
+#include "set_cube_VAO.h"
 
 /* prototypes */
 void set_initial_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,

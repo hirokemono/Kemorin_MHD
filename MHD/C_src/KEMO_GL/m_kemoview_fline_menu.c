@@ -74,7 +74,7 @@ void set_fline_color_field(int selected, struct psf_data *fline_s,
 	fline_m->ic_draw_fline = IZERO;
 	fline_m->icomp_draw_fline = fline_s->istack_comp[fline_m->if_draw_fline];
 	fline_m->cmap_fline = fline_m->cmap_fline_comp[fline_m->icomp_draw_fline];
-	printf("selected 1st component of %s, %d \n", 
+	printf("selected 1st component of %s, %ld \n", 
 			fline_s->data_name[fline_m->if_draw_fline], fline_m->if_draw_fline);
 	return;
 }

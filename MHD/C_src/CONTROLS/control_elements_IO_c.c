@@ -81,7 +81,7 @@ int write_end_array_flag_for_ctl_c(FILE *fp, int level, const char *label){
 
 void skip_comment_read_line(FILE *fp, char buf[LENGTHBUF]){
     
-    long offset = skip_comment_c(fp);
+    skip_comment_c(fp);
     fgets(buf, LENGTHBUF, fp);
     return;
 };

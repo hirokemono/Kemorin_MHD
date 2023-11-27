@@ -10,7 +10,6 @@
 #ifndef SET_EACH_ISOLINE_TO_BUF_
 #define SET_EACH_ISOLINE_TO_BUF_
 
-#include "vartex_array_object_gl.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "set_hex_tube_to_buf.h"
 #include "set_new_patch_4_map_c.h"

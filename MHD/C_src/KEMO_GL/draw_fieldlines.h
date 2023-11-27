@@ -8,7 +8,6 @@
 #include "m_psf_data_4_viewer_c.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_vertex_buffer.h"
-#include "vartex_array_object_gl.h"
 #include "rainbow_color_code_c.h"
 #include "set_color_code_on_nodes.h"
 #include "set_fieldline_to_buf.h"

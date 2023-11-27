@@ -9,11 +9,6 @@
 
 @implementation KemoViewerMetalView
 
-- (id)init
-{
-    [super init];
-};
-
 -(void)InitBackGroundColor
 {
     float BgColor4f[4];

@@ -9,7 +9,6 @@
 #define m_kemoview_object_buffers_h_
 
 #include <stdio.h>
-#include "vartex_array_object_gl.h"
 #include "set_cube_to_buf.h"
 #include "m_kemoview_psf_menu.h"
 #include "m_colorbar_work.h"
