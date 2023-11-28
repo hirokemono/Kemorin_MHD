@@ -33,7 +33,9 @@ Implementation of a platform independent renderer class, which performs Metal se
     KemoViewMetalBuffers   _kemoViewMetalBuf;
     KemoViewMetalShaders   _kemoViewShaders;
     KemoViewMetalPipelines _kemoViewPipelines;
+    
     KemoView3DPipelines    _kemo3DPipelines;
+    KemoView3DPipelines    _kemoAnaglyphPipelines;
 
     /* Texture to render to and then sample from. */
     id<MTLTexture> _renderLeftTexture;
@@ -294,6 +296,67 @@ Implementation of a platform independent renderer class, which performs Metal se
     NSAssert(kemo3DPipelines->simplePipelineState, @"Failed to create pipeline state: %@", error);
 }
 
+-(void) addKemoViewAnaglyphPipelines:(nonnull MTKView *)mtkView
+                             shaders:(KemoViewMetalShaders *) kemoViewShaders
+                           pipelines:(KemoView3DPipelines *) kemoAnaglyphPipelines
+                         targetPixel:(MTLPixelFormat) pixelformat
+{
+    NSError *error;
+    id<MTLDevice> device = mtkView.device;
+
+    MTLRenderPipelineDescriptor *pipelineStateDescriptor;
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+
+    pipelineStateDescriptor.label = @"Phong Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->phongVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->phongFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
+        
+    kemoAnaglyphPipelines->phongPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                  error:&error];
+    NSAssert(kemoAnaglyphPipelines->phongPipelineState, @"Failed to create pipeline state: %@", error);
+
+
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor.label = @"Texure Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->texuredPhongVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->texuredPhongFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
+        
+    kemoAnaglyphPipelines->phongTexturedPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                          error:&error];
+    NSAssert(kemoAnaglyphPipelines->phongTexturedPipelineState, @"Failed to create pipeline state: %@", error);
+    
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor.label = @"Simple Shader Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->simpleVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->simpleFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+
+    kemoAnaglyphPipelines->simplePipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                   error:&error];
+    NSAssert(kemoAnaglyphPipelines->simplePipelineState, @"Failed to create pipeline state: %@", error);
+}
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
@@ -319,6 +382,10 @@ Implementation of a platform independent renderer class, which performs Metal se
                             shaders:&_kemoViewShaders
                           pipelines:&_kemo3DPipelines
                         targetPixel:mtkView.colorPixelFormat];
+        [self addKemoViewAnaglyphPipelines:mtkView
+                                   shaders:&_kemoViewShaders
+                                 pipelines:&_kemoAnaglyphPipelines
+                               targetPixel:mtkView.colorPixelFormat];
 
 /* Add Depth buffer description in command */
         MTLDepthStencilDescriptor *depthDescriptor = [MTLDepthStencilDescriptor new];
@@ -1359,7 +1426,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                             unites:&_leftViewUnites];
         [self leftMaterialParams:&_leftViewUnites.material];
         [self encode3DObjects:renderEncoder
-                    pipelines:&_kemo3DPipelines
+                    pipelines:&_kemoAnaglyphPipelines
                        buffer:kemo_buffers
                     fieldline:kemo_fline
                          mesh:kemo_mesh
@@ -1372,7 +1439,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                              unites:&_rightViewUnites];
          [self rightMaterialParams:&_rightViewUnites.material];
          [self encode3DObjects:renderEncoder
-                     pipelines:&_kemo3DPipelines
+                     pipelines:&_kemoAnaglyphPipelines
                        buffer:kemo_buffers
                     fieldline:kemo_fline
                          mesh:kemo_mesh
