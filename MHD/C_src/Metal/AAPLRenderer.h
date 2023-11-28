@@ -53,11 +53,6 @@ typedef struct
     /*  Texure buffer for PSF with transparent texure */
     id<MTLTexture> _Nullable psfTransTexure;
     
-    /*  Vertex buffer for Map solid patch */
-    id<MTLBuffer> _Nullable mapSolidVertice;
-    /*  Vertex buffer for Map isolines */
-    id<MTLBuffer> _Nullable mapLinesVertice;
-    
     /*  Vertex buffer for field lines solid patch */
     id<MTLBuffer> _Nullable fieldTubeVertice;
     /*  Vertex buffer for field lines  */
@@ -78,6 +73,19 @@ typedef struct
     id<MTLBuffer> _Nullable sphGridVertice;
     /*  Vertex buffer for axis arrows */
     id<MTLBuffer> _Nullable axisVertice;
+} KemoViewMetalBuffers;
+
+typedef struct
+{
+    /*  Vertex buffer for Map solid patch */
+    id<MTLBuffer> _Nullable mapSolidVertice;
+    /*  Vertex buffer for Map isolines */
+    id<MTLBuffer> _Nullable mapLinesVertice;
+    
+    /*  Vertex buffer for Coast lines */
+    id<MTLBuffer> _Nullable coastVertice;
+    /*  Vertex buffer for sphere grids */
+    id<MTLBuffer> _Nullable sphGridVertice;
 
     /*  Vertex buffer for  color bar */
     id<MTLBuffer> _Nullable colorBarVertice;
@@ -102,7 +110,7 @@ typedef struct
     id<MTLTexture> _Nullable timeLabelTexure;
     /*  Texure buffer for message box */
     id<MTLTexture> _Nullable messageTexure;
-} KemoViewMetalBuffers;
+} KemoView2DMetalBuffers;
 
 typedef struct
 {

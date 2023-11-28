@@ -24,6 +24,7 @@
 		1825198116A28AF9006D5158 /* read_psf_vtk_data_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1825198016A28AF9006D5158 /* read_psf_vtk_data_c.c */; };
 		18263FEB2AFA9DC300AA8E72 /* Base2dShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18263FEA2AFA9DC300AA8E72 /* Base2dShader.metal */; };
 		18263FED2AFCB2E900AA8E72 /* PhongShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18263FEC2AFCB2E900AA8E72 /* PhongShader.metal */; };
+		1830DF052B166F4D00984382 /* KemoView2DRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1830DF042B166F4D00984382 /* KemoView2DRenderer.m */; };
 		1831B95E2AE8704900118B1E /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B95D2AE8704800118B1E /* MetalKit.framework */; };
 		1831B9632AE89EA600118B1E /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B9622AE89EA600118B1E /* AppKit.framework */; };
 		1831B9652AE89EBD00118B1E /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831B9642AE89EBC00118B1E /* Metal.framework */; };
@@ -201,6 +202,8 @@
 		1825198216A28B14006D5158 /* read_psf_vtk_data_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = read_psf_vtk_data_c.h; sourceTree = "<group>"; };
 		18263FEA2AFA9DC300AA8E72 /* Base2dShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Base2dShader.metal; path = Metal/Base2dShader.metal; sourceTree = "<group>"; };
 		18263FEC2AFCB2E900AA8E72 /* PhongShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongShader.metal; path = Metal/PhongShader.metal; sourceTree = "<group>"; };
+		1830DF032B166F4D00984382 /* KemoView2DRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoView2DRenderer.h; path = Metal/KemoView2DRenderer.h; sourceTree = "<group>"; };
+		1830DF042B166F4D00984382 /* KemoView2DRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoView2DRenderer.m; path = Metal/KemoView2DRenderer.m; sourceTree = "<group>"; };
 		1831B95D2AE8704800118B1E /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		1831B9622AE89EA600118B1E /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1831B9642AE89EBC00118B1E /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
@@ -861,6 +864,8 @@
 				18F029712AF5A49500D37276 /* AAPLRenderer.h */,
 				18F0296A2AF5A49500D37276 /* AAPLRenderer.m */,
 				18F0296C2AF5A49500D37276 /* AAPLShaderTypes.h */,
+				1830DF032B166F4D00984382 /* KemoView2DRenderer.h */,
+				1830DF042B166F4D00984382 /* KemoView2DRenderer.m */,
 				18F0296D2AF5A49500D37276 /* KemoViewerMetalView.h */,
 				18F0296E2AF5A49500D37276 /* KemoViewerMetalView.m */,
 				18F0296B2AF5A49500D37276 /* KemoViewerMetalViewController.h */,
@@ -1048,6 +1053,7 @@
 				18D7E7421562D359009B05FF /* read_viewer_mesh_c.c in Sources */,
 				18F029742AF5A49500D37276 /* KemoViewerMetalView.m in Sources */,
 				18D7E7431562D359009B05FF /* read_viewer_mesh_gz_c.c in Sources */,
+				1830DF052B166F4D00984382 /* KemoView2DRenderer.m in Sources */,
 				18D7E7441562D359009B05FF /* set_map_data_4_viewer_c.c in Sources */,
 				1888414A22E64C090039BA2B /* psf_patch_buffer.c in Sources */,
 				18D7E7451562D359009B05FF /* set_new_patch_4_map_c.c in Sources */,

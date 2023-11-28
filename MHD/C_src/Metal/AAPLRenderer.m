@@ -31,7 +31,9 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDepthStencilState> _depthState2;
     id<MTLDepthStencilState> _noDepthState;
 
-    KemoViewMetalBuffers   _kemoViewMetalBuf;
+    KemoViewMetalBuffers     _kemoViewMetalBuf;
+    KemoView2DMetalBuffers   _kemo2DMetalBuf;
+
     KemoViewMetalShaders   _kemoViewShaders;
     KemoViewMetalPipelines _kemoViewPipelines;
     
@@ -959,8 +961,10 @@ Implementation of a platform independent renderer class, which performs Metal se
                                views:(struct view_element *) view_s
 {
     if(view_s->iflag_view_type == VIEW_MAP){
-        if(kemo_buffers->MAP_solid_buf->num_nod_buf > 0)   {[_kemoViewMetalBuf.mapSolidVertice release];};
-        if(kemo_buffers->MAP_isoline_buf->num_nod_buf > 0) {[_kemoViewMetalBuf.mapLinesVertice release];};
+        if(kemo_buffers->MAP_solid_buf->num_nod_buf > 0)   {[_kemo2DMetalBuf.mapSolidVertice release];};
+        if(kemo_buffers->MAP_isoline_buf->num_nod_buf > 0) {[_kemo2DMetalBuf.mapLinesVertice release];};
+        if(kemo_buffers->coast_buf->num_nod_buf > 0)    {[_kemo2DMetalBuf.coastVertice   release];};
+        if(kemo_buffers->sph_grid_buf->num_nod_buf > 0) {[_kemo2DMetalBuf.sphGridVertice release];};
     }else{
         if(kemo_buffers->PSF_stxur_buf->num_nod_buf > 0){
             [_kemoViewMetalBuf.psfSTexureVertice release];
@@ -979,6 +983,9 @@ Implementation of a platform independent renderer class, which performs Metal se
         if(kemo_buffers->mesh_grid_buf->num_nod_buf > 0) {[_kemoViewMetalBuf.meshGridVertice   release];};
         if(kemo_buffers->mesh_solid_buf->num_nod_buf > 0) {[_kemoViewMetalBuf.meshSolidVertice release];};
         
+        if(kemo_buffers->coast_buf->num_nod_buf > 0)    {[_kemoViewMetalBuf.coastVertice   release];};
+        if(kemo_buffers->sph_grid_buf->num_nod_buf > 0) {[_kemoViewMetalBuf.sphGridVertice release];};
+
         /*  Set Cube Vertex buffer */
         if(kemo_buffers->cube_buf->num_nod_buf > 0){
             [_kemoViewMetalBuf.cubeVertice release];
@@ -989,29 +996,27 @@ Implementation of a platform independent renderer class, which performs Metal se
         [self releaseTransparentMetalBuffers:kemo_buffers];
     };
     
-    if(kemo_buffers->coast_buf->num_nod_buf > 0)    {[_kemoViewMetalBuf.coastVertice   release];};
-    if(kemo_buffers->sph_grid_buf->num_nod_buf > 0) {[_kemoViewMetalBuf.sphGridVertice release];};
 
-    if(kemo_buffers->cbar_buf->num_nod_buf > 0) {[_kemoViewMetalBuf.colorBarVertice release];};
+    if(kemo_buffers->cbar_buf->num_nod_buf > 0) {[_kemo2DMetalBuf.colorBarVertice release];};
     if(kemo_buffers->min_buf->num_nod_buf > 0){
-        [_kemoViewMetalBuf.minLabelVertice release];
-        [_kemoViewMetalBuf.minLabelTexure  release];
+        [_kemo2DMetalBuf.minLabelVertice release];
+        [_kemo2DMetalBuf.minLabelTexure  release];
     };
     if(kemo_buffers->max_buf->num_nod_buf > 0){
-        [_kemoViewMetalBuf.maxLabelVertice release];
-        [_kemoViewMetalBuf.maxLabelTexure  release];
+        [_kemo2DMetalBuf.maxLabelVertice release];
+        [_kemo2DMetalBuf.maxLabelTexure  release];
     };
     if(kemo_buffers->zero_buf->num_nod_buf > 0){
-        [_kemoViewMetalBuf.zeroLabelVertice release];
-        [_kemoViewMetalBuf.zeroLabelTexure  release];
+        [_kemo2DMetalBuf.zeroLabelVertice release];
+        [_kemo2DMetalBuf.zeroLabelTexure  release];
     };
     if(kemo_buffers->time_buf->num_nod_buf > 0){
-        [_kemoViewMetalBuf.timeLabelVertice release];
-        [_kemoViewMetalBuf.timeLabelTexure  release];
+        [_kemo2DMetalBuf.timeLabelVertice release];
+        [_kemo2DMetalBuf.timeLabelTexure  release];
     };
     if(kemo_buffers->msg_buf->num_nod_buf > 0){
-        [_kemoViewMetalBuf.messageVertice release];
-        [_kemoViewMetalBuf.messageTexure  release];
+        [_kemo2DMetalBuf.messageVertice release];
+        [_kemo2DMetalBuf.messageTexure  release];
     };
     return;
 }
@@ -1039,13 +1044,13 @@ Implementation of a platform independent renderer class, which performs Metal se
     if(view_s->iflag_view_type == VIEW_MAP){
         /*  Commands to render map projection */
         [self setMetalVertexs:kemo_buffers->MAP_solid_buf
-                       vertex:&_kemoViewMetalBuf.mapSolidVertice];
+                       vertex:&_kemo2DMetalBuf.mapSolidVertice];
         [self setMetalVertexs:kemo_buffers->MAP_isoline_buf
-                       vertex:&_kemoViewMetalBuf.mapLinesVertice];
+                       vertex:&_kemo2DMetalBuf.mapLinesVertice];
         [self setMetalVertexs:kemo_buffers->coast_buf
-                       vertex:&_kemoViewMetalBuf.coastVertice];
+                       vertex:&_kemo2DMetalBuf.coastVertice];
         [self setMetalVertexs:kemo_buffers->sph_grid_buf
-                       vertex:&_kemoViewMetalBuf.sphGridVertice];
+                       vertex:&_kemo2DMetalBuf.sphGridVertice];
     }else{
         [self setPSFTexture:kemo_buffers->PSF_stxur_buf
                       image:kemo_psf->psf_a->psf_texure
@@ -1092,27 +1097,27 @@ Implementation of a platform independent renderer class, which performs Metal se
     };
     
     [self setMetalVertexs:kemo_buffers->cbar_buf
-                   vertex:&_kemoViewMetalBuf.colorBarVertice];
+                   vertex:&_kemo2DMetalBuf.colorBarVertice];
     [self setTextBoxTexture:kemo_buffers->min_buf
                       image:kemo_buffers->cbar_min_image
-                     vertex:&_kemoViewMetalBuf.minLabelVertice
-                     texure:&_kemoViewMetalBuf.minLabelTexure];
+                     vertex:&_kemo2DMetalBuf.minLabelVertice
+                     texure:&_kemo2DMetalBuf.minLabelTexure];
     [self setTextBoxTexture:kemo_buffers->max_buf
                       image:kemo_buffers->cbar_max_image
-                     vertex:&_kemoViewMetalBuf.maxLabelVertice
-                     texure:&_kemoViewMetalBuf.maxLabelTexure];
+                     vertex:&_kemo2DMetalBuf.maxLabelVertice
+                     texure:&_kemo2DMetalBuf.maxLabelTexure];
     [self setTextBoxTexture:kemo_buffers->zero_buf
                       image:kemo_buffers->cbar_zero_image
-                     vertex:&_kemoViewMetalBuf.zeroLabelVertice
-                     texure:&_kemoViewMetalBuf.zeroLabelTexure];
+                     vertex:&_kemo2DMetalBuf.zeroLabelVertice
+                     texure:&_kemo2DMetalBuf.zeroLabelTexure];
     [self setTextBoxTexture:kemo_buffers->time_buf
                       image:kemo_buffers->tlabel_image
-                     vertex:&_kemoViewMetalBuf.timeLabelVertice
-                     texure:&_kemoViewMetalBuf.timeLabelTexure];
+                     vertex:&_kemo2DMetalBuf.timeLabelVertice
+                     texure:&_kemo2DMetalBuf.timeLabelTexure];
     [self setTextBoxTexture:kemo_buffers->msg_buf
                       image:kemo_buffers->message_image
-                     vertex:&_kemoViewMetalBuf.messageVertice
-                     texure:&_kemoViewMetalBuf.messageTexure];
+                     vertex:&_kemo2DMetalBuf.messageVertice
+                     texure:&_kemo2DMetalBuf.messageTexure];
     return;
 }
 
@@ -1125,25 +1130,25 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawMapSolidObjext:kemo_buffers->MAP_solid_buf
                      encoder:renderEncoder
                    pipelines:kemoViewPipelines
-                      vertex:&_kemoViewMetalBuf.mapSolidVertice
+                      vertex:&_kemo2DMetalBuf.mapSolidVertice
                   projection:map_proj_mat];
 /*  Commands to render isolines on map */
     [self drawMapSolidObjext:kemo_buffers->MAP_isoline_buf
                      encoder:renderEncoder
                    pipelines:kemoViewPipelines
-                      vertex:&_kemoViewMetalBuf.mapLinesVertice
+                      vertex:&_kemo2DMetalBuf.mapLinesVertice
                   projection:map_proj_mat];
 /*  Commands to render Coastline on map */
     [self drawMapLineObjext:kemo_buffers->coast_buf
                     encoder:renderEncoder
                   pipelines:kemoViewPipelines
-                     vertex:&_kemoViewMetalBuf.coastVertice
+                     vertex:&_kemo2DMetalBuf.coastVertice
                  projection:map_proj_mat];
 /*  Commands to render grids on map */
     [self drawMapLineObjext:kemo_buffers->sph_grid_buf
                     encoder:renderEncoder
                   pipelines:kemoViewPipelines
-                     vertex:&_kemoViewMetalBuf.sphGridVertice
+                     vertex:&_kemo2DMetalBuf.sphGridVertice
                  projection:map_proj_mat];
     return;
 }
@@ -1408,41 +1413,41 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawMapSolidObjext:kemo_buffers->cbar_buf
                      encoder:renderEncoder
                    pipelines:kemoViewPipelines
-                      vertex:&_kemoViewMetalBuf.colorBarVertice
+                      vertex:&_kemo2DMetalBuf.colorBarVertice
                   projection:projection_mat];
 /*  Commands to render colorbar  label */
     [self drawTextBoxObjext:kemo_buffers->min_buf
                     encoder:renderEncoder
                   pipelines:kemoViewPipelines
-                     vertex:&_kemoViewMetalBuf.minLabelVertice
-                     texure:&_kemoViewMetalBuf.minLabelTexure
+                     vertex:&_kemo2DMetalBuf.minLabelVertice
+                     texure:&_kemo2DMetalBuf.minLabelTexure
                  projection:projection_mat];
     [self drawTextBoxObjext:kemo_buffers->max_buf
                     encoder:renderEncoder
                   pipelines:kemoViewPipelines
-                     vertex:&_kemoViewMetalBuf.maxLabelVertice
-                     texure:&_kemoViewMetalBuf.maxLabelTexure
+                     vertex:&_kemo2DMetalBuf.maxLabelVertice
+                     texure:&_kemo2DMetalBuf.maxLabelTexure
                  projection:projection_mat];
     [self drawTextBoxObjext:kemo_buffers->zero_buf
                     encoder:renderEncoder
                   pipelines:kemoViewPipelines
-                     vertex:&_kemoViewMetalBuf.zeroLabelVertice
-                     texure:&_kemoViewMetalBuf.zeroLabelTexure
+                     vertex:&_kemo2DMetalBuf.zeroLabelVertice
+                     texure:&_kemo2DMetalBuf.zeroLabelTexure
                  projection:projection_mat];
 
 /*  Commands to render time label */
     [self drawTextBoxObjext:kemo_buffers->time_buf
                     encoder:renderEncoder
                   pipelines:kemoViewPipelines
-                     vertex:&_kemoViewMetalBuf.timeLabelVertice
-                     texure:&_kemoViewMetalBuf.timeLabelTexure
+                     vertex:&_kemo2DMetalBuf.timeLabelVertice
+                     texure:&_kemo2DMetalBuf.timeLabelTexure
                  projection:projection_mat];
 /*  Commands to render colorbar  box */
     [self drawTextBoxObjext:kemo_buffers->msg_buf
                     encoder:renderEncoder
                   pipelines:kemoViewPipelines
-                     vertex:&_kemoViewMetalBuf.messageVertice
-                     texure:&_kemoViewMetalBuf.messageTexure
+                     vertex:&_kemo2DMetalBuf.messageVertice
+                     texure:&_kemo2DMetalBuf.messageTexure
                  projection:projection_mat];
     return;
 }
