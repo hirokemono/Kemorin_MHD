@@ -65,40 +65,43 @@ Implementation of a platform independent renderer class, which performs Metal se
     IBOutlet KemoViewerObject * _singleKemoView;
 }
 
--(void) loadShaderLibrary: (id<MTLDevice> *) device
+-(void) loadShaderLibrary: (id<MTLLibrary> *) defaultLibrary
 {
     // Load all the shader files with a .metal file extension in the project.
-   id<MTLLibrary> defaultLibrary = [*device newDefaultLibrary];
-    _kemo2DMetalShaders.base2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
-    _kemo2DMetalShaders.base2DFragmentFunction = [defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
+   _kemoViewShaders.phongVertexFunction =   [*defaultLibrary newFunctionWithName:@"PhongVertexShader"];
+   _kemoViewShaders.phongFragmentFunction = [*defaultLibrary newFunctionWithName:@"PhongFragmentShader"];
 
-    _kemo2DMetalShaders.simple2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
-    _kemo2DMetalShaders.simple2DFragmentFunction = [defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
+   _kemoViewShaders.simpleVertexFunction =   [*defaultLibrary newFunctionWithName:@"SimpleVertexShader"];
+   _kemoViewShaders.simpleFragmentFunction = [*defaultLibrary newFunctionWithName:@"SimpleFragmentShader"];
 
-    _kemo2DMetalShaders.texured2DVertexFunction =   [defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
-    _kemo2DMetalShaders.texured2DFragmentFunction = [defaultLibrary newFunctionWithName:@"sampling2dShader"];
+   _kemoViewShaders.texuredPhongVertexFunction = [*defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
+   _kemoViewShaders.texuredPhongFragmentFunction = [*defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
 
-   _kemoViewShaders.phongVertexFunction =   [defaultLibrary newFunctionWithName:@"PhongVertexShader"];
-   _kemoViewShaders.phongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongFragmentShader"];
+   _kemoViewShaders.PhongAnaglyphVertexFunction = [*defaultLibrary newFunctionWithName:@"PhongAnagriphVertexShader"];
+   _kemoViewShaders.PhongAnaglyphFragmentFunction = [*defaultLibrary newFunctionWithName:@"PhongAnagriphFragmentShader"];
 
-   _kemoViewShaders.simpleVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleVertexShader"];
-   _kemoViewShaders.simpleFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleFragmentShader"];
-
-   _kemoViewShaders.texuredPhongVertexFunction = [defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
-   _kemoViewShaders.texuredPhongFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
-
-   _kemoViewShaders.PhongAnaglyphVertexFunction = [defaultLibrary newFunctionWithName:@"PhongAnagriphVertexShader"];
-   _kemoViewShaders.PhongAnaglyphFragmentFunction = [defaultLibrary newFunctionWithName:@"PhongAnagriphFragmentShader"];
-
-   _kemoViewShaders.texuredVertexFunction =   [defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
-   _kemoViewShaders.texuredFragmentFunction = [defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
+   _kemoViewShaders.texuredVertexFunction =   [*defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
+   _kemoViewShaders.texuredFragmentFunction = [*defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
     return;
 }
 
--(void) initKemoViewPipelines:(nonnull MTKView *)mtkView
-                      shaders:(KemoView2DMetalShaders *) kemo2DMetalShaders
-                    pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
-                  targetPixel:(MTLPixelFormat) pixelformat
+-(void) add2DShaderLibrary: (id<MTLLibrary> *) defaultLibrary
+{
+    _kemo2DMetalShaders.base2DVertexFunction =   [*defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
+    _kemo2DMetalShaders.base2DFragmentFunction = [*defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
+
+    _kemo2DMetalShaders.simple2DVertexFunction =   [*defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
+    _kemo2DMetalShaders.simple2DFragmentFunction = [*defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
+
+    _kemo2DMetalShaders.texured2DVertexFunction =   [*defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
+    _kemo2DMetalShaders.texured2DFragmentFunction = [*defaultLibrary newFunctionWithName:@"sampling2dShader"];
+    return;
+}
+
+-(void) addKemoView2DPipelines:(nonnull MTKView *)mtkView
+                       shaders:(KemoView2DMetalShaders *) kemo2DMetalShaders
+                     pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
+                   targetPixel:(MTLPixelFormat) pixelformat
 {
     NSError *error;
     id<MTLDevice> device = mtkView.device;
@@ -353,13 +356,15 @@ Implementation of a platform independent renderer class, which performs Metal se
         mtkView.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
 
 /* Load all the shader files with a .metal file extension in the project. */
-        [self loadShaderLibrary:&_device];
+        id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+        [self loadShaderLibrary:&defaultLibrary];
+        [self add2DShaderLibrary:&defaultLibrary];
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
-        [self initKemoViewPipelines:mtkView
-                            shaders:&_kemo2DMetalShaders
-                          pipelines:&_kemo2DPipelines
-                        targetPixel:mtkView.colorPixelFormat];
+        [self addKemoView2DPipelines:mtkView
+                             shaders:&_kemo2DMetalShaders
+                           pipelines:&_kemo2DPipelines
+                         targetPixel:mtkView.colorPixelFormat];
         [self addKemoView3DPipelines:mtkView
                             shaders:&_kemoViewShaders
                           pipelines:&_kemoViewPipelines
@@ -1380,11 +1385,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
-
-- (void) encodeLabelObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                  pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
-                     buffer:(struct kemoview_buffers *) kemo_buffers
-                 projection:(matrix_float4x4 *) projection_mat
+- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                    pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
+                       buffer:(struct kemoview_buffers *) kemo_buffers
+                   projection:(matrix_float4x4 *) projection_mat
 {
 /*  Commands to render colorbar  box */
     [self drawMapSolidObjext:kemo_buffers->cbar_buf
@@ -1509,10 +1513,10 @@ Implementation of a platform independent renderer class, which performs Metal se
                          mesh:kemo_mesh
                        unites:monoViewUnites];
     };
-    [self encodeLabelObjects:renderEncoder
-                   pipelines:&_kemo2DPipelines
-                      buffer:kemo_buffers
-                  projection:&_cbar_proj_mat];
+    [self encodeMessageObjects:renderEncoder
+                     pipelines:&_kemo2DPipelines
+                        buffer:kemo_buffers
+                    projection:&_cbar_proj_mat];
     return;
 }
 
@@ -1534,10 +1538,10 @@ Implementation of a platform independent renderer class, which performs Metal se
                              mesh:kemo_mesh
                            unites:monoViewUnites];
     };
-    [self encodeLabelObjects:renderEncoder
-                   pipelines:&_kemo2DPipelines
-                      buffer:kemo_buffers
-                  projection:&_cbar_proj_mat];
+    [self encodeMessageObjects:renderEncoder
+                     pipelines:&_kemo2DPipelines
+                        buffer:kemo_buffers
+                    projection:&_cbar_proj_mat];
     return;
 }
 
