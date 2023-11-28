@@ -144,17 +144,22 @@ typedef struct
 {
     /*  Shader functions for simple shader  */
     id<MTLRenderPipelineState> _Nonnull simplePipelineState;
+    /*  Shader functions for Phong shader  */
+    id<MTLRenderPipelineState> _Nonnull phongPipelineState;
+    /*  Shader functions for textured Phong shader  */
+    id<MTLRenderPipelineState> _Nonnull phongTexturedPipelineState;
+} KemoView3DPipelines;
+
+typedef struct
+{
+
+
     /*  Shader functions for textured  shader  */
     id<MTLRenderPipelineState> _Nonnull texuredPipelineState;
 
-    /*  Shader functions for Phong shader  */
-    id<MTLRenderPipelineState> _Nonnull phongPipelineState;
     /*  Shader functions for Phong shader for Anaglyph  */
     id<MTLRenderPipelineState> _Nonnull anaglyphPhongPipelineState;
 
-    
-    /*  Shader functions for textured Phong shader  */
-    id<MTLRenderPipelineState> _Nonnull phongTexturedPipelineState;
     /*  Shader functions for textured Phong anaglyph shader  */
     id<MTLRenderPipelineState> _Nonnull phongAnaglyphPipelineState;
    /*  Shader functions for simple 2D shader  */
