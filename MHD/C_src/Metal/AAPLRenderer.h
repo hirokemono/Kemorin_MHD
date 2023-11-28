@@ -10,26 +10,17 @@ Header for a platform independent renderer class, which performs Metal setup and
 #import "AAPLShaderTypes.h"
 #import "AAPLImage.h"
 #import "KemoViewerObject.h"
+#import "KemoViewRendererTools.h"
 #import "KemoView2DRenderer.h"
 
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_object_buffers.h"
 #include "m_gl_transfer_matrix.h"
-#include "m_transfer_matrices.h"
 
 @interface AAPLRenderer : NSObject<MTKViewDelegate>{
     KemoView2DRenderer * _kemo2DRenderer;
+    KemoViewRendererTools * _kemoRendererTools;
 }
-typedef struct
-{
-/*    Texture to render screen to texture */
-    matrix_float4x4 modelview_mat;
-    matrix_float4x4 projection_mat;
-    matrix_float4x4 normal_mat;
-    
-    LightSourceParameters lights;
-    MaterialParameters    material;
-} KemoViewUnites;
 
 typedef struct
 {
@@ -115,8 +106,6 @@ typedef struct
     /*  Shader functions for textured Phong anaglyph shader  */
     id<MTLRenderPipelineState> _Nonnull phongAnaglyphPipelineState;
 } KemoView3DPipelines;
-
-- (void)setTransferMatrices;
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
 - (void)drawKemoMetalView:(nonnull MTKView *)view
