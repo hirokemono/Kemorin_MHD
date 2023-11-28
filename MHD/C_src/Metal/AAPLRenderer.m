@@ -28,6 +28,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     
     // Combined depth and stencil state object.
     id<MTLDepthStencilState> _depthState;
+    id<MTLDepthStencilState> _depthState2;
     id<MTLDepthStencilState> _noDepthState;
 
     KemoViewMetalBuffers   _kemoViewMetalBuf;
@@ -388,11 +389,18 @@ Implementation of a platform independent renderer class, which performs Metal se
                                targetPixel:mtkView.colorPixelFormat];
 
 /* Add Depth buffer description in command */
-        MTLDepthStencilDescriptor *depthDescriptor = [MTLDepthStencilDescriptor new];
+        MTLDepthStencilDescriptor *depthDescriptor;
+        depthDescriptor = [MTLDepthStencilDescriptor new];
         depthDescriptor.depthCompareFunction = MTLCompareFunctionLessEqual;
         depthDescriptor.depthWriteEnabled = YES;
-        _depthState = [_device newDepthStencilStateWithDescriptor:depthDescriptor];
+        _depthState =  [_device newDepthStencilStateWithDescriptor:depthDescriptor];
 
+        depthDescriptor = [MTLDepthStencilDescriptor new];
+        depthDescriptor.depthCompareFunction = MTLCompareFunctionLessEqual;
+        depthDescriptor.depthWriteEnabled = YES;
+        _depthState2 = [_device newDepthStencilStateWithDescriptor:depthDescriptor];
+
+        depthDescriptor = [MTLDepthStencilDescriptor new];
         depthDescriptor.depthCompareFunction = MTLCompareFunctionLessEqual;
         depthDescriptor.depthWriteEnabled = NO;
         _noDepthState = [_device newDepthStencilStateWithDescriptor:depthDescriptor];
@@ -443,6 +451,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawSolidWithSimple:(struct gl_strided_buffer *) buf
                     encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
                   pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                      depth:(id<MTLDepthStencilState> *) depthState
                      vertex:(id<MTLBuffer> *) vertices
                      unites:(KemoViewUnites *) monoViewUnites
                       sides:(int) iflag_surface
@@ -459,7 +468,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setCullMode:MTLCullModeNone];
         }
         if(iflag_solid == SMOOTH_SHADE){
-            [*renderEncoder setDepthStencilState:_depthState];
+            [*renderEncoder setDepthStencilState:*depthState];
         }
         
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->simplePipelineState];
@@ -482,6 +491,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawTexureWithPhong:(struct gl_strided_buffer *) buf
                     encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
                   pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                      depth:(id<MTLDepthStencilState> *) depthState
                      vertex:(id<MTLBuffer> *) vertices
                      texure:(id<MTLTexture> *) texture
                      unites:(KemoViewUnites *) monoViewUnites
@@ -499,7 +509,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setCullMode:MTLCullModeNone];
         }
         if(iflag_solid == SMOOTH_SHADE){
-            [*renderEncoder setDepthStencilState:_depthState];
+            [*renderEncoder setDepthStencilState:*depthState];
         }
 
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongTexturedPipelineState];
@@ -535,6 +545,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawCubeWithPhong:(struct gl_strided_buffer *) buf
                   encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
                 pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                    depth:(id<MTLDepthStencilState> *) depthState
                    vertex:(id<MTLBuffer> *) vertices
                     index:(id<MTLBuffer> *) indices
                    unites:(KemoViewUnites *) monoViewUnites
@@ -543,8 +554,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
         [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
         [*renderEncoder setCullMode:MTLCullModeBack];
-//        [*renderEncoder setDepthStencilState:_depthState];
-        [*renderEncoder setDepthStencilState:_noDepthState];
+        [*renderEncoder setDepthStencilState:*depthState];
 
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
@@ -578,6 +588,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawSolidWithPhong:(struct gl_strided_buffer *) buf
                    encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
                  pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                     depth:(id<MTLDepthStencilState> *) depthState
                     vertex:(id<MTLBuffer> *) vertices
                     unites:(KemoViewUnites *) monoViewUnites
                      sides:(int) iflag_surface
@@ -594,7 +605,7 @@ Implementation of a platform independent renderer class, which performs Metal se
             [*renderEncoder setCullMode:MTLCullModeNone];
         }
         if(iflag_solid == SMOOTH_SHADE){
-            [*renderEncoder setDepthStencilState:_depthState];
+            [*renderEncoder setDepthStencilState:*depthState];
         }
 
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongPipelineState];
@@ -627,6 +638,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)drawLineObject:(struct gl_strided_buffer *) buf
                encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
              pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                 depth:(id<MTLDepthStencilState> *) depthState
                 vertex:(id<MTLBuffer> *)  vertices
                 unites:(KemoViewUnites *) monoViewUnites
 {
@@ -634,8 +646,8 @@ Implementation of a platform independent renderer class, which performs Metal se
         [*renderEncoder setFrontFacingWinding:MTLWindingCounterClockwise];
         [*renderEncoder setTriangleFillMode:MTLTriangleFillModeFill];
         [*renderEncoder setCullMode:MTLCullModeBack];
-        [*renderEncoder setDepthStencilState:_depthState];
-        
+        [*renderEncoder setDepthStencilState:*depthState];
+
         [*renderEncoder setRenderPipelineState:kemo3DPipelines->simplePipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                 offset:0
@@ -1138,6 +1150,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 - (void) encodeSimpleObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                    pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                       depth:(id<MTLDepthStencilState> *) depthState
                       buffer:(struct kemoview_buffers *) kemo_buffers
                         mesh:(struct kemoview_mesh *) kemo_mesh
                       unites:(KemoViewUnites *) monoViewUnites
@@ -1145,6 +1158,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
                       encoder:renderEncoder
                     pipelines:kemo3DPipelines
+                        depth:depthState
                        vertex:&_kemoViewMetalBuf.psfSTexureVertice
                        texure:&_kemoViewMetalBuf.psfSolidTexure
                        unites:monoViewUnites
@@ -1153,6 +1167,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->axis_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.axisVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1161,6 +1176,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->PSF_solid_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.psfSolidVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1169,17 +1185,20 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawLineObject:kemo_buffers->FLINE_line_buf
                  encoder:renderEncoder
                pipelines:kemo3DPipelines
+                   depth:depthState
                   vertex:&_kemoViewMetalBuf.fieldLineVertice
                   unites:monoViewUnites];
     
     [self drawLineObject:kemo_buffers->mesh_grid_buf
                  encoder:renderEncoder
                pipelines:kemo3DPipelines
+                   depth:depthState
                   vertex:&_kemoViewMetalBuf.meshGridVertice
                   unites:monoViewUnites];
     [self drawSolidWithPhong:kemo_buffers->mesh_solid_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.meshSolidVertice
                       unites:monoViewUnites
                        sides:kemo_mesh->mesh_m->polygon_mode
@@ -1187,6 +1206,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawCubeWithPhong:kemo_buffers->cube_buf
                     encoder:renderEncoder
                   pipelines:kemo3DPipelines
+                      depth:depthState
                      vertex:&_kemoViewMetalBuf.cubeVertice
                       index:&_kemoViewMetalBuf.cubeIndex
                      unites:monoViewUnites];
@@ -1194,11 +1214,13 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawLineObject:kemo_buffers->coast_buf
                  encoder:renderEncoder
                pipelines:kemo3DPipelines
+                   depth:depthState
                   vertex:&_kemoViewMetalBuf.coastVertice
                   unites:monoViewUnites];
     [self drawLineObject:kemo_buffers->sph_grid_buf
                  encoder:renderEncoder
                pipelines:kemo3DPipelines
+                   depth:depthState
                   vertex:&_kemoViewMetalBuf.sphGridVertice
                   unites:monoViewUnites];
 
@@ -1206,6 +1228,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
                       encoder:renderEncoder
                     pipelines:kemo3DPipelines
+                        depth:depthState
                        vertex:&_kemoViewMetalBuf.psfTTexureVertice
                        texure:&_kemoViewMetalBuf.psfTransTexure
                        unites:monoViewUnites
@@ -1215,6 +1238,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->PSF_trns_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.psfTransVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1223,6 +1247,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->mesh_trns_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.meshTransVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1232,6 +1257,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 - (void) encode3DObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                pipelines:(KemoView3DPipelines *) kemo3DPipelines
+                   depth:(id<MTLDepthStencilState> *) depthState
                   buffer:(struct kemoview_buffers *) kemo_buffers
                fieldline:(struct kemoview_fline *) kemo_fline
                     mesh:(struct kemoview_mesh *) kemo_mesh
@@ -1240,6 +1266,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawTexureWithPhong:kemo_buffers->PSF_stxur_buf
                       encoder:renderEncoder
                     pipelines:kemo3DPipelines
+                        depth:depthState
                        vertex:&_kemoViewMetalBuf.psfSTexureVertice
                        texure:&_kemoViewMetalBuf.psfSolidTexure
                        unites:monoViewUnites
@@ -1248,6 +1275,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->axis_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.axisVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1256,6 +1284,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->PSF_solid_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.psfSolidVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1263,6 +1292,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->PSF_isoline_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.psfLinesVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1270,6 +1300,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->PSF_arrow_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.psfArrowVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1279,6 +1310,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         [self drawSolidWithPhong:kemo_buffers->FLINE_tube_buf
                          encoder:renderEncoder
                        pipelines:kemo3DPipelines
+                           depth:depthState
                           vertex:&_kemoViewMetalBuf.fieldTubeVertice
                           unites:monoViewUnites
                            sides:BOTH_SURFACES
@@ -1288,12 +1320,14 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawLineObject:kemo_buffers->FLINE_line_buf
                  encoder:renderEncoder
                pipelines:kemo3DPipelines
+                   depth:depthState
                   vertex:&_kemoViewMetalBuf.fieldLineVertice
                   unites:monoViewUnites];
     
     [self drawSolidWithPhong:kemo_buffers->mesh_node_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.meshNodeVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1301,11 +1335,13 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawLineObject:kemo_buffers->mesh_grid_buf
                  encoder:renderEncoder
                pipelines:kemo3DPipelines
+                   depth:depthState
                   vertex:&_kemoViewMetalBuf.meshGridVertice
                   unites:monoViewUnites];
     [self drawSolidWithPhong:kemo_buffers->mesh_solid_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.meshSolidVertice
                       unites:monoViewUnites
                        sides:kemo_mesh->mesh_m->polygon_mode
@@ -1313,6 +1349,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawCubeWithPhong:kemo_buffers->cube_buf
                     encoder:renderEncoder
                   pipelines:kemo3DPipelines
+                      depth:depthState
                      vertex:&_kemoViewMetalBuf.cubeVertice
                       index:&_kemoViewMetalBuf.cubeIndex
                      unites:monoViewUnites];
@@ -1320,11 +1357,13 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawLineObject:kemo_buffers->coast_buf
                  encoder:renderEncoder
                pipelines:kemo3DPipelines
+                   depth:depthState
                   vertex:&_kemoViewMetalBuf.coastVertice
                   unites:monoViewUnites];
     [self drawLineObject:kemo_buffers->sph_grid_buf
                  encoder:renderEncoder
                pipelines:kemo3DPipelines
+                   depth:depthState
                   vertex:&_kemoViewMetalBuf.sphGridVertice
                   unites:monoViewUnites];
 
@@ -1332,6 +1371,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawTexureWithPhong:kemo_buffers->PSF_ttxur_buf
                       encoder:renderEncoder
                     pipelines:kemo3DPipelines
+                        depth:depthState
                        vertex:&_kemoViewMetalBuf.psfTTexureVertice
                        texure:&_kemoViewMetalBuf.psfTransTexure
                        unites:monoViewUnites
@@ -1341,6 +1381,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->PSF_trns_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.psfTransVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1349,6 +1390,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self drawSolidWithPhong:kemo_buffers->mesh_trns_buf
                      encoder:renderEncoder
                    pipelines:kemo3DPipelines
+                       depth:depthState
                       vertex:&_kemoViewMetalBuf.meshTransVertice
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -1428,6 +1470,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                 unites:&_leftViewUnites];
             [self encode3DObjects:renderEncoder
                         pipelines:&_kemo3DPipelines
+                            depth:&_depthState
                            buffer:kemo_buffers
                         fieldline:kemo_fline
                              mesh:kemo_mesh
@@ -1440,11 +1483,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                                 unites:&_rightViewUnites];
             [self encode3DObjects:renderEncoder
                         pipelines:&_kemo3DPipelines
+                            depth:&_depthState
                            buffer:kemo_buffers
                         fieldline:kemo_fline
                              mesh:kemo_mesh
                            unites:&_rightViewUnites];
         }else{
+
             update_left_projection_struct(view_s);
             modify_left_view_by_struct(view_s);
             [self setTransferMatrices:&_leftViewUnites];
@@ -1452,12 +1497,13 @@ Implementation of a platform independent renderer class, which performs Metal se
                                 unites:&_leftViewUnites];
             [self leftMaterialParams:&_leftViewUnites.material];
             [self encode3DObjects:renderEncoder
-                        pipelines:&_kemoAnaglyphPipelines
+                        pipelines:&_kemo3DPipelines
+                            depth:&_depthState
                            buffer:kemo_buffers
                         fieldline:kemo_fline
                              mesh:kemo_mesh
                            unites:&_leftViewUnites];
-            
+
             update_right_projection_struct(view_s);
             modify_right_view_by_struct(view_s);
             [self setTransferMatrices:&_rightViewUnites];
@@ -1465,7 +1511,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                                 unites:&_rightViewUnites];
             [self rightMaterialParams:&_rightViewUnites.material];
             [self encode3DObjects:renderEncoder
-                        pipelines:&_kemoAnaglyphPipelines
+                        pipelines:&_kemo3DPipelines
+                            depth:&_depthState2
                            buffer:kemo_buffers
                         fieldline:kemo_fline
                              mesh:kemo_mesh
@@ -1474,6 +1521,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     } else {
         [self encode3DObjects:renderEncoder
                     pipelines:&_kemo3DPipelines
+                        depth:&_depthState
                        buffer:kemo_buffers
                     fieldline:kemo_fline
                          mesh:kemo_mesh
@@ -1494,6 +1542,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     [self encodeSimpleObjects:renderEncoder
                     pipelines:&_kemo3DPipelines
+                        depth:&_depthState
                        buffer:kemo_buffers
                          mesh:kemo_mesh
                        unites:monoViewUnites];
