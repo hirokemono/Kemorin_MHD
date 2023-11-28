@@ -67,9 +67,9 @@
 
 }
 
-- (void) setMapMetalBuffers:(id<MTLDevice> *) device
-                metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                    buffers:(struct kemoview_buffers *) kemo_buffers
+- (void) setMapMBuffers:(id<MTLDevice> *) device
+            metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
+                buffers:(struct kemoview_buffers *) kemo_buffers
 {
         [self setMetalVertexs:device
                        buffer:kemo_buffers->MAP_solid_buf
@@ -84,8 +84,8 @@
                        buffer:kemo_buffers->sph_grid_buf
                        vertex:&(kemoView2DMetalBufs->sphGridVertice)];
 };
-- (void) releaseMapMetalBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                        buffers:(struct kemoview_buffers *) kemo_buffers
+- (void) releaseMapMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
+                    buffers:(struct kemoview_buffers *) kemo_buffers
 {
     if(kemo_buffers->MAP_solid_buf->num_nod_buf > 0)   {[kemoView2DMetalBufs->mapSolidVertice release];};
     if(kemo_buffers->MAP_isoline_buf->num_nod_buf > 0) {[kemoView2DMetalBufs->mapLinesVertice release];};
@@ -94,9 +94,9 @@
     return;
 }
 
-- (void) setMsgMetalBuffers:(id<MTLDevice> *) device
-                metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                    buffers:(struct kemoview_buffers *) kemo_buffers
+- (void) setMsgMBuffers:(id<MTLDevice> *) device
+            metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
+                buffers:(struct kemoview_buffers *) kemo_buffers
 {
     [self setMetalVertexs:device
                    buffer:kemo_buffers->cbar_buf
@@ -128,8 +128,8 @@
                      texure:&(kemoView2DMetalBufs->messageTexure)];
     return;
 }
-- (void) releaseMsgMetalBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                        buffers:(struct kemoview_buffers *) kemo_buffers
+- (void) releaseMsgMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
+                    buffers:(struct kemoview_buffers *) kemo_buffers
 {
     if(kemo_buffers->cbar_buf->num_nod_buf > 0) {[kemoView2DMetalBufs->colorBarVertice release];};
     if(kemo_buffers->min_buf->num_nod_buf > 0){
@@ -354,30 +354,81 @@
     return;
 }
 
-
-
-- (void) release2DMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+- (void) setMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+                 pipelines:(KemoView2DMetalPipelines * _Nonnull) kemo2DPipelines
+               metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
+                    buffer:(struct kemoview_buffers * _Nonnull) kemo_buffers
+                projection:(matrix_float4x4 * _Nonnull) projection_mat
 {
-    if(kemoview_get_view_type_flag() == VIEW_MAP){
-        [self releaseMapMetalBuffers:&_kemoView2DMetalBufs
-                             buffers:kemo_buffers];
-    };
-    [self releaseMsgMetalBuffers:&_kemoView2DMetalBufs
-                         buffers:kemo_buffers];
+/*  Commands to render colorbar  box */
+    [self draw2DPatchObject:kemo_buffers->cbar_buf
+                     encoder:renderEncoder
+                   pipelines:kemo2DPipelines
+                      vertex:&(kemoView2DMetalBufs->colorBarVertice)
+                  projection:projection_mat];
+/*  Commands to render colorbar  label */
+    [self drawTextBoxObject:kemo_buffers->min_buf
+                    encoder:renderEncoder
+                  pipelines:kemo2DPipelines
+                     vertex:&(kemoView2DMetalBufs->minLabelVertice)
+                     texure:&(kemoView2DMetalBufs->minLabelTexure)
+                 projection:projection_mat];
+    [self drawTextBoxObject:kemo_buffers->max_buf
+                    encoder:renderEncoder
+                  pipelines:kemo2DPipelines
+                     vertex:&(kemoView2DMetalBufs->maxLabelVertice)
+                     texure:&(kemoView2DMetalBufs->maxLabelTexure)
+                 projection:projection_mat];
+    [self drawTextBoxObject:kemo_buffers->zero_buf
+                    encoder:renderEncoder
+                  pipelines:kemo2DPipelines
+                     vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
+                     texure:&(kemoView2DMetalBufs->zeroLabelTexure)
+                 projection:projection_mat];
+
+/*  Commands to render time label */
+    [self drawTextBoxObject:kemo_buffers->time_buf
+                    encoder:renderEncoder
+                  pipelines:kemo2DPipelines
+                     vertex:&(kemoView2DMetalBufs->timeLabelVertice)
+                     texure:&(kemoView2DMetalBufs->timeLabelTexure)
+                 projection:projection_mat];
+/*  Commands to render colorbar  box */
+    [self drawTextBoxObject:kemo_buffers->msg_buf
+                    encoder:renderEncoder
+                  pipelines:kemo2DPipelines
+                     vertex:&(kemoView2DMetalBufs->messageVertice)
+                     texure:&(kemoView2DMetalBufs->messageTexure)
+                 projection:projection_mat];
     return;
 }
 
-- (void) set2DMetalBuffers:(id<MTLDevice> *) device
-                   buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+- (void) releaseMapMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
 {
-    if(kemoview_get_view_type_flag() == VIEW_MAP){
-        [self setMapMetalBuffers:device
-                     metalbuffer:&_kemoView2DMetalBufs
+    [self releaseMapMBuffers:&_kemoView2DMetalBufs
                          buffers:kemo_buffers];
-    };
-    [self setMsgMetalBuffers:device
-                 metalbuffer:&_kemoView2DMetalBufs
+    return;
+}
+- (void) releaseMsgMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+{
+    [self releaseMsgMBuffers:&_kemoView2DMetalBufs
                      buffers:kemo_buffers];
+    return;
+}
+
+- (void) setMapMetalBuffers:(id<MTLDevice> *) device
+                    buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+{
+    [self setMapMBuffers:device
+             metalbuffer:&_kemoView2DMetalBufs
+                 buffers:kemo_buffers];
+}
+- (void) setMessageMetalBuffers:(id<MTLDevice> *) device
+                        buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+{
+    [self setMsgMBuffers:device
+             metalbuffer:&_kemoView2DMetalBufs
+                 buffers:kemo_buffers];
     return;
 }
 
@@ -409,7 +460,7 @@
                       buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                    projection:(matrix_float4x4 * _Nonnull) projection_mat
 {
-    [self encodeMessages:renderEncoder
+    [self setMessageObjects:renderEncoder
                pipelines:&_kemoView2DPipelines
              metalBuffer:&_kemoView2DMetalBufs
                   buffer:kemo_buffers

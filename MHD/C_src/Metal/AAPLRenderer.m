@@ -32,12 +32,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDepthStencilState> _noDepthState;
 
     KemoViewMetalBuffers     _kemoViewMetalBuf;
-    KemoView2DMetalBuffers   _kemo2DMetalBuf;
 
     KemoViewMetalShaders   _kemoViewShaders;
-    KemoView2DMetalShaders   _kemo2DMetalShaders;
-    KemoView2DMetalPipelines _kemo2DPipelines;
-    
     KemoView3DPipelines    _kemoViewPipelines;
     KemoView3DPipelines    _kemoAnaglyphPipelines;
 
@@ -82,98 +78,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
    _kemoViewShaders.texuredVertexFunction =   [*defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
    _kemoViewShaders.texuredFragmentFunction = [*defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
-    return;
-}
-
--(void) add2DShaderLibrary: (id<MTLLibrary> *) defaultLibrary
-{
-    _kemo2DMetalShaders.base2DVertexFunction =   [*defaultLibrary newFunctionWithName:@"Base2dVertexShader"];
-    _kemo2DMetalShaders.base2DFragmentFunction = [*defaultLibrary newFunctionWithName:@"Base2DfragmentShader"];
-
-    _kemo2DMetalShaders.simple2DVertexFunction =   [*defaultLibrary newFunctionWithName:@"Simple2dVertexShader"];
-    _kemo2DMetalShaders.simple2DFragmentFunction = [*defaultLibrary newFunctionWithName:@"Simple2DfragmentShader"];
-
-    _kemo2DMetalShaders.texured2DVertexFunction =   [*defaultLibrary newFunctionWithName:@"Texture2dVertexShader"];
-    _kemo2DMetalShaders.texured2DFragmentFunction = [*defaultLibrary newFunctionWithName:@"sampling2dShader"];
-    return;
-}
-
--(void) addKemoView2DPipelines:(nonnull MTKView *)mtkView
-                       shaders:(KemoView2DMetalShaders *) kemo2DMetalShaders
-                     pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
-                   targetPixel:(MTLPixelFormat) pixelformat
-{
-    NSError *error;
-    id<MTLDevice> device = mtkView.device;
-
-    MTLRenderPipelineDescriptor *pipelineStateDescriptor;
-    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-
-    pipelineStateDescriptor.label = @"2D Texture Pipeline";
-    pipelineStateDescriptor.vertexFunction =   kemo2DMetalShaders->texured2DVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = kemo2DMetalShaders->texured2DFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-
-    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-    
-    kemo2DPipelines->texured2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                       error:&error];
-/* Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
-//  If the Metal API validation is enabled, you can find out more information about what
-//  went wrong.  (Metal API validation is enabled by default when a debug build is run
-//  from Xcode.) */
-    NSAssert(kemo2DPipelines->texured2DPipelineState, @"Failed to create pipeline state: %@", error);
-
-/*  Create pipeline for simple 2D rendering */
-    pipelineStateDescriptor.label = @"2D transpearent Pipeline";
-    pipelineStateDescriptor.vertexFunction =   kemo2DMetalShaders->simple2DVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = kemo2DMetalShaders->simple2DFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-
-    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
-    
-    kemo2DPipelines->trans2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                    error:&error];
-    NSAssert(kemo2DPipelines->trans2DPipelineState, @"Failed to create pipeline state: %@", error);
-
-    /*  Create pipeline for simple rendering */
-    pipelineStateDescriptor.label = @"2D Simple Pipeline";
-    pipelineStateDescriptor.vertexFunction =   kemo2DMetalShaders->simple2DVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = kemo2DMetalShaders->simple2DFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-
-    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = NO;
-    
-    kemo2DPipelines->simple2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                     error:&error];
-    NSAssert(kemo2DPipelines->simple2DPipelineState, @"Failed to create pipeline state: %@", error);
-
-
-/*  Create pipeline for Basic rendering */
-    pipelineStateDescriptor.label = @"Base Pipeline";
-    pipelineStateDescriptor.vertexFunction =   kemo2DMetalShaders->base2DVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = kemo2DMetalShaders->base2DFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-
-    kemo2DPipelines->base2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                   error:&error];
-    NSAssert(kemo2DPipelines->base2DPipelineState, @"Failed to create pipeline state: %@", error);
     return;
 }
 
@@ -345,6 +249,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
+    _kemo2DRenderer = [KemoView2DRenderer alloc];
     _frameNum = 0;
     _icou_lr = 0;
     self = [super init];
@@ -358,12 +263,10 @@ Implementation of a platform independent renderer class, which performs Metal se
 /* Load all the shader files with a .metal file extension in the project. */
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
         [self loadShaderLibrary:&defaultLibrary];
-        [self add2DShaderLibrary:&defaultLibrary];
+        [_kemo2DRenderer add2DShaderLibrary:&defaultLibrary];
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
-        [self addKemoView2DPipelines:mtkView
-                             shaders:&_kemo2DMetalShaders
-                           pipelines:&_kemo2DPipelines
+        [_kemo2DRenderer addKemoView2DPipelines:mtkView
                          targetPixel:mtkView.colorPixelFormat];
         [self addKemoView3DPipelines:mtkView
                             shaders:&_kemoViewShaders
@@ -651,77 +554,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     }
 };
 
-- (void)drawMapSolidObjext:(struct gl_strided_buffer *) buf
-                   encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
-                 pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
-                    vertex:(id<MTLBuffer> *) vertices
-                projection:(matrix_float4x4 *) projection_mat;
-{
-    if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState: kemo2DPipelines->trans2DPipelineState];
-        [*renderEncoder setVertexBuffer:*vertices
-                                offset:0
-                               atIndex:AAPLVertexInputIndexVertices];
-        [*renderEncoder setVertexBytes:projection_mat
-                               length:sizeof(matrix_float4x4)
-                              atIndex:AAPLOrthogonalMatrix];
-        [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                          vertexStart:0
-                          vertexCount:buf->num_nod_buf];
-    };
-
-}
-
-- (void)drawMapLineObjext:(struct gl_strided_buffer *) buf
-                  encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
-                pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
-                   vertex:(id<MTLBuffer> *) vertices
-               projection:(matrix_float4x4 *) projection_mat;
-{
-    if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState:kemo2DPipelines->simple2DPipelineState];
-        [*renderEncoder setVertexBuffer:*vertices
-                                offset:0
-                               atIndex:AAPLVertexInputIndexVertices];
-        [*renderEncoder setVertexBytes:projection_mat
-                               length:sizeof(matrix_float4x4)
-                              atIndex:AAPLOrthogonalMatrix];
-        [*renderEncoder drawPrimitives:MTLPrimitiveTypeLine
-                          vertexStart:0
-                          vertexCount:buf->num_nod_buf];
-    };
-
-}
-
-- (void)drawTextBoxObjext:(struct gl_strided_buffer *) buf
-                  encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
-                pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
-                   vertex:(id<MTLBuffer> *)  vertices
-                   texure:(id<MTLTexture> *) texture
-               projection:(matrix_float4x4 *) projection_mat;
-{
-    if(buf->num_nod_buf > 0){
-        [*renderEncoder setRenderPipelineState:kemo2DPipelines->texured2DPipelineState];
-/* Pass in the parameter data. */
-        [*renderEncoder setVertexBuffer:*vertices
-                                offset:0
-                               atIndex:AAPLVertexInputIndexVertices];
-        [*renderEncoder setVertexBytes:projection_mat
-                               length:sizeof(matrix_float4x4)
-                              atIndex:AAPLOrthogonalMatrix];
-
-/* Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
-///  to the 'colorMap' argument in the 'samplingShader' function because its
-//   texture attribute qualifier also uses AAPLTextureIndexBaseColor for its index. */
-        [*renderEncoder setFragmentTexture:*texture
-                                  atIndex:AAPLTextureIndexBaseColor];
-/* Draw the triangles. */
-        [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                          vertexStart:0
-                          vertexCount:buf->num_nod_buf];
-    };
-}
-
 - (void)setCubeVertexs:(struct gl_strided_buffer *) buf
               indexbuf:(struct gl_index_buffer *) index_buf
                 vertex:(id<MTLBuffer> *) vertices
@@ -783,39 +615,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 }
 
-- (void)setTextBoxTexture:(struct gl_strided_buffer *) buf
-                    image:(struct line_text_image *) img
-                   vertex:(id<MTLBuffer> *)  vertices
-                   texure:(id<MTLTexture> *) texture
-{
-    if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
-                                         length:(buf->num_nod_buf * sizeof(KemoViewVertex))
-                                        options:MTLResourceStorageModeShared];
-        
-/* Construct message texture */
-        MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
-        lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
-        lineTextureDescriptor.width =  img->npix_img[0];
-        lineTextureDescriptor.height = img->npix_img[1];
-
-/*  Calculate the number of bytes per row in the image. */
-        NSUInteger bytesPerRow = 4 * lineTextureDescriptor.width;
-        MTLRegion region = {
-            { 0, 0, 0 },                   // MTLOrigin
-            {lineTextureDescriptor.width, lineTextureDescriptor.height, 1} // MTLSize
-        };
-        
-/* Create the texture from the device by using the descriptor */
-        *texture = [_device newTextureWithDescriptor:lineTextureDescriptor];
-/* Copy the bytes from the data object into the texture */
-        [*texture replaceRegion:region
-                    mipmapLevel:0
-                      withBytes:img->imgBMP
-                    bytesPerRow:bytesPerRow];
-    };
-
-}
 
 - (void)rightMaterialParams:(MaterialParameters *) material
 {
@@ -944,10 +743,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void) releaseKemoViewMetalBuffers:(struct kemoview_buffers *) kemo_buffers
 {
     if(kemoview_get_view_type_flag() == VIEW_MAP){
-        if(kemo_buffers->MAP_solid_buf->num_nod_buf > 0)   {[_kemo2DMetalBuf.mapSolidVertice release];};
-        if(kemo_buffers->MAP_isoline_buf->num_nod_buf > 0) {[_kemo2DMetalBuf.mapLinesVertice release];};
-        if(kemo_buffers->coast_buf->num_nod_buf > 0)    {[_kemo2DMetalBuf.coastVertice   release];};
-        if(kemo_buffers->sph_grid_buf->num_nod_buf > 0) {[_kemo2DMetalBuf.sphGridVertice release];};
+        [_kemo2DRenderer releaseMapMetalBuffers:kemo_buffers];
     }else{
         if(kemo_buffers->PSF_stxur_buf->num_nod_buf > 0){
             [_kemoViewMetalBuf.psfSTexureVertice release];
@@ -979,28 +775,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         [self releaseTransparentMetalBuffers:kemo_buffers];
     };
     
-
-    if(kemo_buffers->cbar_buf->num_nod_buf > 0) {[_kemo2DMetalBuf.colorBarVertice release];};
-    if(kemo_buffers->min_buf->num_nod_buf > 0){
-        [_kemo2DMetalBuf.minLabelVertice release];
-        [_kemo2DMetalBuf.minLabelTexure  release];
-    };
-    if(kemo_buffers->max_buf->num_nod_buf > 0){
-        [_kemo2DMetalBuf.maxLabelVertice release];
-        [_kemo2DMetalBuf.maxLabelTexure  release];
-    };
-    if(kemo_buffers->zero_buf->num_nod_buf > 0){
-        [_kemo2DMetalBuf.zeroLabelVertice release];
-        [_kemo2DMetalBuf.zeroLabelTexure  release];
-    };
-    if(kemo_buffers->time_buf->num_nod_buf > 0){
-        [_kemo2DMetalBuf.timeLabelVertice release];
-        [_kemo2DMetalBuf.timeLabelTexure  release];
-    };
-    if(kemo_buffers->msg_buf->num_nod_buf > 0){
-        [_kemo2DMetalBuf.messageVertice release];
-        [_kemo2DMetalBuf.messageTexure  release];
-    };
+    [_kemo2DRenderer releaseMsgMetalBuffers:kemo_buffers];
     return;
 }
 
@@ -1024,15 +799,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                        fieldline:(struct kemoview_fline *) kemo_fline
 {
     if(kemoview_get_view_type_flag() == VIEW_MAP){
-        /*  Commands to render map projection */
-        [self setMetalVertexs:kemo_buffers->MAP_solid_buf
-                       vertex:&_kemo2DMetalBuf.mapSolidVertice];
-        [self setMetalVertexs:kemo_buffers->MAP_isoline_buf
-                       vertex:&_kemo2DMetalBuf.mapLinesVertice];
-        [self setMetalVertexs:kemo_buffers->coast_buf
-                       vertex:&_kemo2DMetalBuf.coastVertice];
-        [self setMetalVertexs:kemo_buffers->sph_grid_buf
-                       vertex:&_kemo2DMetalBuf.sphGridVertice];
+        [_kemo2DRenderer setMapMetalBuffers:&_device
+                                    buffers:kemo_buffers];
     }else{
         [self setPSFTexture:kemo_buffers->PSF_stxur_buf
                       image:kemo_psf->psf_a->psf_texure
@@ -1078,60 +846,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                                     PSFs:kemo_psf];
     };
     
-    [self setMetalVertexs:kemo_buffers->cbar_buf
-                   vertex:&_kemo2DMetalBuf.colorBarVertice];
-    [self setTextBoxTexture:kemo_buffers->min_buf
-                      image:kemo_buffers->cbar_min_image
-                     vertex:&_kemo2DMetalBuf.minLabelVertice
-                     texure:&_kemo2DMetalBuf.minLabelTexure];
-    [self setTextBoxTexture:kemo_buffers->max_buf
-                      image:kemo_buffers->cbar_max_image
-                     vertex:&_kemo2DMetalBuf.maxLabelVertice
-                     texure:&_kemo2DMetalBuf.maxLabelTexure];
-    [self setTextBoxTexture:kemo_buffers->zero_buf
-                      image:kemo_buffers->cbar_zero_image
-                     vertex:&_kemo2DMetalBuf.zeroLabelVertice
-                     texure:&_kemo2DMetalBuf.zeroLabelTexure];
-    [self setTextBoxTexture:kemo_buffers->time_buf
-                      image:kemo_buffers->tlabel_image
-                     vertex:&_kemo2DMetalBuf.timeLabelVertice
-                     texure:&_kemo2DMetalBuf.timeLabelTexure];
-    [self setTextBoxTexture:kemo_buffers->msg_buf
-                      image:kemo_buffers->message_image
-                     vertex:&_kemo2DMetalBuf.messageVertice
-                     texure:&_kemo2DMetalBuf.messageTexure];
-    return;
-}
-
-- (void) encodeMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
-                   buffer:(struct kemoview_buffers *) kemo_buffers
-               projection:(matrix_float4x4 *) map_proj_mat
-{
-/*  Commands to render map projection */
-    [self drawMapSolidObjext:kemo_buffers->MAP_solid_buf
-                     encoder:renderEncoder
-                   pipelines:kemo2DPipelines
-                      vertex:&_kemo2DMetalBuf.mapSolidVertice
-                  projection:map_proj_mat];
-/*  Commands to render isolines on map */
-    [self drawMapSolidObjext:kemo_buffers->MAP_isoline_buf
-                     encoder:renderEncoder
-                   pipelines:kemo2DPipelines
-                      vertex:&_kemo2DMetalBuf.mapLinesVertice
-                  projection:map_proj_mat];
-/*  Commands to render Coastline on map */
-    [self drawMapLineObjext:kemo_buffers->coast_buf
-                    encoder:renderEncoder
-                  pipelines:kemo2DPipelines
-                     vertex:&_kemo2DMetalBuf.coastVertice
-                 projection:map_proj_mat];
-/*  Commands to render grids on map */
-    [self drawMapLineObjext:kemo_buffers->sph_grid_buf
-                    encoder:renderEncoder
-                  pipelines:kemo2DPipelines
-                     vertex:&_kemo2DMetalBuf.sphGridVertice
-                 projection:map_proj_mat];
+    [_kemo2DRenderer setMessageMetalBuffers:&_device
+                                    buffers:kemo_buffers];
     return;
 }
 
@@ -1385,54 +1101,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
-- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                    pipelines:(KemoView2DMetalPipelines *) kemo2DPipelines
-                       buffer:(struct kemoview_buffers *) kemo_buffers
-                   projection:(matrix_float4x4 *) projection_mat
-{
-/*  Commands to render colorbar  box */
-    [self drawMapSolidObjext:kemo_buffers->cbar_buf
-                     encoder:renderEncoder
-                   pipelines:kemo2DPipelines
-                      vertex:&_kemo2DMetalBuf.colorBarVertice
-                  projection:projection_mat];
-/*  Commands to render colorbar  label */
-    [self drawTextBoxObjext:kemo_buffers->min_buf
-                    encoder:renderEncoder
-                  pipelines:kemo2DPipelines
-                     vertex:&_kemo2DMetalBuf.minLabelVertice
-                     texure:&_kemo2DMetalBuf.minLabelTexure
-                 projection:projection_mat];
-    [self drawTextBoxObjext:kemo_buffers->max_buf
-                    encoder:renderEncoder
-                  pipelines:kemo2DPipelines
-                     vertex:&_kemo2DMetalBuf.maxLabelVertice
-                     texure:&_kemo2DMetalBuf.maxLabelTexure
-                 projection:projection_mat];
-    [self drawTextBoxObjext:kemo_buffers->zero_buf
-                    encoder:renderEncoder
-                  pipelines:kemo2DPipelines
-                     vertex:&_kemo2DMetalBuf.zeroLabelVertice
-                     texure:&_kemo2DMetalBuf.zeroLabelTexure
-                 projection:projection_mat];
-
-/*  Commands to render time label */
-    [self drawTextBoxObjext:kemo_buffers->time_buf
-                    encoder:renderEncoder
-                  pipelines:kemo2DPipelines
-                     vertex:&_kemo2DMetalBuf.timeLabelVertice
-                     texure:&_kemo2DMetalBuf.timeLabelTexure
-                 projection:projection_mat];
-/*  Commands to render colorbar  box */
-    [self drawTextBoxObjext:kemo_buffers->msg_buf
-                    encoder:renderEncoder
-                  pipelines:kemo2DPipelines
-                     vertex:&_kemo2DMetalBuf.messageVertice
-                     texure:&_kemo2DMetalBuf.messageTexure
-                 projection:projection_mat];
-    return;
-}
-
 - (void) encodeKemoViewers:(id<MTLRenderCommandEncoder>  *) renderEncoder
                     buffer:(struct kemoview_buffers *) kemo_buffers
                      views:(struct view_element *) view_s
@@ -1443,10 +1111,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     int iflag_view = kemoview_get_view_type_flag();
     if(iflag_view == VIEW_MAP){
-        [self encodeMapObjects:renderEncoder
-                     pipelines:&_kemo2DPipelines
-                        buffer:kemo_buffers
-                    projection:&_map_proj_mat];
+        [_kemo2DRenderer encodeMapObjects:renderEncoder
+                                  buffers:kemo_buffers
+                               projection:&_map_proj_mat];
     } else if(iflag_view == VIEW_STEREO){
         if(iflag_lr < 0){
             update_left_projection_struct(view_s);
@@ -1513,10 +1180,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                          mesh:kemo_mesh
                        unites:monoViewUnites];
     };
-    [self encodeMessageObjects:renderEncoder
-                     pipelines:&_kemo2DPipelines
-                        buffer:kemo_buffers
-                    projection:&_cbar_proj_mat];
+    [_kemo2DRenderer encodeMessageObjects:renderEncoder
+                                  buffers:kemo_buffers
+                               projection:&_cbar_proj_mat];
     return;
 }
 
@@ -1526,10 +1192,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                    unites:(KemoViewUnites *) monoViewUnites
 {
     if(kemoview_get_view_type_flag() == VIEW_MAP){
-        [self encodeMapObjects:renderEncoder
-                     pipelines:&_kemo2DPipelines
-                        buffer:kemo_buffers
-                    projection:&_map_proj_mat];
+        [_kemo2DRenderer encodeMapObjects:renderEncoder
+                                  buffers:kemo_buffers
+                               projection:&_map_proj_mat];
     }else{
         [self encodeSimpleObjects:renderEncoder
                         pipelines:&_kemoViewPipelines
@@ -1538,10 +1203,9 @@ Implementation of a platform independent renderer class, which performs Metal se
                              mesh:kemo_mesh
                            unites:monoViewUnites];
     };
-    [self encodeMessageObjects:renderEncoder
-                     pipelines:&_kemo2DPipelines
-                        buffer:kemo_buffers
-                    projection:&_cbar_proj_mat];
+    [_kemo2DRenderer encodeMessageObjects:renderEncoder
+                                  buffers:kemo_buffers
+                               projection:&_cbar_proj_mat];
     return;
 }
 
@@ -1609,7 +1273,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     [self setKemoViewLightings:kemo_sgl->kemo_buffers->cube_buf
                         unites:&_monoViewUnites];
 
-    int iflag = kemoview_get_view_type_flag();
     [self setTransferMatrices:&_monoViewUnites];
 
     [self takoview:view eyeflag:iflag_lr];

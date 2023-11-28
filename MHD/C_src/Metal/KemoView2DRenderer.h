@@ -89,9 +89,12 @@ typedef struct
          v_Nonnullertex:(id<MTLBuffer> *)  vertices;
 
 
-- (void) release2DMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
-- (void) set2DMetalBuffers:(id<MTLDevice> *) device
-                   buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
+- (void) releaseMapMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
+- (void) releaseMsgMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
+- (void) setMapMetalBuffers:(id<MTLDevice> *) device
+                    buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
+- (void) setMessageMetalBuffers:(id<MTLDevice> *) device
+                        buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
 
 
 -(void) add2DShaderLibrary:(id<MTLLibrary>  *) shaderLibrary;
