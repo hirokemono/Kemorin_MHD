@@ -223,8 +223,8 @@ int set_tube_vertex(int ncorner, double radius,
 		nor[3*(6*(ncorner-1)+5)+nd] = norm_w1[3*(ncorner-1)+nd];
 	};
 	for(k=0;k<ncorner;k++){
-		for (nd=0; nd<3; nd++) {
-			col[4*(6*k)+   nd] = color_line[  nd];
+		for (nd=0; nd<4; nd++) {
+			col[4*(6*k)+  nd] = color_line[  nd];
 			col[4*(6*k+1)+nd] = color_line[  nd];
 			col[4*(6*k+2)+nd] = color_line[4+nd];
 			col[4*(6*k+3)+nd] = color_line[4+nd];
@@ -232,7 +232,6 @@ int set_tube_vertex(int ncorner, double radius,
 			col[4*(6*k+5)+nd] = color_line[  nd];
 		};
 	};
-	
 	npatch_wall = 2*ncorner;
 	return npatch_wall;
 }
