@@ -223,7 +223,7 @@ NSData *SnapshotData;
         kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep);
         [_metalView DrawQuilt:int_degree:rotationaxis];
 
-        unsigned char *bgra = [_metalViewController getRenderedbyMetalToBGRA];
+        unsigned char *bgra = [_metalViewController getRenderedbyMetalToBGRA:0];
         kemoview_add_bgra_to_quilt(XViewsize, YViewsize, bgra,
                                    [SnapshotBitmapRep bitmapData]);
         free(bgra);

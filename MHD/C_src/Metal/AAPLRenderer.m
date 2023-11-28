@@ -1412,6 +1412,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                  fieldline:(struct kemoview_fline *) kemo_fline
                       mesh:(struct kemoview_mesh *) kemo_mesh
                     unites:(KemoViewUnites *) monoViewUnites
+                   eyeflag:(int) iflag_lr
 {
     if(view_s->iflag_view_type == VIEW_MAP){
         [self encodeMapObjects:renderEncoder
@@ -1419,31 +1420,57 @@ Implementation of a platform independent renderer class, which performs Metal se
                         buffer:kemo_buffers
                     projection:&_map_proj_mat];
     } else if(view_s->iflag_view_type == VIEW_STEREO){
-        update_left_projection_struct(view_s);
-        modify_left_view_by_struct(view_s);
-        [self setTransferMatrices:&_leftViewUnites];
-        [self setKemoViewLightings:kemo_buffers->cube_buf
-                            unites:&_leftViewUnites];
-        [self leftMaterialParams:&_leftViewUnites.material];
-        [self encode3DObjects:renderEncoder
-                    pipelines:&_kemoAnaglyphPipelines
-                       buffer:kemo_buffers
-                    fieldline:kemo_fline
-                         mesh:kemo_mesh
-                       unites:&_leftViewUnites];
-
-         update_right_projection_struct(view_s);
-         modify_right_view_by_struct(view_s);
-         [self setTransferMatrices:&_rightViewUnites];
-         [self setKemoViewLightings:kemo_buffers->cube_buf
-                             unites:&_rightViewUnites];
-         [self rightMaterialParams:&_rightViewUnites.material];
-         [self encode3DObjects:renderEncoder
-                     pipelines:&_kemoAnaglyphPipelines
-                       buffer:kemo_buffers
-                    fieldline:kemo_fline
-                         mesh:kemo_mesh
-                       unites:&_rightViewUnites];
+        if(iflag_lr < 0){
+            update_left_projection_struct(view_s);
+            modify_left_view_by_struct(view_s);
+            [self setTransferMatrices:&_leftViewUnites];
+            [self setKemoViewLightings:kemo_buffers->cube_buf
+                                unites:&_leftViewUnites];
+            [self encode3DObjects:renderEncoder
+                        pipelines:&_kemo3DPipelines
+                           buffer:kemo_buffers
+                        fieldline:kemo_fline
+                             mesh:kemo_mesh
+                           unites:&_leftViewUnites];
+        }else if(iflag_lr > 0){
+            update_right_projection_struct(view_s);
+            modify_right_view_by_struct(view_s);
+            [self setTransferMatrices:&_rightViewUnites];
+            [self setKemoViewLightings:kemo_buffers->cube_buf
+                                unites:&_rightViewUnites];
+            [self encode3DObjects:renderEncoder
+                        pipelines:&_kemo3DPipelines
+                           buffer:kemo_buffers
+                        fieldline:kemo_fline
+                             mesh:kemo_mesh
+                           unites:&_rightViewUnites];
+        }else{
+            update_left_projection_struct(view_s);
+            modify_left_view_by_struct(view_s);
+            [self setTransferMatrices:&_leftViewUnites];
+            [self setKemoViewLightings:kemo_buffers->cube_buf
+                                unites:&_leftViewUnites];
+            [self leftMaterialParams:&_leftViewUnites.material];
+            [self encode3DObjects:renderEncoder
+                        pipelines:&_kemoAnaglyphPipelines
+                           buffer:kemo_buffers
+                        fieldline:kemo_fline
+                             mesh:kemo_mesh
+                           unites:&_leftViewUnites];
+            
+            update_right_projection_struct(view_s);
+            modify_right_view_by_struct(view_s);
+            [self setTransferMatrices:&_rightViewUnites];
+            [self setKemoViewLightings:kemo_buffers->cube_buf
+                                unites:&_rightViewUnites];
+            [self rightMaterialParams:&_rightViewUnites.material];
+            [self encode3DObjects:renderEncoder
+                        pipelines:&_kemoAnaglyphPipelines
+                           buffer:kemo_buffers
+                        fieldline:kemo_fline
+                             mesh:kemo_mesh
+                           unites:&_rightViewUnites];
+        }
     } else {
         [self encode3DObjects:renderEncoder
                     pipelines:&_kemo3DPipelines
@@ -1505,7 +1532,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                               views:kemo_sgl->view_s
                           fieldline:kemo_sgl->kemo_fline
                                mesh:kemo_sgl->kemo_mesh
-                             unites:&_monoViewUnites];
+                             unites:&_monoViewUnites
+                            eyeflag:iflag_lr];
         };
 
 /*Schedule a present once the framebuffer is complete using the current drawable. */
@@ -1513,25 +1541,10 @@ Implementation of a platform independent renderer class, which performs Metal se
         [_renderEncoder endEncoding];
     }
     [commandBuffer  commit];
+    [commandBuffer waitUntilCompleted];
     return;
 }
 
--(unsigned char *) getRenderedbyMetalToBGRA:(nonnull MTKView *)view
-{
-    /*    Texture to render screen to texture */
-    id<MTLTexture> _imageOutputTexture = view.currentDrawable.texture;
-    NSUInteger height = _imageOutputTexture.height;
-    NSUInteger width =  _imageOutputTexture.width;
-    NSUInteger bpRaw = 4 * _imageOutputTexture.width;
-    NSUInteger num_pixel = _imageOutputTexture.width * _imageOutputTexture.height;
-    unsigned char *bgra = (unsigned char *) malloc(4*num_pixel * sizeof(unsigned char));
-
-    [_imageOutputTexture getBytes:bgra
-                      bytesPerRow:bpRaw
-                       fromRegion:MTLRegionMake2D(0, 0, width, height)
-                      mipmapLevel:0];
-    return bgra;
-};
 
 - (void)drawKemoMetalView:(nonnull MTKView *)view
                   eyeflag:(int) iflag_lr
@@ -1562,23 +1575,19 @@ Implementation of a platform independent renderer class, which performs Metal se
     int iflag = kemoview_get_view_type_flag();
     [self setTransferMatrices:&_monoViewUnites];
 
-    [self takoview:view eyeflag:0];
+    [self takoview:view eyeflag:iflag_lr];
     return;
 }
 
-
-
-
-/// Called whenever the view needs to render a frame.
+// Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
-    int iflag_lr = 0;
     [self drawKemoMetalView:view
-                    eyeflag:iflag_lr];
+                    eyeflag:0];
     return;
 }
 
-/// Called whenever view changes orientation or is resized
+// Called whenever view changes orientation or is resized
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size
 {
     // Save the size of the drawable to pass to the vertex shader.

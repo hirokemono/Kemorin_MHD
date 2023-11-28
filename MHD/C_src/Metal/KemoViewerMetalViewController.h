@@ -25,7 +25,11 @@
 - (void) RenderUpdate;
 - (void) viewDidLayout;
 
--(unsigned char *) getRenderedbyMetalToBGRA;
+-(unsigned char *) getRenderedbyMetalToBGRA:(int) iflag_lr
+                                     Pixels:(NSUInteger *) pix_xy
+                               PixelPerByte:(NSUInteger *) pixelByte;
+-(unsigned char *) getAnaglyphbyMetalToBGRA:(NSUInteger *) pix_xy
+                               PixelPerByte:(NSUInteger *) pixelByte;
 -(CGImageRef) getRenderedbyMetalToCGref;
 -(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep;
 

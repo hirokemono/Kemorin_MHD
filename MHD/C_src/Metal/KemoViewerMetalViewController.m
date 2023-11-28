@@ -65,38 +65,75 @@
     return;
 };
 
--(unsigned char *) getRenderedbyMetalToBGRA
+-(unsigned char *) getRenderedbyMetalToBGRA:(int) iflag_lr
+                                     Pixels:(NSUInteger *) pix_xy
+                               PixelPerByte:(NSUInteger *) pixelByte
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
-    [_renderer drawInMTKView:_metalView];
+    [_renderer drawKemoMetalView:_metalView
+                         eyeflag:iflag_lr];
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
 
     /*    Texture to render screen to texture */
     id<MTLTexture> _imageOutputTexture = _metalView.currentDrawable.texture;
-    NSUInteger height = _imageOutputTexture.height;
-    NSUInteger width =  _imageOutputTexture.width;
-    NSUInteger bpRaw = 4 * _imageOutputTexture.width;
-    NSUInteger num_pixel = _imageOutputTexture.width * _imageOutputTexture.height;
-    unsigned char *bgra = (unsigned char *) malloc(4*num_pixel * sizeof(unsigned char));
+    pix_xy[0] = _imageOutputTexture.width;
+    pix_xy[1] = _imageOutputTexture.height;
+    pixelByte[0] = 4;
+    NSUInteger bpRaw = pixelByte[0] * pix_xy[0] ;
+    NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
+    unsigned char *bgra = (unsigned char *) malloc(pixelByte[0]*num_pixel * sizeof(unsigned char));
 
     [_imageOutputTexture getBytes:bgra
                       bytesPerRow:bpRaw
-                       fromRegion:MTLRegionMake2D(0, 0, width, height)
+                       fromRegion:MTLRegionMake2D(0, 0, pix_xy[0], pix_xy[1])
                       mipmapLevel:0];
     return bgra;
 };
 
+-(unsigned char *) getAnaglyphbyMetalToBGRA:(NSUInteger *) pix_xy
+                               PixelPerByte:(NSUInteger *) pixelByte
+{
+    int i;
+    unsigned char *left_bgra =  [self getRenderedbyMetalToBGRA:-1
+                                                        Pixels:pix_xy
+                                                  PixelPerByte:pixelByte];
+    unsigned char *right_bgra = [self getRenderedbyMetalToBGRA:1
+                                                        Pixels:pix_xy
+                                                  PixelPerByte:pixelByte];
+    
+    NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
+    unsigned char *bgra = (unsigned char *) malloc(pixelByte[0]*num_pixel * sizeof(unsigned char));
+    
+    for(i=0;i<num_pixel;i++){
+        bgra[4*i  ] = right_bgra[4*i  ];
+        bgra[4*i+1] = right_bgra[4*i+1];
+        bgra[4*i+2] = left_bgra[4*i+2];
+        bgra[4*i+3] = left_bgra[4*i+3];
+    };
+    free(left_bgra);
+    free(right_bgra);
+    return bgra;
+}
+
+
 -(CGImageRef) getRenderedbyMetalToCGref
 {
-    /*    Texture to render screen to texture */
-    id<MTLTexture> _imageOutputTexture = _metalView.currentDrawable.texture;
-    NSUInteger height = _imageOutputTexture.height;
-    NSUInteger width =  _imageOutputTexture.width;
-    NSUInteger bpRaw = 4 * _imageOutputTexture.width;
-    NSUInteger num_pixel = _imageOutputTexture.width * _imageOutputTexture.height;
-    NSUInteger i;
-    unsigned char *bgra = [self getRenderedbyMetalToBGRA];
     unsigned char rtmp;
+    NSUInteger i;
+    NSUInteger pix_xy[2];
+    NSUInteger pixelByte[1];
+    unsigned char *bgra;
+    if(kemoview_get_view_type_flag() == VIEW_STEREO){
+        bgra = [self getAnaglyphbyMetalToBGRA:pix_xy
+                                 PixelPerByte:pixelByte];
+    }else{
+        bgra = [self getRenderedbyMetalToBGRA:0
+                                       Pixels:pix_xy
+                                 PixelPerByte:pixelByte];
+    }
+    NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
+    NSUInteger bpRaw =     pixelByte[0] * pix_xy[0];
+
     
     for(i=0;i<num_pixel;i++){
         rtmp = bgra[4*i];
@@ -106,7 +143,7 @@
     
     int bitsPerComponent = 8;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(bgra, width, height,
+    CGContextRef context = CGBitmapContextCreate(bgra, pix_xy[0], pix_xy[1],
                                                  bitsPerComponent, bpRaw, colorSpace,
                                                  (kCGBitmapAlphaInfoMask & kCGImageAlphaPremultipliedLast));
     CGColorSpaceRelease(colorSpace);
