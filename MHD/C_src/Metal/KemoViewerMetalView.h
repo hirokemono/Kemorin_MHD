@@ -35,7 +35,6 @@
     int YpixelRectView;
     
     int iflag_resize;
-    float message_opacity;
     NSTimer* timer_msg;
 
     CFTimeInterval reftime_msg;

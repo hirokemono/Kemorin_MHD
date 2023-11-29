@@ -18,7 +18,6 @@
 #include "m_kemoview_object_buffers.h"
 #include "m_transfer_matrices.h"
 #include "m_gl_transfer_matrix.h"
-#include "draw_colorbar_gl.h"
 
 typedef struct
 {

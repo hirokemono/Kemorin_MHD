@@ -78,7 +78,6 @@
                                                   XpixelRectView, YpixelRectView);
         kemoview_set_message_opacity(1.0);
     } else{
-        kemoview_set_message_opacity(message_opacity);
     }
 }
 
@@ -101,10 +100,26 @@
 }
 
 // ---------------------------------
+- (void)messageTimer:(NSTimer *)timer
+{
+    float message_opacity;
+    if(iflag_resize == 0) return;
+
+    CFTimeInterval deltaTime = CFAbsoluteTimeGetCurrent() - reftime_msg;
+    if(deltaTime < 4.5){ // skip pauses
+        message_opacity = log10f(10.0 - 2.0*deltaTime);
+    } else {
+        iflag_resize = 0;
+        message_opacity = 0.0;
+    }
+    kemoview_set_message_opacity(message_opacity);
+    [self UpdateImage];
+    return;
+}
+
 - (void)initMessageTimer
 {
     iflag_resize = 0;
-    message_opacity = 0.0;
     reftime_msg = CFAbsoluteTimeGetCurrent ();  // set animation time start time
     timer_msg = [NSTimer timerWithTimeInterval:(1.0f/2.0f)
                                         target:self
@@ -114,22 +129,6 @@
                                  forMode:NSDefaultRunLoopMode];
     [[NSRunLoop currentRunLoop] addTimer:timer_msg
                                  forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize
-}
-
-- (void)messageTimer:(NSTimer *)timer
-{
-    if(iflag_resize == 0) return;
-
-    CFTimeInterval deltaTime = CFAbsoluteTimeGetCurrent() - reftime_msg;
-    if(deltaTime < 4.5){ // skip pauses
-        message_opacity = log10f(10.0 - 2.0*deltaTime);
-        [self UpdateImage];
-    } else {
-        iflag_resize = 0;
-        message_opacity = 0.0;
-        [self UpdateImage];
-    }
-    return;
 }
 // ---------------------------------
 
