@@ -18,11 +18,6 @@
 
 #include "m_kemoview_object_buffers.h"
 
-@interface KemoView2DRenderer : NSObject
-{
-    KemoViewMetalBuffers * _kemo2DMetalBufBase;
-}
-
 typedef struct
 {
     /*  Vertex buffer for Map solid patch */
@@ -87,6 +82,11 @@ typedef struct
     id<MTLRenderPipelineState> _Nonnull base2DPipelineState;
 } KemoView2DMetalPipelines;
 
+
+@interface KemoView2DRenderer : NSObject
+{
+    KemoViewMetalBuffers * _kemo2DMetalBufBase;
+}
 
 - (void)setMetalVertexs:(id<MTLDevice> *) device
                  buffer:(struct gl_strided_buffer * _Nonnull) buf

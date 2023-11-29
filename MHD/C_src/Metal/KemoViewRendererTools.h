@@ -19,8 +19,6 @@
 #include "m_gl_transfer_matrix.h"
 #include "draw_colorbar_gl.h"
 
-@interface KemoViewRendererTools : NSObject
-
 typedef struct
 {
 /*    Texture to render screen to texture */
@@ -31,6 +29,8 @@ typedef struct
     LightSourceParameters lights;
     MaterialParameters    material;
 } KemoViewUnites;
+
+@interface KemoViewRendererTools : NSObject
 
 - (void)rightMaterialParams:(MaterialParameters *) material;
 - (void)leftMaterialParams:(MaterialParameters *) material;
