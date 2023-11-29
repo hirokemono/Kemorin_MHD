@@ -6,25 +6,25 @@
 
 
 void alloc_map_data_s(struct psf_map_data *psf_map_s){
-	int i;
+	long i;
 	/* allocate memory  xx_map[node #][direction]*/
 	psf_map_s->xx_map = (double **)calloc(psf_map_s->nnod_map,sizeof(double *));
 	for (i = 0; i < psf_map_s->nnod_map; i++){
 		psf_map_s->xx_map[i] = (double *)calloc(3,sizeof(double));
 	};
 	
-	psf_map_s->inod_map = (int *)calloc(psf_map_s->nnod_map,sizeof(int));
+	psf_map_s->inod_map = (long *)calloc(psf_map_s->nnod_map,sizeof(long));
 	
 	/* allocate memory  ie_map[patch #][connection]*/
-	psf_map_s->ie_map = (int **)calloc(psf_map_s->nele_map,sizeof(int *));
+	psf_map_s->ie_map = (long **)calloc(psf_map_s->nele_map,sizeof(long *));
 	for (i = 0; i < psf_map_s->nele_map; i++){
-		psf_map_s->ie_map[i] = (int *)calloc(3,sizeof(int));
+		psf_map_s->ie_map[i] = (long *)calloc(3,sizeof(long));
 	};
 	
 	/* allocate memory  inod_org_map[added #][interpolate #]*/
-	psf_map_s->inod_org_map = (int **)calloc(psf_map_s->nnod_add_map,sizeof(int *));
+	psf_map_s->inod_org_map = (long **)calloc(psf_map_s->nnod_add_map,sizeof(long *));
 	for (i = 0; i < psf_map_s->nnod_add_map; i++){
-		psf_map_s->inod_org_map[i] = (int *)calloc(2,sizeof(int));
+		psf_map_s->inod_org_map[i] = (long *)calloc(2,sizeof(long));
 	};
 	
 	/* allocate memory  coef_itp_map[added #][interpolate #]*/
@@ -43,7 +43,7 @@ void alloc_map_data_s(struct psf_map_data *psf_map_s){
 };
 
 void dealloc_map_data_s(struct psf_map_data *psf_map_s){
-	int i;
+	long i;
 	/* deallocate memory*/
 	free(psf_map_s->inod_map);
 	

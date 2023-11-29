@@ -127,10 +127,10 @@ void alloc_psf_cutting_4_map(struct psf_data *psf_s){
 	int i;
 	
 	/* allocate memory  dir_ele[patch #][component]*/
-	psf_s->inod_org_4_map_itp = (int **)malloc(psf_s->nnod_added_4_map*sizeof(int *));
+	psf_s->inod_org_4_map_itp = (long **)malloc(psf_s->nnod_added_4_map*sizeof(long *));
 	psf_s->coef_4_map_itp = (double **)malloc(psf_s->nnod_added_4_map*sizeof(int *));
 	for (i = 0; i < psf_s->nnod_added_4_map; i++){
-		psf_s->inod_org_4_map_itp[i] = (int *)calloc(2,sizeof(int));
+		psf_s->inod_org_4_map_itp[i] = (long *)calloc(2,sizeof(long));
 		psf_s->coef_4_map_itp[i] = (double *)calloc(2,sizeof(double));
 	};
 	return;

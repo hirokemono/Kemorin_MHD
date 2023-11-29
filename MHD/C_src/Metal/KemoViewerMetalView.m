@@ -88,13 +88,13 @@
     [self resizeMetal];
 }
 
-- (int) getHorizontalViewSize
+- (NSUInteger) getHorizontalViewSize
 {
     NSRect rectView = [self convertRectToBacking:[self bounds]];
     return rectView.size.width;
 }
 
-- (int) getVerticalViewSize
+- (NSUInteger) getVerticalViewSize
 {
     NSRect rectView = [self convertRectToBacking:[self bounds]];
     return rectView.size.height;

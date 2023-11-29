@@ -95,8 +95,10 @@ NSData *SnapshotData;
     kemoview_free_kvstring(fline_filehead);
 }
 
--(void) OpenQTMovieFileWithSize:(NSString *)movieFileName : (NSInteger) XViewsize : (NSInteger) YViewsize{
-    
+-(void) OpenQTMovieFileWithSize:(NSString *)movieFileName
+                          width:(NSUInteger) XViewsize
+                         height:(NSUInteger) YViewsize
+{
     // Movie setting
     NSDictionary *outputSettings = 
     @{
@@ -149,15 +151,15 @@ NSData *SnapshotData;
 }
 
 -(void) OpenQTMovieFile:(NSString *)movieFileName{
-    NSInteger XViewsize = [_metalView getHorizontalViewSize];
-    NSInteger YViewsize = [_metalView getVerticalViewSize];
-    [self OpenQTMovieFileWithSize:movieFileName: XViewsize : YViewsize];
+    [self OpenQTMovieFileWithSize:movieFileName
+                            width:[_metalView getHorizontalViewSize]
+                           height:[_metalView getVerticalViewSize]];
 }
 -(int) OpenQuiltQTMovieFile:(NSString *)movieFileName{
     int XNumImage = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
     int YNumImage = kemoview_get_quilt_nums(ISET_QUILT_RAW);
-    NSInteger XViewsize = XNumImage * [_metalView getHorizontalViewSize];
-	NSInteger YViewsize = YNumImage * [_metalView getVerticalViewSize];
+    NSUInteger XViewsize = XNumImage * [_metalView getHorizontalViewSize];
+	NSUInteger YViewsize = YNumImage * [_metalView getVerticalViewSize];
 	
 	if((XViewsize*YViewsize) > 35536896){
 		float ratio = (float) (XViewsize*YViewsize) / (float) 35536896;
@@ -171,7 +173,9 @@ NSData *SnapshotData;
 		[alert release];
 		return 1;
 	};
-	[self OpenQTMovieFileWithSize:movieFileName: XViewsize : YViewsize];
+	[self OpenQTMovieFileWithSize:movieFileName
+                            width:XViewsize
+                           height:YViewsize];
 	return 0;
 }
 
@@ -189,10 +193,10 @@ NSData *SnapshotData;
     static unsigned char *glimage;
     NSInteger num_step = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_NUM);
 
-    int XViewsize = [_metalView getHorizontalViewSize];
-    int YViewsize = [_metalView getVerticalViewSize];
-    int XNumImage = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
-    int YNumImage = kemoview_get_quilt_nums(ISET_QUILT_RAW);
+    NSUInteger XViewsize = [_metalView getHorizontalViewSize];
+    NSUInteger YViewsize = [_metalView getVerticalViewSize];
+    NSUInteger XNumImage = (NSUInteger) kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
+    NSUInteger YNumImage = (NSUInteger) kemoview_get_quilt_nums(ISET_QUILT_RAW);
 
     glimage =    (unsigned char*)calloc(3*XViewsize*YViewsize, sizeof(unsigned char));
 
@@ -218,13 +222,16 @@ NSData *SnapshotData;
                                                                          bytesPerRow: (XNumImage*XViewsize*3) //pixelsWide*samplesPerPixel
                                                                         bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
                                    ];
-    
+    NSUInteger pix_xy[2];
+    NSUInteger pixelByte[1];
     for(self.CurrentStep = 0;self.CurrentStep<num_step;self.CurrentStep++){
         kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep);
         [_metalView DrawQuilt:int_degree:rotationaxis];
 
-        unsigned char *bgra = [_metalViewController getRenderedbyMetalToBGRA:0];
-        kemoview_add_bgra_to_quilt(XViewsize, YViewsize, bgra,
+        unsigned char *bgra = [_metalViewController getRenderedbyMetalToBGRA:0
+                                                                      Pixels:(NSUInteger *) pix_xy
+                                                                PixelPerByte:(NSUInteger *) pixelByte];
+        kemoview_add_bgra_to_quilt((int) pix_xy[0], (int) pix_xy[1], bgra,
                                    [SnapshotBitmapRep bitmapData]);
         free(bgra);
 
@@ -522,7 +529,7 @@ NSData *SnapshotData;
 }
 
 -(void) SaveQTmovieEvolution{
-    int iframe;
+    NSInteger iframe;
     
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1){
@@ -546,11 +553,11 @@ NSData *SnapshotData;
             
             if (CurrentMovieFormat == SAVE_QT_MOVIE && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
-                CMTime frameTime = CMTimeMake((int64_t)iframe, self.FramePerSecond);
+                CMTime frameTime = CMTimeMake((int64_t)iframe, (int) self.FramePerSecond);
                 [self AddKemoviewQuiltToMovie:frameTime:IZERO:IONE];
             }else if(CurrentMovieFormat == SAVE_QT_MOVIE) {
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
-                CMTime frameTime = CMTimeMake((int64_t)iframe, self.FramePerSecond);
+                CMTime frameTime = CMTimeMake((int64_t)iframe, (int) self.FramePerSecond);
                 [self AddKemoviewImageToMovie:frameTime];
             } else if (CurrentMovieFormat != 0) {
                 NSString *numstring = [NSString stringWithFormat:@"%ld",self.CurrentStep];

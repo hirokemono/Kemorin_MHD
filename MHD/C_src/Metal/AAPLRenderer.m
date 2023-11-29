@@ -38,8 +38,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     matrix_float4x4 _cbar_proj_mat;
 
     NSUInteger _frameNum;
-    
-    IBOutlet KemoViewerObject * _singleKemoView;
 }
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
@@ -161,6 +159,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void) encodeKemoViewers:(id<MTLRenderCommandEncoder>  *) renderEncoder
                   kemoview:(struct kemoviewer_type *) kemo_sgl
                     unites:(KemoViewUnites *) monoViewUnites
+                leftUnites:(KemoViewUnites *) leftViewUnites
+              rightUunites:(KemoViewUnites *) rightViewUnites
                    eyeflag:(int) iflag_lr
 {
     int iflag_view = kemoview_get_view_type_flag();
@@ -176,41 +176,41 @@ Implementation of a platform independent renderer class, which performs Metal se
             modify_left_view_by_struct(kemo_sgl->view_s);
             [_kemoRendererTools setTransferMatrices:&_leftViewUnites];
             [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                              unites:&_leftViewUnites];
+                                              unites:leftViewUnites];
             [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                                depth:&_depthState
                                             kemoview:kemo_sgl
-                                              unites:&_leftViewUnites];
+                                              unites:leftViewUnites];
         }else if(iflag_lr > 0){
             update_right_projection_struct(kemo_sgl->view_s);
             modify_right_view_by_struct(kemo_sgl->view_s);
-            [_kemoRendererTools setTransferMatrices:&_rightViewUnites];
+            [_kemoRendererTools setTransferMatrices:rightViewUnites];
             [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                              unites:&_rightViewUnites];
+                                              unites:rightViewUnites];
             [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                                depth:&_depthState
                                             kemoview:kemo_sgl
-                                              unites:&_rightViewUnites];
+                                              unites:rightViewUnites];
         }else{
             update_left_projection_struct(kemo_sgl->view_s);
             modify_left_view_by_struct(kemo_sgl->view_s);
-            [_kemoRendererTools setTransferMatrices:&_leftViewUnites];
+            [_kemoRendererTools setTransferMatrices:leftViewUnites];
             [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                              unites:&_leftViewUnites];
-            [_kemoRendererTools leftMaterialParams:&_leftViewUnites.material];
+                                              unites:leftViewUnites];
+            [_kemoRendererTools leftMaterialParams:&(leftViewUnites->material)];
             [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                                depth:&_depthState
                                             kemoview:kemo_sgl
-                                              unites:&_leftViewUnites];
+                                              unites:leftViewUnites];
 
             [_kemoRendererTools setTransferMatrices:&_rightViewUnites];
             [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                              unites:&_rightViewUnites];
-            [_kemoRendererTools rightMaterialParams:&_rightViewUnites.material];
+                                              unites:rightViewUnites];
+            [_kemoRendererTools rightMaterialParams:&(rightViewUnites->material)];
             [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                                depth:&_depthState2
                                             kemoview:kemo_sgl
-                                              unites:&_rightViewUnites];
+                                              unites:rightViewUnites];
         }
     } else {
         [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
@@ -266,6 +266,8 @@ Implementation of a platform independent renderer class, which performs Metal se
             [self encodeKemoViewers:&_renderEncoder
                            kemoview:kemo_sgl
                              unites:&_monoViewUnites
+                         leftUnites:&_leftViewUnites
+                       rightUunites:&_rightViewUnites
                             eyeflag:iflag_lr];
         };
 

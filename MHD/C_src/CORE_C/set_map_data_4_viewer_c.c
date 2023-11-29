@@ -5,7 +5,8 @@
 
 
 void count_map_patch_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_map_s){
-	int iele, i1, i2, i3;
+    int iele;
+    long i1, i2, i3;
 	double y1, y2, y3;
 	
 	psf_map_s->nnod_add_map = 0;
@@ -55,8 +56,9 @@ void count_map_patch_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf
 
 
 void set_map_patch_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_map_s){
-	int iele, i1, i2, i3, i4, i5;
-	int icou_n, icou_e, je;
+    int iele;
+    long i1, i2, i3, i4, i5, je;
+	int icou_n, icou_e;
 	double y1, y2, y3;
 	
 	for (iele = 0; iele < psf_s->nele_viz; iele++){
@@ -235,7 +237,7 @@ void set_map_patch_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_m
 
 
 void set_map_grid_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_map_s){
-	int inod, icou, i1, i2;
+	long inod, icou, i1, i2;
 	double y1, y2;
 	
 	for (inod = 0; inod < psf_s->nnod_viz; inod++){
@@ -260,7 +262,7 @@ void set_map_grid_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_ma
 }
 
 void set_map_data_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_map_s){
-	int inod, icou, j, i1, i2;
+	long inod, icou, j, i1, i2;
 	double y1, y2;
 	
 	for (inod = 0; inod < psf_s->nnod_viz; inod++){

@@ -9,9 +9,9 @@
 
 @implementation KemoViewMetalBuffers:NSObject
 
-- (void)setMetalVertexs:(id<MTLDevice> *) device
+- (void)setMetalVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
                  buffer:(struct gl_strided_buffer * _Nonnull) buf
-                 vertex:(id<MTLBuffer> *)  vertices
+                 vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
 {
     if(buf->num_nod_buf > 0){
         *vertices = [*device newBufferWithBytesNoCopy:buf->v_buf
@@ -21,11 +21,11 @@
     };
 };
 
-- (void)setPSFTexture:(id<MTLDevice> *) device
-               buffer:(struct gl_strided_buffer *) buf
-                image:(struct kemo_PSF_texure *) psf_texure
-               vertex:(id<MTLBuffer> *)  vertices
-               texure:(id<MTLTexture> *) texture
+- (void)setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+               buffer:(struct gl_strided_buffer *_Nonnull) buf
+                image:(struct kemo_PSF_texure *_Nonnull) psf_texure
+               vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+               texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {
     if(buf->num_nod_buf > 0){
         *vertices = [*device newBufferWithBytesNoCopy:buf->v_buf
@@ -57,11 +57,11 @@
 
 }
 
-- (void)setTextBoxTexture:(id<MTLDevice> *) device
-                   buffer:(struct gl_strided_buffer *) buf
-                    image:(struct line_text_image *) img
-                   vertex:(id<MTLBuffer> *)  vertices
-                   texure:(id<MTLTexture> *) texture
+- (void)setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+                   buffer:(struct gl_strided_buffer *_Nonnull) buf
+                    image:(struct line_text_image *_Nonnull) img
+                   vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                   texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {
     if(buf->num_nod_buf > 0){
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
@@ -92,11 +92,11 @@
 
 }
 
-- (void)setCubeVertexs:(id<MTLDevice> *) device
-                buffer:(struct gl_strided_buffer *) buf
-              indexbuf:(struct gl_index_buffer *) index_buf
-                vertex:(id<MTLBuffer> *) vertices
-                 index:(id<MTLBuffer> *) indices
+- (void)setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
+                buffer:(struct gl_strided_buffer *_Nonnull) buf
+              indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
+                vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
+                 index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
 {
     if(buf->num_nod_buf > 0){
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)

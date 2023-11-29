@@ -50,8 +50,8 @@
 - (void) setRetinaMode;
 - (void) setViewerSize;
 
-- (int) getHorizontalViewSize;
-- (int) getVerticalViewSize;
+- (NSUInteger) getHorizontalViewSize;
+- (NSUInteger) getVerticalViewSize;
 
 - (void)initMessageTimer;
 - (void)messageTimer:(NSTimer *)timer;

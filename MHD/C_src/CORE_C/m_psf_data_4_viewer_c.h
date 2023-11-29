@@ -65,7 +65,7 @@ struct psf_data{
 	double **color_nod;
 	
 	int nnod_added_4_map;
-	int **inod_org_4_map_itp;
+	long **inod_org_4_map_itp;
 	double **coef_4_map_itp;
     
     struct psf_edge_data_c *psf_edge; 

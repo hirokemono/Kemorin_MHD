@@ -65,7 +65,7 @@ void check_psf_data_c(struct psf_data *tako){
 };
 
 void check_psf_ave_rms_c(struct psf_data *tako){
-	int i, k, kst, ked;
+	long i, k, kst, ked;
 	
 	printf("area size: %e \n", tako->area_total);
 	printf("average and RMS value  \n");
@@ -73,7 +73,7 @@ void check_psf_ave_rms_c(struct psf_data *tako){
 		kst = tako->istack_comp[i];
 		ked = tako->istack_comp[i+1];
 		for (k = kst; k < ked; k++){
-			printf("field name: %s_%d %d %e %e \n", tako->data_name[i],k-kst+1,
+			printf("field name: %s_%ld %ld %e %e \n", tako->data_name[i],k-kst+1,
 					k, tako->d_ave[k], tako->d_rms[k]);
 		}
 	}
@@ -81,14 +81,14 @@ void check_psf_ave_rms_c(struct psf_data *tako){
 }
 
 void check_psf_min_max_c(struct psf_data *tako){
-	int i, k, kst, ked;
+	long i, k, kst, ked;
 	
 	printf("min and max value  \n");
 	for (i = 0; i < tako->nfield; i++) {
 		kst = tako->istack_comp[i];
 		ked = tako->istack_comp[i+1];
 		for (k = kst; k < ked; k++){
-			printf("field name: %s_%d %d %e %e \n", tako->data_name[i],k-kst+1,
+			printf("field name: %s_%ld %ld %e %e \n", tako->data_name[i],k-kst+1,
 					k, tako->d_min[k], tako->d_max[k]);
 		}
 	}

@@ -88,29 +88,24 @@ typedef struct
     KemoViewMetalBuffers * _kemo2DMetalBufBase;
 }
 
-- (void)setMetalVertexs:(id<MTLDevice> *) device
-                 buffer:(struct gl_strided_buffer * _Nonnull) buf
-         v_Nonnullertex:(id<MTLBuffer> *)  vertices;
-
-
 - (void) releaseMapMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
 - (void) releaseMsgMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
-- (void) setMapMetalBuffers:(id<MTLDevice> *) device
+- (void) setMapMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
                     buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
-- (void) setMessageMetalBuffers:(id<MTLDevice> *) device
+- (void) setMessageMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
                         buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers;
 
 
--(void) add2DShaderLibrary:(id<MTLLibrary>  *) shaderLibrary;
+-(void) add2DShaderLibrary:(id<MTLLibrary> _Nonnull * _Nonnull) shaderLibrary;
 
 -(void) addKemoView2DPipelines:(nonnull MTKView *)mtkView
                    targetPixel:(MTLPixelFormat) pixelformat;
 
 
-- (void) encodeMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+- (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
                   buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                projection:(matrix_float4x4 * _Nonnull) map_proj_mat;
-- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
                       buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                    projection:(matrix_float4x4 * _Nonnull) projection_mat;
 @end

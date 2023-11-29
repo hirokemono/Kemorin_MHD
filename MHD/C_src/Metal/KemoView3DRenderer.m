@@ -850,7 +850,7 @@
 
 
 
--(void) addKemoView3DShaderLibrary:(id<MTLLibrary> *) defaultLibrary
+-(void) addKemoView3DShaderLibrary:(id<MTLLibrary> _Nonnull *_Nonnull) defaultLibrary
 {
     [self add3DShaderLibrary:&_kemoViewShaders
                      library:defaultLibrary];
@@ -878,10 +878,10 @@
 };
 
 
-- (void) encodeKemoSimpleObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                           depth:(id<MTLDepthStencilState> *) depthState
-                        kemoview:(struct kemoviewer_type *) kemo_sgl
-                          unites:(KemoViewUnites *) monoViewUnites
+- (void) encodeKemoSimpleObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
+                           depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
+                        kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
+                          unites:(KemoViewUnites *_Nonnull) monoViewUnites
 {
     [self encodeSimpleObjects:renderEncoder
                     pipelines:&_kemoViewPipelines
@@ -893,10 +893,10 @@
     return;
 };
 
-- (void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                           depth:(id<MTLDepthStencilState> *) depthState
-                        kemoview:(struct kemoviewer_type *) kemo_sgl
-                          unites:(KemoViewUnites *) monoViewUnites
+- (void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
+                           depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState
+                        kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
+                          unites:(KemoViewUnites *_Nonnull) monoViewUnites
 {
     [self encode3DObjects:renderEncoder
                 pipelines:&_kemoViewPipelines

@@ -375,14 +375,14 @@
     return;
 }
 
-- (void) setMapMetalBuffers:(id<MTLDevice> *) device
+- (void) setMapMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
                     buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
 {
     [self setMapMBuffers:device
              metalbuffer:&_kemoView2DMetalBufs
                  buffers:kemo_buffers];
 }
-- (void) setMessageMetalBuffers:(id<MTLDevice> *) device
+- (void) setMessageMetalBuffers:(id<MTLDevice> _Nonnull * _Nonnull) device
                         buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
 {
     [self setMsgMBuffers:device
@@ -392,7 +392,7 @@
 }
 
 
--(void) add2DShaderLibrary:(id<MTLLibrary>  *) shaderLibrary
+-(void) add2DShaderLibrary:(id<MTLLibrary> _Nonnull * _Nonnull) shaderLibrary
 {
     [self set2DShaderLibrary:&_kemoView2DShaders
                      library:shaderLibrary];
@@ -405,7 +405,7 @@
                        pipelines:&_kemoView2DPipelines
                      targetPixel:pixelformat];
 }
-- (void) encodeMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+- (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
                   buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                projection:(matrix_float4x4 * _Nonnull) map_proj_mat
 {
@@ -415,7 +415,7 @@
                  buffer:kemo_buffers
               projection:map_proj_mat];
 }
-- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
+- (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
                       buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                    projection:(matrix_float4x4 * _Nonnull) projection_mat
 {
