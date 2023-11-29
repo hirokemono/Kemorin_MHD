@@ -30,7 +30,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLDepthStencilState> _depthState2;
     id<MTLDepthStencilState> _noDepthState;
 
-    KemoViewMetalBuffers     _kemoViewMetalBuf;
+    KemoView3DBuffers     _kemoViewMetalBuf;
 
     KemoViewMetalShaders   _kemoViewShaders;
     KemoView3DPipelines    _kemoViewPipelines;
@@ -249,7 +249,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
     _kemoRendererTools = [[KemoViewRendererTools alloc] init];
+    _kemoMetalBufBase = [[KemoViewMetalBuffers alloc] init];
     _kemo2DRenderer = [[KemoView2DRenderer alloc] init];
+    
     _frameNum = 0;
     _icou_lr = 0;
     self = [super init];
@@ -517,69 +519,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     }
 };
 
-- (void)setCubeVertexs:(struct gl_strided_buffer *) buf
-              indexbuf:(struct gl_index_buffer *) index_buf
-                vertex:(id<MTLBuffer> *) vertices
-                 index:(id<MTLBuffer> *) indices
-{
-    if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
-                                         length:(buf->num_nod_buf * sizeof(KemoViewVertex))
-                                        options:MTLResourceStorageModeShared];
-        *indices = [_device newBufferWithBytes:index_buf->ie_buf
-                                        length:(index_buf->nsize_buf * sizeof(unsigned int))
-                                       options:MTLResourceStorageModeShared];
-    };
-};
-
-- (void)setMetalVertexs:(struct gl_strided_buffer *) buf
-                 vertex:(id<MTLBuffer> *)  vertices
-{
-    if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-    };
-};
-
-- (void)setPSFTexture:(struct gl_strided_buffer *) buf
-                image:(struct kemo_PSF_texure *) psf_texure
-                vertex:(id<MTLBuffer> *)  vertices
-                texure:(id<MTLTexture> *) texture
-{
-    if(buf->num_nod_buf > 0){
-        *vertices = [_device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-        
-/* Construct message texture */
-        MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
-        lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
-        lineTextureDescriptor.width =  psf_texure->texure_width;
-        lineTextureDescriptor.height = psf_texure->texure_height;
-
-/*  Calculate the number of bytes per row in the image. */
-        NSUInteger bytesPerRow = 4 * lineTextureDescriptor.width;
-        MTLRegion region = {
-            { 0, 0, 0 },                   // MTLOrigin
-            {lineTextureDescriptor.width, lineTextureDescriptor.height, 1} // MTLSize
-        };
-        
-/* Create the texture from the device by using the descriptor */
-        *texture = [_device newTextureWithDescriptor:lineTextureDescriptor];
-/* Copy the bytes from the data object into the texture */
-        [*texture replaceRegion:region
-                    mipmapLevel:0
-                      withBytes:psf_texure->texure_rgba
-                    bytesPerRow:bytesPerRow];
-    };
-
-}
-
-
-
 - (void) releaseTransparentMetalBuffers:(struct kemoview_buffers *) kemo_buffers
 {
     /*  Release transparent vertexs */
@@ -636,14 +575,17 @@ Implementation of a platform independent renderer class, which performs Metal se
                                PSFs:(struct kemoview_psf *) kemo_psf
 {
 /*  Set transparent vertexs */
-    [self setPSFTexture:kemo_buffers->PSF_ttxur_buf
-                  image:kemo_psf->psf_a->psf_texure
-                 vertex:&_kemoViewMetalBuf.psfTTexureVertice
-                 texure:&_kemoViewMetalBuf.psfTransTexure];
-    [self setMetalVertexs:kemo_buffers->PSF_trns_buf
-                   vertex:&_kemoViewMetalBuf.psfTransVertice];
-    [self setMetalVertexs:kemo_buffers->mesh_trns_buf
-                   vertex:&_kemoViewMetalBuf.meshTransVertice];
+    [_kemoMetalBufBase setPSFTexture:&_device
+                              buffer:kemo_buffers->PSF_ttxur_buf
+                               image:kemo_psf->psf_a->psf_texure
+                              vertex:&_kemoViewMetalBuf.psfTTexureVertice
+                              texure:&_kemoViewMetalBuf.psfTransTexure];
+    [_kemoMetalBufBase setMetalVertexs:&_device
+                                buffer:kemo_buffers->PSF_trns_buf
+                                vertex:&_kemoViewMetalBuf.psfTransVertice];
+    [_kemoMetalBufBase setMetalVertexs:&_device
+                                buffer:kemo_buffers->mesh_trns_buf
+                                vertex:&_kemoViewMetalBuf.meshTransVertice];
     return;
 }
 
@@ -655,44 +597,57 @@ Implementation of a platform independent renderer class, which performs Metal se
         [_kemo2DRenderer setMapMetalBuffers:&_device
                                     buffers:kemo_buffers];
     }else{
-        [self setPSFTexture:kemo_buffers->PSF_stxur_buf
-                      image:kemo_psf->psf_a->psf_texure
-                     vertex:&_kemoViewMetalBuf.psfSTexureVertice
-                     texure:&_kemoViewMetalBuf.psfSolidTexure];
-        
-        [self setMetalVertexs:kemo_buffers->coast_buf
-                       vertex:&_kemoViewMetalBuf.coastVertice];
-        [self setMetalVertexs:kemo_buffers->sph_grid_buf
-                       vertex:&_kemoViewMetalBuf.sphGridVertice];
-        [self setMetalVertexs:kemo_buffers->axis_buf
-                       vertex:&_kemoViewMetalBuf.axisVertice];
+        [_kemoMetalBufBase setPSFTexture:&_device
+                                  buffer:kemo_buffers->PSF_stxur_buf
+                                   image:kemo_psf->psf_a->psf_texure
+                                  vertex:&_kemoViewMetalBuf.psfSTexureVertice
+                                  texure:&_kemoViewMetalBuf.psfSolidTexure];
 
-        [self setMetalVertexs:kemo_buffers->PSF_solid_buf
-                       vertex:&_kemoViewMetalBuf.psfSolidVertice];
-        [self setMetalVertexs:kemo_buffers->PSF_isoline_buf
-                       vertex:&_kemoViewMetalBuf.psfLinesVertice];
-        [self setMetalVertexs:kemo_buffers->PSF_arrow_buf
-                       vertex:&_kemoViewMetalBuf.psfArrowVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->coast_buf
+                                    vertex:&_kemoViewMetalBuf.coastVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->sph_grid_buf
+                                    vertex:&_kemoViewMetalBuf.sphGridVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->axis_buf
+                                    vertex:&_kemoViewMetalBuf.axisVertice];
+
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->PSF_solid_buf
+                                    vertex:&_kemoViewMetalBuf.psfSolidVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->PSF_isoline_buf
+                                    vertex:&_kemoViewMetalBuf.psfLinesVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->PSF_arrow_buf
+                                    vertex:&_kemoViewMetalBuf.psfArrowVertice];
         
         if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
-            [self setMetalVertexs:kemo_buffers->FLINE_tube_buf
-                           vertex:&_kemoViewMetalBuf.fieldTubeVertice];
+            [_kemoMetalBufBase setMetalVertexs:&_device
+                                        buffer:kemo_buffers->FLINE_tube_buf
+                                        vertex:&_kemoViewMetalBuf.fieldTubeVertice];
         };
-        [self setMetalVertexs:kemo_buffers->FLINE_line_buf
-                       vertex:&_kemoViewMetalBuf.fieldLineVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->FLINE_line_buf
+                                    vertex:&_kemoViewMetalBuf.fieldLineVertice];
         
-        [self setMetalVertexs:kemo_buffers->mesh_node_buf
-                       vertex:&_kemoViewMetalBuf.meshNodeVertice];
-        [self setMetalVertexs:kemo_buffers->mesh_grid_buf
-                       vertex:&_kemoViewMetalBuf.meshGridVertice];
-        [self setMetalVertexs:kemo_buffers->mesh_solid_buf
-                       vertex:&_kemoViewMetalBuf.meshSolidVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->mesh_node_buf
+                                    vertex:&_kemoViewMetalBuf.meshNodeVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->mesh_grid_buf
+                                    vertex:&_kemoViewMetalBuf.meshGridVertice];
+        [_kemoMetalBufBase setMetalVertexs:&_device
+                                    buffer:kemo_buffers->mesh_solid_buf
+                                    vertex:&_kemoViewMetalBuf.meshSolidVertice];
         
 /*  Set Cube Vertex buffer */
-        [self setCubeVertexs:kemo_buffers->cube_buf
-                    indexbuf:kemo_buffers->cube_index_buf
-                      vertex:&_kemoViewMetalBuf.cubeVertice
-                       index:&_kemoViewMetalBuf.cubeIndex];
+        [_kemoMetalBufBase setCubeVertexs:&_device
+                                   buffer:kemo_buffers->cube_buf
+                                 indexbuf:kemo_buffers->cube_index_buf
+                                   vertex:&_kemoViewMetalBuf.cubeVertice
+                                    index:&_kemoViewMetalBuf.cubeIndex];
         
 /*  Set transparent vertexs */
         [self setTransparentMetalBuffers:kemo_buffers

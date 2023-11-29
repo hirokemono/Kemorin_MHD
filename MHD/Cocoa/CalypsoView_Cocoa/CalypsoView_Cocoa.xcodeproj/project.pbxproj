@@ -14,6 +14,7 @@
 		180999A32B13C5CF00F83574 /* m_kemoview_object_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 180999A12B13C5CF00F83574 /* m_kemoview_object_buffers.c */; };
 		180999AC2B1458C900F83574 /* m_vertex_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 180999AB2B14576100F83574 /* m_vertex_buffer.c */; };
 		180999B22B16905200F83574 /* KemoViewRendererTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 180999B02B16905200F83574 /* KemoViewRendererTools.m */; };
+		180999B52B16B9F900F83574 /* KemoViewMetalBuffers.m in Sources */ = {isa = PBXBuildFile; fileRef = 180999B42B16B9F900F83574 /* KemoViewMetalBuffers.m */; };
 		180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CD1DDFB54700D20198 /* AVFoundation.framework */; };
 		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
 		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
@@ -188,6 +189,8 @@
 		180999AB2B14576100F83574 /* m_vertex_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m_vertex_buffer.c; sourceTree = "<group>"; };
 		180999B02B16905200F83574 /* KemoViewRendererTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoViewRendererTools.m; path = Metal/KemoViewRendererTools.m; sourceTree = "<group>"; };
 		180999B12B16905200F83574 /* KemoViewRendererTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewRendererTools.h; path = Metal/KemoViewRendererTools.h; sourceTree = "<group>"; };
+		180999B32B16B9F800F83574 /* KemoViewMetalBuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewMetalBuffers.h; path = Metal/KemoViewMetalBuffers.h; sourceTree = "<group>"; };
+		180999B42B16B9F900F83574 /* KemoViewMetalBuffers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoViewMetalBuffers.m; path = Metal/KemoViewMetalBuffers.m; sourceTree = "<group>"; };
 		180FF7CD1DDFB54700D20198 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		180FF7CF1DDFB55000D20198 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		180FF7D11DDFB55500D20198 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -869,6 +872,8 @@
 				18F0296C2AF5A49500D37276 /* AAPLShaderTypes.h */,
 				180999B12B16905200F83574 /* KemoViewRendererTools.h */,
 				180999B02B16905200F83574 /* KemoViewRendererTools.m */,
+				180999B32B16B9F800F83574 /* KemoViewMetalBuffers.h */,
+				180999B42B16B9F900F83574 /* KemoViewMetalBuffers.m */,
 				1830DF032B166F4D00984382 /* KemoView2DRenderer.h */,
 				1830DF042B166F4D00984382 /* KemoView2DRenderer.m */,
 				18F0296D2AF5A49500D37276 /* KemoViewerMetalView.h */,
@@ -1047,6 +1052,7 @@
 				18D7E73C1562D359009B05FF /* quicksort_c.c in Sources */,
 				18F029862AF6F76C00D37276 /* KemoViewerObject.m in Sources */,
 				18D7E73D1562D359009B05FF /* read_grouping_mesh_c.c in Sources */,
+				180999B52B16B9F900F83574 /* KemoViewMetalBuffers.m in Sources */,
 				188BA7512305E13100348842 /* invert_small_matrix_c.c in Sources */,
 				18F029732AF5A49500D37276 /* AAPLRenderer.m in Sources */,
 				185CB9B3212F593D00BB3C0B /* t_control_chara_real_IO.c in Sources */,

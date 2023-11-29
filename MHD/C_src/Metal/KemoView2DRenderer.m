@@ -20,69 +20,28 @@
     KemoView2DMetalBuffers   _kemoView2DMetalBufs;
 }
 
-- (void)setMetalVertexs:(id<MTLDevice> *) device
-                 buffer:(struct gl_strided_buffer * _Nonnull) buf
-                 vertex:(id<MTLBuffer> *)  vertices
+-(id) init
 {
-    if(buf->num_nod_buf > 0){
-        *vertices = [*device newBufferWithBytesNoCopy:buf->v_buf
-                                               length:(buf->nsize_buf * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-    };
-};
-
-- (void)setTextBoxTexture:(id<MTLDevice> *) device
-                   buffer:(struct gl_strided_buffer *) buf
-                    image:(struct line_text_image *) img
-                   vertex:(id<MTLBuffer> *)  vertices
-                   texure:(id<MTLTexture> *) texture
-{
-    if(buf->num_nod_buf > 0){
-        *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
-                                         length:(buf->num_nod_buf * sizeof(KemoViewVertex))
-                                        options:MTLResourceStorageModeShared];
-        
-/* Construct message texture */
-        MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
-        lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
-        lineTextureDescriptor.width =  img->npix_img[0];
-        lineTextureDescriptor.height = img->npix_img[1];
-
-/*  Calculate the number of bytes per row in the image. */
-        NSUInteger bytesPerRow = 4 * lineTextureDescriptor.width;
-        MTLRegion region = {
-            { 0, 0, 0 },                   // MTLOrigin
-            {lineTextureDescriptor.width, lineTextureDescriptor.height, 1} // MTLSize
-        };
-        
-/* Create the texture from the device by using the descriptor */
-        *texture = [*device newTextureWithDescriptor:lineTextureDescriptor];
-/* Copy the bytes from the data object into the texture */
-        [*texture replaceRegion:region
-                    mipmapLevel:0
-                      withBytes:img->imgBMP
-                    bytesPerRow:bytesPerRow];
-    };
-
+    _kemo2DMetalBufBase = [[KemoViewMetalBuffers alloc] init];
+    return self;
 }
 
 - (void) setMapMBuffers:(id<MTLDevice> *) device
             metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
                 buffers:(struct kemoview_buffers *) kemo_buffers
 {
-        [self setMetalVertexs:device
-                       buffer:kemo_buffers->MAP_solid_buf
-                       vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
-        [self setMetalVertexs:device
-                       buffer:kemo_buffers->MAP_isoline_buf
-                       vertex:&(kemoView2DMetalBufs->mapLinesVertice)];
-        [self setMetalVertexs:device
-                       buffer:kemo_buffers->coast_buf
-                       vertex:&(kemoView2DMetalBufs->coastVertice)];
-        [self setMetalVertexs:device
-                       buffer:kemo_buffers->sph_grid_buf
-                       vertex:&(kemoView2DMetalBufs->sphGridVertice)];
+    [_kemo2DMetalBufBase setMetalVertexs:device
+                                  buffer:kemo_buffers->MAP_solid_buf
+                                  vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
+    [_kemo2DMetalBufBase setMetalVertexs:device
+                                  buffer:kemo_buffers->MAP_isoline_buf
+                                  vertex:&(kemoView2DMetalBufs->mapLinesVertice)];
+    [_kemo2DMetalBufBase setMetalVertexs:device
+                                  buffer:kemo_buffers->coast_buf
+                                  vertex:&(kemoView2DMetalBufs->coastVertice)];
+    [_kemo2DMetalBufBase setMetalVertexs:device
+                                  buffer:kemo_buffers->sph_grid_buf
+                                  vertex:&(kemoView2DMetalBufs->sphGridVertice)];
 };
 - (void) releaseMapMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
                     buffers:(struct kemoview_buffers *) kemo_buffers
@@ -98,34 +57,34 @@
             metalbuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
                 buffers:(struct kemoview_buffers *) kemo_buffers
 {
-    [self setMetalVertexs:device
-                   buffer:kemo_buffers->cbar_buf
-                   vertex:&(kemoView2DMetalBufs->colorBarVertice)];
-    [self setTextBoxTexture:device
-                     buffer:kemo_buffers->min_buf
-                      image:kemo_buffers->cbar_min_image
-                     vertex:&(kemoView2DMetalBufs->minLabelVertice)
-                     texure:&(kemoView2DMetalBufs->minLabelTexure)];
-    [self setTextBoxTexture:device
-                     buffer:kemo_buffers->max_buf
-                      image:kemo_buffers->cbar_max_image
-                     vertex:&(kemoView2DMetalBufs->maxLabelVertice)
-                     texure:&(kemoView2DMetalBufs->maxLabelTexure)];
-    [self setTextBoxTexture:device
-                     buffer:kemo_buffers->zero_buf
-                      image:kemo_buffers->cbar_zero_image
-                     vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
-                     texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
-    [self setTextBoxTexture:device
-                     buffer:kemo_buffers->time_buf
-                      image:kemo_buffers->tlabel_image
-                     vertex:&(kemoView2DMetalBufs->timeLabelVertice)
-                     texure:&(kemoView2DMetalBufs->timeLabelTexure)];
-    [self setTextBoxTexture:device
-                     buffer:kemo_buffers->msg_buf
-                      image:kemo_buffers->message_image
-                     vertex:&(kemoView2DMetalBufs->messageVertice)
-                     texure:&(kemoView2DMetalBufs->messageTexure)];
+    [_kemo2DMetalBufBase setMetalVertexs:device
+                                buffer:kemo_buffers->cbar_buf
+                                vertex:&(kemoView2DMetalBufs->colorBarVertice)];
+    [_kemo2DMetalBufBase setTextBoxTexture:device
+                                  buffer:kemo_buffers->min_buf
+                                   image:kemo_buffers->cbar_min_image
+                                  vertex:&(kemoView2DMetalBufs->minLabelVertice)
+                                  texure:&(kemoView2DMetalBufs->minLabelTexure)];
+    [_kemo2DMetalBufBase setTextBoxTexture:device
+                                  buffer:kemo_buffers->max_buf
+                                   image:kemo_buffers->cbar_max_image
+                                  vertex:&(kemoView2DMetalBufs->maxLabelVertice)
+                                  texure:&(kemoView2DMetalBufs->maxLabelTexure)];
+    [_kemo2DMetalBufBase setTextBoxTexture:device
+                                  buffer:kemo_buffers->zero_buf
+                                   image:kemo_buffers->cbar_zero_image
+                                  vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
+                                  texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
+    [_kemo2DMetalBufBase setTextBoxTexture:device
+                                  buffer:kemo_buffers->time_buf
+                                   image:kemo_buffers->tlabel_image
+                                  vertex:&(kemoView2DMetalBufs->timeLabelVertice)
+                                  texure:&(kemoView2DMetalBufs->timeLabelTexure)];
+    [_kemo2DMetalBufBase setTextBoxTexture:device
+                                  buffer:kemo_buffers->msg_buf
+                                   image:kemo_buffers->message_image
+                                  vertex:&(kemoView2DMetalBufs->messageVertice)
+                                  texure:&(kemoView2DMetalBufs->messageTexure)];
     return;
 }
 - (void) releaseMsgMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs

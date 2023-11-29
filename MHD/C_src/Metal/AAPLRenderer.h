@@ -12,13 +12,15 @@ Header for a platform independent renderer class, which performs Metal setup and
 #import "KemoViewerObject.h"
 #import "KemoViewRendererTools.h"
 #import "KemoView2DRenderer.h"
+#import "KemoViewMetalBuffers.h"
 
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_object_buffers.h"
 #include "m_gl_transfer_matrix.h"
 
 @interface AAPLRenderer : NSObject<MTKViewDelegate>{
-    KemoView2DRenderer * _kemo2DRenderer;
+    KemoViewMetalBuffers * _kemoMetalBufBase;
+    KemoView2DRenderer *   _kemo2DRenderer;
     KemoViewRendererTools * _kemoRendererTools;
 }
 
@@ -67,7 +69,7 @@ typedef struct
     id<MTLBuffer> _Nullable sphGridVertice;
     /*  Vertex buffer for axis arrows */
     id<MTLBuffer> _Nullable axisVertice;
-} KemoViewMetalBuffers;
+} KemoView3DBuffers;
 
 typedef struct
 {

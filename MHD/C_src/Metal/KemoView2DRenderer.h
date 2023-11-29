@@ -14,10 +14,14 @@
 
 #import "AAPLShaderTypes.h"
 #import "AAPLImage.h"
+#import "KemoViewMetalBuffers.h"
 
 #include "m_kemoview_object_buffers.h"
 
 @interface KemoView2DRenderer : NSObject
+{
+    KemoViewMetalBuffers * _kemo2DMetalBufBase;
+}
 
 typedef struct
 {
