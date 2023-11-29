@@ -95,151 +95,159 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 
 
-- (void) releaseKemoViewMetalBuffers:(struct kemoview_buffers *) kemo_buffers
+- (void) releaseKemoViewMetalBuffers:(struct kemoviewer_type *) kemo_sgl
 {
     if(kemoview_get_view_type_flag() == VIEW_MAP){
-        [_kemo2DRenderer releaseMapMetalBuffers:kemo_buffers];
+/*  Release Map vertexs */
+        [_kemo2DRenderer releaseMapMetalBuffers:kemo_sgl->kemo_buffers];
     }else{
-        [_kemo3DRenderer releaseKemoView3DMetalBuffers:kemo_buffers];
+/*  Release 3D vertexs */
+        [_kemo3DRenderer releaseKemoView3DMetalBuffers:kemo_sgl];
 /*  Release transparent vertexs */
-        [_kemo3DRenderer releaseTransparentMetalBuffers:kemo_buffers];
+        [_kemo3DRenderer releaseTransparentMetalBuffers:kemo_sgl];
     };
-    
-    [_kemo2DRenderer releaseMsgMetalBuffers:kemo_buffers];
+/*  Release Message vertexs */
+    [_kemo2DRenderer releaseMsgMetalBuffers:kemo_sgl->kemo_buffers];
     return;
 }
 
 
-- (void) setKemoViewMetalBuffers:(struct kemoview_buffers *) kemo_buffers
-                            PSFs:(struct kemoview_psf *) kemo_psf
-                       fieldline:(struct kemoview_fline *) kemo_fline
+- (void) setKemoViewMetalBuffers:(id<MTLDevice> *) device
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     if(kemoview_get_view_type_flag() == VIEW_MAP){
-        [_kemo2DRenderer setMapMetalBuffers:&_device
-                                    buffers:kemo_buffers];
+/*  Set Map vertexs to Metal buffers */
+        [_kemo2DRenderer setMapMetalBuffers:device
+                                    buffers:kemo_sgl->kemo_buffers];
     }else{
-        [_kemo3DRenderer setKemoView3DMetalBuffers:&_device
-                                           buffers:kemo_buffers
-                                              PSFs:kemo_psf
-                                         fieldline:kemo_fline];
-/*  Set transparent vertexs */
-        [_kemo3DRenderer setKemoTransparentMetalBuffers:&_device
-                                                buffers:kemo_buffers
-                                                   PSFs:kemo_psf];
+/*  Set 3D vertexs to Metal buffers */
+        [_kemo3DRenderer setKemoView3DMetalBuffers:device
+                                          kemoview:kemo_sgl];
+/*  Set transparent vertexs to Metal buffers */
+        [_kemo3DRenderer setKemoTransparentMetalBuffers:device
+                                               kemoview:kemo_sgl];
     };
     
-    [_kemo2DRenderer setMessageMetalBuffers:&_device
-                                    buffers:kemo_buffers];
+/*  Set message vertexs to Metal buffers */
+    [_kemo2DRenderer setMessageMetalBuffers:device
+                                    buffers:kemo_sgl->kemo_buffers];
+    return;
+}
+
+- (void)refreshKemoViewMetalBuffers:(id<MTLDevice> *) device
+                           kemoview:(struct kemoviewer_type *) kemo_sgl
+{
+    if(kemoview_get_draw_mode() == FULL_DRAW){
+        [self releaseKemoViewMetalBuffers:kemo_sgl];
+        
+        kemoview_const_buffers(kemo_sgl);
+        
+        [self setKemoViewMetalBuffers:device
+                             kemoview:kemo_sgl];
+    }else if(kemoview_get_draw_mode() == FAST_DRAW){
+        if(kemoview_get_view_type_flag() != VIEW_MAP){
+            [_kemo3DRenderer releaseTransparentMetalBuffers:kemo_sgl];
+            
+            kemoview_transparent_buffers(kemo_sgl);
+            
+            [_kemo3DRenderer setKemoTransparentMetalBuffers:device
+                                                   kemoview:kemo_sgl];
+        };
+    };
     return;
 }
 
 
 - (void) encodeKemoViewers:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                    buffer:(struct kemoview_buffers *) kemo_buffers
-                     views:(struct view_element *) view_s
-                 fieldline:(struct kemoview_fline *) kemo_fline
-                      mesh:(struct kemoview_mesh *) kemo_mesh
+                  kemoview:(struct kemoviewer_type *) kemo_sgl
                     unites:(KemoViewUnites *) monoViewUnites
                    eyeflag:(int) iflag_lr
 {
     int iflag_view = kemoview_get_view_type_flag();
     if(iflag_view == VIEW_MAP){
         [_kemo2DRenderer encodeMapObjects:renderEncoder
-                                  buffers:kemo_buffers
+                                  buffers:kemo_sgl->kemo_buffers
                                projection:&_map_proj_mat];
     } else if(iflag_view == VIEW_STEREO){
         [_kemoRendererTools set2dProjectionMatrices:&_cbar_proj_mat
                                       MapProjection:&_map_proj_mat];
         if(iflag_lr < 0){
-            update_left_projection_struct(view_s);
-            modify_left_view_by_struct(view_s);
+            update_left_projection_struct(kemo_sgl->view_s);
+            modify_left_view_by_struct(kemo_sgl->view_s);
             [_kemoRendererTools setTransferMatrices:&_leftViewUnites];
-            [_kemoRendererTools setKemoViewLightings:kemo_buffers->cube_buf
+            [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
                                               unites:&_leftViewUnites];
             [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                                depth:&_depthState
-                                              buffer:kemo_buffers
-                                           fieldline:kemo_fline
-                                                mesh:kemo_mesh
+                                            kemoview:kemo_sgl
                                               unites:&_leftViewUnites];
         }else if(iflag_lr > 0){
-            update_right_projection_struct(view_s);
-            modify_right_view_by_struct(view_s);
+            update_right_projection_struct(kemo_sgl->view_s);
+            modify_right_view_by_struct(kemo_sgl->view_s);
             [_kemoRendererTools setTransferMatrices:&_rightViewUnites];
-            [_kemoRendererTools setKemoViewLightings:kemo_buffers->cube_buf
+            [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
                                               unites:&_rightViewUnites];
             [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                                depth:&_depthState
-                                              buffer:kemo_buffers
-                                           fieldline:kemo_fline
-                                                mesh:kemo_mesh
+                                            kemoview:kemo_sgl
                                               unites:&_rightViewUnites];
         }else{
-            update_left_projection_struct(view_s);
-            modify_left_view_by_struct(view_s);
+            update_left_projection_struct(kemo_sgl->view_s);
+            modify_left_view_by_struct(kemo_sgl->view_s);
             [_kemoRendererTools setTransferMatrices:&_leftViewUnites];
-            [_kemoRendererTools setKemoViewLightings:kemo_buffers->cube_buf
+            [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
                                               unites:&_leftViewUnites];
             [_kemoRendererTools leftMaterialParams:&_leftViewUnites.material];
             [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                                depth:&_depthState
-                                              buffer:kemo_buffers
-                                           fieldline:kemo_fline
-                                                mesh:kemo_mesh
+                                            kemoview:kemo_sgl
                                               unites:&_leftViewUnites];
 
             [_kemoRendererTools setTransferMatrices:&_rightViewUnites];
-            [_kemoRendererTools setKemoViewLightings:kemo_buffers->cube_buf
+            [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
                                               unites:&_rightViewUnites];
             [_kemoRendererTools rightMaterialParams:&_rightViewUnites.material];
             [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                                depth:&_depthState2
-                                              buffer:kemo_buffers
-                                           fieldline:kemo_fline
-                                                mesh:kemo_mesh
+                                            kemoview:kemo_sgl
                                               unites:&_rightViewUnites];
         }
     } else {
         [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                            depth:&_depthState
-                                          buffer:kemo_buffers
-                                       fieldline:kemo_fline
-                                            mesh:kemo_mesh
+                                        kemoview:kemo_sgl
                                           unites:monoViewUnites];
     };
     [_kemo2DRenderer encodeMessageObjects:renderEncoder
-                                  buffers:kemo_buffers
+                                  buffers:kemo_sgl->kemo_buffers
                                projection:&_cbar_proj_mat];
     return;
 }
 
 - (void) encodeSimpleView:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                   buffer:(struct kemoview_buffers *) kemo_buffers
-                     mesh:(struct kemoview_mesh *) kemo_mesh
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
                    unites:(KemoViewUnites *) monoViewUnites
 {
     if(kemoview_get_view_type_flag() == VIEW_MAP){
         [_kemo2DRenderer encodeMapObjects:renderEncoder
-                                  buffers:kemo_buffers
+                                  buffers:kemo_sgl->kemo_buffers
                                projection:&_map_proj_mat];
     }else{
         [_kemo3DRenderer encodeKemoSimpleObjects:renderEncoder
                                            depth:&_depthState
-                                          buffer:kemo_buffers
-                                            mesh:kemo_mesh
+                                        kemoview:kemo_sgl
                                           unites:monoViewUnites];
     };
     [_kemo2DRenderer encodeMessageObjects:renderEncoder
-                                  buffers:kemo_buffers
+                                  buffers:kemo_sgl->kemo_buffers
                                projection:&_cbar_proj_mat];
     return;
 }
 
--(void) takoview:(nonnull MTKView *)view
-         eyeflag:(int) iflag_lr
+-(void) kemoViewEncodeAll:(nonnull MTKView *)view
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
+                  eyeflag:(int) iflag_lr
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-
 /* Create a new command buffer for each render pass to the current drawable. */
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
     commandBuffer.label = @"KemoViewerCommands";
@@ -252,15 +260,11 @@ Implementation of a platform independent renderer class, which performs Metal se
 
         if(kemoview_get_draw_mode() == SIMPLE_DRAW){
             [self encodeSimpleView:&_renderEncoder
-                            buffer:kemo_sgl->kemo_buffers
-                              mesh:kemo_sgl->kemo_mesh
+                          kemoview:kemo_sgl
                             unites:&_monoViewUnites];
         }else{
             [self encodeKemoViewers:&_renderEncoder
-                             buffer:kemo_sgl->kemo_buffers
-                              views:kemo_sgl->view_s
-                          fieldline:kemo_sgl->kemo_fline
-                               mesh:kemo_sgl->kemo_mesh
+                           kemoview:kemo_sgl
                              unites:&_monoViewUnites
                             eyeflag:iflag_lr];
         };
@@ -274,37 +278,23 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
-
 - (void)drawKemoMetalView:(nonnull MTKView *)view
                   eyeflag:(int) iflag_lr
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    if(kemoview_get_draw_mode() == FULL_DRAW){
-        [self releaseKemoViewMetalBuffers:kemo_sgl->kemo_buffers];
 
-        kemoview_const_buffers(kemo_sgl);
-
-        [self setKemoViewMetalBuffers:kemo_sgl->kemo_buffers
-                                 PSFs:kemo_sgl->kemo_psf
-                            fieldline:kemo_sgl->kemo_fline];
-    }else if(kemoview_get_draw_mode() == FAST_DRAW){
-        if(kemoview_get_view_type_flag() != VIEW_MAP){
-            [_kemo3DRenderer releaseTransparentMetalBuffers:kemo_sgl->kemo_buffers];
-            kemoview_transparent_buffers(kemo_sgl);
-            [_kemo3DRenderer setKemoTransparentMetalBuffers:&_device
-                                                    buffers:kemo_sgl->kemo_buffers
-                                                       PSFs:kemo_sgl->kemo_psf];
-        };
-    };
-
-    [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers->cube_buf
+    [self refreshKemoViewMetalBuffers:&_device
+                             kemoview:kemo_sgl];
+    [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
                                       unites:&_monoViewUnites];
 
     [_kemoRendererTools set2dProjectionMatrices:&_cbar_proj_mat
                                   MapProjection:&_map_proj_mat];
     [_kemoRendererTools setTransferMatrices:&_monoViewUnites];
 
-    [self takoview:view eyeflag:iflag_lr];
+    [self kemoViewEncodeAll:view
+                   kemoview:kemo_sgl
+                    eyeflag:iflag_lr];
     return;
 }
 

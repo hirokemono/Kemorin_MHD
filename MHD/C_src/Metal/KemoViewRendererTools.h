@@ -15,6 +15,7 @@
 #import "AAPLShaderTypes.h"
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
+#include "m_kemoview_object_buffers.h"
 #include "m_transfer_matrices.h"
 #include "m_gl_transfer_matrix.h"
 #include "draw_colorbar_gl.h"
@@ -38,7 +39,7 @@ typedef struct
 - (void)set2dProjectionMatrices:(matrix_float4x4 *) cbar_proj_mat
                   MapProjection:(matrix_float4x4 *) map_proj_mat;
 - (void)setTransferMatrices:(KemoViewUnites *) monoViewUnites;
-- (void) setKemoViewLightings:(struct gl_strided_buffer *) cube_buf
+- (void) setKemoViewLightings:(struct kemoview_buffers *) kemo_buffers
                        unites:(KemoViewUnites *) monoViewUnites;
 
 @end

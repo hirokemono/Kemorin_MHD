@@ -17,8 +17,7 @@
 #import "KemoViewMetalBuffers.h"
 #import "KemoViewRendererTools.h"
 
-#include "m_kemoview_object_buffers.h"
-#include "m_kemoview_psf.h"
+#include "m_kemoviewer_data.h"
 
 typedef struct
 {
@@ -111,15 +110,12 @@ typedef struct
 }
 
 - (void) setKemoView3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
-                           buffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
-                              PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
-                         fieldline:(struct kemoview_fline *_Nonnull) kemo_fline;
+                          kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 - (void) setKemoTransparentMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
-                                buffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
-                                   PSFs:(struct kemoview_psf *_Nonnull) kemo_psf;
+                               kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 
-- (void) releaseKemoView3DMetalBuffers:(struct kemoview_buffers *_Nonnull) kemo_buffers;
-- (void) releaseTransparentMetalBuffers:(struct kemoview_buffers *_Nonnull) kemo_buffers;
+- (void) releaseKemoView3DMetalBuffers:(struct kemoviewer_type *_Nonnull) kemo_sgl;
+- (void) releaseTransparentMetalBuffers:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 
 
 
@@ -132,15 +128,12 @@ typedef struct
 
 - (void) encodeKemoSimpleObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                            depth:(id<MTLDepthStencilState> *) depthState
-                          buffer:(struct kemoview_buffers *) kemo_buffers
-                            mesh:(struct kemoview_mesh *) kemo_mesh
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
                           unites:(KemoViewUnites *) monoViewUnites;
 
 - (void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                            depth:(id<MTLDepthStencilState> *) depthState
-                          buffer:(struct kemoview_buffers *) kemo_buffers
-                       fieldline:(struct kemoview_fline *) kemo_fline
-                            mesh:(struct kemoview_mesh *) kemo_mesh
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
                           unites:(KemoViewUnites *) monoViewUnites;
 @end
 

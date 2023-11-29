@@ -8,7 +8,8 @@
 #import <Foundation/Foundation.h>
 
 
-#import "KemoView3DRenderer.h"
+#import  "KemoView3DRenderer.h"
+
 #include "m_gl_transfer_matrix.h"
 #include "draw_colorbar_gl.h"
 
@@ -156,39 +157,36 @@
 }
 
 - (void) setKemoView3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
-                           buffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
-                              PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
-                         fieldline:(struct kemoview_fline *_Nonnull) kemo_fline
+                          kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
     [self set3DMetalBuffers:device
                 metalbuffer:&_kemoViewMetalBuf
-                    buffers:kemo_buffers
-                       PSFs:kemo_psf
-                  fieldline:kemo_fline];
+                    buffers:kemo_sgl->kemo_buffers
+                       PSFs:kemo_sgl->kemo_psf
+                  fieldline:kemo_sgl->kemo_fline];
     return;
 }
 
 - (void) setKemoTransparentMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
-                                buffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
-                                   PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
+                               kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
     [self setTransMetalBuffers:device
                    metalbuffer:&_kemoViewMetalBuf
-                       buffers:kemo_buffers
-                          PSFs:kemo_psf];
+                       buffers:kemo_sgl->kemo_buffers
+                          PSFs:kemo_sgl->kemo_psf];
     return;
 };
 
-- (void) releaseKemoView3DMetalBuffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
+- (void) releaseKemoView3DMetalBuffers:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
     [self release3DMetalBuffers:&_kemoViewMetalBuf
-                        buffers:kemo_buffers];
+                        buffers:kemo_sgl->kemo_buffers];
     return;
 };
-- (void) releaseTransparentMetalBuffers:(struct kemoview_buffers *_Nonnull) kemo_buffers;
+- (void) releaseTransparentMetalBuffers:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 {
     [self releaseTransMetalBuffers:&_kemoViewMetalBuf
-                           buffers:kemo_buffers];
+                           buffers:kemo_sgl->kemo_buffers];
     return;
 };
 
@@ -882,34 +880,31 @@
 
 - (void) encodeKemoSimpleObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                            depth:(id<MTLDepthStencilState> *) depthState
-                          buffer:(struct kemoview_buffers *) kemo_buffers
-                            mesh:(struct kemoview_mesh *) kemo_mesh
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
                           unites:(KemoViewUnites *) monoViewUnites
 {
     [self encodeSimpleObjects:renderEncoder
                     pipelines:&_kemoViewPipelines
                         depth:depthState
                   metalbuffer:&_kemoViewMetalBuf
-                       buffer:kemo_buffers
-                         mesh:kemo_mesh
+                       buffer:kemo_sgl->kemo_buffers
+                         mesh:kemo_sgl->kemo_mesh
                        unites:monoViewUnites];
     return;
 };
 
 - (void) encodeKemoView3DObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                            depth:(id<MTLDepthStencilState> *) depthState
-                          buffer:(struct kemoview_buffers *) kemo_buffers
-                       fieldline:(struct kemoview_fline *) kemo_fline
-                            mesh:(struct kemoview_mesh *) kemo_mesh
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
                           unites:(KemoViewUnites *) monoViewUnites
 {
     [self encode3DObjects:renderEncoder
                 pipelines:&_kemoViewPipelines
                     depth:depthState
               metalbuffer:&_kemoViewMetalBuf
-                   buffer:kemo_buffers
-                fieldline:kemo_fline
-                     mesh:kemo_mesh
+                   buffer:kemo_sgl->kemo_buffers
+                fieldline:kemo_sgl->kemo_fline
+                     mesh:kemo_sgl->kemo_mesh
                    unites:monoViewUnites];
     return;
 }

@@ -149,10 +149,10 @@
     return;
 };
 
-- (void) setKemoViewLightings:(struct gl_strided_buffer *) cube_buf
+- (void) setKemoViewLightings:(struct kemoview_buffers *) kemo_buffers
                        unites:(KemoViewUnites *) monoViewUnites
 {
-    if(cube_buf->num_nod_buf > 0){
+    if(kemo_buffers->cube_buf->num_nod_buf > 0){
         [self setCubeColorbuffer:&(monoViewUnites->lights)
                         material:&(monoViewUnites->material)];
     } else {
