@@ -352,22 +352,21 @@ Implementation of a platform independent renderer class, which performs Metal se
                           vertex:(id<MTLBuffer> *) anaglyphVertice
                           texure:(id<MTLTexture> *) anaglyphTexure
 {
-    int i, j;
-    long i_org, i_flp;
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     struct line_text_image * anaglyph_img
         = alloc_line_text_image((int) pix_xy[0], (int) pix_xy[1], 20);
 
-    for(j=0;j<pix_xy[1];j++){
-        for(i=0;i<pix_xy[0];i++){
-            i_org = i + (pix_xy[1]-j-1) * pix_xy[0];
-            i_flp = i + j * pix_xy[0];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_apply(pix_xy[1], queue, ^(size_t j) {
+        for(int i=0;i<pix_xy[0];i++){
+            long i_org = i + (pix_xy[1]-j-1) * pix_xy[0];
+            long i_flp = i + j * pix_xy[0];
         anaglyph_img->imgBMP[4*i_org  ] = bgra[4*i_flp+2];
         anaglyph_img->imgBMP[4*i_org+1] = bgra[4*i_flp+1];
         anaglyph_img->imgBMP[4*i_org+2] = bgra[4*i_flp  ];
         anaglyph_img->imgBMP[4*i_org+3] = bgra[4*i_flp+3];
         };
-    };
+    });
     /*
      anaglyph_img->imgBMP[4*i  ]: R;
      anaglyph_img->imgBMP[4*i+1]: G
