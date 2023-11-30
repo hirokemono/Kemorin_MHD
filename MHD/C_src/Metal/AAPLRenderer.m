@@ -155,7 +155,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
-
 - (void) encodeKemoViewers:(id<MTLRenderCommandEncoder>  *) renderEncoder
                   kemoview:(struct kemoviewer_type *) kemo_sgl
                     unites:(KemoViewUnites *) monoViewUnites
@@ -168,51 +167,32 @@ Implementation of a platform independent renderer class, which performs Metal se
         [_kemo2DRenderer encodeMapObjects:renderEncoder
                                   buffers:kemo_sgl->kemo_buffers
                                projection:&_map_proj_mat];
-    } else if(iflag_view == VIEW_STEREO){
-        [_kemoRendererTools set2dProjectionMatrices:&_cbar_proj_mat
-                                      MapProjection:&_map_proj_mat];
-        if(iflag_lr < 0){
-            update_left_projection_struct(kemo_sgl->view_s);
-            modify_left_view_by_struct(kemo_sgl->view_s);
-            [_kemoRendererTools setTransferMatrices:&_leftViewUnites];
-            [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                              unites:leftViewUnites];
-            [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
-                                               depth:&_depthState
-                                            kemoview:kemo_sgl
-                                              unites:leftViewUnites];
-        }else if(iflag_lr > 0){
-            update_right_projection_struct(kemo_sgl->view_s);
-            modify_right_view_by_struct(kemo_sgl->view_s);
-            [_kemoRendererTools setTransferMatrices:rightViewUnites];
-            [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                              unites:rightViewUnites];
-            [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
-                                               depth:&_depthState
-                                            kemoview:kemo_sgl
-                                              unites:rightViewUnites];
-        }else{
-            update_left_projection_struct(kemo_sgl->view_s);
-            modify_left_view_by_struct(kemo_sgl->view_s);
-            [_kemoRendererTools setTransferMatrices:leftViewUnites];
-            [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                              unites:leftViewUnites];
-            [_kemoRendererTools leftMaterialParams:&(leftViewUnites->material)];
-            [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
-                                               depth:&_depthState
-                                            kemoview:kemo_sgl
-                                              unites:leftViewUnites];
-
-            [_kemoRendererTools setTransferMatrices:&_rightViewUnites];
-            [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                              unites:rightViewUnites];
-            [_kemoRendererTools rightMaterialParams:&(rightViewUnites->material)];
-            [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
-                                               depth:&_depthState2
-                                            kemoview:kemo_sgl
-                                              unites:rightViewUnites];
-        }
-    } else {
+    }else if(kemoview_get_draw_mode() == SIMPLE_DRAW){
+        [_kemo3DRenderer encodeKemoSimpleObjects:renderEncoder
+                                           depth:&_depthState
+                                        kemoview:kemo_sgl
+                                          unites:monoViewUnites];
+    }else if(iflag_view == VIEW_STEREO && iflag_lr < 0){
+        update_left_projection_struct(kemo_sgl->view_s);
+        modify_left_view_by_struct(kemo_sgl->view_s);
+        [_kemoRendererTools setTransferMatrices:&_leftViewUnites];
+        [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
+                                          unites:leftViewUnites];
+        [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
+                                           depth:&_depthState
+                                        kemoview:kemo_sgl
+                                          unites:leftViewUnites];
+    }else if(iflag_view == VIEW_STEREO && iflag_lr > 0){
+        update_right_projection_struct(kemo_sgl->view_s);
+        modify_right_view_by_struct(kemo_sgl->view_s);
+        [_kemoRendererTools setTransferMatrices:rightViewUnites];
+        [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
+                                          unites:rightViewUnites];
+        [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
+                                           depth:&_depthState
+                                        kemoview:kemo_sgl
+                                          unites:rightViewUnites];
+    }else{
         [_kemo3DRenderer encodeKemoView3DObjects:renderEncoder
                                            depth:&_depthState
                                         kemoview:kemo_sgl
@@ -221,27 +201,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     [_kemo2DRenderer encodeMessageObjects:renderEncoder
                                   buffers:kemo_sgl->kemo_buffers
                                projection:&_cbar_proj_mat];
-    return;
-}
-
-- (void) encodeSimpleView:(id<MTLRenderCommandEncoder>  *) renderEncoder
-                 kemoview:(struct kemoviewer_type *) kemo_sgl
-                   unites:(KemoViewUnites *) monoViewUnites
-{
-    if(kemoview_get_view_type_flag() == VIEW_MAP){
-        [_kemo2DRenderer encodeMapObjects:renderEncoder
-                                  buffers:kemo_sgl->kemo_buffers
-                               projection:&_map_proj_mat];
-    }else{
-        [_kemo3DRenderer encodeKemoSimpleObjects:renderEncoder
-                                           depth:&_depthState
-                                        kemoview:kemo_sgl
-                                          unites:monoViewUnites];
-    };
-    [_kemo2DRenderer encodeMessageObjects:renderEncoder
-                                  buffers:kemo_sgl->kemo_buffers
-                               projection:&_cbar_proj_mat];
-    return;
 }
 
 -(void) kemoViewEncodeAll:(nonnull MTKView *)view
@@ -250,6 +209,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
 /* Create a new command buffer for each render pass to the current drawable. */
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+
     commandBuffer.label = @"KemoViewerCommands";
 /* Obtain a renderPassDescriptor generated from the view's drawable textures. */
     MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
@@ -257,28 +217,174 @@ Implementation of a platform independent renderer class, which performs Metal se
 /* Create a render command encoder. */
         _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"MyRenderEncoder";
-
-        if(kemoview_get_draw_mode() == SIMPLE_DRAW){
-            [self encodeSimpleView:&_renderEncoder
-                          kemoview:kemo_sgl
-                            unites:&_monoViewUnites];
-        }else{
-            [self encodeKemoViewers:&_renderEncoder
-                           kemoview:kemo_sgl
-                             unites:&_monoViewUnites
-                         leftUnites:&_leftViewUnites
-                       rightUunites:&_rightViewUnites
-                            eyeflag:iflag_lr];
-        };
+        [self encodeKemoViewers:&_renderEncoder
+                       kemoview:kemo_sgl
+                         unites:&_monoViewUnites
+                     leftUnites:&_leftViewUnites
+                   rightUunites:&_rightViewUnites
+                        eyeflag:iflag_lr];
 
 /*Schedule a present once the framebuffer is complete using the current drawable. */
         [commandBuffer presentDrawable:view.currentDrawable];
         [_renderEncoder endEncoding];
     }
-    [commandBuffer  commit];
-    [commandBuffer waitUntilCompleted];
+    [commandBuffer commit];
     return;
 }
+
+- (id<MTLTexture>) kemoViewEncodetoTexure:(nonnull MTKView *)view
+                                 kemoview:(struct kemoviewer_type *) kemo_sgl
+                                  eyeflag:(int) iflag_lr
+{
+/* Create a new command buffer for each render pass to the current drawable. */
+    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+
+    commandBuffer.label = @"KemoViewerCommands";
+/* Obtain a renderPassDescriptor generated from the view's drawable textures. */
+    MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
+
+    if(renderPassDescriptor != nil){
+/* Create a render command encoder. */
+        _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        _renderEncoder.label = @"MyRenderEncoder";
+        [self encodeKemoViewers:&_renderEncoder
+                       kemoview:kemo_sgl
+                         unites:&_monoViewUnites
+                     leftUnites:&_leftViewUnites
+                   rightUunites:&_rightViewUnites
+                        eyeflag:iflag_lr];
+
+/*Schedule a present once the framebuffer is complete using the current drawable. */
+        [_renderEncoder endEncoding];
+    }
+    [commandBuffer commit];
+    [commandBuffer waitUntilCompleted];
+    return view.currentDrawable.texture;
+}
+
+- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(nonnull MTKView *)view
+                                        eyeflag:(int) iflag_lr;
+{
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+
+    [self refreshKemoViewMetalBuffers:&_device
+                             kemoview:kemo_sgl];
+    [_kemoRendererTools setKemoViewLightsAndViewMatrices:&_monoViewUnites
+                                           MsgProjection:&_cbar_proj_mat
+                                           MapProjection:&_map_proj_mat];
+    id<MTLTexture> _imageOutputTexture = [self kemoViewEncodetoTexure:view
+                                                             kemoview:kemo_sgl
+                                                              eyeflag:iflag_lr];
+    return _imageOutputTexture;
+}
+
+-(unsigned char *) getRenderedbyMetalToBGRA:(nonnull MTKView *)view
+                                    eyeflag:(int) iflag_lr
+                                     Pixels:(NSUInteger *) pix_xy
+                               PixelPerByte:(NSUInteger *) pixelByte
+{
+    id<MTLTexture> _imageOutputTexture = [self drawKemoViewToTexure:view
+                                                            eyeflag:iflag_lr];
+
+    /*    Texture to render screen to texture */
+    pix_xy[0] = _imageOutputTexture.width;
+    pix_xy[1] = _imageOutputTexture.height;
+    pixelByte[0] = 4;
+    NSUInteger bpRaw = pixelByte[0] * pix_xy[0] ;
+    NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
+    unsigned char *bgra = (unsigned char *) malloc(pixelByte[0]*num_pixel * sizeof(unsigned char));
+
+    [_imageOutputTexture getBytes:bgra
+                      bytesPerRow:bpRaw
+                       fromRegion:MTLRegionMake2D(0, 0, pix_xy[0], pix_xy[1])
+                      mipmapLevel:0];
+    return bgra;
+};
+
+-(unsigned char *) getAnaglyphbyMetalToBGRA:(nonnull MTKView *)view
+                                     Pixels:(NSUInteger *) pix_xy
+                               PixelPerByte:(NSUInteger *) pixelByte
+{
+    int i;
+    unsigned char *left_bgra =  [self getRenderedbyMetalToBGRA:view
+                                                       eyeflag:-1
+                                                        Pixels:pix_xy
+                                                  PixelPerByte:pixelByte];
+    unsigned char *right_bgra = [self getRenderedbyMetalToBGRA:view
+                                                       eyeflag: 1
+                                                        Pixels:pix_xy
+                                                  PixelPerByte:pixelByte];
+    
+    NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
+    unsigned char *bgra = (unsigned char *) malloc(pixelByte[0]*num_pixel * sizeof(unsigned char));
+    
+    for(i=0;i<num_pixel;i++){
+        bgra[4*i  ] = right_bgra[4*i  ];
+        bgra[4*i+1] = right_bgra[4*i+1];
+        bgra[4*i+2] = left_bgra[4*i+2];
+        bgra[4*i+3] = left_bgra[4*i+3];
+    };
+    free(left_bgra);
+    free(right_bgra);
+    return bgra;
+}
+
+-(void) setAnaglyphToMetalBuffer:(nonnull MTKView *)view
+                          Pixels:(unsigned char *) bgra
+                          Pixels:(NSUInteger *) pix_xy
+                    PixelPerByte:(NSUInteger *) pixelByte
+{
+    int i;
+    NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
+    struct line_text_image * anaglyph_img
+        = alloc_line_text_image((int) pix_xy[0], (int) pix_xy[1], 20);
+    
+    for(i=0;i<num_pixel;i++){
+        anaglyph_img->imgBMP[4*i+3] = bgra[4*i  ];
+        anaglyph_img->imgBMP[4*i+2] = bgra[4*i+1];
+        anaglyph_img->imgBMP[4*i+1] = bgra[4*i+2];
+        anaglyph_img->imgBMP[4*i  ] = bgra[4*i+3];
+    };
+
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    
+    /*  Vertex buffer to render anaglyph on screen */
+    id<MTLBuffer> _Nullable _anaglyphVertice;
+    /*  Texture buffer to render anaglyph on screen */
+    id<MTLTexture> _Nullable _anaglyphTexure;
+    [_kemoMetalBufBase setTextBoxTexture:&_device
+                                  buffer:kemo_sgl->kemo_buffers->screen_buf
+                                   image:anaglyph_img
+                                  vertex:&_anaglyphVertice
+                                  texure:&_anaglyphTexure];
+    dealloc_line_text_image(anaglyph_img);
+    
+    
+    /* Create a new command buffer for each render pass to the current drawable. */
+        id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+
+        commandBuffer.label = @"KemoViewerCommands";
+    /* Obtain a renderPassDescriptor generated from the view's drawable textures. */
+        MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
+        if(renderPassDescriptor != nil){
+    /* Create a render command encoder. */
+            _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+            _renderEncoder.label = @"MyRenderEncoder";
+
+            [_kemo2DRenderer encodeTextBoxObject:kemo_sgl->kemo_buffers
+                                         encoder:&_renderEncoder
+                                          vertex:&_anaglyphVertice
+                                          texure:&_anaglyphTexure
+                                      projection:&_cbar_proj_mat];
+    /*Schedule a present once the framebuffer is complete using the current drawable. */
+            [commandBuffer presentDrawable:view.currentDrawable];
+            [_renderEncoder endEncoding];
+        }
+        [commandBuffer commit];
+    return;
+}
+
+
 
 - (void)drawKemoMetalView:(nonnull MTKView *)view
                   eyeflag:(int) iflag_lr
@@ -287,18 +393,16 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     [self refreshKemoViewMetalBuffers:&_device
                              kemoview:kemo_sgl];
-    [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
-                                      unites:&_monoViewUnites];
-
-    [_kemoRendererTools set2dProjectionMatrices:&_cbar_proj_mat
-                                  MapProjection:&_map_proj_mat];
-    [_kemoRendererTools setTransferMatrices:&_monoViewUnites];
-
+    [_kemoRendererTools setKemoViewLightsAndViewMatrices:&_monoViewUnites
+                                           MsgProjection:&_cbar_proj_mat
+                                           MapProjection:&_map_proj_mat];
     [self kemoViewEncodeAll:view
                    kemoview:kemo_sgl
                     eyeflag:iflag_lr];
     return;
 }
+
+
 
 // Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view

@@ -7,9 +7,14 @@
 
 #include "m_vertex_buffer.h"
 
+long prod_padding_4096chars(long num_bytes){
+    long nsize = 1 + num_bytes / 4096;
+    return (4096 * nsize);
+};
+
 static long prod_padding_1024floats(int num_nod_buf, int ncomp_buf){
-    int nsize = 1 + (num_nod_buf * ncomp_buf) / 1024;
-    return (1024 * nsize);
+    long nsize = 4 * num_nod_buf * ncomp_buf;
+    return prod_padding_4096chars(nsize);
 };
 
 struct gl_strided_buffer * init_strided_buffer(int num_points){

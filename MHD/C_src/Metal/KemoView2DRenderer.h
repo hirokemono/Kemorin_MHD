@@ -101,13 +101,18 @@ typedef struct
 -(void) addKemoView2DPipelines:(nonnull MTKView *)mtkView
                    targetPixel:(MTLPixelFormat) pixelformat;
 
-
 - (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
                   buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                projection:(matrix_float4x4 * _Nonnull) map_proj_mat;
 - (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
                       buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                    projection:(matrix_float4x4 * _Nonnull) projection_mat;
+
+- (void)encodeTextBoxObject:(struct gl_strided_buffer *_Nonnull) buf
+                    encoder:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                     vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                     texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
+                 projection:(matrix_float4x4 *_Nonnull) projection_mat;
 @end
 
 

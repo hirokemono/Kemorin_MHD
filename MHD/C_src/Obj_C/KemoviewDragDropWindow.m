@@ -59,7 +59,6 @@
 
 - (void)windowWillClose:(NSNotification *)aNotofication;
 {
-//	NSLog(@"Window %d is closing", id_window);
 //	[self release];
 }
 

@@ -58,6 +58,8 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->zero_buf = init_strided_buffer(n_point);
     kemo_buffers->time_buf = init_strided_buffer(n_point);
     kemo_buffers->msg_buf =  init_strided_buffer(n_point);
+
+    kemo_buffers->screen_buf =  init_strided_buffer(n_point);
     
     kemo_buffers->cbar_min_image =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
     kemo_buffers->cbar_max_image =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
@@ -105,6 +107,8 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->zero_buf);
     dealloc_strided_buffer(kemo_buffers->time_buf);
     dealloc_strided_buffer(kemo_buffers->msg_buf);
+
+    dealloc_strided_buffer(kemo_buffers->screen_buf);
 
     dealloc_strided_buffer(kemo_buffers->axis_buf);
 
@@ -178,6 +182,9 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     const_message_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
                          kemo_buffers->msg_buf, kemo_buffers->message_image);
     
+    const_screen_buffer(view_s->nx_frame, view_s->ny_frame, kemo_buffers->screen_buf);
+    kemo_buffers->screen_buf->num_nod_buf = 0;
+
     /* draw example cube for empty data */
     
     iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;

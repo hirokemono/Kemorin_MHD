@@ -28,6 +28,8 @@ void time_mbox_to_buf(int iflag_retina, float *text_color, float xwin, float ywi
 void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
                          const float xbar_max, const float ybar_min,
                          struct gl_strided_buffer *strided_buf);
+void screen_mbox_to_buf(const int npix_x, const int npix_y,
+                        struct gl_strided_buffer *strided_buf);
 
 #endif
 

@@ -144,7 +144,6 @@
 -(void) FastUpdateImage
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     [_resetview UpdateParameters];
 
     [self setNeedsDisplay: YES];
@@ -158,16 +157,6 @@
 
     [self setNeedsDisplay: YES];
     return;
-}
-
--(id) DrawRotation: (NSInteger) int_degree : (NSInteger)rotationaxis
-{
-    kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_fast_viewmatrix();
-    
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
-    return self;
 }
 
 -(id) DrawQuilt: (NSInteger) int_degree : (NSInteger)rotationaxis

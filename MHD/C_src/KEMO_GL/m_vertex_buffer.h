@@ -37,6 +37,8 @@ struct gl_strided_buffer{
 };
 
 /* prototypes */
+long prod_padding_4096chars(long num_bytes);
+
 struct gl_strided_buffer * init_strided_buffer(int num_points);
 void alloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 void resize_strided_buffer(struct gl_strided_buffer *strided_buf);

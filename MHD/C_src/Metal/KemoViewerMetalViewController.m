@@ -70,12 +70,11 @@
                                PixelPerByte:(NSUInteger *) pixelByte
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
-    [_renderer drawKemoMetalView:_metalView
-                         eyeflag:iflag_lr];
+    id<MTLTexture> _imageOutputTexture = [_renderer drawKemoViewToTexure:_metalView
+                                                                 eyeflag:iflag_lr];
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
 
     /*    Texture to render screen to texture */
-    id<MTLTexture> _imageOutputTexture = _metalView.currentDrawable.texture;
     pix_xy[0] = _imageOutputTexture.width;
     pix_xy[1] = _imageOutputTexture.height;
     pixelByte[0] = 4;

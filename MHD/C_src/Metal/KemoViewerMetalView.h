@@ -59,7 +59,6 @@
 -(void) FastUpdateImage;
 -(void) QuickUpdateImage;
 
--(id) DrawRotation: (NSInteger) int_degree : (NSInteger) rotationaxis;
 -(id) DrawQuilt: (NSInteger) int_degree : (NSInteger) rotationaxis;
 -(id) DrawEvolution:(NSInteger)timeStep;
 

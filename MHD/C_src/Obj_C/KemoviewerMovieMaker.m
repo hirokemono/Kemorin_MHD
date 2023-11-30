@@ -427,6 +427,13 @@ NSData *SnapshotData;
 
 
 // ---------------------------------
+-(id) setRotation: (NSInteger) int_degree : (NSInteger)rotationaxis
+{
+    kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
+    kemoview_fast_viewmatrix();
+    return self;
+}
 
 -(void) SaveQTmovieRotation
 {
@@ -450,8 +457,7 @@ NSData *SnapshotData;
     for(icount = 0;icount<ied_deg;icount++){
         int_degree = (icount * self.RotationIncrement);
         self.CurrentStep = icount;
-        [_metalView DrawRotation:int_degree:RotationAxisID];
-        [_metalViewController RenderUpdate];
+        [self setRotation:int_degree:RotationAxisID];
 
         if (CurrentMovieFormat == SAVE_QT_MOVIE && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
             CMTime frameTime = CMTimeMake((int64_t)icount, (int) self.FramePerSecond);
@@ -476,7 +482,7 @@ NSData *SnapshotData;
                 [self SaveKemoviewPDFFile:ImageFilehead];
             }
         }else{
-            [_metalView draw];
+            [_metalView FastUpdateImage];
         }
         
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
@@ -493,9 +499,8 @@ NSData *SnapshotData;
     }
     
     kemoview_set_quilt_nums(ISET_QUILT_COUNT, IZERO);
-    [_metalView DrawRotation:IZERO:RotationAxisID];
-    [_metalViewController RenderUpdate];
-    [_metalView draw];
+    [self setRotation:IZERO:RotationAxisID];
+    [_metalView FastUpdateImage];
 }
 
 -(void) PreviewQuiltImages

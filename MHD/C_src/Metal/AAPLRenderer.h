@@ -28,8 +28,12 @@ Header for a platform independent renderer class, which performs Metal setup and
 
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
-- (void)drawKemoMetalView:(nonnull MTKView *)view
+
+- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(nonnull MTKView *)view
+                                        eyeflag:(int) iflag_lr;
+- (void)drawKemoMetalView:(nonnull MTKView *) view
                   eyeflag:(int) iflag_lr;
+
 - (void)drawInMTKView:(nonnull MTKView *)view;
 
 @end

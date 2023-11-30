@@ -163,5 +163,21 @@
     return;
 };
 
+- (void)setKemoViewLightsAndViewMatrices:(KemoViewUnites *) monoViewUnites
+                           MsgProjection:(matrix_float4x4 *) cbar_proj_mat
+                           MapProjection:(matrix_float4x4 *) map_proj_mat
+{
+    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+    [self setKemoViewLightings:kemo_sgl->kemo_buffers
+                        unites:monoViewUnites];
+
+    [self set2dProjectionMatrices:cbar_proj_mat
+                    MapProjection:map_proj_mat];
+    [self setTransferMatrices:monoViewUnites];
+    return;
+}
+
+
+
 @end
 

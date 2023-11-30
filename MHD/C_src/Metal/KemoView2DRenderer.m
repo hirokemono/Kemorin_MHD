@@ -251,12 +251,12 @@
     
 }
 
-- (void)drawTextBoxObject:(struct gl_strided_buffer *) buf
-                  encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
-                pipelines:(KemoView2DMetalPipelines *) kemoView2DPipelines
-                   vertex:(id<MTLBuffer> *)  vertices
-                   texure:(id<MTLTexture> *) texture
-               projection:(matrix_float4x4 *) projection_mat
+- (void)drawTextBoxObject:(struct gl_strided_buffer *_Nonnull) buf
+                  encoder:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
+                   vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                   texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
+               projection:(matrix_float4x4 *_Nonnull) projection_mat;
 {
     if(buf->num_nod_buf > 0){
         [*renderEncoder setRenderPipelineState:kemoView2DPipelines->texured2DPipelineState];
@@ -405,6 +405,21 @@
                        pipelines:&_kemoView2DPipelines
                      targetPixel:pixelformat];
 }
+
+- (void)encodeTextBoxObject:(struct gl_strided_buffer *_Nonnull) buf
+                  encoder:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                   vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                   texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
+               projection:(matrix_float4x4 *_Nonnull) projection_mat
+{
+    [self drawTextBoxObject:buf 
+                    encoder:renderEncoder
+                  pipelines:&_kemoView2DPipelines
+                     vertex:vertices
+                     texure:texture
+                 projection:projection_mat];
+}
+
 - (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
                   buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                projection:(matrix_float4x4 * _Nonnull) map_proj_mat

@@ -41,5 +41,8 @@ typedef struct
 - (void) setKemoViewLightings:(struct kemoview_buffers *) kemo_buffers
                        unites:(KemoViewUnites *) monoViewUnites;
 
+- (void)setKemoViewLightsAndViewMatrices:(KemoViewUnites *) monoViewUnites
+                           MsgProjection:(matrix_float4x4 *) cbar_proj_mat
+                           MapProjection:(matrix_float4x4 *) map_proj_mat;
 @end
 #endif /* KemoViewRendererTools_h_ */

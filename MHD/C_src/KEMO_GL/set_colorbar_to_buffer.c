@@ -395,6 +395,10 @@ void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
 	x2[0] = xbar_max + 320.0*(iflag_retina + 1);
 	x3[0] = xbar_max + 320.0*(iflag_retina + 1);
 	x4[0] = xbar_max;
+    x1[1] = ybar_min - iflag_retina - 1;
+    x2[1] = ybar_min - iflag_retina - 1;
+    x3[1] = ybar_min + 24.0 * (iflag_retina + 1);
+    x4[1] = ybar_min + 24.0 * (iflag_retina + 1);
 	x1[2] = 0.001;
 	x2[2] = 0.001;
 	x3[2] = 0.001;
@@ -408,10 +412,6 @@ void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
 	t3[0] = 1.0;
 	t4[0] = 0.0;
 	
-	x1[1] = ybar_min - iflag_retina - 1;
-	x2[1] = ybar_min - iflag_retina - 1;
-	x3[1] = ybar_min + 24.0 * (iflag_retina + 1);
-	x4[1] = ybar_min + 24.0 * (iflag_retina + 1);
 	t1[1] = 0.0;
 	t2[1] = 0.0;
 	t3[1] = 1.0;
@@ -419,5 +419,43 @@ void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
 	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c1, c1, c1, strided_buf);
 	set_one_texture_to_buf(0, t1, t2, t3, t4, strided_buf);
 	return;
+};
+
+
+void screen_mbox_to_buf(const int npix_x, const int npix_y,
+                        struct gl_strided_buffer *strided_buf){
+    float c1[4];
+    float x1[3], x2[3], x3[3], x4[3];
+    float t1[2], t2[2], t3[2], t4[2];
+    int nd;
+    
+    x1[0] = 0.0;
+    x2[0] = (float) npix_x;
+    x3[0] = (float) npix_x;
+    x4[0] = 0.0;
+    x1[1] = 0.0;
+    x2[1] = 0.0;
+    x3[1] = (float) npix_y;
+    x4[1] = (float) npix_y;
+    x1[2] = 0.0;
+    x2[2] = 0.0;
+    x3[2] = 0.0;
+    x4[2] = 0.0;
+    
+    c1[3] = 1.0;
+    for(nd=0;nd<4;nd++) {c1[nd] = 0.0;};
+    
+    t1[0] = 0.0;
+    t2[0] = 1.0;
+    t3[0] = 1.0;
+    t4[0] = 0.0;
+    
+    t1[1] = 0.0;
+    t2[1] = 0.0;
+    t3[1] = 1.0;
+    t4[1] = 1.0;
+    set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c1, c1, c1, strided_buf);
+    set_one_texture_to_buf(0, t1, t2, t3, t4, strided_buf);
+    return;
 };
 
