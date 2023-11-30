@@ -38,6 +38,11 @@ Implementation of a platform independent renderer class, which performs Metal se
     matrix_float4x4 _cbar_proj_mat;
 
     NSUInteger _frameNum;
+    /*  Vertex buffer to render anaglyph on screen */
+    id<MTLBuffer> _Nullable _anaglyphVertice;
+    /*  Texture buffer to render anaglyph on screen */
+    id<MTLTexture> _Nullable _anaglyphTexure;
+
 }
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
@@ -325,14 +330,15 @@ Implementation of a platform independent renderer class, which performs Metal se
         bgra[4*i+3] = left_bgra[4*i+3];
     };
 */
-    for(i=0;i<num_pixel;i++){
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_apply(num_pixel, queue, ^(size_t i) {
         bgra[4*i  ] = right_bgra[4*i  ];
         bgra[4*i+1] = right_bgra[4*i+1];
         bgra[4*i+2] =  0.299 * left_bgra[4*i+2]
                      + 0.587 * left_bgra[4*i+1]
                      + 0.114 * left_bgra[4*i  ];
         bgra[4*i+3] = left_bgra[4*i+3];
-    };
+    });
     free(left_bgra);
     free(right_bgra);
     return bgra;
@@ -381,6 +387,10 @@ Implementation of a platform independent renderer class, which performs Metal se
         }
     };
  */
+    if(kemo_sgl->kemo_buffers->screen_buf->num_nod_buf > 0){
+        [*anaglyphVertice release];
+        [*anaglyphTexure  release];
+    };
     [_kemoMetalBufBase setTextBoxTexture:&_device
                                   buffer:kemo_sgl->kemo_buffers->screen_buf
                                    image:anaglyph_img
@@ -424,11 +434,6 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     NSUInteger pix_xy[2];
     NSUInteger pixelByte[2];
-    /*  Vertex buffer to render anaglyph on screen */
-    id<MTLBuffer> _Nullable _anaglyphVertice;
-    /*  Texture buffer to render anaglyph on screen */
-    id<MTLTexture> _Nullable _anaglyphTexure;
-
     unsigned char *bgra = [self getAnaglyphbyMetalToBGRA:view
                                                   Pixels:pix_xy
                                             PixelPerByte:pixelByte];

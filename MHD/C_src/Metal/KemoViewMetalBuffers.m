@@ -54,7 +54,7 @@
                       withBytes:psf_texure->texure_rgba
                     bytesPerRow:bytesPerRow];
     };
-
+    return;
 }
 
 - (void)setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
@@ -89,7 +89,7 @@
                       withBytes:img->imgBMP
                     bytesPerRow:bytesPerRow];
     };
-
+    return;
 }
 
 - (void)setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
