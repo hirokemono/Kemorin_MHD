@@ -93,12 +93,14 @@
                                PixelPerByte:(NSUInteger *) pixelByte
 {
     int i;
-    unsigned char *left_bgra =  [self getRenderedbyMetalToBGRA:-1
-                                                        Pixels:pix_xy
-                                                  PixelPerByte:pixelByte];
-    unsigned char *right_bgra = [self getRenderedbyMetalToBGRA:1
-                                                        Pixels:pix_xy
-                                                  PixelPerByte:pixelByte];
+    unsigned char *left_bgra =  [_renderer getRenderedbyMetalToBGRA:_metalView
+                                                            eyeflag:-1
+                                                             Pixels:pix_xy
+                                                       PixelPerByte:pixelByte];
+    unsigned char *right_bgra = [_renderer getRenderedbyMetalToBGRA:_metalView
+                                                            eyeflag:1
+                                                             Pixels:pix_xy
+                                                       PixelPerByte:pixelByte];
     
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     unsigned char *bgra = (unsigned char *) malloc(pixelByte[0]*num_pixel * sizeof(unsigned char));
@@ -126,9 +128,10 @@
         bgra = [self getAnaglyphbyMetalToBGRA:pix_xy
                                  PixelPerByte:pixelByte];
     }else{
-        bgra = [self getRenderedbyMetalToBGRA:0
-                                       Pixels:pix_xy
-                                 PixelPerByte:pixelByte];
+        bgra = [_renderer getRenderedbyMetalToBGRA:_metalView
+                                           eyeflag:0
+                                            Pixels:pix_xy
+                                      PixelPerByte:pixelByte];
     }
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     NSUInteger bpRaw =     pixelByte[0] * pix_xy[0];

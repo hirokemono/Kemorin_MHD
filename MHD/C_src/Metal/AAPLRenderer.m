@@ -203,7 +203,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                                projection:&_cbar_proj_mat];
 }
 
--(void) kemoViewEncodeAll:(nonnull MTKView *)view
+-(void) KemoViewRenderAll:(nonnull MTKView *)view
                  kemoview:(struct kemoviewer_type *) kemo_sgl
                   eyeflag:(int) iflag_lr
 {
@@ -317,11 +317,20 @@ Implementation of a platform independent renderer class, which performs Metal se
     
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     unsigned char *bgra = (unsigned char *) malloc(pixelByte[0]*num_pixel * sizeof(unsigned char));
-    
+/*
     for(i=0;i<num_pixel;i++){
         bgra[4*i  ] = right_bgra[4*i  ];
         bgra[4*i+1] = right_bgra[4*i+1];
         bgra[4*i+2] = left_bgra[4*i+2];
+        bgra[4*i+3] = left_bgra[4*i+3];
+    };
+*/
+    for(i=0;i<num_pixel;i++){
+        bgra[4*i  ] = right_bgra[4*i  ];
+        bgra[4*i+1] = right_bgra[4*i+1];
+        bgra[4*i+2] =  0.299 * left_bgra[4*i+2]
+                     + 0.587 * left_bgra[4*i+1]
+                     + 0.114 * left_bgra[4*i  ];
         bgra[4*i+3] = left_bgra[4*i+3];
     };
     free(left_bgra);
@@ -330,36 +339,62 @@ Implementation of a platform independent renderer class, which performs Metal se
 }
 
 -(void) setAnaglyphToMetalBuffer:(nonnull MTKView *)view
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
                           Pixels:(unsigned char *) bgra
-                          Pixels:(NSUInteger *) pix_xy
+                         num_pix:(NSUInteger *) pix_xy
                     PixelPerByte:(NSUInteger *) pixelByte
+                          vertex:(id<MTLBuffer> *) anaglyphVertice
+                          texure:(id<MTLTexture> *) anaglyphTexure
 {
-    int i;
+    int i, j;
+    long i_org, i_flp;
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     struct line_text_image * anaglyph_img
         = alloc_line_text_image((int) pix_xy[0], (int) pix_xy[1], 20);
-    
-    for(i=0;i<num_pixel;i++){
-        anaglyph_img->imgBMP[4*i+3] = bgra[4*i  ];
-        anaglyph_img->imgBMP[4*i+2] = bgra[4*i+1];
-        anaglyph_img->imgBMP[4*i+1] = bgra[4*i+2];
-        anaglyph_img->imgBMP[4*i  ] = bgra[4*i+3];
-    };
 
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    
-    /*  Vertex buffer to render anaglyph on screen */
-    id<MTLBuffer> _Nullable _anaglyphVertice;
-    /*  Texture buffer to render anaglyph on screen */
-    id<MTLTexture> _Nullable _anaglyphTexure;
+    for(j=0;j<pix_xy[1];j++){
+        for(i=0;i<pix_xy[0];i++){
+            i_org = i + (pix_xy[1]-j-1) * pix_xy[0];
+            i_flp = i + j * pix_xy[0];
+        anaglyph_img->imgBMP[4*i_org  ] = bgra[4*i_flp+2];
+        anaglyph_img->imgBMP[4*i_org+1] = bgra[4*i_flp+1];
+        anaglyph_img->imgBMP[4*i_org+2] = bgra[4*i_flp  ];
+        anaglyph_img->imgBMP[4*i_org+3] = bgra[4*i_flp+3];
+        };
+    };
+    /*
+     anaglyph_img->imgBMP[4*i  ]: R;
+     anaglyph_img->imgBMP[4*i+1]: G
+     anaglyph_img->imgBMP[4*i+2]: B
+     anaglyph_img->imgBMP[4*i+3]: A
+     */
+/*
+    for(j=0;j<pix_xy[1];j++){
+        for(k=0;k<pix_xy[0];k++){
+            i = k + j * pix_xy[0];
+            anaglyph_img->imgBMP[4*i  ] = 0;
+            anaglyph_img->imgBMP[4*i+1] = 255;
+            anaglyph_img->imgBMP[4*i+2] = 0;
+            anaglyph_img->imgBMP[4*i+3] = 255;
+//            anaglyph_img->imgBMP[4*i  ] = 256*((float) k / (float) pix_xy[0]);
+//            anaglyph_img->imgBMP[4*i+1] = 256*((float) j / (float) pix_xy[1]);
+        }
+    };
+ */
     [_kemoMetalBufBase setTextBoxTexture:&_device
                                   buffer:kemo_sgl->kemo_buffers->screen_buf
                                    image:anaglyph_img
-                                  vertex:&_anaglyphVertice
-                                  texure:&_anaglyphTexure];
+                                  vertex:anaglyphVertice
+                                  texure:anaglyphTexure];
     dealloc_line_text_image(anaglyph_img);
-    
-    
+    return;
+}
+
+-(void) encodeAnaglyphRender:(nonnull MTKView *)view
+                    kemoview:(struct kemoviewer_type *) kemo_sgl
+                      vertex:(id<MTLBuffer> *) anaglyphVertice
+                      texure:(id<MTLTexture> *) anaglyphTexure
+{
     /* Create a new command buffer for each render pass to the current drawable. */
         id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
 
@@ -371,10 +406,10 @@ Implementation of a platform independent renderer class, which performs Metal se
             _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
             _renderEncoder.label = @"MyRenderEncoder";
 
-            [_kemo2DRenderer encodeTextBoxObject:kemo_sgl->kemo_buffers
+            [_kemo2DRenderer encodeTextBoxObject:kemo_sgl->kemo_buffers->screen_buf
                                          encoder:&_renderEncoder
-                                          vertex:&_anaglyphVertice
-                                          texure:&_anaglyphTexure
+                                          vertex:anaglyphVertice
+                                          texure:anaglyphTexure
                                       projection:&_cbar_proj_mat];
     /*Schedule a present once the framebuffer is complete using the current drawable. */
             [commandBuffer presentDrawable:view.currentDrawable];
@@ -384,7 +419,33 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
+-(void) KemoViewRenderAnaglyph:(nonnull MTKView *)view
+                      kemoview:(struct kemoviewer_type *) kemo_sgl
+{
+    NSUInteger pix_xy[2];
+    NSUInteger pixelByte[2];
+    /*  Vertex buffer to render anaglyph on screen */
+    id<MTLBuffer> _Nullable _anaglyphVertice;
+    /*  Texture buffer to render anaglyph on screen */
+    id<MTLTexture> _Nullable _anaglyphTexure;
 
+    unsigned char *bgra = [self getAnaglyphbyMetalToBGRA:view
+                                                  Pixels:pix_xy
+                                            PixelPerByte:pixelByte];
+    [self setAnaglyphToMetalBuffer:view
+                          kemoview:kemo_sgl
+                            Pixels:bgra
+                           num_pix:pix_xy
+                      PixelPerByte:pixelByte
+                            vertex:&_anaglyphVertice
+                            texure:&_anaglyphTexure];
+    [self encodeAnaglyphRender:view
+                      kemoview:kemo_sgl
+                        vertex:&_anaglyphVertice
+                        texure:&_anaglyphTexure];
+    free(bgra);
+    return;
+};
 
 - (void)drawKemoMetalView:(nonnull MTKView *)view
                   eyeflag:(int) iflag_lr
@@ -396,9 +457,17 @@ Implementation of a platform independent renderer class, which performs Metal se
     [_kemoRendererTools setKemoViewLightsAndViewMatrices:&_monoViewUnites
                                            MsgProjection:&_cbar_proj_mat
                                            MapProjection:&_map_proj_mat];
-    [self kemoViewEncodeAll:view
-                   kemoview:kemo_sgl
-                    eyeflag:iflag_lr];
+
+    if(kemoview_get_view_type_flag() == VIEW_STEREO){
+        kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = TWO*THREE;
+        [self KemoViewRenderAnaglyph:view
+                            kemoview:kemo_sgl];
+    }else{
+        kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = 0;
+        [self KemoViewRenderAll:view
+                       kemoview:kemo_sgl
+                        eyeflag:0];
+    };
     return;
 }
 
