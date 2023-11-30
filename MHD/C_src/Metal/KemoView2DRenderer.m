@@ -126,6 +126,9 @@
     
     kemoView2DShaders->texured2DVertexFunction =   [*shaderLibrary newFunctionWithName:@"Texture2dVertexShader"];
     kemoView2DShaders->texured2DFragmentFunction = [*shaderLibrary newFunctionWithName:@"sampling2dShader"];
+    
+    kemoView2DShaders->AnaglyphVertexFunction =   [*shaderLibrary newFunctionWithName:@"AnaglyphVertexShader"];
+    kemoView2DShaders->AnaglyphFragmentFunction = [*shaderLibrary newFunctionWithName:@"AnaglyphFragmentShader"];
 }
 
 
@@ -145,7 +148,7 @@
     pipelineStateDescriptor.fragmentFunction = kemoView2DShaders->texured2DFragmentFunction;
     pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-    
+
     pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
     pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
     pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
@@ -163,6 +166,7 @@
     NSAssert(kemoView2DPipelines->texured2DPipelineState, @"Failed to create pipeline state: %@", error);
     
     /*  Create pipeline for simple 2D rendering */
+    [pipelineStateDescriptor init];
     pipelineStateDescriptor.label = @"2D transpearent Pipeline";
     pipelineStateDescriptor.vertexFunction =   kemoView2DShaders->simple2DVertexFunction;
     pipelineStateDescriptor.fragmentFunction = kemoView2DShaders->simple2DFragmentFunction;
@@ -182,6 +186,7 @@
     NSAssert(kemoView2DPipelines->trans2DPipelineState, @"Failed to create pipeline state: %@", error);
     
     /*  Create pipeline for simple rendering */
+    [pipelineStateDescriptor init];
     pipelineStateDescriptor.label = @"2D Simple Pipeline";
     pipelineStateDescriptor.vertexFunction =   kemoView2DShaders->simple2DVertexFunction;
     pipelineStateDescriptor.fragmentFunction = kemoView2DShaders->simple2DFragmentFunction;
@@ -205,6 +210,23 @@
     kemoView2DPipelines->base2DPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                                                                       error:&error];
     NSAssert(kemoView2DPipelines->base2DPipelineState, @"Failed to create pipeline state: %@", error);
+    
+    
+    [pipelineStateDescriptor init];
+    pipelineStateDescriptor.label = @"Anaglyph Pipeline";
+    pipelineStateDescriptor.vertexFunction =   kemoView2DShaders->AnaglyphVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoView2DShaders->AnaglyphFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+    
+    kemoView2DPipelines->anaglyphPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                                                         error:&error];
+    /* Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
+     //  If the Metal API validation is enabled, you can find out more information about what
+     //  went wrong.  (Metal API validation is enabled by default when a debug build is run
+     //  from Xcode.) */
+    NSAssert(kemoView2DPipelines->anaglyphPipelineState, @"Failed to create pipeline state: %@", error);
+
     return;
 }
 
@@ -279,6 +301,39 @@
                            vertexCount:buf->num_nod_buf];
     };
 }
+
+- (void)drawAnaglyphObject:(struct gl_strided_buffer *_Nonnull) buf
+                   encoder:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+                 pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
+                    vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                      left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
+                     right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
+                projection:(matrix_float4x4 *_Nonnull) projection_mat;
+{
+    if(buf->num_nod_buf > 0){
+        [*renderEncoder setRenderPipelineState:kemoView2DPipelines->anaglyphPipelineState];
+        /* Pass in the parameter data. */
+        [*renderEncoder setVertexBuffer:*vertices
+                                 offset:0
+                                atIndex:AAPLVertexInputIndexVertices];
+        [*renderEncoder setVertexBytes:projection_mat
+                                length:sizeof(matrix_float4x4)
+                               atIndex:AAPLOrthogonalMatrix];
+        
+        /* Set the texture objects.  The AAPLTextureIndexBaseColor enum value corresponds
+         ///  to the 'colorMap' argument in the 'samplingShader' function because these
+         //   textures attribute qualifier also uses AAPLTextureIndexBaseColor for its index. */
+        [*renderEncoder setFragmentTexture:*leftTexure
+                                   atIndex:AAPLTextureIndexBaseColor];
+        [*renderEncoder setFragmentTexture:*rightTexure
+                                   atIndex:AAPLTextureIndexRight];
+        /* Draw the triangles. */
+        [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                           vertexStart:0
+                           vertexCount:buf->num_nod_buf];
+    };
+}
+
 
 - (void) setMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
              pipelines:(KemoView2DMetalPipelines * _Nonnull) kemoView2DPipelines
@@ -439,6 +494,22 @@
              metalBuffer:&_kemoView2DMetalBufs
                   buffer:kemo_buffers
               projection:projection_mat];
+}
+
+- (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
+                       buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+                        vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  anaglyphVertex
+                          left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
+                         right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
+                    projection:(matrix_float4x4 * _Nonnull) projection_mat
+{
+    [self drawAnaglyphObject:kemo_buffers->screen_buf
+                     encoder:renderEncoder
+                   pipelines:&_kemoView2DPipelines
+                      vertex:anaglyphVertex
+                        left:leftTexure
+                       right:rightTexure
+                  projection:projection_mat];
 }
 
 @end

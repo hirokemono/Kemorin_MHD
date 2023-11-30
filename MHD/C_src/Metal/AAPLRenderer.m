@@ -41,7 +41,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     /*  Vertex buffer to render anaglyph on screen */
     id<MTLBuffer> _Nullable _anaglyphVertice;
     /*  Texture buffer to render anaglyph on screen */
-    id<MTLTexture> _Nullable _anaglyphTexure;
+    id<MTLTexture> _Nullable _leftTexure;
+    id<MTLTexture> _Nullable _rightTexure;
 
 }
 
@@ -306,65 +307,49 @@ Implementation of a platform independent renderer class, which performs Metal se
     return bgra;
 };
 
--(unsigned char *) getAnaglyphbyMetalToBGRA:(nonnull MTKView *)view
-                                     Pixels:(NSUInteger *) pix_xy
-                               PixelPerByte:(NSUInteger *) pixelByte
-{
-    int i;
-    unsigned char *left_bgra =  [self getRenderedbyMetalToBGRA:view
-                                                       eyeflag:-1
-                                                        Pixels:pix_xy
-                                                  PixelPerByte:pixelByte];
-    unsigned char *right_bgra = [self getRenderedbyMetalToBGRA:view
-                                                       eyeflag: 1
-                                                        Pixels:pix_xy
-                                                  PixelPerByte:pixelByte];
-    
-    NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
-    unsigned char *bgra = (unsigned char *) malloc(pixelByte[0]*num_pixel * sizeof(unsigned char));
-/*
-    for(i=0;i<num_pixel;i++){
-        bgra[4*i  ] = right_bgra[4*i  ];
-        bgra[4*i+1] = right_bgra[4*i+1];
-        bgra[4*i+2] = left_bgra[4*i+2];
-        bgra[4*i+3] = left_bgra[4*i+3];
-    };
-*/
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_apply(num_pixel, queue, ^(size_t i) {
-        bgra[4*i  ] = right_bgra[4*i  ];
-        bgra[4*i+1] = right_bgra[4*i+1];
-        bgra[4*i+2] =  0.299 * left_bgra[4*i+2]
-                     + 0.587 * left_bgra[4*i+1]
-                     + 0.114 * left_bgra[4*i  ];
-        bgra[4*i+3] = left_bgra[4*i+3];
-    });
-    free(left_bgra);
-    free(right_bgra);
-    return bgra;
-}
-
 -(void) setAnaglyphToMetalBuffer:(nonnull MTKView *)view
                         kemoview:(struct kemoviewer_type *) kemo_sgl
-                          Pixels:(unsigned char *) bgra
+                      leftPixels:(unsigned char *) bgra_left
+                     rightPixels:(unsigned char *) bgra_right
                          num_pix:(NSUInteger *) pix_xy
                     PixelPerByte:(NSUInteger *) pixelByte
                           vertex:(id<MTLBuffer> *) anaglyphVertice
-                          texure:(id<MTLTexture> *) anaglyphTexure
+                            left:(id<MTLTexture> *) leftTexure
+                           right:(id<MTLTexture> *) rightTexure
 {
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
-    struct line_text_image * anaglyph_img
+    struct line_text_image * left_img
         = alloc_line_text_image((int) pix_xy[0], (int) pix_xy[1], 20);
-
+    struct line_text_image * right_img
+        = alloc_line_text_image((int) pix_xy[0], (int) pix_xy[1], 20);
+/*
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_apply(num_pixel, queue, ^(size_t i) {
+        left_img->imgBMP[4*i  ] =  bgra_left[4*i+2];
+        left_img->imgBMP[4*i+1] =  bgra_left[4*i+1];
+        left_img->imgBMP[4*i+2] =  bgra_left[4*i  ];
+        left_img->imgBMP[4*i+3] =  bgra_left[4*i+3];
+        
+        right_img->imgBMP[4*i  ] = bgra_right[4*i+2];
+        right_img->imgBMP[4*i+1] = bgra_right[4*i+1];
+        right_img->imgBMP[4*i+2] = bgra_right[4*i  ];
+        right_img->imgBMP[4*i+3] = bgra_right[4*i+3];
+    });
+*/
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_apply(pix_xy[1], queue, ^(size_t j) {
         for(int i=0;i<pix_xy[0];i++){
             long i_org = i + (pix_xy[1]-j-1) * pix_xy[0];
             long i_flp = i + j * pix_xy[0];
-        anaglyph_img->imgBMP[4*i_org  ] = bgra[4*i_flp+2];
-        anaglyph_img->imgBMP[4*i_org+1] = bgra[4*i_flp+1];
-        anaglyph_img->imgBMP[4*i_org+2] = bgra[4*i_flp  ];
-        anaglyph_img->imgBMP[4*i_org+3] = bgra[4*i_flp+3];
+            left_img->imgBMP[4*i_org  ] = bgra_left[4*i_flp  ];
+            left_img->imgBMP[4*i_org+1] = bgra_left[4*i_flp+1];
+            left_img->imgBMP[4*i_org+2] = bgra_left[4*i_flp+2];
+            left_img->imgBMP[4*i_org+3] = bgra_left[4*i_flp+3];
+
+            right_img->imgBMP[4*i_org  ] = bgra_right[4*i_flp  ];
+            right_img->imgBMP[4*i_org+1] = bgra_right[4*i_flp+1];
+            right_img->imgBMP[4*i_org+2] = bgra_right[4*i_flp+2];
+            right_img->imgBMP[4*i_org+3] = bgra_right[4*i_flp+3];
         };
     });
     /*
@@ -388,21 +373,26 @@ Implementation of a platform independent renderer class, which performs Metal se
  */
     if(kemo_sgl->kemo_buffers->screen_buf->num_nod_buf > 0){
         [*anaglyphVertice release];
-        [*anaglyphTexure  release];
+        [*leftTexure  release];
+        [*rightTexure  release];
     };
-    [_kemoMetalBufBase setTextBoxTexture:&_device
-                                  buffer:kemo_sgl->kemo_buffers->screen_buf
-                                   image:anaglyph_img
-                                  vertex:anaglyphVertice
-                                  texure:anaglyphTexure];
-    dealloc_line_text_image(anaglyph_img);
+    [_kemoMetalBufBase setAnaglyphTexture:&_device
+                                   buffer:kemo_sgl->kemo_buffers->screen_buf
+                                leftimage:left_img
+                               rightimage:right_img
+                                   vertex:anaglyphVertice
+                                     left:leftTexure
+                                    right:rightTexure];
+    dealloc_line_text_image(left_img);
+    dealloc_line_text_image(right_img);
     return;
 }
 
 -(void) encodeAnaglyphRender:(nonnull MTKView *)view
                     kemoview:(struct kemoviewer_type *) kemo_sgl
                       vertex:(id<MTLBuffer> *) anaglyphVertice
-                      texure:(id<MTLTexture> *) anaglyphTexure
+                        left:(id<MTLTexture> *) leftTexure
+                       right:(id<MTLTexture> *) rightTexure
 {
     /* Create a new command buffer for each render pass to the current drawable. */
         id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
@@ -415,11 +405,12 @@ Implementation of a platform independent renderer class, which performs Metal se
             _renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
             _renderEncoder.label = @"MyRenderEncoder";
 
-            [_kemo2DRenderer encodeTextBoxObject:kemo_sgl->kemo_buffers->screen_buf
-                                         encoder:&_renderEncoder
-                                          vertex:anaglyphVertice
-                                          texure:anaglyphTexure
-                                      projection:&_cbar_proj_mat];
+            [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
+                                           buffers:kemo_sgl->kemo_buffers
+                                            vertex:anaglyphVertice
+                                              left:leftTexure
+                                             right:rightTexure
+                                        projection:&_cbar_proj_mat];
     /*Schedule a present once the framebuffer is complete using the current drawable. */
             [commandBuffer presentDrawable:view.currentDrawable];
             [_renderEncoder endEncoding];
@@ -433,21 +424,31 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     NSUInteger pix_xy[2];
     NSUInteger pixelByte[2];
-    unsigned char *bgra = [self getAnaglyphbyMetalToBGRA:view
-                                                  Pixels:pix_xy
-                                            PixelPerByte:pixelByte];
+    
+    unsigned char *bgra_left =  [self getRenderedbyMetalToBGRA:view
+                                                       eyeflag:-1
+                                                        Pixels:pix_xy
+                                                  PixelPerByte:pixelByte];
+    unsigned char *bgra_right = [self getRenderedbyMetalToBGRA:view
+                                                       eyeflag: 1
+                                                        Pixels:pix_xy
+                                                  PixelPerByte:pixelByte];
     [self setAnaglyphToMetalBuffer:view
                           kemoview:kemo_sgl
-                            Pixels:bgra
+                        leftPixels:bgra_left
+                       rightPixels:bgra_right
                            num_pix:pix_xy
                       PixelPerByte:pixelByte
                             vertex:&_anaglyphVertice
-                            texure:&_anaglyphTexure];
+                              left:&_leftTexure
+                             right:&_rightTexure];
     [self encodeAnaglyphRender:view
                       kemoview:kemo_sgl
                         vertex:&_anaglyphVertice
-                        texure:&_anaglyphTexure];
-    free(bgra);
+                          left:&_leftTexure
+                         right:&_rightTexure];
+    free(bgra_left);
+    free(bgra_right);
     return;
 };
 

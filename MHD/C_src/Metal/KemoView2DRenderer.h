@@ -68,6 +68,10 @@ typedef struct
 /*  Shader functions for original 2D shader  */
     id<MTLFunction> _Nonnull base2DVertexFunction;
     id<MTLFunction> _Nonnull base2DFragmentFunction;
+    
+/*  Shader functions for original 2D shader  */
+    id<MTLFunction> _Nonnull AnaglyphVertexFunction;
+    id<MTLFunction> _Nonnull AnaglyphFragmentFunction;
 } KemoView2DMetalShaders;
 
 typedef struct
@@ -80,6 +84,8 @@ typedef struct
     id<MTLRenderPipelineState> _Nonnull texured2DPipelineState;
 /*  Shader functions for original 2D shader  */
     id<MTLRenderPipelineState> _Nonnull base2DPipelineState;
+/*  Shader functions for Anaglyph shader  */
+    id<MTLRenderPipelineState> _Nonnull anaglyphPipelineState;
 } KemoView2DMetalPipelines;
 
 
@@ -113,6 +119,13 @@ typedef struct
                      vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                      texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
                  projection:(matrix_float4x4 *_Nonnull) projection_mat;
+
+- (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
+                       buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+                        vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  anaglyphVertex
+                          left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
+                         right:(id<MTLTexture> _Nonnull *_Nonnull) righTtexure
+                    projection:(matrix_float4x4 * _Nonnull) projection_mat;
 @end
 
 

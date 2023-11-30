@@ -43,5 +43,13 @@
               indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
                 vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
                  index:(id<MTLBuffer> _Nonnull *_Nonnull) indices;
+
+- (void)setAnaglyphTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+                    buffer:(struct gl_strided_buffer *_Nonnull) buf
+                 leftimage:(struct line_text_image *_Nonnull) leftImg
+                rightimage:(struct line_text_image *_Nonnull) rightImg
+                    vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                      left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexture
+                     right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexture;
 @end
 #endif /* KemoViewMetalBuffers_h_ */

@@ -45,6 +45,7 @@ typedef enum AAPLLightInputIndex
 typedef enum AAPLTextureIndex
 {
     AAPLTextureIndexBaseColor = 0,
+    AAPLTextureIndexRight =     1,
 } AAPLTextureIndex;
 
 
