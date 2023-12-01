@@ -51,5 +51,13 @@
                     vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                       left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexture
                      right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexture;
+
+- (void)setAnaglyphTexture2:(id<MTLDevice> _Nonnull *_Nonnull) device
+                     buffer:(struct gl_strided_buffer *_Nonnull) buf
+                     pixels:(NSUInteger *_Nonnull) npix_img
+                     vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                       left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexture
+                      right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexture;
+
 @end
 #endif /* KemoViewMetalBuffers_h_ */

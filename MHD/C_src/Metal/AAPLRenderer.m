@@ -307,84 +307,25 @@ Implementation of a platform independent renderer class, which performs Metal se
     return bgra;
 };
 
--(void) setAnaglyphToMetalBuffer:(nonnull MTKView *)view
+-(void) setAnaglyphToMetalBuffer:(id<MTLDevice> *)device
                         kemoview:(struct kemoviewer_type *) kemo_sgl
-                      leftPixels:(unsigned char *) bgra_left
-                     rightPixels:(unsigned char *) bgra_right
                          num_pix:(NSUInteger *) pix_xy
-                    PixelPerByte:(NSUInteger *) pixelByte
                           vertex:(id<MTLBuffer> *) anaglyphVertice
                             left:(id<MTLTexture> *) leftTexure
                            right:(id<MTLTexture> *) rightTexure
 {
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
-    struct line_text_image * left_img
-        = alloc_line_text_image((int) pix_xy[0], (int) pix_xy[1], 20);
-    struct line_text_image * right_img
-        = alloc_line_text_image((int) pix_xy[0], (int) pix_xy[1], 20);
-/*
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_apply(num_pixel, queue, ^(size_t i) {
-        left_img->imgBMP[4*i  ] =  bgra_left[4*i+2];
-        left_img->imgBMP[4*i+1] =  bgra_left[4*i+1];
-        left_img->imgBMP[4*i+2] =  bgra_left[4*i  ];
-        left_img->imgBMP[4*i+3] =  bgra_left[4*i+3];
-        
-        right_img->imgBMP[4*i  ] = bgra_right[4*i+2];
-        right_img->imgBMP[4*i+1] = bgra_right[4*i+1];
-        right_img->imgBMP[4*i+2] = bgra_right[4*i  ];
-        right_img->imgBMP[4*i+3] = bgra_right[4*i+3];
-    });
-*/
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_apply(pix_xy[1], queue, ^(size_t j) {
-        for(int i=0;i<pix_xy[0];i++){
-            long i_org = i + (pix_xy[1]-j-1) * pix_xy[0];
-            long i_flp = i + j * pix_xy[0];
-            left_img->imgBMP[4*i_org  ] = bgra_left[4*i_flp  ];
-            left_img->imgBMP[4*i_org+1] = bgra_left[4*i_flp+1];
-            left_img->imgBMP[4*i_org+2] = bgra_left[4*i_flp+2];
-            left_img->imgBMP[4*i_org+3] = bgra_left[4*i_flp+3];
-
-            right_img->imgBMP[4*i_org  ] = bgra_right[4*i_flp  ];
-            right_img->imgBMP[4*i_org+1] = bgra_right[4*i_flp+1];
-            right_img->imgBMP[4*i_org+2] = bgra_right[4*i_flp+2];
-            right_img->imgBMP[4*i_org+3] = bgra_right[4*i_flp+3];
-        };
-    });
-    /*
-     anaglyph_img->imgBMP[4*i  ]: R;
-     anaglyph_img->imgBMP[4*i+1]: G
-     anaglyph_img->imgBMP[4*i+2]: B
-     anaglyph_img->imgBMP[4*i+3]: A
-     */
-/*
-    for(j=0;j<pix_xy[1];j++){
-        for(k=0;k<pix_xy[0];k++){
-            i = k + j * pix_xy[0];
-            anaglyph_img->imgBMP[4*i  ] = 0;
-            anaglyph_img->imgBMP[4*i+1] = 255;
-            anaglyph_img->imgBMP[4*i+2] = 0;
-            anaglyph_img->imgBMP[4*i+3] = 255;
-//            anaglyph_img->imgBMP[4*i  ] = 256*((float) k / (float) pix_xy[0]);
-//            anaglyph_img->imgBMP[4*i+1] = 256*((float) j / (float) pix_xy[1]);
-        }
-    };
- */
     if(kemo_sgl->kemo_buffers->screen_buf->num_nod_buf > 0){
         [*anaglyphVertice release];
         [*leftTexure  release];
         [*rightTexure  release];
+        [_kemoMetalBufBase setAnaglyphTexture2:device
+                                        buffer:kemo_sgl->kemo_buffers->screen_buf
+                                        pixels:pix_xy
+                                        vertex:anaglyphVertice
+                                          left:leftTexure
+                                         right:rightTexure];
     };
-    [_kemoMetalBufBase setAnaglyphTexture:&_device
-                                   buffer:kemo_sgl->kemo_buffers->screen_buf
-                                leftimage:left_img
-                               rightimage:right_img
-                                   vertex:anaglyphVertice
-                                     left:leftTexure
-                                    right:rightTexure];
-    dealloc_line_text_image(left_img);
-    dealloc_line_text_image(right_img);
     return;
 }
 
@@ -419,36 +360,69 @@ Implementation of a platform independent renderer class, which performs Metal se
     return;
 }
 
+
+-(void) encodeCopyTexureToPrivate:(id<MTLTexture> *) sourceTexture
+                          num_pix:(NSUInteger *) pix_xy
+                           target:(id<MTLTexture> *) targetTexture
+{
+    // Create a command buffer for GPU work.
+    id <MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+    // Encode a blit pass to copy data from the source buffer to the private buffer.
+    id <MTLBlitCommandEncoder> blitCommandEncoder = [commandBuffer blitCommandEncoder];
+    MTLSize metalSize = MTLSizeMake(pix_xy[0], pix_xy[1], 1);
+    [blitCommandEncoder copyFromTexture:*sourceTexture
+                            sourceSlice:0 
+                            sourceLevel:0 
+                           sourceOrigin:MTLOriginMake(0, 0, 0)
+                             sourceSize:metalSize
+                              toTexture:*targetTexture
+                       destinationSlice:0
+                       destinationLevel:0
+                      destinationOrigin:MTLOriginMake(0, 0, 0)];
+    [blitCommandEncoder endEncoding];
+    // Add a completion handler and commit the command buffer.
+    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> cb) {
+        // Populate private buffer.
+    }];
+    [commandBuffer commit];
+    [commandBuffer waitUntilCompleted];
+    return;
+}
+
 -(void) KemoViewRenderAnaglyph:(nonnull MTKView *)view
                       kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSUInteger pix_xy[2];
-    NSUInteger pixelByte[2];
+    pix_xy[0] = view.drawableSize.width;
+    pix_xy[1] = view.drawableSize.height;
     
-    unsigned char *bgra_left =  [self getRenderedbyMetalToBGRA:view
-                                                       eyeflag:-1
-                                                        Pixels:pix_xy
-                                                  PixelPerByte:pixelByte];
-    unsigned char *bgra_right = [self getRenderedbyMetalToBGRA:view
-                                                       eyeflag: 1
-                                                        Pixels:pix_xy
-                                                  PixelPerByte:pixelByte];
-    [self setAnaglyphToMetalBuffer:view
+    [self setAnaglyphToMetalBuffer:&_device
                           kemoview:kemo_sgl
-                        leftPixels:bgra_left
-                       rightPixels:bgra_right
                            num_pix:pix_xy
-                      PixelPerByte:pixelByte
                             vertex:&_anaglyphVertice
                               left:&_leftTexure
                              right:&_rightTexure];
+
+    if(kemo_sgl->kemo_buffers->screen_buf->num_nod_buf > 0){
+        id<MTLTexture> _imageOutputTexture;
+        _imageOutputTexture = [self drawKemoViewToTexure:view
+                                                 eyeflag:-1];
+        [self encodeCopyTexureToPrivate:&_imageOutputTexture
+                                num_pix:pix_xy
+                                 target:&_leftTexure];
+
+        _imageOutputTexture = [self drawKemoViewToTexure:view
+                                                 eyeflag: 1];
+        [self encodeCopyTexureToPrivate:&_imageOutputTexture
+                                num_pix:pix_xy
+                                 target:&_rightTexure];
+    }
+
     [self encodeAnaglyphRender:view
                       kemoview:kemo_sgl
                         vertex:&_anaglyphVertice
                           left:&_leftTexure
                          right:&_rightTexure];
-    free(bgra_left);
-    free(bgra_right);
     return;
 };
 
