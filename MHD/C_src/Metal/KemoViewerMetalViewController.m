@@ -79,6 +79,10 @@
     NSUInteger bpRaw = pixelByte[0] * pix_xy[0] ;
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     unsigned char *bgra = (unsigned char *) malloc(pixelByte[0]*num_pixel * sizeof(unsigned char));
+    if(bgra == NULL){
+        printf("malloc error for bgra\n");
+        exit(0);
+    };
 
     [_imageOutputTexture getBytes:bgra
                       bytesPerRow:bpRaw

@@ -75,8 +75,8 @@ void kemoview_fast_modify_view(void){
     modify_stereo_kemoview(FAST_DRAW, kemo_sgl, kemo_gl);
 };
 
-unsigned char * kemoview_alloc_img_buffer_to_bmp(int npix_x, int npix_y){
-    unsigned char *image = alloc_img_buffer_to_bmp(npix_x, npix_y);
+unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y){
+    unsigned char *image = alloc_RGB_buffer_to_bmp(npix_x, npix_y);
     return image;
 };
 void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image){

@@ -51,7 +51,12 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 	for(i=0;i<4;i++){
 		kemo_VAOs->map_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
-	return kemo_VAOs;
+    
+    kemo_VAOs->screen_FBO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
+    for(i=0;i<3;i++){
+        kemo_VAOs->screen_FBO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    };
+    return kemo_VAOs;
 };
 
 void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
@@ -80,22 +85,25 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 
 	for(i=0;i<4;i++){free(kemo_VAOs->map_VAO[i]);};
 	free(kemo_VAOs->map_VAO);
-	return;
+
+    for(i=0;i<3;i++){free(kemo_VAOs->screen_FBO[i]);};
+    free(kemo_VAOs->screen_FBO);
+return;
 };
 
 void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     int i;
-    for(i=0;i<3;i++){glGenVertexArrays(1, &kemo_VAOs->grid_VAO[i]->id_VAO);};
-    for(i=0;i<2;i++){glGenVertexArrays(1, &kemo_VAOs->fline_VAO[i]->id_VAO);};
-    for(i=0;i<4;i++){glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[i]->id_VAO);};
-    for(i=0;i<3;i++){glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[i]->id_VAO);};
-    for(i=0;i<2;i++){glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[i]->id_VAO);};
-	glGenVertexArrays(1, &kemo_VAOs->mesh_trans_VAO->id_VAO);
-    for(i=0;i<5;i++){glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[i]->id_VAO);};
-	glGenVertexArrays(1, &kemo_VAOs->time_VAO->id_VAO);
-    for(i=0;i<4;i++){glGenVertexArrays(1, &kemo_VAOs->map_VAO[i]->id_VAO);};
-    glGenVertexArrays(1, &kemo_VAOs->cube_VAO->id_VAO);
-    glGenVertexArrays(1, &kemo_VAOs->msg_VAO->id_VAO);
+    for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->grid_VAO[i]->id_VAO));};
+    for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->fline_VAO[i]->id_VAO));};
+    for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_solid_VAO[i]->id_VAO));};
+    for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->mesh_solid_VAO[i]->id_VAO));};
+    for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_trans_VAO[i]->id_VAO));};
+	glGenVertexArrays(1, &(kemo_VAOs->mesh_trans_VAO->id_VAO));
+    for(i=0;i<5;i++){glGenVertexArrays(1, &(kemo_VAOs->cbar_VAO[i]->id_VAO));};
+	glGenVertexArrays(1, &(kemo_VAOs->time_VAO->id_VAO));
+    for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->map_VAO[i]->id_VAO));};
+    glGenVertexArrays(1, &(kemo_VAOs->cube_VAO->id_VAO));
+    glGenVertexArrays(1, &(kemo_VAOs->msg_VAO->id_VAO));
 };
 
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
@@ -343,4 +351,32 @@ void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
                         kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
                         kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
 	return;
+}
+
+unsigned char draw_objects_to_rgba_gl(GLuint width, GLuint height, 
+                                      struct kemoviewer_type *kemoview,
+                                      struct kemoviewer_gl_type *kemo_gl){
+/* Construct screen_FBO */
+    Const_FBO(width, height, kemo_gl->kemo_VAOs->screen_FBO[0]);
+/* Set draw target to screen_FBO */
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
+    update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
+                        kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
+                        kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
+
+    GLuint num_pixel = width * height;
+    unsigned char *rgba = (unsigned char *) malloc(4*num_pixel * sizeof(unsigned char));
+    if(rgba == NULL){
+        printf("malloc error for bgra\n");
+        exit(0);
+    };
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glReadPixels(IZERO, IZERO, width, height, GL_RGBA8, GL_UNSIGNED_BYTE, &rgba[0]);
+/* Back draw target to screen framewbuffer */
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+/* Destroy screen_FBO */
+    Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[0]);
+    return rgba;
 }

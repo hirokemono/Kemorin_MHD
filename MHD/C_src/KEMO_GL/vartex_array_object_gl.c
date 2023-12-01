@@ -30,6 +30,35 @@ void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_b
 	glBindVertexArray(0);
 };
 
+void Destroy_VAO_4_Simple(struct VAO_ids *VAO)
+{
+    GLenum ErrorCheckValue = glGetError();
+    
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    glDeleteBuffers(1, &VAO->id_color);
+    glDeleteBuffers(1, &VAO->id_vertex);
+    
+    glBindVertexArray(0);
+    /*
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        fprintf(
+                stderr,
+                "ERROR: Could not destroy the VBO: %s \n",
+                gluErrorString(ErrorCheckValue)
+                );
+        
+        exit(-1);
+    }
+    */
+}
+
+
 void Const_VAO_4_Texture(struct VAO_ids *VAO, const struct gl_strided_buffer *strided_buf){
 	glDeleteBuffers(1, &VAO->id_vertex);
 	
@@ -46,6 +75,25 @@ void Const_VAO_4_Texture(struct VAO_ids *VAO, const struct gl_strided_buffer *st
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 };
+
+void Destroy_VAO_4_Texture(struct VAO_ids *VAO, GLuint *textures)
+{
+    GLenum ErrorCheckValue = glGetError();
+    
+    glBindVertexArray(VAO->id_VAO);
+    
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    glDeleteTextures(1, textures);
+    
+    glDeleteBuffers(1, &VAO->id_color);
+    glDeleteBuffers(1, &VAO->id_vertex);
+    glBindVertexArray(0);
+}
+
 
 void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
     VAO->npoint_draw = strided_buf->num_nod_buf;
@@ -72,6 +120,38 @@ void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_bu
 	glBindVertexArray(0);
 	return;
 };
+
+void Destroy_VAO_4_Phong(struct VAO_ids *VAO)
+{
+    GLenum ErrorCheckValue = glGetError();
+    
+    glBindVertexArray(VAO->id_VAO);
+    
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    glDeleteBuffers(1, &VAO->id_color);
+    glDeleteBuffers(1, &VAO->id_vertex);
+    glBindVertexArray(0);
+    
+    /*
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        fprintf(
+                stderr,
+                "ERROR: Could not destroy the VBO: %s \n",
+                gluErrorString(ErrorCheckValue)
+                );
+        
+        exit(-1);
+    }
+    */
+}
+
 
 void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
     VAO->npoint_draw = strided_buf->num_nod_buf;
@@ -102,166 +182,66 @@ void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *st
 	return;
 };
 
-
-void DestroyVBO(struct VAO_ids *VAO)
+void Destroy_VAO_4_Phong_Texture(struct VAO_ids *VAO, GLuint *textures)
 {
-	GLenum ErrorCheckValue = glGetError();
-	
-	glBindVertexArray(VAO->id_VAO);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	glDeleteBuffers(1, &VAO->id_color);
-	glDeleteBuffers(1, &VAO->id_vertex);
-	
-	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &VAO->id_VAO);
-	/*
-	ErrorCheckValue = glGetError();
-	if (ErrorCheckValue != GL_NO_ERROR)
-	{
-		fprintf(
-				stderr,
-				"ERROR: Could not destroy the VBO: %s \n",
-				gluErrorString(ErrorCheckValue)
-				);
-		
-		exit(-1);
-	}
-	*/
+    GLenum ErrorCheckValue = glGetError();
+    
+    glBindVertexArray(VAO->id_VAO);
+    
+    glDisableVertexAttribArray(4);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    glDeleteTextures(1, textures);
+    
+    glDeleteBuffers(1, &VAO->id_color);
+    glDeleteBuffers(1, &VAO->id_vertex);
+    glBindVertexArray(0);
+    
+    /*
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        fprintf(
+                stderr,
+                "ERROR: Could not destroy the VBO: %s \n",
+                gluErrorString(ErrorCheckValue)
+                );
+        
+        exit(-1);
+    }
+    */
 }
 
 void Destroy_VAO(struct VAO_ids *VAO){
-	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &VAO->id_VAO);
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &(VAO->id_VAO));
 };
 
-void Destroy_Simple_VAO(struct VAO_ids *VAO)
-{
-	GLenum ErrorCheckValue = glGetError();
-	
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	glDeleteBuffers(1, &VAO->id_color);
-	glDeleteBuffers(1, &VAO->id_vertex);
-	
-	glBindVertexArray(0);
-	/*
-	ErrorCheckValue = glGetError();
-	if (ErrorCheckValue != GL_NO_ERROR)
-	{
-		fprintf(
-				stderr,
-				"ERROR: Could not destroy the VBO: %s \n",
-				gluErrorString(ErrorCheckValue)
-				);
-		
-		exit(-1);
-	}
-	*/
+
+
+void Const_FBO(unsigned int width, unsigned int height, 
+               struct VAO_ids *FBO){
+    //Somewhere at initialization
+    glGenFramebuffers(1,&(FBO->id_VAO));
+    glGenRenderbuffers(1,&(FBO->id_texure));
+    glBindRenderbuffer(GL_RENDERBUFFER, FBO->id_texure);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO->id_VAO);
+    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                              GL_RENDERBUFFER, FBO->id_texure);
+    return;
 }
 
-void Destroy_Texture_VAO(struct VAO_ids *VAO, GLuint *textures)
-{
-	GLenum ErrorCheckValue = glGetError();
-	
-	glBindVertexArray(VAO->id_VAO);
-	
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	glDeleteTextures(1, textures);
-	
-	glDeleteBuffers(1, &VAO->id_color);
-	glDeleteBuffers(1, &VAO->id_vertex);
-	glBindVertexArray(0);
-	
-	/*
-	ErrorCheckValue = glGetError();
-	if (ErrorCheckValue != GL_NO_ERROR)
-	{
-		fprintf(
-				stderr,
-				"ERROR: Could not destroy the VBO: %s \n",
-				gluErrorString(ErrorCheckValue)
-				);
-		
-		exit(-1);
-	}
-	*/
+void Destroy_FBO(struct VAO_ids *FBO){
+    glDeleteFramebuffers(1,&(FBO->id_VAO));
+    glDeleteRenderbuffers(1,&(FBO->id_texure));
+    return;
 }
 
-void Destroy_Phong_VAO(struct VAO_ids *VAO)
-{
-	GLenum ErrorCheckValue = glGetError();
-	
-	glBindVertexArray(VAO->id_VAO);
-	
-	glDisableVertexAttribArray(3);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	glDeleteBuffers(1, &VAO->id_color);
-	glDeleteBuffers(1, &VAO->id_vertex);
-	glBindVertexArray(0);
-	
-	/*
-	ErrorCheckValue = glGetError();
-	if (ErrorCheckValue != GL_NO_ERROR)
-	{
-		fprintf(
-				stderr,
-				"ERROR: Could not destroy the VBO: %s \n",
-				gluErrorString(ErrorCheckValue)
-				);
-		
-		exit(-1);
-	}
-	*/
-}
-
-void Destroy_Phong_Texture_VAO(struct VAO_ids *VAO, GLuint *textures)
-{
-	GLenum ErrorCheckValue = glGetError();
-	
-	glBindVertexArray(VAO->id_VAO);
-	
-	glDisableVertexAttribArray(4);
-	glDisableVertexAttribArray(3);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	glDeleteTextures(1, textures);
-	
-	glDeleteBuffers(1, &VAO->id_color);
-	glDeleteBuffers(1, &VAO->id_vertex);
-	glBindVertexArray(0);
-	
-	/*
-	ErrorCheckValue = glGetError();
-	if (ErrorCheckValue != GL_NO_ERROR)
-	{
-		fprintf(
-				stderr,
-				"ERROR: Could not destroy the VBO: %s \n",
-				gluErrorString(ErrorCheckValue)
-				);
-		
-		exit(-1);
-	}
-	*/
-}
 
 GLuint set_texture_to_buffer(const int iwidth, const int iheight, 
                              const unsigned char *rgba){
@@ -289,3 +269,34 @@ void const_texture_VBO(const int iwidth, const int iheight, const unsigned char 
     glBindVertexArray(0);
     return;
 };
+
+void DestroyVBO(struct VAO_ids *VAO)
+{
+    GLenum ErrorCheckValue = glGetError();
+    
+    glBindVertexArray(VAO->id_VAO);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    glDeleteBuffers(1, &VAO->id_color);
+    glDeleteBuffers(1, &VAO->id_vertex);
+    
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &(VAO->id_VAO));
+    /*
+    ErrorCheckValue = glGetError();
+    if (ErrorCheckValue != GL_NO_ERROR)
+    {
+        fprintf(
+                stderr,
+                "ERROR: Could not destroy the VBO: %s \n",
+                gluErrorString(ErrorCheckValue)
+                );
+        
+        exit(-1);
+    }
+    */
+}
+

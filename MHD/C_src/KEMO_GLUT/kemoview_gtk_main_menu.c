@@ -155,7 +155,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
     int iflag_quilt = kemoview_get_quilt_nums(ISET_QUILT_MODE);
     int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
     int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     GtkEntry *entry = GTK_ENTRY(user_data);
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
@@ -181,7 +181,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
     } else {
         int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
         int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
-        unsigned char *quilt_image = kemoview_alloc_img_buffer_to_bmp((nimg_column * npix_x),
+        unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
                                                                       (nimg_raw * npix_y));
         for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
             kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);

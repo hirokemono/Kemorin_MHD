@@ -48,7 +48,7 @@ extern "C" {
     void kemoview_full_modify_view(void);
     void kemoview_fast_modify_view(void);
 
-    unsigned char * kemoview_alloc_img_buffer_to_bmp(int npix_x, int npix_y);
+    unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
     void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt);
 

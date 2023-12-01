@@ -22,21 +22,23 @@
 #include "m_kemoview_object_buffers.h"
 
 struct kemoview_VAOs{
-	struct VAO_ids *cube_VAO;
+    struct VAO_ids *cube_VAO;
     struct VAO_ids *msg_VAO;
-	
-	struct VAO_ids **mesh_solid_VAO;
-	struct VAO_ids *mesh_trans_VAO;
-
-	struct VAO_ids **fline_VAO;
-	struct VAO_ids **psf_solid_VAO;
-	struct VAO_ids **psf_trans_VAO;
-
-	struct VAO_ids **grid_VAO;
-	struct VAO_ids **cbar_VAO;
+    
+    struct VAO_ids **mesh_solid_VAO;
+    struct VAO_ids *mesh_trans_VAO;
+    
+    struct VAO_ids **fline_VAO;
+    struct VAO_ids **psf_solid_VAO;
+    struct VAO_ids **psf_trans_VAO;
+    
+    struct VAO_ids **grid_VAO;
+    struct VAO_ids **cbar_VAO;
     struct VAO_ids *time_VAO;
-
-	struct VAO_ids **map_VAO;
+    
+    struct VAO_ids **map_VAO;
+    
+    struct VAO_ids **screen_FBO;
 };
 
 struct kemoviewer_gl_type{
@@ -56,4 +58,7 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
 
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
                              struct kemoviewer_gl_type *kemo_gl);
+unsigned char draw_objects_to_rgba_gl(GLuint width, GLuint height, 
+                                      struct kemoviewer_type *kemoview,
+                                      struct kemoviewer_gl_type *kemo_gl);
 #endif

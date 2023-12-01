@@ -102,7 +102,7 @@ void cube_flat_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buff
     
     GLenum ErrorCheckValue = glGetError();
     
-    glGenVertexArrays(1, &VAO_quad->id_VAO);
+    glGenVertexArrays(1, &(VAO_quad->id_VAO));
     glBindVertexArray(VAO_quad->id_VAO);
     
     glDeleteBuffers(1, &VAO_quad->id_vertex);

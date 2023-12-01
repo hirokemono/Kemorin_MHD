@@ -10,7 +10,7 @@
 #include "calypso_param_c.h"
 
 /* prototypes */
-unsigned char * alloc_img_buffer_to_bmp(int ihpixf, int jvpixf);
+unsigned char * alloc_RGB_buffer_to_bmp(int ihpixf, int jvpixf);
 void cvt_8bit_cl_int_2_chara(int ihpixf, int jvpixf, int *icl_tbl, unsigned char *rgb);
 int pixout_BMP_c(const char *fhead, int ihpixf, int jvpixf,
 			const unsigned char *rgb);

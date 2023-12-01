@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include "kemo_mesh_viewer_glfw_gtk.h"
+#include "set_texture_4_psf.h"
 
 #define NPIX_X  960
 #define NPIX_Y  800
@@ -171,14 +172,42 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 }
 
 /* Main GTK window */
+static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
+    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
+    unsigned char *fliped_img = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
+    kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+    flip_gl_bitmap(npix_x, npix_y, image, fliped_img);
+    free(image);
+
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img, 
+                                                 GDK_COLORSPACE_RGB, FALSE, 8,
+                                                 npix_x, npix_y, (3*npix_x), 
+                                                 NULL, NULL);
+
+    GtkClipboard *clipboard = (GtkClipboard *) user_data;
+    gtk_clipboard_set_image(clipboard, pixbuf);
+    free(fliped_img);
+}
 
 void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
-	GtkWidget *quitButton;
+	GtkWidget *quitButton, *copyButton;
 	GtkWidget *vbox_main;
-	
+    GtkClipboard *clipboard;
+    
+    
 	mbot = init_main_buttons(kemoviewer_data);
 	
-	gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);                                                            
+    gtk_clipboard_clear(clipboard);                                                                                  
+    gtk_clipboard_set_text(clipboard, "", 0);                                                                        
+
+    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);                                                          
+    gtk_clipboard_clear(clipboard);                                                                                
+    gtk_clipboard_set_text(clipboard, "", 0);
+    
+    gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
 	gtk_window_set_title(GTK_WINDOW(gtk_win), "CalypsoView menu");
 	gtk_widget_set_size_request(gtk_win, 150, -1);
@@ -189,11 +218,17 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	
 	quitButton = gtk_button_new_with_label("Quit");
 	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtkWindowclose_CB), NULL);
+    copyButton = gtk_button_new_with_label("Copy");
+    g_signal_connect(G_OBJECT(copyButton), "clicked", G_CALLBACK(gtkCopyToClipboard_CB), (gpointer) clipboard);
 	
-	
+    GtkWidget *topbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(topbox), copyButton, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(topbox), quitButton, TRUE, TRUE, 0);
+
+    
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), quitButton, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), topbox, FALSE, FALSE, 0);
 	
     iflag_fast_prev = 0;
 	make_gtk_main_menu_box(mbot, gtk_win, single_kemoview);
@@ -203,6 +238,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
 	
 	gtk_widget_show(quitButton);
+    gtk_widget_show(copyButton);
 	gtk_widget_show(vbox_main);
 	gtk_widget_show_all(mbot->menuHbox);
 	gtk_widget_show(gtk_win);

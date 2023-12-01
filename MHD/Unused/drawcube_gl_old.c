@@ -265,7 +265,7 @@ void drawCube_flat(GLfloat fSize,
 	icou = flatNodeCube_VBO(icou, fSize, strided_buf);
 	
 	/* Create VAO */
-	glGenVertexArrays(1, &cube_VAO->id_VAO);
+	glGenVertexArrays(1, &(cube_VAO->id_VAO));
 	glBindVertexArray(cube_VAO->id_VAO);
 	
 	/* Create vertex buffer on GPU and cpoy data from CPU*/
@@ -367,7 +367,7 @@ void drawCube_Element2(GLfloat fSize,
 	
 	
 	/* Create VAO */
-	glGenVertexArrays(1, &cube_VAO->id_VAO);
+	glGenVertexArrays(1, &(cube_VAO->id_VAO));
 	glBindVertexArray(cube_VAO->id_VAO);
 	
 	/* Create vertex buffer on GPU and cpoy data from CPU*/
