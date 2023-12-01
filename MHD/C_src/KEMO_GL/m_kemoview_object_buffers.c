@@ -182,8 +182,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     const_message_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
                          kemo_buffers->msg_buf, kemo_buffers->message_image);
     
-    const_screen_buffer(view_s->nx_frame, view_s->ny_frame, kemo_buffers->screen_buf);
-    kemo_buffers->screen_buf->num_nod_buf = 0;
+    const_screen_buffer(view_s->iflag_view_type, view_s->nx_frame, view_s->ny_frame,
+                        kemo_buffers->screen_buf);
 
     /* draw example cube for empty data */
     

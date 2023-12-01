@@ -176,10 +176,16 @@ void const_message_buffer(int iflag_retina, int nx_win, int ny_win,
     return;
 }
 
-void const_screen_buffer(int nx_win, int ny_win,
-                         struct gl_strided_buffer *cbar_buf){
-    cbar_buf->num_nod_buf = ITWO * ITHREE;
-    screen_mbox_to_buf(nx_win, ny_win, cbar_buf);
+void const_screen_buffer(int iflag_view_type, int nx_win, int ny_win,
+                         struct gl_strided_buffer *screen_buf){
+    screen_buf->num_nod_buf = ITWO * ITHREE;
+    screen_mbox_to_buf(nx_win, ny_win, screen_buf);
+    
+    if(iflag_view_type == VIEW_STEREO) {
+        screen_buf->num_nod_buf = TWO*THREE;
+    }else{
+        screen_buf->num_nod_buf = 0;
+    };
     return;
 }
 

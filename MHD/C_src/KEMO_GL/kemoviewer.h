@@ -400,6 +400,7 @@ extern "C" {
     void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
     void kemoview_set_message_opacity(float opacity);
     
+    void kemoview_update_modelmat(void);
     void kemoview_update_distance(void);
     
     int kemoview_get_draw_mode(void);

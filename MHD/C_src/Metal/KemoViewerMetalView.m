@@ -136,6 +136,8 @@
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
+    kemoview_update_modelmat();
+    kemoview_update_distance();
     [_resetview UpdateParameters];
     
     [self setNeedsDisplay: YES];

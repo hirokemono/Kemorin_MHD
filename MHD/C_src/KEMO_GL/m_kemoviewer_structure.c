@@ -447,6 +447,9 @@ void kemoview_set_message_opacity(float opacity){
 }
 
 
+void kemoview_update_modelmat(void){
+    modify_view_by_struct(kemo_sgl->view_s);
+};
 void kemoview_update_distance(void){
 	update_projection_struct(kemo_sgl->view_s);
 };

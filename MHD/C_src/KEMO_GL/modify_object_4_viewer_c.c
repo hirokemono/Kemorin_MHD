@@ -150,9 +150,8 @@ void set_viewtype(struct view_element *view, int selected){
 	else if(view->iflag_view_type == VIEW_XZ) {
 		view_for_xz_plane(view);
 	}
-	else if(view->iflag_view_type == VIEW_YZ) {
-		view_for_yz_plane(view);
+    else if(view->iflag_view_type == VIEW_YZ) {
+        view_for_yz_plane(view);
     };
-    
 	return;
 };

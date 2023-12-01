@@ -439,11 +439,9 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     int iflag = kemoview_get_view_type_flag();
     if(iflag == VIEW_STEREO){
-        kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = TWO*THREE;
         [self KemoViewRenderAnaglyph:view
                             kemoview:kemo_sgl];
     }else{
-        kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = 0;
         [self KemoViewRenderAll:view
                        kemoview:kemo_sgl
                         eyeflag:0];
