@@ -29,16 +29,9 @@ Header for a platform independent renderer class, which performs Metal setup and
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
 
--(unsigned char *) getRenderedbyMetalToBGRA:(nonnull MTKView *)view
-                                    eyeflag:(int) iflag_lr
-                                     Pixels:(NSUInteger *) pix_xy
-                               PixelPerByte:(NSUInteger *) pixelByte;
-
-
 - (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(nonnull MTKView *)view
-                                        eyeflag:(int) iflag_lr;
-- (void)drawKemoMetalView:(nonnull MTKView *) view
-                  eyeflag:(int) iflag_lr;
+                                         unites:(KemoViewUnites *) viewUnites;
+- (id<MTLTexture>_Nonnull)KemoViewToTexure:(nonnull MTKView *)view;
 
 - (void)drawInMTKView:(nonnull MTKView *)view;
 

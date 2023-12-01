@@ -76,7 +76,7 @@ AnaglyphFragmentShader(RasterizerData in [[stage_in]],
     const float4 rightSample = rightTexture.sample(textureSampler, in.textureCoordinate);
 
 /* Merge right and left texure */
-    float a = 1.0;
+//    float a = 1.0;
     float r = 0.299 * leftSample.r + 0.587 * leftSample.g + 0.114 * leftSample.b;
     float4 colorSample = float4(r, rightSample.g, rightSample.b, 1.0);
     return colorSample;

@@ -44,5 +44,11 @@ typedef struct
 - (void)setKemoViewLightsAndViewMatrices:(KemoViewUnites *) monoViewUnites
                            MsgProjection:(matrix_float4x4 *) cbar_proj_mat
                            MapProjection:(matrix_float4x4 *) map_proj_mat;
+
+-(void) encodeCopyTexureToPrivate:(id<MTLCommandQueue> *) commandQueue
+                          num_pix:(NSUInteger *) pix_xy
+                           source:(id<MTLTexture> *) sourceTexture
+                           target:(id<MTLTexture> *) targetTexture;
+
 @end
 #endif /* KemoViewRendererTools_h_ */

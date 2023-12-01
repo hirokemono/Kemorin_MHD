@@ -178,6 +178,34 @@
 }
 
 
+-(void) encodeCopyTexureToPrivate:(id<MTLCommandQueue> *) commandQueue
+                          num_pix:(NSUInteger *) pix_xy
+                           source:(id<MTLTexture> *) sourceTexture
+                           target:(id<MTLTexture> *) targetTexture
+{
+    // Create a command buffer for GPU work.
+    id <MTLCommandBuffer> commandBuffer = [*commandQueue commandBuffer];
+    // Encode a blit pass to copy data from the source buffer to the private buffer.
+    id <MTLBlitCommandEncoder> blitCommandEncoder = [commandBuffer blitCommandEncoder];
+    MTLSize metalSize = MTLSizeMake(pix_xy[0], pix_xy[1], 1);
+    [blitCommandEncoder copyFromTexture:*sourceTexture
+                            sourceSlice:0
+                            sourceLevel:0
+                           sourceOrigin:MTLOriginMake(0, 0, 0)
+                             sourceSize:metalSize
+                              toTexture:*targetTexture
+                       destinationSlice:0
+                       destinationLevel:0
+                      destinationOrigin:MTLOriginMake(0, 0, 0)];
+    [blitCommandEncoder endEncoding];
+    // Add a completion handler and commit the command buffer.
+    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> cb) {
+        // Populate private buffer.
+    }];
+    [commandBuffer commit];
+    [commandBuffer waitUntilCompleted];
+    return;
+}
 
 @end
 
