@@ -314,17 +314,16 @@ Implementation of a platform independent renderer class, which performs Metal se
                             left:(id<MTLTexture> *) leftTexure
                            right:(id<MTLTexture> *) rightTexure
 {
-    NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     if(kemo_sgl->kemo_buffers->screen_buf->num_nod_buf > 0){
         [*anaglyphVertice release];
         [*leftTexure  release];
         [*rightTexure  release];
-        [_kemoMetalBufBase setAnaglyphTexture2:device
-                                        buffer:kemo_sgl->kemo_buffers->screen_buf
-                                        pixels:pix_xy
-                                        vertex:anaglyphVertice
-                                          left:leftTexure
-                                         right:rightTexure];
+        [_kemoMetalBufBase setAnaglyphTexture:device
+                                       buffer:kemo_sgl->kemo_buffers->screen_buf
+                                       pixels:pix_xy
+                                       vertex:anaglyphVertice
+                                         left:leftTexure
+                                        right:rightTexure];
     };
     return;
 }

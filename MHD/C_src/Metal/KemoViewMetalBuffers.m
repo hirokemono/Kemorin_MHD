@@ -110,58 +110,23 @@
 
 - (void)setAnaglyphTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                     buffer:(struct gl_strided_buffer *_Nonnull) buf
-                 leftimage:(struct line_text_image *_Nonnull) leftImg
-                rightimage:(struct line_text_image *_Nonnull) rightImg
+                    pixels:(NSUInteger *_Nonnull) npix_img
                     vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                       left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexture
                      right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexture
 {
     if(buf->num_nod_buf > 0){
+        for(int i=0;i<buf->num_nod_buf;i++){
+            set_node_stride_buffer(i, buf);
+            buf->x_draw[1] = npix_img[1] - buf->x_draw[1];
+        }
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
                                          length:(buf->num_nod_buf * sizeof(KemoViewVertex))
                                         options:MTLResourceStorageModeShared];
-        
-/* Construct message texture */
-        MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
-        lineTextureDescriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
-        lineTextureDescriptor.width =  leftImg->npix_img[0];
-        lineTextureDescriptor.height = leftImg->npix_img[1];
-
-/*  Calculate the number of bytes per row in the image. */
-        NSUInteger bytesPerRow = 4 * lineTextureDescriptor.width;
-        MTLRegion region = {
-            { 0, 0, 0 },                   // MTLOrigin
-            {lineTextureDescriptor.width, lineTextureDescriptor.height, 1} // MTLSize
-        };
-        
-/* Create the leftTexture from the device by using the descriptor */
-        *leftTexture = [*device newTextureWithDescriptor:lineTextureDescriptor];
-/* Copy the bytes from the data object into the leftTexture */
-        [*leftTexture replaceRegion:region
-                        mipmapLevel:0
-                          withBytes:leftImg->imgBMP
-                        bytesPerRow:bytesPerRow];
-
-        *rightTexture = [*device newTextureWithDescriptor:lineTextureDescriptor];
-        [*rightTexture replaceRegion:region
-                         mipmapLevel:0
-                          withBytes:rightImg->imgBMP
-                        bytesPerRow:bytesPerRow];
-    };
-    return;
-}
-
-- (void)setAnaglyphTexture2:(id<MTLDevice> _Nonnull *_Nonnull) device
-                     buffer:(struct gl_strided_buffer *_Nonnull) buf
-                     pixels:(NSUInteger *_Nonnull) npix_img
-                     vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
-                       left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexture
-                      right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexture
-{
-    if(buf->num_nod_buf > 0){
-        *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
-                                         length:(buf->num_nod_buf * sizeof(KemoViewVertex))
-                                        options:MTLResourceStorageModeShared];
+        for(int i=0;i<buf->num_nod_buf;i++){
+            set_node_stride_buffer(i, buf);
+            buf->x_draw[1] = npix_img[1] - buf->x_draw[1];
+        }
         
 /* Construct message texture */
         MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
