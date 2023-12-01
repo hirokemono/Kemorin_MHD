@@ -141,14 +141,15 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)refreshKemoViewMetalBuffers:(id<MTLDevice> *) device
                            kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    if(kemoview_get_draw_mode() == FULL_DRAW){
+    int iflag = kemoview_get_draw_mode();
+    if(iflag == FULL_DRAW){
         [self releaseKemoViewMetalBuffers:kemo_sgl];
         
         kemoview_const_buffers(kemo_sgl);
         
         [self setKemoViewMetalBuffers:device
                              kemoview:kemo_sgl];
-    }else if(kemoview_get_draw_mode() == FAST_DRAW){
+    }else if(iflag == FAST_DRAW){
         if(kemoview_get_view_type_flag() != VIEW_MAP){
             [_kemo3DRenderer releaseTransparentMetalBuffers:kemo_sgl];
             
@@ -436,7 +437,8 @@ Implementation of a platform independent renderer class, which performs Metal se
                                            MsgProjection:&_cbar_proj_mat
                                            MapProjection:&_map_proj_mat];
 
-    if(kemoview_get_view_type_flag() == VIEW_STEREO){
+    int iflag = kemoview_get_view_type_flag();
+    if(iflag == VIEW_STEREO){
         kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = TWO*THREE;
         [self KemoViewRenderAnaglyph:view
                             kemoview:kemo_sgl];

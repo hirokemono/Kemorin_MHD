@@ -96,7 +96,7 @@
 
     kemoview_set_viewtype((int) selected);
 	[_metalView setViewerType:selected];
-	[_metalView updateProjection];
+    kemoview_update_distance();
 	[_metalView UpdateImage];
 }
 

@@ -20,7 +20,7 @@
     kemoviewer_reset_to_init_angle();
     kemoview_init_lighting();
 
-    _metalView.enableSetNeedsDisplay = YES;
+    _metalView.enableSetNeedsDisplay = FALSE;
 /*    viewDidLoad is called by linkning self.viwew to metal view */
     self.view = _metalView;
 

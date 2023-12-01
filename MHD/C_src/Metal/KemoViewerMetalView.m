@@ -181,18 +181,11 @@
 }
 
 // ---------------------------------
-/* update the projection matrix based on camera and view info */
-- (void) updateProjection
-{
-    kemoview_update_distance();
-}
-
 // updates the contexts model view matrix for object and camera moves
 - (void) Resetview
 {
     kemoviewer_reset_to_init_angle();
-
-    [self updateProjection];
+    kemoview_update_distance();
     [self setNeedsDisplay: YES];
 }
 

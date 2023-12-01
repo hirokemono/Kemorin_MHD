@@ -9,6 +9,8 @@
 #define KemoViewerObject_h
 
 #include "kemoviewer.h"
+#include "m_kemoviewer_data.h"
+#include "m_gl_transfer_matrix.h"
 
 @interface KemoViewerObject : NSObject {
     struct kemoviewer_type *single_kemoview;
