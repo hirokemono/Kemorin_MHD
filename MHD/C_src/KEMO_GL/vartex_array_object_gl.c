@@ -229,7 +229,7 @@ void Const_FBO(unsigned int width, unsigned int height,
     glGenFramebuffers(1,&(FBO->id_VAO));
     glGenRenderbuffers(1,&(FBO->id_texure));
     glBindRenderbuffer(GL_RENDERBUFFER, FBO->id_texure);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB8, width, height);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO->id_VAO);
     glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                               GL_RENDERBUFFER, FBO->id_texure);

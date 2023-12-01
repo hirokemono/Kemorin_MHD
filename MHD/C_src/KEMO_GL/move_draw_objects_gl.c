@@ -13,8 +13,9 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
         exit(0);
     }
 	
-	kemo_VAOs->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-    kemo_VAOs->msg_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	kemo_VAOs->cube_VAO =    (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    kemo_VAOs->msg_VAO =     (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+    kemo_VAOs->screen_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_VAOs->mesh_solid_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids *));
 	for(i=0;i<3;i++){
@@ -61,6 +62,7 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 
 void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	int i;
+    free(kemo_VAOs->screen_VAO);
 	free(kemo_VAOs->cube_VAO);
     free(kemo_VAOs->msg_VAO);
 	
@@ -104,6 +106,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->map_VAO[i]->id_VAO));};
     glGenVertexArrays(1, &(kemo_VAOs->cube_VAO->id_VAO));
     glGenVertexArrays(1, &(kemo_VAOs->msg_VAO->id_VAO));
+    glGenVertexArrays(1, &(kemo_VAOs->screen_VAO->id_VAO));
 };
 
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
@@ -119,6 +122,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->map_VAO[i]);};
     Destroy_VAO(kemo_VAOs->cube_VAO);
     Destroy_VAO(kemo_VAOs->msg_VAO);
+    Destroy_VAO(kemo_VAOs->screen_VAO);
 };
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
@@ -353,30 +357,77 @@ void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
 	return;
 }
 
-unsigned char draw_objects_to_rgba_gl(GLuint width, GLuint height, 
-                                      struct kemoviewer_type *kemoview,
-                                      struct kemoviewer_gl_type *kemo_gl){
+unsigned char * draw_objects_to_rgba_gl(GLuint npix_xy[2], 
+                                        struct kemoviewer_type *kemoview,
+                                        struct kemoviewer_gl_type *kemo_gl){
+    npix_xy[0] = (GLuint) kemoview->view_s->nx_frame;
+    npix_xy[1] = (GLuint) kemoview->view_s->ny_frame;
 /* Construct screen_FBO */
-    Const_FBO(width, height, kemo_gl->kemo_VAOs->screen_FBO[0]);
+    Const_FBO(npix_xy[0], npix_xy[1], kemo_gl->kemo_VAOs->screen_FBO[0]);
 /* Set draw target to screen_FBO */
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
     update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
                         kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
                         kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
 
-    GLuint num_pixel = width * height;
-    unsigned char *rgba = (unsigned char *) malloc(4*num_pixel * sizeof(unsigned char));
-    if(rgba == NULL){
+    GLuint num_pixel = npix_xy[0] * npix_xy[1];
+    unsigned char *rgb = (unsigned char *) malloc(3*num_pixel * sizeof(unsigned char));
+    if(rgb == NULL){
         printf("malloc error for bgra\n");
         exit(0);
     };
 
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
     glReadBuffer(GL_COLOR_ATTACHMENT0);
-    glReadPixels(IZERO, IZERO, width, height, GL_RGBA8, GL_UNSIGNED_BYTE, &rgba[0]);
+    get_gl_buffer_to_bmp(npix_xy[0], npix_xy[1], rgb);
 /* Back draw target to screen framewbuffer */
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 /* Destroy screen_FBO */
     Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[0]);
-    return rgba;
+    return rgb;
 }
+
+void update_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
+                              struct kemoviewer_gl_type *kemo_gl){
+    GLuint width =  kemoview->view_s->nx_frame;
+    GLuint height = kemoview->view_s->ny_frame;
+/* Construct screen_FBO */
+    Const_FBO(width, height, kemo_gl->kemo_VAOs->screen_FBO[1]);
+    Const_FBO(width, height, kemo_gl->kemo_VAOs->screen_FBO[2]);
+/* Draw Left image in FBO */
+    update_left_projection_struct(kemoview->view_s);
+    modify_left_view_by_struct(kemoview->view_s);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[1]->id_VAO);
+    update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
+                        kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
+                        kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
+/* Draw right image in FBO */
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[2]->id_VAO);
+    update_right_projection_struct(kemoview->view_s);
+    modify_right_view_by_struct(kemoview->view_s);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
+                        kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
+                        kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
+/* draw target to screen framewbuffer */
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    modify_view_by_struct(kemoview->view_s);
+    double *orthogonal = orthogonal_projection_mat_c(0.0, width,
+                                                     0.0, height,
+                                                     -1.0, 1.0);
+    struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
+    Const_VAO_4_Texture(kemo_gl->kemo_VAOs->screen_VAO, 
+                       kemoview->kemo_buffers->screen_buf);
+    draw_anaglyph_VAO(cbar_matrices, kemo_gl->kemo_VAOs->screen_VAO, 
+                      kemo_gl->kemo_VAOs->screen_FBO[1],
+                      kemo_gl->kemo_VAOs->screen_FBO[2], 
+                      kemo_gl->kemo_shaders);
+    free(cbar_matrices);
+/* Destroy screen_FBO */
+    Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[2]);
+    Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[1]);
+    return;
+}
+
+
+

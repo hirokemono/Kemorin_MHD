@@ -165,25 +165,57 @@ void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *V
 
 void draw_textured_2D_box_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
                               struct kemoview_shaders *kemo_shaders){
-	if(VAO->npoint_draw <= 0) return;
+    if(VAO->npoint_draw <= 0) return;
     
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
     
-	glUseProgram(kemo_shaders->simple_texure->programId);
+    glUseProgram(kemo_shaders->simple_texure->programId);
     map_matrix_to_GLSL(kemo_shaders->simple_texure, matrices);
 
-	glBindVertexArray(VAO->id_VAO);
-	glBindTexture(GL_TEXTURE_2D, VAO->id_texure);
-	int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
-	glUniform1i(id_textureImage, 0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
-	glDrawArrays(GL_TRIANGLES, 0, VAO->npoint_draw);
+    glBindVertexArray(VAO->id_VAO);
+
+    glBindTexture(GL_TEXTURE_2D, VAO->id_texure);
+    int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
+    glUniform1i(id_textureImage, 0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
+    glDrawArrays(GL_TRIANGLES, 0, VAO->npoint_draw);
     
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	return;
+    return;
 }
+
+void draw_anaglyph_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
+                       struct VAO_ids *left_FBO, struct VAO_ids *right_FBO,
+                       struct kemoview_shaders *kemo_shaders){
+    if(VAO->npoint_draw <= 0) return;
+    
+    glEnable(GL_BLEND);
+    glDepthMask(GL_FALSE);
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    
+    glUseProgram(kemo_shaders->anaglyph_texure->programId);
+    map_matrix_to_GLSL(kemo_shaders->anaglyph_texure, matrices);
+
+    glBindVertexArray(VAO->id_VAO);
+
+    glBindTexture(GL_TEXTURE_2D, left_FBO->id_texure);
+    int id_leftImage = glGetUniformLocation(kemo_shaders->anaglyph_texure->programId, "left_image");
+    glUniform1i(id_leftImage, 0);
+    glBindTexture(GL_TEXTURE_2D, right_FBO->id_texure);
+    int id_rightImage = glGetUniformLocation(kemo_shaders->anaglyph_texure->programId, "right_image");
+    glUniform1i(id_rightImage, 0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
+    glDrawArrays(GL_TRIANGLES, 0, VAO->npoint_draw);
+    
+    glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    return;
+}
+

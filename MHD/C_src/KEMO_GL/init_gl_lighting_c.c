@@ -14,10 +14,12 @@ void kemo_gl_initial_lighting_c(struct kemoview_shaders *kemo_shaders){
 	LoadShaderFromStrings(kemo_shaders->simple, load_simple_vert(), load_simple_frag());
 	LoadShaderFromStrings(kemo_shaders->phong, load_phong_vert(), load_phong_frag());
 	LoadShaderFromStrings(kemo_shaders->phong_texure,
-						load_phong_texture_vert(), load_phong_texture_frag());
+                          load_phong_texture_vert(), load_phong_texture_frag());
 	LoadShaderFromStrings(kemo_shaders->phong_1color, load_phong_vert(), load_phong_frag());
 	LoadShaderFromStrings(kemo_shaders->simple_texure,
-						load_simple_texture_vert(), load_simple_texture_frag());
+                          load_simple_texture_vert(), load_simple_texture_frag());
+    LoadShaderFromStrings(kemo_shaders->anaglyph_texure,
+                          load_anaglyph_texture_vert(), load_anaglyph_texture_frag());
 	
     /*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);

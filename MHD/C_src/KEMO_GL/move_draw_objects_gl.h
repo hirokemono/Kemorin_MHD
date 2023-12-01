@@ -38,6 +38,7 @@ struct kemoview_VAOs{
     
     struct VAO_ids **map_VAO;
     
+    struct VAO_ids *screen_VAO;
     struct VAO_ids **screen_FBO;
 };
 
@@ -58,7 +59,10 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
 
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
                              struct kemoviewer_gl_type *kemo_gl);
-unsigned char draw_objects_to_rgba_gl(GLuint width, GLuint height, 
-                                      struct kemoviewer_type *kemoview,
-                                      struct kemoviewer_gl_type *kemo_gl);
+void update_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
+                              struct kemoviewer_gl_type *kemo_gl);
+
+unsigned char * draw_objects_to_rgba_gl(GLuint npix_xy[2], 
+                                        struct kemoviewer_type *kemoview,
+                                        struct kemoviewer_gl_type *kemo_gl);
 #endif

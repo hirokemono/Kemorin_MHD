@@ -5,6 +5,72 @@
 
 #include "shaders.h"
 
+char * load_anaglyph_texture_frag(void){
+    const char  anaglyph_texture_frag_src[]
+    = {
+        "#version 330\n"\
+        "// anaglyph_texture.frag\n"\
+        "\n"\
+        "in vec2 tex_position;\n"\
+        "\n"\
+        "out vec4 out_Color;\n"\
+        "\n"\
+        "uniform sampler2D left_image;\n"\
+        "uniform sampler2D right_image;\n"\
+        "\n"\
+        "void main (void)\n"\
+        "{\n"\
+        "    vec4 left_Color =  texture(left_image, tex_position);\n"\
+        "    vec4 right_Color = texture(right_image, tex_position);\n"\
+        "\n"\
+        "    float r = 0.299 * left_Color.x + 0.587 * left_Color.y + 0.114 * left_Color.z;\n"\
+        "    out_Color = vec4(r, right_Color.y, right_Color.z, left_Color.w);\n"\
+        "}\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(anaglyph_texture_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, anaglyph_texture_frag_src);
+    return src;
+};
+
+char * load_anaglyph_texture_vert(void){
+    const char  anaglyph_texture_vert_src[]
+    = {
+        "#version 330\n"\
+        "// anaglyph_texture.vert\n"\
+        "\n"\
+        "layout (location = 0) in vec4  xyz;\n"\
+        "layout (location = 1) in vec2  txur;\n"\
+        "\n"\
+        "\n"\
+        "uniform mat4 projectionMat;\n"\
+        "uniform mat4 modelViewMat;\n"\
+        "\n"\
+        "out vec2 tex_position;\n"\
+        "\n"\
+        "void main(void)\n"\
+        "{\n"\
+        "    vec4 position = xyz;\n"\
+        "    position.w = 1.0;\n"\
+        "	position = modelViewMat * position;\n"\
+        "	tex_position = txur;\n"\
+        "\n"\
+        "	gl_Position =  projectionMat * position;\n"\
+        "}\n"\
+        "\n"
+    };
+    
+    long n = strlen(anaglyph_texture_vert_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, anaglyph_texture_vert_src);
+    return src;
+};
+
 char * load_dash_lines_3D_frag(void){
     const char  dash_lines_3D_frag_src[]
     = {

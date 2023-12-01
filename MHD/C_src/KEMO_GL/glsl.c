@@ -316,16 +316,18 @@ struct kemoview_shaders * init_kemoview_shaders(void){
 	};
 	
 	sds->gouraud = init_shader_ids();
-	sds->menu = init_shader_ids();
-	sds->phong = init_shader_ids();
-	sds->phong_texure = init_shader_ids();
-	sds->phong_1color = init_shader_ids();
-	sds->simple_texure = init_shader_ids();
-	sds->simple = init_shader_ids();
+	sds->menu =    init_shader_ids();
+	sds->phong =   init_shader_ids();
+	sds->phong_texure =    init_shader_ids();
+	sds->phong_1color =    init_shader_ids();
+    sds->simple_texure =   init_shader_ids();
+    sds->simple =          init_shader_ids();
+	sds->anaglyph_texure = init_shader_ids();
 	return sds;
 };
 
 void dealloc_kemoview_shaders(struct kemoview_shaders *sds){
+    destory_shaders(sds->anaglyph_texure);
 	destory_shaders(sds->simple_texure);
 	destory_shaders(sds->phong_1color);
 	destory_shaders(sds->phong_texure);
