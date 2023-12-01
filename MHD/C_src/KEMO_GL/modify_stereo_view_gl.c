@@ -17,7 +17,8 @@ void modify_stereo_kemoview(int iflag_draw_mode,
     kemoview->view_s->iflag_draw_mode = iflag_draw_mode;
     glDrawBuffer(GL_BACK);
     
-    if(kemoview->view_s->iflag_view_type == VIEW_STEREO){
+    if(kemoview->view_s->iflag_view_type == VIEW_STEREO
+       && kemoview->view_s->iflag_draw_mode != SIMPLE_DRAW){
         update_draw_anaglyph_gl3(kemoview, kemo_gl);
     } else {
         update_projection_struct(kemoview->view_s);
