@@ -17,15 +17,12 @@ Implementation of a platform independent renderer class, which performs Metal se
 
     id<MTLDevice> _device;
 
-    // The command queue used to pass commands to the device.
+/* The command queue used to pass commands to the device. */
     id<MTLCommandQueue> _commandQueue;
-    
-    // Combined depth and stencil state object.
-    id<MTLDepthStencilState> _depthState;
-    id<MTLDepthStencilState> _depthState2;
-    id<MTLDepthStencilState> _noDepthState;
-
+/* The command encoder for the device. */
     id<MTLRenderCommandEncoder> _renderEncoder;
+/* Combined depth and stencil state object. */
+    id<MTLDepthStencilState> _depthState;
 
     // The current size of the view, used as an input to the vertex shader.
     vector_uint2    _viewportSize;
@@ -37,7 +34,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     matrix_float4x4 _map_proj_mat;
     matrix_float4x4 _cbar_proj_mat;
 
-    NSUInteger _frameNum;
     /*  Vertex buffer to render anaglyph on screen */
     id<MTLBuffer> _Nullable _anaglyphVertice;
     /*  Texture buffer to render anaglyph on screen */
@@ -53,7 +49,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     _kemo2DRenderer = [[KemoView2DRenderer alloc] init];
     _kemo3DRenderer = [[KemoView3DRenderer alloc] init];
 
-    _frameNum = 0;
     self = [super init];
     if(self)
     {
@@ -81,16 +76,6 @@ Implementation of a platform independent renderer class, which performs Metal se
         depthDescriptor.depthCompareFunction = MTLCompareFunctionLessEqual;
         depthDescriptor.depthWriteEnabled = YES;
         _depthState =  [_device newDepthStencilStateWithDescriptor:depthDescriptor];
-
-        depthDescriptor = [MTLDepthStencilDescriptor new];
-        depthDescriptor.depthCompareFunction = MTLCompareFunctionLessEqual;
-        depthDescriptor.depthWriteEnabled = YES;
-        _depthState2 = [_device newDepthStencilStateWithDescriptor:depthDescriptor];
-
-        depthDescriptor = [MTLDepthStencilDescriptor new];
-        depthDescriptor.depthCompareFunction = MTLCompareFunctionLessEqual;
-        depthDescriptor.depthWriteEnabled = NO;
-        _noDepthState = [_device newDepthStencilStateWithDescriptor:depthDescriptor];
     }
 /* Create the command queue */
     _commandQueue = [_device newCommandQueue];
@@ -494,6 +479,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     // Save the size of the drawable to pass to the vertex shader.
     _viewportSize.x = size.width;
     _viewportSize.y = size.height;
+    [self drawKemoMetalView:view];
 }
 
 @end
