@@ -8,6 +8,8 @@
  */
 
 #include "kemoview_gtk_main_menu.h"
+#include "view_modifier_glfw.h"
+
 
 struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data){
 	struct main_buttons *mbot = (struct main_buttons *) malloc(sizeof(struct main_buttons));
@@ -127,10 +129,10 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 	set_viewtype_mode(index_mode);
     kemoview_set_viewtype(index_mode);
 
-	delete_kemoview_menu(mbot);
-	update_kemoview_menu(mbot, window_main);
+//	delete_kemoview_menu(mbot);
+//	update_kemoview_menu(mbot, window_main);
 	
-	gtk_widget_queue_draw(window_main);
+//	gtk_widget_queue_draw(window_main);
 	draw_full();
 	return;
 };

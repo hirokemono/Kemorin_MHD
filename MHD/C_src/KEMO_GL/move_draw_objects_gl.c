@@ -101,7 +101,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
     for(i=0;i<3;i++){glGenVertexArrays(1, &(kemo_VAOs->mesh_solid_VAO[i]->id_VAO));};
     for(i=0;i<2;i++){glGenVertexArrays(1, &(kemo_VAOs->psf_trans_VAO[i]->id_VAO));};
 	glGenVertexArrays(1, &(kemo_VAOs->mesh_trans_VAO->id_VAO));
-    for(i=0;i<5;i++){glGenVertexArrays(1, &(kemo_VAOs->cbar_VAO[i]->id_VAO));};
+    for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->cbar_VAO[i]->id_VAO));};
 	glGenVertexArrays(1, &(kemo_VAOs->time_VAO->id_VAO));
     for(i=0;i<4;i++){glGenVertexArrays(1, &(kemo_VAOs->map_VAO[i]->id_VAO));};
     glGenVertexArrays(1, &(kemo_VAOs->cube_VAO->id_VAO));

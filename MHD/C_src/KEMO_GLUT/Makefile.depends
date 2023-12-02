@@ -265,15 +265,25 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_surface_menu.h \
   $(C_SRCDIR)/GTK/calypso_GTK.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
+  $(C_SRCDIR)/KEMO_GL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+  $(C_SRCDIR)/GLSL/shaders.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
@@ -292,8 +302,6 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
-  $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
@@ -301,7 +309,6 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -337,26 +344,6 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
-  $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
-  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
-  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
-  $(C_SRCDIR)/GTK/tree_view_real2_GTK.h \
-  $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
-  $(C_SRCDIR)/CORE_C/quicksort_c.h \
-  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
-  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
-  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
-  $(C_SRCDIR)/KEMO_GL/glsl.h \
-  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
-  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
-  $(C_SRCDIR)/GLSL/shaders.h \
-  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/KEMO_GL/move_draw_objects_gl.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -374,6 +361,7 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
+  $(C_SRCDIR)/CORE_C/quicksort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -383,7 +371,19 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_png.h \
-  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
+  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
+  $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
+  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
+  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
+  $(C_SRCDIR)/GTK/tree_view_real2_GTK.h \
+  $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
+  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
+  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
+  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_PSF_vector_menu.c \
@@ -636,15 +636,25 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(C_SRCDIR)/GTK/calypso_GTK.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
+  $(C_SRCDIR)/KEMO_GL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+  $(C_SRCDIR)/GLSL/shaders.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
@@ -663,8 +673,6 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
-  $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
@@ -672,7 +680,6 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -708,22 +715,6 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
-  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
-  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
-  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
-  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
-  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
-  $(C_SRCDIR)/KEMO_GL/glsl.h \
-  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
-  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
-  $(C_SRCDIR)/GLSL/shaders.h \
-  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/KEMO_GL/move_draw_objects_gl.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -751,7 +742,16 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_png.h \
-  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
+  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
+  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
+  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
+  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
+  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
+  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_fieldline_menu.c \
@@ -998,18 +998,26 @@ kemoview_gtk_fline_selectors.o: \
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_main_menu.c \
-  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_main_menu.h \
-  $(C_SRCDIR)/GTK/calypso_GTK.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+  $(C_SRCDIR)/GLSL/shaders.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
@@ -1028,8 +1036,6 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
-  $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
@@ -1037,7 +1043,6 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -1073,28 +1078,6 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
-  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
-  $(C_SRCDIR)/GTK/tree_view_viewer_colormap.h \
-  $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
-  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
-  $(C_SRCDIR)/GTK/tree_view_real2_GTK.h \
-  $(C_SRCDIR)/CORE_C/quicksort_c.h \
-  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
-  $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
-  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
-  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
-  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
-  $(C_SRCDIR)/KEMO_GL/glsl.h \
-  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
-  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
-  $(C_SRCDIR)/GLSL/shaders.h \
-  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/KEMO_GL/move_draw_objects_gl.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -1112,6 +1095,7 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_map_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
+  $(C_SRCDIR)/CORE_C/quicksort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -1122,6 +1106,22 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
+  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_main_menu.h \
+  $(C_SRCDIR)/GTK/calypso_GTK.h \
+  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
+  $(C_SRCDIR)/GTK/tree_view_viewer_colormap.h \
+  $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
+  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
+  $(C_SRCDIR)/GTK/tree_view_real2_GTK.h \
+  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
+  $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
+  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
+  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
+  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
   $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.h \
@@ -1531,15 +1531,25 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(C_SRCDIR)/GTK/calypso_GTK.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
+  $(C_SRCDIR)/KEMO_GL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+  $(C_SRCDIR)/GLSL/shaders.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
@@ -1558,8 +1568,6 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
-  $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
@@ -1567,7 +1575,6 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -1603,22 +1610,6 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/KEMO_GL/psf_data_array_manager.h \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
-  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
-  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
-  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
-  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
-  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
-  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
-  $(C_SRCDIR)/KEMO_GL/glsl.h \
-  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
-  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
-  $(C_SRCDIR)/GLSL/shaders.h \
-  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/KEMO_GL/move_draw_objects_gl.h \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
@@ -1646,7 +1637,16 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_png.h \
-  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
+  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
+  $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
+  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
+  $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
+  $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
+  $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.c \

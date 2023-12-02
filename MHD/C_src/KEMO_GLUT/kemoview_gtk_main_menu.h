@@ -15,6 +15,7 @@
 
 #include "calypso_GTK.h"
 #include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_viewer_colormap.h"

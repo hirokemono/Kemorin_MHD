@@ -8,6 +8,7 @@
  */
 
 #include "kemoview_gtk_quilt_menu.h"
+#include "view_modifier_glfw.h"
 
 struct quilt_gtk_menu * init_quilt_menu_box(void){
 	struct quilt_gtk_menu *quilt_gmenu
