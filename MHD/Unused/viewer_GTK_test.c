@@ -49,7 +49,7 @@ void gtk_test_window(struct kemoviewer_type *kemoviewer_data){
 	
 	mbot = (struct main_buttons *) malloc(sizeof(struct main_buttons));
 	mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
-	mbot->color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
+	mbot->color_vws = alloc_colormap_view();
 	mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
 	mbot->lightparams_vws =  init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
 	

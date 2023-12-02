@@ -26,13 +26,15 @@ struct colormap_view{
 	struct chara_ctl_item *colormap_mode_gtk;
     struct r2_clist_view *cmap_vws;
     struct r2_clist_view *opacity_vws;
+    int iflag_cmap_loaded;
 	
 	struct colormap_params *cmap_param;	
     GtkWidget *scrolled_window;
 };
 
+struct colormap_view * alloc_colormap_view(void);
 struct colormap_view * init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c);
-void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws);
+void dealloc_colormap_views(struct colormap_view *color_vws);
 
 
 void colormap_data_edited_CB(gchar *path_str, gchar *new_text,

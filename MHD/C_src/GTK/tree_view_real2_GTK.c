@@ -7,10 +7,32 @@
 
 #include "tree_view_real2_GTK.h"
 
-void init_r2_clist_views(struct real2_clist *r2_clist, struct r2_clist_view *cmap_vws){
-	cmap_vws->r2_clist_gtk = r2_clist;
-	return;
+struct r2_clist_view * alloc_r2_clist_views(void){
+    struct r2_clist_view * r2_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
+    if(r2_vws == NULL){
+        printf("malloc error for r2_clist_view\n");
+        exit(0);
+    }
+    r2_vws->r2_clist_gtk = init_real2_clist();
+    return r2_vws;
 };
+void dealloc_r2_clist_views(struct r2_clist_view *r2_vws){
+    dealloc_real2_clist(r2_vws->r2_clist_gtk);
+    free(r2_vws);
+    return;
+}
+
+
+struct r2_clist_view *  link_r2_clist_view_clist(struct real2_clist *ref_clist){
+    struct r2_clist_view * r2_vws = alloc_r2_clist_views();
+    r2_vws->r2_clist_gtk = ref_clist;
+    return r2_vws;
+};
+void unlink_r2_clist_views(struct r2_clist_view *r2_vws){
+    r2_vws->r2_clist_gtk = NULL;
+    free(r2_vws);
+    return;
+}
 
 /* Append new data at the end of list */
 int append_r2_item_to_tree(int index, double r1_data, double r2_data, 

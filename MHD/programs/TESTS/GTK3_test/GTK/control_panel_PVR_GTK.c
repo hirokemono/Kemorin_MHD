@@ -60,7 +60,7 @@ struct PVR_GTK_widgets * init_PVR_GTK_widgets(struct f_VIZ_PVR_ctl *f_pvr_ctl,
 
 void dealloc_PVR_GTK_widgets(struct f_VIZ_PVR_ctl *f_pvr_ctl,
                              struct PVR_GTK_widgets *pvr_vws){
-    dealloc_colormap_views_4_viewer(pvr_vws->color_vws);
+    dealloc_colormap_views(pvr_vws->color_vws);
     dealloc_chara_int2_clist(pvr_vws->label_field_list);
     dealloc_chara2_int_clist(pvr_vws->label_dir_list);
     

@@ -31,7 +31,7 @@ void dealloc_MAP_GTK_widgets(struct MAP_GTK_widgets *map_vws){
     dealloc_PSF_GTK_widgets(map_vws->psf_def_vws);
     dealloc_chara_int2_clist(map_vws->label_field_list);
     dealloc_chara2_int_clist(map_vws->label_dir_list);
-    dealloc_colormap_views_4_viewer(map_vws->color_vws);
+    dealloc_colormap_views(map_vws->color_vws);
     free(map_vws);
 }
 

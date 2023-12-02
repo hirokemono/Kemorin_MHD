@@ -212,7 +212,6 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode);
-	dealloc_colormap_views_4_viewer(mbot->psf_gmenu->color_vws);
 	
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(mbot, window_main);
@@ -231,7 +230,6 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D);
-	dealloc_colormap_views_4_viewer(mbot->psf_gmenu->color_vws);
 	
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(mbot, window_main);
@@ -276,9 +274,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     int index_mode = gtk_selected_combobox_index(combobox_field);
     
 	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode);
-	
-	dealloc_colormap_views_4_viewer(mbot->psf_gmenu->color_vws);
-	
+		
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(mbot, window_main);
 	
@@ -296,9 +292,7 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
     int index_mode = gtk_selected_combobox_index(combobox_comp);
 	
 	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, index_mode);
-	
-	dealloc_colormap_views_4_viewer(mbot->psf_gmenu->color_vws);
-	
+		
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(mbot, window_main);
 	

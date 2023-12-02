@@ -7,13 +7,19 @@
 
 #include "tree_view_4_colormap.h"
 
-struct colormap_view * init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c){
+struct colormap_view * alloc_colormap_view(void){
     struct colormap_view *color_vws
-			= (struct colormap_view *) malloc(sizeof(struct colormap_view));
-	if(color_vws == NULL){
-		printf("malloc error for colormap_view\n");
-		exit(0);
+            = (struct colormap_view *) malloc(sizeof(struct colormap_view));
+    if(color_vws == NULL){
+        printf("malloc error for colormap_view\n");
+        exit(0);
     };
+    color_vws->iflag_cmap_loaded = 0;
+    return color_vws;
+};
+
+struct colormap_view * init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c){
+    struct colormap_view *color_vws = alloc_colormap_view();
     color_vws->cmap_param
 			= (struct colormap_params *) malloc(sizeof(struct colormap_params));
 	if(color_vws == NULL){
@@ -22,23 +28,22 @@ struct colormap_view * init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c){
     };
    
 	color_vws->colormap_mode_gtk = cmap_c->f_colormap_mode_ctl;
-    color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-    color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
+    color_vws->cmap_vws =    link_r2_clist_view_clist(cmap_c->f_colortbl_ctl);
+    color_vws->opacity_vws = link_r2_clist_view_clist(cmap_c->f_linear_opacity_ctl);
 	
     color_vws->cmap_param->colormap = cmap_c->f_colortbl_ctl;
     color_vws->cmap_param->opacitymap = cmap_c->f_linear_opacity_ctl;
     color_vws->cmap_param->min_opacity = 0.0;
     color_vws->cmap_param->max_opacity = 1.0;
     color_vws->cmap_param->id_color_mode = 0;
- 
-    init_r2_clist_views(cmap_c->f_colortbl_ctl, color_vws->cmap_vws);
-    init_r2_clist_views(cmap_c->f_linear_opacity_ctl, color_vws->opacity_vws);
     return color_vws;
 }
 
-void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws){
-	free(color_vws->cmap_vws);
-	free(color_vws->opacity_vws);
+void dealloc_colormap_views(struct colormap_view *color_vws){
+    color_vws->cmap_param = NULL;;
+    unlink_r2_clist_views(color_vws->cmap_vws);
+    unlink_r2_clist_views(color_vws->opacity_vws);
+    free(color_vws);
     return;
 }
 

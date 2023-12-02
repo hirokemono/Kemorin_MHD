@@ -12,12 +12,14 @@ void init_colormap_views_4_viewer(struct colormap_view *color_vws){
 	
 	color_vws->colormap_mode_gtk = init_chara_ctl_item_c();
 	
-	color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
+    if(color_vws->iflag_cmap_loaded > 0){
+        dealloc_r2_clist_views(color_vws->cmap_vws);
+        dealloc_r2_clist_views(color_vws->opacity_vws);
+    }
+	color_vws->cmap_vws =    alloc_r2_clist_views();
+	color_vws->opacity_vws = alloc_r2_clist_views();
+    color_vws->iflag_cmap_loaded = 1;
 	
-	color_vws->cmap_vws->r2_clist_gtk =   init_real2_clist();
-	color_vws->opacity_vws->r2_clist_gtk = init_real2_clist();
-
 	sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r1_name, "data");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r2_name, "color");
@@ -28,7 +30,7 @@ void init_colormap_views_4_viewer(struct colormap_view *color_vws){
 	int i, num;
 	double value, color;
 	copy_colormap_name_to_ctl(color_vws->cmap_param, 
-				color_vws->colormap_mode_gtk);
+                              color_vws->colormap_mode_gtk);
 	num = send_color_table_num_s(color_vws->cmap_param);
 	for(i=0;i<num;i++){
 		send_color_table_items_s(color_vws->cmap_param, i, &value, &color);
@@ -44,7 +46,7 @@ void init_colormap_views_4_viewer(struct colormap_view *color_vws){
 	return;
 };
 
-void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 
+void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu,
 			struct colormap_view *color_vws){
 	int icomp = psf_current_menu->icomp_draw_psf;
 	dup_real2_clist(color_vws->cmap_vws->r2_clist_gtk,

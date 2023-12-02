@@ -57,7 +57,7 @@ static GtkWidget * init_gtk_psf_colormap_expander(GtkWidget *window, struct colo
 struct psf_gtk_menu * alloc_psf_gtk_menu(){
 	struct psf_gtk_menu *psf_gmenu = (struct psf_gtk_menu *) malloc(sizeof(struct psf_gtk_menu));
 	
-	psf_gmenu->color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
+	psf_gmenu->color_vws = alloc_colormap_view();
 	psf_gmenu->psf_isoline_menu = (struct psf_isoline_gtk_menu *) malloc(sizeof(struct psf_isoline_gtk_menu));
 	psf_gmenu->psf_surface_menu = (struct psf_surface_gtk_menu *) malloc(sizeof(struct psf_surface_gtk_menu));
 	psf_gmenu->psf_color_menu =   (struct psf_color_gtk_menu *) malloc(sizeof(struct psf_color_gtk_menu));
