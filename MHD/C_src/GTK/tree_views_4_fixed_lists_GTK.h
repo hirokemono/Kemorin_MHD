@@ -9,7 +9,7 @@
 #define tree_views_4_fixed_lists_GTK_h_
 
 #include "calypso_GTK.h"
-#include "t_control_label_from_f.h"
+#include "t_control_chara2_int_IO.h"
 #include "m_direction_labels_c.h"
 
 void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data);

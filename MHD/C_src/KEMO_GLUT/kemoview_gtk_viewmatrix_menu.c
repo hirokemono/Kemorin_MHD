@@ -46,15 +46,6 @@ void set_viewmatrix_value(struct view_widgets *view_menu, GtkWidget *window){
     return;
 };
 
-void update_viewmatrix_menu(struct view_widgets *view_menu, GtkWidget *window){    
-	if(kemoview_get_view_type_flag() != VIEW_STEREO){
-        gtk_widget_hide(view_menu->Frame_streo);
-    };
-    gtk_widget_queue_draw(window);
-    return;
-};
-
-
 static void save_viewmatrix_CB(GtkButton *button, gpointer user_data){
 	int iflag_set = kemoview_gtk_save_file_select(button, user_data);
 	if(iflag_set == IZERO) return;
@@ -412,7 +403,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 					 G_CALLBACK(sep_angle_CB), NULL);
 	
 	view_menu->hbox_focus = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), gtk_label_new(" Focus: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), gtk_label_new(" Focul: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), view_menu->spin_focus, FALSE, FALSE, 0);
 	
 	view_menu->hbox_eye_sep = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
@@ -427,11 +418,14 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_focus, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_eye_sep, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_sep_angle, FALSE, FALSE, 0);
-	view_menu->Frame_streo = gtk_frame_new("Stereo parameter");
-	gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_streo), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(view_menu->Frame_streo), view_menu->vbox_streo);
-	
-	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_streo, FALSE, FALSE, 0);
+	view_menu->Frame_stereo = gtk_frame_new("Stereo parameter");
+	gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_stereo), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(view_menu->Frame_stereo), view_menu->vbox_streo);
+    if(kemoview_get_view_type_flag() != VIEW_STEREO){
+        gtk_widget_set_sensitive(view_menu->Frame_stereo, FALSE);
+    };
+
+	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_stereo, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(box_view), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
     expander_view = wrap_into_scroll_expansion_gtk("View parameters", 240, 480, window, box_view);

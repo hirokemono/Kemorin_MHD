@@ -458,7 +458,7 @@ void sel_write_evolution_views(int iflag_img, struct kv_string *image_prefix,
 };
 
 
-void set_viewtype_mode(int selected){
+void set_GLFW_viewtype_mode(int selected){
 	
 	if(selected == RESET) selected = VIEW_3D;
 

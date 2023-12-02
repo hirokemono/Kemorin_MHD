@@ -76,6 +76,7 @@
 @property NSInteger NumberOfColumns;
 @property NSInteger NumberOfQuilts;
 
+- (void) initQuiltMode;
 - (int) ToggleQuiltMode;
 
 - (IBAction) SetQuiltRawByInput:(id)sender;

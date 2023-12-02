@@ -72,7 +72,7 @@ struct view_widgets{
 	GtkWidget *vbox_scale, *Frame_scale;
 	GtkWidget *vbox_rotation, *Frame_rotation;
 	GtkWidget *vbox_aperture, *Frame_aperture;
-	GtkWidget *vbox_streo, *Frame_streo;
+	GtkWidget *vbox_streo, *Frame_stereo;
 	
 	GtkWidget *vbox_viewmatrix_save;
 	GtkWidget *hbox_viewmatrix_save;
@@ -84,7 +84,6 @@ struct view_widgets{
 
 void update_windowsize_menu(struct view_widgets *view_menu, GtkWidget *window);
 void set_viewmatrix_value(struct view_widgets *view_menu, GtkWidget *window);
-void update_viewmatrix_menu(struct view_widgets *view_menu, GtkWidget *window);
 
 GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWidget *window);
 #endif

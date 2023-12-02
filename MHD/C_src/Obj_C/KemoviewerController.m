@@ -15,6 +15,7 @@
 @synthesize fInfo;
 @synthesize fDrawHelp;
 @synthesize StereoFlag;
+@synthesize QuiltFlag;
 @synthesize coastlineRadius;
 @synthesize psfTexTureEnable;
 @synthesize timeDisplayFlag;
@@ -41,6 +42,7 @@
     self.axisDrawFlag =      0;
     self.axisDrawAccess =    1;
 	
+    self.QuiltFlag = [_resetview ToggleQuiltMode];
 	return self;
 }
 
@@ -72,17 +74,19 @@
 	[_viewZXItem setState:NSControlStateValueOff];
 	
     self.axisDrawAccess = 1;
-    self.StereoFlag = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_MODE);
+    self.QuiltFlag = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_MODE);
 	psfTexTureEnable = 1;
-	if (selected == VIEW_3D) {[_view3dItem setState:NSControlStateValueOn];}
+    
+    self.StereoFlag = 0;
+    if(selected == VIEW_STEREO || self.QuiltFlag > 0){self.StereoFlag = 1;};
+
+	if(selected == VIEW_3D) {[_view3dItem setState:NSControlStateValueOn];}
 	else if (selected == VIEW_MAP) {
         self.axisDrawAccess = 0;
-        self.StereoFlag = 0;
 		psfTexTureEnable = 0;
 		[_viewMapItem setState:NSControlStateValueOn];
 	}
 	else if (selected == VIEW_STEREO) {
-		self.StereoFlag = 1;
 		[_viewStereoItem setState:NSControlStateValueOn];
 	}
 	else if (selected == VIEW_XY) {[_viewXYItem setState:NSControlStateValueOn];}
@@ -159,7 +163,8 @@
 
 - (IBAction) ToggleQuiltSwitch:(id)sender
 {
-    self.StereoFlag = [_resetview ToggleQuiltMode];
+    self.QuiltFlag = [_resetview ToggleQuiltMode];
+    [self SetViewTypeMenu:VIEW_3D];
 }
 
 - (IBAction) SetViewtypeAction:(id)pSender{

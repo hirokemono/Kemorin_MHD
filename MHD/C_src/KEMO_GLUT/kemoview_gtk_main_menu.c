@@ -121,19 +121,19 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 
 static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 {
-	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
-	
+    struct view_widgets *view_menu = (struct view_widgets *) user_data;
+
 	int index_mode = gtk_selected_combobox_index(combobox_viewtype);
 	
-	set_viewtype_mode(index_mode);
+    set_GLFW_viewtype_mode(index_mode);
     kemoview_set_viewtype(index_mode);
-
-	delete_kemoview_menu(mbot);
-	update_kemoview_menu(mbot, window_main);
-	
-	gtk_widget_queue_draw(window_main);
-	draw_full();
+    draw_full();
+    
+    if(kemoview_get_view_type_flag() == VIEW_STEREO){
+        gtk_widget_set_sensitive(view_menu->Frame_stereo, TRUE);
+    }else{
+        gtk_widget_set_sensitive(view_menu->Frame_stereo, FALSE);
+    };
 	return;
 };
 
@@ -229,7 +229,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 
     int num_loaded = kemoview_close_PSF_view();
 
-    set_viewtype_mode(VIEW_3D);
+    set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D);
 	dealloc_colormap_views_4_viewer(mbot->psf_gmenu->color_vws);
 	
@@ -594,7 +594,7 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_viewtype), renderer_viewtype,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_viewtype), "changed", 
-                     G_CALLBACK(set_viewtype_CB), entry_file);
+                     G_CALLBACK(set_viewtype_CB), (gpointer) mbot->view_menu);
 	
 	
 	GtkWidget *label_tree_image_fileformat = create_fixed_label_w_index_tree();
@@ -638,10 +638,12 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
 	
     GtkWidget *hbox_axis = make_axis_menu_box(window_main);
     GtkWidget *expander_rot = init_rotation_menu_expander(mbot->rot_gmenu, window_main);
-    GtkWidget *expander_quilt = init_quilt_menu_expander(mbot->quilt_gmenu, window_main);
-    GtkWidget *expander_view = init_viewmatrix_menu_expander(mbot->view_menu, window_main);
-    GtkWidget *expander_pref = init_preference_expander(mbot->pref_gmenu, window_main,
-                                                        kemoviewer_data);
+    
+    mbot->expander_view = init_viewmatrix_menu_expander(mbot->view_menu, window_main);
+    mbot->expander_pref = init_preference_expander(mbot->pref_gmenu, window_main,
+                                                   kemoviewer_data);
+    GtkWidget *expander_quilt = init_quilt_menu_expander(mbot->quilt_gmenu,
+                                                         mbot->view_menu, window_main);
 
     
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_open, FALSE, FALSE, 0);
@@ -650,7 +652,8 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_axis, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_rot, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_quilt, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_view, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_pref, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_view, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_pref, FALSE, FALSE, 0);
     return;
 }
+

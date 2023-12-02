@@ -43,12 +43,16 @@
 @synthesize NumberOfColumns;
 @synthesize NumberOfQuilts;
 
+- (void) initQuiltMode
+{
+    self.Quilt_flag = 0;
+}
 - (int) ToggleQuiltMode
 {
     kemoview_set_quilt_nums(ISET_QUILT_MODE, (int) self.Quilt_flag);
     if(self.Quilt_flag > 0){
-        self.NumberOfColumns = 9;
-        self.NumberOfRows = 5;
+        self.NumberOfColumns = 5;
+        self.NumberOfRows = 9;
         self.FocusPoint = 9.5;
         self.eyeAngle =   35.0;
         kemoview_set_quilt_nums(ISET_QUILT_RAW, (int) self.NumberOfRows);

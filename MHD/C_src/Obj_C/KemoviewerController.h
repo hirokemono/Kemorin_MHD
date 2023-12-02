@@ -42,6 +42,7 @@
 	IBOutlet id _viewZXItem;
 
 	NSInteger StereoFlag;
+    NSInteger QuiltFlag;
 	NSInteger psfTexTureEnable;
 	
 	NSInteger fInfo;
@@ -65,6 +66,7 @@
 @property NSInteger fInfo;
 @property NSInteger fDrawHelp;
 @property NSInteger StereoFlag;
+@property NSInteger QuiltFlag;
 @property CGFloat coastlineRadius;
 @property NSInteger psfTexTureEnable;
 @property NSInteger timeDisplayAccess;

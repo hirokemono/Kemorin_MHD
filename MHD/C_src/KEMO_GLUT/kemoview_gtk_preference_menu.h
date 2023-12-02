@@ -30,10 +30,15 @@
 struct preference_gtk_menu{
 	struct lightparams_view *lightparams_vws;
 	
-	GtkWidget *spin_ambient;
+    GtkWidget *BGselButton;
+    GtkWidget *spin_ambient;
 	GtkWidget *spin_diffuse;
 	GtkWidget *spin_specular;
 	GtkWidget *spin_shineness;
+
+    GtkWidget *Frame_BGsel;
+    GtkWidget *pref_hbox[4];
+    GtkWidget *pref_vbox;
 
 	GtkWidget *combobox_node_color;
 	GtkWidget *button_node_color;

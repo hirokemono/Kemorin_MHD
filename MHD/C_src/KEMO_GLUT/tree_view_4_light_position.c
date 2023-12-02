@@ -252,9 +252,7 @@ static GtkWidget *init_lightposition_list_box(struct lightparams_view *light_vws
 };
 
 GtkWidget * init_light_list_frame(struct lightparams_view *light_vws){
-	GtkWidget *Frame_1;
-	
-	GtkWidget *vbox_1 = init_lightposition_list_box(light_vws);
+    light_vws->light_vbox = init_lightposition_list_box(light_vws);
 	
 	light_vws->scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(light_vws->scrolled_window),
@@ -262,10 +260,10 @@ GtkWidget * init_light_list_frame(struct lightparams_view *light_vws){
     gtk_widget_set_size_request(light_vws->scrolled_window, 160, 200);
     gtk_widget_set_app_paintable(light_vws->scrolled_window, TRUE);
     gtk_widget_add_events (light_vws->scrolled_window, GDK_BUTTON_PRESS_MASK);
-    gtk_container_add(GTK_CONTAINER(light_vws->scrolled_window), vbox_1);
+    gtk_container_add(GTK_CONTAINER(light_vws->scrolled_window), light_vws->light_vbox);
 	
     
-	Frame_1 = gtk_frame_new("");
+    GtkWidget *Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame_1), light_vws->scrolled_window);
     

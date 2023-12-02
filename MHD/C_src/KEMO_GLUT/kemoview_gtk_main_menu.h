@@ -42,11 +42,13 @@ struct main_buttons{
 	
 	GtkWidget *vbox_menu;
 
+    GtkWidget *expander_view;
     struct view_widgets *view_menu;
 	
 	GtkWidget *psfBox;
 	struct psf_gtk_menu *psf_gmenu;
-	
+
+    GtkWidget *expander_pref;
 	struct preference_gtk_menu  *pref_gmenu;
 	
 	GtkWidget *flineBox;
@@ -56,6 +58,7 @@ struct main_buttons{
 	struct kemoview_mesh_view *mesh_vws;
 	
 	struct rotation_gtk_menu *rot_gmenu;
+    
 	struct quilt_gtk_menu *quilt_gmenu;
 	
 	GtkWidget *evolutionBox;
@@ -83,5 +86,8 @@ void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window);
 void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
                             GtkWidget *window_main,
                             struct kemoviewer_type *kemoviewer_data);
+
+
+void sel_mesh_menu_box(struct main_buttons *mbot, gboolean flag);
 
 #endif

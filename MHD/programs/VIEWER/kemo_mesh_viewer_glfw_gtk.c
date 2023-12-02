@@ -78,7 +78,6 @@ static void mainloop_4_glfw(){
         if(mbot == NULL) return;
 		if(iflag_glfw_end == 1) return;
         set_viewmatrix_value(mbot->view_menu, gtk_win);
-		update_viewmatrix_menu(mbot->view_menu, gtk_win);
 
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
             while (gtk_events_pending()) gtk_main_iteration();
@@ -188,10 +187,27 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     free(image);
     free(fliped_img);
 }
+static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
+    struct main_buttons *mbot = (struct main_buttons *)user_data;
+    gchar * text = gtk_button_get_label(button);
+    char test1[1];
+    test1[0] = text[1];
+    if(test1[0] == 110){
+        gtk_button_set_label(button, "Off");
+        gtk_widget_set_sensitive(mbot->expander_view, FALSE);
+        gtk_widget_set_sensitive(mbot->expander_pref, FALSE);
+//        sel_mesh_menu_box(mbot, FALSE);
+    }else if(test1[0] == 102){
+        gtk_button_set_label(button, "On");
+        gtk_widget_set_sensitive(mbot->expander_view, TRUE);
+        gtk_widget_set_sensitive(mbot->expander_pref, TRUE);
+//        sel_mesh_menu_box(mbot, TRUE);
+    };
+    return;
+}
 
 void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *quitButton, *copyButton;
-	GtkWidget *vbox_main;
     GtkClipboard *clipboard;
     
     
@@ -219,26 +235,38 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     copyButton = gtk_button_new_with_label("Copy");
     g_signal_connect(G_OBJECT(copyButton), "clicked", G_CALLBACK(gtkCopyToClipboard_CB), (gpointer) clipboard);
 	
+    GtkWidget *testButton = gtk_button_new_with_label("On");
+    mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+
     GtkWidget *topbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(topbox), testButton, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(topbox), copyButton, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(topbox), quitButton, TRUE, TRUE, 0);
 
     
-	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), topbox, FALSE, FALSE, 0);
 	
     iflag_fast_prev = 0;
-	make_gtk_main_menu_box(mbot, gtk_win, single_kemoview);
-	
-	vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *takobox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	make_gtk_main_menu_box(mbot, takobox, gtk_win, single_kemoview);
+    
+    gtk_box_pack_start(GTK_BOX(takobox), mbot->vbox_menu, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(mbot->menuHbox), takobox, FALSE, FALSE, 0);
+    update_kemoview_menu(mbot, gtk_win);
+
+
+    GtkWidget *vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
-	
+
+    g_signal_connect(G_OBJECT(testButton), "clicked", G_CALLBACK(gtkhidetest_CB), (gpointer) mbot);
+
+    
 	gtk_widget_show(quitButton);
     gtk_widget_show(copyButton);
 	gtk_widget_show(vbox_main);
-	gtk_widget_show_all(mbot->menuHbox);
+//	gtk_widget_show(mbot->menuHbox);
 	gtk_widget_show(gtk_win);
 	return;
 }
