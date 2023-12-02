@@ -59,6 +59,7 @@ struct main_buttons{
 	
 	struct rotation_gtk_menu *rot_gmenu;
     
+    GtkWidget *expander_quilt;
 	struct quilt_gtk_menu *quilt_gmenu;
 	
 	GtkWidget *evolutionBox;

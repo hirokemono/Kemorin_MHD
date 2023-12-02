@@ -59,6 +59,7 @@ struct view_widgets{
 	GtkWidget *hbox_focus;
 	
 	int iflag_updated_eye_separation;
+    int iflag_updated_eye_sep_angle;
 	GtkAdjustment *adj_eye_sep;
     GtkAdjustment *adj_sep_angle;
 	GtkWidget *spin_eye_sep;

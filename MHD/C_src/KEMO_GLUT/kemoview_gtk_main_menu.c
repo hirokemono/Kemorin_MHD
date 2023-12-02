@@ -640,10 +640,10 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
     GtkWidget *expander_rot = init_rotation_menu_expander(mbot->rot_gmenu, window_main);
     
     mbot->expander_view = init_viewmatrix_menu_expander(mbot->view_menu, window_main);
+    mbot->expander_quilt = init_quilt_menu_expander(mbot->quilt_gmenu,
+                                                    mbot->view_menu, window_main);
     mbot->expander_pref = init_preference_expander(mbot->pref_gmenu, window_main,
                                                    kemoviewer_data);
-    GtkWidget *expander_quilt = init_quilt_menu_expander(mbot->quilt_gmenu,
-                                                         mbot->view_menu, window_main);
 
     
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_open, FALSE, FALSE, 0);
@@ -651,7 +651,7 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_viewtype, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_axis, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_rot, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_quilt, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_quilt, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_view, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_pref, FALSE, FALSE, 0);
     return;

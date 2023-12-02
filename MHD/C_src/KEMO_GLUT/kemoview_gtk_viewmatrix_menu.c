@@ -39,10 +39,11 @@ void set_viewmatrix_value(struct view_widgets *view_menu, GtkWidget *window){
 	gtk_adjustment_set_value(view_menu->adj_aperture, kemoview_get_view_parameter(ISET_APERTURE, 0));
 	
 	gtk_adjustment_set_value(view_menu->adj_focus, kemoview_get_view_parameter(ISET_FOCUS, 0));
-    gtk_adjustment_set_value(view_menu->adj_sep_angle, kemoview_get_view_parameter(ISET_EYEAGL, 0));
 
-    double separation = kemoview_get_view_parameter(ISET_EYESEP, 0);
-    gtk_adjustment_set_value(view_menu->adj_eye_sep, separation);
+    gtk_adjustment_set_value(view_menu->adj_eye_sep,
+                             kemoview_get_view_parameter(ISET_EYESEP, 0));
+    gtk_adjustment_set_value(view_menu->adj_sep_angle,
+                             kemoview_get_view_parameter(ISET_EYEAGL, 0));
     return;
 };
 
@@ -147,26 +148,37 @@ static void focus_CB(GtkWidget *spin_focus, gpointer user_data){
     draw_fast();
 	return;
 };
-static void eye_sep_CB(GtkWidget *spin_eye_sep, gpointer user_data){
-	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(spin_eye_sep), "view");
-	
-	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_eye_sep));
-	kemoview_set_stereo_parameter(ISET_EYESEP, gtk_floatvalue);
-	double angle = kemoview_get_view_parameter(ISET_EYEAGL, 0);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_sep_angle), angle);
-	
-    draw_fast();
+static void eye_sep_dist_CB(GtkWidget *spin_eye_sep, gpointer user_data){
+    struct view_widgets *view_menu = (struct view_widgets *) user_data;
+    if(view_menu->iflag_updated_eye_sep_angle > 0){
+        view_menu->iflag_updated_eye_sep_angle = 0;
+    }else{
+        double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_eye_sep));
+        kemoview_set_stereo_parameter(ISET_EYESEP, gtk_floatvalue);
+
+        view_menu->iflag_updated_eye_separation = 1;
+        double angle = kemoview_get_view_parameter(ISET_EYEAGL, 0);
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_sep_angle), angle);
+
+        draw_fast();
+    }
+    view_menu->iflag_updated_eye_separation = 0;
 	return;
 };
-static void sep_angle_CB(GtkWidget *spin_sep_angle, gpointer user_data){
-	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(spin_sep_angle), "view");
-    
-	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_sep_angle));
-    kemoview_set_stereo_parameter(ISET_EYEAGL, gtk_floatvalue);
-    double separation = kemoview_get_view_parameter(ISET_EYESEP, 0);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_eye_sep), separation);
-	
-    draw_fast();
+static void eye_sep_angle_CB(GtkWidget *spin_sep_angle, gpointer user_data){
+    struct view_widgets *view_menu = (struct view_widgets *) user_data;
+    if(view_menu->iflag_updated_eye_separation > 0){
+        view_menu->iflag_updated_eye_separation = 0;
+    }else{
+        double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin_sep_angle));
+        kemoview_set_stereo_parameter(ISET_EYEAGL, gtk_floatvalue);
+
+        view_menu->iflag_updated_eye_sep_angle = 1;
+        double separation = kemoview_get_view_parameter(ISET_EYESEP, 0);
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_eye_sep), separation);
+        draw_fast();
+    }
+    view_menu->iflag_updated_eye_sep_angle = 0;
     return;
 };
 
@@ -387,20 +399,14 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	g_signal_connect(view_menu->spin_focus, "value-changed", 
 					 G_CALLBACK(focus_CB), NULL);
 	view_menu->spin_eye_sep =   gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_sep), 0, 3);
-	gtk_editable_set_editable(view_menu->spin_eye_sep, FALSE);
-	
 	view_menu->spin_sep_angle = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_sep_angle), 0, 3);
 	
-	g_object_set_data(G_OBJECT(view_menu->spin_eye_sep), "view",
-					  (gpointer) view_menu);
-	g_object_set_data(G_OBJECT(view_menu->spin_sep_angle), "view",
-					  (gpointer) view_menu);
-	/*
-	g_signal_connect(view_menu->spin_eye_sep, "value-changed", 
-					 G_CALLBACK(eye_sep_CB), NULL);
-	*/
-	g_signal_connect(view_menu->spin_sep_angle, "value-changed", 
-					 G_CALLBACK(sep_angle_CB), NULL);
+    g_signal_connect(view_menu->spin_eye_sep, "value-changed",
+                     G_CALLBACK(eye_sep_dist_CB), (gpointer) view_menu);
+    g_signal_connect(view_menu->spin_sep_angle, "value-changed",
+                     G_CALLBACK(eye_sep_angle_CB), (gpointer) view_menu);
+    view_menu->iflag_updated_eye_separation = 0;
+    view_menu->iflag_updated_eye_sep_angle = 0;
 	
 	view_menu->hbox_focus = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), gtk_label_new(" Focul: "), TRUE, TRUE, 0);
