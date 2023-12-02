@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -307,7 +307,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1320;
 				ORGANIZATIONNAME = "Hiroaki Matsui";
 				TargetAttributes = {
 					18A91C8924B9241B00D30C46 = {
@@ -317,11 +317,12 @@
 				};
 			};
 			buildConfigurationList = 18A91C8524B9241B00D30C46 /* Build configuration list for PBXProject "CalypsoView_GTK_GLFW" */;
-			compatibilityVersion = "Xcode 8.0";
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 18A91C8124B9241B00D30C46;
 			productRefGroup = 18A91C8B24B9241B00D30C46 /* Products */;
@@ -488,7 +489,7 @@
 					/Users/matsui/src_kemo/work,
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
@@ -613,7 +614,7 @@
 					/Users/matsui/src_kemo/work,
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				SDKROOT = macosx;
@@ -717,7 +718,7 @@
 					/opt/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = /Users/matsui/src_kemo/work;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				SDKROOT = macosx;
@@ -855,7 +856,7 @@
 					/Users/matsui/src_kemo/work,
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				SDKROOT = macosx;

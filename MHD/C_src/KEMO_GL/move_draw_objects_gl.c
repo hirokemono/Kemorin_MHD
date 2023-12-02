@@ -42,8 +42,8 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 		kemo_VAOs->grid_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
-	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids *));
-	for(i=0;i<5;i++){
+	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
+	for(i=0;i<4;i++){
 		kemo_VAOs->cbar_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
     kemo_VAOs->time_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
@@ -81,7 +81,7 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	for(i=0;i<5;i++){free(kemo_VAOs->grid_VAO[i]);};
 	free(kemo_VAOs->grid_VAO);
 
-	for(i=0;i<5;i++){free(kemo_VAOs->cbar_VAO[i]);};
+	for(i=0;i<4;i++){free(kemo_VAOs->cbar_VAO[i]);};
 	free(kemo_VAOs->cbar_VAO);
 	free(kemo_VAOs->time_VAO);
 
