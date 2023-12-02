@@ -49,7 +49,7 @@ static void delete_kemoview_menu(struct main_buttons *mbot){
 	return;
 };
 
-static void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
+void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
 	int istep, iflag;
 	int iflag_draw_m = kemoview_get_draw_mesh_flag();
 	int iflag_draw_f = kemoview_get_fline_parameters(DRAW_SWITCH);
@@ -129,10 +129,10 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 	set_viewtype_mode(index_mode);
     kemoview_set_viewtype(index_mode);
 
-//	delete_kemoview_menu(mbot);
-//	update_kemoview_menu(mbot, window_main);
+	delete_kemoview_menu(mbot);
+	update_kemoview_menu(mbot, window_main);
 	
-//	gtk_widget_queue_draw(window_main);
+	gtk_widget_queue_draw(window_main);
 	draw_full();
 	return;
 };
@@ -437,7 +437,6 @@ static GtkWidget * init_psf_draw_component_hbox(struct main_buttons *mbot, GtkWi
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	int icomp;
 	
-	if(ncomp < 2) return hbox_comp;
 	
 	GtkWidget *entry_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window);
@@ -546,7 +545,8 @@ void gtk_mesh_menu_box(struct main_buttons *mbot, GtkWidget *window){
 	return;
 }
 
-void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main,
+void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
+                            GtkWidget *window_main,
                             struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *entry_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window_main);
@@ -652,11 +652,5 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main,
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_quilt, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_view, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_pref, FALSE, FALSE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->vbox_menu, FALSE, FALSE, 0);
-
-    gtk_widget_show_all(expander_pref);
-	gtk_widget_show_all(mbot->vbox_menu);
-	
-	update_kemoview_menu(mbot, window_main);
+    return;
 }

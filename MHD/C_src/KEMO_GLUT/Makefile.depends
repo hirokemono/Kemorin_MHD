@@ -998,8 +998,10 @@ kemoview_gtk_fline_selectors.o: \
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_main_menu.c \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
+  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_main_menu.h \
+  $(C_SRCDIR)/GTK/calypso_GTK.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
@@ -1106,8 +1108,6 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
-  $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_main_menu.h \
-  $(C_SRCDIR)/GTK/calypso_GTK.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
@@ -2434,7 +2434,6 @@ tree_view_kemoview_colormap.o: \
 view_modifier_glfw.o: \
   $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.c \
   $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.h \
-  $(C_SRCDIR)/GTK/calypso_GTK.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_gl.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/glsl.h \
@@ -2542,7 +2541,8 @@ view_modifier_glfw.o: \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_png.h \
-  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
+  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
+  $(C_SRCDIR)/GTK/calypso_GTK.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 view_modifier_gtk.o: \
   $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.c \

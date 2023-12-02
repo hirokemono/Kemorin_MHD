@@ -40,11 +40,13 @@ void dealloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure){
 
 void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
 	if(id_coord == 1){
-		if(ncomp == 3){
+        if(ncomp == 1){
+            if(icomp == 0) sprintf(comp_name, "Scalar");
+        }else if(ncomp == 3){
 			if(icomp == 0) sprintf(comp_name, "R");
 			if(icomp == 1) sprintf(comp_name, "Theta");
 			if(icomp == 2) sprintf(comp_name, "Phi");
-		} else if(ncomp == 6){
+		}else if(ncomp == 6){
 			if(icomp == 0) sprintf(comp_name, "RR");
 			if(icomp == 1) sprintf(comp_name, "R-Theta");
 			if(icomp == 2) sprintf(comp_name, "R-Phi");
@@ -53,11 +55,13 @@ void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name)
 			if(icomp == 5) sprintf(comp_name, "Phi-Phi");
 		};
 	} else if(id_coord == 2){
-		if(ncomp == 3){
+        if(ncomp == 1){
+            if(icomp == 0) sprintf(comp_name, "Scalar");
+        }else if(ncomp == 3){
 			if(icomp == 0) sprintf(comp_name, "S");
 			if(icomp == 1) sprintf(comp_name, "Phi");
 			if(icomp == 2) sprintf(comp_name, "Z");
-		} else if(ncomp == 6){
+		}else if(ncomp == 6){
 			if(icomp == 0) sprintf(comp_name, "SS");
 			if(icomp == 1) sprintf(comp_name, "S-Phi");
 			if(icomp == 2) sprintf(comp_name, "SZ");
@@ -66,11 +70,13 @@ void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name)
 			if(icomp == 5) sprintf(comp_name, "ZZ");
 		};
 	} else {
-		if(ncomp == 3){
+        if(ncomp == 1){
+            if(icomp == 0) sprintf(comp_name, "Scalar");
+        }else if(ncomp == 3){
 			if(icomp == 0) sprintf(comp_name, "X");
 			if(icomp == 1) sprintf(comp_name, "Y");
 			if(icomp == 2) sprintf(comp_name, "Z");
-		} else if(ncomp == 6){
+		}else if(ncomp == 6){
 			if(icomp == 0) sprintf(comp_name, "XX");
 			if(icomp == 1) sprintf(comp_name, "XY");
 			if(icomp == 2) sprintf(comp_name, "XZ");

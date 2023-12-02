@@ -89,31 +89,29 @@ void add_fline_draw_component_box(GtkWidget *box){
 	int ic_fline = kemoview_get_fline_field_param(COMPONENT_SEL_FLAG);
 	int ncomp =  kemoview_get_fline_color_num_comps(if_fline);
 	
-	if(ncomp > 1){
-		label_tree_comp = create_fixed_label_w_index_tree();
-		model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));  
-		child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
-		id_coord = kemoview_get_each_PSF_field_param(COORDINATE_FLAG);
-		index = 0;
-		for(icomp=0;icomp<ncomp;icomp++){
-			set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
-			index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
-		};
-		
-		combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
-		renderer_comp = gtk_cell_renderer_text_new();
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), ic_fline);
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), renderer_comp, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,
-					"text", COLUMN_FIELD_NAME, NULL);
-		g_signal_connect(G_OBJECT(combobox_comp), "changed", 
-					G_CALLBACK(fline_component_select_CB), NULL);
-		
-		hbox_comp = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-		gtk_box_pack_start(GTK_BOX(hbox_comp), gtk_label_new("Component: "), FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(hbox_comp), combobox_comp, FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(box), hbox_comp, TRUE, TRUE, 0);
-	};
+    label_tree_comp = create_fixed_label_w_index_tree();
+    model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));
+    child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
+    id_coord = kemoview_get_each_PSF_field_param(COORDINATE_FLAG);
+    index = 0;
+    for(icomp=0;icomp<ncomp;icomp++){
+        set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
+        index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
+    };
+    
+    combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
+    renderer_comp = gtk_cell_renderer_text_new();
+    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), ic_fline);
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), renderer_comp, TRUE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,
+                "text", COLUMN_FIELD_NAME, NULL);
+    g_signal_connect(G_OBJECT(combobox_comp), "changed",
+                G_CALLBACK(fline_component_select_CB), NULL);
+    
+    hbox_comp = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_pack_start(GTK_BOX(hbox_comp), gtk_label_new("Component: "), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_comp), combobox_comp, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box), hbox_comp, TRUE, TRUE, 0);
 	return;
 }
 
