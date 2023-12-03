@@ -30,6 +30,10 @@ struct colormap_view{
 	
 	struct colormap_params *cmap_param;	
     GtkWidget *scrolled_window;
+    
+    GtkWidget *combobox_cmap;
+    GtkWidget *vbox_cmap;
+    GtkWidget *hbox_cmap;
 };
 
 struct colormap_view * alloc_colormap_view(void);
@@ -54,6 +58,8 @@ void delete_opacity_list_items_CB(struct colormap_view *color_vws);
 int set_color_mode_CB(GtkComboBox *combobox_cmap, struct colormap_view *color_vws);
 
 gboolean expose_event_CB(cairo_t *cr, struct colormap_view *color_vws);
+
+GtkWidget * init_combobox_cmap(int iflag);
 
 #endif /* TREE_VIEW_4_PVR_COLORMAP_ */
 

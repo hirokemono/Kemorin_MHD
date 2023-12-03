@@ -48,15 +48,26 @@ struct psf_gtk_menu{
 	GtkWidget *psf_vbox;
 	
 	GtkWidget *closeButton;
-	GtkWidget *combobox_field;
+    GtkWidget *combobox_psfs;
+    GtkWidget *combobox_field;
 	GtkWidget *combobox_comp;
 	
-	struct psf_isoline_gtk_menu *psf_isoline_menu;
-	struct psf_surface_gtk_menu *psf_surface_menu;
-	struct psf_color_gtk_menu *psf_color_menu;
+    int num_psfs;
+    GtkWidget *hbox_psfs;
+    GtkWidget *hbox_field;
+    GtkWidget *hbox_comp;
+
+    struct psf_isoline_gtk_menu *psf_isoline_menu;
+    GtkWidget *expander_iso;
+    
+    struct psf_surface_gtk_menu *psf_surface_menu;
+    GtkWidget *expander_surf;
+
 	struct psf_vector_gtk_menu *psf_vector_menu;
-	
-	struct colormap_view *color_vws;
+    GtkWidget *expander_vect;
+    
+    struct colormap_view *color_vws;
+    GtkWidget *expander_color;
 };
 
 /*  prototypes */
@@ -64,7 +75,9 @@ struct psf_gtk_menu{
 struct psf_gtk_menu * alloc_psf_gtk_menu();
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
-GtkWidget * init_psf_menu_hbox(struct psf_gtk_menu *psf_gmenu, 
-                               GtkWidget *window, GtkWidget *psf_vbox);
+void set_vector_plot_availablity(struct psf_gtk_menu *psf_gmenu);
+GtkWidget * init_gtk_psf_colormap_expander(GtkWidget *window,
+                                           struct colormap_view *color_vws);
+void init_psf_menu_hbox(struct psf_gtk_menu *psf_gmenu, GtkWidget *window);
 
 #endif

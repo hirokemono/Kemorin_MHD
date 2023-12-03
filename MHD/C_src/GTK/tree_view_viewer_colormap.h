@@ -18,7 +18,7 @@ void init_colormap_views_4_viewer(struct colormap_view *color_vws);
 
 void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 
 			struct colormap_view *color_vws);
-void add_pvr_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox);
+GtkWidget * add_pvr_colormap_list_box(struct colormap_view *color_vws);
 
 #endif /* TREE_VIEW_VIEWER_COLORMAP_H_ */
 

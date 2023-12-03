@@ -31,6 +31,8 @@ static GtkWidget * draw_viz_colormap_vbox(struct colormap_ctl_c *cmap_c,
     GtkWidget *hbox_9 =  draw_real_item_entry_hbox(cmap_c->f_range_min_ctl);
     GtkWidget *hbox_1 = draw_real_item_entry_hbox(cmap_c->f_range_max_ctl);
     
+    GtkWidget * frame_cmap = add_pvr_colormap_list_box_2(color_vws, vbox_cbox);
+
     GtkWidget *vbox_cbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_2,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_3,  FALSE, FALSE, 0);
@@ -42,9 +44,8 @@ static GtkWidget * draw_viz_colormap_vbox(struct colormap_ctl_c *cmap_c,
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_9,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_10,  FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_cbox), hbox_1,  FALSE, FALSE, 0);
-    
-    add_pvr_colormap_list_box_2(color_vws, vbox_cbox);
-    
+    gtk_box_pack_start(GTK_BOX(vbox_cbox), frame_cmap, TRUE, TRUE, 0);
+
     GtkWidget *expand_cmap = draw_control_block(cmap_c->c_block_name, cmap_c->f_iflag,
                                                 window, vbox_cbox);
     return expand_cmap;

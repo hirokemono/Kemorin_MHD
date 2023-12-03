@@ -147,57 +147,22 @@ void add_pvr_omap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                      G_CALLBACK(delete_pvr_opacity_list_items_CB), (gpointer) color_vws);
 };
 
-void add_pvr_colormap_list_box_2(struct colormap_view *color_vws, GtkWidget *vbox){
-	GtkWidget *Frame_1;
-    GtkWidget *vbox_1, *hbox_1;
-	
-	GtkWidget *combobox_cmap;
-	GtkWidget *label_tree;
-	GtkCellRenderer *renderer;
-	GtkTreeModel *model;
-    GtkTreeModel *child_model;
-    int index = 0;
-	int iflag;
-
-    init_real2_tree_view(color_vws->cmap_vws);
-    init_real2_tree_view(color_vws->opacity_vws);
-    
-	label_tree = create_fixed_label_w_index_tree();
-    model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
-    child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-    index = append_ci_item_to_tree(index, &color_labels[RAINBOW_MODE][0], RAINBOW_MODE, child_model);
-	index = append_ci_item_to_tree(index, &color_labels[GRAYSCALE_MODE][0], GRAYSCALE_MODE, child_model);
-	index = append_ci_item_to_tree(index, &color_labels[RED_BLUE_MODE][0], RED_BLUE_MODE, child_model);
-	index = append_ci_item_to_tree(index, &color_labels[SYM_GRAY_MODE][0], SYM_GRAY_MODE, child_model);
-	
-	combobox_cmap = gtk_combo_box_new_with_model(child_model);
-	renderer = gtk_cell_renderer_text_new();
-    iflag = 0;
-//	iflag = kemoview_get_PSF_color_param(ISET_COLORMAP);
-	if(iflag == SYM_GRAY_MODE){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 3);
-	} else if(iflag == RED_BLUE_MODE){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 2);
-	} else if(iflag == GRAYSCALE_MODE){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 1);
-	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 0);
-	};
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), renderer, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), renderer,
-				"text", COLUMN_FIELD_NAME, NULL);
-    g_signal_connect(G_OBJECT(combobox_cmap), "changed", 
+GtkWidget * add_pvr_colormap_list_box_2(struct colormap_view *color_vws){
+    GtkWidget *frame_cmap;
+    color_vws->combobox_cmap = init_combobox_cmap(IZERO);
+    g_signal_connect(G_OBJECT(color_vws->combobox_cmap), "changed",
                      G_CALLBACK(set_pvr_color_mode_CB), (gpointer) color_vws);
 	
 	
-	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_1), combobox_cmap, FALSE, FALSE, 0);
+    color_vws->vbox_cmap = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(color_vws->vbox_cmap), color_vws->combobox_cmap, FALSE, FALSE, 0);
 	
-	add_pvr_cmap_list_box(color_vws, vbox_1);
-	add_pvr_omap_list_box(color_vws, vbox_1);
+	add_pvr_cmap_list_box(color_vws, color_vws->vbox_cmap);
+	add_pvr_omap_list_box(color_vws, color_vws->vbox_cmap);
 	
-	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start(GTK_BOX(hbox_1), vbox_1, TRUE, TRUE, 0);
+    color_vws->hbox_cmap = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(color_vws->hbox_cmap), color_vws->vbox_cmap,
+                       TRUE, TRUE, 0);
 	
 	color_vws->scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(color_vws->scrolled_window),
@@ -207,13 +172,14 @@ void add_pvr_colormap_list_box_2(struct colormap_view *color_vws, GtkWidget *vbo
     gtk_widget_add_events (color_vws->scrolled_window, GDK_BUTTON_PRESS_MASK);
 	g_signal_connect(G_OBJECT(color_vws->scrolled_window), "draw", 
 				G_CALLBACK(pvr_draw_colorabar_CB), (gpointer) color_vws);
-    gtk_box_pack_start(GTK_BOX(hbox_1), color_vws->scrolled_window, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(color_vws->hbox_cmap), color_vws->scrolled_window,
+                       TRUE, TRUE, 0);
 	
     
-	Frame_1 = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame_1), hbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox), Frame_1, TRUE, TRUE, 0);
+    frame_cmap = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(frame_cmap), GTK_SHADOW_IN);
+    gtk_container_add(GTK_CONTAINER(frame_cmap), color_vws->hbox_cmap);
+    return frame_cmap;
 };
 
 

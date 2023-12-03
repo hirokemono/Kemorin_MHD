@@ -27,8 +27,6 @@
 #endif
 
 struct psf_vector_gtk_menu{
-	GtkWidget *vector_box;
-	
 	GtkWidget *switch_vect;
 	
 	GtkWidget *combobox_vecmode;
