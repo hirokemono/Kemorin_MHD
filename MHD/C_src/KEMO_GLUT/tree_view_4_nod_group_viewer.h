@@ -25,6 +25,8 @@
 #endif
 
 /* prototypes */
-GtkWidget * init_nod_group_draw_expander(GtkWidget *window, struct nod_grp_gtk_menu *node_group_gmenu);
+void set_nod_group_draw_box(struct nod_grp_gtk_menu *node_group_gmenu);
+void init_nod_group_draw_expander(GtkWidget *window, struct nod_grp_gtk_menu *node_group_gmenu);
+GtkWidget * pack_nod_group_draw_expander(GtkWidget *window, struct nod_grp_gtk_menu *node_group_gmenu);
 
 #endif /* tree_view_4_nod_group_viewer */

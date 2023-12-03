@@ -25,6 +25,8 @@
 #endif
 
 /* prototypes */
-GtkWidget * init_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *domain_group_gmenu);
+void set_domain_draw_box(struct group_gtk_menu *domain_group_gmenu);
+void init_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *domain_group_gmenu);
+GtkWidget * pack_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *domain_group_gmenu);
 
 #endif /* tree_view_4_domain_viewer */

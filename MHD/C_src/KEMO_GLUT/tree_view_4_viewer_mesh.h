@@ -50,14 +50,29 @@ struct group_gtk_menu{
 	GtkWidget *button_node_color;
 	GtkWidget *spin_opacity;
 	
-	GdkRGBA gcolor;
+    GtkWidget *button_draw_patch;
+    GtkWidget *button_draw_grid;
+    GtkWidget *button_draw_node;
+    
+    GtkWidget *button_hide_patch;
+    GtkWidget *button_hide_grid;
+    GtkWidget *button_hide_node;
+
+    GtkWidget *scrolled_table;
+    
+    GdkRGBA gcolor;
 };
 
 struct nod_grp_gtk_menu{
 	struct ci_clist_view *nod_grp_vws;
 	
-	GtkWidget *combobox_node_color;
+    GtkWidget *combobox_node_color;
 	GtkWidget *button_node_color;
+    
+    GtkWidget *button_draw_node;
+    GtkWidget *button_hide_node;
+    GtkWidget *scrolled_table;
+
 	GdkRGBA gcolor;
 };
 
@@ -67,7 +82,9 @@ struct kemoview_mesh_view{
 	struct group_gtk_menu *ele_group_gmenu;
 	struct group_gtk_menu *surf_group_gmenu;
 	
-	GtkWidget *spin_dist;
+    GtkWidget *closeMeshButton;
+
+    GtkWidget *spin_dist;
 	GtkWidget *spin_node_size, *spin_node_digit;
 	GtkWidget *spin_num_loop;
 	GtkWidget *combobox_color_mode;

@@ -64,6 +64,7 @@ struct main_buttons{
 	
 	GtkWidget *evolutionBox;
 	struct evolution_gtk_menu *evo_gmenu;
+    int itep_current;
 	
 	GtkWidget *ComboboxImageFormat;
 	int id_iamge_format;
@@ -79,10 +80,13 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 							   GtkWidget *window_main);
 
 void gtk_psf_menu_box(struct main_buttons *mbot, GtkWidget *window);
+GtkWidget * pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
+
 void gtk_fieldline_menu_box(struct main_buttons *mbot, GtkWidget *window);
 void gtk_mesh_menu_box(struct main_buttons *mbot, GtkWidget *window);
 
 void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window);
+void pack_kemoview_menu(struct main_buttons *mbot, GtkWidget *window);
 
 void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
                             GtkWidget *window_main,

@@ -42,11 +42,19 @@ struct evolution_gtk_menu{
 	GtkWidget *spin_evo_increment;
 	
 	GtkWidget *combobox_evo_fileformat;
+    
+    GtkWidget *evoSelect_Button;
+    GtkWidget *evoView_Button;
+    GtkWidget *evoSave_Button;
+    GtkWidget *entry_evo_file;
 };
 
 /*  prototypes */
 
 struct evolution_gtk_menu * init_evoluaiton_menu_box(void);
-GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct evolution_gtk_menu *evo_gmenu);
-	
+void init_evoluaiton_menu_expander(int istep, GtkWidget *window,
+                                   struct evolution_gtk_menu *evo_gmenu);
+GtkWidget * pack_evoluaiton_menu_expander(int istep, GtkWidget *window,
+                                          struct evolution_gtk_menu *evo_gmenu);
+
 #endif

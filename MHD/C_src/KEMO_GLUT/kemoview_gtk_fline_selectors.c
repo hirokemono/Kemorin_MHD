@@ -29,9 +29,7 @@ static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_
 };
 
 
-void add_fline_draw_field_box(GtkWidget *box){
-	GtkWidget *hbox_field;
-	
+GtkWidget * add_fline_draw_field_box(void){
 	GtkWidget *combobox_field;
 	GtkWidget *label_tree_field;
 	GtkCellRenderer *renderer_field;
@@ -62,19 +60,11 @@ void add_fline_draw_field_box(GtkWidget *box){
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_field), "changed", 
 				G_CALLBACK(fline_field_select_CB), NULL);
-	
-	hbox_field = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_field), gtk_label_new("Field: "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_field), combobox_field, FALSE, FALSE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(box), hbox_field, TRUE, TRUE, 0);
-	return;
+    return combobox_field;
 }
 
 
-void add_fline_draw_component_box(GtkWidget *box){
-	GtkWidget *hbox_comp;
-	
+GtkWidget * fline_draw_component_combobox(void){
 	GtkWidget *combobox_comp;
 	GtkWidget *label_tree_comp;
 	GtkCellRenderer *renderer_comp;
@@ -107,11 +97,6 @@ void add_fline_draw_component_box(GtkWidget *box){
                 "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(combobox_comp), "changed",
                 G_CALLBACK(fline_component_select_CB), NULL);
-    
-    hbox_comp = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_pack_start(GTK_BOX(hbox_comp), gtk_label_new("Component: "), FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox_comp), combobox_comp, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), hbox_comp, TRUE, TRUE, 0);
-	return;
+	return combobox_comp;
 }
 

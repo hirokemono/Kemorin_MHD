@@ -27,9 +27,8 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-
 /*  prototypes */
 
-void add_fline_draw_field_box(GtkWidget *box);
-void add_fline_draw_component_box(GtkWidget *box);
+GtkWidget * add_fline_draw_field_box(void);
+GtkWidget * fline_draw_component_combobox(void);
 #endif

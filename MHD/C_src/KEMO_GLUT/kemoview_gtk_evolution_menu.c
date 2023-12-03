@@ -135,85 +135,92 @@ static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_d
 
 
 
-GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct evolution_gtk_menu *evo_gmenu){
-	GtkWidget *hbox_axis, *hbox_sph_grid;
+void init_evoluaiton_menu_expander(int istep, GtkWidget *window,
+                                   struct evolution_gtk_menu *evo_gmenu){
     GtkWidget *expand_evo;
     
-	GtkWidget *entry_evo_file = gtk_entry_new();
-	g_object_set_data(G_OBJECT(entry_evo_file), "parent", (gpointer) window);
-	g_object_set_data(G_OBJECT(entry_evo_file), "evolution", (gpointer) evo_gmenu);
-	
-	GtkWidget *label_tree_evo_fileformat = create_fixed_label_w_index_tree();
-	GtkTreeModel *model_evo_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_evo_fileformat));  
-	GtkTreeModel *child_model_evo_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_evo_fileformat));
-	
-	int index = 0;
-	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE, child_model_evo_fileformat);
-	index = append_ci_item_to_tree(index, "PNG", SAVE_PNG, child_model_evo_fileformat);
-	index = append_ci_item_to_tree(index, "BMP", SAVE_BMP, child_model_evo_fileformat);
-	
-	GtkCellRenderer *renderer_evo_fileformat = gtk_cell_renderer_text_new();
-	evo_gmenu->combobox_evo_fileformat = gtk_combo_box_new_with_model(child_model_evo_fileformat);
-	evo_gmenu->id_fmt_evo = NO_SAVE_FILE;
-	gtk_combo_box_set_active(GTK_COMBO_BOX(evo_gmenu->combobox_evo_fileformat), 0);
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(evo_gmenu->combobox_evo_fileformat),
-							   renderer_evo_fileformat, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(evo_gmenu->combobox_evo_fileformat),
-								   renderer_evo_fileformat, "text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(evo_gmenu->combobox_evo_fileformat), "changed", 
-				G_CALLBACK(set_evo_fileformat_CB), (gpointer) entry_evo_file);
-	
-	
-	GtkWidget *evoSelect_Button = gtk_button_new_with_label("Select...");
-	g_signal_connect(evoSelect_Button, "clicked", G_CALLBACK(kemoview_gtk_save_file_select),
-				(gpointer) entry_evo_file);
-	
-	
-	evo_gmenu->switch_timelabel = gtk_switch_new();
-	if(kemoview_get_object_property_flags(TIME_LABEL_SWITCH) == 0){
-		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
-	} else {
-		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), TRUE);
-	};
-	g_signal_connect(G_OBJECT(evo_gmenu->switch_timelabel), "notify::active",
-				G_CALLBACK(draw_time_switch_CB), (gpointer)entry_evo_file);
-	
-	evo_gmenu->switch_fileindex = gtk_switch_new();
-	if(kemoview_get_object_property_flags(FILE_STEP_LABEL_SWITCH) == 0){
-		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), FALSE);
-	} else {
-		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), TRUE);
-	};
-	g_signal_connect(G_OBJECT(evo_gmenu->switch_fileindex), "notify::active",
-				G_CALLBACK(draw_fileindex_switch_CB), (gpointer)entry_evo_file);
-	
-	GtkWidget *evoView_Button = gtk_button_new_with_label("View Evolution");
-	g_signal_connect(G_OBJECT(evoView_Button), "clicked", 
-					 G_CALLBACK(evolution_view_CB), (gpointer)entry_evo_file);
-	GtkWidget *evoSave_Button = gtk_button_new_with_label("Save Evolution");
-	g_signal_connect(G_OBJECT(evoSave_Button), "clicked", 
-					 G_CALLBACK(evolution_save_CB), (gpointer)entry_evo_file);
-	
-	
-	evo_gmenu->istart_evo = istep;
-	evo_gmenu->iend_evo =   istep;
-	
-	GtkAdjustment *adj_evo_start = gtk_adjustment_new(evo_gmenu->istart_evo, 0, evo_gmenu->istart_evo*1000, 1, 1, 0.0);
-	evo_gmenu->spin_evo_start = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_start), 0, 0);
-	g_signal_connect(evo_gmenu->spin_evo_start, "value-changed", 
-					 G_CALLBACK(evo_start_step_CB), (gpointer)entry_evo_file);
-	
-	GtkAdjustment *adj_evo_end = gtk_adjustment_new(evo_gmenu->iend_evo, 0.00, evo_gmenu->iend_evo*1000, 1, 1, 0.0);
-	evo_gmenu->spin_evo_end = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_end), 0, 0);
-	g_signal_connect(evo_gmenu->spin_evo_end, "value-changed", 
-					 G_CALLBACK(evo_end_step_CB), (gpointer)entry_evo_file);
-	
-	GtkAdjustment *adj_evo_increment = gtk_adjustment_new(evo_gmenu->inc_evo, 0, evo_gmenu->iend_evo*100, 1, 1, 0.0);
-	evo_gmenu->spin_evo_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_increment), 0, 0);
-	g_signal_connect(evo_gmenu->spin_evo_increment, "value-changed", 
-					 G_CALLBACK(evo_increment_CB), (gpointer)entry_evo_file);
-	
-	
+    evo_gmenu->entry_evo_file = gtk_entry_new();
+    g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "parent", (gpointer) window);
+    g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "evolution", (gpointer) evo_gmenu);
+    
+    GtkWidget *label_tree_evo_fileformat = create_fixed_label_w_index_tree();
+    GtkTreeModel *model_evo_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_evo_fileformat));
+    GtkTreeModel *child_model_evo_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_evo_fileformat));
+    
+    int index = 0;
+    index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE, child_model_evo_fileformat);
+    index = append_ci_item_to_tree(index, "PNG", SAVE_PNG, child_model_evo_fileformat);
+    index = append_ci_item_to_tree(index, "BMP", SAVE_BMP, child_model_evo_fileformat);
+    
+    GtkCellRenderer *renderer_evo_fileformat = gtk_cell_renderer_text_new();
+    evo_gmenu->combobox_evo_fileformat = gtk_combo_box_new_with_model(child_model_evo_fileformat);
+    evo_gmenu->id_fmt_evo = NO_SAVE_FILE;
+    gtk_combo_box_set_active(GTK_COMBO_BOX(evo_gmenu->combobox_evo_fileformat), 0);
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(evo_gmenu->combobox_evo_fileformat),
+                               renderer_evo_fileformat, TRUE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(evo_gmenu->combobox_evo_fileformat),
+                                   renderer_evo_fileformat, "text", COLUMN_FIELD_NAME, NULL);
+    g_signal_connect(G_OBJECT(evo_gmenu->combobox_evo_fileformat), "changed",
+                     G_CALLBACK(set_evo_fileformat_CB), (gpointer) evo_gmenu->entry_evo_file);
+    
+    
+    evo_gmenu->evoSelect_Button = gtk_button_new_with_label("Select...");
+    g_signal_connect(evo_gmenu->evoSelect_Button, "clicked",
+                     G_CALLBACK(kemoview_gtk_save_file_select),
+                     (gpointer) evo_gmenu->entry_evo_file);
+    
+    
+    evo_gmenu->switch_timelabel = gtk_switch_new();
+    if(kemoview_get_object_property_flags(TIME_LABEL_SWITCH) == 0){
+        gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
+    } else {
+        gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), TRUE);
+    };
+    g_signal_connect(G_OBJECT(evo_gmenu->switch_timelabel), "notify::active",
+                     G_CALLBACK(draw_time_switch_CB), (gpointer) evo_gmenu->entry_evo_file);
+    
+    evo_gmenu->switch_fileindex = gtk_switch_new();
+    if(kemoview_get_object_property_flags(FILE_STEP_LABEL_SWITCH) == 0){
+        gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), FALSE);
+    } else {
+        gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), TRUE);
+    };
+    g_signal_connect(G_OBJECT(evo_gmenu->switch_fileindex), "notify::active",
+                     G_CALLBACK(draw_fileindex_switch_CB), (gpointer) evo_gmenu->entry_evo_file);
+    
+    evo_gmenu->evoView_Button = gtk_button_new_with_label("View Evolution");
+    g_signal_connect(G_OBJECT(evo_gmenu->evoView_Button), "clicked",
+                     G_CALLBACK(evolution_view_CB), (gpointer) evo_gmenu->entry_evo_file);
+    evo_gmenu->evoSave_Button = gtk_button_new_with_label("Save Evolution");
+    g_signal_connect(G_OBJECT(evo_gmenu->evoSave_Button), "clicked",
+                     G_CALLBACK(evolution_save_CB), (gpointer) evo_gmenu->entry_evo_file);
+    
+    
+    evo_gmenu->istart_evo = istep;
+    evo_gmenu->iend_evo =   istep;
+    
+    GtkAdjustment *adj_evo_start = gtk_adjustment_new(evo_gmenu->istart_evo, 0, evo_gmenu->istart_evo*1000, 1, 1, 0.0);
+    evo_gmenu->spin_evo_start = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_start), 0, 0);
+    g_signal_connect(evo_gmenu->spin_evo_start, "value-changed",
+                     G_CALLBACK(evo_start_step_CB), (gpointer) evo_gmenu->entry_evo_file);
+    
+    GtkAdjustment *adj_evo_end = gtk_adjustment_new(evo_gmenu->iend_evo, 0.00, evo_gmenu->iend_evo*1000, 1, 1, 0.0);
+    evo_gmenu->spin_evo_end = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_end), 0, 0);
+    g_signal_connect(evo_gmenu->spin_evo_end, "value-changed",
+                     G_CALLBACK(evo_end_step_CB), (gpointer) evo_gmenu->entry_evo_file);
+    
+    GtkAdjustment *adj_evo_increment = gtk_adjustment_new(evo_gmenu->inc_evo, 0, evo_gmenu->iend_evo*100, 1, 1, 0.0);
+    evo_gmenu->spin_evo_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_increment), 0, 0);
+    g_signal_connect(evo_gmenu->spin_evo_increment, "value-changed",
+                     G_CALLBACK(evo_increment_CB), (gpointer) evo_gmenu->entry_evo_file);
+    
+    return;
+}
+
+GtkWidget * pack_evoluaiton_menu_expander(int istep, GtkWidget *window,
+                                          struct evolution_gtk_menu *evo_gmenu){
+    GtkWidget *expand_evo;
+    
 	GtkWidget *hbox_time = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_time), gtk_label_new("Draw time: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_time), evo_gmenu->switch_timelabel, FALSE, FALSE, 0);
@@ -238,12 +245,12 @@ GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct e
 	
 	GtkWidget *hbox_evo_filename = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_evo_filename), gtk_label_new("Image file: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_evo_filename), entry_evo_file, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_evo_filename), evoSelect_Button, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_evo_filename), evo_gmenu->entry_evo_file, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_evo_filename), evo_gmenu->evoSelect_Button, TRUE, TRUE, 0);
 	
 	GtkWidget *hbox_evo_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_evo_save), evoView_Button, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_evo_save), evoSave_Button, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_evo_save), evo_gmenu->evoView_Button, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_evo_save), evo_gmenu->evoSave_Button, TRUE, TRUE, 0);
 	
 	
     GtkWidget *evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
