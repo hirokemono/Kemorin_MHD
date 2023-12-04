@@ -253,6 +253,14 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     
     gtk_box_pack_start(GTK_BOX(takobox), mbot->vbox_menu, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->menuHbox), takobox, FALSE, FALSE, 0);
+    
+    
+    mbot->updatable->psfBox =       gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    mbot->updatable->flineBox =     gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    mbot->updatable->meshBox =      gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    mbot->updatable->evolutionBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    mbot->id_current[0] = 1;
+    
     update_kemoview_menu(mbot->updatable, mbot->menuHbox, gtk_win);
     pack_kemoview_menu(mbot->updatable, mbot->menuHbox, gtk_win);
 

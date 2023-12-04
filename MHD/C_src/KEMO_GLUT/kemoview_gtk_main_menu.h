@@ -46,7 +46,7 @@ struct updatable_widgets{
     GtkWidget *meshBox;
     struct kemoview_mesh_view *mesh_vws;
     
-    int itep_current;
+    int istep_current;
     GtkWidget *evolutionBox;
     struct evolution_gtk_menu *evo_gmenu;
 };
@@ -56,7 +56,9 @@ struct main_buttons{
 	
 	GtkWidget *vbox_menu;
 
+    int id_current[1];
     struct updatable_widgets *updatable;
+    
     GtkWidget *expander_view;
     struct view_widgets *view_menu;
 	

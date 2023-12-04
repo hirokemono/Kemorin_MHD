@@ -69,8 +69,8 @@ static void delete_kemoview_menu(struct updatable_widgets *updatable){
 	return;
 };
 
-void update_kemoview_menu(struct updatable_widgets *updatable, GtkWidget *menuHbox,
-                          GtkWidget *window){
+void set_kemoview_menu(struct updatable_widgets *updatable, GtkWidget *menuHbox,
+                       GtkWidget *window){
     int iflag;
     int iflag_draw_m = kemoview_get_draw_mesh_flag();
     int iflag_draw_f = kemoview_get_fline_parameters(DRAW_SWITCH);
@@ -82,11 +82,11 @@ void update_kemoview_menu(struct updatable_widgets *updatable, GtkWidget *menuHb
     if(nload_psf > 0 || iflag_draw_f > 0){
         struct kv_string *file_prefix = kemoview_alloc_kvstring();
         if(nload_psf > 0){
-            updatable->itep_current = kemoview_get_PSF_full_path_file_prefix(file_prefix, &iflag);
+            updatable->istep_current = kemoview_get_PSF_full_path_file_prefix(file_prefix, &iflag);
         } else {
-            updatable->itep_current = kemoview_get_fline_file_step_prefix(file_prefix);
+            updatable->istep_current = kemoview_get_fline_file_step_prefix(file_prefix);
         };
-        init_evoluaiton_menu_expander(updatable->itep_current, window, updatable->evo_gmenu);
+        init_evoluaiton_menu_expander(updatable->istep_current, window, updatable->evo_gmenu);
         kemoview_free_kvstring(file_prefix);
     };
     
@@ -117,12 +117,12 @@ void pack_kemoview_menu(struct updatable_widgets *updatable,
     updatable->evolutionBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(nload_psf > 0 || iflag_draw_f > 0){
 		if(nload_psf > 0){
-            GtkWidget *expand_psf_evo = pack_evoluaiton_menu_expander(updatable->itep_current,
+            GtkWidget *expand_psf_evo = pack_evoluaiton_menu_expander(updatable->istep_current,
                                                                       window, updatable->evo_gmenu);
             gtk_box_pack_start(GTK_BOX(updatable->evolutionBox), expand_psf_evo, FALSE, FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(updatable->psfBox), updatable->evolutionBox, FALSE, FALSE, 0);
 		} else {
-            GtkWidget *expand_fline_evo = pack_evoluaiton_menu_expander(updatable->itep_current,
+            GtkWidget *expand_fline_evo = pack_evoluaiton_menu_expander(updatable->istep_current,
                                                                         window, updatable->evo_gmenu);
             gtk_box_pack_start(GTK_BOX(updatable->evolutionBox), expand_fline_evo, FALSE, FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(updatable->flineBox), updatable->evolutionBox, FALSE, FALSE, 0);
@@ -149,6 +149,16 @@ void pack_kemoview_menu(struct updatable_widgets *updatable,
 	return;
 };
 
+
+void update_kemoview_menu(struct updatable_widgets *updatable, GtkWidget *menuHbox,
+                          GtkWidget *window){
+    delete_kemoview_menu(updatable);
+    set_kemoview_menu(updatable, menuHbox, window);
+    pack_kemoview_menu(updatable, menuHbox, window);
+    return;
+};
+
+
 void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *mbot,
 			GtkWidget *window_main){
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
@@ -164,9 +174,7 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
 	
-    delete_kemoview_menu(mbot->updatable);
     update_kemoview_menu(mbot->updatable, mbot->menuHbox, window_main);
-    pack_kemoview_menu(mbot->updatable, mbot->menuHbox, window_main);
 	gtk_widget_queue_draw(window_main);
 	draw_full();
 	return;
@@ -267,9 +275,7 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
 	
 	kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode);
 	
-	delete_kemoview_menu(updatable);
 	update_kemoview_menu(updatable, menuHbox, window_main);
-    pack_kemoview_menu(updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -286,9 +292,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D);
 	
-	delete_kemoview_menu(updatable);
 	update_kemoview_menu(updatable, menuHbox, window_main);
-    pack_kemoview_menu(updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -301,9 +305,7 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
 
 	kemoview_close_fieldline_view();
 	
-	delete_kemoview_menu(updatable);
 	update_kemoview_menu(updatable, menuHbox, window_main);
-    pack_kemoview_menu(updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -317,9 +319,7 @@ static void close_mesh_CB(GtkButton *button, gpointer user_data){
 	kemoview_close_mesh_view();
 	dealloc_mesh_views_4_viewer(updatable->mesh_vws);
 	
-    delete_kemoview_menu(updatable);
     update_kemoview_menu(updatable, menuHbox, window_main);
-    pack_kemoview_menu(updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -336,9 +336,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     
 	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode);
 		
-	delete_kemoview_menu(updatable);
 	update_kemoview_menu(updatable, menuHbox, window_main);
-    pack_kemoview_menu(updatable, menuHbox, window_main);
     set_vector_plot_availablity(updatable->psf_gmenu);
 
     gtk_widget_queue_draw(window_main);
@@ -356,9 +354,7 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
 	
 	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, index_mode);
 		
-	delete_kemoview_menu(updatable);
     update_kemoview_menu(updatable, menuHbox, window_main);
-    pack_kemoview_menu(updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
