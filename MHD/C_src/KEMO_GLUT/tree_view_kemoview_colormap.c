@@ -171,20 +171,18 @@ static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user
 
 
 static void add_kemoview_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
-	GtkCellRenderer *renderer_spin1;
-	GtkCellRenderer *renderer_spin2;
-	
 	color_vws->cmap_vws->tree_view = gtk_tree_view_new();
-	renderer_spin1 = gtk_cell_renderer_text_new();
-	renderer_spin2 = gtk_cell_renderer_text_new();
-	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
+    color_vws->renderer_value_spin = gtk_cell_renderer_text_new();
+    color_vws->renderer_color_spin = gtk_cell_renderer_text_new();
+	g_signal_connect(G_OBJECT(color_vws->renderer_value_spin), "edited",
 					 G_CALLBACK(kemoview_colormap_data_edited_CB), (gpointer) color_vws);
-	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
+	g_signal_connect(G_OBJECT(color_vws->renderer_color_spin), "edited",
 					 G_CALLBACK(kemoview_colormap_color_edited_CB), (gpointer) color_vws);
 	
 	create_real2_tree_view(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), 
                            color_vws->cmap_vws->r2_clist_gtk, 
-                           renderer_spin1, renderer_spin2);
+                           color_vws->renderer_value_spin,
+                           color_vws->renderer_color_spin);
 
 
 	color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
@@ -205,18 +203,19 @@ static void add_kemoview_cmap_list_box(struct colormap_view *color_vws, GtkWidge
 };
 
 static void add_kemoview_omap_list_box(struct colormap_view *color_vws,
-			GtkWidget *vbox){
+                                       GtkWidget *vbox){
 	color_vws->opacity_vws->tree_view = gtk_tree_view_new();
-	GtkCellRenderer *renderer_spin1 = gtk_cell_renderer_text_new();
-	GtkCellRenderer *renderer_spin2 = gtk_cell_renderer_text_new();
-	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
+    color_vws->renderer_value_spin =    gtk_cell_renderer_text_new();
+	color_vws->renderer_color_spin =    gtk_cell_renderer_text_new();
+	g_signal_connect(G_OBJECT(color_vws->renderer_value_spin), "edited",
 					 G_CALLBACK(kemoview_opacity_data_edited_CB), (gpointer) color_vws);
-	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
+	g_signal_connect(G_OBJECT(color_vws->renderer_color_spin), "edited",
 					 G_CALLBACK(kemoview_opacity_color_edited_CB), (gpointer) color_vws);
 		
 	create_real2_tree_view(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), 
                            color_vws->opacity_vws->r2_clist_gtk, 
-                           renderer_spin1, renderer_spin2);
+                           color_vws->renderer_value_spin,
+                           color_vws->renderer_color_spin);
 	
 	color_vws->opacity_vws->index_bc = append_r2_list_from_ctl(color_vws->opacity_vws->index_bc,
 				&color_vws->opacity_vws->r2_clist_gtk->r2_item_head, 

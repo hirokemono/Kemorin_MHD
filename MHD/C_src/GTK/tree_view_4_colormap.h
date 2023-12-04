@@ -23,20 +23,23 @@
 #include "kemoview_gtk_routines.h"
 
 struct colormap_view{
-	struct chara_ctl_item *colormap_mode_gtk;
+    struct chara_ctl_item *colormap_mode_gtk;
     struct r2_clist_view *cmap_vws;
     struct r2_clist_view *opacity_vws;
     int iflag_cmap_loaded;
-	
-	struct colormap_params *cmap_param;	
+    
+    struct colormap_params *cmap_param;
     GtkWidget *scrolled_window;
     
     GtkWidget *button_add;
     GtkWidget *button_delete;
-
+    
     GtkWidget *combobox_cmap;
     GtkWidget *vbox_cmap;
     GtkWidget *hbox_cmap;
+    
+    GtkCellRenderer *renderer_value_spin;
+    GtkCellRenderer *renderer_color_spin;
 };
 
 struct colormap_view * alloc_colormap_view(void);
