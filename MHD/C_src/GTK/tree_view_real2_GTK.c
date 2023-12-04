@@ -47,19 +47,26 @@ int append_r2_item_to_tree(int index, double r1_data, double r2_data,
     return index + 1;
 }
 
-int append_r2_list_from_ctl(int index, struct real2_ctl_list *head, 
-			GtkTreeView *r2_tree_view){
+int append_r2_list_from_ctl(int index, struct real2_clist *r2_clst,
+                            GtkTreeView *r2_tree_view){
+    struct real2_ctl_list *head = &(r2_clst->r2_item_head);
     GtkTreeModel *model = gtk_tree_view_get_model (r2_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
 		index = append_r2_item_to_tree(index, head->r2_item->r_data[0], 
-					head->r2_item->r_data[1], child_model);
+                                       head->r2_item->r_data[1], child_model);
         head = head->_next;
     };
     return index;
 }
 
+int clear_r2_tree_view(GtkTreeView *r2_tree_view){
+    GtkTreeModel *model = gtk_tree_view_get_model(r2_tree_view);
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    gtk_list_store_clear(GTK_LIST_STORE(child_model));
+    return 0;
+}
 
 void r2_tree_value1_edited(gchar *path_str, gchar *new_text,
 			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
@@ -157,7 +164,7 @@ int add_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
    	if(count_real2_clist(r2_clist) == 0){
 		append_real2_clist(value1, value2, r2_clist);
 		index = count_real2_clist(r2_clist);
-		index = append_r2_list_from_ctl(index, &r2_clist->r2_item_head, r2_tree_view);
+		index = append_r2_list_from_ctl(index, r2_clist, r2_tree_view);
         return index;
     };
 	
@@ -210,7 +217,7 @@ int add_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
     g_list_free(reference_list);
 	
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
-	index = append_r2_list_from_ctl(index, &r2_clist->r2_item_head, r2_tree_view);
+	index = append_r2_list_from_ctl(index, r2_clist, r2_tree_view);
 	return index;
 }
 
@@ -287,7 +294,8 @@ static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *
 
 
 void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist, 
-			GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2){
+                            GtkCellRenderer *renderer_spin1,
+                            GtkCellRenderer *renderer_spin2){
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     
     GtkTreeModel *model;
@@ -347,7 +355,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) r2_tree_view);
     */
-    /* 選択モード */
+    /* Set selection mode */
     selection = gtk_tree_view_get_selection(r2_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
@@ -462,8 +470,8 @@ void init_real2_tree_view(struct r2_clist_view *r2_vws){
 	create_real2_tree_view(GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk, 
                            renderer_spin1, renderer_spin2);
 	
-	r2_vws->index_bc = append_r2_list_from_ctl(r2_vws->index_bc,
-				&r2_vws->r2_clist_gtk->r2_item_head, GTK_TREE_VIEW(r2_vws->tree_view));
+	r2_vws->index_bc = append_r2_list_from_ctl(r2_vws->index_bc, r2_vws->r2_clist_gtk,
+                                               GTK_TREE_VIEW(r2_vws->tree_view));
 };
 
 void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbox){

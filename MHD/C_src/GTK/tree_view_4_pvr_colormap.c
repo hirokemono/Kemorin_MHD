@@ -92,8 +92,8 @@ void add_pvr_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                            color_vws->renderer_color_spin);
 	
 	color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
-				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, 
-				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
+                                                            color_vws->cmap_vws->r2_clist_gtk,
+                                                            GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
 	
     color_vws->button_add =    gtk_button_new_with_label("ADD");
     color_vws->button_delete = gtk_button_new_with_label("Remove");
@@ -124,8 +124,8 @@ void add_pvr_omap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                      G_CALLBACK(pvr_opacity_color_edited_CB), (gpointer) color_vws);
 	
 	color_vws->opacity_vws->index_bc = append_r2_list_from_ctl(color_vws->opacity_vws->index_bc,
-				&color_vws->opacity_vws->r2_clist_gtk->r2_item_head, 
-				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
+                                                               color_vws->opacity_vws->r2_clist_gtk,
+                                                               GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
 	
     color_vws->button_add =    gtk_button_new_with_label("ADD");
     color_vws->button_delete = gtk_button_new_with_label("Remove");

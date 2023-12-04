@@ -21,6 +21,7 @@
 
 /* prototypes */
 
+void update_kemoview_cmap_list_box(struct colormap_view *color_vws);
 GtkWidget * init_kemoview_colormap_list_vbox(struct colormap_view *color_vws);
 	
 #endif /* TREE_VIEW_KEMOVIEW_COLORMAP_ */

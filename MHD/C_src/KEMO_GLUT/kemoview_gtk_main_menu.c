@@ -345,7 +345,11 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     
 	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode);
 		
-	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
+//	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
+    update_colormap_params_4_viewer(updatable->psf_gmenu->color_vws);
+    update_kemoview_cmap_list_box(updatable->psf_gmenu->color_vws);
+
+
     set_vector_plot_availablity(updatable->psf_gmenu);
 
     gtk_widget_queue_draw(window_main);
@@ -560,7 +564,7 @@ void gtk_psf_menu_box(int id_menu[1], struct updatable_widgets  *updatable,
     updatable->psf_gmenu->hbox_comp = init_psf_draw_component_hbox(id_menu, updatable,
                                                                    menuHbox, window);
 	
-	init_colormap_views_4_viewer(updatable->psf_gmenu->color_vws);
+    init_colormap_params_4_viewer(updatable->psf_gmenu->color_vws);
 	
     init_psf_menu_hbox(updatable->psf_gmenu, window);
 	return;

@@ -148,7 +148,7 @@ void add_colormap_list_items_CB(struct colormap_view *color_vws){
     write_real2_clist(stdout, 0, "columns added", color_vws->cmap_vws->r2_clist_gtk);
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
-				color_vws->cmap_param);
+                           color_vws->cmap_param);
 };
 
 void delete_colormap_list_items_CB(struct colormap_view *color_vws){
@@ -199,7 +199,7 @@ int set_color_mode_CB(GtkComboBox *combobox_cmap, struct colormap_view *color_vw
     int index_mode = gtk_selected_combobox_index(combobox_cmap);
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
-				color_vws->cmap_param);
+                           color_vws->cmap_param);
     return index_mode;
 }
 

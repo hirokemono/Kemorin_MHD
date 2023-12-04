@@ -7,43 +7,44 @@
 
 #include "tree_view_viewer_colormap.h"
 
-void init_colormap_views_4_viewer(struct colormap_view *color_vws){
-	color_vws->cmap_param = (struct colormap_params *) kemoview_link_active_colormap_param();
-	
-	color_vws->colormap_mode_gtk = init_chara_ctl_item_c();
-	
-    if(color_vws->iflag_cmap_loaded > 0){
-        dealloc_r2_clist_views(color_vws->cmap_vws);
-        dealloc_r2_clist_views(color_vws->opacity_vws);
-    }
-	color_vws->cmap_vws =    alloc_r2_clist_views();
-	color_vws->opacity_vws = alloc_r2_clist_views();
-    color_vws->iflag_cmap_loaded = 1;
-	
-	sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
+void update_colormap_params_4_viewer(struct colormap_view *color_vws){
+    color_vws->cmap_param = (struct colormap_params *) kemoview_link_active_colormap_param();
+    sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r1_name, "data");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r2_name, "color");
     sprintf(color_vws->opacity_vws->r2_clist_gtk->clist_name, "opacity map");
     sprintf(color_vws->opacity_vws->r2_clist_gtk->r1_name, "data");
     sprintf(color_vws->opacity_vws->r2_clist_gtk->r2_name, "opacity");
     
-	int i, num;
-	double value, color;
-	copy_colormap_name_to_ctl(color_vws->cmap_param, 
+    int i, num;
+    double value, color;
+    copy_colormap_name_to_ctl(color_vws->cmap_param,
                               color_vws->colormap_mode_gtk);
-	num = send_color_table_num_s(color_vws->cmap_param);
-	for(i=0;i<num;i++){
-		send_color_table_items_s(color_vws->cmap_param, i, &value, &color);
-		append_real2_clist(value, color, color_vws->cmap_vws->r2_clist_gtk);
-	};
-	
-	num = send_opacity_table_num_s(color_vws->cmap_param);
-	for(i=0;i<num;i++){
-		send_opacity_table_items_s(color_vws->cmap_param, i, &value, &color);
-		append_real2_clist(value, color, color_vws->opacity_vws->r2_clist_gtk);
-	};
-	
-	return;
+    
+    clear_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
+    num = send_color_table_num_s(color_vws->cmap_param);
+    for(i=0;i<num;i++){
+        send_color_table_items_s(color_vws->cmap_param, i, &value, &color);
+        append_real2_clist(value, color, color_vws->cmap_vws->r2_clist_gtk);
+    };
+    
+    clear_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
+    num = send_opacity_table_num_s(color_vws->cmap_param);
+    for(i=0;i<num;i++){
+        send_opacity_table_items_s(color_vws->cmap_param, i, &value, &color);
+        append_real2_clist(value, color, color_vws->opacity_vws->r2_clist_gtk);
+    };
+    
+    return;
+}
+
+void init_colormap_params_4_viewer(struct colormap_view *color_vws){
+	color_vws->colormap_mode_gtk = init_chara_ctl_item_c();
+    color_vws->cmap_vws =    alloc_r2_clist_views();
+    color_vws->opacity_vws = alloc_r2_clist_views();
+    
+    update_colormap_params_4_viewer(color_vws);
+    return;
 };
 
 void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu,

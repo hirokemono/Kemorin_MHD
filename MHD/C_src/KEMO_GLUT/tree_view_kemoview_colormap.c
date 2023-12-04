@@ -169,6 +169,17 @@ static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user
     return;
 }
 
+void update_kemoview_cmap_list_box(struct colormap_view *color_vws){
+    clear_r2_tree_view(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
+    color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
+                                                            color_vws->cmap_vws->r2_clist_gtk,
+                                                            GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
+    
+    clear_r2_tree_view(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
+    color_vws->opacity_vws->index_bc = append_r2_list_from_ctl(color_vws->opacity_vws->index_bc,
+                                                               color_vws->opacity_vws->r2_clist_gtk,
+                                                               GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
+}
 
 static void add_kemoview_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	color_vws->cmap_vws->tree_view = gtk_tree_view_new();
@@ -186,9 +197,9 @@ static void add_kemoview_cmap_list_box(struct colormap_view *color_vws, GtkWidge
 
 
 	color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
-				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, 
-				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
-	
+                                                            color_vws->cmap_vws->r2_clist_gtk,
+                                                            GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
+
     color_vws->button_add =    gtk_button_new_with_label("ADD");
     color_vws->button_delete = gtk_button_new_with_label("Remove");
 	
@@ -218,8 +229,8 @@ static void add_kemoview_omap_list_box(struct colormap_view *color_vws,
                            color_vws->renderer_color_spin);
 	
 	color_vws->opacity_vws->index_bc = append_r2_list_from_ctl(color_vws->opacity_vws->index_bc,
-				&color_vws->opacity_vws->r2_clist_gtk->r2_item_head, 
-				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
+                                                               color_vws->opacity_vws->r2_clist_gtk,
+                                                               GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
 	
     color_vws->button_add =    gtk_button_new_with_label("ADD");
     color_vws->button_delete = gtk_button_new_with_label("Remove");
