@@ -86,7 +86,7 @@ struct psf_gtk_menu * alloc_psf_gtk_menu(){
 };
 
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
-    dealloc_colormap_views(psf_gmenu->color_vws);
+    free(psf_gmenu->color_vws);
 	free(psf_gmenu->psf_isoline_menu);
 	free(psf_gmenu->psf_surface_menu);
 	free(psf_gmenu->psf_vector_menu);
