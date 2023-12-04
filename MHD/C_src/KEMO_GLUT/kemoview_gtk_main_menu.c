@@ -69,15 +69,15 @@ static void delete_kemoview_menu(struct updatable_widgets *updatable){
 	return;
 };
 
-void set_kemoview_menu(struct updatable_widgets *updatable, GtkWidget *menuHbox,
-                       GtkWidget *window){
+static void set_kemoview_menu(int id_menu[1], struct updatable_widgets *updatable,
+                              GtkWidget *menuHbox, GtkWidget *window){
     int iflag;
     int iflag_draw_m = kemoview_get_draw_mesh_flag();
     int iflag_draw_f = kemoview_get_fline_parameters(DRAW_SWITCH);
     int nload_psf = kemoview_get_PSF_loaded_params(NUM_LOADED);
     
-    if(nload_psf > 0){gtk_psf_menu_box(updatable, menuHbox, window);};
-    if(iflag_draw_f > 0){gtk_fieldline_menu_box(updatable, menuHbox, window);};
+    if(nload_psf > 0){gtk_psf_menu_box(id_menu, updatable, menuHbox, window);};
+    if(iflag_draw_f > 0){gtk_fieldline_menu_box(id_menu, updatable, menuHbox, window);};
     
     if(nload_psf > 0 || iflag_draw_f > 0){
         struct kv_string *file_prefix = kemoview_alloc_kvstring();
@@ -90,7 +90,7 @@ void set_kemoview_menu(struct updatable_widgets *updatable, GtkWidget *menuHbox,
         kemoview_free_kvstring(file_prefix);
     };
     
-    if(iflag_draw_m > 0){gtk_mesh_menu_box(updatable, menuHbox, window);};
+    if(iflag_draw_m > 0){gtk_mesh_menu_box(id_menu, updatable, menuHbox, window);};
     return;
 };
 
@@ -150,11 +150,14 @@ void pack_kemoview_menu(struct updatable_widgets *updatable,
 };
 
 
-void update_kemoview_menu(struct updatable_widgets *updatable, GtkWidget *menuHbox,
-                          GtkWidget *window){
+void update_kemoview_menu(int id_menu[1], struct updatable_widgets *updatable,
+                          GtkWidget *menuHbox, GtkWidget *window){
+    int id = 1 - id_menu[0];
     delete_kemoview_menu(updatable);
-    set_kemoview_menu(updatable, menuHbox, window);
+    set_kemoview_menu(id_menu, updatable, menuHbox, window);
     pack_kemoview_menu(updatable, menuHbox, window);
+    id_menu[0] = id;
+    printf("menu id: %d\n", id_menu[0]);
     return;
 };
 
@@ -174,7 +177,8 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
 	
-    update_kemoview_menu(mbot->updatable, mbot->menuHbox, window_main);
+    update_kemoview_menu(mbot->id_current, mbot->updatable,
+                         mbot->menuHbox, window_main);
 	gtk_widget_queue_draw(window_main);
 	draw_full();
 	return;
@@ -270,12 +274,13 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
     GtkWidget *menuHbox = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
+    int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode);
 	
-	update_kemoview_menu(updatable, menuHbox, window_main);
+	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -286,13 +291,14 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     GtkWidget *menuHbox = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
+    int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
     int num_loaded = kemoview_close_PSF_view();
 
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D);
 	
-	update_kemoview_menu(updatable, menuHbox, window_main);
+	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -302,10 +308,11 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
     GtkWidget *menuHbox = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
+    int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
 	kemoview_close_fieldline_view();
 	
-	update_kemoview_menu(updatable, menuHbox, window_main);
+	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -315,11 +322,12 @@ static void close_mesh_CB(GtkButton *button, gpointer user_data){
     GtkWidget *menuHbox = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
+    int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
 	kemoview_close_mesh_view();
 	dealloc_mesh_views_4_viewer(updatable->mesh_vws);
 	
-    update_kemoview_menu(updatable, menuHbox, window_main);
+    update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -331,12 +339,13 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     GtkWidget *menuHbox = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
+    int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
     int index_mode = gtk_selected_combobox_index(combobox_field);
     
 	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode);
 		
-	update_kemoview_menu(updatable, menuHbox, window_main);
+	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
     set_vector_plot_availablity(updatable->psf_gmenu);
 
     gtk_widget_queue_draw(window_main);
@@ -349,12 +358,13 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
     GtkWidget *menuHbox = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
+    int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
     int index_mode = gtk_selected_combobox_index(combobox_comp);
 	
 	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, index_mode);
 		
-    update_kemoview_menu(updatable, menuHbox, window_main);
+    update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -377,7 +387,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
 };
 
 
-static GtkWidget * init_current_psf_set_hbox(struct updatable_widgets *updatable,
+static GtkWidget * init_current_psf_set_hbox(int id_menu[1], struct updatable_widgets *updatable,
                                              GtkWidget *menuHbox, GtkWidget *window){
 	GtkWidget *hbox_psfs;
 	
@@ -415,16 +425,17 @@ static GtkWidget * init_current_psf_set_hbox(struct updatable_widgets *updatable
             };
             kemoview_set_PSF_loaded_params(SET_CURRENT, id_current);
         };
-        
-        g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
-        g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
-        
+
         updatable->psf_gmenu->combobox_psfs = gtk_combo_box_new_with_model(child_model_psfs);
         GtkCellRenderer *renderer_psfs = gtk_cell_renderer_text_new();
         gtk_combo_box_set_active(GTK_COMBO_BOX(updatable->psf_gmenu->combobox_psfs), index_current);
         gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_psfs), renderer_psfs, TRUE);
         gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_psfs), renderer_psfs,
                                        "text", COLUMN_FIELD_NAME, NULL);
+        
+        g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
+        g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
+        g_object_set_data(G_OBJECT(menuHbox), "current", (gpointer) id_menu);
         g_signal_connect(G_OBJECT(updatable->psf_gmenu->combobox_psfs), "changed",
                          G_CALLBACK(current_psf_select_CB), (gpointer) menuHbox);
         
@@ -436,7 +447,7 @@ static GtkWidget * init_current_psf_set_hbox(struct updatable_widgets *updatable
     return hbox_psfs;
 }
 
-static GtkWidget * init_psf_draw_field_hbox(struct updatable_widgets *updatable,
+static GtkWidget * init_psf_draw_field_hbox(int id_menu[1], struct updatable_widgets *updatable,
                                             GtkWidget *menuHbox, GtkWidget *window){
 	GtkWidget *hbox_field;
 	
@@ -454,16 +465,17 @@ static GtkWidget * init_psf_draw_field_hbox(struct updatable_widgets *updatable,
 		kemoview_get_PSF_field_name(colorname, ifld);
 		index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
 	};
-	
-	g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
-	g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
-	
+
 	GtkCellRenderer *renderer_field = gtk_cell_renderer_text_new();
 	updatable->psf_gmenu->combobox_field = gtk_combo_box_new_with_model(child_model_field);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(updatable->psf_gmenu->combobox_field), if_psf);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_field), renderer_field, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_field), renderer_field,
                                    "text", COLUMN_FIELD_NAME, NULL);
+    
+    g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
+    g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
+    g_object_set_data(G_OBJECT(menuHbox), "current", (gpointer) id_menu);
 	g_signal_connect(G_OBJECT(updatable->psf_gmenu->combobox_field), "changed",
                      G_CALLBACK(psf_field_select_CB), (gpointer) menuHbox);
 	
@@ -473,7 +485,7 @@ static GtkWidget * init_psf_draw_field_hbox(struct updatable_widgets *updatable,
 	return hbox_field;
 }
 
-static GtkWidget * init_psf_draw_component_hbox(struct updatable_widgets *updatable,
+static GtkWidget * init_psf_draw_component_hbox(int id_menu[1], struct updatable_widgets *updatable,
                                                 GtkWidget *menuHbox, GtkWidget *window){
     GtkWidget *hbox_comp = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	
@@ -482,11 +494,7 @@ static GtkWidget * init_psf_draw_component_hbox(struct updatable_widgets *updata
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	int icomp;
 	
-	
-	g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
-	g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
-	
-	GtkWidget *label_tree_comp = create_fixed_label_w_index_tree();
+    GtkWidget *label_tree_comp = create_fixed_label_w_index_tree();
 	GtkTreeModel *model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));  
 	GtkTreeModel *child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
 	
@@ -504,6 +512,10 @@ static GtkWidget * init_psf_draw_component_hbox(struct updatable_widgets *updata
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_comp), renderer_comp, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_comp), renderer_comp,
 				"text", COLUMN_FIELD_NAME, NULL);
+
+    g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
+    g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
+    g_object_set_data(G_OBJECT(menuHbox), "current", (gpointer) id_menu);
 	g_signal_connect(G_OBJECT(updatable->psf_gmenu->combobox_comp), "changed",
                      G_CALLBACK(psf_component_select_CB), (gpointer) menuHbox);
 	
@@ -531,18 +543,22 @@ GtkWidget * pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu){
     return frame;
 }
 
-void gtk_psf_menu_box(struct updatable_widgets  *updatable, GtkWidget *menuHbox,
-                      GtkWidget *window){
-	g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
-	g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
-
+void gtk_psf_menu_box(int id_menu[1], struct updatable_widgets  *updatable,
+                      GtkWidget *menuHbox, GtkWidget *window){
     updatable->psf_gmenu->closeButton = gtk_button_new_with_label("Close Current PSF");
-	g_signal_connect(G_OBJECT(updatable->psf_gmenu->closeButton), "clicked",
+
+    g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
+    g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
+    g_object_set_data(G_OBJECT(menuHbox), "current", (gpointer) id_menu);
+    g_signal_connect(G_OBJECT(updatable->psf_gmenu->closeButton), "clicked",
                      G_CALLBACK(close_psf_CB), menuHbox);
 	
-    updatable->psf_gmenu->hbox_psfs = init_current_psf_set_hbox(updatable, menuHbox, window);
-    updatable->psf_gmenu->hbox_field = init_psf_draw_field_hbox(updatable, menuHbox, window);
-    updatable->psf_gmenu->hbox_comp = init_psf_draw_component_hbox(updatable, menuHbox, window);
+    updatable->psf_gmenu->hbox_psfs = init_current_psf_set_hbox(id_menu,updatable,
+                                                                menuHbox, window);
+    updatable->psf_gmenu->hbox_field = init_psf_draw_field_hbox(id_menu, updatable,
+                                                                menuHbox, window);
+    updatable->psf_gmenu->hbox_comp = init_psf_draw_component_hbox(id_menu, updatable,
+                                                                   menuHbox, window);
 	
 	init_colormap_views_4_viewer(updatable->psf_gmenu->color_vws);
 	
@@ -550,15 +566,16 @@ void gtk_psf_menu_box(struct updatable_widgets  *updatable, GtkWidget *menuHbox,
 	return;
 }
 
-
-void gtk_fieldline_menu_box(struct updatable_widgets *updatable, GtkWidget *menuHbox,
-                            GtkWidget *window){
+void gtk_fieldline_menu_box(int id_menu[1], struct updatable_widgets *updatable,
+                            GtkWidget *menuHbox, GtkWidget *window){
 	GtkWidget *closeButton;
-    g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
-    g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
 
     updatable->fline_menu->closeButton = gtk_button_new_with_label("Close Current PSF");
-	g_signal_connect(G_OBJECT(updatable->fline_menu->closeButton), "clicked",
+
+    g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
+    g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
+    g_object_set_data(G_OBJECT(menuHbox), "current", (gpointer) id_menu);
+    g_signal_connect(G_OBJECT(updatable->fline_menu->closeButton), "clicked",
                      G_CALLBACK(close_fline_CB), menuHbox);
 	
 	updatable->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
@@ -569,16 +586,14 @@ void gtk_fieldline_menu_box(struct updatable_widgets *updatable, GtkWidget *menu
 	return;
 }
 
-void gtk_mesh_menu_box(struct updatable_widgets *updatable,
+void gtk_mesh_menu_box(int id_menu[1], struct updatable_widgets *updatable,
                        GtkWidget *menuHbox, GtkWidget *window){
-	GtkWidget *entry_file;
-	
     init_mesh_views_4_viewer(updatable->mesh_vws);
 	
 	/*  Set buttons */
-	entry_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
     g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
+    g_object_set_data(G_OBJECT(menuHbox), "current", (gpointer) id_menu);
 
     updatable->mesh_vws->closeMeshButton = gtk_button_new_with_label("Close mesh");
 	g_signal_connect(G_OBJECT(updatable->mesh_vws->closeMeshButton), "clicked",

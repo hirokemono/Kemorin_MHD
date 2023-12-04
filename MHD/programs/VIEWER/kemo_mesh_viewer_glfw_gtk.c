@@ -261,7 +261,8 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     mbot->updatable->evolutionBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     mbot->id_current[0] = 1;
     
-    update_kemoview_menu(mbot->updatable, mbot->menuHbox, gtk_win);
+    update_kemoview_menu(mbot->id_current, mbot->updatable,
+                         mbot->menuHbox, gtk_win);
     pack_kemoview_menu(mbot->updatable, mbot->menuHbox, gtk_win);
 
 
