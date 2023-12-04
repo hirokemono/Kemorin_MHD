@@ -31,6 +31,9 @@ struct colormap_view{
 	struct colormap_params *cmap_param;	
     GtkWidget *scrolled_window;
     
+    GtkWidget *button_add;
+    GtkWidget *button_delete;
+
     GtkWidget *combobox_cmap;
     GtkWidget *vbox_cmap;
     GtkWidget *hbox_cmap;

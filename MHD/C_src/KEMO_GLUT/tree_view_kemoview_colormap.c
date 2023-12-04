@@ -173,8 +173,6 @@ static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user
 static void add_kemoview_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkCellRenderer *renderer_spin1;
 	GtkCellRenderer *renderer_spin2;
-	GtkWidget *button_add;
-    GtkWidget *button_delete;
 	
 	color_vws->cmap_vws->tree_view = gtk_tree_view_new();
 	renderer_spin1 = gtk_cell_renderer_text_new();
@@ -193,16 +191,16 @@ static void add_kemoview_cmap_list_box(struct colormap_view *color_vws, GtkWidge
 				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, 
 				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
 	
-	button_add = gtk_button_new_with_label("ADD");
-    button_delete = gtk_button_new_with_label("Remove");
+    color_vws->button_add =    gtk_button_new_with_label("ADD");
+    color_vws->button_delete = gtk_button_new_with_label("Remove");
 	
 	add_real2_list_box(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view),
-				color_vws->cmap_vws->r2_clist_gtk,
-				button_add, button_delete, vbox);
+                       color_vws->cmap_vws->r2_clist_gtk,
+                       color_vws->button_add, color_vws->button_delete, vbox);
 
-	g_signal_connect(G_OBJECT(button_add), "clicked", 
+	g_signal_connect(G_OBJECT(color_vws->button_add), "clicked",
                      G_CALLBACK(add_kemoview_colormap_list_items_CB), (gpointer) color_vws);
-    g_signal_connect(G_OBJECT(button_delete), "clicked", 
+    g_signal_connect(G_OBJECT(color_vws->button_delete), "clicked",
                      G_CALLBACK(delete_kemoview_colormap_list_items_CB), (gpointer) color_vws);
 };
 
@@ -224,15 +222,15 @@ static void add_kemoview_omap_list_box(struct colormap_view *color_vws,
 				&color_vws->opacity_vws->r2_clist_gtk->r2_item_head, 
 				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
 	
-	GtkWidget *button_add = gtk_button_new_with_label("ADD");
-	GtkWidget *button_delete = gtk_button_new_with_label("Remove");
+    color_vws->button_add =    gtk_button_new_with_label("ADD");
+    color_vws->button_delete = gtk_button_new_with_label("Remove");
 	add_real2_list_box(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view),
-				color_vws->opacity_vws->r2_clist_gtk,
-				button_add, button_delete, vbox);
+                       color_vws->opacity_vws->r2_clist_gtk,
+                       color_vws->button_add, color_vws->button_delete, vbox);
 	
-    g_signal_connect(G_OBJECT(button_add), "clicked", 
+    g_signal_connect(G_OBJECT(color_vws->button_add), "clicked",
                      G_CALLBACK(add_kemoview_opacity_list_items_CB), (gpointer) color_vws);
-    g_signal_connect(G_OBJECT(button_delete), "clicked", 
+    g_signal_connect(G_OBJECT(color_vws->button_delete), "clicked",
                      G_CALLBACK(delete_kemoview_opacity_list_items_CB), (gpointer) color_vws);
 };
 
