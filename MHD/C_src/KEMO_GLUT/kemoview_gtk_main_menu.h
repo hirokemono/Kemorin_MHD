@@ -92,7 +92,9 @@ void gtk_fieldline_menu_box(int id_menu[1], struct updatable_widgets *updatable,
 void gtk_mesh_menu_box(int id_menu[1], struct updatable_widgets *updatable,
                        GtkWidget *menuHbox, GtkWidget *window);
 
+void update_psf_draw_field_hbox(struct psf_gtk_menu *psf_gmenu);
 void update_psf_draw_component_hbox(struct psf_gtk_menu *psf_gmenu);
+void update_by_psf_field(struct psf_gtk_menu *psf_gmenu);
 
 void update_kemoview_menu(int id_menu[1], struct updatable_widgets *updatable,
                           GtkWidget *menuHbox, GtkWidget *window);

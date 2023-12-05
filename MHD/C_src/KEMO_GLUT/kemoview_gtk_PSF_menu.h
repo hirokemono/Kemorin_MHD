@@ -49,8 +49,12 @@ struct psf_gtk_menu{
 	
 	GtkWidget *closeButton;
     GtkWidget *combobox_psfs;
-    GtkWidget *combobox_field;
     
+    GtkWidget *combobox_field;
+    GtkWidget *field_label_tree_view;
+    GtkWidget *renderer_field;
+    GtkWidget *hbox_field;
+
 	GtkWidget *combobox_comp;
     GtkWidget *comp_label_tree_view;
     GtkWidget *renderer_comp;
@@ -58,7 +62,6 @@ struct psf_gtk_menu{
 
     int num_psfs;
     GtkWidget *hbox_psfs;
-    GtkWidget *hbox_field;
 
     struct psf_isoline_gtk_menu *psf_isoline_menu;
     GtkWidget *expander_iso;

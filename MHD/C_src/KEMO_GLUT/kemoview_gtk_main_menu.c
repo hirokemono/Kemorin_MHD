@@ -280,7 +280,8 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
 	
 	kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode);
 	
-	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
+    update_psf_draw_field_hbox(updatable->psf_gmenu);
+    update_by_psf_field(updatable->psf_gmenu);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -298,7 +299,9 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D);
 	
-	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
+    update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
+//    update_psf_draw_field_hbox(updatable->psf_gmenu);
+//    update_by_psf_field(updatable->psf_gmenu);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -342,7 +345,7 @@ static void update_by_psf_component(struct psf_gtk_menu *psf_gmenu){
     return;
 }
 
-static void update_by_psf_field(struct psf_gtk_menu *psf_gmenu){
+void update_by_psf_field(struct psf_gtk_menu *psf_gmenu){
     update_psf_draw_component_hbox(psf_gmenu);
     update_by_psf_component(psf_gmenu);
     set_vector_plot_availablity(psf_gmenu);
@@ -359,6 +362,11 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 
     int index_mode = gtk_selected_combobox_index(combobox_field);
     
+    int num_fld = kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
+    if(index_mode >= num_fld || index_mode < 0){
+        index_mode = 0;
+    }
+
 	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode);
     
     update_by_psf_field(updatable->psf_gmenu);
@@ -463,17 +471,37 @@ static GtkWidget * init_current_psf_set_hbox(int id_menu[1], struct updatable_wi
     return hbox_psfs;
 }
 
-static GtkWidget * init_psf_draw_field_hbox(int id_menu[1], struct updatable_widgets *updatable,
-                                            GtkWidget *menuHbox, GtkWidget *window){
-	GtkWidget *hbox_field;
-	
+void update_psf_draw_field_hbox(struct psf_gtk_menu *psf_gmenu){
+    struct kv_string *colorname = kemoview_alloc_kvstring();
+    int num_field = kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
+    int if_psf =    kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
+    int ifld;
+
+    kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, IZERO);
+    
+    clear_ci_tree_view(GTK_TREE_VIEW(psf_gmenu->field_label_tree_view));
+    GtkTreeModel *model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(psf_gmenu->field_label_tree_view));
+    GtkTreeModel *child_model_field = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
+    int index = 0;
+    for(ifld=0;ifld<num_field;ifld++){
+        kemoview_get_PSF_field_name(colorname, ifld);
+        index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
+    };
+
+    ifld = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(psf_gmenu->combobox_field), ifld);
+    return;
+}
+
+void init_psf_draw_field_hbox(int id_menu[1], struct updatable_widgets *updatable,
+                              GtkWidget *menuHbox, GtkWidget *window){
 	struct kv_string *colorname = kemoview_alloc_kvstring();
 	int num_field = kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
 	int if_psf =    kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 	int ifld;
 	
-	GtkWidget *label_tree_field = create_fixed_label_w_index_tree();
-	GtkTreeModel *model_field = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_field));  
+    updatable->psf_gmenu->field_label_tree_view = create_fixed_label_w_index_tree();
+	GtkTreeModel *model_field =       gtk_tree_view_get_model(GTK_TREE_VIEW(updatable->psf_gmenu->field_label_tree_view));
 	GtkTreeModel *child_model_field = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_field));
 	
 	int index = 0;
@@ -482,11 +510,13 @@ static GtkWidget * init_psf_draw_field_hbox(int id_menu[1], struct updatable_wid
 		index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
 	};
 
-	GtkCellRenderer *renderer_field = gtk_cell_renderer_text_new();
+    updatable->psf_gmenu->renderer_field = gtk_cell_renderer_text_new();
 	updatable->psf_gmenu->combobox_field = gtk_combo_box_new_with_model(child_model_field);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(updatable->psf_gmenu->combobox_field), if_psf);
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_field), renderer_field, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_field), renderer_field,
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_field),
+                               updatable->psf_gmenu->renderer_field, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(updatable->psf_gmenu->combobox_field),
+                                   updatable->psf_gmenu->renderer_field,
                                    "text", COLUMN_FIELD_NAME, NULL);
     
     g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
@@ -495,10 +525,10 @@ static GtkWidget * init_psf_draw_field_hbox(int id_menu[1], struct updatable_wid
 	g_signal_connect(G_OBJECT(updatable->psf_gmenu->combobox_field), "changed",
                      G_CALLBACK(psf_field_select_CB), (gpointer) menuHbox);
 	
-	hbox_field = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_field), gtk_label_new("Field: "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_field), updatable->psf_gmenu->combobox_field, FALSE, FALSE, 0);
-	return hbox_field;
+    updatable->psf_gmenu->hbox_field = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(updatable->psf_gmenu->hbox_field), gtk_label_new("Field: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(updatable->psf_gmenu->hbox_field), updatable->psf_gmenu->combobox_field, FALSE, FALSE, 0);
+	return;
 }
 
 void update_psf_draw_component_hbox(struct psf_gtk_menu *psf_gmenu){
@@ -521,7 +551,6 @@ void update_psf_draw_component_hbox(struct psf_gtk_menu *psf_gmenu){
     };
     
     icomp = kemoview_get_each_PSF_field_param(COMPONENT_SEL_FLAG);
-    gtk_combo_box_set_model(GTK_COMBO_BOX(psf_gmenu->combobox_comp), child_model_comp);
     gtk_combo_box_set_active(GTK_COMBO_BOX(psf_gmenu->combobox_comp), icomp);
     return;
 }
@@ -601,8 +630,7 @@ void gtk_psf_menu_box(int id_menu[1], struct updatable_widgets  *updatable,
 	
     updatable->psf_gmenu->hbox_psfs = init_current_psf_set_hbox(id_menu,updatable,
                                                                 menuHbox, window);
-    updatable->psf_gmenu->hbox_field = init_psf_draw_field_hbox(id_menu, updatable,
-                                                                menuHbox, window);
+    init_psf_draw_field_hbox(id_menu, updatable, menuHbox, window);
     init_psf_draw_component_hbox(id_menu, updatable, menuHbox, window);
     init_colormap_params_4_viewer(updatable->psf_gmenu->color_vws);
 	
