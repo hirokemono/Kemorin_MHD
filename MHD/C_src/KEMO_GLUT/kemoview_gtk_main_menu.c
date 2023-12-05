@@ -101,8 +101,9 @@ void pack_kemoview_menu(struct updatable_widgets *updatable,
 
     updatable->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(nload_psf > 0){
-        GtkWidget *frame = pack_psf_menu_frame(updatable->psf_gmenu);
-        gtk_box_pack_start(GTK_BOX(updatable->psfBox), frame, FALSE, FALSE, 0);
+        pack_psf_menu_frame(updatable->psf_gmenu);
+        gtk_box_pack_start(GTK_BOX(updatable->psfBox), updatable->psf_gmenu->psf_frame,
+                           FALSE, FALSE, 0);
         gtk_widget_show_all(updatable->psfBox);
     };
 	
@@ -592,7 +593,7 @@ static void init_psf_draw_component_hbox(struct psf_gtk_menu *psf_gmenu,
 }
 
 
-GtkWidget * pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu){
+void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu){
     GtkWidget *psf_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(psf_vbox), psf_gmenu->closeButton, FALSE, FALSE, 0);
     if(psf_gmenu->num_psfs > 1){
@@ -606,8 +607,8 @@ GtkWidget * pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu){
     gtk_box_pack_start(GTK_BOX(psf_vbox), psf_gmenu->expander_color, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(psf_vbox), psf_gmenu->expander_vect, FALSE, TRUE, 0);
 
-    GtkWidget *frame = wrap_into_frame_gtk("Surfaces", psf_vbox);
-    return frame;
+    psf_gmenu->psf_frame = wrap_into_frame_gtk("Surfaces", psf_vbox);
+    return;
 }
 
 void gtk_psf_menu_box(struct psf_gtk_menu *psf_gmenu,

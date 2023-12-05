@@ -85,7 +85,7 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 void gtk_psf_menu_box(struct psf_gtk_menu *psf_gmenu,
                       GtkWidget *menuHbox,
                       GtkWidget *window);
-GtkWidget * pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
+void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
 
 void gtk_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *menuHbox, GtkWidget *window);

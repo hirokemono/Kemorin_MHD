@@ -46,7 +46,8 @@ struct psf_color_gtk_menu{
 
 struct psf_gtk_menu{
 	GtkWidget *psf_vbox;
-	
+    GtkWidget *psf_frame;
+
 	GtkWidget *closeButton;
     GtkWidget *combobox_psfs;
     
