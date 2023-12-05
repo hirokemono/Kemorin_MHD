@@ -50,12 +50,15 @@ struct psf_gtk_menu{
 	GtkWidget *closeButton;
     GtkWidget *combobox_psfs;
     GtkWidget *combobox_field;
+    
 	GtkWidget *combobox_comp;
-	
+    GtkWidget *comp_label_tree_view;
+    GtkWidget *renderer_comp;
+    GtkWidget *hbox_comp;
+
     int num_psfs;
     GtkWidget *hbox_psfs;
     GtkWidget *hbox_field;
-    GtkWidget *hbox_comp;
 
     struct psf_isoline_gtk_menu *psf_isoline_menu;
     GtkWidget *expander_iso;
@@ -72,7 +75,7 @@ struct psf_gtk_menu{
 
 /*  prototypes */
 
-struct psf_gtk_menu * alloc_psf_gtk_menu();
+struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
 void set_vector_plot_availablity(struct psf_gtk_menu *psf_gmenu);

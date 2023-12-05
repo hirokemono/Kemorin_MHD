@@ -35,6 +35,15 @@ int append_ci_list_from_ctl(int index, struct chara_int_ctl_list *head,
     return index;
 }
 
+int clear_ci_tree_view(GtkTreeView *ci_tree_view){
+    GtkTreeModel *model = gtk_tree_view_get_model(ci_tree_view);
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    gtk_list_store_clear(GTK_LIST_STORE(child_model));
+    return 0;
+}
+ 
+
+
 
 void ci_tree_name_edited(gchar *path_str, gchar *new_text,
 			GtkTreeView *ci_tree_view, struct chara_int_clist *ci_clist)
