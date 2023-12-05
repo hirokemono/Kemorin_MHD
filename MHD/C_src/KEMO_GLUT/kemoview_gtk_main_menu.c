@@ -277,9 +277,8 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
     int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
-	
-	kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode);
-	
+    kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode);
+
     update_psf_draw_field_hbox(updatable->psf_gmenu);
     update_by_psf_field(updatable->psf_gmenu);
 
@@ -295,13 +294,11 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
     int num_loaded = kemoview_close_PSF_view();
-
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D);
 	
-    update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
-//    update_psf_draw_field_hbox(updatable->psf_gmenu);
-//    update_by_psf_field(updatable->psf_gmenu);
+    update_psf_draw_field_hbox(updatable->psf_gmenu);
+    update_by_psf_field(updatable->psf_gmenu);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -361,14 +358,14 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
 
     int index_mode = gtk_selected_combobox_index(combobox_field);
-    
     int num_fld = kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
     if(index_mode >= num_fld || index_mode < 0){
         index_mode = 0;
     }
 
 	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode);
-    
+    kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, IZERO);
+
     update_by_psf_field(updatable->psf_gmenu);
 
     gtk_widget_queue_draw(window_main);
@@ -382,7 +379,6 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
     struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
 
     int index_mode = gtk_selected_combobox_index(combobox_comp);
-
     int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
     if(index_mode >= kemoview_get_PSF_num_component(if_psf) || index_mode < 0){
         index_mode = 0;
@@ -474,9 +470,9 @@ static GtkWidget * init_current_psf_set_hbox(int id_menu[1], struct updatable_wi
 void update_psf_draw_field_hbox(struct psf_gtk_menu *psf_gmenu){
     struct kv_string *colorname = kemoview_alloc_kvstring();
     int num_field = kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
-    int if_psf =    kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
     int ifld;
 
+    kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, IZERO);
     kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, IZERO);
     
     clear_ci_tree_view(GTK_TREE_VIEW(psf_gmenu->field_label_tree_view));
