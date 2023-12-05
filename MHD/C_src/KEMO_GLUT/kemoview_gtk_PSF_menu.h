@@ -45,12 +45,15 @@ struct psf_color_gtk_menu{
 };
 
 struct psf_gtk_menu{
-	GtkWidget *psf_vbox;
     GtkWidget *psf_frame;
 
 	GtkWidget *closeButton;
-    GtkWidget *combobox_psfs;
     
+    GtkWidget *combobox_psfs;
+    GtkWidget *psf_label_tree_view;
+    GtkWidget *renderer_psfs;
+    GtkWidget *psf_vbox;
+
     GtkWidget *combobox_field;
     GtkWidget *field_label_tree_view;
     GtkWidget *renderer_field;
