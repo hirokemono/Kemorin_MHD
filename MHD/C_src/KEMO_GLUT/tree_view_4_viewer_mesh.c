@@ -106,7 +106,7 @@ struct ci3_clist_view * init_surface_group_views(){
 }
 
 void dealloc_group_views_4_viewer(struct ci3_clist_view *domain_vws){
-	dealloc_chara_int3_clist(domain_vws->ci3_clist_gtk);
+//	dealloc_chara_int3_clist(domain_vws->ci3_clist_gtk);
 	free(domain_vws);
     return;
 }

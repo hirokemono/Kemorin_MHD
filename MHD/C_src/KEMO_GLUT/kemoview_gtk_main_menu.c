@@ -141,6 +141,7 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 	
     init_psf_menu(mbot->updatable, window_main);
     init_fline_menu(mbot->updatable, window_main);
+    init_mesh_menu(mbot->updatable, window_main);
     activate_evolution_menu(mbot->updatable->expander_evo);
     
     update_kemoview_menu(mbot->updatable, mbot->menuHbox, window_main);
