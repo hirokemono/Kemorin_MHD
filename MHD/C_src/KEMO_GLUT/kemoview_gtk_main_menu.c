@@ -264,6 +264,7 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
 static void close_psf_CB(GtkButton *button, gpointer user_data){
     GtkWidget *expander_evo = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
+    GtkWidget *psfBox = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "psfbox"));
     struct psf_gtk_menu *psf_gmenu = (struct psf_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "psfmenu");
 
     int num_loaded = kemoview_close_PSF_view();
@@ -274,8 +275,9 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
         update_psf_draw_field_hbox(psf_gmenu);
         update_by_psf_field(psf_gmenu);
     }else{
-//        if(num_loaded == 0) gtk_widget_hide(psfBox);
+        gtk_widget_set_sensitive(psfBox, FALSE);
     }
+    
     activate_evolution_menu(expander_evo);
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -583,7 +585,8 @@ void gtk_psf_menu_box(struct updatable_widgets *updatable, GtkWidget *window){
     updatable->psf_gmenu->closeButton = gtk_button_new_with_label("Close Current PSF");
 
     g_object_set_data(G_OBJECT(updatable->expander_evo), "parent", (gpointer) window);
-    g_object_set_data(G_OBJECT(updatable->expander_evo), "updatables", (gpointer) updatable->psf_gmenu);
+    g_object_set_data(G_OBJECT(updatable->expander_evo), "psfmenu", (gpointer) updatable->psf_gmenu);
+    g_object_set_data(G_OBJECT(updatable->expander_evo), "psfbox", (gpointer) updatable->psfBox);
     g_signal_connect(G_OBJECT(updatable->psf_gmenu->closeButton), "clicked",
                      G_CALLBACK(close_psf_CB), updatable->expander_evo);
 	
