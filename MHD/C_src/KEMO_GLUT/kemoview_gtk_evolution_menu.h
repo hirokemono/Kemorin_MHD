@@ -29,32 +29,41 @@
 #endif
 
 struct evolution_gtk_menu{
-	int id_fmt_evo;
-	
-	int istart_evo;
-	int iend_evo;
-	int inc_evo;
-	
-	GtkWidget *switch_timelabel;
-	GtkWidget *switch_fileindex;
-	GtkWidget *spin_evo_start;
-	GtkWidget *spin_evo_end;
-	GtkWidget *spin_evo_increment;
-	
-	GtkWidget *combobox_evo_fileformat;
+    int id_fmt_evo;
+    
+    int istart_evo;
+    int iend_evo;
+    int inc_evo;
+    
+    GtkWidget *switch_timelabel;
+    GtkWidget *switch_fileindex;
+    GtkWidget *spin_evo_start;
+    GtkWidget *spin_evo_end;
+    GtkWidget *spin_evo_increment;
+    
+    GtkWidget *combobox_evo_fileformat;
     
     GtkWidget *evoSelect_Button;
     GtkWidget *evoView_Button;
     GtkWidget *evoSave_Button;
     GtkWidget *entry_evo_file;
+    
+    GtkWidget *hbox_time;
+    GtkWidget *hbox_fileindex;
+    GtkWidget *hbox_evo_start;
+    GtkWidget *hbox_evo_end;
+    GtkWidget *hbox_evo_increment;
+    GtkWidget *hbox_evo_filename;
+    GtkWidget *hbox_evo_fileformat;
+    GtkWidget *hbox_evo_save;
+    GtkWidget *evo_box;
 };
 
 /*  prototypes */
 
 struct evolution_gtk_menu * init_evoluaiton_menu_box(void);
-void init_evoluaiton_menu_expander(int istep, GtkWidget *window,
-                                   struct evolution_gtk_menu *evo_gmenu);
-GtkWidget * pack_evoluaiton_menu_expander(int istep, GtkWidget *window,
-                                          struct evolution_gtk_menu *evo_gmenu);
+
+GtkWidget * init_evoluaiton_menu_expander(struct evolution_gtk_menu *evo_gmenu, GtkWidget *window);
+void activate_evolution_menu(GtkWidget *expand_evo);
 
 #endif

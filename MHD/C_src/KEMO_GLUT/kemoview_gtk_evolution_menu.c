@@ -28,9 +28,6 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 	struct evolution_gtk_menu *evo_gmenu 
 			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "evolution");
 	
-	gtk_widget_destroy(window);
-	gtk_main_quit();
-	
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
     sel_write_evolution_views(NO_SAVE_FILE, image_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
@@ -80,10 +77,6 @@ static void evolution_save_CB(GtkButton *button, gpointer user_data){
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	struct kv_string *file_prefix = kemoview_alloc_kvstring();
-	
-	gtk_widget_destroy(window);
-	gtk_main_quit();
-	
 	
 	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
 	id_image = kemoview_set_image_file_format_id(stripped_ext);
@@ -135,10 +128,8 @@ static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_d
 
 
 
-void init_evoluaiton_menu_expander(int istep, GtkWidget *window,
-                                   struct evolution_gtk_menu *evo_gmenu){
-    GtkWidget *expand_evo;
-    
+static void set_evoluaiton_menu_expander(int istep, GtkWidget *window,
+                                  struct evolution_gtk_menu *evo_gmenu){
     evo_gmenu->entry_evo_file = gtk_entry_new();
     g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "parent", (gpointer) window);
     g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "evolution", (gpointer) evo_gmenu);
@@ -213,12 +204,10 @@ void init_evoluaiton_menu_expander(int istep, GtkWidget *window,
     evo_gmenu->spin_evo_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_increment), 0, 0);
     g_signal_connect(evo_gmenu->spin_evo_increment, "value-changed",
                      G_CALLBACK(evo_increment_CB), (gpointer) evo_gmenu->entry_evo_file);
-    
     return;
 }
 
-GtkWidget * pack_evoluaiton_menu_expander(int istep, GtkWidget *window,
-                                          struct evolution_gtk_menu *evo_gmenu){
+static GtkWidget * pack_evoluaiton_menu_expander(GtkWidget *window, struct evolution_gtk_menu *evo_gmenu){
     GtkWidget *expand_evo;
     
 	GtkWidget *hbox_time = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -266,3 +255,23 @@ GtkWidget * pack_evoluaiton_menu_expander(int istep, GtkWidget *window,
     expand_evo = wrap_into_scroll_expansion_gtk("Evolution", 360, 240, window, evo_box);
 	return expand_evo;
 }
+
+GtkWidget * init_evoluaiton_menu_expander(struct evolution_gtk_menu *evo_gmenu, GtkWidget *window){
+    GtkWidget *expand_evo;
+
+    set_evoluaiton_menu_expander(IZERO, window, evo_gmenu);
+    expand_evo = pack_evoluaiton_menu_expander(window, evo_gmenu);
+    return expand_evo;
+}
+
+void activate_evolution_menu(GtkWidget *expand_evo){
+    int iflag_draw_f = kemoview_get_fline_parameters(DRAW_SWITCH);
+    int nload_psf = kemoview_get_PSF_loaded_params(NUM_LOADED);
+    if(nload_psf > 0 || iflag_draw_f > 0){
+        gtk_widget_set_sensitive(expand_evo, TRUE);
+    }else{
+        gtk_widget_set_sensitive(expand_evo, FALSE);
+    }
+    return;
+}
+

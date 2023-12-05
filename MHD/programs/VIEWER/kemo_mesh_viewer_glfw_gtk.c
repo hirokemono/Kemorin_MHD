@@ -250,15 +250,13 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     iflag_fast_prev = 0;
     GtkWidget *takobox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	make_gtk_main_menu_box(mbot, takobox, gtk_win, single_kemoview);
-    
+
     gtk_box_pack_start(GTK_BOX(takobox), mbot->vbox_menu, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->menuHbox), takobox, FALSE, FALSE, 0);
-    
     
     mbot->updatable->psfBox =       gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     mbot->updatable->flineBox =     gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     mbot->updatable->meshBox =      gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    mbot->updatable->evolutionBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     mbot->id_current[0] = 1;
     
     update_kemoview_menu(mbot->id_current, mbot->updatable,
