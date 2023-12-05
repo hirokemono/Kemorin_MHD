@@ -280,19 +280,6 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     g_list_free(reference_list);
 }
 
-static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *path_str,
-											 gchar *new_text, gpointer user_data){
-	int i = 0;
-	printf("TAko %d\n", i);
-};
-
-static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *path_str,
-											  gchar *new_text, gpointer user_data){
-	int i = 1;
-	printf("TAko %d\n", i);
-};
-
-
 void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist, 
                             GtkCellRenderer *renderer_spin1,
                             GtkCellRenderer *renderer_spin2){

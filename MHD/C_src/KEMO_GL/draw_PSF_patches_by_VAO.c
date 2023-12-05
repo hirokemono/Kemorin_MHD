@@ -63,6 +63,7 @@ void draw_PSF_trans_objects_VAO(struct transfer_matrices *matrices,
                                 struct kemoview_shaders *kemo_shaders){
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
+    glEnable(GL_MULTISAMPLE);
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_CULL_FACE);
@@ -75,5 +76,6 @@ void draw_PSF_trans_objects_VAO(struct transfer_matrices *matrices,
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    glDisable(GL_MULTISAMPLE);
     return;
 };
