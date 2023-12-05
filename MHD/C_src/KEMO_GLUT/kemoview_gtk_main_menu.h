@@ -82,8 +82,9 @@ void dealloc_main_buttons(struct main_buttons *mbot);
 void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *mbot,
 							   GtkWidget *window_main);
 
-void gtk_psf_menu_box(int id_menu[1], struct updatable_widgets  *updatable,
-                      GtkWidget *menuHbox, GtkWidget *window);
+void gtk_psf_menu_box(struct psf_gtk_menu *psf_gmenu,
+                      GtkWidget *menuHbox,
+                      GtkWidget *window);
 GtkWidget * pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
 
 void gtk_fieldline_menu_box(int id_menu[1], struct updatable_widgets *updatable,
