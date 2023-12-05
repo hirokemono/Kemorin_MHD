@@ -370,7 +370,8 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
 
 gboolean expose_event_CB(cairo_t *cr, struct colormap_view *color_vws)
 { 
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
+	draw_colormap(color_vws->cmap_param, cr,
+                  gtk_widget_get_window(color_vws->scrolled_window));
     return FALSE;
 }
 

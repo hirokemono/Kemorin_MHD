@@ -334,6 +334,15 @@ static void close_mesh_CB(GtkButton *button, gpointer user_data){
 	return;
 };
 
+static void update_by_psf_component(struct psf_gtk_menu *psf_gmenu){
+    set_gtk_surface_menu_values(psf_gmenu->psf_surface_menu);
+    set_gtk_isoline_menu_values(psf_gmenu->psf_isoline_menu);
+    update_colormap_params_4_viewer(psf_gmenu->color_vws);
+    update_kemoview_cmap_list_box(psf_gmenu->color_vws);
+    return;
+}
+
+
 static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 {
     GtkWidget *menuHbox = GTK_WIDGET(user_data);
@@ -344,12 +353,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     int index_mode = gtk_selected_combobox_index(combobox_field);
     
 	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode);
-		
-//	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
-    update_colormap_params_4_viewer(updatable->psf_gmenu->color_vws);
-    update_kemoview_cmap_list_box(updatable->psf_gmenu->color_vws);
-
-
+    update_by_psf_component(updatable->psf_gmenu);
     set_vector_plot_availablity(updatable->psf_gmenu);
 
     gtk_widget_queue_draw(window_main);
@@ -367,9 +371,7 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
     int index_mode = gtk_selected_combobox_index(combobox_comp);
 	
 	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, index_mode);
-		
-    update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
-
+    update_by_psf_component(updatable->psf_gmenu);
 	gtk_widget_queue_draw(window_main);
 	draw_full();
 	return;
