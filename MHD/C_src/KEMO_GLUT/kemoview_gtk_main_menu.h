@@ -87,7 +87,10 @@ void gtk_psf_menu_box(struct psf_gtk_menu *psf_gmenu,
                       GtkWidget *window);
 GtkWidget * pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
 
-void gtk_fieldline_menu_box(int id_menu[1], struct updatable_widgets *updatable,
+void gtk_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu,
+                            GtkWidget *menuHbox, GtkWidget *window);
+
+void fieldline_gtk_menu(struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *menuHbox, GtkWidget *window);
 
 void gtk_mesh_menu_box(int id_menu[1], struct updatable_widgets *updatable,

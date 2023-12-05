@@ -35,7 +35,12 @@ struct fieldline_gtk_menu{
     GtkWidget *spin_thick, *spin_digit;
     
     GtkWidget *combobox_field;
+    GtkWidget *label_tree_field;
+    GtkCellRenderer *renderer_field;
+
     GtkWidget *combobox_comp;
+    GtkWidget *label_tree_comp;
+    GtkCellRenderer *renderer_comp;
 };
 
 
@@ -43,6 +48,8 @@ struct fieldline_gtk_menu{
 
 void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu);
 void init_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu);
+
 GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_menu);
+void update_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu);
 
 #endif

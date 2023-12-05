@@ -76,7 +76,7 @@ static void set_kemoview_menu(int id_menu[1], struct updatable_widgets *updatabl
     int nload_psf = kemoview_get_PSF_loaded_params(NUM_LOADED);
     
     if(nload_psf > 0){gtk_psf_menu_box(updatable->psf_gmenu, menuHbox, window);};
-    if(iflag_draw_f > 0){gtk_fieldline_menu_box(id_menu, updatable, menuHbox, window);};
+    if(iflag_draw_f > 0){gtk_fieldline_menu_box(updatable->fline_menu, menuHbox, window);};
     
     if(nload_psf > 0 || iflag_draw_f > 0){
         struct kv_string *file_prefix = kemoview_alloc_kvstring();
@@ -294,8 +294,12 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D);
 	
-    update_psf_draw_field_hbox(psf_gmenu);
-    update_by_psf_field(psf_gmenu);
+    if(num_loaded > 0){
+        update_psf_draw_field_hbox(psf_gmenu);
+        update_by_psf_field(psf_gmenu);
+    }else{
+//        if(num_loaded == 0) gtk_widget_hide(psfBox);
+    }
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -304,12 +308,11 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 static void close_fline_CB(GtkButton *button, gpointer user_data){
     GtkWidget *menuHbox = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-    struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
-    int *id_menu = (int *) g_object_get_data(G_OBJECT(user_data), "current");
+    struct fieldline_gtk_menu *fline_menu = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "updates");
 
 	kemoview_close_fieldline_view();
 	
-	update_kemoview_menu(id_menu, updatable, menuHbox, window_main);
+    update_fieldline_menu_hbox(fline_menu);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -626,23 +629,21 @@ void gtk_psf_menu_box(struct psf_gtk_menu *psf_gmenu,
 	return;
 }
 
-void gtk_fieldline_menu_box(int id_menu[1], struct updatable_widgets *updatable,
+void gtk_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *menuHbox, GtkWidget *window){
 	GtkWidget *closeButton;
 
-    updatable->fline_menu->closeButton = gtk_button_new_with_label("Close Current PSF");
+    fline_menu->closeButton = gtk_button_new_with_label("Close Current PSF");
 
     g_object_set_data(G_OBJECT(menuHbox), "parent", (gpointer) window);
-    g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) updatable);
-    g_object_set_data(G_OBJECT(menuHbox), "current", (gpointer) id_menu);
-    g_signal_connect(G_OBJECT(updatable->fline_menu->closeButton), "clicked",
+    g_object_set_data(G_OBJECT(menuHbox), "updates", (gpointer) fline_menu);
+    g_signal_connect(G_OBJECT(fline_menu->closeButton), "clicked",
                      G_CALLBACK(close_fline_CB), menuHbox);
 	
-	updatable->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+	fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
     
-    
-	init_fieldline_menu_hbox(updatable->fline_menu);
-    set_gtk_fieldline_menu(updatable->fline_menu);
+	init_fieldline_menu_hbox(fline_menu);
+    set_gtk_fieldline_menu(fline_menu);
 	return;
 }
 

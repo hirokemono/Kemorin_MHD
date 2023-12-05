@@ -154,6 +154,14 @@ void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu){
 	return;
 };
 
+void update_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu){
+    update_fline_component_combobox(fline_menu->combobox_comp, fline_menu->label_tree_comp,
+                                    fline_menu->renderer_comp);
+    
+    set_gtk_fieldline_menu(fline_menu);
+    return;
+}
+
 void init_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu){
     GtkWidget *label_tree_color;
     GtkCellRenderer *renderer_color;
@@ -204,17 +212,17 @@ void init_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu){
     g_signal_connect(fline_menu->spin_digit, "value-changed",
                      G_CALLBACK(fline_digit_CB),NULL);
     
-    adj_min_value = gtk_adjustment_new (0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
-    adj_min_digit = gtk_adjustment_new (0, -20, 20, 1, 1, 0);
+    adj_min_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
+    adj_min_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
     fline_menu->spin_range_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min_value),0,2);
     fline_menu->spin_min_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min_digit),0,0);
     g_signal_connect(fline_menu->spin_range_min, "value-changed",
                      G_CALLBACK(MinValueChange_CB), NULL);
     g_signal_connect(fline_menu->spin_min_digit, "value-changed",
                      G_CALLBACK(MinDigitChange_CB), NULL);
-    
-    adj_max_value = gtk_adjustment_new (0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
-    adj_max_digit = gtk_adjustment_new (0, -20, 20, 1, 1, 0);
+
+    adj_max_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
+    adj_max_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
     fline_menu->spin_range_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_max_value),0,2);
     fline_menu->spin_max_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_max_digit),0,0);
     g_signal_connect(fline_menu->spin_range_max, "value-changed",
@@ -222,8 +230,10 @@ void init_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu){
     g_signal_connect(fline_menu->spin_max_digit, "value-changed",
                      G_CALLBACK(MaxDigitChange_CB), NULL);
     
-    fline_menu->combobox_field = add_fline_draw_field_box();
-    fline_menu->combobox_comp = fline_draw_component_combobox();
+    add_fline_draw_field_box(fline_menu->combobox_field, fline_menu->label_tree_field,
+                             fline_menu->renderer_field);
+    fline_draw_component_combobox(fline_menu->combobox_comp, fline_menu->label_tree_comp,
+                                  fline_menu->renderer_comp);
     
     return;
 }

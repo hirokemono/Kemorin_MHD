@@ -29,6 +29,14 @@
 
 /*  prototypes */
 
-GtkWidget * add_fline_draw_field_box(void);
-GtkWidget * fline_draw_component_combobox(void);
+void add_fline_draw_field_box(GtkWidget *combobox_field,
+                              GtkWidget *label_tree_field,
+                              GtkCellRenderer *renderer_field);
+
+void update_fline_component_combobox(GtkWidget *combobox_comp,
+                                     GtkWidget *label_tree_comp,
+                                     GtkCellRenderer *renderer_comp);
+void fline_draw_component_combobox(GtkWidget *combobox_comp,
+                                   GtkWidget *label_tree_comp,
+                                   GtkCellRenderer *renderer_comp);
 #endif
