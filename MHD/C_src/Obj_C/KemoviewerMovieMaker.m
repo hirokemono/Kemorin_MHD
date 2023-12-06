@@ -232,7 +232,8 @@ NSData *SnapshotData;
     NSUInteger pix_xy[2];
     NSUInteger pixelByte[1];
     for(self.CurrentStep = 0;self.CurrentStep<num_step;self.CurrentStep++){
-        kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep);
+        kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep,
+                                kemo_sgl);
         [_metalView DrawQuilt:int_degree:rotationaxis];
 
         unsigned char *bgra = [_metalViewController getRenderedbyMetalToBGRA:(NSUInteger *) pix_xy
@@ -540,7 +541,7 @@ NSData *SnapshotData;
         [self CloseKemoviewMovieFile];
     }
     
-    kemoview_set_quilt_nums(ISET_QUILT_COUNT, IZERO);
+    kemoview_set_quilt_nums(ISET_QUILT_COUNT, IZERO, kemo_sgl);
     [self setRotation:IZERO:RotationAxisID];
     [_metalView FastUpdateImage];
 }
@@ -558,7 +559,8 @@ NSData *SnapshotData;
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     [evolutionProgreessBar displayIfNeeded];
     for(self.CurrentStep = 0;self.CurrentStep<num_step;self.CurrentStep++){
-        kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep);
+        kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep,
+                                kemo_sgl);
         [_metalView DrawQuilt:IZERO:IONE];
 
         [evolutionProgreessBar incrementBy:(double) 1.0];
@@ -572,7 +574,7 @@ NSData *SnapshotData;
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     [evolutionProgreessBar displayIfNeeded];
     
-    kemoview_set_quilt_nums(ISET_QUILT_COUNT, IZERO);
+    kemoview_set_quilt_nums(ISET_QUILT_COUNT, IZERO, kemo_sgl);
     [_metalView DrawQuilt:IZERO:IZERO];
 }
 
@@ -654,7 +656,7 @@ NSData *SnapshotData;
     
     if (CurrentMovieFormat == SAVE_QT_MOVIE) [self CloseKemoviewMovieFile];
         
-    kemoview_set_quilt_nums(ISET_QUILT_COUNT, IZERO);
+    kemoview_set_quilt_nums(ISET_QUILT_COUNT, IZERO, kemo_sgl);
     [_metalView FastUpdateImage];
 }
 

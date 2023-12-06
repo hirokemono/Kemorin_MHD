@@ -484,24 +484,18 @@ void kemoview_set_stereo_parameter(int selected, double value){
     };
     return;
 };
-void kemoview_set_quilt_nums(int selected, int ivalue){
+void kemoview_set_quilt_nums(int selected, int ivalue,
+                             struct kemoviewer_type *kemoviewer){
     if(selected == ISET_QUILT_MODE){
-        set_quilt_mode_flag(kemo_sgl->view_s, ivalue);
+        set_quilt_mode_flag(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_QUILT_RAW){
-        set_quilt_image_num_raws(kemo_sgl->view_s, ivalue);
+        set_quilt_image_num_raws(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_QUILT_COLUMN){
-        set_quilt_image_num_columns(kemo_sgl->view_s, ivalue);
+        set_quilt_image_num_columns(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_QUILT_NUM){
-        set_quilt_image_num_views(kemo_sgl->view_s, ivalue);
+        set_quilt_image_num_views(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_QUILT_COUNT){
-        set_quilt_image_count(kemo_sgl->view_s, ivalue);
-    };
-    return;
-};
-
-void kemoview_toggle_quilt_flag(int selected){
-    if(selected == ISET_QUILT_MODE){
-        toggle_quilt_mode_flag(kemo_sgl->view_s);
+        set_quilt_image_count(kemoviewer->view_s, ivalue);
     };
     return;
 };

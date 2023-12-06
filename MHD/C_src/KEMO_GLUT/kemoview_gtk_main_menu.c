@@ -219,7 +219,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
         unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
                                                                       (nimg_raw * npix_y));
         for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-            kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);
+            kemoview_set_quilt_nums(kemo_sgl, ISET_QUILT_COUNT, i_quilt);
             draw_quilt();
             kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
             kemoview_add_quilt_img(image, quilt_image);

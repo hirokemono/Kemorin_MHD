@@ -407,8 +407,8 @@ extern "C" {
 
 	void kemoview_set_view_parameter(int selected, int i, double value);
     void kemoview_set_stereo_parameter(int selected, double value);
-    void kemoview_set_quilt_nums(int selected, int ivalue);
-    void kemoview_toggle_quilt_flag(int selected);
+    void kemoview_set_quilt_nums(int selected, int ivalue,
+                                 struct kemoviewer_type *kemoviewer);
 
 	int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
                                   int selected);

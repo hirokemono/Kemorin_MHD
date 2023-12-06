@@ -131,7 +131,6 @@ void set_gl_focal_length(struct view_element *view, double focal);
 void set_gl_eye_separation_distance(struct view_element *view, double eye_sep);
 void set_gl_eye_separation_angle(struct view_element *view, double sep_angle);
 
-void toggle_quilt_mode_flag(struct view_element *view);
 void set_quilt_mode_flag(struct view_element *view, int num);
 void set_quilt_image_num_raws(struct view_element *view, int num);
 void set_quilt_image_num_columns(struct view_element *view, int num);

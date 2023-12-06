@@ -50,14 +50,15 @@
 - (int) ToggleQuiltMode
 {
     struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_quilt_nums(ISET_QUILT_MODE, (int) self.Quilt_flag);
+    kemoview_set_quilt_nums(ISET_QUILT_MODE, (int) self.Quilt_flag, kemo_sgl);
     if(self.Quilt_flag > 0){
         self.NumberOfColumns = 5;
         self.NumberOfRows = 9;
         self.FocusPoint = 9.5;
         self.eyeAngle =   35.0;
-        kemoview_set_quilt_nums(ISET_QUILT_RAW, (int) self.NumberOfRows);
-        kemoview_set_quilt_nums(ISET_QUILT_COLUMN, (int) self.NumberOfColumns);
+        kemoview_set_quilt_nums(ISET_QUILT_RAW, (int) self.NumberOfRows, kemo_sgl);
+        kemoview_set_quilt_nums(ISET_QUILT_COLUMN, (int) self.NumberOfColumns,
+                                kemo_sgl);
         kemoview_set_stereo_parameter(ISET_FOCUS, (double) self.FocusPoint);
         kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle);
         self.eyeRatio= (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYESEP, 0);
@@ -66,11 +67,14 @@
 }
 - (IBAction) SetQuiltRawByInput:(id)sender
 {
-    kemoview_set_quilt_nums(ISET_QUILT_RAW, (int) self.NumberOfRows);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_quilt_nums(ISET_QUILT_RAW, (int) self.NumberOfRows, kemo_sgl);
 }
 - (IBAction) SetQuiltColumnByInput:(id)sender
 {
-    kemoview_set_quilt_nums(ISET_QUILT_COLUMN, (int) self.NumberOfColumns);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_quilt_nums(ISET_QUILT_COLUMN, (int) self.NumberOfColumns,
+                            kemo_sgl);
 }
 - (IBAction) SetEyeSeparationAngleByInput:(id)sender
 {

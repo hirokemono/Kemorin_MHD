@@ -358,7 +358,7 @@ static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
 		
 		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
-			kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);
+			kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
 			draw_quilt();
 			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 			kemoview_add_quilt_img(image, quilt_image);
@@ -419,7 +419,7 @@ static void write_evolution_quilt_views(struct kemoviewer_type *kemo_sgl,
 			kemoview_viewer_evolution(i);
 			
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);
+				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
 				draw_quilt();
 				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 				kemoview_add_quilt_img(image, quilt_image);

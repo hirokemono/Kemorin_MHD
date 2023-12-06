@@ -774,10 +774,6 @@ void set_gl_focal_length(struct view_element *view, double focal)
     return;
 };
 
-void toggle_quilt_mode_flag(struct view_element *view){
-    view->iflag_quilt_mode = 1 - view->iflag_quilt_mode;
-    return;
-};
 void set_quilt_mode_flag(struct view_element *view, int num){
     view->iflag_quilt_mode = num;
     return;
