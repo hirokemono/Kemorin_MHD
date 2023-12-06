@@ -83,8 +83,12 @@ struct view_widgets{
 
 /*  prototypes */
 
-void update_windowsize_menu(struct view_widgets *view_menu, GtkWidget *window);
+void update_windowsize_menu(struct kemoviewer_type *kemo_sgl,
+                            struct view_widgets *view_menu,
+                            GtkWidget *window);
 void set_viewmatrix_value(struct view_widgets *view_menu, GtkWidget *window);
 
-GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWidget *window);
+GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                          struct view_widgets *view_menu,
+                                          GtkWidget *window);
 #endif

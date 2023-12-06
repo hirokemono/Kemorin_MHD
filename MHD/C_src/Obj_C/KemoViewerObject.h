@@ -15,6 +15,7 @@
 @interface KemoViewerObject : NSObject {
     struct kemoviewer_type *single_kemoview;
 }
+@property struct kemoviewer_type *single_kemoview;
 
 - (id) init;
 - (struct kemoviewer_type *) KemoViewPointer;

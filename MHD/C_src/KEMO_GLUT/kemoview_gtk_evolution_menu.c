@@ -27,10 +27,13 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct evolution_gtk_menu *evo_gmenu 
 			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "evolution");
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
-    sel_write_evolution_views(NO_SAVE_FILE, image_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
+    sel_write_evolution_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
+                              evo_gmenu->istart_evo, evo_gmenu->iend_evo,
                               evo_gmenu->inc_evo);
 	kemoview_free_kvstring(image_prefix);
 	return;
@@ -73,7 +76,9 @@ static void evolution_save_CB(GtkButton *button, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct evolution_gtk_menu *evo_gmenu 
 			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "evolution");
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+                                   
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	struct kv_string *file_prefix = kemoview_alloc_kvstring();
@@ -89,7 +94,8 @@ static void evolution_save_CB(GtkButton *button, gpointer user_data){
 	
 	printf("header: %s\n", file_prefix->string);
 	printf("steps: %d %d %d\n", evo_gmenu->istart_evo, evo_gmenu->iend_evo, evo_gmenu->inc_evo);
-    sel_write_evolution_views(id_image, file_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
+    sel_write_evolution_views(kemo_sgl, id_image, file_prefix,
+                              evo_gmenu->istart_evo, evo_gmenu->iend_evo,
                               evo_gmenu->inc_evo);
     kemoview_free_kvstring(file_prefix);
 	
@@ -128,12 +134,14 @@ static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_d
 
 
 
-static void set_evoluaiton_menu_expander(int istep, GtkWidget *window,
-                                  struct evolution_gtk_menu *evo_gmenu){
+static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                         int istep, GtkWidget *window,
+                                         struct evolution_gtk_menu *evo_gmenu){
     evo_gmenu->entry_evo_file = gtk_entry_new();
     g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "parent", (gpointer) window);
     g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "evolution", (gpointer) evo_gmenu);
-    
+    g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "kemoview",  (gpointer) kemo_sgl);
+
     GtkWidget *label_tree_evo_fileformat = create_fixed_label_w_index_tree();
     GtkTreeModel *model_evo_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_evo_fileformat));
     GtkTreeModel *child_model_evo_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_evo_fileformat));
@@ -256,10 +264,12 @@ static GtkWidget * pack_evoluaiton_menu_expander(GtkWidget *window, struct evolu
 	return expand_evo;
 }
 
-GtkWidget * init_evoluaiton_menu_expander(struct evolution_gtk_menu *evo_gmenu, GtkWidget *window){
+GtkWidget * init_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                          struct evolution_gtk_menu *evo_gmenu,
+                                          GtkWidget *window){
     GtkWidget *expand_evo;
 
-    set_evoluaiton_menu_expander(IZERO, window, evo_gmenu);
+    set_evoluaiton_menu_expander(kemo_sgl, IZERO, window, evo_gmenu);
     expand_evo = pack_evoluaiton_menu_expander(window, evo_gmenu);
     return expand_evo;
 }

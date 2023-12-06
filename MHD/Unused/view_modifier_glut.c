@@ -385,8 +385,8 @@ void draw_mesh_keep_menu(){
 
 void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg) {
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     int i, int_degree, ied_deg;
@@ -418,8 +418,8 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 
 void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt){
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     int i;

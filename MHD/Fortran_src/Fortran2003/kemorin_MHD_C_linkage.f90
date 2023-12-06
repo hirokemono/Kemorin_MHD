@@ -19,7 +19,6 @@
 !!
 !
 !    void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data);
-!    void kemoview_allocate_pointers();
 !    void kemoview_deallocate_pointers();
 !    
 !    int kemoview_get_PSF_maximum_load();
@@ -122,7 +121,7 @@
 !    void kemoview_set_view_parameter(int selected, int i, double rot_vect);
 !    void kemoview_set_stereo_parameter(int selected, double value);
 !
-!    int kemoview_get_view_integer(int selected);
+!    int kemoview_get_view_integer(kemo_sgl, int selected);
 !    void kemoview_set_view_integer(int selected, int ivalue);
 !    double kemoview_get_view_parameter(int selected, int i);
 !

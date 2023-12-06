@@ -4370,7 +4370,11 @@
             </view>
             <point key="canvasLocation" x="-305.5" y="645"/>
         </window>
-        <customObject id="2679" customClass="ResetViewControll"/>
+        <customObject id="2679" customClass="ResetViewControll">
+            <connections>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="8Ur-Se-17U"/>
+            </connections>
+        </customObject>
         <customObject id="2637" customClass="KemoviewerMovieMaker">
             <connections>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="718-d3-Vwe"/>

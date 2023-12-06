@@ -56,11 +56,14 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct rotation_gtk_menu *rot_gmenu 
 			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    sel_write_rotate_views(NO_SAVE_FILE, image_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
+    sel_write_rotate_views(kemo_sgl, NO_SAVE_FILE, image_prefix,
+                           rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
 	kemoview_free_kvstring(image_prefix);
 	return;
 };
@@ -70,7 +73,9 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct rotation_gtk_menu *rot_gmenu 
 			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
 	int id_image;
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
@@ -87,19 +92,23 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	kemoview_free_kvstring(filename);
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    sel_write_rotate_views(rot_gmenu->id_fmt_rot, file_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
+    sel_write_rotate_views(kemo_sgl, rot_gmenu->id_fmt_rot, file_prefix,
+                           rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
 	
 	return;
 };
 
 
-GtkWidget * init_rotation_menu_expander(struct rotation_gtk_menu *rot_gmenu, GtkWidget *window){
+GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                        struct rotation_gtk_menu *rot_gmenu,
+                                        GtkWidget *window){
 	GtkWidget *expander_rot;
 	
 	GtkWidget *entry_rotation_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_rotation_file), "parent", (gpointer) window);
 	g_object_set_data(G_OBJECT(entry_rotation_file), "rotation", (gpointer) rot_gmenu);
-	
+    g_object_set_data(G_OBJECT(entry_rotation_file), "kemoview", (gpointer) kemo_sgl);
+
 	GtkWidget *label_tree_rotation_dir = create_fixed_label_w_index_tree();
 	GtkTreeModel *model_rotation_dir = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_rotation_dir));  
 	GtkTreeModel *child_model_rotation_dir = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_rotation_dir));

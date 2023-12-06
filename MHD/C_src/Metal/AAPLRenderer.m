@@ -44,6 +44,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
+/*    printf("initWithMetalKitView Start!!\n"); */
     _kemoRendererTools = [[KemoViewRendererTools alloc] init];
     _kemoMetalBufBase = [[KemoViewMetalBuffers alloc] init];
     _kemo2DRenderer = [[KemoView2DRenderer alloc] init];

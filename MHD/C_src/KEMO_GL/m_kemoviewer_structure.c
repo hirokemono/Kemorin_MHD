@@ -506,12 +506,13 @@ void kemoview_toggle_quilt_flag(int selected){
     return;
 };
 
-int kemoview_get_view_integer(int selected){
+int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
+                              int selected){
     int ivalue = 0;
     if(selected == ISET_PIXEL_X){
-        ivalue = send_gl_windowsize_x(kemo_sgl->view_s);
+        ivalue = send_gl_windowsize_x(kemoviewer->view_s);
     }else if(selected == ISET_PIXEL_Y){
-        ivalue = send_gl_windowsize_y(kemo_sgl->view_s);
+        ivalue = send_gl_windowsize_y(kemoviewer->view_s);
     };
     return ivalue;
 };

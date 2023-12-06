@@ -324,10 +324,11 @@ void draw_full(){
 	return;
 };
 
-static void write_rotate_quilt_views(int iflag_img, struct kv_string *image_prefix, 
+static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
+                                     int iflag_img, struct kv_string *image_prefix,
                                      int i_axis, int inc_deg) {
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
     int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
 	int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
@@ -358,10 +359,11 @@ static void write_rotate_quilt_views(int iflag_img, struct kv_string *image_pref
 	return;
 }
 
-static void write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
-                             int i_axis, int inc_deg) {
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
+                               int iflag_img, struct kv_string *image_prefix,
+                               int i_axis, int inc_deg) {
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
     int i, i_quilt, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
@@ -387,10 +389,11 @@ static void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
 }
 
 
-static void write_quilt_evolution_views(int iflag_img, struct kv_string *image_prefix, 
+static void write_quilt_evolution_views(struct kemoviewer_type *kemo_sgl,
+                                        int iflag_img, struct kv_string *image_prefix,
                                         int ist_udt, int ied_udt, int inc_udt){
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 	int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
 	int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
@@ -420,10 +423,11 @@ static void write_quilt_evolution_views(int iflag_img, struct kv_string *image_p
 	return;
 };
 
-static void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
-								int ist_udt, int ied_udt, int inc_udt){
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+static void write_evolution_views(struct kemoviewer_type *kemo_sgl,
+                                  int iflag_img, struct kv_string *image_prefix,
+                                  int ist_udt, int ied_udt, int inc_udt){
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
     int i;
 
@@ -444,24 +448,27 @@ static void write_evolution_views(int iflag_img, struct kv_string *image_prefix,
 	return;
 };
 
-void sel_write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
-                             int i_axis, int inc_deg) {
+void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
+                            int iflag_img, struct kv_string *image_prefix,
+                            int i_axis, int inc_deg) {
 	if(kemoview_get_quilt_nums(ISET_QUILT_MODE) != 0){
-		write_rotate_quilt_views(iflag_img, image_prefix, i_axis, inc_deg);
+		write_rotate_quilt_views(kemo_sgl, iflag_img, image_prefix,
+                                 i_axis, inc_deg);
 	} else {
-		write_rotate_views(iflag_img, image_prefix, i_axis, inc_deg);
+		write_rotate_views(kemo_sgl, iflag_img, image_prefix, i_axis, inc_deg);
 	};
     draw_full();
 	return;
 }
 
-void sel_write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
+void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
+                               int iflag_img, struct kv_string *image_prefix,
 							   int ist_udt, int ied_udt, int inc_udt){
 	if(kemoview_get_quilt_nums(ISET_QUILT_MODE) != 0){
-		write_quilt_evolution_views(iflag_img, image_prefix, 
+		write_quilt_evolution_views(kemo_sgl, iflag_img, image_prefix,
 									ist_udt, ied_udt, inc_udt);
 	} else {
-		write_evolution_views(iflag_img, image_prefix, 
+		write_evolution_views(kemo_sgl, iflag_img, image_prefix, 
 							  ist_udt, ied_udt, inc_udt);
 	};
 	draw_full();

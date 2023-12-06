@@ -39,9 +39,11 @@ void draw_fast(void);
 void draw_full(void);
 void draw_quilt(void);
 
-void sel_write_rotate_views(int iflag_img, struct kv_string *image_prefix,
+void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
+                            int iflag_img, struct kv_string *image_prefix,
                             int i_axis, int inc_deg);
-void sel_write_evolution_views(int iflag_img, struct kv_string *image_prefix,
+void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
+                               int iflag_img, struct kv_string *image_prefix,
                                int ist_udt, int ied_udt, int inc_udt);
 
 void set_GLFW_viewtype_mode(int selected);

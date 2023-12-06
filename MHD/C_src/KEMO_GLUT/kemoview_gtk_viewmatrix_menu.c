@@ -9,12 +9,14 @@
 #include "kemoview_gtk_viewmatrix_menu.h"
 
 
-void update_windowsize_menu(struct view_widgets *view_menu, GtkWidget *window){
+void update_windowsize_menu(struct kemoviewer_type *kemo_sgl,
+                            struct view_widgets *view_menu,
+                            GtkWidget *window){
     char windowsize_x_text[30];
     char windowsize_y_text[30];
     
-    sprintf(windowsize_x_text, "    %d    ", kemoview_get_view_integer(ISET_PIXEL_X));
-    sprintf(windowsize_y_text, "    %d    ", kemoview_get_view_integer(ISET_PIXEL_Y));
+    sprintf(windowsize_x_text, "    %d    ", kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X));
+    sprintf(windowsize_y_text, "    %d    ", kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y));
     
     gtk_label_set_text(GTK_LABEL(view_menu->spin_win_x), windowsize_x_text);
     gtk_label_set_text(GTK_LABEL(view_menu->spin_win_y), windowsize_y_text);
@@ -182,7 +184,9 @@ static void eye_sep_angle_CB(GtkWidget *spin_sep_angle, gpointer user_data){
     return;
 };
 
-GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWidget *window){
+GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                          struct view_widgets *view_menu,
+                                          GtkWidget *window){
     GtkWidget *expander_view;
 	
     char windowsize_x_text[30];
@@ -192,8 +196,8 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	char current_lookat_y_text[30];
 	char current_lookat_z_text[30];
 	
-    sprintf(windowsize_x_text, "    %d    ", kemoview_get_view_integer(ISET_PIXEL_X));
-    sprintf(windowsize_y_text, "    %d    ", kemoview_get_view_integer(ISET_PIXEL_Y));
+    sprintf(windowsize_x_text, "    %d    ", kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X));
+    sprintf(windowsize_y_text, "    %d    ", kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y));
     
 	sprintf(current_lookat_x_text, "    %f    ",
 			(float) kemoview_get_view_parameter(ISET_VWPOINT, 0));
@@ -226,7 +230,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	view_menu->adj_eye_sep = gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 0.01, 0.0);
     view_menu->adj_sep_angle = gtk_adjustment_new(35.0, 0.1, 180.0, 0.1, 0.1, 0.0);
 
-	update_windowsize_menu(view_menu, window);
+	update_windowsize_menu(kemo_sgl, view_menu, window);
 	set_viewmatrix_value(view_menu, window);
 	
 	view_menu->spin_eye_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_x), 0, 3);

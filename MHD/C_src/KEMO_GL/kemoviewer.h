@@ -271,7 +271,6 @@ extern "C" {
 	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void);
     struct kemoviewer_type * kemoview_single_viwewer_struct(void);
 
-    void kemoview_allocate_pointers(void);
     void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data);
     
     int kemoview_get_PSF_maximum_load(void);
@@ -411,7 +410,8 @@ extern "C" {
     void kemoview_set_quilt_nums(int selected, int ivalue);
     void kemoview_toggle_quilt_flag(int selected);
 
-	int kemoview_get_view_integer(int selected);
+	int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
+                                  int selected);
 	double kemoview_get_view_parameter(int selected, int i);
     int kemoview_get_quilt_nums(int selected);
 

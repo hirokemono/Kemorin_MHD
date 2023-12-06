@@ -8,10 +8,14 @@
 
 @import Cocoa;
 
+#import "KemoViewerObject.h"
+
 #include "kemoviewer.h"
 
 
 @interface ResetViewControll : NSObject {
+    IBOutlet KemoViewerObject *_kmv;
+    
     NSInteger xPixel;
 	NSInteger yPixel;
 	

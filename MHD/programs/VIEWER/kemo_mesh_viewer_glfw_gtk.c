@@ -151,7 +151,7 @@ void windowSizeCB(GLFWwindow *window, int width, int height) {
     msg_timer_start = glfwGetTime();
 	
     if(mbot == NULL) return;
-    update_windowsize_menu(mbot->view_menu, gtk_win);
+    update_windowsize_menu(single_kemoview, mbot->view_menu, gtk_win);
 /*    printf("retinemode %d\n", kemoview_get_retinamode()); */
 }
 
@@ -168,12 +168,18 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
     msg_timer_start = glfwGetTime();
 	
     if(mbot == NULL) return;
-	update_windowsize_menu(mbot->view_menu, gtk_win);
+	update_windowsize_menu(single_kemoview, mbot->view_menu, gtk_win);
 }
 
 /* Main GTK window */
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
-    struct line_text_image *image = draw_objects_to_rgb_gl(single_kemoview, kemo_gl);
+    struct line_text_image *image;
+    if(kemoview_get_view_type_flag() == VIEW_STEREO){
+        image = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_gl);
+    }else{
+        image = draw_objects_to_rgb_gl(single_kemoview, kemo_gl);
+    }
+    
     struct line_text_image *fliped_img = alloc_line_text_image(image->npix_img[0],
                                                                image->npix_img[1], 20);
     flip_gl_bitmap(image->npix_img[0], image->npix_img[1],

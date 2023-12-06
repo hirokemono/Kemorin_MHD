@@ -179,7 +179,8 @@ static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user
 };
 
 static void image_save_CB(GtkButton *button, gpointer user_data){
-	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
+	struct main_buttons *mbot =        (struct main_buttons *)    g_object_get_data(G_OBJECT(user_data), "buttons");
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	int iflag_set = kemoview_gtk_save_file_select(button, user_data);
 	int id_imagefmt_by_input;
     int i_quilt;
@@ -187,8 +188,8 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
 	if(iflag_set == IZERO) return;
 	
     int iflag_quilt = kemoview_get_quilt_nums(ISET_QUILT_MODE);
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     GtkEntry *entry = GTK_ENTRY(user_data);
@@ -656,13 +657,14 @@ void set_mesh_menu_box(struct updatable_widgets *updatable, GtkWidget *window){
 	return;
 }
 
-void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
-                            GtkWidget *window_main,
-                            struct kemoviewer_type *kemoviewer_data){
+void make_gtk_main_menu_box(struct main_buttons *mbot,
+                            GtkWidget *takobox, GtkWidget *window_main,
+                            struct kemoviewer_type *kemo_sgl){
 	GtkWidget *entry_file = gtk_entry_new();
-	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window_main);
-	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
-	
+	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer)   window_main);
+	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer)  mbot);
+    g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) kemo_sgl);
+
 	GtkWidget *open_Button = gtk_button_new_with_label("Open...");
 	g_signal_connect(G_OBJECT(open_Button), "clicked", 
 					 G_CALLBACK(open_file_CB), (gpointer)entry_file);
@@ -748,14 +750,19 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
 	
     GtkWidget *hbox_axis = make_axis_menu_box(window_main);
-    GtkWidget *expander_rot = init_rotation_menu_expander(mbot->rot_gmenu, window_main);
+    GtkWidget *expander_rot = init_rotation_menu_expander(kemo_sgl,
+                                                          mbot->rot_gmenu,
+                                                          window_main);
     
-    mbot->expander_view = init_viewmatrix_menu_expander(mbot->view_menu, window_main);
+    mbot->expander_view = init_viewmatrix_menu_expander(kemo_sgl,
+                                                        mbot->view_menu,
+                                                        window_main);
     mbot->expander_quilt = init_quilt_menu_expander(mbot->quilt_gmenu,
                                                     mbot->view_menu, window_main);
     mbot->expander_pref = init_preference_expander(mbot->pref_gmenu, window_main,
-                                                   kemoviewer_data);
-    mbot->updatable->expander_evo = init_evoluaiton_menu_expander(mbot->updatable->evo_gmenu,
+                                                   kemo_sgl);
+    mbot->updatable->expander_evo = init_evoluaiton_menu_expander(kemo_sgl,
+                                                                  mbot->updatable->evo_gmenu,
                                                                   window_main);
     activate_evolution_menu(mbot->updatable->expander_evo);
 

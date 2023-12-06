@@ -102,9 +102,9 @@ void update_by_psf_field(struct psf_gtk_menu *psf_gmenu);
 void update_kemoview_menu(struct updatable_widgets *updatable,
                           GtkWidget *menuHbox, GtkWidget *window);
 
-void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *takobox,
-                            GtkWidget *window_main,
-                            struct kemoviewer_type *kemoviewer_data);
+void make_gtk_main_menu_box(struct main_buttons *mbot,
+                            GtkWidget *takobox, GtkWidget *window_main,
+                            struct kemoviewer_type *kemo_sgl);
 
 void init_psf_menu(struct updatable_widgets *updatable, GtkWidget *window);
 void init_evolution_menu(struct updatable_widgets *updatable, GtkWidget *window);

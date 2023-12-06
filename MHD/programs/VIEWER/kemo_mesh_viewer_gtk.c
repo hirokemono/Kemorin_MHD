@@ -103,7 +103,7 @@ void windowSizeCB(GLFWwindow *window, int width, int height) {
     kemoview_set_message_opacity(1.0);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 	
-	update_windowsize_menu(mbot->view_menu, gtk_win);
+	update_windowsize_menu(kemoviewer_data, mbot->view_menu, gtk_win);
 }
 */
 /* Main GTK window */

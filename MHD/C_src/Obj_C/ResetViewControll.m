@@ -132,8 +132,9 @@
 
 - (void) UpdateParameters
 {
-	self.xPixel = kemoview_get_view_integer(ISET_PIXEL_X);
-	self.yPixel = kemoview_get_view_integer(ISET_PIXEL_Y);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+	self.xPixel = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+	self.yPixel = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
 	
 	self.ViewPointX = (CGFloat) -kemoview_get_view_parameter(ISET_SHIFT, 0);
 	self.ViewPointY = (CGFloat) -kemoview_get_view_parameter(ISET_SHIFT, 1);
