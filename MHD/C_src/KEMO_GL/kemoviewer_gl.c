@@ -71,7 +71,7 @@ void kemoview_modify_anaglyph(void){
     struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
     glDrawBuffer(GL_BACK);
-    update_draw_anaglyph_gl3(kemoview, kemo_gl);
+    update_draw_anaglyph_gl3(kemo_sgl, kemo_gl);
 };
 
 
