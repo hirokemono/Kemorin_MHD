@@ -112,8 +112,7 @@
 !    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix,
 !                                              int npix_x, int npix_y, unsigned char *image);
 !
-!    void kemoview_full_modify_view();
-!    void kemoview_fast_modify_view();
+!    void kemoview_modify_view();
 !    void kemoviewer_reset_to_init_angle();
 !    
 !    void kemoview_set_retinamode(int i_retina);

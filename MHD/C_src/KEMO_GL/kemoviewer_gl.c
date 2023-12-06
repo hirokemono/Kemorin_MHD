@@ -59,21 +59,21 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 };
 
 
-void kemoview_mono_view(void){
+void kemoview_modify_view(void){
     struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
-    modify_mono_kemoview(kemo_sgl, kemo_gl);
+
+    glDrawBuffer(GL_BACK);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    update_draw_objects_gl3(kemo_sgl, kemo_gl);
 };
-void kemoview_full_modify_view(void){
+void kemoview_modify_anaglyph(void){
     struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
-    modify_stereo_kemoview(FULL_DRAW, kemo_sgl, kemo_gl);
+    glDrawBuffer(GL_BACK);
+    update_draw_anaglyph_gl3(kemoview, kemo_gl);
 };
-void kemoview_fast_modify_view(void){
-    struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
-    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
-    modify_stereo_kemoview(FAST_DRAW, kemo_sgl, kemo_gl);
-};
+
 
 unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y){
     unsigned char *image = alloc_RGB_buffer_to_bmp(npix_x, npix_y);

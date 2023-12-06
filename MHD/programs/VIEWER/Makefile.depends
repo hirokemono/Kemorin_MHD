@@ -104,13 +104,11 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
-  $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(MHDDIR)/C_src/CONTROLS/t_control_label_from_f.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara2_int_IO.h \
   $(MHDDIR)/C_src/CONTROLS/m_direction_labels_c.h \
   $(MHDDIR)/C_src/GTK/tree_view_chara_int_GTK.h \
@@ -142,10 +140,10 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.c \
@@ -252,12 +250,10 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
-  $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(MHDDIR)/C_src/CONTROLS/t_control_label_from_f.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara2_int_IO.h \
   $(MHDDIR)/C_src/CONTROLS/m_direction_labels_c.h \
   $(MHDDIR)/C_src/GTK/tree_view_chara_int_GTK.h \
@@ -289,11 +285,11 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_glfw_gtk.c \
@@ -400,13 +396,11 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
-  $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(MHDDIR)/C_src/CONTROLS/t_control_label_from_f.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara2_int_IO.h \
   $(MHDDIR)/C_src/CONTROLS/m_direction_labels_c.h \
   $(MHDDIR)/C_src/GTK/tree_view_chara_int_GTK.h \
@@ -438,10 +432,10 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoviewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_gtk.c \
@@ -548,12 +542,10 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
-  $(MHDDIR)/C_src/KEMO_GL/modify_stereo_view_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(MHDDIR)/C_src/CONTROLS/t_control_label_from_f.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara2_int_IO.h \
   $(MHDDIR)/C_src/CONTROLS/m_direction_labels_c.h \
   $(MHDDIR)/C_src/GTK/tree_view_chara_int_GTK.h \
@@ -585,9 +577,9 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
-  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
+  $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<

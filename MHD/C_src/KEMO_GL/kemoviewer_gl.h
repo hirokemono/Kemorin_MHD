@@ -20,9 +20,11 @@
 #include "vartex_array_object_gl.h"
 
 #include "m_kemoviewer_data.h"
+#include "m_transfer_matrices.h"
+#include "m_gl_transfer_matrix.h"
 #include "init_gl_lighting_c.h"
+#include "kemoviewer_param_c.h"
 #include "move_draw_objects_gl.h"
-#include "modify_stereo_view_gl.h"
 #include "write_gl_window_to_file.h"
 
 #ifdef PNG_OUTPUT
@@ -44,9 +46,8 @@ extern "C" {
     void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_mono_view(void);
-    void kemoview_full_modify_view(void);
-    void kemoview_fast_modify_view(void);
+    void kemoview_modify_view(void);
+    void kemoview_modify_anaglyph(void);
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);

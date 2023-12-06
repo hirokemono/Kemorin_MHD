@@ -32,7 +32,6 @@ control_elements_IO_GTK.o: \
   $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -44,7 +43,6 @@ control_panel_4_field_GTK.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
@@ -61,6 +59,7 @@ control_panel_4_field_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_chara_int3_items_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_int3_IO.h \
   $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_ctl_array_chara2_int_items_c.h \
   $(C_SRCDIR)/GTK/tree_view_4_field_GTK.h \
   $(C_SRCDIR)/GTK/tree_view_chara_GTK.h
@@ -77,7 +76,6 @@ control_panel_chara_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_chara_GTK.h
@@ -96,7 +94,6 @@ control_panel_chara_int_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h
@@ -116,7 +113,6 @@ control_panel_chara_real_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_chara_real_GTK.h
@@ -135,7 +131,6 @@ control_panel_int2_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_int2_GTK.h
@@ -152,7 +147,6 @@ control_panel_int_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_int_GTK.h
@@ -171,7 +165,6 @@ control_panel_int_real_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_int_real_GTK.h
@@ -188,7 +181,6 @@ control_panel_real_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_real_GTK.h
@@ -203,10 +195,9 @@ kemoview_gtk_routines.o: \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
   $(C_SRCDIR)/GTK/calypso_GTK.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -224,7 +215,6 @@ tree_view_4_colormap.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
@@ -279,7 +269,6 @@ tree_view_4_force_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_chara_real_GTK.h
@@ -298,7 +287,6 @@ tree_view_4_pvr_colormap.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
@@ -320,7 +308,6 @@ tree_view_block_GTK.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
@@ -339,12 +326,12 @@ tree_view_boundary_condition_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_chara2_real_GTK.h \
   $(C_SRCDIR)/GTK/tree_view_chara_GTK.h \
   $(C_SRCDIR)/GTK/control_combobox_GTK.h \
+  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 tree_view_chara2_real_GTK.o: \
@@ -356,7 +343,6 @@ tree_view_chara2_real_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -369,7 +355,6 @@ tree_view_chara_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -382,7 +367,6 @@ tree_view_chara_int3_GTK.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/GTK/calypso_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -395,7 +379,6 @@ tree_view_chara_int_GTK.o: \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/GTK/calypso_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -408,7 +391,6 @@ tree_view_chara_real_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -421,7 +403,6 @@ tree_view_int2_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -434,7 +415,6 @@ tree_view_int_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -447,7 +427,6 @@ tree_view_int_real_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -460,7 +439,6 @@ tree_view_real2_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -473,7 +451,6 @@ tree_view_real3_GTK.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -489,7 +466,6 @@ tree_view_real_GTK.o: \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
@@ -525,7 +501,6 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/GTK/tree_view_4_colormap.h \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/GTK/tree_view_chara_int_GTK.h \
@@ -539,10 +514,9 @@ tree_views_4_fixed_lists_GTK.o: \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.c \
   $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
   $(C_SRCDIR)/GTK/calypso_GTK.h \
-  $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara2_int_IO.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
