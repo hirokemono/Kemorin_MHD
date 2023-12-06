@@ -288,30 +288,10 @@ void glfw_callbacks_init(){
 }
 
 void select_anaglyph(){
-    int i;
-    struct kemoviewer_type *    kemo_sgl = kemoview_single_viwewer_struct();
-    struct kemoviewer_gl_type * kemo_gl = kemoview_single_gl_type();
-    GLuint npix_xy[2];
-    unsigned char *image;
     if(kemoview_get_view_type_flag() == VIEW_STEREO){
-        kemoview_left_viewmatrix();
-        unsigned char *left_rgb = draw_objects_to_rgb_gl(npix_xy, kemo_sgl, kemo_gl);
-        struct line_text_image *anaglyph_image = alloc_line_text_image(npix_xy[0], npix_xy[1], 20);
-
-        kemoview_right_viewmatrix();
-        unsigned char *right_rgb = draw_objects_to_rgb_gl(npix_xy, kemo_sgl, kemo_gl);
-        half_anaglyph_rgba_by_rgbs(npix_xy[0], npix_xy[1], left_rgb, right_rgb,
-                                   anaglyph_image->imgBMP);
-        free(left_rgb);
-        free(right_rgb);
-
-        kemoview_mono_viewmatrix();
-        glDrawBuffer(GL_BACK);
-        kemoview_modify_anaglyph(anaglyph_image);
-        dealloc_line_text_image(anaglyph_image);
+        kemoview_modify_anaglyph();
     }else{
         kemoview_mono_viewmatrix();
-        glDrawBuffer(GL_BACK);
         kemoview_modify_view();
     }
     return;
@@ -336,7 +316,6 @@ void draw_simple(){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW);
     kemoview_mono_viewmatrix();
-    glDrawBuffer(GL_BACK);
     kemoview_modify_view();
     glfwSwapBuffers(glfw_window);
     return;
@@ -346,7 +325,6 @@ void draw_quilt(void){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     kemoview_step_viewmatrix();
-    glDrawBuffer(GL_BACK);
     kemoview_modify_view();
     glfwSwapBuffers(glfw_window);
     return;

@@ -317,7 +317,6 @@ void draw_fast(){
 void draw_full(){
 //    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
     kemoview_mono_viewmatrix();
-    glDrawBuffer(GL_BACK);
 	kemoview_modify_view();
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
@@ -374,9 +373,7 @@ static void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
         kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
         kemoview_mono_viewmatrix();
-        glDrawBuffer(GL_BACK);
         kemoview_modify_view();
-/*	   	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 		
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
