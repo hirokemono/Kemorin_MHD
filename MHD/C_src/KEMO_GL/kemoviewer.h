@@ -388,7 +388,7 @@ extern "C" {
     void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl);
     void kemoview_transparent_buffers(struct kemoviewer_type *kemo_sgl);
 
-    void kemoview_quick_viewmatrix(void);
+    void kemoview_mono_viewmatrix(void);
     void kemoview_step_viewmatrix(void);
 
     void kemoviewer_reset_to_init_angle(void);
@@ -399,10 +399,7 @@ extern "C" {
     void kemoview_set_windowsize(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
     void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
     void kemoview_set_message_opacity(float opacity);
-    
-    void kemoview_update_modelmat(void);
-    void kemoview_update_distance(void);
-    
+
     int kemoview_get_draw_mode(void);
 
     void kemoview_set_view_integer(int selected, int ivalue);

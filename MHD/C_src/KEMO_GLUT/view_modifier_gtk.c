@@ -306,7 +306,9 @@ void gtk_callbacks_init(){
 
 
 void draw_fast(){
-//  kemoview_quick_viewmatrix();
+//    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW);
+//    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO)
+//  kemoview_mono_viewmatrix();
 //	kemoview_mono_view();
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;

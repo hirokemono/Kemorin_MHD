@@ -27,7 +27,7 @@ struct transfer_matrices * init_projection_matrix_for_map(int nx_frame, int ny_f
 
 struct transfer_matrices * transfer_matrix_to_shader(struct view_element *view_s);
 
-void quick_mono_viewmat(struct view_element *view_s);
+void modify_mono_viewmat(struct view_element *view_s);
 void modify_step_viewmat(struct view_element *view_s);
 
 #endif /* m_transfer_matrices_ */

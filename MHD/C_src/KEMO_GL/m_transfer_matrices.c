@@ -66,10 +66,8 @@ struct transfer_matrices * transfer_matrix_to_shader(struct view_element *view_s
     return matrices;
 };
 
-void quick_mono_viewmat(struct view_element *view_s)
+void modify_mono_viewmat(struct view_element *view_s)
 {
-    view_s->iflag_draw_mode = SIMPLE_DRAW;
-    set_gl_animation_rot_angle(view_s, 0);
     update_projection_struct(view_s);
     modify_view_by_struct(view_s);
     return;

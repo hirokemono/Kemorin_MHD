@@ -136,8 +136,7 @@
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_update_modelmat();
-    kemoview_update_distance();
+    kemoview_mono_viewmatrix();
     [_resetview UpdateParameters];
     
     [self setNeedsDisplay: YES];
@@ -154,7 +153,8 @@
 -(void) QuickUpdateImage
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW);
-    kemoview_quick_viewmatrix();
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
+    kemoview_mono_viewmatrix();
     [_resetview UpdateParameters];
 
     [self setNeedsDisplay: YES];
@@ -188,7 +188,7 @@
 - (void) Resetview
 {
     kemoviewer_reset_to_init_angle();
-    kemoview_update_distance();
+    kemoview_mono_viewmatrix();
     [self setNeedsDisplay: YES];
 }
 

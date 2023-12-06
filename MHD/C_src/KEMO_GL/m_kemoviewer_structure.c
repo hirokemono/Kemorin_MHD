@@ -419,7 +419,7 @@ void kemoview_transparent_buffers(struct kemoviewer_type *kemo_sgl){
 };
 
 
-void kemoview_quick_viewmatrix(void){quick_mono_viewmat(kemo_sgl->view_s);};
+void kemoview_mono_viewmatrix(void){modify_mono_viewmat(kemo_sgl->view_s);};
 void kemoview_step_viewmatrix(void){modify_step_viewmat(kemo_sgl->view_s);};
 
 void kemoviewer_reset_to_init_angle(void){
@@ -445,14 +445,6 @@ void kemoview_set_message_opacity(float opacity){
     kemo_sgl->kemo_buffers->message_image->text_opacity = opacity;
     return;
 }
-
-
-void kemoview_update_modelmat(void){
-    modify_view_by_struct(kemo_sgl->view_s);
-};
-void kemoview_update_distance(void){
-	update_projection_struct(kemo_sgl->view_s);
-};
 
 int kemoview_get_draw_mode(void){return send_gl_draw_mode(kemo_sgl->view_s);};
 

@@ -100,7 +100,7 @@
 
     kemoview_set_viewtype((int) selected);
 	[_metalView setViewerType:selected];
-    kemoview_update_distance();
+    kemoview_mono_viewmatrix();
 	[_metalView UpdateImage];
 }
 
