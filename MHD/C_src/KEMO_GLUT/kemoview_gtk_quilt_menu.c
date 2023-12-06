@@ -42,8 +42,12 @@ static void quilt_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer dat
     double FoculPoint;
     double eyeAngle, eyeRatio;
 	struct quilt_gtk_menu *quilt_gmenu
-			= (struct quilt_gtk_menu *) g_object_get_data(G_OBJECT(switch_bar), "parent");
+			= (struct quilt_gtk_menu *) g_object_get_data(G_OBJECT(switch_bar),  "parent");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(switch_bar), "kemoview");
     struct view_widgets *view_menu = (struct view_widgets *) data;
+    
+    
 	kemoview_toggle_quilt_flag(ISET_QUILT_MODE);
 	int iflag_quilt = kemoview_get_quilt_nums(ISET_QUILT_MODE);
     if(iflag_quilt > 0){
@@ -56,7 +60,7 @@ static void quilt_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer dat
         kemoview_set_stereo_parameter(ISET_FOCUS, FoculPoint);
         kemoview_set_stereo_parameter(ISET_EYEAGL, eyeAngle);
         
-        eyeRatio = kemoview_get_view_parameter(ISET_EYESEP, 0);
+        eyeRatio = kemoview_get_view_parameter(kemo_sgl, ISET_EYESEP, 0);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(quilt_gmenu->spin_num_column),
                                   quilt_gmenu->num_column);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(quilt_gmenu->spin_num_raw),
@@ -102,7 +106,8 @@ static void num_quilt_raw_CB(GtkWidget *entry, gpointer data){
 };
 
 
-GtkWidget * init_quilt_menu_expander(struct quilt_gtk_menu *quilt_gmenu,
+GtkWidget * init_quilt_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                     struct quilt_gtk_menu *quilt_gmenu,
                                      struct view_widgets *view_menu,
                                      GtkWidget *window){
 	GtkWidget *expander_quilt;
@@ -110,6 +115,7 @@ GtkWidget * init_quilt_menu_expander(struct quilt_gtk_menu *quilt_gmenu,
 	quilt_gmenu->entry_quilt_menu = gtk_entry_new();
 	g_object_set_data(G_OBJECT(quilt_gmenu->entry_quilt_menu), "parent", (gpointer) window);
 	g_object_set_data(G_OBJECT(quilt_gmenu->entry_quilt_menu), "quilt", (gpointer) quilt_gmenu);
+    g_object_set_data(G_OBJECT(quilt_gmenu->entry_quilt_menu), "kemoview", (gpointer) kemo_sgl);
 
 	quilt_gmenu->quiltOn_Switch = gtk_switch_new();
 	g_signal_connect(G_OBJECT(quilt_gmenu->quiltOn_Switch), "notify::active",

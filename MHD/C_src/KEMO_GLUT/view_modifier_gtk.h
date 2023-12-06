@@ -20,7 +20,7 @@
 
 GtkWidget * open_kemoviwer_gl_panel(int npixel_x, int npixel_y);
 
-void gtk_callbacks_init();
+void gtk_callbacks_init(gtk_callbacks_init);
 void set_GTKindowSize(int width, int height);
 
 void draw_fast(void);

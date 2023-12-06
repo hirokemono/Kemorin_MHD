@@ -56,8 +56,8 @@ struct quilt_gtk_menu{
 /*  prototypes */
 
 struct quilt_gtk_menu * init_quilt_menu_box(void);
-GtkWidget * init_quilt_menu_expander(struct quilt_gtk_menu *quilt_gmenu,
+GtkWidget * init_quilt_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                     struct quilt_gtk_menu *quilt_gmenu,
                                      struct view_widgets *view_menu,
                                      GtkWidget *window);
-
 #endif

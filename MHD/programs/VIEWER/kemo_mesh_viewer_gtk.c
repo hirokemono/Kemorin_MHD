@@ -170,7 +170,7 @@ int draw_mesh_kemo(void) {
 //	g_signal_connect(G_OBJECT(kemoview_area), "create-context", G_CALLBACK(tako_context), NULL);
 	g_signal_connect(G_OBJECT(kemoview_area), "realize", G_CALLBACK(realiseCB), NULL);
 	g_signal_connect(G_OBJECT(kemoview_area), "render", G_CALLBACK(renderCB), NULL);
-	gtk_callbacks_init();
+	gtk_callbacks_init(single_kemoview);
 	
 	/* Set callback for drug and Drop into window */
 	

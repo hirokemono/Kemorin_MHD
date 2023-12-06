@@ -69,6 +69,7 @@ gboolean mouseButtonCB(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 };
 
 gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	/*! This gets called when the mouse moves */
 	double xpos = event->x;
 	double ypos = event->y;
@@ -119,7 +120,8 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 		kemoview_drugging_addToRotationTrackball();
 	}
 	else if (button_function == SCALE){
-		double current_scale = kemoview_get_view_parameter(ISET_SCALE, 0);
+		double current_scale = kemoview_get_view_parameter(kemo_sgl,
+                                                           ISET_SCALE, 0);
         
 		if (ypos < begin[1]) {
 			factor = ONE + TWO_MILI*(begin[1]-ypos);
@@ -170,6 +172,7 @@ void charFunCB(GtkWidget *widget, unsigned int charInfo) {
 
 /*! This routine handles the arrow key operations */
 static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	double x_dbl, y_dbl;
 	double factor;
 	
@@ -252,7 +255,8 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 	}
 	
 	else if (arrow_key_func == SCALE){
-		double current_scale = kemoview_get_view_parameter(ISET_SCALE, 0);
+		double current_scale = kemoview_get_view_parameter(kemo_sgl,
+                                                           ISET_SCALE, 0);
         
 		if (event->keyval == GTK_KEY_DOWN && event->type == GDK_KEY_PRESS)
 		factor = ONE/(ONE + TWO_CENT);
@@ -280,17 +284,17 @@ GtkWidget * open_kemoviwer_gl_panel(int npixel_x, int npixel_y){
 };
 
 
-void gtk_callbacks_init(){
+void gtk_callbacks_init(struct kemoviewer_type *kemo_sgl){
 	/* set callback for mouse button */
 	g_signal_connect(G_OBJECT(gl_area), "button_press_event", G_CALLBACK(mouseButtonCB), NULL);
 	g_signal_connect(G_OBJECT(gl_area), "button_release_event", G_CALLBACK(mouseButtonCB), NULL);
 	/* set callback for cursor position */
-	g_signal_connect(G_OBJECT(gl_area), "motion_notify_event", G_CALLBACK(mousePosCB), NULL);
+	g_signal_connect(G_OBJECT(gl_area), "motion_notify_event", G_CALLBACK(mousePosCB), kemo_sgl);
 	/* set callback for cursor position */
 	g_signal_connect(G_OBJECT(gl_area), "scroll_event", G_CALLBACK(mouseScrollCB), NULL);
 	
 	/* Set callback for keyboard input */
-	g_signal_connect(G_OBJECT(gl_area), "key-press-event", G_CALLBACK(keyFuncCB), NULL);
+	g_signal_connect(G_OBJECT(gl_area), "key-press-event", G_CALLBACK(keyFuncCB), kemo_sgl);
 	
 	gtk_widget_set_events(GTK_WIDGET(gl_area),
 				GDK_BUTTON_PRESS_MASK |

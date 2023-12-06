@@ -49,6 +49,7 @@
 }
 - (int) ToggleQuiltMode
 {
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_quilt_nums(ISET_QUILT_MODE, (int) self.Quilt_flag);
     if(self.Quilt_flag > 0){
         self.NumberOfColumns = 5;
@@ -59,7 +60,7 @@
         kemoview_set_quilt_nums(ISET_QUILT_COLUMN, (int) self.NumberOfColumns);
         kemoview_set_stereo_parameter(ISET_FOCUS, (double) self.FocusPoint);
         kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle);
-        self.eyeRatio= (CGFloat) kemoview_get_view_parameter(ISET_EYESEP, 0);
+        self.eyeRatio= (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYESEP, 0);
     }
     return (int) self.Quilt_flag;
 }
@@ -73,13 +74,15 @@
 }
 - (IBAction) SetEyeSeparationAngleByInput:(id)sender
 {
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle);
-    self.eyeRatio= (CGFloat) kemoview_get_view_parameter(ISET_EYESEP, 0);
+    self.eyeRatio= (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYESEP, 0);
 }
 - (IBAction) SetEyeSeparationDistanceByInput:(id)sender
 {
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_stereo_parameter(ISET_EYESEP, (double) self.eyeRatio);
-    self.eyeAngle= (CGFloat) kemoview_get_view_parameter(ISET_EYEAGL, 0);
+    self.eyeAngle= (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYEAGL, 0);
 }
 - (IBAction) SetFoculPointDistanceByInput:(id)sender
 {
@@ -136,29 +139,29 @@
 	self.xPixel = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
 	self.yPixel = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
 	
-	self.ViewPointX = (CGFloat) -kemoview_get_view_parameter(ISET_SHIFT, 0);
-	self.ViewPointY = (CGFloat) -kemoview_get_view_parameter(ISET_SHIFT, 1);
-	self.ViewPointZ = (CGFloat) -kemoview_get_view_parameter(ISET_SHIFT, 2);
+	self.ViewPointX = (CGFloat) (-1.0 * kemoview_get_view_parameter(kemo_sgl, ISET_SHIFT, 0));
+	self.ViewPointY = (CGFloat) (-1.0 * kemoview_get_view_parameter(kemo_sgl, ISET_SHIFT, 1));
+	self.ViewPointZ = (CGFloat) (-1.0 * kemoview_get_view_parameter(kemo_sgl, ISET_SHIFT, 2));
 	
-	self.LookPointX = (CGFloat)  kemoview_get_view_parameter(ISET_VWPOINT, 0);
-	self.LookPointY = (CGFloat)  kemoview_get_view_parameter(ISET_VWPOINT, 1);
-	self.LookPointZ = (CGFloat)  kemoview_get_view_parameter(ISET_VWPOINT, 2);
+	self.LookPointX = (CGFloat)  kemoview_get_view_parameter(kemo_sgl, ISET_VWPOINT, 0);
+	self.LookPointY = (CGFloat)  kemoview_get_view_parameter(kemo_sgl, ISET_VWPOINT, 1);
+	self.LookPointZ = (CGFloat)  kemoview_get_view_parameter(kemo_sgl, ISET_VWPOINT, 2);
 	
-	self.ScaleFactor = (CGFloat) kemoview_get_view_parameter(ISET_SCALE, 0);
+	self.ScaleFactor = (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_SCALE, 0);
 	
-	self.RotationAxisX = (CGFloat) kemoview_get_view_parameter(ISET_ROTATE, 1);
-	self.RotationAxisY = (CGFloat) kemoview_get_view_parameter(ISET_ROTATE, 2);
-	self.RotationAxisZ = (CGFloat) kemoview_get_view_parameter(ISET_ROTATE, 3);
-	self.RotationAngle = (CGFloat) kemoview_get_view_parameter(ISET_ROTATE, 0);
+	self.RotationAxisX = (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_ROTATE, 1);
+	self.RotationAxisY = (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_ROTATE, 2);
+	self.RotationAxisZ = (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_ROTATE, 3);
+	self.RotationAngle = (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_ROTATE, 0);
 	
-	self.ProjentionAperture = (CGFloat) kemoview_get_view_parameter(ISET_APERTURE, 0);
-	self.ProjentionAspect =   (CGFloat) kemoview_get_view_parameter(ISET_ASPECT, 0);
-	self.ProjentionNear =     (CGFloat) kemoview_get_view_parameter(ISET_NEAR, 0);
-	self.ProjentionFar =      (CGFloat) kemoview_get_view_parameter(ISET_FAR, 0);
+	self.ProjentionAperture = (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_APERTURE, 0);
+	self.ProjentionAspect =   (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_ASPECT, 0);
+	self.ProjentionNear =     (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_NEAR, 0);
+	self.ProjentionFar =      (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_FAR, 0);
 	
-	self.FocusPoint =     (CGFloat) kemoview_get_view_parameter(ISET_FOCUS, 0);
-	self.eyeRatio=        (CGFloat) kemoview_get_view_parameter(ISET_EYESEP, 0);
-    self.eyeAngle=        (CGFloat) kemoview_get_view_parameter(ISET_EYEAGL, 0);
+	self.FocusPoint =     (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_FOCUS, 0);
+	self.eyeRatio=        (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYESEP, 0);
+    self.eyeAngle=        (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYEAGL, 0);
 
     self.Quilt_flag=      (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_MODE);
     self.NumberOfRows=    (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_RAW);

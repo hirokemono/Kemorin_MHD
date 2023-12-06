@@ -60,6 +60,7 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 };
 
 void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
+    struct kemoviewer_type * kemo_sgl = kemoview_single_viwewer_struct();
 	/*! This gets called when the mouse moves */
 	
 	double factor;
@@ -108,7 +109,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		kemoview_drugging_addToRotationTrackball();
 	}
 	else if (button_function == SCALE){
-		double current_scale = kemoview_get_view_parameter(ISET_SCALE, 0);
+		double current_scale = kemoview_get_view_parameter(kemo_sgl, ISET_SCALE, 0);
         
 		if (ypos < begin[1]) {
 			factor = ONE + TWO_MILI*(begin[1]-ypos);
@@ -156,8 +157,9 @@ void charFunCB(GLFWwindow* window, unsigned int charInfo) {
 
 
 /*! This routine handles the arrow key operations */
-static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	double x_dbl, y_dbl;
+static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int mods){
+    struct kemoviewer_type * kemo_sgl = kemoview_single_viwewer_struct();
+    double x_dbl, y_dbl;
 	double factor;
 	
 /*	printf("keyFuncCB %d %d %d %d\n", key, scancode, action, mods);	*/
@@ -239,7 +241,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 	}
 	
 	else if (arrow_key_func == SCALE){
-		double current_scale = kemoview_get_view_parameter(ISET_SCALE, 0);
+		double current_scale = kemoview_get_view_parameter(kemo_sgl, ISET_SCALE, 0);
         
 		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
 		factor = ONE/(ONE + TWO_CENT);

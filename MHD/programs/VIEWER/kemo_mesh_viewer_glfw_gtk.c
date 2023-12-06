@@ -77,7 +77,7 @@ static void mainloop_4_glfw(){
         /* Collect GTK events */
         if(mbot == NULL) return;
 		if(iflag_glfw_end == 1) return;
-        set_viewmatrix_value(mbot->view_menu, gtk_win);
+        set_viewmatrix_value(single_kemoview, mbot->view_menu, gtk_win);
 
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
             while (gtk_events_pending()) gtk_main_iteration();

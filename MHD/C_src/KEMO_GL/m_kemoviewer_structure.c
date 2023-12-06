@@ -516,7 +516,8 @@ int kemoview_get_view_integer(struct kemoviewer_type *kemoviewer,
     };
     return ivalue;
 };
-double kemoview_get_view_parameter(int selected, int i){
+double kemoview_get_view_parameter(struct kemoviewer_type *kemoviewer,
+                                   int selected, int i){
 	double value = 0.0;
 	if(selected == ISET_ROTATE){
 		value =  send_gl_rotation_parameter(kemo_sgl->view_s, i);
