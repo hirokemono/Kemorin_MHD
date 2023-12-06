@@ -67,6 +67,5 @@ unsigned char * draw_objects_to_rgba_gl(GLuint npix_xy[2],
                                         struct kemoviewer_gl_type *kemo_gl);
 void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
                           struct kemoviewer_gl_type *kemo_gl,
-                          struct line_text_image *left_image,
-                          struct line_text_image *right_image);
+                          struct line_text_image *anaglyph_image);
 #endif

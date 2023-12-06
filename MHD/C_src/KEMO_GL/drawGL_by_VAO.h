@@ -41,8 +41,4 @@ void draw_2D_box_patch_VAO(struct transfer_matrices *matrices, struct VAO_ids *V
 						   struct kemoview_shaders *kemo_shaders);
 void draw_textured_2D_box_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
                               struct kemoview_shaders *kemo_shaders);
-
-void draw_anaglyph_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
-                       struct VAO_ids *left_FBO, struct VAO_ids *right_FBO,
-                       struct kemoview_shaders *kemo_shaders);
 #endif

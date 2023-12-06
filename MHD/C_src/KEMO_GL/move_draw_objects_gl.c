@@ -395,8 +395,7 @@ unsigned char * draw_objects_to_rgba_gl(GLuint npix_xy[2],
 
 void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
                           struct kemoviewer_gl_type *kemo_gl,
-                          struct line_text_image *left_image,
-                          struct line_text_image *right_image){
+                          struct line_text_image *anaglyph_image){
     clear_line_text_image(kemoview->kemo_buffers->message_image);
     set_windowsize_image(kemoview->view_s->nx_frame,
                          kemoview->view_s->ny_frame,
@@ -406,9 +405,9 @@ void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
                         kemoview->view_s->ny_frame,
                         kemoview->kemo_buffers->screen_buf);
 
-    const_texture_VBO(left_image->npix_img[0],
-                      left_image->npix_img[1],
-                      left_image->imgBMP,
+    const_texture_VBO(anaglyph_image->npix_img[0],
+                      anaglyph_image->npix_img[1],
+                      anaglyph_image->imgBMP,
                       kemo_gl->kemo_VAOs->screen_VAO,
                       kemoview->kemo_buffers->screen_buf);
 
@@ -419,8 +418,7 @@ void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
     free(orthogonal);
 
     /* draw message */
-    draw_textured_2D_box_VAO(cbar_matrices,
-                             kemo_gl->kemo_VAOs->screen_VAO,
+    draw_textured_2D_box_VAO(cbar_matrices, kemo_gl->kemo_VAOs->screen_VAO,
                              kemo_gl->kemo_shaders);
     free(cbar_matrices);
     return;
