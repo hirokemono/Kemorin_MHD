@@ -672,7 +672,7 @@ void init_kemoview_perspective(struct view_element *view){
     view->istep_quilt =  1;
 
     view->focal_length =  INITIAL_FOCAL;
-	set_gl_eye_separation_angle(view, INITIAL_EYE_SEP);
+    set_gl_eye_separation_distance(view, INITIAL_EYE_SEP);
 	return;
 }
 

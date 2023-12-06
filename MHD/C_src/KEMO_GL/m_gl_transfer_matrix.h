@@ -16,7 +16,7 @@
 #define INITIAL_NEAR        0.02
 #define INITIAL_FAR      1000
 
-#define INITIAL_FOCAL     10
+#define INITIAL_FOCAL      2
 #define INITIAL_EYE_SEP  0.1
 #define INITIAL_SEP_AGL  35
 

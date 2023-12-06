@@ -365,7 +365,9 @@ unsigned char * draw_objects_to_rgba_gl(GLuint npix_xy[2],
 /* Construct screen_FBO */
     Const_FBO(npix_xy[0], npix_xy[1], kemo_gl->kemo_VAOs->screen_FBO[0]);
 /* Set draw target to screen_FBO */
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
+//    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
+    glDrawBuffer(GL_BACK);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
                         kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
                         kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
@@ -376,11 +378,15 @@ unsigned char * draw_objects_to_rgba_gl(GLuint npix_xy[2],
         printf("malloc error for bgra\n");
         exit(0);
     };
+    glFlush();
 
-    glReadBuffer(GL_COLOR_ATTACHMENT0);
-    get_gl_buffer_to_bmp(npix_xy[0], npix_xy[1], rgb);
+//    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glReadBuffer(GL_BACK);
+    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
+    glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
+                 GL_RGB, GL_UNSIGNED_BYTE,rgb);
 /* Back draw target to screen framewbuffer */
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+//    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 /* Destroy screen_FBO */
     Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[0]);
     return rgb;
@@ -391,19 +397,18 @@ void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
                           struct kemoviewer_gl_type *kemo_gl,
                           struct line_text_image *left_image,
                           struct line_text_image *right_image){
-    const_message_buffer(kemoview->view_s->iflag_retina,
-                         kemoview->view_s->nx_frame,
+    clear_line_text_image(kemoview->kemo_buffers->message_image);
+    set_windowsize_image(kemoview->view_s->nx_frame,
                          kemoview->view_s->ny_frame,
-                         kemoview->kemo_buffers->msg_buf,
                          kemoview->kemo_buffers->message_image);
     const_screen_buffer(kemoview->view_s->iflag_view_type,
                         kemoview->view_s->nx_frame,
                         kemoview->view_s->ny_frame,
                         kemoview->kemo_buffers->screen_buf);
 
-    const_texture_VBO(kemoview->kemo_buffers->message_image->npix_img[0],
-                      kemoview->kemo_buffers->message_image->npix_img[1],
-                      kemoview->kemo_buffers->message_image->imgBMP,
+    const_texture_VBO(left_image->npix_img[0],
+                      left_image->npix_img[1],
+                      left_image->imgBMP,
                       kemo_gl->kemo_VAOs->screen_VAO,
                       kemoview->kemo_buffers->screen_buf);
 
