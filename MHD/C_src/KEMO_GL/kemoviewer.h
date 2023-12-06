@@ -390,6 +390,8 @@ extern "C" {
 
     void kemoview_mono_viewmatrix(void);
     void kemoview_step_viewmatrix(void);
+    void kemoview_left_viewmatrix(void);
+    void kemoview_right_viewmatrix(void);
 
     void kemoviewer_reset_to_init_angle(void);
     

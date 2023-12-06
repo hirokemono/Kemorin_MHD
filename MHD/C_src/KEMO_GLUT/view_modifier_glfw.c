@@ -288,10 +288,51 @@ void glfw_callbacks_init(){
 }
 
 void select_anaglyph(){
+    int i;
+    struct kemoviewer_type *    kemo_sgl = kemoview_single_viwewer_struct();
+    struct kemoviewer_gl_type * kemo_gl = kemoview_single_gl_type();
+    GLuint npix_xy[2];
+    unsigned char *image;
     if(kemoview_get_view_type_flag() == VIEW_STEREO){
-        kemoview_modify_anaglyph();
+        npix_xy[0] = kemoview_get_view_integer(ISET_PIXEL_X);
+        npix_xy[1] = kemoview_get_view_integer(ISET_PIXEL_Y);
+        struct line_text_image *left_image = alloc_line_text_image(npix_xy[0], npix_xy[1], 20);
+        struct line_text_image *right_image = alloc_line_text_image(npix_xy[0], npix_xy[1], 20);
+        for(i=0;i<left_image->npixel;i++){
+            left_image->imgBMP[4*i] =   200;
+            left_image->imgBMP[4*i+1] = 125;
+            left_image->imgBMP[4*i+2] = 64;
+            left_image->imgBMP[4*i+3] = 255;
+        }
+ /*
+        kemoview_left_viewmatrix();
+        image = draw_objects_to_rgba_gl(npix_xy, kemo_sgl, kemo_gl);
+        for(i=0;i<left_image->npixel;i++){
+            left_image->imgBMP[4*i] =   image[3*i];
+            left_image->imgBMP[4*i+1] = image[3*i+1];
+            left_image->imgBMP[4*i+2] = image[3*i+2];
+            left_image->imgBMP[4*i+3] = 255;
+        }
+        free(image);
+
+        kemoview_right_viewmatrix();
+        image = draw_objects_to_rgba_gl(npix_xy, kemo_sgl, kemo_gl);
+        for(i=0;i<right_image->npixel;i++){
+            right_image->imgBMP[4*i] =   image[3*i];
+            right_image->imgBMP[4*i+1] = image[3*i+1];
+            right_image->imgBMP[4*i+2] = image[3*i+2];
+            right_image->imgBMP[4*i+3] = 255;
+        }
+        free(image);
+*/
+        kemoview_mono_viewmatrix();
+        glDrawBuffer(GL_BACK);
+        kemoview_modify_anaglyph(left_image, left_image);
+        dealloc_line_text_image(left_image);
+        dealloc_line_text_image(right_image);
     }else{
         kemoview_mono_viewmatrix();
+        glDrawBuffer(GL_BACK);
         kemoview_modify_view();
     }
     return;
@@ -316,6 +357,7 @@ void draw_simple(){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW);
     kemoview_mono_viewmatrix();
+    glDrawBuffer(GL_BACK);
     kemoview_modify_view();
     glfwSwapBuffers(glfw_window);
     return;
@@ -325,6 +367,7 @@ void draw_quilt(void){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     kemoview_step_viewmatrix();
+    glDrawBuffer(GL_BACK);
     kemoview_modify_view();
     glfwSwapBuffers(glfw_window);
     return;

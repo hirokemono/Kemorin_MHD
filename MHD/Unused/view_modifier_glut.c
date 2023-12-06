@@ -339,6 +339,7 @@ void display_menu(){
 void display(){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+    glDrawBuffer(GL_BACK);
     kemoview_modify_view();
 	glutSwapBuffers();
 	
@@ -401,6 +402,7 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 		
 		kemoview_set_animation_rot_angle(int_degree);
         kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+        glDrawBuffer(GL_BACK);
         kemoview_modify_view();
 		glutSwapBuffers();
 		

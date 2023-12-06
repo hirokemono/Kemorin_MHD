@@ -63,15 +63,19 @@ void kemoview_modify_view(void){
     struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
 
-    glDrawBuffer(GL_BACK);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     update_draw_objects_gl3(kemo_sgl, kemo_gl);
 };
-void kemoview_modify_anaglyph(void){
+void kemoview_modify_anaglyph(struct line_text_image *left_image,
+                              struct line_text_image *right_image){
     struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
-    glDrawBuffer(GL_BACK);
-    update_draw_anaglyph_gl3(kemo_sgl, kemo_gl);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    kemo_sgl->kemo_buffers->message_image->text_opacity = 0.8;
+    kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = 6;
+    draw_anaglyph_2D_VAO(kemo_sgl, kemo_gl,
+                         left_image, right_image);
+    kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = 0;
 };
 
 

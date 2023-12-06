@@ -326,14 +326,12 @@ Implementation of a platform independent renderer class, which performs Metal se
                    leftunites:(KemoViewUnites *) leftUnites
                   rightunites:(KemoViewUnites *) rightUnites
 {
-    update_left_projection_struct(kemo_sgl->view_s);
-    modify_left_view_by_struct(kemo_sgl->view_s);
+    kemoview_left_viewmatrix();
     [_kemoRendererTools setTransferMatrices:leftUnites];
     [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
                                       unites:leftUnites];
     
-    update_right_projection_struct(kemo_sgl->view_s);
-    modify_right_view_by_struct(kemo_sgl->view_s);
+    kemoview_right_viewmatrix();
     [_kemoRendererTools setTransferMatrices:rightUnites];
     [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
                                       unites:rightUnites];

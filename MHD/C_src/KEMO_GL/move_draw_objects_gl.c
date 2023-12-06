@@ -387,96 +387,36 @@ unsigned char * draw_objects_to_rgba_gl(GLuint npix_xy[2],
 }
 
 
-void draw_anaglyph_2D_VAO(struct transfer_matrices *matrices, struct VAO_ids *VAO,
-                          struct kemoview_shaders *kemo_shaders){
-    if(VAO->npoint_draw <= 0) return;
-    
-    glEnable(GL_BLEND);
-    glDepthMask(GL_FALSE);
-    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    
-    glUseProgram(kemo_shaders->simple_texure->programId);
-    map_matrix_to_GLSL(kemo_shaders->simple_texure, matrices);
-
-    glBindVertexArray(VAO->id_VAO);
-
-    glBindTexture(GL_TEXTURE_2D, VAO->id_texure);
-    int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
-    glUniform1i(id_textureImage, 0);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
-    glDrawArrays(GL_TRIANGLES, 0, VAO->npoint_draw);
-    
-    glDisable(GL_BLEND);
-    glDepthMask(GL_TRUE);
-    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    return;
-}
-
-
-void update_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
-                              struct kemoviewer_gl_type *kemo_gl){
-    GLuint npix_xy[2];
-    int i;
-/* Draw Left image in FBO */
-    update_left_projection_struct(kemoview->view_s);
-    modify_left_view_by_struct(kemoview->view_s);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    unsigned char * left_rgb = draw_objects_to_rgba_gl(npix_xy, kemoview, kemo_gl);
-    struct line_text_image *left_image = alloc_line_text_image(npix_xy[0], npix_xy[1], 20);
-    for(i=0;i<left_image->npixel;i++){
-        left_image->imgBMP[4*i] =   left_rgb[3*i];
-        left_image->imgBMP[4*i+1] = left_rgb[3*i+1];
-        left_image->imgBMP[4*i+2] = left_rgb[3*i+2];
-        left_image->imgBMP[4*i+3] = 255;
-    }
-    free(left_rgb);
-
-/* Draw right image in FBO */
-    update_right_projection_struct(kemoview->view_s);
-    modify_right_view_by_struct(kemoview->view_s);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    unsigned char * right_rgb = draw_objects_to_rgba_gl(npix_xy, kemoview, kemo_gl);
-    struct line_text_image *right_image = alloc_line_text_image(npix_xy[0], npix_xy[1], 20);
-    for(i=0;i<right_image->npixel;i++){
-        right_image->imgBMP[4*i] =   right_rgb[3*i];
-        right_image->imgBMP[4*i+1] = right_rgb[3*i+1];
-        right_image->imgBMP[4*i+2] = right_rgb[3*i+2];
-        right_image->imgBMP[4*i+3] = 255;
-    }
-    free(right_rgb);
-
-/* draw target to screen framewbuffer */
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    modify_view_by_struct(kemoview->view_s);
-    double *orthogonal = orthogonal_projection_mat_c(0.0, npix_xy[0],
-                                                     0.0, npix_xy[1],
-                                                     -1.0, 1.0);
-    struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
-    Const_VAO_4_Texture(kemo_gl->kemo_VAOs->screen_VAO, 
+void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
+                          struct kemoviewer_gl_type *kemo_gl,
+                          struct line_text_image *left_image,
+                          struct line_text_image *right_image){
+    const_message_buffer(kemoview->view_s->iflag_retina,
+                         kemoview->view_s->nx_frame,
+                         kemoview->view_s->ny_frame,
+                         kemoview->kemo_buffers->msg_buf,
+                         kemoview->kemo_buffers->message_image);
+    const_screen_buffer(kemoview->view_s->iflag_view_type,
+                        kemoview->view_s->nx_frame,
+                        kemoview->view_s->ny_frame,
                         kemoview->kemo_buffers->screen_buf);
 
-    const_texture_VBO(npix_xy[0], npix_xy[1], left_image->imgBMP,
+    const_texture_VBO(kemoview->kemo_buffers->message_image->npix_img[0],
+                      kemoview->kemo_buffers->message_image->npix_img[1],
+                      kemoview->kemo_buffers->message_image->imgBMP,
                       kemo_gl->kemo_VAOs->screen_VAO,
                       kemoview->kemo_buffers->screen_buf);
-    draw_anaglyph_2D_VAO(cbar_matrices, kemo_gl->kemo_VAOs->screen_VAO,
-                         kemo_gl->kemo_shaders);
-/*
-    const_texture_VBO(npix_xy[0], npix_xy[1], right_image->imgBMP,
-                      kemo_gl->kemo_VAOs->screen_FBO[2], 
-                      kemoview->kemo_buffers->screen_buf);
-    draw_anaglyph_VAO(cbar_matrices, kemo_gl->kemo_VAOs->screen_VAO, 
-                      kemo_gl->kemo_VAOs->screen_FBO[1],
-                      kemo_gl->kemo_VAOs->screen_FBO[2], 
-                      kemo_gl->kemo_shaders);
- */    
-    
-    dealloc_line_text_image(left_image);
-    dealloc_line_text_image(right_image);
+
+    double *orthogonal = orthogonal_projection_mat_c(0.0, kemoview->view_s->nx_frame,
+                                                     0.0, kemoview->view_s->ny_frame,
+                                                     -1.0, 1.0);
+    struct transfer_matrices *cbar_matrices = plane_transfer_matrices(orthogonal);
+    free(orthogonal);
+
+    /* draw message */
+    draw_textured_2D_box_VAO(cbar_matrices,
+                             kemo_gl->kemo_VAOs->screen_VAO,
+                             kemo_gl->kemo_shaders);
     free(cbar_matrices);
-/* Destroy screen_FBO */
     return;
 }
-
-
-

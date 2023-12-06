@@ -79,3 +79,18 @@ void modify_step_viewmat(struct view_element *view_s)
     modify_step_view_by_struct(view_s);
     return;
 };
+
+void modify_left_viewmat(struct view_element *view_s)
+{
+    update_left_projection_struct(view_s);
+    modify_left_view_by_struct(view_s);
+    return;
+};
+
+void modify_right_viewmat(struct view_element *view_s)
+{
+    update_right_projection_struct(view_s);
+    modify_right_view_by_struct(view_s);
+    return;
+};
+

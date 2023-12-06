@@ -47,7 +47,8 @@ extern "C" {
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);
 
     void kemoview_modify_view(void);
-    void kemoview_modify_anaglyph(void);
+    void kemoview_modify_anaglyph(struct line_text_image *left_image,
+                                  struct line_text_image *right_image);
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
