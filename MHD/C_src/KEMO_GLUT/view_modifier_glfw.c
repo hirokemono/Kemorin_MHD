@@ -307,10 +307,7 @@ void select_anaglyph(){
         glDrawBuffer(GL_BACK);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         update_draw_objects_gl3(kemo_sgl, kemo_gl);
-        glfwSwapBuffers(glfw_window);
-
-        
-        glReadBuffer(GL_FRONT);
+        glReadBuffer(GL_BACK);
         glPixelStorei(GL_PACK_ALIGNMENT, IONE);
         glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
                      GL_RGB, GL_UNSIGNED_BYTE, rgb);
@@ -319,15 +316,24 @@ void select_anaglyph(){
 //        image = draw_objects_to_rgba_gl(npix_xy, kemo_sgl, kemo_gl);
 //        free(image);
         kemoview_right_viewmatrix();
+        glDrawBuffer(GL_BACK);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         update_draw_objects_gl3(kemo_sgl, kemo_gl);
-        glfwSwapBuffers(glfw_window);
-
-        glReadBuffer(GL_FRONT);
+        glReadBuffer(GL_BACK);
         glPixelStorei(GL_PACK_ALIGNMENT, IONE);
         glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
                      GL_RGB, GL_UNSIGNED_BYTE, rgb);
         pixout_BMP_c("/Users/matsui/Desktop/aright", npix_xy[0], npix_xy[1], rgb);
+
+        kemoview_mono_viewmatrix();
+        glDrawBuffer(GL_BACK);
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        update_draw_objects_gl3(kemo_sgl, kemo_gl);
+        glReadBuffer(GL_BACK);
+        glPixelStorei(GL_PACK_ALIGNMENT, IONE);
+        glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
+                     GL_RGB, GL_UNSIGNED_BYTE, rgb);
+        pixout_BMP_c("/Users/matsui/Desktop/aref", npix_xy[0], npix_xy[1], rgb);
 
         /*
         kemoview_left_viewmatrix();
