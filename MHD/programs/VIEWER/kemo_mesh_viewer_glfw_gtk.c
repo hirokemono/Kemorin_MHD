@@ -173,19 +173,21 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 
 /* Main GTK window */
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
-    GLuint npix_xy[2];
-    unsigned char *image = draw_objects_to_rgb_gl(npix_xy, single_kemoview, kemo_gl);
-    unsigned char *fliped_img = kemoview_alloc_RGB_buffer_to_bmp(npix_xy[0], npix_xy[1]);
-    flip_gl_bitmap(npix_xy[0], npix_xy[1], image, fliped_img);
-    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img, 
+    struct line_text_image *image = draw_objects_to_rgb_gl(single_kemoview, kemo_gl);
+    struct line_text_image *fliped_img = alloc_line_text_image(image->npix_img[0],
+                                                               image->npix_img[1], 20);
+    flip_gl_bitmap(image->npix_img[0], image->npix_img[1],
+                   image->imgBMP, fliped_img->imgBMP);
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->imgBMP,
                                                  GDK_COLORSPACE_RGB, FALSE, 8,
-                                                 npix_xy[0], npix_xy[1], (3*npix_xy[0]), 
+                                                 image->npix_img[0], image->npix_img[1],
+                                                 (3*image->npix_img[0]),
                                                  NULL, NULL);
 
     GtkClipboard *clipboard = (GtkClipboard *) user_data;
     gtk_clipboard_set_image(clipboard, pixbuf);
-    free(image);
-    free(fliped_img);
+    dealloc_line_text_image(image);
+    dealloc_line_text_image(fliped_img);
 }
 static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
     struct main_buttons *mbot = (struct main_buttons *)user_data;

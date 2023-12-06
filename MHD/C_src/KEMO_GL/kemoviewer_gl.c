@@ -62,30 +62,17 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 void kemoview_modify_view(void){
     struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
-
-    glDrawBuffer(GL_BACK);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     update_draw_objects_gl3(kemo_sgl, kemo_gl);
 };
+
 void kemoview_modify_anaglyph(void){
-    GLuint npix_xy[2];
     struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
 
-    kemoview_left_viewmatrix();
-    unsigned char *left_rgb = draw_objects_to_rgb_gl(npix_xy, kemo_sgl, kemo_gl);
-    struct line_text_image *anaglyph_image = alloc_line_text_image(npix_xy[0], npix_xy[1], 20);
-
-    kemoview_right_viewmatrix();
-    unsigned char *right_rgb = draw_objects_to_rgb_gl(npix_xy, kemo_sgl, kemo_gl);
-    half_anaglyph_rgba_by_rgbs(npix_xy[0], npix_xy[1], left_rgb, right_rgb,
-                               anaglyph_image->imgBMP);
-    free(left_rgb);
-    free(right_rgb);
+    struct line_text_image *anaglyph_image = draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_gl);
 
     glDrawBuffer(GL_BACK);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    draw_anaglyph_2D_VAO(kemo_sgl, kemo_gl, anaglyph_image);
+    move_draw_anaglyph_gl3(kemo_sgl, kemo_gl, anaglyph_image);
     dealloc_line_text_image(anaglyph_image);
 };
 

@@ -351,20 +351,53 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
                              struct kemoviewer_gl_type *kemo_gl){
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
                         kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
                         kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
 	return;
 }
 
+struct line_text_image * draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
+                                                struct kemoviewer_gl_type *kemo_gl){
+    GLuint npix_xy[2];
+    npix_xy[0] = (GLuint) kemoview->view_s->nx_frame;
+    npix_xy[1] = (GLuint) kemoview->view_s->ny_frame;
+    struct line_text_image * image = alloc_line_text_image(npix_xy[0], npix_xy[1], 20);
 
-void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
-                          struct kemoviewer_gl_type *kemo_gl,
-                          struct line_text_image *anaglyph_image){
-    clear_line_text_image(kemoview->kemo_buffers->message_image);
-    set_windowsize_image(kemoview->view_s->nx_frame,
-                         kemoview->view_s->ny_frame,
-                         kemoview->kemo_buffers->message_image);
+    glDrawBuffer(GL_BACK);
+    update_draw_objects_gl3(kemoview, kemo_gl);
+    glReadBuffer(GL_BACK);
+    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
+    glReadPixels(IZERO, IZERO, image->npix_img[0], image->npix_img[1],
+                 GL_RGB, GL_UNSIGNED_BYTE, image->imgBMP);
+    return image;
+};
+
+struct line_text_image * draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
+                                                 struct kemoviewer_gl_type *kemo_gl){
+    struct line_text_image *anaglyph_image;
+    
+    modify_left_viewmat(kemoview->view_s);
+    struct line_text_image *left_img = draw_objects_to_rgb_gl(kemoview, kemo_gl);
+    
+    modify_right_viewmat(kemoview->view_s);
+    struct line_text_image *right_img = draw_objects_to_rgb_gl(kemoview, kemo_gl);
+
+    anaglyph_image = alloc_line_text_image(left_img->npix_img[0],
+                                           left_img->npix_img[1], 20);
+    half_anaglyph_rgba_by_rgbs(left_img->npix_img[0], left_img->npix_img[1],
+                               left_img->imgBMP, right_img->imgBMP,
+                               anaglyph_image->imgBMP);
+    dealloc_line_text_image(left_img);
+    dealloc_line_text_image(right_img);
+    return anaglyph_image;
+};
+
+
+void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
+                            struct kemoviewer_gl_type *kemo_gl,
+                            struct line_text_image *anaglyph_image){
     const_screen_buffer(kemoview->view_s->iflag_view_type,
                         kemoview->view_s->nx_frame,
                         kemoview->view_s->ny_frame,
@@ -383,33 +416,13 @@ void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
     free(orthogonal);
 
     /* draw message */
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     draw_textured_2D_box_VAO(cbar_matrices, kemo_gl->kemo_VAOs->screen_VAO,
                              kemo_gl->kemo_shaders);
     free(cbar_matrices);
     return;
 }
 
-unsigned char * draw_objects_to_rgb_gl(GLuint npix_xy[2],
-                                       struct kemoviewer_type *kemoview,
-                                       struct kemoviewer_gl_type *kemo_gl){
-    npix_xy[0] = (GLuint) kemoview->view_s->nx_frame;
-    npix_xy[1] = (GLuint) kemoview->view_s->ny_frame;
-    GLuint num_pixel = npix_xy[0] * npix_xy[1];
-    unsigned char *rgb = (unsigned char *) malloc(3*num_pixel * sizeof(unsigned char));
-    if(rgb == NULL){
-        printf("malloc error for bgra\n");
-        exit(0);
-    };
-    
-    glDrawBuffer(GL_BACK);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    update_draw_objects_gl3(kemoview, kemo_gl);
-    glReadBuffer(GL_BACK);
-    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
-    glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
-                 GL_RGB, GL_UNSIGNED_BYTE, rgb);
-    return rgb;
-};
 unsigned char * draw_objects_to_rgb_by_FBO(GLuint npix_xy[2],
                                            struct kemoviewer_type *kemoview,
                                            struct kemoviewer_gl_type *kemo_gl){
