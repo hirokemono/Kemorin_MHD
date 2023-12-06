@@ -73,6 +73,38 @@ void set_gl_quilt_bitmap(int n_quilt_column, int n_quilt_raw, int istep_quilt,
 };
 
 
+void half_anaglyph_rgba_by_rgbs(const int num_x, const int num_y,
+                                const unsigned char *left_rgb,
+                                const unsigned char *right_rgb,
+                                unsigned char *anaglyph_rgb){
+    int i;
+    for(i=0;i<(num_x*num_y);i++){
+        anaglyph_rgb[4*i  ] =  0.299 * left_rgb[3*i]
+                             + 0.587 * left_rgb[3*i+1]
+                             + 0.114 * left_rgb[3*i+2];
+        anaglyph_rgb[4*i+1] = right_rgb[3*i+1];
+        anaglyph_rgb[4*i+2] = right_rgb[3*i+2];
+        anaglyph_rgb[4*i+3] = 255;
+    }
+    return;
+}
+
+void full_anaglyph_rgba_by_rgbs(const int num_x, const int num_y,
+                                const unsigned char *left_rgb,
+                                const unsigned char *right_rgb,
+                                unsigned char *anaglyph_rgb){
+    int i;
+    for(i=0;i<(num_x*num_y);i++){
+        anaglyph_rgb[4*i  ] = left_rgb[3*i  ];
+        anaglyph_rgb[4*i+1] = right_rgb[3*i+1];
+        anaglyph_rgb[4*i+2] = right_rgb[3*i+2];
+        anaglyph_rgb[4*i+3] = 255;
+    }
+    return;
+}
+
+
+
 
 static void vertical_flip_rgba_c(int ihpixf, int jvpixf, const unsigned char *fliped_img,
                                  unsigned char *image){

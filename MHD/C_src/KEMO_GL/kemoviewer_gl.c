@@ -70,10 +70,7 @@ void kemoview_modify_anaglyph(struct line_text_image *anaglyph_image){
     struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    kemo_sgl->kemo_buffers->message_image->text_opacity = 0.8;
-    kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = 6;
     draw_anaglyph_2D_VAO(kemo_sgl, kemo_gl, anaglyph_image);
-    kemo_sgl->kemo_buffers->screen_buf->num_nod_buf = 0;
 };
 
 

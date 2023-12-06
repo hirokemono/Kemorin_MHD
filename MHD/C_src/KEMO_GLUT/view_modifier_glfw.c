@@ -295,22 +295,15 @@ void select_anaglyph(){
     unsigned char *image;
     if(kemoview_get_view_type_flag() == VIEW_STEREO){
         kemoview_left_viewmatrix();
-        unsigned char *rgb = draw_objects_to_rgb_gl(npix_xy, kemo_sgl, kemo_gl);
+        unsigned char *left_rgb = draw_objects_to_rgb_gl(npix_xy, kemo_sgl, kemo_gl);
         struct line_text_image *anaglyph_image = alloc_line_text_image(npix_xy[0], npix_xy[1], 20);
-        for(i=0;i<anaglyph_image->npixel;i++){
-            anaglyph_image->imgBMP[4*i] =   0.299 * rgb[3*i]
-                                          + 0.587 * rgb[3*i+1]
-                                          + 0.114 * rgb[3*i+2];
-        }
-        free(rgb);
-        
+
         kemoview_right_viewmatrix();
-        unsigned char *rgb = draw_objects_to_rgb_gl(npix_xy, kemo_sgl, kemo_gl);
-        for(i=0;i<anaglyph_image->npixel;i++){
-            anaglyph_image->imgBMP[4*i+1] = rgb[3*i+1];
-            anaglyph_image->imgBMP[4*i+2] = rgb[3*i+2];
-            anaglyph_image->imgBMP[4*i+3] = 255;
-        }
+        unsigned char *right_rgb = draw_objects_to_rgb_gl(npix_xy, kemo_sgl, kemo_gl);
+        half_anaglyph_rgba_by_rgbs(npix_xy[0], npix_xy[1], left_rgb, right_rgb,
+                                   anaglyph_image->imgBMP);
+        free(left_rgb);
+        free(right_rgb);
 
         kemoview_mono_viewmatrix();
         glDrawBuffer(GL_BACK);
