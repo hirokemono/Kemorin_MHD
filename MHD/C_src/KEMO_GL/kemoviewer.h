@@ -389,7 +389,7 @@ extern "C" {
     void kemoview_transparent_buffers(struct kemoviewer_type *kemo_sgl);
 
     void kemoview_quick_viewmatrix(void);
-    void kemoview_fast_viewmatrix(void);
+    void kemoview_step_viewmatrix(void);
 
     void kemoviewer_reset_to_init_angle(void);
     

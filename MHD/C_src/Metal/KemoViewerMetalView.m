@@ -165,8 +165,8 @@
 {
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_fast_viewmatrix();
-//    kemoview_fast_modify_view();
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+    kemoview_step_viewmatrix();
 
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     [self setNeedsDisplay: YES];
@@ -177,7 +177,8 @@
 {
     kemoview_viewer_evolution((int) timeStep);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_fast_viewmatrix();
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+    kemoview_step_viewmatrix();
     [self setNeedsDisplay: YES];
     return self;
 }

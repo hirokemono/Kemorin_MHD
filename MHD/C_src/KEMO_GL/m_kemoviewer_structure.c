@@ -420,7 +420,7 @@ void kemoview_transparent_buffers(struct kemoviewer_type *kemo_sgl){
 
 
 void kemoview_quick_viewmatrix(void){quick_mono_viewmat(kemo_sgl->view_s);};
-void kemoview_fast_viewmatrix(void){modify_fast_viewmat(kemo_sgl->view_s);};
+void kemoview_step_viewmatrix(void){modify_step_viewmat(kemo_sgl->view_s);};
 
 void kemoviewer_reset_to_init_angle(void){
     reset_all_view_parameter(kemo_sgl->view_s);

@@ -75,9 +75,8 @@ void quick_mono_viewmat(struct view_element *view_s)
     return;
 };
 
-void modify_fast_viewmat(struct view_element *view_s)
+void modify_step_viewmat(struct view_element *view_s)
 {
-    view_s->iflag_draw_mode = FAST_DRAW;
     update_step_projection_struct(view_s);
     modify_step_view_by_struct(view_s);
     return;

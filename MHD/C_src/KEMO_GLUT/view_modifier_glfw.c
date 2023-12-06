@@ -304,7 +304,8 @@ void draw_fast(){
 
 void draw_quilt(void){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_fast_viewmatrix();
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+    kemoview_step_viewmatrix();
     kemoview_mono_view();
     glfwSwapBuffers(glfw_window);
     return;

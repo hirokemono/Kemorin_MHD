@@ -430,7 +430,8 @@ NSData *SnapshotData;
 {
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
-    kemoview_fast_viewmatrix();
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+    kemoview_step_viewmatrix();
     return self;
 }
 
