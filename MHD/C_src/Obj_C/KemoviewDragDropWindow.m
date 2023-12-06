@@ -11,8 +11,6 @@
 
 @implementation KemoviewDragDropWindow
 
-@synthesize kemoview_s;
-
 - (id)init
 {
 	self = [super init];
@@ -37,7 +35,10 @@
 
        // TODO: do something with str.
         [self setAlphaValue:1.0];
-        [_kemoviewIOControl OpenKemoviewerFile:filename];
+        
+        struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+        [_kemoviewIOControl OpenKemoviewerFile:filename
+                                      kemoview:kemo_sgl];
     }
     return YES;
 }

@@ -414,7 +414,8 @@ extern "C" {
                                   int selected);
 	double kemoview_get_view_parameter(struct kemoviewer_type *kemoviewer,
                                        int selected, int i);
-    int kemoview_get_quilt_nums(int selected);
+    int kemoview_get_quilt_nums(struct kemoviewer_type *kemoviewer,
+                                int selected);
 
     void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly);
     void kemoview_mousepan(double start[2], double x_pan, double y_pan);

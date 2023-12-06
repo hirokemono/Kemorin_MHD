@@ -413,6 +413,7 @@
                 <outlet property="_ImageFormat_item" destination="1530" id="3583"/>
                 <outlet property="_domainTableController" destination="703" id="3578"/>
                 <outlet property="_flineController" destination="1932" id="3579"/>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="UQo-9i-5Nl"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="oW7-4t-FPV"/>
                 <outlet property="_movieMakerController" destination="2637" id="3608"/>
                 <outlet property="_psfController" destination="1157" id="3581"/>
@@ -495,6 +496,7 @@
             <connections>
                 <outlet property="_colormode_matrix" destination="644" id="967"/>
                 <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3529"/>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="Jre-3r-0r6"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="nqb-nZ-vPu"/>
                 <outlet property="_polygontype_matrix" destination="677" id="968"/>
                 <outlet property="_resetview" destination="2679" id="3543"/>
@@ -1530,6 +1532,7 @@
                 <outlet property="_FlineFieldMenu" destination="1955" id="2197"/>
                 <outlet property="_flinetype_matrix" destination="3125" id="3157"/>
                 <outlet property="_kemoviewControl" destination="964" id="3542"/>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="Fb6-iQ-ybe"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="WpY-a9-ua0"/>
                 <outlet property="window" destination="mUS-wv-uCM" id="XXk-bq-Vfp"/>
             </connections>
@@ -4377,6 +4380,7 @@
         </customObject>
         <customObject id="2637" customClass="KemoviewerMovieMaker">
             <connections>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="8fk-RI-qiY"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="718-d3-Vwe"/>
                 <outlet property="_metalViewController" destination="QEu-s0-e0C" id="RKm-dQ-eOX"/>
                 <outlet property="_movie_defaults_controller" destination="716" id="2654"/>
@@ -4398,6 +4402,7 @@
                 <outlet property="_PsfZeroLineSwitchOutlet" destination="1070" id="1164"/>
                 <outlet property="_currentPsfMenu" destination="2848" id="2866"/>
                 <outlet property="_kemoviewControl" destination="964" id="3541"/>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="GCg-pt-Wf7"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="qvG-XQ-OXD"/>
                 <outlet property="_psfComponentMenu" destination="1076" id="1158"/>
                 <outlet property="_psfFieldMenu" destination="1074" id="2194"/>
@@ -4506,6 +4511,7 @@
             </view>
             <connections>
                 <outlet property="_kemoviewIOControl" destination="1215" id="ptc-jr-seW"/>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="kjs-Pw-erK"/>
             </connections>
             <point key="canvasLocation" x="1393" y="-539"/>
         </window>
@@ -4514,7 +4520,6 @@
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="eec-Y5-vZn"/>
             </connections>
         </viewController>
-        <customObject id="E0L-MH-Dmw"/>
         <window title="View parameters" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="xDT-1I-u7n" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>

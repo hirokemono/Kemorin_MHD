@@ -62,7 +62,8 @@
 	return self;
 }
 
-- (void)SetViewTypeMenu:(NSInteger) selected;
+- (void)SetViewTypeMenu:(NSInteger) selected
+               kemoview:(struct kemoviewer_type *) kemo_sgl
 {
 	[_viewtypeItem selectItemAtIndex:selected];
 	
@@ -74,7 +75,8 @@
 	[_viewZXItem setState:NSControlStateValueOff];
 	
     self.axisDrawAccess = 1;
-    self.QuiltFlag = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_MODE);
+    self.QuiltFlag = (NSInteger) kemoview_get_quilt_nums(kemo_sgl,
+                                                         ISET_QUILT_MODE);
 	psfTexTureEnable = 1;
     
     self.StereoFlag = 0;
@@ -95,8 +97,10 @@
 }
 
 - (void)UpdateViewtype:(NSInteger) selected
+              kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-	[self SetViewTypeMenu:selected];
+	[self SetViewTypeMenu:selected
+                 kemoview:kemo_sgl];
 
     kemoview_set_viewtype((int) selected);
 	[_metalView setViewerType:selected];
@@ -164,16 +168,21 @@
 - (IBAction) ToggleQuiltSwitch:(id)sender
 {
     self.QuiltFlag = [_resetview ToggleQuiltMode];
-    [self SetViewTypeMenu:VIEW_3D];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetViewTypeMenu:VIEW_3D
+                 kemoview:kemo_sgl];
 }
 
 - (IBAction) SetViewtypeAction:(id)pSender{
-	[self UpdateViewtype:[_viewtypeItem selectedTag]];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	[self UpdateViewtype:[_viewtypeItem selectedTag]
+                kemoview:kemo_sgl];
 }
 
-- (void) Set3DView
+- (void) Set3DView:(struct kemoviewer_type *) kemo_sgl
 {
-    [self SetViewTypeMenu:VIEW_3D];
+    [self SetViewTypeMenu:VIEW_3D
+                 kemoview:kemo_sgl];
     [_metalView setViewerType:VIEW_3D];
     kemoview_set_viewtype(VIEW_3D);
 }
@@ -185,7 +194,8 @@
 
 - (IBAction) ResetviewAction:(id)sender;
 {
-	[self Set3DView];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self Set3DView:kemo_sgl];
 	[_metalView Resetview];
 }
 

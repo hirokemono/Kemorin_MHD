@@ -520,44 +520,45 @@ double kemoview_get_view_parameter(struct kemoviewer_type *kemoviewer,
                                    int selected, int i){
 	double value = 0.0;
 	if(selected == ISET_ROTATE){
-		value =  send_gl_rotation_parameter(kemo_sgl->view_s, i);
+		value =  send_gl_rotation_parameter(kemoviewer->view_s, i);
 	}else if(selected == ISET_SHIFT){
-		value =  send_gl_shift_vector(kemo_sgl->view_s, i);
+		value =  send_gl_shift_vector(kemoviewer->view_s, i);
 	}else if(selected == ISET_VWPOINT){
-		value =  send_gl_lookat_vector(kemo_sgl->view_s, i);
+		value =  send_gl_lookat_vector(kemoviewer->view_s, i);
 	}else if(selected == ISET_SCALE){
-		value =  send_scalar_scale_factor(kemo_sgl->view_s);
+		value =  send_scalar_scale_factor(kemoviewer->view_s);
 
 	}else if(selected == ISET_APERTURE){
-		value =  send_gl_projection_aperture(kemo_sgl->view_s);
+		value =  send_gl_projection_aperture(kemoviewer->view_s);
 	}else if(selected == ISET_NEAR){
-		value =  send_gl_projection_near(kemo_sgl->view_s);
+		value =  send_gl_projection_near(kemoviewer->view_s);
 	}else if(selected == ISET_FAR){
-		value =  send_gl_projection_far(kemo_sgl->view_s);
+		value =  send_gl_projection_far(kemoviewer->view_s);
 	}else if(selected == ISET_ASPECT){
-		value =  send_gl_projection_aspect(kemo_sgl->view_s);
+		value =  send_gl_projection_aspect(kemoviewer->view_s);
 		
 	}else if(selected == ISET_FOCUS){
-		value =  send_gl_stereo_focus(kemo_sgl->view_s);
+		value =  send_gl_stereo_focus(kemoviewer->view_s);
 	}else if(selected == ISET_EYESEP){
-		value =  send_gl_stereo_eyeseparation(kemo_sgl->view_s);
+		value =  send_gl_stereo_eyeseparation(kemoviewer->view_s);
     }else if(selected == ISET_EYEAGL){
-        value =  send_gl_stereo_eparation_angle(kemo_sgl->view_s);
+        value =  send_gl_stereo_eparation_angle(kemoviewer->view_s);
 	};
 	return value;
 };
-int kemoview_get_quilt_nums(int selected){
+int kemoview_get_quilt_nums(struct kemoviewer_type *kemoviewer,
+                            int selected){
     int num = 1;
     if(selected == ISET_QUILT_MODE){
-        num =  send_quilt_mode_flag(kemo_sgl->view_s);
+        num =  send_quilt_mode_flag(kemoviewer->view_s);
     }else if(selected == ISET_QUILT_RAW){
-        num =  send_quilt_image_num_raws(kemo_sgl->view_s);
+        num =  send_quilt_image_num_raws(kemoviewer->view_s);
     }else if(selected == ISET_QUILT_COLUMN){
-        num =  send_quilt_image_num_columns(kemo_sgl->view_s);
+        num =  send_quilt_image_num_columns(kemoviewer->view_s);
     }else if(selected == ISET_QUILT_NUM){
-        num =  send_quilt_image_num_views(kemo_sgl->view_s);
+        num =  send_quilt_image_num_views(kemoviewer->view_s);
     }else if(selected == ISET_QUILT_COUNT){
-        num =  send_quilt_image_count(kemo_sgl->view_s);
+        num =  send_quilt_image_count(kemoviewer->view_s);
     };
     return num;
 }

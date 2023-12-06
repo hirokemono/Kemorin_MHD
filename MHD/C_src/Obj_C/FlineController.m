@@ -135,7 +135,9 @@
 	return self;
 }
 
-- (void) OpenFieldlineFile:(NSString*) fieldlineFilehead{
+- (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
+                  kemoview:(struct kemoviewer_type *) kemo_sgl
+{
 	int id_viewtype;
 	
 	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
@@ -147,14 +149,14 @@
 	//		self.EvolutionEndStep =    self.EvolutionStartStep;
 	
 	id_viewtype = kemoview_get_view_type_flag();
-	[_kemoviewControl SetViewTypeMenu:id_viewtype];
-	
-	
-	[_kemoviewControl Set3DView];
+	[_kemoviewControl SetViewTypeMenu:id_viewtype
+                             kemoview:kemo_sgl];
+    [_kemoviewControl Set3DView:kemo_sgl];
 	[_metalView UpdateImage];
 };
 
 - (void) ReadFlineFile:(NSString *) FlineFileName
+              kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     FlineOpenFileext =   [FlineFileName pathExtension];
     FlineOpenFilehead =  [FlineFileName stringByDeletingPathExtension];
@@ -171,7 +173,8 @@
     int iflag_datatype =  kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
     
-    if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead];
+    if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead
+                                                     kemoview:kemo_sgl];
 }
 
 - (IBAction) UpdateFieldline:(id)pId{
@@ -190,7 +193,9 @@
 		FlineOpenDirectory = [[flineOpenPanelObj directoryURL] path];
 		NSString *FlineOpenFilename =  [[flineOpenPanelObj URL] path];
 		// NSLog(@"PSF file directory = %@",FlineOpenDirectory);
-        [self ReadFlineFile:FlineOpenFilename];
+        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+        [self ReadFlineFile:FlineOpenFilename
+                   kemoview:kemo_sgl];
 	};
                                    }];
 }

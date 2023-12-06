@@ -10,12 +10,16 @@
 
 #import "KemoViewerMetalView.h"
 #import "KemoviewerController.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 @interface FlineController : NSObject {
 
     IBOutlet NSWindow*  window;
     IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet KemoViewerObject *_kmv;
 
 	NSInteger DrawFlineFlag;
 	NSString *FlineOpenDirectory;
@@ -82,7 +86,8 @@
 
 - (id) CopyFlineDisplayFlagsFromC;
 
-- (void) OpenFieldlineFile:(NSString*) fieldlineFilehead;
+- (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
+                  kemoview:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction) UpdateFieldline:(id)pId;
 - (IBAction) DrawFlineFile:(id)pId;
 

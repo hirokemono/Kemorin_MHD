@@ -12,13 +12,18 @@
 
 #import "KemoViewerMetalView.h"
 #import "KemoViewerMetalViewController.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 
 @interface KemoviewerMovieMaker : NSObject {
     IBOutlet NSWindow*  window;
     IBOutlet KemoViewerMetalView * _metalView;
     IBOutlet KemoViewerMetalViewController * _metalViewController;
-	IBOutlet NSUserDefaultsController* _movie_defaults_controller;
+    IBOutlet KemoViewerObject *_kmv;
+
+    IBOutlet NSUserDefaultsController* _movie_defaults_controller;
 
 	NSInteger MovieFormatFlag;
 	NSInteger CurrentMovieFormat;
@@ -66,8 +71,14 @@
 -(void) SaveKemoviewBMPFile:(NSString*)ImageFilehead;
 -(void) SaveKemoviewPDFFile:(NSString*)ImageFilehead;
 
--(void) SaveKemoviewQuiltPNGFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
--(void) SaveKemoviewQuiltBMPFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
+-(void) SaveKemoviewQuiltPNGFile:(NSString*)ImageFilehead
+                          degree:(NSInteger) int_degree
+                            axis:(NSInteger)rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl;
+-(void) SaveKemoviewQuiltBMPFile:(NSString*)ImageFilehead
+                          degree:(NSInteger)int_degree
+                            axis:(NSInteger)rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl;
 -(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
 
 - (IBAction)SendToClipAsTIFF:(id)sender;

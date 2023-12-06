@@ -187,7 +187,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
     
 	if(iflag_set == IZERO) return;
 	
-    int iflag_quilt = kemoview_get_quilt_nums(ISET_QUILT_MODE);
+    int iflag_quilt = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
     int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
     int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
     unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
@@ -214,8 +214,8 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
         kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
                                       npix_x, npix_y, image);
     } else {
-        int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
-        int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
+        int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
+        int nimg_raw =    kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
         unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
                                                                       (nimg_raw * npix_y));
         for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){

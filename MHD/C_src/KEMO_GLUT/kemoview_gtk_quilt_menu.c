@@ -20,10 +20,11 @@ struct quilt_gtk_menu * init_quilt_menu_box(void){
 	return quilt_gmenu;
 };
 
-void set_quilt_switch_sensitivity(int iflag_quilt,
-                                  struct quilt_gtk_menu *quilt_gmenu,
-                                  struct view_widgets *view_menu){
-    if(kemoview_get_quilt_nums(ISET_QUILT_MODE) > 0){
+static void set_quilt_switch_sensitivity(int iflag_quilt,
+                                         struct kemoviewer_type *kemo_sgl,
+                                         struct quilt_gtk_menu *quilt_gmenu,
+                                         struct view_widgets *view_menu){
+    if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) > 0){
         gtk_widget_set_sensitive(quilt_gmenu->quiltView_Button, TRUE);
         gtk_widget_set_sensitive(quilt_gmenu->column_hbox, TRUE);
         gtk_widget_set_sensitive(quilt_gmenu->raw_hbox, TRUE);
@@ -49,7 +50,7 @@ static void quilt_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer dat
     
     
 	kemoview_toggle_quilt_flag(ISET_QUILT_MODE);
-	int iflag_quilt = kemoview_get_quilt_nums(ISET_QUILT_MODE);
+	int iflag_quilt = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
     if(iflag_quilt > 0){
         quilt_gmenu->num_column = 9;
         quilt_gmenu->num_raw = 5;
@@ -70,7 +71,7 @@ static void quilt_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer dat
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_eye_sep), eyeRatio);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_sep_angle), eyeAngle);
     }
-    set_quilt_switch_sensitivity(iflag_quilt, quilt_gmenu, view_menu);
+    set_quilt_switch_sensitivity(iflag_quilt, kemo_sgl, quilt_gmenu, view_menu);
 	return;
 }
 
@@ -79,11 +80,14 @@ static void quilt_preview_CB(GtkButton *button, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct quilt_gtk_menu *quilt_gmenu 
 			= (struct quilt_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "quilt");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
     int i;
-    i = kemoview_get_quilt_nums(ISET_QUILT_MODE);
-	if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 0) return;
+    i = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
+	if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 0) return;
 	
-    int num_step = kemoview_get_quilt_nums(ISET_QUILT_NUM);
+    int num_step = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
 	for (i=0;i<num_step; i++){
         kemoview_set_quilt_nums(ISET_QUILT_COUNT, i);
 		kemoview_set_view_integer(ISET_ROTATE_AXIS, IONE);
@@ -170,8 +174,8 @@ GtkWidget * init_quilt_menu_expander(struct kemoviewer_type *kemo_sgl,
 	gtk_box_pack_start(GTK_BOX(quilt_gmenu->quilt_box), quilt_gmenu->column_hbox, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(quilt_gmenu->quilt_box), quilt_gmenu->raw_hbox, FALSE, TRUE, 0);
 	
-    set_quilt_switch_sensitivity(kemoview_get_quilt_nums(ISET_QUILT_MODE),
-                                 quilt_gmenu, view_menu);
+    set_quilt_switch_sensitivity(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE),
+                                 kemo_sgl, quilt_gmenu, view_menu);
 
     expander_quilt = wrap_into_scroll_expansion_gtk("Quilt", 200, 120, window,
                                                     quilt_gmenu->quilt_box);

@@ -155,9 +155,11 @@ NSData *SnapshotData;
                             width:[_metalView getHorizontalViewSize]
                            height:[_metalView getVerticalViewSize]];
 }
--(int) OpenQuiltQTMovieFile:(NSString *)movieFileName{
-    int XNumImage = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
-    int YNumImage = kemoview_get_quilt_nums(ISET_QUILT_RAW);
+-(int) OpenQuiltQTMovieFile:(NSString *)movieFileName
+                   kemoview:(struct kemoviewer_type *) kemo_sgl
+{
+    int XNumImage = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
+    int YNumImage = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
     NSUInteger XViewsize = XNumImage * [_metalView getHorizontalViewSize];
 	NSUInteger YViewsize = YNumImage * [_metalView getVerticalViewSize];
 	
@@ -188,15 +190,20 @@ NSData *SnapshotData;
 }
 
 // ---------------------------------
-- (NSBitmapImageRep *) SetMetalQuiltBitmapToImageRep:(NSInteger) int_degree : (NSInteger)rotationaxis
+- (NSBitmapImageRep *) SetMetalQuiltBitmapToImageRep:(NSInteger) int_degree
+                                                axis:(NSInteger)rotationaxis
+                                            kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     static unsigned char *glimage;
-    NSInteger num_step = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_NUM);
+    NSInteger num_step
+        = (NSInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
 
     NSUInteger XViewsize = [_metalView getHorizontalViewSize];
     NSUInteger YViewsize = [_metalView getVerticalViewSize];
-    NSUInteger XNumImage = (NSUInteger) kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
-    NSUInteger YNumImage = (NSUInteger) kemoview_get_quilt_nums(ISET_QUILT_RAW);
+    NSUInteger XNumImage
+        = (NSUInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
+    NSUInteger YNumImage
+        = (NSUInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
 
     glimage =    (unsigned char*)calloc(3*XViewsize*YViewsize, sizeof(unsigned char));
 
@@ -252,10 +259,13 @@ NSData *SnapshotData;
 }
 
 
-- (NSImage *) InitMetalQuiltBitmapToImage:(NSInteger) int_degree : (NSInteger)rotationaxis
+- (NSImage *) InitMetalQuiltBitmapToImage:(NSInteger) int_degree
+                                     axis:(NSInteger) rotationaxis
+                                 kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSImage *SnapshotImage = [[NSImage alloc] init];
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree:rotationaxis];
+    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree
+                                                                         axis:rotationaxis];
 
     [SnapshotImage addRepresentation:SnapshotBitmapRep];
     [SnapshotBitmapRep release];
@@ -277,10 +287,15 @@ NSData *SnapshotData;
     if (buffer) {CVBufferRelease(buffer);};
 }
 
--(void) AddKemoviewQuiltToMovie:(CMTime)frameTime : (NSInteger) int_degree : (NSInteger)rotationaxis
+-(void) AddKemoviewQuiltToMovie:(CMTime)frameTime
+                         degree:(NSInteger) int_degree
+                           axis:(NSInteger) rotationaxis
+                       kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     // Adds an image for the specified duration to the QTMovie
-    NSImage *SnapshotImage = [self InitMetalQuiltBitmapToImage:int_degree:rotationaxis];
+    NSImage *SnapshotImage = [self InitMetalQuiltBitmapToImage:int_degree
+                                                          axis:rotationaxis
+                                                      kemoview:kemo_sgl];
     
     CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
     CVPixelBufferRef buffer = [self pixelBufferFromCGImage:CGImage];
@@ -294,14 +309,20 @@ NSData *SnapshotData;
     [SnapshotImage release];
 }
 
--(void) SaveKemoviewQuiltPNGFile:(NSString*)ImageFilehead : (NSInteger) int_degree : (NSInteger)rotationaxis{
+-(void) SaveKemoviewQuiltPNGFile:(NSString*)ImageFilehead
+                          degree:(NSInteger) int_degree
+                            axis:(NSInteger)rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
+{
     BOOL interlaced = NO;
     NSDictionary *properties;
     properties = [NSDictionary
                   dictionaryWithObject:[NSNumber numberWithBool:interlaced]
                   forKey:NSImageInterlaced];
 
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree:rotationaxis];
+    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree
+                                                                         axis:rotationaxis
+                                                                     kemoview:kemo_sgl];
     
     SnapshotData = [SnapshotBitmapRep representationUsingType:NSBitmapImageFileTypePNG
                                                    properties:properties];
@@ -311,13 +332,16 @@ NSData *SnapshotData;
     [SnapshotBitmapRep release];
 };
 
--(void) SaveKemoviewQuiltBMPFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis{
+-(void) SaveKemoviewQuiltBMPFile:(NSString*)ImageFilehead
+                          degree:(NSInteger)int_degree
+                            axis:(NSInteger)rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
+{
     BOOL interlaced = NO;
     NSDictionary *properties;
-
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree:rotationaxis];
-
-
+    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree
+                                                                         axis:rotationaxis
+                                                                     kemoview:kemo_sgl];
     NSImage *SnapshotImage = [[NSImage alloc] init];
     [SnapshotImage addRepresentation:SnapshotBitmapRep];
     
@@ -333,13 +357,18 @@ NSData *SnapshotData;
     [SnapshotBitmapRep release];
 };
 
--(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead : (NSInteger) int_degree : (NSInteger)rotationaxis{
+-(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead
+                          degree:(NSInteger) int_degree
+                            axis:(NSInteger) rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
+{
     NSImageView *myView;
     NSRect vFrame;
     NSData *pdfData;
     
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree:rotationaxis];
-
+    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree
+                                                                         axis:rotationaxis
+                                                                     kemoview:kemo_sgl];
     NSImage *SnapshotImage = [[NSImage alloc] init];
     [SnapshotImage addRepresentation:SnapshotBitmapRep];
     
@@ -435,14 +464,15 @@ NSData *SnapshotData;
     return self;
 }
 
--(void) SaveQTmovieRotation
+-(void) SaveQTmovieRotation:(struct kemoviewer_type *) kemo_sgl;
 {
     NSInteger ied_deg = 360/self.RotationIncrement;
     NSInteger int_degree, icount;
     
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
-        if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1){
-            if([self OpenQuiltQTMovieFile:RotateImageFilenameNoStep] != 0) return;
+        if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
+            if([self OpenQuiltQTMovieFile:RotateImageFilenameNoStep
+                                 kemoview:kemo_sgl] != 0) return;
         }else{
             [self OpenQTMovieFile:RotateImageFilenameNoStep];
         }
@@ -459,24 +489,36 @@ NSData *SnapshotData;
         self.CurrentStep = icount;
         [self setRotation:int_degree:RotationAxisID];
 
-        if (CurrentMovieFormat == SAVE_QT_MOVIE && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
+        if (CurrentMovieFormat == SAVE_QT_MOVIE
+            && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
             CMTime frameTime = CMTimeMake((int64_t)icount, (int) self.FramePerSecond);
-            [self AddKemoviewQuiltToMovie:frameTime:int_degree:RotationAxisID];
+            [self AddKemoviewQuiltToMovie:frameTime
+                                   degree:int_degree
+                                   axis:RotationAxisID
+                                 kemoview:kemo_sgl];
         }else if(CurrentMovieFormat == SAVE_QT_MOVIE) {
             CMTime frameTime = CMTimeMake((int64_t)icount, (int) self.FramePerSecond);
             [self AddKemoviewImageToMovie:frameTime];
         } else if (CurrentMovieFormat != 0) {
             NSString *numstring = [NSString stringWithFormat:@"%ld",icount];
             NSString *ImageFilehead =  [RotateImageFilehead stringByAppendingString:numstring];
-            if (CurrentMovieFormat == SAVE_PNG && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
-                [self SaveKemoviewQuiltPNGFile:ImageFilehead:int_degree:RotationAxisID];
+            if (CurrentMovieFormat == SAVE_PNG
+                && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
+                [self SaveKemoviewQuiltPNGFile:ImageFilehead
+                                        degree:int_degree
+                                          axis:RotationAxisID
+                                      kemoview:kemo_sgl];
             } else if(CurrentMovieFormat == SAVE_PNG){
                 [self SaveKemoviewPNGFile:ImageFilehead];
-            } else if (CurrentMovieFormat == SAVE_BMP && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
-                [self SaveKemoviewQuiltBMPFile:ImageFilehead:int_degree:RotationAxisID];
+            } else if (CurrentMovieFormat == SAVE_BMP
+                       && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
+                [self SaveKemoviewQuiltBMPFile:ImageFilehead
+                                        degree:int_degree
+                                          axis:RotationAxisID
+                                      kemoview:kemo_sgl];
             } else if(CurrentMovieFormat == SAVE_BMP){
                 [self SaveKemoviewBMPFile:ImageFilehead];
-            } else if (kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
+            } else if (kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
                 [self SaveKemoviewQuiltPDFFile:ImageFilehead:int_degree:RotationAxisID];
             } else {
                 [self SaveKemoviewPDFFile:ImageFilehead];
@@ -503,9 +545,10 @@ NSData *SnapshotData;
     [_metalView FastUpdateImage];
 }
 
--(void) PreviewQuiltImages
+-(void) PreviewQuiltImages:(struct kemoviewer_type *) kemo_sgl
 {
-    NSInteger num_step = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_NUM);
+    NSInteger num_step
+        = (NSInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
 
     [evolutionProgreessBar setHidden:NO];
     [evolutionProgreessBar setUsesThreadedAnimation:YES];
@@ -533,12 +576,14 @@ NSData *SnapshotData;
     [_metalView DrawQuilt:IZERO:IZERO];
 }
 
--(void) SaveQTmovieEvolution{
+-(void) SaveQTmovieEvolution:(struct kemoviewer_type *) kemo_sgl;
+{
     NSInteger iframe;
     
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
-        if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1){
-            if([self OpenQuiltQTMovieFile:EvolutionImageFilename] != 0) return;
+        if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
+            if([self OpenQuiltQTMovieFile:EvolutionImageFilename
+                                 kemoview:kemo_sgl] != 0) return;
         }else{
             [self OpenQTMovieFile:EvolutionImageFilename];
         }
@@ -556,10 +601,14 @@ NSData *SnapshotData;
         if( ((self.CurrentStep-self.EvolutionStartStep)%self.EvolutionIncrement) == 0) {
             [_metalView DrawEvolution:self.CurrentStep];
             
-            if (CurrentMovieFormat == SAVE_QT_MOVIE && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
+            if (CurrentMovieFormat == SAVE_QT_MOVIE
+                && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
                 CMTime frameTime = CMTimeMake((int64_t)iframe, (int) self.FramePerSecond);
-                [self AddKemoviewQuiltToMovie:frameTime:IZERO:IONE];
+                [self AddKemoviewQuiltToMovie:frameTime
+                                       degree:IZERO
+                                       axis:IONE
+                                     kemoview:kemo_sgl];
             }else if(CurrentMovieFormat == SAVE_QT_MOVIE) {
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
                 CMTime frameTime = CMTimeMake((int64_t)iframe, (int) self.FramePerSecond);
@@ -567,15 +616,23 @@ NSData *SnapshotData;
             } else if (CurrentMovieFormat != 0) {
                 NSString *numstring = [NSString stringWithFormat:@"%ld",self.CurrentStep];
                 NSString *ImageFilehead =  [EvolutionImageFilehead stringByAppendingString:numstring];
-                if (CurrentMovieFormat == SAVE_PNG && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
-                    [self SaveKemoviewQuiltPNGFile:ImageFilehead:IZERO:IONE];
+                if (CurrentMovieFormat == SAVE_PNG
+                    && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
+                    [self SaveKemoviewQuiltPNGFile:ImageFilehead
+                                            degree:IZERO
+                                              axis:IONE
+                                          kemoview:kemo_sgl];
                 } else if(CurrentMovieFormat == SAVE_PNG){
                     [self SaveKemoviewPNGFile:ImageFilehead];
-                } else if (CurrentMovieFormat == SAVE_BMP && kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
-                    [self SaveKemoviewQuiltBMPFile:ImageFilehead:IZERO:IONE];
+                } else if (CurrentMovieFormat == SAVE_BMP
+                           && kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
+                    [self SaveKemoviewQuiltBMPFile:ImageFilehead
+                                            degree:IZERO
+                                              axis:IONE
+                                          kemoview:kemo_sgl];
                 } else if(CurrentMovieFormat == SAVE_BMP){
                     [self SaveKemoviewBMPFile:ImageFilehead];
-                } else if (kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1) {
+                } else if (kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
                     [self SaveKemoviewQuiltPDFFile:ImageFilehead:IZERO:IONE];
                 } else {
                     [self SaveKemoviewPDFFile:ImageFilehead];
@@ -626,19 +683,22 @@ NSData *SnapshotData;
 - (IBAction)ShowRotationMovie:(id)sender;
 {
 	CurrentMovieFormat = 0;
-	[self SaveQTmovieRotation];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SaveQTmovieRotation:kemo_sgl];
 }
 
 - (IBAction)ShowQuiltMovie:(id)sender;
 {
     CurrentMovieFormat = 0;
-    [self PreviewQuiltImages];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self PreviewQuiltImages:kemo_sgl];
 }
 
 - (IBAction)ShowEvolutionMovie:(id)sender;
 {
 	CurrentMovieFormat = 0;
-	[self SaveQTmovieEvolution];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SaveQTmovieEvolution:kemo_sgl];
 }
 
 - (NSInteger) SetImageFileFormatID:(NSString *)FileExtension
@@ -668,6 +728,7 @@ NSData *SnapshotData;
 
 
 - (void) SelectRotationMovieFile:(NSString *)RotateImageFilename
+                        kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSUserDefaults* defaults = [_movie_defaults_controller defaults];
 
@@ -682,11 +743,12 @@ NSData *SnapshotData;
     if(CurrentMovieFormat == SAVE_QT_MOVIE){
         RotateImageFilenameNoStep = [RotateImageFilehead stringByAppendingPathExtension:@"mov"];
     }
-    
-    [self SaveQTmovieRotation];
+    [self SaveQTmovieRotation:kemo_sgl];
 }
 
 - (void) SelectEvolutionMovieFile:(NSString *)EvolutionMovieFilename
+                         kemoview:(struct kemoviewer_type *) kemo_sgl;
+
 {
     NSUserDefaults* defaults = [_movie_defaults_controller defaults];
     NSString * EvolutionImageFileext =   [EvolutionMovieFilename pathExtension];
@@ -700,7 +762,7 @@ NSData *SnapshotData;
         EvolutionImageFilename = [EvolutionImageFilehead stringByAppendingPathExtension:@"mov"];
     }
 
-    [self SaveQTmovieEvolution];
+    [self SaveQTmovieEvolution:kemo_sgl];
 
 }
 
@@ -712,7 +774,9 @@ NSData *SnapshotData;
         if (RotateImageSaveInt == NSModalResponseOK) {
             NSString *RotateImageFilename = [[ RotateImageSavePanelObj URL] path];
             [RotateImageSavePanelObj orderOut:nil];
-            [self SelectRotationMovieFile:RotateImageFilename];
+            struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+            [self SelectRotationMovieFile:RotateImageFilename
+                                 kemoview:kemo_sgl];
         };
                                     }];
 }
@@ -725,7 +789,9 @@ NSData *SnapshotData;
 	if(EvolutionImageSaveInt == NSModalResponseOK){
 		NSString *EvolutionMovieFilename = [[ EvolutionImageSavePanelObj URL] path];
         [EvolutionImageSavePanelObj orderOut:nil];
-        [self SelectEvolutionMovieFile:EvolutionMovieFilename];
+        struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+        [self SelectEvolutionMovieFile:EvolutionMovieFilename
+                              kemoview:kemo_sgl];
 	};
                                     }];
 }

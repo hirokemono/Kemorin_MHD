@@ -8,11 +8,15 @@
 @import Cocoa;
 
 #import "KemoViewerMetalView.h"
+#import "KemoViewerObject.h"
+
+#include "kemoviewer.h"
 
 @interface KemoviewerController : NSObject {
 
 	IBOutlet ResetViewControll*     _resetview;
     IBOutlet KemoViewerMetalView*   _metalView;
+    IBOutlet KemoViewerObject *_kmv;
 
 	IBOutlet id _streoViewTypeMenu;
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
@@ -83,8 +87,10 @@
 - (void)awakeFromNib;
 - (id)dealloc;
 
-- (void)SetViewTypeMenu:(NSInteger) selected;
-- (void)UpdateViewtype:(NSInteger) selected;
+- (void)SetViewTypeMenu:(NSInteger) selected
+               kemoview:(struct kemoviewer_type *) kemo_sgl;
+- (void)UpdateViewtype:(NSInteger) selected
+              kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)AxisSwitchAction:(id)sender;
 - (IBAction)CoastSwitchAction:(id)sender;
@@ -99,7 +105,7 @@
 - (IBAction) ToggleQuiltSwitch:(id)sender;
 - (IBAction) SetViewtypeAction:(id)pSender;
 
-- (void) Set3DView;
+- (void) Set3DView:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction) ResetviewAction:(id)sender;
 
 -(IBAction) Toggleinfo: (id) sender;

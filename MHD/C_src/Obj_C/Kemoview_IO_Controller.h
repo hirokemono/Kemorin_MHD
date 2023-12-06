@@ -13,6 +13,9 @@
 #import "PsfController.h"
 #import "FlineController.h"
 #import "KemoviewerMovieMaker.h"
+#import "KemoViewerObject.h"
+
+#include "kemoviewer.h"
 
 // ==================================
 
@@ -20,12 +23,14 @@
 
 	IBOutlet NSUserDefaultsController* _user_defaults_controller;
     IBOutlet NSWindow*  window;
-    IBOutlet KemoViewerMetalView * _metalView;
-	IBOutlet DomainTableController* _domainTableController;
-	IBOutlet PsfController*         _psfController;
-	IBOutlet FlineController*       _flineController;
-	IBOutlet KemoviewerMovieMaker*  _movieMakerController;
-		
+    IBOutlet KemoViewerMetalView   * _metalView;
+	IBOutlet DomainTableController * _domainTableController;
+	IBOutlet PsfController         * _psfController;
+	IBOutlet FlineController       * _flineController;
+	IBOutlet KemoviewerMovieMaker  * _movieMakerController;
+    IBOutlet KemoViewerObject      * _kmv;
+    
+
 	NSInteger ImageFormatFlag;
 	NSInteger CurrentImageFormat;
 	IBOutlet id _ImageFormat_item;
@@ -40,7 +45,8 @@
 }
 @property NSInteger ImageFormatFlag;
 
-- (void) OpenKemoviewerFile:(NSString*) kemoviewOpenFilename;
+- (void) OpenKemoviewerFile:(NSString*) kemoviewOpenFilename
+                   kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction) OpenKemoviewerFileByMenu:(id)pId;
 - (IBAction) SaveViewMatrixFile:(id)pId;

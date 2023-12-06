@@ -453,13 +453,16 @@
 }
 
 
-- (void) DrawPsfFile:(NSString*) PsfOpenFilehead{
+- (void) DrawPsfFile:(NSString*) PsfOpenFilehead
+            kemoview:(struct kemoviewer_type *) kemo_sgl
+{
 	int id_viewtype = kemoview_get_view_type_flag();
     
 	self.currentPSFStep = [[PsfOpenFilehead pathExtension] intValue];
 	self.PsfWindowlabel = [NSString stringWithFormat:@"PSF:%@",
 						   [[PsfOpenFilehead stringByDeletingPathExtension] lastPathComponent]];
-	[_kemoviewControl SetViewTypeMenu:id_viewtype];
+	[_kemoviewControl SetViewTypeMenu:id_viewtype
+                             kemoview:kemo_sgl];
 	
 	self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
     [_ElasticControl UpdateWindow:self.DrawPsfFlag];
@@ -469,7 +472,7 @@
 	[self SetCurrentPsfMenu];
     [self SetPsfRanges];
 	
-    [_kemoviewControl Set3DView];
+    [_kemoviewControl Set3DView:kemo_sgl];
 	[_metalView UpdateImage];
 	
 	int num_loaded =  kemoview_get_PSF_loaded_params(NUM_LOADED);
@@ -509,6 +512,7 @@
 }
 
 - (void) ReadPsfFile:(NSString *) PsfOpenFilename
+            kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];
     NSString *PsfOpenFilehead =  [PsfOpenFilename stringByDeletingPathExtension];
@@ -526,7 +530,8 @@
     int iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
     
-    if(iflag_datatype == IFLAG_SURFACES) [self DrawPsfFile:PsfOpenFilehead];
+    if(iflag_datatype == IFLAG_SURFACES) [self DrawPsfFile:PsfOpenFilehead
+                                                  kemoview:kemo_sgl];
 }
 
 - (void) ChooseTextureFile{
@@ -560,7 +565,9 @@
 		NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
         PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
         // NSLog(@"PSF file directory = %@",PsfOpenDirectory);
-        [self ReadPsfFile:PsfOpenFilename];
+        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+        [self ReadPsfFile:PsfOpenFilename
+                 kemoview:kemo_sgl];
 	};	
                                  }];
     [_kemoviewControl TimeLabelAvaiability];
@@ -578,7 +585,8 @@
         [self CopyPsfDisplayFlagsFromC];
         [self SetCurrentPsfMenu];
     };
-    [_kemoviewControl Set3DView];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [_kemoviewControl Set3DView:kemo_sgl];
     [_kemoviewControl TimeLabelAvaiability];
     [_kemoviewControl FileStepLabelAvaiability];
 	[_metalView UpdateImage];
