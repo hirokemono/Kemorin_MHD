@@ -133,7 +133,7 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemo_sgl);
 	};
     /* ! update private variables and redisplay */
 	
@@ -267,7 +267,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemo_sgl);
  	};
 	
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */

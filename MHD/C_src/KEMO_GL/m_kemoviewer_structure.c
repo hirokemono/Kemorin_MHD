@@ -461,26 +461,28 @@ void kemoview_set_view_integer(int selected, int ivalue){
 	return;
 };
 
-void kemoview_set_view_parameter(int selected, int i, double value){
+void kemoview_set_view_parameter(int selected, int i, double value,
+                                 struct kemoviewer_type *kemoviewer){
 	if(selected == ISET_ROTATE){
-		set_gl_rotation_parameter(kemo_sgl->view_s, i, value);
+		set_gl_rotation_parameter(kemoviewer->view_s, i, value);
 	}else if(selected == ISET_SHIFT){
-		set_gl_shift_vector(kemo_sgl->view_s, i, value);
+		set_gl_shift_vector(kemoviewer->view_s, i, value);
 	}else if(selected == ISET_SCALE){
-		set_gl_scalar_scale_factor(kemo_sgl->view_s, value);
+		set_gl_scalar_scale_factor(kemoviewer->view_s, value);
 		
 	}else if(selected == ISET_APERTURE){
-		set_gl_projection_aperture(kemo_sgl->view_s, value);
+		set_gl_projection_aperture(kemoviewer->view_s, value);
 	};
 	return;
 };
-void kemoview_set_stereo_parameter(int selected, double value){
+void kemoview_set_stereo_parameter(int selected, double value,
+                                   struct kemoviewer_type *kemoviewer){
     if(selected == ISET_FOCUS){
-        set_gl_focal_length(kemo_sgl->view_s, value);
+        set_gl_focal_length(kemoviewer->view_s, value);
     }else if(selected == ISET_EYESEP){
-        set_gl_eye_separation_distance(kemo_sgl->view_s, value);
+        set_gl_eye_separation_distance(kemoviewer->view_s, value);
     }else if(selected == ISET_EYEAGL){
-        set_gl_eye_separation_angle(kemo_sgl->view_s, value);
+        set_gl_eye_separation_angle(kemoviewer->view_s, value);
     };
     return;
 };

@@ -405,8 +405,10 @@ extern "C" {
 
     void kemoview_set_view_integer(int selected, int ivalue);
 
-	void kemoview_set_view_parameter(int selected, int i, double value);
-    void kemoview_set_stereo_parameter(int selected, double value);
+	void kemoview_set_view_parameter(int selected, int i, double value,
+                                     struct kemoviewer_type *kemoviewer);
+    void kemoview_set_stereo_parameter(int selected, double value,
+                                       struct kemoviewer_type *kemoviewer);
     void kemoview_set_quilt_nums(int selected, int ivalue,
                                  struct kemoviewer_type *kemoviewer);
 

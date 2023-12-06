@@ -59,8 +59,8 @@ static void quilt_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer dat
         eyeAngle = 35.0;
         kemoview_set_quilt_nums(ISET_QUILT_RAW, quilt_gmenu->num_raw, kemo_sgl);
         kemoview_set_quilt_nums(ISET_QUILT_COLUMN, quilt_gmenu->num_column, kemo_sgl);
-        kemoview_set_stereo_parameter(ISET_FOCUS, FoculPoint);
-        kemoview_set_stereo_parameter(ISET_EYEAGL, eyeAngle);
+        kemoview_set_stereo_parameter(ISET_FOCUS, FoculPoint, kemo_sgl);
+        kemoview_set_stereo_parameter(ISET_EYEAGL, eyeAngle, kemo_sgl);
         
         eyeRatio = kemoview_get_view_parameter(kemo_sgl, ISET_EYESEP, 0);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(quilt_gmenu->spin_num_column),

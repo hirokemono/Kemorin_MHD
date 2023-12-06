@@ -121,7 +121,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemo_sgl);
 	};
     /* ! update private variables and redisplay */
 	
@@ -252,7 +252,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemo_sgl);
  	};
 	
 	glfwSwapBuffers(window);

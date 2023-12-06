@@ -59,8 +59,10 @@
         kemoview_set_quilt_nums(ISET_QUILT_RAW, (int) self.NumberOfRows, kemo_sgl);
         kemoview_set_quilt_nums(ISET_QUILT_COLUMN, (int) self.NumberOfColumns,
                                 kemo_sgl);
-        kemoview_set_stereo_parameter(ISET_FOCUS, (double) self.FocusPoint);
-        kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle);
+        kemoview_set_stereo_parameter(ISET_FOCUS, (double) self.FocusPoint,
+                                      kemo_sgl);
+        kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle,
+                                      kemo_sgl);
         self.eyeRatio= (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYESEP, 0);
     }
     return (int) self.Quilt_flag;
@@ -79,56 +81,78 @@
 - (IBAction) SetEyeSeparationAngleByInput:(id)sender
 {
     struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle);
+    kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle,
+                                  kemo_sgl);
     self.eyeRatio= (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYESEP, 0);
 }
 - (IBAction) SetEyeSeparationDistanceByInput:(id)sender
 {
     struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_stereo_parameter(ISET_EYESEP, (double) self.eyeRatio);
+    kemoview_set_stereo_parameter(ISET_EYESEP, (double) self.eyeRatio,
+                                  kemo_sgl);
     self.eyeAngle= (CGFloat) kemoview_get_view_parameter(kemo_sgl, ISET_EYEAGL, 0);
 }
 - (IBAction) SetFoculPointDistanceByInput:(id)sender
 {
-    kemoview_set_stereo_parameter(ISET_FOCUS, (double) self.FocusPoint);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_stereo_parameter(ISET_FOCUS, (double) self.FocusPoint,
+                                  kemo_sgl);
 }
 
 - (IBAction) SetProjectionAperture:(id)sender
 {
-    kemoview_set_view_parameter(ISET_APERTURE, 0, (double) self.ProjentionAperture);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_APERTURE, 0,
+                                (double) self.ProjentionAperture, kemo_sgl);
 }
 
 - (IBAction) SetViewScaleFactor:(id)sender
 {
-    kemoview_set_view_parameter(ISET_SCALE, 0, (double) self.ScaleFactor);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_SCALE, 0,
+                                (double) self.ScaleFactor, kemo_sgl);
 }
 - (IBAction) SetViewPointX:(id)sender
 {
-    kemoview_set_view_parameter(ISET_SHIFT, 0, (double) (-self.ViewPointX));
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_SHIFT, 0,
+                                (double) (-self.ViewPointX), kemo_sgl);
 }
 - (IBAction) SetViewPointY:(id)sender
 {
-    kemoview_set_view_parameter(ISET_SHIFT, 1, (double) (-self.ViewPointY));
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_SHIFT, 1,
+                                (double) (-self.ViewPointY), kemo_sgl);
 }
 - (IBAction) SetViewPointZ:(id)sender
 {
-    kemoview_set_view_parameter(ISET_SHIFT, 2, (double) (-self.ViewPointZ));
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_SHIFT, 2,
+                                (double) (-self.ViewPointZ), kemo_sgl);
 }
 - (IBAction) SetViewRotationAxisX:(id)sender
 {
-    kemoview_set_view_parameter(ISET_ROTATE, 1, (double) self.RotationAxisX);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_ROTATE, 1,
+                                (double) self.RotationAxisX, kemo_sgl);
 }
 - (IBAction) SetViewRotationAxisY:(id)sender
 {
-    kemoview_set_view_parameter(ISET_ROTATE, 2, (double) self.RotationAxisY);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_ROTATE, 2,
+                                (double) self.RotationAxisY, kemo_sgl);
 }
 - (IBAction) SetViewRotationAxisZ:(id)sender
 {
-    kemoview_set_view_parameter(ISET_ROTATE, 3, (double) self.RotationAxisZ);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_ROTATE, 3,
+                                (double) self.RotationAxisZ, kemo_sgl);
 }
 - (IBAction) SetViewRotationAngle:(id)sender
 {
-    kemoview_set_view_parameter(ISET_ROTATE, 0, (double) self.RotationAngle);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_view_parameter(ISET_ROTATE, 0,
+                                (double) self.RotationAngle, kemo_sgl);
 }
 
 
