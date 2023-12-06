@@ -174,10 +174,10 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 /* Main GTK window */
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     GLuint npix_xy[2];
-    unsigned char *image = draw_objects_to_rgba_gl(npix_xy, single_kemoview, kemo_gl);
+    unsigned char *image = draw_objects_to_rgb_gl(npix_xy, single_kemoview, kemo_gl);
     unsigned char *fliped_img = kemoview_alloc_RGB_buffer_to_bmp(npix_xy[0], npix_xy[1]);
     flip_gl_bitmap(npix_xy[0], npix_xy[1], image, fliped_img);
-    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) image, 
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img, 
                                                  GDK_COLORSPACE_RGB, FALSE, 8,
                                                  npix_xy[0], npix_xy[1], (3*npix_xy[0]), 
                                                  NULL, NULL);

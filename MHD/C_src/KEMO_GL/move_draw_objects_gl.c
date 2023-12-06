@@ -357,41 +357,6 @@ void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
 	return;
 }
 
-unsigned char * draw_objects_to_rgba_gl(GLuint npix_xy[2], 
-                                        struct kemoviewer_type *kemoview,
-                                        struct kemoviewer_gl_type *kemo_gl){
-    npix_xy[0] = (GLuint) kemoview->view_s->nx_frame;
-    npix_xy[1] = (GLuint) kemoview->view_s->ny_frame;
-/* Construct screen_FBO */
-    Const_FBO(npix_xy[0], npix_xy[1], kemo_gl->kemo_VAOs->screen_FBO[0]);
-/* Set draw target to screen_FBO */
-//    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
-    glDrawBuffer(GL_BACK);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
-                        kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
-                        kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
-
-    GLuint num_pixel = npix_xy[0] * npix_xy[1];
-    unsigned char *rgb = (unsigned char *) malloc(3*num_pixel * sizeof(unsigned char));
-    if(rgb == NULL){
-        printf("malloc error for bgra\n");
-        exit(0);
-    };
-    glFlush();
-
-//    glReadBuffer(GL_COLOR_ATTACHMENT0);
-    glReadBuffer(GL_BACK);
-    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
-    glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
-                 GL_RGB, GL_UNSIGNED_BYTE,rgb);
-/* Back draw target to screen framewbuffer */
-//    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-/* Destroy screen_FBO */
-    Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[0]);
-    return rgb;
-}
-
 
 void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
                           struct kemoviewer_gl_type *kemo_gl,
@@ -423,3 +388,58 @@ void draw_anaglyph_2D_VAO(struct kemoviewer_type *kemoview,
     free(cbar_matrices);
     return;
 }
+
+unsigned char * draw_objects_to_rgb_gl(GLuint npix_xy[2],
+                                       struct kemoviewer_type *kemoview,
+                                       struct kemoviewer_gl_type *kemo_gl){
+    npix_xy[0] = (GLuint) kemoview->view_s->nx_frame;
+    npix_xy[1] = (GLuint) kemoview->view_s->ny_frame;
+    GLuint num_pixel = npix_xy[0] * npix_xy[1];
+    unsigned char *rgb = (unsigned char *) malloc(3*num_pixel * sizeof(unsigned char));
+    if(rgb == NULL){
+        printf("malloc error for bgra\n");
+        exit(0);
+    };
+    
+    glDrawBuffer(GL_BACK);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    update_draw_objects_gl3(kemoview, kemo_gl);
+    glReadBuffer(GL_BACK);
+    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
+    glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
+                 GL_RGB, GL_UNSIGNED_BYTE, rgb);
+    return rgb;
+};
+unsigned char * draw_objects_to_rgb_by_FBO(GLuint npix_xy[2],
+                                           struct kemoviewer_type *kemoview,
+                                           struct kemoviewer_gl_type *kemo_gl){
+    npix_xy[0] = (GLuint) kemoview->view_s->nx_frame;
+    npix_xy[1] = (GLuint) kemoview->view_s->ny_frame;
+/* Construct screen_FBO */
+    Const_FBO(npix_xy[0], npix_xy[1], kemo_gl->kemo_VAOs->screen_FBO[0]);
+/* Set draw target to screen_FBO */
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, kemo_gl->kemo_VAOs->screen_FBO[0]->id_VAO);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    update_draw_objects(kemoview->kemo_psf, kemoview->kemo_fline,
+                        kemoview->kemo_mesh, kemoview->view_s, kemoview->kemo_buffers,
+                        kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders);
+
+    GLuint num_pixel = npix_xy[0] * npix_xy[1];
+    unsigned char *rgb = (unsigned char *) malloc(3*num_pixel * sizeof(unsigned char));
+    if(rgb == NULL){
+        printf("malloc error for bgra\n");
+        exit(0);
+    };
+    glFlush();
+
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    glPixelStorei(GL_PACK_ALIGNMENT, IONE);
+    glReadPixels(IZERO, IZERO, npix_xy[0], npix_xy[1],
+                 GL_RGB, GL_UNSIGNED_BYTE,rgb);
+/* Back draw target to screen framewbuffer */
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+/* Destroy screen_FBO */
+    Destroy_FBO(kemo_gl->kemo_VAOs->screen_FBO[0]);
+    return rgb;
+}
+
