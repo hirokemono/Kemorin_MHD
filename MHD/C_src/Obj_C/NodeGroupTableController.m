@@ -122,7 +122,8 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
         kemoview_free_kvstring(groupname);
     
 		[NodeGroupDisplayNames      addObject:stname];
-		iflag = kemoview_get_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i);
+		iflag = kemoview_get_draw_mesh_item(kemo_sgl, NODE_GRP_FLAG,
+                                            SURFSOLID_TOGGLE, i);
 		[NodeGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		[stname release];
 	}

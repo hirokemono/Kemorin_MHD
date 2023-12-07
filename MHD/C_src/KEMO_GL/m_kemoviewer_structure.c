@@ -350,8 +350,9 @@ void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int if
 	set_draw_mesh_flag(iflag_group, selected, igrp, iflag, kemoviewer->kemo_mesh);
 	return;
 };
-int kemoview_get_draw_mesh_item(int iflag_group, int selected, int igrp){
-	return get_draw_mesh_flag(kemo_sgl->kemo_mesh, iflag_group, selected, igrp);
+int kemoview_get_draw_mesh_item(struct kemoviewer_type *kemoviewer,
+                                int iflag_group, int selected, int igrp){
+	return get_draw_mesh_flag(kemoviewer->kemo_mesh, iflag_group, selected, igrp);
 };
 
 void kemoview_get_node_grp_name(struct kemoviewer_type *kemoviewer,

@@ -203,11 +203,14 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
         kemoview_free_kvstring(groupname);
 
         [ElementGroupDisplayNames      addObject:stname];
-		iflag = kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, i);
+		iflag = kemoview_get_draw_mesh_item(kemo_sgl, ELEM_GRP_FLAG,
+                                            SURFSOLID_TOGGLE, i);
 		[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, i);
+		iflag = kemoview_get_draw_mesh_item(kemo_sgl, ELEM_GRP_FLAG,
+                                            SURFGRID_TOGGLE, i);
 		[ElementGroupDisplayWireFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, i);
+		iflag = kemoview_get_draw_mesh_item(kemo_sgl, ELEM_GRP_FLAG,
+                                            SURFNOD_TOGGLE, i);
 		[ElementGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		[stname release];
 	}

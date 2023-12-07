@@ -7,7 +7,7 @@
 
 #include "tree_view_4_viewer_mesh.h"
 
-struct ci3_clist_view * init_domain_views_4_viewer(){
+static struct ci3_clist_view * init_domain_views_4_viewer(struct kemoviewer_type *kemo_sgl){
     int i;
 	char tmp_name[128];
 	
@@ -23,9 +23,9 @@ struct ci3_clist_view * init_domain_views_4_viewer(){
 	for(i=0;i<kemoview_get_num_of_mesh_group(DOMAIN_FLAG);i++){
 		sprintf(tmp_name, "Domain %d", i);
 		append_chara_int3_clist(tmp_name, 
-					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, i), 
-					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, i), 
-					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, DOMAIN_FLAG, SURFSOLID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, DOMAIN_FLAG, SURFGRID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, DOMAIN_FLAG, SURFNOD_TOGGLE, i), 
 					domain_vws->ci3_clist_gtk);
 	};
 	return domain_vws;
@@ -46,7 +46,7 @@ static struct ci_clist_view * init_node_group_views(struct kemoviewer_type *kemo
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_node_grp_name(kemo_sgl, i, groupname);
 		append_chara_int_clist(groupname->string, 
-					kemoview_get_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i),
+					kemoview_get_draw_mesh_item(kemo_sgl, NODE_GRP_FLAG, SURFSOLID_TOGGLE, i),
 					nod_grp_vws->ci_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
@@ -70,9 +70,9 @@ static struct ci3_clist_view * init_ele_group_views(struct kemoviewer_type *kemo
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_ele_grp_name(kemo_sgl, i, groupname);
 		append_chara_int3_clist(groupname->string, 
-					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, i), 
-					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, i), 
-					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, ELEM_GRP_FLAG, SURFSOLID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, ELEM_GRP_FLAG, SURFGRID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, ELEM_GRP_FLAG, SURFNOD_TOGGLE, i), 
 					ele_grp_vws->ci3_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
@@ -96,9 +96,9 @@ static struct ci3_clist_view * init_surface_group_views(struct kemoviewer_type *
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_surf_grp_name(kemo_sgl, i, groupname);
 		append_chara_int3_clist(groupname->string, 
-					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i), 
-					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i), 
-					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, SURF_GRP_FLAG, SURFSOLID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, SURF_GRP_FLAG, SURFGRID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(kemo_sgl, SURF_GRP_FLAG, SURFNOD_TOGGLE, i), 
 					surf_grp_vws->ci3_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
@@ -123,7 +123,7 @@ void init_mesh_views_4_viewer(struct kemoviewer_type *kemo_sgl,
 	mesh_vws->ele_group_gmenu = (struct group_gtk_menu *) malloc(sizeof(struct group_gtk_menu));
 	mesh_vws->surf_group_gmenu = (struct group_gtk_menu *) malloc(sizeof(struct group_gtk_menu));
 
-	mesh_vws->domain_group_gmenu->group_vws = init_domain_views_4_viewer();
+	mesh_vws->domain_group_gmenu->group_vws = init_domain_views_4_viewer(kemo_sgl);
 	mesh_vws->node_group_gmenu->nod_grp_vws = init_node_group_views(kemo_sgl);
 	mesh_vws->ele_group_gmenu->group_vws = init_ele_group_views(kemo_sgl);
 	mesh_vws->surf_group_gmenu->group_vws = init_surface_group_views(kemo_sgl);
