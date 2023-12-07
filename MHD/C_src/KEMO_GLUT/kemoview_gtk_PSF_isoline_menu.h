@@ -40,7 +40,9 @@ struct psf_isoline_gtk_menu{
 
 
 /*  prototypes */
-void set_gtk_isoline_menu_values(struct psf_isoline_gtk_menu *psf_isoline_menu);
-GtkWidget * init_isoline_menu_expander(GtkWidget *window, struct psf_isoline_gtk_menu *psf_isoline_menu);
+void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl, 
+                                 struct psf_isoline_gtk_menu *psf_isoline_menu);
+GtkWidget * init_isoline_menu_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
+                                       struct psf_isoline_gtk_menu *psf_isoline_menu);
 
 #endif

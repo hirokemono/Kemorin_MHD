@@ -689,8 +689,9 @@ void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
 void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit){
 	set_each_PSF_color_w_exp(selected, value, i_digit, kemo_sgl->kemo_psf);
 };
-void kemoview_get_each_PSF_color_w_exp(int selected, double *value, int *i_digit){;
-	get_each_PSF_color_w_exp(selected, kemo_sgl->kemo_psf, value, i_digit);
+void kemoview_get_each_PSF_color_w_exp(struct kemoviewer_type *kemoviewer, 
+                                       int selected, double *value, int *i_digit){;
+	get_each_PSF_color_w_exp(selected, kemoviewer->kemo_psf, value, i_digit);
 	return;
 };
 

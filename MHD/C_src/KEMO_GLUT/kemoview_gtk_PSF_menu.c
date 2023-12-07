@@ -108,16 +108,18 @@ void set_vector_plot_availablity(struct psf_gtk_menu *psf_gmenu){
 void init_psf_menu_hbox(struct kemoviewer_type *kemo_sgl,
                         struct psf_gtk_menu *psf_gmenu,
                         GtkWidget *window){
-    psf_gmenu->expander_iso = init_isoline_menu_expander(window, psf_gmenu->psf_isoline_menu);
+    psf_gmenu->expander_iso = init_isoline_menu_expander(kemo_sgl, window,
+                                                         psf_gmenu->psf_isoline_menu);
     psf_gmenu->expander_surf = init_gtk_psf_surface_menu_expander(kemo_sgl, window, psf_gmenu->color_vws,
                                                                   psf_gmenu->psf_surface_menu);
     psf_gmenu->expander_color = init_gtk_psf_colormap_expander(kemo_sgl, window, psf_gmenu->color_vws);
     set_gtk_surface_menu_values(kemo_sgl, psf_gmenu->psf_surface_menu);
-    set_gtk_isoline_menu_values(psf_gmenu->psf_isoline_menu);
+    set_gtk_isoline_menu_values(kemo_sgl, psf_gmenu->psf_isoline_menu);
 
 	
-    psf_gmenu->expander_vect = make_gtk_psf_vector_menu(window, psf_gmenu->psf_vector_menu);
-    set_gtk_psf_vector_menu(psf_gmenu->psf_vector_menu);
+    psf_gmenu->expander_vect = make_gtk_psf_vector_menu(kemo_sgl, window,
+                                                        psf_gmenu->psf_vector_menu);
+    set_gtk_psf_vector_menu(kemo_sgl, psf_gmenu->psf_vector_menu);
     set_vector_plot_availablity(psf_gmenu);
     return;
 }

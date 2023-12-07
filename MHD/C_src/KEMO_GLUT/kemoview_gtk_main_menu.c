@@ -318,7 +318,7 @@ static void close_mesh_CB(GtkButton *button, gpointer user_data){
 static void update_by_psf_component(struct kemoviewer_type *kemo_sgl,
                                     struct psf_gtk_menu *psf_gmenu){
     set_gtk_surface_menu_values(kemo_sgl, psf_gmenu->psf_surface_menu);
-    set_gtk_isoline_menu_values(psf_gmenu->psf_isoline_menu);
+    set_gtk_isoline_menu_values(kemo_sgl, psf_gmenu->psf_isoline_menu);
     update_colormap_params_4_viewer(psf_gmenu->color_vws);
     update_kemoview_cmap_list_box(psf_gmenu->color_vws);
     return;

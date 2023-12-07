@@ -130,44 +130,56 @@ static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 
 static void MinRangeValueChange_CB(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	double value_min, value_max;
 	int i_min_digit, i_max_digit;
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &value_min, &i_min_digit);
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &value_max, &i_max_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                      &value_min, &i_min_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
+                                      &value_max, &i_max_digit);
 	kemoview_set_PSF_linear_colormap(gtk_floatvalue, i_min_digit, 
 									 value_max, i_max_digit);
 	draw_full();
 }
 static void MinRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	int gtk_intvalue = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	double value_min, value_max;
 	int i_min_digit, i_max_digit;
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &value_min, &i_min_digit);
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &value_max, &i_max_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN, 
+                                      &value_min, &i_min_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
+                                      &value_max, &i_max_digit);
 	kemoview_set_PSF_linear_colormap(value_min, gtk_intvalue, 
 									 value_max, i_max_digit);
 	draw_full();
 }
 static void MaxRangeValueChange_CB(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	double value_min, value_max;
 	int i_min_digit, i_max_digit;
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &value_min, &i_min_digit);
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &value_max, &i_max_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                      &value_min, &i_min_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                      &value_max, &i_max_digit);
 	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
 									 gtk_floatvalue, i_max_digit);
 	draw_full();
 }
 static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	int gtk_intvalue = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	double value_min, value_max;
 	int i_min_digit, i_max_digit;
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &value_min, &i_min_digit);
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &value_max, &i_max_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                      &value_min, &i_min_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
+                                      &value_max, &i_max_digit);
 	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
 									 value_max, gtk_intvalue);
 	draw_full();
@@ -214,11 +226,13 @@ void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,
 	current_value = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_opacity1), current_value);
 	
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                      &current_value, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_range_min), current_value);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_digit_min), i_digit);
 	
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                      &current_value, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_range_max), current_value);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_digit_max), i_digit);
 };
@@ -273,18 +287,18 @@ GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_type *kemo_sgl,
 	psf_surface_menu->spin_range_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_range_min),0,2);
 	psf_surface_menu->spin_digit_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit_min),0,0);
 	g_signal_connect(psf_surface_menu->spin_range_min, "value-changed", 
-					 G_CALLBACK(MinRangeValueChange_CB), NULL);
+					 G_CALLBACK(MinRangeValueChange_CB), (gpointer) kemo_sgl);
 	g_signal_connect(psf_surface_menu->spin_digit_min, "value-changed",
-					 G_CALLBACK(MinRangeDigitChange_CB), NULL);
+					 G_CALLBACK(MinRangeDigitChange_CB), (gpointer) kemo_sgl);
 	
 	GtkAdjustment *adj_range_max = gtk_adjustment_new (1, -9.999, 9.999, 0.1, 0.1, 0.0);
 	GtkAdjustment *adj_digit_max = gtk_adjustment_new (0, -20, 20, 1, 1, 0);
 	psf_surface_menu->spin_range_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_range_max),0,2);
 	psf_surface_menu->spin_digit_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit_max),0,0);
 	g_signal_connect(psf_surface_menu->spin_range_max, "value-changed",
-					 G_CALLBACK(MaxRangeValueChange_CB), NULL);
+					 G_CALLBACK(MaxRangeValueChange_CB), (gpointer) kemo_sgl);
 	g_signal_connect(psf_surface_menu->spin_digit_max, "value-changed",
-					 G_CALLBACK(MaxRangeDigitChange_CB), NULL);
+					 G_CALLBACK(MaxRangeDigitChange_CB), (gpointer) kemo_sgl);
 	
 	GtkWidget *hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw surface: "), FALSE, FALSE, 0);

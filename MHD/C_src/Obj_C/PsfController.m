@@ -193,29 +193,35 @@
 	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                      &current_value, &i_digit);
 	self.PsfMinimumRange =      (CGFloat) current_value;
 	self.PsfMinimumDigit =      (CGFloat) i_digit;
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                      &current_value, &i_digit);
 	self.PsfMaximumRange =      (CGFloat) current_value;
 	self.PsfMaximumDigit =      (CGFloat) i_digit;
 
-	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                      &current_value, &i_digit);
 	self.IsolineWidth =      (CGFloat) current_value;
 	self.IsolineDigit =      (CGFloat) i_digit;
 	self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
 	
 	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 
-	kemoview_get_each_PSF_color_w_exp(ISET_PSF_REFVECT, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_REFVECT, 
+                                      &current_value, &i_digit);
 	self.ScaleVector =      (CGFloat) current_value;
 	self.ScaleDigit =       (CGFloat) i_digit;
 
-	kemoview_get_each_PSF_color_w_exp(ISET_VECTOR_INC, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_VECTOR_INC,
+                                      &current_value, &i_digit);
 	self.PSFVectorIncrement = (CGFloat) current_value;
 	self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	
-	kemoview_get_each_PSF_color_w_exp(ISET_PSF_V_THICK, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_V_THICK, 
+                                      &current_value, &i_digit);
     self.VectorThickness = (CGFloat) current_value;
 	self.VectorDigit =     (CGFloat) i_digit;
 	
@@ -261,14 +267,14 @@
      self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 	 self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
-	 kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN, &current_value, &i_digit);
 	 self.PsfMinimumRange =      (CGFloat) current_value;
 	 self.PsfMinimumDigit =      (CGFloat) i_digit;
-	 kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, &current_value, &i_digit);
 	 self.PsfMaximumRange =      (CGFloat) current_value;
 	 self.PsfMaximumDigit =      (CGFloat) i_digit;
 	 
-	 kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH, &current_value, &i_digit);
 	 self.IsolineWidth =      (CGFloat) current_value;
 	 self.IsolineDigit =      (CGFloat) i_digit;
 
@@ -276,11 +282,11 @@
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 
-	 kemoview_get_each_PSF_color_w_exp(ISET_PSF_REFVECT, &current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_REFVECT, &current_value, &i_digit);
 	 self.ScaleVector =      (CGFloat) current_value;
 	 self.ScaleDigit =       (CGFloat) i_digit;
 
-	 kemoview_get_each_PSF_color_w_exp(ISET_VECTOR_INC, &current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_VECTOR_INC, &current_value, &i_digit);
 	 self.PSFVectorIncrement = (CGFloat) current_value;
 	 self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	 
@@ -446,10 +452,12 @@
 	self.PsfMaximumValue = kemoview_get_each_PSF_data_range(kemo_sgl,
                                                             ISET_COLOR_MAX, iplotted);
 
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                      &current_value, &i_digit);
 	self.PsfMinimumRange =      (CGFloat) current_value;
 	self.PsfMinimumDigit =      (CGFloat) i_digit;
-	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
+                                      &current_value, &i_digit);
 	self.PsfMaximumRange =      (CGFloat) current_value;
 	self.PsfMaximumDigit =      (CGFloat) i_digit;
 	

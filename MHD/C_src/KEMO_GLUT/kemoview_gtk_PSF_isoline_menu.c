@@ -49,8 +49,10 @@ static void set_width_CB(GtkWidget *entry, gpointer user_data)
 {
 	double current_width;
 	int i_digit;
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	double gtk_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                      &current_width, &i_digit);
 	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, gtk_value, i_digit);
 	
 	draw_full();
@@ -61,22 +63,26 @@ static void set_digit_CB(GtkWidget *entry, gpointer user_data)
 {
 	double current_width;
 	int i_digit;
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	int gtk_value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                      &current_width, &i_digit);
 	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, current_width, gtk_value);
 	
 	draw_full();
 	return;
 }
 	
-void set_gtk_isoline_menu_values(struct psf_isoline_gtk_menu *psf_isoline_menu){
+void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl, 
+                                 struct psf_isoline_gtk_menu *psf_isoline_menu){
 	double current_width;
 	int i_digit, iflag_sfcolor;
 
 	int current_nline = kemoview_get_PSF_color_param(ISET_NLINE);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_nline), (double) current_nline);
 
-	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                      &current_width, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_width), current_width);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_digit), (double) i_digit);
 
@@ -101,7 +107,8 @@ void set_gtk_isoline_menu_values(struct psf_isoline_gtk_menu *psf_isoline_menu){
 	};
 };
 
-GtkWidget * init_isoline_menu_expander(GtkWidget *window, struct psf_isoline_gtk_menu *psf_isoline_menu){
+GtkWidget * init_isoline_menu_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
+                                       struct psf_isoline_gtk_menu *psf_isoline_menu){
 	GtkWidget *expander_iso;
 	
 	psf_isoline_menu->switch_1 = gtk_switch_new();
@@ -140,11 +147,13 @@ GtkWidget * init_isoline_menu_expander(GtkWidget *window, struct psf_isoline_gtk
 	
 	GtkAdjustment *adj_width = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
 	psf_isoline_menu->spin_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_width), 0, 0);
-	g_signal_connect(psf_isoline_menu->spin_width, "value-changed", G_CALLBACK(set_width_CB), NULL);
+	g_signal_connect(psf_isoline_menu->spin_width, "value-changed", 
+                     G_CALLBACK(set_width_CB), (gpointer) kemo_sgl);
 	
 	GtkAdjustment *adj_digit = gtk_adjustment_new(0, -10, 10, 1, 1, 0);
 	psf_isoline_menu->spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
-	g_signal_connect(psf_isoline_menu->spin_digit, "value-changed", G_CALLBACK(set_digit_CB), NULL);
+	g_signal_connect(psf_isoline_menu->spin_digit, "value-changed",
+                     G_CALLBACK(set_digit_CB), (gpointer) kemo_sgl);
 	
 	GtkWidget *hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw isolines: "), FALSE, FALSE, 0);
