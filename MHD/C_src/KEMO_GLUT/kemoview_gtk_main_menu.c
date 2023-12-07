@@ -101,11 +101,13 @@ static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
     return;
 }
 
-void init_fline_menu(struct updatable_widgets *updatable, GtkWidget *window){
+static void init_fline_menu(struct kemoviewer_type *kemo_sgl,
+                            struct updatable_widgets *updatable,
+                            GtkWidget *window){
     if(kemoview_get_fline_parameters(DRAW_SWITCH) == 0) return;
     if(updatable->iflag_flineBox == 0){
         updatable->flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-        set_fieldline_menu_box(updatable->fline_menu, window);
+        set_fieldline_menu_box(kemo_sgl, updatable->fline_menu, window);
         GtkWidget *frame = pack_fieldline_menu_frame(updatable->fline_menu);
         gtk_box_pack_start(GTK_BOX(updatable->flineBox), frame, FALSE, FALSE, 0);
         updatable->iflag_flineBox = 1;
@@ -147,7 +149,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     kemoview_free_kvstring(filename);
 	
     init_psf_menu(kemo_sgl, mbot->updatable, window_main);
-    init_fline_menu(mbot->updatable, window_main);
+    init_fline_menu(kemo_sgl, mbot->updatable, window_main);
     init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
     activate_evolution_menu(mbot->updatable->expander_evo);
     
@@ -658,7 +660,9 @@ void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
 	return;
 }
 
-void set_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu, GtkWidget *window){
+void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
+                            struct fieldline_gtk_menu *fline_menu,
+                            GtkWidget *window){
 	GtkWidget *closeButton;
 
     fline_menu->closeButton = gtk_button_new_with_label("Close Current PSF");
@@ -669,7 +673,7 @@ void set_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu, GtkWidget *wi
 	
 	fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
     
-	init_fieldline_menu_hbox(fline_menu);
+	init_fieldline_menu_hbox(kemo_sgl, fline_menu);
     set_gtk_fieldline_menu(fline_menu);
 	return;
 }

@@ -233,7 +233,9 @@
 !    int kemoview_toggle_fline_type();
 !	
 !    void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit){
-!    void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue);
+!    void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
+!                                            double maxvalue, int i_max_digit,
+!                                            struct kemoviewer_type *kemoviewer);
 !    void kemoview_get_fline_color_w_exp(int selected, double *value, int *i_digit);
 !
 !    void kemoview_set_fline_constant_opacity(double opacity);

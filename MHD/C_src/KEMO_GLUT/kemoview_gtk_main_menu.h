@@ -91,7 +91,9 @@ void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
                       GtkWidget *window);
 void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
 
-void set_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu, GtkWidget *window);
+void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
+                            struct fieldline_gtk_menu *fline_menu,
+                            GtkWidget *window);
 
 void fieldline_gtk_menu(struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *menuHbox, GtkWidget *window);

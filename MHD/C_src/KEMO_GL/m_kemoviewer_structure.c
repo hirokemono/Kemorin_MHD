@@ -828,9 +828,10 @@ int kemoview_get_fline_field_param(int selected){
 };
 
 void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
-										double maxvalue, int i_max_digit){
+										double maxvalue, int i_max_digit,
+                                        struct kemoviewer_type *kemoviewer){
 	set_fline_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit, 
-							  kemo_sgl->kemo_fline->fline_m);
+                              kemoviewer->kemo_fline->fline_m);
 }
 void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit){
 	set_fline_color_w_exp(selected, value, i_digit, kemo_sgl->kemo_fline);

@@ -339,8 +339,12 @@
 }
 
 - (IBAction) ShowFlineRange:(id)pSender {
-	kemoview_set_fline_linear_colormap(self.FlineDisplayMinimum, (int) self.FlineDisplayMinDigit,
-									   self.FlineDisplayMaximum, (int) self.FlineDisplayMaxDigit);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_fline_linear_colormap(self.FlineDisplayMinimum, 
+                                       (int) self.FlineDisplayMinDigit,
+									   self.FlineDisplayMaximum, 
+                                       (int) self.FlineDisplayMaxDigit,
+                                       kemo_sgl);
 //	[_metalView UpdateImage];
 }
 

@@ -537,7 +537,8 @@ extern "C" {
 	int kemoview_get_fline_field_param(int selected);
 
     void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
-											double maxvalue, int i_max_digit);
+											double maxvalue, int i_max_digit,
+                                            struct kemoviewer_type *kemoviewer);
 	void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit);
 	void kemoview_get_fline_color_w_exp(int selected, double *value, int *i_digit);
 
