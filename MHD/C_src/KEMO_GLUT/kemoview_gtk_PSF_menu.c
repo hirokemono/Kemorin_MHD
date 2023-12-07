@@ -11,18 +11,24 @@
 
 static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(user_data);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	struct kv_string *filename = kemoview_save_file_panel(window);
 	
-	if(filename->string[0] != '\0'){kemoview_write_PSF_colormap_file(filename);};
+	if(filename->string[0] != '\0'){
+        kemoview_write_PSF_colormap_file(filename, kemo_sgl);
+    };
 	kemoview_free_kvstring(filename);
 	return;
 };
 
 static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(user_data);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	struct kv_string *filename = kemoview_read_file_panel(window);
 	
-	if(filename->string[0] != '\0'){kemoview_read_PSF_colormap_file(filename);};
+	if(filename->string[0] != '\0'){kemoview_read_PSF_colormap_file(filename, kemo_sgl);};
 	kemoview_free_kvstring(filename);
 	
 	gtk_widget_queue_draw(window);
@@ -36,11 +42,13 @@ static GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_type *kemo_s
                                                   struct colormap_view *color_vws){
     GtkWidget *expander_color;
     GtkWidget *saveButton = gtk_button_new_with_label("Save colormap...");
-	g_signal_connect(G_OBJECT(saveButton), "clicked", 
+    g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
+	g_signal_connect(G_OBJECT(saveButton), "clicked",
 				G_CALLBACK(save_colormap_file_panel_CB), G_OBJECT(window));
 	
 	GtkWidget *loadButton = gtk_button_new_with_label("Load colormap...");
-	g_signal_connect(G_OBJECT(loadButton), "clicked", 
+    g_object_set_data(window, "kemoview",  (gpointer) kemo_sgl);
+	g_signal_connect(G_OBJECT(loadButton), "clicked",
 				G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(window));
 	
     GtkWidget *frame_box = init_kemoview_colormap_list_vbox(kemo_sgl, color_vws);
@@ -97,7 +105,7 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
 
 void set_vector_plot_availablity(struct kemoviewer_type *kemo_sgl,
                                  struct psf_gtk_menu *psf_gmenu){
-    int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
+    int if_psf = kemoview_get_each_PSF_field_param(kemo_sgl, FIELD_SEL_FLAG);
     if(kemoview_get_PSF_num_component(kemo_sgl, if_psf) == 3){
         gtk_widget_set_sensitive(psf_gmenu->expander_vect, TRUE);
     } else {

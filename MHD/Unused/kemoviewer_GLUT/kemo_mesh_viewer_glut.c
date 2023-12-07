@@ -93,7 +93,7 @@ static void save_evolution_handler(){
 	int iflag;
     struct kv_string *image_prefix = kemoview_alloc_kvstring();
 	
-	ist_udt = kemoview_get_PSF_full_path_file_prefix(image_prefix, &iflag);
+	ist_udt = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, image_prefix, &iflag);
 	int id_image = input_image_format();
 	read_psf_evolution_steps(&ist_udt, &ied_udt, &inc_udt);
 	
@@ -720,7 +720,7 @@ static void make_2nd_level_psf_menu(){
 	
 	if(num_psf > 1){
         stripped_filehead = kemoview_alloc_kvstring();
-		istep = kemoview_get_PSF_file_prefix(stripped_filehead);
+		istep = kemoview_get_PSF_file_prefix(kemo_sgl, stripped_filehead);
 		sprintf(tmp_menu, "Current: %s", stripped_filehead->string);
         kemoview_free_kvstring(stripped_filehead);
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_current_psf_menu);

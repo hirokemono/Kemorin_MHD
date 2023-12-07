@@ -53,8 +53,12 @@ extern "C" {
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
     void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt);
 
-    void kemoview_release_PSF_gl_texture(void);
 
+    int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
+                                     struct kv_string *stripped_filehead);
+    void kemoview_release_PSF_gl_texture(void);
+    void * kemoview_link_active_colormap_param(int i_current, int icomp,
+                                               struct kemoviewer_type *kemoviewer);
 
 #ifdef PNG_OUTPUT
 /* Load texture onto current sectioning image */

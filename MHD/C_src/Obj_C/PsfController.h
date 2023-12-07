@@ -180,7 +180,6 @@
 - (void)awakeFromNib;
 
 
-- (void) SetCurrentPSFFile;
 - (void) SetPsfFieldMenu;
 - (void) SetPsfComponentMenu:(NSInteger)isel
                     kemoview:(struct kemoviewer_type *) kemo_sgl

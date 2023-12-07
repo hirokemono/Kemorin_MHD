@@ -156,7 +156,7 @@ static void load_psf_colormap_glui(int sel){
 	strcat(filename->string, "/");
 	strcat(filename->string, text_fname.c_str());
 	
-	kemoview_read_PSF_colormap_file(filename);
+	kemoview_read_PSF_colormap_file(filename, kemo_sgl);
 	kemoview_free_kvstring(filename);
 	draw_mesh_w_menu();
 	
@@ -832,7 +832,7 @@ static void make_2nd_level_psf_menu(){
 	
 	if(num_psf > 1){
         stripped_filehead = kemoview_alloc_kvstring();
-		istep = kemoview_get_PSF_file_prefix(stripped_filehead);
+		istep = kemoview_get_PSF_file_prefix(kemo_sgl, stripped_filehead);
 		sprintf(tmp_menu, "Current: %s", stripped_filehead->string);
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_current_psf_menu);
         kemoview_free_kvstring(stripped_filehead);

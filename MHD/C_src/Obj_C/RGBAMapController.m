@@ -49,7 +49,8 @@
 		NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
 		
         struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
-		kemoview_write_PSF_colormap_file(filename);
+        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+		kemoview_write_PSF_colormap_file(filename, kemo_sgl);
         kemoview_free_kvstring(filename);
 	};
                                     }];
@@ -73,7 +74,7 @@
                                            NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
                                            
                                            struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
-                                           kemoview_read_PSF_colormap_file(filename);
+                                           kemoview_read_PSF_colormap_file(filename, kemo_sgl);
                                            kemoview_free_kvstring(filename);
                                            
                                            [_metalView UpdateImage];

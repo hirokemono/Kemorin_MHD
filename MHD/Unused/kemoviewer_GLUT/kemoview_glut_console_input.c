@@ -494,7 +494,7 @@ void save_PSF_colormap_file_glut(){
 	*delchara='\0';
 
     filename = kemoview_init_kvstring_by_string(buf);
-	kemoview_write_PSF_colormap_file(filename);
+	kemoview_write_PSF_colormap_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	return;
 };
@@ -510,7 +510,7 @@ void load_PSF_colormap_file_glut(){
 	*delchara='\0';
 
     filename = kemoview_init_kvstring_by_string(buf);
-	kemoview_read_PSF_colormap_file(filename);
+	kemoview_read_PSF_colormap_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	return;
 };

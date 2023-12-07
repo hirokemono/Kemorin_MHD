@@ -52,7 +52,7 @@ static void save_psf_colormap_glui(int sel){
 	strcat(filename->string, "/");
 	strcat(filename->string, text_fname.c_str());
 	
-	kemoview_write_PSF_colormap_file(filename);
+	kemoview_write_PSF_colormap_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	GLUI_Master.close_all();
 	return;
@@ -254,7 +254,7 @@ void set_saveimage_menu_glui(int winid){
 	
 	int_box = 0;
     image_prefix = kemoview_alloc_kvstring();
-	istep = kemoview_get_PSF_full_path_file_prefix(image_prefix, &iflag);
+	istep = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, image_prefix, &iflag);
 	
 	glui_fwin = GLUI_Master.create_glui("Set file name for image", 0, 100, 100);
 	set_imagefile_brouser_glui();
@@ -275,7 +275,7 @@ void set_evolution_menu_glui(int winid){
 	
 	int_box = 0;
     image_prefix = kemoview_alloc_kvstring();
-	ist_udt = kemoview_get_PSF_full_path_file_prefix(image_prefix, &iflag);
+	ist_udt = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, image_prefix, &iflag);
 	ied_udt = ist_udt;
 	inc_udt = 1;
 	
@@ -299,7 +299,7 @@ void set_rotateimages_menu_glui(int winid){
 	
 	int_box = 0;
     image_prefix = kemoview_alloc_kvstring();
-	istep = kemoview_get_PSF_full_path_file_prefix(image_prefix, &iflag);
+	istep = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, image_prefix, &iflag);
 	
 	glui_fwin = GLUI_Master.create_glui("Set file name for image", 0, 100, 100);
 	set_imagefile_brouser_glui();

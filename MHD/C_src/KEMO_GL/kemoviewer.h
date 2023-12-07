@@ -436,18 +436,21 @@ extern "C" {
     void kemoview_reset_animation(void);
 
 /* subroutines for surafces */
-	void kemoview_set_PSF_loaded_params(int selected, int input);
-    void kemoview_set_loaded_PSF_flag(int id_psf, int iflag);
+	void kemoview_set_PSF_loaded_params(int selected, int input,
+                                        struct kemoviewer_type *kemoviewer);
 
-	int kemoview_get_PSF_loaded_params(int selected);
-    int kemoview_get_PSF_loaded_flag(int id_psf);
+	int kemoview_get_PSF_loaded_params(struct kemoviewer_type *kemoviewer, int selected);
+    int kemoview_get_PSF_loaded_flag(struct kemoviewer_type *kemoviewer, int id_psf);
     
-    void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m);
-    int kemoview_get_PSF_full_path_file_prefix(struct kv_string *psf_filehead, int *iflag);
-    int kemoview_get_PSF_file_prefix(struct kv_string *stripped_filehead);
+    void kemoview_get_PSF_full_path_file_name(struct kemoviewer_type *kemoviewer,
+                                              struct kv_string *ucd_m);
+    int kemoview_get_PSF_full_path_file_prefix(struct kemoviewer_type *kemoviewer,
+                                               struct kv_string *psf_filehead, int *iflag);
     
-	void kemoview_set_each_PSF_field_param(int selected, int input);    
-	int kemoview_get_each_PSF_field_param(int selected);
+	void kemoview_set_each_PSF_field_param(int selected, int input,
+                                           struct kemoviewer_type *kemoviewer);    
+	int kemoview_get_each_PSF_field_param(struct kemoviewer_type *kemoviewer,
+                                          int selected);
 	
     int kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i);
 	void kemoview_get_PSF_field_name(struct kemoviewer_type *kemoviewer,
@@ -460,10 +463,8 @@ extern "C" {
     void kemoview_set_PSF_polygon_mode(int iflag, struct kemoviewer_type *kemoviewer);
     void kemoview_set_PSF_tangential_vec_mode(int iflag, struct kemoviewer_type *kemoviewer);
     
-    int kemoview_get_PSF_draw_refv(void);
-    
-	void * kemoview_link_active_colormap_param(void);
-	
+    int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer);
+
 	int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
                                         int selected);
 	int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
@@ -516,9 +517,10 @@ extern "C" {
     void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
                                         int i_point, double *value, double *opacity);
     
-    void kemoview_write_PSF_colormap_file(struct kv_string *filename);
-    void kemoview_read_PSF_colormap_file(struct kv_string *filename);
-	void kemoview_check_PSF_colormap_control(void);
+    void kemoview_write_PSF_colormap_file(struct kv_string *filename,
+                                          struct kemoviewer_type *kemoviewer);
+    void kemoview_read_PSF_colormap_file(struct kv_string *filename,
+                                         struct kemoviewer_type *kemoviewer);
     
     
     /* Subroutines for field lines */

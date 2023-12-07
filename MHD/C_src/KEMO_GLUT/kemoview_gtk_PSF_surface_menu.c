@@ -222,7 +222,7 @@ void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 0);
 	};
 
-	icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
+	icomp = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
 	value_min = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, icomp);
 	value_max = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MAX, icomp);
 	sprintf(min_text, "Min(%1.2e): ", value_min);

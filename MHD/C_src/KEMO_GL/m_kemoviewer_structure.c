@@ -132,7 +132,7 @@ void kemoview_close_mesh_view(void){
 
 int kemoview_close_PSF_view(void){
 	close_PSF_view(kemo_sgl->kemo_psf);
-	return kemoview_get_PSF_loaded_params(NUM_LOADED);
+    return get_PSF_loaded_params(kemo_sgl->kemo_psf, NUM_LOADED);
 }
 
 void kemoview_close_fieldline_view(void){
@@ -585,40 +585,39 @@ void kemoview_reset_animation(void){reset_rot_animation(kemo_sgl->view_s);};
 
 
 /* Subroutines for surface rendering */
-void kemoview_set_PSF_loaded_params(int selected, int input){
-	set_PSF_loaded_params(selected, input, kemo_sgl->kemo_psf);
+void kemoview_set_PSF_loaded_params(int selected, int input,
+                                    struct kemoviewer_type *kemoviewer){
+	set_PSF_loaded_params(selected, input, kemoviewer->kemo_psf);
 };
 
-int kemoview_get_PSF_loaded_params(int selected){
-	return get_PSF_loaded_params(kemo_sgl->kemo_psf, selected);
+int kemoview_get_PSF_loaded_params(struct kemoviewer_type *kemoviewer, int selected){
+	return get_PSF_loaded_params(kemoviewer->kemo_psf, selected);
 };
-int kemoview_get_PSF_loaded_flag(int id_psf){
-	return get_PSF_loaded_flag(id_psf, kemo_sgl->kemo_psf->psf_a);
+int kemoview_get_PSF_loaded_flag(struct kemoviewer_type *kemoviewer, int id_psf){
+	return get_PSF_loaded_flag(id_psf, kemoviewer->kemo_psf->psf_a);
 };
 
 
-void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m){
-	alloc_set_ucd_file_name_by_psf(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], ucd_m);
+void kemoview_get_PSF_full_path_file_name(struct kemoviewer_type *kemoviewer,
+                                          struct kv_string *ucd_m){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+	alloc_set_ucd_file_name_by_psf(kemoviewer->kemo_psf->psf_m[i_psf], ucd_m);
 	return;
 }
-int kemoview_get_PSF_full_path_file_prefix(struct kv_string *psf_filehead, int *iflag){
-    return send_each_psf_file_header_full(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
+int kemoview_get_PSF_full_path_file_prefix(struct kemoviewer_type *kemoviewer,
+                                           struct kv_string *psf_filehead, int *iflag){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    return send_each_psf_file_header_full(kemoviewer->kemo_psf->psf_m[i_psf],
 										  psf_filehead, iflag);
 }
 
-int kemoview_get_PSF_file_prefix(struct kv_string *stripped_filehead){
-	struct kv_string* stripped_dir = alloc_kvstring();
-	int istep = send_each_psf_file_dir_head(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
-											stripped_dir, stripped_filehead);
-	dealloc_kvstring(stripped_dir);
-	return istep;
-}
-
-void kemoview_set_each_PSF_field_param(int selected, int input){
-	return set_each_PSF_field_param(selected, input, kemo_sgl->kemo_psf);
+void kemoview_set_each_PSF_field_param(int selected, int input,
+                                       struct kemoviewer_type *kemoviewer){
+	return set_each_PSF_field_param(selected, input, kemoviewer->kemo_psf);
 };
-int kemoview_get_each_PSF_field_param(int selected){
-	return get_each_PSF_field_param(selected, kemo_sgl->kemo_psf);
+int kemoview_get_each_PSF_field_param(struct kemoviewer_type *kemoviewer,
+                                      int selected){
+	return get_each_PSF_field_param(selected, kemoviewer->kemo_psf);
 };
 
 int kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i){
@@ -640,16 +639,10 @@ void kemoview_set_PSF_tangential_vec_mode(int iflag, struct kemoviewer_type *kem
 	set_psf_vector_mode(kemoviewer->kemo_psf->psf_m[i_psf], iflag);
 };
 
-int kemoview_get_PSF_draw_refv(void){
-	return send_draw_psf_refv(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
+int kemoview_get_PSF_draw_refv(struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+	return send_draw_psf_refv(kemoviewer->kemo_psf->psf_m[i_psf]);
 };
-
-void * kemoview_link_active_colormap_param(void){
-	int i_current = kemoview_get_PSF_loaded_params(SET_CURRENT);
-	int icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-	void *current_cmap = kemo_sgl->kemo_psf->psf_m[i_current]->cmap_psf_comp[icomp];
-	return current_cmap;
-}
 
 int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
                                     int selected){
@@ -777,20 +770,19 @@ void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
 									  i_point, value, opacity);
 }
 
-void kemoview_write_PSF_colormap_file(struct kv_string *filename){
-    write_each_PSF_colormap_control_file(filename->string, 
-                                         kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis,
-                                         kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
+void kemoview_write_PSF_colormap_file(struct kv_string *filename,
+                                      struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    write_each_PSF_colormap_control_file(filename->string,
+                                         kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
+                                         kemoviewer->kemo_psf->psf_m[i_psf]);
 }
-void kemoview_read_PSF_colormap_file(struct kv_string *filename){
-    read_each_PSF_colormap_control_file(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
+void kemoview_read_PSF_colormap_file(struct kv_string *filename,
+                                     struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    read_each_PSF_colormap_control_file(kemoviewer->kemo_psf->psf_m[i_psf],
 										filename->string);
 }
-void kemoview_check_PSF_colormap_control(void){
-    check_each_PSF_colormap_control(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis,
-                                    kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-}
-
 
 /* Subroutines for field lines */
 

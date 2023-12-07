@@ -95,6 +95,17 @@ void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt){
 };
 
 
+
+int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
+                                 struct kv_string *stripped_filehead){
+    struct kv_string* stripped_dir = alloc_kvstring();
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    int istep = send_each_psf_file_dir_head(kemoviewer->kemo_psf->psf_m[i_psf],
+                                            stripped_dir, stripped_filehead);
+    dealloc_kvstring(stripped_dir);
+    return istep;
+}
+
 void kemoview_release_PSF_gl_texture(void){
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
@@ -102,6 +113,12 @@ void kemoview_release_PSF_gl_texture(void){
                                 kemo_gl->kemo_shaders->texture_name);
     return;
 };
+
+void * kemoview_link_active_colormap_param(int i_current, int icomp,
+                                           struct kemoviewer_type *kemoviewer){
+    void *current_cmap = kemoviewer->kemo_psf->psf_m[i_current]->cmap_psf_comp[icomp];
+    return current_cmap;
+}
 
 
 /*  Routines using libpng */

@@ -74,12 +74,13 @@ NSData *SnapshotData;
 }
 
 
--(void) InitEvolutionStepByPSF
+-(void) InitEvolutionStepByPSF:(struct kemoviewer_type *) kemo_sgl
 {
 	int iflag;
     struct kv_string *psf_filehead = kemoview_alloc_kvstring();
     
-	self.CurrentStep = kemoview_get_PSF_full_path_file_prefix(psf_filehead, &iflag);
+	self.CurrentStep
+        = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, psf_filehead, &iflag);
 	self.EvolutionStartStep = self.CurrentStep;
 	self.EvolutionEndStep =   self.CurrentStep;
     

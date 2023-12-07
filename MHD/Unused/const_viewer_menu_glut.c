@@ -33,10 +33,10 @@ void glut_current_PSF_select() {
 	
 	id_current = kemoview_get_curent_PSF_ID();
 	for (i=0; i< kemoview_get_PSF_max_loaded(); i++) {
-		if(i != id_current && kemoview_get_PSF_loaded_flag(i) > 0){
+		if(i != id_current && kemoview_get_PSF_loaded_flag(kemo_sgl, i) > 0){
 			kemoview_set_current_PSF(i);
             stripped_filehead = kemoview_alloc_kvstring();
-			istep = kemoview_get_PSF_file_prefix(stripped_filehead);
+			istep = kemoview_get_PSF_file_prefix(kemo_sgl, stripped_filehead);
 			sprintf(title, "%d: %s", i, stripped_filehead->string);
             kemoview_free_kvstring(stripped_filehead);
 			glutAddMenuEntry(title,i);

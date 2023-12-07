@@ -64,7 +64,7 @@
 -(id) init;
 -(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image;
 
--(void) InitEvolutionStepByPSF;
+-(void) InitEvolutionStepByPSF:(struct kemoviewer_type *) kemo_sgl;
 -(void) InitEvolutionStepByFline:(struct kemoviewer_type *) kemo_sgl;
 
 -(void) SaveKemoviewPNGFile:(NSString*)ImageFilehead;

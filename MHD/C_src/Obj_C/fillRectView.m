@@ -35,7 +35,7 @@
     int		i, npoint;
     
 
-    if(kemoview_get_PSF_loaded_params(NUM_LOADED) < 1) return;
+    if(kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED) < 1) return;
 	npoint = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
 	kemoview_get_PSF_color_items(kemo_sgl, IZERO, &colorMin, &color);
 	kemoview_get_PSF_color_items(kemo_sgl, (npoint-1), &colorMax, &color);

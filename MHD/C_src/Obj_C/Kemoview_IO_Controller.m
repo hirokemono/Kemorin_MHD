@@ -37,7 +37,7 @@
 	else if(iflag_datatype==IFLAG_SURFACES) {
 		[_psfController DrawPsfFile:kemoviewOpenFilehead
                            kemoview:kemo_sgl];
-		[_movieMakerController InitEvolutionStepByPSF];
+        [_movieMakerController InitEvolutionStepByPSF:kemo_sgl];
 	}
 	else if(iflag_datatype==IFLAG_LINES) {
 		[_flineController OpenFieldlineFile:kemoviewOpenFilehead

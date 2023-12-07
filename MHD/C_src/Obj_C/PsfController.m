@@ -138,8 +138,10 @@
 	NSNumber *stnum;
     struct kv_string *colorname;
 	
-	PsfNumberOfField =  kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
-	PsfTotalComponent = kemoview_get_each_PSF_field_param(NTOT_COMPONENT_FLAG);
+	PsfNumberOfField
+        =  kemoview_get_each_PSF_field_param(kemo_sgl, NUM_FIELD_FLAG);
+	PsfTotalComponent
+        = kemoview_get_each_PSF_field_param(kemo_sgl, NTOT_COMPONENT_FLAG);
 	[PsfFieldName removeAllObjects];	
 	[PsfNumberOfComponent removeAllObjects];
 	[PsfMinimum removeAllObjects];
@@ -177,10 +179,12 @@
 	double current_value;
 	int i_digit;
 	
-	self.PSFSelectedField =     kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
-	self.PSFSelectedComponent = kemoview_get_each_PSF_field_param(COMPONENT_SEL_FLAG);
+	self.PSFSelectedField
+        = kemoview_get_each_PSF_field_param(kemo_sgl, FIELD_SEL_FLAG);
+	self.PSFSelectedComponent
+        = kemoview_get_each_PSF_field_param(kemo_sgl, COMPONENT_SEL_FLAG);
     
-	int iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
+	int iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
 	
 	self.PSFSurfaceSwitch 
         =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
@@ -261,10 +265,12 @@
 	self.PSFSelectedField =     IZERO;
 	self.PSFSelectedComponent = IZERO;
     
-	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField);
-    kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent);
+	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField,
+                                      kemo_sgl);
+    kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent,
+                                      kemo_sgl);
     /*   
-     int iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
+     int iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
      
      self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
      self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
@@ -330,15 +336,15 @@
 	NSString *PsfNumberTxt;
 	NSString *PsfFileHeader;
     
-	PsfNumberOfdata = kemoview_get_PSF_loaded_params(MAX_LOADED);
+	PsfNumberOfdata = kemoview_get_PSF_loaded_params(kemo_sgl, MAX_LOADED);
 	[LoadedPsfFileHead removeAllObjects];
 	[LoadedPsfID removeAllObjects];
 	for(i = 0; i < PsfNumberOfdata; i++){
-		if(kemoview_get_PSF_loaded_flag(i) > 0){
-			kemoview_set_PSF_loaded_params(SET_CURRENT, i);
+		if(kemoview_get_PSF_loaded_flag(kemo_sgl, i) > 0){
+			kemoview_set_PSF_loaded_params(SET_CURRENT, i, kemo_sgl);
 
             psf_filehead = kemoview_alloc_kvstring();
-			istep = kemoview_get_PSF_full_path_file_prefix(psf_filehead, &ifmt);
+			istep = kemoview_get_PSF_full_path_file_prefix(kemo_sgl, psf_filehead, &ifmt);
 			PsfNumberTxt = [[NSString alloc] initWithFormat:@"%d: ",i+1];
 			PsfFileHeader = [[[NSString alloc] initWithUTF8String:psf_filehead->string] lastPathComponent];
 			PsfFileHeader = [PsfNumberTxt stringByAppendingString:PsfFileHeader];
@@ -350,21 +356,21 @@
 		}
 	}
     
-	PsfNumberOfdata = kemoview_get_PSF_loaded_params(NUM_LOADED);
+	PsfNumberOfdata = kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
 	[_currentPsfMenu removeAllItems];
 	for(i = 0; i < PsfNumberOfdata; i++){
 		[_currentPsfMenu addItemWithTitle:[LoadedPsfFileHead objectAtIndex: i]];
 		j = [[LoadedPsfID objectAtIndex: i] intValue];
-		if(j == kemoview_get_PSF_loaded_params(SET_CURRENT)) self.currentPSFID = i;
+		if(j == kemoview_get_PSF_loaded_params(kemo_sgl, SET_CURRENT)) self.currentPSFID = i;
 	};
     [self UpdateCurrentPsfMenu:kemo_sgl];
 }
 
-- (void) SetCurrentPSFFile
+- (void) SetCurrentPSFFile:(struct kemoviewer_type *) kemo_sgl
 {
     struct kv_string *ucd_m = kemoview_alloc_kvstring();
 
-    kemoview_get_PSF_full_path_file_name(ucd_m);
+    kemoview_get_PSF_full_path_file_name(kemo_sgl, ucd_m);
     NSString *str = [NSString stringWithCString:ucd_m->string encoding:NSUTF8StringEncoding];
     NSURL *urlReadPSF = [NSURL fileURLWithPath:str]; 
     [_psfPathControl setURL:urlReadPSF];
@@ -438,7 +444,7 @@
 		};
 		
         
-		iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
+		iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
 		self.PsfMinimumValue 
             = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
 		self.PsfMaximumValue
@@ -453,7 +459,7 @@
 	int i_digit;
 	int iplotted;
     
-	iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
+	iplotted = kemoview_get_each_PSF_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
     
  	self.PsfMinimumValue = kemoview_get_each_PSF_data_range(kemo_sgl, 
                                                             ISET_COLOR_MIN, iplotted);
@@ -489,7 +495,7 @@
 	[_kemoviewControl SetViewTypeMenu:id_viewtype
                              kemoview:kemo_sgl];
 	
-	self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
+	self.DrawPsfFlag = kemoview_get_PSF_loaded_params(kemo_sgl, DRAW_SWITCH);
     [_ElasticControl UpdateWindow:self.DrawPsfFlag];
     [self CopyPsfDisplayFlagsFromC:kemo_sgl];
 	[self SetPsfFieldMenu];
@@ -501,7 +507,7 @@
     [_kemoviewControl Set3DView:kemo_sgl];
 	[_metalView UpdateImage];
 	
-	int num_loaded =  kemoview_get_PSF_loaded_params(NUM_LOADED);
+	int num_loaded =  kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
 	int nlimit_load = kemoview_get_PSF_maximum_load();
 	if(num_loaded >= nlimit_load-1){
 		self.psfMoreOpenFlag = 1;
@@ -511,7 +517,7 @@
     [_kemoviewControl TimeLabelAvaiability];
     [_kemoviewControl FileStepLabelAvaiability];
     
-    [self SetCurrentPSFFile];
+    [self SetCurrentPSFFile:kemo_sgl];
 };
 
 - (void) ReadTextureFile:(NSString *) PsfOpenFilename
@@ -609,7 +615,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [self ResetCurrentPsfParam:kemo_sgl];
     int num_loaded = kemoview_close_PSF_view();
-    self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
+    self.DrawPsfFlag = kemoview_get_PSF_loaded_params(kemo_sgl, DRAW_SWITCH);
     [_ElasticControl UpdateWindow:self.DrawPsfFlag];
     
 	if(num_loaded > 0){
@@ -631,8 +637,8 @@
 {	
 	int id_current = [[LoadedPsfID objectAtIndex:self.currentPSFID] intValue];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_PSF_loaded_params(SET_CURRENT, id_current);
-    [self SetCurrentPSFFile];
+	kemoview_set_PSF_loaded_params(SET_CURRENT, id_current, kemo_sgl);
+    [self SetCurrentPSFFile:kemo_sgl];
     [self UpdateCurrentPsfMenu:kemo_sgl];
 }
 
@@ -641,7 +647,8 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	[self SetPsfComponentMenu:self.PSFSelectedField
                      kemoview:kemo_sgl];
-    kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField);
+    kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField,
+                                      kemo_sgl);
 	
     [self SetPsfRanges:kemo_sgl];
     
@@ -651,7 +658,8 @@
 - (IBAction) PsfComponentAction:(id)sender
 {	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent);
+	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent,
+                                      kemo_sgl);
 	
     [self SetPsfRanges:kemo_sgl];
     
