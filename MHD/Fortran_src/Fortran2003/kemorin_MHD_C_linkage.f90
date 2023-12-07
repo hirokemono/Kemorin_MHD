@@ -181,7 +181,8 @@
 !    void kemoview_add_PSF_opacity_list(double add_value, double add_opacity);
 !	
 !    void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
-!                                          double maxvalue, int i_max_digit);
+!                                          double maxvalue, int i_max_digit,
+!                                          struct kemoviewer_type *kemoviewer);
 !
 !    void kemoview_set_PSF_single_color(double *rgba,
 !                                       struct kemoviewer_type *kemoviewer);

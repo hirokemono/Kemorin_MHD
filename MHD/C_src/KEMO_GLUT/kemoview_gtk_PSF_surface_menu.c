@@ -139,7 +139,8 @@ static void MinRangeValueChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
                                       &value_max, &i_max_digit);
 	kemoview_set_PSF_linear_colormap(gtk_floatvalue, i_min_digit, 
-									 value_max, i_max_digit);
+									 value_max, i_max_digit,
+                                     kemo_sgl);
 	draw_full();
 }
 static void MinRangeDigitChange_CB(GtkWidget *entry, gpointer data)
@@ -153,7 +154,8 @@ static void MinRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
                                       &value_max, &i_max_digit);
 	kemoview_set_PSF_linear_colormap(value_min, gtk_intvalue, 
-									 value_max, i_max_digit);
+									 value_max, i_max_digit,
+                                     kemo_sgl);
 	draw_full();
 }
 static void MaxRangeValueChange_CB(GtkWidget *entry, gpointer data)
@@ -167,7 +169,8 @@ static void MaxRangeValueChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
                                       &value_max, &i_max_digit);
 	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
-									 gtk_floatvalue, i_max_digit);
+									 gtk_floatvalue, i_max_digit,
+                                     kemo_sgl);
 	draw_full();
 }
 static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
@@ -181,7 +184,8 @@ static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
                                       &value_max, &i_max_digit);
 	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
-									 value_max, gtk_intvalue);
+									 value_max, gtk_intvalue,
+                                     kemo_sgl);
 	draw_full();
 }
 

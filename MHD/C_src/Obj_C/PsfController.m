@@ -713,19 +713,23 @@
 	[_metalView UpdateImage];
 }
 
-- (IBAction) SetPSFDisplayrange:(id)pSender {
-	
+- (IBAction) SetPSFDisplayrange:(id)pSender
+{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_linear_colormap(self.PsfMinimumRange, (int) self.PsfMinimumDigit,
-									 self.PsfMaximumRange, (int) self.PsfMaximumDigit);
+									 self.PsfMaximumRange, (int) self.PsfMaximumDigit,
+                                     kemo_sgl);
 //	[_metalView UpdateImage];
 }
 
-- (IBAction) ShowIsolineNumber:(id)pSender {
+- (IBAction) ShowIsolineNumber:(id)pSender
+{
 	kemoview_set_PSF_color_param(ISET_NLINE, (int) self.IsolineNumber);
 //    [_metalView UpdateImage];
 }
 
-- (IBAction) SetIsolineWidth:(id)pSender {
+- (IBAction) SetIsolineWidth:(id)pSender
+{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, (double) self.IsolineWidth,
                                       (int) self.IsolineDigit, kemo_sgl);
