@@ -38,7 +38,7 @@
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     if(self.numLightTable <= 0){
-        kemoview_init_phong_light_list();
+        kemoview_init_phong_light_list(kemo_sgl);
         
         self.numLightTable = kemoview_get_num_light_position(kemo_sgl);
 
@@ -64,7 +64,7 @@
         self.specularMaterial = [[defaults stringForKey:@"materialSpecular"] floatValue];
         self.shinessMaterial =  [[defaults stringForKey:@"materialShineness"] floatValue];
 
-        kemoview_alloc_phong_light_list((int) self.numLightTable);
+        kemoview_alloc_phong_light_list((int) self.numLightTable, kemo_sgl);
         kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial, kemo_sgl);
         kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial, kemo_sgl);
         kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial, kemo_sgl);
@@ -86,7 +86,7 @@
 		t2 = [[self.elevationLightPosition objectAtIndex:isel  ] floatValue];
  		p2 = [[self.azimuthLightPosition   objectAtIndex:isel  ] floatValue];
         
-		kemoview_add_phong_light_list(isel, r2, t2, p2);
+		kemoview_add_phong_light_list(isel, r2, t2, p2, kemo_sgl);
         [self SetLightTable:kemo_sgl];
 	}
 	[_metalView UpdateImage];
@@ -106,7 +106,7 @@
 	if ([idlightTableView numberOfSelectedRows] > 0) {
 		for(i= n;i>0;i--){
 			if([SelectedList containsIndex:i] == TRUE){
-				kemoview_delete_phong_light_list(i);
+				kemoview_delete_phong_light_list(i, kemo_sgl);
 			}
 		};
 	}
@@ -211,11 +211,11 @@
 		if(i < n_ini){
 			kemoview_set_each_light_position(i, r, t, p, kemo_sgl);
 		} else {
-			kemoview_add_phong_light_list(i, r, t, p);
+			kemoview_add_phong_light_list(i, r, t, p, kemo_sgl);
 		};
 	};
 	for(i=n_ini; i>self.numLightTable;i--){
-		kemoview_delete_phong_light_list(i-1);
+		kemoview_delete_phong_light_list(i-1, kemo_sgl);
 	};
 	[self SetLightTable:kemo_sgl];
 	return;

@@ -146,7 +146,7 @@ int draw_glfw_test(void) {
 	kemoview_init_lighting();
     kemoview_gl_background_color();
     kemoview_gl_init_lighting(kemo_gl);
-	kemoview_init_phong_light_list();
+	kemoview_init_phong_light_list(kemo_sgl);
 	
 	glClear(GL_COLOR_BUFFER_BIT);
 	draw_full();

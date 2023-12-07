@@ -964,7 +964,7 @@ void draw_mesh_kemo(void) {
 	kemoview_init_lighting();
     kemoview_gl_background_color();
     kemoview_gl_init_lighting(kemo_gl);
-	kemoview_init_phong_light_list();
+	kemoview_init_phong_light_list(kemo_sgl);
 	
 	
 	menu_win = create_kemoview_menu();

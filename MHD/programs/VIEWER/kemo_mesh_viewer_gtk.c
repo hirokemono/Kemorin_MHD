@@ -85,7 +85,7 @@ static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
 	kemoview_init_lighting();
     kemoview_gl_background_color(single_kemoview);
     kemoview_gl_init_lighting(kemo_gl);
-	kemoview_init_phong_light_list();
+	kemoview_init_phong_light_list(single_kemoview);
 	
 	return TRUE;
 };

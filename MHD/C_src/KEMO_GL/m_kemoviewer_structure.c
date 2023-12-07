@@ -241,25 +241,23 @@ int kemoview_toggle_object_properties(int selected, struct kemoviewer_type *kemo
 
 
 
-void kemoview_alloc_phong_light_list(int num){
-	alloc_phong_light_list(kemo_sgl->kemo_buffers->kemo_lights, num);
-};
-void kemoview_dealloc_phong_light_list(void){
-	dealloc_phong_light_list(kemo_sgl->kemo_buffers->kemo_lights);
-};
-void kemoview_realloc_phong_light_list(int num){
-	realloc_phong_light_list(kemo_sgl->kemo_buffers->kemo_lights, num);
+void kemoview_alloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer){
+	alloc_phong_light_list(kemoviewer->kemo_buffers->kemo_lights, num);
 };
 
-void kemoview_delete_phong_light_list(int i_delete){
-	delete_phong_light_list(kemo_sgl->kemo_buffers->kemo_lights, i_delete);
+void kemoview_delete_phong_light_list(int i_delete, struct kemoviewer_type *kemoviewer){
+	delete_phong_light_list(kemoviewer->kemo_buffers->kemo_lights, i_delete);
 };
-void kemoview_add_phong_light_list(int i_add, float r, float t, float p){
-	add_phong_light_list(kemo_sgl->view_s, kemo_sgl->kemo_buffers->kemo_lights, i_add, r, t, p);
+void kemoview_add_phong_light_list(int i_add, float r, float t, float p,
+                                   struct kemoviewer_type *kemoviewer){
+	add_phong_light_list(kemoviewer->view_s,
+                         kemoviewer->kemo_buffers->kemo_lights,
+                         i_add, r, t, p);
 };
 
-void kemoview_init_phong_light_list(void){
-	init_phong_light_list(kemo_sgl->view_s, kemo_sgl->kemo_buffers->kemo_lights);
+void kemoview_init_phong_light_list(struct kemoviewer_type *kemoviewer){
+	init_phong_light_list(kemoviewer->view_s,
+                          kemoviewer->kemo_buffers->kemo_lights);
 };
 
 

@@ -304,15 +304,13 @@ extern "C" {
     int kemoview_get_object_property_flags(struct kemoviewer_type *kemoviewer, int selected);
     int kemoview_toggle_object_properties(int selected, struct kemoviewer_type *kemoviewer);
 	
+/* Lighting parameters */
+	void kemoview_alloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer);
+	void kemoview_delete_phong_light_list(int i_delete, struct kemoviewer_type *kemoviewer);
+	void kemoview_add_phong_light_list(int i_add, float r, float t, float p,
+                                       struct kemoviewer_type *kemoviewer);
 	
-	void kemoview_alloc_phong_light_list(int num);
-	void kemoview_dealloc_phong_light_list(void);
-	void kemoview_realloc_phong_light_list(int num);
-	
-	void kemoview_delete_phong_light_list(int i_delete);
-	void kemoview_add_phong_light_list(int i_add, float r, float t, float p);
-	
-	void kemoview_init_phong_light_list(void);
+	void kemoview_init_phong_light_list(struct kemoviewer_type *kemoviewer);
 	
 	
 	void kemoview_set_each_light_position(int i_point, float r, float t, float p,
