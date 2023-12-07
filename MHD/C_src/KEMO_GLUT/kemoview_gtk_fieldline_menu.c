@@ -131,9 +131,9 @@ void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
 	/*
 	int ifield =  kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
 	int num_fld = kemoview_get_fline_field_param(kemo_sgl, NUM_FIELD_FLAG);
-	int num_comp = kemoview_get_fline_color_num_comps(ifield);
+	int num_comp = kemoview_get_fline_color_num_comps(kemo_sgl, ifield);
 	*/
-	int icolor_mode = kemoview_get_fline_color_param(ISET_COLORMAP);
+	int icolor_mode = kemoview_get_fline_color_param(kemo_sgl, ISET_COLORMAP);
 	int itype_fline = kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
 	
 	int icomp =   kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);

@@ -186,9 +186,11 @@ static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer us
 static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user_data)
 {
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(combobox_cmap), "kemoview");
 	int index_mode = set_color_mode_CB(combobox_cmap, color_vws);
 	
-	kemoview_set_PSF_color_param(ISET_COLORMAP, index_mode);
+	kemoview_set_PSF_color_param(ISET_COLORMAP, index_mode, kemo_sgl);
     gtk_widget_queue_draw(color_vws->scrolled_window);
     return;
 }
@@ -286,8 +288,9 @@ static void add_kemoview_omap_list_box(struct kemoviewer_type *kemo_sgl,
 GtkWidget * init_kemoview_colormap_list_vbox(struct kemoviewer_type *kemo_sgl,
                                              struct colormap_view *color_vws){
     GtkWidget *frame_cmap;
-    int iflag = kemoview_get_PSF_color_param(ISET_COLORMAP);
+    int iflag = kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP);
     color_vws->combobox_cmap = init_combobox_cmap(iflag);
+    g_object_set_data(G_OBJECT(color_vws->combobox_cmap), "kemoview",  (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(color_vws->combobox_cmap), "changed",
                      G_CALLBACK(set_kemoview_color_mode_CB), (gpointer) color_vws);
 	

@@ -26,11 +26,16 @@ static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer us
 
 static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = ( struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_gdcolor);
 	
-	if (index_mode == RAINBOW_PSF_LINE)    {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, RAINBOW_LINE);}
-	else if (index_mode == WHITE_PSF_LINE) {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, WHITE_LINE);}
-    else if (index_mode == BLACK_PSF_LINE) {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, BLACK_LINE);}
+	if (index_mode == RAINBOW_PSF_LINE){
+        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, RAINBOW_LINE, kemo_sgl);
+    }else if (index_mode == WHITE_PSF_LINE){
+        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, WHITE_LINE, kemo_sgl);
+    }else if (index_mode == BLACK_PSF_LINE){
+        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, BLACK_LINE, kemo_sgl);
+    };
 	
 	draw_full();
 	return;
@@ -38,8 +43,9 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_d
 
 static void set_nline_CB(GtkWidget *entry, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = ( struct kemoviewer_type *) user_data;
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_color_param(ISET_NLINE, gtk_intvalue);
+	kemoview_set_PSF_color_param(ISET_NLINE, gtk_intvalue, kemo_sgl);
 	
 	draw_full();
 	return;
@@ -80,7 +86,7 @@ void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl,
 	double current_width;
 	int i_digit, iflag_sfcolor;
 
-	int current_nline = kemoview_get_PSF_color_param(ISET_NLINE);
+	int current_nline = kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_nline), (double) current_nline);
 
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
@@ -99,7 +105,7 @@ void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl,
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_zero), TRUE);
 	};
 
-	iflag_sfcolor = kemoview_get_PSF_color_param(PSFGRID_TOGGLE);
+	iflag_sfcolor = kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
 	if(iflag_sfcolor == BLACK_LINE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_isoline_menu->combobox_gdcolor), 2);
 	} else 	if(iflag_sfcolor == WHITE_LINE){
@@ -140,12 +146,13 @@ GtkWidget * init_isoline_menu_expander(struct kemoviewer_type *kemo_sgl, GtkWidg
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(psf_isoline_menu->combobox_gdcolor), psf_isoline_menu->renderer_gdcolor,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(psf_isoline_menu->combobox_gdcolor), "changed", 
-				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window);
+				G_CALLBACK(psf_surf_colormode_CB), (gpointer) kemo_sgl);
 	
 	
 	GtkAdjustment *adj_nline = gtk_adjustment_new (10, 0, 200, 1, 1, 0.0);
 	psf_isoline_menu->spin_nline = gtk_spin_button_new(GTK_ADJUSTMENT(adj_nline), 0, 0);
-	g_signal_connect(psf_isoline_menu->spin_nline, "value-changed", G_CALLBACK(set_nline_CB), NULL);
+	g_signal_connect(psf_isoline_menu->spin_nline, "value-changed",
+                     G_CALLBACK(set_nline_CB), (gpointer) kemo_sgl);
 	
 	GtkAdjustment *adj_width = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
 	psf_isoline_menu->spin_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_width), 0, 0);

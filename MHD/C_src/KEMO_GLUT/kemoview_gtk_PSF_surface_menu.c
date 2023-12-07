@@ -37,7 +37,7 @@ static void set_PSFcolor_GTK(struct kemoviewer_type *kemo_sgl,
 	dcolor[2] = gcolor.blue;
 	dcolor[3] = (gdouble) kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
 	kemoview_set_PSF_single_color(kemo_sgl, dcolor);
-	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR);
+	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR, kemo_sgl);
 	draw_full();
 	return;
 }
@@ -79,7 +79,8 @@ static int load_texture_file_gtk(GtkWidget *window, struct kv_string *file_prefi
 	return id_img;
 }
 
-static void load_texture_handler(GtkWidget *window){
+static void load_texture_handler(struct kemoviewer_type *kemo_sgl,
+                                 GtkWidget *window){
 	int id_image;
     struct kv_string *image_prefix = kemoview_alloc_kvstring();
 	id_image = load_texture_file_gtk(window, image_prefix);
@@ -88,7 +89,7 @@ static void load_texture_handler(GtkWidget *window){
         kemoview_release_PSF_gl_texture();
         kemoview_update_PSF_textured_id();
 		kemoview_set_texture_to_PSF(id_image, image_prefix);
-		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, TEXTURED_SURFACE);
+		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, TEXTURED_SURFACE, kemo_sgl);
         kemoview_free_kvstring(image_prefix);
 	};
 	
@@ -104,15 +105,15 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == WHITE_SURFACE){
-		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, WHITE_SURFACE);
+		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, WHITE_SURFACE, kemo_sgl);
 	}else if (index_mode == SINGLE_COLOR) {
 		kemoview_gtk_surfcolorsel(kemo_sgl, parent_window);
 	}else if (index_mode == CHANGE_PSF_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 2);
 	}else if (index_mode == RAINBOW_PSF_SURF){
-		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, RAINBOW_SURFACE);
+		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, RAINBOW_SURFACE, kemo_sgl);
 	}else if (index_mode == TEXTURE_PSF_SURF){
-		load_texture_handler(parent_window);
+		load_texture_handler(kemo_sgl, parent_window);
 	};
 	
 	draw_full();
@@ -208,7 +209,7 @@ void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_bar), TRUE);
 	};
 
-	iflag_sfcolor = kemoview_get_PSF_color_param(PSFSOLID_TOGGLE);
+	iflag_sfcolor = kemoview_get_PSF_color_param(kemo_sgl, PSFSOLID_TOGGLE);
 	if(iflag_sfcolor == TEXTURE_PSF_SURF){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 4);
 	} else 	if(iflag_sfcolor == SINGLE_COLOR){

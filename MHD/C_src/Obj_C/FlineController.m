@@ -97,12 +97,12 @@
 	[FlineMinimum removeAllObjects];
 	[FlineMaximum removeAllObjects];
 	for(i = 0; i < FlineNumberOfField; i++){
-		kemoview_get_fline_color_data_name(colorname,i);
+		kemoview_get_fline_color_data_name(kemo_sgl, colorname,i);
 		stname = [[NSString alloc] initWithUTF8String:colorname->string];
 		[FlineFieldName      addObject:stname];
 		[stname release];
 		
-		iflag = kemoview_get_fline_color_num_comps(i);
+		iflag = kemoview_get_fline_color_num_comps(kemo_sgl, i);
 		stnum = [[NSNumber alloc] initWithInt:iflag];
 		[FlineNumberOfComponent addObject:stnum];
 		[stnum release];	

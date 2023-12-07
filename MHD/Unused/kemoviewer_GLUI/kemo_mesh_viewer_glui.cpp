@@ -795,7 +795,7 @@ static void make_3rd_level_fline_menu(){
 	
 	int num_fld =  kemoview_get_fline_color_num_field();
 	int if_fline = kemoview_get_fline_color_field();
-	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
+	int num_comp = kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
 	
 	if (num_fld > 0) {
 		glut_menu_id->ichoose_fline_c_menu = glutCreateMenu(set_fline_color_handler);
@@ -875,13 +875,13 @@ static void make_2nd_level_fline_menu(){
 	int num_fld =  kemoview_get_fline_color_num_field();
 	int if_fline = kemoview_get_fline_color_field();
 	int ic_fline = kemoview_get_fline_color_component();
-	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
+	int num_comp = kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
 	int itype_fline = kemoview_get_fline_type();
     struct kv_string *colorname = kemoview_alloc_kvstring();
 	
 	glut_menu_id->fline_root_menu = glutCreateMenu(fline_handler);
 	
-	kemoview_get_fline_color_data_name(colorname, if_fline);
+	kemoview_get_fline_color_data_name(kemo_sgl, colorname, if_fline);
 	if(num_fld > 1){
 		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_fline_c_menu);
 	} else {

@@ -190,7 +190,7 @@
                                                               ISET_COLOR_MIN, iplotted);
 	self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(kemo_sgl,
                                                               ISET_COLOR_MAX, iplotted);
-	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
+	self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
@@ -228,10 +228,10 @@
 	self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
 	self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
 	
-	self.psfLineColorTag =  kemoview_get_PSF_color_param(PSFGRID_TOGGLE);
-	self.psfPatchColorTag = kemoview_get_PSF_color_param(PSFSOLID_TOGGLE);
+	self.psfLineColorTag =  kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
+	self.psfPatchColorTag = kemoview_get_PSF_color_param(kemo_sgl, PSFSOLID_TOGGLE);
 	
-	self.psfVectorColorTag = kemoview_get_PSF_color_param(ISET_VECTOR_COLOR);
+	self.psfVectorColorTag = kemoview_get_PSF_color_param(kemo_sgl, ISET_VECTOR_COLOR);
 	
     [self CopyPsfDisplayFlagsFromC:kemo_sgl];
 	[self SetPsfFieldMenu];
@@ -264,7 +264,7 @@
      self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
      self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
      self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
-     self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
+     self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	 self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
 	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_COLOR_MIN, &current_value, &i_digit);
@@ -295,10 +295,10 @@
      self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
      self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
      
-     self.psfLineColorTag =  kemoview_get_PSF_color_param(PSFGRID_TOGGLE);
-     self.psfPatchColorTag = kemoview_get_PSF_color_param(PSFSOLID_TOGGLE);
+     self.psfLineColorTag =  kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
+     self.psfPatchColorTag = kemoview_get_PSF_color_param(kemo_sgl, PSFSOLID_TOGGLE);
      
-     self.psfVectorColorTag = kemoview_get_PSF_color_param(ISET_VECTOR_COLOR);
+     self.psfVectorColorTag = kemoview_get_PSF_color_param(kemo_sgl, ISET_VECTOR_COLOR);
      
      [self CopyPsfDisplayFlagsFromC:kemo_sgl];
      [self SetPsfFieldMenu];
@@ -687,19 +687,27 @@
     else if(self.psfPatchColorTag == SINGLE_COLOR){
         [self SetPSFColorFromColorWell:kemo_sgl];
     };
-	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, (int) self.psfPatchColorTag);
+	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE,
+                                 (int) self.psfPatchColorTag,
+                                 kemo_sgl);
     
 	[_metalView UpdateImage];
 }
 - (IBAction)ChoosePsfLineColorAction:(id)sender;
 {
-	kemoview_set_PSF_color_param(PSFGRID_TOGGLE, (int) self.psfLineColorTag);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_PSF_color_param(PSFGRID_TOGGLE, 
+                                 (int) self.psfLineColorTag,
+                                 kemo_sgl);
 	[_metalView UpdateImage];
 }
 
 - (IBAction)ChoosePsfVectorColorAction:(id)sender;
 {
-	kemoview_set_PSF_color_param(ISET_VECTOR_COLOR, (int) self.psfVectorColorTag);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_PSF_color_param(ISET_VECTOR_COLOR, 
+                                 (int) self.psfVectorColorTag,
+                                 kemo_sgl);
 	[_metalView UpdateImage];
 }
 
@@ -724,7 +732,10 @@
 
 - (IBAction) ShowIsolineNumber:(id)pSender
 {
-	kemoview_set_PSF_color_param(ISET_NLINE, (int) self.IsolineNumber);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_PSF_color_param(ISET_NLINE,
+                                 (int) self.IsolineNumber,
+                                 kemo_sgl);
 //    [_metalView UpdateImage];
 }
 

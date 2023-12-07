@@ -151,7 +151,7 @@
 	
 	[ColorTableField removeAllObjects];
 	[ColorTableColor removeAllObjects];
-	NumColorTable = kemoview_get_PSF_color_param(ISET_NUM_COLOR);
+	NumColorTable = kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR);
 	for(i=0;i<NumColorTable;i++){
 		kemoview_get_PSF_color_items(kemo_sgl, i, &value, &color);
 		[ColorTableField addObject:[[NSNumber alloc ] initWithDouble:value] ];
@@ -159,7 +159,7 @@
 	}
 	[_colorTableView reloadData];
 
-	[ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(ISET_COLORMAP)];
+	[ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP)];
 }
 
 - (IBAction)UpdateColorTables:(id)pID
@@ -193,7 +193,10 @@
 
 - (IBAction)SetColorMode:(id)pId;
 {
-	kemoview_set_PSF_color_param(ISET_COLORMAP, (int) [ColorModeItem indexOfSelectedItem]);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_PSF_color_param(ISET_COLORMAP, 
+                                 (int) [ColorModeItem indexOfSelectedItem],
+                                 kemo_sgl);
     [_metalView UpdateImage];
 }
 

@@ -28,9 +28,10 @@ static void set_vector_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
 
 static void set_vector_color_cb(GtkComboBox *combobox_cmap, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_cmap);
     
-	kemoview_set_PSF_color_param(ISET_VECTOR_COLOR, index_mode);
+	kemoview_set_PSF_color_param(ISET_VECTOR_COLOR, index_mode, kemo_sgl);
 	
 	draw_full();
     return;
@@ -144,7 +145,7 @@ void set_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_vector_menu->combobox_vecmode), 0);
 	}
 	
-	iflag = kemoview_get_PSF_color_param(ISET_VECTOR_COLOR);
+	iflag = kemoview_get_PSF_color_param(kemo_sgl, ISET_VECTOR_COLOR);
 	if(iflag == WHITE_SURFACE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_vector_menu->combobox_veccolor), 1);
 	} else {
@@ -230,7 +231,7 @@ GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl, GtkWidget
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(psf_vector_menu->combobox_veccolor),
 								   renderer_veccolor, "text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(psf_vector_menu->combobox_veccolor), "changed", 
-				G_CALLBACK(set_vector_color_cb), NULL);
+				G_CALLBACK(set_vector_color_cb), (gpointer) kemo_sgl);
 	
 	
 	adj_ref_vect = gtk_adjustment_new(1, 1, 9, 1, 1, 0);

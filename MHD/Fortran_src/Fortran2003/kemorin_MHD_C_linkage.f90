@@ -163,8 +163,10 @@
 !    int kemoview_get_PSF_draw_refv();
 !    int kemoview_toggle_PSF_draw_refv();
 !    
-!    void kemoview_set_PSF_color_param(int selected, int input);
-!    int kemoview_get_PSF_color_param(int selected){
+!    void kemoview_set_PSF_color_param(int selected, int input,
+!                                      struct kemoviewer_type *kemoviewer);
+!    int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
+!                                     int selected);
 !
 !    void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit,
 !                                           struct kemoviewer_type *kemoviewer);
@@ -227,8 +229,9 @@
 !
 !    void kemoview_set_fline_color_param(int selected, int input);
 !    
-!    int kemoview_get_fline_color_num_comps(int i);
-!    void kemoview_get_fline_color_data_name(char *name, int i);
+!    int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i);
+!    void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
+!                                            struct kv_string *colorname, int i);
 !    
 !    void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit,
 !                                        struct kemoviewer_type *kemoviewer);
@@ -260,7 +263,8 @@
           integer(c_int) :: selected
         END function
 !    
-!    int kemoview_get_fline_color_param(int selected);
+!    int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
+!                                       int selected);
         function kemoview_get_fline_color_param(selected)               &
      &          BIND(C, name = "kemoview_get_fline_color_param")
 !          IMPORT c_int

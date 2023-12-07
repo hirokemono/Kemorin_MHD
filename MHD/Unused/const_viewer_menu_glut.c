@@ -207,7 +207,7 @@ void glut_fline_color_comp_select() {
 	char tmp_menu[1024];
 	int if_fline = kemoview_get_fline_color_field();
 	int ic_fline = kemoview_get_fline_color_component();
-	int ndir = kemoview_get_fline_color_num_comps(if_fline);
+	int ndir = kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
 	
 	for ( i = 0; i< ndir; i++) {
 		if( i != ic_fline){

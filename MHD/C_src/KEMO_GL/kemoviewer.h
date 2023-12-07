@@ -466,10 +466,11 @@ extern "C" {
 	int kemoview_get_PSF_draw_flags(int selected);
 	
     void kemoview_update_PSF_textured_id(void);
-	void kemoview_set_PSF_color_param(int selected, int input);
-	int kemoview_get_PSF_color_param(int selected);
+	void kemoview_set_PSF_color_param(int selected, int input,
+                                      struct kemoviewer_type *kemoviewer);
+	int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
+                                     int selected);
 	
-
 	void kemoview_delete_PSF_color_list(int i_delete,
                                         struct kemoviewer_type *kemoviewer);
 	void kemoview_delete_PSF_opacity_list(int i_delete,
@@ -526,10 +527,12 @@ extern "C" {
 	int kemoview_get_fline_parameters(int selected);
 	
 	void kemoview_set_fline_color_param(int selected, int input);
-	int kemoview_get_fline_color_param(int selected);
+	int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
+                                       int selected);
 	    
-    int kemoview_get_fline_color_num_comps(int i);
-    void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i);
+    int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i);
+    void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
+                                            struct kv_string *colorname, int i);
 
 	void kemoview_set_fline_field_param(int selected, int input,
                                         struct kemoviewer_type *kemoviewer);

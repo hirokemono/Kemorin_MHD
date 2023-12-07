@@ -160,7 +160,7 @@ void set_fline_range_console(){
 	float data_min = (float) kemoview_get_fline_data_min(icomp);
 	float data_max = (float) kemoview_get_fline_data_max(icomp);
     struct kv_string *colorname = kemoview_alloc_kvstring();
-	kemoview_get_fline_color_data_name(colorname, ifield);
+	kemoview_get_fline_color_data_name(kemo_sgl, colorname, ifield);
 	
 	input_range_from_console(colorname, &range_min, &range_max, data_min, data_max);	
 	kemoview_set_fline_linear_colormap((double) range_min, (double) range_max);
