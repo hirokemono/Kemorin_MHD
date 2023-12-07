@@ -259,7 +259,7 @@ void set_psf_opacity(){
 	printf("Enter PSF opacity: \n");
 	opacity = set_opacity_console(opacity);
 	
-	kemoview_set_PSF_constant_opacity((double) opacity);
+	kemoview_set_PSF_constant_opacity((double) opacity, kemo_sgl);
 	return;
 }
 
@@ -445,7 +445,7 @@ void set_psf_single_color_console(){
 	rgba[2] = (double) blue;
 	rgba[3] = kemoview_get_PSF_max_opacity();
 	
-    kemoview_set_PSF_single_color(rgba);
+    kemoview_set_PSF_single_color(rgba, kemo_sgl);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
 	return;
 }

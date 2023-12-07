@@ -30,7 +30,7 @@
     [_colorMapObject InitColorTables:kemo_sgl];
     [_colorMapObject SetColorTables:kemo_sgl];
     [_opacityMapObject InitOpacityTables:kemo_sgl];
-	[_opacityMapObject SetOpacityTables];
+    [_opacityMapObject SetOpacityTables:kemo_sgl];
 }
 
 
@@ -78,7 +78,7 @@
                                            
                                            [_metalView UpdateImage];
                                            [_colorMapObject SetColorTables:kemo_sgl];
-                                           [_opacityMapObject SetOpacityTables];
+                                           [_opacityMapObject SetOpacityTables:kemo_sgl];
                                        };
                                    }];
     

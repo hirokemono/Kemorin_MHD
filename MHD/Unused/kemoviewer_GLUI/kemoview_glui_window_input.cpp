@@ -92,7 +92,7 @@ static void select_colormap_point(int val){
 static void select_opacitymap_point(int val){
 	double dvalue, dopacity;
 	int sel = radiogroup_opacitymap->get_int_val();
-	kemoview_get_PSF_opacity_items(sel, &dvalue, &dopacity);
+	kemoview_get_PSF_opacity_items(kemo_sgl, sel, &dvalue, &dopacity);
 	value = (float)dvalue;
 	opacity = (float)dopacity;
 	editText_data->set_float_val((float)dvalue);
@@ -191,7 +191,7 @@ static void input_fline_thick_from_panel(int val){
 }
 
 static void input_psf_opacity_from_panel(int val){
-	kemoview_set_PSF_constant_opacity((double) opacity);
+	kemoview_set_PSF_constant_opacity((double) opacity, kemo_sgl);
 	draw_mesh_keep_menu();
 	return;
 }
@@ -276,7 +276,7 @@ static void update_PSFcolor_glui(int val){
     rgba[2] = (double) blue;
 	rgba[3] = kemoview_get_PSF_max_opacity();
     
-    kemoview_set_PSF_single_color(rgba);
+    kemoview_set_PSF_single_color(rgba, kemo_sgl);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
 	draw_mesh_keep_menu();
 	return;
@@ -586,13 +586,13 @@ void edit_psf_opacitymap_by_glui(int winid){
 	
 	radiogroup_opacitymap = new GLUI_RadioGroup(opacity_panel, &obj_type, -1, select_opacitymap_point);
 	for(i = 0; i < kemoview_get_PSF_opacity_table_num(); i++) {
-		kemoview_get_PSF_opacity_items(i, &dvalue, &dopacity);
+		kemoview_get_PSF_opacity_items(kemo_sgl, i, &dvalue, &dopacity);
 		sprintf(tmp_menu, "%3.2e	|	%.2f", (float) dvalue, (float) dopacity);
 		new GLUI_RadioButton(radiogroup_opacitymap, tmp_menu);
 	};
 	
 	
-	kemoview_get_PSF_opacity_items(radiogroup_opacitymap->get_int_val(), &dvalue, &dopacity);
+	kemoview_get_PSF_opacity_items(kemo_sgl, radiogroup_opacitymap->get_int_val(), &dvalue, &dopacity);
 	value = (float)dvalue;
 	opacity = (float)dopacity;
 	

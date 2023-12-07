@@ -480,8 +480,10 @@ extern "C" {
 	void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit);
 	void kemoview_get_each_PSF_color_w_exp(int selected, double *value, int *i_digit);
 	
-    void kemoview_set_PSF_single_color(double *rgba);
-    void kemoview_set_PSF_constant_opacity(double opacity);
+    void kemoview_set_PSF_single_color(double *rgba,
+                                       struct kemoviewer_type *kemoviewer);
+    void kemoview_set_PSF_constant_opacity(double opacity,
+                                           struct kemoviewer_type *kemoviewer);
     
     void kemoview_set_PSF_color_data(int i_point, double value, double color,
                                      struct kemoviewer_type *kemoviewer);
@@ -499,7 +501,8 @@ extern "C" {
     
     void kemoview_get_PSF_color_items(struct kemoviewer_type *kemoviewer,
                                       int i_point, double *value, double *color);
-    void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity);
+    void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
+                                        int i_point, double *value, double *opacity);
     
     void kemoview_write_PSF_colormap_file(struct kv_string *filename);
     void kemoview_read_PSF_colormap_file(struct kv_string *filename);

@@ -219,7 +219,7 @@
 
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 
-- (void)SetPSFColorFromColorWell;
+- (void)SetPSFColorFromColorWell:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction)SetPSFPatchColorAction:(id)sender;
 - (IBAction)SetPSFSingleOpacityAction:(id)sender;
 @end

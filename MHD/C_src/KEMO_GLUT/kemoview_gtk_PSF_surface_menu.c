@@ -36,7 +36,7 @@ static void set_PSFcolor_GTK(struct kemoviewer_type *kemo_sgl,
 	dcolor[1] = gcolor.green;
 	dcolor[2] = gcolor.blue;
 	dcolor[3] = (gdouble) kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
-	kemoview_set_PSF_single_color(dcolor);
+	kemoview_set_PSF_single_color(kemo_sgl, dcolor);
 	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR);
 	draw_full();
 	return;
@@ -121,8 +121,9 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
 
 static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_constant_opacity(gtk_floatvalue);
+	kemoview_set_PSF_constant_opacity(gtk_floatvalue, kemo_sgl);
 	draw_full();
 	return;
 }
@@ -265,7 +266,7 @@ GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_type *kemo_sgl,
 	GtkAdjustment *adj_opacity1 = gtk_adjustment_new(1.0, 0.0, 1.0, 0.01, 0.01, 0.0);
 	psf_surface_menu->spin_opacity1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity1), 0, 2);
 	g_signal_connect(psf_surface_menu->spin_opacity1, "value-changed",
-					 G_CALLBACK(set_psf_opacity_CB), NULL);
+					 G_CALLBACK(set_psf_opacity_CB), (gpointer) kemo_sgl);
 	
 	GtkAdjustment *adj_range_min = gtk_adjustment_new (1, -9.999, 9.999, 0.1, 0.1, 0.0);
 	GtkAdjustment *adj_digit_min = gtk_adjustment_new (0, -20, 20, 1, 1, 0);

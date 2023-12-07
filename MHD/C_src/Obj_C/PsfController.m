@@ -235,7 +235,7 @@
 	[_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
 	
     [colorMapObject SetColorTables:kemo_sgl];
-	[opacityMapObject SetOpacityTables];
+    [opacityMapObject SetOpacityTables:kemo_sgl];
 	
 	[_psfPatchDirMatrix selectCellWithTag:self.psfPatchDirectionTag];
 	
@@ -300,7 +300,7 @@
      [_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
      
      [colorMapObject SetColorTables:kemo_sgl];
-     [opacityMapObject SetOpacityTables];
+     [opacityMapObject SetOpacityTables:kemo_sgl];
      
      [_psfPatchDirMatrix selectCellWithTag:self.psfPatchDirectionTag];
      
@@ -458,7 +458,7 @@
     [self.colorMapObject InitColorTables:kemo_sgl];
     [self.colorMapObject SetColorTables:kemo_sgl];
     [self.opacityMapObject InitOpacityTables:kemo_sgl];
-    [self.opacityMapObject SetOpacityTables];
+    [self.opacityMapObject SetOpacityTables:kemo_sgl];
 }
 
 
@@ -671,12 +671,13 @@
 
 - (IBAction)ChoosePsfPatchColorAction:(id)sender;
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if(self.psfPatchColorTag == TEXTURED_SURFACE){
         kemoview_update_PSF_textured_id();
 		[self ChooseTextureFile];
 	}
     else if(self.psfPatchColorTag == SINGLE_COLOR){
-        [self SetPSFColorFromColorWell];
+        [self SetPSFColorFromColorWell:kemo_sgl];
     };
 	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, (int) self.psfPatchColorTag);
     
@@ -753,7 +754,8 @@
 	[_metalView UpdateImage];
 }
 
-- (void)SetPSFColorFromColorWell{
+- (void)SetPSFColorFromColorWell:(struct kemoviewer_type *) kemo_sgl
+{
     CGFloat redBG, greenBG, blueBG, opacityBG;
     double rgba[4];
     NSColor *nsPSFPatchColor = [PSFPatchColorWell color];
@@ -765,18 +767,20 @@
     rgba[3] = (double) opacityBG;
     self.PSFOpacity = opacityBG;
     
-    kemoview_set_PSF_single_color(rgba);
+    kemoview_set_PSF_single_color(rgba, kemo_sgl);
 }
 
 - (IBAction)SetPSFPatchColorAction:(id)sender
 {
-    [self SetPSFColorFromColorWell];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetPSFColorFromColorWell:kemo_sgl];
     [_metalView UpdateImage];
 }
 
 - (IBAction)SetPSFSingleOpacityAction:(id)sender
 {
-    kemoview_set_PSF_constant_opacity((double) self.PSFOpacity);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_PSF_constant_opacity((double) self.PSFOpacity, kemo_sgl);
 
     NSColor *OriginalWellColor = [PSFPatchColorWell color];
     NSColor *NewWellColor = [OriginalWellColor colorWithAlphaComponent:self.PSFOpacity];

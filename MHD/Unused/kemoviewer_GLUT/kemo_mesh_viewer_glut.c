@@ -601,14 +601,14 @@ static void make_4th_level_psf_menu(){
         npoint = kemoview_get_PSF_opacity_table_num();
         glut_menu_id->modify_opacitymap_menu =  glutCreateMenu(modify_psf_opacitymap_handler);
         for(i = 0; i < npoint; i++) {
-            kemoview_get_PSF_opacity_items(i, &value, &opacity);
+            kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, opacity);
             glutAddMenuEntry(tmp_menu,  i);
         };
         
         glut_menu_id->delete_opacitymap_menu =  glutCreateMenu(delete_psf_opacitymap_handler);
         for(i = 0; i < npoint; i++) {
-            kemoview_get_PSF_opacity_items(i, &value, &opacity);
+            kemoview_get_PSF_opacity_items(kemo_sgl, i, &value, &opacity);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, opacity);
             glutAddMenuEntry(tmp_menu,  i);
 		};

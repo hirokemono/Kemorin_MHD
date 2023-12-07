@@ -694,14 +694,20 @@ void kemoview_get_each_PSF_color_w_exp(int selected, double *value, int *i_digit
 	return;
 };
 
-void kemoview_set_PSF_single_color(double *rgba){
-    set_PSF_fixed_color(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
-						kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], rgba);
+void kemoview_set_PSF_single_color(double *rgba,
+                                   struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    set_PSF_fixed_color(kemoviewer->kemo_psf->psf_d[i_psf],
+                        kemoviewer->kemo_psf->psf_m[i_psf],
+                        rgba);
 }
 
-void kemoview_set_PSF_constant_opacity(double opacity){
-    set_PSF_constant_opacity(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
-							 kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], opacity);
+void kemoview_set_PSF_constant_opacity(double opacity,
+                                       struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    set_PSF_constant_opacity(kemoviewer->kemo_psf->psf_d[i_psf],
+                             kemoviewer->kemo_psf->psf_m[i_psf],
+                             opacity);
 }
 
 void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
@@ -743,8 +749,10 @@ void kemoview_get_PSF_color_items(struct kemoviewer_type *kemoviewer,
     send_each_PSF_color_table_items(kemoviewer->kemo_psf->psf_m[i_psf], 
 									i_point, value, color);
 }
-void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity){
-    send_each_PSF_opacity_table_items(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
+void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
+                                    int i_point, double *value, double *opacity){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    send_each_PSF_opacity_table_items(kemoviewer->kemo_psf->psf_m[i_psf],
 									  i_point, value, opacity);
 }
 

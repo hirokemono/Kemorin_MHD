@@ -43,7 +43,7 @@
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex;
 
 - (void)InitOpacityTables:(struct kemoviewer_type *) kemo_sgl;
-- (void)SetOpacityTables;
+- (void) SetOpacityTables:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction) UpdateOpacityTables:(id)pID;
 
 @end
