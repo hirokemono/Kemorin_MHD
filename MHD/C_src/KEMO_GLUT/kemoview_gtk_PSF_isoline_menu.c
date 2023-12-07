@@ -53,7 +53,8 @@ static void set_width_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
                                       &current_width, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, gtk_value, i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, gtk_value, 
+                                      i_digit, kemo_sgl);
 	
 	draw_full();
 	return;
@@ -67,7 +68,8 @@ static void set_digit_CB(GtkWidget *entry, gpointer user_data)
 	int gtk_value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
                                       &current_width, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, current_width, gtk_value);
+	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, current_width, 
+                                      gtk_value, kemo_sgl);
 	
 	draw_full();
 	return;

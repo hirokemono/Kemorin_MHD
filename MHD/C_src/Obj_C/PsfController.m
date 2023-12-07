@@ -726,7 +726,9 @@
 }
 
 - (IBAction) SetIsolineWidth:(id)pSender {
-	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, (double) self.IsolineWidth, (int) self.IsolineDigit);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, (double) self.IsolineWidth,
+                                      (int) self.IsolineDigit, kemo_sgl);
 //	[_metalView UpdateImage];
 }
 
@@ -741,17 +743,23 @@
 }
 
 - (IBAction)SetReferenceVector:(id)pSender {
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, (double) self.ScaleVector, (int) self.ScaleDigit);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, (double) self.ScaleVector, 
+                                      (int) self.ScaleDigit, kemo_sgl);
 //	[_metalView UpdateImage];
 }
 
 - (IBAction)SetVectorIncrement:(id)pSender {
-	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, (double) self.PSFVectorIncrement, (int) self.PSFVectorIncDigit);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, (double) self.PSFVectorIncrement,
+                                      (int) self.PSFVectorIncDigit, kemo_sgl);
 //	[_metalView UpdateImage];
 }
 
 - (IBAction)SetVectorThickness:(id)pSender {
-    kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, (double) self.VectorThickness, (int) self.VectorDigit);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, (double) self.VectorThickness,
+                                      (int) self.VectorDigit, kemo_sgl);
 //    [_metalView UpdateImage];
 }
     

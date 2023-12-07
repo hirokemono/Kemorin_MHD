@@ -166,7 +166,8 @@
 !    void kemoview_set_PSF_color_param(int selected, int input);
 !    int kemoview_get_PSF_color_param(int selected){
 !
-!    void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit);
+!    void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit,
+!                                           struct kemoviewer_type *kemoviewer);
 !    
 !    int kemoview_get_PSF_draw_flags(int selected);
 !    int kemoview_select_PSF_draw_switch(int selected);

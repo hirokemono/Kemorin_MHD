@@ -477,7 +477,8 @@ extern "C" {
 	
 	void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
 										  double maxvalue, int i_max_digit);
-	void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit);
+	void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit,
+                                           struct kemoviewer_type *kemoviewer);
 	void kemoview_get_each_PSF_color_w_exp(struct kemoviewer_type *kemoviewer,
                                            int selected, double *value, int *i_digit);
 	

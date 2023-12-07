@@ -44,7 +44,8 @@ static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
 	double current_value;
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_REFVECT,
                                       &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, gtk_floatvalue, i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, gtk_floatvalue,
+                                      i_digit, kemo_sgl);
 	
 	draw_full();
 	return;
@@ -58,7 +59,8 @@ static void set_ref_digit_CB(GtkWidget *entry, gpointer user_data)
 	double current_value;
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_REFVECT,
                                       &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, current_value, gtk_intvalue);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, current_value,
+                                      gtk_intvalue, kemo_sgl);
 	
 	draw_full();
 	return;
@@ -72,7 +74,8 @@ static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data)
 	double current_value;
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_VECTOR_INC,
                                       &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, gtk_floatvalue, i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, gtk_floatvalue,
+                                      i_digit, kemo_sgl);
 	
 	draw_full();
 	return;
@@ -86,7 +89,8 @@ static void set_increment_digit_CB(GtkWidget *entry, gpointer user_data)
 	double current_value;
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_VECTOR_INC,
                                       &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, current_value, gtk_intvalue);
+	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, current_value,
+                                      gtk_intvalue, kemo_sgl);
 	
 	draw_full();
 	return;
@@ -100,7 +104,8 @@ static void set_vector_width_CB(GtkWidget *entry, gpointer user_data)
 	double current_value;
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_V_THICK,
                                       &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, gtk_floatvalue, i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, gtk_floatvalue,
+                                      i_digit, kemo_sgl);
 	
 	draw_full();
 	return;
@@ -113,7 +118,8 @@ static void set_width_digit_CB(GtkWidget *entry, gpointer user_data)
 	double current_value;
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_V_THICK,
                                       &current_value, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, current_value, gtk_intvalue);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, current_value,
+                                      gtk_intvalue, kemo_sgl);
 	
 	draw_full();
 	return;
