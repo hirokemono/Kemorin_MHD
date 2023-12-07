@@ -38,7 +38,7 @@
 		opacity2 = [[self.OpacityTableOpacity objectAtIndex:isel] doubleValue];
 		value =   (value1 + value2)*HALF;
 		opacity = (opacity1 + opacity2)*HALF;
-		kemoview_add_PSF_opacity_list(value, opacity);
+		kemoview_add_PSF_opacity_list(value, opacity, kemo_sgl);
 		
         [self SetOpacityTables:kemo_sgl];
 	}
@@ -55,7 +55,7 @@
     if ([idOpacityTableView numberOfSelectedRows] > 0) {
         for(i = (int) [self.OpacityTableField count]-1;i>1;i--){
             if([SelectedList containsIndex:i] == TRUE){
-                kemoview_delete_PSF_opacity_list(i);
+                kemoview_delete_PSF_opacity_list(i, kemo_sgl);
             }
         }
     }

@@ -665,19 +665,27 @@ int kemoview_get_PSF_color_param(int selected){
 	return get_each_PSF_color_param(selected, kemo_sgl->kemo_psf);
 };
 
-void kemoview_delete_PSF_color_list(int i_delete){
-    delete_PSF_color_index_list(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], i_delete);
+void kemoview_delete_PSF_color_list(int i_delete,
+                                    struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    delete_PSF_color_index_list(kemoviewer->kemo_psf->psf_m[i_psf], i_delete);
 }
-void kemoview_delete_PSF_opacity_list(int i_delete){
-    delete_PSF_opacity_index_list(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], i_delete);
+void kemoview_delete_PSF_opacity_list(int i_delete,
+                                      struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    delete_PSF_opacity_index_list(kemoviewer->kemo_psf->psf_m[i_psf], i_delete);
 }
 
-void kemoview_add_PSF_color_list(double add_value, double add_color){
-    add_PSF_color_index_list(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
+void kemoview_add_PSF_color_list(double add_value, double add_color,
+                                 struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    add_PSF_color_index_list(kemoviewer->kemo_psf->psf_m[i_psf],
 							 add_value, add_color);
 }
-void kemoview_add_PSF_opacity_list(double add_value, double add_opacity){
-    add_PSF_opacity_index_list(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
+void kemoview_add_PSF_opacity_list(double add_value, double add_opacity,
+                                   struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    add_PSF_opacity_index_list(kemoviewer->kemo_psf->psf_m[i_psf],
 							   add_value, add_opacity);
 }
 

@@ -61,7 +61,7 @@ static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user
 
     add_colormap_list_items_CB(color_vws);
 	
-	kemoview_add_PSF_color_list(0.0, 0.0);
+	kemoview_add_PSF_color_list(ZERO, ZERO, kemo_sgl);
 	double value, color;
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
@@ -85,7 +85,7 @@ static void delete_kemoview_colormap_list_items_CB(GtkButton *button, gpointer u
 	
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
-	if(num > 2) kemoview_delete_PSF_color_list(num);
+	if(num > 2) kemoview_delete_PSF_color_list(num, kemo_sgl);
 	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
 		kemoview_set_PSF_color_data(i, value, color, kemo_sgl);
@@ -153,7 +153,7 @@ static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
-	kemoview_add_PSF_opacity_list(0.0, 0.0);
+	kemoview_add_PSF_opacity_list(ZERO, ZERO, kemo_sgl);
 	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
 		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_sgl);
@@ -174,7 +174,7 @@ static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer us
 	
 	double value, opacity;
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
-	if(num > 2) kemoview_delete_PSF_opacity_list(num);
+	if(num > 2) kemoview_delete_PSF_opacity_list(num, kemo_sgl);
 	for(i=0;i<num;i++){
 		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
 		kemoview_set_PSF_opacity_data(i, value, opacity, kemo_sgl);

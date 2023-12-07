@@ -453,7 +453,7 @@ void set_psf_single_color_console(){
 void add_psf_colormap_point_console(){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
-	kemoview_add_PSF_color_list((double) value, (double) color);
+	kemoview_add_PSF_color_list((double) value, (double) color, kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	
 	return;
@@ -469,7 +469,8 @@ void modify_psf_colormap_point_console(int i_point){
 void add_psf_opacitymap_point_console(){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
-	kemoview_add_PSF_opacity_list((double) value, (double) opacity);
+	kemoview_add_PSF_opacity_list((double) value, (double) opacity, 
+                                  kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	return;
 }

@@ -46,7 +46,7 @@
 		color2 = [[self.ColorTableColor objectAtIndex:isel] doubleValue];
 		value = (value1 + value2)*HALF;
 		color = (color1 + color2)*HALF;
-		kemoview_add_PSF_color_list(value, color);
+		kemoview_add_PSF_color_list(value, color, kemo_sgl);
 		
         [self SetColorTables:kemo_sgl];
 	}
@@ -62,7 +62,7 @@
 	if ([idColorTableView numberOfSelectedRows] > 0) {
 		for(i = (int) [self.ColorTableField count]-1;i>1;i--){
 			if([SelectedList containsIndex:i] == TRUE){
-				kemoview_delete_PSF_color_list(i);
+				kemoview_delete_PSF_color_list(i, kemo_sgl);
 			}
 		};
 	}

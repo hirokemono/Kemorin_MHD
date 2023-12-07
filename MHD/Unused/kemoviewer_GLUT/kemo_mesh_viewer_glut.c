@@ -384,7 +384,7 @@ static void modify_psf_colormap_handler(int sel){
 };
 
 static void delete_psf_colormap_handler(int sel){
-	kemoview_delete_PSF_color_list(sel);
+	kemoview_delete_PSF_color_list(sel, kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	draw_mesh_w_menu();
    return;
@@ -406,7 +406,7 @@ static void modify_psf_opacitymap_handler(int sel){
 };
 
 static void delete_psf_opacitymap_handler(int sel){
-	kemoview_delete_PSF_opacity_list(sel);
+	kemoview_delete_PSF_opacity_list(sel, kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	draw_mesh_w_menu();
    return;

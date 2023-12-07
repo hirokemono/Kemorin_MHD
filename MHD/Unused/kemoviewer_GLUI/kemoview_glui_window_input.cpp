@@ -126,14 +126,14 @@ static void update_colormap_glui(int val){
 static void add_colormap_glui(int val){
 	value = editText_data->get_float_val();
 	color = editText_color->get_float_val();
-	kemoview_add_PSF_color_list((double) value, (double) color);
+	kemoview_add_PSF_color_list((double) value, (double) color, kemo_sgl);
 	close_panel(0);
 	return;
 }
 
 static void delete_colormap_glui(int val){
 	int sel = radiogroup_colormap->get_int_val();
-	kemoview_delete_PSF_color_list(sel);
+	kemoview_delete_PSF_color_list(sel, kemo_sgl);
 	close_panel(0);
 	return;
 }
@@ -151,14 +151,15 @@ static void update_opacitymap_glui(int val){
 static void add_opacitymap_glui(int val){
 	value = editText_data->get_float_val();
 	opacity = editText_opacity->get_float_val();
-	kemoview_add_PSF_opacity_list((double) value, (double) opacity);
+	kemoview_add_PSF_opacity_list((double) value, (double) opacity,
+                                  kemo_sgl);
 	close_panel(0);
 	return;
 }
 
 static void delete_opacitymap_glui(int val){
 	int sel = radiogroup_opacitymap->get_int_val();
-	kemoview_delete_PSF_opacity_list(sel);
+	kemoview_delete_PSF_opacity_list(sel, kemo_sgl);
 	close_panel(0);
 	return;
 }
