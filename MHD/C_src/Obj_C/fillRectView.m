@@ -5,9 +5,11 @@
 
 - (void)drawRect:(NSRect)frameRect
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	[self setBoundsSize : NSMakeSize(165,275) ];
 	[self setNeedsDisplay:YES]; 
-	[self DrawColorMarks:frameRect];
+    [self DrawColorMarks:frameRect
+                kemoview:kemo_sgl];
 	[self DrawColorBarFlame:frameRect];
 }
 - (void)UpdateColorbar{
@@ -16,6 +18,7 @@
 
 
 - (void)DrawColorMarks:(NSRect)frameRect
+              kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSRect	rect1 = NSMakeRect(55, 2, 25, 2);
     NSRect	rect2 = NSMakeRect(80, 2, 25, 2);
@@ -56,8 +59,8 @@
     for(i = 0; i < rectCount; i++) {
 		value = dataMin
 			+ ((double) i / ((double)rectCount-1)) * (dataMax-dataMin);
-		kemoview_get_PSF_rgb_at_value(value, &r, &g, &b);
-		a = kemoview_get_PSF_opacity_at_value(value);
+		kemoview_get_PSF_rgb_at_value(kemo_sgl, value, &r, &g, &b);
+		a = kemoview_get_PSF_opacity_at_value(kemo_sgl, value);
 		a = a / maxOpacity;
 
         colors[i] = [NSColor colorWithDeviceRed:r green:g blue:b alpha:1.0];

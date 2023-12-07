@@ -5081,7 +5081,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="zjy-Ve-9jn">
                             <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3767">
                                     <rect key="frame" x="0.0" y="0.0" width="192" height="705"/>
@@ -5090,13 +5090,16 @@
                                         <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2560" customClass="fillRectView">
                                             <rect key="frame" x="21" y="416" width="155" height="270"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
+                                            <connections>
+                                                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="S9p-8i-p9X"/>
+                                            </connections>
                                         </customView>
                                         <scrollView fixedFrame="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2554">
                                             <rect key="frame" x="21" y="237" width="155" height="145"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="sgn-Z0-9rw">
                                                 <rect key="frame" x="1" y="1" width="153" height="143"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
                                                         <rect key="frame" x="0.0" y="0.0" width="153" height="126"/>
@@ -5180,7 +5183,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="xhk-53-bjR">
                                                 <rect key="frame" x="1" y="1" width="153" height="143"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
                                                         <rect key="frame" x="0.0" y="0.0" width="153" height="126"/>

@@ -184,8 +184,10 @@
 !    void kemoview_set_PSF_single_color(double *rgba);
 !    void kemoview_set_PSF_constant_opacity(double opacity);
 !    
-!    void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue);
-!    double kemoview_get_PSF_opacity_at_value(double value);
+!    void kemoview_get_PSF_rgb_at_value(struct kemoviewer_type *kemoviewer, double value,
+!                                       double *red, double *green, double *blue);
+!    double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer, 
+!                                             double value);
 !    void kemoview_set_PSF_color_data(int i_point, double value, double color,
 !                                     struct kemoviewer_type *kemoviewer);
 !    void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity,
