@@ -28,7 +28,7 @@
 - (void) SetColormapMinMax:(struct kemoviewer_type *) kemo_sgl
 {
     [_colorMapObject InitColorTables:kemo_sgl];
-	[_colorMapObject SetColorTables];
+    [_colorMapObject SetColorTables:kemo_sgl];
     [_opacityMapObject InitOpacityTables:kemo_sgl];
 	[_opacityMapObject SetOpacityTables];
 }
@@ -57,7 +57,7 @@
 
 - (IBAction) LoadColormapFile:(id)pId;{
 /*    NSArray *ColormapFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil]; */
-    
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     NSOpenPanel *ColormapOpenPanelObj	= [NSOpenPanel openPanel];
     [ColormapOpenPanelObj setTitle:@"Choose colormap data"];
 /*    [ColormapOpenPanelObj setAllowedFileTypes:ColormapFileTypes]; */
@@ -77,7 +77,7 @@
                                            kemoview_free_kvstring(filename);
                                            
                                            [_metalView UpdateImage];
-                                           [_colorMapObject SetColorTables];
+                                           [_colorMapObject SetColorTables:kemo_sgl];
                                            [_opacityMapObject SetOpacityTables];
                                        };
                                    }];

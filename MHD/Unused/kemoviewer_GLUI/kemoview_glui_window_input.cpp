@@ -81,7 +81,7 @@ static void input_psf_max_from_panel(int val){
 static void select_colormap_point(int val){
 	double dvalue, dcolor;
 	int sel = radiogroup_colormap->get_int_val();
-	kemoview_get_PSF_color_items(sel, &dvalue, &dcolor);
+	kemoview_get_PSF_color_items(kemo_sgl, sel, &dvalue, &dcolor);
 	value = (float)dvalue;
 	color = (float)dcolor;
 	editText_data->set_float_val((float)dvalue);
@@ -556,12 +556,13 @@ void edit_psf_colormap_by_glui(int winid){
 	
 	radiogroup_colormap = new GLUI_RadioGroup(color_panel, &obj_type, -1, select_colormap_point);
 	for(i = 0; i < kemoview_get_PSF_color_table_num(); i++) {
-		kemoview_get_PSF_color_items(i, &dvalue, &dcolor);
+		kemoview_get_PSF_color_items(kemo_sgl, i, &dvalue, &dcolor);
 		sprintf(tmp_menu, "%3.2e	|	%.2f", (float) dvalue, (float) dcolor);
 		new GLUI_RadioButton(radiogroup_colormap, tmp_menu);
 	};
 	
-	kemoview_get_PSF_color_items(radiogroup_colormap->get_int_val(), &dvalue, &dcolor);
+	kemoview_get_PSF_color_items(kemo_sgl, radiogroup_colormap->get_int_val(),
+                                 &dvalue, &dcolor);
 	value = (float)dvalue;
 	color = (float)dcolor;
 	editText_data = new GLUI_EditText( glui_sub, "data: ", GLUI_EDITTEXT_FLOAT,

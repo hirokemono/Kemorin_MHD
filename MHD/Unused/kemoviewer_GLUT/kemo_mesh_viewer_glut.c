@@ -585,14 +585,14 @@ static void make_4th_level_psf_menu(){
         npoint = kemoview_get_PSF_color_table_num();
         glut_menu_id->modify_colormap_menu =  glutCreateMenu(modify_psf_colormap_handler);
         for(i = 0; i < npoint; i++) {
-            kemoview_get_PSF_color_items(i, &value, &color);
+            kemoview_get_PSF_color_items(kemo_sgl, i, &value, &color);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, color);
             glutAddMenuEntry(tmp_menu,  i);
         };
         
         glut_menu_id->delete_colormap_menu =  glutCreateMenu(delete_psf_colormap_handler);
         for(i = 0; i < npoint; i++) {
-            kemoview_get_PSF_color_items(i, &value, &color);
+            kemoview_get_PSF_color_items(kemo_sgl, i, &value, &color);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, color);
             glutAddMenuEntry(tmp_menu,  i);
         };

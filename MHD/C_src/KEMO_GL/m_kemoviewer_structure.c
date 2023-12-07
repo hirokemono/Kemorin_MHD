@@ -737,8 +737,10 @@ double kemoview_get_each_PSF_colormap_range(struct kemoviewer_type *kemoviewer,
 	return get_each_PSF_colormap_range(selected, kemoviewer->kemo_psf);
 };
 
-void kemoview_get_PSF_color_items(int i_point, double *value, double *color){
-    send_each_PSF_color_table_items(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], 
+void kemoview_get_PSF_color_items(struct kemoviewer_type *kemoviewer,
+                                  int i_point, double *value, double *color){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    send_each_PSF_color_table_items(kemoviewer->kemo_psf->psf_m[i_psf], 
 									i_point, value, color);
 }
 void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity){

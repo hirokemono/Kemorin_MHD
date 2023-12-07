@@ -234,7 +234,7 @@
 	[_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
 	[_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
 	
-	[colorMapObject SetColorTables];
+    [colorMapObject SetColorTables:kemo_sgl];
 	[opacityMapObject SetOpacityTables];
 	
 	[_psfPatchDirMatrix selectCellWithTag:self.psfPatchDirectionTag];
@@ -299,7 +299,7 @@
      [_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
      [_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
      
-     [colorMapObject SetColorTables];
+     [colorMapObject SetColorTables:kemo_sgl];
      [opacityMapObject SetOpacityTables];
      
      [_psfPatchDirMatrix selectCellWithTag:self.psfPatchDirectionTag];
@@ -456,7 +456,7 @@
     
     [self.rgbaMapObject updateColormapParameter:kemo_sgl];
     [self.colorMapObject InitColorTables:kemo_sgl];
-    [self.colorMapObject SetColorTables];
+    [self.colorMapObject SetColorTables:kemo_sgl];
     [self.opacityMapObject InitOpacityTables:kemo_sgl];
     [self.opacityMapObject SetOpacityTables];
 }

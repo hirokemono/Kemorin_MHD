@@ -12,13 +12,16 @@
 #import "ColorMapController.h"
 #import "OpacityMapController.h"
 #import "fillRectView.h"
-#include "kemoviewer.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 
 @interface RGBAMapController : NSObject {
 
     IBOutlet NSWindow*  window;
     IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerObject *_kmv;
 
 	IBOutlet ColorMapController*   _colorMapObject;
 	IBOutlet OpacityMapController* _opacityMapObject;
