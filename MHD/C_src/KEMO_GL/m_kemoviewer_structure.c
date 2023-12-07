@@ -159,12 +159,6 @@ void kemoview_viewer_evolution(int istep){
 }
 
 
-void kemoview_draw_with_modified_domain_distance(void){
-	cal_range_4_mesh_c(kemo_sgl->kemo_mesh->mesh_d, kemo_sgl->view_s);
-	modify_object_multi_viewer_c(kemo_sgl->kemo_mesh->mesh_m->dist_domains, kemo_sgl->kemo_mesh->mesh_d);
-	return;
-}
-
 void kemoview_set_viewtype(int sel){
     set_viewtype(kemo_sgl->view_s, sel);
 }
@@ -269,29 +263,41 @@ void kemoview_init_phong_light_list(void){
 };
 
 
-void kemoview_set_each_light_position(int i_point, float r, float t, float p){
-	set_each_light_position(kemo_sgl->view_s, kemo_sgl->kemo_buffers->kemo_lights,
+void kemoview_set_each_light_position(int i_point, float r, float t, float p,
+                                      struct kemoviewer_type *kemoviewer){
+	set_each_light_position(kemoviewer->view_s,
+                            kemoviewer->kemo_buffers->kemo_lights,
                             i_point, r, t, p);
 };
-int kemoview_get_num_light_position(void){
-	return send_num_light_position(kemo_sgl->kemo_buffers->kemo_lights);
+int kemoview_get_num_light_position(struct kemoviewer_type *kemoviewer){
+	return send_num_light_position(kemoviewer->kemo_buffers->kemo_lights);
 };
-void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p){
-	send_each_light_rtp(kemo_sgl->kemo_buffers->kemo_lights, i_point, r, t, p);
+void kemoview_get_each_light_rtp(struct kemoviewer_type *kemoviewer,
+                                 int i_point, float *r, float *t, float *p){
+	send_each_light_rtp(kemoviewer->kemo_buffers->kemo_lights, i_point, r, t, p);
 };
-void kemoview_get_each_light_xyz(int i_point, float *x, float *y, float *z){
-    send_each_light_xyz(kemo_sgl->kemo_buffers->kemo_lights, i_point, x, y, z);
+void kemoview_get_each_light_xyz(struct kemoviewer_type *kemoviewer,
+                                 int i_point, float *x, float *y, float *z){
+    send_each_light_xyz(kemoviewer->kemo_buffers->kemo_lights, i_point, x, y, z);
 };
 
-void kemoview_set_material_parameter(int itype, float value){
-	set_matrial_parameter(itype, value, kemo_sgl->kemo_buffers->kemo_lights);
+void kemoview_set_material_parameter(int itype, float value,
+                                     struct kemoviewer_type *kemoviewer){
+	set_matrial_parameter(itype, value, kemoviewer->kemo_buffers->kemo_lights);
 };
-float kemoview_get_material_parameter(int itype){
-	return get_matrial_parameter(itype, kemo_sgl->kemo_buffers->kemo_lights);
+float kemoview_get_material_parameter(struct kemoviewer_type *kemoviewer, int itype){
+	return get_matrial_parameter(itype, kemoviewer->kemo_buffers->kemo_lights);
 };
 
 
 /* mesh controls  */
+void kemoview_draw_with_modified_domain_distance(struct kemoviewer_type *kemoviewer){
+    cal_range_4_mesh_c(kemoviewer->kemo_mesh->mesh_d, kemoviewer->view_s);
+    modify_object_multi_viewer_c(kemoviewer->kemo_mesh->mesh_m->dist_domains,
+                                 kemoviewer->kemo_mesh->mesh_d);
+    return;
+}
+
 void kemoview_set_mesh_color_mode(int icolor, struct kemoviewer_type *kemoviewer){
 	set_mesh_color_mode(icolor, kemoviewer->kemo_mesh->mesh_m);
 };

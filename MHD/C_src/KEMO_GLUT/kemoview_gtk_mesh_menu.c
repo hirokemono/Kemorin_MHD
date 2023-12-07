@@ -14,7 +14,7 @@ static void subdoain_distance_CB(GtkWidget *entry, gpointer data)
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	double dist = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	if(dist >= 0.0) kemoview_set_domain_distance(dist, kemo_sgl);
-	kemoview_draw_with_modified_domain_distance();
+	kemoview_draw_with_modified_domain_distance(kemo_sgl);
 	
 	draw_full();
 }

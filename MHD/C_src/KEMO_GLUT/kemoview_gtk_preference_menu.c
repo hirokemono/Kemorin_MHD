@@ -40,48 +40,54 @@ static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 
 static void AmbientChange(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_material_parameter(AMBIENT_FLAG, value);
+	kemoview_set_material_parameter(AMBIENT_FLAG, value, kemo_sgl);
 	draw_full();
 	return;
 }
 static void DiffuseChange(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_material_parameter(DIFFUSE_FLAG, value);
+	kemoview_set_material_parameter(DIFFUSE_FLAG, value, kemo_sgl);
 	draw_full();
 	return;
 }
 static void SpecularChange(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_material_parameter(SPECULAR_FLAG, value);
+	kemoview_set_material_parameter(SPECULAR_FLAG, value, kemo_sgl);
 	draw_full();
 	return;
 }
 static void ShinenessChange(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	
-	kemoview_set_material_parameter(SHINENESS_FLAG, value);
+	kemoview_set_material_parameter(SHINENESS_FLAG, value, kemo_sgl);
 	draw_full();
 	return;
 }
 
-static void set_GTK_preference_menu(struct preference_gtk_menu *pref_gmenu){
+static void set_GTK_preference_menu(struct kemoviewer_type *kemoviewer_data,
+                                    struct preference_gtk_menu *pref_gmenu){
 	double current_value;
-	current_value = kemoview_get_material_parameter(AMBIENT_FLAG);
+	current_value = kemoview_get_material_parameter(kemoviewer_data, AMBIENT_FLAG);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_ambient), current_value);
-	current_value = kemoview_get_material_parameter(DIFFUSE_FLAG);
+	current_value = kemoview_get_material_parameter(kemoviewer_data, DIFFUSE_FLAG);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_diffuse), current_value);
-	current_value = kemoview_get_material_parameter(SPECULAR_FLAG);
+	current_value = kemoview_get_material_parameter(kemoviewer_data, SPECULAR_FLAG);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_specular), current_value);
-	current_value = kemoview_get_material_parameter(SHINENESS_FLAG);
+	current_value = kemoview_get_material_parameter(kemoviewer_data, SHINENESS_FLAG);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_shineness), current_value);
 	return;
 }
 
-GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, GtkWidget *window,
+GtkWidget * init_preference_expander(struct kemoviewer_type *kemo_sgl,
+                                     struct preference_gtk_menu *pref_gmenu, GtkWidget *window,
                                      struct kemoviewer_type *kemoviewer_data){
     GtkWidget *expander_pref;
 
@@ -94,7 +100,7 @@ GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, Gtk
 	g_signal_connect(G_OBJECT(pref_gmenu->BGselButton), "clicked",
 				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)window);
 
-    pref_gmenu->Frame_BGsel = init_light_list_frame(pref_gmenu->lightparams_vws);
+    pref_gmenu->Frame_BGsel = init_light_list_frame(kemo_sgl, pref_gmenu->lightparams_vws);
 	
 	
     float current_value = 0.0;
@@ -110,12 +116,16 @@ GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, Gtk
 	GtkAdjustment *adj4 = gtk_adjustment_new(current_value, 0.0, 100.0, 0.1, 0.1, 0.0);
 	pref_gmenu->spin_shineness = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,2);
 	
-	g_signal_connect(pref_gmenu->spin_ambient, "value-changed", G_CALLBACK(AmbientChange), NULL);
-	g_signal_connect(pref_gmenu->spin_diffuse, "value-changed", G_CALLBACK(DiffuseChange), NULL);
-	g_signal_connect(pref_gmenu->spin_specular, "value-changed", G_CALLBACK(SpecularChange), NULL);
-	g_signal_connect(pref_gmenu->spin_shineness, "value-changed", G_CALLBACK(ShinenessChange), NULL);
+	g_signal_connect(pref_gmenu->spin_ambient, "value-changed",
+                     G_CALLBACK(AmbientChange), (gpointer) kemo_sgl);
+	g_signal_connect(pref_gmenu->spin_diffuse, "value-changed",
+                     G_CALLBACK(DiffuseChange), (gpointer) kemo_sgl);
+	g_signal_connect(pref_gmenu->spin_specular, "value-changed",
+                     G_CALLBACK(SpecularChange), (gpointer) kemo_sgl);
+	g_signal_connect(pref_gmenu->spin_shineness, "value-changed",
+                     G_CALLBACK(ShinenessChange), (gpointer) kemo_sgl);
 	
-	set_GTK_preference_menu(pref_gmenu);
+	set_GTK_preference_menu(kemoviewer_data, pref_gmenu);
 	
     pref_gmenu->pref_hbox[0] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(pref_gmenu->pref_hbox[0]), gtk_label_new("Ambient:   "), TRUE, TRUE, 0);

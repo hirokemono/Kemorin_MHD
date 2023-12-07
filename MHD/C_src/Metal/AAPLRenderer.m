@@ -329,12 +329,12 @@ Implementation of a platform independent renderer class, which performs Metal se
 {
     kemoview_left_viewmatrix();
     [_kemoRendererTools setTransferMatrices:leftUnites];
-    [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
+    [_kemoRendererTools setKemoViewLightings:kemo_sgl
                                       unites:leftUnites];
     
     kemoview_right_viewmatrix();
     [_kemoRendererTools setTransferMatrices:rightUnites];
-    [_kemoRendererTools setKemoViewLightings:kemo_sgl->kemo_buffers
+    [_kemoRendererTools setKemoViewLightings:kemo_sgl
                                       unites:rightUnites];
 }
 

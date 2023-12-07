@@ -47,7 +47,7 @@
 !    void kemoview_set_viewtype(int sel);
 !    
 !    
-!    void kemoview_draw_with_modified_domain_distance();
+!    void kemoview_draw_with_modified_domain_distance(struct kemoviewer_type *kemoviewer);
 !    
 !    void kemoview_set_coastline_radius(double radius, kemo_sgl);
 !    double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer);

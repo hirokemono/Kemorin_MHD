@@ -455,7 +455,7 @@ static void object_property_handler(int sel){
 		set_node_size_console();
 	} else if( sel == SET_DISTANCE_DOMAIN) {
 		set_domain_distance_console();
-		kemoview_draw_with_modified_domain_distance();
+		kemoview_draw_with_modified_domain_distance(kemo_sgl);
 	} else if( sel == SET_COAST_RADIUS) {
 		set_coastline_radius_console();
 	} else if( sel == OUTPUT_V_MATRIX) {

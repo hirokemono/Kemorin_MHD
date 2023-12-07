@@ -79,18 +79,19 @@
 
 - (void)setMetalColorbuffer:(LightSourceParameters *) lights
                    material:(MaterialParameters *) mats
+                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     int i;
     float x, y, z;
     
-    mats->ambient[0] =  kemoview_get_material_parameter(AMBIENT_FLAG);
-    mats->diffuse[0] =  kemoview_get_material_parameter(DIFFUSE_FLAG);
-    mats->specular[0] = kemoview_get_material_parameter(SPECULAR_FLAG);
-    mats->shininess =   kemoview_get_material_parameter(SHINENESS_FLAG);
+    mats->ambient[0] =  kemoview_get_material_parameter(kemo_sgl, AMBIENT_FLAG);
+    mats->diffuse[0] =  kemoview_get_material_parameter(kemo_sgl, DIFFUSE_FLAG);
+    mats->specular[0] = kemoview_get_material_parameter(kemo_sgl, SPECULAR_FLAG);
+    mats->shininess =   kemoview_get_material_parameter(kemo_sgl, SHINENESS_FLAG);
     
-    lights->num_lights = kemoview_get_num_light_position();
+    lights->num_lights = kemoview_get_num_light_position(kemo_sgl);
     for(i=0;i<lights->num_lights;i++){
-        kemoview_get_each_light_xyz(i, &x, &y, &z);
+        kemoview_get_each_light_xyz(kemo_sgl, i, &x, &y, &z);
         lights->position[i][0] = x;
         lights->position[i][1] = y;
         lights->position[i][2] = z;
@@ -149,15 +150,16 @@
     return;
 };
 
-- (void) setKemoViewLightings:(struct kemoview_buffers *) kemo_buffers
+- (void) setKemoViewLightings:(struct kemoviewer_type *) kemo_sgl
                        unites:(KemoViewUnites *) monoViewUnites
 {
-    if(kemo_buffers->cube_buf->num_nod_buf > 0){
+    if(kemo_sgl->kemo_buffers->cube_buf->num_nod_buf > 0){
         [self setCubeColorbuffer:&(monoViewUnites->lights)
                         material:&(monoViewUnites->material)];
     } else {
         [self setMetalColorbuffer:&(monoViewUnites->lights)
-                         material:&(monoViewUnites->material)];
+                         material:&(monoViewUnites->material)
+                         kemoview:kemo_sgl];
     }
     [self fillMaterialParams:&(monoViewUnites->material)];
     return;
@@ -168,7 +170,7 @@
                            MapProjection:(matrix_float4x4 *) map_proj_mat
 {
     struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-    [self setKemoViewLightings:kemo_sgl->kemo_buffers
+    [self setKemoViewLightings:kemo_sgl
                         unites:monoViewUnites];
 
     [self set2dProjectionMatrices:cbar_proj_mat

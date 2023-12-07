@@ -46,7 +46,8 @@ void dealloc_light_views_4_viewer(struct lightparams_view *light_vws){
     return;
 }
 
-static void sync_phong_light_position_from_list(struct lightparams_view *light_vws){
+static void sync_phong_light_position_from_list(struct kemoviewer_type *kemo_sgl,
+                                                struct lightparams_view *light_vws){
 	double r, t, p;
 	int i;
 	int num = count_real3_clist(light_vws->light_rtp_vws->r3_clist_gtk);
@@ -55,16 +56,19 @@ static void sync_phong_light_position_from_list(struct lightparams_view *light_v
 	for(i=0;i<num;i++){
 		set_from_real3_clist_at_index(i, light_vws->light_rtp_vws->r3_clist_gtk,
 					&r, &t, &p);
-		kemoview_set_each_light_position(i, (float) r, (float) t, (float) p);
+		kemoview_set_each_light_position(i, (float) r, (float) t, (float) p,
+                                         kemo_sgl);
 	};
 	return;
 };
 
 
 void light_radius_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-			gchar *new_text, gpointer user_data){
+                            gchar *new_text, gpointer user_data){
 	struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
-	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view));  
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(cell), "kemoview");
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view));
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
 	GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
@@ -103,14 +107,17 @@ void light_radius_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				new_value, old_value2, old_value3,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
-	sync_phong_light_position_from_list(light_vws);
+	sync_phong_light_position_from_list(kemo_sgl, light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 
 void light_theta_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
 	struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
-	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view));  
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(cell), "kemoview");
+
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view));
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
 	GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
@@ -138,14 +145,17 @@ void light_theta_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				old_value1, new_value, old_value3,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
-	sync_phong_light_position_from_list(light_vws);
+	sync_phong_light_position_from_list(kemo_sgl, light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 
 void light_phi_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
 	struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
-	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view));  
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(cell), "kemoview");
+
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view));
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
 	GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
@@ -173,25 +183,29 @@ void light_phi_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 				old_value1, old_value2, new_value,
 				light_vws->light_rtp_vws->r3_clist_gtk);
 	
-	sync_phong_light_position_from_list(light_vws);
+	sync_phong_light_position_from_list(kemo_sgl, light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 
 void add_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
     struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+
 	light_vws->light_rtp_vws->index_bc
 			= add_r3_list_items(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
 								light_vws->light_rtp_vws->r3_clist_gtk);
-	sync_phong_light_position_from_list(light_vws);
+	sync_phong_light_position_from_list(kemo_sgl, light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 void delete_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
     struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+
 	delete_r3_list_items(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
 				light_vws->light_rtp_vws->r3_clist_gtk);
-	sync_phong_light_position_from_list(light_vws);
+	sync_phong_light_position_from_list(kemo_sgl, light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
 
@@ -203,7 +217,8 @@ static void cursor_chenge_CB(GtkTreeView *tree_view, gpointer user_data){
 	printf("Changed %lf, %lf, %lf\n",org_value[0], org_value[1], org_value[2]);
 }
 
-static GtkWidget *init_lightposition_list_box(struct lightparams_view *light_vws){
+static GtkWidget *init_lightposition_list_box(struct kemoviewer_type *kemo_sgl,
+                                              struct lightparams_view *light_vws){
 	GtkCellRenderer *renderer_spin1;
 	GtkCellRenderer *renderer_spin2;
 	GtkCellRenderer *renderer_spin3;
@@ -223,11 +238,15 @@ static GtkWidget *init_lightposition_list_box(struct lightparams_view *light_vws
 					 G_CALLBACK(cursor_chenge_CB), (gpointer) light_vws);
     */
 	
-	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
+    g_object_set_data(G_OBJECT(renderer_spin1), "kemoview",  (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(renderer_spin2), "kemoview",  (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(renderer_spin3), "kemoview",  (gpointer) kemo_sgl);
+
+    g_signal_connect(G_OBJECT(renderer_spin1), "edited",
                      G_CALLBACK(light_radius_edited_cb), (gpointer) light_vws);
-	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
+	g_signal_connect(G_OBJECT(renderer_spin2), "edited",
                      G_CALLBACK(light_theta_edited_cb), (gpointer) light_vws);
-	g_signal_connect(G_OBJECT(renderer_spin3), "edited", 
+	g_signal_connect(G_OBJECT(renderer_spin3), "edited",
                      G_CALLBACK(light_phi_edited_cb), (gpointer) light_vws);
 	
 	light_vws->light_rtp_vws->index_bc
@@ -243,7 +262,10 @@ static GtkWidget *init_lightposition_list_box(struct lightparams_view *light_vws
 				light_vws->light_rtp_vws->r3_clist_gtk,
 				button_add, button_delete, vbox);
 	
-    g_signal_connect(G_OBJECT(button_add), "clicked", 
+    g_object_set_data(G_OBJECT(button_add),    "kemoview",  (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(button_delete), "kemoview",  (gpointer) kemo_sgl);
+
+    g_signal_connect(G_OBJECT(button_add), "clicked",
                      G_CALLBACK(add_lightposition_list_items_cb), (gpointer) light_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
                      G_CALLBACK(delete_lightposition_list_items_cb), (gpointer) light_vws);
@@ -251,8 +273,9 @@ static GtkWidget *init_lightposition_list_box(struct lightparams_view *light_vws
     return vbox;
 };
 
-GtkWidget * init_light_list_frame(struct lightparams_view *light_vws){
-    light_vws->light_vbox = init_lightposition_list_box(light_vws);
+GtkWidget * init_light_list_frame(struct kemoviewer_type *kemo_sgl,
+                                  struct lightparams_view *light_vws){
+    light_vws->light_vbox = init_lightposition_list_box(kemo_sgl, light_vws);
 	
 	light_vws->scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(light_vws->scrolled_window),

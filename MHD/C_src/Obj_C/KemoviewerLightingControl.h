@@ -12,12 +12,16 @@
 
 #import "KemoViewerMetalView.h"
 #import "fillRectView.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface LightTableController : NSObject {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 	IBOutlet KemoViewerMetalView*  _metalView;
-	IBOutlet id _lightTableView;
+    IBOutlet KemoViewerObject *_kmv;
+
+    IBOutlet id _lightTableView;
 
 	IBOutlet NSTableView * idlightTableView;
 
@@ -67,7 +71,7 @@
 - (void) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender;
 
 - (void)InitLightTable;
-- (void)SetLightTable;
+- (void)SetLightTable:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)UpdateLightTable:(id)pID;
 

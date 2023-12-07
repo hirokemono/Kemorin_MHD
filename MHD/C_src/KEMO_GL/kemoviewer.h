@@ -296,8 +296,6 @@ extern "C" {
     void kemoview_set_viewtype(int sel);
     
     
-    void kemoview_draw_with_modified_domain_distance(void);
-    
     void kemoview_set_coastline_radius(double radius, struct kemoviewer_type *kemoviewer);
     double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer);
     
@@ -317,15 +315,21 @@ extern "C" {
 	void kemoview_init_phong_light_list(void);
 	
 	
-	void kemoview_set_each_light_position(int i_point, float r, float t, float p);
-	int kemoview_get_num_light_position(void);
-	void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p);
-    void kemoview_get_each_light_xyz(int i_point, float *x, float *y, float *z);
+	void kemoview_set_each_light_position(int i_point, float r, float t, float p,
+                                          struct kemoviewer_type *kemoviewer);
+	int kemoview_get_num_light_position(struct kemoviewer_type *kemoviewer);
+	void kemoview_get_each_light_rtp(struct kemoviewer_type *kemoviewer,
+                                     int i_point, float *r, float *t, float *p);
+    void kemoview_get_each_light_xyz(struct kemoviewer_type *kemoviewer,
+                                     int i_point, float *x, float *y, float *z);
 
-	void kemoview_set_material_parameter(int itype, float shiness_in);
-	float kemoview_get_material_parameter(int itype);
+	void kemoview_set_material_parameter(int itype, float shiness_in,
+                                         struct kemoviewer_type *kemoviewer);
+	float kemoview_get_material_parameter(struct kemoviewer_type *kemoviewer, int itype);
 	
 /* subroutines for mesh */
+    void kemoview_draw_with_modified_domain_distance(struct kemoviewer_type *kemoviewer);
+
     void kemoview_set_mesh_color_mode(int icolor, struct kemoviewer_type *kemoviewer);
     int kemoview_get_mesh_color_mode(struct kemoviewer_type *kemoviewer);
     void kemoview_set_num_of_color_loop(int icolor, struct kemoviewer_type *kemoviewer);

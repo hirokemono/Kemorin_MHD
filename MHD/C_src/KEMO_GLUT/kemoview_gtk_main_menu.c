@@ -803,8 +803,8 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
     mbot->expander_quilt = init_quilt_menu_expander(kemo_sgl,
                                                     mbot->quilt_gmenu,
                                                     mbot->view_menu, window_main);
-    mbot->expander_pref = init_preference_expander(mbot->pref_gmenu, window_main,
-                                                   kemo_sgl);
+    mbot->expander_pref = init_preference_expander(kemo_sgl, mbot->pref_gmenu,
+                                                   window_main, kemo_sgl);
     mbot->updatable->expander_evo = init_evoluaiton_menu_expander(kemo_sgl,
                                                                   mbot->updatable->evo_gmenu,
                                                                   window_main);
