@@ -133,7 +133,7 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	g_signal_connect(G_OBJECT(switch_sph_grid), "notify::active",
 				G_CALLBACK(draw_sph_grid_switch_CB), (gpointer) kemo_sgl);
 	
-	GtkAdjustment *adj_coast_radius = gtk_adjustment_new(kemoview_get_coastline_radius(),
+	GtkAdjustment *adj_coast_radius = gtk_adjustment_new(kemoview_get_coastline_radius(kemo_sgl),
 										  0.0, 10.0, 0.02, 0.02, 0.0);
 	GtkWidget *spin_coast_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_coast_radius), 0, 3);
 	g_signal_connect(spin_coast_radius, "value-changed", G_CALLBACK(coastline_radius_CB),NULL);

@@ -5,7 +5,7 @@
 
 #define ARCPI 0.318309886
 
-static GLfloat arrow_c[4] = {0.8, 0.7, 0.6, 1.0};
+static float arrow_c[4] = {0.8, 0.7, 0.6, 1.0};
 
 int count_psf_nodes_to_buf(int ist_psf, int ied_psf){
 	int num_patch = ied_psf - ist_psf;

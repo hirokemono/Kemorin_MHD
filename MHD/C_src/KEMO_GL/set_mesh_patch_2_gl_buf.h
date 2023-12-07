@@ -15,7 +15,7 @@
 int count_mesh_patch_buf(int *istack_grp, int *ip_domain_far,
 			struct viewer_mesh *mesh_s, int *iflag_domain);
 int add_mesh_patch_to_buf(int ist_tri, int shading_mode, int polygon_mode, int surface_color,
-			int color_mode, int color_loop, double opacity, GLfloat single_color[4], 
+			int color_mode, int color_loop, double opacity, float single_color[4], 
 			int num_grp, int *istack_grp, int *item_grp, 
 			double **normal_ele, double **normal_nod, int *isort_grp, 
 			int *ip_domain_far, int igrp, struct viewer_mesh *mesh_s, int *iflag_domain, 

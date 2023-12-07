@@ -169,8 +169,16 @@ void kemoview_set_viewtype(int sel){
     set_viewtype(kemo_sgl->view_s, sel);
 }
 
-void kemoview_set_coastline_radius(double radius){kemo_sgl->kemo_mesh->mesh_m->radius_coast = radius;};
-double kemoview_get_coastline_radius(void){return kemo_sgl->kemo_mesh->mesh_m->radius_coast;};
+/*
+ 20km/yr 0.25 m/s
+ */
+
+void kemoview_set_coastline_radius(double radius, struct kemoviewer_type *kemoviewer){
+    kemo_sgl->kemo_mesh->mesh_m->radius_coast = radius;
+};
+double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer){
+    return kemoviewer->kemo_mesh->mesh_m->radius_coast;
+};
 
 void kemoview_set_object_property_flags(int selected, int iflag,
                                         struct kemoviewer_type *kemoviewer){

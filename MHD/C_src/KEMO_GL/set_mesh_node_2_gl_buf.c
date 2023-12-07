@@ -17,7 +17,7 @@ const int count_mesh_node_ico_to_buf(int *istack_grp, struct viewer_mesh *mesh_s
 
 const int set_mesh_node_ico_to_buf(int ist_tri, int num_grp, int igrp, int *istack_grp, int *item_grp,
 			struct viewer_mesh *mesh_s, double node_diam,
-			int node_color, int color_mode, int color_loop, GLfloat single_color[4], 
+			int node_color, int color_mode, int color_loop, float single_color[4], 
 			int *iflag_domain, struct gl_strided_buffer *mesh_buf){
 	double f_color[4];
 	double xyz_patch[180], norm_patch[180];

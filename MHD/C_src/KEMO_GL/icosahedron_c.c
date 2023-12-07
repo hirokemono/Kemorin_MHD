@@ -74,14 +74,14 @@ void init_icosahedron_c(void){
 int set_icosahedron_patch(double size, double x_draw[3], 
 						  double *xyz_draw, double *norm_draw){
 	int icou;
-	GLfloat xyz_plot[12][3];
+    float xyz_plot[12][3];
 	int i, j, nd;
 	int ie1, ie2, ie3;
 	
 	for (i = 0; i < 12; i++) {
-		xyz_plot[i][0]=  x_draw[0] + (GLfloat) xyz_ico[i][0] * size;
-		xyz_plot[i][1]=  x_draw[1] + (GLfloat) xyz_ico[i][1] * size;
-		xyz_plot[i][2]=  x_draw[2] + (GLfloat) xyz_ico[i][2] * size;
+		xyz_plot[i][0]=  x_draw[0] + (float) xyz_ico[i][0] * size;
+		xyz_plot[i][1]=  x_draw[1] + (float) xyz_ico[i][1] * size;
+		xyz_plot[i][2]=  x_draw[2] + (float) xyz_ico[i][2] * size;
 	};
 	
 	/*! add a points to the display list */
@@ -94,7 +94,7 @@ int set_icosahedron_patch(double size, double x_draw[3],
 		for (j = 0; j < 3; j++) {
 			for (nd = 0; nd < 3; nd++) {
 				ie1 = ifac_poi[i][j];
-				xyz_draw[3*icou+nd] = (GLfloat) xyz_plot[ie1][nd];
+				xyz_draw[3*icou+nd] = (float) xyz_plot[ie1][nd];
 				norm_draw[3*icou+nd] =  xyz_ico[ie1][nd];
 			};
 			icou = icou + 1;

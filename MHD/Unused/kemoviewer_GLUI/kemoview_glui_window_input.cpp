@@ -458,7 +458,7 @@ void set_psf_vector_thick_by_glui(int winid){
 }
 
 void set_coastline_radius_glui(int winid){
-	coast_radius = (float) kemoview_get_coastline_radius();
+	coast_radius = (float) kemoview_get_coastline_radius(kemo_sgl);
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Coastline radius: ", GLUI_EDITTEXT_FLOAT,

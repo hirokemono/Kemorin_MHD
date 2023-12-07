@@ -23,18 +23,18 @@ static float cube_normals [6][3] = {
 	{0.0, 0.0, -1.0}, {-1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {0.0, 1.0, 0.0},
 	{0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}};
 
-static GLuint cube_faces [6][4] = {
+static unsigned int cube_faces [6][4] = {
 	{3, 2, 1, 0}, {2, 3, 7, 6}, {0, 1, 5, 4}, {3, 0, 4, 7}, {1, 2, 6, 5}, {4, 5, 6, 7} };
 
-static GLuint cube_tri_faces [12][3] = {
+static unsigned int cube_tri_faces [12][3] = {
 			{3, 2, 1}, {3, 1, 0}, {2, 3, 7}, {2, 7, 6}, {0, 1, 5}, {0, 5, 4}, 
 			{3, 0, 4}, {3, 4, 7}, {1, 2, 6}, {1, 6, 5}, {4, 5, 6}, {4, 6, 7}};
 
-static GLuint cube_edge [12][2] = {
+static unsigned int cube_edge [12][2] = {
 			{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, 
 			{6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}};
 
-static GLuint cube_nodes[8] = {3, 2, 1, 0, 4, 5, 6, 7};
+static unsigned int cube_nodes[8] = {3, 2, 1, 0, 4, 5, 6, 7};
 
 /* cube informaiton into VBO */
 

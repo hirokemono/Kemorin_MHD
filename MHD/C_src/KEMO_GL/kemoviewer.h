@@ -5,13 +5,6 @@
 #define KEMOVIEWER__
 
 
-#ifdef __APPLE__
-#include<OpenGL/gl3.h>
-#else
-#include<GL/gl.h>
-#endif
-
-
 #define LENGTHBUF 4096     /* length of text buffer */
 
 #define INBUFSIZ   65536        /*  buffer size for original data (arbitraly) */
@@ -305,8 +298,8 @@ extern "C" {
     
     void kemoview_draw_with_modified_domain_distance(void);
     
-    void kemoview_set_coastline_radius(double radius);
-    double kemoview_get_coastline_radius(void);
+    void kemoview_set_coastline_radius(double radius, struct kemoviewer_type *kemoviewer);
+    double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer);
     
     void kemoview_set_object_property_flags(int selected, int iflag,
                                             struct kemoviewer_type *kemoviewer);

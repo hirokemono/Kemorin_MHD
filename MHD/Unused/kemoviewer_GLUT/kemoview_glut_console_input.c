@@ -299,7 +299,7 @@ void set_surf_group_opacity(){
 void set_coastline_radius_console(){
 	float radius;
 	char buf[1024];
-	float radius_org = (float) kemoview_get_coastline_radius();
+	float radius_org = (float) kemoview_get_coastline_radius(kemo_sgl);
 	
 	printf("Enter coastline radius: \n");
 	printf("Current radius  %.7e \n", radius_org);

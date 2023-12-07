@@ -18,7 +18,7 @@ struct kemo_PSF_texure * alloc_kemo_PSF_texure(void){
 }
 void alloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure){
     psf_texure->texure_npix = psf_texure->texure_width * psf_texure->texure_height;
-    psf_texure->texure_rgba = (GLubyte *) malloc( (4*psf_texure->texure_npix) * sizeof(GLubyte));
+    psf_texure->texure_rgba = (unsigned char *) malloc( (4*psf_texure->texure_npix) * sizeof(unsigned char));
     if ((psf_texure->texure_rgba) == NULL) {
         printf("Allocation failed for psf_texure->texure_rgba \n");
         exit(2);

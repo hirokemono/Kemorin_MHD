@@ -49,7 +49,7 @@
 -(void) awakeFromNib
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    self.coastlineRadius = kemoview_get_coastline_radius();
+    self.coastlineRadius = kemoview_get_coastline_radius(kemo_sgl);
     kemoview_set_object_property_flags(TIME_LABEL_AVAIL,
                                        (int) self.timeDisplayAccess, kemo_sgl);
     kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
@@ -154,7 +154,8 @@
 }
 - (IBAction)SphRadiusAction:(id)sender;
 {
-	kemoview_set_coastline_radius((double) coastlineRadius);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_coastline_radius((double) coastlineRadius, kemo_sgl);
 	[_metalView UpdateImage];
 }
 

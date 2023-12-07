@@ -50,7 +50,7 @@
 !    void kemoview_draw_with_modified_domain_distance();
 !    
 !    void kemoview_set_coastline_radius(double radius);
-!    double kemoview_get_coastline_radius();
+!    double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer);
 !    
 !    void kemoview_set_object_property_flags(int selected, int iflag,
 !                                            struct kemoviewer_type *kemoviewer);

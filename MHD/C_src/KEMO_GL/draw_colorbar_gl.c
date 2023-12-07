@@ -136,7 +136,7 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
 };
 
 void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
-                           GLfloat text_color[4], GLfloat bg_color[4],
+                           float text_color[4], float bg_color[4],
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                            struct gl_strided_buffer *min_buf,  struct line_text_image *cbar_min_image,
                            struct gl_strided_buffer *max_buf,  struct line_text_image *cbar_max_image,

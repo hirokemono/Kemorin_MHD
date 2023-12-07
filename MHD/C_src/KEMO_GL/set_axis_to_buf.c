@@ -3,31 +3,31 @@
 
 #include "set_axis_to_buf.h"
 
-static const GLfloat red[4] =   {RED_R, RED_G, RED_B, RED_A};
-static const GLfloat blue[4] =  {BLUE_R, BLUE_G, BLUE_B, BLUE_A};
-static const GLfloat green[4] = {L_GREEN_R, L_GREEN_G, L_GREEN_B, L_GREEN_A};
+static const float red[4] =   {RED_R, RED_G, RED_B, RED_A};
+static const float blue[4] =  {BLUE_R, BLUE_G, BLUE_B, BLUE_A};
+static const float green[4] = {L_GREEN_R, L_GREEN_G, L_GREEN_B, L_GREEN_A};
 
 static float set_ratio_4_axislabel(struct view_element *view_s, 
-                                   int end_screen[2], int zero_screen[2], GLfloat l_axis){
-	GLfloat ratio;
-	GLfloat ratio_tmp[2];
+                                   int end_screen[2], int zero_screen[2], float l_axis){
+    float ratio;
+    float ratio_tmp[2];
 	
 	if ( end_screen[0] < view_s->nx_frame/10 ) { 
-		ratio_tmp[0] = (GLfloat) (view_s->nx_frame/10 - zero_screen[0])
-        / (GLfloat) (end_screen[0] - zero_screen[0]);
+		ratio_tmp[0] = (float) (view_s->nx_frame/10 - zero_screen[0])
+        / (float) (end_screen[0] - zero_screen[0]);
 	} else if  ( end_screen[0] > view_s->nx_frame*9/10 ) {
-		ratio_tmp[0] = (GLfloat) (zero_screen[0]-view_s->nx_frame*9/10)
-        / (GLfloat) (zero_screen[0] - end_screen[0]);
+		ratio_tmp[0] = (float) (zero_screen[0]-view_s->nx_frame*9/10)
+        / (float) (zero_screen[0] - end_screen[0]);
 	} else {
 		ratio_tmp[0] = ONE;
 	};
 	
 	if ( end_screen[1] < view_s->ny_frame/10 ) { 
-		ratio_tmp[1] = (GLfloat) (view_s->ny_frame/10 - zero_screen[1])
-        / (GLfloat) (end_screen[1] - zero_screen[1]);
+		ratio_tmp[1] = (float) (view_s->ny_frame/10 - zero_screen[1])
+        / (float) (end_screen[1] - zero_screen[1]);
 	} else if  ( end_screen[1] > view_s->ny_frame*9/10 ) {
-		ratio_tmp[1] = (GLfloat) (zero_screen[1]-view_s->ny_frame*9/10)
-        / (GLfloat) (zero_screen[1] - end_screen[1]);
+		ratio_tmp[1] = (float) (zero_screen[1]-view_s->ny_frame*9/10)
+        / (float) (zero_screen[1] - end_screen[1]);
 	} else {
 		ratio_tmp[1] = ONE;
 	};
