@@ -80,9 +80,9 @@ static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
 	gtk_gl_area_set_auto_render(GTK_GL_AREA(area), TRUE);
 	
 	/* ! set the perspective and lighting */
-	kemoviewer_reset_to_init_angle();
+	kemoviewer_reset_to_init_angle(single_kemoview);
     kemoview_init_background_color(single_kemoview);
-	kemoview_init_lighting();
+	kemoview_init_lighting(single_kemoview);
     kemoview_gl_background_color(single_kemoview);
     kemoview_gl_init_lighting(kemo_gl);
 	kemoview_init_phong_light_list(single_kemoview);
@@ -180,7 +180,7 @@ int draw_mesh_kemo(void) {
 	
 	iflag_gtk_focus = 1;
 //	glClear(GL_COLOR_BUFFER_BIT);
-	draw_full();
+	draw_full(kemo_sgl);
 	
 	GtkWidget *vbox;
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);

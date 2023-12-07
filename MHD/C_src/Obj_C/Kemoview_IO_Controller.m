@@ -111,7 +111,7 @@
         struct kv_string *filename = kemoview_init_kvstring_by_string([ViewMatrixFilename UTF8String]);
 		kemoview_load_modelview_file(filename, kemo_sgl);
         kemoview_free_kvstring(filename);
-		[_metalView UpdateImage];
+		[_metalView UpdateImage:kemo_sgl];
 	};
                                  }];
 }
@@ -157,7 +157,7 @@
         }
     };
     
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) SaveImageFile:(id)pId;{

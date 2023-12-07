@@ -35,9 +35,9 @@ GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y);
 void glfw_callbacks_init();
 void set_GLFWindowSize(int width, int height);
 
-void draw_fast(void);
-void draw_full(void);
-void draw_quilt(void);
+void draw_fast(struct kemoviewer_type *kemo_sgl);
+void draw_full(struct kemoviewer_type *kemo_sgl);
+void draw_quilt(struct kemoviewer_type *kemo_sgl);
 
 void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
                             int iflag_img, struct kv_string *image_prefix,

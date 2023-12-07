@@ -17,7 +17,7 @@ static void toggle_draw_node_group_CB(GtkTreeViewColumn *renderer,
     kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, 
                                 index_grp, index1_for_toggle, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void draw_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
@@ -32,7 +32,7 @@ static void draw_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
                                     i, IONE, kemo_sgl);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void hide_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
@@ -47,7 +47,7 @@ static void hide_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
                                     i, IZERO, kemo_sgl);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void nod_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
@@ -63,7 +63,7 @@ static void nod_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
                                      index_mode, kemo_sgl);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 

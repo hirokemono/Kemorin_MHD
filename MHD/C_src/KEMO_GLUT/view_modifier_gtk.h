@@ -23,8 +23,8 @@ GtkWidget * open_kemoviwer_gl_panel(int npixel_x, int npixel_y);
 void gtk_callbacks_init(gtk_callbacks_init);
 void set_GTKindowSize(int width, int height);
 
-void draw_fast(void);
-void draw_full(void);
+void draw_fast(struct kemoviewer_type *kemo_sgl);
+void draw_full(struct kemoviewer_type *kemo_sgl);
 void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
                             int iflag_img, struct kv_string *image_prefix,
                             int i_axis, int inc_deg);

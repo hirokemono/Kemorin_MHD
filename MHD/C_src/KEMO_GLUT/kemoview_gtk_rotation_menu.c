@@ -27,9 +27,11 @@ static void set_rotation_direction_CB(GtkComboBox *combobox_rotdir, gpointer use
 {
 	struct rotation_gtk_menu *rot_gmenu 
 			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(combobox_rotdir), "kemoview");
+    
     rot_gmenu->iaxis_rot = gtk_selected_combobox_index(combobox_rotdir);
-   	
-	draw_full();
+	draw_full(kemo_sgl);
 	return;
 };
 
@@ -37,9 +39,11 @@ static void set_rotation_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer u
 {
 	struct rotation_gtk_menu *rot_gmenu 
 			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(combobox_filefmt), "kemoview");
+    
     rot_gmenu->id_fmt_rot = gtk_selected_combobox_index(combobox_filefmt);
-	
-	draw_full();
+	draw_full(kemo_sgl);
 	return;
 };
 
@@ -130,7 +134,8 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
 							   renderer_rotation_dir, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_dir), 
 								   renderer_rotation_dir, "text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(rot_gmenu->combobox_rotation_dir), "changed", 
+    g_object_set_data(G_OBJECT(rot_gmenu->combobox_rotation_dir), "kemoview",  (gpointer) kemo_sgl);
+	g_signal_connect(G_OBJECT(rot_gmenu->combobox_rotation_dir), "changed",
 				G_CALLBACK(set_rotation_direction_CB), entry_rotation_file);
 	
 	
@@ -158,8 +163,9 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
 							   renderer_rotation_fileformat, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_fileformat), 
 								   renderer_rotation_fileformat, "text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(rot_gmenu->combobox_rotation_fileformat), "changed", 
-				G_CALLBACK(set_rotation_fileformat_CB), entry_rotation_file);
+    g_object_set_data(G_OBJECT(rot_gmenu->combobox_rotation_fileformat), "kemoview",  (gpointer) kemo_sgl);
+	g_signal_connect(G_OBJECT(rot_gmenu->combobox_rotation_fileformat), "changed",
+                     G_CALLBACK(set_rotation_fileformat_CB), entry_rotation_file);
 	
 	
 	

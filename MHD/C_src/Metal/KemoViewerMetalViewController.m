@@ -17,8 +17,9 @@
 
 -(void) awakeFromNib
 {
-    kemoviewer_reset_to_init_angle();
-    kemoview_init_lighting();
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoviewer_reset_to_init_angle(kemo_sgl);
+    kemoview_init_lighting(kemo_sgl);
 
     _metalView.enableSetNeedsDisplay = FALSE;
 /*    viewDidLoad is called by linkning self.viwew to metal view */
@@ -68,10 +69,11 @@
 
 -(unsigned char *) getRenderedbyMetalToBGRA:(NSUInteger *) pix_xy
                                PixelPerByte:(NSUInteger *) pixelByte
+                                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     id<MTLTexture> _imageOutputTexture = [_renderer KemoViewToTexure:_metalView];
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
     /*    Texture to render screen to texture */
     pix_xy[0] = _imageOutputTexture.width;
@@ -93,7 +95,7 @@
 };
 
 
--(CGImageRef) getRenderedbyMetalToCGref
+-(CGImageRef) getRenderedbyMetalToCGref:(struct kemoviewer_type *) kemo_sgl
 {
     unsigned char rtmp;
     NSUInteger i;
@@ -102,7 +104,8 @@
     unsigned char *bgra;
     
     bgra = [self getRenderedbyMetalToBGRA:pix_xy
-                             PixelPerByte:pixelByte];
+                             PixelPerByte:pixelByte
+                                 kemoview:kemo_sgl];
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     NSUInteger bpRaw =     pixelByte[0] * pix_xy[0];
 
@@ -125,8 +128,9 @@
 };
 
 -(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep
+                  kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    CGImageRef dstImage = [self getRenderedbyMetalToCGref];
+    CGImageRef dstImage = [self getRenderedbyMetalToCGref:kemo_sgl];
     [imageRep initWithCGImage:dstImage];
     if(dstImage) {CGImageRelease(dstImage);};
     return;

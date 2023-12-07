@@ -18,7 +18,7 @@ static void toggle_draw_ele_grp_patch_CB(GtkTreeViewColumn *renderer,
     kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, 
                                 index_grp, index1_for_toggle, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void toggle_draw_ele_grp_grid_CB(GtkTreeViewColumn *renderer, 
@@ -31,7 +31,7 @@ static void toggle_draw_ele_grp_grid_CB(GtkTreeViewColumn *renderer,
     kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, 
                                 index_grp, index2_for_toggle, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void toggle_draw_ele_grp_node_CB(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
@@ -43,7 +43,7 @@ static void toggle_draw_ele_grp_node_CB(GtkTreeViewColumn *renderer, gchar *path
     kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE,
                                 index_grp, index3_for_toggle, kemo_sgl);
 	
-	draw_full();
+	draw_full(kemo_sgl);
 }
 
 
@@ -59,7 +59,7 @@ static void draw_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
                                     i, IONE, kemo_sgl);
 	};
 	
-	draw_full();
+	draw_full(kemo_sgl);
 }
 
 static void draw_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
@@ -74,7 +74,7 @@ static void draw_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
                                     i, IONE, kemo_sgl);
 	};
 	
-	draw_full();
+	draw_full(kemo_sgl);
 }
 
 static void draw_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
@@ -89,7 +89,7 @@ static void draw_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
                                     i, IONE, kemo_sgl);
 	};
 	
-	draw_full();
+	draw_full(kemo_sgl);
 }
 
 static void hide_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
@@ -104,7 +104,7 @@ static void hide_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
                                     i, IZERO, kemo_sgl);
 	};
 	
-	draw_full();
+	draw_full(kemo_sgl);
 }
 
 static void hide_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
@@ -119,7 +119,7 @@ static void hide_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
                                     i, IZERO, kemo_sgl);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void hide_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
@@ -134,7 +134,7 @@ static void hide_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
                                     i, IZERO, kemo_sgl);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 
@@ -151,7 +151,7 @@ static void ele_grp_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer u
                                      index_mode, user_data);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -168,7 +168,7 @@ static void ele_grp_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
                                      index_mode, user_data);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -185,7 +185,7 @@ static void ele_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
                                      index_mode, user_data);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -200,7 +200,7 @@ static void set_ele_grp_opacity_CB(GtkWidget *entry, gpointer user_data)
 	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE,
                                  colorcode4, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 static void set_single_ele_grp_patch_color_CB(GtkButton *button, gpointer user_data)
@@ -217,7 +217,7 @@ static void set_single_ele_grp_patch_color_CB(GtkButton *button, gpointer user_d
         kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE,
                                      colorcode4, kemo_sgl);
     };
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 static void set_single_ele_grp_grids_color_CB(GtkButton *button, gpointer user_data)
@@ -234,7 +234,7 @@ static void set_single_ele_grp_grids_color_CB(GtkButton *button, gpointer user_d
         kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFGRID_TOGGLE,
                                      colorcode4, kemo_sgl);
     };
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 static void set_single_ele_grp_nodes_color_CB(GtkButton *button, gpointer user_data)
@@ -251,7 +251,7 @@ static void set_single_ele_grp_nodes_color_CB(GtkButton *button, gpointer user_d
         kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFNOD_TOGGLE,
                                      colorcode4, kemo_sgl);
     };
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 

@@ -56,7 +56,7 @@ static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer
 		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 static void draw_fileindex_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
@@ -70,7 +70,7 @@ static void draw_fileindex_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpo
 		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
 	}
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 

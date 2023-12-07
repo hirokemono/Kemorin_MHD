@@ -13,21 +13,21 @@ static void draw_axis_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	kemoview_toggle_object_properties(AXIS_TOGGLE, kemo_sgl);
 	
-	draw_full();
+	draw_full(kemo_sgl);
 	return;
 };
 static void draw_coastline_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	kemoview_toggle_object_properties(COASTLINE_SWITCH, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 static void draw_sph_grid_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	kemoview_toggle_object_properties(SPHEREGRID_SWITCH, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 static void coastline_radius_CB(GtkWidget *entry, gpointer data)
@@ -36,7 +36,7 @@ static void coastline_radius_CB(GtkWidget *entry, gpointer data)
 	double radius = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_coastline_radius(radius, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void set_shading_mode_CB(GtkComboBox *combobox_shading, gpointer data)
@@ -45,7 +45,7 @@ static void set_shading_mode_CB(GtkComboBox *combobox_shading, gpointer data)
     int index_mode = gtk_selected_combobox_index(combobox_shading);
     
 	kemoview_set_object_property_flags(SHADING_SWITCH, index_mode, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -55,7 +55,7 @@ static void set_surface_direction_CB(GtkComboBox *combobox_surfdir, gpointer dat
     int index_mode = gtk_selected_combobox_index(combobox_surfdir);
 	
 	kemoview_set_object_property_flags(POLYGON_SWITCH, index_mode, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 

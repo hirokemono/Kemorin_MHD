@@ -48,7 +48,7 @@ static void mainloop_4_glfw(){
     	    if(delta_t < 4.5){
 	    	    message_opacity = log10(10.0 - 2.0*delta_t);
                 kemoview_set_message_opacity(message_opacity);
-            	draw_full();
+            	draw_full(single_kemoview);
             }else{ 
                 iflag_msg_fade = 0;
             };
@@ -62,7 +62,7 @@ static void mainloop_4_glfw(){
 
             delta_t = glfwGetTime() - fast_draw_start;
             if(delta_t > 1.5){
-                draw_full();
+                draw_full(single_kemoview);
                 iflag_fast_prev = 0;
             	iflag_fast_draw = 0;
             };
@@ -342,7 +342,7 @@ int draw_mesh_kemo(void) {
 			);
 	
 	/*! set callback for GLfw*/
-	kemoviewer_reset_to_init_angle();
+	kemoviewer_reset_to_init_angle(single_kemoview);
 	glfw_callbacks_init();
 	
 	/* Set Cllback for drug and Drop into window */
@@ -360,14 +360,14 @@ int draw_mesh_kemo(void) {
 	
 	/* ! set the perspective and lighting */
     kemoview_init_background_color(single_kemoview);
-	kemoview_init_lighting();
+	kemoview_init_lighting(single_kemoview);
     kemoview_gl_background_color(single_kemoview);
     kemoview_gl_init_lighting(kemo_gl);
 	kemoview_init_phong_light_list(single_kemoview);
 	
 	iflag_gtk_focus = 1;
 	glClear(GL_COLOR_BUFFER_BIT);
-	draw_full();
+	draw_full(single_kemoview);
 	glfwPollEvents();
 	glfwPostEmptyEvent();
 	

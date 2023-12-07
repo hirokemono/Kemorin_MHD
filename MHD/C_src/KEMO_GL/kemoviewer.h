@@ -269,8 +269,6 @@ extern "C" {
     int kemoview_get_PSF_maximum_load(void);
     
     void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
-	
-    void kemoview_init_lighting(void);
 
 	void kemoview_indentity_projectionmatrix(void);
 	void kemoview_indentity_viewmatrix(void);
@@ -306,6 +304,7 @@ extern "C" {
     int kemoview_toggle_object_properties(int selected, struct kemoviewer_type *kemoviewer);
 	
 /* Lighting parameters */
+    void kemoview_init_lighting(struct kemoviewer_type *kemoviewer);
 	void kemoview_alloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer);
 	void kemoview_delete_phong_light_list(int i_delete, struct kemoviewer_type *kemoviewer);
 	void kemoview_add_phong_light_list(int i_add, float r, float t, float p,
@@ -398,7 +397,7 @@ extern "C" {
     void kemoview_left_viewmatrix(void);
     void kemoview_right_viewmatrix(void);
 
-    void kemoviewer_reset_to_init_angle(void);
+    void kemoviewer_reset_to_init_angle(struct kemoviewer_type *kemoviewer);
     
     void kemoview_set_retinamode(int i_retina);
     int kemoview_get_retinamode(void);
@@ -409,7 +408,8 @@ extern "C" {
 
     int kemoview_get_draw_mode(void);
 
-    void kemoview_set_view_integer(int selected, int ivalue);
+    void kemoview_set_view_integer(int selected, int ivalue,
+                                   struct kemoviewer_type *kemoviewer);
 
 	void kemoview_set_view_parameter(int selected, int i, double value,
                                      struct kemoviewer_type *kemoviewer);

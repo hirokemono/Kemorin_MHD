@@ -54,7 +54,8 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	};
 	
 	if(action == GLFW_RELEASE){
-		draw_full();
+        struct kemoviewer_type * kemo_sgl = kemoview_single_viwewer_struct();
+		draw_full(kemo_sgl);
 	};
 	return;
 };
@@ -302,22 +303,22 @@ void select_anaglyph(){
     return;
 }
 
-void draw_full(){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+void draw_full(struct kemoviewer_type *kemo_sgl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
     select_anaglyph();
 	return;
 };
 
-void draw_fast(){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+void draw_fast(struct kemoviewer_type *kemo_sgl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     select_anaglyph();
     return;
 };
-void draw_simple(){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW);
+void draw_simple(struct kemoviewer_type *kemo_sgl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
     kemoview_mono_viewmatrix();
     glDrawBuffer(GL_BACK);
     kemoview_modify_view();
@@ -325,9 +326,9 @@ void draw_simple(){
     return;
 };
 
-void draw_quilt(void){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+void draw_quilt(struct kemoviewer_type *kemo_sgl){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     kemoview_step_viewmatrix();
     glDrawBuffer(GL_BACK);
     kemoview_modify_view();
@@ -349,17 +350,17 @@ static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
 	
-	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
 	glfwFocusWindow(glfw_window);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
 		
 		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
 			kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
-			draw_quilt();
+			draw_quilt(kemo_sgl);
 			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 			kemoview_add_quilt_img(image, quilt_image);
 		};
@@ -383,14 +384,14 @@ static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
 	
-	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
 	glfwFocusWindow(glfw_window);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
-        kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
+        kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
         select_anaglyph();
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
@@ -420,7 +421,7 @@ static void write_evolution_quilt_views(struct kemoviewer_type *kemo_sgl,
 			
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
 				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
-				draw_quilt();
+				draw_quilt(kemo_sgl);
 				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 				kemoview_add_quilt_img(image, quilt_image);
 			};
@@ -449,7 +450,7 @@ static void write_evolution_views(struct kemoviewer_type *kemo_sgl,
 			
 			kemoview_viewer_evolution(i, kemo_sgl);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-			draw_full();
+			draw_full(kemo_sgl);
 			glfwSwapBuffers(glfw_window);
 			
 			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
@@ -471,7 +472,7 @@ void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
 	}else{
 		write_rotate_views(kemo_sgl, iflag_img, image_prefix, i_axis, inc_deg);
 	}
-    draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 
@@ -485,7 +486,7 @@ void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
 		write_evolution_views(kemo_sgl, iflag_img, image_prefix,
 							  ist_udt, ied_udt, inc_udt);
 	};
-    draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 

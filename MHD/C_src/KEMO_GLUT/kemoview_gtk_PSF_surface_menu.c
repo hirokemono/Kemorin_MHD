@@ -14,14 +14,14 @@ GtkWidget *window_csel;
 static void psf_surface_switch_CB(GObject *switch_draw, GParamSpec *pspec, gpointer user_data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	kemoview_select_PSF_draw_switch(kemo_sgl, PSFSOLID_TOGGLE);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
 static void psf_colorbar_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer user_data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	kemoview_select_PSF_draw_switch(kemo_sgl, COLORBAR_TOGGLE);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -40,7 +40,7 @@ static void set_PSFcolor_GTK(struct kemoviewer_type *kemo_sgl,
 	dcolor[3] = (gdouble) kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
 	kemoview_set_PSF_single_color(kemo_sgl, dcolor);
 	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 
@@ -118,7 +118,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
 		load_texture_handler(kemo_sgl, parent_window);
 	};
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -127,7 +127,7 @@ static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_constant_opacity(gtk_floatvalue, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 
@@ -144,7 +144,7 @@ static void MinRangeValueChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_set_PSF_linear_colormap(gtk_floatvalue, i_min_digit, 
 									 value_max, i_max_digit,
                                      kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 }
 static void MinRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 {
@@ -159,7 +159,7 @@ static void MinRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_set_PSF_linear_colormap(value_min, gtk_intvalue, 
 									 value_max, i_max_digit,
                                      kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 }
 static void MaxRangeValueChange_CB(GtkWidget *entry, gpointer data)
 {
@@ -174,7 +174,7 @@ static void MaxRangeValueChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
 									 gtk_floatvalue, i_max_digit,
                                      kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 }
 static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 {
@@ -189,7 +189,7 @@ static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
 									 value_max, gtk_intvalue,
                                      kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,

@@ -77,7 +77,7 @@
                                            kemoview_read_PSF_colormap_file(filename, kemo_sgl);
                                            kemoview_free_kvstring(filename);
                                            
-                                           [_metalView UpdateImage];
+                                           [_metalView UpdateImage:kemo_sgl];
                                            [_colorMapObject SetColorTables:kemo_sgl];
                                            [_opacityMapObject SetOpacityTables:kemo_sgl];
                                        };

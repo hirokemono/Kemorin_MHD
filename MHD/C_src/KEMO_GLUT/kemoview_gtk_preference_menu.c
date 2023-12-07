@@ -25,16 +25,16 @@ void dealloc_preference_gtk_menu(struct preference_gtk_menu *pref_gmenu){
 static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 	float color[4];
 	GtkWindow *window = GTK_WINDOW(data);
-    struct kemoviewer_type *kemoviewer_data
+    struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(data), "kemoview");
 
 	int iflag_set = kemoview_gtk_colorsel_CB(window, color);
 	if(iflag_set > 0){
-        kemoview_set_background_color(color, kemoviewer_data);
-        kemoview_gl_background_color(kemoviewer_data);
+        kemoview_set_background_color(color, kemo_sgl);
+        kemoview_gl_background_color(kemo_sgl);
     };
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 
@@ -43,7 +43,7 @@ static void AmbientChange(GtkWidget *entry, gpointer data)
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_material_parameter(AMBIENT_FLAG, value, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 static void DiffuseChange(GtkWidget *entry, gpointer data)
@@ -51,7 +51,7 @@ static void DiffuseChange(GtkWidget *entry, gpointer data)
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_material_parameter(DIFFUSE_FLAG, value, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 static void SpecularChange(GtkWidget *entry, gpointer data)
@@ -59,7 +59,7 @@ static void SpecularChange(GtkWidget *entry, gpointer data)
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_material_parameter(SPECULAR_FLAG, value, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 static void ShinenessChange(GtkWidget *entry, gpointer data)
@@ -68,7 +68,7 @@ static void ShinenessChange(GtkWidget *entry, gpointer data)
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	
 	kemoview_set_material_parameter(SHINENESS_FLAG, value, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 

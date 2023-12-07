@@ -27,7 +27,7 @@ static void mainloop_4_glfw(){
 	while (!glfwWindowShouldClose(glfw_win)){
 		iflag = glfwWindowShouldClose(glfw_win);
 		
-		draw_full();
+		draw_full(kemo_sgl);
 		glfwPollEvents();
 	};
 	return;
@@ -125,7 +125,7 @@ int draw_glfw_test(void) {
 			);
 	
 	/*! set callback for GLfw*/
-	kemoviewer_reset_to_init_angle();
+	kemoviewer_reset_to_init_angle(kemo_sgl);
 	glfw_callbacks_init();
 	
 	/* Set Cllback for drug and Drop into window */
@@ -143,13 +143,13 @@ int draw_glfw_test(void) {
 	
 	/* ! set the perspective and lighting */
 	kemoview_init_background_color(kemo_sgl);
-	kemoview_init_lighting();
+	kemoview_init_lighting(kemo_sgl);
     kemoview_gl_background_color();
     kemoview_gl_init_lighting(kemo_gl);
 	kemoview_init_phong_light_list(kemo_sgl);
 	
 	glClear(GL_COLOR_BUFFER_BIT);
-	draw_full();
+	draw_full(kemo_sgl);
 	glfwPollEvents();
 	glfwPostEmptyEvent();
 	

@@ -84,12 +84,6 @@ void kemoview_indentity_projectionmatrix(void){set_projection_by_identity();};
 void kemoview_indentity_viewmatrix(void){set_view_by_identity();};
 void kemoview_message_viewmatrix(void){set_view_for_message(kemo_sgl->view_s);};
 
-void kemoview_init_lighting(void){
-    init_kemoview_perspective(kemo_sgl->view_s);
-    init_projection_struct(kemo_sgl->view_s);
-    return;
-}
-
 void kemoview_init_background_color(struct kemoviewer_type *kemoviewer){
     init_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
                            kemoviewer->kemo_mesh->text_color);
@@ -237,7 +231,11 @@ int kemoview_toggle_object_properties(int selected, struct kemoviewer_type *kemo
 
 /* Shader controls */
 
-
+void kemoview_init_lighting(struct kemoviewer_type *kemoviewer){
+    init_kemoview_perspective(kemoviewer->view_s);
+    init_projection_struct(kemoviewer->view_s);
+    return;
+}
 
 void kemoview_alloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer){
 	alloc_phong_light_list(kemoviewer->kemo_buffers->kemo_lights, num);
@@ -450,7 +448,7 @@ void kemoview_step_viewmatrix(void){modify_step_viewmat(kemo_sgl->view_s);};
 void kemoview_left_viewmatrix(void){modify_left_viewmat(kemo_sgl->view_s);};
 void kemoview_right_viewmatrix(void){modify_right_viewmat(kemo_sgl->view_s);};
 
-void kemoviewer_reset_to_init_angle(void){
+void kemoviewer_reset_to_init_angle(struct kemoviewer_type *kemoviewer){
     reset_all_view_parameter(kemo_sgl->view_s);
     init_rot_animation(kemo_sgl->view_s);
 };
@@ -476,13 +474,14 @@ void kemoview_set_message_opacity(float opacity){
 
 int kemoview_get_draw_mode(void){return send_gl_draw_mode(kemo_sgl->view_s);};
 
-void kemoview_set_view_integer(int selected, int ivalue){
+void kemoview_set_view_integer(int selected, int ivalue,
+                               struct kemoviewer_type *kemoviewer){
 	if(selected == ISET_ROTATE_AXIS){
-		set_gl_animation_rot_axis(kemo_sgl->view_s, ivalue);
+		set_gl_animation_rot_axis(kemoviewer->view_s, ivalue);
 	}else if(selected == ISET_ROTATE_INCREMENT){
-		set_gl_animation_rot_angle(kemo_sgl->view_s, ivalue);
+		set_gl_animation_rot_angle(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_DRAW_MODE){
-        set_gl_draw_mode(kemo_sgl->view_s, ivalue);
+        set_gl_draw_mode(kemoviewer->view_s, ivalue);
 	}
 	return;
 };

@@ -29,9 +29,11 @@
 - (void) viewDidLayout;
 
 -(unsigned char *) getRenderedbyMetalToBGRA:(NSUInteger *) pix_xy
-                               PixelPerByte:(NSUInteger *) pixelByte;
--(CGImageRef) getRenderedbyMetalToCGref;
--(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep;
+                               PixelPerByte:(NSUInteger *) pixelByte
+                                   kemoview:(struct kemoviewer_type *) kemo_sgl;
+-(CGImageRef) getRenderedbyMetalToCGref:(struct kemoviewer_type *) kemo_sgl;
+-(void) getRenderedbyMetal:(NSBitmapImageRep *) imageRep
+                  kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 @end
 

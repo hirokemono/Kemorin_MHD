@@ -16,7 +16,7 @@ static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_dat
 	
 	kemoview_set_fline_field_param(FIELD_SEL_FLAG, index_mode, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -26,7 +26,7 @@ static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_
     int index_mode = gtk_selected_combobox_index(combobox_comp);
 	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, index_mode, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 

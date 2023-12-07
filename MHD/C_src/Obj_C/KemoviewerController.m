@@ -110,7 +110,7 @@
     kemoview_set_viewtype((int) selected);
 	[_metalView setViewerType:selected];
     kemoview_mono_viewmatrix();
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChoosePolygontypeAction:(id)sender
@@ -119,7 +119,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode, kemo_sgl);
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseSurfcetypeAction:(id)sender
@@ -128,14 +128,14 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode, kemo_sgl);
     
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)AxisSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	self.axisDrawFlag = kemoview_toggle_object_properties(AXIS_TOGGLE, kemo_sgl);
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)CoastSwitchAction:(id)sender;
@@ -143,20 +143,20 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	self.coastLineDrawFlag
         = kemoview_toggle_object_properties(COASTLINE_SWITCH, kemo_sgl);
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SphGridSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	self.globeGridDrawFlag
         = kemoview_toggle_object_properties(SPHEREGRID_SWITCH, kemo_sgl);
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SphRadiusAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_coastline_radius((double) coastlineRadius, kemo_sgl);
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseColorModeAction:(id)sender
@@ -165,14 +165,14 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_mesh_color_mode((int) MeshColorMode, kemo_sgl);
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)SetColorLoopCount:(id)pSender {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_num_of_color_loop((int) ColorLoopCount, kemo_sgl);
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) ShowNodeSizeValue:(id)pSender {
@@ -181,7 +181,7 @@
                                (int) NodeSizedigits,
                                kemo_sgl);
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) ToggleQuiltSwitch:(id)sender
@@ -208,7 +208,8 @@
 
 - (IBAction) UpdateViewByInpit:(id)sender;
 {
-    [_metalView UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [_metalView UpdateImage:kemo_sgl];
 };
 
 - (IBAction) ResetviewAction:(id)sender;
@@ -251,7 +252,7 @@
         kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
                                            (int) self.fileStepDisplayFlag, kemo_sgl);
     };
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 };
 
 - (IBAction)FileStepLabelSwitchAction:(id)sender{
@@ -263,7 +264,7 @@
         kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
                                            (int) self.timeDisplayFlag, kemo_sgl);
     };
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 };
 
 

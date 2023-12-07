@@ -156,7 +156,7 @@
 	[_kemoviewControl SetViewTypeMenu:id_viewtype
                              kemoview:kemo_sgl];
     [_kemoviewControl Set3DView:kemo_sgl];
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 };
 
 - (void) ReadFlineFile:(NSString *) FlineFileName
@@ -182,7 +182,8 @@
 }
 
 - (IBAction) UpdateFieldline:(id)pId{
-	[_metalView UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	[_metalView UpdateImage:kemo_sgl];
     return;
 };
 
@@ -210,7 +211,7 @@
 	self.DrawFlineFlag = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 	
 }
 
@@ -243,7 +244,7 @@
 	self.FlineDisplayMaximum =  (CGFloat) value;
 	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) FlineComponentAction:(id)sender
@@ -272,7 +273,7 @@
 	self.FlineDisplayMaximum =  (CGFloat) value;
 	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (void) SetFlineFieldMenu{
@@ -362,7 +363,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_fline_color_param(ISET_COLORMAP, (int) tag, kemo_sgl);
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) ShowFlineRange:(id)pSender {
@@ -372,7 +373,7 @@
 									   self.FlineDisplayMaximum, 
                                        (int) self.FlineDisplayMaxDigit,
                                        kemo_sgl);
-//	[_metalView UpdateImage];
+//	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
@@ -383,7 +384,7 @@
                                    (int) self.Flinetype,
                                    kemo_sgl);
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
@@ -391,7 +392,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_fline_color_w_exp(ISET_WIDTH, (double) self.FlineThickFactor,
                                    (int) self.FlineThickDigit, kemo_sgl);
-//	[_metalView UpdateImage];
+//	[_metalView UpdateImage:kemo_sgl];
 }
 
 @end

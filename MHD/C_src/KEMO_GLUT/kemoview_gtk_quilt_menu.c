@@ -91,11 +91,11 @@ static void quilt_preview_CB(GtkButton *button, gpointer user_data){
     int num_step = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
 	for (i=0;i<num_step; i++){
         kemoview_set_quilt_nums(ISET_QUILT_COUNT, i, kemo_sgl);
-		kemoview_set_view_integer(ISET_ROTATE_AXIS, IONE);
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-		draw_quilt();
+		kemoview_set_view_integer(ISET_ROTATE_AXIS, IONE, kemo_sgl);
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+		draw_quilt(kemo_sgl);
 	}
-    draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 

@@ -30,9 +30,11 @@
 }
 
 - (void)Tako:(NSNotification *)notification {
-	[_metalView UpdateImage];
-	/*	
-	// show window position in TextField
+/*
+    NSInteger tag = [[_SurfGrpNodeColorItem selectedCell] tag];
+	[_metalView UpdateImage:kemo_sgl];
+
+ // show window position in TextField
 	NSString *st = [NSString stringWithFormat:@"(x, y)=(%.1f, %.1f), (h ,w)=(%.1f, %.1f)",
 					self.window.frame.origin.x,      self.window.frame.origin.y,                    self.window.frame.size.width,                  self.window.frame.size.height];
 //	[self.windowPosition　setStringValue: st];

@@ -14,7 +14,7 @@ static void psf_grid_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer us
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	kemoview_select_PSF_draw_switch(kemo_sgl, PSFGRID_TOGGLE);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer user_data){
@@ -23,7 +23,7 @@ static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer us
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	kemoview_select_PSF_draw_switch(kemo_sgl, ZEROGRID_TOGGLE);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	gtk_widget_queue_draw(window);
 	return;
 };
@@ -41,7 +41,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_d
         kemoview_set_PSF_color_param(PSFGRID_TOGGLE, BLACK_LINE, kemo_sgl);
     };
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -51,7 +51,7 @@ static void set_nline_CB(GtkWidget *entry, gpointer user_data)
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_color_param(ISET_NLINE, gtk_intvalue, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 
@@ -66,7 +66,7 @@ static void set_width_CB(GtkWidget *entry, gpointer user_data)
 	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, gtk_value, 
                                       i_digit, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 
@@ -81,7 +81,7 @@ static void set_digit_CB(GtkWidget *entry, gpointer user_data)
 	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, current_width, 
                                       gtk_value, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 	

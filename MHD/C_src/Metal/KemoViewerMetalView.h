@@ -10,18 +10,20 @@
 
 #import "AAPLRenderer.h"
 
-#include "kemoviewer.h"
 #import "KemoViewerObject.h"
 #import "ResetViewControll.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 #define PAN     2
 #define ROTATE  3
 
 @interface KemoViewerMetalView : MTKView{
     IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
-    IBOutlet KemoViewerObject     * _singleKemoView;
+    IBOutlet KemoViewerObject     * _kmv;
     IBOutlet ResetViewControll    * _resetview;
-    
+
     bool fDrawCaps;
     GLboolean gDolly;
     GLboolean gPan;
@@ -54,12 +56,14 @@
 - (void)initMessageTimer;
 - (void)messageTimer:(NSTimer *)timer;
 
--(void) UpdateImage;
+-(void) UpdateImage:(struct kemoviewer_type *) kemo_sgl;
 -(void) FastUpdateImage;
 -(void) QuickUpdateImage;
 
 -(id) DrawQuilt:(NSInteger) int_degree
-           axis:(NSInteger) rotationaxis;
+           axis:(NSInteger) rotationaxis
+       kemoview:(struct kemoviewer_type *) kemo_sgl;
+
 -(id) DrawEvolution:(NSInteger)timeStep
            kemoview:(struct kemoviewer_type *) kemo_sgl;
 

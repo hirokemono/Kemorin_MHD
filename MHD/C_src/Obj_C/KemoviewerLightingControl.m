@@ -89,7 +89,7 @@
 		kemoview_add_phong_light_list(isel, r2, t2, p2, kemo_sgl);
         [self SetLightTable:kemo_sgl];
 	}
-	[_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 	return;
 };
 
@@ -112,7 +112,7 @@
 	}
 	
     [self SetLightTable:kemo_sgl];
-	[_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 	return;
 };
 
@@ -187,7 +187,7 @@
 	self.azimuthSliderValue =   p0;
 
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 	[self SetLightTable:kemo_sgl];
 } // end tableView:setObjectValue:forTableColumn:row:
 
@@ -260,7 +260,7 @@
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial, kemo_sgl);
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 	return;
 };
 - (IBAction)SetDiffuseMaterialAction:(id)sender{
@@ -269,7 +269,7 @@
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial, kemo_sgl);
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 	return;
 };
 - (IBAction)SetSpecularMaterialAction:(id)sender{
@@ -278,7 +278,7 @@
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial, kemo_sgl);
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 	return;
 };
 - (IBAction)SetShinenessMaterialAction:(id)sender{
@@ -287,7 +287,7 @@
     
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_material_parameter(SHINENESS_FLAG, self.shinessMaterial, kemo_sgl);
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 	return;
 };
 
@@ -323,7 +323,7 @@
 	self.azimuthSliderValue =   p0;
     
 	[self SetLightTable:kemo_sgl];
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 };
 - (IBAction)SetelevationLightPositionAction:(id)sender{
 	float r0, t0, p0;
@@ -341,7 +341,7 @@
 	self.radialSliderValue =    r0;
 	self.azimuthSliderValue =   p0;
 	[self SetLightTable:kemo_sgl];
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 };
 - (IBAction)SetAzimuthLightPositionAction:(id)sender{
 	float r0, t0, p0;
@@ -360,7 +360,7 @@
 	self.radialSliderValue =    r0;
 	self.elevationSliderValue = t0;
 	[self SetLightTable:kemo_sgl];
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 };
 
 @end

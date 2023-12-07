@@ -137,12 +137,12 @@ void draw_mesh_kemo(void) {
 	
 	
 	/*  initialize view_modifier, receiving the id for it's submenu  */
-	kemoviewer_reset_to_init_angle();
+	kemoviewer_reset_to_init_angle(kemo_sgl);
 	view_modifier_init();
 	
 	/* ! set the perspective and lighting */
     kemoview_init_background_color(kemo_sgl);
-	kemoview_init_lighting();
+	kemoview_init_lighting(kemo_sgl);
     kemoview_gl_background_color();
     kemoview_gl_init_lighting(kemo_gl);
 	kemoview_init_phong_light_list(kemo_sgl);

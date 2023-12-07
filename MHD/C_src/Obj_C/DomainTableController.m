@@ -67,7 +67,7 @@
     [_eleGrpController UpdateElementTable:kemo_sgl];
     [_surfGrpController UpdateSurfaceTable:kemo_sgl];
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (void) ReadMeshFile:(NSString *) MeshOpenFilename
@@ -119,7 +119,7 @@
 	[DomainDisplayWireFlags removeAllObjects];
 	[DomainDisplayNodeFlags removeAllObjects];
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) ShowAllDomainAction:(id)pId{
@@ -149,7 +149,7 @@
         kemoview_set_mesh_draw_flag(SURFNOD_TOGGLE, IONE, kemo_sgl);
 	}
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) HideAllDomainAction:(id)pId
@@ -179,7 +179,7 @@
         kemoview_set_mesh_draw_flag(SURFNOD_TOGGLE, IZERO, kemo_sgl);
 	}
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
  - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
@@ -238,7 +238,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
                                     kemo_sgl);
     }
 
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (void)tableView:(NSTableView *)aTableView 
@@ -255,28 +255,31 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 - (IBAction)ChooseDomainPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainPatchColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE,
-                                 (int) tag, [_kmv KemoViewPointer]);
 
-	[_metalView UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE,
+                                 (int) tag, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseDomainLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainLineColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE,
-                                 (int) tag, [_kmv KemoViewPointer]);
 
-	[_metalView UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE,
+                                 (int) tag, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseDomainNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainNodeColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE,
-                                 (int) tag, [_kmv KemoViewPointer]);
 
-	[_metalView UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE,
+                                 (int) tag, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 
@@ -295,7 +298,7 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 	kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE,
                                  colorcode4, kemo_sgl);
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SetDomainLineColorAction:(id)sender
 {
@@ -312,7 +315,7 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 	kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFGRID_TOGGLE,
                                  colorcode4, kemo_sgl);
 	
-	[_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SetDomainNodeColorAction:(id)sender
 {
@@ -329,7 +332,7 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 	kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFNOD_TOGGLE,
                                  colorcode4, kemo_sgl);
 	
-	[_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 
@@ -341,6 +344,6 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 	kemoview_set_domain_distance(dblobjectDistance, kemo_sgl);
 	kemoview_draw_with_modified_domain_distance(kemo_sgl);
 
-	[_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 @end

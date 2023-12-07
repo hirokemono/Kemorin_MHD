@@ -27,7 +27,7 @@
 !     void kemoview_set_current_viewer_id(int id_window, mul_kemoviewer_type *kemoview_array);
 !    
 !    void kemoview_draw_objects_c();
-!    void kemoview_init_lighting();
+!    void kemoview_init_lighting(struct kemoviewer_type *kemoviewer);
 !    void kemoview_gl_init_lighting(struct kemoviewer_type *kemoviewer);
 !    
 !    void kemoview_init_background_color(struct kemoviewer_type *kemoviewer);
@@ -127,8 +127,8 @@
 !                                              int npix_x, int npix_y, unsigned char *image);
 !
 !    void kemoview_modify_view();
-!    void kemoviewer_reset_to_init_angle();
-!    
+!    void kemoviewer_reset_to_init_angle(struct kemoviewer_type *kemoviewer);
+!
 !    void kemoview_set_retinamode(int i_retina);
 !    void kemoview_set_windowsize(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
 !    void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
@@ -137,7 +137,8 @@
 !    void kemoview_set_stereo_parameter(int selected, double value);
 !
 !    int kemoview_get_view_integer(kemo_sgl, int selected);
-!    void kemoview_set_view_integer(int selected, int ivalue);
+!    void kemoview_set_view_integer(int selected, int ivalue,
+!                                   struct kemoviewer_type *kemoviewer);
 !    double kemoview_get_view_parameter(int selected, int i);
 !
 !    void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly);

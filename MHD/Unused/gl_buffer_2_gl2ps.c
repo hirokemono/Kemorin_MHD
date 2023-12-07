@@ -16,7 +16,7 @@ void gl_buffer_2_ps_gl2ps(int size, int doSort, const char *filehead){
 	fp = fopen(fname, "wb");
 	printf("Writing %s... ",fname);
 	
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 	while(state == GL2PS_OVERFLOW){
         buffsize += size;
         kemoview_draw_viewer_to_ps();
@@ -44,7 +44,7 @@ void gl_buffer_2_eps_gl2ps(int size, int doSort, const char *filehead){
 	fp = fopen(fname, "wb");
 	printf("Writing %s... ",fname);
 	
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 	while(state == GL2PS_OVERFLOW){
         buffsize += size;
         kemoview_draw_viewer_to_ps();
@@ -73,7 +73,7 @@ void gl_buffer_2_pdf_gl2ps(int size, int doSort, const char *filehead){
 	fp = fopen(fname, "wb");
 	printf("Writing %s... ",fname);
 	
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 	while(state == GL2PS_OVERFLOW){
         buffsize += size;
         kemoview_draw_viewer_to_ps();

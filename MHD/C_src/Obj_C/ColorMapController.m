@@ -50,7 +50,7 @@
 		
         [self SetColorTables:kemo_sgl];
 	}
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)deleteSelectedRow:(id)pId {
@@ -68,7 +68,7 @@
 	}
 	
     [self SetColorTables:kemo_sgl];
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 
@@ -125,7 +125,7 @@
 	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_color_data(pRowIndex, value, color, kemo_sgl);
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 } // end tableView:setObjectValue:forTableColumn:row:
 
 - (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{
@@ -189,7 +189,7 @@
 	[defaults setFloat:((float) rgbaBG[2]) forKey:@"BackGroundBlue"];
 	
     [_metalView updateBackground:kemo_sgl];
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)SetColorMode:(id)pId;
@@ -198,7 +198,7 @@
 	kemoview_set_PSF_color_param(ISET_COLORMAP, 
                                  (int) [ColorModeItem indexOfSelectedItem],
                                  kemo_sgl);
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 

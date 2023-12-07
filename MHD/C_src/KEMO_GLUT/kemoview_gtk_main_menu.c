@@ -157,19 +157,21 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
                          window_main);
     
 	gtk_widget_queue_draw(window_main);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
 static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 {
     struct view_widgets *view_menu = (struct view_widgets *) user_data;
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(combobox_viewtype), "kemoview");
 
 	int index_mode = gtk_selected_combobox_index(combobox_viewtype);
 	
     set_GLFW_viewtype_mode(index_mode);
     kemoview_set_viewtype(index_mode);
-    draw_full();
+    draw_full(kemo_sgl);
     
     if(kemoview_get_view_type_flag() == VIEW_STEREO){
         gtk_widget_set_sensitive(view_menu->Frame_stereo, TRUE);
@@ -182,9 +184,11 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
 {
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(combobox_filefmt), "kemoview");
 
 	mbot->id_iamge_format = gtk_selected_combobox_index(combobox_filefmt);
-	draw_full();
+	draw_full(kemo_sgl);
 	return;
 };
 
@@ -230,7 +234,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
                                                                       (nimg_raw * npix_y));
         for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
             kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
-            draw_quilt();
+            draw_quilt(kemo_sgl);
             kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
             kemoview_add_quilt_img(image, quilt_image);
         };
@@ -239,7 +243,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
                                       (nimg_raw * npix_y), quilt_image);
         free(quilt_image);
         printf("quilt! %d x %d\n", nimg_column, nimg_raw);
-        draw_full();
+        draw_full(kemo_sgl);
     }
     free(image);
     kemoview_free_kvstring(file_prefix);
@@ -262,7 +266,7 @@ static void current_psf_select_CB(GtkComboBox *combobox_psfs, gpointer user_data
     update_by_psf_field(kemo_sgl, psf_gmenu);
 
 	gtk_widget_queue_draw(window_main);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -289,7 +293,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     
     activate_evolution_menu(kemo_sgl, expander_evo);
 	gtk_widget_queue_draw(window_main);
-	draw_full();
+    draw_full(kemo_sgl);
 };
 
 static void close_fline_CB(GtkButton *button, gpointer user_data){
@@ -303,7 +307,7 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
     update_fieldline_menu_hbox(kemo_sgl, fline_menu);
 
 	gtk_widget_queue_draw(window_main);
-	draw_full();
+    draw_full(kemo_sgl);
 };
 
 static void close_mesh_CB(GtkButton *button, gpointer user_data){
@@ -317,7 +321,7 @@ static void close_mesh_CB(GtkButton *button, gpointer user_data){
 	
     gtk_widget_hide(updatable->meshBox);
 	gtk_widget_queue_draw(window_main);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -358,7 +362,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     update_by_psf_field(kemo_sgl, psf_gmenu);
 
     gtk_widget_queue_draw(window_main);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -378,7 +382,7 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
 	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, index_mode, kemo_sgl);
     update_by_psf_component(kemo_sgl, psf_gmenu);
 	gtk_widget_queue_draw(window_main);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -752,7 +756,8 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_viewtype), renderer_viewtype, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_viewtype), renderer_viewtype,
 				"text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(combobox_viewtype), "changed", 
+    g_object_set_data(G_OBJECT(combobox_viewtype), "kemoview",  (gpointer) kemo_sgl);
+	g_signal_connect(G_OBJECT(combobox_viewtype), "changed",
                      G_CALLBACK(set_viewtype_CB), (gpointer) mbot->view_menu);
 	
 	
@@ -777,7 +782,8 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(mbot->ComboboxImageFormat), renderer_image_fileformat, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(mbot->ComboboxImageFormat), renderer_image_fileformat,
 				"text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(mbot->ComboboxImageFormat), "changed", 
+    g_object_set_data(G_OBJECT(mbot->ComboboxImageFormat), "kemoview",  (gpointer) kemo_sgl);
+	g_signal_connect(G_OBJECT(mbot->ComboboxImageFormat), "changed",
 				G_CALLBACK(set_image_fileformat_CB), entry_file);
 	
 	

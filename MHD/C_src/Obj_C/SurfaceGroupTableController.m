@@ -88,7 +88,7 @@
 		}
 	}
     [self UpdateSurfaceTable:kemo_sgl];
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) HideAllSurfaceGroupAction:(id)pId
@@ -120,7 +120,7 @@
 		}
 	}	
     [self UpdateSurfaceTable:kemo_sgl];
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
@@ -173,7 +173,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
                                     kemo_sgl);
 		[SurfaceGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
 	}
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn
@@ -218,25 +218,28 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseSurfGrpPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpPatchColorItem selectedCell] tag];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
-                                 (int) tag, [_kmv KemoViewPointer]);
-	[_metalView UpdateImage];
+                                 (int) tag, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseSurfGrpLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpLineColorItem selectedCell] tag];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE,
-                                 (int) tag, [_kmv KemoViewPointer]);
-	[_metalView UpdateImage];
+                                 (int) tag, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseSurfGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpNodeColorItem selectedCell] tag];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE,
-                                 (int) tag, [_kmv KemoViewPointer]);
-	[_metalView UpdateImage];
+                                 (int) tag, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 
@@ -255,7 +258,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
                                  colorcode4, kemo_sgl);
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SetSurfGrpLineColorAction:(id)sender
 {
@@ -272,7 +275,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFGRID_TOGGLE,
                                  colorcode4, kemo_sgl);
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SetSurfGrpNodeColorAction:(id)sender
 {
@@ -289,6 +292,6 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFNOD_TOGGLE,
                                  colorcode4, kemo_sgl);
 	
-	[_metalView UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 @end

@@ -42,7 +42,7 @@
 		
         [self SetOpacityTables:kemo_sgl];
 	}
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
     return;
 }
 
@@ -61,7 +61,7 @@
     }
     
     [self SetOpacityTables:kemo_sgl];
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
     return;
 }
 
@@ -119,7 +119,7 @@
 	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_opacity_data((int) pRowIndex, value, opacity, kemo_sgl);
-    [_metalView UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
     return;
 } // end tableView:setObjectValue:forTableColumn:row:
 

@@ -63,7 +63,7 @@ gboolean mouseButtonCB(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 	};
 	
 	if(event->type == GDK_BUTTON_RELEASE){
-		draw_full();
+		draw_full(kemo_sgl);
 	};
 	return TRUE;
 };
@@ -309,9 +309,9 @@ void gtk_callbacks_init(struct kemoviewer_type *kemo_sgl){
 }
 
 
-void draw_fast(){
-//    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW);
-//    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO)
+void draw_fast(struct kemoviewer_type *kemo_sgl){
+//    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
+//    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl)
 //  kemoview_mono_viewmatrix();
 //    glDrawBuffer(GL_BACK);
 //	kemoview_modify_view();
@@ -319,8 +319,8 @@ void draw_fast(){
 	return;
 };
 
-void draw_full(){
-//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW);
+void draw_full(struct kemoviewer_type *kemo_sgl){
+//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
     kemoview_mono_viewmatrix();
     glDrawBuffer(GL_BACK);
 	kemoview_modify_view();
@@ -342,15 +342,15 @@ static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
 	
-	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
 		for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
 			kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
-			draw_quilt();
+			draw_quilt(kemo_sgl);
 			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 			kemoview_add_quilt_img(image, quilt_image);
 		};
@@ -373,13 +373,13 @@ static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
 	
-	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
-        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
+        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
         kemoview_mono_viewmatrix();
         glDrawBuffer(GL_BACK);
         kemoview_modify_view();
@@ -413,7 +413,7 @@ static void write_quilt_evolution_views(struct kemoviewer_type *kemo_sgl,
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
 				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
-				draw_quilt();
+				draw_quilt(kemo_sgl);
 				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 				kemoview_add_quilt_img(image, quilt_image);
 			};

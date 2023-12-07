@@ -22,7 +22,7 @@ static void fline_thickness_CB(GtkWidget *entry, gpointer data)
                                    &current_thick, &current_digit);
 	kemoview_set_fline_color_w_exp(ISET_WIDTH, thick_in, current_digit, kemo_sgl);
 
-	draw_full();
+    draw_full(kemo_sgl);
 }
 static void fline_digit_CB(GtkWidget *entry, gpointer data)
 {
@@ -35,7 +35,7 @@ static void fline_digit_CB(GtkWidget *entry, gpointer data)
                                    &current_thick, &current_digit);
 	kemoview_set_fline_color_w_exp(ISET_WIDTH, current_thick, in_digit, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void MinValueChange_CB(GtkWidget *entry, gpointer data)
@@ -51,7 +51,7 @@ static void MinValueChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_set_fline_linear_colormap(gtk_floatvalue, i_min_digit, 
 									   maxvalue, i_max_digit, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void MinDigitChange_CB(GtkWidget *entry, gpointer data)
@@ -67,7 +67,7 @@ static void MinDigitChange_CB(GtkWidget *entry, gpointer data)
 	kemoview_set_fline_linear_colormap(minvalue, gtk_intvalue, 
 									   maxvalue, i_max_digit, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void MaxValueChange_CB(GtkWidget *entry, gpointer data)
@@ -84,7 +84,7 @@ static void MaxValueChange_CB(GtkWidget *entry, gpointer data)
 									   gtk_floatvalue, i_max_digit, 
                                        kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void MaxDigitChange_CB(GtkWidget *entry, gpointer data)
@@ -101,14 +101,14 @@ static void MaxDigitChange_CB(GtkWidget *entry, gpointer data)
 									   maxvalue, gtk_intvalue,
                                        kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 }
 
 static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
     int itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
     kemoview_set_fline_field_param(FIELD_SEL_FLAG, itoggle, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
@@ -118,7 +118,7 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer data)
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	kemoview_set_fline_color_param(ISET_COLORMAP, index_mode, kemo_sgl);
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
