@@ -4,8 +4,8 @@
 #include "const_viewer_menu_glut.h"
 
 void glut_drawing_select() {
-	int iflag_shade = kemoview_get_object_property_flags(SHADING_SWITCH);
-	int iflag_polygon = kemoview_get_object_property_flags(POLYGON_SWITCH);
+	int iflag_shade = kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
+	int iflag_polygon = kemoview_get_object_property_flags(kemo_sgl, POLYGON_SWITCH);
 	
 	if(iflag_shade == FLAT_SHADE ){
 		glutAddMenuEntry("flat => smooth",SHADING_SWITCH);

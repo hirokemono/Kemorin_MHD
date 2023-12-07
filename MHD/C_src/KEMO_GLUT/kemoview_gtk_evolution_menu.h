@@ -61,7 +61,7 @@ struct evolution_gtk_menu{
 
 /*  prototypes */
 
-struct evolution_gtk_menu * init_evoluaiton_menu_box(void);
+struct evolution_gtk_menu * init_evoluaiton_menu_box(struct kemoviewer_type *kemo_sgl);
 
 GtkWidget * init_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
                                           struct evolution_gtk_menu *evo_gmenu,

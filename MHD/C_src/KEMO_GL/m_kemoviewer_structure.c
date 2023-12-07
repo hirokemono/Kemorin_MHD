@@ -172,64 +172,65 @@ void kemoview_set_viewtype(int sel){
 void kemoview_set_coastline_radius(double radius){kemo_sgl->kemo_mesh->mesh_m->radius_coast = radius;};
 double kemoview_get_coastline_radius(void){return kemo_sgl->kemo_mesh->mesh_m->radius_coast;};
 
-void kemoview_set_object_property_flags(int selected, int iflag){
+void kemoview_set_object_property_flags(int selected, int iflag,
+                                        struct kemoviewer_type *kemoviewer){
 	if (selected == AXIS_TOGGLE){
-        set_axis_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);
+        set_axis_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == COASTLINE_SWITCH){
-        set_coastline_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);
+        set_coastline_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SPHEREGRID_SWITCH){
-        set_sphere_grid_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);
+        set_sphere_grid_flag(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SHADING_SWITCH){
-        kemo_sgl->view_s->shading_mode = iflag;
+        kemoviewer->view_s->shading_mode = iflag;
     }else if(selected == POLYGON_SWITCH){
-        set_polygon_mode(iflag, kemo_sgl->kemo_mesh->mesh_m);
+        set_polygon_mode(iflag, kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == TIME_LABEL_SWITCH){
-        set_draw_time_flag(iflag, kemo_sgl->kemo_psf);
+        set_draw_time_flag(iflag, kemoviewer->kemo_psf);
     }else if(selected == FILE_STEP_LABEL_SWITCH){
-        set_draw_file_step_flag(iflag, kemo_sgl->kemo_psf);
+        set_draw_file_step_flag(iflag, kemoviewer->kemo_psf);
     };
 	return;
 }
 
-int kemoview_get_object_property_flags(int selected){
+int kemoview_get_object_property_flags(struct kemoviewer_type *kemoviewer, int selected){
 	if (selected == AXIS_TOGGLE){
-        return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis;
+        return kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis;
     }else if(selected == COASTLINE_SWITCH){
-        return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast;
+        return kemoviewer->kemo_mesh->mesh_m->iflag_draw_coast;
     }else if(selected == SPHEREGRID_SWITCH){
-        return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid;
+        return kemoviewer->kemo_mesh->mesh_m->iflag_draw_sph_grid;
     }else if(selected == SHADING_SWITCH){
-        return kemo_sgl->view_s->shading_mode;
+        return kemoviewer->view_s->shading_mode;
     }else if(selected == POLYGON_SWITCH){
-        return kemo_sgl->kemo_mesh->mesh_m->polygon_mode;
+        return kemoviewer->kemo_mesh->mesh_m->polygon_mode;
     }else if(selected == TIME_LABEL_SWITCH){
-        return get_draw_time_flag(kemo_sgl->kemo_psf);
+        return get_draw_time_flag(kemoviewer->kemo_psf);
     }else if(selected == FILE_STEP_LABEL_SWITCH){
-        return get_draw_file_step_flag(kemo_sgl->kemo_psf);
+        return get_draw_file_step_flag(kemoviewer->kemo_psf);
     }else if(selected == TIME_LABEL_AVAIL){
-        return get_avail_time_flag(kemo_sgl->kemo_psf);
+        return get_avail_time_flag(kemoviewer->kemo_psf);
     }else if(selected == FILE_STEP_LABEL_AVAIL){
-        return get_avail_file_step_flag(kemo_sgl->kemo_psf);
+        return get_avail_file_step_flag(kemoviewer->kemo_psf);
     };
 	return 0;
 }
 
-int kemoview_toggle_object_properties(int selected){
+int kemoview_toggle_object_properties(int selected, struct kemoviewer_type *kemoviewer){
 	if (selected == AXIS_TOGGLE){
-        return toggle_draw_axis(kemo_sgl->kemo_mesh->mesh_m);
+        return toggle_draw_axis(kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == COASTLINE_SWITCH){
-        return toggle_coastline_flag(kemo_sgl->kemo_mesh->mesh_m);
+        return toggle_coastline_flag(kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SPHEREGRID_SWITCH){
-        return toggle_sphere_grid_flag(kemo_sgl->kemo_mesh->mesh_m);
+        return toggle_sphere_grid_flag(kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == SHADING_SWITCH){
-		kemo_sgl->view_s->shading_mode = toggle_value_c(kemo_sgl->view_s->shading_mode);
-		return kemo_sgl->view_s->shading_mode;
+        kemoviewer->view_s->shading_mode = toggle_value_c(kemoviewer->view_s->shading_mode);
+		return kemoviewer->view_s->shading_mode;
 	}else if(selected == POLYGON_SWITCH){
-        return toggle_polygon_mode(kemo_sgl->kemo_mesh->mesh_m);
+        return toggle_polygon_mode(kemoviewer->kemo_mesh->mesh_m);
     }else if(selected == TIME_LABEL_SWITCH){
-        return toggle_draw_time_flag(kemo_sgl->kemo_psf);
+        return toggle_draw_time_flag(kemoviewer->kemo_psf);
     }else if(selected == FILE_STEP_LABEL_SWITCH){    
-        return toggle_draw_file_step_flag(kemo_sgl->kemo_psf);
+        return toggle_draw_file_step_flag(kemoviewer->kemo_psf);
     };
 	return 0;
 }

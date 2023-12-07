@@ -20,7 +20,7 @@ static struct updatable_widgets * init_updatable_widgets(struct kemoviewer_type 
     updatable->psf_gmenu = alloc_psf_gtk_menu();
     updatable->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
     updatable->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
-    updatable->evo_gmenu = init_evoluaiton_menu_box();
+    updatable->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
     return updatable;
 }
 static void dealloc_updatable_widgets(struct updatable_widgets *updatable){
@@ -792,7 +792,7 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
 	
-    GtkWidget *hbox_axis = make_axis_menu_box(window_main);
+    GtkWidget *hbox_axis = make_axis_menu_box(kemo_sgl, window_main);
     GtkWidget *expander_rot = init_rotation_menu_expander(kemo_sgl,
                                                           mbot->rot_gmenu,
                                                           window_main);

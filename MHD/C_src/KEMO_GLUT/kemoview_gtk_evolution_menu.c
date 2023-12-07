@@ -9,7 +9,7 @@
 
 #include "kemoview_gtk_evolution_menu.h"
 
-struct evolution_gtk_menu * init_evoluaiton_menu_box(void){
+struct evolution_gtk_menu * init_evoluaiton_menu_box(struct kemoviewer_type *kemo_sgl){
 	struct evolution_gtk_menu *evo_gmenu
 			= (struct evolution_gtk_menu *)  malloc(sizeof(struct evolution_gtk_menu));
 	evo_gmenu->id_fmt_evo = 0;
@@ -18,8 +18,8 @@ struct evolution_gtk_menu * init_evoluaiton_menu_box(void){
 	evo_gmenu->iend_evo =   0;
 	evo_gmenu->inc_evo =    1;
 	
-	kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH);
-	kemoview_set_object_property_flags(0, FILE_STEP_LABEL_SWITCH);
+	kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH, kemo_sgl);
+	kemoview_set_object_property_flags(0, FILE_STEP_LABEL_SWITCH, kemo_sgl);
 	return evo_gmenu;
 };
 
@@ -42,12 +42,14 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	struct evolution_gtk_menu *evo_gmenu 
 			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(data), "evolution");
-	if(kemoview_get_object_property_flags(TIME_LABEL_AVAIL) == 0){
-		kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(data), "kemoview");
+	if(kemoview_get_object_property_flags(kemo_sgl, TIME_LABEL_AVAIL) == 0){
+		kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH, kemo_sgl);
 		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
 	};
-	if(kemoview_toggle_object_properties(TIME_LABEL_SWITCH) > 0){
-		kemoview_set_object_property_flags(0, FILE_STEP_LABEL_SWITCH);
+	if(kemoview_toggle_object_properties(TIME_LABEL_SWITCH, kemo_sgl) > 0){
+		kemoview_set_object_property_flags(0, FILE_STEP_LABEL_SWITCH, kemo_sgl);
 		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), TRUE);
 		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), FALSE);
 	}else{
@@ -60,9 +62,11 @@ static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer
 static void draw_fileindex_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	struct evolution_gtk_menu *evo_gmenu 
 			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(data), "evolution");
-	int toggle = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(data), "kemoview");
+	int toggle = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH, kemo_sgl);
 	if(toggle > 0){
-		kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH);
+		kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH, kemo_sgl);
 		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
 	}
 	
@@ -170,7 +174,7 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
     
     
     evo_gmenu->switch_timelabel = gtk_switch_new();
-    if(kemoview_get_object_property_flags(TIME_LABEL_SWITCH) == 0){
+    if(kemoview_get_object_property_flags(kemo_sgl, TIME_LABEL_SWITCH) == 0){
         gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
     } else {
         gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), TRUE);
@@ -179,7 +183,7 @@ static void set_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
                      G_CALLBACK(draw_time_switch_CB), (gpointer) evo_gmenu->entry_evo_file);
     
     evo_gmenu->switch_fileindex = gtk_switch_new();
-    if(kemoview_get_object_property_flags(FILE_STEP_LABEL_SWITCH) == 0){
+    if(kemoview_get_object_property_flags(kemo_sgl, FILE_STEP_LABEL_SWITCH) == 0){
         gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), FALSE);
     } else {
         gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), TRUE);

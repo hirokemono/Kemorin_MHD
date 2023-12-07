@@ -48,11 +48,16 @@
 
 -(void) awakeFromNib
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     self.coastlineRadius = kemoview_get_coastline_radius();
-    kemoview_set_object_property_flags(TIME_LABEL_AVAIL, (int) self.timeDisplayAccess);
-    kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
-    kemoview_set_object_property_flags(FILE_STEP_LABEL_AVAIL, (int) self.fileStepDisplayAccess);
-    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
+    kemoview_set_object_property_flags(TIME_LABEL_AVAIL,
+                                       (int) self.timeDisplayAccess, kemo_sgl);
+    kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
+                                       (int) self.timeDisplayFlag, kemo_sgl);
+    kemoview_set_object_property_flags(FILE_STEP_LABEL_AVAIL,
+                                       (int) self.fileStepDisplayAccess, kemo_sgl);
+    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
+                                       (int) self.fileStepDisplayFlag, kemo_sgl);
     return;
 }
 
@@ -111,7 +116,8 @@
 - (IBAction)ChoosePolygontypeAction:(id)sender
 {
 	PolygonMode = [[_polygontype_matrix selectedCell] tag];
-	kemoview_set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode, kemo_sgl);
 	
 	[_metalView UpdateImage];
 }
@@ -119,24 +125,31 @@
 - (IBAction)ChooseSurfcetypeAction:(id)sender
 {
 	ShadingMode = [[_surfacetype_matrix selectedCell] tag];
-	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode, kemo_sgl);
+    
 	[_metalView UpdateImage];
 }
 
 - (IBAction)AxisSwitchAction:(id)sender;
 {
-	self.axisDrawFlag = kemoview_toggle_object_properties(AXIS_TOGGLE);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.axisDrawFlag = kemoview_toggle_object_properties(AXIS_TOGGLE, kemo_sgl);
 	[_metalView UpdateImage];
 }
 
 - (IBAction)CoastSwitchAction:(id)sender;
 {
-	self.coastLineDrawFlag = kemoview_toggle_object_properties(COASTLINE_SWITCH);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.coastLineDrawFlag
+        = kemoview_toggle_object_properties(COASTLINE_SWITCH, kemo_sgl);
 	[_metalView UpdateImage];
 }
 - (IBAction)SphGridSwitchAction:(id)sender;
 {
-	self.globeGridDrawFlag = kemoview_toggle_object_properties(SPHEREGRID_SWITCH);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.globeGridDrawFlag
+        = kemoview_toggle_object_properties(SPHEREGRID_SWITCH, kemo_sgl);
 	[_metalView UpdateImage];
 }
 - (IBAction)SphRadiusAction:(id)sender;
@@ -219,27 +232,35 @@
 
 - (void) TimeLabelAvaiability
 {
-    self.timeDisplayAccess = kemoview_get_object_property_flags(TIME_LABEL_AVAIL);
+    self.timeDisplayAccess = kemoview_get_object_property_flags([_kmv KemoViewPointer],
+                                                                TIME_LABEL_AVAIL);
 }
 - (void) FileStepLabelAvaiability
 {
-    self.fileStepDisplayAccess = kemoview_get_object_property_flags(FILE_STEP_LABEL_AVAIL);
+    self.fileStepDisplayAccess = kemoview_get_object_property_flags([_kmv KemoViewPointer],
+                                                                    FILE_STEP_LABEL_AVAIL);
 }
 
 - (IBAction)TimeLabelSwitchAction:(id)sender{
-    self.timeDisplayFlag = kemoview_toggle_object_properties(TIME_LABEL_SWITCH);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    self.timeDisplayFlag
+        = kemoview_toggle_object_properties(TIME_LABEL_SWITCH, kemo_sgl);
     if(self.timeDisplayFlag > 0){
         self.fileStepDisplayFlag = 0;
-        kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
+        kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
+                                           (int) self.fileStepDisplayFlag, kemo_sgl);
     };
     [_metalView UpdateImage];
 };
 
 - (IBAction)FileStepLabelSwitchAction:(id)sender{
-    self.fileStepDisplayFlag = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    self.fileStepDisplayFlag
+        = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH, kemo_sgl);
     if(self.fileStepDisplayFlag > 0){
         self.timeDisplayFlag = 0;
-        kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
+        kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
+                                           (int) self.timeDisplayFlag, kemo_sgl);
     };
     [_metalView UpdateImage];
 };

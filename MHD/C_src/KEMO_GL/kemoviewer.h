@@ -308,9 +308,10 @@ extern "C" {
     void kemoview_set_coastline_radius(double radius);
     double kemoview_get_coastline_radius(void);
     
-    void kemoview_set_object_property_flags(int selected, int iflag);
-    int kemoview_get_object_property_flags(int selected);
-    int kemoview_toggle_object_properties(int selected);
+    void kemoview_set_object_property_flags(int selected, int iflag,
+                                            struct kemoviewer_type *kemoviewer);
+    int kemoview_get_object_property_flags(struct kemoviewer_type *kemoviewer, int selected);
+    int kemoview_toggle_object_properties(int selected, struct kemoviewer_type *kemoviewer);
 	
 	
 	void kemoview_alloc_phong_light_list(int num);

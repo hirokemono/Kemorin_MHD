@@ -449,7 +449,7 @@ static void color_mode_handler(int sel){
 
 static void object_property_handler(int sel){
 	int toggle;
-    toggle = kemoview_toggle_object_properties(sel);
+    toggle = kemoview_toggle_object_properties(sel, kemo_sgl);
 
 	if		 ( sel == SET_NODE_SIZE) {
 		set_node_size_console();
@@ -803,9 +803,9 @@ static void make_2nd_level_image_menu(){
 	int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
-	int iflag_axis =       kemoview_get_object_property_flags(AXIS_TOGGLE);
-	int iflag_draw_coast = kemoview_get_object_property_flags(COASTLINE_SWITCH);
-	int iflag_draw_sph =   kemoview_get_object_property_flags(SPHEREGRID_SWITCH);
+	int iflag_axis =       kemoview_get_object_property_flags(kemo_sgl, AXIS_TOGGLE);
+	int iflag_draw_coast = kemoview_get_object_property_flags(kemo_sgl, COASTLINE_SWITCH);
+	int iflag_draw_sph =   kemoview_get_object_property_flags(kemo_sgl, SPHEREGRID_SWITCH);
 	
 	glut_menu_id->color_mode_menu = glutCreateMenu(color_mode_handler);
 	glut_color_mode_menu_item();
