@@ -82,8 +82,10 @@
 !    
 !    int kemoview_get_num_of_mesh_group(int iflag_group);
 !    
-!    void kemoview_get_node_grp_name(char *name, int i);
-!    void kemoview_get_ele_grp_name(char *name, int i);
+!    void kemoview_get_node_grp_name(struct kemoviewer_type *kemoviewer,
+!                                   int i, struct kv_string *groupname);
+!    void kemoview_get_ele_grp_name(struct kemoviewer_type *kemoviewer,
+!                                   int i, struct kv_string *groupname);
 !    void kemoview_get_surf_grp_name(struct kemoviewer_type *kemoviewer,
 !                                    int i, struct kv_string *groupname);
 !    

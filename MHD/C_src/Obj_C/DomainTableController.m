@@ -63,8 +63,8 @@
 		[stname release];
 	}
 	[_tableView reloadData];
-    [_nodeGrpController UpdateNodeTable];
-    [_eleGrpController UpdateElementTable];
+    [_nodeGrpController UpdateNodeTable:kemo_sgl];
+    [_eleGrpController UpdateElementTable:kemo_sgl];
     [_surfGrpController UpdateSurfaceTable:kemo_sgl];
 	
 	[_metalView UpdateImage];

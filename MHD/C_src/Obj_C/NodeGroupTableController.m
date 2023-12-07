@@ -44,7 +44,7 @@
 		}
 	}
 
-    [self UpdateNodeTable];
+    [self UpdateNodeTable:kemo_sgl];
 	[_metalView UpdateImage];
 }
 
@@ -61,7 +61,7 @@
 		}
 	}	
 
-    [self UpdateNodeTable];
+    [self UpdateNodeTable:kemo_sgl];
 	[_metalView UpdateImage];
 }
 
@@ -105,7 +105,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	return;
 }
 
-- (void) UpdateNodeTable
+- (void) UpdateNodeTable:(struct kemoviewer_type *) kemo_sgl
 {
 	int i, iflag;
     struct kv_string *groupname;
@@ -117,7 +117,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	NumNodeGroup = kemoview_get_num_of_mesh_group(NODE_GRP_FLAG);
 	for(i=0;i<NumNodeGroup;i++){
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_node_grp_name(groupname,i);
+		kemoview_get_node_grp_name(kemo_sgl, i, groupname);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
     

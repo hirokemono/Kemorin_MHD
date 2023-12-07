@@ -37,7 +37,8 @@
 	int i;
     struct kv_string *groupname;
 	NSString *stname;
-	
+
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	[ElementGroupDisplayNames removeAllObjects];
 	[ElementGroupDisplayPatchFlags removeAllObjects];
 	[ElementGroupDisplayWireFlags removeAllObjects];
@@ -45,7 +46,7 @@
 	NumElementGroup = kemoview_get_num_of_mesh_group(ELEM_GRP_FLAG);
 	for(i=0;i<NumElementGroup;i++){
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_ele_grp_name(groupname,i);
+		kemoview_get_ele_grp_name(kemo_sgl, i, groupname);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
 
@@ -87,7 +88,7 @@
 		}
 	}
     
-    [self UpdateElementTable];
+    [self UpdateElementTable:kemo_sgl];
 	[_metalView UpdateImage];
 }
 
@@ -119,7 +120,7 @@
                                         kemo_sgl);
 		}
 	}	
-    [self UpdateElementTable];
+    [self UpdateElementTable:kemo_sgl];
 	[_metalView UpdateImage];
 }
 
@@ -183,7 +184,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	return;
 }
 
-- (void) UpdateElementTable
+- (void) UpdateElementTable:(struct kemoviewer_type *) kemo_sgl
 {
 	int i, iflag;
     struct kv_string *groupname;
@@ -197,7 +198,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	NumElementGroup = kemoview_get_num_of_mesh_group(ELEM_GRP_FLAG);
 	for(i=0;i<NumElementGroup;i++){
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_ele_grp_name(groupname,i);
+		kemoview_get_ele_grp_name(kemo_sgl, i, groupname);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
 

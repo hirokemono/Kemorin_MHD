@@ -359,8 +359,10 @@ extern "C" {
                                      struct kemoviewer_type *kemoviewer);
 	int kemoview_get_draw_mesh_item(int iflag_group, int selected, int igrp);
     
-    void kemoview_get_node_grp_name(struct kv_string *groupname, int i);
-    void kemoview_get_ele_grp_name(struct kv_string *groupname, int i);
+    void kemoview_get_node_grp_name(struct kemoviewer_type *kemoviewer,
+                                    int i, struct kv_string *groupname);
+    void kemoview_get_ele_grp_name(struct kemoviewer_type *kemoviewer,
+                                   int i, struct kv_string *groupname);
     void kemoview_get_surf_grp_name(struct kemoviewer_type *kemoviewer,
                                     int i, struct kv_string *groupname);
     

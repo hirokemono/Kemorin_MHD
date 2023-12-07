@@ -50,7 +50,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 			  row:(int)rowIndex;
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (void)UpdateNodeTable;
+- (void)UpdateNodeTable:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction)ChooseNodeGrpNodeColorAction:(id)sender;
 - (IBAction)SetNodeGrpNodeColorAction:(id)sender;
 

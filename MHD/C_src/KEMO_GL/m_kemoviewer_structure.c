@@ -354,11 +354,13 @@ int kemoview_get_draw_mesh_item(int iflag_group, int selected, int igrp){
 	return get_draw_mesh_flag(kemo_sgl->kemo_mesh, iflag_group, selected, igrp);
 };
 
-void kemoview_get_node_grp_name(struct kv_string *groupname, int i){
-    alloc_copy_string(kemo_sgl->kemo_mesh->mesh_d->nod_gp_name_sf[i], groupname);
+void kemoview_get_node_grp_name(struct kemoviewer_type *kemoviewer,
+                                int i, struct kv_string *groupname){
+    alloc_copy_string(kemoviewer->kemo_mesh->mesh_d->nod_gp_name_sf[i], groupname);
 };
-void kemoview_get_ele_grp_name(struct kv_string *groupname, int i){ 
-    alloc_copy_string(kemo_sgl->kemo_mesh->mesh_d->ele_gp_name_sf[i], groupname);
+void kemoview_get_ele_grp_name(struct kemoviewer_type *kemoviewer,
+                               int i, struct kv_string *groupname){ 
+    alloc_copy_string(kemoviewer->kemo_mesh->mesh_d->ele_gp_name_sf[i], groupname);
 };
 void kemoview_get_surf_grp_name(struct kemoviewer_type *kemoviewer,
                                 int i, struct kv_string *groupname){

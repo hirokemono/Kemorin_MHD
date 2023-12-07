@@ -61,7 +61,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (void) UpdateElementTable;
+- (void) UpdateElementTable:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)ChooseEleGrpPatchColorAction:(id)sender;
 - (IBAction)ChooseEleGrpLineColorAction:(id)sender;
