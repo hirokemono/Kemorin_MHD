@@ -42,7 +42,7 @@
 	else if(iflag_datatype==IFLAG_LINES) {
 		[_flineController OpenFieldlineFile:kemoviewOpenFilehead
                                    kemoview:kemo_sgl];
-		[_movieMakerController InitEvolutionStepByFline];
+        [_movieMakerController InitEvolutionStepByFline:kemo_sgl];
 	};
 	
 }

@@ -274,8 +274,9 @@ GtkWidget * init_evoluaiton_menu_expander(struct kemoviewer_type *kemo_sgl,
     return expand_evo;
 }
 
-void activate_evolution_menu(GtkWidget *expand_evo){
-    int iflag_draw_f = kemoview_get_fline_parameters(DRAW_SWITCH);
+void activate_evolution_menu(struct kemoviewer_type *kemo_sgl,
+                             GtkWidget *expand_evo){
+    int iflag_draw_f = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
     int nload_psf = kemoview_get_PSF_loaded_params(NUM_LOADED);
     if(nload_psf > 0 || iflag_draw_f > 0){
         gtk_widget_set_sensitive(expand_evo, TRUE);

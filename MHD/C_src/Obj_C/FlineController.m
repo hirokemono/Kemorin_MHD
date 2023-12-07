@@ -147,7 +147,7 @@
 	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
 							 [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
 
-	self.DrawFlineFlag = kemoview_get_fline_parameters(DRAW_SWITCH);
+	self.DrawFlineFlag = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	//		self.EvolutionStartStep = [[FlineOpenFilehead pathExtension] intValue];
 	//		self.EvolutionEndStep =    self.EvolutionStartStep;
@@ -207,7 +207,7 @@
 - (IBAction) CloseFlineFile:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_close_fieldline_view();
-	self.DrawFlineFlag = kemoview_get_fline_parameters(DRAW_SWITCH);
+	self.DrawFlineFlag = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	
 	[_metalView UpdateImage];

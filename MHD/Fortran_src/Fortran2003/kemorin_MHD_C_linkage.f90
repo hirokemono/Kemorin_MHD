@@ -221,12 +221,14 @@
 !    
 !    /* Subroutines for field lines */
 !    
-!    int kemoview_get_fline_file_step_prefix(char *file_head);
-!    void kemoview_set_fline_file_step(int istep);
+!    int kemoview_get_fline_file_step_prefix(struct kemoviewer_type *kemoviewer,
+!                                            struct kv_string *fline_filehead);
+!    void kemoview_set_fline_file_step(int istep, struct kemoviewer_type *kemoviewer);
 !    
 !    void kemoview_set_fline_field_param(int selected, int input);
 !    
-!    void kemoview_set_fline_parameters(int selected, int iflag);
+!    void kemoview_set_fline_parameters(int selected, int iflag, 
+!                                       struct kemoviewer_type *kemoviewer);
 !    int kemoview_get_fline_parameters(int selected);
 !
 !    void kemoview_set_fline_color_param(int selected, int input,
@@ -295,7 +297,8 @@
           REAL(C_DOUBLE), intent(inout) :: opacity(i_point)
         END subroutine
 !
-!    void kemoview_write_fline_colormap_file(const char *file_name);
+!    void kemoview_write_fline_colormap_file(struct kv_string *filename,
+!                                            struct kemoviewer_type *kemoviewer){
         subroutine kemoview_write_fline_colormap_file(file_name)        &
      &            BIND(C, name = "kemoview_write_fline_colormap_file")
 !          IMPORT C_DOUBLE, C_CHAR

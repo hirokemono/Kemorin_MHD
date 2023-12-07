@@ -789,22 +789,26 @@ void kemoview_check_PSF_colormap_control(void){
 
 /* Subroutines for field lines */
 
-void kemoview_get_fline_full_path_file_name(struct kv_string *ucd_m){
-	get_fline_full_path_file_name(kemo_sgl->kemo_fline->fline_m, ucd_m);
+void kemoview_get_fline_full_path_file_name(struct kemoviewer_type *kemoviewer,
+                                            struct kv_string *ucd_m){
+	get_fline_full_path_file_name(kemoviewer->kemo_fline->fline_m, ucd_m);
 	return;
 }
-int kemoview_get_fline_file_step_prefix(struct kv_string *fline_filehead){
-	return get_fline_file_step_prefix(kemo_sgl->kemo_fline->fline_m, fline_filehead);
+int kemoview_get_fline_file_step_prefix(struct kemoviewer_type *kemoviewer,
+                                        struct kv_string *fline_filehead){
+	return get_fline_file_step_prefix(kemoviewer->kemo_fline->fline_m, fline_filehead);
 };
-void kemoview_set_fline_file_step(int istep){
-	set_fline_file_step(kemo_sgl->kemo_fline->fline_m, istep);
+void kemoview_set_fline_file_step(int istep, struct kemoviewer_type *kemoviewer){
+	set_fline_file_step(kemoviewer->kemo_fline->fline_m, istep);
 };
 
-void kemoview_set_fline_parameters(int selected, int iflag){
-	set_fline_parameters(selected, iflag, kemo_sgl->kemo_fline);
+void kemoview_set_fline_parameters(int selected, int iflag,
+                                   struct kemoviewer_type *kemoviewer){
+	set_fline_parameters(selected, iflag, kemoviewer->kemo_fline);
 };
-int kemoview_get_fline_parameters(int selected){
-	return get_fline_parameters(kemo_sgl->kemo_fline, selected);
+int kemoview_get_fline_parameters(struct kemoviewer_type *kemoviewer,
+                                  int selected){
+	return get_fline_parameters(kemoviewer->kemo_fline, selected);
 };
 
 void kemoview_set_fline_color_param(int selected, int input,
@@ -893,10 +897,12 @@ void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
                            i_point, value, opacity);
 }
 
-void kemoview_write_fline_colormap_file(struct kv_string *filename){
-	write_fline_colormap_file(filename, kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis,
-                              kemo_sgl->kemo_fline->fline_m);
+void kemoview_write_fline_colormap_file(struct kv_string *filename,
+                                        struct kemoviewer_type *kemoviewer){
+	write_fline_colormap_file(filename, kemoviewer->kemo_mesh->mesh_m->iflag_draw_axis,
+                              kemoviewer->kemo_fline->fline_m);
 }
-void kemoview_read_fline_colormap_file(struct kv_string *filename){
-	read_fline_colormap_file(filename, kemo_sgl->kemo_fline->fline_m);
+void kemoview_read_fline_colormap_file(struct kv_string *filename,
+                                       struct kemoviewer_type *kemoviewer){
+	read_fline_colormap_file(filename, kemoviewer->kemo_fline->fline_m);
 }

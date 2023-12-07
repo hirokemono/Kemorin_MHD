@@ -65,7 +65,7 @@ void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
                           struct updatable_widgets *updatable,
                           GtkWidget *menuHbox, GtkWidget *window){
     int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
-    int iflag_draw_f = kemoview_get_fline_parameters(DRAW_SWITCH);
+    int iflag_draw_f = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
     int nload_psf = kemoview_get_PSF_loaded_params(NUM_LOADED);
 
     if(updatable->iflag_psfBox > 0){
@@ -104,7 +104,7 @@ static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
 static void init_fline_menu(struct kemoviewer_type *kemo_sgl,
                             struct updatable_widgets *updatable,
                             GtkWidget *window){
-    if(kemoview_get_fline_parameters(DRAW_SWITCH) == 0) return;
+    if(kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH) == 0) return;
     if(updatable->iflag_flineBox == 0){
         updatable->flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         set_fieldline_menu_box(kemo_sgl, updatable->fline_menu, window);
@@ -151,7 +151,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     init_psf_menu(kemo_sgl, mbot->updatable, window_main);
     init_fline_menu(kemo_sgl, mbot->updatable, window_main);
     init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
-    activate_evolution_menu(mbot->updatable->expander_evo);
+    activate_evolution_menu(kemo_sgl, mbot->updatable->expander_evo);
     
     update_kemoview_menu(kemo_sgl, mbot->updatable, mbot->menuHbox,
                          window_main);
@@ -287,7 +287,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
         gtk_widget_hide(psfBox);
     }
     
-    activate_evolution_menu(expander_evo);
+    activate_evolution_menu(kemo_sgl, expander_evo);
 	gtk_widget_queue_draw(window_main);
 	draw_full();
 };
@@ -805,7 +805,7 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
     mbot->updatable->expander_evo = init_evoluaiton_menu_expander(kemo_sgl,
                                                                   mbot->updatable->evo_gmenu,
                                                                   window_main);
-    activate_evolution_menu(mbot->updatable->expander_evo);
+    activate_evolution_menu(kemo_sgl, mbot->updatable->expander_evo);
 
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_open, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_image_save, FALSE, FALSE, 0);

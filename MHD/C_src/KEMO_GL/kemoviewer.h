@@ -521,12 +521,16 @@ extern "C" {
     
     /* Subroutines for field lines */
     
-    void kemoview_get_fline_full_path_file_name(struct kv_string *ucd_m);
-    int kemoview_get_fline_file_step_prefix(struct kv_string *fline_filehead);
-    void kemoview_set_fline_file_step(int istep);
+    void kemoview_get_fline_full_path_file_name(struct kemoviewer_type *kemoviewer,
+                                                struct kv_string *ucd_m);
+    int kemoview_get_fline_file_step_prefix(struct kemoviewer_type *kemoviewer,
+                                            struct kv_string *fline_filehead);
+    void kemoview_set_fline_file_step(int istep, struct kemoviewer_type *kemoviewer);
     
-	void kemoview_set_fline_parameters(int selected, int iflag);
-	int kemoview_get_fline_parameters(int selected);
+	void kemoview_set_fline_parameters(int selected, int iflag, 
+                                       struct kemoviewer_type *kemoviewer);
+	int kemoview_get_fline_parameters(struct kemoviewer_type *kemoviewer,
+                                      int selected);
 	
 	void kemoview_set_fline_color_param(int selected, int input,
                                         struct kemoviewer_type *kemoviewer);
@@ -571,8 +575,10 @@ extern "C" {
     void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
                                          int i_point, double *value, double *opacity);
     
-    void kemoview_write_fline_colormap_file(struct kv_string *filename);
-    void kemoview_read_fline_colormap_file(struct kv_string *filename);
+    void kemoview_write_fline_colormap_file(struct kv_string *filename,
+                                            struct kemoviewer_type *kemoviewer);
+    void kemoview_read_fline_colormap_file(struct kv_string *filename,
+                                           struct kemoviewer_type *kemoviewer);
 #ifdef __cplusplus
 }
 #endif

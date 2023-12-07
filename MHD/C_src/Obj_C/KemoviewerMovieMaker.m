@@ -74,7 +74,7 @@ NSData *SnapshotData;
 }
 
 
--(void) InitEvolutionStepByPSF;
+-(void) InitEvolutionStepByPSF
 {
 	int iflag;
     struct kv_string *psf_filehead = kemoview_alloc_kvstring();
@@ -86,10 +86,10 @@ NSData *SnapshotData;
     kemoview_free_kvstring(psf_filehead);
 };
 
--(void) InitEvolutionStepByFline;
+-(void) InitEvolutionStepByFline:(struct kemoviewer_type *) kemo_sgl
 {
     struct kv_string *fline_filehead = kemoview_alloc_kvstring();
-	self.CurrentStep = kemoview_get_fline_file_step_prefix(fline_filehead);
+	self.CurrentStep = kemoview_get_fline_file_step_prefix(kemo_sgl, fline_filehead);
 	self.EvolutionStartStep = self.CurrentStep;
 	self.EvolutionEndStep =   self.CurrentStep;
     kemoview_free_kvstring(fline_filehead);
