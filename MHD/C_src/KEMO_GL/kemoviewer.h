@@ -435,7 +435,7 @@ extern "C" {
     void kemoview_animation_add_rotation(double dt);
     void kemoview_reset_animation(void);
 
-    /* subroutines for surafces */
+/* subroutines for surafces */
 	void kemoview_set_PSF_loaded_params(int selected, int input);
     void kemoview_set_loaded_PSF_flag(int id_psf, int iflag);
 
@@ -449,16 +449,18 @@ extern "C" {
 	void kemoview_set_each_PSF_field_param(int selected, int input);    
 	int kemoview_get_each_PSF_field_param(int selected);
 	
-    int kemoview_get_PSF_num_component(int i);
-	void kemoview_get_PSF_field_name(struct kv_string *colorname, int i);
+    int kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i);
+	void kemoview_get_PSF_field_name(struct kemoviewer_type *kemoviewer,
+                                     struct kv_string *colorname, int i);
     
-    void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char *bgra_in);
+    void kemoview_set_PSF_by_rgba_texture(int width, int height, 
+                                          const unsigned char *bgra_in,
+                                          struct kemoviewer_type *kemoviewer);
     
-    void kemoview_set_PSF_polygon_mode(int iflag);
-    void kemoview_set_PSF_tangential_vec_mode(int iflag);
+    void kemoview_set_PSF_polygon_mode(int iflag, struct kemoviewer_type *kemoviewer);
+    void kemoview_set_PSF_tangential_vec_mode(int iflag, struct kemoviewer_type *kemoviewer);
     
     int kemoview_get_PSF_draw_refv(void);
-    int kemoview_toggle_PSF_draw_refv(void);
     
 	void * kemoview_link_active_colormap_param(void);
 	

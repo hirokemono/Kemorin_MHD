@@ -95,7 +95,7 @@ static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
         updatable->iflag_psfBox = 1;
     }else{
         update_current_psf_set_hbox(updatable->psf_gmenu);
-        update_psf_draw_field_hbox(updatable->psf_gmenu);
+        update_psf_draw_field_hbox(kemo_sgl, updatable->psf_gmenu);
         update_by_psf_field(kemo_sgl, updatable->psf_gmenu);
     };
     return;
@@ -258,7 +258,7 @@ static void current_psf_select_CB(GtkComboBox *combobox_psfs, gpointer user_data
     if(index_mode < 0){index_mode = 0;};
     kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode);
 
-    update_psf_draw_field_hbox(psf_gmenu);
+    update_psf_draw_field_hbox(kemo_sgl, psf_gmenu);
     update_by_psf_field(kemo_sgl, psf_gmenu);
 
 	gtk_widget_queue_draw(window_main);
@@ -280,7 +280,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 	
     if(num_loaded > 0){
         update_current_psf_set_hbox(psf_gmenu);
-        update_psf_draw_field_hbox(psf_gmenu);
+        update_psf_draw_field_hbox(kemo_sgl, psf_gmenu);
         update_by_psf_field(kemo_sgl, psf_gmenu);
     }else{
 //        gtk_widget_set_sensitive(psfBox, FALSE);
@@ -330,9 +330,9 @@ static void update_by_psf_component(struct kemoviewer_type *kemo_sgl,
 
 void update_by_psf_field(struct kemoviewer_type *kemo_sgl,
                          struct psf_gtk_menu *psf_gmenu){
-    update_psf_draw_component_hbox(psf_gmenu);
+    update_psf_draw_component_hbox(kemo_sgl, psf_gmenu);
     update_by_psf_component(kemo_sgl, psf_gmenu);
-    set_vector_plot_availablity(psf_gmenu);
+    set_vector_plot_availablity(kemo_sgl, psf_gmenu);
     return;
 }
 
@@ -369,7 +369,7 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
 
     int index_mode = gtk_selected_combobox_index(combobox_comp);
     int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
-    if(index_mode >= kemoview_get_PSF_num_component(if_psf) || index_mode < 0){
+    if(index_mode >= kemoview_get_PSF_num_component(kemo_sgl, if_psf) || index_mode < 0){
         index_mode = 0;
     }
 	
@@ -499,7 +499,8 @@ static void init_current_psf_set_hbox(struct kemoviewer_type *kemo_sgl,
     return;
 }
 
-void update_psf_draw_field_hbox(struct psf_gtk_menu *psf_gmenu){
+void update_psf_draw_field_hbox(struct kemoviewer_type *kemo_sgl,
+                                struct psf_gtk_menu *psf_gmenu){
     struct kv_string *colorname = kemoview_alloc_kvstring();
     int num_field = kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
     int ifld;
@@ -511,7 +512,7 @@ void update_psf_draw_field_hbox(struct psf_gtk_menu *psf_gmenu){
     GtkTreeModel *child_model_field = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
     int index = 0;
     for(ifld=0;ifld<num_field;ifld++){
-        kemoview_get_PSF_field_name(colorname, ifld);
+        kemoview_get_PSF_field_name(kemo_sgl, colorname, ifld);
         index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
     };
     ifld = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
@@ -533,7 +534,7 @@ static void init_psf_draw_field_hbox(struct kemoviewer_type *kemo_sgl,
 	
 	int index = 0;
 	for(ifld=0;ifld<num_field;ifld++){
-		kemoview_get_PSF_field_name(colorname, ifld);
+		kemoview_get_PSF_field_name(kemo_sgl, colorname, ifld);
 		index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
 	};
 
@@ -558,14 +559,15 @@ static void init_psf_draw_field_hbox(struct kemoviewer_type *kemo_sgl,
 	return;
 }
 
-void update_psf_draw_component_hbox(struct psf_gtk_menu *psf_gmenu){
+void update_psf_draw_component_hbox(struct kemoviewer_type *kemo_sgl, 
+                                    struct psf_gtk_menu *psf_gmenu){
     char comp_name[1024];
     int icomp;
 
     int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 
     kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, IZERO);
-    int ncomp = kemoview_get_PSF_num_component(if_psf);
+    int ncomp = kemoview_get_PSF_num_component(kemo_sgl, if_psf);
     int id_coord = kemoview_get_each_PSF_field_param(COORDINATE_FLAG);
     
     clear_ci_tree_view(GTK_TREE_VIEW(psf_gmenu->comp_label_tree_view));
@@ -586,7 +588,7 @@ static void init_psf_draw_component_hbox(struct kemoviewer_type *kemo_sgl,
                                          struct psf_gtk_menu *psf_gmenu, GtkWidget *window){
 	char comp_name[1024];
 	int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
-	int ncomp = kemoview_get_PSF_num_component(if_psf);
+	int ncomp = kemoview_get_PSF_num_component(kemo_sgl, if_psf);
 	int icomp;
 	
     psf_gmenu->comp_label_tree_view = create_fixed_label_w_index_tree();

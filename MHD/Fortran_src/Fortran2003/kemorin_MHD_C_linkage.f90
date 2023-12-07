@@ -152,16 +152,16 @@
 !    void kemoview_set_each_PSF_field_param(int selected, int input);
 !    
 !    int kemoview_get_each_PSF_field_param(int selected);
-!    int kemoview_get_PSF_num_component(int i);
-!    void kemoview_get_PSF_field_name(char *name, int i);
+!    int kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i);
+!    void kemoview_get_PSF_field_name(struct kemoviewer_type *kemoviewer,
+!                                     struct kv_string *colorname, int i);
 !    
 !    void set_texture_current_psf(int img_fmt, const char *img_head);
 !    
-!    void kemoview_set_PSF_polygon_mode(int iflag);
-!    void kemoview_set_PSF_tangential_vec_mode(int iflag);
+!    void kemoview_set_PSF_polygon_mode(int iflag, struct kemoviewer_type *kemoviewer);
+!    void kemoview_set_PSF_tangential_vec_mode(int iflag, struct kemoviewer_type *kemoviewer);
 !    
 !    int kemoview_get_PSF_draw_refv();
-!    int kemoview_toggle_PSF_draw_refv();
 !    
 !    void kemoview_set_PSF_color_param(int selected, int input,
 !                                      struct kemoviewer_type *kemoviewer);

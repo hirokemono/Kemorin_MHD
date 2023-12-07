@@ -180,7 +180,6 @@
 - (void)awakeFromNib;
 
 
-- (void) ChooseTextureFile;
 - (void) SetCurrentPSFFile;
 - (void) SetPsfFieldMenu;
 - (void) SetPsfComponentMenu:(NSInteger)isel

@@ -147,12 +147,12 @@
     
     colorname = kemoview_alloc_kvstring();
 	for(i = 0; i < PsfNumberOfField; i++){
-		kemoview_get_PSF_field_name(colorname,i);
+		kemoview_get_PSF_field_name(kemo_sgl, colorname, i);
 		stname = [[NSString alloc] initWithUTF8String:colorname->string];
 		[PsfFieldName      addObject:stname];
 		[stname release];	
         
-		iflag = kemoview_get_PSF_num_component(i);
+		iflag = kemoview_get_PSF_num_component(kemo_sgl, i);
 		stnum = [[NSNumber alloc] initWithInt:iflag];
 		[PsfNumberOfComponent addObject:stnum];
 		[stnum release];	
@@ -515,6 +515,7 @@
 };
 
 - (void) ReadTextureFile:(NSString *) PsfOpenFilename
+                kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSInteger width, height;
     NSInteger rowBytes, pixelBytes;
@@ -532,7 +533,8 @@
         pixelBytes = rowBytes / width;
         pixels = (unsigned char *)[imgRep bitmapData];
         
-        kemoview_set_PSF_by_rgba_texture((int) width, (int) height, pixels);
+        kemoview_set_PSF_by_rgba_texture((int) width, (int) height, 
+                                         pixels, kemo_sgl);
     }
     [img release];
 }
@@ -560,7 +562,8 @@
                                                   kemoview:kemo_sgl];
 }
 
-- (void) ChooseTextureFile{
+- (void) ChooseTextureFile:(struct kemoviewer_type *) kemo_sgl
+{
     
     NSArray *psfFileTypes = [NSArray arrayWithObjects:@"png",@"bmp",@"PNG",@"BMP",nil];
     NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
@@ -571,7 +574,8 @@
     if(PsfOpenInteger == NSModalResponseOK){
         PsfOpenDirectory = [[PsfOpenPanelObj directoryURL] path];
         NSString *PsfOpenFilename =  [[PsfOpenPanelObj URL] path];
-        [self ReadTextureFile:PsfOpenFilename];
+        [self ReadTextureFile:PsfOpenFilename
+                     kemoview:kemo_sgl];
     };	
     return;
 }
@@ -696,7 +700,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if(self.psfPatchColorTag == TEXTURED_SURFACE){
         kemoview_update_PSF_textured_id(kemo_sgl);
-		[self ChooseTextureFile];
+        [self ChooseTextureFile:kemo_sgl];
 	}
     else if(self.psfPatchColorTag == SINGLE_COLOR){
         [self SetPSFColorFromColorWell:kemo_sgl];
@@ -727,10 +731,11 @@
 
 - (IBAction)ChoosePsfVectorModeAction:(id)sender;
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if(self.psfTangentialVectorTag == 0){
-		kemoview_set_PSF_tangential_vec_mode(FULL_COMPONENT);
+		kemoview_set_PSF_tangential_vec_mode(FULL_COMPONENT, kemo_sgl);
 	} else if (self.psfVectorColorTag == 1) {
-		kemoview_set_PSF_tangential_vec_mode(TANGENTIAL_COMPONENT);
+		kemoview_set_PSF_tangential_vec_mode(TANGENTIAL_COMPONENT, kemo_sgl);
 	}
 	[_metalView UpdateImage];
 }
@@ -796,8 +801,9 @@
     
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	self.psfPatchDirectionTag = [[_psfPatchDirMatrix selectedCell] tag];
-	kemoview_set_PSF_polygon_mode((int) self.psfPatchDirectionTag);
+	kemoview_set_PSF_polygon_mode((int) self.psfPatchDirectionTag, kemo_sgl);
 	[_metalView UpdateImage];
 }
 

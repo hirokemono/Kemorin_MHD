@@ -95,9 +95,10 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
 	return;
 };
 
-void set_vector_plot_availablity(struct psf_gtk_menu *psf_gmenu){
+void set_vector_plot_availablity(struct kemoviewer_type *kemo_sgl,
+                                 struct psf_gtk_menu *psf_gmenu){
     int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
-    if(kemoview_get_PSF_num_component(if_psf) == 3){
+    if(kemoview_get_PSF_num_component(kemo_sgl, if_psf) == 3){
         gtk_widget_set_sensitive(psf_gmenu->expander_vect, TRUE);
     } else {
         gtk_widget_set_sensitive(psf_gmenu->expander_vect, FALSE);
@@ -120,7 +121,7 @@ void init_psf_menu_hbox(struct kemoviewer_type *kemo_sgl,
     psf_gmenu->expander_vect = make_gtk_psf_vector_menu(kemo_sgl, window,
                                                         psf_gmenu->psf_vector_menu);
     set_gtk_psf_vector_menu(kemo_sgl, psf_gmenu->psf_vector_menu);
-    set_vector_plot_availablity(psf_gmenu);
+    set_vector_plot_availablity(kemo_sgl, psf_gmenu);
     return;
 }
 

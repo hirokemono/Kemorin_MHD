@@ -144,7 +144,7 @@ void set_psf_range_console(){
 	float data_max = (float) kemoview_get_PSF_max_data(icomp);
 
     colorname = kemoview_alloc_kvstring();
-	kemoview_get_PSF_field_name(colorname, ifield);
+	kemoview_get_PSF_field_name(kemo_sgl, colorname, ifield);
 	
 	input_range_from_console(colorname, &range_min, &range_max, data_min, data_max);
 	kemoview_set_PSF_linear_colormap((double) range_min, (double) range_max);

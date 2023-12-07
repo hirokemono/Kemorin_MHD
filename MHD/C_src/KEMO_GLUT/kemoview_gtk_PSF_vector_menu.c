@@ -19,10 +19,10 @@ static void psf_vector_switch_CB(GObject *switch_vect, GParamSpec *pspec, gpoint
 
 static void set_vector_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_cmap);
     
-	kemoview_set_PSF_tangential_vec_mode(index_mode);
-	
+	kemoview_set_PSF_tangential_vec_mode(kemo_sgl, index_mode);
 	draw_full();
     return;
 }
@@ -215,7 +215,7 @@ GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl, GtkWidget
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(psf_vector_menu->combobox_vecmode), 
 								   renderer_vmode, "text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(psf_vector_menu->combobox_vecmode), "changed", 
-				G_CALLBACK(set_vector_mode_cb), NULL);
+				G_CALLBACK(set_vector_mode_cb), (gpointer) kemo_sgl);
 	
 	label_tree_veccolor = create_fixed_label_w_index_tree();
 	model_veccolor = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_veccolor));  

@@ -751,7 +751,7 @@ static void make_3rd_level_psf_menu(){
 	int num_psf =     kemoview_get_PSF_num_loaded();
 	int num_fld =     kemoview_get_PSF_num_field();
 	int if_psf =      kemoview_get_PSF_field_id();
-	int num_comp =    kemoview_get_PSF_num_component(if_psf);
+	int num_comp =    kemoview_get_PSF_num_component(kemo_sgl, if_psf);
 	int iflag_solid = kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
 	int iflag_grid =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	
@@ -824,7 +824,7 @@ static void make_2nd_level_psf_menu(){
 	int num_fld =     kemoview_get_PSF_num_field();
 	int if_psf =      kemoview_get_PSF_field_id();
 	int ic_psf =      kemoview_get_PSF_component_id();
-	int num_comp =    kemoview_get_PSF_num_component(if_psf);
+	int num_comp =    kemoview_get_PSF_num_component(kemo_sgl, if_psf);
 	int iflag_solid = kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
 	int iflag_grid =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	
@@ -841,7 +841,7 @@ static void make_2nd_level_psf_menu(){
 	
 	
     colorname = kemoview_alloc_kvstring();
-	kemoview_get_PSF_field_name(colorname,if_psf);
+	kemoview_get_PSF_field_name(kemo_sgl, colorname,if_psf);
 	if (num_fld > 1) {
 		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_field_menu);
 	} else {
