@@ -249,7 +249,7 @@ static void input_psf_vector_thickness_panel(int val){
 
 static void input_coast_radius_from_panel(int val){
 	coast_radius = editText->get_float_val();
-	kemoview_set_coastline_radius((double) coast_radius);
+	kemoview_set_coastline_radius((double) coast_radius, kemo_sgl);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;

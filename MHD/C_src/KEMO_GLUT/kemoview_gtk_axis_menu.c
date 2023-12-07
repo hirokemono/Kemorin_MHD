@@ -11,29 +11,30 @@
 
 static void draw_axis_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	int toggle = kemoview_toggle_object_properties(AXIS_TOGGLE, kemo_sgl);
+	kemoview_toggle_object_properties(AXIS_TOGGLE, kemo_sgl);
 	
 	draw_full();
 	return;
 };
 static void draw_coastline_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	int toggle = kemoview_toggle_object_properties(COASTLINE_SWITCH, kemo_sgl);
+	kemoview_toggle_object_properties(COASTLINE_SWITCH, kemo_sgl);
 	
 	draw_full();
 	return;
 };
 static void draw_sph_grid_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
-	int toggle = kemoview_toggle_object_properties(SPHEREGRID_SWITCH, kemo_sgl);
+	kemoview_toggle_object_properties(SPHEREGRID_SWITCH, kemo_sgl);
 	
 	draw_full();
 	return;
 };
 static void coastline_radius_CB(GtkWidget *entry, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
 	double radius = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_coastline_radius(radius);
+	kemoview_set_coastline_radius(radius, kemo_sgl);
 	
 	draw_full();
 }
@@ -136,7 +137,8 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
 	GtkAdjustment *adj_coast_radius = gtk_adjustment_new(kemoview_get_coastline_radius(kemo_sgl),
 										  0.0, 10.0, 0.02, 0.02, 0.0);
 	GtkWidget *spin_coast_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_coast_radius), 0, 3);
-	g_signal_connect(spin_coast_radius, "value-changed", G_CALLBACK(coastline_radius_CB),NULL);
+	g_signal_connect(spin_coast_radius, "value-changed",
+                     G_CALLBACK(coastline_radius_CB), (gpointer) kemo_sgl);
 	
 	
 	GtkWidget *hbox_shading = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);

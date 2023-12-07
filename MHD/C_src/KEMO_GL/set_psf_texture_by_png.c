@@ -27,7 +27,7 @@ static int set_texture_from_bmp(const char *img_head, struct kemo_PSF_texure *ps
 
 void set_texture_to_psf(int img_fmt, const char *img_head,
                         struct kemo_PSF_texure *psf_texure,
-                        GLuint *texture_name){
+                        unsigned int *texture_name){
     int iflag = 0;
 	if(img_fmt == SAVE_PNG){
         iflag = set_texture_from_png(img_head, psf_texure);

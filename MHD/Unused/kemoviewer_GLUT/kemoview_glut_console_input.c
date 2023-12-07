@@ -308,7 +308,7 @@ void set_coastline_radius_console(){
 	sscanf(buf,"%f", &radius);
 	printf("modified radius: %.7e \n", radius);
 	
-	kemoview_set_coastline_radius((double) radius);
+	kemoview_set_coastline_radius((double) radius, kemo_sgl);
 	return;
 };
 

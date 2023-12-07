@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_phong_light_table_c.h"
 #include "vartex_array_object_gl.h"
