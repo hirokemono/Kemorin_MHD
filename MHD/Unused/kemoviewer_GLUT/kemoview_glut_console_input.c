@@ -476,7 +476,8 @@ void add_psf_opacitymap_point_console(){
 void modify_psf_opacitymap_point_console(int i_point){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
-	kemoview_set_PSF_opacity_data(i_point, (double) value, (double) opacity);
+	kemoview_set_PSF_opacity_data(i_point, (double) value, (double) opacity,
+                                  kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	return;
 }

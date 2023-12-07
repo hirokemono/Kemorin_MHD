@@ -82,11 +82,13 @@ void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
 	return;
 };
 
-void init_psf_menu(struct updatable_widgets *updatable, GtkWidget *window){
+static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
+                          struct updatable_widgets *updatable,
+                          GtkWidget *window){
     if(kemoview_get_PSF_loaded_params(NUM_LOADED) == 0) return;
     if(updatable->iflag_psfBox == 0){
         updatable->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-        set_psf_menu_box(updatable, window);
+        set_psf_menu_box(kemo_sgl, updatable, window);
         pack_psf_menu_frame(updatable->psf_gmenu);
         gtk_box_pack_start(GTK_BOX(updatable->psfBox), updatable->psf_gmenu->psf_frame,
                            FALSE, FALSE, 0);
@@ -144,7 +146,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
 	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
 	
-    init_psf_menu(mbot->updatable, window_main);
+    init_psf_menu(kemo_sgl, mbot->updatable, window_main);
     init_fline_menu(mbot->updatable, window_main);
     init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
     activate_evolution_menu(mbot->updatable->expander_evo);
@@ -617,7 +619,9 @@ void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu){
     return;
 }
 
-void set_psf_menu_box(struct updatable_widgets *updatable, GtkWidget *window){
+void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
+                      struct updatable_widgets *updatable, 
+                      GtkWidget *window){
     updatable->psf_gmenu->closeButton = gtk_button_new_with_label("Close Current PSF");
 
     g_object_set_data(G_OBJECT(updatable->expander_evo), "parent", (gpointer) window);
@@ -631,7 +635,7 @@ void set_psf_menu_box(struct updatable_widgets *updatable, GtkWidget *window){
     init_psf_draw_component_hbox(updatable->psf_gmenu, window);
     init_colormap_params_4_viewer(updatable->psf_gmenu->color_vws);
 	
-    init_psf_menu_hbox(updatable->psf_gmenu, window);
+    init_psf_menu_hbox(kemo_sgl, updatable->psf_gmenu, window);
 	return;
 }
 

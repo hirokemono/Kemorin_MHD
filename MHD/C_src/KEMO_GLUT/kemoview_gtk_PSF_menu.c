@@ -31,8 +31,9 @@ static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_dat
 };
 
 
-GtkWidget * init_gtk_psf_colormap_expander(GtkWidget *window,
-                                           struct colormap_view *color_vws){
+static GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_type *kemo_sgl,
+                                                  GtkWidget *window,
+                                                  struct colormap_view *color_vws){
     GtkWidget *expander_color;
     GtkWidget *saveButton = gtk_button_new_with_label("Save colormap...");
 	g_signal_connect(G_OBJECT(saveButton), "clicked", 
@@ -42,7 +43,7 @@ GtkWidget * init_gtk_psf_colormap_expander(GtkWidget *window,
 	g_signal_connect(G_OBJECT(loadButton), "clicked", 
 				G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(window));
 	
-    GtkWidget *frame_box = init_kemoview_colormap_list_vbox(color_vws);
+    GtkWidget *frame_box = init_kemoview_colormap_list_vbox(kemo_sgl, color_vws);
     GtkWidget *color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(color_box), frame_box, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(color_box), saveButton, FALSE, FALSE, 0);
@@ -104,11 +105,13 @@ void set_vector_plot_availablity(struct psf_gtk_menu *psf_gmenu){
     return;
 };
 
-void init_psf_menu_hbox(struct psf_gtk_menu *psf_gmenu, GtkWidget *window){
+void init_psf_menu_hbox(struct kemoviewer_type *kemo_sgl,
+                        struct psf_gtk_menu *psf_gmenu,
+                        GtkWidget *window){
     psf_gmenu->expander_iso = init_isoline_menu_expander(window, psf_gmenu->psf_isoline_menu);
     psf_gmenu->expander_surf = init_gtk_psf_surface_menu_expander(window, psf_gmenu->color_vws,
                                                                   psf_gmenu->psf_surface_menu);
-    psf_gmenu->expander_color = init_gtk_psf_colormap_expander(window, psf_gmenu->color_vws);
+    psf_gmenu->expander_color = init_gtk_psf_colormap_expander(kemo_sgl, window, psf_gmenu->color_vws);
     set_gtk_surface_menu_values(psf_gmenu->psf_surface_menu);
     set_gtk_isoline_menu_values(psf_gmenu->psf_isoline_menu);
 

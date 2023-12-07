@@ -4455,6 +4455,7 @@
             <connections>
                 <outlet property="_OpacityTableView" destination="2585" id="2621"/>
                 <outlet property="_fillRectView" destination="2560" id="3746"/>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="BmJ-RW-PBc"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="uqG-Cc-4eR"/>
                 <outlet property="idOpacityTableView" destination="2585" id="2622"/>
             </connections>

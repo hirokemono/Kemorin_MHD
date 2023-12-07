@@ -9,10 +9,13 @@
 
 #import "KemoViewerMetalView.h"
 #import "fillRectView.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface OpacityMapController : NSObject {
     IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerObject *_kmv;
 
 	NSInteger  NumOpacityTable;
 	NSMutableArray *OpacityTableField;

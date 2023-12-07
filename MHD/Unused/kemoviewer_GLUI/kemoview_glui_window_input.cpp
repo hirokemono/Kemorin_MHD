@@ -142,7 +142,8 @@ static void update_opacitymap_glui(int val){
 	int sel = radiogroup_opacitymap->get_int_val();
 	value = editText_data->get_float_val();
 	opacity = editText_opacity->get_float_val();
-	kemoview_set_PSF_opacity_data(sel, (double) value, (double) opacity);
+	kemoview_set_PSF_opacity_data(sel, (double) value, (double) opacity,
+                                  kemo_sgl);
 	close_panel(0);
 	return;
 }

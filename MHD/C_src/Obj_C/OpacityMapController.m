@@ -115,7 +115,8 @@
 										  withObject:[[NSNumber alloc] initWithDouble:opacity]];
 	}
 	
-	kemoview_set_PSF_opacity_data((int) pRowIndex, value, opacity);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_PSF_opacity_data((int) pRowIndex, value, opacity, kemo_sgl);
     [_metalView UpdateImage];
     return;
 } // end tableView:setObjectValue:forTableColumn:row:

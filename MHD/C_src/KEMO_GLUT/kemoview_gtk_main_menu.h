@@ -86,7 +86,9 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
                                struct main_buttons *mbot,
                                GtkWidget *window_main);
 
-void set_psf_menu_box(struct updatable_widgets *updatable, GtkWidget *window);
+void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
+                      struct updatable_widgets *updatable, 
+                      GtkWidget *window);
 void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
 
 void set_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu, GtkWidget *window);
@@ -111,7 +113,6 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
                             GtkWidget *takobox, GtkWidget *window_main,
                             struct kemoviewer_type *kemo_sgl);
 
-void init_psf_menu(struct updatable_widgets *updatable, GtkWidget *window);
 void init_evolution_menu(struct updatable_widgets *updatable, GtkWidget *window);
 
 
