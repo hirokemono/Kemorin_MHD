@@ -103,7 +103,8 @@ void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
 void update_current_psf_set_hbox(struct psf_gtk_menu *psf_gmenu);
 void update_psf_draw_field_hbox(struct psf_gtk_menu *psf_gmenu);
 void update_psf_draw_component_hbox(struct psf_gtk_menu *psf_gmenu);
-void update_by_psf_field(struct psf_gtk_menu *psf_gmenu);
+void update_by_psf_field(struct kemoviewer_type *kemo_sgl,
+                         struct psf_gtk_menu *psf_gmenu);
 
 void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
                           struct updatable_widgets *updatable,

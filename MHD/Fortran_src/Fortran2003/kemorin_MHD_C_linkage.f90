@@ -171,7 +171,8 @@
 !    int kemoview_get_PSF_draw_flags(int selected);
 !    int kemoview_select_PSF_draw_switch(int selected);
 !    
-!    double kemoview_get_each_PSF_data_range(int selected, int icomp);
+!    idouble kemoview_get_each_PSF_data_range(int selected, int icomp,
+!    i                                        struct kemoviewer_type *kemoviewer){
 !    
 !    void kemoview_delete_PSF_color_list(int i_delete);
 !    void kemoview_delete_PSF_opacity_list(int i_delete);

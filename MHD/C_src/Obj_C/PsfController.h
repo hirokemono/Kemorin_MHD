@@ -180,16 +180,12 @@
 - (void)awakeFromNib;
 
 
-- (id) CopyPsfDisplayFlagsFromC;
-
 - (void) ChooseTextureFile;
-- (void) SetCurrentPsfMenu;
 - (void) SetCurrentPSFFile;
 - (void) SetPsfFieldMenu;
-- (void) UpdateCurrentPsfMenu;
-- (void) ResetCurrentPsfParam;
-- (void) SetPsfComponentMenu:(NSInteger)isel;
-- (void) SetPsfRanges;
+- (void) SetPsfComponentMenu:(NSInteger)isel
+                    kemoview:(struct kemoviewer_type *) kemo_sgl
+;
 - (void) DrawPsfFile:(NSString*) PsfOpenFilehead
             kemoview:(struct kemoviewer_type *) kemo_sgl;
 

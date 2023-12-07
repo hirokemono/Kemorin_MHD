@@ -168,7 +168,8 @@ static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 	draw_full();
 }
 
-void set_gtk_surface_menu_values(struct psf_surface_gtk_menu *psf_surface_menu){
+void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,
+                                 struct psf_surface_gtk_menu *psf_surface_menu){
 	int iflag_sfcolor;
 	int icomp, i_digit;
 	double current_value;
@@ -198,8 +199,8 @@ void set_gtk_surface_menu_values(struct psf_surface_gtk_menu *psf_surface_menu){
 	};
 
 	icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-	value_min = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, icomp);
-	value_max = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, icomp);
+	value_min = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, icomp, kemo_sgl);
+	value_max = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, icomp, kemo_sgl);
 	sprintf(min_text, "Min(%1.2e): ", value_min);
 	sprintf(max_text, "Max(%1.2e): ", value_max);
 	gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_min), min_text);

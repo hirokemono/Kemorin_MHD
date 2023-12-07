@@ -130,7 +130,7 @@
     [_ElasticControl UpdateWindow:0];
 }
 
-- (id) CopyPsfDisplayFlagsFromC
+- (void) CopyPsfDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
 	int i, iflag;
 	double minmax;
@@ -159,20 +159,23 @@
 	}
     kemoview_free_kvstring(colorname);
 	for(i = 0; i < PsfTotalComponent; i++){
-		minmax = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, i);
+		minmax = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, i,
+                                                  kemo_sgl);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[PsfMinimum      addObject:stnum];
 		[stnum release];	
 		
-		minmax = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, i);
+		minmax = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, i,
+                                                  kemo_sgl);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[PsfMaximum      addObject:stnum];
 		[stnum release];	
 	}
-	return self;
+	return;
 }
 
-- (void) UpdateCurrentPsfMenu{
+- (void) UpdateCurrentPsfMenu:(struct kemoviewer_type *) kemo_sgl
+{
 	double current_value;
 	int i_digit;
 	
@@ -185,8 +188,10 @@
 	self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
 	self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
 	self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-	self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
-	self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
+	self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted,
+                                                              kemo_sgl);
+	self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted,
+                                                              kemo_sgl);
 	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
@@ -224,9 +229,10 @@
 	
 	self.psfVectorColorTag = kemoview_get_PSF_color_param(ISET_VECTOR_COLOR);
 	
-	[self CopyPsfDisplayFlagsFromC];
+    [self CopyPsfDisplayFlagsFromC:kemo_sgl];
 	[self SetPsfFieldMenu];
-	[self SetPsfComponentMenu:self.PSFSelectedField];
+	[self SetPsfComponentMenu:self.PSFSelectedField
+                     kemoview:kemo_sgl];
 	[_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
 	[_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
 	
@@ -239,7 +245,7 @@
 	else{ [_PSFVectorSwitchOutlet setTitle:@"On"];};
 }
 
-- (void) ResetCurrentPsfParam{
+- (void) ResetCurrentPsfParam:(struct kemoviewer_type *) kemo_sgl{
 	self.PSFSelectedField =     IZERO;
 	self.PSFSelectedComponent = IZERO;
     
@@ -252,8 +258,8 @@
      self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
      self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
      self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-     self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
-     self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
+     self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted, kemo_sgl);
+     self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted, kemo_sgl);
      self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 	 self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
@@ -290,7 +296,7 @@
      
      self.psfVectorColorTag = kemoview_get_PSF_color_param(ISET_VECTOR_COLOR);
      
-     [self CopyPsfDisplayFlagsFromC];
+     [self CopyPsfDisplayFlagsFromC:kemo_sgl];
      [self SetPsfFieldMenu];
      [_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
      [_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
@@ -305,7 +311,8 @@
      */
 }
 
-- (void) SetCurrentPsfMenu{
+- (void) SetCurrentPsfMenu:(struct kemoviewer_type *) kemo_sgl
+{
 	int i, j, istep, ifmt;
     struct kv_string *psf_filehead;
 	NSString *PsfNumberTxt;
@@ -338,9 +345,7 @@
 		j = [[LoadedPsfID objectAtIndex: i] intValue];
 		if(j == kemoview_get_PSF_loaded_params(SET_CURRENT)) self.currentPSFID = i;
 	};
-    
-    
-	[self UpdateCurrentPsfMenu];
+    [self UpdateCurrentPsfMenu:kemo_sgl];
 }
 
 - (void) SetCurrentPSFFile
@@ -368,7 +373,9 @@
 	}
 }
 
-- (void) SetPsfComponentMenu:(NSInteger)isel{
+- (void) SetPsfComponentMenu:(NSInteger)isel
+                    kemoview:(struct kemoviewer_type *) kemo_sgl
+{
 	int iplotted;
 	
 	[_psfComponentMenu removeAllItems];
@@ -420,22 +427,26 @@
 		
         
 		iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-		self.PsfMinimumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
-		self.PsfMaximumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
+		self.PsfMinimumValue 
+            = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted, kemo_sgl);
+		self.PsfMaximumValue
+            = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted, kemo_sgl);
 	}
 	
 	return;
 }
 
-- (void) SetPsfRanges{
+- (void) SetPsfRanges:(struct kemoviewer_type *) kemo_sgl{
 	double current_value;
 	int i_digit;
 	int iplotted;
     
 	iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
     
- 	self.PsfMinimumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
-	self.PsfMaximumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
+ 	self.PsfMinimumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted,
+                                                            kemo_sgl);
+	self.PsfMaximumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted,
+                                                            kemo_sgl);
 
 	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
 	self.PsfMinimumRange =      (CGFloat) current_value;
@@ -466,11 +477,12 @@
 	
 	self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
     [_ElasticControl UpdateWindow:self.DrawPsfFlag];
-	[self CopyPsfDisplayFlagsFromC];
+    [self CopyPsfDisplayFlagsFromC:kemo_sgl];
 	[self SetPsfFieldMenu];
-	[self SetPsfComponentMenu:0];
-	[self SetCurrentPsfMenu];
-    [self SetPsfRanges];
+	[self SetPsfComponentMenu:0
+                     kemoview:kemo_sgl];
+    [self SetCurrentPsfMenu:kemo_sgl];
+    [self SetPsfRanges:kemo_sgl];
 	
     [_kemoviewControl Set3DView:kemo_sgl];
 	[_metalView UpdateImage];
@@ -576,16 +588,16 @@
 
 
 - (IBAction) ClosePsfFile:(id)pId{
-    [self ResetCurrentPsfParam];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self ResetCurrentPsfParam:kemo_sgl];
     int num_loaded = kemoview_close_PSF_view();
     self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
     [_ElasticControl UpdateWindow:self.DrawPsfFlag];
     
 	if(num_loaded > 0){
-        [self CopyPsfDisplayFlagsFromC];
-        [self SetCurrentPsfMenu];
+        [self CopyPsfDisplayFlagsFromC:kemo_sgl];
+        [self SetCurrentPsfMenu:kemo_sgl];
     };
-    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [_kemoviewControl Set3DView:kemo_sgl];
     [_kemoviewControl TimeLabelAvaiability];
     [_kemoviewControl FileStepLabelAvaiability];
@@ -599,30 +611,31 @@
 
 - (IBAction) CurrentPsfAction:(id)sender
 {	
-	int id_current;
-	
-	id_current = [[LoadedPsfID objectAtIndex:self.currentPSFID] intValue];
+	int id_current = [[LoadedPsfID objectAtIndex:self.currentPSFID] intValue];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_loaded_params(SET_CURRENT, id_current);
     [self SetCurrentPSFFile];
-	[self UpdateCurrentPsfMenu];
+    [self UpdateCurrentPsfMenu:kemo_sgl];
 }
 
 - (IBAction) PsfFieldAction:(id)sender
 {	
-	[self SetPsfComponentMenu:self.PSFSelectedField];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	[self SetPsfComponentMenu:self.PSFSelectedField
+                     kemoview:kemo_sgl];
     kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, (int) self.PSFSelectedField);
 	
-	[self SetPsfRanges];
+    [self SetPsfRanges:kemo_sgl];
     
 	[_metalView UpdateImage];
 }
 
 - (IBAction) PsfComponentAction:(id)sender
 {	
-    
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent);
 	
-    [self SetPsfRanges];
+    [self SetPsfRanges:kemo_sgl];
     
 	[_metalView UpdateImage];
 }
@@ -636,17 +649,19 @@
 
 - (IBAction)PsfLineSwitchAction:(id)sender;
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	self.PSFIsolineSwitch = kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
-	[self UpdateCurrentPsfMenu];
+    [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage];
 }
 
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	self.PSFZerolineSwitch = kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
-	[self UpdateCurrentPsfMenu];
+    [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage];
 }
 
