@@ -165,10 +165,10 @@ void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl,
     init_ele_group_draw_expander(kemo_sgl,  window, mesh_vws->ele_group_gmenu);
     init_surf_group_draw_expander(kemo_sgl, window, mesh_vws->surf_group_gmenu);
     
-    set_domain_draw_box(mesh_vws->domain_group_gmenu);
-    set_nod_group_draw_box(mesh_vws->node_group_gmenu);
-    set_ele_group_draw_box(mesh_vws->ele_group_gmenu);
-    set_surf_group_draw_box(mesh_vws->surf_group_gmenu);
+    set_domain_draw_box(kemo_sgl, mesh_vws->domain_group_gmenu);
+    set_nod_group_draw_box(kemo_sgl, mesh_vws->node_group_gmenu);
+    set_ele_group_draw_box(kemo_sgl, mesh_vws->ele_group_gmenu);
+    set_surf_group_draw_box(kemo_sgl, mesh_vws->surf_group_gmenu);
     
     return;
 }

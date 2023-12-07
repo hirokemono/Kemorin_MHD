@@ -319,8 +319,9 @@ void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor,
 	set_mesh_color_flag(iflag_group, selected, icolor, kemoviewer->kemo_mesh);
     return;
 }
-int kemoview_get_mesh_color_flag(int iflag_group, int selected){
-	return get_mesh_color_flag(iflag_group, selected, kemo_sgl->kemo_mesh);
+int kemoview_get_mesh_color_flag(struct kemoviewer_type *kemoviewer,
+                                 int iflag_group, int selected){
+	return get_mesh_color_flag(iflag_group, selected, kemoviewer->kemo_mesh);
 }
 
 void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]){

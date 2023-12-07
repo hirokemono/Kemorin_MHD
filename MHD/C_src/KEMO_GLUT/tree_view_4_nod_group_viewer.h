@@ -25,7 +25,8 @@
 #endif
 
 /* prototypes */
-void set_nod_group_draw_box(struct nod_grp_gtk_menu *node_group_gmenu);
+void set_nod_group_draw_box(struct kemoviewer_type *kemo_sgl,
+                            struct nod_grp_gtk_menu *node_group_gmenu);
 void init_nod_group_draw_expander(struct kemoviewer_type *kemo_sgl,
                                   GtkWidget *window, 
                                   struct nod_grp_gtk_menu *node_group_gmenu);

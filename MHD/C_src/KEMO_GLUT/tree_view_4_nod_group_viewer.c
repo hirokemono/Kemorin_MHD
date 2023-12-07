@@ -145,9 +145,10 @@ static void create_node_group_view(struct kemoviewer_type *kemo_sgl,
     
 }
 
-void set_nod_group_draw_box(struct nod_grp_gtk_menu *node_group_gmenu){
+void set_nod_group_draw_box(struct kemoviewer_type *kemo_sgl,
+                            struct nod_grp_gtk_menu *node_group_gmenu){
     float color4[4] = {0.0, 0.0, 0.0, 1.0};
-	int iflag_color = kemoview_get_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE);
+	int iflag_color = kemoview_get_mesh_color_flag(kemo_sgl, NODE_GRP_FLAG, SURFSOLID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(node_group_gmenu->combobox_node_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){

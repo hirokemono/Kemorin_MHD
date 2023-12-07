@@ -25,7 +25,8 @@
 #endif
 
 /* prototypes */
-void set_domain_draw_box(struct group_gtk_menu *domain_group_gmenu);
+void set_domain_draw_box(struct kemoviewer_type *kemo_sgl,
+                         struct group_gtk_menu *domain_group_gmenu);
 void init_domain_draw_expander(struct kemoviewer_type *kemo_sgl,
                                GtkWidget *window,
                                struct group_gtk_menu *domain_group_gmenu);

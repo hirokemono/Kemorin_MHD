@@ -324,11 +324,12 @@ static void create_ele_group_view(struct kemoviewer_type *kemo_sgl,
     
 }
 
-void set_ele_group_draw_box(struct group_gtk_menu *ele_group_gmenu){
+void set_ele_group_draw_box(struct kemoviewer_type *kemo_sgl,
+                            struct group_gtk_menu *ele_group_gmenu){
 	int iflag_color;
 	float color4[4];
 	
-	iflag_color = kemoview_get_mesh_color_flag(ELEM_GRP_FLAG, SURFSOLID_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(kemo_sgl, ELEM_GRP_FLAG, SURFSOLID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(ele_group_gmenu->combobox_patch_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
@@ -339,7 +340,7 @@ void set_ele_group_draw_box(struct group_gtk_menu *ele_group_gmenu){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(ele_group_gmenu->combobox_patch_color), 0);
 	};
 	
-	iflag_color = kemoview_get_mesh_color_flag(ELEM_GRP_FLAG, SURFGRID_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(kemo_sgl, ELEM_GRP_FLAG, SURFGRID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(ele_group_gmenu->combobox_grid_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
@@ -350,7 +351,7 @@ void set_ele_group_draw_box(struct group_gtk_menu *ele_group_gmenu){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(ele_group_gmenu->combobox_grid_color), 0);
 	};
 	
-	iflag_color = kemoview_get_mesh_color_flag(ELEM_GRP_FLAG, SURFNOD_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(kemo_sgl, ELEM_GRP_FLAG, SURFNOD_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(ele_group_gmenu->combobox_node_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
