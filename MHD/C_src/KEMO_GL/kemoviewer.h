@@ -344,7 +344,8 @@ extern "C" {
 	int kemoview_get_mesh_color_flag(struct kemoviewer_type *kemoviewer,
                                      int iflag_group, int selected);
     
-	void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
+	void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
+                                      struct kemoviewer_type *kemoviewer);
 	void kemoview_get_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
 	
 	void kemoview_set_mesh_opacity(int iflag_group, double opacity_in);

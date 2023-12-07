@@ -191,9 +191,13 @@ static void surf_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer u
 static void set_surf_grp_opacity_CB(GtkWidget *entry, gpointer user_data)
 {
 	float colorcode4[4];
-	kemoview_get_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
+    kemoview_get_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
+	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4, kemo_sgl);
 	
 	draw_full();
 	return;
@@ -202,11 +206,15 @@ static void set_single_surf_grp_patch_color_CB(GtkButton *button, gpointer user_
 {
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
 	kemoview_get_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);};
-	
+    if(iflag_set > 0) {
+        kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                     colorcode4, kemo_sgl);
+    };
 	draw_full();
 	return;
 };
@@ -214,11 +222,15 @@ static void set_single_surf_grp_grids_color_CB(GtkButton *button, gpointer user_
 {
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
 	kemoview_get_mesh_color_code(SURF_GRP_FLAG, SURFGRID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFGRID_TOGGLE, colorcode4);};
-	
+    if(iflag_set > 0) {
+        kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFGRID_TOGGLE,
+                                     colorcode4, kemo_sgl);
+    };
 	draw_full();
 	return;
 };
@@ -226,11 +238,15 @@ static void set_single_surf_grp_nodes_color_CB(GtkButton *button, gpointer user_
 {
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
 	kemoview_get_mesh_color_code(SURF_GRP_FLAG, SURFNOD_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFNOD_TOGGLE, colorcode4);};
-	
+    if(iflag_set > 0) {
+        kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFNOD_TOGGLE,
+                                     colorcode4, kemo_sgl);
+    };
 	draw_full();
 	return;
 };
@@ -380,6 +396,8 @@ void set_surf_group_draw_box(struct kemoviewer_type *kemo_sgl,
 
 void init_surf_group_draw_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
                                    struct group_gtk_menu *surf_group_gmenu){
+    g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
+
     create_surface_group_view(kemo_sgl, surf_group_gmenu->group_vws);
     
     /* Delete data bottun */
@@ -487,7 +505,7 @@ void init_surf_group_draw_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *
     GtkAdjustment *adj_opacity = gtk_adjustment_new(color4[3], 0.0, 1.0, 0.01, 0.01, 0.0);
     surf_group_gmenu->spin_opacity = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity), 0, 2);
     g_signal_connect(surf_group_gmenu->spin_opacity, "value-changed",
-                     G_CALLBACK(set_surf_grp_opacity_CB), NULL);
+                     G_CALLBACK(set_surf_grp_opacity_CB), (gpointer) window);
     
     surf_group_gmenu->button_patch_color = gtk_color_button_new_with_rgba(&surf_group_gmenu->gcolor);
     g_signal_connect(G_OBJECT(surf_group_gmenu->button_patch_color), "clicked",

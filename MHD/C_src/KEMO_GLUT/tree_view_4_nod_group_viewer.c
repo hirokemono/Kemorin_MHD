@@ -71,10 +71,15 @@ static void set_single_nod_grp_nodes_color_CB(GtkButton *button, gpointer user_d
 {
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
-	
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+
 	kemoview_get_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);};
+	if(iflag_set > 0) {
+        kemoview_set_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE,
+                                     colorcode4, kemo_sgl);
+    };
 	return;
 };
 
@@ -169,6 +174,8 @@ void set_nod_group_draw_box(struct kemoviewer_type *kemo_sgl,
 void init_nod_group_draw_expander(struct kemoviewer_type *kemo_sgl,
                                   GtkWidget *window, 
                                   struct nod_grp_gtk_menu *node_group_gmenu){
+    g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
+
     create_node_group_view(kemo_sgl, node_group_gmenu->nod_grp_vws);
     
     /* Delete data bottun */

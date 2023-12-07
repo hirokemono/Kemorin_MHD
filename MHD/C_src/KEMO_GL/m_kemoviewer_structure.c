@@ -333,8 +333,9 @@ int kemoview_get_mesh_color_flag(struct kemoviewer_type *kemoviewer,
 	return get_mesh_color_flag(iflag_group, selected, kemoviewer->kemo_mesh);
 }
 
-void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]){
-	set_mesh_color_code(iflag_group, selected, color_code4, kemo_sgl->kemo_mesh);
+void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
+                                  struct kemoviewer_type *kemoviewer){
+	set_mesh_color_code(iflag_group, selected, color_code4, kemoviewer->kemo_mesh);
 };
 void kemoview_get_mesh_color_code(int iflag_group, int selected, float color_code4[4]){
 	get_mesh_color_code(kemo_sgl->kemo_mesh, iflag_group, selected, color_code4);
