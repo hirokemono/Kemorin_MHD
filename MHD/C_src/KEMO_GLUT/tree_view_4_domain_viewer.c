@@ -189,7 +189,8 @@ static void set_domain_opacity_CB(GtkWidget *entry, gpointer user_data)
 	float colorcode4[4];
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-	kemoview_get_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+                                 SURFSOLID_TOGGLE, colorcode4);
 	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE,
                                  colorcode4, kemo_sgl);
@@ -204,7 +205,8 @@ static void set_single_domain_patch_color_CB(GtkButton *button, gpointer user_da
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-	kemoview_get_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+                                 SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {
         kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE,
@@ -222,7 +224,8 @@ static void set_single_domain_grids_color_CB(GtkButton *button, gpointer user_da
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-	kemoview_get_mesh_color_code(DOMAIN_FLAG, SURFGRID_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+                                 SURFGRID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {
         kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFGRID_TOGGLE,
@@ -239,7 +242,8 @@ static void set_single_domain_nodes_color_CB(GtkButton *button, gpointer user_da
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-	kemoview_get_mesh_color_code(DOMAIN_FLAG, SURFNOD_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+                                 SURFNOD_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {
         kemoview_set_mesh_color_code(DOMAIN_FLAG, SURFNOD_TOGGLE,
@@ -374,18 +378,21 @@ void set_domain_draw_box(struct kemoviewer_type *kemo_sgl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(domain_group_gmenu->combobox_node_color), 0);
 	};
 	
-	kemoview_get_mesh_color_code(DOMAIN_FLAG, SURFSOLID_TOGGLE, color4);
+	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+                                 SURFSOLID_TOGGLE, color4);
 	set_color_to_GTK(color4, &domain_group_gmenu->gcolor);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(domain_group_gmenu->spin_opacity), (double) color4[3]);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_group_gmenu->button_patch_color),
 							   &domain_group_gmenu->gcolor);
 
-	kemoview_get_mesh_color_code(DOMAIN_FLAG, SURFGRID_TOGGLE, color4);
+	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+                                 SURFGRID_TOGGLE, color4);
 	set_color_to_GTK(color4, &domain_group_gmenu->gcolor);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_group_gmenu->button_grid_color),
 							   &domain_group_gmenu->gcolor);
 	
-	kemoview_get_mesh_color_code(DOMAIN_FLAG, SURFNOD_TOGGLE, color4);
+	kemoview_get_mesh_color_code(kemo_sgl, DOMAIN_FLAG,
+                                 SURFNOD_TOGGLE, color4);
 	set_color_to_GTK(color4, &domain_group_gmenu->gcolor);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_group_gmenu->button_node_color),
 							   &domain_group_gmenu->gcolor);

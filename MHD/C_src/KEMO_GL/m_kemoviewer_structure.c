@@ -337,17 +337,20 @@ void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_cod
                                   struct kemoviewer_type *kemoviewer){
 	set_mesh_color_code(iflag_group, selected, color_code4, kemoviewer->kemo_mesh);
 };
-void kemoview_get_mesh_color_code(int iflag_group, int selected, float color_code4[4]){
-	get_mesh_color_code(kemo_sgl->kemo_mesh, iflag_group, selected, color_code4);
+void kemoview_get_mesh_color_code(struct kemoviewer_type *kemoviewer,
+                                  int iflag_group, int selected, float color_code4[4]){
+	get_mesh_color_code(kemoviewer->kemo_mesh, iflag_group, selected, color_code4);
 };
 
-void kemoview_set_mesh_opacity(int iflag_group, double opacity_in){
-	set_mesh_opacity(iflag_group, opacity_in, kemo_sgl->kemo_mesh);
+void kemoview_set_mesh_opacity(int iflag_group, double opacity_in,
+                               struct kemoviewer_type *kemoviewer){
+	set_mesh_opacity(iflag_group, opacity_in, kemoviewer->kemo_mesh);
 	return;
 };
 
-double kemoview_get_mesh_opacity(int iflag_group){
-	return get_mesh_opacity(kemo_sgl->kemo_mesh, iflag_group);
+double kemoview_get_mesh_opacity(struct kemoviewer_type *kemoviewer,
+                                 int iflag_group){
+	return get_mesh_opacity(kemoviewer->kemo_mesh, iflag_group);
 };
 
 void kemoview_set_mesh_draw_flag(int selected, int iflag,

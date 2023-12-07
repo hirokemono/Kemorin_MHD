@@ -325,7 +325,7 @@ extern "C" {
 	void kemoview_set_material_parameter(int itype, float shiness_in);
 	float kemoview_get_material_parameter(int itype);
 	
-	
+/* subroutines for mesh */
     void kemoview_set_mesh_color_mode(int icolor, struct kemoviewer_type *kemoviewer);
     int kemoview_get_mesh_color_mode(struct kemoviewer_type *kemoviewer);
     void kemoview_set_num_of_color_loop(int icolor, struct kemoviewer_type *kemoviewer);
@@ -346,10 +346,13 @@ extern "C" {
     
 	void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
                                       struct kemoviewer_type *kemoviewer);
-	void kemoview_get_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
+	void kemoview_get_mesh_color_code(struct kemoviewer_type *kemoviewer,
+                                      int iflag_group, int selected, float color_code4[4]);
 	
-	void kemoview_set_mesh_opacity(int iflag_group, double opacity_in);
-	double kemoview_get_mesh_opacity(int iflag_group);
+	void kemoview_set_mesh_opacity(int iflag_group, double opacity_in,
+                                   struct kemoviewer_type *kemoviewer);
+	double kemoview_get_mesh_opacity(struct kemoviewer_type *kemoviewer,
+                                     int iflag_group);
     
 
     void kemoview_set_mesh_draw_flag(int selected, int iflag,
@@ -369,10 +372,8 @@ extern "C" {
     void kemoview_get_surf_grp_name(struct kemoviewer_type *kemoviewer,
                                     int i, struct kv_string *groupname);
     
-    
+/* PArameters for Views */
     int kemoview_get_view_type_flag(void);
-    
-
     
     void kemoview_get_ext_from_file_name(struct kv_string *filename,
                                          struct kv_string *stripped_prefix, struct kv_string *stripped_ext);

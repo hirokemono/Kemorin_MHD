@@ -73,9 +73,11 @@
 !                                      struct kemoviewer_type *kemoviewer);
 !    void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
 !    
-!    void kemoview_set_mesh_opacity(int iflag_group, double opacity_in);
-!    double kemoview_get_mesh_opacity(int iflag_group);
-!    
+!    void kemoview_set_mesh_opacity(int iflag_group, double opacity_in,
+!                                   struct kemoviewer_type *kemoviewer);
+!    double kemoview_get_mesh_opacity(struct kemoviewer_type *kemoviewer,
+!                                     int iflag_group);
+!
 !    
 !    void kemoview_set_mesh_draw_flag(int selected, int iflag,
 !                                     struct kemoviewer_type *kemoviewer);

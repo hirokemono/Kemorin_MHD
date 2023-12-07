@@ -135,13 +135,22 @@ int get_mesh_color_flag(int iflag_group, int selected,
 void set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
 						 struct kemoview_mesh *kemo_mesh){
 	if(iflag_group == DOMAIN_FLAG){
-		set_domain_color_code(selected, color_code4, kemo_mesh->mesh_m);
+		set_domain_color_code(selected, color_code4, kemo_mesh);
+        if(selected == SURFSOLID_TOGGLE){
+            set_mesh_opacity(DOMAIN_FLAG, (double) color_code4[3], kemo_mesh);
+        };
 	}else if(iflag_group == NODE_GRP_FLAG){
 		set_node_grp_color_code(color_code4, kemo_mesh->mesh_m);
 	}else if(iflag_group == ELEM_GRP_FLAG){
 		set_ele_grp_color_code(selected, color_code4, kemo_mesh->mesh_m);
+        if(selected == SURFSOLID_TOGGLE){
+            set_mesh_opacity(ELEM_GRP_FLAG, (double) color_code4[3], kemo_mesh);
+        };
 	}else if(iflag_group == SURF_GRP_FLAG){
 		set_surf_grp_color_code(selected, color_code4, kemo_mesh->mesh_m);
+        if(selected == SURFSOLID_TOGGLE){
+            set_mesh_opacity(SURF_GRP_FLAG, (double) color_code4[3], kemo_mesh);
+        };
 	};
 	return;
 };
