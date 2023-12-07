@@ -72,9 +72,8 @@
 !    double kemoview_get_mesh_opacity(int iflag_group);
 !    
 !    
-!    void kemoview_set_mesh_draw_flag(int selected, int iflag);
-!    void kemoview_mesh_draw_toggle(int selected);
-!    
+!    void kemoview_set_mesh_draw_flag(int selected, int iflag,
+!                                     struct kemoviewer_type *kemoviewer);
 !    void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int iflag);
 !    int kemoview_get_draw_mesh_item(int iflag_group, int selected, int igrp);
 !    

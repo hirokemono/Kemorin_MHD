@@ -125,12 +125,13 @@
 - (IBAction) ShowAllDomainAction:(id)pId{
 	int i;
  
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if([selectedDomainObjectType isEqualToString:@"DomainPatch"]) {
 		[DomainDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumSubDomain;i++){
 			[DomainDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
 		}
-        kemoview_set_mesh_draw_flag(SURFSOLID_TOGGLE, IONE);
+        kemoview_set_mesh_draw_flag(SURFSOLID_TOGGLE, IONE, kemo_sgl);
 	}
 	else if([selectedDomainObjectType isEqualToString:@"DomainGrid"]) {
 //		NSLog([NSString stringWithFormat:@"select all grid %s",[selectedDomainObjectType UTF8String]]);
@@ -138,14 +139,14 @@
 		for(i=0;i<NumSubDomain;i++){
 			[DomainDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
 		}
-        kemoview_set_mesh_draw_flag(SURFGRID_TOGGLE, IONE);
+        kemoview_set_mesh_draw_flag(SURFGRID_TOGGLE, IONE, kemo_sgl);
 	}
 	else if([selectedDomainObjectType isEqualToString:@"DomainNode"]) {
 		[DomainDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumSubDomain;i++){
 			[DomainDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
 		}
-        kemoview_set_mesh_draw_flag(SURFNOD_TOGGLE, IONE);
+        kemoview_set_mesh_draw_flag(SURFNOD_TOGGLE, IONE, kemo_sgl);
 	}
 
 	[_metalView UpdateImage];
@@ -155,26 +156,27 @@
 {
 	int i;
  
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if([selectedDomainObjectType isEqualToString:@"DomainPatch"]) {
 		[DomainDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumSubDomain;i++){
 			[DomainDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
 		}
-        kemoview_set_mesh_draw_flag(SURFSOLID_TOGGLE, IZERO);
+        kemoview_set_mesh_draw_flag(SURFSOLID_TOGGLE, IZERO, kemo_sgl);
 	}
 	else if([selectedDomainObjectType isEqualToString:@"DomainGrid"]) {
 		[DomainDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumSubDomain;i++){
 			[DomainDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
 		}
-        kemoview_set_mesh_draw_flag(SURFGRID_TOGGLE, IZERO);
+        kemoview_set_mesh_draw_flag(SURFGRID_TOGGLE, IZERO, kemo_sgl);
 	}
 	else if([selectedDomainObjectType isEqualToString:@"DomainNode"]) {
 		[DomainDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumSubDomain;i++){
 			[DomainDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
 		}
-        kemoview_set_mesh_draw_flag(SURFNOD_TOGGLE, IZERO);
+        kemoview_set_mesh_draw_flag(SURFNOD_TOGGLE, IZERO, kemo_sgl);
 	}
 
 	[_metalView UpdateImage];

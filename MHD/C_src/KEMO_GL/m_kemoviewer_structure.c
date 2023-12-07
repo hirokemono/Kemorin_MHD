@@ -326,18 +326,12 @@ double kemoview_get_mesh_opacity(int iflag_group){
 	return get_mesh_opacity(kemo_sgl->kemo_mesh, iflag_group);
 };
 
-void kemoview_set_mesh_draw_flag(int selected, int iflag){
-	int num_pe = get_num_of_mesh_group(DOMAIN_FLAG, kemo_sgl->kemo_mesh);
-	set_mesh_draw_flag(num_pe, selected, iflag, kemo_sgl->kemo_mesh->mesh_m);
+void kemoview_set_mesh_draw_flag(int selected, int iflag,
+                                 struct kemoviewer_type *kemoviewer){
+	int num_pe = get_num_of_mesh_group(DOMAIN_FLAG, kemoviewer->kemo_mesh);
+	set_mesh_draw_flag(num_pe, selected, iflag, kemoviewer->kemo_mesh->mesh_m);
 	return;
 };
-
-void kemoview_mesh_draw_toggle(int selected){
-	int num_pe = get_num_of_mesh_group(DOMAIN_FLAG, kemo_sgl->kemo_mesh);
-	mesh_draw_toggle(num_pe, selected, kemo_sgl->kemo_mesh->mesh_m);
-	return;
-};
-
 
 void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int iflag,
                                  struct kemoviewer_type *kemoviewer){
