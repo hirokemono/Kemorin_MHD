@@ -92,7 +92,8 @@ struct kemoview_mesh_view{
 
 /* prototypes */
 
-void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws);
+void init_mesh_views_4_viewer(struct kemoviewer_type *kemo_sgl,
+                              struct kemoview_mesh_view *mesh_vws);
 void dealloc_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws);
 
 void append_grp_model_data(int index, struct ci3_clist_view *grp_vws, 

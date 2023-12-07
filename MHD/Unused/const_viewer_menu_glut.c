@@ -361,7 +361,7 @@ void glut_surf_grp_patch_menu(){
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_patch(i);
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname, i);
+		kemoview_get_surf_grp_name(kemo_sgl, i, groupname);
         
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
@@ -378,7 +378,7 @@ void glut_surf_grp_edge_menu(){
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_grid(i);
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname, i);
+		kemoview_get_surf_grp_name(kemo_sgl, i, groupname);
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
 	};
@@ -394,7 +394,7 @@ void glut_surf_grp_node_menu(){
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_node(i);
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname, i);
+		kemoview_get_surf_grp_name(kemo_sgl, i, groupname);
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
 	};

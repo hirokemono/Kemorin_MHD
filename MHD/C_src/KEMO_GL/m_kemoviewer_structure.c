@@ -350,10 +350,6 @@ void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int if
 	set_draw_mesh_flag(iflag_group, selected, igrp, iflag, kemoviewer->kemo_mesh);
 	return;
 };
-void kemoview_toggle_draw_mesh_item(int iflag_group, int selected, int igrp){
-	toggle_draw_mesh_flag(iflag_group, selected, igrp, kemo_sgl->kemo_mesh);
-	return;
-};
 int kemoview_get_draw_mesh_item(int iflag_group, int selected, int igrp){
 	return get_draw_mesh_flag(kemo_sgl->kemo_mesh, iflag_group, selected, igrp);
 };
@@ -364,8 +360,9 @@ void kemoview_get_node_grp_name(struct kv_string *groupname, int i){
 void kemoview_get_ele_grp_name(struct kv_string *groupname, int i){ 
     alloc_copy_string(kemo_sgl->kemo_mesh->mesh_d->ele_gp_name_sf[i], groupname);
 };
-void kemoview_get_surf_grp_name(struct kv_string *groupname, int i){
-    alloc_copy_string(kemo_sgl->kemo_mesh->mesh_d->surf_gp_name_sf[i], groupname); 
+void kemoview_get_surf_grp_name(struct kemoviewer_type *kemoviewer,
+                                int i, struct kv_string *groupname){
+    alloc_copy_string(kemoviewer->kemo_mesh->mesh_d->surf_gp_name_sf[i], groupname); 
 };
 
 int kemoview_get_view_type_flag(void){return kemo_sgl->view_s->iflag_view_type;};

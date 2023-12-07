@@ -62,7 +62,8 @@
 - (id) init;
 - (id) dealloc;
 
-- (void) OpenSurfaceMeshFile:(NSString*) MeshOpenFilehead;
+- (void) OpenSurfaceMeshFile:(NSString*) MeshOpenFilehead
+                    kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction) SelectMeshFile:(id)pId;
 - (IBAction) CloseMeshFile:(id)pId;

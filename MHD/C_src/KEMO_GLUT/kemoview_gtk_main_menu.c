@@ -652,7 +652,7 @@ void set_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu, GtkWidget *wi
 void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
                        struct updatable_widgets *updatable, 
                        GtkWidget *window){
-    init_mesh_views_4_viewer(updatable->mesh_vws);
+    init_mesh_views_4_viewer(kemo_sgl, updatable->mesh_vws);
 	
 	/*  Set buttons */
     g_object_set_data(G_OBJECT(window), "updates", (gpointer) updatable);

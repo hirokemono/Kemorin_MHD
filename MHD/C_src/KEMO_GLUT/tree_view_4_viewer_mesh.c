@@ -79,7 +79,7 @@ struct ci3_clist_view * init_ele_group_views(){
 	return ele_grp_vws;
 }
 
-struct ci3_clist_view * init_surface_group_views(){
+struct ci3_clist_view * init_surface_group_views(struct kemoviewer_type *kemo_sgl){
     int i;
 	struct kv_string *groupname;
 	
@@ -94,7 +94,7 @@ struct ci3_clist_view * init_surface_group_views(){
 	
 	for(i=0;i<kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);i++){
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname, i);
+		kemoview_get_surf_grp_name(kemo_sgl, i, groupname);
 		append_chara_int3_clist(groupname->string, 
 					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i), 
 					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i), 
@@ -116,7 +116,8 @@ void dealloc_nod_grp_views_4_viewer(struct ci_clist_view *nod_grp_vws){
     return;
 }
 
-void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
+void init_mesh_views_4_viewer(struct kemoviewer_type *kemo_sgl,
+                              struct kemoview_mesh_view *mesh_vws){
 	mesh_vws->domain_group_gmenu = (struct group_gtk_menu *) malloc(sizeof(struct group_gtk_menu));
 	mesh_vws->node_group_gmenu = (struct nod_grp_gtk_menu *) malloc(sizeof(struct nod_grp_gtk_menu));
 	mesh_vws->ele_group_gmenu = (struct group_gtk_menu *) malloc(sizeof(struct group_gtk_menu));
@@ -125,7 +126,7 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 	mesh_vws->domain_group_gmenu->group_vws = init_domain_views_4_viewer();
 	mesh_vws->node_group_gmenu->nod_grp_vws = init_node_group_views();
 	mesh_vws->ele_group_gmenu->group_vws = init_ele_group_views();
-	mesh_vws->surf_group_gmenu->group_vws = init_surface_group_views();
+	mesh_vws->surf_group_gmenu->group_vws = init_surface_group_views(kemo_sgl);
 	return;
 }
 

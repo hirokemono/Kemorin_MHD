@@ -37,7 +37,9 @@
 	return self;
 }
 
-- (void) OpenSurfaceMeshFile:(NSString*) MeshOpenFilehead{
+- (void) OpenSurfaceMeshFile:(NSString*) MeshOpenFilehead
+                    kemoview:(struct kemoviewer_type *) kemo_sgl
+{
 	int i;
 	char name[4096];
 	NSString *stname;
@@ -63,12 +65,13 @@
 	[_tableView reloadData];
     [_nodeGrpController UpdateNodeTable];
     [_eleGrpController UpdateElementTable];
-    [_surfGrpController UpdateSurfaceTable];
+    [_surfGrpController UpdateSurfaceTable:kemo_sgl];
 	
 	[_metalView UpdateImage];
 }
 
 - (void) ReadMeshFile:(NSString *) MeshOpenFilename
+             kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSString *MeshOpenFilehead = [MeshOpenFilename stringByDeletingPathExtension];
     // NSString *MeshOpenFileheadNoPath = [MeshOpenFilehead lastPathComponent];
@@ -83,10 +86,12 @@
     int iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
     
-    if(iflag_datatype==IFLAG_MESH ) [self OpenSurfaceMeshFile:MeshOpenFilehead];
+    if(iflag_datatype==IFLAG_MESH ) [self OpenSurfaceMeshFile:MeshOpenFilehead
+                                                     kemoview:kemo_sgl];
 }
 
 - (IBAction) SelectMeshFile:(id)pId{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	NSArray *meshFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"gz",@"GZ",nil];
 	NSOpenPanel *MeshOpenPanelObj	= [NSOpenPanel openPanel];
 	[MeshOpenPanelObj setTitle:@"Choose mesh data"];
@@ -97,7 +102,8 @@
 		NSString *MeshOpenFilename = [[MeshOpenPanelObj URL] path];
 //		NSString *MeshOpenDirectory = [[MeshOpenPanelObj directoryURL] path];
 //      NSLog(@"Mesh file directory = %@",MeshOpenDirectory);
-        [self ReadMeshFile:MeshOpenFilename];
+        [self ReadMeshFile:MeshOpenFilename
+                  kemoview:kemo_sgl];
 	};
                               }];
 }

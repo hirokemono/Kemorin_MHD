@@ -38,6 +38,7 @@
     struct kv_string *groupname;
 	NSString *stname;
 	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	[SurfaceGroupDisplayNames removeAllObjects];
 	[SurfaceGroupDisplayPatchFlags removeAllObjects];
 	[SurfaceGroupDisplayWireFlags removeAllObjects];
@@ -45,7 +46,7 @@
 	NumSurfaceGroup = kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);
 	for(i=0;i<NumSurfaceGroup;i++){
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname,i);
+		kemoview_get_surf_grp_name(kemo_sgl, i, groupname);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
 
@@ -86,7 +87,7 @@
                                         kemo_sgl);
 		}
 	}
-    [self UpdateSurfaceTable];
+    [self UpdateSurfaceTable:kemo_sgl];
 	[_metalView UpdateImage];
 }
 
@@ -118,7 +119,7 @@
                                         kemo_sgl);
 		}
 	}	
-    [self UpdateSurfaceTable];
+    [self UpdateSurfaceTable:kemo_sgl];
 	[_metalView UpdateImage];
 }
 
@@ -181,7 +182,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	return;
 }
 
-- (void) UpdateSurfaceTable
+- (void) UpdateSurfaceTable:(struct kemoviewer_type *) kemo_sgl
 {
 	int i, iflag;
     struct kv_string *groupname;
@@ -194,7 +195,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	NumSurfaceGroup = kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);
 	for(i=0;i<NumSurfaceGroup;i++){
         groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname,i);
+		kemoview_get_surf_grp_name(kemo_sgl, i, groupname);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
 

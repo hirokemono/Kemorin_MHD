@@ -59,7 +59,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (void)UpdateSurfaceTable;
+- (void) UpdateSurfaceTable:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)ChooseSurfGrpPatchColorAction:(id)sender;
 - (IBAction)ChooseSurfGrpLineColorAction:(id)sender;

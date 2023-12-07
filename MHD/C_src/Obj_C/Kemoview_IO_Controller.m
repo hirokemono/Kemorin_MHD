@@ -31,7 +31,8 @@
     kemoview_free_kvstring(filename);
 	
 	if(iflag_datatype==IFLAG_MESH) {
-		[_domainTableController OpenSurfaceMeshFile:kemoviewOpenFilehead];
+		[_domainTableController OpenSurfaceMeshFile:kemoviewOpenFilehead
+                                           kemoview:kemo_sgl];
 	}
 	else if(iflag_datatype==IFLAG_SURFACES) {
 		[_psfController DrawPsfFile:kemoviewOpenFilehead
