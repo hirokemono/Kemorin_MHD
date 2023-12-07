@@ -94,12 +94,12 @@ void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_width), current_width);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_digit), (double) i_digit);
 
-	if(kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE) == 0){
+	if(kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_1), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_1), TRUE);
 	};
-	if(kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE) == 0){
+	if(kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_zero), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_zero), TRUE);

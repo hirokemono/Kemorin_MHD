@@ -735,8 +735,8 @@ static void make_2nd_level_mesh_menu(){
 
 /* 4th level menues*/
 static void make_4th_level_psf_menu(){
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
+	int iflag_solid = kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	int iflag_grid =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	
 	if (iflag_solid > 0 || iflag_grid > 0) {
 		glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
@@ -752,8 +752,8 @@ static void make_3rd_level_psf_menu(){
 	int num_fld =     kemoview_get_PSF_num_field();
 	int if_psf =      kemoview_get_PSF_field_id();
 	int num_comp =    kemoview_get_PSF_num_component(if_psf);
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
+	int iflag_solid = kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	int iflag_grid =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	
 	if(num_psf > 1){
 		glut_menu_id->ichoose_current_psf_menu = glutCreateMenu(set_current_psf_handler);
@@ -825,8 +825,8 @@ static void make_2nd_level_psf_menu(){
 	int if_psf =      kemoview_get_PSF_field_id();
 	int ic_psf =      kemoview_get_PSF_component_id();
 	int num_comp =    kemoview_get_PSF_num_component(if_psf);
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
+	int iflag_solid = kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	int iflag_grid =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	
 	glut_menu_id->psf_root_menu = glutCreateMenu(psf_handler);
 	

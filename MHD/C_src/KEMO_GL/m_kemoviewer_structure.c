@@ -649,12 +649,13 @@ void * kemoview_link_active_colormap_param(void){
 int kemoview_select_PSF_draw_switch(int selected){
 	return toggle_each_PSF_draw_switch(selected, kemo_sgl->kemo_psf);
 }
-int kemoview_get_PSF_draw_flags(int selected){
-	return get_each_PSF_draw_switch(selected, kemo_sgl->kemo_psf);
+int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
+                                int selected){
+	return get_each_PSF_draw_switch(selected, kemoviewer->kemo_psf);
 }
 
-void kemoview_update_PSF_textured_id(void){
-    update_PSF_textured_id(kemo_sgl->kemo_psf);
+void kemoview_update_PSF_textured_id(struct kemoviewer_type *kemoviewer){
+    update_PSF_textured_id(kemoviewer->kemo_psf);
     return;
 };
 void kemoview_set_PSF_color_param(int selected, int input,
@@ -805,8 +806,9 @@ int kemoview_get_fline_parameters(int selected){
 	return get_fline_parameters(kemo_sgl->kemo_fline, selected);
 };
 
-void kemoview_set_fline_color_param(int selected, int input) {
-	set_fline_color_param(selected, input, kemo_sgl->kemo_fline);
+void kemoview_set_fline_color_param(int selected, int input,
+                                    struct kemoviewer_type *kemoviewer){
+	set_fline_color_param(selected, input, kemoviewer->kemo_fline);
 };
 int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
                                    int selected){

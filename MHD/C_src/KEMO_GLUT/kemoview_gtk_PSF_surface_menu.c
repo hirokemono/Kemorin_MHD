@@ -87,7 +87,7 @@ static void load_texture_handler(struct kemoviewer_type *kemo_sgl,
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
         kemoview_release_PSF_gl_texture();
-        kemoview_update_PSF_textured_id();
+        kemoview_update_PSF_textured_id(kemo_sgl);
 		kemoview_set_texture_to_PSF(id_image, image_prefix);
 		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, TEXTURED_SURFACE, kemo_sgl);
         kemoview_free_kvstring(image_prefix);
@@ -198,12 +198,12 @@ void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,
 	double value_min, value_max;
 	char min_text[30], max_text[30];
 	
-	if(kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE) == 0){
+	if(kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_draw), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_draw), TRUE);
 	};
-	if(kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE) == 0){
+	if(kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_bar), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_bar), TRUE);

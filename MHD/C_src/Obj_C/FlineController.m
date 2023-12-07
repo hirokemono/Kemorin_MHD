@@ -359,7 +359,8 @@
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 {
 	NSInteger tag = [[FieldlineColorItem selectedCell] tag];
-	kemoview_set_fline_color_param(ISET_COLORMAP, (int) tag);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_fline_color_param(ISET_COLORMAP, (int) tag, kemo_sgl);
 	
 	[_metalView UpdateImage];
 }

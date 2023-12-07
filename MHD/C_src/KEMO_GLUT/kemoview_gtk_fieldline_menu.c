@@ -112,11 +112,12 @@ static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpoint
 	return;
 };
 
-static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
+static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	kemoview_set_fline_color_param(ISET_COLORMAP, index_mode);
+	kemoview_set_fline_color_param(ISET_COLORMAP, index_mode, kemo_sgl);
 	draw_full();
 	return;
 };
@@ -224,7 +225,7 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(fline_menu->combobox_color),
                                    renderer_color,"text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(fline_menu->combobox_color), "changed",
-                     G_CALLBACK(psf_fline_colormode_CB), NULL);
+                     G_CALLBACK(psf_fline_colormode_CB), (gpointer) kemo_sgl);
     
     
     fline_menu->switch_tube = gtk_switch_new();

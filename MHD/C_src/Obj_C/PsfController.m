@@ -182,14 +182,18 @@
     
 	int iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
 	
-	self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
-	self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
-	self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-	self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(kemo_sgl, 
-                                                              ISET_COLOR_MIN, iplotted);
-	self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(kemo_sgl,
-                                                              ISET_COLOR_MAX, iplotted);
+	self.PSFSurfaceSwitch 
+        =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	self.PSFIsolineSwitch 
+        =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
+	self.PSFZerolineSwitch
+        = kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
+	self.PSFColorbarSwitch 
+        = kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
+	self.PsfMinimumValue 
+        = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
+	self.PsfMaximumValue 
+        = kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
 	self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
@@ -206,9 +210,11 @@
                                       &current_value, &i_digit);
 	self.IsolineWidth =      (CGFloat) current_value;
 	self.IsolineDigit =      (CGFloat) i_digit;
-	self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
+	self.PSFOpacity
+        = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
 	
-	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
+	self.DrawPSFVectorFlag
+        = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
 
 	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_REFVECT, 
                                       &current_value, &i_digit);
@@ -225,8 +231,10 @@
     self.VectorThickness = (CGFloat) current_value;
 	self.VectorDigit =     (CGFloat) i_digit;
 	
-	self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
-	self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
+	self.psfPatchDirectionTag
+        = kemoview_get_PSF_draw_flags(kemo_sgl, PSF_POLYGON_SWITCH);
+	self.psfTangentialVectorTag 
+        = kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
 	
 	self.psfLineColorTag =  kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
 	self.psfPatchColorTag = kemoview_get_PSF_color_param(kemo_sgl, PSFSOLID_TOGGLE);
@@ -258,10 +266,10 @@
     /*   
      int iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
      
-     self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-     self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
-     self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
-     self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
+     self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+     self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
+     self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
+     self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
      self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
      self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
      self.IsolineNumber =     kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
@@ -280,7 +288,7 @@
 
 	 self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
      
-     self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
+     self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
 
 	 kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_PSF_REFVECT, &current_value, &i_digit);
 	 self.ScaleVector =      (CGFloat) current_value;
@@ -290,10 +298,10 @@
 	 self.PSFVectorIncrement = (CGFloat) current_value;
 	 self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	 
-     self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
+     self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
      
-     self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
-     self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
+     self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(kemo_sgl, PSF_POLYGON_SWITCH);
+     self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
      
      self.psfLineColorTag =  kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
      self.psfPatchColorTag = kemoview_get_PSF_color_param(kemo_sgl, PSFSOLID_TOGGLE);
@@ -681,7 +689,7 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if(self.psfPatchColorTag == TEXTURED_SURFACE){
-        kemoview_update_PSF_textured_id();
+        kemoview_update_PSF_textured_id(kemo_sgl);
 		[self ChooseTextureFile];
 	}
     else if(self.psfPatchColorTag == SINGLE_COLOR){

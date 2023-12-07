@@ -463,9 +463,10 @@ extern "C" {
 	void * kemoview_link_active_colormap_param(void);
 	
 	int kemoview_select_PSF_draw_switch(int selected);
-	int kemoview_get_PSF_draw_flags(int selected);
+	int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
+                                    int selected);
 	
-    void kemoview_update_PSF_textured_id(void);
+    void kemoview_update_PSF_textured_id(struct kemoviewer_type *kemoviewer);
 	void kemoview_set_PSF_color_param(int selected, int input,
                                       struct kemoviewer_type *kemoviewer);
 	int kemoview_get_PSF_color_param(struct kemoviewer_type *kemoviewer,
@@ -526,7 +527,8 @@ extern "C" {
 	void kemoview_set_fline_parameters(int selected, int iflag);
 	int kemoview_get_fline_parameters(int selected);
 	
-	void kemoview_set_fline_color_param(int selected, int input);
+	void kemoview_set_fline_color_param(int selected, int input,
+                                        struct kemoviewer_type *kemoviewer);
 	int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
                                        int selected);
 	    

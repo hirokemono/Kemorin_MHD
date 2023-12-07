@@ -132,13 +132,13 @@ void set_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl,
 	int i_digit;
 	double current_value;
 	
-	if(kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE) == 0){
+	if(kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_vector_menu->switch_vect), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_vector_menu->switch_vect), TRUE);
 	};
 	
-	iflag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
+	iflag = kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
 	if(iflag == TANGENTIAL_COMPONENT){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_vector_menu->combobox_vecmode), 1);
 	} else {

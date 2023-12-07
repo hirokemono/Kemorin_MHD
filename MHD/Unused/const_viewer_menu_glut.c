@@ -222,13 +222,13 @@ void glut_fline_color_comp_select() {
 };
 
 void glut_PSF_draw_menu(){
-	int iflag_solid =       kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =        kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
-	int iflag_zero =        kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
-	int iflag_cbar =        kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-	int iflag_vect =        kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
-	int iflag_PSF_polygon = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
-    int iflag_PSF_tanvec =  kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
+	int iflag_solid =       kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	int iflag_grid =        kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
+	int iflag_zero =        kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
+	int iflag_cbar =        kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
+	int iflag_vect =        kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
+	int iflag_PSF_polygon = kemoview_get_PSF_draw_flags(kemo_sgl, PSF_POLYGON_SWITCH);
+    int iflag_PSF_tanvec =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
 	int if_psf =            kemoview_get_PSF_field_id();
 	int ncomp =             kemoview_get_PSF_num_component(if_psf);
 	
@@ -291,7 +291,7 @@ void glut_PSF_draw_menu(){
 void glut_PSF_range_menu(){
 	int if_psf =        kemoview_get_PSF_field_id();
 	int ncomp =         kemoview_get_PSF_num_component(if_psf);
-	int iflag_vect =    kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
+	int iflag_vect =    kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
 	int iflag_v_color = kemoview_get_PSF_vector_color_mode();
 /*	int iflag_refv =  kemoview_get_PSF_draw_refv();*/
 
