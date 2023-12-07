@@ -71,7 +71,7 @@
 	return self;
 }
 
-- (id) CopyFlineDisplayFlagsFromC
+- (id) CopyFlineDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
 	int i, iflag;
 	double minmax;
@@ -84,7 +84,8 @@
 	FlineNumberOfField =  kemoview_get_fline_field_param(NUM_FIELD_FLAG);
 	FlineTotalComponent = kemoview_get_fline_field_param(NTOT_COMPONENT_FLAG);
 	
-	kemoview_get_fline_color_w_exp(ISET_WIDTH, &current_thick, &current_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_WIDTH, 
+                                   &current_thick, &current_digit);
 	self.FlineThickFactor = (CGFloat) current_thick;
 	self.FlineThickDigit = (CGFloat) current_digit;
 
@@ -131,7 +132,8 @@
 	*/
 
 	[self SetFlineFieldMenu];
-	[self SetFlineComponentMenu:0];
+	[self SetFlineComponentMenu:0
+                       kemoview:kemo_sgl];
 	return self;
 }
 
@@ -144,7 +146,7 @@
 							 [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
 
 	self.DrawFlineFlag = kemoview_get_fline_parameters(DRAW_SWITCH);
-	[self CopyFlineDisplayFlagsFromC];
+    [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	//		self.EvolutionStartStep = [[FlineOpenFilehead pathExtension] intValue];
 	//		self.EvolutionEndStep =    self.EvolutionStartStep;
 	
@@ -201,10 +203,10 @@
 }
 
 - (IBAction) CloseFlineFile:(id)pId{
-
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_close_fieldline_view();
 	self.DrawFlineFlag = kemoview_get_fline_parameters(DRAW_SWITCH);
-	[self CopyFlineDisplayFlagsFromC];
+    [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	
 	[_metalView UpdateImage];
 	
@@ -215,8 +217,11 @@
 	int i_digit;
 	double value;
 	NSInteger isel = [_FlineFieldMenu indexOfSelectedItem];
-	[self SetFlineComponentMenu:isel];
-	
+
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetFlineComponentMenu:isel
+                       kemoview:kemo_sgl];
+    
 	kemoview_set_fline_field_param(FIELD_SEL_FLAG, (int) isel);
 	
 	
@@ -224,10 +229,12 @@
 	self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
 	self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
 	
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &value, &i_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                   &value, &i_digit);
 	self.FlineDisplayMinimum =  (CGFloat) value;
 	self.FlineDisplayMinDigit = (CGFloat) i_digit;
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MAX, &value, &i_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                   &value, &i_digit);
 	self.FlineDisplayMaximum =  (CGFloat) value;
 	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 
@@ -240,16 +247,19 @@
 	double value;
 	int iplotted;
 	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, (int) [_FlineComponentMenu indexOfSelectedItem]);
 	
 	iplotted = kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
 	self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
 	self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
 
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &value, &i_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                   &value, &i_digit);
 	self.FlineDisplayMinimum =  (CGFloat) value;
 	self.FlineDisplayMinDigit = (CGFloat) i_digit;
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MAX, &value, &i_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
+                                   &value, &i_digit);
 	self.FlineDisplayMaximum =  (CGFloat) value;
 	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 
@@ -269,7 +279,9 @@
 	}
 }
 
-- (void) SetFlineComponentMenu:(NSInteger)isel{
+- (void) SetFlineComponentMenu:(NSInteger)isel
+                      kemoview:(struct kemoviewer_type *) kemo_sgl
+{
 	int i_digit;
 	double value;
 	int iplotted;
@@ -320,10 +332,12 @@
 		self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
 		self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
 
-		kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &value, &i_digit);
+		kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                       &value, &i_digit);
 		self.FlineDisplayMinimum =  (CGFloat) value;
 		self.FlineDisplayMinDigit = (CGFloat) i_digit;
-		kemoview_get_fline_color_w_exp(ISET_COLOR_MAX, &value, &i_digit);
+		kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                       &value, &i_digit);
 		self.FlineDisplayMaximum =  (CGFloat) value;
 		self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 	}
@@ -358,7 +372,9 @@
 
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
 {
-	kemoview_set_fline_color_w_exp(ISET_WIDTH, (double) self.FlineThickFactor, (int) self.FlineThickDigit);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_fline_color_w_exp(ISET_WIDTH, (double) self.FlineThickFactor,
+                                   (int) self.FlineThickDigit, kemo_sgl);
 //	[_metalView UpdateImage];
 }
 

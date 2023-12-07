@@ -84,8 +84,6 @@
 - (id)init;
 - (id)dealloc;
 
-- (id) CopyFlineDisplayFlagsFromC;
-
 - (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
                   kemoview:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction) UpdateFieldline:(id)pId;
@@ -96,7 +94,8 @@
 - (IBAction) FlineComponentAction:(id)sender;
 
 - (void) SetFlineFieldMenu;
-- (void) SetFlineComponentMenu:(NSInteger)isel;
+- (void) SetFlineComponentMenu:(NSInteger)isel
+                      kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 

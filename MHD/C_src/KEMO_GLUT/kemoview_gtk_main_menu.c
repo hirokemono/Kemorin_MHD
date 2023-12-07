@@ -112,7 +112,7 @@ static void init_fline_menu(struct kemoviewer_type *kemo_sgl,
         gtk_box_pack_start(GTK_BOX(updatable->flineBox), frame, FALSE, FALSE, 0);
         updatable->iflag_flineBox = 1;
     }else{
-        update_fieldline_menu_hbox(updatable->fline_menu);
+        update_fieldline_menu_hbox(kemo_sgl, updatable->fline_menu);
     };
     return;
 }
@@ -295,10 +295,12 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 static void close_fline_CB(GtkButton *button, gpointer user_data){
     GtkWidget *window_main = GTK_WIDGET(user_data);
     struct fieldline_gtk_menu *fline_menu = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "flinemenu");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
 	kemoview_close_fieldline_view();
 	
-    update_fieldline_menu_hbox(fline_menu);
+    update_fieldline_menu_hbox(kemo_sgl, fline_menu);
 
 	gtk_widget_queue_draw(window_main);
 	draw_full();
@@ -668,13 +670,14 @@ void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
     fline_menu->closeButton = gtk_button_new_with_label("Close Current PSF");
 
     g_object_set_data(G_OBJECT(window), "flinemenu", (gpointer) fline_menu);
+    g_object_set_data(G_OBJECT(window), "kemoview", (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(fline_menu->closeButton), "clicked",
-                     G_CALLBACK(close_fline_CB), window);
+                     G_CALLBACK(close_fline_CB), (gpointer) window);
 	
 	fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
     
 	init_fieldline_menu_hbox(kemo_sgl, fline_menu);
-    set_gtk_fieldline_menu(fline_menu);
+    set_gtk_fieldline_menu(kemo_sgl, fline_menu);
 	return;
 }
 

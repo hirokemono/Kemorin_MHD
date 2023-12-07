@@ -46,11 +46,13 @@ struct fieldline_gtk_menu{
 
 /*  prototypes */
 
-void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu);
+void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
+                            struct fieldline_gtk_menu *fline_menu);
 void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
                               struct fieldline_gtk_menu *fline_menu);
 
 GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_menu);
-void update_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu);
+void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
+                                struct fieldline_gtk_menu *fline_menu);
 
 #endif

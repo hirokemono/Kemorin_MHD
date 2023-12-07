@@ -833,11 +833,13 @@ void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
 	set_fline_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit, 
                               kemoviewer->kemo_fline->fline_m);
 }
-void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit){
-	set_fline_color_w_exp(selected, value, i_digit, kemo_sgl->kemo_fline);
+void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit,
+                                    struct kemoviewer_type *kemoviewer){
+	set_fline_color_w_exp(selected, value, i_digit, kemoviewer->kemo_fline);
 };
-void kemoview_get_fline_color_w_exp(int selected, double *value, int *i_digit){
-	get_fline_color_w_exp(selected, kemo_sgl->kemo_fline, value, i_digit);
+void kemoview_get_fline_color_w_exp(struct kemoviewer_type *kemoviewer,
+                                    int selected, double *value, int *i_digit){
+	get_fline_color_w_exp(selected, kemoviewer->kemo_fline, value, i_digit);
 	return;
 };
 

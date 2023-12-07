@@ -13,11 +13,14 @@ static void fline_thickness_CB(GtkWidget *entry, gpointer data)
 {
 	double current_thick;
 	int current_digit;
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    
 	double thick_in = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	if(thick_in <= 0) return;
 	
-	kemoview_get_fline_color_w_exp(ISET_WIDTH, &current_thick, &current_digit);
-	kemoview_set_fline_color_w_exp(ISET_WIDTH, thick_in, current_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_WIDTH, 
+                                   &current_thick, &current_digit);
+	kemoview_set_fline_color_w_exp(ISET_WIDTH, thick_in, current_digit, kemo_sgl);
 
 	draw_full();
 }
@@ -25,9 +28,12 @@ static void fline_digit_CB(GtkWidget *entry, gpointer data)
 {
 	double current_thick;
 	int current_digit;
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    
 	int in_digit = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_get_fline_color_w_exp(ISET_WIDTH, &current_thick, &current_digit);
-	kemoview_set_fline_color_w_exp(ISET_WIDTH, current_thick, in_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                   &current_thick, &current_digit);
+	kemoview_set_fline_color_w_exp(ISET_WIDTH, current_thick, in_digit, kemo_sgl);
 	
 	draw_full();
 }
@@ -38,8 +44,10 @@ static void MinValueChange_CB(GtkWidget *entry, gpointer data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_min_digit, i_max_digit;
 	double minvalue, maxvalue;
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &minvalue, &i_min_digit);
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MAX, &maxvalue, &i_max_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                   &minvalue, &i_min_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX, 
+                                   &maxvalue, &i_max_digit);
 	kemoview_set_fline_linear_colormap(gtk_floatvalue, i_min_digit, 
 									   maxvalue, i_max_digit, kemo_sgl);
 	
@@ -52,8 +60,10 @@ static void MinDigitChange_CB(GtkWidget *entry, gpointer data)
 	int gtk_intvalue = (double) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	int i_min_digit, i_max_digit;
 	double minvalue, maxvalue;
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &minvalue, &i_min_digit);
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MAX, &maxvalue, &i_max_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                   &minvalue, &i_min_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                   &maxvalue, &i_max_digit);
 	kemoview_set_fline_linear_colormap(minvalue, gtk_intvalue, 
 									   maxvalue, i_max_digit, kemo_sgl);
 	
@@ -66,8 +76,10 @@ static void MaxValueChange_CB(GtkWidget *entry, gpointer data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_min_digit, i_max_digit;
 	double minvalue, maxvalue;
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &minvalue, &i_min_digit);
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MAX, &maxvalue, &i_max_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                   &minvalue, &i_min_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                   &maxvalue, &i_max_digit);
 	kemoview_set_fline_linear_colormap(minvalue, i_min_digit, 
 									   gtk_floatvalue, i_max_digit, 
                                        kemo_sgl);
@@ -81,8 +93,10 @@ static void MaxDigitChange_CB(GtkWidget *entry, gpointer data)
 	int gtk_intvalue = (double) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	int i_min_digit, i_max_digit;
 	double minvalue, maxvalue;
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &minvalue, &i_min_digit);
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MAX, &maxvalue, &i_max_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                   &minvalue, &i_min_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                   &maxvalue, &i_max_digit);
 	kemoview_set_fline_linear_colormap(minvalue, i_min_digit, 
 									   maxvalue, gtk_intvalue,
                                        kemo_sgl);
@@ -106,7 +120,8 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 	return;
 };
 
-void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu){
+void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
+                            struct fieldline_gtk_menu *fline_menu){
 	char min_text[40], max_text[40];
 	double range_min, range_max;
 	int i_min_digit, i_max_digit;
@@ -145,26 +160,30 @@ void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu){
 		gtk_switch_set_active(GTK_SWITCH(fline_menu->switch_tube), TRUE);
 	};
 	
-	kemoview_get_fline_color_w_exp(ISET_WIDTH, &current_thick, &current_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                   &current_thick, &current_digit);
 	int_thick = (int) current_thick;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(fline_menu->spin_thick), (double) int_thick);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(fline_menu->spin_digit), (double) current_digit);
 	
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &range_min, &i_min_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
+                                   &range_min, &i_min_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(fline_menu->spin_range_min), range_min);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(fline_menu->spin_min_digit), (double) i_min_digit);
 	
-	kemoview_get_fline_color_w_exp(ISET_COLOR_MAX, &range_max, &i_max_digit);
+	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MAX,
+                                   &range_max, &i_max_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(fline_menu->spin_range_max), range_max);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(fline_menu->spin_max_digit), (double) i_max_digit);
 	return;
 };
 
-void update_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu){
+void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
+                                struct fieldline_gtk_menu *fline_menu){
     update_fline_component_combobox(fline_menu->combobox_comp, fline_menu->label_tree_comp,
                                     fline_menu->renderer_comp);
     
-    set_gtk_fieldline_menu(fline_menu);
+    set_gtk_fieldline_menu(kemo_sgl, fline_menu);
     return;
 }
 
@@ -215,27 +234,27 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     fline_menu->spin_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
     fline_menu->spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
     g_signal_connect(fline_menu->spin_thick, "value-changed",
-                     G_CALLBACK(fline_thickness_CB),NULL);
+                     G_CALLBACK(fline_thickness_CB), (gpointer) kemo_sgl);
     g_signal_connect(fline_menu->spin_digit, "value-changed",
-                     G_CALLBACK(fline_digit_CB),NULL);
+                     G_CALLBACK(fline_digit_CB), (gpointer) kemo_sgl);
     
     adj_min_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
     adj_min_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
     fline_menu->spin_range_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min_value),0,2);
     fline_menu->spin_min_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min_digit),0,0);
     g_signal_connect(fline_menu->spin_range_min, "value-changed",
-                     G_CALLBACK(MinValueChange_CB), kemo_sgl);
+                     G_CALLBACK(MinValueChange_CB), (gpointer) kemo_sgl);
     g_signal_connect(fline_menu->spin_min_digit, "value-changed",
-                     G_CALLBACK(MinDigitChange_CB), kemo_sgl);
+                     G_CALLBACK(MinDigitChange_CB), (gpointer) kemo_sgl);
 
     adj_max_value = gtk_adjustment_new(0.0, -9.999, 9.999, 0.1, 0.1, 0.0);
     adj_max_digit = gtk_adjustment_new(0, -20, 20, 1, 1, 0);
     fline_menu->spin_range_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_max_value),0,2);
     fline_menu->spin_max_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_max_digit),0,0);
     g_signal_connect(fline_menu->spin_range_max, "value-changed",
-                     G_CALLBACK(MaxValueChange_CB), kemo_sgl);
+                     G_CALLBACK(MaxValueChange_CB), (gpointer) kemo_sgl);
     g_signal_connect(fline_menu->spin_max_digit, "value-changed",
-                     G_CALLBACK(MaxDigitChange_CB), kemo_sgl);
+                     G_CALLBACK(MaxDigitChange_CB), (gpointer) kemo_sgl);
     
     add_fline_draw_field_box(fline_menu->combobox_field, fline_menu->label_tree_field,
                              fline_menu->renderer_field);
