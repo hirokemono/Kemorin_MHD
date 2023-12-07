@@ -11,14 +11,16 @@
 
 GtkWidget *window_csel;
 
-static void psf_surface_switch_CB(GObject *switch_draw, GParamSpec *pspec, gpointer data){
-	kemoview_select_PSF_draw_switch(PSFSOLID_TOGGLE);
+static void psf_surface_switch_CB(GObject *switch_draw, GParamSpec *pspec, gpointer user_data){
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
+	kemoview_select_PSF_draw_switch(kemo_sgl, PSFSOLID_TOGGLE);
 	draw_full();
 	return;
 };
 
-static void psf_colorbar_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
-	kemoview_select_PSF_draw_switch(COLORBAR_TOGGLE);
+static void psf_colorbar_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer user_data){
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
+	kemoview_select_PSF_draw_switch(kemo_sgl, COLORBAR_TOGGLE);
 	draw_full();
 	return;
 };
@@ -251,12 +253,12 @@ GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_type *kemo_sgl,
 	psf_surface_menu->switch_draw = gtk_switch_new();
 	gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_draw), TRUE);
 	g_signal_connect(G_OBJECT(psf_surface_menu->switch_draw), "notify::active",
-				G_CALLBACK(psf_surface_switch_CB), NULL);
+				G_CALLBACK(psf_surface_switch_CB), (gpointer) kemo_sgl);
 	
 	psf_surface_menu->switch_bar = gtk_switch_new();
 	gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_bar), FALSE);
 	g_signal_connect(G_OBJECT(psf_surface_menu->switch_bar), "notify::active",
-				G_CALLBACK(psf_colorbar_switch_CB), NULL);
+				G_CALLBACK(psf_colorbar_switch_CB), (gpointer) kemo_sgl);
 	
 	
 	GtkWidget *label_tree_sfcolor = create_fixed_label_w_index_tree();

@@ -173,7 +173,8 @@
 !    
 !    int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
 !                                    int selected);
-!    int kemoview_select_PSF_draw_switch(int selected);
+!    int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
+!                                        int selected);
 !    
 !    double kemoview_get_each_PSF_data_range(struct kemoviewer_type *kemoviewer,
 !                                            int selected, int icomp);

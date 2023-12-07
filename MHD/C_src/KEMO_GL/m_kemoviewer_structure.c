@@ -646,8 +646,9 @@ void * kemoview_link_active_colormap_param(void){
 	return current_cmap;
 }
 
-int kemoview_select_PSF_draw_switch(int selected){
-	return toggle_each_PSF_draw_switch(selected, kemo_sgl->kemo_psf);
+int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
+                                    int selected){
+	return toggle_each_PSF_draw_switch(selected, kemoviewer->kemo_psf);
 }
 int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
                                 int selected){

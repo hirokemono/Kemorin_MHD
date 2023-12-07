@@ -9,8 +9,9 @@
 
 #include "kemoview_gtk_PSF_vector_menu.h"
 
-static void psf_vector_switch_CB(GObject *switch_vect, GParamSpec *pspec, gpointer data){
-	kemoview_select_PSF_draw_switch(PSFVECT_TOGGLE);
+static void psf_vector_switch_CB(GObject *switch_vect, GParamSpec *pspec, gpointer user_data){
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
+	kemoview_select_PSF_draw_switch(kemo_sgl, PSFVECT_TOGGLE);
 	
 	draw_full();
 	return;
@@ -198,7 +199,7 @@ GtkWidget * make_gtk_psf_vector_menu(struct kemoviewer_type *kemo_sgl, GtkWidget
 	psf_vector_menu->switch_vect = gtk_switch_new();
 	gtk_switch_set_active(GTK_SWITCH(psf_vector_menu->switch_vect), FALSE);
 	g_signal_connect(G_OBJECT(psf_vector_menu->switch_vect), "notify::active",
-				G_CALLBACK(psf_vector_switch_CB), NULL);
+				G_CALLBACK(psf_vector_switch_CB), (gpointer) kemo_sgl);
 	
 	label_tree_vmode = create_fixed_label_w_index_tree();
 	model_vmode = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_vmode));  

@@ -657,14 +657,17 @@
 
 - (IBAction)PsfSurfSwitchAction:(id)sender;
 {
-	self.PSFSurfaceSwitch = kemoview_select_PSF_draw_switch(PSFSOLID_TOGGLE);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.PSFSurfaceSwitch 
+        = kemoview_select_PSF_draw_switch(kemo_sgl, PSFSOLID_TOGGLE);
 	[_metalView UpdateImage];
 }
 
 - (IBAction)PsfLineSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.PSFIsolineSwitch = kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
+	self.PSFIsolineSwitch
+        = kemoview_select_PSF_draw_switch(kemo_sgl, PSFGRID_TOGGLE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage];
@@ -673,7 +676,8 @@
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	self.PSFZerolineSwitch = kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
+	self.PSFZerolineSwitch
+        = kemoview_select_PSF_draw_switch(kemo_sgl, ZEROGRID_TOGGLE);
 	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
     [self UpdateCurrentPsfMenu:kemo_sgl];
 	[_metalView UpdateImage];
@@ -681,7 +685,9 @@
 
 - (IBAction)PsfColorbarSwitchAction:(id)sender;
 {
-	self.PSFColorbarSwitch = kemoview_select_PSF_draw_switch(COLORBAR_TOGGLE);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.PSFColorbarSwitch 
+        = kemoview_select_PSF_draw_switch(kemo_sgl, COLORBAR_TOGGLE);
 	[_metalView UpdateImage];
 }
 
@@ -757,7 +763,9 @@
 
 - (IBAction)DrawPSFVectorAction:(id)sender;
 {
-	self.DrawPSFVectorFlag = kemoview_select_PSF_draw_switch(PSFVECT_TOGGLE);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.DrawPSFVectorFlag
+        = kemoview_select_PSF_draw_switch(kemo_sgl, PSFVECT_TOGGLE);
 	
 	if(self.DrawPSFVectorFlag == 0) {[_PSFVectorSwitchOutlet setTitle:@"Off"];}
 	else{ [_PSFVectorSwitchOutlet setTitle:@"On"];};

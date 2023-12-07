@@ -462,7 +462,8 @@ extern "C" {
     
 	void * kemoview_link_active_colormap_param(void);
 	
-	int kemoview_select_PSF_draw_switch(int selected);
+	int kemoview_select_PSF_draw_switch(struct kemoviewer_type *kemoviewer,
+                                        int selected);
 	int kemoview_get_PSF_draw_flags(struct kemoviewer_type *kemoviewer,
                                     int selected);
 	

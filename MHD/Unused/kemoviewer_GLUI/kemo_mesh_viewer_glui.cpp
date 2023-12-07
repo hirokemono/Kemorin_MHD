@@ -500,7 +500,7 @@ static void psf_handler(int sel){
 		nload_psf = kemoview_close_PSF_view();
 		draw_mesh_w_menu();
 	} else {
-		toggle = kemoview_select_PSF_draw_switch(sel);
+		toggle = kemoview_select_PSF_draw_switch(kemo_sgl, sel);
 		kemoview_psf_draw_input_setting(sel);
 		draw_mesh_w_menu();
 	};

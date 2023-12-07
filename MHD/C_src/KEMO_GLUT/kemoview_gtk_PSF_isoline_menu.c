@@ -10,14 +10,18 @@
 #include "kemoview_gtk_PSF_isoline_menu.h"
 
 static void psf_grid_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer user_data){
-	kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+	kemoview_select_PSF_draw_switch(kemo_sgl, PSFGRID_TOGGLE);
 	
 	draw_full();
 	return;
 };
 static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(user_data);
-	kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+	kemoview_select_PSF_draw_switch(kemo_sgl, ZEROGRID_TOGGLE);
 	
 	draw_full();
 	gtk_widget_queue_draw(window);
@@ -118,6 +122,7 @@ void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl,
 GtkWidget * init_isoline_menu_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
                                        struct psf_isoline_gtk_menu *psf_isoline_menu){
 	GtkWidget *expander_iso;
+    g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
 	
 	psf_isoline_menu->switch_1 = gtk_switch_new();
 	gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_1), FALSE);
