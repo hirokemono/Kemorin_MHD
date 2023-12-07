@@ -818,13 +818,13 @@ void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i){
 	get_fline_color_data_name(kemo_sgl->kemo_fline->fline_d, colorname, i);
 };
 
-long kemoview_toggle_fline_type(void){return toggle_fline_type(kemo_sgl->kemo_fline->fline_m);};
-
-void kemoview_set_fline_field_param(int selected, int input){
-	return set_fline_field_param(selected, input, kemo_sgl->kemo_fline);
+void kemoview_set_fline_field_param(int selected, int input,
+                                    struct kemoviewer_type *kemoviewer){
+	return set_fline_field_param(selected, input, kemoviewer->kemo_fline);
 };
-int kemoview_get_fline_field_param(int selected){
-	return (int) get_fline_field_param(selected, kemo_sgl->kemo_fline);
+int kemoview_get_fline_field_param(struct kemoviewer_type *kemoviewer,
+                                   int selected){
+	return (int) get_fline_field_param(selected, kemoviewer->kemo_fline);
 };
 
 void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
@@ -843,32 +843,46 @@ void kemoview_get_fline_color_w_exp(struct kemoviewer_type *kemoviewer,
 	return;
 };
 
-void kemoview_set_fline_constant_opacity(double opacity){
-	set_fline_constant_opacity(kemo_sgl->kemo_fline->fline_d, kemo_sgl->kemo_fline->fline_m, opacity);
+void kemoview_set_fline_constant_opacity(double opacity,
+                                         struct kemoviewer_type *kemoviewer){
+	set_fline_constant_opacity(kemoviewer->kemo_fline->fline_d, 
+                               kemoviewer->kemo_fline->fline_m, opacity);
 }
 
-double kemoview_get_fline_opacity_at_value(double value){
-	return get_fline_opacity_at_value(kemo_sgl->kemo_fline->fline_m, value);
+double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
+                                           double value){
+	return get_fline_opacity_at_value(kemoviewer->kemo_fline->fline_m, value);
 }
-void kemoview_set_fline_color_data(int i_point, double value, double color){
-	set_fline_color_data(kemo_sgl->kemo_fline->fline_m, i_point, value, color);
+void kemoview_set_fline_color_data(int i_point, double value, double color,
+                                   struct kemoviewer_type *kemoviewer){
+	set_fline_color_data(kemoviewer->kemo_fline->fline_m,
+                         i_point, value, color);
 }
-void kemoview_set_fline_opacity_data(int i_point, double value, double opacity){
-	set_fline_opacity_data(kemo_sgl->kemo_fline->fline_m, i_point, value, opacity);
+void kemoview_set_fline_opacity_data(int i_point, double value, double opacity,
+                                     struct kemoviewer_type *kemoviewer){
+	set_fline_opacity_data(kemoviewer->kemo_fline->fline_m,
+                           i_point, value, opacity);
 }
 
-double kemoview_get_fline_data_range(int selected, int icomp){
-	return get_fline_data_range(selected, icomp, kemo_sgl->kemo_fline);
+double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
+                                     int selected, int icomp){
+	return get_fline_data_range(selected, icomp, 
+                                kemoviewer->kemo_fline);
 };
-double kemoview_get_fline_colormap_range(int selected){
-	return get_fline_colormap_range(selected, kemo_sgl->kemo_fline);
+double kemoview_get_fline_colormap_range(struct kemoviewer_type *kemoviewer,
+                                         int selected){
+	return get_fline_colormap_range(selected, kemoviewer->kemo_fline);
 };
 
-void kemoview_get_fline_color_item(int i_point, double *value, double *color){
-	get_fline_color_item(kemo_sgl->kemo_fline->fline_m, i_point, value, color);
+void kemoview_get_fline_color_item(struct kemoviewer_type *kemoviewer,
+                                   int i_point, double *value, double *color){
+	get_fline_color_item(kemoviewer->kemo_fline->fline_m,
+                         i_point, value, color);
 }
-void kemoview_get_fline_opacity_item(int i_point, double *value, double *opacity){
-	get_fline_opacity_item(kemo_sgl->kemo_fline->fline_m, i_point, value, opacity);
+void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
+                                     int i_point, double *value, double *opacity){
+	get_fline_opacity_item(kemoviewer->kemo_fline->fline_m,
+                           i_point, value, opacity);
 }
 
 void kemoview_write_fline_colormap_file(struct kv_string *filename){

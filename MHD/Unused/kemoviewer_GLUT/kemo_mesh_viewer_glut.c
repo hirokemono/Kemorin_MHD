@@ -317,10 +317,12 @@ static void psf_colormap_handler(int sel){
 };
 
 static void fline_handler(int sel){
-	int toggle;
+	int itoggle;
 	if (sel == FLINE_OFF) {kemoview_close_fieldline_view();}
-	else if (sel == ISET_FLINE_TYPE) {toggle = kemoview_toggle_fline_type();}
-	else {kemoview_fline_draw_setting(sel);};
+	else if (sel == ISET_FLINE_TYPE) {
+        itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
+        kemoview_set_fline_field_param(FIELD_SEL_FLAG, itoggle, kemo_sgl);
+    }else {kemoview_fline_draw_setting(sel);};
 	
 	draw_mesh_w_menu();
 	return;

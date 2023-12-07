@@ -62,9 +62,6 @@ void set_fline_type(struct fline_menu_val *fline_m, long iflag) {
 	fline_m->fieldline_type = iflag;
 };
 long get_fline_type(struct fline_menu_val *fline_m) {return fline_m->fieldline_type;};
-long toggle_fline_type(struct fline_menu_val *fline_m){
-	return fline_m->fieldline_type = (long) toggle_value_c(fline_m->fieldline_type);
-};
 
 
 void set_fline_thickness(double value, struct fline_menu_val *fline_m){fline_m->fieldline_thick = value;};

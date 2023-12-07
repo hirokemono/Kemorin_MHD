@@ -105,8 +105,9 @@ static void MaxDigitChange_CB(GtkWidget *entry, gpointer data)
 }
 
 static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
-	kemoview_toggle_fline_type();
-	
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) data;
+    int itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
+    kemoview_set_fline_field_param(FIELD_SEL_FLAG, itoggle, kemo_sgl);
 	draw_full();
 	return;
 };
@@ -128,16 +129,16 @@ void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
 	double current_thick;
 	int int_thick, current_digit;
 	/*
-	int ifield =  kemoview_get_fline_field_param(FIELD_SEL_FLAG);
-	int num_fld = kemoview_get_fline_field_param(NUM_FIELD_FLAG);
+	int ifield =  kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
+	int num_fld = kemoview_get_fline_field_param(kemo_sgl, NUM_FIELD_FLAG);
 	int num_comp = kemoview_get_fline_color_num_comps(ifield);
 	*/
 	int icolor_mode = kemoview_get_fline_color_param(ISET_COLORMAP);
-	int itype_fline = kemoview_get_fline_field_param(LINETYPE_FLAG);
+	int itype_fline = kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
 	
-	int icomp =   kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
-	double value_min = kemoview_get_fline_data_range(ISET_COLOR_MIN, icomp);
-	double value_max = kemoview_get_fline_data_range(ISET_COLOR_MAX, icomp);
+	int icomp =   kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+	double value_min = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, icomp);
+	double value_max = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, icomp);
 	sprintf(min_text, "Min(%1.2e): ", value_min);
 	sprintf(max_text, "Max(%1.2e): ", value_max);
 	
@@ -180,7 +181,9 @@ void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
 
 void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
                                 struct fieldline_gtk_menu *fline_menu){
-    update_fline_component_combobox(fline_menu->combobox_comp, fline_menu->label_tree_comp,
+    update_fline_component_combobox(kemo_sgl, 
+                                    fline_menu->combobox_comp, 
+                                    fline_menu->label_tree_comp,
                                     fline_menu->renderer_comp);
     
     set_gtk_fieldline_menu(kemo_sgl, fline_menu);
@@ -227,7 +230,7 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     fline_menu->switch_tube = gtk_switch_new();
     gtk_switch_set_active(GTK_SWITCH(fline_menu->switch_tube), FALSE);
     g_signal_connect(G_OBJECT(fline_menu->switch_tube), "notify::active",
-                     G_CALLBACK(psf_fieldtube_switch_CB), NULL);
+                     G_CALLBACK(psf_fieldtube_switch_CB), (gpointer) kemo_sgl);
     
     adj_thick = gtk_adjustment_new(1, 0.0, 9.0, 1, 1, 0.0);
     adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
@@ -256,11 +259,14 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(fline_menu->spin_max_digit, "value-changed",
                      G_CALLBACK(MaxDigitChange_CB), (gpointer) kemo_sgl);
     
-    add_fline_draw_field_box(fline_menu->combobox_field, fline_menu->label_tree_field,
+    add_fline_draw_field_box(kemo_sgl, 
+                             fline_menu->combobox_field, 
+                             fline_menu->label_tree_field,
                              fline_menu->renderer_field);
-    fline_draw_component_combobox(fline_menu->combobox_comp, fline_menu->label_tree_comp,
+    fline_draw_component_combobox(kemo_sgl, 
+                                  fline_menu->combobox_comp, 
+                                  fline_menu->label_tree_comp,
                                   fline_menu->renderer_comp);
-    
     return;
 }
 

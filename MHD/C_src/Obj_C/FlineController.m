@@ -81,8 +81,10 @@
     NSString *stname;
 	NSNumber *stnum;
 	
-	FlineNumberOfField =  kemoview_get_fline_field_param(NUM_FIELD_FLAG);
-	FlineTotalComponent = kemoview_get_fline_field_param(NTOT_COMPONENT_FLAG);
+	FlineNumberOfField 
+        =  kemoview_get_fline_field_param(kemo_sgl, NUM_FIELD_FLAG);
+	FlineTotalComponent 
+        = kemoview_get_fline_field_param(kemo_sgl, NTOT_COMPONENT_FLAG);
 	
 	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_WIDTH, 
                                    &current_thick, &current_digit);
@@ -108,12 +110,12 @@
     kemoview_free_kvstring(colorname);
     
 	for(i = 0; i < FlineTotalComponent; i++){
-		minmax = kemoview_get_fline_data_range(ISET_COLOR_MIN, i);
+		minmax = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[FlineMinimum      addObject:stnum];
 		[stnum release];	
 		
-		minmax = kemoview_get_fline_data_range(ISET_COLOR_MAX, i);
+		minmax = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[FlineMaximum      addObject:stnum];
 		[stnum release];	
@@ -222,12 +224,15 @@
     [self SetFlineComponentMenu:isel
                        kemoview:kemo_sgl];
     
-	kemoview_set_fline_field_param(FIELD_SEL_FLAG, (int) isel);
+	kemoview_set_fline_field_param(FIELD_SEL_FLAG, (int) isel,
+                                   kemo_sgl);
 	
-	
-    int iplotted = kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
-	self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
-	self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
+    int iplotted
+        = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+	self.FlineMinimumValue
+        = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
+	self.FlineMaximumValue
+        = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
 	
 	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
                                    &value, &i_digit);
@@ -245,14 +250,18 @@
 {	
 	int i_digit;
 	double value;
-	int iplotted;
 	
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, (int) [_FlineComponentMenu indexOfSelectedItem]);
+	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, 
+                                   (int) [_FlineComponentMenu indexOfSelectedItem],
+                                   kemo_sgl);
 	
-	iplotted = kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
-	self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
-	self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
+	int iplotted
+        = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+	self.FlineMinimumValue 
+        = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
+	self.FlineMaximumValue 
+        = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
 
 	kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
                                    &value, &i_digit);
@@ -328,9 +337,12 @@
 			}
 		}
 
-		iplotted = kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
-		self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
-		self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
+		iplotted
+            = kemoview_get_fline_field_param(kemo_sgl, DRAW_ADDRESS_FLAG);
+		self.FlineMinimumValue
+            = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MIN, iplotted);
+		self.FlineMaximumValue
+            = kemoview_get_fline_data_range(kemo_sgl, ISET_COLOR_MAX, iplotted);
 
 		kemoview_get_fline_color_w_exp(kemo_sgl, ISET_COLOR_MIN,
                                        &value, &i_digit);
@@ -365,7 +377,10 @@
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
 {
 	self.Flinetype = [[_flinetype_matrix selectedCell] tag];
-	kemoview_set_fline_field_param(LINETYPE_FLAG, (int) self.Flinetype);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_fline_field_param(LINETYPE_FLAG,
+                                   (int) self.Flinetype,
+                                   kemo_sgl);
 	
 	[_metalView UpdateImage];
 }

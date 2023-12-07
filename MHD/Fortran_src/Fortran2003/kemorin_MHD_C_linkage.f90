@@ -230,8 +230,6 @@
 !    int kemoview_get_fline_color_num_comps(int i);
 !    void kemoview_get_fline_color_data_name(char *name, int i);
 !    
-!    int kemoview_toggle_fline_type();
-!	
 !    void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit,
 !                                        struct kemoviewer_type *kemoviewer);
 !    void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
@@ -240,15 +238,21 @@
 !    void kemoview_get_fline_color_w_exp(struct kemoviewer_type *kemoviewer,
 !                                        int selected, double *value, int *i_digit);
 !
-!    void kemoview_set_fline_constant_opacity(double opacity);
+!    void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
+!                                    struct fieldline_gtk_menu *fline_menu){
+!    double kemoview_get_fline_opacity_at_value(struct kemoviewer_type *kemoviewer,
+!                                               double value);
 !    
-!    double kemoview_get_fline_opacity_at_value(double value);
+!    void kemoview_set_fline_color_data(int i_point, double value, double color,
+!                                       struct kemoviewer_type *kemoviewer);
+!    void kemoview_set_fline_opacity_data(int i_point, double value, double opacity,
+!                                         struct kemoviewer_type *kemoviewer,);
 !    
-!    void kemoview_set_fline_color_data(int i_point, double value, double color);
-!    void kemoview_set_fline_opacity_data(int i_point, double value, double opacity);
-!    
-!    double kemoview_get_fline_data_range(int selected, int icomp){
-!    double kemoview_get_fline_colormap_range(int selected);
+!    double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
+!                                         int selected, int icomp);
+!    double kemoview_get_fline_data_range(struct kemoviewer_type *kemoviewer,
+!                                         int selected, int icomp){
+!
         function kemoview_get_fline_colormap_range(selected)            &
      &          BIND(C, name = "kemoview_get_fline_colormap_range")
 !          IMPORT C_DOUBLE, c_int
