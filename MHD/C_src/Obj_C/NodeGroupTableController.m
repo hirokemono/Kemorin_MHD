@@ -134,7 +134,8 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseNodeGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_NodeGrpNodeColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 (int) tag, [_kmv KemoViewPointer]);
 
 	[_metalView UpdateImage];
 }

@@ -314,8 +314,9 @@ double kemoview_get_domain_distance(struct kemoviewer_type *kemoviewer){
 };
 
 
-void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor){
-	set_mesh_color_flag(iflag_group, selected, icolor, kemo_sgl->kemo_mesh);
+void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor,
+                                  struct kemoviewer_type *kemoviewer){
+	set_mesh_color_flag(iflag_group, selected, icolor, kemoviewer->kemo_mesh);
     return;
 }
 int kemoview_get_mesh_color_flag(int iflag_group, int selected){

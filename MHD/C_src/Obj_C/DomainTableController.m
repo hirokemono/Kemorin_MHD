@@ -255,7 +255,8 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 - (IBAction)ChooseDomainPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainPatchColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE,
+                                 (int) tag, [_kmv KemoViewPointer]);
 
 	[_metalView UpdateImage];
 }
@@ -263,7 +264,8 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 - (IBAction)ChooseDomainLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainLineColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE,
+                                 (int) tag, [_kmv KemoViewPointer]);
 
 	[_metalView UpdateImage];
 }
@@ -271,7 +273,8 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 - (IBAction)ChooseDomainNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainNodeColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE,
+                                 (int) tag, [_kmv KemoViewPointer]);
 
 	[_metalView UpdateImage];
 }

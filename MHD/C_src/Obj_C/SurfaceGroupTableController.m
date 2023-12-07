@@ -218,21 +218,24 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseSurfGrpPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpPatchColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 (int) tag, [_kmv KemoViewPointer]);
 	[_metalView UpdateImage];
 }
 
 - (IBAction)ChooseSurfGrpLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpLineColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE,
+                                 (int) tag, [_kmv KemoViewPointer]);
 	[_metalView UpdateImage];
 }
 
 - (IBAction)ChooseSurfGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpNodeColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE,
+                                 (int) tag, [_kmv KemoViewPointer]);
 	[_metalView UpdateImage];
 }
 

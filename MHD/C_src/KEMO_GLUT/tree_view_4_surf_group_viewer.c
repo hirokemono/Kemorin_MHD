@@ -139,12 +139,15 @@ static void hide_all_sf_grp_nodes_CB(GtkButton *button, gpointer user_data)
 
 static void surf_grp_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                     index_mode, kemo_sgl);
 	} else {
-		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                     index_mode, kemo_sgl);
 	};
 	
 	draw_full();
@@ -153,12 +156,15 @@ static void surf_grp_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer 
 
 static void surf_grp_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE,
+                                     index_mode, kemo_sgl);
 	} else {
-		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE,
+                                     index_mode, kemo_sgl);
 	};
 	
 	draw_full();
@@ -167,12 +173,15 @@ static void surf_grp_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer u
 
 static void surf_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE,
+                                     index_mode, kemo_sgl);
 	} else {
-		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE,
+                                     index_mode, kemo_sgl);
 	};
 	
 	draw_full();
@@ -430,7 +439,7 @@ void init_surf_group_draw_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(surf_group_gmenu->combobox_patch_color),
                                    renderer_patch_color, "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(surf_group_gmenu->combobox_patch_color), "changed",
-                     G_CALLBACK(surf_grp_patch_colormode_CB), (gpointer) window);
+                     G_CALLBACK(surf_grp_patch_colormode_CB), (gpointer) kemo_sgl);
     
     
     GtkWidget *label_tree_grid_color = create_fixed_label_w_index_tree();
@@ -450,7 +459,7 @@ void init_surf_group_draw_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(surf_group_gmenu->combobox_grid_color),
                                    renderer_grid_color, "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(surf_group_gmenu->combobox_grid_color), "changed",
-                     G_CALLBACK(surf_grp_grid_colormode_CB), (gpointer) window);
+                     G_CALLBACK(surf_grp_grid_colormode_CB), (gpointer) kemo_sgl);
     
     
     GtkWidget *label_tree_node_color = create_fixed_label_w_index_tree();
@@ -470,7 +479,7 @@ void init_surf_group_draw_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(surf_group_gmenu->combobox_node_color),
                                    renderer_node_color, "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(surf_group_gmenu->combobox_node_color), "changed",
-                     G_CALLBACK(surf_grp_node_colormode_CB), (gpointer) window);
+                     G_CALLBACK(surf_grp_node_colormode_CB), (gpointer) kemo_sgl);
     
     float color4[4] = {0.0, 0.0, 0.0, 1.0};
     set_color_to_GTK(color4, &surf_group_gmenu->gcolor);

@@ -52,12 +52,15 @@ static void hide_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 
 static void nod_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-		kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE,
+                                     index_mode, kemo_sgl);
 	} else {
-		kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE,
+                                     index_mode, kemo_sgl);
 	};
 	
 	draw_full();
@@ -204,7 +207,7 @@ void init_nod_group_draw_expander(struct kemoviewer_type *kemo_sgl,
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(node_group_gmenu->combobox_node_color),
                                    renderer_node_color, "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(node_group_gmenu->combobox_node_color), "changed",
-                     G_CALLBACK(nod_grp_node_colormode_CB), (gpointer) window);
+                     G_CALLBACK(nod_grp_node_colormode_CB), (gpointer) kemo_sgl);
     
     float color4[4] = {0.0, 0.0, 0.0, 1.0};
     kemoview_get_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, color4);

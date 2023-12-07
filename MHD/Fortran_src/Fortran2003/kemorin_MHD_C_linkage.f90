@@ -68,7 +68,8 @@
 !    double kemoview_get_domain_distance(struct kemoviewer_type *kemoviewer);
 !
 !    
-!    void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor);
+!    void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor,
+!                                      struct kemoviewer_type *kemoviewer);
 !    void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
 !    
 !    void kemoview_set_mesh_opacity(int iflag_group, double opacity_in);

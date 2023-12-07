@@ -345,7 +345,8 @@ extern "C" {
 	void kemoview_set_domain_distance(double dist, struct kemoviewer_type *kemoviewer);
     double kemoview_get_domain_distance(struct kemoviewer_type *kemoviewer);
 
-	void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor);
+	void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor,
+                                      struct kemoviewer_type *kemoviewer);
 	int kemoview_get_mesh_color_flag(int iflag_group, int selected);
     
 	void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
