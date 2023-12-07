@@ -180,14 +180,15 @@
     for (i=0; i<3; i++) glrgbaBG[i] = (float) rgbaBG[i];
 	glrgbaBG[3] = ONE;
 
-	kemoview_set_background_color(glrgbaBG);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_background_color(glrgbaBG, kemo_sgl);
 
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) rgbaBG[0]) forKey:@"BackGroundRed"];
 	[defaults setFloat:((float) rgbaBG[1]) forKey:@"BackGroundGreen"];
 	[defaults setFloat:((float) rgbaBG[2]) forKey:@"BackGroundBlue"];
 	
-    [_metalView updateBackground];
+    [_metalView updateBackground:kemo_sgl];
     [_metalView UpdateImage];
 }
 

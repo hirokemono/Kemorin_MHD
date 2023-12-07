@@ -561,7 +561,7 @@
     };
     
     struct kv_string *filename = kemoview_init_kvstring_by_string([PsfOpenFilename UTF8String]);
-    int iflag_datatype = kemoview_open_data(filename);
+    int iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
     
     if(iflag_datatype == IFLAG_SURFACES) [self DrawPsfFile:PsfOpenFilehead
@@ -614,7 +614,7 @@
 - (IBAction) ClosePsfFile:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [self ResetCurrentPsfParam:kemo_sgl];
-    int num_loaded = kemoview_close_PSF_view();
+    int num_loaded = kemoview_close_PSF_view(kemo_sgl);
     self.DrawPsfFlag = kemoview_get_PSF_loaded_params(kemo_sgl, DRAW_SWITCH);
     [_ElasticControl UpdateWindow:self.DrawPsfFlag];
     

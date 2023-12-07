@@ -92,7 +92,7 @@ void read_kemoview_data_glut(){
 	printf("stripped_ext %s\n", stripped_ext->string);
     kemoview_free_kvstring(stripped_ext);
 	
-	iflag_datatype = kemoview_open_data(filename);
+	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(file_prefix);
     kemoview_free_kvstring(filename);
 	return;
@@ -317,7 +317,7 @@ void set_background_color_console(){
     float red, green, blue;
     char buf[1024];
 
-    kemoview_get_background_color(color);
+    kemoview_get_background_color(color, kemo_sgl);
     printf("Enter Background color by (R,G,B) from 0.0 to 1.0: \n");
     printf("Corrent color:  %.7e %.7e %.7e \n", color[0], color[1], color[2]);
     fgets(buf,sizeof(buf),stdin);
@@ -330,7 +330,7 @@ void set_background_color_console(){
 
     
     draw_mesh_keep_menu();
-    kemoview_set_background_color(color);
+    kemoview_set_background_color(color, kemo_sgl);
     kemoview_gl_background_color();
     glClear(GL_COLOR_BUFFER_BIT); 
     return;
@@ -526,7 +526,7 @@ void save_viewmatrix_file(){
 	*delchara='\0';
 
     filename = kemoview_init_kvstring_by_string(buf);
-	kemoview_write_modelview_file(filename);
+	kemoview_write_modelview_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	return;
 };
@@ -542,7 +542,7 @@ void load_viewmatrix_file(){
 	*delchara='\0';
 
     filename = kemoview_init_kvstring_by_string(buf);
-	kemoview_load_modelview_file(filename);
+	kemoview_load_modelview_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	return;
 };

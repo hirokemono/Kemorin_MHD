@@ -43,8 +43,7 @@
 }
 @property int id_window;
 
--(void)InitBackGroundColor;
--(void) updateBackground;
+-(void) updateBackground:(struct kemoviewer_type *) kemo_sgl;
 
 - (void) setRetinaMode;
 - (void) setViewerSize;
@@ -59,8 +58,10 @@
 -(void) FastUpdateImage;
 -(void) QuickUpdateImage;
 
--(id) DrawQuilt: (NSInteger) int_degree : (NSInteger) rotationaxis;
--(id) DrawEvolution:(NSInteger)timeStep;
+-(id) DrawQuilt:(NSInteger) int_degree
+           axis:(NSInteger) rotationaxis;
+-(id) DrawEvolution:(NSInteger)timeStep
+           kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (void) Resetview;
 

@@ -181,7 +181,7 @@ static void viewtype_handler(int sel){
 
 static void domain_handler(int sel){
 	if(sel == MESH_OFF){
-		kemoview_close_mesh_view();
+		kemoview_close_mesh_view(kemo_sgl);
 	} else{
 		kemoview_mesh_draw_toggle(sel);
 	};
@@ -295,7 +295,7 @@ static void psf_handler(int sel){
     
 	if (sel == PSF_OFF) {
         set_viewtype_mode_glut(VIEW_3D);
-        nload_psf = kemoview_close_PSF_view();
+        nload_psf = kemoview_close_PSF_view(kemo_sgl);
 		draw_mesh_w_menu();
 	}
 	else {
@@ -318,7 +318,7 @@ static void psf_colormap_handler(int sel){
 
 static void fline_handler(int sel){
 	int itoggle;
-	if (sel == FLINE_OFF) {kemoview_close_fieldline_view();}
+	if (sel == FLINE_OFF) {kemoview_close_fieldline_view(kemo_sgl);}
 	else if (sel == ISET_FLINE_TYPE) {
         itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
         kemoview_set_fline_field_param(FIELD_SEL_FLAG, itoggle, kemo_sgl);
@@ -960,7 +960,7 @@ void draw_mesh_kemo(void) {
 	view_modifier_init();
 	
 	/* ! set the perspective and lighting */
-    kemoview_init_background_color();
+    kemoview_init_background_color(kemo_sgl);
 	kemoview_init_lighting();
     kemoview_gl_background_color();
     kemoview_gl_init_lighting(kemo_gl);

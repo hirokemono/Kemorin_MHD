@@ -27,7 +27,7 @@
 	};
 
     struct kv_string *filename = kemoview_init_kvstring_by_string([kemoviewOpenFilename UTF8String]);
-	iflag_datatype = kemoview_open_data(filename);
+	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
 	if(iflag_datatype==IFLAG_MESH) {
@@ -81,8 +81,9 @@
 		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
 		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
 
+        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
         struct kv_string *filename = kemoview_init_kvstring_by_string([ViewMatrixFilename UTF8String]);
-		kemoview_write_modelview_file(filename);
+		kemoview_write_modelview_file(filename, kemo_sgl);
         kemoview_free_kvstring(filename);
 	};
                                    }];
@@ -106,8 +107,9 @@
 		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
 		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
         
+        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
         struct kv_string *filename = kemoview_init_kvstring_by_string([ViewMatrixFilename UTF8String]);
-		kemoview_load_modelview_file(filename);
+		kemoview_load_modelview_file(filename, kemo_sgl);
         kemoview_free_kvstring(filename);
 		[_metalView UpdateImage];
 	};

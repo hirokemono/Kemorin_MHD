@@ -94,6 +94,15 @@ void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt){
     return;
 };
 
+int kemoview_set_data_format_flag(struct kv_string *filename,
+                                  struct kv_string *stripped_prefix,
+                                  struct kv_string *stripped_ext){
+    alloc_kvstringitem(strlen(filename->string), stripped_prefix);
+    alloc_kvstringitem(strlen(filename->string), stripped_ext);
+    return set_data_format_flag(filename->string, stripped_prefix->string,
+                                stripped_ext->string);
+}
+
 
 
 int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,

@@ -9,7 +9,7 @@
 
 @implementation KemoViewerMetalView
 
--(void)InitBackGroundColor
+-(void)InitBackGroundColor:(struct kemoviewer_type *) kemo_sgl
 {
     float BgColor4f[4];
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
@@ -17,15 +17,16 @@
 	BgColor4f[1] = [[defaults stringForKey:@"BackGroundGreen"] floatValue];
 	BgColor4f[2] = [[defaults stringForKey:@"BackGroundBlue"] floatValue];
 	BgColor4f[3] = 1.0;
-	kemoview_set_background_color(BgColor4f);
+    
+	kemoview_set_background_color(BgColor4f, kemo_sgl);
     return;
 };
 
--(void) updateBackground
+-(void) updateBackground:(struct kemoviewer_type *) kemo_sgl
 {
     float bgcolor[4];
-    [self InitBackGroundColor];
-	kemoview_get_background_color(bgcolor);
+    [self InitBackGroundColor:kemo_sgl];
+    kemoview_get_background_color(bgcolor);
     self.clearColor = MTLClearColorMake(bgcolor[0], bgcolor[1], bgcolor[2], bgcolor[3]);
     return;
 }
@@ -161,7 +162,8 @@
     return;
 }
 
--(id) DrawQuilt: (NSInteger) int_degree : (NSInteger)rotationaxis
+-(id) DrawQuilt:(NSInteger) int_degree
+           axis:(NSInteger) rotationaxis
 {
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
@@ -174,8 +176,9 @@
 }
 
 -(id) DrawEvolution:(NSInteger)timeStep
+           kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    kemoview_viewer_evolution((int) timeStep);
+    kemoview_viewer_evolution((int) timeStep, kemo_sgl);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW);
     kemoview_step_viewmatrix();

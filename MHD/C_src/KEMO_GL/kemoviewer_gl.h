@@ -26,6 +26,7 @@
 #include "kemoviewer_param_c.h"
 #include "move_draw_objects_gl.h"
 #include "write_gl_window_to_file.h"
+#include "set_kemoviewer_ucd_data.h"
 
 #ifdef PNG_OUTPUT
     #include "set_psf_texture_by_png.h"
@@ -52,6 +53,12 @@ extern "C" {
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
     void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt);
+
+
+/* subroutines for IO */
+    int kemoview_set_data_format_flag(struct kv_string *filename,
+                                      struct kv_string *stripped_prefix,
+                                      struct kv_string *stripped_ext);
 
 
 /* subroutines for surafces */

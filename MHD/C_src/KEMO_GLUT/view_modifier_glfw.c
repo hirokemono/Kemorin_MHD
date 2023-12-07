@@ -416,7 +416,7 @@ static void write_evolution_quilt_views(struct kemoviewer_type *kemo_sgl,
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
-			kemoview_viewer_evolution(i);
+			kemoview_viewer_evolution(i, kemo_sgl);
 			
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
 				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
@@ -447,7 +447,7 @@ static void write_evolution_views(struct kemoviewer_type *kemo_sgl,
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
-			kemoview_viewer_evolution(i);
+			kemoview_viewer_evolution(i, kemo_sgl);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			draw_full();
 			glfwSwapBuffers(glfw_window);

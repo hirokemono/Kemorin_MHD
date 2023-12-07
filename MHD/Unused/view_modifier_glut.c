@@ -428,7 +428,7 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
-			kemoview_viewer_evolution(i);
+			kemoview_viewer_evolution(i, kemo_sgl);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			draw_mesh_keep_menu();

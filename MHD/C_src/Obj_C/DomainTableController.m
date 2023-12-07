@@ -83,7 +83,7 @@
     };
     
     struct kv_string *filename = kemoview_init_kvstring_by_string([MeshOpenFilehead UTF8String]);
-    int iflag_datatype = kemoview_open_data(filename);
+    int iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
     
     if(iflag_datatype==IFLAG_MESH ) [self OpenSurfaceMeshFile:MeshOpenFilehead
@@ -110,7 +110,7 @@
 
 - (IBAction) CloseMeshFile:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_close_mesh_view();
+	kemoview_close_mesh_view(kemo_sgl);
 
 	self.DrawMeshFlag = kemoview_get_draw_mesh_flag(kemo_sgl);
 	NumSubDomain = kemoview_get_num_of_mesh_group(kemo_sgl, DOMAIN_FLAG);

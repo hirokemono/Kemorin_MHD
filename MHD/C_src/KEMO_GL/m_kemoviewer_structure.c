@@ -96,10 +96,11 @@ void kemoview_init_background_color(struct kemoviewer_type *kemoviewer){
     set_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
                           kemoviewer->kemo_mesh->text_color);
 };
-void kemoview_set_background_color(float color[4]) {
-    copy_rgba_color_c(color, kemo_sgl->kemo_mesh->bg_color);
-    set_bg_color_kemoview(kemo_sgl->kemo_mesh->bg_color,
-                          kemo_sgl->kemo_mesh->text_color);
+void kemoview_set_background_color(float color[4],
+                                   struct kemoviewer_type *kemoviewer) {
+    copy_rgba_color_c(color, kemoviewer->kemo_mesh->bg_color);
+    set_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
+                          kemoviewer->kemo_mesh->text_color);
 };
 void kemoview_get_background_color(float color[4]){
     copy_rgba_color_c(kemo_sgl->kemo_mesh->bg_color, color);
@@ -109,52 +110,49 @@ void kemoview_get_background_color(float color[4]){
 
 
 /* Routines for menu selection */
-int kemoview_set_data_format_flag(struct kv_string *filename, 
-                                  struct kv_string *stripped_prefix,
-                                  struct kv_string *stripped_ext){
-    alloc_kvstringitem(strlen(filename->string), stripped_prefix);
-    alloc_kvstringitem(strlen(filename->string), stripped_ext);
-    return set_data_format_flag(filename->string, stripped_prefix->string, stripped_ext->string);
-}
-
-int kemoview_open_data(struct kv_string *filename){
-	int iflag_datatype;
-	iflag_datatype = kemoviewer_open_data(filename, 
-				kemo_sgl->kemo_mesh, kemo_sgl->kemo_psf, kemo_sgl->kemo_fline,
-				kemo_sgl->psf_ucd_tmp,kemo_sgl->view_s);
+int kemoview_open_data(struct kv_string *filename,
+                       struct kemoviewer_type *kemoviewer){
+	int iflag_datatype = kemoviewer_open_data(filename,
+                                              kemoviewer->kemo_mesh,
+                                              kemoviewer->kemo_psf,
+                                              kemoviewer->kemo_fline,
+                                              kemoviewer->psf_ucd_tmp,
+                                              kemoviewer->view_s);
 	return iflag_datatype;
 }
 
-void kemoview_close_mesh_view(void){
-	close_mesh_view(kemo_sgl->kemo_mesh);
+void kemoview_close_mesh_view(struct kemoviewer_type *kemoviewer){
+	close_mesh_view(kemoviewer->kemo_mesh);
 	return;
 }
 
-int kemoview_close_PSF_view(void){
-	close_PSF_view(kemo_sgl->kemo_psf);
-    return get_PSF_loaded_params(kemo_sgl->kemo_psf, NUM_LOADED);
+int kemoview_close_PSF_view(struct kemoviewer_type *kemoviewer){
+	close_PSF_view(kemoviewer->kemo_psf);
+    return get_PSF_loaded_params(kemoviewer->kemo_psf, NUM_LOADED);
 }
 
-void kemoview_close_fieldline_view(void){
-	close_fieldline_view(kemo_sgl->kemo_fline);
+void kemoview_close_fieldline_view(struct kemoviewer_type *kemoviewer){
+	close_fieldline_view(kemoviewer->kemo_fline);
 	return;
 }
 
-void kemoview_write_modelview_file(struct kv_string *filename){
-	write_GL_modelview_file(filename, kemo_sgl->view_s);
+void kemoview_write_modelview_file(struct kv_string *filename,
+                                   struct kemoviewer_type *kemoviewer){
+	write_GL_modelview_file(filename, kemoviewer->view_s);
 }
-void kemoview_load_modelview_file(struct kv_string *filename){
-	read_GL_modelview_file(filename, kemo_sgl->view_s);
+void kemoview_load_modelview_file(struct kv_string *filename,
+                                  struct kemoviewer_type *kemoviewer){
+	read_GL_modelview_file(filename, kemoviewer->view_s);
 }
 
 
 
-void kemoview_viewer_evolution(int istep){
+void kemoview_viewer_evolution(int istep, struct kemoviewer_type *kemoviewer){
 	int ierr = 0;
-	psf_viewer_evolution(istep, kemo_sgl->kemo_psf->psf_a);
-	ierr = evolution_fline_viewer(kemo_sgl->kemo_fline, kemo_sgl->psf_ucd_tmp,
-				kemo_sgl->kemo_psf->psf_a->istep_sync);
-    evolution_psf_viewer(kemo_sgl->psf_ucd_tmp, kemo_sgl->kemo_psf);
+	psf_viewer_evolution(istep, kemoviewer->kemo_psf->psf_a);
+	ierr = evolution_fline_viewer(kemoviewer->kemo_fline, kemoviewer->psf_ucd_tmp,
+                                  kemoviewer->kemo_psf->psf_a->istep_sync);
+    evolution_psf_viewer(kemoviewer->psf_ucd_tmp, kemoviewer->kemo_psf);
 	return;
 }
 

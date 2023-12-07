@@ -277,21 +277,22 @@ extern "C" {
 	void kemoview_message_viewmatrix(void);
 
     void kemoview_init_background_color(struct kemoviewer_type *kemoviewer);
-    void kemoview_set_background_color(float color[4]);
+    void kemoview_set_background_color(float color[4],
+                                       struct kemoviewer_type *kemoviewer);
     void kemoview_get_background_color(float color[4]);
 
-    void kemoview_viewer_evolution(int istep);
+    void kemoview_viewer_evolution(int istep, struct kemoviewer_type *kemoviewer);
     
-    void kemoview_write_modelview_file(struct kv_string *filename);
-    void kemoview_load_modelview_file(struct kv_string *filename);
+    void kemoview_write_modelview_file(struct kv_string *filename,
+                                       struct kemoviewer_type *kemoviewer);
+    void kemoview_load_modelview_file(struct kv_string *filename,
+                                      struct kemoviewer_type *kemoviewer);
     
-    int kemoview_set_data_format_flag(struct kv_string *filename, 
-                                      struct kv_string *stripped_prefix, struct kv_string *stripped_ext);
-    int kemoview_open_data(struct kv_string *filename);
-    
-    void kemoview_close_mesh_view(void);
-    int  kemoview_close_PSF_view(void);
-    void kemoview_close_fieldline_view(void);
+    int kemoview_open_data(struct kv_string *filename,
+                           struct kemoviewer_type *kemoviewer);
+    void kemoview_close_mesh_view(struct kemoviewer_type *kemoviewer);
+    int  kemoview_close_PSF_view(struct kemoviewer_type *kemoviewer);
+    void kemoview_close_fieldline_view(struct kemoviewer_type *kemoviewer);
     
     void kemoview_set_viewtype(int sel);
     

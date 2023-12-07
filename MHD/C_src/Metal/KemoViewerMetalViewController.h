@@ -14,9 +14,12 @@
 
 #import "AAPLRenderer.h"
 #import "KemoViewerMetalView.h"
-#include "kemoviewer.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 @interface KemoViewerMetalViewController : NSViewController{
+    IBOutlet KemoViewerObject *_kmv;
 }
 
 -(void) awakeFromNib;

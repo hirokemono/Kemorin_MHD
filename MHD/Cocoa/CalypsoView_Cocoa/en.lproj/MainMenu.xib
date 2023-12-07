@@ -4525,6 +4525,7 @@
         </window>
         <viewController id="QEu-s0-e0C" customClass="KemoViewerMetalViewController">
             <connections>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="YBB-TF-07S"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="eec-Y5-vZn"/>
             </connections>
         </viewController>

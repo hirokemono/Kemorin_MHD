@@ -263,7 +263,7 @@ static void update_BGcolor_glui(int val){
     color[3] = (float) alpha;
 	
 	draw_mesh_keep_menu();
-    kemoview_set_background_color(color);
+    kemoview_set_background_color(color, kemo_sgl);
     kemoview_gl_background_color();
     glClear(GL_COLOR_BUFFER_BIT); 
 	return;
@@ -471,7 +471,7 @@ void set_background_color_glui(int winid){
     float color[4];
     char buf[1024];
 	
-    kemoview_get_background_color(color);
+    kemoview_get_background_color(color, kemo_sgl);
     red =   color[0];
     green = color[1];
 	blue =  color[2];

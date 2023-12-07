@@ -145,7 +145,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     kemoview_free_kvstring(stripped_ext);
     kemoview_free_kvstring(file_prefix);
 	
-	iflag_datatype = kemoview_open_data(filename);
+	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
     init_psf_menu(kemo_sgl, mbot->updatable, window_main);
@@ -274,7 +274,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-    int num_loaded = kemoview_close_PSF_view();
+    int num_loaded = kemoview_close_PSF_view(kemo_sgl);
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D);
 	
@@ -298,7 +298,7 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-	kemoview_close_fieldline_view();
+	kemoview_close_fieldline_view(kemo_sgl);
 	
     update_fieldline_menu_hbox(kemo_sgl, fline_menu);
 
@@ -309,8 +309,10 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
 static void close_mesh_CB(GtkButton *button, gpointer user_data){
     GtkWidget *window_main = GTK_WIDGET(user_data);
     struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-	kemoview_close_mesh_view();
+	kemoview_close_mesh_view(kemo_sgl);
 	dealloc_mesh_views_4_viewer(updatable->mesh_vws);
 	
     gtk_widget_hide(updatable->meshBox);
@@ -691,6 +693,7 @@ void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
 	
 	/*  Set buttons */
     g_object_set_data(G_OBJECT(window), "updates", (gpointer) updatable);
+    g_object_set_data(G_OBJECT(window), "kemoview", (gpointer) kemo_sgl);
 
     updatable->mesh_vws->closeMeshButton = gtk_button_new_with_label("Close mesh");
 	g_signal_connect(G_OBJECT(updatable->mesh_vws->closeMeshButton), "clicked",

@@ -35,7 +35,8 @@
     _metalView.device = MTLCreateSystemDefaultDevice();
     _metalView.framebufferOnly = false;
     
-    [_metalView updateBackground];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [_metalView updateBackground:kemo_sgl];
 
     _renderer = [[AAPLRenderer alloc] initWithMetalKitView:_metalView];
 

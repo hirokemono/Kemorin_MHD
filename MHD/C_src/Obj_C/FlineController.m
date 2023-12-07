@@ -174,7 +174,7 @@
     };
     
     struct kv_string *filename = kemoview_init_kvstring_by_string([FlineFileName UTF8String]);
-    int iflag_datatype =  kemoview_open_data(filename);
+    int iflag_datatype =  kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
     
     if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead
@@ -206,7 +206,7 @@
 
 - (IBAction) CloseFlineFile:(id)pId{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	kemoview_close_fieldline_view();
+	kemoview_close_fieldline_view(kemo_sgl);
 	self.DrawFlineFlag = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
     [self CopyFlineDisplayFlagsFromC:kemo_sgl];
 	

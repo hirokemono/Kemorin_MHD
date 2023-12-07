@@ -142,7 +142,7 @@ int draw_glfw_test(void) {
 	glfwSetWindowCloseCallback(glfw_win, glfwWindowclose_CB);
 	
 	/* ! set the perspective and lighting */
-	kemoview_init_background_color();
+	kemoview_init_background_color(kemo_sgl);
 	kemoview_init_lighting();
     kemoview_gl_background_color();
     kemoview_gl_init_lighting(kemo_gl);
