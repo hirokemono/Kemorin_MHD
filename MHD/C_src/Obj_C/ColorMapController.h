@@ -13,12 +13,16 @@
 #import "KemoViewerMetalView.h"
 #import "fillRectView.h"
 #import "AAPLRenderer.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface ColorMapController : NSObject {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
     IBOutlet KemoViewerMetalView *_metalView;
-	IBOutlet id _colorTableView;
+    IBOutlet KemoViewerObject *_kmv;
+
+    IBOutlet id _colorTableView;
 	IBOutlet fillRectView* _fillRectView;
 
 	IBOutlet NSTableView * idColorTableView;

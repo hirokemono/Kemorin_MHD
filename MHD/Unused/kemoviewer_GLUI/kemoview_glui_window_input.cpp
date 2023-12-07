@@ -118,7 +118,7 @@ static void update_colormap_glui(int val){
 	int sel = radiogroup_colormap->get_int_val();
 	value = editText_data->get_float_val();
 	color = editText_color->get_float_val();
-	kemoview_set_PSF_color_data(sel, (double) value, (double) color);
+	kemoview_set_PSF_color_data(sel, (double) value, (double) color, kemo_sgl);
 	close_panel(0);
 	return;
 }

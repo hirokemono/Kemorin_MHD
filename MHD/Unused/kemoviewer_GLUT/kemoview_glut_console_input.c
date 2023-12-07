@@ -461,7 +461,7 @@ void add_psf_colormap_point_console(){
 void modify_psf_colormap_point_console(int i_point){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
-	kemoview_set_PSF_color_data(i_point, (double) value, (double) color);
+	kemoview_set_PSF_color_data(i_point, (double) value, (double) color, kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	return;
 }

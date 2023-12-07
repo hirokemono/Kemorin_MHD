@@ -711,8 +711,10 @@ void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, dou
 double kemoview_get_PSF_opacity_at_value(double value){
     return get_PSF_opacity_at_value(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value);
 }
-void kemoview_set_PSF_color_data(int i_point, double value, double color){
-    set_each_PSF_color_point(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
+void kemoview_set_PSF_color_data(int i_point, double value, double color,
+                                 struct kemoviewer_type *kemoviewer){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    set_each_PSF_color_point(kemoviewer->kemo_psf->psf_m[i_psf],
 							 i_point, value, color);
 }
 void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity,

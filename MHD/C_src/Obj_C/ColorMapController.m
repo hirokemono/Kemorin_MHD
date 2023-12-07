@@ -122,8 +122,8 @@
 											withObject:[[NSNumber alloc] initWithDouble:color]];
 	}
 	
-	kemoview_set_PSF_color_data(pRowIndex, value, color);
-
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_PSF_color_data(pRowIndex, value, color, kemo_sgl);
     [_metalView UpdateImage];
 } // end tableView:setObjectValue:forTableColumn:row:
 

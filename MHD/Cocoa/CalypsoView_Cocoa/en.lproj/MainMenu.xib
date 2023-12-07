@@ -4474,6 +4474,7 @@
                 <outlet property="_colorTableView" destination="2596" id="2611"/>
                 <outlet property="_fillRectView" destination="2560" id="3745"/>
                 <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3440"/>
+                <outlet property="_kmv" destination="w8N-Cd-Q0k" id="dND-XQ-6F3"/>
                 <outlet property="_metalView" destination="0Nx-Qx-Xru" id="VUt-49-dPD"/>
                 <outlet property="backgroundColorWell" destination="2473" id="3441"/>
                 <outlet property="idColorTableView" destination="2596" id="2612"/>
