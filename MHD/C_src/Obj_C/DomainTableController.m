@@ -45,8 +45,8 @@
 	NSString *stname;
 	
 	self.DomainWindowlabel = [NSString stringWithFormat:@"Mesh View - %@ -",MeshOpenFilehead];
-	self.DrawMeshFlag = kemoview_get_draw_mesh_flag();
-	NumSubDomain =     kemoview_get_num_of_mesh_group(DOMAIN_FLAG);
+	self.DrawMeshFlag = kemoview_get_draw_mesh_flag(kemo_sgl);
+	NumSubDomain =     kemoview_get_num_of_mesh_group(kemo_sgl, DOMAIN_FLAG);
 
 	[DomainDisplayNames removeAllObjects];
 	[DomainDisplayPatchFlags removeAllObjects];
@@ -109,10 +109,11 @@
 }
 
 - (IBAction) CloseMeshFile:(id)pId{
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_close_mesh_view();
 
-	self.DrawMeshFlag = kemoview_get_draw_mesh_flag();
-	NumSubDomain = kemoview_get_num_of_mesh_group(DOMAIN_FLAG);
+	self.DrawMeshFlag = kemoview_get_draw_mesh_flag(kemo_sgl);
+	NumSubDomain = kemoview_get_num_of_mesh_group(kemo_sgl, DOMAIN_FLAG);
 	[DomainDisplayNames removeAllObjects];
 	[DomainDisplayPatchFlags removeAllObjects];
 	[DomainDisplayWireFlags removeAllObjects];

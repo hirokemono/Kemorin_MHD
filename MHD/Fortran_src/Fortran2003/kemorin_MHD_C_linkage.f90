@@ -78,10 +78,12 @@
 !    void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int iflag);
 !    int kemoview_get_draw_mesh_item(int iflag_group, int selected, int igrp);
 !    
-!    int kemoview_get_draw_mesh_flag();
+!    int kemoview_get_draw_mesh_flag(struct kemoviewer_type *kemoviewer);
 !    
 !    int kemoview_get_num_of_mesh_group(int iflag_group);
 !    
+!    int kemoview_get_num_of_mesh_group(struct kemoviewer_type *kemoviewer,
+!                                       int iflag_group);
 !    void kemoview_get_node_grp_name(struct kemoviewer_type *kemoviewer,
 !                                   int i, struct kv_string *groupname);
 !    void kemoview_get_ele_grp_name(struct kemoviewer_type *kemoviewer,

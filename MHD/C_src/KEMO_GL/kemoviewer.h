@@ -353,11 +353,12 @@ extern "C" {
     void kemoview_set_mesh_draw_flag(int selected, int iflag);
     void kemoview_mesh_draw_toggle(int selected);
     
-	int kemoview_get_draw_mesh_flag(void);
-	int kemoview_get_num_of_mesh_group(int iflag_group);
 	void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int iflag,
                                      struct kemoviewer_type *kemoviewer);
 
+    int kemoview_get_draw_mesh_flag(struct kemoviewer_type *kemoviewer);
+    int kemoview_get_num_of_mesh_group(struct kemoviewer_type *kemoviewer,
+                                       int iflag_group);
 	int kemoview_get_draw_mesh_item(struct kemoviewer_type *kemoviewer,
                                     int iflag_group, int selected, int igrp);    
     void kemoview_get_node_grp_name(struct kemoviewer_type *kemoviewer,

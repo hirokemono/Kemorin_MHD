@@ -61,9 +61,10 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 };
 
 
-void update_kemoview_menu(struct updatable_widgets *updatable,
+void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
+                          struct updatable_widgets *updatable,
                           GtkWidget *menuHbox, GtkWidget *window){
-    int iflag_draw_m = kemoview_get_draw_mesh_flag();
+    int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
     int iflag_draw_f = kemoview_get_fline_parameters(DRAW_SWITCH);
     int nload_psf = kemoview_get_PSF_loaded_params(NUM_LOADED);
 
@@ -116,7 +117,7 @@ static void init_mesh_menu(struct kemoviewer_type *kemo_sgl,
                            struct updatable_widgets *updatable, 
                            GtkWidget *window){
     if(updatable->iflag_meshBox > 0) return;
-    if(kemoview_get_draw_mesh_flag() == 0) return;
+    if(kemoview_get_draw_mesh_flag(kemo_sgl) == 0) return;
 
     updatable->meshBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     set_mesh_menu_box(kemo_sgl, updatable, window);
@@ -148,7 +149,8 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
     activate_evolution_menu(mbot->updatable->expander_evo);
     
-    update_kemoview_menu(mbot->updatable, mbot->menuHbox, window_main);
+    update_kemoview_menu(kemo_sgl, mbot->updatable, mbot->menuHbox,
+                         window_main);
     
 	gtk_widget_queue_draw(window_main);
 	draw_full();

@@ -114,7 +114,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 //	printf("Update Node group map\n");
 	[NodeGroupDisplayNames removeAllObjects];
 	[NodeGroupDisplayNodeFlags removeAllObjects];
-	NumNodeGroup = kemoview_get_num_of_mesh_group(NODE_GRP_FLAG);
+	NumNodeGroup = kemoview_get_num_of_mesh_group(kemo_sgl, NODE_GRP_FLAG);
 	for(i=0;i<NumNodeGroup;i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_node_grp_name(kemo_sgl, i, groupname);

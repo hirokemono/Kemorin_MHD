@@ -103,7 +103,8 @@ void update_psf_draw_field_hbox(struct psf_gtk_menu *psf_gmenu);
 void update_psf_draw_component_hbox(struct psf_gtk_menu *psf_gmenu);
 void update_by_psf_field(struct psf_gtk_menu *psf_gmenu);
 
-void update_kemoview_menu(struct updatable_widgets *updatable,
+void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
+                          struct updatable_widgets *updatable,
                           GtkWidget *menuHbox, GtkWidget *window);
 
 void make_gtk_main_menu_box(struct main_buttons *mbot,

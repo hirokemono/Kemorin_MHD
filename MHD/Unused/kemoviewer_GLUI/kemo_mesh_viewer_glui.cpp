@@ -912,7 +912,7 @@ static void make_2nd_level_fline_menu(){
 /* 2nd level menues*/
 
 static void make_2nd_level_image_menu(){
-	int iflag_draw_m = kemoview_get_draw_mesh_flag();
+	int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_axis =       kemoview_get_object_property_flags(AXIS_TOGGLE);
@@ -951,7 +951,7 @@ static void make_2nd_level_image_menu(){
 static void make_1st_level_menu(){
 	GLint menu_id;
 	
-	int iflag_draw_m = kemoview_get_draw_mesh_flag();
+	int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_any_objects_on = iflag_draw_p + iflag_draw_m + iflag_draw_f;

@@ -83,7 +83,7 @@ static void dummy_handler(int sel){
 static void make_1st_level_menu(){
 	GLint menu_id;
 	
-	int iflag_draw_m = kemoview_get_draw_mesh_flag();
+	int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_any_objects_on = iflag_draw_p + iflag_draw_m + iflag_draw_f;

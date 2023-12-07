@@ -267,7 +267,8 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     mbot->updatable->iflag_meshBox =  0;
     mbot->id_current[0] = 1;
     
-    update_kemoview_menu(mbot->updatable, mbot->menuHbox, gtk_win);
+    update_kemoview_menu(single_kemoview, mbot->updatable, mbot->menuHbox, 
+                         gtk_win);
 
 
     GtkWidget *vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
