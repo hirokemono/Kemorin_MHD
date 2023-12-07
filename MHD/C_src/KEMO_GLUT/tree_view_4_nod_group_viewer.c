@@ -55,7 +55,6 @@ static void nod_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-//		kemoview_gtk_surfcolorsel(user_data);
 		kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
 	} else {
 		kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);

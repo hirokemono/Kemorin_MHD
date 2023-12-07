@@ -492,9 +492,10 @@ extern "C" {
     double kemoview_get_PSF_opacity_at_value(struct kemoviewer_type *kemoviewer, 
                                              double value);
     
-	double kemoview_get_each_PSF_data_range(int selected, int icomp,
-                                            struct kemoviewer_type *kemoviewer);
-	double kemoview_get_each_PSF_colormap_range(int selected);
+	double kemoview_get_each_PSF_data_range(struct kemoviewer_type *kemoviewer,
+                                            int selected, int icomp);
+	double kemoview_get_each_PSF_colormap_range(struct kemoviewer_type *kemoviewer,
+                                                int selected);
     
     void kemoview_get_PSF_color_items(int i_point, double *value, double *color);
     void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity);

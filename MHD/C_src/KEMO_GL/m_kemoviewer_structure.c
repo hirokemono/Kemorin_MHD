@@ -728,12 +728,13 @@ void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity,
 							   i_point, value, opacity);
 }
 
-double kemoview_get_each_PSF_data_range(int selected, int icomp,
-                                        struct kemoviewer_type *kemoviewer){
+double kemoview_get_each_PSF_data_range(struct kemoviewer_type *kemoviewer,
+                                        int selected, int icomp){
 	return get_each_PSF_data_range(selected, icomp, kemoviewer->kemo_psf);
 };
-double kemoview_get_each_PSF_colormap_range(int selected){
-	return get_each_PSF_colormap_range(selected, kemo_sgl->kemo_psf);
+double kemoview_get_each_PSF_colormap_range(struct kemoviewer_type *kemoviewer, 
+                                            int selected){
+	return get_each_PSF_colormap_range(selected, kemoviewer->kemo_psf);
 };
 
 void kemoview_get_PSF_color_items(int i_point, double *value, double *color){

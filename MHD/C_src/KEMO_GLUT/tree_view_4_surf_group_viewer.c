@@ -142,7 +142,6 @@ static void surf_grp_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer 
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-//		kemoview_gtk_surfcolorsel(user_data);
 		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
 	} else {
 		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
@@ -157,7 +156,6 @@ static void surf_grp_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer u
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-//		kemoview_gtk_surfcolorsel(user_data);
 		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE, index_mode);
 	} else {
 		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE, index_mode);
@@ -172,7 +170,6 @@ static void surf_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer u
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-//		kemoview_gtk_surfcolorsel(user_data);
 		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE, index_mode);
 	} else {
 		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE, index_mode);

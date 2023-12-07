@@ -51,7 +51,7 @@
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex;
 
-- (void)InitColorTables;
+- (void)InitColorTables:(struct kemoviewer_type *) kemo_sgl;
 - (void)SetColorTables;
 
 - (IBAction)UpdateColorTables:(id)pID;

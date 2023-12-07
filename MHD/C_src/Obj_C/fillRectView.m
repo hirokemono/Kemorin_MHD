@@ -45,7 +45,7 @@
 	if (dataMin > colorMin) {dataMin = colorMin;};
 	if (dataMax < colorMax) {dataMax = colorMax;};
 
-	maxOpacity = kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
+	maxOpacity = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
 	
     // Set rectList
     for(i = 0; i < rectCount; i++) {

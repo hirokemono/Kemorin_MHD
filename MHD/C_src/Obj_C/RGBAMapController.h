@@ -31,7 +31,7 @@
 
 
 - (void)awakeFromNib;
-- (void)updateColormapParameter;
+- (void)updateColormapParameter:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)SaveColormapFile:(id)pId;
 - (IBAction)LoadColormapFile:(id)pId;

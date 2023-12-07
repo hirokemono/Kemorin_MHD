@@ -125,12 +125,13 @@
 	NSLog(@"Selected Column and raws id:   %@ %d",[pTableColumn identifier],pRowIndex);
 }
 
-- (void)InitOpacityTables {
+- (void)InitOpacityTables:(struct kemoviewer_type *) kemo_sgl
+{
 	double d_min, d_max;
 	
 	NumOpacityTable = 2;
-	d_min = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
-	d_max = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
+	d_min = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MIN);
+	d_max = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MAX);
 	
 	[self SetOpacityTables];
 }
