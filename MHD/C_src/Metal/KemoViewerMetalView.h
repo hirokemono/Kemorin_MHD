@@ -47,7 +47,6 @@
 
 -(void) updateBackground:(struct kemoviewer_type *) kemo_sgl;
 
-- (void) setRetinaMode;
 - (void) setViewerSize;
 
 - (NSUInteger) getHorizontalViewSize;

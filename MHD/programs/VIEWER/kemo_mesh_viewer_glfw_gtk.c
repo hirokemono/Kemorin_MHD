@@ -47,7 +47,8 @@ static void mainloop_4_glfw(){
 	        delta_t = glfwGetTime() - msg_timer_start;
     	    if(delta_t < 4.5){
 	    	    message_opacity = log10(10.0 - 2.0*delta_t);
-                kemoview_set_message_opacity(message_opacity);
+                kemoview_set_message_opacity(message_opacity,
+                                             single_kemoview);
             	draw_full(single_kemoview);
             }else{ 
                 iflag_msg_fade = 0;
@@ -144,15 +145,17 @@ void windowSizeCB(GLFWwindow *window, int width, int height) {
 	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
 	
     message_opacity = 1.0;
-	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf, width, height);
-	kemoview_set_message_opacity(message_opacity);
+	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf,
+                                              width, height,
+                                              single_kemoview);
+	kemoview_set_message_opacity(message_opacity, single_kemoview);
 	glViewport(IZERO, IZERO, (GLint) nx_buf, (GLint) ny_buf);
     iflag_msg_fade = 1;
     msg_timer_start = glfwGetTime();
 	
     if(mbot == NULL) return;
     update_windowsize_menu(single_kemoview, mbot->view_menu, gtk_win);
-/*    printf("retinemode %d\n", kemoview_get_retinamode()); */
+/*    printf("retinemode %d\n", kemoview_get_retinamode(single_kemoview)); */
 }
 
 void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
@@ -161,8 +164,10 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 /*	printf("frameBufferSizeCB %d %d\n", nx_buf, ny_buf); */
 	
     message_opacity = 1.0;
-	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf, npix_x, npix_y);
-    kemoview_set_message_opacity(message_opacity);
+	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf,
+                                              npix_x, npix_y,
+                                              single_kemoview);
+    kemoview_set_message_opacity(message_opacity, single_kemoview);
 	glViewport(IZERO, IZERO, (GLint) nx_buf, (GLint) ny_buf);
     iflag_msg_fade = 1;
     msg_timer_start = glfwGetTime();
@@ -333,7 +338,8 @@ int draw_mesh_kemo(void) {
     int nx_buf, ny_buf;
 	glfw_win = open_kemoviwer_glfw_window(NPIX_X, NPIX_Y);
 	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
-    kemoview_set_windowsize(nx_buf, ny_buf, NPIX_X, NPIX_Y);
+    kemoview_set_windowsize(nx_buf, ny_buf, NPIX_X, NPIX_Y,
+                            single_kemoview);
 	
 	fprintf(
 			stdout,

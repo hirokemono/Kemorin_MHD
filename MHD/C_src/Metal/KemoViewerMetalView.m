@@ -31,7 +31,7 @@
     return;
 }
 
-- (void) setRetinaMode
+- (void) setRetinaMode:(struct kemoviewer_type *) kemo_sgl
 {
     NSRect rectView = [self convertRectToBacking:[self bounds]];
     XpixelGLWindow = rectView.size.width;
@@ -40,9 +40,9 @@
     XpixelRectView = rectView_DISP.size.width;
     
     if(XpixelGLWindow > XpixelRectView){
-        kemoview_set_retinamode(IONE);
+        kemoview_set_retinamode(IONE, kemo_sgl);
     } else {
-        kemoview_set_retinamode(IZERO);
+        kemoview_set_retinamode(IZERO, kemo_sgl);
     };
     return;
 }
@@ -68,7 +68,7 @@
 }
 
 /* handles resizing of GL need context update and if the window dimensions change */
-- (void) resizeMetal
+- (void) resizeMetal:(struct kemoviewer_type *) kemo_sgl
 {
     // ensure camera knows size changed
     int iflag_updated = [self getViewSize];
@@ -76,16 +76,18 @@
         iflag_resize = 1;
         reftime_msg = CFAbsoluteTimeGetCurrent(); //reset time in all cases
         kemoview_update_projection_by_viewer_size(XpixelGLWindow, YpixelGLWindow,
-                                                  XpixelRectView, YpixelRectView);
-        kemoview_set_message_opacity(1.0);
+                                                  XpixelRectView, YpixelRectView,
+                                                  kemo_sgl);
+        kemoview_set_message_opacity(1.0, kemo_sgl);
     } else{
     }
 }
 
 - (void) setViewerSize
 {
-    [self setRetinaMode];
-    [self resizeMetal];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self setRetinaMode:kemo_sgl];
+    [self resizeMetal:kemo_sgl];
 }
 
 - (NSUInteger) getHorizontalViewSize
@@ -115,7 +117,7 @@
     }
     
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_message_opacity(message_opacity);
+    kemoview_set_message_opacity(message_opacity, kemo_sgl);
     [self UpdateImage:kemo_sgl];
     return;
 }

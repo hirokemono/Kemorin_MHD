@@ -129,10 +129,14 @@
 !    void kemoview_modify_view();
 !    void kemoviewer_reset_to_init_angle(struct kemoviewer_type *kemoviewer);
 !
-!    void kemoview_set_retinamode(int i_retina);
-!    void kemoview_set_windowsize(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
-!    void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
-!    
+!    void kemoview_set_retinamode(int i_retina, struct kemoviewer_type *kemoviewer);
+!    void kemoview_set_windowsize(int npixel_x, int npixel_y,
+!                                 int nwindow_x, int nwindow_y,
+!                                 struct kemoviewer_type *kemoviewer);
+!    void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y,
+!                                                   int nwindow_x, int nwindow_y,
+!                                                   struct kemoviewer_type *kemoviewer);
+!
 !    void kemoview_set_view_parameter(int selected, int i, double rot_vect);
 !    void kemoview_set_stereo_parameter(int selected, double value);
 !

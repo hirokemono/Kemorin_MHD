@@ -187,7 +187,8 @@ int draw_mesh_kemo(void) {
 	kemoview_main_window(single_kemoview, vbox);
 	
     /*! Create viewer window*/
-    kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+    kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y,
+                            single_kemoview);
 
     gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox);

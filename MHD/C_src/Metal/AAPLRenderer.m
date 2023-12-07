@@ -127,7 +127,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void)refreshKemoViewMetalBuffers:(id<MTLDevice> *) device
                            kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    int iflag = kemoview_get_draw_mode();
+    int iflag = kemoview_get_draw_mode(kemo_sgl);
     if(iflag == FULL_DRAW){
         [self releaseKemoViewMetalBuffers:kemo_sgl];
         
@@ -157,7 +157,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         [_kemo2DRenderer encodeMapObjects:renderEncoder
                                   buffers:kemo_sgl->kemo_buffers
                                projection:&_map_proj_mat];
-    }else if(kemoview_get_draw_mode() == SIMPLE_DRAW){
+    }else if(kemoview_get_draw_mode(kemo_sgl) == SIMPLE_DRAW){
         [_kemo3DRenderer encodeKemoSimpleObjects:renderEncoder
                                            depth:&_depthState
                                         kemoview:kemo_sgl

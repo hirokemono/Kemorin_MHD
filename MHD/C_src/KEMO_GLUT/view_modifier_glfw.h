@@ -33,7 +33,8 @@ struct window_pointers{
 GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y);
 
 void glfw_callbacks_init();
-void set_GLFWindowSize(int width, int height);
+void set_GLFWindowSize(int width, int height,
+                       struct kemoviewer_type *kemo_sgl);
 
 void draw_fast(struct kemoviewer_type *kemo_sgl);
 void draw_full(struct kemoviewer_type *kemo_sgl);

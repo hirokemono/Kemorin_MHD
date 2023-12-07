@@ -943,8 +943,8 @@ void draw_mesh_kemo(void) {
     glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
                         |GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
 	/*! Create viewer window*/
-    kemoview_set_retinamode(IZERO);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+    kemoview_set_retinamode(IZERO, kemo_sgl);
+	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y, kemo_sgl);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = create_kemoview_window();
 	

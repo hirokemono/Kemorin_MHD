@@ -399,14 +399,19 @@ extern "C" {
 
     void kemoviewer_reset_to_init_angle(struct kemoviewer_type *kemoviewer);
     
-    void kemoview_set_retinamode(int i_retina);
-    int kemoview_get_retinamode(void);
+    void kemoview_set_retinamode(int i_retina, struct kemoviewer_type *kemoviewer);
+    int kemoview_get_retinamode(struct kemoviewer_type *kemoviewer);
     
-    void kemoview_set_windowsize(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
-    void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
-    void kemoview_set_message_opacity(float opacity);
+    void kemoview_set_windowsize(int npixel_x, int npixel_y,
+                                 int nwindow_x, int nwindow_y,
+                                 struct kemoviewer_type *kemoviewer);
+    void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y,
+                                                   int nwindow_x, int nwindow_y,
+                                                   struct kemoviewer_type *kemoviewer);
+    void kemoview_set_message_opacity(float opacity,
+                                      struct kemoviewer_type *kemoviewer);
 
-    int kemoview_get_draw_mode(void);
+    int kemoview_get_draw_mode(struct kemoviewer_type *kemoviewer);
 
     void kemoview_set_view_integer(int selected, int ivalue,
                                    struct kemoviewer_type *kemoviewer);

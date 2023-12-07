@@ -1059,8 +1059,8 @@ void draw_mesh_kemo_glui(void) {
     kemoview_free_kvstring(command);
 	
 	/*! Create viewer window*/
-    kemoview_set_retinamode(IZERO);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+    kemoview_set_retinamode(IZERO, kemo_sgl);
+	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y, kemo_sgl);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = create_kemoview_window();
 	

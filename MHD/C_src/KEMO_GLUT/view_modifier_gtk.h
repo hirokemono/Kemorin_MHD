@@ -21,7 +21,8 @@
 GtkWidget * open_kemoviwer_gl_panel(int npixel_x, int npixel_y);
 
 void gtk_callbacks_init(gtk_callbacks_init);
-void set_GTKindowSize(int width, int height);
+void set_GTKindowSize(int width, int height,
+                      struct kemoviewer_type *kemo_sgl);
 
 void draw_fast(struct kemoviewer_type *kemo_sgl);
 void draw_full(struct kemoviewer_type *kemo_sgl);
