@@ -283,22 +283,34 @@ float kemoview_get_material_parameter(int itype){
 
 
 /* mesh controls  */
-void kemoview_set_mesh_color_mode(int icolor)  {
-	set_mesh_color_mode(icolor, kemo_sgl->kemo_mesh->mesh_m);
+void kemoview_set_mesh_color_mode(int icolor, struct kemoviewer_type *kemoviewer){
+	set_mesh_color_mode(icolor, kemoviewer->kemo_mesh->mesh_m);
 };
-void kemoview_set_num_of_color_loop(int icolor){
-	set_num_of_color_loop(icolor, kemo_sgl->kemo_mesh->mesh_m);
-};
-
-void kemoview_set_node_diamater(double factor, int i_digit){
-	set_node_diamater(factor, i_digit, kemo_sgl->kemo_mesh->mesh_m);
-};
-void kemoview_get_node_diamater(double *factor, int *i_digit){
-	get_node_diamater(kemo_sgl->kemo_mesh->mesh_m, factor, i_digit);	
+void kemoview_set_num_of_color_loop(int icolor, struct kemoviewer_type *kemoviewer){
+	set_num_of_color_loop(icolor, kemoviewer->kemo_mesh->mesh_m);
 };
 
-void kemoview_set_domain_distance(double dist){
-	set_domain_distance(dist, kemo_sgl->kemo_mesh->mesh_m);
+void kemoview_set_node_diamater(double factor, int i_digit,
+                                struct kemoviewer_type *kemoviewer){
+	set_node_diamater(factor, i_digit, kemoviewer->kemo_mesh->mesh_m);
+};
+int kemoview_get_mesh_color_mode(struct kemoviewer_type *kemoviewer){
+    return kemoviewer->kemo_mesh->mesh_m->mesh_color_mode;
+};
+void kemoview_get_node_diamater(struct kemoviewer_type *kemoviewer,
+                                double *factor, int *i_digit){
+	get_node_diamater(kemoviewer->kemo_mesh->mesh_m, factor, i_digit);	
+};
+int kemoview_get_num_of_color_loop(struct kemoviewer_type *kemoviewer){
+    return kemoviewer->kemo_mesh->mesh_m->num_of_color_loop;
+};
+
+void kemoview_set_domain_distance(double dist, struct kemoviewer_type *kemoviewer){
+	set_domain_distance(dist, kemoviewer->kemo_mesh->mesh_m);
+};
+double kemoview_get_domain_distance(struct kemoviewer_type *kemoviewer){
+    return kemoviewer->kemo_mesh->mesh_m->dist_domains;
+    
 };
 
 
@@ -367,11 +379,6 @@ void kemoview_get_surf_grp_name(struct kemoviewer_type *kemoviewer,
 };
 
 int kemoview_get_view_type_flag(void){return kemo_sgl->view_s->iflag_view_type;};
-
-int kemoview_get_mesh_color_mode(void){return kemo_sgl->kemo_mesh->mesh_m->mesh_color_mode;};
-int kemoview_get_num_of_color_loop(void){return kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop;};
-
-double kemoview_get_domain_distance(void){return kemo_sgl->kemo_mesh->mesh_m->dist_domains;};
 
 
 void kemoview_get_ext_from_file_name(struct kv_string *filename,

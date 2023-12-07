@@ -594,9 +594,9 @@ static void set_fline_col_type_handler(int sel){
 
 static void color_mode_handler(int sel){
 	if (sel == GRAYSCALE) {
-		kemoview_set_mesh_color_mode(GRAYSCALE);
+		kemoview_set_mesh_color_mode(GRAYSCALE, kemo_sgl);
 	} else if( sel == RAINBOW_COLOR) {
-		kemoview_set_mesh_color_mode(RAINBOW_COLOR);
+		kemoview_set_mesh_color_mode(RAINBOW_COLOR, kemo_sgl);
 	} else if( sel == SET_NUM_COLORS) {
 		set_num_color_loop_by_glui(winid);
 	};

@@ -340,7 +340,7 @@ void set_background_color_console(){
 void set_domain_distance_console(){
 	float distance;
 	char buf[1024];
-	float dist_org = (float) kemoview_get_domain_distance();
+	float dist_org = (float) kemoview_get_domain_distance(kemo_sgl);
 	
 	printf("Enter object distance: \n");
 	printf("Current distance  %.7e \n", dist_org);
@@ -349,14 +349,14 @@ void set_domain_distance_console(){
 	sscanf(buf,"%f", &distance);
 	printf("modified distance: %.7e \n", distance);
 	
-	kemoview_set_domain_distance((double) distance);
+	kemoview_set_domain_distance((double) distance, kemo_sgl);
 	return;
 }
 
 void set_num_color_loop_console(){
 	char buf[1024];
 	int num_cloop;
-	int num_loop_org = kemoview_get_num_of_color_loop();
+	int num_loop_org = kemoview_get_num_of_color_loop(kemo_sgl);
 	
 	printf("Enter number of color: \n");
 	printf("Current number  %d \n", num_loop_org);
@@ -365,7 +365,7 @@ void set_num_color_loop_console(){
 	sscanf(buf,"%d", &num_cloop);
 	printf("modified number of color: %d \n", num_cloop);
 	
-	kemoview_set_num_of_color_loop(num_cloop);
+	kemoview_set_num_of_color_loop(num_cloop, kemo_sgl);
 	return;
 }
 

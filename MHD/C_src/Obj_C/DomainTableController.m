@@ -323,10 +323,9 @@ didClickTableColumn:(NSTableColumn *)tableColumn
 
 - (IBAction) SetObjectDistanceAction:(id)pSender
 {
-	double dblobjectDistance;
-	
-	dblobjectDistance = (double) self.objectDistance;
-	kemoview_set_domain_distance(dblobjectDistance);
+	double dblobjectDistance = (double) self.objectDistance;
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_domain_distance(dblobjectDistance, kemo_sgl);
 	kemoview_draw_with_modified_domain_distance();
 
 	[_metalView UpdateImage];

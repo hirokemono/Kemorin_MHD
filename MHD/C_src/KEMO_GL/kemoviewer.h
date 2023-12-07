@@ -332,14 +332,19 @@ extern "C" {
 	float kemoview_get_material_parameter(int itype);
 	
 	
-    void kemoview_set_mesh_color_mode(int icolor);
-    void kemoview_set_num_of_color_loop(int icolor);
-    
-    void kemoview_set_node_diamater(double factor, int i_digit);
-	void kemoview_get_node_diamater(double *factor, int *i_digit);
+    void kemoview_set_mesh_color_mode(int icolor, struct kemoviewer_type *kemoviewer);
+    int kemoview_get_mesh_color_mode(struct kemoviewer_type *kemoviewer);
+    void kemoview_set_num_of_color_loop(int icolor, struct kemoviewer_type *kemoviewer);
+    int kemoview_get_num_of_color_loop(struct kemoviewer_type *kemoviewer);
 
-	void kemoview_set_domain_distance(double dist);
-    
+    void kemoview_set_node_diamater(double factor, int i_digit,
+                                    struct kemoviewer_type *kemoviewer);
+	void kemoview_get_node_diamater(struct kemoviewer_type *kemoviewer,
+                                    double *factor, int *i_digit);
+
+	void kemoview_set_domain_distance(double dist, struct kemoviewer_type *kemoviewer);
+    double kemoview_get_domain_distance(struct kemoviewer_type *kemoviewer);
+
 	void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor);
 	int kemoview_get_mesh_color_flag(int iflag_group, int selected);
     
@@ -370,11 +375,7 @@ extern "C" {
     
     int kemoview_get_view_type_flag(void);
     
-	int kemoview_get_mesh_color_mode(void);
-	int kemoview_get_num_of_color_loop(void);
-    
-	double kemoview_get_domain_distance(void);
-    
+
     
     void kemoview_get_ext_from_file_name(struct kv_string *filename,
                                          struct kv_string *stripped_prefix, struct kv_string *stripped_ext);

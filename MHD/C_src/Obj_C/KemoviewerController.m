@@ -148,19 +148,24 @@
 - (IBAction)ChooseColorModeAction:(id)sender
 {
 	MeshColorMode = [[_colormode_matrix selectedCell] tag];
-	kemoview_set_mesh_color_mode((int) MeshColorMode);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_mode((int) MeshColorMode, kemo_sgl);
 
 	[_metalView UpdateImage];
 }
 
 - (IBAction)SetColorLoopCount:(id)pSender {
-	kemoview_set_num_of_color_loop((int) ColorLoopCount);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_num_of_color_loop((int) ColorLoopCount, kemo_sgl);
 
 	[_metalView UpdateImage];
 }
 
 - (IBAction) ShowNodeSizeValue:(id)pSender {
-	kemoview_set_node_diamater((double) NodeSizeFactor, (int) NodeSizedigits);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_node_diamater((double) NodeSizeFactor,
+                               (int) NodeSizedigits,
+                               kemo_sgl);
 
 	[_metalView UpdateImage];
 }

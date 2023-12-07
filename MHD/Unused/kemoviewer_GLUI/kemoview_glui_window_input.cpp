@@ -285,7 +285,7 @@ static void update_PSFcolor_glui(int val){
 
 static void input_domain_distance_from_panel(int val){
 	distance = editText->get_float_val();
-	kemoview_set_domain_distance((double) distance);
+	kemoview_set_domain_distance((double) distance, kemo_sgl);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -293,7 +293,7 @@ static void input_domain_distance_from_panel(int val){
 
 static void input_num_colorloop_from_panel(int val){
 	nloop = editText->get_int_val();
-	if(nloop > 0) kemoview_set_num_of_color_loop(nloop);
+	if(nloop > 0) kemoview_set_num_of_color_loop(nloop, kemo_sgl);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -497,7 +497,7 @@ void set_background_color_glui(int winid){
 
 
 void set_domain_distance_by_glui(int winid){
-	distance = (float) kemoview_get_domain_distance();
+	distance = (float) kemoview_get_domain_distance(kemo_sgl);
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Object distance: ", GLUI_EDITTEXT_FLOAT,
@@ -507,7 +507,7 @@ void set_domain_distance_by_glui(int winid){
 }
 
 void set_num_color_loop_by_glui(int winid){
-	nloop = kemoview_get_num_of_color_loop();
+	nloop = kemoview_get_num_of_color_loop(kemo_sgl);
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Num of color: ", GLUI_EDITTEXT_INT,

@@ -54,6 +54,7 @@ extern "C" {
     void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt);
 
 
+/* subroutines for surafces */
     int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
                                      struct kv_string *stripped_filehead);
     void kemoview_release_PSF_gl_texture(void);

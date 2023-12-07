@@ -56,14 +56,17 @@
 !    int kemoview_get_object_property_flags(int selected);
 !    int kemoview_toggle_object_properties(int selected);
 !    
-!    void kemoview_set_mesh_color_mode(int icolor);
-!    void kemoview_set_num_of_color_loop(int icolor);
+!    void kemoview_set_mesh_color_mode(int icolor, struct kemoviewer_type *kemoviewer);
+!    void kemoview_set_num_of_color_loop(int icolor, struct kemoviewer_type *kemoviewer);
 !    
-!    void kemoview_set_node_diamater(double factor, int i_digit);
-!    void kemoview_get_node_diamater(double *factor, int *i_digit);
+!    void kemoview_set_node_diamater(double factor, int i_digit,
+!                                    struct kemoviewer_type *kemoviewer);
+!    void kemoview_get_node_diamater(struct kemoviewer_type *kemoviewer,
+!                                    double *factor, int *i_digit);
 !
-!    void kemoview_set_domain_distance(double dist);
-!    
+!    void kemoview_set_domain_distance(double dist, struct kemoviewer_type *kemoviewer);
+!    double kemoview_get_domain_distance(struct kemoviewer_type *kemoviewer);
+!
 !    
 !    void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor);
 !    void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
@@ -93,10 +96,9 @@
 !    
 !    int kemoview_get_view_type_flag();
 !    
-!    int kemoview_get_num_of_color_loop();
+!    int kemoview_get_num_of_color_loop(struct kemoviewer_type *kemoviewer);
 !    
-!    double kemoview_get_domain_distance();
-!    
+!
 !    
 !    void kemoview_get_ext_from_file_name(const char *file_head, char *stripped_fhead, char *stripped_ext);
 !    void kemoview_add_ext_to_file_name(const char *file_head, const char *added_ext, char *file_name);
