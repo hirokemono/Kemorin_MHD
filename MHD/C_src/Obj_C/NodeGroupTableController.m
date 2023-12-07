@@ -31,7 +31,7 @@
 
 - (IBAction) ShowAllNodeGroupAction:(id)pId{
 	int i;
-	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	NSLog(@"selectedNodeGroupObjectType %@", selectedNodeGroupObjectType);
 	if([selectedNodeGroupObjectType isEqualToString:@"NodGrpNode"]) {
 		NSLog(@"Set all NodGrpNode");
@@ -39,7 +39,8 @@
 		for(i=0;i<NumNodeGroup;i++){
 			[NodeGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
 			NSLog(@"Set all nodes %d", i);
-			kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i, IONE);
+			kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i, IONE,
+                                        kemo_sgl);
 		}
 	}
 
@@ -50,12 +51,13 @@
 - (IBAction) HideAllNodeGroupAction:(id)pId
 {
 	int i;
-	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if([selectedNodeGroupObjectType isEqualToString:@"NodGrpNode"]) {
 		[NodeGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumNodeGroup;i++){
 			[NodeGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i, IZERO);
+			kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i, IZERO,
+                                        kemo_sgl);
 		}
 	}	
 
@@ -86,11 +88,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
    forTableColumn:(NSTableColumn *)tableColumn 
 			  row:(int)rowIndex;
 {
-    id	identifier;
-	
-    identifier = [tableColumn identifier];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    id	identifier = [tableColumn identifier];
     if([identifier isEqualToString:@"NodGrpNode"]) {
-		kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, rowIndex, [object intValue]);
+		kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, rowIndex, [object intValue],
+                                    kemo_sgl);
 		[NodeGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
 	}
 

@@ -208,28 +208,32 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 {
     id	identifier;
 	int iflag;
-    
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     identifier = [tableColumn identifier];
     if([identifier isEqualToString:@"DomainPatch"]) {
 		[DomainDisplayPatchFlags replaceObjectAtIndex:rowIndex withObject:object];
 		iflag = [[DomainDisplayPatchFlags objectAtIndex:rowIndex] intValue];
-		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, rowIndex, iflag);
+		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, rowIndex, iflag,
+                                    kemo_sgl);
     }
     if([identifier isEqualToString:@"DomainGrid"]) {
 		[DomainDisplayWireFlags replaceObjectAtIndex:rowIndex withObject:object];
 		iflag = [[DomainDisplayWireFlags objectAtIndex:rowIndex] intValue];
-		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, rowIndex, iflag);
+		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, rowIndex, iflag,
+                                    kemo_sgl);
     }
     if([identifier isEqualToString:@"DomainNode"]) {
 		[DomainDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
 		iflag = [[DomainDisplayNodeFlags objectAtIndex:rowIndex] intValue];
-		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, rowIndex, iflag);
+		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, rowIndex, iflag,
+                                    kemo_sgl);
     }
 
 	[_metalView UpdateImage];
 }
 
-- (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn
+- (void)tableView:(NSTableView *)aTableView 
+didClickTableColumn:(NSTableColumn *)tableColumn
 {
 	selectedDomainObjectType = [tableColumn identifier];
 	return;

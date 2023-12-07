@@ -12,6 +12,9 @@
 #import "ElementGroupTableController.h"
 #import "NodeGroupTableController.h"
 #import "SurfaceGroupTableController.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 
 @interface DomainTableController : NSObject {
@@ -21,6 +24,8 @@
     IBOutlet SurfaceGroupTableController* _surfGrpController;
     
     IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerObject *_kmv;
+
     IBOutlet NSWindow*  window;
 	IBOutlet NSWindow* _meshWindow;
 	IBOutlet id _tableView;

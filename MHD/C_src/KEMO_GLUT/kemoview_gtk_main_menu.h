@@ -81,8 +81,10 @@ struct main_buttons{
 struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data);
 void dealloc_main_buttons(struct main_buttons *mbot);
 
-void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *mbot,
-							   GtkWidget *window_main);
+void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
+                               struct kv_string *filename, 
+                               struct main_buttons *mbot,
+                               GtkWidget *window_main);
 
 void set_psf_menu_box(struct updatable_widgets *updatable, GtkWidget *window);
 void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
@@ -92,7 +94,9 @@ void set_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu, GtkWidget *wi
 void fieldline_gtk_menu(struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *menuHbox, GtkWidget *window);
 
-void set_mesh_menu_box(struct updatable_widgets *updatable, GtkWidget *window);
+void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
+                       struct updatable_widgets *updatable, 
+                       GtkWidget *window);
 
 void update_current_psf_set_hbox(struct psf_gtk_menu *psf_gmenu);
 void update_psf_draw_field_hbox(struct psf_gtk_menu *psf_gmenu);

@@ -112,20 +112,24 @@ void init_fline_menu(struct updatable_widgets *updatable, GtkWidget *window){
     return;
 }
 
-void init_mesh_menu(struct updatable_widgets *updatable, GtkWidget *window){
+static void init_mesh_menu(struct kemoviewer_type *kemo_sgl,
+                           struct updatable_widgets *updatable, 
+                           GtkWidget *window){
     if(updatable->iflag_meshBox > 0) return;
     if(kemoview_get_draw_mesh_flag() == 0) return;
 
     updatable->meshBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    set_mesh_menu_box(updatable, window);
+    set_mesh_menu_box(kemo_sgl, updatable, window);
     GtkWidget *frame_mesh = pack_gtk_mesh_menu(updatable->mesh_vws, window);
     gtk_box_pack_start(GTK_BOX(updatable->meshBox), frame_mesh, FALSE, FALSE, 0);
     updatable->iflag_meshBox = 1;
     return;
 }
 
-void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *mbot,
-			GtkWidget *window_main){
+void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
+                               struct kv_string *filename, 
+                               struct main_buttons *mbot,
+                               GtkWidget *window_main){
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	int iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
@@ -141,7 +145,7 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 	
     init_psf_menu(mbot->updatable, window_main);
     init_fline_menu(mbot->updatable, window_main);
-    init_mesh_menu(mbot->updatable, window_main);
+    init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
     activate_evolution_menu(mbot->updatable->expander_evo);
     
     update_kemoview_menu(mbot->updatable, mbot->menuHbox, window_main);
@@ -219,7 +223,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
         unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
                                                                       (nimg_raw * npix_y));
         for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-            kemoview_set_quilt_nums(kemo_sgl, ISET_QUILT_COUNT, i_quilt);
+            kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
             draw_quilt();
             kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
             kemoview_add_quilt_img(image, quilt_image);
@@ -361,6 +365,8 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
 
 static void open_file_CB(GtkButton *button, gpointer user_data){
     struct kv_string *filename;
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	
 	int iflag_set = kemoview_gtk_read_file_select(button, user_data);
 	if(iflag_set == IZERO) return;
@@ -369,7 +375,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	
-	open_kemoviewer_file_glfw(filename, mbot, window_main);
+	open_kemoviewer_file_glfw(kemo_sgl, filename, mbot, window_main);
 	return;
 };
 
@@ -643,7 +649,9 @@ void set_fieldline_menu_box(struct fieldline_gtk_menu *fline_menu, GtkWidget *wi
 	return;
 }
 
-void set_mesh_menu_box(struct updatable_widgets *updatable, GtkWidget *window){
+void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
+                       struct updatable_widgets *updatable, 
+                       GtkWidget *window){
     init_mesh_views_4_viewer(updatable->mesh_vws);
 	
 	/*  Set buttons */
@@ -653,7 +661,7 @@ void set_mesh_menu_box(struct updatable_widgets *updatable, GtkWidget *window){
 	g_signal_connect(G_OBJECT(updatable->mesh_vws->closeMeshButton), "clicked",
                      G_CALLBACK(close_mesh_CB), (gpointer) window);
 	
-    init_gtk_mesh_menu(updatable->mesh_vws, window);
+    init_gtk_mesh_menu(kemo_sgl, updatable->mesh_vws, window);
 	return;
 }
 

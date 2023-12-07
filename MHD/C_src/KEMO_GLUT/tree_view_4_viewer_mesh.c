@@ -181,9 +181,8 @@ void append_node_grp_model_data(int index, struct ci_clist_view *nod_grp_vws,
 	return;
 }
 
-int toggle_draw_patch_switch(gchar *path_str, gpointer user_data, 
-			int *index1_for_toggle){
-	struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
+int toggle_draw_patch_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                             int *index1_for_toggle){
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(grp_vws->tree_view));  
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
@@ -215,9 +214,8 @@ int toggle_draw_patch_switch(gchar *path_str, gpointer user_data,
 	return index;
 }
 
-int toggle_draw_grid_switch(gchar *path_str, gpointer user_data, 
-			int *index2_for_toggle){
-	struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
+int toggle_draw_grid_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                            int *index2_for_toggle){
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(grp_vws->tree_view));  
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
@@ -249,9 +247,8 @@ int toggle_draw_grid_switch(gchar *path_str, gpointer user_data,
 	return index;
 }
 
-int toggle_draw_node_switch(gchar *path_str, gpointer user_data, 
-			int *index3_for_toggle){
-	struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
+int toggle_draw_node_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                            int *index3_for_toggle){
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(grp_vws->tree_view));  
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
@@ -283,9 +280,8 @@ int toggle_draw_node_switch(gchar *path_str, gpointer user_data,
 	return index;
 }
 
-int toggle_draw_nod_grp_node_switch(gchar *path_str, gpointer user_data,
+int toggle_draw_nod_grp_node_switch(gchar *path_str, struct ci_clist_view *nod_grp_vws,
 			int *index1_for_toggle){
-	struct ci_clist_view *nod_grp_vws = (struct ci_clist_view *) user_data;
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(nod_grp_vws->tree_view));  
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
@@ -314,9 +310,8 @@ int toggle_draw_nod_grp_node_switch(gchar *path_str, gpointer user_data,
 }
 
 
-int set_all_draw_flags(int iflag, int iflag_column, gpointer user_data)
+int set_all_draw_flags(int iflag, int iflag_column, struct ci3_clist_view *grp_vws)
 {
-	struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(grp_vws->tree_view));  
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreeIter iter;
@@ -347,9 +342,8 @@ int set_all_draw_flags(int iflag, int iflag_column, gpointer user_data)
 }
 
 
-int set_all_node_draw_flags(int iflag, gpointer user_data)
+int set_all_node_draw_flags(int iflag, struct ci_clist_view *nod_grp_vws)
 {
-	struct ci_clist_view *nod_grp_vws = (struct ci_clist_view *) user_data;
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(nod_grp_vws->tree_view));  
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreeIter iter;

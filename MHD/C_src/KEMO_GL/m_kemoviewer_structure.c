@@ -345,8 +345,9 @@ void kemoview_mesh_draw_toggle(int selected){
 };
 
 
-void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int iflag){
-	set_draw_mesh_flag(iflag_group, selected, igrp, iflag, kemo_sgl->kemo_mesh);
+void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int iflag,
+                                 struct kemoviewer_type *kemoviewer){
+	set_draw_mesh_flag(iflag_group, selected, igrp, iflag, kemoviewer->kemo_mesh);
 	return;
 };
 void kemoview_toggle_draw_mesh_item(int iflag_group, int selected, int igrp){

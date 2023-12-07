@@ -100,16 +100,16 @@ void append_grp_model_data(int index, struct ci3_clist_view *grp_vws,
 void append_node_grp_model_data(int index, struct ci_clist_view *nod_grp_vws,
 			GtkListStore *child_model);
 
-int toggle_draw_patch_switch(gchar *path_str, gpointer user_data, 
-			int *index1_for_toggle);
-int toggle_draw_grid_switch(gchar *path_str, gpointer user_data, 
-			int *index2_for_toggle);
-int toggle_draw_node_switch(gchar *path_str, gpointer user_data, 
-			int *index3_for_toggle);
-int toggle_draw_nod_grp_node_switch(gchar *path_str, gpointer user_data, 
-			int *index1_for_toggle);
+int toggle_draw_patch_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                             int *index1_for_toggle);
+int toggle_draw_grid_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                            int *index2_for_toggle);
+int toggle_draw_node_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                            int *index3_for_toggle);
+int toggle_draw_nod_grp_node_switch(gchar *path_str, struct ci_clist_view *nod_grp_vws, 
+                                    int *index1_for_toggle);
 
-int set_all_draw_flags(int iflag, int iflag_column, gpointer user_data);
-int set_all_node_draw_flags(int iflag, gpointer user_data);
+int set_all_draw_flags(int iflag, int iflag_column, struct ci3_clist_view *grp_vws);
+int set_all_node_draw_flags(int iflag, struct ci_clist_view *nod_grp_vws);
 
 #endif /* tree_view_4_pvr_colormap_h_ */

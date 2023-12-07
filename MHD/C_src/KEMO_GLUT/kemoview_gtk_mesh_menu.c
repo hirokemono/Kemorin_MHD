@@ -100,7 +100,9 @@ void set_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws){
 	return;
 };
 
-void init_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, GtkWidget *window){
+void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl, 
+                        struct kemoview_mesh_view *mesh_vws, 
+                        GtkWidget *window){
     GtkAdjustment *adj_dist;
     GtkAdjustment *adj_node_size, *adj_node_digit;
     GtkAdjustment *adj_num_loop;
@@ -148,10 +150,10 @@ void init_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, GtkWidget *window){
     
     set_gtk_mesh_menu(mesh_vws);
     
-    init_domain_draw_expander(window, mesh_vws->domain_group_gmenu);
-    init_nod_group_draw_expander(window, mesh_vws->node_group_gmenu);
-    init_ele_group_draw_expander(window, mesh_vws->ele_group_gmenu);
-    init_surf_group_draw_expander(window, mesh_vws->surf_group_gmenu);
+    init_domain_draw_expander(kemo_sgl, window, mesh_vws->domain_group_gmenu);
+    init_nod_group_draw_expander(kemo_sgl,  window, mesh_vws->node_group_gmenu);
+    init_ele_group_draw_expander(kemo_sgl,  window, mesh_vws->ele_group_gmenu);
+    init_surf_group_draw_expander(kemo_sgl, window, mesh_vws->surf_group_gmenu);
     
     set_domain_draw_box(mesh_vws->domain_group_gmenu);
     set_nod_group_draw_box(mesh_vws->node_group_gmenu);

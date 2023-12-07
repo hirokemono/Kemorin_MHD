@@ -19,19 +19,15 @@ static int iflag_set;
    Constract input windows
 */
 
-int kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
+int kemoview_gtk_read_file_select(GtkButton *button, gpointer entry_data){
 	int response;
-	GtkWidget *parent;
-	GtkEntry *entry;
+	GtkEntry *entry = GTK_ENTRY(entry_data);
+    GtkWidget *parent = GTK_WIDGET(g_object_get_data(G_OBJECT(entry_data), "parent"));
 	GtkFileChooser *chooser;
 	
 	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
-	
-	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
-	entry = GTK_ENTRY(data);
-	
-	
-	iflag_set = IZERO;
+
+    iflag_set = IZERO;
 	/* generate file selection widget*/
 	
 	filew = gtk_file_chooser_dialog_new("Select File", GTK_WINDOW(parent), action,

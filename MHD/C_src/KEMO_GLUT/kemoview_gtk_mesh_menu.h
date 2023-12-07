@@ -30,7 +30,9 @@
 
 
 /*  prototypes */
-void init_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, GtkWidget *window);
+void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl, 
+                        struct kemoview_mesh_view *mesh_vws, 
+                        GtkWidget *window);
 GtkWidget *  pack_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, GtkWidget *window);
 
 #endif
