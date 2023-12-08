@@ -3,18 +3,16 @@
 
 #include "m_kemoviewer_structure.h"
 
-struct kemoviewer_type *kemo_sgl;
-
-static void kemoview_allocate_pointers(){
-	kemo_sgl->view_s = (struct view_element *) malloc(sizeof(struct view_element));
+static void kemoview_allocate_pointers(struct kemoviewer_type *kemoviewer_data){
+    kemoviewer_data->view_s = (struct view_element *) malloc(sizeof(struct view_element));
 	
-    kemo_sgl->kemo_buffers = init_kemoview_buffers();
+    kemoviewer_data->kemo_buffers = init_kemoview_buffers();
 
-	kemo_sgl->kemo_mesh =  init_kemoview_mesh();
-	kemo_sgl->kemo_fline = init_kemoview_fline();
-	kemo_sgl->kemo_psf =   init_kemoview_psf();
+    kemoviewer_data->kemo_mesh =  init_kemoview_mesh();
+    kemoviewer_data->kemo_fline = init_kemoview_fline();
+    kemoviewer_data->kemo_psf =   init_kemoview_psf();
 	
-	kemo_sgl->psf_ucd_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
+    kemoviewer_data->psf_ucd_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
 	return;
 }
 
@@ -23,14 +21,14 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
 	struct kemoviewer_type *kemoviewer_data 
 		= (struct kemoviewer_type *)malloc(sizeof(struct kemoviewer_type));
     
-    kemo_sgl = kemoviewer_data;
-	kemoview_allocate_pointers();
+	kemoview_allocate_pointers(kemoviewer_data);
     
-	init_kemoview_array(kemo_sgl->kemo_psf->psf_a);
+	init_kemoview_array(kemoviewer_data->kemo_psf->psf_a);
     
-	init_kemoviewer(IZERO, kemo_sgl->kemo_mesh->mesh_d, kemo_sgl->kemo_mesh->mesh_m, kemo_sgl->view_s);
-	init_fline_parameters(kemo_sgl->kemo_fline->fline_m);
-    kemo_sgl = kemoviewer_data;
+	init_kemoviewer(IZERO, kemoviewer_data->kemo_mesh->mesh_d,
+                    kemoviewer_data->kemo_mesh->mesh_m,
+                    kemoviewer_data->view_s);
+	init_fline_parameters(kemoviewer_data->kemo_fline->fline_m);
 	return kemoviewer_data;
 }
 
