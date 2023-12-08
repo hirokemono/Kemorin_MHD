@@ -15,7 +15,7 @@
 
 /* prptotypes */
 
-int count_psf_nodes_to_buf(int ist_psf, int ied_psf);
+long count_psf_nodes_to_buf(long ist_psf, long ied_psf);
 
 void set_psf_nodes_to_buf(int ist_psf, int ied_psf, int shading_mode, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m, 

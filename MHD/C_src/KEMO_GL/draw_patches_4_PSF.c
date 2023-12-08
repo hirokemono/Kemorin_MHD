@@ -5,11 +5,11 @@
 
 #define ARCPI 0.318309886
 
-void const_PSF_patch_buffer(int shading_mode, int ist_psf, int ied_psf,
+void const_PSF_patch_buffer(int shading_mode, long ist_psf, long ied_psf,
                             struct psf_data **psf_s, struct psf_menu_val **psf_m,
                             struct kemo_array_control *psf_a,
                             struct gl_strided_buffer *psf_buf){
-	int num_vetex = ITHREE * count_psf_nodes_to_buf(ist_psf, ied_psf);
+	int num_vetex = ITHREE * (int) count_psf_nodes_to_buf(ist_psf, ied_psf);
     set_buffer_address_4_patch(num_vetex, psf_buf);
 	if(psf_buf->num_nod_buf <= 0) return;
 	
@@ -20,7 +20,7 @@ void const_PSF_patch_buffer(int shading_mode, int ist_psf, int ied_psf,
 	return;
 }
 
-void const_PSF_texture_buffer(int shading_mode, int ist_psf, int ied_psf,
+void const_PSF_texture_buffer(int shading_mode, long ist_psf, long ied_psf,
                               struct psf_data **psf_s, struct psf_menu_val **psf_m,
                               struct kemo_array_control *psf_a,
                               struct gl_strided_buffer *psf_buf){
@@ -103,11 +103,12 @@ void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data
                                     struct gl_strided_buffer *PSF_stxur_buf,
                                     struct gl_strided_buffer *PSF_isoline_buf,
                                     struct gl_strided_buffer *PSF_arrow_buf){
-    const_PSF_texture_buffer(view_s->shading_mode, IZERO, psf_a->istack_solid_psf_txtur,
+    const_PSF_texture_buffer(view_s->shading_mode,
+                             IZERO, psf_a->istack_solid_psf_txtur,
                              psf_s, psf_m, psf_a, PSF_stxur_buf);
-    const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_solid_psf_txtur,
-                           psf_a->istack_solid_psf_patch, psf_s, psf_m, psf_a,
-                           PSF_solid_buf);
+    const_PSF_patch_buffer(view_s->shading_mode, 
+                           psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch,
+                           psf_s, psf_m, psf_a, PSF_solid_buf);
     const_PSF_isoline_buffer(view_s, psf_s, psf_m, psf_a, PSF_isoline_buf);
     const_PSF_arrow_buffer(psf_s, psf_m, psf_a, PSF_arrow_buf);
     return;
@@ -120,9 +121,9 @@ void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data
     const_PSF_texture_buffer(view_s->shading_mode,
                              psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur,
                              psf_s, psf_m, psf_a, PSF_ttxur_buf);
-    const_PSF_patch_buffer(view_s->shading_mode, psf_a->istack_trans_psf_txtur,
-                           psf_a->ntot_psf_patch, psf_s, psf_m, psf_a,
-                           PSF_trns_buf);
+    const_PSF_patch_buffer(view_s->shading_mode,
+                           psf_a->istack_trans_psf_txtur, psf_a->ntot_psf_patch, 
+                           psf_s, psf_m, psf_a, PSF_trns_buf);
 	return;
 };
 

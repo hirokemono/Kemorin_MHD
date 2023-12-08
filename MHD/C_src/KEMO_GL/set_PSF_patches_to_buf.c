@@ -7,9 +7,8 @@
 
 static float arrow_c[4] = {0.8, 0.7, 0.6, 1.0};
 
-int count_psf_nodes_to_buf(int ist_psf, int ied_psf){
-	int num_patch = ied_psf - ist_psf;
-	return num_patch;
+long count_psf_nodes_to_buf(long ist_psf, long ied_psf){
+	return (ied_psf - ist_psf);
 };
 
 void set_psf_nodes_to_buf(int ist_psf, int ied_psf, int shading_mode, 

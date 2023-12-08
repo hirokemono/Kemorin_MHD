@@ -208,7 +208,7 @@ static void copy_color_opacity_to_ctl(struct colormap_params *cmap_s,
 
 static void make_colorbar_for_ctl(const int iflag_draw_time, const int iflag_draw_axis,
                                   const int draw_psf_cbar, struct colormap_params *cmap_s, 
-			struct pvr_colorbar_ctl_c *cbar_c){
+                                  struct pvr_colorbar_ctl_c *cbar_c){
     double d_cmap[2], v_cmap[2];
     
     set_boolean_by_chara_ctl_item(iflag_draw_time, cbar_c->f_time_switch_ctl);
@@ -217,7 +217,7 @@ static void make_colorbar_for_ctl(const int iflag_draw_time, const int iflag_dra
 	set_boolean_by_chara_ctl_item(draw_psf_cbar, cbar_c->f_colorbar_switch_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->f_colorbar_scale_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->f_zeromarker_flag_ctl);
-    sprintf(cbar_c->f_colorbar_switch_ctl, "%s", "side");
+    sprintf(cbar_c->f_colorbar_switch_ctl->c_tbl, "%s", "side");
 	
 	int num = count_real2_clist(cmap_s->colormap);
 	set_from_real2_clist_at_index(0,     cmap_s->colormap, &d_cmap[0], &v_cmap[0]);

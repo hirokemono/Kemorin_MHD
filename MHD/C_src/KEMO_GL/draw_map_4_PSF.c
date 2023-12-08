@@ -18,7 +18,7 @@ void set_map_patch_buffer(int ist_psf, int ied_psf, struct psf_data **psf_s,
                           struct gl_strided_buffer *map_buf){
     set_color_code_for_psfs(psf_s, psf_m, psf_a);
 
-    int num_patch = count_psf_nodes_to_buf(ist_psf, ied_psf);
+    int num_patch = (int) count_psf_nodes_to_buf(ist_psf, ied_psf);
     set_buffer_address_4_patch((ITHREE * num_patch), map_buf);
     if(map_buf->num_nod_buf > 0){
         resize_strided_buffer(map_buf);

@@ -597,9 +597,9 @@ void set_position_in_model(struct view_element *view, int nnod,
 }
 
 
-void set_distance_in_model(struct view_element *view, int nnod,
+void set_distance_in_model(struct view_element *view, long nnod,
                            double **xx, double *z_eye){
-	int i;
+	long i;
 	
 	/* transfer matrix for object*/
 	for (i=0;i<nnod;i++){

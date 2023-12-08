@@ -99,13 +99,14 @@ void quicksort_real_c(float *rvec, int *list, int lo, int hi) {
 	return;
 }
 
-void quicksort_double_2idx_c(double *dvec, int *list1, int *list2, int lo, int hi){
-    int i, j, itmp;
+void quicksort_double_2idx_c(double *dvec, int *list1, int *list2, long lo, long hi){
+    long i, j;
+    int itmp;
     double rtmp, pivot;
     
     if(lo == hi) return; 
-    i=lo; 
-    j=hi;
+    i = lo; 
+    j = hi;
     pivot= dvec[(lo+hi)/2]; 
     
     /* Split the array into two parts */

@@ -34,11 +34,11 @@ struct kemo_array_control{
     int istep_sync;
 	int *iflag_loaded;
     
-    int ntot_psf_patch;
-    int istack_solid_psf_txtur;
-    int istack_solid_psf_patch;
-    int istack_trans_psf_txtur;
-    int istack_trans_psf_patch;
+    long ntot_psf_patch;
+    long istack_solid_psf_txtur;
+    long istack_solid_psf_patch;
+    long istack_trans_psf_txtur;
+    long istack_trans_psf_patch;
     
     double *z_ele_viz;
     int *ipsf_viz_far;
