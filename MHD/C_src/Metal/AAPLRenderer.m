@@ -408,7 +408,6 @@ static const NSUInteger MaxFramesInFlight = 3;
                                               num_pix:pix_xy
                                                source:&_imageOutputTexture
                                                target:&_leftTexure];
-
         _imageOutputTexture = [self drawKemoViewToTexure:kemo_sgl
                                                metalView:view
                                                   unites:&_rightViewUnites];
@@ -416,6 +415,8 @@ static const NSUInteger MaxFramesInFlight = 3;
                                               num_pix:pix_xy
                                                source:&_imageOutputTexture
                                                target:&_rightTexure];
+
+
     }
     [self encodeAnaglyphRender:view
                       kemoview:kemo_sgl

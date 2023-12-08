@@ -659,6 +659,8 @@ void set_gl_eye_separation_angle(struct view_element *view, double sep_angle)
 };
 
 void init_kemoview_perspective(struct view_element *view){
+    view->iflag_quilt_mode = OFF;
+    
 	view->aperture =   INITIAL_APATURE;
 	
 	view->near =       INITIAL_NEAR;

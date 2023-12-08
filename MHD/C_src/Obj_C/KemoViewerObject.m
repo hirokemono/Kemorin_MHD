@@ -11,7 +11,9 @@
 
 @implementation KemoViewerObject
 - (id) init{
+#ifdef __APPLE__
     printf("KemoViewerObject init Start!!\n");
+#endif
     self.kemoview_metal = kemoview_allocate_single_viwewer_struct();
     reset_all_view_parameter(self.kemoview_metal->view_s);
     reset_to_init_angle(self.kemoview_metal->view_s);
