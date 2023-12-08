@@ -100,14 +100,14 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 	
 	if (button_function == ZOOM){
 		factor = -0.5*(ypos-begin[1]);
-		kemoview_zooming(factor);
+		kemoview_zooming(factor, kemo_sgl);
 	}
 	
 	if (button_function == WALKTO){
-		kemoview_mousedolly(begin, xpos, ypos);
+		kemoview_mousedolly(begin, xpos, ypos, kemo_sgl);
 	}
 	else if(button_function == PAN){
-		kemoview_mousepan(begin, xpos, ypos);
+		kemoview_mousepan(begin, xpos, ypos, kemo_sgl);
 	}
 	else if (button_function == ROTATE) {
 		gTrackBallRotation[0] = ZERO;
@@ -115,9 +115,9 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 		gTrackBallRotation[2] = ZERO;
 		gTrackBallRotation[3] = ZERO;
 		
-		kemoview_startTrackball( begin[0], (-begin[1]));
-		kemoview_rollToTrackball( xpos, (-ypos));
-		kemoview_drugging_addToRotationTrackball();
+		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
+		kemoview_rollToTrackball( xpos, (-ypos), kemo_sgl);
+		kemoview_drugging_addToRotationTrackball(kemo_sgl);
 	}
 	else if (button_function == SCALE){
 		double current_scale = kemoview_get_view_parameter(kemo_sgl,
@@ -162,8 +162,9 @@ void set_GTKindowSize(int width, int height,
 
 gboolean mouseScrollCB(GtkWidget *widget, GdkEventScroll *event, gpointer user_data) {
 /*	printf("mouseScrollCB %.1lf %.1lf\n", x, y);*/
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     double newScale = event->x + event->y;
-	kemoview_zooming(newScale);
+	kemoview_zooming(newScale, kemo_sgl);
 	return TRUE;
 }
 
@@ -192,7 +193,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 		else {
 			factor = ZERO;
 		};
-		kemoview_zooming(factor);
+		kemoview_zooming(factor, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == WALKTO){
@@ -209,7 +210,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 		else {
 			factor = ZERO;
 		};
-		kemoview_mousedolly(begin, x_dbl, y_dbl);
+		kemoview_mousedolly(begin, x_dbl, y_dbl, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == PAN){
@@ -231,7 +232,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 			x_dbl = ZERO;
 			y_dbl = -ONE;
 		};
-		kemoview_mousepan(begin, x_dbl, y_dbl);
+		kemoview_mousepan(begin, x_dbl, y_dbl, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == ROTATE){
@@ -251,9 +252,9 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 			x_dbl = begin[0] + ZERO;
 			y_dbl = begin[1] - TEN;
 		};
-		kemoview_startTrackball( begin[0], (-begin[1]));
+		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
 		kemoview_rollToTrackball( x_dbl, (-y_dbl));
-		kemoview_drugging_addToRotationTrackball();
+		kemoview_drugging_addToRotationTrackball(kemo_sgl);
 	}
 	
 	else if (arrow_key_func == SCALE){

@@ -143,14 +143,17 @@
 !
 !    void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly);
 !    void kemoview_mousepan(double start[2], double x_pan, double y_pan);
-!    void kemoview_zooming(double wheelDelta);
+!    void kemoview_zooming(double wheelDelta, struct kemoviewer_type *kemoviewer);
 !    
-!    void kemoview_startTrackball(double x, double y);
+!    void kemoview_startTrackball(double x, double y,
+!                                 struct kemoviewer_type *kemoviewer);
 !    /* calculated rotation based on current mouse position */
-!    void kemoview_rollToTrackball(double x, double y);
+!    void kemoview_rollToTrackball(double x, double y,
+!                                  struct kemoviewer_type *kemoviewer);
 !    /* add a GL rotation (dA) to an existing GL rotation (A) */
-!    void kemoview_drugging_addToRotationTrackball();
-!    void kemoview_animation_add_rotation(double dt);
+!    void kemoview_drugging_addToRotationTrackball(struct kemoviewer_type *kemoviewer);
+!    void kemoview_animation_add_rotation(double dt,
+!                                         struct kemoviewer_type *kemoviewer);
 !    void kemoview_reset_animation();
 !    
 !    /* subroutines for surafces */

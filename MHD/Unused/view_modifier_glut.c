@@ -80,14 +80,14 @@ static void motion(GLint x, GLint y){
 	if (button_function == ZOOM){
 		y_dbl = (GLdouble) y;
 		factor = -0.5*(y_dbl-begin[1]);
-		kemoview_zooming((GLdouble) factor);
+		kemoview_zooming((GLdouble) factor, kemo_sgl);
 	}
 	
 	if (button_function == WALKTO){
-		kemoview_mousedolly(begin, (GLdouble) x, (GLdouble) y);
+		kemoview_mousedolly(begin, (GLdouble) x, (GLdouble) y, kemo_sgl);
 	}
 	else if(button_function == PAN){
-		kemoview_mousepan(begin, (GLdouble) x, (GLdouble) y);
+		kemoview_mousepan(begin, (GLdouble) x, (GLdouble) y, kemo_sgl);
 	}
 	else if (button_function == ROTATE) {
 		x_dbl = (GLdouble) x;
@@ -97,9 +97,9 @@ static void motion(GLint x, GLint y){
 		gTrackBallRotation[2] = ZERO;
 		gTrackBallRotation[3] = ZERO;
 		
-		kemoview_startTrackball( begin[0], (-begin[1]));
-		kemoview_rollToTrackball( x_dbl, (-y_dbl));
-		kemoview_drugging_addToRotationTrackball();
+		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
+		kemoview_rollToTrackball( x_dbl, (-y_dbl), kemo_sgl);
+		kemoview_drugging_addToRotationTrackball(kemo_sgl);
 	}
 	else if (button_function == SCALE){
 		double current_scale;
@@ -158,7 +158,7 @@ static void arrows_c(int key, int x, int y){
 		else {
 			factor = ZERO;
 		};
-		kemoview_zooming((GLdouble) factor);
+		kemoview_zooming((GLdouble) factor, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == WALKTO){
@@ -173,7 +173,7 @@ static void arrows_c(int key, int x, int y){
 		else {
 			factor = ZERO;
 		};
-		kemoview_mousedolly(begin, x_dbl, y_dbl);
+		kemoview_mousedolly(begin, x_dbl, y_dbl, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == PAN){
@@ -195,7 +195,7 @@ static void arrows_c(int key, int x, int y){
 			x_dbl = ZERO;
 			y_dbl = -ONE;
 		};
-		kemoview_mousepan(begin, x_dbl, y_dbl);
+		kemoview_mousepan(begin, x_dbl, y_dbl, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == ROTATE){
@@ -215,9 +215,9 @@ static void arrows_c(int key, int x, int y){
 			x_dbl = begin[0] + ZERO;
 			y_dbl = begin[1] - TEN;
 		};
-		kemoview_startTrackball( begin[0], (-begin[1]));
-		kemoview_rollToTrackball( x_dbl, (-y_dbl));
-		kemoview_drugging_addToRotationTrackball();
+		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
+		kemoview_rollToTrackball( x_dbl, (-y_dbl), kemo_sgl);
+		kemoview_drugging_addToRotationTrackball(kemo_sgl);
 	}
 	
 	else if (arrow_key_func == SCALE){

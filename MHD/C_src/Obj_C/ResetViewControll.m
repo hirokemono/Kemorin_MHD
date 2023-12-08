@@ -223,7 +223,8 @@
 - (void) updateObjectRotationForTimeDelta:(CFAbsoluteTime)deltaTime
 {
     double dt = deltaTime;
-	kemoview_animation_add_rotation(dt);
+    struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_animation_add_rotation(dt, kemo_sgl);
 	[self UpdateParameters];
 }
 @end

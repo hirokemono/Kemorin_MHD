@@ -244,6 +244,7 @@
     gPan =       FALSE;
     gTrackball = FALSE;
 
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     if ([theEvent modifierFlags] & NSEventModifierFlagControl) // send to pan
         [self rightMouseDown:theEvent];
     else if ([theEvent modifierFlags] & NSEventModifierFlagShift) // send to dolly
@@ -259,7 +260,8 @@
         gDolly =     FALSE; // no dolly
         gPan =       FALSE; // no pan
         gTrackball = TRUE;
-        kemoview_startTrackball(xmove, ymove);
+        
+        kemoview_startTrackball(xmove, ymove, kemo_sgl);
 //        gTrackingViewInfo = self;
     }
     [self QuickUpdateImage];
@@ -275,7 +277,7 @@
     double ymove = (double) (location.y - YpixelGLWindow);
 /*
     if (gTrackball) { // if we are currently tracking, end trackball
-        kemoview_drugging_addToRotationTrackball();
+        kemoview_drugging_addToRotationTrackball(kemo_sgl);
     }
  */
     gDolly =     FALSE; // no dolly
@@ -296,7 +298,7 @@
     double ymove = (double) (YpixelGLWindow - location.y);
 /*
     if (gTrackball) { // if we are currently tracking, end trackball
-        kemoview_drugging_addToRotationTrackball();
+        kemoview_drugging_addToRotationTrackball(kemo_sgl);
     }
  */
     gDolly =     TRUE;
@@ -316,7 +318,7 @@
         gPan =       FALSE;
     } else if (gTrackball) { // end trackball
         gTrackball = FALSE;
-/*        kemoview_drugging_addToRotationTrackball();*/
+/*        kemoview_drugging_addToRotationTrackball(kemo_sgl);*/
         [_resetview UpdateParameters];
     }
 //    gTrackingViewInfo = NULL;
@@ -331,14 +333,16 @@
     NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     double xmove = (double) location.x;
     double ymove = (double) (YpixelGLWindow - location.y);
+
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     if(gTrackball) {
-        kemoview_rollToTrackball (xmove, -ymove);
-        kemoview_drugging_addToRotationTrackball();
-        kemoview_startTrackball(xmove, -ymove);
+        kemoview_rollToTrackball (xmove, -ymove, kemo_sgl);
+        kemoview_drugging_addToRotationTrackball(kemo_sgl);
+        kemoview_startTrackball(xmove, -ymove, kemo_sgl);
     } else if (gDolly) {
-        kemoview_mousedolly(gDollyPanStartPoint, xmove, ymove);
+        kemoview_mousedolly(gDollyPanStartPoint, xmove, ymove, kemo_sgl);
     } else if (gPan) {
-        kemoview_mousepan(gDollyPanStartPoint, xmove, ymove);
+        kemoview_mousepan(gDollyPanStartPoint, xmove, ymove, kemo_sgl);
     }
     [self QuickUpdateImage];
     return;
@@ -347,10 +351,11 @@
 // ---------------------------------
 - (void)scrollWheel:(NSEvent *)theEvent
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     float wheelDelta = [theEvent deltaX] + [theEvent deltaY] + [theEvent deltaZ];
     if (wheelDelta)
     {
-        kemoview_zooming((double) wheelDelta);
+        kemoview_zooming((double) wheelDelta, kemo_sgl);
     }
     [self QuickUpdateImage];
 }
@@ -373,8 +378,9 @@
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent
 {
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     double newScale = 200.0*[theEvent magnification];
-    kemoview_zooming(newScale);
+    kemoview_zooming(newScale, kemo_sgl);
     [self QuickUpdateImage];
 }
 // ---------------------------------

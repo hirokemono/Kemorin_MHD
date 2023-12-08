@@ -577,32 +577,45 @@ int kemoview_get_quilt_nums(struct kemoviewer_type *kemoviewer,
     return num;
 }
 
-void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly){
-	gl_mousedolly_struct(kemo_sgl->view_s, start, x_dolly, y_dolly);
+void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly,
+                         struct kemoviewer_type *kemoviewer){
+	gl_mousedolly_struct(kemoviewer->view_s, start, x_dolly, y_dolly);
 }
-void kemoview_mousepan(double start[2], double x_pan, double y_pan){
-	gl_mousepan_struct(kemo_sgl->view_s, start, x_pan, y_pan);
+void kemoview_mousepan(double start[2], double x_pan, double y_pan,
+                       struct kemoviewer_type *kemoviewer){
+	gl_mousepan_struct(kemoviewer->view_s, start, x_pan, y_pan);
 }
-void kemoview_zooming(double wheelDelta){
-	gl_zooming_struct(kemo_sgl->view_s, wheelDelta);
+void kemoview_zooming(double wheelDelta, struct kemoviewer_type *kemoviewer){
+	gl_zooming_struct(kemoviewer->view_s, wheelDelta);
 }
 
 /* called with the start position and the window origin + size */
-void kemoview_startTrackball(double x, double y){gl_startTrackball(x, y, kemo_sgl->view_s);};
+void kemoview_startTrackball(double x, double y,
+                             struct kemoviewer_type *kemoviewer){
+    gl_startTrackball(x, y, kemoviewer->view_s);
+};
 /* calculated rotation based on current mouse position */
-void kemoview_rollToTrackball(double x, double y){ gl_rollToTrackball (x, y, kemo_sgl->view_s);};
+void kemoview_rollToTrackball(double x, double y,
+                              struct kemoviewer_type *kemoviewer){
+    gl_rollToTrackball (x, y, kemoviewer->view_s);
+};
 /* add a GL rotation (dA) to an existing GL rotation (A) */
-void kemoview_drugging_addToRotationTrackball(void){
-    gl_drag_addToRotationTrackball(kemo_sgl->view_s);
+void kemoview_drugging_addToRotationTrackball(struct kemoviewer_type *kemoviewer){
+    gl_drag_addToRotationTrackball(kemoviewer->view_s);
 }
 
-void kemoview_animation_add_rotation(double dt){add_animation_rotation(kemo_sgl->view_s, dt);}
-void kemoview_reset_animation(void){reset_rot_animation(kemo_sgl->view_s);};
+void kemoview_animation_add_rotation(double dt,
+                                     struct kemoviewer_type *kemoviewer){
+    add_animation_rotation(kemoviewer->view_s, dt);
+};
+void kemoview_reset_animation(struct kemoviewer_type *kemoviewer){
+    reset_rot_animation(kemoviewer->view_s);
+};
 
 
 /* Subroutines for surface rendering */
 int kemoview_get_PSF_maximum_load(struct kemoviewer_type *kemoviewer){
-    return get_PSF_maximum_load(kemo_sgl->kemo_psf->psf_a);
+    return get_PSF_maximum_load(kemoviewer->kemo_psf->psf_a);
 };
 
 void kemoview_set_PSF_loaded_params(int selected, int input,
