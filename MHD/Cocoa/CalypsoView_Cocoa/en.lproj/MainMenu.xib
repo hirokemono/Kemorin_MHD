@@ -4545,7 +4545,7 @@
                         <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                             <rect key="frame" x="0.0" y="0.0" width="224" height="554"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3791">
                                     <rect key="frame" x="0.0" y="0.0" width="224" height="585"/>
