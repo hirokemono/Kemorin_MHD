@@ -40,6 +40,7 @@
     [_metalView updateBackground:kemo_sgl];
 
     _renderer = [[AAPLRenderer alloc] initWithMetalKitView:_metalView];
+    [_renderer setKemoViewPointer:[_kmv KemoViewPointer]];
 
     if(!_renderer)
     {
@@ -72,7 +73,8 @@
                                    kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    id<MTLTexture> _imageOutputTexture = [_renderer KemoViewToTexure:_metalView];
+    id<MTLTexture> _imageOutputTexture = [_renderer KemoViewToTexure:_metalView
+                                                            kemoview:kemo_sgl];
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
     /*    Texture to render screen to texture */

@@ -32,11 +32,13 @@ typedef struct
 
 @interface KemoViewRendererTools : NSObject
 
-- (void)setTransferMatrices:(KemoViewUnites *) monoViewUnites;
+- (void)setTransferMatrices:(struct kemoviewer_type *) kemo_sgl
+                     unites:(KemoViewUnites *) monoViewUnites;
 - (void) setKemoViewLightings:(struct kemoviewer_type *) kemo_sgl
                        unites:(KemoViewUnites *) monoViewUnites;
 
-- (void)setKemoViewLightsAndViewMatrices:(KemoViewUnites *) monoViewUnites
+- (void)setKemoViewLightsAndViewMatrices:(struct kemoviewer_type *) kemo_sgl
+                               ModelView:(KemoViewUnites *) monoViewUnites
                            MsgProjection:(matrix_float4x4 *) cbar_proj_mat
                            MapProjection:(matrix_float4x4 *) map_proj_mat;
 

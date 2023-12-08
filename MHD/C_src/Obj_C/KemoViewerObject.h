@@ -13,9 +13,9 @@
 #include "m_gl_transfer_matrix.h"
 
 @interface KemoViewerObject : NSObject {
-    struct kemoviewer_type *single_kemoview;
+    struct kemoviewer_type *kemoview_metal;
 }
-@property struct kemoviewer_type *single_kemoview;
+@property struct kemoviewer_type *kemoview_metal;
 
 - (id) init;
 - (struct kemoviewer_type *) KemoViewPointer;

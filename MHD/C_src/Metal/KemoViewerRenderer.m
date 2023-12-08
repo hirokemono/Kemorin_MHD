@@ -212,11 +212,10 @@ Implementation of a platform independent renderer class, which performs Metal se
     return view.currentDrawable.texture;
 }
 
-- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(nonnull MTKView *)view
+- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(struct kemoviewer_type *) kemo_sgl
+                                      metalView:(nonnull MTKView *)view
                                          unites:(KemoViewUnites *) viewUnites
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-
     [self refreshKemoViewMetalBuffers:&_device
                              kemoview:kemo_sgl];
     [_kemoRendererTools setKemoViewLightsAndViewMatrices:&_monoViewUnites

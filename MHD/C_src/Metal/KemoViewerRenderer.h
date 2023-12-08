@@ -29,6 +29,7 @@ Header for a platform independent renderer class, which performs Metal setup and
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView;
 
-- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(nonnull MTKView *)view
+- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(struct kemoviewer_type *) kemo_sgl
+                                      metalView:(nonnull MTKView *)view
                                          unites:(KemoViewUnites *) viewUnites;
 @end

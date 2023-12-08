@@ -40,11 +40,19 @@ Implementation of a platform independent renderer class, which performs Metal se
     id<MTLTexture> _Nullable _leftTexure;
     id<MTLTexture> _Nullable _rightTexure;
 
+    struct kemoviewer_type *_kemoMetal;
+}
+
+- (void) setKemoViewPointer:(struct kemoviewer_type *) kemo_sgl
+{
+    _kemoMetal = kemo_sgl;
+    return;
 }
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
 /*    printf("initWithMetalKitView Start!!\n"); */
+    
     _kemoRendererTools = [[KemoViewRendererTools alloc] init];
     _kemoMetalBufBase = [[KemoViewMetalBuffers alloc] init];
     _kemo2DRenderer = [[KemoView2DRenderer alloc] init];
@@ -225,14 +233,14 @@ Implementation of a platform independent renderer class, which performs Metal se
     return view.currentDrawable.texture;
 }
 
-- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(nonnull MTKView *)view
+- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(struct kemoviewer_type *) kemo_sgl
+                                      metalView:(nonnull MTKView *)view
                                          unites:(KemoViewUnites *) viewUnites
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-
     [self refreshKemoViewMetalBuffers:&_device
                              kemoview:kemo_sgl];
-    [_kemoRendererTools setKemoViewLightsAndViewMatrices:&_monoViewUnites
+    [_kemoRendererTools setKemoViewLightsAndViewMatrices:kemo_sgl
+                                               ModelView:&_monoViewUnites
                                            MsgProjection:&_cbar_proj_mat
                                            MapProjection:&_map_proj_mat];
     id<MTLTexture> _imageOutputTexture = [self kemoViewEncodeToTexure:view
@@ -328,12 +336,14 @@ Implementation of a platform independent renderer class, which performs Metal se
                   rightunites:(KemoViewUnites *) rightUnites
 {
     kemoview_left_viewmatrix(kemo_sgl);
-    [_kemoRendererTools setTransferMatrices:leftUnites];
+    [_kemoRendererTools setTransferMatrices:kemo_sgl
+                                     unites:leftUnites];
     [_kemoRendererTools setKemoViewLightings:kemo_sgl
                                       unites:leftUnites];
     
     kemoview_right_viewmatrix(kemo_sgl);
-    [_kemoRendererTools setTransferMatrices:rightUnites];
+    [_kemoRendererTools setTransferMatrices:kemo_sgl
+                                     unites:rightUnites];
     [_kemoRendererTools setKemoViewLightings:kemo_sgl
                                       unites:rightUnites];
 }
@@ -358,14 +368,16 @@ Implementation of a platform independent renderer class, which performs Metal se
                                  right:&_rightTexure];
 
         id<MTLTexture> _imageOutputTexture;
-        _imageOutputTexture = [self drawKemoViewToTexure:view
+        _imageOutputTexture = [self drawKemoViewToTexure:kemo_sgl
+                                               metalView:view
                                                   unites:&_leftViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
                                                source:&_imageOutputTexture
                                                target:&_leftTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:view
+        _imageOutputTexture = [self drawKemoViewToTexure:kemo_sgl
+                                               metalView:view
                                                   unites:&_rightViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
@@ -400,14 +412,16 @@ Implementation of a platform independent renderer class, which performs Metal se
                                   left:&_leftTexure
                                  right:&_rightTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:view
+        _imageOutputTexture = [self drawKemoViewToTexure:kemo_sgl
+                                               metalView:view
                                                   unites:&_leftViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
                                                source:&_imageOutputTexture
                                                target:&_leftTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:view
+        _imageOutputTexture = [self drawKemoViewToTexure:kemo_sgl
+                                               metalView:view
                                                   unites:&_rightViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
@@ -423,12 +437,12 @@ Implementation of a platform independent renderer class, which performs Metal se
 };
 
 - (void)drawKemoMetalView:(nonnull MTKView *)view
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-
     [self refreshKemoViewMetalBuffers:&_device
                              kemoview:kemo_sgl];
-    [_kemoRendererTools setKemoViewLightsAndViewMatrices:&_monoViewUnites
+    [_kemoRendererTools setKemoViewLightsAndViewMatrices:kemo_sgl
+                                               ModelView:&_monoViewUnites
                                            MsgProjection:&_cbar_proj_mat
                                            MapProjection:&_map_proj_mat];
 
@@ -444,10 +458,10 @@ Implementation of a platform independent renderer class, which performs Metal se
 }
 
 - (id<MTLTexture>_Nonnull)KemoViewToTexure:(nonnull MTKView *)view
+                                  kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
-
-   [_kemoRendererTools setKemoViewLightsAndViewMatrices:&_monoViewUnites
+   [_kemoRendererTools setKemoViewLightsAndViewMatrices:kemo_sgl
+                                              ModelView:&_monoViewUnites
                                            MsgProjection:&_cbar_proj_mat
                                            MapProjection:&_map_proj_mat];
     id<MTLTexture> _imageOutputTexture;
@@ -468,7 +482,8 @@ Implementation of a platform independent renderer class, which performs Metal se
 // Called whenever the view needs to render a frame.
 - (void)drawInMTKView:(nonnull MTKView *)view
 {
-    [self drawKemoMetalView:view];
+    [self drawKemoMetalView:view
+                   kemoview:_kemoMetal];
     return;
 }
 
@@ -478,7 +493,8 @@ Implementation of a platform independent renderer class, which performs Metal se
     // Save the size of the drawable to pass to the vertex shader.
     _viewportSize.x = size.width;
     _viewportSize.y = size.height;
-    [self drawKemoMetalView:view];
+    [self drawKemoMetalView:view
+                   kemoview:_kemoMetal];
 }
 
 @end

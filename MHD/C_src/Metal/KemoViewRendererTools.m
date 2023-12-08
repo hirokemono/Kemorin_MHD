@@ -120,10 +120,10 @@
     return;
 };
 
-- (void)set2dProjectionMatrices:(matrix_float4x4 *) cbar_proj_mat
+- (void)set2dProjectionMatrices:(struct kemoviewer_type *) kemo_sgl
+                  MsgProjection:(matrix_float4x4 *) cbar_proj_mat
                   MapProjection:(matrix_float4x4 *) map_proj_mat
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     double *orthogonal = orthogonal_projection_mat_c(0.0, kemo_sgl->view_s->nx_frame,
                                                      0.0, kemo_sgl->view_s->ny_frame,
                                                     -1.0, 1.0);
@@ -138,9 +138,9 @@
     return;
 }
 
-- (void)setTransferMatrices:(KemoViewUnites *) monoViewUnites
+- (void)setTransferMatrices:(struct kemoviewer_type *) kemo_sgl
+                     unites:(KemoViewUnites *) monoViewUnites
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     struct transfer_matrices *view_matrices = transfer_matrix_to_shader(kemo_sgl->view_s);
 
     monoViewUnites->modelview_mat =  [self setMetalViewMatrices:view_matrices->model];
@@ -165,17 +165,19 @@
     return;
 };
 
-- (void)setKemoViewLightsAndViewMatrices:(KemoViewUnites *) monoViewUnites
+- (void)setKemoViewLightsAndViewMatrices:(struct kemoviewer_type *) kemo_sgl
+                               ModelView:(KemoViewUnites *) monoViewUnites
                            MsgProjection:(matrix_float4x4 *) cbar_proj_mat
                            MapProjection:(matrix_float4x4 *) map_proj_mat
 {
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
     [self setKemoViewLightings:kemo_sgl
                         unites:monoViewUnites];
 
-    [self set2dProjectionMatrices:cbar_proj_mat
+    [self set2dProjectionMatrices:kemo_sgl
+                    MsgProjection:cbar_proj_mat
                     MapProjection:map_proj_mat];
-    [self setTransferMatrices:monoViewUnites];
+    [self setTransferMatrices:kemo_sgl
+                       unites:monoViewUnites];
     return;
 }
 
