@@ -335,13 +335,14 @@ int get_draw_surfgrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp){
 };
 
 
-void set_domain_color_flag(int icolor, int selected, struct mesh_menu_val *mesh_m){
+void set_domain_color_flag(int selected, int icolor,
+                           struct mesh_menu_val *mesh_m){
 	if(selected == SURFSOLID_TOGGLE){
-		mesh_m->domain_node_color = icolor;
+        mesh_m->domain_surface_color = icolor;
 	}else if(selected == SURFGRID_TOGGLE){
 		mesh_m->domain_grid_color = icolor;
 	}else if(selected == SURFNOD_TOGGLE){
-		mesh_m->domain_surface_color = icolor;
+        mesh_m->domain_node_color = icolor;
 	};
 	return;
 }

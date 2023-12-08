@@ -88,6 +88,7 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
   $(MHDDIR)/C_src/KEMO_GL/trackball.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh_menu.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh.h \
   $(MHDDIR)/C_src/KEMO_GL/rainbow_color_code_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_fline_menu.h \
   $(MHDDIR)/C_src/KEMO_GL/m_kemoview_fline.h \
@@ -115,8 +116,7 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/CORE_C/check_viewer_mesh_c.h \
   $(MHDDIR)/C_src/CORE_C/set_normal_on_node_4_mesh.h \
   $(MHDDIR)/C_src/KEMO_GL/psf_data_array_manager.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_each_psf_parameters.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh.h
+  $(MHDDIR)/C_src/KEMO_GL/set_each_psf_parameters.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 test_wt_png_c.o: \
   $(MHDDIR)/programs/TESTS/graphic_test/test_wt_png_c.c \

@@ -20,7 +20,7 @@
 #include "t_control_real3_IO.h"
 
 #define NLBL_COLORMAP_CTL     14
-#define NLBL_LIGHTING_CTL      4
+#define NLBL_LIGHTING_CTL      5
 #define NLBL_PVR_COLORBAR_CTL 10
 #define NLBL_CMAP_CBAR_CTL     2
 

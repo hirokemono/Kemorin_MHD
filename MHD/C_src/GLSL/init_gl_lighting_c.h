@@ -4,10 +4,10 @@
 #ifndef init_GL_LIGHTING_C_
 #define init_GL_LIGHTING_C_
 
+#include "glsl.h"
 #include "kemoviewer_param_c.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_gl_transfer_matrix.h"
-#include "glsl.h"
 #include "m_phong_light_table_c.h"
 
 /* prototypes */

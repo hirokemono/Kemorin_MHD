@@ -69,8 +69,10 @@ int add_mesh_patch_to_buf(int ist_tri, int shading_mode, int polygon_mode, int s
 	for(i = 0; i < mesh_s->num_pe_sf; i++){
 		ip = ip_domain_far[i] - 1;
 		if(iflag_domain[ip] != 0){
-			set_patch_color_mode_c(surface_color, color_mode, color_loop, ip, mesh_s->num_pe_sf, 
-						igrp, num_grp, opacity, single_color, f_color);
+			set_patch_color_mode_c(surface_color, color_mode, color_loop,
+                                   ip, mesh_s->num_pe_sf,
+                                   igrp, num_grp, opacity,
+                                   single_color, f_color);
 			
 			ist = istack_grp[ip];
 			ied = istack_grp[ip+1];

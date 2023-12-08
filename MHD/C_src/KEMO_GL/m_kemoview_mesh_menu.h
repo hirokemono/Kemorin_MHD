@@ -137,7 +137,8 @@ int get_draw_elegrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp);
 int get_draw_surfgrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp);
 
 
-void set_domain_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);
+void set_domain_color_flag(int selected, int icolor,
+                           struct mesh_menu_val *mesh_m);
 void set_node_grp_color_flag(int icolor, struct mesh_menu_val *mesh_m);
 void set_ele_grp_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);
 void set_surf_grp_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);

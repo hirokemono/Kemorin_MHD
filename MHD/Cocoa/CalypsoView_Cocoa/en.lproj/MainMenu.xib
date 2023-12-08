@@ -629,6 +629,7 @@
                                                                 <items>
                                                                     <menuItem title="Domain" state="on" tag="3" id="1726"/>
                                                                     <menuItem title="Group" tag="4" id="1725"/>
+                                                                    <menuItem title="White" tag="1" id="3N3-LD-nEA"/>
                                                                     <menuItem title="Single color" tag="6" id="1724"/>
                                                                 </items>
                                                             </menu>
@@ -654,7 +655,7 @@
                                                             <menu key="menu" title="OtherViews" id="1717">
                                                                 <items>
                                                                     <menuItem title="Domain" state="on" tag="3" id="1720"/>
-                                                                    <menuItem title="Group" tag="4" id="1719"/>
+                                                                    <menuItem title="Group" tag="2" id="1719"/>
                                                                     <menuItem title="Single color" tag="6" id="1718"/>
                                                                 </items>
                                                             </menu>
@@ -681,7 +682,8 @@
                                                                 <items>
                                                                     <menuItem title="Domain" state="on" tag="3" id="1714"/>
                                                                     <menuItem title="Group" tag="4" id="1713"/>
-                                                                    <menuItem title="Single color" tag="6" id="1712"/>
+                                                                    <menuItem title="White" tag="1" id="1712"/>
+                                                                    <menuItem title="Single color" tag="6" id="fCt-aa-yCW"/>
                                                                 </items>
                                                             </menu>
                                                         </popUpButtonCell>
