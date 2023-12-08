@@ -20,15 +20,9 @@
 #define SCALE   4
 #define WALKTO  5
 
-struct window_pointers{
-	GLFWwindow *glfw_window;
-	
-	GtkWidget *window_main;
-	
-	int iflag_menu_update;
-};
-
 /* prototypes */
+
+void set_GLFW_viewtype_mode(int selected);
 
 GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y);
 
@@ -47,6 +41,4 @@ void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
 void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
                                int iflag_img, struct kv_string *image_prefix,
                                int ist_udt, int ied_udt, int inc_udt);
-
-void set_GLFW_viewtype_mode(int selected);
 #endif

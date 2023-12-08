@@ -22,6 +22,24 @@ static double  begin_left[2], begin_middle[2], begin_right[2];
 static double  begin[2];
 static double  gTrackBallRotation[4];
 
+
+void set_GLFW_viewtype_mode(int selected){
+    if(selected == RESET) selected = VIEW_3D;
+
+    if(selected == VIEW_3D
+                || selected == VIEW_STEREO){
+        left_button_func = ROTATE;
+    }
+    else if(selected == VIEW_MAP
+                || selected == VIEW_XY
+                || selected == VIEW_XZ
+                || selected == VIEW_YZ) {
+        left_button_func = PAN;
+    };
+    return;
+}
+
+
 void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	double xpos;
 	double ypos;
@@ -397,7 +415,7 @@ static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
-        kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
         select_anaglyph(kemo_sgl);
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
@@ -478,7 +496,7 @@ void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
 	}else{
 		write_rotate_views(kemo_sgl, iflag_img, image_prefix, i_axis, inc_deg);
 	}
-    draw_full(kemo_sgl);
+    draw_fast(kemo_sgl);
 	return;
 }
 
@@ -496,20 +514,4 @@ void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
 	return;
 };
 
-
-void set_GLFW_viewtype_mode(int selected){
-	if(selected == RESET) selected = VIEW_3D;
-
-	if(selected == VIEW_3D
-				|| selected == VIEW_STEREO){
-		left_button_func = ROTATE;
-	}
-	else if(selected == VIEW_MAP
-				|| selected == VIEW_XY
-				|| selected == VIEW_XZ
-				|| selected == VIEW_YZ) {
-		left_button_func = PAN;
-	};
-    return;
-}
 
