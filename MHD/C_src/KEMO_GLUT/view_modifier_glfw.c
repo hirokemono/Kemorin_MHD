@@ -293,12 +293,12 @@ void glfw_callbacks_init(){
 	return;
 }
 
-void select_anaglyph(){
-    if(kemoview_get_view_type_flag() == VIEW_STEREO){
+void select_anaglyph(struct kemoviewer_type *kemo_sgl){
+    if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_STEREO){
         kemoview_modify_anaglyph();
         glfwSwapBuffers(glfw_window);
     }else{
-        kemoview_mono_viewmatrix();
+        kemoview_mono_viewmatrix(kemo_sgl);
         glDrawBuffer(GL_BACK);
         kemoview_modify_view();
         glfwSwapBuffers(glfw_window);
@@ -309,20 +309,20 @@ void select_anaglyph(){
 void draw_full(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
-    select_anaglyph();
+    select_anaglyph(kemo_sgl);
 	return;
 };
 
 void draw_fast(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    select_anaglyph();
+    select_anaglyph(kemo_sgl);
     return;
 };
 void draw_simple(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
-    kemoview_mono_viewmatrix();
+    kemoview_mono_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
     kemoview_modify_view();
     glfwSwapBuffers(glfw_window);
@@ -332,7 +332,7 @@ void draw_simple(struct kemoviewer_type *kemo_sgl){
 void draw_quilt(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    kemoview_step_viewmatrix();
+    kemoview_step_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
     kemoview_modify_view();
     glfwSwapBuffers(glfw_window);
@@ -395,7 +395,7 @@ static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
 		
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
         kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
-        select_anaglyph();
+        select_anaglyph(kemo_sgl);
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 											 npix_x, npix_y, image);

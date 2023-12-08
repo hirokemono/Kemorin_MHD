@@ -379,7 +379,7 @@ void set_main_window_id_glut(int winid){
 void draw_mesh_keep_menu(){
 	glutSetWindow(id_window);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_mono_viewmatrix();
+    kemoview_mono_viewmatrix(kemo_sgl);
 	glutPostRedisplay();
 	return;
 };

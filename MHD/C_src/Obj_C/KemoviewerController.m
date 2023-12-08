@@ -109,7 +109,7 @@
 
     kemoview_set_viewtype((int) selected);
 	[_metalView setViewerType:selected];
-    kemoview_mono_viewmatrix();
+    kemoview_mono_viewmatrix(kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 

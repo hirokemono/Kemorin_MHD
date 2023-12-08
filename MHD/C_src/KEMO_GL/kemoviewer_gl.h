@@ -59,7 +59,12 @@ extern "C" {
     int kemoview_set_data_format_flag(struct kv_string *filename,
                                       struct kv_string *stripped_prefix,
                                       struct kv_string *stripped_ext);
-
+    void kemoview_get_ext_from_file_name(struct kv_string *filename,
+                                         struct kv_string *stripped_prefix,
+                                         struct kv_string *stripped_ext);
+    void kemoview_add_ext_to_file_name(struct kv_string *file_prefix,
+                                       struct kv_string *added_ext,
+                                       struct kv_string *file_name);
 
 /* subroutines for surafces */
     int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,

@@ -314,7 +314,7 @@ void gtk_callbacks_init(struct kemoviewer_type *kemo_sgl){
 void draw_fast(struct kemoviewer_type *kemo_sgl){
 //    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
 //    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl)
-//  kemoview_mono_viewmatrix();
+//  kemoview_mono_viewmatrix(kemo_sgl);
 //    glDrawBuffer(GL_BACK);
 //	kemoview_modify_view();
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
@@ -323,7 +323,7 @@ void draw_fast(struct kemoviewer_type *kemo_sgl){
 
 void draw_full(struct kemoviewer_type *kemo_sgl){
 //    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
-    kemoview_mono_viewmatrix();
+    kemoview_mono_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
 	kemoview_modify_view();
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
@@ -382,7 +382,7 @@ static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
 		
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
         kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-        kemoview_mono_viewmatrix();
+        kemoview_mono_viewmatrix(kemo_sgl);
         glDrawBuffer(GL_BACK);
         kemoview_modify_view();
 		

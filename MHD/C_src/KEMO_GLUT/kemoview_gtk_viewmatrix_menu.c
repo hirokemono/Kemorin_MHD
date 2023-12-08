@@ -467,7 +467,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_type *kemo_sgl,
 	view_menu->Frame_stereo = gtk_frame_new("Stereo parameter");
 	gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_stereo), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(view_menu->Frame_stereo), view_menu->vbox_streo);
-    if(kemoview_get_view_type_flag() != VIEW_STEREO){
+    if(kemoview_get_view_type_flag(kemo_sgl) != VIEW_STEREO){
         gtk_widget_set_sensitive(view_menu->Frame_stereo, FALSE);
     };
 

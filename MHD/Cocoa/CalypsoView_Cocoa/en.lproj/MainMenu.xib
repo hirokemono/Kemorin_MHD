@@ -4513,7 +4513,6 @@
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="2FT-zh-sSB"/>
                             <outlet property="_kmv" destination="w8N-Cd-Q0k" id="frD-ZC-lh2"/>
                             <outlet property="_resetview" destination="2679" id="ed0-h0-BmC"/>
-                            <outlet property="_singleKemoView" destination="w8N-Cd-Q0k" id="eR2-mh-xu3"/>
                         </connections>
                     </customView>
                 </subviews>

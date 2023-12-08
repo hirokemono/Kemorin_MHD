@@ -173,7 +173,7 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
     kemoview_set_viewtype(index_mode);
     draw_full(kemo_sgl);
     
-    if(kemoview_get_view_type_flag() == VIEW_STEREO){
+    if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_STEREO){
         gtk_widget_set_sensitive(view_menu->Frame_stereo, TRUE);
     }else{
         gtk_widget_set_sensitive(view_menu->Frame_stereo, FALSE);
@@ -739,7 +739,7 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
 	
 	GtkWidget *combobox_viewtype = gtk_combo_box_new_with_model(child_model_viewtype);
 	GtkCellRenderer *renderer_viewtype = gtk_cell_renderer_text_new();
-	int iflag_mode = kemoview_get_view_type_flag();
+	int iflag_mode = kemoview_get_view_type_flag(kemo_sgl);
 	if(iflag_mode == VIEW_YZ){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_viewtype), 5);
 	}else if(iflag_mode == VIEW_XZ){

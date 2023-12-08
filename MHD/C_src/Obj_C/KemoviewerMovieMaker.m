@@ -242,8 +242,8 @@ NSData *SnapshotData;
         unsigned char *bgra = [_metalViewController getRenderedbyMetalToBGRA:(NSUInteger *) pix_xy
                                                                 PixelPerByte:(NSUInteger *) pixelByte
                                                                     kemoview:kemo_sgl];
-        kemoview_add_bgra_to_quilt((int) pix_xy[0], (int) pix_xy[1], bgra,
-                                   [SnapshotBitmapRep bitmapData]);
+        kemoview_add_bgra_to_quilt(kemo_sgl, (int) pix_xy[0], (int) pix_xy[1],
+                                   bgra, [SnapshotBitmapRep bitmapData]);
         free(bgra);
 
         
@@ -474,7 +474,7 @@ NSData *SnapshotData;
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis, kemo_sgl);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    kemoview_step_viewmatrix();
+    kemoview_step_viewmatrix(kemo_sgl);
     return self;
 }
 

@@ -152,7 +152,7 @@
 	//		self.EvolutionStartStep = [[FlineOpenFilehead pathExtension] intValue];
 	//		self.EvolutionEndStep =    self.EvolutionStartStep;
 	
-	id_viewtype = kemoview_get_view_type_flag();
+	id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
 	[_kemoviewControl SetViewTypeMenu:id_viewtype
                              kemoview:kemo_sgl];
     [_kemoviewControl Set3DView:kemo_sgl];

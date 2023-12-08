@@ -487,7 +487,7 @@
 - (void) DrawPsfFile:(NSString*) PsfOpenFilehead
             kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-	int id_viewtype = kemoview_get_view_type_flag();
+	int id_viewtype = kemoview_get_view_type_flag(kemo_sgl);
     
 	self.currentPSFStep = [[PsfOpenFilehead pathExtension] intValue];
 	self.PsfWindowlabel = [NSString stringWithFormat:@"PSF:%@",
@@ -508,7 +508,7 @@
 	[_metalView UpdateImage:kemo_sgl];
 	
 	int num_loaded =  kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
-	int nlimit_load = kemoview_get_PSF_maximum_load();
+	int nlimit_load = kemoview_get_PSF_maximum_load(kemo_sgl);
 	if(num_loaded >= nlimit_load-1){
 		self.psfMoreOpenFlag = 1;
 	}else {

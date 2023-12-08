@@ -48,10 +48,6 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	return;
 }
 
-int kemoview_get_PSF_maximum_load(void){
-	return get_PSF_maximum_load(kemo_sgl->kemo_psf->psf_a);
-};
-
 void kemoview_alloc_kvstringitem(unsigned long length, struct kv_string *kvstring){
 	alloc_kvstringitem(length, kvstring);
 	return;
@@ -79,10 +75,6 @@ void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *k
 	return;
 }
 /* Routines for draw by OpenGL */
-
-void kemoview_indentity_projectionmatrix(void){set_projection_by_identity();};
-void kemoview_indentity_viewmatrix(void){set_view_by_identity();};
-void kemoview_message_viewmatrix(void){set_view_for_message(kemo_sgl->view_s);};
 
 void kemoview_init_background_color(struct kemoviewer_type *kemoviewer){
     init_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
@@ -155,12 +147,8 @@ void kemoview_set_viewtype(int sel){
     set_viewtype(kemo_sgl->view_s, sel);
 }
 
-/*
- 20km/yr 0.25 m/s
- */
-
 void kemoview_set_coastline_radius(double radius, struct kemoviewer_type *kemoviewer){
-    kemo_sgl->kemo_mesh->mesh_m->radius_coast = radius;
+    kemoviewer->kemo_mesh->mesh_m->radius_coast = radius;
 };
 double kemoview_get_coastline_radius(struct kemoviewer_type *kemoviewer){
     return kemoviewer->kemo_mesh->mesh_m->radius_coast;
@@ -393,33 +381,18 @@ void kemoview_get_surf_grp_name(struct kemoviewer_type *kemoviewer,
     alloc_copy_string(kemoviewer->kemo_mesh->mesh_d->surf_gp_name_sf[i], groupname); 
 };
 
-int kemoview_get_view_type_flag(void){return kemo_sgl->view_s->iflag_view_type;};
+int kemoview_get_view_type_flag(struct kemoviewer_type *kemoviewer){
+    return kemoviewer->view_s->iflag_view_type;
+};
 
-
-void kemoview_get_ext_from_file_name(struct kv_string *filename,
-                                     struct kv_string *stripped_prefix, struct kv_string *stripped_ext){
-    alloc_kvstringitem((int) strlen(filename->string), stripped_prefix);
-    alloc_kvstringitem((int) strlen(filename->string), stripped_ext);
-	get_ext_from_file_name_c(filename->string, stripped_prefix->string, stripped_ext->string);
-}
-void kemoview_add_ext_to_file_name(struct kv_string *file_prefix, struct kv_string *added_ext,
-                                   struct kv_string *file_name){
-    int lentgh = (int) strlen(file_prefix->string) + (int) strlen(added_ext->string);
-    alloc_kvstringitem(lentgh+2, file_name);
-    add_ext_to_file_name_c(file_prefix->string, added_ext->string, file_name->string);
-}
-
-void kemoview_set_text_color_code(float c_code[4]){copy_rgba_color_c(c_code, kemo_sgl->kemo_mesh->text_color);};
-void kemoview_get_text_color_code(float c_code[4]){copy_rgba_color_c(kemo_sgl->kemo_mesh->text_color, c_code);};
-
-
-
-
-void kemoview_add_bgra_to_quilt(int npix_x, int npix_y,
-                                unsigned char *bgra, unsigned char *fliped_quilt){
-    quilt_bitmap_by_bgra(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws,
-                         kemo_sgl->view_s->istep_quilt,
-                         npix_x, npix_y, bgra, fliped_quilt);
+void kemoview_add_bgra_to_quilt(struct kemoviewer_type *kemoviewer,
+                                int npix_x, int npix_y,
+                                unsigned char *glimage,
+                                unsigned char *fliped_quilt){
+    quilt_bitmap_by_bgra(kemoviewer->view_s->num_columns,
+                         kemoviewer->view_s->num_raws,
+                         kemoviewer->view_s->istep_quilt,
+                         npix_x, npix_y, glimage, fliped_quilt);
     return;
 };
 
@@ -431,26 +404,35 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height,
                               width, height, bgra_in);
 };
 
-void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl){
-    set_kemoviewer_buffers(kemo_sgl->kemo_psf, kemo_sgl->kemo_fline,
-                           kemo_sgl->kemo_mesh, kemo_sgl->view_s, kemo_sgl->kemo_buffers);
+void kemoview_const_buffers(struct kemoviewer_type *kemoviewer){
+    set_kemoviewer_buffers(kemoviewer->kemo_psf, kemoviewer->kemo_fline,
+                           kemoviewer->kemo_mesh, kemoviewer->view_s,
+                           kemoviewer->kemo_buffers);
     return;
 };
-void kemoview_transparent_buffers(struct kemoviewer_type *kemo_sgl){
-    set_transparent_buffers(kemo_sgl->kemo_psf, kemo_sgl->kemo_mesh,
-                            kemo_sgl->view_s, kemo_sgl->kemo_buffers);
+void kemoview_transparent_buffers(struct kemoviewer_type *kemoviewer){
+    set_transparent_buffers(kemoviewer->kemo_psf, kemoviewer->kemo_mesh,
+                            kemoviewer->view_s, kemoviewer->kemo_buffers);
     return;
 };
 
 
-void kemoview_mono_viewmatrix(void){modify_mono_viewmat(kemo_sgl->view_s);};
-void kemoview_step_viewmatrix(void){modify_step_viewmat(kemo_sgl->view_s);};
-void kemoview_left_viewmatrix(void){modify_left_viewmat(kemo_sgl->view_s);};
-void kemoview_right_viewmatrix(void){modify_right_viewmat(kemo_sgl->view_s);};
+void kemoview_mono_viewmatrix(struct kemoviewer_type *kemoviewer){
+    modify_mono_viewmat(kemoviewer->view_s);
+};
+void kemoview_step_viewmatrix(struct kemoviewer_type *kemoviewer){
+    modify_step_viewmat(kemoviewer->view_s);
+};
+void kemoview_left_viewmatrix(struct kemoviewer_type *kemoviewer){
+    modify_left_viewmat(kemoviewer->view_s);
+};
+void kemoview_right_viewmatrix(struct kemoviewer_type *kemoviewer){
+    modify_right_viewmat(kemoviewer->view_s);
+};
 
 void kemoviewer_reset_to_init_angle(struct kemoviewer_type *kemoviewer){
-    reset_all_view_parameter(kemo_sgl->view_s);
-    init_rot_animation(kemo_sgl->view_s);
+    reset_all_view_parameter(kemoviewer->view_s);
+    init_rot_animation(kemoviewer->view_s);
 };
 
 
@@ -619,6 +601,10 @@ void kemoview_reset_animation(void){reset_rot_animation(kemo_sgl->view_s);};
 
 
 /* Subroutines for surface rendering */
+int kemoview_get_PSF_maximum_load(struct kemoviewer_type *kemoviewer){
+    return get_PSF_maximum_load(kemo_sgl->kemo_psf->psf_a);
+};
+
 void kemoview_set_PSF_loaded_params(int selected, int input,
                                     struct kemoviewer_type *kemoviewer){
 	set_PSF_loaded_params(selected, input, kemoviewer->kemo_psf);

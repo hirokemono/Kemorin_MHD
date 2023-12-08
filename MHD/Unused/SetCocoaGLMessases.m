@@ -121,6 +121,9 @@ GLenum glReportError ()
 }
 
 // draw text info using our GLString class for much more optimized text drawing
+void kemoview_indentity_viewmatrix(void){set_view_by_identity();};
+void kemoview_indentity_projectionmatrix(void){set_projection_by_identity();};
+void kemoview_message_viewmatrix(void){set_view_for_message(kemo_sgl->view_s);};
 
 - (void) drawInfo : (GLfloat) xWinSize : (GLfloat) yWinSize
 {
@@ -129,7 +132,7 @@ GLenum glReportError ()
 	GLfloat TextColor4f[4], ErrTextColor4f[4];	
     
     if(fDrawHelp == NO && fDrawResolution==NO && fDrawinfo==NO) return;
-	kemoview_get_text_color_code(TextColor4f);
+	kemoview_get_text_color_code(kemo_sgl, TextColor4f);
 	
 	// set orthograhic 1:1  pixel transform in local view coords
 	kemoview_indentity_projectionmatrix();

@@ -21,9 +21,6 @@
 !    void kemoview_allocate_single_viwewer_struct(struct kemoviewer_type *kemoviewer_data);
 !    void kemoview_deallocate_pointers();
 !    
-!    int kemoview_get_PSF_maximum_load();
-!    
-!
 !     void kemoview_set_current_viewer_id(int id_window, mul_kemoviewer_type *kemoview_array);
 !    
 !    void kemoview_draw_objects_c();
@@ -104,8 +101,7 @@
 !                                    int i, struct kv_string *groupname);
 !    
 !    
-!    int kemoview_get_view_type_flag();
-!    
+!    int kemoview_get_view_type_flag(struct kemoviewer_type *kemoviewer);
 !    int kemoview_get_num_of_color_loop(struct kemoviewer_type *kemoviewer);
 !    
 !
@@ -114,9 +110,9 @@
 !    void kemoview_add_ext_to_file_name(const char *file_head, const char *added_ext, char *file_name);
 !    
 !    
-!    void kemoview_set_text_color_code(float c_code[4]);
-!    void kemoview_get_text_color_code(float c_code[4]);
-!    
+!    void kemoview_set_text_color_code(float c_code[4], struct kemoviewer_type *kemoviewer);
+!    void kemoview_get_text_color_code(struct kemoviewer_type *kemoviewer, float c_code[4]);
+!
 !    int kemoview_set_image_file_format_id(char *image_fmt);
 !    void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
 !    void kemoview_get_fliped_img(int npixel_x, int npixel_y,
@@ -158,6 +154,7 @@
 !    void kemoview_reset_animation();
 !    
 !    /* subroutines for surafces */
+!    int kemoview_get_PSF_maximum_load(struct kemoviewer_type *kemoviewer);
 !    void kemoview_set_PSF_num_loaded(int selected, int num);
 !    int kemoview_get_PSF_loaded_params(struct kemoviewer_type *kemoviewer, int selected);
 !    int kemoview_get_PSF_loaded_flag(struct kemoviewer_type *kemoviewer, int id_psf);

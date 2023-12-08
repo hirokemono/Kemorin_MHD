@@ -265,14 +265,8 @@ extern "C" {
     struct kemoviewer_type * kemoview_single_viwewer_struct(void);
 
     void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data);
-    
-    int kemoview_get_PSF_maximum_load(void);
-    
-    void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
 
-	void kemoview_indentity_projectionmatrix(void);
-	void kemoview_indentity_viewmatrix(void);
-	void kemoview_message_viewmatrix(void);
+    void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
 
     void kemoview_init_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_set_background_color(float color[4],
@@ -374,28 +368,21 @@ extern "C" {
     void kemoview_get_surf_grp_name(struct kemoviewer_type *kemoviewer,
                                     int i, struct kv_string *groupname);
     
-/* PArameters for Views */
-    int kemoview_get_view_type_flag(void);
+/* Parameters for Views */
+    int kemoview_get_view_type_flag(struct kemoviewer_type *kemoviewer);
     
-    void kemoview_get_ext_from_file_name(struct kv_string *filename,
-                                         struct kv_string *stripped_prefix, struct kv_string *stripped_ext);
-    void kemoview_add_ext_to_file_name(struct kv_string *file_prefix, struct kv_string *added_ext,
-                                       struct kv_string *file_name);
-    
-    
-    void kemoview_set_text_color_code(float c_code[4]);
-    void kemoview_get_text_color_code(float c_code[4]);
-    
-    void kemoview_add_bgra_to_quilt(int npix_x, int npix_y,
-                                    unsigned char *glimage, unsigned char *fliped_quilt);
+    void kemoview_add_bgra_to_quilt(struct kemoviewer_type *kemoviewer,
+                                    int npix_x, int npix_y,
+                                    unsigned char *glimage,
+                                    unsigned char *fliped_quilt);
 
-    void kemoview_const_buffers(struct kemoviewer_type *kemo_sgl);
-    void kemoview_transparent_buffers(struct kemoviewer_type *kemo_sgl);
+    void kemoview_const_buffers(struct kemoviewer_type *kemoviewer);
+    void kemoview_transparent_buffers(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_mono_viewmatrix(void);
-    void kemoview_step_viewmatrix(void);
-    void kemoview_left_viewmatrix(void);
-    void kemoview_right_viewmatrix(void);
+    void kemoview_mono_viewmatrix(struct kemoviewer_type *kemoviewer);
+    void kemoview_step_viewmatrix(struct kemoviewer_type *kemoviewer);
+    void kemoview_left_viewmatrix(struct kemoviewer_type *kemoviewer);
+    void kemoview_right_viewmatrix(struct kemoviewer_type *kemoviewer);
 
     void kemoviewer_reset_to_init_angle(struct kemoviewer_type *kemoviewer);
     
@@ -443,6 +430,7 @@ extern "C" {
     void kemoview_reset_animation(void);
 
 /* subroutines for surafces */
+    int kemoview_get_PSF_maximum_load(struct kemoviewer_type *kemoviewer);
 	void kemoview_set_PSF_loaded_params(int selected, int input,
                                         struct kemoviewer_type *kemoviewer);
 

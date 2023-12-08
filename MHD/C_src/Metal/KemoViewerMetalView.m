@@ -141,7 +141,7 @@
 {
     kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_mono_viewmatrix();
+    kemoview_mono_viewmatrix(kemo_sgl);
     [_resetview UpdateParameters];
     
     [self setNeedsDisplay: YES];
@@ -161,7 +161,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_mono_viewmatrix();
+    kemoview_mono_viewmatrix(kemo_sgl);
     [_resetview UpdateParameters];
 
     [self setNeedsDisplay: YES];
@@ -175,7 +175,7 @@
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis, kemo_sgl);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    kemoview_step_viewmatrix();
+    kemoview_step_viewmatrix(kemo_sgl);
 
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     [self setNeedsDisplay: YES];
@@ -188,7 +188,7 @@
     kemoview_viewer_evolution((int) timeStep, kemo_sgl);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    kemoview_step_viewmatrix();
+    kemoview_step_viewmatrix(kemo_sgl);
     [self setNeedsDisplay: YES];
     return self;
 }
@@ -199,7 +199,7 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoviewer_reset_to_init_angle(kemo_sgl);
-    kemoview_mono_viewmatrix();
+    kemoview_mono_viewmatrix(kemo_sgl);
     [self setNeedsDisplay: YES];
 }
 

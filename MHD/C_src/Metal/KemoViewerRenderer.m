@@ -74,7 +74,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 
 - (void) releaseKemoViewMetalBuffers:(struct kemoviewer_type *) kemo_sgl
 {
-    if(kemoview_get_view_type_flag() == VIEW_MAP){
+    if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_MAP){
 /*  Release Map vertexs */
         [_kemo2DRenderer releaseMapMetalBuffers:kemo_sgl->kemo_buffers];
     }else{
@@ -92,7 +92,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 - (void) setKemoViewMetalBuffers:(id<MTLDevice> *) device
                         kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    if(kemoview_get_view_type_flag() == VIEW_MAP){
+    if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_MAP){
 /*  Set Map vertexs to Metal buffers */
         [_kemo2DRenderer setMapMetalBuffers:device
                                     buffers:kemo_sgl->kemo_buffers];
@@ -123,7 +123,7 @@ Implementation of a platform independent renderer class, which performs Metal se
         [self setKemoViewMetalBuffers:device
                              kemoview:kemo_sgl];
     }else if(iflag == FAST_DRAW){
-        if(kemoview_get_view_type_flag() != VIEW_MAP){
+        if(kemoview_get_view_type_flag(kemo_sgl) != VIEW_MAP){
             [_kemo3DRenderer releaseTransparentMetalBuffers:kemo_sgl];
             
             kemoview_transparent_buffers(kemo_sgl);
@@ -139,7 +139,7 @@ Implementation of a platform independent renderer class, which performs Metal se
                   kemoview:(struct kemoviewer_type *) kemo_sgl
                     unites:(KemoViewUnites *) monoViewUnites
 {
-    int iflag_view = kemoview_get_view_type_flag();
+    int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag_view == VIEW_MAP){
         [_kemo2DRenderer encodeMapObjects:renderEncoder
                                   buffers:kemo_sgl->kemo_buffers

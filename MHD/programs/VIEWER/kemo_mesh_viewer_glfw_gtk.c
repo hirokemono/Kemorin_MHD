@@ -179,7 +179,7 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 /* Main GTK window */
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     struct line_text_image *image;
-    if(kemoview_get_view_type_flag() == VIEW_STEREO){
+    if(kemoview_get_view_type_flag(single_kemoview) == VIEW_STEREO){
         image = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_gl);
     }else{
         image = draw_objects_to_rgb_gl(single_kemoview, kemo_gl);

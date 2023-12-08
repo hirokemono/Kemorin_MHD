@@ -452,7 +452,7 @@ void glut_ele_grp_node_menu(){
 }
 
 void glut_viewtype_menu(){
-	int iflag_view = kemoview_get_view_type_flag();
+	int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
 	
 	if( iflag_view != VIEW_3D){
 		glutAddMenuEntry("3D-Viewer",VIEW_3D);
