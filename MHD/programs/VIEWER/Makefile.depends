@@ -2,7 +2,7 @@
 kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_glfw_gtk.c \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_glfw_gtk.h \
-  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_gl.h \
+  $(MHDDIR)/C_src/GLSL/kemoviewer_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
   $(MHDDIR)/C_src/GLSL/glsl.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
@@ -85,26 +85,26 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/GLSL/init_gl_lighting_c.h \
   $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h \
   $(MHDDIR)/C_src/GLSL/drawGL_by_VAO.h \
+  $(MHDDIR)/C_src/GLSL/drawcube_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_colorbar_to_buffer.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
+  $(MHDDIR)/C_src/GLSL/set_cube_VAO.h \
+  $(MHDDIR)/C_src/GLSL/draw_PSF_patches_by_VAO.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
   $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/drawcube_gl.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_cube_VAO.h \
-  $(MHDDIR)/C_src/GLSL/draw_PSF_patches_by_VAO.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patch_4_mesh_c.h \
   $(MHDDIR)/C_src/KEMO_GL/sort_by_patch_distance.h \
   $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
-  $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
+  $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
@@ -149,7 +149,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
 kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.c \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.h \
-  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_gl.h \
+  $(MHDDIR)/C_src/GLSL/kemoviewer_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
   $(MHDDIR)/C_src/GLSL/glsl.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
@@ -232,26 +232,26 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/GLSL/init_gl_lighting_c.h \
   $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h \
   $(MHDDIR)/C_src/GLSL/drawGL_by_VAO.h \
+  $(MHDDIR)/C_src/GLSL/drawcube_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_colorbar_to_buffer.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
+  $(MHDDIR)/C_src/GLSL/set_cube_VAO.h \
+  $(MHDDIR)/C_src/GLSL/draw_PSF_patches_by_VAO.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
   $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/drawcube_gl.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_cube_VAO.h \
-  $(MHDDIR)/C_src/GLSL/draw_PSF_patches_by_VAO.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patch_4_mesh_c.h \
   $(MHDDIR)/C_src/KEMO_GL/sort_by_patch_distance.h \
   $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
-  $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
+  $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
@@ -296,7 +296,7 @@ kemo_mesh_viewer_gtk.o: \
 kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_glfw_gtk.c \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_glfw_gtk.h \
-  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_gl.h \
+  $(MHDDIR)/C_src/GLSL/kemoviewer_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
   $(MHDDIR)/C_src/GLSL/glsl.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
@@ -379,26 +379,26 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/GLSL/init_gl_lighting_c.h \
   $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h \
   $(MHDDIR)/C_src/GLSL/drawGL_by_VAO.h \
+  $(MHDDIR)/C_src/GLSL/drawcube_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_colorbar_to_buffer.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
+  $(MHDDIR)/C_src/GLSL/set_cube_VAO.h \
+  $(MHDDIR)/C_src/GLSL/draw_PSF_patches_by_VAO.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
   $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/drawcube_gl.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_cube_VAO.h \
-  $(MHDDIR)/C_src/GLSL/draw_PSF_patches_by_VAO.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patch_4_mesh_c.h \
   $(MHDDIR)/C_src/KEMO_GL/sort_by_patch_distance.h \
   $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
-  $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
+  $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
   $(MHDDIR)/C_src/KEMO_GLUT/view_modifier_glfw.h \
@@ -443,7 +443,7 @@ kemoviewer_glfw_gtk.o: \
 kemoviewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_gtk.c \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.h \
-  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_gl.h \
+  $(MHDDIR)/C_src/GLSL/kemoviewer_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
   $(MHDDIR)/C_src/GLSL/glsl.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
@@ -526,26 +526,26 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/GLSL/init_gl_lighting_c.h \
   $(MHDDIR)/C_src/GLSL/move_draw_objects_gl.h \
   $(MHDDIR)/C_src/GLSL/drawGL_by_VAO.h \
+  $(MHDDIR)/C_src/GLSL/drawcube_gl.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_colorbar_gl.h \
   $(MHDDIR)/C_src/KEMO_GL/set_colorbar_to_buffer.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
+  $(MHDDIR)/C_src/GLSL/set_cube_VAO.h \
+  $(MHDDIR)/C_src/GLSL/draw_PSF_patches_by_VAO.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_coastline.h \
   $(MHDDIR)/C_src/KEMO_GL/set_axis_to_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/drawcube_gl.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_cube_to_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/set_cube_VAO.h \
-  $(MHDDIR)/C_src/GLSL/draw_PSF_patches_by_VAO.h \
-  $(MHDDIR)/C_src/KEMO_GL/draw_map_4_PSF.h \
   $(MHDDIR)/C_src/KEMO_GL/set_map_isolines_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_fieldlines.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_fieldline_to_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/draw_patch_4_mesh_c.h \
   $(MHDDIR)/C_src/KEMO_GL/sort_by_patch_distance.h \
   $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_object_buffers.h \
-  $(MHDDIR)/C_src/KEMO_GL/write_gl_window_to_file.h \
+  $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \

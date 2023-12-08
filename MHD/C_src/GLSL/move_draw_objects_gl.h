@@ -11,14 +11,8 @@
 
 #include "m_kemoviewer_data.h"
 #include "drawGL_by_VAO.h"
-#include "draw_colorbar_gl.h"
-#include "draw_fieldlines.h"
-#include "draw_coastline.h"
 #include "drawcube_gl.h"
 #include "draw_PSF_patches_by_VAO.h"
-#include "draw_map_4_PSF.h"
-#include "draw_patch_4_mesh_c.h"
-#include "set_texture_4_psf.h"
 #include "m_kemoview_object_buffers.h"
 
 struct kemoview_VAOs{
