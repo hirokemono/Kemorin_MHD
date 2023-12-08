@@ -88,9 +88,9 @@ static void load_texture_handler(struct kemoviewer_type *kemo_sgl,
 	id_image = load_texture_file_gtk(window, image_prefix);
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
-        kemoview_release_PSF_gl_texture();
+        kemoview_release_PSF_gl_texture(kemo_sgl);
         kemoview_update_PSF_textured_id(kemo_sgl);
-		kemoview_set_texture_to_PSF(id_image, image_prefix);
+		kemoview_set_texture_to_PSF(id_image, image_prefix, kemo_sgl);
 		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, TEXTURED_SURFACE, kemo_sgl);
         kemoview_free_kvstring(image_prefix);
 	};

@@ -317,7 +317,7 @@ void draw_fast(struct kemoviewer_type *kemo_sgl){
 //    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl)
 //  kemoview_mono_viewmatrix(kemo_sgl);
 //    glDrawBuffer(GL_BACK);
-//	kemoview_modify_view();
+//	kemoview_modify_view(kemo_sgl);
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
@@ -326,7 +326,7 @@ void draw_full(struct kemoviewer_type *kemo_sgl){
 //    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
     kemoview_mono_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
-	kemoview_modify_view();
+	kemoview_modify_view(kemo_sgl);
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
@@ -355,7 +355,7 @@ static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
 			kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
 			draw_quilt(kemo_sgl);
 			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-			kemoview_add_quilt_img(image, quilt_image);
+			kemoview_add_quilt_img(kemo_sgl, image, quilt_image);
 		};
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 											 (nimg_column * npix_x),
@@ -385,7 +385,7 @@ static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
         kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
         kemoview_mono_viewmatrix(kemo_sgl);
         glDrawBuffer(GL_BACK);
-        kemoview_modify_view();
+        kemoview_modify_view(kemo_sgl);
 		
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
@@ -418,7 +418,7 @@ static void write_quilt_evolution_views(struct kemoviewer_type *kemo_sgl,
 				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
 				draw_quilt(kemo_sgl);
 				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-				kemoview_add_quilt_img(image, quilt_image);
+				kemoview_add_quilt_img(kemo_sgl, image, quilt_image);
 			};
 			kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 												 (nimg_column * npix_x),

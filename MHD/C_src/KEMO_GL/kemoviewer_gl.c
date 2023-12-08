@@ -59,14 +59,12 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 };
 
 
-void kemoview_modify_view(void){
-    struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
+void kemoview_modify_view(struct kemoviewer_type *kemo_sgl){
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
     update_draw_objects_gl3(kemo_sgl, kemo_gl);
 };
 
-void kemoview_modify_anaglyph(void){
-    struct kemoviewer_type *kemo_sgl =   kemoview_single_viwewer_struct();
+void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl){
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
 
     struct line_text_image *anaglyph_image = draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_gl);
@@ -84,8 +82,8 @@ unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y){
 void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image){
     get_gl_buffer_to_bmp(npix_x, npix_y, image);
 };
-void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt){
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+void kemoview_add_quilt_img(struct kemoviewer_type *kemo_sgl,
+                            unsigned char *glimage, unsigned char *image_quilt){
     get_gl_buffer_to_bmp(kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame, glimage);
     set_gl_quilt_bitmap(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws,
                         kemo_sgl->view_s->istep_quilt,
@@ -130,8 +128,7 @@ int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
     return istep;
 }
 
-void kemoview_release_PSF_gl_texture(void){
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl){
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
     release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_a->psf_texure,
                                 kemo_gl->kemo_shaders->texture_name);
@@ -162,8 +159,8 @@ void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_st
                               npix_x, npix_y, image);
 }
 
-void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix){
-    struct kemoviewer_type *kemo_sgl = kemoview_single_viwewer_struct();
+void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
+                                 struct kemoviewer_type *kemo_sgl){
     struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
     set_texture_to_psf(img_fmt, image_prefix->string,
                        kemo_sgl->kemo_psf->psf_a->psf_texure,

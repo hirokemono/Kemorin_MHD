@@ -7,6 +7,7 @@
 /* initial settings */
 
 GLFWwindow *glfw_window;
+struct kemoviewer_type * kemoview_GLFW;
 int iflag_quickdraw = 0;
 
 static int left_button_func =   ROTATE;
@@ -54,16 +55,13 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	};
 	
 	if(action == GLFW_RELEASE){
-        struct kemoviewer_type * kemo_sgl = kemoview_single_viwewer_struct();
-		draw_full(kemo_sgl);
+		draw_full(kemoview_GLFW);
 	};
 	return;
 };
 
 void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
-    struct kemoviewer_type * kemo_sgl = kemoview_single_viwewer_struct();
 	/*! This gets called when the mouse moves */
-	
 	double factor;
 	int button_function = left_button_func;
 	
@@ -90,14 +88,14 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 	
 	if (button_function == ZOOM){
 		factor = -0.5*(ypos-begin[1]);
-		kemoview_zooming(factor, kemo_sgl);
+		kemoview_zooming(factor, kemoview_GLFW);
 	}
 	
 	if (button_function == WALKTO){
-		kemoview_mousedolly(begin, xpos, ypos, kemo_sgl);
+		kemoview_mousedolly(begin, xpos, ypos, kemoview_GLFW);
 	}
 	else if(button_function == PAN){
-		kemoview_mousepan(begin, xpos, ypos, kemo_sgl);
+		kemoview_mousepan(begin, xpos, ypos, kemoview_GLFW);
 	}
 	else if (button_function == ROTATE) {
 		gTrackBallRotation[0] = ZERO;
@@ -105,12 +103,12 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		gTrackBallRotation[2] = ZERO;
 		gTrackBallRotation[3] = ZERO;
 		
-		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
-		kemoview_rollToTrackball( xpos, (-ypos), kemo_sgl);
-		kemoview_drugging_addToRotationTrackball(kemo_sgl);
+		kemoview_startTrackball( begin[0], (-begin[1]), kemoview_GLFW);
+		kemoview_rollToTrackball( xpos, (-ypos), kemoview_GLFW);
+		kemoview_drugging_addToRotationTrackball(kemoview_GLFW);
 	}
 	else if (button_function == SCALE){
-		double current_scale = kemoview_get_view_parameter(kemo_sgl, ISET_SCALE, 0);
+		double current_scale = kemoview_get_view_parameter(kemoview_GLFW, ISET_SCALE, 0);
         
 		if (ypos < begin[1]) {
 			factor = ONE + TWO_MILI*(begin[1]-ypos);
@@ -122,7 +120,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemo_sgl);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemoview_GLFW);
 	};
     /* ! update private variables and redisplay */
 	
@@ -152,9 +150,8 @@ void set_GLFWindowSize(int width, int height,
 
 void mouseScrollCB(GLFWwindow *window, double x, double y) {
 /*	printf("mouseScrollCB %.1lf %.1lf\n", x, y);*/
-    struct kemoviewer_type * kemo_sgl = kemoview_single_viwewer_struct();
     double newScale = x + y;
-    kemoview_zooming(newScale, kemo_sgl);
+    kemoview_zooming(newScale, kemoview_GLFW);
 }
 void charFunCB(GLFWwindow* window, unsigned int charInfo) {
 	printf("charFunCB %d\n", charInfo);
@@ -163,7 +160,6 @@ void charFunCB(GLFWwindow* window, unsigned int charInfo) {
 
 /*! This routine handles the arrow key operations */
 static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int mods){
-    struct kemoviewer_type * kemo_sgl = kemoview_single_viwewer_struct();
     double x_dbl, y_dbl;
 	double factor;
 	
@@ -181,7 +177,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		else {
 			factor = ZERO;
 		};
-		kemoview_zooming(factor, kemo_sgl);
+		kemoview_zooming(factor, kemoview_GLFW);
 	}
 	
 	else if (arrow_key_func == WALKTO){
@@ -198,7 +194,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		else {
 			factor = ZERO;
 		};
-		kemoview_mousedolly(begin, x_dbl, y_dbl, kemo_sgl);
+		kemoview_mousedolly(begin, x_dbl, y_dbl, kemoview_GLFW);
 	}
 	
 	else if (arrow_key_func == PAN){
@@ -220,7 +216,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 			x_dbl = ZERO;
 			y_dbl = -ONE;
 		};
-		kemoview_mousepan(begin, x_dbl, y_dbl, kemo_sgl);
+		kemoview_mousepan(begin, x_dbl, y_dbl, kemoview_GLFW);
 	}
 	
 	else if (arrow_key_func == ROTATE){
@@ -240,13 +236,13 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 			x_dbl = begin[0] + ZERO;
 			y_dbl = begin[1] - TEN;
 		};
-		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
-		kemoview_rollToTrackball( x_dbl, (-y_dbl), kemo_sgl);
-		kemoview_drugging_addToRotationTrackball(kemo_sgl);
+		kemoview_startTrackball( begin[0], (-begin[1]), kemoview_GLFW);
+		kemoview_rollToTrackball( x_dbl, (-y_dbl), kemoview_GLFW);
+		kemoview_drugging_addToRotationTrackball(kemoview_GLFW);
 	}
 	
 	else if (arrow_key_func == SCALE){
-		double current_scale = kemoview_get_view_parameter(kemo_sgl, ISET_SCALE, 0);
+		double current_scale = kemoview_get_view_parameter(kemoview_GLFW, ISET_SCALE, 0);
         
 		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
 		factor = ONE/(ONE + TWO_CENT);
@@ -257,7 +253,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemo_sgl);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemoview_GLFW);
  	};
 	
 	glfwSwapBuffers(window);
@@ -279,7 +275,10 @@ GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y){
 };
 
 
-void glfw_callbacks_init(){
+void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl){
+    kemoview_GLFW = kemo_sgl;
+    
+    
 	/* set callback for mouse button */
 	glfwSetMouseButtonCallback(glfw_window, mouseButtonCB);
 	/* set callback for cursor position */
@@ -296,12 +295,12 @@ void glfw_callbacks_init(){
 
 void select_anaglyph(struct kemoviewer_type *kemo_sgl){
     if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_STEREO){
-        kemoview_modify_anaglyph();
+        kemoview_modify_anaglyph(kemo_sgl);
         glfwSwapBuffers(glfw_window);
     }else{
         kemoview_mono_viewmatrix(kemo_sgl);
         glDrawBuffer(GL_BACK);
-        kemoview_modify_view();
+        kemoview_modify_view(kemo_sgl);
         glfwSwapBuffers(glfw_window);
     }
     return;
@@ -325,7 +324,7 @@ void draw_simple(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
     kemoview_mono_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
-    kemoview_modify_view();
+    kemoview_modify_view(kemo_sgl);
     glfwSwapBuffers(glfw_window);
     return;
 };
@@ -335,7 +334,7 @@ void draw_quilt(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     kemoview_step_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
-    kemoview_modify_view();
+    kemoview_modify_view(kemo_sgl);
     glfwSwapBuffers(glfw_window);
     return;
 };
@@ -366,7 +365,7 @@ static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
 			kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
 			draw_quilt(kemo_sgl);
 			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-			kemoview_add_quilt_img(image, quilt_image);
+			kemoview_add_quilt_img(kemo_sgl, image, quilt_image);
 		};
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 											 (nimg_column * npix_x),
@@ -427,7 +426,7 @@ static void write_evolution_quilt_views(struct kemoviewer_type *kemo_sgl,
 				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt, kemo_sgl);
 				draw_quilt(kemo_sgl);
 				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-				kemoview_add_quilt_img(image, quilt_image);
+				kemoview_add_quilt_img(kemo_sgl, image, quilt_image);
 			};
 			kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 												 (nimg_column * npix_x),
@@ -496,7 +495,6 @@ void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
 
 
 void set_GLFW_viewtype_mode(int selected){
-	
 	if(selected == RESET) selected = VIEW_3D;
 
 	if(selected == VIEW_3D

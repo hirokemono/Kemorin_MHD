@@ -78,7 +78,7 @@ static void load_texture_handler(){
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
 	
-		kemoview_set_texture_to_PSF(id_image, image_prefix);
+		kemoview_set_texture_to_PSF(id_image, image_prefix, kemo_sgl);
 		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
 	};
     kemoview_free_kvstring(image_prefix);

@@ -262,7 +262,6 @@ extern "C" {
 	void kemoview_free_kvstring(struct kv_string *kvstring);
 
 	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void);
-    struct kemoviewer_type * kemoview_single_viwewer_struct(void);
 
     void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data);
 

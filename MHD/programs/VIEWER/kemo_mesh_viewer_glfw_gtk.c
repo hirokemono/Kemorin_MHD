@@ -349,7 +349,7 @@ int draw_mesh_kemo(void) {
 	
 	/*! set callback for GLfw*/
 	kemoviewer_reset_to_init_angle(single_kemoview);
-	glfw_callbacks_init();
+	glfw_callbacks_init(single_kemoview);
 	
 	/* Set Cllback for drug and Drop into window */
 	glfwSetDropCallback(glfw_win, dropFileToGlfw_CB);

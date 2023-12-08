@@ -47,12 +47,13 @@ extern "C" {
     void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_modify_view(void);
-    void kemoview_modify_anaglyph(void);
+    void kemoview_modify_view(struct kemoviewer_type *kemo_sgl);
+    void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl);
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
-    void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt);
+    void kemoview_add_quilt_img(struct kemoviewer_type *kemo_sgl,
+                                unsigned char *glimage, unsigned char *image_quilt);
 
 
 /* subroutines for IO */
@@ -69,13 +70,14 @@ extern "C" {
 /* subroutines for surafces */
     int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
                                      struct kv_string *stripped_filehead);
-    void kemoview_release_PSF_gl_texture(void);
+    void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl);
     void * kemoview_link_active_colormap_param(int i_current, int icomp,
                                                struct kemoviewer_type *kemoviewer);
 
 #ifdef PNG_OUTPUT
 /* Load texture onto current sectioning image */
-    void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix);
+    void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
+                                     struct kemoviewer_type *kemo_sgl);
 
 /* Set Image file format by ID */
     int kemoview_set_image_file_format_id(struct kv_string *image_ext);
