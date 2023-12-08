@@ -38,7 +38,6 @@ extern "C" {
 
 
 /*  OopenGL routines */
-    struct kemoviewer_gl_type * kemoview_single_gl_type(void);
     struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(void);
     void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl);
 
@@ -47,8 +46,10 @@ extern "C" {
     void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer);
 
-    void kemoview_modify_view(struct kemoviewer_type *kemo_sgl);
-    void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl);
+    void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
+                              struct kemoviewer_gl_type *kemo_gl);
+    void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
+                                  struct kemoviewer_gl_type *kemo_gl);
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
@@ -70,14 +71,16 @@ extern "C" {
 /* subroutines for surafces */
     int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
                                      struct kv_string *stripped_filehead);
-    void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl);
+    void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
+                                         struct kemoviewer_gl_type *kemo_gl);
     void * kemoview_link_active_colormap_param(int i_current, int icomp,
                                                struct kemoviewer_type *kemoviewer);
 
 #ifdef PNG_OUTPUT
 /* Load texture onto current sectioning image */
     void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
-                                     struct kemoviewer_type *kemo_sgl);
+                                     struct kemoviewer_type *kemo_sgl,
+                                     struct kemoviewer_gl_type *kemo_gl);
 
 /* Set Image file format by ID */
     int kemoview_set_image_file_format_id(struct kv_string *image_ext);

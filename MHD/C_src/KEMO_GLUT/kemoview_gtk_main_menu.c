@@ -83,12 +83,13 @@ void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
 };
 
 static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
+                          struct kemoviewer_gl_type *kemo_gl,
                           struct updatable_widgets *updatable,
                           GtkWidget *window){
     if(kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED) == 0) return;
     if(updatable->iflag_psfBox == 0){
         updatable->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-        set_psf_menu_box(kemo_sgl, updatable, window);
+        set_psf_menu_box(kemo_sgl, kemo_gl, updatable, window);
         pack_psf_menu_frame(updatable->psf_gmenu);
         gtk_box_pack_start(GTK_BOX(updatable->psfBox), updatable->psf_gmenu->psf_frame,
                            FALSE, FALSE, 0);
@@ -132,7 +133,8 @@ static void init_mesh_menu(struct kemoviewer_type *kemo_sgl,
 }
 
 void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
-                               struct kv_string *filename, 
+                               struct kemoviewer_gl_type *kemo_gl,
+                               struct kv_string *filename,
                                struct main_buttons *mbot,
                                GtkWidget *window_main){
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
@@ -148,7 +150,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
 	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
-    init_psf_menu(kemo_sgl, mbot->updatable, window_main);
+    init_psf_menu(kemo_sgl, kemo_gl, mbot->updatable, window_main);
     init_fline_menu(kemo_sgl, mbot->updatable, window_main);
     init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
     activate_evolution_menu(kemo_sgl, mbot->updatable->expander_evo);
@@ -391,7 +393,9 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
     struct kv_string *filename;
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-	
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+
 	int iflag_set = kemoview_gtk_read_file_select(button, user_data);
 	if(iflag_set == IZERO) return;
 	GtkEntry *entry = GTK_ENTRY(user_data);
@@ -399,7 +403,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	
-	open_kemoviewer_file_glfw(kemo_sgl, filename, mbot, window_main);
+	open_kemoviewer_file_glfw(kemo_sgl, kemo_gl, filename, mbot, window_main);
 	return;
 };
 
@@ -651,7 +655,8 @@ void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu){
 }
 
 void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
-                      struct updatable_widgets *updatable, 
+                      struct kemoviewer_gl_type *kemo_gl,
+                      struct updatable_widgets *updatable,
                       GtkWidget *window){
     updatable->psf_gmenu->closeButton = gtk_button_new_with_label("Close Current PSF");
 
@@ -667,7 +672,7 @@ void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
     init_psf_draw_component_hbox(kemo_sgl, updatable->psf_gmenu, window);
     init_colormap_params_4_viewer(kemo_sgl, updatable->psf_gmenu->color_vws);
 	
-    init_psf_menu_hbox(kemo_sgl, updatable->psf_gmenu, window);
+    init_psf_menu_hbox(kemo_sgl, kemo_gl, updatable->psf_gmenu, window);
 	return;
 }
 
@@ -709,11 +714,13 @@ void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
 
 void make_gtk_main_menu_box(struct main_buttons *mbot,
                             GtkWidget *takobox, GtkWidget *window_main,
-                            struct kemoviewer_type *kemo_sgl){
+                            struct kemoviewer_type *kemo_sgl,
+                            struct kemoviewer_gl_type *kemo_gl){
 	GtkWidget *entry_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer)   window_main);
 	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer)  mbot);
     g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) kemo_sgl);
+    g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemo_gl);
 
 	GtkWidget *open_Button = gtk_button_new_with_label("Open...");
 	g_signal_connect(G_OBJECT(open_Button), "clicked", 

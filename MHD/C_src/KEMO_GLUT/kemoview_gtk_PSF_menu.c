@@ -115,11 +115,13 @@ void set_vector_plot_availablity(struct kemoviewer_type *kemo_sgl,
 };
 
 void init_psf_menu_hbox(struct kemoviewer_type *kemo_sgl,
+                        struct kemoviewer_gl_type *kemo_gl,
                         struct psf_gtk_menu *psf_gmenu,
                         GtkWidget *window){
     psf_gmenu->expander_iso = init_isoline_menu_expander(kemo_sgl, window,
                                                          psf_gmenu->psf_isoline_menu);
-    psf_gmenu->expander_surf = init_gtk_psf_surface_menu_expander(kemo_sgl, window, psf_gmenu->color_vws,
+    psf_gmenu->expander_surf = init_gtk_psf_surface_menu_expander(kemo_sgl, kemo_gl, window,
+                                                                  psf_gmenu->color_vws,
                                                                   psf_gmenu->psf_surface_menu);
     psf_gmenu->expander_color = init_gtk_psf_colormap_expander(kemo_sgl, window, psf_gmenu->color_vws);
     set_gtk_surface_menu_values(kemo_sgl, psf_gmenu->psf_surface_menu);

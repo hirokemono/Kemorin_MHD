@@ -15,6 +15,10 @@
 #define GTK_KEY_LEFT   10000
 #define GTK_KEY_RIGHT  10000
 
+
+struct kemoviewer_gl_type * kemoGL_GTK;
+
+
 GtkWidget *gl_area;
 int iflag_quickdraw = 0;
 
@@ -317,7 +321,7 @@ void draw_fast(struct kemoviewer_type *kemo_sgl){
 //    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl)
 //  kemoview_mono_viewmatrix(kemo_sgl);
 //    glDrawBuffer(GL_BACK);
-//	kemoview_modify_view(kemo_sgl);
+//	kemoview_modify_view(kemo_sgl, kemoGL_GTK);
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
@@ -326,7 +330,7 @@ void draw_full(struct kemoviewer_type *kemo_sgl){
 //    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
     kemoview_mono_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
-	kemoview_modify_view(kemo_sgl);
+	kemoview_modify_view(kemo_sgl, kemoGL_GTK);
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
@@ -385,7 +389,7 @@ static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
         kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
         kemoview_mono_viewmatrix(kemo_sgl);
         glDrawBuffer(GL_BACK);
-        kemoview_modify_view(kemo_sgl);
+        kemoview_modify_view(kemo_sgl, kemoGL_GTK);
 		
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,

@@ -7,7 +7,8 @@
 /* initial settings */
 
 GLFWwindow *glfw_window;
-struct kemoviewer_type * kemoview_GLFW;
+struct kemoviewer_type *    kemoview_GLFW;
+struct kemoviewer_gl_type * kemoGL_GLFW;
 int iflag_quickdraw = 0;
 
 static int left_button_func =   ROTATE;
@@ -275,8 +276,10 @@ GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y){
 };
 
 
-void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl){
+void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
+                         struct kemoviewer_gl_type *kemo_gl){
     kemoview_GLFW = kemo_sgl;
+    kemoGL_GLFW = kemo_gl;
     
     
 	/* set callback for mouse button */
@@ -295,12 +298,12 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl){
 
 void select_anaglyph(struct kemoviewer_type *kemo_sgl){
     if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_STEREO){
-        kemoview_modify_anaglyph(kemo_sgl);
+        kemoview_modify_anaglyph(kemo_sgl, kemoGL_GLFW);
         glfwSwapBuffers(glfw_window);
     }else{
         kemoview_mono_viewmatrix(kemo_sgl);
         glDrawBuffer(GL_BACK);
-        kemoview_modify_view(kemo_sgl);
+        kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
         glfwSwapBuffers(glfw_window);
     }
     return;
@@ -324,7 +327,7 @@ void draw_simple(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
     kemoview_mono_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
-    kemoview_modify_view(kemo_sgl);
+    kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
     glfwSwapBuffers(glfw_window);
     return;
 };
@@ -334,7 +337,7 @@ void draw_quilt(struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     kemoview_step_viewmatrix(kemo_sgl);
     glDrawBuffer(GL_BACK);
-    kemoview_modify_view(kemo_sgl);
+    kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
     glfwSwapBuffers(glfw_window);
     return;
 };

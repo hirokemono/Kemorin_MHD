@@ -7,7 +7,7 @@
 #define NPIX_Y  800
 
 struct kemoviewer_type *single_kemoview;
-struct kemoviewer_gl_type *kemo_gl;
+struct kemoviewer_gl_type *kemo_sgl_gl;
 
 int iflag_gtk_focus = 0;
 
@@ -84,7 +84,7 @@ static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
     kemoview_init_background_color(single_kemoview);
 	kemoview_init_lighting(single_kemoview);
     kemoview_gl_background_color(single_kemoview);
-    kemoview_gl_init_lighting(kemo_gl);
+    kemoview_gl_init_lighting(kemo_sgl_gl);
 	kemoview_init_phong_light_list(single_kemoview);
 	
 	return TRUE;
@@ -132,7 +132,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data, GtkWidget *vb
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
-	make_gtk_main_menu_box(mbot, gtk_win, single_kemoview);
+	make_gtk_main_menu_box(mbot, gtk_win, single_kemoview, kemo_sgl_gl);
 	gtk_box_pack_start(GTK_BOX(vbox), mbot->menuHbox, FALSE, FALSE, 0);
 	
 	
@@ -151,7 +151,7 @@ int draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-    kemo_gl = kemoview_allocate_gl_pointers();
+    kemo_sgl_gl = kemoview_allocate_gl_pointers();
 	
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */

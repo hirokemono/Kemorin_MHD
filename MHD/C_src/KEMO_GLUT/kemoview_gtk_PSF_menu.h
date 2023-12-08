@@ -88,6 +88,7 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 void set_vector_plot_availablity(struct kemoviewer_type *kemo_sgl,
                                  struct psf_gtk_menu *psf_gmenu);
 void init_psf_menu_hbox(struct kemoviewer_type *kemo_sgl,
+                        struct kemoviewer_gl_type *kemo_gl,
                         struct psf_gtk_menu *psf_gmenu,
                         GtkWidget *window);
 

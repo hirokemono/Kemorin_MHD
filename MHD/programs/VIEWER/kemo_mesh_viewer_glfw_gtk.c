@@ -10,7 +10,7 @@
 #define NPIX_Y  800
 
 struct kemoviewer_type *single_kemoview;
-struct kemoviewer_gl_type *kemo_gl;
+struct kemoviewer_gl_type *kemo_sgl_gl;
 
 GLFWwindow *glfw_win;
 int iflag_glfw_focus = 0;
@@ -136,7 +136,8 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 	struct kv_string *filename;
 	for (int i = 0; i < num; i++) {
 		filename = kemoview_init_kvstring_by_string(paths[i]);
-		open_kemoviewer_file_glfw(single_kemoview, filename, mbot, gtk_win);
+		open_kemoviewer_file_glfw(single_kemoview, kemo_sgl_gl,
+                                  filename, mbot, gtk_win);
 	}
 }
 
@@ -180,9 +181,9 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     struct line_text_image *image;
     if(kemoview_get_view_type_flag(single_kemoview) == VIEW_STEREO){
-        image = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_gl);
+        image = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_sgl_gl);
     }else{
-        image = draw_objects_to_rgb_gl(single_kemoview, kemo_gl);
+        image = draw_objects_to_rgb_gl(single_kemoview, kemo_sgl_gl);
     }
     
     struct line_text_image *fliped_img = alloc_line_text_image(image->npix_img[0],
@@ -262,7 +263,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	
     iflag_fast_prev = 0;
     GtkWidget *takobox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	make_gtk_main_menu_box(mbot, takobox, gtk_win, single_kemoview);
+	make_gtk_main_menu_box(mbot, takobox, gtk_win, single_kemoview, kemo_sgl_gl);
 
     gtk_box_pack_start(GTK_BOX(takobox), mbot->vbox_menu, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->menuHbox), takobox, FALSE, FALSE, 0);
@@ -280,7 +281,8 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
 
-    g_signal_connect(G_OBJECT(testButton), "clicked", G_CALLBACK(gtkhidetest_CB), (gpointer) mbot);
+    g_signal_connect(G_OBJECT(testButton), "clicked",
+                     G_CALLBACK(gtkhidetest_CB), (gpointer) mbot);
 
     
 	gtk_widget_show(quitButton);
@@ -300,7 +302,7 @@ int draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-    kemo_gl = kemoview_allocate_gl_pointers();
+    kemo_sgl_gl = kemoview_allocate_gl_pointers();
 	
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;
@@ -349,7 +351,7 @@ int draw_mesh_kemo(void) {
 	
 	/*! set callback for GLfw*/
 	kemoviewer_reset_to_init_angle(single_kemoview);
-	glfw_callbacks_init(single_kemoview);
+	glfw_callbacks_init(single_kemoview, kemo_sgl_gl);
 	
 	/* Set Cllback for drug and Drop into window */
 	glfwSetDropCallback(glfw_win, dropFileToGlfw_CB);
@@ -368,7 +370,7 @@ int draw_mesh_kemo(void) {
     kemoview_init_background_color(single_kemoview);
 	kemoview_init_lighting(single_kemoview);
     kemoview_gl_background_color(single_kemoview);
-    kemoview_gl_init_lighting(kemo_gl);
+    kemoview_gl_init_lighting(kemo_sgl_gl);
 	kemoview_init_phong_light_list(single_kemoview);
 	
 	iflag_gtk_focus = 1;

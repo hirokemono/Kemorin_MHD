@@ -8,11 +8,7 @@
 #include <stdio.h>
 #include "kemoviewer_gl.h"
 
-struct kemoviewer_gl_type *kemo_sgl_gl;
-
 /*  OpenGL routines */
-struct kemoviewer_gl_type * kemoview_single_gl_type(void){return kemo_sgl_gl;};
-
 struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(void){
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) malloc(sizeof(struct kemoviewer_gl_type));
     if(kemo_gl == NULL){
@@ -27,8 +23,7 @@ struct kemoviewer_gl_type * kemoview_allocate_gl_pointers(void){
         exit(0);
     };
     
-    kemo_sgl_gl = kemo_gl;
-    return kemo_sgl_gl;
+    return kemo_gl;
 }
 
 void kemoview_deallocate_gl_pointers(struct kemoviewer_gl_type *kemo_gl){
@@ -59,14 +54,13 @@ void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
 };
 
 
-void kemoview_modify_view(struct kemoviewer_type *kemo_sgl){
-    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
+void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
+                          struct kemoviewer_gl_type *kemo_gl){
     update_draw_objects_gl3(kemo_sgl, kemo_gl);
 };
 
-void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl){
-    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
-
+void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
+                              struct kemoviewer_gl_type *kemo_gl){
     struct line_text_image *anaglyph_image = draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_gl);
 
     glDrawBuffer(GL_BACK);
@@ -128,8 +122,8 @@ int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
     return istep;
 }
 
-void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl){
-    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
+void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
+                                     struct kemoviewer_gl_type *kemo_gl){
     release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_a->psf_texure,
                                 kemo_gl->kemo_shaders->texture_name);
     return;
@@ -160,8 +154,8 @@ void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_st
 }
 
 void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix,
-                                 struct kemoviewer_type *kemo_sgl){
-    struct kemoviewer_gl_type *kemo_gl = kemoview_single_gl_type();
+                                 struct kemoviewer_type *kemo_sgl,
+                                 struct kemoviewer_gl_type *kemo_gl){
     set_texture_to_psf(img_fmt, image_prefix->string,
                        kemo_sgl->kemo_psf->psf_a->psf_texure,
                        &kemo_gl->kemo_shaders->texture_name);

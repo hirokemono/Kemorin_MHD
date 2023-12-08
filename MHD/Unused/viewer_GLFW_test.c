@@ -127,7 +127,7 @@ int draw_glfw_test(void) {
 	
 	/*! set callback for GLfw*/
 	kemoviewer_reset_to_init_angle(kemo_sgl);
-	glfw_callbacks_init(kemo_sgl);
+	glfw_callbacks_init(kemo_sgl, kemo_gl);
 	
 	/* Set Cllback for drug and Drop into window */
 	glfwSetDropCallback(glfw_win, dropFileToGlfw_CB);

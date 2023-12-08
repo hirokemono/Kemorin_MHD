@@ -132,7 +132,8 @@ static void load_psf_texture_glui(int sel){
     kemoview_free_kvstring(file_prefix);
 	
 	if(ext_fmt == SAVE_PNG || ext_fmt == SAVE_BMP){
-		kemoview_set_texture_to_PSF(ext_fmt, stripped_ext, kemo_sgl);
+		kemoview_set_texture_to_PSF(ext_fmt, stripped_ext,
+                                    kemo_sgl, kemo_gl);
 		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
 	};
     kemoview_free_kvstring(stripped_ext);

@@ -82,15 +82,16 @@ static int load_texture_file_gtk(GtkWidget *window, struct kv_string *file_prefi
 }
 
 static void load_texture_handler(struct kemoviewer_type *kemo_sgl,
+                                 struct kemoviewer_gl_type *kemo_gl,
                                  GtkWidget *window){
 	int id_image;
     struct kv_string *image_prefix = kemoview_alloc_kvstring();
 	id_image = load_texture_file_gtk(window, image_prefix);
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
-        kemoview_release_PSF_gl_texture(kemo_sgl);
+        kemoview_release_PSF_gl_texture(kemo_sgl, kemo_gl);
         kemoview_update_PSF_textured_id(kemo_sgl);
-		kemoview_set_texture_to_PSF(id_image, image_prefix, kemo_sgl);
+		kemoview_set_texture_to_PSF(id_image, image_prefix, kemo_sgl, kemo_gl);
 		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, TEXTURED_SURFACE, kemo_sgl);
         kemoview_free_kvstring(image_prefix);
 	};
@@ -104,6 +105,8 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
     GtkWidget *parent_window = (GtkWidget *) user_data;
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == WHITE_SURFACE){
@@ -115,7 +118,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
 	}else if (index_mode == RAINBOW_PSF_SURF){
 		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, RAINBOW_SURFACE, kemo_sgl);
 	}else if (index_mode == TEXTURE_PSF_SURF){
-		load_texture_handler(kemo_sgl, parent_window);
+		load_texture_handler(kemo_sgl, kemo_gl, parent_window);
 	};
 	
     draw_full(kemo_sgl);
@@ -245,6 +248,7 @@ void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,
 };
 
 GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                               struct kemoviewer_gl_type *kemo_gl,
                                                GtkWidget *window, 
                                                struct colormap_view *color_vws, 
                                                struct psf_surface_gtk_menu *psf_surface_menu){
@@ -278,7 +282,8 @@ GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_type *kemo_sgl,
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(psf_surface_menu->combobox_sfcolor), renderer_sfcolor,
 				"text", COLUMN_FIELD_NAME, NULL);
     g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
-	g_signal_connect(G_OBJECT(psf_surface_menu->combobox_sfcolor), "changed", 
+    g_object_set_data(G_OBJECT(window), "kemoview_gl",  (gpointer) kemo_gl);
+	g_signal_connect(G_OBJECT(psf_surface_menu->combobox_sfcolor), "changed",
 				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window);
 	
 	psf_surface_menu->label_range_min = gtk_label_new(" ");
