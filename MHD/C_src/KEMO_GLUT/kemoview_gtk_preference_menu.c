@@ -92,7 +92,7 @@ GtkWidget * init_preference_expander(struct kemoviewer_type *kemo_sgl,
     GtkWidget *expander_pref;
 
     float color[4];
-	kemoview_get_background_color(color);
+	kemoview_get_background_color(kemo_sgl, color);
 	
 	/* Set buttons   */
     pref_gmenu->BGselButton = gtk_button_new_with_label("Set Background");

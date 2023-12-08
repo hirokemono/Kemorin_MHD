@@ -271,7 +271,8 @@ extern "C" {
     void kemoview_init_background_color(struct kemoviewer_type *kemoviewer);
     void kemoview_set_background_color(float color[4],
                                        struct kemoviewer_type *kemoviewer);
-    void kemoview_get_background_color(float color[4]);
+    void kemoview_get_background_color(struct kemoviewer_type *kemoviewer,
+                                       float color[4]);
 
     void kemoview_viewer_evolution(int istep, struct kemoviewer_type *kemoviewer);
     
@@ -286,7 +287,7 @@ extern "C" {
     int  kemoview_close_PSF_view(struct kemoviewer_type *kemoviewer);
     void kemoview_close_fieldline_view(struct kemoviewer_type *kemoviewer);
     
-    void kemoview_set_viewtype(int sel);
+    void kemoview_set_viewtype(int sel, struct kemoviewer_type *kemoviewer);
     
     
     void kemoview_set_coastline_radius(double radius, struct kemoviewer_type *kemoviewer);

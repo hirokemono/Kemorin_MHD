@@ -317,7 +317,7 @@ void set_background_color_console(){
     float red, green, blue;
     char buf[1024];
 
-    kemoview_get_background_color(color, kemo_sgl);
+    kemoview_get_background_color(kemo_sgl, color);
     printf("Enter Background color by (R,G,B) from 0.0 to 1.0: \n");
     printf("Corrent color:  %.7e %.7e %.7e \n", color[0], color[1], color[2]);
     fgets(buf,sizeof(buf),stdin);

@@ -5,8 +5,8 @@
 
 struct kemoviewer_type *kemo_sgl;
 
-void kemoview_allocate_pointers(){
-	kemo_sgl->view_s = (struct view_element *)      malloc(sizeof(struct view_element));
+static void kemoview_allocate_pointers(){
+	kemo_sgl->view_s = (struct view_element *) malloc(sizeof(struct view_element));
 	
     kemo_sgl->kemo_buffers = init_kemoview_buffers();
 
@@ -88,8 +88,9 @@ void kemoview_set_background_color(float color[4],
     set_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
                           kemoviewer->kemo_mesh->text_color);
 };
-void kemoview_get_background_color(float color[4]){
-    copy_rgba_color_c(kemo_sgl->kemo_mesh->bg_color, color);
+void kemoview_get_background_color(struct kemoviewer_type *kemoviewer,
+                                   float color[4]){
+    copy_rgba_color_c(kemoviewer->kemo_mesh->bg_color, color);
     return;
 };
 
@@ -143,8 +144,8 @@ void kemoview_viewer_evolution(int istep, struct kemoviewer_type *kemoviewer){
 }
 
 
-void kemoview_set_viewtype(int sel){
-    set_viewtype(kemo_sgl->view_s, sel);
+void kemoview_set_viewtype(int sel, struct kemoviewer_type *kemoviewer){
+    set_viewtype(kemoviewer->view_s, sel);
 }
 
 void kemoview_set_coastline_radius(double radius, struct kemoviewer_type *kemoviewer){

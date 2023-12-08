@@ -498,7 +498,7 @@ void set_viewtype_mode(int selected){
 		left_button_func = PAN;
 	};
 	
-	kemoview_set_viewtype(selected);
+	kemoview_set_viewtype(selected, kemo_sgl);
 	return;
 }
 

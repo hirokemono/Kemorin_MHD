@@ -170,7 +170,7 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 	int index_mode = gtk_selected_combobox_index(combobox_viewtype);
 	
     set_GLFW_viewtype_mode(index_mode);
-    kemoview_set_viewtype(index_mode);
+    kemoview_set_viewtype(index_mode, kemo_sgl);
     draw_full(kemo_sgl);
     
     if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_STEREO){
@@ -280,7 +280,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 
     int num_loaded = kemoview_close_PSF_view(kemo_sgl);
     set_GLFW_viewtype_mode(VIEW_3D);
-    kemoview_set_viewtype(VIEW_3D);
+    kemoview_set_viewtype(VIEW_3D, kemo_sgl);
 	
     if(num_loaded > 0){
         update_current_psf_set_hbox(kemo_sgl, psf_gmenu);

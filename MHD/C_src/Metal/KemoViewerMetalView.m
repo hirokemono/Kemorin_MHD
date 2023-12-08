@@ -26,7 +26,7 @@
 {
     float bgcolor[4];
     [self InitBackGroundColor:kemo_sgl];
-    kemoview_get_background_color(bgcolor);
+    kemoview_get_background_color(kemo_sgl, bgcolor);
     self.clearColor = MTLClearColorMake(bgcolor[0], bgcolor[1], bgcolor[2], bgcolor[3]);
     return;
 }

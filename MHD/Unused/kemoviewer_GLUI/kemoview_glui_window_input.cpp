@@ -471,7 +471,7 @@ void set_background_color_glui(int winid){
     float color[4];
     char buf[1024];
 	
-    kemoview_get_background_color(color, kemo_sgl);
+    kemoview_get_background_color(kemo_sgl, color);
     red =   color[0];
     green = color[1];
 	blue =  color[2];

@@ -107,7 +107,7 @@
 	[self SetViewTypeMenu:selected
                  kemoview:kemo_sgl];
 
-    kemoview_set_viewtype((int) selected);
+    kemoview_set_viewtype((int) selected, kemo_sgl);
 	[_metalView setViewerType:selected];
     kemoview_mono_viewmatrix(kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
@@ -203,7 +203,7 @@
     [self SetViewTypeMenu:VIEW_3D
                  kemoview:kemo_sgl];
     [_metalView setViewerType:VIEW_3D];
-    kemoview_set_viewtype(VIEW_3D);
+    kemoview_set_viewtype(VIEW_3D, kemo_sgl);
 }
 
 - (IBAction) UpdateViewByInpit:(id)sender;
