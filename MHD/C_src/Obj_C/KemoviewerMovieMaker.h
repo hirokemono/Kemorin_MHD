@@ -79,7 +79,10 @@
                           degree:(NSInteger)int_degree
                             axis:(NSInteger)rotationaxis
                         kemoview:(struct kemoviewer_type *) kemo_sgl;
--(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
+-(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead
+                          degree:(NSInteger) int_degree
+                            axis:(NSInteger) rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)SendToClipAsTIFF:(id)sender;
 

@@ -145,7 +145,9 @@
                                                        axis:IONE
                                                    kemoview:kemo_sgl];
         } else {
-            [_movieMakerController SaveKemoviewQuiltPDFFile:ImageFilehead:IZERO:IONE];
+            [_movieMakerController SaveKemoviewQuiltPDFFile:ImageFilehead
+                                                     degree:IZERO
+                                                       axis:IONE kemoview:kemo_sgl];
         }
     } else {
         if(id_format == SAVE_PNG){

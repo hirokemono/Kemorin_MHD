@@ -269,8 +269,10 @@ NSData *SnapshotData;
                                  kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSImage *SnapshotImage = [[NSImage alloc] init];
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree
-                                                                         axis:rotationaxis];
+    NSBitmapImageRep *SnapshotBitmapRep
+        = [self SetMetalQuiltBitmapToImageRep:int_degree
+                                         axis:rotationaxis
+                                     kemoview:kemo_sgl];
 
     [SnapshotImage addRepresentation:SnapshotBitmapRep];
     [SnapshotBitmapRep release];
@@ -372,9 +374,10 @@ NSData *SnapshotData;
     NSRect vFrame;
     NSData *pdfData;
     
-    NSBitmapImageRep *SnapshotBitmapRep = [self SetMetalQuiltBitmapToImageRep:int_degree
-                                                                         axis:rotationaxis
-                                                                     kemoview:kemo_sgl];
+    NSBitmapImageRep *SnapshotBitmapRep 
+        = [self SetMetalQuiltBitmapToImageRep:int_degree
+                                         axis:rotationaxis
+                                     kemoview:kemo_sgl];
     NSImage *SnapshotImage = [[NSImage alloc] init];
     [SnapshotImage addRepresentation:SnapshotBitmapRep];
     
@@ -536,7 +539,10 @@ NSData *SnapshotData;
             } else if(CurrentMovieFormat == SAVE_BMP){
                 [self SaveKemoviewBMPFile:ImageFilehead];
             } else if (kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                [self SaveKemoviewQuiltPDFFile:ImageFilehead:int_degree:RotationAxisID];
+                [self SaveKemoviewQuiltPDFFile:ImageFilehead
+                                        degree:int_degree
+                                          axis:RotationAxisID
+                                      kemoview:kemo_sgl];
             } else {
                 [self SaveKemoviewPDFFile:ImageFilehead];
             }
@@ -659,7 +665,10 @@ NSData *SnapshotData;
                 } else if(CurrentMovieFormat == SAVE_BMP){
                     [self SaveKemoviewBMPFile:ImageFilehead];
                 } else if (kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1) {
-                    [self SaveKemoviewQuiltPDFFile:ImageFilehead:IZERO:IONE];
+                    [self SaveKemoviewQuiltPDFFile:ImageFilehead
+                                            degree:IZERO
+                                              axis:IONE
+                                          kemoview:kemo_sgl];
                 } else {
                     [self SaveKemoviewPDFFile:ImageFilehead];
                 }

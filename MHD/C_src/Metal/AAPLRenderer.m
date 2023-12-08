@@ -11,11 +11,19 @@ Implementation of a platform independent renderer class, which performs Metal se
 #import "AAPLRenderer.h"
 #include "draw_colorbar_gl.h"
 
-// Main class performing the rendering
+/* The maximum number of frames in flight. */
+static const NSUInteger MaxFramesInFlight = 3;
+
+/* Main class performing the rendering */
 @implementation AAPLRenderer
 {
 
     id<MTLDevice> _device;
+
+/* A semaphore used to ensure that buffers read by the GPU are not simultaneously written by the CPU. */
+    dispatch_semaphore_t _inFlightSemaphore;
+/* The index of the Metal buffer in _vertexBuffers to write to for the current frame. */
+    NSUInteger _currentBuffer;
 
 /* The command queue used to pass commands to the device. */
     id<MTLCommandQueue> _commandQueue;
@@ -43,7 +51,7 @@ Implementation of a platform independent renderer class, which performs Metal se
     struct kemoviewer_type *_kemoMetal;
 }
 
-- (void) setKemoViewPointer:(struct kemoviewer_type *) kemo_sgl
+- (void) setKemoViewPointer:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
     _kemoMetal = kemo_sgl;
     return;
@@ -63,7 +71,9 @@ Implementation of a platform independent renderer class, which performs Metal se
     {
         _device = mtkView.device;
 
-// Indicate that each pixel in the depth buffer is a 32-bit floating point value.
+        _inFlightSemaphore = dispatch_semaphore_create(MaxFramesInFlight);
+
+/* Indicate that each pixel in the depth buffer is a 32-bit floating point value. */
         mtkView.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
 
 /* Load all the shader files with a .metal file extension in the project. */
@@ -184,6 +194,16 @@ Implementation of a platform independent renderer class, which performs Metal se
 -(void) KemoViewEncodeAll:(nonnull MTKView *)view
                  kemoview:(struct kemoviewer_type *) kemo_sgl
 {
+/*
+    Wait to ensure only `MaxFramesInFlight` number of frames are getting processed
+    by any stage in the Metal pipeline (CPU, GPU, Metal, Drivers, etc.).
+*/
+    dispatch_semaphore_wait(_inFlightSemaphore, DISPATCH_TIME_FOREVER);
+/*
+    Iterate through the Metal buffers, and cycle back to the first when you've written to the last.
+*/
+    _currentBuffer = (_currentBuffer + 1) % MaxFramesInFlight;
+
 /* Create a new command buffer for each render pass to the current drawable. */
     id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
 
@@ -202,6 +222,19 @@ Implementation of a platform independent renderer class, which performs Metal se
         [commandBuffer presentDrawable:view.currentDrawable];
         [_renderEncoder endEncoding];
     }
+/*
+    Add a completion handler that signals `_inFlightSemaphore` when Metal and the GPU have fully
+    finished processing the commands that were encoded for this frame.
+    This completion indicates that the dynamic buffers that were written-to in this frame, are no
+    longer needed by Metal and the GPU; therefore, the CPU can overwrite the buffer contents
+    without corrupting any rendering operations.
+*/
+    __block dispatch_semaphore_t block_semaphore = _inFlightSemaphore;
+    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer)
+     {
+         dispatch_semaphore_signal(block_semaphore);
+     }];
+
     [commandBuffer commit];
     return;
 }
@@ -233,9 +266,9 @@ Implementation of a platform independent renderer class, which performs Metal se
     return view.currentDrawable.texture;
 }
 
-- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(struct kemoviewer_type *) kemo_sgl
+- (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(struct kemoviewer_type *_Nonnull) kemo_sgl
                                       metalView:(nonnull MTKView *)view
-                                         unites:(KemoViewUnites *) viewUnites
+                                         unites:(KemoViewUnites *_Nonnull) viewUnites
 {
     [self refreshKemoViewMetalBuffers:&_device
                              kemoview:kemo_sgl];
@@ -458,7 +491,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 }
 
 - (id<MTLTexture>_Nonnull)KemoViewToTexure:(nonnull MTKView *)view
-                                  kemoview:(struct kemoviewer_type *) kemo_sgl
+                                  kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
    [_kemoRendererTools setKemoViewLightsAndViewMatrices:kemo_sgl
                                               ModelView:&_monoViewUnites
@@ -493,8 +526,6 @@ Implementation of a platform independent renderer class, which performs Metal se
     // Save the size of the drawable to pass to the vertex shader.
     _viewportSize.x = size.width;
     _viewportSize.y = size.height;
-    [self drawKemoMetalView:view
-                   kemoview:_kemoMetal];
 }
 
 @end
