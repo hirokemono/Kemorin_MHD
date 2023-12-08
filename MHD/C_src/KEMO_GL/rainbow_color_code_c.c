@@ -287,6 +287,7 @@ void set_node_color_mode_c(int surface_color, int color_mode, int color_loop,
 void set_black_color_c(double *f_color){
 	int i;
 	for (i=0; i<3; i++) {f_color[i] = black[i];};
+    f_color[3] = 1.0;
 	return;
 };
 
