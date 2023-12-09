@@ -19,12 +19,7 @@ Header for a platform independent renderer class, which performs Metal setup and
 #include "m_kemoview_object_buffers.h"
 #include "m_gl_transfer_matrix.h"
 
-@interface AAPLRenderer : NSObject<MTKViewDelegate>{
-    KemoViewMetalBuffers * _kemoMetalBufBase;
-    KemoView2DRenderer *   _kemo2DRenderer;
-    KemoView3DRenderer *   _kemo3DRenderer;
-    KemoViewRendererTools * _kemoRendererTools;
-}
+@interface AAPLRenderer : NSObject<MTKViewDelegate>
 
 - (void) setKemoViewPointer:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 
