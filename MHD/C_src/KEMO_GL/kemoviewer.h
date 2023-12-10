@@ -199,7 +199,6 @@
 #define ISET_QUILT_RAW       31
 #define ISET_QUILT_COLUMN    32
 #define ISET_QUILT_NUM       33
-#define ISET_QUILT_COUNT     34
 
 #define ISET_PIXEL_X            0
 #define ISET_PIXEL_Y            1
@@ -372,7 +371,7 @@ extern "C" {
     int kemoview_get_view_type_flag(struct kemoviewer_type *kemoviewer);
     
     void kemoview_add_bgra_to_quilt(struct kemoviewer_type *kemoviewer,
-                                    int npix_x, int npix_y,
+                                    int istep_quilt, int npix_x, int npix_y,
                                     unsigned char *glimage,
                                     unsigned char *fliped_quilt);
 
@@ -380,7 +379,7 @@ extern "C" {
     void kemoview_transparent_buffers(struct kemoviewer_type *kemoviewer);
 
     void kemoview_mono_viewmatrix(struct kemoviewer_type *kemoviewer);
-    void kemoview_step_viewmatrix(struct kemoviewer_type *kemoviewer);
+    void kemoview_step_viewmatrix(int istep, struct kemoviewer_type *kemoviewer);
     void kemoview_left_viewmatrix(struct kemoviewer_type *kemoviewer);
     void kemoview_right_viewmatrix(struct kemoviewer_type *kemoviewer);
 

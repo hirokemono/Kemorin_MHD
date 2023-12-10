@@ -73,10 +73,10 @@ void modify_mono_viewmat(struct view_element *view_s)
     return;
 };
 
-void modify_step_viewmat(struct view_element *view_s)
+void modify_step_viewmat(int istep, struct view_element *view_s)
 {
-    update_step_projection_struct(view_s);
-    modify_step_view_by_struct(view_s);
+    update_step_projection_struct(istep, view_s);
+    modify_step_view_by_struct(istep, view_s);
     return;
 };
 

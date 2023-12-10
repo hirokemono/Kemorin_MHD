@@ -53,7 +53,6 @@ struct view_element{
 	double rotpoint[3];   /*rotation point*/
     
     int iflag_quilt_mode;        /*Integer flag to set if eye separation is updated */
-    int istep_quilt;
     int num_raws;
     int num_columns;
     int num_views;
@@ -80,7 +79,7 @@ void set_view_by_identity(void);
 void modify_view_by_struct(struct view_element *view);
 void modify_left_view_by_struct(struct view_element *view);
 void modify_right_view_by_struct(struct view_element *view);
-void modify_step_view_by_struct(struct view_element *view);
+void modify_step_view_by_struct(int istep, struct view_element *view);
 
 void set_view_for_message(struct view_element *view);
 
@@ -89,7 +88,7 @@ void init_projection_struct(struct view_element *view);
 void update_projection_struct(struct view_element *view);
 void update_left_projection_struct(struct view_element *view);
 void update_right_projection_struct(struct view_element *view);
-void update_step_projection_struct(struct view_element *view);
+void update_step_projection_struct(int istep, struct view_element *view);
 
 void copy_lookatpoint_struct(struct view_element *origin, struct view_element *dest);
 void copy_viewmatrix_struct(struct view_element *origin, struct view_element *dest);
@@ -135,7 +134,6 @@ void set_quilt_mode_flag(struct view_element *view, int num);
 void set_quilt_image_num_raws(struct view_element *view, int num);
 void set_quilt_image_num_columns(struct view_element *view, int num);
 void set_quilt_image_num_views(struct view_element *view, int num);
-void set_quilt_image_count(struct view_element *view, int num);
 
 double send_gl_rotation_parameter(struct view_element *view, int i);
 void send_gl_dragging_rotation(struct view_element *view, double rot_vect[4]);
@@ -157,7 +155,6 @@ int send_quilt_mode_flag(struct view_element *view);
 int send_quilt_image_num_raws(struct view_element *view);
 int send_quilt_image_num_columns(struct view_element *view);
 int send_quilt_image_num_views(struct view_element *view);
-int send_quilt_image_count(struct view_element *view);
 
 
 /* called with the start position and the window origin + size */

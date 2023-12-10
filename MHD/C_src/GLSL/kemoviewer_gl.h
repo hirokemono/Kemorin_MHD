@@ -53,7 +53,7 @@ extern "C" {
 
     unsigned char * kemoview_alloc_RGB_buffer_to_bmp(int npix_x, int npix_y);
     void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
-    void kemoview_add_quilt_img(struct kemoviewer_type *kemo_sgl,
+    void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
                                 unsigned char *glimage, unsigned char *image_quilt);
 
 

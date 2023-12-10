@@ -84,13 +84,13 @@ static void quilt_preview_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
-    int i;
+    int i, i_quilt;
     i = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE);
 	if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 0) return;
 	
     int num_step = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
-	for (i=0;i<num_step; i++){
-        kemoview_set_quilt_nums(ISET_QUILT_COUNT, i, kemo_sgl);
+	for (i_quilt=0;i_quilt<num_step; i_quilt++){
+        kemoview_step_viewmatrix(i_quilt, kemo_sgl);
 		kemoview_set_view_integer(ISET_ROTATE_AXIS, IONE, kemo_sgl);
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
 		draw_quilt(kemo_sgl);

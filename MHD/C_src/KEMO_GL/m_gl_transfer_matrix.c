@@ -365,7 +365,7 @@ static double each_eye_from_middle_c(int istep, int num_step, double focalLength
 									 double eye_sep_angle){
     if(istep <= 0) return ZERO;
 	double pi_180 = FOUR * atan(1.0) / 180.0;
-	double rstep = 0.5 - ((double) istep) / ((double) (num_step-1));
+	double rstep = 0.5 - (double) (istep-1) / ((double) (num_step-1));
 	double eye_from_middle = focalLength * tan(pi_180 * rstep * eye_sep_angle);
 	return eye_from_middle;
 }
@@ -467,13 +467,13 @@ void modify_right_view_by_struct(struct view_element *view){
 	return;
 };
 
-void modify_step_view_by_struct(struct view_element *view){
+void modify_step_view_by_struct(int istep, struct view_element *view){
     
     identity_glmat_c(view->mat_object_2_eye);
     Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
 						  view->mat_object_2_eye);
 	
-	double eyeSep = each_eye_from_middle_c(view->istep_quilt, view->num_views,
+	double eyeSep = each_eye_from_middle_c(istep, view->num_views,
 										   view->focal_length,
 										   view->eye_separation_angle);
 	Kemo_Translate_view_c(eyeSep, ZERO, ZERO, view->mat_object_2_eye);
@@ -537,8 +537,8 @@ void update_right_projection_struct(struct view_element *view){
 							view->mat_eye_2_clip);
 	return;
 };
-void update_step_projection_struct(struct view_element *view){
-	update_step_projection(view->istep_quilt, view->num_views,
+void update_step_projection_struct(int istep, struct view_element *view){
+	update_step_projection(istep, view->num_views,
 						   view->x_lookfrom, view->nx_frame, view->ny_frame,
 						   view->aperture, &view->aspect, &view->near, &view->far,
 						   view->focal_length, view->eye_separation_angle, 
@@ -671,7 +671,6 @@ void init_kemoview_perspective(struct view_element *view){
     view->num_raws =     1;
     view->num_columns =  1;
     view->num_views =    1;
-    view->istep_quilt =  1;
 
     view->focal_length =  INITIAL_FOCAL;
     set_gl_eye_separation_distance(view, INITIAL_EYE_SEP);
@@ -794,10 +793,6 @@ void set_quilt_image_num_views(struct view_element *view, int num){
     view->num_views =   num;
     return;
 };
-void set_quilt_image_count(struct view_element *view, int num){
-    view->istep_quilt =   num;
-return;
-};
 
 
 double send_gl_rotation_parameter(struct view_element *view, int i){return (double) view->rotation[i];}
@@ -848,9 +843,6 @@ int send_quilt_image_num_columns(struct view_element *view){
 };
 int send_quilt_image_num_views(struct view_element *view){
     return (int) view->num_views;
-};
-int send_quilt_image_count(struct view_element *view){
-    return (int) view->istep_quilt;
 };
 
 

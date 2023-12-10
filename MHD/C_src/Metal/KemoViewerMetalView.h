@@ -59,7 +59,8 @@
 -(void) FastUpdateImage;
 -(void) QuickUpdateImage;
 
--(id) DrawQuilt:(NSInteger) int_degree
+-(id) DrawQuilt:(NSInteger) istep_quilt
+         degree:(NSInteger) int_degree
            axis:(NSInteger) rotationaxis
        kemoview:(struct kemoviewer_type *) kemo_sgl;
 

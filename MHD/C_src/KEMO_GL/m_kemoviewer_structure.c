@@ -383,13 +383,13 @@ int kemoview_get_view_type_flag(struct kemoviewer_type *kemoviewer){
 };
 
 void kemoview_add_bgra_to_quilt(struct kemoviewer_type *kemoviewer,
-                                int npix_x, int npix_y,
+                                int istep_quilt, int npix_x, int npix_y,
                                 unsigned char *glimage,
                                 unsigned char *fliped_quilt){
     quilt_bitmap_by_bgra(kemoviewer->view_s->num_columns,
                          kemoviewer->view_s->num_raws,
-                         kemoviewer->view_s->istep_quilt,
-                         npix_x, npix_y, glimage, fliped_quilt);
+                         istep_quilt, npix_x, npix_y, glimage,
+                         fliped_quilt);
     return;
 };
 
@@ -417,8 +417,8 @@ void kemoview_transparent_buffers(struct kemoviewer_type *kemoviewer){
 void kemoview_mono_viewmatrix(struct kemoviewer_type *kemoviewer){
     modify_mono_viewmat(kemoviewer->view_s);
 };
-void kemoview_step_viewmatrix(struct kemoviewer_type *kemoviewer){
-    modify_step_viewmat(kemoviewer->view_s);
+void kemoview_step_viewmatrix(int istep, struct kemoviewer_type *kemoviewer){
+    modify_step_viewmat(istep, kemoviewer->view_s);
 };
 void kemoview_left_viewmatrix(struct kemoviewer_type *kemoviewer){
     modify_left_viewmat(kemoviewer->view_s);
@@ -511,8 +511,6 @@ void kemoview_set_quilt_nums(int selected, int ivalue,
         set_quilt_image_num_columns(kemoviewer->view_s, ivalue);
     }else if(selected == ISET_QUILT_NUM){
         set_quilt_image_num_views(kemoviewer->view_s, ivalue);
-    }else if(selected == ISET_QUILT_COUNT){
-        set_quilt_image_count(kemoviewer->view_s, ivalue);
     };
     return;
 };
@@ -568,8 +566,6 @@ int kemoview_get_quilt_nums(struct kemoviewer_type *kemoviewer,
         num =  send_quilt_image_num_columns(kemoviewer->view_s);
     }else if(selected == ISET_QUILT_NUM){
         num =  send_quilt_image_num_views(kemoviewer->view_s);
-    }else if(selected == ISET_QUILT_COUNT){
-        num =  send_quilt_image_count(kemoviewer->view_s);
     };
     return num;
 }
