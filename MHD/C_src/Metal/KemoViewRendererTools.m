@@ -76,7 +76,6 @@
     return;
 }
 
-
 - (void)setMetalColorbuffer:(LightSourceParameters *) lights
                    material:(MaterialParameters *) mats
                    kemoview:(struct kemoviewer_type *) kemo_sgl

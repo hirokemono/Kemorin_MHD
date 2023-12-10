@@ -64,7 +64,7 @@ static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *
 			set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf], 
 								   d_patch, &psf_s->color_nod[inod][0]);
 		};
-	};
+    };
 /*
 	else if (psf_m->psf_patch_color == TWO_COLOR_LINE) {
 		for (inod=0; inod< psf_s->nnod_viz; inod++){

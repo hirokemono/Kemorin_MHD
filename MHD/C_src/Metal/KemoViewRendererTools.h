@@ -28,6 +28,8 @@ typedef struct
     
     LightSourceParameters lights;
     MaterialParameters    material;
+    
+    NSInteger iColormapMode;
 } KemoViewUnites;
 
 @interface KemoViewRendererTools : NSObject

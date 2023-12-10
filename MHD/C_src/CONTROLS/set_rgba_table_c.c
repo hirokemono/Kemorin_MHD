@@ -77,7 +77,9 @@ void set_rgb_from_rgb(struct colormap_params *cmap_s,
 double set_opacity_from_value_s(struct colormap_params *cmap_s, double value){
 	struct colormap_array *cmap_tmp = init_colormap_from_list(cmap_s->opacitymap);
 	double rnorm = color_normalize_linear_segment_c(cmap_tmp->num,
-				cmap_tmp->data, cmap_tmp->value, value);
+                                                    cmap_tmp->data,
+                                                    cmap_tmp->value,
+                                                    value);
 	dealloc_colormap_array(cmap_tmp);
 	return rnorm;
 }
