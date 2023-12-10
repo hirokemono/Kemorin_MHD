@@ -80,13 +80,13 @@ typedef struct
     id<MTLFunction> _Nonnull phongVertexFunction;
     id<MTLFunction> _Nonnull phongFragmentFunction;
     
+    /*  Shader functions for Phong shader with colormap */
+    id<MTLFunction> _Nonnull phongColorMapVertexFunction;
+    id<MTLFunction> _Nonnull phongColorMapFragmentFunction;
+    
     /*  Shader functions for textured Phong shader  */
     id<MTLFunction> _Nonnull texuredPhongVertexFunction;
     id<MTLFunction> _Nonnull texuredPhongFragmentFunction;
-    
-    /*  Shader functions for textured Phong anaglyph shader  */
-    id<MTLFunction> _Nonnull PhongAnaglyphVertexFunction;
-    id<MTLFunction> _Nonnull PhongAnaglyphFragmentFunction;
 } KemoViewMetalShaders;
 
 typedef struct
@@ -95,13 +95,13 @@ typedef struct
     id<MTLRenderPipelineState> _Nonnull simplePipelineState;
     /*  Shader functions for Phong shader  */
     id<MTLRenderPipelineState> _Nonnull phongPipelineState;
+    /*  Shader functions for Phong shader with colormap construction */
+    id<MTLRenderPipelineState> _Nonnull phongColorMapPipelineState;
     /*  Shader functions for textured Phong shader  */
     id<MTLRenderPipelineState> _Nonnull phongTexturedPipelineState;
 
     /*  Shader functions for textured  shader  */
     id<MTLRenderPipelineState> _Nonnull texuredPipelineState;
-    /*  Shader functions for textured Phong anaglyph shader  */
-    id<MTLRenderPipelineState> _Nonnull phongAnaglyphPipelineState;
 } KemoView3DPipelines;
 
 @interface KemoView3DRenderer : NSObject
@@ -123,8 +123,6 @@ typedef struct
 
 -(void) addKemoView3DPipelines:(nonnull MTKView *)mtkView
                    targetPixel:(MTLPixelFormat) pixelformat;
--(void) addKemoViewAnaglyphPipelines:(nonnull MTKView *)mtkView
-                         targetPixel:(MTLPixelFormat) pixelformat;
 
 - (void) encodeKemoSimpleObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
                            depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState

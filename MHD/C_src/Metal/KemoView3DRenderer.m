@@ -17,10 +17,7 @@
 @implementation KemoView3DRenderer
 {
     KemoViewMetalShaders   _kemoViewShaders;
-    
     KemoView3DPipelines    _kemoViewPipelines;
-    KemoView3DPipelines    _kemoAnaglyphPipelines;
-    
     KemoView3DBuffers     _kemoViewMetalBuf;
 }
 
@@ -203,9 +200,9 @@
     kemoViewShaders->texuredPhongVertexFunction = [*defaultLibrary newFunctionWithName:@"PhongTexureVertexShader"];
     kemoViewShaders->texuredPhongFragmentFunction = [*defaultLibrary newFunctionWithName:@"PhongTextureFragmentShader"];
     
-    kemoViewShaders->PhongAnaglyphVertexFunction = [*defaultLibrary newFunctionWithName:@"PhongAnagriphVertexShader"];
-    kemoViewShaders->PhongAnaglyphFragmentFunction = [*defaultLibrary newFunctionWithName:@"PhongAnagriphFragmentShader"];
-    
+    kemoViewShaders->phongColorMapVertexFunction =   [*defaultLibrary newFunctionWithName:@"PhongColorMapVertexShader"];
+    kemoViewShaders->phongColorMapFragmentFunction = [*defaultLibrary newFunctionWithName:@"PhongColorMapFragmentShader"];
+
     kemoViewShaders->texuredVertexFunction =   [*defaultLibrary newFunctionWithName:@"SimpleTexureVertexShader"];
     kemoViewShaders->texuredFragmentFunction = [*defaultLibrary newFunctionWithName:@"SimpleTextureFragmentShader"];
     return;
@@ -221,7 +218,7 @@
     id<MTLDevice> device = mtkView.device;
     
     MTLRenderPipelineDescriptor *pipelineStateDescriptor;
-    /* Configure a pipeline descriptor that is used to create a pipeline state. */
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
     pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
     
     pipelineStateDescriptor.label = @"Phong Shader Pipeline";
@@ -238,12 +235,33 @@
     pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
     pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
     
-    kemo3DPipelines->phongPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                 error:&error];
+    kemo3DPipelines->phongPipelineState
+        = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
     NSAssert(kemo3DPipelines->phongPipelineState, @"Failed to create pipeline state: %@", error);
     
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
     
-    /* Configure a pipeline descriptor that is used to create a pipeline state. */
+    pipelineStateDescriptor.label = @"Phong Shader Pipeline with colormap construction";
+    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->phongColorMapVertexFunction;
+    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->phongColorMapFragmentFunction;
+    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
+    
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
+    
+    kemo3DPipelines->phongColorMapPipelineState
+        = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
+    NSAssert(kemo3DPipelines->phongColorMapPipelineState, @"Failed to create pipeline state: %@", error);
+    
+
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
     pipelineStateDescriptor.label = @"Texure Shader Pipeline";
     pipelineStateDescriptor.vertexFunction =   kemoViewShaders->texuredPhongVertexFunction;
     pipelineStateDescriptor.fragmentFunction = kemoViewShaders->texuredPhongFragmentFunction;
@@ -258,11 +276,11 @@
     pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
     pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
     
-    kemo3DPipelines->phongTexturedPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                         error:&error];
+    kemo3DPipelines->phongTexturedPipelineState
+        = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
     NSAssert(kemo3DPipelines->phongTexturedPipelineState, @"Failed to create pipeline state: %@", error);
     
-    /* Configure a pipeline descriptor that is used to create a pipeline state. */
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
     pipelineStateDescriptor.label = @"Simple Shader Pipeline";
     pipelineStateDescriptor.vertexFunction =   kemoViewShaders->simpleVertexFunction;
     pipelineStateDescriptor.fragmentFunction = kemoViewShaders->simpleFragmentFunction;
@@ -293,91 +311,7 @@
     kemo3DPipelines->texuredPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                                                                    error:&error];
     NSAssert(kemo3DPipelines->texuredPipelineState, @"Failed to create pipeline state: %@", error);
-    
-    /* Configure a pipeline descriptor that is used to create a pipeline state. */
-    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-    
-    pipelineStateDescriptor.label = @"Phong Anaglyph Shader Pipeline";
-    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->phongVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->phongFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-    
-    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
-    
-    kemo3DPipelines->phongAnaglyphPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                         error:&error];
-    NSAssert(kemo3DPipelines->phongAnaglyphPipelineState, @"Failed to create pipeline state: %@", error);
 }
-
--(void) addAnaglyphPipelines:(nonnull MTKView *)mtkView
-                     shaders:(KemoViewMetalShaders *) kemoViewShaders
-                   pipelines:(KemoView3DPipelines *) kemoAnaglyphPipelines
-                 targetPixel:(MTLPixelFormat) pixelformat
-{
-    NSError *error;
-    id<MTLDevice> device = mtkView.device;
-    
-    MTLRenderPipelineDescriptor *pipelineStateDescriptor;
-    /* Configure a pipeline descriptor that is used to create a pipeline state. */
-    pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-    
-    pipelineStateDescriptor.label = @"Phong Shader Pipeline";
-    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->phongVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->phongFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-    
-    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
-    
-    kemoAnaglyphPipelines->phongPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                       error:&error];
-    NSAssert(kemoAnaglyphPipelines->phongPipelineState, @"Failed to create pipeline state: %@", error);
-    
-    
-    /* Configure a pipeline descriptor that is used to create a pipeline state. */
-    pipelineStateDescriptor.label = @"Texure Shader Pipeline";
-    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->texuredPhongVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->texuredPhongFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-    
-    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = YES;
-    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
-    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
-    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
-    
-    kemoAnaglyphPipelines->phongTexturedPipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                               error:&error];
-    NSAssert(kemoAnaglyphPipelines->phongTexturedPipelineState, @"Failed to create pipeline state: %@", error);
-    
-    /* Configure a pipeline descriptor that is used to create a pipeline state. */
-    pipelineStateDescriptor.label = @"Simple Shader Pipeline";
-    pipelineStateDescriptor.vertexFunction =   kemoViewShaders->simpleVertexFunction;
-    pipelineStateDescriptor.fragmentFunction = kemoViewShaders->simpleFragmentFunction;
-    pipelineStateDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = pixelformat;
-    
-    kemoAnaglyphPipelines->simplePipelineState = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                                                        error:&error];
-    NSAssert(kemoAnaglyphPipelines->simplePipelineState, @"Failed to create pipeline state: %@", error);
-}
-
 
 - (void)drawSolidWithSimple:(struct gl_strided_buffer *) buf
                     encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
@@ -866,17 +800,6 @@
                  targetPixel:pixelformat];
     return;
 }
-
--(void) addKemoViewAnaglyphPipelines:(nonnull MTKView *)mtkView
-                         targetPixel:(MTLPixelFormat) pixelformat
-{
-    [self addAnaglyphPipelines:mtkView
-                       shaders:&_kemoViewShaders
-                     pipelines:&_kemoAnaglyphPipelines
-                   targetPixel:pixelformat];
-    return;
-};
-
 
 - (void) encodeKemoSimpleObjects:(id<MTLRenderCommandEncoder> _Nonnull  *_Nonnull) renderEncoder
                            depth:(id<MTLDepthStencilState> _Nonnull *_Nonnull) depthState

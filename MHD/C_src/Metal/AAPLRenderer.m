@@ -92,12 +92,9 @@ static const NSUInteger MaxFramesInFlight = 3;
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
         [_kemo2DRenderer addKemoView2DPipelines:mtkView
                                     targetPixel:mtkView.colorPixelFormat];
-        
         for(i=0;i<MaxFramesInFlight;i++){
             [_kemo3DRenderer[i] addKemoView3DPipelines:mtkView
                                            targetPixel:mtkView.colorPixelFormat];
-            [_kemo3DRenderer[i] addKemoViewAnaglyphPipelines:mtkView
-                                                 targetPixel:mtkView.colorPixelFormat];
         };
 
 /* Add Depth buffer description in command */
