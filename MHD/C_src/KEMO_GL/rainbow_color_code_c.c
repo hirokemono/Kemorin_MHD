@@ -133,9 +133,9 @@ void set_two_color_scale_g(double val, double *f_color){
 }
 
 void set_rainbow_color_code(struct colormap_params *cmap_s, double val_pe,
-							double *f_color){
+							double *f_color, double *rnorm){
 	
-	set_rgb_from_value_s(cmap_s, val_pe, &f_color[0], &f_color[1], &f_color[2]);
+	set_rgb_from_value_s(cmap_s, val_pe, &f_color[0], &f_color[1], &f_color[2], rnorm);
 	f_color[3] = set_opacity_from_value_s(cmap_s, val_pe);
 	return;
 }
@@ -191,17 +191,6 @@ static void get_d_rainbow_int_c(int inum, int iloop, int i_min, int i_max, doubl
 	val_max = i_max;
 	val_pe =  ival;
 	get_dark_rainbow_c(val_pe, val_min, val_max, f_color);
-	return;
-}
-
-void set_rainbow_PSF_c(double val_pe, struct colormap_params *cmap_s){
-	set_rainbow_color_code(cmap_s, val_pe, c_code);
-	return;
-}
-
-void set_rainbow_anaglyph_PSF_c(double val_pe, struct colormap_params *cmap_s){
-	set_rainbow_color_code(cmap_s, val_pe, c_code);
-	convert_anaglyph_color(0.4, c_code);
 	return;
 }
 

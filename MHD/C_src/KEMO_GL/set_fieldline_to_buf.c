@@ -15,7 +15,8 @@ int set_fieldtubes_to_buf(int ncorner,
 			struct psf_data *fline_s, struct fline_menu_val *fline_m,
 			struct gl_strided_buffer *strided_buf) {
 	int num_wall, inum_patch;
-	int inod, iele, k, nd;
+	int iele, k, nd;
+    long inod;
 	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
 	double x_line[6], dir_line[6], color_line[8];
 	double norm_line[6];
@@ -51,7 +52,8 @@ int set_fieldtubes_to_buf(int ncorner,
 
 int set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *fline_m,
 			struct gl_strided_buffer *strided_buf) {
-	int inod, iele, k, nd;
+	int iele, k, nd;
+    long inod;
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
 	

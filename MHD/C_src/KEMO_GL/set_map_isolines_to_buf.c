@@ -31,7 +31,7 @@ static int set_map_isolines_to_buf(int ist_patch, int ist, int ied,
 			struct gl_strided_buffer *psf_buf){
 	int inum_patch = ist_patch;
 	int j, nd;
-	double v_line;
+	double v_line, d_norm;
 	double f_color[4];
 	
 	if (psf_m->isoline_color == BLACK_LINE){
@@ -46,7 +46,7 @@ static int set_map_isolines_to_buf(int ist_patch, int ist, int ied,
 		
 		if (psf_m->isoline_color == RAINBOW_LINE){	
 			set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf],
-								   v_line, f_color);
+								   v_line, f_color, &d_norm);
 		};
 		inum_patch = set_each_map_isoline_to_buf(inum_patch, psf_m->isoline_width, 
 												 v_line, psf_m->icomp_draw_psf,

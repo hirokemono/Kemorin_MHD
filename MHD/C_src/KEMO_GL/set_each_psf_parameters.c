@@ -189,7 +189,9 @@ void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_m
 
 void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
                             double value, double *red, double *green, double *blue){
-	set_rgb_from_value_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], value, red, green, blue);
+    double rnorm;
+	set_rgb_from_value_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
+                         value, red, green, blue, &rnorm);
 	return;
 }
 double get_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value){
