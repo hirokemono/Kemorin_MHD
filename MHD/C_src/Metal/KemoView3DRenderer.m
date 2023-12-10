@@ -473,7 +473,7 @@
             [*renderEncoder setDepthStencilState:*depthState];
         }
         
-        [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongColorMapPipelineState];
+        [*renderEncoder setRenderPipelineState:kemo3DPipelines->phongPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
                                 atIndex:AAPLVertexInputIndexVertices];
