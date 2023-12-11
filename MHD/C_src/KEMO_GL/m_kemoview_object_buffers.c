@@ -138,10 +138,12 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         set_map_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
         set_map_flame_buffer(kemo_mesh->mesh_m, kemo_buffers->sph_grid_buf);
     } else {
-        /* Set Axis data into buffer */
+/* Set Axis data into buffer */
         double axis_radius = 4.0;
-        set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis, kemo_mesh->mesh_m->dist_domains,
-                        kemo_buffers->ncorner_axis, axis_radius, kemo_buffers->axis_buf);
+        set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                        kemo_mesh->mesh_m->dist_domains,
+                        kemo_buffers->ncorner_axis, axis_radius,
+                        kemo_buffers->axis_buf);
         
         iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
                                                 kemo_psf->psf_a, view_s);
@@ -199,6 +201,12 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
 void set_transparent_buffers(struct kemoview_psf *kemo_psf, struct kemoview_mesh *kemo_mesh,
                              struct view_element *view_s, struct kemoview_buffers *kemo_buffers)
 {
+    double axis_radius = 4.0;
+    set_axis_to_buf(view_s, kemo_mesh->mesh_m->iflag_draw_axis,
+                    kemo_mesh->mesh_m->dist_domains,
+                    kemo_buffers->ncorner_axis, axis_radius,
+                    kemo_buffers->axis_buf);
+
     int iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
                                             kemo_psf->psf_a, view_s);
     iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);

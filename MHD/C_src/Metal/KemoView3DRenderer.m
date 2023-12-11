@@ -45,6 +45,10 @@
     [_kemo3DMetalBufBase setMetalVertexs:device
                                   buffer:kemo_buffers->mesh_trns_buf
                                   vertex:&(kemoView3DMetalBuf->meshTransVertice)];
+
+    [_kemo3DMetalBufBase setMetalVertexs:device
+                                  buffer:kemo_buffers->axis_buf
+                                  vertex:&(kemoView3DMetalBuf->axisVertice)];
     return;
 }
 
@@ -66,9 +70,6 @@
     [_kemo3DMetalBufBase setMetalVertexs:device
                                   buffer:kemo_buffers->sph_grid_buf
                                   vertex:&(kemoView3DMetalBuf->sphGridVertice)];
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->axis_buf
-                                  vertex:&(kemoView3DMetalBuf->axisVertice)];
     
     [_kemo3DMetalBufBase setMetalVertexs:device
                                   buffer:kemo_buffers->PSF_solid_buf
@@ -119,6 +120,8 @@
     
     if(kemo_buffers->PSF_trns_buf->num_nod_buf > 0)  {[kemoView3DMetalBuf->psfTransVertice release];};
     if(kemo_buffers->mesh_trns_buf->num_nod_buf > 0) {[kemoView3DMetalBuf->meshTransVertice release];};
+
+    if(kemo_buffers->axis_buf->num_nod_buf > 0){[kemoView3DMetalBuf->axisVertice     release];};
     return;
 }
 
@@ -130,7 +133,6 @@
         [kemoView3DMetalBuf->psfSolidTexure    release];
     };
     
-    if(kemo_buffers->axis_buf->num_nod_buf > 0)        {[kemoView3DMetalBuf->axisVertice     release];};
     if(kemo_buffers->PSF_solid_buf->num_nod_buf > 0)   {[kemoView3DMetalBuf->psfSolidVertice release];};
     if(kemo_buffers->PSF_isoline_buf->num_nod_buf > 0) {[kemoView3DMetalBuf->psfLinesVertice release];};
     if(kemo_buffers->PSF_arrow_buf->num_nod_buf > 0)   {[kemoView3DMetalBuf->psfArrowVertice release];};
