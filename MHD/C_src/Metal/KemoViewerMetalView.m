@@ -254,11 +254,11 @@
     else if(leftBottunFlag == PAN)
         [self rightMouseDown:theEvent];
     else {
-        NSRect rectView = [self convertRectToBacking:[self bounds]];
-        CGFloat YpixelGLWindow = rectView.size.height;
+//        NSRect rectView = [self convertRectToBacking:[self bounds]];
+        NSRect rectView = [self bounds];
         NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         double xmove = (double) location.x;
-        double ymove = (double) (location.y - YpixelGLWindow);
+        double ymove = (double) (location.y - rectView.size.height);
         gDolly =     FALSE; // no dolly
         gPan =       FALSE; // no pan
         gTrackball = TRUE;
@@ -272,11 +272,10 @@
 // ---------------------------------
 - (void)rightMouseDown:(NSEvent *)theEvent // pan
 {
-    NSRect rectView = [self convertRectToBacking:[self bounds]];
-    CGFloat YpixelGLWindow = rectView.size.height;
+    NSRect rectView = [self bounds];
     NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     double xmove = (double) location.x;
-    double ymove = (double) (location.y - YpixelGLWindow);
+    double ymove = (double) (location.y - rectView.size.height);
 /*
     if (gTrackball) { // if we are currently tracking, end trackball
         kemoview_drugging_addToRotationTrackball(kemo_sgl);
@@ -293,11 +292,10 @@
 // ---------------------------------
 - (void)otherMouseDown:(NSEvent *)theEvent //dolly
 {
-    NSRect rectView = [self convertRectToBacking:[self bounds]];
-    CGFloat YpixelGLWindow = rectView.size.height;
+    NSRect rectView = [self bounds];
     NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     double xmove = (double) location.x;
-    double ymove = (double) (YpixelGLWindow - location.y);
+    double ymove = (double) (rectView.size.height - location.y);
 /*
     if (gTrackball) { // if we are currently tracking, end trackball
         kemoview_drugging_addToRotationTrackball(kemo_sgl);
@@ -330,11 +328,10 @@
 // ---------------------------------
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-    NSRect rectView = [self convertRectToBacking:[self bounds]];
-    CGFloat YpixelGLWindow = rectView.size.height;
+    NSRect rectView = [self bounds];
     NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    double xmove = (double) location.x;
-    double ymove = (double) (YpixelGLWindow - location.y);
+    double xmove = (double)  location.x;
+    double ymove = (double) (rectView.size.height - location.y);
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     if(gTrackball) {
