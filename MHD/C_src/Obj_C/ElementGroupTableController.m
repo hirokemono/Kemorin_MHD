@@ -45,8 +45,7 @@
 	[ElementGroupDisplayNodeFlags removeAllObjects];
 	NumElementGroup = kemoview_get_num_of_mesh_group(kemo_sgl, ELEM_GRP_FLAG);
 	for(i=0;i<NumElementGroup;i++){
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_ele_grp_name(kemo_sgl, i, groupname);
+        groupname = kemoview_get_group_name(kemo_sgl, ELEM_GRP_FLAG, i);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
 
@@ -197,8 +196,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[ElementGroupDisplayNodeFlags removeAllObjects];
 	NumElementGroup = kemoview_get_num_of_mesh_group(kemo_sgl, ELEM_GRP_FLAG);
 	for(i=0;i<NumElementGroup;i++){
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_ele_grp_name(kemo_sgl, i, groupname);
+        groupname = kemoview_get_group_name(kemo_sgl, ELEM_GRP_FLAG, i);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
 
