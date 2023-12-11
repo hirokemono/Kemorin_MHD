@@ -350,10 +350,10 @@ void draw_simple(struct kemoviewer_type *kemo_sgl){
     return;
 };
 
-void draw_quilt(struct kemoviewer_type *kemo_sgl){
+void draw_quilt(int istep_qult, struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
-    kemoview_step_viewmatrix(kemo_sgl);
+    kemoview_step_viewmatrix(istep_qult, kemo_sgl);
     glDrawBuffer(GL_BACK);
     kemoview_modify_view(kemo_sgl, kemoGL_GLFW);
     glfwSwapBuffers(glfw_window);
@@ -383,8 +383,7 @@ static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
 		
 		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
-            kemoview_step_viewmatrix(i_quilt, kemo_sgl);
-			draw_quilt(kemo_sgl);
+			draw_quilt(i_quilt, kemo_sgl);
 			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 			kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
 		};
@@ -444,8 +443,7 @@ static void write_evolution_quilt_views(struct kemoviewer_type *kemo_sgl,
 			kemoview_viewer_evolution(i, kemo_sgl);
 			
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-                kemoview_step_viewmatrix(i_quilt, kemo_sgl);
-				draw_quilt(kemo_sgl);
+				draw_quilt(i_quilt, kemo_sgl);
 				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 				kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
 			};

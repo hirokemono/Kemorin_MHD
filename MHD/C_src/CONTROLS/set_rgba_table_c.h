@@ -22,7 +22,7 @@ void copy_colormap_name_to_ctl(struct colormap_params *cmap_s,
 			struct chara_ctl_item *colormap_mode);
 
 void set_rgb_from_value_s(struct colormap_params *cmap_s, double value,
-                          double *red, double *green, double *blue, double *rnorm);
+                          double *red, double *green, double *blue);
 void set_rgb_from_rgb(struct colormap_params *cmap_s,
 			double red, double green, double blue);
 double set_opacity_from_value_s(struct colormap_params *cmap_s, 

@@ -139,18 +139,6 @@ void alloc_psf_data_s(struct psf_data *psf_s){
         }
 	};
 
-    psf_s->dnorm_nod = (double *)malloc(psf_s->nnod_viz*sizeof(double));
-    if(psf_s->dnorm_nod  == NULL){
-        printf("malloc error for psf_s->color_nod \n");
-        exit(0);
-    }
-    psf_s->onorm_nod = (double *)malloc(psf_s->nnod_viz*sizeof(double));
-    if(psf_s->onorm_nod  == NULL){
-        printf("malloc error for psf_s->onorm_nod \n");
-        exit(0);
-    }
-
-
 	psf_s->d_min = (double *)calloc(psf_s->ncomptot,sizeof(double));
 	psf_s->d_max = (double *)calloc(psf_s->ncomptot,sizeof(double));
 	psf_s->d_ave = (double *)calloc(psf_s->ncomptot,sizeof(double));
@@ -264,9 +252,6 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	free(psf_s->amp_max);
 	free(psf_s->amp_min);
 	
-    free(psf_s->dnorm_nod);
-    free(psf_s->onorm_nod);
-
     for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->color_nod[i]);
 	free(psf_s->color_nod);
 	

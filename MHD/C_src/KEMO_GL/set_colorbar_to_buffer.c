@@ -68,11 +68,11 @@ int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s,
 	float y1;
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
-	double psf_value, d_norm;
+	double psf_value;
 	double f_color[4], l_color[4];
 	int i, nd;
 	
-	set_rainbow_color_code(cmap_s, cbar_wk->psf_min, f_color, &d_norm);
+	set_rainbow_color_code(cmap_s, cbar_wk->psf_min, f_color);
 	f_color[3] = ONE;
 	for(nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	
@@ -89,7 +89,7 @@ int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s,
 		y1 = cbar_wk->ybar_min + cbar_wk->ydelta * (float) i;
 		psf_value = cbar_wk->psf_min + (cbar_wk->psf_max - cbar_wk->psf_min)
 									* (double)(i+1) / (double)cbar_wk->num_quad;
-		set_rainbow_color_code(cmap_s, psf_value, f_color, &d_norm);
+		set_rainbow_color_code(cmap_s, psf_value, f_color);
 		f_color[3] = ONE;
 		
 		x1[1] = y1;
@@ -119,12 +119,12 @@ int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, float
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	
-	double psf_value, d_norm;
+	double psf_value;
 	double f_color[4], l_color[4];
 	int i, nd;
 	
 	
-	set_rainbow_color_code(cmap_s, cbar_wk->psf_min, f_color, &d_norm);
+	set_rainbow_color_code(cmap_s, cbar_wk->psf_min, f_color);
 	for (nd=0; nd<3; nd++) {
 		f_color[nd] = f_color[nd] * f_color[3]
 				+ bg_color[nd] * (ONE - f_color[3]);
@@ -146,7 +146,7 @@ int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, float
 		
 		psf_value = cbar_wk->psf_min + (cbar_wk->psf_max - cbar_wk->psf_min)
 									* (double)(i+1) / (double)cbar_wk->num_quad;
-		set_rainbow_color_code(cmap_s, psf_value, f_color, &d_norm);
+		set_rainbow_color_code(cmap_s, psf_value, f_color);
 	
 		for (nd=0; nd<3; nd++) {
 			f_color[nd] = f_color[nd] * f_color[3]
