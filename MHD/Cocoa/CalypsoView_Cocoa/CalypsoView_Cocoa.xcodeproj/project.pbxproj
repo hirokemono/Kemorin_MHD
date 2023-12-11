@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1804E5C3125F025100EC8EAA /* CalypsoView.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1804E5C2125F025100EC8EAA /* CalypsoView.icns */; };
-		1804E5E6125F028300EC8EAA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1804E5E3125F028300EC8EAA /* OpenGL.framework */; };
 		180999A02B13C14100F83574 /* m_transfer_matrices.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809999F2B13C14100F83574 /* m_transfer_matrices.c */; };
 		180999A32B13C5CF00F83574 /* m_kemoview_object_buffers.c in Sources */ = {isa = PBXBuildFile; fileRef = 180999A12B13C5CF00F83574 /* m_kemoview_object_buffers.c */; };
 		180999AC2B1458C900F83574 /* m_vertex_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 180999AB2B14576100F83574 /* m_vertex_buffer.c */; };
@@ -510,7 +509,6 @@
 				1831B9652AE89EBD00118B1E /* Metal.framework in Frameworks */,
 				180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				1804E5E6125F028300EC8EAA /* OpenGL.framework in Frameworks */,
 				180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */,
 				1831B9632AE89EA600118B1E /* AppKit.framework in Frameworks */,
 				1831B95E2AE8704900118B1E /* MetalKit.framework in Frameworks */,
