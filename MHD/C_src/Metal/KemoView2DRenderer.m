@@ -33,23 +33,27 @@
     [_kemo2DMetalBufBase setMetalVertexs:device
                                   buffer:kemo_buffers->MAP_solid_buf
                                   vertex:&(kemoView2DMetalBufs->mapSolidVertice)];
+    kemoView2DMetalBufs->numMapSolidVertice = kemo_buffers->MAP_solid_buf->num_nod_buf;
     [_kemo2DMetalBufBase setMetalVertexs:device
                                   buffer:kemo_buffers->MAP_isoline_buf
                                   vertex:&(kemoView2DMetalBufs->mapLinesVertice)];
+    kemoView2DMetalBufs->numMapinesVertice = kemo_buffers->MAP_isoline_buf->num_nod_buf;
     [_kemo2DMetalBufBase setMetalVertexs:device
                                   buffer:kemo_buffers->coast_buf
                                   vertex:&(kemoView2DMetalBufs->coastVertice)];
+    kemoView2DMetalBufs->numCoastVertice = kemo_buffers->coast_buf->num_nod_buf;
     [_kemo2DMetalBufBase setMetalVertexs:device
                                   buffer:kemo_buffers->sph_grid_buf
                                   vertex:&(kemoView2DMetalBufs->sphGridVertice)];
+    kemoView2DMetalBufs->numSphGridVertice = kemo_buffers->sph_grid_buf->num_nod_buf;
 };
+
 - (void) releaseMapMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                    buffers:(struct kemoview_buffers *) kemo_buffers
 {
-    if(kemo_buffers->MAP_solid_buf->num_nod_buf > 0)   {[kemoView2DMetalBufs->mapSolidVertice release];};
-    if(kemo_buffers->MAP_isoline_buf->num_nod_buf > 0) {[kemoView2DMetalBufs->mapLinesVertice release];};
-    if(kemo_buffers->coast_buf->num_nod_buf > 0)    {[kemoView2DMetalBufs->coastVertice   release];};
-    if(kemo_buffers->sph_grid_buf->num_nod_buf > 0) {[kemoView2DMetalBufs->sphGridVertice release];};
+    if(kemoView2DMetalBufs->numMapSolidVertice > 0) {[kemoView2DMetalBufs->mapSolidVertice release];};
+    if(kemoView2DMetalBufs->numMapinesVertice > 0)  {[kemoView2DMetalBufs->mapLinesVertice release];};
+    if(kemoView2DMetalBufs->numCoastVertice > 0)    {[kemoView2DMetalBufs->coastVertice   release];};
+    if(kemoView2DMetalBufs->numSphGridVertice > 0)  {[kemoView2DMetalBufs->sphGridVertice release];};
     return;
 }
 
@@ -60,54 +64,62 @@
     [_kemo2DMetalBufBase setMetalVertexs:device
                                 buffer:kemo_buffers->cbar_buf
                                 vertex:&(kemoView2DMetalBufs->colorBarVertice)];
+    kemoView2DMetalBufs->numColorBarVertice = kemo_buffers->cbar_buf->num_nod_buf;
     [_kemo2DMetalBufBase setTextBoxTexture:device
                                   buffer:kemo_buffers->min_buf
                                    image:kemo_buffers->cbar_min_image
                                   vertex:&(kemoView2DMetalBufs->minLabelVertice)
                                   texure:&(kemoView2DMetalBufs->minLabelTexure)];
+    kemoView2DMetalBufs->numMinLabelVertice = kemo_buffers->min_buf->num_nod_buf;
     [_kemo2DMetalBufBase setTextBoxTexture:device
                                   buffer:kemo_buffers->max_buf
                                    image:kemo_buffers->cbar_max_image
                                   vertex:&(kemoView2DMetalBufs->maxLabelVertice)
                                   texure:&(kemoView2DMetalBufs->maxLabelTexure)];
+    kemoView2DMetalBufs->numMaxLabelVertice = kemo_buffers->max_buf->num_nod_buf;
     [_kemo2DMetalBufBase setTextBoxTexture:device
                                   buffer:kemo_buffers->zero_buf
                                    image:kemo_buffers->cbar_zero_image
                                   vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
                                   texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
+    kemoView2DMetalBufs->numZeroLabelVertice = kemo_buffers->zero_buf->num_nod_buf;
+    
     [_kemo2DMetalBufBase setTextBoxTexture:device
                                   buffer:kemo_buffers->time_buf
                                    image:kemo_buffers->tlabel_image
                                   vertex:&(kemoView2DMetalBufs->timeLabelVertice)
                                   texure:&(kemoView2DMetalBufs->timeLabelTexure)];
+    kemoView2DMetalBufs->numtimeLabelVertice = kemo_buffers->time_buf->num_nod_buf;
+    
     [_kemo2DMetalBufBase setTextBoxTexture:device
                                   buffer:kemo_buffers->msg_buf
                                    image:kemo_buffers->message_image
                                   vertex:&(kemoView2DMetalBufs->messageVertice)
                                   texure:&(kemoView2DMetalBufs->messageTexure)];
+    kemoView2DMetalBufs->numMessageVertice = kemo_buffers->msg_buf->num_nod_buf;
     return;
 }
+
 - (void) releaseMsgMBuffers:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                    buffers:(struct kemoview_buffers *) kemo_buffers
 {
-    if(kemo_buffers->cbar_buf->num_nod_buf > 0) {[kemoView2DMetalBufs->colorBarVertice release];};
-    if(kemo_buffers->min_buf->num_nod_buf > 0){
+    if(kemoView2DMetalBufs->numColorBarVertice > 0) {[kemoView2DMetalBufs->colorBarVertice release];};
+    if(kemoView2DMetalBufs->numMinLabelVertice > 0){
         [kemoView2DMetalBufs->minLabelVertice release];
         [kemoView2DMetalBufs->minLabelTexure  release];
     };
-    if(kemo_buffers->max_buf->num_nod_buf > 0){
+    if(kemoView2DMetalBufs->numMaxLabelVertice > 0){
         [kemoView2DMetalBufs->maxLabelVertice release];
         [kemoView2DMetalBufs->maxLabelTexure  release];
     };
-    if(kemo_buffers->zero_buf->num_nod_buf > 0){
+    if(kemoView2DMetalBufs->numZeroLabelVertice > 0){
         [kemoView2DMetalBufs->zeroLabelVertice release];
         [kemoView2DMetalBufs->zeroLabelTexure  release];
     };
-    if(kemo_buffers->time_buf->num_nod_buf > 0){
+    if(kemoView2DMetalBufs->numtimeLabelVertice > 0){
         [kemoView2DMetalBufs->timeLabelVertice release];
         [kemoView2DMetalBufs->timeLabelTexure  release];
     };
-    if(kemo_buffers->msg_buf->num_nod_buf > 0){
+    if(kemoView2DMetalBufs->numMessageVertice > 0){
         [kemoView2DMetalBufs->messageVertice release];
         [kemoView2DMetalBufs->messageTexure  release];
     };
@@ -230,13 +242,13 @@
     return;
 }
 
-- (void)draw2DLineObject:(struct gl_strided_buffer *) buf
-                 encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
+- (void)draw2DLineObject:(id<MTLRenderCommandEncoder> *) renderEncoder
                pipelines:(KemoView2DMetalPipelines *) kemoView2DPipelines
+               numVertex:(NSUInteger) numVertex
                   vertex:(id<MTLBuffer> *) vertices
               projection:(matrix_float4x4 *) projection_mat;
 {
-    if(buf->num_nod_buf > 0){
+    if(numVertex > 0){
         [*renderEncoder setRenderPipelineState:kemoView2DPipelines->simple2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
@@ -246,19 +258,19 @@
                                atIndex:AAPLOrthogonalMatrix];
         [*renderEncoder drawPrimitives:MTLPrimitiveTypeLine
                            vertexStart:0
-                           vertexCount:buf->num_nod_buf];
+                           vertexCount:numVertex];
     };
     
 }
 
 
-- (void)draw2DPatchObject:(struct gl_strided_buffer *) buf
-                  encoder:(id<MTLRenderCommandEncoder> *) renderEncoder
+- (void)draw2DPatchObject:(id<MTLRenderCommandEncoder> *) renderEncoder
                 pipelines:(KemoView2DMetalPipelines *) kemoView2DPipelines
+                numVertex:(NSUInteger) numVertex
                    vertex:(id<MTLBuffer> *) vertices
                projection:(matrix_float4x4 *) projection_mat
 {
-    if(buf->num_nod_buf > 0){
+    if(numVertex > 0){
         [*renderEncoder setRenderPipelineState: kemoView2DPipelines->trans2DPipelineState];
         [*renderEncoder setVertexBuffer:*vertices
                                  offset:0
@@ -268,19 +280,19 @@
                                atIndex:AAPLOrthogonalMatrix];
         [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                            vertexStart:0
-                           vertexCount:buf->num_nod_buf];
+                           vertexCount:numVertex];
     };
     
 }
 
-- (void)drawTextBoxObject:(struct gl_strided_buffer *_Nonnull) buf
-                  encoder:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+- (void)drawTextBoxObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
                 pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
+                numVertex:(NSUInteger) numVertex
                    vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                    texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
                projection:(matrix_float4x4 *_Nonnull) projection_mat;
 {
-    if(buf->num_nod_buf > 0){
+    if(numVertex > 0){
         [*renderEncoder setRenderPipelineState:kemoView2DPipelines->texured2DPipelineState];
         /* Pass in the parameter data. */
         [*renderEncoder setVertexBuffer:*vertices
@@ -298,19 +310,19 @@
         /* Draw the triangles. */
         [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                            vertexStart:0
-                           vertexCount:buf->num_nod_buf];
+                           vertexCount:numVertex];
     };
 }
 
-- (void)drawAnaglyphObject:(struct gl_strided_buffer *_Nonnull) buf
-                   encoder:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
+- (void)drawAnaglyphObject:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
                  pipelines:(KemoView2DMetalPipelines *_Nonnull) kemoView2DPipelines
+                 numVertex:(NSUInteger) numVertex
                     vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                       left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
                      right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
                 projection:(matrix_float4x4 *_Nonnull) projection_mat;
 {
-    if(buf->num_nod_buf > 0){
+    if(numVertex > 0){
         [*renderEncoder setRenderPipelineState:kemoView2DPipelines->anaglyphPipelineState];
         /* Pass in the parameter data. */
         [*renderEncoder setVertexBuffer:*vertices
@@ -330,7 +342,7 @@
         /* Draw the triangles. */
         [*renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                            vertexStart:0
-                           vertexCount:buf->num_nod_buf];
+                           vertexCount:numVertex];
     };
 }
 
@@ -338,31 +350,30 @@
 - (void) setMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
              pipelines:(KemoView2DMetalPipelines * _Nonnull) kemoView2DPipelines
            metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                buffer:(struct kemoview_buffers *) kemo_buffers
             projection:(matrix_float4x4 * _Nonnull) map_proj_mat
 {
     /*  Commands to render map projection */
-    [self draw2DPatchObject:kemo_buffers->MAP_solid_buf
-                    encoder:renderEncoder
+    [self draw2DPatchObject:renderEncoder
                   pipelines:kemoView2DPipelines
+                  numVertex:kemoView2DMetalBufs->numMapSolidVertice
                      vertex:&(kemoView2DMetalBufs->mapSolidVertice)
                  projection:map_proj_mat];
     /*  Commands to render isolines on map */
-    [self draw2DPatchObject:kemo_buffers->MAP_isoline_buf
-                    encoder:renderEncoder
+    [self draw2DPatchObject:renderEncoder
                   pipelines:kemoView2DPipelines
+                  numVertex:kemoView2DMetalBufs->numMapinesVertice
                      vertex:&(kemoView2DMetalBufs->mapLinesVertice)
                  projection:map_proj_mat];
     /*  Commands to render Coastline on map */
-    [self draw2DLineObject:kemo_buffers->coast_buf
-                   encoder:renderEncoder
+    [self draw2DLineObject:renderEncoder
                  pipelines:kemoView2DPipelines
+                 numVertex:kemoView2DMetalBufs->numCoastVertice
                     vertex:&(kemoView2DMetalBufs->coastVertice)
                 projection:map_proj_mat];
     /*  Commands to render grids on map */
-    [self draw2DLineObject:kemo_buffers->sph_grid_buf
-                   encoder:renderEncoder
+    [self draw2DLineObject:renderEncoder
                  pipelines:kemoView2DPipelines
+                 numVertex:kemoView2DMetalBufs->numSphGridVertice
                     vertex:&(kemoView2DMetalBufs->sphGridVertice)
                 projection:map_proj_mat];
     return;
@@ -371,62 +382,59 @@
 - (void) setMessageObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder
                  pipelines:(KemoView2DMetalPipelines * _Nonnull) kemo2DPipelines
                metalBuffer:(KemoView2DMetalBuffers *) kemoView2DMetalBufs
-                    buffer:(struct kemoview_buffers * _Nonnull) kemo_buffers
                 projection:(matrix_float4x4 * _Nonnull) projection_mat
 {
 /*  Commands to render colorbar  box */
-    [self draw2DPatchObject:kemo_buffers->cbar_buf
-                     encoder:renderEncoder
-                   pipelines:kemo2DPipelines
-                      vertex:&(kemoView2DMetalBufs->colorBarVertice)
-                  projection:projection_mat];
-/*  Commands to render colorbar  label */
-    [self drawTextBoxObject:kemo_buffers->min_buf
-                    encoder:renderEncoder
+    [self draw2DPatchObject:renderEncoder
                   pipelines:kemo2DPipelines
+                  numVertex:kemoView2DMetalBufs->numColorBarVertice
+                     vertex:&(kemoView2DMetalBufs->colorBarVertice)
+                 projection:projection_mat];
+/*  Commands to render colorbar  label */
+    [self drawTextBoxObject:renderEncoder
+                  pipelines:kemo2DPipelines
+                  numVertex:kemoView2DMetalBufs->numMinLabelVertice
                      vertex:&(kemoView2DMetalBufs->minLabelVertice)
                      texure:&(kemoView2DMetalBufs->minLabelTexure)
                  projection:projection_mat];
-    [self drawTextBoxObject:kemo_buffers->max_buf
-                    encoder:renderEncoder
+    [self drawTextBoxObject:renderEncoder
                   pipelines:kemo2DPipelines
+                  numVertex:kemoView2DMetalBufs->numMaxLabelVertice
                      vertex:&(kemoView2DMetalBufs->maxLabelVertice)
                      texure:&(kemoView2DMetalBufs->maxLabelTexure)
                  projection:projection_mat];
-    [self drawTextBoxObject:kemo_buffers->zero_buf
-                    encoder:renderEncoder
+    [self drawTextBoxObject:renderEncoder
                   pipelines:kemo2DPipelines
+                  numVertex:kemoView2DMetalBufs->numZeroLabelVertice
                      vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
                      texure:&(kemoView2DMetalBufs->zeroLabelTexure)
                  projection:projection_mat];
 
 /*  Commands to render time label */
-    [self drawTextBoxObject:kemo_buffers->time_buf
-                    encoder:renderEncoder
+    [self drawTextBoxObject:renderEncoder
                   pipelines:kemo2DPipelines
+                  numVertex:kemoView2DMetalBufs->numtimeLabelVertice
                      vertex:&(kemoView2DMetalBufs->timeLabelVertice)
                      texure:&(kemoView2DMetalBufs->timeLabelTexure)
                  projection:projection_mat];
 /*  Commands to render colorbar  box */
-    [self drawTextBoxObject:kemo_buffers->msg_buf
-                    encoder:renderEncoder
+    [self drawTextBoxObject:renderEncoder
                   pipelines:kemo2DPipelines
+                  numVertex:kemoView2DMetalBufs->numMessageVertice
                      vertex:&(kemoView2DMetalBufs->messageVertice)
                      texure:&(kemoView2DMetalBufs->messageTexure)
                  projection:projection_mat];
     return;
 }
 
-- (void) releaseMapMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+- (void) releaseMapMetalBuffers
 {
-    [self releaseMapMBuffers:&_kemoView2DMetalBufs
-                         buffers:kemo_buffers];
+    [self releaseMapMBuffers:&_kemoView2DMetalBufs];
     return;
 }
-- (void) releaseMsgMetalBuffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+- (void) releaseMsgMetalBuffers
 {
-    [self releaseMsgMBuffers:&_kemoView2DMetalBufs
-                     buffers:kemo_buffers];
+    [self releaseMsgMBuffers:&_kemoView2DMetalBufs];
     return;
 }
 
@@ -461,51 +469,33 @@
                      targetPixel:pixelformat];
 }
 
-- (void)encodeTextBoxObject:(struct gl_strided_buffer *_Nonnull) buf
-                  encoder:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
-                   vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
-                   texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
-               projection:(matrix_float4x4 *_Nonnull) projection_mat
-{
-    [self drawTextBoxObject:buf 
-                    encoder:renderEncoder
-                  pipelines:&_kemoView2DPipelines
-                     vertex:vertices
-                     texure:texture
-                 projection:projection_mat];
-}
-
 - (void) encodeMapObjects:(id<MTLRenderCommandEncoder> _Nonnull *_Nonnull) renderEncoder
-                  buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                projection:(matrix_float4x4 * _Nonnull) map_proj_mat
 {
     [self setMapObjects:renderEncoder
               pipelines:&_kemoView2DPipelines
             metalBuffer:&_kemoView2DMetalBufs
-                 buffer:kemo_buffers
               projection:map_proj_mat];
 }
 - (void) encodeMessageObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                      buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
                    projection:(matrix_float4x4 * _Nonnull) projection_mat
 {
     [self setMessageObjects:renderEncoder
                pipelines:&_kemoView2DPipelines
              metalBuffer:&_kemoView2DMetalBufs
-                  buffer:kemo_buffers
               projection:projection_mat];
 }
 
 - (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                       buffers:(struct kemoview_buffers * _Nonnull) kemo_buffers
+                     numVertex:(int) numVertex
                         vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  anaglyphVertex
                           left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
                          right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure
                     projection:(matrix_float4x4 * _Nonnull) projection_mat
 {
-    [self drawAnaglyphObject:kemo_buffers->screen_buf
-                     encoder:renderEncoder
+    [self drawAnaglyphObject:renderEncoder
                    pipelines:&_kemoView2DPipelines
+                   numVertex:numVertex
                       vertex:anaglyphVertex
                         left:leftTexure
                        right:rightTexure

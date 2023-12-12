@@ -112,19 +112,19 @@ static const NSUInteger MaxFramesInFlight = 3;
 
 
 - (void) releaseKemoViewMetalBuffers:(NSUInteger) i_current
-                            kemoview:(struct kemoviewer_type *) kemo_sgl
+                            viewflag:(int) iflag_view
 {
-    if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_MAP){
+    if(iflag_view == VIEW_MAP){
 /*  Release Map vertexs */
-        [_kemo2DRenderer releaseMapMetalBuffers:kemo_sgl->kemo_buffers];
+        [_kemo2DRenderer releaseMapMetalBuffers];
     }else{
 /*  Release 3D vertexs */
-        [_kemo3DRenderer[i_current] releaseKemoView3DMetalBuffers:kemo_sgl];
+        [_kemo3DRenderer[i_current] releaseKemoView3DMetalBuffers];
 /*  Release transparent vertexs */
-        [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers:kemo_sgl];
+        [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
     };
 /*  Release Message vertexs */
-    [_kemo2DRenderer releaseMsgMetalBuffers:kemo_sgl->kemo_buffers];
+    [_kemo2DRenderer releaseMsgMetalBuffers];
     return;
 }
 
@@ -158,17 +158,19 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
 
     int iflag = kemoview_get_draw_mode(kemo_sgl);
+    int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag == FULL_DRAW){
         [self releaseKemoViewMetalBuffers:i_current
-                                 kemoview:kemo_sgl];
+                                 viewflag:iflag_view];
+        
         kemoview_const_buffers(kemo_sgl);
         
         [self setKemoViewMetalBuffers:i_current
                           metalDevice:device
                              kemoview:kemo_sgl];
     }else if(iflag == FAST_DRAW){
-        if(kemoview_get_view_type_flag(kemo_sgl) != VIEW_MAP){
-            [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers:kemo_sgl];
+        if(iflag_view != VIEW_MAP){
+            [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
             
             kemoview_transparent_buffers(kemo_sgl);
             
@@ -184,24 +186,25 @@ static const NSUInteger MaxFramesInFlight = 3;
                   kemoview:(struct kemoviewer_type *) kemo_sgl
                     unites:(KemoViewUnites *) monoViewUnites
 {
+    int iflag_polygon = kemoview_get_object_property_flags(kemo_sgl, POLYGON_SWITCH);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag_view == VIEW_MAP){
         [_kemo2DRenderer encodeMapObjects:renderEncoder
-                                  buffers:kemo_sgl->kemo_buffers
                                projection:&_map_proj_mat];
     }else if(kemoview_get_draw_mode(kemo_sgl) == SIMPLE_DRAW){
         [_kemo3DRenderer[i_current] encodeKemoSimpleObjects:renderEncoder
                                                       depth:&_depthState
-                                                   kemoview:kemo_sgl
-                                                     unites:monoViewUnites];
+                                                     unites:monoViewUnites
+                                                      sides:iflag_polygon];
     }else{
+        int iflag_tube =    kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
         [_kemo3DRenderer[i_current] encodeKemoView3DObjects:renderEncoder
                                                       depth:&_depthState
-                                                   kemoview:kemo_sgl
-                                                     unites:monoViewUnites];
+                                                     unites:monoViewUnites
+                                                      sides:iflag_polygon
+                                                  fieldTube:iflag_tube];
     };
     [_kemo2DRenderer encodeMessageObjects:renderEncoder
-                                  buffers:kemo_sgl->kemo_buffers
                                projection:&_cbar_proj_mat];
 }
 
@@ -299,27 +302,8 @@ static const NSUInteger MaxFramesInFlight = 3;
     return _imageOutputTexture;
 }
 
--(void) setAnaglyphToMetalBuffer:(id<MTLDevice> *)device
-                        kemoview:(struct kemoviewer_type *) kemo_sgl
-                         num_pix:(NSUInteger *) pix_xy
-                          vertex:(id<MTLBuffer> *) anaglyphVertice
-                            left:(id<MTLTexture> *) leftTexure
-                           right:(id<MTLTexture> *) rightTexure
-{
-    [*anaglyphVertice release];
-    [*leftTexure  release];
-    [*rightTexure  release];
-    [_kemoMetalBufBase setAnaglyphTexture:device
-                                   buffer:kemo_sgl->kemo_buffers->screen_buf
-                                   pixels:pix_xy
-                                   vertex:anaglyphVertice
-                                     left:leftTexure
-                                    right:rightTexure];
-    return;
-}
-
--(void) encodeAnaglyphRender:(nonnull MTKView *)view
-                    kemoview:(struct kemoviewer_type *) kemo_sgl
+-(void) encodeAnaglyphRender:(nonnull MTKView *) view
+                   numVertex:(int) numVertex
                       vertex:(id<MTLBuffer> *) anaglyphVertice
                         left:(id<MTLTexture> *) leftTexure
                        right:(id<MTLTexture> *) rightTexure
@@ -342,7 +326,7 @@ static const NSUInteger MaxFramesInFlight = 3;
         _renderEncoder.label = @"MyRenderEncoder";
 
         [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
-                                       buffers:kemo_sgl->kemo_buffers
+                                     numVertex:numVertex
                                         vertex:anaglyphVertice
                                           left:leftTexure
                                          right:rightTexure
@@ -369,7 +353,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 }
 
 - (id<MTLTexture>) encodeAnaglyphToTexure:(nonnull MTKView *)view
-                                 kemoview:(struct kemoviewer_type *) kemo_sgl
+                                numVertex:(int) numVertex
                                    vertex:(id<MTLBuffer> *) anaglyphVertice
                                      left:(id<MTLTexture> *) leftTexure
                                     right:(id<MTLTexture> *) rightTexure
@@ -386,7 +370,7 @@ static const NSUInteger MaxFramesInFlight = 3;
         _renderEncoder.label = @"MyRenderEncoder";
 
         [_kemo2DRenderer encodeAnaglyphObjects:&_renderEncoder
-                                       buffers:kemo_sgl->kemo_buffers
+                                     numVertex:numVertex
                                         vertex:anaglyphVertice
                                           left:leftTexure
                                          right:rightTexure
@@ -422,20 +406,24 @@ static const NSUInteger MaxFramesInFlight = 3;
                       kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSUInteger pix_xy[2];
-    if(kemo_sgl->kemo_buffers->screen_buf->num_nod_buf > 0){
-
+    int numScreenBuf = kemo_sgl->kemo_buffers->screen_buf->num_nod_buf;
+    if(numScreenBuf > 0){
         pix_xy[0] = view.drawableSize.width;
         pix_xy[1] = view.drawableSize.height;
         [self setKemoAnaglyphUnites:view
                            kemoview:kemo_sgl
                          leftunites:&_leftViewUnites
                         rightunites:&_rightViewUnites];
-        [self setAnaglyphToMetalBuffer:&_device
-                              kemoview:kemo_sgl
-                               num_pix:pix_xy
-                                vertex:&_anaglyphVertice
-                                  left:&_leftTexure
-                                 right:&_rightTexure];
+        [_anaglyphVertice release];
+        [_leftTexure  release];
+        [_rightTexure  release];
+
+        [_kemoMetalBufBase setAnaglyphTexture:&_device
+                                       buffer:kemo_sgl->kemo_buffers->screen_buf
+                                       pixels:pix_xy
+                                       vertex:&_anaglyphVertice
+                                         left:&_leftTexure
+                                        right:&_rightTexure];
 
         id<MTLTexture> _imageOutputTexture;
         _imageOutputTexture = [self drawKemoViewToTexure:i_current
@@ -458,7 +446,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 
     }
     [self encodeAnaglyphRender:view
-                      kemoview:kemo_sgl
+                     numVertex:numScreenBuf
                         vertex:&_anaglyphVertice
                           left:&_leftTexure
                          right:&_rightTexure];
@@ -470,7 +458,8 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     NSUInteger pix_xy[2];
     id<MTLTexture> _imageOutputTexture;
-    if(kemo_sgl->kemo_buffers->screen_buf->num_nod_buf > 0){
+    int numScreenBuf = kemo_sgl->kemo_buffers->screen_buf->num_nod_buf;
+    if(numScreenBuf > 0){
         pix_xy[0] = view.drawableSize.width;
         pix_xy[1] = view.drawableSize.height;
         
@@ -478,12 +467,16 @@ static const NSUInteger MaxFramesInFlight = 3;
                            kemoview:kemo_sgl
                          leftunites:&_leftViewUnites
                         rightunites:&_rightViewUnites];
-        [self setAnaglyphToMetalBuffer:&_device
-                              kemoview:kemo_sgl
-                               num_pix:pix_xy
-                                vertex:&_anaglyphVertice
-                                  left:&_leftTexure
-                                 right:&_rightTexure];
+        [_anaglyphVertice release];
+        [_leftTexure  release];
+        [_rightTexure  release];
+
+        [_kemoMetalBufBase setAnaglyphTexture:&_device
+                                       buffer:kemo_sgl->kemo_buffers->screen_buf
+                                       pixels:pix_xy
+                                       vertex:&_anaglyphVertice
+                                         left:&_leftTexure
+                                        right:&_rightTexure];
 
         _imageOutputTexture = [self drawKemoViewToTexure:kemo_sgl
                                                metalView:view
@@ -502,10 +495,10 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                target:&_rightTexure];
     }
     _imageOutputTexture = [self encodeAnaglyphToTexure:view
-                                              kemoview:kemo_sgl
-                                              vertex:&_anaglyphVertice
-                                                left:&_leftTexure
-                                               right:&_rightTexure];
+                                             numVertex:numScreenBuf
+                                                vertex:&_anaglyphVertice
+                                                  left:&_leftTexure
+                                                 right:&_rightTexure];
     return _imageOutputTexture;
 };
 
