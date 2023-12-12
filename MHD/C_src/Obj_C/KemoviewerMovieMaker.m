@@ -40,8 +40,10 @@ NSData *SnapshotData;
     
     CVPixelBufferRef pxbuffer = NULL;
     
-/*    width is required producs of 16 pixels*/
+/*    width is required producs of 16 pixels
     CGFloat width  = 16 * (int) (1 + CGImageGetWidth(image) / 16);
+ */
+    CGFloat width  = CGImageGetWidth(image);
     CGFloat height = CGImageGetHeight(image);
     CVPixelBufferCreate(kCFAllocatorDefault,
                         width,
@@ -284,15 +286,21 @@ NSData *SnapshotData;
                        kemoview:(struct kemoviewer_type *) kemo_sgl
 {
 	// Adds an image for the specified duration to the QTMovie
-    CGImageRef dstImage = [_metalViewController getRenderedbyMetalToCGref:kemo_sgl];
-    
-    CVPixelBufferRef buffer = [self pixelBufferFromCGImage:dstImage];
+    NSImage *SnapshotImage = [[NSImage alloc] init];
+    NSBitmapImageRep * imageRep = [NSBitmapImageRep alloc];
+    [_metalViewController getRenderedbyMetal:imageRep
+                                    kemoview:kemo_sgl];
+    [SnapshotImage addRepresentation:imageRep];
+
+    CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
+    CVPixelBufferRef buffer = [self pixelBufferFromCGImage:CGImage];
     // Append Image buffer
     if (![adaptor appendPixelBuffer:buffer withPresentationTime:frameTime]) {
         NSLog(@"Adapter Failure");
     }
-    if (dstImage) {CGImageRelease(dstImage);};
     if (buffer) {CVBufferRelease(buffer);};
+    CGImageRelease(CGImage);
+    [imageRep release];
 }
 
 -(void) AddKemoviewQuiltToMovie:(CMTime)frameTime

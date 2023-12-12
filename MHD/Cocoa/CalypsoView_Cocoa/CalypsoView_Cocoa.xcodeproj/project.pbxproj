@@ -1225,9 +1225,11 @@
 				GCC_PREFIX_HEADER = CalypsoView_Cocoa_Prefix.pch;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "CalypsoView_Cocoa-Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MARKETING_VERSION = 0.2;
 				"OTHER_LDFLAGS[arch=*]" = "-L/opt/local/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.ucdavis.CalypsoView-Cocoa";
 				PRODUCT_NAME = CalypsoView_Cocoa;
@@ -1254,9 +1256,11 @@
 				GCC_PREFIX_HEADER = CalypsoView_Cocoa_Prefix.pch;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "CalypsoView_Cocoa-Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MARKETING_VERSION = 0.2;
 				OTHER_LDFLAGS = "-L/opt/local/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.ucdavis.CalypsoView-Cocoa";
 				PRODUCT_NAME = CalypsoView_Cocoa;

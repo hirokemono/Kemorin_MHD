@@ -21,7 +21,7 @@
     kemoviewer_reset_to_init_angle(kemo_sgl);
     kemoview_init_lighting(kemo_sgl);
 
-    _metalView.enableSetNeedsDisplay = FALSE;
+    _metalView.enableSetNeedsDisplay = TRUE;
 /*    viewDidLoad is called by linkning self.viwew to metal view */
     self.view = _metalView;
 
@@ -103,11 +103,9 @@
     NSUInteger i;
     NSUInteger pix_xy[2];
     NSUInteger pixelByte[1];
-    unsigned char *bgra;
-    
-    bgra = [self getRenderedbyMetalToBGRA:pix_xy
-                             PixelPerByte:pixelByte
-                                 kemoview:kemo_sgl];
+    unsigned char *bgra = [self getRenderedbyMetalToBGRA:pix_xy
+                                            PixelPerByte:pixelByte
+                                                kemoview:kemo_sgl];
     NSUInteger num_pixel = pix_xy[0] * pix_xy[1];
     NSUInteger bpRaw =     pixelByte[0] * pix_xy[0];
 

@@ -12,7 +12,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 #include "draw_colorbar_gl.h"
 
 /* The maximum number of frames in flight. */
-static const NSUInteger MaxFramesInFlight = 3;
+static const NSUInteger MaxFramesInFlight = 1;
 
 /* Main class performing the rendering */
 @implementation AAPLRenderer
@@ -280,6 +280,10 @@ static const NSUInteger MaxFramesInFlight = 3;
 /*Schedule a present once the framebuffer is complete using the current drawable. */
         [_renderEncoder endEncoding];
     }
+    // Add a completion handler and commit the command buffer.
+    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> cb) {
+        // Populate private buffer.
+    }];
     [commandBuffer commit];
     [commandBuffer waitUntilCompleted];
     return view.currentDrawable.texture;
@@ -380,6 +384,10 @@ static const NSUInteger MaxFramesInFlight = 3;
 /*Schedule a present once the framebuffer is complete using the current drawable. */
         [_renderEncoder endEncoding];
     }
+    // Add a completion handler and commit the command buffer.
+    [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> cb) {
+        // Populate private buffer.
+    }];
     [commandBuffer commit];
     [commandBuffer waitUntilCompleted];
     return view.currentDrawable.texture;
@@ -538,19 +546,15 @@ static const NSUInteger MaxFramesInFlight = 3;
 - (id<MTLTexture>_Nonnull)KemoViewToTexure:(nonnull MTKView *)view
                                   kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
-   [_kemoRendererTools setKemoViewLightsAndViewMatrices:kemo_sgl
-                                              ModelView:&_monoViewUnites
-                                           MsgProjection:&_cbar_proj_mat
-                                           MapProjection:&_map_proj_mat];
     id<MTLTexture> _imageOutputTexture;
     int iflag = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag == VIEW_STEREO){
         _imageOutputTexture = [self KemoViewAnaglyphToTexure:view
                                                   kemoview:kemo_sgl];
     }else{
-        _imageOutputTexture = [self kemoViewEncodeToTexure:ZERO
+        _imageOutputTexture = [self drawKemoViewToTexure:IZERO
+                                                kemoview:kemo_sgl
                                                  metalView:view
-                                                  kemoview:kemo_sgl
                                                     unites:&_monoViewUnites];
     };
     return _imageOutputTexture;

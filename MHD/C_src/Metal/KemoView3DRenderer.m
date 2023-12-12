@@ -48,9 +48,9 @@
                                                                             vertex:&(kemoView3DMetalBuf->meshTransVertice)];
     
 
-    kemoView3DMetalBuf->numMeshNodeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
-                                                                           buffer:kemo_buffers->axis_buf
-                                                                           vertex:&(kemoView3DMetalBuf->axisVertice)];
+    kemoView3DMetalBuf->numAxisVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                       buffer:kemo_buffers->axis_buf
+                                                                       vertex:&(kemoView3DMetalBuf->axisVertice)];
     return;
 }
 
@@ -124,7 +124,7 @@
     if(kemoView3DMetalBuf->numPSFTransVertice > 0)  {[kemoView3DMetalBuf->psfTransVertice  release];};
     if(kemoView3DMetalBuf->numMeshTransVertice > 0) {[kemoView3DMetalBuf->meshTransVertice release];};
 
-    if(kemoView3DMetalBuf->numMeshNodeVertice > 0)  {[kemoView3DMetalBuf->axisVertice      release];};
+    if(kemoView3DMetalBuf->numAxisVertice > 0)  {[kemoView3DMetalBuf->axisVertice      release];};
     return;
 }
 
@@ -551,7 +551,7 @@
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
-                   numVertex:kemoView3DMetalBuf->numMeshNodeVertice
+                   numVertex:kemoView3DMetalBuf->numAxisVertice
                       vertex:&(kemoView3DMetalBuf->axisVertice)
                       unites:monoViewUnites
                        sides:BOTH_SURFACES
@@ -659,7 +659,7 @@
     [self drawSolidWithPhong:renderEncoder
                    pipelines:kemo3DPipelines
                        depth:depthState
-                   numVertex:kemoView3DMetalBuf->numMeshNodeVertice
+                   numVertex:kemoView3DMetalBuf->numAxisVertice
                       vertex:&(kemoView3DMetalBuf->axisVertice)
                       unites:monoViewUnites
                        sides:BOTH_SURFACES

@@ -122,11 +122,10 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                             struct kemoview_buffers *kemo_buffers)
 {
     int iflag;
-    int iflag_psf = 0;
+    int iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
+                                                kemo_psf->psf_a, view_s);
     /* Set transfer matrices */
     if(view_s->iflag_view_type == VIEW_MAP) {
-        iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
-                                                kemo_psf->psf_a, view_s);
         iflag_psf = check_draw_map(kemo_psf->psf_a);
         
         set_map_patch_buffer(IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
@@ -145,8 +144,6 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                         kemo_buffers->ncorner_axis, axis_radius,
                         kemo_buffers->axis_buf);
         
-        iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
-                                                kemo_psf->psf_a, view_s);
         iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
         set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
         
@@ -208,7 +205,7 @@ void set_transparent_buffers(struct kemoview_psf *kemo_psf, struct kemoview_mesh
                     kemo_buffers->axis_buf);
 
     int iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
-                                            kemo_psf->psf_a, view_s);
+                                                kemo_psf->psf_a, view_s);
     iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
     
     const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
