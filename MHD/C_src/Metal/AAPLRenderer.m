@@ -132,8 +132,9 @@ static const NSUInteger MaxFramesInFlight = 3;
 - (void) setKemoViewMetalBuffers:(NSUInteger) i_current
                     metalDevice:(id<MTLDevice> *) device
                         kemoview:(struct kemoviewer_type *) kemo_sgl
+                        viewflag:(int) viewflag
 {
-    if(kemoview_get_view_type_flag(kemo_sgl) == VIEW_MAP){
+    if(viewflag == VIEW_MAP){
 /*  Set Map vertexs to Metal buffers */
         [_kemo2DRenderer setMapMetalBuffers:device
                                     buffers:kemo_sgl->kemo_buffers];
@@ -167,7 +168,8 @@ static const NSUInteger MaxFramesInFlight = 3;
         
         [self setKemoViewMetalBuffers:i_current
                           metalDevice:device
-                             kemoview:kemo_sgl];
+                             kemoview:kemo_sgl
+                             viewflag:iflag_view];
     }else if(iflag == FAST_DRAW){
         if(iflag_view != VIEW_MAP){
             [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
@@ -478,7 +480,8 @@ static const NSUInteger MaxFramesInFlight = 3;
                                          left:&_leftTexure
                                         right:&_rightTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:kemo_sgl
+        _imageOutputTexture = [self drawKemoViewToTexure:IZERO
+                                                kemoview:kemo_sgl
                                                metalView:view
                                                   unites:&_leftViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
@@ -486,7 +489,8 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                source:&_imageOutputTexture
                                                target:&_leftTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:kemo_sgl
+        _imageOutputTexture = [self drawKemoViewToTexure:IZERO
+                                                kemoview:kemo_sgl
                                                metalView:view
                                                   unites:&_rightViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue

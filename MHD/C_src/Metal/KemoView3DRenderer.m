@@ -34,26 +34,23 @@
                          PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
 {
     /*  Set transparent vertexs */
-    [_kemo3DMetalBufBase setPSFTexture:device
-                                buffer:kemo_buffers->PSF_ttxur_buf
-                                 image:kemo_psf->psf_a->psf_texure
-                                vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
-                                texure:&(kemoView3DMetalBuf->psfTransTexure)];
-    kemoView3DMetalBuf->numPSFTransTexureVertice = kemo_buffers->PSF_ttxur_buf->num_nod_buf;
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->PSF_trns_buf
-                                  vertex:&(kemoView3DMetalBuf->psfTransVertice)];
-    kemoView3DMetalBuf->numPSFTransVertice = kemo_buffers->PSF_trns_buf->num_nod_buf;
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->mesh_trns_buf
-                                  vertex:&(kemoView3DMetalBuf->meshTransVertice)];
-    kemoView3DMetalBuf->numMeshTransVertice = kemo_buffers->mesh_trns_buf->num_nod_buf;
+    kemoView3DMetalBuf->numPSFTransTexureVertice = [_kemo3DMetalBufBase setPSFTexture:device
+                                                                               buffer:kemo_buffers->PSF_ttxur_buf
+                                                                                image:kemo_psf->psf_a->psf_texure
+                                                                               vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
+                                                                               texure:&(kemoView3DMetalBuf->psfTransTexure)];
+
+    kemoView3DMetalBuf->numPSFTransVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->PSF_trns_buf
+                                                                            vertex:&(kemoView3DMetalBuf->psfTransVertice)];
+    kemoView3DMetalBuf->numMeshTransVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->mesh_trns_buf
+                                                                            vertex:&(kemoView3DMetalBuf->meshTransVertice)];
     
 
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->axis_buf
-                                  vertex:&(kemoView3DMetalBuf->axisVertice)];
-    kemoView3DMetalBuf->numMeshNodeVertice = kemo_buffers->axis_buf->num_nod_buf;
+    kemoView3DMetalBuf->numMeshNodeVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->axis_buf
+                                                                           vertex:&(kemoView3DMetalBuf->axisVertice)];
     return;
 }
 
@@ -63,35 +60,29 @@
                    buffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
                       PSFs:(struct kemoview_psf *_Nonnull) kemo_psf
 {
-    [_kemo3DMetalBufBase setPSFTexture:device
-                                buffer:kemo_buffers->PSF_stxur_buf
-                                 image:kemo_psf->psf_a->psf_texure
-                                vertex:&(kemoView3DMetalBuf->psfSTexureVertice)
-                                texure:&(kemoView3DMetalBuf->psfSolidTexure)];
-    kemoView3DMetalBuf->numPSFSolidTexureVertice = kemo_buffers->PSF_solid_buf->num_nod_buf;
+    kemoView3DMetalBuf->numPSFSolidTexureVertice = [_kemo3DMetalBufBase setPSFTexture:device
+                                                                               buffer:kemo_buffers->PSF_stxur_buf
+                                                                                image:kemo_psf->psf_a->psf_texure
+                                                                               vertex:&(kemoView3DMetalBuf->psfSTexureVertice)
+                                                                               texure:&(kemoView3DMetalBuf->psfSolidTexure)];
 
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->coast_buf
-                                  vertex:&(kemoView3DMetalBuf->coastVertice)];
-    kemoView3DMetalBuf->numCoastVertice = kemo_buffers->coast_buf->num_nod_buf;
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->sph_grid_buf
-                                  vertex:&(kemoView3DMetalBuf->sphGridVertice)];
-    kemoView3DMetalBuf->numSphGridVertice = kemo_buffers->sph_grid_buf->num_nod_buf;
+    kemoView3DMetalBuf->numCoastVertice =    [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->coast_buf
+                                                                           vertex:&(kemoView3DMetalBuf->coastVertice)];
+    kemoView3DMetalBuf->numSphGridVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->sph_grid_buf
+                                                                           vertex:&(kemoView3DMetalBuf->sphGridVertice)];
 
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->PSF_solid_buf
-                                  vertex:&(kemoView3DMetalBuf->psfSolidVertice)];
-    kemoView3DMetalBuf->numPSFSolidVertice = kemo_buffers->PSF_solid_buf->num_nod_buf;
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->PSF_isoline_buf
-                                  vertex:&(kemoView3DMetalBuf->psfLinesVertice)];
-    kemoView3DMetalBuf->numPSFLinesVertice = kemo_buffers->PSF_isoline_buf->num_nod_buf;
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->PSF_arrow_buf
-                                  vertex:&(kemoView3DMetalBuf->psfArrowVertice)];
-    kemoView3DMetalBuf->numPSFArrowVertice = kemo_buffers->PSF_arrow_buf->num_nod_buf;
-
+    kemoView3DMetalBuf->numPSFSolidVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->PSF_solid_buf
+                                                                           vertex:&(kemoView3DMetalBuf->psfSolidVertice)];
+    kemoView3DMetalBuf->numPSFLinesVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->PSF_isoline_buf
+                                                                           vertex:&(kemoView3DMetalBuf->psfLinesVertice)];
+    kemoView3DMetalBuf->numPSFArrowVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                           buffer:kemo_buffers->PSF_arrow_buf
+                                                                           vertex:&(kemoView3DMetalBuf->psfArrowVertice)];
+    
     if(kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG) == IFLAG_PIPE){
         [_kemo3DMetalBufBase setMetalVertexs:device
                                       buffer:kemo_buffers->FLINE_tube_buf
@@ -99,31 +90,26 @@
     };
     kemoView3DMetalBuf->numFieldTubeVertice = kemo_buffers->FLINE_tube_buf->num_nod_buf;
     
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->FLINE_line_buf
-                                  vertex:&(kemoView3DMetalBuf->fieldLineVertice)];
-    kemoView3DMetalBuf->numFfieldLineVertice = kemo_buffers->FLINE_line_buf->num_nod_buf;
+    kemoView3DMetalBuf->numFfieldLineVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                             buffer:kemo_buffers->FLINE_line_buf
+                                                                             vertex:&(kemoView3DMetalBuf->fieldLineVertice)];
 
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->mesh_node_buf
-                                  vertex:&(kemoView3DMetalBuf->meshNodeVertice)];
-    kemoView3DMetalBuf->numMeshNodeVertice = kemo_buffers->mesh_node_buf->num_nod_buf;
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->mesh_grid_buf
-                                  vertex:&(kemoView3DMetalBuf->meshGridVertice)];
-    kemoView3DMetalBuf->numMeshGridVertice = kemo_buffers->mesh_grid_buf->num_nod_buf;
-    [_kemo3DMetalBufBase setMetalVertexs:device
-                                  buffer:kemo_buffers->mesh_solid_buf
-                                  vertex:&(kemoView3DMetalBuf->meshSolidVertice)];
-    kemoView3DMetalBuf->numMeshSolidVertice = kemo_buffers->mesh_solid_buf->num_nod_buf;
+    kemoView3DMetalBuf->numMeshNodeVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->mesh_node_buf
+                                                                            vertex:&(kemoView3DMetalBuf->meshNodeVertice)];
+    kemoView3DMetalBuf->numMeshGridVertice =  [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->mesh_grid_buf
+                                                                            vertex:&(kemoView3DMetalBuf->meshGridVertice)];
+    kemoView3DMetalBuf->numMeshSolidVertice = [_kemo3DMetalBufBase setMetalVertexs:device
+                                                                            buffer:kemo_buffers->mesh_solid_buf
+                                                                            vertex:&(kemoView3DMetalBuf->meshSolidVertice)];
 
     /*  Set Cube Vertex buffer */
-    [_kemo3DMetalBufBase setCubeVertexs:device
-                                 buffer:kemo_buffers->cube_buf
-                               indexbuf:kemo_buffers->cube_index_buf
-                                 vertex:&(kemoView3DMetalBuf->cubeVertice)
-                                  index:&(kemoView3DMetalBuf->cubeIndex)];
-    kemoView3DMetalBuf->numCubeVertice = kemo_buffers->cube_buf->num_nod_buf;
+    kemoView3DMetalBuf->numCubeVertice = [_kemo3DMetalBufBase setCubeVertexs:device
+                                                                      buffer:kemo_buffers->cube_buf
+                                                                    indexbuf:kemo_buffers->cube_index_buf
+                                                                      vertex:&(kemoView3DMetalBuf->cubeVertice)
+                                                                       index:&(kemoView3DMetalBuf->cubeIndex)];
     return;
 }
 

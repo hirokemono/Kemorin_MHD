@@ -9,7 +9,7 @@
 
 @implementation KemoViewMetalBuffers:NSObject
 
-- (void)setMetalVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
+- (int) setMetalVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
                  buffer:(struct gl_strided_buffer * _Nonnull) buf
                  vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
 {
@@ -19,9 +19,10 @@
                                               options:MTLResourceStorageModeShared
                                           deallocator:nil];
     };
+    return buf->num_nod_buf;
 };
 
-- (void)setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+- (int) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                buffer:(struct gl_strided_buffer *_Nonnull) buf
                 image:(struct kemo_PSF_texure *_Nonnull) psf_texure
                vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
@@ -54,10 +55,10 @@
                       withBytes:psf_texure->texure_rgba
                     bytesPerRow:bytesPerRow];
     };
-    return;
+    return buf->num_nod_buf;
 }
 
-- (void)setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+- (int) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                    buffer:(struct gl_strided_buffer *_Nonnull) buf
                     image:(struct line_text_image *_Nonnull) img
                    vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
@@ -89,10 +90,10 @@
                       withBytes:img->imgBMP
                     bytesPerRow:bytesPerRow];
     };
-    return;
+    return buf->num_nod_buf;
 }
 
-- (void)setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
+- (int) setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
                 buffer:(struct gl_strided_buffer *_Nonnull) buf
               indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
                 vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
@@ -106,6 +107,7 @@
                                         length:(index_buf->nsize_buf * sizeof(unsigned int))
                                        options:MTLResourceStorageModeShared];
     };
+    return buf->num_nod_buf;
 };
 
 - (void)setAnaglyphTexture:(id<MTLDevice> _Nonnull *_Nonnull) device

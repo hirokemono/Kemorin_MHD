@@ -22,23 +22,23 @@
 
 @interface KemoViewMetalBuffers : NSObject
 
-- (void)setMetalVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
+- (int) setMetalVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
                  buffer:(struct gl_strided_buffer * _Nonnull) buf
                  vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices;
 
-- (void)setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+- (int) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                buffer:(struct gl_strided_buffer *_Nonnull) buf
                 image:(struct kemo_PSF_texure *_Nonnull) psf_texure
                vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                texure:(id<MTLTexture> _Nonnull *_Nonnull) texture;
 
-- (void)setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+- (int) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                    buffer:(struct gl_strided_buffer *_Nonnull) buf
                     image:(struct line_text_image *_Nonnull) img
                    vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                    texure:(id<MTLTexture> _Nonnull *_Nonnull) texture;
 
-- (void)setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
+- (int) setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
                 buffer:(struct gl_strided_buffer *_Nonnull) buf
               indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
                 vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
