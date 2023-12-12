@@ -24,6 +24,7 @@
 #define TWO_CENT   0.02
 #define TWO_MILI   0.002
 
+#define TRIPLE_UPDATE 99
 #define FULL_DRAW      0
 #define FAST_DRAW      1
 #define SIMPLE_DRAW    2

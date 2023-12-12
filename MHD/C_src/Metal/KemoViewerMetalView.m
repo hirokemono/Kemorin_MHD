@@ -147,6 +147,7 @@
     [self setNeedsDisplay: YES];
     return;
 }
+
 -(void) FastUpdateImage
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
@@ -156,6 +157,7 @@
     [self setNeedsDisplay: YES];
     return;
 }
+
 -(void) QuickUpdateImage
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
@@ -164,6 +166,17 @@
     kemoview_mono_viewmatrix(kemo_sgl);
     [_resetview UpdateParameters];
 
+    [self setNeedsDisplay: YES];
+    return;
+}
+
+-(void) TripleUpdateImage:(struct kemoviewer_type *) kemo_sgl
+{
+    kemoview_set_view_integer(ISET_DRAW_MODE, TRIPLE_UPDATE, kemo_sgl);
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO,  kemo_sgl);
+    kemoview_mono_viewmatrix(kemo_sgl);
+    [_resetview UpdateParameters];
+    
     [self setNeedsDisplay: YES];
     return;
 }
@@ -178,7 +191,6 @@
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     kemoview_step_viewmatrix(istep_quilt, kemo_sgl);
 
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     [self setNeedsDisplay: YES];
     return self;
 }
@@ -266,7 +278,7 @@
         kemoview_startTrackball(xmove, ymove, kemo_sgl);
 //        gTrackingViewInfo = self;
     }
-    [self QuickUpdateImage];
+    [self TripleUpdateImage:kemo_sgl];
     return;
 }
 // ---------------------------------

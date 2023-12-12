@@ -58,6 +58,7 @@
 -(void) UpdateImage:(struct kemoviewer_type *) kemo_sgl;
 -(void) FastUpdateImage;
 -(void) QuickUpdateImage;
+-(void) TripleUpdateImage:(struct kemoviewer_type *) kemo_sgl;
 
 -(id) DrawQuilt:(NSInteger) istep_quilt
          degree:(NSInteger) int_degree

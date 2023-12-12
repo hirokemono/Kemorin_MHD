@@ -12,7 +12,7 @@ Implementation of a platform independent renderer class, which performs Metal se
 #include "draw_colorbar_gl.h"
 
 /* The maximum number of frames in flight. */
-static const NSUInteger MaxFramesInFlight = 1;
+static const NSUInteger MaxFramesInFlight = 3;
 
 /* Main class performing the rendering */
 @implementation AAPLRenderer
@@ -111,7 +111,7 @@ static const NSUInteger MaxFramesInFlight = 1;
 
 
 
-- (void) releaseKemoViewMetalBuffers:(NSUInteger) i_current
+- (void) releaseKemoViewMetalBuffers:(KemoView3DRenderer *) kemo3DRenderer
                             viewflag:(int) iflag_view
 {
     if(iflag_view == VIEW_MAP){
@@ -119,9 +119,9 @@ static const NSUInteger MaxFramesInFlight = 1;
         [_kemo2DRenderer releaseMapMetalBuffers];
     }else{
 /*  Release 3D vertexs */
-        [_kemo3DRenderer[i_current] releaseKemoView3DMetalBuffers];
+        [kemo3DRenderer releaseKemoView3DMetalBuffers];
 /*  Release transparent vertexs */
-        [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
+        [kemo3DRenderer releaseTransparentMetalBuffers];
     };
 /*  Release Message vertexs */
     [_kemo2DRenderer releaseMsgMetalBuffers];
@@ -129,7 +129,7 @@ static const NSUInteger MaxFramesInFlight = 1;
 }
 
 
-- (void) setKemoViewMetalBuffers:(NSUInteger) i_current
+- (void) setKemoViewMetalBuffers:(KemoView3DRenderer *) kemo3DRenderer
                     metalDevice:(id<MTLDevice> *) device
                         kemoview:(struct kemoviewer_type *) kemo_sgl
                         viewflag:(int) viewflag
@@ -140,11 +140,11 @@ static const NSUInteger MaxFramesInFlight = 1;
                                     buffers:kemo_sgl->kemo_buffers];
     }else{
 /*  Set 3D vertexs to Metal buffers */
-        [_kemo3DRenderer[i_current] setKemoView3DMetalBuffers:device
-                                                     kemoview:kemo_sgl];
+        [kemo3DRenderer setKemoView3DMetalBuffers:device
+                                         kemoview:kemo_sgl];
 /*  Set transparent vertexs to Metal buffers */
-        [_kemo3DRenderer[i_current] setKemoTransparentMetalBuffers:device
-                                                          kemoview:kemo_sgl];
+        [kemo3DRenderer setKemoTransparentMetalBuffers:device
+                                              kemoview:kemo_sgl];
     };
     
 /*  Set message vertexs to Metal buffers */
@@ -157,19 +157,29 @@ static const NSUInteger MaxFramesInFlight = 1;
                         metalDevice:(id<MTLDevice> *) device
                            kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-
+    int i;
     int iflag = kemoview_get_draw_mode(kemo_sgl);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag == FULL_DRAW){
-        [self releaseKemoViewMetalBuffers:i_current
+        [self releaseKemoViewMetalBuffers:_kemo3DRenderer[i_current]
                                  viewflag:iflag_view];
         
         kemoview_const_buffers(kemo_sgl);
         
-        [self setKemoViewMetalBuffers:i_current
+        [self setKemoViewMetalBuffers:_kemo3DRenderer[i_current]
                           metalDevice:device
                              kemoview:kemo_sgl
                              viewflag:iflag_view];
+    }else if(iflag == TRIPLE_UPDATE){
+        kemoview_const_buffers(kemo_sgl);
+        for(i=0;i<MaxFramesInFlight;i++){
+            [self releaseKemoViewMetalBuffers:_kemo3DRenderer[i]
+                                     viewflag:iflag_view];
+            [self setKemoViewMetalBuffers:_kemo3DRenderer[i]
+                              metalDevice:device
+                                 kemoview:kemo_sgl
+                                 viewflag:iflag_view];
+        }
     }else if(iflag == FAST_DRAW){
         if(iflag_view != VIEW_MAP){
             [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
@@ -182,6 +192,7 @@ static const NSUInteger MaxFramesInFlight = 1;
     };
     return;
 }
+
 
 - (void) encodeKemoViewers:(NSUInteger) i_current
                    encoder:(id<MTLRenderCommandEncoder>  *) renderEncoder

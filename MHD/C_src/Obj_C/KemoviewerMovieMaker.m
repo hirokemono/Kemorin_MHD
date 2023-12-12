@@ -494,6 +494,8 @@ NSData *SnapshotData;
     NSInteger ied_deg = 360/self.RotationIncrement;
     NSInteger int_degree, icount;
     
+    [_metalView TripleUpdateImage:kemo_sgl];
+    
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
             if([self OpenQuiltQTMovieFile:RotateImageFilenameNoStep
@@ -580,6 +582,7 @@ NSData *SnapshotData;
 
 -(void) PreviewQuiltImages:(struct kemoviewer_type *) kemo_sgl
 {
+    [_metalView TripleUpdateImage:kemo_sgl];
     NSInteger num_step
         = (NSInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
 
