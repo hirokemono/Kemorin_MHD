@@ -484,7 +484,6 @@ NSData *SnapshotData;
 {
     kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis, kemo_sgl);
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     kemoview_step_viewmatrix(IZERO, kemo_sgl);
     return self;
 }
@@ -495,6 +494,7 @@ NSData *SnapshotData;
     NSInteger int_degree, icount;
     
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
 
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
@@ -557,7 +557,7 @@ NSData *SnapshotData;
                 [self SaveKemoviewPDFFile:ImageFilehead];
             }
         }else{
-            [_metalView FastUpdateImage];
+            [_metalView drawRotation];
         }
         
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
@@ -577,12 +577,14 @@ NSData *SnapshotData;
     [self setRotation:IZERO
                  axis:RotationAxisID
              kemoview:kemo_sgl];
-    [_metalView FastUpdateImage];
+    [_metalView drawRotation];
 }
 
 -(void) PreviewQuiltImages:(struct kemoviewer_type *) kemo_sgl
 {
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
+    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+
     NSInteger num_step
         = (NSInteger) kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_NUM);
 
@@ -629,6 +631,8 @@ NSData *SnapshotData;
         }
     }
     
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+
     [evolutionProgreessBar setHidden:NO];
     [evolutionProgreessBar setUsesThreadedAnimation:YES];
     [evolutionProgreessBar setMinValue:(double) self.EvolutionStartStep];
@@ -700,7 +704,7 @@ NSData *SnapshotData;
     if (CurrentMovieFormat == SAVE_QT_MOVIE) [self CloseKemoviewMovieFile];
         
     kemoview_step_viewmatrix(IZERO, kemo_sgl);
-    [_metalView FastUpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 

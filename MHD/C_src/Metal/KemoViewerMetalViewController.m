@@ -79,10 +79,8 @@
                                PixelPerByte:(NSUInteger *) pixelByte
                                    kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
     id<MTLTexture> _imageOutputTexture = [_renderer KemoViewToTexure:_metalView
                                                             kemoview:kemo_sgl];
-    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
     /*    Texture to render screen to texture */
     pix_xy[0] = _imageOutputTexture.width;
