@@ -324,8 +324,8 @@ static const NSUInteger MaxFramesInFlight = 3;
 }
 
 - (id<MTLTexture>_Nonnull) drawKemoViewToTexure:(NSUInteger) i_current
-                                       kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
                                       metalView:(nonnull MTKView *)view
+                                       kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
                                          unites:(KemoViewUnites *_Nonnull) viewUnites
 {
     [self refreshKemoViewMetalBuffers:i_current
@@ -471,16 +471,16 @@ static const NSUInteger MaxFramesInFlight = 3;
 
         id<MTLTexture> _imageOutputTexture;
         _imageOutputTexture = [self drawKemoViewToTexure:i_current
-                                                kemoview:kemo_sgl
                                                metalView:view
+                                                kemoview:kemo_sgl
                                                   unites:&_leftViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
                                                source:&_imageOutputTexture
                                                target:&_leftTexure];
         _imageOutputTexture = [self drawKemoViewToTexure:i_current
-                                                kemoview:kemo_sgl
                                                metalView:view
+                                                kemoview:kemo_sgl
                                                   unites:&_rightViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
@@ -497,7 +497,8 @@ static const NSUInteger MaxFramesInFlight = 3;
     return;
 };
 
--(id<MTLTexture>) KemoViewAnaglyphToTexure:(nonnull MTKView *)view
+-(id<MTLTexture>) KemoViewAnaglyphToTexure:(int) i_current
+                                 metalView:(nonnull MTKView *)view
                                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSUInteger pix_xy[2];
@@ -522,18 +523,18 @@ static const NSUInteger MaxFramesInFlight = 3;
                                          left:&_leftTexure
                                         right:&_rightTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:IZERO
-                                                kemoview:kemo_sgl
+        _imageOutputTexture = [self drawKemoViewToTexure:i_current
                                                metalView:view
+                                                kemoview:kemo_sgl
                                                   unites:&_leftViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
                                                source:&_imageOutputTexture
                                                target:&_leftTexure];
 
-        _imageOutputTexture = [self drawKemoViewToTexure:IZERO
-                                                kemoview:kemo_sgl
+        _imageOutputTexture = [self drawKemoViewToTexure:i_current
                                                metalView:view
+                                                kemoview:kemo_sgl
                                                   unites:&_rightViewUnites];
         [_kemoRendererTools encodeCopyTexureToPrivate:&_commandQueue
                                               num_pix:pix_xy
@@ -581,15 +582,18 @@ static const NSUInteger MaxFramesInFlight = 3;
                                   kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
     id<MTLTexture> _imageOutputTexture;
+    _currentBuffer = (_currentBuffer + 1) % MaxFramesInFlight;
+
     int iflag = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag == VIEW_STEREO){
-        _imageOutputTexture = [self KemoViewAnaglyphToTexure:view
-                                                  kemoview:kemo_sgl];
+        _imageOutputTexture = [self KemoViewAnaglyphToTexure:_currentBuffer
+                                                   metalView:view
+                                                    kemoview:kemo_sgl];
     }else{
-        _imageOutputTexture = [self drawKemoViewToTexure:IZERO
+        _imageOutputTexture = [self drawKemoViewToTexure:_currentBuffer
+                                               metalView:view
                                                 kemoview:kemo_sgl
-                                                 metalView:view
-                                                    unites:&_monoViewUnites];
+                                                  unites:&_monoViewUnites];
     };
     return _imageOutputTexture;
 }

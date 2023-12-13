@@ -119,6 +119,8 @@
         rtmp = bgra[4*i];
         bgra[4*i] = bgra[4*i+2];
         bgra[4*i+2] = rtmp;
+        bgra[4*i+3] = 255;
+
     }
     
     int bitsPerComponent = 8;
