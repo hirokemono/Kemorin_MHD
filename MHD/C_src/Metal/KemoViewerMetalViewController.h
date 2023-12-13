@@ -28,6 +28,8 @@
 - (void) RenderUpdate;
 - (void) viewDidLayout;
 
+- (void)refreshKemoViewTripleBuffersForRotation:(struct kemoviewer_type *) kemo_sgl;
+
 -(unsigned char *) getRenderedbyMetalToBGRA:(NSUInteger *) pix_xy
                                PixelPerByte:(NSUInteger *) pixelByte
                                    kemoview:(struct kemoviewer_type *) kemo_sgl;

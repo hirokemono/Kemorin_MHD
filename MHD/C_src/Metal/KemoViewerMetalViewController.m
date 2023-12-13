@@ -68,6 +68,13 @@
     return;
 };
 
+- (void)refreshKemoViewTripleBuffersForRotation:(struct kemoviewer_type *) kemo_sgl
+{
+    [_renderer refreshKemoViewTripleBuffers:kemo_sgl];
+    return;
+}
+
+
 -(unsigned char *) getRenderedbyMetalToBGRA:(NSUInteger *) pix_xy
                                PixelPerByte:(NSUInteger *) pixelByte
                                    kemoview:(struct kemoviewer_type *) kemo_sgl

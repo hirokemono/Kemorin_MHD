@@ -153,14 +153,42 @@ static const NSUInteger MaxFramesInFlight = 3;
     return;
 }
 
+- (void)refreshTripleBuffers:(NSUInteger) i_current
+                 metalDevice:(id<MTLDevice> *) device
+                    kemoview:(struct kemoviewer_type *) kemo_sgl
+{
+    int i, i_update;
+    for(i=1;i<MaxFramesInFlight;i++){
+        i_update = (i_current + i) % MaxFramesInFlight;
+        [_kemo3DRenderer[i_update] releaseKemoView3DMetalBuffers];
+        [_kemo3DRenderer[i_update] releaseTransparentMetalBuffers];
+        
+        [_kemo3DRenderer[i_update] setKemoView3DMetalBuffers:device
+                                                    kemoview:kemo_sgl];
+        [_kemo3DRenderer[i_update] setKemoTransparentMetalBuffers:device
+                                                         kemoview:kemo_sgl];
+    }
+    return;
+}
+
+
+
 - (void)refreshKemoViewMetalBuffers:(NSUInteger) i_current
                         metalDevice:(id<MTLDevice> *) device
                            kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    int i;
     int iflag = kemoview_get_draw_mode(kemo_sgl);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
-    if(iflag == FULL_DRAW){
+    if(iflag == FAST_DRAW){
+        if(iflag_view != VIEW_MAP){
+            [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
+            
+            kemoview_transparent_buffers(kemo_sgl);
+            
+            [_kemo3DRenderer[i_current] setKemoTransparentMetalBuffers:device
+                                                              kemoview:kemo_sgl];
+        };
+    }else{
         [self releaseKemoViewMetalBuffers:_kemo3DRenderer[i_current]
                                  viewflag:iflag_view];
         
@@ -170,26 +198,21 @@ static const NSUInteger MaxFramesInFlight = 3;
                           metalDevice:device
                              kemoview:kemo_sgl
                              viewflag:iflag_view];
-    }else if(iflag == TRIPLE_UPDATE){
-        kemoview_const_buffers(kemo_sgl);
-        for(i=0;i<MaxFramesInFlight;i++){
-            [self releaseKemoViewMetalBuffers:_kemo3DRenderer[i]
-                                     viewflag:iflag_view];
-            [self setKemoViewMetalBuffers:_kemo3DRenderer[i]
-                              metalDevice:device
-                                 kemoview:kemo_sgl
-                                 viewflag:iflag_view];
-        }
-    }else if(iflag == FAST_DRAW){
-        if(iflag_view != VIEW_MAP){
-            [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
-            
-            kemoview_transparent_buffers(kemo_sgl);
-            
-            [_kemo3DRenderer[i_current] setKemoTransparentMetalBuffers:device
-                                                              kemoview:kemo_sgl];
-        };
+
+        if(iflag == TRIPLE_UPDATE){
+            [self refreshTripleBuffers:i_current
+                           metalDevice:device
+                              kemoview:kemo_sgl];
+       }
     };
+    return;
+}
+
+- (void)refreshKemoViewTripleBuffers:(struct kemoviewer_type *) kemo_sgl
+{
+    [self refreshTripleBuffers:_currentBuffer
+                   metalDevice:&_device
+                      kemoview:kemo_sgl];
     return;
 }
 
