@@ -148,15 +148,6 @@
     return;
 }
 
--(void) drawRotation
-{
-    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    [_resetview UpdateParameters];
-
-    [self setNeedsDisplay: YES];
-    return;
-}
-
 -(void) QuickUpdateImage
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];

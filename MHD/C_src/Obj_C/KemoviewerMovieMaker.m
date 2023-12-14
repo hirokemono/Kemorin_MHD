@@ -495,6 +495,7 @@ NSData *SnapshotData;
     
     [_metalViewController refreshKemoViewTripleBuffersForRotation:kemo_sgl];
     kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
 
     if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
@@ -557,7 +558,7 @@ NSData *SnapshotData;
                 [self SaveKemoviewPDFFile:ImageFilehead];
             }
         }else{
-            [_metalView drawRotation];
+            [_metalView setNeedsDisplay:YES];
         }
         
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
@@ -577,7 +578,7 @@ NSData *SnapshotData;
     [self setRotation:IZERO
                  axis:RotationAxisID
              kemoview:kemo_sgl];
-    [_metalView drawRotation];
+    [_metalView setNeedsDisplay:YES];
 }
 
 -(void) PreviewQuiltImages:(struct kemoviewer_type *) kemo_sgl
