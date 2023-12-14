@@ -22,7 +22,7 @@
 typedef struct
 {
     /*  Vertex buffer for initial cube */
-    id<MTLBuffer> cubeVertice;
+    id<MTLBuffer> _Nullable cubeVertice;
     NSUInteger numCubeVertice;
     /*  Index buffer for initial cube */
     id<MTLBuffer> _Nullable cubeIndex;

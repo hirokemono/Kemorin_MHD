@@ -497,7 +497,7 @@ static const NSUInteger MaxFramesInFlight = 3;
     return;
 };
 
--(id<MTLTexture>) KemoViewAnaglyphToTexure:(int) i_current
+-(id<MTLTexture>) KemoViewAnaglyphToTexure:(NSUInteger) i_current
                                  metalView:(nonnull MTKView *)view
                                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
