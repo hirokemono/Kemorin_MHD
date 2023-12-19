@@ -40,10 +40,11 @@ NSData *SnapshotData;
     
     CVPixelBufferRef pxbuffer = NULL;
     
-/*    width is required producs of 16 pixels
+/*    width is required producs of 16 pixels */
     CGFloat width  = 16 * (int) (1 + CGImageGetWidth(image) / 16);
- */
+/*
     CGFloat width  = CGImageGetWidth(image);
+ */
     CGFloat height = CGImageGetHeight(image);
     CVPixelBufferCreate(kCFAllocatorDefault,
                         width,
