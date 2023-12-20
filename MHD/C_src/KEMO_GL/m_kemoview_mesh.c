@@ -135,7 +135,7 @@ int get_mesh_color_flag(int iflag_group, int selected,
 void set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
 						 struct kemoview_mesh *kemo_mesh){
 	if(iflag_group == DOMAIN_FLAG){
-		set_domain_color_code(selected, color_code4, kemo_mesh);
+		set_domain_color_code(selected, color_code4, kemo_mesh->mesh_m);
         if(selected == SURFSOLID_TOGGLE){
             set_mesh_opacity(DOMAIN_FLAG, (double) color_code4[3], kemo_mesh);
         };

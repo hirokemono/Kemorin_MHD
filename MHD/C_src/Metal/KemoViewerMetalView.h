@@ -41,9 +41,9 @@
 
     CFTimeInterval reftime_msg;
 
-    int id_window;
+//    int id_window;
 }
-@property int id_window;
+// @property int id_window;
 
 -(void) updateBackground:(struct kemoviewer_type *) kemo_sgl;
 

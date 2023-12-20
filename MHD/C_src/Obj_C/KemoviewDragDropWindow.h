@@ -15,7 +15,7 @@
 @interface KemoviewDragDropWindow : NSWindow {
 	IBOutlet Kemoview_IO_Controller * _kemoviewIOControl;
     IBOutlet KemoViewerObject *_kmv;
-    int id_window;
+//    int id_window;
 }
 
 
