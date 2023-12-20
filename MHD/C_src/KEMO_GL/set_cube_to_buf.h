@@ -29,5 +29,9 @@ void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
                      struct gl_index_buffer *index_buf);
 int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_buf);
 
+long flatEdgeCube_VBO(long icou, float fSize,
+                      struct gl_strided_buffer *strided_buf);
+long flatNodeCube_VBO(long icou, float fSize, 
+                      struct gl_strided_buffer *strided_buf);
 
 #endif

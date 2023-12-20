@@ -27,10 +27,10 @@ int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu,
 
 
 
-int send_nfield_each_psf(struct psf_data *psf_d){return psf_d->nfield;};
-int send_ncomptot_each_psf(struct psf_data *psf_d){return psf_d->ncomptot;};
-int send_ncomp_each_psf(struct psf_data *psf_d, int i){return psf_d->ncomp[i];};
-int send_istack_each_comp_psf(struct psf_data *psf_d, int i){return psf_d->istack_comp[i];};
+long send_nfield_each_psf(struct psf_data *psf_d){return psf_d->nfield;};
+long send_ncomptot_each_psf(struct psf_data *psf_d){return psf_d->ncomptot;};
+long send_ncomp_each_psf(struct psf_data *psf_d, int i){return psf_d->ncomp[i];};
+long send_istack_each_comp_psf(struct psf_data *psf_d, int i){return psf_d->istack_comp[i];};
 void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname, int i){
 	alloc_copy_string(psf_d->data_name[i], colorname);
 };

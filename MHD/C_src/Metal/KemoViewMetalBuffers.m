@@ -117,15 +117,16 @@
                       left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexture
                      right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexture
 {
+    long i;
     if(buf->num_nod_buf > 0){
-        for(int i=0;i<buf->num_nod_buf;i++){
+        for(i=0;i<buf->num_nod_buf;i++){
             set_node_stride_buffer(i, buf);
             buf->x_draw[1] = npix_img[1] - buf->x_draw[1];
         }
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
                                          length:(buf->num_nod_buf * sizeof(KemoViewVertex))
                                         options:MTLResourceStorageModeShared];
-        for(int i=0;i<buf->num_nod_buf;i++){
+        for(i=0;i<buf->num_nod_buf;i++){
             set_node_stride_buffer(i, buf);
             buf->x_draw[1] = npix_img[1] - buf->x_draw[1];
         }

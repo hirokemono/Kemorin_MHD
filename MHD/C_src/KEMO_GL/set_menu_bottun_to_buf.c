@@ -132,9 +132,9 @@ static int count_menu_to_buf(){
 	return num_dot;
 };
 
-static int set_menu_to_buf(unsigned char *menubottun_bits,
-                           struct gl_strided_buffer *strided_buf){
-	int i, j, idx, icou;
+static long set_menu_to_buf(unsigned char *menubottun_bits,
+                            struct gl_strided_buffer *strided_buf){
+	long i, j, idx, icou;
 	for(j=0;j<MENU_HEIGHT;j++){
 		for(i=0;i<MENU_WIDTH;i++){
 			idx = i + j * MENU_WIDTH;

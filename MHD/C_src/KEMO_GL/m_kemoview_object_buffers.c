@@ -9,7 +9,7 @@
 
 struct kemoview_buffers * init_kemoview_buffers(void)
 {
-    int n_point = 1024;
+    long n_point = 1024;
 
     struct kemoview_buffers *kemo_buffers = (struct kemoview_buffers *) malloc(sizeof(struct kemoview_buffers));
     if(kemo_buffers == NULL){
@@ -21,7 +21,7 @@ struct kemoview_buffers * init_kemoview_buffers(void)
         exit(0);
     };
 
-    kemo_buffers->cube_buf = init_strided_buffer(n_point);
+    kemo_buffers->cube_buf =        init_strided_buffer(n_point);
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
     CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, kemo_buffers->cube_index_buf);
 
@@ -35,29 +35,29 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->MAP_solid_buf =   init_strided_buffer(n_point);
     kemo_buffers->MAP_isoline_buf = init_strided_buffer(n_point);
 
-    kemo_buffers->FLINE_line_buf = init_strided_buffer(n_point);
-    kemo_buffers->FLINE_tube_buf = init_strided_buffer(n_point);
+    kemo_buffers->FLINE_line_buf =  init_strided_buffer(n_point);
+    kemo_buffers->FLINE_tube_buf =  init_strided_buffer(n_point);
 
-    kemo_buffers->mesh_solid_buf = init_strided_buffer(n_point);
-    kemo_buffers->mesh_grid_buf =  init_strided_buffer(n_point);
-    kemo_buffers->mesh_node_buf =  init_strided_buffer(n_point);
-    kemo_buffers->mesh_trns_buf =  init_strided_buffer(n_point);
+    kemo_buffers->mesh_solid_buf =  init_strided_buffer(n_point);
+    kemo_buffers->mesh_grid_buf =   init_strided_buffer(n_point);
+    kemo_buffers->mesh_node_buf =   init_strided_buffer(n_point);
+    kemo_buffers->mesh_trns_buf =   init_strided_buffer(n_point);
 
-    kemo_buffers->coast_buf =    init_strided_buffer((n_point));
-    kemo_buffers->sph_grid_buf = init_strided_buffer(n_point);
+    kemo_buffers->coast_buf =       init_strided_buffer(n_point);
+    kemo_buffers->sph_grid_buf =    init_strided_buffer(n_point);
     
     kemo_buffers->ncorner_axis = ISIX*8;
-    kemo_buffers->axis_buf = init_strided_buffer(n_point);
+    kemo_buffers->axis_buf =        init_strided_buffer(n_point);
 
     n_point = count_colorbar_box_buffer(IONE, 128);
-    kemo_buffers->cbar_buf = init_strided_buffer(n_point);
+    kemo_buffers->cbar_buf =        init_strided_buffer(n_point);
 
     n_point = ITWO * ITHREE;
-    kemo_buffers->min_buf =  init_strided_buffer(n_point);
-    kemo_buffers->max_buf =  init_strided_buffer(n_point);
-    kemo_buffers->zero_buf = init_strided_buffer(n_point);
-    kemo_buffers->time_buf = init_strided_buffer(n_point);
-    kemo_buffers->msg_buf =  init_strided_buffer(n_point);
+    kemo_buffers->min_buf =     init_strided_buffer(n_point);
+    kemo_buffers->max_buf =     init_strided_buffer(n_point);
+    kemo_buffers->zero_buf =    init_strided_buffer(n_point);
+    kemo_buffers->time_buf =    init_strided_buffer(n_point);
+    kemo_buffers->msg_buf =     init_strided_buffer(n_point);
 
     kemo_buffers->screen_buf =  init_strided_buffer(n_point);
     

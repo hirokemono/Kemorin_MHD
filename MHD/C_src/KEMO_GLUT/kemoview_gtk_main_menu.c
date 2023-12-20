@@ -376,7 +376,8 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
 
     int index_mode = gtk_selected_combobox_index(combobox_comp);
     int if_psf = kemoview_get_each_PSF_field_param(kemo_sgl, FIELD_SEL_FLAG);
-    if(index_mode >= kemoview_get_PSF_num_component(kemo_sgl, if_psf) || index_mode < 0){
+    int ncomp = (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
+    if(index_mode >= ncomp || index_mode < 0){
         index_mode = 0;
     }
 	
@@ -577,7 +578,7 @@ void update_psf_draw_component_hbox(struct kemoviewer_type *kemo_sgl,
     int if_psf = kemoview_get_each_PSF_field_param(kemo_sgl, FIELD_SEL_FLAG);
 
     kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, IZERO, kemo_sgl);
-    int ncomp = kemoview_get_PSF_num_component(kemo_sgl, if_psf);
+    int ncomp = (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
     int id_coord = kemoview_get_each_PSF_field_param(kemo_sgl, COORDINATE_FLAG);
     
     clear_ci_tree_view(GTK_TREE_VIEW(psf_gmenu->comp_label_tree_view));
@@ -598,7 +599,7 @@ static void init_psf_draw_component_hbox(struct kemoviewer_type *kemo_sgl,
                                          struct psf_gtk_menu *psf_gmenu, GtkWidget *window){
 	char comp_name[1024];
 	int if_psf = kemoview_get_each_PSF_field_param(kemo_sgl, FIELD_SEL_FLAG);
-	int ncomp = kemoview_get_PSF_num_component(kemo_sgl, if_psf);
+	int ncomp = (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
 	int icomp;
 	
     psf_gmenu->comp_label_tree_view = create_fixed_label_w_index_tree();

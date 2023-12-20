@@ -106,7 +106,8 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
 void set_vector_plot_availablity(struct kemoviewer_type *kemo_sgl,
                                  struct psf_gtk_menu *psf_gmenu){
     int if_psf = kemoview_get_each_PSF_field_param(kemo_sgl, FIELD_SEL_FLAG);
-    if(kemoview_get_PSF_num_component(kemo_sgl, if_psf) == 3){
+    int ncomp = (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
+    if(ncomp == 3){
         gtk_widget_set_sensitive(psf_gmenu->expander_vect, TRUE);
     } else {
         gtk_widget_set_sensitive(psf_gmenu->expander_vect, FALSE);

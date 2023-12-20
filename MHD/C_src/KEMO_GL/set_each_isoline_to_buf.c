@@ -80,9 +80,10 @@ int add_each_isoline_npatch(int ist_patch, double v_line, int icomp, struct psf_
 	return inum_patch;
 };
 
-int set_each_isoline_to_buf(int ist_patch, double width, 
-                            double v_line, int icomp, double *f_color,
-                            struct psf_data *psf_s, struct gl_strided_buffer *strided_buf){
+long set_each_isoline_to_buf(const long ist_patch, double width, 
+                             double v_line, int icomp, double *f_color,
+                             struct psf_data *psf_s,
+                             struct gl_strided_buffer *strided_buf){
 	double d_tri[3], xyz_tri[9], nrm_tri[9];
 	double x_line[6], dir_line[6], norm_line[6], color_line[8];
 	int hex_tube[12][3];
@@ -110,9 +111,10 @@ int set_each_isoline_to_buf(int ist_patch, double width,
 	return inum_patch;
 };
 
-int set_each_map_isoline_to_buf(int ist_patch, double width, 
-							   double v_line, int icomp, double *f_color, 
-							   struct psf_data *psf_s, struct gl_strided_buffer *strided_buf){
+long set_each_map_isoline_to_buf(const long ist_patch, double width, 
+                                 double v_line, int icomp, double *f_color, 
+                                 struct psf_data *psf_s, 
+                                 struct gl_strided_buffer *strided_buf){
 	double d_tri[3], nrm_tri[9];
 	double xyz_map[9];
 	double x_line[6], dir_line[6], norm_line[6], color_line[8];
@@ -121,7 +123,7 @@ int set_each_map_isoline_to_buf(int ist_patch, double width,
 	int idraw;
 	int iele, nd;
 	
-	int inum_patch = ist_patch;
+	long inum_patch = ist_patch;
 	copy_hex_tube_pp(hex_tube);
 	for (iele = 0; iele < psf_s->nele_viz; iele++) {
 		copy_each_triangle_map_postion(&psf_s->ie_viz[iele][0], psf_s->xx_viz,

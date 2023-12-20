@@ -5,7 +5,7 @@
 #include "set_colorbar_to_buffer.h"
 
 
-static void set_one_quad_to_buf(int i_quad, 
+static void set_one_quad_to_buf(long i_quad, 
 			float x1[3], float x2[3], float x3[3], float x4[3], 
 			float c1[4], float c2[4], float c3[4], float c4[4], 
 			struct gl_strided_buffer *strided_buf){
@@ -37,7 +37,7 @@ static void set_one_quad_to_buf(int i_quad,
 	return;
 };
 
-static void set_one_texture_to_buf(int i_quad, 
+static void set_one_texture_to_buf(const long i_quad, 
 			float t1[2], float t2[2], float t3[2], float t4[2], 
 			struct gl_strided_buffer *strided_buf){
 	int nd;
@@ -62,15 +62,17 @@ static void set_one_texture_to_buf(int i_quad,
 	return;
 };
 
-int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, 
-                              struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
-	int inum_quad = ist_quad;
+long solid_colorbar_box_to_buf(const long ist_quad,
+                               struct colormap_params *cmap_s, 
+                               struct cbar_work *cbar_wk,
+                               struct gl_strided_buffer *strided_buf){
+	long inum_quad = ist_quad;
 	float y1;
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	double psf_value;
 	double f_color[4], l_color[4];
-	int i, nd;
+	long i, nd;
 	
 	set_rainbow_color_code(cmap_s, cbar_wk->psf_min, f_color);
 	f_color[3] = ONE;
@@ -112,16 +114,18 @@ int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s,
 	return inum_quad;
 };
 
-int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, float *bg_color, 
-                             struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
-	int inum_quad = ist_quad;
+long fade_colorbar_box_to_buf(const long ist_quad, 
+                              struct colormap_params *cmap_s, float *bg_color, 
+                              struct cbar_work *cbar_wk, 
+                              struct gl_strided_buffer *strided_buf){
+	long inum_quad = ist_quad;
 	float y1;
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	
 	double psf_value;
 	double f_color[4], l_color[4];
-	int i, nd;
+	long i, nd;
 	
 	
 	set_rainbow_color_code(cmap_s, cbar_wk->psf_min, f_color);
@@ -174,8 +178,9 @@ int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, float
 	return inum_quad;
 };
 
-int colorbar_frame_to_buf(int ist_quad, int iflag_retina, float *text_color,
-                          struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
+long colorbar_frame_to_buf(const long ist_quad, int iflag_retina, 
+                           float *text_color, struct cbar_work *cbar_wk,
+                           struct gl_strided_buffer *strided_buf){
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	int nd;

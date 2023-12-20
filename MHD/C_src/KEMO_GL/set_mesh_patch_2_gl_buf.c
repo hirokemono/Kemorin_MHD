@@ -3,12 +3,12 @@
 
 #include "set_mesh_patch_2_gl_buf.h"
 
-static int add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
-			double **xx_draw, int **ie_sf_viewer, int *node_quad_2_linear_tri, 
-			double normal_ele[3], double normal_nod[9], 
-			double f_color[4], int inum_tri, struct gl_strided_buffer *strided_buf){
-	int inod, k, kr, k1, nd;
-	int count;
+static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
+                                    double **xx_draw, int **ie_sf_viewer, int *node_quad_2_linear_tri, 
+                                    double normal_ele[3], double normal_nod[9], 
+                                    double f_color[4], const long inum_tri, struct gl_strided_buffer *strided_buf){
+	int inod, k1, nd;
+    long k, kr;
 	
 	for (k=0; k<ITHREE; k++) {
 		if (iele < 0) {kr = ITHREE - k - 1;}
@@ -31,8 +31,7 @@ static int add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int
 			for (nd = 0; nd < 3; nd++){strided_buf->n_draw[nd] = -strided_buf->n_draw[nd];};
 		};
 	};
-	count = inum_tri + 1;
-	return count;
+	return (inum_tri + 1);
 };
 
 
@@ -55,16 +54,17 @@ int count_mesh_patch_buf(int *istack_grp, int *ip_domain_far,
 	return num_patch;
 }
 
-int add_mesh_patch_to_buf(int ist_tri, int shading_mode, int polygon_mode, int surface_color,
-			int color_mode, int color_loop, double opacity, float single_color[4], 
-			int num_grp, int *istack_grp, int *item_grp, 
-			double **normal_ele, double **normal_nod, int *isort_grp, 
-			int *ip_domain_far, int igrp, struct viewer_mesh *mesh_s, int *iflag_domain, 
-			struct gl_strided_buffer *mesh_buf){
+static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int polygon_mode, 
+                                  int surface_color, int color_mode, int color_loop,
+                                  double opacity, float single_color[4], 
+                                  int num_grp, int *istack_grp, int *item_grp, 
+                                  double **normal_ele, double **normal_nod, int *isort_grp, 
+                                  int *ip_domain_far, int igrp, struct viewer_mesh *mesh_s, int *iflag_domain, 
+                                  struct gl_strided_buffer *mesh_buf){
 	int i, ip, icou, inum, ist, ied, j, jnum;
 	double f_color[4];
 	
-	int inum_tri = ist_tri;
+	long inum_tri = ist_tri;
 	
 	for(i = 0; i < mesh_s->num_pe_sf; i++){
 		ip = ip_domain_far[i] - 1;
@@ -86,9 +86,10 @@ int add_mesh_patch_to_buf(int ist_tri, int shading_mode, int polygon_mode, int s
 								normal_ele[jnum][1], normal_ele[jnum][2]);
 					 */
 					inum_tri = add_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
-								mesh_s->xx_draw, mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri, 
-								normal_ele[jnum], normal_nod[jnum], 
-								f_color, inum_tri, mesh_buf);
+                                                       mesh_s->xx_draw, mesh_s->ie_sf_viewer,
+                                                       mesh_s->node_quad_2_linear_tri, 
+                                                       normal_ele[jnum], normal_nod[jnum], 
+                                                       f_color, inum_tri, mesh_buf);
 				};
 			};
 		};
@@ -171,10 +172,12 @@ int count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_
 	return num_patch;
 }
 
-int set_solid_mesh_patches_to_buf(int shading_mode, struct viewer_mesh *mesh_s, 
-			struct mesh_menu_val *mesh_m, struct gl_strided_buffer *mesh_buf){
+long set_solid_mesh_patches_to_buf(int shading_mode, 
+                                   struct viewer_mesh *mesh_s, 
+                                   struct mesh_menu_val *mesh_m, 
+                                   struct gl_strided_buffer *mesh_buf){
 	int i, ip_st;
-	int ist_tri = 0;
+	long ist_tri = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
 		ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
 				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
@@ -223,10 +226,12 @@ int set_solid_mesh_patches_to_buf(int shading_mode, struct viewer_mesh *mesh_s,
 }
 
 
-int set_transparent_mesh_patches_to_buf(int shading_mode, struct viewer_mesh *mesh_s, 
-			struct mesh_menu_val *mesh_m, struct gl_strided_buffer *mesh_buf){
+long set_transparent_mesh_patches_to_buf(int shading_mode,
+                                         struct viewer_mesh *mesh_s, 
+                                         struct mesh_menu_val *mesh_m,
+                                         struct gl_strided_buffer *mesh_buf){
 	int i, ip_st;
-	int ist_tri = 0;
+	long ist_tri = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity < 1.0){
 		ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
 				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,

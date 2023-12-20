@@ -238,12 +238,13 @@ int set_isoline_on_triangle(double xyz_line[6], double dir_line[6], double nrm_l
 
 int add_line_tube_patch_num(int ipatch_in){return ipatch_in + 12;};
 
-int append_line_tube_to_buf(int ipatch_in, int hex_tube[12][3], double radius, 
+long append_line_tube_to_buf(const long ipatch_in, 
+                             int hex_tube[12][3], double radius, 
 							 double color_edge[8], double xyz_edge[6], 
 							 double dir_edge[6], double nrm_edge[6], 
 							 struct gl_strided_buffer *strided_buf){
-	int ipatch = ipatch_in;
-	int i, k, nd;
+	long ipatch = ipatch_in;
+	long i, k, nd;
 	double xx_tube[18];
 	double norm_tube[18];
 	double color_tube[24];

@@ -163,9 +163,9 @@ int get_each_PSF_field_param(int selected, struct kemoview_psf *kemo_psf){
 	int i_current = kemo_psf->psf_a->id_current;
 	
 	if(selected == NUM_FIELD_FLAG){
-		output = send_nfield_each_psf(kemo_psf->psf_d[i_current]);
+		output = (int) send_nfield_each_psf(kemo_psf->psf_d[i_current]);
 	} else if(selected == NTOT_COMPONENT_FLAG){
-		output = send_ncomptot_each_psf(kemo_psf->psf_d[i_current]);
+		output = (int) send_ncomptot_each_psf(kemo_psf->psf_d[i_current]);
 	} else if(selected == FIELD_SEL_FLAG){
 		output =  send_field_draw_each_psf(kemo_psf->psf_m[i_current]);
 	} else if(selected == COMPONENT_SEL_FLAG){
@@ -173,7 +173,8 @@ int get_each_PSF_field_param(int selected, struct kemoview_psf *kemo_psf){
 	} else if(selected == DRAW_ADDRESS_FLAG){
 		output =  send_draw_component_psf(kemo_psf->psf_m[i_current]);
 	} else if(selected == COORDINATE_FLAG){
-		output =  send_coordinate_id_psf(kemo_psf->psf_d[i_current], kemo_psf->psf_m[i_current]);
+		output =  send_coordinate_id_psf(kemo_psf->psf_d[i_current], 
+                                         kemo_psf->psf_m[i_current]);
 	};
 	return output;
 };

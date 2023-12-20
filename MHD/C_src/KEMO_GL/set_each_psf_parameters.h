@@ -28,10 +28,10 @@ int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu
 			, struct kv_string *stripped_dir, struct kv_string *stripped_filehead);
 
 
-int send_nfield_each_psf(struct psf_data *psf_d);
-int send_ncomptot_each_psf(struct psf_data *psf_d);
-int send_ncomp_each_psf(struct psf_data *psf_d, int i);
-int send_istack_each_comp_psf(struct psf_data *psf_d, int i);
+long send_nfield_each_psf(struct psf_data *psf_d);
+long send_ncomptot_each_psf(struct psf_data *psf_d);
+long send_ncomp_each_psf(struct psf_data *psf_d, int i);
+long send_istack_each_comp_psf(struct psf_data *psf_d, int i);
 void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname, int i);
 
 

@@ -537,7 +537,7 @@ int kemoview_get_each_PSF_field_param(struct kemoviewer_type *kemoviewer,
 	return get_each_PSF_field_param(selected, kemoviewer->kemo_psf);
 };
 
-int kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i){
+long kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i){
     int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
 	return send_ncomp_each_psf(kemoviewer->kemo_psf->psf_d[i_psf], i);
 };

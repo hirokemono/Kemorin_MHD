@@ -32,8 +32,8 @@ void set_map_PSF_isolines_buffer(struct psf_data **psf_s, struct psf_menu_val **
                                  struct gl_strided_buffer *mline_buf){
 	double ref_width = 1.5;
 	int i, iflag;
-	int inum_patch;
 	int num_patch = 0;
+    long inum_patch;
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){

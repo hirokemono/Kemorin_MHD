@@ -26,10 +26,10 @@ static int count_map_isoline(int num_patch, int ist, int ied,
 	return num_patch;
 }
 
-static int set_map_isolines_to_buf(int ist_patch, int ist, int ied, 
-			struct psf_data *psf_s, struct psf_menu_val *psf_m, 
-			struct gl_strided_buffer *psf_buf){
-	int inum_patch = ist_patch;
+static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied, 
+                                    struct psf_data *psf_s, struct psf_menu_val *psf_m, 
+                                    struct gl_strided_buffer *psf_buf){
+	long inum_patch = ist_patch;
 	int j, nd;
 	double v_line;
 	double f_color[4];
@@ -82,9 +82,9 @@ int count_map_PSF_isoline(int ist_patch, struct psf_data *psf_s, struct psf_menu
 }
 
 
-int set_map_PSF_isoline_to_buf(int ist_patch,
-							   struct psf_data *psf_s, struct psf_menu_val *psf_m,
-							   struct gl_strided_buffer *psf_buf){
+long set_map_PSF_isoline_to_buf(const long ist_patch,
+                                struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                                struct gl_strided_buffer *psf_buf){
 	double dub_r;
 	int inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){

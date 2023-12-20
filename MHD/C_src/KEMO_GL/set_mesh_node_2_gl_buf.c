@@ -15,16 +15,17 @@ const int count_mesh_node_ico_to_buf(int *istack_grp, struct viewer_mesh *mesh_s
 	return num_patch;
 }
 
-const int set_mesh_node_ico_to_buf(int ist_tri, int num_grp, int igrp,
-                                   int *istack_grp, int *item_grp,
-                                   struct viewer_mesh *mesh_s, double node_diam,
-                                   int node_color, int color_mode,
-                                   int color_loop, float single_color[4],
-                                   int *iflag_domain, struct gl_strided_buffer *mesh_buf){
+static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
+                                     int *istack_grp, int *item_grp,
+                                     struct viewer_mesh *mesh_s, double node_diam,
+                                     int node_color, int color_mode,
+                                     int color_loop, float single_color[4],
+                                     int *iflag_domain, struct gl_strided_buffer *mesh_buf){
 	double f_color[4];
 	double xyz_patch[180], norm_patch[180];
-	int inum_tri, num_ico;
-	int i, nd, ip, inod, inum, ist, ied, ico;
+    int i, ip, inod, inum, ist, ied;
+    long ico, nd;
+    long inum_tri, num_ico;
 	
 	set_node_color_mode_c(node_color, color_mode, color_loop,
                           igrp, num_grp, single_color);
@@ -101,10 +102,10 @@ int count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 }
 
 
-int set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-			struct gl_strided_buffer *mesh_buf){
+long set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
+                          struct gl_strided_buffer *mesh_buf){
 	int i, ip_st;
-	int ist_tri = 0;
+	long ist_tri = 0;
 	
 	ist_tri = set_mesh_node_ico_to_buf(ist_tri, mesh_s->num_pe_sf, IZERO,
                                        mesh_s->nod_stack_domain_sf,

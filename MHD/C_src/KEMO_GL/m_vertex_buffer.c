@@ -17,7 +17,7 @@ static long prod_padding_1024floats(int num_nod_buf, int ncomp_buf){
     return prod_padding_4096chars(nsize);
 };
 
-struct gl_strided_buffer * init_strided_buffer(int num_points){
+struct gl_strided_buffer * init_strided_buffer(long num_points){
     struct gl_strided_buffer *strided_buf;
     if((strided_buf = (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer))) == NULL){
         printf("malloc error for gl_strided_buffer\n");
@@ -88,16 +88,16 @@ void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf){
 };
 
 
-void set_zero_stride_buffer(int inum, struct gl_strided_buffer *strided_buf){
+void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf){
     strided_buf->x_draw = &strided_buf->v_buf[3*inum + strided_buf->ist_xyz*strided_buf->num_nod_buf];
-    strided_buf->d_draw = &strided_buf->v_buf[inum +   strided_buf->ist_data*strided_buf->num_nod_buf];
+    strided_buf->d_draw = &strided_buf->v_buf[  inum + strided_buf->ist_data*strided_buf->num_nod_buf];
     strided_buf->c_draw = &strided_buf->v_buf[4*inum + strided_buf->ist_csurf*strided_buf->num_nod_buf];
     strided_buf->n_draw = &strided_buf->v_buf[3*inum + strided_buf->ist_norm*strided_buf->num_nod_buf];
     strided_buf->x_txur = &strided_buf->v_buf[2*inum + strided_buf->ist_tex*strided_buf->num_nod_buf];
     return;
 };
 
-void set_node_stride_buffer(int inum, struct gl_strided_buffer *strided_buf){
+void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf){
     strided_buf->x_draw = &strided_buf->v_buf[strided_buf->ncomp_buf*inum + strided_buf->ist_xyz];
     strided_buf->d_draw = &strided_buf->v_buf[strided_buf->ncomp_buf*inum + strided_buf->ist_data];
     strided_buf->c_draw = &strided_buf->v_buf[strided_buf->ncomp_buf*inum + strided_buf->ist_csurf];
@@ -106,7 +106,7 @@ void set_node_stride_buffer(int inum, struct gl_strided_buffer *strided_buf){
     return;
 };
 
-void select_strided_buffer(int inum, struct gl_strided_buffer *strided_buf){
+void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf){
     if(strided_buf->istride == 0){
         set_zero_stride_buffer(inum, strided_buf);
     } else {

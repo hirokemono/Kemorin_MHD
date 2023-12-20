@@ -71,12 +71,12 @@ void init_icosahedron_c(void){
 };
 
 
-int set_icosahedron_patch(double size, double x_draw[3], 
-						  double *xyz_draw, double *norm_draw){
-	int icou;
+long set_icosahedron_patch(double size, double x_draw[3], 
+                           double *xyz_draw, double *norm_draw){
     float xyz_plot[12][3];
-	int i, j, nd;
+	int i, j;
 	int ie1, ie2, ie3;
+    long icou, nd;
 	
 	for (i = 0; i < 12; i++) {
 		xyz_plot[i][0]=  x_draw[0] + (float) xyz_ico[i][0] * size;
@@ -285,12 +285,12 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 }
 
 
-int set_tube_strided_buffer(int ist_patch, int ncorner, double radius, 
-			double x_line[6], double dir_line[6], double norm_line[6],
-			double color_line[8], struct gl_strided_buffer *strided_buf) {
+long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius, 
+                             double x_line[6], double dir_line[6], double norm_line[6],
+                             double color_line[8], struct gl_strided_buffer *strided_buf){
 	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
-	int npatch_wall = 0;
-	int k, nd;
+	long npatch_wall = 0;
+	long k, nd;
 	
 	npatch_wall = set_tube_vertex(ncorner, radius, x_line, dir_line, norm_line, color_line,
 								   xyz, nor, col);

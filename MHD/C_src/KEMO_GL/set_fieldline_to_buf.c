@@ -3,19 +3,20 @@
 
 #include "set_fieldline_to_buf.h"
 
-int count_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s){
-	int num_patch = 2 * fline_s->nele_viz * ncorner; 
+long count_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s){
+    long num_patch = 2 * fline_s->nele_viz * ncorner; 
 	return num_patch;
 };
-int count_fieldlines_to_buf(struct psf_data *fline_s){
+long count_fieldlines_to_buf(struct psf_data *fline_s){
 	return fline_s->nele_viz;
 }
 
-int set_fieldtubes_to_buf(int ncorner,
-			struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct gl_strided_buffer *strided_buf) {
-	int num_wall, inum_patch;
-	int iele, k, nd;
+long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s, 
+                           struct fline_menu_val *fline_m,
+                           struct gl_strided_buffer *strided_buf) {
+    long inum_patch, k;
+	int num_wall;
+	int iele, nd;
     long inod;
 	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
 	double x_line[6], dir_line[6], color_line[8];
@@ -50,10 +51,9 @@ int set_fieldtubes_to_buf(int ncorner,
 };
 
 
-int set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-			struct gl_strided_buffer *strided_buf) {
-	int iele, k, nd;
-    long inod;
+long set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *fline_m,
+                           struct gl_strided_buffer *strided_buf) {
+	long iele, k, nd, inod;
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
 	

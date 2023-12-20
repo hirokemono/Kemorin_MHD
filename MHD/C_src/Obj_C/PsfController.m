@@ -132,7 +132,7 @@
 
 - (void) CopyPsfDisplayFlagsFromC:(struct kemoviewer_type *) kemo_sgl
 {
-	int i, iflag;
+	int i;
 	double minmax;
 	NSString *stname;
 	NSNumber *stnum;
@@ -154,8 +154,8 @@
 		[PsfFieldName      addObject:stname];
 		[stname release];	
         
-		iflag = kemoview_get_PSF_num_component(kemo_sgl, i);
-		stnum = [[NSNumber alloc] initWithInt:iflag];
+		long iflag = kemoview_get_PSF_num_component(kemo_sgl, i);
+		stnum = [[NSNumber alloc] initWithLong:iflag];
 		[PsfNumberOfComponent addObject:stnum];
 		[stnum release];	
 	}

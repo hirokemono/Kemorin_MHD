@@ -33,7 +33,8 @@ int count_sph_flame(void){
 }
 
 void set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
-	int i, j, nd, inum;
+    long inum;
+	int i, j, nd;
 	double f_color[4];
 	double t_mid, p_mid;
 	
@@ -90,8 +91,9 @@ void set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
 	return;
 }
 
-int set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
-	int i, j, nd, inum;
+long set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
+    long inum;
+	int i, j, nd;
 	double rtp_flame[6], d_map_flame[4], f_color[4];
 	
 	set_black_color_c(f_color);

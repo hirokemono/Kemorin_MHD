@@ -72,7 +72,7 @@ static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
     
             cbar_buf->num_nod_buf = count_colorbar_box_buffer(cbar_wk->iflag_zero, cbar_wk->num_quad);
             
-            int inum_quad = 0;
+            long inum_quad = 0;
             inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
                                                   cbar_wk, cbar_buf);
             inum_quad = fade_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],

@@ -135,7 +135,8 @@ int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
 	return icou;
 };
 
-int flatEdgeCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_buf){
+long flatEdgeCube_VBO(long icou, float fSize,
+                      struct gl_strided_buffer *strided_buf){
 	int i, j, k;
 	
 	for(j=0;j<12;j++){
@@ -165,7 +166,8 @@ int flatEdgeCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
 	return icou;
 };
 
-int flatNodeCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_buf){
+long flatNodeCube_VBO(long icou, float fSize, 
+                      struct gl_strided_buffer *strided_buf){
 	int i, j;
 	float radius;
 	

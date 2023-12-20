@@ -405,7 +405,7 @@ extern "C" {
 	int kemoview_get_each_PSF_field_param(struct kemoviewer_type *kemoviewer,
                                           int selected);
 	
-    int kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i);
+    long kemoview_get_PSF_num_component(struct kemoviewer_type *kemoviewer, int i);
 	void kemoview_get_PSF_field_name(struct kemoviewer_type *kemoviewer,
                                      struct kv_string *colorname, int i);
     

@@ -39,7 +39,7 @@ struct gl_strided_buffer{
 /* prototypes */
 long prod_padding_4096chars(long num_bytes);
 
-struct gl_strided_buffer * init_strided_buffer(int num_points);
+struct gl_strided_buffer * init_strided_buffer(long num_points);
 void alloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 void resize_strided_buffer(struct gl_strided_buffer *strided_buf);
 void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf);
@@ -47,8 +47,8 @@ void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 void set_buffer_address_4_patch(int num_points, struct gl_strided_buffer *strided_buf);
 void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf);
 
-void set_zero_stride_buffer(int inum, struct gl_strided_buffer *strided_buf);
-void set_node_stride_buffer(int inum, struct gl_strided_buffer *strided_buf);
-void select_strided_buffer(int inum, struct gl_strided_buffer *strided_buf);
+void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);
+void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);
+void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf);
 
 #endif /* m_vertex_buffer_h_ */

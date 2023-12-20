@@ -60,10 +60,9 @@ static int add_num_PSF_isolines(int ist_patch, int ist, int ied,
 	return num_patch;
 }
 
-static int set_PSF_isolines_to_buf(int ist_patch, int ist, int ied, 
-			struct psf_data *psf_s, struct psf_menu_val *psf_m, 
-			struct gl_strided_buffer *psf_buf){
-	int inum_patch;
+static long set_PSF_isolines_to_buf(const long ist_patch, int ist, int ied, 
+                                    struct psf_data *psf_s, struct psf_menu_val *psf_m, 
+                                    struct gl_strided_buffer *psf_buf){
 	int j, nd;
 	double v_line;
 	double f_color[4];
@@ -74,7 +73,7 @@ static int set_PSF_isolines_to_buf(int ist_patch, int ist, int ied,
 		for(nd=0;nd<4;nd++) {f_color[nd] = white[nd];}
 	};
 	
-	inum_patch = ist_patch;
+	long inum_patch = ist_patch;
 	for (j = ist; j < ied; j++){
 		v_line = cal_isoline_value(j, psf_m->n_isoline, 
 								   psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
@@ -113,10 +112,11 @@ int count_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *p
 	return num_patch;
 }
 
-int set_PSF_all_isolines_to_buf(int ist_patch, struct psf_data *psf_s, struct psf_menu_val *psf_m,
-								struct gl_strided_buffer *psf_buf){
+long set_PSF_all_isolines_to_buf(const long ist_patch, struct psf_data *psf_s,
+                                struct psf_menu_val *psf_m,
+                                 struct gl_strided_buffer *psf_buf){
 	double dub_r;
-	int inum_patch = ist_patch;
+	long inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
 		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline,
 								psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
