@@ -123,7 +123,7 @@ typedef struct
                    projection:(matrix_float4x4 * _Nonnull) projection_mat;
 
 - (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                     numVertex:(int) numVertex
+                     numVertex:(NSUInteger) numVertex
                         vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  anaglyphVertex
                           left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
                          right:(id<MTLTexture> _Nonnull *_Nonnull) righTtexure

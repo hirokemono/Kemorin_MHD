@@ -127,9 +127,8 @@ void menubottun_bitmap(unsigned char *menu_bitmap){
 	return;
 }
 
-static int count_menu_to_buf(){
-	int num_dot = MENU_HEIGHT * MENU_WIDTH;
-	return num_dot;
+static long count_menu_to_buf(){
+	return (MENU_HEIGHT * MENU_WIDTH);
 };
 
 static long set_menu_to_buf(unsigned char *menubottun_bits,
@@ -155,7 +154,7 @@ static long set_menu_to_buf(unsigned char *menubottun_bits,
 
 void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf){
     unsigned char menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
-	int num_dot = count_menu_to_buf();
+	long num_dot = count_menu_to_buf();
 	
 	set_buffer_address_4_patch(num_dot, strided_buf);
 	resize_strided_buffer(strided_buf);

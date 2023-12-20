@@ -18,7 +18,7 @@ struct gl_strided_buffer{
     int istride;
     
     int ncomp_buf;
-    int num_nod_buf;
+    long num_nod_buf;
     
     int ist_xyz;
     int ist_rtp;
@@ -44,7 +44,7 @@ void alloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 void resize_strided_buffer(struct gl_strided_buffer *strided_buf);
 void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 
-void set_buffer_address_4_patch(int num_points, struct gl_strided_buffer *strided_buf);
+void set_buffer_address_4_patch(long num_points, struct gl_strided_buffer *strided_buf);
 void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf);
 
 void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);

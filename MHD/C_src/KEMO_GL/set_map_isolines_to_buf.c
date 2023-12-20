@@ -12,8 +12,9 @@
 static double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
-static int count_map_isoline(int num_patch, int ist, int ied, 
-			struct psf_data *psf_s, struct psf_menu_val *psf_m){
+static long count_map_isoline(long num_patch, int ist, int ied,
+                              struct psf_data *psf_s,
+                              struct psf_menu_val *psf_m){
 	int j;
 	double v_line;
 	
@@ -58,8 +59,9 @@ static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied,
 
 
 
-int count_map_PSF_isoline(int ist_patch, struct psf_data *psf_s, struct psf_menu_val *psf_m){
-	int num_patch = ist_patch;
+long count_map_PSF_isoline(const long ist_patch, struct psf_data *psf_s,
+                           struct psf_menu_val *psf_m){
+	long num_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
 		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline,
 								psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);

@@ -343,7 +343,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 }
 
 -(void) encodeAnaglyphRender:(nonnull MTKView *) view
-                   numVertex:(int) numVertex
+                   numVertex:(NSUInteger) numVertex
                       vertex:(id<MTLBuffer> *) anaglyphVertice
                         left:(id<MTLTexture> *) leftTexure
                        right:(id<MTLTexture> *) rightTexure
@@ -393,7 +393,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 }
 
 - (id<MTLTexture>) encodeAnaglyphToTexure:(nonnull MTKView *)view
-                                numVertex:(int) numVertex
+                                numVertex:(NSUInteger) numVertex
                                    vertex:(id<MTLBuffer> *) anaglyphVertice
                                      left:(id<MTLTexture> *) leftTexure
                                     right:(id<MTLTexture> *) rightTexure
@@ -450,7 +450,7 @@ static const NSUInteger MaxFramesInFlight = 3;
                       kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSUInteger pix_xy[2];
-    int numScreenBuf = kemo_sgl->kemo_buffers->screen_buf->num_nod_buf;
+    NSUInteger numScreenBuf = kemo_sgl->kemo_buffers->screen_buf->num_nod_buf;
     if(numScreenBuf > 0){
         pix_xy[0] = view.drawableSize.width;
         pix_xy[1] = view.drawableSize.height;
@@ -503,7 +503,7 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     NSUInteger pix_xy[2];
     id<MTLTexture> _imageOutputTexture;
-    int numScreenBuf = kemo_sgl->kemo_buffers->screen_buf->num_nod_buf;
+    NSUInteger numScreenBuf = kemo_sgl->kemo_buffers->screen_buf->num_nod_buf;
     if(numScreenBuf > 0){
         pix_xy[0] = view.drawableSize.width;
         pix_xy[1] = view.drawableSize.height;

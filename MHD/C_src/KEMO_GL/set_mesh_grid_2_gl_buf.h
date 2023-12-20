@@ -13,9 +13,7 @@
 
 /* prototypes */
 
-int count_mesh_edge_buf(int *iflag_domain, int *istack_grp, struct viewer_mesh *mesh_s);
-
-int count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
+long count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 long set_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                           struct gl_strided_buffer *mesh_buf);
 

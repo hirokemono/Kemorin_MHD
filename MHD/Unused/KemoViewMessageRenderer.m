@@ -183,6 +183,7 @@
                            vertexStart:0
                            vertexCount:buf->num_nod_buf];
     };
+    return;
 }
 
 - (void) setMapObjects:(id<MTLRenderCommandEncoder>  *) renderEncoder

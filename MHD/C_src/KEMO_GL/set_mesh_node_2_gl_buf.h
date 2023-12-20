@@ -12,7 +12,7 @@
 #include "rainbow_color_code_c.h"
 
 /* prototypes */
-int count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
+long count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 long set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                           struct gl_strided_buffer *mesh_buf);
 

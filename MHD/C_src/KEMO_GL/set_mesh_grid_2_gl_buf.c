@@ -26,9 +26,9 @@ static long set_each_mesh_grid(int iedge, struct viewer_mesh *mesh_s, double f_c
 	return inum_buf;
 }
 
-int count_mesh_edge_buf(int *iflag_domain, int *istack_grp, struct viewer_mesh *mesh_s){
+long count_mesh_edge_buf(int *iflag_domain, int *istack_grp, struct viewer_mesh *mesh_s){
 	int ip;
-	int num_edge = 0;
+	long num_edge = 0;
 	for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
 		if(iflag_domain[ip] != 0){
 			num_edge = num_edge + (mesh_s->nnod_4_edge-1)*(istack_grp[ip+1] -istack_grp[ip]);
@@ -65,12 +65,13 @@ long add_mesh_edge_to_buf(const long ist_edge, int line_color, int color_mode,
 }
 
 
-int count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
+long count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
 	int i, ip_st;
-	int num_edge = 0;
+	long num_edge = 0;
 	if(mesh_m->draw_surface_grid != 0){
 		num_edge = count_mesh_edge_buf(mesh_m->draw_domains_grid, 
-					mesh_s->edge_stack_domain_sf, mesh_s);
+                                       mesh_s->edge_stack_domain_sf,
+                                       mesh_s);
 	};
 	
 	/* ! draw element group */
@@ -80,7 +81,8 @@ int count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 		
 		if( mesh_m->draw_elegrp_grid[i] ){
 			num_edge = num_edge + count_mesh_edge_buf(mesh_m->always_draw_domains, 
-						&mesh_s->ele_edge_stack_sf[ip_st], mesh_s);
+                                                      &mesh_s->ele_edge_stack_sf[ip_st],
+                                                      mesh_s);
 		};
 	};
 	
@@ -91,7 +93,8 @@ int count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mes
 		
 		if( mesh_m->draw_surfgrp_grid[i] ){
 			num_edge = num_edge + count_mesh_edge_buf(mesh_m->always_draw_domains, 
-						&mesh_s->surf_edge_stack_sf[ip_st], mesh_s);
+                                                      &mesh_s->surf_edge_stack_sf[ip_st],
+                                                      mesh_s);
 		};
 	};
 	return num_edge;

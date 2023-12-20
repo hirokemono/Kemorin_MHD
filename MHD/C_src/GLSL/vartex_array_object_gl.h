@@ -23,7 +23,7 @@ struct VAO_ids{
 
     unsigned int id_index;
 	
-    unsigned int npoint_draw;
+    unsigned long npoint_draw;
 };
 
 /* Prototypes */

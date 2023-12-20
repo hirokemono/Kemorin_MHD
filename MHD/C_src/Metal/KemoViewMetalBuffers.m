@@ -9,9 +9,9 @@
 
 @implementation KemoViewMetalBuffers:NSObject
 
-- (int) setMetalVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
-                 buffer:(struct gl_strided_buffer * _Nonnull) buf
-                 vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+- (NSUInteger) setMetalVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
+                        buffer:(struct gl_strided_buffer * _Nonnull) buf
+                        vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
 {
     if(buf->num_nod_buf > 0){
         *vertices = [*device newBufferWithBytesNoCopy:buf->v_buf
@@ -22,11 +22,11 @@
     return buf->num_nod_buf;
 };
 
-- (int) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
-               buffer:(struct gl_strided_buffer *_Nonnull) buf
-                image:(struct kemo_PSF_texure *_Nonnull) psf_texure
-               vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
-               texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
+- (NSUInteger) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+                      buffer:(struct gl_strided_buffer *_Nonnull) buf
+                       image:(struct kemo_PSF_texure *_Nonnull) psf_texure
+                      vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                      texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {
     if(buf->num_nod_buf > 0){
         *vertices = [*device newBufferWithBytesNoCopy:buf->v_buf
@@ -58,11 +58,11 @@
     return buf->num_nod_buf;
 }
 
-- (int) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
-                   buffer:(struct gl_strided_buffer *_Nonnull) buf
-                    image:(struct line_text_image *_Nonnull) img
-                   vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
-                   texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
+- (NSUInteger) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
+                          buffer:(struct gl_strided_buffer *_Nonnull) buf
+                           image:(struct line_text_image *_Nonnull) img
+                          vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
+                          texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {
     if(buf->num_nod_buf > 0){
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
@@ -93,11 +93,11 @@
     return buf->num_nod_buf;
 }
 
-- (int) setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
-                buffer:(struct gl_strided_buffer *_Nonnull) buf
-              indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
-                vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
-                 index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
+- (NSUInteger) setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device
+                       buffer:(struct gl_strided_buffer *_Nonnull) buf
+                     indexbuf:(struct gl_index_buffer *_Nonnull) index_buf
+                       vertex:(id<MTLBuffer> _Nonnull *_Nonnull) vertices
+                        index:(id<MTLBuffer> _Nonnull *_Nonnull) indices
 {
     if(buf->num_nod_buf > 0){
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)

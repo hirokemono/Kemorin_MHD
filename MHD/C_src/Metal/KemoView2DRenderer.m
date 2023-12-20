@@ -477,7 +477,7 @@
 }
 
 - (void) encodeAnaglyphObjects:(id<MTLRenderCommandEncoder> _Nonnull * _Nonnull) renderEncoder
-                     numVertex:(int) numVertex
+                     numVertex:(NSUInteger) numVertex
                         vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  anaglyphVertex
                           left:(id<MTLTexture> _Nonnull *_Nonnull) leftTexure
                          right:(id<MTLTexture> _Nonnull *_Nonnull) rightTexure

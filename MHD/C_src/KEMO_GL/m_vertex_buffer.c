@@ -60,7 +60,7 @@ void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf){
     return;
 };
 
-void set_buffer_address_4_patch(int num_points, struct gl_strided_buffer *strided_buf){
+void set_buffer_address_4_patch(long num_points, struct gl_strided_buffer *strided_buf){
     strided_buf->ist_xyz =    0;
     strided_buf->ist_csurf =  4;
     strided_buf->ist_norm =   8;

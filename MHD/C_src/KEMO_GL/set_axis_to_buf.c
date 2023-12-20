@@ -290,8 +290,8 @@ static long set_axis_rod_to_buf(int ncorner, float radius,
 }
 
 
-int count_axis_to_buf(int ncorner){
-	int npatch_wall = 0;
+long count_axis_to_buf(int ncorner){
+	long npatch_wall = 0;
     /*draw x axis */
 	npatch_wall = npatch_wall + 2*ncorner;
     /*draw y axis */
@@ -319,7 +319,7 @@ void set_axis_to_buf(struct view_element *view_s, int iflag_draw_axis,
 	long icou_patch = 0;
     
     if(iflag_draw_axis > 0){
-        int n_vertex = ITHREE * count_axis_to_buf(ncorner);
+        long n_vertex = ITHREE * count_axis_to_buf(ncorner);
         set_buffer_address_4_patch(n_vertex, strided_buf);
         resize_strided_buffer(strided_buf);
         set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz,

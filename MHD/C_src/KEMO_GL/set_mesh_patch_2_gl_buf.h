@@ -12,12 +12,8 @@
 
 /* prototypes */
 
-int count_mesh_patch_buf(int *istack_grp, int *ip_domain_far,
-			struct viewer_mesh *mesh_s, int *iflag_domain);
-
-
-int count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
-int count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
+long count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
+long count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 
 long set_solid_mesh_patches_to_buf(int shading_mode, 
                                    struct viewer_mesh *mesh_s, 

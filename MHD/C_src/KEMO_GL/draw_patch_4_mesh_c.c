@@ -8,7 +8,7 @@ static void const_solid_mesh_patch_bufffer(int shading_mode,
                                            struct viewer_mesh *mesh_s,
                                            struct mesh_menu_val *mesh_m,
                                            struct gl_strided_buffer *mesh_buf){
-	int num_patch = count_solid_mesh_patches(mesh_s, mesh_m);
+	long num_patch = count_solid_mesh_patches(mesh_s, mesh_m);
     set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
 	if(mesh_buf->num_nod_buf <= 0) return;
 	
@@ -20,8 +20,6 @@ static void const_solid_mesh_patch_bufffer(int shading_mode,
 
 void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                              struct view_element *view_s, struct gl_strided_buffer *mesh_trns_buf){
-    int num_patch;
-
     mesh_trns_buf->num_nod_buf = 0;
     if(mesh_m->iflag_draw_mesh == 0) return;
 
@@ -33,7 +31,7 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
         copy_patch_distance_mesh(mesh_s);
     }
     
-    num_patch = count_transparent_mesh_patches(mesh_s, mesh_m);
+    long num_patch = count_transparent_mesh_patches(mesh_s, mesh_m);
     set_buffer_address_4_patch(ITHREE*num_patch, mesh_trns_buf);
 
     if(mesh_trns_buf->num_nod_buf > 0){
@@ -46,7 +44,7 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
 
 static void const_mesh_grids_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                                     struct gl_strided_buffer *mesh_buf){
-	int num_edge = count_mesh_grid_to_buf(mesh_s, mesh_m);
+	long num_edge = count_mesh_grid_to_buf(mesh_s, mesh_m);
     set_buffer_address_4_patch(ITWO*num_edge, mesh_buf);
 	if(mesh_buf->num_nod_buf <= 0) return;
 	
@@ -58,7 +56,7 @@ static void const_mesh_grids_buffer(struct viewer_mesh *mesh_s, struct mesh_menu
 
 static void const_mesh_nodes_ico_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
                                         struct gl_strided_buffer *mesh_buf){
-	int num_patch = count_mesh_node_to_buf(mesh_s, mesh_m);
+	long num_patch = count_mesh_node_to_buf(mesh_s, mesh_m);
     set_buffer_address_4_patch((ITHREE*num_patch), mesh_buf);
 	if(mesh_buf->num_nod_buf <= 0) return;
 	

@@ -9,7 +9,7 @@ void const_PSF_patch_buffer(int shading_mode, long ist_psf, long ied_psf,
                             struct psf_data **psf_s, struct psf_menu_val **psf_m,
                             struct kemo_array_control *psf_a,
                             struct gl_strided_buffer *psf_buf){
-	int num_vetex = ITHREE * (int) count_psf_nodes_to_buf(ist_psf, ied_psf);
+	long num_vetex = ITHREE * count_psf_nodes_to_buf(ist_psf, ied_psf);
     set_buffer_address_4_patch(num_vetex, psf_buf);
 	if(psf_buf->num_nod_buf <= 0) return;
 	
@@ -34,7 +34,7 @@ void const_PSF_arrow_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m
     int ncorner = 20;
     int i;
     
-    int num_patch = 0;
+    long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
             num_patch = num_patch + count_psf_arrows_to_buf(ncorner, psf_s[i], psf_m[i]);
@@ -62,14 +62,14 @@ static void const_PSF_isoline_buffer(struct view_element *view_s, struct psf_dat
 	double ref_width = 1.5;
 	int i, iflag;
 	
-	int num_patch = 0;
+	long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
         if(iflag != 0){
 			num_patch = num_patch + count_PSF_all_isolines_to_buf(psf_s[i], psf_m[i]);
 		};
 	};
-    set_buffer_address_4_patch(ITHREE*num_patch, psf_buf);
+    set_buffer_address_4_patch((ITHREE*num_patch), psf_buf);
 
     if(psf_buf->num_nod_buf <= 0) return;
 	resize_strided_buffer(psf_buf);

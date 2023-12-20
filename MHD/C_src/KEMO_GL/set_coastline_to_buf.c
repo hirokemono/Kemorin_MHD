@@ -27,12 +27,12 @@ void init_mapgrid_position(void){
 	return;
 }
 
-int count_sph_flame(void){
-	int num_edge = (NUM_P+1) * N_CURVE + (NUM_T-1) * N_CURVE;
+long count_sph_flame(void){
+	long num_edge = (NUM_P+1) * N_CURVE + (NUM_T-1) * N_CURVE;
 	return num_edge;
 }
 
-void set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
+long set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
     long inum;
 	int i, j, nd;
 	double f_color[4];
@@ -88,7 +88,7 @@ void set_sph_flame_to_buf(double radius, struct gl_strided_buffer *strided_buf){
 			inum = inum + 1;
 		}
 	}
-	return;
+	return inum;
 }
 
 long set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
@@ -153,13 +153,13 @@ long set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
 
 
 
-int count_coastline_buf(void){
-	return get_nedge_coastline();
+long count_coastline_buf(void){
+	return (long) get_nedge_coastline();
 };
 
-void set_coastline_buf(double radius, struct gl_strided_buffer *strided_buf){
+long set_coastline_buf(double radius, struct gl_strided_buffer *strided_buf){
 	int iedge, k, nd;
-	int nedge_coast;
+	long nedge_coast;
 	double tp_coast[4], lake[2], f_color[4];
 	
 	set_black_color_c(f_color);
@@ -179,12 +179,12 @@ void set_coastline_buf(double radius, struct gl_strided_buffer *strided_buf){
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
 		};
 	};
-	return;
+	return nedge_coast;
 }
 
-int set_map_coastline_buf(struct gl_strided_buffer *strided_buf){
+long set_map_coastline_buf(struct gl_strided_buffer *strided_buf){
 	int iedge, k, nd;
-	int nedge_coast;
+	long nedge_coast;
 	double tp_coast[4], lake[2], f_color[4];
 	double rtp_flame[6], xy_coast[4];
 	double pi;

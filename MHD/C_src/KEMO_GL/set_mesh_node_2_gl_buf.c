@@ -3,9 +3,10 @@
 
 #include "set_mesh_node_2_gl_buf.h"
 
-const int count_mesh_node_ico_to_buf(int *istack_grp, struct viewer_mesh *mesh_s, int *iflag_domain){
+const long count_mesh_node_ico_to_buf(int *istack_grp, struct viewer_mesh *mesh_s,
+                                      int *iflag_domain){
 	int ip;
-	int num_patch = 0;
+	long num_patch = 0;
 	for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
 		if(iflag_domain[ip] != 0){
 			num_patch = num_patch + 20 * (istack_grp[ip+1] - istack_grp[ip]);
@@ -61,12 +62,10 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
 }
 
 
-int count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
+long count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
 	int i, ip_st;
-	int num_patch = 0;
-	
-	num_patch = num_patch + count_mesh_node_ico_to_buf(mesh_s->nod_stack_domain_sf,
-				mesh_s, mesh_m->draw_domains_nod);
+	long num_patch = count_mesh_node_ico_to_buf(mesh_s->nod_stack_domain_sf,
+                                                mesh_s, mesh_m->draw_domains_nod);
 	
 	/* ! draw node group */
 	

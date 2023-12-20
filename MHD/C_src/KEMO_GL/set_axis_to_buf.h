@@ -16,7 +16,6 @@
 
 
 /* prototypes */
-int count_axis_to_buf(int ncorner);
 void set_axis_to_buf(struct view_element *view_s, int iflag_draw_axis,
                      double dist, int ncorner, double radius,
                      struct gl_strided_buffer *strided_buf);

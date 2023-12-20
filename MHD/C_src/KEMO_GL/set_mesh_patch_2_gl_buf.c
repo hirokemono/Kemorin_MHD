@@ -35,11 +35,11 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
 };
 
 
-int count_mesh_patch_buf(int *istack_grp, int *ip_domain_far,
-			struct viewer_mesh *mesh_s, int *iflag_domain){
+long count_mesh_patch_buf(int *istack_grp, int *ip_domain_far,
+                          struct viewer_mesh *mesh_s, int *iflag_domain){
 	int i, ip, icou, ist, ied;
 	
-	int num_patch = 0;
+	long num_patch = 0;
 	for(i = 0; i < mesh_s->num_pe_sf; i++){
 		ip = ip_domain_far[i] - 1;
 		if(iflag_domain[ip] != 0){
@@ -98,10 +98,10 @@ static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int poly
 	return inum_tri;
 }
 
-int count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
+long count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
 	int i, ip_st;
 	
-	int num_patch = 0;
+	long num_patch = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
 		num_patch = num_patch
 				+ count_mesh_patch_buf(mesh_s->isurf_stack_domain_sf, mesh_s->ip_domain_far, 
@@ -135,10 +135,10 @@ int count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
 }
 
 
-int count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
+long count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m){
 	int i, ip_st;
 	
-	int num_patch = 0;
+	long num_patch = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity < 1.0){
 		num_patch = num_patch
 				+ count_mesh_patch_buf(mesh_s->isurf_stack_domain_sf, mesh_s->ip_domain_far, 
