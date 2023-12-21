@@ -109,7 +109,7 @@ struct BMP_data * read_gzipped_BMP_c(const char *fhead){
     void * FP_gzip1 = open_rd_gzfile_c(gzip_name);
 	printf("open_rd_gzfile_c \n");
     
-    int ierr = gzread_32bit_c(FP_gzip1, &iflag_swap, 54, (char *) header);
+    int ierr = gzread_32bit_c(FP_gzip1, iflag_swap, 54, (char *) header);
 	/*
 	for(ilength=0;ilength<54;ilength++){
 		printf("header %d %x\n", ilength, header[ilength]);
@@ -129,7 +129,7 @@ struct BMP_data * read_gzipped_BMP_c(const char *fhead){
 	alloc_bgr_data(d_BMP);
 	
     ilength = 3*d_BMP->npixel;
-    ierr = gzread_32bit_c(FP_gzip1, &iflag_swap, ilength, (char *) d_BMP->bgr);
+    ierr = gzread_32bit_c(FP_gzip1, iflag_swap, ilength, (char *) d_BMP->bgr);
     close_gzfile_c(FP_gzip1);
 	/*
 	for(ilength=0;d_BMP->npixel<54;ilength++){

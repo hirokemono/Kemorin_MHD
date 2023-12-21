@@ -60,9 +60,9 @@ void swap_4byte(char *buf8){
     return;
 }
 
-void swap_fortran_64bit(int *ilength, char *buf){
+void swap_fortran_64bit(int ilength, char *buf){
     int i;
-    for(i=0;i<*ilength/8;i++){swap_4byte((char *) &buf[8*i]);}
+    for(i=0;i<ilength/8;i++){swap_4byte((char *) &buf[8*i]);}
     return;
 }
 

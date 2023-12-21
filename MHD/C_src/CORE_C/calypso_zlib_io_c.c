@@ -212,7 +212,7 @@ int gzread_64bit_c(void *FP_gzip, const int iflag_swap, const int ilength,
 }
 
 int gzwrite_c(void *FP_gzip, const int ilength, void *buf){
-    int ierr = gzwrite((gzFile) FP_gzip, buf, (unsigned long) ilength);
+    int ierr = gzwrite((gzFile) FP_gzip, buf, (unsigned int) ilength);
     return (ierr - ilength);
 }
 
