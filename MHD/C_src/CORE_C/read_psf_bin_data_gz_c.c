@@ -9,14 +9,16 @@
 
 static void gzread_64bit_psf(void *FP_gzip, struct psf_bin_work *psf_z_WK,
 							 char *textbuf){
-    gzread_64bit_c(FP_gzip, &psf_z_WK->iflag_swap, &psf_z_WK->ilength,
+    int length4 = (int) psf_z_WK->ilength;
+    gzread_64bit_c(FP_gzip, &psf_z_WK->iflag_swap, &length4,
                    textbuf, &psf_z_WK->ierr);
     return;
 };
 
 static void gzread_64bit_psfchara(void *FP_gzip, struct psf_bin_work *psf_z_WK,
 								  char *textbuf){
-    gzread_64bit_c(FP_gzip, &psf_z_WK->iflag_keep, &psf_z_WK->ilength, 
+    int length4 = (int) psf_z_WK->ilength;
+    gzread_64bit_c(FP_gzip, &psf_z_WK->iflag_keep, &length4,
                    textbuf, &psf_z_WK->ierr);
     return;
 };
@@ -26,7 +28,8 @@ static void * open_read_psf_bin_gz_file(const char *gzip_name, struct psf_bin_wo
     void *FP_gzip = open_rd_gzfile_c(gzip_name);
     int itmp_gz = 0;
     psf_z_WK->ilength = sizeof(int);
-    gzread_32bit_c(FP_gzip, &psf_z_WK->iflag_keep, &psf_z_WK->ilength, 
+    int length4 = (int) psf_z_WK->ilength;
+    gzread_32bit_c(FP_gzip, &psf_z_WK->iflag_keep, &length4,
                    (char *) &itmp_gz, &psf_z_WK->ierr);
     if(itmp_gz != psf_z_WK->i_UNIX){psf_z_WK->iflag_swap = 1;};
     
