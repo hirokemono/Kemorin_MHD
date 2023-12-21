@@ -199,7 +199,7 @@ void gzread_32bit_c(void *FP_gzip, const int *iflag_swap,int *ilength,
 					char *textbuf, int *ierr){
     *ierr =  gzread((gzFile) FP_gzip, textbuf, (uInt) *ilength);
     *ierr = *ierr - *ilength;
-    if(*iflag_swap == IFLAG_SWAP) {byte_swap_4(*ilength, textbuf);};
+    if(*iflag_swap == IFLAG_ON) {byte_swap_4((long) *ilength, textbuf);};
     return;
 }
 
@@ -207,7 +207,7 @@ void gzread_64bit_c(void *FP_gzip, const int *iflag_swap, int *ilength,
                     char *textbuf, int *ierr){
     *ierr =  gzread((gzFile) FP_gzip, textbuf, (uInt) *ilength);
     *ierr = *ierr - *ilength;
-    if(*iflag_swap == IFLAG_SWAP) {byte_swap_8(*ilength, textbuf);};
+    if(*iflag_swap == IFLAG_ON) {byte_swap_8((long) *ilength, textbuf);};
     return;
 }
 

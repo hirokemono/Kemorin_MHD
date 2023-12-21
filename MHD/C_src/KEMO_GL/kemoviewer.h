@@ -181,8 +181,6 @@
 #define IFLAG_SURF_SDT_GZ   130
 #define IFLAG_PSF_BIN_GZ    131
 
-#define IFLAG_SWAP  1
-
 #define ISET_ROTATE     0
 #define ISET_SHIFT      1
 #define ISET_VWPOINT    2
@@ -239,6 +237,9 @@
 
 #define OFF 0
 #define ON  1
+
+#define IFLAG_OFF  0
+#define IFLAG_ON   1
 
 /*
  Kemoviewer_t: Structure to run kemoviewer in one window.

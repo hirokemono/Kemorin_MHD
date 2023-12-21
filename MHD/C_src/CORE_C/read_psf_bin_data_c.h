@@ -21,7 +21,7 @@ struct psf_bin_work{
     
     int iflag_keep;
     int iflag_swap;
-    int lchar_out;
+    long lchar_out;
     long nprocs;
     long ilength;
 
