@@ -2,6 +2,7 @@
 /* set_menu_bottun_to_buf.c */
 #include "set_menu_bottun_to_buf.h"
 
+/*
 static void dtob(int BitSize, int x, int *c) {
 	int bit = 1, i;
 	
@@ -15,6 +16,7 @@ static void dtob(int BitSize, int x, int *c) {
 	}
 	return;
 }
+*/
 
 static void uchar2bin(int BitSize, unsigned char xchr, int *c) {
 	int bit = 1, i;

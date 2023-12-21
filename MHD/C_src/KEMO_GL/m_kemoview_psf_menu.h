@@ -73,7 +73,7 @@ struct psf_menu_val{
 	
 	int if_draw_psf;
 	int ic_draw_psf;
-	int icomp_draw_psf;
+	long icomp_draw_psf;
 	
 	int psf_patch_color;
 	int isoline_color;

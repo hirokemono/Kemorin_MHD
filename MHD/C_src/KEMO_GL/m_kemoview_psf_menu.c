@@ -222,7 +222,7 @@ void set_PSF_field(int selected, struct psf_data *psf_s, struct psf_menu_val *ps
 void set_PSF_component(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	psf_m->ic_draw_psf = selected;
 	psf_m->icomp_draw_psf = psf_s->istack_comp[psf_m->if_draw_psf] + psf_m->ic_draw_psf;
-	printf("component %d  of %s, %d \n", (psf_m->ic_draw_psf+1),
+	printf("component %d  of %s, %ld \n", (psf_m->ic_draw_psf+1),
 			psf_s->data_name[psf_m->if_draw_psf], psf_m->icomp_draw_psf);
 	return;
 }

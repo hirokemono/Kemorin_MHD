@@ -9,7 +9,7 @@
 
 #include "set_each_isoline_to_buf.h"
 
-static void copy_each_triangle_postion(long ie_viz[3], double **xx_viz, double **d_nod, int icomp,
+static void copy_each_triangle_postion(long ie_viz[3], double **xx_viz, double **d_nod, long icomp,
 									   double xyz_tri[9], double d_tri[3]){
 	int k;
 	long inod;
@@ -24,7 +24,7 @@ static void copy_each_triangle_postion(long ie_viz[3], double **xx_viz, double *
 	return;
 };
 static void copy_each_triangle_postion_norm(long ie_viz[3], double **xx_viz, double **norm_nod,
-											double **d_nod, int icomp,
+											double **d_nod, long icomp,
 											double xyz_tri[9], double nrm_tri[9], double d_tri[3]){
 	int k;
 	long inod;
@@ -41,8 +41,9 @@ static void copy_each_triangle_postion_norm(long ie_viz[3], double **xx_viz, dou
 	};
 	return;
 };
+
 static void copy_each_triangle_map_postion(long ie_viz[3], double **xx_viz,
-											double **d_nod, int icomp,
+											double **d_nod, long icomp,
 											double xyz_map[9], double nrm_tri[9], double d_tri[3]){
 	double xyz_tri[9];
 	long inod;
@@ -64,7 +65,7 @@ static void copy_each_triangle_map_postion(long ie_viz[3], double **xx_viz,
 
 
 long add_each_isoline_npatch(const long ist_patch, double v_line,
-                             int icomp, struct psf_data *psf_s){
+                             long icomp, struct psf_data *psf_s){
 	double d_tri[3], xyz_tri[9];
 	int iele, idraw;
 	
@@ -82,7 +83,7 @@ long add_each_isoline_npatch(const long ist_patch, double v_line,
 };
 
 long set_each_isoline_to_buf(const long ist_patch, double width, 
-                             double v_line, int icomp, double *f_color,
+                             double v_line, long icomp, double *f_color,
                              struct psf_data *psf_s,
                              struct gl_strided_buffer *strided_buf){
 	double d_tri[3], xyz_tri[9], nrm_tri[9];
@@ -113,7 +114,7 @@ long set_each_isoline_to_buf(const long ist_patch, double width,
 };
 
 long set_each_map_isoline_to_buf(const long ist_patch, double width, 
-                                 double v_line, int icomp, double *f_color, 
+                                 double v_line, long icomp, double *f_color,
                                  struct psf_data *psf_s, 
                                  struct gl_strided_buffer *strided_buf){
 	double d_tri[3], nrm_tri[9];

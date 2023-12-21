@@ -12,7 +12,7 @@ long prod_padding_4096chars(long num_bytes){
     return (4096 * nsize);
 };
 
-static long prod_padding_1024floats(int num_nod_buf, int ncomp_buf){
+static long prod_padding_1024floats(long num_nod_buf, int ncomp_buf){
     long nsize = 4 * num_nod_buf * ncomp_buf;
     return prod_padding_4096chars(nsize);
 };

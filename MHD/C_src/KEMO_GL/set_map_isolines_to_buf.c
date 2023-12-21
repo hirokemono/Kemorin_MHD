@@ -78,7 +78,7 @@ long count_map_PSF_isoline(const long ist_patch, struct psf_data *psf_s,
 	};
 	if(psf_m->draw_psf_zero  != 0){
 		num_patch = add_each_isoline_npatch(num_patch, ZERO,
-											psf_m->icomp_draw_psf, psf_s);
+                                            psf_m->icomp_draw_psf, psf_s);
 	};
 	return num_patch;
 }
@@ -90,8 +90,9 @@ long set_map_PSF_isoline_to_buf(const long ist_patch,
 	double dub_r;
 	long inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
-		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline, 
-								psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
+		psf_m->ist_positive_line
+            = find_start_positive_lines(psf_m->n_isoline,
+                                        psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
 		if(psf_m->ist_positive_line > 1){
 			inum_patch = set_map_isolines_to_buf(inum_patch,
 						IZERO, psf_m->ist_positive_line,
@@ -106,7 +107,7 @@ long set_map_PSF_isoline_to_buf(const long ist_patch,
 	if(psf_m->draw_psf_zero  != 0){
 		dub_r = 2.0 * psf_m->isoline_width;
 		inum_patch = set_each_map_isoline_to_buf(inum_patch, dub_r,
-												 ZERO, psf_m->icomp_draw_psf, 
+												 ZERO, psf_m->icomp_draw_psf,
 												 black, psf_s, psf_buf);
 	};
 	return inum_patch;

@@ -736,7 +736,7 @@ int kemoview_get_fline_color_param(struct kemoviewer_type *kemoviewer,
 
 
 int kemoview_get_fline_color_num_comps(struct kemoviewer_type *kemoviewer, int i){
-	return fline_color_num_comps(kemoviewer->kemo_fline->fline_d, i);
+	return (int) fline_color_num_comps(kemoviewer->kemo_fline->fline_d, i);
 };
 void kemoview_get_fline_color_data_name(struct kemoviewer_type *kemoviewer,
                                         struct kv_string *colorname, int i){

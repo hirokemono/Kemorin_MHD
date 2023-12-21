@@ -43,6 +43,7 @@ int set_same_id_by_N_c(int inum, int iloop, int i_min, int i_max){
 	return ival;
 }
 
+/*
 static void convert_anaglyph_color(double ratio_mono, double *f_color){
 	float gray;
 	gray = (ONE - ratio_mono) * (f_color[0] + f_color[1] + f_color[2])
@@ -52,7 +53,7 @@ static void convert_anaglyph_color(double ratio_mono, double *f_color){
 	f_color[2] = f_color[2] * ratio_mono + gray;
 	return ;
 };
-
+*/
 
 static void get_rainbow_c(double val, double  minval,double  maxval, double *f_color) {
 	double f = color_normalize_linear_c(minval, maxval, val);

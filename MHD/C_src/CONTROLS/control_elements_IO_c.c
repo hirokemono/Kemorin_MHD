@@ -225,7 +225,7 @@ void set_labels_from_packed(int len_fix, char *packed_name, struct label_list_f 
 	
 	label_list->maxlen = 0;
 	for(i=0;i<label_list->num_labels;i++){
-		len = strlen(&packed_name[len_fix * i])+1;
+		len = (int) strlen(&packed_name[len_fix * i]) + 1;
 		if(len > label_list->maxlen){
 			label_list->maxlen = len;
 		};

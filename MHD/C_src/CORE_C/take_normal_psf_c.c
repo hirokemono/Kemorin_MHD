@@ -357,7 +357,8 @@ static void take_rms_ave_fline(struct psf_data *viz_s){
 }
 
 static void take_minmax_psf_fields(struct psf_data *viz_s){
-	int ifld, icomp, n;
+	int ifld, n;
+    long icomp;
 	
 	for (ifld = 0; ifld < viz_s->nfield; ifld++){
 		for (n = 0; n < viz_s->nnod_viz; n++) viz_s->d_amp[n][ifld] = 0.0;

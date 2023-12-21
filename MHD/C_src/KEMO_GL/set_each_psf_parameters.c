@@ -38,7 +38,7 @@ void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname
 
 int send_field_draw_each_psf(struct psf_menu_val *psf_menu){return psf_menu->if_draw_psf;};
 int send_draw_comp_id_psf(struct psf_menu_val *psf_menu){return psf_menu->ic_draw_psf;};
-int send_draw_component_psf(struct psf_menu_val *psf_menu){return psf_menu->icomp_draw_psf;};
+long send_draw_component_psf(struct psf_menu_val *psf_menu){return psf_menu->icomp_draw_psf;};
 int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu){
 	int id_current = psf_menu->if_draw_psf;
 	return psf_d->id_coord[id_current];
@@ -172,7 +172,7 @@ void set_PSF_linear_colormap(double minvalue, int i_min_digit, double maxvalue, 
 
 void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
                          double *rgba){
-    int icomp = psf_menu->icomp_draw_psf;
+    long icomp = psf_menu->icomp_draw_psf;
     set_rgb_from_rgb(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], rgba[0], rgba[1], rgba[2]);	
     set_constant_opacitymap(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
                             psf_d->d_min[icomp], psf_d->d_max[icomp], rgba[3]);
@@ -181,7 +181,7 @@ void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
 
 void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
                                  double opacity){
-	int icomp = psf_menu->icomp_draw_psf;
+	long icomp = psf_menu->icomp_draw_psf;
 	set_constant_opacitymap(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
                             psf_d->d_min[icomp], psf_d->d_max[icomp], opacity);
     return;

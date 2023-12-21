@@ -18,13 +18,15 @@
 long count_psf_nodes_to_buf(long ist_psf, long ied_psf);
 
 void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode, 
-			struct psf_data **psf_s, struct psf_menu_val **psf_m, 
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf);
-void set_psf_textures_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf);
+                          struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                          struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf);
+void set_psf_textures_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
+                             struct kemo_array_control *psf_a,
+                             struct gl_strided_buffer *strided_buf);
 
-void set_psf_map_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s, 
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf);
+void set_psf_map_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
+                        struct kemo_array_control *psf_a,
+                        struct gl_strided_buffer *strided_buf);
 
 long count_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m);
 long set_psf_arrows_to_buf(long ist_patch, int ncorner, 

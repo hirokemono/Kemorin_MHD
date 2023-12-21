@@ -39,8 +39,9 @@ void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode,
     return;
 }
 
-void set_psf_textures_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
+void set_psf_textures_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
+                             struct kemo_array_control *psf_a,
+                             struct gl_strided_buffer *strided_buf){
     long inum, iele, inod, k;
     int ipsf;
 	int iflag;
@@ -67,8 +68,9 @@ void set_psf_textures_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
 	return;
 }
 
-void set_psf_map_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s, 
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
+void set_psf_map_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
+                        struct kemo_array_control *psf_a,
+                        struct gl_strided_buffer *strided_buf){
     long inum, iele, inod, k;
     int ipsf, nd;
 	double xx_tri[9], xyz_map[9];
@@ -128,7 +130,7 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
 	int inod, k, nd;
     long inum_buf, i;
 	
-	int icomp = psf_s->istack_comp[psf_m->if_draw_psf];
+	long icomp = psf_s->istack_comp[psf_m->if_draw_psf];
 	double radius = psf_m->vector_thick;
 	double ascale = ONE / psf_m->scale_vect;
 	

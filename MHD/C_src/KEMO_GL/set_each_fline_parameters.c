@@ -34,10 +34,10 @@ void set_fline_color_type(struct fline_menu_val *fline_m, int iflag) {
 int get_fline_switch(struct fline_menu_val *fline_m){return fline_m->iflag_draw_fline;};
 long get_fline_color_num_field(struct psf_data *fline_d){return fline_d->nfield;};
 long get_fline_color_ncomptot(struct psf_data *fline_d){return fline_d->ncomptot;};
-int fline_color_num_comps(struct psf_data *fline_d, int i){
+long fline_color_num_comps(struct psf_data *fline_d, int i){
 	return fline_d->ncomp[i];
 };
-int get_fline_color_istack(struct psf_data *fline_d, int i){
+long get_fline_color_istack(struct psf_data *fline_d, int i){
 	return fline_d->istack_comp[i];
 };
 void get_fline_color_data_name(struct psf_data *fline_d, 

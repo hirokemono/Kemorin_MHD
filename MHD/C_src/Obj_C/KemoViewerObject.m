@@ -10,6 +10,7 @@
 #import "KemoViewerObject.h"
 
 @implementation KemoViewerObject
+@synthesize kemoview_metal;
 - (id) init{
 #ifdef __APPLE__
     printf("KemoViewerObject init Start!!\n");

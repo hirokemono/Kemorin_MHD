@@ -12,7 +12,7 @@ int check_draw_map(struct kemo_array_control *psf_a){
     return iflag_map;
 };
 
-void set_map_patch_buffer(int ist_psf, int ied_psf, struct psf_data **psf_s,
+void set_map_patch_buffer(long ist_psf, long ied_psf, struct psf_data **psf_s,
                           struct psf_menu_val **psf_m,
                           struct kemo_array_control *psf_a,
                           struct gl_strided_buffer *map_buf){

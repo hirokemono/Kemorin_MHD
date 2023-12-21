@@ -36,8 +36,8 @@ void set_fline_color_type(struct fline_menu_val *fline_m, int iflag);
 int get_fline_switch(struct fline_menu_val *fline_m);
 long get_fline_color_num_field(struct psf_data *fline_d);
 long get_fline_color_ncomptot(struct psf_data *fline_d);
-int fline_color_num_comps(struct psf_data *fline_d, int i);
-int get_fline_color_istack(struct psf_data *fline_d, int i);
+long fline_color_num_comps(struct psf_data *fline_d, int i);
+long get_fline_color_istack(struct psf_data *fline_d, int i);
 void get_fline_color_data_name(struct psf_data *fline_d, 
 			struct kv_string *colorname, int i);
 long get_fline_color_field(struct fline_menu_val *fline_m);

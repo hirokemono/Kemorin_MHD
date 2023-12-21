@@ -131,8 +131,9 @@ int read_field_name_from_buffer(int len_buf, char *buf, char *data_name){
 	return iflag_coord;
 };
 
-void read_field_names(FILE *fp, int num, char **data_name, int *id_coord){
-	int i, iflag;
+void read_field_names(FILE *fp, const long num, char **data_name, int *id_coord){
+    long i;
+    int iflag;
 	char buf[LENGTHBUF];    /* array for reading line */
 	
 	for (i = 0; i < num; i++) {
@@ -262,9 +263,9 @@ void strip_cautation_marks(char *string){
 
 char * duplicate_underscore(const char *string){
 	char *tmpchara;
-	int i = 0;
-	int icou = 1;
-	int len = strlen(string);
+	long i = 0;
+	long icou = 1;
+	long len = strlen(string);
 	for(i=0;i<len;i++){
 		if(string[i] == '_') icou = icou + 1;
 	}

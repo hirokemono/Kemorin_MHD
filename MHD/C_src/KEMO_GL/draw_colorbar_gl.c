@@ -62,7 +62,7 @@ static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
                                       struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                       struct cbar_work *cbar_wk, struct gl_strided_buffer *cbar_buf){
     int i;
-    int icomp;
+    long icomp;
     cbar_buf->num_nod_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
