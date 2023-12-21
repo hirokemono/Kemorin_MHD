@@ -195,26 +195,25 @@ int gzoffset_c(void *FP_gzip){
 
 
 
-void gzread_32bit_c(void *FP_gzip, const int *iflag_swap,int *ilength,
-					char *textbuf, int *ierr){
-    *ierr =  gzread((gzFile) FP_gzip, textbuf, (uInt) *ilength);
-    *ierr = *ierr - *ilength;
-    if(*iflag_swap == IFLAG_ON) {byte_swap_4((long) *ilength, textbuf);};
-    return;
+int gzread_32bit_c(void *FP_gzip, const int iflag_swap, const int ilength,
+                   char *textbuf){
+    int ierr = gzread((gzFile) FP_gzip, textbuf, (unsigned int) ilength);
+    ierr = ierr - ilength;
+    if(iflag_swap == IFLAG_ON) {byte_swap_4((unsigned long) ilength, textbuf);};
+    return ierr;
 }
 
-void gzread_64bit_c(void *FP_gzip, const int *iflag_swap, int *ilength,
-                    char *textbuf, int *ierr){
-    *ierr =  gzread((gzFile) FP_gzip, textbuf, (uInt) *ilength);
-    *ierr = *ierr - *ilength;
-    if(*iflag_swap == IFLAG_ON) {byte_swap_8((long) *ilength, textbuf);};
-    return;
+int gzread_64bit_c(void *FP_gzip, const int iflag_swap, const int ilength,
+                   char *textbuf){
+    int ierr =  gzread((gzFile) FP_gzip, textbuf, (unsigned int) ilength);
+    ierr = ierr - ilength;
+    if(iflag_swap == IFLAG_ON) {byte_swap_8((unsigned long) ilength, textbuf);};
+    return ierr;
 }
 
-void gzwrite_c(void *FP_gzip, int *ilength, void *buf, int *ierr){
-    *ierr = gzwrite((gzFile) FP_gzip, buf, (uInt) *ilength);
-    *ierr = *ierr - *ilength;
-    return;
+int gzwrite_c(void *FP_gzip, const int ilength, void *buf){
+    int ierr = gzwrite((gzFile) FP_gzip, buf, (unsigned long) ilength);
+    return (ierr - ilength);
 }
 
 void get_one_line_from_gz_c(void *FP_gzip, int *num_buffer,

@@ -39,11 +39,11 @@ void gzseek_go_fwd_c(void *FP_gzip, int *ioffset, int *ierr);
 int gztell_c(void *FP_gzip);
 int gzoffset_c(void *FP_gzip);
 
-void gzread_32bit_c(void *FP_gzip, const int *iflag_swap, int *ilength,
-					char *textbuf, int *ierr);
-void gzread_64bit_c(void *FP_gzip, const int *iflag_swap, int *ilength,
-					char *textbuf, int *ierr);
-void gzwrite_c(void *FP_gzip, int *ilength, void *buf, int *ierr);
+int gzread_32bit_c(void *FP_gzip, const int iflag_swap, const int ilength,
+                   char *textbuf);
+int gzread_64bit_c(void *FP_gzip, const int iflag_swap, const int ilength,
+                   char *textbuf);
+int gzwrite_c(void *FP_gzip, const int ilength, void *buf);
 
 void get_one_line_from_gz_c(void *FP_gzip, int *num_buffer, int *num_word,
 							int *nchara, char *line_buf);
