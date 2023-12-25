@@ -16,7 +16,13 @@
 @synthesize ColorTableField;
 @synthesize ColorTableColor;
 @synthesize idColorTableView;
+//@synthesize _colorModeItem;
 
+- (id)init{
+    [super init];
+    _colorModeItem = [[NSPopUpButton alloc] init];
+    return self;
+}
 - (void)awakeFromNib {
 	float r, g, b;
 	
@@ -159,7 +165,8 @@
 	}
 	[_colorTableView reloadData];
 
-	[ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP)];
+	[_colorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(kemo_sgl, ISET_COLORMAP)];
+    return;
 }
 
 - (IBAction)UpdateColorTables:(id)pID
@@ -196,7 +203,7 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_color_param(ISET_COLORMAP, 
-                                 (int) [ColorModeItem indexOfSelectedItem],
+                                 (int) [_colorModeItem indexOfSelectedItem],
                                  kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }

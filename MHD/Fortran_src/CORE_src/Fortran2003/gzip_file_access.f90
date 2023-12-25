@@ -113,7 +113,7 @@
           use ISO_C_BINDING
 !
           type(C_ptr), value :: FP_gzip
-          integer(C_int), intent(in) :: num_buffer
+          integer(C_int), value :: num_buffer
           integer(C_int), intent(inout) :: num_word
           integer(C_int), intent(inout) :: nchara
           type(C_ptr), value :: line_buf
@@ -124,7 +124,7 @@
           use ISO_C_BINDING
 !
           type(C_ptr), value :: FP_gzip
-          integer(C_int), intent(in) :: nchara
+          integer(C_int), value :: nchara
           type(C_ptr), value :: line_buf
         end subroutine write_compress_txt_c
 !  -----------------
@@ -133,7 +133,7 @@
           use ISO_C_BINDING
 !
           type(C_ptr), value :: FP_gzip
-          integer(C_int), intent(in) :: nchara
+          integer(C_int), value :: nchara
           type(C_ptr), value :: line_buf
         end subroutine write_compress_txt_nolf_c
 !  -----------------

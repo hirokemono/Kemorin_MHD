@@ -34,13 +34,16 @@
 	IBOutlet NSColorWell *backgroundColorWell;
     NSColor *nsBackgroundColor;
 
-	IBOutlet id ColorModeItem;	
+	IBOutlet NSPopUpButton *_colorModeItem;
+    NSInteger   colorModeTag;
 }
 @property (assign) NSMutableArray * ColorTableField;
 @property (assign) NSMutableArray * ColorTableColor;
 @property (assign) NSTableView * idColorTableView;
+// @property (assign) NSPopUpButton * _colorModeItem;
 
 
+- (id)init;
 - (void)awakeFromNib;
 
 

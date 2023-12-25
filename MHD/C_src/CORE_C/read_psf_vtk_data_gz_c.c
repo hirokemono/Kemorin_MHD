@@ -16,18 +16,18 @@ static void read_psf_vtk_node_data_gz(void *FP_gzip, int lbuf, char *buf,
 	char tmpchara[8];
 	int num_word, nchara;
 	
-    num_word = skip_comment_gz_c(FP_gzip, &lbuf, buf);
-    get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);     /* ASCII */
-    get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);     /* DATASET UNSTRUCTURED_GRID */
+    num_word = skip_comment_gz_c(FP_gzip, lbuf, buf);
+    get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* ASCII */
+    get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* DATASET UNSTRUCTURED_GRID */
     
-    get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);     /* POINTS    nnod_viz  float */
+    get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* POINTS    nnod_viz  float */
 	sscanf(buf, "%6s %ld %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
 	
 	alloc_viz_node_s(viz_s);
 	
 	for (i = 0; i < viz_s->nnod_viz; i++) {
         viz_s->inod_viz[i] = i + 1;
-        get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+        get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
 		sscanf(buf, "%lf %lf %lf",
                &viz_s->xx_viz[i][0],
                &viz_s->xx_viz[i][1],
@@ -43,7 +43,7 @@ static int read_psf_vtk_connect_data_gz(void *FP_gzip, int lbuf, char *buf,
     int i, j, num_index, itmp;
 	int iflag_datatype = IFLAG_SURFACES;
     
-    get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);     /* CELLS    nele_viz  nele*nnod_4_ele */
+    get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* CELLS    nele_viz  nele*nnod_4_ele */
 	sscanf(buf, "%5s %ld %d", tmpchara, &viz_s->nele_viz, &num_index);
     
     viz_s->nnod_4_ele_viz = (num_index / viz_s->nele_viz) - 1;
@@ -53,7 +53,7 @@ static int read_psf_vtk_connect_data_gz(void *FP_gzip, int lbuf, char *buf,
 		printf("Quad patch data \n");
 		iflag_datatype = IFLAG_SURFACES;
         for (i = 0; i < viz_s->nele_viz; i++) {
-            get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%d %ld %ld %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2], &viz_s->ie_viz[i][3]);
@@ -63,7 +63,7 @@ static int read_psf_vtk_connect_data_gz(void *FP_gzip, int lbuf, char *buf,
 		printf("Triangle patch data \n");
 		iflag_datatype = IFLAG_SURFACES;
         for (i = 0; i < viz_s->nele_viz; i++) {
-            get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%d %ld %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2]);
@@ -73,16 +73,16 @@ static int read_psf_vtk_connect_data_gz(void *FP_gzip, int lbuf, char *buf,
 		printf("Line data \n");
 		iflag_datatype = IFLAG_LINES;
         for (i = 0; i < viz_s->nele_viz; i++) {
-            get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%d %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1]);
         };
     };
     
-    get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);     /* CELL_TYPES    nele_viz */
+    get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* CELL_TYPES    nele_viz */
 	sscanf(buf, "%10s %d", tmpchara, &num_index);
     for (i = 0; i < viz_s->nele_viz; i++) {
-        get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+        get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
         sscanf(buf, "%d", &itmp);
     };
     for (i = 0; i < viz_s->nele_viz; i++) {
@@ -100,7 +100,7 @@ static int read_psf_vtk_field_list_gz(void *FP_gzip, int lbuf, char *buf,
 	char fieldtype[8];
 	int num_word, nchara;
 	
-    get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+    get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
     if (check_gzfile_eof_c(FP_gzip)) {
         free(fld_list);
         return 1;
@@ -132,34 +132,34 @@ static int read_psf_vtk_field_list_gz(void *FP_gzip, int lbuf, char *buf,
               && fieldtype[5] == 'R'
               && fieldtype[6] == 'S'){
         fld_list->ncomp_vtk = 1;
-        get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);     /* LOOKUP_TABLE  default */
+        get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* LOOKUP_TABLE  default */
     } else {
         fld_list->ncomp_vtk = 1;
-        get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);     /* LOOKUP_TABLE  default */
+        get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);     /* LOOKUP_TABLE  default */
     };
     
     alloc_vtk_field_data_c(fld_list);
     
     if(fld_list->ncomp_vtk == 6){
         for (i = 0; i < fld_list->nnod_fld; i++) {
-            get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%lf %lf %lf",
                    &fld_list->d_vtk[i][0],
                    &fld_list->d_vtk[i][1],
                    &fld_list->d_vtk[i][2]);
-            get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%lf %lf %lf",
                    &rtmp,
                    &fld_list->d_vtk[i][3],
                    &fld_list->d_vtk[i][4]);
-            get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%lf %lf %lf",
                    &rtmp, &rtmp,
                    &fld_list->d_vtk[i][5]);
         };
     } else if(fld_list->ncomp_vtk == 3){
         for (i = 0; i < fld_list->nnod_fld; i++) {
-            get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%lf %lf %lf",
                    &fld_list->d_vtk[i][0],
                    &fld_list->d_vtk[i][1],
@@ -167,7 +167,7 @@ static int read_psf_vtk_field_list_gz(void *FP_gzip, int lbuf, char *buf,
         };
     } else {
         for (i = 0; i < fld_list->nnod_fld; i++) {
-            get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+            get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
             sscanf(buf, "%lf", &fld_list->d_vtk[i][0]);
         };
     };
@@ -183,9 +183,9 @@ static void read_psf_vtk_field_data_gz(void *FP_gzip, int lbuf, char *buf,
     vtk_fields_t *last_fld;
     int iflag_end;
 	char tmpchara[200];
-	int num_word, nchara;
+	int num_word;
 
-    num_word = skip_comment_gz_c(FP_gzip, &lbuf, buf);  /* POINT_DATA  nnod_viz */
+    num_word = skip_comment_gz_c(FP_gzip, lbuf, buf);  /* POINT_DATA  nnod_viz */
 	sscanf(buf, "%10s %d", tmpchara, &vtk_tmp.nnod_vtk);
 
     vtk_tmp.vtk_fields = (vtk_fields_t *) malloc(sizeof(vtk_fields_t));

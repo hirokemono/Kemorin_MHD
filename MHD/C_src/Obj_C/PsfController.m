@@ -63,7 +63,11 @@
 @synthesize PSFVectorIncDigit;
 - (id)init;
 {
-	self.PsfWindowlabel = [NSString stringWithFormat:@"PSF View"];
+    self.rgbaMapObject =    [RGBAMapController alloc];
+    self.colorMapObject =   [[ColorMapController alloc] init];
+    self.opacityMapObject = [OpacityMapController alloc];
+
+    self.PsfWindowlabel = [NSString stringWithFormat:@"PSF View"];
     
 	LoadedPsfID =      [[NSMutableArray alloc] init];
 	LoadedPsfFileHead =[[NSMutableArray alloc] init];
@@ -124,9 +128,6 @@
 }
 
 - (void)awakeFromNib {
-	self.rgbaMapObject =    [RGBAMapController alloc];
-	self.colorMapObject =   [ColorMapController alloc];
-	self.opacityMapObject = [OpacityMapController alloc];
     [_ElasticControl UpdateWindow:0];
 }
 
