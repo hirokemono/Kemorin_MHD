@@ -43,6 +43,15 @@ struct gl_index_buffer{
     unsigned int *ie_buf;
 };
 
+
+struct kemoview_gl_texure{
+    int texure_width;
+    int texure_height;
+    int texure_npix;
+    unsigned char  *texure_rgba;
+};
+
+
 /* prototypes */
 long prod_padding_4096chars(long num_bytes);
 

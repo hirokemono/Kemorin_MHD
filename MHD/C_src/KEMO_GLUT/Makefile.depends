@@ -17,6 +17,7 @@ kemoview_gtk_PSF_isoline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -47,7 +48,6 @@ kemoview_gtk_PSF_isoline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -140,6 +140,7 @@ kemoview_gtk_PSF_menu.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -170,7 +171,6 @@ kemoview_gtk_PSF_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -394,6 +394,7 @@ kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -424,7 +425,6 @@ kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -517,6 +517,7 @@ kemoview_gtk_axis_menu.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -547,7 +548,6 @@ kemoview_gtk_axis_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -765,6 +765,7 @@ kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
@@ -793,7 +794,6 @@ kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -880,6 +880,7 @@ kemoview_gtk_fline_selectors.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -910,7 +911,6 @@ kemoview_gtk_fline_selectors.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -1150,6 +1150,7 @@ kemoview_gtk_mesh_menu.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -1180,7 +1181,6 @@ kemoview_gtk_mesh_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -1404,6 +1404,7 @@ kemoview_gtk_quilt_menu.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -1434,7 +1435,6 @@ kemoview_gtk_quilt_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -1648,6 +1648,7 @@ kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -1678,7 +1679,6 @@ kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \

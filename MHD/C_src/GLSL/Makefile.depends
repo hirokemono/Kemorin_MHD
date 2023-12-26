@@ -117,6 +117,7 @@ draw_PSF_patches_by_VAO.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
@@ -144,7 +145,6 @@ draw_PSF_patches_by_VAO.o: \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
   $(C_SRCDIR)/GLSL/vartex_array_object_gl.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
@@ -1012,6 +1012,7 @@ vartex_array_object_gl.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
+  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
@@ -1039,7 +1040,6 @@ vartex_array_object_gl.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_fline_parameters.h \
   $(C_SRCDIR)/KEMO_GL/set_texture_4_psf.h \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.h \
-  $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \

@@ -11,18 +11,12 @@
 #include "calypso_param_c.h"
 #include "kemoviewer_param_c.h"
 #include "kemoviewer_base.h"
+#include "m_vertex_buffer.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_color_table_c.h"
 #include "m_colorbar_work.h"
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
-
-struct kemoview_gl_texure{
-    int texure_width;
-    int texure_height;
-    int texure_npix;
-    unsigned char  *texure_rgba;
-};
 
 struct kemo_array_control{
 	int nlimit_loaded;
