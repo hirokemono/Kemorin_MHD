@@ -20,8 +20,8 @@ struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_t
     l_txt_img->npixel = l_txt_img->npix_img[0] * l_txt_img->npix_img[1];
     
     l_txt_img->image = alloc_kemoview_gl_texure();
-    l_txt_img->image->texure_width =  npix_x;
-    l_txt_img->image->texure_height = npix_y;
+    l_txt_img->image->nipxel_xy[0] = npix_x;
+    l_txt_img->image->nipxel_xy[1] = npix_y;
     alloc_draw_psf_texture(l_txt_img->image);
     return l_txt_img;
 };

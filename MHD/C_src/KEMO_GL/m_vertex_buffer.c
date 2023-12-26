@@ -145,14 +145,14 @@ struct kemoview_gl_texure * alloc_kemoview_gl_texure(void){
         printf("Allocation failed for kemo_texure \n");
         exit(1);
     }
-    kemo_texure->texure_npix =   0;
-    kemo_texure->texure_width =  0;
-    kemo_texure->texure_height = 0;
+    kemo_texure->texure_npix =  0;
+    kemo_texure->nipxel_xy[0] = 0;
+    kemo_texure->nipxel_xy[1] = 0;
     return kemo_texure;
 }
 
 void alloc_draw_psf_texture(struct kemoview_gl_texure *kemo_texure){
-    kemo_texure->texure_npix = kemo_texure->texure_width * kemo_texure->texure_height;
+    kemo_texure->texure_npix = kemo_texure->nipxel_xy[0] * kemo_texure->nipxel_xy[1];
     kemo_texure->texure_rgba = (unsigned char *) malloc( (4*kemo_texure->texure_npix) * sizeof(unsigned char));
     if ((kemo_texure->texure_rgba) == NULL) {
         printf("Allocation failed for kemo_texure->texure_rgba \n");

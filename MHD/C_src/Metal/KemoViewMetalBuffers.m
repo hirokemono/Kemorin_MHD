@@ -37,8 +37,8 @@
 /* Construct message texture */
         MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
         lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
-        lineTextureDescriptor.width =  psf_texure->texure_width;
-        lineTextureDescriptor.height = psf_texure->texure_height;
+        lineTextureDescriptor.width =  psf_texure->nipxel_xy[0];
+        lineTextureDescriptor.height = psf_texure->nipxel_xy[1];
 
 /*  Calculate the number of bytes per row in the image. */
         NSUInteger bytesPerRow = 4 * lineTextureDescriptor.width;

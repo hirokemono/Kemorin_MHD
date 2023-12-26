@@ -45,8 +45,7 @@ struct gl_index_buffer{
 
 
 struct kemoview_gl_texure{
-    int texure_width;
-    int texure_height;
+    int nipxel_xy[2];
     int texure_npix;
     unsigned char  *texure_rgba;
 };

@@ -12,8 +12,8 @@ void const_PSF_gl_texure_name(const int ipsf_texured,
                               struct kemoview_gl_texure *psf_texure,
                               struct kemoview_shaders *kemo_shaders){
     if(ipsf_texured > -1){
-        kemo_shaders->texture_name = set_texture_to_buffer(psf_texure->texure_width,
-                                                           psf_texure->texure_height,
+        kemo_shaders->texture_name = set_texture_to_buffer(psf_texure->nipxel_xy[0],
+                                                           psf_texure->nipxel_xy[1],
                                                            psf_texure->texure_rgba);
     };
     return;

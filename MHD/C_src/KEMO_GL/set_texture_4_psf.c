@@ -126,11 +126,11 @@ static void vertical_flip_rgba_c(int ihpixf, int jvpixf, const unsigned char *fl
 void set_texture_4_psf(int width, int height, const unsigned char *bgra_in, 
                        struct kemoview_gl_texure *psf_texure){
 	
-    psf_texure->texure_width =  width;
-    psf_texure->texure_height = height;
+    psf_texure->nipxel_xy[0] =  width;
+    psf_texure->nipxel_xy[1] = height;
 	
 	alloc_draw_psf_texture(psf_texure);
-    vertical_flip_rgba_c(psf_texure->texure_width, psf_texure->texure_height,
+    vertical_flip_rgba_c(psf_texure->nipxel_xy[0], psf_texure->nipxel_xy[1],
                          bgra_in, psf_texure->texure_rgba);
 	return;
 }
