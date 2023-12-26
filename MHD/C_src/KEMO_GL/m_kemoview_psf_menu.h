@@ -17,7 +17,7 @@
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
 
-struct kemo_PSF_texure{
+struct kemoview_gl_texure{
     int texure_width;
     int texure_height;
     int texure_npix;
@@ -51,7 +51,7 @@ struct kemo_array_control{
     int file_step_disp;
     
     int ipsf_texured;
-    struct kemo_PSF_texure *psf_texure;
+    struct kemoview_gl_texure *psf_texure;
 };
 
 struct psf_menu_val{
@@ -93,8 +93,8 @@ struct psf_menu_val{
 };
 
 /* Prototypes */
-void alloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure);
-void dealloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure);
+void alloc_draw_psf_texture(struct kemoview_gl_texure *psf_texure);
+void dealloc_draw_psf_texture(struct kemoview_gl_texure *psf_texure);
 
 void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name);
 

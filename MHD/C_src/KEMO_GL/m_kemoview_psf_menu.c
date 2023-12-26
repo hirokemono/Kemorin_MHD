@@ -4,8 +4,8 @@
 
 #include "m_kemoview_psf_menu.h"
 
-struct kemo_PSF_texure * alloc_kemo_PSF_texure(void){
-    struct kemo_PSF_texure *psf_texure = (struct kemo_PSF_texure *) malloc(sizeof(struct kemo_PSF_texure));
+struct kemoview_gl_texure * alloc_kemo_PSF_texure(void){
+    struct kemoview_gl_texure *psf_texure = (struct kemoview_gl_texure *) malloc(sizeof(struct kemoview_gl_texure));
     if (psf_texure == NULL) {
         printf("Allocation failed for psf_texure \n");
         exit(1);
@@ -15,7 +15,7 @@ struct kemo_PSF_texure * alloc_kemo_PSF_texure(void){
     psf_texure->texure_height = 0;
     return psf_texure;
 }
-void alloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure){
+void alloc_draw_psf_texture(struct kemoview_gl_texure *psf_texure){
     psf_texure->texure_npix = psf_texure->texure_width * psf_texure->texure_height;
     psf_texure->texure_rgba = (unsigned char *) malloc( (4*psf_texure->texure_npix) * sizeof(unsigned char));
     if ((psf_texure->texure_rgba) == NULL) {
@@ -24,14 +24,14 @@ void alloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure){
     }
     return;
 }
-void dealloc_kemo_PSF_texure(struct kemo_PSF_texure *psf_texure){
+void dealloc_kemo_PSF_texure(struct kemoview_gl_texure *psf_texure){
     dealloc_draw_psf_texture(psf_texure);
     free(psf_texure);
     return;
 }
 
 
-void dealloc_draw_psf_texture(struct kemo_PSF_texure *psf_texure){
+void dealloc_draw_psf_texture(struct kemoview_gl_texure *psf_texure){
     if(psf_texure->texure_npix > 0) {free(psf_texure->texure_rgba);};
     psf_texure->texure_npix = 0;
     return;

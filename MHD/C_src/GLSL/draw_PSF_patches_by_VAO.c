@@ -9,7 +9,7 @@
 
 
 void const_PSF_gl_texure_name(const int ipsf_texured,
-                              struct kemo_PSF_texure *psf_texure,
+                              struct kemoview_gl_texure *psf_texure,
                               struct kemoview_shaders *kemo_shaders){
     if(ipsf_texured > -1){
         kemo_shaders->texture_name = set_texture_to_buffer(psf_texure->texure_width,

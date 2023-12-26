@@ -13,7 +13,7 @@
 
 /* Prototypes */
 void set_texture_to_psf(int img_fmt, const char *img_head,
-                        struct kemo_PSF_texure *psf_texure,
+                        struct kemoview_gl_texure *psf_texure,
                         unsigned int *texture_name);
 
 #endif
