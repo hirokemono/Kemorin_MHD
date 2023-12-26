@@ -189,8 +189,8 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     struct line_text_image *fliped_img = alloc_line_text_image(image->npix_img[0],
                                                                image->npix_img[1], 20);
     flip_gl_bitmap(image->npix_img[0], image->npix_img[1],
-                   image->imgBMP, fliped_img->imgBMP);
-    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->imgBMP,
+                   image->image->texure_rgba, fliped_img->image->texure_rgba);
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->image->texure_rgba,
                                                  GDK_COLORSPACE_RGB, FALSE, 8,
                                                  image->npix_img[0], image->npix_img[1],
                                                  (3*image->npix_img[0]),

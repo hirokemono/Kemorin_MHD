@@ -140,36 +140,47 @@ void dealloc_gl_index_buffer(struct gl_index_buffer *index_buf){
 
 
 struct kemoview_gl_texure * alloc_kemoview_gl_texure(void){
-    struct kemoview_gl_texure *psf_texure = (struct kemoview_gl_texure *) malloc(sizeof(struct kemoview_gl_texure));
-    if (psf_texure == NULL) {
-        printf("Allocation failed for psf_texure \n");
+    struct kemoview_gl_texure *kemo_texure = (struct kemoview_gl_texure *) malloc(sizeof(struct kemoview_gl_texure));
+    if (kemo_texure == NULL) {
+        printf("Allocation failed for kemo_texure \n");
         exit(1);
     }
-    psf_texure->texure_npix =   0;
-    psf_texure->texure_width =  0;
-    psf_texure->texure_height = 0;
-    return psf_texure;
+    kemo_texure->texure_npix =   0;
+    kemo_texure->texure_width =  0;
+    kemo_texure->texure_height = 0;
+    return kemo_texure;
 }
 
-void alloc_draw_psf_texture(struct kemoview_gl_texure *psf_texure){
-    psf_texure->texure_npix = psf_texure->texure_width * psf_texure->texure_height;
-    psf_texure->texure_rgba = (unsigned char *) malloc( (4*psf_texure->texure_npix) * sizeof(unsigned char));
-    if ((psf_texure->texure_rgba) == NULL) {
-        printf("Allocation failed for psf_texure->texure_rgba \n");
+void alloc_draw_psf_texture(struct kemoview_gl_texure *kemo_texure){
+    kemo_texure->texure_npix = kemo_texure->texure_width * kemo_texure->texure_height;
+    kemo_texure->texure_rgba = (unsigned char *) malloc( (4*kemo_texure->texure_npix) * sizeof(unsigned char));
+    if ((kemo_texure->texure_rgba) == NULL) {
+        printf("Allocation failed for kemo_texure->texure_rgba \n");
         exit(2);
     }
     return;
 }
 
 
-void dealloc_draw_psf_texture(struct kemoview_gl_texure *psf_texure){
-    if(psf_texure->texure_npix > 0) {free(psf_texure->texure_rgba);};
-    psf_texure->texure_npix = 0;
+void dealloc_draw_psf_texture(struct kemoview_gl_texure *kemo_texure){
+    if(kemo_texure->texure_npix > 0) {free(kemo_texure->texure_rgba);};
+    kemo_texure->texure_npix = 0;
     return;
 }
 
-void dealloc_kemoview_gl_texure(struct kemoview_gl_texure *psf_texure){
-    dealloc_draw_psf_texture(psf_texure);
-    free(psf_texure);
+void dealloc_kemoview_gl_texure(struct kemoview_gl_texure *kemo_texure){
+    dealloc_draw_psf_texture(kemo_texure);
+    free(kemo_texure);
     return;
 }
+
+void clear_kemoview_gl_texure(struct kemoview_gl_texure *kemo_texure){
+    int i;
+    for(i=0;i<kemo_texure->texure_npix;i++){
+        kemo_texure->texure_rgba[4*i  ] =  0;
+        kemo_texure->texure_rgba[4*i+1] =  0;
+        kemo_texure->texure_rgba[4*i+2] =  0;
+        kemo_texure->texure_rgba[4*i+3] =  0;
+    };
+    return;
+};

@@ -87,7 +87,7 @@
 /* Copy the bytes from the data object into the texture */
         [*texture replaceRegion:region
                     mipmapLevel:0
-                      withBytes:img->imgBMP
+                      withBytes:img->image->rgba
                     bytesPerRow:bytesPerRow];
     };
     return buf->num_nod_buf;

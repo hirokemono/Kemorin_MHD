@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+
+#include "m_vertex_buffer.h"
 #include "m_color_table_c.h"
 #include "ysglfontdata.h"
 #include "write_image_2_bmp.h"
@@ -33,7 +35,7 @@ struct line_text_image{
     
     int npixel;
     int npix_img[2];
-    unsigned char *imgBMP;
+    struct kemoview_gl_texure *image;
 
     int npix_box[2];
 };
