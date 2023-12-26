@@ -40,28 +40,6 @@ static unsigned int cube_nodes[8] = {3, 2, 1, 0, 4, 5, 6, 7};
 */
 /* cube informaiton into VBO */
 
-struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele){
-    struct gl_index_buffer *index_buf;
-    if((index_buf = (struct gl_index_buffer *) malloc(sizeof(struct gl_index_buffer))) == NULL) {
-        printf("malloc error in gl_index_buffer\n");
-        exit(0);
-    }
-    index_buf->num_ele_buf =  numele;
-    index_buf->num_each_ele = nnod_4_ele;
-    index_buf->nsize_buf =    numele * nnod_4_ele;
-    
-    if((index_buf->ie_buf = (unsigned int *) malloc(index_buf->nsize_buf * sizeof(unsigned int))) == NULL){
-        printf("malloc error in index_buf\n");
-        exit(0);
-    }
-    return index_buf;
-}
-
-void dealloc_gl_index_buffer(struct gl_index_buffer *index_buf){
-    if(index_buf->nsize_buf > 0) free(index_buf->ie_buf);
-    free(index_buf);
-    return;
-};
 
 void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
                      struct gl_index_buffer *index_buf){

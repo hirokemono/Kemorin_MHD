@@ -17,8 +17,7 @@
 
 #include "m_vertex_buffer.h"
 #include "m_colorbar_work.h"
-#include "m_kemoview_psf_menu.h"
-#include "set_cube_to_buf.h"
+// #include "m_kemoview_psf_menu.h"
 
 @interface KemoViewMetalBuffers : NSObject
 

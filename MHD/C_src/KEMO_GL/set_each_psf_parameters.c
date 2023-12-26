@@ -102,9 +102,7 @@ int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){
 void set_psf_patch_color_mode(struct kemo_array_control *psf_a,
                               struct psf_menu_val *psf_menu, int iflag){
 	psf_menu->psf_patch_color = iflag;
-    if(iflag != TEXTURED_SURFACE){
-        psf_a->psf_texure->ipsf_texured = -1;
-    };
+    if(iflag != TEXTURED_SURFACE){psf_a->ipsf_texured = -1;};
 	return;
 };
 

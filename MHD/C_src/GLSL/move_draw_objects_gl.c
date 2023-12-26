@@ -286,7 +286,8 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
         Const_VAO_4_Phong(kemo_VAOs->fline_VAO[0], kemo_buffers->FLINE_tube_buf);
         Const_VAO_4_Simple(kemo_VAOs->fline_VAO[1], kemo_buffers->FLINE_line_buf);
         
-        const_PSF_gl_texure_name(kemo_psf->psf_a->psf_texure, kemo_shaders);
+        const_PSF_gl_texure_name(kemo_psf->psf_a->ipsf_texured,
+                                 kemo_psf->psf_a->psf_texure, kemo_shaders);
         set_PSF_solid_objects_VAO(kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
                                   kemo_buffers->PSF_isoline_buf, kemo_buffers->PSF_arrow_buf,
                                   kemo_VAOs->psf_solid_VAO);

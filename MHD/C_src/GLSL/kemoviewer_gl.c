@@ -123,7 +123,7 @@ int kemoview_get_PSF_file_prefix(struct kemoviewer_type *kemoviewer,
 
 void kemoview_release_PSF_gl_texture(struct kemoviewer_type *kemo_sgl,
                                      struct kemoviewer_gl_type *kemo_gl){
-    release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_a->psf_texure,
+    release_PSF_texture_from_gl(kemo_sgl->kemo_psf->psf_a->ipsf_texured,
                                 kemo_gl->kemo_shaders->texture_name);
     return;
 };

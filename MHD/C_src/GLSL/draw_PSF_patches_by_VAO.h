@@ -21,11 +21,11 @@
 
 /* prototypes */
 
-void const_PSF_gl_texure_name(struct kemo_PSF_texure *psf_texure,
+void const_PSF_gl_texure_name(const int ipsf_texured,
+                              struct kemo_PSF_texure *psf_texure,
                               struct kemoview_shaders *kemo_shaders);
 
-void release_PSF_texture_from_gl(struct kemo_PSF_texure *psf_texure,
-                                 GLuint *texture_name);
+void release_PSF_texture_from_gl(const int ipsf_texured, GLuint *texture_name);
 
 void set_PSF_solid_objects_VAO(struct gl_strided_buffer *PSF_solid_buf, struct gl_strided_buffer *PSF_stxur_buf,
                                struct gl_strided_buffer *PSF_isoline_buf, struct gl_strided_buffer *PSF_arrow_buf,

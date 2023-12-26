@@ -234,7 +234,7 @@ void update_PSF_textured_id(struct kemoview_psf *kemo_psf){
             kemo_psf->psf_m[i]->psf_patch_color = RAINBOW_SURFACE;
         };
     };
-    kemo_psf->psf_a->psf_texure->ipsf_texured = i_current;
+    kemo_psf->psf_a->ipsf_texured = i_current;
     release_texture_4_psf(kemo_psf->psf_a);
 };
 

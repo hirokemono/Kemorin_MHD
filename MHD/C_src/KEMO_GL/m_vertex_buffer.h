@@ -36,6 +36,13 @@ struct gl_strided_buffer{
     float *d_draw;
 };
 
+struct gl_index_buffer{
+    int nsize_buf;
+    int num_ele_buf;
+    int num_each_ele;
+    unsigned int *ie_buf;
+};
+
 /* prototypes */
 long prod_padding_4096chars(long num_bytes);
 
@@ -50,5 +57,11 @@ void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf);
 void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);
 void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);
 void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf);
+
+
+struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele);
+void dealloc_gl_index_buffer(struct gl_index_buffer * alloc_gl_index_buffer);
+
+
 
 #endif /* m_vertex_buffer_h_ */

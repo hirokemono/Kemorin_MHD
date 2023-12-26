@@ -10,7 +10,6 @@ struct kemo_PSF_texure * alloc_kemo_PSF_texure(void){
         printf("Allocation failed for psf_texure \n");
         exit(1);
     }
-    psf_texure->ipsf_texured = -1;
     psf_texure->texure_npix =   0;
     psf_texure->texure_width =  0;
     psf_texure->texure_height = 0;
@@ -171,6 +170,7 @@ void init_kemoview_array(struct kemo_array_control *psf_a){
 	psf_a->num_loaded =  0;
 	psf_a->nmax_loaded = 0;
 	psf_a->id_current =  0;
+    psf_a->ipsf_texured = -1;
 	alloc_kemoview_array(psf_a);
     psf_a->psf_texure = alloc_kemo_PSF_texure();
 	return;
