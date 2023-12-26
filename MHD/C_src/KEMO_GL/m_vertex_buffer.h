@@ -72,5 +72,9 @@ struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele);
 void dealloc_gl_index_buffer(struct gl_index_buffer * alloc_gl_index_buffer);
 
 
+struct kemoview_gl_texure * alloc_kemoview_gl_texure(void);
+void alloc_draw_psf_texture(struct kemoview_gl_texure *psf_texure);
+void dealloc_draw_psf_texture(struct kemoview_gl_texure *psf_texure);
+void dealloc_kemoview_gl_texure(struct kemoview_gl_texure *psf_texure);
 
 #endif /* m_vertex_buffer_h_ */
