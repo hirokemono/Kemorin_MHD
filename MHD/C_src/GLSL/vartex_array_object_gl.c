@@ -243,8 +243,7 @@ void Destroy_FBO(struct VAO_ids *FBO){
 }
 
 
-GLuint set_texture_to_buffer(const int iwidth, const int iheight, 
-                             const unsigned char *rgba){
+GLuint set_texture_to_buffer(struct kemoview_gl_texure *kemo_texure){
 	/* Preference for resiging texture */
     GLuint textureName;
 	glGenTextures(1, &textureName);
@@ -253,19 +252,22 @@ GLuint set_texture_to_buffer(const int iwidth, const int iheight,
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-	glTexImage2D(GL_TEXTURE_2D , 0 , GL_RGBA , iwidth, iheight,
-				 0 , GL_RGBA , GL_UNSIGNED_BYTE , rgba);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+                 kemo_texure->nipxel_xy[0],
+                 kemo_texure->nipxel_xy[1],
+				 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                 kemo_texure->texure_rgba);
 	return textureName;
 };
 
-void const_texture_VBO(const int iwidth, const int iheight, const unsigned char *rgba,
+void const_texture_VBO(struct kemoview_gl_texure *kemo_texure,
                        struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
     VAO->npoint_draw = strided_buf->num_nod_buf;
     if(VAO->npoint_draw <= 0) return;
 
     glBindVertexArray(VAO->id_VAO);
     Const_VAO_4_Texture(VAO, strided_buf);
-    VAO->id_texure = set_texture_to_buffer(iwidth, iheight, rgba);
+    VAO->id_texure = set_texture_to_buffer(kemo_texure);
     glBindVertexArray(0);
     return;
 };

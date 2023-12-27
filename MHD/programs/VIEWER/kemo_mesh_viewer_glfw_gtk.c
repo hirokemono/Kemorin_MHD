@@ -179,27 +179,29 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 
 /* Main GTK window */
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
-    struct line_text_image *l_txt_img;
+    struct kemoview_gl_texure *render_image;
     if(kemoview_get_view_type_flag(single_kemoview) == VIEW_STEREO){
-        l_txt_img = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_sgl_gl);
+        render_image = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_sgl_gl);
     }else{
-        l_txt_img = draw_objects_to_rgb_gl(single_kemoview, kemo_sgl_gl);
+        render_image = draw_objects_to_rgb_gl(single_kemoview, kemo_sgl_gl);
     }
     
-    struct line_text_image *fliped_img = alloc_line_text_image(l_txt_img->image->nipxel_xy[0],
-                                                               l_txt_img->image->nipxel_xy[1], 20);
-    flip_gl_bitmap(l_txt_img->image->nipxel_xy[0], l_txt_img->image->nipxel_xy[1],
-                   l_txt_img->image->texure_rgba, fliped_img->image->texure_rgba);
-    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->image->texure_rgba,
+    struct kemoview_gl_texure *fliped_img = alloc_kemoview_gl_texure();
+    fliped_img->nipxel_xy[0] = render_image->nipxel_xy[0];
+    fliped_img->nipxel_xy[1] = render_image->nipxel_xy[1];
+    alloc_draw_psf_texture(fliped_img);
+    flip_gl_bitmap(render_image->nipxel_xy[0], render_image->nipxel_xy[1],
+                   render_image->texure_rgba, fliped_img->texure_rgba);
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->texure_rgba,
                                                  GDK_COLORSPACE_RGB, FALSE, 8,
-                                                 l_txt_img->image->nipxel_xy[0], l_txt_img->image->nipxel_xy[1],
-                                                 (3*l_txt_img->image->nipxel_xy[0]),
+                                                 fliped_img->nipxel_xy[0], fliped_img->nipxel_xy[1],
+                                                 (3*fliped_img->nipxel_xy[0]),
                                                  NULL, NULL);
 
     GtkClipboard *clipboard = (GtkClipboard *) user_data;
     gtk_clipboard_set_image(clipboard, pixbuf);
-    dealloc_line_text_image(l_txt_img);
-    dealloc_line_text_image(fliped_img);
+    dealloc_kemoview_gl_texure(render_image);
+    dealloc_kemoview_gl_texure(fliped_img);
     return;
 }
 
