@@ -32,11 +32,8 @@ struct line_text_image{
     float text_opacity;
     int len_text;
     char *texts;
-    
-    int npixel;
-    struct kemoview_gl_texure *image;
 
-    int npix_box[2];
+    struct kemoview_gl_texure *image;
 };
 
 struct cbar_work{

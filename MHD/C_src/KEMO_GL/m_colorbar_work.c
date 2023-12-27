@@ -19,8 +19,6 @@ struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_t
     l_txt_img->image->nipxel_xy[0] = npix_x;
     l_txt_img->image->nipxel_xy[1] = npix_y;
     alloc_draw_psf_texture(l_txt_img->image);
-    
-    l_txt_img->npixel = l_txt_img->image->nipxel_xy[0] * l_txt_img->image->nipxel_xy[1];
     return l_txt_img;
 };
 
@@ -38,12 +36,12 @@ void clear_line_text_image(struct line_text_image *l_txt_img){
 };
 
 void check_line_text_bitmap(struct line_text_image *l_txt_img){
-    unsigned char *testBMP = (unsigned char *) calloc((9 * l_txt_img->npixel), sizeof(unsigned char));
+    unsigned char *testBMP = (unsigned char *) calloc((9 * l_txt_img->image->texure_npix), sizeof(unsigned char));
     if(testBMP == NULL){
         printf("malloc error for testBMP\n");
         exit(0);
     };
-    for(int i=0;i<l_txt_img->npixel;i++){
+    for(int i=0;i<l_txt_img->image->texure_npix;i++){
         testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) l_txt_img->image->texure_rgba[4*i  ]));
         testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) l_txt_img->image->texure_rgba[4*i+1]));
         testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) l_txt_img->image->texure_rgba[4*i+2]));
@@ -97,10 +95,10 @@ void set_line_msgbox_image(int icolor_txt, int icolor_mid,
         l_txt_img->image->texure_rgba[4*i+1] = icolor_txt;
         l_txt_img->image->texure_rgba[4*i+2] = icolor_txt;
         l_txt_img->image->texure_rgba[4*i+3] = icolor_txt;
-        l_txt_img->image->texure_rgba[4*(l_txt_img->npixel-i-1)  ] = icolor_mid;
-        l_txt_img->image->texure_rgba[4*(l_txt_img->npixel-i-1)+1] = icolor_mid;
-        l_txt_img->image->texure_rgba[4*(l_txt_img->npixel-i-1)+2] = icolor_mid;
-        l_txt_img->image->texure_rgba[4*(l_txt_img->npixel-i-1)+3] = icolor_mid;
+        l_txt_img->image->texure_rgba[4*(l_txt_img->image->texure_npix-i-1)  ] = icolor_mid;
+        l_txt_img->image->texure_rgba[4*(l_txt_img->image->texure_npix-i-1)+1] = icolor_mid;
+        l_txt_img->image->texure_rgba[4*(l_txt_img->image->texure_npix-i-1)+2] = icolor_mid;
+        l_txt_img->image->texure_rgba[4*(l_txt_img->image->texure_npix-i-1)+3] = icolor_mid;
     };
     for(i=0;i<l_txt_img->image->nipxel_xy[1];i++){
         l_txt_img->image->texure_rgba[4*l_txt_img->image->nipxel_xy[0]*i  ] = icolor_txt;
@@ -124,7 +122,7 @@ void set_line_msgbox_image(int icolor_txt, int icolor_mid,
 
 void set_line_text_color(float text_color3[3], struct line_text_image *l_txt_img){
     int i;
-    for(i=0;i<l_txt_img->npixel;i++){
+    for(i=0;i<l_txt_img->image->texure_npix;i++){
         l_txt_img->image->texure_rgba[4*i  ]
             = (unsigned char) (text_color3[0] * (float) ((int) l_txt_img->image->texure_rgba[4*i  ]));
         l_txt_img->image->texure_rgba[4*i+1]
@@ -137,7 +135,7 @@ void set_line_text_color(float text_color3[3], struct line_text_image *l_txt_img
 
 static void set_line_text_opacity(struct line_text_image *l_txt_img){
     int i;
-    for(i=0;i<l_txt_img->npixel;i++){
+    for(i=0;i<l_txt_img->image->texure_npix;i++){
         l_txt_img->image->texure_rgba[4*i+3] = (unsigned char) ((float) 255 * l_txt_img->text_opacity);
     };
     return;
