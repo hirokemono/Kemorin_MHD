@@ -34,7 +34,6 @@ struct line_text_image{
     char *texts;
     
     int npixel;
-    int npix_img[2];
     struct kemoview_gl_texure *image;
 
     int npix_box[2];

@@ -179,28 +179,30 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 
 /* Main GTK window */
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
-    struct line_text_image *image;
+    struct line_text_image *l_txt_img;
     if(kemoview_get_view_type_flag(single_kemoview) == VIEW_STEREO){
-        image = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_sgl_gl);
+        l_txt_img = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_sgl_gl);
     }else{
-        image = draw_objects_to_rgb_gl(single_kemoview, kemo_sgl_gl);
+        l_txt_img = draw_objects_to_rgb_gl(single_kemoview, kemo_sgl_gl);
     }
     
-    struct line_text_image *fliped_img = alloc_line_text_image(image->npix_img[0],
-                                                               image->npix_img[1], 20);
-    flip_gl_bitmap(image->npix_img[0], image->npix_img[1],
-                   image->image->texure_rgba, fliped_img->image->texure_rgba);
+    struct line_text_image *fliped_img = alloc_line_text_image(l_txt_img->image->nipxel_xy[0],
+                                                               l_txt_img->image->nipxel_xy[1], 20);
+    flip_gl_bitmap(l_txt_img->image->nipxel_xy[0], l_txt_img->image->nipxel_xy[1],
+                   l_txt_img->image->texure_rgba, fliped_img->image->texure_rgba);
     GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->image->texure_rgba,
                                                  GDK_COLORSPACE_RGB, FALSE, 8,
-                                                 image->npix_img[0], image->npix_img[1],
-                                                 (3*image->npix_img[0]),
+                                                 l_txt_img->image->nipxel_xy[0], l_txt_img->image->nipxel_xy[1],
+                                                 (3*l_txt_img->image->nipxel_xy[0]),
                                                  NULL, NULL);
 
     GtkClipboard *clipboard = (GtkClipboard *) user_data;
     gtk_clipboard_set_image(clipboard, pixbuf);
-    dealloc_line_text_image(image);
+    dealloc_line_text_image(l_txt_img);
     dealloc_line_text_image(fliped_img);
+    return;
 }
+
 static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
     struct main_buttons *mbot = (struct main_buttons *)user_data;
     gchar * text = gtk_button_get_label(button);
