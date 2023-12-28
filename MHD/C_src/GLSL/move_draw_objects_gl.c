@@ -307,9 +307,9 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
     const_texture_VBO(kemo_buffers->cbar_min_image->image,  kemo_buffers->min_buf,  kemo_VAOs->cbar_VAO[1]);
     const_texture_VBO(kemo_buffers->cbar_max_image->image,  kemo_buffers->max_buf,  kemo_VAOs->cbar_VAO[2]);
     const_texture_VBO(kemo_buffers->cbar_zero_image->image, kemo_buffers->zero_buf, kemo_VAOs->cbar_VAO[3]);
-    const_texture_VBO(kemo_buffers->tlabel_image->image,    kemo_buffers->time_buf, kemo_VAOs->time_VAO);
+    const_texture_VBO(kemo_buffers->tlabel_image->image,    kemo_buffers->tlabel_image->vertex, kemo_VAOs->time_VAO);
     
-    const_texture_VBO(kemo_buffers->message_image->image,   kemo_buffers->message_image->vertex,  kemo_VAOs->msg_VAO);
+    const_texture_VBO(kemo_buffers->message_buf->image,   kemo_buffers->message_buf->vertex,  kemo_VAOs->msg_VAO);
     set_initial_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf, kemo_VAOs->cube_VAO);
     return;
 };

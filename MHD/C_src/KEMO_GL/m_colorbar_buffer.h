@@ -73,7 +73,7 @@ void set_time_text_image(float text_color3[3], struct textbox_gl_buffer *tlabel_
 float message_xmax(const int nx_win);
 float message_ymin(const int ny_win);
 void set_windowsize_image(const int npixel_x, const int npixel_y,
-                          struct textbox_gl_buffer *message_image);
+                          struct textbox_gl_buffer *message_buf);
 
 #endif // m_colorbar_buffer_
 

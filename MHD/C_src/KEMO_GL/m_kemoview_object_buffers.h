@@ -60,7 +60,6 @@ struct kemoview_buffers{
     struct gl_strided_buffer *min_buf;
     struct gl_strided_buffer *max_buf;
     struct gl_strided_buffer *zero_buf;
-    struct gl_strided_buffer *time_buf;
     
     struct gl_strided_buffer *screen_buf;
     
@@ -68,7 +67,7 @@ struct kemoview_buffers{
     struct textbox_gl_buffer *cbar_max_image;
     struct textbox_gl_buffer *cbar_zero_image;
     struct textbox_gl_buffer *tlabel_image;
-    struct textbox_gl_buffer *message_image;
+    struct textbox_gl_buffer *message_buf;
 };
 
 

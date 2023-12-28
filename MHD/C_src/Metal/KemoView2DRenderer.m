@@ -77,14 +77,14 @@
                                                                                texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
     
     kemoView2DMetalBufs->numtimeLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->time_buf
+                                                                               buffer:kemo_buffers->tlabel_image->vertex
                                                                                 image:kemo_buffers->tlabel_image->image
                                                                                vertex:&(kemoView2DMetalBufs->timeLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->timeLabelTexure)];
     
     kemoView2DMetalBufs->numMessageVertice =   [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->message_image->vertex
-                                                                                image:kemo_buffers->message_image->image
+                                                                               buffer:kemo_buffers->message_buf->vertex
+                                                                                image:kemo_buffers->message_buf->image
                                                                                vertex:&(kemoView2DMetalBufs->messageVertice)
                                                                                texure:&(kemoView2DMetalBufs->messageTexure)];
     return;

@@ -194,17 +194,17 @@ float message_xmax(const int nx_win){return 0.05 * ((float) nx_win);};
 float message_ymin(const int ny_win){return 0.92 * ((float) ny_win);};
 
 void set_windowsize_image(const int npixel_x, const int npixel_y,
-                          struct textbox_gl_buffer *message_image){
+                          struct textbox_gl_buffer *message_buf){
 	int i;
 	float text_color3[4];
 	
 	for(i=0;i<3;i++){text_color3[i] = 1.0;};
     text_color3[3] = 1.0;
 	
-	sprintf(message_image->texts, " Window size:(%4d,%4d)", npixel_x, npixel_y);
-    set_line_msgbox_image(ICOLOR_FULL, ICOLOR_MID, message_image->image);
-    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, message_image->texts, message_image->image);
-    set_line_text_color(text_color3, message_image->image);
-    set_line_text_opacity(message_image->text_opacity, message_image->image);
-    /* check_line_text_bitmap(message_image->image) */
+	sprintf(message_buf->texts, " Window size:(%4d,%4d)", npixel_x, npixel_y);
+    set_line_msgbox_image(ICOLOR_FULL, ICOLOR_MID, message_buf->image);
+    set_line_text24_image(ICOLOR_FULL, ICOLOR_MID, message_buf->texts, message_buf->image);
+    set_line_text_color(text_color3, message_buf->image);
+    set_line_text_opacity(message_buf->text_opacity, message_buf->image);
+    /* check_line_text_bitmap(message_buf->image) */
 };

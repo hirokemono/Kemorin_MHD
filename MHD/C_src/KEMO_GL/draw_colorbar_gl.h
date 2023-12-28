@@ -32,8 +32,7 @@ int count_colorbar_box_buffer(int iflag_zero, int num_quad);
 void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
                             float text_color[4], float bg_color[4],
                             struct kemo_array_control *psf_a,
-                            struct textbox_gl_buffer *tlabel_image,
-                            struct gl_strided_buffer *time_buf);
+                            struct textbox_gl_buffer *tlabel_buf);
 void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            float text_color[4], float bg_color[4],
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
@@ -45,7 +44,7 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
 void const_message_buffer(const int iflag_retina,
                           const int nx_win, const int ny_win,
                           struct gl_strided_buffer *cbar_buf,
-                          struct textbox_gl_buffer *message_image);
+                          struct textbox_gl_buffer *message_buf);
 void const_screen_buffer(int iflag_view_type, int nx_win, int ny_win,
                          struct gl_strided_buffer *cbar_buf);
 #endif
