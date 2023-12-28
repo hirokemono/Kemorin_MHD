@@ -183,10 +183,10 @@ void set_colorbar_text_image(float text_color3[3], float value,
     return;
 };
 
-void set_time_text_image(float text_color3[3], struct textbox_gl_buffer *tlabel_image){
-    set_line_text16_image(ICOLOR_FULL, ICOLOR_MID, tlabel_image->texts, tlabel_image->image);
-    set_line_text_color(text_color3, tlabel_image->image);
-    /* check_line_text_bitmap(tlabel_image->image) */
+void set_time_text_image(float text_color3[3], struct textbox_gl_buffer *timelabel_buf){
+    set_line_text16_image(ICOLOR_FULL, ICOLOR_MID, timelabel_buf->texts, timelabel_buf->image);
+    set_line_text_color(text_color3, timelabel_buf->image);
+    /* check_line_text_bitmap(timelabel_buf->image) */
     return;
 };
 

@@ -66,7 +66,7 @@ struct kemoview_buffers{
     struct textbox_gl_buffer *cbar_min_image;
     struct textbox_gl_buffer *cbar_max_image;
     struct textbox_gl_buffer *cbar_zero_image;
-    struct textbox_gl_buffer *tlabel_image;
+    struct textbox_gl_buffer *timelabel_buf;
     struct textbox_gl_buffer *message_buf;
 };
 

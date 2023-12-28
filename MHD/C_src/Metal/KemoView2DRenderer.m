@@ -77,8 +77,8 @@
                                                                                texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
     
     kemoView2DMetalBufs->numtimeLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->tlabel_image->vertex
-                                                                                image:kemo_buffers->tlabel_image->image
+                                                                               buffer:kemo_buffers->timelabel_buf->vertex
+                                                                                image:kemo_buffers->timelabel_buf->image
                                                                                vertex:&(kemoView2DMetalBufs->timeLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->timeLabelTexure)];
     

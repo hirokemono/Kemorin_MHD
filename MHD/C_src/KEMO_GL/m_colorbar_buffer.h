@@ -68,7 +68,7 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 void set_colorbar_text_image(float text_color3[3], float value,
                              struct textbox_gl_buffer *l_txt_img);
 
-void set_time_text_image(float text_color3[3], struct textbox_gl_buffer *tlabel_image);
+void set_time_text_image(float text_color3[3], struct textbox_gl_buffer *timelabel_buf);
 
 float message_xmax(const int nx_win);
 float message_ymin(const int ny_win);

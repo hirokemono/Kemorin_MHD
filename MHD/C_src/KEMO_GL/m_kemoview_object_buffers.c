@@ -57,8 +57,8 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     kemo_buffers->max_buf =     init_strided_buffer(n_point);
     kemo_buffers->zero_buf =    init_strided_buffer(n_point);
     
-    kemo_buffers->tlabel_image = alloc_line_text_image(IWIDTH_TLABEL, IHIGHT_TXT, NCHARA_CBOX);
-    kemo_buffers->tlabel_image->vertex = init_strided_buffer(n_point);
+    kemo_buffers->timelabel_buf = alloc_line_text_image(IWIDTH_TLABEL, IHIGHT_TXT, NCHARA_CBOX);
+    kemo_buffers->timelabel_buf->vertex = init_strided_buffer(n_point);
 
     kemo_buffers->message_buf =   alloc_line_text_image(IWIDTH_MSG, IHIGHT_MSG, NCHARA_MSG);
     kemo_buffers->message_buf->vertex = init_strided_buffer(n_point);
@@ -76,8 +76,8 @@ void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
     dealloc_strided_buffer(kemo_buffers->message_buf->vertex);
     dealloc_line_text_image(kemo_buffers->message_buf);
 
-    dealloc_strided_buffer(kemo_buffers->tlabel_image->vertex);
-    dealloc_line_text_image(kemo_buffers->tlabel_image);
+    dealloc_strided_buffer(kemo_buffers->timelabel_buf->vertex);
+    dealloc_line_text_image(kemo_buffers->timelabel_buf);
 
     dealloc_line_text_image(kemo_buffers->cbar_zero_image);
     dealloc_line_text_image(kemo_buffers->cbar_max_image);
@@ -172,7 +172,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
     };
     const_timelabel_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
                            kemo_mesh->text_color, kemo_mesh->bg_color,
-                           kemo_psf->psf_a, kemo_buffers->tlabel_image);
+                           kemo_psf->psf_a, kemo_buffers->timelabel_buf);
     
     const_colorbar_buffer(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
                           kemo_mesh->text_color, kemo_mesh->bg_color,
