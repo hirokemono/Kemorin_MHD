@@ -32,7 +32,7 @@
 
 - (NSUInteger) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                           buffer:(struct gl_strided_buffer *_Nonnull) buf
-                           image:(struct line_text_image *_Nonnull) img
+                           image:(struct kemoview_gl_texure *_Nonnull) image
                           vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                           texure:(id<MTLTexture> _Nonnull *_Nonnull) texture;
 

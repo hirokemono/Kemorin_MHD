@@ -120,7 +120,7 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
                             struct line_text_image *tlabel_image,
                             struct gl_strided_buffer *time_buf){
     if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){
-        clear_line_text_image(tlabel_image);
+        clear_kemoview_gl_texure(tlabel_image->image);
         if(psf_a->iflag_draw_time > 0){
             sprintf(tlabel_image->texts,"    t = %5.4E", (float) psf_a->time_disp);
         }else if(psf_a->iflag_draw_file_step > 0){
@@ -157,12 +157,13 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
     return;
 };
 
-void const_message_buffer(int iflag_retina, int nx_win, int ny_win,
+void const_message_buffer(const int iflag_retina,
+                          const int nx_win, const int ny_win,
                           struct gl_strided_buffer *cbar_buf,
                           struct line_text_image *message_image){
     float xbar_max, ybar_min;
     if(message_image->text_opacity > 0.0){
-        clear_line_text_image(message_image);
+        clear_kemoview_gl_texure(message_image->image);
         xbar_max = message_xmax(nx_win);
         ybar_min = message_ymin(ny_win);
         set_windowsize_image(nx_win, ny_win, message_image);

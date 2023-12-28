@@ -42,7 +42,8 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            struct gl_strided_buffer *zero_buf, struct line_text_image *cbar_zero_image,
                            struct gl_strided_buffer *cbar_buf);
 
-void const_message_buffer(int iflag_retina, int nx_win, int ny_win,
+void const_message_buffer(const int iflag_retina,
+                          const int nx_win, const int ny_win,
                           struct gl_strided_buffer *cbar_buf,
                           struct line_text_image *message_image);
 void const_screen_buffer(int iflag_view_type, int nx_win, int ny_win,

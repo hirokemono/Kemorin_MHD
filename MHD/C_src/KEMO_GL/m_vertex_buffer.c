@@ -151,7 +151,10 @@ struct kemoview_gl_texure * alloc_kemoview_gl_texure(void){
     return kemo_texure;
 }
 
-void alloc_draw_psf_texture(struct kemoview_gl_texure *kemo_texure){
+void alloc_draw_psf_texture(const int npixel_x, const int npixel_y,
+                            struct kemoview_gl_texure *kemo_texure){
+    kemo_texure->nipxel_xy[0] = npixel_x;
+    kemo_texure->nipxel_xy[1] = npixel_y;
     kemo_texure->texure_npix = kemo_texure->nipxel_xy[0] * kemo_texure->nipxel_xy[1];
     kemo_texure->texure_rgba = (unsigned char *) malloc( (4*kemo_texure->texure_npix) * sizeof(unsigned char));
     if ((kemo_texure->texure_rgba) == NULL) {

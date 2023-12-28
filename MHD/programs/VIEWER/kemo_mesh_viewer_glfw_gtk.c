@@ -187,9 +187,9 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     }
     
     struct kemoview_gl_texure *fliped_img = alloc_kemoview_gl_texure();
-    fliped_img->nipxel_xy[0] = render_image->nipxel_xy[0];
-    fliped_img->nipxel_xy[1] = render_image->nipxel_xy[1];
-    alloc_draw_psf_texture(fliped_img);
+    alloc_draw_psf_texture(render_image->nipxel_xy[0],
+                           render_image->nipxel_xy[1],
+                           fliped_img);
     flip_gl_bitmap(render_image->nipxel_xy[0], render_image->nipxel_xy[1],
                    render_image->texure_rgba, fliped_img->texure_rgba);
     GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->texure_rgba,

@@ -62,29 +62,29 @@
                                                                                vertex:&(kemoView2DMetalBufs->colorBarVertice)];
     kemoView2DMetalBufs->numMinLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
                                                                                buffer:kemo_buffers->min_buf
-                                                                                image:kemo_buffers->cbar_min_image
+                                                                                image:kemo_buffers->cbar_min_image->image
                                                                                vertex:&(kemoView2DMetalBufs->minLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->minLabelTexure)];
     kemoView2DMetalBufs->numMaxLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
                                                                                buffer:kemo_buffers->max_buf
-                                                                                image:kemo_buffers->cbar_max_image
+                                                                                image:kemo_buffers->cbar_max_image->image
                                                                                vertex:&(kemoView2DMetalBufs->maxLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->maxLabelTexure)];
     kemoView2DMetalBufs->numZeroLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
                                                                                buffer:kemo_buffers->zero_buf
-                                                                                image:kemo_buffers->cbar_zero_image
+                                                                                image:kemo_buffers->cbar_zero_image->image
                                                                                vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
     
     kemoView2DMetalBufs->numtimeLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
                                                                                buffer:kemo_buffers->time_buf
-                                                                                image:kemo_buffers->tlabel_image
+                                                                                image:kemo_buffers->tlabel_image->image
                                                                                vertex:&(kemoView2DMetalBufs->timeLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->timeLabelTexure)];
     
     kemoView2DMetalBufs->numMessageVertice =   [_kemo2DMetalBufBase setTextBoxTexture:device
                                                                                buffer:kemo_buffers->msg_buf
-                                                                                image:kemo_buffers->message_image
+                                                                                image:kemo_buffers->message_image->image
                                                                                vertex:&(kemoView2DMetalBufs->messageVertice)
                                                                                texure:&(kemoView2DMetalBufs->messageTexure)];
     return;

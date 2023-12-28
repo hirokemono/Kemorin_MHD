@@ -63,7 +63,7 @@ void update_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
                               struct kemoviewer_gl_type *kemo_gl);
 void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
                             struct kemoviewer_gl_type *kemo_gl,
-                            struct line_text_image *anaglyph_image);
+                            struct kemoview_gl_texure *anaglyph_image);
 
 unsigned char * draw_objects_to_rgb_by_FBO(GLuint npix_xy[2],
                                            struct kemoviewer_type *kemoview,

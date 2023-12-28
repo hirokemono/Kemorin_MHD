@@ -356,9 +356,9 @@ void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
 struct kemoview_gl_texure * draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
                                                    struct kemoviewer_gl_type *kemo_gl){
     struct kemoview_gl_texure *image = alloc_kemoview_gl_texure();
-    image->nipxel_xy[0] = kemoview->view_s->nx_frame;
-    image->nipxel_xy[1] = kemoview->view_s->ny_frame;
-    alloc_draw_psf_texture(image);
+    alloc_draw_psf_texture(kemoview->view_s->nx_frame,
+                           kemoview->view_s->ny_frame,
+                           image);
 
     glDrawBuffer(GL_BACK);
     update_draw_objects_gl3(kemoview, kemo_gl);
@@ -372,9 +372,9 @@ struct kemoview_gl_texure * draw_objects_to_rgb_gl(struct kemoviewer_type *kemov
 struct kemoview_gl_texure * draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
                                                     struct kemoviewer_gl_type *kemo_gl){
     struct kemoview_gl_texure *anaglyph_image = alloc_kemoview_gl_texure();
-    anaglyph_image->nipxel_xy[0] = kemoview->view_s->nx_frame;
-    anaglyph_image->nipxel_xy[1] = kemoview->view_s->ny_frame;
-    alloc_draw_psf_texture(anaglyph_image);
+    alloc_draw_psf_texture(kemoview->view_s->nx_frame,
+                           kemoview->view_s->ny_frame,
+                           anaglyph_image);
 
     modify_left_viewmat(kemoview->view_s);
     struct kemoview_gl_texure *left_img = draw_objects_to_rgb_gl(kemoview, kemo_gl);
@@ -393,13 +393,13 @@ struct kemoview_gl_texure * draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemo
 
 void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
                             struct kemoviewer_gl_type *kemo_gl,
-                            struct line_text_image *anaglyph_image){
+                            struct kemoview_gl_texure *anaglyph_image){
     const_screen_buffer(kemoview->view_s->iflag_view_type,
                         kemoview->view_s->nx_frame,
                         kemoview->view_s->ny_frame,
                         kemoview->kemo_buffers->screen_buf);
 
-    const_texture_VBO(anaglyph_image->image,
+    const_texture_VBO(anaglyph_image,
                       kemo_gl->kemo_VAOs->screen_VAO,
                       kemoview->kemo_buffers->screen_buf);
 
