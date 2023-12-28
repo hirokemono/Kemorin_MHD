@@ -1,14 +1,14 @@
 /*
-// m_colorbar_work.c
+// m_colorbar_buffer.c
 */
 
-#include "m_colorbar_work.h"
+#include "m_colorbar_buffer.h"
 
-struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_text)
+struct textbox_gl_buffer * alloc_line_text_image(int npix_x, int npix_y, int len_text)
 {
-    struct line_text_image *l_txt_img;
-    if((l_txt_img = (struct line_text_image *) malloc(sizeof(struct line_text_image))) == NULL){
-        printf("malloc error for line_text_image\n");
+    struct textbox_gl_buffer *l_txt_img;
+    if((l_txt_img = (struct textbox_gl_buffer *) malloc(sizeof(struct textbox_gl_buffer))) == NULL){
+        printf("malloc error for textbox_gl_buffer\n");
         exit(0);
     }
     l_txt_img->text_opacity = 0.0;
@@ -20,7 +20,7 @@ struct line_text_image * alloc_line_text_image(int npix_x, int npix_y, int len_t
     return l_txt_img;
 };
 
-void dealloc_line_text_image(struct line_text_image *l_txt_img)
+void dealloc_line_text_image(struct textbox_gl_buffer *l_txt_img)
 {
     dealloc_kemoview_gl_texure(l_txt_img->image);
     free(l_txt_img->texts);
@@ -174,7 +174,7 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 }
 
 void set_colorbar_text_image(float text_color3[3], float value,
-                             struct line_text_image *l_txt_img){
+                             struct textbox_gl_buffer *l_txt_img){
     sprintf(l_txt_img->texts, "% 3.2E", value);
     clear_kemoview_gl_texure(l_txt_img->image);
     set_line_text16_image(ICOLOR_FULL, ICOLOR_MID, l_txt_img->texts, l_txt_img->image);
@@ -183,7 +183,7 @@ void set_colorbar_text_image(float text_color3[3], float value,
     return;
 };
 
-void set_time_text_image(float text_color3[3], struct line_text_image *tlabel_image){
+void set_time_text_image(float text_color3[3], struct textbox_gl_buffer *tlabel_image){
     set_line_text16_image(ICOLOR_FULL, ICOLOR_MID, tlabel_image->texts, tlabel_image->image);
     set_line_text_color(text_color3, tlabel_image->image);
     /* check_line_text_bitmap(tlabel_image->image) */
@@ -194,7 +194,7 @@ float message_xmax(const int nx_win){return 0.05 * ((float) nx_win);};
 float message_ymin(const int ny_win){return 0.92 * ((float) ny_win);};
 
 void set_windowsize_image(const int npixel_x, const int npixel_y,
-                          struct line_text_image *message_image){
+                          struct textbox_gl_buffer *message_image){
 	int i;
 	float text_color3[4];
 	
