@@ -58,7 +58,6 @@ struct kemoview_buffers{
     
     struct gl_strided_buffer *cbar_buf;
     struct gl_strided_buffer *min_buf;
-    struct gl_strided_buffer *max_buf;
     
     struct gl_strided_buffer *screen_buf;
     
