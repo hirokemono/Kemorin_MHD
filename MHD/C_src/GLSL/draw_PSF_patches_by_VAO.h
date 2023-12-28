@@ -22,7 +22,7 @@
 /* prototypes */
 
 void const_PSF_gl_texure_name(const int ipsf_texured,
-                              struct kemoview_gl_texure *psf_texure,
+                              struct gl_texure_image *psf_texure,
                               struct kemoview_shaders *kemo_shaders);
 
 void release_PSF_texture_from_gl(const int ipsf_texured, GLuint *texture_name);

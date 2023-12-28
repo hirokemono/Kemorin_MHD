@@ -29,7 +29,7 @@ void dealloc_line_text_image(struct line_text_image *l_txt_img)
 };
 
 
-void check_line_text_bitmap(struct kemoview_gl_texure *image){
+void check_line_text_bitmap(struct gl_texure_image *image){
     unsigned char *testBMP = (unsigned char *) calloc((9 * image->texure_npix), sizeof(unsigned char));
     if(testBMP == NULL){
         printf("malloc error for testBMP\n");
@@ -46,7 +46,7 @@ void check_line_text_bitmap(struct kemoview_gl_texure *image){
 };
 
 static void set_line_text16_image(int icolor_txt, int icolor_mid, char *texts,
-                                  struct kemoview_gl_texure *image){
+                                  struct gl_texure_image *image){
     YsGlWriteStringToRGBA8Bitmap(texts, icolor_mid, icolor_mid, icolor_mid, icolor_mid,
                                  image->texure_rgba, image->nipxel_xy[0], image->nipxel_xy[1],
                                  0, 0, YsFont12x16, 14, 16);
@@ -64,7 +64,7 @@ static void set_line_text16_image(int icolor_txt, int icolor_mid, char *texts,
 };
 
 static void set_line_text24_image(int icolor_txt, int icolor_mid, char *texts,
-                                  struct kemoview_gl_texure *image){
+                                  struct gl_texure_image *image){
     YsGlWriteStringToRGBA8Bitmap(texts, icolor_mid, icolor_mid, icolor_mid, icolor_mid,
                                  image->texure_rgba, image->nipxel_xy[0], image->nipxel_xy[1],
                                  0, 4, YsFont16x24, 20, 24);
@@ -82,7 +82,7 @@ static void set_line_text24_image(int icolor_txt, int icolor_mid, char *texts,
 };
 
 static void set_line_msgbox_image(int icolor_txt, int icolor_mid,
-                                  struct kemoview_gl_texure *image){
+                                  struct gl_texure_image *image){
     int i;
     /* Draw box in the texture */
     for(i=0;i<2*image->nipxel_xy[0];i++){
@@ -116,7 +116,7 @@ static void set_line_msgbox_image(int icolor_txt, int icolor_mid,
     return;
 };
 
-void set_line_text_color(const float text_color3[3], struct kemoview_gl_texure *image){
+void set_line_text_color(const float text_color3[3], struct gl_texure_image *image){
     int i;
     for(i=0;i<image->texure_npix;i++){
         image->texure_rgba[4*i  ]
@@ -129,7 +129,7 @@ void set_line_text_color(const float text_color3[3], struct kemoview_gl_texure *
     return;
 };
 
-static void set_line_text_opacity(const float text_opacity, struct kemoview_gl_texure *image){
+static void set_line_text_opacity(const float text_opacity, struct gl_texure_image *image){
     int i;
     for(i=0;i<image->texure_npix;i++){
         image->texure_rgba[4*i+3] = (unsigned char) ((float) 255 * text_opacity);

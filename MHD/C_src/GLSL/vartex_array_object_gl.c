@@ -243,7 +243,7 @@ void Destroy_FBO(struct VAO_ids *FBO){
 }
 
 
-GLuint set_texture_to_buffer(struct kemoview_gl_texure *kemo_texure){
+GLuint set_texture_to_buffer(struct gl_texure_image *kemo_texure){
 	/* Preference for resiging texture */
     GLuint textureName;
 	glGenTextures(1, &textureName);
@@ -260,7 +260,7 @@ GLuint set_texture_to_buffer(struct kemoview_gl_texure *kemo_texure){
 	return textureName;
 };
 
-void const_texture_VBO(struct kemoview_gl_texure *kemo_texure,
+void const_texture_VBO(struct gl_texure_image *kemo_texure,
                        struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
     VAO->npoint_draw = strided_buf->num_nod_buf;
     if(VAO->npoint_draw <= 0) return;

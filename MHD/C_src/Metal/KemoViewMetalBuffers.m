@@ -24,7 +24,7 @@
 
 - (NSUInteger) setPSFTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                       buffer:(struct gl_strided_buffer *_Nonnull) buf
-                       image:(struct kemoview_gl_texure *_Nonnull) psf_texure
+                       image:(struct gl_texure_image *_Nonnull) psf_texure
                       vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                       texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {
@@ -60,7 +60,7 @@
 
 - (NSUInteger) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
                           buffer:(struct gl_strided_buffer *_Nonnull) buf
-                           image:(struct kemoview_gl_texure *_Nonnull) image
+                           image:(struct gl_texure_image *_Nonnull) image
                           vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                           texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {

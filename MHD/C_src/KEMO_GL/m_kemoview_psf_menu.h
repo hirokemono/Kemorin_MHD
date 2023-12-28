@@ -45,7 +45,7 @@ struct kemo_array_control{
     int file_step_disp;
     
     int ipsf_texured;
-    struct kemoview_gl_texure *psf_texure;
+    struct gl_texure_image *psf_texure;
 };
 
 struct psf_menu_val{

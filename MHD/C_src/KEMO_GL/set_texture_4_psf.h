@@ -30,7 +30,7 @@ void full_anaglyph_rgba_by_rgbs(const int num_x, const int num_y,
 
 
 void set_texture_4_psf(int width, int height, const unsigned char *bgra_in,
-                       struct kemoview_gl_texure *psf_texure);
+                       struct gl_texure_image *psf_texure);
 void release_texture_4_psf(struct kemo_array_control *psf_a);
 
 #endif

@@ -3,7 +3,7 @@
 
 #include "set_psf_texture_by_png.h"
 
-static int set_texture_from_png(const char *img_head, struct kemoview_gl_texure *psf_texure) {
+static int set_texture_from_png(const char *img_head, struct gl_texure_image *psf_texure) {
 	int iflag_rgba;
     int nipxel_xy[2];
 	read_png_file_c(img_head, &nipxel_xy[0], &nipxel_xy[1], &iflag_rgba);
@@ -13,7 +13,7 @@ static int set_texture_from_png(const char *img_head, struct kemoview_gl_texure 
 	return 1;
 }
 
-static int set_texture_from_bmp(const char *img_head, struct kemoview_gl_texure *psf_texure) {
+static int set_texture_from_bmp(const char *img_head, struct gl_texure_image *psf_texure) {
     struct BMP_data *d_BMP = read_BMP_c(img_head);
 	alloc_draw_psf_texture(d_BMP->ihpixf, d_BMP->jvpixf, psf_texure);
 	copy_rgba_from_BMP_c(d_BMP, psf_texure->texure_rgba);
@@ -22,7 +22,7 @@ static int set_texture_from_bmp(const char *img_head, struct kemoview_gl_texure 
 }
 
 void set_texture_to_psf(int img_fmt, const char *img_head,
-                        struct kemoview_gl_texure *psf_texure,
+                        struct gl_texure_image *psf_texure,
                         unsigned int *texture_name){
     int iflag = 0;
 	if(img_fmt == SAVE_PNG){

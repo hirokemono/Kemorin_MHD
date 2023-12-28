@@ -44,7 +44,7 @@ struct gl_index_buffer{
 };
 
 
-struct kemoview_gl_texure{
+struct gl_texure_image{
     int nipxel_xy[2];
     int texure_npix;
     unsigned char  *texure_rgba;
@@ -71,11 +71,11 @@ struct gl_index_buffer * alloc_gl_index_buffer(int numele, int nnod_4_ele);
 void dealloc_gl_index_buffer(struct gl_index_buffer * alloc_gl_index_buffer);
 
 
-struct kemoview_gl_texure * alloc_kemoview_gl_texure(void);
+struct gl_texure_image * alloc_kemoview_gl_texure(void);
 void alloc_draw_psf_texture(const int npixel_x, const int npixel_y,
-                            struct kemoview_gl_texure *kemo_texure);
-void dealloc_draw_psf_texture(struct kemoview_gl_texure *kemo_texure);
-void dealloc_kemoview_gl_texure(struct kemoview_gl_texure *kemo_texure);
-void clear_kemoview_gl_texure(struct kemoview_gl_texure *kemo_texure);
+                            struct gl_texure_image *kemo_texure);
+void dealloc_draw_psf_texture(struct gl_texure_image *kemo_texure);
+void dealloc_kemoview_gl_texure(struct gl_texure_image *kemo_texure);
+void clear_kemoview_gl_texure(struct gl_texure_image *kemo_texure);
 
 #endif /* m_vertex_buffer_h_ */

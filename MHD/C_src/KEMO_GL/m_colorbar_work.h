@@ -33,7 +33,7 @@ struct line_text_image{
     int len_text;
     char *texts;
 
-    struct kemoview_gl_texure *image;
+    struct gl_texure_image *image;
 };
 
 struct cbar_work{

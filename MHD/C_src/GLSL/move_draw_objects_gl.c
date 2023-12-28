@@ -353,9 +353,9 @@ void update_draw_objects_gl3(struct kemoviewer_type *kemoview,
 	return;
 }
 
-struct kemoview_gl_texure * draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
-                                                   struct kemoviewer_gl_type *kemo_gl){
-    struct kemoview_gl_texure *image = alloc_kemoview_gl_texure();
+struct gl_texure_image * draw_objects_to_rgb_gl(struct kemoviewer_type *kemoview,
+                                                struct kemoviewer_gl_type *kemo_gl){
+    struct gl_texure_image *image = alloc_kemoview_gl_texure();
     alloc_draw_psf_texture(kemoview->view_s->nx_frame,
                            kemoview->view_s->ny_frame,
                            image);
@@ -369,18 +369,18 @@ struct kemoview_gl_texure * draw_objects_to_rgb_gl(struct kemoviewer_type *kemov
     return image;
 };
 
-struct kemoview_gl_texure * draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
-                                                    struct kemoviewer_gl_type *kemo_gl){
-    struct kemoview_gl_texure *anaglyph_image = alloc_kemoview_gl_texure();
+struct gl_texure_image * draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
+                                                 struct kemoviewer_gl_type *kemo_gl){
+    struct gl_texure_image *anaglyph_image = alloc_kemoview_gl_texure();
     alloc_draw_psf_texture(kemoview->view_s->nx_frame,
                            kemoview->view_s->ny_frame,
                            anaglyph_image);
 
     modify_left_viewmat(kemoview->view_s);
-    struct kemoview_gl_texure *left_img = draw_objects_to_rgb_gl(kemoview, kemo_gl);
+    struct gl_texure_image *left_img = draw_objects_to_rgb_gl(kemoview, kemo_gl);
     
     modify_right_viewmat(kemoview->view_s);
-    struct kemoview_gl_texure *right_img = draw_objects_to_rgb_gl(kemoview, kemo_gl);
+    struct gl_texure_image *right_img = draw_objects_to_rgb_gl(kemoview, kemo_gl);
 
     half_anaglyph_rgba_by_rgbs(left_img->nipxel_xy[0], left_img->nipxel_xy[1],
                                left_img->texure_rgba, right_img->texure_rgba,
@@ -393,7 +393,7 @@ struct kemoview_gl_texure * draw_anaglyph_to_rgb_gl(struct kemoviewer_type *kemo
 
 void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
                             struct kemoviewer_gl_type *kemo_gl,
-                            struct kemoview_gl_texure *anaglyph_image){
+                            struct gl_texure_image *anaglyph_image){
     const_screen_buffer(kemoview->view_s->iflag_view_type,
                         kemoview->view_s->nx_frame,
                         kemoview->view_s->ny_frame,

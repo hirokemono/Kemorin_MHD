@@ -124,7 +124,7 @@ static void vertical_flip_rgba_c(int ihpixf, int jvpixf, const unsigned char *fl
 }
 
 void set_texture_4_psf(int width, int height, const unsigned char *bgra_in, 
-                       struct kemoview_gl_texure *psf_texure){
+                       struct gl_texure_image *psf_texure){
 	alloc_draw_psf_texture(width, height, psf_texure);
     vertical_flip_rgba_c(psf_texure->nipxel_xy[0], psf_texure->nipxel_xy[1],
                          bgra_in, psf_texure->texure_rgba);

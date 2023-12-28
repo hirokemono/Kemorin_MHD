@@ -44,8 +44,8 @@ void Const_FBO(unsigned int width, unsigned int height,
                struct VAO_ids *FBO);
 void Destroy_FBO(struct VAO_ids *FBO);
 
-GLuint set_texture_to_buffer(struct kemoview_gl_texure *kemo_texure);
-void const_texture_VBO(struct kemoview_gl_texure *kemo_texure,
+GLuint set_texture_to_buffer(struct gl_texure_image *kemo_texure);
+void const_texture_VBO(struct gl_texure_image *kemo_texure,
                        struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf);
 void DestroyVBO(struct VAO_ids *VAO);
 
