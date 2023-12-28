@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "skip_comment_c.h"
+
 #define NPATCH_GL_BUFFER  4096
 
 struct gl_strided_buffer{
@@ -50,6 +52,14 @@ struct gl_texure_image{
     unsigned char  *texure_rgba;
 };
 
+struct gl_textbox_buffer{
+    float text_opacity;
+    int len_text;
+    char *texts;
+
+    struct gl_strided_buffer *vertex;
+    struct gl_texure_image *image;
+};
 
 /* prototypes */
 long prod_padding_4096chars(long num_bytes);
@@ -77,5 +87,9 @@ void alloc_draw_psf_texture(const int npixel_x, const int npixel_y,
 void dealloc_draw_psf_texture(struct gl_texure_image *kemo_texure);
 void dealloc_kemoview_gl_texure(struct gl_texure_image *kemo_texure);
 void clear_kemoview_gl_texure(struct gl_texure_image *kemo_texure);
+
+struct gl_textbox_buffer * alloc_line_text_image(const int npix_x, const int npix_y,
+                                                 const long n_vertex, const int len_text);
+void dealloc_line_text_image(struct gl_textbox_buffer *l_txt_img);
 
 #endif /* m_vertex_buffer_h_ */

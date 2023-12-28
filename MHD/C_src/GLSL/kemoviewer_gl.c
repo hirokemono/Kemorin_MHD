@@ -61,7 +61,8 @@ void kemoview_modify_view(struct kemoviewer_type *kemo_sgl,
 
 void kemoview_modify_anaglyph(struct kemoviewer_type *kemo_sgl,
                               struct kemoviewer_gl_type *kemo_gl){
-    struct gl_texure_image *anaglyph_image = draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_gl);
+    struct gl_texure_image *anaglyph_image = alloc_kemoview_gl_texure();
+    draw_anaglyph_to_rgb_gl(kemo_sgl, kemo_gl, anaglyph_image);
 
     glDrawBuffer(GL_BACK);
     move_draw_anaglyph_gl3(kemo_sgl, kemo_gl, anaglyph_image);

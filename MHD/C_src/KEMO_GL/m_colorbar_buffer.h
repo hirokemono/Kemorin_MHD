@@ -28,15 +28,6 @@
 #define IWIDTH_MSG 488
 
 
-struct textbox_gl_buffer{
-    float text_opacity;
-    int len_text;
-    char *texts;
-
-    struct gl_strided_buffer *vertex;
-    struct gl_texure_image *image;
-};
-
 struct cbar_work{
 	int iflag_zero;
 	
@@ -55,21 +46,18 @@ struct cbar_work{
 };
 
 /* prototypes */
-struct textbox_gl_buffer * alloc_line_text_image(int npix_x, int npix_y, int len_text);
-void dealloc_line_text_image(struct textbox_gl_buffer *l_txt_img);
-
 void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 						   struct colormap_params *cmap_s, struct cbar_work *cbar_wk);
 
 void set_colorbar_text_image(float text_color3[3], float value,
-                             struct textbox_gl_buffer *l_txt_img);
+                             struct gl_textbox_buffer *l_txt_img);
 
-void set_time_text_image(float text_color3[3], struct textbox_gl_buffer *timelabel_buf);
+void set_time_text_image(float text_color3[3], struct gl_textbox_buffer *timelabel_buf);
 
 float message_xmax(const int nx_win);
 float message_ymin(const int ny_win);
 void set_windowsize_image(const int npixel_x, const int npixel_y,
-                          struct textbox_gl_buffer *message_buf);
+                          struct gl_textbox_buffer *message_buf);
 
 #endif // m_colorbar_buffer_
 

@@ -52,22 +52,13 @@ struct kemoview_buffers * init_kemoview_buffers(void)
     n_point = count_colorbar_box_buffer(IONE, 128);
     kemo_buffers->cbar_buf =        init_strided_buffer(n_point);
 
+    kemo_buffers->cbar_min_buf =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
+    kemo_buffers->cbar_max_buf =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
+    kemo_buffers->cbar_zero_buf = alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
+    kemo_buffers->timelabel_buf = alloc_line_text_image(IWIDTH_TLABEL, IHIGHT_TXT, (ITWO * ITHREE), NCHARA_CBOX);
+    kemo_buffers->message_buf =   alloc_line_text_image(IWIDTH_MSG, IHIGHT_MSG,    (ITWO * ITHREE), NCHARA_MSG);
+
     n_point = ITWO * ITHREE;
-    kemo_buffers->cbar_min_buf =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
-    kemo_buffers->cbar_min_buf->vertex = init_strided_buffer(n_point);
-    
-    kemo_buffers->cbar_max_buf =  alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
-    kemo_buffers->cbar_max_buf->vertex = init_strided_buffer(n_point);
-    
-    kemo_buffers->cbar_zero_buf = alloc_line_text_image(IWIDTH_TXT, IHIGHT_TXT, NCHARA_CBOX);
-    kemo_buffers->cbar_zero_buf->vertex =    init_strided_buffer(n_point);
-    
-    kemo_buffers->timelabel_buf = alloc_line_text_image(IWIDTH_TLABEL, IHIGHT_TXT, NCHARA_CBOX);
-    kemo_buffers->timelabel_buf->vertex = init_strided_buffer(n_point);
-
-    kemo_buffers->message_buf =   alloc_line_text_image(IWIDTH_MSG, IHIGHT_MSG, NCHARA_MSG);
-    kemo_buffers->message_buf->vertex = init_strided_buffer(n_point);
-
     kemo_buffers->screen_buf =  init_strided_buffer(n_point);
     
     return kemo_buffers;
@@ -75,19 +66,10 @@ struct kemoview_buffers * init_kemoview_buffers(void)
 
 void dealloc_kemoview_buffers(struct kemoview_buffers *kemo_buffers)
 {
-    dealloc_strided_buffer(kemo_buffers->message_buf->vertex);
     dealloc_line_text_image(kemo_buffers->message_buf);
-
-    dealloc_strided_buffer(kemo_buffers->timelabel_buf->vertex);
     dealloc_line_text_image(kemo_buffers->timelabel_buf);
-
-    dealloc_strided_buffer(kemo_buffers->cbar_zero_buf->vertex);
     dealloc_line_text_image(kemo_buffers->cbar_zero_buf);
-    
-    dealloc_strided_buffer(kemo_buffers->cbar_max_buf->vertex);
     dealloc_line_text_image(kemo_buffers->cbar_max_buf);
-    
-    dealloc_strided_buffer(kemo_buffers->cbar_min_buf->vertex);
     dealloc_line_text_image(kemo_buffers->cbar_min_buf);
 
     dealloc_gl_index_buffer(kemo_buffers->cube_index_buf);

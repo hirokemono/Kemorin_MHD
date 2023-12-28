@@ -59,21 +59,20 @@
 }
 
 - (NSUInteger) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
-                          buffer:(struct gl_strided_buffer *_Nonnull) buf
-                           image:(struct gl_texure_image *_Nonnull) image
+                          buffer:(struct gl_textbox_buffer *_Nonnull) buf
                           vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                           texure:(id<MTLTexture> _Nonnull *_Nonnull) texture
 {
-    if(buf->num_nod_buf > 0){
-        *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
-                                         length:(buf->num_nod_buf * sizeof(KemoViewVertex))
+    if(buf->vertex->num_nod_buf > 0){
+        *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->vertex->v_buf)
+                                         length:(buf->vertex->num_nod_buf * sizeof(KemoViewVertex))
                                         options:MTLResourceStorageModeShared];
         
 /* Construct message texture */
         MTLTextureDescriptor *lineTextureDescriptor = [[MTLTextureDescriptor alloc] init];
         lineTextureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
-        lineTextureDescriptor.width =  image->nipxel_xy[0];
-        lineTextureDescriptor.height = image->nipxel_xy[1];
+        lineTextureDescriptor.width =  buf->image->nipxel_xy[0];
+        lineTextureDescriptor.height = buf->image->nipxel_xy[1];
 
 /*  Calculate the number of bytes per row in the image. */
         NSUInteger bytesPerRow = 4 * lineTextureDescriptor.width;
@@ -87,10 +86,10 @@
 /* Copy the bytes from the data object into the texture */
         [*texture replaceRegion:region
                     mipmapLevel:0
-                      withBytes:image->texure_rgba
+                      withBytes:buf->image->texure_rgba
                     bytesPerRow:bytesPerRow];
     };
-    return buf->num_nod_buf;
+    return buf->vertex->num_nod_buf;
 }
 
 - (NSUInteger) setCubeVertexs:(id<MTLDevice> _Nonnull *_Nonnull) device

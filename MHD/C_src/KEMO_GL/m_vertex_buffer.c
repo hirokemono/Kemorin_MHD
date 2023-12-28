@@ -187,3 +187,32 @@ void clear_kemoview_gl_texure(struct gl_texure_image *kemo_texure){
     };
     return;
 };
+
+
+struct gl_textbox_buffer * alloc_line_text_image(const int npix_x, const int npix_y,
+                                                 const long n_vertex, const int len_text)
+{
+    struct gl_textbox_buffer *l_txt_img;
+    if((l_txt_img = (struct gl_textbox_buffer *) malloc(sizeof(struct gl_textbox_buffer))) == NULL){
+        printf("malloc error for gl_textbox_buffer\n");
+        exit(0);
+    }
+    l_txt_img->text_opacity = 0.0;
+    l_txt_img->len_text =  len_text;
+    l_txt_img->texts = alloc_string(len_text);
+
+    l_txt_img->vertex = init_strided_buffer(n_vertex);
+    
+    l_txt_img->image = alloc_kemoview_gl_texure();
+    alloc_draw_psf_texture(npix_x, npix_y, l_txt_img->image);
+    return l_txt_img;
+};
+
+void dealloc_line_text_image(struct gl_textbox_buffer *l_txt_img)
+{
+    dealloc_strided_buffer(l_txt_img->vertex);
+    dealloc_kemoview_gl_texure(l_txt_img->image);
+    free(l_txt_img->texts);
+    free(l_txt_img);
+    return;
+};

@@ -179,11 +179,11 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 
 /* Main GTK window */
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
-    struct gl_texure_image *render_image;
+    struct gl_texure_image *render_image = alloc_kemoview_gl_texure();
     if(kemoview_get_view_type_flag(single_kemoview) == VIEW_STEREO){
-        render_image = draw_anaglyph_to_rgb_gl(single_kemoview, kemo_sgl_gl);
+        draw_anaglyph_to_rgb_gl(single_kemoview, kemo_sgl_gl, render_image);
     }else{
-        render_image = draw_objects_to_rgb_gl(single_kemoview, kemo_sgl_gl);
+        draw_objects_to_rgb_gl(single_kemoview, kemo_sgl_gl, render_image);
     }
     
     struct gl_texure_image *fliped_img = alloc_kemoview_gl_texure();

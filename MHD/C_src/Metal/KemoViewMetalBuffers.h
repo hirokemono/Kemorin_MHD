@@ -30,8 +30,7 @@
                       texure:(id<MTLTexture> _Nonnull *_Nonnull) texture;
 
 - (NSUInteger) setTextBoxTexture:(id<MTLDevice> _Nonnull *_Nonnull) device
-                          buffer:(struct gl_strided_buffer *_Nonnull) buf
-                           image:(struct gl_texure_image *_Nonnull) image
+                          buffer:(struct gl_textbox_buffer *_Nonnull) buf
                           vertex:(id<MTLBuffer> _Nonnull *_Nonnull)  vertices
                           texure:(id<MTLTexture> _Nonnull *_Nonnull) texture;
 

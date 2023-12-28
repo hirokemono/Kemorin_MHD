@@ -17,7 +17,6 @@
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_object_buffers.h"
 #include "m_transfer_matrices.h"
-#include "m_gl_transfer_matrix.h"
 
 typedef struct
 {
