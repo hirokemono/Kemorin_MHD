@@ -259,7 +259,7 @@
                      texure:&(kemoViewMetalBuf->timeLabelTexure)
                  projection:projection_mat];
     /*  Commands to render colorbar  box */
-    [self drawTextBoxObject:kemo_buffers->msg_buf
+    [self drawTextBoxObject:kemo_buffers->message_image->vertex
                     encoder:renderEncoder
                   pipelines:kemoView2DPipelines
                      vertex:&(kemoViewMetalBuf->messageVertice)

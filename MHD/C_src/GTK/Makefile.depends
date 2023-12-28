@@ -498,7 +498,7 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
+  $(C_SRCDIR)/KEMO_GL/m_colorbar_buffer.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
   $(C_SRCDIR)/CORE_C/write_image_2_bmp.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \

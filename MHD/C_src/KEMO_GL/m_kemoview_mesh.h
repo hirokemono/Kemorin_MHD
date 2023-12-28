@@ -15,7 +15,7 @@
 #include "kemoviewer_base.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_surface_mesh_4_viewer_c.h"
-#include "m_colorbar_work.h"
+#include "m_colorbar_buffer.h"
 
 struct kemoview_mesh{
     struct viewer_mesh        *mesh_d;

@@ -87,9 +87,9 @@ static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
 
 static void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
                                    struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, struct cbar_work *cbar_wk,
-                                   struct gl_strided_buffer *min_buf,  struct line_text_image *cbar_min_image,
-                                   struct gl_strided_buffer *max_buf,  struct line_text_image *cbar_max_image,
-                                   struct gl_strided_buffer *zero_buf, struct line_text_image *cbar_zero_image){
+                                   struct gl_strided_buffer *min_buf,  struct textbox_gl_buffer *cbar_min_image,
+                                   struct gl_strided_buffer *max_buf,  struct textbox_gl_buffer *cbar_max_image,
+                                   struct gl_strided_buffer *zero_buf, struct textbox_gl_buffer *cbar_zero_image){
     int i;
     min_buf->num_nod_buf =  0;
     max_buf->num_nod_buf =  0;
@@ -117,7 +117,7 @@ static void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
 void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
                             float text_color[4], float bg_color[4],
                             struct kemo_array_control *psf_a,
-                            struct line_text_image *tlabel_image,
+                            struct textbox_gl_buffer *tlabel_image,
                             struct gl_strided_buffer *time_buf){
     if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){
         clear_kemoview_gl_texure(tlabel_image->image);
@@ -138,9 +138,9 @@ void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
 void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            float text_color[4], float bg_color[4],
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                           struct gl_strided_buffer *min_buf,  struct line_text_image *cbar_min_image,
-                           struct gl_strided_buffer *max_buf,  struct line_text_image *cbar_max_image,
-                           struct gl_strided_buffer *zero_buf, struct line_text_image *cbar_zero_image,
+                           struct gl_strided_buffer *min_buf,  struct textbox_gl_buffer *cbar_min_image,
+                           struct gl_strided_buffer *max_buf,  struct textbox_gl_buffer *cbar_max_image,
+                           struct gl_strided_buffer *zero_buf, struct textbox_gl_buffer *cbar_zero_image,
                            struct gl_strided_buffer *cbar_buf){
     struct cbar_work *cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
     if(cbar_wk == NULL){
@@ -160,7 +160,7 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
 void const_message_buffer(const int iflag_retina,
                           const int nx_win, const int ny_win,
                           struct gl_strided_buffer *cbar_buf,
-                          struct line_text_image *message_image){
+                          struct textbox_gl_buffer *message_image){
     float xbar_max, ybar_min;
     if(message_image->text_opacity > 0.0){
         clear_kemoview_gl_texure(message_image->image);

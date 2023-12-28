@@ -261,7 +261,8 @@ GLuint set_texture_to_buffer(struct gl_texure_image *kemo_texure){
 };
 
 void const_texture_VBO(struct gl_texure_image *kemo_texure,
-                       struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+                       struct gl_strided_buffer *strided_buf,
+                       struct VAO_ids *VAO){
     VAO->npoint_draw = strided_buf->num_nod_buf;
     if(VAO->npoint_draw <= 0) return;
 

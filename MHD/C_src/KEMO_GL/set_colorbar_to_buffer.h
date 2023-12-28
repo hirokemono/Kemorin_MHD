@@ -7,8 +7,8 @@
 
 #include <math.h>
 #include "m_color_table_c.h"
-#include "m_colorbar_work.h"
 #include "m_vertex_buffer.h"
+#include "m_colorbar_buffer.h"
 #include "rainbow_color_code_c.h"
 
 /* prototypes */

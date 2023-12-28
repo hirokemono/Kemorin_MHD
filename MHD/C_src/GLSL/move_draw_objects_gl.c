@@ -304,13 +304,12 @@ static void set_draw_objects_to_VAO(struct kemoview_psf *kemo_psf,
     };
     
     Const_VAO_4_Simple(kemo_VAOs->cbar_VAO[0], kemo_buffers->cbar_buf);
-    const_texture_VBO(kemo_buffers->cbar_min_image->image, kemo_VAOs->cbar_VAO[1], kemo_buffers->min_buf);
-    const_texture_VBO(kemo_buffers->cbar_max_image->image, kemo_VAOs->cbar_VAO[2], kemo_buffers->max_buf);
-    const_texture_VBO(kemo_buffers->cbar_zero_image->image, kemo_VAOs->cbar_VAO[3], kemo_buffers->zero_buf);
-    const_texture_VBO(kemo_buffers->tlabel_image->image, kemo_VAOs->time_VAO, kemo_buffers->time_buf);
+    const_texture_VBO(kemo_buffers->cbar_min_image->image,  kemo_buffers->min_buf,  kemo_VAOs->cbar_VAO[1]);
+    const_texture_VBO(kemo_buffers->cbar_max_image->image,  kemo_buffers->max_buf,  kemo_VAOs->cbar_VAO[2]);
+    const_texture_VBO(kemo_buffers->cbar_zero_image->image, kemo_buffers->zero_buf, kemo_VAOs->cbar_VAO[3]);
+    const_texture_VBO(kemo_buffers->tlabel_image->image,    kemo_buffers->time_buf, kemo_VAOs->time_VAO);
     
-    const_texture_VBO(kemo_buffers->message_image->image,
-                      kemo_VAOs->msg_VAO, kemo_buffers->msg_buf);
+    const_texture_VBO(kemo_buffers->message_image->image,   kemo_buffers->message_image->vertex,  kemo_VAOs->msg_VAO);
     set_initial_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf, kemo_VAOs->cube_VAO);
     return;
 };
@@ -399,9 +398,8 @@ void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
                         kemoview->view_s->ny_frame,
                         kemoview->kemo_buffers->screen_buf);
 
-    const_texture_VBO(anaglyph_image,
-                      kemo_gl->kemo_VAOs->screen_VAO,
-                      kemoview->kemo_buffers->screen_buf);
+    const_texture_VBO(anaglyph_image, kemoview->kemo_buffers->screen_buf,
+                      kemo_gl->kemo_VAOs->screen_VAO);
 
     double *orthogonal = orthogonal_projection_mat_c(0.0, kemoview->view_s->nx_frame,
                                                      0.0, kemoview->view_s->ny_frame,

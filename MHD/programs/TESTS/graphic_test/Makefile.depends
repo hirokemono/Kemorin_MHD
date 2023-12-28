@@ -74,7 +74,7 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/CORE_C/set_rgb_colors_c.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_real2_IO.h \
   $(MHDDIR)/C_src/CONTROLS/control_elements_IO_c.h \
-  $(MHDDIR)/C_src/KEMO_GL/m_colorbar_work.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_colorbar_buffer.h \
   $(MHDDIR)/C_src/CORE_C/ysglfontdata.h \
   $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h \
   $(MHDDIR)/C_src/CONTROLS/set_rgba_table_c.h \

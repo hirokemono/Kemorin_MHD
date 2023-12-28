@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include "set_cube_to_buf.h"
 #include "m_kemoview_psf_menu.h"
-#include "m_colorbar_work.h"
+#include "m_colorbar_buffer.h"
 #include "m_gl_transfer_matrix.h"
 #include "m_kemoview_mesh.h"
 #include "m_kemoview_psf.h"
@@ -62,14 +62,13 @@ struct kemoview_buffers{
     struct gl_strided_buffer *zero_buf;
     struct gl_strided_buffer *time_buf;
     
-    struct gl_strided_buffer *msg_buf;
     struct gl_strided_buffer *screen_buf;
     
-    struct line_text_image *cbar_min_image;
-    struct line_text_image *cbar_max_image;
-    struct line_text_image *cbar_zero_image;
-    struct line_text_image *tlabel_image;
-    struct line_text_image *message_image;
+    struct textbox_gl_buffer *cbar_min_image;
+    struct textbox_gl_buffer *cbar_max_image;
+    struct textbox_gl_buffer *cbar_zero_image;
+    struct textbox_gl_buffer *tlabel_image;
+    struct textbox_gl_buffer *message_image;
 };
 
 

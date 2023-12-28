@@ -33,6 +33,7 @@ struct textbox_gl_buffer{
     int len_text;
     char *texts;
 
+    struct gl_strided_buffer *vertex;
     struct gl_texure_image *image;
 };
 

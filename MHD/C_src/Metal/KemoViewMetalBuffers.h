@@ -16,7 +16,6 @@
 #import "AAPLImage.h"
 
 #include "m_vertex_buffer.h"
-// #include "m_colorbar_work.h"
 
 @interface KemoViewMetalBuffers : NSObject
 
