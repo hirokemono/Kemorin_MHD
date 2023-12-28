@@ -232,7 +232,7 @@
                      vertex:&(kemoViewMetalBuf->colorBarVertice)
                  projection:projection_mat];
     /*  Commands to render colorbar  label */
-    [self drawTextBoxObject:kemo_buffers->min_buf
+    [self drawTextBoxObject:kemo_buffers->cbar_min_buf->vertex
                     encoder:renderEncoder
                   pipelines:kemoView2DPipelines
                      vertex:&(kemoViewMetalBuf->minLabelVertice)

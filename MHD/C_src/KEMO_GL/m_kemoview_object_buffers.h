@@ -56,12 +56,11 @@ struct kemoview_buffers{
     int ncorner_axis;
     struct gl_strided_buffer *axis_buf;
     
-    struct gl_strided_buffer *cbar_buf;
-    struct gl_strided_buffer *min_buf;
-    
+
     struct gl_strided_buffer *screen_buf;
     
-    struct textbox_gl_buffer *cbar_min_image;
+    struct gl_strided_buffer *cbar_buf;
+    struct textbox_gl_buffer *cbar_min_buf;
     struct textbox_gl_buffer *cbar_max_buf;
     struct textbox_gl_buffer *cbar_zero_buf;
     struct textbox_gl_buffer *timelabel_buf;

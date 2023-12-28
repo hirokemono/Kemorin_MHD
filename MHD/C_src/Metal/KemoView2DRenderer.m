@@ -61,8 +61,8 @@
                                                                                buffer:kemo_buffers->cbar_buf
                                                                                vertex:&(kemoView2DMetalBufs->colorBarVertice)];
     kemoView2DMetalBufs->numMinLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->min_buf
-                                                                                image:kemo_buffers->cbar_min_image->image
+                                                                               buffer:kemo_buffers->cbar_min_buf->vertex
+                                                                                image:kemo_buffers->cbar_min_buf->image
                                                                                vertex:&(kemoView2DMetalBufs->minLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->minLabelTexure)];
     kemoView2DMetalBufs->numMaxLabelVertice =  [_kemo2DMetalBufBase setTextBoxTexture:device
