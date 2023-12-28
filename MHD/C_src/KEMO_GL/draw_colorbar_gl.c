@@ -88,25 +88,25 @@ static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
 static void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
                                    struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, struct cbar_work *cbar_wk,
                                    struct gl_strided_buffer *min_buf,  struct textbox_gl_buffer *cbar_min_image,
-                                   struct textbox_gl_buffer *cbar_max_image,
+                                   struct textbox_gl_buffer *cbar_max_buf,
                                    struct textbox_gl_buffer *cbar_zero_buf){
     int i;
     min_buf->num_nod_buf =  0;
-    cbar_max_image->vertex->num_nod_buf =  0;
+    cbar_max_buf->vertex->num_nod_buf =  0;
     cbar_zero_buf->vertex->num_nod_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0){
             set_colorbar_text_image(text_color, cbar_wk->psf_min, cbar_min_image);
-            set_colorbar_text_image(text_color, cbar_wk->psf_max, cbar_max_image);
+            set_colorbar_text_image(text_color, cbar_wk->psf_max, cbar_max_buf);
             if(cbar_wk->iflag_zero == 1){
                 set_colorbar_text_image(text_color, ZERO, cbar_zero_buf);
             }
 
             min_buf->num_nod_buf =  (ITHREE*2);
-            cbar_max_image->vertex->num_nod_buf =  (ITHREE*2);
+            cbar_max_buf->vertex->num_nod_buf =  (ITHREE*2);
             if(cbar_wk->iflag_zero == 1) cbar_zero_buf->vertex->num_nod_buf = (ITHREE*2);
             colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk,
-                                 min_buf, cbar_max_image->vertex, cbar_zero_buf->vertex);
+                                 min_buf, cbar_max_buf->vertex, cbar_zero_buf->vertex);
             break;
         };
     };
@@ -138,7 +138,7 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
                            float text_color[4], float bg_color[4],
                            struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                            struct gl_strided_buffer *min_buf,  struct textbox_gl_buffer *cbar_min_image,
-                           struct textbox_gl_buffer *cbar_max_image,
+                           struct textbox_gl_buffer *cbar_max_buf,
                            struct textbox_gl_buffer *cbar_zero_buf,
                            struct gl_strided_buffer *cbar_buf){
     struct cbar_work *cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
@@ -150,7 +150,7 @@ void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
     const_colorbar_box_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
                               psf_m, psf_a, cbar_wk, cbar_buf);
     const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a, cbar_wk,
-                           min_buf, cbar_min_image,  cbar_max_image, cbar_zero_buf);
+                           min_buf, cbar_min_image,  cbar_max_buf, cbar_zero_buf);
     free(cbar_wk);
     return;
 };

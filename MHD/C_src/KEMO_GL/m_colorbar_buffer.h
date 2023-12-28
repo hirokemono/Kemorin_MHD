@@ -52,9 +52,6 @@ struct cbar_work{
 	int num_quad;
 	double psf_min;
 	double psf_max;
-	
-    struct textbox_gl_buffer *cbar_min_image;
-    struct textbox_gl_buffer *cbar_max_image;
 };
 
 /* prototypes */
