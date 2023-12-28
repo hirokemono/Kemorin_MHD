@@ -244,7 +244,7 @@
                      vertex:&(kemoViewMetalBuf->maxLabelVertice)
                      texure:&(kemoViewMetalBuf->maxLabelTexure)
                  projection:projection_mat];
-    [self drawTextBoxObject:kemo_buffers->zero_buf
+    [self drawTextBoxObject:kemo_buffers->cbar_zero_buf->vertex
                     encoder:renderEncoder
                   pipelines:kemoView2DPipelines
                      vertex:&(kemoViewMetalBuf->zeroLabelVertice)

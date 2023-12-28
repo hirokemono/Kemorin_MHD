@@ -27,7 +27,7 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
 
 void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
                           struct cbar_work *cbar_wk, struct gl_strided_buffer *min_buf,
-                          struct gl_strided_buffer *max_buf, struct gl_strided_buffer *zero_buf);
+                          struct gl_strided_buffer *max_buf, struct gl_strided_buffer *strided_buf);
 void time_mbox_to_buf(int iflag_retina, float *text_color, float xwin, float ywin,
                       struct gl_strided_buffer *strided_buf);
 

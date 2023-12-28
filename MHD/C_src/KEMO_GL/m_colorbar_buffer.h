@@ -55,7 +55,6 @@ struct cbar_work{
 	
     struct textbox_gl_buffer *cbar_min_image;
     struct textbox_gl_buffer *cbar_max_image;
-    struct textbox_gl_buffer *cbar_zero_image;
 };
 
 /* prototypes */

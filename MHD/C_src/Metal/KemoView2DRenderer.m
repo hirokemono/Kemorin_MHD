@@ -71,8 +71,8 @@
                                                                                vertex:&(kemoView2DMetalBufs->maxLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->maxLabelTexure)];
     kemoView2DMetalBufs->numZeroLabelVertice = [_kemo2DMetalBufBase setTextBoxTexture:device
-                                                                               buffer:kemo_buffers->zero_buf
-                                                                                image:kemo_buffers->cbar_zero_image->image
+                                                                               buffer:kemo_buffers->cbar_zero_buf->vertex
+                                                                                image:kemo_buffers->cbar_zero_buf->image
                                                                                vertex:&(kemoView2DMetalBufs->zeroLabelVertice)
                                                                                texure:&(kemoView2DMetalBufs->zeroLabelTexure)];
     

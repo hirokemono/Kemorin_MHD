@@ -269,7 +269,7 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
 
 void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
                           struct cbar_work *cbar_wk, struct gl_strided_buffer *min_buf,
-                          struct gl_strided_buffer *max_buf, struct gl_strided_buffer *zero_buf){
+                          struct gl_strided_buffer *max_buf, struct gl_strided_buffer *strided_buf){
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	float t1[2], t2[2], t3[2], t4[2];
@@ -344,8 +344,8 @@ void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
 		t2[1] = 0.0;
 		t3[1] = 1.0;
 		t4[1] = 1.0;
-		set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, zero_buf);
-		set_one_texture_to_buf(0, t1, t2, t3, t4, zero_buf);
+		set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+		set_one_texture_to_buf(0, t1, t2, t3, t4, strided_buf);
 	};
 	return;
 };
