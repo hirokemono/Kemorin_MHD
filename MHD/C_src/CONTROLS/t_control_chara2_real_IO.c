@@ -309,7 +309,7 @@ static void set_from_chara2_real_ctl_list_at_c_tbl(char *ref_1, char *ref_2,
 
 
 
-struct chara2_real_clist * init_chara2_real_clist(){
+struct chara2_real_clist * init_chara2_real_clist(void){
     struct chara2_real_clist *c2r_clst;
     if((c2r_clst = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist))) == NULL) {
         printf("malloc error for chara2_real_clist\n");

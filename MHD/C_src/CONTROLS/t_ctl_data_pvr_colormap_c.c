@@ -7,7 +7,7 @@
 
 #include "t_ctl_data_pvr_colormap_c.h"
 
-struct colormap_ctl_c * init_colormap_ctl_c(){
+struct colormap_ctl_c * init_colormap_ctl_c(void){
     struct colormap_ctl_c *cmap_c;
     if((cmap_c = (struct colormap_ctl_c *) malloc(sizeof(struct colormap_ctl_c))) == NULL) {
         printf("malloc error for colormap_ctl_c \n");

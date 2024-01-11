@@ -11,7 +11,7 @@
  message and exits the program. Zlib's error statuses are all less
  than zero. */
 
-static gzFile malloc_gzFile(){
+static gzFile malloc_gzFile(void){
 	gzFile file_gz = (gzFile) malloc(sizeof(gzFile));
 	if(file_gz == NULL){
 		printf("malloc error for gzFile structure\n");

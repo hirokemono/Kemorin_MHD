@@ -129,7 +129,7 @@ void menubottun_bitmap(unsigned char *menu_bitmap){
 	return;
 }
 
-static long count_menu_to_buf(){
+static long count_menu_to_buf(void){
 	return (MENU_HEIGHT * MENU_WIDTH);
 };
 

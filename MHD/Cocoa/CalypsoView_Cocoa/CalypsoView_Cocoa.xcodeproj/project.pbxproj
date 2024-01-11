@@ -18,6 +18,7 @@
 		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
 		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
 		181A7E512A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181A7E4F2A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c */; };
+		181B0A0D2B4FBC8600E23E1C /* libz.1.2.12.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 181B0A0C2B4FBC8600E23E1C /* libz.1.2.12.tbd */; };
 		181D16672B3D02F30069067A /* m_colorbar_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 181D16662B3D02B70069067A /* m_colorbar_buffer.c */; };
 		182174D62492F5640044ECA0 /* calypso_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D22492F5630044ECA0 /* calypso_param_c.c */; };
 		182174D72492F5640044ECA0 /* calypso_zlib_io_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */; };
@@ -79,7 +80,6 @@
 		18A4D60B24C203B4005A559B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A4D60A24C203B4005A559B /* Images.xcassets */; };
 		18AA13E22494183C004A444D /* read_psf_bin_data_gz_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13DF2494183C004A444D /* read_psf_bin_data_gz_c.c */; };
 		18AA13E32494183C004A444D /* read_psf_bin_data_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13E12494183C004A444D /* read_psf_bin_data_c.c */; };
-		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
 		18B8535128C1C1AF00E570CD /* calypso_rawfile_io_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B8534F28C1C1AF00E570CD /* calypso_rawfile_io_c.c */; };
 		18B885EB24E617BB0077BA16 /* t_psf_edge_connect_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885E724E617BA0077BA16 /* t_psf_edge_connect_c.c */; };
 		18B885EC24E617BB0077BA16 /* t_surf_edge_hash_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885E924E617BB0077BA16 /* t_surf_edge_hash_c.c */; };
@@ -198,6 +198,8 @@
 		180FF7D11DDFB55500D20198 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		181A7E4F2A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctl_data_pvr_colormap_IO_c.c; sourceTree = "<group>"; };
 		181A7E502A68FEBD0092E5FC /* ctl_data_pvr_colormap_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ctl_data_pvr_colormap_IO_c.h; sourceTree = "<group>"; };
+		181B0A092B4FBABC00E23E1C /* CoreAudioTypes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioTypes.framework; path = System/Library/Frameworks/CoreAudioTypes.framework; sourceTree = SDKROOT; };
+		181B0A0C2B4FBC8600E23E1C /* libz.1.2.12.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.12.tbd; path = usr/lib/libz.1.2.12.tbd; sourceTree = SDKROOT; };
 		181D16652B3D02B70069067A /* m_colorbar_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_colorbar_buffer.h; sourceTree = "<group>"; };
 		181D16662B3D02B70069067A /* m_colorbar_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m_colorbar_buffer.c; sourceTree = "<group>"; };
 		182174D22492F5630044ECA0 /* calypso_param_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = calypso_param_c.c; sourceTree = "<group>"; };
@@ -505,6 +507,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				181B0A0D2B4FBC8600E23E1C /* libz.1.2.12.tbd in Frameworks */,
 				180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */,
 				1831B9652AE89EBD00118B1E /* Metal.framework in Frameworks */,
 				180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */,
@@ -512,7 +515,6 @@
 				180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */,
 				1831B9632AE89EA600118B1E /* AppKit.framework in Frameworks */,
 				1831B95E2AE8704900118B1E /* MetalKit.framework in Frameworks */,
-				18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -942,6 +944,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				181B0A0C2B4FBC8600E23E1C /* libz.1.2.12.tbd */,
+				181B0A092B4FBABC00E23E1C /* CoreAudioTypes.framework */,
 				1831B9642AE89EBC00118B1E /* Metal.framework */,
 				1831B9622AE89EA600118B1E /* AppKit.framework */,
 				1831B95D2AE8704800118B1E /* MetalKit.framework */,
