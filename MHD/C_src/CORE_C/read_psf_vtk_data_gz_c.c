@@ -183,9 +183,8 @@ static void read_psf_vtk_field_data_gz(void *FP_gzip, int lbuf, char *buf,
     vtk_fields_t *last_fld;
     int iflag_end;
 	char tmpchara[200];
-	int num_word;
 
-    num_word = skip_comment_gz_c(FP_gzip, lbuf, buf);  /* POINT_DATA  nnod_viz */
+    skip_comment_gz_c(FP_gzip, lbuf, buf);  /* POINT_DATA  nnod_viz */
 	sscanf(buf, "%10s %d", tmpchara, &vtk_tmp.nnod_vtk);
 
     vtk_tmp.vtk_fields = (vtk_fields_t *) malloc(sizeof(vtk_fields_t));

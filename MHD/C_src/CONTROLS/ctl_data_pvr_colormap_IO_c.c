@@ -292,17 +292,14 @@ void read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
 
 void write_colormap_file_c(const char *file_name, 
 			struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
-	int level = 0;
-	
     printf("Write PVR colormap file name: %s\n", file_name);
 	if ((FP_Colormap = fopen(file_name, "w")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", file_name);
 		exit (2);                    /* terminate with error message */
 	};
 	
-	level = write_colormap_colorbar_ctl_c(FP_Colormap, 0, 
-				label_colormap_head, cmap_cbar_c);
+	write_colormap_colorbar_ctl_c(FP_Colormap, 0,
+                                  label_colormap_head, cmap_cbar_c);
 	fclose(FP_Colormap);
-	
 	return;
 };

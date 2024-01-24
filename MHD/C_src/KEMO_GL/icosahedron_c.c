@@ -75,7 +75,8 @@ long set_icosahedron_patch(double size, double x_draw[3],
                            double *xyz_draw, double *norm_draw){
     float xyz_plot[12][3];
 	int i, j;
-	int ie1, ie2, ie3;
+    int ie1;
+/*    int ie2, ie3; */
     long icou, nd;
 	
 	for (i = 0; i < 12; i++) {
@@ -84,13 +85,14 @@ long set_icosahedron_patch(double size, double x_draw[3],
 		xyz_plot[i][2]=  x_draw[2] + (float) xyz_ico[i][2] * size;
 	};
 	
-	/*! add a points to the display list */
+/* add a points to the display list */
 	icou = 0;
-	for (i = 0; i < 20; i++) {
+	for (i = 0; i < 20; i++){
+/*
 		ie1 = ifac_poi[i][0];
 		ie2 = ifac_poi[i][1];
 		ie3 = ifac_poi[i][2];
-		
+*/
 		for (j = 0; j < 3; j++) {
 			for (nd = 0; nd < 3; nd++) {
 				ie1 = ifac_poi[i][j];
