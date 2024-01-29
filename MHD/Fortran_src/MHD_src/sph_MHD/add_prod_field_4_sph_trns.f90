@@ -17,6 +17,14 @@
 !!        type(phys_products_address), intent(in) :: ipol_prd, iphys_prd
 !!        type(phys_products_address), intent(inout) :: b_trns_prd
 !!        type(spherical_transform_data), intent(inout) :: trns
+!!      subroutine add_scalar_comps_sph_trns_snap                       &
+!!     &         (d_rj, ipol_cmp, iphys_cmp, b_trns_cmp, trns)
+!!        type(phys_data), intent(in) :: d_rj
+!!        type(field_component_address), intent(in) :: iphys_cmp
+!!        type(field_component_address), intent(in) :: ipol_cmp
+!!        type(field_component_address), intent(inout) :: b_trns_cmp
+!!        type(spherical_transform_data), intent(inout) :: trns
+!!
 !!      subroutine add_prod_vector_sph_trns_snap                        &
 !!     &         (d_rj, ipol_prd, iphys_prd, f_trns_prd, trns)
 !!      subroutine add_prod_scalar_sph_trns_snap                        &
@@ -84,6 +92,39 @@
 !
       end subroutine add_subtracted_sph_trns_snap
 !
+!-----------------------------------------------------------------------
+!
+      subroutine add_scalar_comps_sph_trns_snap                         &
+     &         (d_rj, ipol_cmp, iphys_cmp, b_trns_cmp, trns)
+!
+      use add_field_to_sph_trans_list
+!
+      type(phys_data), intent(in) :: d_rj
+      type(field_component_address), intent(in) :: ipol_cmp, iphys_cmp
+      type(field_component_address), intent(inout) :: b_trns_cmp
+      type(spherical_transform_data), intent(inout) :: trns
+!
+!
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_cmp%i_temp_from_CMB, iphys_cmp%i_temp_from_CMB,          &
+     &    b_trns_cmp%i_temp_from_CMB, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_cmp%i_light_from_CMB, iphys_cmp%i_light_from_CMB,        &
+     &    b_trns_cmp%i_light_from_CMB, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_cmp%i_entropy_from_CMB, iphys_cmp%i_entropy_from_CMB,    &
+     &    b_trns_cmp%i_entropy_from_CMB, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_cmp%i_density_from_CMB, iphys_cmp%i_density_from_CMB,    &
+     &    b_trns_cmp%i_density_from_CMB, trns)
+!
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_cmp%i_asph_pressure, iphys_cmp%i_asph_pressure,          &
+     &    b_trns_cmp%i_asph_pressure, trns)
+!
+      end subroutine add_scalar_comps_sph_trns_snap
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine add_prod_vector_sph_trns_snap                          &

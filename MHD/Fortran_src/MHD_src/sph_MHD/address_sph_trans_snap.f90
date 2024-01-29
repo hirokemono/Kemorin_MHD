@@ -69,6 +69,7 @@
      &         (d_rj, ipol, iphys, b_trns, trns_back)
 !
       use add_base_field_4_sph_trns
+      use add_prod_field_4_sph_trns
 !
       type(phys_data), intent(in) :: d_rj
       type(phys_address), intent(in) :: ipol, iphys
@@ -105,6 +106,10 @@
      &    trns_back)
       call add_base_scalar_sph_trns_snap                                &
      &   (d_rj, ipol%asym_fld, iphys%asym_fld, b_trns%asym_fld,         &
+     &    trns_back)
+!
+      call add_scalar_comps_sph_trns_snap                               &
+     &   (d_rj, ipol%fld_cmp, iphys%fld_cmp, b_trns%fld_cmp,            &
      &    trns_back)
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
 !
