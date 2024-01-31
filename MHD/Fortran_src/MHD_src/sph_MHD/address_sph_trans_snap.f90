@@ -95,6 +95,10 @@
       call add_base_vector_sph_trns_snap                                &
      &   (d_rj, ipol%asym_fld, iphys%asym_fld, b_trns%asym_fld,         &
      &    trns_back)
+!
+      call add_vector_comps_sph_trns_snap                               &
+     &   (d_rj, ipol%prod_fld, iphys%prod_fld, b_trns%prod_fld,         &
+     &    trns_back)
       trns_back%num_vector = trns_back%nfield
 !
 !      Scalars
@@ -110,6 +114,10 @@
 !
       call add_scalar_comps_sph_trns_snap                               &
      &   (d_rj, ipol%fld_cmp, iphys%fld_cmp, b_trns%fld_cmp,            &
+     &    trns_back)
+!
+      call add_flux_prods_sph_trns_snap                                 &
+     &   (d_rj, ipol%prod_fld, iphys%prod_fld, b_trns%prod_fld,         &
      &    trns_back)
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
 !
@@ -167,6 +175,11 @@
       call add_base_force_sph_trns_snap                                 &
      &   (d_rj, ipol%forces_by_asym_sym, iphys%forces_by_asym_sym,      &
      &    f_trns%forces_by_asym_sym, trns_fwd)
+!
+      call add_vector_prods_sph_trns_snap                               &
+     &   (d_rj, ipol%prod_fld, iphys%prod_fld, f_trns%prod_fld,         &
+     &    trns_fwd)
+!
       trns_fwd%num_vector = trns_fwd%nfield
 !
       call add_field_comps_sph_trns_snap                                &

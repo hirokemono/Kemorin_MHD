@@ -106,7 +106,8 @@
      &    SPH_MHD%ipol%base, SPH_MHD%ipol%sym_fld,                      &
      &    SPH_MHD%ipol%asym_fld, SPH_MHD%fld)
       call s_adjust_scalar_rj_fields(SPH_MHD%sph,                       &
-     &    SPH_MHD%ipol%base, SPH_MHD%ipol%fld_cmp, SPH_MHD%fld)
+     &    SPH_MHD%ipol%base, SPH_MHD%ipol%fld_cmp,                      &
+     &    SPH_MHD%ipol%prod_fld, SPH_MHD%fld)
 !
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
      &    SPH_MHD%ipol%sym_fld, SPH_MHD%ipol%forces_by_sym_asym,        &

@@ -141,7 +141,8 @@
       end if
 !
       call s_adjust_scalar_rj_fields(SPH_MHD%sph,                       &
-     &    SPH_MHD%ipol%base, SPH_MHD%ipol%fld_cmp, SPH_MHD%fld)
+     &    SPH_MHD%ipol%base, SPH_MHD%ipol%fld_cmp,                      &
+     &    SPH_MHD%ipol%prod_fld, SPH_MHD%fld)
       call s_decomp_w_sym_rj_base_field(SPH_MHD%sph%sph_rj,             &
      &    SPH_MHD%ipol%base, SPH_MHD%ipol%sym_fld,                      &
      &    SPH_MHD%ipol%asym_fld, SPH_MHD%fld)
@@ -180,6 +181,7 @@
       use sph_transforms_snapshot
       use cal_nonlinear_sph_MHD
       use get_components_from_field
+      use cal_lorentz_by_dipole
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -275,6 +277,10 @@
      &    trns_snap%forward%ncomp,  trns_snap%forward%fld_pole)
       end if
 !
+      call s_cal_lorentz_by_dipole(sph%sph_rtp, MHD_prop%fl_prop,       &
+     &    trns_snap%b_trns, trns_snap%f_trns, trns_snap%backward,       &
+     &    trns_snap%forward)
+!
       if (iflag_debug.gt.0) write(*,*)                                  &
      &    'sph_forward_trans_snapshot_MHD for snapshot'
       call sph_forward_trans_snapshot_MHD                               &
@@ -346,6 +352,7 @@
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
       use cal_geomagnetic_data
+      use cal_helicities_rtp
 !
       integer(kind = kint), intent(in) :: ltr_crust
       type(sph_grids), intent(in) :: sph
@@ -399,6 +406,7 @@
       use cal_energy_flux_rj
       use cal_energy_flux_rtp
       use cal_ene_flux_by_sym_rtp
+      use cal_helicities_rtp
 !
       integer(kind = kint), intent(in) :: ltr_crust
       type(sph_grids), intent(in) :: sph
@@ -434,11 +442,17 @@
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
      &    rj_fld, trns_eflux%backward, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
+!       Evaluate helicities
+      if (iflag_debug.gt.0) write(*,*) 's_cal_helicities_rtp'
+      call s_cal_helicities_rtp                                         &
+     &   (sph%sph_rtp, MHD_prop%fl_prop, trans_p%leg,                   &
+     &    trns_snap%b_trns, trns_eflux%b_trns, trns_eflux%f_trns,       &
+     &    trns_snap%backward, trns_eflux%backward, trns_eflux%forward)
 !       Evaluate energy fluxes
       if (iflag_debug.gt.0) write(*,*) 's_cal_energy_flux_rtp'
       call s_cal_energy_flux_rtp                                        &
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, trans_p%leg,      &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_eflux%b_trns,         &
      &    trns_difv%b_trns, trns_eflux%f_trns,                          &
      &    trns_MHD%forward, trns_snap%backward, trns_eflux%backward,    &

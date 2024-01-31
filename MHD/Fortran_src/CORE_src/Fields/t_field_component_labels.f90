@@ -104,7 +104,6 @@
 !>        start address for aspherical component of pressure
 !!         @f$ P-|\int P dS| @f$
         integer (kind=kint) :: i_asph_pressure =       izero
-!
       end type field_component_address
 !
 ! ----------------------------------------------------------------------
