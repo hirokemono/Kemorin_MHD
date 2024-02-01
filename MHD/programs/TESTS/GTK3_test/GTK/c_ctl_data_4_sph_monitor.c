@@ -46,6 +46,7 @@ extern void * c_sph_idx_pick_sph_m_ctl(void *f_pspec_ctl);
 extern void * c_sph_l_spectr_ctl_block_name(void *f_lp_ctl);
 extern void * c_sph_l_spectr_ctl_iflag(void *f_lp_ctl);
 extern void * c_sph_layer_pwr_spectr_prefix(void *f_lp_ctl);
+extern void * c_layered_lorentz_spectr_prefix(void *f_lp_ctl);
 extern void * c_sph_layer_pwr_spectr_format(void *f_lp_ctl);
 extern void * c_sph_l_spec_degree_switch(void *f_lp_ctl);
 extern void * c_sph_l_spec_order_switch(void *f_lp_ctl);
@@ -95,6 +96,8 @@ static struct f_MHD_sph_layer_spectr_ctls * init_f_MHD_sph_layer_spectr_ctls(voi
 	
 	f_lp_ctl->f_layered_pwr_spectr_prefix = init_f_ctl_chara_item(c_sph_layer_pwr_spectr_prefix,
 																  f_lp_ctl->f_self);
+    f_lp_ctl->f_layered_lorentz_spectr_prefix = init_f_ctl_chara_item(c_layered_lorentz_spectr_prefix,
+                                                                  f_lp_ctl->f_self);
 	f_lp_ctl->f_layered_pwr_spectr_format =  init_f_ctl_chara_item(c_sph_layer_pwr_spectr_format,
 																   f_lp_ctl->f_self);
 	f_lp_ctl->f_degree_spectra_switch =  init_f_ctl_chara_item(c_sph_l_spec_degree_switch,

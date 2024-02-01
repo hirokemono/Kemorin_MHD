@@ -88,6 +88,11 @@
 !
 !>        Data on circles
         type(mul_fields_on_circle) :: mul_circle
+!
+!>        Structure of mean square data
+        type(sph_mean_squares) :: lor_spectr
+!>        Work area of mean square data
+        type(sph_mean_square_work) :: WK_lor_spectr
       end type sph_mhd_monitor_data
 !
 !  --------------------------------------------------------------------

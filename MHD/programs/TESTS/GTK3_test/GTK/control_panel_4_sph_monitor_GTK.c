@@ -12,7 +12,8 @@ static GtkWidget * draw_sph_layer_spectr_ctls_vbox(struct f_MHD_sph_layer_spectr
 											GtkWidget *window){
 	
 	GtkWidget *hbox_c1 = draw_chara_item_entry_hbox(f_lp_ctl->f_layered_pwr_spectr_prefix);
-	GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_lp_ctl->f_layered_pwr_spectr_format);
+    GtkWidget *hbox_c2 = draw_chara_item_entry_hbox(f_lp_ctl->f_layered_pwr_spectr_prefix);
+	GtkWidget *hbox_c3 = draw_chara_item_entry_hbox(f_lp_ctl->f_layered_lorentz_spectr_prefix);
 	GtkWidget *hbox_a1 = real_array_vbox_w_addbottun(f_lp_ctl->f_layer_radius_ctl,
 													 f_sph_monitor_vws->f_layer_radius_ctl_tree);
 	GtkWidget *hbox_a2 = add_int_list_box_w_addbottun(f_lp_ctl->f_idx_spec_layer_ctl,
@@ -26,6 +27,7 @@ static GtkWidget * draw_sph_layer_spectr_ctls_vbox(struct f_MHD_sph_layer_spectr
 	
 	gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c1, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c3, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a1, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_a2, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox_pick), hbox_c3, FALSE, FALSE, 0);

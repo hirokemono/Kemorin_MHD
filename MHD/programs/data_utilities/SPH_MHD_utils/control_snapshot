@@ -513,6 +513,7 @@
     volume_lorentz_spectr_prefix 'monitor/sph_lorentz_work_volume'
 
     layered_pwr_spectr_prefix    'sph_pwr_layer'
+    layered_lorentz_spectr_prefix    'monitor/sph_lorentz_work_layer'
     layered_pwr_spectr_format    'gzip'
 !
 !

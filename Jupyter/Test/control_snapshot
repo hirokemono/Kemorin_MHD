@@ -261,6 +261,7 @@ begin MHD_control
 !
     begin layered_spectrum_ctl
       layered_pwr_spectr_prefix    'monitor/sph_pwr_layer'
+      layered_lorentz_spectr_prefix    'monitor/sph_lorentz_work_layer'
 !
       array spectr_layer_ctl
         spectr_layer_ctl   25

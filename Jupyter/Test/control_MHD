@@ -318,8 +318,9 @@ begin MHD_control
     end array volume_spectrum_ctl
 !
     begin layered_spectrum_ctl
-      layered_pwr_spectr_prefix    'monitor/sph_pwr_layer'
-      layered_pwr_spectr_format    'gzip'
+      layered_pwr_spectr_prefix        'monitor/sph_pwr_layer'
+      layered_lorentz_spectr_prefix    'monitor/sph_lorentz_work_layer'
+      layered_pwr_spectr_format        'gzip'
 !
       array spectr_radius_ctl
         spectr_radius_ctl    0.538461538461538
