@@ -62,7 +62,6 @@
 !
       integer(kind = kint) :: j_fld, i_fld
       integer(kind = kint) :: icomp_rj, jcomp_st, ncomp_rj
-      integer(kind = kint) :: num, i
 !
 !
 !$omp parallel workshare
@@ -80,11 +79,108 @@
         jcomp_st = pwr%istack_comp_sq(j_fld-1) + 1
         ncomp_rj = pwr%istack_comp_sq(j_fld)                            &
      &            - pwr%istack_comp_sq(j_fld-1)
-        num = sph_rj%nidx_rj(2) * ncomp_rj
         call cal_rms_sph_spec_one_field                                 &
-     &     (sph_rj, ipol, ncomp_rj, g_sph_rj, icomp_rj,                 &
+     &     (sph_rj, ncomp_rj, g_sph_rj, icomp_rj, icomp_rj,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      WK_pwr%shl_rj(0,1,1))
+!
+        if(ncomp_rj .eq. n_vector) then
+          call cvt_mag_or_kin_ene_spectr(sph_rj, ipol, icomp_rj,        &
+     &                                   WK_pwr%shl_rj(0,1,1))
+        end if
+!
+        call sum_each_sph_layerd_pwr(l_truncation, sph_rj, pwr,         &
+     &                               ncomp_rj, jcomp_st, WK_pwr)
+      end do
+!
+      end subroutine sum_sph_layerd_pwr
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sum_sph_layerd_lorentz_wk(l_truncation, sph_rj,        &
+     &          pwr, ipol, rj_fld, g_sph_rj, lwk_sp, WK_lor_mode)
+!
+      use t_spheric_rj_data
+      use t_phys_data
+      use t_sph_volume_mean_square
+      use t_rms_4_sph_spectr
+      use t_sum_sph_rms_data
+!
+      use cal_rms_by_sph_spectr
+      use cal_ave_4_rms_vector_sph
+      use radial_int_for_sph_spec
+      use sum_sph_rms_by_degree
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(in) :: rj_fld
+      type(sph_mean_squares), intent(in) :: pwr
+      integer(kind = kint), intent(in) :: l_truncation
+      real(kind = kreal), intent(in)                                    &
+     &                     :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(sph_lorentz_work_spectr), intent(in) :: lwk_sp
+!
+      type(sph_mean_square_work), intent(inout) :: WK_lor_mode
+!
+      integer(kind = kint) :: icou
+!
+!$omp parallel workshare
+      WK_lor_mode%shl_l_local =  zero
+      WK_lor_mode%shl_m_local =  zero
+      WK_lor_mode%shl_lm_local = zero
+      WK_lor_mode%vol_l_local =  zero
+      WK_lor_mode%vol_m_local =  zero
+      WK_lor_mode%vol_lm_local = zero
+!$omp end parallel workshare
+!
+      icou = 1
+      if(i_ujb_mode .gt. 0) then
+        call cal_rms_sph_spec_one_field(sph_rj, n_vector, g_sph_rj,     &
+     &      ipol%base%i_velo, ipol%forces%i_lorentz,                    &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      WK_lor_mode%shl_rj(0,1,1))
+        call sum_each_sph_layerd_pwr(l_truncation, sph_rj, pwr,         &
+     &      n_vector, lwk_sp%i_ujb_mode, WK_lor_mode)
+      end if
+!
+      if(i_dipole_ujb_mode .gt. 0) then
+        call cal_rms_sph_spec_one_field(sph_rj, n_vector, g_sph_rj,     &
+     &      ipol%base%i_velo, ipol%prod_fld%i_dipole_Lorentz,           &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
+     &      WK_lor_mode%shl_rj(0,1,1))
+        call sum_each_sph_layerd_pwr(l_truncation, sph_rj, pwr,         &
+     &      n_vector, lwk_sp%i_dipole_ujb_mode, WK_lor_mode)
+      end if
+!
+      end subroutine sum_sph_layerd_lorentz_wk
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sum_each_sph_layerd_pwr(l_truncation, sph_rj, pwr,     &
+     &                                   ncomp_rj, jcomp_st, WK_pwr)
+!
+      use t_spheric_rj_data
+      use t_phys_data
+      use t_sph_volume_mean_square
+      use t_rms_4_sph_spectr
+      use t_sum_sph_rms_data
+!
+      use cal_rms_by_sph_spectr
+      use cal_ave_4_rms_vector_sph
+      use radial_int_for_sph_spec
+      use sum_sph_rms_by_degree
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_mean_squares), intent(in) :: pwr
+      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: ncomp_rj, jcomp_st
+!
+      type(sph_mean_square_work), intent(inout) :: WK_pwr
+!
+      integer(kind = kint) :: num, i
+!
+!
+        num = sph_rj%nidx_rj(2) * ncomp_rj
 !
         do i = 1, pwr%num_vol_spectr
           call radial_integration                                       &
@@ -117,10 +213,10 @@
         call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
      &      WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,         &
      &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_lm_local(1,0,jcomp_st))
-      end do
 !
-      end subroutine sum_sph_layerd_pwr
+      end subroutine sum_each_sph_layerd_pwr
 !
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine sum_sph_layerd_correlate(l_truncation, sph_rj, pwr,    &
