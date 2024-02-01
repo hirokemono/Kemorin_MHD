@@ -89,6 +89,8 @@
 !>        Data on circles
         type(mul_fields_on_circle) :: mul_circle
 !
+!>        Structure of label for energies
+        type(energy_label_param) :: lor_labels
 !>        Structure of mean square data
         type(sph_mean_squares) :: lor_spectr
 !>        Work area of mean square data
