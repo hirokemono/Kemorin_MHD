@@ -78,6 +78,7 @@ struct sph_monitor_control_c{
 	
     struct chara_ctl_item *volume_average_prefix_c;
     struct chara_ctl_item *volume_pwr_spectr_prefix_c;
+    struct chara_ctl_item *volume_lorentz_spectr_prefix_c;
     struct chara_ctl_item *volume_pwr_spectr_format_c;
     struct chara_ctl_item *Nusselt_file_prefix_c;
 	

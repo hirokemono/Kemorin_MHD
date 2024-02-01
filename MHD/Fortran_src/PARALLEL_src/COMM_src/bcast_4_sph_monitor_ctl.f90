@@ -50,6 +50,7 @@
 !
       call bcast_ctl_type_c1(smonitor_ctl%volume_average_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_prefix)
+      call bcast_ctl_type_c1(smonitor_ctl%volume_lorentz_spectr_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_format)
 !
       call bcast_ctl_type_c1(smonitor_ctl%degree_v_spectra_switch)
@@ -172,6 +173,7 @@
       do i = 1, num_vspec_ctl
         call bcast_ctl_type_c1(v_pwr(i)%volume_spec_file_ctl)
         call bcast_ctl_type_c1(v_pwr(i)%volume_ave_file_ctl)
+        call bcast_ctl_type_c1(v_pwr(i)%volume_lor_spec_file_ctl)
         call bcast_ctl_type_c1(v_pwr(i)%volume_spec_format_ctl)
 !
         call bcast_ctl_type_c1(v_pwr(i)%degree_v_spectra_switch)

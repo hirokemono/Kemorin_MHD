@@ -17,6 +17,7 @@ extern void * c_sph_monitor_dbench_ctl(void *f_smonitor_ctl);
 extern void * c_sph_monitor_fdip_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_vol_ave_prefix(void *f_smonitor_ctl);
 extern void * c_sph_mntr_vol_pspec_prefix(void *f_smonitor_ctl);
+extern void * c_sph_mntr_vol_lor_work_prefix(void *f_smonitor_ctl);
 extern void * c_sph_mntr_v_pwr_spectr_fmt(void *f_smonitor_ctl);
 extern void * c_sph_mntr_degree_v_spectra_ctl(void *f_smonitor_ctl);
 extern void * c_sph_mntr_order_v_spectra_ctl(void *f_smonitor_ctl);
@@ -278,6 +279,8 @@ struct f_MHD_sph_monitor_ctls * init_f_MHD_sph_monitor_ctls(void *(*c_load_self)
 			=     init_f_ctl_chara_item(c_sph_mntr_vol_ave_prefix, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_volume_pwr_spectr_prefix 
 			=  init_f_ctl_chara_item(c_sph_mntr_vol_pspec_prefix, f_smonitor_ctl->f_self);
+    f_smonitor_ctl->f_sph_mntr_vol_lor_work_prefix 
+            =  init_f_ctl_chara_item(c_sph_mntr_vol_lor_work_prefix, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_volume_pwr_spectr_format
 			=  init_f_ctl_chara_item(c_sph_mntr_v_pwr_spectr_fmt, f_smonitor_ctl->f_self);
 	f_smonitor_ctl->f_degree_v_spectra_switch 
