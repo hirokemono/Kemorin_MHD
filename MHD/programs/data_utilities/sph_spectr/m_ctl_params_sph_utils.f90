@@ -192,8 +192,8 @@
 !
       call set_ctl_params_layered_spectr                                &
      &   (spu_ctl%smonitor_ctl%lp_ctl, pwr)
-!
       call set_ctl_params_sph_spectr(spu_ctl%smonitor_ctl, pwr)
+!
       call set_ctl_params_pick_sph(spu_ctl%smonitor_ctl%pspec_ctl,      &
      &    pick_list_u, pick_sph_u)
 !

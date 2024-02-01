@@ -16,7 +16,6 @@
       real(kind = kreal) :: time_init
 !
       integer(kind = kint) :: istep, istart, iend, increment
-      integer(kind = kint) :: ifmt_input = iflag_vtk
       type(field_IO_params) :: ucd_param
       type(time_data), save :: t_IO
       type(ucd_data), save :: ucd
@@ -40,7 +39,7 @@
       read(*,*) file_ext
       ucd_param%iflag_format                                            &
      &      = psf_to_vtk_format_id_from_input(file_ext)
-      write(*,*) 'ifmt_input', ucd_param%iflag_format
+      write(*,*) 'iflag_format', ucd_param%iflag_format
       if(ucd_param%iflag_format .eq. iflag_vtk) then
         write(*,*) 'Set correct file extension (except for vtk)'
         go to 90

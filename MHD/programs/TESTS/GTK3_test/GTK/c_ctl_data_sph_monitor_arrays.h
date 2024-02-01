@@ -25,6 +25,7 @@ struct f_sph_vol_spectr_ctls{
 	
 	struct chara_ctl_item *f_volume_spec_file_ctl;
 	struct chara_ctl_item *f_volume_ave_file_ctl;
+    struct chara_ctl_item *f_sph_volume_lor_spec_file_ctl;
 	struct chara_ctl_item *f_volume_spec_format_ctl;
 	struct chara_ctl_item *f_degree_v_spectra_switch;
 	struct chara_ctl_item *f_order_v_spectra_switch;

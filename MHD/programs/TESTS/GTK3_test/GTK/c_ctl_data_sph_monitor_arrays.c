@@ -12,6 +12,7 @@ extern void * c_sph_v_spectr_ctl_block_name(void *f_v_pwr_item);
 extern void * c_sph_v_spectr_ctl_iflag(void *f_v_pwr_item);
 extern void * c_sph_volume_spec_file_ctl(void *f_v_pwr_item);
 extern void * c_sph_volume_ave_file_ctl(void *f_v_pwr_item);
+extern void * c_sph_volume_lor_spec_file_ctl(void *f_v_pwr_item);
 extern void * c_sph_volume_spec_format_ctl(void *f_v_pwr_item);
 extern void * c_sph_degree_v_spectra_switch(void *f_v_pwr_item);
 extern void * c_sph_order_v_spectra_switch(void *f_v_pwr_item);
@@ -48,6 +49,8 @@ struct f_sph_vol_spectr_ctls * init_f_sph_vol_spectr_ctls(int idx, void *void_in
 																  f_v_pwr_item->f_self);
 	f_v_pwr_item->f_volume_ave_file_ctl =  init_f_ctl_chara_item(c_sph_volume_ave_file_ctl, 
 																 f_v_pwr_item->f_self);
+    f_v_pwr_item->f_sph_volume_lor_spec_file_ctl =  init_f_ctl_chara_item(c_sph_volume_lor_spec_file_ctl, 
+                                                                  f_v_pwr_item->f_self);
 	f_v_pwr_item->f_volume_spec_format_ctl =  init_f_ctl_chara_item(c_sph_volume_spec_format_ctl,
 																	f_v_pwr_item->f_self);
 	f_v_pwr_item->f_degree_v_spectra_switch =  init_f_ctl_chara_item(c_sph_degree_v_spectra_switch, 
@@ -73,6 +76,7 @@ struct f_sph_vol_spectr_ctls * dealloc_f_sph_vol_spectr_ctls(void *f_item){
 	
 	dealloc_chara_ctl_item_c(f_v_pwr_item->f_volume_spec_file_ctl);
 	dealloc_chara_ctl_item_c(f_v_pwr_item->f_volume_ave_file_ctl);
+    dealloc_chara_ctl_item_c(f_v_pwr_item->f_sph_volume_lor_spec_file_ctl);
 	dealloc_chara_ctl_item_c(f_v_pwr_item->f_volume_spec_format_ctl);
 	dealloc_chara_ctl_item_c(f_v_pwr_item->f_degree_v_spectra_switch);
 	dealloc_chara_ctl_item_c(f_v_pwr_item->f_order_v_spectra_switch);

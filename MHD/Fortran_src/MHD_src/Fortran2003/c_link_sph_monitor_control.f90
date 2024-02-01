@@ -23,6 +23,8 @@
 !!     &          bind(C, NAME = 'c_sph_mntr_vol_ave_prefix')
 !!      type(c_ptr) function c_sph_mntr_vol_pspec_prefix(c_ctl)         &
 !!     &          bind(C, NAME = 'c_sph_mntr_vol_pspec_prefix')
+!!      type(c_ptr) function c_sph_mntr_vol_lor_work_prefix(c_ctl)      &
+!!     &          bind(C, NAME = 'c_sph_mntr_vol_lor_work_prefix')
 !!      type(c_ptr) function c_sph_mntr_v_pwr_spectr_fmt(c_ctl)         &
 !!     &          bind(C, NAME = 'c_sph_mntr_v_pwr_spectr_fmt')
 !!      type(c_ptr) function c_sph_mntr_degree_v_spectra_ctl(c_ctl)     &
@@ -139,6 +141,17 @@
       c_sph_mntr_vol_pspec_prefix                                       &
      &                     = C_loc(f_ctl%volume_pwr_spectr_prefix)
       end function c_sph_mntr_vol_pspec_prefix
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_mntr_vol_lor_work_prefix(c_ctl)        &
+     &          bind(C, NAME = 'c_sph_mntr_vol_lor_work_prefix')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(sph_monitor_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_mntr_vol_lor_work_prefix                                    &
+     &                     = C_loc(f_ctl%volume_lorentz_spectr_prefix)
+      end function c_sph_mntr_vol_lor_work_prefix
 !
 !  ---------------------------------------------------------------------
 !

@@ -291,6 +291,7 @@ begin MHD_control
   begin sph_monitor_ctl
     volume_average_prefix        'monitor/sph_ave_volume'
     volume_pwr_spectr_prefix     'monitor/sph_pwr_volume'
+    volume_lorentz_spectr_prefix 'monitor/sph_lorentz_work_volume'
     volume_pwr_spectr_format     'gzip'
 !
     nusselt_number_prefix        'Nusselt'
@@ -300,6 +301,7 @@ begin MHD_control
       begin volume_spectrum_ctl
         volume_average_prefix        'monitor/sph_ave_convective'
         volume_pwr_spectr_prefix     'monitor/sph_pwr_convective'
+        volume_lorentz_spectr_prefix 'monitor/sph_lorentz_work_convective'
         volume_pwr_spectr_format      'gzip'
 !
         inner_radius_ctl           0.588461538461538
@@ -316,8 +318,9 @@ begin MHD_control
     end array volume_spectrum_ctl
 !
     begin layered_spectrum_ctl
-      layered_pwr_spectr_prefix    'monitor/sph_pwr_layer'
-      layered_pwr_spectr_format    'gzip'
+      layered_pwr_spectr_prefix        'monitor/sph_pwr_layer'
+      layered_lorentz_spectr_prefix    'monitor/sph_lorentz_work_layer'
+      layered_pwr_spectr_format        'gzip'
 !
       array spectr_radius_ctl
         spectr_radius_ctl    0.538461538461538

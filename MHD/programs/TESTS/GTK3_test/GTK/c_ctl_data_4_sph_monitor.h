@@ -80,6 +80,7 @@ struct f_MHD_sph_layer_spectr_ctls{
 	char * c_block_name;
 	
 	struct chara_ctl_item *f_layered_pwr_spectr_prefix;
+    struct chara_ctl_item *f_layered_lorentz_spectr_prefix
 	struct chara_ctl_item *f_layered_pwr_spectr_format;
 	struct chara_ctl_item *f_degree_spectra_switch;
 	struct chara_ctl_item *f_order_spectra_switch;
@@ -111,6 +112,7 @@ struct f_MHD_sph_monitor_ctls{
 	
 	struct chara_ctl_item * f_volume_average_prefix;
 	struct chara_ctl_item * f_volume_pwr_spectr_prefix;
+    struct chara_ctl_item * f_sph_mntr_vol_lor_work_prefix;
 	struct chara_ctl_item * f_volume_pwr_spectr_format;
 	struct chara_ctl_item * f_degree_v_spectra_switch;
 	struct chara_ctl_item * f_order_v_spectra_switch;

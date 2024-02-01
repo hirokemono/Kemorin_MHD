@@ -15,6 +15,8 @@
 !!     &          bind(C, NAME = 'c_sph_volume_spec_file_ctl')
 !!      type(c_ptr) function c_sph_volume_ave_file_ctl(c_ctl)           &
 !!     &          bind(C, NAME = 'c_sph_volume_ave_file_ctl')
+!!      type(c_ptr) function c_sph_volume_lor_spec_file_ctl(c_ctl)      &
+!!     &          bind(C, NAME = 'c_sph_volume_lor_spec_file_ctl')
 !!      type(c_ptr) function c_sph_volume_spec_format_ctl(c_ctl)        &
 !!     &          bind(C, NAME = 'c_sph_volume_spec_format_ctl')
 !!      type(c_ptr) function c_sph_degree_v_spectra_switch(c_ctl)       &
@@ -83,6 +85,17 @@
       call c_f_pointer(c_ctl, f_ctl)
       c_sph_volume_ave_file_ctl = C_loc(f_ctl%volume_ave_file_ctl)
       end function c_sph_volume_ave_file_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_sph_volume_lor_spec_file_ctl(c_ctl)        &
+     &          bind(C, NAME = 'c_sph_volume_lor_spec_file_ctl')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(volume_spectr_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_sph_volume_lor_spec_file_ctl                                    &
+     &     = C_loc(f_ctl%volume_lor_spec_file_ctl)
+      end function c_sph_volume_lor_spec_file_ctl
 !
 !  ---------------------------------------------------------------------
 !

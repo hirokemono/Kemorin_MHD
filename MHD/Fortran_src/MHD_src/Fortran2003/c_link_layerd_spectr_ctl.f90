@@ -13,6 +13,8 @@
 !!
 !!      type(c_ptr) function c_sph_layer_pwr_spectr_prefix(c_ctl)       &
 !!     &          bind(C, NAME = 'c_sph_layer_pwr_spectr_prefix')
+!!      type(c_ptr) function c_layered_lorentz_spectr_prefix(c_ctl)     &
+!!     &          bind(C, NAME = 'c_layered_lorentz_spectr_prefix')
 !!      type(c_ptr) function c_sph_layer_pwr_spectr_format(c_ctl)       &
 !!     &          bind(C, NAME = 'c_sph_layer_pwr_spectr_format')
 !!      type(c_ptr) function c_sph_l_spec_degree_switch(c_ctl)          &
@@ -71,6 +73,17 @@
       c_sph_layer_pwr_spectr_prefix                                     &
      &        = C_loc(f_ctl%layered_pwr_spectr_prefix)
       end function c_sph_layer_pwr_spectr_prefix
+!
+!  ---------------------------------------------------------------------
+!
+      type(c_ptr) function c_layered_lorentz_spectr_prefix(c_ctl)       &
+     &          bind(C, NAME = 'c_layered_lorentz_spectr_prefix')
+      type(c_ptr), value, intent(in) :: c_ctl
+      type(layerd_spectr_control), pointer :: f_ctl
+      call c_f_pointer(c_ctl, f_ctl)
+      c_layered_lorentz_spectr_prefix                                   &
+     &        = C_loc(f_ctl%layered_lorentz_spectr_prefix)
+      end function c_layered_lorentz_spectr_prefix
 !
 !  ---------------------------------------------------------------------
 !
