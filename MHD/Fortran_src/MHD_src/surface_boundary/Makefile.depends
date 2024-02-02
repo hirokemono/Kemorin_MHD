@@ -8,7 +8,7 @@ fem_surf_crank_free_sph.o: $(MHD_SF_BC_DIR)/fem_surf_crank_free_sph.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_surf_skv_diffuse.o: $(MHD_SF_BC_DIR)/fem_surf_skv_diffuse.f90 m_precision.o m_geometry_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-fem_surf_skv_diffuse_sgs.o: $(MHD_SF_BC_DIR)/fem_surf_skv_diffuse_sgs.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o
+fem_surf_skv_diffuse_sgs.o: $(MHD_SF_BC_DIR)/fem_surf_skv_diffuse_sgs.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o t_filter_elength.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_surf_skv_norm_grad.o: $(MHD_SF_BC_DIR)/fem_surf_skv_norm_grad.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

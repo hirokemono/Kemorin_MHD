@@ -90,6 +90,7 @@
       use cal_typical_scale
       use const_data_4_dynamobench
       use sph_fwd_trans_on_circles
+      use lorentz_spctr_in_shell
 !
       type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) :: sph
@@ -109,6 +110,11 @@
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    trans_p%leg, monitor%pwr, monitor%WK_pwr)
+!
+      if(iflag_debug.gt.0)  write(*,*) 'cal_lorentz_spctr_in_shell'
+      call cal_lorentz_spctr_in_shell                                   &
+     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
+     &    trans_p%leg, monitor%lor_spectr, monitor%WK_lor_spectr)
 !
        if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
@@ -201,6 +207,7 @@
       use cal_ave_4_rms_vector_sph
       use radial_int_for_sph_spec
       use sum_sph_rms_by_degree
+      use sum_sph_rms_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_address), intent(in) :: ipol

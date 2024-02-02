@@ -17,6 +17,11 @@
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!        type(send_recv_status), intent(inout) :: SR_sig
+!!
+!!      subroutine init_sph_spectr_data_and_file(sph, rj_fld, monitor)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!@endverbatim
 !
       module t_sph_mhd_monitor_data_IO
@@ -89,8 +94,6 @@
 !>        Data on circles
         type(mul_fields_on_circle) :: mul_circle
 !
-!>        Structure of label for energies
-        type(energy_label_param) :: lor_labels
 !>        Structure of mean square data
         type(sph_mean_squares) :: lor_spectr
 !>        Work area of mean square data

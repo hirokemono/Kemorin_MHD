@@ -188,8 +188,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_rms_sph_SGS_mhd_control'
       call init_rms_sph_SGS_mhd_control(SPH_model%MHD_prop,             &
      &    SPH_model%sph_MHD_bc, SPH_WK%r_2nd, SPH_WK%trans_p,           &
-     &    FEM_dat%field, SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor,      &
-     &    m_SR%SR_sig, m_SR%SR_r)
+     &    FEM_dat%field, SPH_SGS, SPH_MHD, SPH_WK%MHD_mats,             &
+     &    SPH_WK%monitor, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
       call calypso_mpi_barrier
 !

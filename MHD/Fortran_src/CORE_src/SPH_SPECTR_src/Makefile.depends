@@ -56,7 +56,7 @@ set_control_4_pickup_sph.o: $(SPH_SPECTR_DIR)/set_control_4_pickup_sph.f90 m_pre
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_sph_spectr.o: $(SPH_SPECTR_DIR)/set_control_sph_spectr.f90 m_precision.o t_rms_4_sph_spectr.o t_ctl_data_sph_layer_spectr.o t_pickup_sph_spectr_data.o t_multi_flag_labels.o m_file_format_labels.o skip_comment_f.o t_ctl_data_4_sph_monitor.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_ctl_sph_lorentz_spectr.o: $(SPH_SPECTR_DIR)/set_ctl_sph_lorentz_spectr.f90 m_precision.o t_rms_4_sph_spectr.o t_ctl_data_sph_layer_spectr.o t_pickup_sph_spectr_data.o t_multi_flag_labels.o m_file_format_labels.o skip_comment_f.o t_ctl_data_4_sph_monitor.o
+set_ctl_sph_lorentz_spectr.o: $(SPH_SPECTR_DIR)/set_ctl_sph_lorentz_spectr.f90 m_precision.o t_rms_4_sph_spectr.o t_ctl_data_sph_layer_spectr.o t_pickup_sph_spectr_data.o t_multi_flag_labels.o m_file_format_labels.o set_control_sph_spectr.o skip_comment_f.o t_ctl_data_4_sph_monitor.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_radial_grid_sph_shell.o: $(SPH_SPECTR_DIR)/set_radial_grid_sph_shell.f90 m_precision.o m_constants.o chebyshev_radial_grid.o half_chebyshev_radial_grid.o m_spheric_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

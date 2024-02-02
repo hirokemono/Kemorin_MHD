@@ -226,8 +226,6 @@
       subroutine alloc_data_on_circles_ctl(smonitor_ctl)
 !
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
-      integer(kind = kint) :: i
-!
 !
       allocate(smonitor_ctl%meq_ctl(smonitor_ctl%num_circ_ctl))
 !

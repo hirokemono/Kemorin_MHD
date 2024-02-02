@@ -241,9 +241,9 @@
         else if (field_name .eq. current_for_dipole%name) then
           prod_fld%i_dipole_J =    i_phys
 !
-        else if (field_name .eq. magnetic_dipole%name) then
+        else if (field_name .eq. Lorentz_force_dipole%name) then
           prod_fld%i_dipole_Lorentz = i_phys
-        else if (field_name .eq. current_for_dipole%name) then
+        else if (field_name .eq. Lorentz_work_dipole%name) then
           prod_fld%i_dipole_ujb =     i_phys
         end if
       end if
