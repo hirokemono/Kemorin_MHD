@@ -46,8 +46,13 @@
     kemoView3DMetalBuf->numMeshTransVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                             buffer:kemo_buffers->mesh_trns_buf
                                                                             vertex:&(kemoView3DMetalBuf->meshTransVertice)];
-    
-
+    return;
+}
+- (void) setAxisMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
+                  metalbuffer:(KemoView3DBuffers *_Nullable) kemoView3DMetalBuf
+                      buffers:(struct kemoview_buffers *_Nonnull) kemo_buffers
+{
+    /*  Set axis vertexs */
     kemoView3DMetalBuf->numAxisVertice = [_kemo3DMetalBufBase setMetalVertexs:device
                                                                        buffer:kemo_buffers->axis_buf
                                                                        vertex:&(kemoView3DMetalBuf->axisVertice)];
@@ -123,7 +128,11 @@
     
     if(kemoView3DMetalBuf->numPSFTransVertice > 0)  {[kemoView3DMetalBuf->psfTransVertice  release];};
     if(kemoView3DMetalBuf->numMeshTransVertice > 0) {[kemoView3DMetalBuf->meshTransVertice release];};
+    return;
+}
 
+- (void) releaseAxisMetalBuffers:(KemoView3DBuffers *_Nonnull) kemoView3DMetalBuf
+{
     if(kemoView3DMetalBuf->numAxisVertice > 0)  {[kemoView3DMetalBuf->axisVertice      release];};
     return;
 }
@@ -157,17 +166,6 @@
     return;
 }
 
-- (void) setKemoView3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
-                          kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
-{
-    [self set3DMetalBuffers:device
-                metalbuffer:&_kemoViewMetalBuf
-                   kemoview:kemo_sgl
-                    buffers:kemo_sgl->kemo_buffers
-                       PSFs:kemo_sgl->kemo_psf];
-    return;
-}
-
 - (void) setKemoTransparentMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
                                kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
@@ -177,15 +175,54 @@
                           PSFs:kemo_sgl->kemo_psf];
     return;
 };
-
-- (void) releaseKemoView3DMetalBuffers
+- (void) setKemoFastMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
+                        kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
 {
-    [self release3DMetalBuffers:&_kemoViewMetalBuf];
+    [self setAxisMetalBuffers:device
+                   metalbuffer:&_kemoViewMetalBuf
+                       buffers:kemo_sgl->kemo_buffers];
+    [self setTransMetalBuffers:device
+                   metalbuffer:&_kemoViewMetalBuf
+                       buffers:kemo_sgl->kemo_buffers
+                          PSFs:kemo_sgl->kemo_psf];
     return;
 };
+
+- (void) setKemoView3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
+                          kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl
+{
+    [self setAxisMetalBuffers:device
+                   metalbuffer:&_kemoViewMetalBuf
+                       buffers:kemo_sgl->kemo_buffers];
+    [self setTransMetalBuffers:device
+                   metalbuffer:&_kemoViewMetalBuf
+                       buffers:kemo_sgl->kemo_buffers
+                          PSFs:kemo_sgl->kemo_psf];
+    [self set3DMetalBuffers:device
+                metalbuffer:&_kemoViewMetalBuf
+                   kemoview:kemo_sgl
+                    buffers:kemo_sgl->kemo_buffers
+                       PSFs:kemo_sgl->kemo_psf];
+    return;
+}
+
+
 - (void) releaseTransparentMetalBuffers
 {
     [self releaseTransMetalBuffers:&_kemoViewMetalBuf];
+    return;
+};
+- (void) releaseKemoFastMetalBuffers
+{
+    [self releaseTransMetalBuffers:&_kemoViewMetalBuf];
+    [self releaseAxisMetalBuffers:&_kemoViewMetalBuf];
+    return;
+};
+- (void) releaseKemoView3DMetalBuffers
+{
+    [self release3DMetalBuffers:&_kemoViewMetalBuf];
+    [self releaseTransMetalBuffers:&_kemoViewMetalBuf];
+    [self releaseAxisMetalBuffers:&_kemoViewMetalBuf];
     return;
 };
 

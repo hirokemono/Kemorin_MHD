@@ -352,7 +352,7 @@ void draw_simple(struct kemoviewer_type *kemo_sgl){
 
 void draw_quilt(int istep_qult, struct kemoviewer_type *kemo_sgl){
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
-    kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, QUILT_DRAW, kemo_sgl);
     kemoview_step_viewmatrix(istep_qult, kemo_sgl);
     glDrawBuffer(GL_BACK);
     kemoview_modify_view(kemo_sgl, kemoGL_GLFW);

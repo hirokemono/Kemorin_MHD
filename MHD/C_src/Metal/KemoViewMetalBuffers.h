@@ -12,7 +12,7 @@
 @import MetalKit;
 @import simd;
 
-#import "AAPLShaderTypes.h"
+#import "KemoViewShaderTypes.h"
 #import "AAPLImage.h"
 
 #include "m_vertex_buffer.h"

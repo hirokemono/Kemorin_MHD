@@ -12,7 +12,7 @@
 @import AppKit;
 @import MetalKit;
 
-#import "AAPLRenderer.h"
+#import "KemoViewerRenderer.h"
 #import "KemoViewerMetalView.h"
 #import "KemoViewerObject.h"
 

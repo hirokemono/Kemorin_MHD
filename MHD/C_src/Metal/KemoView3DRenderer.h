@@ -12,7 +12,7 @@
 @import MetalKit;
 @import Foundation;
 
-#import "AAPLShaderTypes.h"
+#import "KemoViewShaderTypes.h"
 #import "AAPLImage.h"
 #import "KemoViewMetalBuffers.h"
 #import "KemoViewRendererTools.h"
@@ -125,15 +125,16 @@ typedef struct
     KemoViewMetalBuffers * _kemo3DMetalBufBase;
 }
 
-- (void) setKemoView3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
-                          kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 - (void) setKemoTransparentMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
                                kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
+- (void) setKemoFastMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
+                        kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
+- (void) setKemoView3DMetalBuffers:(id<MTLDevice> _Nonnull *_Nonnull) device
+                          kemoview:(struct kemoviewer_type *_Nonnull) kemo_sgl;
 
-- (void) releaseKemoView3DMetalBuffers;
 - (void) releaseTransparentMetalBuffers;
-
-
+- (void) releaseKemoFastMetalBuffers;
+- (void) releaseKemoView3DMetalBuffers;
 
 -(void) addKemoView3DShaderLibrary:(id<MTLLibrary> _Nonnull *_Nonnull) defaultLibrary;
 

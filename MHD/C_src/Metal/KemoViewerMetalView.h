@@ -8,7 +8,7 @@
 @import Cocoa;
 @import MetalKit;
 
-#import "AAPLRenderer.h"
+#import "KemoViewerRenderer.h"
 
 #import "KemoViewerObject.h"
 #import "ResetViewControll.h"

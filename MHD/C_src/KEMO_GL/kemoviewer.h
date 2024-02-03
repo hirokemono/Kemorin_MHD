@@ -28,6 +28,7 @@
 #define FULL_DRAW      0
 #define FAST_DRAW      1
 #define SIMPLE_DRAW    2
+#define QUILT_DRAW     3
 
 #define VIEW_3D        0
 #define VIEW_STEREO    1
@@ -332,6 +333,7 @@ extern "C" {
 
     void kemoview_const_buffers(struct kemoviewer_type *kemoviewer);
     void kemoview_transparent_buffers(struct kemoviewer_type *kemoviewer);
+    void kemoview_fast_buffers(struct kemoviewer_type *kemoviewer);
 
     void kemoview_mono_viewmatrix(struct kemoviewer_type *kemoviewer);
     void kemoview_step_viewmatrix(int istep, struct kemoviewer_type *kemoviewer);

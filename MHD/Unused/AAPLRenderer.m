@@ -120,8 +120,6 @@ static const NSUInteger MaxFramesInFlight = 3;
     }else{
 /*  Release 3D vertexs */
         [kemo3DRenderer releaseKemoView3DMetalBuffers];
-/*  Release transparent vertexs */
-        [kemo3DRenderer releaseTransparentMetalBuffers];
     };
 /*  Release Message vertexs */
     [_kemo2DRenderer releaseMsgMetalBuffers];
@@ -142,9 +140,6 @@ static const NSUInteger MaxFramesInFlight = 3;
 /*  Set 3D vertexs to Metal buffers */
         [kemo3DRenderer setKemoView3DMetalBuffers:device
                                          kemoview:kemo_sgl];
-/*  Set transparent vertexs to Metal buffers */
-        [kemo3DRenderer setKemoTransparentMetalBuffers:device
-                                              kemoview:kemo_sgl];
     };
     
 /*  Set message vertexs to Metal buffers */
@@ -161,12 +156,9 @@ static const NSUInteger MaxFramesInFlight = 3;
     for(i=1;i<MaxFramesInFlight;i++){
         i_update = (i_current + i) % MaxFramesInFlight;
         [_kemo3DRenderer[i_update] releaseKemoView3DMetalBuffers];
-        [_kemo3DRenderer[i_update] releaseTransparentMetalBuffers];
         
         [_kemo3DRenderer[i_update] setKemoView3DMetalBuffers:device
                                                     kemoview:kemo_sgl];
-        [_kemo3DRenderer[i_update] setKemoTransparentMetalBuffers:device
-                                                         kemoview:kemo_sgl];
     }
     return;
 }
@@ -179,15 +171,16 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     int iflag = kemoview_get_draw_mode(kemo_sgl);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
-    if(iflag == FAST_DRAW){
-        if(iflag_view != VIEW_MAP){
-            [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
-            
-            kemoview_transparent_buffers(kemo_sgl);
-            
-            [_kemo3DRenderer[i_current] setKemoTransparentMetalBuffers:device
-                                                              kemoview:kemo_sgl];
-        };
+    if(iflag == FAST_DRAW && iflag_view != VIEW_MAP){
+        [_kemo3DRenderer[i_current] releaseKemoFastMetalBuffers];
+        kemoview_fast_buffers(kemo_sgl);
+        [_kemo3DRenderer[i_current] setKemoFastMetalBuffers:device
+                                                   kemoview:kemo_sgl];
+    }else if(iflag == QUILT_DRAW && iflag_view != VIEW_MAP){
+        [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
+        kemoview_transparent_buffers(kemo_sgl);
+        [_kemo3DRenderer[i_current] setKemoTransparentMetalBuffers:device
+                                                          kemoview:kemo_sgl];
     }else{
         [self releaseKemoViewMetalBuffers:_kemo3DRenderer[i_current]
                                  viewflag:iflag_view];

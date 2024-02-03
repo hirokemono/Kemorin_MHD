@@ -12,7 +12,7 @@
 {
     IBOutlet KemoViewerMetalView *_metalView;
 
-    IBOutlet AAPLRenderer *_renderer;
+    IBOutlet KemoViewerRenderer *_renderer;
 }
 
 -(void) awakeFromNib
@@ -39,7 +39,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [_metalView updateBackground:kemo_sgl];
 
-    _renderer = [[AAPLRenderer alloc] initWithMetalKitView:_metalView];
+    _renderer = [[KemoViewerRenderer alloc] initWithMetalKitView:_metalView];
     [_renderer setKemoViewPointer:[_kmv KemoViewPointer]];
 
     if(!_renderer)

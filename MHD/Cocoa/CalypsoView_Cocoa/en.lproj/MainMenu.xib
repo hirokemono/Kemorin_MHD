@@ -71,6 +71,11 @@
                 <menuItem title="File" id="83">
                     <menu key="submenu" title="File" id="81">
                         <items>
+                            <menuItem title="Open..." keyEquivalent="o" id="75">
+                                <connections>
+                                    <action selector="OpenKemoviewerFileByMenu:" target="1215" id="8PC-RB-hbW"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Open" id="1926">
                                 <menu key="submenu" title="Open" id="1927">
                                     <items>
@@ -94,9 +99,6 @@
                                         </menuItem>
                                     </items>
                                 </menu>
-                                <connections>
-                                    <action selector="OpenKemoviewerFileByMenu:" target="1215" id="3615"/>
-                                </connections>
                             </menuItem>
                             <menuItem title="Open Recent" id="124">
                                 <menu key="submenu" title="Open Recent" systemMenu="recentDocuments" id="125">
@@ -137,9 +139,9 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Save Image" keyEquivalent="s" id="75">
+                            <menuItem title="Save Image..." keyEquivalent="s" id="KNo-Cw-y0f">
                                 <connections>
-                                    <action selector="SaveImageFile:" target="1215" id="2632"/>
+                                    <action selector="SaveImageFile:" target="1215" id="ZIA-i6-KxV"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="74">

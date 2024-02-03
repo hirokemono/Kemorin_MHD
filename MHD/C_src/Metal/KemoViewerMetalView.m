@@ -180,7 +180,7 @@
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree, kemo_sgl);
     kemoview_step_viewmatrix((int) istep_quilt, kemo_sgl);
 
-    [self setNeedsDisplay: YES];
+    [self draw];
     return self;
 }
 

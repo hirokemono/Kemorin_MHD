@@ -12,7 +12,7 @@
 @import MetalKit;
 @import simd;
 
-#import "AAPLShaderTypes.h"
+#import  "KemoViewShaderTypes.h"
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_object_buffers.h"

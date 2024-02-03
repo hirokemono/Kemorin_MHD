@@ -12,7 +12,7 @@
 @import MetalKit;
 @import Foundation;
 
-#import "AAPLShaderTypes.h"
+#import "KemoViewShaderTypes.h"
 #import "AAPLImage.h"
 #import "KemoViewMetalBuffers.h"
 

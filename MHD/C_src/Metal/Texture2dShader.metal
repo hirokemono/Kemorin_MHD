@@ -11,7 +11,7 @@ Metal shaders used for this sample
 using namespace metal;
 
 // Include header shared between this Metal shader code and C code executing Metal API commands
-#include "AAPLShaderTypes.h"
+#include "KemoViewShaderTypes.h"
 
 // Vertex shader outputs and fragment shader inputs
 struct RasterizerData

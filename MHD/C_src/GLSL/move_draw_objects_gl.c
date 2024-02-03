@@ -326,17 +326,22 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                            view_s, kemo_buffers->kemo_lights,
                            kemo_VAOs, kemo_shaders);
 
-    }else if(view_s->iflag_draw_mode == FAST_DRAW){
-        if(view_s->iflag_view_type != VIEW_MAP){
+    }else{
+        if(view_s->iflag_draw_mode == FAST_DRAW
+           && view_s->iflag_view_type != VIEW_MAP){
+            set_fast_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
+            
+            Const_VAO_4_Phong(kemo_VAOs->grid_VAO[2], kemo_buffers->axis_buf);
+            set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
+        }else if(view_s->iflag_draw_mode == QUILT_DRAW
+                 && view_s->iflag_view_type != VIEW_MAP){
             set_transparent_buffers(kemo_psf, kemo_mesh, view_s, kemo_buffers);
             set_transparent_objects_to_VAO(kemo_buffers, kemo_VAOs, kemo_shaders);
+        }else{
+            set_kemoviewer_buffers(kemo_psf, kemo_fline, kemo_mesh, view_s, kemo_buffers);
+            set_draw_objects_to_VAO(kemo_psf, view_s, kemo_buffers,
+                                    kemo_VAOs, kemo_shaders);
         }
-        full_draw_objects(kemo_psf, kemo_fline, kemo_mesh, view_s,
-                          kemo_buffers->kemo_lights, kemo_VAOs, kemo_shaders);
-    }else{
-        set_kemoviewer_buffers(kemo_psf, kemo_fline, kemo_mesh, view_s, kemo_buffers);
-        set_draw_objects_to_VAO(kemo_psf, view_s, kemo_buffers,
-                                kemo_VAOs, kemo_shaders);
         full_draw_objects(kemo_psf, kemo_fline, kemo_mesh, view_s,
                           kemo_buffers->kemo_lights, kemo_VAOs, kemo_shaders);
     }

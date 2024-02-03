@@ -559,7 +559,7 @@ NSData *SnapshotData;
                 [self SaveKemoviewPDFFile:ImageFilehead];
             }
         }else{
-            [_metalView setNeedsDisplay:YES];
+            [_metalView draw];
         }
         
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];

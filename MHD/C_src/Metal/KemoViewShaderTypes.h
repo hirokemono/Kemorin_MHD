@@ -5,8 +5,8 @@ Abstract:
 Header containing types and enum constants shared between Metal shaders and C/ObjC source
 */
 
-#ifndef AAPLShaderTypes_h
-#define AAPLShaderTypes_h
+#ifndef KemoViewShaderTypes_h_
+#define KemoViewShaderTypes_h_
 
 #include <simd/simd.h>
 
@@ -112,4 +112,4 @@ typedef struct{
     float         shininess;  // Srm
 } MaterialParameters;
 
-#endif /* AAPLShaderTypes_h */
+#endif /* KemoViewShaderTypes_h_ */
