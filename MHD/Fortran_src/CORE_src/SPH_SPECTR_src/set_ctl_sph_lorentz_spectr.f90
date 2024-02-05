@@ -139,6 +139,7 @@
       use t_ctl_data_4_sph_monitor
       use t_pickup_sph_spectr_data
       use t_multi_flag_labels
+      use m_file_format_labels
 !
       use set_control_sph_spectr
       use skip_comment_f
@@ -165,7 +166,7 @@
       end if
 !
       call set_ctl_prm_vol_sph_spectr(v_pwr_ctl, v_lor_spectr)
-      call set_ctl_vol_sph_spectr_range(v_pwr_ctl, v_spectr)
+      call set_ctl_vol_sph_spectr_range(v_pwr_ctl, v_lor_spectr)
 !
       end subroutine set_ctl_vol_lor_spec_file
 !
