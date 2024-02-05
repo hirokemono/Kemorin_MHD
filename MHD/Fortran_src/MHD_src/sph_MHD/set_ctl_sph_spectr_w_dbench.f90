@@ -70,8 +70,6 @@
       do inum = 1, smonitor_ctl%num_vspec_ctl
         call set_ctl_params_vol_sph_spectr(smonitor_ctl%v_pwr(inum),    &
      &                                     pwr%v_spectr(inum+1))
-        call set_ctl_prm_vol_sph_spectr(smonitor_ctl%v_pwr(inum),       &
-     &                                  pwr%v_spectr(inum+1))
       end do
       call add_ctl_params_v_spec_w_dbench                               &
      &   (MHD_BC, pwr%num_vol_spectr, pwr%v_spectr, bench)

@@ -72,8 +72,8 @@
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
 !
-      use set_control_sph_data_MHD
       use set_control_SPH_MHD_w_viz
+      use set_control_sph_data_MHD
       use set_control_sph_mhd
       use set_controls_4_sph_shell
       use set_field_data_w_SGS

@@ -91,8 +91,6 @@
       do inum = 1, smonitor_ctl%num_vspec_ctl
         call set_ctl_params_vol_sph_spectr(smonitor_ctl%v_pwr(inum),    &
      &                                     pwr%v_spectr(inum+1))
-        call set_ctl_prm_vol_sph_spectr(smonitor_ctl%v_pwr(inum),       &
-     &                                  pwr%v_spectr(inum+1))
       end do
 !
       end subroutine set_ctl_params_sph_spectr
@@ -157,6 +155,16 @@
       if(v_spectr%iflag_volume_ave_sph .gt. 0) then
         v_spectr%fhead_ave = v_pwr_ctl%volume_ave_file_ctl%charavalue
       end if
+!
+      v_spectr%gzip_flag_vol_spec = .FALSE.
+      if(v_pwr_ctl%volume_spec_format_ctl%iflag .gt. 0) then
+        input_flag = v_pwr_ctl%volume_spec_format_ctl%charavalue
+        if(check_mul_flags(input_flag, gzip_flags))                     &
+     &                   v_spectr%gzip_flag_vol_spec = .TRUE.
+      end if
+!
+      call set_ctl_prm_vol_sph_spectr(v_pwr_ctl, v_spectr)
+      call set_ctl_vol_sph_spectr_range(v_pwr_ctl, v_spectr)
 !
       end subroutine set_ctl_params_vol_sph_spectr
 !
@@ -293,13 +301,6 @@
       character(len = kchara) :: input_flag
 !
 !
-      v_spectr%gzip_flag_vol_spec = .FALSE.
-      if(v_pwr_ctl%volume_spec_format_ctl%iflag .gt. 0) then
-        input_flag = v_pwr_ctl%volume_spec_format_ctl%charavalue
-        if(check_mul_flags(input_flag, gzip_flags))                     &
-     &                   v_spectr%gzip_flag_vol_spec = .TRUE.
-      end if
-!
       v_spectr%flag_skip_v_spec_l =  .FALSE.
       if(no_flag(v_pwr_ctl%degree_v_spectra_switch%charavalue))         &
      &                           v_spectr%flag_skip_v_spec_l = .TRUE.
@@ -313,6 +314,21 @@
       if(no_flag(v_pwr_ctl%axis_v_power_switch%charavalue))             &
      &                           v_spectr%flag_skip_v_spec_m0 = .TRUE.
 !
+      end subroutine set_ctl_prm_vol_sph_spectr
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_ctl_vol_sph_spectr_range(v_pwr_ctl, v_spectr)
+!
+      use t_ctl_data_4_sph_monitor
+!
+      use m_file_format_labels
+      use skip_comment_f
+!
+      type(volume_spectr_control), intent(in) :: v_pwr_ctl
+      type(sph_vol_mean_squares), intent(inout) :: v_spectr
+!
+!
       if(v_pwr_ctl%inner_radius_ctl%iflag .gt. 0) then
         v_spectr%r_inside = v_pwr_ctl%inner_radius_ctl%realvalue
       else
@@ -325,7 +341,7 @@
         v_spectr%r_outside = -1.0
       end if
 !
-      end subroutine set_ctl_prm_vol_sph_spectr
+      end subroutine set_ctl_vol_sph_spectr_range
 !
 ! -----------------------------------------------------------------------
 !
