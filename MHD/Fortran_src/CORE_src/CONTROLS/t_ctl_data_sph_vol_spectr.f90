@@ -192,7 +192,7 @@
      &                           v_pwr%volume_spec_file_ctl)
         call read_chara_ctl_type(c_buf, hd_vol_ave,                     &
      &                           v_pwr%volume_ave_file_ctl)
-        call read_chara_ctl_type(c_buf, hd_vol_pwr,                     &
+        call read_chara_ctl_type(c_buf, hd_vol_lor_wk,                  &
      &                           v_pwr%volume_lor_spec_file_ctl)
         call read_chara_ctl_type(c_buf, hd_vol_fmt,                     &
      &                           v_pwr%volume_spec_format_ctl)
@@ -232,6 +232,7 @@
       if(v_pwr%i_vol_spectr_ctl .le. 0) return
 !
       maxlen = len_trim(hd_vol_pwr)
+      maxlen = max(maxlen, len_trim(hd_vol_lor_wk))
       maxlen = max(maxlen, len_trim(hd_vol_fmt))
       maxlen = max(maxlen, len_trim(hd_vol_ave))
       maxlen = max(maxlen, len_trim(hd_inner_r))
@@ -285,7 +286,7 @@
      &      v_pwr%volume_spec_file_ctl)
         call init_chara_ctl_item_label(hd_vol_ave,                      &
      &      v_pwr%volume_ave_file_ctl)
-        call init_chara_ctl_item_label(hd_vol_pwr,                      &
+        call init_chara_ctl_item_label(hd_vol_lor_wk,                   &
      &      v_pwr%volume_lor_spec_file_ctl)
         call init_chara_ctl_item_label(hd_vol_fmt,                      &
      &      v_pwr%volume_spec_format_ctl)
