@@ -150,7 +150,7 @@
       type(sph_monitor_control), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
       c_sph_mntr_vol_lor_work_prefix                                    &
-     &                     = C_loc(f_ctl%volume_lorentz_spectr_prefix)
+     &                     = C_loc(f_ctl%volume_work_spectr_prefix)
       end function c_sph_mntr_vol_lor_work_prefix
 !
 !  ---------------------------------------------------------------------

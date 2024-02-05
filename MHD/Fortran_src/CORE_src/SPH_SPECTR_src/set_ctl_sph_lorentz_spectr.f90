@@ -46,10 +46,10 @@
 !
 !
       lor_spectr%iflag_layer_rms_spec                                   &
-     &      = lp_ctl%layered_lorentz_spectr_prefix%iflag
+     &      = lp_ctl%layered_work_spectr_prefix%iflag
       if(lor_spectr%iflag_layer_rms_spec .gt. 0) then
         lor_spectr%fhead_rms_layer                                      &
-     &        = lp_ctl%layered_lorentz_spectr_prefix%charavalue
+     &        = lp_ctl%layered_work_spectr_prefix%charavalue
       end if
 !
       call set_ctl_prm_layered_spectr(lp_ctl, lor_spectr)
@@ -76,7 +76,7 @@
 !
 !
       icou = 0
-      if(smonitor_ctl%volume_lorentz_spectr_prefix%iflag .gt. 0)        &
+      if(smonitor_ctl%volume_work_spectr_prefix%iflag .gt. 0)           &
      &  icou = icou + 1
       do inum = 1, smonitor_ctl%num_vspec_ctl
         if(smonitor_ctl%v_pwr(inum)%volume_lor_spec_file_ctl%iflag      &
@@ -86,7 +86,7 @@
       call alloc_volume_spectr_data(icou, lor_spectr)
 !
       icou = 0
-      if(smonitor_ctl%volume_lorentz_spectr_prefix%iflag .gt. 0) then
+      if(smonitor_ctl%volume_work_spectr_prefix%iflag .gt. 0) then
         icou = icou + 1
         call set_ctl_base_vol_lor_spec_file(smonitor_ctl,               &
      &                                      lor_spectr%v_spectr(icou))
@@ -124,10 +124,10 @@
       v_spectr%iflag_volume_ave_sph = 0
 !
       v_spectr%iflag_volume_rms_spec                                    &
-     &        = smonitor_ctl%volume_lorentz_spectr_prefix%iflag
+     &        = smonitor_ctl%volume_work_spectr_prefix%iflag
       if(v_spectr%iflag_volume_rms_spec .gt. 0) then
         v_spectr%fhead_rms_v                                            &
-     &        = smonitor_ctl%volume_lorentz_spectr_prefix%charavalue
+     &        = smonitor_ctl%volume_work_spectr_prefix%charavalue
       end if
 !
       end subroutine set_ctl_base_vol_lor_spec_file

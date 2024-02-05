@@ -29,7 +29,7 @@
 !!  begin sph_monitor_ctl
 !!    volume_average_prefix        'sph_ave_volume'
 !!    volume_pwr_spectr_prefix     'sph_pwr_volume'
-!!    volume_lorentz_spectr_prefix 'sph_lorentz_work_convective'
+!!    volume_work_spectr_prefix    'sph_work_convective'
 !!    volume_pwr_spectr_format     'gzip'
 !!
 !!    degree_spectra_switch         'On'
@@ -121,7 +121,7 @@
       character(len=kchara), parameter, private                         &
      &           :: hd_voume_rms_head = 'volume_pwr_spectr_prefix'
       character(len=kchara), parameter, private                         &
-     &            :: hd_vol_lor_wk = 'volume_lorentz_spectr_prefix'
+     &            :: hd_vol_lor_wk = 'volume_work_spectr_prefix'
 !
       character(len=kchara), parameter, private                         &
      &           :: hd_voume_rms_format = 'volume_pwr_spectr_format'
@@ -227,7 +227,7 @@
         call read_chara_ctl_type(c_buf, hd_voume_rms_head,              &
      &      smonitor_ctl%volume_pwr_spectr_prefix)
         call read_chara_ctl_type(c_buf, hd_vol_lor_wk,                  &
-     &      smonitor_ctl%volume_lorentz_spectr_prefix)
+     &      smonitor_ctl%volume_work_spectr_prefix)
         call read_chara_ctl_type(c_buf, hd_voume_rms_format,            &
      &      smonitor_ctl%volume_pwr_spectr_format)
 !
@@ -287,7 +287,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    smonitor_ctl%volume_pwr_spectr_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    smonitor_ctl%volume_lorentz_spectr_prefix)
+     &    smonitor_ctl%volume_work_spectr_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    smonitor_ctl%volume_pwr_spectr_format)
 !

@@ -24,7 +24,7 @@
 !!  begin sph_monitor_ctl
 !!    volume_average_prefix        'sph_ave_volume'
 !!    volume_pwr_spectr_prefix     'sph_pwr_volume'
-!!    volume_lorentz_spectr_prefix 'sph_lorentz_work_convective'
+!!    volume_work_spectr_prefix    'sph_work_convective'
 !!    volume_pwr_spectr_format     'gzip'
 !!
 !!    degree_spectra_switch         'On'
@@ -127,7 +127,7 @@
 !>        Structure for volume average file prefix
         type(read_character_item) :: volume_average_prefix
 !>        Structure for volume average of work of Lorentz force file prefix
-        type(read_character_item) :: volume_lorentz_spectr_prefix
+        type(read_character_item) :: volume_work_spectr_prefix
 !
 !>        Structure for volume spectrum file format
         type(read_character_item) :: volume_pwr_spectr_format
@@ -183,7 +183,7 @@
 !
       smonitor_ctl%volume_average_prefix%iflag =         0
       smonitor_ctl%volume_pwr_spectr_prefix%iflag =      0
-      smonitor_ctl%volume_lorentz_spectr_prefix%iflag =  0
+      smonitor_ctl%volume_work_spectr_prefix%iflag =     0
       smonitor_ctl%volume_pwr_spectr_format%iflag =      0
 !
       smonitor_ctl%degree_v_spectra_switch%iflag =   0

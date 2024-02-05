@@ -12,7 +12,7 @@
 const char label_volume_spectr_ctl[NLBL_VOLUME_SPECTR][KCHARA_C] = {
     /*[ 0]*/    {"volume_pwr_spectr_prefix"},
     /*[ 1]*/    {"volume_average_prefix"},
-    /*[ 2]*/    {"volume_lorentz_spectr_prefix"},
+    /*[ 2]*/    {"volume_work_spectr_prefix"},
     /*[ 3]*/    {"volume_pwr_spectr_format"},
 
     /*[ 4]*/    {"inner_radius_ctl"},

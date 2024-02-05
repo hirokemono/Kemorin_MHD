@@ -82,7 +82,7 @@
       type(layerd_spectr_control), pointer :: f_ctl
       call c_f_pointer(c_ctl, f_ctl)
       c_layered_lorentz_spectr_prefix                                   &
-     &        = C_loc(f_ctl%layered_lorentz_spectr_prefix)
+     &        = C_loc(f_ctl%layered_work_spectr_prefix)
       end function c_layered_lorentz_spectr_prefix
 !
 !  ---------------------------------------------------------------------

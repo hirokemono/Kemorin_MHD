@@ -50,7 +50,7 @@
 !
       call bcast_ctl_type_c1(smonitor_ctl%volume_average_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_prefix)
-      call bcast_ctl_type_c1(smonitor_ctl%volume_lorentz_spectr_prefix)
+      call bcast_ctl_type_c1(smonitor_ctl%volume_work_spectr_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_format)
 !
       call bcast_ctl_type_c1(smonitor_ctl%degree_v_spectra_switch)
@@ -207,7 +207,7 @@
       call bcast_ctl_array_r1(lp_ctl%layer_radius_ctl)
 !
       call bcast_ctl_type_c1(lp_ctl%layered_pwr_spectr_prefix)
-      call bcast_ctl_type_c1(lp_ctl%layered_lorentz_spectr_prefix)
+      call bcast_ctl_type_c1(lp_ctl%layered_work_spectr_prefix)
       call bcast_ctl_type_c1(lp_ctl%layered_pwr_spectr_format)
 !
       call bcast_ctl_type_c1(lp_ctl%degree_spectra_switch)

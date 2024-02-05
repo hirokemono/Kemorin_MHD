@@ -257,11 +257,11 @@ begin MHD_control
   begin sph_monitor_ctl
     volume_average_prefix        'monitor/sph_ave_volume'
     volume_pwr_spectr_prefix     'monitor/sph_pwr_volume'
-    volume_lorentz_spectr_prefix 'monitor/sph_lorentz_work_convective'
+    volume_work_spectr_prefix    'monitor/sph_work_convective'
 !
     begin layered_spectrum_ctl
       layered_pwr_spectr_prefix    'monitor/sph_pwr_layer'
-      layered_lorentz_spectr_prefix    'monitor/sph_lorentz_work_layer'
+      layered_work_spectr_prefix    'monitor/sph_work_layer'
 !
       array spectr_layer_ctl
         spectr_layer_ctl   25

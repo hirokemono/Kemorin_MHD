@@ -25,7 +25,7 @@ const char label_sph_monitor_ctl[NLBL_SPH_MONITOR][KCHARA_C] = {
     
 	/*[ 5]*/    {"volume_average_prefix"},
     /*[ 6]*/    {"volume_pwr_spectr_prefix"},
-    /*[ 7]*/    {"volume_lorentz_spectr_prefix"},
+    /*[ 7]*/    {"volume_work_spectr_prefix"},
     /*[ 8]*/    {"volume_pwr_spectr_format"},
     /*[ 9]*/    {"nusselt_number_prefix"}
 };
@@ -52,7 +52,7 @@ const char label_gauss_spectr_ctl[NLBL_GAUSS_SPECTR][KCHARA_C] = {
 
 const char label_layerd_spectr_ctl[NLBL_LAYERD_SPECTR][KCHARA_C] = {
     /*[ 0]*/    {"layered_pwr_spectr_prefix"},
-    /*[ 1]*/    {"layered_lorentz_spectr_prefix"},
+    /*[ 1]*/    {"layered_work_spectr_prefix"},
     /*[ 2]*/    {"layered_pwr_spectr_format"},
     /*[ 3]*/    {"spectr_layer_ctl"},
     /*[ 4]*/    {"spectr_radius_ctl"},

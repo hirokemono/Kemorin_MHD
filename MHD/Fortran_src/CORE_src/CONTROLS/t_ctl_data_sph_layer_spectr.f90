@@ -28,7 +28,7 @@
 !!
 !!  begin layered_spectrum_ctl
 !!    layered_pwr_spectr_prefix        'sph_pwr_layer'
-!!    layered_lorentz_spectr_prefix    'sph_lorentz_work_layer'
+!!    layered_work_spectr_prefix       'sph_work_layer'
 !!    layered_pwr_spectr_format        'gzip'
 !!
 !!    degree_spectra_switch         'On'
@@ -71,7 +71,7 @@
 !>        Structure for layered spectrum file prefix
         type(read_character_item) :: layered_pwr_spectr_prefix
 !>        Structure for layered spectrum file prefix
-        type(read_character_item) :: layered_lorentz_spectr_prefix
+        type(read_character_item) :: layered_work_spectr_prefix
 !>        Structure for layered spectrum file format
         type(read_character_item) :: layered_pwr_spectr_format
 !
@@ -102,7 +102,7 @@
       character(len=kchara), parameter, private                         &
      &           :: hd_layer_rms_head = 'layered_pwr_spectr_prefix'
       character(len=kchara), parameter, private                         &
-     &           :: hd_layer_lor_head = 'layered_lorentz_spectr_prefix'
+     &           :: hd_layer_lor_head = 'layered_work_spectr_prefix'
       character(len=kchara), parameter, private                         &
      &           :: hd_layer_rms_fmt =  'layered_pwr_spectr_format'
 !
@@ -151,7 +151,7 @@
         call read_chara_ctl_type(c_buf, hd_layer_rms_head,              &
      &      lp_ctl%layered_pwr_spectr_prefix)
         call read_chara_ctl_type(c_buf, hd_layer_lor_head,              &
-     &      lp_ctl%layered_lorentz_spectr_prefix)
+     &      lp_ctl%layered_work_spectr_prefix)
         call read_chara_ctl_type(c_buf, hd_layer_rms_fmt,               &
      &      lp_ctl%layered_pwr_spectr_format)
 !
@@ -204,7 +204,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    lp_ctl%layered_pwr_spectr_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    lp_ctl%layered_lorentz_spectr_prefix)
+     &    lp_ctl%layered_work_spectr_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    lp_ctl%layered_pwr_spectr_format)
 !
@@ -238,7 +238,7 @@
         call init_chara_ctl_item_label(hd_layer_rms_head,               &
      &      lp_ctl%layered_pwr_spectr_prefix)
         call init_chara_ctl_item_label(hd_layer_lor_head,               &
-     &      lp_ctl%layered_lorentz_spectr_prefix)
+     &      lp_ctl%layered_work_spectr_prefix)
         call init_chara_ctl_item_label(hd_layer_rms_fmt,                &
      &      lp_ctl%layered_pwr_spectr_format)
 !
@@ -263,9 +263,9 @@
       call dealloc_control_array_int(lp_ctl%idx_spec_layer_ctl)
       call dealloc_control_array_real(lp_ctl%layer_radius_ctl)
 !
-      lp_ctl%layered_pwr_spectr_prefix%iflag = 0
-      lp_ctl%layered_lorentz_spectr_prefix%iflag = 0
-      lp_ctl%layered_pwr_spectr_format%iflag = 0
+      lp_ctl%layered_pwr_spectr_prefix%iflag =  0
+      lp_ctl%layered_work_spectr_prefix%iflag = 0
+      lp_ctl%layered_pwr_spectr_format%iflag =  0
       lp_ctl%degree_spectra_switch%iflag =  0
       lp_ctl%order_spectra_switch%iflag =   0
       lp_ctl%diff_lm_spectra_switch%iflag = 0

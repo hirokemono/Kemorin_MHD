@@ -36,7 +36,7 @@
 !!      begin volume_spectrum_ctl
 !!        volume_average_prefix        'sph_ave_convective'
 !!        volume_pwr_spectr_prefix     'sph_pwr_convective'
-!!        volume_lorentz_spectr_prefix 'sph_lorentz_work_convective'
+!!        volume_work_spectr_prefix    'sph_work_convective'
 !!        volume_pwr_spectr_format     'ASCII'
 !!        inner_radius_ctl           0.55
 !!        outer_radius_ctl           1.4
@@ -45,7 +45,7 @@
 !!      begin volume_spectrum_ctl
 !!        volume_average_prefix        'sph_ave_inner_core'
 !!        volume_pwr_spectr_prefix     'sph_pwr_inner_core'
-!!        volume_lorentz_spectr_prefix 'sph_lorentz_work_inner_core'
+!!        volume_work_spectr_prefix    'sph_work_inner_core'
 !!        volume_pwr_spectr_format     'gzip'
 !!
 !!        degree_spectra_switch         'On'
@@ -111,7 +111,7 @@
       character(len=kchara), parameter, private                         &
      &            :: hd_vol_ave =    'volume_average_prefix'
       character(len=kchara), parameter, private                         &
-     &            :: hd_vol_lor_wk = 'volume_lorentz_spectr_prefix'
+     &            :: hd_vol_lor_wk = 'volume_work_spectr_prefix'
 !
       character(len=kchara), parameter, private                         &
      &            :: hd_vol_fmt = 'volume_pwr_spectr_format'
