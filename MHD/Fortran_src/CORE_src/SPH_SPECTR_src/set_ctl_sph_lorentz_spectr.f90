@@ -157,11 +157,11 @@
      &     = v_pwr_ctl%volume_lor_spec_file_ctl%charavalue
       end if
 !
-      v_spectr%gzip_flag_vol_spec = .FALSE.
+      v_lor_spectr%gzip_flag_vol_spec = .FALSE.
       if(v_pwr_ctl%volume_spec_format_ctl%iflag .gt. 0) then
         input_flag = v_pwr_ctl%volume_spec_format_ctl%charavalue
         if(check_mul_flags(input_flag, gzip_flags))                     &
-     &                   v_spectr%gzip_flag_vol_spec = .TRUE.
+     &                   v_lor_spectr%gzip_flag_vol_spec = .TRUE.
       end if
 !
       call set_ctl_prm_vol_sph_spectr(v_pwr_ctl, v_lor_spectr)
