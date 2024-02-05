@@ -246,8 +246,10 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      WK_pwr%shl_rj(0,1,1))
 !
-        call cvt_filtered_ene_spectr(sph_rj, ipol, ipol_LES,            &
+        if(ncomp_rj .eq. n_vector) then
+          call cvt_filtered_ene_spectr(sph_rj, ipol, ipol_LES,          &
      &      ncomp_rj, icomp_rj, WK_pwr%shl_rj(0,1,1))
+        end if
 !
         call sum_each_sph_layerd_pwr(l_truncation, sph_rj, pwr,         &
      &                               ncomp_rj, jcomp_st, WK_pwr)
@@ -272,7 +274,6 @@
      &    :: rms_sph_rj(0:sph_rj%nidx_rj(1),sph_rj%nidx_rj(2),ncomp_rj)
 !
 !
-      if(ncomp_rj .ne. n_scalar) return
       call cvt_mag_or_kin_ene_spectr(sph_rj, ipol%base,                 &
      &                               icomp_rj, rms_sph_rj(0,1,1))
       call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%filter_fld,       &
