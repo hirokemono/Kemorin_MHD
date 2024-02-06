@@ -7,9 +7,8 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine FEM_fields_evolution(time_d, geofem, FEM_model,       &
-!!     &          iref_base, iref_grad, ref_fld, iphys,                  &
-!!     &          MHD_CG, SGS_MHD_wk, nod_fld, FEM_SGS, fem_sq, m_SR)
+!!      subroutine FEM_fields_evolution(time_d, FEM_model,              &
+!!     &          MHD_CG, SGS_MHD_wk, FEM_MHD, FEM_SGS, fem_sq, m_SR)
 !!      subroutine update_FEM_fields                                    &
 !!     &         (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,           &
 !!     &          FEM_MHD_BCs, iphys, iphys_LES, FEM_filters,           &
@@ -91,7 +90,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_fields_evolution(time_d, FEM_model,                 &
+      subroutine FEM_fields_evolution(time_d, FEM_model,                &
      &          MHD_CG, SGS_MHD_wk, FEM_MHD, FEM_SGS, fem_sq, m_SR)
 !
       use FEM_MHD_evolution

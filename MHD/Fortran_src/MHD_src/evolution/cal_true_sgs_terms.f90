@@ -3,21 +3,20 @@
 !
 !      Written by H. Matsui on Oct., 2005
 !
-!!      subroutine cal_true_sgs_terms_pre(dt, FEM_prm, SGS_par,         &
-!!     &          nod_comm, node, ele, surf, sf_grp,                    &
-!!     &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,   &
-!!     &          nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele_base,  &
-!!     &          ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs, &
-!!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,        &
+!!      subroutine cal_true_sgs_terms_pre                               &
+!!     &         (dt, FEM_prm, SGS_par, mesh, sf_grp, fluid, conduct,   &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,&
+!!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
+!!     &          FEM_elens, iak_diff_sgs, diff_coefs, mk_MHD,          &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                &
 !!     &          v_sol, SR_sig, SR_r)
-!!      subroutine cal_true_sgs_terms_post(filter_param, nod_comm, node,&
+!!      subroutine cal_true_sgs_terms_post(filter_param, mesh,          &
 !!     &          iphys_div_frc, iphys_trSGS, iphys_div_trSGS,          &
 !!     &          iphys_SGS_wk, filtering, wk_filter, nod_fld,          &
 !!     &          v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_data), intent(in) :: node
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -59,11 +58,8 @@
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
-      use t_comm_table
+      use t_mesh_data
       use t_geometry_data_MHD
-      use t_geometry_data
-      use t_surface_data
-      use t_group_data
       use t_phys_data
       use t_phys_address
       use t_base_field_labels
@@ -106,12 +102,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_true_sgs_terms_pre(dt, FEM_prm, SGS_par,           &
-     &          nod_comm, node, ele, surf, sf_grp,                      &
-     &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,     &
-     &          nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele_base,    &
-     &          ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs,   &
-     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,          &
+      subroutine cal_true_sgs_terms_pre                                 &
+     &         (dt, FEM_prm, SGS_par, mesh, sf_grp, fluid, conduct,     &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,  &
+     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
+     &          FEM_elens, iak_diff_sgs, diff_coefs, mk_MHD,            &
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                  &
      &          v_sol, SR_sig, SR_r)
 !
       use calypso_mpi
@@ -121,10 +117,7 @@
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(fluid_property), intent(in) :: fl_prop
@@ -161,9 +154,9 @@
      &        iphys_LES%true_div_SGS%i_SGS_h_flux,                      &
      &        iphys%forces%i_h_flux, iphys%div_forces%i_h_flux,         &
      &        iphys_LES%filter_fld%i_temp, iphys_LES%filter_fld%i_velo, &
-     &        FEM_prm, nod_comm, node, ele, fluid, ht_prop,             &
-     &        nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,       &
-     &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,            &
+     &        FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,       &
+     &        ht_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,       &
+     &        fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,   &
      &        v_sol, SR_sig, SR_r)
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -173,17 +166,18 @@
      &       iphys_LES%true_div_SGS%i_SGS_c_flux,                       &
      &       iphys%forces%i_c_flux, iphys%div_forces%i_c_flux,          &
      &       iphys_LES%filter_fld%i_light, iphys_LES%filter_fld%i_velo, &
-     &       FEM_prm, nod_comm, node, ele, fluid, cp_prop,              &
-     &       nod_bcs%Cnod_bcs, iphys_ele_base, ele_fld, fem_int,        &
-     &       mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,             &
+     &       FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,        &
+     &       cp_prop, nod_bcs%Cnod_bcs, iphys_ele_base, ele_fld,        &
+     &       fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,    &
      &       v_sol, SR_sig, SR_r)
          else if ( nod_fld%phys_name(i).eq.SGS_div_m_flux_true%name)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_m_flux_true_pre(dt, FEM_prm, SGS_par,       &
-     &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
-     &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
+     &        mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,            &
+     &        sf_grp, fluid, fl_prop, cd_prop,                          &
+     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,                       &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys_LES%filter_fld,                    &
      &        iphys_LES%force_by_filter, iphys_LES%SGS_term,            &
@@ -195,9 +189,9 @@
          else if(nod_fld%phys_name(i) .eq. SGS_Lorentz_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_maxwell_true_pre                            &
-     &        (dt, FEM_prm, SGS_par, nod_comm, node, ele,               &
-     &         surf, sf_grp, fluid, fl_prop, cd_prop,                   &
+           call cal_div_sgs_maxwell_true_pre(dt, FEM_prm, SGS_par,      &
+     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
+     &         sf_grp, fluid, fl_prop, cd_prop,                         &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,                      &
      &         iphys%base, iphys%forces, iphys%div_forces,              &
      &         iphys%diffusion, iphys_LES%filter_fld,                   &
@@ -212,15 +206,16 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_induct_true_pre(dt, FEM_prm, SGS_par,       &
-     &        nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,      &
-     &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
-     &        iphys%base, iphys%forces, iphys%div_forces,               &
-     &        iphys%diffusion, iphys_LES%filter_fld,                    &
-     &        iphys_LES%SGS_term, iphys_LES%true_SGS,                   &
-     &        iphys_ele_base, ele_fld, ak_MHD,                          &
-     &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
-     &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,            &
-     &        v_sol, SR_sig, SR_r)
+     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
+     &         sf_grp, conduct, cd_prop,                                &
+     &         nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,    &
+     &         iphys%base, iphys%forces, iphys%div_forces,              &
+     &         iphys%diffusion, iphys_LES%filter_fld,                   &
+     &         iphys_LES%SGS_term, iphys_LES%true_SGS,                  &
+     &         iphys_ele_base, ele_fld, ak_MHD,                         &
+     &         fem_int, FEM_elens, iak_diff_sgs, diff_coefs,            &
+     &         mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,           &
+     &         v_sol, SR_sig, SR_r)
          end if
        end do
 !
@@ -228,7 +223,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_true_sgs_terms_post(filter_param, nod_comm, node,  &
+      subroutine cal_true_sgs_terms_post(filter_param, mesh,            &
      &          iphys_div_frc, iphys_trSGS, iphys_div_trSGS,            &
      &          iphys_SGS_wk, filtering, wk_filter, nod_fld,            &
      &          v_sol, SR_sig, SR_r)
@@ -237,8 +232,7 @@
       use m_true_SGS_term_labels
 !
       type(SGS_filtering_params), intent(in) :: filter_param
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
+      type(mesh_geometry), intent(in) :: mesh
 !
       type(base_force_address), intent(in) :: iphys_div_frc
       type(SGS_term_address), intent(in) :: iphys_trSGS
@@ -263,16 +257,16 @@
            call cal_div_sgs_s_flux_true_post                            &
      &        (iphys_div_trSGS%i_SGS_h_flux,                            &
      &         iphys_div_frc%i_h_flux, iphys_SGS_wk%i_simi,             &
-     &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld, v_sol, SR_sig, SR_r)
+     &         filter_param, mesh%nod_comm, mesh%node,                  &
+     &         filtering, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_post                            &
      &        (iphys_div_trSGS%i_SGS_c_flux,                            &
      &         iphys_div_frc%i_c_flux, iphys_SGS_wk%i_simi,             &
-     &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld, v_sol, SR_sig, SR_r)
+     &         filter_param, mesh%nod_comm, mesh%node,                  &
+     &         filtering, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
          else if ( nod_fld%phys_name(i).eq.SGS_div_m_flux_true%name)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -280,16 +274,16 @@
            call cal_div_sgs_tensor_true_post                            &
      &        (iphys_div_trSGS%i_SGS_m_flux,                            &
      &         iphys_div_frc%i_m_flux, iphys_SGS_wk%i_simi,             &
-     &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld, v_sol, SR_sig, SR_r)
+     &         filter_param, mesh%nod_comm, mesh%node,                  &
+     &         filtering, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
          else if(nod_fld%phys_name(i) .eq. SGS_Lorentz_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post                            &
      &        (iphys_trSGS%i_SGS_Lorentz,                               &
      &         iphys_div_frc%i_maxwell, iphys_SGS_wk%i_simi,            &
-     &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld, v_sol, SR_sig, SR_r)
+     &         filter_param, mesh%nod_comm, mesh%node,                  &
+     &         filtering, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
          else if(nod_fld%phys_name(i) .eq. SGS_mag_induction_true%name) &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -297,8 +291,8 @@
            call cal_div_sgs_tensor_true_post                            &
      &        (iphys_trSGS%i_SGS_induction,                             &
      &         iphys_div_frc%i_induct_t, iphys_SGS_wk%i_simi,           &
-     &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld, v_sol, SR_sig, SR_r)
+     &         filter_param, mesh%nod_comm, mesh%node,                  &
+     &         filtering, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
          end if
        end do
 !
