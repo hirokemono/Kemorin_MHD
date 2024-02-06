@@ -241,12 +241,8 @@
 !     ----- Time integration
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_fields_evolution'
-      call FEM_fields_evolution(MHD_step%time_d,                        &
-     &    FEM_model%FEM_prm, FEM_MHD%geofem, FEM_model%MHD_mesh,        &
-     &    FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs,                    &
-     &    FEM_MHD%iref_base, FEM_MHD%iref_grad, FEM_MHD%ref_fld,        &
-     &    FEM_MHD%iphys, MHD_CG, SGS_MHD_wk, FEM_MHD%field, FEM_SGS,    &
-     &    fem_sq, m_SR)
+      call FEM_fields_evolution(MHD_step%time_d, FEM_model,              &
+     &    MHD_CG, SGS_MHD_wk, FEM_MHD, FEM_SGS, fem_sq, m_SR)
 !
 !     ----- Evaluate model coefficients
 !
