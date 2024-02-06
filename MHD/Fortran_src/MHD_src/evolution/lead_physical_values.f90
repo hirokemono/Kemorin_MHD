@@ -10,7 +10,7 @@
 !!      subroutine lead_fields_by_FEM(istep, MHD_step, FEM_prm, SGS_par,&
 !!     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs,              &
 !!     &          iphys, iphys_LES, ak_MHD, FEM_filters, SGS_MHD_wk,    &
-!!     &          nod_fld, Csims_FEM_MHD, v_sol, SR_sig, SR_r)
+!!     &          nod_fld, Csims_FEM_MHD, m_SR)
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -28,7 +28,7 @@
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module lead_physical_values
@@ -58,8 +58,7 @@
       use t_SGS_model_coefs
       use t_FEM_SGS_model_coefs
       use t_work_FEM_SGS_MHD
-      use t_vector_for_solver
-      use t_solver_SR
+      use t_mesh_SR
 !
       implicit none
 !
@@ -74,7 +73,7 @@
       subroutine lead_fields_by_FEM(istep, MHD_step, FEM_prm, SGS_par,  &
      &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs,                &
      &          iphys, iphys_LES, ak_MHD, FEM_filters, SGS_MHD_wk,      &
-     &          nod_fld, Csims_FEM_MHD, v_sol, SR_sig, SR_r)
+     &          nod_fld, Csims_FEM_MHD, m_SR)
 !
       use update_after_evolution
       use itp_potential_on_edge
@@ -98,9 +97,7 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if(lead_field_data_flag(istep, MHD_step) .eqv. .FALSE.) return
@@ -112,7 +109,7 @@
       if (iflag_debug.gt.0) write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_prm, SGS_par, geofem, &
      &    MHD_mesh, FEM_MHD_BCs, iphys, iphys_LES, FEM_filters,         &
-     &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD, v_sol, SR_sig, SR_r)
+     &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
 !
       call cal_field_by_rotation(MHD_step%time_d%dt, FEM_prm,           &
      &   SGS_par%model_p, SGS_par%commute_p, geofem%mesh, geofem%group, &
@@ -122,7 +119,7 @@
      &   SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                     &
      &   Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,         &
      &   SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,  &
-     &   nod_fld, v_sol, SR_sig, SR_r)
+     &   nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
       call cal_helicity(iphys, nod_fld)
@@ -134,8 +131,8 @@
      &    SGS_MHD_wk%iphys_ele_base, ak_MHD, SGS_MHD_wk%fem_int,        &
      &    FEM_filters%FEM_elens, Csims_FEM_MHD, FEM_filters%filtering,  &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                     &
-     &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &
-     &    nod_fld, SGS_MHD_wk%ele_fld, v_sol, SR_sig, SR_r)
+     &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,           &
+     &    SGS_MHD_wk%ele_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       end subroutine lead_fields_by_FEM
 !

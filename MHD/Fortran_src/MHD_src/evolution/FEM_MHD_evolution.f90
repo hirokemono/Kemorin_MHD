@@ -11,11 +11,10 @@
 !!     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
 !!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
 !!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
-!!     &          nod_fld, Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
+!!     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
 !!      subroutine update_fields(time_d, FEM_prm, SGS_par,              &
 !!     &         geofem, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_LES, &
-!!     &         FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD,       &
-!!     &         v_sol, SR_sig, SR_r)
+!!     &         FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
 !!      subroutine reset_update_flag(nod_fld, sgs_coefs, diff_coefs)
 !!
 !!      subroutine fields_evo_for_FEM_SPH(time_d, FEM_prm, SGS_par,     &
@@ -104,8 +103,7 @@
       use t_FEM_MHD_mean_square
       use t_work_FEM_SGS_MHD
       use t_FEM_SGS_model_coefs
-      use t_vector_for_solver
-      use t_solver_SR
+      use t_mesh_SR
 !
       implicit none
 !
@@ -119,7 +117,7 @@
      &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
      &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
      &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
+     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
 !
       use calypso_mpi
       use cal_temperature
@@ -156,9 +154,7 @@
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'reset_update_flag'
@@ -178,7 +174,7 @@
      &      SGS_MHD_wk%mk_MHD, s_package%Bmatrix, s_package%Fmatrix,    &
      &      ak_MHD%ak_d_magne, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk,          &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, fem_sq,          &
-     &      nod_fld, v_sol, SR_sig, SR_r)
+     &      nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 
         call update_with_vector_potential                               &
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
@@ -192,7 +188,7 @@
      &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
-     &     Csims_FEM_MHD%diff_coefs, v_sol, SR_sig, SR_r)
+     &    Csims_FEM_MHD%diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       else if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)  &
      &     then
@@ -210,7 +206,7 @@
      &     SGS_MHD_wk%mk_MHD, s_package%Bmatrix, s_package%Fmatrix,     &
      &     ak_MHD%ak_d_magne, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk,           &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                   &
-     &     fem_sq, nod_fld, v_sol, SR_sig, SR_r)
+     &     fem_sq, nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         call update_with_magnetic_field                                 &
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, MHD_mesh%conduct, &
@@ -223,7 +219,7 @@
      &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
-     &     Csims_FEM_MHD%diff_coefs, v_sol, SR_sig, SR_r)
+     &    Csims_FEM_MHD%diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
 !     ---- temperature update
@@ -247,7 +243,8 @@
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Tmatrix, ak_MHD, MGCG_WK,                        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
-     &       SGS_MHD_wk%rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &       SGS_MHD_wk%rhs_mat, nod_fld,                               &
+     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
@@ -274,7 +271,8 @@
      &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
      &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &        SGS_MHD_wk%rhs_mat, nod_fld,                              &
+     &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
         if (iphys%base%i_per_temp .gt. 0) then
 !$omp parallel
@@ -296,7 +294,7 @@
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
 !     ----- composition update
@@ -320,7 +318,7 @@
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       v_sol, SR_sig, SR_r)
+     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
@@ -345,7 +343,7 @@
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       v_sol, SR_sig, SR_r)
+     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
           if (iphys%base%i_per_light .gt. 0) then
 !$omp parallel
@@ -366,7 +364,7 @@
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
 !     ---- velocity update
@@ -387,7 +385,8 @@
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
      &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
-     &      Csims_FEM_MHD%sgs_coefs_nod, fem_sq, v_sol, SR_sig, SR_r)
+     &      Csims_FEM_MHD%sgs_coefs_nod, fem_sq,                        &
+     &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         call update_with_velocity(time_d%i_time_step, time_d%dt,        &
      &     FEM_prm, SGS_par, geofem%mesh, geofem%group, MHD_mesh%fluid, &
      &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                          &
@@ -400,7 +399,7 @@
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
      &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs,                &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       end subroutine fields_evolution
@@ -409,8 +408,7 @@
 !
       subroutine update_fields(time_d, FEM_prm, SGS_par,                &
      &         geofem, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_LES,   &
-     &         FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD,         &
-     &         v_sol, SR_sig, SR_r)
+     &         FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
 !
       use average_on_elements
       use update_with_scalars
@@ -432,9 +430,7 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if(iphys%base%i_velo .ne. 0) then
@@ -450,7 +446,7 @@
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
      &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs,                &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       if(iphys%base%i_temp .ne. 0) then
@@ -464,7 +460,7 @@
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       if(iphys%base%i_light .ne. 0) then
@@ -477,7 +473,7 @@
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       if(iphys%base%i_vecp .ne. 0) then
@@ -493,7 +489,7 @@
      &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
-     &     Csims_FEM_MHD%diff_coefs, v_sol, SR_sig, SR_r)
+     &    Csims_FEM_MHD%diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       else if(iphys%base%i_magne.ne.0) then
         call update_with_magnetic_field                                 &
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
@@ -507,7 +503,7 @@
      &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
-     &     Csims_FEM_MHD%diff_coefs, v_sol, SR_sig, SR_r)
+     &    Csims_FEM_MHD%diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       end subroutine update_fields
@@ -519,7 +515,7 @@
      &          geofem, fluid, MHD_prop, nod_bcs, surf_bcs,             &
      &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
      &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, fem_sq, v_sol, SR_sig, SR_r)
+     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
 !
       use cal_temperature
       use cal_velocity
@@ -553,9 +549,7 @@
 !
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'reset_update_flag'
@@ -582,7 +576,8 @@
      &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
      &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &        SGS_MHD_wk%rhs_mat, nod_fld,                              &
+     &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
@@ -606,7 +601,8 @@
      &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
      &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &        SGS_MHD_wk%rhs_mat, nod_fld,                              &
+     &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
           if (iphys%base%i_per_temp .gt. 0) then
 !$omp parallel
@@ -628,7 +624,7 @@
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
 !     ----- composition update
@@ -651,7 +647,7 @@
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       v_sol, SR_sig, SR_r)
+     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
@@ -675,7 +671,7 @@
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       v_sol, SR_sig, SR_r)
+     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
           if (iphys%base%i_per_light .gt. 0) then
 !$omp parallel
@@ -696,7 +692,7 @@
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
 !     ---- velocity update
@@ -716,7 +712,8 @@
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
      &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
-     &      Csims_FEM_MHD%sgs_coefs, fem_sq, v_sol, SR_sig, SR_r)
+     &      Csims_FEM_MHD%sgs_coefs, fem_sq,                            &
+     &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         call update_with_velocity(time_d%i_time_step, time_d%dt,        &
      &     FEM_prm, SGS_par, geofem%mesh, geofem%group, fluid,          &
      &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                          &
@@ -729,7 +726,7 @@
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
      &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs,                &
-     &     v_sol, SR_sig, SR_r)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       end subroutine fields_evo_for_FEM_SPH

@@ -187,8 +187,7 @@
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,    &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_SGS%FEM_filters,        &
-     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,                     &
-     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims, m_SR)
 !
 !     ----- Evaluate model coefficients
 !
@@ -197,7 +196,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    FEM_SGS%Csims, m_SR)
 !
 !     ========  Data output
 !
@@ -206,7 +205,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,       &
-     &    FEM_SGS%Csims, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    FEM_SGS%Csims, m_SR)
 !
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
       call lead_specital_SGS                                            &
