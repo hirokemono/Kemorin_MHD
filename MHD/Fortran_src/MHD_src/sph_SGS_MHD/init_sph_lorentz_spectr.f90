@@ -124,6 +124,7 @@
      &   .or. ipol_start .eq. ipol_force%i_buoyancy                     &
      &   .or. ipol_start .eq. ipol_force%i_comp_buo                     &
      &   .or. ipol_start .eq. ipol_force%i_m_advect                     &
+     &   .or. ipol_start .eq. ipol_force%magnetic_induction             &
      &  ) return
       
       check_Lorentz_gravity_intertia = .FALSE.

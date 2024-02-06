@@ -68,8 +68,8 @@
       if(pwr%ntot_comp_sq .eq. 0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_lorentz_wk'
-      call sum_sph_layerd_lorentz_wk(sph_params%l_truncation, sph_rj,  &
-     &    pwr, ipol%base, ipol_LES, rj_fld, leg%g_sph_rj, WK_pwr)
+      call sum_sph_layerd_lorentz_wk(sph_params%l_truncation, sph_rj,   &
+     &    pwr, ipol, ipol_LES, rj_fld, leg%g_sph_rj, WK_pwr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'global_sum_sph_layerd_square'
       call global_sum_sph_layerd_square                                 &
@@ -90,7 +90,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sum_sph_layerd_lorentz_wk(l_truncation, sph_rj, pwr,   &
-     &          ipol_base, ipol_LES, rj_fld, g_sph_rj, WK_lor_mode)
+     &          ipol, ipol_LES, rj_fld, g_sph_rj, WK_lor_mode)
 !
       use t_spheric_rj_data
       use t_phys_data
@@ -105,7 +105,7 @@
       use sum_sph_rms_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(base_field_address), intent(in) :: ipol_base
+      type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
       type(sph_mean_squares), intent(in) :: pwr
@@ -133,10 +133,16 @@
         jcomp_st = pwr%istack_comp_sq(j_fld-1) + 1
         ncomp_rj = pwr%istack_comp_sq(j_fld)                            &
      &            - pwr%istack_comp_sq(j_fld-1)
-        if(icomp_st .eq. ipol_LES%SGS_term%i_SGS_induction) then
-          icomp_ref = ipol_base%i_magne
+        if(      icomp_st .eq. ipo%forces%i_induction                   &
+     &      .or. icomp_st .eq. ipo%forces_by_sym_sym%i_induction        &
+     &      .or. icomp_st .eq. ipo%forces_by_asym_asym%i_induction      &
+     &      .or. icomp_st .eq. ipo%forces_by_sym_asym%i_induction       &
+     &      .or. icomp_st .eq. ipo%forces_by_asym_sym%i_induction       &
+     &      .or. icomp_st .eq. ipol_LES%SGS_term%i_SGS_induction        &
+     &   ) then
+          icomp_ref = ipol%base%i_magne
         else
-          icomp_ref = ipol_base%i_velo
+          icomp_ref = ipol%base%i_velo
         end if
 !
         call cal_rms_sph_spec_one_field                                 &
