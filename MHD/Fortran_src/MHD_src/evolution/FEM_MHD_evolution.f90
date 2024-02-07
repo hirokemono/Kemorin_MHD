@@ -174,7 +174,7 @@
      &      SGS_MHD_wk%mk_MHD, s_package%Bmatrix, s_package%Fmatrix,    &
      &      ak_MHD%ak_d_magne, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk,          &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, fem_sq,          &
-     &      nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &      nod_fld, m_SR)
 
         call update_with_vector_potential                               &
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
@@ -206,7 +206,7 @@
      &     SGS_MHD_wk%mk_MHD, s_package%Bmatrix, s_package%Fmatrix,     &
      &     ak_MHD%ak_d_magne, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk,           &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                   &
-     &     fem_sq, nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &     fem_sq, nod_fld, m_SR)
         call update_with_magnetic_field                                 &
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, MHD_mesh%conduct, &
