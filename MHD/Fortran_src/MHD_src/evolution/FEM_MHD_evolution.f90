@@ -228,8 +228,10 @@
         if(MHD_prop%ref_param_T%iflag_reference .ne. id_no_ref_temp)    &
      &   then
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
-          call cal_temperature_field(iphys%base%i_per_temp, time_d%dt,  &
-     &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
+          call cal_temperature_field                                    &
+     &       (iphys%base%i_per_temp, time_d%dt, FEM_prm,                &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &       geofem%mesh, geofem%group,                                 &
      &       MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,    &
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
      &       iref_grad, ref_fld, iphys, iphys_LES,                      &
@@ -255,8 +257,10 @@
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, geofem%group%surf_nod_grp)
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
-          call cal_temperature_field(iphys%base%i_temp, time_d%dt,      &
-     &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
+          call cal_temperature_field                                    &
+     &       (iphys%base%i_temp, time_d%dt, FEM_prm,                    &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        geofem%mesh, geofem%group,                                &
      &        MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,   &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
      &        iref_grad, ref_fld, iphys, iphys_LES,                     &
@@ -301,8 +305,10 @@
         if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp)    &
      &   then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(iphys%base%i_per_light, time_d%dt,   &
-     &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
+          call s_cal_light_element                                      &
+     &      (iphys%base%i_per_light, time_d%dt, FEM_prm,                &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &       geofem%mesh, geofem%group,                                 &
      &       MHD_mesh%fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,    &
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
      &       iref_grad, ref_fld, iphys, iphys_LES,                      &
@@ -325,8 +331,10 @@
 !$omp end parallel
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
-          call s_cal_light_element(iphys%base%i_light, time_d%dt,       &
-     &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
+          call s_cal_light_element                                      &
+     &      (iphys%base%i_light, time_d%dt, FEM_prm,                    &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &       geofem%mesh, geofem%group,               &
      &       MHD_mesh%fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,    &
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
      &       iref_grad, ref_fld, iphys, iphys_LES,                      &
@@ -558,8 +566,10 @@
         if(MHD_prop%ref_param_T%iflag_reference .ne. id_no_ref_temp)    &
      &   then
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
-          call cal_temperature_field(iphys%base%i_per_temp, time_d%dt,  &
-     &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
+          call cal_temperature_field                                    &
+     &       (iphys%base%i_per_temp, time_d%dt, FEM_prm,                &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        geofem%mesh, geofem%group,                                &
      &        fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,            &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
      &        iref_grad, ref_fld, iphys, iphys_LES,                     &
@@ -582,8 +592,10 @@
 !$omp end parallel
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
-          call cal_temperature_field(iphys%base%i_temp, time_d%dt,      &
-     &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
+          call cal_temperature_field                                    &
+     &       (iphys%base%i_temp, time_d%dt, FEM_prm,                    &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        geofem%mesh, geofem%group,              &
      &        fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,            &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
      &        iref_grad, ref_fld, iphys, iphys_LES,                     &
@@ -627,8 +639,10 @@
         if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp)    &
      &   then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(iphys%base%i_per_light, time_d%dt,   &
-     &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
+          call s_cal_light_element                                      &
+     &      (iphys%base%i_per_light, time_d%dt, FEM_prm,                &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &       geofem%mesh, geofem%group,               &
      &       fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,             &
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
      &       iref_grad, ref_fld, iphys, iphys_LES,                      &
@@ -650,8 +664,10 @@
 !$omp end parallel
         else
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
-          call s_cal_light_element(iphys%base%i_light, time_d%dt,       &
-     &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
+          call s_cal_light_element                                      &
+     &      (iphys%base%i_light, time_d%dt, FEM_prm,                    &
+     &       SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,      &
+     &       geofem%mesh, geofem%group,               &
      &       fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,             &
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
      &       iref_grad, ref_fld, iphys, iphys_LES,                      &
