@@ -243,8 +243,7 @@
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Tmatrix, ak_MHD, MGCG_WK,                        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
-     &       SGS_MHD_wk%rhs_mat, nod_fld,                               &
-     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &       SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
@@ -271,8 +270,7 @@
      &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
      &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld,                              &
-     &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &        SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
         if (iphys%base%i_per_temp .gt. 0) then
 !$omp parallel
@@ -317,8 +315,7 @@
      &       Csims_FEM_MHD%diff_coefs,                                  &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
-     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
@@ -342,8 +339,7 @@
      &       Csims_FEM_MHD%diff_coefs,                                  &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
-     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
           if (iphys%base%i_per_light .gt. 0) then
 !$omp parallel
@@ -576,8 +572,7 @@
      &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
      &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld,                              &
-     &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &        SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
@@ -601,8 +596,7 @@
      &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
      &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld,                              &
-     &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &        SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
           if (iphys%base%i_per_temp .gt. 0) then
 !$omp parallel
@@ -646,8 +640,7 @@
      &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,     &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
-     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
@@ -670,8 +663,7 @@
      &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,     &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
-     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
           if (iphys%base%i_per_light .gt. 0) then
 !$omp parallel

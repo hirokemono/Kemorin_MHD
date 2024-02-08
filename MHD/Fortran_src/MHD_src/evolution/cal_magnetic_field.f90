@@ -185,7 +185,7 @@
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,       &
      &     Fmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk, &
      &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                          &
-     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_rr)
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &

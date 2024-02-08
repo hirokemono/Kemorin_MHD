@@ -7,7 +7,6 @@
 !>@brief  I/O routines for mean square and averaga data
 !!
 !!@verbatim
-!
 !!      subroutine init_rms_sph_SGS_mhd_control(MHD_prop, sph_MHD_bc,   &
 !!     &          r_2nd, trans_p, nod_fld, SPH_SGS, SPH_MHD, MHD_mats,  &
 !!     &          monitor, SR_sig, SR_r)
