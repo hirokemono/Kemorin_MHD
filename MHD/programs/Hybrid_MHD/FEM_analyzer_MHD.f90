@@ -223,7 +223,7 @@
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution_4_FEM_SPH'
       call fields_evolution_4_FEM_SPH                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
-     &    FEM_MHD%geofem, FEM_model%MHD_mesh%fluid, FEM_model%MHD_prop, &
+     &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iref_base, FEM_MHD%iref_grad,  &
      &    FEM_MHD%ref_fld, FEM_MHD%iphys, FEM_SGS%iphys_LES,            &
      &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,       &

@@ -21,7 +21,7 @@
 !!     &          nod_fld, Csims_FEM_MHD, m_SR)
 !!
 !!      subroutine fields_evolution_4_FEM_SPH(time_d, FEM_prm, SGS_par, &
-!!     &          geofem, fluid, MHD_prop, FEM_MHD_BCs,                 &
+!!     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs,              &
 !!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
 !!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
 !!     &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
@@ -31,7 +31,6 @@
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!!        type(field_geometry_data), intent(in) :: fluid
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
@@ -195,7 +194,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine fields_evolution_4_FEM_SPH(time_d, FEM_prm, SGS_par,   &
-     &          geofem, fluid, MHD_prop, FEM_MHD_BCs,                   &
+     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs,                &
      &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
      &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
      &          nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
@@ -206,7 +205,7 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem
-      type(field_geometry_data), intent(in) :: fluid
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
       type(base_field_address), intent(in) :: iref_base
@@ -227,7 +226,7 @@
 !
 !
       call fields_evo_for_FEM_SPH                                       &
-     &   (time_d, FEM_prm, SGS_par, geofem, fluid, MHD_prop,            &
+     &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh, MHD_prop,         &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,                    &
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
      &    ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,          &
