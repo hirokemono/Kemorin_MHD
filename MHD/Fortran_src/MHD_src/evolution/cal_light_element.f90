@@ -193,12 +193,7 @@
      &         diff_coefs, filtering, mlump_fl, Smatrix, ak_diffuse,    &
      &         MGCG_WK, wk_filter, mhd_fem_wk, rhs_mat, nod_fld, m_SR)
 !
-      use nod_phys_send_recv
-      use set_boundary_scalars
-      use cal_sgs_fluxes
-      use copy_nodal_fields
-      use sel_int_scalar_ele
-      use sel_cal_scalar_pre
+      use cal_temperature
 !
       integer(kind = kint), intent(in) :: i_field
       real(kind = kreal), intent(in) :: dt
