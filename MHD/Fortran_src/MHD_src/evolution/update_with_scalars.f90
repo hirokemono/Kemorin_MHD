@@ -215,8 +215,8 @@
 !
              if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad)   &
      &        then
-               if (iflag_debug.gt.0)                                    &
-     &            write(*,*) 's_cal_diff_coef_scalar temp'
+               if (iflag_debug.gt.0)  write(*,*)                        &
+     &                        's_cal_diff_coef_scalar temperature'
                call s_cal_diff_coef_scalar                              &
      &           (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,    &
      &            dt, iphys_SGS_wk%i_sgs_temp, iphys_fil%i_temp,        &
@@ -337,20 +337,20 @@
      &        then
                if (iflag_debug.gt.0)  write(*,*)                        &
      &                        's_cal_diff_coef_scalar composition'
-               call s_cal_diff_coef_scalar(FEM_prm%iflag_comp_supg,     &
-     &             FEM_prm%npoint_t_evo_int, dt,                        &
-     &             iphys_SGS_wk%i_sgs_composit, iphys_fil%i_light,      &
-     &             iak_diff_base%i_light, icomp_diff_base%i_light,      &
-     &             SGS_par, mesh%nod_comm, mesh%node, mesh%ele,         &
-     &             mesh%surf, group%surf_grp, sf_bcs, iphys_SGS_wk,     &
-     &             iphys_ele_base, ele_fld, fluid,                      &
-     &             FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl, &
-     &             FEM_filters%FEM_elens, FEM_filters%filtering,        &
-     &             mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,               &
-     &             FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
-     &             FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk, &
-     &             rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                  &
-     &             diff_coefs, v_sol, SR_sig, SR_r)
+               call s_cal_diff_coef_scalar                              &
+     &           (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,    &
+     &            dt, iphys_SGS_wk%i_sgs_composit, iphys_fil%i_light,   &
+     &            iak_diff_base%i_light, icomp_diff_base%i_light,       &
+     &            SGS_par, mesh%nod_comm, mesh%node, mesh%ele,          &
+     &            mesh%surf, group%surf_grp, sf_bcs, iphys_SGS_wk,      &
+     &            iphys_ele_base, ele_fld, fluid,                       &
+     &            FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl,  &
+     &            FEM_filters%FEM_elens, FEM_filters%filtering,         &
+     &            mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,                &
+     &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
+     &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
+     &            rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                   &
+     &            diff_coefs, v_sol, SR_sig, SR_r)
              end if
 
            end if

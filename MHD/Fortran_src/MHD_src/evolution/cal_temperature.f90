@@ -58,35 +58,24 @@
       use m_machine_parameter
       use m_phys_constants
 !
-      use t_reference_scalar_param
+      use t_time_data
       use t_FEM_control_parameter
       use t_SGS_control_parameter
-      use t_physical_property
+      use t_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
-      use t_surface_data
+      use t_bc_data_MHD
+      use t_surface_bc_data_MHD
+      use t_base_field_labels
       use t_phys_data
       use t_phys_address
+      use t_FEM_MHD_filter_data
       use t_SGS_model_addresses
-      use t_base_field_labels
-      use t_grad_field_labels
-      use t_explicit_term_labels
-      use t_SGS_term_labels
-      use t_jacobians
-      use t_table_FEM_const
-      use t_MHD_finite_element_mat
-      use t_MHD_mass_matrices
-      use t_layering_ele_list
-      use t_filter_elength
-      use t_filtering_data
-      use t_bc_data_temp
-      use t_surface_bc_scalar
       use t_material_property
-      use t_SGS_model_coefs
-      use t_solver_djds_MHD
+      use t_MHD_matrices_pack
       use t_MGCG_data
-      use t_work_FEM_integration
-      use t_work_FEM_dynamic_SGS
+      use t_work_FEM_SGS_MHD
+      use t_FEM_SGS_model_coefs
       use t_mesh_SR
 !
       implicit none
@@ -96,6 +85,118 @@
       contains
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine temperature_evolution(time_d, FEM_prm, SGS_par,        &
+     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
+     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
+     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
+     &          nod_fld, Csims_FEM_MHD, m_SR)
+!
+      use update_with_scalars
+      use cal_add_smp
+      use cal_subtract_smp
+!
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+      type(SGS_paremeters), intent(in) :: SGS_par
+      type(time_data), intent(in) :: time_d
+      type(mesh_data), intent(in) :: geofem
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(nodal_boundarty_conditions), intent(in) :: nod_bcs
+      type(surface_boundarty_conditions), intent(in) :: surf_bcs
+      type(base_field_address), intent(in) :: iref_base
+      type(gradient_field_address), intent(in) :: iref_grad
+      type(phys_data), intent(in) :: ref_fld
+      type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
+      type(coefs_4_MHD_type), intent(in) :: ak_MHD
+      type(filters_on_FEM), intent(in) :: FEM_filters
+      type(MHD_matrices_pack), intent(in) :: s_package
+!
+      type(MGCG_data), intent(inout) :: MGCG_WK
+      type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
+      type(phys_data), intent(inout) :: nod_fld
+      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(mesh_SR), intent(inout) :: m_SR
+!
+!     ---- temperature update
+!
+      if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
+        if(MHD_prop%ref_param_T%iflag_reference .ne. id_no_ref_temp)    &
+     &   then
+          if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
+          call cal_temperature_field                                    &
+     &       (iphys%base%i_per_temp, time_d%dt, FEM_prm,                &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        geofem%mesh, geofem%group,                                &
+     &        MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,   &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
+     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
+     &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
+     &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
+     &        Csims_FEM_MHD%icomp_sgs_term,                             &
+     &        Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,  &
+     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs, &
+     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,    &
+     &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
+     &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
+!
+!$omp parallel
+          call add_scalars_smp(nod_fld%n_point,                         &
+     &                         ref_fld%d_fld(1,iref_base%i_temp),       &
+     &                         nod_fld%d_fld(1,iphys%base%i_per_temp),  &
+     &                         nod_fld%d_fld(1,iphys%base%i_temp))
+!$omp end parallel
+        else
+!          call check_surface_param_smp('cal_temperature_field start',  &
+!     &        my_rank, sf_grp, geofem%group%surf_nod_grp)
+          if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
+          call cal_temperature_field                                    &
+     &       (iphys%base%i_temp, time_d%dt, FEM_prm,                    &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
+     &        MHD_prop%ht_prop, MHD_prop%ref_param_T,                   &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
+     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
+     &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
+     &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
+     &        Csims_FEM_MHD%icomp_sgs_term,                             &
+     &        Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,  &
+     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs, &
+     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,    &
+     &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
+     &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
+!
+          if (iphys%base%i_per_temp .gt. 0) then
+!$omp parallel
+            call subtract_scalars_smp(nod_fld%n_point,                  &
+     &                          nod_fld%d_fld(1,iphys%base%i_temp),     &
+     &                          ref_fld%d_fld(1,iref_base%i_temp),      &
+     &                          nod_fld%d_fld(1,iphys%base%i_per_temp))
+!$omp end parallel
+          end if
+        end if
+!
+        call update_with_temperature                                    &
+     &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
+     &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Tsf_bcs, &
+     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
+     &     iphys_LES%force_by_filter, iphys_LES%eflux_by_filter,        &
+     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
+     &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+      end if
+!
+      end subroutine temperature_evolution
+!
+!-----------------------------------------------------------------------
 !
       subroutine cal_temperature_field(i_field, dt,                     &
      &         FEM_prm, SGS_param, cmt_param, filter_param,             &
