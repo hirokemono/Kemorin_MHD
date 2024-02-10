@@ -9,18 +9,24 @@
 !!     &          wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !!
 !!      subroutine cal_diff_coef                                        &
-!!     &         (SGS_par, layer_tbl, node, ele, iphys_SGS_wk, nod_fld, &
-!!     &          jacs, numdir, ifield_d, icomp_f, n_int,               &
+!!     &         (iflag_SGS_initial, SGS_param, cmt_param,              &
+!!     &          layer_tbl, node, ele, iphys_SGS_wk, nod_fld, jacs,    &
+!!     &          numdir, ifield_d, icomp_f, n_int,                     &
 !!     &          wk_cor, wk_lsq, wk_diff, diff_coefs)
-!!      subroutine cal_diff_coef_fluid(SGS_par, layer_tbl,              &
+!!      subroutine cal_diff_coef_fluid                                  &
+!!     &         (iflag_SGS_initial, SGS_param, cmt_param, layer_tbl,   &
 !!     &          node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,        &
 !!     &          numdir, ifield_d, icomp_f, n_int,                     &
 !!     &          wk_cor, wk_lsq, wk_diff, diff_coefs)
 !!      subroutine cal_diff_coef_conduct                                &
-!!     &         (SGS_par, layer_tbl, node, ele, conduct, jacs,         &
-!!     &          iphys_SGS_wk, nod_fld, numdir, ifield_d, icomp_f,     &
-!!     &          n_int, wk_cor, wk_lsq, wk_diff, diff_coefs)
+!!     &         (iflag_SGS_initial, SGS_param, cmt_param, layer_tbl,   &
+!!     &          node, ele, conduct, iphys_SGS_wk, nod_fld, jacs,      &
+!!     &          numdir, ifield_d, icomp_f, n_int,                     &
+!!     &          wk_cor, wk_lsq, wk_diff, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
+!!        integer(kind = kint), intent(in) :: iflag_SGS_initial
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -117,7 +123,8 @@
      &    wk_lsq)
 !
       call clippging_sgs_diff_coefs                                     &
-     &   (n_tensor, ifield_d, icomp_f, SGS_par, wk_sgs)
+     &   (SGS_par%iflag_SGS_initial, SGS_par%model_p,                   &
+     &    n_tensor, ifield_d, icomp_f, wk_sgs)
 !
       call clear_model_coefs_2_ele(ele, n_tensor, icomp_f,              &
      &    sgs_coefs%ntot_comp, sgs_coefs%ak)
@@ -134,14 +141,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_diff_coef                                          &
-     &         (SGS_par, layer_tbl, node, ele, iphys_SGS_wk, nod_fld,   &
-     &          jacs, numdir, ifield_d, icomp_f, n_int,                 &
+     &         (iflag_SGS_initial, SGS_param, cmt_param,                &
+     &          layer_tbl, node, ele, iphys_SGS_wk, nod_fld, jacs,      &
+     &          numdir, ifield_d, icomp_f, n_int,                       &
      &          wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       integer (kind = kint), intent(in) :: numdir
       integer (kind = kint), intent(in) :: ifield_d, icomp_f, n_int
 !
-      type(SGS_paremeters), intent(in) :: SGS_par
+      integer(kind = kint), intent(in) :: iflag_SGS_initial
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
@@ -155,15 +165,16 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1) then
-        call cal_layerd_diff_coef                                       &
-     &     (SGS_par, layer_tbl, node, ele, iphys_SGS_wk, nod_fld,       &
+      if (cmt_param%iset_DIFF_coefs .eq. 1) then
+        call cal_layerd_diff_coef(iflag_SGS_initial, SGS_param,         &
+     &      layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
      &      numdir, ifield_d, icomp_f, n_int,                           &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       else
-        call cal_whole_diff_coef(layer_tbl, ele%istack_ele_smp,         &
-     &      SGS_par, node, ele, iphys_SGS_wk, nod_fld,                  &
+        call cal_whole_diff_coef                                        &
+     &     (layer_tbl, ele%istack_ele_smp, iflag_SGS_initial,           &
+     &      SGS_param, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
      &      numdir, ifield_d, icomp_f, n_int, ele%volume,               &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
@@ -173,7 +184,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_coef_fluid(SGS_par, layer_tbl,                &
+      subroutine cal_diff_coef_fluid                                    &
+     &         (iflag_SGS_initial, SGS_param, cmt_param, layer_tbl,     &
      &          node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,          &
      &          numdir, ifield_d, icomp_f, n_int,                       &
      &          wk_cor, wk_lsq, wk_diff, diff_coefs)
@@ -181,7 +193,9 @@
       integer (kind = kint), intent(in) :: numdir
       integer (kind = kint), intent(in) :: ifield_d, icomp_f, n_int
 !
-      type(SGS_paremeters), intent(in) :: SGS_par
+      integer(kind = kint), intent(in) :: iflag_SGS_initial
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -196,15 +210,16 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1) then
-        call cal_layerd_diff_coef                                       &
-     &     (SGS_par, layer_tbl, node, ele, iphys_SGS_wk, nod_fld,       &
+      if (cmt_param%iset_DIFF_coefs .eq. 1) then
+        call cal_layerd_diff_coef(iflag_SGS_initial, SGS_param,         &
+     &      layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
      &      numdir, ifield_d, icomp_f, n_int,                           &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       else
-        call cal_whole_diff_coef(layer_tbl, fluid%istack_ele_fld_smp,   &
-     &      SGS_par, node, ele, iphys_SGS_wk, nod_fld,                  &
+        call cal_whole_diff_coef                                        &
+     &     (layer_tbl, fluid%istack_ele_fld_smp, iflag_SGS_initial,     &
+     &      SGS_param, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
      &      numdir, ifield_d, icomp_f, n_int, fluid%volume,             &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
@@ -215,14 +230,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_diff_coef_conduct                                  &
-     &         (SGS_par, layer_tbl, node, ele, conduct, jacs,           &
-     &          iphys_SGS_wk, nod_fld, numdir, ifield_d, icomp_f,       &
-     &          n_int, wk_cor, wk_lsq, wk_diff, diff_coefs)
+     &         (iflag_SGS_initial, SGS_param, cmt_param, layer_tbl,     &
+     &          node, ele, conduct, iphys_SGS_wk, nod_fld, jacs,        &
+     &          numdir, ifield_d, icomp_f, n_int,                       &
+     &          wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       integer (kind = kint), intent(in) :: numdir
       integer (kind = kint), intent(in) :: ifield_d, icomp_f, n_int
 !
-      type(SGS_paremeters), intent(in) :: SGS_par
+      integer(kind = kint), intent(in) :: iflag_SGS_initial
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
@@ -237,15 +255,16 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1) then
-        call cal_layerd_diff_coef                                       &
-     &     (SGS_par, layer_tbl, node, ele, iphys_SGS_wk, nod_fld,       &
+      if (cmt_param%iset_DIFF_coefs .eq. 1) then
+        call cal_layerd_diff_coef(iflag_SGS_initial, SGS_param,         &
+     &      layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
      &      numdir, ifield_d, icomp_f, n_int,                           &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       else
-        call cal_whole_diff_coef(layer_tbl, conduct%istack_ele_fld_smp, &
-     &      SGS_par, node, ele, iphys_SGS_wk, nod_fld,                  &
+        call cal_whole_diff_coef                                        &
+     &     (layer_tbl, conduct%istack_ele_fld_smp, iflag_SGS_initial,   &
+     &      SGS_param, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
      &      numdir, ifield_d, icomp_f, n_int, conduct%volume,           &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
@@ -256,7 +275,8 @@
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_layerd_diff_coef(SGS_par, layer_tbl, node, ele,    &
+      subroutine cal_layerd_diff_coef                                   &
+     &         (iflag_SGS_initial, SGS_param, layer_tbl, node, ele,     &
      &          iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
      &          numdir, ifield_d, icomp_f, n_int,                       &
      &          wk_cor, wk_lsq, wk_diff, diff_coefs)
@@ -268,7 +288,8 @@
       integer (kind = kint), intent(in) :: numdir
       integer (kind = kint), intent(in) :: n_int, ifield_d, icomp_f
 !
-      type(SGS_paremeters), intent(in) :: SGS_par
+      integer(kind = kint), intent(in) :: iflag_SGS_initial
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
@@ -299,15 +320,15 @@
      &    wk_diff%corrilate_w, wk_diff%covariant_w, wk_cor)
 !
       call cal_model_coef_4_flux                                        &
-    &    (SGS_par%model_p%iflag_Csim_marging, layer_tbl,                &
+    &    (SGS_param%iflag_Csim_marging, layer_tbl,                      &
      &    node, ele, iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    numdir, ifield_d, icomp_f, n_int,                             &
      &    wk_diff%nlayer, wk_diff%num_kinds, wk_diff%ntot_comp,         &
      &    wk_diff%corrilate, wk_diff%corrilate_w, wk_diff%fld_coef,     &
      &    wk_diff%comp_coef, wk_diff%fld_whole, wk_diff%comp_whole,     &
      &    wk_lsq)
-      call clippging_sgs_diff_coefs                                     &
-     &   (numdir, ifield_d, icomp_f, SGS_par, wk_diff)
+      call clippging_sgs_diff_coefs(iflag_SGS_initial, SGS_param,       &
+     &    numdir, ifield_d, icomp_f, wk_diff)
 !
       call set_diff_coefs_layer_ele(ele, ifield_d,                      &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
@@ -318,8 +339,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_whole_diff_coef                                    &
-     &         (layer_tbl, iele_fsmp_stack, SGS_par, node, ele,         &
+      subroutine cal_whole_diff_coef(layer_tbl, iele_fsmp_stack,        &
+     &          iflag_SGS_initial, SGS_param, node, ele,                &
      &          iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
      &          numdir, ifield_d, icomp_f, n_int, volume_d,             &
      &          wk_cor, wk_lsq, wk_diff, diff_coefs)
@@ -334,7 +355,8 @@
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: volume_d
 !
-      type(SGS_paremeters), intent(in) :: SGS_par
+      integer(kind = kint), intent(in) :: iflag_SGS_initial
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
@@ -362,13 +384,13 @@
      &    wk_diff%corrilate_w, wk_diff%covariant_w, wk_cor)
 !
       call cal_lsq_diff_coef                                            &
-     &   (SGS_par%model_p%iflag_Csim_marging, iele_fsmp_stack,          &
+     &   (SGS_param%iflag_Csim_marging, iele_fsmp_stack,                &
      &    node, ele, iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    numdir, ifield_d, icomp_f, n_int,                             &
      &    wk_diff%num_kinds, wk_diff%ntot_comp, wk_diff%corrilate_w,    &
      &    wk_diff%fld_whole, wk_diff%comp_whole, wk_lsq)
-      call clippging_sgs_diff_coefs                                     &
-     &   (numdir, ifield_d, icomp_f, SGS_par, wk_diff)
+      call clippging_sgs_diff_coefs(iflag_SGS_initial, SGS_param,       &
+     &    numdir, ifield_d, icomp_f, wk_diff)
       call set_diff_coefs_whole_ele(ele, iele_fsmp_stack, ifield_d,     &
      &    diff_coefs%ntot_comp, wk_diff%fld_whole_clip, diff_coefs%ak)
 !

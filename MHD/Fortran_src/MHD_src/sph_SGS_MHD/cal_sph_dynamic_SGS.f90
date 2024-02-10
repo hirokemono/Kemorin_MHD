@@ -82,6 +82,7 @@
       use nonlinear_gradient_sph_SGS
       use dynamic_model_sph_MHD
       use copy_Csim_4_sph_MHD
+      use t_IO_step_parameter
 !
       integer(kind = kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par

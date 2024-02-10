@@ -241,7 +241,8 @@
      &                     'cal_diff_coef_fluid', n_vector,             &
      &                     iak_diff_sgs%i_SGS_Lorentz,                  &
      &                     icomp_diff_sgs%i_SGS_Lorentz
-      call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
+      call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
+     &    SGS_par%model_p, SGS_par%commute_p, FEM_filters%layer_tbl,    &
      &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
      &    fem_int%jcs, n_vector, iak_diff_sgs%i_SGS_Lorentz,            &
      &    icomp_diff_sgs%i_SGS_Lorentz, FEM_prm%npoint_t_evo_int,       &

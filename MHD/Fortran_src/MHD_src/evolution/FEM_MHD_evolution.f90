@@ -319,11 +319,11 @@
 !
       if(iphys%base%i_temp .ne. 0) then
         call update_with_temperature                                    &
-     &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
+     &    (time_d%i_time_step, time_d%dt, FEM_prm,                      &
+     &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
+     &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Tsf_bcs, &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%force_by_filter, iphys_LES%eflux_by_filter,        &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
+     &     iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
@@ -333,10 +333,11 @@
 !
       if(iphys%base%i_light .ne. 0) then
         call update_with_dummy_scalar                                   &
-     &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
+     &    (time_d%i_time_step, time_d%dt, FEM_prm,                      &
+     &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
+     &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Csf_bcs, &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
+     &     iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &

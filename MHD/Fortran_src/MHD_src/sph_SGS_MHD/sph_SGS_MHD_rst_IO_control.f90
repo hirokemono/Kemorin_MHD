@@ -157,6 +157,7 @@
       use SPH_SGS_ini_model_coefs_IO
       use copy_Csim_4_sph_MHD
       use sph_transforms_4_SGS
+      use t_IO_step_parameter
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step

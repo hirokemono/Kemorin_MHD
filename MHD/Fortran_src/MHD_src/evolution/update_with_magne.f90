@@ -145,7 +145,7 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
-     &     .and. dynamic_SGS_flag(i_step, SGS_par)) then
+     &     .and. output_flag(i_step, SGS_par%i_step_sgs_coefs)) then
         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity     &
      &    .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)    &
      &   then

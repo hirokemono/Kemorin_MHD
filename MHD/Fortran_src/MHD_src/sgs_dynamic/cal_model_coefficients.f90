@@ -99,6 +99,7 @@
       use cal_sgs_induction_dynamic
       use cal_diff_coef_sgs_induct
       use cal_sgs_uxb_dynamic_simi
+      use t_IO_step_parameter
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -128,7 +129,7 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(dynamic_SGS_flag(time_d%i_time_step, SGS_par)                  &
+      if(output_flag(time_d%i_time_step, SGS_par%i_step_sgs_coefs)      &
      &   .eqv. .FALSE.) return
 !
       if(my_rank .eq. 0) write(*,*)                                     &

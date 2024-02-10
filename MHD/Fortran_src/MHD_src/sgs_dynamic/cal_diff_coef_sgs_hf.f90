@@ -231,7 +231,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_scalar, iak_diff_flux, icomp_diff_sf
-      call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
+      call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
+     &    SGS_par%model_p, SGS_par%commute_p, FEM_filters%layer_tbl,    &
      &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
      &    fem_int%jcs, n_scalar, iak_diff_flux, icomp_diff_sf, num_int, &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &

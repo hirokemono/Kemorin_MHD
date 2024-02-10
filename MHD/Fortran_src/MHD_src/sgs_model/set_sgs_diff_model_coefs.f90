@@ -1,13 +1,19 @@
+!>@file   set_sgs_diff_model_coefs.f90
+!!@brief  module set_sgs_diff_model_coefs
+!!
+!!@author  H.Matsui and H.Okuda
+!!@date   Programmed in Oct., 2005
+!!@n      Modified in July, 2007
+!!@n      Modified in Nov., 2009
 !
-!      module set_sgs_diff_model_coefs
-!
-!     Written by H. Matsui on Oct., 2005
-!     Modified by H. Matsui on July, 2007
-!     Modified by H. Matsui on Nov., 2009
-!
-!!      subroutine clippging_sgs_diff_coefs                             &
-!!     &         (numdir, ifield_d, icomp_f, SGS_par, wk_sgs)
-!!        type(SGS_paremeters), intent(in) :: SGS_par
+!>@brief Set model coefficients for scalars
+!!
+!!@verbatim
+!!      subroutine clippging_sgs_diff_coefs(iflag_SGS_initial,          &
+!!     &          SGS_param, numdir, ifield_d, icomp_f, wk_sgs)
+!!        integer(kind = kint), intent(in) :: iflag_SGS_initial
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!
 !!      subroutine clear_model_coefs_2_ele                              &
@@ -23,6 +29,7 @@
 !!     &         ntot_fld_ele, diff_f_clip, ak_diff)
 !!      subroutine set_diff_coefs_whole_ele(ele, iele_fsmp_stack,       &
 !!     &          ifield_d, ntot_fld_ele, diff_f_whole_clip, ak_diff)
+!!@endverbatim
 !
       module set_sgs_diff_model_coefs
 !
@@ -43,19 +50,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine clippging_sgs_diff_coefs                               &
-     &         (numdir, ifield_d, icomp_f, SGS_par, wk_sgs)
+      subroutine clippging_sgs_diff_coefs(iflag_SGS_initial,            &
+     &          SGS_param, numdir, ifield_d, icomp_f, wk_sgs)
 !
       use t_ele_info_4_dynamic
       use t_SGS_control_parameter
 !
+      integer(kind = kint), intent(in) :: iflag_SGS_initial
       integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
-      type(SGS_paremeters), intent(in) :: SGS_par
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
 !
-      call clippging_sgs_coefs(SGS_par%iflag_SGS_initial,               &
-     &    SGS_par%model_p, numdir, ifield_d, icomp_f,                   &
+      call clippging_sgs_coefs                                          &
+     &   (iflag_SGS_initial, SGS_param, numdir, ifield_d, icomp_f,      &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
      &    wk_sgs%fld_coef, wk_sgs%comp_coef, wk_sgs%fld_whole,          &
      &    wk_sgs%comp_whole, wk_sgs%fld_clip, wk_sgs%comp_clip,         &

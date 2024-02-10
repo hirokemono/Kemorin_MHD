@@ -1,18 +1,25 @@
+!>@file   cal_diff_coef_temp.f90
+!!@brief  module cal_diff_coef_temp
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2005
 !
-!     module cal_diff_coef_temp
-!
-!     Written by H. Matsui
-!
+!>@brief  Evaluate model coefficients for scalar differentiation
+!!
+!!@verbatim
 !!      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,      &
 !!     &        ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
-!!     &        SGS_par, nod_comm, node, ele, surf, sf_grp, Tsf_bcs,    &
+!!     &        SGS_param, cmt_param, filter_param,                     &
+!!     &        nod_comm, node, ele, surf, sf_grp, Tsf_bcs,             &
 !!     &        iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl,&
 !!     &        jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,          &
 !!     &        wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
 !!     &        f_l, f_nl, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
+!!        integer(kind = kint), intent(in) :: iflag_SGS_initial
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -41,6 +48,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_diff_coef_temp
 !
@@ -80,9 +88,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,        &
+      subroutine s_cal_diff_coef_scalar                                 &
+     &        (iflag_SGS_initial, iflag_supg, num_int, dt,              &
      &         ifield, ifield_f, iak_diff_t, icomp_diff_t,              &
-     &         SGS_par, nod_comm, node, ele, surf, sf_grp, Tsf_bcs,     &
+     &         SGS_param, cmt_param, filter_param,                      &
+     &         nod_comm, node, ele, surf, sf_grp, Tsf_bcs,              &
      &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl, &
      &         jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,           &
      &         wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,     &
@@ -105,7 +115,11 @@
       integer(kind = kint), intent(in) :: ifield, ifield_f
       real(kind = kreal), intent(in) :: dt
 !
-      type(SGS_paremeters), intent(in) :: SGS_par
+      integer(kind = kint), intent(in) :: iflag_SGS_initial
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_filtering_params), intent(in) :: filter_param
+!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -167,7 +181,7 @@
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole                                    &
-     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
+     &   (filter_param, nod_comm, node, filtering,                      &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
      &    nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -213,7 +227,7 @@
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole                                    &
-     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
+     &   (filter_param, nod_comm, node, filtering,                      &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
      &    nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -224,8 +238,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_t, icomp_diff_t
-      call cal_diff_coef_fluid(SGS_par, layer_tbl,                      &
-     &    node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,                &
+      call cal_diff_coef_fluid(iflag_SGS_initial, SGS_param, cmt_param, &
+     &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,     &
      &    n_vector, iak_diff_t, icomp_diff_t, num_int,                  &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !

@@ -243,9 +243,10 @@
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                         &
      &      iak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy, &
      &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
-        call clippging_sgs_diff_coefs(ncomp_sgs_buo,                    &
+        call clippging_sgs_diff_coefs                                   &
+     &     (SGS_par%iflag_SGS_initial, SGS_par%model_p, ncomp_sgs_buo,  &
      &      iak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy, &
-     &      SGS_par, wk_sgs)
+     &      wk_sgs)
       end if
       if(fl_prop%iflag_4_composit_buo) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, isix,       &
@@ -256,9 +257,10 @@
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                         &
      &      iak_sgs_term%i_SGS_comp_buo, icomp_sgs_term%i_SGS_comp_buo, &
      &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
-        call clippging_sgs_diff_coefs(ncomp_sgs_buo,                    &
+        call clippging_sgs_diff_coefs                                   &
+     &     (SGS_par%iflag_SGS_initial, SGS_par%model_p, ncomp_sgs_buo,  &
      &      iak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy, &
-     &      SGS_par, wk_sgs)
+     &      wk_sgs)
       end if
 !
       call mod_Csim_by_SGS_buoyancy_ele                                 &

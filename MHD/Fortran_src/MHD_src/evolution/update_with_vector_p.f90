@@ -100,6 +100,7 @@
       use cal_diff_vector_on_ele
       use cal_diff_coef_vector_p
       use cal_filtering_scalars
+      use t_IO_step_parameter
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
@@ -142,7 +143,7 @@
 !
 !   set model coefficients for vector potential
 !
-      iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
+      iflag_dmc = output_flag(i_step, SGS_par%i_step_sgs_coefs)
       if (SGS_par%commute_p%iflag_c_magne .eq. id_SGS_commute_ON        &
      &     .and. iphys_fil%i_vecp .ne. 0                                &
      &     .and. iflag_dmc) then

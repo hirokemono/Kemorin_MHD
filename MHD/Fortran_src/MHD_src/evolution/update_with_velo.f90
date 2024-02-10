@@ -93,6 +93,7 @@
       use cal_filtering_scalars
       use cal_diff_vector_on_ele
       use cal_diff_coef_velo
+      use t_IO_step_parameter
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
@@ -134,7 +135,7 @@
       logical :: iflag_dmc
 !
 !
-      iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
+      iflag_dmc = output_flag(i_step, SGS_par%i_step_sgs_coefs)
 !
       if (iphys_ele_base%i_velo .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &

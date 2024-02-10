@@ -287,8 +287,9 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_v, icomp_diff_v
-      call cal_diff_coef_fluid                                          &
-     &   (SGS_par, layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld,  &
+      call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
+     &    SGS_par%model_p, SGS_par%commute_p,                           &
+     &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld,           &
      &    jacs, n_sym_tensor, iak_diff_v, icomp_diff_v,                 &
      &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
      &    diff_coefs)
