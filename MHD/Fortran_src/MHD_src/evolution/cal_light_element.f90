@@ -108,21 +108,25 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_scalar, i_pert, iref_scalar
+      integer(kind = kint) :: i_velo, i_pre_advect
 !
 !     ----- composition update
 !
-      i_scalar = iphys%base%i_light
-      i_pert =   iphys%base%i_per_light
+      i_scalar =     iphys%base%i_light
+      i_pert =       iphys%base%i_per_light
+      i_velo =       iphys%base%i_velo
+      i_pre_advect = iphys%exp_work%i_pre_composit
       iref_scalar = iref_base%i_light
 !
       if(property%iflag_scheme .gt. id_no_evolution) then
         if(ref_param%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(i_pert, time_d%dt, FEM_prm,          &
+          call s_cal_light_element(i_pert, i_scalar, i_velo,            &
+     &        i_pre_advect, time_d%dt, FEM_prm,          &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
      &        property, ref_param, nod_bcs, sf_bcs,                     &
-     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
+     &        iref_grad, ref_fld, iphys_LES,                     &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
      &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
      &        Csims_FEM_MHD%icomp_sgs_term,                             &
@@ -142,11 +146,12 @@
 !$omp end parallel
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
-          call s_cal_light_element(i_scalar, time_d%dt, FEM_prm,        &
+          call s_cal_light_element(i_scalar, i_scalar, i_velo,          &
+     &        i_pre_advect, time_d%dt, FEM_prm,        &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
      &        property, ref_param, nod_bcs, sf_bcs,                     &
-     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
+     &        iref_grad, ref_fld, iphys_LES,                     &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
      &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
      &        Csims_FEM_MHD%icomp_sgs_term,                             &
@@ -168,12 +173,12 @@
           end if
         end if
 !
-        call update_with_dummy_scalar                                   &
-     &    (time_d%i_time_step, time_d%dt, FEM_prm,                      &
+        call update_with_dummy_scalar(time_d%i_time_step, time_d%dt,    &
+     &     i_scalar, i_pert, FEM_prm,                      &
      &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, sf_bcs,           &
-     &     iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base,                 &
+     &     iphys_LES, SGS_MHD_wk%iphys_ele_base,                        &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
@@ -185,10 +190,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_light_element(i_field, dt, FEM_prm,              &
-     &         SGS_param, cmt_param, filter_param, mesh, group,         &
+      subroutine s_cal_light_element(i_field, i_scalar, i_velo,         &
+     &         i_pre_advect, dt,     &
+     &         FEM_prm, SGS_param, cmt_param, filter_param, mesh, group, &
      &         fluid, property, ref_param, nod_bcs, sf_bcs,             &
-     &         iref_grad, ref_fld, iphys, iphys_LES,                    &
+     &         iref_grad, ref_fld, iphys_LES,                           &
      &         iphys_ele_base, ele_fld, fem_int, FEM_elens,             &
      &         icomp_sgs_term, iak_diff_base, iak_diff_SGS,             &
      &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
@@ -198,7 +204,8 @@
 !
       use cal_temperature
 !
-      integer(kind = kint), intent(in) :: i_field
+      integer(kind = kint), intent(in) :: i_field, i_scalar
+      integer(kind = kint), intent(in) :: i_velo, i_pre_advect
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -216,7 +223,6 @@
       type(gradient_field_address), intent(in) :: iref_grad
       type(phys_data), intent(in) :: ref_fld
 !
-      type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
@@ -250,13 +256,10 @@
       integer(kind = kint) :: iflag_commute_flux
       integer(kind = kint) :: iflag_commute_field
 !
-      integer(kind = kint) :: i_scalar
-      integer(kind = kint) :: i_velo
       integer(kind = kint) :: i_gref
       integer(kind = kint) :: i_tensor
       integer(kind = kint) :: i_filter_s
       integer(kind = kint) :: i_filter_v
-      integer(kind = kint) :: i_pre_advect
       integer(kind = kint) :: iak_diff
       integer(kind = kint) :: i_diff_SGS
       integer(kind = kint) :: icomp_sgs_flux
@@ -275,10 +278,7 @@
       ifilter_final =  SGS_param%ifilter_final
       iflag_commute_flux = cmt_param%iflag_c_cf
       iflag_commute_field = cmt_param%iflag_c_light
-      i_scalar = iphys%base%i_light
-      i_velo =     iphys%base%i_velo
       i_gref = iref_grad%i_grad_composit
-      i_pre_advect = iphys%exp_work%i_pre_composit
       i_tensor = iphys_LES%SGS_term%i_SGS_c_flux
       iak_diff = iak_diff_base%i_light
       i_diff_SGS = iak_diff_SGS%i_SGS_c_flux

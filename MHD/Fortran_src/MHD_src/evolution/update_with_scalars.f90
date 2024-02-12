@@ -48,7 +48,7 @@
 !
       subroutine update_with_scalar(i_step, dt, iflag_supg, n_int_evo,  &
      &          iflag_SGS_flux, iflag_commute_field,                    &
-     &          i_scalar, i_perturbation, i_filter_s, i_SGS_wk_field,   &
+     &          i_scalar, i_pert, i_filter_s, i_SGS_wk_field,           &
      &          iak_diff, iphys_wfl_scalar, iphys_fefx_buo_gen,         &
      &          icomp_diff_t, iflag_SGS_initial, i_step_sgs_coefs,      &
      &          SGS_param, cmt_param, filter_param,                     &
@@ -84,7 +84,7 @@
       integer(kind = kint), intent(in) :: iflag_SGS_flux
       integer(kind = kint), intent(in) :: iflag_commute_field
       integer(kind = kint), intent(in) :: i_scalar
-      integer(kind = kint), intent(in) :: i_perturbation
+      integer(kind = kint), intent(in) :: i_pert
       integer(kind = kint), intent(in) :: i_filter_s
       integer(kind = kint), intent(in) :: i_SGS_wk_field
       integer(kind = kint), intent(in) :: iak_diff
@@ -116,7 +116,7 @@
       if(i_SGS_wk_field .gt. 0) then
         if(SGS_param%iflag_parterbuation .eq. id_SGS_REFERENCE) then
           call copy_scalar_component(nod_fld,                           &
-     &        i_perturbation, i_SGS_wk_field)
+     &        i_pert, i_SGS_wk_field)
         else
           call copy_scalar_component(nod_fld,                           &
      &        i_scalar, i_SGS_wk_field)
@@ -197,16 +197,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_temperature(i_step, dt, FEM_prm,           &
+      subroutine update_with_temperature(i_step, dt,                    &
+     &          i_scalar, i_pert, FEM_prm,           &
      &          iflag_SGS_initial, i_step_sgs_coefs,                    &
      &          SGS_param, cmt_param, filter_param,                     &
-     &          mesh, group, fluid, sf_bcs, iphys, iphys_LES,           &
+     &          mesh, group, fluid, sf_bcs, iphys_LES,                  &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
      &          rhs_mat, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
+!
+      integer(kind = kint), intent(in) :: i_scalar, i_pert
 !
       integer(kind = kint), intent(in) :: iflag_SGS_initial
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
@@ -220,7 +223,6 @@
       type(field_geometry_data), intent(in) :: fluid
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !
-      type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
 !
       type(base_field_address), intent(in) :: iphys_ele_base
@@ -243,8 +245,6 @@
       integer(kind = kint) :: n_int_evo
       integer(kind = kint) :: iflag_SGS_flux
       integer(kind = kint) :: iflag_commute_field
-      integer(kind = kint) :: i_scalar
-      integer(kind = kint) :: i_perturbation
       integer(kind = kint) :: i_filter_s
       integer(kind = kint) :: i_SGS_wk_field
       integer(kind = kint) :: iak_diff
@@ -253,8 +253,6 @@
       integer(kind = kint) :: icomp_diff_t
 !
       iflag_SGS_flux = SGS_param%iflag_SGS_h_flux
-      i_scalar =       iphys%base%i_temp
-      i_perturbation = iphys%base%i_per_temp
       i_filter_s =     iphys_LES%filter_fld%i_temp
       i_SGS_wk_field = iphys_LES%SGS_wk%i_sgs_temp
 !
@@ -269,7 +267,7 @@
 !
       call update_with_scalar(i_step, dt,                               &
      &    iflag_supg, n_int_evo, iflag_SGS_flux, iflag_commute_field,   &
-     &    i_scalar, i_perturbation, i_filter_s, i_SGS_wk_field,         &
+     &    i_scalar, i_pert, i_filter_s, i_SGS_wk_field,         &
      &    iak_diff, iphys_wfl_scalar, iphys_fefx_buo_gen, icomp_diff_t, &
      &    iflag_SGS_initial, i_step_sgs_coefs,                          &
      &    SGS_param, cmt_param, filter_param,                           &
@@ -281,16 +279,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_dummy_scalar(i_step, dt, FEM_prm,          &
+      subroutine update_with_dummy_scalar(i_step, dt,                   &
+     &          i_scalar, i_pert, FEM_prm, &
      &          iflag_SGS_initial, i_step_sgs_coefs,                    &
      &          SGS_param, cmt_param, filter_param,                     &
-     &          mesh, group, fluid, sf_bcs, iphys, iphys_LES,           &
+     &          mesh, group, fluid, sf_bcs, iphys_LES,           &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
      &          rhs_mat, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
+!
+      integer(kind = kint), intent(in) :: i_scalar, i_pert
 !
       integer(kind = kint), intent(in) :: iflag_SGS_initial
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
@@ -304,7 +305,6 @@
       type(field_geometry_data), intent(in) :: fluid
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !
-      type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
 !
       type(base_field_address), intent(in) :: iphys_ele_base
@@ -327,8 +327,6 @@
       integer(kind = kint) :: n_int_evo
       integer(kind = kint) :: iflag_SGS_flux
       integer(kind = kint) :: iflag_commute_field
-      integer(kind = kint) :: i_scalar
-      integer(kind = kint) :: i_perturbation
       integer(kind = kint) :: i_filter_s
       integer(kind = kint) :: i_SGS_wk_field
       integer(kind = kint) :: iak_diff
@@ -337,8 +335,6 @@
       integer(kind = kint) :: icomp_diff_t
 !
       iflag_SGS_flux = SGS_param%iflag_SGS_c_flux
-      i_scalar =       iphys%base%i_light
-      i_perturbation = iphys%base%i_per_light
       i_filter_s =     iphys_LES%filter_fld%i_light
       i_SGS_wk_field = iphys_LES%SGS_wk%i_sgs_composit
 !
@@ -353,7 +349,7 @@
 !
       call update_with_scalar(i_step, dt,                               &
      &    iflag_supg, n_int_evo, iflag_SGS_flux, iflag_commute_field,   &
-     &    i_scalar, i_perturbation, i_filter_s, i_SGS_wk_field,         &
+     &    i_scalar, i_pert, i_filter_s, i_SGS_wk_field,         &
      &    iak_diff, iphys_wfl_scalar, iphys_fefx_buo_gen, icomp_diff_t, &
      &    iflag_SGS_initial, i_step_sgs_coefs,                          &
      &    SGS_param, cmt_param, filter_param,                           &
