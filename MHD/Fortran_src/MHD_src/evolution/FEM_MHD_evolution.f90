@@ -222,18 +222,22 @@
       end if
 !
 !     ---- temperature update
-      call temperature_evolution(time_d, FEM_prm, SGS_par,              &
-     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
-     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, m_SR)
+      call temperature_evolution                                        &
+     &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
+     &    MHD_prop%ht_prop, MHD_prop%ref_param_T,                       &
+     &    nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                           &
+     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
+     &    ak_MHD, FEM_filters, s_package%Tmatrix, MGCG_WK, SGS_MHD_wk,  &
+     &    nod_fld, Csims_FEM_MHD, m_SR)
 !
 !     ----- composition update
-      call light_element_evolution(time_d, FEM_prm, SGS_par,            &
-     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
-     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, m_SR)
+      call light_element_evolution                                      &
+     &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
+     &    MHD_prop%cp_prop, MHD_prop%ref_param_C,                       &
+     &    nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                           &
+     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
+     &    ak_MHD, FEM_filters, s_package%Cmatrix, MGCG_WK, SGS_MHD_wk,  &
+     &    nod_fld, Csims_FEM_MHD, m_SR)
 !
 !     ---- velocity update
 !
@@ -426,18 +430,22 @@
      &   (nod_fld, Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs)
 !
 !     ---- temperature update
-      call temperature_evolution(time_d, FEM_prm, SGS_par,              &
-     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
-     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, m_SR)
+      call temperature_evolution                                        &
+     &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
+     &    MHD_prop%ht_prop, MHD_prop%ref_param_T,                       &
+     &    nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                           &
+     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
+     &    ak_MHD, FEM_filters, s_package%Tmatrix, MGCG_WK, SGS_MHD_wk,  &
+     &    nod_fld, Csims_FEM_MHD, m_SR)
 !
 !     ----- composition update
-      call light_element_evolution(time_d, FEM_prm, SGS_par,            &
-     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
-     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, m_SR)
+      call light_element_evolution                                      &
+     &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
+     &    MHD_prop%cp_prop, MHD_prop%ref_param_C,                       &
+     &    nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                           &
+     &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
+     &    ak_MHD, FEM_filters, s_package%Cmatrix, MGCG_WK, SGS_MHD_wk,  &
+     &    nod_fld, Csims_FEM_MHD, m_SR)
 !
 !     ---- velocity update
 !

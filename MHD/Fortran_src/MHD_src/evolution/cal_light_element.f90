@@ -8,18 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine light_element_evolution(time_d, FEM_prm, SGS_par,    &
-!!     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
-!!     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,      &
-!!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
-!!     &          nod_fld, Csims_FEM_MHD, m_SR)
+!!     &         geofem, MHD_mesh, property, ref_param, nod_bcs, sf_bcs,&
+!!     &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,       &
+!!     &         ak_MHD, FEM_filters, Smatrix, MGCG_WK, SGS_MHD_wk,     &
+!!     &         nod_fld, Csims_FEM_MHD, m_SR)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
-!!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
+!!        type(scalar_property), intent(in) :: property
+!!        type(reference_scalar_param), intent(in) :: ref_param
+!!        type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
+!!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(base_field_address), intent(in) :: iref_base
 !!        type(gradient_field_address), intent(in) :: iref_grad
 !!        type(phys_data), intent(in) :: ref_fld
@@ -27,7 +28,7 @@
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(MHD_matrices_pack), intent(in) :: s_package
+!!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -72,10 +73,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine light_element_evolution(time_d, FEM_prm, SGS_par,      &
-     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
-     &          iref_base, iref_grad, ref_fld, iphys, iphys_LES,        &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, m_SR)
+     &         geofem, MHD_mesh, property, ref_param, nod_bcs, sf_bcs,  &
+     &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,         &
+     &         ak_MHD, FEM_filters, Smatrix, MGCG_WK, SGS_MHD_wk,       &
+     &         nod_fld, Csims_FEM_MHD, m_SR)
 !
       use update_with_scalars
       use cal_add_smp
@@ -86,9 +87,11 @@
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem
       type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(nodal_boundarty_conditions), intent(in) :: nod_bcs
-      type(surface_boundarty_conditions), intent(in) :: surf_bcs
+      type(scalar_property), intent(in) :: property
+      type(reference_scalar_param), intent(in) :: ref_param
+      type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
+      type(scaler_surf_bc_type), intent(in) :: sf_bcs
+!
       type(base_field_address), intent(in) :: iref_base
       type(gradient_field_address), intent(in) :: iref_grad
       type(phys_data), intent(in) :: ref_fld
@@ -96,7 +99,7 @@
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(MHD_matrices_pack), intent(in) :: s_package
+      type(MHD_MG_matrix), intent(in) :: Smatrix
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -104,60 +107,63 @@
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(mesh_SR), intent(inout) :: m_SR
 !
+      integer(kind = kint) :: i_scalar, i_pert, iref_scalar
+!
 !     ----- composition update
 !
-      if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp)    &
-     &   then
+      i_scalar = iphys%base%i_light
+      i_pert =   iphys%base%i_per_light
+      iref_scalar = iref_base%i_light
+!
+      if(property%iflag_scheme .gt. id_no_evolution) then
+        if(ref_param%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element                                      &
-     &      (iphys%base%i_per_light, time_d%dt, FEM_prm,                &
-     &       SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,      &
-     &       geofem%mesh, geofem%group, MHD_mesh%fluid,                 &
-     &       MHD_prop%cp_prop, MHD_prop%ref_param_C,                    &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
-     &       iref_grad, ref_fld, iphys, iphys_LES,                      &
-     &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
-     &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
-     &       Csims_FEM_MHD%iak_diff_sgs,                                &
-     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,  &
-     &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,     &
-     &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
-     &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
-     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
+          call s_cal_light_element(i_pert, time_d%dt, FEM_prm,          &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
+     &        property, ref_param, nod_bcs, sf_bcs,                     &
+     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
+     &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
+     &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
+     &        Csims_FEM_MHD%icomp_sgs_term,                             &
+     &        Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,  &
+     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs, &
+     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,    &
+     &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
+     &        Smatrix, ak_MHD, MGCG_WK,                                 &
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
 !$omp parallel
           call add_scalars_smp(nod_fld%n_point,                         &
-     &                         ref_fld%d_fld(1,iref_base%i_light),      &
-     &                         nod_fld%d_fld(1,iphys%base%i_per_light), &
-     &                         nod_fld%d_fld(1,iphys%base%i_light))
+     &                         ref_fld%d_fld(1,iref_scalar),            &
+     &                         nod_fld%d_fld(1,i_pert),                 &
+     &                         nod_fld%d_fld(1,i_scalar))
 !$omp end parallel
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
-          call s_cal_light_element                                      &
-     &      (iphys%base%i_light, time_d%dt, FEM_prm,                    &
-     &       SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,      &
-     &       geofem%mesh, geofem%group, MHD_mesh%fluid,                 &
-     &       MHD_prop%cp_prop, MHD_prop%ref_param_C,                    &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
-     &       iref_grad, ref_fld, iphys, iphys_LES,                      &
-     &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
-     &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
-     &       Csims_FEM_MHD%iak_diff_sgs,                                &
-     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,  &
-     &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,     &
-     &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
-     &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
-     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
+          call s_cal_light_element(i_scalar, time_d%dt, FEM_prm,        &
+     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
+     &        property, ref_param, nod_bcs, sf_bcs,                     &
+     &        iref_grad, ref_fld, iphys, iphys_LES,                     &
+     &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
+     &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
+     &        Csims_FEM_MHD%icomp_sgs_term,                             &
+     &        Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,  &
+     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs, &
+     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,    &
+     &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
+     &        Smatrix, ak_MHD, MGCG_WK,                                 &
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, m_SR)
 !
-          if(iphys%base%i_per_light .gt. 0) then
+          if(i_pert .gt. 0) then
 !$omp parallel
             call subtract_scalars_smp(nod_fld%n_point,                  &
-     &                         nod_fld%d_fld(1,iphys%base%i_light),     &
-     &                         ref_fld%d_fld(1,iref_base%i_light),      &
-     &                         nod_fld%d_fld(1,iphys%base%i_per_light))
+     &                                nod_fld%d_fld(1,i_scalar),        &
+     &                                ref_fld%d_fld(1,iref_scalar),     &
+     &                                nod_fld%d_fld(1,i_pert))
 !$omp end parallel
           end if
         end if
@@ -166,7 +172,7 @@
      &    (time_d%i_time_step, time_d%dt, FEM_prm,                      &
      &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
-     &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Csf_bcs, &
+     &     geofem%mesh, geofem%group, MHD_mesh%fluid, sf_bcs,           &
      &     iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
