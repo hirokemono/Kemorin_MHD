@@ -122,6 +122,12 @@
       real(kind = kreal) :: eps_4_crank
       integer(kind = kint) :: iflag_supg
 !
+      integer(kind = kint) :: iflag_SGS_flux
+      integer(kind = kint) :: itype_Csym_flux
+      integer(kind = kint) :: ifilter_final
+      integer(kind = kint) :: iflag_commute_flux
+      integer(kind = kint) :: iflag_commute_field
+!
 !     ----- composition update
 !
       i_scalar =     iphys%base%i_light
@@ -147,13 +153,22 @@
       eps_4_crank = FEM_prm%eps_4_comp_crank
       iflag_supg =  FEM_prm%iflag_comp_supg
 !
+      iflag_SGS_flux =  SGS_par%model_p%iflag_SGS_c_flux
+      itype_Csym_flux = SGS_par%model_p%itype_Csym_c_flux
+      ifilter_final =   SGS_par%model_p%ifilter_final
+!
+      iflag_commute_flux = SGS_par%commute_p%iflag_c_cf
+      iflag_commute_field = SGS_par%commute_p%iflag_c_light
+!
       if(property%iflag_scheme .gt. id_no_evolution) then
         if(ref_param%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element(i_pert, i_scalar, i_velo,            &
      &        i_pre_advect, i_gref, i_filter_s, i_filter_v, i_tensor,   &
-     &        time_d%dt, eps_4_crank, iflag_supg, FEM_prm, &
-     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        time_d%dt, eps_4_crank, iflag_supg,                       &
+     &        iflag_SGS_flux, itype_Csym_flux, ifilter_final,           &
+     &        iflag_commute_flux, iflag_commute_field,                  &
+     &        FEM_prm, SGS_par%model_p, SGS_par%filter_p,               &
      &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
      &        property, ref_param, nod_bcs, sf_bcs, ref_fld,            &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
@@ -176,8 +191,10 @@
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
           call s_cal_light_element(i_scalar, i_scalar, i_velo,          &
      &        i_pre_advect, i_gref, i_filter_s, i_filter_v, i_tensor,   &
-     &        time_d%dt, eps_4_crank, iflag_supg, FEM_prm, &
-     &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
+     &        time_d%dt, eps_4_crank, iflag_supg,                       &
+     &        iflag_SGS_flux, itype_Csym_flux, ifilter_final,           &
+     &        iflag_commute_flux, iflag_commute_field,                  &
+     &        FEM_prm, SGS_par%model_p, SGS_par%filter_p,               &
      &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
      &        property, ref_param, nod_bcs, sf_bcs, ref_fld,            &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
@@ -203,7 +220,7 @@
         call update_with_dummy_scalar(time_d%i_time_step, time_d%dt,    &
      &     i_scalar, i_pert, i_filter_s, i_SGS_wk_field,                &
      &     iphys_wfl_scalar, iphys_fefx_buo_gen,                        &
-     &     iflag_supg, FEM_prm%npoint_t_evo_int,                        &
+     &     iflag_supg, FEM_prm%npoint_t_evo_int, iflag_SGS_flux, iflag_commute_field, &
      &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, sf_bcs,           &
@@ -220,8 +237,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_light_element(i_field, i_scalar, i_velo,         &
-     &         i_pre_advect, i_gref, i_filter_s, i_filter_v, i_tensor, dt,          &
-     &         eps_4_crank, iflag_supg, FEM_prm, SGS_param, cmt_param, filter_param, mesh, group, &
+     &         i_pre_advect, i_gref, i_filter_s, i_filter_v, i_tensor,          &
+     &         dt, eps_4_crank, iflag_supg,   &
+     &         iflag_SGS_flux, itype_Csym_flux, ifilter_final,          &
+     &         iflag_commute_flux, iflag_commute_field,                 &
+     &         FEM_prm, SGS_param, filter_param, mesh, group,           &
      &         fluid, property, ref_param, nod_bcs, sf_bcs,             &
      &         ref_fld, iphys_ele_base, ele_fld, fem_int, FEM_elens,    &
      &         icomp_sgs_flux, iak_diff, i_diff_SGS,                    &
@@ -244,10 +264,14 @@
 !
       real(kind = kreal), intent(in) :: eps_4_crank
       integer(kind = kint), intent(in) :: iflag_supg
+      integer(kind = kint), intent(in) :: iflag_SGS_flux
+      integer(kind = kint), intent(in) :: itype_Csym_flux
+      integer(kind = kint), intent(in) :: ifilter_final
+      integer(kind = kint), intent(in) :: iflag_commute_flux
+      integer(kind = kint), intent(in) :: iflag_commute_field
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -279,19 +303,6 @@
       type(phys_data), intent(inout) :: nod_fld
       type(mesh_SR), intent(inout) :: m_SR
 !
-!
-      integer(kind = kint) :: iflag_SGS_flux
-      integer(kind = kint) :: itype_Csym_flux
-      integer(kind = kint) :: ifilter_final
-      integer(kind = kint) :: iflag_commute_flux
-      integer(kind = kint) :: iflag_commute_field
-!
-      itype_Csym_flux = SGS_param%itype_Csym_c_flux
-!
-      iflag_SGS_flux = SGS_param%iflag_SGS_c_flux
-      ifilter_final =  SGS_param%ifilter_final
-      iflag_commute_flux = cmt_param%iflag_c_cf
-      iflag_commute_field = cmt_param%iflag_c_light
       call cal_scalar_field_pre(i_field, dt,                            &
      &          iflag_supg, iflag_SGS_flux, itype_Csym_flux,            &
      &          ifilter_final, iflag_commute_flux, iflag_commute_field, &

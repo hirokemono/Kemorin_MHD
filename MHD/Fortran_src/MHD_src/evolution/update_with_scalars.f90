@@ -200,7 +200,7 @@
       subroutine update_with_temperature(i_step, dt,                    &
      &          i_scalar, i_pert, i_filter_s,                           &
      &          i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,   &
-     &          iflag_supg, n_int_evo, iflag_SGS_initial,               &
+     &          iflag_supg, n_int_evo, iflag_SGS_flux, iflag_commute_field, iflag_SGS_initial,               &
      &          i_step_sgs_coefs, SGS_param, cmt_param, filter_param,   &
      &          mesh, group, fluid, sf_bcs, iphys_SGS_wk,               &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
@@ -250,7 +250,6 @@
       integer(kind = kint) :: iflag_commute_field
 !
       iflag_SGS_flux = SGS_param%iflag_SGS_h_flux
-!
       iflag_commute_field = cmt_param%iflag_c_temp
 !
       call update_with_scalar(i_step, dt, iflag_supg,                   &
@@ -270,7 +269,7 @@
       subroutine update_with_dummy_scalar(i_step, dt,                   &
      &          i_scalar, i_pert, i_filter_s,                           &
      &          i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,   &
-     &          iflag_supg, n_int_evo, iflag_SGS_initial,               &
+     &          iflag_supg, n_int_evo, iflag_SGS_flux, iflag_commute_field, iflag_SGS_initial,               &
      &          i_step_sgs_coefs, SGS_param, cmt_param, filter_param,   &
      &          mesh, group, fluid, sf_bcs, iphys_SGS_wk,               &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &

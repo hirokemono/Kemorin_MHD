@@ -310,6 +310,9 @@
       integer(kind = kint) :: iak_diff, icomp_diff_t
 !
       integer(kind = kint) :: iflag_supg, n_int_evo
+      integer(kind = kint) :: iflag_SGS_flux
+      integer(kind = kint) :: iflag_commute_field
+!
 !
       if(iphys%base%i_velo .ne. 0) then
         call update_with_velocity(time_d%i_time_step, time_d%dt,        &
@@ -339,10 +342,12 @@
 !
         iflag_supg = FEM_prm%iflag_temp_supg
         n_int_evo =  FEM_prm%npoint_t_evo_int
+        iflag_SGS_flux =      SGS_par%model_p%iflag_SGS_h_flux
+        iflag_commute_field = SGS_par%commute_p%iflag_c_temp
         call update_with_temperature                                    &
      &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
      &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &
-     &     iflag_supg, n_int_evo, &
+     &     iflag_supg, n_int_evo, iflag_SGS_flux, iflag_commute_field,  &
      &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Tsf_bcs, &
@@ -366,10 +371,12 @@
 !
         iflag_supg = FEM_prm%iflag_comp_supg
         n_int_evo =  FEM_prm%npoint_t_evo_int
+        iflag_SGS_flux =      SGS_par%model_p%iflag_SGS_c_flux
+        iflag_commute_field = SGS_par%commute_p%iflag_c_light
         call update_with_dummy_scalar                                   &
      &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
      &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &
-     &     iflag_supg, n_int_evo, &
+     &     iflag_supg, n_int_evo, iflag_SGS_flux, iflag_commute_field,  &
      &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Csf_bcs, &
