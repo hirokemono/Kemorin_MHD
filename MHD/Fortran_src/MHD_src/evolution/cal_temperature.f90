@@ -281,6 +281,7 @@
 !
       iflag_supg = FEM_prm%iflag_temp_supg
       n_int_evo =  FEM_prm%npoint_t_evo_int
+      eps_4_crank = FEM_prm%eps_4_temp_crank
       iflag_SGS_flux = SGS_param%iflag_SGS_h_flux
       ifilter_final =  SGS_param%ifilter_final
       iflag_commute_flux =  cmt_param%iflag_c_hf
