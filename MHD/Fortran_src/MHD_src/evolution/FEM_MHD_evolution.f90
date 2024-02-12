@@ -305,6 +305,9 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_scalar, i_pert
+      integer(kind = kint) :: i_filter_s, i_SGS_wk_field
+      integer(kind = kint) :: iphys_wfl_scalar, iphys_fefx_buo_gen
+      integer(kind = kint) :: iak_diff, icomp_diff_t
 !
 !
       if(iphys%base%i_velo .ne. 0) then
@@ -326,15 +329,21 @@
       if(iphys%base%i_temp .ne. 0) then
         i_scalar =     iphys%base%i_temp
         i_pert =       iphys%base%i_per_temp
+        i_filter_s =         iphys_LES%filter_fld%i_temp
+        i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_temp
+        iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_temp
+        iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_buo_gen
+        iak_diff =     Csims_FEM_MHD%iak_diff_base%i_temp
+        icomp_diff_t = Csims_FEM_MHD%icomp_diff_base%i_temp
         call update_with_temperature                                    &
-     &    (time_d%i_time_step, time_d%dt, &
-     &     i_scalar, i_pert, FEM_prm,                      &
-     &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
+     &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
+     &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &
+     &     FEM_prm, SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,&
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Tsf_bcs, &
-     &     iphys_LES, SGS_MHD_wk%iphys_ele_base,                        &
+     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     iak_diff, icomp_diff_t,                                      &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
@@ -343,15 +352,21 @@
       if(iphys%base%i_light .ne. 0) then
         i_scalar =     iphys%base%i_light
         i_pert =       iphys%base%i_per_light
+        i_filter_s =         iphys_LES%filter_fld%i_light
+        i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_composit
+        iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_light
+        iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_c_buo_gen
+        iak_diff =      Csims_FEM_MHD%iak_diff_base%i_light
+        icomp_diff_t =  Csims_FEM_MHD%icomp_diff_base%i_light
         call update_with_dummy_scalar                                   &
-     &    (time_d%i_time_step, time_d%dt, &
-     &     i_scalar, i_pert, FEM_prm,                      &
-     &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
+     &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
+     &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &
+     &     FEM_prm, SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,&
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Csf_bcs, &
-     &     iphys_LES, SGS_MHD_wk%iphys_ele_base,                        &
+     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     iak_diff, icomp_diff_t,                                      &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)

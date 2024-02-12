@@ -198,18 +198,24 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_temperature(i_step, dt,                    &
-     &          i_scalar, i_pert, FEM_prm,           &
-     &          iflag_SGS_initial, i_step_sgs_coefs,                    &
+     &          i_scalar, i_pert, i_filter_s,                           &
+     &          i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,   &
+     &          FEM_prm, iflag_SGS_initial, i_step_sgs_coefs,           &
      &          SGS_param, cmt_param, filter_param,                     &
-     &          mesh, group, fluid, sf_bcs, iphys_LES,                  &
+     &          mesh, group, fluid, sf_bcs, iphys_SGS_wk,               &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
-     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
+     &          iak_diff, icomp_diff_t, mk_MHD, FEM_SGS_wk,             &
      &          rhs_mat, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: i_scalar, i_pert
+      integer(kind = kint), intent(in) :: i_filter_s, i_SGS_wk_field
+      integer(kind = kint), intent(in) :: iphys_wfl_scalar
+      integer(kind = kint), intent(in) :: iphys_fefx_buo_gen
+!
+      integer(kind = kint), intent(in) :: iak_diff, icomp_diff_t
 !
       integer(kind = kint), intent(in) :: iflag_SGS_initial
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
@@ -223,14 +229,12 @@
       type(field_geometry_data), intent(in) :: fluid
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !
-      type(SGS_model_addresses), intent(in) :: iphys_LES
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !
       type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(base_field_address), intent(in) :: icomp_diff_base
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -242,36 +246,22 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: iflag_supg
-      integer(kind = kint) :: n_int_evo
       integer(kind = kint) :: iflag_SGS_flux
       integer(kind = kint) :: iflag_commute_field
-      integer(kind = kint) :: i_filter_s
-      integer(kind = kint) :: i_SGS_wk_field
-      integer(kind = kint) :: iak_diff
-      integer(kind = kint) :: iphys_wfl_scalar
-      integer(kind = kint) :: iphys_fefx_buo_gen
-      integer(kind = kint) :: icomp_diff_t
 !
       iflag_SGS_flux = SGS_param%iflag_SGS_h_flux
-      i_filter_s =     iphys_LES%filter_fld%i_temp
-      i_SGS_wk_field = iphys_LES%SGS_wk%i_sgs_temp
 !
       iflag_supg = FEM_prm%iflag_temp_supg
-      n_int_evo =  FEM_prm%npoint_t_evo_int
-      iak_diff =   iak_diff_base%i_temp
-      icomp_diff_t = icomp_diff_base%i_temp
 !
-      iphys_wfl_scalar = iphys_LES%wide_filter_fld%i_temp
-      iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_buo_gen
       iflag_commute_field = cmt_param%iflag_c_temp
 !
-      call update_with_scalar(i_step, dt,                               &
-     &    iflag_supg, n_int_evo, iflag_SGS_flux, iflag_commute_field,   &
-     &    i_scalar, i_pert, i_filter_s, i_SGS_wk_field,         &
+      call update_with_scalar(i_step, dt, iflag_supg,                   &
+     &    FEM_prm%npoint_t_evo_int, iflag_SGS_flux, iflag_commute_field,&
+     &    i_scalar, i_pert, i_filter_s, i_SGS_wk_field,                 &
      &    iak_diff, iphys_wfl_scalar, iphys_fefx_buo_gen, icomp_diff_t, &
      &    iflag_SGS_initial, i_step_sgs_coefs,                          &
      &    SGS_param, cmt_param, filter_param,                           &
-     &    mesh, group, fluid, sf_bcs, iphys_LES%SGS_wk, iphys_ele_base, &
+     &    mesh, group, fluid, sf_bcs, iphys_SGS_wk, iphys_ele_base,     &
      &    ele_fld, fem_int, FEM_filters, mk_MHD, FEM_SGS_wk, rhs_mat,   &
      &    nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !
@@ -280,18 +270,24 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_dummy_scalar(i_step, dt,                   &
-     &          i_scalar, i_pert, FEM_prm, &
-     &          iflag_SGS_initial, i_step_sgs_coefs,                    &
+     &          i_scalar, i_pert, i_filter_s,                           &
+     &          i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,   &
+     &          FEM_prm, iflag_SGS_initial, i_step_sgs_coefs,           &
      &          SGS_param, cmt_param, filter_param,                     &
-     &          mesh, group, fluid, sf_bcs, iphys_LES,           &
+     &          mesh, group, fluid, sf_bcs, iphys_SGS_wk,               &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
-     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
+     &          iak_diff, icomp_diff_t, mk_MHD, FEM_SGS_wk,             &
      &          rhs_mat, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: i_scalar, i_pert
+      integer(kind = kint), intent(in) :: i_filter_s, i_SGS_wk_field
+      integer(kind = kint), intent(in) :: iphys_wfl_scalar
+      integer(kind = kint), intent(in) :: iphys_fefx_buo_gen
+!
+      integer(kind = kint), intent(in) :: iak_diff, icomp_diff_t
 !
       integer(kind = kint), intent(in) :: iflag_SGS_initial
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
@@ -305,14 +301,12 @@
       type(field_geometry_data), intent(in) :: fluid
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !
-      type(SGS_model_addresses), intent(in) :: iphys_LES
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !
       type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(base_field_address), intent(in) :: icomp_diff_base
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -324,36 +318,22 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: iflag_supg
-      integer(kind = kint) :: n_int_evo
       integer(kind = kint) :: iflag_SGS_flux
       integer(kind = kint) :: iflag_commute_field
-      integer(kind = kint) :: i_filter_s
-      integer(kind = kint) :: i_SGS_wk_field
-      integer(kind = kint) :: iak_diff
-      integer(kind = kint) :: iphys_wfl_scalar
-      integer(kind = kint) :: iphys_fefx_buo_gen
-      integer(kind = kint) :: icomp_diff_t
 !
       iflag_SGS_flux = SGS_param%iflag_SGS_c_flux
-      i_filter_s =     iphys_LES%filter_fld%i_light
-      i_SGS_wk_field = iphys_LES%SGS_wk%i_sgs_composit
 !
       iflag_supg = FEM_prm%iflag_comp_supg
-      n_int_evo =  FEM_prm%npoint_t_evo_int
-      iak_diff =   iak_diff_base%i_light
-      icomp_diff_t = icomp_diff_base%i_light
 !
-      iphys_wfl_scalar = iphys_LES%wide_filter_fld%i_light
-      iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_c_buo_gen
       iflag_commute_field = cmt_param%iflag_c_light
 !
-      call update_with_scalar(i_step, dt,                               &
-     &    iflag_supg, n_int_evo, iflag_SGS_flux, iflag_commute_field,   &
-     &    i_scalar, i_pert, i_filter_s, i_SGS_wk_field,         &
+      call update_with_scalar(i_step, dt, iflag_supg,                   &
+     &    FEM_prm%npoint_t_evo_int, iflag_SGS_flux, iflag_commute_field,&
+     &    i_scalar, i_pert, i_filter_s, i_SGS_wk_field,                 &
      &    iak_diff, iphys_wfl_scalar, iphys_fefx_buo_gen, icomp_diff_t, &
      &    iflag_SGS_initial, i_step_sgs_coefs,                          &
      &    SGS_param, cmt_param, filter_param,                           &
-     &    mesh, group, fluid, sf_bcs, iphys_LES%SGS_wk, iphys_ele_base, &
+     &    mesh, group, fluid, sf_bcs, iphys_SGS_wk, iphys_ele_base,     &
      &    ele_fld, fem_int, FEM_filters, mk_MHD, FEM_SGS_wk, rhs_mat,   &
      &    nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !
