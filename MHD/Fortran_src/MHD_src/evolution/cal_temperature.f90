@@ -108,13 +108,16 @@
       integer(kind = kint) :: i_velo, i_pre_advect
       integer(kind = kint) :: i_gref
 !
-      integer(kind = kint) :: i_filter_s, i_tensor
+      integer(kind = kint) :: i_filter_s, i_filter_v, i_tensor
       integer(kind = kint) :: i_SGS_wk_field
       integer(kind = kint) :: iphys_wfl_scalar
       integer(kind = kint) :: iphys_fefx_buo_gen
 !
       integer(kind = kint) :: icomp_sgs_flux
       integer(kind = kint) :: iak_diff, i_diff_SGS, icomp_diff_t
+!
+      real(kind = kreal) :: eps_4_crank
+      integer(kind = kint) :: iflag_supg
 !
 !     ---- temperature update
 !
@@ -125,8 +128,9 @@
       iref_scalar =  iref_base%i_temp
       i_gref =       iref_grad%i_grad_temp
 !
-      i_filter_s =   iphys_LES%filter_fld%i_temp
-      i_tensor =     iphys_LES%SGS_term%i_SGS_h_flux
+      i_filter_s =         iphys_LES%filter_fld%i_temp
+      i_filter_v =         iphys_LES%filter_fld%i_velo
+      i_tensor =           iphys_LES%SGS_term%i_SGS_h_flux
       i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_temp
       iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_temp
       iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_buo_gen
@@ -136,12 +140,15 @@
       i_diff_SGS =     Csims_FEM_MHD%iak_diff_SGS%i_SGS_h_flux
       icomp_diff_t =   Csims_FEM_MHD%icomp_diff_base%i_temp
 !
+      eps_4_crank = FEM_prm%eps_4_temp_crank
+      iflag_supg = FEM_prm%iflag_temp_supg
+!
       if(property%iflag_scheme .gt. id_no_evolution) then
         if(ref_param%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
           call cal_temperature_field(i_pert, i_scalar, i_velo,          &
-     &        i_pre_advect, i_gref, i_filter_s, i_tensor,               &
-     &        time_d%dt, FEM_prm, &
+     &        i_pre_advect, i_gref, i_filter_s, i_filter_v, i_tensor,   &
+     &        time_d%dt, eps_4_crank, iflag_supg, FEM_prm, &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
      &        property, ref_param, nod_bcs, sf_bcs, ref_fld,            &
@@ -166,8 +173,8 @@
 !     &        my_rank, sf_grp, geofem%group%surf_nod_grp)
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
           call cal_temperature_field(i_scalar, i_scalar, i_velo,        &
-     &        i_pre_advect, i_gref, i_filter_s, i_tensor,               &
-     &        time_d%dt, FEM_prm, &
+     &        i_pre_advect, i_gref, i_filter_s, i_filter_v, i_tensor,   &
+     &        time_d%dt, eps_4_crank, iflag_supg, FEM_prm, &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        geofem%mesh, geofem%group, MHD_mesh%fluid,                &
      &        property, ref_param, nod_bcs, sf_bcs, ref_fld,            &
@@ -193,7 +200,8 @@
 !
         call update_with_temperature(time_d%i_time_step, time_d%dt,     &
      &     i_scalar, i_pert, i_filter_s, i_SGS_wk_field,                &
-     &     iphys_wfl_scalar, iphys_fefx_buo_gen, FEM_prm,               &
+     &     iphys_wfl_scalar, iphys_fefx_buo_gen,                        &
+     &     iflag_supg, FEM_prm%npoint_t_evo_int,                        &
      &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, sf_bcs,           &
@@ -210,8 +218,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_temperature_field(i_field, i_scalar, i_velo,       &
-     &         i_pre_advect, i_gref, i_filter_s, i_tensor, dt,          &
-     &         FEM_prm, SGS_param, cmt_param, filter_param,             &
+     &         i_pre_advect, i_gref, i_filter_s, i_filter_v, i_tensor, dt,          &
+     &         eps_4_crank, iflag_supg, FEM_prm, SGS_param, cmt_param, filter_param, &
      &         mesh, group, fluid, property, ref_param,                 &
      &         nod_bcs, sf_bcs, ref_fld,                     &
      &         iphys_ele_base, ele_fld, fem_int,             &
@@ -224,11 +232,15 @@
       integer(kind = kint), intent(in) :: i_field, i_scalar
       integer(kind = kint), intent(in) :: i_velo, i_pre_advect
       integer(kind = kint), intent(in) :: i_gref
-      integer(kind = kint), intent(in) :: i_filter_s, i_tensor
+      integer(kind = kint), intent(in) :: i_filter_s, i_filter_v
+      integer(kind = kint), intent(in) :: i_tensor
       real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: icomp_sgs_flux
       integer(kind = kint), intent(in) :: iak_diff, i_diff_SGS
+!
+      real(kind = kreal), intent(in) :: eps_4_crank
+      integer(kind = kint), intent(in) :: iflag_supg
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -265,24 +277,17 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      integer(kind = kint) :: iflag_supg
       integer(kind = kint) :: iflag_SGS_flux
       integer(kind = kint) :: itype_Csym_flux
       integer(kind = kint) :: ifilter_final
       integer(kind = kint) :: iflag_commute_flux
       integer(kind = kint) :: iflag_commute_field
 !
-      integer(kind = kint) :: i_filter_v
-!
-      real(kind = kreal) :: eps_4_crank
-!
 !
       itype_Csym_flux = SGS_param%itype_Csym_h_flux
       iflag_SGS_flux = SGS_param%iflag_SGS_h_flux
       ifilter_final =  SGS_param%ifilter_final
 !
-      iflag_supg = FEM_prm%iflag_temp_supg
-      eps_4_crank = FEM_prm%eps_4_temp_crank
       iflag_commute_flux =  cmt_param%iflag_c_hf
       iflag_commute_field = cmt_param%iflag_c_temp
       call cal_scalar_field_pre(i_field, dt,                            &

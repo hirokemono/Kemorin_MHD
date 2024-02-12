@@ -309,6 +309,7 @@
       integer(kind = kint) :: iphys_wfl_scalar, iphys_fefx_buo_gen
       integer(kind = kint) :: iak_diff, icomp_diff_t
 !
+      integer(kind = kint) :: iflag_supg, n_int_evo
 !
       if(iphys%base%i_velo .ne. 0) then
         call update_with_velocity(time_d%i_time_step, time_d%dt,        &
@@ -335,10 +336,14 @@
         iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_buo_gen
         iak_diff =     Csims_FEM_MHD%iak_diff_base%i_temp
         icomp_diff_t = Csims_FEM_MHD%icomp_diff_base%i_temp
+!
+        iflag_supg = FEM_prm%iflag_temp_supg
+        n_int_evo =  FEM_prm%npoint_t_evo_int
         call update_with_temperature                                    &
      &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
      &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &
-     &     FEM_prm, SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,&
+     &     iflag_supg, n_int_evo, &
+     &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Tsf_bcs, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
@@ -358,10 +363,14 @@
         iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_c_buo_gen
         iak_diff =      Csims_FEM_MHD%iak_diff_base%i_light
         icomp_diff_t =  Csims_FEM_MHD%icomp_diff_base%i_light
+!
+        iflag_supg = FEM_prm%iflag_comp_supg
+        n_int_evo =  FEM_prm%npoint_t_evo_int
         call update_with_dummy_scalar                                   &
      &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
      &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &
-     &     FEM_prm, SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,&
+     &     iflag_supg, n_int_evo, &
+     &     SGS_par%iflag_SGS_initial, SGS_par%i_step_sgs_coefs,         &
      &     SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,        &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Csf_bcs, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &

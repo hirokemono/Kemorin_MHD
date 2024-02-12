@@ -200,8 +200,8 @@
       subroutine update_with_temperature(i_step, dt,                    &
      &          i_scalar, i_pert, i_filter_s,                           &
      &          i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,   &
-     &          FEM_prm, iflag_SGS_initial, i_step_sgs_coefs,           &
-     &          SGS_param, cmt_param, filter_param,                     &
+     &          iflag_supg, n_int_evo, iflag_SGS_initial,               &
+     &          i_step_sgs_coefs, SGS_param, cmt_param, filter_param,   &
      &          mesh, group, fluid, sf_bcs, iphys_SGS_wk,               &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff, icomp_diff_t, mk_MHD, FEM_SGS_wk,             &
@@ -217,13 +217,14 @@
 !
       integer(kind = kint), intent(in) :: iak_diff, icomp_diff_t
 !
+      integer(kind = kint), intent(in) :: iflag_supg, n_int_evo
+!
       integer(kind = kint), intent(in) :: iflag_SGS_initial
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
 !
-      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(field_geometry_data), intent(in) :: fluid
@@ -245,18 +246,15 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
-      integer(kind = kint) :: iflag_supg
       integer(kind = kint) :: iflag_SGS_flux
       integer(kind = kint) :: iflag_commute_field
 !
       iflag_SGS_flux = SGS_param%iflag_SGS_h_flux
 !
-      iflag_supg = FEM_prm%iflag_temp_supg
-!
       iflag_commute_field = cmt_param%iflag_c_temp
 !
       call update_with_scalar(i_step, dt, iflag_supg,                   &
-     &    FEM_prm%npoint_t_evo_int, iflag_SGS_flux, iflag_commute_field,&
+     &    n_int_evo, iflag_SGS_flux, iflag_commute_field,&
      &    i_scalar, i_pert, i_filter_s, i_SGS_wk_field,                 &
      &    iak_diff, iphys_wfl_scalar, iphys_fefx_buo_gen, icomp_diff_t, &
      &    iflag_SGS_initial, i_step_sgs_coefs,                          &
@@ -272,8 +270,8 @@
       subroutine update_with_dummy_scalar(i_step, dt,                   &
      &          i_scalar, i_pert, i_filter_s,                           &
      &          i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,   &
-     &          FEM_prm, iflag_SGS_initial, i_step_sgs_coefs,           &
-     &          SGS_param, cmt_param, filter_param,                     &
+     &          iflag_supg, n_int_evo, iflag_SGS_initial,               &
+     &          i_step_sgs_coefs, SGS_param, cmt_param, filter_param,   &
      &          mesh, group, fluid, sf_bcs, iphys_SGS_wk,               &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff, icomp_diff_t, mk_MHD, FEM_SGS_wk,             &
@@ -291,11 +289,13 @@
 !
       integer(kind = kint), intent(in) :: iflag_SGS_initial
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
+!
+      integer(kind = kint), intent(in) :: iflag_supg, n_int_evo
+!
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
 !
-      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(field_geometry_data), intent(in) :: fluid
@@ -317,18 +317,15 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
-      integer(kind = kint) :: iflag_supg
       integer(kind = kint) :: iflag_SGS_flux
       integer(kind = kint) :: iflag_commute_field
 !
       iflag_SGS_flux = SGS_param%iflag_SGS_c_flux
 !
-      iflag_supg = FEM_prm%iflag_comp_supg
-!
       iflag_commute_field = cmt_param%iflag_c_light
 !
-      call update_with_scalar(i_step, dt, iflag_supg,                   &
-     &    FEM_prm%npoint_t_evo_int, iflag_SGS_flux, iflag_commute_field,&
+      call update_with_scalar(i_step, dt, iflag_supg, n_int_evo,        &
+     &    iflag_SGS_flux, iflag_commute_field,                          &
      &    i_scalar, i_pert, i_filter_s, i_SGS_wk_field,                 &
      &    iak_diff, iphys_wfl_scalar, iphys_fefx_buo_gen, icomp_diff_t, &
      &    iflag_SGS_initial, i_step_sgs_coefs,                          &
