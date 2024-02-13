@@ -7,7 +7,7 @@
 !!     &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
-!!     &          iak_diff_sgs, icomp_diff_sgs, icomp_sgs_term,         &
+!!     &          iak_diff_sgs, icomp_diff_sgs_Lorentz, icomp_sgs_term, &
 !!     &          iphys_elediff_fil_b, sgs_coefs, mk_MHD, FEM_SGS_wk,   &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs,             &
 !!     &          v_sol, SR_sig, SR_r)
@@ -27,7 +27,6 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(SGS_term_address), intent(in) :: icomp_diff_sgs
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -80,7 +79,7 @@
      &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                  &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
-     &          iak_diff_sgs, icomp_diff_sgs, icomp_sgs_term,           &
+     &          iak_diff_sgs, icomp_diff_sgs_Lorentz, icomp_sgs_term,   &
      &          iphys_elediff_fil_b, sgs_coefs, mk_MHD, FEM_SGS_wk,     &
      &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs,               &
      &          v_sol, SR_sig, SR_r)
@@ -100,6 +99,7 @@
       use nod_phys_send_recv
 !
       real(kind = kreal), intent(in) :: dt
+      integer(kind = kint), intent(in) :: icomp_diff_sgs_Lorentz
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -119,7 +119,6 @@
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_term_address), intent(in) :: iak_diff_sgs
-      type(SGS_term_address), intent(in) :: icomp_diff_sgs
       type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -239,12 +238,12 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &                     'cal_diff_coef_fluid', n_vector,             &
      &                     iak_diff_sgs%i_SGS_Lorentz,                  &
-     &                     icomp_diff_sgs%i_SGS_Lorentz
+     &                     icomp_diff_sgs_Lorentz
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p, FEM_filters%layer_tbl,    &
      &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
      &    fem_int%jcs, n_vector, iak_diff_sgs%i_SGS_Lorentz,            &
-     &    icomp_diff_sgs%i_SGS_Lorentz, FEM_prm%npoint_t_evo_int,       &
+     &    icomp_diff_sgs_Lorentz, FEM_prm%npoint_t_evo_int,             &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &
      &    diff_coefs)
 !

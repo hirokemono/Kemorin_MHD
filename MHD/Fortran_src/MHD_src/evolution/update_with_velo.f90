@@ -11,7 +11,7 @@
 !!     &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                 &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,  &
-!!     &          iak_diff_base, icomp_diff_base,                       &
+!!     &          iak_diff_base, icomp_diff_v,                          &
 !!     &          iphys_elediff_vec_v, iphys_elediff_fil_v,             &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
 !!     &          nod_fld, ele_fld, diff_coefs, v_sol, SR_sig, SR_r)
@@ -31,7 +31,6 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(base_field_address), intent(in) :: iak_diff_base
-!!        type(base_field_address), intent(in) :: icomp_diff_base
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -84,7 +83,7 @@
      &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                   &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          iak_diff_base, icomp_diff_base,                         &
+     &          iak_diff_base, icomp_diff_v,                            &
      &          iphys_elediff_vec_v, iphys_elediff_fil_v,               &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
      &          nod_fld, ele_fld, diff_coefs, v_sol, SR_sig, SR_r)
@@ -98,6 +97,7 @@
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
+      integer(kind = kint), intent(in) :: icomp_diff_v
       integer(kind = kint), intent(in) :: iphys_elediff_vec_v
       integer(kind = kint), intent(in) :: iphys_elediff_fil_v
 !
@@ -119,7 +119,6 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(base_field_address), intent(in) :: iak_diff_base
-      type(base_field_address), intent(in) :: icomp_diff_base
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -213,7 +212,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
           call s_cal_diff_coef_velo                                     &
-     &       (iak_diff_base%i_velo, icomp_diff_base%i_velo,             &
+     &       (iak_diff_base%i_velo, icomp_diff_v,                       &
      &        dt, FEM_prm, SGS_par,  mesh%nod_comm, mesh%node,          &
      &        mesh%ele, mesh%surf, group%surf_grp, Vsf_bcs, Psf_bcs,    &
      &        iphys_base, iphys_fil, iphys_SGS_wk,                      &
