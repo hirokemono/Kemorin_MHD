@@ -4,14 +4,13 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_sf                               &
-!!     &         (itype_Csym_flux, iflag_supg, num_int, dt,             &
-!!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
-!!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf,         &
-!!     &          SGS_par, mesh, group, Snod_bcs, sf_bcs,               &
-!!     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,&
-!!     &          FEM_filters, iphys_elediff_fil, sgs_coefs, mk_MHD,    &
-!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,             &
-!!     &          diff_coefs, v_sol, SR_sig, SR_r)
+!!     &        (itype_Csym_flux, iflag_supg, num_int, dt,              &
+!!     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs, iak_diff_flux,&
+!!     &         icomp_sgs_flux, icomp_diff_sf, iphys_elediff_fil_v,    &
+!!     &         SGS_par, mesh, group, Snod_bcs, sf_bcs,                &
+!!     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int, &
+!!     &         FEM_filters, sgs_coefs, mk_MHD, FEM_SGS_wk, mhd_fem_wk,&
+!!     &         rhs_mat, nod_fld,diff_coefs, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -24,7 +23,6 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -69,14 +67,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_sf                                 &
-     &         (itype_Csym_flux, iflag_supg, num_int, dt,               &
-     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
-     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf,           &
-     &          SGS_par, mesh, group, Snod_bcs, sf_bcs,                 &
-     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,  &
-     &          FEM_filters, iphys_elediff_fil, sgs_coefs, mk_MHD,      &
-     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,               &
-     &          diff_coefs, v_sol, SR_sig, SR_r)
+     &        (itype_Csym_flux, iflag_supg, num_int, dt,                &
+     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs, iak_diff_flux,  &
+     &         icomp_sgs_flux, icomp_diff_sf, iphys_elediff_fil_v,      &
+     &         SGS_par, mesh, group, Snod_bcs, sf_bcs,                  &
+     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,   &
+     &         FEM_filters, sgs_coefs, mk_MHD, FEM_SGS_wk, mhd_fem_wk,  &
+     &         rhs_mat, nod_fld,diff_coefs, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -99,6 +96,7 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_flux
       integer(kind = kint), intent(in) :: icomp_sgs_flux, icomp_diff_sf
+      integer(kind = kint), intent(in) :: iphys_elediff_fil_v
       real(kind = kreal), intent(in) :: dt
 !
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -112,7 +110,6 @@
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(base_field_address), intent(in) :: iphys_elediff_fil
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -138,7 +135,7 @@
       call cal_sgs_s_flux_grad_w_coef                                   &
      &   (iflag_supg, num_int, dt, itype_Csym_flux,                     &
      &    SGS_par%model_p%icoord_Csim, ifilter_4delta, icomp_sgs_flux,  &
-     &    iphys_SGS_wk%i_wd_nlg, ifield_f, iphys_elediff_fil%i_velo,    &
+     &    iphys_SGS_wk%i_wd_nlg, ifield_f, iphys_elediff_fil_v,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_filters%FEM_elens, sgs_coefs, mk_MHD%mlump_fl,            &
