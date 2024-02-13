@@ -132,7 +132,7 @@
 !
 !>      Parameters for ommutation error correction
       type commutation_control_params
-        integer (kind=kint) :: iset_DIFF_coefs =  0
+        integer (kind=kint) :: iflag_layerd_DIFF_coefs =  0
 !
 !>      commutation error correction flag for system
         integer (kind=kint) :: iflag_commute = id_SGS_commute_OFF

@@ -250,7 +250,7 @@
       end do
 !
       if (cmt_param%iflag_c_linear .gt. id_SGS_commute_OFF) then
-        if (cmt_param%iset_DIFF_coefs .eq. 1) then
+        if (cmt_param%iflag_layerd_DIFF_coefs .eq. 1) then
           do j = 1, num_diff_kind
             do i = 1, nlayer_diff
               diff_r = abs(diff_f_coef(i,j) - coef_diff_p(i,j))
@@ -300,7 +300,7 @@
       end do
 !
       if (cmt_param%iflag_c_linear .gt. id_SGS_commute_OFF) then
-        if (cmt_param%iset_DIFF_coefs .eq. 1) then
+        if (cmt_param%iflag_layerd_DIFF_coefs .eq. 1) then
           do j = 1, num_diff_kind
             do i = 1, nlayer_diff
               coef_diff_p(i,j) = diff_f_coef(i,j)

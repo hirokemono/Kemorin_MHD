@@ -130,14 +130,14 @@
       end if
 !
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        cmt_param%iset_DIFF_coefs = 0
+        cmt_param%iflag_layerd_DIFF_coefs = 0
         if (sgs_ctl%DIFF_model_coef_ctl%iflag .ne. 0) then
           tmpchara = sgs_ctl%DIFF_model_coef_ctl%charavalue
 !
           if (cmp_no_case(tmpchara, 'whole_domain')) then
-            cmt_param%iset_DIFF_coefs = 0
+            cmt_param%iflag_layerd_DIFF_coefs = 0
           else if (cmp_no_case(tmpchara, 'layerd')) then
-            cmt_param%iset_DIFF_coefs = 1
+            cmt_param%iflag_layerd_DIFF_coefs = 1
           end if
         end if
       end if
@@ -159,7 +159,8 @@
         write(*,*) 'iflag_commute_c_flux:   ',                          &
      &            SGS_param%SGS_light%iflag_commute_flux
 !
-        write(*,*) 'iset_DIFF_coefs:   ', cmt_param%iset_DIFF_coefs
+        write(*,*) 'iflag_layerd_DIFF_coefs:   ',                       &
+     &            cmt_param%iflag_layerd_DIFF_coefs
       end if
 !
 !

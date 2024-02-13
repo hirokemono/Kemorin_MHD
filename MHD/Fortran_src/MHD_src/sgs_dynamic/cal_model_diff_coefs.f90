@@ -165,7 +165,7 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (cmt_param%iset_DIFF_coefs .eq. 1) then
+      if (cmt_param%iflag_layerd_DIFF_coefs .eq. 1) then
         call cal_layerd_diff_coef(iflag_SGS_initial, SGS_param,         &
      &      layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
@@ -210,7 +210,7 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (cmt_param%iset_DIFF_coefs .eq. 1) then
+      if (cmt_param%iflag_layerd_DIFF_coefs .eq. 1) then
         call cal_layerd_diff_coef(iflag_SGS_initial, SGS_param,         &
      &      layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
@@ -255,7 +255,7 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (cmt_param%iset_DIFF_coefs .eq. 1) then
+      if (cmt_param%iflag_layerd_DIFF_coefs .eq. 1) then
         call cal_layerd_diff_coef(iflag_SGS_initial, SGS_param,         &
      &      layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                &
      &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &

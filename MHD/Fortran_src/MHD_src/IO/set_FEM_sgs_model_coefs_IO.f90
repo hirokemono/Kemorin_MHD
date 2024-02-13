@@ -195,7 +195,7 @@
       end do
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
-        if (cmt_param%iset_DIFF_coefs .eq. 0) then
+        if (cmt_param%iflag_layerd_DIFF_coefs .eq. 0) then
           do i = 1, diff_coefs%num_field
             call set_diff_coefs_whole_ele                               &
      &         (ele, fluid%istack_ele_fld_smp, i, diff_coefs%ntot_comp, &
