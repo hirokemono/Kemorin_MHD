@@ -227,8 +227,8 @@
      &    MHD_prop%ht_prop, MHD_prop%ref_param_T,                       &
      &    nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                           &
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD, FEM_filters, s_package%Tmatrix, MGCG_WK, SGS_MHD_wk,  &
-     &    nod_fld, Csims_FEM_MHD, m_SR)
+     &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
+     &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
 !
 !     ----- composition update
       call light_element_evolution                                      &
@@ -236,8 +236,8 @@
      &    MHD_prop%cp_prop, MHD_prop%ref_param_C,                       &
      &    nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                           &
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD, FEM_filters, s_package%Cmatrix, MGCG_WK, SGS_MHD_wk,  &
-     &    nod_fld, Csims_FEM_MHD, m_SR)
+     &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
+     &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
 !
 !     ---- velocity update
 !
@@ -474,8 +474,8 @@
      &    MHD_prop%ht_prop, MHD_prop%ref_param_T,                       &
      &    nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                           &
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD, FEM_filters, s_package%Tmatrix, MGCG_WK, SGS_MHD_wk,  &
-     &    nod_fld, Csims_FEM_MHD, m_SR)
+     &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
+     &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
 !
 !     ----- composition update
       call light_element_evolution                                      &
@@ -483,8 +483,8 @@
      &    MHD_prop%cp_prop, MHD_prop%ref_param_C,                       &
      &    nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                           &
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
-     &    ak_MHD, FEM_filters, s_package%Cmatrix, MGCG_WK, SGS_MHD_wk,  &
-     &    nod_fld, Csims_FEM_MHD, m_SR)
+     &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
+     &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
 !
 !     ---- velocity update
 !
