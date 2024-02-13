@@ -149,7 +149,8 @@
      &          'lead ', trim(SGS_heat_flux%name)
         call cal_sgs_heat_flux                                          &
      &    (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,       &
-     &     SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,     &
+     &     SGS_param%SGS_heat%iflag_SGS_flux,                           &
+     &     SGS_param%SGS_heat%itype_Csym_flux,                          &
      &     iphys%base%i_temp, iphys_LES%filter_fld%i_temp,              &
      &     iphys%base%i_velo, iphys_LES%filter_fld%i_velo,              &
      &     iphys_LES%SGS_term%i_SGS_h_flux,                             &
@@ -166,7 +167,8 @@
      &          'lead ', trim(SGS_composit_flux%name)
         call cal_sgs_heat_flux                                          &
      &    (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,       &
-     &     SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,     &
+     &     SGS_param%SGS_light%iflag_SGS_flux,                          &
+     &     SGS_param%SGS_light%itype_Csym_flux,                         &
      &     iphys%base%i_light, iphys_LES%filter_fld%i_light,            &
      &     iphys%base%i_velo,  iphys_LES%filter_fld%i_velo,             &
      &     iphys_LES%SGS_term%i_SGS_c_flux,                             &
@@ -290,8 +292,9 @@
      &      iphys%base%i_velo, iphys%base%i_temp,                       &
      &      iphys_LES%SGS_term%i_SGS_h_flux, iak_diff_sgs%i_SGS_h_flux, &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
-     &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp, dt, FEM_prm,  &
+     &      SGS_param%ifilter_final, SGS_param%SGS_heat%iflag_SGS_flux, &
+     &      SGS_param%SGS_heat%iflag_commute_flux,                      &
+     &      SGS_param%SGS_heat%iflag_commute_field, dt, FEM_prm,        &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, sf_grp, ht_prop, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, &
      &      iphys_ele_base, ele_fld, fem_int, FEM_elens, diff_coefs,    &
@@ -306,8 +309,9 @@
      &      iphys%base%i_velo, iphys%base%i_light,                      &
      &      iphys_LES%SGS_term%i_SGS_c_flux, iak_diff_sgs%i_SGS_c_flux, &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
-     &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light, dt, FEM_prm, &
+     &      SGS_param%ifilter_final, SGS_param%SGS_light%iflag_SGS_flux,&
+     &      SGS_param%SGS_light%iflag_commute_flux,                     &
+     &      SGS_param%SGS_light%iflag_commute_field, dt, FEM_prm,       &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, sf_grp, cp_prop, nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, &
      &      iphys_ele_base, ele_fld, fem_int, FEM_elens, diff_coefs,    &

@@ -149,12 +149,12 @@
       eps_4_crank = FEM_prm%eps_4_temp_crank
       iflag_supg = FEM_prm%iflag_temp_supg
 !
-      iflag_SGS_flux =  SGS_par%model_p%iflag_SGS_h_flux
-      itype_Csym_flux = SGS_par%model_p%itype_Csym_h_flux
+      iflag_SGS_flux =  SGS_par%model_p%SGS_heat%iflag_SGS_flux
+      itype_Csym_flux = SGS_par%model_p%SGS_heat%itype_Csym_flux
       ifilter_final =   SGS_par%model_p%ifilter_final
 !
-      iflag_commute_flux =  SGS_par%commute_p%iflag_c_hf
-      iflag_commute_field = SGS_par%commute_p%iflag_c_temp
+      iflag_commute_flux = SGS_par%model_p%SGS_heat%iflag_commute_flux
+      iflag_commute_field = SGS_par%model_p%SGS_heat%iflag_commute_field
 !
       call scalar_evolution(i_scalar, i_pert,                           &
      &         iref_scalar, i_velo, i_pre_advect, i_gref,               &

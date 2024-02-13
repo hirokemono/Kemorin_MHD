@@ -51,14 +51,12 @@
 !
       if(SGS_param%icoord_Csim .eq. iflag_spherical) then
         call convert_dynamic_vectors_2_sph                              &
-     &     (node%numnod, node%istack_nod_smp, node%xx,                  &
-     &      node%rr, node%ss, node%a_r, node%a_s, nod_fld%ntot_phys,    &
-     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
-     &      nod_fld%d_fld)
+     &     (node%numnod, node%xx, node%rr, node%ss, node%a_r, node%a_s, &
+     &      nod_fld%ntot_phys, iSGS_wk%i_simi, iSGS_wk%i_nlg,           &
+     &      iSGS_wk%i_wd_nlg, nod_fld%d_fld)
       else if(SGS_param%icoord_Csim .eq. iflag_cylindrical) then
         call convert_dynamic_vectors_2_cyl                              &
-     &     (node%numnod, node%istack_nod_smp, node%xx,                  &
-     &      node%ss, node%a_s, nod_fld%ntot_phys,                       &
+     &     (node%numnod, node%xx, node%ss, node%a_s, nod_fld%ntot_phys, &
      &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
      &      nod_fld%d_fld)
       end if
@@ -102,14 +100,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine convert_dynamic_vectors_2_cyl(numnod, inod_smp_stack,  &
-     &          xx, s, a_s, ncomp_nod, i_sgs_simi, i_sgs_grad,          &
-     &          i_sgs_grad_f, d_nod)
+      subroutine convert_dynamic_vectors_2_cyl(numnod, xx, s, a_s,      &
+     &          ncomp_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f, d_nod)
 !
       use cvt_xyz_vector_2_cyl_smp
 !
       integer (kind = kint), intent(in) :: numnod
-      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: xx(numnod,3)
       real(kind=kreal), intent(in) :: s(numnod)
       real(kind=kreal), intent(in) :: a_s(numnod)
@@ -133,14 +129,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine convert_dynamic_vectors_2_sph(numnod,                  &
-     &          inod_smp_stack, xx, r, s, a_r, a_s, ncomp_nod,          &
+      subroutine convert_dynamic_vectors_2_sph                          &
+     &         (numnod, xx, r, s, a_r, a_s, ncomp_nod,                  &
      &          i_sgs_simi, i_sgs_grad, i_sgs_grad_f, d_nod)
 !
       use cvt_xyz_vector_2_sph_smp
 !
       integer (kind = kint), intent(in) :: numnod
-      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: xx(numnod,3)
       real(kind=kreal), intent(in) :: r(numnod)
       real(kind=kreal), intent(in) :: s(numnod)

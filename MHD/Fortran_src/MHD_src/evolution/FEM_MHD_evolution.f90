@@ -342,8 +342,8 @@
 !
         iflag_supg = FEM_prm%iflag_temp_supg
         n_int_evo =  FEM_prm%npoint_t_evo_int
-        iflag_SGS_flux =      SGS_par%model_p%iflag_SGS_h_flux
-        iflag_commute_field = SGS_par%commute_p%iflag_c_temp
+        iflag_SGS_flux =      SGS_par%model_p%SGS_heat%iflag_SGS_flux
+        iflag_commute_field = SGS_par%model_p%SGS_heat%iflag_commute_field
         call update_with_scalar                                         &
      &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
      &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &
@@ -371,8 +371,8 @@
 !
         iflag_supg = FEM_prm%iflag_comp_supg
         n_int_evo =  FEM_prm%npoint_t_evo_int
-        iflag_SGS_flux =      SGS_par%model_p%iflag_SGS_c_flux
-        iflag_commute_field = SGS_par%commute_p%iflag_c_light
+        iflag_SGS_flux =      SGS_par%model_p%SGS_light%iflag_SGS_flux
+        iflag_commute_field = SGS_par%model_p%SGS_light%iflag_commute_field
         call update_with_scalar                                         &
      &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
      &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &

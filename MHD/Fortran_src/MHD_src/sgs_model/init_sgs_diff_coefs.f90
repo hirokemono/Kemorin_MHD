@@ -113,8 +113,9 @@
       diff_coefs%num_field = 0
       ntot_diff_comp = 0
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-          if (cmt_param%iflag_c_hf .eq. id_SGS_commute_ON) then
+        if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
+          if (SGS_param%SGS_heat%iflag_commute_flux                     &
+     &       .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
             ntot_diff_comp = ntot_diff_comp + 3
           end if
@@ -147,8 +148,9 @@
       end if
 !
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
-          if (cmt_param%iflag_c_cf .eq. id_SGS_commute_ON) then
+        if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
+          if (SGS_param%SGS_light%iflag_commute_flux                    &
+     &      .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
             ntot_diff_comp = ntot_diff_comp + 3
           end if
@@ -157,7 +159,8 @@
 !
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
-     &      .and. cmt_param%iflag_c_temp .eq. id_SGS_commute_ON) then
+     &      .and. SGS_param%SGS_heat%iflag_commute_field                &
+     &           .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
           ntot_diff_comp = ntot_diff_comp + 3
         end if
@@ -165,7 +168,8 @@
 !
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
-     &      .and. cmt_param%iflag_c_light .eq. id_SGS_commute_ON) then
+     &      .and. SGS_param%SGS_light%iflag_commute_field               &
+     &           .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
           ntot_diff_comp = ntot_diff_comp + 3
         end if
@@ -234,8 +238,9 @@
        id = 1
        jd = 1
        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-         if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-           if (cmt_param%iflag_c_hf .eq. id_SGS_commute_ON) then
+         if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
+           if (SGS_param%SGS_heat%iflag_commute_flux                    &
+     &       .eq. id_SGS_commute_ON) then
              icomp_diff_sgs%i_SGS_h_flux = id
              iak_diff_sgs%i_SGS_h_flux =  jd
              wk_diff%name(jd) = SGS_heat_flux%name
@@ -284,8 +289,9 @@
        end if
 !
        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
-           if(cmt_param%iflag_c_cf .eq. id_SGS_commute_ON) then
+         if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
+           if(SGS_param%SGS_light%iflag_commute_flux                    &
+     &        .eq. id_SGS_commute_ON) then
              icomp_diff_sgs%i_SGS_c_flux = id
              iak_diff_sgs%i_SGS_c_flux =  jd
              wk_diff%name(jd) = SGS_composit_flux%name
@@ -299,7 +305,8 @@
 !
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
-     &      .and. cmt_param%iflag_c_temp .eq. id_SGS_commute_ON) then
+     &      .and. SGS_param%SGS_heat%iflag_commute_field               &
+     &           .eq. id_SGS_commute_ON) then
             icomp_diff_base%i_temp = id
             iak_diff_base%i_temp = jd
             wk_diff%name(jd) = temperature%name
@@ -311,7 +318,8 @@
 !
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
-     &      .and. cmt_param%iflag_c_light .eq. id_SGS_commute_ON) then
+     &      .and. SGS_param%SGS_light%iflag_commute_field              &
+     &           .eq. id_SGS_commute_ON) then
             icomp_diff_base%i_light = id
             iak_diff_base%i_light = jd
             wk_diff%name(jd) = composition%name

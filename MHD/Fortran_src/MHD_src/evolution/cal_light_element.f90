@@ -149,17 +149,17 @@
       icomp_sgs_flux = Csims_FEM_MHD%icomp_sgs_term%i_SGS_c_flux
       iak_diff =       Csims_FEM_MHD%iak_diff_base%i_light
       i_diff_SGS =     Csims_FEM_MHD%iak_diff_SGS%i_SGS_c_flux
-      icomp_diff_t =  Csims_FEM_MHD%icomp_diff_base%i_light
+      icomp_diff_t =   Csims_FEM_MHD%icomp_diff_base%i_light
 !
       eps_4_crank = FEM_prm%eps_4_comp_crank
       iflag_supg =  FEM_prm%iflag_comp_supg
 !
-      iflag_SGS_flux =  SGS_par%model_p%iflag_SGS_c_flux
-      itype_Csym_flux = SGS_par%model_p%itype_Csym_c_flux
+      iflag_SGS_flux =  SGS_par%model_p%SGS_light%iflag_SGS_flux
+      itype_Csym_flux = SGS_par%model_p%SGS_light%itype_Csym_flux
       ifilter_final =   SGS_par%model_p%ifilter_final
 !
-      iflag_commute_flux = SGS_par%commute_p%iflag_c_cf
-      iflag_commute_field = SGS_par%commute_p%iflag_c_light
+      iflag_commute_flux = SGS_par%model_p%SGS_light%iflag_commute_flux
+      iflag_commute_field = SGS_par%model_p%SGS_light%iflag_commute_field
 !
       call scalar_evolution(i_scalar, i_pert,                           &
      &         iref_scalar, i_velo, i_pre_advect, i_gref,               &

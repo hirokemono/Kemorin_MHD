@@ -125,7 +125,7 @@
      &   (sgs_ctl, SGS_par%model_p, SGS_par%filter_p,                   &
      &    MHD_files%Csim_file_IO, SGS_par%i_step_sgs_coefs)
       call s_set_control_SGS_commute                                    &
-     &   (SGS_par%model_p, sgs_ctl, SGS_par%commute_p,                  &
+     &   (sgs_ctl, SGS_par%model_p, SGS_par%commute_p,                  &
      &    MHD_files%Cdiff_file_IO)
 !
       call set_control_SPH_SGS_filters                                  &

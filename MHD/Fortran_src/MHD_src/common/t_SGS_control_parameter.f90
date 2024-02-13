@@ -57,23 +57,41 @@
 !>      filter ID for @f$ 4\Delta @f$  filter
       integer (kind=kint), parameter :: ifilter_4delta = 2
 !
+!>      ID not to apply commutation error correction
+      integer (kind=kint), parameter :: id_SGS_commute_OFF = 0
+!>      ID to apply commutation error correction
+      integer (kind=kint), parameter :: id_SGS_commute_ON =  1
+!
+!
+      type SGS_model_control_parameter
+        integer (kind=kint) :: iflag_SGS_flux =  id_SGS_none
+        integer (kind=kint) :: itype_Csym_flux = id_CSIM_FIELD
+!>        commutation error correction flag for flux
+        integer (kind=kint) :: iflag_commute_flux = id_SGS_commute_OFF
+!>        commutation error correction flag for field
+        integer (kind=kint) :: iflag_commute_field = id_SGS_commute_OFF
+!
+        real(kind = kreal) :: SGS_factor = one
+      end type SGS_model_control_parameter
+!
 !>      Parameters for SGS model
       type SGS_model_control_params
         integer (kind=kint) :: iflag_SGS =     id_SGS_none
         integer (kind=kint) :: iflag_dynamic = id_SGS_DYNAMIC_OFF
 !
-        integer (kind=kint) :: iflag_SGS_h_flux =  id_SGS_none
+!>        structure for heat equation
+        type(SGS_model_control_parameter) :: SGS_heat
+!>        structure for composition equation
+        type(SGS_model_control_parameter) :: SGS_light
+!
         integer (kind=kint) :: iflag_SGS_m_flux =  id_SGS_none
         integer (kind=kint) :: iflag_SGS_lorentz = id_SGS_none
         integer (kind=kint) :: iflag_SGS_uxb =     id_SGS_none
-        integer (kind=kint) :: iflag_SGS_c_flux =  id_SGS_none
         integer (kind=kint) :: iflag_SGS_gravity = id_SGS_none
 !
-        real(kind = kreal) :: SGS_hf_factor =      1.0d0
         real(kind = kreal) :: SGS_mf_factor =      1.0d0
         real(kind = kreal) :: SGS_mawell_factor =  1.0d0
         real(kind = kreal) :: SGS_uxb_factor =     1.0d0
-        real(kind = kreal) :: SGS_cf_factor =      1.0d0
 !
         integer (kind=kint) :: min_step_dynamic =  1
         integer (kind=kint) :: max_step_dynamic =  1
@@ -92,8 +110,6 @@
 !>        Usae of model coefficients for SGS buoyancy
         integer (kind=kint) :: iflag_SGS_buo_usage = 0
 !
-        integer (kind=kint) :: itype_Csym_h_flux =   id_CSIM_FIELD
-        integer (kind=kint) :: itype_Csym_c_flux =   id_CSIM_FIELD
         integer (kind=kint) :: itype_Csym_m_flux =   id_CSIM_FIELD
         integer (kind=kint) :: itype_Csym_maxwell =  id_CSIM_FIELD
         integer (kind=kint) :: itype_Csym_uxb =      id_CSIM_FIELD
@@ -114,11 +130,6 @@
         integer (kind=kint) :: ifilter_final = ifilter_2delta
       end type SGS_model_control_params
 !
-!>      ID not to apply commutation error correction
-      integer (kind=kint), parameter :: id_SGS_commute_OFF = 0
-!>      ID to apply commutation error correction
-      integer (kind=kint), parameter :: id_SGS_commute_ON =  1
-!
 !>      Parameters for ommutation error correction
       type commutation_control_params
         integer (kind=kint) :: iset_DIFF_coefs =  0
@@ -130,30 +141,21 @@
 !>      commutation error correction flag for nonlinear terms
         integer (kind=kint) :: iflag_c_nonlinars = id_SGS_commute_OFF
 !
-!>      commutation error correction flag for temperature
-        integer (kind=kint) :: iflag_c_temp = id_SGS_commute_OFF
 !>      commutation error correction flag for velocity
         integer (kind=kint) :: iflag_c_velo = id_SGS_commute_OFF
 !>      commutation error correction flag for magnetic field
         integer (kind=kint) :: iflag_c_magne = id_SGS_commute_OFF
-!>      commutation error correction flag for composition variation
-        integer (kind=kint) :: iflag_c_light = id_SGS_commute_OFF
 !
-!>      commutation error correction flag for heat flux
-        integer (kind=kint) :: iflag_c_hf = id_SGS_commute_OFF
 !>      commutation error correction flag for momentum flux
         integer (kind=kint) :: iflag_c_mf = id_SGS_commute_OFF
 !>      commutation error correction flag for heat flux
         integer (kind=kint) :: iflag_c_lorentz = id_SGS_commute_OFF
 !>      commutation error correction flag for magnetic induction
         integer (kind=kint) :: iflag_c_uxb = id_SGS_commute_OFF
-!>      commutation error correction flag for composition flux
-        integer (kind=kint) :: iflag_c_cf  = id_SGS_commute_OFF
 !
 !>        Flag of exsistense of initial model coefficients
         integer (kind = kint) :: iflag_rst_sgs_comm_code = 0
       end type commutation_control_params
-!
 !
       integer (kind=kint), parameter :: id_SGS_NO_FILTERING =         0
       integer (kind=kint), parameter :: id_SGS_3D_FILTERING =         1
