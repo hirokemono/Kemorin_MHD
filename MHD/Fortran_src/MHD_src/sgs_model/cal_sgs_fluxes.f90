@@ -408,10 +408,9 @@
      &    write(*,*) 'cal_sgs_induct_t_grad'
         call cal_sgs_induct_t_grad_w_coef(SGS_param%ifilter_final,      &
      &      icomp_sgs_term%i_SGS_induction, iphys_SGS%i_SGS_induct_t,   &
-     &      iphys_base%i_velo, iphys_base%i_magne,                      &
-     &      iphys_elediff_vec%i_velo, iphys_elediff_vec%i_magne, dt,    &
-     &      FEM_prm, SGS_param, nod_comm, node, ele, conduct, cd_prop,  &
-     &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
+     &      dt, FEM_prm, SGS_param, nod_comm, node, ele, conduct,       &
+     &      cd_prop, iphys_base, iphys_ele_base, iphys_elediff_vec,     &
+     &      ele_fld, jacs, rhs_tbl, FEM_elens,                          &
      &      sgs_coefs, mlump_cd, fem_wk, mhd_fem_wk, f_l,               &
      &      nod_fld, v_sol, SR_sig, SR_r)
 !
