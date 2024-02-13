@@ -557,9 +557,9 @@
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base, iphys_frc,            &
      &    iphys_div_frc, iphys_dif, iphys_SGS,                          &
-     &    iphys_ele_base, ele_fld, fem_int, FEM_elens, iak_diff_sgs,    &
-     &    diff_coefs, mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,           &
-     &    v_sol, SR_sig, SR_r)
+     &    iphys_ele_base, ele_fld, fem_int, FEM_elens,                  &
+     &    iak_diff_sgs%i_SGS_induction, diff_coefs, mlump_cd,           &
+     &    mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       call copy_vector_component(nod_fld, iphys_div_frc%i_induct_t,     &
      &    iphys_trSGS%i_SGS_induction)
 !

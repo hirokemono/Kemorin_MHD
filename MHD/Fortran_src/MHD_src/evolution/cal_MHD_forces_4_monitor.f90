@@ -359,8 +359,9 @@
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys_LES%SGS_term,                      &
      &        iphys_ele_base, ele_fld, fem_int, FEM_elens,              &
-     &        iak_diff_sgs, diff_coefs, mk_MHD%mlump_cd,                &
-     &        mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &        iak_diff_sgs%i_SGS_induction, diff_coefs,                 &
+     &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,            &
+     &        v_sol, SR_sig, SR_r)
         end if
       end do
 !
@@ -369,9 +370,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(vecp_induction%name)
         call cal_vecp_induction                                         &
-     &     (dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
-     &      nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,  &
-     &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &     (dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,   &
+     &      cd_prop, nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld,  &
+     &      fem_int, mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -436,8 +437,8 @@
      &      sf_grp, nod_bcs%Bnod_bcs,                                   &
      &      surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,                         &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term, fem_int,   &
-     &      FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,         &
-     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      FEM_elens, iak_diff_base, iak_diff_sgs%i_SGS_induction,     &
+     &      diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine cal_forces_4_monitor

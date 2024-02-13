@@ -12,13 +12,13 @@
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,      &
 !!     &          nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,      &
-!!     &          rhs_tbl, FEM_elen, iak_diff_SGS, diff_coefs,          &
+!!     &          rhs_tbl, FEM_elen, iak_diff_SGS_induction, diff_coefs,&
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_monitor_upm(i_field, num_int, dt,      &
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,      &
 !!     &          nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,      &
-!!     &          rhs_tbl, FEM_elen, iak_diff_SGS, diff_coefs,          &
+!!     &          rhs_tbl, FEM_elen, iak_diff_SGS_induction, diff_coefs,&
 !!     &          mhd_fem_wk, fem_wk,f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -37,7 +37,6 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
-!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -79,7 +78,7 @@
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,        &
      &          nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,        &
-     &          rhs_tbl, FEM_elen, iak_diff_SGS, diff_coefs,            &
+     &          rhs_tbl, FEM_elen, iak_diff_SGS_induction, diff_coefs,  &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_vect_differences
@@ -89,6 +88,8 @@
 !
       integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: num_int
+!
+      integer(kind=kint), intent(in) :: iak_diff_SGS_induction
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -109,7 +110,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -135,7 +135,7 @@
      &       (node, ele, nod_fld, iphys_base, iphys_SGS,                &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elen, diff_coefs,             &
      &        conduct%istack_ele_fld_smp, num_int,                      &
-     &        SGS_param%ifilter_final, iak_diff_SGS%i_SGS_induction,    &
+     &        SGS_param%ifilter_final, iak_diff_SGS_induction,          &
      &        cd_prop%coef_induct, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
@@ -154,7 +154,7 @@
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,        &
      &          nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,        &
-     &          rhs_tbl, FEM_elen, iak_diff_SGS, diff_coefs,            &
+     &          rhs_tbl, FEM_elen, iak_diff_SGS_induction, diff_coefs,  &
      &          mhd_fem_wk, fem_wk,f_nl)
 !
       use int_vol_vect_diff_upw
@@ -165,6 +165,8 @@
       integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: num_int
       real(kind = kreal), intent(in) :: dt
+!
+      integer(kind=kint), intent(in) :: iak_diff_SGS_induction
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -185,7 +187,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -212,7 +213,7 @@
      &       (node, ele, nod_fld, iphys_base, iphys_SGS,                &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elen, diff_coefs,             &
      &        conduct%istack_ele_fld_smp, num_int, dt,                  &
-     &        SGS_param%ifilter_final, iak_diff_SGS%i_SGS_induction,    &
+     &        SGS_param%ifilter_final, iak_diff_SGS_induction,          &
      &        cd_prop%coef_induct, ele_fld%ntot_phys,                   &
      &        iphys_ele_base%i_magne, ele_fld%d_fld, fem_wk,            &
      &        mhd_fem_wk, f_nl)

@@ -201,16 +201,18 @@
      &     iphys%base, iphys_LES%SGS_term, nod_fld,                     &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele_base,            &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_filters%FEM_elens,     &
-     &     Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,        &
-     &     mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &     Csims_FEM_MHD%iak_diff_sgs%i_SGS_induction,                  &
+     &     Csims_FEM_MHD%diff_coefs, mhd_fem_wk,                        &
+     &     rhs_mat%fem_wk, rhs_mat%f_nl)
       else
        call int_vol_magne_pre_ele(FEM_prm%npoint_t_evo_int,             &
      &     SGS_param, cmt_param, mesh%node, mesh%ele, conduct, cd_prop, &
      &     iphys%base, iphys_LES%SGS_term, nod_fld,                     &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele_base,            &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_filters%FEM_elens,     &
-     &     Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,        &
-     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &     Csims_FEM_MHD%iak_diff_sgs%i_SGS_induction,                  &
+     &     Csims_FEM_MHD%diff_coefs, mhd_fem_wk,                        &
+     &     rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
 !
@@ -219,7 +221,8 @@
      &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
      &    Asf_bcs, Bsf_bcs, iphys%base, iphys_LES%SGS_term, nod_fld,    &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_filters%FEM_elens,  &
-     &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,         &
+     &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_induction,                   &
+     &    Csims_FEM_MHD%diff_coefs,                                     &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
