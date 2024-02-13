@@ -74,7 +74,8 @@
 !
 !
       if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
-        call product_fixed_model_coefs(SGS_param%SGS_mf_factor,         &
+        call product_fixed_model_coefs                                  &
+     &     (SGS_param%SGS_momentum%SGS_factor,                          &
      &      sph_rtp, fg_trns_SGS%i_SGS_inertia, n_vector,               &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
@@ -124,7 +125,7 @@
       if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs MF'
         call sel_product_model_coefs                                    &
-     &     (SGS_param%SGS_mf_factor, sph_rtp, sph_d_grp,                &
+     &     (SGS_param%SGS_momentum%SGS_factor, sph_rtp, sph_d_grp,      &
      &      n_vector, fg_trns_SGS%i_SGS_inertia,                        &
      &      iak_sgs_term%i_SGS_m_flux, wk_sgs, trns_f_SGS)
       end if

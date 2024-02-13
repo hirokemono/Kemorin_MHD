@@ -133,7 +133,7 @@
       mhd_fem_wk%n_dvx = 0
       if ( SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (  SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none        &
-     &   .or. SGS_param%iflag_SGS_m_flux .ne. id_SGS_none               &
+     &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
      &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none       &
      &   .or. SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
@@ -148,7 +148,7 @@
 !
       else if(SGS_param%iflag_SGS .ne. id_SGS_none) then
         if (  SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none        &
-     &   .or. SGS_param%iflag_SGS_m_flux .ne. id_SGS_none               &
+     &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
      &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none       &
      &   .or. SGS_param%iflag_SGS_uxb .ne.    id_SGS_none ) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9

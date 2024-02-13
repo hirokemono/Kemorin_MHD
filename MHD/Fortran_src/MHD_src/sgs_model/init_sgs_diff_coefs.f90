@@ -122,9 +122,11 @@
         end if
       end if
 !
-      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
-          if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
+        if(SGS_param%SGS_momentum%iflag_SGS_flux                        &
+     &        .ne. id_SGS_none) then
+          if(SGS_param%SGS_momentum%iflag_commute_flux                  &
+     &      .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
             ntot_diff_comp = ntot_diff_comp + 9
           end if
@@ -177,7 +179,8 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
-     &       .and. cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
+     &       .and. SGS_param%SGS_momentum%iflag_commute_field           &
+     &            .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
         end if
@@ -251,9 +254,11 @@
          end if
        end if
 !
-       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-         if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
-           if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
+         if(SGS_param%SGS_momentum%iflag_SGS_flux                       &
+     &     .ne. id_SGS_none) then
+           if(SGS_param%SGS_momentum%iflag_commute_flux                 &
+     &      .eq. id_SGS_commute_ON) then
              icomp_diff_sgs%i_SGS_m_flux = id
              iak_diff_sgs%i_SGS_m_flux = jd
              wk_diff%name(jd) = SGS_momentum_flux%name
@@ -331,7 +336,8 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
-     &      .and. cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
+     &      .and. SGS_param%SGS_momentum%iflag_commute_field           &
+     &           .eq. id_SGS_commute_ON) then
             icomp_diff_base%i_velo = id
             iak_diff_base%i_velo = jd
             wk_diff%name(jd) = velocity%name

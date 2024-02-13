@@ -158,7 +158,8 @@
      &    node, ele, surf, sf_grp, nod_fld, jacs%g_FEM,                 &
      &    jacs%jac_sf_grp_l, rhs_tbl, fem_wk, surf_wk, f_l)
 !
-!      if (cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
+!      if(SGS_param%SGS_momentum%iflag_commute_field                    &
+!     &                        .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node, ele, surf, sf_grp, nod_fld, jacs%g_FEM,              &
 !     &      jacs%jac_sf_grp_q, jacs%jac_sf_grp_l,                      &
@@ -177,7 +178,7 @@
 !
 !   add boundary term for fixed velocity
 !
-      call int_vol_sk_po_bc(cmt_param%iflag_c_velo,                     &
+      call int_vol_sk_po_bc(SGS_param%SGS_momentum%iflag_commute_field, &
      &    SGS_param%ifilter_final, FEM_prm%npoint_poisson_int,          &
      &    iphys%exp_work%i_p_phi, iak_diff_base%i_velo,                 &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l, rhs_tbl,       &

@@ -89,7 +89,8 @@
           if(     cmp_no_case(tmpchara, temperature%name)) then
             SGS_param%SGS_heat%iflag_commute_field = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, velocity%name)) then
-            cmt_param%iflag_c_velo =      id_SGS_commute_ON
+            SGS_param%SGS_momentum%iflag_commute_field                  &
+     &        = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, magnetic_field%name)) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, vector_potential%name)) then
@@ -101,7 +102,8 @@
      &       .or. cmp_no_case(tmpchara, heat_flux_1)) then
             SGS_param%SGS_heat%iflag_commute_flux = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, inertia%name)) then
-            cmt_param%iflag_c_mf =   id_SGS_commute_ON
+            SGS_param%SGS_momentum%iflag_commute_flux                   &
+     &         = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, Lorentz_force%name)             &
      &       .or. cmp_no_case(tmpchara, lorentz_label)) then
             cmt_param%iflag_c_lorentz = id_SGS_commute_ON
@@ -117,12 +119,13 @@
 !
         cmt_param%iflag_c_linear                                        &
      &        =  SGS_param%SGS_heat%iflag_commute_field                 &
-     &         +  cmt_param%iflag_c_velo                                &
+     &         + SGS_param%SGS_momentum%iflag_commute_field             &
      &         + cmt_param%iflag_c_magne                                &
      &         + SGS_param%SGS_light%iflag_commute_field
         cmt_param%iflag_c_nonlinars                                     &
      &        =  SGS_param%SGS_heat%iflag_commute_flux                  &
-     &         + cmt_param%iflag_c_mf + cmt_param%iflag_c_lorentz       &
+     &         + SGS_param%SGS_momentum%iflag_commute_flux              &
+     &         + cmt_param%iflag_c_lorentz                              &
      &         + cmt_param%iflag_c_uxb                                  &
      &         + SGS_param%SGS_light%iflag_commute_flux
         cmt_param%iflag_commute = cmt_param%iflag_c_linear              &
@@ -144,15 +147,17 @@
 !
       if (iflag_debug .gt. 0)  then
         write(*,*) 'iflag_commute_temp:     ',                          &
-     &           SGS_param%SGS_heat%iflag_commute_field
-        write(*,*) 'iflag_commute_velo:     ', cmt_param%iflag_c_velo
+     &            SGS_param%SGS_heat%iflag_commute_field
+        write(*,*) 'iflag_commute_velo:     ',                          &
+     &            SGS_param%SGS_momentum%iflag_commute_field
         write(*,*) 'iflag_commute_magne:    ',                          &
      &              cmt_param%iflag_c_magne
         write(*,*) 'iflag_commute_composit: ',                          &
      &            SGS_param%SGS_light%iflag_commute_field
         write(*,*) 'iflag_commute_heat:     ',                          &
      &            SGS_param%SGS_heat%iflag_commute_flux
-        write(*,*) 'iflag_commute_inertia:  ', cmt_param%iflag_c_mf
+        write(*,*) 'iflag_commute_inertia:  ',                          &
+     &            SGS_param%SGS_momentum%iflag_commute_flux
         write(*,*) 'iflag_commute_lorentz:  ',                          &
      &              cmt_param%iflag_c_lorentz
         write(*,*) 'iflag_commute_induction:', cmt_param%iflag_c_uxb

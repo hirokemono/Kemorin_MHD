@@ -149,9 +149,9 @@
 !
           if (iflag_4_rotate .eq. id_turn_ON) then
 !
-            if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none              &
-     &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON)        &
-     &       then
+            if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none   &
+     &        .and. SGS_param%SGS_momentum%iflag_commute_flux           &
+     &            .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
@@ -171,7 +171,8 @@
      &            iak_diff_SGS%i_SGS_m_flux, diff_coefs%ak,             &
      &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,     &
      &            fem_wk%tensor_1, fem_wk%sk6)
-            else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
+            else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
+     &          .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
      &            k2, iphys_SGS%i_SGS_m_flux, fl_prop%coef_nega_v,      &
      &            mhd_fem_wk%sgs_t1)
@@ -194,8 +195,9 @@
 !  -----  Inertia including Reynolds stress --------
 !
           else
-            if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none              &
-     &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+            if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none   &
+     &        .and. SGS_param%SGS_momentum%iflag_commute_flux           &
+     &             .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
@@ -207,7 +209,8 @@
      &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%velo_1,     &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
      &            d_ele(1,iphys_ele_base%i_velo), fem_wk%sk6)
-            else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
+            else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
+     &           .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
      &            k2, iphys_SGS%i_SGS_m_flux, fl_prop%coef_nega_v,      &
      &            mhd_fem_wk%sgs_t1)
@@ -443,8 +446,9 @@
 !  -----  Inertia including Reynolds stress by rotation form --------
 !
           if (iflag_4_rotate .eq. id_turn_ON) then
-            if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none              &
-     &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+            if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none   &
+     &        .and. SGS_param%SGS_momentum%iflag_commute_flux           &
+     &             .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
@@ -460,7 +464,8 @@
      &            iak_diff_SGS%i_SGS_m_flux, diff_coefs%ak,             &
      &            ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),       &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
-            else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
+            else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
+     &          .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
      &            k2, iphys_SGS%i_SGS_m_flux, fl_prop%coef_nega_v,      &
      &            mhd_fem_wk%sgs_t1)
@@ -479,8 +484,9 @@
 !  -----  Inertia including Reynolds stress --------
 !
           else
-            if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none              &
-     &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+            if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none   &
+     &        .and. SGS_param%SGS_momentum%iflag_commute_flux           &
+     &             .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
@@ -493,7 +499,8 @@
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
      &            d_ele(1,iphys_ele_base%i_velo), d_ele(1,ie_upw),      &
      &            fem_wk%sk6)
-            else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
+            else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
+     &          .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
      &            k2, iphys_SGS%i_SGS_m_flux, fl_prop%coef_nega_v,      &
      &            mhd_fem_wk%sgs_t1)
@@ -512,8 +519,10 @@
 !
 !    set Reynolds stress
 !
-          if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
-            if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+          if(SGS_param%SGS_momentum%iflag_SGS_flux                      &
+     &      .ne. id_SGS_none) then
+            if(SGS_param%SGS_momentum%iflag_commute_flux                &
+     &             .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,            &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &

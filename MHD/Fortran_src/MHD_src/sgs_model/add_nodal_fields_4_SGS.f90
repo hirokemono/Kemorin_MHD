@@ -209,7 +209,7 @@
         end if
       end if
 !
-      if(     (SGS_param%iflag_SGS_m_flux .eq. id_SGS_diffusion)        &
+      if((SGS_param%SGS_momentum%iflag_SGS_flux .eq. id_SGS_diffusion)  &
      &   .or. (SGS_param%iflag_SGS_lorentz .eq. id_SGS_diffusion)) then
         call add_phys_name_ctl(SGS_diffuse, field_ctl)
       end if

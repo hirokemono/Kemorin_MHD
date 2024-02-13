@@ -309,9 +309,9 @@
       if (fl_prop%coef_imp .gt. zero) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
         call int_sk_4_fixed_velo                                        &
-     &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
-     &      FEM_prm%npoint_t_evo_int, i_velo, iak_diff_v,               &
-     &      node, ele, nod_fld, fl_prop,                                &
+     &     (SGS_param%SGS_momentum%iflag_commute_field,                 &
+     &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
+     &      i_velo, iak_diff_v, node, ele, nod_fld, fl_prop,            &
      &      g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,              &
      &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
      &      fem_wk, f_l)

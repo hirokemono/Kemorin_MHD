@@ -206,7 +206,8 @@
      &      nod_fld, ele_fld, sgs_coefs, v_sol, SR_sig, SR_r)
       end if
 !
-      if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
+      if(SGS_par%model_p%SGS_momentum%iflag_SGS_flux                    &
+     &      .ne. id_SGS_none) then
         call cal_sgs_momentum_flux(dt, FEM_prm, SGS_par%model_p,        &
      &      SGS_par%filter_p, nod_comm, node, ele, fluid,               &
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
@@ -318,7 +319,8 @@
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_velo_pre_lumped_crank(SGS_par%commute_p%iflag_c_velo,  &
+        call cal_velo_pre_lumped_crank                                  &
+     &     (SGS_par%model_p%SGS_momentum%iflag_commute_field,           &
      &      SGS_par%model_p%ifilter_final,                              &
      &      iak_diff_base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,        &
      &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
@@ -329,7 +331,8 @@
      &      nod_fld, v_sol, SR_sig, SR_r)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
-        call cal_velo_pre_consist_crank(SGS_par%commute_p%iflag_c_velo, &
+        call cal_velo_pre_consist_crank                                 &
+     &     (SGS_par%model_p%SGS_momentum%iflag_commute_field,           &
      &      SGS_par%model_p%ifilter_final,                              &
      &      iphys%base%i_velo, iphys%exp_work%i_pre_mom,                &
      &      iak_diff_base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,        &
@@ -417,7 +420,8 @@
      &    fem_int%rhs_tbl, FEM_elens, diff_coefs,                       &
      &    rhs_mat%fem_wk, rhs_mat%f_nl)
 !
-      if (SGS_par%commute_p%iflag_c_velo .eq. id_SGS_commute_ON         &
+      if(SGS_par%model_p%SGS_momentum%iflag_commute_field               &
+      &                                  .eq. id_SGS_commute_ON         &
      &     .and. Psf_bcs%sgs%ngrp_sf_dat.gt.0) then
         if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
                              iphys%exp_work%i_p_phi

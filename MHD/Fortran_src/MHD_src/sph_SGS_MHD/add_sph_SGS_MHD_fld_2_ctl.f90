@@ -47,7 +47,7 @@
 !
 !   Add SGS terms
 !
-      if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
+      if(SGS_param%SGS_momentum%iflag_SGS_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(SGS_inertia, field_ctl)
         call add_phys_name_ctl(rot_SGS_inertia, field_ctl)
         call add_phys_name_ctl(div_SGS_inertia, field_ctl)
@@ -76,10 +76,12 @@
 !
 !   Add fieltered field
 !
-      if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
+      if(SGS_param%SGS_momentum%iflag_SGS_flux                          &
+     &      .eq. id_SGS_similarity) then
         call add_phys_name_ctl(filter_velocity, field_ctl)
         call add_phys_name_ctl(filter_vorticity, field_ctl)
-      else if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
+      else if(SGS_param%SGS_momentum%iflag_SGS_flux                     &
+     &      .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(grad_v_1, field_ctl)
         call add_phys_name_ctl(grad_v_2, field_ctl)
         call add_phys_name_ctl(grad_v_3, field_ctl)
@@ -160,7 +162,7 @@
 !
 !   Add model coefficients
 !
-      if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
+      if(SGS_param%SGS_momentum%iflag_SGS_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(Csim_SGS_inertia, field_ctl)
       end if
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
@@ -187,10 +189,12 @@
 !
 !    Add filtered field
 !
-      if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
+      if(SGS_param%SGS_momentum%iflag_SGS_flux                          &
+     &      .eq. id_SGS_similarity) then
         call add_phys_name_ctl(wide_filter_velocity, field_ctl)
         call add_phys_name_ctl(wide_filter_vorticity, field_ctl)
-      else if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
+      else if(SGS_param%SGS_momentum%iflag_SGS_flux                     &
+     &      .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(filter_velocity, field_ctl)
         call add_phys_name_ctl(filter_vorticity, field_ctl)
       end if
@@ -231,7 +235,8 @@
       end if
 !
 !
-      if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
+      if(SGS_param%SGS_momentum%iflag_SGS_flux                          &
+     &      .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(grad_filtered_w_1, field_ctl)
         call add_phys_name_ctl(grad_filtered_w_2, field_ctl)
         call add_phys_name_ctl(grad_filtered_w_3, field_ctl)
@@ -274,7 +279,7 @@
 !
 !       Add SGS fluxes
 !
-      if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none)                   &
+      if(SGS_param%SGS_momentum%iflag_SGS_flux .gt. id_SGS_none)        &
      &   call add_phys_name_ctl(wide_SGS_inertia, field_ctl)
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none)                  &
      &   call add_phys_name_ctl(wide_SGS_Lorentz, field_ctl)
@@ -299,7 +304,7 @@
       end if
 !
 !
-      if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none)                   &
+      if(SGS_param%SGS_momentum%iflag_SGS_flux .gt. id_SGS_none)        &
      &   call add_phys_name_ctl(double_SGS_inertia, field_ctl)
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none)                  &
      &   call add_phys_name_ctl(double_SGS_Lorentz, field_ctl)

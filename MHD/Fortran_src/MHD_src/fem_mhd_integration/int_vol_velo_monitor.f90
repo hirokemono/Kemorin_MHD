@@ -220,7 +220,8 @@
      &      iphys_frc%i_maxwell, fl_prop%coef_lor, fem_wk, f_nl)
 !
       else if(i_field .eq. iphys_div_SGS%i_SGS_m_flux) then
-        if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+        if(SGS_param%SGS_momentum%iflag_commute_flux                    &
+     &      .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
@@ -400,7 +401,8 @@
      &      ele_fld%d_fld, fl_prop%coef_lor, fem_wk, f_nl)
 !
       else if(i_field .eq. iphys_div_SGS%i_SGS_m_flux) then 
-        if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+        if(SGS_param%SGS_momentum%iflag_commute_flux                    &
+     &        .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &

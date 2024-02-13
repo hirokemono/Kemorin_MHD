@@ -239,7 +239,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-      if (  SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
+      if(SGS_param%SGS_momentum%iflag_SGS_flux                          &
+     &     .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_m_flux_grad', SGS_param%ifilter_final
         call cal_sgs_m_flux_grad_w_coef                                 &
@@ -250,7 +251,8 @@
      &      jacs, FEM_elens, sgs_coefs, rhs_tbl, mlump_fl,              &
      &      fem_wk, mhd_fem_wk, nod_fld, v_sol, SR_sig, SR_r)
 !
-      else if (SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
+      else if(SGS_param%SGS_momentum%iflag_SGS_flux                     &
+     &      .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_mf_simi', iphys_SGS%i_SGS_m_flux
         call cal_sgs_mf_simi                                            &
@@ -259,7 +261,8 @@
      &     filtering, sgs_coefs_nod, wk_filter, nod_fld,                &
      &     v_sol, SR_sig, SR_r)
 !
-      else if (SGS_param%iflag_SGS_m_flux .eq. id_SGS_diffusion) then
+      else if(SGS_param%SGS_momentum%iflag_SGS_flux                     &
+     &      .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_m_flux_diffuse',      &
      &                                  iphys_SGS%i_SGS_m_flux
         call cal_sgs_m_flux_diffuse(iphys_base%i_velo,                  &

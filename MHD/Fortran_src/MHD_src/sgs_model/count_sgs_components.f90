@@ -119,24 +119,24 @@
       sgs_coefs%num_field = 0
       sgs_coefs%ntot_comp = 0
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
+        if(SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
+        if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
         end if
 !
-        if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
+        if(SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
         end if
 !
-        if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+        if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_gravity) then
             sgs_coefs%num_field = sgs_coefs%num_field + 1
             sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
@@ -215,8 +215,9 @@
          end if
        end if
 !
-       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-         if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
+       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
+         if(SGS_param%SGS_momentum%iflag_SGS_flux                       &
+     &         .ne. id_SGS_none) then
            icomp_sgs_term%i_SGS_m_flux = i_cmp
            iak_sgs_term%i_SGS_m_flux =  i_fld
            wk_sgs%name(i_fld) = SGS_momentum_flux%name
@@ -315,7 +316,7 @@
       i = 1
       if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (  SGS_param%SGS_heat%iflag_SGS_flux .ne.   id_SGS_none      &
-     &   .or. SGS_param%iflag_SGS_m_flux .ne.   id_SGS_none             &
+     &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
      &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne.   id_SGS_none     &
      &   .or. SGS_param%iflag_SGS_uxb .ne. id_SGS_none ) then
          iphys_elediff_vec%i_velo = i
@@ -337,7 +338,7 @@
       else if (SGS_param%iflag_SGS .ne. id_SGS_none                     &
      &   .and. SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) then
         if (  SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none        &
-     &   .or. SGS_param%iflag_SGS_m_flux .ne. id_SGS_none               &
+     &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
      &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none       &
      &   .or. SGS_param%iflag_SGS_uxb .ne.    id_SGS_none) then
          iphys_elediff_vec%i_velo = i

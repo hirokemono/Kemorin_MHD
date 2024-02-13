@@ -131,7 +131,7 @@
       SGS_param%SGS_light%itype_Csym_flux                               &
      &      = set_Csim_type(SGS_param%itype_Csym,                       &
      &                      sgs_ctl%comp_flux_csim_type_ctl)
-      SGS_param%itype_Csym_m_flux                                       &
+      SGS_param%SGS_momentum%itype_Csym_flux                            &
      &      = set_Csim_type(SGS_param%itype_Csym,                       &
      &                      sgs_ctl%mom_flux_csim_type_ctl)
       SGS_param%itype_Csym_maxwell                                      &
@@ -178,9 +178,10 @@
           write(*,*) 'icoord_SGS_model_coef: ', SGS_param%icoord_Csim
 !
           write(*,*) 'SGS_hf_factor: ', SGS_param%SGS_heat%SGS_factor
-          write(*,*) 'SGS_mf_factor: ', SGS_param%SGS_mf_factor
+          write(*,*) 'SGS_mf_factor: ',                                 &
+     &              SGS_param%SGS_momentum%SGS_factor
           write(*,*) 'SGS_mawell_factor: ',                             &
-     &               SGS_param%SGS_mawell_factor
+     &              SGS_param%SGS_mawell_factor
           write(*,*) 'SGS_uxb_factor:    ', SGS_param%SGS_uxb_factor
           write(*,*) 'SGS_cf_factor: ', SGS_param%SGS_light%SGS_factor
 !
@@ -189,7 +190,7 @@
           write(*,*) 'itype_SGS_c_flux_coef:  ',                        &
      &              SGS_param%SGS_light%itype_Csym_flux
           write(*,*) 'itype_SGS_m_flux_coef:  ',                        &
-     &              SGS_param%itype_Csym_m_flux
+     &              SGS_param%SGS_momentum%itype_Csym_flux
           write(*,*) 'itype_SGS_maxwell_coef: ',                        &
      &              SGS_param%itype_Csym_maxwell
           write(*,*) 'itype_SGS_uxb_coef:     ',                        &

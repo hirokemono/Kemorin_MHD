@@ -115,8 +115,9 @@
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &        write(*,*) 'cal_vorticity'
           call choose_cal_rotation_sgs                                  &
-     &       (cmt_param%iflag_c_velo, FEM_prm%iflag_velo_supg,          &
-     &        FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_velo,       &
+     &       (SGS_param%SGS_momentum%iflag_commute_field,               &
+     &        FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,        &
+     &        dt, iak_diff_base%i_velo,                                 &
      &        iphys_base%i_velo, iphys_base%i_vort,                     &
      &        fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                &
      &        SGS_param, mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, &

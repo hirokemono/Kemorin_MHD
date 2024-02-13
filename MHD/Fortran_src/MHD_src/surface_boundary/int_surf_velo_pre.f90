@@ -107,8 +107,9 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
-      if(SGS_param%iflag_SGS_m_flux  .ne. id_SGS_none) then
-        if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+      if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none) then
+        if(SGS_param%SGS_momentum%iflag_commute_flux                    &
+     &      .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux                                &
      &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
      &        rhs_tbl, FEM_elens, diff_coefs, Vsf_bcs%sgs, num_int,     &
@@ -187,8 +188,9 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
-      if (i_field .eq. iphys_div_SGS%i_SGS_m_flux) then
-        if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
+      if(i_field .eq. iphys_div_SGS%i_SGS_m_flux) then
+        if(SGS_param%SGS_momentum%iflag_commute_flux                    &
+     &        .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux                                &
      &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
      &        rhs_tbl, FEM_elens, diff_coefs, Vsf_bcs%sgs, num_int,     &

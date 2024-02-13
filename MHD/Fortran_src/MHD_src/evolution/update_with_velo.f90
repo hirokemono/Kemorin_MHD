@@ -206,7 +206,8 @@
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
 !
-        if (SGS_par%commute_p%iflag_c_velo .eq. id_SGS_commute_ON       &
+        if(SGS_par%model_p%SGS_momentum%iflag_commute_field             &
+     &                                     .eq. id_SGS_commute_ON       &
      &    .and. diff_coefs%iflag_field(iak_diff_base%i_velo).eq.0) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
