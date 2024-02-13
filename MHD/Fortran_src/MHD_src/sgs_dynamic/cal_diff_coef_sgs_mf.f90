@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_mf                               &
-!!     &         (iak_diff_sgs_m_flux, icomp_sgs_term,                  &
+!!     &         (iak_diff_sgs_m_flux, icomp_SGS_m_flux,                &
 !!     &          icomp_diff_sgs_m_flux, iphys_elediff_fil_v,           &
 !!     &          dt, FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs, &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
@@ -27,7 +27,6 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -74,7 +73,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_mf                                 &
-     &         (iak_diff_sgs_m_flux, icomp_sgs_term,                    &
+     &         (iak_diff_sgs_m_flux, icomp_SGS_m_flux,                  &
      &          icomp_diff_sgs_m_flux, iphys_elediff_fil_v,             &
      &          dt, FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs,   &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
@@ -98,6 +97,7 @@
 !
       real(kind = kreal), intent(in) :: dt
       integer(kind = kint), intent(in) :: iak_diff_sgs_m_flux
+      integer(kind = kint), intent(in) :: icomp_SGS_m_flux
       integer(kind = kint), intent(in) :: icomp_diff_sgs_m_flux
       integer(kind = kint), intent(in) :: iphys_elediff_fil_v
 !
@@ -117,7 +117,6 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -141,7 +140,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_m_flux_grad'
       call cal_sgs_m_flux_grad_w_coef(ifilter_4delta,                   &
-     &    icomp_sgs_term%i_SGS_m_flux, iphys_SGS_wk%i_wd_nlg,           &
+     &    icomp_SGS_m_flux, iphys_SGS_wk%i_wd_nlg,                      &
      &    iphys_fil%i_velo, iphys_elediff_fil_v, dt, FEM_prm,           &
      &    SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, fluid,   &
      &    iphys_ele_base, ele_fld, fem_int%jcs, FEM_filters%FEM_elens,  &

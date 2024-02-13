@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_induct                           &
-!!     &         (iak_sgs_term, icomp_sgs_term,                         &
+!!     &         (iak_diff_SGS_induction, icomp_SGS_induction,          &
 !!     &          icomp_diff_sgs_induction, iphys_elediff_fil, dt,      &
 !!     &          FEM_prm, SGS_par, mesh, group,                        &
 !!     &          fluid, conduct, cd_prop, Bsf_bcs,                     &
@@ -29,8 +29,6 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
-!!        type(SGS_term_address), intent(in) :: iak_sgs_term
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -75,7 +73,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_induct                             &
-     &         (iak_sgs_term, icomp_sgs_term,                           &
+     &         (iak_diff_SGS_induction, icomp_SGS_induction,            &
      &          icomp_diff_sgs_induction, iphys_elediff_fil, dt,        &
      &          FEM_prm, SGS_par, mesh, group,                          &
      &          fluid, conduct, cd_prop, Bsf_bcs,                       &
@@ -98,6 +96,8 @@
       use nod_phys_send_recv
 !
       real(kind = kreal), intent(in) :: dt
+      integer(kind = kint), intent(in) :: iak_diff_SGS_induction
+      integer(kind = kint), intent(in) :: icomp_SGS_induction
       integer(kind = kint), intent(in) :: icomp_diff_sgs_induction
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -116,8 +116,6 @@
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type(SGS_term_address), intent(in) :: iak_sgs_term
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(base_field_address), intent(in) :: iphys_elediff_fil
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -135,15 +133,14 @@
 !
       call reset_diff_model_coefs                                       &
      &   (mesh%ele%numele, mesh%ele%istack_ele_smp,                     &
-     &    diff_coefs%num_field, iak_sgs_term%i_SGS_induction,           &
-     &    diff_coefs%ak)
+     &    diff_coefs%num_field, iak_diff_SGS_induction, diff_coefs%ak)
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   gradient model by filtered field (to iphys_SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_induct_grad'
       call cal_sgs_induct_t_grad_w_coef(ifilter_4delta,                 &
-     &    icomp_sgs_term%i_SGS_induction, iphys_SGS_wk%i_wd_nlg,        &
+     &    icomp_SGS_induction, iphys_SGS_wk%i_wd_nlg,                   &
      &    dt, FEM_prm, SGS_par%model_p,                                 &
      &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
      &    iphys_fil, iphys_ele_base, iphys_elediff_fil,                 &
@@ -235,13 +232,13 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &                     'cal_diff_coef_fluid', n_vector,             &
-     &                     iak_sgs_term%i_SGS_induction,                &
+     &                     iak_diff_SGS_induction,                      &
      &                     icomp_diff_sgs_induction
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p,                           &
      &    FEM_filters%layer_tbl, mesh%node, mesh%ele,                   &
      &    fluid, iphys_SGS_wk, nod_fld, fem_int%jcs, n_vector,          &
-     &    iak_sgs_term%i_SGS_induction, icomp_diff_sgs_induction,       &
+     &    iak_diff_SGS_induction, icomp_diff_sgs_induction,             &
      &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &
      &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, diff_coefs)
 !

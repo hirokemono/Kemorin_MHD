@@ -8,7 +8,7 @@
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
 !!     &          iak_diff_SGS_Lorentz, icomp_diff_sgs_Lorentz,         &
-!!     &          icomp_sgs_term, iphys_elediff_fil_b, sgs_coefs,       &
+!!     &          icomp_SGS_Lorentz, iphys_elediff_fil_b, sgs_coefs,    &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
 !!     &          nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -26,7 +26,6 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -79,7 +78,7 @@
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff_SGS_Lorentz, icomp_diff_sgs_Lorentz,           &
-     &          icomp_sgs_term, iphys_elediff_fil_b, sgs_coefs,         &
+     &          icomp_SGS_Lorentz, iphys_elediff_fil_b, sgs_coefs,      &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
      &          nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !
@@ -99,6 +98,7 @@
 !
       real(kind = kreal), intent(in) :: dt
       integer(kind = kint), intent(in) :: iak_diff_SGS_Lorentz
+      integer(kind = kint), intent(in) :: icomp_SGS_Lorentz
       integer(kind = kint), intent(in) :: icomp_diff_sgs_Lorentz
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
@@ -118,7 +118,6 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -141,7 +140,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
       call cal_sgs_m_flux_grad_w_coef(ifilter_4delta,                   &
-     &    icomp_sgs_term%i_SGS_Lorentz, iphys_SGS_wk%i_wd_nlg,          &
+     &    icomp_SGS_Lorentz, iphys_SGS_wk%i_wd_nlg,                     &
      &    iphys_fil%i_magne, iphys_elediff_fil_b, dt,                   &
      &    FEM_prm, SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, &
      &    fluid, iphys_ele_base, ele_fld, fem_int%jcs,                  &
