@@ -412,7 +412,7 @@
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
      &      iphys_LES%div_SGS, ak_MHD, fem_int, FEM_elens,              &
-     &      iak_diff_base, iak_diff_sgs, diff_coefs,                    &
+     &      iak_diff_base%i_velo, iak_diff_sgs, diff_coefs,             &
      &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
@@ -423,8 +423,8 @@
      &     (ak_MHD%ak_d_magne, FEM_prm, SGS_par%model_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
-     &      FEM_elens, iak_diff_base, diff_coefs, mk_MHD%mlump_cd,      &
-     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      FEM_elens, iak_diff_base%i_magne, diff_coefs,               &
+     &      mk_MHD%mlump_cd, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_b_diffuse .gt. izero                        &
@@ -436,8 +436,9 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
      &      sf_grp, nod_bcs%Bnod_bcs,                                   &
      &      surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,                         &
-     &      iphys%base, iphys%diffusion, iphys_LES%SGS_term, fem_int,   &
-     &      FEM_elens, iak_diff_base, iak_diff_sgs%i_SGS_induction,     &
+     &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
+     &      fem_int, FEM_elens,                                         &
+     &      iak_diff_base%i_magne, iak_diff_sgs%i_SGS_induction,        &
      &      diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !

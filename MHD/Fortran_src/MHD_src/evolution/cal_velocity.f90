@@ -179,8 +179,8 @@
      &    fluid, group%surf_grp, group%surf_nod_grp, fl_prop, cd_prop,  &
      &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,                 &
      &    iphys_ele_base, ak_MHD, fem_int, FEM_filters%FEM_elens,       &
-     &    iak_sgs_term, icomp_sgs_term, iak_diff_base, iak_diff_sgs,    &
-     &    iphys_elediff_vec, sgs_coefs_nod, diff_coefs,                 &
+     &    iak_sgs_term, icomp_sgs_term, iak_diff_base%i_velo,           &
+     &    iak_diff_sgs, iphys_elediff_vec, sgs_coefs_nod, diff_coefs,   &
      &    FEM_filters%filtering, FEM_filters%layer_tbl,                 &
      &    mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,   &
@@ -203,9 +203,9 @@
      &      mesh%node, mesh%ele, mesh%surf, fluid,                      &
      &      group%surf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs,                 &
      &      iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &      iak_diff_base, diff_coefs, Pmatrix, MGCG_WK%MG_vector,      &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
-     &      nod_fld, v_sol, SR_sig, SR_r)
+     &      iak_diff_base%i_velo, diff_coefs, Pmatrix,                  &
+     &      MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
         call cal_sol_pressure                                           &
      &     (dt, mesh%node%numnod, mesh%node%istack_internal_smp,        &
@@ -217,7 +217,7 @@
      &      fluid, group%surf_grp, group%surf_nod_grp,                  &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele_base, &
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
-     &      iak_diff_base, diff_coefs, mk_MHD%mlump_fl,                 &
+     &      iak_diff_base%i_velo, diff_coefs, mk_MHD%mlump_fl,          &
      &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk,                     &
      &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !

@@ -12,7 +12,7 @@
 !!     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,           &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,  &
-!!     &          iak_diff_base, icomp_diff_b,                          &
+!!     &          iak_diff_magne, icomp_diff_b,                         &
 !!     &          iphys_elediff_vec_b, iphys_elediff_fil_b,             &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
 !!     &          diff_coefs, v_sol, SR_sig, SR_r)
@@ -32,7 +32,6 @@
 !!        type(base_field_address), intent(in) :: iphys_ele_fil
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -86,7 +85,7 @@
      &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,             &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          iak_diff_base, icomp_diff_b,                            &
+     &          iak_diff_magne, icomp_diff_b,                           &
      &          iphys_elediff_vec_b, iphys_elediff_fil_b,               &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
      &          diff_coefs, v_sol, SR_sig, SR_r)
@@ -102,6 +101,7 @@
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
+      integer(kind = kint), intent(in) :: iak_diff_magne
       integer(kind = kint), intent(in) :: icomp_diff_b
       integer(kind = kint), intent(in) :: iphys_elediff_vec_b
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
@@ -124,7 +124,6 @@
       type(base_field_address), intent(in) :: iphys_ele_fil
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(base_field_address), intent(in) :: iak_diff_base
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -172,16 +171,16 @@
         end if
 !
 !
-        if(diff_coefs%iflag_field(iak_diff_base%i_magne) .eq. 0) then
+        if(diff_coefs%iflag_field(iak_diff_magne) .eq. 0) then
           if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)     &
      &     then
             if    (SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad        &
      &        .or. SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity)    &
      &       then
               call s_cal_diff_coef_vector_p                             &
-     &           (iak_diff_base%i_magne, icomp_diff_b,                  &
-     &            dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,       &
-     &            mesh%ele, mesh%surf, fluid, FEM_filters%layer_tbl,    &
+     &           (iak_diff_magne, icomp_diff_b,  dt, FEM_prm, SGS_par,  &
+     &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,        &
+     &            fluid, FEM_filters%layer_tbl,                         &
      &            group%surf_grp, Asf_bcs, Fsf_bcs,                     &
      &            iphys_base, iphys_fil, iphys_SGS_wk, iphys_ele_base,  &
      &            ele_fld, fem_int%jcs, fem_int%rhs_tbl,                &
@@ -203,7 +202,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs                                    &
      &     (SGS_par%commute_p%iflag_c_magne, FEM_prm%iflag_magne_supg,  &
-     &      FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,        &
+     &      FEM_prm%npoint_t_evo_int, dt, iak_diff_magne,               &
      &      iphys_base%i_vecp, iphys_base%i_magne,                      &
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &

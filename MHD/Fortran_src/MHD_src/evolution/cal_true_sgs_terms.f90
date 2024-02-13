@@ -212,8 +212,8 @@
      &         iphys%base, iphys%forces, iphys%div_forces,              &
      &         iphys%diffusion, iphys_LES%filter_fld,                   &
      &         iphys_LES%SGS_term, iphys_LES%true_SGS,                  &
-     &         iphys_ele_base, ele_fld, ak_MHD,                         &
-     &         fem_int, FEM_elens, iak_diff_sgs, diff_coefs,            &
+     &         iphys_ele_base, ele_fld, ak_MHD, fem_int, FEM_elens,     &
+     &         iak_diff_sgs%i_SGS_induction, diff_coefs,                &
      &         mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,           &
      &         v_sol, SR_sig, SR_r)
          end if
@@ -501,8 +501,8 @@
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base,                 &
      &          iphys_frc, iphys_div_frc, iphys_dif, iphys_fil,         &
      &          iphys_SGS, iphys_trSGS, iphys_ele_base, ele_fld,        &
-     &          ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs,   &
-     &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,                 &
+     &          ak_MHD, fem_int, FEM_elens, iak_diff_SGS_induction,     &
+     &          diff_coefs, mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,     &
      &          v_sol, SR_sig, SR_r)
 !
       use t_bc_data_magne
@@ -510,6 +510,7 @@
       use cal_magnetic_terms
 !
       real(kind = kreal), intent(in) :: dt
+      integer(kind = kint), intent(in) :: iak_diff_SGS_induction
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -537,7 +538,6 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_term_address), intent(in) :: iak_diff_sgs
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
@@ -558,7 +558,7 @@
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base, iphys_frc,            &
      &    iphys_div_frc, iphys_dif, iphys_SGS,                          &
      &    iphys_ele_base, ele_fld, fem_int, FEM_elens,                  &
-     &    iak_diff_sgs%i_SGS_induction, diff_coefs, mlump_cd,           &
+     &    iak_diff_SGS_induction, diff_coefs, mlump_cd,                 &
      &    mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       call copy_vector_component(nod_fld, iphys_div_frc%i_induct_t,     &
      &    iphys_trSGS%i_SGS_induction)
