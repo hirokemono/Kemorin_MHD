@@ -12,12 +12,11 @@
 !!     &          jacs, rhs_tbl, Csims_FEM_MHD, FEM_filters, mlump_cd,  &
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,            &
 !!     &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
-!!      subroutine cal_vector_p_co(iak_diff_base, ak_d_magne, dt,       &
-!!     &          FEM_prm, SGS_param, cmt_param,                        &
-!!     &          mesh, conduct, group, cd_prop,                        &
-!!     &          Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,             &
+!!      subroutine cal_vector_p_co(iflag_diff_b, ak_d_magne, dt,        &
+!!     &          FEM_prm, SGS_param, cmt_param, mesh, conduct, group,  &
+!!     &          cd_prop, Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,    &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          diff_coefs, m_lump, Bmatrix, MG_vector, mhd_fem_wk,   &
+!!     &          ak_diff, m_lump, Bmatrix, MG_vector, mhd_fem_wk,      &
 !!     &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -168,8 +167,9 @@
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
      &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
-     &      rhs_tbl, FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,   &
+     &      rhs_tbl, FEM_filters%FEM_elens,                             &
      &      Csims_FEM_MHD%iak_diff_base%i_magne,                        &
+     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne),       &
      &      cd_prop%coef_exp, ak_d_magne, iphys%base%i_vecp,            &
      &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
@@ -239,11 +239,11 @@
         call cal_vect_p_pre_lumped_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
-     &      Csims_FEM_MHD%iak_diff_base%i_magne, ak_d_magne,            &
-     &      Bnod_bcs%nod_bc_a, dt, FEM_prm,                             &
+     &      ak_d_magne, Bnod_bcs%nod_bc_a, dt, FEM_prm,                 &
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      cd_prop, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
-     &      rhs_tbl, FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,   &
+     &      rhs_tbl, FEM_filters%FEM_elens,                             &
+     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne),   &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk,                   &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
      &      v_sol, SR_sig, SR_r)
@@ -251,11 +251,11 @@
      & then
         call cal_vect_p_pre_consist_crank                               &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
-     &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
-     &      Csims_FEM_MHD%iak_diff_base%i_magne, ak_d_magne,            &
+     &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb, ak_d_magne,    &
      &      Bnod_bcs%nod_bc_a, dt, FEM_prm, mesh%node, mesh%ele,        &
      &      conduct, cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
-     &      FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,            &
+     &      FEM_filters%FEM_elens,                                      &
+     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne),   &
      &      Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if
@@ -274,12 +274,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co(iak_diff_base, ak_d_magne, dt,         &
-     &          FEM_prm, SGS_param, cmt_param,                          &
-     &          mesh, conduct, group, cd_prop,                          &
-     &          Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,               &
+      subroutine cal_vector_p_co(iflag_diff_b, ak_d_magne, dt,          &
+     &          FEM_prm, SGS_param, cmt_param, mesh, conduct, group,    &
+     &          cd_prop, Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,      &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          diff_coefs, m_lump, Bmatrix, MG_vector, mhd_fem_wk,     &
+     &          ak_diff, m_lump, Bmatrix, MG_vector, mhd_fem_wk,        &
      &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use set_boundary_scalars
@@ -306,15 +305,15 @@
 !
       type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
-      type(base_field_address), intent(in) :: iak_diff_base
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
+      integer(kind = kint), intent(in) :: iflag_diff_b
       real(kind = kreal), intent(in) :: ak_d_magne(mesh%ele%numele)
+      real(kind = kreal), intent(in) :: ak_diff(mesh%ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
       type(vectors_4_solver), intent(inout)                             &
@@ -332,10 +331,9 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &
      &    SGS_param%ifilter_final, mesh%ele%istack_ele_smp,             &
-     &    iphys_exp%i_m_phi, iak_diff_base%i_magne,                     &
-     &    mesh%node, mesh%ele, nod_fld,                                 &
-     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &    iphys_exp%i_m_phi, iflag_diff_b, mesh%node, mesh%ele,         &
+     &    nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,              &
+     &    rhs_tbl, FEM_elens, ak_diff, rhs_mat%fem_wk, rhs_mat%f_nl)
 !
       if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
@@ -346,8 +344,7 @@
      &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_param%ifilter_final,                                    &
-     &      diff_coefs%ak(1,iak_diff_base%i_magne), iphys_exp%i_m_phi,  &
+     &      SGS_param%ifilter_final, ak_diff, iphys_exp%i_m_phi,        &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
@@ -356,10 +353,10 @@
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
         call cal_vector_p_co_imp(iphys_base%i_vecp,                     &
-     &      iak_diff_base%i_magne, ak_d_magne, dt, FEM_prm, SGS_param,  &
+     &      iflag_diff_b, ak_d_magne, dt, FEM_prm, SGS_param,           &
      &      cmt_param, mesh%nod_comm, mesh%node, mesh%ele,              &
      &      conduct, cd_prop, Bnod_bcs, iphys_ele_base, ele_fld,        &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, ak_diff,       &
      &      m_lump, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,     &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
         call clear_field_data                                           &

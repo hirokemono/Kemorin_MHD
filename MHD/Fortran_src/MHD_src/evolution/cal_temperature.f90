@@ -430,10 +430,10 @@
 !
 !
       call s_sel_cal_scalar_pre(iflag_supg, i_field, dt,                &
-     &    iflag_commute_field, i_pre_advect, iak_diff, eps_4_crank,     &
+     &    iflag_commute_field, i_pre_advect, eps_4_crank,               &
      &    FEM_prm, SGS_param, mesh, fluid, property, nod_bcs,           &
-     &    iphys_ele_base, ele_fld, fem_int%jcs,                         &
-     &    fem_int%rhs_tbl, FEM_elens,  diff_coefs, mk_MHD%mlump_fl,     &
+     &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
+     &    FEM_elens, diff_coefs%ak(1,iak_diff), mk_MHD%mlump_fl,        &
      &    Smatrix, ak_diffuse, MGCG_WK, mhd_fem_wk, rhs_mat%fem_wk,     &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld, m_SR)
 !

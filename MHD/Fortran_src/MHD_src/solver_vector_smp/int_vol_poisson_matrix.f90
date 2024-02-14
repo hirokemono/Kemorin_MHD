@@ -240,8 +240,8 @@
 !
       subroutine sel_int_diffuse3_crank_mat                             &
      &         (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,     &
-     &          n_int, iak_diff, ak_diff, dt, coef_imp, ak_d, i_filter, &
-     &          fem_wk, mat33_DJDS)
+     &          n_int, iflag_diff, ak_diff, dt, coef_imp, ak_d,         &
+     &          i_filter, fem_wk, mat33_DJDS)
 !
       use int_vol_poisson_mat
       use int_vol_poisson_sgs_matrix
@@ -254,7 +254,7 @@
       type(table_mat_const), intent(in) :: MG_mat_tbl
 !
       integer(kind = kint), intent(in) :: n_int, i_filter
-      integer(kind = kint), intent(in) :: iak_diff
+      integer(kind = kint), intent(in) :: iflag_diff
       real(kind = kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_imp
@@ -264,7 +264,7 @@
       type(DJDS_MATRIX), intent(inout) :: mat33_DJDS
 !
 !
-      if(iak_diff .gt. 0) then
+      if(iflag_diff .gt. 0) then
         call int_vol_diffuse_sgs_mat33                                  &
      &     (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,         &
      &      n_int, dt, coef_imp, i_filter, ak_diff, ak_d,               &
@@ -281,8 +281,8 @@
 !
       subroutine choose_int_diffuse1_crank_mat                          &
      &         (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,     &
-     &          n_int, iak_diff, ak_diff, dt, coef_imp, ak_d, i_filter, &
-     &          fem_wk, mat11_DJDS)
+     &          n_int, iflag_diff, ak_diff, dt, coef_imp, ak_d,         &
+     &          i_filter, fem_wk, mat11_DJDS)
 !
       use int_vol_poisson_mat
       use int_vol_poisson_sgs_matrix
@@ -295,7 +295,7 @@
       type(table_mat_const), intent(in) :: MG_mat_tbl
 !
       integer(kind = kint), intent(in) :: n_int, i_filter
-      integer(kind = kint), intent(in) :: iak_diff
+      integer(kind = kint), intent(in) :: iflag_diff
       real(kind = kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_imp
@@ -305,7 +305,7 @@
       type(DJDS_MATRIX), intent(inout) :: mat11_DJDS
 !
 !
-      if(iak_diff .gt. 0) then
+      if(iflag_diff .gt. 0) then
         call int_vol_diffuse_sgs_mat11                                  &
      &     (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,         &
      &      n_int, dt, coef_imp, i_filter, ak_diff, ak_d,               &

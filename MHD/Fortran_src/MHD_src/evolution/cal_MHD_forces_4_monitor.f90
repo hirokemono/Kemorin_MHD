@@ -385,8 +385,8 @@
      &      FEM_prm%npoint_t_evo_int, SGS_par%model_p,                  &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, fluid,       &
      &      sf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int,        &
-     &      FEM_elens, diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld,   &
-     &      v_sol, SR_sig, SR_r)
+     &      FEM_elens, diff_coefs%ak(1,iak_diff_base%i_temp),           &
+     &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_c_diffuse .gt. izero) then
@@ -397,9 +397,9 @@
      &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &
      &      SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele,        &
      &      mesh%surf, fluid, sf_grp,                                   &
-     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int, FEM_elens,     &
-     &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld,              &
-     &      v_sol, SR_sig, SR_r)
+     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int,                &
+     &      FEM_elens, diff_coefs%ak(1,iak_diff_base%i_light),          &
+     &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_v_diffuse .gt. izero) then
@@ -423,7 +423,8 @@
      &     (ak_MHD%ak_d_magne, FEM_prm, SGS_par%model_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
-     &      FEM_elens, iak_diff_base%i_magne, diff_coefs,               &
+     &      FEM_elens, iak_diff_base%i_magne,                           &
+     &      diff_coefs%ak(1,iak_diff_base%i_magne),                     &
      &      mk_MHD%mlump_cd, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !

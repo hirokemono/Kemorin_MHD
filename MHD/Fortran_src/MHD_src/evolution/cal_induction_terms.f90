@@ -11,7 +11,7 @@
 !!      subroutine cal_vecp_diffusion(ak_d_magne,                       &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,&
 !!     &          Bnod_bcs, Asf_bcs,iphys, fem_int, FEM_elens,          &
-!!     &          iak_diff_magne, diff_coefs, mlump_cd, rhs_mat,        &
+!!     &          iflag_diff_magne, ak_diff, mlump_cd, rhs_mat,         &
 !!     &          nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -149,7 +149,7 @@
       subroutine cal_vecp_diffusion(ak_d_magne,                         &
      &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,  &
      &          Bnod_bcs, Asf_bcs,iphys, fem_int, FEM_elens,            &
-     &          iak_diff_magne, diff_coefs, mlump_cd, rhs_mat,          &
+     &          iflag_diff_magne, ak_diff, mlump_cd, rhs_mat,           &
      &          nod_fld, v_sol, SR_sig, SR_r)
 !
       use t_SGS_control_parameter
@@ -159,7 +159,7 @@
       use int_surf_fixed_gradients
       use set_boundary_scalars
 !
-      integer(kind = kint), intent(in) :: iak_diff_magne
+      integer(kind = kint), intent(in) :: iflag_diff_magne
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -173,10 +173,10 @@
       type(phys_address), intent(in) :: iphys
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
@@ -191,9 +191,8 @@
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &
      &    FEM_prm%npoint_t_evo_int,  node, ele, nod_fld,                &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, diff_coefs, iak_diff_magne,                        &
-     &    one, ak_d_magne, iphys%base%i_vecp, rhs_mat%fem_wk,           &
-     &    rhs_mat%f_l)
+     &    FEM_elens, iflag_diff_magne, ak_diff, one, ak_d_magne,        &
+     &    iphys%base%i_vecp, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
@@ -201,10 +200,10 @@
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, fem_int%rhs_tbl,          &
-     &    rhs_mat%f_l, rhs_mat%f_nl)
+     &                        rhs_mat%f_l, rhs_mat%f_nl)
 !
       call delete_vector_ffs_on_bc(node, Bnod_bcs%nod_bc_a,             &
-     &    rhs_mat%f_l, rhs_mat%f_nl)
+     &                             rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    rhs_mat%f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,               &

@@ -217,8 +217,8 @@
      &      fluid, group%surf_grp, group%surf_nod_grp,                  &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele_base, &
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
-     &      iak_diff_base%i_velo, diff_coefs, mk_MHD%mlump_fl,          &
-     &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk,                     &
+     &      iak_diff_base%i_velo, diff_coefs%ak(1,iak_diff_base%i_velo), &
+     &      mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk,    &
      &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
 !

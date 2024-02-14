@@ -247,8 +247,9 @@
      &   (SGS_param%ifilter_final, conduct%istack_ele_fld_smp,          &
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, diff_coefs, iak_diff_magne, one, ak_d_magne,       &
-     &    iphys_base%i_magne, rhs_mat%fem_wk, rhs_mat%f_l)
+     &    FEM_elens, iak_diff_magne, diff_coefs%ak(1,iak_diff_magne),   &
+     &    one, ak_d_magne, iphys_base%i_magne,                          &
+     &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_surf_magne_monitor(SGS_param, cmt_param,                 &
      &   FEM_prm%npoint_t_evo_int, iphys_dif%i_b_diffuse, ak_d_magne,   &

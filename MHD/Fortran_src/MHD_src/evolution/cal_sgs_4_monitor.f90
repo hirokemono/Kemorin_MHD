@@ -290,14 +290,15 @@
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys_LES%div_SGS%i_SGS_h_flux,           &
      &      iphys%base%i_velo, iphys%base%i_temp,                       &
-     &      iphys_LES%SGS_term%i_SGS_h_flux, iak_diff_sgs%i_SGS_h_flux, &
+     &      iphys_LES%SGS_term%i_SGS_h_flux,                            &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%SGS_heat%iflag_SGS_flux, &
      &      SGS_param%SGS_heat%iflag_commute_flux,                      &
      &      SGS_param%SGS_heat%iflag_commute_field, dt, FEM_prm,        &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, sf_grp, ht_prop, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, &
-     &      iphys_ele_base, ele_fld, fem_int, FEM_elens, diff_coefs,    &
+     &      iphys_ele_base, ele_fld, fem_int, FEM_elens,                &
+     &      diff_coefs%ak(1,iak_diff_sgs%i_SGS_h_flux),                 &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
      &      v_sol, SR_sig, SR_r)
       end if
@@ -307,14 +308,15 @@
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys_LES%div_SGS%i_SGS_c_flux,           &
      &      iphys%base%i_velo, iphys%base%i_light,                      &
-     &      iphys_LES%SGS_term%i_SGS_c_flux, iak_diff_sgs%i_SGS_c_flux, &
+     &      iphys_LES%SGS_term%i_SGS_c_flux,                            &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%SGS_light%iflag_SGS_flux,&
      &      SGS_param%SGS_light%iflag_commute_flux,                     &
      &      SGS_param%SGS_light%iflag_commute_field, dt, FEM_prm,       &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, sf_grp, cp_prop, nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, &
-     &      iphys_ele_base, ele_fld, fem_int, FEM_elens, diff_coefs,    &
+     &      iphys_ele_base, ele_fld, fem_int, FEM_elens,                &
+     &      diff_coefs%ak(1,iak_diff_sgs%i_SGS_c_flux),                 &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
      &      v_sol, SR_sig, SR_r)
       end if

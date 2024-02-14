@@ -194,14 +194,14 @@
      &      iphys%base%i_mag_p, nod_fld%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
-        call cal_vector_p_co(Csims_FEM_MHD%iak_diff_base, ak_d_magne,   &
+        call cal_vector_p_co(Csims_FEM_MHD%iak_diff_base%i_magne, ak_d_magne,   &
      &      dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,            &
      &      mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,           &
      &      iphys%base, iphys%exp_work, iphys_ele_base, ele_fld,        &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,        &
-     &      Csims_FEM_MHD%diff_coefs, fem_int%m_lump, Bmatrix,          &
-     &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld,            &
-     &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne), &
+     &      fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk,     &
+     &      rhs_mat, nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
@@ -234,7 +234,8 @@
      &         (dt, FEM_prm, SGS_par, mesh, group, conduct,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,           &
      &          iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,     &
-     &          Csims_FEM_MHD, FEM_filters, sgs_coefs, sgs_coefs_nod, diff_coefs, mk_MHD, Bmatrix, Fmatrix,   &
+     &          Csims_FEM_MHD, FEM_filters, sgs_coefs, sgs_coefs_nod,   &
+     &          diff_coefs, mk_MHD, Bmatrix, Fmatrix,                   &
      &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,   &
      &          fem_sq, nod_fld, m_SR)
 !
@@ -344,9 +345,9 @@
      &      iphys, iphys_ele_base, ele_fld,                             &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,        &
      &      Csims_FEM_MHD%iak_diff_base%i_magne,                        &
-     &      diff_coefs, fem_int%m_lump,                   &
-     &      Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat,nod_fld,    &
-     &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne),                   &
+     &      fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk,     &
+     &      rhs_mat,nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
         call cal_rms_scalar_potential                                   &
      &     (iloop, mesh%ele%istack_ele_smp, iphys%base%i_mag_p,         &

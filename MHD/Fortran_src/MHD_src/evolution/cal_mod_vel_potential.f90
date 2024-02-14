@@ -148,9 +148,9 @@
 !
       call int_vol_fractional_div_ele(SGS_param%ifilter_final,          &
      &    fluid%istack_ele_fld_smp, FEM_prm%npoint_poisson_int,         &
-     &    iphys%base%i_velo, iak_diff_velo,                             &
-     &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,   &
-     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
+     &    iphys%base%i_velo, iak_diff_velo, node, ele, nod_fld,         &
+     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, rhs_tbl, FEM_elens,   &
+     &    diff_coefs%ak(1,iak_diff_velo), fem_wk, f_l)
 !
       call int_surf_normal_vector                                       &
      &   (iphys%base%i_velo, FEM_prm%npoint_poisson_int,                &
@@ -253,10 +253,9 @@
       if (iflag_debug .gt. 0)  write(*,*) 'int_vol_divergence_vect_p'
       call int_vol_fractional_div_ele(SGS_param%ifilter_final,          &
      &    mesh%ele%istack_ele_smp, FEM_prm%npoint_poisson_int,          &
-     &    iphys%base%i_vecp, iak_diff_magne,                            &
-     &    mesh%node, mesh%ele, nod_fld,                                 &
-     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
+     &    iphys%base%i_vecp, iak_diff_magne, mesh%node, mesh%ele,       &
+     &    nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, rhs_tbl,     &
+     &    FEM_elens, diff_coefs%ak(1,iak_diff_magne), fem_wk, f_l)
 !
 !      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
@@ -352,9 +351,9 @@
 !
       call int_vol_fractional_div_ele(SGS_param%ifilter_final,          &
      &    ele%istack_ele_smp, FEM_prm%npoint_poisson_int,               &
-     &    iphys%base%i_magne, iak_diff_magne,                           &
-     &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,   &
-     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
+     &    iphys%base%i_magne, iak_diff_magne, node, ele, nod_fld,       &
+     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, rhs_tbl, FEM_elens,   &
+     &    diff_coefs%ak(1,iak_diff_magne), fem_wk, f_l)
 !
 !      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele(node, ele, surf, sf_grp,        &

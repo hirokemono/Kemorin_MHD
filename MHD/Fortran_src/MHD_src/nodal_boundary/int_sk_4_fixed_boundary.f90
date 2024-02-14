@@ -282,7 +282,7 @@
       type(scaler_rotaion_nod_bc_type), intent(in)  :: nod_bc_rot
 !
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
