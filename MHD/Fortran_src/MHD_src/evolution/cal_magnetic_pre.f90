@@ -202,9 +202,10 @@
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
-     &      rhs_tbl, FEM_filters%FEM_elens, iak_diff_base%i_magne,      &
-     &      diff_coefs%ak(1,iak_diff_base%i_magne), cd_prop%coef_exp,   &
-     &      ak_d_magne, iphys%base%i_magne, rhs_mat%fem_wk, rhs_mat%f_l)
+     &      rhs_tbl, FEM_filters%FEM_elens,                             &
+     &      diff_coefs%Cdiff_magne%num_comp, diff_coefs%Cdiff_magne%coef, &
+     &      cd_prop%coef_exp, ak_d_magne, iphys%base%i_magne,           &
+     &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
 !
 ! lead induction terms
@@ -257,7 +258,7 @@
      &      ak_d_magne, Bnod_bcs%nod_bc_b, dt, FEM_prm,                 &
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,       &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      FEM_filters%FEM_elens, diff_coefs%ak(1,iak_diff_base%i_magne),     &
+     &      FEM_filters%FEM_elens, diff_coefs%Cdiff_magne%coef,         &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,   &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson_cmass)   &
@@ -268,7 +269,7 @@
      &     ak_d_magne, Bnod_bcs%nod_bc_b, dt, FEM_prm,                  &
      &     mesh%node, mesh%ele, conduct, cd_prop,                       &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_filters%FEM_elens,     &
-     &     diff_coefs%ak(1,iak_diff_base%i_magne), Bmatrix, MG_vector,  &
+     &     diff_coefs%Cdiff_magne%coef, Bmatrix, MG_vector,             &
      &     mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,       &
      &     nod_fld, v_sol, SR_sig, SR_r)
       end if

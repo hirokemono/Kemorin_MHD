@@ -241,7 +241,7 @@
      &    fem_int%jcs, n_vector, iak_diff_SGS_Lorentz,                  &
      &    icomp_diff_sgs_Lorentz, FEM_prm%npoint_t_evo_int,             &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &
-     &    diff_coefs)
+     &    diff_coefs%ak(1,iak_diff_SGS_Lorentz))
 !
       end subroutine s_cal_diff_coef_sgs_mxwl
 !

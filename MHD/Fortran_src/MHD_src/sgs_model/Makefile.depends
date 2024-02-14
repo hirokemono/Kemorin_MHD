@@ -78,7 +78,7 @@ fem_skv_inertia_sgs_upw.o: $(MHD_SGS_DIR)/fem_skv_inertia_sgs_upw.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_poisson_sgs.o: $(MHD_SGS_DIR)/fem_skv_poisson_sgs.f90 m_precision.o m_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-fem_skv_rotation_sgs.o: $(MHD_SGS_DIR)/fem_skv_rotation_sgs.f90 m_precision.o m_constants.o m_phys_constants.o
+fem_skv_rotation_sgs.o: $(MHD_SGS_DIR)/fem_skv_rotation_sgs.f90 m_precision.o m_constants.o m_phys_constants.o t_filter_elength.o t_SGS_model_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_rotation_sgs_upw.o: $(MHD_SGS_DIR)/fem_skv_rotation_sgs_upw.f90 m_precision.o m_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

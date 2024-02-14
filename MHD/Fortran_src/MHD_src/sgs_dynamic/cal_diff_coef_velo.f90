@@ -292,7 +292,7 @@
      &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld,           &
      &    jacs, n_sym_tensor, iak_diff_v, icomp_diff_v,                 &
      &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
-     &    diff_coefs)
+     &    diff_coefs%ak(1,iak_diff_v))
 !
       diff_coefs%iflag_field(iak_diff_v) = 1
 !

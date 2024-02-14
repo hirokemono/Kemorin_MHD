@@ -8,14 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine update_with_vector_potential                         &
-!!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group,            &
-!!     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,           &
-!!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
-!!     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,  &
-!!     &          iak_diff_base, icomp_diff_b,                          &
-!!     &          iphys_elediff_vec_b, iphys_elediff_fil_b,             &
-!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
-!!     &          diff_coefs, v_sol, SR_sig, SR_r)
+!!     &        (i_step, dt, FEM_prm, SGS_par, mesh, group,             &
+!!     &         fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,            &
+!!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,        &
+!!     &         iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,   &
+!!     &         icomp_diff_b, iphys_elediff_vec_b, iphys_elediff_fil_b,&
+!!     &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,     &
+!!     &         Cdiff_magne, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -38,7 +37,7 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(inout) :: Cdiff_magne
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -85,10 +84,9 @@
      &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,             &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          iak_diff_base, icomp_diff_b,                            &
-     &          iphys_elediff_vec_b, iphys_elediff_fil_b,               &
+     &          icomp_diff_b, iphys_elediff_vec_b, iphys_elediff_fil_b, &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
-     &          diff_coefs, v_sol, SR_sig, SR_r)
+     &          Cdiff_magne, v_sol, SR_sig, SR_r)
 !
       use average_on_elements
       use cal_rotation_sgs
@@ -101,7 +99,6 @@
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
-      type(base_field_address), intent(in) :: iak_diff_base
       integer(kind = kint), intent(in) :: icomp_diff_b
       integer(kind = kint), intent(in) :: iphys_elediff_vec_b
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
@@ -130,7 +127,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_model_coefficient), intent(inout) :: Cdiff_magne
       type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -171,14 +168,14 @@
         end if
 !
 !
-        if(diff_coefs%iflag_field(iak_diff_base%i_magne) .eq. 0) then
+        if(Cdiff_magne%flag_set .eqv. .FALSE.) then
           if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)     &
      &     then
             if    (SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad        &
      &        .or. SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity)    &
      &       then
-              call s_cal_diff_coef_vector_p(iak_diff_base%i_magne,      &
-     &            icomp_diff_b,  dt, FEM_prm, SGS_par,                  &
+              call s_cal_diff_coef_vector_p                             &
+     &           (icomp_diff_b,  dt, FEM_prm, SGS_par,                  &
      &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,        &
      &            fluid, FEM_filters%layer_tbl,                         &
      &            group%surf_grp, Asf_bcs, Fsf_bcs,                     &
@@ -189,7 +186,7 @@
      &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
      &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
      &            rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                   &
-     &            diff_coefs, v_sol, SR_sig, SR_r)
+     &            Cdiff_magne, v_sol, SR_sig, SR_r)
             end if
 !
           end if
@@ -207,10 +204,10 @@
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,       &
-     &      FEM_filters%FEM_elens, Bnod_bcs%nod_bc_b,                   &
-     &      Asf_bcs%sgs, diff_coefs%ak(1,iak_diff_base%i_magne),        &
-     &      fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
-     &      rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &      FEM_filters%FEM_elens, Bnod_bcs%nod_bc_b, Asf_bcs%sgs,      &
+     &      Cdiff_magne%coef, fem_int%rhs_tbl,                          &
+     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld,     &
+     &      v_sol, SR_sig, SR_r)
       end if
       if (iphys_ele_base%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'

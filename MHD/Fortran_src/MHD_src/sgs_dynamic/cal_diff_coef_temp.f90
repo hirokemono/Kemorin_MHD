@@ -241,7 +241,7 @@
       call cal_diff_coef_fluid(iflag_SGS_initial, SGS_param, cmt_param, &
      &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,     &
      &    n_vector, iak_diff_t, icomp_diff_t, num_int,                  &
-     &    wk_cor, wk_lsq, wk_diff, diff_coefs)
+     &    wk_cor, wk_lsq, wk_diff, diff_coefs%ak(1,iak_diff_t))
 !
       diff_coefs%iflag_field(iak_diff_t) = 1
 !

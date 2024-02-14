@@ -182,13 +182,13 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base,                                 &
      &     Csims_FEM_MHD%icomp_diff_base%i_magne,                       &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_magne,                     &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_magne,                     &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
-     &    Csims_FEM_MHD%diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne,                        &
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       else if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)  &
      &     then
@@ -215,13 +215,13 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base%i_magne,                         &
      &     Csims_FEM_MHD%icomp_diff_base%i_magne,                       &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_magne,                     &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_magne,                     &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
-     &    Csims_FEM_MHD%diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne,                        &
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
 !     ---- temperature update
@@ -413,13 +413,13 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base,                                 &
      &     Csims_FEM_MHD%icomp_diff_base%i_magne,                       &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_magne,                     &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_magne,                     &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
-     &    Csims_FEM_MHD%diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne,                        &
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       else if(iphys%base%i_magne.ne.0) then
         call update_with_magnetic_field                                 &
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
@@ -428,13 +428,13 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base%i_magne,                         &
      &     Csims_FEM_MHD%icomp_diff_base%i_magne,                       &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_magne,                     &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_magne,                     &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
-     &    Csims_FEM_MHD%diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne,                        &
+     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       end subroutine update_fields
@@ -605,6 +605,7 @@
       nod_fld%iflag_update(1:nod_fld%ntot_phys) = 0
       sgs_coefs%iflag_field(1:sgs_coefs%num_field) = 0
       diff_coefs%iflag_field(1:diff_coefs%num_field) = 0
+      diff_coefs%Cdiff_magne%flag_set = .FALSE.
 !
       end subroutine reset_update_flag
 !

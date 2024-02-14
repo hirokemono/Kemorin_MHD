@@ -30,9 +30,14 @@
       implicit  none
 !
       type SGS_model_coefficient
-!>        Nnumber of grid poins
+!>        Set flag
+        logical :: flag_set
+!>        Address for model coeffieint
+        integer(kind = kint) :: iak_diff
+!
+!>        Number of grid poins
         integer(kind = kint) :: num_poins
-!>        Nnumber of components (0 indicates no used)
+!>        Number of components (0 indicates no used)
         integer(kind = kint) :: num_comp
 !>        Model coefficiens
         real(kind = kreal), allocatable :: coef(:,:)
@@ -45,6 +50,8 @@
         integer(kind = kint), allocatable  :: num_comps(:)
         integer(kind = kint), allocatable  :: istack_comps(:)
         real(kind = kreal), allocatable :: ak(:,:)
+!
+        type(SGS_model_coefficient) :: Cdiff_magne
       end type SGS_coefficients_type
 !
 ! -------------------------------------------------------------------
@@ -126,8 +133,9 @@
 !
       call alloc_SGS_model_coefficient                                  &
      &   (org_Csim%num_poins, org_Csim%num_comp, new_Csim)
-      if((new_Csim%num_poins*new_Csim%num_comp) .le. 0) return
 !
+      new_Csim%flag_set = org_Csim%flag_set
+      if((new_Csim%num_poins*new_Csim%num_comp) .le. 0) return
 !$omp parallel workshare
       new_Csim%coef(1:new_Csim%num_poins, 1:new_Csim%num_comp)          &
      &   = org_Csim%coef(1:new_Csim%num_poins, 1:new_Csim%num_comp)
@@ -147,8 +155,9 @@
       Csim%num_poins = num_poins
       Csim%num_comp = num_comp
       allocate(Csim%coef(Csim%num_poins, Csim%num_comp))
-      if((Csim%num_poins*Csim%num_comp) .le. 0) return
 !
+      Csim%flag_set = .FALSE.
+      if((Csim%num_poins*Csim%num_comp) .le. 0) return
 !$omp parallel workshare
       Csim%coef(1:Csim%num_poins, 1:Csim%num_comp) = 0.0d0
 !$omp end parallel workshare

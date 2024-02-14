@@ -1,9 +1,13 @@
-!
-!     module int_sgs_induction
-!
-!        programmed by H.Matsui on July, 2005
-!        modified by H.Matsui on AUg., 2007
-!
+!>@file   int_sgs_induction.f90
+!!        module int_sgs_induction
+!!
+!>@author H. Matsui
+!>@date programmed by H.Matsui in July, 2005
+!!        modified by H.Matsui in Aug., 2007
+!!
+!> @brief Evaluate model coefficients for commutation of magnetic field
+!!
+!!@verbatim
 !!      subroutine int_vol_sgs_induction(FEM_prm, nod_comm, node, ele,
 !!     &          conduct, iphys, iphys_LES, g_FEM, jac_3d, rhs_tbl,    &
 !!     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld,          &
@@ -45,6 +49,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module int_sgs_induction
 !

@@ -142,8 +142,7 @@
      &           mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
      &           group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,  &
      &           FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,                  &
-     &           surf_bcs%Bsf_bcs%sgs,                                  &
-     &           diff_coefs%ak(1,iak_diff_base%i_magne),                &
+     &           surf_bcs%Bsf_bcs%sgs, diff_coefs%Cdiff_magne%coef,     &
      &           fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,      &
      &           rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -155,8 +154,7 @@
 !     &          mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
 !     &          group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,  &
 !     &          FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,                  &
-!     &          surf_bcs%Bsf_bcs%sgs,                                  &
-!     &          diff_coefs%ak(1,iak_diff_base%i_magne),                &
+!     &          surf_bcs%Bsf_bcs%sgs, diff_coefs%Cdiff_magne%coef,     &
 !     &          fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,      &
 !     &          rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !             call int_current_diffuse                                  &
@@ -177,8 +175,7 @@
      &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
      &         group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,    &
      &         FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,                    &
-     &         surf_bcs%Bsf_bcs%sgs,                                    &
-     &         diff_coefs%ak(1,iak_diff_base%i_magne),                  &
+     &         surf_bcs%Bsf_bcs%sgs, diff_coefs%Cdiff_magne%coef,       &
      &         fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
      &         rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
@@ -188,8 +185,7 @@
 !     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,          &
 !     &         group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,   &
 !     &         FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,                   &
-!     &         surf_bcs%Bsf_bcs%sgs,                                   &
-!     &         diff_coefs%ak(1,iak_diff_base%i_magne),                 &
+!     &         surf_bcs%Bsf_bcs%sgs, diff_coefs%Cdiff_magne%coef,      &
 !     &         fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
 !     &         rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
           end if

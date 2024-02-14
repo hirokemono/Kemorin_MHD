@@ -168,8 +168,8 @@
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
      &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
      &      rhs_tbl, FEM_filters%FEM_elens,                             &
-     &      Csims_FEM_MHD%iak_diff_base%i_magne,                        &
-     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne),       &
+     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%num_comp,              &
+     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                  &
      &      cd_prop%coef_exp, ak_d_magne, iphys%base%i_vecp,            &
      &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
@@ -243,7 +243,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      cd_prop, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_filters%FEM_elens,                             &
-     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne),   &
+     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                  &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk,                   &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
      &      v_sol, SR_sig, SR_r)
@@ -255,7 +255,7 @@
      &      Bnod_bcs%nod_bc_a, dt, FEM_prm, mesh%node, mesh%ele,        &
      &      conduct, cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
      &      FEM_filters%FEM_elens,                                      &
-     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne),   &
+     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                  &
      &      Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if

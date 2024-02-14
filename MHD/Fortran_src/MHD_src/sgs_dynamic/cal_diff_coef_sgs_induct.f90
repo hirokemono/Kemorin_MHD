@@ -240,7 +240,8 @@
      &    fluid, iphys_SGS_wk, nod_fld, fem_int%jcs, n_vector,          &
      &    iak_diff_SGS_induction, icomp_diff_sgs_induction,             &
      &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &
-     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, diff_coefs)
+     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,                        &
+     &    diff_coefs%ak(1,iak_diff_SGS_induction))
 !
       end subroutine s_cal_diff_coef_sgs_induct
 !

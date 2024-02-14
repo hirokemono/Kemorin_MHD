@@ -1,9 +1,12 @@
-!
-!     module init_sgs_diff_coefs
-!
-!      Written by H. Matsui on 2004
-!      Modified by H. Matsui on July, 2007
-!
+!>@file   init_sgs_diff_coefs.f90
+!!        module init_sgs_diff_coefs
+!!
+!! @author H. Matsui
+!! @date ...when???
+!!
+!> @brief initialize model coefficients for commutation
+!!
+!!@verbatim
 !!      subroutine define_sgs_diff_coefs(numele, SGS_param, cmt_param,  &
 !!     &          layer_tbl, MHD_prop, wk_diff, Csims_FEM_MHD)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -11,6 +14,7 @@
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!@end verbatim
 !
       module init_sgs_diff_coefs
 !
@@ -74,6 +78,14 @@
      &    wk_diff, Csims_FEM_MHD%diff_coefs)
       Csims_FEM_MHD%diff_coefs%ntot_comp                                &
      &      = Csims_FEM_MHD%diff_coefs%num_field
+!
+      if(Csims_FEM_MHD%diff_coefs%Cdiff_magne%iak_diff .gt. 0) then
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_magne)
+      else
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_magne)
+      end if
 !
       if(iflag_debug .gt. 0) then
         call check_sgs_diff_addresses                                   &
@@ -347,23 +359,22 @@
         end if
       end if
 !
+      diff_coefs%Cdiff_magne%iak_diff = 0
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
             icomp_diff_base%i_magne = id
-            iak_diff_base%i_magne = jd
             wk_diff%name(jd) = magnetic_field%name
+            diff_coefs%Cdiff_magne%iak_diff = jd
             diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
-      end if
-!
-      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
+      else if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
             icomp_diff_base%i_magne = id
-            iak_diff_base%i_magne = jd
+            diff_coefs%Cdiff_magne%iak_diff = jd
             wk_diff%name(jd) = magnetic_field%name
             diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
@@ -443,11 +454,12 @@
      &        diff_coefs%num_comps(iak_diff_base%i_velo),               &
      &        trim(wk_diff%name(iak_diff_base%i_velo))
         end if
-        if(iak_diff_base%i_magne .gt. 0) then
+        if(diff_coefs%Cdiff_magne%iak_diff .gt. 0) then
           write(*,*) 'iak_diff_b',                                      &
-     &        iak_diff_base%i_magne, icomp_diff_base%i_magne,           &
-     &        diff_coefs%num_comps(iak_diff_base%i_magne),              &
-     &        trim(wk_diff%name(iak_diff_base%i_magne))
+     &        diff_coefs%Cdiff_magne%iak_diff,                          &
+     &        icomp_diff_base%i_magne,                                  &
+     &        diff_coefs%Cdiff_magne%num_comp,                          &
+     &        trim(wk_diff%name(diff_coefs%Cdiff_magne%iak_diff))
         end if
         if(iak_diff_base%i_light .gt. 0) then
           write(*,*) 'iak_diff_c',                                      &
