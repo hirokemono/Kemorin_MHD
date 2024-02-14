@@ -12,7 +12,7 @@
 !!     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,           &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,  &
-!!     &          iak_diff_magne, icomp_diff_b,                         &
+!!     &          iak_diff_base, icomp_diff_b,                          &
 !!     &          iphys_elediff_vec_b, iphys_elediff_fil_b,             &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
 !!     &          diff_coefs, v_sol, SR_sig, SR_r)
@@ -85,7 +85,7 @@
      &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,             &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          iak_diff_magne, icomp_diff_b,                           &
+     &          iak_diff_base, icomp_diff_b,                            &
      &          iphys_elediff_vec_b, iphys_elediff_fil_b,               &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
      &          diff_coefs, v_sol, SR_sig, SR_r)
@@ -101,7 +101,7 @@
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
-      integer(kind = kint), intent(in) :: iak_diff_magne
+      type(base_field_address), intent(in) :: iak_diff_base
       integer(kind = kint), intent(in) :: icomp_diff_b
       integer(kind = kint), intent(in) :: iphys_elediff_vec_b
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
@@ -171,14 +171,14 @@
         end if
 !
 !
-        if(diff_coefs%iflag_field(iak_diff_magne) .eq. 0) then
+        if(diff_coefs%iflag_field(iak_diff_base%i_magne) .eq. 0) then
           if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)     &
      &     then
             if    (SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad        &
      &        .or. SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity)    &
      &       then
-              call s_cal_diff_coef_vector_p                             &
-     &           (iak_diff_magne, icomp_diff_b,  dt, FEM_prm, SGS_par,  &
+              call s_cal_diff_coef_vector_p(iak_diff_base%i_magne,      &
+     &            icomp_diff_b,  dt, FEM_prm, SGS_par,                  &
      &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,        &
      &            fluid, FEM_filters%layer_tbl,                         &
      &            group%surf_grp, Asf_bcs, Fsf_bcs,                     &
@@ -208,7 +208,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,       &
      &      FEM_filters%FEM_elens, Bnod_bcs%nod_bc_b,                   &
-     &      Asf_bcs%sgs, diff_coefs%ak(1,iak_diff_magne),               &
+     &      Asf_bcs%sgs, diff_coefs%ak(1,iak_diff_base%i_magne),        &
      &      fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
      &      rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if

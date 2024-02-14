@@ -359,7 +359,7 @@
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys_LES%SGS_term,                      &
      &        iphys_ele_base, ele_fld, fem_int, FEM_elens,              &
-     &        iak_diff_sgs%i_SGS_induction, diff_coefs,                 &
+     &        diff_coefs%ak(1,iak_diff_sgs%i_SGS_induction),            &
      &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,            &
      &        v_sol, SR_sig, SR_r)
         end if
@@ -412,7 +412,7 @@
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
      &      iphys_LES%div_SGS, ak_MHD, fem_int, FEM_elens,              &
-     &      iak_diff_base%i_velo, iak_diff_sgs, diff_coefs,             &
+     &      iak_diff_base, iak_diff_sgs, diff_coefs,                    &
      &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
@@ -438,8 +438,7 @@
      &      sf_grp, nod_bcs%Bnod_bcs,                                   &
      &      surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,                         &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
-     &      fem_int, FEM_elens,                                         &
-     &      iak_diff_base%i_magne, iak_diff_sgs%i_SGS_induction,        &
+     &      fem_int, FEM_elens, iak_diff_base, iak_diff_sgs,            &
      &      diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !

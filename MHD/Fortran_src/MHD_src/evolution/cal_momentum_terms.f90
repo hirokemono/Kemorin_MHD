@@ -17,8 +17,10 @@
 !!     &          fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,                  &
 !!     &          iphys_base, iphys_dif, iphys_SGS, iphys_div_SGS,      &
 !!     &          ak_MHD, fem_int, FEM_elens,                           &
-!!     &          iak_diff_velo, iak_diff_SGS, diff_coefs,              &
+!!     &          iak_diff_base, iak_diff_SGS, diff_coefs,              &
 !!     &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -45,7 +47,6 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -226,13 +227,14 @@
      &          fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,                    &
      &          iphys_base, iphys_dif, iphys_SGS, iphys_div_SGS,        &
      &          ak_MHD, fem_int, FEM_elens,                             &
-     &          iak_diff_velo, iak_diff_SGS, diff_coefs,                &
+     &          iak_diff_base, iak_diff_SGS, diff_coefs,                &
      &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
       use int_surf_velo_pre
 !
-      integer(kind = kint), intent(in) :: iak_diff_velo
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_SGS
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -256,7 +258,6 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -273,7 +274,7 @@
      &   (SGS_param%ifilter_final, fluid%istack_ele_fld_smp,            &
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, iak_diff_velo, diff_coefs%ak(1,iak_diff_velo),     &
+     &    FEM_elens, iak_diff_base%i_velo, diff_coefs%ak(1,iak_diff_base%i_velo),     &
      &    one, ak_MHD%ak_d_velo, iphys_base%i_velo,                     &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !

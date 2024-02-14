@@ -10,7 +10,7 @@
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
 !!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
 !!     &          FEM_elens, iak_sgs_term, icomp_sgs_term,              &
-!!     &          iak_diff_velo, iak_diff_sgs, iphys_elediff_vec,       &
+!!     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,       &
 !!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
 !!     &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,         &
 !!     &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,     &
@@ -123,7 +123,7 @@
      &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
      &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
      &          FEM_elens, iak_sgs_term, icomp_sgs_term,                &
-     &          iak_diff_velo, iak_diff_sgs, iphys_elediff_vec,         &
+     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,         &
      &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
      &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,           &
      &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,       &
@@ -144,7 +144,8 @@
       use evolve_by_consist_crank
 !
       real(kind = kreal), intent(in) :: time, dt
-      integer(kind = kint), intent(in) :: iak_diff_velo
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_sgs
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -168,7 +169,6 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(SGS_term_address), intent(in) :: iak_diff_sgs
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -242,7 +242,7 @@
      &     (SGS_par%model_p%ifilter_final, fluid%istack_ele_fld_smp,    &
      &      FEM_prm%npoint_t_evo_int, node, ele, nod_fld,               &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, iak_diff_velo, diff_coefs%ak(1,iak_diff_velo),   &
+     &      FEM_elens, iak_diff_base%i_velo, diff_coefs%ak(1,iak_diff_base%i_velo),   &
      &      fl_prop%coef_exp, ak_MHD%ak_d_velo, iphys%base%i_velo,      &
      &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
@@ -324,7 +324,7 @@
      &      FEM_prm, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,     &
      &      iphys, iphys_LES, iphys_ele_base, ele_fld,                  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, diff_coefs%ak(1,iak_diff_velo), mlump_fl,        &
+     &      FEM_elens, diff_coefs%ak(1,iak_diff_base%i_velo), mlump_fl, &
      &      Vmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -336,7 +336,7 @@
      &      ak_MHD%ak_d_velo, dt, FEM_prm,                              &
      &      node, ele, fluid, fl_prop, Vnod_bcs,                        &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, diff_coefs%ak(1,iak_diff_velo),                  &
+     &      FEM_elens, diff_coefs%ak(1,iak_diff_base%i_velo),           &
      &      Vmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if

@@ -15,8 +15,10 @@
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
 !!     &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
 !!     &          iphys_base, iphys_dif, iphys_SGS, fem_int,            &
-!!     &          FEM_elens, iak_diff_magne, iak_diff_SGS_induction,    &
+!!     &          FEM_elens, iak_diff_base, iak_diff_sgs,               &
 !!     &          diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -101,13 +103,11 @@
      &         conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
      &         iphys_base, iphys_frc, iphys_div_frc, iphys_dif,         &
      &         iphys_SGS, iphys_ele_base, ele_fld, fem_int, FEM_elens,  &
-     &         iak_diff_SGS_induction, diff_coefs, mlump_cd,            &
-     &         mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &         ak_diff, mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,         &
+     &         v_sol, SR_sig, SR_r)
 !
       use int_vol_magne_monitor
       use set_boundary_scalars
-!
-      integer(kind = kint), intent(in) :: iak_diff_SGS_induction
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -133,11 +133,11 @@
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       integer (kind=kint), intent(in) :: i_field
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -157,8 +157,8 @@
      &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
      &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, iak_diff_SGS_induction, diff_coefs,              &
-     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &      FEM_elens, ak_diff, mhd_fem_wk,                             &
+     &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_magne_monitor_pg                                   &
      &     (i_field, FEM_prm%npoint_t_evo_int,                          &
@@ -166,8 +166,8 @@
      &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
      &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, iak_diff_SGS_induction, diff_coefs,              &
-     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &      FEM_elens, ak_diff, mhd_fem_wk,                             &
+     &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
       call int_surf_magne_monitor(SGS_param, cmt_param,                 &
@@ -175,8 +175,8 @@
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                    &
      &    iphys_base, iphys_dif, iphys_SGS, nod_fld,                    &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, diff_coefs%ak(1,iak_diff_SGS_induction),           &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
+     &    FEM_elens, ak_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,          &
+     &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
@@ -202,14 +202,14 @@
      &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
      &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,      &
      &          iphys_base, iphys_dif, iphys_SGS, fem_int,              &
-     &          FEM_elens, iak_diff_magne, iak_diff_SGS_induction,      &
+     &          FEM_elens, iak_diff_base, iak_diff_sgs,                 &
      &          diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
 !
-      integer(kind = kint), intent(in) :: iak_diff_magne
-      integer(kind = kint), intent(in) :: iak_diff_SGS_induction
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_sgs
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -247,7 +247,7 @@
      &   (SGS_param%ifilter_final, conduct%istack_ele_fld_smp,          &
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, iak_diff_magne, diff_coefs%ak(1,iak_diff_magne),   &
+     &    FEM_elens, iak_diff_base%i_magne, diff_coefs%ak(1,iak_diff_base%i_magne),   &
      &    one, ak_d_magne, iphys_base%i_magne,                          &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
@@ -256,7 +256,7 @@
      &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                     &
      &   iphys_base, iphys_dif, iphys_SGS, nod_fld,                     &
      &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
-     &   FEM_elens, diff_coefs%ak(1,iak_diff_SGS_induction),            &
+     &   FEM_elens, diff_coefs%ak(1,iak_diff_sgs%i_SGS_induction),      &
      &   rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node,                           &

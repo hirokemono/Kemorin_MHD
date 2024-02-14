@@ -182,7 +182,7 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base%i_magne,                         &
+     &     Csims_FEM_MHD%iak_diff_base,                                 &
      &     Csims_FEM_MHD%icomp_diff_base%i_magne,                       &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_magne,                     &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_magne,                     &
@@ -413,7 +413,7 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base%i_magne,                         &
+     &     Csims_FEM_MHD%iak_diff_base,                                 &
      &     Csims_FEM_MHD%icomp_diff_base%i_magne,                       &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_magne,                     &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_magne,                     &

@@ -11,6 +11,15 @@
 !!       subroutine alloc_SGS_coefs(nele, coefs)
 !!       subroutine dealloc_SGS_coefs(coefs)
 !!
+!!      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
+!!        type(SGS_model_coefficient), intent(in) :: org_Csim
+!!        type(SGS_model_coefficient), intent(inout) :: new_Csim
+!!      subroutine alloc_SGS_model_coefficient(num_poins, num_comp,     &
+!!     &                                       Csim)
+!!      subroutine dealloc_SGS_model_coefficient(Csim)
+!!        integer(kind = kint), intent(in) :: num_poins, num_comp
+!!        type(SGS_model_coefficient), intent(inout) :: Csim
+!!
 !
       module t_SGS_model_coefs
 !
@@ -20,6 +29,14 @@
 !
       implicit  none
 !
+      type SGS_model_coefficient
+!>        Nnumber of grid poins
+        integer(kind = kint) :: num_poins
+!>        Nnumber of components (0 indicates no used)
+        integer(kind = kint) :: num_comp
+!>        Model coefficiens
+        real(kind = kreal), allocatable :: coef(:,:)
+      end type SGS_model_coefficient
 !
       type SGS_coefficients_type
         integer(kind = kint) :: num_field
@@ -86,7 +103,6 @@
       end subroutine alloc_SGS_coefs
 !
 ! -------------------------------------------------------------------
-! -------------------------------------------------------------------
 !
       subroutine dealloc_SGS_coefs(coefs)
 !
@@ -98,6 +114,57 @@
       deallocate(coefs%iflag_field)
 !
       end subroutine dealloc_SGS_coefs
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
+!
+      type(SGS_model_coefficient), intent(in) :: org_Csim
+      type(SGS_model_coefficient), intent(inout) :: new_Csim
+!
+!
+      call alloc_SGS_model_coefficient                                  &
+     &   (org_Csim%num_poins, org_Csim%num_comp, new_Csim)
+      if((new_Csim%num_poins*new_Csim%num_comp) .le. 0) return
+!
+!$omp parallel workshare
+      new_Csim%coef(1:new_Csim%num_poins, 1:new_Csim%num_comp)          &
+     &   = org_Csim%coef(1:new_Csim%num_poins, 1:new_Csim%num_comp)
+!$omp end parallel workshare
+!
+      end subroutine dup_SGS_model_coefficient
+!
+! -------------------------------------------------------------------
+!
+      subroutine alloc_SGS_model_coefficient(num_poins, num_comp,       &
+     &                                       Csim)
+!
+      integer(kind = kint), intent(in) :: num_poins, num_comp
+      type(SGS_model_coefficient), intent(inout) :: Csim
+!
+!
+      Csim%num_poins = num_poins
+      Csim%num_comp = num_comp
+      allocate(Csim%coef(Csim%num_poins, Csim%num_comp))
+      if((Csim%num_poins*Csim%num_comp) .le. 0) return
+!
+!$omp parallel workshare
+      Csim%coef(1:Csim%num_poins, 1:Csim%num_comp) = 0.0d0
+!$omp end parallel workshare
+!
+      end subroutine alloc_SGS_model_coefficient
+!
+! -------------------------------------------------------------------
+!
+      subroutine dealloc_SGS_model_coefficient(Csim)
+!
+      type(SGS_model_coefficient), intent(inout) :: Csim
+!
+!
+      deallocate(Csim%coef)
+!
+      end subroutine dealloc_SGS_model_coefficient
 !
 ! -------------------------------------------------------------------
 !

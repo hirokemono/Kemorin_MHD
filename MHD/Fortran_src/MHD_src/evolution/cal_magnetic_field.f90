@@ -183,7 +183,8 @@
      &     mesh, group, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys,              &
      &     fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,         &
      &     Csims_FEM_MHD%iak_diff_base%i_magne,                         &
-     &     Csims_FEM_MHD%diff_coefs, Fmatrix, MGCG_WK%MG_vector,        &
+     &     Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne), &
+     &     Fmatrix, MGCG_WK%MG_vector,                                  &
      &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
      &     nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
@@ -305,8 +306,7 @@
      &   mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,     &
      &   iphys, iphys_LES, iphys_ele_base, ele_fld,                     &
      &   fem_int%jcs, fem_int%rhs_tbl,                                  &
-     &   Csims_FEM_MHD%iak_diff_base%i_magne,                           &
-     &   Csims_FEM_MHD%iak_diff_sgs%i_SGS_induction,                    &
+     &   Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,       &
      &   Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iphys_elediff_vec, &
      &   sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,             &
      &   mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                   &
@@ -327,7 +327,8 @@
      &     mesh%node, mesh%ele, mesh%surf, group%surf_grp,              &
      &     Bnod_bcs, Bsf_bcs, Fsf_bcs, iphys,                           &
      &     fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,         &
-     &     Csims_FEM_MHD%iak_diff_base%i_magne, diff_coefs,             &
+     &     Csims_FEM_MHD%iak_diff_base%i_magne,                         &
+     &     Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne), &
      &     Fmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk, &
      &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                          &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
@@ -345,7 +346,7 @@
      &      iphys, iphys_ele_base, ele_fld,                             &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,        &
      &      Csims_FEM_MHD%iak_diff_base%i_magne,                        &
-     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne),                   &
+     &      Csims_FEM_MHD%diff_coefs%ak(1,Csims_FEM_MHD%iak_diff_base%i_magne), &
      &      fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk,     &
      &      rhs_mat,nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
