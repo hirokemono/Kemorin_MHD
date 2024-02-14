@@ -202,15 +202,15 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs                                    &
      &     (SGS_par%commute_p%iflag_c_magne, FEM_prm%iflag_magne_supg,  &
-     &      FEM_prm%npoint_t_evo_int, dt, iak_diff_magne,               &
+     &      FEM_prm%npoint_t_evo_int, dt,                               &
      &      iphys_base%i_vecp, iphys_base%i_magne,                      &
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,       &
-     &      FEM_filters%FEM_elens, diff_coefs, Bnod_bcs%nod_bc_b,       &
-     &      Asf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,               &
-     &      rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld,                     &
-     &      v_sol, SR_sig, SR_r)
+     &      FEM_filters%FEM_elens, Bnod_bcs%nod_bc_b,                   &
+     &      Asf_bcs%sgs, diff_coefs%ak(1,iak_diff_magne),               &
+     &      fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
+     &      rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if
       if (iphys_ele_base%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'

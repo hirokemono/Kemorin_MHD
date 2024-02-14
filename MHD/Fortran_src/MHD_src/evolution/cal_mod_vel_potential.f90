@@ -162,11 +162,10 @@
 !     &                        .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node, ele, surf, sf_grp, nod_fld, jacs%g_FEM,              &
-!     &      jacs%jac_sf_grp_q, jacs%jac_sf_grp_l,                      &
-!     &      rhs_tbl, FEM_elens, diff_coefs,                            &
+!     &      jacs%jac_sf_grp_q, jacs%jac_sf_grp_l, rhs_tbl, FEM_elens,  &
 !     &      FEM_prm%npoint_poisson_int, Vsf_bcs%sgs%nmax_sf_dat,       &
 !     &      Vsf_bcs%sgs%ngrp_sf_dat, Vsf_bcs%sgs%id_grp_sf_dat,        &
-!     &      SGS_param%ifilter_final, iak_diff_velo,                    &
+!     &      SGS_param%ifilter_final, diff_coefs%ak(1,iak_diff_velo),   &
 !     &      iphys%base%i_velo, fem_wk, surf_wk, f_l)
 !      end if
 !
@@ -261,11 +260,11 @@
 !      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,   &
-!     &      jacs%g_FEM, jacs%jac_sf_grp_q, jacs%jac_sf_grp_l,          &
-!     &      rhs_tbl, FEM_elens, diff_coefs,                            &
-!     &      FEM_prm%npoint_poisson_int, Asf_bcs%sgs%nmax_sf_dat,       &
-!     &      Asf_bcs%sgs%ngrp_sf_dat, Asf_bcs%sgs%id_grp_sf_dat,        &
-!     &      SGS_param%ifilter_final, iak_diff_magne,                   &
+!     &      jacs%g_FEM, jacs%jac_sf_grp_q, jacs%jac_sf_grp_l, rhs_tbl, &
+!     &      FEM_elens, FEM_prm%npoint_poisson_int,                     &
+!     &      Asf_bcs%sgs%nmax_sf_dat, Asf_bcs%sgs%ngrp_sf_dat,          &
+!     &      Asf_bcs%sgs%id_grp_sf_dat,                                 &
+!     &      SGS_param%ifilter_final, diff_coefs%ak(1,iak_diff_magne),  &
 !     &      iphys%base%i_vecp, fem_wk, surf_wk, f_l)
 !      end if
 !
@@ -359,10 +358,11 @@
 !      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele(node, ele, surf, sf_grp,        &
 !     &      nod_fld, jacs%g_FEM, jacs%jac_sf_grp_q, jacs%jac_sf_grp_l, &
-!     &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int,&
+!     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
 !     &      Bsf_bcs%sgs%nmax_sf_dat, Bsf_bcs%sgs%ngrp_sf_dat,          &
 !     &      Bsf_bcs%sgs%id_grp_sf_dat, SGS_param%ifilter_final,        &
-!     &      iak_diff_magne, iphys%base%i_magne, fem_wk, surf_wk, f_l)
+!     &      diff_coefs%ak(1,iak_diff_magne), iphys%base%i_magne,       &
+!     &      fem_wk, surf_wk, f_l)
 !      end if
 !
       call int_surf_normal_vector                                       &

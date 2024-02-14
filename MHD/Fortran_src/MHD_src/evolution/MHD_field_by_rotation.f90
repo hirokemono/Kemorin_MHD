@@ -117,13 +117,13 @@
           call choose_cal_rotation_sgs                                  &
      &       (SGS_param%SGS_momentum%iflag_commute_field,               &
      &        FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,        &
-     &        dt, iak_diff_base%i_velo,                                 &
-     &        iphys_base%i_velo, iphys_base%i_vort,                     &
+     &        dt, iphys_base%i_velo, iphys_base%i_vort,                 &
      &        fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                &
      &        SGS_param, mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, &
-     &        group%surf_grp, iphys_ele_base, ele_fld,                  &
-     &        fem_int%jcs, FEM_elens, diff_coefs,                       &
-     &        nod_bcs%Vnod_bcs%nod_bc_w, surf_bcs%Vsf_bcs%sgs,          &
+     &        group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,     &
+     &        FEM_elens, nod_bcs%Vnod_bcs%nod_bc_w,                     &
+     &        surf_bcs%Vsf_bcs%sgs,                                     &
+     &        diff_coefs%ak(1,iak_diff_base%i_velo),                    &
      &        fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
      &        rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
         end if
@@ -136,27 +136,29 @@
      &        write(*,*) 'cal_current_density'
               call choose_cal_rotation_sgs                              &
      &          (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
-     &           FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,   &
+     &           FEM_prm%npoint_t_evo_int, dt,                          &
      &           iphys_base%i_magne, iphys_base%i_current,              &
      &           mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,    &
      &           mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
      &           group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,  &
-     &           FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
-     &           surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk, &
-     &           rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld,                &
-     &           v_sol, SR_sig, SR_r)
+     &           FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,                  &
+     &           surf_bcs%Bsf_bcs%sgs,                                  &
+     &           diff_coefs%ak(1,iak_diff_base%i_magne),                &
+     &           fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,      &
+     &           rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
 !             call choose_cal_rotation_sgs                              &
 !     &         (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
-!     &          FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,   &
+!     &          FEM_prm%npoint_t_evo_int, dt,                          &
 !     &          iphys_base%i_magne, iphys_base%i_current,              &
 !     &          conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param,&
 !     &          mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
 !     &          group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,  &
-!     &          FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
-!     &          surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                 &
-!     &          rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl,         &
-!     &          nod_fld, v_sol, SR_sig, SR_r)
+!     &          FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,                  &
+!     &          surf_bcs%Bsf_bcs%sgs,                                  &
+!     &          diff_coefs%ak(1,iak_diff_base%i_magne),                &
+!     &          fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,      &
+!     &          rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !             call int_current_diffuse                                  &
 !     &         (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,           &
 !     &          mesh%surf, group%surf_grp, surf_bcs%Asf_bcs,           &
@@ -169,26 +171,27 @@
      &        write(*,*) 'cal_current_density'
             call choose_cal_rotation_sgs                                &
      &        (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,       &
-     &         FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,     &
+     &         FEM_prm%npoint_t_evo_int, dt,                            &
      &         iphys_base%i_magne, iphys_base%i_current,                &
      &         mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,      &
      &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
      &         group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,    &
-     &         FEM_elens, diff_coefs,  nod_bcs%Bnod_bcs%nod_bc_j,       &
-     &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,   &
-     &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld,                  &
-     &         v_sol, SR_sig, SR_r)
+     &         FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,                    &
+     &         surf_bcs%Bsf_bcs%sgs,                                    &
+     &         diff_coefs%ak(1,iak_diff_base%i_magne),                  &
+     &         fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
+     &         rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
-!     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,     &
-!     &         dt, iak_diff_base%i_magne,                              &
+!     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt, &
 !     &         iphys_base%i_magne, iphys_base%i_current,               &
 !     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param, &
 !     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,          &
 !     &         group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,   &
-!     &         FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,       &
-!     &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                  &
-!     &         rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl,          &
-!     &         nod_fld, v_sol, SR_sig, SR_r)
+!     &         FEM_elens, nod_bcs%Bnod_bcs%nod_bc_j,                   &
+!     &         surf_bcs%Bsf_bcs%sgs,                                   &
+!     &         diff_coefs%ak(1,iak_diff_base%i_magne),                 &
+!     &         fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
+!     &         rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
           end if
         end if
       end if

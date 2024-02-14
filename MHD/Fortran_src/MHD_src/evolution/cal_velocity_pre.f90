@@ -428,11 +428,11 @@
      &     (node, ele, surf, sf_grp, nod_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp,                  &
      &      fem_int%jcs%jac_sf_grp_l, fem_int%rhs_tbl,                  &
-     &      FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int,          &
+     &      FEM_elens, FEM_prm%npoint_poisson_int,                      &
      &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_par%model_p%ifilter_final, iak_diff_velo,               &
-     &      iphys%exp_work%i_p_phi, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
-     &      rhs_mat%f_nl)
+     &      SGS_par%model_p%ifilter_final,                              &
+     &      diff_coefs%ak(1,iak_diff_velo), iphys%exp_work%i_p_phi,     &
+     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
 !

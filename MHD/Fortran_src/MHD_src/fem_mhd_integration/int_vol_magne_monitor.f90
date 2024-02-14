@@ -133,9 +133,10 @@
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_pg                              &
      &       (node, ele, nod_fld, iphys_base, iphys_SGS,                &
-     &        g_FEM, jac_3d, rhs_tbl, FEM_elen, diff_coefs,             &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elen,                         &
      &        conduct%istack_ele_fld_smp, num_int,                      &
-     &        SGS_param%ifilter_final, iak_diff_SGS_induction,          &
+     &        SGS_param%ifilter_final,                                  &
+     &        diff_coefs%ak(1,iak_diff_SGS_induction),                  &
      &        cd_prop%coef_induct, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
@@ -211,9 +212,10 @@
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_upm                             &
      &       (node, ele, nod_fld, iphys_base, iphys_SGS,                &
-     &        g_FEM, jac_3d, rhs_tbl, FEM_elen, diff_coefs,             &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elen,                         &
      &        conduct%istack_ele_fld_smp, num_int, dt,                  &
-     &        SGS_param%ifilter_final, iak_diff_SGS_induction,          &
+     &        SGS_param%ifilter_final,                                  &
+     &        diff_coefs%ak(1,iak_diff_SGS_induction),                  &
      &        cd_prop%coef_induct, ele_fld%ntot_phys,                   &
      &        iphys_ele_base%i_magne, ele_fld%d_fld, fem_wk,            &
      &        mhd_fem_wk, f_nl)

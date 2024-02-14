@@ -344,11 +344,11 @@
          call int_surf_sgs_velo_co_ele                                  &
      &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,    &
      &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int, &
+     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_param%ifilter_final, iak_diff_base%i_magne,             &
-     &      iphys_exp%i_m_phi, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
-     &      rhs_mat%f_nl)
+     &      SGS_param%ifilter_final,                                    &
+     &      diff_coefs%ak(1,iak_diff_base%i_magne), iphys_exp%i_m_phi,  &
+     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
 !

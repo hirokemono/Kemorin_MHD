@@ -234,7 +234,7 @@
      &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
      &    Asf_bcs, Bsf_bcs, iphys%base, iphys_LES%SGS_term, nod_fld,    &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_filters%FEM_elens,  &
-     &    iak_diff_SGS_induction, diff_coefs,                           &
+     &    diff_coefs%ak(1,iak_diff_SGS_induction),                      &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
@@ -350,11 +350,11 @@
          call int_surf_sgs_velo_co_ele                                  &
      &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,    &
      &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, diff_coefs,                             &
-     &      FEM_prm%npoint_poisson_int, Fsf_bcs%sgs%ngrp_sf_dat,        &
-     &      Fsf_bcs%sgs%id_grp_sf_dat, SGS_param%ifilter_final,         &
-     &      iak_diff_magne, iphys%exp_work%i_m_phi,                     &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
+     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
+     &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
+     &      SGS_param%ifilter_final, diff_coefs%ak(1,iak_diff_magne),   &
+     &      iphys%exp_work%i_m_phi, rhs_mat%fem_wk,                     &
+     &      rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
 !
@@ -447,9 +447,9 @@
          call int_surf_sgs_velo_co_ele                                  &
      &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,    &
      &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int, &
+     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_param%ifilter_final, iak_diff_magne,                    &
+     &      SGS_param%ifilter_final, diff_coefs%ak(1,iak_diff_magne),   &
      &      iphys%exp_work%i_m_phi, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
      &      rhs_mat%f_nl)
       end if
