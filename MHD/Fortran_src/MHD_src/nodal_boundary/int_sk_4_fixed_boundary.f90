@@ -104,8 +104,7 @@
      &      g_FEM, jac_3d_l, rhs_tbl, FEM_elens, num_int,               &
      &      nod_bc_p%ibc_end, nod_bc_p%num_idx_ibc, nod_bc_p%ele_bc_id, &
      &      nod_bc_p%ibc_stack_smp, nod_bc_p%ibc_shape, ifilter_final,  &
-     &      i_p_phi, diff_coefs%num_field, iak_diff_v, diff_coefs%ak,   &
-     &      fem_wk, f_l)
+     &      i_p_phi, diff_coefs%ak(1,iak_diff_v), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &    (node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl, num_int,       &
@@ -152,8 +151,7 @@
      &      g_FEM, jac_3d_l, rhs_tbl, FEM_elens, num_int,               &
      &      nod_bc_f%ibc_end, nod_bc_f%num_idx_ibc, nod_bc_f%ele_bc_id, &
      &      nod_bc_f%ibc_stack_smp, nod_bc_f%ibc_shape, ifilter_final,  &
-     &      i_m_phi, diff_coefs%num_field, iak_diff_b, diff_coefs%ak,   &
-     &      fem_wk, f_l)
+     &      i_m_phi, diff_coefs%ak(1,iak_diff_b), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &     (node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl, num_int,      &
@@ -202,8 +200,7 @@
      &      nod_bc_fins%ibc_end, nod_bc_fins%num_idx_ibc,               &
      &      nod_bc_fins%ele_bc_id, nod_bc_fins%ibc_stack_smp,           &
      &      nod_bc_fins%ibc_shape, ifilter_final, i_m_phi,              &
-     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,            &
-     &      fem_wk, f_l)
+     &      diff_coefs%ak(1,iak_diff_b), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &     (node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl, num_int,      &
@@ -254,8 +251,7 @@
      &      num_int, nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,            &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, ifilter_final, i_temp,                  &
-     &      diff_coefs%num_field, iak_diff_t, diff_coefs%ak,            &
-     &      ak_d, coef_imp, fem_wk, f_l)
+     &      diff_coefs%ak(1,iak_diff_t), ak_d, coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf                                  &
      &     (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, num_int,        &
@@ -311,8 +307,8 @@
      &      rhs_tbl, FEM_elens, num_int, nod_bc_rot%ibc_end,            &
      &      nod_bc_rot%num_idx_ibc, nod_bc_rot%ele_bc_id,               &
      &      nod_bc_rot%ibc_stack_smp, nod_bc_rot%ibc_shape,             &
-     &      ifilter_final, i_velo, diff_coefs%num_field, iak_diff_v,    &
-     &      diff_coefs%ak, ak_d, fl_prop%coef_imp, fem_wk, f_l)
+     &      ifilter_final, i_velo, diff_coefs%ak(1,iak_diff_v), ak_d,   &
+     &      fl_prop%coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_rotate_surf                                  &
      &     (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, num_int,        &
@@ -360,8 +356,8 @@
      &      jac_3d, rhs_tbl, FEM_elens, num_int, nod_bc%nmax_idx_ibc2,  &
      &      nod_bc%ibc_end, nod_bc%num_idx_ibc,  nod_bc%ele_bc_id,      &
      &      nod_bc%ibc_stack_smp, nod_bc%ibc_shape, ifilter_final,      &
-     &      i_field, diff_coefs%num_field, iak_diff, diff_coefs%ak,     &
-     &      ak_d, coef_imp, fem_wk, f_l)
+     &      i_field, diff_coefs%ak(1,iak_diff), ak_d, coef_imp,         &
+     &      fem_wk, f_l)
       else
         call int_vol_fixed_vector_surf(node, ele, nod_fld,              &
      &      g_FEM, jac_3d, rhs_tbl, num_int, nod_bc%nmax_idx_ibc2,      &

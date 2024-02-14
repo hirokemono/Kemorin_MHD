@@ -108,8 +108,7 @@
      &           (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,      &
      &            igrp, k2, nd, n_int, i_filter,                        &
      &            surf_wk%dxe_sf, surf_wk%vect_sf,                      &
-     &            iak_diff_uxb, diff_coefs%num_field, diff_coefs%ak,    &
-     &            dminus, fem_wk%sk6)
+     &            diff_coefs%ak(1,iak_diff_uxb), dminus, fem_wk%sk6)
             end do
 !
           end if

@@ -91,7 +91,7 @@
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_vector                                     &
      &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
-     &      diff_coefs%num_field, iak_diff, diff_coefs%ak,              &
+     &      diff_coefs%ak(1,iak_diff),                                  &
      &      ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,           &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
@@ -144,7 +144,7 @@
      &      mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
         call fem_skv_div_sgs_tensor                                     &
      &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
-     &      diff_coefs%num_field, iak_diff, diff_coefs%ak,              &
+     &      diff_coefs%ak(1,iak_diff),                                  &
      &      ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,           &
      &      fem_wk%tensor_1, fem_wk%sk6)
       end do
@@ -204,7 +204,7 @@
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_vector_upwind                              &
      &     (iele_fsmp_stack, n_int, k2, i_filter, dt,                   &
-     &      diff_coefs%num_field, iak_diff, diff_coefs%ak,              &
+     &      diff_coefs%ak(1,iak_diff),                                  &
      &      ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),             &
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
       end do
@@ -263,7 +263,7 @@
      &      mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
         call fem_skv_div_sgs_tensor_upwind                              &
      &     (iele_fsmp_stack, n_int, k2, i_filter, dt,                   &
-     &      diff_coefs%num_field, iak_diff, diff_coefs%ak,              &
+     &      diff_coefs%ak(1,iak_diff),                                  &
      &      ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),             &
      &      mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
       end do

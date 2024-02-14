@@ -330,10 +330,10 @@
       call clippging_sgs_diff_coefs(iflag_SGS_initial, SGS_param,       &
      &    numdir, ifield_d, icomp_f, wk_diff)
 !
-      call set_diff_coefs_layer_ele(ele, ifield_d,                      &
-     &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
+      call set_diff_coefs_layer_ele                                     &
+     &   (ele, layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,       &
      &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
-     &    diff_coefs%ntot_comp, wk_diff%fld_clip, diff_coefs%ak)
+     &    wk_diff%fld_clip(1,ifield_d), diff_coefs%ak(1,ifield_d))
 !
       end subroutine cal_layerd_diff_coef
 !
@@ -391,8 +391,8 @@
      &    wk_diff%fld_whole, wk_diff%comp_whole, wk_lsq)
       call clippging_sgs_diff_coefs(iflag_SGS_initial, SGS_param,       &
      &    numdir, ifield_d, icomp_f, wk_diff)
-      call set_diff_coefs_whole_ele(ele, iele_fsmp_stack, ifield_d,     &
-     &    diff_coefs%ntot_comp, wk_diff%fld_whole_clip, diff_coefs%ak)
+      call set_diff_coefs_whole_ele(ele, iele_fsmp_stack,               &
+     &    wk_diff%fld_whole_clip(ifield_d), diff_coefs%ak(1,ifield_d))
 !
 !
       end subroutine cal_whole_diff_coef

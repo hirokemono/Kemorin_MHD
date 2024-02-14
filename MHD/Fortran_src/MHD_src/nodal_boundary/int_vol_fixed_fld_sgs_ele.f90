@@ -8,27 +8,24 @@
 !!     &          g_FEM, jac_3d_l, rhs_tbl, FEM_elens,                  &
 !!     &          n_int, ibc_end, num_index_ibc, ele_bc_id,             &
 !!     &          ibc_stack_smp, ibc_shape, i_filter, i_field,          &
-!!     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_l)
+!!     &          ak_diff, fem_wk, f_l)
 !!
 !!      subroutine int_vol_fixed_sgs_scalar_surf                        &
 !!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          n_int, ibc_end, num_index_ibc, ele_bc_id,             &
 !!     &          ibc_stack_smp, ibc_shape, i_filter, i_field,          &
-!!     &          ncomp_diff, iak_diff, ak_diff, ak_d, coef_implicit,   &
-!!     &          fem_wk, f_l)
+!!     &          ak_diff, ak_d, coef_implicit, fem_wk, f_l)
 !!      subroutine int_vol_fixed_sgs_vector_surf                        &
 !!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          n_int, nmax_index_ibc, ibc_end, num_index_ibc,        &
 !!     &          ele_bc_id, ibc_stack_smp, ibc_shape, i_filter,        &
-!!     &          i_field,  ncomp_diff, iak_diff, ak_diff, ak_d,        &
-!!     &          coef_implicit, fem_wk, f_l)
+!!     &          i_field, ak_diff, ak_d, coef_implicit, fem_wk, f_l)
 !!
 !!      subroutine int_vol_fixed_rotate_sgs_surf                        &
 !!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          n_int, ibc_end, num_index_ibc, ele_bc_id,             &
 !!     &          ibc_stack_smp, ibc_shape, i_filter, i_field,          &
-!!     &          ncomp_diff, iak_diff, ak_diff, ak_d, coef_implicit,   &
-!!     &          fem_wk, f_l)
+!!     &          ak_diff, ak_d, coef_implicit, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data),    intent(in) :: nod_fld
@@ -70,7 +67,7 @@
      &          g_FEM, jac_3d_l, rhs_tbl, FEM_elens,                    &
      &          n_int, ibc_end, num_index_ibc, ele_bc_id,               &
      &          ibc_stack_smp, ibc_shape, i_filter, i_field,            &
-     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_l)
+     &          ak_diff, fem_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -89,8 +86,7 @@
 !
       integer(kind=kint), intent(in) :: i_field
 !
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -118,8 +114,7 @@
         call fem_skv_poisson_sgs_fix_bc                                 &
      &     (ele, g_FEM, jac_3d_l, FEM_elens,                            &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp), k2,    &
-     &      n_int, i_filter, ak_diff(1,iak_diff),                       &
-     &      fem_wk%scalar_1, fem_wk%sk6)
+     &      n_int, i_filter, ak_diff, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -133,8 +128,7 @@
      &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          n_int, ibc_end, num_index_ibc, ele_bc_id,               &
      &          ibc_stack_smp, ibc_shape, i_filter, i_field,            &
-     &          ncomp_diff, iak_diff, ak_diff, ak_d, coef_implicit,     &
-     &          fem_wk, f_l)
+     &          ak_diff, ak_d, coef_implicit, fem_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -155,8 +149,7 @@
 !
       real(kind = kreal), intent(in) :: coef_implicit
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -183,7 +176,7 @@
 !
         call fem_skv_diffuse_sgs_fix_bc(ele, g_FEM, jac_3d, FEM_elens,  &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
-     &      k2, ione, n_int, i_filter, ak_diff(1,iak_diff), ak_d,       &
+     &      k2, ione, n_int, i_filter, ak_diff, ak_d,                   &
      &      fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
@@ -198,8 +191,7 @@
      &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          n_int, nmax_index_ibc, ibc_end, num_index_ibc,          &
      &          ele_bc_id, ibc_stack_smp, ibc_shape, i_filter,          &
-     &          i_field,  ncomp_diff, iak_diff, ak_diff, ak_d,          &
-     &          coef_implicit, fem_wk, f_l)
+     &          i_field, ak_diff, ak_d, coef_implicit, fem_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -221,8 +213,7 @@
 !
       real(kind = kreal), intent(in) :: coef_implicit
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -254,7 +245,7 @@
             call fem_skv_diffuse_sgs_fix_bc                             &
      &         (ele, g_FEM, jac_3d, FEM_elens, nmax_index_ibc,          &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2, nd,  &
-     &          n_int, i_filter, ak_diff(1,iak_diff), ak_d,             &
+     &          n_int, i_filter, ak_diff, ak_d,                         &
      &          fem_wk%scalar_1, fem_wk%sk6)
           end do
         end if
@@ -271,8 +262,7 @@
      &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          n_int, ibc_end, num_index_ibc, ele_bc_id,               &
      &          ibc_stack_smp, ibc_shape, i_filter, i_field,            &
-     &          ncomp_diff, iak_diff, ak_diff, ak_d, coef_implicit,     &
-     &          fem_wk, f_l)
+     &          ak_diff, ak_d, coef_implicit, fem_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -293,8 +283,7 @@
 !
       real(kind = kreal), intent(in) :: coef_implicit
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real (kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -324,9 +313,8 @@
 !
             call fem_skv_diffuse_sgs_fix_bc                             &
      &         (ele, g_FEM, jac_3d, FEM_elens, num_index_ibc,           &
-     &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd,           &
-     &          n_int, i_filter, ak_diff(1,iak_diff), ak_d,             &
-     &          fem_wk%scalar_1, fem_wk%sk6)
+     &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd, n_int,    &
+     &          i_filter, ak_diff, ak_d, fem_wk%scalar_1, fem_wk%sk6)
           end do
       end do
 !

@@ -70,7 +70,7 @@
         call int_vol_sgs_div_v_linear                                   &
      &    (node, ele, g_FEM, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elen,     &
      &     nod_fld, iele_fsmp_stack, num_int, i_scalar, ifilter_final,  &
-     &     diff_coefs%num_field, iak_diff, diff_coefs%ak, fem_wk, f_nl)
+     &     diff_coefs%ak(1,iak_diff), fem_wk, f_nl)
       else
         call int_vol_solenoidal_co                                      &
      &     (node, ele, g_FEM, jac_3d_q, jac_3d_l, rhs_tbl, nod_fld,     &

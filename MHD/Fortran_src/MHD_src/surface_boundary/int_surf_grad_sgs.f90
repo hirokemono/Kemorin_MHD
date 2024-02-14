@@ -111,8 +111,7 @@
             call fem_sf_grp_skv_sgs_velo_co_p(ele, surf, sf_grp,        &
      &          g_FEM, jac_sf_grp_q, jac_sf_grp_l, FEM_elens, igrp,     &
      &          k2, n_int, i_filter, surf_wk%dxe_sf, surf_wk%scalar_sf, &
-     &          iak_diff, diff_coefs%num_field, diff_coefs%ak,          &
-     &          fem_wk%sk6)
+     &          diff_coefs%ak(1,iak_diff), fem_wk%sk6)
           end do
 !
         end if
@@ -176,8 +175,7 @@
             call fem_sf_grp_skv_sgs_grad_p(ele, surf, sf_grp,           &
      &          g_FEM, jac_sf_grp_q, FEM_elens, igrp, k2, n_int,        &
      &          i_filter, surf_wk%dxe_sf, surf_wk%scalar_sf,            &
-     &          iak_diff, diff_coefs%num_field, diff_coefs%ak,          &
-     &          one, fem_wk%sk6)
+     &          diff_coefs%ak(1,iak_diff), one, fem_wk%sk6)
           end do
 !
         end if

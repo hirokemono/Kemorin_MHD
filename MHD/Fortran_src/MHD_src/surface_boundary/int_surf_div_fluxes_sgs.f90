@@ -120,8 +120,7 @@
      &         (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,        &
      &          igrp, k2, ione, n_int, i_filter,                        &
      &          surf_wk%dxe_sf, surf_wk%vect_sf,                        &
-     &          i_diff, diff_coefs%num_field, diff_coefs%ak,            &
-     &          coef_field, fem_wk%sk6)
+     &          diff_coefs%ak(1,i_diff), coef_field, fem_wk%sk6)
           end do
 !
         end if
@@ -191,8 +190,7 @@
      &           (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,      &
      &            igrp, k2, nd, n_int, i_filter,                        &
      &            surf_wk%dxe_sf, surf_wk%vect_sf,                      &
-     &            i_diff, diff_coefs%num_field, diff_coefs%ak,          &
-     &            coef_field, fem_wk%sk6)
+     &            diff_coefs%ak(1,i_diff), coef_field, fem_wk%sk6)
             end do
 !
           end if

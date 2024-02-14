@@ -154,8 +154,8 @@
      &         mhd_fem_wk%sgs_v1, fem_wk%vector_1)
            call fem_skv_div_sgs_asym_tsr                                &
      &        (conduct%istack_ele_fld_smp, num_int, k2,                 &
-     &         SGS_param%ifilter_final, diff_coefs%num_field,           &
-     &         iak_diff_SGS_induction, diff_coefs%ak,                   &
+     &         SGS_param%ifilter_final,                                 &
+     &         diff_coefs%ak(1,iak_diff_SGS_induction),                 &
      &         ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,        &
      &         fem_wk%vector_1, fem_wk%sk6)
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
@@ -260,8 +260,8 @@
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1)
           call fem_skv_div_sgs_asym_t_upwind                            &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
-     &        SGS_param%ifilter_final, dt, diff_coefs%num_field,        &
-     &        iak_diff_SGS_induction, diff_coefs%ak,                    &
+     &        SGS_param%ifilter_final, dt,                              &
+     &        diff_coefs%ak(1,iak_diff_SGS_induction),                  &
      &        ele, g_FEM, jac_3d, FEM_elens,                            &
      &        d_ele(1,iphys_ele_base%i_magne), mhd_fem_wk%sgs_v1,       &
      &        fem_wk%vector_1, fem_wk%sk6)

@@ -24,11 +24,11 @@
 !!     &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,         &
 !!     &          layer_stack_smp, item_layer, num_kind_ele,            &
 !!     &          ntot_comp_ele, sgs_f_clip, sgs_c_clip, ak_sgs)
-!!      subroutine set_diff_coefs_layer_ele(ele, ifield_d,              &
-!!     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,&
-!!     &         ntot_fld_ele, diff_f_clip, ak_diff)
+!!      subroutine set_diff_coefs_layer_ele                             &
+!!     &         (ele, n_layer_d, n_item_layer_d, layer_stack_smp,      &
+!!     &          item_layer, diff_f_clip, ak_diff)
 !!      subroutine set_diff_coefs_whole_ele(ele, iele_fsmp_stack,       &
-!!     &          ifield_d, ntot_fld_ele, diff_f_whole_clip, ak_diff)
+!!     &                                    diff_f_whole_clip, ak_diff)
 !!@endverbatim
 !
       module set_sgs_diff_model_coefs
@@ -378,35 +378,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_diff_coefs_layer_ele(ele, ifield_d,                &
-     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,  &
-     &         ntot_fld_ele, diff_f_clip, ak_diff)
+      subroutine set_diff_coefs_layer_ele                               &
+     &         (ele, n_layer_d, n_item_layer_d, layer_stack_smp,        &
+     &          item_layer, diff_f_clip, ak_diff)
 !
       use m_machine_parameter
 !
       type(element_data), intent(in) :: ele
-      integer (kind = kint), intent(in) :: ntot_fld_ele, ifield_d
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
-      real(kind = kreal), intent(in)                                    &
-     &          :: diff_f_clip(n_item_layer_d,ntot_fld_ele)
+      real(kind = kreal), intent(in) :: diff_f_clip(n_item_layer_d)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_diff(ele%numele,ntot_fld_ele)
+      real(kind = kreal), intent(inout) :: ak_diff(ele%numele)
 !
       integer (kind = kint) :: ip, is, ist, ied, inum, iele0, iele
 !
 !
-!$omp parallel do private(is,ist,ied,inum,iele0,iele)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
           ist = ele%istack_ele_smp(ip-1) + 1
           ied = ele%istack_ele_smp(ip  )
-!cdir nodep
-          do iele = ist, ied
-            ak_diff(iele,ifield_d) = zero
-          end do
+          ak_diff(ist:ied) = zero
       end do
 !$omp end parallel do
 !
@@ -420,7 +414,7 @@
 !cdir nodep
             do iele0 = ist, ied
               iele = item_layer(iele0)
-              ak_diff(iele,ifield_d) = diff_f_clip(inum,ifield_d)
+              ak_diff(iele) = diff_f_clip(inum)
             end do
           end do
       end do
@@ -431,39 +425,32 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_diff_coefs_whole_ele(ele, iele_fsmp_stack,         &
-     &          ifield_d, ntot_fld_ele, diff_f_whole_clip, ak_diff)
+     &                                    diff_f_whole_clip, ak_diff)
 !
       use m_machine_parameter
 !
       type(element_data), intent(in) :: ele
-      integer (kind = kint), intent(in) :: ntot_fld_ele, ifield_d
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: diff_f_whole_clip(ntot_fld_ele)
+      real(kind = kreal), intent(in) :: diff_f_whole_clip
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_diff(ele%numele,ntot_fld_ele)
+      real(kind = kreal), intent(inout) :: ak_diff(ele%numele)
 !
-      integer (kind = kint) :: ip, ist, ied, iele
+      integer (kind = kint) :: ip, ist, ied
 !
 !
-!$omp parallel do private(ist,ied,iele)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
         ist = ele%istack_ele_smp(ip-1) + 1
         ied = ele%istack_ele_smp(ip  )
-!cdir nodep
-        do iele = ist, ied
-          ak_diff(iele,ifield_d) = zero
-        end do
+        ak_diff(ist:ied) = zero
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(ist,ied,iele)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
         ist = iele_fsmp_stack(ip-1) + 1
         ied = iele_fsmp_stack(ip  )
-        do iele = ist, ied
-          ak_diff(iele,ifield_d) = diff_f_whole_clip(ifield_d)
-        end do
+        ak_diff(ist:ied) = diff_f_whole_clip
       end do
 !$omp end parallel do
 !

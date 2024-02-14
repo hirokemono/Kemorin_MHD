@@ -6,30 +6,25 @@
 !
 !!      subroutine int_sgs_gradient_upw                                 &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,&
-!!     &          iele_fsmp_stack, num_int, dt, i_filter,               &
-!!     &          ncomp_diff, iak_diff, ak_diff, i_field,               &
-!!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!      subroutine int_sgs_divergence_upw                               &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,&
-!!     &          iele_fsmp_stack, num_int, dt, i_filter,               &
-!!     &          ncomp_diff, iak_diff, ak_diff, i_field,               &
-!!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!      subroutine int_sgs_rotation_upw                                 &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,&
-!!     &          iele_fsmp_stack, num_int, dt, i_filter,               &
-!!     &          ncomp_diff, iak_diff, ak_diff, i_field,               &
-!!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!
 !!      subroutine int_sgs_div_tsr_upw                                  &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,&
-!!     &          iele_fsmp_stack, num_int, dt, i_filter,               &
-!!     &          ncomp_diff, iak_diff, ak_diff, i_field,               &
-!!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!      subroutine int_sgs_div_as_tsr_upw                               &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,&
-!!     &          iele_fsmp_stack, num_int, dt, i_filter,               &
-!!     &          ncomp_diff, iak_diff, ak_diff, i_field,               &
-!!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -68,9 +63,8 @@
 !
       subroutine int_sgs_gradient_upw                                   &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,  &
-     &          iele_fsmp_stack, num_int, dt, i_filter,                 &
-     &          ncomp_diff, iak_diff, ak_diff, i_field,                 &
-     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -86,8 +80,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -105,7 +98,7 @@
      &      k2, i_field, fem_wk%scalar_1)
         call fem_skv_grad_sgs_upwind                                    &
      &     (iele_fsmp_stack, num_int, k2, i_filter, dt,                 &
-     &      ak_diff(1,iak_diff), ele, g_FEM, jac_3d, FEM_elens,         &
+     &      ak_diff, ele, g_FEM, jac_3d, FEM_elens,                     &
      &      d_ele(1,iv_up), fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
@@ -118,9 +111,8 @@
 !
       subroutine int_sgs_divergence_upw                                 &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,  &
-     &          iele_fsmp_stack, num_int, dt, i_filter,                 &
-     &          ncomp_diff, iak_diff, ak_diff, i_field,                 &
-     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -136,8 +128,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -155,7 +146,7 @@
      &      k2, i_field, fem_wk%vector_1)
         call fem_skv_div_sgs_upwind                                     &
      &     (iele_fsmp_stack, num_int, k2, i_filter, dt,                 &
-     &      ak_diff(1,iak_diff), ele, g_FEM, jac_3d, FEM_elens,         &
+     &      ak_diff, ele, g_FEM, jac_3d, FEM_elens,                     &
      &      d_ele(1,iv_up), fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -168,9 +159,8 @@
 !
       subroutine int_sgs_rotation_upw                                   &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,  &
-     &          iele_fsmp_stack, num_int, dt, i_filter,                 &
-     &          ncomp_diff, iak_diff, ak_diff, i_field,                 &
-     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -186,8 +176,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -205,7 +194,7 @@
      &      k2, i_field, fem_wk%vector_1)
         call fem_skv_rot_sgs_upwind                                     &
      &     (iele_fsmp_stack, num_int, k2, i_filter, dt,                 &
-     &      ak_diff(1,iak_diff), ele, g_FEM, jac_3d, FEM_elens,         &
+     &      ak_diff, ele, g_FEM, jac_3d, FEM_elens,                     &
      &      d_ele(1,iv_up), fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -219,9 +208,8 @@
 !
       subroutine int_sgs_div_tsr_upw                                    &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,  &
-     &          iele_fsmp_stack, num_int, dt, i_filter,                 &
-     &          ncomp_diff, iak_diff, ak_diff, i_field,                 &
-     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -237,8 +225,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -256,7 +243,7 @@
      &      k2, i_field, fem_wk%tensor_1)
         call fem_skv_div_tsr_sgs_upwind                                 &
      &     (iele_fsmp_stack, num_int, k2, i_filter, dt,                 &
-     &      ak_diff(1,iak_diff), ele, g_FEM, jac_3d, FEM_elens,         &
+     &      ak_diff, ele, g_FEM, jac_3d, FEM_elens,                     &
      &      d_ele(1,iv_up), fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
@@ -269,9 +256,8 @@
 !
       subroutine int_sgs_div_as_tsr_upw                                 &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld, FEM_elens,  &
-     &          iele_fsmp_stack, num_int, dt, i_filter,                 &
-     &          ncomp_diff, iak_diff, ak_diff, i_field,                 &
-     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -287,8 +273,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -306,7 +291,7 @@
      &      k2, i_field, fem_wk%vector_1)
         call fem_skv_div_as_tsr_sgs_upwind                              &
      &     (iele_fsmp_stack, num_int, k2, i_filter, dt,                 &
-     &      ak_diff(1,iak_diff), ele, g_FEM, jac_3d, FEM_elens,         &
+     &      ak_diff, ele, g_FEM, jac_3d, FEM_elens,                     &
      &      d_ele(1,iv_up), fem_wk%vector_1, fem_wk%sk6)
       end do
 !

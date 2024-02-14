@@ -198,15 +198,15 @@
         if (cmt_param%iflag_layerd_DIFF_coefs .eq. 0) then
           do i = 1, diff_coefs%num_field
             call set_diff_coefs_whole_ele                               &
-     &         (ele, fluid%istack_ele_fld_smp, i, diff_coefs%ntot_comp, &
-     &          wk_diff%fld_whole_clip, diff_coefs%ak)
+     &         (ele, fluid%istack_ele_fld_smp,                          &
+     &          wk_diff%fld_whole_clip(i), diff_coefs%ak(1,i))
           end do
         else
           do i = 1, diff_coefs%num_field
             call set_diff_coefs_layer_ele                               &
-     &         (ele, i, layer_egrp%num_grp, layer_egrp%num_item,        &
+     &         (ele, layer_egrp%num_grp, layer_egrp%num_item,           &
      &          layer_egrp%istack_grp_smp, layer_egrp%item_grp,         &
-     &          diff_coefs%ntot_comp, wk_diff%fld_clip, diff_coefs%ak)
+     &          wk_diff%fld_clip(1,i), diff_coefs%ak(1,i))
           end do
         end if
       end if

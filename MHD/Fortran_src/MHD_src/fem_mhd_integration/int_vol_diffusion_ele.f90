@@ -82,9 +82,8 @@
       if (iak_diff .gt. 0) then
         call int_vol_scalar_sgs_diffuse                                 &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,      &
-     &      iele_fsmp_stack, num_int, coef_crank, ak_d,                 &
-     &      i_scalar, ifilter_final, diff_coefs%num_field,              &
-     &      iak_diff, diff_coefs%ak, fem_wk, f_l)
+     &      iele_fsmp_stack, num_int, coef_crank, ak_d, i_scalar,       &
+     &      ifilter_final, diff_coefs%ak(1,iak_diff), fem_wk, f_l)
       else
         call int_vol_scalar_diffuse                                     &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
@@ -127,9 +126,8 @@
       if (iak_diff .gt. 0) then
         call int_vol_vector_sgs_diffuse                                 &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,      &
-     &      iele_fsmp_stack, num_int, coef_crank, ak_d,                 &
-     &      i_vector, ifilter_final, diff_coefs%num_field,              &
-     &      iak_diff, diff_coefs%ak, fem_wk, f_l)
+     &      iele_fsmp_stack, num_int, coef_crank, ak_d, i_vector,       &
+     &      ifilter_final, diff_coefs%ak(1,iak_diff), fem_wk, f_l)
       else
         call int_vol_vector_diffuse                                     &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
