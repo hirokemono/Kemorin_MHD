@@ -179,9 +179,10 @@
 !
       call int_vol_sk_po_bc(SGS_param%SGS_momentum%iflag_commute_field, &
      &    SGS_param%ifilter_final, FEM_prm%npoint_poisson_int,          &
-     &    iphys%exp_work%i_p_phi, iak_diff_velo,                        &
-     &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l, rhs_tbl,       &
-     &    FEM_elens, diff_coefs, Vnod_bcs%nod_bc_p, fem_wk, f_l)
+     &    iphys%exp_work%i_p_phi, node, ele, nod_fld,                   &
+     &    jacs%g_FEM, jacs%jac_3d_l, rhs_tbl, FEM_elens,                &
+     &    Vnod_bcs%nod_bc_p, diff_coefs%ak(1,iak_diff_velo),            &
+     &    fem_wk, f_l)
 !
 !   add boundary term for fixed pressure
 !
@@ -274,12 +275,12 @@
      &    mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,      &
      &    jacs%g_FEM, jacs%jac_sf_grp_l, rhs_tbl, fem_wk, surf_wk, f_l)
 !
-      call int_vol_sk_mp_bc(cmt_param%iflag_c_magne,                    &
-     &    SGS_param%ifilter_final, FEM_prm%npoint_poisson_int,          &
-     &    iphys%exp_work%i_m_phi, iak_diff_magne,                       &
+      call int_vol_sk_mp_bc                                             &
+     &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
+     &    FEM_prm%npoint_poisson_int, iphys%exp_work%i_m_phi,           &
      &    mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l,      &
-     &    rhs_tbl, FEM_elens, diff_coefs, Bnod_bcs%nod_bc_f,            &
-     &    fem_wk, f_l)
+     &    rhs_tbl, FEM_elens, Bnod_bcs%nod_bc_f,                        &
+     &    diff_coefs%ak(1,iak_diff_magne), fem_wk, f_l)
 !
       call set_boundary_ff(mesh%node, Bnod_bcs%nod_bc_f, f_l)
 !
@@ -374,11 +375,12 @@
      &    jacs%g_FEM, jacs%jac_sf_grp_l, rhs_tbl,                       &
      &    Fsf_bcs%grad, FEM_prm%npoint_poisson_int, fem_wk, f_l)
 !
-      call int_vol_sk_mp_bc(cmt_param%iflag_c_magne,                    &
-     &    SGS_param%ifilter_final, FEM_prm%npoint_poisson_int,          &
-     &    iphys%exp_work%i_m_phi, iak_diff_magne,                       &
-     &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l, rhs_tbl,       &
-     &    FEM_elens, diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
+      call int_vol_sk_mp_bc                                             &
+     &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
+     &    FEM_prm%npoint_poisson_int, iphys%exp_work%i_m_phi,           &
+     &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l,                &
+     &    rhs_tbl, FEM_elens, Bnod_bcs%nod_bc_f,                        &
+     &    diff_coefs%ak(1,iak_diff_magne), fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !

@@ -247,7 +247,7 @@
              icomp_diff_sgs%i_SGS_h_flux = id
              iak_diff_sgs%i_SGS_h_flux =  jd
              wk_diff%name(jd) = SGS_heat_flux%name
-             diff_coefs%num_comps(jd) = 3
+             diff_coefs%num_comps(jd) = 1
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
@@ -262,7 +262,7 @@
              icomp_diff_sgs%i_SGS_m_flux = id
              iak_diff_sgs%i_SGS_m_flux = jd
              wk_diff%name(jd) = SGS_momentum_flux%name
-             diff_coefs%num_comps(jd) = 9
+             diff_coefs%num_comps(jd) = 1
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
@@ -273,7 +273,7 @@
              icomp_diff_sgs%i_SGS_Lorentz = id
              iak_diff_sgs%i_SGS_Lorentz = jd
              wk_diff%name(jd) = SGS_Lorentz%name
-             diff_coefs%num_comps(jd) = 9
+             diff_coefs%num_comps(jd) = 1
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
@@ -286,7 +286,7 @@
              icomp_diff_sgs%i_SGS_induction = id
              iak_diff_sgs%i_SGS_induction =  jd
              wk_diff%name(jd) = SGS_induction%name
-             diff_coefs%num_comps(jd) = 9
+             diff_coefs%num_comps(jd) = 1
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
@@ -300,7 +300,7 @@
              icomp_diff_sgs%i_SGS_c_flux = id
              iak_diff_sgs%i_SGS_c_flux =  jd
              wk_diff%name(jd) = SGS_composit_flux%name
-             diff_coefs%num_comps(jd) = 3
+             diff_coefs%num_comps(jd) = 1
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
            end if
@@ -315,7 +315,7 @@
             icomp_diff_base%i_temp = id
             iak_diff_base%i_temp = jd
             wk_diff%name(jd) = temperature%name
-            diff_coefs%num_comps(jd) = 3
+            diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
@@ -328,7 +328,7 @@
             icomp_diff_base%i_light = id
             iak_diff_base%i_light = jd
             wk_diff%name(jd) = composition%name
-            diff_coefs%num_comps(jd) = 3
+            diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
@@ -341,7 +341,7 @@
             icomp_diff_base%i_velo = id
             iak_diff_base%i_velo = jd
             wk_diff%name(jd) = velocity%name
-            diff_coefs%num_comps(jd) = 9
+            diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
@@ -353,7 +353,7 @@
             icomp_diff_base%i_magne = id
             iak_diff_base%i_magne = jd
             wk_diff%name(jd) = magnetic_field%name
-            diff_coefs%num_comps(jd) = 9
+            diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
@@ -365,7 +365,7 @@
             icomp_diff_base%i_magne = id
             iak_diff_base%i_magne = jd
             wk_diff%name(jd) = magnetic_field%name
-            diff_coefs%num_comps(jd) = 9
+            diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
         end if
