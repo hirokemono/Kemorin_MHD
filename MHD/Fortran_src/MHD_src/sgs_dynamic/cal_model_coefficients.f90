@@ -383,8 +383,7 @@
         if(SGS_par%commute_p%iflag_c_uxb .eq. id_SGS_commute_ON) then
           if(iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_induct'
           call s_cal_diff_coef_sgs_induct                               &
-     &      (iak_diff_sgs%i_SGS_induction,                              &
-     &       icomp_sgs_term%i_SGS_induction,                            &
+     &      (icomp_sgs_term%i_SGS_induction,                            &
      &       icomp_diff_sgs%i_SGS_induction, iphys_elediff_fil,         &
      &       time_d%dt, FEM_prm, SGS_par, geofem%mesh, geofem%group,    &
      &       MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,        &
@@ -393,7 +392,7 @@
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       fem_int, sgs_coefs, FEM_filters, SGS_MHD_wk%mk_MHD,        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
-     &       SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs,                   &
+     &       SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs%Cdiff_SGS_uxb,     &
      &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         end if
 !

@@ -111,6 +111,16 @@
      &       Csims_FEM_MHD%diff_coefs%Cdiff_light)
       end if
 !
+!
+      if(Csims_FEM_MHD%diff_coefs%Cdiff_SGS_uxb%iak_diff .gt. 0) then
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_uxb)
+      else
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_uxb)
+      end if
+!
+!
       if(iflag_debug .gt. 0) then
         call check_sgs_diff_addresses(Csims_FEM_MHD%iak_diff_sgs,       &
      &     Csims_FEM_MHD%icomp_diff_base, Csims_FEM_MHD%icomp_diff_sgs, &
@@ -317,8 +327,8 @@
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            if (cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
              icomp_diff_sgs%i_SGS_induction = id
-             iak_diff_sgs%i_SGS_induction =  jd
              wk_diff%name(jd) = SGS_induction%name
+             diff_coefs%Cdiff_SGS_uxb%iak_diff = jd
              diff_coefs%num_comps(jd) = 1
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
@@ -453,12 +463,12 @@
      &        diff_coefs%num_comps(iak_diff_sgs%i_SGS_Lorentz),         &
      &        trim(wk_diff%name(iak_diff_sgs%i_SGS_Lorentz))
         end if
-        if(iak_diff_sgs%i_SGS_induction .gt. 0) then
+        if(diff_coefs%Cdiff_SGS_uxb%iak_diff .gt. 0) then
           write(*,*) 'iak_diff_uxb',                                    &
-     &        iak_diff_sgs%i_SGS_induction,                             &
+     &        diff_coefs%Cdiff_SGS_uxb%iak_diff,                        &
      &        icomp_diff_sgs%i_SGS_induction,                           &
-     &        diff_coefs%num_comps(iak_diff_sgs%i_SGS_induction),       &
-     &        trim(wk_diff%name(iak_diff_sgs%i_SGS_induction))
+     &        diff_coefs%Cdiff_SGS_uxb%num_comp,                        &
+     &        trim(wk_diff%name(diff_coefs%Cdiff_SGS_uxb%iak_diff))
         end if
 !
         if(diff_coefs%Cdiff_temp%iak_diff .gt. 0) then

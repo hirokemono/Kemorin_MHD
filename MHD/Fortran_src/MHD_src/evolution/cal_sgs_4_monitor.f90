@@ -354,7 +354,7 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     iphys%base, iphys%forces, iphys%div_forces, iphys%diffusion, &
      &     iphys_LES%SGS_term, iphys_ele_base, ele_fld, fem_int,        &
-     &     FEM_elens, diff_coefs%ak(1,iak_diff_sgs%i_SGS_induction),    &
+     &     FEM_elens, diff_coefs%Cdiff_SGS_uxb%coef(1,1),               &
      &     mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,               &
      &     v_sol, SR_sig, SR_r)
       end if

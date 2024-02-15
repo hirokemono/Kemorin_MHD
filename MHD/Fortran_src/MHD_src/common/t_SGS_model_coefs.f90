@@ -58,6 +58,9 @@
         type(SGS_model_coefficient) :: Cdiff_temp
 !>       Structure for commutationa error coefficient for temperature
         type(SGS_model_coefficient) :: Cdiff_light
+!
+!>       Structure for commutationa error coefficient for SGS inducion
+        type(SGS_model_coefficient) :: Cdiff_SGS_uxb
       end type SGS_coefficients_type
 !
 ! -------------------------------------------------------------------

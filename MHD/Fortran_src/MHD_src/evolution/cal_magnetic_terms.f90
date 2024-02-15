@@ -14,9 +14,8 @@
 !!      subroutine cal_magnetic_diffusion(ak_d_magne,                   &
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
 !!     &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
-!!     &          iphys_base, iphys_dif, iphys_SGS, fem_int,            &
-!!     &          FEM_elens, iak_diff_sgs, diff_coefs, rhs_mat, nod_fld,&
-!!     &          v_sol, SR_sig, SR_r)
+!!     &          iphys_base, iphys_dif, iphys_SGS, fem_int, FEM_elens, &
+!!     &          diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -200,14 +199,11 @@
       subroutine cal_magnetic_diffusion(ak_d_magne,                     &
      &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
      &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,      &
-     &          iphys_base, iphys_dif, iphys_SGS, fem_int,              &
-     &          FEM_elens, iak_diff_sgs, diff_coefs, rhs_mat, nod_fld,  &
-     &          v_sol, SR_sig, SR_r)
+     &          iphys_base, iphys_dif, iphys_SGS, fem_int, FEM_elens,   &
+     &          diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
-!
-      type(SGS_term_address), intent(in) :: iak_diff_sgs
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -253,7 +249,7 @@
      &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                     &
      &   iphys_base, iphys_dif, iphys_SGS, nod_fld,                     &
      &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
-     &   FEM_elens, diff_coefs%ak(1,iak_diff_sgs%i_SGS_induction),      &
+     &   FEM_elens, diff_coefs%Cdiff_SGS_uxb%coef(1,1),                 &
      &   rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node,                           &
