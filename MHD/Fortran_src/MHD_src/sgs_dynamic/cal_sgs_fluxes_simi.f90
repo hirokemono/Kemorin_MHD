@@ -112,9 +112,8 @@
 !  ----------   substruct flux obtained by filterd values
 !
       call cal_sgs_flux_tensor(node%numnod, node%istack_nod_smp,        &
-     &    nod_fld%ntot_phys, i_sgs, i_vect_f, i_vect_f,                 &
-     &    sgs_coefs_nod%ntot_comp, icm_sgs, sgs_coefs_nod%ak,           &
-     &    nod_fld%d_fld)
+     &    sgs_coefs_nod%ak(1,icm_sgs), i_sgs, i_vect_f, i_vect_f,       &
+     &    nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine cal_sgs_mf_simi
 !
@@ -157,9 +156,8 @@
      &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       call cal_sgs_flux_vector(node%numnod, node%istack_nod_smp,        &
-     &    nod_fld%ntot_phys, i_sgs, ivelo_f, ifield_f,                  &
-     &    sgs_coefs_nod%ntot_comp, icm_sgs, sgs_coefs_nod%ak,           &
-     &    nod_fld%d_fld)
+     &    sgs_coefs_nod%ak(1,icm_sgs), i_sgs, ivelo_f, ifield_f,        &
+     &    nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine cal_sgs_sf_simi
 !
@@ -199,10 +197,9 @@
 !
 !  ----------   substruct flux obtained by filterd values
 !
-      call subctract_induction_tensor                                   &
-     &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
-     &    i_sgs, i_fil_b, i_fil_v, sgs_coefs_nod%ntot_comp, icm_sgs,    &
-     &    sgs_coefs_nod%ak, nod_fld%d_fld)
+      call subctract_induction_tensor(node%numnod, node%istack_nod_smp, &
+     &    sgs_coefs_nod%ak(1,icm_sgs), i_sgs, i_fil_b, i_fil_v,         &
+     &    nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine cal_sgs_induct_t_simi
 !
@@ -240,7 +237,7 @@
      &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       call subctract_uxb_vector(node%numnod, node%istack_nod_smp,       &
-     &    nod_fld%ntot_phys, i_sgs, i_fil_v, i_fil_b, nod_fld%d_fld)
+     &    i_sgs, i_fil_v, i_fil_b, nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine cal_sgs_uxb_simi
 !

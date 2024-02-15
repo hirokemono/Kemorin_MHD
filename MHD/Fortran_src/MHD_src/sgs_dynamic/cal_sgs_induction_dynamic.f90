@@ -208,6 +208,7 @@
       use cal_model_diff_coefs
       use cvt_dynamic_scheme_coord
       use reduce_model_coefs
+      use overwrite_prod_const_smp
 !
       integer(kind = kint), intent(in) :: iak_SGS_induction
       integer(kind = kint), intent(in) :: icomp_SGS_induction
@@ -312,9 +313,13 @@
 !
       call reduce_model_coefs_layer(SGS_par%model_p%SGS_uxb_factor,     &
      &    iak_SGS_induction, FEM_SGS_wk%wk_sgs)
-      call reduce_ele_vect_model_coefs                                  &
-     &   (mesh%ele, SGS_par%model_p%SGS_uxb_factor,                     &
-     &    sgs_coefs%ntot_comp, icomp_SGS_induction, sgs_coefs%ak)
+!
+!$omp parallel
+      call ovwrt_coef_prod_vect_smp                                     &
+     &   (np_smp, mesh%ele%numele, mesh%ele%istack_ele_smp,             &
+     &    SGS_par%model_p%SGS_uxb_factor,                               &
+     &    sgs_coefs%ak(1,icomp_SGS_induction))
+!$omp end parallel
 !
       end subroutine cal_sgs_induct_t_dynamic
 !

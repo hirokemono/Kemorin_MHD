@@ -81,6 +81,7 @@
       use cal_model_diff_coefs
       use cvt_dynamic_scheme_coord
       use reduce_model_coefs
+      use overwrite_prod_const_smp
 !
       integer(kind = kint), intent(in) :: iflag_supg, num_int
       integer(kind = kint), intent(in) :: itype_Csym_flux
@@ -179,8 +180,12 @@
 !
       call reduce_model_coefs_layer                                     &
      &   (SGS_flux_factor, iak_sgs_hlux, FEM_SGS_wk%wk_sgs)
-      call reduce_ele_vect_model_coefs(mesh%ele, SGS_flux_factor,       &
-     &    sgs_coefs%ntot_comp, icomp_sgs_flux, sgs_coefs%ak)
+!
+!$omp parallel
+      call ovwrt_coef_prod_vect_smp                                     &
+     &   (np_smp, mesh%ele%numele, mesh%ele%istack_ele_smp,             &
+     &    SGS_flux_factor, sgs_coefs%ak(1,icomp_sgs_flux))
+!$omp end parallel
 !
       end subroutine cal_sgs_sf_dynamic
 !

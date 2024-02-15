@@ -109,7 +109,7 @@
 !     set elemental model coefficients
 !
       call prod_model_coefs_4_vector(ele, itype_Csym_uxb, icoord_Csim,  &
-     &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
+     &    sgs_coefs%ak(1,icomp_sgs_uxb), fem_wk%sk6)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_nl%ff_smp)

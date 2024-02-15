@@ -4,14 +4,11 @@
 !      Written by H. Matsui on Apr., 2012
 !
 !!      subroutine prod_model_coefs_4_tensor                            &
-!!     &         (ele, itype_Csim, icoord_Csim,  ntot_comp_ele,         &
-!!     &          icomp_sgs, ak_sgs, sk6)
+!!     &         (ele, itype_Csim, icoord_Csim, ak_sgs, sk6)
 !!      subroutine prod_model_coefs_4_vector                            &
-!!     &         (ele, itype_Csim, icoord_Csim, ntot_comp_ele,          &
-!!     &          icomp_sgs, ak_sgs, sk6)
+!!     &         (ele, itype_Csim, icoord_Csim, ak_sgs, sk6)
 !!      subroutine prod_model_coefs_4_asym_t                            &
-!!     &         (ele, itype_Csim, icoord_Csim, ntot_comp_ele,          &
-!!     &          icomp_sgs, ak_sgs, sk6)
+!!     &         (ele, itype_Csim, icoord_Csim, ak_sgs, sk6)
 !
       module product_model_coefs_to_sk
 !
@@ -33,8 +30,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prod_model_coefs_4_tensor                              &
-     &         (ele, itype_Csim, icoord_Csim,  ntot_comp_ele,           &
-     &          icomp_sgs, ak_sgs, sk6)
+     &         (ele, itype_Csim, icoord_Csim, ak_sgs, sk6)
 !
       use cvt_xyz_tensor_2_cyl_smp
       use cvt_xyz_tensor_2_sph_smp
@@ -44,8 +40,7 @@
 !
       type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: itype_Csim, icoord_Csim
-      integer (kind = kint), intent(in) :: ntot_comp_ele, icomp_sgs
-      real (kind=kreal), intent(in) :: ak_sgs(ele%numele,ntot_comp_ele)
+      real (kind=kreal), intent(in) :: ak_sgs(ele%numele,n_sym_tensor)
       real (kind=kreal), intent(inout)                                  &
      &             :: sk6(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
@@ -63,7 +58,7 @@
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
-     &          ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &          ak_sgs(1,1), sk6(1,1,k1) )
             call overwrite_xyz_tensor_by_sph_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -79,7 +74,7 @@
      &          ele%s_ele, ele%as_ele)
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
-     &          ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &          ak_sgs(1,1), sk6(1,1,k1) )
             call overwrite_xyz_tensor_by_cyl_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -89,14 +84,14 @@
         else
           do k1 = 1, ele%nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele%numele,       &
-     &          ele%istack_ele_smp, ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &          ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
           end do
         end if
 !
       else
         do k1 = 1, ele%nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele%numele,         &
-     &        ele%istack_ele_smp, ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &        ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
          end do
       end if
 !$omp end parallel
@@ -106,8 +101,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prod_model_coefs_4_vector                              &
-     &         (ele, itype_Csim, icoord_Csim, ntot_comp_ele,            &
-     &          icomp_sgs, ak_sgs, sk6)
+     &         (ele, itype_Csim, icoord_Csim, ak_sgs, sk6)
 !
       use cvt_xyz_vector_2_cyl_smp
       use cvt_xyz_vector_2_sph_smp
@@ -117,8 +111,7 @@
 !
       type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: itype_Csim, icoord_Csim
-      integer (kind = kint), intent(in) :: ntot_comp_ele, icomp_sgs
-      real(kind=kreal), intent(in) :: ak_sgs(ele%numele,ntot_comp_ele)
+      real(kind=kreal), intent(in) :: ak_sgs(ele%numele,n_vector)
       real(kind=kreal), intent(inout)                                   &
      &              :: sk6(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
@@ -135,7 +128,7 @@
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
-     &          ak_sgs(1,icomp_sgs), sk6(1,1,k1))
+     &          ak_sgs(1,1), sk6(1,1,k1))
             call overwrite_sph_vect_2_xyz_smp                           &
      &         (ele%numele, sk6(1,1,k1), ele%theta_ele, ele%phi_ele)
           end do
@@ -147,7 +140,7 @@
      &          ele%s_ele, ele%as_ele)
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
-     &          ak_sgs(1,icomp_sgs), sk6(1,1,k1))
+     &          ak_sgs(1,1), sk6(1,1,k1))
             call overwrite_cyl_vect_2_xyz_smp                           &
      &         (ele%numele, sk6(1,1,k1), ele%phi_ele)
           end do
@@ -155,14 +148,14 @@
         else
           do k1 = 1, ele%nnod_4_ele
             call ovwrt_vector_vector_prod_smp(np_smp, ele%numele,       &
-     &          ele%istack_ele_smp, ak_sgs(1,icomp_sgs), sk6(1,1,k1))
+     &          ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1))
           end do
         end if
 !
       else
         do k1 = 1, ele%nnod_4_ele
           call ovwrt_vec_scalar_prod_smp(np_smp, ele%numele,            &
-     &        ele%istack_ele_smp, ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &        ele%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
          end do
       end if
 !$omp end parallel
@@ -172,8 +165,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prod_model_coefs_4_asym_t                              &
-     &         (ele, itype_Csim, icoord_Csim, ntot_comp_ele,            &
-     &          icomp_sgs, ak_sgs, sk6)
+     &         (ele, itype_Csim, icoord_Csim, ak_sgs, sk6)
 !
       use cvt_xyz_asym_t_2_cyl_smp
       use cvt_xyz_asym_t_2_sph_smp
@@ -183,8 +175,7 @@
 !
       type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: itype_Csim, icoord_Csim
-      integer (kind = kint), intent(in) :: ntot_comp_ele, icomp_sgs
-      real(kind=kreal), intent(in) :: ak_sgs(ele%numele,ntot_comp_ele)
+      real(kind=kreal), intent(in) :: ak_sgs(ele%numele)
       real (kind=kreal), intent(inout)                                  &
      &             :: sk6(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
@@ -202,7 +193,7 @@
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
-     &          ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &          ak_sgs(1), sk6(1,1,k1) )
             call overwrite_xyz_asym_t_by_sph_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -218,7 +209,7 @@
      &          ele%s_ele, ele%as_ele)
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele%numele, ele%istack_ele_smp,                 &
-     &          ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &          ak_sgs(1), sk6(1,1,k1) )
             call overwrite_xyz_asym_t_by_cyl_smp                        &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
      &          ele%x_ele(1:ele%numele,1), ele%x_ele(1:ele%numele,2),   &
@@ -228,7 +219,7 @@
         else
           do k1 = 1, ele%nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele%numele,       &
-     &          ele%istack_ele_smp, ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &          ele%istack_ele_smp, ak_sgs(1), sk6(1,1,k1) )
           end do
 !
         end if
@@ -236,7 +227,7 @@
       else
         do k1 = 1, ele%nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele%numele,         &
-     &        ele%istack_ele_smp, ak_sgs(1,icomp_sgs), sk6(1,1,k1) )
+     &        ele%istack_ele_smp, ak_sgs(1), sk6(1,1,k1) )
          end do
 !
       end if

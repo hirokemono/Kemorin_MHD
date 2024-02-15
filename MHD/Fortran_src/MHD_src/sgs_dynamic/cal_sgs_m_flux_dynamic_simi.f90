@@ -113,8 +113,7 @@
      &    icomp_sgs_term%i_SGS_m_flux, sgs_coefs)
       call reset_tensor_sgs_nod_m_coefs                                 &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
-     &    sgs_coefs_nod%ntot_comp, icomp_sgs_term%i_SGS_m_flux,         &
-     &    sgs_coefs_nod%ak)
+     &    sgs_coefs_nod%ak(1,icomp_sgs_term%i_SGS_m_flux))
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   similarity model with wider filter
@@ -231,8 +230,7 @@
      &    icomp_sgs_term%i_SGS_Lorentz, sgs_coefs)
       call reset_tensor_sgs_nod_m_coefs                                 &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
-     &    sgs_coefs_nod%ntot_comp, icomp_sgs_term%i_SGS_Lorentz,        &
-     &    sgs_coefs_nod%ak)
+     &    sgs_coefs_nod%ak(1,icomp_sgs_term%i_SGS_Lorentz))
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   similarity model with wider filter

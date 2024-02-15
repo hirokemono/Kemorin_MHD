@@ -114,7 +114,7 @@
 !     set elemental model coefficients
 !
       call prod_model_coefs_4_vector(ele, itype_Csym_flux, icoord_Csim, &
-     &    sgs_coefs%ntot_comp, icomp_sgs_hf, sgs_coefs%ak, fem_wk%sk6)
+     &    sgs_coefs%ak(1,icomp_sgs_hf), fem_wk%sk6)
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_l%ff_smp)

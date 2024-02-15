@@ -120,8 +120,7 @@
 !
       call prod_model_coefs_4_tensor                                    &
      &   (ele, SGS_param%SGS_momentum%itype_Csym_flux,                  &
-     &    SGS_param%icoord_Csim, sgs_coefs%ntot_comp,                   &
-     &    icm_sgs, sgs_coefs%ak, fem_wk%sk6)
+     &    SGS_param%icoord_Csim, sgs_coefs%ak(1,icm_sgs), fem_wk%sk6)
 !
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &
      &     fem_wk%sk6, mhd_fem_wk%ff_t_smp)

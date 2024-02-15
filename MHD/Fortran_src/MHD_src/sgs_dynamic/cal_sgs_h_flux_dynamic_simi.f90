@@ -95,7 +95,7 @@
      &   (mesh%ele, FEM_filters%layer_tbl, icomp_sgs_flux, sgs_coefs)
       call reset_vector_sgs_nod_m_coefs                                 &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
-     &    sgs_coefs_nod%ntot_comp, icomp_sgs_flux, sgs_coefs_nod%ak)
+     &    sgs_coefs_nod%ak(1,icomp_sgs_flux))
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   similarity model with wider filter
