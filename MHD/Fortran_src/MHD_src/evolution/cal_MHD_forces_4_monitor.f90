@@ -420,8 +420,8 @@
      &     (ak_MHD%ak_d_magne, FEM_prm, SGS_par%model_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
-     &      FEM_elens, diff_coefs%Cdiff_magne%num_comp, diff_coefs%Cdiff_magne%coef, &
-     &      mk_MHD%mlump_cd, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      FEM_elens, diff_coefs%Cdiff_magne, mk_MHD%mlump_cd,         &
+     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_b_diffuse .gt. izero                        &

@@ -215,9 +215,9 @@
      &      fluid, group%surf_grp, group%surf_nod_grp,                  &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele_base, &
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
-     &      diff_coefs%Cdiff_velo%iak_diff, diff_coefs%Cdiff_velo%coef(1,1), &
-     &      mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk,    &
-     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      diff_coefs%Cdiff_velo, mk_MHD%mlump_fl, Vmatrix,            &
+     &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld,            &
+     &      v_sol, SR_sig, SR_r)
 !
 !
         call cal_rms_scalar_potential                                   &

@@ -270,9 +270,8 @@
      &   (SGS_param%ifilter_final, fluid%istack_ele_fld_smp,            &
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, diff_coefs%Cdiff_velo%iak_diff, diff_coefs%Cdiff_velo%coef(1,1),  &
-     &    one, ak_MHD%ak_d_velo, iphys_base%i_velo,                     &
-     &    rhs_mat%fem_wk, rhs_mat%f_l)
+     &    FEM_elens, diff_coefs%Cdiff_velo, one, ak_MHD%ak_d_velo,      &
+     &    iphys_base%i_velo, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_surf_velo_monitor(iphys_dif%i_v_diffuse,                 &
      &    ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                   &

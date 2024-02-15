@@ -195,12 +195,12 @@
      &      iphys%base%i_mag_p, nod_fld%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
-        call cal_vector_p_co(Csims_FEM_MHD%diff_coefs%Cdiff_magne%num_comp, ak_d_magne,   &
-     &      dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,            &
+        call cal_vector_p_co(ak_d_magne, dt,                            &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,           &
      &      iphys%base, iphys%exp_work, iphys_ele_base, ele_fld,        &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,        &
-     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                  &
+     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne,                       &
      &      fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk,     &
      &      rhs_mat, nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
@@ -344,8 +344,7 @@
      &      mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,           &
      &      iphys, iphys_ele_base, ele_fld,                             &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,        &
-     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%num_comp,              &
-     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                  &
+     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne,                       &
      &      fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk,     &
      &      rhs_mat,nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !

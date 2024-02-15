@@ -3,10 +3,10 @@
 !
 !      Written by H. Matsui on june, 2005
 !
-!!      subroutine int_vol_solenoid_co(num_int, ifilter_final,          &
-!!     &          iele_fsmp_stack, i_scalar, iflag_diff,                &
+!!      subroutine int_vol_solenoid_co                                  &
+!!     &         (num_int, ifilter_final, iele_fsmp_stack, i_scalar,    &
 !!     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,        &
-!!     &          rhs_tbl, FEM_elen, fem_wk, f_nl)
+!!     &          rhs_tbl, FEM_elen, Cdiff, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -14,6 +14,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
@@ -40,10 +41,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_solenoid_co(num_int, ifilter_final,            &
-     &          iele_fsmp_stack, i_scalar, iflag_diff,                  &
+      subroutine int_vol_solenoid_co                                    &
+     &         (num_int, ifilter_final, iele_fsmp_stack, i_scalar,      &
      &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
-     &          rhs_tbl, FEM_elen, ak_diff, fem_wk, f_nl)
+     &          rhs_tbl, FEM_elen, Cdiff, fem_wk, f_nl)
 !
       use int_vol_fractional
       use int_vol_sgs_fractional
@@ -55,22 +56,22 @@
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(SGS_model_coefficient), intent(in) :: Cdiff
 !
       integer(kind=kint), intent(in) :: num_int
       integer(kind=kint), intent(in) :: ifilter_final
-      integer(kind=kint), intent(in) :: i_scalar, iflag_diff
+      integer(kind=kint), intent(in) :: i_scalar
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
-      if(iflag_diff .gt. 0) then
+      if(Cdiff%num_comp .gt. 0) then
         call int_vol_sgs_div_v_linear                                   &
      &    (node, ele, g_FEM, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elen,     &
      &     nod_fld, iele_fsmp_stack, num_int, i_scalar, ifilter_final,  &
-     &     ak_diff, fem_wk, f_nl)
+     &     Cdiff%coef(1,1), fem_wk, f_nl)
       else
         call int_vol_solenoidal_co                                      &
      &     (node, ele, g_FEM, jac_3d_q, jac_3d_l, rhs_tbl, nod_fld,     &
