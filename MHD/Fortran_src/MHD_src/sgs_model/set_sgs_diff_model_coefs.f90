@@ -16,14 +16,12 @@
 !!        integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!
-!!      subroutine clear_model_coefs_2_ele                              &
-!!     &         (ele, numdir, icomp_f, ntot_comp_ele, ak_sgs)
+!!        subroutine clear_model_coefs_2_ele(ele, numdir, ak_sgs)
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!
 !!      subroutine set_model_coefs_2_ele(ele, itype_csim, numdir,       &
-!!     &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,         &
-!!     &          layer_stack_smp, item_layer, num_kind_ele,            &
-!!     &          ntot_comp_ele, sgs_f_clip, sgs_c_clip, ak_sgs)
+!!     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,&
+!!     &         sgs_f_clip, sgs_c_clip, ak_sgs)
 !!      subroutine set_diff_coefs_layer_ele                             &
 !!     &         (ele, n_layer_d, n_item_layer_d, layer_stack_smp,      &
 !!     &          item_layer, diff_f_clip, ak_diff)
@@ -266,32 +264,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine clear_model_coefs_2_ele                                &
-     &         (ele, numdir, icomp_f, ntot_comp_ele, ak_sgs)
+      subroutine clear_model_coefs_2_ele(ele, numdir, ak_sgs)
 !
       use m_machine_parameter
 !
       type(element_data), intent(in) :: ele
-      integer (kind = kint), intent(in) :: ntot_comp_ele, numdir
-      integer (kind = kint), intent(in) :: icomp_f
+      integer (kind = kint), intent(in) :: numdir
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_sgs(ele%numele,ntot_comp_ele)
+      real(kind = kreal), intent(inout) :: ak_sgs(ele%numele,numdir)
 !
-      integer (kind = kint) :: ip, ist, ied, nst, ned
+      integer (kind = kint) :: ip, ist, ied
       integer (kind = kint) :: iele, nd
 !
-!
-      nst = icomp_f
-      ned = icomp_f + numdir - 1
 !
 !$omp parallel do private(ist,ied,iele)
       do ip = 1, np_smp
         ist = ele%istack_ele_smp(ip-1) + 1
         ied = ele%istack_ele_smp(ip  )
-        do nd = nst, ned
+        do nd = 1, numdir
 !cdir nodep
-          do iele = ist, ied
+          do iele = ist,ied
             ak_sgs(iele,nd) = zero
           end do
         end do
@@ -304,41 +296,33 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_model_coefs_2_ele(ele, itype_csim, numdir,         &
-     &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,           &
-     &          layer_stack_smp, item_layer, num_kind_ele,              &
-     &          ntot_comp_ele, sgs_f_clip, sgs_c_clip, ak_sgs)
+     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,  &
+     &         sgs_f_clip, sgs_c_clip, ak_sgs)
 !
       use m_machine_parameter
 !
       type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: itype_csim
-      integer (kind = kint), intent(in) :: num_kind_ele, ntot_comp_ele
       integer (kind = kint), intent(in) :: numdir
-      integer (kind = kint), intent(in) :: ifield_d, icomp_f
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+      real(kind = kreal), intent(in) :: sgs_f_clip(n_item_layer_d)
       real(kind = kreal), intent(in)                                    &
-     &          :: sgs_f_clip(n_item_layer_d,num_kind_ele)
-      real(kind = kreal), intent(in)                                    &
-     &          :: sgs_c_clip(n_item_layer_d,ntot_comp_ele)
+     &          :: sgs_c_clip(n_item_layer_d,numdir)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_sgs(ele%numele,ntot_comp_ele)
+      real(kind = kreal), intent(inout) :: ak_sgs(ele%numele,numdir)
 !
-      integer (kind = kint) :: ip, is, ist, ied, nst, ned
+      integer (kind = kint) :: ip, is, ist, ied
       integer (kind = kint) :: inum, iele0, iele, nd
 !
-!
-      nst = icomp_f
-      ned = icomp_f + numdir - 1
 !
       if(itype_csim .eq. 1) then
 !$omp parallel do private(is,ist,ied,inum,iele0,iele)
         do ip = 1, np_smp
-          do nd = nst, ned
+          do nd = 1, numdir
             do inum = 1, n_layer_d
               is = (inum-1)*np_smp + ip
               ist = layer_stack_smp(is-1) + 1
@@ -357,7 +341,7 @@
       else
 !$omp parallel do private(is,ist,ied,inum,iele0,iele)
         do ip = 1, np_smp
-          do nd = nst, ned
+          do nd = 1, numdir
             do inum = 1, n_layer_d
               is = (inum-1)*np_smp + ip
               ist = layer_stack_smp(is-1) + 1
@@ -366,7 +350,7 @@
 !cdir nodep
               do iele0 = ist, ied
                 iele = item_layer(iele0)
-                ak_sgs(iele,nd) = sgs_f_clip(inum,ifield_d)
+                ak_sgs(iele,nd) = sgs_f_clip(inum)
               end do
             end do
           end do

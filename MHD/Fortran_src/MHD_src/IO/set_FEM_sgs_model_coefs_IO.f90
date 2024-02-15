@@ -187,13 +187,13 @@
 !
       do i = 1, sgs_coefs%num_field
          ist = sgs_coefs%istack_comps(i-1) + 1
-         call clear_model_coefs_2_ele(ele, sgs_coefs%num_comps(i), ist, &
-     &      sgs_coefs%ntot_comp, sgs_coefs%ak)
+         call clear_model_coefs_2_ele(ele, sgs_coefs%num_comps(i),      &
+     &                                sgs_coefs%ak(1,ist))
          call set_model_coefs_2_ele(ele, izero, sgs_coefs%num_comps(i), &
-     &       i, ist, layer_egrp%num_grp, layer_egrp%num_item,           &
+     &       layer_egrp%num_grp, layer_egrp%num_item,                   &
      &       layer_egrp%istack_grp_smp, layer_egrp%item_grp,            &
-     &       sgs_coefs%num_field, sgs_coefs%ntot_comp,                  &
-     &       wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
+     &       wk_sgs%fld_clip(1,i), wk_sgs%comp_clip(1,ist),             &
+     &       sgs_coefs%ak(1,ist))
       end do
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then

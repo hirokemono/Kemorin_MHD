@@ -165,16 +165,15 @@
 !
 !   lead SGS momentum flux using original model coefficient
 !
-      call clear_model_coefs_2_ele                                      &
-     &   (ele, n_sym_tensor, icomp_sgs_term%i_SGS_m_flux,               &
-     &    sgs_coefs%ntot_comp, sgs_coefs%ak)
+      call clear_model_coefs_2_ele(ele, n_sym_tensor,                   &
+     &    sgs_coefs%ak(1,icomp_sgs_term%i_SGS_m_flux))
       call set_model_coefs_2_ele(ele,                                   &
      &    SGS_par%model_p%SGS_momentum%itype_Csym_flux, n_sym_tensor,   &
-     &    iak_sgs_term%i_SGS_m_flux, icomp_sgs_term%i_SGS_m_flux,       &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
      &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
-     &    sgs_coefs%num_field, sgs_coefs%ntot_comp,                     &
-     &    wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
+     &    wk_sgs%fld_clip(1,iak_sgs_term%i_SGS_m_flux),                 &
+     &    wk_sgs%comp_clip(1,icomp_sgs_term%i_SGS_m_flux),              &
+     &    sgs_coefs%ak(1,icomp_sgs_term%i_SGS_m_flux))
 !
       call cal_sgs_momentum_flux(dt, FEM_prm, SGS_par%model_p,          &
      &    SGS_par%filter_p, nod_comm, node, ele, fluid, iphys%base,     &

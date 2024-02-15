@@ -128,14 +128,13 @@
      &   (SGS_par%iflag_SGS_initial, SGS_par%model_p,                   &
      &    n_tensor, ifield_d, icomp_f, wk_sgs)
 !
-      call clear_model_coefs_2_ele(ele, n_tensor, icomp_f,              &
-     &    sgs_coefs%ntot_comp, sgs_coefs%ak)
-      call set_model_coefs_2_ele                                        &
-     &   (ele, itype_csim, n_tensor, ifield_d, icomp_f,                 &
+      call clear_model_coefs_2_ele(ele, n_tensor,                       &
+     &                             sgs_coefs%ak(1,icomp_f))
+      call set_model_coefs_2_ele(ele, itype_csim, n_tensor,             &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
      &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
-     &    sgs_coefs%num_field, sgs_coefs%ntot_comp,                     &
-     &    wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
+     &    wk_sgs%fld_clip(1,ifield_d), wk_sgs%comp_clip(1,icomp_f),     &
+     &    sgs_coefs%ak(1,icomp_f))
 !
       end subroutine cal_model_coefs
 !

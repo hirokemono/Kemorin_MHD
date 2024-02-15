@@ -60,9 +60,8 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
-      call clear_model_coefs_2_ele                                      &
-     &   (ele, n_sym_tensor, icomp_sgs_term%i_SGS_m_flux,               &
-     &    sgs_coefs%ntot_comp, sgs_coefs%ak)
+      call clear_model_coefs_2_ele(ele, n_sym_tensor,                   &
+     &    sgs_coefs%ak(1,icomp_sgs_term%i_SGS_m_flux))
 !
       if(fl_prop%iflag_4_gravity                                        &
      &     .and. fl_prop%iflag_4_composit_buo) then
