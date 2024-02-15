@@ -11,7 +11,7 @@
 !!      subroutine int_MHD_poisson_matrices                             &
 !!     &         (num_int, ifilter_final, iflag_commute_magne,          &
 !!     &          mesh, fl_prop, cd_prop, g_FEM, jac_3d_l, rhs_tbl,     &
-!!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens, iak_diff_base, &
+!!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                &
 !!     &          diff_coefs, fem_wk, mat_press, mat_magp)
 !!      subroutine int_MHD_crank_matrices                               &
 !!     &         (num_int, dt, ifilter_final, mesh,                     &
@@ -79,7 +79,7 @@
       subroutine int_MHD_poisson_matrices                               &
      &         (num_int, ifilter_final, iflag_commute_magne,            &
      &          mesh, fl_prop, cd_prop, g_FEM, jac_3d_l, rhs_tbl,       &
-     &          MG_mat_linear, MG_mat_fl_l, FEM_elens, iak_diff_base,   &
+     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                  &
      &          diff_coefs, fem_wk, mat_press, mat_magp)
 !
       integer(kind = kint), intent(in) :: num_int
@@ -94,7 +94,6 @@
       type(table_mat_const),  intent(in) :: MG_mat_linear
       type(table_mat_const),  intent(in) :: MG_mat_fl_l
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -106,8 +105,8 @@
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_fl_l,            &
      &      FEM_elens, iflag_commute_magne, num_int,                    &
-     &      diff_coefs%ak(1,iak_diff_base%i_velo),                      &
-     &      ifilter_final, fem_wk, mat_press)
+     &      diff_coefs%Cdiff_velo%coef(1,1), ifilter_final,             &
+     &      fem_wk, mat_press)
       end if
 !
       if (     cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
@@ -159,7 +158,7 @@
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &     rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                    &
-     &     iak_diff_base%i_velo, diff_coefs%ak(1,iak_diff_base%i_velo), &
+     &     diff_coefs%Cdiff_velo%iak_diff, diff_coefs%Cdiff_velo%coef(1,1), &
      &     dt, fl_prop%coef_imp, ak_MHD%ak_d_velo, ifilter_final,       &
      &     fem_wk, mat_velo)
       end if

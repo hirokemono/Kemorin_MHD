@@ -122,8 +122,7 @@
      &        SGS_param, mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, &
      &        group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,     &
      &        FEM_elens, nod_bcs%Vnod_bcs%nod_bc_w,                     &
-     &        surf_bcs%Vsf_bcs%sgs,                                     &
-     &        diff_coefs%ak(1,iak_diff_base%i_velo),                    &
+     &        surf_bcs%Vsf_bcs%sgs, diff_coefs%Cdiff_velo%coef(1,1),    &
      &        fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
      &        rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
         end if

@@ -150,8 +150,7 @@
      &    SGS_param%ifilter_final, cmt_param%iflag_c_magne,             &
      &    mesh, fl_prop, cd_prop, jacs%g_FEM, jacs%jac_3d_l,            &
      &    rhs_tbl, MG_mat_linear, MG_mat_fl_l,                          &
-     &    FEM_elens, iak_diff_base, diff_coefs, fem_wk,                 &
-     &    mat_press, mat_magp)
+     &    FEM_elens, diff_coefs, fem_wk, mat_press, mat_magp)
 !
       if (iflag_scheme .eq. id_Crank_nicolson) then
         call int_vol_crank_mat_lump                                     &

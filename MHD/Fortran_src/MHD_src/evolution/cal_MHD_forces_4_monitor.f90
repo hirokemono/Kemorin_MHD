@@ -412,8 +412,8 @@
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
      &      iphys_LES%div_SGS, ak_MHD, fem_int, FEM_elens,              &
-     &      iak_diff_base, iak_diff_sgs, diff_coefs,                    &
-     &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      iak_diff_sgs, diff_coefs, mk_MHD%mlump_fl, rhs_mat,         &
+     &      nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_vp_diffuse .gt. izero) then

@@ -50,7 +50,9 @@
         integer(kind = kint), allocatable  :: num_comps(:)
         integer(kind = kint), allocatable  :: istack_comps(:)
         real(kind = kreal), allocatable :: ak(:,:)
-!
+!>       Structure for commutationa error coefficient for velocity
+        type(SGS_model_coefficient) :: Cdiff_velo
+!>       Structure for commutationa error coefficient for magnetic field
         type(SGS_model_coefficient) :: Cdiff_magne
       end type SGS_coefficients_type
 !

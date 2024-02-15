@@ -280,13 +280,12 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base%i_velo,                          &
      &     Csims_FEM_MHD%icomp_diff_base%i_velo,                        &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_velo,                      &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_velo,                      &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs,                &
+     &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs%Cdiff_velo,     &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
@@ -337,13 +336,12 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base%i_velo,                          &
      &     Csims_FEM_MHD%icomp_diff_base%i_velo,                        &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_velo,                      &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_velo,                      &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs,                &
+     &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs%Cdiff_velo,     &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
@@ -542,13 +540,12 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     Csims_FEM_MHD%iak_diff_base%i_velo,                          &
      &     Csims_FEM_MHD%icomp_diff_base%i_velo,                        &
      &     Csims_FEM_MHD%iphys_elediff_vec%i_velo,                      &
      &     Csims_FEM_MHD%iphys_elediff_fil%i_velo,                      &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs,                &
+     &     SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs%Cdiff_velo,     &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !

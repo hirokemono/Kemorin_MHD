@@ -79,6 +79,14 @@
       Csims_FEM_MHD%diff_coefs%ntot_comp                                &
      &      = Csims_FEM_MHD%diff_coefs%num_field
 !
+      if(Csims_FEM_MHD%diff_coefs%Cdiff_velo%iak_diff .gt. 0) then
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_velo)
+      else
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_velo)
+      end if
+!
       if(Csims_FEM_MHD%diff_coefs%Cdiff_magne%iak_diff .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
      &       Csims_FEM_MHD%diff_coefs%Cdiff_magne)
@@ -351,8 +359,8 @@
      &      .and. SGS_param%SGS_momentum%iflag_commute_field           &
      &           .eq. id_SGS_commute_ON) then
             icomp_diff_base%i_velo = id
-            iak_diff_base%i_velo = jd
             wk_diff%name(jd) = velocity%name
+            diff_coefs%Cdiff_velo%iak_diff = jd
             diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
@@ -448,11 +456,11 @@
      &        diff_coefs%num_comps(iak_diff_base%i_temp),               &
      &        trim(wk_diff%name(iak_diff_base%i_temp))
         end if
-        if(iak_diff_base%i_velo .gt. 0) then
+        if(diff_coefs%Cdiff_velo%iak_diff .gt. 0) then
           write(*,*) 'iak_diff_v',                                      &
-     &        iak_diff_base%i_velo, icomp_diff_base%i_velo,             &
-     &        diff_coefs%num_comps(iak_diff_base%i_velo),               &
-     &        trim(wk_diff%name(iak_diff_base%i_velo))
+     &        diff_coefs%Cdiff_velo%iak_diff, icomp_diff_base%i_velo,   &
+     &        diff_coefs%Cdiff_velo%num_comp,                           &
+     &        trim(wk_diff%name(diff_coefs%Cdiff_velo%iak_diff))
         end if
         if(diff_coefs%Cdiff_magne%iak_diff .gt. 0) then
           write(*,*) 'iak_diff_b',                                      &
