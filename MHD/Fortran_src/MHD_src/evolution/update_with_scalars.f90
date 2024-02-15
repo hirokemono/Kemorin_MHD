@@ -15,8 +15,8 @@
 !!     &          i_step_sgs_coefs, SGS_param, cmt_param, filter_param, &
 !!     &          mesh, group, fluid, sf_bcs, iphys_SGS_wk,             &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
-!!     &          icomp_diff_t, mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld,   &
-!!     &          Cdiff_scalar, v_sol, SR_sig, SR_r)
+!!     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, Cdiff_scalar,   &
+!!     &          v_sol, SR_sig, SR_r)
 !!        integer(kind=kint), intent(in) :: i_step
 !!        real(kind=kreal), intent(in) :: dt
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -99,8 +99,8 @@
      &          i_step_sgs_coefs, SGS_param, cmt_param, filter_param,   &
      &          mesh, group, fluid, sf_bcs, iphys_SGS_wk,               &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
-     &          icomp_diff_t, mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld,     &
-     &          Cdiff_scalar, v_sol, SR_sig, SR_r)
+     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, Cdiff_scalar,     &
+     &          v_sol, SR_sig, SR_r)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -134,7 +134,6 @@
       integer(kind = kint), intent(in) :: i_SGS_wk_field
       integer(kind = kint), intent(in) :: iphys_wfl_scalar
       integer(kind = kint), intent(in) :: iphys_fefx_buo_gen
-      integer(kind = kint), intent(in) :: icomp_diff_t
 !
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !
@@ -219,7 +218,7 @@
      &                        's_cal_diff_coef_scalar'
                call s_cal_diff_coef_scalar                              &
      &           (iflag_SGS_initial, iflag_supg, n_int_evo, dt,         &
-     &            i_SGS_wk_field, i_filter_s, icomp_diff_t,             &
+     &            i_SGS_wk_field, i_filter_s,                           &
      &            SGS_param, cmt_param, filter_param,                   &
      &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,        &
      &            group%surf_grp, sf_bcs, iphys_SGS_wk,                 &

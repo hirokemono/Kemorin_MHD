@@ -11,7 +11,7 @@
 !!     &         mesh, group, fluid, Vsf_bcs, Psf_bcs,                  &
 !!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,        &
 !!     &         iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,   &
-!!     &         icomp_diff_v, iphys_elediff_vec_v, iphys_elediff_fil_v,&
+!!     &         iphys_elediff_vec_v, iphys_elediff_fil_v,              &
 !!     &         mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,               &
 !!     &         nod_fld, ele_fld, Cdiff_velo, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -81,7 +81,7 @@
      &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                   &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          icomp_diff_v, iphys_elediff_vec_v, iphys_elediff_fil_v, &
+     &          iphys_elediff_vec_v, iphys_elediff_fil_v,               &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
      &          nod_fld, ele_fld, Cdiff_velo, v_sol, SR_sig, SR_r)
 !
@@ -94,7 +94,6 @@
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
-      integer(kind = kint), intent(in) :: icomp_diff_v
       integer(kind = kint), intent(in) :: iphys_elediff_vec_v
       integer(kind = kint), intent(in) :: iphys_elediff_fil_v
 !
@@ -207,8 +206,8 @@
      &    .and. Cdiff_velo%flag_set .eqv. .FALSE.) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
-          call s_cal_diff_coef_velo(icomp_diff_v,                       &
-     &        dt, FEM_prm, SGS_par,  mesh%nod_comm, mesh%node,          &
+          call s_cal_diff_coef_velo                                     &
+     &       (dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,           &
      &        mesh%ele, mesh%surf, group%surf_grp, Vsf_bcs, Psf_bcs,    &
      &        iphys_base, iphys_fil, iphys_SGS_wk,                      &
      &        iphys_ele_base, ele_fld, fluid,                           &

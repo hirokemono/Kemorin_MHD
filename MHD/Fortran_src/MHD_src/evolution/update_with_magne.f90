@@ -12,7 +12,7 @@
 !!     &          fluid, conduct, Bsf_bcs, Fsf_bcs,                     &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,  &
-!!     &          icomp_diff_b,iphys_elediff_vec_b, iphys_elediff_fil_b,&
+!!     &          iphys_elediff_vec_b, iphys_elediff_fil_b,             &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
 !!     &          Cdiff_magne, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -82,7 +82,7 @@
      &          fluid, conduct, Bsf_bcs, Fsf_bcs,                       &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          icomp_diff_b, iphys_elediff_vec_b, iphys_elediff_fil_b, &
+     &          iphys_elediff_vec_b, iphys_elediff_fil_b,               &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
      &          Cdiff_magne, v_sol, SR_sig, SR_r)
 !
@@ -95,7 +95,6 @@
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
-      integer(kind = kint), intent(in) :: icomp_diff_b
       integer(kind = kint), intent(in) :: iphys_elediff_vec_b
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
@@ -206,8 +205,8 @@
      &   .and. Cdiff_magne%flag_set .eqv. .FALSE.) then
         if (iflag2.eq.2 .or. iflag2.eq.3) then
           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
-          call s_cal_diff_coef_magne(icomp_diff_b,                      &
-     &        dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,           &
+          call s_cal_diff_coef_magne                                    &
+     &       (dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,           &
      &        mesh%ele, mesh%surf, group%surf_grp, Bsf_bcs, Fsf_bcs,    &
      &        iphys_base, iphys_fil, iphys_SGS_wk,                      &
      &        iphys_ele_base, ele_fld, fluid,                           &

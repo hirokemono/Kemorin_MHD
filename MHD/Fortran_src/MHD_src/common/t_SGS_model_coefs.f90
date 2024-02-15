@@ -34,6 +34,8 @@
         logical :: flag_set
 !>        Address for model coeffieint
         integer(kind = kint) :: iak_Csim
+!>        Start address for model coeffieint work array
+        integer(kind = kint) :: icomp_Csim
 !
 !>        Number of grid poins
         integer(kind = kint) :: num_poins

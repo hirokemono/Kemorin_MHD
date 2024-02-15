@@ -7,9 +7,8 @@
 !>@brief  Evaluate model coefficients for scalar differentiation
 !!
 !!@verbatim
-!!      subroutine s_cal_diff_coef_scalar                               &
-!!     &        (iflag_SGS_initial, iflag_supg, num_int, dt,            &
-!!     &         ifield, ifield_f, icomp_diff_t,                        &
+!!      subroutine s_cal_diff_coef_scalar(iflag_SGS_initial,            &
+!!     &        iflag_supg, num_int, dt, ifield, ifield_f,              &
 !!     &        SGS_param, cmt_param, filter_param,                     &
 !!     &        nod_comm, node, ele, surf, sf_grp, Tsf_bcs,             &
 !!     &        iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl,&
@@ -89,9 +88,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_scalar                                 &
-     &        (iflag_SGS_initial, iflag_supg, num_int, dt,              &
-     &         ifield, ifield_f, icomp_diff_t,                          &
+      subroutine s_cal_diff_coef_scalar(iflag_SGS_initial,              &
+     &        iflag_supg, num_int, dt, ifield, ifield_f,                &
      &         SGS_param, cmt_param, filter_param,                      &
      &         nod_comm, node, ele, surf, sf_grp, Tsf_bcs,              &
      &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl, &
@@ -112,7 +110,6 @@
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: iflag_supg, num_int
-      integer(kind = kint), intent(in) :: icomp_diff_t
       integer(kind = kint), intent(in) :: ifield, ifield_f
       real(kind = kreal), intent(in) :: dt
 !
@@ -238,11 +235,10 @@
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)  'cal_diff_coef_fluid',         &
-     &            n_vector, Cdiff_scalar%iak_Csim, icomp_diff_t
+     &        n_vector, Cdiff_scalar%iak_Csim, Cdiff_scalar%icomp_Csim
       call cal_diff_coef_fluid(iflag_SGS_initial, SGS_param, cmt_param, &
      &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,     &
-     &    n_vector, icomp_diff_t, num_int, wk_cor, wk_lsq, wk_diff,     &
-     &    Cdiff_scalar)
+     &    n_vector, num_int, wk_cor, wk_lsq, wk_diff, Cdiff_scalar)
 !
       Cdiff_scalar%flag_set = .TRUE.
 !

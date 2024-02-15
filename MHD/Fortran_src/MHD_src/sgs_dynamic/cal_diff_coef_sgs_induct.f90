@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_induct(icomp_SGS_induction,      &
-!!     &          icomp_diff_sgs_induction, iphys_elediff_fil, dt,      &
+!!      subroutine s_cal_diff_coef_sgs_induct                           &
+!!     &         (icomp_SGS_induction, iphys_elediff_fil, dt,           &
 !!     &          FEM_prm, SGS_par, mesh, group,                        &
 !!     &          fluid, conduct, cd_prop, Bsf_bcs,                     &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
@@ -72,8 +72,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_induct(icomp_SGS_induction,        &
-     &          icomp_diff_sgs_induction, iphys_elediff_fil, dt,        &
+      subroutine s_cal_diff_coef_sgs_induct                             &
+     &         (icomp_SGS_induction, iphys_elediff_fil, dt,             &
      &          FEM_prm, SGS_par, mesh, group,                          &
      &          fluid, conduct, cd_prop, Bsf_bcs,                       &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
@@ -96,7 +96,6 @@
 !
       real(kind = kreal), intent(in) :: dt
       integer(kind = kint), intent(in) :: icomp_SGS_induction
-      integer(kind = kint), intent(in) :: icomp_diff_sgs_induction
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -231,14 +230,13 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &                     'cal_diff_coef_fluid', n_vector,             &
      &                     Cdiff_SGS_uxb%iak_Csim,                      &
-     &                     icomp_diff_sgs_induction
+     &                     Cdiff_SGS_uxb%icomp_Csim
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p,                           &
      &    FEM_filters%layer_tbl, mesh%node, mesh%ele, fluid,            &
      &    iphys_SGS_wk, nod_fld, fem_int%jcs, n_vector,                 &
-     &    icomp_diff_sgs_induction, FEM_prm%npoint_t_evo_int,           &
-     &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                         &
-     &    FEM_SGS_wk%wk_diff, Cdiff_SGS_uxb)
+     &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &
+     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, Cdiff_SGS_uxb)
 !
       Cdiff_SGS_uxb%flag_set = .TRUE.
 !

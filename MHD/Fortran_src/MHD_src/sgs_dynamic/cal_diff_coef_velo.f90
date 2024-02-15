@@ -7,8 +7,7 @@
 !> @brief Evaluate model coefficients for commutation of magnetic field
 !!
 !!@verbatim
-!!      subroutine s_cal_diff_coef_velo                                 &
-!!     &         (icomp_diff_v, dt, FEM_prm, SGS_par,                   &
+!!      subroutine s_cal_diff_coef_velo(dt, FEM_prm, SGS_par,           &
 !!     &          nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,  &
 !!     &          iphys_base, iphys_fil, iphys_SGS_wk,                  &
 !!     &          iphys_ele_base, ele_fld, fluid, layer_tbl,            &
@@ -90,8 +89,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_velo                                   &
-     &         (icomp_diff_v, dt, FEM_prm, SGS_par,                     &
+      subroutine s_cal_diff_coef_velo(dt, FEM_prm, SGS_par,             &
      &          nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,    &
      &          iphys_base, iphys_fil, iphys_SGS_wk,                    &
      &          iphys_ele_base, ele_fld, fluid, layer_tbl,              &
@@ -113,7 +111,6 @@
       use set_nodal_bc_id_data
       use nod_phys_send_recv
 !
-      integer (kind=kint), intent(in) :: icomp_diff_v
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -291,12 +288,11 @@
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_diff_coef_fluid',          &
-     &      n_sym_tensor, Cdiff_velo%iak_Csim, icomp_diff_v
+     &      n_sym_tensor, Cdiff_velo%iak_Csim, Cdiff_velo%icomp_Csim
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p, layer_tbl,                &
      &    node, ele, fluid, iphys_SGS_wk, nod_fld, jacs, n_sym_tensor,  &
-     &    icomp_diff_v, FEM_prm%npoint_t_evo_int,                       &
-     &    wk_cor, wk_lsq, wk_diff, Cdiff_velo)
+     &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff, Cdiff_velo)
 !
       Cdiff_velo%flag_set = .TRUE.
 !

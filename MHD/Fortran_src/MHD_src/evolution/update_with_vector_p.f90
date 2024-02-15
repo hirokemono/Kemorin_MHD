@@ -12,7 +12,7 @@
 !!     &         fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,            &
 !!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,        &
 !!     &         iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,   &
-!!     &         icomp_diff_b, iphys_elediff_vec_b, iphys_elediff_fil_b,&
+!!     &         iphys_elediff_vec_b, iphys_elediff_fil_b,              &
 !!     &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,     &
 !!     &         Cdiff_magne, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -84,7 +84,7 @@
      &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,             &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          icomp_diff_b, iphys_elediff_vec_b, iphys_elediff_fil_b, &
+     &          iphys_elediff_vec_b, iphys_elediff_fil_b,               &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
      &          Cdiff_magne, v_sol, SR_sig, SR_r)
 !
@@ -99,7 +99,6 @@
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
 !
-      integer(kind = kint), intent(in) :: icomp_diff_b
       integer(kind = kint), intent(in) :: iphys_elediff_vec_b
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
@@ -174,8 +173,7 @@
             if    (SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad        &
      &        .or. SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity)    &
      &       then
-              call s_cal_diff_coef_vector_p                             &
-     &           (icomp_diff_b,  dt, FEM_prm, SGS_par,                  &
+              call s_cal_diff_coef_vector_p(dt, FEM_prm, SGS_par,       &
      &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,        &
      &            fluid, FEM_filters%layer_tbl,                         &
      &            group%surf_grp, Asf_bcs, Fsf_bcs,                     &

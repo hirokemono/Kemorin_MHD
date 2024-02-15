@@ -181,7 +181,6 @@
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh, MHD_prop,         &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
      &    Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,     &
-     &    Csims_FEM_MHD%icomp_diff_sgs,                                 &
      &    Csims_FEM_MHD%iphys_elediff_vec,                              &
      &    Csims_FEM_MHD%iphys_elediff_fil,                              &
      &    SGS_MHD_wk%fem_int, FEM_filters,                              &

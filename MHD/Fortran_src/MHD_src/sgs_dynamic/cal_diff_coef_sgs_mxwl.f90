@@ -7,7 +7,6 @@
 !!     &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
-!!     &          icomp_diff_sgs_Lorentz,                               &
 !!     &          icomp_SGS_Lorentz, iphys_elediff_fil_b, sgs_coefs,    &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
 !!     &          nod_fld, Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
@@ -77,7 +76,6 @@
      &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                  &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
-     &          icomp_diff_sgs_Lorentz,                                 &
      &          icomp_SGS_Lorentz, iphys_elediff_fil_b, sgs_coefs,      &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
      &          nod_fld, Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
@@ -98,7 +96,6 @@
 !
       real(kind = kreal), intent(in) :: dt
       integer(kind = kint), intent(in) :: icomp_SGS_Lorentz
-      integer(kind = kint), intent(in) :: icomp_diff_sgs_Lorentz
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -233,13 +230,13 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &                   'cal_diff_coef_fluid', n_vector,               &
-     &                   Cdiff_SGS_lor%iak_Csim, icomp_diff_sgs_Lorentz
+     &                 Cdiff_SGS_lor%iak_Csim, Cdiff_SGS_lor%icomp_Csim
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p, FEM_filters%layer_tbl,    &
      &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
-     &    fem_int%jcs, n_vector, icomp_diff_sgs_Lorentz,                &
-     &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &
-     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, Cdiff_SGS_lor)
+     &    fem_int%jcs, n_vector, FEM_prm%npoint_t_evo_int,              &
+     &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                         &
+     &    FEM_SGS_wk%wk_diff, Cdiff_SGS_lor)
 !
       Cdiff_SGS_lor%flag_set = .TRUE.
 !

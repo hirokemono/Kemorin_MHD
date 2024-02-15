@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_mf(icomp_SGS_m_flux,             &
-!!     &          icomp_diff_sgs_m_flux, iphys_elediff_fil_v,           &
-!!     &          dt, FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs, &
+!!      subroutine s_cal_diff_coef_sgs_mf                               &
+!!     &         (icomp_SGS_m_flux, iphys_elediff_fil_v, dt,            &
+!!     &          FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs,     &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fluid, fem_int, FEM_filters, &
 !!     &          sgs_coefs, mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,   &
@@ -71,9 +71,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_mf(icomp_SGS_m_flux,               &
-     &          icomp_diff_sgs_m_flux, iphys_elediff_fil_v,             &
-     &          dt, FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs,   &
+      subroutine s_cal_diff_coef_sgs_mf                                 &
+     &         (icomp_SGS_m_flux, iphys_elediff_fil_v, dt,              &
+     &          FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs,       &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fluid, fem_int, FEM_filters,   &
      &          sgs_coefs, mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,     &
@@ -95,7 +95,6 @@
 !
       real(kind = kreal), intent(in) :: dt
       integer(kind = kint), intent(in) :: icomp_SGS_m_flux
-      integer(kind = kint), intent(in) :: icomp_diff_sgs_m_flux
       integer(kind = kint), intent(in) :: iphys_elediff_fil_v
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -237,13 +236,13 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &                     'cal_diff_coef_fluid', n_vector,             &
-     &                     Cdiff_SGS_mf%iak_Csim, icomp_diff_sgs_m_flux
+     &                   Cdiff_SGS_mf%iak_Csim, Cdiff_SGS_mf%icomp_Csim
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p, FEM_filters%layer_tbl,    &
      &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
-     &    fem_int%jcs, n_vector, icomp_diff_sgs_m_flux,                 &
-     &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &
-     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, Cdiff_SGS_mf)
+     &    fem_int%jcs, n_vector, FEM_prm%npoint_t_evo_int,              &
+     &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                         &
+     &    FEM_SGS_wk%wk_diff, Cdiff_SGS_mf)
 !
       Cdiff_SGS_mf%flag_set = .TRUE.
 !

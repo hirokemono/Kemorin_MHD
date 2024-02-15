@@ -7,8 +7,8 @@
 !> @brief Evaluate model coefficients for commutation of magnetic field
 !!
 !!@verbatim
-!!      subroutine s_cal_diff_coef_vector_p(icomp_diff_b,               &
-!!     &          dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,      &
+!!      subroutine s_cal_diff_coef_vector_p                             &
+!!     &         (dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,      &
 !!     &          fluid, layer_tbl, sf_grp, Asf_bcs, Fsf_bcs,           &
 !!     &          iphys_base, iphys_fil, iphys_SGS_wk,                  &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
@@ -88,8 +88,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_vector_p(icomp_diff_b,                 &
-     &          dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,        &
+      subroutine s_cal_diff_coef_vector_p                               &
+     &         (dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,        &
      &          fluid, layer_tbl, sf_grp, Asf_bcs, Fsf_bcs,             &
      &          iphys_base, iphys_fil, iphys_SGS_wk,                    &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
@@ -110,7 +110,6 @@
       use cal_model_diff_coefs
       use nod_phys_send_recv
 !
-      integer (kind=kint), intent(in) :: icomp_diff_b
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -286,11 +285,11 @@
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_diff_coef_fluid',          &
-     &   n_sym_tensor, Cdiff_magne%iak_Csim, icomp_diff_b
+     &   n_sym_tensor, Cdiff_magne%iak_Csim, Cdiff_magne%icomp_Csim
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p,                           &
      &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,     &
-     &    n_sym_tensor, icomp_diff_b, FEM_prm%npoint_t_evo_int,         &
+     &    n_sym_tensor, FEM_prm%npoint_t_evo_int,                       &
      &    wk_cor, wk_lsq, wk_diff, Cdiff_magne)
 !
       Cdiff_magne%flag_set = .TRUE.
