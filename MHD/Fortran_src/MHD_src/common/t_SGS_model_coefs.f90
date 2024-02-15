@@ -61,6 +61,10 @@
 !
 !>       Structure for commutationa error coefficient for SGS inducion
         type(SGS_model_coefficient) :: Cdiff_SGS_uxb
+!>       Structure for commutationa error coefficient for SGS hea flux
+        type(SGS_model_coefficient) :: Cdiff_SGS_hf
+!>       Structure for commutationa error coefficient for SGS composition flux
+        type(SGS_model_coefficient) :: Cdiff_SGS_cf
       end type SGS_coefficients_type
 !
 ! -------------------------------------------------------------------

@@ -232,7 +232,6 @@
      &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
      &    Csims_FEM_MHD%icomp_sgs_term%i_SGS_h_flux,                    &
      &    Csims_FEM_MHD%icomp_diff_base%i_temp,                         &
-     &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_h_flux,                      &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
@@ -246,7 +245,6 @@
      &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
      &    Csims_FEM_MHD%icomp_sgs_term%i_SGS_c_flux,                    &
      &    Csims_FEM_MHD%icomp_diff_base%i_light,                        &
-     &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_c_flux,                      &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
@@ -487,7 +485,6 @@
      &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
      &    Csims_FEM_MHD%icomp_sgs_term%i_SGS_h_flux,                    &
      &    Csims_FEM_MHD%icomp_diff_base%i_temp,                         &
-     &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_h_flux,                      &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
@@ -501,7 +498,6 @@
      &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
      &    Csims_FEM_MHD%icomp_sgs_term%i_SGS_c_flux,                    &
      &    Csims_FEM_MHD%icomp_diff_base%i_light,                        &
-     &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_c_flux,                      &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
@@ -597,6 +593,10 @@
       diff_coefs%Cdiff_magne%flag_set = .FALSE.
       diff_coefs%Cdiff_temp%flag_set =  .FALSE.
       diff_coefs%Cdiff_light%flag_set = .FALSE.
+!
+      diff_coefs%Cdiff_SGS_uxb%flag_set = .FALSE.
+      diff_coefs%Cdiff_SGS_hf%flag_set =  .FALSE.
+      diff_coefs%Cdiff_SGS_cf%flag_set =  .FALSE.
 !
       end subroutine reset_update_flag
 !

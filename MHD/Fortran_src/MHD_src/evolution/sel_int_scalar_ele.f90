@@ -9,11 +9,11 @@
 !!@verbatim
 !!      subroutine s_sel_int_scalar_ele(i_field, dt,                    &
 !!     &          iflag_supg, n_int_evo, iflag_SGS_flux, ifilter_final, &
-!!     &          iflag_commute_flux, iflag_commute_field, i_scalar,    &
-!!     &          i_velo, i_gref, i_tensor, i_diff_SGS,                 &
+!!     &          iflag_commute_flux, iflag_commute_field,              &
+!!     &          i_scalar, i_velo, i_gref, i_tensor,                   &
 !!     &          mesh, group, fluid, property, ref_param, sf_bcs,      &
 !!     &          ref_fld, iphys_ele_base, ele_fld, jacs, rhs_tbl,      &
-!!     &          FEM_elens, Cdiff_scalar, Cdiff_scalar, diff_coefs,    &
+!!     &          FEM_elens, Cdiff_scalar, Cdiff_SGS_flux,              &
 !!     &          ak_diffuse,  mhd_fem_wk, rhs_mat, nod_fld)
 !!        integer(kind = kint), intent(in) :: i_field
 !!        real(kind = kreal), intent(in) :: dt
@@ -27,7 +27,6 @@
 !!        integer(kind = kint), intent(in) :: i_velo
 !!        integer(kind = kint), intent(in) :: i_gref
 !!        integer(kind = kint), intent(in) :: i_tensor
-!!        integer(kind = kint), intent(in) :: i_diff_SGS
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -40,7 +39,8 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_scalar
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_flux
 !!        real(kind = kreal), intent(in) :: ak_diffuse(mesh%ele%numele)
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -91,11 +91,11 @@
 !
       subroutine s_sel_int_scalar_ele(i_field, dt,                      &
      &          iflag_supg, n_int_evo, iflag_SGS_flux, ifilter_final,   &
-     &          iflag_commute_flux, iflag_commute_field, i_scalar,      &
-     &          i_velo, i_gref, i_tensor, i_diff_SGS,                   &
+     &          iflag_commute_flux, iflag_commute_field,                &
+     &          i_scalar, i_velo, i_gref, i_tensor,                     &
      &          mesh, group, fluid, property, ref_param, sf_bcs,        &
      &          ref_fld, iphys_ele_base, ele_fld, jacs, rhs_tbl,        &
-     &          FEM_elens, Cdiff_scalar, diff_coefs,      &
+     &          FEM_elens, Cdiff_scalar, Cdiff_SGS_flux,                &
      &          ak_diffuse,  mhd_fem_wk, rhs_mat, nod_fld)
 !
       use nod_phys_send_recv
@@ -120,7 +120,6 @@
       integer(kind = kint), intent(in) :: i_velo
       integer(kind = kint), intent(in) :: i_gref
       integer(kind = kint), intent(in) :: i_tensor
-      integer(kind = kint), intent(in) :: i_diff_SGS
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
@@ -136,8 +135,8 @@
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(SGS_model_coefficient), intent(in) :: Cdiff_scalar
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_flux
 !
       real(kind = kreal), intent(in) :: ak_diffuse(mesh%ele%numele)
 !
@@ -168,7 +167,7 @@
      &      n_int_evo, dt, i_scalar, i_velo, i_tensor,                  &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,                &
-     &      diff_coefs%ak(1,i_diff_SGS), ele_fld%ntot_phys,             &
+     &      Cdiff_SGS_flux%coef(1,1), ele_fld%ntot_phys,                &
      &      iphys_ele_base%i_velo, ele_fld%d_fld,                       &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
@@ -177,7 +176,7 @@
      &      n_int_evo, i_scalar, i_velo, i_tensor,                      &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,                &
-     &      diff_coefs%ak(1,i_diff_SGS), ele_fld%ntot_phys,             &
+     &      Cdiff_SGS_flux%coef(1,1), ele_fld%ntot_phys,                &
      &      iphys_ele_base%i_velo, ele_fld%d_fld,                       &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
@@ -197,7 +196,7 @@
      &      rhs_tbl, FEM_elens, n_int_evo,                              &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      ifilter_final, i_tensor, i_velo, i_scalar,                  &
-     &      diff_coefs%ak(1,i_diff_SGS), property%coef_advect,          &
+     &      Cdiff_SGS_flux%coef(1,1), property%coef_advect,             &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !

@@ -182,7 +182,7 @@
      &        iphys_LES%filter_fld%i_temp, iphys%base%i_velo,           &
      &        iphys_LES%filter_fld%i_velo,                              &
      &        iphys_LES%SGS_term%i_SGS_h_flux,                          &
-     &        iak_diff_sgs%i_SGS_h_flux, icomp_sgs_term%i_SGS_h_flux,   &
+     &        icomp_sgs_term%i_SGS_h_flux,                              &
      &        icomp_diff_sgs%i_SGS_h_flux, iphys_elediff_fil%i_velo,    &
      &        SGS_par, geofem%mesh, geofem%group,                       &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys_LES%SGS_wk,     &
@@ -190,7 +190,8 @@
      &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
      &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
-     &        diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &        diff_coefs%Cdiff_SGS_hf,                                  &
+     &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         end if
       end if
 !
@@ -244,7 +245,7 @@
      &        iphys_LES%filter_fld%i_light, iphys%base%i_velo,          &
      &        iphys_LES%filter_fld%i_velo,                              &
      &        iphys_LES%SGS_term%i_SGS_c_flux,                          &
-     &        iak_diff_sgs%i_SGS_c_flux, icomp_sgs_term%i_SGS_c_flux,   &
+     &        icomp_sgs_term%i_SGS_c_flux,                              &
      &        icomp_diff_sgs%i_SGS_c_flux, iphys_elediff_fil%i_velo,    &
      &        SGS_par, geofem%mesh, geofem%group,                       &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys_LES%SGS_wk,     &
@@ -252,7 +253,8 @@
      &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
      &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
-     &        diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &        diff_coefs%Cdiff_SGS_cf,                                  &
+     &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         end if
       end if
 !

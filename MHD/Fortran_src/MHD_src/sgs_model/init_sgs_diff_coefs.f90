@@ -120,6 +120,22 @@
      &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_uxb)
       end if
 !
+      if(Csims_FEM_MHD%diff_coefs%Cdiff_SGS_hf%iak_diff .gt. 0) then
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_hf)
+      else
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_hf)
+      end if
+!
+      if(Csims_FEM_MHD%diff_coefs%Cdiff_SGS_cf%iak_diff .gt. 0) then
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_cf)
+      else
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_cf)
+      end if
+!
 !
       if(iflag_debug .gt. 0) then
         call check_sgs_diff_addresses(Csims_FEM_MHD%iak_diff_sgs,       &
@@ -288,8 +304,8 @@
            if (SGS_param%SGS_heat%iflag_commute_flux                    &
      &       .eq. id_SGS_commute_ON) then
              icomp_diff_sgs%i_SGS_h_flux = id
-             iak_diff_sgs%i_SGS_h_flux =  jd
              wk_diff%name(jd) = SGS_heat_flux%name
+             diff_coefs%Cdiff_SGS_hf%iak_diff = jd
              diff_coefs%num_comps(jd) = 1
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
@@ -341,8 +357,8 @@
            if(SGS_param%SGS_light%iflag_commute_flux                    &
      &        .eq. id_SGS_commute_ON) then
              icomp_diff_sgs%i_SGS_c_flux = id
-             iak_diff_sgs%i_SGS_c_flux =  jd
              wk_diff%name(jd) = SGS_composit_flux%name
+             diff_coefs%Cdiff_SGS_cf%iak_diff = jd
              diff_coefs%num_comps(jd) = 1
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
@@ -445,12 +461,20 @@
         write(*,*) 'wk_diff%ntot_comp', wk_diff%ntot_comp
         write(*,*) 'diff_coefs%num_field', diff_coefs%num_field
 !
-        if(iak_diff_sgs%i_SGS_h_flux .gt. 0) then
-          write(*,*) 'iak_diff_hf',                                     &
-     &        iak_diff_sgs%i_SGS_h_flux, icomp_diff_sgs%i_SGS_h_flux,   &
-     &        diff_coefs%num_comps(iak_diff_sgs%i_SGS_h_flux),          &
-     &        trim(wk_diff%name(iak_diff_sgs%i_SGS_h_flux))
+        if(diff_coefs%Cdiff_SGS_hf%iak_diff .gt. 0) then
+          write(*,*) 'iak_diff_hf', diff_coefs%Cdiff_SGS_hf%iak_diff,   &
+     &        icomp_diff_sgs%i_SGS_h_flux,                              &
+     &        diff_coefs%Cdiff_SGS_hf%num_comp,                         &
+     &        trim(wk_diff%name(diff_coefs%Cdiff_SGS_hf%iak_diff))
         end if
+!
+        if(diff_coefs%Cdiff_SGS_cf%iak_diff .gt. 0) then
+          write(*,*) 'iak_diff_hf', diff_coefs%Cdiff_SGS_cf%iak_diff,   &
+     &        icomp_diff_sgs%i_SGS_h_flux,                              &
+     &        diff_coefs%Cdiff_SGS_cf%num_comp,                         &
+     &        trim(wk_diff%name(diff_coefs%Cdiff_SGS_cf%iak_diff))
+        end if
+!
         if(iak_diff_sgs%i_SGS_m_flux .gt. 0) then
           write(*,*) 'iak_diff_mf',                                     &
      &        iak_diff_sgs%i_SGS_m_flux, icomp_diff_sgs%i_SGS_m_flux,   &

@@ -298,9 +298,8 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, sf_grp, ht_prop, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, &
      &      iphys_ele_base, ele_fld, fem_int, FEM_elens,                &
-     &      diff_coefs%ak(1,iak_diff_sgs%i_SGS_h_flux),                 &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
-     &      v_sol, SR_sig, SR_r)
+     &      diff_coefs%Cdiff_SGS_hf%coef(1,1), mk_MHD%mlump_fl,         &
+     &      mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys_LES%div_SGS%i_SGS_c_flux .gt. 0) then
@@ -316,7 +315,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, sf_grp, cp_prop, nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, &
      &      iphys_ele_base, ele_fld, fem_int, FEM_elens,                &
-     &      diff_coefs%ak(1,iak_diff_sgs%i_SGS_c_flux),                 &
+     &      diff_coefs%Cdiff_SGS_cf%coef(1,1),                          &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
      &      v_sol, SR_sig, SR_r)
       end if
