@@ -595,6 +595,8 @@
       diff_coefs%Cdiff_light%flag_set = .FALSE.
 !
       diff_coefs%Cdiff_SGS_uxb%flag_set = .FALSE.
+      diff_coefs%Cdiff_SGS_lor%flag_set = .FALSE.
+      diff_coefs%Cdiff_SGS_mf%flag_set =  .FALSE.
       diff_coefs%Cdiff_SGS_hf%flag_set =  .FALSE.
       diff_coefs%Cdiff_SGS_cf%flag_set =  .FALSE.
 !

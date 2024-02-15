@@ -16,7 +16,6 @@
 !!     &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
 !!     &          iphys_base, iphys_dif, iphys_SGS, fem_int, FEM_elens, &
 !!     &          diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
-!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param

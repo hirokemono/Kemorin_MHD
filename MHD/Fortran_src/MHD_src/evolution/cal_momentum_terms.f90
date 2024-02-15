@@ -16,7 +16,7 @@
 !!     &          nod_comm, node, ele, surf, sf_grp, fluid,             &
 !!     &          fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,                  &
 !!     &          iphys_base, iphys_dif, iphys_SGS, iphys_div_SGS,      &
-!!     &          ak_MHD, fem_int, FEM_elens, iak_diff_SGS, diff_coefs, &
+!!     &          ak_MHD, fem_int, FEM_elens, diff_coefs,               &
 !!     &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -167,7 +167,7 @@
      &      iphys_fil, iphys_fil_frc, iphys_SGS,                        &
      &      iphys_div_SGS, nod_fld, iphys_ele_base, ak_MHD,             &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, iak_diff_SGS, diff_coefs, mhd_fem_wk,            &
+     &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
@@ -177,7 +177,7 @@
      &      iphys_fil, iphys_fil_frc, iphys_SGS,                        &
      &      iphys_div_SGS, nod_fld, iphys_ele_base, ak_MHD,             &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, iak_diff_SGS, diff_coefs, mhd_fem_wk,            &
+     &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg                                     &
@@ -187,7 +187,7 @@
      &     iphys_fil, iphys_fil_frc, iphys_SGS,                         &
      &     iphys_div_SGS, nod_fld, iphys_ele_base, ak_MHD,              &
      &     fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,      &
-     &     FEM_elens, iak_diff_SGS, diff_coefs, mhd_fem_wk,             &
+     &     FEM_elens, diff_coefs, mhd_fem_wk,                           &
      &     rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       end if
 !
@@ -197,8 +197,8 @@
      &    Vsf_bcs, Bsf_bcs, iphys_base, iphys_dif,                      &
      &    iphys_SGS, iphys_div_SGS, nod_fld,                            &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, iak_diff_SGS, diff_coefs,                          &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
+     &    FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
+     &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
@@ -224,13 +224,11 @@
      &          nod_comm, node, ele, surf, sf_grp, fluid,               &
      &          fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,                    &
      &          iphys_base, iphys_dif, iphys_SGS, iphys_div_SGS,        &
-     &          ak_MHD, fem_int, FEM_elens, iak_diff_SGS, diff_coefs,   &
+     &          ak_MHD, fem_int, FEM_elens, diff_coefs,                 &
      &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
       use int_surf_velo_pre
-!
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -279,8 +277,8 @@
      &    Vsf_bcs, Bsf_bcs, iphys_base, iphys_dif,                      &
      &    iphys_SGS, iphys_div_SGS, nod_fld,                            &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, iak_diff_SGS, diff_coefs,                          &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
+     &    FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
+     &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call set_ff_nl_smp_2_ff                                           &
      &   (n_vector, node, fem_int%rhs_tbl, rhs_mat%f_l, rhs_mat%f_nl)

@@ -25,7 +25,6 @@
 !!     &          Bnod_bcs, Fsf_bcs, iphys, jacs, rhs_tbl, FEM_elens,   &
 !!     &          Cdiff_magne, mlump_ins, mhd_fem_wk, rhs_mat, nod_fld, &
 !!     &          v_sol, SR_sig, SR_r)
-!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param

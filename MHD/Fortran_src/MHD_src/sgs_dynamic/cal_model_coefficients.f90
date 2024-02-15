@@ -10,8 +10,7 @@
 !!      subroutine s_cal_model_coefficients(time_d, FEM_prm, SGS_par,   &
 !!     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
 !!     &          iphys, iphys_LES, iak_sgs_term, icomp_sgs_term,       &
-!!     &          iak_diff_sgs, icomp_diff_sgs,                         &
-!!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
+!!     &          icomp_diff_sgs, iphys_elediff_vec, iphys_elediff_fil, &
 !!     &          fem_int, FEM_filters, SGS_MHD_wk, nod_fld,            &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, m_SR)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -25,7 +24,6 @@
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(SGS_term_address), intent(in) :: icomp_diff_sgs
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(base_field_address), intent(in) :: iphys_elediff_fil
@@ -83,8 +81,7 @@
       subroutine s_cal_model_coefficients(time_d, FEM_prm, SGS_par,     &
      &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
      &          iphys, iphys_LES, iak_sgs_term, icomp_sgs_term,         &
-     &          iak_diff_sgs, icomp_diff_sgs,                           &
-     &          iphys_elediff_vec, iphys_elediff_fil,                   &
+     &          icomp_diff_sgs, iphys_elediff_vec, iphys_elediff_fil,   &
      &          fem_int, FEM_filters, SGS_MHD_wk, nod_fld,              &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, m_SR)
 !
@@ -112,7 +109,6 @@
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(SGS_term_address), intent(in) :: iak_diff_sgs
       type(SGS_term_address), intent(in) :: icomp_diff_sgs
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(base_field_address), intent(in) :: iphys_elediff_fil
@@ -290,8 +286,7 @@
         if(SGS_par%model_p%SGS_momentum%iflag_commute_flux              &
      &      .eq. id_SGS_commute_ON) then
           if(iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_mf'
-          call s_cal_diff_coef_sgs_mf                                   &
-     &     (iak_diff_sgs%i_SGS_m_flux, icomp_sgs_term%i_SGS_m_flux,     &
+          call s_cal_diff_coef_sgs_mf(icomp_sgs_term%i_SGS_m_flux,      &
      &      icomp_diff_sgs%i_SGS_m_flux, iphys_elediff_fil%i_velo,      &
      &      time_d%dt, FEM_prm, SGS_par, geofem%mesh, geofem%group,     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, iphys%base,             &
@@ -300,7 +295,8 @@
      &      MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs,            &
      &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                  &
-     &      nod_fld, diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &      nod_fld, diff_coefs%Cdiff_SGS_mf,                           &
+     &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         end if
       end if
 !
@@ -330,7 +326,8 @@
      &       iphys_LES%SGS_term, iphys_LES%SGS_wk,                      &
      &       fem_int, FEM_filters, iak_sgs_term, icomp_sgs_term,        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       sgs_coefs, sgs_coefs_nod, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &       sgs_coefs, sgs_coefs_nod,                                  &
+     &       m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         end if
 !
         if(SGS_par%commute_p%iflag_c_lorentz .eq. id_SGS_commute_ON)    &
@@ -342,11 +339,12 @@
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                &
      &      SGS_MHD_wk%ele_fld, fem_int, FEM_filters,                   &
-     &      iak_diff_sgs%i_SGS_Lorentz, icomp_diff_sgs%i_SGS_Lorentz,   &
+     &      icomp_diff_sgs%i_SGS_Lorentz,                               &
      &      icomp_sgs_term%i_SGS_Lorentz, iphys_elediff_fil%i_magne,    &
      &      sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,        &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,         &
-     &      diff_coefs, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &      diff_coefs%Cdiff_SGS_lor,                                   &
+     &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         end if
       end if
 !

@@ -297,8 +297,8 @@
      &    node, ele, surf, sf_grp, fl_prop,                             &
      &    Vsf_bcs, Bsf_bcs, iphys%base, iphys_LES%SGS_term, nod_fld,    &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, iak_diff_sgs, diff_coefs,                          &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
+     &    FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
+     &    rhs_mat%f_l, rhs_mat%f_nl)
 !
 !
       if (fl_prop%iflag_scheme .eq. id_explicit_euler) then

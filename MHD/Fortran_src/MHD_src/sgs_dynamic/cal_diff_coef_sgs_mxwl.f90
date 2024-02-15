@@ -7,10 +7,10 @@
 !!     &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
-!!     &          iak_diff_SGS_Lorentz, icomp_diff_sgs_Lorentz,         &
+!!     &          icomp_diff_sgs_Lorentz,                               &
 !!     &          icomp_SGS_Lorentz, iphys_elediff_fil_b, sgs_coefs,    &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
-!!     &          nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
+!!     &          nod_fld, Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -32,7 +32,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(inout) :: Cdiff_SGS_lor
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -77,10 +77,10 @@
      &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                  &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
-     &          iak_diff_SGS_Lorentz, icomp_diff_sgs_Lorentz,           &
+     &          icomp_diff_sgs_Lorentz,                                 &
      &          icomp_SGS_Lorentz, iphys_elediff_fil_b, sgs_coefs,      &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
-     &          nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
+     &          nod_fld, Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -97,7 +97,6 @@
       use nod_phys_send_recv
 !
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: iak_diff_SGS_Lorentz
       integer(kind = kint), intent(in) :: icomp_SGS_Lorentz
       integer(kind = kint), intent(in) :: icomp_diff_sgs_Lorentz
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
@@ -124,7 +123,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_model_coefficient), intent(inout) :: Cdiff_SGS_lor
       type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -133,7 +132,7 @@
 !
       call reset_diff_model_coefs                                       &
      &   (mesh%ele%numele, mesh%ele%istack_ele_smp,                     &
-     &    diff_coefs%num_field, iak_diff_SGS_Lorentz, diff_coefs%ak)
+     &    Cdiff_SGS_lor%num_comp, ione, Cdiff_SGS_lor%coef(1,1))
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   gradient model by filtered field (to iphys_SGS_wk%i_wd_nlg)
@@ -233,15 +232,17 @@
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
-     &                     'cal_diff_coef_fluid', n_vector,             &
-     &                     iak_diff_SGS_Lorentz, icomp_diff_sgs_Lorentz
+     &                   'cal_diff_coef_fluid', n_vector,               &
+     &                   Cdiff_SGS_lor%iak_diff, icomp_diff_sgs_Lorentz
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p, FEM_filters%layer_tbl,    &
      &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
-     &    fem_int%jcs, n_vector, iak_diff_SGS_Lorentz,                  &
+     &    fem_int%jcs, n_vector, Cdiff_SGS_lor%iak_diff,                &
      &    icomp_diff_sgs_Lorentz, FEM_prm%npoint_t_evo_int,             &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &
-     &    diff_coefs%ak(1,iak_diff_SGS_Lorentz))
+     &    Cdiff_SGS_lor%coef(1,1))
+!
+      Cdiff_SGS_lor%flag_set = .TRUE.
 !
       end subroutine s_cal_diff_coef_sgs_mxwl
 !

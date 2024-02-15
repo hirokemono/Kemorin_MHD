@@ -4,17 +4,17 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine int_surf_velo_pre_ele                                &
-!!     &        (ak_d_velo, num_int, SGS_param, cmt_param,              &
-!!     &         node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,    &
-!!     &         iphys_base, iphys_SGS, nod_fld, g_FEM, jac_sf_grp,     &
-!!     &         rhs_tbl, FEM_elens, iak_diff_SGS, diff_coefs,          &
-!!     &         fem_wk, surf_wk, f_l, f_nl)
+!!     &         (ak_d_velo, num_int, SGS_param, cmt_param,             &
+!!     &          node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,   &
+!!     &          iphys_base, iphys_SGS, nod_fld, g_FEM, jac_sf_grp,    &
+!!     &          rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk,      &
+!!     &          f_l, f_nl)
 !!      subroutine int_surf_velo_monitor(i_field, ak_d_velo, num_int,   &
 !!     &          SGS_param, cmt_param, node, ele, surf, sf_grp,        &
 !!     &          fl_prop, Vsf_bcs, Bsf_bcs, iphys_base, iphys_dif,     &
 !!     &          iphys_SGS, iphys_div_SGS, nod_fld, g_FEM, jac_sf_grp, &
-!!     &          rhs_tbl, FEM_elens, iak_diff_SGS, diff_coefs,         &
-!!     &          fem_wk, surf_wk, f_l, f_nl)
+!!     &          rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk,      &
+!!     &          f_l, f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
@@ -33,7 +33,6 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -74,11 +73,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_surf_velo_pre_ele                                  &
-     &        (ak_d_velo, num_int, SGS_param, cmt_param,                &
-     &         node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,      &
-     &         iphys_base, iphys_SGS, nod_fld, g_FEM, jac_sf_grp,       &
-     &         rhs_tbl, FEM_elens, iak_diff_SGS, diff_coefs,            &
-     &         fem_wk, surf_wk, f_l, f_nl)
+     &         (ak_d_velo, num_int, SGS_param, cmt_param,               &
+     &          node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,     &
+     &          iphys_base, iphys_SGS, nod_fld, g_FEM, jac_sf_grp,      &
+     &          rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk,        &
+     &          f_l, f_nl)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -97,7 +96,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
 !
       integer(kind= kint), intent(in) :: num_int
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
@@ -115,7 +113,7 @@
      &        rhs_tbl, FEM_elens, Vsf_bcs%sgs, num_int,                 &
      &        SGS_param%ifilter_final, iphys_SGS%i_SGS_m_flux,          &
      &        iphys_base%i_velo, iphys_base%i_velo,                     &
-     &        diff_coefs%ak(1,iak_diff_SGS%i_SGS_m_flux),               &
+     &        diff_coefs%Cdiff_SGS_mf%coef(1,1),                        &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
       end if
@@ -127,7 +125,7 @@
      &        rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                 &
      &        SGS_param%ifilter_final, iphys_SGS%i_SGS_maxwell,         &
      &        iphys_base%i_magne, iphys_base%i_magne,                   &
-     &        diff_coefs%ak(1,iak_diff_SGS%i_SGS_Lorentz),              &
+     &        diff_coefs%Cdiff_SGS_lor%coef(1,1),                       &
      &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
         end if
       end if
@@ -155,8 +153,8 @@
      &          SGS_param, cmt_param, node, ele, surf, sf_grp,          &
      &          fl_prop, Vsf_bcs, Bsf_bcs, iphys_base, iphys_dif,       &
      &          iphys_SGS, iphys_div_SGS, nod_fld, g_FEM, jac_sf_grp,   &
-     &          rhs_tbl, FEM_elens, iak_diff_SGS, diff_coefs,           &
-     &          fem_wk, surf_wk, f_l, f_nl)
+     &          rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk,        &
+     &          f_l, f_nl)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -177,7 +175,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
 !
       integer(kind= kint), intent(in) :: num_int
       integer(kind= kint), intent(in) :: i_field
@@ -196,7 +193,7 @@
      &        rhs_tbl, FEM_elens, Vsf_bcs%sgs, num_int,                 &
      &        SGS_param%ifilter_final, iphys_SGS%i_SGS_m_flux,          &
      &        iphys_base%i_velo, iphys_base%i_velo,                     &
-     &        diff_coefs%ak(1,iak_diff_SGS%i_SGS_m_flux),               &
+     &        diff_coefs%Cdiff_SGS_mf%coef(1,1),                        &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
       end if
@@ -208,7 +205,7 @@
      &        rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                 &
      &        SGS_param%ifilter_final, iphys_SGS%i_SGS_maxwell,         &
      &        iphys_base%i_magne, iphys_base%i_magne,                   &
-     &        diff_coefs%ak(1,iak_diff_SGS%i_SGS_Lorentz),              &
+     &        diff_coefs%Cdiff_SGS_lor%coef(1,1),                       &
      &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
         end if
       end if

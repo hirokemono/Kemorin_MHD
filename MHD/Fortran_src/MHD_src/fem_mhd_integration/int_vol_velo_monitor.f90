@@ -13,14 +13,14 @@
 !!     &         iphys_base, iphys_frc, iphys_div_frc,                  &
 !!     &         iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,    &
 !!     &         nod_fld, iphys_ele_base, ak_MHD, g_FEM, jac_3d,        &
-!!     &         rhs_tbl, FEM_elens, iak_diff_SGS, diff_coefs,          &
+!!     &         rhs_tbl, FEM_elens, diff_coefs,                        &
 !!     &         mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !!      subroutine int_vol_velo_monitor_upwind(i_field, iv_upw, dt,     &
 !!     &         FEM_prm, SGS_param, cmt_param, node, ele, fluid,       &
 !!     &         fl_prop, cd_prop, iphys_base, iphys_frc, iphys_div_frc,&
 !!     &         iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,    &
 !!     &         nod_fld, iphys_ele_base, ak_MHD, g_FEM, jac_3d,        &
-!!     &         rhs_tbl, FEM_elens, iak_diff_SGS, diff_coefs,          &
+!!     &         rhs_tbl, FEM_elens, diff_coefs,                        &
 !!     &         mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -45,7 +45,6 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -92,7 +91,7 @@
      &          iphys_base, iphys_frc, iphys_div_frc,                   &
      &          iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,     &
      &          nod_fld, iphys_ele_base, ak_MHD, g_FEM, jac_3d,         &
-     &          rhs_tbl, FEM_elens, iak_diff_SGS, diff_coefs,           &
+     &          rhs_tbl, FEM_elens, diff_coefs             ,            &
      &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !
       use int_vol_inertia
@@ -129,7 +128,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -227,7 +225,7 @@
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,                &
      &        SGS_param%ifilter_final,                                  &
-     &        diff_coefs%ak(1,iak_diff_SGS%i_SGS_m_flux),               &
+     &        diff_coefs%Cdiff_SGS_mf%coef(1,1),                        &
      &        fl_prop%coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
@@ -244,7 +242,7 @@
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys_base%i_magne, iphys_SGS%i_SGS_maxwell,              &
      &        SGS_param%ifilter_final,                                  &
-     &        diff_coefs%ak(1,iak_diff_SGS%i_SGS_Lorentz),              &
+     &        diff_coefs%Cdiff_SGS_lor%coef(1,1),                       &
      &        fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
@@ -264,8 +262,8 @@
      &          fl_prop, cd_prop, iphys_base, iphys_frc, iphys_div_frc, &
      &          iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,     &
      &          nod_fld, iphys_ele_base, ak_MHD, g_FEM, jac_3d,         &
-     &          rhs_tbl, FEM_elens, iak_diff_SGS, diff_coefs,           &
-     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,     &
+     &          f_nl, ele_fld)
 !
       use int_vol_inertia
       use int_vol_vect_cst_diff_upw
@@ -302,7 +300,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -410,7 +407,7 @@
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys_base%i_velo, iphys_SGS%i_SGS_m_flux,                &
      &        SGS_param%ifilter_final,                                  &
-     &        diff_coefs%ak(1,iak_diff_SGS%i_SGS_m_flux),               &
+     &        diff_coefs%Cdiff_SGS_mf%coef(1,1),                        &
      &        ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,                 &
      &        fl_prop%coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
@@ -428,7 +425,7 @@
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys_base%i_magne, iphys_SGS%i_SGS_maxwell,              &
      &        SGS_param%ifilter_final,                                  &
-     &        diff_coefs%ak(1,iak_diff_SGS%i_SGS_Lorentz),              &
+     &        diff_coefs%Cdiff_SGS_lor%coef(1,1),                       &
      &        ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,                 &
      &        fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
