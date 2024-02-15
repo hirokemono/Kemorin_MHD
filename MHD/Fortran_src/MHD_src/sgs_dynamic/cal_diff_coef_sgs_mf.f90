@@ -130,7 +130,7 @@
 !
       call reset_diff_model_coefs                                       &
      &   (mesh%ele%numele, mesh%ele%istack_ele_smp,                     &
-     &    Cdiff_SGS_mf%num_comp, ione, Cdiff_SGS_mf%coef(1,1))
+     &    Cdiff_SGS_mf%coef(1,1))
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   gradient model by filtered field (to iphys_SGS_wk%i_wd_nlg)
@@ -237,15 +237,13 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &                     'cal_diff_coef_fluid', n_vector,             &
-     &                     Cdiff_SGS_mf%iak_diff, icomp_diff_sgs_m_flux
+     &                     Cdiff_SGS_mf%iak_Csim, icomp_diff_sgs_m_flux
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
-     &    SGS_par%model_p, SGS_par%commute_p,                           &
-     &    FEM_filters%layer_tbl, mesh%node, mesh%ele, fluid,            &
-     &    iphys_SGS_wk, nod_fld, fem_int%jcs, n_vector,                 &
-     &    Cdiff_SGS_mf%iak_diff, icomp_diff_sgs_m_flux,                 &
+     &    SGS_par%model_p, SGS_par%commute_p, FEM_filters%layer_tbl,    &
+     &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
+     &    fem_int%jcs, n_vector, icomp_diff_sgs_m_flux,                 &
      &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &
-     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,                        &
-     &    Cdiff_SGS_mf%coef(1,1))
+     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, Cdiff_SGS_mf)
 !
       Cdiff_SGS_mf%flag_set = .TRUE.
 !

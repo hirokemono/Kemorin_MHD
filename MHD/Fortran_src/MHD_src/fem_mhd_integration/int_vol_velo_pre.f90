@@ -10,18 +10,17 @@
 !!
 !!@verbatim
 !!      subroutine int_vol_velo_pre_ele(iflag_4_rotate, num_int,        &
-!!     &         SGS_param, cmt_param, node, ele, fluid,                &
-!!     &         fl_prop, cd_prop, iphys_base, iphys_fil, iphys_SGS,    &
-!!     &         nod_fld, ak_MHD, ncomp_ele, d_ele, iphys_ele_base,     &
-!!     &         iak_diff_SGS, g_FEM, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &         diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+!!     &          SGS_param, cmt_param, node, ele, fluid,               &
+!!     &          fl_prop, cd_prop, iphys_base, iphys_fil, iphys_SGS,   &
+!!     &          nod_fld, ak_MHD, ncomp_ele, d_ele, iphys_ele_base,    &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens,                    &
+!!     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_velo_pre_ele_upwind(iflag_4_rotate, num_int, &
 !!     &          dt, SGS_param, cmt_param, node, ele, fluid,           &
 !!     &          fl_prop, cd_prop, iphys_base, iphys_fil, iphys_SGS,   &
-!!     &          nod_fld, ak_MHD, ncomp_ele, ie_upw,                   &
-!!     &          d_ele, iphys_ele_base, iak_diff_SGS, g_FEM, jac_3d,   &
-!!     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,           &
-!!     &          fem_wk, f_nl)
+!!     &          nod_fld, ak_MHD, ncomp_ele, ie_upw, d_ele,            &
+!!     &          iphys_ele_base, g_FEM, jac_3d, rhs_tbl, FEM_elens,    &
+!!     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
@@ -40,7 +39,6 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -85,7 +83,7 @@
      &         SGS_param, cmt_param, node, ele, fluid,                  &
      &         fl_prop, cd_prop, iphys_base, iphys_fil, iphys_SGS,      &
      &         nod_fld, ak_MHD, ncomp_ele, d_ele, iphys_ele_base,       &
-     &         iak_diff_SGS, g_FEM, jac_3d, rhs_tbl, FEM_elens,         &
+     &         g_FEM, jac_3d, rhs_tbl, FEM_elens,                       &
      &         diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -118,7 +116,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
 !
       integer(kind = kint), intent(in) :: iflag_4_rotate, num_int
       integer(kind = kint), intent(in) :: ncomp_ele
@@ -380,10 +377,9 @@
       subroutine int_vol_velo_pre_ele_upwind(iflag_4_rotate, num_int,   &
      &          dt, SGS_param, cmt_param, node, ele, fluid,             &
      &          fl_prop, cd_prop, iphys_base, iphys_fil, iphys_SGS,     &
-     &          nod_fld, ak_MHD, ncomp_ele, ie_upw,                     &
-     &          d_ele, iphys_ele_base, iak_diff_SGS, g_FEM, jac_3d,     &
-     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,             &
-     &          fem_wk, f_nl)
+     &          nod_fld, ak_MHD, ncomp_ele, ie_upw, d_ele,              &
+     &          iphys_ele_base, g_FEM, jac_3d, rhs_tbl, FEM_elens,      &
+     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -416,12 +412,12 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
 !
       integer(kind = kint), intent(in) :: iflag_4_rotate, num_int
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: dt
+
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

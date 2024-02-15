@@ -33,7 +33,7 @@
 !>        Set flag
         logical :: flag_set
 !>        Address for model coeffieint
-        integer(kind = kint) :: iak_diff
+        integer(kind = kint) :: iak_Csim
 !
 !>        Number of grid poins
         integer(kind = kint) :: num_poins

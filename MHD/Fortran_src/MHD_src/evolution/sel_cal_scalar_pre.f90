@@ -18,7 +18,6 @@
 !!        integer(kind = kint), intent(in) :: iflag_supg
 !!        integer(kind = kint), intent(in) :: iflag_commute_field
 !!        integer(kind = kint), intent(in) :: i_pre_advect
-!!        integer(kind = kint), intent(in) :: iak_diff
 !!        real(kind = kreal), intent(in) ::   eps_4_crank
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param

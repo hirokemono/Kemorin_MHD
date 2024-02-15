@@ -154,7 +154,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
-     &    Cdiff_scalar%num_comp, ione, Cdiff_scalar%coef(1,1))
+     &                            Cdiff_scalar%coef(1,1))
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   take gradient of filtered temperature (to iphys_SGS_wk%i_simi)
@@ -238,11 +238,11 @@
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)  'cal_diff_coef_fluid',         &
-     &            n_vector, Cdiff_scalar%iak_diff, icomp_diff_t
+     &            n_vector, Cdiff_scalar%iak_Csim, icomp_diff_t
       call cal_diff_coef_fluid(iflag_SGS_initial, SGS_param, cmt_param, &
      &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,     &
-     &    n_vector, Cdiff_scalar%iak_diff, icomp_diff_t, num_int,       &
-     &    wk_cor, wk_lsq, wk_diff, Cdiff_scalar%coef(1,1))
+     &    n_vector, icomp_diff_t, num_int, wk_cor, wk_lsq, wk_diff,     &
+     &    Cdiff_scalar)
 !
       Cdiff_scalar%flag_set = .TRUE.
 !

@@ -14,7 +14,7 @@
 !!     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
 !!
 !!      subroutine reset_diff_model_coefs                               &
-!!     &         (numele, iele_smp_stack, ncomp_diff, iak_diff, ak_diff)
+!!     &         (numele, iele_smp_stack, ak_diff)
 !!
 !!      subroutine reset_vector_sgs_nod_m_coefs(numnod, inod_smp_stack, &
 !!     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
@@ -329,21 +329,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine reset_diff_model_coefs                                 &
-     &         (numele, iele_smp_stack, ncomp_diff, iak_diff, ak_diff)
+     &         (numele, iele_smp_stack, ak_diff)
 !
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: numele, ncomp_diff, iak_diff
-      real(kind=kreal), intent(inout) :: ak_diff(numele,ncomp_diff)
+      integer (kind = kint), intent(in) :: numele
+      real(kind=kreal), intent(inout) :: ak_diff(numele)
 !
-      integer (kind = kint) :: iele, iproc, ist, ied
+      integer (kind = kint) :: iproc, ist, ied
 !
-!$omp parallel do private(iele, ist, ied) 
+!$omp parallel do private(ist, ied)
       do iproc = 1, np_smp
         ist = iele_smp_stack(iproc-1) + 1
         ied = iele_smp_stack(iproc)
-        do iele = ist, ied
-          ak_diff(iele, iak_diff) = one
-        end do
+        ak_diff(ist:ied) = one
       end do
 !$omp end parallel do
 !

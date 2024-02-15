@@ -10,15 +10,14 @@
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,      &
 !!     &          iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,   &
 !!     &          iphys_ele_base, ak_MHD, fem_int, FEM_elens,           &
-!!     &          iak_diff_SGS, diff_coefs, mlump_fl, mhd_fem_wk,       &
-!!     &          rhs_mat, nod_fld, ele_fld, v_sol, SR_sig, SR_r)
+!!     &          diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,   &
+!!     &          ele_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_viscous_diffusion(FEM_prm, SGS_param, cmt_param, &
 !!     &          nod_comm, node, ele, surf, sf_grp, fluid,             &
 !!     &          fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,                  &
 !!     &          iphys_base, iphys_dif, iphys_SGS, iphys_div_SGS,      &
 !!     &          ak_MHD, fem_int, FEM_elens, diff_coefs,               &
 !!     &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
-!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -108,8 +107,8 @@
      &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,        &
      &          iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,     &
      &          iphys_ele_base, ak_MHD, fem_int, FEM_elens,             &
-     &          iak_diff_SGS, diff_coefs, mlump_fl, mhd_fem_wk,         &
-     &          rhs_mat,  nod_fld, ele_fld, v_sol, SR_sig, SR_r)
+     &          diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
+     &          ele_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_velo_monitor
       use int_surf_velo_pre
@@ -144,7 +143,6 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !

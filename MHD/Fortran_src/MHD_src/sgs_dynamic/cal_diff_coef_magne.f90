@@ -159,7 +159,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
-     &    Cdiff_magne%num_comp, ione, Cdiff_magne%coef(1,1))
+     &                            Cdiff_magne%coef(1,1))
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !    get filtered scalar potential(to iphys_SGS_wk%i_wd_nlg)
@@ -279,13 +279,12 @@
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_diff_coef_fluid',          &
-     &           n_sym_tensor, Cdiff_magne%iak_diff, icomp_diff_b
+     &           n_sym_tensor, Cdiff_magne%iak_Csim, icomp_diff_b
       call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
      &    SGS_par%model_p, SGS_par%commute_p,                           &
      &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,     &
-     &    n_sym_tensor, Cdiff_magne%iak_diff, icomp_diff_b,             &
-     &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
-     &    Cdiff_magne%coef(1,1))
+     &    n_sym_tensor, icomp_diff_b, FEM_prm%npoint_t_evo_int,         &
+     &    wk_cor, wk_lsq, wk_diff, Cdiff_magne)
 !
       Cdiff_magne%flag_set = .TRUE.
 !

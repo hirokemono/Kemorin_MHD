@@ -341,8 +341,7 @@
      &      iphys%div_forces, iphys%diffusion, iphys_LES%filter_fld,    &
      &      iphys_LES%force_by_filter, iphys_LES%SGS_term,              &
      &      iphys_LES%div_SGS, iphys_ele_base,                          &
-     &      ak_MHD, fem_int, FEM_elens,                                 &
-     &      Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,       &
+     &      ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD%diff_coefs,       &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                       &
      &      nod_fld, ele_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if

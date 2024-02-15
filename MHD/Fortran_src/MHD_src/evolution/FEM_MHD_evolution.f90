@@ -261,7 +261,6 @@
      &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
      &      Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,   &
-     &      Csims_FEM_MHD%iak_diff_sgs,                                 &
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
@@ -317,7 +316,7 @@
       integer(kind = kint) :: i_scalar, i_pert
       integer(kind = kint) :: i_filter_s, i_SGS_wk_field
       integer(kind = kint) :: iphys_wfl_scalar, iphys_fefx_buo_gen
-      integer(kind = kint) :: iak_diff, icomp_diff_t
+      integer(kind = kint) :: icomp_diff_t
 !
       integer(kind = kint) :: iflag_supg, n_int_evo
       integer(kind = kint) :: iflag_SGS_flux
@@ -513,7 +512,6 @@
      &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
      &      Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,   &
-     &      Csims_FEM_MHD%iak_diff_sgs,                                 &
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
