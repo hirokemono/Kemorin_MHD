@@ -182,8 +182,7 @@
      &    (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                 &
      &     mesh, group, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys,              &
      &     fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,         &
-     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne%num_comp,               &
-     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                   &
+     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne,                        &
      &     Fmatrix, MGCG_WK%MG_vector,                                  &
      &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
      &     nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
@@ -323,11 +322,9 @@
       do iloop = 0, FEM_prm%maxiter_coulomb
         call cal_mag_potential                                          &
      &    (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                 &
-     &     mesh%node, mesh%ele, mesh%surf, group%surf_grp,              &
-     &     Bnod_bcs, Bsf_bcs, Fsf_bcs, iphys,                           &
+     &     mesh, group%surf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs, iphys,     &
      &     fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,         &
-     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne%num_comp,               &
-     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                   &
+     &     Csims_FEM_MHD%diff_coefs%Cdiff_magne,                        &
      &     Fmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk, &
      &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                          &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
