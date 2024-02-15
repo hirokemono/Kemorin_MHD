@@ -9,7 +9,7 @@
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          mesh, conduct, group, cd_prop, Bnod_bcs,              &
 !!     &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,   &
-!!     &          ele_fld, jacs, rhs_tbl, iak_diff_base, iak_diff_sgs,  &
+!!     &          ele_fld, jacs, rhs_tbl, iak_diff_sgs,                 &
 !!     &          icomp_sgs_term, iphys_elediff_vec,                    &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,    &
 !!     &          mlump_cd, Bmatrix, MG_vector, wk_filter,              &
@@ -26,7 +26,6 @@
 !!     &          Bnod_bcs, Fsf_bcs, iphys, jacs, rhs_tbl, FEM_elens,   &
 !!     &          iflag_diff_b, ak_diff, mlump_ins, mhd_fem_wk,         &
 !!     &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
-!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -119,7 +118,7 @@
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          mesh, conduct, group, cd_prop, Bnod_bcs,                &
      &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,     &
-     &          ele_fld, jacs, rhs_tbl, iak_diff_base, iak_diff_sgs,    &
+     &          ele_fld, jacs, rhs_tbl, iak_diff_sgs,                   &
      &          icomp_sgs_term, iphys_elediff_vec,                      &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,      &
      &          mlump_cd, Bmatrix, MG_vector, wk_filter,                &
@@ -138,7 +137,6 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
-      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: iak_diff_sgs
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm

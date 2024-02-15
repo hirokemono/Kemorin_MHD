@@ -40,7 +40,6 @@
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(base_field_address), intent(in) :: icomp_diff_base
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(base_field_address), intent(in) :: iphys_elediff_fil
@@ -232,7 +231,6 @@
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
      &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
      &    Csims_FEM_MHD%icomp_sgs_term%i_SGS_h_flux,                    &
-     &    Csims_FEM_MHD%iak_diff_base%i_temp,                           &
      &    Csims_FEM_MHD%icomp_diff_base%i_temp,                         &
      &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_h_flux,                      &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
@@ -247,7 +245,6 @@
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
      &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
      &    Csims_FEM_MHD%icomp_sgs_term%i_SGS_c_flux,                    &
-     &    Csims_FEM_MHD%iak_diff_base%i_light,                          &
      &    Csims_FEM_MHD%icomp_diff_base%i_light,                        &
      &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_c_flux,                      &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
@@ -266,7 +263,7 @@
      &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
      &      Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,   &
-     &      Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,    &
+     &      Csims_FEM_MHD%iak_diff_sgs,                                 &
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
@@ -352,7 +349,6 @@
         i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_temp
         iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_temp
         iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_buo_gen
-        iak_diff =     Csims_FEM_MHD%iak_diff_base%i_temp
         icomp_diff_t = Csims_FEM_MHD%icomp_diff_base%i_temp
 !
         iflag_supg = FEM_prm%iflag_temp_supg
@@ -368,9 +364,8 @@
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Tsf_bcs, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     iak_diff, icomp_diff_t,                                      &
-     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
-     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
+     &     icomp_diff_t, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs%Cdiff_temp, &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
@@ -381,7 +376,6 @@
         i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_composit
         iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_light
         iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_c_buo_gen
-        iak_diff =      Csims_FEM_MHD%iak_diff_base%i_light
         icomp_diff_t =  Csims_FEM_MHD%icomp_diff_base%i_light
 !
         iflag_supg = FEM_prm%iflag_comp_supg
@@ -397,9 +391,8 @@
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, surf_bcs%Csf_bcs, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     iak_diff, icomp_diff_t,                                      &
-     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
-     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs,       &
+     &     icomp_diff_t, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs%Cdiff_light, &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
@@ -493,7 +486,6 @@
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
      &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
      &    Csims_FEM_MHD%icomp_sgs_term%i_SGS_h_flux,                    &
-     &    Csims_FEM_MHD%iak_diff_base%i_temp,                           &
      &    Csims_FEM_MHD%icomp_diff_base%i_temp,                         &
      &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_h_flux,                      &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
@@ -508,7 +500,6 @@
      &    iref_base, iref_grad, ref_fld, iphys, iphys_LES,              &
      &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
      &    Csims_FEM_MHD%icomp_sgs_term%i_SGS_c_flux,                    &
-     &    Csims_FEM_MHD%iak_diff_base%i_light,                          &
      &    Csims_FEM_MHD%icomp_diff_base%i_light,                        &
      &    Csims_FEM_MHD%iak_diff_SGS%i_SGS_c_flux,                      &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
@@ -526,7 +517,7 @@
      &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
      &      Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,   &
-     &      Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,    &
+     &      Csims_FEM_MHD%iak_diff_sgs,                                 &
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
@@ -602,7 +593,10 @@
       nod_fld%iflag_update(1:nod_fld%ntot_phys) = 0
       sgs_coefs%iflag_field(1:sgs_coefs%num_field) = 0
       diff_coefs%iflag_field(1:diff_coefs%num_field) = 0
+      diff_coefs%Cdiff_velo%flag_set =  .FALSE.
       diff_coefs%Cdiff_magne%flag_set = .FALSE.
+      diff_coefs%Cdiff_temp%flag_set =  .FALSE.
+      diff_coefs%Cdiff_light%flag_set = .FALSE.
 !
       end subroutine reset_update_flag
 !

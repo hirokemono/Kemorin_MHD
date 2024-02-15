@@ -305,8 +305,7 @@
      &   SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,          &
      &   mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,     &
      &   iphys, iphys_LES, iphys_ele_base, ele_fld,                     &
-     &   fem_int%jcs, fem_int%rhs_tbl,                                  &
-     &   Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,       &
+     &   fem_int%jcs, fem_int%rhs_tbl, Csims_FEM_MHD%iak_diff_sgs,      &
      &   Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iphys_elediff_vec, &
      &   sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,             &
      &   mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                   &

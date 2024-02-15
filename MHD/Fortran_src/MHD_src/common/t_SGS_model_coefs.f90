@@ -54,6 +54,10 @@
         type(SGS_model_coefficient) :: Cdiff_velo
 !>       Structure for commutationa error coefficient for magnetic field
         type(SGS_model_coefficient) :: Cdiff_magne
+!>       Structure for commutationa error coefficient for temperature
+        type(SGS_model_coefficient) :: Cdiff_temp
+!>       Structure for commutationa error coefficient for temperature
+        type(SGS_model_coefficient) :: Cdiff_light
       end type SGS_coefficients_type
 !
 ! -------------------------------------------------------------------

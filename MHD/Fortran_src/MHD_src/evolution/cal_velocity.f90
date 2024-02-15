@@ -9,7 +9,7 @@
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,&
 !!     &          iphys_ele_base, ak_MHD, fem_int, FEM_filters,         &
-!!     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,          &
+!!     &          iak_sgs_term, icomp_sgs_term,                         &
 !!     &          iak_diff_sgs, iphys_elediff_vec,                      &
 !!     &          sgs_coefs_nod, diff_coefs, mk_MHD,                    &
 !!     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
@@ -33,7 +33,6 @@
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
@@ -108,7 +107,7 @@
      &          mesh, group, fluid, fl_prop, cd_prop,                   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,  &
      &          iphys_ele_base, ak_MHD, fem_int, FEM_filters,           &
-     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,            &
+     &          iak_sgs_term, icomp_sgs_term,                           &
      &          iak_diff_sgs, iphys_elediff_vec,                        &
      &          sgs_coefs_nod, diff_coefs, mk_MHD,                      &
      &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,      &
@@ -143,7 +142,6 @@
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: iak_diff_sgs
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod

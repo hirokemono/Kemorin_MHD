@@ -15,9 +15,8 @@
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
 !!     &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
 !!     &          iphys_base, iphys_dif, iphys_SGS, fem_int,            &
-!!     &          FEM_elens, iak_diff_base, iak_diff_sgs,               &
-!!     &          diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
-!!        type(base_field_address), intent(in) :: iak_diff_base
+!!     &          FEM_elens, iak_diff_sgs, diff_coefs, rhs_mat, nod_fld,&
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -202,13 +201,12 @@
      &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
      &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,      &
      &          iphys_base, iphys_dif, iphys_SGS, fem_int,              &
-     &          FEM_elens, iak_diff_base, iak_diff_sgs,                 &
-     &          diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &          FEM_elens, iak_diff_sgs, diff_coefs, rhs_mat, nod_fld,  &
+     &          v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
 !
-      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: iak_diff_sgs
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm

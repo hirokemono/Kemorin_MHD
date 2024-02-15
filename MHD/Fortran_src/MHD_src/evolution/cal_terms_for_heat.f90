@@ -16,7 +16,7 @@
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!
 !!      subroutine cal_thermal_diffusion                                &
-!!     &         (i_field, i_scalar, iflag_diff, ak_d, num_int,         &
+!!     &         (i_field, i_scalar, ak_d, num_int,                     &
 !!     &          SGS_param, nod_comm, node, ele, surf, fluid, sf_grp,  &
 !!     &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, ak_diff,       &
 !!     &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
@@ -37,6 +37,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -236,9 +237,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_thermal_diffusion                                  &
-     &         (i_field, i_scalar, iflag_diff, ak_d, num_int,           &
+     &         (i_field, i_scalar, ak_d, num_int,                       &
      &          SGS_param, nod_comm, node, ele, surf, fluid, sf_grp,    &
-     &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, ak_diff,         &
+     &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, Cdiff,           &
      &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
@@ -256,12 +257,11 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(lumped_mass_matrices), intent(in) :: mlump_fl
+      type(SGS_model_coefficient), intent(in) :: Cdiff
 !
       integer (kind=kint), intent(in) :: i_field, i_scalar
       integer (kind=kint), intent(in) :: num_int
-      integer (kind=kint), intent(in) :: iflag_diff
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
@@ -275,7 +275,7 @@
       call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,          &
      &    fluid%istack_ele_fld_smp, num_int, node, ele, nod_fld,        &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, iflag_diff, ak_diff, one, ak_d, i_scalar,          &
+     &    FEM_elens, Cdiff, one, ak_d, i_scalar,                        &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_sf_scalar_flux(node, ele, surf, sf_grp,                  &

@@ -18,7 +18,7 @@
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
 !!     &          g_FEM, jac_3d, rhs_tbl,                               &
 !!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
-!!     &          FEM_elens, iak_diff_base, diff_coefs, fem_wk,         &
+!!     &          FEM_elens, diff_coefs, fem_wk,                        &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -33,7 +33,6 @@
 !!        type(table_mat_const), intent(in) :: MG_mat_q
 !!        type(table_mat_const), intent(in) :: MG_mat_fl_q
 !!        type(table_mat_const), intent(in) :: MG_mat_full_cd_q
-!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_press
@@ -128,7 +127,7 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,             &
      &          g_FEM, jac_3d, rhs_tbl,                                 &
      &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
-     &          FEM_elens, iak_diff_base, diff_coefs, fem_wk,           &
+     &          FEM_elens, diff_coefs, fem_wk,                          &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
       integer(kind = kint), intent(in) :: num_int, ifilter_final
@@ -145,7 +144,6 @@
       type(table_mat_const), intent(in) :: MG_mat_fl_q
       type(table_mat_const), intent(in) :: MG_mat_full_cd_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -184,7 +182,8 @@
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, g_FEM, jac_3d,     &
      &     rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                    &
-     &     iak_diff_base%i_temp, diff_coefs%ak(1,iak_diff_base%i_temp), &
+     &     diff_coefs%Cdiff_temp%iak_diff,                              &
+     &     diff_coefs%Cdiff_temp%coef(1,1),                             &
      &     dt, ht_prop%coef_imp, ak_MHD%ak_d_temp, ifilter_final,       &
      &     fem_wk, mat_temp)
       end if
@@ -192,7 +191,8 @@
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, g_FEM, jac_3d,     &
      &     rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                    &
-     &     iak_diff_base%i_light,diff_coefs%ak(1,iak_diff_base%i_light),&
+     &     diff_coefs%Cdiff_light%iak_diff,                             &
+     &     diff_coefs%Cdiff_light%coef(1,1),                            &
      &     dt, cp_prop%coef_imp, ak_MHD%ak_d_composit, ifilter_final,   &
      &     fem_wk, mat_light)
       end if

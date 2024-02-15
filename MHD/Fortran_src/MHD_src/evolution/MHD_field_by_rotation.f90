@@ -11,8 +11,8 @@
 !!     &         (dt, FEM_prm, SGS_param, cmt_param, mesh, group,       &
 !!     &          fluid, conduct, cd_prop, nod_bcs, surf_bcs,           &
 !!     &          iphys_base, iphys_ele_base, ele_fld, fem_int,         &
-!!     &          FEM_elens, iak_diff_base, diff_coefs, mk_MHD,         &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+!!     &          FEM_elens, diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,   &
+!!     &          nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -27,7 +27,6 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -77,8 +76,8 @@
      &         (dt, FEM_prm, SGS_param, cmt_param, mesh, group,         &
      &          fluid, conduct, cd_prop, nod_bcs, surf_bcs,             &
      &          iphys_base, iphys_ele_base, ele_fld, fem_int,           &
-     &          FEM_elens, iak_diff_base, diff_coefs, mk_MHD,           &
-     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &          FEM_elens, diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,     &
+     &          nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_rotation_sgs
 !
@@ -98,7 +97,6 @@
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !

@@ -1,14 +1,16 @@
-!
-!      module int_vol_diffusion_ele
-!
-! numerical integration for diffusion terms (Lapracians)
-!      Written by H. Matsui on July, 2005
-!
+!>@file   int_vol_diffusion_ele.f90
+!!        module int_vol_diffusion_ele
+!!
+!>@author H. Matsui
+!>@date Written by H. Matsui in July, 2005
+!!
+!>@brief Evaluate field data for time integration for FEM dynamo model
+!!
+!!@verbatim
 !!      subroutine int_vol_scalar_diffuse_ele                           &
 !!     &         (ifilter_final, iele_fsmp_stack, num_int,              &
 !!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
-!!     &          iflag_diff, ak_diff, coef_crank, ak_d, i_scalar,      &
-!!     &          fem_wk, f_l)
+!!     &          Cdiff, coef_crank, ak_d, i_scalar, fem_wk, f_l)
 !!      subroutine int_vol_vector_diffuse_ele                           &
 !!     &         (ifilter_final, iele_fsmp_stack, num_int,              &
 !!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
@@ -21,8 +23,10 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
+!!@endverbatim
 !
       module int_vol_diffusion_ele
 !
@@ -53,8 +57,7 @@
       subroutine int_vol_scalar_diffuse_ele                             &
      &         (ifilter_final, iele_fsmp_stack, num_int,                &
      &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
-     &          iflag_diff, ak_diff, coef_crank, ak_d, i_scalar,        &
-     &          fem_wk, f_l)
+     &          Cdiff, coef_crank, ak_d, i_scalar, fem_wk, f_l)
 !
       use int_vol_fractional
       use int_vol_sgs_fractional
@@ -66,23 +69,23 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff
 !
       integer(kind = kint), intent(in) :: ifilter_final, num_int
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: i_scalar, iflag_diff
+      integer(kind=kint), intent(in) :: i_scalar
       real (kind=kreal), intent(in) :: coef_crank
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if(iflag_diff .gt. 0) then
+      if(Cdiff%num_comp .gt. 0) then
         call int_vol_scalar_sgs_diffuse                                 &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,      &
      &      iele_fsmp_stack, num_int, coef_crank, ak_d, i_scalar,       &
-     &      ifilter_final, ak_diff, fem_wk, f_l)
+     &      ifilter_final, Cdiff%coef(1,1), fem_wk, f_l)
       else
         call int_vol_scalar_diffuse                                     &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &

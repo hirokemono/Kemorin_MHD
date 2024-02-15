@@ -9,7 +9,7 @@
 !!     &         (dt, FEM_prm, SGS_par, mesh, fluid, conduct, sf_grp,   &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,&
 !!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
-!!     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,   &
+!!     &          FEM_elens, iak_diff_sgs, diff_coefs,                  &
 !!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,        &
 !!     &          v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -32,7 +32,6 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -169,7 +168,7 @@
      &         (dt, FEM_prm, SGS_par, mesh, fluid, conduct, sf_grp,     &
      &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,  &
      &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
-     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,     &
+     &          FEM_elens, iak_diff_sgs, diff_coefs,                    &
      &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,          &
      &          v_sol, SR_sig, SR_r)
 !
@@ -200,7 +199,6 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: iak_diff_sgs
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -381,25 +379,24 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(thermal_diffusion%name)
         call cal_thermal_diffusion(iphys%diffusion%i_t_diffuse,         &
-     &      iphys%base%i_temp, iak_diff_base%i_temp, ak_MHD%ak_d_temp,  &
+     &      iphys%base%i_temp, ak_MHD%ak_d_temp,                        &
      &      FEM_prm%npoint_t_evo_int, SGS_par%model_p,                  &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, fluid,       &
      &      sf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int,        &
-     &      FEM_elens, diff_coefs%ak(1,iak_diff_base%i_temp),           &
-     &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      FEM_elens, diff_coefs%Cdiff_temp, mk_MHD%mlump_fl,          &
+     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_c_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(composition_diffusion%name)
         call cal_thermal_diffusion(iphys%diffusion%i_c_diffuse,         &
-     &      iphys%base%i_light, iak_diff_base%i_light,                  &
-     &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &
-     &      SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele,        &
-     &      mesh%surf, fluid, sf_grp,                                   &
-     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int,                &
-     &      FEM_elens, diff_coefs%ak(1,iak_diff_base%i_light),          &
-     &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      iphys%base%i_light, ak_MHD%ak_d_composit,                   &
+     &      FEM_prm%npoint_t_evo_int, SGS_par%model_p,                  &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, fluid,       &
+     &      sf_grp, nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int,        &
+     &      FEM_elens, diff_coefs%Cdiff_light, mk_MHD%mlump_fl,         &
+     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_v_diffuse .gt. izero) then
@@ -437,8 +434,8 @@
      &      sf_grp, nod_bcs%Bnod_bcs,                                   &
      &      surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,                         &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
-     &      fem_int, FEM_elens, iak_diff_base, iak_diff_sgs,            &
-     &      diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      fem_int, FEM_elens, iak_diff_sgs, diff_coefs,               &
+     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine cal_forces_4_monitor

@@ -111,8 +111,8 @@
      &   FEM_model%MHD_prop%cd_prop,                                    &
      &   FEM_model%FEM_MHD_BCs%nod_bcs, FEM_model%FEM_MHD_BCs%surf_bcs, &
      &   FEM_MHD%iphys%base, SGS_MHD_wk%iphys_ele_base,                 &
-     &   SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters%FEM_elens, &
-     &   Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,         &
+     &   SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int,                        &
+     &   FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,               &
      &   SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,  &
      &   FEM_MHD%field, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
@@ -207,7 +207,7 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,                    &
      &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
-     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
+     &    Csims_FEM_MHD%iak_diff_sgs,                                   &
      &    Csims_FEM_MHD%diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,        &
      &    nod_fld, ele_fld, v_sol, SR_sig, SR_r)
       call cal_diff_of_sgs_terms                                        &

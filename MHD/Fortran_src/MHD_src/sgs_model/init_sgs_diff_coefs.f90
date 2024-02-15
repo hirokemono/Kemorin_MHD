@@ -73,7 +73,7 @@
       call set_sgs_diff_addresses(SGS_param, cmt_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
+     &    Csims_FEM_MHD%iak_diff_sgs,                                   &
      &    Csims_FEM_MHD%icomp_diff_base, Csims_FEM_MHD%icomp_diff_sgs,  &
      &    wk_diff, Csims_FEM_MHD%diff_coefs)
       Csims_FEM_MHD%diff_coefs%ntot_comp                                &
@@ -95,9 +95,24 @@
      &       Csims_FEM_MHD%diff_coefs%Cdiff_magne)
       end if
 !
+      if(Csims_FEM_MHD%diff_coefs%Cdiff_temp%iak_diff .gt. 0) then
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_temp)
+      else
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_temp)
+      end if
+!
+      if(Csims_FEM_MHD%diff_coefs%Cdiff_light%iak_diff .gt. 0) then
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_light)
+      else
+         call alloc_SGS_model_coefficient(numele, ione,                 &
+     &       Csims_FEM_MHD%diff_coefs%Cdiff_light)
+      end if
+!
       if(iflag_debug .gt. 0) then
-        call check_sgs_diff_addresses                                   &
-     &    (Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,     &
+        call check_sgs_diff_addresses(Csims_FEM_MHD%iak_diff_sgs,       &
      &     Csims_FEM_MHD%icomp_diff_base, Csims_FEM_MHD%icomp_diff_sgs, &
      &     wk_diff, Csims_FEM_MHD%diff_coefs)
       end if
@@ -227,8 +242,7 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_sgs_diff_addresses(SGS_param, cmt_param,           &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          iak_diff_base, iak_diff_sgs,                            &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, iak_diff_sgs,       &
      &          icomp_diff_base, icomp_diff_sgs, wk_diff, diff_coefs)
 !
       use calypso_mpi
@@ -248,7 +262,6 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
 !
-      type(base_field_address), intent(inout) :: iak_diff_base
       type(SGS_term_address), intent(inout) :: iak_diff_sgs
       type(base_field_address), intent(inout) :: icomp_diff_base
       type(SGS_term_address), intent(inout) :: icomp_diff_sgs
@@ -333,8 +346,8 @@
      &      .and. SGS_param%SGS_heat%iflag_commute_field               &
      &           .eq. id_SGS_commute_ON) then
             icomp_diff_base%i_temp = id
-            iak_diff_base%i_temp = jd
             wk_diff%name(jd) = temperature%name
+            diff_coefs%Cdiff_temp%iak_diff = jd
             diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
@@ -346,8 +359,8 @@
      &      .and. SGS_param%SGS_light%iflag_commute_field              &
      &           .eq. id_SGS_commute_ON) then
             icomp_diff_base%i_light = id
-            iak_diff_base%i_light = jd
             wk_diff%name(jd) = composition%name
+            diff_coefs%Cdiff_light%iak_diff = jd
             diff_coefs%num_comps(jd) = 1
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
@@ -400,8 +413,7 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine check_sgs_diff_addresses                               &
-     &         (iak_diff_base, iak_diff_sgs,                            &
+      subroutine check_sgs_diff_addresses(iak_diff_sgs,                 &
      &          icomp_diff_base, icomp_diff_sgs, wk_diff, diff_coefs)
 !
       use calypso_mpi
@@ -412,7 +424,6 @@
       use t_SGS_model_coefs
 !
 !
-      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: iak_diff_sgs
       type(base_field_address), intent(in) :: icomp_diff_base
       type(SGS_term_address), intent(in) :: icomp_diff_sgs
@@ -450,11 +461,11 @@
      &        trim(wk_diff%name(iak_diff_sgs%i_SGS_induction))
         end if
 !
-        if(iak_diff_base%i_temp .gt. 0) then
+        if(diff_coefs%Cdiff_temp%iak_diff .gt. 0) then
           write(*,*) 'iak_diff_t',                                      &
-     &        iak_diff_base%i_temp, icomp_diff_base%i_temp,             &
-     &        diff_coefs%num_comps(iak_diff_base%i_temp),               &
-     &        trim(wk_diff%name(iak_diff_base%i_temp))
+     &        diff_coefs%Cdiff_temp%iak_diff, icomp_diff_base%i_temp,   &
+     &        diff_coefs%Cdiff_temp%num_comp,                           &
+     &        trim(wk_diff%name(diff_coefs%Cdiff_temp%iak_diff))
         end if
         if(diff_coefs%Cdiff_velo%iak_diff .gt. 0) then
           write(*,*) 'iak_diff_v',                                      &
@@ -469,11 +480,11 @@
      &        diff_coefs%Cdiff_magne%num_comp,                          &
      &        trim(wk_diff%name(diff_coefs%Cdiff_magne%iak_diff))
         end if
-        if(iak_diff_base%i_light .gt. 0) then
+        if(diff_coefs%Cdiff_light%iak_diff .gt. 0) then
           write(*,*) 'iak_diff_c',                                      &
-     &        iak_diff_base%i_light, icomp_diff_base%i_light,           &
-     &        diff_coefs%num_comps(iak_diff_base%i_light),              &
-     &        trim(wk_diff%name(iak_diff_base%i_light))
+     &        diff_coefs%Cdiff_light%iak_diff, icomp_diff_base%i_light, &
+     &        diff_coefs%Cdiff_light%num_comp,                          &
+     &        trim(wk_diff%name(diff_coefs%Cdiff_light%iak_diff))
         end if
 !
       end subroutine check_sgs_diff_addresses

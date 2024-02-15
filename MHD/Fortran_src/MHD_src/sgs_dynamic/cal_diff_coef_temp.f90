@@ -7,14 +7,15 @@
 !>@brief  Evaluate model coefficients for scalar differentiation
 !!
 !!@verbatim
-!!      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,      &
-!!     &        ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
+!!      subroutine s_cal_diff_coef_scalar                               &
+!!     &        (iflag_SGS_initial, iflag_supg, num_int, dt,            &
+!!     &         ifield, ifield_f, icomp_diff_t,                        &
 !!     &        SGS_param, cmt_param, filter_param,                     &
 !!     &        nod_comm, node, ele, surf, sf_grp, Tsf_bcs,             &
 !!     &        iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl,&
 !!     &        jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,          &
 !!     &        wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
-!!     &        f_l, f_nl, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
+!!     &        f_l, f_nl, nod_fld, Cdiff_scalar, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        integer(kind = kint), intent(in) :: iflag_SGS_initial
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -44,7 +45,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(inout) :: Cdiff_scalar
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -90,13 +91,13 @@
 !
       subroutine s_cal_diff_coef_scalar                                 &
      &        (iflag_SGS_initial, iflag_supg, num_int, dt,              &
-     &         ifield, ifield_f, iak_diff_t, icomp_diff_t,              &
+     &         ifield, ifield_f, icomp_diff_t,                          &
      &         SGS_param, cmt_param, filter_param,                      &
      &         nod_comm, node, ele, surf, sf_grp, Tsf_bcs,              &
      &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl, &
      &         jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,           &
      &         wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,     &
-     &         f_l, f_nl, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
+     &         f_l, f_nl, nod_fld, Cdiff_scalar, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -111,7 +112,7 @@
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: iflag_supg, num_int
-      integer(kind = kint), intent(in) :: iak_diff_t, icomp_diff_t
+      integer(kind = kint), intent(in) :: icomp_diff_t
       integer(kind = kint), intent(in) :: ifield, ifield_f
       real(kind = kreal), intent(in) :: dt
 !
@@ -145,7 +146,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_model_coefficient), intent(inout) :: Cdiff_scalar
       type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -153,7 +154,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
-     &    diff_coefs%num_field, iak_diff_t, diff_coefs%ak)
+     &    Cdiff_scalar%num_comp, ione, Cdiff_scalar%coef(1,1))
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   take gradient of filtered temperature (to iphys_SGS_wk%i_simi)
@@ -236,14 +237,14 @@
 !
 !     obtain model coefficient
 !
-      if (iflag_debug.gt.0)  write(*,*)                                 &
-     &   'cal_diff_coef_fluid', n_vector, iak_diff_t, icomp_diff_t
+      if (iflag_debug.gt.0)  write(*,*)  'cal_diff_coef_fluid',         &
+     &            n_vector, Cdiff_scalar%iak_diff, icomp_diff_t
       call cal_diff_coef_fluid(iflag_SGS_initial, SGS_param, cmt_param, &
      &    layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,     &
-     &    n_vector, iak_diff_t, icomp_diff_t, num_int,                  &
-     &    wk_cor, wk_lsq, wk_diff, diff_coefs%ak(1,iak_diff_t))
+     &    n_vector, Cdiff_scalar%iak_diff, icomp_diff_t, num_int,       &
+     &    wk_cor, wk_lsq, wk_diff, Cdiff_scalar%coef(1,1))
 !
-      diff_coefs%iflag_field(iak_diff_t) = 1
+      Cdiff_scalar%flag_set = .TRUE.
 !
       end subroutine s_cal_diff_coef_scalar
 !

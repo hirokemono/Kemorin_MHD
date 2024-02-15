@@ -36,7 +36,6 @@
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
-!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump

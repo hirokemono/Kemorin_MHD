@@ -37,8 +37,6 @@
 !>        Component list of SGS terms
         type(SGS_term_address) :: icomp_sgs_term
 !
-!>        field list of commutaion error correction for base fields
-        type(base_field_address) :: iak_diff_base
 !>        field list of commutaion error correction for SGS terms
         type(SGS_term_address) :: iak_diff_sgs
 !
