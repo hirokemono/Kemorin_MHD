@@ -291,8 +291,8 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, sf_grp, ht_prop, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, &
      &      iphys_ele_base, ele_fld, fem_int, FEM_elens,                &
-     &      diff_coefs%Cdiff_SGS_hf%coef(1,1), mk_MHD%mlump_fl,         &
-     &      mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      diff_coefs%Cdiff_SGS_hf, mk_MHD%mlump_fl, mhd_fem_wk,       &
+     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys_LES%div_SGS%i_SGS_c_flux .gt. 0) then
@@ -308,9 +308,8 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, sf_grp, cp_prop, nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, &
      &      iphys_ele_base, ele_fld, fem_int, FEM_elens,                &
-     &      diff_coefs%Cdiff_SGS_cf%coef(1,1),                          &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
-     &      v_sol, SR_sig, SR_r)
+     &      diff_coefs%Cdiff_SGS_cf, mk_MHD%mlump_fl,                   &
+     &      mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       do i = 1, nod_fld%num_phys
@@ -345,9 +344,8 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     iphys%base, iphys%forces, iphys%div_forces, iphys%diffusion, &
      &     iphys_LES%SGS_term, iphys_ele_base, ele_fld, fem_int,        &
-     &     FEM_elens, diff_coefs%Cdiff_SGS_uxb%coef(1,1),               &
-     &     mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,               &
-     &     v_sol, SR_sig, SR_r)
+     &     FEM_elens, diff_coefs%Cdiff_SGS_uxb, mk_MHD%mlump_cd,        &
+     &     mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine cal_diff_of_sgs_terms

@@ -110,10 +110,9 @@
      &      .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux                                &
      &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
-     &        rhs_tbl, FEM_elens, Vsf_bcs%sgs, num_int,                 &
-     &        SGS_param%ifilter_final, iphys_SGS%i_SGS_m_flux,          &
+     &        rhs_tbl, FEM_elens, diff_coefs%Cdiff_SGS_mf, Vsf_bcs%sgs, &
+     &        num_int, SGS_param%ifilter_final, iphys_SGS%i_SGS_m_flux, &
      &        iphys_base%i_velo, iphys_base%i_velo,                     &
-     &        diff_coefs%Cdiff_SGS_mf%coef(1,1),                        &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
       end if
@@ -121,12 +120,11 @@
       if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux                                &
-     &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
-     &        rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                 &
-     &        SGS_param%ifilter_final, iphys_SGS%i_SGS_maxwell,         &
-     &        iphys_base%i_magne, iphys_base%i_magne,                   &
-     &        diff_coefs%Cdiff_SGS_lor%coef(1,1),                       &
-     &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
+     &      (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,       &
+     &       rhs_tbl, FEM_elens, diff_coefs%Cdiff_SGS_lor, Bsf_bcs%sgs, &
+     &       num_int, SGS_param%ifilter_final, iphys_SGS%i_SGS_maxwell, &
+     &       iphys_base%i_magne, iphys_base%i_magne,                    &
+     &       (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
         end if
       end if
 !
@@ -190,10 +188,9 @@
      &        .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux                                &
      &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
-     &        rhs_tbl, FEM_elens, Vsf_bcs%sgs, num_int,                 &
-     &        SGS_param%ifilter_final, iphys_SGS%i_SGS_m_flux,          &
+     &        rhs_tbl, FEM_elens, diff_coefs%Cdiff_SGS_mf, Vsf_bcs%sgs, &
+     &        num_int, SGS_param%ifilter_final, iphys_SGS%i_SGS_m_flux, &
      &        iphys_base%i_velo, iphys_base%i_velo,                     &
-     &        diff_coefs%Cdiff_SGS_mf%coef(1,1),                        &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
       end if
@@ -201,12 +198,11 @@
       if (i_field .eq. iphys_SGS%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux                                &
-     &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
-     &        rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                 &
-     &        SGS_param%ifilter_final, iphys_SGS%i_SGS_maxwell,         &
-     &        iphys_base%i_magne, iphys_base%i_magne,                   &
-     &        diff_coefs%Cdiff_SGS_lor%coef(1,1),                       &
-     &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
+     &      (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,       &
+     &       rhs_tbl, FEM_elens, diff_coefs%Cdiff_SGS_lor, Bsf_bcs%sgs, &
+     &       num_int, SGS_param%ifilter_final, iphys_SGS%i_SGS_maxwell, &
+     &       iphys_base%i_magne, iphys_base%i_magne,                    &
+     &       (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
         end if
       end if
 !

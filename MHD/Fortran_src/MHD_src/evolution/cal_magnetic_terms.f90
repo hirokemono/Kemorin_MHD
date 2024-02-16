@@ -9,8 +9,8 @@
 !!     &         conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,  &
 !!     &         iphys_base, iphys_frc, iphys_div_frc, iphys_dif,       &
 !!     &         iphys_SGS, iphys_ele_base, ele_fld, fem_int, FEM_elens,&
-!!     &         iak_diff_SGS_induction, diff_coefs, mlump_cd,          &
-!!     &         mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+!!     &         Cdiff_SGS_uxb, mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, &
+!!     &         v_sol, SR_sig, SR_r)
 !!      subroutine cal_magnetic_diffusion(ak_d_magne,                   &
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
 !!     &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
@@ -39,6 +39,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -100,7 +101,7 @@
      &         conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
      &         iphys_base, iphys_frc, iphys_div_frc, iphys_dif,         &
      &         iphys_SGS, iphys_ele_base, ele_fld, fem_int, FEM_elens,  &
-     &         ak_diff, mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,         &
+     &         Cdiff_SGS_uxb, mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,   &
      &         v_sol, SR_sig, SR_r)
 !
       use int_vol_magne_monitor
@@ -130,11 +131,11 @@
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
       type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       integer (kind=kint), intent(in) :: i_field
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -154,7 +155,7 @@
      &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
      &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, ak_diff, mhd_fem_wk,                             &
+     &      FEM_elens, Cdiff_SGS_uxb%coef(1,1), mhd_fem_wk,             &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_magne_monitor_pg                                   &
@@ -163,7 +164,7 @@
      &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
      &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, ak_diff, mhd_fem_wk,                             &
+     &      FEM_elens, Cdiff_SGS_uxb, mhd_fem_wk,                       &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
@@ -172,7 +173,7 @@
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                    &
      &    iphys_base, iphys_dif, iphys_SGS, nod_fld,                    &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, ak_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,          &
+     &    FEM_elens, Cdiff_SGS_uxb%coef(1,1), rhs_mat%fem_wk, rhs_mat%surf_wk,          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector_cd                                        &

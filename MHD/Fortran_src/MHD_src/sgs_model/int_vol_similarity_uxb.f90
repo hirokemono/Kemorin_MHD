@@ -62,8 +62,8 @@
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_field
-      use cal_products_within_skv
       use cal_skv_to_ff_smp
+      use cal_product_to_skv
 !
       integer (kind=kint), intent(in) :: num_int
 !
@@ -95,9 +95,9 @@
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d%ntot_int, num_int, k2, jac_3d%xjac,     &
      &      jac_3d%an, jac_3d%an, fem_wk%vector_1, fem_wk%sk6)
-        call scalar_prod_to_tensor_skv                                  &
-     &     (ele, conduct%istack_ele_fld_smp, Csim_SGS_uxb%num_comp,     &
-     &      ione, Csim_SGS_uxb%coef(1,1), fem_wk%sk6)
+        call scalar_prod_to_skv_tensor                                  &
+     &     (ele%numele, conduct%istack_ele_fld_smp, ele%nnod_4_ele,     &
+     &      Csim_SGS_uxb%coef(1,1), fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -114,8 +114,8 @@
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_fld_upwind
-      use cal_products_within_skv
       use cal_skv_to_ff_smp
+      use cal_product_to_skv
 !
       integer (kind=kint), intent(in) :: num_int
 !
@@ -149,9 +149,9 @@
      &      num_int, k2, dt, d_ele(1,iele_magne), ele, g_FEM, jac_3d,   &
      &      fem_wk%vector_1, fem_wk%sk6)
 !
-        call scalar_prod_to_tensor_skv(ele, conduct%istack_ele_fld_smp, &
-     &      Csim_SGS_uxb%num_comp, ione, Csim_SGS_uxb%coef(1,1),        &
-     &      fem_wk%sk6)
+        call scalar_prod_to_skv_tensor                                  &
+     &     (ele%numele, conduct%istack_ele_fld_smp, ele%nnod_4_ele,     &
+     &      Csim_SGS_uxb%coef(1,1), fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

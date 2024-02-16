@@ -207,9 +207,8 @@
      &         iphys%diffusion, iphys_LES%filter_fld,                   &
      &         iphys_LES%SGS_term, iphys_LES%true_SGS,                  &
      &         iphys_ele_base, ele_fld, ak_MHD, fem_int, FEM_elens,     &
-     &         diff_coefs%Cdiff_SGS_uxb%coef(1,1),                      &
-     &         mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,           &
-     &         v_sol, SR_sig, SR_r)
+     &         diff_coefs%Cdiff_SGS_uxb, mk_MHD%mlump_cd, mhd_fem_wk,   &
+     &         rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
          end if
        end do
 !
@@ -491,7 +490,7 @@
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base,                 &
      &          iphys_frc, iphys_div_frc, iphys_dif, iphys_fil,         &
      &          iphys_SGS, iphys_trSGS, iphys_ele_base, ele_fld,        &
-     &          ak_MHD, fem_int, FEM_elens, ak_diff, mlump_cd,          &
+     &          ak_MHD, fem_int, FEM_elens, Cdiff_SGS_uxb, mlump_cd,    &
      &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use t_bc_data_magne
@@ -526,8 +525,8 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
       type(lumped_mass_matrices), intent(in) :: mlump_cd
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -545,7 +544,7 @@
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base, iphys_frc,            &
      &    iphys_div_frc, iphys_dif, iphys_SGS, iphys_ele_base,          &
-     &    ele_fld, fem_int, FEM_elens, ak_diff, mlump_cd,               &
+     &    ele_fld, fem_int, FEM_elens, Cdiff_SGS_uxb, mlump_cd,         &
      &    mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       call copy_vector_component(nod_fld, iphys_div_frc%i_induct_t,     &
      &    iphys_trSGS%i_SGS_induction)

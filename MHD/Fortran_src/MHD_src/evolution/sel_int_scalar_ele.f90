@@ -193,11 +193,11 @@
           .and. iflag_SGS_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux(mesh%node, mesh%ele, mesh%surf,  &
      &      group%surf_grp, nod_fld, jacs%g_FEM, jacs%jac_sf_grp,       &
-     &      rhs_tbl, FEM_elens, n_int_evo,                              &
+     &      rhs_tbl, FEM_elens, Cdiff_SGS_flux, n_int_evo,              &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      ifilter_final, i_tensor, i_velo, i_scalar,                  &
-     &      Cdiff_SGS_flux%coef(1,1), property%coef_advect,             &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
+     &      property%coef_advect, rhs_mat%fem_wk, rhs_mat%surf_wk,      &
+     &      rhs_mat%f_nl)
       end if
 !
 !      call check_nodal_data                                            &

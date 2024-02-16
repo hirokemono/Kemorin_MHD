@@ -162,12 +162,10 @@
      &            jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%an,   &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele_base%i_vort),    &
      &            fem_wk%sk6)
-              call fem_skv_div_sgs_tensor                               &
-     &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            SGS_param%ifilter_final,                              &
-     &            diff_coefs%Cdiff_SGS_mf%coef(1,1),                    &
-     &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,     &
-     &            fem_wk%tensor_1, fem_wk%sk6)
+              call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
+     &            num_int, k2, SGS_param%ifilter_final, ele, g_FEM,     &
+     &            jac_3d, FEM_elens, diff_coefs%Cdiff_SGS_mf,           &
+     &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
      &          .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
@@ -274,12 +272,10 @@
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys_base%i_magne, iphys_SGS%i_SGS_maxwell,          &
      &            fl_prop%coef_lor, mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
-              call fem_skv_div_sgs_tensor                               &
-     &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            SGS_param%ifilter_final,                              &
-     &            diff_coefs%Cdiff_SGS_lor%coef(1,1),                   &
-     &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,     &
-     &            fem_wk%tensor_1, fem_wk%sk6)
+              call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
+     &            num_int, k2, SGS_param%ifilter_final, ele, g_FEM,     &
+     &            jac_3d, FEM_elens, diff_coefs%Cdiff_SGS_lor,          &
+     &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele                           &
      &           (node, ele, nod_fld, k2, iphys_SGS%i_SGS_maxwell,      &
@@ -456,9 +452,8 @@
      &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            SGS_param%ifilter_final, dt,                          &
-     &            diff_coefs%Cdiff_SGS_mf%coef(1,1),                    &
-     &            ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),       &
+     &            SGS_param%ifilter_final, dt, ele, g_FEM, jac_3d,      &
+     &            FEM_elens, diff_coefs%Cdiff_SGS_mf, d_ele(1,ie_upw),  &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
      &          .ne. id_SGS_none) then
@@ -525,9 +520,8 @@
      &            fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            SGS_param%ifilter_final, dt,                          &
-     &            diff_coefs%Cdiff_SGS_mf%coef(1,1),                    &
-     &            ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),       &
+     &            SGS_param%ifilter_final, dt, ele, g_FEM, jac_3d,      &
+     &            FEM_elens, diff_coefs%Cdiff_SGS_mf, d_ele(1,ie_upw),  &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
@@ -588,9 +582,8 @@
      &            fl_prop%coef_lor, mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            SGS_param%ifilter_final, dt,                          &
-     &            diff_coefs%Cdiff_SGS_lor%coef(1,1),                   &
-     &            ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),       &
+     &            SGS_param%ifilter_final, dt, ele, g_FEM, jac_3d,      &
+     &            FEM_elens, diff_coefs%Cdiff_SGS_lor, d_ele(1,ie_upw), &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele                           &

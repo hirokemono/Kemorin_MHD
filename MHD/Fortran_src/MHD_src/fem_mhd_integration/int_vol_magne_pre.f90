@@ -13,7 +13,8 @@
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_SGS, nod_fld,                       &
 !!     &          ncomp_ele, d_ele, iphys_ele_base, g_FEM, jac_3d,      &
-!!     &          rhs_tbl, FEM_elens, ak_diff, mhd_fem_wk, fem_wk, f_nl)
+!!     &          rhs_tbl, FEM_elens, Cdiff_SGS_uxb,                    &
+!!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_pre_ele_upm(num_int, dt,               &
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_SGS, nod_fld, ncomp_ele, d_ele,     &
@@ -32,6 +33,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -76,7 +78,8 @@
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys_base, iphys_SGS, nod_fld,                         &
      &          ncomp_ele, d_ele, iphys_ele_base, g_FEM, jac_3d,        &
-     &          rhs_tbl, FEM_elens, ak_diff, mhd_fem_wk, fem_wk, f_nl)
+     &          rhs_tbl, FEM_elens, Cdiff_SGS_uxb,                      &
+     &          mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
@@ -101,11 +104,11 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -149,8 +152,8 @@
      &         mhd_fem_wk%sgs_v1, fem_wk%vector_1)
            call fem_skv_div_sgs_asym_tsr                                &
      &        (conduct%istack_ele_fld_smp, num_int, k2,                 &
-     &         SGS_param%ifilter_final, ak_diff,                        &
-     &         ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,        &
+     &         SGS_param%ifilter_final, ele, g_FEM, jac_3d,             &
+     &         FEM_elens, Cdiff_SGS_uxb, mhd_fem_wk%sgs_v1,             &
      &         fem_wk%vector_1, fem_wk%sk6)
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &

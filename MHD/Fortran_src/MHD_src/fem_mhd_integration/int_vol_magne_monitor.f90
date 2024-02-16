@@ -12,7 +12,8 @@
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,      &
 !!     &          nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,      &
-!!     &          rhs_tbl, FEM_elen, ak_diff, mhd_fem_wk, fem_wk, f_nl)
+!!     &          rhs_tbl, FEM_elen, Cdiff_SGS_uxb,                     &
+!!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_monitor_upm(i_field, num_int, dt,      &
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,      &
@@ -35,6 +36,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -76,7 +78,8 @@
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,        &
      &          nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,        &
-     &          rhs_tbl, FEM_elen, ak_diff, mhd_fem_wk, fem_wk, f_nl)
+     &          rhs_tbl, FEM_elen, Cdiff_SGS_uxb,                       &
+     &          mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_vect_differences
       use int_vol_vect_cst_difference
@@ -105,7 +108,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -128,10 +131,10 @@
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_pg                              &
      &       (node, ele, nod_fld, iphys_base, iphys_SGS,                &
-     &        g_FEM, jac_3d, rhs_tbl, FEM_elen,                         &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elen, Cdiff_SGS_uxb,          &
      &        conduct%istack_ele_fld_smp, num_int,                      &
-     &        SGS_param%ifilter_final, ak_diff,                         &
-     &        cd_prop%coef_induct, fem_wk, mhd_fem_wk, f_nl)
+     &        SGS_param%ifilter_final, cd_prop%coef_induct,             &
+     &        fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &

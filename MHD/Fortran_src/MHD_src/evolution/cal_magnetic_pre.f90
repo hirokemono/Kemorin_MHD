@@ -214,7 +214,7 @@
      &     iphys%base, iphys_LES%SGS_term, nod_fld,                     &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele_base,            &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_filters%FEM_elens,     &
-     &     diff_coefs%Cdiff_SGS_uxb%coef(1,1), mhd_fem_wk,              &
+     &     diff_coefs%Cdiff_SGS_uxb, mhd_fem_wk,                        &
      &     rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
@@ -335,12 +335,11 @@
                              iphys%exp_work%i_m_phi
          call int_surf_sgs_velo_co_ele                                  &
      &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,    &
-     &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
+     &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l, rhs_tbl,    &
+     &      FEM_elens, Cdiff_magne, FEM_prm%npoint_poisson_int,         &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_param%ifilter_final, Cdiff_magne%coef(1,1),             &
-     &      iphys%exp_work%i_m_phi, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
-     &      rhs_mat%f_nl)
+     &      SGS_param%ifilter_final, iphys%exp_work%i_m_phi,            &
+     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
 !
@@ -430,12 +429,11 @@
                              iphys%exp_work%i_m_phi
          call int_surf_sgs_velo_co_ele                                  &
      &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,    &
-     &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
+     &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l, rhs_tbl,    &
+     &      FEM_elens, Cdiff_magne, FEM_prm%npoint_poisson_int,         &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_param%ifilter_final, Cdiff_magne%coef(1,1),             &
-     &      iphys%exp_work%i_m_phi, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
-     &      rhs_mat%f_nl)
+     &      SGS_param%ifilter_final, iphys%exp_work%i_m_phi,            &
+     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
 !
