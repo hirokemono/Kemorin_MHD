@@ -179,9 +179,8 @@
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_wk,         &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl,                     &
      &      FEM_filters%FEM_elens, FEM_filters%filtering,               &
-     &      Csims_FEM_MHD%icomp_sgs_term,                               &
-     &      Csims_FEM_MHD%iphys_elediff_vec,                            &
-     &      Csims_FEM_MHD%sgs_coefs_nod, wk_filter, mhd_fem_wk,         &
+     &      Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,                       &
+     &      Csims_FEM_MHD%iphys_elediff_vec, wk_filter, mhd_fem_wk,     &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !

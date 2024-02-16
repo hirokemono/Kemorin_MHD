@@ -9,9 +9,8 @@
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          mesh, conduct, group, cd_prop, Bnod_bcs,              &
 !!     &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,   &
-!!     &          ele_fld, jacs, rhs_tbl,                               &
-!!     &          icomp_sgs_term, iphys_elediff_vec,                    &
-!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,    &
+!!     &          ele_fld, jacs, rhs_tbl, iphys_elediff_vec,            &
+!!     &          Csim_SGS_uxb, sgs_coefs_nod, diff_coefs, FEM_filters, &
 !!     &          mlump_cd, Bmatrix, MG_vector, wk_filter,              &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_magnetic_co                                      &
@@ -46,9 +45,8 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
@@ -116,9 +114,8 @@
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          mesh, conduct, group, cd_prop, Bnod_bcs,                &
      &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,     &
-     &          ele_fld, jacs, rhs_tbl,                                 &
-     &          icomp_sgs_term, iphys_elediff_vec,                      &
-     &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,      &
+     &          ele_fld, jacs, rhs_tbl, iphys_elediff_vec,              &
+     &          Csim_SGS_uxb, sgs_coefs_nod, diff_coefs, FEM_filters,   &
      &          mlump_cd, Bmatrix, MG_vector, wk_filter,                &
      &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -152,9 +149,8 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -182,7 +178,7 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,        &
      &     iphys_ele_base, ele_fld, jacs, rhs_tbl,                      &
      &     FEM_filters%FEM_elens, FEM_filters%filtering,                &
-     &     icomp_sgs_term, iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, &
+     &     iphys_elediff_vec, Csim_SGS_uxb, sgs_coefs_nod,              &
      &     mlump_cd, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
      &     rhs_mat%f_l, nod_fld, v_sol, SR_sig, SR_r)
       end if

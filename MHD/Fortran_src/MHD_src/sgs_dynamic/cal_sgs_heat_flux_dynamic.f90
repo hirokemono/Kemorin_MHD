@@ -5,13 +5,12 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_sgs_sf_dynamic(iflag_supg, num_int, dt,          &
-!!     &          itype_Csym_flux, SGS_flux_factor,                     &
-!!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
-!!     &          iak_sgs_hlux, icomp_sgs_flux, SGS_par, mesh,          &
-!!     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,&
-!!     &          FEM_filters, iphys_elediff_vec_v, iphys_elediff_fil_v,&
-!!     &          sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,        &
-!!     &          rhs_mat, nod_fld, sgs_coefs, v_sol, SR_sig, SR_r)
+!!     &         itype_Csym_flux, SGS_flux_factor,                      &
+!!     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs, SGS_par, mesh,&
+!!     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int, &
+!!     &         FEM_filters, iphys_elediff_vec_v, iphys_elediff_fil_v, &
+!!     &         sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,         &
+!!     &         rhs_mat, nod_fld, Csim_SGS_flux, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
@@ -26,7 +25,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(inout) :: Csim_SGS_flux
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -65,13 +64,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_sf_dynamic(iflag_supg, num_int, dt,            &
-     &          itype_Csym_flux, SGS_flux_factor,                       &
-     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
-     &          iak_sgs_hlux, icomp_sgs_flux, SGS_par, mesh,            &
-     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,  &
-     &          FEM_filters, iphys_elediff_vec_v, iphys_elediff_fil_v,  &
-     &          sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,          &
-     &          rhs_mat, nod_fld, sgs_coefs, v_sol, SR_sig, SR_r)
+     &         itype_Csym_flux, SGS_flux_factor,                        &
+     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs, SGS_par, mesh,  &
+     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,   &
+     &         FEM_filters, iphys_elediff_vec_v, iphys_elediff_fil_v,   &
+     &         sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,           &
+     &         rhs_mat, nod_fld, Csim_SGS_flux, v_sol, SR_sig, SR_r)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -94,8 +92,6 @@
       integer(kind = kint), intent(in) :: iphys_elediff_vec_v
       integer(kind = kint), intent(in) :: iphys_elediff_fil_v
 !
-      integer(kind = kint), intent(in) :: iak_sgs_hlux, icomp_sgs_flux
-!
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
@@ -111,7 +107,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_model_coefficient), intent(inout) :: Csim_SGS_flux
       type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -119,17 +115,17 @@
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (mesh%ele, FEM_filters%layer_tbl, icomp_sgs_flux, sgs_coefs)
+     &   (mesh%ele, FEM_filters%layer_tbl, Csim_SGS_flux)
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !    SGS term by similarity model
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_sf_simi'
-      call cal_sgs_sf_simi                                              &
-     &   (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icomp_sgs_flux,      &
-     &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
-     &    FEM_filters%filtering, sgs_coefs_nod, FEM_SGS_wk%wk_filter,   &
-     &    nod_fld, v_sol, SR_sig, SR_r)
+      call cal_sgs_sf_simi(i_sgs, ifield, ifield_f, ivelo, ivelo_f,     &
+     &    Csim_SGS_flux%icomp_Csim, SGS_par%filter_p,                   &
+     &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
+     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld,                 &
+     &    v_sol, SR_sig, SR_r)
 !
 !    copy to work array
 !
@@ -170,21 +166,20 @@
 !
 !     obtain model coefficient
 !
-      if (iflag_debug.gt.0)  write(*,*)                                 &
-     &   'cal_model_coefs', n_vector, iak_sgs_hlux, icomp_sgs_flux
+      if (iflag_debug.gt.0)  write(*,*) 'cal_model_coefs', n_vector,    &
+     &              Csim_SGS_flux%iak_Csim, Csim_SGS_flux%icomp_Csim
       call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
      &    mesh%node, mesh%ele, iphys_SGS_wk, nod_fld, fem_int%jcs,      &
-     &    itype_Csym_flux, n_vector, iak_sgs_hlux, icomp_sgs_flux,      &
-     &    num_int, FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
-     &    FEM_SGS_wk%wk_sgs, sgs_coefs)
+     &    itype_Csym_flux, num_int, FEM_SGS_wk%wk_cor,                  &
+     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs, Csim_SGS_flux)
 !
       call reduce_model_coefs_layer                                     &
-     &   (SGS_flux_factor, iak_sgs_hlux, FEM_SGS_wk%wk_sgs)
+     &   (SGS_flux_factor, Csim_SGS_flux%iak_Csim, FEM_SGS_wk%wk_sgs)
 !
 !$omp parallel
       call ovwrt_coef_prod_vect_smp                                     &
      &   (np_smp, mesh%ele%numele, mesh%ele%istack_ele_smp,             &
-     &    SGS_flux_factor, sgs_coefs%ak(1,icomp_sgs_flux))
+     &    SGS_flux_factor, Csim_SGS_flux%coef(1,1))
 !$omp end parallel
 !
       end subroutine cal_sgs_sf_dynamic

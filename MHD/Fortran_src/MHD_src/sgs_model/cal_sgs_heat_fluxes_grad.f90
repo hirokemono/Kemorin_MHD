@@ -5,9 +5,9 @@
 !
 !!      subroutine cal_sgs_s_flux_grad_w_coef                           &
 !!     &         (iflag_supg, num_int, dt, itype_Csym_flux, icoord_Csim,&
-!!     &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,       &
+!!     &          i_filter, i_sgs, i_field, ie_dvx,                     &
 !!     &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,  &
-!!     &          jacs, rhs_tbl, FEM_elens, sgs_coefs, mlump_fl,        &
+!!     &          jacs, rhs_tbl, FEM_elens, Csim_SGS_flux, mlump_fl,    &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt, &
 !!     &          i_filter, i_sgs, i_field, ie_dvx,                     &
@@ -23,7 +23,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -64,9 +64,9 @@
 !
       subroutine cal_sgs_s_flux_grad_w_coef                             &
      &         (iflag_supg, num_int, dt, itype_Csym_flux, icoord_Csim,  &
-     &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,         &
+     &          i_filter, i_sgs, i_field, ie_dvx,                       &
      &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,    &
-     &          jacs, rhs_tbl, FEM_elens, sgs_coefs, mlump_fl,          &
+     &          jacs, rhs_tbl, FEM_elens, Csim_SGS_flux, mlump_fl,      &
      &          mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_ff_smp_to_ffs
@@ -84,12 +84,12 @@
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type (lumped_mass_matrices), intent(in) :: mlump_fl
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer (kind=kint), intent(in) :: iflag_supg, num_int
       integer (kind=kint), intent(in) :: itype_Csym_flux, icoord_Csim
-      integer (kind=kint), intent(in) :: i_filter, icomp_sgs_hf
+      integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
       real(kind = kreal), intent(in) :: dt
@@ -114,7 +114,7 @@
 !     set elemental model coefficients
 !
       call prod_model_coefs_4_vector(ele, itype_Csym_flux, icoord_Csim, &
-     &    sgs_coefs%ak(1,icomp_sgs_hf), fem_wk%sk6)
+     &    Csim_SGS_flux%coef(1,1), fem_wk%sk6)
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_l%ff_smp)

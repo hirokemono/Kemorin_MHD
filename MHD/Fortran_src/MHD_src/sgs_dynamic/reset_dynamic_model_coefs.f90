@@ -8,10 +8,8 @@
 !!      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!
-!!      subroutine reset_vector_sgs_model_coefs                         &
-!!     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
-!!      subroutine reset_tensor_sgs_model_coefs                         &
-!!     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
+!!      subroutine reset_vector_sgs_model_coefs(ele, layer_tbl, Csim)
+!!      subroutine reset_tensor_sgs_model_coefs(ele, layer_tbl, Csim)
 !!
 !!      subroutine reset_diff_model_coefs                               &
 !!     &         (numele, iele_smp_stack, ak_diff)
@@ -63,8 +61,7 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine reset_vector_sgs_model_coefs                           &
-     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
+      subroutine reset_vector_sgs_model_coefs(ele, layer_tbl, Csim)
 !
       use t_geometry_data
       use t_layering_ele_list
@@ -72,9 +69,8 @@
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
-      integer (kind = kint), intent(in) :: icomp_sgs
 !
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &
@@ -83,21 +79,20 @@
      &     (ele%numele, ele%istack_ele_smp,                             &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,   &
-     &      sgs_coefs%ak(1,icomp_sgs))
+     &      Csim%coef(1,1))
       else
         call reset_sgs_v_model_coefs_grpsmp(ele%numele,                 &
      &     layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,           &
      &     layer_tbl%e_grp%istack_grp,                                  &
      &     layer_tbl%istack_item_layer_d_smp, layer_tbl%e_grp%item_grp, &
-     &     sgs_coefs%ak(1,icomp_sgs))
+     &      Csim%coef(1,1))
       end if
 !
       end subroutine reset_vector_sgs_model_coefs
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_tensor_sgs_model_coefs                           &
-     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
+      subroutine reset_tensor_sgs_model_coefs(ele, layer_tbl, Csim)
 !
       use t_geometry_data
       use t_layering_ele_list
@@ -105,9 +100,8 @@
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
-      integer (kind = kint), intent(in) :: icomp_sgs
 !
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &
@@ -116,13 +110,13 @@
      &     (ele%numele, ele%istack_ele_smp,                             &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,   &
-     &      sgs_coefs%ak(1,icomp_sgs))
+     &      Csim%coef(1,1))
       else
         call reset_sgs_t_model_coefs_grpsmp(ele%numele,                 &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp,                                 &
      &      layer_tbl%istack_item_layer_d_smp,                          &
-     &      layer_tbl%e_grp%item_grp, sgs_coefs%ak(1,icomp_sgs))
+     &      layer_tbl%e_grp%item_grp, Csim%coef(1,1))
       end if
 !
       end subroutine reset_tensor_sgs_model_coefs

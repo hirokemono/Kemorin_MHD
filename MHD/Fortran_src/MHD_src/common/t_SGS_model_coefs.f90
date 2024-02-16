@@ -52,6 +52,24 @@
         integer(kind = kint), allocatable  :: num_comps(:)
         integer(kind = kint), allocatable  :: istack_comps(:)
         real(kind = kreal), allocatable :: ak(:,:)
+
+
+!>       Structure for commutationa error coefficient for SGS inducion
+        type(SGS_model_coefficient) :: Csim_SGS_uxb
+!>       Structure for commutationa error coefficient for SGS Lorenz force
+        type(SGS_model_coefficient) :: Csim_SGS_lor
+!>       Structure for commutationa error coefficient for SGS momentum flux
+        type(SGS_model_coefficient) :: Csim_SGS_mf
+!>       Structure for commutationa error coefficient for SGS heat flux
+        type(SGS_model_coefficient) :: Csim_SGS_hf
+!>       Structure for commutationa error coefficient for SGS composition flux
+        type(SGS_model_coefficient) :: Csim_SGS_cf
+!>       Structure for commutationa error coefficient for SGS composition flux
+        type(SGS_model_coefficient) :: Csim_SGS_tbuo
+!>       Structure for commutationa error coefficient for SGS composition flux
+        type(SGS_model_coefficient) :: Csim_SGS_cbuo
+
+
 !>       Structure for commutationa error coefficient for velocity
         type(SGS_model_coefficient) :: Cdiff_velo
 !>       Structure for commutationa error coefficient for magnetic field

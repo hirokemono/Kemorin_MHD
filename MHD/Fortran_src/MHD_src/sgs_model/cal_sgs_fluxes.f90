@@ -6,42 +6,40 @@
 !!      subroutine cal_sgs_heat_flux(iflag_supg, num_int, dt,           &
 !!     &          iflag_SGS_flux, itype_Csym_flux,                      &
 !!     &          ifleld, ifield_f, ivelo, ivelo_f, i_sgs,              &
-!!     &          icomp_sgs_flux, ie_dvx, SGS_param, filter_param,      &
-!!     &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,  &
-!!     &          jacs, rhs_tbl, FEM_elens, filtering,                  &
-!!     &          sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,        &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
-!!     &          v_sol, SR_sig, SR_r)
+!!     &          ie_dvx, SGS_param, filter_param, nod_comm, node, ele, &
+!!     &          fluid, iphys_ele_base, ele_fld, jacs, rhs_tbl,        &
+!!     &          FEM_elens, filtering, Csim_SGS_flux, sgs_coefs_nod,   &
+!!     &          mlump_fl, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,   &
+!!     &          nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_momentum_flux(dt, FEM_prm, SGS_param,        &
 !!     &          filter_param, nod_comm, node, ele, fluid,             &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          filtering, icomp_sgs_term, iphys_elediff_vec,         &
-!!     &          sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,        &
+!!     &          filtering, iphys_elediff_vec,                         &
+!!     &          Csim_SGS_mf, sgs_coefs_nod, mlump_fl, wk_filter,      &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
 !!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_maxwell(dt, FEM_prm, SGS_param,              &
 !!     &          filter_param, nod_comm, node, ele, fluid,             &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          filtering, icomp_sgs_term, iphys_elediff_vec,         &
-!!     &          sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,        &
+!!     &          filtering, iphys_elediff_vec,                         &
+!!     &          Csim_SGS_lor, sgs_coefs_nod, mlump_fl, wk_filter,     &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
 !!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_magne_induction(dt, FEM_prm, SGS_param,      &
 !!     &          filter_param, nod_comm, node, ele, conduct, cd_prop,  &
 !!     &          iphys_base, iphys_fil, iphys_SGS,                     &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          filtering, icomp_sgs_term, iphys_elediff_vec,         &
-!!     &          sgs_coefs, sgs_coefs_nod, mlump_cd, wk_filter,        &
+!!     &          filtering, iphys_elediff_vec,                         &
+!!     &          Csim_SGS_uxb, sgs_coefs_nod, mlump_cd, wk_filter,     &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param,            &
 !!     &          filter_param, nod_comm, node, ele, conduct, cd_prop,  &
 !!     &          iphys_base, iphys_fil, iphys_SGS_wk,                  &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          filtering, icomp_sgs_term, iphys_elediff_vec,         &
-!!     &          sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,             &
-!!     &          f_nl, nod_fld, v_sol, SR_sig, SR_r)
+!!     &          filtering, Csim_SGS_uxb, iphys_elediff_vec, wk_filter,&
+!!     &          mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -60,9 +58,11 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_mf
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_lor
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
@@ -117,12 +117,11 @@
       subroutine cal_sgs_heat_flux(iflag_supg, num_int, dt,             &
      &          iflag_SGS_flux, itype_Csym_flux,                        &
      &          ifleld, ifield_f, ivelo, ivelo_f, i_sgs,                &
-     &          icomp_sgs_flux, ie_dvx, SGS_param, filter_param,        &
-     &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,    &
-     &          jacs, rhs_tbl, FEM_elens, filtering,                    &
-     &          sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,          &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
-     &          v_sol, SR_sig, SR_r)
+     &          ie_dvx, SGS_param, filter_param, nod_comm, node, ele,   &
+     &          fluid, iphys_ele_base, ele_fld, jacs, rhs_tbl,          &
+     &          FEM_elens, filtering, Csim_SGS_flux, sgs_coefs_nod,     &
+     &          mlump_fl, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,     &
+     &          nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_sgs_heat_fluxes_grad
       use cal_gradient
@@ -132,7 +131,7 @@
       integer(kind = kint), intent(in) :: itype_Csym_flux
       integer(kind = kint), intent(in) :: ifleld, ifield_f
       integer(kind = kint), intent(in) :: i_sgs, ivelo, ivelo_f
-      integer(kind = kint), intent(in) :: icomp_sgs_flux, ie_dvx
+      integer(kind = kint), intent(in) :: ie_dvx
       real(kind = kreal), intent(in) :: dt
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -147,7 +146,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -167,17 +166,17 @@
       call cal_sgs_s_flux_grad_w_coef                                   &
      &   (iflag_supg, num_int, dt, itype_Csym_flux,                     &
      &    SGS_param%icoord_Csim, SGS_param%ifilter_final,               &
-     &    icomp_sgs_flux, i_sgs, ifleld, ie_dvx,                        &
-     &    nod_comm, node, ele, fluid, iphys_ele_base, ele_fld, jacs,    &
-     &    rhs_tbl, FEM_elens, sgs_coefs, mlump_fl, mhd_fem_wk, fem_wk,  &
-     &    f_l, nod_fld, v_sol, SR_sig, SR_r)
+     &    i_sgs, ifleld, ie_dvx, nod_comm, node, ele, fluid,            &
+     &    iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,            &
+     &    Csim_SGS_flux, mlump_fl, mhd_fem_wk, fem_wk, f_l, nod_fld,    &
+     &     v_sol, SR_sig, SR_r)
 !
       else if(iflag_SGS_flux .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_sf_simi'
-        call cal_sgs_sf_simi                                            &
-     &     (i_sgs, ifleld, ifield_f, ivelo, ivelo_f, icomp_sgs_flux,    &
-     &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
-     &      wk_filter, nod_fld, v_sol, SR_sig, SR_r)
+        call cal_sgs_sf_simi(i_sgs, ifleld, ifield_f, ivelo, ivelo_f,   &
+     &      Csim_SGS_flux%icomp_Csim, filter_param, nod_comm, node,     &
+     &      filtering, sgs_coefs_nod, wk_filter, nod_fld,               &
+     &      v_sol, SR_sig, SR_r)
 !
       else if(iflag_SGS_flux .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_h_flux_diffuse'
@@ -197,8 +196,8 @@
      &          filter_param, nod_comm, node, ele, fluid,               &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          filtering, icomp_sgs_term, iphys_elediff_vec,           &
-     &          sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,          &
+     &          filtering, iphys_elediff_vec,                           &
+     &          Csim_SGS_mf, sgs_coefs_nod, mlump_fl, wk_filter,        &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
      &          v_sol, SR_sig, SR_r)
 !
@@ -223,9 +222,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_mf
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -243,12 +241,11 @@
      &     .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_m_flux_grad', SGS_param%ifilter_final
-        call cal_sgs_m_flux_grad_w_coef                                 &
-     &     (SGS_param%ifilter_final, icomp_sgs_term%i_SGS_m_flux,       &
+        call cal_sgs_m_flux_grad_w_coef(SGS_param%ifilter_final,        &
      &      iphys_SGS%i_SGS_m_flux, iphys_base%i_velo,                  &
      &      iphys_elediff_vec%i_velo, dt, FEM_prm, SGS_param,           &
      &      nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,        &
-     &      jacs, FEM_elens, sgs_coefs, rhs_tbl, mlump_fl,              &
+     &      jacs, FEM_elens, Csim_SGS_mf, rhs_tbl, mlump_fl,            &
      &      fem_wk, mhd_fem_wk, nod_fld, v_sol, SR_sig, SR_r)
 !
       else if(SGS_param%SGS_momentum%iflag_SGS_flux                     &
@@ -257,7 +254,7 @@
      &    write(*,*) 'cal_sgs_mf_simi', iphys_SGS%i_SGS_m_flux
         call cal_sgs_mf_simi                                            &
      &    (iphys_SGS%i_SGS_m_flux, iphys_base%i_velo, iphys_fil%i_velo, &
-     &     icomp_sgs_term%i_SGS_m_flux, filter_param, nod_comm, node,   &
+     &     Csim_SGS_mf%icomp_Csim, filter_param, nod_comm, node,        &
      &     filtering, sgs_coefs_nod, wk_filter, nod_fld,                &
      &     v_sol, SR_sig, SR_r)
 !
@@ -280,8 +277,8 @@
      &          filter_param, nod_comm, node, ele, fluid,               &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          filtering, icomp_sgs_term, iphys_elediff_vec,           &
-     &          sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,          &
+     &          filtering, iphys_elediff_vec,                           &
+     &          Csim_SGS_lor, sgs_coefs_nod, mlump_fl, wk_filter,       &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
      &          v_sol, SR_sig, SR_r)
 !
@@ -306,9 +303,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_lor
       type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -325,12 +321,11 @@
       if (    SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_maxwell_grad', SGS_param%ifilter_final
-        call cal_sgs_m_flux_grad_w_coef                                 &
-     &     (SGS_param%ifilter_final, icomp_sgs_term%i_SGS_Lorentz,      &
+        call cal_sgs_m_flux_grad_w_coef(SGS_param%ifilter_final,        &
      &      iphys_SGS%i_SGS_maxwell, iphys_base%i_magne,                &
      &      iphys_elediff_vec%i_magne, dt, FEM_prm, SGS_param,          &
      &      nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,        &
-     &      jacs, FEM_elens, sgs_coefs, rhs_tbl, mlump_fl,              &
+     &      jacs, FEM_elens, Csim_SGS_lor, rhs_tbl, mlump_fl,           &
      &      fem_wk, mhd_fem_wk, nod_fld, v_sol, SR_sig, SR_r)
 !
 !
@@ -339,7 +334,7 @@
      &     write(*,*) 'cal_sgs_mf_simi',  iphys_SGS%i_SGS_maxwell
         call cal_sgs_mf_simi                                            &
      &     (iphys_SGS%i_SGS_maxwell, iphys_base%i_magne,                &
-     &      iphys_fil%i_magne, icomp_sgs_term%i_SGS_Lorentz,            &
+     &      iphys_fil%i_magne, Csim_SGS_lor%icomp_Csim,                 &
      &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
      &      wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -362,8 +357,8 @@
      &          filter_param, nod_comm, node, ele, conduct, cd_prop,    &
      &          iphys_base, iphys_fil, iphys_SGS,                       &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          filtering, icomp_sgs_term, iphys_elediff_vec,           &
-     &          sgs_coefs, sgs_coefs_nod, mlump_cd, wk_filter,          &
+     &          filtering, iphys_elediff_vec,                           &
+     &          Csim_SGS_uxb, sgs_coefs_nod, mlump_cd, wk_filter,       &
      &          mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_sgs_inductions_grad
@@ -387,9 +382,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
       type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
@@ -407,12 +401,11 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_induct_t_grad'
         call cal_sgs_induct_t_grad_w_coef(SGS_param%ifilter_final,      &
-     &      icomp_sgs_term%i_SGS_induction, iphys_SGS%i_SGS_induct_t,   &
-     &      dt, FEM_prm, SGS_param, nod_comm, node, ele, conduct,       &
-     &      cd_prop, iphys_base, iphys_ele_base, iphys_elediff_vec,     &
-     &      ele_fld, jacs, rhs_tbl, FEM_elens,                          &
-     &      sgs_coefs, mlump_cd, fem_wk, mhd_fem_wk, f_l,               &
-     &      nod_fld, v_sol, SR_sig, SR_r)
+     &      iphys_SGS%i_SGS_induct_t, dt, FEM_prm, SGS_param,           &
+     &      nod_comm, node, ele, conduct, cd_prop,                      &
+     &      iphys_base, iphys_ele_base, iphys_elediff_vec, ele_fld,     &
+     &      jacs, rhs_tbl, FEM_elens, Csim_SGS_uxb, mlump_cd, fem_wk,   &
+     &      mhd_fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
@@ -420,7 +413,7 @@
         call cal_sgs_induct_t_simi(iphys_SGS%i_SGS_induct_t,            &
      &      iphys_base%i_velo, iphys_base%i_magne,                      &
      &      iphys_fil%i_velo, iphys_fil%i_magne,                        &
-     &      icomp_sgs_term%i_SGS_induction, filter_param,               &
+     &      Csim_SGS_uxb%icomp_Csim, filter_param,                      &
      &      nod_comm, node, filtering, sgs_coefs_nod, wk_filter,        &
      &      nod_fld, v_sol, SR_sig, SR_r)
       end if
@@ -433,9 +426,8 @@
      &          filter_param, nod_comm, node, ele, conduct, cd_prop,    &
      &          iphys_base, iphys_fil, iphys_SGS_wk,                    &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          filtering, icomp_sgs_term, iphys_elediff_vec,           &
-     &          sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,               &
-     &          f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &          filtering, Csim_SGS_uxb, iphys_elediff_vec, wk_filter,  &
+     &          mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_rotation
       use cal_sgs_uxb_grad
@@ -459,9 +451,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
       type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -476,22 +467,22 @@
       if     (SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_uxb_2_ff_grad', SGS_param%ifilter_final
-        call cal_sgs_uxb_2_ff_grad(SGS_param%itype_Csym_uxb,            &
-     &      SGS_param%icoord_Csim, SGS_param%ifilter_final,             &
-     &      icomp_sgs_term%i_SGS_induction, iphys_elediff_vec%i_velo,   &
+        call cal_sgs_uxb_2_ff_grad                                      &
+     &      (SGS_param%itype_Csym_uxb, SGS_param%icoord_Csim,           &
+     &      SGS_param%ifilter_final, iphys_elediff_vec%i_velo,          &
      &      dt, FEM_prm, node, ele, conduct, cd_prop,                   &
      &      iphys_base, nod_fld, iphys_ele_base, ele_fld, jacs,         &
-     &      rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
+     &      rhs_tbl, FEM_elens, Csim_SGS_uxb, mhd_fem_wk, fem_wk, f_nl)
 !
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'cal_sgs_uxb_2_ff_simi', SGS_param%ifilter_final
-        call cal_sgs_uxb_2_ff_simi(icomp_sgs_term%i_SGS_induction, dt,  &
-     &      FEM_prm, filter_param, nod_comm, node, ele, conduct,        &
+        call cal_sgs_uxb_2_ff_simi                                      &
+     &     (dt, FEM_prm, filter_param, nod_comm, node, ele, conduct,    &
      &      iphys_base, iphys_fil, iphys_SGS_wk,                        &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      filtering, sgs_coefs, wk_filter, fem_wk, f_nl,              &
-     &      nod_fld, v_sol, SR_sig, SR_r)
+     &      filtering, Csim_SGS_uxb, wk_filter, fem_wk, f_nl, nod_fld,  &
+     &      v_sol, SR_sig, SR_r)
 !
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_diffusion) then
          if (iflag_debug.eq.1)                                          &

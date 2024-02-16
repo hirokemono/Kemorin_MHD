@@ -8,9 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine cal_model_coefs(SGS_par, layer_tbl, node, ele,       &
-!!     &          iphys_SGS_wk, nod_fld, jacs, itype_csim,              &
-!!     &          n_tensor, ifield_d, icomp_f, n_int,                   &
-!!     &          wk_cor, wk_lsq, wk_sgs, sgs_coefs)
+!!     &          iphys_SGS_wk, nod_fld, jacs, itype_csim, n_int,       &
+!!     &          wk_cor, wk_lsq, wk_sgs, Csim)
 !!
 !!      subroutine cal_diff_coef                                        &
 !!     &         (iflag_SGS_initial, SGS_param, cmt_param,              &
@@ -40,7 +39,7 @@
 !!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(inout) :: Csim
 !!        type(SGS_model_coefficient), intent(inout) :: Cdiff
 !!@endverbatim
 !
@@ -73,16 +72,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_model_coefs(SGS_par, layer_tbl, node, ele,         &
-     &          iphys_SGS_wk, nod_fld, jacs, itype_csim,                &
-     &          n_tensor, ifield_d, icomp_f, n_int,                     &
-     &          wk_cor, wk_lsq, wk_sgs, sgs_coefs)
+     &          iphys_SGS_wk, nod_fld, jacs, itype_csim, n_int,         &
+     &          wk_cor, wk_lsq, wk_sgs, Csim)
 !
       use cal_lsq_model_coefs
       use cal_ave_rms_4_dynamic
       use cal_correlate_4_dynamic
 !
-      integer (kind = kint), intent(in) :: itype_csim, n_tensor
-      integer (kind = kint), intent(in) :: n_int, ifield_d, icomp_f
+      integer (kind = kint), intent(in) :: itype_csim
+      integer (kind = kint), intent(in) :: n_int
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(node_data), intent(in) :: node
@@ -95,13 +93,14 @@
       type(dynamic_correlation_data), intent(inout) :: wk_cor
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
       call cal_ave_rms_sgs_dynamic                                      &
      &   (layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    n_tensor, icomp_f, n_int, wk_sgs%nlayer, wk_sgs%ntot_comp,    &
+     &    Csim%num_comp, Csim%icomp_Csim, n_int,                        &
+     &    wk_sgs%nlayer, wk_sgs%ntot_comp,                              &
      &    wk_sgs%ave_simi, wk_sgs%ave_grad, wk_sgs%rms_simi,            &
      &    wk_sgs%rms_grad, wk_sgs%ratio,                                &
      &    wk_sgs%ave_simi_w, wk_sgs%ave_grad_w, wk_sgs%rms_simi_w,      &
@@ -110,7 +109,7 @@
       call cal_correlate_sgs_dynamic                                    &
      &   (layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    n_tensor, icomp_f, n_int,                                     &
+     &    Csim%num_comp, Csim%icomp_Csim, n_int,                        &
      &    wk_sgs%nlayer, wk_sgs%ntot_comp, wk_sgs%ave_simi,             &
      &    wk_sgs%ave_grad, wk_sgs%corrilate, wk_sgs%covariant,          &
      &    wk_sgs%corrilate_w, wk_sgs%covariant_w, wk_cor)
@@ -118,7 +117,7 @@
       call cal_model_coef_4_flux(SGS_par%model_p%iflag_Csim_marging,    &
      &    layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    n_tensor, ifield_d, icomp_f, n_int,                           &
+     &    Csim%num_comp, Csim%iak_Csim, Csim%icomp_Csim, n_int,         &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
      &    wk_sgs%corrilate, wk_sgs%corrilate_w, wk_sgs%fld_coef,        &
      &    wk_sgs%comp_coef, wk_sgs%fld_whole, wk_sgs%comp_whole,        &
@@ -126,15 +125,14 @@
 !
       call clippging_sgs_diff_coefs                                     &
      &   (SGS_par%iflag_SGS_initial, SGS_par%model_p,                   &
-     &    n_tensor, ifield_d, icomp_f, wk_sgs)
+     &    Csim%num_comp, Csim%iak_Csim, Csim%icomp_Csim, wk_sgs)
 !
-      call clear_model_coefs_2_ele(ele, n_tensor,                       &
-     &                             sgs_coefs%ak(1,icomp_f))
-      call set_model_coefs_2_ele(ele, itype_csim, n_tensor,             &
+      call clear_model_coefs_2_ele(ele, Csim%num_comp, Csim%coef(1,1))
+      call set_model_coefs_2_ele(ele, itype_csim, Csim%num_comp,        &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
      &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
-     &    wk_sgs%fld_clip(1,ifield_d), wk_sgs%comp_clip(1,icomp_f),     &
-     &    sgs_coefs%ak(1,icomp_f))
+     &    wk_sgs%fld_clip(1,Csim%iak_Csim),                             &
+     &    wk_sgs%comp_clip(1,Csim%icomp_Csim), Csim%coef(1,1))
 !
       end subroutine cal_model_coefs
 !

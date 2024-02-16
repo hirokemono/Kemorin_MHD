@@ -7,9 +7,9 @@
 !!     &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
-!!     &          icomp_SGS_Lorentz, iphys_elediff_fil_b, sgs_coefs,    &
-!!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
-!!     &          nod_fld, Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
+!!     &          iphys_elediff_fil_b, Csim_SGS_lor, mk_MHD,            &
+!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,             &
+!!     &          Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -25,7 +25,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_lor
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -76,9 +76,9 @@
      &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                  &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
-     &          icomp_SGS_Lorentz, iphys_elediff_fil_b, sgs_coefs,      &
-     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
-     &          nod_fld, Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
+     &          iphys_elediff_fil_b, Csim_SGS_lor, mk_MHD,              &
+     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,               &
+     &          Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -95,7 +95,6 @@
       use nod_phys_send_recv
 !
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: icomp_SGS_Lorentz
       integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -113,7 +112,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_lor
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -135,12 +134,12 @@
 !   gradient model by filtered field (to iphys_SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
-      call cal_sgs_m_flux_grad_w_coef(ifilter_4delta,                   &
-     &    icomp_SGS_Lorentz, iphys_SGS_wk%i_wd_nlg,                     &
+      call cal_sgs_m_flux_grad_w_coef                                   &
+     &   (ifilter_4delta, iphys_SGS_wk%i_wd_nlg,                        &
      &    iphys_fil%i_magne, iphys_elediff_fil_b, dt,                   &
      &    FEM_prm, SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, &
      &    fluid, iphys_ele_base, ele_fld, fem_int%jcs,                  &
-     &    FEM_filters%FEM_elens, sgs_coefs, fem_int%rhs_tbl,            &
+     &    FEM_filters%FEM_elens, Csim_SGS_lor, fem_int%rhs_tbl,         &
      &    mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld,         &
      &    v_sol, SR_sig, SR_r)
 !

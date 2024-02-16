@@ -18,7 +18,7 @@ cal_sgs_mom_fluxes_grad.o: $(MHD_SGS_DIR)/cal_sgs_mom_fluxes_grad.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sgs_uxb_grad.o: $(MHD_SGS_DIR)/cal_sgs_uxb_grad.f90 m_precision.o m_phys_constants.o t_FEM_control_parameter.o t_physical_property.o t_geometry_data_MHD.o t_comm_table.o t_geometry_data.o t_phys_data.o t_base_field_labels.o t_jacobians.o t_finite_element_mat.o t_filter_elength.o t_material_property.o t_SGS_model_coefs.o t_MHD_finite_element_mat.o t_vector_for_solver.o t_solver_SR.o int_vol_sgs_uxb.o cal_skv_to_ff_smp.o product_model_coefs_to_sk.o cal_ff_smp_to_ffs.o cal_for_ffs.o nod_phys_send_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_similarity_terms.o: $(MHD_SGS_DIR)/cal_similarity_terms.f90 m_precision.o m_machine_parameter.o
+cal_similarity_terms.o: $(MHD_SGS_DIR)/cal_similarity_terms.f90 m_precision.o m_machine_parameter.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 count_sgs_components.o: $(MHD_SGS_DIR)/count_sgs_components.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_SGS_control_parameter.o t_layering_ele_list.o t_ele_info_4_dynamic.o t_physical_property.o t_FEM_SGS_model_coefs.o t_SGS_model_coefs.o t_SGS_term_labels.o m_SGS_term_labels.o t_base_field_labels.o t_material_property.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -4,10 +4,10 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_sgs_induct_t_grad_w_coef                         &
-!!     &        (i_filter, icomp_sgs_uxb, i_sgs, dt, FEM_prm, SGS_param,&
+!!     &        (i_filter, i_sgs, dt, FEM_prm, SGS_param,               &
 !!     &         nod_comm, node, ele, conduct, cd_prop,                 &
-!!     &         iphys_base, iphys_ele_base, iphys_elediff,             &
-!!     &         ele_fld, jacs, rhs_tbl, FEM_elen, sgs_coefs, mlump_cd, &
+!!     &         iphys_base, iphys_ele_base, iphys_elediff, ele_fld,    &
+!!     &         jacs, rhs_tbl, FEM_elen, Csim_SGS_uxb, mlump_cd,       &
 !!     &         fem_wk, mhd_fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_induct_t_grad_no_coef                        &
 !!     &         (i_filter, i_sgs, dt, FEM_prm,                         &
@@ -29,7 +29,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
@@ -68,10 +68,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_induct_t_grad_w_coef                           &
-     &        (i_filter, icomp_sgs_uxb, i_sgs, dt, FEM_prm, SGS_param,  &
+     &        (i_filter, i_sgs, dt, FEM_prm, SGS_param,                 &
      &         nod_comm, node, ele, conduct, cd_prop,                   &
-     &         iphys_base, iphys_ele_base, iphys_elediff,               &
-     &         ele_fld, jacs, rhs_tbl, FEM_elen, sgs_coefs, mlump_cd,   &
+     &         iphys_base, iphys_ele_base, iphys_elediff, ele_fld,      &
+     &         jacs, rhs_tbl, FEM_elen, Csim_SGS_uxb, mlump_cd,         &
      &         fem_wk, mhd_fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_sgs_induct_t
@@ -94,10 +94,10 @@
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
       type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
-      integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
+      integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs
       real(kind = kreal), intent(in) :: dt
 !
@@ -123,7 +123,7 @@
 !
       call prod_model_coefs_4_asym_t                                    &
      &   (ele, SGS_param%itype_Csym_uxb, SGS_param%icoord_Csim,         &
-     &    sgs_coefs%ak(1,icomp_sgs_uxb), fem_wk%sk6)
+     &    Csim_SGS_uxb%coef(1,1), fem_wk%sk6)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_l%ff_smp)

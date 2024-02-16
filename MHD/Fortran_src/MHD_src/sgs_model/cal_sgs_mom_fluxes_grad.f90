@@ -4,9 +4,9 @@
 !      Written by H. Matsui on Apr., 2012
 !
 !!      subroutine cal_sgs_m_flux_grad_w_coef                           &
-!!     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,        &
+!!     &         (i_filter, i_sgs, i_field, ie_dvx, dt,                 &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,       &
-!!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, sgs_coefs,  &
+!!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, Csim,       &
 !!     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld,       &
 !!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_m_flux_grad_no_coef                          &
@@ -25,7 +25,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type (lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -68,9 +68,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_m_flux_grad_w_coef                             &
-     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,          &
+     &         (i_filter, i_sgs, i_field, ie_dvx, dt,                   &
      &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,         &
-     &          iphys_ele_base, ele_fld, jacs, FEM_elens, sgs_coefs,    &
+     &          iphys_ele_base, ele_fld, jacs, FEM_elens, Csim,         &
      &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld,         &
      &          v_sol, SR_sig, SR_r)
 !
@@ -90,11 +90,11 @@
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_type), intent(in) :: jacs
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
-      integer (kind=kint), intent(in) :: i_filter, icm_sgs
+      integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
       real(kind = kreal), intent(in) :: dt
@@ -120,7 +120,7 @@
 !
       call prod_model_coefs_4_tensor                                    &
      &   (ele, SGS_param%SGS_momentum%itype_Csym_flux,                  &
-     &    SGS_param%icoord_Csim, sgs_coefs%ak(1,icm_sgs), fem_wk%sk6)
+     &    SGS_param%icoord_Csim, Csim%coef(1,1), fem_wk%sk6)
 !
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &
      &     fem_wk%sk6, mhd_fem_wk%ff_t_smp)
