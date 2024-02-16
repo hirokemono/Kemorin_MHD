@@ -127,12 +127,8 @@
      &   (SGS_par%iflag_SGS_initial, SGS_par%model_p,                   &
      &    Csim%num_comp, Csim%iak_Csim, Csim%icomp_Csim, wk_sgs)
 !
-      call clear_model_coefs_2_ele(ele, Csim%num_comp, Csim%coef(1,1))
-      call set_model_coefs_2_ele(ele, itype_csim, Csim%num_comp,        &
-     &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
-     &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
-     &    wk_sgs%fld_clip(1,Csim%iak_Csim),                             &
-     &    wk_sgs%comp_clip(1,Csim%icomp_Csim), Csim%coef(1,1))
+      call sel_model_coefs_2_ele(ele, layer_tbl%e_grp, itype_csim,      &
+     &                           wk_sgs, Csim)
 !
       end subroutine cal_model_coefs
 !

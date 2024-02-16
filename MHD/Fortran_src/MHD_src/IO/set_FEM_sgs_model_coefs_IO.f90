@@ -183,18 +183,17 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer(kind = kint) :: i, ist
 !
-      do i = 1, sgs_coefs%num_field
-         ist = sgs_coefs%istack_comps(i-1) + 1
-         call clear_model_coefs_2_ele(ele, sgs_coefs%num_comps(i),      &
-     &                                sgs_coefs%ak(1,ist))
-         call set_model_coefs_2_ele(ele, izero, sgs_coefs%num_comps(i), &
-     &       layer_egrp%num_grp, layer_egrp%num_item,                   &
-     &       layer_egrp%istack_grp_smp, layer_egrp%item_grp,            &
-     &       wk_sgs%fld_clip(1,i), wk_sgs%comp_clip(1,ist),             &
-     &       sgs_coefs%ak(1,ist))
-      end do
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_uxb)
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_lor)
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_mf)
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_hf)
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_cf)
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
         call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &

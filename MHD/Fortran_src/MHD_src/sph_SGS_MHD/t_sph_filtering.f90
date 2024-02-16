@@ -206,8 +206,8 @@
      &   (SGS_par%model_p, MHD_prop%fl_prop, MHD_prop%cd_prop,          &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
-      call check_sgs_addresses                                          &
-     &   (iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
+!      call check_sgs_addresses                                          &
+!     &   (iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
 !
       end subroutine init_work_4_SGS_sph_mhd
 !

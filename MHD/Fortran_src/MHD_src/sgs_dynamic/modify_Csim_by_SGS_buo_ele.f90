@@ -59,8 +59,7 @@
       type(SGS_model_coefficient), intent(inout) :: Csim_SGS_mf
 !
 !
-      call clear_model_coefs_2_ele(ele, Csim_SGS_mf%num_comp,           &
-     &                             Csim_SGS_mf%coef(1,1))
+      call clear_model_coefs_2_ele(ele, Csim_SGS_mf)
 !
       if(fl_prop%iflag_4_gravity                                        &
      &     .and. fl_prop%iflag_4_composit_buo) then

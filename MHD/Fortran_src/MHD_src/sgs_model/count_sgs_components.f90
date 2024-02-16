@@ -15,8 +15,7 @@
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !!      subroutine set_SGS_ele_fld_addresses(cd_prop, SGS_param,        &
 !!     &          iphys_elediff_vec, iphys_elediff_fil)
-!!      subroutine check_sgs_addresses                                  &
-!!     &         (iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
+!!      subroutine check_sgs_addresses(wk_sgs, sgs_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(layering_tbl), intent(in) :: layer_tbl
@@ -81,9 +80,7 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,     &
      &    wk_sgs, Csims_FEM_MHD%sgs_coefs)
-      call check_sgs_addresses                                          &
-     &   (Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,     &
-     &    wk_sgs, Csims_FEM_MHD%sgs_coefs)
+      call check_sgs_addresses(wk_sgs, Csims_FEM_MHD%sgs_coefs)
 !
       if(     SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF           &
      &   .or. SGS_param%iflag_SGS.eq.id_SGS_similarity)  then
@@ -206,10 +203,11 @@
        jd = 1
        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_h_flux = i_cmp
-           iak_sgs_term%i_SGS_h_flux =  i_fld
+           sgs_coefs%Csim_SGS_hf%num_comp = n_vector
+           sgs_coefs%Csim_SGS_hf%iak_Csim =   i_fld
+           sgs_coefs%Csim_SGS_hf%icomp_Csim = i_cmp
            wk_sgs%name(i_fld) = SGS_heat_flux%name
-           sgs_coefs%num_comps(i_fld) = 3
+           sgs_coefs%num_comps(i_fld) = sgs_coefs%Csim_SGS_hf%num_comp
            i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
            i_fld = i_fld + 1
          end if
@@ -218,8 +216,9 @@
        if(fl_prop%iflag_scheme .gt. id_no_evolution) then
          if(SGS_param%SGS_momentum%iflag_SGS_flux                       &
      &         .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_m_flux = i_cmp
-           iak_sgs_term%i_SGS_m_flux =  i_fld
+           sgs_coefs%Csim_SGS_mf%num_comp = n_sym_tensor
+           sgs_coefs%Csim_SGS_mf%iak_Csim =   i_fld
+           sgs_coefs%Csim_SGS_mf%icomp_Csim = i_cmp
            wk_sgs%name(i_fld) = SGS_momentum_flux%name
            sgs_coefs%num_comps(i_fld) = 6
            i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
@@ -227,8 +226,9 @@
          end if
 !
          if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_Lorentz = i_cmp
-           iak_sgs_term%i_SGS_Lorentz =  i_fld
+           sgs_coefs%Csim_SGS_lor%num_comp = n_sym_tensor
+           sgs_coefs%Csim_SGS_lor%iak_Csim =   i_fld
+           sgs_coefs%Csim_SGS_lor%icomp_Csim = i_cmp
            wk_sgs%name(i_fld) = SGS_maxwell_tensor%name
            sgs_coefs%num_comps(i_fld) = 6
            i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
@@ -237,16 +237,18 @@
 !
         if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_gravity) then
-            icomp_sgs_term%i_SGS_buoyancy = i_cmp
-            iak_sgs_term%i_SGS_buoyancy =  i_fld
+            sgs_coefs%Csim_SGS_tbuo%num_comp = n_sym_tensor
+            sgs_coefs%Csim_SGS_tbuo%iak_Csim =   i_fld
+            sgs_coefs%Csim_SGS_tbuo%icomp_Csim = i_cmp
             wk_sgs%name(i_fld) = SGS_buoyancy%name
             sgs_coefs%num_comps(i_fld) = 6
             i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
             i_fld = i_fld + 1
           end if
           if(fl_prop%iflag_4_composit_buo) then
-            icomp_sgs_term%i_SGS_comp_buo = i_cmp
-            iak_sgs_term%i_SGS_comp_buo =  i_fld
+            sgs_coefs%Csim_SGS_cbuo%num_comp = n_sym_tensor
+            sgs_coefs%Csim_SGS_cbuo%iak_Csim =   i_fld
+            sgs_coefs%Csim_SGS_cbuo%icomp_Csim = i_cmp
             wk_sgs%name(i_fld) = SGS_composit_buoyancy%name
             sgs_coefs%num_comps(i_fld) = 6
             i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
@@ -257,8 +259,9 @@
 !
        if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_induction = i_cmp
-           iak_sgs_term%i_SGS_induction =  i_fld
+           sgs_coefs%Csim_SGS_uxb%num_comp = n_vector
+           sgs_coefs%Csim_SGS_uxb%iak_Csim =   i_fld
+           sgs_coefs%Csim_SGS_uxb%icomp_Csim = i_cmp
            wk_sgs%name(i_fld) = SGS_induction%name
            sgs_coefs%num_comps(i_fld) = 3
            i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
@@ -267,8 +270,9 @@
        end if
        if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_induction = i_cmp
-           iak_sgs_term%i_SGS_induction =  i_fld
+           sgs_coefs%Csim_SGS_uxb%num_comp = n_vector
+           sgs_coefs%Csim_SGS_uxb%iak_Csim =   i_fld
+           sgs_coefs%Csim_SGS_uxb%icomp_Csim = i_cmp
            wk_sgs%name(i_fld) = SGS_induction%name
            sgs_coefs%num_comps(i_fld) = 3
            i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
@@ -278,8 +282,9 @@
 !
        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_c_flux = i_cmp
-           iak_sgs_term%i_SGS_c_flux =  i_fld
+           sgs_coefs%Csim_SGS_hf%num_comp = n_vector
+           sgs_coefs%Csim_SGS_hf%iak_Csim =   i_fld
+           sgs_coefs%Csim_SGS_hf%icomp_Csim = i_cmp
            wk_sgs%name(i_fld) = SGS_composit_flux%name
            sgs_coefs%num_comps(i_fld) = 3
            i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
@@ -360,8 +365,7 @@
 !  ------------------------------------------------------------------
 !  ------------------------------------------------------------------
 !
-      subroutine check_sgs_addresses                                    &
-     &         (iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
+      subroutine check_sgs_addresses(wk_sgs, sgs_coefs)
 !
       use calypso_mpi
 !
@@ -371,10 +375,6 @@
       use t_SGS_term_labels
       use t_SGS_model_coefs
 !
-!
-      type(SGS_term_address), intent(in) :: iak_sgs_term
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
-!
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
@@ -383,48 +383,47 @@
         write(*,*) 'num_sgs_kinds', sgs_coefs%num_field
         write(*,*) 'num_sgs_coefs', sgs_coefs%ntot_comp
 !
-        if(iak_sgs_term%i_SGS_h_flux .gt. 0) then
-          write(*,*) 'iak_sgs_hf',                                      &
-     &       iak_sgs_term%i_SGS_h_flux, icomp_sgs_term%i_SGS_h_flux,    &
-     &       sgs_coefs%num_comps(iak_sgs_term%i_SGS_h_flux),            &
-     &       trim(wk_sgs%name(iak_sgs_term%i_SGS_h_flux))
+        if(sgs_coefs%Csim_SGS_hf%iak_Csim .gt. 0) then
+          write(*,*) 'iak_sgs_hf', sgs_coefs%Csim_SGS_hf%iak_Csim,      &
+     &                             sgs_coefs%Csim_SGS_hf%icomp_Csim,    &
+     &                             sgs_coefs%Csim_SGS_hf%num_comp,      &
+     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_hf%iak_Csim))
         end if
-        if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
-          write(*,*) 'iak_sgs_mf',                                      &
-     &       iak_sgs_term%i_SGS_m_flux, icomp_sgs_term%i_SGS_m_flux,    &
-     &       sgs_coefs%num_comps(iak_sgs_term%i_SGS_m_flux),            &
-     &       trim(wk_sgs%name(iak_sgs_term%i_SGS_m_flux))
+        if(sgs_coefs%Csim_SGS_cf%iak_Csim .gt. 0) then
+          write(*,*) 'iak_sgs_cf', sgs_coefs%Csim_SGS_cf%iak_Csim,      &
+     &                             sgs_coefs%Csim_SGS_cf%icomp_Csim,    &
+     &                             sgs_coefs%Csim_SGS_cf%num_comp,      &
+     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_cf%iak_Csim))
         end if
-        if(iak_sgs_term%i_SGS_Lorentz .gt. 0) then
-          write(*,*) 'iak_sgs_lor',                                     &
-     &       iak_sgs_term%i_SGS_Lorentz, icomp_sgs_term%i_SGS_Lorentz,  &
-     &       sgs_coefs%num_comps(iak_sgs_term%i_SGS_Lorentz),           &
-     &       trim(wk_sgs%name(iak_sgs_term%i_SGS_Lorentz))
+        if(sgs_coefs%Csim_SGS_mf%iak_Csim .gt. 0) then
+          write(*,*) 'iak_sgs_mf', sgs_coefs%Csim_SGS_mf%iak_Csim,      &
+     &                             sgs_coefs%Csim_SGS_mf%icomp_Csim,    &
+     &                             sgs_coefs%Csim_SGS_mf%num_comp,      &
+     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_mf%iak_Csim))
         end if
-        if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
-          write(*,*) 'iak_sgs_tbuo',                                    &
-     &      iak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy, &
-     &      sgs_coefs%num_comps(iak_sgs_term%i_SGS_buoyancy),           &
-     &      trim(wk_sgs%name(iak_sgs_term%i_SGS_buoyancy))
+        if(sgs_coefs%Csim_SGS_lor%iak_Csim .gt. 0) then
+          write(*,*) 'iak_sgs_lor', sgs_coefs%Csim_SGS_lor%iak_Csim,    &
+     &                             sgs_coefs%Csim_SGS_lor%icomp_Csim,   &
+     &                             sgs_coefs%Csim_SGS_lor%num_comp,     &
+     &            trim(wk_sgs%name(sgs_coefs%Csim_SGS_lor%iak_Csim))
         end if
-        if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-          write(*,*) 'iak_sgs_cbuo',                                    &
-     &      iak_sgs_term%i_SGS_comp_buo, icomp_sgs_term%i_SGS_comp_buo, &
-     &      sgs_coefs%num_comps(iak_sgs_term%i_SGS_comp_buo),           &
-     &      trim(wk_sgs%name(iak_sgs_term%i_SGS_comp_buo))
+        if(sgs_coefs%Csim_SGS_tbuo%iak_Csim .gt. 0) then
+          write(*,*) 'iak_sgs_tbuo', sgs_coefs%Csim_SGS_tbuo%iak_Csim,  &
+     &                              sgs_coefs%Csim_SGS_tbuo%icomp_Csim, &
+     &                              sgs_coefs%Csim_SGS_tbuo%num_comp,   &
+     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_tbuo%iak_Csim))
         end if
-        if(iak_sgs_term%i_SGS_induction .gt. 0) then
-          write(*,*) 'iak_sgs_uxb',                                     &
-     &       iak_sgs_term%i_SGS_induction,                              &
-     &       icomp_sgs_term%i_SGS_induction,                            &
-     &       sgs_coefs%num_comps(iak_sgs_term%i_SGS_induction),         &
-     &       trim(wk_sgs%name(iak_sgs_term%i_SGS_induction))
+        if(sgs_coefs%Csim_SGS_cbuo%iak_Csim .gt. 0) then
+          write(*,*) 'iak_sgs_cbuo', sgs_coefs%Csim_SGS_cbuo%iak_Csim,  &
+     &                              sgs_coefs%Csim_SGS_cbuo%icomp_Csim, &
+     &                              sgs_coefs%Csim_SGS_cbuo%num_comp,   &
+     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_cbuo%iak_Csim))
         end if
-        if(iak_sgs_term%i_SGS_c_flux .gt. 0) then
-          write(*,*) 'iak_sgs_cf',                                      &
-     &       iak_sgs_term%i_SGS_c_flux, icomp_sgs_term%i_SGS_c_flux,    &
-     &       sgs_coefs%num_comps(iak_sgs_term%i_SGS_c_flux),            &
-     &       trim(wk_sgs%name(iak_sgs_term%i_SGS_c_flux))
+        if(sgs_coefs%Csim_SGS_uxb%iak_Csim .gt. 0) then
+          write(*,*) 'iak_sgs_uxb', sgs_coefs%Csim_SGS_uxb%iak_Csim,    &
+     &                              sgs_coefs%Csim_SGS_uxb%icomp_Csim,  &
+     &                              sgs_coefs%Csim_SGS_uxb%num_comp,    &
+     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_uxb%iak_Csim))
         end if
       end if
 !
