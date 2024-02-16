@@ -160,7 +160,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
-     &                            Cdiff_velo%coef(1,1))
+     &                            Cdiff_velo)
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !    get filtered pressure(to iphys_SGS_wk%i_wd_nlg)

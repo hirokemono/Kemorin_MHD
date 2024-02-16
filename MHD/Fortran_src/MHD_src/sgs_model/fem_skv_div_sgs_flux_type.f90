@@ -24,12 +24,14 @@
 !!     &         (iele_fsmp_stack, n_int, k2,                           &
 !!     &          ele, g_FEM, jac_3d, vector_e, sgs_e, wxe, sk_v)
 !!
-!!      subroutine fem_skv_scl_inertia_modsgs_pg(iele_fsmp_stack,       &
-!!     &          n_int, k2, i_filter, ak_diff, ele, g_FEM, jac_3d,     &
-!!     &          FEM_elens, scalar_e, sgs_e, flux_e, vxe, sk_v)
-!!      subroutine fem_skv_vec_inertia_modsgs_pg(iele_fsmp_stack,       &
-!!     &          n_int, k2, i_filter, ak_diff, ele, g_FEM, jac_3d,     &
-!!     &          FEM_elens, vector_e, sgs_e, flux_e, vxe, sk_v)
+!!      subroutine fem_skv_scl_inertia_modsgs_pg                        &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter,                 &
+!!     &          ele, g_FEM, jac_3d, FEM_elens, Csim_SGS,              &
+!!     &          scalar_e, sgs_e, flux_e, vxe, sk_v)
+!!      subroutine fem_skv_vec_inertia_modsgs_pg                        &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter,                 &
+!!     &          ele, g_FEM, jac_3d, FEM_elens, Csim_SGS,              &
+!!     &          vector_e, sgs_e, flux_e, vxe, sk_v)
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -273,9 +275,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_scl_inertia_modsgs_pg(iele_fsmp_stack,         &
-     &          n_int, k2, i_filter, ak_diff, ele, g_FEM, jac_3d,       &
-     &          FEM_elens, scalar_e, sgs_e, flux_e, vxe, sk_v)
+      subroutine fem_skv_scl_inertia_modsgs_pg                          &
+     &         (iele_fsmp_stack, n_int, k2, i_filter,                   &
+     &          ele, g_FEM, jac_3d, FEM_elens, Csim_SGS,                &
+     &          scalar_e, sgs_e, flux_e, vxe, sk_v)
 !
       use fem_skv_inertia1_sgsmod
 !
@@ -283,11 +286,11 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS
 !
       integer(kind=kint), intent(in) :: n_int, k2, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
       real (kind=kreal), intent(in) :: flux_e(ele%numele,3)
       real (kind=kreal), intent(in) :: sgs_e(ele%numele,3)
       real (kind=kreal), intent(in) :: scalar_e(ele%numele)
@@ -308,15 +311,16 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, scalar_e, sgs_e, flux_e, vxe, sk_v)
+     &    Csim_SGS%coef(1,1), scalar_e, sgs_e, flux_e, vxe, sk_v)
 !
       end subroutine fem_skv_scl_inertia_modsgs_pg
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_vec_inertia_modsgs_pg(iele_fsmp_stack,         &
-     &          n_int, k2, i_filter, ak_diff, ele, g_FEM, jac_3d,       &
-     &          FEM_elens, vector_e, sgs_e, flux_e, vxe, sk_v)
+      subroutine fem_skv_vec_inertia_modsgs_pg                          &
+     &         (iele_fsmp_stack, n_int, k2, i_filter,                   &
+     &          ele, g_FEM, jac_3d, FEM_elens, Csim_SGS,                &
+     &          vector_e, sgs_e, flux_e, vxe, sk_v)
 !
       use fem_skv_inertia3_sgsmod
 !
@@ -324,11 +328,11 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS
 !
       integer(kind=kint), intent(in) :: n_int, k2, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
       real (kind=kreal), intent(in) :: flux_e(ele%numele,6)
       real (kind=kreal), intent(in) :: sgs_e(ele%numele,6)
       real (kind=kreal), intent(in) :: vector_e(ele%numele,3)
@@ -349,7 +353,7 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, vector_e, sgs_e, flux_e, vxe, sk_v)
+     &    Csim_SGS%coef(1,1), vector_e, sgs_e, flux_e, vxe, sk_v)
 !
       end subroutine fem_skv_vec_inertia_modsgs_pg
 !

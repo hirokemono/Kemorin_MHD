@@ -151,7 +151,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
-     &                            Cdiff_scalar%coef(1,1))
+     &                            Cdiff_scalar)
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   take gradient of filtered temperature (to iphys_SGS_wk%i_simi)

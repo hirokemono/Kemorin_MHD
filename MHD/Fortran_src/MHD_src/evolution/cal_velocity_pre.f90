@@ -423,9 +423,8 @@
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
         call cal_velocity_co_imp                                        &
-     &     (iphys%base%i_velo, ak_MHD%ak_d_velo,                        &
-     &      dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,            &
-     &      nod_comm, node, ele, fluid, fl_prop,                        &
+     &     (iphys%base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,           &
+     &      SGS_par%model_p, nod_comm, node, ele, fluid, fl_prop,       &
      &      Vnod_bcs, iphys_ele_base, ele_fld, fem_int%jcs%g_FEM,       &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, Cdiff_velo, &
      &      mlump_fl, Vmatrix, MG_vector, mhd_fem_wk,                   &

@@ -198,12 +198,11 @@
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
               call fem_skv_vec_inertia_modsgs_pg                        &
-     &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            SGS_param%ifilter_final,                              &
-     &            diff_coefs%Cdiff_SGS_mf%coef(1,1),                    &
-     &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%velo_1,     &
-     &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
-     &            d_ele(1,iphys_ele_base%i_velo), fem_wk%sk6)
+     &          (fluid%istack_ele_fld_smp, num_int, k2,                 &
+     &           SGS_param%ifilter_final, ele, g_FEM, jac_3d,           &
+     &           FEM_elens, diff_coefs%Cdiff_SGS_mf,                    &
+     &           mhd_fem_wk%velo_1, mhd_fem_wk%sgs_t1, fem_wk%tensor_1, &
+     &           d_ele(1,iphys_ele_base%i_velo), fem_wk%sk6)
             else if(SGS_param%SGS_momentum%iflag_SGS_flux               &
      &           .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &

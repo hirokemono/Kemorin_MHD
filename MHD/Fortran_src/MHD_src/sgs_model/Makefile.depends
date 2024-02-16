@@ -40,9 +40,9 @@ fem_skv_div_ast_w_sgs.o: $(MHD_SGS_DIR)/fem_skv_div_ast_w_sgs.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_div_ast_w_sgs_upw.o: $(MHD_SGS_DIR)/fem_skv_div_ast_w_sgs_upw.f90 m_precision.o m_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-fem_skv_div_sgs_flux_type.o: $(MHD_SGS_DIR)/fem_skv_div_sgs_flux_type.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_filter_elength.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_div_vect_w_sgs.o fem_skv_div_tsr_w_sgs.o fem_skv_div_ast_w_sgs.o fem_skv_inertia_sgs.o fem_skv_inertia1_sgsmod.o fem_skv_inertia3_sgsmod.o
+fem_skv_div_sgs_flux_type.o: $(MHD_SGS_DIR)/fem_skv_div_sgs_flux_type.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_filter_elength.o t_fem_gauss_int_coefs.o t_jacobians.o t_SGS_model_coefs.o fem_skv_div_vect_w_sgs.o fem_skv_div_tsr_w_sgs.o fem_skv_div_ast_w_sgs.o fem_skv_inertia_sgs.o fem_skv_inertia1_sgsmod.o fem_skv_inertia3_sgsmod.o
 	$(F90) -c $(F90OPTFLAGS) $<
-fem_skv_div_sgs_flux_upw.o: $(MHD_SGS_DIR)/fem_skv_div_sgs_flux_upw.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_filter_elength.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_div_vect_w_sgs_upw.o fem_skv_div_tsr_w_sgs_upw.o fem_skv_div_ast_w_sgs_upw.o fem_skv_inertia_sgs_upw.o fem_skv_inertia1_sgsmod_upw.o fem_skv_inertia3_sgsmod_upw.o
+fem_skv_div_sgs_flux_upw.o: $(MHD_SGS_DIR)/fem_skv_div_sgs_flux_upw.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_filter_elength.o t_fem_gauss_int_coefs.o t_jacobians.o t_SGS_model_coefs.o fem_skv_div_vect_w_sgs_upw.o fem_skv_div_tsr_w_sgs_upw.o fem_skv_div_ast_w_sgs_upw.o fem_skv_inertia_sgs_upw.o fem_skv_inertia1_sgsmod_upw.o fem_skv_inertia3_sgsmod_upw.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_div_tensor_sgs.o: $(MHD_SGS_DIR)/fem_skv_div_tensor_sgs.f90 m_precision.o m_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -112,7 +112,7 @@ int_vol_sgs_induct_t.o: $(MHD_SGS_DIR)/int_vol_sgs_induct_t.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_sgs_uxb.o: $(MHD_SGS_DIR)/int_vol_sgs_uxb.f90 m_precision.o m_phys_constants.o t_FEM_control_parameter.o t_geometry_data_MHD.o t_geometry_data.o t_phys_data.o t_base_field_labels.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_finite_element_mat.o t_filter_elength.o t_MHD_finite_element_mat.o fem_skv_sgs_flux_type.o nodal_fld_2_each_element.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_vol_similarity_uxb.o: $(MHD_SGS_DIR)/int_vol_similarity_uxb.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_FEM_control_parameter.o t_geometry_data_MHD.o t_geometry_data.o t_phys_data.o t_phys_address.o t_SGS_model_coef_labels.o t_fem_gauss_int_coefs.o t_jacobians.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o t_material_property.o t_SGS_model_coefs.o nodal_fld_2_each_element.o fem_skv_nodal_field.o cal_products_within_skv.o cal_skv_to_ff_smp.o fem_skv_nodal_fld_upwind.o
+int_vol_similarity_uxb.o: $(MHD_SGS_DIR)/int_vol_similarity_uxb.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_FEM_control_parameter.o t_geometry_data_MHD.o t_geometry_data.o t_phys_data.o t_phys_address.o t_SGS_model_coef_labels.o t_fem_gauss_int_coefs.o t_jacobians.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o t_material_property.o t_SGS_model_coefs.o nodal_fld_2_each_element.o fem_skv_nodal_field.o cal_skv_to_ff_smp.o cal_product_to_skv.o fem_skv_nodal_fld_upwind.o
 	$(F90) -c $(F90OPTFLAGS) $<
 merge_coefs_whole_dynamic.o: $(MHD_SGS_DIR)/merge_coefs_whole_dynamic.f90 m_precision.o m_constants.o t_SGS_control_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

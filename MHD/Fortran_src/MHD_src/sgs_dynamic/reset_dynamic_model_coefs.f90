@@ -11,8 +11,10 @@
 !!      subroutine reset_vector_sgs_model_coefs(ele, layer_tbl, Csim)
 !!      subroutine reset_tensor_sgs_model_coefs(ele, layer_tbl, Csim)
 !!
-!!      subroutine reset_diff_model_coefs                               &
-!!     &         (numele, iele_smp_stack, ak_diff)
+!!      subroutine reset_diff_model_coefs(numele, iele_smp_stack, Cdiff)
+!!        integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+!!        integer (kind = kint), intent(in) :: numele
+!!        type(SGS_model_coefficient), intent(inout) :: Cdiff
 !!
 !!      subroutine reset_vector_sgs_nod_m_coefs(numnod, inod_smp_stack, &
 !!     &                                        ak_sgs_nod)
@@ -314,22 +316,22 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine reset_diff_model_coefs                                 &
-     &         (numele, iele_smp_stack, ak_diff)
+      subroutine reset_diff_model_coefs(numele, iele_smp_stack, Cdiff)
+!
+      use t_SGS_model_coefs
+      use delete_field_smp
 !
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numele
-      real(kind=kreal), intent(inout) :: ak_diff(numele)
+      type(SGS_model_coefficient), intent(inout) :: Cdiff
 !
-      integer (kind = kint) :: iproc, ist, ied
+      integer (kind = kint) :: ist, ied
 !
-!$omp parallel do private(ist, ied)
-      do iproc = 1, np_smp
-        ist = iele_smp_stack(iproc-1) + 1
-        ied = iele_smp_stack(iproc)
-        ak_diff(ist:ied) = one
-      end do
-!$omp end parallel do
+      ist = iele_smp_stack(0) + 1
+      ied = iele_smp_stack(np_smp)
+!$omp parallel
+      call constant_scalar_smp(one, numele, ist, ied, Cdiff%coef(1,1))
+!$omp end parallel
 !
       end subroutine reset_diff_model_coefs
 !
@@ -339,24 +341,21 @@
       subroutine reset_vector_sgs_nod_m_coefs(numnod, inod_smp_stack,   &
      &                                        ak_sgs_nod)
 !
+      use delete_field_smp
+!
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       real(kind = kreal), intent(inout) :: ak_sgs_nod(numnod,n_vector)
 !
-      integer (kind = kint) :: inod, iproc, ist, ied
+      integer (kind = kint) :: ist, ied
 !
-!$omp parallel do private(inod, ist, ied) 
-      do iproc = 1, np_smp
-        ist = inod_smp_stack(iproc-1) + 1
-        ied = inod_smp_stack(iproc)
-        do inod = ist, ied
-          ak_sgs_nod(inod, 1) = one
-          ak_sgs_nod(inod, 2) = one
-          ak_sgs_nod(inod, 3) = one
-        end do
-      end do
-!$omp end parallel do
+!
+      ist = inod_smp_stack(0) + 1
+      ied = inod_smp_stack(np_smp)
+!$omp parallel 
+      call constant_vector_smp(one, numnod, ist, ied, ak_sgs_nod)
+!$omp end parallel
 !
       end subroutine reset_vector_sgs_nod_m_coefs
 !
@@ -365,28 +364,22 @@
       subroutine reset_tensor_sgs_nod_m_coefs(numnod, inod_smp_stack,   &
      &                                        ak_sgs_nod)
 !
+      use delete_field_smp
+!
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: ak_sgs_nod(numnod,n_sym_tensor)
 !
-      integer (kind = kint) :: inod, iproc, ist, ied
+      integer (kind = kint) :: ist, ied
 !
-!$omp parallel do private(inod, ist, ied) 
-      do iproc = 1, np_smp
-        ist = inod_smp_stack(iproc-1) + 1
-        ied = inod_smp_stack(iproc)
-        do inod = ist, ied
-          ak_sgs_nod(inod, 1) = one
-          ak_sgs_nod(inod, 2) = one
-          ak_sgs_nod(inod, 3) = one
-          ak_sgs_nod(inod, 4) = one
-          ak_sgs_nod(inod, 5) = one
-          ak_sgs_nod(inod, 6) = one
-        end do
-      end do
-!$omp end parallel do
+!
+      ist = inod_smp_stack(0) + 1
+      ied = inod_smp_stack(np_smp)
+!$omp parallel 
+      call constant_sym_tensor_smp(one, numnod, ist, ied, ak_sgs_nod)
+!$omp end parallel
 !
       end subroutine reset_tensor_sgs_nod_m_coefs
 !

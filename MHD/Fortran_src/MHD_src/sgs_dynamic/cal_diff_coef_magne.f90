@@ -156,7 +156,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
-     &                            Cdiff_magne%coef(1,1))
+     &                            Cdiff_magne)
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !    get filtered scalar potential(to iphys_SGS_wk%i_wd_nlg)

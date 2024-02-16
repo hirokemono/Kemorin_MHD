@@ -21,8 +21,8 @@
 !!     &          g_FEM, jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!
-!!      subroutine cal_velocity_co_imp(i_velo, ak_d_velo,               &
-!!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
+!!      subroutine cal_velocity_co_imp                                  &
+!!     &         (i_velo, ak_d_velo, dt, FEM_prm, SGS_param,            &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
 !!     &          FEM_elens, Cdiff_velo, mlump_fl, Vmatrix, MG_vector,  &
@@ -247,8 +247,8 @@
 ! -----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velocity_co_imp(i_velo, ak_d_velo,                 &
-     &          dt, FEM_prm, SGS_param, cmt_param,                      &
+      subroutine cal_velocity_co_imp                                    &
+     &         (i_velo, ak_d_velo, dt, FEM_prm, SGS_param,              &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
      &          FEM_elens, Cdiff_velo, mlump_fl, Vmatrix, MG_vector,    &
@@ -266,7 +266,6 @@
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

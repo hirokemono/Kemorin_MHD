@@ -127,8 +127,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs                                       &
-     &   (mesh%ele%numele, mesh%ele%istack_ele_smp,                     &
-     &    Cdiff_SGS_lor%coef(1,1))
+     &   (mesh%ele%numele, mesh%ele%istack_ele_smp, Cdiff_SGS_lor)
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   gradient model by filtered field (to iphys_SGS_wk%i_wd_nlg)
