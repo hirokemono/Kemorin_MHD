@@ -8,9 +8,10 @@
 !
 !!      subroutine temperature_evolution(time_d, FEM_prm, SGS_par,      &
 !!     &         geofem, MHD_mesh, property, ref_param, nod_bcs, sf_bcs,&
-!!     &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,       &
-!!     &         ak_diffuse, FEM_filters, Smatrix, MGCG_WK, SGS_MHD_wk, &
-!!     &         nod_fld, Csims_FEM_MHD, m_SR)
+!!     &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,         &
+!!     &         ak_diffuse, FEM_filters, Smatrix, iphys_elediff_vec_v,   &
+!!     &         Csim_SGS_hf, MGCG_WK, SGS_MHD_wk,                        &
+!!     &         nod_fld, diff_coefs, m_SR)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -27,7 +28,6 @@
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
@@ -76,7 +76,7 @@
      &         geofem, MHD_mesh, property, ref_param, nod_bcs, sf_bcs,  &
      &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,         &
      &         ak_diffuse, FEM_filters, Smatrix, iphys_elediff_vec_v,   &
-     &         Csim_SGS_hf, sgs_coefs_nod, MGCG_WK, SGS_MHD_wk,         &
+     &         Csim_SGS_hf, MGCG_WK, SGS_MHD_wk,                        &
      &         nod_fld, diff_coefs, m_SR)
 !
       use update_with_scalars
@@ -101,7 +101,6 @@
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_hf
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(MHD_MG_matrix), intent(in) :: Smatrix
       real(kind = kreal), intent(in)                                    &
      &      :: ak_diffuse(geofem%mesh%ele%numele)
@@ -165,7 +164,7 @@
      &    iflag_commute_flux, iflag_commute_field,                      &
      &    time_d, FEM_prm, SGS_par, geofem, MHD_mesh, property,         &
      &    ref_param, nod_bcs, sf_bcs, ref_fld, iphys_LES,               &
-     &    ak_diffuse, FEM_filters, Csim_SGS_hf, sgs_coefs_nod,          &
+     &    ak_diffuse, FEM_filters, Csim_SGS_hf,                         &
      &    Smatrix, MGCG_WK, SGS_MHD_wk, nod_fld,                        &
      &    diff_coefs%Cdiff_temp, diff_coefs%Cdiff_SGS_hf, m_SR)
 !
@@ -182,7 +181,7 @@
      &         iflag_commute_flux, iflag_commute_field, time_d,         &
      &         FEM_prm, SGS_par, geofem, MHD_mesh, property,            &
      &         ref_param, nod_bcs, sf_bcs, ref_fld, iphys_LES,          &
-     &         ak_diffuse, FEM_filters, Csim_SGS_flux, sgs_coefs_nod,   &
+     &         ak_diffuse, FEM_filters, Csim_SGS_flux,                  &
      &         Smatrix, MGCG_WK, SGS_MHD_wk, nod_fld,                   &
      &         Cdiff_scalar, Cdiff_SGS_flux, m_SR)
 !
@@ -223,7 +222,6 @@
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(MHD_MG_matrix), intent(in) :: Smatrix
       real(kind = kreal), intent(in)                                    &
      &      :: ak_diffuse(geofem%mesh%ele%numele)
@@ -251,7 +249,7 @@
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       iphys_elediff_vec_v, Csim_SGS_flux,                        &
-     &       sgs_coefs_nod, Cdiff_scalar, Cdiff_SGS_flux,               &
+     &       Cdiff_scalar, Cdiff_SGS_flux,                              &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       Smatrix, ak_diffuse, MGCG_WK,                              &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
@@ -278,7 +276,7 @@
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       iphys_elediff_vec_v, Csim_SGS_flux,                        &
-     &       sgs_coefs_nod, Cdiff_scalar, Cdiff_SGS_flux,               &
+     &       Cdiff_scalar, Cdiff_SGS_flux,                              &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       Smatrix, ak_diffuse, MGCG_WK,                              &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
@@ -322,9 +320,9 @@
      &         fluid, property, ref_param, nod_bcs, sf_bcs,             &
      &         ref_fld, iphys_ele_base, ele_fld, fem_int, FEM_elens,    &
      &         iphys_elediff_vec_v, Csim_SGS_flux,                      &
-     &         sgs_coefs_nod, Cdiff_scalar, Cdiff_SGS_flux,             &
-     &         filtering, mk_MHD, Smatrix, ak_diffuse, MGCG_WK,         &
-     &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, m_SR)
+     &         Cdiff_scalar, Cdiff_SGS_flux, filtering, mk_MHD,         &
+     &         Smatrix, ak_diffuse, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
+     &         rhs_mat, nod_fld, m_SR)
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -371,7 +369,6 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_model_coefficient), intent(in) :: Cdiff_scalar
       type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_flux
       type(filtering_data_type), intent(in) :: filtering
@@ -398,9 +395,9 @@
      &      iphys_elediff_vec_v, SGS_param, filter_param,               &
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid,                  &
      &      iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
-     &      FEM_elens, filtering, Csim_SGS_flux, sgs_coefs_nod,         &
-     &      mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      FEM_elens, filtering, Csim_SGS_flux, mk_MHD%mlump_fl,       &
+     &      FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,           &
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                         &
      &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !

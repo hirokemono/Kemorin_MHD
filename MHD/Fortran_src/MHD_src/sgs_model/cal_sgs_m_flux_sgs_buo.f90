@@ -8,7 +8,7 @@
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_LES, &
 !!     &          iphys_ele_base, ak_MHD, fem_int, FEM_elens, filtering,&
 !!     &          iphys_elediff_vec, Csim_SGS_tbuo, Csim_SGS_cbuo,      &
-!!     &          sgs_coefs_nod, diff_coefs, mlump_fl, wk_filter,       &
+!!     &          diff_coefs, mlump_fl, wk_filter,                      &
 !!     &          wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,&
 !!     &          Csim_SGS_mf, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -32,7 +32,6 @@
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_tbuo
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_cbuo
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(filtering_work_type), intent(inout) :: wk_filter
@@ -101,7 +100,7 @@
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,   &
      &          iphys_ele_base, ak_MHD, fem_int, FEM_elens, filtering,  &
      &          iphys_elediff_vec, Csim_SGS_tbuo, Csim_SGS_cbuo,        &
-     &          sgs_coefs_nod, diff_coefs, mlump_fl, wk_filter,         &
+     &          diff_coefs, mlump_fl, wk_filter,                        &
      &          wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,  &
      &          Csim_SGS_mf, v_sol, SR_sig, SR_r)
 !
@@ -143,7 +142,6 @@
 !
       type(base_field_address), intent(in) :: iphys_elediff_vec
 !
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -174,7 +172,7 @@
      &    iphys_LES%filter_fld, iphys_LES%SGS_term, iphys_LES%SGS_wk,   &
      &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_elens, filtering, iphys_elediff_vec,                      &
-     &    Csim_SGS_mf, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
+     &    Csim_SGS_mf, mlump_fl, wk_filter, mhd_fem_wk,                 &
      &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,           &
      &    v_sol, SR_sig, SR_r)
 !

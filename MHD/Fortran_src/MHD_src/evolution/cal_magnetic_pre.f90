@@ -10,7 +10,7 @@
 !!     &          mesh, conduct, group, cd_prop, Bnod_bcs,              &
 !!     &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,   &
 !!     &          ele_fld, jacs, rhs_tbl, iphys_elediff_vec,            &
-!!     &          Csim_SGS_uxb, sgs_coefs_nod, diff_coefs, FEM_filters, &
+!!     &          Csim_SGS_uxb, diff_coefs, FEM_filters,                &
 !!     &          mlump_cd, Bmatrix, MG_vector, wk_filter,              &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_magnetic_co                                      &
@@ -47,7 +47,6 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(lumped_mass_matrices), intent(in) :: mlump_ins
@@ -115,7 +114,7 @@
      &          mesh, conduct, group, cd_prop, Bnod_bcs,                &
      &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,     &
      &          ele_fld, jacs, rhs_tbl, iphys_elediff_vec,              &
-     &          Csim_SGS_uxb, sgs_coefs_nod, diff_coefs, FEM_filters,   &
+     &          Csim_SGS_uxb, diff_coefs, FEM_filters,                  &
      &          mlump_cd, Bmatrix, MG_vector, wk_filter,                &
      &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -151,7 +150,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_cd
@@ -178,9 +176,9 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,        &
      &     iphys_ele_base, ele_fld, jacs, rhs_tbl,                      &
      &     FEM_filters%FEM_elens, FEM_filters%filtering,                &
-     &     iphys_elediff_vec, Csim_SGS_uxb, sgs_coefs_nod,              &
-     &     mlump_cd, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &     rhs_mat%f_l, nod_fld, v_sol, SR_sig, SR_r)
+     &     iphys_elediff_vec, Csim_SGS_uxb, mlump_cd, wk_filter,        &
+     &     mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,            &
+     &     v_sol, SR_sig, SR_r)
       end if
 !
       call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)

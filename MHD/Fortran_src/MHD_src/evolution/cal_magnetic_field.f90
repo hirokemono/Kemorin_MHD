@@ -17,7 +17,7 @@
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,         &
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,   &
 !!     &          Csims_FEM_MHD, FEM_filters, Csim_SGS_uxb,             &
-!!     &          sgs_coefs_nod, diff_coefs, mk_MHD, Bmatrix, Fmatrix,  &
+!!     &          diff_coefs, mk_MHD, Bmatrix, Fmatrix,                 &
 !!     &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, &
 !!     &          fem_sq, nod_fld, m_SR)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -236,7 +236,7 @@
      &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,           &
      &          iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,     &
      &          Csims_FEM_MHD, FEM_filters, Csim_SGS_uxb,               &
-     &          sgs_coefs_nod, diff_coefs, mk_MHD, Bmatrix, Fmatrix,    &
+     &          diff_coefs, mk_MHD, Bmatrix, Fmatrix,                   &
      &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,   &
      &          fem_sq, nod_fld, m_SR)
 !
@@ -267,7 +267,6 @@
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
       type(MHD_MG_matrix), intent(in) :: Bmatrix
@@ -306,7 +305,7 @@
      &   mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,     &
      &   iphys, iphys_LES, iphys_ele_base, ele_fld,                     &
      &   fem_int%jcs, fem_int%rhs_tbl, Csims_FEM_MHD%iphys_elediff_vec, &
-     &   Csim_SGS_uxb, sgs_coefs_nod, diff_coefs, FEM_filters,          &
+     &   Csim_SGS_uxb, diff_coefs, FEM_filters,                         &
      &   mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                   &
      &   FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld,            &
      &   m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)

@@ -87,22 +87,22 @@
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)
         do inod = ist, ied
-          d_nod(inod,i_r  ) = ak_sgs_nod(inod,1)                &
+          d_nod(inod,i_r  ) = ak_sgs_nod(inod,1)                        &
      &                    * ( d_nod(inod,i_r  )                         &
      &                      - d_nod(inod,i_v1  ) * d_nod(inod,i_v2  ) )
-          d_nod(inod,i_r+1) = ak_sgs_nod(inod,2)                &
+          d_nod(inod,i_r+1) = ak_sgs_nod(inod,2)                        &
      &                    * ( d_nod(inod,i_r+1)                         &
      &                      - d_nod(inod,i_v1+1) * d_nod(inod,i_v2  ) )
-          d_nod(inod,i_r+2) = ak_sgs_nod(inod,3)                &
+          d_nod(inod,i_r+2) = ak_sgs_nod(inod,3)                        &
      &                    * ( d_nod(inod,i_r+2)                         &
      &                      - d_nod(inod,i_v1+2) * d_nod(inod,i_v2  ) )
-          d_nod(inod,i_r+3) = ak_sgs_nod(inod,4)                &
+          d_nod(inod,i_r+3) = ak_sgs_nod(inod,4)                        &
      &                    * ( d_nod(inod,i_r+3)                         &
      &                      - d_nod(inod,i_v1+1) * d_nod(inod,i_v2+1) )
-          d_nod(inod,i_r+4) = ak_sgs_nod(inod,5)                &
+          d_nod(inod,i_r+4) = ak_sgs_nod(inod,5)                        &
      &                    * ( d_nod(inod,i_r+4)                         &
      &                      - d_nod(inod,i_v1+2) * d_nod(inod,i_v2+1) )
-          d_nod(inod,i_r+5) = ak_sgs_nod(inod,6)                &
+          d_nod(inod,i_r+5) = ak_sgs_nod(inod,6)                        &
      &                    * ( d_nod(inod,i_r+5)                         &
      &                      - d_nod(inod,i_v1+2) * d_nod(inod,i_v2+2) )
         end do

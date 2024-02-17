@@ -14,8 +14,8 @@
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, conduct, cd_prop, fem_int,   &
 !!     &          FEM_filters, iphys_elediff_vec, iphys_elediff_fil,    &
-!!     &          sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,        &
-!!     &          rhs_mat,nod_fld, Csim_SGS_uxb, v_sol, SR_sig, SR_r)
+!!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,     &
+!!     &          Csim_SGS_uxb, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -190,8 +190,8 @@
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, conduct, cd_prop, fem_int,     &
      &          FEM_filters, iphys_elediff_vec, iphys_elediff_fil,      &
-     &          sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,          &
-     &          rhs_mat, nod_fld, Csim_SGS_uxb, v_sol, SR_sig, SR_r)
+     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,       &
+     &          Csim_SGS_uxb, v_sol, SR_sig, SR_r)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -220,7 +220,6 @@
       type(conductive_property), intent(in) :: cd_prop
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -242,12 +241,10 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_simi'
       call cal_sgs_induct_t_simi(iphys_SGS%i_SGS_induct_t,              &
-     &    iphys_base%i_velo, iphys_base%i_magne,                        &
-     &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
-     &    Csim_SGS_uxb%icomp_Csim, SGS_par%filter_p,                    &
-     &    mesh%nod_comm, mesh%node,  FEM_filters%filtering,             &
-     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld,                 &
-     &    v_sol, SR_sig, SR_r)
+     &   iphys_base%i_velo, iphys_base%i_magne,                         &
+     &   iphys_fil%i_velo, iphys_fil%i_magne, SGS_par%filter_p,         &
+     &   mesh%nod_comm, mesh%node, FEM_filters%filtering, Csim_SGS_uxb, &
+     &   FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
 !    copy to work array
 !

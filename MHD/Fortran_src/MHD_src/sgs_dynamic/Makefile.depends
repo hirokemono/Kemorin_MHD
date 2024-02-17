@@ -98,7 +98,7 @@ product_model_coefs_to_sk.o: $(MHD_SGS_DYNAMIC_DIR)/product_model_coefs_to_sk.f9
 	$(F90) -c $(F90OPTFLAGS) $<
 reduce_model_coefs.o: $(MHD_SGS_DYNAMIC_DIR)/reduce_model_coefs.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_ele_info_4_dynamic.o
 	$(F90) -c $(F90OPTFLAGS) $<
-reset_dynamic_model_coefs.o: $(MHD_SGS_DYNAMIC_DIR)/reset_dynamic_model_coefs.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o t_SGS_model_coef_labels.o t_phys_data.o copy_nodal_fields.o t_geometry_data.o t_layering_ele_list.o t_SGS_model_coefs.o delete_field_smp.o
+reset_dynamic_model_coefs.o: $(MHD_SGS_DYNAMIC_DIR)/reset_dynamic_model_coefs.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o t_SGS_model_coefs.o t_SGS_model_coef_labels.o t_phys_data.o copy_nodal_fields.o t_geometry_data.o t_layering_ele_list.o delete_field_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sgs_terms_to_each_ele.o: $(MHD_SGS_DYNAMIC_DIR)/sgs_terms_to_each_ele.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_phys_data.o sgs_terms_2_each_element.o m_phys_constants.o sgs_terms_coef_each_element.o sgs_terms_cst_each_element.o
 	$(F90) -c $(F90OPTFLAGS) $<

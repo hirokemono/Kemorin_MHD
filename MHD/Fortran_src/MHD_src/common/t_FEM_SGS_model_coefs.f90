@@ -16,7 +16,6 @@
       use m_precision
       use t_SGS_model_coefs
       use t_base_field_labels
-      use t_SGS_term_labels
 !
       implicit  none
 !
@@ -25,17 +24,8 @@
       type SGS_coefficients_data
 !>        Model coefficeints in elements
         type(SGS_coefficients_type) :: sgs_coefs
-!
-!>        Model coefficeints at nodes
-        type(SGS_coefficients_type) :: sgs_coefs_nod
-!
 !>        Commutation error model coefficeints
         type(SGS_coefficients_type) :: diff_coefs
-!
-!>        Field adddress for dynamic SGS model
-        type(SGS_term_address) :: iak_sgs_term
-!>        Component list of SGS terms
-        type(SGS_term_address) :: icomp_sgs_term
 !
 !>        Address of differenciation of elemental field
         type(base_field_address) :: iphys_elediff_vec

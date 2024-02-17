@@ -187,8 +187,7 @@
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
      &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                      &
-     &    Csims_FEM_MHD%iphys_elediff_vec,                              &
-     &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
+     &    Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,     &
      &    filtering, mk_MHD, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
      &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,           &
      &    v_sol, SR_sig, SR_r)

@@ -14,10 +14,12 @@
 !!      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
 !!        type(SGS_model_coefficient), intent(in) :: org_Csim
 !!        type(SGS_model_coefficient), intent(inout) :: new_Csim
-!!      subroutine alloc_SGS_model_coefficient(num_poins, num_comp,     &
-!!     &                                       Csim)
+!!      subroutine alloc_SGS_model_coefficient(n_ele, num_comp, Csim)
+!!      subroutine alloc_SGS_model_coef_on_nod(n_nod, Csim)
 !!      subroutine dealloc_SGS_model_coefficient(Csim)
-!!        integer(kind = kint), intent(in) :: num_poins, num_comp
+!!      subroutine dealloc_SGS_model_coef_on_nod(Csim)
+!!        integer(kind = kint), intent(in) :: n_ele, num_comp
+!!        integer(kind = kint), intent(in) :: n_nod
 !!        type(SGS_model_coefficient), intent(inout) :: Csim
 !!
 !
@@ -37,12 +39,17 @@
 !>        Start address for model coeffieint work array
         integer(kind = kint) :: icomp_Csim
 !
-!>        Number of grid poins
-        integer(kind = kint) :: num_poins
 !>        Number of components (0 indicates no used)
         integer(kind = kint) :: num_comp
-!>        Model coefficiens
+!>        Number of element
+        integer(kind = kint) :: n_ele
+!>        Model coefficiens on element
         real(kind = kreal), allocatable :: coef(:,:)
+!
+!>        Number of element
+        integer(kind = kint) :: n_nod
+!>        Model coefficiens on element
+        real(kind = kreal), allocatable :: coef_nod(:,:)
       end type SGS_model_coefficient
 !
       type SGS_coefficients_type
@@ -169,48 +176,76 @@
 !
 !
       call alloc_SGS_model_coefficient                                  &
-     &   (org_Csim%num_poins, org_Csim%num_comp, new_Csim)
+     &   (org_Csim%n_ele, org_Csim%num_comp, new_Csim)
 !
       new_Csim%flag_set = org_Csim%flag_set
-      if((new_Csim%num_poins*new_Csim%num_comp) .le. 0) return
+      if((new_Csim%n_ele*new_Csim%num_comp) .le. 0) return
 !$omp parallel workshare
-      new_Csim%coef(1:new_Csim%num_poins, 1:new_Csim%num_comp)          &
-     &   = org_Csim%coef(1:new_Csim%num_poins, 1:new_Csim%num_comp)
+      new_Csim%coef(1:new_Csim%n_ele, 1:new_Csim%num_comp)              &
+     &   = org_Csim%coef(1:new_Csim%n_ele, 1:new_Csim%num_comp)
 !$omp end parallel workshare
 !
       end subroutine dup_SGS_model_coefficient
 !
 ! -------------------------------------------------------------------
 !
-      subroutine alloc_SGS_model_coefficient(num_poins, num_comp,       &
-     &                                       Csim)
+      subroutine alloc_SGS_model_coefficient(n_ele, num_comp, Csim)
 !
-      integer(kind = kint), intent(in) :: num_poins, num_comp
+      integer(kind = kint), intent(in) :: n_ele, num_comp
       type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
-      Csim%num_poins = num_poins
+      Csim%n_ele = n_ele
       Csim%num_comp = num_comp
-      allocate(Csim%coef(Csim%num_poins, Csim%num_comp))
+      allocate(Csim%coef(Csim%n_ele, Csim%num_comp))
 !
       Csim%flag_set = .FALSE.
-      if((Csim%num_poins*Csim%num_comp) .le. 0) return
+      if((Csim%n_ele*Csim%num_comp) .le. 0) return
 !$omp parallel workshare
-      Csim%coef(1:Csim%num_poins, 1:Csim%num_comp) = 0.0d0
+      Csim%coef(1:Csim%n_ele, 1:Csim%num_comp) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_SGS_model_coefficient
 !
 ! -------------------------------------------------------------------
 !
+      subroutine alloc_SGS_model_coef_on_nod(n_nod, Csim)
+!
+      integer(kind = kint), intent(in) :: n_nod
+      type(SGS_model_coefficient), intent(inout) :: Csim
+!
+!
+      Csim%n_nod = n_nod
+      allocate(Csim%coef_nod(Csim%n_nod, Csim%num_comp))
+!
+      Csim%flag_set = .FALSE.
+      if((Csim%n_nod*Csim%num_comp) .le. 0) return
+!$omp parallel workshare
+      Csim%coef_nod(1:Csim%n_nod, 1:Csim%num_comp) = 0.0d0
+!$omp end parallel workshare
+!
+      end subroutine alloc_SGS_model_coef_on_nod
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
       subroutine dealloc_SGS_model_coefficient(Csim)
 !
       type(SGS_model_coefficient), intent(inout) :: Csim
 !
-!
       deallocate(Csim%coef)
 !
       end subroutine dealloc_SGS_model_coefficient
+!
+! -------------------------------------------------------------------
+!
+      subroutine dealloc_SGS_model_coef_on_nod(Csim)
+!
+      type(SGS_model_coefficient), intent(inout) :: Csim
+!
+      deallocate(Csim%coef_nod)
+!
+      end subroutine dealloc_SGS_model_coef_on_nod
 !
 ! -------------------------------------------------------------------
 !

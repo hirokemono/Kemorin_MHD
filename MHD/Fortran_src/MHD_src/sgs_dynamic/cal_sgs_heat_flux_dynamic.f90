@@ -9,8 +9,8 @@
 !!     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs, SGS_par, mesh,&
 !!     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int, &
 !!     &         FEM_filters, iphys_elediff_vec_v, iphys_elediff_fil_v, &
-!!     &         sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,         &
-!!     &         rhs_mat, nod_fld, Csim_SGS_flux, v_sol, SR_sig, SR_r)
+!!     &         mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,      &
+!!     &         Csim_SGS_flux, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
@@ -19,7 +19,6 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -68,8 +67,8 @@
      &         ifield, ifield_f, ivelo, ivelo_f, i_sgs, SGS_par, mesh,  &
      &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,   &
      &         FEM_filters, iphys_elediff_vec_v, iphys_elediff_fil_v,   &
-     &         sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,           &
-     &         rhs_mat, nod_fld, Csim_SGS_flux, v_sol, SR_sig, SR_r)
+     &         mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,        &
+     &         Csim_SGS_flux, v_sol, SR_sig, SR_r)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -100,7 +99,6 @@
       type(field_geometry_data), intent(in) :: fluid
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -121,10 +119,10 @@
 !    SGS term by similarity model
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_sf_simi'
-      call cal_sgs_sf_simi(i_sgs, ifield, ifield_f, ivelo, ivelo_f,     &
-     &    Csim_SGS_flux%icomp_Csim, SGS_par%filter_p,                   &
+      call cal_sgs_sf_simi                                              &
+     &   (i_sgs, ifield, ifield_f, ivelo, ivelo_f, SGS_par%filter_p,    &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld,                 &
+     &    Csim_SGS_flux, FEM_SGS_wk%wk_filter, nod_fld,                 &
      &    v_sol, SR_sig, SR_r)
 !
 !    copy to work array

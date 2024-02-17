@@ -154,7 +154,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'reset_update_flag'
       call reset_update_flag                                            &
-     &   (nod_fld, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs)
+     &   (nod_fld, Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs)
 !
 !     ---- magnetic field update
 !
@@ -199,7 +199,6 @@
      &     SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,               &
      &     SGS_MHD_wk%fem_int, Csims_FEM_MHD, FEM_filters,              &
      &     Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,                        &
-     &     Csims_FEM_MHD%sgs_coefs_nod,                                 &
      &     Csims_FEM_MHD%diff_coefs, SGS_MHD_wk%mk_MHD,                 &
      &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
      &     MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,       &
@@ -228,7 +227,6 @@
      &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
      &    Csims_FEM_MHD%sgs_coefs%Csim_SGS_hf,                          &
-     &    Csims_FEM_MHD%sgs_coefs_nod,                                  &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
 !
 !     ----- composition update
@@ -240,7 +238,6 @@
      &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
      &    Csims_FEM_MHD%sgs_coefs%Csim_SGS_cf,                          &
-     &    Csims_FEM_MHD%sgs_coefs_nod,                                  &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
 !
 !     ---- velocity update
@@ -254,8 +251,7 @@
      &      surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
-     &      Csims_FEM_MHD%iphys_elediff_vec,                            &
-     &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
+     &      Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%diff_coefs,  &
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
      &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
@@ -472,7 +468,6 @@
      &    ak_MHD%ak_d_temp, FEM_filters, s_package%Tmatrix,             &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
      &    Csims_FEM_MHD%sgs_coefs%Csim_SGS_hf,                          &
-     &    Csims_FEM_MHD%sgs_coefs_nod,                                  &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
 !
 !     ----- composition update
@@ -484,7 +479,6 @@
      &    ak_MHD%ak_d_composit, FEM_filters, s_package%Cmatrix,         &
      &    Csims_FEM_MHD%iphys_elediff_vec%i_velo,                       &
      &    Csims_FEM_MHD%sgs_coefs%Csim_SGS_cf,                          &
-     &    Csims_FEM_MHD%sgs_coefs_nod,                                  &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs, m_SR)
 !
 !     ---- velocity update
@@ -497,8 +491,7 @@
      &      surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,       &
      &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
-     &      Csims_FEM_MHD%iphys_elediff_vec,                            &
-     &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
+     &      Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%diff_coefs,  &
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
      &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
@@ -568,9 +561,14 @@
 !
 !     reset monitoring flag
 !
-      nod_fld%iflag_update(1:nod_fld%ntot_phys) = 0
-      sgs_coefs%iflag_field(1:sgs_coefs%num_field) = 0
-      diff_coefs%iflag_field(1:diff_coefs%num_field) = 0
+      sgs_coefs%Csim_SGS_uxb%flag_set =  .FALSE.
+      sgs_coefs%Csim_SGS_lor%flag_set =  .FALSE.
+      sgs_coefs%Csim_SGS_mf%flag_set =  .FALSE.
+      sgs_coefs%Csim_SGS_hf%flag_set =  .FALSE.
+      sgs_coefs%Csim_SGS_cf%flag_set =  .FALSE.
+      sgs_coefs%Csim_SGS_tbuo%flag_set =  .FALSE.
+      sgs_coefs%Csim_SGS_cbuo%flag_set =  .FALSE.
+!
       diff_coefs%Cdiff_velo%flag_set =  .FALSE.
       diff_coefs%Cdiff_magne%flag_set = .FALSE.
       diff_coefs%Cdiff_temp%flag_set =  .FALSE.
