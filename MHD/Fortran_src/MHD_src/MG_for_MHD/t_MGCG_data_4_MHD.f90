@@ -88,7 +88,6 @@
       allocate(MGCG_MHD_FEM%MG_filter_MHD(MGCG_WK%num_MG_level))
       allocate(MGCG_MHD_FEM%MG_iak_diff_base(MGCG_WK%num_MG_level))
       allocate(MGCG_MHD_FEM%MG_diff_coefs(MGCG_WK%num_MG_level))
-      allocate(MGCG_MHD_FEM%MG_diff_coefs(MGCG_WK%num_MG_level))
 !
       allocate(MGCG_MHD_FEM%MG_mk_MHD(MGCG_WK%num_MG_level))
       allocate(MGCG_MHD_FEM%MG_MHD_CRS_table(MGCG_WK%num_MG_level))
@@ -110,7 +109,6 @@
 !
       deallocate(MGCG_MHD_FEM%MG_filter_MHD)
       deallocate(MGCG_MHD_FEM%MG_iak_diff_base)
-      deallocate(MGCG_MHD_FEM%MG_diff_coefs)
       deallocate(MGCG_MHD_FEM%MG_diff_coefs)
       deallocate(MGCG_MHD_FEM%MG_mk_MHD, MGCG_MHD_FEM%MG_MHD_CRS_table)
 !

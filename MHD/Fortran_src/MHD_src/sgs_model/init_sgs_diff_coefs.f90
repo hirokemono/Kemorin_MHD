@@ -68,7 +68,6 @@
      &    Csims_FEM_MHD%diff_coefs%num_field, ntot_diff_comp, wk_diff)
 !
       call alloc_SGS_num_coefs(Csims_FEM_MHD%diff_coefs)
-      call alloc_SGS_coefs(numele, Csims_FEM_MHD%diff_coefs)
 !
       call set_sgs_diff_addresses(SGS_param, cmt_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
