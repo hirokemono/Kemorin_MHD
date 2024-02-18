@@ -50,7 +50,7 @@
 !>        field name
         character(len = kchara), allocatable :: field_name(:)
 !>        component address in rayleigh
-        integer(kind = kint), allocatable :: id_rayleigh(:)
+        integer(kind = kint), allocatable :: id_Rayleigh(:)
       end type rayleigh_field_address
 !
       private :: alloc_rayleigh_field_num, alloc_rayleigh_field_address
@@ -119,17 +119,17 @@
 !
       do inum = 1, field_ctl%scalar_phys%num
         i = rayleigh_ftbl%istack_comp(inum-1)
-        rayleigh_ftbl%id_rayleigh(i+1)                                  &
+        rayleigh_ftbl%id_Rayleigh(i+1)                                  &
      &       = field_ctl%scalar_phys%ivec(inum)
       end do
       do inum = 1, field_ctl%vector_phys%num
         icou = inum + field_ctl%scalar_phys%num
         i = rayleigh_ftbl%istack_comp(icou-1)
-        rayleigh_ftbl%id_rayleigh(i+1)                                  &
+        rayleigh_ftbl%id_Rayleigh(i+1)                                  &
      &       = field_ctl%vector_phys%ivec1(inum)
-        rayleigh_ftbl%id_rayleigh(i+2)                                  &
+        rayleigh_ftbl%id_Rayleigh(i+2)                                  &
      &       = field_ctl%vector_phys%ivec2(inum)
-        rayleigh_ftbl%id_rayleigh(i+3)                                  &
+        rayleigh_ftbl%id_Rayleigh(i+3)                                  &
      &       = field_ctl%vector_phys%ivec3(inum)
       end do
 !
