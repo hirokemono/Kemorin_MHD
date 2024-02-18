@@ -71,7 +71,6 @@
      &    Csims_FEM_MHD%sgs_coefs%ntot_comp, wk_sgs)
 !
       call alloc_SGS_num_coefs(Csims_FEM_MHD%sgs_coefs)
-      call alloc_SGS_coefs(numele, Csims_FEM_MHD%sgs_coefs)
 !
       call set_sgs_addresses(numnod, numele, SGS_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

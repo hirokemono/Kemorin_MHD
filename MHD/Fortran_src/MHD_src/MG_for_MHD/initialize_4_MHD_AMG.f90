@@ -185,9 +185,6 @@
 !
         call copy_SGS_num_coefs                                         &
      &     (diff_coefs, MGCG_MHD_FEM%MG_diff_coefs(i_level))
-        call alloc_SGS_coefs                                            &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele%numele,                  &
-     &      MGCG_MHD_FEM%MG_diff_coefs(i_level))
       end do
 !
 !     --------------------- 

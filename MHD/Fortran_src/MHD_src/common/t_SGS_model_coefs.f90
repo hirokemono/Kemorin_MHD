@@ -8,7 +8,6 @@
 !!       subroutine copy_SGS_num_coefs(org_coefs, new_coefs)
 !!
 !!       subroutine alloc_SGS_num_coefs(coefs)
-!!       subroutine alloc_SGS_coefs(nele, coefs)
 !!       subroutine dealloc_SGS_coefs(coefs)
 !!
 !!      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
@@ -58,7 +57,6 @@
         integer(kind = kint), allocatable  :: iflag_field(:)
         integer(kind = kint), allocatable  :: num_comps(:)
         integer(kind = kint), allocatable  :: istack_comps(:)
-        real(kind = kreal), allocatable :: ak(:,:)
 
 
 !>       Structure for commutationa error coefficient for SGS inducion
@@ -141,26 +139,11 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine alloc_SGS_coefs(nele, coefs)
-!
-      integer(kind = kint), intent(in) :: nele
-      type(SGS_coefficients_type), intent(inout) :: coefs
-!
-!
-      allocate(coefs%ak(nele,coefs%ntot_comp) )
-!
-      if(nele*coefs%ntot_comp .gt. 0) coefs%ak = 1.0d0
-!
-      end subroutine alloc_SGS_coefs
-!
-! -------------------------------------------------------------------
-!
       subroutine dealloc_SGS_coefs(coefs)
 !
       type(SGS_coefficients_type), intent(inout) :: coefs
 !
 !
-      deallocate(coefs%ak)
       deallocate(coefs%num_comps, coefs%istack_comps)
       deallocate(coefs%iflag_field)
 !
