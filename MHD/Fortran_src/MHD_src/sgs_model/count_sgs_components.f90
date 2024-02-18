@@ -70,8 +70,6 @@
      &    Csims_FEM_MHD%sgs_coefs%num_field,                            &
      &    Csims_FEM_MHD%sgs_coefs%ntot_comp, wk_sgs)
 !
-      call alloc_SGS_num_coefs(Csims_FEM_MHD%sgs_coefs)
-!
       call set_sgs_addresses(numnod, numele, SGS_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
@@ -192,11 +190,11 @@
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
           num_comp = n_vector
+          sgs_coefs%Csim_SGS_hf%num_comp = num_comp
           sgs_coefs%Csim_SGS_hf%iak_Csim =   i_fld
           sgs_coefs%Csim_SGS_hf%icomp_Csim = i_cmp
           wk_sgs%name(i_fld) = SGS_heat_flux%name
-          sgs_coefs%num_comps(i_fld) = sgs_coefs%Csim_SGS_hf%num_comp
-          i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
+          i_cmp = i_cmp + num_comp
           i_fld = i_fld + 1
         end if
       end if
@@ -208,11 +206,11 @@
         if(SGS_param%SGS_momentum%iflag_SGS_flux                       &
      &         .ne. id_SGS_none) then
           num_comp = n_sym_tensor
+          sgs_coefs%Csim_SGS_mf%num_comp = num_comp
           sgs_coefs%Csim_SGS_mf%iak_Csim =   i_fld
           sgs_coefs%Csim_SGS_mf%icomp_Csim = i_cmp
           wk_sgs%name(i_fld) = SGS_momentum_flux%name
-          sgs_coefs%num_comps(i_fld) = 6
-          i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
+          i_cmp = i_cmp + num_comp
           i_fld = i_fld + 1
         end if
       end if
@@ -223,11 +221,11 @@
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
           num_comp = n_sym_tensor
+          sgs_coefs%Csim_SGS_lor%num_comp = num_comp
           sgs_coefs%Csim_SGS_lor%iak_Csim =   i_fld
           sgs_coefs%Csim_SGS_lor%icomp_Csim = i_cmp
           wk_sgs%name(i_fld) = SGS_maxwell_tensor%name
-          sgs_coefs%num_comps(i_fld) = 6
-          i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
+          i_cmp = i_cmp + num_comp
           i_fld = i_fld + 1
         end if
       end if
@@ -239,11 +237,11 @@
         if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_gravity) then
             num_comp = n_sym_tensor
+            sgs_coefs%Csim_SGS_tbuo%num_comp = num_comp
             sgs_coefs%Csim_SGS_tbuo%iak_Csim =   i_fld
             sgs_coefs%Csim_SGS_tbuo%icomp_Csim = i_cmp
             wk_sgs%name(i_fld) = SGS_buoyancy%name
-            sgs_coefs%num_comps(i_fld) = 6
-            i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
+          i_cmp = i_cmp + num_comp
             i_fld = i_fld + 1
           end if
         end if
@@ -257,11 +255,11 @@
         if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_composit_buo) then
             num_comp = n_sym_tensor
+            sgs_coefs%Csim_SGS_cbuo%num_comp = num_comp
             sgs_coefs%Csim_SGS_cbuo%iak_Csim =   i_fld
             sgs_coefs%Csim_SGS_cbuo%icomp_Csim = i_cmp
             wk_sgs%name(i_fld) = SGS_composit_buoyancy%name
-            sgs_coefs%num_comps(i_fld) = 6
-            i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
+          i_cmp = i_cmp + num_comp
             i_fld = i_fld + 1
           end if
         end if
@@ -271,39 +269,39 @@
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           num_comp = n_vector
+          sgs_coefs%Csim_SGS_uxb%num_comp = num_comp
           sgs_coefs%Csim_SGS_uxb%iak_Csim =   i_fld
           sgs_coefs%Csim_SGS_uxb%icomp_Csim = i_cmp
           wk_sgs%name(i_fld) = SGS_induction%name
-          sgs_coefs%num_comps(i_fld) = 3
-          i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
+          i_cmp = i_cmp + num_comp
           i_fld = i_fld + 1
         end if
       else if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           num_comp = n_vector
+          sgs_coefs%Csim_SGS_uxb%num_comp = num_comp
           sgs_coefs%Csim_SGS_uxb%iak_Csim =   i_fld
           sgs_coefs%Csim_SGS_uxb%icomp_Csim = i_cmp
           wk_sgs%name(i_fld) = SGS_induction%name
-          sgs_coefs%num_comps(i_fld) = 3
-          i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
+          i_cmp = i_cmp + num_comp
           i_fld = i_fld + 1
         end if
       end if
       call alloc_SGS_model_coefficient(numele, num_comp,                &
      &                                 sgs_coefs%Csim_SGS_uxb)
 !
-       num_comp = 0
-       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-         if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
-           num_comp = n_vector
-           sgs_coefs%Csim_SGS_cf%iak_Csim =   i_fld
-           sgs_coefs%Csim_SGS_cf%icomp_Csim = i_cmp
-           wk_sgs%name(i_fld) = SGS_composit_flux%name
-           sgs_coefs%num_comps(i_fld) = 3
-           i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
-           i_fld = i_fld + 1
-         end if
-       end if
+      num_comp = 0
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
+        if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
+          num_comp = n_vector
+          sgs_coefs%Csim_SGS_cf%num_comp = num_comp
+          sgs_coefs%Csim_SGS_cf%iak_Csim =   i_fld
+          sgs_coefs%Csim_SGS_cf%icomp_Csim = i_cmp
+          wk_sgs%name(i_fld) = SGS_composit_flux%name
+          i_cmp = i_cmp + num_comp
+          i_fld = i_fld + 1
+        end if
+      end if
       call alloc_SGS_model_coefficient(numele, num_comp,                &
      &                                 sgs_coefs%Csim_SGS_cf)
 !

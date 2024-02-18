@@ -200,8 +200,6 @@
       call alloc_sgs_coefs_layer(sph_d_grp%ngrp_dynamic,                &
      &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
 !
-      call alloc_SGS_num_coefs(sgs_coefs)
-!
       call set_sph_sgs_addresses                                        &
      &   (SGS_par%model_p, MHD_prop%fl_prop, MHD_prop%cd_prop,          &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
@@ -531,7 +529,6 @@
         if(iak_sgs_term%i_SGS_c_flux .gt. 0) then
           write(*,*) 'iak_sgs_cf',                                      &
      &       iak_sgs_term%i_SGS_c_flux, icomp_sgs_term%i_SGS_c_flux,    &
-     &       sgs_coefs%num_comps(iak_sgs_term%i_SGS_c_flux),            &
      &                              sgs_coefs%Csim_SGS_cf%num_comp,     &
      &       trim(wk_sgs%name(iak_sgs_term%i_SGS_c_flux))
         end if
