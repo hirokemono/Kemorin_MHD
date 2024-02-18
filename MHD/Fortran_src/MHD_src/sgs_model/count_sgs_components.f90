@@ -316,13 +316,6 @@
         call alloc_SGS_model_coef_on_nod(numnod,sgs_coefs%Csim_SGS_uxb)
       end if
 !
-       sgs_coefs%istack_comps(0) = 0
-       do i_cmp = 1, sgs_coefs%num_field
-         sgs_coefs%istack_comps(i_cmp)                                  &
-     &          = sgs_coefs%istack_comps(i_cmp-1)                       &
-     &           + sgs_coefs%num_comps(i_cmp)
-       end do
-!
       end subroutine set_sgs_addresses
 !
 !  ------------------------------------------------------------------

@@ -56,7 +56,6 @@
         integer(kind = kint) :: ntot_comp
         integer(kind = kint), allocatable  :: iflag_field(:)
         integer(kind = kint), allocatable  :: num_comps(:)
-        integer(kind = kint), allocatable  :: istack_comps(:)
 
 
 !>       Structure for commutationa error coefficient for SGS inducion
@@ -115,7 +114,6 @@
 !
       new_coefs%num_comps =    org_coefs%num_comps
       new_coefs%iflag_field =  org_coefs%iflag_field
-      new_coefs%istack_comps = org_coefs%istack_comps
 !
       end subroutine copy_SGS_num_coefs
 !
@@ -128,12 +126,10 @@
 !
 !
       allocate(coefs%num_comps(coefs%num_field) )
-      allocate(coefs%istack_comps(0:coefs%num_field) )
       allocate(coefs%iflag_field(coefs%num_field) )
 !
       if(coefs%num_field .gt. 0) coefs%num_comps =   0
       if(coefs%num_field .gt. 0) coefs%iflag_field = 0
-      coefs%istack_comps = 0
 !
       end subroutine alloc_SGS_num_coefs
 !
@@ -144,7 +140,7 @@
       type(SGS_coefficients_type), intent(inout) :: coefs
 !
 !
-      deallocate(coefs%num_comps, coefs%istack_comps)
+      deallocate(coefs%num_comps)
       deallocate(coefs%iflag_field)
 !
       end subroutine dealloc_SGS_coefs
