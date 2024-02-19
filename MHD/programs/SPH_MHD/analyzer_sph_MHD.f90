@@ -50,6 +50,8 @@
       use init_sph_MHD_elapsed_label
 !
       character(len=kchara), intent(in) :: control_file_name
+
+      integer :: j
 !
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save :: MHD_ctl1
