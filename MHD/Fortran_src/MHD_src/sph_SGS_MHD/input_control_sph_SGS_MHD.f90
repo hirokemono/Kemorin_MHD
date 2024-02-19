@@ -142,6 +142,13 @@
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_WK%trans_p,         &
      &    SPH_WK%trns_WK, SPH_MHD%sph_maker)
 !
+      write(*,*) 'list of numbers: s_set_ctl_SPH_SGS_MHD_w_viz', my_rank
+      do j = 1, SPH_model%MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(SPH_model%MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    SPH_model%MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
+!
       call s_set_ctl_SPH_SGS_MHD_w_viz                                  &
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
      &    add_SSMHD_ctl%zm_ctls%crust_filter_ctl, MHD_ctl%nmtr_ctl,     &
