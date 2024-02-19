@@ -193,12 +193,15 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
+      integer(kind = kint) :: num_SGS_terms, ntot_SGS_comps
+!
 !
       call s_count_sgs_components(SGS_par%model_p,                      &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, sgs_coefs)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    num_SGS_terms, ntot_SGS_comps)
       call alloc_sgs_coefs_layer(sph_d_grp%ngrp_dynamic,                &
-     &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
+     &    num_SGS_terms, ntot_SGS_comps, wk_sgs)
 !
       call set_sph_sgs_addresses                                        &
      &   (SGS_par%model_p, MHD_prop%fl_prop, MHD_prop%cd_prop,          &
@@ -481,13 +484,13 @@
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: icomp_sgs_term
 !
-      type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(dynamic_model_data), intent(in) :: wk_sgs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'num_sgs_kinds', sgs_coefs%num_field
-        write(*,*) 'num_sgs_coefs', sgs_coefs%ntot_comp
+        write(*,*) 'num_sgs_kinds', wk_sgs%num_kinds
+        write(*,*) 'num_sgs_coefs', wk_sgs%ntot_comp
 !
         if(iak_sgs_term%i_SGS_h_flux .gt. 0) then
           write(*,*) 'iak_sgs_hf',                                      &

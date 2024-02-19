@@ -67,7 +67,7 @@
 !
 !
       wk_dmc%nlayer = n_layer_d
-      wk_dmc%num_kinds =  num_sgs_kinds
+      wk_dmc%num_kinds = num_sgs_kinds
       wk_dmc%ntot_comp = num_sgs_coefs
 !
        allocate(wk_dmc%comp_coef(wk_dmc%nlayer, wk_dmc%ntot_comp) )

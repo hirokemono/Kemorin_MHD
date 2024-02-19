@@ -182,9 +182,6 @@
      &      MGCG_MHD_FEM%ak_MHD_AMG(i_level))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
-!
-        call copy_SGS_num_coefs                                         &
-     &     (diff_coefs, MGCG_MHD_FEM%MG_diff_coefs(i_level))
       end do
 !
 !     --------------------- 

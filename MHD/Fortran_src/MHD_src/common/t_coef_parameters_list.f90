@@ -113,7 +113,8 @@
       call set_dimensionless_numbers(dless_ctl, MHD_coef_list)
 !
 !      if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'num_dimless ', MHD_coef_list%dimless_list%num
+        write(*,*) 'num_dimless set_control_4_normalize', &
+     &            MHD_coef_list%dimless_list%num
         do i = 1, MHD_coef_list%dimless_list%num
           write(*,*) i, trim(MHD_coef_list%dimless_list%name(i)),       &
      &              ': ', MHD_coef_list%dimless_list%value(i)

@@ -5,8 +5,6 @@
 !
 !     Written by H. Matsui
 !
-!!       subroutine copy_SGS_num_coefs(org_coefs, new_coefs)
-!!
 !!      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
 !!        type(SGS_model_coefficient), intent(in) :: org_Csim
 !!        type(SGS_model_coefficient), intent(inout) :: new_Csim
@@ -49,9 +47,6 @@
       end type SGS_model_coefficient
 !
       type SGS_coefficients_type
-        integer(kind = kint) :: num_field
-        integer(kind = kint) :: ntot_comp
-
 !>       Structure for commutationa error coefficient for SGS inducion
         type(SGS_model_coefficient) :: Csim_SGS_uxb
 !>       Structure for commutationa error coefficient for SGS Lorenz force
@@ -93,20 +88,6 @@
 !
       contains
 !
-! -------------------------------------------------------------------
-!
-      subroutine copy_SGS_num_coefs(org_coefs, new_coefs)
-!
-      type(SGS_coefficients_type), intent(in) :: org_coefs
-      type(SGS_coefficients_type), intent(inout) :: new_coefs
-!
-!
-      new_coefs%num_field = org_coefs%num_field
-      new_coefs%ntot_comp = org_coefs%ntot_comp
-!
-      end subroutine copy_SGS_num_coefs
-!
-! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)

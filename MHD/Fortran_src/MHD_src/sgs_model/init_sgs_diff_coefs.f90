@@ -57,22 +57,20 @@
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
-      integer(kind = kint) :: ntot_diff_comp
+      integer(kind = kint) :: num_diff_field, ntot_diff_comp
 !
 !
       call count_sgs_diff_coefs(SGS_param, cmt_param,                   &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ntot_diff_comp, Csims_FEM_MHD%diff_coefs)
+     &    num_diff_field, ntot_diff_comp)
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
-     &    Csims_FEM_MHD%diff_coefs%num_field, ntot_diff_comp, wk_diff)
+     &    num_diff_field, ntot_diff_comp, wk_diff)
 !
       call set_sgs_diff_addresses(SGS_param, cmt_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    wk_diff, Csims_FEM_MHD%diff_coefs)
-      Csims_FEM_MHD%diff_coefs%ntot_comp                                &
-     &      = Csims_FEM_MHD%diff_coefs%num_field
 !
       if(Csims_FEM_MHD%diff_coefs%Cdiff_velo%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
@@ -159,7 +157,7 @@
 !
       subroutine count_sgs_diff_coefs(SGS_param, cmt_param,             &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          ntot_diff_comp, diff_coefs)
+     &          num_diff_field, ntot_diff_comp)
 !
       use calypso_mpi
 !
@@ -174,19 +172,19 @@
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
-      integer(kind = kint), intent(inout) :: ntot_diff_comp
 !
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      integer(kind = kint), intent(inout) :: num_diff_field
+      integer(kind = kint), intent(inout) :: ntot_diff_comp
 !
 !    count coefficients for SGS terms
 !
-      diff_coefs%num_field = 0
+      num_diff_field = 0
       ntot_diff_comp = 0
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
           if (SGS_param%SGS_heat%iflag_commute_flux                     &
      &       .eq. id_SGS_commute_ON) then
-            diff_coefs%num_field = diff_coefs%num_field + 1
+            num_diff_field = num_diff_field + 1
             ntot_diff_comp = ntot_diff_comp + 3
           end if
         end if
@@ -197,7 +195,7 @@
      &        .ne. id_SGS_none) then
           if(SGS_param%SGS_momentum%iflag_commute_flux                  &
      &      .eq. id_SGS_commute_ON) then
-            diff_coefs%num_field = diff_coefs%num_field + 1
+            num_diff_field = num_diff_field + 1
             ntot_diff_comp = ntot_diff_comp + 9
           end if
         end if
@@ -206,7 +204,7 @@
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
           if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
-            diff_coefs%num_field = diff_coefs%num_field + 1
+            num_diff_field = num_diff_field + 1
             ntot_diff_comp = ntot_diff_comp + 9
           end if
         end if
@@ -215,7 +213,7 @@
       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
-            diff_coefs%num_field = diff_coefs%num_field + 1
+            num_diff_field = num_diff_field + 1
             ntot_diff_comp = ntot_diff_comp + 9
           end if
         end if
@@ -225,7 +223,7 @@
         if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
           if (SGS_param%SGS_light%iflag_commute_flux                    &
      &      .eq. id_SGS_commute_ON) then
-            diff_coefs%num_field = diff_coefs%num_field + 1
+            num_diff_field = num_diff_field + 1
             ntot_diff_comp = ntot_diff_comp + 3
           end if
         end if
@@ -235,7 +233,7 @@
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
      &      .and. SGS_param%SGS_heat%iflag_commute_field                &
      &           .eq. id_SGS_commute_ON) then
-          diff_coefs%num_field = diff_coefs%num_field + 1
+          num_diff_field = num_diff_field + 1
           ntot_diff_comp = ntot_diff_comp + 3
         end if
       end if
@@ -244,7 +242,7 @@
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
      &      .and. SGS_param%SGS_light%iflag_commute_field               &
      &           .eq. id_SGS_commute_ON) then
-          diff_coefs%num_field = diff_coefs%num_field + 1
+          num_diff_field = num_diff_field + 1
           ntot_diff_comp = ntot_diff_comp + 3
         end if
       end if
@@ -253,7 +251,7 @@
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
      &       .and. SGS_param%SGS_momentum%iflag_commute_field           &
      &            .eq. id_SGS_commute_ON) then
-          diff_coefs%num_field = diff_coefs%num_field + 1
+          num_diff_field = num_diff_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
         end if
       end if
@@ -261,7 +259,7 @@
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
-          diff_coefs%num_field = diff_coefs%num_field + 1
+          num_diff_field = num_diff_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
         end if
       end if
@@ -269,7 +267,7 @@
       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .gt. id_SGS_none                         &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
-          diff_coefs%num_field = diff_coefs%num_field + 1
+          num_diff_field = num_diff_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
         end if
       end if
@@ -464,8 +462,8 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-        write(*,*) 'wk_diff%ntot_comp', wk_diff%ntot_comp
-        write(*,*) 'diff_coefs%num_field', diff_coefs%num_field
+      write(*,*) 'diff_coefs%num_field', wk_diff%num_kinds
+      write(*,*) 'wk_diff%ntot_comp', wk_diff%ntot_comp
 !
         if(diff_coefs%Cdiff_SGS_hf%iak_Csim .gt. 0) then
           write(*,*) 'iak_diff_hf', diff_coefs%Cdiff_SGS_hf%iak_Csim,   &

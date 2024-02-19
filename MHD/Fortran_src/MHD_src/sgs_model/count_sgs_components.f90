@@ -59,16 +59,18 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
+      integer(kind = kint) :: num_SGS_terms, ntot_SGS_comps
+!
 !
       call s_count_sgs_components(SGS_param,                            &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, Csims_FEM_MHD%sgs_coefs)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    num_SGS_terms, ntot_SGS_comps)
 !
 !   set index for model coefficients
 !
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
-     &    Csims_FEM_MHD%sgs_coefs%num_field,                            &
-     &    Csims_FEM_MHD%sgs_coefs%ntot_comp, wk_sgs)
+     &    num_SGS_terms, ntot_SGS_comps, wk_sgs)
 !
       call set_sgs_addresses(numnod, numele, SGS_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
@@ -81,7 +83,8 @@
 !  ------------------------------------------------------------------
 !
       subroutine s_count_sgs_components(SGS_param,                      &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          num_SGS_terms, ntot_SGS_comps)
 !
       use calypso_mpi
 !
@@ -96,59 +99,60 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      integer(kind = kint), intent(inout) :: num_SGS_terms
+      integer(kind = kint), intent(inout) :: ntot_SGS_comps
 !
 !    count coefficients for SGS terms
 !
-      sgs_coefs%num_field = 0
-      sgs_coefs%ntot_comp = 0
+      num_SGS_terms =  0
+      ntot_SGS_comps = 0
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
-          sgs_coefs%num_field = sgs_coefs%num_field + 1
-          sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 3
         end if
       end if
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none) then
-          sgs_coefs%num_field = sgs_coefs%num_field + 1
-          sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 6
         end if
 !
         if(SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-          sgs_coefs%num_field = sgs_coefs%num_field + 1
-          sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 6
         end if
 !
         if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_gravity) then
-            sgs_coefs%num_field = sgs_coefs%num_field + 1
-            sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
+            num_SGS_terms = num_SGS_terms +   1
+            ntot_SGS_comps = ntot_SGS_comps + 6
           end if
           if(fl_prop%iflag_4_composit_buo) then
-            sgs_coefs%num_field = sgs_coefs%num_field + 1
-            sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
+            num_SGS_terms = num_SGS_terms +   1
+            ntot_SGS_comps = ntot_SGS_comps + 6
           end if
         end if
       end if
 !
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-          sgs_coefs%num_field = sgs_coefs%num_field + 1
-          sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
+          num_SGS_terms = num_SGS_terms +  1
+          ntot_SGS_comps = ntot_SGS_comps + 3
         end if
       end if
       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-          sgs_coefs%num_field = sgs_coefs%num_field + 1
-          sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 3
         end if
       end if
 !
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
-          sgs_coefs%num_field = sgs_coefs%num_field + 1
-          sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 3
         end if
       end if
 !
@@ -395,8 +399,8 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'num_sgs_kinds', sgs_coefs%num_field
-        write(*,*) 'num_sgs_coefs', sgs_coefs%ntot_comp
+        write(*,*) 'num_sgs_kinds', wk_sgs%num_kinds
+        write(*,*) 'num_sgs_coefs', wk_sgs%ntot_comp
 !
         if(sgs_coefs%Csim_SGS_hf%iak_Csim .gt. 0) then
           write(*,*) 'iak_sgs_hf', sgs_coefs%Csim_SGS_hf%iak_Csim,      &
