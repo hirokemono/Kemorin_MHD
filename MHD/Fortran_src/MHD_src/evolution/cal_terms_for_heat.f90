@@ -35,7 +35,6 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk

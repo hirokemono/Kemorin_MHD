@@ -267,7 +267,7 @@
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
       type(MHD_MG_matrix), intent(in) :: Bmatrix
       type(MHD_MG_matrix), intent(in) :: Fmatrix

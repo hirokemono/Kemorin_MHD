@@ -32,7 +32,7 @@
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_tbuo
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_cbuo
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -142,7 +142,7 @@
 !
       type(base_field_address), intent(in) :: iphys_elediff_vec
 !
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(SGS_model_coefficient), intent(inout) :: Csim_SGS_mf

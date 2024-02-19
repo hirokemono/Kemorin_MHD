@@ -29,12 +29,11 @@
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_cf
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
@@ -112,7 +111,7 @@
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_scalar, i_pert, iref_scalar

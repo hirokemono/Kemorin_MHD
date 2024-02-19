@@ -32,7 +32,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -95,7 +95,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !
       integer(kind= kint), intent(in) :: num_int
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
@@ -172,7 +172,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !
       integer(kind= kint), intent(in) :: num_int
       integer(kind= kint), intent(in) :: i_field

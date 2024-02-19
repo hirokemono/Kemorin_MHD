@@ -112,7 +112,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_type), intent(in) :: jacs
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_q
       type(table_mat_const), intent(in) :: MG_mat_fl_q

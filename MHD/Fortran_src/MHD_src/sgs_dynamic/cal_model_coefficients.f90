@@ -31,7 +31,7 @@
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -112,7 +112,7 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(mesh_SR), intent(inout) :: m_SR
 !
 !

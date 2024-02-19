@@ -38,7 +38,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -224,7 +224,7 @@
 !
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !

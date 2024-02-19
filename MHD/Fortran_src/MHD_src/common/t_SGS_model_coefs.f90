@@ -61,8 +61,10 @@
         type(SGS_model_coefficient) :: Csim_SGS_tbuo
 !>       Structure for commutationa error coefficient for SGS composition flux
         type(SGS_model_coefficient) :: Csim_SGS_cbuo
-
-
+      end type SGS_coefficients_type
+!
+!
+      type SGS_commutation_coefs
 !>       Structure for commutationa error coefficient for velocity
         type(SGS_model_coefficient) :: Cdiff_velo
 !>       Structure for commutationa error coefficient for magnetic field
@@ -82,7 +84,7 @@
         type(SGS_model_coefficient) :: Cdiff_SGS_hf
 !>       Structure for commutationa error coefficient for SGS composition flux
         type(SGS_model_coefficient) :: Cdiff_SGS_cf
-      end type SGS_coefficients_type
+      end type SGS_commutation_coefs
 !
 ! -------------------------------------------------------------------
 !

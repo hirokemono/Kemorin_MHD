@@ -59,7 +59,7 @@
 !!      subroutine reset_update_flag(nod_fld, sgs_coefs, diff_coefs)
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!@endverbatim
 !
       module FEM_MHD_evolution
@@ -557,7 +557,7 @@
 !
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !
 !     reset monitoring flag
 !

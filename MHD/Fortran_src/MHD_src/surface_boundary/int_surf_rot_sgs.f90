@@ -20,7 +20,6 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !!
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk

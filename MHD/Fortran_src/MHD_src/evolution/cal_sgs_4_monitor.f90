@@ -42,7 +42,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -259,7 +259,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk

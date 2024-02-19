@@ -25,7 +25,7 @@
 !>        Model coefficeints in elements
         type(SGS_coefficients_type) :: sgs_coefs
 !>        Commutation error model coefficeints
-        type(SGS_coefficients_type) :: diff_coefs
+        type(SGS_commutation_coefs) :: diff_coefs
 !
 !>        Address of differenciation of elemental field
         type(base_field_address) :: iphys_elediff_vec

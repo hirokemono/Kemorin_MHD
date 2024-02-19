@@ -21,7 +21,6 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD

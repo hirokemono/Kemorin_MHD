@@ -17,7 +17,7 @@
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
@@ -93,7 +93,7 @@
 !
       real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(DJDS_poarameter), intent(in) :: DJDS_param

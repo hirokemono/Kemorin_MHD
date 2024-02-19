@@ -30,7 +30,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix
@@ -133,7 +133,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
       type(MHD_MG_matrix), intent(in) :: Vmatrix
       type(MHD_MG_matrix), intent(in) :: Pmatrix

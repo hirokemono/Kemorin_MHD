@@ -16,7 +16,7 @@
 !!        type(group_data), intent(in) :: layer_egrp
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!
 !!      subroutine set_initial_model_coefs_ele                          &
 !!     &         (cmt_param, ele, fluid, layer_egrp,                    &
@@ -181,7 +181,7 @@
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !
 !
       call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &

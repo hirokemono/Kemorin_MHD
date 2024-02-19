@@ -35,7 +35,7 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
@@ -128,7 +128,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -387,7 +387,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -456,7 +456,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk

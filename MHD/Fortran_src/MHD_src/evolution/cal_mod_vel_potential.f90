@@ -40,7 +40,6 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff_velo
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff_magne
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Fmatrix
 !!        type(vectors_4_solver), intent(inout)                         &

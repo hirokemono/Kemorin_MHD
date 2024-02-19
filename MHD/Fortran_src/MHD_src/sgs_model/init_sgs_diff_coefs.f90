@@ -298,7 +298,7 @@
       type(commutation_control_params), intent(in) :: cmt_param
 !
       type(dynamic_model_data), intent(inout) :: wk_diff
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !
       integer(kind = kint) :: id, jd, num_comp
 !
@@ -459,7 +459,7 @@
       use t_SGS_model_coefs
 !
       type(dynamic_model_data), intent(inout) :: wk_diff
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !
 !
       write(*,*) 'diff_coefs%num_field', wk_diff%num_kinds

@@ -47,7 +47,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(lumped_mass_matrices), intent(in) :: mlump_ins
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -150,7 +150,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(MHD_MG_matrix), intent(in) :: Bmatrix

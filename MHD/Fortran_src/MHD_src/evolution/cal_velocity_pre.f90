@@ -8,8 +8,8 @@
 !!      subroutine s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,       &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
-!!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
-!!     &          FEM_elens, iphys_elediff_vec, diff_coefs,               &
+!!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
+!!     &          FEM_elens, iphys_elediff_vec, diff_coefs,             &
 !!     &          filtering, layer_tbl, mlump_fl, Vmatrix, MG_vector,   &
 !!     &          wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, rhs_mat,       &
 !!     &          nod_fld, ele_fld, sgs_coefs, v_sol, SR_sig, SR_r)
@@ -157,7 +157,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
       type(lumped_mass_matrices), intent(in) :: mlump_fl

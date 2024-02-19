@@ -37,7 +37,6 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk

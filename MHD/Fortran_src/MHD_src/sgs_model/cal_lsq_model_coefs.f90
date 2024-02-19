@@ -22,7 +22,6 @@
 !!        type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
       module cal_lsq_model_coefs

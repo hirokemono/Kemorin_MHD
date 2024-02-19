@@ -24,7 +24,7 @@
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(field_IO), intent(inout) :: fem_fst_IO
 !!
@@ -90,7 +90,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(time_data), intent(inout) :: init_d, time_d
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
