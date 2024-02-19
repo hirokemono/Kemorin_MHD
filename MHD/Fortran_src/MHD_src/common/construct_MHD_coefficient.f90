@@ -87,16 +87,16 @@
             end if
           end do
           if(flag_missing) then
-            if(my_rank .eq. 0) then
+!            if(my_rank .eq. 0) then
               write(*,*) 'refered numbers: ', power_list%name(i)
               write(*,*) 'list of numbers: '
               do j = 1, dless_list%num
                 write(*,*) j, trim(dless_list%name(j)), ': ',           &
      &                    dless_list%value(j)
               end do
-            end if
+!            end if
             write(e_message,*) 'there is missing dimensionless number'
-            call calypso_MPI_barrier
+!            call calypso_MPI_barrier
             call calypso_MPI_abort(ierr_dless, e_message)
           end if
         end if
