@@ -93,17 +93,33 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(node_monitor_IO), intent(inout) :: nod_mntr
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, j
 !
 !       set nodal field list
       if(iflag_debug.gt.0) write(*,*) 'set_SGS_field_ctl_by_viz'
       call set_SGS_field_ctl_by_viz                                     &
      &   (model_ctl%fld_ctl%field_ctl, nod_fld, ierr)
 !
+!
+      write(*,*) 'list of numbers: set_control_sph_sgs_mhd_fields', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
+!
 !       set spectr field list
       if(iflag_debug.gt.0) write(*,*) 'set_control_sph_sgs_mhd_fields'
       call set_control_sph_sgs_mhd_fields(SGS_par%model_p, MHD_prop,    &
      &    model_ctl%fld_ctl%field_ctl, rj_fld)
+!
+!
+      write(*,*) 'list of numbers: set_ctl_SPH_SGS_MHD_monitors', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
 !
 !   set_pickup modes
       call set_ctl_SPH_SGS_MHD_monitors                                 &
@@ -113,6 +129,14 @@
 !
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
 !
+!
+      write(*,*) 'list of numbers: set_control_node_grp_monitor', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
+
       call set_control_node_grp_monitor(nmtr_ctl, nod_mntr)
       call count_field_4_monitor(rj_fld, nod_mntr)
 !
