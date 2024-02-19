@@ -151,9 +151,9 @@
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
       write(*,*) 'list of numbers: load_para_SPH_and_FEM_w_LIC', my_rank
-      do j = 1, SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%value(j)
+      do j = 1, SPH_model%MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(SPH_model%MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    SPH_model%MHD_prop%MHD_coef_list%dimless_list%value(j)
       end do
 !
 !  Load spherical shell table
