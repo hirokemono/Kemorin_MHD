@@ -65,6 +65,12 @@
       integer(kind=kint) :: i, j
       logical :: flag_missing
 !
+      write(*,*) 'list of numbers: init', my_rank
+      do j = 1, dless_list%num
+        write(*,*) j, trim(dless_list%name(j)), ': ',           &
+     &                    dless_list%value(j)
+      end do
+      call calypso_MPI_barrier
 !
       do i = 1, power_list%num
         if     (cmp_no_case(power_list%name(i), 'One'))  then
