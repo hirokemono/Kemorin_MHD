@@ -96,6 +96,7 @@
               end do
             end if
             write(e_message,*) 'there is missing dimensionless number'
+            call calypso_MPI_barrier
             call calypso_MPI_abort(ierr_dless, e_message)
           end if
         end if
