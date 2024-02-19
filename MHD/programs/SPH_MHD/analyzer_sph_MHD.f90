@@ -83,6 +83,13 @@
 !
 !        Initialize FEM mesh data for field data IO
 !
+!
+      write(*,*) 'list of numbers: FEM_initialize_sph_SGS_MHD', my_rank
+      do j = 1, SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+!
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD                                   &
      &   (SSMHDs%MHD_files, SSMHDs%MHD_step, SVIZ_m%SPH_SGS%iphys_LES,  &
