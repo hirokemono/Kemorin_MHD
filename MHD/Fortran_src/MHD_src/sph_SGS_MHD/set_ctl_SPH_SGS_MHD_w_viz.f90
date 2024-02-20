@@ -125,6 +125,13 @@
       call set_ctl_SPH_SGS_MHD_monitors                                 &
      &   (smonitor_ctl, MHD_BC, rj_fld, monitor)
 !
+      write(*,*) 'list of numbers: set_crustal_filtering_control', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
+!
       call set_crustal_filtering_control(crust_filter_ctl, monitor)
 !
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
@@ -169,7 +176,7 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: ierr, j
+      integer(kind = kint) :: ierr
 !
 !
 !   set physical values
@@ -190,12 +197,6 @@
         call add_filter_force_4_sph_mhd                                 &
      &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
-!
-      write(*,*) 'list of numbers: add_field_name_4_SGS', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
 !
         call add_field_name_4_SGS(SGS_param, field_ctl)
         call add_field_name_dynamic_SGS                                 &
@@ -264,6 +265,13 @@
         call set_ctl_circle_for_dbench(smonitor_ctl%dbench_ctl,         &
      &      monitor%circ_mid_eq%circle)
       end if
+!
+      write(*,*) 'list of numbers: set_ctl_params_pick_sph', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
 !
 !   set_pickup modes
       call set_ctl_params_pick_sph                                      &
