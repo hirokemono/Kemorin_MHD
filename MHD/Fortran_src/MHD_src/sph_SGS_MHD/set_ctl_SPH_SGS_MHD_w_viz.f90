@@ -245,6 +245,7 @@
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
+      integer :: j
 !
       if(allocated(gzip_flags%flags) .eqv. .FALSE.) then
         call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags)
