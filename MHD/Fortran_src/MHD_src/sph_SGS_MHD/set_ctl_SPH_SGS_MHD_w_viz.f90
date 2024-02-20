@@ -258,11 +258,34 @@ type(MHD_evolution_param), intent(in) :: MHD_prop
       call s_set_ctl_sph_spectr_w_dbench(smonitor_ctl, MHD_BC,          &
      &    monitor%pwr, monitor%circ_mid_eq%circle, monitor%bench)
 !   Set spectr monitor
+!
+      write(*,*) 'list of numbers: set_ctl_params_layer_lor_spec', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
+
       call set_ctl_params_layer_lor_spec(smonitor_ctl%lp_ctl,           &
      &                                   monitor%lor_spectr)
+!
+      write(*,*) 'list of numbers: set_ctl_params_vol_lor_spectr', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
+
       call set_ctl_params_vol_lor_spectr(smonitor_ctl,                  &
      &                                   monitor%lor_spectr)
 !   Set parameters for dynamo benchmark output
+!
+      write(*,*) 'list of numbers: set_ctl_circle_for_dbench', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
+      call calypso_MPI_barrier
       if(monitor%bench%iflag_dynamobench .gt. 0) then
         call set_ctl_circle_for_dbench(smonitor_ctl%dbench_ctl,         &
      &      monitor%circ_mid_eq%circle)
