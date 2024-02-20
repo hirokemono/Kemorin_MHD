@@ -123,7 +123,7 @@
 !
 !   set_pickup modes
       call set_ctl_SPH_SGS_MHD_monitors                                 &
-     &   (smonitor_ctl, MHD_BC, rj_fld, monitor)
+     &   (smonitor_ctl, MHD_prop, MHD_BC, rj_fld, monitor)
 !
       write(*,*) 'list of numbers: set_crustal_filtering_control', my_rank
       do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
@@ -218,7 +218,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_SPH_SGS_MHD_monitors(smonitor_ctl,             &
+      subroutine set_ctl_SPH_SGS_MHD_monitors(smonitor_ctl, MHD_prop, &
      &                                        MHD_BC, rj_fld, monitor)
 !
       use t_phys_data
@@ -242,6 +242,7 @@
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(phys_data), intent(in) :: rj_fld
+type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
