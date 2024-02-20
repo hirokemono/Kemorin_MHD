@@ -93,57 +93,26 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(node_monitor_IO), intent(inout) :: nod_mntr
 !
-      integer(kind = kint) :: ierr, j
+      integer(kind = kint) :: ierr
 !
 !       set nodal field list
       if(iflag_debug.gt.0) write(*,*) 'set_SGS_field_ctl_by_viz'
       call set_SGS_field_ctl_by_viz                                     &
      &   (model_ctl%fld_ctl%field_ctl, nod_fld, ierr)
 !
-!
-      write(*,*) 'list of numbers: set_control_sph_sgs_mhd_fields', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
-!
 !       set spectr field list
       if(iflag_debug.gt.0) write(*,*) 'set_control_sph_sgs_mhd_fields'
       call set_control_sph_sgs_mhd_fields(SGS_par%model_p, MHD_prop,    &
      &    model_ctl%fld_ctl%field_ctl, rj_fld)
 !
-!
-      write(*,*) 'list of numbers: set_ctl_SPH_SGS_MHD_monitors', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
-!
 !   set_pickup modes
       call set_ctl_SPH_SGS_MHD_monitors                                 &
      &   (smonitor_ctl, MHD_prop, MHD_BC, rj_fld, monitor)
-!
-      write(*,*) 'list of numbers: set_crustal_filtering_control', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
 !
       call set_crustal_filtering_control(crust_filter_ctl, monitor)
 !
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
 !
-!
-      write(*,*) 'list of numbers: set_control_node_grp_monitor', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
-
       call set_control_node_grp_monitor(nmtr_ctl, nod_mntr)
       call count_field_4_monitor(rj_fld, nod_mntr)
 !
@@ -246,8 +215,6 @@ type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
-      integer :: j
-!
       if(allocated(gzip_flags%flags) .eqv. .FALSE.) then
         call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags)
       end if
@@ -259,44 +226,17 @@ type(MHD_evolution_param), intent(in) :: MHD_prop
      &    monitor%pwr, monitor%circ_mid_eq%circle, monitor%bench)
 !   Set spectr monitor
 !
-      write(*,*) 'list of numbers: set_ctl_params_layer_lor_spec', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
-
       call set_ctl_params_layer_lor_spec(smonitor_ctl%lp_ctl,           &
      &                                   monitor%lor_spectr)
 !
-      write(*,*) 'list of numbers: set_ctl_params_vol_lor_spectr', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
-
       call set_ctl_params_vol_lor_spectr(smonitor_ctl,                  &
      &                                   monitor%lor_spectr)
 !   Set parameters for dynamo benchmark output
 !
-      write(*,*) 'list of numbers: set_ctl_circle_for_dbench', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
       if(monitor%bench%iflag_dynamobench .gt. 0) then
         call set_ctl_circle_for_dbench(smonitor_ctl%dbench_ctl,         &
      &      monitor%circ_mid_eq%circle)
       end if
-!
-      write(*,*) 'list of numbers: set_ctl_params_pick_sph', my_rank
-      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
 !
 !   set_pickup modes
       call set_ctl_params_pick_sph                                      &

@@ -50,8 +50,6 @@
       use init_sph_MHD_elapsed_label
 !
       character(len=kchara), intent(in) :: control_file_name
-
-      integer :: j
 !
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save :: MHD_ctl1
@@ -84,13 +82,6 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
 !
 !        Initialize FEM mesh data for field data IO
-!
-!
-      write(*,*) 'list of numbers: FEM_initialize_sph_SGS_MHD', my_rank
-      do j = 1, SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    SSMHDs%SPH_model%MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD                                   &

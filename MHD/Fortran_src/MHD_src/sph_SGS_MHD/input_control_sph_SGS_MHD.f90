@@ -126,7 +126,6 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !
-      integer :: j
 !  Read control file
       if(iflag_debug.eq.1) write(*,*) 'load_control_sph_SGS_MHD'
       call load_control_sph_SGS_MHD(ctl_file_name, MHD_ctl,             &
@@ -142,13 +141,6 @@
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_WK%trans_p,         &
      &    SPH_WK%trns_WK, SPH_MHD%sph_maker)
 !
-      write(*,*) 'list of numbers: s_set_ctl_SPH_SGS_MHD_w_viz', my_rank
-      do j = 1, SPH_model%MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(SPH_model%MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    SPH_model%MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
-      call calypso_MPI_barrier
-!
       call s_set_ctl_SPH_SGS_MHD_w_viz                                  &
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
      &    add_SSMHD_ctl%zm_ctls%crust_filter_ctl, MHD_ctl%nmtr_ctl,     &
@@ -156,12 +148,6 @@
      &    SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor,      &
      &    FEM_dat%nod_mntr)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
-!
-      write(*,*) 'list of numbers: load_para_SPH_and_FEM_w_LIC', my_rank
-      do j = 1, SPH_model%MHD_prop%MHD_coef_list%dimless_list%num
-        write(*,*) j, trim(SPH_model%MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
-     &                    SPH_model%MHD_prop%MHD_coef_list%dimless_list%value(j)
-      end do
 !
 !  Load spherical shell table
       if(iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_w_LIC'
