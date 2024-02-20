@@ -169,7 +169,7 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, j
 !
 !
 !   set physical values
@@ -177,10 +177,10 @@
       if(field_ctl%icou .eq. 0) then
         call calypso_MPI_abort(ierr_fld, 'Set field for simulation')
       end if
-      if (iflag_debug.eq.1) write(*,*)                                  &
+      if(iflag_debug .eq. 1) write(*,*)                                 &
      &    'original number of field ', field_ctl%num
 !
-      if ( field_ctl%num .ne. 0 ) then
+      if(field_ctl%num .ne. 0) then
 !
 !     add fields for simulation
         call add_field_name_4_mhd(MHD_prop, field_ctl)
@@ -190,6 +190,12 @@
         call add_filter_force_4_sph_mhd                                 &
      &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
+!
+      write(*,*) 'list of numbers: add_field_name_4_SGS', my_rank
+      do j = 1, MHD_prop%MHD_coef_list%dimless_list%num
+        write(*,*) j, trim(MHD_prop%MHD_coef_list%dimless_list%name(j)), ': ', &
+     &                    MHD_prop%MHD_coef_list%dimless_list%value(j)
+      end do
 !
         call add_field_name_4_SGS(SGS_param, field_ctl)
         call add_field_name_dynamic_SGS                                 &
