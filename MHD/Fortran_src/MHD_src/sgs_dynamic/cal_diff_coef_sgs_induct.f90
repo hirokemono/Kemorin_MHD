@@ -3,12 +3,11 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_induct(iphys_elediff_fil, dt,    &
-!!     &          FEM_prm, SGS_par, mesh, group,                        &
-!!     &          fluid, conduct, cd_prop, Bsf_bcs,                     &
+!!      subroutine s_cal_diff_coef_sgs_induct(dt, FEM_prm, SGS_par,     &
+!!     &          mesh, group, fluid, conduct, cd_prop, Bsf_bcs,        &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fem_int, Csim_SGS_uxb,       &
-!!     &          FEM_filters, mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, &
+!!     &          FEM_filters, mk_MHD, mhd_fem_wk, FEM_SGS_wk, rhs_mat, &
 !!     &          nod_fld, Cdiff_SGS_uxb, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -27,7 +26,6 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-!!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(SGS_model_coefficient), intent(inout) :: Cdiff_SGS_uxb
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -71,12 +69,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_induct(iphys_elediff_fil, dt,      &
-     &          FEM_prm, SGS_par, mesh, group,                          &
-     &          fluid, conduct, cd_prop, Bsf_bcs,                       &
+      subroutine s_cal_diff_coef_sgs_induct(dt, FEM_prm, SGS_par,       &
+     &          mesh, group, fluid, conduct, cd_prop, Bsf_bcs,          &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fem_int, Csim_SGS_uxb,         &
-     &          FEM_filters, mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,   &
+     &          FEM_filters, mk_MHD, mhd_fem_wk, FEM_SGS_wk, rhs_mat,   &
      &          nod_fld, Cdiff_SGS_uxb, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
@@ -110,12 +107,11 @@
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-      type(base_field_address), intent(in) :: iphys_elediff_fil
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
+      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(SGS_model_coefficient), intent(inout) :: Cdiff_SGS_uxb
       type(phys_data), intent(inout) :: nod_fld
@@ -134,11 +130,12 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_induct_grad'
       call cal_sgs_induct_t_grad_w_coef(ifilter_4delta,                 &
      &    iphys_SGS_wk%i_wd_nlg, dt, FEM_prm, SGS_par%model_p,          &
-     &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
-     &    iphys_fil, iphys_ele_base, iphys_elediff_fil,                 &
+     &    mesh%nod_comm, mesh%node, mesh%ele, conduct,                  &
+     &    cd_prop, iphys_fil, iphys_ele_base,                           &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl,                        &
      &    FEM_filters%FEM_elens, Csim_SGS_uxb, mk_MHD%mlump_cd,         &
-     &    rhs_mat%fem_wk, mhd_fem_wk, rhs_mat%f_l, nod_fld,             &
+     &    mhd_fem_wk%ifil_elediff_v, mhd_fem_wk%ifil_elediff_b,         &
+     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,             &
      &    v_sol, SR_sig, SR_r)
 !
 !   take divergence of filtered heat flux (to iphys_SGS_wk%i_simi)

@@ -204,9 +204,9 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,       &
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
-     &      filtering, iphys_elediff_vec, sgs_coefs%Csim_SGS_uxb,       &
-     &      mk_MHD%mlump_cd, wk_filter, mhd_fem_wk, fem_wk,             &
-     &      f_l, nod_fld, v_sol, SR_sig, SR_r)
+     &      filtering, sgs_coefs%Csim_SGS_uxb, mk_MHD%mlump_cd,         &
+     &      mhd_fem_wk, wk_filter, fem_wk, f_l, nod_fld,                &
+     &      v_sol, SR_sig, SR_r)
       end if
 !
       if(iphys_LES%SGS_term%i_SGS_vp_induct .gt. 0) then

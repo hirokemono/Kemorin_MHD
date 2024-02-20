@@ -24,16 +24,15 @@
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
 !!     &          filtering, iphys_elediff_vec,                         &
-!!     &          Csim_SGS_lor, mlump_fl, wk_filter,                      &
+!!     &          Csim_SGS_lor, mlump_fl, wk_filter,                    &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
 !!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_magne_induction(dt, FEM_prm, SGS_param,      &
 !!     &          filter_param, nod_comm, node, ele, conduct, cd_prop,  &
-!!     &          iphys_base, iphys_fil, iphys_SGS,                     &
-!!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          filtering, iphys_elediff_vec, Csim_SGS_uxb, mlump_cd, &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld,          &
-!!     &          v_sol, SR_sig, SR_r)
+!!     &          iphys_base, iphys_fil, iphys_SGS, iphys_ele_base,     &
+!!     &          ele_fld, jacs, rhs_tbl, FEM_elens, filtering,         &
+!!     &          Csim_SGS_uxb, mlump_cd, mhd_fem_wk, wk_filter,        &
+!!     &          fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param,            &
 !!     &          filter_param, nod_comm, node, ele, conduct, cd_prop,  &
 !!     &          iphys_base, iphys_fil, iphys_SGS_wk,                  &
@@ -347,11 +346,10 @@
 !
       subroutine cal_sgs_magne_induction(dt, FEM_prm, SGS_param,        &
      &          filter_param, nod_comm, node, ele, conduct, cd_prop,    &
-     &          iphys_base, iphys_fil, iphys_SGS,                       &
-     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          filtering, iphys_elediff_vec, Csim_SGS_uxb, mlump_cd,   &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld,            &
-     &          v_sol, SR_sig, SR_r)
+     &          iphys_base, iphys_fil, iphys_SGS, iphys_ele_base,       &
+     &          ele_fld, jacs, rhs_tbl, FEM_elens, filtering,           &
+     &          Csim_SGS_uxb, mlump_cd, mhd_fem_wk, wk_filter,          &
+     &          fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_sgs_inductions_grad
 !
@@ -375,12 +373,11 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
-      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(lumped_mass_matrices), intent(in) :: mlump_cd
+      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
@@ -394,9 +391,10 @@
         call cal_sgs_induct_t_grad_w_coef(SGS_param%ifilter_final,      &
      &      iphys_SGS%i_SGS_induct_t, dt, FEM_prm, SGS_param,           &
      &      nod_comm, node, ele, conduct, cd_prop,                      &
-     &      iphys_base, iphys_ele_base, iphys_elediff_vec, ele_fld,     &
-     &      jacs, rhs_tbl, FEM_elens, Csim_SGS_uxb, mlump_cd, fem_wk,   &
-     &      mhd_fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
+     &      iphys_base, iphys_ele_base, ele_fld, jacs,                  &
+     &      rhs_tbl, FEM_elens, Csim_SGS_uxb, mlump_cd,                 &
+     &      mhd_fem_wk%iphys_elediff_v, mhd_fem_wk%iphys_elediff_b,     &
+     &      mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol, SR_sig, SR_r)
 !
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &

@@ -13,9 +13,8 @@
 !!      subroutine cal_sgs_induct_t_dynamic(dt, FEM_prm, SGS_par, mesh, &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, conduct, cd_prop, fem_int,   &
-!!     &          FEM_filters, iphys_elediff_vec, iphys_elediff_fil,    &
-!!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,     &
-!!     &          Csim_SGS_uxb, v_sol, SR_sig, SR_r)
+!!     &          FEM_filters, mk_MHD, mhd_fem_wk, FEM_SGS_wk,          &
+!!     &          rhs_mat, nod_fld, Csim_SGS_uxb, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -30,9 +29,9 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
+!!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
-!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_model_coefficient), intent(inout) :: Csim_SGS_uxb
 !!        type(vectors_4_solver), intent(inout) :: v_sol
@@ -189,9 +188,8 @@
       subroutine cal_sgs_induct_t_dynamic(dt, FEM_prm, SGS_par, mesh,   &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, conduct, cd_prop, fem_int,     &
-     &          FEM_filters, iphys_elediff_vec, iphys_elediff_fil,      &
-     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,       &
-     &          Csim_SGS_uxb, v_sol, SR_sig, SR_r)
+     &          FEM_filters, mk_MHD, mhd_fem_wk, FEM_SGS_wk,            &
+     &          rhs_mat, nod_fld, Csim_SGS_uxb, v_sol, SR_sig, SR_r)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -203,8 +201,6 @@
       use reduce_model_coefs
       use overwrite_prod_const_smp
 !
-      type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(base_field_address), intent(in) :: iphys_elediff_fil
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -221,10 +217,10 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
+      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_model_coefficient), intent(inout) :: Csim_SGS_uxb
       type(vectors_4_solver), intent(inout) :: v_sol
@@ -257,10 +253,11 @@
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_4delta, iphys_SGS_wk%i_wd_nlg,                        &
      &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
-     &    cd_prop, iphys_fil, iphys_ele_base, iphys_elediff_fil,        &
-     &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &    mk_MHD%mlump_cd, rhs_mat%fem_wk, mhd_fem_wk, rhs_mat%f_l,     &
-     &    nod_fld, v_sol, SR_sig, SR_r)
+     &    cd_prop, iphys_fil, iphys_ele_base, ele_fld, fem_int%jcs,     &
+     &    fem_int%rhs_tbl, FEM_filters%FEM_elens, mk_MHD%mlump_cd,      &
+     &    mhd_fem_wk%ifil_elediff_v, mhd_fem_wk%ifil_elediff_b,         &
+     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,             &
+     &    v_sol, SR_sig, SR_r)
 !
 !   gradient model by original field
 !
@@ -268,10 +265,11 @@
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_2delta,  iphys_SGS%i_SGS_induct_t,                    &
      &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
-     &    cd_prop, iphys_base, iphys_ele_base, iphys_elediff_vec,       &
-     &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &    mk_MHD%mlump_cd, rhs_mat%fem_wk, mhd_fem_wk, rhs_mat%f_l,     &
-     &     nod_fld, v_sol, SR_sig, SR_r)
+     &    cd_prop, iphys_base, iphys_ele_base, ele_fld, fem_int%jcs,    &
+     &    fem_int%rhs_tbl, FEM_filters%FEM_elens, mk_MHD%mlump_cd,      &
+     &    mhd_fem_wk%iphys_elediff_v, mhd_fem_wk%iphys_elediff_b,       &
+     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,             &
+     &    v_sol, SR_sig, SR_r)
 !
 !      filtering
 !

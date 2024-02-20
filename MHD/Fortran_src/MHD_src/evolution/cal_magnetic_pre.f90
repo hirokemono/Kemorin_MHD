@@ -175,10 +175,9 @@
      &     mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,        &
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,        &
      &     iphys_ele_base, ele_fld, jacs, rhs_tbl,                      &
-     &     FEM_filters%FEM_elens, FEM_filters%filtering,                &
-     &     iphys_elediff_vec, Csim_SGS_uxb, mlump_cd, wk_filter,        &
-     &     mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,            &
-     &     v_sol, SR_sig, SR_r)
+     &     FEM_filters%FEM_elens, FEM_filters%filtering, Csim_SGS_uxb,  &
+     &     mlump_cd, mhd_fem_wk, wk_filter, rhs_mat%fem_wk,             &
+     &     rhs_mat%f_l, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)
