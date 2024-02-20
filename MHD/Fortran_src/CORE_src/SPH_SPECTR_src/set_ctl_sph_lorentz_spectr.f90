@@ -19,6 +19,7 @@
 !
       use m_precision
       use t_rms_4_sph_spectr
+      use calypso_mpi
 !
       implicit  none
 !
@@ -84,6 +85,7 @@
       end do
 !
       call alloc_volume_spectr_data(icou, lor_spectr)
+      write(*,*) my_rank, 'alloc_volume_spectr_data', size(lor_spectr)
 !
       icou = 0
       if(smonitor_ctl%volume_work_spectr_prefix%iflag .gt. 0) then
@@ -91,7 +93,7 @@
         call set_ctl_base_vol_lor_spec_file(smonitor_ctl,               &
      &                                      lor_spectr%v_spectr(icou))
         call set_ctl_prm_base_vol_spectr(smonitor_ctl,                  &
-     &                                   lor_spectr%v_spectr(1))
+     &                                   lor_spectr%v_spectr(icou))
       end if
 !
       do inum = 1, smonitor_ctl%num_vspec_ctl
@@ -102,6 +104,8 @@
         call set_ctl_vol_lor_spec_file(smonitor_ctl%v_pwr(inum),        &
      &                                   lor_spectr%v_spectr(icou))
       end do
+      write(*,*) my_rank, 'set_ctl_params_vol_lor_spectr', &
+     &     size(lor_spectr), icou
 !
       end subroutine set_ctl_params_vol_lor_spectr
 !
