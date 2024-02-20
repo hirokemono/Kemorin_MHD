@@ -81,7 +81,7 @@
      &  icou = icou + 1
       do inum = 1, smonitor_ctl%num_vspec_ctl
         if(smonitor_ctl%v_pwr(inum)%volume_lor_spec_file_ctl%iflag      &
-     &        .eq. 0) icou = icou + 1
+     &        .gt. 0) icou = icou + 1
       end do
 !
       call alloc_volume_spectr_data(icou, lor_spectr)
