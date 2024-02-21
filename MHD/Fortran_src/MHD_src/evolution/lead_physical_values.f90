@@ -51,7 +51,6 @@
       use t_MHD_mass_matrices
       use t_FEM_MHD_filter_data
       use t_material_property
-      use t_SGS_model_coefs
       use t_FEM_SGS_model_coefs
       use t_work_FEM_SGS_MHD
       use t_mesh_SR

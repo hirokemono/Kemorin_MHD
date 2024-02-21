@@ -43,7 +43,7 @@
       use t_physical_property
       use t_material_property
       use t_SGS_term_labels
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_ele_info_4_dynamic
       use set_sgs_diff_model_coefs
 !

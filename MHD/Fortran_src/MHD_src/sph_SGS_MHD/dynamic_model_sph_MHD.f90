@@ -52,7 +52,6 @@
       use t_sph_trans_arrays_SGS_MHD
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
-      use t_SGS_model_coefs
       use t_sph_filtering
 !
       implicit none

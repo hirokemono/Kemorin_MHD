@@ -46,7 +46,6 @@
       use t_SGS_model_addresses
       use t_SGS_term_labels
       use t_addresses_sph_transform
-      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_groups_sph_dynamic
 !

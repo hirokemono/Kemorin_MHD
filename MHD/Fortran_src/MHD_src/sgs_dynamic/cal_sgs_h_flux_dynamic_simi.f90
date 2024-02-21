@@ -35,7 +35,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_FEM_MHD_filter_data
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS

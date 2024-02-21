@@ -55,7 +55,6 @@
       use t_FEM_MHD_filter_data
       use t_MHD_mass_matrices
       use t_int_surface_data
-      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_bc_data_MHD
       use t_surface_bc_data_MHD

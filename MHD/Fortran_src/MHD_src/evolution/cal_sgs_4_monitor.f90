@@ -79,7 +79,7 @@
       use t_bc_data_MHD
       use t_surface_bc_data_MHD
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_MHD_finite_element_mat
       use t_MHD_mass_matrices
       use t_work_FEM_integration

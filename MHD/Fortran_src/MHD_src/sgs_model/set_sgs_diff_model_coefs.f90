@@ -44,7 +44,7 @@
       use m_constants
       use t_geometry_data
       use t_group_data
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !

@@ -30,7 +30,7 @@
 !
       use t_SGS_control_parameter
       use t_sph_filtering
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_file_IO_parameter
       use t_time_data
 !

@@ -50,7 +50,6 @@
       use t_addresses_sph_transform
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
-      use t_SGS_model_coefs
 !
       implicit none
 !

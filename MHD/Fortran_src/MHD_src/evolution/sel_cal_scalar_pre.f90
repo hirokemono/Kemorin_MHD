@@ -73,7 +73,7 @@
       use t_bc_data_temp
       use t_surface_bc_scalar
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_solver_djds_MHD
       use t_MGCG_data
       use t_work_FEM_integration

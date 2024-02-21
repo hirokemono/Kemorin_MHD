@@ -40,7 +40,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_reference_scalar_param
       use t_physical_property

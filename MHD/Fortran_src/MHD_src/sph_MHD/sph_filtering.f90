@@ -39,7 +39,6 @@
       use t_phys_data
       use t_sph_filtering_data
       use t_work_4_sph_trans
-      use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_sph_filtering
 !

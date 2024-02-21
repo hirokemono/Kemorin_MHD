@@ -68,7 +68,7 @@
       use t_surface_bc_data
       use t_surface_bc_scalar
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_vector_for_solver

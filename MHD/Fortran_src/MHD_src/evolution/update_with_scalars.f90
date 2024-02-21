@@ -62,7 +62,7 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_data

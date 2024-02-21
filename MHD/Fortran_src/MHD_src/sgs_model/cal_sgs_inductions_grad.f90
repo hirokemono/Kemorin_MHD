@@ -54,7 +54,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_vector_for_solver
       use t_solver_SR
 !

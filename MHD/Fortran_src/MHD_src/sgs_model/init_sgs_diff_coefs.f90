@@ -25,6 +25,7 @@
       use t_physical_property
       use t_base_field_labels
       use t_SGS_term_labels
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
@@ -42,7 +43,6 @@
 !
       use t_mesh_data
       use t_layering_ele_list
-      use t_FEM_SGS_model_coefs
       use t_work_FEM_dynamic_SGS
       use count_sgs_components
 !
@@ -194,7 +194,6 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_material_property
-      use t_SGS_model_coefs
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
@@ -315,7 +314,6 @@
       use t_ele_info_4_dynamic
       use t_material_property
       use t_SGS_term_labels
-      use t_SGS_model_coefs
 !
       use m_base_field_labels
       use m_SGS_term_labels
@@ -485,7 +483,6 @@
       use t_base_field_labels
       use t_SGS_term_labels
       use t_ele_info_4_dynamic
-      use t_SGS_model_coefs
 !
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(SGS_commutation_coefs), intent(inout) :: diff_coefs

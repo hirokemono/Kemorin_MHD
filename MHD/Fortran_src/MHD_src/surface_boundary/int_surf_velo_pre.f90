@@ -57,7 +57,7 @@
       use t_surface_bc_vector
       use t_surface_bc_velocity
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_physical_property
 !
       use int_surf_div_fluxes_sgs

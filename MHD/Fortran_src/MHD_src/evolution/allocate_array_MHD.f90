@@ -60,7 +60,6 @@
       use t_work_FEM_integration
       use t_material_property
       use t_FEM_SGS_model_coefs
-      use t_SGS_model_coefs
       use t_FEM_MHD_mean_square
 !
       use set_control_field_data

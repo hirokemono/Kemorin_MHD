@@ -27,7 +27,7 @@
       use m_constants
       use m_machine_parameter
       use m_phys_constants
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
@@ -67,7 +67,6 @@
 !
       use t_geometry_data
       use t_layering_ele_list
-      use t_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
@@ -98,7 +97,6 @@
 !
       use t_geometry_data
       use t_layering_ele_list
-      use t_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
@@ -318,7 +316,6 @@
 !
       subroutine reset_diff_model_coefs(numele, iele_smp_stack, Cdiff)
 !
-      use t_SGS_model_coefs
       use delete_field_smp
 !
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)

@@ -339,7 +339,6 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_physical_property
-      use t_SGS_model_coefs
       use t_SGS_term_labels
       use t_SGS_control_parameter
 !
@@ -472,7 +471,6 @@
       use t_ele_info_4_dynamic
       use t_material_property
       use t_SGS_term_labels
-      use t_SGS_model_coefs
       use t_SGS_control_parameter
 !
       type(SGS_term_address), intent(in) :: iak_sgs_term

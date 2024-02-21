@@ -304,7 +304,7 @@ set_sph_scalar_mat_bc.o: $(MHD_SPH_DIR)/set_sph_scalar_mat_bc.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 solve_sph_fluid_crank.o: $(MHD_SPH_DIR)/solve_sph_fluid_crank.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_spheric_rj_data.o t_sph_matrices.o set_reference_sph_mhd.o lubksb_357band_mul.o check_sph_radial_mat.o t_sph_center_matrix.o cal_sph_exp_center.o fill_scalar_field.o spherical_harmonics.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_filtering.o: $(MHD_SPH_DIR)/sph_filtering.f90 m_precision.o m_constants.o m_machine_parameter.o t_SGS_control_parameter.o t_control_parameter.o t_physical_property.o t_spheric_parameter.o t_spheric_group.o t_phys_data.o t_sph_filtering_data.o t_work_4_sph_trans.o t_SGS_model_coefs.o t_ele_info_4_dynamic.o t_sph_filtering.o calypso_mpi.o t_SGS_buoyancy_sph.o set_groups_sph_dynamic.o sph_radial_filtering.o
+sph_filtering.o: $(MHD_SPH_DIR)/sph_filtering.f90 m_precision.o m_constants.o m_machine_parameter.o t_SGS_control_parameter.o t_control_parameter.o t_physical_property.o t_spheric_parameter.o t_spheric_group.o t_phys_data.o t_sph_filtering_data.o t_work_4_sph_trans.o t_ele_info_4_dynamic.o t_sph_filtering.o calypso_mpi.o t_SGS_buoyancy_sph.o set_groups_sph_dynamic.o sph_radial_filtering.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_fwd_trans_mid_eq.o: $(MHD_SPH_DIR)/sph_fwd_trans_mid_eq.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_rj_data.o t_phys_data.o t_phys_address.o t_field_on_circle.o t_sph_circle_parameters.o t_FFT_selector.o t_field_4_dynamobench.o field_at_mid_equator.o circle_bwd_transfer_rj.o t_base_field_labels.o calypso_mpi_real.o transfer_to_long_integers.o cal_circle_transform.o t_circle_transform.o
 	$(F90) -c $(F90OPTFLAGS) $<

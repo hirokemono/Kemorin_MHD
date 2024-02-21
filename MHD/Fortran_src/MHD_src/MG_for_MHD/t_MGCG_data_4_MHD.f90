@@ -24,7 +24,7 @@
       use t_crs_connect
       use t_bc_data_MHD
       use t_boundary_field_IO
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_base_field_labels
 !
       implicit  none

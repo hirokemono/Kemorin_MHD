@@ -33,7 +33,6 @@
       use t_SGS_model_coef_labels
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
-      use t_SGS_model_coefs
       use t_groups_sph_dynamic
 !
       implicit none

@@ -28,6 +28,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
@@ -48,7 +49,6 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_physical_property
-      use t_FEM_SGS_model_coefs
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(layering_tbl), intent(in) :: layer_tbl
@@ -92,7 +92,6 @@
       use t_ele_info_4_dynamic
       use t_physical_property
       use t_physical_property
-      use t_SGS_model_coefs
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
@@ -168,7 +167,6 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_physical_property
-      use t_SGS_model_coefs
       use t_SGS_term_labels
 !
       use m_SGS_term_labels
@@ -402,7 +400,6 @@
       use t_ele_info_4_dynamic
       use t_material_property
       use t_SGS_term_labels
-      use t_SGS_model_coefs
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs

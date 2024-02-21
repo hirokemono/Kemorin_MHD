@@ -265,7 +265,6 @@
       use t_SGS_model_addresses
       use t_rms_4_sph_spectr
       use t_spheric_parameter
-      use t_SGS_model_coefs
       use t_SGS_term_labels
       use radial_int_for_sph_spec
       use volume_average_4_sph
@@ -302,7 +301,6 @@
       use t_SGS_model_addresses
       use t_rms_4_sph_spectr
       use t_spheric_parameter
-      use t_SGS_model_coefs
       use t_SGS_term_labels
       use radial_int_for_sph_spec
       use volume_average_4_sph

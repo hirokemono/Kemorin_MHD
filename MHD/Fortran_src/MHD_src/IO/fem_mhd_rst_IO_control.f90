@@ -165,7 +165,7 @@
      &         sgs_coefs, diff_coefs, nod_fld, init_d, time_d, flex_p)
 !
       use t_geometry_data_MHD
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use m_fem_mhd_restart
       use FEM_sgs_ini_model_coefs_IO
 !

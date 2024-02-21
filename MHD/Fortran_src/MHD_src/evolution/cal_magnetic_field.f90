@@ -73,7 +73,6 @@
       use t_surface_bc_vector
       use t_surface_bc_velocity
       use t_material_property
-      use t_SGS_model_coefs
       use t_solver_djds_MHD
       use t_MGCG_data
       use t_FEM_MHD_mean_square

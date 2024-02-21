@@ -52,7 +52,7 @@
       use t_MHD_finite_element_mat
       use t_MHD_mass_matrices
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
