@@ -7,7 +7,6 @@
 !!      subroutine cal_sgs_maxwell_t_dynamic(dt, FEM_prm, SGS_par, mesh,&
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, fld_ele, fluid, fem_int, FEM_filters, &
-!!     &          iphys_elediff_vec_b, iphys_elediff_fil_b,             &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,     &
 !!     &          Csim_SGS_lor, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -70,7 +69,6 @@
       subroutine cal_sgs_maxwell_t_dynamic(dt, FEM_prm, SGS_par, mesh,  &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, fld_ele, fluid, fem_int, FEM_filters,   &
-     &          iphys_elediff_vec_b, iphys_elediff_fil_b,               &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,       &
      &          Csim_SGS_lor, v_sol, SR_sig, SR_r)
 !
@@ -84,8 +82,6 @@
       use cvt_dynamic_scheme_coord
 !
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: iphys_elediff_vec_b
-      integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -137,7 +133,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_mxwl_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef                                  &
      &   (ifilter_4delta, iphys_SGS_wk%i_wd_nlg,                        &
-     &    iphys_fil%i_magne, iphys_elediff_fil_b, dt,                   &
+     &    iphys_fil%i_magne, mhd_fem_wk%ifil_elediff_b, dt,             &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele_base, fld_ele, fem_int%jcs, FEM_filters%FEM_elens,  &
      &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, &
@@ -148,7 +144,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_maxwell_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef                                  &
      &   (ifilter_2delta, iphys_SGS%i_SGS_maxwell,                      &
-     &    iphys_base%i_magne, iphys_elediff_vec_b, dt,                  &
+     &    iphys_base%i_magne, mhd_fem_wk%iphys_elediff_v, dt,           &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele_base, fld_ele, fem_int%jcs, FEM_filters%FEM_elens,  &
      &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, &

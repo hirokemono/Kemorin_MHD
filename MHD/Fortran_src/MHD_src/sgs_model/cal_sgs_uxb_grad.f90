@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,   &
-!!     &          i_filter, ie_dvx, dt, FEM_prm,                        &
+!!      subroutine cal_sgs_uxb_2_ff_grad                                &
+!!     &         (itype_Csym_uxb, icoord_Csim, i_filter, dt, FEM_prm,   &
 !!     &          node, ele, conduct, cd_prop, iphys_base, nod_fld,     &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
 !!     &          Csim_SGS_uxb, mhd_fem_wk, fem_wk, f_nl)
@@ -65,8 +65,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,     &
-     &          i_filter, ie_dvx, dt, FEM_prm,                          &
+      subroutine cal_sgs_uxb_2_ff_grad                                  &
+     &         (itype_Csym_uxb, icoord_Csim, i_filter, dt, FEM_prm,     &
      &          node, ele, conduct, cd_prop, iphys_base, nod_fld,       &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
      &          Csim_SGS_uxb, mhd_fem_wk, fem_wk, f_nl)
@@ -77,7 +77,6 @@
 !
       integer (kind=kint), intent(in) :: itype_Csym_uxb, icoord_Csim
       integer (kind=kint), intent(in) :: i_filter
-      integer (kind=kint), intent(in) :: ie_dvx
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -101,8 +100,8 @@
 !
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
-      call sel_int_vol_sgs_uxb                                          &
-     &   (i_filter, iphys_base%i_magne, ie_dvx, dt, FEM_prm,            &
+      call sel_int_vol_sgs_uxb(i_filter, iphys_base%i_magne,            &
+     &    mhd_fem_wk%iphys_elediff_v, dt, FEM_prm,                      &
      &    node, ele, conduct, nod_fld, iphys_ele_base, ele_fld,         &
      &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !

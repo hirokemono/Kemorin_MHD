@@ -375,7 +375,6 @@
      &     MHD_mesh%conduct, MHD_prop%cd_prop, iphys, iphys_LES,        &
      &     iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,       &
      &     FEM_elens, filtering, Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,  &
-     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
      &     mk_MHD%mlump_cd, FEM_SGS_wk%wk_filter, mhd_fem_wk,           &
      &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,          &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)

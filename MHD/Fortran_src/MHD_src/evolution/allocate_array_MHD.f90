@@ -101,12 +101,7 @@
          (SGS_par%model_p, MHD_prop%cd_prop, SGS_MHD_wk%mhd_fem_wk)
       call alloc_int_vol_dvx(mesh%ele%numele, SGS_MHD_wk%mhd_fem_wk)
       call set_SGS_ele_fld_addresses(MHD_prop%cd_prop, SGS_par%model_p, &
-     &    Csims_FEM_MHD%iphys_elediff_vec,                              &
-     &    Csims_FEM_MHD%iphys_elediff_fil)
-      SGS_MHD_wk%mhd_fem_wk%ifil_elediff_v = Csims_FEM_MHD%iphys_elediff_fil%i_velo
-      SGS_MHD_wk%mhd_fem_wk%ifil_elediff_b = Csims_FEM_MHD%iphys_elediff_fil%i_magne
-      SGS_MHD_wk%mhd_fem_wk%iphys_elediff_v = Csims_FEM_MHD%iphys_elediff_vec%i_velo
-      SGS_MHD_wk%mhd_fem_wk%iphys_elediff_b = Csims_FEM_MHD%iphys_elediff_vec%i_magne
+     &                               SGS_MHD_wk%mhd_fem_wk)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_SGS_MHD_field_data'

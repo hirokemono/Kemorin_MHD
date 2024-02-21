@@ -114,7 +114,7 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele_base, ele_fld,           &
-     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, mhd_fem_wk, fem_wk)
 !
 !     set elemental model coefficients
 !
@@ -180,7 +180,7 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele_base, ele_fld,           &
-     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, mhd_fem_wk, fem_wk)
 !
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, mhd_fem_wk%ff_t_smp)

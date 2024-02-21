@@ -9,10 +9,9 @@
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,&
 !!     &          iphys_ele_base, ak_MHD, fem_int, FEM_filters,         &
-!!     &          iphys_elediff_vec, diff_coefs, mk_MHD,                &
-!!     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
-!!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq,         &
-!!     &          v_sol, SR_sig, SR_r)
+!!     &          diff_coefs, mk_MHD, Vmatrix, Pmatrix, MGCG_WK,        &
+!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
+!!     &          sgs_coefs, fem_sq, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -29,7 +28,6 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
@@ -101,10 +99,9 @@
      &          mesh, group, fluid, fl_prop, cd_prop,                   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,  &
      &          iphys_ele_base, ak_MHD, fem_int, FEM_filters,           &
-     &          iphys_elediff_vec, diff_coefs, mk_MHD,                  &
-     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,      &
-     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq,           &
-     &          v_sol, SR_sig, SR_r)
+     &          diff_coefs, mk_MHD, Vmatrix, Pmatrix, MGCG_WK,          &
+     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
+     &          sgs_coefs, fem_sq, v_sol, SR_sig, SR_r)
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -129,7 +126,6 @@
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(base_field_address), intent(in) :: iphys_ele_base
-      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -164,9 +160,8 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
      &    fluid, group%surf_grp, group%surf_nod_grp, fl_prop, cd_prop,  &
      &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,                 &
-     &    iphys_ele_base, ak_MHD, fem_int,                              &
-     &    FEM_filters%FEM_elens,  iphys_elediff_vec, diff_coefs,        &
-     &    FEM_filters%filtering, FEM_filters%layer_tbl,                 &
+     &    iphys_ele_base, ak_MHD, fem_int, FEM_filters%FEM_elens,       &
+     &    diff_coefs, FEM_filters%filtering, FEM_filters%layer_tbl,     &
      &    mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,   &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs,             &

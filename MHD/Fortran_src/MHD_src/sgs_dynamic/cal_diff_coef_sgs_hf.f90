@@ -6,7 +6,6 @@
 !!      subroutine s_cal_diff_coef_sgs_sf                               &
 !!     &        (itype_Csym_flux, iflag_supg, num_int, dt,              &
 !!     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs,               &
-!!     &         iphys_elediff_fil_v,                                   &
 !!     &         SGS_par, mesh, group, Snod_bcs, sf_bcs,                &
 !!     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int, &
 !!     &         FEM_filters, Csim_SGS_flux, mk_MHD,                    &
@@ -70,7 +69,6 @@
       subroutine s_cal_diff_coef_sgs_sf                                 &
      &        (itype_Csym_flux, iflag_supg, num_int, dt,                &
      &         ifield, ifield_f, ivelo, ivelo_f, i_sgs,                 &
-     &         iphys_elediff_fil_v,                                     &
      &         SGS_par, mesh, group, Snod_bcs, sf_bcs,                  &
      &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,   &
      &         FEM_filters, Csim_SGS_flux, mk_MHD,                      &
@@ -96,7 +94,6 @@
       integer (kind=kint), intent(in) :: i_sgs, ifield, ifield_f
       integer (kind=kint), intent(in) :: ivelo, ivelo_f
 !
-      integer(kind = kint), intent(in) :: iphys_elediff_fil_v
       real(kind = kreal), intent(in) :: dt
 !
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -134,7 +131,7 @@
       call cal_sgs_s_flux_grad_w_coef                                   &
      &   (iflag_supg, num_int, dt, itype_Csym_flux,                     &
      &    SGS_par%model_p%icoord_Csim, ifilter_4delta,                  &
-     &    iphys_SGS_wk%i_wd_nlg, ifield_f, iphys_elediff_fil_v,         &
+     &    iphys_SGS_wk%i_wd_nlg, ifield_f, mhd_fem_wk%iphys_elediff_v,  &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_filters%FEM_elens, Csim_SGS_flux, mk_MHD%mlump_fl,        &

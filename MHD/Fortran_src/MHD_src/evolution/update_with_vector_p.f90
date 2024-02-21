@@ -12,7 +12,6 @@
 !!     &         fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,            &
 !!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,        &
 !!     &         iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,   &
-!!     &         iphys_elediff_vec_b, iphys_elediff_fil_b,              &
 !!     &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,     &
 !!     &         Cdiff_magne, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -84,7 +83,6 @@
      &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,             &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          iphys_elediff_vec_b, iphys_elediff_fil_b,               &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
      &          Cdiff_magne, v_sol, SR_sig, SR_r)
 !
@@ -98,9 +96,6 @@
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
-!
-      integer(kind = kint), intent(in) :: iphys_elediff_vec_b
-      integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -273,12 +268,12 @@
      &          iphys_ele_fil%i_magne, ele_fld)
          end if
 !
-         if(iflag2.eq.2 .and. iphys_elediff_fil_b.ne.0) then
+         if(iflag2.eq.2 .and. mhd_fem_wk%ifil_elediff_b.ne.0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,       &
-     &         iphys_fil%i_magne, iphys_elediff_fil_b,                  &
+     &         iphys_fil%i_magne, mhd_fem_wk%ifil_elediff_b,            &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
 !
@@ -299,11 +294,11 @@
 !
        if (  SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad      &
      &  .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
-         if(iphys_elediff_vec_b .ne. 0) then
+         if(mhd_fem_wk%iphys_elediff_b .ne. 0) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,       &
-     &         iphys_base%i_magne, iphys_elediff_vec_b,                 &
+     &         iphys_base%i_magne, mhd_fem_wk%iphys_elediff_b,          &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
         end if
        end if

@@ -7,9 +7,8 @@
 !!     &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
-!!     &          iphys_elediff_fil_b, Csim_SGS_lor, mk_MHD,            &
-!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,             &
-!!     &          Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
+!!     &          Csim_SGS_lor, mk_MHD, FEM_SGS_wk, mhd_fem_wk,         &
+!!     &          rhs_mat, nod_fld, Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -76,9 +75,8 @@
      &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                  &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
-     &          iphys_elediff_fil_b, Csim_SGS_lor, mk_MHD,              &
-     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,               &
-     &          Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
+     &          Csim_SGS_lor, mk_MHD, FEM_SGS_wk, mhd_fem_wk,           &
+     &          rhs_mat, nod_fld, Cdiff_SGS_lor, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -95,7 +93,6 @@
       use nod_phys_send_recv
 !
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: iphys_elediff_fil_b
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -135,7 +132,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (ifilter_4delta, iphys_SGS_wk%i_wd_nlg,                        &
-     &    iphys_fil%i_magne, iphys_elediff_fil_b, dt,                   &
+     &    iphys_fil%i_magne, mhd_fem_wk%ifil_elediff_b, dt,             &
      &    FEM_prm, SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, &
      &    fluid, iphys_ele_base, ele_fld, fem_int%jcs,                  &
      &    FEM_filters%FEM_elens, Csim_SGS_lor, fem_int%rhs_tbl,         &

@@ -180,11 +180,8 @@
       call s_cal_model_coefficients                                     &
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh, MHD_prop,         &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
-     &    Csims_FEM_MHD%iphys_elediff_vec,                              &
-     &    Csims_FEM_MHD%iphys_elediff_fil,                              &
-     &    SGS_MHD_wk%fem_int, FEM_filters,                              &
-     &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD%sgs_coefs,                 &
-     &    Csims_FEM_MHD%diff_coefs, m_SR)
+     &    SGS_MHD_wk%fem_int, FEM_filters, SGS_MHD_wk, nod_fld,         &
+     &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs, m_SR)
 !
       end subroutine cal_FEM_model_coefficients
 !

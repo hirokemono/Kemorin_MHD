@@ -180,8 +180,8 @@
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl,                     &
      &      FEM_filters%FEM_elens, FEM_filters%filtering,               &
      &      Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,                       &
-     &      Csims_FEM_MHD%iphys_elediff_vec, wk_filter, mhd_fem_wk,     &
-     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &      wk_filter, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl,        &
+     &      nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then

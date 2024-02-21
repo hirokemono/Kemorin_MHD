@@ -10,9 +10,8 @@
 !!      subroutine light_element_evolution(time_d, FEM_prm, SGS_par,    &
 !!     &         geofem, MHD_mesh, property, ref_param, nod_bcs, sf_bcs,&
 !!     &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,       &
-!!     &         ak_diffuse, FEM_filters, Smatrix, iphys_elediff_vec_v, &
-!!     &         Csim_SGS_cf, MGCG_WK, SGS_MHD_wk,                      &
-!!     &         nod_fld, diff_coefs, m_SR)
+!!     &         ak_diffuse, FEM_filters, Smatrix, Csim_SGS_cf, MGCG_WK,&
+!!     &         SGS_MHD_wk, nod_fld, diff_coefs, m_SR)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -76,16 +75,13 @@
       subroutine light_element_evolution(time_d, FEM_prm, SGS_par,      &
      &         geofem, MHD_mesh, property, ref_param, nod_bcs, sf_bcs,  &
      &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,         &
-     &         ak_diffuse, FEM_filters, Smatrix, iphys_elediff_vec_v,   &
-     &         Csim_SGS_cf, MGCG_WK, SGS_MHD_wk,                        &
-     &         nod_fld, diff_coefs, m_SR)
+     &         ak_diffuse, FEM_filters, Smatrix, Csim_SGS_cf, MGCG_WK,  &
+     &         SGS_MHD_wk, nod_fld, diff_coefs, m_SR)
 !
       use update_with_scalars
       use cal_add_smp
       use cal_subtract_smp
       use cal_temperature
-!
-      integer(kind = kint), intent(in) :: iphys_elediff_vec_v
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -163,7 +159,7 @@
      &    iref_scalar, i_velo, i_pre_advect, i_gref,                    &
      &    i_filter_s, i_filter_v, i_tensor, i_SGS_wk_field,             &
      &    iphys_wfl_scalar, iphys_fefx_buo_gen,                         &
-     &    iphys_elediff_vec_v, eps_4_crank, iflag_supg, iflag_SGS_flux, &
+     &    eps_4_crank, iflag_supg, iflag_SGS_flux,                      &
      &    itype_Csym_flux, ifilter_final,                               &
      &    iflag_commute_flux, iflag_commute_field,                      &
      &    time_d, FEM_prm, SGS_par, geofem, MHD_mesh, property,         &

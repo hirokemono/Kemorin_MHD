@@ -9,9 +9,8 @@
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          mesh, conduct, group, cd_prop, Bnod_bcs,              &
 !!     &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,   &
-!!     &          ele_fld, jacs, rhs_tbl, iphys_elediff_vec,            &
-!!     &          Csim_SGS_uxb, diff_coefs, FEM_filters,                &
-!!     &          mlump_cd, Bmatrix, MG_vector, wk_filter,              &
+!!     &          ele_fld, jacs, rhs_tbl, Csim_SGS_uxb, diff_coefs,     &
+!!     &          FEM_filters, mlump_cd, Bmatrix, MG_vector, wk_filter, &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_magnetic_co                                      &
 !!     &         (ak_d_magne, dt, FEM_prm, SGS_param, cmt_param,        &
@@ -45,7 +44,6 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
@@ -113,9 +111,8 @@
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          mesh, conduct, group, cd_prop, Bnod_bcs,                &
      &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,     &
-     &          ele_fld, jacs, rhs_tbl, iphys_elediff_vec,              &
-     &          Csim_SGS_uxb, diff_coefs, FEM_filters,                  &
-     &          mlump_cd, Bmatrix, MG_vector, wk_filter,                &
+     &          ele_fld, jacs, rhs_tbl, Csim_SGS_uxb, diff_coefs,       &
+     &          FEM_filters, mlump_cd, Bmatrix, MG_vector, wk_filter,   &
      &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use calypso_mpi
@@ -148,7 +145,6 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
       type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(filters_on_FEM), intent(in) :: FEM_filters

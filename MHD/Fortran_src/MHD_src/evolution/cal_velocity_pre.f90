@@ -9,10 +9,10 @@
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
 !!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
-!!     &          FEM_elens, iphys_elediff_vec, diff_coefs,             &
-!!     &          filtering, layer_tbl, mlump_fl, Vmatrix, MG_vector,   &
-!!     &          wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, rhs_mat,       &
-!!     &          nod_fld, ele_fld, sgs_coefs, v_sol, SR_sig, SR_r)
+!!     &          FEM_elens, diff_coefs, filtering, layer_tbl, mlump_fl,&
+!!     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,        &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs,     &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_velocity_co(time, dt, FEM_prm, SGS_par,          &
 !!     &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
 !!     &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,            &
@@ -40,7 +40,6 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff_velo
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
@@ -115,10 +114,10 @@
      &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
      &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
      &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
-     &          FEM_elens, iphys_elediff_vec, diff_coefs,               &
-     &          filtering, layer_tbl, mlump_fl, Vmatrix, MG_vector,     &
-     &          wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, rhs_mat,         &
-     &          nod_fld, ele_fld, sgs_coefs, v_sol, SR_sig, SR_r)
+     &          FEM_elens, diff_coefs, filtering, layer_tbl, mlump_fl,  &
+     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,          &
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs,       &
+     &          v_sol, SR_sig, SR_r)
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -156,7 +155,6 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
@@ -185,7 +183,6 @@
      &     nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,         &
      &     fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,        &
      &     iphys_ele_base, ak_MHD, fem_int, FEM_elens, filtering,       &
-     &     iphys_elediff_vec,                                           &
      &     sgs_coefs%Csim_SGS_tbuo, sgs_coefs%Csim_SGS_cbuo,            &
      &     diff_coefs, mlump_fl, wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, &
      &     rhs_mat, nod_fld, ele_fld, sgs_coefs%Csim_SGS_mf,            &
@@ -199,9 +196,9 @@
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_LES%SGS_wk, iphys_ele_base, ele_fld,                  &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
-     &      iphys_elediff_vec, sgs_coefs%Csim_SGS_mf,                   &
-     &      mlump_fl, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,            &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &      sgs_coefs%Csim_SGS_mf, mlump_fl, wk_filter, mhd_fem_wk,     &
+     &      rhs_mat%fem_wk,  rhs_mat%f_l, rhs_mat%f_nl, nod_fld,        &
+     &      v_sol, SR_sig, SR_r)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
@@ -210,9 +207,9 @@
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_LES%SGS_wk, iphys_ele_base, ele_fld,                  &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
-     &      iphys_elediff_vec, sgs_coefs%Csim_SGS_lor,                  &
-     &      mlump_fl, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,            &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &      sgs_coefs%Csim_SGS_lor, mlump_fl, wk_filter, mhd_fem_wk,    &
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      v_sol, SR_sig, SR_r)
       end if
 !
 !   --- reset work array for time evolution

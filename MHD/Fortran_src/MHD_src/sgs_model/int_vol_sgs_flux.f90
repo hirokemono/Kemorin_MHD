@@ -9,7 +9,7 @@
 !!      subroutine sel_int_vol_sgs_flux(iflag_4_supg, num_int, dt,      &
 !!     &          i_filter, numdir, i_field, id_dx,                     &
 !!     &          node, ele, fluid, nod_fld, iphys_ele, ele_fld,        &
-!!     &          g_FEM, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+!!     &          g_FEM, jac_3d, FEM_elens, mhd_fem_wk, fem_wk)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -19,8 +19,8 @@
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       module int_vol_sgs_flux
 !
@@ -52,7 +52,7 @@
       subroutine sel_int_vol_sgs_flux(iflag_4_supg, num_int, dt,        &
      &          i_filter, numdir, i_field, id_dx,                       &
      &          node, ele, fluid, nod_fld, iphys_ele_base, ele_fld,     &
-     &          g_FEM, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &          g_FEM, jac_3d, FEM_elens, mhd_fem_wk, fem_wk)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -63,6 +63,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer(kind = kint), intent(in) :: iflag_4_supg, num_int
       integer (kind = kint), intent(in) :: id_dx, i_filter
@@ -70,27 +71,24 @@
       real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_sgs_flux_upwind                                    &
      &     (num_int, dt, i_filter, numdir, i_field,                     &
      &      node, ele, fluid, nod_fld, g_FEM, jac_3d, FEM_elens,        &
-     &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      ele_fld%ntot_phys, iphys_ele_base%i_magne, ele_fld%d_fld,   &
-     &      fem_wk)
+     &      mhd_fem_wk%dvx(1,id_dx), fem_wk)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_sgs_flux_upwind                                    &
      &     (num_int, dt, i_filter, numdir, i_field,                     &
      &      node, ele, fluid, nod_fld, g_FEM, jac_3d, FEM_elens,        &
-     &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,    &
-     &      fem_wk)
+     &      mhd_fem_wk%dvx(1,id_dx), fem_wk)
       else
         call int_vol_sgs_flux_pg(num_int, i_filter, numdir, i_field,    &
      &      node, ele, fluid, nod_fld, g_FEM, jac_3d, FEM_elens,        &
-     &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx, fem_wk)
+     &      mhd_fem_wk%dvx(1,id_dx), fem_wk)
       end if
 !
       end subroutine sel_int_vol_sgs_flux
@@ -101,7 +99,7 @@
       subroutine int_vol_sgs_flux_pg                                    &
      &         (num_int, i_filter, numdir, i_field,                     &
      &          node, ele, fluid, nod_fld, g_FEM, jac_3d, FEM_elens,    &
-     &          ncomp_dvx, id_dx, diff_ele, fem_wk)
+     &          diff_ele, fem_wk)
 !
       use fem_skv_sgs_flux_type
       use nodal_fld_2_each_element
@@ -116,8 +114,7 @@
 !
       integer (kind = kint), intent(in) :: i_filter, numdir, i_field
       integer(kind = kint), intent(in) :: num_int
-      integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
-      real(kind = kreal), intent(in) :: diff_ele(ele%numele,ncomp_dvx)
+      real(kind = kreal), intent(in) :: diff_ele(ele%numele,9)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
@@ -130,7 +127,7 @@
 !
         do ndx = 1, 4-nd
           nd2 = nd + ndx - 1
-          id_dvx2 = id_dx + 3*(nd2-1)
+          id_dvx2 = 1 + 3*(nd2-1)
           nd_t = lst_sim_t(nd) + ndx
 !
 ! -------- loop for shape function for the phsical values
@@ -153,8 +150,7 @@
       subroutine int_vol_sgs_flux_upwind                                &
      &         (num_int, dt, i_filter, numdir, i_field,                 &
      &          node, ele, fluid, nod_fld, g_FEM, jac_3d, FEM_elens,    &
-     &          ncomp_dvx, id_dx, diff_ele, ncomp_ele, ie_upw, d_ele,   &
-     &          fem_wk)
+     &          ncomp_ele, ie_upw, d_ele, diff_ele, fem_wk)
 !
       use fem_skv_sgs_flux_type
       use nodal_fld_2_each_element
@@ -169,11 +165,10 @@
 !
       integer (kind = kint), intent(in) :: i_filter, numdir, i_field
       integer(kind = kint), intent(in) :: num_int
-      integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      real(kind = kreal), intent(in) :: diff_ele(ele%numele,ncomp_dvx)
+      real(kind = kreal), intent(in) :: diff_ele(ele%numele,9)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
@@ -187,7 +182,7 @@
 !
         do ndx = 1, 4-nd
           nd2 = nd + ndx - 1
-          id_dvx2 = id_dx + 3*(nd2-1)
+          id_dvx2 = 1 + 3*(nd2-1)
           nd_t = lst_sim_t(nd) + ndx
 !
 ! -------- loop for shape function for the phsical values

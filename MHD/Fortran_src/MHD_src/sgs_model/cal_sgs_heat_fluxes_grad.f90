@@ -109,7 +109,7 @@
       call sel_int_vol_sgs_flux                                         &
      &   (iflag_supg, num_int, dt, i_filter, n_vector, i_field, ie_dvx, &
      &    node, ele, fluid, nod_fld, iphys_ele_base, ele_fld,           &
-     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, mhd_fem_wk, fem_wk)
 !
 !     set elemental model coefficients
 !
@@ -173,7 +173,7 @@
       call sel_int_vol_sgs_flux                                         &
      &   (iflag_supg, num_int, dt, i_filter, n_vector, i_field, ie_dvx, &
      &    node, ele, fluid, nod_fld, iphys_ele_base, ele_fld,           &
-     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, mhd_fem_wk, fem_wk)
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_l%ff_smp)

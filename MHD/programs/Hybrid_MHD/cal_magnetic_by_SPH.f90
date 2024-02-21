@@ -176,8 +176,7 @@
      &   MHD_prop%cd_prop, iphys, iphys_LES,                            &
      &   FSGSs%SGS_MHD_wk%iphys_ele_base, FSGSs%SGS_MHD_wk%ele_fld,     &
      &   fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,           &
-     &   Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,                          &
-     &   Csims_FEM_MHD%iphys_elediff_vec,  mhd1_fem_wk%mlump_cd,        &
+     &   Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,  mhd1_fem_wk%mlump_cd,   &
      &   FSGSs%SGS_MHD_wk%FEM_SGS_wk%wk_filter, mhd_fem1_wk,            &
      &   rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                  &
      &   FEM_MHD%field, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)

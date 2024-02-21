@@ -8,9 +8,8 @@
 !!     &         itype_Csym_flux, SGS_flux_factor,                      &
 !!     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs, SGS_par, mesh,&
 !!     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int, &
-!!     &         FEM_filters, iphys_elediff_vec_v, iphys_elediff_fil_v, &
-!!     &         mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,      &
-!!     &         Csim_SGS_flux, v_sol, SR_sig, SR_r)
+!!     &         FEM_filters,  mk_MHD, FEM_SGS_wk, mhd_fem_wk,          &
+!!     &         rhs_mat, nod_fld, Csim_SGS_flux, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
@@ -66,9 +65,8 @@
      &         itype_Csym_flux, SGS_flux_factor,                        &
      &         ifield, ifield_f, ivelo, ivelo_f, i_sgs, SGS_par, mesh,  &
      &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,   &
-     &         FEM_filters, iphys_elediff_vec_v, iphys_elediff_fil_v,   &
-     &         mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,        &
-     &         Csim_SGS_flux, v_sol, SR_sig, SR_r)
+     &         FEM_filters,  mk_MHD, FEM_SGS_wk, mhd_fem_wk,            &
+     &         rhs_mat, nod_fld, Csim_SGS_flux, v_sol, SR_sig, SR_r)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -87,9 +85,6 @@
 !
       integer (kind=kint), intent(in) :: i_sgs, ifield, ifield_f
       integer (kind=kint), intent(in) :: ivelo, ivelo_f
-!
-      integer(kind = kint), intent(in) :: iphys_elediff_vec_v
-      integer(kind = kint), intent(in) :: iphys_elediff_fil_v
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -134,7 +129,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad_4_dyn'
       call cal_sgs_s_flux_grad_no_coef                                  &
      &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
-     &    iphys_SGS_wk%i_wd_nlg, ifield_f, iphys_elediff_fil_v,         &
+     &    iphys_SGS_wk%i_wd_nlg, ifield_f, mhd_fem_wk%ifil_elediff_v,   &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele_base,    &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,     &
@@ -144,7 +139,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_h_flux_grad_4_dyn'
       call cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,         &
-     &    ifilter_2delta, i_sgs, ifield, iphys_elediff_vec_v,           &
+     &    ifilter_2delta, i_sgs, ifield, mhd_fem_wk%iphys_elediff_v,    &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele_base,    &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,     &

@@ -106,6 +106,6 @@ t_ele_info_4_dynamic.o: $(MHD_SGS_DYNAMIC_DIR)/t_ele_info_4_dynamic.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 t_work_4_dynamic_model.o: $(MHD_SGS_DYNAMIC_DIR)/t_work_4_dynamic_model.f90 m_precision.o m_machine_parameter.o calypso_mpi.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_work_FEM_dynamic_SGS.o: $(MHD_SGS_DYNAMIC_DIR)/t_work_FEM_dynamic_SGS.f90 m_precision.o m_constants.o t_work_layer_correlate.o t_work_4_dynamic_model.o t_ele_info_4_dynamic.o t_filtering_data.o t_layering_ele_list.o t_mesh_data.o t_control_parameter.o t_SGS_control_parameter.o t_FEM_SGS_model_coefs.o count_sgs_components.o init_sgs_diff_coefs.o
+t_work_FEM_dynamic_SGS.o: $(MHD_SGS_DYNAMIC_DIR)/t_work_FEM_dynamic_SGS.f90 m_precision.o m_constants.o t_work_layer_correlate.o t_work_4_dynamic_model.o t_ele_info_4_dynamic.o t_filtering_data.o t_layering_ele_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

@@ -11,7 +11,6 @@
 !!     &         mesh, group, fluid, Vsf_bcs, Psf_bcs,                  &
 !!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,        &
 !!     &         iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,   &
-!!     &         iphys_elediff_vec_v, iphys_elediff_fil_v,              &
 !!     &         mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,               &
 !!     &         nod_fld, ele_fld, Cdiff_velo, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -29,8 +28,6 @@
 !!        type(base_field_address), intent(in) :: iphys_ele_fil
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -81,7 +78,6 @@
      &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                   &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          iphys_elediff_vec_v, iphys_elediff_fil_v,               &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
      &          nod_fld, ele_fld, Cdiff_velo, v_sol, SR_sig, SR_r)
 !
@@ -93,9 +89,6 @@
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
-!
-      integer(kind = kint), intent(in) :: iphys_elediff_vec_v
-      integer(kind = kint), intent(in) :: iphys_elediff_fil_v
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -197,7 +190,7 @@
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,      &
-     &         iphys_fil%i_velo, iphys_elediff_fil_v,                   &
+     &         iphys_fil%i_velo, mhd_fem_wk%ifil_elediff_v,             &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
 !
@@ -224,13 +217,13 @@
 !
 !   required field for gradient model
 !
-       if (iphys_elediff_vec_v .ne. 0) then
+       if (mhd_fem_wk%iphys_elediff_v .ne. 0) then
          if(SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,      &
-     &         iphys_base%i_velo, iphys_elediff_vec_v,                  &
+     &         iphys_base%i_velo, mhd_fem_wk%iphys_elediff_v,           &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
        end if

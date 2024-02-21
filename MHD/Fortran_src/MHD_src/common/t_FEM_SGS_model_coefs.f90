@@ -26,11 +26,6 @@
         type(SGS_coefficients_type) :: sgs_coefs
 !>        Commutation error model coefficeints
         type(SGS_commutation_coefs) :: diff_coefs
-!
-!>        Address of differenciation of elemental field
-        type(base_field_address) :: iphys_elediff_vec
-!>        Address of differenciation of filtered elemental field
-        type(base_field_address) :: iphys_elediff_fil
       end type SGS_coefficients_data
 !
       end module t_FEM_SGS_model_coefs

@@ -301,14 +301,13 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre(ak_d_magne, dt, FEM_prm,              &
-     &   SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,          &
-     &   mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,     &
-     &   iphys, iphys_LES, iphys_ele_base, ele_fld,                     &
-     &   fem_int%jcs, fem_int%rhs_tbl, Csims_FEM_MHD%iphys_elediff_vec, &
-     &   Csim_SGS_uxb, diff_coefs, FEM_filters,                         &
-     &   mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                   &
-     &   FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld,            &
-     &   m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
+     &    mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
+     &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
+     &    fem_int%jcs, fem_int%rhs_tbl, Csim_SGS_uxb, diff_coefs,       &
+     &    FEM_filters, mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,     &
+     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld,           &
+     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
 !----  set magnetic field in insulate layer
 !

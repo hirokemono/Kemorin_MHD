@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_mf(iphys_elediff_fil_v, dt,      &
-!!     &          FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs,     &
+!!      subroutine s_cal_diff_coef_sgs_mf                               &
+!!     &         (dt, FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs, &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fluid, fem_int, FEM_filters, &
 !!     &          Csim_SGS_mf, mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat, &
@@ -69,8 +69,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_mf(iphys_elediff_fil_v, dt,        &
-     &          FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs,       &
+      subroutine s_cal_diff_coef_sgs_mf                                 &
+     &         (dt, FEM_prm, SGS_par, mesh, group, Vnod_bcs, Vsf_bcs,   &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fluid, fem_int, FEM_filters,   &
      &          Csim_SGS_mf, mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,   &
@@ -91,7 +91,6 @@
       use nod_phys_send_recv
 !
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: iphys_elediff_fil_v
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -132,7 +131,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_m_flux_grad'
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (ifilter_4delta, iphys_SGS_wk%i_wd_nlg,                        &
-     &    iphys_fil%i_velo, iphys_elediff_fil_v, dt, FEM_prm,           &
+     &    iphys_fil%i_velo, mhd_fem_wk%ifil_elediff_v, dt, FEM_prm,     &
      &    SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, fluid,   &
      &    iphys_ele_base, ele_fld, fem_int%jcs, FEM_filters%FEM_elens,  &
      &    Csim_SGS_mf, fem_int%rhs_tbl, mk_MHD%mlump_fl,                &

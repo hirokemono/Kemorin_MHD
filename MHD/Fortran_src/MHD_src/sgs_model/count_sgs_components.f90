@@ -14,16 +14,15 @@
 !!      subroutine s_count_sgs_components(SGS_param,                    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !!      subroutine set_SGS_ele_fld_addresses(cd_prop, SGS_param,        &
-!!     &          iphys_elediff_vec, iphys_elediff_fil)
+!!     &                                     mhd_fem_wk)
 !!      subroutine check_sgs_addresses(wk_sgs, sgs_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(base_field_address), intent(inout) :: iphys_elediff_vec
-!!        type(base_field_address), intent(inout) :: iphys_elediff_fil
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       module count_sgs_components
 !
@@ -323,19 +322,25 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_SGS_ele_fld_addresses(cd_prop, SGS_param,          &
-     &          iphys_elediff_vec, iphys_elediff_fil)
+     &                                     mhd_fem_wk)
 !
       use t_SGS_control_parameter
       use t_physical_property
-      use t_base_field_labels
+      use t_MHD_finite_element_mat
 !
       type(conductive_property), intent(in) :: cd_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
-      type(base_field_address), intent(inout) :: iphys_elediff_vec
-      type(base_field_address), intent(inout) :: iphys_elediff_fil
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
+      integer(kind = kint) :: ifil_elediff_v,  ifil_elediff_b
+      integer(kind = kint) :: iphys_elediff_v, iphys_elediff_b
       integer(kind = kint) :: i
+!
+      ifil_elediff_v = 0
+      ifil_elediff_b = 0
+      iphys_elediff_v = 0
+      iphys_elediff_b = 0
 !
       i = 1
       if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
@@ -343,19 +348,19 @@
      &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
      &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne.   id_SGS_none     &
      &   .or. SGS_param%iflag_SGS_uxb .ne. id_SGS_none ) then
-         iphys_elediff_vec%i_velo = i
-         iphys_elediff_fil%i_velo = i + 9
+         iphys_elediff_v = i
+         ifil_elediff_v = i + 9
          i = i + 18
         end if
 !
         if ( SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-         iphys_elediff_vec%i_magne = i
-         iphys_elediff_fil%i_magne = i + 9
+         iphys_elediff_b = i
+         ifil_elediff_b = i + 9
          i = i + 18
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
      &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-         iphys_elediff_vec%i_magne = i
-         iphys_elediff_fil%i_magne = i + 9
+         iphys_elediff_b = i
+         ifil_elediff_b = i + 9
          i = i + 18
         end if
 !
@@ -365,19 +370,24 @@
      &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
      &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none       &
      &   .or. SGS_param%iflag_SGS_uxb .ne.    id_SGS_none) then
-         iphys_elediff_vec%i_velo = i
+         iphys_elediff_v = i
          i = i + 9
         end if
 !
         if ( SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-         iphys_elediff_vec%i_magne = i
+         iphys_elediff_b = i
          i = i + 9
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
      &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-         iphys_elediff_vec%i_magne = i
+         iphys_elediff_b = i
          i = i + 9
         end if
       end if
+!
+      mhd_fem_wk%ifil_elediff_v =  ifil_elediff_v
+      mhd_fem_wk%ifil_elediff_b =  ifil_elediff_b
+      mhd_fem_wk%iphys_elediff_v = iphys_elediff_v
+      mhd_fem_wk%iphys_elediff_b = iphys_elediff_b
 !
       end subroutine set_SGS_ele_fld_addresses
 !

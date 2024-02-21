@@ -20,7 +20,7 @@ cal_sgs_uxb_grad.o: $(MHD_SGS_DIR)/cal_sgs_uxb_grad.f90 m_precision.o m_phys_con
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_similarity_terms.o: $(MHD_SGS_DIR)/cal_similarity_terms.f90 m_precision.o m_machine_parameter.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-count_sgs_components.o: $(MHD_SGS_DIR)/count_sgs_components.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_SGS_control_parameter.o t_layering_ele_list.o t_ele_info_4_dynamic.o t_physical_property.o t_FEM_SGS_model_coefs.o t_SGS_model_coefs.o t_SGS_term_labels.o m_SGS_term_labels.o t_base_field_labels.o t_material_property.o
+count_sgs_components.o: $(MHD_SGS_DIR)/count_sgs_components.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_SGS_control_parameter.o t_layering_ele_list.o t_ele_info_4_dynamic.o t_physical_property.o t_FEM_SGS_model_coefs.o t_SGS_model_coefs.o t_SGS_term_labels.o m_SGS_term_labels.o t_MHD_finite_element_mat.o t_material_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cvt_dynamic_scheme_coord.o: $(MHD_SGS_DIR)/cvt_dynamic_scheme_coord.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_SGS_control_parameter.o t_geometry_data.o t_SGS_model_coef_labels.o t_phys_data.o cvt_xyz_vector_2_cyl_smp.o cvt_xyz_vector_2_sph_smp.o cvt_xyz_tensor_2_cyl_smp.o cvt_xyz_tensor_2_sph_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -90,7 +90,7 @@ fem_skv_sgs_induct_t.o: $(MHD_SGS_DIR)/fem_skv_sgs_induct_t.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_sgs_uxb.o: $(MHD_SGS_DIR)/fem_skv_sgs_uxb.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-init_sgs_diff_coefs.o: $(MHD_SGS_DIR)/init_sgs_diff_coefs.f90 m_precision.o m_machine_parameter.o t_SGS_control_parameter.o t_control_parameter.o t_physical_property.o t_base_field_labels.o t_SGS_term_labels.o calypso_mpi.o t_layering_ele_list.o t_ele_info_4_dynamic.o t_material_property.o t_FEM_SGS_model_coefs.o t_SGS_model_coefs.o m_base_field_labels.o m_SGS_term_labels.o
+init_sgs_diff_coefs.o: $(MHD_SGS_DIR)/init_sgs_diff_coefs.f90 m_precision.o m_machine_parameter.o t_SGS_control_parameter.o t_control_parameter.o t_physical_property.o t_base_field_labels.o t_SGS_term_labels.o t_mesh_data.o t_layering_ele_list.o t_FEM_SGS_model_coefs.o t_work_FEM_dynamic_SGS.o count_sgs_components.o calypso_mpi.o t_ele_info_4_dynamic.o t_material_property.o t_SGS_model_coefs.o m_base_field_labels.o m_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_div_sgs_flux.o: $(MHD_SGS_DIR)/int_div_sgs_flux.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data_MHD.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o sgs_terms_2_each_ele.o fem_skv_div_flux.o cal_skv_to_ff_smp.o fem_skv_div.o fem_skv_div_asym_t.o
 	$(F90) -c $(F90OPTFLAGS) $<
