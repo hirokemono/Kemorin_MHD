@@ -6,16 +6,16 @@
 !
 !
 !!      subroutine set_SPH_Csim_from_IO(Csim_time, Csim_IO, time_d,     &
-!!     &          i_step_sgs_coefs, wk_sgs, ierr)
+!!     &          i_step_sgs_coefs, wk_sph_sgs, ierr)
 !!        type(time_data), intent(in) :: Csim_time
 !!        type(field_IO), intent(in) :: Csim_IO
 !!        type(time_data), intent(in) :: time_d
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!      subroutine count_SPH_Csim_to_IO(wk_sgs, Csim_IO)
+!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+!!      subroutine count_SPH_Csim_to_IO(wk_sph_sgs, Csim_IO)
 !!      subroutine set_SPH_Csim_to_IO(i_step_sgs_coefs, time_d,         &
-!!     &          wk_sgs, Csim_time, Csim_IO)
+!!     &          wk_sph_sgs, Csim_time, Csim_IO)
 !!        type(time_data), intent(in) :: time_d
-!!        type(dynamic_model_data), intent(in) :: wk_sgs
+!!        type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
 !!        type(time_data), intent(inout) :: Csim_time
 !!        type(field_IO), intent(inout) :: Csim_IO
 !
@@ -27,7 +27,7 @@
       use m_constants
 !
       use t_ele_info_4_dynamic
-      use t_FEM_SGS_model_coefs
+      use t_sph_filtering
       use t_time_data
       use t_field_data_IO
 !
@@ -40,7 +40,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_SPH_Csim_from_IO(Csim_time, Csim_IO, time_d,       &
-     &          i_step_sgs_coefs, wk_sgs, ierr)
+     &          i_step_sgs_coefs, wk_sph_sgs, ierr)
 !
       type(time_data), intent(in) :: Csim_time
       type(field_IO), intent(in) :: Csim_IO
@@ -48,7 +48,7 @@
 !
       integer(kind = kint), intent(inout) :: ierr
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
-      type(dynamic_model_data), intent(inout) :: wk_sgs
+      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
 !
       integer(kind = kint) :: i_fld, j_fld
 !
@@ -66,7 +66,7 @@
         e_message = 'Time data in Csim restart file is wrong'
         ierr = 1
       end if
-      if(wk_sgs%nlayer .ne. Csim_IO%nnod_IO) then
+      if(wk_sph_sgs%nlayer .ne. Csim_IO%nnod_IO) then
         e_message = 'number of node in Csim restart file is wrong'
         ierr = 1
       end if
@@ -77,11 +77,11 @@
      &                          KIND(i_step_sgs_coefs))
       end if
 !
-      do i_fld = 1, wk_sgs%num_kinds
+      do i_fld = 1, wk_sph_sgs%num_kinds
         do j_fld = 1, Csim_IO%num_field_IO
-          if(Csim_IO%fld_name(j_fld) .eq. wk_sgs%name(i_fld)) then
+          if(Csim_IO%fld_name(j_fld) .eq. wk_sph_sgs%name(i_fld)) then
 !$omp parallel workshare
-            wk_sgs%fld_coef(:,i_fld) = Csim_IO%d_IO(:,j_fld)
+            wk_sph_sgs%fld_coef(:,i_fld) = Csim_IO%d_IO(:,j_fld)
 !$omp end parallel workshare
             exit
           end if
@@ -92,21 +92,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine count_SPH_Csim_to_IO(wk_sgs, Csim_IO)
+      subroutine count_SPH_Csim_to_IO(wk_sph_sgs, Csim_IO)
 !
       use cal_minmax_and_stacks
       use const_global_element_ids
 !
-      type(dynamic_model_data), intent(in) :: wk_sgs
+      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
       type(field_IO), intent(inout) :: Csim_IO
 !
 !
-      Csim_IO%nnod_IO =      wk_sgs%nlayer
-      Csim_IO%num_field_IO = wk_sgs%num_kinds
+      Csim_IO%nnod_IO =      wk_sph_sgs%nlayer
+      Csim_IO%num_field_IO = wk_sph_sgs%num_kinds
       call alloc_phys_name_IO(Csim_IO)
 !
-      Csim_IO%fld_name(1:wk_sgs%num_kinds)                              &
-     &      = wk_sgs%name(1:wk_sgs%num_kinds)
+      Csim_IO%fld_name(1:wk_sph_sgs%num_kinds)                          &
+     &      = wk_sph_sgs%name(1:wk_sph_sgs%num_kinds)
       Csim_IO%num_comp_IO(1:Csim_IO%num_field_IO) = 1
 !
       call s_cal_total_and_stacks                                       &
@@ -124,11 +124,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_SPH_Csim_to_IO(i_step_sgs_coefs, time_d,           &
-     &          wk_sgs, Csim_time, Csim_IO)
+     &          wk_sph_sgs, Csim_time, Csim_IO)
 !
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
       type(time_data), intent(in) :: time_d
-      type(dynamic_model_data), intent(in) :: wk_sgs
+      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
 !
       type(time_data), intent(inout) :: Csim_time
       type(field_IO), intent(inout) :: Csim_IO
@@ -139,7 +139,7 @@
       Csim_time%dt = time_d%dt * dble(i_step_sgs_coefs)
 !
 !$omp parallel workshare
-      Csim_IO%d_IO(:,:) = wk_sgs%fld_coef(:,:)
+      Csim_IO%d_IO(:,:) = wk_sph_sgs%fld_coef(:,:)
 !$omp end parallel workshare
 !
       end subroutine set_SPH_Csim_to_IO

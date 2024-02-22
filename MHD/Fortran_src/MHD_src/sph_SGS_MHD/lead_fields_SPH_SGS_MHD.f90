@@ -452,7 +452,7 @@
         call copy_model_coefs_4_sph_snap                                &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
      &      dynamic_SPH%iak_sgs_term, trns_Csim%f_trns_LES%Csim,        &
-     &      dynamic_SPH%wk_sgs, trns_SGS_snap%forward)
+     &      dynamic_SPH%wk_sph_sgs, trns_SGS_snap%forward)
       end if
 !
       end subroutine lead_SGS_terms_4_SPH

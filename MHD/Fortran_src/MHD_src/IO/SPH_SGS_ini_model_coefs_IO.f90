@@ -12,7 +12,7 @@
 !!        type(time_data), intent(in) :: init_d
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
 !!      subroutine init_SPH_Csim_file(dynamic_SPH)
 !!      subroutine write_SPH_Csim_file(i_step, i_step_sgs_coefs,        &
 !!     &          Csim_file_IO, rst_step, time_d, dynamic_SPH)
@@ -75,7 +75,7 @@
 !
       call set_SPH_Csim_from_IO                                         &
      &   (Csim_time_S_IO, dynamic_SPH%Csim_S_IO,                        &
-     &    init_d, i_step_sgs_coefs, dynamic_SPH%wk_sgs, ierr)
+     &    init_d, i_step_sgs_coefs, dynamic_SPH%wk_sph_sgs, ierr)
 !
       call dealloc_phys_data_IO(dynamic_SPH%Csim_S_IO)
       call dealloc_phys_name_IO(dynamic_SPH%Csim_S_IO)
@@ -92,8 +92,8 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
-      call count_SPH_Csim_to_IO                                         &
-     &   (dynamic_SPH%wk_sgs, dynamic_SPH%Csim_S_IO)
+      call count_SPH_Csim_to_IO(dynamic_SPH%wk_sph_sgs,                 &
+     &                          dynamic_SPH%Csim_S_IO)
 !
       end subroutine init_SPH_Csim_file
 !
@@ -119,9 +119,9 @@
       integer(kind = kint) :: istep_rst
 !
       istep_rst = set_IO_step(i_step, rst_step)
-      call set_SPH_Csim_to_IO                                           &
-     &   (i_step_sgs_coefs, time_d, dynamic_SPH%wk_sgs,                 &
-     &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
+      call set_SPH_Csim_to_IO(i_step_sgs_coefs, time_d,                 &
+     &                        dynamic_SPH%wk_sph_sgs,                   &
+     &                        Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
       call sel_write_step_FEM_field_file(istep_rst, Csim_file_IO,       &
      &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)

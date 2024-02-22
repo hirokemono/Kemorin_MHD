@@ -184,7 +184,7 @@
         call copy_model_coefs_4_sph_snap                                &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
      &      dynamic_SPH%iak_sgs_term, WK_LES%trns_Csim%f_trns_LES%Csim, &
-     &      dynamic_SPH%wk_sgs, WK_LES%trns_Csim%forward)
+     &      dynamic_SPH%wk_sph_sgs, WK_LES%trns_Csim%forward)
         if (iflag_debug .gt.0 ) write(*,*)                              &
      &                   'sph_forward_trans_SGS_MHD Csim for initial'
         call sph_forward_trans_SGS_MHD                                  &

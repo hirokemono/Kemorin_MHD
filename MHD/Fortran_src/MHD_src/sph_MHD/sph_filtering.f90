@@ -72,17 +72,9 @@
      &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
       if(SGS_par%model_p%iflag_SGS .eq. 0) return
-      if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-        if (iflag_debug.gt.0) write(*,*) 'find_grouping_4_dynamic_model'
-        call find_grouping_4_dynamic_model(SGS_par%model_p,             &
-     &      sph%sph_params, sph%sph_rtp, dynamic_SPH%sph_d_grp)
-      end if
 !
       if (iflag_debug.gt.0) write(*,*) 'init_work_4_SGS_sph_mhd'
-      call init_work_4_SGS_sph_mhd                                      &
-     &   (SGS_par, dynamic_SPH%sph_d_grp, MHD_prop,                     &
-     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,         &
-     &    dynamic_SPH%wk_sgs)
+      call init_work_4_SGS_sph_mhd(SGS_par, sph, MHD_prop, dynamic_SPH)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_volume_4_SGS_buoyancy'
       call alloc_sph_ave_Csim_SGS_buo                                   &

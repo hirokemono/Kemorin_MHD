@@ -155,7 +155,7 @@
         call product_model_coefs_4_sph(SGS_par%model_p, sph%sph_rtp,    &
      &      dynamic_SPH%sph_d_grp, dynamic_SPH%iak_sgs_term,            &
      &      WK_LES%trns_SGS%f_trns_LES%SGS_term,                        &
-     &      WK_LES%trns_SGS%forward, dynamic_SPH%wk_sgs)
+     &      WK_LES%trns_SGS%forward, dynamic_SPH%wk_sph_sgs)
       else
         call prod_fixed_sph_SGS_Csim                                    &
      &     (SGS_par%model_p, sph%sph_rtp, dynamic_SPH%iak_sgs_term,     &
@@ -178,7 +178,7 @@
         call copy_model_coefs_4_sph_snap                                &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
      &      dynamic_SPH%iak_sgs_term, WK_LES%trns_Csim%f_trns_LES%Csim, &
-     &      dynamic_SPH%wk_sgs, WK_LES%trns_Csim%forward)
+     &      dynamic_SPH%wk_sph_sgs, WK_LES%trns_Csim%forward)
 !
         if(iflag_SMHD_time)                                             &
      &         call start_elapsed_time(ist_elapsed_SMHD+11)
@@ -282,7 +282,8 @@
      &    dynamic_SPH%sph_d_grp, trns_SGS%f_trns_LES%SGS_term,          &
      &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%b_trns_LES%dble_SGS, &
      &    trns_SGS%forward, trns_DYNS%backward, trns_DYNS%backward,     &
-     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs)
+     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,         &
+     &    dynamic_SPH%wk_sph_sgs)
 !
       end subroutine sph_dynamic_similarity
 !
@@ -355,7 +356,8 @@
      &    dynamic_SPH%sph_d_grp, trns_SIMI%f_trns_LES%SGS_term,         &
      &    trns_Csim%b_trns_LES%wide_SGS, trns_DYNG%b_trns_LES%dble_SGS, &
      &    trns_SIMI%forward, trns_Csim%backward, trns_DYNG%backward,    &
-     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs)
+     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,         &
+     &    dynamic_SPH%wk_sph_sgs)
 !
       end subroutine sph_dynamic_nl_gradient
 !

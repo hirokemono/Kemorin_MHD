@@ -71,7 +71,7 @@
         call prod_SGS_buoyancy_to_Reynolds                              &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
      &      trns_SGS%f_trns_LES, dynamic_SPH%iak_sgs_term,              &
-     &      dynamic_SPH%wk_sgs, trns_SGS%forward)
+     &      dynamic_SPH%wk_sph_sgs, trns_SGS%forward)
 !
       else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
         if(istep_dynamic .eq. 0) then
