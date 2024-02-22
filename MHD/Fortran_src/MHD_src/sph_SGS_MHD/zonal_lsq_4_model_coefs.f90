@@ -8,9 +8,10 @@
 !!@verbatim
 !!      subroutine cal_dynamic_SGS_4_sph_MHD                            &
 !!     &        (sph_rtp, sph_d_grp, stab_weight, numdir,               &
-!!     &         flux_simi, flux_wide, flux_dble, sgs_zl, sgs_zt, sgs_c)
+!!     &         flux_simi, flux_wide, flux_dble, iak_sgs, wk_sph_sgs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
 !!@endverbatim
 !
       module zonal_lsq_4_model_coefs
@@ -38,7 +39,7 @@
 !
       subroutine cal_dynamic_SGS_4_sph_MHD                              &
      &        (sph_rtp, sph_d_grp, stab_weight, numdir,                 &
-     &         flux_simi, flux_wide, flux_dble, sgs_zl, sgs_zt, sgs_c)
+     &         flux_simi, flux_wide, flux_dble, iak_sgs, wk_sph_sgs)
 !
       use m_FFT_selector
       use cal_sph_model_coefs
@@ -46,7 +47,7 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       real(kind = kreal), intent(in) :: stab_weight
-      integer(kind = kint), intent(in) :: numdir
+      integer(kind = kint), intent(in) :: numdir, iak_sgs
 !
       real(kind = kreal), intent(in)                                    &
      &                   :: flux_simi(sph_rtp%nnod_rtp,numdir)
@@ -55,21 +56,19 @@
       real(kind = kreal), intent(in)                                    &
      &                   :: flux_dble(sph_rtp%nnod_rtp,numdir)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: sgs_zl(sph_d_grp%ngrp_dynamic)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: sgs_zt(sph_d_grp%ngrp_dynamic)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: sgs_c(sph_d_grp%ngrp_dynamic)
+      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_int_zonal_4_model_coefs'
       call sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,              &
-     &    numdir, flux_simi, flux_wide, flux_dble, sgs_zl, sgs_zt)
+     &    numdir, flux_simi, flux_wide, flux_dble,                      &
+     &    wk_sph_sgs%sgs_zl(1,1), wk_sph_sgs%sgs_zt(1,1))
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_scalar_sph_model_coefs'
       call cal_scalar_sph_model_coefs                                   &
-     &   (sph_d_grp%ngrp_dynamic, stab_weight, sgs_zl, sgs_zt, sgs_c)
+     &   (sph_d_grp%ngrp_dynamic, stab_weight,                          &
+     &    wk_sph_sgs%sgs_zl(1,1), wk_sph_sgs%sgs_zt(1,1),               &
+     &    wk_sph_sgs%fld_coef(1,iak_sgs))
 !
       end subroutine cal_dynamic_SGS_4_sph_MHD
 !

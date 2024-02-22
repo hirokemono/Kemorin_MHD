@@ -85,8 +85,6 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          num_SGS_terms, ntot_SGS_comps)
 !
-      use calypso_mpi
-!
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_ele_info_4_dynamic

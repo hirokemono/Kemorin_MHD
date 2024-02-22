@@ -10,7 +10,7 @@
 !!      subroutine cal_SGS_buo_coef_sph_MHD                             &
 !!     &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,         &
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
-!!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
+!!     &          ifld_SGS_buo, wk_sgs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
@@ -101,7 +101,7 @@
       subroutine cal_SGS_buo_coef_sph_MHD                               &
      &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,           &
      &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,  &
-     &          ifld_SGS_buo, icomp_SGS_buo, wk_sph_sgs)
+     &          ifld_SGS_buo, wk_sph_sgs)
 !
       use m_FFT_selector
       use zonal_lsq_4_model_coefs
@@ -114,7 +114,6 @@
       integer(kind = kint), intent(in)  :: ncomp_snap_rtp_2_rj
       integer(kind = kint), intent(in)  :: if_trns_reynolds
       integer(kind = kint), intent(in)  :: if_trns_buo_wk
-      integer(kind = kint), intent(in)  :: icomp_SGS_buo
       integer(kind = kint), intent(in)  :: ifld_SGS_buo
       real(kind = kreal), intent(in)                                    &
      &               :: frc_rtp(sph_rtp%nnod_rtp,ncomp_snap_rtp_2_rj)
@@ -124,13 +123,11 @@
 !
       call sel_int_zonal_4_buo_coef(sph_rtp, sph_d_grp,                 &
      &    frc_rtp(1,if_trns_reynolds), frc_rtp(1,if_trns_buo_wk),       &
-     &    wk_sph_sgs%comp_coef(1,icomp_SGS_buo),                        &
-     &    wk_sph_sgs%comp_clip(1,icomp_SGS_buo))
+     &    wk_sph_sgs%sgs_zl(1,1), wk_sph_sgs%sgs_zt(1,1))
 !
       call sel_sph_model_coef                                           &
      &   (ione, sph_d_grp%ngrp_dynamic,  stablize_weight,               &
-     &    wk_sph_sgs%comp_coef(1,icomp_SGS_buo),                        &
-     &    wk_sph_sgs%comp_clip(1,icomp_SGS_buo),                        &
+     &    wk_sph_sgs%sgs_zl(1,1), wk_sph_sgs%sgs_zt(1,1),               &
      &    wk_sph_sgs%fld_coef(1,ifld_SGS_buo))
 !
       end subroutine cal_SGS_buo_coef_sph_MHD
@@ -151,23 +148,17 @@
 !
       if     (iak_sgs_term%i_SGS_buoyancy                               &
      &          * iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-        call sel_product_double_buo_coefs                               &
-     &     (sph_rtp, sph_d_grp, wk_sph_sgs%num_kinds,                   &
+        call sel_product_double_buo_coefs(sph_rtp, sph_d_grp,           &
      &      iak_sgs_term%i_SGS_buoyancy, iak_sgs_term%i_SGS_comp_buo,   &
-     &      wk_sph_sgs%fld_coef, trns_f_SGS%ncomp,                      &
-     &      fg_trns_LES%SGS_term%i_SGS_inertia, trns_f_SGS%fld_rtp)
+     &      wk_sph_sgs, fg_trns_LES%SGS_term%i_SGS_inertia, trns_f_SGS)
       else if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
-        call sel_product_single_buo_coefs                               &
-     &     (sph_rtp, sph_d_grp, wk_sph_sgs%num_kinds,                   &
-     &      iak_sgs_term%i_SGS_buoyancy, wk_sph_sgs%fld_coef,           &
-     &      trns_f_SGS%ncomp, fg_trns_LES%SGS_term%i_SGS_inertia,       &
-     &      trns_f_SGS%fld_rtp)
+        call sel_product_single_buo_coefs(sph_rtp, sph_d_grp,           &
+     &      iak_sgs_term%i_SGS_buoyancy, wk_sph_sgs,                    &
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, trns_f_SGS)
       else if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-        call sel_product_single_buo_coefs                               &
-     &     (sph_rtp, sph_d_grp, wk_sph_sgs%num_kinds,                   &
-     &      iak_sgs_term%i_SGS_comp_buo, wk_sph_sgs%fld_coef,           &
-     &      trns_f_SGS%ncomp, fg_trns_LES%SGS_term%i_SGS_inertia,       &
-     &      trns_f_SGS%fld_rtp)
+        call sel_product_single_buo_coefs(sph_rtp, sph_d_grp,           &
+     &      iak_sgs_term%i_SGS_comp_buo, wk_sph_sgs,                    &
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, trns_f_SGS)
       end if
 !
       end subroutine prod_SGS_buoyancy_to_Reynolds
@@ -263,67 +254,63 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_product_single_buo_coefs                           &
-     &         (sph_rtp, sph_d_grp, nfld_sgs, isgs_buo,                 &
-     &          fld_coef, nc_SGS_rtp_2_rj, i_SGS_inertia, fSGS_rtp)
+      subroutine sel_product_single_buo_coefs(sph_rtp, sph_d_grp,       &
+     &          isgs_buo, wk_sph_sgs, i_SGS_inertia, trns_f_SGS)
 !
       use m_FFT_selector
       use prod_SGS_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
 !
-      integer(kind = kint), intent(in) :: nfld_sgs, isgs_buo
+      integer(kind = kint), intent(in) :: isgs_buo
       integer(kind = kint), intent(in) :: i_SGS_inertia
-      integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
-      real(kind = kreal), intent(in)                                    &
-     &                   :: fld_coef(sph_d_grp%ngrp_dynamic,nfld_sgs)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: fSGS_rtp(sph_rtp%nnod_rtp,nc_SGS_rtp_2_rj)
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if(sph_rtp%istep_rtp(3) .eq. 1) then
         call product_single_buo_coefs_pin(sph_rtp, sph_d_grp,           &
-     &      fld_coef(1,isgs_buo), fSGS_rtp(1,i_SGS_inertia))
+     &      wk_sph_sgs%fld_coef(1,isgs_buo),                            &
+     &      trns_f_SGS%fld_rtp(1,i_SGS_inertia))
       else
         call product_single_buo_coefs_rin(sph_rtp, sph_d_grp,           &
-     &      fld_coef(1,isgs_buo), fSGS_rtp(1,i_SGS_inertia))
+     &      wk_sph_sgs%fld_coef(1,isgs_buo),                            &
+     &      trns_f_SGS%fld_rtp(1,i_SGS_inertia))
       end if
 !
       end subroutine sel_product_single_buo_coefs
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_product_double_buo_coefs                           &
-     &         (sph_rtp, sph_d_grp, nfld_sgs, isgs_buo1, isgs_buo2,     &
-     &          fld_coef, nc_SGS_rtp_2_rj, i_SGS_inertia, fSGS_rtp)
+      subroutine sel_product_double_buo_coefs(sph_rtp, sph_d_grp,       &
+     &          isgs_buo1, isgs_buo2, wk_sph_sgs,                       &
+     &          i_SGS_inertia, trns_f_SGS)
 !
       use m_FFT_selector
       use prod_SGS_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
 !
-      integer(kind = kint), intent(in) :: nfld_sgs
       integer(kind = kint), intent(in) :: isgs_buo1, isgs_buo2
       integer(kind = kint), intent(in) :: i_SGS_inertia
-      integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
-      real(kind = kreal), intent(in)                                    &
-     &                   :: fld_coef(sph_d_grp%ngrp_dynamic,nfld_sgs)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: fSGS_rtp(sph_rtp%nnod_rtp,nc_SGS_rtp_2_rj)
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if(sph_rtp%istep_rtp(3) .eq. 1) then
         call product_double_buo_coefs_pin(sph_rtp, sph_d_grp,           &
-     &      fld_coef(1,isgs_buo1), fld_coef(1,isgs_buo2),               &
-     &      fSGS_rtp(1,i_SGS_inertia))
+     &      wk_sph_sgs%fld_coef(1,isgs_buo1),                           &
+     &      wk_sph_sgs%fld_coef(1,isgs_buo2),                           &
+     &      trns_f_SGS%fld_rtp(1,i_SGS_inertia))
       else
         call product_double_buo_coefs_rin(sph_rtp, sph_d_grp,           &
-     &      fld_coef(1,isgs_buo1),  fld_coef(1,isgs_buo2),              &
-     &      fSGS_rtp(1,i_SGS_inertia))
+     &      wk_sph_sgs%fld_coef(1,isgs_buo1),                           &
+     &      wk_sph_sgs%fld_coef(1,isgs_buo2),                           &
+     &      trns_f_SGS%fld_rtp(1,i_SGS_inertia))
       end if
 !
       end subroutine sel_product_double_buo_coefs

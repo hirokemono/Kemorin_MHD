@@ -12,9 +12,114 @@ test_bmp_images.o: $(GRAPHIC_TEST_DIR)/test_bmp_images.f90 m_precision.o write_b
 	$(F90) -c $(F90OPTFLAGS) $<
 
 #
+check_fontshape.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/check_fontshape.c \
+  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
+  $(MHDDIR)/C_src/CORE_C/ysglfontdata.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_read_bmp_c.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_read_bmp_c.c \
+  $(MHDDIR)/C_src/CORE_C/read_image_2_bmp.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_c.h \
+  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_read_gzipped_bmp_c.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_read_gzipped_bmp_c.c \
+  $(MHDDIR)/C_src/CORE_C/read_image_2_bmp.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_c.h \
+  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_read_png_c.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_read_png_c.c \
+  $(MHDDIR)/C_src/CORE_C/read_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_read_psf_data.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_read_psf_data.c \
+  $(MHDDIR)/C_src/CORE_C/m_psf_data_4_viewer_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
+  $(MHDDIR)/C_src/CORE_C/t_psf_edge_connect_c.h \
+  $(MHDDIR)/C_src/CORE_C/t_surf_edge_hash_c.h \
+  $(MHDDIR)/C_src/CORE_C/read_psf_data_viewer_c.h \
+  $(MHDDIR)/C_src/CORE_C/take_normal_psf_c.h \
+  $(MHDDIR)/C_src/CORE_C/cal_surface_center_normal_c.h \
+  $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \
+  $(MHDDIR)/C_src/CORE_C/check_psf_data_viewer_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/select_read_psf_viewer_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/kemoviewer.h \
+  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_base.h \
+  $(MHDDIR)/C_src/CORE_C/read_psf_vtk_data_c.h \
+  $(MHDDIR)/C_src/CORE_C/read_psf_data_gz_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_c.h \
+  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
+  $(MHDDIR)/C_src/CORE_C/read_psf_vtk_data_gz_c.h \
+  $(MHDDIR)/C_src/CORE_C/read_psf_bin_data_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_rawfile_io_c.h \
+  $(MHDDIR)/C_src/CORE_C/read_psf_bin_data_gz_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_psf_menu.h \
+  $(MHDDIR)/C_src/KEMO_GL/kemoviewer_param_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_vertex_buffer.h \
+  $(MHDDIR)/C_src/CONTROLS/m_color_table_c.h \
+  $(MHDDIR)/C_src/CORE_C/set_rgb_colors_c.h \
+  $(MHDDIR)/C_src/CONTROLS/t_control_real2_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/control_elements_IO_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_colorbar_buffer.h \
+  $(MHDDIR)/C_src/CORE_C/ysglfontdata.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h \
+  $(MHDDIR)/C_src/CONTROLS/set_rgba_table_c.h \
+  $(MHDDIR)/C_src/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+  $(MHDDIR)/C_src/CONTROLS/t_control_int_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/t_control_real_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/t_control_chara_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/t_control_real3_IO.h \
+  $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
+  $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \
+  $(MHDDIR)/C_src/KEMO_GL/trackball.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh_menu.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_mesh.h \
+  $(MHDDIR)/C_src/KEMO_GL/rainbow_color_code_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_fline_menu.h \
+  $(MHDDIR)/C_src/KEMO_GL/m_kemoview_fline.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_each_fline_parameters.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_texture_4_psf.h \
+  $(MHDDIR)/C_src/KEMO_GL/draw_patches_4_PSF.h \
+  $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
+  $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
+  $(MHDDIR)/C_src/KEMO_GL/icosahedron_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_color_code_on_nodes.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_PSF_patches_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_PSF_isolines_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/find_isoline_on_patch_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_each_isoline_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_hex_tube_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/modify_object_4_viewer_c.h \
+  $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_c.h \
+  $(MHDDIR)/C_src/CORE_C/read_viewer_mesh_gz_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_coastline_to_buf.h \
+  $(MHDDIR)/C_src/KEMO_GL/coastline_c.h \
+  $(MHDDIR)/C_src/CORE_C/set_psf_viewer.h \
+  $(MHDDIR)/C_src/CORE_C/take_normal_surf_mesh_c.h \
+  $(MHDDIR)/C_src/CORE_C/set_surface_mesh_data.h \
+  $(MHDDIR)/C_src/CORE_C/check_viewer_mesh_c.h \
+  $(MHDDIR)/C_src/CORE_C/set_normal_on_node_4_mesh.h \
+  $(MHDDIR)/C_src/KEMO_GL/psf_data_array_manager.h \
+  $(MHDDIR)/C_src/KEMO_GL/set_each_psf_parameters.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_wt_png_c.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_wt_png_c.c \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<

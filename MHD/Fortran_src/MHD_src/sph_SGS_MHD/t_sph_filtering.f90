@@ -17,13 +17,11 @@
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_d_grp, MHD_prop,&
-!!     &          iak_sgs_term, icomp_sgs_term, wk_sph_sgs)
+!!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph, MHD_prop,      &
+!!     &                                   dynamic_SPH)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(SGS_term_address), intent(inout) :: iak_sgs_term
-!!        type(SGS_term_address), intent(inout) :: icomp_sgs_term
-!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!@endverbatim
 !!
 !
@@ -51,20 +49,17 @@
       type SPH_dynamic_model_data
         integer(kind = kint) :: nlayer
         integer(kind = kint) :: num_kinds
-        integer(kind = kint) :: ntot_comp
         character(len = kchara), allocatable :: name(:)
         real(kind = kreal), allocatable :: fld_coef(:,:)
 !
-        real(kind = kreal), allocatable :: comp_coef(:,:)
-        real(kind = kreal), allocatable :: comp_clip(:,:)
+        real(kind = kreal), allocatable :: sgs_zl(:,:)
+        real(kind = kreal), allocatable :: sgs_zt(:,:)
       end type SPH_dynamic_model_data
 !
 !>      Structure of work area for dyanmic SGS model for spectrum dynamo
       type dynamic_SGS_data_4_sph
 !>         Field adddress for dynamic SGS model
         type(SGS_term_address) :: iak_sgs_term
-!>         Component adddress for dynamic SGS model
-        type(SGS_term_address) :: icomp_sgs_term
 !>         Work area for dynamic SGS model
         type(SPH_dynamic_model_data) :: wk_sph_sgs
 !
@@ -214,16 +209,14 @@
      &    num_SGS_terms, ntot_SGS_comps)
       call alloc_sph_sgs_coefs_layer                                    &
      &   (dynamic_SPH%sph_d_grp%ngrp_dynamic,                           &
-     &    num_SGS_terms, ntot_SGS_comps, dynamic_SPH%wk_sph_sgs)
+     &    num_SGS_terms, dynamic_SPH%wk_sph_sgs)
 !
       call set_sph_sgs_addresses                                        &
      &   (SGS_par%model_p, MHD_prop%fl_prop, MHD_prop%cd_prop,          &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,         &
-     &    dynamic_SPH%wk_sph_sgs)
-      call check_sph_sgs_addresses                                      &
-     &   (dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,         &
-     &    dynamic_SPH%wk_sph_sgs)
+     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sph_sgs)
+      call check_sph_sgs_addresses(dynamic_SPH%iak_sgs_term,            &
+     &                             dynamic_SPH%wk_sph_sgs)
 !
       end subroutine init_work_4_SGS_sph_mhd
 !
@@ -351,7 +344,7 @@
 !
       subroutine set_sph_sgs_addresses                                  &
      &          (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,         &
-     &           iak_sgs_term, icomp_sgs_term, wk_sph_sgs)
+     &           iak_sgs_term, wk_sph_sgs)
 !
       use calypso_mpi
 !
@@ -370,111 +363,76 @@
       type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       type(SGS_term_address), intent(inout) :: iak_sgs_term
-      type(SGS_term_address), intent(inout) :: icomp_sgs_term
       type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
 !
-      integer(kind = kint) :: i_cmp, i_fld, id, jd, num_comp
+      integer(kind = kint) :: i_fld
 !
 !
-       i_cmp = 1
-       i_fld = 1
-       id = 1
-       jd = 1
-       num_comp = 0
+       i_fld = 0
        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_h_flux = i_cmp
+           i_fld = i_fld + 1
            iak_sgs_term%i_SGS_h_flux =  i_fld
            wk_sph_sgs%name(i_fld) = SGS_heat_flux%name
-           num_comp = 3
-           i_cmp = i_cmp + num_comp
-           i_fld = i_fld + 1
          end if
        end if
 !
-       num_comp = 0
        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_m_flux = i_cmp
+           i_fld = i_fld + 1
            iak_sgs_term%i_SGS_m_flux =  i_fld
            wk_sph_sgs%name(i_fld) = SGS_momentum_flux%name
-           num_comp = 6
-           i_cmp = i_cmp + num_comp
-           i_fld = i_fld + 1
          end if
        end if
 !
-       num_comp = 0
        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_Lorentz = i_cmp
+           i_fld = i_fld + 1
            iak_sgs_term%i_SGS_Lorentz =  i_fld
            wk_sph_sgs%name(i_fld) = SGS_maxwell_tensor%name
-           num_comp = 6
-           i_cmp = i_cmp + num_comp
-           i_fld = i_fld + 1
          end if
        end if
 !
-       num_comp = 0
        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_gravity) then
-            icomp_sgs_term%i_SGS_buoyancy = i_cmp
+            i_fld = i_fld + 1
             iak_sgs_term%i_SGS_buoyancy =  i_fld
             wk_sph_sgs%name(i_fld) = SGS_buoyancy%name
-            num_comp = 6
-            i_cmp = i_cmp + num_comp
-            i_fld = i_fld + 1
           end if
          end if
        end if
 !
-       num_comp = 0
        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_composit_buo) then
-            icomp_sgs_term%i_SGS_comp_buo = i_cmp
+            i_fld = i_fld + 1
             iak_sgs_term%i_SGS_comp_buo =  i_fld
             wk_sph_sgs%name(i_fld) = SGS_composit_buoyancy%name
-            num_comp = 6
-            i_cmp = i_cmp + num_comp
-            i_fld = i_fld + 1
           end if
         end if
        end if
 !
-       num_comp = 0
        if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_induction = i_cmp
+           i_fld = i_fld + 1
            iak_sgs_term%i_SGS_induction =  i_fld
            wk_sph_sgs%name(i_fld) = SGS_induction%name
-           num_comp = 3
-           i_cmp = i_cmp + num_comp
-           i_fld = i_fld + 1
          end if
        end if
        if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_induction = i_cmp
+           i_fld = i_fld + 1
            iak_sgs_term%i_SGS_induction =  i_fld
            wk_sph_sgs%name(i_fld) = SGS_induction%name
-           num_comp = 3
-           i_cmp = i_cmp + num_comp
-           i_fld = i_fld + 1
          end if
        end if
 !
-       num_comp = 0
        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
-           icomp_sgs_term%i_SGS_c_flux = i_cmp
+           i_fld = i_fld + 1
            iak_sgs_term%i_SGS_c_flux =  i_fld
            wk_sph_sgs%name(i_fld) = SGS_composit_flux%name
-           num_comp = 3
-           i_cmp = i_cmp + num_comp
-           i_fld = i_fld + 1
          end if
        end if
 !
@@ -482,8 +440,7 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine check_sph_sgs_addresses                                &
-     &         (iak_sgs_term, icomp_sgs_term, wk_sph_sgs)
+      subroutine check_sph_sgs_addresses(iak_sgs_term, wk_sph_sgs)
 !
       use calypso_mpi
 !
@@ -494,49 +451,40 @@
       use t_SGS_control_parameter
 !
       type(SGS_term_address), intent(in) :: iak_sgs_term
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
 !
       type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
 !
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'num_sgs_kinds', wk_sph_sgs%num_kinds
-        write(*,*) 'num_sgs_coefs', wk_sph_sgs%ntot_comp
 !
         if(iak_sgs_term%i_SGS_h_flux .gt. 0) then
-          write(*,*) 'iak_sgs_hf',                                      &
-     &       iak_sgs_term%i_SGS_h_flux, icomp_sgs_term%i_SGS_h_flux,    &
+          write(*,*) 'iak_sgs_hf', iak_sgs_term%i_SGS_h_flux,           &
      &       trim(wk_sph_sgs%name(iak_sgs_term%i_SGS_h_flux))
         end if
         if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
-          write(*,*) 'iak_sgs_mf',                                      &
-     &       iak_sgs_term%i_SGS_m_flux, icomp_sgs_term%i_SGS_m_flux,    &
+          write(*,*) 'iak_sgs_mf', iak_sgs_term%i_SGS_m_flux,           &
      &       trim(wk_sph_sgs%name(iak_sgs_term%i_SGS_m_flux))
         end if
         if(iak_sgs_term%i_SGS_Lorentz .gt. 0) then
-          write(*,*) 'iak_sgs_lor',                                     &
-     &       iak_sgs_term%i_SGS_Lorentz, icomp_sgs_term%i_SGS_Lorentz,  &
+          write(*,*) 'iak_sgs_lor', iak_sgs_term%i_SGS_Lorentz,         &
      &       trim(wk_sph_sgs%name(iak_sgs_term%i_SGS_Lorentz))
         end if
         if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
-          write(*,*) 'iak_sgs_tbuo',                                    &
-     &      iak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy, &
+          write(*,*) 'iak_sgs_tbuo', iak_sgs_term%i_SGS_buoyancy,       &
      &      trim(wk_sph_sgs%name(iak_sgs_term%i_SGS_buoyancy))
         end if
         if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-          write(*,*) 'iak_sgs_cbuo',                                    &
-     &      iak_sgs_term%i_SGS_comp_buo, icomp_sgs_term%i_SGS_comp_buo, &
+          write(*,*) 'iak_sgs_cbuo', iak_sgs_term%i_SGS_comp_buo,       &
      &      trim(wk_sph_sgs%name(iak_sgs_term%i_SGS_comp_buo))
         end if
         if(iak_sgs_term%i_SGS_induction .gt. 0) then
           write(*,*) 'iak_sgs_uxb',                                     &
      &       iak_sgs_term%i_SGS_induction,                              &
-     &       icomp_sgs_term%i_SGS_induction,                            &
      &       trim(wk_sph_sgs%name(iak_sgs_term%i_SGS_induction))
         end if
         if(iak_sgs_term%i_SGS_c_flux .gt. 0) then
-          write(*,*) 'iak_sgs_cf',                                      &
-     &       iak_sgs_term%i_SGS_c_flux, icomp_sgs_term%i_SGS_c_flux,    &
+          write(*,*) 'iak_sgs_cf', iak_sgs_term%i_SGS_c_flux,           &
      &       trim(wk_sph_sgs%name(iak_sgs_term%i_SGS_c_flux))
         end if
       end if
@@ -545,23 +493,22 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine alloc_sph_sgs_coefs_layer                              &
-     &         (n_layer_d, num_sgs_kinds, num_sgs_comps, wk_sph_sgs)
+      subroutine alloc_sph_sgs_coefs_layer(n_layer_d, num_sgs_kinds,    &
+     &                                     wk_sph_sgs)
 !
       integer(kind = kint), intent(in) :: n_layer_d
-      integer(kind = kint), intent(in) :: num_sgs_kinds, num_sgs_comps
+      integer(kind = kint), intent(in) :: num_sgs_kinds
       type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
 !
 !
       wk_sph_sgs%nlayer = n_layer_d
       wk_sph_sgs%num_kinds = num_sgs_kinds
-      wk_sph_sgs%ntot_comp = num_sgs_comps
 !
       allocate(wk_sph_sgs%name(num_sgs_kinds))
       allocate(wk_sph_sgs%fld_coef(n_layer_d, num_sgs_kinds))
 !
-      allocate(wk_sph_sgs%comp_coef(n_layer_d, num_sgs_comps))
-      allocate(wk_sph_sgs%comp_clip(n_layer_d, num_sgs_comps))
+      allocate(wk_sph_sgs%sgs_zl(n_layer_d,n_sym_tensor))
+      allocate(wk_sph_sgs%sgs_zt(n_layer_d,n_sym_tensor))
 !
       if(num_sgs_kinds .gt. 0) then
 !$omp parallel workshare
@@ -569,12 +516,10 @@
 !$omp end parallel workshare
       end if
 !
-      if(num_sgs_comps .gt. 0) then
 !$omp parallel workshare
-        wk_sph_sgs%comp_coef(1:n_layer_d, 1:num_sgs_comps) =  one
-        wk_sph_sgs%comp_clip(1:n_layer_d, 1:num_sgs_comps) =  one
+      wk_sph_sgs%sgs_zl(1:n_layer_d,1:n_sym_tensor) =  one
+      wk_sph_sgs%sgs_zt(1:n_layer_d,1:n_sym_tensor) =  one
 !$omp end parallel workshare
-      end if
 !
       end subroutine alloc_sph_sgs_coefs_layer
 !
@@ -587,7 +532,7 @@
 !
       deallocate(wk_sph_sgs%name)
       deallocate(wk_sph_sgs%fld_coef)
-      deallocate(wk_sph_sgs%comp_coef, wk_sph_sgs%comp_clip)
+      deallocate(wk_sph_sgs%sgs_zl, wk_sph_sgs%sgs_zt)
 !
       end subroutine dealloc_sph_sgs_coefs_layer
 !
