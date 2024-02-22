@@ -23,14 +23,14 @@
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
-!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+!!        type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !!
 !!     subroutine sel_product_model_coefs                               &
 !!    &         (const_Csim, sph_rtp, sph_d_grp, numdir,                &
 !!    &          irtp_sgs, ifld_sgs, wk_sph_sgs, trns_f_SGS)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+!!        type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!@endverbatim
 !
@@ -51,7 +51,8 @@
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
       use t_sph_filtering
-!
+      use t_SPH_dynamic_model_coefs
+
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -117,7 +118,7 @@
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: fg_trns_SGS
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
       type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
@@ -179,7 +180,7 @@
       integer(kind = kint), intent(in) :: ifld_sgs
       real(kind = kreal), intent(in) :: const_Csim
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
       type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !

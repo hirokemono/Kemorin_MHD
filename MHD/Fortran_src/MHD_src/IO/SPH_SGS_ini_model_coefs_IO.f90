@@ -12,7 +12,6 @@
 !!        type(time_data), intent(in) :: init_d
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
-!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
 !!      subroutine init_SPH_Csim_file(dynamic_SPH)
 !!      subroutine write_SPH_Csim_file(i_step, i_step_sgs_coefs,        &
 !!     &          Csim_file_IO, rst_step, time_d, dynamic_SPH)

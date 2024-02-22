@@ -50,6 +50,7 @@
       use t_ele_info_4_dynamic
       use t_groups_sph_dynamic
       use t_sph_filtering
+      use t_SPH_dynamic_model_coefs
 !
       implicit none
 !
@@ -118,7 +119,7 @@
       real(kind = kreal), intent(in)                                    &
      &               :: frc_rtp(sph_rtp%nnod_rtp,ncomp_snap_rtp_2_rj)
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !
 !
       call sel_int_zonal_4_buo_coef(sph_rtp, sph_d_grp,                 &
@@ -141,7 +142,7 @@
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(SGS_model_addresses), intent(in) :: fg_trns_LES
       type(SGS_term_address), intent(in) :: iak_sgs_term
-      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(in) :: wk_sph_sgs
 !
       type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
@@ -262,7 +263,7 @@
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(in) :: wk_sph_sgs
 !
       integer(kind = kint), intent(in) :: isgs_buo
       integer(kind = kint), intent(in) :: i_SGS_inertia
@@ -293,7 +294,7 @@
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(in) :: wk_sph_sgs
 !
       integer(kind = kint), intent(in) :: isgs_buo1, isgs_buo2
       integer(kind = kint), intent(in) :: i_SGS_inertia

@@ -11,7 +11,7 @@
 !!     &         flux_simi, flux_wide, flux_dble, iak_sgs, wk_sph_sgs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+!!        type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !!@endverbatim
 !
       module zonal_lsq_4_model_coefs
@@ -25,7 +25,7 @@
       use t_spheric_rtp_data
       use t_groups_sph_dynamic
       use t_ele_info_4_dynamic
-      use t_sph_filtering
+      use t_SPH_dynamic_model_coefs
 !
       implicit none
 !
@@ -56,7 +56,7 @@
       real(kind = kreal), intent(in)                                    &
      &                   :: flux_dble(sph_rtp%nnod_rtp,numdir)
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_int_zonal_4_model_coefs'

@@ -21,7 +21,7 @@
 !!        type(spherical_transform_data), intent(in) :: trns_b_wide
 !!        type(spherical_transform_data), intent(in) :: trns_b_dble
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
-!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+!!        type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !!
 !!      subroutine const_dynamic_SGS_4_buo_sph(stab_weight, sph_rtp,    &
 !!     &          fl_prop, trns_MHD, trns_SGS, trns_Csim, dynamic_SPH)
@@ -53,6 +53,7 @@
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
       use t_sph_filtering
+      use t_SPH_dynamic_model_coefs
 !
       implicit none
 !
@@ -82,7 +83,7 @@
       type(spherical_transform_data), intent(in) :: trns_b_dble
       type(SGS_term_address), intent(in) :: iak_sgs_term
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !
 !
       if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
@@ -183,7 +184,7 @@
       type(SGS_ene_flux_address), intent(in) :: f_trns_sef
       type(spherical_transform_data), intent(in) :: trns_Csim_fwd
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !
 !
       if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then

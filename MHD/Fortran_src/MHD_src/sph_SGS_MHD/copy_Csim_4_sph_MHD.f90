@@ -15,7 +15,7 @@
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: f_trns_Csim
-!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+!!        type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !!        type(spherical_transform_data), intent(inout) :: fwd_Csim
 !!@endverbatim
 !
@@ -34,7 +34,7 @@
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
       use t_groups_sph_dynamic
-      use t_sph_filtering
+      use t_SPH_dynamic_model_coefs
 !
       implicit none
 !
@@ -54,7 +54,7 @@
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: f_trns_Csim
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
       type(spherical_transform_data), intent(inout) :: fwd_Csim
 !
 !
@@ -89,7 +89,7 @@
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: f_trns_Csim
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
       type(spherical_transform_data), intent(inout) :: fwd_Csim
 !
 !
@@ -169,7 +169,7 @@
       integer(kind = kint), intent(in) :: irtp_sgs
       integer(kind = kint), intent(in) :: ifld_sgs
 !
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
       type(spherical_transform_data), intent(inout) :: trns_fwd
 !
 !
@@ -177,8 +177,9 @@
       trns_fwd%fld_rtp(1:sph_rtp%nnod_rtp,irtp_sgs) = one
 !$omp end parallel workshare
 !
-      call sel_product_model_coefs(one, sph_rtp, sph_d_grp,             &
-     &    wk_sph_sgs%num_kinds, irtp_sgs, ione, wk_sph_sgs, trns_fwd)
+      call sel_product_model_coefs                                      &
+     &   (one, sph_rtp, sph_d_grp, wk_sph_sgs%num_kinds, irtp_sgs,      &
+     &    ifld_sgs, wk_sph_sgs, trns_fwd)
 !
       end subroutine set_model_coefs_sph_snap
 !

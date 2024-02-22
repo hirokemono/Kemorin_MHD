@@ -10,12 +10,12 @@
 !!        type(time_data), intent(in) :: Csim_time
 !!        type(field_IO), intent(in) :: Csim_IO
 !!        type(time_data), intent(in) :: time_d
-!!        type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+!!        type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !!      subroutine count_SPH_Csim_to_IO(wk_sph_sgs, Csim_IO)
 !!      subroutine set_SPH_Csim_to_IO(i_step_sgs_coefs, time_d,         &
 !!     &          wk_sph_sgs, Csim_time, Csim_IO)
 !!        type(time_data), intent(in) :: time_d
-!!        type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
+!!        type(SPH_dynamic_model_coefs), intent(in) :: wk_sph_sgs
 !!        type(time_data), intent(inout) :: Csim_time
 !!        type(field_IO), intent(inout) :: Csim_IO
 !
@@ -30,6 +30,7 @@
       use t_sph_filtering
       use t_time_data
       use t_field_data_IO
+      use t_SPH_dynamic_model_coefs
 !
       implicit none
 !
@@ -48,7 +49,7 @@
 !
       integer(kind = kint), intent(inout) :: ierr
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
-      type(SPH_dynamic_model_data), intent(inout) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !
       integer(kind = kint) :: i_fld, j_fld
 !
@@ -97,7 +98,7 @@
       use cal_minmax_and_stacks
       use const_global_element_ids
 !
-      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(in) :: wk_sph_sgs
       type(field_IO), intent(inout) :: Csim_IO
 !
 !
@@ -128,7 +129,7 @@
 !
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
       type(time_data), intent(in) :: time_d
-      type(SPH_dynamic_model_data), intent(in) :: wk_sph_sgs
+      type(SPH_dynamic_model_coefs), intent(in) :: wk_sph_sgs
 !
       type(time_data), intent(inout) :: Csim_time
       type(field_IO), intent(inout) :: Csim_IO
