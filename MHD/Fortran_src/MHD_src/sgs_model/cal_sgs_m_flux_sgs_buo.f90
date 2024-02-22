@@ -223,9 +223,16 @@
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                         &
      &      Csim_SGS_tbuo%iak_Csim, Csim_SGS_tbuo%icomp_Csim,           &
      &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
-        call clippging_sgs_diff_coefs(SGS_par%iflag_SGS_initial,        &
-     &      SGS_par%model_p, ncomp_sgs_buo,                             &
-     &      Csim_SGS_tbuo%iak_Csim, Csim_SGS_tbuo%icomp_Csim, wk_sgs)
+        call clippging_sgs_coefs(SGS_par%iflag_SGS_initial,             &
+     &      SGS_par%model_p, ncomp_sgs_buo, wk_sgs%nlayer,              &
+     &      wk_sgs%fld_coef(1,Csim_SGS_tbuo%iak_Csim),                  &
+     &      wk_sgs%comp_coef(1,Csim_SGS_tbuo%icomp_Csim),               &
+     &      wk_sgs%fld_whole(Csim_SGS_tbuo%iak_Csim),                   &
+     &      wk_sgs%comp_whole(Csim_SGS_tbuo%icomp_Csim),                &
+     &      wk_sgs%fld_clip(1,Csim_SGS_tbuo%iak_Csim),                  &
+     &      wk_sgs%comp_clip(1,Csim_SGS_tbuo%icomp_Csim),               &
+     &      wk_sgs%fld_whole_clip(Csim_SGS_tbuo%iak_Csim),              &
+     &      wk_sgs%comp_whole_clip(Csim_SGS_tbuo%icomp_Csim))
       end if
       if(fl_prop%iflag_4_composit_buo) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, isix,       &
@@ -236,9 +243,16 @@
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                         &
      &      Csim_SGS_cbuo%iak_Csim, Csim_SGS_cbuo%icomp_Csim,           &
      &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
-        call clippging_sgs_diff_coefs                                   &
-     &     (SGS_par%iflag_SGS_initial, SGS_par%model_p, ncomp_sgs_buo,  &
-     &      Csim_SGS_cbuo%iak_Csim, Csim_SGS_cbuo%icomp_Csim, wk_sgs)
+        call clippging_sgs_coefs(SGS_par%iflag_SGS_initial,             &
+     &      SGS_par%model_p, ncomp_sgs_buo, wk_sgs%nlayer,              &
+     &      wk_sgs%fld_coef(1,Csim_SGS_cbuo%iak_Csim),                  &
+     &      wk_sgs%comp_coef(1,Csim_SGS_cbuo%icomp_Csim),               &
+     &      wk_sgs%fld_whole(Csim_SGS_cbuo%iak_Csim),                   &
+     &      wk_sgs%comp_whole(Csim_SGS_cbuo%icomp_Csim),                &
+     &      wk_sgs%fld_clip(1,Csim_SGS_cbuo%iak_Csim),                  &
+     &      wk_sgs%comp_clip(1,Csim_SGS_cbuo%icomp_Csim),               &
+     &      wk_sgs%fld_whole_clip(Csim_SGS_cbuo%iak_Csim),              &
+     &      wk_sgs%comp_whole_clip(Csim_SGS_cbuo%icomp_Csim))
       end if
 !
       call mod_Csim_by_SGS_buoyancy_ele                                 &

@@ -136,7 +136,7 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, toroidal, grid data'
+     &             'transform, poloidal, grid data'
       end if
 !
       trns_back%nfield = 0

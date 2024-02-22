@@ -95,37 +95,52 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_model_coefficient), intent(inout) :: Csim
 !
+
 !
       call cal_ave_rms_sgs_dynamic                                      &
      &   (layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    Csim%num_comp, Csim%icomp_Csim, n_int,                        &
-     &    wk_sgs%nlayer, wk_sgs%ntot_comp,                              &
-     &    wk_sgs%ave_simi, wk_sgs%ave_grad, wk_sgs%rms_simi,            &
-     &    wk_sgs%rms_grad, wk_sgs%ratio,                                &
-     &    wk_sgs%ave_simi_w, wk_sgs%ave_grad_w, wk_sgs%rms_simi_w,      &
-     &    wk_sgs%rms_grad_w, wk_sgs%ratio_w, wk_cor)
+     &    Csim%num_comp, n_int, wk_sgs%nlayer,                          &
+     &    wk_sgs%ave_simi(1,1), wk_sgs%ave_grad(1,1),                   &
+     &    wk_sgs%rms_simi(1,Csim%icomp_Csim),                           &
+     &    wk_sgs%rms_grad(1,Csim%icomp_Csim),                           &
+     &    wk_sgs%ratio(1,Csim%icomp_Csim),                              &
+     &    wk_sgs%ave_simi_w(1), wk_sgs%ave_grad_w(1),                   &
+     &    wk_sgs%rms_simi_w(Csim%icomp_Csim),                           &
+     &    wk_sgs%rms_grad_w(Csim%icomp_Csim),                           &
+     &    wk_sgs%ratio_w(Csim%icomp_Csim), wk_cor)
 !
       call cal_correlate_sgs_dynamic                                    &
      &   (layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
-     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    Csim%num_comp, Csim%icomp_Csim, n_int,                        &
-     &    wk_sgs%nlayer, wk_sgs%ntot_comp, wk_sgs%ave_simi,             &
-     &    wk_sgs%ave_grad, wk_sgs%corrilate, wk_sgs%covariant,          &
-     &    wk_sgs%corrilate_w, wk_sgs%covariant_w, wk_cor)
+     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, Csim%num_comp, n_int, &
+     &    wk_sgs%nlayer, wk_sgs%ave_simi(1,1), wk_sgs%ave_grad(1,1),    &
+     &    wk_sgs%corrilate(1,Csim%icomp_Csim),                          &
+     &    wk_sgs%covariant(1,Csim%icomp_Csim),                          &
+     &    wk_sgs%corrilate_w(Csim%icomp_Csim),                          &
+     &    wk_sgs%covariant_w(Csim%icomp_Csim), wk_cor)
 !
       call cal_model_coef_4_flux(SGS_par%model_p%iflag_Csim_marging,    &
      &    layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    Csim%num_comp, Csim%iak_Csim, Csim%icomp_Csim, n_int,         &
-     &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
-     &    wk_sgs%corrilate, wk_sgs%corrilate_w, wk_sgs%fld_coef,        &
-     &    wk_sgs%comp_coef, wk_sgs%fld_whole, wk_sgs%comp_whole,        &
+     &    Csim%num_comp, n_int, wk_sgs%nlayer,                          &
+     &    wk_sgs%corrilate(1,Csim%icomp_Csim),                          &
+     &    wk_sgs%corrilate_w(Csim%icomp_Csim),                          &
+     &    wk_sgs%fld_coef(1,Csim%iak_Csim),                             &
+     &    wk_sgs%comp_coef(1,Csim%icomp_Csim),                          &
+     &    wk_sgs%fld_whole(Csim%iak_Csim),                              &
+     &    wk_sgs%comp_whole(Csim%icomp_Csim),                           &
      &    wk_lsq)
 !
-      call clippging_sgs_diff_coefs                                     &
-     &   (SGS_par%iflag_SGS_initial, SGS_par%model_p,                   &
-     &    Csim%num_comp, Csim%iak_Csim, Csim%icomp_Csim, wk_sgs)
+      call clippging_sgs_coefs(SGS_par%iflag_SGS_initial,               &
+     &    SGS_par%model_p, Csim%num_comp, wk_sgs%nlayer,                &
+     &    wk_sgs%fld_coef(1,Csim%iak_Csim),                             &
+     &    wk_sgs%comp_coef(1,Csim%icomp_Csim),                          &
+     &    wk_sgs%fld_whole(Csim%iak_Csim),                              &
+     &    wk_sgs%comp_whole(Csim%icomp_Csim),                           &
+     &    wk_sgs%fld_clip(1,Csim%iak_Csim),                             &
+     &    wk_sgs%comp_clip(1,Csim%icomp_Csim),                          &
+     &    wk_sgs%fld_whole_clip(Csim%iak_Csim),                         &
+     &    wk_sgs%comp_whole_clip(Csim%icomp_Csim))
 !
       call sel_model_coefs_2_ele(ele, layer_tbl%e_grp, itype_csim,      &
      &                           wk_sgs, Csim)
@@ -289,31 +304,47 @@
       type(SGS_model_coefficient), intent(inout) :: Cdiff
 !
 !
-      call cal_ave_rms_sgs_dynamic(layer_tbl, node, ele, iphys_SGS_wk,  &
-     &    nod_fld, g_FEM, jac_3d_q, jac_3d_l, numdir, Cdiff%icomp_Csim, &
-     &    n_int, wk_diff%nlayer, wk_diff%ntot_comp,                     &
-     &    wk_diff%ave_simi, wk_diff%ave_grad, wk_diff%rms_simi,         &
-     &    wk_diff%rms_grad, wk_diff%ratio,                              &
-     &    wk_diff%ave_simi_w, wk_diff%ave_grad_w, wk_diff%rms_simi_w,   &
-     &    wk_diff%rms_grad_w, wk_diff%ratio_w, wk_cor)
+      call cal_ave_rms_sgs_dynamic                                      &
+     &   (layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
+     &    g_FEM, jac_3d_q, jac_3d_l, numdir, n_int, wk_diff%nlayer,     &
+     &    wk_diff%ave_simi(1,1), wk_diff%ave_grad(1,1),                 &
+     &    wk_diff%rms_simi(1,Cdiff%icomp_Csim),                         &
+     &    wk_diff%rms_grad(1,Cdiff%icomp_Csim),                         &
+     &    wk_diff%ratio(1,Cdiff%icomp_Csim),                            &
+     &    wk_diff%ave_simi_w(1), wk_diff%ave_grad_w(1),                 &
+     &    wk_diff%rms_simi_w(Cdiff%icomp_Csim),                         &
+     &    wk_diff%rms_grad_w(Cdiff%icomp_Csim),                         &
+     &    wk_diff%ratio_w(Cdiff%icomp_Csim), wk_cor)
 !
       call cal_correlate_sgs_dynamic                                    &
      &   (layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
-     &    g_FEM, jac_3d_q, jac_3d_l, numdir, Cdiff%icomp_Csim, n_int,   &
-     &    wk_diff%nlayer, wk_diff%ntot_comp, wk_diff%ave_simi,          &
-     &    wk_diff%ave_grad, wk_diff%corrilate, wk_diff%covariant,       &
-     &    wk_diff%corrilate_w, wk_diff%covariant_w, wk_cor)
+     &    g_FEM, jac_3d_q, jac_3d_l, numdir, n_int,                     &
+     &    wk_diff%nlayer, wk_diff%ave_simi(1,1), wk_diff%ave_grad(1,1), &
+     &    wk_diff%corrilate(1,Cdiff%icomp_Csim),                        &
+     &    wk_diff%covariant(1,Cdiff%icomp_Csim),                        &
+     &    wk_diff%corrilate_w(Cdiff%icomp_Csim),                        &
+     &    wk_diff%covariant_w(Cdiff%icomp_Csim), wk_cor)
 !
-      call cal_model_coef_4_flux                                        &
-    &    (SGS_param%iflag_Csim_marging, layer_tbl,                      &
-     &    node, ele, iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
-     &    numdir, Cdiff%iak_Csim, Cdiff%icomp_Csim, n_int,              &
-     &    wk_diff%nlayer, wk_diff%num_kinds, wk_diff%ntot_comp,         &
-     &    wk_diff%corrilate, wk_diff%corrilate_w, wk_diff%fld_coef,     &
-     &    wk_diff%comp_coef, wk_diff%fld_whole, wk_diff%comp_whole,     &
+      call cal_model_coef_4_flux(SGS_param%iflag_Csim_marging,          &
+     &    layer_tbl, node, ele, iphys_SGS_wk, nod_fld,                  &
+     &    g_FEM, jac_3d_q, jac_3d_l, numdir, n_int, wk_diff%nlayer,     &
+     &    wk_diff%corrilate(1,Cdiff%icomp_Csim),                        &
+     &    wk_diff%corrilate_w(Cdiff%icomp_Csim),                        &
+     &    wk_diff%fld_coef(1,Cdiff%iak_Csim),                           &
+     &    wk_diff%comp_coef(1,Cdiff%icomp_Csim),                        &
+     &    wk_diff%fld_whole(Cdiff%iak_Csim),                            &
+     &    wk_diff%comp_whole(Cdiff%icomp_Csim),                         &
      &    wk_lsq)
-      call clippging_sgs_diff_coefs(iflag_SGS_initial, SGS_param,       &
-     &    numdir, Cdiff%iak_Csim, Cdiff%icomp_Csim, wk_diff)
+      call clippging_sgs_coefs                                          &
+     &   (iflag_SGS_initial, SGS_param, numdir, wk_diff%nlayer,         &
+     &    wk_diff%fld_coef(1,Cdiff%iak_Csim),                           &
+     &    wk_diff%comp_coef(1,Cdiff%icomp_Csim),                        &
+     &    wk_diff%fld_whole(Cdiff%iak_Csim),                            &
+     &    wk_diff%comp_whole(Cdiff%icomp_Csim),                         &
+     &    wk_diff%fld_clip(1,Cdiff%iak_Csim),                           &
+     &    wk_diff%comp_clip(1,Cdiff%icomp_Csim),                        &
+     &    wk_diff%fld_whole_clip(Cdiff%iak_Csim),                       &
+     &    wk_diff%comp_whole_clip(Cdiff%icomp_Csim))
 !
       call set_diff_coefs_layer_ele                                     &
      &   (ele, layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,       &
@@ -354,26 +385,38 @@
       type(SGS_model_coefficient), intent(inout) :: Cdiff
 !
 !
-      call cal_ave_rms_diff_area(iele_fsmp_stack,                       &
-     &    node, ele, iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
-     &    numdir, Cdiff%icomp_Csim, n_int, volume_d, wk_diff%ntot_comp, &
-     &    wk_diff%ave_simi_w, wk_diff%ave_grad_w, wk_diff%rms_simi_w,   &
-     &    wk_diff%rms_grad_w, wk_diff%ratio_w, wk_cor)
+      call cal_ave_rms_diff_area                                        &
+     &   (iele_fsmp_stack, node, ele, iphys_SGS_wk, nod_fld,            &
+     &    g_FEM, jac_3d_q, jac_3d_l, numdir, n_int, volume_d,           &
+     &    wk_diff%ave_simi_w(1), wk_diff%ave_grad_w(1),                 &
+     &    wk_diff%rms_simi_w(Cdiff%icomp_Csim),                         &
+     &    wk_diff%rms_grad_w(Cdiff%icomp_Csim),                         &
+     &    wk_diff%ratio_w(Cdiff%icomp_Csim), wk_cor)
 !
-      call cal_correlate_diff_area(layer_tbl, iele_fsmp_stack,          &
-     &    node, ele, iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
-     &    numdir, Cdiff%icomp_Csim, n_int, wk_diff%ntot_comp,           &
-     &    wk_diff%ave_simi_w, wk_diff%ave_grad_w,                       &
-     &    wk_diff%corrilate_w, wk_diff%covariant_w, wk_cor)
+      call cal_correlate_diff_area                                      &
+     &   (layer_tbl, iele_fsmp_stack, node, ele, iphys_SGS_wk, nod_fld, &
+     &    g_FEM, jac_3d_q, jac_3d_l, numdir, n_int,                     &
+     &    wk_diff%ave_simi_w(1), wk_diff%ave_grad_w(1),                 &
+     &    wk_diff%corrilate_w(Cdiff%icomp_Csim),                        &
+     &    wk_diff%covariant_w(Cdiff%icomp_Csim), wk_cor)
 !
-      call cal_lsq_diff_coef                                            &
-     &   (SGS_param%iflag_Csim_marging, iele_fsmp_stack,                &
-     &    node, ele, iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
-     &    numdir, Cdiff%iak_Csim, Cdiff%icomp_Csim, n_int,              &
-     &    wk_diff%num_kinds, wk_diff%ntot_comp, wk_diff%corrilate_w,    &
-     &    wk_diff%fld_whole, wk_diff%comp_whole, wk_lsq)
-      call clippging_sgs_diff_coefs(iflag_SGS_initial, SGS_param,       &
-     &    numdir, Cdiff%iak_Csim, Cdiff%icomp_Csim, wk_diff)
+      call cal_lsq_diff_coef(SGS_param%iflag_Csim_marging,              &
+     &    iele_fsmp_stack, node, ele, iphys_SGS_wk, nod_fld,            &
+     &    g_FEM, jac_3d_q, jac_3d_l, numdir, n_int,                     &
+     &    wk_diff%corrilate_w(Cdiff%icomp_Csim),                        &
+     &    wk_diff%fld_whole(Cdiff%iak_Csim),                            &
+     &    wk_diff%comp_whole(Cdiff%icomp_Csim), wk_lsq)
+      call clippging_sgs_coefs                                          &
+     &   (iflag_SGS_initial, SGS_param, numdir, wk_diff%nlayer,         &
+     &    wk_diff%fld_coef(1,Cdiff%iak_Csim),                           &
+     &    wk_diff%comp_coef(1,Cdiff%icomp_Csim),                        &
+     &    wk_diff%fld_whole(Cdiff%iak_Csim),                            &
+     &    wk_diff%comp_whole(Cdiff%icomp_Csim),                         &
+     &    wk_diff%fld_clip(1,Cdiff%iak_Csim),                           &
+     &    wk_diff%comp_clip(1,Cdiff%icomp_Csim),                        &
+     &    wk_diff%fld_whole_clip(Cdiff%iak_Csim),                       &
+     &    wk_diff%comp_whole_clip(Cdiff%icomp_Csim))
+!
       call set_diff_coefs_whole_ele(ele, iele_fsmp_stack,               &
      &    wk_diff%fld_whole_clip(Cdiff%iak_Csim), Cdiff%coef(1,1))
 !

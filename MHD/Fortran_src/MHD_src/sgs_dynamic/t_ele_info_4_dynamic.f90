@@ -34,14 +34,15 @@
 !
         real(kind = kreal), allocatable    :: ave_simi(:,:)
         real(kind = kreal), allocatable    :: ave_grad(:,:)
+        real(kind = kreal) :: ave_simi_w(6)
+        real(kind = kreal) :: ave_grad_w(6)
+!
         real(kind = kreal), allocatable    :: rms_simi(:,:)
         real(kind = kreal), allocatable    :: rms_grad(:,:)
         real(kind = kreal), allocatable    :: corrilate(:,:)
         real(kind = kreal), allocatable    :: covariant(:,:)
         real(kind = kreal), allocatable    :: ratio(:,:)
 !
-        real(kind = kreal), allocatable    :: ave_simi_w(:)
-        real(kind = kreal), allocatable    :: ave_grad_w(:)
         real(kind = kreal), allocatable    :: rms_simi_w(:)
         real(kind = kreal), allocatable    :: rms_grad_w(:)
         real(kind = kreal), allocatable    :: corrilate_w(:)
@@ -80,15 +81,13 @@
        allocate(wk_dmc%fld_whole(wk_dmc%num_kinds) )
        allocate(wk_dmc%name(wk_dmc%num_kinds) )
 !
-       allocate(wk_dmc%ave_simi(wk_dmc%nlayer, wk_dmc%ntot_comp) )
-       allocate(wk_dmc%ave_grad(wk_dmc%nlayer, wk_dmc%ntot_comp) )
+       allocate(wk_dmc%ave_simi(wk_dmc%nlayer, 6) )
+       allocate(wk_dmc%ave_grad(wk_dmc%nlayer, 6) )
        allocate(wk_dmc%rms_simi(wk_dmc%nlayer, wk_dmc%ntot_comp) )
        allocate(wk_dmc%rms_grad(wk_dmc%nlayer, wk_dmc%ntot_comp) )
        allocate(wk_dmc%corrilate(wk_dmc%nlayer, wk_dmc%ntot_comp) )
        allocate(wk_dmc%covariant(wk_dmc%nlayer, wk_dmc%ntot_comp) )
        allocate(wk_dmc%ratio(wk_dmc%nlayer, wk_dmc%ntot_comp) )
-       allocate(wk_dmc%ave_simi_w(wk_dmc%ntot_comp) )
-       allocate(wk_dmc%ave_grad_w(wk_dmc%ntot_comp) )
        allocate(wk_dmc%rms_simi_w(wk_dmc%ntot_comp) )
        allocate(wk_dmc%rms_grad_w(wk_dmc%ntot_comp) )
        allocate(wk_dmc%corrilate_w(wk_dmc%ntot_comp) )
@@ -124,8 +123,6 @@
           wk_dmc%ratio =     zero
         end if
  !
-        wk_dmc%ave_simi_w =  zero
-        wk_dmc%ave_grad_w =  zero
         wk_dmc%rms_simi_w =  zero
         wk_dmc%rms_grad_w =  zero
         wk_dmc%corrilate_w = zero
@@ -153,7 +150,6 @@
        deallocate(wk_dmc%rms_simi, wk_dmc%rms_grad)
        deallocate(wk_dmc%corrilate, wk_dmc%covariant)
        deallocate(wk_dmc%ratio)
-       deallocate(wk_dmc%ave_simi_w,  wk_dmc%ave_grad_w)
        deallocate(wk_dmc%rms_simi_w,  wk_dmc%rms_grad_w)
        deallocate(wk_dmc%corrilate_w, wk_dmc%covariant_w)
        deallocate(wk_dmc%ratio_w)

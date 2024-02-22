@@ -90,7 +90,7 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table ',                  &
-     &             'transform, poloidal, toroidal, grid data'
+     &             'transform, poloidal, grid data'
       end if
 !
       trns_bwd%nfield = 0
@@ -131,7 +131,7 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, toroidal, grid data'
+     &             'transform, poloidal, grid data'
       end if
 !
       trns_fwd%nfield = 0
@@ -163,7 +163,7 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, toroidal, grid data'
+     &             'transform, poloidal, grid data'
       end if
 !
       trns_bwd%nfield = 0
@@ -208,7 +208,7 @@
 !
      if(iflag_debug .gt. 0) then
         write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, toroidal, grid data'
+     &             'transform, poloidal, grid data'
       end if
 !
       trns_fwd%nfield = 0

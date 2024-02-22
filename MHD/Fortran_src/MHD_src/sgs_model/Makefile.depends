@@ -120,7 +120,7 @@ reordering_element_size.o: $(MHD_SGS_DIR)/reordering_element_size.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 set_3d_filtering_group_id.o: $(MHD_SGS_DIR)/set_3d_filtering_group_id.f90 m_precision.o m_machine_parameter.o t_SGS_control_parameter.o t_filter_coefficients.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_sgs_diff_model_coefs.o: $(MHD_SGS_DIR)/set_sgs_diff_model_coefs.f90 m_precision.o m_machine_parameter.o m_constants.o t_geometry_data.o t_group_data.o t_FEM_SGS_model_coefs.o t_ele_info_4_dynamic.o t_SGS_control_parameter.o calypso_mpi.o delete_field_smp.o
+set_sgs_diff_model_coefs.o: $(MHD_SGS_DIR)/set_sgs_diff_model_coefs.f90 m_precision.o m_machine_parameter.o m_constants.o t_geometry_data.o t_group_data.o t_FEM_SGS_model_coefs.o calypso_mpi.o t_SGS_control_parameter.o delete_field_smp.o t_ele_info_4_dynamic.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sgs_terms_2_each_ele.o: $(MHD_SGS_DIR)/sgs_terms_2_each_ele.f90 m_precision.o m_machine_parameter.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

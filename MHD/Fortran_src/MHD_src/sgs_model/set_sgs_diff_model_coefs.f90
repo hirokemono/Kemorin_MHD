@@ -9,12 +9,23 @@
 !>@brief Set model coefficients for scalars
 !!
 !!@verbatim
-!!      subroutine clippging_sgs_diff_coefs(iflag_SGS_initial,          &
-!!     &          SGS_param, numdir, ifield_d, icomp_f, wk_sgs)
+!!      subroutine clippging_sgs_coefs                                  &
+!!     &         (iflag_SGS_initial, SGS_param, numdir, nlayer_SGS,     &
+!!     &          sgs_f_coef, sgs_c_coef, sgs_f_whole, sgs_c_whole,     &
+!!     &          sgs_f_clip, sgs_c_clip, sgs_fw_clip, sgs_cw_clip)
 !!        integer(kind = kint), intent(in) :: iflag_SGS_initial
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        integer(kind = kint), intent(in) :: numdir
+!!        integer (kind = kint), intent(in) :: nlayer_SGS
+!!        real(kind = kreal), intent(in)  :: sgs_f_coef(nlayer_SGS)
+!!        real(kind = kreal), intent(in) :: sgs_c_coef(nlayer_SGS,numdir)
+!!        real(kind = kreal), intent(in) :: sgs_f_whole
+!!        real(kind = kreal), intent(in) :: sgs_c_whole(numdir)
+!!        real(kind = kreal), intent(inout):: sgs_f_clip(nlayer_SGS)
+!!        real(kind = kreal), intent(inout):: sgs_c_clip(nlayer_SGS,numdir)
+!!        real(kind = kreal), intent(inout):: sgs_fw_clip
+!!        real(kind = kreal), intent(inout):: sgs_cw_clip(numdir)
+!
 !!
 !!      subroutine clear_model_coefs_2_ele(ele, Csim)
 !!      subroutine sel_model_coefs_2_ele(ele, layer_egrp, itype_csim,   &
@@ -48,7 +59,6 @@
 !
       implicit none
 !
-      private :: clippging_sgs_coefs
       private :: delete_negative_coefs, ignore_negative_coefs
       private :: init_negative_coefs, copy_sgs_coefs
       private :: each_comps_model_coefs_2_ele, field_model_coefs_2_ele
@@ -57,31 +67,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine clippging_sgs_diff_coefs(iflag_SGS_initial,            &
-     &          SGS_param, numdir, ifield_d, icomp_f, wk_sgs)
-!
-      use t_ele_info_4_dynamic
-      use t_SGS_control_parameter
-!
-      integer(kind = kint), intent(in) :: iflag_SGS_initial
-      integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(dynamic_model_data), intent(inout) :: wk_sgs
-!
-!
-      call clippging_sgs_coefs                                          &
-     &   (iflag_SGS_initial, SGS_param, numdir, wk_sgs%nlayer,          &
-     &    wk_sgs%fld_coef(1,ifield_d), wk_sgs%comp_coef(1,icomp_f),     &
-     &    wk_sgs%fld_whole(ifield_d), wk_sgs%comp_whole(icomp_f),       &
-     &    wk_sgs%fld_clip(1,ifield_d), wk_sgs%comp_clip(1,icomp_f),     &
-     &    wk_sgs%fld_whole_clip(ifield_d),                              &
-     &    wk_sgs%comp_whole_clip(icomp_f))
-!
-      end subroutine clippging_sgs_diff_coefs
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine clippging_sgs_coefs                                    &
@@ -98,8 +83,7 @@
       integer(kind = kint), intent(in) :: numdir
       integer (kind = kint), intent(in) :: nlayer_SGS
 !
-      real(kind = kreal), intent(in)                                    &
-     &          :: sgs_f_coef(nlayer_SGS)
+      real(kind = kreal), intent(in)  :: sgs_f_coef(nlayer_SGS)
       real(kind = kreal), intent(in) :: sgs_c_coef(nlayer_SGS,numdir)
       real(kind = kreal), intent(in) :: sgs_f_whole
       real(kind = kreal), intent(in) :: sgs_c_whole(numdir)
