@@ -9,9 +9,10 @@
 !!@verbatim
 !!      subroutine axis_direction_in_screen(pvr_screen)
 !!        type(pvr_projected_position), intent(inout) :: pvr_screen
-!!      subroutine set_pvr_axislabel                                    &
-!!     &         (num_pixel, n_pvr_pixel, pvr_screen, rgba_gl)
+!!      subroutine set_pvr_axislabel(num_pixel, n_pvr_pixel, iscale,    &
+!!     &                             pvr_screen, rgba_gl)
 !!        integer(kind = kint), intent(in) :: num_pixel
+!!        integer(kind = kint), intent(in) :: iscale
 !!        integer(kind = kint), intent(in) :: n_pvr_pixel(2)
 !!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!        real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
@@ -57,8 +58,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_axislabel                                      &
-     &         (num_pixel, n_pvr_pixel, pvr_screen, rgba_gl)
+      subroutine set_pvr_axislabel(num_pixel, n_pvr_pixel, iscale,      &
+     &                             pvr_screen, rgba_gl)
 !
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
@@ -66,6 +67,7 @@
       use draw_pvr_colorbar_nums
 !
       integer(kind = kint), intent(in) :: num_pixel
+      integer(kind = kint), intent(in) :: iscale
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
 !
       type(pvr_projected_position), intent(in) :: pvr_screen
@@ -85,7 +87,7 @@
         rmax = max(rmax,r)
       end do
 !
-      length = 30
+      length = 30 * iscale
 !      length =  int(0.13 * rmax * min(n_pvr_pixel(1),n_pvr_pixel(2)))
       rmax = one / rmax
       do m = 1, 3
@@ -106,7 +108,7 @@
         ist_px = ist_px + int(rlen, KIND(ist_px))
         ist_py = ist_py + int(rhgt, KIND(ist_py))
 !
-        call set_one_label(axis_label(n), ione, ist_px, ist_py,         &
+        call set_one_label(axis_label(n), iscale, ist_px, ist_py,       &
      &      n_pvr_pixel, num_pixel, rgba_gl)
       end do
 !
