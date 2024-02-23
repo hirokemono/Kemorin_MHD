@@ -26,8 +26,6 @@
       implicit none
 !
 !
-      integer(kind = kint), parameter, private :: BAR_WIDTH = 12
-!
       private :: draw_bottom_pvr_colorbar, gen_bottom_colormark
       private :: draw_left_pvr_colorbar, gen_right_colormark
 !
@@ -121,7 +119,7 @@
       integer(kind = kint):: isleeve_bar
 !
 !
-      isleeve_bar = BAR_WIDTH + 6 + 8 * 9
+      isleeve_bar = l_bar_width() + 6 + 8 * 9
       isleeve_bar = isleeve_bar + 8                                     &
      &                  - mod((isleeve_bar-ione),ifour)
 !
@@ -166,7 +164,7 @@
       integer(kind = kint):: isleeve_bar
 !
 !
-      isleeve_bar = (BAR_WIDTH + 6 + 8 * 9) * iscale
+      isleeve_bar = (l_bar_width() + 6 + 8 * 9) * iscale
       isleeve_bar = isleeve_bar + ithree                                &
      &                  - mod((isleeve_bar-ione),ifour) 
 !
@@ -238,19 +236,19 @@
      &      color_param%num_pvr_datamap_pnt,                            &
      &      color_param%pvr_datamap_param, value, color)
 !
-        do j = jst_h, jst_h+iscale*BAR_WIDTH/2-1
+        do j = jst_h, jst_h+iscale*l_bar_width()/2-1
           inod = (j-1)*npix_img(1) + i
           dimage(1:3,inod) = color(1:3) * opa_current
           dimage(4,inod) = one
         end do
-        do j = jst_h+iscale*BAR_WIDTH/2, jst_h+iscale*BAR_WIDTH
+        do j = jst_h+iscale*l_bar_width()/2, jst_h+iscale*l_bar_width()
           inod = (j-1)*npix_img(1) + i
           dimage(1:3,inod) = color(1:3)
           dimage(4,inod) = one
         end do
       end do
 !
-      do i = -(iscale-1)/4, (iscale-1)/4
+      do i = -iscale/4, (iscale+1)/4
         do j = jst_h, jed_h
           inod = (j-1)*npix_img(1) + ist_h+i
           dimage(1:4,inod) = one
@@ -259,7 +257,7 @@
         end do
       end do
 !
-      do j = -(iscale-1)/4, (iscale-1)/4
+      do j = -iscale/4, (iscale+1)/4
         do i = ist_h, ied_h
           inod = i + (jst_h+j-1)*npix_img(1)
           dimage(1:4,inod) = one
@@ -321,19 +319,19 @@
      &      color_param%num_pvr_datamap_pnt,                            &
      &      color_param%pvr_datamap_param, value, color)
 !
-        do i = ist, ist+iscale*BAR_WIDTH/2-1
+        do i = ist, ist+iscale*l_bar_width()/2-1
           inod = j*npix_img(1) + i + 1
           dimage(1:3,inod) = color(1:3)
           dimage(4,inod) = one
         end do
-        do i = ist+iscale*BAR_WIDTH/2, ist+iscale*BAR_WIDTH-1
+        do i = ist+iscale*l_bar_width()/2, ist+iscale*l_bar_width()-1
           inod = j*npix_img(1) + i + 1
           dimage(1:3,inod) = color(1:3) * opa_current
           dimage(4,inod) = one
         end do
       end do
 !
-      do i = -(iscale-1)/4, (iscale-1)/4
+      do i = -iscale/4, (iscale+1)/4
         do j = jst, jed
           inod = j*npix_img(1) + ist + i
           dimage(1:4,inod) = one
@@ -342,7 +340,7 @@
         end do
       end do
 !
-      do j = -(iscale-1)/4, (iscale-1)/4
+      do j = -iscale/4, (iscale+1)/4
         do i = ist-1, ied
           inod = (jst+j)*npix_img(1) + i + 1
           dimage(1:4,inod) = one

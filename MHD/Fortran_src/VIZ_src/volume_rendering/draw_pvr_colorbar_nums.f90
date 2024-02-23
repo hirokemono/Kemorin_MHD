@@ -8,6 +8,7 @@
 !>@brief  Construct number bitmaps
 !!
 !!@verbatim
+!!      integer(kind = kint) function l_bar_width()
 !!      subroutine corners_4_right_colorbar                             &
 !!     &         (iscale, npix_img, isleeve_bar, ist, jst, ied, jed)
 !!      subroutine corners_4_bottom_colorbar                            &
@@ -39,13 +40,19 @@
 !
       integer(kind = kint), parameter, private :: BAR_WIDTH = iten
       integer(kind = kint), parameter, private :: NUM_LENGTH = inine
-      integer(kind = kint), parameter, private :: NUM_TLABEL = 14
+      integer(kind = kint), parameter, private :: NUM_TIMELABEL = 14
 !
       private :: set_numeric_labels
 !
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function l_bar_width()
+      l_bar_width = BAR_WIDTH
+      end function l_bar_width
 !
 !  ---------------------------------------------------------------------
 !
@@ -119,7 +126,7 @@
         call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,  &
      &      npix_img, ntot_pix, dimage)
 !
-        do j = -(iscale-1)/4, (iscale-1)/4
+        do j = -iscale/4, (iscale+1)/4
           do i = ist, ied + 4
             inod = (start_px(2)+j) * npix_img(1) + i + 1
             dimage(1:4,inod) = one
@@ -161,7 +168,7 @@
       call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,    &
      &                        npix_img, ntot_pix, dimage)
 !
-      do j = -(iscale-1)/4, (iscale-1)/4
+      do j = -iscale/4, (iscale+1)/4
         do i = ist, ied + 4
           inod = (j+start_px(2)) * npix_img(1) + i + 1
           dimage(1:4,inod) = one
@@ -207,7 +214,7 @@
         call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,  &
      &      npix_img, ntot_pix, dimage)
 !
-        do i = -(iscale-1)/4, (iscale-1)/4
+        do i = -iscale/4, (iscale+1)/4
           do j = jst_h-4, jed_h
             inod = (j-1) * npix_img(1)                                  &
      &            + ist_h + i + int(rhgt, KIND(start_px(1)))
@@ -251,7 +258,7 @@
       call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,    &
      &                        npix_img, ntot_pix, dimage)
 !
-      do i = -(iscale-1)/4, (iscale-1)/4
+      do i = -iscale/4, (iscale+1)/4
         do j = jst_h-4, jed_h
           inod = (j-1) * npix_img(1)                                    &
      &          + ist_h + i + int(rhgt, KIND(start_px(1)))
@@ -274,15 +281,15 @@
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
       integer(kind = kint) :: start_px(2)
-      character(len=NUM_TLABEL) :: t_label
+      character(len=NUM_TIMELABEL) :: t_label
 !
 !
-      start_px(1) = npix_img(1) - 8 * (NUM_TLABEL+1) * iscale
+      start_px(1) = npix_img(1) - 8 * (NUM_TIMELABEL+1) * iscale
       start_px(2) = npix_img(2) - iten - 12 * iscale
 !
       write(t_label,'(a3,1pe11.4)') 't =', time
-      call set_numeric_labels(NUM_TLABEL, t_label, iscale, start_px,    &
-     &                        npix_img, ntot_pix, dimage)
+      call set_numeric_labels(NUM_TIMELABEL, t_label, iscale,           &
+     &                        start_px, npix_img, ntot_pix, dimage)
 !
       end subroutine gen_time_label
 !

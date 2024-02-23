@@ -74,7 +74,8 @@
 !
       real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
 !
-      integer(kind = kint) :: i, j, k, l, n, m, length, ist_px, ist_py
+      integer(kind = kint) :: i, j, l, n, m, i2, j2
+      integer(kind = kint) :: length, ist_px, ist_py, inod
       real(kind = kreal) :: rlen, rhgt
       real(kind = kreal) :: r, rmax
 !
@@ -94,14 +95,18 @@
         ist_px = int(length * 1.3, KIND(ist_px))
         ist_py = int(length * 1.3, KIND(ist_py))
         n = pvr_screen%axis_order(m)
-        do l = 0, length
-          rlen = l * pvr_screen%axis_view(n,1) * rmax
-          rhgt = l * pvr_screen%axis_view(n,2) * rmax
-          i = ist_px + int(rlen, KIND(i))
-          j = ist_py + int(rhgt, KIND(j))
-          k = j*n_pvr_pixel(1) + i + 1
-          rgba_gl(n,k) = one
-          rgba_gl(4,k) = one
+        do j2 = -iscale/4, (iscale+1)/4
+          do i2 = -iscale/4, (iscale+1)/4
+            do l = 0, length
+              rlen = l * pvr_screen%axis_view(n,1) * rmax
+              rhgt = l * pvr_screen%axis_view(n,2) * rmax
+              i = ist_px + int(rlen, KIND(i))
+              j = ist_py + int(rhgt, KIND(j))
+              inod = (j+j2)*n_pvr_pixel(1) + (i+i2) + 1
+              rgba_gl(n,inod) = one
+              rgba_gl(4,inod) = one
+            end do
+          end do
         end do
         rlen = (length+10) * pvr_screen%axis_view(n,1) * rmax
         rhgt = (length+12) * pvr_screen%axis_view(n,2) * rmax
