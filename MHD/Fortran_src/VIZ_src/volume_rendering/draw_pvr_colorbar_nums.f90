@@ -119,7 +119,7 @@
      &         * dble(k-1) / dble(num_of_scale-1) + c_minmax(1)
 !
         rhgt = dble(jed-jst) * dble(k-1) / dble(num_of_scale-1)
-        start_px(1) = ist + BAR_WIDTH + ithree
+        start_px(1) = ist + iscale * BAR_WIDTH + ithree
         start_px(2) = jst + int(rhgt, KIND(start_px(1)))
 !
         write(numeric,'(1pe9.2)') value
@@ -161,7 +161,7 @@
       zero_rgb = (zero - c_minmax(1)) / (c_minmax(2) - c_minmax(1))
 !
       rhgt = zero_rgb * dble(jed-jst)
-      start_px(1) = ist + BAR_WIDTH + ithree
+      start_px(1) = ist + iscale * BAR_WIDTH + ithree
       start_px(2) = jst + int(rhgt, KIND(ntot_pix))
 !
       write(numeric,'(1pe9.2)') zero
