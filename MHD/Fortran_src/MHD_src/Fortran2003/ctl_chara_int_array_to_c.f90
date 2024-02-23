@@ -35,7 +35,7 @@
 !!     &          bind(C, NAME = 'c_store_chara_int_array')
 !!        type(c_ptr), value, intent(in) :: c_ctl
 !!        character(C_char), intent(in) :: c_in(kchara)
-!!       integer(C_int), value, intent(in) :: idx_in, i_in
+!!        integer(C_int), value, intent(in) :: idx_in, i_in
 !!
 !!      subroutine c_dealloc_chara_int_array(c_ctl)                     &
 !!     &          bind(C, NAME = 'c_dealloc_chara_int_array')

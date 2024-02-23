@@ -160,6 +160,12 @@
      &     (hd_block, c_buf%level, file_name)
         call read_control_pvr_colormap_file                             &
      &     (id_control+2, file_name, hd_block, cmap_cbar_c, c_buf)
+!
+      else if(check_begin_flag(c_buf, hd_block)) then
+        file_name = 'NO_FILE'
+        call write_included_message(hd_block, c_buf%level)
+        call read_pvr_cmap_cbar(id_control, hd_block,                   &
+     &                          cmap_cbar_c, c_buf)
       else if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
         file_name = 'NO_FILE'
 !
