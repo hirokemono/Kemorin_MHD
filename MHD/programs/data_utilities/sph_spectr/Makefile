@@ -496,6 +496,7 @@ t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
 t_sph_volume_mean_series.o \
+t_tave_stable_and_reversal.o \
 count_monitor_time_series.o \
 gz_gauss_coefs_monitor_IO.o \
 gz_spl_sph_spectr_data_IO.o \
@@ -510,6 +511,8 @@ t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
 t_sph_volume_spectr_series.o \
+t_tave_stable_and_reversal.o \
+t_sph_volume_mean_series.o \
 count_monitor_time_series.o \
 gz_gauss_coefs_monitor_IO.o \
 gz_spl_sph_spectr_data_IO.o \

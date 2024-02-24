@@ -62,6 +62,7 @@
       subroutine s_time_average_gauss_coefs                             &
      &         (flag_log, input_file_name, start_time, end_time)
 !
+      use t_sph_volume_mean_series
       use count_monitor_time_series
       use gz_gauss_coefs_monitor_IO
       use write_gauss_coefs_4_monitor
@@ -75,6 +76,10 @@
       real(kind = kreal), allocatable :: sdev_gauss(:)
       real(kind = kreal), allocatable :: prev_gauss(:)
       integer(kind = kint), allocatable :: imask(:)
+!
+      type(sph_spectr_head_labels), save :: sph_lbl_g
+      type(read_sph_spectr_data), save :: sph_IN_g
+      type(sph_volume_mean_series), save :: g_series
 !
       character(len=kchara) :: tave_pick_gauss_fname
       character(len=kchara) :: trms_pick_gauss_fname
@@ -94,46 +99,46 @@
 !       Load gauss coefficients data
       call load_gauss_coefs_time_series                                 &
      &   (flag_log, input_file_name, start_time, end_time,              &
-     &    true_start, true_end, gauss_IO_a)
+     &    true_start, true_end, gauss_IO_a, sph_IN_g, g_series)
 !
-      allocate(ave_gauss(gauss_IO_a%num_mode))
-      allocate(rms_gauss(gauss_IO_a%num_mode))
-      allocate(sdev_gauss(gauss_IO_a%num_mode))
-      allocate(prev_gauss(gauss_IO_a%num_mode))
+      allocate(ave_gauss(sph_IN_g%nfield_sph_spec))
+      allocate(rms_gauss(sph_IN_g%nfield_sph_spec))
+      allocate(sdev_gauss(sph_IN_g%nfield_sph_spec))
+      allocate(prev_gauss(sph_IN_g%nfield_sph_spec))
       allocate(imask(gauss_IO_a%n_step))
       imask(1:gauss_IO_a%n_step) = 1
 !
       call cal_time_ave_picked_sph_spectr                               &
      &   (gauss_IO_a%n_step, gauss_IO_a%d_time, imask,                  &
-     &    gauss_IO_a%num_mode, gauss_IO_a%d_gauss, ave_gauss,           &
+     &    sph_IN_g%nfield_sph_spec, gauss_IO_a%d_gauss, ave_gauss,      &
      &    rms_gauss, sdev_gauss)
 !
 !
-      do icou = 1, gauss_IO_a%num_mode
+      do icou = 1, sph_IN_g%nfield_sph_spec
         write(*,*) icou, ave_gauss(icou), rms_gauss(icou),              &
      &         sdev_gauss(icou), trim(gauss_IO_a%gauss_coef_name(icou))
       end do
 !
 !  Output time average
 !$omp parallel workshare
-      gauss_IO_a%gauss_coef(1:gauss_IO_a%num_mode)                      &
-     &      = ave_gauss(1:gauss_IO_a%num_mode)
+      gauss_IO_a%gauss_coef(1:sph_IN_g%nfield_sph_spec)                 &
+     &      = ave_gauss(1:sph_IN_g%nfield_sph_spec)
 !$omp end parallel workshare
       call s_write_gauss_coefs_4_monitor(0, tave_pick_gauss_fname,      &
      &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)
 !
 !  Output time average
 !$omp parallel workshare
-      gauss_IO_a%gauss_coef(1:gauss_IO_a%num_mode)                      &
-     &      = rms_gauss(1:gauss_IO_a%num_mode)
+      gauss_IO_a%gauss_coef(1:sph_IN_g%nfield_sph_spec)                 &
+     &      = rms_gauss(1:sph_IN_g%nfield_sph_spec)
 !$omp end parallel workshare
       call s_write_gauss_coefs_4_monitor(0, trms_pick_gauss_fname,      &
      &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)
 !
 !  Output time average
 !$omp parallel workshare
-      gauss_IO_a%gauss_coef(1:gauss_IO_a%num_mode)                      &
-     &      = sdev_gauss(1:gauss_IO_a%num_mode)
+      gauss_IO_a%gauss_coef(1:sph_IN_g%nfield_sph_spec)                 &
+     &      = sdev_gauss(1:sph_IN_g%nfield_sph_spec)
 !$omp end parallel workshare
       call s_write_gauss_coefs_4_monitor(0, sdev_pick_gauss_fname,      &
      &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)

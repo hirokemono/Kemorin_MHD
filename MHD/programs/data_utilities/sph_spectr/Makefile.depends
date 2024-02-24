@@ -116,9 +116,9 @@ sph_volume_monitor_snap_IO.o: $(SPH_UTILS_DIR)/sph_volume_monitor_snap_IO.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_append_picked_spectr_file.o: $(SPH_UTILS_DIR)/t_append_picked_spectr_file.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_pick_copy_monitor_data.o t_buffer_4_gzip.o select_gz_stream_file_IO.o t_picked_sph_spectr_data_IO.o picked_sph_spectr_data_IO.o gz_spl_sph_spectr_data_IO.o write_snap_pick_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ave_spectr_stable_and_rev.o: $(SPH_UTILS_DIR)/t_ave_spectr_stable_and_rev.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o set_parallel_file_name.o t_buffer_4_gzip.o t_read_sph_spectra.o t_sph_volume_spectr_series.o count_monitor_time_series.o gz_gauss_coefs_monitor_IO.o gz_open_sph_vol_mntr_file.o write_gauss_coefs_4_monitor.o select_gz_stream_file_IO.o gz_volume_spectr_monitor_IO.o skip_comment_f.o
+t_ave_spectr_stable_and_rev.o: $(SPH_UTILS_DIR)/t_ave_spectr_stable_and_rev.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o t_tave_stable_and_reversal.o set_parallel_file_name.o t_buffer_4_gzip.o t_read_sph_spectra.o t_sph_volume_spectr_series.o t_sph_volume_mean_series.o count_monitor_time_series.o gz_gauss_coefs_monitor_IO.o gz_open_sph_vol_mntr_file.o write_gauss_coefs_4_monitor.o select_gz_stream_file_IO.o gz_volume_spectr_monitor_IO.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ave_stable_and_reversal.o: $(SPH_UTILS_DIR)/t_ave_stable_and_reversal.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o set_parallel_file_name.o t_buffer_4_gzip.o t_read_sph_spectra.o t_sph_volume_mean_series.o count_monitor_time_series.o gz_gauss_coefs_monitor_IO.o gz_open_sph_vol_mntr_file.o select_gz_stream_file_IO.o write_gauss_coefs_4_monitor.o sph_monitor_data_text.o skip_comment_f.o
+t_ave_stable_and_reversal.o: $(SPH_UTILS_DIR)/t_ave_stable_and_reversal.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o t_tave_stable_and_reversal.o set_parallel_file_name.o t_buffer_4_gzip.o t_read_sph_spectra.o t_sph_volume_mean_series.o count_monitor_time_series.o gz_gauss_coefs_monitor_IO.o gz_open_sph_vol_mntr_file.o select_gz_stream_file_IO.o write_gauss_coefs_4_monitor.o sph_monitor_data_text.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_average_sph_ene_spec.o: $(SPH_UTILS_DIR)/t_average_sph_ene_spec.f90 m_precision.o m_constants.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o t_sph_volume_mean_series.o t_tave_sph_volume_spectr.o t_tave_sph_layer_mean.o t_tave_sph_layer_spectr.o tave_sdev_sph_layer_spec.o tave_sdev_sph_layer_mean.o tave_sdev_sph_volume_spec.o time_ave_picked_sph_spectr.o set_parallel_file_name.o count_monitor_time_series.o time_ave_sph_monitor_data.o time_ave_sph_volume_mean.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -167,6 +167,8 @@ t_tave_sph_layer_mean.o: $(SPH_UTILS_DIR)/t_tave_sph_layer_mean.f90 m_precision.
 t_tave_sph_layer_spectr.o: $(SPH_UTILS_DIR)/t_tave_sph_layer_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_buffer_4_gzip.o gz_spl_sph_spectr_data_IO.o cal_tave_sph_ene_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_tave_sph_volume_spectr.o: $(SPH_UTILS_DIR)/t_tave_sph_volume_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_buffer_4_gzip.o select_gz_stream_file_IO.o gz_volume_spectr_monitor_IO.o cal_tave_sph_ene_spectr.o gz_open_sph_vol_mntr_file.o sel_gz_input_sph_mtr_head.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_tave_stable_and_reversal.o: $(SPH_UTILS_DIR)/t_tave_stable_and_reversal.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o set_parallel_file_name.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 tave_sdev_sph_layer_mean.o: $(SPH_UTILS_DIR)/tave_sdev_sph_layer_mean.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_tave_sph_layer_mean.o t_buffer_4_gzip.o set_parallel_file_name.o select_gz_stream_file_IO.o sel_gz_input_sph_mtr_head.o count_monitor_time_series.o sph_layer_monitor_snap_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

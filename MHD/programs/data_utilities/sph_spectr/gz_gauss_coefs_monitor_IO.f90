@@ -114,8 +114,9 @@
 !
       subroutine load_gauss_coefs_time_series                           &
      &         (flag_log, file_name, start_time, end_time,              &
-     &          true_start, true_end, gauss_IO)
+     &          true_start, true_end, gauss_IO, sph_IN_g, g_series)
 !
+      use t_sph_volume_mean_series
       use gzip_file_access
       use select_gz_stream_file_IO
       use count_monitor_time_series
@@ -126,12 +127,15 @@
 !
       real(kind = kreal), intent(inout) :: true_start, true_end
       type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
+      type(read_sph_spectr_data), intent(inout) :: sph_IN_g
+      type(sph_volume_mean_series), intent(inout) :: g_series
 !
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf1
       character, pointer, save  :: FPz_f1
 !
       integer(kind = kint) :: num_count, icou_skip, ierr
+      integer(kind = kint) :: i
 !
 !
       call sel_open_read_gz_stream_file                                 &
@@ -165,6 +169,24 @@
 !
       write(*,*) 'Start step and time: ',                               &
      &           true_start, true_end, num_count
+!
+!
+      sph_IN_g%kr_inner = 0
+      sph_IN_g%kr_outer = 0
+      sph_IN_g%r_inner =  0.0d0
+      sph_IN_g%r_outer =  gauss_IO%radius_gauss
+!
+      sph_IN_g%nfield_sph_spec =  gauss_IO%num_mode
+      sph_IN_g%ntot_sph_spec =    gauss_IO%num_mode
+      sph_IN_g%num_time_labels =  2
+      call alloc_sph_espec_name(sph_IN_g)
+      sph_IN_g%ncomp_sph_spec(1:sph_IN_g%nfield_sph_spec) = 1
+      do i = 1, sph_IN_g%nfield_sph_spec
+        sph_IN_g%ene_sph_spec_name(i) = gauss_IO%gauss_coef_name(i)
+      end do
+
+      g_series%n_step =    gauss_IO%n_step
+      g_series%ntot_comp = gauss_IO%num_mode
 !
       end subroutine load_gauss_coefs_time_series
 !
@@ -234,6 +256,8 @@
       call sel_skip_comment_gz_stream(FPz_f, id_stream,                 &
      &                                flag_gzip, zbuf)
       read(zbuf%fixbuf(1),*) gauss_IO%num_mode, gauss_IO%radius_gauss
+      write(*,*) 'gauss_IO%num_mode, gauss_IO%radius_gauss', &
+     &     gauss_IO%num_mode, gauss_IO%radius_gauss
 !
       end subroutine read_gauss_coefs_header
 !
