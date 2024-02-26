@@ -318,10 +318,10 @@ t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_data_append_sph_mntr.o \
 t_gauss_coefs_monitor_IO.o \
+t_sph_volume_spectr_series.o \
 t_ctl_param_sph_series_util.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-gz_gauss_coefs_monitor_IO.o \
 write_snap_pick_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
 t_pick_copy_monitor_data.o \
@@ -338,11 +338,10 @@ t_picked_sph_spectr_data_IO.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_data_append_sph_mntr.o \
-t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
+t_sph_volume_spectr_series.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-gz_gauss_coefs_monitor_IO.o \
 write_snap_pick_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
 t_pick_copy_monitor_data.o \

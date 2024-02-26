@@ -48,7 +48,7 @@ ctl_file_sph_data_utils_IO.o: $(SPH_UTILS_DIR)/ctl_file_sph_data_utils_IO.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_file_sph_utils_IO.o: $(SPH_UTILS_DIR)/ctl_file_sph_utils_IO.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_sph_utils.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_ctl_data_4_fields.o t_ctl_data_4_time_steps.o t_ctl_data_4_sph_monitor.o t_control_array_character.o t_control_array_real.o skip_comment_f.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_sph_monitor_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/gz_gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o t_buffer_4_gzip.o select_gz_stream_file_IO.o count_monitor_time_series.o gzip_file_access.o
+gz_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/gz_gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o t_buffer_4_gzip.o gzip_file_access.o select_gz_stream_file_IO.o count_monitor_time_series.o t_sph_volume_mean_series.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_spl_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/gz_spl_sph_spectr_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_buffer_4_gzip.o gzip_file_access.o skip_gz_comment.o old_sph_spectr_data_IO.o gz_layer_mean_monitor_IO.o gz_layer_spectr_monitor_IO.o select_gz_stream_file_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -182,7 +182,7 @@ time_ave_sph_monitor_data.o: $(SPH_UTILS_DIR)/time_ave_sph_monitor_data.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 time_ave_sph_volume_mean.o: $(SPH_UTILS_DIR)/time_ave_sph_volume_mean.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_buffer_4_gzip.o t_sph_volume_mean_series.o count_monitor_time_series.o sph_monitor_data_text.o set_parallel_file_name.o sph_volume_monitor_snap_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-time_average_gauss_coefs.o: $(SPH_UTILS_DIR)/time_average_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o count_monitor_time_series.o gz_gauss_coefs_monitor_IO.o write_gauss_coefs_4_monitor.o
+time_average_gauss_coefs.o: $(SPH_UTILS_DIR)/time_average_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o count_monitor_time_series.o t_sph_volume_mean_series.o gz_gauss_coefs_monitor_IO.o write_gauss_coefs_4_monitor.o
 	$(F90) -c $(F90OPTFLAGS) $<
 time_average_sph_ene_spectr.o: $(SPH_UTILS_DIR)/time_average_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_tave_sph_volume_spectr.o count_monitor_time_series.o time_ave_sph_volume_mean.o time_ave_sph_monitor_data.o t_tave_sph_layer_mean.o tave_sdev_sph_layer_mean.o t_tave_sph_layer_spectr.o tave_sdev_sph_layer_spec.o tave_sdev_sph_volume_spec.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -136,7 +136,8 @@
         call load_gauss_coefs_time_series                               &
      &     (flag_log, tave_st_rev_param%gauss_file_name,                &
      &      tave_st_rev_param%start_time, tave_st_rev_param%end_time,   &
-     &      true_start, true_end, gauss_IO_a, sph_IN_g, g_series)
+     &      true_start, true_end, gauss_IO_a)
+        call dup_gauss_series_to_spectr(gauss_IO_a, sph_IN_g, g_series)
       else
         call load_sph_volume_mean_file                                  &
      &     (tave_st_rev_param%gauss_file_name,                          &
@@ -145,22 +146,15 @@
         write(comment_111,'(2a,a23,1p2E25.15e3,a1)') '#', char(10),     &
      &             '# Start and End time:  ', true_start, true_end,     &
      &             char(10)
-        write(*,*) size(g_series%vmean_series,1), size(g_series%vmean_series,2)
-        write(*,*) sph_IN_g%num_labels, sph_IN_g%nfield_sph_spec, size(sph_IN_g%ene_sph_spec_name)
-        do i = 1, sph_IN_g%nfield_sph_spec
-          write(*,*) i, 'sph_IN_g ', trim(sph_IN_g%ene_sph_spec_name(i))
-        end do
       end if
-      write(*,*) comment_111
-      stop
 !
       imode_g1(-1:1) = 0
       do i = 1, sph_IN_g%nfield_sph_spec
-        if(cmp_no_case(gauss_IO_a%gauss_coef_name(i), hd_g10))          &
+        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g10))          &
      &                                               imode_g1( 0) = i
-        if(cmp_no_case(gauss_IO_a%gauss_coef_name(i), hd_g11))          &
+        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_g11))          &
      &                                               imode_g1( 1) = i
-        if(cmp_no_case(gauss_IO_a%gauss_coef_name(i), hd_h11))          &
+        if(cmp_no_case(sph_IN_g%ene_sph_spec_name(i), hd_h11))          &
      &                                               imode_g1(-1) = i
       end do
       write(*,*) 'imode_g1', imode_g1( 0), imode_g1( 1), imode_g1(-1)
@@ -168,39 +162,40 @@
       allocate(ave_gauss(sph_IN_g%nfield_sph_spec,2))
       allocate(rms_gauss(sph_IN_g%nfield_sph_spec,2))
       allocate(sdev_gauss(sph_IN_g%nfield_sph_spec,2))
-      allocate(iflag_sta(gauss_IO_a%n_step))
-      allocate(iflag_rev(gauss_IO_a%n_step))
+      allocate(iflag_sta(g_series%n_step))
+      allocate(iflag_rev(g_series%n_step))
 !
       iflag_sta = 0
       iflag_rev = 0
-      do i = 1, gauss_IO_a%n_step-1
-        g10_mid = half * (gauss_IO_a%d_gauss(imode_g1( 0),i)            &
-     &                  + gauss_IO_a%d_gauss(imode_g1( 0),i+1))
+      do i = 1, g_series%n_step-1
+        g10_mid = half * (g_series%vmean_series(imode_g1( 0),i)         &
+     &                  + g_series%vmean_series(imode_g1( 0),i+1))
         if(abs(g10_mid) .le. tave_st_rev_param%border_g10)              &
      &                                        iflag_rev(i) = 1
       end do
-      iflag_sta(1:gauss_IO_a%n_step)                                    &
-     &                  = 1 - iflag_rev(1:gauss_IO_a%n_step)
+      iflag_sta(1:g_series%n_step) = 1 - iflag_rev(1:g_series%n_step)
 !
       call cal_time_ave_picked_sph_spectr                               &
-     &   (gauss_IO_a%n_step, gauss_IO_a%d_time, iflag_sta,              &
-     &    sph_IN_g%nfield_sph_spec, gauss_IO_a%d_gauss(1,1),            &
+     &   (g_series%n_step, g_series%d_time, iflag_sta,                  &
+     &    sph_IN_g%nfield_sph_spec, g_series%vmean_series(1,1),         &
      &    ave_gauss(1,1), rms_gauss(1,1), sdev_gauss(1,1))
       call cal_time_ave_picked_sph_spectr                               &
-     &   (gauss_IO_a%n_step, gauss_IO_a%d_time, iflag_rev,              &
-     &    sph_IN_g%nfield_sph_spec, gauss_IO_a%d_gauss(1,2),            &
+     &   (g_series%n_step, g_series%d_time, iflag_rev,                  &
+     &    sph_IN_g%nfield_sph_spec, g_series%vmean_series(1,2),         &
      &    ave_gauss(1,2), rms_gauss(1,2), sdev_gauss(1,2))
 !
 !
 !      do icou = 1, sph_IN_g%nfield_sph_spec
 !        write(*,*) icou, ave_gauss(icou,1), rms_gauss(icou,1),         &
-!     &       sdev_gauss(icou,1), trim(gauss_IO_a%gauss_coef_name(icou))
+!     &       sdev_gauss(icou,1), trim(sph_IN_g%ene_sph_spec_name(icou))
 !      end do
 !      do icou = 1, sph_IN_g%nfield_sph_spec
 !        write(*,*) icou, ave_gauss(icou,2), rms_gauss(icou,2),         &
-!     &       sdev_gauss(icou,2), trim(gauss_IO_a%gauss_coef_name(icou))
+!     &       sdev_gauss(icou,2), trim(sph_IN_g%ene_sph_spec_name(icou))
 !      end do
 !
+      write(*,*) 'load_sph_volume_spec_file', &
+     &           tave_st_rev_param%vpwr_file_name
       call load_sph_volume_spec_file(tave_st_rev_param%vpwr_file_name,  &
      &    tave_st_rev_param%start_time, tave_st_rev_param%end_time,     &
      &    true_start, true_end, sph_lbl_IN_p, sph_IN_p, vs_srs_p)
