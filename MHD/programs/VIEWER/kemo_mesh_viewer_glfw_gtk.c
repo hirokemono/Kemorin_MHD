@@ -204,7 +204,7 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     dealloc_kemoview_gl_texure(fliped_img);
     return;
 }
-
+/*
 static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
     struct main_buttons *mbot = (struct main_buttons *)user_data;
     gchar * text = gtk_button_get_label(button);
@@ -223,7 +223,7 @@ static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
     };
     return;
 }
-
+*/
 void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *quitButton, *copyButton;
     GtkClipboard *clipboard;
@@ -252,13 +252,18 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtkWindowclose_CB), NULL);
     copyButton = gtk_button_new_with_label("Copy");
     g_signal_connect(G_OBJECT(copyButton), "clicked", G_CALLBACK(gtkCopyToClipboard_CB), (gpointer) clipboard);
-	
+	/*
     GtkWidget *testButton = gtk_button_new_with_label("On");
+    g_signal_connect(G_OBJECT(testButton), "clicked",
+                     G_CALLBACK(gtkhidetest_CB), (gpointer) mbot);
+    */
     mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     GtkWidget *topbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    /*
     gtk_box_pack_start(GTK_BOX(topbox), testButton, TRUE, TRUE, 0);
+    */
     gtk_box_pack_start(GTK_BOX(topbox), copyButton, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(topbox), quitButton, TRUE, TRUE, 0);
 
@@ -284,10 +289,6 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     GtkWidget *vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
-
-    g_signal_connect(G_OBJECT(testButton), "clicked",
-                     G_CALLBACK(gtkhidetest_CB), (gpointer) mbot);
-
     
 	gtk_widget_show(quitButton);
     gtk_widget_show(copyButton);
