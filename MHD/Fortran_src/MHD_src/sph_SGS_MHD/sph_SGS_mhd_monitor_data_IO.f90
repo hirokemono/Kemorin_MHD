@@ -286,7 +286,9 @@
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    monitor%lor_spectr, monitor%WK_lor_spectr)
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'error_sph_vol_ms_file'
+      if(monitor%lor_spectr%num_vol_spectr .le. 0) return
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &      'error_sph_vol_ms_file in init_sph_lorentz_spectr_data'
       flag = error_sph_vol_ms_file(my_rank, monitor%ene_labels,         &
      &                             sph%sph_params, sph%sph_rj,          &
      &                             monitor%lor_spectr%v_spectr(1))
