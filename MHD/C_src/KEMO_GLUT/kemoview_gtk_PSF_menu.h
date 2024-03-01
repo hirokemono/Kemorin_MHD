@@ -37,6 +37,7 @@ struct psf_color_gtk_menu{
 	GtkWidget *switch_draw, *switch_bar;
 	
 	GtkWidget *combobox_sfcolor;
+	GtkWidget *colorcell_sfcolor;
 	
 	GtkWidget *spin_opacity1;	
 	GtkWidget *spin_range_min, *spin_digit_min; 

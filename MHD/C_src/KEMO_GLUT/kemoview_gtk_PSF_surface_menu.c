@@ -38,7 +38,7 @@ static void set_PSFcolor_GTK(struct kemoviewer_type *kemo_sgl,
 	dcolor[1] = gcolor.green;
 	dcolor[2] = gcolor.blue;
 	dcolor[3] = (gdouble) kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_OPACITY_MAX);
-	kemoview_set_PSF_single_color(kemo_sgl, dcolor);
+	kemoview_set_PSF_single_color(dcolor, kemo_sgl);
 	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR, kemo_sgl);
     draw_full(kemo_sgl);
 	return;
@@ -113,8 +113,10 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
 		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, WHITE_SURFACE, kemo_sgl);
 	}else if (index_mode == SINGLE_COLOR) {
 		kemoview_gtk_surfcolorsel(kemo_sgl, parent_window);
+    /*
 	}else if (index_mode == CHANGE_PSF_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 2);
+    */
 	}else if (index_mode == RAINBOW_PSF_SURF){
 		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, RAINBOW_SURFACE, kemo_sgl);
 	}else if (index_mode == TEXTURE_PSF_SURF){
@@ -272,7 +274,7 @@ GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_type *kemo_sgl,
 	index = append_ci_item_to_tree(index, "Contour", RAINBOW_PSF_SURF, child_model_sfcolor);
 	index = append_ci_item_to_tree(index, "White", WHITE_SURFACE, child_model_sfcolor);
 	index = append_ci_item_to_tree(index, "Single color", SINGLE_COLOR, child_model_sfcolor);
-	index = append_ci_item_to_tree(index, "Change color", CHANGE_PSF_COLOR, child_model_sfcolor);
+/*	index = append_ci_item_to_tree(index, "Change color", CHANGE_PSF_COLOR, child_model_sfcolor); */
 	index = append_ci_item_to_tree(index, "Texture", TEXTURE_PSF_SURF, child_model_sfcolor);
 	
 	GtkCellRenderer *renderer_sfcolor = gtk_cell_renderer_text_new();

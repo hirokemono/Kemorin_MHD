@@ -3377,11 +3377,11 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3787">
-                                    <rect key="frame" x="0.0" y="0.0" width="196" height="661"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="196" height="663"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Globe" translatesAutoresizingMaskIntoConstraints="NO" id="3642">
-                                            <rect key="frame" x="8" y="565" width="180" height="96"/>
+                                            <rect key="frame" x="8" y="567" width="180" height="96"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="UEG-wT-T8S">
                                                 <rect key="frame" x="3" y="3" width="174" height="78"/>
@@ -3481,7 +3481,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Time Evolution" translatesAutoresizingMaskIntoConstraints="NO" id="1071">
-                                            <rect key="frame" x="8" y="116" width="180" height="230"/>
+                                            <rect key="frame" x="8" y="121" width="180" height="230"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="ZTw-eu-QP7">
                                                 <rect key="frame" x="3" y="3" width="174" height="212"/>
@@ -3765,7 +3765,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Rotation" translatesAutoresizingMaskIntoConstraints="NO" id="633">
-                                            <rect key="frame" x="8" y="353" width="180" height="147"/>
+                                            <rect key="frame" x="8" y="355" width="180" height="147"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="3hU-ZR-xfa">
                                                 <rect key="frame" x="3" y="3" width="174" height="129"/>
@@ -3950,7 +3950,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Surface Type" translatesAutoresizingMaskIntoConstraints="NO" id="632">
-                                            <rect key="frame" x="8" y="503" width="180" height="58"/>
+                                            <rect key="frame" x="8" y="506" width="180" height="58"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="1aT-Dw-0jh">
                                                 <rect key="frame" x="3" y="3" width="174" height="40"/>
@@ -3991,7 +3991,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Quilt output" translatesAutoresizingMaskIntoConstraints="NO" id="fVb-Qy-szJ">
-                                            <rect key="frame" x="8" y="-4" width="180" height="116"/>
+                                            <rect key="frame" x="8" y="1" width="180" height="116"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="jUZ-vD-eTg">
                                                 <rect key="frame" x="3" y="3" width="174" height="98"/>
@@ -5529,7 +5529,7 @@
                                     <rect key="frame" x="10" y="133" width="229" height="118"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
                                         <rect key="frame" x="1" y="1" width="227" height="116"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                 <rect key="frame" x="0.0" y="0.0" width="227" height="93"/>
@@ -5878,7 +5878,7 @@
                         <rect key="frame" x="8" y="122" width="216" height="554"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                             <rect key="frame" x="0.0" y="0.0" width="216" height="554"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3791">
                                     <rect key="frame" x="0.0" y="0.0" width="224" height="585"/>
@@ -6403,7 +6403,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3346">
-                                                        <rect key="frame" x="148" y="72" width="19" height="25"/>
+                                                        <rect key="frame" x="148" y="71" width="19" height="27"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="NXg-dJ-WSA"/>
                                                             <constraint firstAttribute="height" constant="19" id="V6R-qg-05f"/>
@@ -6419,7 +6419,7 @@
                                                         </connections>
                                                     </stepper>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3517">
-                                                        <rect key="frame" x="148" y="41" width="19" height="25"/>
+                                                        <rect key="frame" x="148" y="40" width="19" height="27"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="H68-Ey-TyI"/>
                                                             <constraint firstAttribute="height" constant="19" id="Q2y-Ay-AQp"/>
@@ -6468,7 +6468,7 @@
                                                         </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WQ1-6O-FaN">
-                                                        <rect key="frame" x="148" y="12" width="19" height="23"/>
+                                                        <rect key="frame" x="148" y="11" width="19" height="25"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="13" id="QJI-PZ-JcP"/>
                                                             <constraint firstAttribute="height" constant="17" id="i2K-Ur-twG"/>
@@ -6634,7 +6634,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
                         <clipView key="contentView" id="zjy-Ve-9jn">
                             <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view translatesAutoresizingMaskIntoConstraints="NO" id="3767">
                                     <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
@@ -6653,7 +6653,7 @@
                                             <rect key="frame" x="20" y="244" width="154" height="145"/>
                                             <clipView key="contentView" id="sgn-Z0-9rw">
                                                 <rect key="frame" x="1" y="1" width="152" height="143"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
                                                         <rect key="frame" x="0.0" y="0.0" width="152" height="126"/>
@@ -6746,7 +6746,7 @@
                                             <rect key="frame" x="20" y="71" width="154" height="145"/>
                                             <clipView key="contentView" id="xhk-53-bjR">
                                                 <rect key="frame" x="1" y="1" width="152" height="143"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
                                                         <rect key="frame" x="0.0" y="0.0" width="152" height="126"/>
