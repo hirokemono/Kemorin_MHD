@@ -158,7 +158,7 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [self SetOpacityTables:kemo_sgl];
-//	[_fillRectView UpdateColorbar];
+	[_fillRectView UpdateColorbar];
 }
 
 

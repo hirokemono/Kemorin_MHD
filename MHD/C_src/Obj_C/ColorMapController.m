@@ -173,7 +173,7 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     [self SetColorTables:kemo_sgl];
-//	[_fillRectView UpdateColorbar];
+	[_fillRectView UpdateColorbar];
 }
 
 - (IBAction)ChooseBackgroundColorAction: (id) sender;
@@ -205,6 +205,7 @@
 	kemoview_set_PSF_color_param(ISET_COLORMAP, 
                                  (int) [_colorModeItem indexOfSelectedItem],
                                  kemo_sgl);
+	[_fillRectView UpdateColorbar];
     [_metalView UpdateImage:kemo_sgl];
 }
 
