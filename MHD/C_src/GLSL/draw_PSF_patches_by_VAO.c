@@ -17,8 +17,8 @@ void const_PSF_gl_texure_name(const int ipsf_texured,
     return;
 };
 
-void release_PSF_texture_from_gl(const int ipsf_texured, GLuint *texture_name){
-    if(ipsf_texured > 0){glDeleteTextures(1, texture_name);};
+void release_PSF_texture_from_gl(const int ipsf_texured, struct kemoview_shaders *kemo_shaders){
+    if(ipsf_texured > 0){glDeleteTextures(1, &kemo_shaders->texture_name);};
     return;
 };
 
