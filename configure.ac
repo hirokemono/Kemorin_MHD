@@ -2,7 +2,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# AC_PREREQ([2.71])
+# AC_PREREQ([2.72])
 AC_INIT([FULL-PACKAGE-NAME],[VERSION],[BUG-REPORT-ADDRESS])
 
 AM_INIT_AUTOMAKE
@@ -337,12 +337,9 @@ AC_SUBST(PNG_LIBS)
 # Checks for Cocoa framework
 if test ${USE_Cocoa} = "yes"
 then
-	X_LIBS="-L/usr/X11/lib -lX11"
-	AC_SUBST(X_LIBS)
-	
 	USE_gl = "yes"
 	GL_LIBS="-framework OpenGL  -framework CoreVideo  -framework IOKit -framework Cocoa"
-	GL_INC="-I/usr/X11/include"
+	GL_INC="${X_CFLAGS}"
 	COCOA_FLAG="-D__APPLE__"
 # Check Aquaterm
 	LIBS=""

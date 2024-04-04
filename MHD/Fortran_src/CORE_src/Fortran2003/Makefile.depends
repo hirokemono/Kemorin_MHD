@@ -1,12 +1,12 @@
-base_control_labels_to_c.o: $(F2003DIR)/base_control_labels_to_c.f90 m_precision.o ctl_data_4_time_steps_IO.o
+SGS_field_names_to_c.o: $(F2003DIR)/SGS_field_names_to_c.f90 m_precision.o t_base_field_labels.o t_control_array_character.o t_control_array_chara2int.o m_SGS_term_labels.o m_SGS_enegy_flux_labels.o m_diff_SGS_term_labels.o m_SGS_model_coef_labels.o m_filtered_field_labels.o m_grad_filter_field_labels.o m_filtered_force_labels.o m_rot_filtered_force_labels.o m_filtered_ene_flux_labels.o m_wide_filter_field_labels.o m_dble_filter_field_labels.o m_diff_filter_vect_labels.o m_wide_SGS_term_labels.o m_force_w_SGS_labels.o m_true_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 binary_file_access.o: $(F2003DIR)/binary_file_access.f90 m_precision.o t_binary_IO_buffer.o set_parallel_file_name.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 byte_swap_f.o: $(F2003DIR)/byte_swap_f.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-component_names_to_c.o: $(F2003DIR)/component_names_to_c.f90 m_precision.o t_base_field_labels.o m_component_flags.o m_more_component_flags.o
+component_names_to_c.o: $(F2003DIR)/component_names_to_c.f90 m_precision.o t_base_field_labels.o t_control_array_chara2int.o m_more_component_flags.o m_component_flags.o
 	$(F90) -c $(F90OPTFLAGS) $<
-field_names_to_c.o: $(F2003DIR)/field_names_to_c.f90 m_precision.o t_base_field_labels.o m_base_field_labels.o m_base_force_labels.o m_rot_force_labels.o m_div_force_labels.o m_energy_flux_labels.o m_grad_field_labels.o m_field_product_labels.o m_diffusion_term_labels.o m_explicit_term_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o m_energy_flux_w_sym_labels.o m_field_component_labels.o m_SGS_term_labels.o m_diff_SGS_term_labels.o m_SGS_enegy_flux_labels.o m_SGS_model_coef_labels.o m_filtered_field_labels.o m_grad_filter_field_labels.o m_filtered_force_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_filtered_ene_flux_labels.o m_wide_filter_field_labels.o m_dble_filter_field_labels.o m_diff_vector_labels.o m_diff_filter_vect_labels.o m_wide_SGS_term_labels.o m_force_w_SGS_labels.o m_true_SGS_term_labels.o
+field_names_to_c.o: $(F2003DIR)/field_names_to_c.f90 m_precision.o t_base_field_labels.o t_control_array_character.o t_control_array_chara2int.o m_base_field_labels.o m_base_force_labels.o m_rot_force_labels.o m_div_force_labels.o m_energy_flux_labels.o m_grad_field_labels.o m_field_product_labels.o m_diffusion_term_labels.o m_explicit_term_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o m_sym_ene_flux_labels.o m_energy_flux_w_sym_labels.o m_field_component_labels.o m_diff_vector_labels.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gzip_defleate.o: $(F2003DIR)/gzip_defleate.f90 m_precision.o t_buffer_4_gzip.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -14,11 +14,11 @@ gzip_file_access.o: $(F2003DIR)/gzip_file_access.f90 m_precision.o t_buffer_4_gz
 	$(F90) -c $(F90OPTFLAGS) $<
 gzip_infleate.o: $(F2003DIR)/gzip_infleate.f90 m_precision.o t_buffer_4_gzip.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_MHD_field_group.o: $(F2003DIR)/m_MHD_field_group.f90 m_precision.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_energy_flux_labels.o t_grad_field_labels.o t_field_product_labels.o t_explicit_term_labels.o t_diff_vector_labels.o m_rot_force_labels.o m_div_force_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o m_energy_flux_w_sym_labels.o t_SGS_term_labels.o t_SGS_enegy_flux_labels.o t_SGS_model_coef_labels.o m_diff_SGS_term_labels.o m_filtered_field_labels.o m_filtered_force_labels.o m_filtered_ene_flux_labels.o m_diff_filter_vect_labels.o m_div_filtered_force_labels.o m_rot_filtered_force_labels.o m_grad_filter_field_labels.o m_wide_SGS_term_labels.o m_wide_filter_field_labels.o m_dble_filter_field_labels.o m_force_w_SGS_labels.o m_true_SGS_term_labels.o m_base_field_labels.o m_base_force_labels.o m_diffusion_term_labels.o m_grad_field_labels.o m_energy_flux_labels.o m_field_product_labels.o m_explicit_term_labels.o m_diff_vector_labels.o m_SGS_term_labels.o m_SGS_model_coef_labels.o m_SGS_enegy_flux_labels.o
+m_MHD_field_group.o: $(F2003DIR)/m_MHD_field_group.f90 m_precision.o t_control_array_character.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_energy_flux_labels.o t_grad_field_labels.o t_field_product_labels.o t_explicit_term_labels.o t_diff_vector_labels.o m_rot_force_labels.o m_div_force_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o m_energy_flux_w_sym_labels.o t_SGS_term_labels.o t_SGS_enegy_flux_labels.o t_SGS_model_coef_labels.o m_diff_SGS_term_labels.o m_filtered_field_labels.o m_filtered_force_labels.o m_filtered_ene_flux_labels.o m_diff_filter_vect_labels.o m_div_filtered_force_labels.o m_rot_filtered_force_labels.o m_grad_filter_field_labels.o m_wide_SGS_term_labels.o m_wide_filter_field_labels.o m_dble_filter_field_labels.o m_force_w_SGS_labels.o m_true_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_OMP_FFTW3_counter.o: $(F2003DIR)/m_OMP_FFTW3_counter.F90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
-m_field_file_fmt_list.o: $(F2003DIR)/m_field_file_fmt_list.f90 m_precision.o m_file_format_labels.o t_read_control_elements.o t_multi_flag_labels.o m_field_file_format_labels.o m_merged_field_fmt_labels.o skip_comment_f.o set_sections_file_ctl.o set_isosurface_file_ctl.o m_field_file_format.o
+m_field_file_fmt_list.o: $(F2003DIR)/m_field_file_fmt_list.f90 m_precision.o m_file_format_labels.o t_read_control_elements.o t_multi_flag_labels.o m_field_file_format_labels.o m_merged_field_fmt_labels.o t_control_array_character.o m_field_file_format.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_binary_IO_buffer.o: $(F2003DIR)/t_binary_IO_buffer.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -31,8 +31,6 @@
 !
       implicit none
 !
-      type(calypso_MPI_IO_params), save, private :: IO_param1
-!
 !-----------------------------------------------------------------------
 !
       contains

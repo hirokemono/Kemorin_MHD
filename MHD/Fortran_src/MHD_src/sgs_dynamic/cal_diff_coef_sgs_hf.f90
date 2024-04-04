@@ -4,14 +4,13 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_sf                               &
-!!     &         (itype_Csym_flux, iflag_supg, num_int, dt,             &
-!!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
-!!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf,         &
-!!     &          SGS_par, mesh, group, Snod_bcs, sf_bcs,               &
-!!     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,&
-!!     &          FEM_filters, iphys_elediff_fil, sgs_coefs, mk_MHD,    &
-!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,             &
-!!     &          diff_coefs, v_sol, SR_sig, SR_r)
+!!     &        (itype_Csym_flux, iflag_supg, num_int, dt,              &
+!!     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs,               &
+!!     &         SGS_par, mesh, group, Snod_bcs, sf_bcs,                &
+!!     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int, &
+!!     &         FEM_filters, Csim_SGS_flux, mk_MHD,                    &
+!!     &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,              &
+!!     &         Cdiff_SGS_flux, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -24,14 +23,13 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(base_field_address), intent(in) :: iphys_elediff_fil
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(inout) :: Cdiff_SGS_flux
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -69,14 +67,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_sf                                 &
-     &         (itype_Csym_flux, iflag_supg, num_int, dt,               &
-     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
-     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf,           &
-     &          SGS_par, mesh, group, Snod_bcs, sf_bcs,                 &
-     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,  &
-     &          FEM_filters, iphys_elediff_fil, sgs_coefs, mk_MHD,      &
-     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,               &
-     &          diff_coefs, v_sol, SR_sig, SR_r)
+     &        (itype_Csym_flux, iflag_supg, num_int, dt,                &
+     &         ifield, ifield_f, ivelo, ivelo_f, i_sgs,                 &
+     &         SGS_par, mesh, group, Snod_bcs, sf_bcs,                  &
+     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,   &
+     &         FEM_filters, Csim_SGS_flux, mk_MHD,                      &
+     &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,                &
+     &         Cdiff_SGS_flux, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -97,8 +94,6 @@
       integer (kind=kint), intent(in) :: i_sgs, ifield, ifield_f
       integer (kind=kint), intent(in) :: ivelo, ivelo_f
 !
-      integer(kind = kint), intent(in) :: iak_diff_flux
-      integer(kind = kint), intent(in) :: icomp_sgs_flux, icomp_diff_sf
       real(kind = kreal), intent(in) :: dt
 !
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -112,15 +107,14 @@
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(base_field_address), intent(in) :: iphys_elediff_fil
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_flux
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_model_coefficient), intent(inout) :: Cdiff_SGS_flux
       type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -128,8 +122,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs                                       &
-     &   (mesh%ele%numele, mesh%ele%istack_ele_smp,                     &
-     &    diff_coefs%num_field, iak_diff_flux, diff_coefs%ak)
+     &   (mesh%ele%numele, mesh%ele%istack_ele_smp, Cdiff_SGS_flux)
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   gradient model by filtered field (to iphys_SGS_wk%i_wd_nlg)
@@ -137,11 +130,11 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad'
       call cal_sgs_s_flux_grad_w_coef                                   &
      &   (iflag_supg, num_int, dt, itype_Csym_flux,                     &
-     &    SGS_par%model_p%icoord_Csim, ifilter_4delta, icomp_sgs_flux,  &
-     &    iphys_SGS_wk%i_wd_nlg, ifield_f, iphys_elediff_fil%i_velo,    &
+     &    SGS_par%model_p%icoord_Csim, ifilter_4delta,                  &
+     &    iphys_SGS_wk%i_wd_nlg, ifield_f, mhd_fem_wk%iphys_elediff_v,  &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
-     &    FEM_filters%FEM_elens, sgs_coefs, mk_MHD%mlump_fl,            &
+     &    FEM_filters%FEM_elens, Csim_SGS_flux, mk_MHD%mlump_fl,        &
      &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,             &
      &    v_sol, SR_sig, SR_r)
 !
@@ -229,13 +222,16 @@
 !
 !     obtain model coefficient
 !
-      if (iflag_debug.gt.0)  write(*,*)                                 &
-     &   'cal_diff_coef_fluid', n_scalar, iak_diff_flux, icomp_diff_sf
-      call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
-     &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
-     &    fem_int%jcs, n_scalar, iak_diff_flux, icomp_diff_sf, num_int, &
-     &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &
-     &    diff_coefs)
+      if (iflag_debug.gt.0)  write(*,*)  'cal_diff_coef_fluid',         &
+     &     n_scalar, Cdiff_SGS_flux%iak_Csim, Cdiff_SGS_flux%icomp_Csim
+      call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
+     &    SGS_par%model_p, SGS_par%commute_p,                           &
+     &    FEM_filters%layer_tbl, mesh%node, mesh%ele, fluid,            &
+     &    iphys_SGS_wk, nod_fld, fem_int%jcs, n_scalar, num_int,        &
+     &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                         &
+     &    FEM_SGS_wk%wk_diff, Cdiff_SGS_flux)
+!
+      Cdiff_SGS_flux%flag_set = .TRUE.
 !
       end subroutine s_cal_diff_coef_sgs_sf
 !

@@ -14,24 +14,36 @@ struct int2_ctl_item * init_int2_ctl_item_c(void){
         printf("malloc error for int2_ctl_item \n");
         exit(0);
     }
-    
+	if((i2_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for r_item->f_iflag\n");
+		exit(0);
+	}
+        
 	i2_item->i_data[0] = 0;
 	i2_item->i_data[1] = 0;
-	i2_item->iflag = 0;
     return i2_item;
 };
 
-int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+void dealloc_f_ctl_i2_item(struct int2_ctl_item *i2_item)
+{
+	if(i2_item->c_block_name !=NULL) free(i2_item->c_block_name);
+    i2_item->f_iflag = NULL;
+	i2_item->f_self = NULL;
+	return;
+}
+
+
+int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label,
                           struct int2_ctl_item *i2_item){
 	char header_chara[KCHARA_C];
 	
-	if(i2_item->iflag > 0) return 0;
+	if(i2_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %d %d", header_chara, 
 					&i2_item->i_data[0], &i2_item->i_data[1]);
-		i2_item->iflag = 1;
+		i2_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -39,7 +51,7 @@ int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_int2_ctl_item_c(FILE *fp, int level, int maxlen, 
                            const char *label, struct int2_ctl_item *i2_item){
     
-	if(i2_item->iflag == 0) return level;
+	if(i2_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
 	fprintf(fp, "%d  %d\n", i2_item->i_data[0], i2_item->i_data[1]);
@@ -49,7 +61,7 @@ int write_int2_ctl_item_c(FILE *fp, int level, int maxlen,
 
 void update_int2_ctl_item_c(int i1_in, int i2_in,  
 			struct int2_ctl_item *i2_item){
-	i2_item->iflag = 1;
+	i2_item->f_iflag[0] = 1;
 	i2_item->i_data[0] = i1_in;
 	i2_item->i_data[1] = i2_in;
     return;
@@ -57,7 +69,7 @@ void update_int2_ctl_item_c(int i1_in, int i2_in,
 
 void set_from_int2_ctl_item_c(struct int2_ctl_item *i2_item,
 			int *i1_out, int *i2_out){
-	if(i2_item->iflag == 0) return;
+	if(i2_item->f_iflag[0] == 0) return;
 	*i1_out = i2_item->i_data[0];
 	*i2_out = i2_item->i_data[1];
     return;
@@ -302,6 +314,8 @@ void dealloc_int2_clist(struct int2_clist *i2_clst){
     free(i2_clst->i1_name);
     free(i2_clst->i2_name);
     
+    i2_clst->f_self = NULL;
+    
     free(i2_clst);
     return;
 };
@@ -338,6 +352,12 @@ void set_from_int2_clist_at_index(int index, struct int2_clist *i2_clst,
             i1_out, i2_out);
     return;
 };
+
+struct int2_ctl_item *int2_clist_at_index(int index, struct int2_clist *i2_clst){
+    struct int2_ctl_list *ct_tmp = find_i2_ctl_list_item_by_index(index, &i2_clst->i2_item_head);
+    return ct_tmp->i2_item;
+}
+
 
 void add_int2_clist_before_c_tbl(int iref_1, int iref_2, 
             int i1_in, int i2_in, struct int2_clist *i2_clst){

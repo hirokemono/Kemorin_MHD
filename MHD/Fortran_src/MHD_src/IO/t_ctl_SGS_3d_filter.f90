@@ -7,14 +7,14 @@
 !>@brief  Structure for filtering controls
 !!
 !!@verbatim
+!!      subroutine init_3d_filtering_ctl_label(hd_block, s3df_ctl)
 !!      subroutine read_3d_filtering_ctl                                &
 !!     &         (id_control, hd_block, s3df_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_3d_filtering_ctl                               &
-!!     &         (id_control, hd_block, s3df_ctl, level)
+!!      subroutine write_3d_filtering_ctl(id_control, s3df_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_3d_filter_control), intent(in) :: s3df_ctl
@@ -77,6 +77,8 @@
 !
 !
       type SGS_3d_filter_control
+!>        Block name
+        character(len=kchara) :: block_name = '3d_filtering_ctl'
 !>        Structure for group list for filtering for whole area
 !!@n        whole_filter_grp_ctl%c_tbl: element group name
         type(ctl_array_chara) :: whole_filter_grp_ctl
@@ -124,8 +126,9 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(s3df_ctl%i_SGS_3d_filter_ctl .gt. 0) return
+      s3df_ctl%block_name = hd_block
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -151,13 +154,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_3d_filtering_ctl                                 &
-     &         (id_control, hd_block, s3df_ctl, level)
+      subroutine write_3d_filtering_ctl(id_control, s3df_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(SGS_3d_filter_control), intent(in) :: s3df_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -172,23 +173,50 @@
       maxlen = max(maxlen, len_trim(hd_induction_filter_ctl))
       maxlen = max(maxlen, len_trim(hd_comp_filter_ctl))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 s3df_ctl%block_name)
       call write_control_array_c1(id_control, level,                    &
-     &    hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl)
+     &    s3df_ctl%whole_filter_grp_ctl)
       call write_control_array_c1(id_control, level,                    &
-     &    hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl)
+     &    s3df_ctl%fluid_filter_grp_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_momentum_filter_ctl, s3df_ctl%momentum_filter_ctl)
+     &    s3df_ctl%momentum_filter_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_heat_filter_ctl, s3df_ctl%heat_filter_ctl)
+     &    s3df_ctl%heat_filter_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_induction_filter_ctl, s3df_ctl%induction_filter_ctl)
+     &    s3df_ctl%induction_filter_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_comp_filter_ctl, s3df_ctl%compostion_filter_ctl)
-      level = write_end_flag_for_ctl(id_control, level, hd_block)
+     &    s3df_ctl%compostion_filter_ctl)
+      level = write_end_flag_for_ctl(id_control, level,                 &
+     &                                 s3df_ctl%block_name)
 !
       end subroutine write_3d_filtering_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_3d_filtering_ctl_label(hd_block, s3df_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
+!
+!
+      s3df_ctl%block_name = hd_block
+        call init_chara_ctl_array_label                                 &
+     &     (hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl)
+        call init_chara_ctl_array_label                                 &
+     &     (hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl)
+!
+        call init_chara_ctl_item_label(hd_momentum_filter_ctl,          &
+     &      s3df_ctl%momentum_filter_ctl)
+        call init_chara_ctl_item_label(hd_heat_filter_ctl,              &
+     &      s3df_ctl%heat_filter_ctl)
+        call init_chara_ctl_item_label(hd_induction_filter_ctl,         &
+     &      s3df_ctl%induction_filter_ctl)
+        call init_chara_ctl_item_label(hd_comp_filter_ctl,              &
+     &      s3df_ctl%compostion_filter_ctl)
+!
+      end subroutine init_3d_filtering_ctl_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -235,6 +263,7 @@
      &                     new_s3df_c%compostion_filter_ctl)
 !
       new_s3df_c%i_SGS_3d_filter_ctl = org_s3df_c%i_SGS_3d_filter_ctl
+      new_s3df_c%block_name = org_s3df_c%block_name
 !
       end subroutine copy_3d_filtering_ctl
 !

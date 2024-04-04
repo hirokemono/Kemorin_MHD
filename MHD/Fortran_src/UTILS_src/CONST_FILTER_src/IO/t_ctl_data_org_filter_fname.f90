@@ -116,15 +116,12 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_org_filter_head, org_fil_files_ctl%org_filter_head_ctl)
+     &    org_fil_files_ctl%org_filter_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_org_filter_coef_head,                                      &
      &    org_fil_files_ctl%org_filter_coef_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_org_filter_elen_head,                                      &
      &    org_fil_files_ctl%org_filter_elen_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_org_filter_moms_head,                                      &
      &    org_fil_files_ctl%org_filter_moms_head_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

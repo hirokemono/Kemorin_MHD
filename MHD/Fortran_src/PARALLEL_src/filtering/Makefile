@@ -13,7 +13,9 @@ MOD_FILTERING = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'FILTER_DIR = $(FILTER_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_FILTERING)' >> $(MAKENAME)
 
 

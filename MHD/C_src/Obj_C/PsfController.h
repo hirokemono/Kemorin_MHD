@@ -6,20 +6,25 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#include "math.h"
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
 
-#import "KemoViewerOpenGLView.h"
+#include "math.h"
+
+#import "KemoviewerMovieMaker.h"
 #import "KemoviewerController.h"
 #import "RGBAMapController.h"
 #import "ElasticMenuWindow.h"
-#include "kemoviewer.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 @interface PsfController : NSObject {
     
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet KemoViewerObject *_kmv;
+
     IBOutlet NSPathControl *_psfPathControl;
     IBOutlet NSColorWell *PSFPatchColorWell;
     
@@ -175,17 +180,12 @@
 - (void)awakeFromNib;
 
 
-- (id) CopyPsfDisplayFlagsFromC;
-
-- (void) ChooseTextureFile;
-- (void) SetCurrentPsfMenu;
-- (void) SetCurrentPSFFile;
 - (void) SetPsfFieldMenu;
-- (void) UpdateCurrentPsfMenu;
-- (void) ResetCurrentPsfParam;
-- (void) SetPsfComponentMenu:(int)isel;
-- (void) SetPsfRanges;
-- (void) DrawPsfFile:(NSString*) PsfOpenFilehead;
+- (void) SetPsfComponentMenu:(NSInteger)isel
+                    kemoview:(struct kemoviewer_type *) kemo_sgl
+;
+- (void) DrawPsfFile:(NSString*) PsfOpenFilehead
+            kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction) OpenPsfFile:(id)pId;
 
@@ -217,7 +217,7 @@
 
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 
-- (void)SetPSFColorFromColorWell;
+- (void)SetPSFColorFromColorWell:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction)SetPSFPatchColorAction:(id)sender;
 - (IBAction)SetPSFSingleOpacityAction:(id)sender;
 @end

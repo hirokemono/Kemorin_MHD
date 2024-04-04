@@ -4,16 +4,16 @@
 !        programmed by H.Matsui on July, 2005
 !        modified by H.Matsui on Aug., 2006
 !
-!!      subroutine fem_skv_div_sgs_vector_upwind(iele_fsmp_stack, n_int,&
-!!     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,      &
+!!      subroutine fem_skv_div_sgs_vector_upwind                        &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,    &
 !!     &          ele, g_FEM, jac_3d, FEM_elens, vxe,                   &
 !!     &          sgs_1, flux_1, sk_v)
-!!      subroutine fem_skv_div_sgs_tensor_upwind(iele_fsmp_stack, n_int,&
-!!     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,      &
-!!     &          ele, g_FEM, jac_3d, FEM_elens, vxe,                   &
+!!      subroutine fem_skv_div_sgs_tensor_upwind                        &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt,             &
+!!     &          ele, g_FEM, jac_3d, FEM_elens, Cdiff_SGS, vxe,        &
 !!     &          sgs_1, flux_1, sk_v)
-!!      subroutine fem_skv_div_sgs_asym_t_upwind(iele_fsmp_stack, n_int,&
-!!     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,      &
+!!      subroutine fem_skv_div_sgs_asym_t_upwind                        &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,    &
 !!     &          ele, g_FEM, jac_3d, FEM_elens, vxe_up,                &
 !!     &          sgs_1, flux_1, sk_v)
 !!
@@ -27,18 +27,19 @@
 !!     &          n_int, k2, dt, ele, g_FEM, jac_3d, vector_e, sgs_e,   &
 !!     &          wxe, vxe_up, sk_v)
 !!
-!!      subroutine fem_skv_scl_inertia_msgs_upw(iele_fsmp_stack, n_int, &
-!!     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,      &
+!!      subroutine fem_skv_scl_inertia_msgs_upw                         &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,    &
 !!     &          ele, g_FEM, jac_3d, FEM_elens, scalar_e, sgs_e,       &
 !!     &          flux_e, vxe, vxe_up, sk_v)
-!!      subroutine fem_skv_vec_inertia_msgs_upw(iele_fsmp_stack, n_int, &
-!!     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,      &
+!!      subroutine fem_skv_vec_inertia_msgs_upw                         &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,    &
 !!     &          ele, g_FEM, jac_3d, FEM_elens, vector_e, sgs_e,       &
 !!     &          flux_e, vxe, vxe_up, sk_v)
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS
 !
       module fem_skv_div_sgs_flux_upw
 !
@@ -52,6 +53,7 @@
       use t_filter_elength
       use t_fem_gauss_int_coefs
       use t_jacobians
+      use t_FEM_SGS_model_coefs
 !
       implicit  none
 !
@@ -61,8 +63,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine fem_skv_div_sgs_vector_upwind(iele_fsmp_stack, n_int,  &
-     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,        &
+      subroutine fem_skv_div_sgs_vector_upwind                          &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,      &
      &          ele, g_FEM, jac_3d, FEM_elens, vxe,                     &
      &          sgs_1, flux_1, sk_v)
 !
@@ -77,9 +79,8 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
       real(kind=kreal), intent(in) :: dt
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: vxe(ele%numele,n_vector)
       real(kind=kreal), intent(in) :: sgs_1(ele%numele,n_vector)
       real(kind=kreal), intent(in) :: flux_1(ele%numele,n_vector)
@@ -99,15 +100,15 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff(1,iak_diff), vxe, sgs_1, flux_1, sk_v)
+     &    ak_diff, vxe, sgs_1, flux_1, sk_v)
 !
       end subroutine fem_skv_div_sgs_vector_upwind
 !
 !   --------------------------------------------------------------------
 !
-      subroutine fem_skv_div_sgs_tensor_upwind(iele_fsmp_stack, n_int,  &
-     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,        &
-     &          ele, g_FEM, jac_3d, FEM_elens, vxe,                     &
+      subroutine fem_skv_div_sgs_tensor_upwind                          &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, dt,               &
+     &          ele, g_FEM, jac_3d, FEM_elens, Cdiff_SGS, vxe,          &
      &          sgs_1, flux_1, sk_v)
 !
       use fem_skv_div_tsr_w_sgs_upw
@@ -116,14 +117,13 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
       real(kind=kreal), intent(in) :: dt
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
       real(kind=kreal), intent(in) :: vxe(ele%numele,3)
       real(kind=kreal), intent(in) :: sgs_1(ele%numele,n_sym_tensor)
       real(kind=kreal), intent(in) :: flux_1(ele%numele,n_sym_tensor)
@@ -143,14 +143,14 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff(1,iak_diff), vxe, sgs_1, flux_1, sk_v)
+     &    Cdiff_SGS%coef(1,1), vxe, sgs_1, flux_1, sk_v)
 !
       end subroutine fem_skv_div_sgs_tensor_upwind
 !
 !   --------------------------------------------------------------------
 !
-      subroutine fem_skv_div_sgs_asym_t_upwind(iele_fsmp_stack, n_int,  &
-     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,        &
+      subroutine fem_skv_div_sgs_asym_t_upwind                          &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,      &
      &          ele, g_FEM, jac_3d, FEM_elens, vxe_up,                  &
      &          sgs_1, flux_1, sk_v)
 !
@@ -165,9 +165,8 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
       real(kind=kreal), intent(in) :: dt
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real (kind=kreal), intent(in) :: vxe_up(ele%numele,3)
       real(kind=kreal), intent(in) :: sgs_1(ele%numele,3)
       real(kind=kreal), intent(in) :: flux_1(ele%numele,3)
@@ -187,7 +186,7 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff(1,iak_diff), vxe_up, sgs_1, flux_1, sk_v)
+     &    ak_diff, vxe_up, sgs_1, flux_1, sk_v)
 !
       end subroutine fem_skv_div_sgs_asym_t_upwind
 !
@@ -297,8 +296,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_scl_inertia_msgs_upw(iele_fsmp_stack, n_int,   &
-     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,        &
+      subroutine fem_skv_scl_inertia_msgs_upw                           &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,      &
      &          ele, g_FEM, jac_3d, FEM_elens, scalar_e, sgs_e,         &
      &          flux_e, vxe, vxe_up, sk_v)
 !
@@ -312,9 +311,8 @@
       integer(kind=kint), intent(in) :: n_int, k2, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
       real(kind=kreal), intent(in) :: dt
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: flux_e(ele%numele,3)
       real(kind=kreal), intent(in) :: sgs_e(ele%numele,3)
       real(kind=kreal), intent(in) :: scalar_e(ele%numele)
@@ -335,15 +333,14 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff(1,iak_diff), scalar_e, sgs_e, flux_e, vxe, vxe_up,    &
-     &    sk_v)
+     &    ak_diff, scalar_e, sgs_e, flux_e, vxe, vxe_up, sk_v)
 !
       end subroutine fem_skv_scl_inertia_msgs_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_vec_inertia_msgs_upw(iele_fsmp_stack, n_int,   &
-     &          k2, i_filter, dt, ncomp_diff, iak_diff, ak_diff,        &
+      subroutine fem_skv_vec_inertia_msgs_upw                           &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,      &
      &          ele, g_FEM, jac_3d, FEM_elens, vector_e, sgs_e,         &
      &          flux_e, vxe, vxe_up, sk_v)
 !
@@ -357,9 +354,8 @@
       integer(kind=kint), intent(in) :: n_int, k2, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
       real(kind=kreal), intent(in) :: dt
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: flux_e(ele%numele,6)
       real(kind=kreal), intent(in) :: sgs_e(ele%numele,6)
       real(kind=kreal), intent(in) :: vector_e(ele%numele,3)
@@ -380,8 +376,7 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff(1,iak_diff), vector_e, sgs_e, flux_e, vxe,            &
-     &    vxe_up, sk_v)
+     &    ak_diff, vector_e, sgs_e, flux_e, vxe, vxe_up, sk_v)
 !
       end subroutine fem_skv_vec_inertia_msgs_upw
 !

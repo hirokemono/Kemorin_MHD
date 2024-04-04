@@ -16,9 +16,9 @@
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!
 !!      subroutine cal_thermal_diffusion                                &
-!!     &         (i_field, i_scalar, iak_diffuse, ak_diffuse, num_int,  &
+!!     &         (i_field, i_scalar, ak_d, num_int,                     &
 !!     &          SGS_param, nod_comm, node, ele, surf, fluid, sf_grp,  &
-!!     &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, diff_coefs,    &
+!!     &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, ak_diff,       &
 !!     &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -35,8 +35,8 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -236,9 +236,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_thermal_diffusion                                  &
-     &         (i_field, i_scalar, iak_diffuse, ak_diffuse, num_int,    &
+     &         (i_field, i_scalar, ak_d, num_int,                       &
      &          SGS_param, nod_comm, node, ele, surf, fluid, sf_grp,    &
-     &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, diff_coefs,      &
+     &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, Cdiff,           &
      &          mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
@@ -255,13 +255,12 @@
       type(scaler_surf_bc_type), intent(in) :: Ssf_bcs
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
+      type(SGS_model_coefficient), intent(in) :: Cdiff
 !
       integer (kind=kint), intent(in) :: i_field, i_scalar
       integer (kind=kint), intent(in) :: num_int
-      integer (kind=kint), intent(in) :: iak_diffuse
-      real(kind = kreal), intent(in) :: ak_diffuse(ele%numele)
+      real(kind = kreal), intent(in) :: ak_d(ele%numele)
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
@@ -275,13 +274,12 @@
       call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,          &
      &    fluid%istack_ele_fld_smp, num_int, node, ele, nod_fld,        &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, diff_coefs, iak_diffuse, one, ak_diffuse,          &
-     &    i_scalar, rhs_mat%fem_wk, rhs_mat%f_l)
+     &    FEM_elens, Cdiff, one, ak_d, i_scalar,                        &
+     &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_sf_scalar_flux(node, ele, surf, sf_grp,                  &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    Ssf_bcs%flux, num_int, ak_diffuse,                            &
-     &    rhs_mat%fem_wk, rhs_mat%f_l)
+     &    Ssf_bcs%flux, num_int, ak_d, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call set_ff_nl_smp_2_ff                                           &
      &   (n_scalar, node, fem_int%rhs_tbl, rhs_mat%f_l, rhs_mat%f_nl)

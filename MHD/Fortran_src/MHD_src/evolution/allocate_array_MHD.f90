@@ -60,7 +60,6 @@
       use t_work_FEM_integration
       use t_material_property
       use t_FEM_SGS_model_coefs
-      use t_SGS_model_coefs
       use t_FEM_MHD_mean_square
 !
       use set_control_field_data
@@ -101,8 +100,7 @@
          (SGS_par%model_p, MHD_prop%cd_prop, SGS_MHD_wk%mhd_fem_wk)
       call alloc_int_vol_dvx(mesh%ele%numele, SGS_MHD_wk%mhd_fem_wk)
       call set_SGS_ele_fld_addresses(MHD_prop%cd_prop, SGS_par%model_p, &
-     &    Csims_FEM_MHD%iphys_elediff_vec,                              &
-     &    Csims_FEM_MHD%iphys_elediff_fil)
+     &                               SGS_MHD_wk%mhd_fem_wk)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_SGS_MHD_field_data'
@@ -132,9 +130,9 @@
 !
       mhd_fem_wk%n_dvx = 0
       if ( SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (  SGS_param%iflag_SGS_h_flux .ne. id_SGS_none               &
-     &   .or. SGS_param%iflag_SGS_m_flux .ne. id_SGS_none               &
-     &   .or. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none               &
+        if (  SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none        &
+     &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
+     &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none       &
      &   .or. SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         end if
@@ -147,9 +145,9 @@
         end if
 !
       else if(SGS_param%iflag_SGS .ne. id_SGS_none) then
-        if (  SGS_param%iflag_SGS_h_flux .ne. id_SGS_none               &
-     &   .or. SGS_param%iflag_SGS_m_flux .ne. id_SGS_none               &
-     &   .or. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none               &
+        if (  SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none        &
+     &   .or. SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none    &
+     &   .or. SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none       &
      &   .or. SGS_param%iflag_SGS_uxb .ne.    id_SGS_none ) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         end if

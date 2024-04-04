@@ -18,9 +18,10 @@
 
 struct lightparams_view{
     struct r3_clist_view *light_rtp_vws;
-	struct phong_lights *lights_gtk;
-	
+    struct phong_lights *lights_gtk;
+    
     GtkWidget *scrolled_window;
+    GtkWidget *light_vbox;
 };
 
 /* prototypes */
@@ -29,7 +30,8 @@ struct lightparams_view * init_light_views_4_ctl(struct real3_clist *light_list)
 struct lightparams_view * init_light_views_4_viewer(struct phong_lights *lights);
 void dealloc_light_views_4_viewer(struct lightparams_view *light_vws);
 
-GtkWidget * init_light_list_frame(struct lightparams_view *light_vws);
+GtkWidget * init_light_list_frame(struct kemoviewer_type *kemo_sgl,
+                                  struct lightparams_view *light_vws);
 
 
 #endif /* tree_view_4_pvr_colormap_h_ */

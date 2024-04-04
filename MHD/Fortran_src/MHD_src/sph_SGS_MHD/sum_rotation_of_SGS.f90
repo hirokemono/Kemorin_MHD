@@ -65,12 +65,13 @@
       ied =  sph_bc_U%kr_out * sph_rj%nidx_rj(2)
 !
 !$omp parallel
-      if(      SGS_param%iflag_SGS_m_flux  .ne. id_turn_OFF             &
+      if(      SGS_param%SGS_momentum%iflag_SGS_flux  .ne. id_turn_OFF  &
      &   .and. SGS_param%iflag_SGS_lorentz .ne. id_turn_OFF) then
         call add_SGS_MHD_terms_to_force                                 &
      &     (ipol%exp_work, ipol_LES%rot_SGS, ist, ied,                  &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if(SGS_param%iflag_SGS_m_flux  .ne. id_turn_OFF) then
+      else if(SGS_param%SGS_momentum%iflag_SGS_flux                     &
+     &    .ne. id_turn_OFF) then
         call add_SGS_inertia_to_vort_force                              &
      &     (ipol%exp_work, ipol_LES%rot_SGS, ist, ied,                  &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)

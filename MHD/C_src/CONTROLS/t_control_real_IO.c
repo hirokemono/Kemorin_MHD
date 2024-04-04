@@ -14,22 +14,38 @@ struct real_ctl_item * init_real_ctl_item_c(void){
         printf("malloc error for real_ctl_item \n");
         exit(0);
     }
+	if((r_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for r_item->f_iflag\n");
+		exit(0);
+	}
     
 	r_item->r_data = 0.0;
-	r_item->iflag = 0;
     return r_item;
 };
+
+void dealloc_real_ctl_item_c(struct real_ctl_item *r_item)
+{
+	if(r_item->c_block_name !=NULL) free(r_item->c_block_name);
+	
+	r_item->f_iflag = NULL;
+	r_item->f_self = NULL;
+	
+	free(r_item);
+	return;
+}
+
+
 
 int read_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct real_ctl_item *r_item){
 	char header_chara[KCHARA_C];
 	
-	if(r_item->iflag > 0) return 0;
+	if(r_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %lf", header_chara, &r_item->r_data);
-		r_item->iflag = 1;
+		r_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -37,7 +53,7 @@ int read_real_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_real_ctl_item_c(FILE *fp, int level, int maxlen, 
                            const char *label, struct real_ctl_item *r_item){
     
-	if(r_item->iflag == 0) return level;
+	if(r_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
 	fprintf(fp,  "%.12e\n", r_item->r_data);
@@ -46,12 +62,12 @@ int write_real_ctl_item_c(FILE *fp, int level, int maxlen,
 
 
 void update_real_ctl_item_c(double r1_in, struct real_ctl_item *r_item){
-	r_item->iflag = 1;
+	r_item->f_iflag[0] = 1;
 	r_item->r_data = r1_in;
     return;
 };
 void set_from_real_ctl_item_c(struct real_ctl_item *r_item, double *r1_out){
-	if(r_item->iflag == 0) return;
+	if(r_item->f_iflag[0] == 0) return;
 	*r1_out = r_item->r_data;
     return;
 };
@@ -214,12 +230,24 @@ static void set_from_real_ctl_list_at_index(int index, struct real_ctl_list *hea
 };
 
 
-static void add_real_ctl_list_before_c_tbl(double ref, double r1_in,
-			struct real_ctl_list *head){
+static double set_real_ctl_list_by_midvalue(struct real_ctl_list *current){
+	double ave;
+	if(current->_prev->r_item == NULL){
+        ave = current->_next->r_item->r_data;
+	}else if(current->_next->r_item == NULL){
+        ave = current->_prev->r_item->r_data;
+	}else{
+        ave = 0.5 * (current->_prev->r_item->r_data + current->_next->r_item->r_data);
+	};
+	return ave;
+};
+
+static void add_real_ctl_list_before_c_tbl(double ref, struct real_ctl_list *head){
 	head = find_r_ctl_list_item_by_value(ref, head);
 	if(head == NULL) return;
 	head = add_real_ctl_list_before(head);
-	update_real_ctl_item_c(r1_in, head->r_item);
+	double ave = set_real_ctl_list_by_midvalue(head);
+	update_real_ctl_item_c(ave, head->r_item);
 	return;
 };
 static void add_real_ctl_list_after_c_tbl(double ref, double r1_in,
@@ -324,8 +352,15 @@ void set_from_real_clist_at_index(int index, struct real_clist *r_clst, double *
     return;
 };
 
-void add_real_clist_before_c_tbl(double ref, double r1_in, struct real_clist *r_clst){
-    add_real_ctl_list_before_c_tbl(ref, r1_in, &r_clst->r_item_head);
+struct real_ctl_item *real_clist_at_index(int index, struct real_clist *r_clst){
+    struct real_ctl_list *ct_tmp = find_r_ctl_list_item_by_index(index, &r_clst->r_item_head);
+    return ct_tmp->r_item;
+}
+
+
+
+void add_real_clist_before_c_tbl(double ref, struct real_clist *r_clst){
+    add_real_ctl_list_before_c_tbl(ref, &r_clst->r_item_head);
     return;
 };
 void add_real_clist_after_c_tbl(double ref, double r1_in, struct real_clist *r_clst){

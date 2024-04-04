@@ -137,8 +137,10 @@
 !
 !   2 begin time_step_ctl
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(ctl%iflag .gt. 0) return
+      call init_platforms_labels(hd_platform, ctl%plt)
+      call init_ctl_time_step_label(hd_time_step, ctl%tctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -178,7 +180,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, ctl%plt, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, ctl%tctl, level)
+     &   (id_control, ctl%tctl, level)
       call write_diff_spectr_file_control                               &
      &   (id_control, hd_file_def, ctl%file_list, level)
       call write_rename_spectr_control                                  &

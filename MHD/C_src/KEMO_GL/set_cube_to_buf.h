@@ -12,14 +12,16 @@
 
 #include <math.h>
 #include "kemoviewer_param_c.h"
-#include "vartex_array_object_gl.h"
+#include "m_vertex_buffer.h"
 
 /* prototypes */
+void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
+                     struct gl_index_buffer *index_buf);
+int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_buf);
 
-void cube_surf_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_edge_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_flat_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-
-void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
+long flatEdgeCube_VBO(long icou, float fSize,
+                      struct gl_strided_buffer *strided_buf);
+long flatNodeCube_VBO(long icou, float fSize, 
+                      struct gl_strided_buffer *strided_buf);
 
 #endif

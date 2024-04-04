@@ -15,7 +15,7 @@ dir_list:
 
 lib_name:
 
-lib_archve:
+lib_archve: libtarget
 
 mod_list:
 	@echo  OBJ_GL2PS_C=  \\ >> $(MAKENAME)

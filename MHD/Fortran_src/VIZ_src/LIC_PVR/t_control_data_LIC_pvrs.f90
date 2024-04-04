@@ -8,6 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine alloc_lic_ctl_struct(lic_ctls)
+!!      subroutine dealloc_lic_ctl_struct(lic_ctls)
+!!      subroutine init_lic_ctls_labels(hd_block, lic_ctls)
 !!      subroutine read_files_4_lic_ctl                                 &
 !!     &         (id_control, hd_lic_ctl, lic_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -24,6 +26,12 @@
 !!      subroutine add_fields_4_lics_to_fld_ctl(lic_ctls, field_ctl)
 !!        type(lic_rendering_controls), intent(in) :: lic_ctls
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!
+!!      subroutine append_lic_ctl_struct(idx_in, hd_block, lic_ctls)
+!!      subroutine delete_lic_ctl_struct(idx_in, lic_ctls)
+!!        integer(kind = kint), intent(in) :: idx_in
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  LIC_rendering
 !!      file  LIC_rendering  'ctl_pvr_temp'
@@ -43,6 +51,9 @@
       implicit  none
 !
       type lic_rendering_controls
+!>        Control block name
+        character(len = kchara) :: block_name = 'cross_section_ctl'
+!
         integer(kind = kint) :: num_lic_ctl = 0
         character(len = kchara), allocatable :: fname_lic_ctl(:)
         type(pvr_parameter_ctl), allocatable :: pvr_ctl_type(:)
@@ -91,6 +102,18 @@
       end subroutine dealloc_lic_ctl_struct
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine init_lic_ctls_labels(hd_block, lic_ctls)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(lic_rendering_controls), intent(inout) :: lic_ctls
+!
+      lic_ctls%num_lic_ctl = 0
+      lic_ctls%block_name = hd_block
+!
+      end subroutine init_lic_ctls_labels
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine read_files_4_lic_ctl                                   &
@@ -107,10 +130,10 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer(kind = kint) :: n_append
 !
       if(check_array_flag(c_buf, hd_lic_ctl) .eqv. .FALSE.) return
       if(allocated(lic_ctls%fname_lic_ctl)) return
-      lic_ctls%num_lic_ctl = 0
       call alloc_lic_ctl_struct(lic_ctls)
 !
       do
@@ -120,7 +143,8 @@
 !
         if(check_file_flag(c_buf, hd_lic_ctl)                           &
      &        .or. check_begin_flag(c_buf, hd_lic_ctl)) then
-          call append_new_lic_ctl_struct(lic_ctls)
+          n_append = lic_ctls%num_lic_ctl
+          call append_lic_ctl_struct(n_append, hd_lic_ctl, lic_ctls)
 !
           call write_multi_ctl_file_message                             &
      &       (hd_lic_ctl, lic_ctls%num_lic_ctl, c_buf%level)
@@ -170,49 +194,104 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine append_new_lic_ctl_struct(lic_ctls)
+      subroutine append_lic_ctl_struct(idx_in, hd_block, lic_ctls)
 !
+      use ctl_data_lic_pvr_IO
+!
+      integer(kind = kint), intent(in) :: idx_in
+      character(len=kchara), intent(in) :: hd_block
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
       type(lic_rendering_controls) :: tmp_lics_c
+      integer(kind = kint) :: i
 !
+!
+      if(idx_in.lt.0 .or. idx_in.gt.lic_ctls%num_lic_ctl) return
 !
       tmp_lics_c%num_lic_ctl = lic_ctls%num_lic_ctl
       call alloc_lic_ctl_struct(tmp_lics_c)
-      call dup_lic_ctl_struct                                           &
-     &   (lic_ctls%num_lic_ctl, lic_ctls, tmp_lics_c)
-      call dealloc_lic_ctl_struct(lic_ctls)
+      do i = 1, lic_ctls%num_lic_ctl
+        tmp_lics_c%fname_lic_ctl(i) = lic_ctls%fname_lic_ctl(i)
+        call dup_pvr_ctl(lic_ctls%pvr_ctl_type(i),                      &
+     &                   tmp_lics_c%pvr_ctl_type(i))
+        call dup_lic_control_data(lic_ctls%lic_ctl_type(i),             &
+     &                            tmp_lics_c%lic_ctl_type(i))
+      end do
 !
+      call dealloc_lic_ctl_struct(lic_ctls)
       lic_ctls%num_lic_ctl = tmp_lics_c%num_lic_ctl + 1
       call alloc_lic_ctl_struct(lic_ctls)
-      call dup_lic_ctl_struct                                           &
-     &   (tmp_lics_c%num_lic_ctl, tmp_lics_c, lic_ctls)
+!
+      do i = 1, idx_in
+        lic_ctls%fname_lic_ctl(i) = tmp_lics_c%fname_lic_ctl(i)
+        call dup_pvr_ctl(tmp_lics_c%pvr_ctl_type(i),                    &
+     &                   lic_ctls%pvr_ctl_type(i))
+        call dup_lic_control_data(tmp_lics_c%lic_ctl_type(i),           &
+     &                            lic_ctls%lic_ctl_type(i))
+      end do
+!
+      lic_ctls%fname_lic_ctl(idx_in+1) = 'NO_FILE'
+      call init_lic_pvr_ctl_label(hd_block,                             &
+     &                            lic_ctls%pvr_ctl_type(idx_in+1),      &
+     &                            lic_ctls%lic_ctl_type(idx_in+1))
+!
+      do i = idx_in+1, tmp_lics_c%num_lic_ctl
+        lic_ctls%fname_lic_ctl(i+1) = tmp_lics_c%fname_lic_ctl(i)
+        call dup_pvr_ctl(tmp_lics_c%pvr_ctl_type(i),                    &
+     &                   lic_ctls%pvr_ctl_type(i+1))
+        call dup_lic_control_data(tmp_lics_c%lic_ctl_type(i),           &
+     &                            lic_ctls%lic_ctl_type(i+1))
+      end do
+!
       call dealloc_lic_ctl_struct(tmp_lics_c)
 !
-      end subroutine append_new_lic_ctl_struct
+      end subroutine append_lic_ctl_struct
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dup_lic_ctl_struct(num_lic, org_lics_c, new_lics_c)
+      subroutine delete_lic_ctl_struct(idx_in, lic_ctls)
 !
-      use bcast_control_data_4_pvr
-      use bcast_control_data_4_lic
+      integer(kind = kint), intent(in) :: idx_in
+      type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
-      integer(kind = kint), intent(in) :: num_lic
-      type(lic_rendering_controls), intent(in) :: org_lics_c
-      type(lic_rendering_controls), intent(inout) :: new_lics_c
-!
+      type(lic_rendering_controls) :: tmp_lics_c
       integer(kind = kint) :: i
 !
-      do i = 1, num_lic
-        new_lics_c%fname_lic_ctl(i) = org_lics_c%fname_lic_ctl(i)
-        call dup_pvr_ctl(org_lics_c%pvr_ctl_type(i),                    &
-     &                   new_lics_c%pvr_ctl_type(i))
-        call dup_lic_control_data(org_lics_c%lic_ctl_type(i),           &
-     &                            new_lics_c%lic_ctl_type(i))
+!
+      if(idx_in.le.0 .or. idx_in.gt.lic_ctls%num_lic_ctl) return
+!
+      tmp_lics_c%num_lic_ctl = lic_ctls%num_lic_ctl
+      call alloc_lic_ctl_struct(tmp_lics_c)
+      do i = 1, lic_ctls%num_lic_ctl
+        tmp_lics_c%fname_lic_ctl(i) = lic_ctls%fname_lic_ctl(i)
+        call dup_pvr_ctl(lic_ctls%pvr_ctl_type(i),                      &
+     &                   tmp_lics_c%pvr_ctl_type(i))
+        call dup_lic_control_data(lic_ctls%lic_ctl_type(i),             &
+     &                            tmp_lics_c%lic_ctl_type(i))
       end do
 !
-      end subroutine dup_lic_ctl_struct
+      call dealloc_lic_ctl_struct(lic_ctls)
+      lic_ctls%num_lic_ctl = tmp_lics_c%num_lic_ctl - 1
+      call alloc_lic_ctl_struct(lic_ctls)
+!
+      do i = 1, idx_in-1
+        lic_ctls%fname_lic_ctl(i) = tmp_lics_c%fname_lic_ctl(i)
+        call dup_pvr_ctl(tmp_lics_c%pvr_ctl_type(i),                    &
+     &                   lic_ctls%pvr_ctl_type(i))
+        call dup_lic_control_data(tmp_lics_c%lic_ctl_type(i),           &
+     &                            lic_ctls%lic_ctl_type(i))
+      end do
+      do i = idx_in, lic_ctls%num_lic_ctl
+        lic_ctls%fname_lic_ctl(1) = tmp_lics_c%fname_lic_ctl(i+1)
+        call dup_pvr_ctl(tmp_lics_c%pvr_ctl_type(i+1),                  &
+     &                   lic_ctls%pvr_ctl_type(i))
+        call dup_lic_control_data(tmp_lics_c%lic_ctl_type(i+1),         &
+     &                            lic_ctls%lic_ctl_type(i))
+      end do
+!
+      call dealloc_lic_ctl_struct(tmp_lics_c)
+!
+      end subroutine delete_lic_ctl_struct
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

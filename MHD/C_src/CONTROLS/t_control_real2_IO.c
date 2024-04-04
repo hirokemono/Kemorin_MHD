@@ -14,24 +14,36 @@ struct real2_ctl_item * init_real2_ctl_item_c(void){
         printf("malloc error for real2_ctl_item \n");
         exit(0);
     }
-    
+    if((r2_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+        printf("malloc error for r2_item->f_iflag\n");
+        exit(0);
+    }
+
 	r2_item->r_data[0] = 0.0;
 	r2_item->r_data[1] = 0.0;
-	r2_item->iflag = 0;
     return r2_item;
 };
+
+void dealloc_real2_ctl_item_c(struct real2_ctl_item *r2_item){
+    if(r2_item->c_block_name !=NULL) free(r2_item->c_block_name);
+    
+    free(r2_item->f_iflag);
+    free(r2_item);
+    return;
+};
+
 
 int read_real2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct real2_ctl_item *r2_item){
 	char header_chara[KCHARA_C];
 	
-	if(r2_item->iflag > 0) return 0;
+	if(r2_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %lf %lf", header_chara, 
 					&r2_item->r_data[0], &r2_item->r_data[1]);
-		r2_item->iflag = 1;
+		r2_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -39,7 +51,7 @@ int read_real2_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_real2_ctl_item_c(FILE *fp, int level, int maxlen, 
                            const char *label, struct real2_ctl_item *r2_item){
     
-	if(r2_item->iflag == 0) return level;
+	if(r2_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
 	fprintf(fp, "%.12e  %.12e\n", r2_item->r_data[0], r2_item->r_data[1]);
@@ -49,14 +61,14 @@ int write_real2_ctl_item_c(FILE *fp, int level, int maxlen,
 
 void update_real2_ctl_item_c(double r1_in, double r2_in,  
                               struct real2_ctl_item *r2_item){
-	r2_item->iflag = 1;
+	r2_item->f_iflag[0] = 1;
 	r2_item->r_data[0] = r1_in;
 	r2_item->r_data[1] = r2_in;
     return;
 };
 void set_from_real2_ctl_item_c(struct real2_ctl_item *r2_item,
                               double *r1_out, double *r2_out){
-	if(r2_item->iflag == 0) return;
+	if(r2_item->f_iflag[0] == 0) return;
 	*r1_out = r2_item->r_data[0];
 	*r2_out = r2_item->r_data[1];
     return;
@@ -247,6 +259,7 @@ static void set_real2_ctl_list_by_midvalue(struct real2_ctl_list *current, doubl
 	};
 	return;
 };
+
 static void add_real2_ctl_list_before_c_tbl(double ref_1, double ref_2, 
 			struct real2_ctl_list *head){
 	double ave[2];
@@ -323,7 +336,7 @@ static void dup_real2_ctl_list(struct real2_ctl_list *head_src,
 	head_src = head_src->_next;
     while (head_src != NULL){
         head_tgt = add_real2_ctl_list_after(head_tgt);
-        head_tgt->r2_item->iflag = 1;;
+        head_tgt->r2_item->f_iflag[0] = 1;;
         head_tgt->r2_item->r_data[0] = head_src->r2_item->r_data[0];
         head_tgt->r2_item->r_data[1] = head_src->r2_item->r_data[1];
         head_src = head_src->_next;
@@ -393,6 +406,11 @@ void set_from_real2_clist_at_index(int index, struct real2_clist *r2_clst,
             r1_out, r2_out);
     return;
 };
+
+struct real2_ctl_item *real2_clist_at_index(int index, struct real2_clist *r2_clst){
+    struct real2_ctl_list *ct_tmp = find_r2_ctl_list_item_by_index(index, &r2_clst->r2_item_head);
+    return ct_tmp->r2_item;
+}
 
 void add_real2_clist_before_c_tbl(double ref_1, double ref_2, struct real2_clist *r2_clst){
     add_real2_ctl_list_before_c_tbl(ref_1, ref_2, &r2_clst->r2_item_head);

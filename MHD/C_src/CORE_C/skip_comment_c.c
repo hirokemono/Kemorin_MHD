@@ -131,8 +131,9 @@ int read_field_name_from_buffer(int len_buf, char *buf, char *data_name){
 	return iflag_coord;
 };
 
-void read_field_names(FILE *fp, int num, char **data_name, int *id_coord){
-	int i, iflag;
+void read_field_names(FILE *fp, const long num, char **data_name, int *id_coord){
+    long i;
+    int iflag;
 	char buf[LENGTHBUF];    /* array for reading line */
 	
 	for (i = 0; i < num; i++) {
@@ -186,21 +187,29 @@ void read_multi_field_name(FILE *fp, char **data_name){
 };
 
 
-void strngcopy(char *chara_out, const char *chara_in){
-	int j;
-	
-	int len_chara = (int) strlen(chara_in);
-	for (j = 0; j < len_chara; j++) {
-		if (chara_in[j] == ' ' || chara_in[j] == '\0') {
-			break;
-		}
-		else{
-			chara_out[j] = chara_in[j];
-		};
-	};
-	chara_out[len_chara] = '\0';
-	/*printf("output %s \n",chara_out);*/
-	return;
+int strngcopy_w_length(char *chara_out, const int len_chara, const char *chara_in){
+    int j;
+    
+    for (j = 0; j < len_chara; j++) {
+        if (chara_in[j] == ' ' || chara_in[j] == '\0') {
+            
+            return j;
+        }
+        else{
+            chara_out[j] = chara_in[j];
+        };
+    };
+    chara_out[len_chara] = '\0';
+    /*printf("output %s \n",chara_out);*/
+    return len_chara;
+}
+
+int strngcopy(char *chara_out, const char *chara_in){
+    int j;
+    
+    int len_chara = (int) strlen(chara_in);
+    j = strngcopy_w_length(chara_out, len_chara, chara_in);
+    return j;
 }
 
 int compare_string(int length, const char *string1, const char *string2){
@@ -254,9 +263,9 @@ void strip_cautation_marks(char *string){
 
 char * duplicate_underscore(const char *string){
 	char *tmpchara;
-	int i = 0;
-	int icou = 1;
-	int len = strlen(string);
+	long i = 0;
+	long icou = 1;
+	long len = strlen(string);
 	for(i=0;i<len;i++){
 		if(string[i] == '_') icou = icou + 1;
 	}

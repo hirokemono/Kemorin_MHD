@@ -25,14 +25,14 @@ lib_name:
 	@echo  'LIB_NETLIB_FILE =  $(LIB_NETLIB_FILE)'  >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_NETLIB_FILE): $$(MOD_NETLIB)'>> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_NETLIB)' >> $(MAKENAME)
 
 mod_list:

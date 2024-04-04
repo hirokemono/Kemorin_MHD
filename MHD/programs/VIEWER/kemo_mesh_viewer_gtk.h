@@ -14,7 +14,7 @@
 	#include <gtk/gtk.h>
 #endif
 
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "kemoview_gtk_PSF_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_preference_menu.h"
@@ -24,6 +24,6 @@
 
 /* prototypes */
 
-int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
+int draw_mesh_kemo(void);
 
 #endif

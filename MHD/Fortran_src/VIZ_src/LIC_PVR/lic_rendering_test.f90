@@ -70,6 +70,7 @@
       use set_lic_controls
       use ctl_data_lic_pvr_IO
       use select_LIC_rendering
+      use skip_comment_f
 !
       integer(kind = kint), intent(in) :: increment_lic
       type(mesh_data), intent(in), target :: geofem
@@ -132,7 +133,7 @@
       end do
 !
       do i_lic = 1, lic%pvr%num_pvr
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
+        if((no_file_flag(lic_ctls%fname_lic_ctl(i_lic)) .eqv. .FALSE.)  &
      &      .or. my_rank .ne. 0) then
           call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
      &        lic_ctls%lic_ctl_type(i_lic))

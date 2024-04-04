@@ -19,10 +19,9 @@
 !!      subroutine sel_write_cube_noise_ctl_file                        &
 !!     &         (id_control, hd_block, file_name, noise_ctl, level)
 !!      subroutine write_cube_noise_control_file(id_control, file_name, &
-!!     &                                         hd_block, noise_ctl)
+!!     &                                         noise_ctl)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: file_name
-!!        character(len = kchara), intent(in) :: hd_block
 !!        type(cube_noise_ctl), intent(in) :: noise_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -105,6 +104,8 @@
       subroutine read_cube_noise_control_file(id_control, file_name,    &
      &          hd_block, noise_ctl, c_buf)
 !
+      use skip_comment_f
+!
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len = kchara), intent(in) :: hd_block
@@ -112,7 +113,9 @@
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
-      if(file_name .eq. 'NO_FILE') return
+      if(no_file_flag(file_name)) return
+!
+      call init_cube_noise_ctl_label(hd_block, noise_ctl)
 !
       c_buf%level = c_buf%level + 1
       open(id_control, file=file_name, status='old')
@@ -137,6 +140,7 @@
      &         (id_control, hd_block, file_name, noise_ctl, level)
 !
       use write_control_elements
+      use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
@@ -146,13 +150,13 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name, 'NO_FILE')) then
-        call write_cube_noise_control_data(id_control, hd_block,        &
+      if(no_file_flag(file_name)) then
+        call write_cube_noise_control_data(id_control,                  &
      &                                     noise_ctl, level)
       else if(id_control .eq. id_monitor) then
         write(*,'(4a)') '!  ', trim(hd_block),                          &
      &                 ' should be written to ... ', trim(file_name)
-        call write_cube_noise_control_data(id_control, hd_block,        &
+        call write_cube_noise_control_data(id_control,                  &
      &                                     noise_ctl, level)
       else
         write(*,'(3a)') trim(hd_block),                                 &
@@ -160,7 +164,7 @@
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_cube_noise_control_file((id_control+2), file_name,   &
-     &                                     hd_block, noise_ctl)
+     &                                     noise_ctl)
       end if
 !
       end subroutine sel_write_cube_noise_ctl_file
@@ -168,11 +172,10 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_cube_noise_control_file(id_control, file_name,   &
-     &                                         hd_block, noise_ctl)
+     &                                         noise_ctl)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
-      character(len = kchara), intent(in) :: hd_block
       type(cube_noise_ctl), intent(in) :: noise_ctl
 !
       integer(kind = kint) :: level
@@ -180,7 +183,7 @@
       level = 0
       open(id_control, file=file_name)
       call write_cube_noise_control_data                                &
-     &     (id_control, hd_block, noise_ctl, level)
+     &     (id_control, noise_ctl, level)
       close(id_control)
 !
       end subroutine write_cube_noise_control_file

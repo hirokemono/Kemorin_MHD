@@ -12,8 +12,8 @@
 !!      logical function check_flux_tensor_w_SGS(field_name)
 !!      logical function check_induction_tensor_w_SGS(field_name)
 !!
-!!      integer(kind = kint) function num_force_w_SGS()
-!!      subroutine set_force_with_SGS_labels(n_comps, names, maths)
+!!      subroutine set_force_with_SGS_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
 !! !!!!!  force include SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -43,8 +43,6 @@
 !
       implicit  none
 ! 
-      integer(kind = kint), parameter, private :: nforce_w_SGS = 9
-!
 !>        Field label of momentum flux with SGS term
 !!         @f$ u_{i} u_{j} + \left(\widetilde{u_{i}u_{j}}
 !!                          - \tilde{u}_{i}\tilde{u}_{j} \right)@f$
@@ -188,42 +186,25 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_force_w_SGS()
-      num_force_w_SGS = nforce_w_SGS
-      return
-      end function num_force_w_SGS
+      subroutine set_force_with_SGS_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-! ----------------------------------------------------------------------
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      subroutine set_force_with_SGS_labels(n_comps, names, maths)
+      call set_field_label_to_ctl(momentum_flux_w_SGS,    array_c2i)
+      call set_field_label_to_ctl(maxwell_tensor_w_SGS,   array_c2i)
+      call set_field_label_to_ctl(induction_tensor_w_SGS, array_c2i)
+      call set_field_label_to_ctl(heat_flux_w_SGS,        array_c2i)
+      call set_field_label_to_ctl(compostion_flux_w_SGS,  array_c2i)
+      call set_field_label_to_ctl(intertia_w_SGS,         array_c2i)
+      call set_field_label_to_ctl(Lorentz_w_SGS,          array_c2i)
+      call set_field_label_to_ctl(vecp_induction_w_SGS,   array_c2i)
+      call set_field_label_to_ctl(induction_w_SGS,        array_c2i)
 !
-      integer(kind = kint_4b), intent(inout) :: n_comps(nforce_w_SGS)
-      character(len = kchara), intent(inout) :: names(nforce_w_SGS)
-      character(len = kchara), intent(inout) :: maths(nforce_w_SGS)
-!
-!
-      call set_field_labels(momentum_flux_w_SGS,                        &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(maxwell_tensor_w_SGS,                       &
-     &    n_comps( 2), names( 2), maths( 2))
-      call set_field_labels(induction_tensor_w_SGS,                     &
-     &    n_comps( 3), names( 3), maths( 3))
-!
-      call set_field_labels(heat_flux_w_SGS,                            &
-     &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(compostion_flux_w_SGS,                      &
-     &    n_comps( 5), names( 5), maths( 5))
-!
-      call set_field_labels(intertia_w_SGS,                             &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(Lorentz_w_SGS,                              &
-     &    n_comps( 7), names( 7), maths( 7))
-      call set_field_labels(vecp_induction_w_SGS,                       &
-     &    n_comps( 8), names( 8), maths( 8))
-      call set_field_labels(induction_w_SGS,                            &
-     &    n_comps( 9), names( 9), maths( 9))
-!
-      end subroutine set_force_with_SGS_labels
+      end subroutine set_force_with_SGS_names
 !
 ! ----------------------------------------------------------------------
 !

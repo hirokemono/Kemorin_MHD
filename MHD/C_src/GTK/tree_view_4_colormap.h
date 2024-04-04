@@ -20,26 +20,31 @@
 #include "set_rgb_colors_c.h"
 #include "set_rgba_table_c.h"
 #include "m_color_table_c.h"
-#include "set_each_psf_parameters.h"
 #include "kemoview_gtk_routines.h"
 
 struct colormap_view{
-	struct chara_ctl_item *colormap_mode_gtk;
+    struct chara_ctl_item *colormap_mode_gtk;
     struct r2_clist_view *cmap_vws;
     struct r2_clist_view *opacity_vws;
-	
-	struct colormap_params *cmap_param;	
+    int iflag_cmap_loaded;
+    
+    struct colormap_params *cmap_param;
     GtkWidget *scrolled_window;
+    
+    GtkWidget *button_add;
+    GtkWidget *button_delete;
+    
+    GtkWidget *combobox_cmap;
+    GtkWidget *vbox_cmap;
+    GtkWidget *hbox_cmap;
+    
+    GtkCellRenderer *renderer_value_spin;
+    GtkCellRenderer *renderer_color_spin;
 };
 
-void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 
-			struct colormap_view *color_vws);
-
-void init_colormap_views_4_viewer(struct colormap_view *color_vws);
-void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 
-			struct colormap_view *color_vws);
-
-void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws);
+struct colormap_view * alloc_colormap_view(void);
+struct colormap_view * init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c);
+void dealloc_colormap_views(struct colormap_view *color_vws);
 
 
 void colormap_data_edited_CB(gchar *path_str, gchar *new_text,
@@ -59,6 +64,8 @@ void delete_opacity_list_items_CB(struct colormap_view *color_vws);
 int set_color_mode_CB(GtkComboBox *combobox_cmap, struct colormap_view *color_vws);
 
 gboolean expose_event_CB(cairo_t *cr, struct colormap_view *color_vws);
+
+GtkWidget * init_combobox_cmap(int iflag);
 
 #endif /* TREE_VIEW_4_PVR_COLORMAP_ */
 

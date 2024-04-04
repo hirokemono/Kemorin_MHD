@@ -8,15 +8,21 @@
 //
 */
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
 #import "fillRectView.h"
+#import "KemoViewerRenderer.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface ColorMapController : NSObject {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	IBOutlet id _colorTableView;
+    IBOutlet KemoViewerMetalView *_metalView;
+    IBOutlet KemoViewerObject *_kmv;
+
+    IBOutlet id _colorTableView;
 	IBOutlet fillRectView* _fillRectView;
 
 	IBOutlet NSTableView * idColorTableView;
@@ -28,25 +34,28 @@
 	IBOutlet NSColorWell *backgroundColorWell;
     NSColor *nsBackgroundColor;
 
-	IBOutlet id ColorModeItem;	
+	IBOutlet NSPopUpButton *_colorModeItem;
+    NSInteger   colorModeTag;
 }
 @property (assign) NSMutableArray * ColorTableField;
 @property (assign) NSMutableArray * ColorTableColor;
 @property (assign) NSTableView * idColorTableView;
+// @property (assign) NSPopUpButton * _colorModeItem;
 
 
+- (id)init;
 - (void)awakeFromNib;
 
 
 - (IBAction)addAtSelectedRow:(id)pId;
 - (IBAction)deleteSelectedRow:(id)pId;
 
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex;
 
-- (void)InitColorTables;
-- (void)SetColorTables;
+- (void)InitColorTables:(struct kemoviewer_type *) kemo_sgl;
+- (void)SetColorTables:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)UpdateColorTables:(id)pID;
 - (IBAction)ChooseBackgroundColorAction: (id) sender;

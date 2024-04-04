@@ -8,6 +8,11 @@
 !!      subroutine dealloc_const_filter_ctl_data(fil3_ctl)
 !!        type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
 !!        type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
+!!      subroutine write_const_filter_ctl_data                          &
+!!      &         (id_control, filter3d_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !
       module t_ctl_data_gen_3d_filter
@@ -28,6 +33,9 @@
 !
 !
       type ctl_data_gen_3d_filter
+!>        Block name
+        character(len=kchara) :: block_name = 'LIC_ctl'
+!
 !>        Structure for file settings
         type(platform_data_control) :: gen_filter_plt
 !
@@ -141,8 +149,13 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(filter3d_ctl%i_filter_control .gt. 0) return
+      filter3d_ctl%block_name = hd_block
+      call init_platforms_labels(hd_platform,                           &
+     &                           filter3d_ctl%gen_filter_plt)
+      call init_filter_fnames_ctl_label(hd_filter_fnames,               &
+     &    filter3d_ctl%fil3_ctl%ffile_3d_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -173,7 +186,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_const_filter_ctl_data                            &
-     &         (id_control, hd_block, filter3d_ctl, level)
+     &         (id_control, filter3d_ctl, level)
 !
       use ctl_data_platforms_IO
       use ctl_data_gen_filter_IO
@@ -181,14 +194,14 @@
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
       integer(kind = kint), intent(inout) :: level
 !
 !
       if(filter3d_ctl%i_filter_control .le. 0) return
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 filter3d_ctl%block_name)
       call write_control_platforms(id_control, hd_platform,             &
      &   filter3d_ctl%gen_filter_plt, level)
 !
@@ -204,7 +217,8 @@
       call write_org_filter_fnames_ctl                                  &
      &   (id_control, hd_org_filter_fnames,                             &
      &    filter3d_ctl%org_fil_files_ctl, level)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+&                                     filter3d_ctl%block_name)
 !
       end subroutine write_const_filter_ctl_data
 !

@@ -37,28 +37,25 @@
       integer(kind=kint), parameter, private :: control_file_code = 11
 !
       type ctl_data_gen_sph_w_repart
+!>        Block name
+        character(len=kchara) :: hd_gen_sph_w_repart = 'MHD_control'
+!
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !
 !>        File name to read spherical shell control file
-        character (len = kchara) :: fname_psph_ctl
+        character (len = kchara) :: fname_psph = 'NO_FILE'
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
 !
 !>         File name for repartition control block
-        character(len = kchara) :: fname_vol_repart_ctl
+        character(len = kchara) :: fname_vol_repart_ctl = 'NO_FILE'
 !>        Structure for new partitioning controls
         type(viz_repartition_ctl) :: repart_ctl
 !
         integer(kind=kint) :: i_sph_mesh_ctl = 0
         integer(kind=kint) :: i_viz_control =  0
       end type ctl_data_gen_sph_w_repart
-!
-!
-!   Top level of label
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_mhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -99,11 +96,12 @@
 !
       do
         call load_one_line_from_control(control_file_code,              &
-     &                                  hd_mhd_ctl, c_buf)
+     &      gen_SPH_wP_c%hd_gen_sph_w_repart, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
         call read_ctl_data_gen_sph_w_repart                             &
-     &     (control_file_code, hd_mhd_ctl, gen_SPH_wP_c, c_buf)
+     &     (control_file_code, gen_SPH_wP_c%hd_gen_sph_w_repart,        &
+     &      gen_SPH_wP_c, c_buf)
         if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) exit
       end do
       close(control_file_code)
@@ -135,7 +133,8 @@
       level1 = 0
       open(control_file_code, file = file_name, status='old' )
       call write_ctl_data_gen_sph_w_repart                              &
-     &   (control_file_code, hd_mhd_ctl, gen_SPH_wP_c, level1)
+     &   (control_file_code, gen_SPH_wP_c%hd_gen_sph_w_repart,          &
+     &    gen_SPH_wP_c, level1)
       close(control_file_code)
 !
       end subroutine write_ctl_file_gen_sph_w_repart
@@ -156,8 +155,11 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) return
+      call init_platforms_labels(hd_platform, gen_SPH_wP_c%plt)
+      call init_parallel_shell_ctl_label(hd_sph_shell,                  &
+     &                                   gen_SPH_wP_c%psph_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -166,7 +168,7 @@
         call read_control_platforms                                     &
      &     (id_control, hd_platform, gen_SPH_wP_c%plt, c_buf)
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      gen_SPH_wP_c%fname_psph_ctl, gen_SPH_wP_c%psph_ctl, c_buf)
+     &      gen_SPH_wP_c%fname_psph, gen_SPH_wP_c%psph_ctl, c_buf)
         call read_viz_repart_ctl_only(id_control, hd_viz_control,       &
      &                                gen_SPH_wP_c, c_buf)
       end do
@@ -194,8 +196,8 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_platforms                                      &
      &   (id_control, hd_platform, gen_SPH_wP_c%plt, level)
-      call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
-     &    gen_SPH_wP_c%fname_psph_ctl, gen_SPH_wP_c%psph_ctl, level)
+      call sel_write_ctl_gen_shell_grids(id_control,                    &
+     &    gen_SPH_wP_c%fname_psph, gen_SPH_wP_c%psph_ctl, level)
       call write_viz_repart_ctl_only(id_control, hd_viz_control,        &
      &                               gen_SPH_wP_c, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
@@ -218,8 +220,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gen_SPH_wP_c%i_viz_control .gt. 0) return
+      call init_control_vol_repart_label(hd_viz_partition,              &
+     &                                   gen_SPH_wP_c%repart_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

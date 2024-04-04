@@ -6,10 +6,9 @@
 static void read_gz_viz_node_data(void *FP_gzip, struct psf_data *viz_s){
 	int i;
 	int itmp;
-	char buf[LENGTHBUF];    /* array for reading line */
-	int num_word[1], nchara[1], lbuf[1];
-	
-	lbuf[0] = LENGTHBUF;
+    int lbuf = LENGTHBUF;
+	char buf[lbuf];    /* array for reading line */
+	int num_word[1], nchara[1];
 	
     get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
 	sscanf(buf, "%ld %ld %ld %d %d",
@@ -30,12 +29,11 @@ static void read_gz_viz_node_data(void *FP_gzip, struct psf_data *viz_s){
 static int read_gz_kemoview_connect_data(void *FP_gzip, struct psf_data *viz_s){
 	int i, iflag_datatype;
 	int itmp;
+    int lbuf = LENGTHBUF;
 	char celllabel[5];    /* array for cell label */
-	char buf[LENGTHBUF];    /* array for reading line */
-	int num_word[1], nchara[1], lbuf[1];
-	
-	lbuf[0] = LENGTHBUF;
-	
+	char buf[lbuf];    /* array for reading line */
+	int num_word[1], nchara[1];
+
     get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
 	sscanf(buf, "%d %d %4s", &itmp, &itmp, celllabel);
 	iflag_datatype = 0;
@@ -103,11 +101,11 @@ static int read_gz_kemoview_connect_data(void *FP_gzip, struct psf_data *viz_s){
 static int read_gz_psf_connect_data(void *FP_gzip, struct psf_data *viz_s){
 	int i;
 	int itmp;
+    int lbuf = LENGTHBUF;
 	char celllabel[4];    /* array for cell label */
-	char buf[LENGTHBUF];    /* array for reading line */
-	int num_word[1], nchara[1], lbuf[1];
+	char buf[lbuf];    /* array for reading line */
+	int num_word[1], nchara[1];
 	
-	lbuf[0] = LENGTHBUF;
 	
     get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
 	sscanf(buf, "%d %d %3s", &itmp, &itmp, celllabel);
@@ -132,11 +130,10 @@ static int read_gz_psf_connect_data(void *FP_gzip, struct psf_data *viz_s){
 
 static void read_gz_viz_phys_data(void *FP_gzip, struct psf_data *viz_s){
 	int i, j, itmp, iread, nread;
-	char buf[LENGTHBUF];    /* array for reading line */
-	int num_word[1], nchara[1], lbuf[1];
-	
-	lbuf[0] = LENGTHBUF;
-	
+    int lbuf = LENGTHBUF;
+	char buf[lbuf];    /* array for reading line */
+	int num_word[1], nchara[1];
+
 	iread = 0;
     get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
 	sscanf(buf, "%ld%n", &viz_s->nfield, &nread);
@@ -178,7 +175,7 @@ static void read_gz_viz_phys_data(void *FP_gzip, struct psf_data *viz_s){
 	for (i = 0; i < viz_s->nfield; i++) {
         get_one_line_from_gz_c(FP_gzip, lbuf, num_word, nchara, buf);
         
-        viz_s->id_coord[i] = read_field_name_from_buffer(lbuf[0]+1, buf, viz_s->data_name[i]);
+        viz_s->id_coord[i] = read_field_name_from_buffer((lbuf+1), buf, viz_s->data_name[i]);
 /*		printf("%d, %s coordinate: %d \n", i, viz_s->data_name[i], viz_s->id_coord[i]);*/
 	};
 	/*  read field */

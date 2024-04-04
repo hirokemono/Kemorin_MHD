@@ -135,7 +135,7 @@
         if(cbar_param%flag_pvr_axis) then
           call set_pvr_axislabel                                        &
      &       (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
-     &        pvr_screen, pvr_rgb%rgba_real_gl)
+     &        cbar_param%iscale_font, pvr_screen, pvr_rgb%rgba_real_gl)
         end if
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
       end if

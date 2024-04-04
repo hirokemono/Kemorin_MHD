@@ -3,30 +3,27 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f, icm_sgs,    &
-!!     &          filter_param, nod_comm, node, filtering,              &
-!!     &          sgs_coefs_nod, wk_filter, nod_fld,                    &
-!!     &          v_sol, SR_sig, SR_r)
+!!      subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f,             &
+!!     &          filter_param, nod_comm, node, filtering, Csim_SGS,    &
+!!     &          wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_sf_simi                                      &
-!!     &         (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icm_sgs,     &
-!!     &          filter_param, nod_comm, node, filtering,              &
-!!     &          sgs_coefs_nod, wk_filter, nod_fld,                    &
-!!     &          v_sol, SR_sig, SR_r)
+!!     &         (i_sgs, ifield, ifield_f, ivelo, ivelo_f,              &
+!!     &          filter_param, nod_comm, node, filtering, Csim_SGS,    &
+!!     &          wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_induct_t_simi                                &
-!!     &         (i_sgs, i_v, i_b, i_fil_v, i_fil_b, icm_sgs,           &
-!!     &          filter_param, nod_comm, node, filtering,              &
-!!     &          sgs_coefs_nod, wk_filter, nod_fld,                    &
-!!     &          v_sol, SR_sig, SR_r)
+!!     &         (i_sgs, i_v, i_b, i_fil_v, i_fil_b,                    &
+!!     &          filter_param, nod_comm, node, filtering, Csim_SGS_uxb,&
+!!     &          wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_uxb_simi(i_sgs, i_v, i_b, i_fil_v, i_fil_b,  &
 !!     &          filter_param, nod_comm, node, filtering,              &
 !!     &          wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !!
-!!      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb, dt,             &
-!!     &         FEM_prm, filter_param, nod_comm, node, ele, conduct,   &
-!!     &         iphys_base, iphys_fil, iphys_SGS_wk,                   &
-!!     &         iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,       &
-!!     &         filtering, sgs_coefs, wk_filter, fem_wk, f_nl,         &
-!!     &         nod_fld, v_sol, SR_sig, SR_r)
+!!      subroutine cal_sgs_uxb_2_ff_simi(dt, FEM_prm,                   &
+!!     &          filter_param, nod_comm, node, ele, conduct,           &
+!!     &          iphys_base, iphys_fil, iphys_SGS_wk, iphys_ele_base,  &
+!!     &          ele_fld, g_FEM, jac_3d, rhs_tbl,                      &
+!!     &          filtering, Csim_SGS_uxb, wk_filter, fem_wk, f_nl,     &
+!!     &          nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -42,7 +39,8 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(filtering_data_type), intent(in) :: filtering
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -66,7 +64,7 @@
       use t_finite_element_mat
       use t_filtering_data
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_vector_for_solver
       use t_solver_SR
 !
@@ -78,23 +76,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f, icm_sgs,      &
-     &          filter_param, nod_comm, node, filtering,                &
-     &          sgs_coefs_nod, wk_filter, nod_fld,                      &
-     &          v_sol, SR_sig, SR_r)
+      subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f,               &
+     &          filter_param, nod_comm, node, filtering, Csim_SGS,      &
+     &          wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_fluxes
       use cal_similarity_terms
       use cal_filtering_scalars
 !
       integer (kind=kint), intent(in) :: i_sgs, i_vect, i_vect_f
-      integer (kind=kint), intent(in) :: icm_sgs
 !
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
@@ -112,19 +108,17 @@
 !  ----------   substruct flux obtained by filterd values
 !
       call cal_sgs_flux_tensor(node%numnod, node%istack_nod_smp,        &
-     &    nod_fld%ntot_phys, i_sgs, i_vect_f, i_vect_f,                 &
-     &    sgs_coefs_nod%ntot_comp, icm_sgs, sgs_coefs_nod%ak,           &
-     &    nod_fld%d_fld)
+     &    Csim_SGS%coef_nod(1,1), i_sgs, i_vect_f, i_vect_f,            &
+     &    nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine cal_sgs_mf_simi
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_sf_simi                                        &
-     &         (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icm_sgs,       &
-     &          filter_param, nod_comm, node, filtering,                &
-     &          sgs_coefs_nod, wk_filter, nod_fld,                      &
-     &          v_sol, SR_sig, SR_r)
+     &         (i_sgs, ifield, ifield_f, ivelo, ivelo_f,                &
+     &          filter_param, nod_comm, node, filtering, Csim_SGS,      &
+     &          wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_fluxes
       use products_nodal_fields_smp
@@ -133,13 +127,12 @@
 !
       integer (kind=kint), intent(in) :: i_sgs, ifield, ifield_f
       integer (kind=kint), intent(in) :: ivelo, ivelo_f
-      integer (kind=kint), intent(in) :: icm_sgs
 !
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
@@ -157,32 +150,30 @@
      &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       call cal_sgs_flux_vector(node%numnod, node%istack_nod_smp,        &
-     &    nod_fld%ntot_phys, i_sgs, ivelo_f, ifield_f,                  &
-     &    sgs_coefs_nod%ntot_comp, icm_sgs, sgs_coefs_nod%ak,           &
-     &    nod_fld%d_fld)
+     &    Csim_SGS%coef_nod(1,1), i_sgs, ivelo_f, ifield_f,             &
+     &    nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine cal_sgs_sf_simi
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_induct_t_simi                                  &
-     &         (i_sgs, i_v, i_b, i_fil_v, i_fil_b, icm_sgs,             &
-     &          filter_param, nod_comm, node, filtering,                &
-     &          sgs_coefs_nod, wk_filter, nod_fld,                      &
-     &          v_sol, SR_sig, SR_r)
+     &         (i_sgs, i_v, i_b, i_fil_v, i_fil_b,                      &
+     &          filter_param, nod_comm, node, filtering, Csim_SGS_uxb,  &
+     &          wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_fluxes
       use cal_similarity_terms
       use cal_filtering_scalars
 !
       integer (kind=kint), intent(in) :: i_sgs, i_v, i_b
-      integer (kind=kint), intent(in) :: i_fil_v, i_fil_b, icm_sgs
+      integer (kind=kint), intent(in) :: i_fil_v, i_fil_b
 !
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
@@ -199,10 +190,9 @@
 !
 !  ----------   substruct flux obtained by filterd values
 !
-      call subctract_induction_tensor                                   &
-     &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
-     &    i_sgs, i_fil_b, i_fil_v, sgs_coefs_nod%ntot_comp, icm_sgs,    &
-     &    sgs_coefs_nod%ak, nod_fld%d_fld)
+      call subctract_induction_tensor(node%numnod, node%istack_nod_smp, &
+     &    Csim_SGS_uxb%coef_nod(1,1), i_sgs, i_fil_b, i_fil_v,          &
+     &    nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine cal_sgs_induct_t_simi
 !
@@ -240,24 +230,23 @@
      &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       call subctract_uxb_vector(node%numnod, node%istack_nod_smp,       &
-     &    nod_fld%ntot_phys, i_sgs, i_fil_v, i_fil_b, nod_fld%d_fld)
+     &    i_sgs, i_fil_v, i_fil_b, nod_fld%ntot_phys, nod_fld%d_fld)
 !
       end subroutine cal_sgs_uxb_simi
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb, dt,               &
-     &         FEM_prm, filter_param, nod_comm, node, ele, conduct,     &
-     &         iphys_base, iphys_fil, iphys_SGS_wk,                     &
-     &         iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,         &
-     &         filtering, sgs_coefs, wk_filter, fem_wk, f_nl,           &
-     &         nod_fld, v_sol, SR_sig, SR_r)
+      subroutine cal_sgs_uxb_2_ff_simi(dt, FEM_prm,                     &
+     &          filter_param, nod_comm, node, ele, conduct,             &
+     &          iphys_base, iphys_fil, iphys_SGS_wk, iphys_ele_base,    &
+     &          ele_fld, g_FEM, jac_3d, rhs_tbl,                        &
+     &          filtering, Csim_SGS_uxb, wk_filter, fem_wk, f_nl,       &
+     &          nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_similarity_uxb
 !
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: icomp_sgs_uxb
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_filtering_params), intent(in) :: filter_param
@@ -274,7 +263,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -293,17 +282,15 @@
 !
 !
       if (FEM_prm%iflag_magne_supg .eq. id_turn_ON) then
-        call int_simi_vp_induct_upm                                     &
-     &     (FEM_prm%npoint_t_evo_int, dt, icomp_sgs_uxb,                &
+        call int_simi_vp_induct_upm(FEM_prm%npoint_t_evo_int, dt,       &
      &      node, ele, conduct, iphys_SGS_wk, nod_fld,                  &
-     &      g_FEM, jac_3d, rhs_tbl, sgs_coefs,                          &
+     &      g_FEM, jac_3d, rhs_tbl, Csim_SGS_uxb,                       &
      &      ele_fld%ntot_phys, iphys_ele_base%i_magne, ele_fld%d_fld,   &
      &      fem_wk, f_nl)
       else
         call int_simi_vp_induct                                         &
-     &     (FEM_prm%npoint_t_evo_int, icomp_sgs_uxb,                    &
-     &      node, ele, conduct, iphys_SGS_wk, nod_fld, g_FEM, jac_3d,   &
-     &      rhs_tbl, sgs_coefs, fem_wk, f_nl)
+     &    (FEM_prm%npoint_t_evo_int, node, ele, conduct, iphys_SGS_wk,  &
+     &     nod_fld, g_FEM, jac_3d, rhs_tbl, Csim_SGS_uxb, fem_wk, f_nl)
       end if
 !
       end subroutine cal_sgs_uxb_2_ff_simi

@@ -81,13 +81,13 @@ void set_fline_field_param(int selected, int input, struct kemoview_fline *kemo_
 	}else if(selected == COMPONENT_SEL_FLAG){
 		set_fline_color_component(input, kemo_fline->fline_d, kemo_fline->fline_m);
 	} else if(selected == LINETYPE_FLAG){
-		set_fline_type(kemo_fline->fline_m, input);
+		set_fline_type(kemo_fline->fline_m, (long) input);
 	};
 	return;
 };
 
-int get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
-	int output = 0;
+long get_fline_field_param(int selected, struct kemoview_fline *kemo_fline){
+    long output = 0;
 	
 	if(selected == NUM_FIELD_FLAG){
 		output = get_fline_color_num_field(kemo_fline->fline_d);

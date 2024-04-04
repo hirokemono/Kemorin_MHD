@@ -6,16 +6,24 @@
 //  Copyright 2011 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import <AVFoundation/AVFoundation.h>
-#import <CoreVideo/CoreVideo.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+@import AVFoundation;
+@import CoreVideo;
+
+#import "KemoViewerMetalView.h"
+#import "KemoViewerMetalViewController.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 
 @interface KemoviewerMovieMaker : NSObject {
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	IBOutlet NSUserDefaultsController* _movie_defaults_controller;
+    IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerMetalViewController * _metalViewController;
+    IBOutlet KemoViewerObject *_kmv;
+
+    IBOutlet NSUserDefaultsController* _movie_defaults_controller;
 
 	NSInteger MovieFormatFlag;
 	NSInteger CurrentMovieFormat;
@@ -56,18 +64,27 @@
 -(id) init;
 -(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image;
 
--(void) InitEvolutionStepByPSF;
--(void) InitEvolutionStepByFline;
+-(void) InitEvolutionStepByPSF:(struct kemoviewer_type *) kemo_sgl;
+-(void) InitEvolutionStepByFline:(struct kemoviewer_type *) kemo_sgl;
 
 -(void) SaveKemoviewPNGFile:(NSString*)ImageFilehead;
 -(void) SaveKemoviewBMPFile:(NSString*)ImageFilehead;
 -(void) SaveKemoviewPDFFile:(NSString*)ImageFilehead;
 
--(void) SaveKemoviewQuiltPNGFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
--(void) SaveKemoviewQuiltBMPFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
--(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
+-(void) SaveKemoviewQuiltPNGFile:(NSString*)ImageFilehead
+                          degree:(NSInteger) int_degree
+                            axis:(NSInteger)rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl;
+-(void) SaveKemoviewQuiltBMPFile:(NSString*)ImageFilehead
+                          degree:(NSInteger)int_degree
+                            axis:(NSInteger)rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl;
+-(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead
+                          degree:(NSInteger) int_degree
+                            axis:(NSInteger) rotationaxis
+                        kemoview:(struct kemoviewer_type *) kemo_sgl;
 
-- (IBAction)SendToClipAsPDF:(id)sender;
+- (IBAction)SendToClipAsTIFF:(id)sender;
 
 - (NSInteger) SetImageFileFormatID:(NSString *)FileExtension;
 

@@ -110,7 +110,7 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c1(id_control, level,                    &
-     &   hd_filter_area, fil3_ctl%filter_area_ctl)
+     &    fil3_ctl%filter_area_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_filter_area_ctl
@@ -170,7 +170,7 @@
      &   (id_control, hd_esize_solver, fil3_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_mass_matrix_type, fil3_ctl%mass_matrix_type_ctl)
+     &    fil3_ctl%mass_matrix_type_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_element_size_ctl
@@ -243,18 +243,18 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_method_esize, fil3_ctl%method_esize_ctl)
+     &    fil3_ctl%method_esize_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_precond_esize, fil3_ctl%precond_esize_ctl)
+     &    fil3_ctl%precond_esize_ctl)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_eps_esize, fil3_ctl%eps_esize_ctl)
+     &    fil3_ctl%eps_esize_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_itr_esize, fil3_ctl%itr_esize_ctl)
+     &    fil3_ctl%itr_esize_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sigma_esize, fil3_ctl%sigma_esize_ctl)
+     &    fil3_ctl%sigma_esize_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_sigma_diag_esize, fil3_ctl%sigma_diag_esize_ctl)
+     &    fil3_ctl%sigma_diag_esize_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_dx_solver_param_ctl

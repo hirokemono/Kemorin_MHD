@@ -7,9 +7,6 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine alloc_repart_masking_ctl(new_part_ctl)
-!!      subroutine dealloc_repart_masking_ctl(new_part_ctl)
-!!        type(new_patition_control), intent(inout) :: new_part_ctl
 !!      subroutine dealloc_ctl_data_new_decomp(new_part_ctl)
 !!        type(new_patition_control), intent(inout) :: new_part_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
@@ -17,9 +14,6 @@
 !!     &                                   new_new_part_c)
 !!        type(new_patition_control), intent(in) :: org_new_part_c
 !!        type(new_patition_control), intent(inout) :: new_new_part_c
-!!
-!!      subroutine append_repart_masking_ctl(new_part_ctl)
-!!        type(new_patition_control), intent(inout) :: new_part_ctl
 !!
 !! --------------------------------------------------------------------
 !!    Example of control block
@@ -74,12 +68,14 @@
       use t_control_array_integer
       use t_control_array_character
       use t_control_array_charaint
-      use t_control_data_masking
+      use t_control_data_maskings
       use skip_comment_f
 !
       implicit  none
 !
       type new_patition_control
+!>        Block name
+        character(len=kchara) :: block_name = 'LIC_ctl'
 !>        Data transfer table file prefix
         type(read_character_item) :: repart_table_head_ctl
 !>        Data transfer table file format
@@ -110,10 +106,9 @@
         type(read_real_item) :: masking_weight_ctl
 !>        Power of volume for re-paritiong reference
         type(read_real_item) :: power_of_volume_ctl
-!>        Number of field masking
-        integer(kind = kint) :: num_masking_ctl = 0
+!
 !>        field masking list
-        type(masking_by_field_ctl), allocatable :: mask_ctl(:)
+        type(multi_masking_ctl) :: mul_mask_c
 !
         integer(kind = kint) :: i_new_patition_ctl = 0
       end type new_patition_control
@@ -123,32 +118,6 @@
       contains
 !
 !   --------------------------------------------------------------------
-!
-      subroutine alloc_repart_masking_ctl(new_part_ctl)
-!
-      type(new_patition_control), intent(inout) :: new_part_ctl
-!
-!
-      allocate(new_part_ctl%mask_ctl(new_part_ctl%num_masking_ctl))
-!
-      end subroutine alloc_repart_masking_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_repart_masking_ctl(new_part_ctl)
-!
-      type(new_patition_control), intent(inout) :: new_part_ctl
-!
-!
-      if(allocated(new_part_ctl%mask_ctl)) then
-        deallocate(new_part_ctl%mask_ctl)
-      end if
-      new_part_ctl%num_masking_ctl = 0
-!
-      end subroutine dealloc_repart_masking_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
       subroutine dealloc_ctl_data_new_decomp(new_part_ctl)
 !
@@ -171,11 +140,7 @@
 !
       new_part_ctl%ratio_of_grouping_ctl%iflag = 0
 !
-      if(new_part_ctl%num_masking_ctl .gt. 0) then
-        call dealloc_masking_ctls                                       &
-     &     (new_part_ctl%num_masking_ctl, new_part_ctl%mask_ctl)
-      end if
-      call dealloc_repart_masking_ctl(new_part_ctl)
+      call dealloc_mul_masking_ctl(new_part_ctl%mul_mask_c)
 !
       new_part_ctl%i_new_patition_ctl = 0
 !
@@ -218,41 +183,12 @@
       call copy_integer_ctl(org_new_part_c%ratio_of_grouping_ctl,       &
      &                      new_new_part_c%ratio_of_grouping_ctl)
 !
+      new_new_part_c%block_name = org_new_part_c%block_name
       new_new_part_c%i_new_patition_ctl                                 &
      &      = org_new_part_c%i_new_patition_ctl
 !
       end subroutine dup_ctl_data_new_decomp
 !
 ! -----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine append_repart_masking_ctl(new_part_ctl)
-!
-      type(new_patition_control), intent(inout) :: new_part_ctl
-!
-      integer(kind=kint) :: ntmp_masking
-      type(masking_by_field_ctl), allocatable :: tmp_mask_c(:)
-!
-!
-      ntmp_masking = new_part_ctl%num_masking_ctl
-      allocate(tmp_mask_c(ntmp_masking))
-      call dup_masking_ctls                                             &
-     &   (ntmp_masking, new_part_ctl%mask_ctl, tmp_mask_c)
-!
-      call dealloc_masking_ctls                                         &
-     &   (new_part_ctl%num_masking_ctl, new_part_ctl%mask_ctl)
-      call dealloc_repart_masking_ctl(new_part_ctl)
-!
-      new_part_ctl%num_masking_ctl = ntmp_masking + 1
-      call alloc_repart_masking_ctl(new_part_ctl)
-      call dup_masking_ctls                                             &
-     &   (ntmp_masking, tmp_mask_c, new_part_ctl%mask_ctl(1))
-!
-      call dealloc_masking_ctls(ntmp_masking, tmp_mask_c)
-      deallocate(tmp_mask_c)
-!
-      end subroutine append_repart_masking_ctl
-!
-!  ---------------------------------------------------------------------
 !
       end module t_ctl_data_volume_grouping

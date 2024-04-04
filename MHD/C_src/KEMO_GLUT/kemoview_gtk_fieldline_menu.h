@@ -25,19 +25,34 @@
 #endif
 
 struct fieldline_gtk_menu{
-	GtkWidget *combobox_color;
-	GtkWidget *switch_tube;
-	
-	GtkWidget *label_min, *label_max;
-	GtkWidget *spin_range_min, *spin_min_digit;
-	GtkWidget *spin_range_max, *spin_max_digit;
-	GtkWidget *spin_thick, *spin_digit;
+    GtkWidget *closeButton;
+    GtkWidget *combobox_color;
+    GtkWidget *switch_tube;
+    
+    GtkWidget *label_min, *label_max;
+    GtkWidget *spin_range_min, *spin_min_digit;
+    GtkWidget *spin_range_max, *spin_max_digit;
+    GtkWidget *spin_thick, *spin_digit;
+    
+    GtkWidget *combobox_field;
+    GtkWidget *label_tree_field;
+    GtkCellRenderer *renderer_field;
+
+    GtkWidget *combobox_comp;
+    GtkWidget *label_tree_comp;
+    GtkCellRenderer *renderer_comp;
 };
 
 
 /*  prototypes */
 
-void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu);
-GtkWidget * init_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu, GtkWidget *menu_box);
+void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
+                            struct fieldline_gtk_menu *fline_menu);
+void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
+                              struct fieldline_gtk_menu *fline_menu);
+
+GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_menu);
+void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
+                                struct fieldline_gtk_menu *fline_menu);
 
 #endif

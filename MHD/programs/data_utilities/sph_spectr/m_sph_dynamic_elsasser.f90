@@ -29,8 +29,6 @@
       integer(kind = kint), parameter :: id_file_rms_m =    37
       integer(kind = kint), parameter :: id_file_lscale =   44
 !
-      integer(kind = kint), parameter :: iflag_on = 1
-!
       type(read_sph_spectr_data), save :: sph_IN_l, sph_IN_m
       type(read_sph_spectr_data), save :: sph_OUT1
 !

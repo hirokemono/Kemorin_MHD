@@ -64,6 +64,8 @@
         type(read_character_item) :: volume_spectr_file_ctl
 !>        Structure for gauss coefficient file name
         type(read_character_item) :: gauss_coefs_file_ctl
+!>        Structure for old format flag
+        type(read_character_item) :: old_gauss_coefs_file_ctl
 !
 !>        lower limit of stable dipole
         type(read_real_item) :: stable_limit_g10_ctl
@@ -90,6 +92,8 @@
      &      :: hd_volume_spectr_file = 'volume_pwr_spectr_file_name'
       character(len=kchara), parameter, private                         &
      &      :: hd_gauss_coefs_file = 'gauss_coefs_file_name'
+      character(len=kchara), parameter, private                         &
+&           :: hd_old_gauss_file =   'old_gauss_coefs_file_flag'
 !
       character(len=kchara), parameter, private                         &
      &      :: hd_stable_limit_g10 = 'stable_limit_g10_ctl'
@@ -166,6 +170,8 @@
 !
         call read_chara_ctl_type(c_buf, hd_gauss_coefs_file,            &
      &      tave_svsr_ctl%gauss_coefs_file_ctl)
+        call read_chara_ctl_type(c_buf, hd_old_gauss_file,              &
+     &      tave_svsr_ctl%old_gauss_coefs_file_ctl)
       end do
       tave_svsr_ctl%i_tave_stable_reverse = 1
 !
@@ -185,6 +191,7 @@
       tave_svsr_ctl%volume_power_file_ctl%iflag = 0
       tave_svsr_ctl%volume_spectr_file_ctl%iflag = 0
       tave_svsr_ctl%gauss_coefs_file_ctl%iflag = 0
+      tave_svsr_ctl%old_gauss_coefs_file_ctl%iflag = 0
 !
       tave_svsr_ctl%i_tave_stable_reverse = 0
 !

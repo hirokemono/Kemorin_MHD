@@ -60,7 +60,7 @@ lib_tasks: libtarget lib_archve
 libtarget:
 	@echo  '$$(LIB_KEMO_C_FILE): $(OBJS_C)' >> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

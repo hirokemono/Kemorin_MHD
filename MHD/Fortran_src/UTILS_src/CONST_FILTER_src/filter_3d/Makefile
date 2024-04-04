@@ -13,7 +13,9 @@ MOD_3D_FILTER_MAT = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'FILTER_3D_MATDIR = $(FILTER_3D_MATDIR)'   >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_3D_FILTER_MAT)' \
 	>> $(MAKENAME)
 

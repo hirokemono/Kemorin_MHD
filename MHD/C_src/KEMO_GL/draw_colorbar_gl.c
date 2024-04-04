@@ -4,178 +4,186 @@
 
 #include "draw_colorbar_gl.h"
 
-static void count_colorbar_box_VAO(struct cbar_work *cbar_wk, struct VAO_ids *cbar_VAO){
-	int num_patch;
-	
-	num_patch = 4 * cbar_wk->num_quad;
-	num_patch = num_patch + 2*(cbar_wk->iflag_zero + IFOUR);
-	cbar_VAO->npoint_draw = ITHREE * num_patch;
-	return;
-};
+static const float default_background[4] = { 0.9, 0.9, 0.9, 1.0 };
+static const int    num_light = 2;
+static const float  lightposition[4] =  { 1.5, 1.5,-10.0,0.0};
+static const float  light2position[4] = {-1.5,-1.5,-10.0,0.0};
+static const float  white1[4] = {0.4, 0.4, 0.4, 1.0};
+static const float  white2[4] = {0.4, 0.4, 0.4, 1.0};
+static const float  white3[4] = {0.2, 0.2, 0.2, 1.0};
+static const float  shine[1] = {30.0};
 
-static void count_colorbar_text_VAO(struct cbar_work *cbar_wk,struct VAO_ids *text_VAO){
-	text_VAO->npoint_draw = ITHREE*2*(cbar_wk->iflag_zero + ITWO);
-	return;
+void set_bg_color_kemoview(float bg_color[4], float text_color[4]){
+    int i;
+    
+    for(i=0;i<3;i++){
+        if(bg_color[i] < 0.5){
+            text_color[i] = 0.9;
+        }else{
+            text_color[i] = 0.1;
+        };
+    }
+    text_color[3] = ONE;
+    return;
 };
-
-static void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_color[4], 
-			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
-			struct VAO_ids *cbar_VAO, struct gl_strided_buffer *cbar_buf){
-	int inum_quad;
-	set_buffer_address_4_patch(cbar_VAO->npoint_draw, cbar_buf);
-	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-	
-	inum_quad = 0;
-	inum_quad = solid_colorbar_box_to_buf(inum_quad, cmap_s, cbar_wk, cbar_buf);
-	inum_quad = fade_colorbar_box_to_buf(inum_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
-	inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color, cbar_wk, cbar_buf);
-	
-	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
-	return;
-};
-
-static void set_colorbar_text_VAO(int iflag_retina, 
-								  GLfloat text_color[4], GLfloat bg_color[4], 
-								  struct cbar_work *cbar_wk, struct VAO_ids *text_VAO,
-								  struct gl_strided_buffer *cbar_buf){
-	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
-	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-	
-	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
-	
-	glBindVertexArray(text_VAO->id_VAO);
-	Const_VAO_4_Texture(text_VAO, cbar_buf);
-	cbar_wk->id_texture = set_texture_to_buffer(cbar_wk->npix_x, 3*cbar_wk->npix_y,
-                                                cbar_wk->numBMP);
-	glBindVertexArray(0);
-	return;
-};
-
-static void set_time_text_VAO(int iflag_retina, 
-								  GLfloat text_color[4], GLfloat bg_color[4], 
-								  struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
-								  struct gl_strided_buffer *cbar_buf){
-	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
-	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-	
-	time_mbox_to_buf(iflag_retina, text_color, tlabel_wk, cbar_buf);
-	
-	glBindVertexArray(text_VAO->id_VAO);
-	Const_VAO_4_Texture(text_VAO, cbar_buf);
-	tlabel_wk->id_texture = set_texture_to_buffer(tlabel_wk->npix_x, 3*tlabel_wk->npix_y,
-												  tlabel_wk->numBMP);
-	glBindVertexArray(0);
-	return;
-};
-
-void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], GLfloat bg_color[4],
-			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-			struct VAO_ids **cbar_VAO){
-	int i;
-	int icomp;
-	struct gl_strided_buffer *cbar_buf 
-		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	set_buffer_address_4_patch(16, cbar_buf);
-	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-		
-	cbar_VAO[1]->npoint_draw = 0;
-	clear_colorbar_text_image(psf_a->cbar_wk);
-	for(i=0; i<psf_a->nmax_loaded; i++){
-		if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
-			icomp = psf_m[i]->icomp_draw_psf;
-			set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, 
-						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk);
-			set_colorbar_text_image(text_color, psf_a->cbar_wk);
-	
-			count_colorbar_box_VAO(psf_a->cbar_wk, cbar_VAO[0]);
-			count_colorbar_text_VAO(psf_a->cbar_wk, cbar_VAO[1]);
-			set_colorbar_box_VAO(iflag_retina, text_color, bg_color, 
-						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk, cbar_VAO[0], cbar_buf);
-			set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
-						psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
-		};
-	};
-	free(cbar_buf->v_buf);
-	free(cbar_buf);
-	return;
-};
-
-void set_timelabel_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], GLfloat bg_color[4],
-			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-			struct VAO_ids *time_VAO){
-	struct gl_strided_buffer *cbar_buf 
-		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
-	set_buffer_address_4_patch(16, cbar_buf);
-	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
-		
-	time_VAO->npoint_draw = 0;
-	if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){
-		psf_a->tlabel_wk->xwin = (float) nx_win;
-		psf_a->tlabel_wk->ywin = (float) ny_win;
-		
-		clear_time_text_image(psf_a->tlabel_wk);
-		if(psf_a->iflag_draw_time > 0){
-			sprintf(psf_a->tlabel_wk->minlabel,"    t = %5.4E", (float) psf_a->time_disp);
-		}else if(psf_a->iflag_draw_file_step > 0){
-			sprintf(psf_a->tlabel_wk->minlabel,"File index: %6d", psf_a->file_step_disp);
-		};
-		set_time_text_image(text_color, psf_a->tlabel_wk);
-		time_VAO->npoint_draw = ITHREE*2;
-		set_time_text_VAO(iflag_retina, text_color, bg_color, 
-							  psf_a->tlabel_wk, time_VAO, cbar_buf);
-	};
-	free(cbar_buf->v_buf);
-	free(cbar_buf);
-	return;
-};
-
-void draw_colorbar_VAO(struct cbar_work *cbar_wk,
-			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders){
-	double orthogonal[16];
-	if(cbar_VAO[1]->npoint_draw <= 0) return;
-	
-	orthogonal_glmat_c(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin, -1.0, 1.0, orthogonal);
-	
-	glEnable(GL_BLEND);
-	glEnable(GL_TRUE);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glEnable(GL_MULTISAMPLE);
-	
-	draw_2D_box_patch_VAO(orthogonal, cbar_VAO[0], kemo_shaders);
-	draw_textured_2D_box_VAO(cbar_wk->id_texture, orthogonal,
-							 cbar_VAO[1], kemo_shaders);
-	
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);	
-	
-	return;
+void init_bg_color_kemoview(float bg_color[4], float text_color[4]){
+    int i;
+    for(i=0;i<3;i++) {bg_color[i] = default_background[i];};
+    return;
 }
 
-void draw_timelabel_VAO(struct tlabel_work *tlabel_wk,
-			struct VAO_ids *time_VAO, struct kemoview_shaders *kemo_shaders){
-	double orthogonal[16];
-	if(time_VAO->npoint_draw <= 0) return;
-	
-	orthogonal_glmat_c(0.0, tlabel_wk->xwin, 0.0, tlabel_wk->ywin,
-					   -1.0, 1.0, orthogonal);
-	
-	glEnable(GL_BLEND);
-	glEnable(GL_TRUE);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glEnable(GL_MULTISAMPLE);
-	
-	draw_textured_2D_box_VAO(tlabel_wk->id_texture, orthogonal,
-							 time_VAO, kemo_shaders);
-	
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);	
-	
-	return;
+struct initial_cube_lighting * init_inital_cube_lighting(void){
+    struct initial_cube_lighting *init_light
+        = (struct initial_cube_lighting *) malloc(sizeof(struct initial_cube_lighting));
+    if(init_light == NULL){
+        printf("malloc error for initial_cube_lighting\n");
+        exit(0);
+    }
+    init_light->num_light = num_light;
+    for(int i=0;i<4;i++){
+        init_light->lightposition[0][i] = lightposition[i];
+        init_light->lightposition[1][i] = light2position[i];
+        init_light->whitelight[0][i] = 0.2*white1[i];
+        init_light->whitelight[1][i] = 0.8*white2[i];
+        init_light->whitelight[2][i] = 2*white3[i];
+    };
+    init_light->shine[0] = 10*shine[0];
+
+    return init_light;
+};
+
+int count_colorbar_box_buffer(int iflag_zero, int num_quad){
+    int num_patch = 4*num_quad + 2*(iflag_zero + IFOUR);
+    return (ITHREE * num_patch);
+};
+
+static void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
+                                      float text_color[4], float bg_color[4],
+                                      struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                                      struct cbar_work *cbar_wk, struct gl_strided_buffer *cbar_buf){
+    int i;
+    long icomp;
+    cbar_buf->num_nod_buf = 0;
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
+            icomp = psf_m[i]->icomp_draw_psf;
+            set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win,
+                                  psf_m[i]->cmap_psf_comp[icomp], cbar_wk);
+    
+            cbar_buf->num_nod_buf = count_colorbar_box_buffer(cbar_wk->iflag_zero, cbar_wk->num_quad);
+            
+            long inum_quad = 0;
+            inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
+                                                  cbar_wk, cbar_buf);
+            inum_quad = fade_colorbar_box_to_buf(inum_quad, psf_m[i]->cmap_psf_comp[icomp],
+                                                 bg_color, cbar_wk, cbar_buf);
+            inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color,
+                                              cbar_wk, cbar_buf);
+            break;
+        };
+    };
+    return;
+};
+
+static void const_cbar_text_buffer(int iflag_retina,  float text_color[4],
+                                   struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                                   struct cbar_work *cbar_wk,
+                                   struct gl_textbox_buffer *cbar_min_buf,
+                                   struct gl_textbox_buffer *cbar_max_buf,
+                                   struct gl_textbox_buffer *cbar_zero_buf){
+    int i;
+    cbar_min_buf->vertex->num_nod_buf =  0;
+    cbar_max_buf->vertex->num_nod_buf =  0;
+    cbar_zero_buf->vertex->num_nod_buf = 0;
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0){
+            set_colorbar_text_image(text_color, cbar_wk->psf_min, cbar_min_buf);
+            set_colorbar_text_image(text_color, cbar_wk->psf_max, cbar_max_buf);
+            if(cbar_wk->iflag_zero == 1){
+                set_colorbar_text_image(text_color, ZERO, cbar_zero_buf);
+            }
+
+            cbar_min_buf->vertex->num_nod_buf =  (ITHREE*2);
+            cbar_max_buf->vertex->num_nod_buf =  (ITHREE*2);
+            if(cbar_wk->iflag_zero == 1) cbar_zero_buf->vertex->num_nod_buf = (ITHREE*2);
+            colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk,
+                                 cbar_min_buf->vertex, cbar_max_buf->vertex, cbar_zero_buf->vertex);
+            break;
+        };
+    };
+    return;
+};
+
+
+void const_timelabel_buffer(int iflag_retina, int nx_win, int ny_win,
+                            float text_color[4], float bg_color[4],
+                            struct kemo_array_control *psf_a,
+                            struct gl_textbox_buffer *tlabel_buf){
+    if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){
+        clear_kemoview_gl_texure(tlabel_buf->image);
+        if(psf_a->iflag_draw_time > 0){
+            sprintf(tlabel_buf->texts,"    t = %5.4E", (float) psf_a->time_disp);
+        }else if(psf_a->iflag_draw_file_step > 0){
+            sprintf(tlabel_buf->texts,"File index: %6d", psf_a->file_step_disp);
+        };
+        set_time_text_image(text_color, tlabel_buf);
+        time_mbox_to_buf(iflag_retina, text_color, (float) nx_win, (float) ny_win, tlabel_buf->vertex);
+        tlabel_buf->vertex->num_nod_buf = TWO * THREE;
+   }else{
+       tlabel_buf->vertex->num_nod_buf = 0;
+    };
+    return;
+};
+
+void const_colorbar_buffer(int iflag_retina, int nx_win, int ny_win,
+                           float text_color[4], float bg_color[4],
+                           struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
+                           struct gl_textbox_buffer *cbar_min_buf, struct gl_textbox_buffer *cbar_max_buf,
+                           struct gl_textbox_buffer *cbar_zero_buf, struct gl_strided_buffer *cbar_buf){
+    struct cbar_work *cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
+    if(cbar_wk == NULL){
+        printf("malloc error for cbar_work\n");
+        exit(0);
+    }
+    
+    const_colorbar_box_buffer(iflag_retina, nx_win, ny_win, text_color, bg_color,
+                              psf_m, psf_a, cbar_wk, cbar_buf);
+    const_cbar_text_buffer(iflag_retina, text_color, psf_m, psf_a, cbar_wk,
+                           cbar_min_buf, cbar_max_buf, cbar_zero_buf);
+    free(cbar_wk);
+    return;
+};
+
+void const_message_buffer(const int iflag_retina,
+                          const int nx_win, const int ny_win,
+                          struct gl_strided_buffer *cbar_buf,
+                          struct gl_textbox_buffer *message_buf){
+    float xbar_max, ybar_min;
+    if(message_buf->text_opacity > 0.0){
+        clear_kemoview_gl_texure(message_buf->image);
+        xbar_max = message_xmax(nx_win);
+        ybar_min = message_ymin(ny_win);
+        set_windowsize_image(nx_win, ny_win, message_buf);
+        
+        cbar_buf->num_nod_buf = ITWO * ITHREE;
+        message_mbox_to_buf(iflag_retina, message_buf->text_opacity,
+                            xbar_max, ybar_min, cbar_buf);
+    }else{
+        cbar_buf->num_nod_buf = 0;
+    }
+    return;
+}
+
+void const_screen_buffer(int iflag_view_type, int nx_win, int ny_win,
+                         struct gl_strided_buffer *screen_buf){
+    screen_buf->num_nod_buf = ITWO * ITHREE;
+    screen_mbox_to_buf(nx_win, ny_win, screen_buf);
+    
+    if(iflag_view_type == VIEW_STEREO) {
+        screen_buf->num_nod_buf = TWO*THREE;
+    }else{
+        screen_buf->num_nod_buf = 0;
+    };
+    return;
 }
 

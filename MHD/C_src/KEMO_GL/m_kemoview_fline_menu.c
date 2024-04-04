@@ -63,28 +63,28 @@ void init_fline_parameters(struct fline_menu_val *fline_m){
 	fline_m->icomp_draw_fline = INIT_IC_DRAW_FLINE;
 	
 	fline_m->fieldline_color = INIT_FLDLINE_COLOR;
-	fline_m->fieldline_type = INIT_FLDLINE_TYPE;
+	fline_m->fieldline_type =  INIT_FLDLINE_TYPE;
 	fline_m->fieldline_thick = INIT_FLDLINE_THICK;
 	return;
 }
 
 void set_fline_color_field(int selected, struct psf_data *fline_s,
 			struct fline_menu_val *fline_m){
-	fline_m->if_draw_fline = selected;
+	fline_m->if_draw_fline = (long) selected;
 	fline_m->ic_draw_fline = IZERO;
 	fline_m->icomp_draw_fline = fline_s->istack_comp[fline_m->if_draw_fline];
 	fline_m->cmap_fline = fline_m->cmap_fline_comp[fline_m->icomp_draw_fline];
-	printf("selected 1st component of %s, %d \n", 
+	printf("selected 1st component of %s, %ld \n", 
 			fline_s->data_name[fline_m->if_draw_fline], fline_m->if_draw_fline);
 	return;
 }
 
 void set_fline_color_component(int selected, struct psf_data *fline_s,
 			struct fline_menu_val *fline_m){
-	fline_m->ic_draw_fline = selected;
+	fline_m->ic_draw_fline = (long) selected;
 	fline_m->icomp_draw_fline = fline_s->istack_comp[fline_m->if_draw_fline] + fline_m->ic_draw_fline;
 	fline_m->cmap_fline = fline_m->cmap_fline_comp[fline_m->icomp_draw_fline];
-	printf("selected %d  of %s, %d \n", (selected+1), 
+	printf("selected %d  of %s, %ld \n", (selected+1), 
 			fline_s->data_name[fline_m->if_draw_fline], fline_m->icomp_draw_fline);
 	return;
 }

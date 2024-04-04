@@ -30,15 +30,15 @@
 !
       subroutine bcast_viz_controls(viz_ctls)
 !
-      use calypso_mpi_int
+      use transfer_to_long_integers
       use calypso_mpi_char
+      use calypso_mpi_int
       use bcast_control_arrays
       use bcast_section_control_data
       use bcast_maps_control_data
       use bcast_ctl_data_field_line
       use bcast_ctl_data_vol_repart
       use bcast_control_data_pvrs
-      use transfer_to_long_integers
 !
       type(visualization_controls), intent(inout) :: viz_ctls
 !
@@ -70,9 +70,12 @@
 !
       call bcast_ctl_type_c1(viz_ctls%output_field_file_fmt_ctl)
 !
-      call calypso_mpi_bcast_one_int(viz_ctls%i_viz_control, 0)
       call calypso_mpi_bcast_character(viz_ctls%fname_vol_repart_ctl,   &
      &                                 cast_long(kchara), 0)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (viz_ctls%block_name, cast_long(kchara), 0)
+      call calypso_mpi_bcast_one_int(viz_ctls%i_viz_control, 0)
 !
       end subroutine bcast_viz_controls
 !
@@ -89,6 +92,8 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
 !
+      call calypso_mpi_bcast_character                                  &
+     &   (lic_ctls%block_name, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(lic_ctls%num_lic_ctl, 0)
       if(lic_ctls%num_lic_ctl .le. 0) return
 !

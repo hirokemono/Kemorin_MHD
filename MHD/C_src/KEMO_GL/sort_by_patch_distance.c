@@ -16,11 +16,13 @@ void copy_patch_distance_mesh(struct viewer_mesh *mesh_s){
 }
 
 void sort_by_patch_distance_mesh(struct viewer_mesh *mesh_s, struct view_element *view_s){
-	int ip, i, j, ist, ied, num;
+	int ip, i, j, ist, ied;
+    long num;
 	
 	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
 	set_distance_in_model(view_s, num, mesh_s->surf_center_view,  mesh_s->z_ele_view);
-	set_distance_in_model(view_s, mesh_s->num_pe_sf, mesh_s->domain_center,  mesh_s->z_center_view);
+	set_distance_in_model(view_s, (long) mesh_s->num_pe_sf, 
+                          mesh_s->domain_center,  mesh_s->z_center_view);
 	
 	for(i=0; i < mesh_s->num_pe_sf;i++){
 		mesh_s->ip_domain_far[i] = i+1;
@@ -83,8 +85,10 @@ void sort_by_patch_distance_mesh(struct viewer_mesh *mesh_s, struct view_element
 
 int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m, 
                                  struct kemo_array_control *psf_a, struct view_element *view_s){
-    int i, iele, icou, ntot_tmp;
-    int icou_solid_psf, icou_trans_psf, icou_solid_txt, icou_trans_txt;
+    long ntot_tmp;
+    int i, iele;
+    long icou;
+    long icou_solid_psf, icou_trans_psf, icou_solid_txt, icou_trans_txt;
     
     icou = 0;
     
@@ -159,5 +163,5 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
                                 psf_a->istack_solid_psf_patch, (psf_a->ntot_psf_patch-1));
     };
     
-    return psf_a->ntot_psf_patch;
+    return (int) psf_a->ntot_psf_patch;
 }

@@ -90,6 +90,7 @@
       use cal_typical_scale
       use const_data_4_dynamobench
       use sph_fwd_trans_on_circles
+      use lorentz_spctr_in_shell
 !
       type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) :: sph
@@ -109,6 +110,11 @@
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    trans_p%leg, monitor%pwr, monitor%WK_pwr)
+!
+      if(iflag_debug.gt.0)  write(*,*) 'cal_lorentz_spctr_in_shell'
+      call cal_lorentz_spctr_in_shell                                   &
+     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
+     &    trans_p%leg, monitor%lor_spectr, monitor%WK_lor_spectr)
 !
        if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
@@ -201,6 +207,7 @@
       use cal_ave_4_rms_vector_sph
       use radial_int_for_sph_spec
       use sum_sph_rms_by_degree
+      use sum_sph_rms_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_address), intent(in) :: ipol
@@ -235,43 +242,17 @@
      &            - pwr%istack_comp_sq(j_fld-1)
         num = sph_rj%nidx_rj(2) * ncomp_rj
         call cal_rms_sph_spec_one_field                                 &
-     &     (sph_rj, ipol, ncomp_rj, g_sph_rj, icomp_rj,                 &
+     &     (sph_rj, ncomp_rj, g_sph_rj, icomp_rj, icomp_rj,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,             &
      &      WK_pwr%shl_rj(0,1,1))
-        call cvt_filtered_ene_spectr                                    &
-     &     (sph_rj, ipol_LES, ncomp_rj, icomp_rj, WK_pwr%shl_rj(0,1,1))
 !
-        do i = 1, pwr%num_vol_spectr
-          call radial_integration                                       &
-     &       (pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
-     &        pwr%v_spectr(i)%c_inter_in, pwr%v_spectr(i)%c_inter_out,  &
-     &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, num,            &
-     &        WK_pwr%shl_rj(0,1,1), WK_pwr%volume_j(1,1))
+        if(ncomp_rj .eq. n_vector) then
+          call cvt_filtered_ene_spectr(sph_rj, ipol, ipol_LES,          &
+     &      ncomp_rj, icomp_rj, WK_pwr%shl_rj(0,1,1))
+        end if
 !
-          call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
-     &        WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,        &
-     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_l_local(0,jcomp_st,i))
-          call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
-     &        WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,        &
-     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_m_local(0,jcomp_st,i))
-          call sum_sph_v_rms_by_degree(l_truncation, sph_rj%nidx_rj(2), &
-     &        WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,       &
-     &        ncomp_rj, WK_pwr%volume_j(1,1),                           &
-     &        WK_pwr%vol_lm_local(0,jcomp_st,i))
-        end do
-!
-        if(pwr%nri_rms .le. 0) cycle
-        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
-     &      WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,          &
-     &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_l_local(1,0,jcomp_st))
-        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
-     &      WK_pwr%istack_mode_sum_m,  WK_pwr%item_mode_sum_m,          &
-     &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_m_local(1,0,jcomp_st))
-        call sum_sph_l_rms_by_degree(pwr, l_truncation, sph_rj%nidx_rj, &
-     &      WK_pwr%istack_mode_sum_lm, WK_pwr%item_mode_sum_lm,         &
-     &      ncomp_rj, WK_pwr%shl_rj, WK_pwr%shl_lm_local(1,0,jcomp_st))
+        call sum_each_sph_layerd_pwr(l_truncation, sph_rj, pwr,         &
+     &                               ncomp_rj, jcomp_st, WK_pwr)
       end do
 !
       end subroutine sum_SGS_sph_layerd_rms
@@ -280,11 +261,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cvt_filtered_ene_spectr                                &
-     &        (sph_rj, ipol_LES, ncomp_rj, icomp_rj, rms_sph_rj)
+     &         (sph_rj, ipol, ipol_LES, ncomp_rj, icomp_rj, rms_sph_rj)
 !
       use cal_rms_by_sph_spectr
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       integer(kind = kint), intent(in) :: ncomp_rj, icomp_rj
 !
@@ -292,13 +274,14 @@
      &    :: rms_sph_rj(0:sph_rj%nidx_rj(1),sph_rj%nidx_rj(2),ncomp_rj)
 !
 !
-      if(ncomp_rj .ne. n_scalar) return
+      call cvt_mag_or_kin_ene_spectr(sph_rj, ipol%base,                 &
+     &                               icomp_rj, rms_sph_rj(0,1,1))
       call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%filter_fld,       &
-     &    icomp_rj, rms_sph_rj(0,1,1))
+     &                               icomp_rj, rms_sph_rj(0,1,1))
       call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%wide_filter_fld,  &
-     &    icomp_rj, rms_sph_rj(0,1,1))
+     &                               icomp_rj, rms_sph_rj(0,1,1))
       call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%dbl_filter_fld,   &
-     &    icomp_rj, rms_sph_rj(0,1,1))
+     &                               icomp_rj, rms_sph_rj(0,1,1))
 !
       end subroutine cvt_filtered_ene_spectr
 !

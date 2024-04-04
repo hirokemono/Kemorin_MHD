@@ -27,10 +27,10 @@ int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu,
 
 
 
-int send_nfield_each_psf(struct psf_data *psf_d){return psf_d->nfield;};
-int send_ncomptot_each_psf(struct psf_data *psf_d){return psf_d->ncomptot;};
-int send_ncomp_each_psf(struct psf_data *psf_d, int i){return psf_d->ncomp[i];};
-int send_istack_each_comp_psf(struct psf_data *psf_d, int i){return psf_d->istack_comp[i];};
+long send_nfield_each_psf(struct psf_data *psf_d){return psf_d->nfield;};
+long send_ncomptot_each_psf(struct psf_data *psf_d){return psf_d->ncomptot;};
+long send_ncomp_each_psf(struct psf_data *psf_d, int i){return psf_d->ncomp[i];};
+long send_istack_each_comp_psf(struct psf_data *psf_d, int i){return psf_d->istack_comp[i];};
 void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname, int i){
 	alloc_copy_string(psf_d->data_name[i], colorname);
 };
@@ -38,15 +38,15 @@ void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname
 
 int send_field_draw_each_psf(struct psf_menu_val *psf_menu){return psf_menu->if_draw_psf;};
 int send_draw_comp_id_psf(struct psf_menu_val *psf_menu){return psf_menu->ic_draw_psf;};
-int send_draw_component_psf(struct psf_menu_val *psf_menu){return psf_menu->icomp_draw_psf;};
+long send_draw_component_psf(struct psf_menu_val *psf_menu){return psf_menu->icomp_draw_psf;};
 int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu){
 	int id_current = psf_menu->if_draw_psf;
 	return psf_d->id_coord[id_current];
 };
 
-void set_texture_psf_from_bgra(struct psf_menu_val *psf_menu,
-			int width, int height, const unsigned char *bgra_in){
-    set_texture_4_psf(width, height, bgra_in, psf_menu);
+void set_texture_psf_from_bgra(struct kemo_array_control *psf_a,
+                               int width, int height, const unsigned char *bgra_in){
+    set_texture_4_psf(width, height, bgra_in, psf_a->psf_texure);
 };
 
 void set_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->polygon_mode_psf = iflag;};
@@ -99,13 +99,10 @@ int toggle_draw_psf_refv(struct psf_menu_val *psf_menu){
 	return psf_menu->draw_psf_refv;
 };
 
-void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag){
-	if(psf_menu->psf_patch_color == TEXTURED_SURFACE){
-		release_PSF_texture_from_gl(psf_menu);
-		release_texture_4_psf(psf_menu);
-	};
-	
+void set_psf_patch_color_mode(struct kemo_array_control *psf_a,
+                              struct psf_menu_val *psf_menu, int iflag){
 	psf_menu->psf_patch_color = iflag;
+    if(iflag != TEXTURED_SURFACE){psf_a->ipsf_texured = -1;};
 	return;
 };
 
@@ -173,7 +170,7 @@ void set_PSF_linear_colormap(double minvalue, int i_min_digit, double maxvalue, 
 
 void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
                          double *rgba){
-    int icomp = psf_menu->icomp_draw_psf;
+    long icomp = psf_menu->icomp_draw_psf;
     set_rgb_from_rgb(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], rgba[0], rgba[1], rgba[2]);	
     set_constant_opacitymap(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
                             psf_d->d_min[icomp], psf_d->d_max[icomp], rgba[3]);
@@ -182,7 +179,7 @@ void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
 
 void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
                                  double opacity){
-	int icomp = psf_menu->icomp_draw_psf;
+	long icomp = psf_menu->icomp_draw_psf;
 	set_constant_opacitymap(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
                             psf_d->d_min[icomp], psf_d->d_max[icomp], opacity);
     return;
@@ -190,7 +187,8 @@ void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_m
 
 void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
                             double value, double *red, double *green, double *blue){
-	set_rgb_from_value_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], value, red, green, blue);
+	set_rgb_from_value_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
+                         value, red, green, blue);
 	return;
 }
 double get_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value){

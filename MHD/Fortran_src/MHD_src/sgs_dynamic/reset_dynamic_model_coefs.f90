@@ -8,18 +8,17 @@
 !!      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!
-!!      subroutine reset_vector_sgs_model_coefs                         &
-!!     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
-!!      subroutine reset_tensor_sgs_model_coefs                         &
-!!     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
+!!      subroutine reset_vector_sgs_model_coefs(ele, layer_tbl, Csim)
+!!      subroutine reset_tensor_sgs_model_coefs(ele, layer_tbl, Csim)
 !!
-!!      subroutine reset_diff_model_coefs                               &
-!!     &         (numele, iele_smp_stack, ncomp_diff, iak_diff, ak_diff)
+!!      subroutine reset_diff_model_coefs(numele, iele_smp_stack, Cdiff)
+!!        integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+!!        integer (kind = kint), intent(in) :: numele
+!!        type(SGS_model_coefficient), intent(inout) :: Cdiff
 !!
-!!      subroutine reset_vector_sgs_nod_m_coefs(numnod, inod_smp_stack, &
-!!     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
-!!      subroutine reset_tensor_sgs_nod_m_coefs(numnod, inod_smp_stack, &
-!!     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
+!!      subroutine reset_vector_sgs_nod_m_coefs(Csim_SGS)
+!!      subroutine reset_tensor_sgs_nod_m_coefs(Csim_SGS)
+!!        type(SGS_model_coefficient), intent(inout) :: Csim_SGS
 !
       module reset_dynamic_model_coefs
 !
@@ -27,6 +26,8 @@
 !
       use m_constants
       use m_machine_parameter
+      use m_phys_constants
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
@@ -62,67 +63,60 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine reset_vector_sgs_model_coefs                           &
-     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
+      subroutine reset_vector_sgs_model_coefs(ele, layer_tbl, Csim)
 !
       use t_geometry_data
       use t_layering_ele_list
-      use t_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
-      integer (kind = kint), intent(in) :: icomp_sgs
 !
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &
      &     .gt. layer_tbl%min_item_layer_d_smp) then
         call reset_sgs_v_model_coefs_elesmp                             &
-     &     (icomp_sgs, ele%numele, ele%istack_ele_smp,                  &
+     &     (ele%numele, ele%istack_ele_smp,                             &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,   &
-     &      sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      Csim%coef(1,1))
       else
-        call reset_sgs_v_model_coefs_grpsmp(icomp_sgs, ele%numele,      &
+        call reset_sgs_v_model_coefs_grpsmp(ele%numele,                 &
      &     layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,           &
      &     layer_tbl%e_grp%istack_grp,                                  &
      &     layer_tbl%istack_item_layer_d_smp, layer_tbl%e_grp%item_grp, &
-     &     sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      Csim%coef(1,1))
       end if
 !
       end subroutine reset_vector_sgs_model_coefs
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_tensor_sgs_model_coefs                           &
-     &         (ele, layer_tbl, icomp_sgs, sgs_coefs)
+      subroutine reset_tensor_sgs_model_coefs(ele, layer_tbl, Csim)
 !
       use t_geometry_data
       use t_layering_ele_list
-      use t_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
-      integer (kind = kint), intent(in) :: icomp_sgs
 !
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &
      &     .gt. layer_tbl%min_item_layer_d_smp) then
         call reset_sgs_t_model_coefs_elesmp                             &
-     &     (icomp_sgs, ele%numele, ele%istack_ele_smp,                  &
+     &     (ele%numele, ele%istack_ele_smp,                             &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,   &
-     &      sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      Csim%coef(1,1))
       else
-        call reset_sgs_t_model_coefs_grpsmp(icomp_sgs, ele%numele,      &
+        call reset_sgs_t_model_coefs_grpsmp(ele%numele,                 &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp,                                 &
      &      layer_tbl%istack_item_layer_d_smp,                          &
-     &      layer_tbl%e_grp%item_grp,                                   &
-     &      sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &      layer_tbl%e_grp%item_grp, Csim%coef(1,1))
       end if
 !
       end subroutine reset_tensor_sgs_model_coefs
@@ -131,19 +125,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine reset_sgs_v_model_coefs_elesmp                         &
-     &         (icomp_sgs, numele, iele_smp_stack, n_layer_d,           &
-     &          n_item_layer_d, layer_stack_smp, item_layer,            &
-     &          ntot_comp_ele, ak_sgs)
+     &         (numele, iele_smp_stack, n_layer_d,                      &
+     &          n_item_layer_d, layer_stack_smp, item_layer, ak_sgs)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: ntot_comp_ele, icomp_sgs
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
-      real(kind = kreal), intent(inout) :: ak_sgs(numele,ntot_comp_ele)
+      real(kind = kreal), intent(inout) :: ak_sgs(numele,n_vector)
 !
       integer (kind = kint) :: iele0, iele, iproc, ist, ied, is, inum
 !
@@ -153,9 +145,9 @@
         ist = iele_smp_stack(iproc-1) + 1
         ied = iele_smp_stack(iproc)
         do iele = ist, ied
-          ak_sgs(iele, icomp_sgs  ) = zero
-          ak_sgs(iele, icomp_sgs+1) = zero
-          ak_sgs(iele, icomp_sgs+2) = zero
+          ak_sgs(iele, 1) = zero
+          ak_sgs(iele, 2) = zero
+          ak_sgs(iele, 3) = zero
         end do
       end do
 !$omp end parallel do
@@ -170,9 +162,9 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            ak_sgs(iele, icomp_sgs  ) = one
-            ak_sgs(iele, icomp_sgs+1) = one
-            ak_sgs(iele, icomp_sgs+2) = one
+            ak_sgs(iele, 1) = one
+            ak_sgs(iele, 2) = one
+            ak_sgs(iele, 3) = one
           end do
         end do
 !$omp end do nowait
@@ -184,19 +176,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine reset_sgs_t_model_coefs_elesmp                         &
-     &         (icomp_sgs, numele, iele_smp_stack, n_layer_d,           &
-     &          n_item_layer_d, layer_stack_smp, item_layer,            &
-     &          ntot_comp_ele, ak_sgs)
+     &         (numele, iele_smp_stack, n_layer_d,                      &
+     &          n_item_layer_d, layer_stack_smp, item_layer, ak_sgs)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: ntot_comp_ele, icomp_sgs
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
-      real(kind = kreal), intent(inout) :: ak_sgs(numele,ntot_comp_ele)
+      real(kind = kreal), intent(inout) :: ak_sgs(numele,n_sym_tensor)
 !
       integer (kind = kint) :: iele0, iele, iproc, ist, ied, is, inum
 !
@@ -206,12 +196,12 @@
         ist = iele_smp_stack(iproc-1) + 1
         ied = iele_smp_stack(iproc)
         do iele = ist, ied
-          ak_sgs(iele, icomp_sgs  ) = zero
-          ak_sgs(iele, icomp_sgs+1) = zero
-          ak_sgs(iele, icomp_sgs+2) = zero
-          ak_sgs(iele, icomp_sgs+3) = zero
-          ak_sgs(iele, icomp_sgs+4) = zero
-          ak_sgs(iele, icomp_sgs+5) = zero
+          ak_sgs(iele, 1) = zero
+          ak_sgs(iele, 2) = zero
+          ak_sgs(iele, 3) = zero
+          ak_sgs(iele, 4) = zero
+          ak_sgs(iele, 5) = zero
+          ak_sgs(iele, 6) = zero
         end do
       end do
 !$omp end parallel do
@@ -226,12 +216,12 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            ak_sgs(iele, icomp_sgs  ) = one
-            ak_sgs(iele, icomp_sgs+1) = one
-            ak_sgs(iele, icomp_sgs+2) = one
-            ak_sgs(iele, icomp_sgs+3) = one
-            ak_sgs(iele, icomp_sgs+4) = one
-            ak_sgs(iele, icomp_sgs+5) = one
+            ak_sgs(iele, 1) = one
+            ak_sgs(iele, 2) = one
+            ak_sgs(iele, 3) = one
+            ak_sgs(iele, 4) = one
+            ak_sgs(iele, 5) = one
+            ak_sgs(iele, 6) = one
           end do
         end do
 !$omp end do nowait
@@ -242,20 +232,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_sgs_v_model_coefs_grpsmp(icomp_sgs, numele,      &
-     &          n_layer_d, n_item_layer_d, layer_stack,                 &
-     &          istack_item_layer_d_smp, item_layer,                    &
-     &          ntot_comp_ele, ak_sgs)
+      subroutine reset_sgs_v_model_coefs_grpsmp                         &
+     &         (numele, n_layer_d, n_item_layer_d, layer_stack,         &
+     &          istack_item_layer_d_smp, item_layer, ak_sgs)
 !
       integer (kind = kint), intent(in) :: numele
-      integer (kind = kint), intent(in) :: ntot_comp_ele, icomp_sgs
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
       integer (kind = kint), intent(in)                                 &
      &               :: istack_item_layer_d_smp(0:np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
-      real(kind = kreal), intent(inout) :: ak_sgs(numele,ntot_comp_ele)
+      real(kind = kreal), intent(inout) :: ak_sgs(numele,n_vector)
 !
       integer (kind = kint) :: iele0, iele, iproc, inum
       integer (kind = kint) :: ist, ied, ist_num, ied_num
@@ -271,9 +259,9 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            ak_sgs(iele, icomp_sgs  ) = one
-            ak_sgs(iele, icomp_sgs+1) = one
-            ak_sgs(iele, icomp_sgs+2) = one
+            ak_sgs(iele, 1) = one
+            ak_sgs(iele, 2) = one
+            ak_sgs(iele, 3) = one
           end do
         end do
       end do
@@ -283,20 +271,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_sgs_t_model_coefs_grpsmp(icomp_sgs, numele,      &
-     &          n_layer_d, n_item_layer_d, layer_stack,                 &
-     &          istack_item_layer_d_smp, item_layer,                    &
-     &          ntot_comp_ele, ak_sgs)
+      subroutine reset_sgs_t_model_coefs_grpsmp                         &
+     &         (numele, n_layer_d, n_item_layer_d, layer_stack,         &
+     &          istack_item_layer_d_smp, item_layer, ak_sgs)
 !
       integer (kind = kint), intent(in) :: numele
-      integer (kind = kint), intent(in) :: ntot_comp_ele, icomp_sgs
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
       integer (kind = kint), intent(in)                                 &
      &               :: istack_item_layer_d_smp(0:np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
-      real(kind = kreal), intent(inout) :: ak_sgs(numele,ntot_comp_ele)
+      real(kind = kreal), intent(inout) :: ak_sgs(numele,n_sym_tensor)
 !
       integer (kind = kint) :: iele0, iele, iproc, inum
       integer (kind = kint) :: ist, ied, ist_num, ied_num
@@ -312,12 +298,12 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            ak_sgs(iele, icomp_sgs  ) = one
-            ak_sgs(iele, icomp_sgs+1) = one
-            ak_sgs(iele, icomp_sgs+2) = one
-            ak_sgs(iele, icomp_sgs+3) = one
-            ak_sgs(iele, icomp_sgs+4) = one
-            ak_sgs(iele, icomp_sgs+5) = one
+            ak_sgs(iele, 1) = one
+            ak_sgs(iele, 2) = one
+            ak_sgs(iele, 3) = one
+            ak_sgs(iele, 4) = one
+            ak_sgs(iele, 5) = one
+            ak_sgs(iele, 6) = one
           end do
         end do
       end do
@@ -328,84 +314,53 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine reset_diff_model_coefs                                 &
-     &         (numele, iele_smp_stack, ncomp_diff, iak_diff, ak_diff)
+      subroutine reset_diff_model_coefs(numele, iele_smp_stack, Cdiff)
+!
+      use delete_field_smp
 !
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: numele, ncomp_diff, iak_diff
-      real(kind=kreal), intent(inout) :: ak_diff(numele,ncomp_diff)
+      integer (kind = kint), intent(in) :: numele
+      type(SGS_model_coefficient), intent(inout) :: Cdiff
 !
-      integer (kind = kint) :: iele, iproc, ist, ied
+      integer (kind = kint) :: ist, ied
 !
-!$omp parallel do private(iele, ist, ied) 
-      do iproc = 1, np_smp
-        ist = iele_smp_stack(iproc-1) + 1
-        ied = iele_smp_stack(iproc)
-        do iele = ist, ied
-          ak_diff(iele, iak_diff) = one
-        end do
-      end do
-!$omp end parallel do
+      ist = iele_smp_stack(0) + 1
+      ied = iele_smp_stack(np_smp)
+!$omp parallel
+      call constant_scalar_smp(one, numele, ist, ied, Cdiff%coef(1,1))
+!$omp end parallel
 !
       end subroutine reset_diff_model_coefs
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine reset_vector_sgs_nod_m_coefs(numnod, inod_smp_stack,   &
-     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
+      subroutine reset_vector_sgs_nod_m_coefs(Csim_SGS)
 !
-      integer (kind = kint), intent(in) :: numnod
-      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: ntot_comp_nod, icomp_sgs
+      use delete_field_smp
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_sgs_nod(numnod,ntot_comp_nod)
+      type(SGS_model_coefficient), intent(inout) :: Csim_SGS
 !
-      integer (kind = kint) :: inod, iproc, ist, ied
-!
-!$omp parallel do private(inod, ist, ied) 
-      do iproc = 1, np_smp
-        ist = inod_smp_stack(iproc-1) + 1
-        ied = inod_smp_stack(iproc)
-        do inod = ist, ied
-          ak_sgs_nod(inod, icomp_sgs  ) = one
-          ak_sgs_nod(inod, icomp_sgs+1) = one
-          ak_sgs_nod(inod, icomp_sgs+2) = one
-        end do
-      end do
-!$omp end parallel do
+!$omp parallel
+      call constant_vector_smp(one, Csim_SGS%n_nod,                     &
+     &    ione, Csim_SGS%n_nod, Csim_SGS%coef_nod(1,1))
+!$omp end parallel
 !
       end subroutine reset_vector_sgs_nod_m_coefs
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_tensor_sgs_nod_m_coefs(numnod, inod_smp_stack,   &
-     &          ntot_comp_nod, icomp_sgs, ak_sgs_nod)
+      subroutine reset_tensor_sgs_nod_m_coefs(Csim_SGS)
 !
-      integer (kind = kint), intent(in) :: numnod
-      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: ntot_comp_nod, icomp_sgs
+      use delete_field_smp
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_sgs_nod(numnod,ntot_comp_nod)
+      type(SGS_model_coefficient), intent(inout) :: Csim_SGS
 !
-      integer (kind = kint) :: inod, iproc, ist, ied
 !
-!$omp parallel do private(inod, ist, ied) 
-      do iproc = 1, np_smp
-        ist = inod_smp_stack(iproc-1) + 1
-        ied = inod_smp_stack(iproc)
-        do inod = ist, ied
-          ak_sgs_nod(inod, icomp_sgs  ) = one
-          ak_sgs_nod(inod, icomp_sgs+1) = one
-          ak_sgs_nod(inod, icomp_sgs+2) = one
-          ak_sgs_nod(inod, icomp_sgs+3) = one
-          ak_sgs_nod(inod, icomp_sgs+4) = one
-          ak_sgs_nod(inod, icomp_sgs+5) = one
-        end do
-      end do
-!$omp end parallel do
+!$omp parallel
+      call constant_sym_tensor_smp(one, Csim_SGS%n_nod,                 &
+     &    ione, Csim_SGS%n_nod, Csim_SGS%coef_nod(1,1))
+!$omp end parallel
 !
       end subroutine reset_tensor_sgs_nod_m_coefs
 !

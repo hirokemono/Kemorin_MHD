@@ -6,15 +6,15 @@
 
 static void read_listed_item_gz_viewer(void *FP_gzip, int num, int *item_sf){
 	int i, j, iread, nread;
-	char buf[LENGTHBUF];            /* character buffer for reading line */
-	int num_word, nchara, lbuf;
+    int lbuf = LENGTHBUF;
+	char buf[lbuf];            /* character buffer for reading line */
+	int num_word, nchara;
 	
-	lbuf = LENGTHBUF;
 	
 	j = 0;
 	while (j < num) {
 		iread = 0;
-        get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+        get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
 		for (i = 0; i < num_word; i++) {
 			sscanf(&buf[iread], "%d%n", &item_sf[j],&nread);
 			j = j + 1;
@@ -35,14 +35,13 @@ static void read_group_item_gz_viewer(void *FP_gzip, int npe, int ngrp,
 									  int *stack_sf, int *istack_pe,
 									  char **name, int *item){
 	int i, j, jst, jnum;
-	char buf[LENGTHBUF];            /* character buffer for reading line */
-	int num_word, nchara, lbuf;
-	
-	lbuf = LENGTHBUF;
+    int lbuf = LENGTHBUF;
+	char buf[lbuf];            /* character buffer for reading line */
+	int num_word, nchara;
 	
 	stack_sf[0] = 0;
 	for (j = 0; j < ngrp; j++) {
-		num_word = skip_comment_gz_c(FP_gzip, &lbuf, buf);
+		num_word = skip_comment_gz_c(FP_gzip, lbuf, buf);
 		sscanf(buf, "%s", name[j]);
 		
 		read_group_stack_gz_viewer(FP_gzip, npe, &stack_sf[npe*j]);
@@ -55,7 +54,7 @@ static void read_group_item_gz_viewer(void *FP_gzip, int npe, int ngrp,
 			if(jnum > 0){
 				read_listed_item_gz_viewer(FP_gzip, jnum, &item[jst]);
 			} else {
-                get_one_line_from_gz_c(FP_gzip, &lbuf, &num_word, &nchara, buf);
+                get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
 			};
 		}
 	};
@@ -64,15 +63,14 @@ static void read_group_item_gz_viewer(void *FP_gzip, int npe, int ngrp,
 
 
 int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
-	char buf[LENGTHBUF];    /* array for reading line */
+    int lbuf = LENGTHBUF;
+	char buf[lbuf];    /* array for reading line */
 	char name_tmp[4096];
 	char **tmp_name_sf;
 	int *istack_pe, *istack_grp;
 	int itmp;
 	int i;
-	int num_word[1], lbuf[1];
-	
-	lbuf[0] = LENGTHBUF;
+	int num_word[1];
 
 	printf("kemoviewer mesh file name: %s \n",file_name);
 	

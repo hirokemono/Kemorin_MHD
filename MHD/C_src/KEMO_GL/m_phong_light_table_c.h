@@ -35,7 +35,9 @@ void set_each_light_position(struct view_element *view_s, struct phong_lights *l
 
 int send_num_light_position(struct phong_lights *lights);
 void send_each_light_rtp(struct phong_lights *lights, 
-			int i_point, float *r, float *t, float *p);
+                         int i_point, float *r, float *t, float *p);
+void send_each_light_xyz(struct phong_lights *lights,
+                         int i_point, float *x, float *y, float *z);
 
 void set_matrial_parameter(int itype, float value, struct phong_lights *lights);
 float get_matrial_parameter(int itype, struct phong_lights *lights);

@@ -14,13 +14,16 @@
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_4_SGS_filters                          &
-!!     &         (id_control, hd_block, sgs_ctl, level)
+!!     &         (id_control, sgs_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine append_SGS_filter_ctls(sgs_ctl)
+!!      subroutine append_SGS_filter_ctls(idx_in, hd_block, sgs_ctl)
+!!      subroutine delete_SGS_filter_ctls(idx_in, hd_block, sgs_ctl)
+!!        integer(kind = kint), intent(in) :: idx_in
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!@endverbatim
 !
@@ -36,8 +39,6 @@
 !
       implicit  none
 !
-      private :: append_SGS_filter_ctls, copy_SGS_filter_ctls
-!
 !   --------------------------------------------------------------------
 !
       contains
@@ -52,6 +53,8 @@
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer(kind = kint) :: n_append
+!
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(sgs_ctl%num_sph_filter_ctl .gt. 0) return
@@ -64,7 +67,8 @@
         if(check_end_array_flag(c_buf, hd_block)) exit
 !
         if(check_begin_flag(c_buf, hd_block)) then
-          call append_SGS_filter_ctls(sgs_ctl)
+          n_append = sgs_ctl%num_sph_filter_ctl
+          call append_SGS_filter_ctls(n_append, hd_block, sgs_ctl)
           call read_control_4_SGS_filter(id_control, hd_block,          &
      &        sgs_ctl%sph_filter_ctl(sgs_ctl%num_sph_filter_ctl),       &
      &        c_buf)
@@ -76,12 +80,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_control_4_SGS_filters                            &
-     &         (id_control, hd_block, sgs_ctl, level)
+     &          (id_control, sgs_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(SGS_model_control), intent(in) :: sgs_ctl
       integer(kind = kint), intent(inout) :: level
 !
@@ -89,56 +92,96 @@
 !
       if(sgs_ctl%num_sph_filter_ctl .le. 0) return
 !
-      level = write_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_array_flag_for_ctl(id_control, level,               &
+     &                            sgs_ctl%sph_filter_ctl(1)%block_name)
       do i = 1, sgs_ctl%num_sph_filter_ctl
-        call write_control_4_SGS_filter(id_control, hd_block,           &
+        call write_control_4_SGS_filter(id_control,                     &
      &      sgs_ctl%sph_filter_ctl(i), level)
       end do
-      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                            sgs_ctl%sph_filter_ctl(1)%block_name)
 !
       end subroutine write_control_4_SGS_filters
 !
 !   --------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine append_SGS_filter_ctls(sgs_ctl)
+      subroutine append_SGS_filter_ctls(idx_in, hd_block, sgs_ctl)
 !
+      integer(kind = kint), intent(in) :: idx_in
+      character(len=kchara), intent(in) :: hd_block
       type(SGS_model_control), intent(inout) :: sgs_ctl
 !
       integer(kind = kint) :: num_tmp = 0
       type(sph_filter_ctl_type), allocatable :: tmp_sfil_c(:)
 !
+      integer(kind = kint) :: i
+!
+      if(idx_in.lt.0 .or. idx_in.gt.sgs_ctl%num_sph_filter_ctl) return
 !
       num_tmp = sgs_ctl%num_sph_filter_ctl
       allocate(tmp_sfil_c(num_tmp))
-      call copy_SGS_filter_ctls                                         &
-     &   (num_tmp, sgs_ctl%sph_filter_ctl, tmp_sfil_c)
-      call dealloc_sph_filter_ctl(sgs_ctl)
+      do i = 1, num_tmp
+        call copy_control_4_SGS_filter(sgs_ctl%sph_filter_ctl(i),       &
+     &                                 tmp_sfil_c(i))
+      end do
 !
+      call dealloc_sph_filter_ctl(sgs_ctl)
       sgs_ctl%num_sph_filter_ctl = num_tmp + 1
       call alloc_sph_filter_ctl(sgs_ctl)
 !
-      call copy_SGS_filter_ctls                                         &
-     &   (num_tmp, tmp_sfil_c, sgs_ctl%sph_filter_ctl(1))
+      do i = 1, idx_in
+        call copy_control_4_SGS_filter(tmp_sfil_c(i),                   &
+     &                                 sgs_ctl%sph_filter_ctl(i))
+      end do
+      call init_control_SGS_filter_label(hd_block,                      &
+          sgs_ctl%sph_filter_ctl(idx_in+1))
+      do i = idx_in+1, num_tmp
+        call copy_control_4_SGS_filter(tmp_sfil_c(i),                   &
+     &                                 sgs_ctl%sph_filter_ctl(i+1))
+      end do
+!
       deallocate(tmp_sfil_c)
 !
       end subroutine append_SGS_filter_ctls
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_SGS_filter_ctls(num_ctl, org_sfil_c, new_sfil_c)
+      subroutine delete_SGS_filter_ctls(idx_in, sgs_ctl)
 !
-      integer(kind = kint), intent(in) :: num_ctl
-      type(sph_filter_ctl_type), intent(in) :: org_sfil_c(num_ctl)
-      type(sph_filter_ctl_type), intent(inout) :: new_sfil_c(num_ctl)
+      integer(kind = kint), intent(in) :: idx_in
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+!
+      integer(kind = kint) :: num_tmp = 0
+      type(sph_filter_ctl_type), allocatable :: tmp_sfil_c(:)
 !
       integer(kind = kint) :: i
 !
-      do i = 1, num_ctl
-        call copy_control_4_SGS_filter(org_sfil_c(i), new_sfil_c(i))
+      if(idx_in.lt.0 .or. idx_in.gt.sgs_ctl%num_sph_filter_ctl) return
+!
+      num_tmp = sgs_ctl%num_sph_filter_ctl
+      allocate(tmp_sfil_c(num_tmp))
+      do i = 1, num_tmp
+        call copy_control_4_SGS_filter(sgs_ctl%sph_filter_ctl(i),       &
+     &                                 tmp_sfil_c(i))
       end do
 !
-      end subroutine copy_SGS_filter_ctls
+      call dealloc_sph_filter_ctl(sgs_ctl)
+      sgs_ctl%num_sph_filter_ctl = num_tmp - 1
+      call alloc_sph_filter_ctl(sgs_ctl)
+!
+      do i = 1, idx_in-1
+        call copy_control_4_SGS_filter(tmp_sfil_c(i),                   &
+     &                                 sgs_ctl%sph_filter_ctl(i))
+      end do
+      do i = idx_in, sgs_ctl%num_sph_filter_ctl
+        call copy_control_4_SGS_filter(tmp_sfil_c(i+1),                 &
+     &                                 sgs_ctl%sph_filter_ctl(i))
+      end do
+!
+      deallocate(tmp_sfil_c)
+!
+      end subroutine delete_SGS_filter_ctls
 !
 ! -----------------------------------------------------------------------
 !

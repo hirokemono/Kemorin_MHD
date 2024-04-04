@@ -38,14 +38,14 @@
     struct kv_string *groupname;
 	NSString *stname;
 	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	[SurfaceGroupDisplayNames removeAllObjects];
 	[SurfaceGroupDisplayPatchFlags removeAllObjects];
 	[SurfaceGroupDisplayWireFlags removeAllObjects];
 	[SurfaceGroupDisplayNodeFlags removeAllObjects];
-	NumSurfaceGroup = kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);
+	NumSurfaceGroup = kemoview_get_num_of_mesh_group(kemo_sgl, SURF_GRP_FLAG);
 	for(i=0;i<NumSurfaceGroup;i++){
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname,i);
+        groupname = kemoview_get_group_name(kemo_sgl, SURF_GRP_FLAG, i);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
 
@@ -60,12 +60,13 @@
 
 - (IBAction) ShowAllSurfaceGroupAction:(id)pId{
 	int i;
-	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpPatch"]) {
 		[SurfaceGroupDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i, IONE);
+			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i, IONE,
+                                        kemo_sgl);
 		}
 	}
 	else if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpGrid"]) {
@@ -73,52 +74,57 @@
 		[SurfaceGroupDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i, IONE);
+			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i, IONE,
+                                        kemo_sgl);
 		}
 	}
 	else if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpNode"]) {
 		[SurfaceGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i, IONE);
+			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i, IONE,
+                                        kemo_sgl);
 		}
 	}
-    [self UpdateSurfaceTable];
-	[_kemoviewer UpdateImage];
+    [self UpdateSurfaceTable:kemo_sgl];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) HideAllSurfaceGroupAction:(id)pId
 {
 	int i;
-	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpPatch"]) {
 		[SurfaceGroupDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i, IZERO);
+			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i, IZERO,
+                                        kemo_sgl);
 		}
 	}
 	else if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpGrid"]) {
 		[SurfaceGroupDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i, IZERO);
+			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i, IZERO,
+                                        kemo_sgl);
 		}
 	}
 	else if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpNode"]) {
 		[SurfaceGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i, IZERO);
+			kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i, IZERO,
+                                        kemo_sgl);
 		}
 	}	
-    [self UpdateSurfaceTable];
-	[_kemoviewer UpdateImage];
+    [self UpdateSurfaceTable:kemo_sgl];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-    return NumSurfaceGroup;
+    return (int) NumSurfaceGroup;
 }
 
 - (id)tableView:(NSTableView *)aTableView
@@ -149,22 +155,24 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
    forTableColumn:(NSTableColumn *)tableColumn 
 			  row:(int)rowIndex;
 {
-    id	identifier;
-	
-    identifier = [tableColumn identifier];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    id	identifier = [tableColumn identifier];
     if([identifier isEqualToString:@"SurfGrpPatch"]) {
-		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, rowIndex, [object intValue]);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, rowIndex, [object intValue],
+                                    kemo_sgl);
 		[SurfaceGroupDisplayPatchFlags replaceObjectAtIndex:rowIndex withObject:object];
     }
     if([identifier isEqualToString:@"SurfGrpGrid"]) {
-		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, rowIndex, [object intValue]);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, rowIndex, [object intValue],
+                                    kemo_sgl);
 		[SurfaceGroupDisplayWireFlags replaceObjectAtIndex:rowIndex withObject:object];
 	}
     if([identifier isEqualToString:@"SurfGrpNode"]) {
-		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, rowIndex, [object intValue]);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, rowIndex, [object intValue],
+                                    kemo_sgl);
 		[SurfaceGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
 	}
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn
@@ -173,7 +181,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	return;
 }
 
-- (void) UpdateSurfaceTable
+- (void) UpdateSurfaceTable:(struct kemoviewer_type *) kemo_sgl
 {
 	int i, iflag;
     struct kv_string *groupname;
@@ -183,19 +191,21 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[SurfaceGroupDisplayPatchFlags removeAllObjects];
 	[SurfaceGroupDisplayWireFlags removeAllObjects];
 	[SurfaceGroupDisplayNodeFlags removeAllObjects];
-	NumSurfaceGroup = kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);
+	NumSurfaceGroup = kemoview_get_num_of_mesh_group(kemo_sgl, SURF_GRP_FLAG);
 	for(i=0;i<NumSurfaceGroup;i++){
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname,i);
+        groupname = kemoview_get_group_name(kemo_sgl, SURF_GRP_FLAG, i);
 		stname = [[NSString alloc] initWithUTF8String:groupname->string];
         kemoview_free_kvstring(groupname);
 
         [SurfaceGroupDisplayNames      addObject:stname];
-		iflag = kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i);
+		iflag = kemoview_get_draw_mesh_item(kemo_sgl, SURF_GRP_FLAG,
+                                            SURFSOLID_TOGGLE, i);
 		[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i);
+		iflag = kemoview_get_draw_mesh_item(kemo_sgl, SURF_GRP_FLAG,
+                                            SURFGRID_TOGGLE, i);
 		[SurfaceGroupDisplayWireFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i);
+		iflag = kemoview_get_draw_mesh_item(kemo_sgl, SURF_GRP_FLAG,
+                                            SURFNOD_TOGGLE, i);
 		[SurfaceGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		[stname release];
 	}
@@ -206,22 +216,28 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseSurfGrpPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpPatchColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE, tag);
-	[_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 (int) tag, kemo_sgl);
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseSurfGrpLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpLineColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE, tag);
-	[_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE,
+                                 (int) tag, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseSurfGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpNodeColorItem selectedCell] tag];
-	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE, tag);
-	[_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE,
+                                 (int) tag, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 
@@ -235,9 +251,12 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (float) greenBG;
 	colorcode4[2] =  (float) blueBG;
 	colorcode4[3] =  (float) opacityBG;
-	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
+    
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFSOLID_TOGGLE,
+                                 colorcode4, kemo_sgl);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SetSurfGrpLineColorAction:(id)sender
 {
@@ -249,9 +268,12 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (float) greenBG;
 	colorcode4[2] =  (float) blueBG;
 	colorcode4[3] =  (float) opacityBG;
-	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFGRID_TOGGLE, colorcode4);
+    
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFGRID_TOGGLE,
+                                 colorcode4, kemo_sgl);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SetSurfGrpNodeColorAction:(id)sender
 {
@@ -263,8 +285,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (float) greenBG;
 	colorcode4[2] =  (float) blueBG;
 	colorcode4[3] =  (float) opacityBG;
-	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFNOD_TOGGLE, colorcode4);
+    
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_code(SURF_GRP_FLAG, SURFNOD_TOGGLE,
+                                 colorcode4, kemo_sgl);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 @end

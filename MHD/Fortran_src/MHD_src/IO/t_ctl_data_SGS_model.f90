@@ -87,6 +87,9 @@
 !
 !
       type SGS_model_control
+!>        Block name
+        character(len=kchara) :: block_name = 'SGS_control'
+!
         type(read_character_item) :: SGS_model_name_ctl
         type(read_character_item) :: SGS_filter_name_ctl
         type(read_character_item) :: DIFF_model_coef_ctl
@@ -135,9 +138,14 @@
 !>        Structure for element layering
         type(layering_control) :: elayer_ctl
 !
+!>        Structure for 3-D filtering controls
         type(SGS_3d_filter_control) :: s3df_ctl
 !
+!>        Array name of spherical shell model filter
+        character(len=kchara) :: sph_filters_name = 'sph_filter_ctl'
+!>        Number of array of spherical shell model filter
         integer(kind = kint) :: num_sph_filter_ctl
+!>        array of spherical shell model filter
         type(sph_filter_ctl_type), allocatable :: sph_filter_ctl(:)
 !
         integer (kind=kint) :: i_sgs_ctl =       0

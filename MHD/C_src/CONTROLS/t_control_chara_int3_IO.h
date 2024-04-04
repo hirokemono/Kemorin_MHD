@@ -17,7 +17,9 @@
 
 
 struct chara_int3_ctl_item{
-	int iflag;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
 	
 	char *c_tbl;
 	int i_data[3];
@@ -33,11 +35,15 @@ struct chara_int3_ctl_list{
 struct chara_int3_clist{
 	struct chara_int3_ctl_list ci3_item_head;
 
+    void *f_self;
+
     char *clist_name;
     char *c1_name;
     char *i1_name;
     char *i2_name;
     char *i3_name;
+    
+    int index_bc;
 };
 
 /* prototypes */
@@ -53,23 +59,6 @@ void update_chara_int3_ctl_item_c(char *c_in, int i1_in, int i2_in, int i3_in,
 void set_from_chara_int3_ctl_item_c( struct chara_int3_ctl_item *ci3_item,
 			char *c_out, int *i1_out, int *i2_out, int *i3_out);
 
-void init_chara_int3_ctl_list(struct chara_int3_ctl_list *head);
-void clear_chara_int3_ctl_list(struct chara_int3_ctl_list *head);
-struct chara_int3_ctl_list *add_chara_int3_ctl_list_after(struct chara_int3_ctl_list *current);
-void delete_chara_int3_ctl_list(struct chara_int3_ctl_list *current);
-
-int count_maxlen_chara_int3_ctl_list(const char *label, 
-			struct chara_int3_ctl_list *head, int mlen2[2]);
-int count_chara_int3_ctl_list(struct chara_int3_ctl_list *head);
-struct chara_int3_ctl_list *find_ci3_ctl_list_item_by_index(int index, struct chara_int3_ctl_list *head);
-struct chara_int3_ctl_list *find_ci3_ctl_list_item_by_c_tbl(char *ref, struct chara_int3_ctl_list *head);
-
-int read_chara_int3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
-                      struct chara_int3_ctl_list *head);
-int write_chara_int3_ctl_list(FILE *fp, int level, const char *label, 
-                       struct chara_int3_ctl_list *head);
-
-void del_chara_int3_ctl_list_by_c_tbl(char *ref, struct chara_int3_ctl_list *head);
 
 
 struct chara_int3_clist * init_chara_int3_clist(void);

@@ -8,19 +8,16 @@
 !!     &        node_on_sf, num_surf_bc, surf_item,                     &
 !!     &        num_surf_smp, isurf_grp_smp_stack,                      &
 !!     &         max_int_point, maxtot_int_3d, int_start3, owe3d,       &
-!!     &        ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,  &
-!!     &        elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2, &
-!!     &        elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,&
+!!     &        ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, diff2,      &
 !!     &        igrp, k2, n_int, ak_diff, phi_sf, sk_v)
 !!      subroutine fem_surf_skv_diffusion_sgs                           &
 !!     &       (np_smp, numele, nnod_4_e1, nnod_4_e2, nnod_4_sf1,       &
 !!     &        node_on_sf, num_surf_bc, surf_item,                     &
 !!     &        num_surf_smp, isurf_grp_smp_stack,                      &
-!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
-!!     &        ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,  &
-!!     &        elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2, &
-!!     &        elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,&
-!!     &        igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
+!!     &        max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+!!     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, diff2,     &
+!!     &         igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
+!!        type(elen_diffs_type), intent(in) :: diff2
 !
       module fem_surf_skv_diffuse_sgs
 !
@@ -29,6 +26,7 @@
       use m_constants
       use m_geometry_constants
       use m_phys_constants
+      use t_filter_elength
 !
       implicit none
 !
@@ -43,9 +41,7 @@
      &         node_on_sf, num_surf_bc, surf_item,                      &
      &         num_surf_smp, isurf_grp_smp_stack,                       &
      &         max_int_point, maxtot_int_3d, int_start3, owe3d,         &
-     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,   &
-     &         elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,  &
-     &         elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2, &
+     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, diff2,       &
      &         igrp, k2, n_int, ak_diff, phi_sf, sk_v)
 !
       integer(kind = kint), intent(in) :: np_smp, numele
@@ -74,13 +70,7 @@
 !
       real(kind=kreal), intent(in) :: xmom_order2
 !
-      integer(kind=kint), intent(in) :: nele_fmom
-      real(kind=kreal), intent(in) :: elen_dx2_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dy2_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dz2_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dxdy_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dydz_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dzdx_ele_dx2(nele_fmom,3)
+      type(elen_diffs_type), intent(in) :: diff2
 !
       real (kind=kreal), intent(in) :: phi_sf(num_surf_bc)
       real (kind=kreal), intent(in) :: ak_diff(numele)
@@ -120,45 +110,45 @@
      &                    + dnx1(iele,k1,ix,3)*dnx2(iele,k2,ix,3) )
 !
               div_x = half * xmom_order2                                &
-     &               * ((elen_dx2_ele_dx2(iele,1)* dnx1(iele,k1,ix,1)   &
-     &                 + elen_dxdy_ele_dx2(iele,1)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dzdx_ele_dx2(iele,1)*dnx1(iele,k1,ix,3))  &
+     &               * ((diff2%df_x2(iele,1)* dnx1(iele,k1,ix,1)        &
+     &                 + diff2%df_xy(iele,1)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_zx(iele,1)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,1)                              &
-     &               +  (elen_dxdy_ele_dx2(iele,1)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dy2_ele_dx2(iele,1)* dnx1(iele,k1,ix,2)   &
-     &                 + elen_dydz_ele_dx2(iele,1)*dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_xy(iele,1)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_y2(iele,1)* dnx1(iele,k1,ix,2)        &
+     &                 + diff2%df_yz(iele,1)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,2)                              &
-     &               +  (elen_dzdx_ele_dx2(iele,1)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dydz_ele_dx2(iele,1)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dz2_ele_dx2(iele,1)* dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_zx(iele,1)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_yz(iele,1)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_z2(iele,1)* dnx1(iele,k1,ix,3))       &
      &                * dnx2(iele,k2,ix,3) )
 !
               div_y = half * xmom_order2                                &
-     &               * ((elen_dx2_ele_dx2(iele,2)* dnx1(iele,k1,ix,1)   &
-     &                 + elen_dxdy_ele_dx2(iele,2)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dzdx_ele_dx2(iele,2)*dnx1(iele,k1,ix,3))  &
+     &               * ((diff2%df_x2(iele,2)* dnx1(iele,k1,ix,1)        &
+     &                 + diff2%df_xy(iele,2)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_zx(iele,2)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,1)                              &
-     &               +  (elen_dxdy_ele_dx2(iele,2)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dy2_ele_dx2(iele,2)* dnx1(iele,k1,ix,2)   &
-     &                 + elen_dydz_ele_dx2(iele,2)*dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_xy(iele,2)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_y2(iele,2)* dnx1(iele,k1,ix,2)        &
+     &                 + diff2%df_yz(iele,2)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,2)                              &
-     &               +  (elen_dzdx_ele_dx2(iele,3)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dydz_ele_dx2(iele,3)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dz2_ele_dx2(iele,3)* dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_zx(iele,3)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_yz(iele,3)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_z2(iele,3)* dnx1(iele,k1,ix,3))       &
      &                * dnx2(iele,k2,ix,3) )
 !
               div_z = half * xmom_order2                                &
-     &               * ((elen_dx2_ele_dx2(iele,3)* dnx1(iele,k1,ix,1)   &
-     &                 + elen_dxdy_ele_dx2(iele,3)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dzdx_ele_dx2(iele,3)*dnx1(iele,k1,ix,3))  &
+     &               * ((diff2%df_x2(iele,3)* dnx1(iele,k1,ix,1)        &
+     &                 + diff2%df_xy(iele,3)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_zx(iele,3)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,1)                              &
-     &               +  (elen_dxdy_ele_dx2(iele,3)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dy2_ele_dx2(iele,3)* dnx1(iele,k1,ix,2)   &
-     &                 + elen_dydz_ele_dx2(iele,3)*dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_xy(iele,3)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_y2(iele,3)* dnx1(iele,k1,ix,2)        &
+     &                 + diff2%df_yz(iele,3)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,2)                              &
-     &               +  (elen_dzdx_ele_dx2(iele,3)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dydz_ele_dx2(iele,3)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dz2_ele_dx2(iele,3)* dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_zx(iele,3)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_yz(iele,3)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_z2(iele,3)* dnx1(iele,k1,ix,3))       &
      &                * dnx2(iele,k2,ix,3) )
 !
 ! -------  caliculate 
@@ -182,9 +172,7 @@
      &         node_on_sf, num_surf_bc, surf_item,                      &
      &         num_surf_smp, isurf_grp_smp_stack,                       &
      &         max_int_point, maxtot_int_3d, int_start3, owe3d,         &
-     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,   &
-     &         elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,  &
-     &         elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2, &
+     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, diff2,       &
      &         igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
 !
       integer(kind = kint), intent(in) :: np_smp, numele
@@ -213,13 +201,7 @@
 !
       real(kind=kreal), intent(in) :: xmom_order2
 !
-      integer(kind=kint), intent(in) :: nele_fmom
-      real(kind=kreal), intent(in) :: elen_dx2_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dy2_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dz2_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dxdy_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dydz_ele_dx2(nele_fmom,3)
-      real(kind=kreal), intent(in) :: elen_dzdx_ele_dx2(nele_fmom,3)
+      type(elen_diffs_type), intent(in) :: diff2
 !
       real (kind=kreal), intent(in) :: vect_sf(num_surf_bc,3)
       real (kind=kreal), intent(in) :: ak_d(numele)
@@ -260,45 +242,45 @@
      &                    + dnx1(iele,k1,ix,3)*dnx2(iele,k2,ix,3) )
 !
               div_x = half * xmom_order2                                &
-     &               * ((elen_dx2_ele_dx2(iele,1)* dnx1(iele,k1,ix,1)   &
-     &                 + elen_dxdy_ele_dx2(iele,1)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dzdx_ele_dx2(iele,1)*dnx1(iele,k1,ix,3))  &
+     &               * ((diff2%df_x2(iele,1)* dnx1(iele,k1,ix,1)        &
+     &                 + diff2%df_xy(iele,1)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_zx(iele,1)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,1)                              &
-     &               +  (elen_dxdy_ele_dx2(iele,1)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dy2_ele_dx2(iele,1)* dnx1(iele,k1,ix,2)   &
-     &                 + elen_dydz_ele_dx2(iele,1)*dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_xy(iele,1)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_y2(iele,1)* dnx1(iele,k1,ix,2)        &
+     &                 + diff2%df_yz(iele,1)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,2)                              &
-     &               +  (elen_dzdx_ele_dx2(iele,1)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dydz_ele_dx2(iele,1)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dz2_ele_dx2(iele,1)* dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_zx(iele,1)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_yz(iele,1)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_z2(iele,1)* dnx1(iele,k1,ix,3))       &
      &                * dnx2(iele,k2,ix,3) )
 !
               div_y = half * xmom_order2                                &
-     &               * ((elen_dx2_ele_dx2(iele,2)* dnx1(iele,k1,ix,1)   &
-     &                 + elen_dxdy_ele_dx2(iele,2)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dzdx_ele_dx2(iele,2)*dnx1(iele,k1,ix,3))  &
+     &               * ((diff2%df_x2(iele,2)* dnx1(iele,k1,ix,1)        &
+     &                 + diff2%df_xy(iele,2)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_zx(iele,2)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,1)                              &
-     &               +  (elen_dxdy_ele_dx2(iele,2)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dy2_ele_dx2(iele,2)* dnx1(iele,k1,ix,2)   &
-     &                 + elen_dydz_ele_dx2(iele,2)*dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_xy(iele,2)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_y2(iele,2)* dnx1(iele,k1,ix,2)        &
+     &                 + diff2%df_yz(iele,2)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,2)                              &
-     &               +  (elen_dzdx_ele_dx2(iele,3)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dydz_ele_dx2(iele,3)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dz2_ele_dx2(iele,3)* dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_zx(iele,3)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_yz(iele,3)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_z2(iele,3)* dnx1(iele,k1,ix,3))       &
      &                * dnx2(iele,k2,ix,3) )
 !
               div_z = half * xmom_order2                                &
-     &               * ((elen_dx2_ele_dx2(iele,3)* dnx1(iele,k1,ix,1)   &
-     &                 + elen_dxdy_ele_dx2(iele,3)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dzdx_ele_dx2(iele,3)*dnx1(iele,k1,ix,3))  &
+     &               * ((diff2%df_x2(iele,3)* dnx1(iele,k1,ix,1)        &
+     &                 + diff2%df_xy(iele,3)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_zx(iele,3)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,1)                              &
-     &               +  (elen_dxdy_ele_dx2(iele,3)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dy2_ele_dx2(iele,3)* dnx1(iele,k1,ix,2)   &
-     &                 + elen_dydz_ele_dx2(iele,3)*dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_xy(iele,3)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_y2(iele,3)* dnx1(iele,k1,ix,2)        &
+     &                 + diff2%df_yz(iele,3)*dnx1(iele,k1,ix,3))        &
      &                * dnx2(iele,k2,ix,2)                              &
-     &               +  (elen_dzdx_ele_dx2(iele,3)*dnx1(iele,k1,ix,1)   &
-     &                 + elen_dydz_ele_dx2(iele,3)*dnx1(iele,k1,ix,2)   &
-     &                 + elen_dz2_ele_dx2(iele,3)* dnx1(iele,k1,ix,3))  &
+     &               +  (diff2%df_zx(iele,3)*dnx1(iele,k1,ix,1)         &
+     &                 + diff2%df_yz(iele,3)*dnx1(iele,k1,ix,2)         &
+     &                 + diff2%df_z2(iele,3)* dnx1(iele,k1,ix,3))       &
      &                * dnx2(iele,k2,ix,3) )
 !
 ! -------  caliculate 

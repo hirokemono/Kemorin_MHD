@@ -1,16 +1,19 @@
-!
-!     module cal_diff_coef_velo
-!
-!     Written by H. Matsui
-!
-!!      subroutine s_cal_diff_coef_velo                                 &
-!!     &         (iak_diff_v, icomp_diff_v, dt, FEM_prm, SGS_par,       &
+!>@file   cal_diff_coef_velo.f90
+!!        module cal_diff_coef_velo
+!!
+!! @author H. Matsui
+!! @date ...when???
+!!
+!> @brief Evaluate model coefficients for commutation of magnetic field
+!!
+!!@verbatim
+!!      subroutine s_cal_diff_coef_velo(dt, FEM_prm, SGS_par,           &
 !!     &          nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,  &
 !!     &          iphys_base, iphys_fil, iphys_SGS_wk,                  &
 !!     &          iphys_ele_base, ele_fld, fluid, layer_tbl,            &
 !!     &          jacs, rhs_tbl, FEM_elen, filtering, wk_filter,        &
 !!     &          wk_cor, wk_lsq, wk_diff, mlump_fl, fem_wk, surf_wk,   &
-!!     &          f_l, f_nl, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
+!!     &          f_l, f_nl, nod_fld, Cdiff_velo, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -40,10 +43,11 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(inout) :: Cdiff_velo
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@end verbatim
 !
 !
       module cal_diff_coef_velo
@@ -73,7 +77,7 @@
       use t_surface_bc_scalar
       use t_surface_bc_velocity
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_vector_for_solver
       use t_solver_SR
 !
@@ -85,14 +89,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_velo                                   &
-     &         (iak_diff_v, icomp_diff_v, dt, FEM_prm, SGS_par,         &
+      subroutine s_cal_diff_coef_velo(dt, FEM_prm, SGS_par,             &
      &          nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,    &
      &          iphys_base, iphys_fil, iphys_SGS_wk,                    &
      &          iphys_ele_base, ele_fld, fluid, layer_tbl,              &
      &          jacs, rhs_tbl, FEM_elen, filtering, wk_filter,          &
      &          wk_cor, wk_lsq, wk_diff, mlump_fl, fem_wk, surf_wk,     &
-     &          f_l, f_nl, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
+     &          f_l, f_nl, nod_fld, Cdiff_velo, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -108,7 +111,6 @@
       use set_nodal_bc_id_data
       use nod_phys_send_recv
 !
-      integer (kind=kint), intent(in) :: iak_diff_v, icomp_diff_v
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -141,7 +143,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_model_coefficient), intent(inout) :: Cdiff_velo
       type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -158,7 +160,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
-     &    diff_coefs%num_field, iak_diff_v, diff_coefs%ak)
+     &                            Cdiff_velo)
       call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !    get filtered pressure(to iphys_SGS_wk%i_wd_nlg)
@@ -285,15 +287,14 @@
 !
 !     obtain model coefficient
 !
-      if (iflag_debug.gt.0)  write(*,*)                                 &
-     &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_v, icomp_diff_v
-      call cal_diff_coef_fluid                                          &
-     &   (SGS_par, layer_tbl, node, ele, fluid, iphys_SGS_wk, nod_fld,  &
-     &    jacs, n_sym_tensor, iak_diff_v, icomp_diff_v,                 &
-     &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
-     &    diff_coefs)
+      if (iflag_debug.gt.0)  write(*,*) 'cal_diff_coef_fluid',          &
+     &      n_sym_tensor, Cdiff_velo%iak_Csim, Cdiff_velo%icomp_Csim
+      call cal_diff_coef_fluid(SGS_par%iflag_SGS_initial,               &
+     &    SGS_par%model_p, SGS_par%commute_p, layer_tbl,                &
+     &    node, ele, fluid, iphys_SGS_wk, nod_fld, jacs, n_sym_tensor,  &
+     &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff, Cdiff_velo)
 !
-      diff_coefs%iflag_field(iak_diff_v) = 1
+      Cdiff_velo%flag_set = .TRUE.
 !
       end subroutine s_cal_diff_coef_velo
 !

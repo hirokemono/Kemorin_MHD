@@ -23,9 +23,9 @@ void open_ad_rawfile(const char *file_name, int *ierr);
 void open_rd_rawfile(const char *file_name, int *ierr);
 void close_rawfile(void);
 
-void rawseek_go_fwd(int *ioffset, int *ierr);
-void rawread_32bit(int *iflag_swap, int *ilength, void *buf, int *lenchara);
-void rawread_64bit(int *iflag_swap, int *ilength, void *buf, int *lenchara);
-void rawwrite(int *ilength, void *buf, int *lenchara);
+int rawseek_go_fwd(const long ioffset);
+long rawread_32bit(const int iflag_swap, const long ilength, void *buf);
+long rawread_64bit(const int iflag_swap, const long ilength, void *buf);
+long rawwrite(const long ilength, void *buf);
 
 #endif

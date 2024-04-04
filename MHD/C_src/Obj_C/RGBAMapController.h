@@ -6,19 +6,23 @@
 //  Copyright 2011 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
 #import "ColorMapController.h"
 #import "OpacityMapController.h"
 #import "fillRectView.h"
-#include "kemoviewer.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 
 @interface RGBAMapController : NSObject {
 
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	
+    IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerObject *_kmv;
+
 	IBOutlet ColorMapController*   _colorMapObject;
 	IBOutlet OpacityMapController* _opacityMapObject;
 
@@ -30,7 +34,7 @@
 
 
 - (void)awakeFromNib;
-- (void)updateColormapParameter;
+- (void)updateColormapParameter:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)SaveColormapFile:(id)pId;
 - (IBAction)LoadColormapFile:(id)pId;

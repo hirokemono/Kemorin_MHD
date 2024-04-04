@@ -17,14 +17,11 @@
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_d_grp, MHD_prop,&
-!!     &          iak_sgs_term, icomp_sgs_term, sgs_coefs, wk_sgs)
+!!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph, MHD_prop,      &
+!!     &                                   dynamic_SPH)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(SGS_term_address), intent(inout) :: iak_sgs_term
-!!        type(SGS_term_address), intent(inout) :: icomp_sgs_term
-!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!@endverbatim
 !!
 !
@@ -41,11 +38,11 @@
       use t_schmidt_poly_on_rtm
       use t_filter_coefficients
       use t_SGS_control_parameter
-      use t_SGS_model_coefs
       use t_SGS_buoyancy_sph
       use t_ele_info_4_dynamic
       use t_field_data_IO
       use t_groups_sph_dynamic
+      use t_SPH_dynamic_model_coefs
 !
       implicit none
 !
@@ -53,12 +50,8 @@
       type dynamic_SGS_data_4_sph
 !>         Field adddress for dynamic SGS model
         type(SGS_term_address) :: iak_sgs_term
-!>         Component adddress for dynamic SGS model
-        type(SGS_term_address) :: icomp_sgs_term
-!>         Data array for dynamic SGS model
-        type(SGS_coefficients_type) :: sgs_coefs
 !>         Work area for dynamic SGS model
-        type(dynamic_model_data) :: wk_sgs
+        type(SPH_dynamic_model_coefs) :: wk_sph_sgs
 !
 !>         Work area for dynamic SGS model
         type(work_4_sph_SGS_buoyancy) :: wk_sgs_buo
@@ -75,9 +68,6 @@
       end type dynamic_SGS_data_4_sph
 !
       character(len=kchara), parameter :: filter_head = 'radial_filter'
-!
-      private :: const_sph_radial_filter, const_radial_filter
-      private :: const_filter_on_sphere
 !
 ! ----------------------------------------------------------------------
 !
@@ -116,6 +106,7 @@
       use calypso_mpi
       use wider_radial_filter_data
       use set_parallel_file_name
+      use const_filter_on_sph
 !
       integer(kind = kint), intent(in) :: num_sph_filteres
       type(sph_grids), intent(in) ::  sph
@@ -178,157 +169,44 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_d_grp, MHD_prop,  &
-     &          iak_sgs_term, icomp_sgs_term, sgs_coefs, wk_sgs)
+      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph, MHD_prop,        &
+     &                                   dynamic_SPH)
 !
       use t_physical_property
       use count_sgs_components
+      use set_groups_sph_dynamic
 !
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+      type(sph_grids), intent(in) ::  sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
-      type(SGS_term_address), intent(inout) :: iak_sgs_term
-      type(SGS_term_address), intent(inout) :: icomp_sgs_term
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(dynamic_model_data), intent(inout) :: wk_sgs
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
+      integer(kind = kint) :: num_SGS_terms, ntot_SGS_comps
+!
+!
+      if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+        if(iflag_debug.gt.0) write(*,*) 'find_grouping_4_dynamic_model'
+        call find_grouping_4_dynamic_model(SGS_par%model_p,             &
+     &      sph%sph_params, sph%sph_rtp, dynamic_SPH%sph_d_grp)
+      end if
 !
       call s_count_sgs_components(SGS_par%model_p,                      &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, sgs_coefs)
-      call alloc_sgs_coefs_layer(sph_d_grp%ngrp_dynamic,                &
-     &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    num_SGS_terms, ntot_SGS_comps)
+      call alloc_sph_sgs_coefs_layer                                    &
+     &   (dynamic_SPH%sph_d_grp%ngrp_dynamic,                           &
+     &    num_SGS_terms, dynamic_SPH%wk_sph_sgs)
 !
-      call alloc_SGS_num_coefs(sgs_coefs)
-!
-      call set_sgs_addresses                                            &
+      call set_sph_sgs_addresses                                        &
      &   (SGS_par%model_p, MHD_prop%fl_prop, MHD_prop%cd_prop,          &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
-      call check_sgs_addresses                                          &
-     &   (iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
+     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sph_sgs)
+      call check_sph_sgs_addresses(dynamic_SPH%iak_sgs_term,            &
+     &                             dynamic_SPH%wk_sph_sgs)
 !
       end subroutine init_work_4_SGS_sph_mhd
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine const_sph_radial_filter(sph_rj, sph_grps,              &
-     &          sph_filters)
-!
-      use calypso_mpi
-      use wider_radial_filter_data
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_group_data), intent(in) :: sph_grps
-      type(sph_filters_type), intent(inout) :: sph_filters
-!
-!
-      call alloc_sph_filter_moms(sph_filters%r_moments)
-      call cal_r_gaussian_moments(sph_filters%width,                    &
-     &    sph_filters%r_moments)
-!
-      call const_radial_filter(sph_rj, sph_grps, sph_filters%r_moments, &
-     &    sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,                &
-     &    sph_filters%r_filter)
-!
-      end subroutine const_sph_radial_filter
-!
-! ----------------------------------------------------------------------
-!
-      subroutine const_filter_on_sphere                                 &
-     &         (itype_sph_filter,  l_truncation,                        &
-     &          ref1_moments, ref2_moments, ref1_filter, ref2_filter,   &
-     &          sph_moments, sph_filter)
-!
-      use cal_sph_filtering_data
-!
-      integer(kind = kint), intent(in) :: itype_sph_filter
-      integer(kind = kint), intent(in) :: l_truncation
-      type(sph_gaussian_filter), intent(in) :: ref1_filter, ref2_filter
-      type(sph_filter_moment), intent(in) :: ref1_moments, ref2_moments
-!
-      type(sph_gaussian_filter), intent(inout) :: sph_filter
-      type(sph_filter_moment), intent(inout) :: sph_moments
-!
-!
-      if(itype_sph_filter .eq. iflag_recursive_filter) then
-        sph_moments%num_momentum                                        &
-     &      = max(ref1_moments%num_momentum, ref2_moments%num_momentum)
-      end if
-!
-      call alloc_sph_filter_weights(l_truncation, sph_filter)
-      call alloc_sph_filter_moms(sph_moments)
-!
-!
-      if(itype_sph_filter .eq. iflag_recursive_filter) then
-        if(iflag_debug.gt.0) write(*,*)' set_sph_recursive_filter'
-        call set_sph_recursive_filter                                   &
-     &     (sph_filter%l_truncation, sph_moments%num_momentum,          &
-     &      ref1_moments%num_momentum, ref2_moments%num_momentum,       &
-     &      ref1_filter%weight, ref1_moments%filter_mom,                &
-     &      ref2_filter%weight, ref2_moments%filter_mom,                &
-     &      sph_filter%weight, sph_moments%filter_mom)
-!
-      else if(itype_sph_filter .eq. iflag_cutoff_filter) then
-        if(iflag_debug.gt.0) write(*,*)' set_sph_cutoff_filter'
-        call set_sph_cutoff_filter(sph_filter%l_truncation,             &
-     &      sph_filter%f_width, sph_filter%weight,                      &
-     &      sph_moments%num_momentum, sph_moments%filter_mom)
-      else
-        if(iflag_debug.gt.0) write(*,*)' set_sph_gaussian_filter'
-        call set_sph_gaussian_filter(sph_filter%l_truncation,           &
-     &      sph_filter%f_width, sph_filter%weight,                      &
-     &      sph_moments%num_momentum, sph_moments%filter_mom)
-      end if
-!
-      end subroutine const_filter_on_sphere
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine const_radial_filter(sph_rj, sph_grps, r_moments,       &
-     &          kmin_rtp_OC, kmax_rtp_OC, r_filter)
-!
-      use cal_radial_filtering_data
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_group_data), intent(in) :: sph_grps
-      type(sph_filter_moment), intent(in) :: r_moments
-!
-      integer(kind = kint), intent(inout) :: kmin_rtp_OC, kmax_rtp_OC
-      type(filter_coefficients_type), intent(inout) :: r_filter
-!
-      integer(kind = kint) :: num_rj_OC, kmin_rj_OC, kmax_rj_OC
-      integer(kind = kint) :: num_rtp_OC
-!
-!
-      r_filter%ngrp_node = 1
-      call alloc_num_filtering_comb(np_smp, r_filter)
-      r_filter%group_name(1) = 'outer_core'
-!
-      call count_radial_point_4_filter(sph_rj, r_filter)
-!
-      call alloc_inod_filter_comb(r_filter)
-!
-      call count_fiiltering_area(r_moments%num_momentum, sph_rj,        &
-     &    sph_grps%radial_rj_grp, sph_grps%radial_rtp_grp, r_filter,    &
-     &    num_rj_OC, kmin_rj_OC, kmax_rj_OC,                            &
-     &    num_rtp_OC, kmin_rtp_OC, kmax_rtp_OC)
-!
-      call alloc_3d_filter_comb(r_filter)
-      call alloc_3d_filter_func(r_filter)
-!
-      call set_filtering_points(num_rj_OC, kmin_rj_OC, kmax_rj_OC,      &
-     &    r_moments%num_momentum, r_moments%nfilter_sides,              &
-     &    sph_rj, r_filter)
-
-      call cal_radial_fileters(kmin_rj_OC, kmax_rj_OC,                  &
-     &    r_moments%num_momentum, r_moments%nfilter_sides,              &
-     &    r_moments%filter_mom, sph_rj, r_filter)
-!
-      end subroutine const_radial_filter
 !
 ! ----------------------------------------------------------------------
 !

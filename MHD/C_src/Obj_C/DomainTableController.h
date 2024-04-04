@@ -6,11 +6,15 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
 #import "ElementGroupTableController.h"
 #import "NodeGroupTableController.h"
 #import "SurfaceGroupTableController.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 
 @interface DomainTableController : NSObject {
@@ -19,7 +23,9 @@
     IBOutlet ElementGroupTableController* _eleGrpController;
     IBOutlet SurfaceGroupTableController* _surfGrpController;
     
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerObject *_kmv;
+
     IBOutlet NSWindow*  window;
 	IBOutlet NSWindow* _meshWindow;
 	IBOutlet id _tableView;
@@ -56,14 +62,15 @@
 - (id) init;
 - (id) dealloc;
 
-- (void) OpenSurfaceMeshFile:(NSString*) MeshOpenFilehead;
+- (void) OpenSurfaceMeshFile:(NSString*) MeshOpenFilehead
+                    kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction) SelectMeshFile:(id)pId;
 - (IBAction) CloseMeshFile:(id)pId;
 - (IBAction) ShowAllDomainAction:(id)pId;
 - (IBAction) HideAllDomainAction:(id)pId;
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 
 - (id)tableView:(NSTableView *)aTableView
 objectValueForTableColumn:(NSTableColumn *)aTableColumn

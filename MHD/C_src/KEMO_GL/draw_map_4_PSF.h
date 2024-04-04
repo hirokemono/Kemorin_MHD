@@ -8,9 +8,7 @@
 #include "m_kemoview_mesh_menu.h"
 #include "m_kemoview_psf_menu.h"
 #include "m_psf_data_4_viewer_c.h"
-#include "vartex_array_object_gl.h"
-#include "glsl.h"
-#include "init_gl_lighting_c.h"
+#include "m_vertex_buffer.h"
 #include "set_new_patch_4_map_c.h"
 #include "icosahedron_c.h"
 #include "coordinate_converter_c.h"
@@ -25,8 +23,12 @@
 /* prptotypes */
 
 int check_draw_map(struct kemo_array_control *psf_a);
-void set_map_objects_VAO(struct view_element *view_s, 
-						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
-						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-						 struct VAO_ids **map_VAO);
+
+void set_map_PSF_isolines_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                                 struct kemo_array_control *psf_a, struct view_element *view_s,
+                                 struct gl_strided_buffer *mline_buf);
+void set_map_patch_buffer(long ist_psf, long ied_psf, struct psf_data **psf_s,
+                          struct psf_menu_val **psf_m,
+                          struct kemo_array_control *psf_a,
+                          struct gl_strided_buffer *map_buf);
 #endif

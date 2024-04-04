@@ -13,7 +13,6 @@
 #include "kemoviewer_param_c.h"
 #include "m_kemoview_psf_menu.h"
 #include "m_psf_data_4_viewer_c.h"
-#include "vartex_array_object_gl.h"
 #include "set_new_patch_4_map_c.h"
 #include "find_isoline_on_patch_c.h"
 #include "set_color_code_on_nodes.h"
@@ -25,9 +24,10 @@
 
 /* prototypes */
 
-int count_map_PSF_isoline(int ist_patch, struct psf_data *psf_s, struct psf_menu_val *psf_m);
-int set_map_PSF_isoline_to_buf(int ist_patch,
-                               struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                               struct gl_strided_buffer *psf_buf);
+long count_map_PSF_isoline(const long ist_patch, struct psf_data *psf_s,
+                           struct psf_menu_val *psf_m);
+long set_map_PSF_isoline_to_buf(const long ist_patch,
+                                struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                                struct gl_strided_buffer *psf_buf);
 
 #endif

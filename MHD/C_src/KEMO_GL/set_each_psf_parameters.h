@@ -18,7 +18,6 @@
 #include "kemoviewer_base.h"
 #include "set_rgba_table_c.h"
 #include "set_texture_4_psf.h"
-#include "draw_patches_4_PSF.h"
 #include "numbers_to_bin_c.h"
 
 /* prototypes */
@@ -29,20 +28,20 @@ int send_each_psf_file_dir_head(struct psf_menu_val *psf_menu
 			, struct kv_string *stripped_dir, struct kv_string *stripped_filehead);
 
 
-int send_nfield_each_psf(struct psf_data *psf_d);
-int send_ncomptot_each_psf(struct psf_data *psf_d);
-int send_ncomp_each_psf(struct psf_data *psf_d, int i);
-int send_istack_each_comp_psf(struct psf_data *psf_d, int i);
+long send_nfield_each_psf(struct psf_data *psf_d);
+long send_ncomptot_each_psf(struct psf_data *psf_d);
+long send_ncomp_each_psf(struct psf_data *psf_d, int i);
+long send_istack_each_comp_psf(struct psf_data *psf_d, int i);
 void send_each_psf_data_name(struct psf_data *psf_d, struct kv_string *colorname, int i);
 
 
 int send_field_draw_each_psf(struct psf_menu_val *psf_menu);
 int send_draw_comp_id_psf(struct psf_menu_val *psf_menu);
-int send_draw_component_psf(struct psf_menu_val *psf_menu);
+long send_draw_component_psf(struct psf_menu_val *psf_menu);
 int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu);
 
-void set_texture_psf_from_bgra(struct psf_menu_val *psf_menu,
-			int width, int height, const unsigned char *bgra_in);
+void set_texture_psf_from_bgra(struct kemo_array_control *psf_a,
+                               int width, int height, const unsigned char *bgra_in);
 
 void set_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag);
 int send_each_psf_polygon_mode(struct psf_menu_val *psf_menu);
@@ -70,7 +69,8 @@ int toggle_draw_psf_vect(struct psf_menu_val *psf_menu);
 int send_draw_psf_refv(struct psf_menu_val *psf_menu);
 int toggle_draw_psf_refv(struct psf_menu_val *psf_menu);
 
-void set_psf_patch_color_mode(struct psf_menu_val *psf_menu, int iflag);
+void set_psf_patch_color_mode(struct kemo_array_control *psf_a,
+                              struct psf_menu_val *psf_menu, int iflag);
 
 void set_each_isoline_color(struct psf_menu_val *psf_menu, int iflag);
 void set_each_n_isoline(struct psf_menu_val *psf_menu, int nlline);

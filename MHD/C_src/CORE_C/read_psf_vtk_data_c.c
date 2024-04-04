@@ -40,7 +40,7 @@ static void read_psf_vtk_node_data(struct psf_data *viz_s){
 
 static int read_psf_vtk_connect_data(struct psf_data *viz_s){
 	char buf[LENGTHBUF];    /* array for reading line */
-	char tmpchara[8];
+	char tmpchara[11];
     int i, j, num_index, iflag_datatype, itmp;
 
 

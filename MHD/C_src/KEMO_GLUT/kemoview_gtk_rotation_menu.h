@@ -15,6 +15,7 @@
 
 #include "calypso_GTK.h"
 #include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_chara_int_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
@@ -45,6 +46,8 @@ struct rotation_gtk_menu{
 /*  prototypes */
 
 struct rotation_gtk_menu * init_rotation_menu_box(void);
-GtkWidget * init_rotation_menu_expander(struct rotation_gtk_menu *rot_gmenu, GtkWidget *window);
-	
+GtkWidget * init_rotation_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                        struct rotation_gtk_menu *rot_gmenu,
+                                        GtkWidget *window);
+
 #endif

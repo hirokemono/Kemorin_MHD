@@ -6,17 +6,17 @@
 //  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
+
 #import "Kemoview_IO_Controller.h"
+#import "KemoViewerObject.h"
 #include "Kemoviewer.h"
 
 @interface KemoviewDragDropWindow : NSWindow {
-	IBOutlet Kemoview_IO_Controller* _kemoviewIOControl;
-	
-    struct kemoviewer_type *kemoview_s;
-    int id_window;
+	IBOutlet Kemoview_IO_Controller * _kemoviewIOControl;
+    IBOutlet KemoViewerObject *_kmv;
+//    int id_window;
 }
-@property (assign) struct kemoviewer_type *kemoview_s;
 
 
 - (id)init;

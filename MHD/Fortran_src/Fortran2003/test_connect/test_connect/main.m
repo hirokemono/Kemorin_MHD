@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-extern void c_read_control_sph_SGS_MHD();
+extern void c_read_control_sph_SGS_MHD(char *file_name);
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         // insert code here...
         
-        c_read_control_sph_SGS_MHD();
+        c_read_control_sph_SGS_MHD(file_name);
         
         NSLog(@"Hello, World!");
     }

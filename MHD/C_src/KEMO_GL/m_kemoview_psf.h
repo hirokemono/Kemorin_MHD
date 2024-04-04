@@ -39,6 +39,7 @@ int get_each_PSF_field_param(int selected, struct kemoview_psf *kemo_psf);
 int toggle_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf);
 int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf);
 
+void update_PSF_textured_id(struct kemoview_psf *kemo_psf);
 void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo_psf);
 int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf);
 

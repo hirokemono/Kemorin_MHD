@@ -136,9 +136,9 @@
 !
 !  set applied terms
 !
-      SGS_param%iflag_SGS_h_flux =  id_SGS_none
-      SGS_param%iflag_SGS_c_flux =  id_SGS_none
-      SGS_param%iflag_SGS_m_flux =  id_SGS_none
+      SGS_param%SGS_heat%iflag_SGS_flux =      id_SGS_none
+      SGS_param%SGS_light%iflag_SGS_flux =     id_SGS_none
+      SGS_param%SGS_momentum%iflag_SGS_flux =  id_SGS_none
       SGS_param%iflag_SGS_lorentz = id_SGS_none
       SGS_param%iflag_SGS_uxb =     id_SGS_none
       SGS_param%iflag_SGS_gravity = id_SGS_none
@@ -153,9 +153,10 @@
             tmpchara = sgs_ctl%SGS_terms_ctl%c_tbl(i)
             if(     cmp_no_case(tmpchara, heat_advect%name)             &
      &         .or. cmp_no_case(tmpchara, heat_flux_1)) then
-              SGS_param%iflag_SGS_h_flux =  SGS_param%iflag_SGS
+              SGS_param%SGS_heat%iflag_SGS_flux =  SGS_param%iflag_SGS
             else if(cmp_no_case(tmpchara, inertia%name)) then
-              SGS_param%iflag_SGS_m_flux =  SGS_param%iflag_SGS
+              SGS_param%SGS_momentum%iflag_SGS_flux                     &
+     &                                          =  SGS_param%iflag_SGS
             else if(cmp_no_case(tmpchara, Lorentz_force%name)           &
      &         .or. cmp_no_case(tmpchara, lorentz_label)) then
               SGS_param%iflag_SGS_lorentz = SGS_param%iflag_SGS
@@ -167,7 +168,7 @@
               SGS_param%iflag_SGS_gravity = SGS_param%iflag_SGS
             else if(cmp_no_case(tmpchara, composition_advect%name)      &
      &         .or. cmp_no_case(tmpchara, comp_flux_1)) then
-              SGS_param%iflag_SGS_c_flux =  SGS_param%iflag_SGS
+              SGS_param%SGS_light%iflag_SGS_flux =  SGS_param%iflag_SGS
             end if
           end do
 !
@@ -177,11 +178,11 @@
       if (SGS_param%iflag_SGS .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then
           write(*,*) 'iflag_SGS_heat:         ',                        &
-     &              SGS_param%iflag_SGS_h_flux
+     &              SGS_param%SGS_heat%iflag_SGS_flux
           write(*,*) 'iflag_SGS_comp_flux:    ',                        &
-     &              SGS_param%iflag_SGS_c_flux
+     &              SGS_param%SGS_light%iflag_SGS_flux
           write(*,*) 'iflag_SGS_inertia:      ',                        &
-     &              SGS_param%iflag_SGS_m_flux
+     &              SGS_param%SGS_momentum%iflag_SGS_flux
           write(*,*) 'iflag_SGS_lorentz:      ',                        &
      &              SGS_param%iflag_SGS_lorentz
           write(*,*) 'iflag_SGS_induction:    ',                        &
@@ -195,15 +196,15 @@
       SGS_param%clipping_limit                                          &
      &        = set_fixed_Csim(zero, sgs_ctl%clipping_limit_ctl)
 !
-      SGS_param%SGS_hf_factor                                           &
+      SGS_param%SGS_heat%SGS_factor                                     &
      &        = set_fixed_Csim(one, sgs_ctl%SGS_hf_factor_ctl)
-      SGS_param%SGS_mf_factor                                           &
+      SGS_param%SGS_momentum%SGS_factor                                 &
      &        = set_fixed_Csim(one, sgs_ctl%SGS_mf_factor_ctl)
       SGS_param%SGS_mawell_factor                                       &
      &        = set_fixed_Csim(one, sgs_ctl%SGS_mxwl_factor_ctl)
       SGS_param%SGS_uxb_factor                                          &
      &        = set_fixed_Csim(one, sgs_ctl%SGS_uxb_factor_ctl)
-      SGS_param%SGS_cf_factor                                           &
+      SGS_param%SGS_light%SGS_factor                                    &
      &        = set_fixed_Csim(one, sgs_ctl%SGS_cf_factor_ctl)
 !
       SGS_param%ngrp_rave_dynamic = 1

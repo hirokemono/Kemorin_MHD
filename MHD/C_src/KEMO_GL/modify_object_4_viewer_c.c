@@ -67,9 +67,10 @@ void cal_range_4_map_grid_c(struct view_element *view){
 	view->max_point[1] =  HALF;
 	view->max_point[2] =  ONE;
 	
-	view->r_max = ONE;
-	view->iso_scale =  1.0 / view->r_max;
-	
+/*    Skip normalize scale factor
+    view->r_max = ONE;
+/	view->iso_scale =  1.0 / view->r_max;
+*/
 	view->x_lookat[0] = ZERO;
 	view->x_lookat[1] = ZERO;
 	view->x_lookat[2] = ZERO;
@@ -150,9 +151,8 @@ void set_viewtype(struct view_element *view, int selected){
 	else if(view->iflag_view_type == VIEW_XZ) {
 		view_for_xz_plane(view);
 	}
-	else if(view->iflag_view_type == VIEW_YZ) {
-		view_for_yz_plane(view);
+    else if(view->iflag_view_type == VIEW_YZ) {
+        view_for_yz_plane(view);
     };
-    
 	return;
 };

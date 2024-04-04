@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "calypso_GTK.h"
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
@@ -30,10 +30,15 @@
 struct preference_gtk_menu{
 	struct lightparams_view *lightparams_vws;
 	
-	GtkWidget *spin_ambient;
+    GtkWidget *BGselButton;
+    GtkWidget *spin_ambient;
 	GtkWidget *spin_diffuse;
 	GtkWidget *spin_specular;
 	GtkWidget *spin_shineness;
+
+    GtkWidget *Frame_BGsel;
+    GtkWidget *pref_hbox[4];
+    GtkWidget *pref_vbox;
 
 	GtkWidget *combobox_node_color;
 	GtkWidget *button_node_color;
@@ -45,6 +50,8 @@ struct preference_gtk_menu{
 struct preference_gtk_menu * init_preference_gtk_menu(struct kemoviewer_type *kemoviewer_data);
 void dealloc_preference_gtk_menu(struct preference_gtk_menu *pref_gmenu);
 
-GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, GtkWidget *window);
+GtkWidget * init_preference_expander(struct kemoviewer_type *kemo_sgl,
+                                     struct preference_gtk_menu *pref_gmenu, GtkWidget *window,
+                                     struct kemoviewer_type *kemoviewer_data);
 
 #endif

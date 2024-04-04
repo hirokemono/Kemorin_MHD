@@ -1,56 +1,40 @@
+!>@file   cal_light_element.f90
+!!@brief  module cal_light_element
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2005
 !
-!      module cal_light_element
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modieied by H. Matsui on Sep., 2005
-!
-!!      subroutine s_cal_light_element                                  &
-!!     &        (i_field, dt, FEM_prm, SGS_par, mesh, group,            &
-!!     &         fluid, property, ref_param, nod_bcs, sf_bcs,           &
-!!     &         iref_grad, ref_fld, iphys, iphys_LES,                  &
-!!     &         iphys_ele_base, ele_fld, fem_int, FEM_elens,           &
-!!     &         icomp_sgs_term, iak_diff_base, iak_diff_sgs,           &
-!!     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,           &
-!!     &         diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,        &
-!!     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
-!!     &         nod_fld, v_sol, SR_sig, SR_r)
+!>@brief  Time integration routine select for scalar
+!!
+!!@verbatim
+!!      subroutine light_element_evolution(time_d, FEM_prm, SGS_par,    &
+!!     &         geofem, MHD_mesh, property, ref_param, nod_bcs, sf_bcs,&
+!!     &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,       &
+!!     &         ak_diffuse, FEM_filters, Smatrix, Csim_SGS_cf, MGCG_WK,&
+!!     &         SGS_MHD_wk, nod_fld, diff_coefs, m_SR)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) :: group
-!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(time_data), intent(in) :: time_d
+!!        type(mesh_data), intent(in) :: geofem
+!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(scalar_property), intent(in) :: property
 !!        type(reference_scalar_param), intent(in) :: ref_param
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
+!!        type(base_field_address), intent(in) :: iref_base
 !!        type(gradient_field_address), intent(in) :: iref_grad
 !!        type(phys_data), intent(in) :: ref_fld
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
-!!        type(base_field_address), intent(in) :: iphys_ele_base
-!!        type(phys_data), intent(in) :: ele_fld
-!!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
-!!        type(finite_element_integration), intent(in) :: fem_int
-!!        type(filtering_data_type), intent(in) :: filtering
-!!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(base_field_address), intent(in) :: iak_diff_base
-!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
+!!        type(filters_on_FEM), intent(in) :: FEM_filters
+!!        type(SGS_model_coefficient), intent(in) :: Csim_SGS_cf
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
-!!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
-!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+!!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(mesh_SR), intent(inout) :: m_SR
+!!@endverbatim
 !
       module cal_light_element
 !
@@ -60,40 +44,27 @@
       use m_machine_parameter
       use m_phys_constants
 !
-      use t_reference_scalar_param
+      use t_time_data
       use t_FEM_control_parameter
       use t_SGS_control_parameter
-      use t_physical_property
+      use t_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
-      use t_surface_data
+      use t_bc_data_MHD
+      use t_surface_bc_data_MHD
+      use t_base_field_labels
       use t_phys_data
       use t_phys_address
+      use t_FEM_MHD_filter_data
       use t_SGS_model_addresses
-      use t_base_field_labels
-      use t_grad_field_labels
-      use t_explicit_term_labels
-      use t_jacobians
-      use t_table_FEM_const
-      use t_MHD_finite_element_mat
-      use t_MHD_mass_matrices
-      use t_layering_ele_list
-      use t_filter_elength
-      use t_filtering_data
-      use t_bc_data_temp
-      use t_surface_bc_scalar
       use t_material_property
-      use t_SGS_model_coefs
-      use t_solver_djds_MHD
+      use t_MHD_matrices_pack
       use t_MGCG_data
-      use t_work_FEM_integration
-      use t_work_FEM_dynamic_SGS
-      use t_vector_for_solver
-      use t_solver_SR
+      use t_work_FEM_SGS_MHD
+      use t_FEM_SGS_model_coefs
+      use t_mesh_SR
 !
       implicit none
-!
-      private :: s_cal_light_element_pre
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,311 +72,104 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_light_element                                    &
-     &        (i_field, dt, FEM_prm, SGS_par, mesh, group,              &
-     &         fluid, property, ref_param, nod_bcs, sf_bcs,             &
-     &         iref_grad, ref_fld, iphys, iphys_LES,                    &
-     &         iphys_ele_base, ele_fld, fem_int, FEM_elens,             &
-     &         icomp_sgs_term, iak_diff_base, iak_diff_sgs,             &
-     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
-     &         diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,          &
-     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
-     &         nod_fld, v_sol, SR_sig, SR_r)
+      subroutine light_element_evolution(time_d, FEM_prm, SGS_par,      &
+     &         geofem, MHD_mesh, property, ref_param, nod_bcs, sf_bcs,  &
+     &         iref_base, iref_grad, ref_fld, iphys, iphys_LES,         &
+     &         ak_diffuse, FEM_filters, Smatrix, Csim_SGS_cf, MGCG_WK,  &
+     &         SGS_MHD_wk, nod_fld, diff_coefs, m_SR)
 !
-      use nod_phys_send_recv
-      use set_boundary_scalars
-      use int_surf_fixed_gradients
-      use int_surf_div_fluxes_sgs
-      use int_vol_diffusion_ele
-      use int_vol_thermal_ele
-      use cal_sgs_fluxes
-      use copy_nodal_fields
-      use cal_stratification_by_temp
-      use evolve_by_1st_euler
-      use evolve_by_adams_bashforth
-      use evolve_by_lumped_crank
-      use evolve_by_consist_crank
-!
-      integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(in) :: dt
+      use update_with_scalars
+      use cal_add_smp
+      use cal_subtract_smp
+      use cal_temperature
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-      type(field_geometry_data), intent(in) :: fluid
+      type(time_data), intent(in) :: time_d
+      type(mesh_data), intent(in) :: geofem
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(scalar_property), intent(in) :: property
       type(reference_scalar_param), intent(in) :: ref_param
       type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !
+      type(base_field_address), intent(in) :: iref_base
       type(gradient_field_address), intent(in) :: iref_grad
       type(phys_data), intent(in) :: ref_fld
-!
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
-      type(base_field_address), intent(in) :: iphys_ele_base
-      type(phys_data), intent(in) :: ele_fld
-      type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(finite_element_integration), intent(in) :: fem_int
-      type(filtering_data_type), intent(in) :: filtering
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(SGS_term_address), intent(in) :: iak_diff_sgs
-      type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
+      type(filters_on_FEM), intent(in) :: FEM_filters
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_cf
       type(MHD_MG_matrix), intent(in) :: Smatrix
+      real(kind = kreal), intent(in)                                    &
+     &      :: ak_diffuse(geofem%mesh%ele%numele)
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
-      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+      type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
+      type(mesh_SR), intent(inout) :: m_SR
 !
+      integer(kind = kint) :: i_scalar, i_pert, iref_scalar
+      integer(kind = kint) :: i_velo, i_pre_advect
+      integer(kind = kint) :: i_gref
 !
-      call s_cal_light_element_pre                                      &
-     &   (i_field, dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
-     &    SGS_par%filter_p, mesh, group, fluid, property,               &
-     &    ref_param,  nod_bcs, sf_bcs, iref_grad, ref_fld, iphys%base,  &
-     &    iphys_LES%filter_fld, iphys_LES%SGS_term, iphys%exp_work,     &
-     &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
-     &    FEM_elens, icomp_sgs_term, iak_diff_base, iak_diff_sgs,       &
-     &    iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,      &
-     &    filtering, mk_MHD%mlump_fl, Smatrix, ak_MHD%ak_d_composit,    &
-     &    MGCG_WK, FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,    &
-     &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,          &
-     &    v_sol, SR_sig, SR_r)
+      integer(kind = kint) :: i_filter_s, i_filter_v, i_tensor
+      integer(kind = kint) :: i_SGS_wk_field
+      integer(kind = kint) :: iphys_wfl_scalar
+      integer(kind = kint) :: iphys_fefx_buo_gen
 !
-      end subroutine s_cal_light_element
+      real(kind = kreal) :: eps_4_crank
+      integer(kind = kint) :: iflag_supg
 !
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
+      integer(kind = kint) :: iflag_SGS_flux
+      integer(kind = kint) :: itype_Csym_flux
+      integer(kind = kint) :: ifilter_final
+      integer(kind = kint) :: iflag_commute_flux
+      integer(kind = kint) :: iflag_commute_field
 !
-      subroutine s_cal_light_element_pre(i_field, dt, FEM_prm,          &
-     &         SGS_param, cmt_param, filter_param, mesh, group,         &
-     &         fluid, property, ref_param, nod_bcs, sf_bcs,             &
-     &         iref_grad, ref_fld, iphys_base,                          &
-     &         iphys_fil, iphys_SGS, iphys_exp,                         &
-     &         iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,       &
-     &         icomp_sgs_term, iak_diff_base, iak_diff_SGS,             &
-     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
-     &         diff_coefs, filtering, mlump_fl, Smatrix, ak_diffuse,    &
-     &         MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,         &
-     &         f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
+!     ----- composition update
 !
-      use nod_phys_send_recv
-      use set_boundary_scalars
-      use int_surf_fixed_gradients
-      use int_surf_div_fluxes_sgs
-      use int_vol_diffusion_ele
-      use int_vol_thermal_ele
-      use cal_sgs_fluxes
-      use copy_nodal_fields
-      use cal_stratification_by_temp
-      use evolve_by_1st_euler
-      use evolve_by_adams_bashforth
-      use evolve_by_lumped_crank
-      use evolve_by_consist_crank
+      i_scalar =     iphys%base%i_light
+      i_pert =       iphys%base%i_per_light
+      i_velo =       iphys%base%i_velo
+      i_pre_advect = iphys%exp_work%i_pre_composit
 !
-      integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(in) :: dt
+      iref_scalar =  iref_base%i_light
+      i_gref =       iref_grad%i_grad_composit
 !
-      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
-      type(SGS_filtering_params), intent(in) :: filter_param
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
-      type(field_geometry_data), intent(in) :: fluid
-      type(scalar_property), intent(in) :: property
-      type(reference_scalar_param), intent(in) :: ref_param
-      type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
-      type(scaler_surf_bc_type), intent(in) :: sf_bcs
+      i_filter_s =         iphys_LES%filter_fld%i_light
+      i_filter_v =         iphys_LES%filter_fld%i_velo
+      i_tensor =           iphys_LES%SGS_term%i_SGS_c_flux
+      i_SGS_wk_field =     iphys_LES%SGS_wk%i_sgs_composit
+      iphys_wfl_scalar =   iphys_LES%wide_filter_fld%i_light
+      iphys_fefx_buo_gen = iphys_LES%eflux_by_filter%i_c_buo_gen
 !
-      type(gradient_field_address), intent(in) :: iref_grad
-      type(phys_data), intent(in) :: ref_fld
+      eps_4_crank = FEM_prm%eps_4_comp_crank
+      iflag_supg =  FEM_prm%iflag_comp_supg
 !
-      type(base_field_address), intent(in) :: iphys_base
-      type(base_field_address), intent(in) :: iphys_fil
-      type(SGS_term_address), intent(in) :: iphys_SGS
-      type(explicit_term_address), intent(in) :: iphys_exp
+      iflag_SGS_flux =  SGS_par%model_p%SGS_light%iflag_SGS_flux
+      itype_Csym_flux = SGS_par%model_p%SGS_light%itype_Csym_flux
+      ifilter_final =   SGS_par%model_p%ifilter_final
 !
-      type(base_field_address), intent(in) :: iphys_ele_base
-      type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacs
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(SGS_term_address), intent(in) :: iak_diff_SGS
-      type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(filtering_data_type), intent(in) :: filtering
-      type(lumped_mass_matrices), intent(in) :: mlump_fl
-      type(MHD_MG_matrix), intent(in) :: Smatrix
+      iflag_commute_flux = SGS_par%model_p%SGS_light%iflag_commute_flux
+      iflag_commute_field = SGS_par%model_p%SGS_light%iflag_commute_field
 !
-      real(kind = kreal), intent(in) :: ak_diffuse(mesh%ele%numele)
+      call scalar_evolution(i_scalar, i_pert,                           &
+     &    iref_scalar, i_velo, i_pre_advect, i_gref,                    &
+     &    i_filter_s, i_filter_v, i_tensor, i_SGS_wk_field,             &
+     &    iphys_wfl_scalar, iphys_fefx_buo_gen,                         &
+     &    eps_4_crank, iflag_supg, iflag_SGS_flux,                      &
+     &    itype_Csym_flux, ifilter_final,                               &
+     &    iflag_commute_flux, iflag_commute_field,                      &
+     &    time_d, FEM_prm, SGS_par, geofem, MHD_mesh, property,         &
+     &    ref_param, nod_bcs, sf_bcs, ref_fld, iphys_LES,               &
+     &    ak_diffuse, FEM_filters, Csim_SGS_cf,                         &
+     &    Smatrix, MGCG_WK, SGS_MHD_wk, nod_fld,                        &
+     &    diff_coefs%Cdiff_light, diff_coefs%Cdiff_SGS_cf, m_SR)
 !
-      type(MGCG_data), intent(inout) :: MGCG_WK
-      type(filtering_work_type), intent(inout) :: wk_filter
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_surface_element_mat), intent(inout) :: surf_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
-      type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      end subroutine light_element_evolution
 !
-!
-      if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call cal_sgs_heat_flux                                          &
-     &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
-     &      i_field, iphys_fil%i_light,                                 &
-     &      iphys_base%i_velo, iphys_fil%i_velo,                        &
-     &      iphys_SGS%i_SGS_c_flux, icomp_sgs_term%i_SGS_c_flux,        &
-     &      iphys_elediff_vec%i_velo, SGS_param, filter_param,          &
-     &      mesh%nod_comm, mesh%node, mesh%ele, fluid,                  &
-     &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
-     &      filtering, sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,   &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                     &
-     &      v_sol, SR_sig, SR_r)
-      end if
-!
-!      call check_nodal_data                                            &
-!     &     ((50+my_rank), nod_fld, 3, iphys_SGS%i_SGS_c_flux)
-!
-      call reset_ff_smps(mesh%node, f_l, f_nl)
-!
-      if (property%coef_advect .gt. zero                                &
-     &     .and. property%coef_exp.gt.zero) then
-        call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
-     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
-     &      rhs_tbl, FEM_elens, diff_coefs, iak_diff_base%i_light,      &
-     &      property%coef_exp,  ak_diffuse, i_field, fem_wk, f_l)
-      end if
-!
-!  ----------  lead advection term
-!
-      if (FEM_prm%iflag_comp_supg .gt. id_turn_OFF) then
-        call int_vol_temp_ele_upw                                       &
-     &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
-     &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
-     &      dt, iphys_base%i_light, iphys_base%i_velo,                  &
-     &      iphys_SGS%i_SGS_c_flux, iak_diff_SGS%i_SGS_c_flux,          &
-     &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
-     &      ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,    &
-     &      mhd_fem_wk, fem_wk, f_nl)
-      else
-        call int_vol_temp_ele                                           &
-     &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
-     &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
-     &      iphys_base%i_light, iphys_base%i_velo,                      &
-     &      iphys_SGS%i_SGS_c_flux, iak_diff_SGS%i_SGS_c_flux,          &
-     &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
-     &      ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,    &
-     &      mhd_fem_wk, fem_wk, f_nl)
-      end if
-!
-!
-      call int_sf_scalar_flux                                           &
-     &   (mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
-     &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, sf_bcs%flux,            &
-     &    FEM_prm%npoint_t_evo_int, ak_diffuse, fem_wk, f_l)
-!
-      if(cmt_param%iflag_c_light .ne. id_SGS_commute_OFF                &
-          .and. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
-        call int_sf_skv_sgs_div_v_flux(mesh%node, mesh%ele, mesh%surf,  &
-     &     group%surf_grp, nod_fld, jacs%g_FEM, jacs%jac_sf_grp,        &
-     &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_t_evo_int,   &
-     &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
-     &      SGS_param%ifilter_final, iphys_SGS%i_SGS_c_flux,            &
-     &      iphys_base%i_velo, iphys_base%i_light,                      &
-     &      iak_diff_SGS%i_SGS_c_flux, property%coef_advect,            &
-     &      fem_wk, surf_wk, f_nl)
-      end if
-!
-!      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_scalar, i_field)
-!
-!
-      if (ref_param%iflag_reference .eq. id_takepiro_temp) then
-        if (FEM_prm%iflag_comp_supg .gt. id_turn_OFF) then
-          call cal_stratified_layer_upw                                 &
-     &       (iref_grad%i_grad_composit, FEM_prm%npoint_t_evo_int,      &
-     &        dt,  mesh%node, mesh%ele, fluid, ref_fld,                 &
-     &        ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,  &
-     &        jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,             &
-     &        fem_wk, f_nl)
-        else
-          call cal_stratified_layer                                     &
-     &       (iref_grad%i_grad_composit, FEM_prm%npoint_t_evo_int,      &
-     &        mesh%node, mesh%ele, fluid, ref_fld,                      &
-     &        ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,  &
-     &        jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,             &
-     &        fem_wk, f_nl)
-        end if
-      end if
-!
-!
-      if     (property%iflag_scheme .eq. id_explicit_euler) then
-        call cal_scalar_pre_euler(FEM_prm%iflag_comp_supg, i_field, dt, &
-     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
-     &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,           &
-     &      v_sol, SR_sig, SR_r)
-!
-      else if(property%iflag_scheme .eq. id_explicit_adams2) then
-        call cal_scalar_pre_adams                                       &
-     &     (FEM_prm%iflag_comp_supg, i_field, iphys_exp%i_pre_composit, &
-     &      dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,     &
-     &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,           &
-     &      v_sol, SR_sig, SR_r)
-!
-      else if(property%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_temp_pre_lumped_crank(FEM_prm%iflag_comp_supg,         &
-     &      cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
-     &      i_field, iphys_exp%i_pre_composit, iak_diff_base%i_light,   &
-     &      ak_diffuse, FEM_prm%eps_4_comp_crank, dt, FEM_prm,          &
-     &      mesh%nod_comm, mesh%node, mesh%ele, fluid, property,        &
-     &      nod_bcs, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
-     &      rhs_tbl, FEM_elens,  diff_coefs, mlump_fl, Smatrix,         &
-     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
-     &      nod_fld, v_sol, SR_sig, SR_r)
-!
-      else if(property%iflag_scheme .eq. id_Crank_nicolson_cmass) then
-        call cal_temp_pre_consist_crank                                 &
-     &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
-     &      i_field, iphys_exp%i_pre_composit, iak_diff_base%i_light,   &
-     &      ak_diffuse, FEM_prm%eps_4_comp_crank, dt, FEM_prm,          &
-     &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
-     &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,       &
-     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
-     &      nod_fld, v_sol, SR_sig, SR_r)
-      end if
-!
-      call set_boundary_scalar                                          &
-     &   (nod_bcs%nod_bc_s, i_field, nod_fld)
-!
-      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld,            &
-     &                      v_sol, SR_sig, SR_r)
-!
-      end subroutine s_cal_light_element_pre
-!
-! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       end module cal_light_element

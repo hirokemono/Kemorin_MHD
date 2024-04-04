@@ -42,7 +42,7 @@ libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_GEN_FILTER_FILE): $$(MOD_GEN_FILTER)' >> $(MAKENAME)
 
-lib_archve:
+lib_archve: 
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

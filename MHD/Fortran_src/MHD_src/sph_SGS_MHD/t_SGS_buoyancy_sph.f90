@@ -259,50 +259,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine magnify_sph_ave_SGS_buoyancy(sph_rtp, iak_sgs_term,    &
-     &          wk_sgs_buo, fg_trns_LES, trns_f_SGS)
-!
-      use t_SGS_model_addresses
-      use t_rms_4_sph_spectr
-      use t_spheric_parameter
-      use t_SGS_model_coefs
-      use t_SGS_term_labels
-      use radial_int_for_sph_spec
-      use volume_average_4_sph
-      use prod_buo_model_coefs_sph
-      use SGS_buo_coefs_sph_MHD
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(SGS_term_address), intent(in) :: iak_sgs_term
-      type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
-      type(SGS_model_addresses), intent(in) :: fg_trns_LES
-!
-      type(spherical_transform_data), intent(inout) :: trns_f_SGS
-!
-!
-      if     (iak_sgs_term%i_SGS_buoyancy                               &
-     &         * iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-        call sel_prod_dbl_radial_buo_coefs(sph_rtp,                     &
-     &      wk_sgs_buo%Cbuo_ave_sph_rtp, fg_trns_LES, trns_f_SGS)
-      else if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
-        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
-     &      wk_sgs_buo%Cbuo_ave_sph_rtp(1,1), fg_trns_LES, trns_f_SGS)
-      else if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
-     &      wk_sgs_buo%Cbuo_ave_sph_rtp(1,2), fg_trns_LES, trns_f_SGS)
-      end if
-!
-      end subroutine magnify_sph_ave_SGS_buoyancy
-!
-! ----------------------------------------------------------------------
-!
       subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, iak_sgs_term,    &
      &          wk_sgs_buo, fg_trns_LES, trns_f_SGS)
 !
       use t_SGS_model_addresses
       use t_rms_4_sph_spectr
       use t_spheric_parameter
-      use t_SGS_model_coefs
       use t_SGS_term_labels
       use radial_int_for_sph_spec
       use volume_average_4_sph

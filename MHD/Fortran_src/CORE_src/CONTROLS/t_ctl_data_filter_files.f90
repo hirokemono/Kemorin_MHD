@@ -7,6 +7,7 @@
 !>@brief  Structure for reading parameters for filtering files
 !!
 !!@verbatim
+!!      subroutine init_filter_fnames_ctl_label(hd_block, ffile_ctl)
 !!      subroutine read_filter_fnames_control                           &
 !!     &         (id_control, hd_block, ffile_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -56,6 +57,9 @@
 !
 !>      Structure for filtering files
       type filter_file_control
+!>        Block name
+        character(len=kchara) :: block_name = 'SGS_control'
+!
 !>        Structure for filter file for nodes
         type(read_character_item) :: filter_head_ctl
 !>        Structure for filter coefficients file for nodes
@@ -215,34 +219,70 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_head_ctl, ffile_ctl%filter_head_ctl)
+     &    ffile_ctl%filter_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_coef_head_ctl, ffile_ctl%filter_coef_head_ctl)
+     &    ffile_ctl%filter_coef_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_elen_head_ctl, ffile_ctl%filter_elen_head_ctl)
+     &    ffile_ctl%filter_elen_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_moms_head_ctl, ffile_ctl%filter_moms_head_ctl)
+     &    ffile_ctl%filter_moms_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_wide_head, ffile_ctl%filter_wide_head_ctl)
+     &    ffile_ctl%filter_wide_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_model_coef_ini_head, ffile_ctl%model_coef_ini_head_ctl)
+     &    ffile_ctl%model_coef_ini_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_commute_coef_ini_head,               &
      &                          ffile_ctl%commute_coef_ini_head_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_elen_fmt, ffile_ctl%filter_elen_format)
+     &    ffile_ctl%filter_elen_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_3d_fmt, ffile_ctl%filter_3d_format)
+     &    ffile_ctl%filter_3d_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_wide_fmt, ffile_ctl%filter_wide_format)
+     &    ffile_ctl%filter_wide_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_model_coef_rst_format, ffile_ctl%model_coef_rst_format)
+     &    ffile_ctl%model_coef_rst_format)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_commute_c_rst_format, ffile_ctl%commute_coef_rst_format)
+     &    ffile_ctl%commute_coef_rst_format)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_filter_fnames_control
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_filter_fnames_ctl_label(hd_block, ffile_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(filter_file_control), intent(inout) :: ffile_ctl
+!
+!
+      ffile_ctl%block_name = hd_block
+        call init_chara_ctl_item_label                                  &
+     &     (hd_filter_head_ctl, ffile_ctl%filter_head_ctl)
+        call init_chara_ctl_item_label(hd_filter_coef_head_ctl,         &
+     &      ffile_ctl%filter_coef_head_ctl)
+        call init_chara_ctl_item_label(hd_filter_elen_head_ctl,         &
+     &      ffile_ctl%filter_elen_head_ctl)
+        call init_chara_ctl_item_label(hd_filter_moms_head_ctl,         &
+     &      ffile_ctl%filter_moms_head_ctl)
+        call init_chara_ctl_item_label(hd_filter_wide_head,             &
+     &      ffile_ctl%filter_wide_head_ctl)
+        call init_chara_ctl_item_label(hd_model_coef_ini_head,          &
+     &      ffile_ctl%model_coef_ini_head_ctl)
+        call init_chara_ctl_item_label(hd_commute_coef_ini_head,        &
+     &      ffile_ctl%commute_coef_ini_head_ctl)
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_filter_elen_fmt, ffile_ctl%filter_elen_format)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_filter_3d_fmt, ffile_ctl%filter_3d_format)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_filter_wide_fmt, ffile_ctl%filter_wide_format)
+        call init_chara_ctl_item_label(hd_model_coef_rst_format,        &
+     &      ffile_ctl%model_coef_rst_format)
+        call init_chara_ctl_item_label(hd_commute_c_rst_format,         &
+     &      ffile_ctl%commute_coef_rst_format)
+!
+      end subroutine init_filter_fnames_ctl_label
 !
 !  ---------------------------------------------------------------------
 !

@@ -18,9 +18,14 @@
 
 -(void)linkToReal3clist
 {
-    load_MHD_control_c();
-    struct PVR_ctl_list *pvr1 = link_to_pvr_ctl_list();
-    Real3CtlList = pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->step_opacity_list;
+    struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) malloc(sizeof(struct f_MHD_control));
+    if(f_MHD_ctl == NULL){
+        printf("malloc error for f_MHD_ctl\n");
+        exit(0);
+    };
+    f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD("control_MHD");
+    struct f_VIZ_PVR_ctl *f_ctl_tmp = void_clist_at_index(0,f_MHD_ctl->f_viz_ctls->f_pvr_ctls);
+    Real3CtlList = f_pvr_ctl->f_light->f_light_position_ctl;
 }
 -(void)createMutablearray
 {

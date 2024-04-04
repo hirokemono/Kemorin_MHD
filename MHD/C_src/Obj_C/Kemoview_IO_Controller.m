@@ -14,6 +14,7 @@
 @implementation Kemoview_IO_Controller
 @synthesize ImageFormatFlag;
 - (void) OpenKemoviewerFile:(NSString*) kemoviewOpenFilename
+                   kemoview:(struct kemoviewer_type *) kemo_sgl
 {
 	int iflag_datatype;
 	NSString *kemoviewOpenFilehead = [kemoviewOpenFilename stringByDeletingPathExtension];
@@ -26,19 +27,22 @@
 	};
 
     struct kv_string *filename = kemoview_init_kvstring_by_string([kemoviewOpenFilename UTF8String]);
-	iflag_datatype = kemoview_open_data(filename);
+	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
 	if(iflag_datatype==IFLAG_MESH) {
-		[_domainTableController OpenSurfaceMeshFile:kemoviewOpenFilehead];
+		[_domainTableController OpenSurfaceMeshFile:kemoviewOpenFilehead
+                                           kemoview:kemo_sgl];
 	}
 	else if(iflag_datatype==IFLAG_SURFACES) {
-		[_psfController DrawPsfFile:kemoviewOpenFilehead];
-		[_movieMakerController InitEvolutionStepByPSF];
+		[_psfController DrawPsfFile:kemoviewOpenFilehead
+                           kemoview:kemo_sgl];
+        [_movieMakerController InitEvolutionStepByPSF:kemo_sgl];
 	}
 	else if(iflag_datatype==IFLAG_LINES) {
-		[_flineController OpenFieldlineFile:kemoviewOpenFilehead];
-		[_movieMakerController InitEvolutionStepByFline];
+		[_flineController OpenFieldlineFile:kemoviewOpenFilehead
+                                   kemoview:kemo_sgl];
+        [_movieMakerController InitEvolutionStepByFline:kemo_sgl];
 	};
 	
 }
@@ -54,9 +58,11 @@
     [KemoviewOpenPanelObj setAllowedFileTypes:kemoviewFileTypes];
     [KemoviewOpenPanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger KemoviewOpenInteger){
-	if(KemoviewOpenInteger == NSFileHandlingPanelOKButton){
+	if(KemoviewOpenInteger == NSModalResponseOK){
 		NSString *kemoviewOpenFilename = [[KemoviewOpenPanelObj URL] path];
-		[self OpenKemoviewerFile:kemoviewOpenFilename];
+        struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+		[self OpenKemoviewerFile:kemoviewOpenFilename
+                        kemoview:kemo_sgl];
 	};
                                    }];
 }
@@ -66,7 +72,7 @@
 	NSSavePanel *ViewMatrixSavePanelObj	= [NSSavePanel savePanel];
     [ViewMatrixSavePanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger ViewMatrixSaveInt){
-	if(ViewMatrixSaveInt == NSFileHandlingPanelOKButton){
+	if(ViewMatrixSaveInt == NSModalResponseOK){
 		
 		NSString * ViewMatrixFilename = [[ ViewMatrixSavePanelObj URL] path];
 		NSString * ViewMatrixDirectory = [[ ViewMatrixSavePanelObj directoryURL] path];
@@ -75,8 +81,9 @@
 		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
 		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
 
+        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
         struct kv_string *filename = kemoview_init_kvstring_by_string([ViewMatrixFilename UTF8String]);
-		kemoview_write_modelview_file(filename);
+		kemoview_write_modelview_file(filename, kemo_sgl);
         kemoview_free_kvstring(filename);
 	};
                                    }];
@@ -91,7 +98,7 @@
 /*    [ViewMatrixOpenPanelObj setAllowedFileTypes:MatrixFileTypes];*/
     [ViewMatrixOpenPanelObj beginSheetModalForWindow:window 
                                  completionHandler:^(NSInteger ViewMatrixOpenInteger){
-    if(ViewMatrixOpenInteger == NSFileHandlingPanelOKButton){
+    if(ViewMatrixOpenInteger == NSModalResponseOK){
 		
 		NSString * ViewMatrixFilename = [[ ViewMatrixOpenPanelObj URL] path];
 		NSString * ViewMatrixDirectory = [[ ViewMatrixOpenPanelObj directoryURL] path];
@@ -100,15 +107,17 @@
 		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
 		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
         
+        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
         struct kv_string *filename = kemoview_init_kvstring_by_string([ViewMatrixFilename UTF8String]);
-		kemoview_load_modelview_file(filename);
+		kemoview_load_modelview_file(filename, kemo_sgl);
         kemoview_free_kvstring(filename);
-		[_kemoviewer UpdateImage];
+		[_metalView UpdateImage:kemo_sgl];
 	};
                                  }];
 }
 
--(void) SelectImageFileFormat:(NSString *)ImageFilename
+-(void) SaveImageByFormat:(NSString *)ImageFilename
+                 kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     NSUserDefaults* defaults = [_user_defaults_controller defaults];
     CurrentImageFormat = [[defaults stringForKey:@"ImageFormatID"] intValue];
@@ -124,13 +133,21 @@
         id_format = (int) CurrentImageFormat;
     }
     
-    if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1){
+    if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) == 1){
         if(id_format == SAVE_PNG){
-            [_movieMakerController SaveKemoviewQuiltPNGFile:ImageFilehead:IZERO:IONE];
+            [_movieMakerController SaveKemoviewQuiltPNGFile:ImageFilehead
+                                                    degree:IZERO
+                                                       axis:IONE
+                                                   kemoview:kemo_sgl];
         } else if(id_format == SAVE_BMP){
-            [_movieMakerController SaveKemoviewQuiltBMPFile:ImageFilehead:IZERO:IONE];
+            [_movieMakerController SaveKemoviewQuiltBMPFile:ImageFilehead
+                                                     degree:IZERO
+                                                       axis:IONE
+                                                   kemoview:kemo_sgl];
         } else {
-            [_movieMakerController SaveKemoviewQuiltPDFFile:ImageFilehead:IZERO:IONE];
+            [_movieMakerController SaveKemoviewQuiltPDFFile:ImageFilehead
+                                                     degree:IZERO
+                                                       axis:IONE kemoview:kemo_sgl];
         }
     } else {
         if(id_format == SAVE_PNG){
@@ -142,7 +159,7 @@
         }
     };
     
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) SaveImageFile:(id)pId;{
@@ -151,12 +168,14 @@
 	[ImageSavePanelObj setCanSelectHiddenExtension:YES];
     [ImageSavePanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger ImageSaveInt){
-	if(ImageSaveInt == NSFileHandlingPanelOKButton){
+	if(ImageSaveInt == NSModalResponseOK){
 		
 		NSString * ImageFilename = [[ ImageSavePanelObj URL] path];
         // NSString * ImageDirectory = [ ImageSavePanelObj directory];
         // NSLog(@" ImageDirectory = %@", ImageDirectory);
-        [self SelectImageFileFormat:ImageFilename];
+        struct kemoviewer_type * kemo_sgl = [_kmv KemoViewPointer];
+        [self SaveImageByFormat:ImageFilename
+                       kemoview:kemo_sgl];
 	};
                                    }];
 }

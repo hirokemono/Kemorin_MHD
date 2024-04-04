@@ -34,6 +34,8 @@
       subroutine bcast_sgs_ctl(sgs_ctl)
 !
       use t_ctl_data_SGS_model
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_4_filter_files_ctl
       use bcast_control_arrays
@@ -98,6 +100,10 @@
       call bcast_ctl_type_i1(sgs_ctl%ngrp_radial_ave_ctl)
       call bcast_ctl_type_i1(sgs_ctl%ngrp_med_ave_ctl)
 !
+      call calypso_mpi_bcast_character(sgs_ctl%sph_filters_name,        &
+     &                                 cast_long(kchara), 0)
+      call calypso_mpi_bcast_character(sgs_ctl%block_name,              &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(sgs_ctl%i_sgs_ctl, 0)
 !
       end subroutine bcast_sgs_ctl
@@ -108,6 +114,8 @@
       subroutine bcast_3d_filtering_ctl(s3df_ctl)
 !
       use t_ctl_SGS_3d_filter
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
 !
@@ -122,6 +130,8 @@
       call bcast_ctl_type_c1(s3df_ctl%induction_filter_ctl)
       call bcast_ctl_type_c1(s3df_ctl%compostion_filter_ctl)
 !
+      call calypso_mpi_bcast_character(s3df_ctl%block_name,             &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(s3df_ctl%i_SGS_3d_filter_ctl, 0)
 !
       end subroutine bcast_3d_filtering_ctl
@@ -131,6 +141,8 @@
       subroutine bcast_control_4_SGS_filter(sphf_ctl)
 !
       use t_ctl_data_SGS_filter
+      use transfer_to_long_integers
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
 !
@@ -146,6 +158,10 @@
 !
       call bcast_ctl_type_i1(sphf_ctl%first_reference_ctl)
       call bcast_ctl_type_i1(sphf_ctl%second_reference_ctl)
+!
+      call calypso_mpi_bcast_character(sphf_ctl%block_name,             &
+     &                                 cast_long(kchara), 0)
+      call calypso_mpi_bcast_one_int(sphf_ctl%i_sph_filter_ctl, 0)
 !
       end subroutine bcast_control_4_SGS_filter
 !

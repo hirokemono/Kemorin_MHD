@@ -39,7 +39,12 @@
 
 -(void)linkToFieldclist:(struct all_field_ctl_c *) ref_all_fld_list
 {
-    mhd_ctl_m = link_to_mhd_ctl();
+    struct f_MHD_control *f_MHD_ctl = (struct f_MHD_control *) malloc(sizeof(struct f_MHD_control));
+    if(f_MHD_ctl == NULL){
+        printf("malloc error for f_MHD_ctl\n");
+        exit(0);
+    };
+    f_MHD_ctl->f_self = c_read_control_sph_SGS_MHD("control_MHD");
     all_fld_list = ref_all_fld_list;
 }
 
@@ -64,12 +69,14 @@
 {
     int i;
     char *c1_out;
-    
+    struct chara2_int_ctl_item *tmp_item;
+
     /*
      for(i=0;i<all_fld_list->fld_list->ntot_fields;i++){
-     printf("%d %s %d %d %d %d \n", i, all_fld_list->fld_list->field_name[i], 
-     all_fld_list->iflag_use[i], all_fld_list->iflag_viz[i],
-     all_fld_list->iflag_monitor[i], all_fld_list->iflag_quad[i]);
+        tmp_item = chara2_int_clist_at_index(i, all_fld_list->fld_list->field_label);
+        printf("%d %s %d %d %d %d \n", i, tmp_item->c1_tbl,
+        all_fld_list->iflag_use[i], all_fld_list->iflag_viz[i],
+        all_fld_list->iflag_monitor[i], all_fld_list->iflag_quad[i]);
      }
      */
     
@@ -78,7 +85,8 @@
     c1_out = (char *)calloc(KCHARA_C, sizeof(char));
     for(i=2;i<50;i++){
         if(all_fld_list->iflag_use[i] == 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
+            tmp_item = chara2_int_clist_at_index(i, all_fld_list->fld_list->field_label);
+            NSString *data1 = [NSString stringWithCString:tmp_item->c1_tbl encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.baseFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Base",self.key2, num0,self.key0, data1,self.key1, nil];
             [self.baseFieldArray addObject:data1];
@@ -90,7 +98,8 @@
     [self.forceFieldArray removeAllObjects];
     for(i=50;i<100;i++){
         if(all_fld_list->iflag_use[i] == 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
+            tmp_item = chara2_int_clist_at_index(i, all_fld_list->fld_list->field_label);
+            NSString *data1 = [NSString stringWithCString:tmp_item->c1_tbl encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.forceFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Force",self.key2, num0,self.key0, data1,self.key1, nil];
             [self.forceFieldArray addObject:data1];
@@ -102,7 +111,8 @@
     [self.energyFieldArray removeAllObjects];
     for(i=100;i<170;i++){
         if(all_fld_list->iflag_use[i] == 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
+            tmp_item = chara2_int_clist_at_index(i, all_fld_list->fld_list->field_label);
+            NSString *data1 = [NSString stringWithCString:tmp_item->c1_tbl encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.energyFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Energy",self.key2, num0,self.key0, data1,self.key1, nil];
             [self.energyFieldArray addObject:data1];
@@ -114,7 +124,8 @@
     [self.sgsFieldArray removeAllObjects];
     for(i=170;i<all_fld_list->fld_list->ntot_fields;i++){
         if(all_fld_list->iflag_use[i] == 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
+            tmp_item = chara2_int_clist_at_index(i, all_fld_list->fld_list->field_label);
+            NSString *data1 = [NSString stringWithCString:tmp_item->c1_tbl encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.sgsFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"SGS",self.key2, num0,self.key0, data1,self.key1, nil];
             [self.sgsFieldArray addObject:data1];

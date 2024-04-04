@@ -249,8 +249,12 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_ctl%i_part_ctl .gt. 0) return
+      call init_platforms_labels(hd_platform, part_ctl%part_plt)
+      call init_platforms_labels(hd_org_data, part_ctl%single_plt)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, part_ctl%part_Fmesh)
+      call init_FEM_sleeve_ctl_label(hd_FEM_sleeve, part_ctl%Fsleeve_c)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

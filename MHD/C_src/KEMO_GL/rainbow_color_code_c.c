@@ -3,10 +3,10 @@
 
 #include "rainbow_color_code_c.h"
 
-static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
-static const GLfloat white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
-static const GLfloat l_green[4] = {L_GREEN_R,L_GREEN_G,L_GREEN_B,L_GREEN_A};
-/* static const GLfloat d_green[4] = {D_GREEN_R,D_GREEN_G,D_GREEN_B,D_GREEN_A}; */
+static const float black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
+static const float white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
+static const float l_green[4] = {L_GREEN_R,L_GREEN_G,L_GREEN_B,L_GREEN_A};
+/* static const float d_green[4] = {D_GREEN_R,D_GREEN_G,D_GREEN_B,D_GREEN_A}; */
 
 static double c_code[4];
 
@@ -43,6 +43,7 @@ int set_same_id_by_N_c(int inum, int iloop, int i_min, int i_max){
 	return ival;
 }
 
+/*
 static void convert_anaglyph_color(double ratio_mono, double *f_color){
 	float gray;
 	gray = (ONE - ratio_mono) * (f_color[0] + f_color[1] + f_color[2])
@@ -52,17 +53,12 @@ static void convert_anaglyph_color(double ratio_mono, double *f_color){
 	f_color[2] = f_color[2] * ratio_mono + gray;
 	return ;
 };
-
+*/
 
 static void get_rainbow_c(double val, double  minval,double  maxval, double *f_color) {
-	double f, r, g, b;
-
-	f = color_normalize_linear_c(minval, maxval, val);
-	color_rainbow_c(f, &r, &g, &b);
-	f_color[0] = (GLfloat) r;
-	f_color[1] = (GLfloat) g;
-	f_color[2] = (GLfloat) b;
-	return ;
+	double f = color_normalize_linear_c(minval, maxval, val);
+	color_rainbow_c(f, &f_color[0], &f_color[1], &f_color[2]);
+	return;
 }
 
 
@@ -199,20 +195,9 @@ static void get_d_rainbow_int_c(int inum, int iloop, int i_min, int i_max, doubl
 	return;
 }
 
-void set_rainbow_PSF_c(double val_pe, struct colormap_params *cmap_s){
-	set_rainbow_color_code(cmap_s, val_pe, c_code);
-	return;
-}
-
-void set_rainbow_anaglyph_PSF_c(double val_pe, struct colormap_params *cmap_s){
-	set_rainbow_color_code(cmap_s, val_pe, c_code);
-	convert_anaglyph_color(0.4, c_code);
-	return;
-}
-
 void set_patch_color_mode_c(int surface_color, int color_mode, int color_loop, 
 							int ip, int num_pe, int igrp, int num_grp, 
-							double opacity, GLfloat single_color[4], double *f_color){
+							double opacity, float single_color[4], double *f_color){
 	int i;
 	if (surface_color == GROUP_COLOR) {
 		if(color_mode == GRAYSCALE){
@@ -244,7 +229,7 @@ void set_patch_color_mode_c(int surface_color, int color_mode, int color_loop,
 
 void set_grid_color_mode_c(int line_color, int color_mode, int color_loop, 
 						   int ip, int num_pe, int igrp, int num_grp,
-						   GLfloat single_color[4], double *f_color){
+                           float single_color[4], double *f_color){
 	int i;
 	if (line_color == DOMAIN_COLOR) {
 		if(color_mode == GRAYSCALE){
@@ -274,7 +259,7 @@ void set_grid_color_mode_c(int line_color, int color_mode, int color_loop,
 };
 
 void set_node_color_mode_c(int surface_color, int color_mode, int color_loop, 
-			int igrp, int num_grp, GLfloat single_color[4]){
+			int igrp, int num_grp, float single_color[4]){
 	
 	if (surface_color == GROUP_COLOR) {
 		igrp = igrp+1;
@@ -292,6 +277,7 @@ void set_node_color_mode_c(int surface_color, int color_mode, int color_loop,
 void set_black_color_c(double *f_color){
 	int i;
 	for (i=0; i<3; i++) {f_color[i] = black[i];};
+    f_color[3] = 1.0;
 	return;
 };
 

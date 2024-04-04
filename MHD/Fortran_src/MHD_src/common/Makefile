@@ -13,7 +13,9 @@ MOD_COMMON = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MHD_COMMON_DIR = $(MHD_COMMON_DIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_COMMON)' \
 	>> $(MAKENAME)
 

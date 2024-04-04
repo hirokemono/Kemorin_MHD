@@ -157,6 +157,7 @@
       use SPH_SGS_ini_model_coefs_IO
       use copy_Csim_4_sph_MHD
       use sph_transforms_4_SGS
+      use t_IO_step_parameter
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
@@ -183,7 +184,7 @@
         call copy_model_coefs_4_sph_snap                                &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
      &      dynamic_SPH%iak_sgs_term, WK_LES%trns_Csim%f_trns_LES%Csim, &
-     &      dynamic_SPH%wk_sgs, WK_LES%trns_Csim%forward)
+     &      dynamic_SPH%wk_sph_sgs, WK_LES%trns_Csim%forward)
         if (iflag_debug .gt.0 ) write(*,*)                              &
      &                   'sph_forward_trans_SGS_MHD Csim for initial'
         call sph_forward_trans_SGS_MHD                                  &

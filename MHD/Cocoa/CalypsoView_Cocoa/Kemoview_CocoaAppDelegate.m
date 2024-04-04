@@ -8,12 +8,11 @@
 
 #import "Kemoview_CocoaAppDelegate.h"
 
-struct kemoviewer_type *single_kemoview;
 
 @implementation Kemoview_CocoaAppDelegate
 
 - (id) init{
-    single_kemoview = kemoview_allocate_single_viwewer_struct();
+    [_singleKemoView init];
     return self;
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -31,10 +30,11 @@ struct kemoviewer_type *single_kemoview;
 }
 
 - (void)Tako:(NSNotification *)notification {
-	[_kemoviewer UpdateImage];
+/*
+    NSInteger tag = [[_SurfGrpNodeColorItem selectedCell] tag];
+	[_metalView UpdateImage:kemo_sgl];
 
-	/*	
-	// show window position in TextField
+ // show window position in TextField
 	NSString *st = [NSString stringWithFormat:@"(x, y)=(%.1f, %.1f), (h ,w)=(%.1f, %.1f)",
 					self.window.frame.origin.x,      self.window.frame.origin.y,                    self.window.frame.size.width,                  self.window.frame.size.height];
 //	[self.windowPosition　setStringValue: st];

@@ -510,8 +510,10 @@
   begin sph_monitor_ctl
     volume_average_prefix        'sph_ave_volume'
     volume_pwr_spectr_prefix     'sph_pwr_volume'
+    volume_work_spectr_prefix    'monitor/sph_work_volume'
 
     layered_pwr_spectr_prefix    'sph_pwr_layer'
+    layered_work_spectr_prefix   'monitor/sph_work_layer'
     layered_pwr_spectr_format    'gzip'
 !
 !

@@ -187,8 +187,7 @@
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,    &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_SGS%FEM_filters,        &
-     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,                     &
-     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims, m_SR)
 !
 !     ----- Evaluate model coefficients
 !
@@ -197,16 +196,14 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    FEM_SGS%Csims, m_SR)
 !
 !     ========  Data output
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt,             &
-     &    MHD_step, FEM_model%FEM_prm, FEM_SGS%SGS_par,                 &
-     &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
-     &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
-     &    ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,       &
-     &    FEM_SGS%Csims, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    MHD_step, FEM_model, FEM_SGS%SGS_par, FEM_SGS%iphys_LES,      &
+     &    ak_MHD, FEM_SGS%FEM_filters, FEM_MHD, SGS_MHD_wk,             &
+     &    FEM_SGS%Csims, m_SR)
 !
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
       call lead_specital_SGS                                            &
@@ -344,8 +341,7 @@
      &      iphys%div_forces, iphys%diffusion, iphys_LES%filter_fld,    &
      &      iphys_LES%force_by_filter, iphys_LES%SGS_term,              &
      &      iphys_LES%div_SGS, iphys_ele_base,                          &
-     &      ak_MHD, fem_int, FEM_elens,                                 &
-     &      Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,       &
+     &      ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD%diff_coefs,       &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                       &
      &      nod_fld, ele_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
@@ -378,8 +374,7 @@
      &     SGS_par%filter_p, mesh%nod_comm, mesh%node, mesh%ele,        &
      &     MHD_mesh%conduct, MHD_prop%cd_prop, iphys, iphys_LES,        &
      &     iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,       &
-     &     FEM_elens, filtering, Csims_FEM_MHD%icomp_sgs_term,          &
-     &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,    &
+     &     FEM_elens, filtering, Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,  &
      &     mk_MHD%mlump_cd, FEM_SGS_wk%wk_filter, mhd_fem_wk,           &
      &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,          &
      &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)

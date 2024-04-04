@@ -15,9 +15,6 @@
 #include "m_kemoview_fline.h"
 #include "m_kemoview_mesh.h"
 #include "m_gl_transfer_matrix.h"
-#include "vartex_array_object_gl.h"
-#include "glsl.h"
-#include "shaders.h"
 
 struct kemoviewer_type{
 	int window_ID;
@@ -25,15 +22,14 @@ struct kemoviewer_type{
 	struct kemoview_mesh      *kemo_mesh;
 	struct kemoview_psf       *kemo_psf;
     struct kemoview_fline     *kemo_fline;
-    
+    struct psf_data           *psf_ucd_tmp;
+
     struct view_element       *view_s;
-	struct kemoview_shaders   *kemo_shaders;
-	struct kemoview_VAOs      *kemo_VAOs;
-	struct VAO_ids            *menu_VAO;
-	
-	struct psf_data           *psf_ucd_tmp;
-	
-	struct kemoviewer_type    *next;
+
+    struct kemoview_buffers   *kemo_buffers;
+
+
+    struct kemoviewer_type    *next;
 };
 
 struct mul_kemoviewer_type{

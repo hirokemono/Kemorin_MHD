@@ -7,12 +7,13 @@
 !>@brief  Structure for SGS model controls
 !!
 !!@verbatim
+!!      subroutine init_sgs_ctl_label(hd_block, sgs_ctl)
 !!      subroutine read_sgs_ctl(id_control, hd_block, sgs_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_sgs_ctl(id_control, hd_block, sgs_ctl, level)
+!!      subroutine write_sgs_ctl(id_control, sgs_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
@@ -238,8 +239,8 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(sgs_ctl%i_sgs_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -332,14 +333,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_sgs_ctl(id_control, hd_block, sgs_ctl, level)
+      subroutine write_sgs_ctl(id_control, sgs_ctl, level)
 !
       use t_control_array_real
       use ctl_data_SGS_filters_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(SGS_model_control), intent(in) :: sgs_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -378,88 +378,178 @@
       maxlen = max(maxlen, len_trim(hd_r_ave_area_ctl))
       maxlen = max(maxlen, len_trim(hd_med_ave_area_ctl))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 sgs_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_model, sgs_ctl%SGS_model_name_ctl)
+     &    sgs_ctl%SGS_model_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_filter, sgs_ctl%SGS_filter_name_ctl)
+     &    sgs_ctl%SGS_filter_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_DIFF_coefs, sgs_ctl%DIFF_model_coef_ctl)
+     &    sgs_ctl%DIFF_model_coef_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_clips, sgs_ctl%SGS_negative_clip_ctl)
+     &    sgs_ctl%SGS_negative_clip_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_clip_limit, sgs_ctl%clipping_limit_ctl)
+     &    sgs_ctl%clipping_limit_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_marging, sgs_ctl%SGS_marging_ctl)
+     &    sgs_ctl%SGS_marging_ctl)
 !
-      call write_control_4_SGS_filters                                  &
-     &   (id_control, hd_sph_filter, sgs_ctl, level)
+      call write_control_4_SGS_filters(id_control, sgs_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_buo_Csim_usage, sgs_ctl%SGS_buo_Csim_usage_ctl)
+     &    sgs_ctl%SGS_buo_Csim_usage_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_hf_factor, sgs_ctl%SGS_hf_factor_ctl)
+     &    sgs_ctl%SGS_hf_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_cf_factor, sgs_ctl%SGS_cf_factor_ctl)
+     &    sgs_ctl%SGS_cf_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_mf_factor, sgs_ctl%SGS_mf_factor_ctl)
+     &    sgs_ctl%SGS_mf_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_mxwl_factor, sgs_ctl%SGS_mxwl_factor_ctl)
+     &    sgs_ctl%SGS_mxwl_factor_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_SGS_uxb_factor, sgs_ctl%SGS_uxb_factor_ctl)
+     &    sgs_ctl%SGS_uxb_factor_ctl)
 !
       call write_filter_fnames_control                                  &
      &   (id_control, hd_filter_fnames, sgs_ctl%ffile_ctl, level)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_istep_dynamic, sgs_ctl%istep_dynamic_ctl)
+     &    sgs_ctl%istep_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_stabilize_weight, sgs_ctl%stabilize_weight_ctl)
+     &    sgs_ctl%stabilize_weight_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_r_ave_area_ctl, sgs_ctl%ngrp_radial_ave_ctl)
+     &    sgs_ctl%ngrp_radial_ave_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_med_ave_area_ctl, sgs_ctl%ngrp_med_ave_ctl)
+     &    sgs_ctl%ngrp_med_ave_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_min_step_dynamic, sgs_ctl%min_step_dynamic_ctl)
+     &    sgs_ctl%min_step_dynamic_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_max_step_dynamic, sgs_ctl%max_step_dynamic_ctl)
+     &    sgs_ctl%max_step_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_shrink_dynamic,                                      &
      &    sgs_ctl%delta_to_shrink_dynamic_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_extend_dynamic, sgs_ctl%delta_to_extend_dynamic_ctl)
+     &    sgs_ctl%delta_to_extend_dynamic_ctl)
 !
       call write_control_array_c1(id_control, level,                    &
-     &    hd_SGS_terms, sgs_ctl%SGS_terms_ctl)
+     &    sgs_ctl%SGS_terms_ctl)
       call write_control_array_c1(id_control, level,                    &
-     &    hd_commutation_fld, sgs_ctl%commutate_fld_ctl)
-      call write_3d_filtering_ctl                                       &
-     &   (id_control, hd_3d_filtering, sgs_ctl%s3df_ctl, level)
+     &    sgs_ctl%commutate_fld_ctl)
+      call write_3d_filtering_ctl(id_control, sgs_ctl%s3df_ctl, level)
       call write_ele_layers_control(id_control, hd_dynamic_layers,      &
      &                              sgs_ctl%elayer_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_SGS_perturbation_ctl, sgs_ctl%SGS_perturbation_ctl)
+     &    sgs_ctl%SGS_perturbation_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_model_coef_type_ctl, sgs_ctl%SGS_model_coef_type_ctl)
+     &    sgs_ctl%SGS_model_coef_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_hf_csim_type_ctl, sgs_ctl%heat_flux_csim_type_ctl)
+     &    sgs_ctl%heat_flux_csim_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_cf_csim_type_ctl, sgs_ctl%comp_flux_csim_type_ctl)
+     &    sgs_ctl%comp_flux_csim_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_mf_csim_type_ctl, sgs_ctl%mom_flux_csim_type_ctl)
+     &    sgs_ctl%mom_flux_csim_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_mxwl_csim_type_ctl, sgs_ctl%maxwell_csim_type_ctl)
+     &    sgs_ctl%maxwell_csim_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_uxb_csim_type_ctl, sgs_ctl%uxb_csim_type_ctl)
+     &    sgs_ctl%uxb_csim_type_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_model_coef_coord_ctl, sgs_ctl%SGS_model_coef_coord_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+     &    sgs_ctl%SGS_model_coef_coord_ctl)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                 sgs_ctl%block_name)
 !
       end subroutine write_sgs_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_sgs_ctl_label(hd_block, sgs_ctl)
+!
+      use ctl_data_SGS_filters_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+!
+!
+      sgs_ctl%block_name =       hd_block
+      sgs_ctl%sph_filters_name = hd_sph_filter
+      call init_3d_filtering_ctl_label(hd_3d_filtering,                 &
+     &                                 sgs_ctl%s3df_ctl)
+      call init_filter_fnames_ctl_label(hd_filter_fnames,               &
+     &                                  sgs_ctl%ffile_ctl)
+      call init_ele_layers_ctl_label(hd_dynamic_layers,                 &
+     &                               sgs_ctl%elayer_ctl)
+!
+        call init_chara_ctl_array_label                                 &
+     &     (hd_SGS_terms, sgs_ctl%SGS_terms_ctl)
+        call init_chara_ctl_array_label                                 &
+     &     (hd_commutation_fld, sgs_ctl%commutate_fld_ctl)
+!
+        call init_chara_ctl_item_label(hd_SGS_model,                    &
+     &      sgs_ctl%SGS_model_name_ctl)
+        call init_chara_ctl_item_label(hd_SGS_filter,                   &
+     &      sgs_ctl%SGS_filter_name_ctl)
+        call init_chara_ctl_item_label(hd_DIFF_coefs,                   &
+     &      sgs_ctl%DIFF_model_coef_ctl)
+!
+        call init_chara_ctl_item_label(hd_SGS_clips,                    &
+     &      sgs_ctl%SGS_negative_clip_ctl)
+        call init_chara_ctl_item_label(hd_SGS_marging,                  &
+     &      sgs_ctl%SGS_marging_ctl)
+        call init_chara_ctl_item_label(hd_SGS_perturbation_ctl,         &
+     &      sgs_ctl%SGS_perturbation_ctl)
+        call init_chara_ctl_item_label(hd_model_coef_type_ctl,          &
+     &      sgs_ctl%SGS_model_coef_type_ctl)
+!
+        call init_chara_ctl_item_label(hd_hf_csim_type_ctl,             &
+     &      sgs_ctl%heat_flux_csim_type_ctl)
+        call init_chara_ctl_item_label(hd_cf_csim_type_ctl,             &
+     &      sgs_ctl%comp_flux_csim_type_ctl)
+        call init_chara_ctl_item_label(hd_mf_csim_type_ctl,             &
+     &      sgs_ctl%mom_flux_csim_type_ctl)
+        call init_chara_ctl_item_label(hd_mxwl_csim_type_ctl,           &
+     &      sgs_ctl%maxwell_csim_type_ctl)
+        call init_chara_ctl_item_label(hd_uxb_csim_type_ctl,            &
+     &      sgs_ctl%uxb_csim_type_ctl)
+        call init_chara_ctl_item_label(hd_model_coef_coord_ctl,         &
+     &      sgs_ctl%SGS_model_coef_coord_ctl)
+        call init_chara_ctl_item_label(hd_SGS_buo_Csim_usage,           &
+     &      sgs_ctl%SGS_buo_Csim_usage_ctl)
+!
+!
+        call init_real_ctl_item_label(hd_delta_shrink_dynamic,          &
+     &      sgs_ctl%delta_to_shrink_dynamic_ctl)
+        call init_real_ctl_item_label(hd_SGS_clip_limit,                &
+     &      sgs_ctl%clipping_limit_ctl)
+!
+        call init_real_ctl_item_label(hd_SGS_hf_factor,                 &
+     &      sgs_ctl%SGS_hf_factor_ctl)
+        call init_real_ctl_item_label(hd_SGS_cf_factor,                 &
+     &      sgs_ctl%SGS_cf_factor_ctl)
+        call init_real_ctl_item_label(hd_SGS_mf_factor,                 &
+     &      sgs_ctl%SGS_mf_factor_ctl)
+        call init_real_ctl_item_label(hd_SGS_mxwl_factor,               &
+     &      sgs_ctl%SGS_mxwl_factor_ctl)
+        call init_real_ctl_item_label(hd_SGS_uxb_factor,                &
+     &      sgs_ctl%SGS_uxb_factor_ctl)
+!
+        call init_real_ctl_item_label(hd_delta_extend_dynamic,          &
+     &      sgs_ctl%delta_to_extend_dynamic_ctl)
+        call init_real_ctl_item_label(hd_stabilize_weight,              &
+     &      sgs_ctl%stabilize_weight_ctl)
+!
+        call init_int_ctl_item_label(hd_istep_dynamic,                  &
+     &      sgs_ctl%istep_dynamic_ctl)
+        call init_int_ctl_item_label(hd_min_step_dynamic,               &
+     &      sgs_ctl%min_step_dynamic_ctl)
+        call init_int_ctl_item_label(hd_max_step_dynamic,               &
+     &      sgs_ctl%max_step_dynamic_ctl)
+!
+        call init_int_ctl_item_label(hd_r_ave_area_ctl,                 &
+     &      sgs_ctl%ngrp_radial_ave_ctl)
+        call init_int_ctl_item_label(hd_med_ave_area_ctl,               &
+     &      sgs_ctl%ngrp_med_ave_ctl)
+!
+      end subroutine init_sgs_ctl_label
 !
 !   --------------------------------------------------------------------
 !

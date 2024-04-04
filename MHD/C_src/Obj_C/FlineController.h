@@ -6,15 +6,20 @@
 //  Copyright 2011 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
 #import "KemoviewerController.h"
+#import "KemoViewerObject.h"
+
+#include "Kemoviewer.h"
 
 @interface FlineController : NSObject {
 
     IBOutlet NSWindow*  window;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
+    IBOutlet KemoViewerMetalView * _metalView;
 	IBOutlet KemoviewerController*  _kemoviewControl;
+    IBOutlet KemoViewerObject *_kmv;
 
 	NSInteger DrawFlineFlag;
 	NSString *FlineOpenDirectory;
@@ -79,9 +84,8 @@
 - (id)init;
 - (id)dealloc;
 
-- (id) CopyFlineDisplayFlagsFromC;
-
-- (void) OpenFieldlineFile:(NSString*) fieldlineFilehead;
+- (void) OpenFieldlineFile:(NSString*) fieldlineFilehead
+                  kemoview:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction) UpdateFieldline:(id)pId;
 - (IBAction) DrawFlineFile:(id)pId;
 
@@ -90,7 +94,8 @@
 - (IBAction) FlineComponentAction:(id)sender;
 
 - (void) SetFlineFieldMenu;
-- (void) SetFlineComponentMenu:(int)isel;
+- (void) SetFlineComponentMenu:(NSInteger)isel
+                      kemoview:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 

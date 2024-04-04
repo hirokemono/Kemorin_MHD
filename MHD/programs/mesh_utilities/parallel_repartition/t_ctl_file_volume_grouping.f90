@@ -48,6 +48,9 @@
       integer(kind = kint), parameter :: part_ctl_file_code = 11
 !
       type new_patition_test_control
+!>        Control block name
+        character(len = kchara) :: block_name = 'viz_repartition_ctl'
+!
 !>        Structure for file controls
         type(platform_data_control) :: plt
 !
@@ -160,8 +163,12 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(part_tctl%i_mesh_test_ctl .gt. 0) return
+      call init_platforms_labels(hd_platform, part_tctl%plt)
+      call init_ctl_time_step_label(hd_time_step, part_tctl%t_viz_ctl)
+      call init_control_vol_repart_label(hd_viz_partition,              &
+     &                                   part_tctl%viz_repart_c)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -204,7 +211,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, part_tctl%plt, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, part_tctl%t_viz_ctl, level)
+     &   (id_control, part_tctl%t_viz_ctl, level)
 !
       call sel_write_ctl_file_vol_repart(id_control, hd_viz_partition,  &
      &   part_tctl%fname_vol_repart_ctl, part_tctl%viz_repart_c, level)

@@ -12,7 +12,7 @@ fem_skv_poisson_sgs_bc_t.o: $(MHD_NOD_BC_DIR)/fem_skv_poisson_sgs_bc_t.f90 m_pre
 	$(F90) -c $(F90OPTFLAGS) $<
 field_2_each_element_bc.o: $(MHD_NOD_BC_DIR)/field_2_each_element_bc.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_sk_4_fixed_boundary.o: $(MHD_NOD_BC_DIR)/int_sk_4_fixed_boundary.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_physical_property.o t_SGS_control_parameter.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o t_filter_elength.o t_material_property.o t_SGS_model_coefs.o t_nodal_bc_data.o int_vol_fixed_field_ele.o int_vol_fixed_fld_sgs_ele.o cal_ff_smp_to_ffs.o
+int_sk_4_fixed_boundary.o: $(MHD_NOD_BC_DIR)/int_sk_4_fixed_boundary.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_physical_property.o t_SGS_control_parameter.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o t_filter_elength.o t_material_property.o t_FEM_SGS_model_coefs.o t_nodal_bc_data.o int_vol_fixed_field_ele.o int_vol_fixed_fld_sgs_ele.o cal_ff_smp_to_ffs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_fixed_field_ele.o: $(MHD_NOD_BC_DIR)/int_vol_fixed_field_ele.f90 m_precision.o m_machine_parameter.o m_phys_constants.o m_geometry_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o cal_skv_to_ff_smp.o field_2_each_element_bc.o fem_skv_poisson_bc.o
 	$(F90) -c $(F90OPTFLAGS) $<

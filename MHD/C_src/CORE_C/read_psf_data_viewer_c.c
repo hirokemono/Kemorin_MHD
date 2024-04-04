@@ -30,7 +30,7 @@ static void read_viz_node_data(struct psf_data *viz_s){
 static int read_kemoview_ucd_connect(struct psf_data *viz_s){
 	int iflag_datatype;
 	int i, itmp;
-	char celllabel[4];      /* array for cell label */
+	char celllabel[5];      /* array for cell label */
 	char buf[LENGTHBUF];    /* array for reading line */
 	
 	iflag_datatype = 0;

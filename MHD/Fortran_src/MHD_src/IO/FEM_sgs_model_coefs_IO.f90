@@ -68,7 +68,7 @@
      &     (MHD_step%time_d%i_time_step, MHD_step%time_d%time,          &
      &      MHD_prop%cd_prop, FEM_SGS_wk%wk_diff)
 !
-        if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1 ) then
+        if (SGS_par%commute_p%iflag_layerd_DIFF_coefs .eq. 1) then
           call output_layered_diff_coefs_file                           &
      &       (MHD_step%time_d%i_time_step, MHD_step%time_d%time,        &
      &        MHD_prop%cd_prop, FEM_SGS_wk%wk_diff)

@@ -19,16 +19,18 @@
 	self.DataMaximum = ONE;
 }
 
-- (void)updateColormapParameter {
-	self.DataMinimum = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
-	self.DataMaximum = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
+- (void)updateColormapParameter:(struct kemoviewer_type *) kemo_sgl
+{
+	self.DataMinimum = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MIN);
+	self.DataMaximum = kemoview_get_each_PSF_colormap_range(kemo_sgl, ISET_COLOR_MAX);
 }
 
-- (void) SetColormapMinMax{
-	[_colorMapObject InitColorTables];
-	[_colorMapObject SetColorTables];
-	[_opacityMapObject InitOpacityTables];
-	[_opacityMapObject SetOpacityTables];
+- (void) SetColormapMinMax:(struct kemoviewer_type *) kemo_sgl
+{
+    [_colorMapObject InitColorTables:kemo_sgl];
+    [_colorMapObject SetColorTables:kemo_sgl];
+    [_opacityMapObject InitOpacityTables:kemo_sgl];
+    [_opacityMapObject SetOpacityTables:kemo_sgl];
 }
 
 
@@ -37,7 +39,7 @@
 	NSSavePanel *ColormapSavePanelObj	= [NSSavePanel savePanel];
     [ColormapSavePanelObj beginSheetModalForWindow:window 
                                     completionHandler:^(NSInteger ColrmapSaveInt){
-	if(ColrmapSaveInt == NSFileHandlingPanelOKButton){
+	if(ColrmapSaveInt == NSModalResponseOK){
 		
 		NSString * ColormapFilename = [[ ColormapSavePanelObj URL] path];
 		NSString * ColormapDirectory = [[ ColormapSavePanelObj directoryURL] path];
@@ -47,7 +49,8 @@
 		NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
 		
         struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
-		kemoview_write_PSF_colormap_file(filename);
+        struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+		kemoview_write_PSF_colormap_file(filename, kemo_sgl);
         kemoview_free_kvstring(filename);
 	};
                                     }];
@@ -55,13 +58,13 @@
 
 - (IBAction) LoadColormapFile:(id)pId;{
 /*    NSArray *ColormapFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil]; */
-    
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     NSOpenPanel *ColormapOpenPanelObj	= [NSOpenPanel openPanel];
     [ColormapOpenPanelObj setTitle:@"Choose colormap data"];
 /*    [ColormapOpenPanelObj setAllowedFileTypes:ColormapFileTypes]; */
     [ColormapOpenPanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger ColormapOpenInteger){
-                                       if(ColormapOpenInteger == NSFileHandlingPanelOKButton){
+                                       if(ColormapOpenInteger == NSModalResponseOK){
                                            
                                            NSString * ColormapFilename = [[ ColormapOpenPanelObj URL] path];
                                            NSString * ColormapDirectory = [[ ColormapOpenPanelObj directoryURL] path];
@@ -71,12 +74,12 @@
                                            NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
                                            
                                            struct kv_string *filename = kemoview_init_kvstring_by_string([ColormapFilename UTF8String]);
-                                           kemoview_read_PSF_colormap_file(filename);
+                                           kemoview_read_PSF_colormap_file(filename, kemo_sgl);
                                            kemoview_free_kvstring(filename);
                                            
-                                           [_kemoviewer UpdateImage];
-                                           [_colorMapObject SetColorTables];
-                                           [_opacityMapObject SetOpacityTables];
+                                           [_metalView UpdateImage:kemo_sgl];
+                                           [_colorMapObject SetColorTables:kemo_sgl];
+                                           [_opacityMapObject SetOpacityTables:kemo_sgl];
                                        };
                                    }];
     

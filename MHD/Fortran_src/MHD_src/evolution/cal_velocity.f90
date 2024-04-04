@@ -9,12 +9,9 @@
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,&
 !!     &          iphys_ele_base, ak_MHD, fem_int, FEM_filters,         &
-!!     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,          &
-!!     &          iak_diff_sgs, iphys_elediff_vec,                      &
-!!     &          sgs_coefs_nod, diff_coefs, mk_MHD,                    &
-!!     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
-!!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq,         &
-!!     &          v_sol, SR_sig, SR_r)
+!!     &          diff_coefs, mk_MHD, Vmatrix, Pmatrix, MGCG_WK,        &
+!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
+!!     &          sgs_coefs, fem_sq, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -31,13 +28,7 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(SGS_term_address), intent(in) :: iak_sgs_term
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(base_field_address), intent(in) :: iak_diff_base
-!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix
@@ -76,7 +67,7 @@
       use t_surface_bc_vector
       use t_surface_bc_velocity
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_solver_djds_MHD
@@ -108,12 +99,9 @@
      &          mesh, group, fluid, fl_prop, cd_prop,                   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,  &
      &          iphys_ele_base, ak_MHD, fem_int, FEM_filters,           &
-     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,            &
-     &          iak_diff_sgs, iphys_elediff_vec,                        &
-     &          sgs_coefs_nod, diff_coefs, mk_MHD,                      &
-     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,      &
-     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq,           &
-     &          v_sol, SR_sig, SR_r)
+     &          diff_coefs, mk_MHD, Vmatrix, Pmatrix, MGCG_WK,          &
+     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
+     &          sgs_coefs, fem_sq, v_sol, SR_sig, SR_r)
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -141,13 +129,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(SGS_term_address), intent(in) :: iak_sgs_term
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(SGS_term_address), intent(in) :: iak_diff_sgs
-      type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
       type(MHD_MG_matrix), intent(in) :: Vmatrix
       type(MHD_MG_matrix), intent(in) :: Pmatrix
@@ -179,9 +161,7 @@
      &    fluid, group%surf_grp, group%surf_nod_grp, fl_prop, cd_prop,  &
      &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,                 &
      &    iphys_ele_base, ak_MHD, fem_int, FEM_filters%FEM_elens,       &
-     &    iak_sgs_term, icomp_sgs_term, iak_diff_base, iak_diff_sgs,    &
-     &    iphys_elediff_vec, sgs_coefs_nod, diff_coefs,                 &
-     &    FEM_filters%filtering, FEM_filters%layer_tbl,                 &
+     &    diff_coefs, FEM_filters%filtering, FEM_filters%layer_tbl,     &
      &    mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,   &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs,             &
@@ -199,13 +179,12 @@
 !
       do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential                                          &
-     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%node, mesh%ele, mesh%surf, fluid,                      &
-     &      group%surf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs,                 &
-     &      iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &      iak_diff_base, diff_coefs, Pmatrix, MGCG_WK%MG_vector,      &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
-     &      nod_fld, v_sol, SR_sig, SR_r)
+     &    (FEM_prm, SGS_par%model_p, SGS_par%commute_p, mesh, fluid,    &
+     &     group%surf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs,                  &
+     &     iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,  &
+     &     diff_coefs%Cdiff_velo, Pmatrix, MGCG_WK%MG_vector,           &
+     &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
+     &     nod_fld, v_sol, SR_sig, SR_r)
 !
         call cal_sol_pressure                                           &
      &     (dt, mesh%node%numnod, mesh%node%istack_internal_smp,        &
@@ -217,9 +196,9 @@
      &      fluid, group%surf_grp, group%surf_nod_grp,                  &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele_base, &
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
-     &      iak_diff_base, diff_coefs, mk_MHD%mlump_fl,                 &
-     &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk,                     &
-     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      diff_coefs%Cdiff_velo, mk_MHD%mlump_fl, Vmatrix,            &
+     &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld,            &
+     &      v_sol, SR_sig, SR_r)
 !
 !
         call cal_rms_scalar_potential                                   &

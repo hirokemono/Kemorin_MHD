@@ -22,7 +22,7 @@ lib_name:
 	>> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB)' '$$@'  >> $(MAKENAME)
 
 libtarget:

@@ -9,7 +9,7 @@
 #include "calypso_param_c.h"
 #include "t_control_chara2_real_IO.h"
 #include "t_ctl_data_4_fields_c.h"
-#include "load_MHD_control_c.h"
+#include "c_ctl_data_SGS_MHD.h"
 #include "UsedFieldControlTableview.h"
 #include "UnusedFieldControlTableview.h"
 

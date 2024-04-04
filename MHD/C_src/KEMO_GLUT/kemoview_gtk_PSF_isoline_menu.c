@@ -10,38 +10,48 @@
 #include "kemoview_gtk_PSF_isoline_menu.h"
 
 static void psf_grid_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer user_data){
-	kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+	kemoview_select_PSF_draw_switch(kemo_sgl, PSFGRID_TOGGLE);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(user_data);
-	kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+	kemoview_select_PSF_draw_switch(kemo_sgl, ZEROGRID_TOGGLE);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	gtk_widget_queue_draw(window);
 	return;
 };
 
 static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = ( struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_gdcolor);
 	
-	if (index_mode == RAINBOW_PSF_LINE)    {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, RAINBOW_LINE);}
-	else if (index_mode == WHITE_PSF_LINE) {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, WHITE_LINE);}
-    else if (index_mode == BLACK_PSF_LINE) {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, BLACK_LINE);}
+	if (index_mode == RAINBOW_PSF_LINE){
+        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, RAINBOW_LINE, kemo_sgl);
+    }else if (index_mode == WHITE_PSF_LINE){
+        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, WHITE_LINE, kemo_sgl);
+    }else if (index_mode == BLACK_PSF_LINE){
+        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, BLACK_LINE, kemo_sgl);
+    };
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
 static void set_nline_CB(GtkWidget *entry, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = ( struct kemoviewer_type *) user_data;
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_color_param(ISET_NLINE, gtk_intvalue);
+	kemoview_set_PSF_color_param(ISET_NLINE, gtk_intvalue, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 
@@ -49,11 +59,14 @@ static void set_width_CB(GtkWidget *entry, gpointer user_data)
 {
 	double current_width;
 	int i_digit;
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	double gtk_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, gtk_value, i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                      &current_width, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, gtk_value, 
+                                      i_digit, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 
@@ -61,37 +74,42 @@ static void set_digit_CB(GtkWidget *entry, gpointer user_data)
 {
 	double current_width;
 	int i_digit;
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	int gtk_value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
-	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, current_width, gtk_value);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                      &current_width, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, current_width, 
+                                      gtk_value, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 }
 	
-void set_gtk_isoline_menu_values(struct psf_isoline_gtk_menu *psf_isoline_menu){
+void set_gtk_isoline_menu_values(struct kemoviewer_type *kemo_sgl, 
+                                 struct psf_isoline_gtk_menu *psf_isoline_menu){
 	double current_width;
 	int i_digit, iflag_sfcolor;
 
-	int current_nline = kemoview_get_PSF_color_param(ISET_NLINE);
+	int current_nline = kemoview_get_PSF_color_param(kemo_sgl, ISET_NLINE);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_nline), (double) current_nline);
 
-	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(kemo_sgl, ISET_WIDTH,
+                                      &current_width, &i_digit);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_width), current_width);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_isoline_menu->spin_digit), (double) i_digit);
 
-	if(kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE) == 0){
+	if(kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_1), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_1), TRUE);
 	};
-	if(kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE) == 0){
+	if(kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE) == 0){
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_zero), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_zero), TRUE);
 	};
 
-	iflag_sfcolor = kemoview_get_PSF_color_param(PSFGRID_TOGGLE);
+	iflag_sfcolor = kemoview_get_PSF_color_param(kemo_sgl, PSFGRID_TOGGLE);
 	if(iflag_sfcolor == BLACK_LINE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_isoline_menu->combobox_gdcolor), 2);
 	} else 	if(iflag_sfcolor == WHITE_LINE){
@@ -101,8 +119,10 @@ void set_gtk_isoline_menu_values(struct psf_isoline_gtk_menu *psf_isoline_menu){
 	};
 };
 
-GtkWidget * init_isoline_menu_expander(GtkWidget *window, struct psf_isoline_gtk_menu *psf_isoline_menu){
+GtkWidget * init_isoline_menu_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
+                                       struct psf_isoline_gtk_menu *psf_isoline_menu){
 	GtkWidget *expander_iso;
+    g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
 	
 	psf_isoline_menu->switch_1 = gtk_switch_new();
 	gtk_switch_set_active(GTK_SWITCH(psf_isoline_menu->switch_1), FALSE);
@@ -131,20 +151,23 @@ GtkWidget * init_isoline_menu_expander(GtkWidget *window, struct psf_isoline_gtk
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(psf_isoline_menu->combobox_gdcolor), psf_isoline_menu->renderer_gdcolor,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(psf_isoline_menu->combobox_gdcolor), "changed", 
-				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window);
+				G_CALLBACK(psf_surf_colormode_CB), (gpointer) kemo_sgl);
 	
 	
 	GtkAdjustment *adj_nline = gtk_adjustment_new (10, 0, 200, 1, 1, 0.0);
 	psf_isoline_menu->spin_nline = gtk_spin_button_new(GTK_ADJUSTMENT(adj_nline), 0, 0);
-	g_signal_connect(psf_isoline_menu->spin_nline, "value-changed", G_CALLBACK(set_nline_CB), NULL);
+	g_signal_connect(psf_isoline_menu->spin_nline, "value-changed",
+                     G_CALLBACK(set_nline_CB), (gpointer) kemo_sgl);
 	
 	GtkAdjustment *adj_width = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
 	psf_isoline_menu->spin_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_width), 0, 0);
-	g_signal_connect(psf_isoline_menu->spin_width, "value-changed", G_CALLBACK(set_width_CB), NULL);
+	g_signal_connect(psf_isoline_menu->spin_width, "value-changed", 
+                     G_CALLBACK(set_width_CB), (gpointer) kemo_sgl);
 	
 	GtkAdjustment *adj_digit = gtk_adjustment_new(0, -10, 10, 1, 1, 0);
 	psf_isoline_menu->spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
-	g_signal_connect(psf_isoline_menu->spin_digit, "value-changed", G_CALLBACK(set_digit_CB), NULL);
+	g_signal_connect(psf_isoline_menu->spin_digit, "value-changed",
+                     G_CALLBACK(set_digit_CB), (gpointer) kemo_sgl);
 	
 	GtkWidget *hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw isolines: "), FALSE, FALSE, 0);
@@ -175,6 +198,6 @@ GtkWidget * init_isoline_menu_expander(GtkWidget *window, struct psf_isoline_gtk
 	gtk_box_pack_start(GTK_BOX(isoline_box), hbox_nline, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(isoline_box), hbox_width, FALSE, TRUE, 0);
 	
-	expander_iso = wrap_into_expanded_frame_gtk("Isolines", 425, 220, window, isoline_box);
+	expander_iso = wrap_into_scroll_expansion_gtk("Isolines", 425, 220, window, isoline_box);
 	return expander_iso;
 }

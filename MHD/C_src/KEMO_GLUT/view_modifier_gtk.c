@@ -15,6 +15,10 @@
 #define GTK_KEY_LEFT   10000
 #define GTK_KEY_RIGHT  10000
 
+
+struct kemoviewer_gl_type * kemoGL_GTK;
+
+
 GtkWidget *gl_area;
 int iflag_quickdraw = 0;
 
@@ -63,12 +67,13 @@ gboolean mouseButtonCB(GtkWidget *widget, GdkEventButton *event, gpointer user_d
 	};
 	
 	if(event->type == GDK_BUTTON_RELEASE){
-		draw_full();
+		draw_full(kemo_sgl);
 	};
 	return TRUE;
 };
 
 gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	/*! This gets called when the mouse moves */
 	double xpos = event->x;
 	double ypos = event->y;
@@ -99,14 +104,14 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 	
 	if (button_function == ZOOM){
 		factor = -0.5*(ypos-begin[1]);
-		kemoview_zooming(factor);
+		kemoview_zooming(factor, kemo_sgl);
 	}
 	
 	if (button_function == WALKTO){
-		kemoview_mousedolly(begin, xpos, ypos);
+		kemoview_mousedolly(begin, xpos, ypos, kemo_sgl);
 	}
 	else if(button_function == PAN){
-		kemoview_mousepan(begin, xpos, ypos);
+		kemoview_mousepan(begin, xpos, ypos, kemo_sgl);
 	}
 	else if (button_function == ROTATE) {
 		gTrackBallRotation[0] = ZERO;
@@ -114,12 +119,13 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 		gTrackBallRotation[2] = ZERO;
 		gTrackBallRotation[3] = ZERO;
 		
-		kemoview_startTrackball( begin[0], (-begin[1]));
-		kemoview_rollToTrackball( xpos, (-ypos));
-		kemoview_drugging_addToRotationTrackball();
+		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
+		kemoview_rollToTrackball( xpos, (-ypos), kemo_sgl);
+		kemoview_drugging_addToRotationTrackball(kemo_sgl);
 	}
 	else if (button_function == SCALE){
-		double current_scale = kemoview_get_view_parameter(ISET_SCALE, 0);
+		double current_scale = kemoview_get_view_parameter(kemo_sgl,
+                                                           ISET_SCALE, 0);
         
 		if (ypos < begin[1]) {
 			factor = ONE + TWO_MILI*(begin[1]-ypos);
@@ -131,7 +137,7 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemo_sgl);
 	};
     /* ! update private variables and redisplay */
 	
@@ -150,16 +156,19 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 	return TRUE;
 }
 
-void set_GTKindowSize(int width, int height){
+void set_GTKindowSize(int width, int height,
+                      struct kemoviewer_type *kemo_sgl){
 	gtk_widget_set_size_request(gl_area, width, height);
-	kemoview_update_projection_by_viewer_size(width, height, width, height);
+	kemoview_update_projection_by_viewer_size(width, height,
+                                              width, height, kemo_sgl);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 };
 
 gboolean mouseScrollCB(GtkWidget *widget, GdkEventScroll *event, gpointer user_data) {
 /*	printf("mouseScrollCB %.1lf %.1lf\n", x, y);*/
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     double newScale = event->x + event->y;
-	kemoview_zooming(newScale);
+	kemoview_zooming(newScale, kemo_sgl);
 	return TRUE;
 }
 
@@ -170,6 +179,7 @@ void charFunCB(GtkWidget *widget, unsigned int charInfo) {
 
 /*! This routine handles the arrow key operations */
 static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
 	double x_dbl, y_dbl;
 	double factor;
 	
@@ -187,7 +197,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 		else {
 			factor = ZERO;
 		};
-		kemoview_zooming(factor);
+		kemoview_zooming(factor, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == WALKTO){
@@ -204,7 +214,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 		else {
 			factor = ZERO;
 		};
-		kemoview_mousedolly(begin, x_dbl, y_dbl);
+		kemoview_mousedolly(begin, x_dbl, y_dbl, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == PAN){
@@ -226,7 +236,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 			x_dbl = ZERO;
 			y_dbl = -ONE;
 		};
-		kemoview_mousepan(begin, x_dbl, y_dbl);
+		kemoview_mousepan(begin, x_dbl, y_dbl, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == ROTATE){
@@ -246,13 +256,14 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 			x_dbl = begin[0] + ZERO;
 			y_dbl = begin[1] - TEN;
 		};
-		kemoview_startTrackball( begin[0], (-begin[1]));
+		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
 		kemoview_rollToTrackball( x_dbl, (-y_dbl));
-		kemoview_drugging_addToRotationTrackball();
+		kemoview_drugging_addToRotationTrackball(kemo_sgl);
 	}
 	
 	else if (arrow_key_func == SCALE){
-		double current_scale = kemoview_get_view_parameter(ISET_SCALE, 0);
+		double current_scale = kemoview_get_view_parameter(kemo_sgl,
+                                                           ISET_SCALE, 0);
         
 		if (event->keyval == GTK_KEY_DOWN && event->type == GDK_KEY_PRESS)
 		factor = ONE/(ONE + TWO_CENT);
@@ -263,7 +274,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemo_sgl);
  	};
 	
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
@@ -280,17 +291,17 @@ GtkWidget * open_kemoviwer_gl_panel(int npixel_x, int npixel_y){
 };
 
 
-void gtk_callbacks_init(){
+void gtk_callbacks_init(struct kemoviewer_type *kemo_sgl){
 	/* set callback for mouse button */
 	g_signal_connect(G_OBJECT(gl_area), "button_press_event", G_CALLBACK(mouseButtonCB), NULL);
 	g_signal_connect(G_OBJECT(gl_area), "button_release_event", G_CALLBACK(mouseButtonCB), NULL);
 	/* set callback for cursor position */
-	g_signal_connect(G_OBJECT(gl_area), "motion_notify_event", G_CALLBACK(mousePosCB), NULL);
+	g_signal_connect(G_OBJECT(gl_area), "motion_notify_event", G_CALLBACK(mousePosCB), kemo_sgl);
 	/* set callback for cursor position */
 	g_signal_connect(G_OBJECT(gl_area), "scroll_event", G_CALLBACK(mouseScrollCB), NULL);
 	
 	/* Set callback for keyboard input */
-	g_signal_connect(G_OBJECT(gl_area), "key-press-event", G_CALLBACK(keyFuncCB), NULL);
+	g_signal_connect(G_OBJECT(gl_area), "key-press-event", G_CALLBACK(keyFuncCB), kemo_sgl);
 	
 	gtk_widget_set_events(GTK_WIDGET(gl_area),
 				GDK_BUTTON_PRESS_MASK |
@@ -305,42 +316,49 @@ void gtk_callbacks_init(){
 }
 
 
-int draw_fast(){
-//	int iflag_fast = kemoview_quick_view();
-/*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
-	return iflag_fast;
-};
-
-void draw_full(){
-//	kemoview_modify_view();
+void draw_fast(struct kemoviewer_type *kemo_sgl){
+//    kemoview_set_view_integer(ISET_DRAW_MODE, SIMPLE_DRAW, kemo_sgl);
+//    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl)
+//  kemoview_mono_viewmatrix(kemo_sgl);
+//    glDrawBuffer(GL_BACK);
+//	kemoview_modify_view(kemo_sgl, kemoGL_GTK);
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
 
-static void write_rotate_quilt_views(int iflag_img, struct kv_string *image_prefix, 
-                             int i_axis, int inc_deg) {
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
-    int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
-	int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
-	unsigned char *quilt_image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+void draw_full(struct kemoviewer_type *kemo_sgl){
+//    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+    kemoview_mono_viewmatrix(kemo_sgl);
+    glDrawBuffer(GL_BACK);
+	kemoview_modify_view(kemo_sgl, kemoGL_GTK);
+/*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
+	return;
+};
+
+static void write_rotate_quilt_views(struct kemoviewer_type *kemo_sgl,
+                                     int iflag_img, struct kv_string *image_prefix,
+                                     int i_axis, int inc_deg) {
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
+    int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
+	int nimg_raw = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
+	unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     int i, i_quilt, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
 	
-	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
 		for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-			kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);
-			draw_quilt();
+			draw_quilt(i_quilt, kemo_sgl);
 			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-			kemoview_add_quilt_img(image, quilt_image);
+			kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
 		};
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 											 (nimg_column * npix_x),
@@ -351,23 +369,26 @@ static void write_rotate_quilt_views(int iflag_img, struct kv_string *image_pref
 	return;
 }
 
-static void write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
-                             int i_axis, int inc_deg) {
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+static void write_rotate_views(struct kemoviewer_type *kemo_sgl,
+                               int iflag_img, struct kv_string *image_prefix,
+                               int i_axis, int inc_deg) {
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
     int i, i_quilt, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
 	
-	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_sgl);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
-		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
-		kemoview_modify_view();
-/*	   	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree, kemo_sgl);
+        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+        kemoview_mono_viewmatrix(kemo_sgl);
+        glDrawBuffer(GL_BACK);
+        kemoview_modify_view(kemo_sgl, kemoGL_GTK);
 		
 		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
 		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
@@ -378,28 +399,28 @@ static void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
 }
 
 
-static void write_quilt_evolution_views(int iflag_img, struct kv_string *image_prefix, 
-								int ist_udt, int ied_udt, int inc_udt){
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
-	int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
-	int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
-	unsigned char *quilt_image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+static void write_quilt_evolution_views(struct kemoviewer_type *kemo_sgl,
+                                        int iflag_img, struct kv_string *image_prefix,
+                                        int ist_udt, int ied_udt, int inc_udt){
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
+	int nimg_column = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_COLUMN);
+	int nimg_raw = kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_RAW);
+	unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
     int i, i_quilt;
 
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
-			kemoview_viewer_evolution(i);
+			kemoview_viewer_evolution(i, kemo_sgl);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);
-				draw_quilt();
+				draw_quilt(i_quilt, kemo_sgl);
 				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
-				kemoview_add_quilt_img(image, quilt_image);
+				kemoview_add_quilt_img(i_quilt, kemo_sgl, image, quilt_image);
 			};
 			kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
 												 (nimg_column * npix_x),
@@ -411,17 +432,18 @@ static void write_quilt_evolution_views(int iflag_img, struct kv_string *image_p
 	return;
 };
 
-static void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
-								int ist_udt, int ied_udt, int inc_udt){
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+static void write_evolution_views(struct kemoviewer_type *kemo_sgl,
+                                  int iflag_img, struct kv_string *image_prefix,
+                                  int ist_udt, int ied_udt, int inc_udt){
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
     int i;
 
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
-			kemoview_viewer_evolution(i);
+			kemoview_viewer_evolution(i, kemo_sgl);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			draw_full();
@@ -435,24 +457,27 @@ static void write_evolution_views(int iflag_img, struct kv_string *image_prefix,
 	return;
 };
 
-void sel_write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
-                             int i_axis, int inc_deg) {
-	if(kemoview_get_quilt_nums(ISET_QUILT_MODE) != 0){
-		write_rotate_quilt_views(iflag_img, image_prefix, i_axis, inc_deg);
+void sel_write_rotate_views(struct kemoviewer_type *kemo_sgl,
+                            int iflag_img, struct kv_string *image_prefix,
+                            int i_axis, int inc_deg) {
+	if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) != 0){
+		write_rotate_quilt_views(kemo_sgl, iflag_img, image_prefix,
+                                 i_axis, inc_deg);
 	} else {
-		write_rotate_views(iflag_img, image_prefix, i_axis, inc_deg);
+		write_rotate_views(kemo_sgl, iflag_img, image_prefix, i_axis, inc_deg);
 	};
     draw_full();
 	return;
 }
 
-void sel_write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
+void sel_write_evolution_views(struct kemoviewer_type *kemo_sgl,
+                               int iflag_img, struct kv_string *image_prefix,
 							   int ist_udt, int ied_udt, int inc_udt){
-	if(kemoview_get_quilt_nums(ISET_QUILT_MODE) != 0){
-		write_quilt_evolution_views(iflag_img, image_prefix, 
+	if(kemoview_get_quilt_nums(kemo_sgl, ISET_QUILT_MODE) != 0){
+		write_quilt_evolution_views(kemo_sgl, iflag_img, image_prefix,
 									ist_udt, ied_udt, inc_udt);
 	} else {
-		write_evolution_views(iflag_img, image_prefix, 
+		write_evolution_views(kemo_sgl, iflag_img, image_prefix, 
 							  ist_udt, ied_udt, inc_udt);
 	};
 	draw_full();
@@ -475,7 +500,7 @@ void set_viewtype_mode(int selected){
 		left_button_func = PAN;
 	};
 	
-	kemoview_set_viewtype(selected);
+	kemoview_set_viewtype(selected, kemo_sgl);
 	return;
 }
 

@@ -16,12 +16,12 @@ dir_list:
 
 lib_name:
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_VIZ_F2003)' \
 	>> $(MAKENAME)
 

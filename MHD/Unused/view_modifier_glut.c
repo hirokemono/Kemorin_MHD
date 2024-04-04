@@ -80,14 +80,14 @@ static void motion(GLint x, GLint y){
 	if (button_function == ZOOM){
 		y_dbl = (GLdouble) y;
 		factor = -0.5*(y_dbl-begin[1]);
-		kemoview_zooming((GLdouble) factor);
+		kemoview_zooming((GLdouble) factor, kemo_sgl);
 	}
 	
 	if (button_function == WALKTO){
-		kemoview_mousedolly(begin, (GLdouble) x, (GLdouble) y);
+		kemoview_mousedolly(begin, (GLdouble) x, (GLdouble) y, kemo_sgl);
 	}
 	else if(button_function == PAN){
-		kemoview_mousepan(begin, (GLdouble) x, (GLdouble) y);
+		kemoview_mousepan(begin, (GLdouble) x, (GLdouble) y, kemo_sgl);
 	}
 	else if (button_function == ROTATE) {
 		x_dbl = (GLdouble) x;
@@ -97,9 +97,9 @@ static void motion(GLint x, GLint y){
 		gTrackBallRotation[2] = ZERO;
 		gTrackBallRotation[3] = ZERO;
 		
-		kemoview_startTrackball( begin[0], (-begin[1]));
-		kemoview_rollToTrackball( x_dbl, (-y_dbl));
-		kemoview_drugging_addToRotationTrackball();
+		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
+		kemoview_rollToTrackball( x_dbl, (-y_dbl), kemo_sgl);
+		kemoview_drugging_addToRotationTrackball(kemo_sgl);
 	}
 	else if (button_function == SCALE){
 		double current_scale;
@@ -158,7 +158,7 @@ static void arrows_c(int key, int x, int y){
 		else {
 			factor = ZERO;
 		};
-		kemoview_zooming((GLdouble) factor);
+		kemoview_zooming((GLdouble) factor, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == WALKTO){
@@ -173,7 +173,7 @@ static void arrows_c(int key, int x, int y){
 		else {
 			factor = ZERO;
 		};
-		kemoview_mousedolly(begin, x_dbl, y_dbl);
+		kemoview_mousedolly(begin, x_dbl, y_dbl, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == PAN){
@@ -195,7 +195,7 @@ static void arrows_c(int key, int x, int y){
 			x_dbl = ZERO;
 			y_dbl = -ONE;
 		};
-		kemoview_mousepan(begin, x_dbl, y_dbl);
+		kemoview_mousepan(begin, x_dbl, y_dbl, kemo_sgl);
 	}
 	
 	else if (arrow_key_func == ROTATE){
@@ -215,9 +215,9 @@ static void arrows_c(int key, int x, int y){
 			x_dbl = begin[0] + ZERO;
 			y_dbl = begin[1] - TEN;
 		};
-		kemoview_startTrackball( begin[0], (-begin[1]));
-		kemoview_rollToTrackball( x_dbl, (-y_dbl));
-		kemoview_drugging_addToRotationTrackball();
+		kemoview_startTrackball( begin[0], (-begin[1]), kemo_sgl);
+		kemoview_rollToTrackball( x_dbl, (-y_dbl), kemo_sgl);
+		kemoview_drugging_addToRotationTrackball(kemo_sgl);
 	}
 	
 	else if (arrow_key_func == SCALE){
@@ -281,7 +281,7 @@ void set_viewtype_mode_glut(int selected){
 		left_button_func = PAN;
 	};
 	
-	kemoview_set_viewtype(selected);
+	kemoview_set_viewtype(selected, kemo_sgl);
 	return;
 }
 
@@ -337,15 +337,18 @@ void display_menu(){
 };
 
 void display(){
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-	kemoview_modify_view();
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_set_view_integer(ISET_DRAW_MODE, FULL_DRAW, kemo_sgl);
+    glDrawBuffer(GL_BACK);
+    kemoview_modify_view(kemo_sgl, kemo_gl);
 	glutSwapBuffers();
 	
 	return;
 };
 
 void modifywindow(int width, int height){
-    kemoview_update_projection_by_viewer_size(width, height, width, height);
+    kemoview_update_projection_by_viewer_size(width, height,
+                                              width, height, kemo_sgl);
 	return;
 }
 
@@ -375,18 +378,17 @@ void set_main_window_id_glut(int winid){
 
 void draw_mesh_keep_menu(){
 	glutSetWindow(id_window);
-	kemoview_update_distance();
-    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
-	kemoview_modify_view();
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
+    kemoview_mono_viewmatrix(kemo_sgl);
 	glutPostRedisplay();
 	return;
 };
 
 void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg) {
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     int i, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
@@ -400,7 +402,9 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_animation_rot_angle(int_degree);
-        kemoview_modify_view();
+        kemoview_set_view_integer(ISET_DRAW_MODE, FAST_DRAW, kemo_sgl);
+        glDrawBuffer(GL_BACK);
+        kemoview_modify_view(kemo_sgl, kemo_gl);
 		glutSwapBuffers();
 		
         kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
@@ -415,9 +419,9 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 
 void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt){
-    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+    int npix_x = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_sgl, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
 
     int i;
 
@@ -425,7 +429,7 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
-			kemoview_viewer_evolution(i);
+			kemoview_viewer_evolution(i, kemo_sgl);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			draw_mesh_keep_menu();

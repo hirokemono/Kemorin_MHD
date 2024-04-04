@@ -86,7 +86,7 @@
 !
         call write_one_ctl_file_message                                 &
      &     (hd_block, c_buf%level, file_name)
-        call read_ctl_file_vol_repart((id_control+1), file_name,        &
+        call read_ctl_file_vol_repart((id_control+2), file_name,        &
      &                                hd_block, viz_repart_c, c_buf)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
@@ -103,9 +103,7 @@
       subroutine read_ctl_file_vol_repart(id_control, file_name,        &
      &          hd_block, viz_repart_c, c_buf)
 !
-      use calypso_mpi
       use skip_comment_f
-      use bcast_4_platform_ctl
       use t_read_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -114,8 +112,6 @@
       type(viz_repartition_ctl), intent(inout) :: viz_repart_c
       type(buffer_for_control), intent(inout) :: c_buf
 !
-!
-      if(my_rank .ne. 0) return
 !
       c_buf%level = c_buf%level + 1
       open(id_control, file=file_name, status='old')
@@ -147,7 +143,7 @@
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(file_name,'NO_FILE')) then
+      if(no_file_flag(file_name)) then
         call write_control_vol_repart(id_control, hd_block,             &
      &                                viz_repart_c, level)
       else if(id_control .eq. id_monitor) then
@@ -160,7 +156,7 @@
      &       ' is written to file ... ', trim(file_name)
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
-        call write_ctl_file_vol_repart((id_control+1), file_name,       &
+        call write_ctl_file_vol_repart((id_control+2), file_name,       &
      &                                 hd_block, viz_repart_c)
       end if
 !
@@ -171,9 +167,7 @@
       subroutine write_ctl_file_vol_repart(id_control, file_name,       &
      &                                     hd_block, viz_repart_c)
 !
-      use calypso_mpi
       use skip_comment_f
-      use bcast_4_platform_ctl
       use t_read_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -182,9 +176,6 @@
       type(viz_repartition_ctl), intent(in) :: viz_repart_c
 !
       integer(kind = kint) :: level
-!
-!
-      if(my_rank .ne. 0) return
 !
       level = 0
       open(id_control, file=file_name)

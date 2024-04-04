@@ -7,8 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine sel_sph_model_coef                                   &
-!!     &         (numdir, ngrp_dynamic, stab_wt, ifld_sgs, icomp_sgs,   &
-!!     &          nfld_sgs, ncomp_sgs,  sgs_zl, sgs_zt, sgs_c)
+!!     &         (numdir, ngrp_dynamic, stab_wt, sgs_zl, sgs_zt, sgs_c)
 !!      subroutine cal_scalar_sph_model_coefs                           &
 !!     &         (ngrp_dynamic, stab_wt, sgs_zl, sgs_zt, sgs_c)
 !!@endverbatim
@@ -31,29 +30,24 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_sph_model_coef                                     &
-     &         (numdir, ngrp_dynamic, stab_wt, ifld_sgs, icomp_sgs,     &
-     &          nfld_sgs, ncomp_sgs,  sgs_zl, sgs_zt, sgs_c)
+     &         (numdir, ngrp_dynamic, stab_wt, sgs_zl, sgs_zt, sgs_c)
 !
       use m_phys_constants
 !
       integer(kind = kint), intent(in) :: numdir, ngrp_dynamic
-      integer(kind = kint), intent(in) :: nfld_sgs, ncomp_sgs
-      integer(kind = kint), intent(in) :: ifld_sgs, icomp_sgs
-      real(kind = kreal), intent(in) :: sgs_zl(ngrp_dynamic,ncomp_sgs)
-      real(kind = kreal), intent(in) :: sgs_zt(ngrp_dynamic,ncomp_sgs)
+      real(kind = kreal), intent(in) :: sgs_zl(ngrp_dynamic,numdir)
+      real(kind = kreal), intent(in) :: sgs_zt(ngrp_dynamic,numdir)
       real(kind = kreal), intent(in) :: stab_wt
 !
-      real(kind = kreal), intent(inout) :: sgs_c(ngrp_dynamic,nfld_sgs)
+      real(kind = kreal), intent(inout) :: sgs_c(ngrp_dynamic)
 !
 !
       if(numdir .eq. n_vector) then
         call cal_vector_sph_model_coefs(ngrp_dynamic, stab_wt,          &
-     &      sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs),                   &
-     &      sgs_c(1,ifld_sgs))
+     &      sgs_zl(1,1), sgs_zt(1,1), sgs_c)
       else
         call cal_scalar_sph_model_coefs(ngrp_dynamic, stab_wt,          &
-     &      sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs),                   &
-     &      sgs_c(1,ifld_sgs))
+     &      sgs_zl(1,1), sgs_zt(1,1), sgs_c)
       end if
 !
       end subroutine sel_sph_model_coef

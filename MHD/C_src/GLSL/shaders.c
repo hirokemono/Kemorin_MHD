@@ -5,6 +5,72 @@
 
 #include "shaders.h"
 
+char * load_anaglyph_texture_frag(void){
+    const char  anaglyph_texture_frag_src[]
+    = {
+        "#version 330\n"\
+        "// anaglyph_texture.frag\n"\
+        "\n"\
+        "in vec2 tex_position;\n"\
+        "\n"\
+        "out vec4 out_Color;\n"\
+        "\n"\
+        "uniform sampler2D left_image;\n"\
+        "uniform sampler2D right_image;\n"\
+        "\n"\
+        "void main (void)\n"\
+        "{\n"\
+        "    vec4 left_Color =  texture(left_image, tex_position);\n"\
+        "    vec4 right_Color = texture(right_image, tex_position);\n"\
+        "\n"\
+        "    float r = 0.299 * left_Color.x + 0.587 * left_Color.y + 0.114 * left_Color.z;\n"\
+        "    out_Color = vec4(r, right_Color.y, right_Color.z, left_Color.w);\n"\
+        "}\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(anaglyph_texture_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, anaglyph_texture_frag_src);
+    return src;
+};
+
+char * load_anaglyph_texture_vert(void){
+    const char  anaglyph_texture_vert_src[]
+    = {
+        "#version 330\n"\
+        "// anaglyph_texture.vert\n"\
+        "\n"\
+        "layout (location = 0) in vec4  xyz;\n"\
+        "layout (location = 1) in vec2  txur;\n"\
+        "\n"\
+        "\n"\
+        "uniform mat4 projectionMat;\n"\
+        "uniform mat4 modelViewMat;\n"\
+        "\n"\
+        "out vec2 tex_position;\n"\
+        "\n"\
+        "void main(void)\n"\
+        "{\n"\
+        "    vec4 position = xyz;\n"\
+        "    position.w = 1.0;\n"\
+        "	position = modelViewMat * position;\n"\
+        "	tex_position = txur;\n"\
+        "\n"\
+        "	gl_Position =  projectionMat * position;\n"\
+        "}\n"\
+        "\n"
+    };
+    
+    long n = strlen(anaglyph_texture_vert_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, anaglyph_texture_vert_src);
+    return src;
+};
+
 char * load_dash_lines_3D_frag(void){
     const char  dash_lines_3D_frag_src[]
     = {
@@ -381,11 +447,11 @@ char * load_gouraud_vert(void){
         "#version 330\n"\
         "// gouraud.vert\n"\
         "\n"\
-        "layout (location = 0) in vec3  xyz;\n"\
-        "layout (location = 1) in float data;\n"\
-        "layout (location = 2) in vec4  color;\n"\
-        "layout (location = 3) in vec3  norm;\n"\
-        "layout (location = 4) in vec2  txur;\n"\
+        "layout (location = 0) in vec4  xyz;\n"\
+        "layout (location = 1) in vec4  color;\n"\
+        "layout (location = 2) in vec4  norm;\n"\
+        "layout (location = 3) in vec2  txur;\n"\
+        "layout (location = 4) in float data;\n"\
         "\n"\
         "out vec4 ex_Position;\n"\
         "out vec4 ex_Color;\n"\
@@ -393,7 +459,7 @@ char * load_gouraud_vert(void){
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
-        "uniform mat3 modelNormalMat;\n"\
+        "uniform mat4 modelNormalMat;\n"\
         "\n"\
         "#define MAX_LIGHTS 10\n"\
         "struct LightSourceParameters{\n"\
@@ -428,19 +494,23 @@ char * load_gouraud_vert(void){
         "\n"\
         "void main(void)\n"\
         "{\n"\
-        "	vec3 position = vec3(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	vec3 normal = normalize(modelNormalMat * norm);\n"\
+        "    vec4 position.xyz = xyz;\n"\
+        "    position.w = 1.0;\n"\
+        "    position = modelViewMat * position;\n"\
+        "\n"\
+        "	vec4 norm4 =  modelNormalMat * norm;\n"\
+        "    vec3 normal = normalize(norm4.xyz);\n"\
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "	\n"\
         "	ex_Color = vec4(0.0,0.0,0.0,0.0);\n"\
         "	for (int i = 0; i < num_lights; ++i){\n"\
-        "		light = normalize(LightSource[0].position.xyz - position);\n"\
+        "		light = normalize(LightSource[0].position.xyz - position.xyz);\n"\
         "		diffuse = dot(light, normal);\n"\
         "		\n"\
         "		ex_Color += frontMaterial.ambient;\n"\
         "		if (diffuse > 0.0) {\n"\
-        "			vec3 view = normalize(position);\n"\
+        "			vec3 view = normalize(position.xyz);\n"\
         "			vec3 halfway = normalize(light - view);\n"\
         "			float specular = pow(max(dot(normal, halfway), 0.0), frontMaterial.shininess);\n"\
         "			ex_Color += frontMaterial.diffuse * diffuse\n"\
@@ -448,7 +518,7 @@ char * load_gouraud_vert(void){
         "		}\n"\
         "	}\n"\
         "	\n"\
-        "	ex_Position =  projectionMat * vec4(position, 1.0);\n"\
+        "	ex_Position =  projectionMat * position;\n"\
         "}\n"\
         "\n"
     };
@@ -487,13 +557,13 @@ char * load_menu_vert(void){
     = {
         "#version 330\n"\
         "\n"\
-        "layout(location=0) in vec3 in_Position;\n"\
+        "layout(location=0) in vec4 in_Position;\n"\
         "layout(location=1) in vec4 in_Color;\n"\
         "out vec4 ex_Color;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
-        "    gl_Position = vec4(in_Position, 1.0);\n"\
+        "    gl_Position = vec4(in_Position.xyz, 1.0);\n"\
         "    ex_Color = in_Color;\n"\
         "}\n"\
         "\n"
@@ -514,7 +584,7 @@ char * load_phong_frag(void){
         "\n"\
         "in vec4 position;\n"\
         "in vec4 ex_Color;\n"\
-        "in vec3 normal;\n"\
+        "in vec4 normal;\n"\
         "out vec4 out_Color;\n"\
         "\n"\
         "#define MAX_LIGHTS 10\n"\
@@ -549,24 +619,33 @@ char * load_phong_frag(void){
         "\n"\
         "void main (void)\n"\
         "{\n"\
-        "	vec3 fnormal = normalize(normal);\n"\
+        "	vec3 fnormal = normalize(normal.xyz);\n"\
         "	vec3 light;\n"\
         "	float diffuse;\n"\
+        "\n"\
+        "    vec3 halfway;\n"\
+        "    float product;\n"\
+        "    float fspecular;\n"\
+        "\n"\
+        "    vec3 view =   normalize(position.xyz);\n"\
+        "    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);\n"\
         "\n"\
         "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
         "	for (int i = 0; i < num_lights; ++i){\n"\
         "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
-        "		diffuse = dot(light, fnormal);\n"\
         "\n"\
-        "		out_Color += ex_Color * frontMaterial.ambient;\n"\
-        "		if (diffuse > 0.0) {\n"\
-        "			vec3 view = normalize(position.xyz);\n"\
-        "			vec3 halfway = normalize(light - view);\n"\
-        "			float product = max(dot(fnormal, halfway), 0.0);\n"\
-        "			float specular = pow(product, frontMaterial.shininess);\n"\
-        "			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
-        "			+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;\n"\
-        "		}\n"\
+        "        halfway =   normalize(light - view);\n"\
+        "        product =   max(dot(fnormal, halfway), 0.0);\n"\
+        "        fspecular = pow(product, frontMaterial.shininess);\n"\
+        "		diffuse =   dot(light, fnormal);\n"\
+        "\n"\
+        "		out_Color += ex_Color * frontMaterial.ambient\n"\
+        "                    + ex_Color * frontMaterial.diffuse * abs(diffuse)\n"\
+        "                    + tmpsp * fspecular;\n"\
+        "//		if (diffuse > 0.0) {\n"\
+        "//			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
+        "//                        + tmpsp * fspecular;\n"\
+        "//		}\n"\
         "	}\n"\
         "}\n"\
         "\n"\
@@ -586,26 +665,28 @@ char * load_phong_vert(void){
         "#version 330\n"\
         "// phong.vert\n"\
         "\n"\
-        "layout (location = 0) in vec3  xyz;\n"\
-        "layout (location = 1) in float data;\n"\
-        "layout (location = 2) in vec4  color;\n"\
-        "layout (location = 3) in vec3  norm;\n"\
-        "layout (location = 4) in vec2  txur;\n"\
+        "layout (location = 0) in vec4  xyz;\n"\
+        "layout (location = 1) in vec4  color;\n"\
+        "layout (location = 2) in vec4  norm;\n"\
+        "layout (location = 3) in vec2  txur;\n"\
+        "layout (location = 4) in float data;\n"\
         "\n"\
         "\n"\
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
-        "uniform mat3 modelNormalMat;\n"\
+        "uniform mat4 modelNormalMat;\n"\
         "\n"\
         "out vec4 position;\n"\
         "out vec4 ex_Color;\n"\
-        "out vec3 normal;\n"\
+        "out vec4 normal;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
-        "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	normal = normalize(modelNormalMat * norm);\n"\
+        "    position = xyz;\n"\
+        "    position.w = 1.0;\n"\
+        "    position = modelViewMat * position;\n"\
+        "	normal =   modelNormalMat * norm;\n"\
         "	ex_Color = color;\n"\
         "\n"\
         "	gl_Position =  projectionMat * position;\n"\
@@ -631,7 +712,7 @@ char * load_phong_1color_frag(void){
         "//\n"\
         "\n"\
         "in vec4 position;\n"\
-        "in vec3 normal;\n"\
+        "in vec4 normal;\n"\
         "out vec4 out_Color;\n"\
         "\n"\
         "#define MAX_LIGHTS 10\n"\
@@ -668,24 +749,29 @@ char * load_phong_1color_frag(void){
         "\n"\
         "void main (void)\n"\
         "{\n"\
-        "	vec3 fnormal = normalize(normal);\n"\
+        "	vec3 fnormal = normalize(normal.xyz);\n"\
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "	\n"\
-        "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
+        "    vec3 halfway;\n"\
+        "    float product;\n"\
+        "    float fspecular;\n"\
+        "\n"\
+        "    vec3 view = normalize(position.xyz);\n"\
+        "    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);\n"\
+        "\n"\
+        "    out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
         "	for (int i = 0; i < num_lights; ++i){\n"\
         "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
+        "\n"\
+        "        halfway = normalize(light - view);\n"\
+        "        product = max(dot(fnormal, halfway), 0.0);\n"\
+        "        fspecular = pow(product, frontMaterial.shininess);\n"\
         "		diffuse = dot(light, fnormal);\n"\
         "		\n"\
-        "		out_Color += SingleColor * frontMaterial.ambient;\n"\
-        "		if (diffuse > 0.0) {\n"\
-        "			vec3 view = normalize(position.xyz);\n"\
-        "			vec3 halfway = normalize(light - view);\n"\
-        "			float product = max(dot(fnormal, halfway), 0.0);\n"\
-        "			float specular = pow(product, frontMaterial.shininess);\n"\
-        "			out_Color += SingleColor * frontMaterial.diffuse * diffuse\n"\
-        "			+ vec4(frontMaterial.specular.xyz, SingleColor.w) * specular;\n"\
-        "		}\n"\
+        "		out_Color += SingleColor * frontMaterial.ambient\n"\
+        "			        + SingleColor * frontMaterial.diffuse * abs(diffuse)\n"\
+        "                    + tmpsp * fspecular;\n"\
         "	}\n"\
         "}\n"\
         "\n"\
@@ -705,22 +791,25 @@ char * load_phong_1color_vert(void){
         "#version 330\n"\
         "// phong_1color.vert\n"\
         "\n"\
-        "layout(location = 0) in vec3  xyz;\n"\
-        "layout(location = 1) in vec3  norm;\n"\
+        "layout(location = 0) in vec4  xyz;\n"\
+        "layout(location = 1) in vec4  norm;\n"\
         "\n"\
         "\n"\
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
-        "uniform mat3 modelNormalMat;\n"\
+        "uniform mat4 modelNormalMat;\n"\
         "\n"\
         "out vec4 position;\n"\
-        "out vec3 normal;\n"\
+        "out vec4 normal;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
-        "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	normal = normalize(modelNormalMat * norm);\n"\
+        "    vec4 position = xyz;\n"\
+        "    position.w = 1.0;\n"\
+        "    position = modelViewMat * position;\n"\
+        "\n"\
+        "	normal = modelNormalMat * norm;\n"\
         "	\n"\
         "	gl_Position =  projectionMat * position;\n"\
         "}\n"\
@@ -743,7 +832,7 @@ char * load_phong_texture_frag(void){
         "\n"\
         "in vec4 position;\n"\
         "in vec4 ex_Color;\n"\
-        "in vec3 normal;\n"\
+        "in vec4 normal;\n"\
         "in vec2 tex_position;\n"\
         "out vec4 out_Color;\n"\
         "\n"\
@@ -781,26 +870,34 @@ char * load_phong_texture_frag(void){
         "\n"\
         "void main (void)\n"\
         "{\n"\
-        "	vec3 fnormal = normalize(normal);\n"\
+        "	vec3 fnormal = normalize(normal.xyz);\n"\
         "	vec3 light;\n"\
         "	float diffuse;\n"\
         "\n"\
-        "	vec4 txColor = texture(image, tex_position);\n"\
+        "    vec3 halfway;\n"\
+        "    float product;\n"\
+        "    float fspecular;\n"\
         "\n"\
-        "	out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
+        "    vec3 view =   normalize(position.xyz);\n"\
+        "    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);\n"\
+        "\n"\
+        "	vec4 txColor = texture(image, tex_position);\n"\
+        "    vec4 addColor = vec4(txColor.xyz, ex_Color.w);\n"\
+        "\n"\
+        "    vec3 out_Color3;\n"\
+        "    float opacity;\n"\
+        "    out_Color = vec4(0.0,0.0,0.0,0.0);\n"\
         "	for (int i = 0; i < num_lights; ++i){\n"\
         "		light = normalize(LightSource[i].position.xyz - position.xyz);\n"\
-        "		diffuse = dot(light, fnormal);\n"\
+        "        halfway = normalize(light - view);\n"\
+        "        product = max(dot(fnormal, halfway), 0.0);\n"\
+        "        fspecular = pow(product, frontMaterial.shininess);\n"\
         "\n"\
-        "		out_Color += txColor * frontMaterial.ambient;\n"\
-        "		if (diffuse > 0.0) {\n"\
-        "			vec3 view = normalize(position.xyz);\n"\
-        "			vec3 halfway = normalize(light - view);\n"\
-        "			float product = max(dot(fnormal, halfway), 0.0);\n"\
-        "			float specular = pow(product, frontMaterial.shininess);\n"\
-        "			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
-        "			+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;\n"\
-        "		}\n"\
+        "        diffuse = dot(light, fnormal);\n"\
+        "\n"\
+        "        out_Color += addColor * frontMaterial.ambient;\n"\
+        "                   + addColor * frontMaterial.diffuse * abs(diffuse)\n"\
+        "                   + tmpsp * fspecular;\n"\
         "	}\n"\
         "}\n"\
         "\n"\
@@ -820,27 +917,30 @@ char * load_phong_texture_vert(void){
         "#version 330\n"\
         "// phong_texture.vert\n"\
         "\n"\
-        "layout (location = 0) in vec3  xyz;\n"\
-        "layout (location = 1) in float data;\n"\
-        "layout (location = 2) in vec4  color;\n"\
-        "layout (location = 3) in vec3  norm;\n"\
-        "layout (location = 4) in vec2  txur;\n"\
+        "layout (location = 0) in vec4  xyz;\n"\
+        "layout (location = 1) in vec4  color;\n"\
+        "layout (location = 2) in vec4  norm;\n"\
+        "layout (location = 3) in vec2  txur;\n"\
+        "layout (location = 4) in float data;\n"\
         "\n"\
         "\n"\
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
-        "uniform mat3 modelNormalMat;\n"\
+        "uniform mat4 modelNormalMat;\n"\
         "\n"\
         "out vec4 position;\n"\
         "out vec4 ex_Color;\n"\
-        "out vec3 normal;\n"\
+        "out vec4 normal;\n"\
         "out vec2 tex_position;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
-        "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
-        "	normal = normalize(modelNormalMat * norm);\n"\
+        "    position = xyz;\n"\
+        "    position.w = 1.0;\n"\
+        "    position = modelViewMat * position;\n"\
+        "\n"\
+        "    normal = modelNormalMat * norm;\n"\
         "	ex_Color = color;\n"\
         "	tex_position = txur;\n"\
         "\n"\
@@ -884,9 +984,7 @@ char * load_simple_vert(void){
         "#version 330\n"\
         "// simple.vert\n"\
         "\n"\
-        "layout (location = 0) in vec3  xyz;\n"\
-        "// layout (location = 1) in vec3  norm;\n"\
-        "// layout (location = 2) in vec2  txur;\n"\
+        "layout (location = 0) in vec4  xyz;\n"\
         "layout (location = 1) in vec4  color;\n"\
         "\n"\
         "out vec4 ex_Color;\n"\
@@ -898,7 +996,10 @@ char * load_simple_vert(void){
         "\n"\
         "void main(void)\n"\
         "{\n"\
-        "	gl_Position = vec4(projectionMat *  modelViewMat * vec4(xyz, 1.0));\n"\
+        "    vec4 position = xyz;\n"\
+        "    position.w = 1.0;\n"\
+        "    position = modelViewMat * position;\n"\
+        "	gl_Position = projectionMat * position;\n"\
         "	ex_Color = color;\n"\
         "}\n"\
         "\n"
@@ -917,8 +1018,8 @@ char * load_simple_texture_frag(void){
         "#version 330\n"\
         "// simple_texture.frag\n"\
         "\n"\
-        "in vec4 position;\n"\
         "in vec2 tex_position;\n"\
+        "\n"\
         "out vec4 out_Color;\n"\
         "\n"\
         "uniform sampler2D image;\n"\
@@ -944,19 +1045,20 @@ char * load_simple_texture_vert(void){
         "#version 330\n"\
         "// simple_texture.vert\n"\
         "\n"\
-        "layout (location = 0) in vec3  xyz;\n"\
+        "layout (location = 0) in vec4  xyz;\n"\
         "layout (location = 1) in vec2  txur;\n"\
         "\n"\
         "\n"\
         "uniform mat4 projectionMat;\n"\
         "uniform mat4 modelViewMat;\n"\
         "\n"\
-        "out vec4 position;\n"\
         "out vec2 tex_position;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
-        "	position = vec4(modelViewMat * vec4(xyz, 1.0));\n"\
+        "    vec4 position = xyz;\n"\
+        "    position.w = 1.0;\n"\
+        "	position = modelViewMat * position;\n"\
         "	tex_position = txur;\n"\
         "\n"\
         "	gl_Position =  projectionMat * position;\n"\

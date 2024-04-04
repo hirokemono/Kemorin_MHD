@@ -23,6 +23,7 @@
 @synthesize radialSliderValue;
 @synthesize elevationSliderValue;
 @synthesize azimuthSliderValue;
+
 - (void)awakeFromNib{
     int i;
     float r, t, p;
@@ -35,18 +36,19 @@
 	self.numLightTable =  [[defaults stringForKey:@"numberOfLights"] intValue];
 //	self.numLightTable = 0;
 
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     if(self.numLightTable <= 0){
-        kemoview_init_phong_light_list();
+        kemoview_init_phong_light_list(kemo_sgl);
         
-        self.numLightTable = kemoview_get_num_light_position();
+        self.numLightTable = kemoview_get_num_light_position(kemo_sgl);
 
-        self.ambientMaterial =  kemoview_get_material_parameter(AMBIENT_FLAG);
-        self.diffuseMaterial =  kemoview_get_material_parameter(DIFFUSE_FLAG);
-        self.specularMaterial = kemoview_get_material_parameter(SPECULAR_FLAG);
-        self.shinessMaterial =  kemoview_get_material_parameter(SHINENESS_FLAG);
+        self.ambientMaterial =  kemoview_get_material_parameter(kemo_sgl, AMBIENT_FLAG);
+        self.diffuseMaterial =  kemoview_get_material_parameter(kemo_sgl, DIFFUSE_FLAG);
+        self.specularMaterial = kemoview_get_material_parameter(kemo_sgl, SPECULAR_FLAG);
+        self.shinessMaterial =  kemoview_get_material_parameter(kemo_sgl, SHINENESS_FLAG);
         
         for(i=0;i<self.numLightTable;i++){
-            kemoview_get_each_light_rtp(i, &r, &t, &p);
+            kemoview_get_each_light_rtp(kemo_sgl, i, &r, &t, &p);
             
             [self.radialLightPosition addObject:[NSNumber numberWithFloat:r]];
             [self.elevationLightPosition addObject:[NSNumber numberWithFloat:t]];
@@ -62,11 +64,11 @@
         self.specularMaterial = [[defaults stringForKey:@"materialSpecular"] floatValue];
         self.shinessMaterial =  [[defaults stringForKey:@"materialShineness"] floatValue];
 
-        kemoview_alloc_phong_light_list(self.numLightTable);
-        kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial);
-        kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial);
-        kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial);
-        kemoview_set_material_parameter(SHINENESS_FLAG, self.shinessMaterial);
+        kemoview_alloc_phong_light_list((int) self.numLightTable, kemo_sgl);
+        kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial, kemo_sgl);
+        kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial, kemo_sgl);
+        kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial, kemo_sgl);
+        kemoview_set_material_parameter(SHINENESS_FLAG, self.shinessMaterial, kemo_sgl);
     };
 	
 	[self InitLightTable];
@@ -76,17 +78,18 @@
 
 - (IBAction)addAtSelectedRow:(id)pId{
 	float r2, t2, p2;
-	int isel = [idlightTableView selectedRow];
+	int isel = (int) [idlightTableView selectedRow];
 	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if ([idlightTableView selectedRow] >= 0) {
 		r2 = [[self.radialLightPosition    objectAtIndex:isel  ] floatValue];
 		t2 = [[self.elevationLightPosition objectAtIndex:isel  ] floatValue];
  		p2 = [[self.azimuthLightPosition   objectAtIndex:isel  ] floatValue];
-		kemoview_add_phong_light_list(isel, r2, t2, p2);
-		
-		[self SetLightTable];
+        
+		kemoview_add_phong_light_list(isel, r2, t2, p2, kemo_sgl);
+        [self SetLightTable:kemo_sgl];
 	}
-	[_kemoviewer UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 	return;
 };
 
@@ -96,24 +99,25 @@
 	int i, n;
 	
 	NSIndexSet *SelectedList = [idlightTableView selectedRowIndexes];
-	n = [self.radialLightPosition count];
+	n = (int) [self.radialLightPosition count];
 	if(n < 1) return;
 	
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	if ([idlightTableView numberOfSelectedRows] > 0) {
 		for(i= n;i>0;i--){
 			if([SelectedList containsIndex:i] == TRUE){
-				kemoview_delete_phong_light_list(i);
+				kemoview_delete_phong_light_list(i, kemo_sgl);
 			}
 		};
 	}
 	
-	[self SetLightTable];
-	[_kemoviewer UpdateImage];
+    [self SetLightTable:kemo_sgl];
+    [_metalView UpdateImage:kemo_sgl];
 	return;
 };
 
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj{
-	return [self.radialLightPosition count];
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)pTableViewObj{
+	return  [self.radialLightPosition count];
 };
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex{
@@ -136,7 +140,7 @@
 	float r0, t0, p0;
 	float r_in, r1, r2;
 	
-	int numberOfRaw = [self.radialLightPosition count];
+	int numberOfRaw = (int) [self.radialLightPosition count];
 	
 	r0 =  [[self.radialLightPosition objectAtIndex:pRowIndex] floatValue];
 	t0 =  [[self.elevationLightPosition objectAtIndex:pRowIndex] floatValue];
@@ -176,14 +180,15 @@
 											   withObject:[[NSNumber alloc] initWithFloat:p0]];
 	}
 	
-	kemoview_set_each_light_position(pRowIndex, r0, t0, p0);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_each_light_position(pRowIndex, r0, t0, p0, kemo_sgl);
 	self.radialSliderValue =    r0;
 	self.elevationSliderValue = t0;
 	self.azimuthSliderValue =   p0;
 
 	
-	[_kemoviewer UpdateImage];
-	[self SetLightTable];
+	[_metalView UpdateImage:kemo_sgl];
+	[self SetLightTable:kemo_sgl];
 } // end tableView:setObjectValue:forTableColumn:row:
 
 
@@ -197,24 +202,26 @@
 	int i, n_ini;
 	float r, t, p;
 	
-	n_ini = kemoview_get_num_light_position();
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	n_ini = kemoview_get_num_light_position(kemo_sgl);
 	for(i=0;i<self.numLightTable;i++){
 		r =  [[self.radialLightPosition objectAtIndex:i] floatValue];
 		t =  [[self.elevationLightPosition objectAtIndex:i] floatValue];
 		p =  [[self.azimuthLightPosition objectAtIndex:i] floatValue];
 		if(i < n_ini){
-			kemoview_set_each_light_position(i, r, t, p);
+			kemoview_set_each_light_position(i, r, t, p, kemo_sgl);
 		} else {
-			kemoview_add_phong_light_list(i, r, t, p);
+			kemoview_add_phong_light_list(i, r, t, p, kemo_sgl);
 		};
 	};
 	for(i=n_ini; i>self.numLightTable;i--){
-		kemoview_delete_phong_light_list(i-1);
+		kemoview_delete_phong_light_list(i-1, kemo_sgl);
 	};
-	[self SetLightTable];
+	[self SetLightTable:kemo_sgl];
 	return;
 };
-- (void)SetLightTable{
+- (void)SetLightTable:(struct kemoviewer_type *) kemo_sgl
+{
 	int i;
 	float r, t, p;
 	//	double value, color, color;
@@ -222,9 +229,9 @@
 	[radialLightPosition removeAllObjects];
 	[elevationLightPosition removeAllObjects];
 	[azimuthLightPosition removeAllObjects];
-	self.numLightTable = kemoview_get_num_light_position();
+	self.numLightTable = kemoview_get_num_light_position(kemo_sgl);
 	for(i=0;i<self.numLightTable;i++){
-		kemoview_get_each_light_rtp(i, &r, &t, &p);
+		kemoview_get_each_light_rtp(kemo_sgl, i, &r, &t, &p);
 		[self.radialLightPosition addObject:[[NSNumber alloc ] initWithFloat:r] ];
 		[self.elevationLightPosition addObject:[[NSNumber alloc ] initWithFloat:t] ];
 		[self.azimuthLightPosition addObject:[[NSNumber alloc ] initWithFloat:p] ];
@@ -242,7 +249,7 @@
 };
 
 - (IBAction)UpdateLightTable:(id)pID{
-	[self SetLightTable];
+	[self SetLightTable:[_kmv KemoViewPointer]];
 	return;
 };
 
@@ -250,35 +257,43 @@
 - (IBAction)SetAmbientMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.diffuseMaterial) forKey:@"materialAmbient"];
-	kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial);
-	[_kemoviewer UpdateImage];
+
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 	return;
 };
 - (IBAction)SetDiffuseMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.diffuseMaterial) forKey:@"materialDiffuse"];
-	kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial);
-	[_kemoviewer UpdateImage];
+
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 	return;
 };
 - (IBAction)SetSpecularMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.specularMaterial) forKey:@"materialSpecular"];
-	kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial);
-	[_kemoviewer UpdateImage];
+
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 	return;
 };
 - (IBAction)SetShinenessMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.shinessMaterial) forKey:@"materialShineness"];
-	kemoview_set_material_parameter(SHINENESS_FLAG, self.shinessMaterial);
-	[_kemoviewer UpdateImage];
+    
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_material_parameter(SHINENESS_FLAG, self.shinessMaterial, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 	return;
 };
 
 - (IBAction)SetRadialLightPositionAction:(id)sender{
 	float r0, t0, p0, r1, r2;
-	int isel = [idlightTableView selectedRow];
+	int isel = (int) [idlightTableView selectedRow];
 	if(isel < 0 || isel >= self.numLightTable) return;
 	
 	t0 =  [[self.elevationLightPosition objectAtIndex:isel] floatValue];
@@ -300,48 +315,52 @@
 		r0 = self.radialSliderValue;
 	};
 	
-	kemoview_set_each_light_position(isel, r0, t0, p0);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_each_light_position(isel, r0, t0, p0, kemo_sgl);
 	[self.radialLightPosition replaceObjectAtIndex:isel
 										withObject:[[NSNumber alloc] initWithFloat:r0]];
 	self.elevationSliderValue = t0;
 	self.azimuthSliderValue =   p0;
-	[self SetLightTable];
-	[_kemoviewer UpdateImage];
+    
+	[self SetLightTable:kemo_sgl];
+	[_metalView UpdateImage:kemo_sgl];
 };
 - (IBAction)SetelevationLightPositionAction:(id)sender{
 	float r0, t0, p0;
-	int isel = [idlightTableView selectedRow];
+	int isel = (int) [idlightTableView selectedRow];
 	if(isel < 0 || isel >= self.numLightTable) return;
 	
 	r0 =  [[self.radialLightPosition objectAtIndex:isel] floatValue];
 	t0 =  self.elevationSliderValue;
 	p0 =  [[self.azimuthLightPosition objectAtIndex:isel] floatValue];
 	
-	kemoview_set_each_light_position(isel, r0, t0, p0);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_each_light_position(isel, r0, t0, p0, kemo_sgl);
 	[self.elevationLightPosition replaceObjectAtIndex:isel
 										   withObject:[[NSNumber alloc] initWithFloat:t0]];
 	self.radialSliderValue =    r0;
 	self.azimuthSliderValue =   p0;
-	[self SetLightTable];
-	[_kemoviewer UpdateImage];
+	[self SetLightTable:kemo_sgl];
+	[_metalView UpdateImage:kemo_sgl];
 };
 - (IBAction)SetAzimuthLightPositionAction:(id)sender{
 	float r0, t0, p0;
-	int isel = [idlightTableView selectedRow];
+	int isel = (int) [idlightTableView selectedRow];
 	if(isel < 0 || isel >= self.numLightTable) return;
 	
 	r0 =  [[self.radialLightPosition objectAtIndex:isel] floatValue];
 	t0 =  [[self.elevationLightPosition objectAtIndex:isel] floatValue];
 	p0 =  self.azimuthSliderValue;
 	
-	kemoview_set_each_light_position(isel, r0, t0, p0);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_each_light_position(isel, r0, t0, p0, kemo_sgl);
 	[self.azimuthLightPosition replaceObjectAtIndex:isel
 										 withObject:[[NSNumber alloc] initWithFloat:p0]];
 	
 	self.radialSliderValue =    r0;
 	self.elevationSliderValue = t0;
-	[self SetLightTable];
-	[_kemoviewer UpdateImage];
+	[self SetLightTable:kemo_sgl];
+	[_metalView UpdateImage:kemo_sgl];
 };
 
 @end

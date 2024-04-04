@@ -10,32 +10,32 @@
 #include <stdio.h>
 
 #include "t_control_label_from_f.h"
+#include "t_control_chara_IO.h"
+#include "t_control_chara2_int_IO.h"
+#include "t_ctl_array_single_items_c.h"
+#include "t_ctl_array_chara2_int_items_c.h"
 
 #ifndef M_FIELD_NAME_FROM_F_
 #define M_FIELD_NAME_FROM_F_
 
 struct field_names_f{
-	int len_f;
-	
-	int num_field_groups[3];
-	int istack_field_groups[4];
-	int ntot_field_groups;
-	
-	int ntot_fields;
-	int *num_fields;
-	int *istack_fields;
-	char **field_group_name;
-	
-	int *num_comp;
-	char **field_name;
-	char **field_math;
+    int len_f;
+    
+    int istack_field_groups[4];
+    int ntot_field_groups;
+    
+    int ntot_fields;
+    int *istack_fields;
+    
+    struct chara_clist      *fld_grp_list;
+    struct chara2_int_clist *field_label;
 };
 
 struct component_flags_f{
-    struct flag_with_math_f *scalar_components_flag;
-    struct flag_with_math_f *vector_components_flag;
-    struct flag_with_math_f *sym_tensor_components_flag;
-    struct flag_with_math_f *asym_tensor_components_flag;
+    struct chara2_int_clist *scalar_components_flag;
+    struct chara2_int_clist *vector_components_flag;
+    struct chara2_int_clist *sym_tensor_components_flag;
+    struct chara2_int_clist *asym_tensor_components_list;
 };
 
 /*  prototype */
@@ -44,11 +44,6 @@ struct field_names_f * init_field_name_f();
 void dealloc_field_name_f(struct field_names_f *fld_list);
 void check_field_name_f(struct field_names_f *fld_list);
 
-
-struct flag_with_math_f * init_scalar_components_flag();
-struct flag_with_math_f * init_vector_components_flag();
-struct flag_with_math_f * init_sym_tensor_components_flag();
-struct flag_with_math_f * init_asym_tensor_components_flag();
 
 struct component_flags_f * init_component_flags_f();
 void dealloc_component_flags_f(struct component_flags_f *comp_flags);

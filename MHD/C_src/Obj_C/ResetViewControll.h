@@ -6,14 +6,16 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-/* #import "KemoViewerOpenGLView.h" */
+@import Cocoa;
+
+#import "KemoViewerObject.h"
+
 #include "kemoviewer.h"
 
 
 @interface ResetViewControll : NSObject {
-/*     IBOutlet KemoViewerOpenGLView*  _kemoviewer; */
-
+    IBOutlet KemoViewerObject *_kmv;
+    
     NSInteger xPixel;
 	NSInteger yPixel;
 	
@@ -78,6 +80,7 @@
 @property NSInteger NumberOfColumns;
 @property NSInteger NumberOfQuilts;
 
+- (void) initQuiltMode;
 - (int) ToggleQuiltMode;
 
 - (IBAction) SetQuiltRawByInput:(id)sender;

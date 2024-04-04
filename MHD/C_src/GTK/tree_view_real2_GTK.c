@@ -7,10 +7,32 @@
 
 #include "tree_view_real2_GTK.h"
 
-void init_r2_clist_views(struct real2_clist *r2_clist, struct r2_clist_view *cmap_vws){
-	cmap_vws->r2_clist_gtk = r2_clist;
-	return;
+struct r2_clist_view * alloc_r2_clist_views(void){
+    struct r2_clist_view * r2_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
+    if(r2_vws == NULL){
+        printf("malloc error for r2_clist_view\n");
+        exit(0);
+    }
+    r2_vws->r2_clist_gtk = init_real2_clist();
+    return r2_vws;
 };
+void dealloc_r2_clist_views(struct r2_clist_view *r2_vws){
+    dealloc_real2_clist(r2_vws->r2_clist_gtk);
+    free(r2_vws);
+    return;
+}
+
+
+struct r2_clist_view *  link_r2_clist_view_clist(struct real2_clist *ref_clist){
+    struct r2_clist_view * r2_vws = alloc_r2_clist_views();
+    r2_vws->r2_clist_gtk = ref_clist;
+    return r2_vws;
+};
+void unlink_r2_clist_views(struct r2_clist_view *r2_vws){
+    r2_vws->r2_clist_gtk = NULL;
+    free(r2_vws);
+    return;
+}
 
 /* Append new data at the end of list */
 int append_r2_item_to_tree(int index, double r1_data, double r2_data, 
@@ -25,19 +47,26 @@ int append_r2_item_to_tree(int index, double r1_data, double r2_data,
     return index + 1;
 }
 
-int append_r2_list_from_ctl(int index, struct real2_ctl_list *head, 
-			GtkTreeView *r2_tree_view){
+int append_r2_list_from_ctl(int index, struct real2_clist *r2_clst,
+                            GtkTreeView *r2_tree_view){
+    struct real2_ctl_list *head = &(r2_clst->r2_item_head);
     GtkTreeModel *model = gtk_tree_view_get_model (r2_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
 		index = append_r2_item_to_tree(index, head->r2_item->r_data[0], 
-					head->r2_item->r_data[1], child_model);
+                                       head->r2_item->r_data[1], child_model);
         head = head->_next;
     };
     return index;
 }
 
+int clear_r2_tree_view(GtkTreeView *r2_tree_view){
+    GtkTreeModel *model = gtk_tree_view_get_model(r2_tree_view);
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    gtk_list_store_clear(GTK_LIST_STORE(child_model));
+    return 0;
+}
 
 void r2_tree_value1_edited(gchar *path_str, gchar *new_text,
 			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
@@ -129,10 +158,17 @@ int add_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
     GList *list;
     GList *reference_list;
     GList *cur;
-    double value1, value2;
+    double value1 = 0.0, value2 = 0.0;
 	int index = 0;
     
-    /* Get path of selected raw */
+   	if(count_real2_clist(r2_clist) == 0){
+		append_real2_clist(value1, value2, r2_clist);
+		index = count_real2_clist(r2_clist);
+		index = append_r2_list_from_ctl(index, r2_clist, r2_tree_view);
+        return index;
+    };
+	
+	/* Get path of selected raw */
     /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(r2_tree_view);
     child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -159,29 +195,29 @@ int add_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
     }
     g_list_free(list);
     
-    /* Add */
-	
-	GtkTreePath *tree_path;
 	GtkTreeIter iter;
 	cur = g_list_first(reference_list);
-	tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
-	gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
-	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_INDEX, &value1, -1);
-	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &value2, -1);
-    for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
-        
-        /* Add */
-		add_real2_clist_before_c_tbl(value1, value2, r2_clist);
+	if(cur == NULL){
+		append_real2_clist(value1, value2, r2_clist);
+		index = count_real2_clist(r2_clist);
+	} else {
+		GtkTreePath *tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
+		gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_INDEX, &value1, -1);
+		gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &value2, -1);
 		
-		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
-		
-	}
+		for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
+			/* Add */
+			add_real2_clist_before_c_tbl(value1, value2, r2_clist);
+			gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
+		}
+		gtk_tree_path_free(tree_path);
+	};
 	
-	gtk_tree_path_free(tree_path);
     g_list_free(reference_list);
 	
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
-	index = append_r2_list_from_ctl(index, &r2_clist->r2_item_head, r2_tree_view);
+	index = append_r2_list_from_ctl(index, r2_clist, r2_tree_view);
 	return index;
 }
 
@@ -244,21 +280,9 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     g_list_free(reference_list);
 }
 
-static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *path_str,
-											 gchar *new_text, gpointer user_data){
-	int i = 0;
-	printf("TAko %d\n", i);
-};
-
-static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *path_str,
-											  gchar *new_text, gpointer user_data){
-	int i = 1;
-	printf("TAko %d\n", i);
-};
-
-
 void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist, 
-			GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2){
+                            GtkCellRenderer *renderer_spin1,
+                            GtkCellRenderer *renderer_spin2){
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     
     GtkTreeModel *model;
@@ -286,7 +310,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     g_object_set(G_OBJECT(renderer_spin1), 
 				"adjustment", adjust,
 				"climb-rate", 0.5,
-				"digits", 3, NULL);
+				"digits", 6, NULL);
 	*/
     g_object_set(G_OBJECT(renderer_spin1), 
                  "editable", TRUE, 
@@ -296,10 +320,11 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     gtk_tree_view_column_set_attributes(column, renderer_spin1, "text", COLUMN_FIELD_INDEX, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+	g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+	/*
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) r2_tree_view);
-    
+    */
     /* Second row */
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r2_tree_view, column);
@@ -312,11 +337,12 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     gtk_tree_view_column_set_attributes(column, renderer_spin2, "text", COLUMN_FIELD_NAME, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
+	g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
+	/*
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) r2_tree_view);
-    
-    /* 選択モード */
+    */
+    /* Set selection mode */
     selection = gtk_tree_view_get_selection(r2_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
@@ -431,8 +457,8 @@ void init_real2_tree_view(struct r2_clist_view *r2_vws){
 	create_real2_tree_view(GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk, 
                            renderer_spin1, renderer_spin2);
 	
-	r2_vws->index_bc = append_r2_list_from_ctl(r2_vws->index_bc,
-				&r2_vws->r2_clist_gtk->r2_item_head, GTK_TREE_VIEW(r2_vws->tree_view));
+	r2_vws->index_bc = append_r2_list_from_ctl(r2_vws->index_bc, r2_vws->r2_clist_gtk,
+                                               GTK_TREE_VIEW(r2_vws->tree_view));
 };
 
 void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbox){

@@ -39,13 +39,13 @@ void dealloc_psf_bin_work(struct psf_bin_work *psf_b_WK){
 };
 
 static void rawread_64bit_psf(struct psf_bin_work *psf_b_WK, void *buf){
-    rawread_64bit(&psf_b_WK->iflag_swap, &psf_b_WK->ilength, 
-                  buf, &psf_b_WK->lchar_out);
+    psf_b_WK->lchar_out = rawread_64bit(psf_b_WK->iflag_swap,
+                                        psf_b_WK->ilength, buf);
     return;
 };
 static void rawread_64bit_psfchara(struct psf_bin_work *psf_b_WK, void *buf){
-    rawread_64bit(&psf_b_WK->iflag_keep, &psf_b_WK->ilength, 
-                  buf, &psf_b_WK->lchar_out);
+    psf_b_WK->lchar_out = rawread_64bit(psf_b_WK->iflag_keep,
+                                        psf_b_WK->ilength, buf);
     return;
 };
 
@@ -56,8 +56,8 @@ static struct psf_bin_work * open_read_psf_bin_file(const char *file_name){
     int itmp = 0;
     open_rd_rawfile(file_name, &psf_b_WK->ierr);
     psf_b_WK->ilength = sizeof(int);
-    rawread_32bit(&psf_b_WK->iflag_keep, &psf_b_WK->ilength,
-                  &itmp, &psf_b_WK->lchar_out);
+    psf_b_WK->lchar_out = rawread_32bit(psf_b_WK->iflag_keep,
+                                        psf_b_WK->ilength, &itmp);
     if(itmp != psf_b_WK->i_UNIX){psf_b_WK->iflag_swap = 1;};
     
     return psf_b_WK;
@@ -91,7 +91,7 @@ static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work 
     for(j=0;j<3;j++){
         psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);
         rawread_64bit_psf(psf_b_WK, psf_b_WK->itmp_mp);
-        psf_b_WK->ilength = psf_b->nnod_viz*sizeof(double);
+        psf_b_WK->ilength = psf_b->nnod_viz * sizeof(double);
         rawread_64bit_psf(psf_b_WK, xx);
         for(i=0;i<psf_b->nnod_viz;i++){
             psf_b->xx_viz[i][j] = xx[i];

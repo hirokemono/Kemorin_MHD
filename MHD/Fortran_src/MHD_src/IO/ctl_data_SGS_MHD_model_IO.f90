@@ -11,6 +11,7 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
+!!      subroutine init_sph_sgs_mhd_model(hd_block, model_ctl, sgs_ctl)
 !!      subroutine read_sph_sgs_mhd_model                               &
 !!     &         (id_control, hd_block, model_ctl, sgs_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -65,8 +66,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(model_ctl%i_model .gt. 0) return
+      call init_sph_mhd_model_label(hd_block, model_ctl)
+      call init_sgs_ctl_label(hd_sgs_ctl, sgs_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -101,11 +104,25 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_sph_mhd_model_items(id_control, model_ctl, level)
-      call write_sgs_ctl                                                &
-     &   (id_control, hd_sgs_ctl, sgs_ctl, level)
+      call write_sgs_ctl(id_control, sgs_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_sgs_mhd_model
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_sph_sgs_mhd_model(hd_block, model_ctl, sgs_ctl)
+!
+      use ctl_data_MHD_model_IO
+      use ctl_data_SGS_model_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(mhd_model_control), intent(inout) :: model_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+!
+      call init_sph_mhd_model_label(hd_block, model_ctl)
+      call init_sgs_ctl_label(hd_sgs_ctl, sgs_ctl)
+      end subroutine init_sph_sgs_mhd_model
 !
 !   --------------------------------------------------------------------
 !

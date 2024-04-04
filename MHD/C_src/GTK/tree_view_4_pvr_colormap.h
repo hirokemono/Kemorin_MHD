@@ -20,6 +20,12 @@
 
 /* prototypes */
 
-void add_pvr_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox);
+gboolean pvr_draw_colorabar_CB(GtkWidget *widget, cairo_t *cr, gpointer user_data);
+void add_pvr_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vbox);
+void add_pvr_omap_list_box(struct colormap_view *color_vws, GtkWidget *vbox);
+void set_pvr_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user_data);
+
+
+GtkWidget * add_pvr_colormap_list_box_2(struct colormap_view *color_vws);
 
 #endif /* tree_view_4_pvr_colormap_h_ */

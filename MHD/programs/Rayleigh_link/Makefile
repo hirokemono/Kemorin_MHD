@@ -160,14 +160,14 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 	@echo '' >> $(MAKENAME)
 	@echo  '$$(LIB_RAYLEIGH_LINK_FILE): $$(MOD_RAYLEIGH_CONNECT)'>> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_RAYLEIGH_CONNECT)' >> $(MAKENAME)
 
 

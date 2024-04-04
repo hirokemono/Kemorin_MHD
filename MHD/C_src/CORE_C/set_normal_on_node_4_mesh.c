@@ -52,11 +52,11 @@ static void refine_normal_on_node_4_grp(struct viewer_mesh *mesh_s, int ntot_nod
 	 
 	for (i=ist; i<ied; i++) {
 		iele = abs(item_grp[i]) - 1;
-		idir = abs(item_grp[i]) / item_grp[i];
+/*		idir = abs(item_grp[i]) / item_grp[i]; */
 	 
 		for (j=0; j<mesh_s->nsurf_each_tri; j++) {
 			jnum = j + i * mesh_s->nsurf_each_tri;
-			inum = j + iele * mesh_s->nsurf_each_tri;
+/*			inum = j + iele * mesh_s->nsurf_each_tri; */
 			for (k1=0; k1<ITHREE; k1++) {
 				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
 					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;

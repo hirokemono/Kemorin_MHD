@@ -27,9 +27,19 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-
 /*  prototypes */
 
-void add_fline_draw_field_box(GtkWidget *box);
-void add_fline_draw_component_box(GtkWidget *box);
+void add_fline_draw_field_box(struct kemoviewer_type *kemo_sgl,
+                              GtkWidget *combobox_field,
+                              GtkWidget *label_tree_field,
+                              GtkCellRenderer *renderer_field);
+
+void update_fline_component_combobox(struct kemoviewer_type *kemo_sgl,
+                                     GtkWidget *combobox_comp,
+                                     GtkWidget *label_tree_comp,
+                                     GtkCellRenderer *renderer_comp);
+ void fline_draw_component_combobox(struct kemoviewer_type *kemo_sgl,
+                                   GtkWidget *combobox_comp,
+                                   GtkWidget *label_tree_comp,
+                                   GtkCellRenderer *renderer_comp);
 #endif

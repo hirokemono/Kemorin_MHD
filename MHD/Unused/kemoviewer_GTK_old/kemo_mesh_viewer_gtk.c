@@ -83,7 +83,7 @@ static void dummy_handler(int sel){
 static void make_1st_level_menu(){
 	GLint menu_id;
 	
-	int iflag_draw_m = kemoview_get_draw_mesh_flag();
+	int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_any_objects_on = iflag_draw_p + iflag_draw_m + iflag_draw_f;
@@ -104,21 +104,15 @@ static void make_1st_level_menu(){
 
 /* Main routine for C */
 
-void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
+void draw_mesh_kemo(void) {
 	int narg_glut = 0;
 	char **arg_glut;
     GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-	kemoview_set_stereo_shutter(iflag_streo_shutter);
-	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_anaglyph_flag(ANAGLYPH_OFF);
-	} else {
-		kemoview_set_anaglyph_flag(ANAGLYPH_ON);
-	};
-	
+    kemo_gl = kemoview_allocate_gl_pointers();
+
 	link_glut_menu_address();
 	glutInit(&narg_glut, arg_glut);
 	
@@ -127,16 +121,11 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	gtk_init (&narg_glut, &arg_glut);
     
 	/*! Initializations with GLUT*/
-	if(iflag_streo_shutter == SHUTTER_ON){
-		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
-					|GLUT_MULTISAMPLE|GLUT_STEREO|GLUT_3_2_CORE_PROFILE);
-		} else {
-		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
-					|GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
-	};
+    glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
+                        |GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
 	/*! Create viewer window*/
-    kemoview_set_retinamode(IZERO);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+    kemoview_set_retinamode(IZERO, kemo_sgl);
+	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y, kemo_sgl);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = create_kemoview_window();
 	
@@ -148,18 +137,20 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	
 	/*  initialize view_modifier, receiving the id for it's submenu  */
-	kemoviewer_reset_to_init_angle();
+	kemoviewer_reset_to_init_angle(kemo_sgl);
 	view_modifier_init();
 	
 	/* ! set the perspective and lighting */
-	kemoview_init_background_color();
-	kemoview_init_lighting();
-	kemoview_init_phong_light_list();
+    kemoview_init_background_color(kemo_sgl);
+	kemoview_init_lighting(kemo_sgl);
+    kemoview_gl_background_color();
+    kemoview_gl_init_lighting(kemo_gl);
+	kemoview_init_phong_light_list(kemo_sgl);
 	
 	menu_win = create_kemoview_menu();
 	
 	glutSetWindow(menu_win);
-	kemoview_draw_menu_setup();
+	kemoview_draw_menu_setup(kemo_gl);
 	
 	glutSetWindow(winid);
 	draw_mesh_w_menu();

@@ -188,7 +188,7 @@
       write(13,'(a)') '#define shaders__'
       write(13,'(a)') ''
       write(13,'(a)') '#include <string.h>'
-      write(13,'(a)') '#include "kemoviewer.h"'
+      write(13,'(a)') '#include "kemoviewer_gl.h"'
       write(13,'(a)') '#include "skip_comment_c.h"'
       write(13,'(a)') ''
 !      write(13,'(a)') 'struct shader_ids{'

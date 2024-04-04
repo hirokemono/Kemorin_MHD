@@ -56,7 +56,7 @@ copy_repart_table_for_IO.o: $(MODIFY_PARA_MESHDIR)/copy_repart_table_for_IO.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 ctl_data_volume_grouping_IO.o: $(MODIFY_PARA_MESHDIR)/ctl_data_volume_grouping_IO.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o t_control_array_integer.o t_control_array_character.o t_control_array_charaint.o t_control_data_masking.o t_ctl_data_volume_grouping.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ctl_file_volume_repart_IO.o: $(MODIFY_PARA_MESHDIR)/ctl_file_volume_repart_IO.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_ctl_data_FEM_sleeve_size.o t_ctl_data_volume_grouping.o t_ctl_data_volume_repart.o write_control_elements.o calypso_mpi.o skip_comment_f.o bcast_4_platform_ctl.o t_read_control_elements.o
+ctl_file_volume_repart_IO.o: $(MODIFY_PARA_MESHDIR)/ctl_file_volume_repart_IO.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_ctl_data_FEM_sleeve_size.o t_ctl_data_volume_grouping.o t_ctl_data_volume_repart.o write_control_elements.o skip_comment_f.o t_read_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ele_trans_tbl_4_repart.o: $(MODIFY_PARA_MESHDIR)/ele_trans_tbl_4_repart.f90 m_precision.o m_constants.o calypso_mpi.o t_geometry_data.o t_calypso_comm_table.o m_error_IDs.o calypso_mpi_int.o set_comm_tbl_to_new_part.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -130,7 +130,7 @@ t_control_param_vol_grping.o: $(MODIFY_PARA_MESHDIR)/t_control_param_vol_grping.
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_mesh_test.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_mesh_test.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o calypso_mpi.o skip_comment_f.o bcast_4_platform_ctl.o t_read_control_elements.o ctl_data_platforms_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_volume_grouping.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_volume_grouping.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o t_control_array_integer.o t_control_array_character.o t_control_array_charaint.o t_control_data_masking.o skip_comment_f.o
+t_ctl_data_volume_grouping.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_volume_grouping.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o t_control_array_integer.o t_control_array_character.o t_control_array_charaint.o t_control_data_maskings.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_volume_repart.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_volume_repart.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_ctl_data_FEM_sleeve_size.o t_ctl_data_volume_grouping.o t_read_control_elements.o ctl_data_platforms_IO.o ctl_data_volume_grouping_IO.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

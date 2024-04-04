@@ -84,6 +84,8 @@
 !
 !>        Structures of visualization controls
       type visualization_controls
+!>        Block name
+        character(len=kchara) :: block_name = 'visual_control'
 !>        Structures of setioning controls
         type(section_controls) :: psf_ctls
 !>        Structures of isosurface controls
@@ -98,7 +100,7 @@
         type(lic_rendering_controls) :: lic_ctls
 !
 !>         File name for repartition control block
-        character(len = kchara) :: fname_vol_repart_ctl
+        character(len = kchara) :: fname_vol_repart_ctl = 'NO_FILE'
 !>        Structure for new partitioning controls
         type(viz_repartition_ctl) :: repart_ctl
 !

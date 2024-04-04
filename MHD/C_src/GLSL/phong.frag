@@ -3,7 +3,7 @@
 
 in vec4 position;
 in vec4 ex_Color;
-in vec3 normal;
+in vec4 normal;
 out vec4 out_Color;
 
 #define MAX_LIGHTS 10
@@ -38,24 +38,33 @@ uniform ColorMaterial backMaterial;
 
 void main (void)
 {
-	vec3 fnormal = normalize(normal);
+	vec3 fnormal = normalize(normal.xyz);
 	vec3 light;
 	float diffuse;
+
+    vec3 halfway;
+    float product;
+    float fspecular;
+    
+    vec3 view =   normalize(position.xyz);
+    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);
 
 	out_Color = vec4(0.0,0.0,0.0,0.0);
 	for (int i = 0; i < num_lights; ++i){
 		light = normalize(LightSource[i].position.xyz - position.xyz);
-		diffuse = dot(light, fnormal);
 
-		out_Color += ex_Color * frontMaterial.ambient;
-		if (diffuse > 0.0) {
-			vec3 view = normalize(position.xyz);
-			vec3 halfway = normalize(light - view);
-			float product = max(dot(fnormal, halfway), 0.0);
-			float specular = pow(product, frontMaterial.shininess);
-			out_Color += ex_Color * frontMaterial.diffuse * diffuse
-			+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;
-		}
+        halfway =   normalize(light - view);
+        product =   max(dot(fnormal, halfway), 0.0);
+        fspecular = pow(product, frontMaterial.shininess);
+		diffuse =   dot(light, fnormal);
+
+		out_Color += ex_Color * frontMaterial.ambient
+                    + ex_Color * frontMaterial.diffuse * abs(diffuse)
+                    + tmpsp * fspecular;
+//		if (diffuse > 0.0) {
+//			out_Color += ex_Color * frontMaterial.diffuse * diffuse
+//                        + tmpsp * fspecular;
+//		}
 	}
 }
 

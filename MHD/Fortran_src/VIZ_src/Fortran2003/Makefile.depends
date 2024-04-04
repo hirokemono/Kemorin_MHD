@@ -1,9 +1,5 @@
-FLINE_control_label_to_c.o: $(VIZ_F2003_DIR)/FLINE_control_label_to_c.f90 m_precision.o ctl_data_field_line_IO.o t_control_params_4_fline.o
+PSF_control_label_to_c.o: $(VIZ_F2003_DIR)/PSF_control_label_to_c.f90 m_precision.o t_control_array_character.o m_section_coef_flags.o m_pvr_control_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-LIC_control_label_to_c.o: $(VIZ_F2003_DIR)/LIC_control_label_to_c.f90 m_precision.o ctl_data_lic_pvr_IO.o ctl_data_LIC_IO.o t_control_data_LIC_noise.o t_control_data_LIC_kernel.o t_control_data_masking.o ctl_data_pvr_colormap_IO.o ctl_data_pvr_movie_IO.o t_control_params_4_pvr.o
-	$(F90) -c $(F90OPTFLAGS) $<
-PSF_control_label_to_c.o: $(VIZ_F2003_DIR)/PSF_control_label_to_c.f90 m_precision.o ctl_data_isosurface_IO.o t_control_data_4_iso_def.o t_control_params_4_iso.o t_control_data_4_fld_on_psf.o ctl_data_section_def_IO.o ctl_data_section_IO.o set_coefs_of_sections.o m_section_coef_flags.o skip_comment_f.o
-	$(F90) -c $(F90OPTFLAGS) $<
-PVR_control_label_to_c.o: $(VIZ_F2003_DIR)/PVR_control_label_to_c.f90 m_precision.o ctl_data_each_pvr_IO.o ctl_data_view_transfer_IO.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_streo_view.o t_ctl_data_4_projection.o t_ctl_data_pvr_area.o t_ctl_data_pvr_light.o ctl_data_pvr_colormap_IO.o ctl_data_pvr_colorbar_IO.o t_ctl_data_pvr_colormap_bar.o t_ctl_data_pvr_isosurface.o ctl_data_pvr_section_IO.o ctl_data_pvr_movie_IO.o t_ctl_data_quilt_image.o t_control_params_4_pvr.o pvr_surface_enhancement.o
+PVR_control_label_to_c.o: $(VIZ_F2003_DIR)/PVR_control_label_to_c.f90 m_precision.o t_control_array_character.o m_pvr_control_labels.o m_control_fline_flags.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

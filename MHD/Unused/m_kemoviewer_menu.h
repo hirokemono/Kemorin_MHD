@@ -14,7 +14,7 @@
 #include "m_psf_data_4_viewer_c.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_color_table_c.h"
-#include "m_colorbar_work.h"
+#include "m_colorbar_buffer.h"
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
 

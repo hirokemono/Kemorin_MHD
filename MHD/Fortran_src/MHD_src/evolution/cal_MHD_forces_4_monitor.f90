@@ -5,13 +5,12 @@
 !
 !!      subroutine cal_fluxes_4_monitor                                 &
 !!     &         (node, fl_prop, cd_prop, iphys, nod_fld)
-!!      subroutine cal_forces_4_monitor(dt, FEM_prm, SGS_par,           &
-!!     &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
+!!      subroutine cal_forces_4_monitor                                 &
+!!     &         (dt, FEM_prm, SGS_par, mesh, fluid, conduct, sf_grp,   &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,&
 !!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
-!!     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,   &
-!!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,        &
-!!     &          v_sol, SR_sig, SR_r)
+!!     &          FEM_elens, diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,   &
+!!     &          nod_fld, ele_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -32,9 +31,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(base_field_address), intent(in) :: iak_diff_base
-!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -70,7 +67,7 @@
       use t_MHD_mass_matrices
       use t_filter_elength
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_bc_data_MHD
       use t_surface_bc_data_MHD
       use t_physical_property
@@ -165,13 +162,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_forces_4_monitor(dt, FEM_prm, SGS_par,             &
-     &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
+      subroutine cal_forces_4_monitor                                   &
+     &         (dt, FEM_prm, SGS_par, mesh, fluid, conduct, sf_grp,     &
      &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,  &
      &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
-     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,     &
-     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,          &
-     &          v_sol, SR_sig, SR_r)
+     &          FEM_elens, diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,     &
+     &          nod_fld, ele_fld, v_sol, SR_sig, SR_r)
 !
       use m_base_force_labels
       use m_diffusion_term_labels
@@ -186,10 +182,7 @@
       real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(surface_group_data), intent(in) :: sf_grp
       type(fluid_property),  intent(in) :: fl_prop
@@ -203,9 +196,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(SGS_term_address), intent(in) :: iak_diff_sgs
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -225,9 +216,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%forces%i_h_advect, iphys%base%i_temp,                 &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      ht_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,         &
+     &      fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -237,9 +228,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%forces%i_ph_advect, iphys%base%i_per_temp,            &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      ht_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,         &
+     &      fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -249,9 +240,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%div_forces%i_h_flux, iphys%forces%i_h_flux,           &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      ht_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,         &
+     &      fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -261,9 +252,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%div_forces%i_ph_flux, iphys%forces%i_ph_flux,         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      ht_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,         &
+     &      fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -274,9 +265,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%forces%i_c_advect, iphys%base%i_light,                &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      cp_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,         &
+     &      fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -286,9 +277,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%forces%i_pc_advect, iphys%base%i_per_light,           &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      cp_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,         &
+     &      fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -298,9 +289,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%div_forces%i_c_flux, iphys%forces%i_c_flux,           &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      cp_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,         &
+     &      fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -310,9 +301,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%div_forces%i_pc_flux, iphys%forces%i_pc_flux,         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
-     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      cp_prop, nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld,         &
+     &      fem_int, mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -333,15 +324,15 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
      &       (i_fld, dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,   &
-     &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
-     &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
+     &        mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,            &
+     &        sf_grp, fluid, fl_prop, cd_prop,                          &
+     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,                       &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys_LES%filter_fld,                    &
      &        iphys_LES%force_by_filter, iphys_LES%SGS_term,            &
-     &        iphys_LES%div_SGS, iphys_ele_base, ak_MHD,                &
-     &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
-     &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                     &
-     &        nod_fld, ele_fld, v_sol, SR_sig, SR_r)
+     &        iphys_LES%div_SGS, iphys_ele_base, ak_MHD, fem_int,       &
+     &        FEM_elens, diff_coefs, mk_MHD%mlump_fl, mhd_fem_wk,       &
+     &        rhs_mat, nod_fld, ele_fld, v_sol, SR_sig, SR_r)
         end if
       end do
 !
@@ -355,13 +346,14 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic(i_fld, ak_MHD%ak_d_magne, dt,       &
      &        FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
-     &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,      &
+     &        mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,            &
+     &        conduct, sf_grp, cd_prop,                                 &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
-     &        iphys%diffusion, iphys_LES%SGS_term,                      &
-     &        iphys_ele_base, ele_fld, fem_int, FEM_elens,              &
-     &        iak_diff_sgs, diff_coefs, mk_MHD%mlump_cd,                &
-     &        mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &        iphys%diffusion, iphys_LES%SGS_term, iphys_ele_base,      &
+     &        ele_fld, fem_int, FEM_elens, diff_coefs%Cdiff_SGS_uxb,    &
+     &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,            &
+     &        v_sol, SR_sig, SR_r)
         end if
       end do
 !
@@ -370,9 +362,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(vecp_induction%name)
         call cal_vecp_induction                                         &
-     &     (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
-     &      nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,  &
-     &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,              &
+     &     (dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,   &
+     &      cd_prop, nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld,  &
+     &      fem_int, mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -381,24 +373,24 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(thermal_diffusion%name)
         call cal_thermal_diffusion(iphys%diffusion%i_t_diffuse,         &
-     &      iphys%base%i_temp, iak_diff_base%i_temp,                    &
-     &      ak_MHD%ak_d_temp, FEM_prm%npoint_t_evo_int,                 &
-     &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
-     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int, FEM_elens,     &
-     &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld,              &
-     &      v_sol, SR_sig, SR_r)
+     &      iphys%base%i_temp, ak_MHD%ak_d_temp,                        &
+     &      FEM_prm%npoint_t_evo_int, SGS_par%model_p,                  &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, fluid,       &
+     &      sf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int,        &
+     &      FEM_elens, diff_coefs%Cdiff_temp, mk_MHD%mlump_fl,          &
+     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_c_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(composition_diffusion%name)
         call cal_thermal_diffusion(iphys%diffusion%i_c_diffuse,         &
-     &      iphys%base%i_light, iak_diff_base%i_light,                  &
-     &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &
-     &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
-     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int, FEM_elens,     &
-     &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld,              &
-     &      v_sol, SR_sig, SR_r)
+     &      iphys%base%i_light, ak_MHD%ak_d_composit,                   &
+     &      FEM_prm%npoint_t_evo_int, SGS_par%model_p,                  &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, fluid,       &
+     &      sf_grp, nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int,        &
+     &      FEM_elens, diff_coefs%Cdiff_light, mk_MHD%mlump_fl,         &
+     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_v_diffuse .gt. izero) then
@@ -406,21 +398,22 @@
      &             write(*,*) 'lead  ', trim(viscous_diffusion%name)
         call cal_viscous_diffusion                                      &
      &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,          &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
+     &      sf_grp, fluid, fl_prop,                                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
-     &      iphys_LES%div_SGS, ak_MHD, fem_int, FEM_elens,              &
-     &      iak_diff_base, iak_diff_sgs, diff_coefs,                    &
+     &      iphys_LES%div_SGS, ak_MHD, fem_int, FEM_elens, diff_coefs,  &
      &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (iphys%diffusion%i_vp_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(vector_potential_diffusion%name)
-        call cal_vecp_diffusion(ak_MHD%ak_d_magne,                      &
-     &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
+        call cal_vecp_diffusion                                         &
+     &     (ak_MHD%ak_d_magne, FEM_prm, SGS_par%model_p,                &
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
-     &      FEM_elens, iak_diff_base, diff_coefs, mk_MHD%mlump_cd,      &
+     &      FEM_elens, diff_coefs%Cdiff_magne, mk_MHD%mlump_cd,         &
      &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
@@ -430,11 +423,12 @@
      &             write(*,*) 'lead  ', trim(magnetic_diffusion%name)
         call cal_magnetic_diffusion(ak_MHD%ak_d_magne,                  &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
-     &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
-     &      iphys%base, iphys%diffusion, iphys_LES%SGS_term, fem_int,   &
-     &      FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,         &
-     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
+     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
+     &      sf_grp, nod_bcs%Bnod_bcs,                                   &
+     &      surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,                         &
+     &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
+     &      fem_int, FEM_elens, diff_coefs, rhs_mat, nod_fld,           &
+     &      v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine cal_forces_4_monitor

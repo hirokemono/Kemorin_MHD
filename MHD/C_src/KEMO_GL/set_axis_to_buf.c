@@ -3,31 +3,31 @@
 
 #include "set_axis_to_buf.h"
 
-static const GLfloat red[4] =   {RED_R, RED_G, RED_B, RED_A};
-static const GLfloat blue[4] =  {BLUE_R, BLUE_G, BLUE_B, BLUE_A};
-static const GLfloat green[4] = {L_GREEN_R, L_GREEN_G, L_GREEN_B, L_GREEN_A};
+static const float red[4] =   {RED_R, RED_G, RED_B, RED_A};
+static const float blue[4] =  {BLUE_R, BLUE_G, BLUE_B, BLUE_A};
+static const float green[4] = {L_GREEN_R, L_GREEN_G, L_GREEN_B, L_GREEN_A};
 
 static float set_ratio_4_axislabel(struct view_element *view_s, 
-                                   int end_screen[2], int zero_screen[2], GLfloat l_axis){
-	GLfloat ratio;
-	GLfloat ratio_tmp[2];
+                                   int end_screen[2], int zero_screen[2], float l_axis){
+    float ratio;
+    float ratio_tmp[2];
 	
 	if ( end_screen[0] < view_s->nx_frame/10 ) { 
-		ratio_tmp[0] = (GLfloat) (view_s->nx_frame/10 - zero_screen[0])
-        / (GLfloat) (end_screen[0] - zero_screen[0]);
+		ratio_tmp[0] = (float) (view_s->nx_frame/10 - zero_screen[0])
+        / (float) (end_screen[0] - zero_screen[0]);
 	} else if  ( end_screen[0] > view_s->nx_frame*9/10 ) {
-		ratio_tmp[0] = (GLfloat) (zero_screen[0]-view_s->nx_frame*9/10)
-        / (GLfloat) (zero_screen[0] - end_screen[0]);
+		ratio_tmp[0] = (float) (zero_screen[0]-view_s->nx_frame*9/10)
+        / (float) (zero_screen[0] - end_screen[0]);
 	} else {
 		ratio_tmp[0] = ONE;
 	};
 	
 	if ( end_screen[1] < view_s->ny_frame/10 ) { 
-		ratio_tmp[1] = (GLfloat) (view_s->ny_frame/10 - zero_screen[1])
-        / (GLfloat) (end_screen[1] - zero_screen[1]);
+		ratio_tmp[1] = (float) (view_s->ny_frame/10 - zero_screen[1])
+        / (float) (end_screen[1] - zero_screen[1]);
 	} else if  ( end_screen[1] > view_s->ny_frame*9/10 ) {
-		ratio_tmp[1] = (GLfloat) (zero_screen[1]-view_s->ny_frame*9/10)
-        / (GLfloat) (zero_screen[1] - end_screen[1]);
+		ratio_tmp[1] = (float) (zero_screen[1]-view_s->ny_frame*9/10)
+        / (float) (zero_screen[1] - end_screen[1]);
 	} else {
 		ratio_tmp[1] = ONE;
 	};
@@ -182,14 +182,14 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 	 return;
 }
 
-static int set_axis_rod_to_buf(int ncorner, float radius, 
-			double x_arrowx[6], double x_arrowy[6], double x_arrowz[6],
-			double x_charax[12], double x_charay[18], double x_charaz[18],
-			struct gl_strided_buffer *strided_buf){
+static long set_axis_rod_to_buf(int ncorner, float radius, 
+                                double x_arrowx[6], double x_arrowy[6], double x_arrowz[6],
+                                double x_charax[12], double x_charay[18], double x_charaz[18],
+                                struct gl_strided_buffer *strided_buf){
 	double dir_line[6];
 	double norm_line[6];
 	double color_2p[8];
-    int icou_patch = 0;
+    long icou_patch = 0;
 	int k, nd;
     /*draw x axis */
 	for (k=0; k<2; k++) {
@@ -203,7 +203,7 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
 	*/
 	find_normal_of_line(norm_line, x_arrowx, dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowx, 
-				dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	
     /*draw y axis */
 	for (k=0; k<2; k++) {
@@ -212,7 +212,7 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
     }
 	find_normal_of_line(norm_line, x_arrowy, dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowy, 
-				dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	
     /*draw z axis */
 	for (k=0; k<2; k++) {
@@ -221,7 +221,7 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
     }
 	find_normal_of_line(norm_line, x_arrowz, dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, x_arrowz,
-				dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	
 	
 	/*draw 'X' */
@@ -231,14 +231,14 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
     }
 	find_normal_of_line(norm_line, &x_charax[0], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charax[0],
-					dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charax[9+nd] - x_charax[6+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  red[nd];};
     }
 	find_normal_of_line(norm_line,  &x_charax[6], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charax[6],
-					dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	
 	/*draw 'Y' */
 	for (k=0; k<2; k++) {
@@ -247,21 +247,21 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
     }
 	find_normal_of_line(norm_line,  &x_charay[0], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[0],
-					dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[9+nd] - x_charay[6+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
 	find_normal_of_line(norm_line,  &x_charay[6], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[6],
-					dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charay[15+nd] - x_charay[12+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  green[nd];};
     }
 	find_normal_of_line(norm_line,  &x_charay[12], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charay[12],
-					dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	
 	/*draw 'Z' */
 	for (k=0; k<2; k++) {
@@ -270,28 +270,28 @@ static int set_axis_rod_to_buf(int ncorner, float radius,
     }
 	find_normal_of_line(norm_line,  &x_charaz[0], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[0],
-					dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[9+nd] - x_charaz[6+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
 	find_normal_of_line(norm_line,  &x_charaz[6], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[6],
-					dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
 	for (k=0; k<2; k++) {
 		for(nd=0;nd<3;nd++){dir_line[3*k+nd] =  x_charaz[15+nd] - x_charaz[12+nd];};
 		for(nd=0;nd<4;nd++){color_2p[4*k+nd] =  blue[nd];};
     }
 	find_normal_of_line(norm_line,  &x_charaz[12], dir_line);
 	icou_patch = set_tube_strided_buffer(icou_patch, ncorner, radius, &x_charaz[12],
-					dir_line, norm_line, color_2p, strided_buf);
+                                         dir_line, norm_line, color_2p, strided_buf);
     
 	return icou_patch;
 }
 
 
-int count_axis_to_buf(int ncorner){
-	int npatch_wall = 0;
+long count_axis_to_buf(int ncorner){
+	long npatch_wall = 0;
     /*draw x axis */
 	npatch_wall = npatch_wall + 2*ncorner;
     /*draw y axis */
@@ -310,17 +310,26 @@ int count_axis_to_buf(int ncorner){
 	return npatch_wall;
 }
 
-int set_axis_to_buf(struct view_element *view_s, double dist, int ncorner, double radius, 
-			struct gl_strided_buffer *strided_buf){
+void set_axis_to_buf(struct view_element *view_s, int iflag_draw_axis,
+                     double dist, int ncorner, double radius,
+                     struct gl_strided_buffer *strided_buf){
 	double x_arrowx[6], x_arrowy[6], x_arrowz[6];
 	double w_ratio[3];
 	double x_charax[12], x_charay[18], x_charaz[18];
-	int icou_patch = 0;
-	
-	set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz, 
-						 w_ratio, x_charax, x_charay, x_charaz, &radius);
-	icou_patch = set_axis_rod_to_buf(ncorner, radius, 
-				x_arrowx, x_arrowy, x_arrowz, x_charax, x_charay, x_charaz,
-				strided_buf);
-	return icou_patch;
+	long icou_patch = 0;
+    
+    if(iflag_draw_axis > 0){
+        long n_vertex = ITHREE * count_axis_to_buf(ncorner);
+        set_buffer_address_4_patch(n_vertex, strided_buf);
+        resize_strided_buffer(strided_buf);
+        set_vertexs_for_axis(view_s, dist, x_arrowx, x_arrowy, x_arrowz,
+                             w_ratio, x_charax, x_charay, x_charaz, &radius);
+        icou_patch = set_axis_rod_to_buf(ncorner, radius,
+                                         x_arrowx, x_arrowy, x_arrowz, 
+                                         x_charax, x_charay, x_charaz,
+                                         strided_buf);
+    }else{
+        strided_buf->num_nod_buf = 0;
+    };
+	return;
 };

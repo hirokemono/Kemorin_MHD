@@ -14,7 +14,9 @@ MOD_JACOBI = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'JACOBIDIR = $(JACOBIDIR)'  >> $(MAKENAME)
 
-lib_archve:
+libtarget:
+
+lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_JACOBI)' >> $(MAKENAME)
 
 mod_list:

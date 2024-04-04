@@ -72,10 +72,10 @@
 !
 !   work area for SGS model
 !
-      if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
+      if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
         call add_phys_name_ctl(temp_4_SGS, field_ctl)
       end if
-      if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
+      if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
         call add_phys_name_ctl(comp_4_SGS, field_ctl)
       end if
 !
@@ -201,15 +201,15 @@
         call add_phys_name_ctl(SGS_simi, field_ctl)
         call add_phys_name_ctl(SGS_grad_f, field_ctl)
 !
-        if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
+        if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
           call add_phys_name_ctl(temp_4_SGS, field_ctl)
         end if
-        if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
+        if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
           call add_phys_name_ctl(comp_4_SGS, field_ctl)
         end if
       end if
 !
-      if(     (SGS_param%iflag_SGS_m_flux .eq. id_SGS_diffusion)        &
+      if((SGS_param%SGS_momentum%iflag_SGS_flux .eq. id_SGS_diffusion)  &
      &   .or. (SGS_param%iflag_SGS_lorentz .eq. id_SGS_diffusion)) then
         call add_phys_name_ctl(SGS_diffuse, field_ctl)
       end if

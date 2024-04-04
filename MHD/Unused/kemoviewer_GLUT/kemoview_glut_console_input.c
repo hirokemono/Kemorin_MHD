@@ -92,7 +92,7 @@ void read_kemoview_data_glut(){
 	printf("stripped_ext %s\n", stripped_ext->string);
     kemoview_free_kvstring(stripped_ext);
 	
-	iflag_datatype = kemoview_open_data(filename);
+	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(file_prefix);
     kemoview_free_kvstring(filename);
 	return;
@@ -144,7 +144,7 @@ void set_psf_range_console(){
 	float data_max = (float) kemoview_get_PSF_max_data(icomp);
 
     colorname = kemoview_alloc_kvstring();
-	kemoview_get_PSF_field_name(colorname, ifield);
+	kemoview_get_PSF_field_name(kemo_sgl, colorname, ifield);
 	
 	input_range_from_console(colorname, &range_min, &range_max, data_min, data_max);
 	kemoview_set_PSF_linear_colormap((double) range_min, (double) range_max);
@@ -160,7 +160,7 @@ void set_fline_range_console(){
 	float data_min = (float) kemoview_get_fline_data_min(icomp);
 	float data_max = (float) kemoview_get_fline_data_max(icomp);
     struct kv_string *colorname = kemoview_alloc_kvstring();
-	kemoview_get_fline_color_data_name(colorname, ifield);
+	kemoview_get_fline_color_data_name(kemo_sgl, colorname, ifield);
 	
 	input_range_from_console(colorname, &range_min, &range_max, data_min, data_max);	
 	kemoview_set_fline_linear_colormap((double) range_min, (double) range_max);
@@ -259,7 +259,7 @@ void set_psf_opacity(){
 	printf("Enter PSF opacity: \n");
 	opacity = set_opacity_console(opacity);
 	
-	kemoview_set_PSF_constant_opacity((double) opacity);
+	kemoview_set_PSF_constant_opacity((double) opacity, kemo_sgl);
 	return;
 }
 
@@ -299,7 +299,7 @@ void set_surf_group_opacity(){
 void set_coastline_radius_console(){
 	float radius;
 	char buf[1024];
-	float radius_org = (float) kemoview_get_coastline_radius();
+	float radius_org = (float) kemoview_get_coastline_radius(kemo_sgl);
 	
 	printf("Enter coastline radius: \n");
 	printf("Current radius  %.7e \n", radius_org);
@@ -308,7 +308,7 @@ void set_coastline_radius_console(){
 	sscanf(buf,"%f", &radius);
 	printf("modified radius: %.7e \n", radius);
 	
-	kemoview_set_coastline_radius((double) radius);
+	kemoview_set_coastline_radius((double) radius, kemo_sgl);
 	return;
 };
 
@@ -317,7 +317,7 @@ void set_background_color_console(){
     float red, green, blue;
     char buf[1024];
 
-    kemoview_get_background_color(color);
+    kemoview_get_background_color(kemo_sgl, color);
     printf("Enter Background color by (R,G,B) from 0.0 to 1.0: \n");
     printf("Corrent color:  %.7e %.7e %.7e \n", color[0], color[1], color[2]);
     fgets(buf,sizeof(buf),stdin);
@@ -330,7 +330,8 @@ void set_background_color_console(){
 
     
     draw_mesh_keep_menu();
-    kemoview_set_background_color(color);
+    kemoview_set_background_color(color, kemo_sgl);
+    kemoview_gl_background_color();
     glClear(GL_COLOR_BUFFER_BIT); 
     return;
 };
@@ -339,7 +340,7 @@ void set_background_color_console(){
 void set_domain_distance_console(){
 	float distance;
 	char buf[1024];
-	float dist_org = (float) kemoview_get_domain_distance();
+	float dist_org = (float) kemoview_get_domain_distance(kemo_sgl);
 	
 	printf("Enter object distance: \n");
 	printf("Current distance  %.7e \n", dist_org);
@@ -348,14 +349,14 @@ void set_domain_distance_console(){
 	sscanf(buf,"%f", &distance);
 	printf("modified distance: %.7e \n", distance);
 	
-	kemoview_set_domain_distance((double) distance);
+	kemoview_set_domain_distance((double) distance, kemo_sgl);
 	return;
 }
 
 void set_num_color_loop_console(){
 	char buf[1024];
 	int num_cloop;
-	int num_loop_org = kemoview_get_num_of_color_loop();
+	int num_loop_org = kemoview_get_num_of_color_loop(kemo_sgl);
 	
 	printf("Enter number of color: \n");
 	printf("Current number  %d \n", num_loop_org);
@@ -364,7 +365,7 @@ void set_num_color_loop_console(){
 	sscanf(buf,"%d", &num_cloop);
 	printf("modified number of color: %d \n", num_cloop);
 	
-	kemoview_set_num_of_color_loop(num_cloop);
+	kemoview_set_num_of_color_loop(num_cloop, kemo_sgl);
 	return;
 }
 
@@ -444,7 +445,7 @@ void set_psf_single_color_console(){
 	rgba[2] = (double) blue;
 	rgba[3] = kemoview_get_PSF_max_opacity();
 	
-    kemoview_set_PSF_single_color(rgba);
+    kemoview_set_PSF_single_color(rgba, kemo_sgl);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
 	return;
 }
@@ -452,7 +453,7 @@ void set_psf_single_color_console(){
 void add_psf_colormap_point_console(){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
-	kemoview_add_PSF_color_list((double) value, (double) color);
+	kemoview_add_PSF_color_list((double) value, (double) color, kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	
 	return;
@@ -460,7 +461,7 @@ void add_psf_colormap_point_console(){
 void modify_psf_colormap_point_console(int i_point){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
-	kemoview_set_PSF_color_data(i_point, (double) value, (double) color);
+	kemoview_set_PSF_color_data(i_point, (double) value, (double) color, kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	return;
 }
@@ -468,14 +469,16 @@ void modify_psf_colormap_point_console(int i_point){
 void add_psf_opacitymap_point_console(){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
-	kemoview_add_PSF_opacity_list((double) value, (double) opacity);
+	kemoview_add_PSF_opacity_list((double) value, (double) opacity, 
+                                  kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	return;
 }
 void modify_psf_opacitymap_point_console(int i_point){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
-	kemoview_set_PSF_opacity_data(i_point, (double) value, (double) opacity);
+	kemoview_set_PSF_opacity_data(i_point, (double) value, (double) opacity,
+                                  kemo_sgl);
 	kemoview_check_PSF_colormap_control();
 	return;
 }
@@ -491,7 +494,7 @@ void save_PSF_colormap_file_glut(){
 	*delchara='\0';
 
     filename = kemoview_init_kvstring_by_string(buf);
-	kemoview_write_PSF_colormap_file(filename);
+	kemoview_write_PSF_colormap_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	return;
 };
@@ -507,7 +510,7 @@ void load_PSF_colormap_file_glut(){
 	*delchara='\0';
 
     filename = kemoview_init_kvstring_by_string(buf);
-	kemoview_read_PSF_colormap_file(filename);
+	kemoview_read_PSF_colormap_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	return;
 };
@@ -523,7 +526,7 @@ void save_viewmatrix_file(){
 	*delchara='\0';
 
     filename = kemoview_init_kvstring_by_string(buf);
-	kemoview_write_modelview_file(filename);
+	kemoview_write_modelview_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	return;
 };
@@ -539,7 +542,7 @@ void load_viewmatrix_file(){
 	*delchara='\0';
 
     filename = kemoview_init_kvstring_by_string(buf);
-	kemoview_load_modelview_file(filename);
+	kemoview_load_modelview_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	return;
 };

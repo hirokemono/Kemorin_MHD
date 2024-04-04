@@ -7,10 +7,6 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_SGS_SPH_MHD_field(model_ctl, psph_ctl,   &
-!!     &          smonitor_ctl, crust_filter_ctl, nmtr_ctl,             &
-!!     &          SGS_par, MHD_prop, MHD_BC, sph, rj_fld,               &
-!!     &          nod_fld, monitor, nod_mntr)
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt,              &
 !!     &          model_ctl, smctl_ctl, psph_ctl, sgs_ctl,              &
 !!     &          MHD_files, bc_IO, refs, SGS_par, dynamic_SPH,         &
@@ -70,69 +66,11 @@
 !
       implicit none
 !
-      private :: set_control_sph_sgs_mhd_fields
       private :: set_control_SGS_SPH_MHD
 !
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_control_SGS_SPH_MHD_field(model_ctl, psph_ctl,     &
-     &          smonitor_ctl, crust_filter_ctl, nmtr_ctl,               &
-     &          SGS_par, MHD_prop, MHD_BC, sph, rj_fld,                 &
-     &          nod_fld, monitor, nod_mntr)
-!
-      use t_SGS_control_parameter
-      use t_phys_data
-      use t_sph_mhd_monitor_data_IO
-!
-      use set_control_sph_data_MHD
-      use set_control_sph_mhd
-      use set_controls_4_sph_shell
-      use set_field_data_w_SGS
-      use set_nodal_field_name
-!
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(SGS_paremeters), intent(inout) :: SGS_par
-      type(mhd_model_control), intent(inout) :: model_ctl
-      type(sph_monitor_control), intent(in) :: smonitor_ctl
-      type(clust_filtering_ctl), intent(in) :: crust_filter_ctl
-      type(parallel_sph_shell_control), intent(in) :: psph_ctl
-      type(node_monitor_control), intent(in) :: nmtr_ctl
-      type(MHD_BC_lists), intent(in) :: MHD_BC
-      type(sph_grids), intent(inout) :: sph
-      type(phys_data), intent(inout) :: rj_fld
-      type(phys_data), intent(inout) :: nod_fld
-      type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(node_monitor_IO), intent(inout) :: nod_mntr
-!
-      integer(kind = kint) :: ierr
-!
-!
-!       set nodal field list
-      if(iflag_debug.gt.0) write(*,*) 'set_SGS_field_ctl_by_viz'
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (model_ctl%fld_ctl%field_ctl, nod_fld, ierr)
-!
-!       set spectr field list
-      if(iflag_debug.gt.0) write(*,*) 'set_control_sph_sgs_mhd_fields'
-      call set_control_sph_sgs_mhd_fields(SGS_par%model_p, MHD_prop,    &
-     &    model_ctl%fld_ctl%field_ctl, rj_fld)
-!
-!   set_pickup modes
-      call set_control_SPH_MHD_monitors                                 &
-     &   (smonitor_ctl, MHD_BC, rj_fld, monitor)
-!
-      call set_crustal_filtering_control(crust_filter_ctl, monitor)
-!
-      call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
-!
-      call set_control_node_grp_monitor(nmtr_ctl, nod_mntr)
-      call count_field_4_monitor(rj_fld, nod_mntr)
-!
-      end subroutine set_control_SGS_SPH_MHD_field
 !
 ! ----------------------------------------------------------------------
 !
@@ -187,7 +125,7 @@
      &   (sgs_ctl, SGS_par%model_p, SGS_par%filter_p,                   &
      &    MHD_files%Csim_file_IO, SGS_par%i_step_sgs_coefs)
       call s_set_control_SGS_commute                                    &
-     &   (SGS_par%model_p, sgs_ctl, SGS_par%commute_p,                  &
+     &   (sgs_ctl, SGS_par%model_p, SGS_par%commute_p,                  &
      &    MHD_files%Cdiff_file_IO)
 !
       call set_control_SPH_SGS_filters                                  &
@@ -202,72 +140,6 @@
       end subroutine set_control_4_SPH_SGS_MHD
 !
 ! ----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_control_sph_sgs_mhd_fields                         &
-     &         (SGS_param, MHD_prop, field_ctl, rj_fld)
-!
-      use m_error_IDs
-      use m_machine_parameter
-!
-      use t_control_parameter
-      use t_SGS_control_parameter
-      use t_control_array_character3
-      use t_phys_data
-!
-      use add_nodal_fields_4_MHD
-      use add_sph_MHD_fields_2_ctl
-      use add_sph_SGS_MHD_fld_2_ctl
-      use add_sph_filter_force_2_ctl
-      use set_field_data_w_SGS
-      use add_dependency_for_SGS
-!
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(ctl_array_c3), intent(inout) :: field_ctl
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-      integer(kind = kint) :: ierr
-!
-!
-!   set physical values
-!
-      if(field_ctl%icou .eq. 0) then
-        call calypso_MPI_abort(ierr_fld, 'Set field for simulation')
-      end if
-      if (iflag_debug.eq.1) write(*,*)                                  &
-     &    'original number of field ', field_ctl%num
-!
-      if ( field_ctl%num .ne. 0 ) then
-!
-!     add fields for simulation
-        call add_field_name_4_mhd(MHD_prop, field_ctl)
-        call add_field_name_4_sph_mhd                                   &
-     &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
-        call add_filter_force_4_sph_mhd                                 &
-     &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
-!
-        call add_field_name_4_SGS(SGS_param, field_ctl)
-        call add_field_name_dynamic_SGS                                 &
-     &     (SGS_param, MHD_prop%fl_prop, field_ctl)
-!
-        call add_dependent_SGS_field(SGS_param, field_ctl)
-        call add_dependent_field(MHD_prop, field_ctl)
-!
-        if (iflag_debug.eq.1) write(*,*)                                &
-     &    'field_ctl%num after modified ', field_ctl%num
-!
-!    set nodal data
-!
-        if (iflag_debug.gt.0) write(*,*) 'set_SGS_field_ctl_by_viz'
-        call set_SGS_field_ctl_by_viz(field_ctl, rj_fld, ierr)
-      end if
-!
-      end subroutine set_control_sph_sgs_mhd_fields
-!
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &

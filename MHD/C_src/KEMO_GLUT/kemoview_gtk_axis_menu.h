@@ -29,6 +29,7 @@
 
 /*  prototypes */
 
-GtkWidget * make_axis_menu_box(GtkWidget *window);
+GtkWidget * make_axis_menu_box(struct kemoviewer_type *kemo_sgl,
+                               GtkWidget *window);
 
 #endif

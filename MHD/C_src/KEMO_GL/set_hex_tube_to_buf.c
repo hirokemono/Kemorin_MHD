@@ -33,7 +33,7 @@ static int hex_tube_np[12][3] = {{3, 6,2}, {2, 6, 7},
 								 {0, 9,5}, {5, 9,10},
 								 {5,10,4}, {4,10,11},
 								 {4,11,3}, {3,11, 6}};
-
+/*
 static int hex_cap_n[ 6][3] = {{0,6,1},
 							   {1,6,2},
 							   {2,6,3},
@@ -46,6 +46,7 @@ static int hex_cap_p[ 6][3] = {{3,6,2},
 							   {0,6,5},
 							   {5,6,4},
 							   {4,6,3}};
+*/
 
 void copy_hex_tube_pp(int hex_tube[12][3]){
 	int i, k;
@@ -238,12 +239,13 @@ int set_isoline_on_triangle(double xyz_line[6], double dir_line[6], double nrm_l
 
 int add_line_tube_patch_num(int ipatch_in){return ipatch_in + 12;};
 
-int append_line_tube_to_buf(int ipatch_in, int hex_tube[12][3], double radius, 
+long append_line_tube_to_buf(const long ipatch_in, 
+                             int hex_tube[12][3], double radius, 
 							 double color_edge[8], double xyz_edge[6], 
 							 double dir_edge[6], double nrm_edge[6], 
 							 struct gl_strided_buffer *strided_buf){
-	int ipatch = ipatch_in;
-	int i, k, nd;
+	long ipatch = ipatch_in;
+	long i, k, nd;
 	double xx_tube[18];
 	double norm_tube[18];
 	double color_tube[24];
@@ -255,7 +257,7 @@ int append_line_tube_to_buf(int ipatch_in, int hex_tube[12][3], double radius,
 		set_each_tube_data(xx_tube, norm_tube, color_tube, 
 						   &hex_tube[2*i], norms_hex, radius, xyz_edge, color_edge);
 		for(k=0;k<6;k++){
-			set_node_stride_VBO((3*ipatch+6*i+k), strided_buf);
+            set_node_stride_buffer((3*ipatch+6*i+k), strided_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = (float) xx_tube[3*k+nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = (float) color_tube[4*k+nd];};
 			for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = (float) norm_tube[3*k+nd];};

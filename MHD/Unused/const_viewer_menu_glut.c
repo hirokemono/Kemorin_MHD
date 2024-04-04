@@ -4,8 +4,8 @@
 #include "const_viewer_menu_glut.h"
 
 void glut_drawing_select() {
-	int iflag_shade = kemoview_get_object_property_flags(SHADING_SWITCH);
-	int iflag_polygon = kemoview_get_object_property_flags(POLYGON_SWITCH);
+	int iflag_shade = kemoview_get_object_property_flags(kemo_sgl, SHADING_SWITCH);
+	int iflag_polygon = kemoview_get_object_property_flags(kemo_sgl, POLYGON_SWITCH);
 	
 	if(iflag_shade == FLAT_SHADE ){
 		glutAddMenuEntry("flat => smooth",SHADING_SWITCH);
@@ -33,10 +33,10 @@ void glut_current_PSF_select() {
 	
 	id_current = kemoview_get_curent_PSF_ID();
 	for (i=0; i< kemoview_get_PSF_max_loaded(); i++) {
-		if(i != id_current && kemoview_get_PSF_loaded_flag(i) > 0){
+		if(i != id_current && kemoview_get_PSF_loaded_flag(kemo_sgl, i) > 0){
 			kemoview_set_current_PSF(i);
             stripped_filehead = kemoview_alloc_kvstring();
-			istep = kemoview_get_PSF_file_prefix(stripped_filehead);
+			istep = kemoview_get_PSF_file_prefix(kemo_sgl, stripped_filehead);
 			sprintf(title, "%d: %s", i, stripped_filehead->string);
             kemoview_free_kvstring(stripped_filehead);
 			glutAddMenuEntry(title,i);
@@ -54,7 +54,7 @@ void glut_PSF_field_select() {
 	
 	for ( i = 0; i< num_field; i++) {
 		if( i != if_psf){
-			kemoview_get_PSF_field_name(colorname, i);
+			kemoview_get_PSF_field_name(kemo_sgl, colorname, i);
 			glutAddMenuEntry(colorname->string,i);
 		}
 	};
@@ -70,7 +70,7 @@ void glut_fline_color_select(){
 	
 	for ( i = 0; i< num_field; i++) {
 		if( i != if_fline) {
-			kemoview_get_PSF_field_name(colorname, i);
+			kemoview_get_PSF_field_name(kemo_sgl, colorname, i);
 			glutAddMenuEntry(colorname->string,i);
 		}
 	};
@@ -133,7 +133,7 @@ void glut_PSF_comps_select() {
 	char tmp_menu[1024];
 	int i;
 	int if_psf =   kemoview_get_PSF_field_id();
-	int ndir =     kemoview_get_PSF_num_component(if_psf);
+	int ndir = (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
 	
 	for(i=0;i<ndir;i++){
 		if(kemoview_get_PSF_component_id() != i){
@@ -207,7 +207,7 @@ void glut_fline_color_comp_select() {
 	char tmp_menu[1024];
 	int if_fline = kemoview_get_fline_color_field();
 	int ic_fline = kemoview_get_fline_color_component();
-	int ndir = kemoview_get_fline_color_num_comps(if_fline);
+	int ndir = kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
 	
 	for ( i = 0; i< ndir; i++) {
 		if( i != ic_fline){
@@ -222,15 +222,15 @@ void glut_fline_color_comp_select() {
 };
 
 void glut_PSF_draw_menu(){
-	int iflag_solid =       kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =        kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
-	int iflag_zero =        kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
-	int iflag_cbar =        kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-	int iflag_vect =        kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
-	int iflag_PSF_polygon = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
-    int iflag_PSF_tanvec =  kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
+	int iflag_solid =       kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	int iflag_grid =        kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
+	int iflag_zero =        kemoview_get_PSF_draw_flags(kemo_sgl, ZEROGRID_TOGGLE);
+	int iflag_cbar =        kemoview_get_PSF_draw_flags(kemo_sgl, COLORBAR_TOGGLE);
+	int iflag_vect =        kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
+	int iflag_PSF_polygon = kemoview_get_PSF_draw_flags(kemo_sgl, PSF_POLYGON_SWITCH);
+    int iflag_PSF_tanvec =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFTANVEC_TOGGLE);
 	int if_psf =            kemoview_get_PSF_field_id();
-	int ncomp =             kemoview_get_PSF_num_component(if_psf);
+	int ncomp =       (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
 	
 	if(iflag_solid != IZERO ){
 		glutAddMenuEntry("hide PSF surface",PSFSOLID_TOGGLE);
@@ -290,8 +290,8 @@ void glut_PSF_draw_menu(){
 	
 void glut_PSF_range_menu(){
 	int if_psf =        kemoview_get_PSF_field_id();
-	int ncomp =         kemoview_get_PSF_num_component(if_psf);
-	int iflag_vect =    kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
+	int ncomp =   (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
+	int iflag_vect =    kemoview_get_PSF_draw_flags(kemo_sgl, PSFVECT_TOGGLE);
 	int iflag_v_color = kemoview_get_PSF_vector_color_mode();
 /*	int iflag_refv =  kemoview_get_PSF_draw_refv();*/
 
@@ -344,8 +344,7 @@ void glut_nod_grp_menu_item(){
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_nodgrp_node(i);
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_node_grp_name(groupname, i);
+        groupname = kemoview_get_group_name(kemo_sgl, NODE_GRP_FLAG, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
 	};
@@ -360,8 +359,7 @@ void glut_surf_grp_patch_menu(){
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_patch(i);
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname, i);
+        groupname = kemoview_get_group_name(kemo_sgl, SURF_GRP_FLAG, i);
         
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
@@ -377,8 +375,7 @@ void glut_surf_grp_edge_menu(){
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_grid(i);
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname, i);
+        groupname = kemoview_get_group_name(kemo_sgl, SURF_GRP_FLAG, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
 	};
@@ -393,8 +390,7 @@ void glut_surf_grp_node_menu(){
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_surfgrp_node(i);
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_surf_grp_name(groupname, i);
+        groupname = kemoview_get_group_name(kemo_sgl, SURF_GRP_FLAG, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
 	};
@@ -410,8 +406,7 @@ void glut_ele_grp_patch_menu(){
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_elegrp_patch(i);
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_ele_grp_name(groupname, i);
+        groupname = kemoview_get_group_name(kemo_sgl, ELEM_GRP_FLAG, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
 	};
@@ -426,8 +421,7 @@ void glut_ele_grp_edge_menu(){
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
 		iflag_draw = kemoview_get_draw_elegrp_grid(i);
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_ele_grp_name(groupname, i);
+        groupname = kemoview_get_group_name(kemo_sgl, ELEM_GRP_FLAG, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
 	};
@@ -441,8 +435,7 @@ void glut_ele_grp_node_menu(){
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-        groupname = kemoview_alloc_kvstring();
-		kemoview_get_ele_grp_name(groupname, i);
+        groupname = kemoview_get_group_name(kemo_sgl, ELEM_GRP_FLAG, i);
 		iflag_draw = kemoview_get_draw_elegrp_node(i);
 		glut_add_each_grp_menu_item(i, iflag_draw, groupname->string);
         kemoview_free_kvstring(groupname);
@@ -452,7 +445,7 @@ void glut_ele_grp_node_menu(){
 }
 
 void glut_viewtype_menu(){
-	int iflag_view = kemoview_get_view_type_flag();
+	int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
 	
 	if( iflag_view != VIEW_3D){
 		glutAddMenuEntry("3D-Viewer",VIEW_3D);

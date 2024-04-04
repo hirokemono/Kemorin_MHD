@@ -50,14 +50,29 @@ struct group_gtk_menu{
 	GtkWidget *button_node_color;
 	GtkWidget *spin_opacity;
 	
-	GdkRGBA gcolor;
+    GtkWidget *button_draw_patch;
+    GtkWidget *button_draw_grid;
+    GtkWidget *button_draw_node;
+    
+    GtkWidget *button_hide_patch;
+    GtkWidget *button_hide_grid;
+    GtkWidget *button_hide_node;
+
+    GtkWidget *scrolled_table;
+    
+    GdkRGBA gcolor;
 };
 
 struct nod_grp_gtk_menu{
 	struct ci_clist_view *nod_grp_vws;
 	
-	GtkWidget *combobox_node_color;
+    GtkWidget *combobox_node_color;
 	GtkWidget *button_node_color;
+    
+    GtkWidget *button_draw_node;
+    GtkWidget *button_hide_node;
+    GtkWidget *scrolled_table;
+
 	GdkRGBA gcolor;
 };
 
@@ -67,7 +82,9 @@ struct kemoview_mesh_view{
 	struct group_gtk_menu *ele_group_gmenu;
 	struct group_gtk_menu *surf_group_gmenu;
 	
-	GtkWidget *spin_dist;
+    GtkWidget *closeMeshButton;
+
+    GtkWidget *spin_dist;
 	GtkWidget *spin_node_size, *spin_node_digit;
 	GtkWidget *spin_num_loop;
 	GtkWidget *combobox_color_mode;
@@ -75,7 +92,8 @@ struct kemoview_mesh_view{
 
 /* prototypes */
 
-void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws);
+void init_mesh_views_4_viewer(struct kemoviewer_type *kemo_sgl,
+                              struct kemoview_mesh_view *mesh_vws);
 void dealloc_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws);
 
 void append_grp_model_data(int index, struct ci3_clist_view *grp_vws, 
@@ -83,16 +101,16 @@ void append_grp_model_data(int index, struct ci3_clist_view *grp_vws,
 void append_node_grp_model_data(int index, struct ci_clist_view *nod_grp_vws,
 			GtkListStore *child_model);
 
-int toggle_draw_patch_switch(gchar *path_str, gpointer user_data, 
-			int *index1_for_toggle);
-int toggle_draw_grid_switch(gchar *path_str, gpointer user_data, 
-			int *index2_for_toggle);
-int toggle_draw_node_switch(gchar *path_str, gpointer user_data, 
-			int *index3_for_toggle);
-int toggle_draw_nod_grp_node_switch(gchar *path_str, gpointer user_data, 
-			int *index1_for_toggle);
+int toggle_draw_patch_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                             int *index1_for_toggle);
+int toggle_draw_grid_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                            int *index2_for_toggle);
+int toggle_draw_node_switch(gchar *path_str, struct ci3_clist_view *grp_vws, 
+                            int *index3_for_toggle);
+int toggle_draw_nod_grp_node_switch(gchar *path_str, struct ci_clist_view *nod_grp_vws, 
+                                    int *index1_for_toggle);
 
-int set_all_draw_flags(int iflag, int iflag_column, gpointer user_data);
-int set_all_node_draw_flags(int iflag, gpointer user_data);
+int set_all_draw_flags(int iflag, int iflag_column, struct ci3_clist_view *grp_vws);
+int set_all_node_draw_flags(int iflag, struct ci_clist_view *nod_grp_vws);
 
 #endif /* tree_view_4_pvr_colormap_h_ */

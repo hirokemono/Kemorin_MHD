@@ -6,22 +6,20 @@
 !!      subroutine int_vol_sgs_div_v_linear(node, ele,                  &
 !!     &          g_FEM, jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld, &
 !!     &          iele_fsmp_stack, n_int, i_vector, i_filter,           &
-!!     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_l)
+!!     &          ak_diff, fem_wk, f_l)
 !!      subroutine int_vol_sgs_solenoidal_co(node, ele,                 &
 !!     &          g_FEM, jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld, &
 !!     &          iele_fsmp_stack, n_int, i_scalar, i_filter,           &
-!!     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_nl)
+!!     &          ak_diff, fem_wk, f_nl)
 !!
 !!      subroutine int_vol_scalar_sgs_diffuse                           &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,&
 !!     &          iele_fsmp_stack, n_int, coef_crank, ak_d,             &
-!!     &          i_scalar, i_filter, ncomp_diff, iak_diff, ak_diff,    &
-!!     &          fem_wk, f_l)
+!!     &          i_scalar, i_filter, ak_diff, fem_wk, f_l)
 !!      subroutine int_vol_vector_sgs_diffuse                           &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,&
 !!     &          iele_fsmp_stack, n_int, coef_crank, ak_d,             &
-!!     &          i_vector, i_filter, ncomp_diff, iak_diff, ak_diff,    &
-!!     &          fem_wk, f_l)
+!!     &          i_vector, i_filter, ak_diff, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -55,7 +53,7 @@
       subroutine int_vol_sgs_div_v_linear(node, ele,                    &
      &          g_FEM, jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld,   &
      &          iele_fsmp_stack, n_int, i_vector, i_filter,             &
-     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_l)
+     &          ak_diff, fem_wk, f_l)
 !
       use cal_skv_to_ff_smp
       use nodal_fld_2_each_element
@@ -73,8 +71,7 @@
       integer(kind=kint), intent(in) :: n_int, i_vector
       integer(kind=kint), intent(in) :: i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -89,7 +86,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vector, fem_wk%vector_1)
         call fem_skv_div_sgs_linear                                     &
-     &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff(1,iak_diff),  &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff,              &
      &      ele, g_FEM, jac_3d, jac_3d_l, FEM_elens, fem_wk%vector_1,   &
      &      fem_wk%sk6)
       end do
@@ -104,7 +101,7 @@
       subroutine int_vol_sgs_solenoidal_co(node, ele,                   &
      &          g_FEM, jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld,   &
      &          iele_fsmp_stack, n_int, i_scalar, i_filter,             &
-     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_nl)
+     &          ak_diff, fem_wk, f_nl)
 !
       use cal_skv_to_ff_smp
       use nodal_fld_2_each_element
@@ -122,8 +119,7 @@
       integer(kind=kint), intent(in) :: n_int, i_scalar
       integer(kind=kint), intent(in) :: i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -138,7 +134,7 @@
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_scalar, fem_wk%scalar_1)
         call fem_skv_grad_sgs_linear                                    &
-     &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff(1,iak_diff),  &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff,              &
      &      ele, g_FEM, jac_3d, jac_3d_l, FEM_elens, fem_wk%scalar_1,   &
      &      fem_wk%sk6)
       end do
@@ -154,8 +150,7 @@
       subroutine int_vol_scalar_sgs_diffuse                             &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,  &
      &          iele_fsmp_stack, n_int, coef_crank, ak_d,               &
-     &          i_scalar, i_filter, ncomp_diff, iak_diff, ak_diff,      &
-     &          fem_wk, f_l)
+     &          i_scalar, i_filter, ak_diff, fem_wk, f_l)
 !
       use cal_skv_to_ff_smp
       use nodal_fld_2_each_element
@@ -174,8 +169,7 @@
       integer(kind=kint), intent(in) :: i_filter
       real (kind=kreal), intent(in) :: coef_crank
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -189,10 +183,9 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_scalar, fem_wk%scalar_1)
-        call fem_skv_scalar_diffuse_sgs_type(iele_fsmp_stack, n_int,    &
-     &      k2, i_filter, ak_diff(1,iak_diff), ak_d,                    &
-     &      ele, g_FEM, jac_3d, FEM_elens, fem_wk%scalar_1,             &
-     &      fem_wk%sk6)
+        call fem_skv_scalar_diffuse_sgs_type                            &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff, ak_d,        &
+     &      ele, g_FEM, jac_3d, FEM_elens, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp                                    &
@@ -205,8 +198,7 @@
       subroutine int_vol_vector_sgs_diffuse                             &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,  &
      &          iele_fsmp_stack, n_int, coef_crank, ak_d,               &
-     &          i_vector, i_filter, ncomp_diff, iak_diff, ak_diff,      &
-     &          fem_wk, f_l)
+     &          i_vector, i_filter, ak_diff, fem_wk, f_l)
 !
       use cal_skv_to_ff_smp
       use nodal_fld_2_each_element
@@ -225,8 +217,7 @@
       integer(kind=kint), intent(in) :: i_filter
       real (kind=kreal), intent(in) :: coef_crank
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
-      integer(kind=kint), intent(in) :: ncomp_diff, iak_diff
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele,ncomp_diff)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -240,10 +231,9 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vector, fem_wk%vector_1)
-        call fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack, n_int,    &
-     &      k2, i_filter, ak_diff(1,iak_diff), ak_d,                    &
-     &      ele, g_FEM, jac_3d, FEM_elens, fem_wk%vector_1,             &
-     &      fem_wk%sk6)
+        call fem_skv_vector_diffuse_sgs_type                            &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff, ak_d,        &
+     &      ele, g_FEM, jac_3d, FEM_elens, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_coef_to_ff_v_smp                                    &

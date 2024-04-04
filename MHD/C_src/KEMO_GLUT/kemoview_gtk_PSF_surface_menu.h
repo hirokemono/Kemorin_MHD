@@ -15,6 +15,7 @@
 
 #include "calypso_GTK.h"
 #include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_chara_int_GTK.h"
@@ -41,8 +42,11 @@ struct psf_surface_gtk_menu{
 
 /*  prototypes */
 
-void set_gtk_surface_menu_values(struct psf_surface_gtk_menu *gtk_psf_surface);
-GtkWidget * init_gtk_psf_surface_menu_expander(GtkWidget *window_cmap, struct colormap_view *color_vws, 
-							  struct psf_surface_gtk_menu *psf_surface_menu);
-
+void set_gtk_surface_menu_values(struct kemoviewer_type *kemo_sgl,
+                                 struct psf_surface_gtk_menu *gtk_psf_surface);
+GtkWidget * init_gtk_psf_surface_menu_expander(struct kemoviewer_type *kemo_sgl,
+                                               struct kemoviewer_gl_type *kemo_gl,
+                                               GtkWidget *window, 
+                                               struct colormap_view *color_vws, 
+                                               struct psf_surface_gtk_menu *psf_surface_menu);
 #endif

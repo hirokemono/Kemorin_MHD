@@ -41,8 +41,7 @@ static void cb_file_block_select(GtkComboBox *combobox_cmap, gpointer data)
 
 static void cb_file_name_input(GtkEntry *entry, gpointer data)
 {
-    const char *file_name = (char *) data;
-    file_name = gtk_entry_get_text(entry);
+    gtk_entry_get_text(entry);
     return;
 };
 
@@ -235,7 +234,7 @@ GtkWidget *make_empty_ctl_hbox(const char *label_hd, int *iflag_use){
 static void cb_switch_chara(GtkSwitch *switch_3, GParamSpec *pspec, gpointer data){
 	struct chara_ctl_item *ctl_item = (struct chara_ctl_item *) data;
 	
-	if(ctl_item->iflag == 0 && gtk_switch_get_state(switch_3) == TRUE){
+	if(ctl_item->f_iflag[0] == 0 && gtk_switch_get_state(switch_3) == TRUE){
 		gtk_switch_set_state(switch_3, FALSE);
 	};
 	
@@ -262,7 +261,7 @@ static void cb_toggle_ctl_item(GtkToggleButton *toggle, gpointer data)
     gboolean status = gtk_toggle_button_get_active(toggle);
     
 	if(ctl_item->c_tbl != NULL) {
-        ctl_item->iflag = 1;
+        ctl_item->f_iflag[0] = 1;
         set_boolean_by_chara_ctl_item((int) status, ctl_item);
 		gtk_button_set_label(GTK_BUTTON(toggle), ctl_item->c_tbl);
         printf("New value: %s\n", ctl_item->c_tbl);
@@ -338,7 +337,7 @@ GtkWidget *make_chara_ctl_switch_hbox(int iflag_fix_on, const char *label, struc
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "notify::active",
 				G_CALLBACK(cb_switch_chara), (gpointer) ctl_item);
 	
-	hbox = make_entry_with_switch_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	hbox = make_entry_with_switch_hbox(iflag_fix_on, label, ctl_item->f_iflag, tbox_flag);
 	return hbox;
 };
 
@@ -370,7 +369,7 @@ static void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 	struct chara_ctl_item *ctl_item = (struct chara_ctl_item *) data;
 	
 	if(ctl_item->c_tbl != NULL) {
-		ctl_item->iflag = 1;
+		ctl_item->f_iflag[0] = 1;
 		ctl_item->c_tbl = (char *) gtk_entry_get_text(entry);
 	};
 	return;
@@ -385,7 +384,7 @@ GtkWidget *make_text_hbox(int iflag_fix_on, const char *label, struct chara_ctl_
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "activate",
 				G_CALLBACK(cb_chara_ctl_item), (gpointer) ctl_item);
 	
-	hbox = make_entry_with_check_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	hbox = make_entry_with_check_hbox(iflag_fix_on, label, ctl_item->f_iflag, tbox_flag);
   return hbox;
 }
 
@@ -395,7 +394,7 @@ static void cb_int_ctl_item(GtkSpinButton *spinner, gpointer data)
 	struct int_ctl_item *ctl_item = (struct int_ctl_item *) data;
 	
 	if(data != NULL) {
-		ctl_item->iflag = 1;
+		ctl_item->f_iflag[0] = 1;
 		ctl_item->i_data = gtk_spin_button_get_value_as_int(spinner);
 /*		printf("New value: %d\n", ctl_item->i_data); */
 	};
@@ -413,7 +412,7 @@ GtkWidget *make_integer_hbox(int iflag_fix_on, const char *label, struct int_ctl
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "value-changed",
 				G_CALLBACK(cb_int_ctl_item), (gpointer) ctl_item);
 	
-	hbox = make_entry_with_check_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	hbox = make_entry_with_check_hbox(iflag_fix_on, label, ctl_item->f_iflag, tbox_flag);
 	return hbox;
 }
 
@@ -422,7 +421,7 @@ static void cb_real_ctl_item(GtkEntry *spinner, gpointer data)
 	struct real_ctl_item *ctl_item = (struct real_ctl_item *) data;
 	
 	if(data != NULL) {
-		ctl_item->iflag = 1;
+		ctl_item->f_iflag[0] = 1;
 		ctl_item->r_data = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
 	};
 	return;
@@ -439,7 +438,7 @@ GtkWidget *make_real_hbox(int iflag_fix_on, const char *label, struct real_ctl_i
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "value-changed",
 				G_CALLBACK(cb_real_ctl_item), (gpointer) ctl_item);
 	
-	hbox = make_entry_with_check_hbox(iflag_fix_on, label, &ctl_item->iflag, tbox_flag);
+	hbox = make_entry_with_check_hbox(iflag_fix_on, label, ctl_item->f_iflag, tbox_flag);
 	return hbox;
 }
 

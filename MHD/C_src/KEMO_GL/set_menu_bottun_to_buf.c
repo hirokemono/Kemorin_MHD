@@ -2,6 +2,7 @@
 /* set_menu_bottun_to_buf.c */
 #include "set_menu_bottun_to_buf.h"
 
+/*
 static void dtob(int BitSize, int x, int *c) {
 	int bit = 1, i;
 	
@@ -15,6 +16,7 @@ static void dtob(int BitSize, int x, int *c) {
 	}
 	return;
 }
+*/
 
 static void uchar2bin(int BitSize, unsigned char xchr, int *c) {
 	int bit = 1, i;
@@ -29,7 +31,7 @@ static void uchar2bin(int BitSize, unsigned char xchr, int *c) {
 	return;
 }
 
-void menubottun_bitmap(GLubyte *menu_bitmap){
+void menubottun_bitmap(unsigned char *menu_bitmap){
 	int Bitlen, bitmap8[8], bitmap32[8*4];
 	unsigned char intbit;
 	unsigned char MenuFONT8x12_M[48];
@@ -127,17 +129,17 @@ void menubottun_bitmap(GLubyte *menu_bitmap){
 	return;
 }
 
-static int count_menu_to_buf(){
-	int num_dot = MENU_HEIGHT * MENU_WIDTH;
-	return num_dot;
+static long count_menu_to_buf(void){
+	return (MENU_HEIGHT * MENU_WIDTH);
 };
 
-static int set_menu_to_buf(GLubyte *menubottun_bits, struct gl_strided_buffer *strided_buf){
-	int i, j, idx, icou;
+static long set_menu_to_buf(unsigned char *menubottun_bits,
+                            struct gl_strided_buffer *strided_buf){
+	long i, j, idx, icou;
 	for(j=0;j<MENU_HEIGHT;j++){
 		for(i=0;i<MENU_WIDTH;i++){
 			idx = i + j * MENU_WIDTH;
-			set_node_stride_VBO(idx, strided_buf);
+            set_node_stride_buffer(idx, strided_buf);
 			strided_buf->x_draw[0] =  2.0*((float) i / (float) MENU_WIDTH) - 1.0;
 			strided_buf->x_draw[1] =  2.0*((float) j / (float) MENU_HEIGHT)- 1.0;
 			strided_buf->x_draw[2] = 0.0;
@@ -153,11 +155,11 @@ static int set_menu_to_buf(GLubyte *menubottun_bits, struct gl_strided_buffer *s
 };
 
 void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf){
-	GLubyte menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
-	int num_dot = count_menu_to_buf();
+    unsigned char menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
+	long num_dot = count_menu_to_buf();
 	
 	set_buffer_address_4_patch(num_dot, strided_buf);
-	resize_strided_buffer(strided_buf->num_nod_buf, strided_buf->ncomp_buf, strided_buf);
+	resize_strided_buffer(strided_buf);
 	
 	menubottun_bitmap(menubottun_bits);
 	set_menu_to_buf(menubottun_bits, strided_buf);

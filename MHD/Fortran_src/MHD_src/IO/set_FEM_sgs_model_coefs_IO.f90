@@ -16,7 +16,7 @@
 !!        type(group_data), intent(in) :: layer_egrp
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!
 !!      subroutine set_initial_model_coefs_ele                          &
 !!     &         (cmt_param, ele, fluid, layer_egrp,                    &
@@ -30,11 +30,13 @@
       use m_constants
 !
       use t_ele_info_4_dynamic
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_time_data
       use t_field_data_IO
 !
       implicit none
+!
+      private :: sel_diff_coefs_layer_ele
 !
 !-----------------------------------------------------------------------
 !
@@ -179,39 +181,76 @@
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !
-      integer(kind = kint) :: i, ist
 !
-      do i = 1, sgs_coefs%num_field
-         ist = sgs_coefs%istack_comps(i-1) + 1
-         call clear_model_coefs_2_ele(ele, sgs_coefs%num_comps(i), ist, &
-     &      sgs_coefs%ntot_comp, sgs_coefs%ak)
-         call set_model_coefs_2_ele(ele, izero, sgs_coefs%num_comps(i), &
-     &       i, ist, layer_egrp%num_grp, layer_egrp%num_item,           &
-     &       layer_egrp%istack_grp_smp, layer_egrp%item_grp,            &
-     &       sgs_coefs%num_field, sgs_coefs%ntot_comp,                  &
-     &       wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
-      end do
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_uxb)
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_lor)
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_mf)
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_hf)
+      call sel_model_coefs_2_ele(ele, layer_egrp, izero,                &
+     &                           wk_sgs, sgs_coefs%Csim_SGS_cf)
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
-        if (cmt_param%iset_DIFF_coefs .eq. 0) then
-          do i = 1, diff_coefs%num_field
-            call set_diff_coefs_whole_ele                               &
-     &         (ele, fluid%istack_ele_fld_smp, i, diff_coefs%ntot_comp, &
-     &          wk_diff%fld_whole_clip, diff_coefs%ak)
-          end do
-        else
-          do i = 1, diff_coefs%num_field
-            call set_diff_coefs_layer_ele                               &
-     &         (ele, i, layer_egrp%num_grp, layer_egrp%num_item,        &
-     &          layer_egrp%istack_grp_smp, layer_egrp%item_grp,         &
-     &          diff_coefs%ntot_comp, wk_diff%fld_clip, diff_coefs%ak)
-          end do
-        end if
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_velo)
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_magne)
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_temp)
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_light)
+!
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_SGS_uxb)
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_SGS_lor)
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_SGS_mf)
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_SGS_hf)
+        call sel_diff_coefs_layer_ele(cmt_param, ele, fluid,            &
+     &      layer_egrp, wk_diff, diff_coefs%Cdiff_SGS_cf)
       end if
 !
       end subroutine set_initial_model_coefs_ele
+!
+!-----------------------------------------------------------------------
+!
+      subroutine sel_diff_coefs_layer_ele                               &
+     &         (cmt_param, ele, fluid, layer_egrp, wk_diff, Cdiff)
+!
+      use t_geometry_data
+      use t_group_data
+      use t_geometry_data_MHD
+      use t_SGS_control_parameter
+      use set_sgs_diff_model_coefs
+!
+      type(commutation_control_params), intent(in) :: cmt_param
+      type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
+      type(group_data), intent(in) :: layer_egrp
+      type(dynamic_model_data), intent(in) :: wk_diff
+!
+      type(SGS_model_coefficient), intent(inout) :: Cdiff
+!
+!
+      if(Cdiff%num_comp .le. 0) return
+      if(cmt_param%iflag_layerd_DIFF_coefs .eq. 0) then
+        call set_diff_coefs_whole_ele(ele, fluid%istack_ele_fld_smp,    &
+     &      wk_diff%fld_whole_clip(Cdiff%iak_Csim), Cdiff%coef(1,1))
+      else
+        call set_diff_coefs_layer_ele                                   &
+     &     (ele, layer_egrp%num_grp, layer_egrp%num_item,               &
+     &      layer_egrp%istack_grp_smp, layer_egrp%item_grp,             &
+     &      wk_diff%fld_clip(1,Cdiff%iak_Csim), Cdiff%coef(1,1))
+      end if
+!
+      end subroutine sel_diff_coefs_layer_ele
 !
 !-----------------------------------------------------------------------
 !

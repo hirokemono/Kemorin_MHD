@@ -164,8 +164,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(viz4_c%i_viz_only_file .gt. 0) return
+      call init_platforms_labels(hd_platform, viz4_c%viz_plt)
+      call init_ctl_time_step_label(hd_time_step, viz4_c%t_viz_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -207,7 +209,7 @@
       call write_control_platforms                                      &
      &   (id_control, hd_platform, viz4_c%viz_plt, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, viz4_c%t_viz_ctl, level)
+     &   (id_control, viz4_c%t_viz_ctl, level)
 !
       call write_viz4_controls(id_control, hd_viz_control,              &
      &                         viz4_c%viz4_ctl, level)

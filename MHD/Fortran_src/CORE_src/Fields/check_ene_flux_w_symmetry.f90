@@ -43,45 +43,49 @@
       if(     check_field_list_ctl(u_dot_wsym_x_usym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(wsym_x_usym, field_ctl)
-      else if(check_field_list_ctl(rev_u_dot_Jsym_x_Bsym, field_ctl)    &
+      end if
+      if(check_field_list_ctl(rev_u_dot_Jsym_x_Bsym, field_ctl)         &
      &   .or. check_field_list_ctl(u_dot_Jsym_x_Bsym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(Jsym_x_Bsym, field_ctl)
-      else if(check_field_list_ctl(u_dot_Bsym_nabla_Bsym,               &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(u_dot_Bsym_nabla_Bsym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(Bsym_nabla_Bsym, field_ctl)
 !
-      else if(check_field_list_ctl(sym_termal_buo_flux,                 &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(sym_termal_buo_flux, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(sym_thermal_buoyancy, field_ctl)
-      else if(check_field_list_ctl(sym_composite_buo_flux,              &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(sym_composite_buo_flux, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(sym_composite_buoyancy, field_ctl)
 !
-      else if(check_field_list_ctl(B_rot_Bsym_x_usym, field_ctl)) then
+      end if
+      if(check_field_list_ctl(B_rot_Bsym_x_usym, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(rot_usym_x_Bsym, field_ctl)
-      else if(check_field_list_ctl(B_dot_Bsym_nabla_usym,               &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(B_dot_Bsym_nabla_usym, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(Bsym_nabla_usym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(T_usym_nabla_Tsym, field_ctl)) then
+      if(check_field_list_ctl(T_usym_nabla_Tsym, field_ctl)) then
         call add_phys_name_ctl(temperature, field_ctl)
         call add_phys_name_ctl(usym_nabla_Tsym, field_ctl)
-      else if(check_field_list_ctl(pT_usym_nabla_pTsym,                 &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(pT_usym_nabla_pTsym, field_ctl)) then
         call add_phys_name_ctl(perturbation_temp, field_ctl)
         call add_phys_name_ctl(usym_nabla_pTsym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(C_usym_nabla_Csym, field_ctl)) then
+      if(check_field_list_ctl(C_usym_nabla_Csym, field_ctl)) then
         call add_phys_name_ctl(composition, field_ctl)
         call add_phys_name_ctl(usym_nabla_Csym, field_ctl)
-      else if(check_field_list_ctl(pC_usym_nabla_pCsym,                 &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(pC_usym_nabla_pCsym, field_ctl)) then
         call add_phys_name_ctl(perturbation_composition, field_ctl)
         call add_phys_name_ctl(usym_nabla_pCsym, field_ctl)
       end if
@@ -103,49 +107,50 @@
       if(check_field_list_ctl(u_dot_wasym_x_uasym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(wasym_x_uasym, field_ctl)
-      else if(check_field_list_ctl(rev_u_dot_Jasym_x_Basym, field_ctl)  &
-     &   .or. check_field_list_ctl(u_dot_Jasym_x_Basym,                 &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(rev_u_dot_Jasym_x_Basym, field_ctl)       &
+     &   .or. check_field_list_ctl(u_dot_Jasym_x_Basym, field_ctl)      &
+     &   ) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(Jasym_x_Basym, field_ctl)
-      else if(check_field_list_ctl(u_dot_Basym_nabla_Basym,             &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(u_dot_Basym_nabla_Basym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(Basym_nabla_Basym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(asym_termal_buo_flux,                &
-     &                             field_ctl)) then
+      if(check_field_list_ctl(asym_termal_buo_flux, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(asym_thermal_buoyancy, field_ctl)
-      else if(check_field_list_ctl(asym_composite_buo_flux,             &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(asym_composite_buo_flux, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(asym_composite_buoyancy, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(B_rot_Basym_x_uasym,                 &
-     &                             field_ctl)) then
+      if(check_field_list_ctl(B_rot_Basym_x_uasym, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(rot_uasym_x_Basym, field_ctl)
-      else if(check_field_list_ctl(B_dot_Basym_nabla_uasym,             &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(B_dot_Basym_nabla_uasym, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(Basym_nabla_uasym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(T_uasym_nabla_Tasym,                 &
-     &                             field_ctl)) then
+      if(check_field_list_ctl(T_uasym_nabla_Tasym, field_ctl)) then
         call add_phys_name_ctl(temperature, field_ctl)
         call add_phys_name_ctl(uasym_nabla_Tasym, field_ctl)
-      else if(check_field_list_ctl(pT_uasym_nabla_pTasym,               &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(pT_uasym_nabla_pTasym, field_ctl)) then
         call add_phys_name_ctl(perturbation_temp, field_ctl)
         call add_phys_name_ctl(uasym_nabla_pTasym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(C_uasym_nabla_Casym,                 &
-     &                             field_ctl)) then
+      if(check_field_list_ctl(C_uasym_nabla_Casym, field_ctl)) then
         call add_phys_name_ctl(composition, field_ctl)
         call add_phys_name_ctl(uasym_nabla_Casym, field_ctl)
-      else if(check_field_list_ctl(pC_uasym_nabla_pCasym,               &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(pC_uasym_nabla_pCasym, field_ctl)) then
         call add_phys_name_ctl(perturbation_composition, field_ctl)
         call add_phys_name_ctl(uasym_nabla_pCasym, field_ctl)
       end if
@@ -167,74 +172,83 @@
       if(     check_field_list_ctl(u_dot_wsym_x_uasym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(wsym_x_uasym, field_ctl)
-      else if(check_field_list_ctl(rev_u_dot_Jsym_x_Basym, field_ctl)   &
+      end if
+      if(check_field_list_ctl(rev_u_dot_Jsym_x_Basym, field_ctl)        &
      &   .or. check_field_list_ctl(u_dot_Jsym_x_Basym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(Jsym_x_Basym, field_ctl)
-      else if(check_field_list_ctl(u_dot_Bsym_nabla_Basym,              &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(u_dot_Bsym_nabla_Basym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(Bsym_nabla_Basym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(B_rot_Bsym_x_uasym, field_ctl)) then
+      if(check_field_list_ctl(B_rot_Bsym_x_uasym, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(rot_usym_x_Basym, field_ctl)
-      else if(check_field_list_ctl(B_dot_Bsym_nabla_uasym,              &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(B_dot_Bsym_nabla_uasym, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(Bsym_nabla_uasym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(T_usym_nabla_Tasym, field_ctl)) then
+      if(check_field_list_ctl(T_usym_nabla_Tasym, field_ctl)) then
         call add_phys_name_ctl(temperature, field_ctl)
         call add_phys_name_ctl(usym_nabla_Tasym, field_ctl)
-      else if(check_field_list_ctl(pT_usym_nabla_pTasym,                &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(pT_usym_nabla_pTasym, field_ctl)) then
         call add_phys_name_ctl(perturbation_temp, field_ctl)
         call add_phys_name_ctl(usym_nabla_pTasym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(C_usym_nabla_Casym, field_ctl)) then
+      if(check_field_list_ctl(C_usym_nabla_Casym, field_ctl)) then
         call add_phys_name_ctl(composition, field_ctl)
         call add_phys_name_ctl(usym_nabla_Casym, field_ctl)
-      else if(check_field_list_ctl(pC_usym_nabla_pCasym,                &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(pC_usym_nabla_pCasym, field_ctl)) then
         call add_phys_name_ctl(perturbation_composition, field_ctl)
         call add_phys_name_ctl(usym_nabla_pCasym, field_ctl)
+      end if
 !
 !
-      else if(check_field_list_ctl(u_dot_wasym_x_usym, field_ctl)) then
+      if(check_field_list_ctl(u_dot_wasym_x_usym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(wasym_x_usym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(rev_u_dot_Jasym_x_Bsym, field_ctl)   &
+      if(check_field_list_ctl(rev_u_dot_Jasym_x_Bsym, field_ctl)        &
      &    .or.check_field_list_ctl(u_dot_Jasym_x_Bsym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(Jasym_x_Bsym, field_ctl)
-      else if(check_field_list_ctl(u_dot_Basym_nabla_Bsym,              &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(u_dot_Basym_nabla_Bsym, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(Basym_nabla_Bsym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(B_rot_Basym_x_usym, field_ctl)) then
+      if(check_field_list_ctl(B_rot_Basym_x_usym, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(rot_uasym_x_Bsym, field_ctl)
-      else if(check_field_list_ctl(B_dot_Basym_nabla_usym,              &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(B_dot_Basym_nabla_usym, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(Basym_nabla_usym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(T_uasym_nabla_Tsym, field_ctl)) then
+      if(check_field_list_ctl(T_uasym_nabla_Tsym, field_ctl)) then
         call add_phys_name_ctl(temperature, field_ctl)
         call add_phys_name_ctl(uasym_nabla_Tsym, field_ctl)
-      else if(check_field_list_ctl(pT_uasym_nabla_pTsym,                &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(pT_uasym_nabla_pTsym, field_ctl)) then
         call add_phys_name_ctl(perturbation_temp, field_ctl)
         call add_phys_name_ctl(uasym_nabla_pTsym, field_ctl)
+      end if
 !
-      else if(check_field_list_ctl(C_uasym_nabla_Csym, field_ctl)) then
+      if(check_field_list_ctl(C_uasym_nabla_Csym, field_ctl)) then
         call add_phys_name_ctl(composition, field_ctl)
         call add_phys_name_ctl(uasym_nabla_Csym, field_ctl)
-      else if(check_field_list_ctl(pC_uasym_nabla_pCsym,                &
-     &                             field_ctl)) then
+      end if
+      if(check_field_list_ctl(pC_uasym_nabla_pCsym, field_ctl)) then
         call add_phys_name_ctl(perturbation_composition, field_ctl)
         call add_phys_name_ctl(uasym_nabla_pCsym, field_ctl)
       end if

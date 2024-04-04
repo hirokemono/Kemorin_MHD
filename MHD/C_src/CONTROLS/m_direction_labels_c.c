@@ -7,49 +7,6 @@
 
 #include "m_direction_labels_c.h"
 
-const struct direction_flag_def vector_flags[NUM_VECTOR_FLAG] = {
-			{"vector", "$$  (V_{x}, V_{y}, V_{z})  $$"},
-			{"spherical_vector", "$$  (V_{r}, V_{\\theta}, V_{\\phi})  $$"},
-			{"cylindrical_vector", "$$  (V_{s}, V_{\\phi}, V_{z})  $$"},
-			{"magnitude", "$$  |V|  $$"},
-			
-			{"x", "$$  V_{x}  $$"},
-			{"y", "$$  V_{y}  $$"},
-			{"z", "$$  V_{z}  $$"},
-			
-			{"r", "$$  V_{r}  $$"},
-			{"theta", "$$  V_{\\theta}  $$"},
-			{"phi", "$$  V_{\\phi}  $$"},
-			{"s", "$$  V_{s}  $$"},
-};
-
-const struct direction_flag_def sym_tensor_flags[NUM_SYM_TENSOR_FLAG] = {
-			{"sym_tensor", "$$  (T_{xx}, T_{xy}, T_{xz}, T_{yy}, T_{yz}, T_{zz})  $$"},
-			{"spherical_sym_tensor", "$$  (T_{rr}, T_{r \\theta}, T_{r \\phi}, T_{\\theta \\theta}, T_{\\theta \\phi}, T_{\\phi \\phi})  $$"},
-			{"cylindrical_sym_tensor", "$$  (T_{ss}, T_{s \\phi}, T_{sz}, T_{\\phi \\phi}, T_{\\phi z}, T_{zz})  $$"},
-			{"magnitude", "$$  || T ||  $$"},
-
-			{"xx", "$$  T_{xx}  $$"},
-			{"xy", "$$  T_{xy}  $$"},
-			{"xz", "$$  T_{xz}  $$"},
-			{"yy", "$$  T_{yy}  $$"},
-			{"yz", "$$  T_{yz}  $$"},
-			{"zz", "$$  T_{zz}  $$"},
-		
-			{"rr", "$$  T_{rr}  $$"},
-			{"rt", "$$  T_{r \\theta}  $$"},
-			{"rp", "$$  T_{\\phi}  $$"},
-			{"tt", "$$  T_{\\theta \\theta}  $$"},
-			{"tp", "$$  T_{\\theta \\phi}  $$"},
-			{"pp", "$$  T_{\\phi \\phi}  $$"},
-		
-			{"ss", "$$  T_{ss}  $$"},
-			{"sp", "$$  T_{s \\phi}  $$"},
-			{"sz", "$$  T_{sz}  $$"},
-			{"pp_cyl", "$$  T_{\\phi \\phi}  $$"},
-			{"pz", "$$  T_{\\phi z}  $$"},
-			{"zz_cyl", "$$  T_{zz}  $$"}
-};
 
 const struct direction_flag_def xyz_vector_flags[NUM_XYZ_FLAG] = {
 			{"x", "$$  x  $$"},

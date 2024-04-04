@@ -27,7 +27,7 @@ static void mainloop_4_glfw(){
 	while (!glfwWindowShouldClose(glfw_win)){
 		iflag = glfwWindowShouldClose(glfw_win);
 		
-		draw_full();
+		draw_full(kemo_sgl);
 		glfwPollEvents();
 	};
 	return;
@@ -61,7 +61,8 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 }
 void windowSizeCB(GLFWwindow *window, int width, int height) {
 /*	printf("windowSizeCB %d %d\n", width, height); */
-	kemoview_update_projection_by_viewer_size(width, height, width, height);
+	kemoview_update_projection_by_viewer_size(width, height,
+                                              width, height, kemo_sgl);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 }
 void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
@@ -72,24 +73,18 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 
 /* Main routine for C */
 
-int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
+int draw_glfw_test(void) {
 	int narg_glut = 0;
 	char **arg_glut;
 	int iflag_retinamode = 0;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-	kemoview_set_view_integer(ISET_SHUTTER, iflag_streo_shutter);
-	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_OFF);
-	} else {
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_ON);
-	};
-	
+    kemo_gl = kemoview_allocate_gl_pointers();
+
 	/*! Create viewer window*/
-	kemoview_set_retinamode(iflag_retinamode);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+	kemoview_set_retinamode(iflag_retinamode, kemo_sgl);
+	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y, kemo_sgl);
 
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;
@@ -110,11 +105,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 	
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	if(iflag_streo_shutter == SHUTTER_ON){
-		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
-	} else{
-		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
-	};
+    glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
 	/*
 	if(iflag_retinamode == 1){
 		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
@@ -135,8 +126,8 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 			);
 	
 	/*! set callback for GLfw*/
-	kemoviewer_reset_to_init_angle();
-	glfw_callbacks_init();
+	kemoviewer_reset_to_init_angle(kemo_sgl);
+	glfw_callbacks_init(kemo_sgl, kemo_gl);
 	
 	/* Set Cllback for drug and Drop into window */
 	glfwSetDropCallback(glfw_win, dropFileToGlfw_CB);
@@ -152,12 +143,14 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	glfwSetWindowCloseCallback(glfw_win, glfwWindowclose_CB);
 	
 	/* ! set the perspective and lighting */
-	kemoview_init_background_color();
-	kemoview_init_lighting();
-	kemoview_init_phong_light_list();
+	kemoview_init_background_color(kemo_sgl);
+	kemoview_init_lighting(kemo_sgl);
+    kemoview_gl_background_color();
+    kemoview_gl_init_lighting(kemo_gl);
+	kemoview_init_phong_light_list(kemo_sgl);
 	
 	glClear(GL_COLOR_BUFFER_BIT);
-	draw_full();
+	draw_full(kemo_sgl);
 	glfwPollEvents();
 	glfwPostEmptyEvent();
 	
@@ -167,26 +160,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 };
 
 int main(int argc, char *argv[]){
-	int iflag_streo_shutter = SHUTTER_OFF;
-	int i;
-	
-	/*	printf("Number of arguments %d\n", argc);*/
-	for (i = 0; i < argc; i++) {
-/*		printf("%dth arguments: %s\n", i, argv[i]);*/
-		if(strcmp(argv[i],"-help") == 0){
-			printf("-stereo_shutter: Use streo monitor with shutter\n");
-			return 0;
-		}
-	}
-		
-	for (i = 0; i < argc; i++) {
-		if(strcmp(argv[i],"-stereo_shutter") == 0){
-			printf("shutter ON\n");
-			iflag_streo_shutter = SHUTTER_ON;
-		}
-	}
-	
-	draw_glfw_test(iflag_streo_shutter, IZERO);
+	draw_glfw_test();
 	return 0;
 };
 

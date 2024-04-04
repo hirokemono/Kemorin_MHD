@@ -234,8 +234,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_distribute_itp .gt. 0) return
+      call init_platforms_labels(hd_platform, gtbl_ctl%src_plt)
+      call init_platforms_labels(hd_new_data, gtbl_ctl%dst_plt)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -289,8 +291,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_distribute_itp .gt. 0) return
+      call init_platforms_labels(hd_platform, gtbl_ctl%src_plt)
+      call init_platforms_labels(hd_new_data, gtbl_ctl%dst_plt)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -388,8 +392,11 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gtbl_ctl%i_itp_model .gt. 0) return
+      call init_phys_data_ctl_label(hd_phys_values,                     &
+     &                              gtbl_ctl%fld_gt_ctl)
+      call init_ctl_time_step_label(hd_time_step, gtbl_ctl%t_gt_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit

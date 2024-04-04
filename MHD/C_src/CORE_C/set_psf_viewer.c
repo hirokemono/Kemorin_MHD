@@ -27,7 +27,8 @@ static void set_viewer_udt_quad(struct psf_data *viz_copied, struct psf_data *vi
 
 static void count_new_node_for_mapping_tri(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	int num_map_patch;
-	int inod, iele, k, nd;
+	int iele, k, nd;
+    long inod;
 	int num_add;
 	long ie_1ele[5];
 	double xyz_tri[9];
@@ -39,7 +40,7 @@ static void count_new_node_for_mapping_tri(struct psf_data *viz_s, struct psf_da
 		ie_1ele[2] = viz_tmp->ie_viz[iele][2];
 		
 		for (k=0; k<3; k++) {
-			inod = ie_1ele[k]-1;
+			inod = ie_1ele[k] - 1;
 			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xx_viz[inod][nd];};
 		};
 		num_map_patch = count_new_patch_at_phi180(&xyz_tri[0]);
@@ -56,7 +57,8 @@ static void count_new_node_for_mapping_tri(struct psf_data *viz_s, struct psf_da
 
 static void count_new_node_for_mapping_quad(struct psf_data *viz_s, struct psf_data *viz_tmp){
 	int num_map_patch;
-	int inod, iele, k, nd;
+    long inod;
+	int iele, k, nd;
 	int num_add;
 	long ie_1ele[5];
 	double xyz_tri[9];
@@ -93,11 +95,12 @@ static void count_new_node_for_mapping_quad(struct psf_data *viz_s, struct psf_d
 	return;
 }
 
-static int cut_each_patch_for_map(int iele, int icou, int nnod_org, int iele_end, long ie_patch[5], 
-								   struct psf_data *viz_s){
+static int cut_each_patch_for_map(int iele, int icou, long nnod_org, long iele_end,
+                                  long ie_patch[5], struct psf_data *viz_s){
 	int num_map_patch;
-    long inod;
-    int k, nd, i, j, i1, i2;
+    long inod, i1, i2;
+    long j;
+    int k, nd, i;
 	long ie_cut[9], inod_src[4];
 	double xyz_tri[9], coef_cut[4];
 	
@@ -118,7 +121,7 @@ static int cut_each_patch_for_map(int iele, int icou, int nnod_org, int iele_end
 		viz_s->coef_4_map_itp[icou+i][1] = coef_cut[2*i+1];
 	};
 	for (k=0; k<3; k++) {
-		j = ie_cut[k]-1;
+		j = ie_cut[k] - 1;
 		viz_s->ie_viz[iele][k] = ie_patch[j];
 	};
 	for (i=1; i<(num_map_patch); i++) {
@@ -131,10 +134,10 @@ static int cut_each_patch_for_map(int iele, int icou, int nnod_org, int iele_end
 	return num_map_patch;
 }
 
-static void cut_patches_for_map_tri(int nele_org, struct psf_data *viz_s){
+static void cut_patches_for_map_tri(long nele_org, struct psf_data *viz_s){
 	int num_map_patch;
 	int iele, icou;
-	int nnod_org, iele_end;
+    long nnod_org, iele_end;
 	long ie_patch[5];
 	
 	nnod_org = viz_s->nnod_viz - viz_s->nnod_added_4_map;
@@ -154,10 +157,10 @@ static void cut_patches_for_map_tri(int nele_org, struct psf_data *viz_s){
 	return;
 }
 
-static void cut_patches_for_map_quad(int nele_org, struct psf_data *viz_s){
+static void cut_patches_for_map_quad(long nele_org, struct psf_data *viz_s){
 	int num_map_patch;
 	int iele, icou;
-	int nnod_org, iele_end;
+    long nnod_org, iele_end;
 	long ie_patch[5];
 	
 	nnod_org = viz_s->nnod_viz - viz_s->nnod_added_4_map;
@@ -188,8 +191,9 @@ static void cut_patches_for_map_quad(int nele_org, struct psf_data *viz_s){
 }
 
 static void set_new_node_for_mapping(struct psf_data *viz_s){
-	int i, i1, i2;
-	int nnod_org;
+    int i;
+    long i1, i2;
+	long nnod_org;
 	
 	nnod_org = viz_s->nnod_viz - viz_s->nnod_added_4_map;
 	for(i=0; i<viz_s->nnod_added_4_map; i++){
@@ -209,8 +213,9 @@ static void set_new_node_for_mapping(struct psf_data *viz_s){
 };
 
 static void set_new_data_for_mapping(struct psf_data *viz_s){
-	int i, i1, i2, nd;
-	int ncomp, nnod_org;
+	int i, nd;
+    long i1, i2;
+	long ncomp, nnod_org;
 	
 	ncomp =    viz_s->ncomptot;
 	nnod_org = viz_s->nnod_viz - viz_s->nnod_added_4_map;

@@ -9,19 +9,16 @@
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
 !!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
-!!     &          FEM_elens, iak_sgs_term, icomp_sgs_term,              &
-!!     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,       &
-!!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
-!!     &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,         &
-!!     &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,     &
-!!     &          sgs_coefs, v_sol, SR_sig, SR_r)
+!!     &          FEM_elens, diff_coefs, filtering, layer_tbl, mlump_fl,&
+!!     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,        &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs,     &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_velocity_co(time, dt, FEM_prm, SGS_par,          &
 !!     &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
 !!     &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,            &
 !!     &         iphys_ele_base, ele_fld, ak_MHD, fem_int, FEM_elens,   &
-!!     &         iak_diff_base, diff_coefs, mlump_fl,                   &
-!!     &         Vmatrix, MG_vector, mhd_fem_wk, rhs_mat,               &
-!!     &         nod_fld, v_sol, SR_sig, SR_r)
+!!     &         Cdiff_velo, mlump_fl, Vmatrix, MG_vector,              &
+!!     &         mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -43,13 +40,7 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_term_address), intent(in) :: iak_sgs_term
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(base_field_address), intent(in) :: iak_diff_base
-!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_velo
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
@@ -97,7 +88,7 @@
       use t_solver_djds_MHD
       use t_interpolate_table
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_vector_for_solver
@@ -123,12 +114,10 @@
      &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
      &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
      &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
-     &          FEM_elens, iak_sgs_term, icomp_sgs_term,                &
-     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,         &
-     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
-     &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,           &
-     &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,       &
-     &          sgs_coefs, v_sol, SR_sig, SR_r)
+     &          FEM_elens, diff_coefs, filtering, layer_tbl, mlump_fl,  &
+     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,          &
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs,       &
+     &          v_sol, SR_sig, SR_r)
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -166,13 +155,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_term_address), intent(in) :: iak_sgs_term
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(SGS_term_address), intent(in) :: iak_diff_sgs
-      type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
       type(lumped_mass_matrices), intent(in) :: mlump_fl
@@ -197,24 +180,24 @@
 !
       if(SGS_par%model_p%iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,        &
-     &      nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
-     &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,       &
-     &      iphys_ele_base, ak_MHD, fem_int, FEM_elens, filtering,      &
-     &      iak_sgs_term, icomp_sgs_term, iak_diff_sgs,                 &
-     &      iphys_elediff_vec, sgs_coefs_nod, diff_coefs,               &
-     &      mlump_fl, wk_filter,  wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,  &
-     &      nod_fld, ele_fld, sgs_coefs, v_sol, SR_sig, SR_r)
+     &     nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,         &
+     &     fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,        &
+     &     iphys_ele_base, ak_MHD, fem_int, FEM_elens, filtering,       &
+     &     sgs_coefs%Csim_SGS_tbuo, sgs_coefs%Csim_SGS_cbuo,            &
+     &     diff_coefs, mlump_fl, wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, &
+     &     rhs_mat, nod_fld, ele_fld, sgs_coefs%Csim_SGS_mf,            &
+     &     v_sol, SR_sig, SR_r)
       end if
 !
-      if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
+      if(SGS_par%model_p%SGS_momentum%iflag_SGS_flux                    &
+     &      .ne. id_SGS_none) then
         call cal_sgs_momentum_flux(dt, FEM_prm, SGS_par%model_p,        &
      &      SGS_par%filter_p, nod_comm, node, ele, fluid,               &
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_LES%SGS_wk, iphys_ele_base, ele_fld,                  &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
-     &      icomp_sgs_term, iphys_elediff_vec,                          &
-     &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      sgs_coefs%Csim_SGS_mf, mlump_fl, wk_filter, mhd_fem_wk,     &
+     &      rhs_mat%fem_wk,  rhs_mat%f_l, rhs_mat%f_nl, nod_fld,        &
      &      v_sol, SR_sig, SR_r)
       end if
 !
@@ -224,8 +207,7 @@
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_LES%SGS_wk, iphys_ele_base, ele_fld,                  &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
-     &      icomp_sgs_term, iphys_elediff_vec,                          &
-     &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
+     &      sgs_coefs%Csim_SGS_lor, mlump_fl, wk_filter, mhd_fem_wk,    &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
      &      v_sol, SR_sig, SR_r)
       end if
@@ -242,8 +224,8 @@
      &     (SGS_par%model_p%ifilter_final, fluid%istack_ele_fld_smp,    &
      &      FEM_prm%npoint_t_evo_int, node, ele, nod_fld,               &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, diff_coefs, iak_diff_base%i_velo,                &
-     &      fl_prop%coef_exp, ak_MHD%ak_d_velo, iphys%base%i_velo,      &
+     &      FEM_elens, diff_coefs%Cdiff_velo, fl_prop%coef_exp,         &
+     &      ak_MHD%ak_d_velo, iphys%base%i_velo,                        &
      &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
 !
@@ -263,9 +245,8 @@
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys%base, iphys_LES%filter_fld,         &
-     &      iphys_LES%SGS_term, nod_fld, ak_MHD,                        &
-     &      ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,    &
-     &      iphys_ele_base, iak_diff_sgs,                               &
+     &      iphys_LES%SGS_term, nod_fld, ak_MHD, ele_fld%ntot_phys,     &
+     &      iphys_ele_base%i_velo, ele_fld%d_fld, iphys_ele_base,       &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
@@ -274,9 +255,8 @@
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys%base, iphys_LES%filter_fld,         &
-     &      iphys_LES%SGS_term, nod_fld, ak_MHD,                        &
-     &      ele_fld%ntot_phys, iphys_ele_base%i_magne, ele_fld%d_fld,   &
-     &      iphys_ele_base, iak_diff_sgs,                               &
+     &      iphys_LES%SGS_term, nod_fld, ak_MHD, ele_fld%ntot_phys,     &
+     &      iphys_ele_base%i_magne, ele_fld%d_fld, iphys_ele_base,      &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
@@ -286,7 +266,7 @@
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys%base, iphys_LES%filter_fld,         &
      &      iphys_LES%SGS_term, nod_fld, ak_MHD, ele_fld%ntot_phys,     &
-     &      ele_fld%d_fld, iphys_ele_base, iak_diff_sgs,                &
+     &      ele_fld%d_fld, iphys_ele_base,                              &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
@@ -299,8 +279,8 @@
      &    node, ele, surf, sf_grp, fl_prop,                             &
      &    Vsf_bcs, Bsf_bcs, iphys%base, iphys_LES%SGS_term, nod_fld,    &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, iak_diff_sgs, diff_coefs,                          &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
+     &    FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
+     &    rhs_mat%f_l, rhs_mat%f_nl)
 !
 !
       if (fl_prop%iflag_scheme .eq. id_explicit_euler) then
@@ -318,26 +298,27 @@
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_velo_pre_lumped_crank(SGS_par%commute_p%iflag_c_velo,  &
-     &      SGS_par%model_p%ifilter_final,                              &
-     &      iak_diff_base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,        &
-     &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
+        call cal_velo_pre_lumped_crank                                  &
+     &     (SGS_par%model_p%SGS_momentum%iflag_commute_field,           &
+     &      SGS_par%model_p%ifilter_final, ak_MHD%ak_d_velo, dt,        &
+     &      FEM_prm, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,     &
      &      iphys, iphys_LES, iphys_ele_base, ele_fld,                  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, diff_coefs, mlump_fl, Vmatrix, MG_vector,        &
-     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,      &
-     &      nod_fld, v_sol, SR_sig, SR_r)
+     &      FEM_elens, diff_coefs%Cdiff_velo%coef(1,1), mlump_fl,       &
+     &      Vmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
-        call cal_velo_pre_consist_crank(SGS_par%commute_p%iflag_c_velo, &
+        call cal_velo_pre_consist_crank                                 &
+     &     (SGS_par%model_p%SGS_momentum%iflag_commute_field,           &
      &      SGS_par%model_p%ifilter_final,                              &
      &      iphys%base%i_velo, iphys%exp_work%i_pre_mom,                &
-     &      iak_diff_base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,        &
+     &      ak_MHD%ak_d_velo, dt, FEM_prm,                              &
      &      node, ele, fluid, fl_prop, Vnod_bcs,                        &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, diff_coefs, Vmatrix, MG_vector, mhd_fem_wk,      &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
-     &      v_sol, SR_sig, SR_r)
+     &      FEM_elens, diff_coefs%Cdiff_velo%coef(1,1),                 &
+     &      Vmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       call set_boundary_velo                                            &
@@ -356,9 +337,8 @@
      &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,    &
      &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,              &
      &         iphys_ele_base, ele_fld, ak_MHD, fem_int, FEM_elens,     &
-     &         iak_diff_base, diff_coefs, mlump_fl,                     &
-     &         Vmatrix, MG_vector, mhd_fem_wk, rhs_mat,                 &
-     &         nod_fld, v_sol, SR_sig, SR_r)
+     &         Cdiff_velo, mlump_fl, Vmatrix, MG_vector,                &
+     &         mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -391,8 +371,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(SGS_model_coefficient), intent(in) :: Cdiff_velo
       type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
@@ -411,13 +390,13 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
       call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &
      &    SGS_par%model_p%ifilter_final, fluid%istack_ele_fld_smp,      &
-     &    iphys%exp_work%i_p_phi, iak_diff_base%i_velo,                 &
-     &    node, ele, nod_fld,                                           &
+     &    iphys%exp_work%i_p_phi, node, ele, nod_fld,                   &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,  &
-     &    fem_int%rhs_tbl, FEM_elens, diff_coefs,                       &
+     &    fem_int%rhs_tbl, FEM_elens, Cdiff_velo,                       &
      &    rhs_mat%fem_wk, rhs_mat%f_nl)
 !
-      if (SGS_par%commute_p%iflag_c_velo .eq. id_SGS_commute_ON         &
+      if(SGS_par%model_p%SGS_momentum%iflag_commute_field               &
+      &                                  .eq. id_SGS_commute_ON         &
      &     .and. Psf_bcs%sgs%ngrp_sf_dat.gt.0) then
         if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
                              iphys%exp_work%i_p_phi
@@ -425,11 +404,10 @@
      &     (node, ele, surf, sf_grp, nod_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp,                  &
      &      fem_int%jcs%jac_sf_grp_l, fem_int%rhs_tbl,                  &
-     &      FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int,          &
+     &      FEM_elens, Cdiff_velo, FEM_prm%npoint_poisson_int,          &
      &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_par%model_p%ifilter_final, iak_diff_base%i_velo,        &
-     &      iphys%exp_work%i_p_phi, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
-     &      rhs_mat%f_nl)
+     &      SGS_par%model_p%ifilter_final, iphys%exp_work%i_p_phi,      &
+     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
 !
@@ -437,11 +415,10 @@
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
         call cal_velocity_co_imp                                        &
-     &     (iphys%base%i_velo, iak_diff_base%i_velo, ak_MHD%ak_d_velo,  &
-     &      dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,            &
-     &      nod_comm, node, ele, fluid, fl_prop,                        &
+     &     (iphys%base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,           &
+     &      SGS_par%model_p, nod_comm, node, ele, fluid, fl_prop,       &
      &      Vnod_bcs, iphys_ele_base, ele_fld, fem_int%jcs%g_FEM,       &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, diff_coefs, &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, Cdiff_velo, &
      &      mlump_fl, Vmatrix, MG_vector, mhd_fem_wk,                   &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
      &      v_sol, SR_sig, SR_r)

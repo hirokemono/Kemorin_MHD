@@ -48,12 +48,12 @@ lib_name:
 	@echo  'LIB_GLUI_FILE = $(LIB_GLUI_FILE)'  >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-lib_tasks: libtarget lib_archve
+lib_tasks: lib_archve
 
 libtarget:
 	@echo  '$$(LIB_GLUI_FILE): $$(GLUI_OBJS)' >> $(MAKENAME)
 
-lib_archve:
+lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(GLUI_OBJS)' >> $(MAKENAME)
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 

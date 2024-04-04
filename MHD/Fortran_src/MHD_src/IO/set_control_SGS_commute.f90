@@ -11,9 +11,9 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_SGS_commute                            &
-!!     &         (SGS_param, sgs_ctl, cmt_param, Cdiff_file_IO)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!     &         (sgs_ctl, SGS_param, cmt_param, Cdiff_file_IO)
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
+!!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(commutation_control_params), intent(inout) :: cmt_param
 !!        type(field_IO_params), intent(inout) :: Csim_file_IO
 !!        type(field_IO_params), intent(inout) :: Cdiff_file_IO
@@ -59,7 +59,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_SGS_commute                              &
-     &         (SGS_param, sgs_ctl, cmt_param, Cdiff_file_IO)
+     &         (sgs_ctl, SGS_param, cmt_param, Cdiff_file_IO)
 !
       use m_base_field_labels
       use m_base_force_labels
@@ -72,8 +72,8 @@
       use skip_comment_f
       use mpi_abort_by_missing_zlib
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_model_control), intent(in) :: sgs_ctl
+      type(SGS_model_control_params), intent(inout) :: SGS_param
       type(commutation_control_params), intent(inout) :: cmt_param
       type(field_IO_params), intent(inout) :: Cdiff_file_IO
 !
@@ -87,21 +87,23 @@
         do i = 1, sgs_ctl%commutate_fld_ctl%num
           tmpchara = sgs_ctl%commutate_fld_ctl%c_tbl(i)
           if(     cmp_no_case(tmpchara, temperature%name)) then
-            cmt_param%iflag_c_temp =      id_SGS_commute_ON
+            SGS_param%SGS_heat%iflag_commute_field = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, velocity%name)) then
-            cmt_param%iflag_c_velo =      id_SGS_commute_ON
+            SGS_param%SGS_momentum%iflag_commute_field                  &
+     &        = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, magnetic_field%name)) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, vector_potential%name)) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, composition%name)) then
-            cmt_param%iflag_c_cf =    id_SGS_commute_ON
+            SGS_param%SGS_light%iflag_commute_flux = id_SGS_commute_ON
 !
           else if(cmp_no_case(tmpchara, heat_advect%name)               &
      &       .or. cmp_no_case(tmpchara, heat_flux_1)) then
-            cmt_param%iflag_c_hf =   id_SGS_commute_ON
+            SGS_param%SGS_heat%iflag_commute_flux = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, inertia%name)) then
-            cmt_param%iflag_c_mf =   id_SGS_commute_ON
+            SGS_param%SGS_momentum%iflag_commute_flux                   &
+     &         = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, Lorentz_force%name)             &
      &       .or. cmp_no_case(tmpchara, lorentz_label)) then
             cmt_param%iflag_c_lorentz = id_SGS_commute_ON
@@ -110,50 +112,60 @@
             cmt_param%iflag_c_uxb = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, composition_advect%name)        &
      &       .or. cmp_no_case(tmpchara, comp_flux_1)) then
-            cmt_param%iflag_c_light =  id_SGS_commute_ON
+            SGS_param%SGS_light%iflag_commute_field = id_SGS_commute_ON
           end if
         end do
 !
 !
         cmt_param%iflag_c_linear                                        &
-     &        =  cmt_param%iflag_c_temp +  cmt_param%iflag_c_velo       &
-     &         + cmt_param%iflag_c_magne + cmt_param%iflag_c_light
+     &        =  SGS_param%SGS_heat%iflag_commute_field                 &
+     &         + SGS_param%SGS_momentum%iflag_commute_field             &
+     &         + cmt_param%iflag_c_magne                                &
+     &         + SGS_param%SGS_light%iflag_commute_field
         cmt_param%iflag_c_nonlinars                                     &
-     &        =  cmt_param%iflag_c_hf                                   &
-     &         + cmt_param%iflag_c_mf + cmt_param%iflag_c_lorentz       &
-     &         + cmt_param%iflag_c_uxb + cmt_param%iflag_c_cf
+     &        =  SGS_param%SGS_heat%iflag_commute_flux                  &
+     &         + SGS_param%SGS_momentum%iflag_commute_flux              &
+     &         + cmt_param%iflag_c_lorentz                              &
+     &         + cmt_param%iflag_c_uxb                                  &
+     &         + SGS_param%SGS_light%iflag_commute_flux
         cmt_param%iflag_commute = cmt_param%iflag_c_linear              &
      &                              + cmt_param%iflag_c_nonlinars
       end if
 !
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        cmt_param%iset_DIFF_coefs = 0
+        cmt_param%iflag_layerd_DIFF_coefs = 0
         if (sgs_ctl%DIFF_model_coef_ctl%iflag .ne. 0) then
           tmpchara = sgs_ctl%DIFF_model_coef_ctl%charavalue
 !
           if (cmp_no_case(tmpchara, 'whole_domain')) then
-            cmt_param%iset_DIFF_coefs = 0
+            cmt_param%iflag_layerd_DIFF_coefs = 0
           else if (cmp_no_case(tmpchara, 'layerd')) then
-            cmt_param%iset_DIFF_coefs = 1
+            cmt_param%iflag_layerd_DIFF_coefs = 1
           end if
         end if
       end if
 !
       if (iflag_debug .gt. 0)  then
-        write(*,*) 'iflag_commute_temp:     ', cmt_param%iflag_c_temp
-        write(*,*) 'iflag_commute_velo:     ', cmt_param%iflag_c_velo
+        write(*,*) 'iflag_commute_temp:     ',                          &
+     &            SGS_param%SGS_heat%iflag_commute_field
+        write(*,*) 'iflag_commute_velo:     ',                          &
+     &            SGS_param%SGS_momentum%iflag_commute_field
         write(*,*) 'iflag_commute_magne:    ',                          &
      &              cmt_param%iflag_c_magne
         write(*,*) 'iflag_commute_composit: ',                          &
-     &              cmt_param%iflag_c_light
-        write(*,*) 'iflag_commute_heat:     ', cmt_param%iflag_c_hf
-        write(*,*) 'iflag_commute_inertia:  ', cmt_param%iflag_c_mf
+     &            SGS_param%SGS_light%iflag_commute_field
+        write(*,*) 'iflag_commute_heat:     ',                          &
+     &            SGS_param%SGS_heat%iflag_commute_flux
+        write(*,*) 'iflag_commute_inertia:  ',                          &
+     &            SGS_param%SGS_momentum%iflag_commute_flux
         write(*,*) 'iflag_commute_lorentz:  ',                          &
      &              cmt_param%iflag_c_lorentz
         write(*,*) 'iflag_commute_induction:', cmt_param%iflag_c_uxb
-        write(*,*) 'iflag_commute_c_flux:   ', cmt_param%iflag_c_cf
+        write(*,*) 'iflag_commute_c_flux:   ',                          &
+     &            SGS_param%SGS_light%iflag_commute_flux
 !
-        write(*,*) 'iset_DIFF_coefs:   ', cmt_param%iset_DIFF_coefs
+        write(*,*) 'iflag_layerd_DIFF_coefs:   ',                       &
+     &            cmt_param%iflag_layerd_DIFF_coefs
       end if
 !
 !

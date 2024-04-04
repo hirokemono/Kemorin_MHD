@@ -335,13 +335,14 @@ int get_draw_surfgrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp){
 };
 
 
-void set_domain_color_flag(int icolor, int selected, struct mesh_menu_val *mesh_m){
+void set_domain_color_flag(int selected, int icolor,
+                           struct mesh_menu_val *mesh_m){
 	if(selected == SURFSOLID_TOGGLE){
-		mesh_m->domain_node_color = icolor;
+        mesh_m->domain_surface_color = icolor;
 	}else if(selected == SURFGRID_TOGGLE){
 		mesh_m->domain_grid_color = icolor;
 	}else if(selected == SURFNOD_TOGGLE){
-		mesh_m->domain_surface_color = icolor;
+        mesh_m->domain_node_color = icolor;
 	};
 	return;
 }
@@ -411,7 +412,6 @@ void set_domain_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->domain_surface_color_code);
-        kemoview_set_mesh_opacity(DOMAIN_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->domain_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){
@@ -428,7 +428,6 @@ void set_ele_grp_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->ele_surface_color_code);
-        kemoview_set_mesh_opacity(ELEM_GRP_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->ele_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){
@@ -441,7 +440,6 @@ void set_surf_grp_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->surf_surface_color_code);
-        kemoview_set_mesh_opacity(SURF_GRP_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->surf_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){

@@ -96,7 +96,7 @@ static void init_kemoview_data_glui(int val){
     kemoview_free_kvstring(stripped_ext);
     kemoview_free_kvstring(file_prefix);
 	
-	iflag_datatype = kemoview_open_data(filename);
+	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
 	GLUI_Master.close_all();
@@ -132,7 +132,8 @@ static void load_psf_texture_glui(int sel){
     kemoview_free_kvstring(file_prefix);
 	
 	if(ext_fmt == SAVE_PNG || ext_fmt == SAVE_BMP){
-		kemoview_set_texture_to_PSF(ext_fmt, stripped_ext);
+		kemoview_set_texture_to_PSF(ext_fmt, stripped_ext,
+                                    kemo_sgl, kemo_gl);
 		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
 	};
     kemoview_free_kvstring(stripped_ext);
@@ -156,7 +157,7 @@ static void load_psf_colormap_glui(int sel){
 	strcat(filename->string, "/");
 	strcat(filename->string, text_fname.c_str());
 	
-	kemoview_read_PSF_colormap_file(filename);
+	kemoview_read_PSF_colormap_file(filename, kemo_sgl);
 	kemoview_free_kvstring(filename);
 	draw_mesh_w_menu();
 	
@@ -178,7 +179,7 @@ static void load_viewmatrix_glui(int sel){
 	strcat(filename->string, "/");
 	strcat(filename->string, text_fname.c_str());
 	
-	kemoview_load_modelview_file(filename);
+	kemoview_load_modelview_file(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
 	draw_mesh_w_menu();
@@ -382,7 +383,7 @@ static void viewtype_handler(int sel){
 
 static void domain_handler(int sel){
 	if(sel == MESH_OFF){
-		kemoview_close_mesh_view();
+		kemoview_close_mesh_view(kemo_sgl);
 		draw_mesh_w_menu();
 	}
 	else{
@@ -497,10 +498,10 @@ static void psf_handler(int sel){
     
 	if (sel == PSF_OFF) {
         set_viewtype_mode_glut(VIEW_3D);
-		nload_psf = kemoview_close_PSF_view();
+		nload_psf = kemoview_close_PSF_view(kemo_sgl);
 		draw_mesh_w_menu();
 	} else {
-		toggle = kemoview_select_PSF_draw_switch(sel);
+		toggle = kemoview_select_PSF_draw_switch(kemo_sgl, sel);
 		kemoview_psf_draw_input_setting(sel);
 		draw_mesh_w_menu();
 	};
@@ -520,10 +521,12 @@ static void psf_colormap_handler(int sel){
 
 
 static void fline_handler(int sel){
-	int toggle;
-	if (sel == FLINE_OFF) {kemoview_close_fieldline_view();}
-	else if (sel == ISET_FLINE_TYPE) {toggle = kemoview_toggle_fline_type();}
-	else {kemoview_fline_draw_setting(sel);};
+	int itoggle;
+	if (sel == FLINE_OFF) {kemoview_close_fieldline_view(kemo_sgl);}
+	else if (sel == ISET_FLINE_TYPE) {
+        itoggle = 1 - kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
+        kemoview_set_fline_field_param(FIELD_SEL_FLAG, itoggle, kemo_sgl);
+    }else {kemoview_fline_draw_setting(sel);};
 	draw_mesh_w_menu();
 	return;
 };
@@ -592,9 +595,9 @@ static void set_fline_col_type_handler(int sel){
 
 static void color_mode_handler(int sel){
 	if (sel == GRAYSCALE) {
-		kemoview_set_mesh_color_mode(GRAYSCALE);
+		kemoview_set_mesh_color_mode(GRAYSCALE, kemo_sgl);
 	} else if( sel == RAINBOW_COLOR) {
-		kemoview_set_mesh_color_mode(RAINBOW_COLOR);
+		kemoview_set_mesh_color_mode(RAINBOW_COLOR, kemo_sgl);
 	} else if( sel == SET_NUM_COLORS) {
 		set_num_color_loop_by_glui(winid);
 	};
@@ -604,13 +607,13 @@ static void color_mode_handler(int sel){
 
 static void object_property_handler(int sel){
 	int toggle;
-    toggle = kemoview_toggle_object_properties(sel);
+    toggle = kemoview_toggle_object_properties(sel, kemo_sgl);
 
 	if		 ( sel == SET_NODE_SIZE) {
 		set_node_size_by_glui(winid);
 	} else if( sel == SET_DISTANCE_DOMAIN) {
 		set_domain_distance_by_glui(winid);
-		kemoview_draw_with_modified_domain_distance();
+		kemoview_draw_with_modified_domain_distance(kemo_sgl);
 	} else if( sel == SET_COAST_RADIUS) {
 		set_coastline_radius_glui(winid);
 	} else if( sel == OUTPUT_V_MATRIX) {
@@ -733,8 +736,8 @@ static void make_2nd_level_mesh_menu(){
 
 /* 4th level menues*/
 static void make_4th_level_psf_menu(){
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
+	int iflag_solid = kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	int iflag_grid =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	
 	if (iflag_solid > 0 || iflag_grid > 0) {
 		glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
@@ -749,9 +752,9 @@ static void make_3rd_level_psf_menu(){
 	int num_psf =     kemoview_get_PSF_num_loaded();
 	int num_fld =     kemoview_get_PSF_num_field();
 	int if_psf =      kemoview_get_PSF_field_id();
-	int num_comp =    kemoview_get_PSF_num_component(if_psf);
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
+	int num_comp =    (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
+	int iflag_solid = kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	int iflag_grid =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	
 	if(num_psf > 1){
 		glut_menu_id->ichoose_current_psf_menu = glutCreateMenu(set_current_psf_handler);
@@ -793,7 +796,7 @@ static void make_3rd_level_fline_menu(){
 	
 	int num_fld =  kemoview_get_fline_color_num_field();
 	int if_fline = kemoview_get_fline_color_field();
-	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
+	int num_comp = kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
 	
 	if (num_fld > 0) {
 		glut_menu_id->ichoose_fline_c_menu = glutCreateMenu(set_fline_color_handler);
@@ -822,15 +825,15 @@ static void make_2nd_level_psf_menu(){
 	int num_fld =     kemoview_get_PSF_num_field();
 	int if_psf =      kemoview_get_PSF_field_id();
 	int ic_psf =      kemoview_get_PSF_component_id();
-	int num_comp =    kemoview_get_PSF_num_component(if_psf);
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
+	int num_comp =    (int) kemoview_get_PSF_num_component(kemo_sgl, if_psf);
+	int iflag_solid = kemoview_get_PSF_draw_flags(kemo_sgl, PSFSOLID_TOGGLE);
+	int iflag_grid =  kemoview_get_PSF_draw_flags(kemo_sgl, PSFGRID_TOGGLE);
 	
 	glut_menu_id->psf_root_menu = glutCreateMenu(psf_handler);
 	
 	if(num_psf > 1){
         stripped_filehead = kemoview_alloc_kvstring();
-		istep = kemoview_get_PSF_file_prefix(stripped_filehead);
+		istep = kemoview_get_PSF_file_prefix(kemo_sgl, stripped_filehead);
 		sprintf(tmp_menu, "Current: %s", stripped_filehead->string);
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_current_psf_menu);
         kemoview_free_kvstring(stripped_filehead);
@@ -839,7 +842,7 @@ static void make_2nd_level_psf_menu(){
 	
 	
     colorname = kemoview_alloc_kvstring();
-	kemoview_get_PSF_field_name(colorname,if_psf);
+	kemoview_get_PSF_field_name(kemo_sgl, colorname,if_psf);
 	if (num_fld > 1) {
 		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_field_menu);
 	} else {
@@ -873,13 +876,13 @@ static void make_2nd_level_fline_menu(){
 	int num_fld =  kemoview_get_fline_color_num_field();
 	int if_fline = kemoview_get_fline_color_field();
 	int ic_fline = kemoview_get_fline_color_component();
-	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
+	int num_comp = kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
 	int itype_fline = kemoview_get_fline_type();
     struct kv_string *colorname = kemoview_alloc_kvstring();
 	
 	glut_menu_id->fline_root_menu = glutCreateMenu(fline_handler);
 	
-	kemoview_get_fline_color_data_name(colorname, if_fline);
+	kemoview_get_fline_color_data_name(kemo_sgl, colorname, if_fline);
 	if(num_fld > 1){
 		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_fline_c_menu);
 	} else {
@@ -912,12 +915,12 @@ static void make_2nd_level_fline_menu(){
 /* 2nd level menues*/
 
 static void make_2nd_level_image_menu(){
-	int iflag_draw_m = kemoview_get_draw_mesh_flag();
+	int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
-	int iflag_axis =       kemoview_get_object_property_flags(AXIS_TOGGLE);
-	int iflag_draw_coast = kemoview_get_object_property_flags(COASTLINE_SWITCH);
-	int iflag_draw_sph =   kemoview_get_object_property_flags(SPHEREGRID_SWITCH);
+	int iflag_axis =       kemoview_get_object_property_flags(kemo_sgl, AXIS_TOGGLE);
+	int iflag_draw_coast = kemoview_get_object_property_flags(kemo_sgl, COASTLINE_SWITCH);
+	int iflag_draw_sph =   kemoview_get_object_property_flags(kemo_sgl, SPHEREGRID_SWITCH);
 	
 	glut_menu_id->color_mode_menu = glutCreateMenu(color_mode_handler);
 	glut_color_mode_menu_item();
@@ -951,7 +954,7 @@ static void make_2nd_level_image_menu(){
 static void make_1st_level_menu(){
 	GLint menu_id;
 	
-	int iflag_draw_m = kemoview_get_draw_mesh_flag();
+	int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_any_objects_on = iflag_draw_p + iflag_draw_m + iflag_draw_f;
@@ -1035,56 +1038,48 @@ static void make_1st_level_menu(){
 /* Main routine for C */
 
 
-void draw_mesh_kemo_glui(int iflag_streo_shutter, int iflag_dmesh) {
+void draw_mesh_kemo_glui(void) {
     struct kv_string *command;
 	int narg_glut = 0;
 	char **arg_glut;
 	
 	/* Initialize arrays for viewer */
 	kemoview_allocate_single_viwewer_struct(single_kemoview);
-	kemoview_set_stereo_shutter(iflag_streo_shutter);
-	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_anaglyph_flag(ANAGLYPH_OFF);
-	} else {
-		kemoview_set_anaglyph_flag(ANAGLYPH_ON);
-	};
-	
+    kemo_gl = kemoview_allocate_gl_pointers();
+
 	link_glut_menu_address();
 	
 	/*! Initializations with GLUT*/
 	glutInit(&narg_glut, arg_glut);
 	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
-					|GLUT_MULTISAMPLE|GLUT_STEREO|GLUT_3_2_CORE_PROFILE);
-		} else {
-		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
-					|GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
-	};
+    glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH
+                        |GLUT_MULTISAMPLE|GLUT_3_2_CORE_PROFILE);
 	
     command = kemoview_init_kvstring_by_string(pick_surf_command);
 	kemoview_set_pick_surface_command(command);
     kemoview_free_kvstring(command);
 	
 	/*! Create viewer window*/
-    kemoview_set_retinamode(IZERO);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+    kemoview_set_retinamode(IZERO, kemo_sgl);
+	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y, kemo_sgl);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = create_kemoview_window();
 	
 	/*  initialize view_modifier, receiving the id for it's submenu  */
-	kemoviewer_reset_to_init_angle();
+	kemoviewer_reset_to_init_angle(kemo_sgl);
 	view_modifier_init();
 	/* ! set the perspective and lighting */
-	kemoview_init_background_color();
-	kemoview_init_lighting();
-	kemoview_init_phong_light_list();
+    kemoview_init_background_color(kemo_sgl);
+	kemoview_init_lighting(kemo_sgl);
+    kemoview_gl_background_color();
+    kemoview_gl_init_lighting(kemo_gl);
+	kemoview_init_phong_light_list(kemo_sgl);
 	
 	/*! Create menu window*/
 	menu_win = create_kemoview_menu();
 	
 	glutSetWindow(menu_win);
-	kemoview_draw_menu_setup();
+	kemoview_draw_menu_setup(kemo_gl);
 	
 	glutSetWindow(winid);
 	draw_mesh_w_menu();

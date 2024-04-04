@@ -6,14 +6,19 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface NodeGroupTableController : NSObject {
 	
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	IBOutlet id _nodeTableView;
+    IBOutlet KemoViewerMetalView * _metalView;
+    IBOutlet KemoViewerObject *_kmv;
+
+    IBOutlet id _nodeTableView;
 	
 	NSInteger  NumNodeGroup;
 	NSMutableArray *NodeGroupDisplayNames;
@@ -33,7 +38,7 @@
 - (IBAction) ShowAllNodeGroupAction:(id)pId;
 - (IBAction) HideAllNodeGroupAction:(id)pId;
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;
 
 - (id)tableView:(NSTableView *)aTableView
 objectValueForTableColumn:(NSTableColumn *)aTableColumn
@@ -45,7 +50,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 			  row:(int)rowIndex;
 - (void)tableView:(NSTableView *)aTableView didClickTableColumn:(NSTableColumn *)tableColumn;
 
-- (void)UpdateNodeTable;
+- (void)UpdateNodeTable:(struct kemoviewer_type *) kemo_sgl;
 - (IBAction)ChooseNodeGrpNodeColorAction:(id)sender;
 - (IBAction)SetNodeGrpNodeColorAction:(id)sender;
 

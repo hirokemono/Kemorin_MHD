@@ -7,6 +7,7 @@
 !>@brief  Structure for reading parameters for radial grouping
 !!
 !!@verbatim
+!!      subroutine init_ele_layers_ctl_label(hd_block, elayer_ctl)
 !!      subroutine read_ele_layers_control                              &
 !!     &         (id_control, hd_block, iflag, elayer_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -78,6 +79,9 @@
 !
 !>     Structure for element layering
       type layering_control
+!>        Block name
+        character(len=kchara) :: block_name = 'SGS_control'
+!
 !>        Structure for group type
         type(read_character_item) :: layering_grp_type_ctl
 !
@@ -215,30 +219,62 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_control_array_c1(id_control, level,                    &
-     &    hd_ntotal_layer_grp_ctl, elayer_ctl%layer_grp_name_ctl)
+     &    elayer_ctl%layer_grp_name_ctl)
 !
       call write_control_array_i1(id_control, level,                    &
-     &    hd_num_layer_grp_ctl, elayer_ctl%igrp_stack_layer_ctl)
+     &    elayer_ctl%igrp_stack_layer_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_SGS_ele_grp, elayer_ctl%num_layering_grp_ctl)
+     &    elayer_ctl%num_layering_grp_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_SGS_fluid_grp, elayer_ctl%num_fl_layer_grp_ctl)
+     &    elayer_ctl%num_fl_layer_grp_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_ngrp_SGS_on_sphere, elayer_ctl%ngrp_SGS_on_sphere_ctl)
+     &    elayer_ctl%ngrp_SGS_on_sphere_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_layering_data_ctl, elayer_ctl%layering_grp_type_ctl)
+     &    elayer_ctl%layering_grp_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_start_SGS_ele_grp_name,              &
      &                          elayer_ctl%start_layering_grp_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &                          hd_start_SGS_fluid_grp_name,            &
      &                          elayer_ctl%start_fl_layer_grp_name_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_ele_layers_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_ele_layers_ctl_label(hd_block, elayer_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(layering_control), intent(inout) :: elayer_ctl
+!
+!
+      elayer_ctl%block_name = hd_block
+!
+        call init_chara_ctl_array_label(hd_ntotal_layer_grp_ctl,        &
+     &      elayer_ctl%layer_grp_name_ctl)
+!
+        call init_int_ctl_array_label(hd_num_layer_grp_ctl,             &
+     &      elayer_ctl%igrp_stack_layer_ctl)
+!
+!
+        call init_int_ctl_item_label(hd_num_SGS_ele_grp,                &
+     &      elayer_ctl%num_layering_grp_ctl)
+        call init_int_ctl_item_label(hd_num_SGS_fluid_grp,              &
+     &      elayer_ctl%num_fl_layer_grp_ctl)
+!
+        call init_int_ctl_item_label(hd_ngrp_SGS_on_sphere,             &
+     &      elayer_ctl%ngrp_SGS_on_sphere_ctl)
+!
+        call init_chara_ctl_item_label(hd_layering_data_ctl,            &
+     &      elayer_ctl%layering_grp_type_ctl)
+        call init_chara_ctl_item_label(hd_start_SGS_ele_grp_name,       &
+     &      elayer_ctl%start_layering_grp_name_ctl)
+        call init_chara_ctl_item_label(hd_start_SGS_fluid_grp_name,     &
+     &      elayer_ctl%start_fl_layer_grp_name_ctl)
+!
+      end subroutine init_ele_layers_ctl_label
 !
 !   --------------------------------------------------------------------
 !

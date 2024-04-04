@@ -12,8 +12,8 @@
 !!      logical function check_div_SGS_flux_tensor(field_name)
 !!      logical function check_rot_SGS_terms(field_name)
 !!
-!!      integer(kind = kint) function num_diff_SGS_terms()
-!!      subroutine set_diff_SGS_term_labels(n_comps, names, maths)
+!!      subroutine set_diff_SGS_term_names(array_c2i)
+!!        type(ctl_array_c2i), intent(inout) :: array_c2i
 !!
 !! !!!!! divergence of SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -43,9 +43,6 @@
       use t_field_labels
 !
       implicit  none
-! 
-      integer(kind = kint), parameter, private :: ndiff_SGS = 7
-!
 !
 !>        Field label for divergence of SGS momentum flux
 !!         @f$ \partial_{i} ( \widetilde{u_{i}u_{j}}
@@ -158,38 +155,23 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function num_diff_SGS_terms()
-      num_diff_SGS_terms = ndiff_SGS
-      return
-      end function num_diff_SGS_terms
+      subroutine set_diff_SGS_term_names(array_c2i)
+      use t_control_array_chara2int
+      type(ctl_array_c2i), intent(inout) :: array_c2i
 !
-! ----------------------------------------------------------------------
+      array_c2i%array_name = '  '
+      array_c2i%num =         0
+      call alloc_control_array_c2_i(array_c2i)
 !
-      subroutine set_diff_SGS_term_labels(n_comps, names, maths)
+      call set_field_label_to_ctl(div_SGS_m_flux,  array_c2i)
+      call set_field_label_to_ctl(div_SGS_h_flux,  array_c2i)
+      call set_field_label_to_ctl(div_SGS_c_flux,  array_c2i)
+      call set_field_label_to_ctl(div_SGS_inertia, array_c2i)
+      call set_field_label_to_ctl(div_SGS_Lorentz, array_c2i)
+      call set_field_label_to_ctl(rot_SGS_inertia, array_c2i)
+      call set_field_label_to_ctl(rot_SGS_Lorentz, array_c2i)
 !
-      integer(kind = kint_4b), intent(inout) :: n_comps(ndiff_SGS)
-      character(len = kchara), intent(inout) :: names(ndiff_SGS)
-      character(len = kchara), intent(inout) :: maths(ndiff_SGS)
-!
-!
-      call set_field_labels(div_SGS_m_flux,                             &
-     &    n_comps( 1), names( 1), maths( 1))
-      call set_field_labels(div_SGS_h_flux,                             &
-     &    n_comps( 2), names( 2), maths( 2))
-      call set_field_labels(div_SGS_c_flux,                             &
-     &    n_comps( 3), names( 3), maths( 3))
-!
-      call set_field_labels(div_SGS_inertia,                            &
-     &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(div_SGS_Lorentz,                            &
-     &    n_comps( 5), names( 5), maths( 5))
-!
-      call set_field_labels(rot_SGS_inertia,                            &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(rot_SGS_Lorentz,                            &
-     &    n_comps( 7), names( 7), maths( 7))
-!
-      end subroutine set_diff_SGS_term_labels
+      end subroutine set_diff_SGS_term_names
 !
 ! ----------------------------------------------------------------------
 !

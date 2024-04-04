@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#include "load_MHD_control_c.h"
+#include "c_ctl_data_SGS_MHD.h"
 
 int main(int argc, const char * argv[]) {
     

@@ -17,7 +17,9 @@
 
 
 struct int_real_ctl_item{
-	int iflag;
+	void * f_self;
+	int * f_iflag;
+	char * c_block_name;
 	
 	int i_data;
 	double r_data;
@@ -33,15 +35,22 @@ struct int_real_ctl_list{
 struct int_real_clist{
 	struct int_real_ctl_list ir_item_head;
 
+    void * f_self;
+
     char *clist_name;
     char *i1_name;
     char *r1_name;
+
+    int index_bc;
 };
 
 
 /* prototypes */
 
 struct int_real_ctl_item * init_int_real_ctl_item_c(void);
+void dealloc_f_ctl_ir_item(struct int_real_ctl_item *ir_item);
+
+
 int read_int_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct int_real_ctl_item *ir_item);
 int write_int_real_ctl_item_c(FILE *fp, int level, int maxlen, 
@@ -70,11 +79,10 @@ void update_int_real_clist_by_index(int index, int i1_in, double r2_in,
 			struct int_real_clist *ir_clst);
 void set_from_int_real_clist_at_index(int index, struct int_real_clist *ir_clst,
 			int *i1_out, double *r2_out);
+struct int_real_ctl_item *int_real_clist_at_index(int index, struct int_real_clist *ir_clst);
 
-void add_int_real_clist_before_c_tbl(int iref_1, double ref_2, 
-			int i1_in, double r2_in, struct int_real_clist *ir_clst);
-void add_int_real_clist_after_c_tbl(int iref_1, double ref_2, 
-			int i1_in, double r2_in, struct int_real_clist *ir_clst);
+void add_int_real_clist_before_c_tbl(int iref_1, double ref_2, struct int_real_clist *ir_clst);
+void add_int_real_clist_after_c_tbl(int iref_1, double ref_2, struct int_real_clist *ir_clst);
 void del_int_real_clist_by_c_tbl(int iref_1, double ref_2,
 			struct int_real_clist *ir_clst);
 void update_int_real_clist_by_c_tbl(int iref_1, double ref_2, 

@@ -20,7 +20,7 @@
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!      subroutine init_FEM_Csim_file                                   &
 !!     &         (SGS_param, cmt_param, wk_sgs, wk_diff)
 !!      subroutine write_FEM_Csim_file                                  &
@@ -42,7 +42,7 @@
       use m_constants
 !
       use t_SGS_control_parameter
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_file_IO_parameter
       use t_time_data
@@ -84,7 +84,7 @@
       type(commutation_control_params), intent(inout) :: cmt_param
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !
       integer(kind = kint) :: ierr
 !

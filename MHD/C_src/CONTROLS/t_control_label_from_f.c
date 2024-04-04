@@ -7,7 +7,7 @@
 
 #include "t_control_label_from_f.h"
 
-int lengthchara_f();
+int lengthchara_f(void);
 
 struct control_labels_f * init_control_labels_f(int (*num_list_func)(void),
                                                 void (*name_list_func)(char *)){
@@ -60,79 +60,27 @@ void check_control_labels_f(struct control_labels_f *ctl_list){
 	return;
 };
 
+int maxlen_flag_with_math_f(struct chara2_int_clist *flag_w_math){
+    struct chara2_int_ctl_item *tmp_item;
+    int maxlen = 0;
+    int i, len;
+    for(i=0;i<count_chara2_int_clist(flag_w_math);i++){
+        tmp_item = chara2_int_clist_at_index(i, flag_w_math);
+        len = strlen(tmp_item->c1_tbl);
+        if(len > maxlen){maxlen = len;};
+    }
+    return maxlen;
+}
 
-struct flag_with_math_f * init_flag_with_math_f(int (*num_list_func)(void),
-												void (*name_list_func)(int *, char *, char *)){
-	
-	struct flag_with_math_f *flag_w_math;
-	if((flag_w_math = (struct flag_with_math_f *) malloc(sizeof(struct flag_with_math_f))) == NULL){
-		printf("malloc error for flag_with_math_f\n");
-		exit(0);
-	};
-	flag_w_math->len_f = lengthchara_f();
-	flag_w_math->num_flags = (*num_list_func)();
-	
-	long ntot_chara, len;
+void check_flag_with_math_f(struct chara2_int_clist *flag_w_math){
+    struct chara2_int_ctl_item *tmp_item;
 	int i;
-	ntot_chara = (long) flag_w_math->len_f * (long) flag_w_math->num_flags;
-	char *packed_name = alloc_string(ntot_chara);;
-	char *packed_math = alloc_string(ntot_chara);;
-	
-	if((flag_w_math->num_comp = (int *)calloc(flag_w_math->num_flags, sizeof(int))) == NULL) 
-	{
-		printf("malloc error for num_comp\n");
-		exit(0);
-	}
-	
-	(*name_list_func) (flag_w_math->num_comp, packed_name, packed_math);
-	
-	if ((flag_w_math->component_name = (char **) malloc(flag_w_math->num_flags*sizeof(char *))) == NULL) {
-		printf("malloc error for component_name\n");
-		exit(0);
-	}
-	if ((flag_w_math->component_math = (char **) malloc(flag_w_math->num_flags*sizeof(char *))) == NULL) {
-		printf("malloc error for component_math\n");
-		exit(0);
-	}
-	
-	flag_w_math->maxlen = 0;
-	for(i=0;i<flag_w_math->num_flags;i++){
-		len = strlen(&packed_name[flag_w_math->len_f * i]);
-		if(len > flag_w_math->maxlen){flag_w_math->maxlen = len;};
-		flag_w_math->component_name[i] = alloc_string(len);
-		
-		len = strlen(&packed_math[flag_w_math->len_f * i]);
-		flag_w_math->component_math[i] = alloc_string(len);
-		
-		strcpy(flag_w_math->component_name[i], &packed_name[flag_w_math->len_f * i]);
-		strcpy(flag_w_math->component_math[i], &packed_math[flag_w_math->len_f * i]);
-	}
-	
-	free(packed_name);
-	free(packed_math);
-	return flag_w_math;
-};
-
-void dealloc_flag_with_math_f(struct flag_with_math_f *flag_w_math){
-	int i;
-	for(i=0;i<flag_w_math->num_flags;i++){
-		free(flag_w_math->component_name[i]);
-		free(flag_w_math->component_math[i]);
-	};
-	free(flag_w_math->component_name);
-	free(flag_w_math->component_math);
-	free(flag_w_math->num_comp);
-	free(flag_w_math);
-	return;
-};
-
-void check_flag_with_math_f(struct flag_with_math_f *flag_w_math){
-	int i;
-	printf("flag_w_math->len_f %d \n", flag_w_math->len_f);
-	printf("flag_w_math->num_labels %d \n", flag_w_math->num_flags);
-	for(i=0;i<flag_w_math->num_flags;i++){
-		printf("%d: %d %s, %s \n", i, flag_w_math->num_comp[i],
-            flag_w_math->component_name[i], flag_w_math->component_math[i]);
+    int num = count_chara2_int_clist(flag_w_math);
+	printf("flag_w_math->num_labels %d \n", num);
+	for(i=0;i<num;i++){
+        tmp_item = chara2_int_clist_at_index(i, flag_w_math);
+		printf("%d: %d %s, %s \n", i, tmp_item->i_data,
+               tmp_item->c1_tbl, tmp_item->c2_tbl);
 	};
 	printf("\n");
 	return;

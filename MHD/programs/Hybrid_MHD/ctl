@@ -133,17 +133,6 @@ begin MHD_control
         quad_field_name_ctl  maxwell_tensor
         quad_field_name_ctl  vecp_induction
       end array
-!
-      array linear_field_name_ctl    7
-        linear_field_name_ctl  velocity
-        linear_field_name_ctl  pressure
-        linear_field_name_ctl  vorticity
-        linear_field_name_ctl  temperature
-        linear_field_name_ctl  magnetic_field
-        linear_field_name_ctl  current_density
-        linear_field_name_ctl  magnetic_potential
-!        linear_field_name_ctl  composition
-      end array
     end phys_values_ctl
 !
 !!!!!  physical values for time evolution !!!!!!!!!!!!!!!!!!

@@ -8,27 +8,21 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine init_masking_ctl_label(hd_block, mask_ctl)
 !!      subroutine read_masking_ctl_data                                &
 !!     &         (id_control, hd_block, mask_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: hd_block
 !!  `     type(masking_by_field_ctl), intent(inout) :: mask_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_masking_ctl_data                               &
-!!     &         (id_control, hd_block, mask_ctl, level)
+!!      subroutine write_masking_ctl_data(id_control, mask_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
-!!        character(len = kchara), intent(in) :: hd_block
 !!        type(masking_by_field_ctl), intent(in) :: mask_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine dealloc_masking_ctls(num_ctl, mask_ctl)
-!!        type(masking_by_field_ctl), intent(inout) :: mask_ctl(num_ctl)
 !!      subroutine dealloc_masking_ctl_flags(mask_ctl)
+!!        type(masking_by_field_ctl), intent(inout) :: mask_ctl
 !!
-!!      subroutine dup_masking_ctls(num_ctl, org_mask_c, new_mask_c)
-!!        type(masking_by_field_ctl), intent(in) :: org_mask_c(num_ctl)
-!!        type(masking_by_field_ctl), intent(inout)                     &
-!!     &                                         :: new_mask_c(num_ctl)
 !!      subroutine dup_masking_ctl_data(org_mask_c, new_mask_c)
 !!        type(masking_by_field_ctl), intent(in) :: org_mask_c
 !!        type(masking_by_field_ctl), intent(inout) :: new_mask_c
@@ -36,11 +30,6 @@
 !!      subroutine add_mask_field_to_fld_ctl(mask_ctl, field_ctl)
 !!        type(masking_by_field_ctl), intent(in) :: mask_ctl
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
-!!
-!!      integer(kind = kint) function num_ctl_label_masking()
-!!      subroutine set_ctl_label_masking(names)
-!!        character(len = kchara), intent(inout)                        &
-!!                                :: names(n_label_masking)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      begin masking_control
 !!        masking_type         field or geometry
@@ -70,6 +59,9 @@
 !
 !
       type masking_by_field_ctl
+!>        Block name
+        character(len=kchara) :: block_name = 'masking_control'
+!
         type(read_character_item) :: mask_type_ctl
         type(read_character_item) :: field_name_ctl
         type(read_character_item) :: component_ctl
@@ -89,8 +81,6 @@
 !
       character(len=kchara), parameter, private                         &
      &                      :: hd_masking_range = 'masking_range'
-!
-      integer(kind = kint), parameter, private :: n_label_masking = 4
 !
 !  ---------------------------------------------------------------------
 !
@@ -130,13 +120,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_masking_ctl_data                                 &
-     &         (id_control, hd_block, mask_ctl, level)
+      subroutine write_masking_ctl_data(id_control, mask_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_block
       type(masking_by_field_ctl), intent(in) :: mask_ctl
 !
       integer(kind = kint), intent(inout) :: level
@@ -150,37 +138,44 @@
       maxlen = max(maxlen, len_trim(hd_masking_field))
       maxlen = max(maxlen, len_trim(hd_masking_comp))
 !
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      level = write_begin_flag_for_ctl(id_control, level,               &
+     &                                 mask_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_masking_type, mask_ctl%mask_type_ctl)
+     &    mask_ctl%mask_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_masking_field, mask_ctl%field_name_ctl)
+     &    mask_ctl%field_name_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_masking_comp, mask_ctl%component_ctl)
+     &    mask_ctl%component_ctl)
 !
       call write_control_array_r2(id_control, level,                    &
-     &    hd_masking_range, mask_ctl%mask_range_ctl)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+     &    mask_ctl%mask_range_ctl)
+      level =  write_end_flag_for_ctl(id_control, level,                &
+     &                                mask_ctl%block_name)
 !
       end subroutine write_masking_ctl_data
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine init_masking_ctl_label(hd_block, mask_ctl)
+!
+      character(len = kchara), intent(in) :: hd_block
+      type(masking_by_field_ctl), intent(inout) :: mask_ctl
+!
+!
+      mask_ctl%block_name = hd_block
+!
+        call init_chara_ctl_item_label                                  &
+     &     (hd_masking_type, mask_ctl%mask_type_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_masking_field, mask_ctl%field_name_ctl)
+        call init_chara_ctl_item_label                                  &
+     &     (hd_masking_comp, mask_ctl%component_ctl)
+        call init_r2_ctl_array_label                                    &
+     &     (hd_masking_range, mask_ctl%mask_range_ctl)
+!
+      end subroutine init_masking_ctl_label
+!
 !  ---------------------------------------------------------------------
-!
-      subroutine dealloc_masking_ctls(num_ctl, mask_ctl)
-!
-      integer(kind = kint) :: num_ctl
-      type(masking_by_field_ctl), intent(inout) :: mask_ctl(num_ctl)
-!
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, num_ctl
-        call dealloc_masking_ctl_flags(mask_ctl(i))
-      end do
-!
-      end subroutine dealloc_masking_ctls
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_masking_ctl_flags(mask_ctl)
@@ -203,28 +198,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine dup_masking_ctls(num_ctl, org_mask_c, new_mask_c)
-!
-      integer(kind = kint) :: num_ctl
-      type(masking_by_field_ctl), intent(in) :: org_mask_c(num_ctl)
-      type(masking_by_field_ctl), intent(inout) :: new_mask_c(num_ctl)
-!
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, num_ctl
-        call dup_masking_ctl_data(org_mask_c(i), new_mask_c(i))
-      end do
-!
-      end subroutine dup_masking_ctls
-!
-!  ---------------------------------------------------------------------
-!
       subroutine dup_masking_ctl_data(org_mask_c, new_mask_c)
 !
       type(masking_by_field_ctl), intent(in) :: org_mask_c
       type(masking_by_field_ctl), intent(inout) :: new_mask_c
 !
+!
+      new_mask_c%block_name =     org_mask_c%block_name
+      new_mask_c%i_mask_control = org_mask_c%i_mask_control
 !
       call copy_chara_ctl(org_mask_c%mask_type_ctl,                     &
      &                    new_mask_c%mask_type_ctl)
@@ -256,27 +237,5 @@
       end subroutine add_mask_field_to_fld_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_ctl_label_masking()
-      num_ctl_label_masking = n_label_masking
-      return
-      end function num_ctl_label_masking
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_ctl_label_masking(names)
-!
-      character(len = kchara), intent(inout) :: names(n_label_masking)
-!
-!
-      call set_control_labels(hd_masking_type,  names( 1))
-      call set_control_labels(hd_masking_field, names( 2))
-      call set_control_labels(hd_masking_comp,  names( 3))
-      call set_control_labels(hd_masking_range, names( 4))
-!
-      end subroutine set_ctl_label_masking
-!
-! ----------------------------------------------------------------------
 !
       end module t_control_data_masking

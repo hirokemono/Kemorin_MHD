@@ -109,8 +109,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(gen_f_ctl%i_filter_param_ctl .gt. 0) return
+      call init_CG_solver_param_ctl_label(hd_solver_ctl,                &
+     &                                    gen_f_ctl%CG_filter_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -218,56 +220,56 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_tgt_filter_type, gen_f_ctl%tgt_filter_type_ctl)
+     &    gen_f_ctl%tgt_filter_type_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_momentum_type, gen_f_ctl%momentum_type_ctl)
+     &    gen_f_ctl%momentum_type_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_num_int_points, gen_f_ctl%num_int_points_ctl)
+     &    gen_f_ctl%num_int_points_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_maximum_neighbour, gen_f_ctl%maximum_neighbour_ctl)
+     &    gen_f_ctl%maximum_neighbour_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_omitted_ratio, gen_f_ctl%omitted_ratio_ctl)
+     &    gen_f_ctl%omitted_ratio_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_minimum_comp, gen_f_ctl%minimum_comp_ctl)
+     &    gen_f_ctl%minimum_comp_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_ordering_list, gen_f_ctl%ordering_list_ctl)
+     &    gen_f_ctl%ordering_list_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_minimum_det, gen_f_ctl%minimum_det_ctl)
+     &    gen_f_ctl%minimum_det_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_maximum_rms, gen_f_ctl%maximum_rms_ctl)
+     &    gen_f_ctl%maximum_rms_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_corection, gen_f_ctl%filter_correction_ctl)
+     &    gen_f_ctl%filter_correction_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_fixed_point, gen_f_ctl%filter_fixed_point_ctl)
+     &    gen_f_ctl%filter_fixed_point_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_filter_negative_center, gen_f_ctl%negative_center_ctl)
+     &    gen_f_ctl%negative_center_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_err_level_commute, gen_f_ctl%ilevel_filter_error_info)
+     &    gen_f_ctl%ilevel_filter_error_info)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_start_node_ctl, gen_f_ctl%start_node_ctl)
+     &    gen_f_ctl%start_node_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_end_node_ctl, gen_f_ctl%end_node_ctl)
+     &    gen_f_ctl%end_node_ctl)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_start_nfree_mat, gen_f_ctl%ist_num_free_ctl)
+     &    gen_f_ctl%ist_num_free_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_end_nfree_mat, gen_f_ctl%ied_num_free_ctl)
+     &    gen_f_ctl%ied_num_free_ctl)
 !
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_ref_filter, gen_f_ctl%reference_filter_ctl)
+     &    gen_f_ctl%reference_filter_ctl)
       call write_control_array_i_c_r(id_control, level,                 &
-     &    hd_order_moments, gen_f_ctl%ref_filter_mom_ctl)
+     &    gen_f_ctl%ref_filter_mom_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_solver_type, gen_f_ctl%f_solver_type_ctl)
+     &    gen_f_ctl%f_solver_type_ctl)
       call write_CG_solver_param_ctl(id_control,                        &
      &    hd_solver_ctl, gen_f_ctl%CG_filter_ctl, level)
 !
       call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_nele_filtering, gen_f_ctl%num_ele_4_filter_ctl)
+     &    gen_f_ctl%num_ele_4_filter_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_horiz_filter, gen_f_ctl%horizontal_filter_ctl)
+     &    gen_f_ctl%horizontal_filter_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_filter_param_ctl

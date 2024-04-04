@@ -24,12 +24,14 @@
 !
       subroutine bcast_const_filter_ctl_data(filter3d_ctl)
 !
+      use calypso_mpi_char
       use calypso_mpi_int
       use bcast_control_arrays
       use bcast_4_platform_ctl
       use bcast_4_filter_files_ctl
       use bcast_ctl_data_3d_filter
       use bcast_ctl_data_gen_filter
+      use transfer_to_long_integers
 !
       type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
 !
@@ -43,6 +45,8 @@
       call bcast_element_size_ctl(filter3d_ctl%fil3_ctl)
       call bcast_org_filter_fnames_ctl(filter3d_ctl%org_fil_files_ctl)
 !
+      call calypso_mpi_bcast_character(filter3d_ctl%block_name,         &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(filter3d_ctl%i_filter_control, 0)
 !
       end subroutine bcast_const_filter_ctl_data

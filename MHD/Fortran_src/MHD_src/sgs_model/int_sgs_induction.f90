@@ -1,20 +1,23 @@
-!
-!     module int_sgs_induction
-!
-!        programmed by H.Matsui on July, 2005
-!        modified by H.Matsui on AUg., 2007
-!
+!>@file   int_sgs_induction.f90
+!!        module int_sgs_induction
+!!
+!>@author H. Matsui
+!>@date programmed by H.Matsui in July, 2005
+!!        modified by H.Matsui in Aug., 2007
+!!
+!> @brief Evaluate model coefficients for commutation of magnetic field
+!!
+!!@verbatim
 !!      subroutine int_vol_sgs_induction(FEM_prm, nod_comm, node, ele,
 !!     &          conduct, iphys, iphys_LES, g_FEM, jac_3d, rhs_tbl,    &
 !!     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld,          &
 !!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,        &
-!!     &          filter_param, nod_comm, node, ele, conduct, cd_prop,  &
-!!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
-!!     &          jacs, rhs_tbl, FEM_elen, filtering,                   &
-!!     &          icomp_sgs_term, iphys_elediff_vec, sgs_coefs,         &
-!!     &          mlump_cd, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,   &
-!!     &          nod_fld, v_sol, SR_sig, SR_r)
+!!    &          filter_param, nod_comm, node, ele, conduct, cd_prop,   &
+!!    &          iphys, iphys_LES, iphys_ele_base, ele_fld,             &
+!!    &          jacs, rhs_tbl, FEM_elen, filtering, Csim_SGS_uxb,      &
+!!    &          mlump_cd, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,    &
+!!    &          nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -33,9 +36,6 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(filtering_data_type), intent(in) :: filtering
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -45,6 +45,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module int_sgs_induction
 !
@@ -70,7 +71,7 @@
       use t_filter_elength
       use t_filtering_data
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use t_vector_for_solver
       use t_solver_SR
 !
@@ -139,12 +140,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,          &
-     &          filter_param, nod_comm, node, ele, conduct, cd_prop,    &
-     &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
-     &          jacs, rhs_tbl, FEM_elen, filtering,                     &
-     &          icomp_sgs_term, iphys_elediff_vec, sgs_coefs,           &
-     &          mlump_cd, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,     &
-     &          nod_fld, v_sol, SR_sig, SR_r)
+    &          filter_param, nod_comm, node, ele, conduct, cd_prop,     &
+    &          iphys, iphys_LES, iphys_ele_base, ele_fld,               &
+    &          jacs, rhs_tbl, FEM_elen, filtering, Csim_SGS_uxb,        &
+    &          mlump_cd, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,      &
+    &          nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_sgs_fluxes
       use cal_ff_smp_to_ffs
@@ -169,10 +169,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(base_field_address), intent(in) :: iphys_elediff_vec
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type (lumped_mass_matrices), intent(in) :: mlump_cd
+      type(SGS_model_coefficient), intent(in) :: Csim_SGS_uxb
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -189,8 +187,8 @@
      &    nod_comm, node, ele, conduct, cd_prop,                        &
      &    iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_wk,           &
      &    iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elen, filtering,  &
-     &    icomp_sgs_term, iphys_elediff_vec, sgs_coefs, wk_filter,      &
-     &    mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &    Csim_SGS_uxb, wk_filter, mhd_fem_wk, fem_wk, f_nl,            &
+     &    nod_fld, v_sol, SR_sig, SR_r)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
       call cal_ff_2_vector                                              &

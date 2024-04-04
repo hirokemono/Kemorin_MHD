@@ -6,13 +6,15 @@
 #define shaders__
 
 #include <string.h>
-#include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 #include "skip_comment_c.h"
 
 
 /* prototypes */
 
 
+char * load_anaglyph_texture_frag(void);
+char * load_anaglyph_texture_vert(void);
 char * load_dash_lines_3D_frag(void);
 char * load_dash_lines_3D_vert(void);
 char * load_gouraud_frag(void);

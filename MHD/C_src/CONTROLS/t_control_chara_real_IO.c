@@ -14,13 +14,20 @@ struct chara_real_ctl_item * init_chara_real_ctl_item_c(void){
         printf("malloc error for chara_real_ctl_item\n");
         exit(0);
     }
+	if((cr_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for cr_item->f_iflag\n");
+		exit(0);
+	}
 	cr_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	cr_item->r_data = 0.0;
-	cr_item->iflag = 0;
     return cr_item;
 };
 
 void dealloc_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item){
+	cr_item->c_block_name = NULL;
+	cr_item->f_iflag = NULL;
+    
+	cr_item->f_self = NULL;
     free(cr_item->c_tbl);
     free(cr_item);
     return;
@@ -30,14 +37,14 @@ int read_chara_real_ctl_item_c(char buf[LENGTHBUF], const char *label,
                                struct chara_real_ctl_item *cr_item){
 	char header_chara[KCHARA_C];
 	
-	if(cr_item->iflag > 0) return 0;
+	if(cr_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %s %lf", header_chara, 
 					cr_item->c_tbl, &cr_item->r_data);
 		strip_cautation_marks(cr_item->c_tbl);
-		cr_item->iflag = 1;
+		cr_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -45,7 +52,7 @@ int read_chara_real_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_chara_real_ctl_item_c(FILE *fp, int level, int maxlen[2], 
                            const char *label, struct chara_real_ctl_item *cr_item){
     
-	if(cr_item->iflag == 0) return level;
+	if(cr_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen[0], label);
 	write_one_label_cont_c(fp, maxlen[1], cr_item->c_tbl);
@@ -56,14 +63,14 @@ int write_chara_real_ctl_item_c(FILE *fp, int level, int maxlen[2],
 
 void update_chara_real_ctl_item_c(char *c_in, double r_in,  
                               struct chara_real_ctl_item *cr_item){
-	cr_item->iflag = 1;
+	cr_item->f_iflag[0] = 1;
 	sprintf(cr_item->c_tbl,"%s", c_in);
 	cr_item->r_data = r_in;
     return;
 };
 void set_from_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item,
                               char *c_out, double *r_out){
-	if(cr_item->iflag == 0) return;
+	if(cr_item->f_iflag[0] == 0) return;
 	sprintf(c_out,"%s", cr_item->c_tbl);
 	*r_out = cr_item->r_data;
     return;
@@ -340,6 +347,12 @@ void set_from_chara_real_clist_at_index(int index, struct chara_real_clist *cr_c
             c_out, r_out);
      return;
 };
+
+struct chara_real_ctl_item *chara_real_clist_at_index(int index, struct chara_real_clist *cr_clst){
+    struct chara_real_ctl_list *ct_tmp = find_cr_ctl_list_item_by_index(index, &cr_clst->cr_item_head);
+    return ct_tmp->cr_item;
+}
+
 
 void add_chara_real_clist_before_c_tbl(char *ref, char *c_in, double r_in, struct chara_real_clist *cr_clst){
     add_chara_real_ctl_list_before_c_tbl(ref, c_in, r_in, &cr_clst->cr_item_head);

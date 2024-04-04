@@ -122,8 +122,10 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(spu_ctl%i_sph_trans_model .gt. 0) return
+      call init_ctl_time_step_label(hd_time_step, spu_ctl%tstep_ctl)
+      call init_phys_data_ctl_label(hd_phys_values, spu_ctl%fld_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -167,14 +169,14 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_phys_data_control                                      &
-     &   (id_control, hd_phys_values, spu_ctl%fld_ctl, level)
+     &   (id_control, spu_ctl%fld_ctl, level)
       call write_control_time_step_data                                 &
-     &   (id_control, hd_time_step, spu_ctl%tstep_ctl, level)
+     &   (id_control, spu_ctl%tstep_ctl, level)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_buo_ratio, spu_ctl%buoyancy_ratio_ctl)
+     &    spu_ctl%buoyancy_ratio_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_thermal_buo, spu_ctl%thermal_buoyancy_ctl)
+     &    spu_ctl%thermal_buoyancy_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_trans_model_ctl
@@ -252,13 +254,13 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_ene_spec_head, spu_ctl%ene_spec_head_ctl)
+     &    spu_ctl%ene_spec_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_vol_ene_spec_head, spu_ctl%vol_ene_spec_head_ctl)
+     &    spu_ctl%vol_ene_spec_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_zm_sph_spec_file, spu_ctl%zm_spec_file_head_ctl)
+     &    spu_ctl%zm_spec_file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_tsph_esp_file, spu_ctl%tave_ene_spec_head_ctl)
+     &    spu_ctl%tave_ene_spec_head_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_trans_params_ctl

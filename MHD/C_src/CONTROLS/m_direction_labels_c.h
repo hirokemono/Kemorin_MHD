@@ -39,8 +39,6 @@ struct constant_flag_def{
 };
 
 
-extern const struct direction_flag_def vector_flags[NUM_VECTOR_FLAG];
-extern const struct direction_flag_def sym_tensor_flags[NUM_SYM_TENSOR_FLAG];
 extern const struct direction_flag_def xyz_vector_flags[NUM_XYZ_FLAG];
 extern const struct direction_flag_def surface_equation_flags[NTERM_PLANE];
 

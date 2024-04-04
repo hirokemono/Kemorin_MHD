@@ -3,7 +3,7 @@
 
 in vec4 position;
 in vec4 ex_Color;
-in vec3 normal;
+in vec4 normal;
 in vec2 tex_position;
 out vec4 out_Color;
 
@@ -41,26 +41,34 @@ uniform sampler2D image;
 
 void main (void)
 {
-	vec3 fnormal = normalize(normal);
+	vec3 fnormal = normalize(normal.xyz);
 	vec3 light;
 	float diffuse;
 
-	vec4 txColor = texture(image, tex_position);
+    vec3 halfway;
+    float product;
+    float fspecular;
+    
+    vec3 view =   normalize(position.xyz);
+    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, ex_Color.w);
 
-	out_Color = vec4(0.0,0.0,0.0,0.0);
+	vec4 txColor = texture(image, tex_position);
+    vec4 addColor = vec4(txColor.xyz, ex_Color.w);
+
+    vec3 out_Color3;
+    float opacity;
+    out_Color = vec4(0.0,0.0,0.0,0.0);
 	for (int i = 0; i < num_lights; ++i){
 		light = normalize(LightSource[i].position.xyz - position.xyz);
-		diffuse = dot(light, fnormal);
+        halfway = normalize(light - view);
+        product = max(dot(fnormal, halfway), 0.0);
+        fspecular = pow(product, frontMaterial.shininess);
 
-		out_Color += txColor * frontMaterial.ambient;
-		if (diffuse > 0.0) {
-			vec3 view = normalize(position.xyz);
-			vec3 halfway = normalize(light - view);
-			float product = max(dot(fnormal, halfway), 0.0);
-			float specular = pow(product, frontMaterial.shininess);
-			out_Color += ex_Color * frontMaterial.diffuse * diffuse
-			+ vec4(frontMaterial.specular.xyz, ex_Color.w) * specular;
-		}
+        diffuse = dot(light, fnormal);
+
+        out_Color += addColor * frontMaterial.ambient;
+                   + addColor * frontMaterial.diffuse * abs(diffuse)
+                   + tmpsp * fspecular;
 	}
 }
 

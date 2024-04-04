@@ -103,7 +103,7 @@
       call calypso_mpi_bcast_character                                  &
      &   (gen_SPH_wP_c%fname_vol_repart_ctl, cast_long(kchara), 0)
       call calypso_mpi_bcast_character                                  &
-     &   (gen_SPH_wP_c%fname_psph_ctl, cast_long(kchara), 0)
+     &   (gen_SPH_wP_c%fname_psph, cast_long(kchara), 0)
 !
       end subroutine bcast_ctl_data_gen_sph_w_repart
 !

@@ -12,15 +12,15 @@
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_kemoview_mesh.h"
-#include "m_colorbar_work.h"
+#include "m_colorbar_buffer.h"
 #include "m_phong_light_table_c.h"
 #include "m_gl_transfer_matrix.h"
-#include "vartex_array_object_gl.h"
+#include "m_transfer_matrices.h"
+#include "m_kemoview_object_buffers.h"
 #include "read_data_4_kemoviewer.h"
 #include "set_rgba_table_c.h"
 #include "rainbow_color_code_c.h"
 #include "psf_data_array_manager.h"
-#include "modify_stereo_view_gl.h"
 #include "set_kemoviewer_ucd_data.h"
 #include "skip_comment_c.h"
 #include "write_modelview_matrix.h"
@@ -29,16 +29,5 @@
 #include "set_each_fline_parameters.h"
 #include "set_texture_4_psf.h"
 #include "numbers_to_bin_c.h"
-
-#include "glsl.h"
-#include "shaders.h"
-
-
-#include "kemoviewer.h"
-#include "write_gl_window_to_file.h"
-
-#ifdef PNG_OUTPUT
-    #include "set_psf_texture_by_png.h"
-#endif
 
 #endif

@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine copy_Csim_buo_4_sph_trans(sph_rtp, sph_d_grp,        &
-!!     &          iak_sgs_term, f_trns_Csim, wk_sgs, fwd_Csim)
+!!     &          iak_sgs_term, f_trns_Csim, wk_sph_sgs, fwd_Csim)
 !!      subroutine copy_model_coefs_4_sph_snap(sph_rtp, sph_d_grp,      &
-!!     &          iak_sgs_term, f_trns_Csim, wk_sgs, fwd_Csim)
+!!     &          iak_sgs_term, f_trns_Csim, wk_sph_sgs, fwd_Csim)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: f_trns_Csim
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
 !!        type(spherical_transform_data), intent(inout) :: fwd_Csim
 !!@endverbatim
 !
@@ -33,8 +33,8 @@
       use t_SGS_model_coef_labels
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
-      use t_SGS_model_coefs
       use t_groups_sph_dynamic
+      use t_SPH_dynamic_model_coefs
 !
       implicit none
 !
@@ -47,14 +47,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_Csim_buo_4_sph_trans(sph_rtp, sph_d_grp,          &
-     &          iak_sgs_term, f_trns_Csim, wk_sgs, fwd_Csim)
+     &          iak_sgs_term, f_trns_Csim, wk_sph_sgs, fwd_Csim)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: f_trns_Csim
 !
-      type(dynamic_model_data), intent(inout) :: wk_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
       type(spherical_transform_data), intent(inout) :: fwd_Csim
 !
 !
@@ -68,13 +68,13 @@
       if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &      f_trns_Csim%i_SGS_buoyancy, iak_sgs_term%i_SGS_buoyancy,    &
-     &      wk_sgs, fwd_Csim)
+     &      wk_sph_sgs, fwd_Csim)
       end if
 !
       if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &      f_trns_Csim%i_SGS_comp_buo, iak_sgs_term%i_SGS_comp_buo,    &
-     &      wk_sgs, fwd_Csim)
+     &      wk_sph_sgs, fwd_Csim)
       end if
 !
       end subroutine copy_Csim_buo_4_sph_trans
@@ -82,14 +82,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_model_coefs_4_sph_snap(sph_rtp, sph_d_grp,        &
-     &          iak_sgs_term, f_trns_Csim, wk_sgs, fwd_Csim)
+     &          iak_sgs_term, f_trns_Csim, wk_sph_sgs, fwd_Csim)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: f_trns_Csim
 !
-      type(dynamic_model_data), intent(inout) :: wk_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
       type(spherical_transform_data), intent(inout) :: fwd_Csim
 !
 !
@@ -113,44 +113,44 @@
       if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &      f_trns_Csim%i_SGS_m_flux, iak_sgs_term%i_SGS_m_flux,        &
-     &      wk_sgs, fwd_Csim)
+     &      wk_sph_sgs, fwd_Csim)
       end if
 !
       if(iak_sgs_term%i_SGS_Lorentz .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &      f_trns_Csim%i_SGS_Lorentz, iak_sgs_term%i_SGS_Lorentz,      &
-     &      wk_sgs, fwd_Csim)
+     &      wk_sph_sgs, fwd_Csim)
       end if
 !
       if(iak_sgs_term%i_SGS_induction .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &     f_trns_Csim%i_SGS_vp_induct, iak_sgs_term%i_SGS_induction,   &
-     &     wk_sgs, fwd_Csim)
+     &     wk_sph_sgs, fwd_Csim)
       end if
 !
       if(iak_sgs_term%i_SGS_h_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &      f_trns_Csim%i_SGS_h_flux, iak_sgs_term%i_SGS_h_flux,        &
-     &      wk_sgs, fwd_Csim)
+     &      wk_sph_sgs, fwd_Csim)
       end if
 !
       if(iak_sgs_term%i_SGS_c_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &      f_trns_Csim%i_SGS_c_flux, iak_sgs_term%i_SGS_c_flux,        &
-     &      wk_sgs, fwd_Csim)
+     &      wk_sph_sgs, fwd_Csim)
       end if
 !
 !
       if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &      f_trns_Csim%i_SGS_buoyancy, iak_sgs_term%i_SGS_buoyancy,    &
-     &      wk_sgs, fwd_Csim)
+     &      wk_sph_sgs, fwd_Csim)
       end if
 !
       if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
      &      f_trns_Csim%i_SGS_comp_buo, iak_sgs_term%i_SGS_comp_buo,    &
-     &      wk_sgs, fwd_Csim)
+     &      wk_sph_sgs, fwd_Csim)
       end if
 !
       end subroutine copy_model_coefs_4_sph_snap
@@ -159,7 +159,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_model_coefs_sph_snap(sph_rtp, sph_d_grp,           &
-     &          irtp_sgs, ifld_sgs, wk_sgs, trns_fwd)
+     &          irtp_sgs, ifld_sgs, wk_sph_sgs, trns_fwd)
 !
       use product_model_coefs_sph
 !
@@ -169,7 +169,7 @@
       integer(kind = kint), intent(in) :: irtp_sgs
       integer(kind = kint), intent(in) :: ifld_sgs
 !
-      type(dynamic_model_data), intent(inout) :: wk_sgs
+      type(SPH_dynamic_model_coefs), intent(inout) :: wk_sph_sgs
       type(spherical_transform_data), intent(inout) :: trns_fwd
 !
 !
@@ -177,8 +177,9 @@
       trns_fwd%fld_rtp(1:sph_rtp%nnod_rtp,irtp_sgs) = one
 !$omp end parallel workshare
 !
-      call sel_product_model_coefs(one, sph_rtp, sph_d_grp,             &
-     &    wk_sgs%num_kinds, irtp_sgs, ione, wk_sgs, trns_fwd)
+      call sel_product_model_coefs                                      &
+     &   (one, sph_rtp, sph_d_grp, wk_sph_sgs%num_kinds, irtp_sgs,      &
+     &    ifld_sgs, wk_sph_sgs, trns_fwd)
 !
       end subroutine set_model_coefs_sph_snap
 !

@@ -8,15 +8,20 @@
 #ifndef KemoviewerLightingControl_h__
 #define KemoviewerLightingControl_h__
 
-#import <Cocoa/Cocoa.h>
-#import "KemoViewerOpenGLView.h"
+@import Cocoa;
+
+#import "KemoViewerMetalView.h"
 #import "fillRectView.h"
+#import "KemoViewerObject.h"
+#include "Kemoviewer.h"
 
 
 @interface LightTableController : NSObject {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
-	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
-	IBOutlet id _lightTableView;
+	IBOutlet KemoViewerMetalView*  _metalView;
+    IBOutlet KemoViewerObject *_kmv;
+
+    IBOutlet id _lightTableView;
 
 	IBOutlet NSTableView * idlightTableView;
 
@@ -60,13 +65,13 @@
 - (IBAction)addAtSelectedRow:(id)pId;
 - (IBAction)deleteSelectedRow:(id)pId;
 
-- (int)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)pTableViewObj;
 
 - (id) tableView:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex;
 - (void) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender;
 
 - (void)InitLightTable;
-- (void)SetLightTable;
+- (void)SetLightTable:(struct kemoviewer_type *) kemo_sgl;
 
 - (IBAction)UpdateLightTable:(id)pID;
 

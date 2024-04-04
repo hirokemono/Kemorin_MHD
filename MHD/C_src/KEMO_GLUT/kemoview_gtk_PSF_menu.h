@@ -37,6 +37,7 @@ struct psf_color_gtk_menu{
 	GtkWidget *switch_draw, *switch_bar;
 	
 	GtkWidget *combobox_sfcolor;
+	GtkWidget *colorcell_sfcolor;
 	
 	GtkWidget *spin_opacity1;	
 	GtkWidget *spin_range_min, *spin_digit_min; 
@@ -45,26 +46,51 @@ struct psf_color_gtk_menu{
 };
 
 struct psf_gtk_menu{
-	GtkWidget *psf_vbox;
-	
+    GtkWidget *psf_frame;
+
 	GtkWidget *closeButton;
-	GtkWidget *combobox_field;
+    
+    GtkWidget *combobox_psfs;
+    GtkWidget *psf_label_tree_view;
+    GtkWidget *renderer_psfs;
+    GtkWidget *psf_vbox;
+
+    GtkWidget *combobox_field;
+    GtkWidget *field_label_tree_view;
+    GtkWidget *renderer_field;
+    GtkWidget *hbox_field;
+
 	GtkWidget *combobox_comp;
-	
-	struct psf_isoline_gtk_menu *psf_isoline_menu;
-	struct psf_surface_gtk_menu *psf_surface_menu;
-	struct psf_color_gtk_menu *psf_color_menu;
+    GtkWidget *comp_label_tree_view;
+    GtkWidget *renderer_comp;
+    GtkWidget *hbox_comp;
+
+    int num_psfs;
+    GtkWidget *hbox_psfs;
+
+    struct psf_isoline_gtk_menu *psf_isoline_menu;
+    GtkWidget *expander_iso;
+    
+    struct psf_surface_gtk_menu *psf_surface_menu;
+    GtkWidget *expander_surf;
+
 	struct psf_vector_gtk_menu *psf_vector_menu;
-	
-	struct colormap_view *color_vws;
+    GtkWidget *expander_vect;
+    
+    struct colormap_view *color_vws;
+    GtkWidget *expander_color;
 };
 
 /*  prototypes */
 
-struct psf_gtk_menu * alloc_psf_gtk_menu();
+struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
-GtkWidget * init_psf_menu_hbox(struct psf_gtk_menu *psf_gmenu, 
-                               GtkWidget *window, GtkWidget *psf_vbox);
+void set_vector_plot_availablity(struct kemoviewer_type *kemo_sgl,
+                                 struct psf_gtk_menu *psf_gmenu);
+void init_psf_menu_hbox(struct kemoviewer_type *kemo_sgl,
+                        struct kemoviewer_gl_type *kemo_gl,
+                        struct psf_gtk_menu *psf_gmenu,
+                        GtkWidget *window);
 
 #endif

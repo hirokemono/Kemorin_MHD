@@ -14,15 +14,22 @@ struct chara_ctl_item * init_chara_ctl_item_c(void){
         printf("malloc error for chara_ctl_item\n");
         exit(0);
     }
-
+	if((c_item->f_iflag = (int *)calloc(1, sizeof(int))) == NULL) {
+		printf("malloc error for c_item->f_iflag\n");
+		exit(0);
+	}
+    c_item->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
 	c_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
-	c_item->iflag = 0;
     return c_item;
 };
 
 void dealloc_chara_ctl_item_c(struct chara_ctl_item *c_item){
     free(c_item->c_tbl);
-    free(c_item);
+	c_item->f_self = NULL;
+	c_item->f_iflag = NULL;
+    free(c_item->c_block_name);
+	
+	free(c_item);
     return;
 };
 
@@ -30,13 +37,13 @@ int read_chara_ctl_item_c(char buf[LENGTHBUF], const char *label,
                                struct chara_ctl_item *c_item){
 	char header_chara[KCHARA_C];
 	
-	if(c_item->iflag > 0) return 0;
+	if(c_item->f_iflag[0] > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
 		sscanf(buf, "%s %s", header_chara, c_item->c_tbl);
 		strip_cautation_marks(c_item->c_tbl);
-		c_item->iflag = 1;
+		c_item->f_iflag[0] = 1;
 	};
 	return 1;
 };
@@ -44,7 +51,7 @@ int read_chara_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_chara_ctl_item_c(FILE *fp, int level, int maxlen, 
                            const char *label, struct chara_ctl_item *c_item){
     
-	if(c_item->iflag == 0) return level;
+	if(c_item->f_iflag[0] == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
 	write_one_label_w_lf_c(fp, c_item->c_tbl);
@@ -52,12 +59,12 @@ int write_chara_ctl_item_c(FILE *fp, int level, int maxlen,
 };
 
 void update_chara_ctl_item_c(char *c_in, struct chara_ctl_item *c_item){
-	c_item->iflag = 1;
+	c_item->f_iflag[0] = 1;
 	sprintf(c_item->c_tbl,"%s", c_in);
     return;
 };
 void set_from_chara_ctl_item_c(struct chara_ctl_item *c_item, char *c_out){
-	if(c_item->iflag == 0) return;
+	if(c_item->f_iflag[0] == 0) return;
 	sprintf(c_out,"%s", c_item->c_tbl);
     return;
 };
@@ -65,7 +72,7 @@ void set_from_chara_ctl_item_c(struct chara_ctl_item *c_item, char *c_out){
 
 int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item){
     int iflag = 0;
-	if(c_item->iflag == 0) return iflag;
+	if(c_item->f_iflag[0] == 0) return iflag;
 	
 	iflag = cmp_no_case_c(c_item->c_tbl, "ON");
     if(iflag == 0) iflag = cmp_no_case_c(c_item->c_tbl, "YES");
@@ -73,7 +80,7 @@ int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item){
 };
 
 void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item){
-	c_item->iflag = 1;
+	c_item->f_iflag[0] = 1;
     if(iflag > 0){
         sprintf(c_item->c_tbl, "%s", "On");
     } else {
@@ -83,19 +90,19 @@ void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item){
 };
 
 void copy_from_chara_ctl_item(struct chara_ctl_item *c_item, char *c_data){
-	if(c_item->iflag == 0) return;
+	if(c_item->f_iflag[0] == 0) return;
 	sprintf(c_data, "%s", c_item->c_tbl);
 	return;
 };
 void copy_to_chara_ctl_item(const char *c_data, struct chara_ctl_item *c_item){
-	c_item->iflag = 1;
+	c_item->f_iflag[0] = 1;
 	sprintf(c_item->c_tbl, "%s", c_data);
 	return;
 };
 
 
 
-void init_chara_ctl_list(struct chara_ctl_list *head){
+static void init_chara_ctl_list(struct chara_ctl_list *head){
     head->c_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
@@ -122,7 +129,7 @@ struct chara_ctl_list *add_chara_ctl_list_before(struct chara_ctl_list *current)
     return added;
 };
 
-struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
+static struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
     struct chara_ctl_list *added;
     struct chara_ctl_list *old_next;
     
@@ -142,7 +149,7 @@ struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
     return added;
 };
 
-void delete_chara_ctl_list(struct chara_ctl_list *current){
+static void delete_chara_ctl_list(struct chara_ctl_list *current){
     struct chara_ctl_list *old_prev = current->_prev;
     struct chara_ctl_list *old_next = current->_next;
     
@@ -153,15 +160,13 @@ void delete_chara_ctl_list(struct chara_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
     return;
 };
-void clear_chara_ctl_list(struct chara_ctl_list *head){
-    while (head->_next != NULL) {
-        delete_chara_ctl_list(head->_next);
-	}
+static void clear_chara_ctl_list(struct chara_ctl_list *head){
+    while (head->_next != NULL) {delete_chara_ctl_list(head->_next);}
     return;
 };
 
 
-int count_chara_ctl_list(struct chara_ctl_list *head){
+static int count_chara_ctl_list(struct chara_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
@@ -171,13 +176,13 @@ int count_chara_ctl_list(struct chara_ctl_list *head){
     return num;
 };
 
-struct chara_ctl_list *find_c_ctl_list_item_by_index(int index, struct chara_ctl_list *head){
+static struct chara_ctl_list *find_c_ctl_list_item_by_index(int index, struct chara_ctl_list *head){
     int i;
     if(index < 0 || index > count_chara_ctl_list(head)) return NULL;
     for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
-struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl_list *head){
+static struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl_list *head){
     head = head->_next;
     while (head != NULL){
 		if(cmp_no_case_c(head->c_item->c_tbl, ref)) return head;
@@ -186,7 +191,7 @@ struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl
     return head;
 };
 
-int read_chara_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+static int read_chara_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_ctl_list *head){
     int iflag = 0;
     int icou = 0;
@@ -204,7 +209,7 @@ int read_chara_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     return icou;
 };
 
-int write_chara_ctl_list(FILE *fp, int level, const char *label, 
+static int write_chara_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara_ctl_list *head){
     if(count_chara_ctl_list(head) == 0) return level;
     
@@ -222,7 +227,7 @@ int write_chara_ctl_list(FILE *fp, int level, const char *label,
 };
 
 
-void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head){
+static void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head){
     int num = count_chara_ctl_list(head);
     if(num > 0) head = find_c_ctl_list_item_by_index(num-1, head);
 	head = add_chara_ctl_list_after(head);
@@ -248,10 +253,6 @@ static void set_from_chara_ctl_list_at_index(int index, struct chara_ctl_list *h
 	if(head != NULL) set_from_chara_ctl_item_c(head->c_item, c_out);
 	return;
 };
-static struct chara_ctl_item *chara_ctl_list_at_index(int index, struct chara_ctl_list *head){
-    struct chara_ctl_list *tmp_list = find_c_ctl_list_item_by_index(index, head);
-    return tmp_list->c_item;
-};
 
 
 static void add_chara_ctl_list_before_c_tbl(char *ref, char *c_in,
@@ -270,7 +271,7 @@ static void add_chara_ctl_list_after_c_tbl(char *ref, char *c_in,
 	update_chara_ctl_item_c(c_in, head->c_item);
 	return;
 };
-void del_chara_ctl_list_by_c_tbl(char *ref, struct chara_ctl_list *head){
+static void del_chara_ctl_list_by_c_tbl(char *ref, struct chara_ctl_list *head){
 	head = find_c_ctl_list_item_by_c_tbl(ref, head);
 	if(head != NULL) delete_chara_ctl_list(head);
 	return;
@@ -298,8 +299,8 @@ struct chara_clist * init_chara_clist(void){
     init_chara_ctl_list(&c_clst->c_item_head);
 
     c_clst->iflag_use = 0;
-    c_clst->clist_name = (char *)calloc(32,sizeof(char));
-    c_clst->c1_name = (char *)calloc(32,sizeof(char));
+    c_clst->clist_name = (char *)calloc(KCHARA_C,sizeof(char));
+    c_clst->c1_name = (char *)calloc(KCHARA_C,sizeof(char));
     return c_clst;
 };
 void dealloc_chara_clist(struct chara_clist *c_clst){
@@ -347,8 +348,10 @@ void set_from_chara_clist_at_index(int index, struct chara_clist *c_clst, char *
     set_from_chara_ctl_list_at_index(index, &c_clst->c_item_head, c_out);
     return;
 };
+
 struct chara_ctl_item *chara_clist_at_index(int index, struct chara_clist *c_clst){
-    return chara_ctl_list_at_index(index, &c_clst->c_item_head);
+    struct chara_ctl_list *tmp_list = find_c_ctl_list_item_by_index(index, &c_clst->c_item_head);
+    return tmp_list->c_item;
 }
 
 void add_chara_clist_before_c_tbl(char *ref, char *c_in, struct chara_clist *c_clst){

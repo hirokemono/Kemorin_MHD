@@ -7,6 +7,7 @@
 !>@brief  Control data for repartitioning by volume
 !!
 !!@verbatim
+!!      subroutine init_control_vol_repart_label(hd_block, viz_repart_c)
 !!      subroutine read_control_vol_repart                              &
 !!     &         (id_control, hd_block, viz_repart_c, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
@@ -67,6 +68,9 @@
 !
 !>      Structure for new partitioning controls
       type viz_repartition_ctl
+!>        Control block name
+        character(len = kchara) :: block_name = 'viz_repartition_ctl'
+!
 !>        Structure for new file controls
         type(platform_data_control) :: viz_plt
 !
@@ -112,8 +116,14 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(viz_repart_c%i_viz_repartition_ctl .gt. 0) return
+      call init_platforms_labels(hd_viz_platform, viz_repart_c%viz_plt)
+      call init_ctl_label_new_partition(hd_new_partition,               &
+     &                                  viz_repart_c%new_part_ctl)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, viz_repart_c%Fmesh_ctl)
+      call init_FEM_sleeve_ctl_label(hd_FEM_sleeve,                     &
+     &                               viz_repart_c%Fsleeve_ctl)
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -158,7 +168,7 @@
      &   (id_control, hd_viz_platform, viz_repart_c%viz_plt, level)
 !
       call write_FEM_mesh_control                                       &
-     &   (id_control, hd_FEM_mesh, viz_repart_c%Fmesh_ctl, level)
+     &   (id_control, viz_repart_c%Fmesh_ctl, level)
       call write_ctl_data_new_partition(id_control, hd_new_partition,   &
      &    viz_repart_c%new_part_ctl, level)
       call write_FEM_sleeve_control                                     &
@@ -166,6 +176,27 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_vol_repart
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_control_vol_repart_label(hd_block, viz_repart_c)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_volume_grouping_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+      type(viz_repartition_ctl), intent(inout) :: viz_repart_c
+!
+!
+      viz_repart_c%block_name = hd_block
+      call init_platforms_labels(hd_viz_platform, viz_repart_c%viz_plt)
+      call init_ctl_label_new_partition(hd_new_partition,               &
+     &                                  viz_repart_c%new_part_ctl)
+      call init_FEM_mesh_ctl_label(hd_FEM_mesh, viz_repart_c%Fmesh_ctl)
+      call init_FEM_sleeve_ctl_label(hd_FEM_sleeve,                     &
+     &                               viz_repart_c%Fsleeve_ctl)
+!
+      end subroutine init_control_vol_repart_label
 !
 !   --------------------------------------------------------------------
 !
@@ -186,7 +217,7 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine dup_control_vol_repart(org_viz_repart_c,              &
+      subroutine dup_control_vol_repart(org_viz_repart_c,               &
       &                                  new_viz_repart_c)
 !
       type(viz_repartition_ctl), intent(in) :: org_viz_repart_c
@@ -203,6 +234,7 @@
       call copy_FEM_sleeve_control(org_viz_repart_c%Fsleeve_ctl,        &
      &                             new_viz_repart_c%Fsleeve_ctl)
 !
+      new_viz_repart_c%block_name = org_viz_repart_c%block_name
       new_viz_repart_c%i_viz_repartition_ctl                            &
      &      = org_viz_repart_c%i_viz_repartition_ctl
 !

@@ -72,12 +72,19 @@ GtkWidget * wrap_into_scrollbox_gtk(int width, int height, GtkWidget *box_in){
 }
 
 
-GtkWidget * wrap_into_expanded_frame_gtk(const char *title, int width, int height, 
+GtkWidget * wrap_into_expanded_frame_gtk(const char *title, GtkWidget *window,
+                                         GtkWidget *box_in){
+    GtkWidget *expander = gtk_expander_new_with_mnemonic(title);
+    g_signal_connect(expander, "notify::expanded",
+                     G_CALLBACK(expander_CB), (gpointer) window);
+    gtk_container_add(GTK_CONTAINER(expander), box_in);
+    return expander;
+}
+
+GtkWidget * wrap_into_scroll_expansion_gtk(const char *title, int width, int height,
                                   GtkWidget *window, GtkWidget *box_in){
-    GtkWidget *expander;
     GtkWidget *scroll = wrap_into_scrollbox_gtk(width, height, box_in);
-    
-    expander = gtk_expander_new_with_mnemonic(title);
+    GtkWidget *expander = gtk_expander_new_with_mnemonic(title);
     g_signal_connect(expander, "notify::expanded", 
                      G_CALLBACK(expander_CB), (gpointer) window);
     gtk_container_add(GTK_CONTAINER(expander), scroll);

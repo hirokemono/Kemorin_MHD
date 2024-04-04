@@ -51,6 +51,9 @@
       integer(kind=kint), parameter :: ctl_file_code = 11
 !
       type fem_mhd_control
+!>        Block name
+        character(len=kchara) :: block_name = 'MHD_control'
+!
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !>        Control structure for orginal file informations
@@ -71,10 +74,8 @@
         integer(kind = kint) :: i_mhd_ctl = 0
       end type fem_mhd_control
 !
-!   Top level of label
-!
       character(len=kchara), parameter, private                         &
-     &                    :: hd_mhd_ctl = 'MHD_control'
+     &                    :: hd_Fmhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -98,7 +99,7 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
 !
-      private :: read_fem_mhd_control_data
+      private :: read_fem_mhd_control_data, init_fem_mhd_control_label
       private :: write_fem_mhd_control_data
 !
 ! ----------------------------------------------------------------------
@@ -121,14 +122,16 @@
 !
 !
       c_buf%level = c_buf%level + 1
+      call init_fem_mhd_control_label(hd_Fmhd_ctl, FEM_MHD_ctl,         &
+     &                                sgs_ctl, viz_ctls)
       open(ctl_file_code, file = file_name, status='old' )
 !
       do
         call load_one_line_from_control(ctl_file_code,                  &
-     &                                  hd_mhd_ctl, c_buf)
+     &                                  hd_Fmhd_ctl, c_buf)
         if(c_buf%iend .gt. 0) exit
 !
-        call read_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,       &
+        call read_fem_mhd_control_data(ctl_file_code, hd_Fmhd_ctl,      &
      &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
         if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
@@ -168,7 +171,8 @@
       write(*,*) 'Write MHD control file: ', trim(file_name)
       level1 = 0
       open(ctl_file_code, file = file_name)
-      call write_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,        &
+      call write_fem_mhd_control_data                                   &
+     &   (ctl_file_code, FEM_MHD_ctl%block_name,                        &
      &    FEM_MHD_ctl, sgs_ctl, viz_ctls, level1)
       close(ctl_file_code)
 !
@@ -195,8 +199,8 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       do
         call load_one_line_from_control(id_control, hd_block, c_buf)
         if(c_buf%iend .gt. 0) exit
@@ -256,13 +260,41 @@
       call write_fem_mhd_control                                        &
      &   (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, level)
 !
-      call write_monitor_data_ctl(id_control, hd_monitor_data,          &
+      call write_monitor_data_ctl(id_control,                           &
      &                            FEM_MHD_ctl%nmtr_ctl, level)
-      call write_viz_controls(id_control, hd_viz_control,               &
-     &                         viz_ctls, level)
+      call write_viz_controls(id_control, viz_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_fem_mhd_control_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine init_fem_mhd_control_label(hd_block, FEM_MHD_ctl,      &
+     &                                      sgs_ctl, viz_ctls)
+!
+      use t_ctl_data_SGS_model
+      use ctl_data_SGS_MHD_model_IO
+      use ctl_data_platforms_IO
+      use ctl_data_visualiser_IO
+!
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls
+!
+!
+      FEM_MHD_ctl%block_name = trim(hd_block)
+      call init_platforms_labels(hd_platform, FEM_MHD_ctl%plt)
+      call init_platforms_labels(hd_org_data, FEM_MHD_ctl%org_plt)
+      call init_sph_sgs_mhd_model(hd_model, FEM_MHD_ctl%model_ctl,      &
+     &                            sgs_ctl)
+      call init_fem_mhd_ctl_label(hd_control, FEM_MHD_ctl%fmctl_ctl)
+      call init_viz_ctl_label(hd_viz_control, viz_ctls)
+      call init_monitor_data_ctl_label(hd_monitor_data,                 &
+     &                                 FEM_MHD_ctl%nmtr_ctl)
+!
+      end subroutine init_fem_mhd_control_label
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

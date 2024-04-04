@@ -1,41 +1,67 @@
-!
-!      module set_sgs_diff_model_coefs
-!
-!     Written by H. Matsui on Oct., 2005
-!     Modified by H. Matsui on July, 2007
-!     Modified by H. Matsui on Nov., 2009
-!
-!!      subroutine clippging_sgs_diff_coefs                             &
-!!     &         (numdir, ifield_d, icomp_f, SGS_par, wk_sgs)
-!!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!>@file   set_sgs_diff_model_coefs.f90
+!!@brief  module set_sgs_diff_model_coefs
 !!
-!!      subroutine clear_model_coefs_2_ele                              &
-!!     &         (ele, numdir, icomp_f, ntot_comp_ele, ak_sgs)
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!@author  H.Matsui and H.Okuda
+!!@date   Programmed in Oct., 2005
+!!@n      Modified in July, 2007
+!!@n      Modified in Nov., 2009
+!
+!>@brief Set model coefficients for scalars
 !!
-!!      subroutine set_model_coefs_2_ele(ele, itype_csim, numdir,       &
-!!     &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,         &
-!!     &          layer_stack_smp, item_layer, num_kind_ele,            &
-!!     &          ntot_comp_ele, sgs_f_clip, sgs_c_clip, ak_sgs)
-!!      subroutine set_diff_coefs_layer_ele(ele, ifield_d,              &
-!!     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,&
-!!     &         ntot_fld_ele, diff_f_clip, ak_diff)
+!!@verbatim
+!!      subroutine clippging_sgs_coefs                                  &
+!!     &         (iflag_SGS_initial, SGS_param, numdir, nlayer_SGS,     &
+!!     &          sgs_f_coef, sgs_c_coef, sgs_f_whole, sgs_c_whole,     &
+!!     &          sgs_f_clip, sgs_c_clip, sgs_fw_clip, sgs_cw_clip)
+!!        integer(kind = kint), intent(in) :: iflag_SGS_initial
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        integer(kind = kint), intent(in) :: numdir
+!!        integer (kind = kint), intent(in) :: nlayer_SGS
+!!        real(kind = kreal), intent(in)  :: sgs_f_coef(nlayer_SGS)
+!!        real(kind = kreal), intent(in) :: sgs_c_coef(nlayer_SGS,numdir)
+!!        real(kind = kreal), intent(in) :: sgs_f_whole
+!!        real(kind = kreal), intent(in) :: sgs_c_whole(numdir)
+!!        real(kind = kreal), intent(inout):: sgs_f_clip(nlayer_SGS)
+!!        real(kind = kreal), intent(inout):: sgs_c_clip(nlayer_SGS,numdir)
+!!        real(kind = kreal), intent(inout):: sgs_fw_clip
+!!        real(kind = kreal), intent(inout):: sgs_cw_clip(numdir)
+!
+!!
+!!      subroutine clear_model_coefs_2_ele(ele, Csim)
+!!      subroutine sel_model_coefs_2_ele(ele, layer_egrp, itype_csim,   &
+!!     &                                 wk_sgs, Csim)
+!!        type(element_data), intent(in) :: ele
+!!        type(group_data), intent(in) :: layer_egrp
+!!       integer (kind = kint), intent(in) :: itype_csim
+!!        type(dynamic_model_data), intent(in) :: wk_sgs
+!!        type(SGS_model_coefficient), intent(inout) :: Csim
+!!
+!!      subroutine set_model_coefs_2_ele(ele, layer_egrp, itype_csim,   &
+!!     &          numdir, sgs_f_clip, sgs_c_clip, ak_sgs)
+!!        type(element_data), intent(in) :: ele
+!!        type(group_data), intent(in) :: layer_egrp
+!!      subroutine set_diff_coefs_layer_ele                             &
+!!     &         (ele, n_layer_d, n_item_layer_d, layer_stack_smp,      &
+!!     &          item_layer, diff_f_clip, ak_diff)
 !!      subroutine set_diff_coefs_whole_ele(ele, iele_fsmp_stack,       &
-!!     &          ifield_d, ntot_fld_ele, diff_f_whole_clip, ak_diff)
+!!     &                                    diff_f_whole_clip, ak_diff)
+!!@endverbatim
 !
       module set_sgs_diff_model_coefs
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_constants
       use t_geometry_data
+      use t_group_data
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
-      private :: clippging_sgs_coefs
       private :: delete_negative_coefs, ignore_negative_coefs
       private :: init_negative_coefs, copy_sgs_coefs
+      private :: each_comps_model_coefs_2_ele, field_model_coefs_2_ele
 !
 !  ---------------------------------------------------------------------
 !
@@ -43,32 +69,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine clippging_sgs_diff_coefs                               &
-     &         (numdir, ifield_d, icomp_f, SGS_par, wk_sgs)
-!
-      use t_ele_info_4_dynamic
-      use t_SGS_control_parameter
-!
-      integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
-      type(SGS_paremeters), intent(in) :: SGS_par
-      type(dynamic_model_data), intent(inout) :: wk_sgs
-!
-!
-      call clippging_sgs_coefs(SGS_par%iflag_SGS_initial,               &
-     &    SGS_par%model_p, numdir, ifield_d, icomp_f,                   &
-     &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
-     &    wk_sgs%fld_coef, wk_sgs%comp_coef, wk_sgs%fld_whole,          &
-     &    wk_sgs%comp_whole, wk_sgs%fld_clip, wk_sgs%comp_clip,         &
-     &    wk_sgs%fld_whole_clip, wk_sgs%comp_whole_clip)
-!
-      end subroutine clippging_sgs_diff_coefs
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine clippging_sgs_coefs(iflag_SGS_initial,                 &
-     &          SGS_param, numdir, ifield_d, icomp_f,                   &
-     &          nlayer_SGS, num_sgs_kinds, num_sgs_coefs,               &
+      subroutine clippging_sgs_coefs                                    &
+     &         (iflag_SGS_initial, SGS_param, numdir, nlayer_SGS,       &
      &          sgs_f_coef, sgs_c_coef, sgs_f_whole, sgs_c_whole,       &
      &          sgs_f_clip, sgs_c_clip, sgs_fw_clip, sgs_cw_clip)
 !
@@ -78,44 +80,32 @@
       integer(kind = kint), intent(in) :: iflag_SGS_initial
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
-      integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
+      integer(kind = kint), intent(in) :: numdir
       integer (kind = kint), intent(in) :: nlayer_SGS
-      integer (kind = kint), intent(in) :: num_sgs_kinds, num_sgs_coefs
 !
-      real(kind = kreal), intent(in)                                    &
-     &          :: sgs_f_coef(nlayer_SGS,num_sgs_kinds)
-      real(kind = kreal), intent(in)                                    &
-     &          :: sgs_c_coef(nlayer_SGS,num_sgs_coefs)
-      real(kind = kreal), intent(in) :: sgs_f_whole(num_sgs_kinds)
-      real(kind = kreal), intent(in) :: sgs_c_whole(num_sgs_coefs)
+      real(kind = kreal), intent(in)  :: sgs_f_coef(nlayer_SGS)
+      real(kind = kreal), intent(in) :: sgs_c_coef(nlayer_SGS,numdir)
+      real(kind = kreal), intent(in) :: sgs_f_whole
+      real(kind = kreal), intent(in) :: sgs_c_whole(numdir)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &          :: sgs_f_clip(nlayer_SGS,num_sgs_kinds)
-      real(kind = kreal), intent(inout)                                 &
-     &          :: sgs_c_clip(nlayer_SGS,num_sgs_coefs)
-      real(kind = kreal), intent(inout) :: sgs_fw_clip(num_sgs_kinds)
-      real(kind = kreal), intent(inout) :: sgs_cw_clip(num_sgs_coefs)
+      real(kind = kreal), intent(inout):: sgs_f_clip(nlayer_SGS)
+      real(kind = kreal), intent(inout):: sgs_c_clip(nlayer_SGS,numdir)
+      real(kind = kreal), intent(inout):: sgs_fw_clip
+      real(kind = kreal), intent(inout):: sgs_cw_clip(numdir)
 !
       integer (kind = kint) :: nd
-!
-!
-!      write(50+my_rank,*) 'nd, i, sgs_c_coef(i,icomp_f:icomp_f+numdir-1)'
-!      do nd = 1, nlayer_SGS
-!        write(50+my_rank,*) nd, i, sgs_c_coef(i,icomp_f:icomp_f+numdir-1)
-!      end do
 !
 !
       if (SGS_param%iflag_nagetive_clip .eq. id_SGS_ZERO_CLIP) then
         do nd = 1, numdir
           call delete_negative_coefs                                    &
      &       (nlayer_SGS, SGS_param%clipping_limit,                     &
-     &        sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),    &
-     &        sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
+     &        sgs_c_coef(1,nd), sgs_c_whole(nd),                        &
+     &        sgs_c_clip(1,nd), sgs_cw_clip(nd))
         end do
           call delete_negative_coefs                                    &
      &       (nlayer_SGS, SGS_param%clipping_limit,                     &
-     &        sgs_f_coef(1,ifield_d), sgs_f_whole(ifield_d),            &
-     &        sgs_f_clip(1,ifield_d), sgs_fw_clip(ifield_d))
+     &        sgs_f_coef(1), sgs_f_whole, sgs_f_clip(1), sgs_fw_clip)
 !
 !
       else if(SGS_param%iflag_nagetive_clip .eq. id_SGS_KEEP_PREVIOUS) &
@@ -123,37 +113,35 @@
         do nd = 1, numdir
           call ignore_negative_coefs                                    &
      &       (nlayer_SGS, SGS_param%clipping_limit,                     &
-     &        sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),    &
-     &        sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
+     &        sgs_c_coef(1,nd), sgs_c_whole(nd),                        &
+     &        sgs_c_clip(1,nd), sgs_cw_clip(nd))
         end do
           call ignore_negative_coefs                                    &
      &       (nlayer_SGS, SGS_param%clipping_limit,                     &
-     &        sgs_f_coef(1,ifield_d), sgs_f_whole(ifield_d),            &
-     &        sgs_f_clip(1,ifield_d), sgs_fw_clip(ifield_d))
+     &        sgs_f_coef(1), sgs_f_whole, sgs_f_clip(1), sgs_fw_clip)
 !
         if (iflag_SGS_initial .eq. 1) then
           do nd = 1, numdir
             call init_negative_coefs                                    &
      &         (nlayer_SGS, SGS_param%clipping_limit,                   &
-     &          sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),  &
-     &          sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
+     &          sgs_c_coef(1,nd), sgs_c_whole(nd),                      &
+     &          sgs_c_clip(1,nd), sgs_cw_clip(nd))
           end do
             call init_negative_coefs                                    &
      &         (nlayer_SGS, SGS_param%clipping_limit,                   &
-     &          sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),  &
-     &          sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
+     &          sgs_c_coef(1,nd), sgs_c_whole(nd),                      &
+     &          sgs_c_clip(1,nd), sgs_cw_clip(nd))
         end if
 !
       else
 !
         do nd = 1, numdir
           call copy_sgs_coefs(nlayer_SGS,                               &
-     &      sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),      &
-     &      sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
+     &      sgs_c_coef(1,nd), sgs_c_whole(nd),                          &
+     &      sgs_c_clip(1,nd), sgs_cw_clip(nd))
         end do
         call copy_sgs_coefs(nlayer_SGS,                                 &
-     &       sgs_f_coef(1,ifield_d), sgs_f_whole(ifield_d),             &
-     &       sgs_f_clip(1,ifield_d), sgs_fw_clip(ifield_d))
+     &       sgs_f_coef(1), sgs_f_whole, sgs_f_clip(1), sgs_fw_clip)
       end if
 !
       end subroutine clippging_sgs_coefs
@@ -258,87 +246,79 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine clear_model_coefs_2_ele                                &
-     &         (ele, numdir, icomp_f, ntot_comp_ele, ak_sgs)
+      subroutine clear_model_coefs_2_ele(ele, Csim)
 !
-      use m_machine_parameter
+      use delete_field_smp
 !
       type(element_data), intent(in) :: ele
-      integer (kind = kint), intent(in) :: ntot_comp_ele, numdir
-      integer (kind = kint), intent(in) :: icomp_f
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_sgs(ele%numele,ntot_comp_ele)
-!
-      integer (kind = kint) :: ip, ist, ied, nst, ned
-      integer (kind = kint) :: iele, nd
+      type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
-      nst = icomp_f
-      ned = icomp_f + numdir - 1
-!
-!$omp parallel do private(ist,ied,iele)
-      do ip = 1, np_smp
-        ist = ele%istack_ele_smp(ip-1) + 1
-        ied = ele%istack_ele_smp(ip  )
-        do nd = nst, ned
-!cdir nodep
-          do iele = ist, ied
-            ak_sgs(iele,nd) = zero
-          end do
-        end do
-      end do
-!$omp end parallel do
+!$omp parallel
+      call delete_phys_data_smp(ele%numele, ione, ele%numele,           &
+     &    Csim%num_comp, Csim%num_comp, ione, Csim%coef(1,1))
+!$omp end parallel
 !
       end subroutine clear_model_coefs_2_ele
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine set_model_coefs_2_ele(ele, itype_csim, numdir,         &
-     &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,           &
-     &          layer_stack_smp, item_layer, num_kind_ele,              &
-     &          ntot_comp_ele, sgs_f_clip, sgs_c_clip, ak_sgs)
+      subroutine sel_model_coefs_2_ele(ele, layer_egrp, itype_csim,     &
+     &                                 wk_sgs, Csim)
 !
-      use m_machine_parameter
+      use t_ele_info_4_dynamic
 !
       type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: layer_egrp
       integer (kind = kint), intent(in) :: itype_csim
-      integer (kind = kint), intent(in) :: num_kind_ele, ntot_comp_ele
+      type(dynamic_model_data), intent(in) :: wk_sgs
+!
+      type(SGS_model_coefficient), intent(inout) :: Csim
+!
+!
+      if(Csim%num_comp .le. 0) return
+      call clear_model_coefs_2_ele(ele, Csim)
+!
+      if(itype_csim .eq. 1) then
+        call each_comps_model_coefs_2_ele                               &
+     &     (ele, layer_egrp, Csim%num_comp,                             &
+     &      wk_sgs%comp_clip(1,Csim%icomp_Csim), Csim%coef(1,1))
+      else
+        call field_model_coefs_2_ele(ele, layer_egrp, Csim%num_comp,    &
+     &      wk_sgs%fld_clip(1,Csim%iak_Csim), Csim%coef(1,1))
+      end if
+!
+      end subroutine sel_model_coefs_2_ele
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine each_comps_model_coefs_2_ele(ele, layer_egrp,          &
+     &          numdir, sgs_c_clip, ak_sgs)
+!
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: layer_egrp
       integer (kind = kint), intent(in) :: numdir
-      integer (kind = kint), intent(in) :: ifield_d, icomp_f
-!
-      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
-      integer (kind = kint), intent(in)                                 &
-     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
-      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
       real(kind = kreal), intent(in)                                    &
-     &          :: sgs_f_clip(n_item_layer_d,num_kind_ele)
-      real(kind = kreal), intent(in)                                    &
-     &          :: sgs_c_clip(n_item_layer_d,ntot_comp_ele)
+     &                   :: sgs_c_clip(layer_egrp%num_item,numdir)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_sgs(ele%numele,ntot_comp_ele)
+      real(kind = kreal), intent(inout) :: ak_sgs(ele%numele,numdir)
 !
-      integer (kind = kint) :: ip, is, ist, ied, nst, ned
+      integer (kind = kint) :: ip, is, ist, ied
       integer (kind = kint) :: inum, iele0, iele, nd
 !
 !
-      nst = icomp_f
-      ned = icomp_f + numdir - 1
-!
-      if(itype_csim .eq. 1) then
 !$omp parallel do private(is,ist,ied,inum,iele0,iele)
         do ip = 1, np_smp
-          do nd = nst, ned
-            do inum = 1, n_layer_d
+          do nd = 1, numdir
+            do inum = 1, layer_egrp%num_grp
               is = (inum-1)*np_smp + ip
-              ist = layer_stack_smp(is-1) + 1
-              ied = layer_stack_smp(is  )
+              ist = layer_egrp%istack_grp_smp(is-1) + 1
+              ied = layer_egrp%istack_grp_smp(is  )
 !
 !cdir nodep
               do iele0 = ist, ied
-                iele = item_layer(iele0)
+                iele = layer_egrp%item_grp(iele0)
                 ak_sgs(iele,nd) = sgs_c_clip(inum,nd)
               end do
             end do
@@ -346,59 +326,68 @@
         end do
 !$omp end parallel do
 !
-      else
+      end subroutine each_comps_model_coefs_2_ele
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine field_model_coefs_2_ele(ele, layer_egrp,               &
+     &          numdir, sgs_f_clip, ak_sgs)
+!
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: layer_egrp
+      integer (kind = kint), intent(in) :: numdir
+      real(kind = kreal), intent(in) :: sgs_f_clip(layer_egrp%num_item)
+!
+      real(kind = kreal), intent(inout) :: ak_sgs(ele%numele,numdir)
+!
+      integer (kind = kint) :: ip, is, ist, ied
+      integer (kind = kint) :: inum, iele0, iele, nd
+!
+!
 !$omp parallel do private(is,ist,ied,inum,iele0,iele)
         do ip = 1, np_smp
-          do nd = nst, ned
-            do inum = 1, n_layer_d
+          do nd = 1, numdir
+            do inum = 1, layer_egrp%num_grp
               is = (inum-1)*np_smp + ip
-              ist = layer_stack_smp(is-1) + 1
-              ied = layer_stack_smp(is  )
+              ist = layer_egrp%istack_grp_smp(is-1) + 1
+              ied = layer_egrp%istack_grp_smp(is  )
 !
 !cdir nodep
               do iele0 = ist, ied
-                iele = item_layer(iele0)
-                ak_sgs(iele,nd) = sgs_f_clip(inum,ifield_d)
+                iele = layer_egrp%item_grp(iele0)
+                ak_sgs(iele,nd) = sgs_f_clip(inum)
               end do
             end do
           end do
         end do
 !$omp end parallel do
-      end if
 !
-      end subroutine set_model_coefs_2_ele
+      end subroutine field_model_coefs_2_ele
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine set_diff_coefs_layer_ele(ele, ifield_d,                &
-     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,  &
-     &         ntot_fld_ele, diff_f_clip, ak_diff)
-!
-      use m_machine_parameter
+      subroutine set_diff_coefs_layer_ele                               &
+     &         (ele, n_layer_d, n_item_layer_d, layer_stack_smp,        &
+     &          item_layer, diff_f_clip, ak_diff)
 !
       type(element_data), intent(in) :: ele
-      integer (kind = kint), intent(in) :: ntot_fld_ele, ifield_d
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
      &                      :: layer_stack_smp(0:n_layer_d*np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
-      real(kind = kreal), intent(in)                                    &
-     &          :: diff_f_clip(n_item_layer_d,ntot_fld_ele)
+      real(kind = kreal), intent(in) :: diff_f_clip(n_item_layer_d)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_diff(ele%numele,ntot_fld_ele)
+      real(kind = kreal), intent(inout) :: ak_diff(ele%numele)
 !
       integer (kind = kint) :: ip, is, ist, ied, inum, iele0, iele
 !
 !
-!$omp parallel do private(is,ist,ied,inum,iele0,iele)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
           ist = ele%istack_ele_smp(ip-1) + 1
           ied = ele%istack_ele_smp(ip  )
-!cdir nodep
-          do iele = ist, ied
-            ak_diff(iele,ifield_d) = zero
-          end do
+          ak_diff(ist:ied) = zero
       end do
 !$omp end parallel do
 !
@@ -412,7 +401,7 @@
 !cdir nodep
             do iele0 = ist, ied
               iele = item_layer(iele0)
-              ak_diff(iele,ifield_d) = diff_f_clip(inum,ifield_d)
+              ak_diff(iele) = diff_f_clip(inum)
             end do
           end do
       end do
@@ -423,39 +412,30 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_diff_coefs_whole_ele(ele, iele_fsmp_stack,         &
-     &          ifield_d, ntot_fld_ele, diff_f_whole_clip, ak_diff)
-!
-      use m_machine_parameter
+     &                                    diff_f_whole_clip, ak_diff)
 !
       type(element_data), intent(in) :: ele
-      integer (kind = kint), intent(in) :: ntot_fld_ele, ifield_d
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: diff_f_whole_clip(ntot_fld_ele)
+      real(kind = kreal), intent(in) :: diff_f_whole_clip
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: ak_diff(ele%numele,ntot_fld_ele)
+      real(kind = kreal), intent(inout) :: ak_diff(ele%numele)
 !
-      integer (kind = kint) :: ip, ist, ied, iele
+      integer (kind = kint) :: ip, ist, ied
 !
 !
-!$omp parallel do private(ist,ied,iele)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
         ist = ele%istack_ele_smp(ip-1) + 1
         ied = ele%istack_ele_smp(ip  )
-!cdir nodep
-        do iele = ist, ied
-          ak_diff(iele,ifield_d) = zero
-        end do
+        ak_diff(ist:ied) = zero
       end do
 !$omp end parallel do
 !
-!$omp parallel do private(ist,ied,iele)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
         ist = iele_fsmp_stack(ip-1) + 1
         ied = iele_fsmp_stack(ip  )
-        do iele = ist, ied
-          ak_diff(iele,ifield_d) = diff_f_whole_clip(ifield_d)
-        end do
+        ak_diff(ist:ied) = diff_f_whole_clip
       end do
 !$omp end parallel do
 !

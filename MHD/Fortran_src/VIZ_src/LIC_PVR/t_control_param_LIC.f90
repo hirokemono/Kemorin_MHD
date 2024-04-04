@@ -190,13 +190,13 @@ logical :: flag_LIC_elapsed_dump = .TRUE.
      &   (lic_ctl%repart_ctl%new_part_ctl, lic_p%each_part_p, rep_ref)
       if(lic_p%each_part_p%flag_repartition) flag_each_repart = .TRUE.
 !
-      lic_p%num_masking = lic_ctl%num_masking_ctl
+      lic_p%num_masking = lic_ctl%mul_mask_c%num_masking_ctl
       if(lic_p%num_masking .gt. 0) then
         allocate(lic_p%masking(lic_p%num_masking))
 !
         do i = 1, lic_p%num_masking
           call s_set_control_LIC_masking(num_nod_phys, phys_nod_name,   &
-     &        lic_ctl%mask_ctl(i), lic_p%masking(i))
+     &        lic_ctl%mul_mask_c%mask_ctl(i), lic_p%masking(i))
         end do
       end if
 !
@@ -212,7 +212,7 @@ logical :: flag_LIC_elapsed_dump = .TRUE.
           write(*,*) 'LIC masking field: ',  i,                         &
      &              lic_p%masking(i)%id_mask_field,                     &
      &              lic_p%masking(i)%id_mask_comp,                      &
-     &              trim(lic_ctl%mask_ctl(i)%field_name_ctl%charavalue)
+     &   trim(lic_ctl%mul_mask_c%mask_ctl(i)%field_name_ctl%charavalue)
           write(*,*) 'LIC masking range min: ',                         &
      &              lic_p%masking(i)%range_min(:)
           write(*,*) 'LIC masking range max: ',                         &

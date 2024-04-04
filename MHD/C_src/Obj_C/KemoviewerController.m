@@ -12,10 +12,10 @@
 @synthesize ColorLoopCount;
 @synthesize NodeSizeFactor;
 @synthesize NodeSizedigits;
-@synthesize fAnimate;
 @synthesize fInfo;
 @synthesize fDrawHelp;
 @synthesize StereoFlag;
+@synthesize QuiltFlag;
 @synthesize coastlineRadius;
 @synthesize psfTexTureEnable;
 @synthesize timeDisplayFlag;
@@ -42,21 +42,22 @@
     self.axisDrawFlag =      0;
     self.axisDrawAccess =    1;
 	
-	fAnimate = 0;
+    self.QuiltFlag = [_resetview ToggleQuiltMode];
 	return self;
 }
 
 -(void) awakeFromNib
 {
-	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
-	AnaglyphFlag = [[defaults stringForKey:@"AnaglyphFlag"] intValue];
-	[_streoViewTypeMenu selectItemAtIndex:(1-AnaglyphFlag)];
-
-    self.coastlineRadius = kemoview_get_coastline_radius();
-    kemoview_set_object_property_flags(TIME_LABEL_AVAIL, (int) self.timeDisplayAccess);
-    kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
-    kemoview_set_object_property_flags(FILE_STEP_LABEL_AVAIL, (int) self.fileStepDisplayAccess);
-    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    self.coastlineRadius = kemoview_get_coastline_radius(kemo_sgl);
+    kemoview_set_object_property_flags(TIME_LABEL_AVAIL,
+                                       (int) self.timeDisplayAccess, kemo_sgl);
+    kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
+                                       (int) self.timeDisplayFlag, kemo_sgl);
+    kemoview_set_object_property_flags(FILE_STEP_LABEL_AVAIL,
+                                       (int) self.fileStepDisplayAccess, kemo_sgl);
+    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
+                                       (int) self.fileStepDisplayFlag, kemo_sgl);
     return;
 }
 
@@ -66,185 +67,204 @@
 	return self;
 }
 
-- (void)SetViewTypeMenu:(NSInteger) selected;
+- (void)SetViewTypeMenu:(NSInteger) selected
+               kemoview:(struct kemoviewer_type *) kemo_sgl
 {
 	[_viewtypeItem selectItemAtIndex:selected];
 	
-	[_view3dItem setState:NSOffState];
-	[_viewMapItem setState:NSOffState];
-	[_viewStereoItem setState:NSOffState];
-	[_viewXYItem setState:NSOffState];
-	[_viewYZItem setState:NSOffState];
-	[_viewZXItem setState:NSOffState];
+	[_view3dItem setState:NSControlStateValueOff];
+	[_viewMapItem setState:NSControlStateValueOff];
+	[_viewStereoItem setState:NSControlStateValueOff];
+	[_viewXYItem setState:NSControlStateValueOff];
+	[_viewYZItem setState:NSControlStateValueOff];
+	[_viewZXItem setState:NSControlStateValueOff];
 	
     self.axisDrawAccess = 1;
-    self.StereoFlag = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_MODE);
+    self.QuiltFlag = (NSInteger) kemoview_get_quilt_nums(kemo_sgl,
+                                                         ISET_QUILT_MODE);
 	psfTexTureEnable = 1;
-	if (selected == VIEW_3D) {[_view3dItem setState:NSOnState];}
+    
+    self.StereoFlag = 0;
+    if(selected == VIEW_STEREO || self.QuiltFlag > 0){self.StereoFlag = 1;};
+
+	if(selected == VIEW_3D) {[_view3dItem setState:NSControlStateValueOn];}
 	else if (selected == VIEW_MAP) {
         self.axisDrawAccess = 0;
-        self.StereoFlag = 0;
 		psfTexTureEnable = 0;
-		[_viewMapItem setState:NSOnState];
+		[_viewMapItem setState:NSControlStateValueOn];
 	}
 	else if (selected == VIEW_STEREO) {
-		self.StereoFlag = 1;
-		[_viewStereoItem setState:NSOnState];
+		[_viewStereoItem setState:NSControlStateValueOn];
 	}
-	else if (selected == VIEW_XY) {[_viewXYItem setState:NSOnState];}
-	else if (selected == VIEW_YZ) {[_viewYZItem setState:NSOnState];}
-	else if (selected == VIEW_XZ) {[_viewZXItem setState:NSOnState];};
+	else if (selected == VIEW_XY) {[_viewXYItem setState:NSControlStateValueOn];}
+	else if (selected == VIEW_YZ) {[_viewYZItem setState:NSControlStateValueOn];}
+	else if (selected == VIEW_XZ) {[_viewZXItem setState:NSControlStateValueOn];};
 }
 
 - (void)UpdateViewtype:(NSInteger) selected
+              kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-	[self SetViewTypeMenu:selected];
+	[self SetViewTypeMenu:selected
+                 kemoview:kemo_sgl];
 
-    kemoview_set_viewtype(selected);
-	[_kemoviewer setViewerType:selected];
-	[_kemoviewer updateProjection];
-	[_kemoviewer UpdateImage];
+    kemoview_set_viewtype((int) selected, kemo_sgl);
+	[_metalView setViewerType:selected];
+    kemoview_mono_viewmatrix(kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChoosePolygontypeAction:(id)sender
 {
 	PolygonMode = [[_polygontype_matrix selectedCell] tag];
-	kemoview_set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode, kemo_sgl);
 	
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseSurfcetypeAction:(id)sender
 {
 	ShadingMode = [[_surfacetype_matrix selectedCell] tag];
-	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode);
-	[_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode, kemo_sgl);
+    
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)AxisSwitchAction:(id)sender;
 {
-	self.axisDrawFlag = kemoview_toggle_object_properties(AXIS_TOGGLE);
-	[_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.axisDrawFlag = kemoview_toggle_object_properties(AXIS_TOGGLE, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)CoastSwitchAction:(id)sender;
 {
-	self.coastLineDrawFlag = kemoview_toggle_object_properties(COASTLINE_SWITCH);
-	[_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.coastLineDrawFlag
+        = kemoview_toggle_object_properties(COASTLINE_SWITCH, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SphGridSwitchAction:(id)sender;
 {
-	self.globeGridDrawFlag = kemoview_toggle_object_properties(SPHEREGRID_SWITCH);
-	[_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	self.globeGridDrawFlag
+        = kemoview_toggle_object_properties(SPHEREGRID_SWITCH, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SphRadiusAction:(id)sender;
 {
-	kemoview_set_coastline_radius((double) coastlineRadius);
-	[_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_coastline_radius((double) coastlineRadius, kemo_sgl);
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)ChooseColorModeAction:(id)sender
 {
 	MeshColorMode = [[_colormode_matrix selectedCell] tag];
-	kemoview_set_mesh_color_mode((int) MeshColorMode);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_mesh_color_mode((int) MeshColorMode, kemo_sgl);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)SetColorLoopCount:(id)pSender {
-	kemoview_set_num_of_color_loop((int) ColorLoopCount);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_num_of_color_loop((int) ColorLoopCount, kemo_sgl);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) ShowNodeSizeValue:(id)pSender {
-	kemoview_set_node_diamater((double) NodeSizeFactor, (int) NodeSizedigits);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	kemoview_set_node_diamater((double) NodeSizeFactor,
+                               (int) NodeSizedigits,
+                               kemo_sgl);
 
-	[_kemoviewer UpdateImage];
+	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction) ToggleQuiltSwitch:(id)sender
 {
-    self.StereoFlag = [_resetview ToggleQuiltMode];
+    self.QuiltFlag = [_resetview ToggleQuiltMode];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self SetViewTypeMenu:VIEW_3D
+                 kemoview:kemo_sgl];
 }
 
 - (IBAction) SetViewtypeAction:(id)pSender{
-	[self UpdateViewtype:[_viewtypeItem selectedTag]];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+	[self UpdateViewtype:[_viewtypeItem selectedTag]
+                kemoview:kemo_sgl];
 }
 
-- (IBAction) SetStereoViewType:(id)sender;
+- (void) Set3DView:(struct kemoviewer_type *) kemo_sgl
 {
-	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
-	
-	AnaglyphFlag = (1-[_streoViewTypeMenu indexOfSelectedItem]);
-	kemoview_set_view_integer(ISET_ANAGYLYPH, (int) AnaglyphFlag);
-	[defaults setInteger:((int) AnaglyphFlag) forKey:@"AnaglyphFlag"];
-
-    printf("AnaglyphFlag %d\n", (int) AnaglyphFlag);
-	[_kemoviewer UpdateImage];
-}
-
-- (void) Set3DView
-{
-    [self SetViewTypeMenu:VIEW_3D];
-    [_kemoviewer setViewerType:VIEW_3D];
-    kemoview_set_viewtype(VIEW_3D);
+    [self SetViewTypeMenu:VIEW_3D
+                 kemoview:kemo_sgl];
+    [_metalView setViewerType:VIEW_3D];
+    kemoview_set_viewtype(VIEW_3D, kemo_sgl);
 }
 
 - (IBAction) UpdateViewByInpit:(id)sender;
 {
-    [_kemoviewer UpdateImage];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [_metalView UpdateImage:kemo_sgl];
 };
 
 - (IBAction) ResetviewAction:(id)sender;
 {
-	[self Set3DView];
-	[_kemoviewer Resetview];
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    [self Set3DView:kemo_sgl];
+	[_metalView Resetview];
 }
 
--(IBAction) ToggleAnimate: (id) sender
-{
-	fAnimate = 1 - fAnimate;
-	[_kemoviewer setAnimate:fAnimate];
-}
 
 -(IBAction) Toggleinfo: (id) sender
 {
 	fInfo = 1 - fInfo;
-	[_kemoviewer setInfo:fInfo];
+	[_metalView setInfo:fInfo];
 }
 
 -(IBAction) ToggleQuickhelp: (id) sender
 {
 	fDrawHelp = 1 - fDrawHelp;
-	[_kemoviewer setQuickHelp:fDrawHelp];
+	[_metalView setQuickHelp:fDrawHelp];
 }
 
 - (void) TimeLabelAvaiability
 {
-    self.timeDisplayAccess = kemoview_get_object_property_flags(TIME_LABEL_AVAIL);
+    self.timeDisplayAccess = kemoview_get_object_property_flags([_kmv KemoViewPointer],
+                                                                TIME_LABEL_AVAIL);
 }
 - (void) FileStepLabelAvaiability
 {
-    self.fileStepDisplayAccess = kemoview_get_object_property_flags(FILE_STEP_LABEL_AVAIL);
+    self.fileStepDisplayAccess = kemoview_get_object_property_flags([_kmv KemoViewPointer],
+                                                                    FILE_STEP_LABEL_AVAIL);
 }
 
 - (IBAction)TimeLabelSwitchAction:(id)sender{
-    self.timeDisplayFlag = kemoview_toggle_object_properties(TIME_LABEL_SWITCH);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    self.timeDisplayFlag
+        = kemoview_toggle_object_properties(TIME_LABEL_SWITCH, kemo_sgl);
     if(self.timeDisplayFlag > 0){
         self.fileStepDisplayFlag = 0;
-        kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
+        kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
+                                           (int) self.fileStepDisplayFlag, kemo_sgl);
     };
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 };
 
 - (IBAction)FileStepLabelSwitchAction:(id)sender{
-    self.fileStepDisplayFlag = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH);
+    struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
+    self.fileStepDisplayFlag
+        = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH, kemo_sgl);
     if(self.fileStepDisplayFlag > 0){
         self.timeDisplayFlag = 0;
-        kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
+        kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
+                                           (int) self.timeDisplayFlag, kemo_sgl);
     };
-    [_kemoviewer UpdateImage];
+    [_metalView UpdateImage:kemo_sgl];
 };
 
 

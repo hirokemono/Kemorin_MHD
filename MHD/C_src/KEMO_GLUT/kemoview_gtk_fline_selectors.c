@@ -11,38 +11,38 @@
 
 static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_field);
 	
-	kemoview_set_fline_field_param(FIELD_SEL_FLAG, index_mode);
+	kemoview_set_fline_field_param(FIELD_SEL_FLAG, index_mode, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
 static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_data)
 {
+    struct kemoviewer_type *kemo_sgl = (struct kemoviewer_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_comp);
-	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, index_mode);
+	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, index_mode, kemo_sgl);
 	
-	draw_full();
+    draw_full(kemo_sgl);
 	return;
 };
 
 
-void add_fline_draw_field_box(GtkWidget *box){
-	GtkWidget *hbox_field;
-	
-	GtkWidget *combobox_field;
-	GtkWidget *label_tree_field;
-	GtkCellRenderer *renderer_field;
+void add_fline_draw_field_box(struct kemoviewer_type *kemo_sgl,
+                              GtkWidget *combobox_field,
+                              GtkWidget *label_tree_field,
+                              GtkCellRenderer *renderer_field){
 	GtkTreeModel *model_field;
 	GtkTreeModel *child_model_field;
 	
 	int index = 0;
 	
     struct kv_string *colorname = kemoview_alloc_kvstring();
-	int num_field = kemoview_get_fline_field_param(NUM_FIELD_FLAG);
-	int if_fline =  kemoview_get_fline_field_param(FIELD_SEL_FLAG);
+	int num_field = kemoview_get_fline_field_param(kemo_sgl, NUM_FIELD_FLAG);
+	int if_fline =  kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
 	int ifld;
 	
 	label_tree_field = create_fixed_label_w_index_tree();
@@ -50,34 +50,49 @@ void add_fline_draw_field_box(GtkWidget *box){
 	child_model_field = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_field));
 	index = 0;
 	for(ifld=0;ifld<num_field;ifld++){
-		kemoview_get_fline_color_data_name(colorname, ifld);
+		kemoview_get_fline_color_data_name(kemo_sgl, colorname, ifld);
 		index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
 	};
 	
-	combobox_field = gtk_combo_box_new_with_model(child_model_field);
-	renderer_field = gtk_cell_renderer_text_new();
+    renderer_field = gtk_cell_renderer_text_new();
+	combobox_field = gtk_combo_box_new();
+    gtk_combo_box_set_model(combobox_field, child_model_field);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_field), if_fline);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), renderer_field, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), renderer_field,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_field), "changed", 
-				G_CALLBACK(fline_field_select_CB), NULL);
-	
-	hbox_field = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_field), gtk_label_new("Field: "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_field), combobox_field, FALSE, FALSE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(box), hbox_field, TRUE, TRUE, 0);
-	return;
+				G_CALLBACK(fline_field_select_CB), (gpointer) kemo_sgl);
+    return;
+}
+
+void update_fline_component_combobox(struct kemoviewer_type *kemo_sgl,
+                                     GtkWidget *combobox_comp,
+                                     GtkWidget *label_tree_comp,
+                                     GtkCellRenderer *renderer_comp){
+    char comp_name[1024];
+    int icomp, id_coord;
+    int if_fline = kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
+    int ncomp =  kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
+
+    clear_ci_tree_view(GTK_TREE_VIEW(label_tree_comp));
+    GtkTreeModel *model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));
+    GtkTreeModel *child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
+    int index = 0;
+    for(icomp=0;icomp<ncomp;icomp++){
+        set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
+        index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
+    };
+    
+    icomp = kemoview_get_fline_field_param(kemo_sgl, COMPONENT_SEL_FLAG);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), icomp);
 }
 
 
-void add_fline_draw_component_box(GtkWidget *box){
-	GtkWidget *hbox_comp;
-	
-	GtkWidget *combobox_comp;
-	GtkWidget *label_tree_comp;
-	GtkCellRenderer *renderer_comp;
+void fline_draw_component_combobox(struct kemoviewer_type *kemo_sgl,
+                                   GtkWidget *combobox_comp,
+                                   GtkWidget *label_tree_comp,
+                                   GtkCellRenderer *renderer_comp){
 	GtkTreeModel *model_comp;
 	GtkTreeModel *child_model_comp;
 	
@@ -85,35 +100,28 @@ void add_fline_draw_component_box(GtkWidget *box){
 	
 	char comp_name[128];
 	int icomp, id_coord;
-	int if_fline = kemoview_get_fline_field_param(FIELD_SEL_FLAG);
-	int ic_fline = kemoview_get_fline_field_param(COMPONENT_SEL_FLAG);
-	int ncomp =  kemoview_get_fline_color_num_comps(if_fline);
+	int if_fline = kemoview_get_fline_field_param(kemo_sgl, FIELD_SEL_FLAG);
+	int ic_fline = kemoview_get_fline_field_param(kemo_sgl, COMPONENT_SEL_FLAG);
+	int ncomp =  kemoview_get_fline_color_num_comps(kemo_sgl, if_fline);
 	
-	if(ncomp > 1){
-		label_tree_comp = create_fixed_label_w_index_tree();
-		model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));  
-		child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
-		id_coord = kemoview_get_each_PSF_field_param(COORDINATE_FLAG);
-		index = 0;
-		for(icomp=0;icomp<ncomp;icomp++){
-			set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
-			index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
-		};
-		
-		combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
-		renderer_comp = gtk_cell_renderer_text_new();
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), ic_fline);
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), renderer_comp, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,
-					"text", COLUMN_FIELD_NAME, NULL);
-		g_signal_connect(G_OBJECT(combobox_comp), "changed", 
-					G_CALLBACK(fline_component_select_CB), NULL);
-		
-		hbox_comp = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-		gtk_box_pack_start(GTK_BOX(hbox_comp), gtk_label_new("Component: "), FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(hbox_comp), combobox_comp, FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(box), hbox_comp, TRUE, TRUE, 0);
-	};
+    label_tree_comp = create_fixed_label_w_index_tree();
+    model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));
+    child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
+    id_coord = kemoview_get_each_PSF_field_param(kemo_sgl, COORDINATE_FLAG);
+    index = 0;
+    for(icomp=0;icomp<ncomp;icomp++){
+        set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
+        index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
+    };
+    
+    combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
+    renderer_comp = gtk_cell_renderer_text_new();
+    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), ic_fline);
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), renderer_comp, TRUE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,
+                "text", COLUMN_FIELD_NAME, NULL);
+    g_signal_connect(G_OBJECT(combobox_comp), "changed",
+                G_CALLBACK(fline_component_select_CB), (gpointer) kemo_sgl);
 	return;
 }
 

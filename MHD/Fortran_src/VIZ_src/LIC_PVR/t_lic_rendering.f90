@@ -102,6 +102,7 @@
      &         (id_control, lic_ctls, lic, iflag_update)
 !
       use calypso_mpi_int
+      use bcast_control_data_4_pvr
       use ctl_file_each_pvr_IO
       use skip_comment_f
 !
@@ -132,6 +133,13 @@
         end if
         call reset_pvr_update_flags(lic_ctls%pvr_ctl_type(1))
       end if
+!
+      call bcast_pvr_update_flag(lic_ctls%pvr_ctl_type(1))
+      if(lic_ctls%pvr_ctl_type(1)%i_pvr_ctl .lt. 0) then
+        call calypso_MPI_abort(lic_ctls%pvr_ctl_type(1)%i_pvr_ctl,      &
+     &                           'control file is broken')
+      end if
+!
       call calypso_mpi_bcast_one_int(iflag_update, 0)
 !
       end subroutine check_LIC_update
@@ -153,7 +161,7 @@
 !
       c_buf1%level = 0
       do i_lic = 1, lic_ctls%num_lic_ctl
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE') then
+        if(.not. no_file_flag(lic_ctls%fname_lic_ctl(i_lic))) then
           call read_control_lic_pvr_file                                &
      &     (id_control, lic_ctls%fname_lic_ctl(i_lic), hd_lic_ctl,      &
      &      lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic), &
@@ -216,7 +224,7 @@
      &    lic%rep_ref, lic%pvr, lic%flag_each_repart)
 !
       do i_lic = 1, lic%pvr%num_pvr
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
+        if((no_file_flag(lic_ctls%fname_lic_ctl(i_lic)) .eqv. .FALSE.)  &
      &      .or. my_rank .ne. 0) then
           call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
      &        lic_ctls%lic_ctl_type(i_lic))

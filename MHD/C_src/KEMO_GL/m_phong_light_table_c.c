@@ -8,7 +8,7 @@
 
 #define PI 3.131592
 
-static void light_positionfrom_angle(struct view_element *view_s, float light_rtp[3], float light_xyz[4]){
+static void light_position_from_angle(struct view_element *view_s, float light_rtp[3], float light_xyz[4]){
 	light_xyz[0] = (float) view_s->shift[0]
 				+ light_rtp[0] * cos(PI * light_rtp[1]/180.0) * sin(PI * light_rtp[2]/180.0);
 	light_xyz[1] = (float) view_s->shift[1]
@@ -106,7 +106,7 @@ void add_phong_light_list(struct view_element *view_s, struct phong_lights *ligh
 	lights->light_rtp[3*i_add+1] = t;
 	lights->light_rtp[3*i_add+2] = p;
 	
-	light_positionfrom_angle(view_s, &lights->light_rtp[3*i_add], &lights->light_xyz[4*i_add]);
+	light_position_from_angle(view_s, &lights->light_rtp[3*i_add], &lights->light_xyz[4*i_add]);
 	for(i=4*(i_add+1);i<4*lights->nbuf_light_point; i++){
 		lights->light_xyz[i] = light_xyz_tmp[i-4];
 	};
@@ -147,9 +147,9 @@ void init_phong_light_list(struct view_element *view_s, struct phong_lights *lig
 	lights->light_rtp[7] =-75.0;
 	lights->light_rtp[8] =-75.0;
 	
-	light_positionfrom_angle(view_s, &lights->light_rtp[0], &lights->light_xyz[0]);
-	light_positionfrom_angle(view_s, &lights->light_rtp[3], &lights->light_xyz[4]);
-	light_positionfrom_angle(view_s, &lights->light_rtp[6], &lights->light_xyz[8]);
+	light_position_from_angle(view_s, &lights->light_rtp[0], &lights->light_xyz[0]);
+	light_position_from_angle(view_s, &lights->light_rtp[3], &lights->light_xyz[4]);
+	light_position_from_angle(view_s, &lights->light_rtp[6], &lights->light_xyz[8]);
 };
 
 
@@ -158,7 +158,7 @@ void set_each_light_position(struct view_element *view_s, struct phong_lights *l
 	lights->light_rtp[3*i_point  ] = r;
 	lights->light_rtp[3*i_point+1] = t;
 	lights->light_rtp[3*i_point+2] = p;
-	light_positionfrom_angle(view_s, &lights->light_rtp[3*i_point], &lights->light_xyz[4*i_point]);
+	light_position_from_angle(view_s, &lights->light_rtp[3*i_point], &lights->light_xyz[4*i_point]);
 	return;
 }
 
@@ -170,6 +170,14 @@ void send_each_light_rtp(struct phong_lights *lights,
 	*p = lights->light_rtp[3*i_point+2];
 	return;
 }
+void send_each_light_xyz(struct phong_lights *lights,
+                         int i_point, float *x, float *y, float *z){
+    *x = lights->light_xyz[4*i_point  ];
+    *y = lights->light_xyz[4*i_point+1];
+    *z = lights->light_xyz[4*i_point+2];
+    return;
+};
+
 
 void set_matrial_parameter(int itype, float value, struct phong_lights *lights){
     int i;

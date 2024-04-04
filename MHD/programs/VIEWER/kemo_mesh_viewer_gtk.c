@@ -7,6 +7,7 @@
 #define NPIX_Y  800
 
 struct kemoviewer_type *single_kemoview;
+struct kemoviewer_gl_type *kemo_sgl_gl;
 
 int iflag_gtk_focus = 0;
 
@@ -79,10 +80,12 @@ static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
 	gtk_gl_area_set_auto_render(GTK_GL_AREA(area), TRUE);
 	
 	/* ! set the perspective and lighting */
-	kemoviewer_reset_to_init_angle();
-	kemoview_init_background_color();
-	kemoview_init_lighting();
-	kemoview_init_phong_light_list();
+	kemoviewer_reset_to_init_angle(single_kemoview);
+    kemoview_init_background_color(single_kemoview);
+	kemoview_init_lighting(single_kemoview);
+    kemoview_gl_background_color(single_kemoview);
+    kemoview_gl_init_lighting(kemo_sgl_gl);
+	kemoview_init_phong_light_list(single_kemoview);
 	
 	return TRUE;
 };
@@ -100,7 +103,7 @@ void windowSizeCB(GLFWwindow *window, int width, int height) {
     kemoview_set_message_opacity(1.0);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 	
-	update_windowsize_menu(mbot->view_menu, gtk_win);
+	update_windowsize_menu(kemoviewer_data, mbot->view_menu, gtk_win);
 }
 */
 /* Main GTK window */
@@ -112,9 +115,9 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data, GtkWidget *vb
 	
 	mbot = (struct main_buttons *) malloc(sizeof(struct main_buttons));
 	mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
-	mbot->color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
+	mbot->color_vws = alloc_colormap_view();
 	mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
-	mbot->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_shaders->lights);
+	mbot->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
 	
 	gtk_window_set_title(GTK_WINDOW(gtk_win), "Kemoviewer menu");
 	gtk_widget_set_size_request(gtk_win, 150, -1);
@@ -129,7 +132,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data, GtkWidget *vb
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
-	make_gtk_main_menu_box(mbot, gtk_win);
+	make_gtk_main_menu_box(mbot, gtk_win, single_kemoview, kemo_sgl_gl);
 	gtk_box_pack_start(GTK_BOX(vbox), mbot->menuHbox, FALSE, FALSE, 0);
 	
 	
@@ -141,20 +144,14 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data, GtkWidget *vb
 
 /* Main routine for C */
 
-int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
+int draw_mesh_kemo(void) {
 	int narg_glut = 0;
 	char **arg_glut;
 	int iflag_retinamode = 0;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-	kemoview_set_view_integer(ISET_SHUTTER, iflag_streo_shutter);
-	
-	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_OFF);
-	} else {
-		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_ON);
-	};
+    kemo_sgl_gl = kemoview_allocate_gl_pointers();
 	
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */
@@ -173,7 +170,7 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 //	g_signal_connect(G_OBJECT(kemoview_area), "create-context", G_CALLBACK(tako_context), NULL);
 	g_signal_connect(G_OBJECT(kemoview_area), "realize", G_CALLBACK(realiseCB), NULL);
 	g_signal_connect(G_OBJECT(kemoview_area), "render", G_CALLBACK(renderCB), NULL);
-	gtk_callbacks_init();
+	gtk_callbacks_init(single_kemoview);
 	
 	/* Set callback for drug and Drop into window */
 	
@@ -183,14 +180,15 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	iflag_gtk_focus = 1;
 //	glClear(GL_COLOR_BUFFER_BIT);
-	draw_full();
+	draw_full(kemo_sgl);
 	
 	GtkWidget *vbox;
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	kemoview_main_window(single_kemoview, vbox);
 	
     /*! Create viewer window*/
-    kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+    kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y,
+                            single_kemoview);
 
     gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox);

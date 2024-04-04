@@ -38,7 +38,7 @@
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(time_data), intent(inout) :: init_d, time_d
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
@@ -165,7 +165,7 @@
      &         sgs_coefs, diff_coefs, nod_fld, init_d, time_d, flex_p)
 !
       use t_geometry_data_MHD
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
       use m_fem_mhd_restart
       use FEM_sgs_ini_model_coefs_IO
 !
@@ -179,7 +179,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(phys_data), intent(inout) :: nod_fld
       type(time_data), intent(inout) :: init_d, time_d
       type(flexible_stepping_parameter), intent(inout) :: flex_p

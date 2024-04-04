@@ -63,7 +63,6 @@
       use set_initial_sph_dynamo
       use adjust_reference_fields
       use set_bc_sph_mhd
-      use adjust_reference_fields
       use material_property
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph

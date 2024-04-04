@@ -44,11 +44,10 @@ static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s, struct mesh_menu_val
 void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s, 
                      struct mesh_menu_val *mesh_m, struct view_element *view){
 	
-    view->iflag_retina = IONE;
+    view->iflag_draw_mode = FULL_DRAW;
+    view->iflag_retina =    ON;
 	view->iflag_view_type = VIEW_3D;
-	view->iflag_streo_stutter =  SHUTTER_OFF;
-	view->iflag_streo_anaglyph = ANAGLYPH_ON;
-	view->shading_mode =         INIT_SHADING_MODE;
+	view->shading_mode =    INIT_SHADING_MODE;
     
     mesh_m->mesh_file_name = init_kvstring_by_string("in.ksm");
 	
@@ -95,7 +94,7 @@ static void set_fline_data_by_UCD(struct psf_data *fline_s, struct psf_data *ucd
 
 void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m){
 	int iflag_datatype;
-    double time;
+    double time = 0.0;
 	
 	if(psf_m->iflag_psf_file == IFLAG_SURF_UDT
 	   || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
