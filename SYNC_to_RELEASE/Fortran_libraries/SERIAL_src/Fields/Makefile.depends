@@ -4,6 +4,10 @@ check_base_forces.o: $(FIELDIR)/check_base_forces.f90 m_precision.o m_constants.
 	$(F90) -c $(F90OPTFLAGS) $<
 check_energy_fluxes.o: $(FIELDIR)/check_energy_fluxes.f90 m_precision.o m_constants.o t_control_array_character3.o m_base_field_labels.o m_base_force_labels.o m_diffusion_term_labels.o m_energy_flux_labels.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
+check_field_w_symmetry.o: $(FIELDIR)/check_field_w_symmetry.f90 m_precision.o m_constants.o t_base_field_labels.o m_field_w_symmetry_labels.o t_control_array_character3.o m_base_field_labels.o add_nodal_fields_ctl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+check_forces_w_symmetry.o: $(FIELDIR)/check_forces_w_symmetry.f90 m_precision.o m_constants.o t_base_force_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
+	$(F90) -c $(F90OPTFLAGS) $<
 check_workarea_4_explicit.o: $(FIELDIR)/check_workarea_4_explicit.f90 m_precision.o t_control_array_character3.o m_base_field_labels.o m_explicit_term_labels.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 decomp_w_sym_rj_base_field.o: $(FIELDIR)/decomp_w_sym_rj_base_field.f90 m_precision.o t_spheric_rj_data.o t_phys_data.o t_base_field_labels.o
