@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/Fields/check_field_w_symmetry.f90
