@@ -224,7 +224,7 @@
       endtime = MPI_WTIME() - starttime
 !
       if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'
-      call finalize_sph_FFT_select(sph_rtp, WK_FFTs)
+      call finalize_sph_FFT_select(WK_FFTs)
 !
       call calypso_mpi_allreduce_one_real(endtime, etime_fft, MPI_SUM)
       etime_fft = etime_fft / dble(nprocs)

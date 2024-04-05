@@ -289,7 +289,6 @@
       do inum = 1, comm_sph_FFTW%ntot_item
         kl = comm_sph_FFTW%kl_fftw(inum)
         m =  comm_sph_FFTW%m_fftw(inum)
-!
         ic_send = nd + (inum-1) * ncomp_fwd
         WS(ic_send) = real(comm_sph_FFTW%cnrm_sr_rtp(inum)              &
      &                     * C_fft(m,kl))

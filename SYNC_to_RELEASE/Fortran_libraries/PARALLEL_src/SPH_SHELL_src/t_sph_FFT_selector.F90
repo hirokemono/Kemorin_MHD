@@ -12,8 +12,7 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
-!!      subroutine finalize_sph_FFT_select(sph_rtp, WK_FFTs)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!      subroutine finalize_sph_FFT_select(WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine verify_sph_FFT_select                                &
 !!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
@@ -209,9 +208,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFT_select(sph_rtp, WK_FFTs)
+      subroutine finalize_sph_FFT_select(WK_FFTs)
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
