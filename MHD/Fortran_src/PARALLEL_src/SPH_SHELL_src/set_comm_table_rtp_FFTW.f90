@@ -137,7 +137,7 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) ::  ip, ist, num, i, ms
+      integer(kind = kint) ::  ip, ist, num, ms
       integer(kind = kint) ::  m, j, ic_rtp, is_rtp, ic_send, is_send
 !
 !

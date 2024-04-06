@@ -223,9 +223,8 @@
 !     &    sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,                &
 !     &    FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(1), n_WS, WS)
       call copy_all_prt_FFTW_to_send                                    &
-     &   (sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),          &
-     &    ncomp_fwd, FFTW_f%Nfft_c, FFTW_f%C(1),                        &
-     &    FFTW_f%comm_sph_FFTW, n_WS, WS)
+     &   (sph_rtp%istack_rtp_rt_smp(np_smp),  ncomp_fwd, FFTW_f%Nfft_c, &
+     &    FFTW_f%C(1), FFTW_f%comm_sph_FFTW, n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine prt_fwd_FFTW_to_send
@@ -254,7 +253,7 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-      call copy_prt_FFTW_field_from_recv                                &
+      call copy_FFTW_field_from_recv                                    &
      &   (sph_rtp%nnod_rtp, sph_rtp%istep_rtp,                          &
      &    sph_rtp%istack_rtp_rt_smp(np_smp), comm_rtp%irev_sr,          &
      &    ncomp_bwd, n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C(1))
