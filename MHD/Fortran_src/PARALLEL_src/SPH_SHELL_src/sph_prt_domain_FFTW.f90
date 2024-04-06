@@ -214,7 +214,7 @@
 !     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
 !     &      sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,              &
 !     &      FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(1), n_WS, WS)
-        call copy_1comp_prt_FFTW_to_send                                &
+        call copy_1comp_FFTW_to_send                                    &
      &     (nd, sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),    &
      &      ncomp_fwd, FFTW_f%Nfft_c, FFTW_f%C(1),                      &
      &      FFTW_f%comm_sph_FFTW, n_WS, WS)
