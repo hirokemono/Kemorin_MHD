@@ -549,14 +549,14 @@
         call sph_FTTRUF_to_send(sph_rtp, comm_rtp, ncomp_fwd,           &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
-        call sph_domain_FTTRUF_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
+        call sph_domain_FTTRUF_to_send(sph_rtp, ncomp_fwd,              &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_ISPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         call sph_FXRTFA_to_send(sph_rtp, comm_rtp, ncomp_fwd,           &
      &     n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
-        call sph_domain_FXRTFA_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
+        call sph_domain_FXRTFA_to_send(sph_rtp, ncomp_fwd,              &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         call sph_comp_FXRTFA_to_send(sph_rtp, comm_rtp, ncomp_fwd,      &

@@ -146,8 +146,9 @@
 !
       call alloc_comm_table_sph_FFT                                     &
      &   (comm_rtp%ntot_item_sr, ispack3_t%comm_sph_ISPACK3)
-      call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,                 &
-     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,               &
+      call set_comm_item_rtp_4_ISPACK                                   &
+     &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                        &
+     &    sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp,                 &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
      &    ispack3_t%comm_sph_ISPACK3)
 !
@@ -200,8 +201,9 @@
         call dealloc_comm_table_sph_FFT(ispack3_t%comm_sph_ISPACK3)
         call alloc_comm_table_sph_FFT                                   &
      &   (comm_rtp%ntot_item_sr, ispack3_t%comm_sph_ISPACK3)
-        call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,               &
-     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,             &
+        call set_comm_item_rtp_4_ISPACK                                 &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                      &
+     &      sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp,               &
      &      comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                    &
      &      ispack3_t%comm_sph_ISPACK3)
       end if
