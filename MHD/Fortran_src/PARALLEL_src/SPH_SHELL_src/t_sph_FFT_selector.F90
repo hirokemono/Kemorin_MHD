@@ -546,7 +546,7 @@
 !
 !
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
-        call sph_FTTRUF_to_send(sph_rtp, comm_rtp, ncomp_fwd,           &
+        call sph_FTTRUF_to_send(sph_rtp, ncomp_fwd,                     &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         call sph_domain_FTTRUF_to_send(sph_rtp, ncomp_fwd,              &
