@@ -229,8 +229,8 @@
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       call copy_prt_FFTPACK_from_recv                                   &
-     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                           &
-     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),       &
+     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr, sph_rtp%nidx_rtp(3),      &
+     &    sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),         &
      &    ncomp_bwd, n_WR, WR, fftpack_t%X(1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !

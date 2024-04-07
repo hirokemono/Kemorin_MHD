@@ -17,7 +17,7 @@
 !!        type(comm_tbl_from_FFT), intent(inout) :: comm_sph_FFT
 !!
 !!      subroutine copy_prt_FFTPACK_from_recv                           &
-!!     &         (nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,             &
+!!     &         (nnod_rtp, irev_sr_rtp, mphi_rtp, istep_rtp, nnod_rt,  &
 !!     &          ncomp_bwd, n_WR, WR, X_FFT)
 !!      subroutine copy_prt_comp_FFTPACK_from_recv                      &
 !!     &         (nd, nnod_rtp, mphi_rtp, istep_rtp, nnod_rt,           &
@@ -101,10 +101,10 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_prt_FFTPACK_from_recv                             &
-     &         (nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,               &
+     &         (nnod_rtp, irev_sr_rtp, mphi_rtp, istep_rtp, nnod_rt,    &
      &          ncomp_bwd, n_WR, WR, X_FFT)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nnod_rtp, istep_rtp(3)
       integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
 !
       integer(kind = kint), intent(in) :: ncomp_bwd
@@ -114,24 +114,25 @@
 !
       real(kind = kreal), intent(inout) :: X_FFT(nnod_rtp,ncomp_bwd)
 !
-      integer(kind = kint) :: j, m, jst
+      integer(kind = kint) :: j, m, jst, j0_rtp
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
-!$omp parallel do private(j,m,ic_rtp,is_rtp,ic_recv,is_recv,jst)
+!$omp parallel do private(j,m,j0_rtp,ic_rtp,is_rtp,ic_recv,is_recv,jst)
       do j = 1, nnod_rt
         jst = (j-1)*mphi_rtp
 !
-        is_rtp = j + nnod_rt
-        ic_recv = (irev_sr_rtp(j) - 1) * ncomp_bwd
+        j0_rtp = 1 + (j-1) * istep_rtp(1)
+        is_rtp = j0_rtp + istep_rtp(3)
+        ic_recv = (irev_sr_rtp(j0_rtp) - 1) * ncomp_bwd
         is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
         X_fft(1+jst,1:ncomp_bwd)                                        &
      &        =WR(ic_recv+1:ic_recv+ncomp_bwd)
         X_fft(mphi_rtp+jst,1:ncomp_bwd)                                 &
      &        = WR(is_recv+1:is_recv+ncomp_bwd)
         do m = 1, mphi_rtp/2 - 1
-          ic_rtp = j + (2*m  ) * nnod_rt
-          is_rtp = j + (2*m+1) * nnod_rt
+          ic_rtp = j0_rtp + (2*m  ) * istep_rtp(3)
+          is_rtp = j0_rtp + (2*m+1) * istep_rtp(3)
           ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
           is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
           X_fft(2*m  +jst,1:ncomp_bwd)                                  &
