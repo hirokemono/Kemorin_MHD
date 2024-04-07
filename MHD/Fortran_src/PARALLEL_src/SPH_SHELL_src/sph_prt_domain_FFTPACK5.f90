@@ -109,7 +109,8 @@
      &   (comm_rtp%ntot_item_sr, fftpack_d%comm_sph_FFTPACK)
       call set_comm_item_prt_4_FFTPACK(sph_rtp%nnod_rtp,                &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
-     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),       &
+     &    sph_rtp%nidx_rtp(3), sph_rtp%istep_rtp,                       &
+     &    sph_rtp%istack_rtp_rt_smp(np_smp),                            &
      &    fftpack_d%comm_sph_FFTPACK)
 !
       end subroutine init_prt_domain_FFTPACK5
@@ -133,7 +134,8 @@
      &     (comm_rtp%ntot_item_sr, fftpack_d%comm_sph_FFTPACK)
         call set_comm_item_prt_4_FFTPACK(sph_rtp%nnod_rtp,              &
      &      comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                    &
-     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
+     &      sph_rtp%nidx_rtp(3), sph_rtp%istep_rtp,                     &
+     &      sph_rtp%istack_rtp_rt_smp(np_smp),                          &
      &      fftpack_d%comm_sph_FFTPACK)
       end if
 !
@@ -219,9 +221,9 @@
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
         call copy_prt_comp_FFTPACK_from_recv                            &
-     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
-     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
-     &      ncomp_bwd, n_WR, WR, fftpack_d%X(1))
+     &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                  &
+     &      sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),       &
+     &      comm_rtp%irev_sr, ncomp_bwd, n_WR, WR, fftpack_d%X(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)

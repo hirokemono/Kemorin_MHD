@@ -115,7 +115,8 @@
      &   (comm_rtp%ntot_item_sr, fftpack_t%comm_sph_FFTPACK)
       call set_comm_item_prt_4_FFTPACK(sph_rtp%nnod_rtp,                &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
-     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),       &
+     &    sph_rtp%nidx_rtp(3), sph_rtp%istep_rtp,                       &
+     &    sph_rtp%istack_rtp_rt_smp(np_smp),                            &
      &    fftpack_t%comm_sph_FFTPACK)
 !
       end subroutine init_prt_FFTPACK5
@@ -140,7 +141,8 @@
      &     (comm_rtp%ntot_item_sr, fftpack_t%comm_sph_FFTPACK)
         call set_comm_item_prt_4_FFTPACK(sph_rtp%nnod_rtp,              &
      &      comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                    &
-     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
+     &      sph_rtp%nidx_rtp(3), sph_rtp%istep_rtp,                     &
+     &      sph_rtp%istack_rtp_rt_smp(np_smp),                          &
      &      fftpack_t%comm_sph_FFTPACK)
       end if
 !
