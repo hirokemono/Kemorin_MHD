@@ -11,8 +11,6 @@
 !!     &         (nnod_rtp, ntot_sr_rtp, irev_sr_rtp,                   &
 !!     &          mphi_rtp, nnod_rt, comm_sph_FFT)
 !!        type(comm_tbl_from_FFT), intent(inout) :: comm_sph_FFT
-!!      subroutine copy_prt_FFTPACK_to_send(nnod_rtp, irev_sr_rtp,      &
-!!     &          mphi_rtp, nnod_rt, ncomp_fwd, X_FFT, n_WS, WS)
 !!      subroutine copy_prt_comp_FFTPACK_to_send                        &
 !!     &         (nd, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,         &
 !!     &          ncomp_fwd, X_FFT, n_WS, WS)
@@ -96,94 +94,6 @@
 !$omp end parallel do
 !
       end subroutine set_comm_item_prt_4_FFTPACK
-!
-! ------------------------------------------------------------------
-!
-      subroutine copy_prt_FFTPACK_to_send(nnod_rtp, irev_sr_rtp,        &
-     &          mphi_rtp, nnod_rt, ncomp_fwd, X_FFT, n_WS, WS)
-!
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
-!
-      integer(kind = kint), intent(in) :: ncomp_fwd
-      real(kind = kreal), intent(in) :: X_FFT(nnod_rtp,ncomp_fwd)
-!
-      integer(kind = kint), intent(in) :: n_WS
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(inout):: WS(n_WS)
-!
-      integer(kind = kint) :: m, j, jst
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-!
-!
-!$omp parallel do private(j,m,ic_rtp,is_rtp,ic_send,is_send,jst)
-      do j = 1, nnod_rt
-        jst = (j-1)*mphi_rtp
-!
-        is_rtp = j + nnod_rt
-        ic_send = (irev_sr_rtp(j) - 1) * ncomp_fwd
-        is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-        WS(ic_send+1:ic_send+ncomp_fwd)                                 &
-     &            = X_fft(1+jst,1:ncomp_fwd)
-        WS(is_send+1:is_send+ncomp_fwd)                                 &
-     &            = X_fft(mphi_rtp+jst,1:ncomp_fwd)
-        do m = 1, mphi_rtp/2 - 1
-          ic_rtp = j + (2*m  ) * nnod_rt
-          is_rtp = j + (2*m+1) * nnod_rt
-          ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-          is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-          WS(ic_send+1:ic_send+ncomp_fwd)                               &
-     &            = X_fft(2*m  +jst,1:ncomp_fwd)
-          WS(is_send+1:is_send+ncomp_fwd)                               &
-     &            = X_fft(2*m+1+jst,1:ncomp_fwd)
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_prt_FFTPACK_to_send
-!
-! ------------------------------------------------------------------
-!
-      subroutine copy_prt_comp_FFTPACK_to_send                          &
-     &         (nd, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,           &
-     &          ncomp_fwd, X_FFT, n_WS, WS)
-!
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
-!
-      integer(kind = kint), intent(in) :: nd
-      integer(kind = kint), intent(in) :: ncomp_fwd
-      real(kind = kreal), intent(in) :: X_FFT(ncomp_fwd*nnod_rtp)
-!
-      integer(kind = kint), intent(in) :: n_WS
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(inout):: WS(n_WS)
-!
-      integer(kind = kint) :: m, j, jst
-      integer(kind = kint) :: ic_send, is_send, ic_rtp, is_rtp
-!
-!
-!$omp parallel do private(j,m,ic_rtp,is_rtp,ic_send,is_send,jst)
-      do j = 1, nnod_rt
-        jst = (j-1)*mphi_rtp
-!
-        is_rtp = j + nnod_rt
-        ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
-        is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-        WS(ic_send) = X_fft(1+jst)
-        WS(is_send) = X_fft(mphi_rtp+jst)
-        do m = 1, mphi_rtp/2 - 1
-          ic_rtp = j + (2*m  ) * nnod_rt
-          is_rtp = j + (2*m+1) * nnod_rt
-          ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-          is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-          WS(ic_send) = X_fft(2*m  +jst)
-          WS(is_send) = X_fft(2*m+1+jst)
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_prt_comp_FFTPACK_to_send
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

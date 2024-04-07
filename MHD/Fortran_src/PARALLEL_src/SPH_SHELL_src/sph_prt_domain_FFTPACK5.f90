@@ -19,10 +19,9 @@
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
 !!
-!!      subroutine prt_domain_RFFTMF_to_send(sph_rtp, comm_rtp,         &
-!!     &          ncomp_fwd, n_WS, X_rtp, WS, fftpack_d)
+!!      subroutine prt_domain_RFFTMF_to_send                            &
+!!     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, fftpack_d)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTPACK5
@@ -104,7 +103,7 @@
       type(work_for_domain_fftpack), intent(inout) :: fftpack_d
 !
 !
-      call init_sph_domain_FFTPACK5(sph_rtp, comm_rtp, fftpack_d)
+      call init_sph_domain_FFTPACK5(sph_rtp, fftpack_d)
 !
       call alloc_comm_table_sph_FFT                                     &
      &   (comm_rtp%ntot_item_sr, fftpack_d%comm_sph_FFTPACK)
@@ -138,21 +137,20 @@
      &      fftpack_d%comm_sph_FFTPACK)
       end if
 !
-      call verify_sph_domain_FFTPACK5(sph_rtp, comm_rtp, fftpack_d)
+      call verify_sph_domain_FFTPACK5(sph_rtp, fftpack_d)
 !
       end subroutine verify_prt_domain_FFTPACK5
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine prt_domain_RFFTMF_to_send(sph_rtp, comm_rtp,           &
-     &          ncomp_fwd, n_WS, X_rtp, WS, fftpack_d)
+      subroutine prt_domain_RFFTMF_to_send                              &
+     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, fftpack_d)
 !
       use copy_rtp_data_to_FFTPACK
       use set_comm_table_prt_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
@@ -187,10 +185,6 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!        call copy_prt_comp_FFTPACK_to_send                             &
-!     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
-!     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),    &
-!     &      ncomp_fwd, fftpack_d%X(1), n_WS, WS)
         call copy_1comp_prt_FFT_to_send                                 &
      &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ncomp_fwd,          &
      &      fftpack_d%X(1), fftpack_d%comm_sph_FFTPACK, n_WS, WS)
