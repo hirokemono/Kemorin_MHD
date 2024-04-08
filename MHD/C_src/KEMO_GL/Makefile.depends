@@ -1,6 +1,5 @@
 #
-coastline_c.o: \
-  $(C_SRCDIR)/KEMO_GL/coastline_c.c \
+coastline_c.o: $(C_SRCDIR)/KEMO_GL/coastline_c.c \
   $(C_SRCDIR)/KEMO_GL/coastline_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 draw_coastline.o: \
@@ -260,8 +259,7 @@ find_isoline_on_patch_c.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-icosahedron_c.o: \
-  $(C_SRCDIR)/KEMO_GL/icosahedron_c.c \
+icosahedron_c.o: $(C_SRCDIR)/KEMO_GL/icosahedron_c.c \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
