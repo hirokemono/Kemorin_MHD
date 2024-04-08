@@ -105,7 +105,7 @@
      &    comms_sph, trans_p, leg_circ%P_circ, leg_circ%dPdt_circ,      &
      &    SR_sig, SR_r)
 !
-      write(*,*) ' check_legendre_on_circ_rj ', my_rank
+!      write(*,*) ' check_legendre_on_circ_rj ', my_rank
       if(i_debug .gt. 0) then
         call check_legendre_on_circ_rj(sph%sph_rj, leg_circ)
       end if

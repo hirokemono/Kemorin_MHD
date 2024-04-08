@@ -23,10 +23,9 @@
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_FXRTFA_to_send(sph_rtp, comm_rtp,                &
-!!     &          ncomp_fwd, n_WS, X_rtp, WS, ispack3_t)
+!!      subroutine sph_FXRTFA_to_send                                   &
+!!     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, ispack3_t)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_fwd
 !!        real(kind = kreal), intent(in)                                &
 !!       &     :: X_rtp(irt_rtp_smp_stack(np_smp),nphi_rtp,ncomp_fwd)
@@ -146,8 +145,9 @@
 !
       call alloc_comm_table_sph_FFT                                     &
      &   (comm_rtp%ntot_item_sr, ispack3_t%comm_sph_ISPACK3)
-      call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,                 &
-     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,               &
+      call set_comm_item_rtp_4_ISPACK                                   &
+     &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                        &
+     &    sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp,                 &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
      &    ispack3_t%comm_sph_ISPACK3)
 !
@@ -200,8 +200,9 @@
         call dealloc_comm_table_sph_FFT(ispack3_t%comm_sph_ISPACK3)
         call alloc_comm_table_sph_FFT                                   &
      &   (comm_rtp%ntot_item_sr, ispack3_t%comm_sph_ISPACK3)
-        call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,               &
-     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,             &
+        call set_comm_item_rtp_4_ISPACK                                 &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                      &
+     &      sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp,               &
      &      comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                    &
      &      ispack3_t%comm_sph_ISPACK3)
       end if
@@ -218,8 +219,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_FXRTFA_to_send(sph_rtp, comm_rtp,                  &
-     &          ncomp_fwd, n_WS, X_rtp, WS, ispack3_t)
+      subroutine sph_FXRTFA_to_send                                     &
+     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, ispack3_t)
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
@@ -227,7 +228,6 @@
       use copy_rtp_data_to_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_fwd
 !
       real(kind = kreal), intent(in)                                    &
@@ -268,9 +268,6 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!      call copy_ISPACK_field_to_send(sph_rtp%nnod_rtp,                 &
-!     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,              &
-!     &      ncomp_fwd, comm_rtp%irev_sr, ispack3_t%X, n_WS, WS)
       call copy_all_rtp_FFT_to_send_smp(sph_rtp%nnod_rtp,               &
      &    sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, ncomp_fwd,       &
      &    ispack3_t%X, ispack3_t%comm_sph_ISPACK3, n_WS, WS)
@@ -304,8 +301,9 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-      call copy_ISPACK_field_from_recv(sph_rtp%nnod_rtp,                &
-     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,               &
+      call copy_ISPACK_field_from_recv                                  &
+     &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                        &
+     &    sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp,                 &
      &    ncomp_bwd, comm_rtp%irev_sr, n_WR, WR, ispack3_t%X)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
