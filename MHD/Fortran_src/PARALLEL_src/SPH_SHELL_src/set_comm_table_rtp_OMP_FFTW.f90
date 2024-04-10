@@ -88,116 +88,6 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine set_OMP_FFTW_field_to_send                             &
-     &         (nnod_rt, nnod_rtp, ncomp_fwd, n_WS,                     &
-     &          irev_sr_rtp, WS, Nfft_c, aNfft, C_fft)
-!
-      integer(kind = kint), intent(in) :: nnod_rtp
-!
-      integer(kind = kint), intent(in) :: ncomp_fwd
-!
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-!
-      integer(kind = kint), intent(in) :: Nfft_c, nnod_rt
-      real(kind = kreal), intent(in) :: aNfft
-      complex(kind = fftw_complex), intent(in)                          &
-     &                     :: C_fft(ncomp_fwd,nnod_rt,Nfft_c)
-!
-      integer(kind = kint), intent(in) :: n_WS
-      real (kind=kreal), intent(inout):: WS(n_WS)
-!
-      integer(kind = kint) ::  m, j, ic_rtp, is_rtp, ic_send, is_send
-!
-!
-!$omp parallel do private(j,ic_send)
-      do j = 1, nnod_rt
-        ic_send = (irev_sr_rtp(j) - 1) * ncomp_fwd
-        WS(ic_send+1:ic_send+ncomp_fwd)                                 &
-     &        = aNfft * real(C_fft(1:ncomp_fwd,j,1))
-      end do
-!$omp end parallel do
-!
-      do m = 2, Nfft_c-1
-!$omp parallel do private(j,ic_rtp,is_rtp,ic_send,is_send)
-        do j = 1, nnod_rt
-          ic_rtp = j + (2*m-2) * nnod_rt
-          is_rtp = j + (2*m-1) * nnod_rt
-          ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-          is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-          WS(ic_send+1:ic_send+ncomp_fwd)                               &
-     &        = two * aNfft * real(C_fft(1:ncomp_fwd,j,m))
-          WS(is_send+1:is_send+ncomp_fwd)                               &
-     &        = two * aNfft * real(C_fft(1:ncomp_fwd,j,m)*iu)
-        end do 
-!$omp end parallel do
-      end do
-!
-!$omp parallel do private(j,ic_rtp,ic_send)
-      do j = 1, nnod_rt
-        ic_rtp = j + nnod_rt
-        ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-        WS(ic_send+1:ic_send+ncomp_fwd)                                 &
-     &        = two * aNfft * real(C_fft(1:ncomp_fwd,j,Nfft_c))
-      end do
-!$omp end parallel do
-!
-      end subroutine set_OMP_FFTW_field_to_send
-!
-! ------------------------------------------------------------------
-!
-      subroutine set_OMP_FFTW_comp_to_send                              &
-     &         (nd, nnod_rt, nnod_rtp, ncomp_fwd, n_WS,                 &
-     &          irev_sr_rtp, WS, Nfft_c, aNfft, C_fft)
-!
-      integer(kind = kint), intent(in) :: nd
-      integer(kind = kint), intent(in) :: nnod_rtp
-!
-      integer(kind = kint), intent(in) :: ncomp_fwd
-!
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-!
-      integer(kind = kint), intent(in) :: Nfft_c, nnod_rt
-      real(kind = kreal), intent(in) :: aNfft
-      complex(kind = fftw_complex), intent(in) :: C_fft(nnod_rt,Nfft_c)
-!
-      integer(kind = kint), intent(in) :: n_WS
-      real (kind=kreal), intent(inout):: WS(n_WS)
-!
-      integer(kind = kint) ::  m, j, ic_rtp, is_rtp, ic_send, is_send
-!
-!
-!$omp parallel do private(j,ic_send)
-      do j = 1, nnod_rt
-        ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
-        WS(ic_send) = aNfft * real(C_fft(j,1))
-      end do
-!$omp end parallel do
-!
-      do m = 2, Nfft_c-1
-!$omp parallel do private(j,ic_rtp,is_rtp,ic_send,is_send)
-        do j = 1, nnod_rt
-          ic_rtp = j + (2*m-2) * nnod_rt
-          is_rtp = j + (2*m-1) * nnod_rt
-          ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-          is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-          WS(ic_send) = two * aNfft * real(C_fft(j,m))
-          WS(is_send) = two * aNfft * real(C_fft(j,m)*iu)
-        end do 
-!$omp end parallel do
-      end do
-!
-!$omp parallel do private(j,ic_rtp,ic_send)
-      do j = 1, nnod_rt
-        ic_rtp = j + nnod_rt
-        ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-        WS(ic_send) = two * aNfft * real(C_fft(j,Nfft_c))
-      end do
-!$omp end parallel do
-!
-      end subroutine set_OMP_FFTW_comp_to_send
-!
-! ------------------------------------------------------------------
-!
       subroutine set_OMP_FFTW_field_from_recv                           &
      &         (nnod_rt, nnod_rtp, ncomp_bwd,                           &
      &          n_WR, irev_sr_rtp, WR, Nfft_c, C_fft)
@@ -343,22 +233,6 @@
 !$omp end parallel do
 !
       end subroutine copy_rtp_field_to_OMP_FFTW
-!
-! ------------------------------------------------------------------
-!
-      subroutine copy_rtp_comp_to_OMP_FFTW(nnod_rtp, X_rtp, X_FFT)
-!
-      integer(kind = kint), intent(in) :: nnod_rtp
-      real(kind = kreal), intent(in)  :: X_rtp(nnod_rtp)
-!
-      real(kind = kreal), intent(inout) :: X_FFT(nnod_rtp)
-!
-!
-!$omp parallel workshare
-      X_FFT(1:nnod_rtp) = X_rtp(1:nnod_rtp)
-!$omp end parallel workshare
-!
-      end subroutine copy_rtp_comp_to_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
