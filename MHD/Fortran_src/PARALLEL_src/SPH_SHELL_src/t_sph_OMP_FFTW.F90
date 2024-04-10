@@ -20,8 +20,8 @@
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_forward_OFFTW_to_send(sph_rtp, comm_rtp,         &
-!!     &          ncomp_fwd, n_WS, X_rtp, WS, OFFTW)
+!!      subroutine sph_forward_OFFTW_to_send                            &
+!!     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, OFFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !! ------------------------------------------------------------------
@@ -217,13 +217,12 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_forward_OFFTW_to_send(sph_rtp, comm_rtp,           &
-     &          ncomp_fwd, n_WS, X_rtp, WS, OFFTW)
+      subroutine sph_forward_OFFTW_to_send                              &
+     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, OFFTW)
 !
       use set_comm_table_rtp_OMP_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
@@ -246,10 +245,6 @@
 !
 !   normalization
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!        call set_OMP_FFTW_field_to_send                                &
-!     &       (sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nnod_rtp,     &
-!     &        ncomp_fwd, n_WS, comm_rtp%irev_sr, WS,                   &
-!     &        OFFTW%Nfft_c, OFFTW%aNfft, OFFTW%C(1))
       call copy_all_rtp_FFTW_to_send                                    &
      &   (sph_rtp%istack_rtp_rt_smp(np_smp), OFFTW%Nfft_c,              &
      &    ncomp_fwd, OFFTW%C, OFFTW%comm_FFTW, n_WS, WS)

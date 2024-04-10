@@ -19,10 +19,9 @@
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_domain_fwd_OFFTW_to_send(sph_rtp, comm_rtp,      &
-!!     &          ncomp_fwd, n_WS, X_rtp, WS, OFFTW_d)
+!!      subroutine sph_domain_fwd_OFFTW_to_send                         &
+!!     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, OFFTW_d)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -204,13 +203,13 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_domain_fwd_OFFTW_to_send(sph_rtp, comm_rtp,        &
-     &          ncomp_fwd, n_WS, X_rtp, WS, OFFTW_d)
+      subroutine sph_domain_fwd_OFFTW_to_send                           &
+     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, OFFTW_d)
 !
+      use copy_field_smp
       use set_comm_table_rtp_OMP_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
@@ -225,8 +224,10 @@
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-        call copy_rtp_comp_to_OMP_FFTW                                  &
-     &     (sph_rtp%nnod_rtp, X_rtp(1,nd), OFFTW_d%X(1))
+!$omp parallel
+        call copy_nod_scalar_smp(sph_rtp%nnod_rtp, X_rtp(1,nd),         &
+     &                           OFFTW_d%X(1))
+!$omp end parallel
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
@@ -236,10 +237,6 @@
 !
 !   normalization
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!          call set_OMP_FFTW_comp_to_send                               &
-!     &       (nd, sph_rtp%istack_rtp_rt_smp(np_smp),                   &
-!     &        sph_rtp%nnod_rtp, ncomp_fwd, n_WS, comm_rtp%irev_sr, WS, &
-!     &        OFFTW_d%Nfft_c, OFFTW_d%aNfft, OFFTW_d%C(1))
           call copy_1comp_rtp_FFTW_to_send                             &
      &       (nd, sph_rtp%istack_rtp_rt_smp(np_smp), OFFTW_d%Nfft_c,   &
      &        ncomp_fwd, OFFTW_d%C, OFFTW_d%comm_FFTW, n_WS, WS)
@@ -253,6 +250,7 @@
       subroutine sph_domain_back_OFFTW_from_recv                        &
      &         (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, X_rtp, OFFTW_d)
 !
+      use copy_field_smp
       use set_comm_table_rtp_OMP_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -283,8 +281,10 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-        call copy_rtp_comp_to_OMP_FFTW                                  &
-     &     (sph_rtp%nnod_rtp, OFFTW_d%X(1), X_rtp(1,nd))
+!$omp parallel
+        call copy_nod_scalar_smp(sph_rtp%nnod_rtp, OFFTW_d%X(1),        &
+     &                           X_rtp(1,nd))
+!$omp end parallel
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !
