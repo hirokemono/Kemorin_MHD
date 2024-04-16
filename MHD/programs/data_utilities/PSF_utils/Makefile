@@ -83,26 +83,50 @@ take_normals_4_psf.o
 
 MOD_ZCPLANE_PG = \
 drcz_fem.o \
+set_color_4_pvr.o \
 set_rgb_colors.o \
+colormap_rainbow.o \
+colormap_two_colors.o \
+colormap_grayscales.o \
+colormap_metal.o \
+colormap_space.o \
 m_psf_results.o \
 t_norms_4_psf.o
 
 
 MOD_XCPLANE_PG = \
 drcx_fem.o \
+set_color_4_pvr.o \
 set_rgb_colors.o \
+colormap_rainbow.o \
+colormap_two_colors.o \
+colormap_grayscales.o \
+colormap_metal.o \
+colormap_space.o \
 m_psf_results.o \
 t_norms_4_psf.o
 
 MOD_YCPLANE_PG = \
 drcy_fem.o \
+set_color_4_pvr.o \
 set_rgb_colors.o \
+colormap_rainbow.o \
+colormap_two_colors.o \
+colormap_grayscales.o \
+colormap_metal.o \
+colormap_space.o \
 m_psf_results.o \
 t_norms_4_psf.o
 
 MOD_MAP_PG = \
 drmap_fem.o \
+set_color_4_pvr.o \
 set_rgb_colors.o \
+colormap_rainbow.o \
+colormap_two_colors.o \
+colormap_grayscales.o \
+colormap_metal.o \
+colormap_space.o \
 m_psf_results.o \
 t_norms_4_psf.o \
 t_map_patch_from_1patch.o \

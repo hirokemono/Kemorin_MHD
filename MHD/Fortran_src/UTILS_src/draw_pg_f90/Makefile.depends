@@ -22,7 +22,7 @@ map_contour_fem_pg.o: $(KEMO_PGDIR)/map_contour_fem_pg.f90 m_precision.o m_const
 	$(F90) -c $(F90OPTFLAGS) $<
 map_projection_sph.o: $(KEMO_PGDIR)/map_projection_sph.f90 m_precision.o aitoff.o
 	$(F90) -c $(F90OPTFLAGS) $<
-rbcolor_pg.o: $(KEMO_PGDIR)/rbcolor_pg.f90 m_precision.o m_constants.o set_rgb_colors.o
+rbcolor_pg.o: $(KEMO_PGDIR)/rbcolor_pg.f90 m_precision.o m_constants.o set_rgb_colors.o set_color_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_draw_pg.o: $(KEMO_PGDIR)/set_control_draw_pg.f90 m_precision.o t_ctl_data_plot_pg.o m_machine_parameter.o m_ctl_param_plot_pg.o skip_comment_f.o m_isoline_dat_pg.o m_file_format_switch.o m_field_file_format.o set_components_flags.o stop_by_missing_zlib.o m_spheric_constants.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
