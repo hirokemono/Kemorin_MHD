@@ -197,6 +197,15 @@ void glut_PSF_colormode_select(){
     if (iflag_cmap_mode != SYM_GRAY_MODE) {
         glutAddMenuEntry("Symmetric Grayscale", SYM_GRAY_MODE);
     };
+    if (iflag_cmap_mode != ORANGE_CYAN_MODE) {
+        glutAddMenuEntry("Cyan to Orange", ORANGE_CYAN_MODE);
+    };
+    if (iflag_cmap_mode != MOLTEN_METAL_MODE) {
+        glutAddMenuEntry("Molten metal", MOLTEN_METAL_MODE);
+    };
+    if (iflag_cmap_mode != SPACE_COLOR_MODE) {
+        glutAddMenuEntry("Space", SPACE_COLOR_MODE);
+    };
     
     return;
 }

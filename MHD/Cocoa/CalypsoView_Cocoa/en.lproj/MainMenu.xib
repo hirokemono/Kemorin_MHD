@@ -1910,7 +1910,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="229" height="709"/>
                                     <clipView key="contentView" drawsBackground="NO" id="qPk-6n-CsU">
                                         <rect key="frame" x="1" y="1" width="227" height="707"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2r5-Q1-lji">
                                                 <rect key="frame" x="0.0" y="0.0" width="214" height="695"/>
@@ -3374,7 +3374,7 @@
                         <rect key="frame" x="12" y="25" width="207" height="667"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Wsi-nh-URc">
                             <rect key="frame" x="1" y="1" width="205" height="665"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3787">
                                     <rect key="frame" x="0.0" y="0.0" width="196" height="663"/>
@@ -6850,12 +6850,12 @@
                                             </connections>
                                         </button>
                                         <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2561">
-                                            <rect key="frame" x="65" y="393" width="113" height="22"/>
+                                            <rect key="frame" x="64" y="393" width="114" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="92" id="umq-vi-wPa"/>
                                                 <constraint firstAttribute="height" constant="16" id="vZl-2v-Ztx"/>
                                             </constraints>
-                                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="2574">
+                                            <popUpButtonCell key="cell" type="push" title="Rainbow" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="2576" id="2574">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <menu key="menu" title="OtherViews" id="2575">
@@ -6863,7 +6863,10 @@
                                                         <menuItem title="Rainbow" id="2576"/>
                                                         <menuItem title="Grayscale" tag="1" id="2577"/>
                                                         <menuItem title="Blue to Red" tag="2" id="2578"/>
-                                                        <menuItem title="Sym. Grayscale" tag="3" id="2579"/>
+                                                        <menuItem title="Sym. Grayscale" tag="3" id="iOS-uW-Z0A"/>
+                                                        <menuItem title="Cyan to Orange" tag="4" id="2579"/>
+                                                        <menuItem title="Molten Metal" tag="5" id="Olo-aS-iPu"/>
+                                                        <menuItem title="Space" tag="6" id="4B4-ZT-QzK"/>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>

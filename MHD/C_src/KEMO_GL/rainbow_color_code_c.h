@@ -8,6 +8,8 @@
 #include "m_color_table_c.h"
 #include "set_rgba_table_c.h"
 #include "set_rgb_colors_c.h"
+#include "colormap_rainbow_c.h"
+#include "colormap_grayscale_c.h"
 
 
 /* prototypes */

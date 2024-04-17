@@ -85,7 +85,7 @@
       else if (rnorm .ge. blue .and. rnorm.lt.white) then
         r = rnorm * 2.0d0
         g = 1.0d0
-        b = rnorm * 0.5d0
+        b = 1.0d0 - rnorm * 0.5d0
       else if (rnorm .ge. white .and. rnorm.lt.red) then
         r = 1.0
         g = (red - rnorm) + 0.5d0

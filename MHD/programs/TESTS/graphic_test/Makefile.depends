@@ -84,6 +84,13 @@ test_read_psf_data.o: \
   $(MHDDIR)/C_src/CONTROLS/t_control_chara_IO.h \
   $(MHDDIR)/C_src/CONTROLS/t_control_real3_IO.h \
   $(MHDDIR)/C_src/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(MHDDIR)/C_src/CORE_C/colormap_rainbow_c.h \
+  $(MHDDIR)/C_src/CORE_C/colormap_red_blue_c.h \
+  $(MHDDIR)/C_src/CORE_C/colormap_sym_gray_c.h \
+  $(MHDDIR)/C_src/CORE_C/colormap_grayscale_c.h \
+  $(MHDDIR)/C_src/CORE_C/colormap_orange_cyan_c.h \
+  $(MHDDIR)/C_src/CORE_C/colormap_molten_metal_c.h \
+  $(MHDDIR)/C_src/CORE_C/colormap_space_c.h \
   $(MHDDIR)/C_src/KEMO_GL/read_data_4_kemoviewer.h \
   $(MHDDIR)/C_src/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(MHDDIR)/C_src/KEMO_GL/m_gl_transfer_matrix.h \

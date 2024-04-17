@@ -384,17 +384,26 @@ GtkWidget * init_combobox_cmap(int iflag){
     index = append_ci_item_to_tree(index, &color_labels[GRAYSCALE_MODE][0], GRAYSCALE_MODE, child_model);
     index = append_ci_item_to_tree(index, &color_labels[RED_BLUE_MODE][0], RED_BLUE_MODE, child_model);
     index = append_ci_item_to_tree(index, &color_labels[SYM_GRAY_MODE][0], SYM_GRAY_MODE, child_model);
+    index = append_ci_item_to_tree(index, &color_labels[ORANGE_CYAN_MODE][0], ORANGE_CYAN_MODE, child_model);
+    index = append_ci_item_to_tree(index, &color_labels[MOLTEN_METAL_MODE][0], MOLTEN_METAL_MODE, child_model);
+    index = append_ci_item_to_tree(index, &color_labels[SPACE_COLOR_MODE][0], SPACE_COLOR_MODE, child_model);
     
     combobox_cmap = gtk_combo_box_new_with_model(child_model);
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-    if(iflag == SYM_GRAY_MODE){
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 3);
+    if(iflag == SPACE_COLOR_MODE){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), SPACE_COLOR_MODE);
+    } else if(iflag == MOLTEN_METAL_MODE){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), MOLTEN_METAL_MODE);
+    } else if(iflag == ORANGE_CYAN_MODE){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), ORANGE_CYAN_MODE);
+    } else if(iflag == SYM_GRAY_MODE){
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), SYM_GRAY_MODE);
     } else if(iflag == RED_BLUE_MODE){
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 2);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), RED_BLUE_MODE);
     } else if(iflag == GRAYSCALE_MODE){
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 1);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), GRAYSCALE_MODE);
     } else {
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 0);
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), RAINBOW_MODE);
     };
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), renderer, TRUE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), renderer,

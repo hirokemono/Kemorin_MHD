@@ -11,6 +11,13 @@
 #include "skip_comment_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "ctl_data_pvr_colormap_IO_c.h"
+#include "colormap_rainbow_c.h"
+#include "colormap_red_blue_c.h"
+#include "colormap_sym_gray_c.h"
+#include "colormap_grayscale_c.h"
+#include "colormap_orange_cyan_c.h"
+#include "colormap_molten_metal_c.h"
+#include "colormap_space_c.h"
 
 
 extern const char color_labels[4][KCHARA_C];

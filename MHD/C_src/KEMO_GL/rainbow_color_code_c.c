@@ -57,7 +57,7 @@ static void convert_anaglyph_color(double ratio_mono, double *f_color){
 
 static void get_rainbow_c(double val, double  minval,double  maxval, double *f_color) {
 	double f = color_normalize_linear_c(minval, maxval, val);
-	color_rainbow_c(f, &f_color[0], &f_color[1], &f_color[2]);
+	colormap_rainbow_c(f, &f_color[0], &f_color[1], &f_color[2]);
 	return;
 }
 
@@ -85,7 +85,7 @@ static void get_grayscale_c(double val, double minval, double maxval,
 	double f, r, g, b;
 	
 	f = color_normalize_linear_c(minval, maxval, val);
-	color_grayscale_c(f, &r, &g, &b);
+	colormap_grayscale_c(f, &r, &g, &b);
 	
 	f_color[0] = (maxcolor-mincolor) * r;
 	f_color[1] = (maxcolor-mincolor) * g;

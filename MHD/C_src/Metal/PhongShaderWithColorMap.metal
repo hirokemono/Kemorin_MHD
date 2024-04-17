@@ -32,7 +32,7 @@ struct RasterizerData
 };
 
 
-float3 color_rainbow_c(float rnorm){
+float3 color_rainbow_m(float rnorm){
     float purple = 0.0;
     float blue =   0.1;
     float ocean =  0.325;
@@ -131,7 +131,7 @@ PhongColorMapFragmentShader(RasterizerData in [[stage_in]],
     float4 materialSpecular =  FrontMaterialParams.specular;
     float  shininess =         FrontMaterialParams.shininess;
 
-    float4 pixelSpaceColor = float4(color_rainbow_c(in.pixelSpaceData.x).xyz, in.pixelSpaceData.y);
+    float4 pixelSpaceColor = float4(color_rainbow_m(in.pixelSpaceData.x).xyz, in.pixelSpaceData.y);
     
     float3 view =    normalize(in.pixelSpacePosition.xyz);
     float3 fnormal = normalize(in.pixelSpaceNormal.xyz);

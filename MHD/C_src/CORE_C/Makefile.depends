@@ -46,6 +46,41 @@ check_viewer_mesh_c.o: \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+colormap_grayscale_c.o: \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.c \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+colormap_molten_metal_c.o: \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.c \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+colormap_orange_cyan_c.o: \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.c \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+colormap_rainbow_c.o: \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.c \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+colormap_red_blue_c.o: \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.c \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+colormap_space_c.o: \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.c \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+colormap_sym_gray_c.o: \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.c \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 coordinate_converter_c.o: \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.c \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \

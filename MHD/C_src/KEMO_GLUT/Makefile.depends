@@ -36,6 +36,13 @@ kemoview_gtk_PSF_isoline_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -159,6 +166,13 @@ kemoview_gtk_PSF_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -298,6 +312,13 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -413,6 +434,13 @@ kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -536,6 +564,13 @@ kemoview_gtk_axis_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -666,6 +701,13 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -782,6 +824,13 @@ kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -899,6 +948,13 @@ kemoview_gtk_fline_selectors.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -1028,6 +1084,13 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -1169,6 +1232,13 @@ kemoview_gtk_mesh_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -1306,6 +1376,13 @@ kemoview_gtk_preference_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -1423,6 +1500,13 @@ kemoview_gtk_quilt_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -1555,6 +1639,13 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -1667,6 +1758,13 @@ kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -1808,6 +1906,13 @@ tree_view_4_domain_viewer.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
@@ -1932,6 +2037,13 @@ tree_view_4_ele_group_viewer.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
@@ -2076,6 +2188,13 @@ tree_view_4_nod_group_viewer.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
@@ -2200,6 +2319,13 @@ tree_view_4_surf_group_viewer.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.h \
@@ -2315,6 +2441,13 @@ tree_view_kemoview_colormap.o: \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
   $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h \
   $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
@@ -2450,6 +2583,13 @@ view_modifier_glfw.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
@@ -2564,6 +2704,13 @@ view_modifier_gtk.o: \
   $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/CONTROLS/ctl_data_pvr_colormap_IO_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_rainbow_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_red_blue_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_sym_gray_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_grayscale_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_orange_cyan_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_molten_metal_c.h \
+  $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/read_data_4_kemoviewer.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \

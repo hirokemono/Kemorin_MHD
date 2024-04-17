@@ -53,6 +53,14 @@ OBJ_KEMO_C = \
  set_map_data_4_viewer_c.o \
  take_normal_psf_c.o \
  \
+ colormap_rainbow_c.o \
+ colormap_red_blue_c.o \
+ colormap_sym_gray_c.o \
+ colormap_grayscale_c.o \
+ colormap_molten_metal_c.o \
+ colormap_orange_cyan_c.o \
+ colormap_space_c.o \
+ \
  set_rgb_colors_c.o \
  invert_small_matrix_c.o \
  transfer_matvec.o \

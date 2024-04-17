@@ -7,10 +7,13 @@
 #include "set_rgba_table_c.h"
 
 
-const char *label_rainbow =   "rainbow";
-const char *label_bluered =   "blue_to_red";
-const char *label_grayscale = "grayscale";
-const char *label_sym_gray  = "symmetric_grayscale";
+const char *label_rainbow =      "rainbow";
+const char *label_bluered =      "blue_to_red";
+const char *label_grayscale =    "grayscale";
+const char *label_sym_gray =     "symmetric_grayscale";
+const char *label_orangecyan =   "cyan_to_orange";
+const char *label_molten_metal = "molten_metal";
+const char *label_space_color  = "space_color";
 
 const char *hd_minmax_c =      "minmax";
 const char *hd_linear_c =      "linear";
@@ -40,6 +43,12 @@ void copy_colormap_name_to_ctl(struct colormap_params *cmap_s,
 		copy_to_chara_ctl_item(label_grayscale, colormap_mode);
 	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
 		copy_to_chara_ctl_item(label_sym_gray, colormap_mode);
+	} else if(cmap_s->id_color_mode == ORANGE_CYAN_MODE){
+		copy_to_chara_ctl_item(label_orangecyan, colormap_mode);
+	} else if(cmap_s->id_color_mode == MOLTEN_METAL_MODE){
+		copy_to_chara_ctl_item(label_molten_metal, colormap_mode);
+	} else if(cmap_s->id_color_mode == SPACE_COLOR_MODE){
+		copy_to_chara_ctl_item(label_space_color, colormap_mode);
 	} else {
 		copy_to_chara_ctl_item(label_rainbow, colormap_mode);
 	};
@@ -55,13 +64,19 @@ void set_rgb_from_value_s(struct colormap_params *cmap_s,
 	dealloc_colormap_array(cmap_tmp);
 	
 	if(cmap_s->id_color_mode == GRAYSCALE_MODE){
-		color_grayscale_c(rnorm, red, green, blue);
+		colormap_grayscale_c(rnorm, red, green, blue);
 	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
-		color_sym_grayscale_c(rnorm, red, green, blue);
+		colormap_sym_grayscale_c(rnorm, red, green, blue);
 	} else if(cmap_s->id_color_mode == RED_BLUE_MODE){
-		color_redblue_c(rnorm, red, green, blue);
+		colormap_red_blue_c(rnorm, red, green, blue);
+	} else if(cmap_s->id_color_mode == ORANGE_CYAN_MODE){
+		colormap_orange_cyan_c(rnorm, red, green, blue);
+	} else if(cmap_s->id_color_mode == MOLTEN_METAL_MODE){
+		colormap_molten_metal_c(rnorm, red, green, blue);
+	} else if(cmap_s->id_color_mode == SPACE_COLOR_MODE){
+		colormap_space_c(rnorm, red, green, blue);
 	} else {
-        color_rainbow_c(rnorm, red, green, blue);
+        colormap_rainbow_c(rnorm, red, green, blue);
 	}
 	return;
 }
@@ -238,8 +253,14 @@ void copy_colormap_from_ctl(struct chara_ctl_item *f_colormap_mode_ctl,
 		cmap_s->id_color_mode = RED_BLUE_MODE;
 	} else if(compare_string(9, label_grayscale, f_colormap_mode_ctl->c_tbl) > 0){
 		cmap_s->id_color_mode = GRAYSCALE_MODE;
-	} else if(compare_string(18, label_sym_gray, f_colormap_mode_ctl->c_tbl) > 0){
+	} else if(compare_string(19, label_sym_gray, f_colormap_mode_ctl->c_tbl) > 0){
 		cmap_s->id_color_mode = SYM_GRAY_MODE;
+	} else if(compare_string(14, label_orangecyan, f_colormap_mode_ctl->c_tbl) > 0){
+		cmap_s->id_color_mode = ORANGE_CYAN_MODE;
+	} else if(compare_string(12, label_molten_metal, f_colormap_mode_ctl->c_tbl) > 0){
+		cmap_s->id_color_mode = MOLTEN_METAL_MODE;
+	} else if(compare_string(11, label_space_color, f_colormap_mode_ctl->c_tbl) > 0){
+		cmap_s->id_color_mode = SPACE_COLOR_MODE;
 	} else {
 		cmap_s->id_color_mode = RAINBOW_MODE;
 	};

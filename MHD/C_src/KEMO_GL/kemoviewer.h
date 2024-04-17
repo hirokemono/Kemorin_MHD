@@ -139,6 +139,9 @@
 #define GRAYSCALE_MODE  1
 #define RED_BLUE_MODE   2
 #define SYM_GRAY_MODE   3
+#define ORANGE_CYAN_MODE   4
+#define MOLTEN_METAL_MODE  5
+#define SPACE_COLOR_MODE   6
 
 #define FLAT_SHADE    0
 #define SMOOTH_SHADE  1
