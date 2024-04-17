@@ -132,6 +132,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_color_data(pRowIndex, value, color, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
+	[_fillRectView UpdateColorbar];
 } // end tableView:setObjectValue:forTableColumn:row:
 
 - (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{

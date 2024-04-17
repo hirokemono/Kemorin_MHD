@@ -120,6 +120,7 @@
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
 	kemoview_set_PSF_opacity_data((int) pRowIndex, value, opacity, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
+	[_fillRectView UpdateColorbar];
     return;
 } // end tableView:setObjectValue:forTableColumn:row:
 
