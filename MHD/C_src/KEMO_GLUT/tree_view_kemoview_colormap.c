@@ -59,6 +59,7 @@ static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
 
+    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_COLOR) > 16) return;
     add_colormap_list_items_CB(color_vws);
 	
 	kemoview_add_PSF_color_list(ZERO, ZERO, kemo_sgl);
@@ -145,6 +146,8 @@ static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(button), "kemoview");
+
+    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY) > 16) return;
 
     add_opacity_list_items_CB(color_vws);
 	gtk_widget_queue_draw(color_vws->scrolled_window);

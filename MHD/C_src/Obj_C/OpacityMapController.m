@@ -30,7 +30,9 @@
     
 	NSInteger isel = [idOpacityTableView selectedRow];
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-	
+
+    if(kemoview_get_PSF_color_param(kemo_sgl, ISET_NUM_OPACITY) > 16) return;
+
 	if (isel > 0) {
 		value1 =   [[self.OpacityTableField objectAtIndex:isel-1] doubleValue];
 		opacity1 = [[self.OpacityTableOpacity objectAtIndex:isel-1] doubleValue];
