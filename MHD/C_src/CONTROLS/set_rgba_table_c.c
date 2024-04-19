@@ -26,11 +26,14 @@ const char *hd_pointrange_c =  "point_ranges";
 const char *hd_pointdelta_c =  "point_delta";
 const char *hd_intensity_c =   "intense_chenge";
 
-const char color_labels[4][KCHARA_C] = {
+const char color_labels[7][KCHARA_C] = {
     "rainbow", 
     "grayscale",
     "blue_to_red",
-    "symmetric_grayscale"
+    "symmetric_grayscale",
+    "cyan_to_orange",
+    "molten_metal",
+    "space_color"
 };
 
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;

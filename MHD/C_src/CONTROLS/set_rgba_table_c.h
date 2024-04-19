@@ -20,7 +20,7 @@
 #include "colormap_space_c.h"
 
 
-extern const char color_labels[4][KCHARA_C];
+extern const char color_labels[7][KCHARA_C];
 
 /* prototypes */
 
