@@ -54,8 +54,8 @@
         stop 'control file is broken'
       end if
 !
-      call set_control_ave_gauss(tave_svsr_ctl, tave_st_rev_p1)
-      call reset_ctl_tave_stable_rev(tave_svsr_ctl)
+      call set_control_stable_rev(tave_svsr_ctl, tave_st_rev_p1)
+      call dealloc_ctl_tave_stable_rev(tave_svsr_ctl)
 !
 !
       call s_time_average_vol_stable_rev(.TRUE., tave_st_rev_p1)
@@ -92,23 +92,20 @@
       integer(kind = kint), allocatable :: iflag_sta(:)
       integer(kind = kint), allocatable :: iflag_rev(:)
 !
-      real(kind = kreal), allocatable :: tave_vol_ave(:,:)
-      real(kind = kreal), allocatable :: rms_vol_ave(:,:)
-      real(kind = kreal), allocatable :: sdev_vol_ave(:,:)
       real(kind = kreal), allocatable :: tave_vol_pwr(:,:)
       real(kind = kreal), allocatable :: rms_vol_pwr(:,:)
       real(kind = kreal), allocatable :: sdev_vol_pwr(:,:)
 !
-      character(len=kchara) :: file_name, directory, extension
+      character(len=kchara) :: file_name, directory
       character(len=kchara) :: fname_no_dir, fname_tmp
 !
 !      integer(kind = kint) :: icou
       real(kind = kreal) :: true_start, true_end, g10_mid
 !>      Structure for gauss coeffciients
       type(picked_gauss_coefs_IO), save :: gauss_IO_a
-      type(sph_spectr_head_labels), save :: sph_lbl_IN_a, sph_lbl_IN_p
-      type(read_sph_spectr_data), save :: sph_IN_a, sph_IN_p, sph_OUT1
-      type(sph_volume_mean_series), save :: vm_srs_a, vm_srs_p
+      type(sph_spectr_head_labels), save :: sph_lbl_IN
+      type(read_sph_spectr_data), save :: sph_IN, sph_OUT1
+      type(sph_volume_mean_series), save :: vm_srs
       real(kind = kreal), allocatable :: spectr_OUT(:)
 !
       type(sph_spectr_head_labels), save :: sph_lbl_g
@@ -122,6 +119,10 @@
       character(len=kchara) :: hd_g11 = 'g1_1'
       character(len=kchara) :: hd_h11 = 'h1_1'
       character(len=2+23+25+25+1) :: comment_111
+      character(len=18) :: chara_start, chara_end
+!
+      integer(kind = kint) :: ifile
+!
 !
 !       Load gauss coefficients data
       if(tave_st_rev_param%flag_old_gauss) then
@@ -167,10 +168,12 @@
       end do
       iflag_sta(1:g_series%n_step) = 1 - iflag_rev(1:g_series%n_step)
 !
+      write(*,'(a)',advance='NO') 'Stable Phase '
       call cal_time_ave_picked_sph_spectr                               &
      &   (g_series%n_step, g_series%d_time, iflag_sta,                  &
      &    sph_IN_g%nfield_sph_spec, g_series%vmean_series(1,1),         &
      &    ave_gauss(1,1), rms_gauss(1,1), sdev_gauss(1,1))
+      write(*,'(a)',advance='NO') 'Reversing Phase '
       call cal_time_ave_picked_sph_spectr                               &
      &   (g_series%n_step, g_series%d_time, iflag_rev,                  &
      &    sph_IN_g%nfield_sph_spec, g_series%vmean_series(1,2),         &
@@ -186,229 +189,146 @@
 !     &       sdev_gauss(icou,2), trim(sph_IN_g%ene_sph_spec_name(icou))
 !      end do
 !
-      call load_sph_volume_mean_file                                    &
-     &   (tave_st_rev_param%vave_file_name,                             &
-     &    tave_st_rev_param%start_time, tave_st_rev_param%end_time,     &
-     &    true_start, true_end, sph_lbl_IN_a, sph_IN_a, vm_srs_a)
-
-      allocate(tave_vol_ave(sph_IN_a%ntot_sph_spec,2))
-      allocate(rms_vol_ave(sph_IN_a%ntot_sph_spec,2))
-      allocate(sdev_vol_ave(sph_IN_a%ntot_sph_spec,2))
-      call cal_time_ave_picked_sph_spectr                               &
-     &   (vm_srs_a%n_step, vm_srs_a%d_time, iflag_sta,                  &
-     &    sph_IN_a%ntot_sph_spec, vm_srs_a%vmean_series(1,1),           &
-     &    tave_vol_ave(1,1), rms_vol_ave(1,1), sdev_vol_ave(1,1))
-      call cal_time_ave_picked_sph_spectr                               &
-     &   (vm_srs_a%n_step, vm_srs_a%d_time, iflag_rev,                  &
-     &    sph_IN_a%ntot_sph_spec, vm_srs_a%vmean_series(1,1),           &
-     &    tave_vol_ave(1,2), rms_vol_ave(1,2), sdev_vol_ave(1,2))
-      call dealloc_sph_volume_mean_series(vm_srs_a)
-      call dealloc_sph_espec_data(sph_IN_a)
-      call dealloc_sph_espec_name(sph_IN_a)
+      do ifile = 1, tave_st_rev_param%num_vol_series_file
+        write(file_name,'(a,a4)')                                       &
+     &    trim(tave_st_rev_param%vol_series_file_prefix(ifile)), '.dat'
+        call load_sph_volume_mean_file(file_name,                       &
+     &      tave_st_rev_param%start_time, tave_st_rev_param%end_time,   &
+     &      true_start, true_end, sph_lbl_IN, sph_IN, vm_srs)
 !
+        allocate(tave_vol_pwr(sph_IN%ntot_sph_spec,2))
+        allocate(rms_vol_pwr(sph_IN%ntot_sph_spec,2))
+        allocate(sdev_vol_pwr(sph_IN%ntot_sph_spec,2))
 !
-      call load_sph_volume_mean_file(tave_st_rev_param%vpwr_file_name,  &
-     &    tave_st_rev_param%start_time, tave_st_rev_param%end_time,     &
-     &    true_start, true_end, sph_lbl_IN_p, sph_IN_p, vm_srs_p)
-!
-      allocate(tave_vol_pwr(sph_IN_p%ntot_sph_spec,2))
-      allocate(rms_vol_pwr(sph_IN_p%ntot_sph_spec,2))
-      allocate(sdev_vol_pwr(sph_IN_p%ntot_sph_spec,2))
-      call cal_time_ave_picked_sph_spectr                               &
-     &   (vm_srs_p%n_step, vm_srs_p%d_time, iflag_sta,                  &
-     &    sph_IN_p%ntot_sph_spec, vm_srs_p%vmean_series(1,1),           &
+        write(*,'(a)',advance='NO') 'Stable Phase '
+        call cal_time_ave_picked_sph_spectr                             &
+     &   (vm_srs%n_step, vm_srs%d_time, iflag_sta,                      &
+     &    sph_IN%ntot_sph_spec, vm_srs%vmean_series(1,1),               &
      &    tave_vol_pwr(1,1), rms_vol_pwr(1,1), sdev_vol_pwr(1,1))
-      call cal_time_ave_picked_sph_spectr                               &
-     &   (vm_srs_p%n_step, vm_srs_p%d_time, iflag_rev,                  &
-     &    sph_IN_p%ntot_sph_spec,  vm_srs_p%vmean_series(1,1),          &
-     &    tave_vol_pwr(1,2), rms_vol_pwr(1,2), sdev_vol_pwr(1,2))
-      call dealloc_sph_volume_mean_series(vm_srs_p)
 !
+        write(*,'(a)',advance='NO') 'Reversing Phase '
+        call cal_time_ave_picked_sph_spectr                             &
+       &   (vm_srs%n_step, vm_srs%d_time, iflag_rev,                    &
+       &    sph_IN%ntot_sph_spec,  vm_srs%vmean_series(1,1),            &
+       &    tave_vol_pwr(1,2), rms_vol_pwr(1,2), sdev_vol_pwr(1,2))
+        call dealloc_sph_volume_mean_series(vm_srs)
 !
-      call copy_read_ene_head_params(sph_IN_p, sph_OUT1)
-      sph_OUT1%nfield_sph_spec = sph_OUT1%nfield_sph_spec + 1
-      sph_OUT1%ntot_sph_spec =   sph_OUT1%ntot_sph_spec + 3
-!      sph_OUT1%num_time_labels = sph_OUT1%num_time_labels
+        call copy_read_ene_head_params(sph_IN, sph_OUT1)
+        sph_OUT1%nfield_sph_spec = sph_OUT1%nfield_sph_spec + 1
+        sph_OUT1%ntot_sph_spec =   sph_OUT1%ntot_sph_spec + 3
+!        sph_OUT1%num_time_labels = sph_OUT1%num_time_labels
 !
-      call alloc_sph_espec_name(sph_OUT1)
+        call alloc_sph_espec_name(sph_OUT1)
 !
-      call alloc_sph_spectr_data(izero, sph_OUT1)
-      call copy_read_ene_name_params                                    &
-     &   (sph_IN_p%nfield_sph_spec, sph_IN_p%ntot_sph_spec,             &
-     &    sph_OUT1%num_time_labels, sph_IN_p, sph_OUT1)
-      i = sph_OUT1%num_time_labels + sph_IN_p%ntot_sph_spec
-      sph_OUT1%ncomp_sph_spec(sph_IN_p%nfield_sph_spec+1) = 3
-      sph_OUT1%ene_sph_spec_name(i+1) = hd_g10
-      sph_OUT1%ene_sph_spec_name(i+2) = hd_g11
-      sph_OUT1%ene_sph_spec_name(i+3) = hd_h11
+        call alloc_sph_spectr_data(izero, sph_OUT1)
+        call copy_read_ene_name_params                                  &
+     &     (sph_IN%nfield_sph_spec, sph_IN%ntot_sph_spec,               &
+     &      sph_OUT1%num_time_labels, sph_IN, sph_OUT1)
+        i = sph_OUT1%num_time_labels + sph_IN%ntot_sph_spec
+        sph_OUT1%ncomp_sph_spec(sph_IN%nfield_sph_spec+1) = 3
+        sph_OUT1%ene_sph_spec_name(i+1) = hd_g10
+        sph_OUT1%ene_sph_spec_name(i+2) = hd_g11
+        sph_OUT1%ene_sph_spec_name(i+3) = hd_h11
 !
-      allocate(spectr_OUT(sph_OUT1%ntot_sph_spec))
+        allocate(spectr_OUT(sph_OUT1%ntot_sph_spec))
 !$omp parallel workshare
-      spectr_OUT(1:sph_OUT1%ntot_sph_spec) = 0.0d0
+        spectr_OUT(1:sph_OUT1%ntot_sph_spec) = 0.0d0
 !$omp end parallel workshare
 !
-      call split_extrension(tave_st_rev_param%vpwr_file_name,           &
-     &                      file_name, extension)
-      if(extension .eq. 'gz') then
-        call split_extrension(file_name, fname_tmp, extension)
-      else
-        fname_tmp = file_name
-      end if
-      call split_directory(fname_tmp, directory, fname_no_dir)
-      write(fname_tmp, '(a17,a,a4)')                                    &
-     &    't_ave_stable_rev_', trim(fname_no_dir), '.dat'
-      file_name = append_directory(directory, fname_tmp)
 !
-      write(*,*) 'average file_name: ', trim(file_name)
-      open(id_file_rms, file=file_name,                                 &
+        call split_directory                                            &
+     &     (tave_st_rev_param%vol_series_file_prefix(ifile),            &
+     &      directory, fname_no_dir)
+        write(fname_tmp, '(a17,a,a4)')                                  &
+     &      't_ave_stable_rev_', trim(fname_no_dir), '.dat'
+        file_name = append_directory(directory, fname_tmp)
+!
+        write(*,*) 'average file_name: ', trim(file_name)
+        open(id_file_rms, file=file_name,                               &
      &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  0: average of volume mean square in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  1: average of volume mean square in reverse'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  2: R.M.S. of volume mean square in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  3: R.M.S. of volume mean square in reverse'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  4: s.dev. of volume mean square in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  5: s.dev. of volume mean square in reverse'
+        write(id_file_rms) '# Step  0: average in stable', char(10)
+        write(id_file_rms) '# Step  1: average in reverse', char(10)
+        write(id_file_rms) '# Step  2: R.M.S. in stable', char(10)
+        write(id_file_rms) '# Step  3: R.M.S. in reverse', char(10)
+        write(id_file_rms) '# Step  4: s.dev. in stable', char(10)
+        write(id_file_rms) '# Step  5: s.dev. in reverse', char(10)
 !
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  6: average of volume average in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  7: average of volume average in reverse'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  8: R.M.S. of volume average in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  9: R.M.S. of volume average in reverse'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step 10: s.dev. of volume average in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step 11: s.dev. of volume average in reverse'
-      write(id_file_rms,'(a,1p2e16.8e3)')                               &
-     &          '# Start and End time: ', true_start, true_end
+        write(chara_start,'(a2,1p2e16.8e3)') '  ', true_start
+        write(chara_end,  '(a2,1p2e16.8e3)') '  ', true_end
+        write(id_file_rms)  '# Start and End time:',                    &
+     &         chara_start, chara_end, char(10)
 !
-      call write_sph_pwr_vol_head(.FALSE., id_file_rms, sph_pwr_labels, &
-     &                            sph_OUT1, zbuf_s)
+        call write_sph_pwr_vol_head(.FALSE., id_file_rms,               &
+     &                              sph_pwr_labels, sph_OUT1, zbuf_s)
 !
-      sph_OUT1%time = true_end
-      sph_OUT1%i_step = 0
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,1),                    &
-     &    sph_IN_g%nfield_sph_spec, ave_gauss(1,1),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
+        sph_OUT1%time = true_end
+        sph_OUT1%i_step = 0
+        call copy_moniter_aves_to_IO                                    &
+     &     (sph_IN%ntot_sph_spec, tave_vol_pwr(1,1),                    &
+     &      sph_IN_g%nfield_sph_spec, ave_gauss(1,1),                   &
+     &      imode_g1, spectr_OUT)
+        call sel_gz_write_text_stream(.FALSE., id_file_rms,             &
+     &      volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,        &
+     &      sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
-      sph_OUT1%i_step = 1
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,2),                    &
-     &    sph_IN_g%nfield_sph_spec, ave_gauss(1,2),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
+        sph_OUT1%i_step = 1
+        call copy_moniter_aves_to_IO                                    &
+     &     (sph_IN%ntot_sph_spec, tave_vol_pwr(1,2),                    &
+     &      sph_IN_g%nfield_sph_spec, ave_gauss(1,2),                   &
+     &      imode_g1, spectr_OUT)
+        call sel_gz_write_text_stream(.FALSE., id_file_rms,             &
+     &      volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,        &
+     &      sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
 !
-      sph_OUT1%i_step = 2
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,1),                     &
-     &    sph_IN_g%nfield_sph_spec, rms_gauss(1,1),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
+        sph_OUT1%i_step = 2
+        call copy_moniter_aves_to_IO                                    &
+     &     (sph_IN%ntot_sph_spec, rms_vol_pwr(1,1),                     &
+     &      sph_IN_g%nfield_sph_spec, rms_gauss(1,1),                   &
+     &      imode_g1, spectr_OUT)
+        call sel_gz_write_text_stream(.FALSE., id_file_rms,             &
+     &      volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,        &
+     &      sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
-      sph_OUT1%i_step = 3
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,2),                     &
-     &    sph_IN_g%nfield_sph_spec, rms_gauss(1,2),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
-!
-!
-      sph_OUT1%i_step = 4
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,1),                    &
-     &    sph_IN_g%nfield_sph_spec, sdev_gauss(1,1),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
-!
-      sph_OUT1%i_step = 5
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,2),                    &
-     &    sph_IN_g%nfield_sph_spec, sdev_gauss(1,2),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
+        sph_OUT1%i_step = 3
+        call copy_moniter_aves_to_IO                                    &
+     &     (sph_IN%ntot_sph_spec, rms_vol_pwr(1,2),                     &
+     &      sph_IN_g%nfield_sph_spec, rms_gauss(1,2),                   &
+     &      imode_g1, spectr_OUT)
+        call sel_gz_write_text_stream(.FALSE., id_file_rms,             &
+     &      volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,        &
+     &      sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
 !
-      sph_OUT1%i_step = 6
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,1),                    &
-     &    sph_IN_g%nfield_sph_spec, ave_gauss(1,1),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
+        sph_OUT1%i_step = 4
+        call copy_moniter_aves_to_IO                                    &
+     &     (sph_IN%ntot_sph_spec, sdev_vol_pwr(1,1),                    &
+     &      sph_IN_g%nfield_sph_spec, sdev_gauss(1,1),                  &
+     &      imode_g1, spectr_OUT)
+        call sel_gz_write_text_stream(.FALSE., id_file_rms,             &
+     &      volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,        &
+     &      sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
-      sph_OUT1%i_step = 7
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,2),                    &
-     &    sph_IN_g%nfield_sph_spec, ave_gauss(1,2),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
+        sph_OUT1%i_step = 5
+        call copy_moniter_aves_to_IO                                    &
+     &     (sph_IN%ntot_sph_spec, sdev_vol_pwr(1,2),                    &
+     &      sph_IN_g%nfield_sph_spec, sdev_gauss(1,2),                  &
+     &      imode_g1, spectr_OUT)
+        call sel_gz_write_text_stream(.FALSE., id_file_rms,             &
+     &      volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,        &
+     &      sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
+        close(id_file_rms)
+        deallocate(spectr_OUT)
+        deallocate(tave_vol_pwr)
+        deallocate(rms_vol_pwr)
+        deallocate(sdev_vol_pwr)
 !
-      sph_OUT1%i_step = 8
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,1),                     &
-     &    sph_IN_g%nfield_sph_spec, rms_gauss(1,1),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
-!
-      sph_OUT1%i_step = 9
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,2),                     &
-     &    sph_IN_g%nfield_sph_spec, rms_gauss(1,2),                     &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
-!
-!
-      sph_OUT1%i_step = 10
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,1),                    &
-     &    sph_IN_g%nfield_sph_spec, sdev_gauss(1,1),                    &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
-!
-      sph_OUT1%i_step = 11
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,2),                    &
-     &    sph_IN_g%nfield_sph_spec, sdev_gauss(1,2),                    &
-     &    imode_g1, spectr_OUT)
-      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
-     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
-     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
-!
-      close(id_file_rms)
-      deallocate(spectr_OUT)
+        call dealloc_sph_espec_data(sph_OUT1)
+        call dealloc_sph_espec_name(sph_OUT1)
+        call dealloc_sph_espec_data(sph_IN)
+        call dealloc_sph_espec_name(sph_IN)
+      end do
 !
       end subroutine s_time_average_vol_stable_rev
 !

@@ -491,6 +491,7 @@ count_monitor_time_series.o \
 part_sum_sph_ene_spec.o
 
 MOD_T_AVE_STABLE_REV = \
+t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
@@ -506,6 +507,7 @@ time_average_gauss_coefs.o \
 t_ave_stable_and_reversal.o
 
 MOD_T_AVE_STABLE_REV_SPEC = \
+t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \

@@ -136,7 +136,7 @@ t_ctl_data_sph_monitor_list.o: $(SPH_UTILS_DIR)/t_ctl_data_sph_monitor_list.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_tave_sph_monitor.o: $(SPH_UTILS_DIR)/t_ctl_data_tave_sph_monitor.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer2.o t_ctl_data_sph_monitor_list.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_tave_stable_rev.o: $(SPH_UTILS_DIR)/t_ctl_data_tave_stable_rev.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o skip_comment_f.o
+t_ctl_data_tave_stable_rev.o: $(SPH_UTILS_DIR)/t_ctl_data_tave_stable_rev.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_ctl_data_sph_monitor_list.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_param_dipole_fit.o: $(SPH_UTILS_DIR)/t_ctl_param_dipole_fit.f90 m_precision.o m_constants.o t_ctl_data_dipole_fit_ratio.o t_read_sph_spectra.o skip_comment_f.o m_read_sph_spectra_f.o approximate_to_polynomial.o
 	$(F90) -c $(F90OPTFLAGS) $<

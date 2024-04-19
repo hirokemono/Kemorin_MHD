@@ -9,7 +9,7 @@
 !!        from spherical harmonics spectrum data
 !!
 !!@verbatim
-!!      subroutine set_control_ave_gauss(tave_svsr_ctl,                 &
+!!      subroutine set_control_stable_rev(tave_svsr_ctl,                &
 !!     &                                 tave_st_rev_param)
 !!        type(tave_stable_reverse_ctl), intent(in) :: tave_svsr_ctl
 !!        type(tave_stable_and_reversal), intent(inout)                 &
@@ -45,9 +45,13 @@
 !
       type tave_stable_and_reversal
         logical :: flag_old_gauss
-        character(len=kchara) :: vave_file_name = 'NO_FILE'
-        character(len=kchara) :: vpwr_file_name = 'NO_FILE'
         character(len=kchara) :: gauss_file_name
+!
+        integer(kind = kint) :: num_vol_series_file
+        character(len=kchara), allocatable :: vol_series_file_prefix(:)
+        integer(kind = kint) :: num_vol_spectr_file
+        character(len=kchara), allocatable :: vol_spectr_file_prefix(:)
+!
         real(kind = kreal) :: start_time
         real(kind = kreal) :: end_time
         real(kind = kreal) :: border_g10
@@ -59,8 +63,8 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_control_ave_gauss(tave_svsr_ctl,                   &
-     &                                 tave_st_rev_param)
+      subroutine set_control_stable_rev(tave_svsr_ctl,                  &
+     &                                  tave_st_rev_param)
 !
       use skip_comment_f
 !
@@ -68,20 +72,7 @@
       type(tave_stable_and_reversal), intent(inout)                     &
      &                                 :: tave_st_rev_param
 !
-!
-      tave_st_rev_param%vave_file_name = 'NO_FILE'
-      if(tave_svsr_ctl%volume_average_file_ctl%iflag .eq. 0) then
-        write(*,*) 'No volume average data file'
-      end if
-      tave_st_rev_param%vave_file_name                                  &
-     &      = tave_svsr_ctl%volume_average_file_ctl%charavalue
-!
-      tave_st_rev_param%vpwr_file_name = 'NO_FILE'
-      if(tave_svsr_ctl%volume_power_file_ctl%iflag .eq. 0) then
-        write(*,*) 'No volume mean square data file'
-      end if
-      tave_st_rev_param%vpwr_file_name                                  &
-     &      = tave_svsr_ctl%volume_power_file_ctl%charavalue
+      integer(kind = kint) :: i
 !
       if(tave_svsr_ctl%gauss_coefs_file_ctl%iflag .eq. 0) then
         write(*,*) 'Set File prefix for Gauss coefficients'
@@ -117,7 +108,35 @@
      &    tave_st_rev_param%flag_old_gauss = .TRUE.
       end if
 !
-      end subroutine set_control_ave_gauss
+      tave_st_rev_param%num_vol_series_file                             &
+     &  = tave_svsr_ctl%monitor_list_ctl%volume_series_file_ctl%num
+      allocate(tave_st_rev_param%vol_series_file_prefix(tave_st_rev_param%num_vol_series_file))
+      do i = 1, tave_st_rev_param%num_vol_series_file
+        tave_st_rev_param%vol_series_file_prefix(i)                     &
+     &  = tave_svsr_ctl%monitor_list_ctl%volume_series_file_ctl%c_tbl(i)
+      end do
+!
+      tave_st_rev_param%num_vol_spectr_file                             &
+     &  = tave_svsr_ctl%monitor_list_ctl%volume_spec_file_ctl%num
+      allocate(tave_st_rev_param%vol_spectr_file_prefix(tave_st_rev_param%num_vol_spectr_file))
+      do i = 1, tave_st_rev_param%num_vol_spectr_file
+        tave_st_rev_param%vol_spectr_file_prefix(i)                     &
+     &  = tave_svsr_ctl%monitor_list_ctl%volume_spec_file_ctl%c_tbl(i)
+      end do
+!
+!      write(*,*) 'vol_series_file_prefix: ',  &
+!     & tave_st_rev_param%num_vol_series_file
+!      do i = 1, tave_st_rev_param%num_vol_series_file
+!        write(*,*) i, trim(tave_st_rev_param%vol_series_file_prefix(i))
+!      end do
+!
+!      write(*,*) 'vol_spectr_file_prefix: ',  &
+!     & tave_st_rev_param%num_vol_spectr_file
+!      do i = 1, tave_st_rev_param%num_vol_spectr_file
+!        write(*,*) i, trim(tave_st_rev_param%vol_spectr_file_prefix(i))
+!      end do
+!
+      end subroutine set_control_stable_rev
 !
 !   --------------------------------------------------------------------
 !
