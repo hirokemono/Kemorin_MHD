@@ -464,7 +464,7 @@ void draw_fast(struct kemoviewer_type *kemo_sgl){
 
 void kemoview_gl_shader_init(struct kemoview_shaders *kemo_shaders){	
 	if (glslInit()) exit(1);
-	LoadShaderFromStrings(kemo_shaders->phong, load_phong_vert(), load_phong_frag());
+	LoadShaderFromStrings(kemo_shaders->phong, load_phong_cmap_vert(), load_phong_cmap_frag());
 	
     /*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);

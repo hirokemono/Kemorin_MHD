@@ -12,6 +12,7 @@
 #endif
 
 #include "kemoviewer_gl.h"
+#include "test_shaders.h"
 
 #define ZOOM    1
 #define PAN     2
