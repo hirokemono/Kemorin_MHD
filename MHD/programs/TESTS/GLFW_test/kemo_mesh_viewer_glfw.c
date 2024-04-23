@@ -183,7 +183,9 @@ int draw_mesh_kemo(void) {
     kemoview_init_background_color(single_kemoview);
 	kemoview_init_lighting(single_kemoview);
     kemoview_gl_background_color(single_kemoview);
-    kemoview_gl_init_lighting(kemo_sgl_gl);
+    
+    kemoview_gl_test_init(kemo_sgl_gl);
+    
 	kemoview_init_phong_light_list(single_kemoview);
 	
 	glClear(GL_COLOR_BUFFER_BIT);

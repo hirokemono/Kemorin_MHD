@@ -32,4 +32,6 @@ void set_GLFWindowSize(int width, int height,
 
 void draw_fast(struct kemoviewer_type *kemo_sgl);
 void draw_full(struct kemoviewer_type *kemo_sgl);
+void kemoview_gl_test_init(struct kemoviewer_gl_type *kemo_gl);
+
 #endif
