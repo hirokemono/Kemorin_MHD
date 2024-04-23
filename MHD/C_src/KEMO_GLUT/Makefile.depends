@@ -2661,8 +2661,7 @@ view_modifier_glfw.o: \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(C_SRCDIR)/KEMO_GL/set_psf_texture_by_png.h \
   $(C_SRCDIR)/CORE_C/read_image_2_png.h \
-  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h \
-  $(C_SRCDIR)/GTK/calypso_GTK.h
+  $(C_SRCDIR)/CORE_C/read_image_2_bmp.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 view_modifier_gtk.o: \
   $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.c \

@@ -64,9 +64,9 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
                           struct updatable_widgets *updatable,
                           GtkWidget *menuHbox, GtkWidget *window){
-    int iflag_draw_m = kemoview_get_draw_mesh_flag(kemo_sgl);
-    int iflag_draw_f = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
-    int nload_psf = kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
+    kemoview_get_draw_mesh_flag(kemo_sgl);
+    kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
+    kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
 
     if(updatable->iflag_psfBox > 0){
         gtk_box_pack_start(GTK_BOX(menuHbox), updatable->psfBox, FALSE, FALSE, 0);
@@ -679,8 +679,6 @@ void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
 void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
                             struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *window){
-	GtkWidget *closeButton;
-
     fline_menu->closeButton = gtk_button_new_with_label("Close Current PSF");
 
     g_object_set_data(G_OBJECT(window), "flinemenu", (gpointer) fline_menu);

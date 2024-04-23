@@ -115,22 +115,22 @@ char * load_colormap_molten_metal_frag(void){
         "}\n"\
         "\n"\
         "float colormap_metal_green(float x) {\n"\
-        "    if (x < 0.6) {\n"\
-        "        return 0.0;\n"\
-        "    } else if (x <= 0.95) {\n"\
-        "        return ((x - 0.6) * 728.57) / 255.0;\n"\
-        "    } else {\n"\
-        "        return 1.0;\n"\
-        "    }\n"\
-        "}\n"\
-        "\n"\
-        "float colormap_metal_red(float x) {\n"\
         "    if (x < 0.0) {\n"\
         "        return 0.0;\n"\
         "    } else if (x <= 0.57147) {\n"\
         "        return 446.22 * x / 255.0;\n"\
         "    } else {\n"\
         "       return 1.0;\n"\
+        "    }\n"\
+        "}\n"\
+        "\n"\
+        "float colormap_metal_red(float x) {\n"\
+        "    if (x < 0.6) {\n"\
+        "        return 0.0;\n"\
+        "    } else if (x <= 0.95) {\n"\
+        "        return ((x - 0.6) * 728.57) / 255.0;\n"\
+        "    } else {\n"\
+        "        return 1.0;\n"\
         "    }\n"\
         "}\n"\
         "\n"\
@@ -159,9 +159,9 @@ char * load_colormap_orange_cyan_frag(void){
         "    if (x < 0.0){\n"\
         "        return 1.0;\n"\
         "    }else if(x < 0.5){\n"\
-        "        return x * 0.5d0;\n"\
+        "        return (1.0 - x * 0.5);\n"\
         "    }else if(x < 1.0){\n"\
-        "        return (red - x) * 1.5d0;\n"\
+        "        return (red - x) * 1.5;\n"\
         "    }else{\n"\
         "        return 0.0;\n"\
         "    };\n"\
@@ -171,9 +171,9 @@ char * load_colormap_orange_cyan_frag(void){
         "    if (x < 0.0){\n"\
         "        return 1.0;\n"\
         "    }else if(x < 0.5){\n"\
-        "        return 1.0d0;\n"\
+        "        return 1.0;\n"\
         "    }else if(x < 1.0){\n"\
-        "        return (red - x) + 0.5d0;\n"\
+        "        return (red - x) + 0.5;\n"\
         "    }else{\n"\
         "        return 0.5;\n"\
         "    };\n"\
@@ -183,7 +183,7 @@ char * load_colormap_orange_cyan_frag(void){
         "    if (x < 0.0){\n"\
         "        return 0.0;\n"\
         "    }else if(x < 0.5){\n"\
-        "        return x * 2.0d0;\n"\
+        "        return x * 2.0;\n"\
         "    }else if(x < 1.0){\n"\
         "        return 1.0;\n"\
         "    }else{\n"\
@@ -213,8 +213,8 @@ char * load_colormap_rainbow_frag(void){
         "*/\n"\
         "\n"\
         "float colormap_rainbow_blue(float x) {\n"\
-        "	double ocean =  0.325;\n"\
-        "	double green =  0.55;\n"\
+        "	float ocean =  0.325;\n"\
+        "    float green =  0.55;\n"\
         "\n"\
         "	if (x < ocean){\n"\
         "		return 1.0;\n"\
@@ -226,10 +226,10 @@ char * load_colormap_rainbow_frag(void){
         "}\n"\
         "\n"\
         "float colormap_rainbow_green(float x) {\n"\
-        "	double blue =   0.1;\n"\
-        "	double ocean =  0.325;\n"\
-        "	double yellow = 0.775;\n"\
-        "	double red =    1.0;\n"\
+        "    float blue =   0.1;\n"\
+        "    float ocean =  0.325;\n"\
+        "    float yellow = 0.775;\n"\
+        "    float red =    1.0;\n"\
         "			\n"\
         "	if (x < blue){\n"\
         "		return 0.0;\n"\
@@ -245,10 +245,10 @@ char * load_colormap_rainbow_frag(void){
         "}\n"\
         "\n"\
         "float colormap_rainbow_red(float x) {\n"\
-        "	double purple = 0.0;\n"\
-        "	double blue =   0.1;\n"\
-        "	double green =  0.55;\n"\
-        "	double yellow = 0.775;\n"\
+        "    float purple = 0.0;\n"\
+        "    float blue =   0.1;\n"\
+        "    float green =  0.55;\n"\
+        "    float yellow = 0.775;\n"\
         "			\n"\
         "	if (x < purple){\n"\
         "		return 0.5;\n"\
