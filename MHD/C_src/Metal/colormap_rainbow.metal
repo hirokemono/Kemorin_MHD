@@ -7,8 +7,8 @@
 
 
 float colormap_rainbow_blue(float x) {
-	double ocean =  0.325;
-	double green =  0.55;
+    float ocean =  0.325;
+    float green =  0.55;
         
 	if (x < ocean){
 		return 1.0;
@@ -20,10 +20,10 @@ float colormap_rainbow_blue(float x) {
 }
 
 float colormap_rainbow_green(float x) {
-	double blue =   0.1;
-	double ocean =  0.325;
-	double yellow = 0.775;
-	double red =    1.0;
+	float blue =   0.1;
+    float ocean =  0.325;
+    float yellow = 0.775;
+    float red =    1.0;
 			
 	if (x < blue){
 		return 0.0;
@@ -39,10 +39,10 @@ float colormap_rainbow_green(float x) {
 }
 
 float colormap_rainbow_red(float x) {
-	double purple = 0.0;
-	double blue =   0.1;
-	double green =  0.55;
-	double yellow = 0.775;
+    float purple = 0.0;
+    float blue =   0.1;
+    float green =  0.55;
+    float yellow = 0.775;
 			
 	if (x < purple){
 		return 0.5;
