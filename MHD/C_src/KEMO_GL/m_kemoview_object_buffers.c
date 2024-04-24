@@ -23,7 +23,6 @@ struct kemoview_buffers * init_kemoview_buffers(void)
 
     kemo_buffers->cube_buf =        init_strided_buffer(n_point);
     kemo_buffers->cube_index_buf = alloc_gl_index_buffer(12, 3);
-    CubeNode_to_buf(0.5f, kemo_buffers->cube_buf, kemo_buffers->cube_index_buf);
 
     kemo_buffers->PSF_solid_buf =   init_strided_buffer(n_point);
     kemo_buffers->PSF_stxur_buf =   init_strided_buffer(n_point);

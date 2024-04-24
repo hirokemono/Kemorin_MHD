@@ -16,6 +16,9 @@
 #define MOLTEN_METAL_MODE  5
 #define SPACE_COLOR_MODE   6
 
+#define MAX_COLORMAP_POINT   16
+
+
 struct colormap_params{
 	int id_color_mode;
 	struct real2_clist *colormap;

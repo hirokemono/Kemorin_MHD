@@ -13,6 +13,7 @@
 
 #include "kemoviewer_gl.h"
 #include "test_shaders.h"
+#include "m_color_table_c.h"
 
 #define ZOOM    1
 #define PAN     2

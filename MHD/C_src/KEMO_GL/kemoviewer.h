@@ -268,8 +268,8 @@ extern "C" {
 	void kemoview_free_kvstring(struct kv_string *kvstring);
 
 	struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void);
-
     void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data);
+    void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data);
 
     void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *kemoview_array);
 

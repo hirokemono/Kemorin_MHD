@@ -13,7 +13,7 @@ static void kemoview_allocate_pointers(struct kemoviewer_type *kemoviewer_data){
     kemoviewer_data->kemo_psf =   init_kemoview_psf();
 	
     kemoviewer_data->psf_ucd_tmp = (struct psf_data *) malloc(sizeof(struct psf_data));
-	return;
+    return;
 }
 
 struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
@@ -29,7 +29,8 @@ struct kemoviewer_type * kemoview_allocate_single_viwewer_struct(void){
                     kemoviewer_data->kemo_mesh->mesh_m,
                     kemoviewer_data->view_s);
 	init_fline_parameters(kemoviewer_data->kemo_fline->fline_m);
-	return kemoviewer_data;
+
+    return kemoviewer_data;
 }
 
 void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
@@ -43,6 +44,13 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
     dealloc_kemoview_buffers(kemoviewer_data->kemo_buffers);
 	return;
 }
+
+void kemoview_init_cube_buf(struct kemoviewer_type *kemoviewer_data){
+    CubeNode_to_buf(0.5f, kemoviewer_data->kemo_buffers->cube_buf, 
+                    kemoviewer_data->kemo_buffers->cube_index_buf);
+    return;
+};
+
 
 void kemoview_alloc_kvstringitem(unsigned long length, struct kv_string *kvstring){
 	alloc_kvstringitem(length, kvstring);

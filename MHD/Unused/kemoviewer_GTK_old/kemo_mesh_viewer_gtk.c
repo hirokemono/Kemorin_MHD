@@ -111,6 +111,7 @@ void draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
+    kemoview_init_cube_buf(single_kemoview);
     kemo_gl = kemoview_allocate_gl_pointers();
 
 	link_glut_menu_address();
