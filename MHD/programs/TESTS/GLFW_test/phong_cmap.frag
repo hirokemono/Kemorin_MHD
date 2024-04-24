@@ -4,13 +4,6 @@
 // phong.frag
 //
 
-vec4 darkcolor(vec4 x)
-{
-    return x * 0.2;
-}
-
-
-
 in vec4 position;
 in vec4 ex_Color;
 in vec4 normal;

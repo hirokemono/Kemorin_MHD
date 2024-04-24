@@ -5,6 +5,28 @@
 
 #include "test_shaders.h"
 
+char * load_colormap_frag(void){
+    const char  colormap_frag_src[]
+    = {
+        "//\n"\
+        "// colormap.frag\n"\
+        "//\n"\
+        "\n"\
+        "vec4 darkcolor(vec4 x)\n"\
+        "{\n"\
+        "    return x * 0.2;\n"\
+        "}\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(colormap_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, colormap_frag_src);
+    return src;
+};
+
 char * load_phong_cmap_frag(void){
     const char  phong_cmap_frag_src[]
     = {
@@ -13,13 +35,6 @@ char * load_phong_cmap_frag(void){
         "//\n"\
         "// phong.frag\n"\
         "//\n"\
-        "\n"\
-        "vec4 darkcolor(vec4 x)\n"\
-        "{\n"\
-        "    return x * 0.2;\n"\
-        "}\n"\
-        "\n"\
-        "\n"\
         "\n"\
         "in vec4 position;\n"\
         "in vec4 ex_Color;\n"\

@@ -13,6 +13,7 @@
 /* prototypes */
 
 
+char * load_colormap_frag(void);
 char * load_phong_cmap_frag(void);
 char * load_phong_cmap_vert(void);
 
