@@ -315,7 +315,7 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 }
 
 static void light_for_cube(struct initial_cube_lighting *init_light,
-                                   struct kemoview_shaders *kemo_shaders){
+                           struct kemoview_shaders *kemo_shaders){
     int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
 	int id_light1Position = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[0].position");
 	int id_light2Position = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[1].position");
@@ -333,7 +333,49 @@ static void light_for_cube(struct initial_cube_lighting *init_light,
 	glUniform4fv(id_MaterialDiffuse, 1, init_light->whitelight[1]);
 	glUniform4fv(id_MaterialSpecular, 1, init_light->whitelight[2]);
 	glUniform1fv(id_MaterialShiness, 1, init_light->shine);
-	return;
+
+    int id_colormap = glGetUniformLocation(kemo_shaders->phong->programId, "id_colormap");
+    glUniform1i(id_colormap,    MOLTEN_METAL_MODE);
+    
+    int id_datavalue =  0;
+    int id_normalized = 0;
+
+    int id_num_ctbl = glGetUniformLocation(kemo_shaders->phong->programId, "num_normalize");
+    glUniform1i(id_num_ctbl,    3);
+    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[0].data");
+    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[0].normalized");
+    glUniform1f(id_datavalue,  -1.0);
+    glUniform1f(id_normalized, 0.0);
+    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[1].data");
+    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[1].normalized");
+    glUniform1f(id_datavalue,  0.0);
+    glUniform1f(id_normalized, 0.25);
+    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[2].data");
+    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[2].normalized");
+    glUniform1f(id_datavalue,  1.0);
+    glUniform1f(id_normalized, 1.0);
+
+    
+    int id_num_opacity = glGetUniformLocation(kemo_shaders->phong->programId, "num_opacity");
+    glUniform1i(id_num_opacity, 4);
+    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[0].data");
+    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[0].normalized");
+    glUniform1f(id_datavalue,  -1.0);
+    glUniform1f(id_normalized, 1.0);
+    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[1].data");
+    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[1].normalized");
+    glUniform1f(id_datavalue, -0.25);
+    glUniform1f(id_normalized, 0.1);
+    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[2].data");
+    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[2].normalized");
+    glUniform1f(id_datavalue,  0.25);
+    glUniform1f(id_normalized, 0.1);
+    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[3].data");
+    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[3].normalized");
+    glUniform1f(id_datavalue,  1.0);
+    glUniform1f(id_normalized, 1.0);
+    
+    return;
 };
 
 void test_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
@@ -351,18 +393,22 @@ void test_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf
     printf("strided_buf->ist_xyz %d \n", strided_buf->ist_xyz);
     printf("strided_buf->ist_csurf %d \n", strided_buf->ist_csurf);
     printf("strided_buf->ist_norm %d \n", strided_buf->ist_norm);
-    printf("strided_buf->ist_norm %d \n", strided_buf->ist_data);
-    
+    printf("strided_buf->ist_data %d \n", strided_buf->ist_data);
+    printf("strided_buf->istride %d \n", strided_buf->istride);
+   
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
 						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
 						  (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
 						  (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
+    glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, strided_buf->istride,
+                          (GLvoid*) (strided_buf->ist_data * sizeof(GL_FLOAT)));
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(4);
 	glBindVertexArray(0);
 	return;
 };
@@ -387,7 +433,6 @@ void test_cube_surf_VBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_b
 void set_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *index_buf,
                           struct VAO_ids *cube_VAO){
     cube_VAO->npoint_draw = cube_buf->num_nod_buf;
-	if(cube_VAO->npoint_draw <= 0) return;
 	test_cube_surf_VBO(cube_VAO, cube_buf, index_buf);
 	glBindVertexArray(0);
 	return;

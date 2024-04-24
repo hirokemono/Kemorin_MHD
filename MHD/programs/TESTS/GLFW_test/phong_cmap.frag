@@ -7,9 +7,12 @@
 in vec4 position;
 in vec4 ex_Color;
 in vec4 normal;
+in float ex_data;
 out vec4 out_Color;
 
 #define MAX_LIGHTS 10
+#define MAX_POINTS 16
+
 struct LightSourceParameters{
 	vec4 ambient;              // Aclarri   
 	vec4 diffuse;              // Dcli   
@@ -25,7 +28,8 @@ struct LightSourceParameters{
 	float constantAttenuation;   // K0   
 	float linearAttenuation;     // K1   
 	float quadraticAttenuation;  // K2  
-};    
+};
+
 uniform int num_lights;
 uniform LightSourceParameters LightSource[MAX_LIGHTS];
 
@@ -38,6 +42,19 @@ struct ColorMaterial {
 };
 uniform ColorMaterial frontMaterial;
 uniform ColorMaterial backMaterial;
+
+struct NormalizationTable{
+    float data;              // data value               
+    float normalizaed;       // normalizad value
+};
+
+uniform int num_normalize;
+uniform NormalizationTable normalizeTable[MAX_POINTS];
+uniform int num_opacity;
+uniform NormalizationTable opacityTable[MAX_POINTS];
+
+uniform int id_colormap;
+
 
 void main (void)
 {

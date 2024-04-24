@@ -16,9 +16,10 @@ uniform mat4 viewMatrix;
 uniform mat4 modelViewMat;
 uniform mat4 modelNormalMat;
 
-out vec4 position;
-out vec4 ex_Color;
-out vec4 normal;
+out vec4  position;
+out vec4  ex_Color;
+out vec4  normal;
+out float ex_data;
 
 void main(void)
 {
@@ -27,6 +28,7 @@ void main(void)
     position = modelViewMat * position;
 	normal =   modelNormalMat * norm;
 	ex_Color = color;
+    ex_data = data;
 
 	gl_Position =  projectionMat * position;
 }

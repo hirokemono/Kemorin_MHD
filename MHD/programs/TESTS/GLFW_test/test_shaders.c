@@ -39,9 +39,12 @@ char * load_phong_cmap_frag(void){
         "in vec4 position;\n"\
         "in vec4 ex_Color;\n"\
         "in vec4 normal;\n"\
+        "in float ex_data;\n"\
         "out vec4 out_Color;\n"\
         "\n"\
         "#define MAX_LIGHTS 10\n"\
+        "#define MAX_POINTS 16\n"\
+        "\n"\
         "struct LightSourceParameters{\n"\
         "	vec4 ambient;              // Aclarri\n"\
         "	vec4 diffuse;              // Dcli\n"\
@@ -58,6 +61,7 @@ char * load_phong_cmap_frag(void){
         "	float linearAttenuation;     // K1\n"\
         "	float quadraticAttenuation;  // K2\n"\
         "};\n"\
+        "\n"\
         "uniform int num_lights;\n"\
         "uniform LightSourceParameters LightSource[MAX_LIGHTS];\n"\
         "\n"\
@@ -70,6 +74,19 @@ char * load_phong_cmap_frag(void){
         "};\n"\
         "uniform ColorMaterial frontMaterial;\n"\
         "uniform ColorMaterial backMaterial;\n"\
+        "\n"\
+        "struct NormalizationTable{\n"\
+        "    float data;              // data value\n"\
+        "    float normalizaed;       // normalizad value\n"\
+        "};\n"\
+        "\n"\
+        "uniform int num_normalize;\n"\
+        "uniform NormalizationTable normalizeTable[MAX_POINTS];\n"\
+        "uniform int num_opacity;\n"\
+        "uniform NormalizationTable opacityTable[MAX_POINTS];\n"\
+        "\n"\
+        "uniform int id_colormap;\n"\
+        "\n"\
         "\n"\
         "void main (void)\n"\
         "{\n"\
@@ -133,9 +150,10 @@ char * load_phong_cmap_vert(void){
         "uniform mat4 modelViewMat;\n"\
         "uniform mat4 modelNormalMat;\n"\
         "\n"\
-        "out vec4 position;\n"\
-        "out vec4 ex_Color;\n"\
-        "out vec4 normal;\n"\
+        "out vec4  position;\n"\
+        "out vec4  ex_Color;\n"\
+        "out vec4  normal;\n"\
+        "out float ex_data;\n"\
         "\n"\
         "void main(void)\n"\
         "{\n"\
@@ -144,6 +162,7 @@ char * load_phong_cmap_vert(void){
         "    position = modelViewMat * position;\n"\
         "	normal =   modelNormalMat * norm;\n"\
         "	ex_Color = color;\n"\
+        "    ex_data = data;\n"\
         "\n"\
         "	gl_Position =  projectionMat * position;\n"\
         "}\n"\
