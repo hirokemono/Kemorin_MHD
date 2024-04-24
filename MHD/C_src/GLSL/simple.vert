@@ -1,5 +1,7 @@
-#version 330
+// #version 330
+//
 // simple.vert
+//
 
 layout (location = 0) in vec4  xyz;
 layout (location = 1) in vec4  color;

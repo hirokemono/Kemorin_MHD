@@ -1,3 +1,4 @@
+// #version 330
 
 //
 // phong.frag

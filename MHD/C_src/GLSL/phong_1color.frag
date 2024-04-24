@@ -1,4 +1,4 @@
-#version 330
+// #version 330
 //
 //
 // phong_1color.frag

@@ -1,5 +1,7 @@
-#version 330
+// #version 330
+//
 // simple_texture.frag
+//
 
 in vec2 tex_position;
 

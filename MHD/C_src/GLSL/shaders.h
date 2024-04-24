@@ -2,8 +2,8 @@
 //  Header of shader texts
 //  Generated from shader files
 */
-#ifndef shaders__
-#define shaders__
+#ifndef shaders_
+#define shaders_
 
 #include <string.h>
 #include "kemoviewer_gl.h"

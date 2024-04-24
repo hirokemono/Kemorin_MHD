@@ -8,6 +8,7 @@
 char * load_phong_cmap_frag(void){
     const char  phong_cmap_frag_src[]
     = {
+        "// #version 330\n"\
         "\n"\
         "//\n"\
         "// phong.frag\n"\
@@ -27,7 +28,7 @@ char * load_phong_cmap_frag(void){
         "\n"\
         "#define MAX_LIGHTS 10\n"\
         "struct LightSourceParameters{\n"\
-        "	vec4 ambient;              // Acmake cleanlarri\n"\
+        "	vec4 ambient;              // Aclarri\n"\
         "	vec4 diffuse;              // Dcli\n"\
         "	vec4 specular;             // Scli\n"\
         "	vec4 position;             // Ppli\n"\
@@ -99,6 +100,8 @@ char * load_phong_cmap_frag(void){
 char * load_phong_cmap_vert(void){
     const char  phong_cmap_vert_src[]
     = {
+        "// #version 330\n"\
+        "\n"\
         "//\n"\
         "// phong.vert\n"\
         "//\n"\

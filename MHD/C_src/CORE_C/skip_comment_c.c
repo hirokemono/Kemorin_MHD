@@ -212,6 +212,23 @@ int strngcopy(char *chara_out, const char *chara_in){
     return j;
 }
 
+void append_text_c(const char *text_to_append, char *target_text){
+    long i;
+    long len = strlen(text_to_append);
+    long ist = strlen(target_text);
+    for(i=0;i<len;i++){
+        target_text[i+ist] =   text_to_append[i];
+    }
+    target_text[len+ist] = '\0';
+/*
+    for(i=0;i<len+1;i++){
+        printf("txt: %d %d %c \n", i, (int) target_text[i], target_text[i]);
+    }
+ */
+    return;
+}
+
+
 int compare_string(int length, const char *string1, const char *string2){
 	int i, iflag;
 	iflag = 1;

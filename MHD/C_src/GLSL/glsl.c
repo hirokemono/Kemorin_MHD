@@ -6,6 +6,7 @@
 
 #include "glsl.h"
 
+char *glsl_version = "# version 330 \n";
 
 /*
 ** Init GLSL
@@ -184,13 +185,26 @@ void LoadShaderFromFile(struct shader_ids *shader,
 void LoadShaderFromStrings(struct shader_ids *shader,
 			const GLchar *text_vertex, const GLchar *text_fragment)
 {
-	/* Make shader object */
+    long len_version = strlen(glsl_version);
+    long len_vertex =   strlen(text_vertex) + len_version;
+    long len_fragment = strlen(text_fragment) + len_version;
+
+    char *vertex_shader =   alloc_string(len_vertex+len_version);
+    char *fragment_shader = alloc_string(len_fragment+len_version);
+    append_text_c(glsl_version, vertex_shader);
+    append_text_c(glsl_version, fragment_shader);
+    append_text_c(text_vertex, vertex_shader);
+    append_text_c(text_fragment, fragment_shader);
+/*    printf("%s\n\n", vertex_shader);
+    printf("%s\n\n", fragment_shader);
+ */
+    /* Make shader object */
 	shader->vertexID = glCreateShader(GL_VERTEX_SHADER);
 	shader->fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
 	
 	/* reader shader source */
-	glShaderSource(shader->vertexID, 1, &text_vertex, 0);
-	glShaderSource(shader->fragmentID, 1, &text_fragment, 0);
+	glShaderSource(shader->vertexID, 1, &vertex_shader, 0);
+	glShaderSource(shader->fragmentID, 1, &fragment_shader, 0);
 	
 	/* Compile and link  shader */
 	CompileLinkShader(shader);

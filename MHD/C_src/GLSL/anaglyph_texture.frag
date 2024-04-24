@@ -1,6 +1,7 @@
-#version 330
+// #version 330
+//
 // anaglyph_texture.frag
-
+//
 in vec2 tex_position;
 
 out vec4 out_Color;
