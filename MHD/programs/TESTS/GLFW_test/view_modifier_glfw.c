@@ -462,9 +462,36 @@ void draw_fast(struct kemoviewer_type *kemo_sgl){
     return;
 };
 
-void kemoview_gl_shader_init(struct kemoview_shaders *kemo_shaders){	
+void kemoview_gl_shader_init(struct kemoview_shaders *kemo_shaders){
+    int i;
+    char *glsl_version = "# version 330 \n";
+    long len_version = strlen(glsl_version);
+    long len_vertex =   strlen(load_phong_cmap_vert()) + len_version;
+    long len_fragment = strlen(load_phong_cmap_frag()) + len_version;
+
+    char *vertex_shader =   alloc_string(len_vertex+len_version);
+    char *fragment_shader = alloc_string(len_fragment+len_version);
+    
+    for(i=0;i<len_version;i++){
+        vertex_shader[i] =   glsl_version[i];
+        fragment_shader[i] = glsl_version[i];
+    }
+    for(i=0;i<len_vertex;i++){
+        vertex_shader[i+len_version] =   load_phong_cmap_vert()[i];
+    }
+    vertex_shader[len_vertex+len_version] = "\0";
+
+    for(i=0;i<len_fragment;i++){
+        fragment_shader[i+len_version] = load_phong_cmap_frag()[i];
+    }
+    fragment_shader[len_fragment+len_version] = "\0";
+        
 	if (glslInit()) exit(1);
-	LoadShaderFromStrings(kemo_shaders->phong, load_phong_cmap_vert(), load_phong_cmap_frag());
+    
+    printf("%s \n", vertex_shader);
+    printf("%d %d \n", strlen(load_phong_cmap_vert()), strlen(glsl_version));
+    
+	LoadShaderFromStrings(kemo_shaders->phong, vertex_shader, fragment_shader);
 	
     /*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);

@@ -12,7 +12,13 @@ char * load_phong_cmap_frag(void){
         "//\n"\
         "// phong.frag\n"\
         "//\n"\
-        "#version 330\n"\
+        "\n"\
+        "vec4 darkcolor(vec4 x)\n"\
+        "{\n"\
+        "    return x * 0.2;\n"\
+        "}\n"\
+        "\n"\
+        "\n"\
         "\n"\
         "in vec4 position;\n"\
         "in vec4 ex_Color;\n"\
@@ -21,7 +27,8 @@ char * load_phong_cmap_frag(void){
         "\n"\
         "#define MAX_LIGHTS 10\n"\
         "struct LightSourceParameters{\n"\
-        "	vec4 ambient;              // Aclarri\n"\
+        "	vec4 ambient;              // Acmake clean
+        larri\n"\
         "	vec4 diffuse;              // Dcli\n"\
         "	vec4 specular;             // Scli\n"\
         "	vec4 position;             // Ppli\n"\
@@ -80,12 +87,6 @@ char * load_phong_cmap_frag(void){
         "    }\n"\
         "}\n"\
         "\n"\
-        "vec4 darkcolor(vec4 x)\n"\
-        "{\n"\
-        "    return x * 0.2;\n"\
-        "}\n"\
-        "\n"\
-        "\n"\
         "\n"
     };
     
@@ -102,8 +103,6 @@ char * load_phong_cmap_vert(void){
         "//\n"\
         "// phong.vert\n"\
         "//\n"\
-        "\n"\
-        "#version 330\n"\
         "\n"\
         "layout (location = 0) in vec4  xyz;\n"\
         "layout (location = 1) in vec4  color;\n"\
