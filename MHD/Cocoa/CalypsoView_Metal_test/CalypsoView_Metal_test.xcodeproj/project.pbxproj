@@ -56,7 +56,6 @@
 		1861CBF32BD9B66800C8E66C /* AAPLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBD72BD9B66600C8E66C /* AAPLImage.m */; };
 		1861CBF42BD9B66800C8E66C /* KemoViewerMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBD92BD9B66600C8E66C /* KemoViewerMetalView.m */; };
 		1861CBF62BD9B66800C8E66C /* KemoViewerMetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBDC2BD9B66700C8E66C /* KemoViewerMetalViewController.m */; };
-		1861CBF92BD9B66800C8E66C /* KemoView2DRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBDF2BD9B66700C8E66C /* KemoView2DRenderer.m */; };
 		1861CC132BD9BA3B00C8E66C /* PhongShaderWithColorMap.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC0C2BD9BA3B00C8E66C /* PhongShaderWithColorMap.metal */; };
 		1861CC142BD9BA3B00C8E66C /* SmpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC0D2BD9BA3B00C8E66C /* SmpleShader.metal */; };
 		1861CC152BD9BA3B00C8E66C /* TexureShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC0E2BD9BA3B00C8E66C /* TexureShader.metal */; };
@@ -272,9 +271,7 @@
 		1861CBD92BD9B66600C8E66C /* KemoViewerMetalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoViewerMetalView.m; path = CalypsoView_Cocoa/Metal/KemoViewerMetalView.m; sourceTree = SOURCE_ROOT; };
 		1861CBDA2BD9B66700C8E66C /* KemoViewerRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewerRenderer.h; path = CalypsoView_Cocoa/Metal/KemoViewerRenderer.h; sourceTree = SOURCE_ROOT; };
 		1861CBDC2BD9B66700C8E66C /* KemoViewerMetalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoViewerMetalViewController.m; path = CalypsoView_Cocoa/Metal/KemoViewerMetalViewController.m; sourceTree = SOURCE_ROOT; };
-		1861CBDF2BD9B66700C8E66C /* KemoView2DRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoView2DRenderer.m; path = CalypsoView_Cocoa/Metal/KemoView2DRenderer.m; sourceTree = SOURCE_ROOT; };
 		1861CBE22BD9B66700C8E66C /* KemoViewRendererTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewRendererTools.h; path = CalypsoView_Cocoa/Metal/KemoViewRendererTools.h; sourceTree = SOURCE_ROOT; };
-		1861CBE32BD9B66700C8E66C /* KemoView2DRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoView2DRenderer.h; path = CalypsoView_Cocoa/Metal/KemoView2DRenderer.h; sourceTree = SOURCE_ROOT; };
 		1861CC0C2BD9BA3B00C8E66C /* PhongShaderWithColorMap.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongShaderWithColorMap.metal; path = Metal/PhongShaderWithColorMap.metal; sourceTree = "<group>"; };
 		1861CC0D2BD9BA3B00C8E66C /* SmpleShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = SmpleShader.metal; path = Metal/SmpleShader.metal; sourceTree = "<group>"; };
 		1861CC0E2BD9BA3B00C8E66C /* TexureShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = TexureShader.metal; path = Metal/TexureShader.metal; sourceTree = "<group>"; };
@@ -863,8 +860,6 @@
 			children = (
 				1861CBC52BD9B66400C8E66C /* AAPLImage.h */,
 				1861CBD72BD9B66600C8E66C /* AAPLImage.m */,
-				1861CBE32BD9B66700C8E66C /* KemoView2DRenderer.h */,
-				1861CBDF2BD9B66700C8E66C /* KemoView2DRenderer.m */,
 				1861CBD02BD9B66500C8E66C /* KemoView3DRenderer.h */,
 				1861CBD52BD9B66600C8E66C /* KemoView3DRenderer.m */,
 				1861CBC92BD9B66400C8E66C /* KemoViewerMetalView.h */,
@@ -1132,7 +1127,6 @@
 				18D7E76C1562D359009B05FF /* modify_object_4_viewer_c.c in Sources */,
 				188BA75B2306BB0500348842 /* draw_map_4_PSF.c in Sources */,
 				188C9428230DDC7B00A4DB14 /* m_kemoviewer_data.c in Sources */,
-				1861CBF92BD9B66800C8E66C /* KemoView2DRenderer.m in Sources */,
 				188FFD962308F9B200F5A0DE /* set_PSF_isolines_to_buf.c in Sources */,
 				182174D72492F5640044ECA0 /* calypso_zlib_io_c.c in Sources */,
 				18D7E76F1562D359009B05FF /* psf_data_array_manager.c in Sources */,

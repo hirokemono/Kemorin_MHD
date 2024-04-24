@@ -11,7 +11,6 @@ Header for a platform independent renderer class, which performs Metal setup and
 #import "AAPLImage.h"
 #import "KemoViewerObject.h"
 #import "KemoViewRendererTools.h"
-#import "KemoView2DRenderer.h"
 #import "KemoView3DRenderer.h"
 #import "KemoViewMetalBuffers.h"
 

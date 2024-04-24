@@ -18,7 +18,6 @@ static const NSUInteger MaxFramesInFlight = 3;
 @implementation KemoViewerRenderer
 {
     KemoViewMetalBuffers * _kemoMetalBufBase;
-    KemoView2DRenderer *   _kemo2DRenderer;
     KemoView3DRenderer *   _kemo3DRenderer[MaxFramesInFlight];
     KemoViewRendererTools * _kemoRendererTools;
 
@@ -67,7 +66,6 @@ static const NSUInteger MaxFramesInFlight = 3;
     
     _kemoRendererTools = [[KemoViewRendererTools alloc] init];
     _kemoMetalBufBase = [[KemoViewMetalBuffers alloc] init];
-    _kemo2DRenderer = [[KemoView2DRenderer alloc] init];
     for(i=0;i<MaxFramesInFlight;i++){
         _kemo3DRenderer[i] = [[KemoView3DRenderer alloc] init];
     };
@@ -84,14 +82,11 @@ static const NSUInteger MaxFramesInFlight = 3;
 
 /* Load all the shader files with a .metal file extension in the project. */
         id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
-        [_kemo2DRenderer add2DShaderLibrary:&defaultLibrary];
         for(i=0;i<MaxFramesInFlight;i++){
             [_kemo3DRenderer[i] addKemoView3DShaderLibrary:&defaultLibrary];
         }
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
-        [_kemo2DRenderer addKemoView2DPipelines:mtkView
-                                    targetPixel:mtkView.colorPixelFormat];
         for(i=0;i<MaxFramesInFlight;i++){
             [_kemo3DRenderer[i] addKemoView3DPipelines:mtkView
                                            targetPixel:mtkView.colorPixelFormat];
@@ -116,8 +111,6 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
 /*  Release 3D vertexs */
     [kemo3DRenderer releaseKemoView3DMetalBuffers];
-/*  Release Message vertexs */
-    [_kemo2DRenderer releaseMsgMetalBuffers];
     return;
 }
 
@@ -130,10 +123,6 @@ static const NSUInteger MaxFramesInFlight = 3;
 /*  Set 3D vertexs to Metal buffers */
     [kemo3DRenderer setKemoView3DMetalBuffers:device
                                      kemoview:kemo_sgl];
-    
-/*  Set message vertexs to Metal buffers */
-    [_kemo2DRenderer setMessageMetalBuffers:device
-                                    buffers:kemo_sgl->kemo_buffers];
     return;
 }
 
@@ -210,8 +199,6 @@ static const NSUInteger MaxFramesInFlight = 3;
                                                       sides:iflag_polygon
                                                   fieldTube:iflag_tube];
     };
-    [_kemo2DRenderer encodeMessageObjects:renderEncoder
-                               projection:&_cbar_proj_mat];
 }
 
 -(void) KemoViewEncodeAll:(NSUInteger) i_current
