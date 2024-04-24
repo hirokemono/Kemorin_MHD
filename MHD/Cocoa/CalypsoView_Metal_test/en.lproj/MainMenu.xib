@@ -431,14 +431,14 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="27" y="154" width="485" height="816"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="contentRect" x="27" y="154" width="239" height="92"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1175"/>
             <view key="contentView" id="1065">
-                <rect key="frame" x="0.0" y="0.0" width="485" height="816"/>
+                <rect key="frame" x="0.0" y="0.0" width="239" height="92"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3591">
-                        <rect key="frame" x="5" y="770" width="104" height="32"/>
+                        <rect key="frame" x="5" y="46" width="104" height="32"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="aGU-wC-J8c"/>
                         </constraints>
@@ -451,7 +451,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2228">
-                        <rect key="frame" x="119" y="737" width="107" height="32"/>
+                        <rect key="frame" x="119" y="13" width="107" height="32"/>
                         <buttonCell key="cell" type="push" title="View Matrix" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2229">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -461,7 +461,7 @@
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1519">
-                        <rect key="frame" x="123" y="773" width="100" height="25"/>
+                        <rect key="frame" x="123" y="49" width="100" height="25"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="91" id="xNo-Pw-E0F"/>
                         </constraints>
@@ -505,7 +505,7 @@
                         </popUpButtonCell>
                     </popUpButton>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FRw-dN-qkX">
-                        <rect key="frame" x="5" y="737" width="104" height="32"/>
+                        <rect key="frame" x="5" y="13" width="104" height="32"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="zgX-VZ-Tj8"/>
                         </constraints>
@@ -517,62 +517,30 @@
                             <action selector="terminate:" target="-1" id="eup-sA-uVi"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1909">
-                        <rect key="frame" x="10" y="8" width="46" height="11"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="11" id="CZR-sm-k1S"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="42" id="imz-7X-7sS"/>
-                        </constraints>
-                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Progress:" id="1910">
-                            <font key="font" metaFont="miniSystem"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Wyf-gz-mv9">
-                        <rect key="frame" x="61" y="5" width="52" height="16"/>
-                        <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="1D8-GT-mKu"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="48" id="J8M-13-Lq2"/>
-                            <constraint firstAttribute="width" constant="48" id="Ls4-wt-h3h"/>
-                            <constraint firstAttribute="height" constant="16" id="bo1-6X-Ym4"/>
-                        </constraints>
-                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" usesSingleLineMode="YES" id="yer-JQ-Nz9">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="WEq-Gd-SUm"/>
-                            <font key="font" metaFont="miniSystem"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                 </subviews>
                 <constraints>
                     <constraint firstItem="FRw-dN-qkX" firstAttribute="top" secondItem="3591" secondAttribute="bottom" constant="13" id="7t0-tf-yjP"/>
                     <constraint firstItem="1519" firstAttribute="centerY" secondItem="3591" secondAttribute="centerY" id="8JW-5f-Esh"/>
                     <constraint firstItem="FRw-dN-qkX" firstAttribute="centerX" secondItem="3591" secondAttribute="centerX" id="B6q-5l-LJe"/>
-                    <constraint firstItem="Wyf-gz-mv9" firstAttribute="leading" secondItem="1909" secondAttribute="trailing" constant="9" id="DaY-Cd-HNj"/>
                     <constraint firstItem="2228" firstAttribute="trailing" secondItem="1519" secondAttribute="trailing" id="Dg8-Yq-pWC"/>
                     <constraint firstItem="FRw-dN-qkX" firstAttribute="leading" secondItem="3591" secondAttribute="leading" id="DxX-rU-CrZ"/>
-                    <constraint firstItem="Wyf-gz-mv9" firstAttribute="leading" secondItem="1909" secondAttribute="trailing" constant="9" id="P3S-Fh-Scq"/>
                     <constraint firstItem="1519" firstAttribute="top" secondItem="1065" secondAttribute="top" constant="19" id="QWw-3A-44x"/>
-                    <constraint firstAttribute="bottom" secondItem="Wyf-gz-mv9" secondAttribute="bottom" constant="5" id="RbW-MH-ZF2"/>
-                    <constraint firstItem="1909" firstAttribute="leading" secondItem="1065" secondAttribute="leading" constant="12" id="Wh7-4p-NGM"/>
                     <constraint firstItem="2228" firstAttribute="top" secondItem="1519" secondAttribute="bottom" constant="13" id="bJj-Oj-kg8"/>
                     <constraint firstItem="3591" firstAttribute="leading" secondItem="1065" secondAttribute="leading" constant="12" id="gtu-sC-SQ0"/>
                     <constraint firstItem="2228" firstAttribute="centerX" secondItem="1519" secondAttribute="centerX" id="mXU-B4-gYo"/>
                     <constraint firstItem="3591" firstAttribute="top" secondItem="1065" secondAttribute="top" constant="19" id="q3f-5Q-lJx"/>
                     <constraint firstItem="1519" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="3591" secondAttribute="trailing" constant="15" id="wkQ-b9-BWB"/>
-                    <constraint firstItem="Wyf-gz-mv9" firstAttribute="centerY" secondItem="1909" secondAttribute="centerY" id="xRX-Ae-YFd"/>
                 </constraints>
             </view>
             <contentBorderThickness maxY="0.0"/>
-            <point key="canvasLocation" x="-211.5" y="-104"/>
+            <point key="canvasLocation" x="-311" y="-461"/>
         </window>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="2202" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="123" y="299" width="299" height="510"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1175"/>
             <view key="contentView" id="2203">
                 <rect key="frame" x="0.0" y="0.0" width="299" height="510"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -639,7 +607,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="641">
-                                    <rect key="frame" x="229" y="11" width="19" height="21"/>
+                                    <rect key="frame" x="229" y="10" width="19" height="23"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="13" id="UHl-6o-Jjf"/>
                                         <constraint firstAttribute="height" constant="15" id="wuu-uc-pbT"/>
@@ -1054,7 +1022,7 @@
                                     <rect key="frame" x="10" y="133" width="229" height="118"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
                                         <rect key="frame" x="1" y="1" width="227" height="116"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                 <rect key="frame" x="0.0" y="0.0" width="227" height="88"/>
@@ -1290,14 +1258,14 @@
         <window title="Metal-test" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="mUS-wv-uCM" userLabel="Metal Window" customClass="KemoviewDragDropWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="458" y="120" width="960" height="720"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="contentRect" x="458" y="120" width="385" height="328"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1175"/>
             <view key="contentView" id="BeK-5P-Wgc">
-                <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
+                <rect key="frame" x="0.0" y="0.0" width="385" height="328"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Nx-Qx-Xru" customClass="KemoViewerMetalView">
-                        <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
+                        <rect key="frame" x="0.0" y="0.0" width="385" height="328"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <connections>
                             <outlet property="_kemoviewGL_defaults_controller" destination="716" id="2FT-zh-sSB"/>
@@ -1311,7 +1279,7 @@
                 <outlet property="_kemoviewIOControl" destination="1215" id="ptc-jr-seW"/>
                 <outlet property="_kmv" destination="w8N-Cd-Q0k" id="kjs-Pw-erK"/>
             </connections>
-            <point key="canvasLocation" x="792" y="488"/>
+            <point key="canvasLocation" x="38.5" y="-276"/>
         </window>
         <viewController id="QEu-s0-e0C" customClass="KemoViewerMetalViewController">
             <connections>
@@ -1323,7 +1291,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1015" y="235" width="232" height="676"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1175"/>
             <view key="contentView" id="8yB-vy-asK">
                 <rect key="frame" x="0.0" y="0.0" width="232" height="676"/>
                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
@@ -1332,7 +1300,7 @@
                         <rect key="frame" x="8" y="122" width="216" height="554"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                             <rect key="frame" x="0.0" y="0.0" width="216" height="554"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3791">
                                     <rect key="frame" x="0.0" y="0.0" width="224" height="585"/>
@@ -2078,7 +2046,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="242" y="130" width="194" height="714"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1175"/>
             <view key="contentView" id="9Ms-do-edR">
                 <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -2087,7 +2055,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
                         <clipView key="contentView" id="zjy-Ve-9jn">
                             <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <view translatesAutoresizingMaskIntoConstraints="NO" id="3767">
                                     <rect key="frame" x="0.0" y="0.0" width="194" height="714"/>
@@ -2106,7 +2074,7 @@
                                             <rect key="frame" x="20" y="244" width="154" height="145"/>
                                             <clipView key="contentView" id="sgn-Z0-9rw">
                                                 <rect key="frame" x="1" y="1" width="152" height="143"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
                                                         <rect key="frame" x="0.0" y="0.0" width="152" height="115"/>
@@ -2199,7 +2167,7 @@
                                             <rect key="frame" x="20" y="71" width="154" height="145"/>
                                             <clipView key="contentView" id="xhk-53-bjR">
                                                 <rect key="frame" x="1" y="1" width="152" height="143"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
                                                         <rect key="frame" x="0.0" y="0.0" width="152" height="115"/>
