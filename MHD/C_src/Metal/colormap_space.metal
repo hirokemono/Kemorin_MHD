@@ -5,6 +5,7 @@
 */
 
 #include <metal_stdlib>
+using namespace metal;
 
 float colormap_space_red(float x) {
     if (x < 37067.0 / 158860.0) {

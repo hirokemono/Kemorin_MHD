@@ -12,7 +12,7 @@ float colormap_orangecyan_blue(float x) {
     }else if(x < 0.5){
         return (1.0 - x * 0.5);
     }else if(x < 1.0){
-        return (red - x) * 1.5;
+        return (1.0 - x) * 1.5;
     }else{
         return 0.0;
     };
@@ -24,7 +24,7 @@ float colormap_orangecyan_green(float x) {
     }else if(x < 0.5){
         return 1.0;
     }else if(x < 1.0){
-        return (red - x) + 0.5;
+        return (1.0 - x) + 0.5;
     }else{
         return 0.5;
     };
