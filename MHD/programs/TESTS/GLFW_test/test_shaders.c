@@ -27,8 +27,7 @@ char * load_phong_cmap_frag(void){
         "\n"\
         "#define MAX_LIGHTS 10\n"\
         "struct LightSourceParameters{\n"\
-        "	vec4 ambient;              // Acmake clean
-        larri\n"\
+        "	vec4 ambient;              // Acmake cleanlarri\n"\
         "	vec4 diffuse;              // Dcli\n"\
         "	vec4 specular;             // Scli\n"\
         "	vec4 position;             // Ppli\n"\
