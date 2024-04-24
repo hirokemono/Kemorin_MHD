@@ -512,12 +512,12 @@
 		18FC007917EF4D7600B5F684 /* read_psf_vtk_data_gz_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = read_psf_vtk_data_gz_c.h; sourceTree = "<group>"; };
 		256AC3D80F4B6AC300CF3369 /* Kemoview_CocoaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kemoview_CocoaAppDelegate.h; sourceTree = "<group>"; };
 		256AC3D90F4B6AC300CF3369 /* Kemoview_CocoaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Kemoview_CocoaAppDelegate.m; sourceTree = "<group>"; };
-		256AC3F00F4B6AF500CF3369 /* CalypsoView_Cocoa_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalypsoView_Cocoa_Prefix.pch; sourceTree = "<group>"; };
+		256AC3F00F4B6AF500CF3369 /* CalypsoView_Metal_test_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalypsoView_Metal_test_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		8D1107310486CEB800E47090 /* CalypsoView_Cocoa-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CalypsoView_Cocoa-Info.plist"; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* CalypsoView_Cocoa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalypsoView_Cocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107310486CEB800E47090 /* CalypsoView_Metal_test-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CalypsoView_Metal_test-Info.plist"; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* CalypsoView_Metal_test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalypsoView_Metal_test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -933,7 +933,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* CalypsoView_Cocoa.app */,
+				8D1107320486CEB800E47090 /* CalypsoView_Metal_test.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -953,7 +953,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				256AC3F00F4B6AF500CF3369 /* CalypsoView_Cocoa_Prefix.pch */,
+				256AC3F00F4B6AF500CF3369 /* CalypsoView_Metal_test_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -965,7 +965,7 @@
 				1831B9842AE9B71D00118B1E /* MainMenu.xib */,
 				18A4D60A24C203B4005A559B /* Images.xcassets */,
 				1804E5C2125F025100EC8EAA /* CalypsoView.icns */,
-				8D1107310486CEB800E47090 /* CalypsoView_Cocoa-Info.plist */,
+				8D1107310486CEB800E47090 /* CalypsoView_Metal_test-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 			);
 			name = Resources;
@@ -988,9 +988,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* CalypsoView_Cocoa */ = {
+		8D1107260486CEB800E47090 /* CalypsoView_Metal_test */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "CalypsoView_Cocoa" */;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "CalypsoView_Metal_test" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -1000,10 +1000,10 @@
 			);
 			dependencies = (
 			);
-			name = CalypsoView_Cocoa;
+			name = CalypsoView_Metal_test;
 			productInstallPath = "$(HOME)/Applications";
 			productName = Kemoview_Cocoa;
-			productReference = 8D1107320486CEB800E47090 /* CalypsoView_Cocoa.app */;
+			productReference = 8D1107320486CEB800E47090 /* CalypsoView_Metal_test.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1020,7 +1020,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CalypsoView_Cocoa" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CalypsoView_Metal_test" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 1;
@@ -1034,7 +1034,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* CalypsoView_Cocoa */,
+				8D1107260486CEB800E47090 /* CalypsoView_Metal_test */,
 			);
 		};
 /* End PBXProject section */
@@ -1262,9 +1262,9 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = CalypsoView_Cocoa_Prefix.pch;
+				GCC_PREFIX_HEADER = CalypsoView_Metal_test_Prefix.pch;
 				GCC_VERSION = "";
-				INFOPLIST_FILE = "CalypsoView_Cocoa-Info.plist";
+				INFOPLIST_FILE = "CalypsoView_Metal_test-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -1272,7 +1272,7 @@
 				MARKETING_VERSION = 0.2;
 				"OTHER_LDFLAGS[arch=*]" = "-L/opt/local/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.ucdavis.CalypsoView-Cocoa";
-				PRODUCT_NAME = CalypsoView_Cocoa;
+				PRODUCT_NAME = CalypsoView_Metal_test;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
@@ -1293,9 +1293,9 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = CalypsoView_Cocoa_Prefix.pch;
+				GCC_PREFIX_HEADER = CalypsoView_Metal_test_Prefix.pch;
 				GCC_VERSION = "";
-				INFOPLIST_FILE = "CalypsoView_Cocoa-Info.plist";
+				INFOPLIST_FILE = "CalypsoView_Metal_test-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -1303,7 +1303,7 @@
 				MARKETING_VERSION = 0.2;
 				OTHER_LDFLAGS = "-L/opt/local/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.ucdavis.CalypsoView-Cocoa";
-				PRODUCT_NAME = CalypsoView_Cocoa;
+				PRODUCT_NAME = CalypsoView_Metal_test;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
@@ -1399,7 +1399,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "CalypsoView_Cocoa" */ = {
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "CalypsoView_Metal_test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
@@ -1408,7 +1408,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CalypsoView_Cocoa" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CalypsoView_Metal_test" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
