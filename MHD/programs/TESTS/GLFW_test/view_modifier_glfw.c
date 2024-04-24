@@ -348,6 +348,11 @@ void test_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
 				 strided_buf->v_buf, GL_STATIC_DRAW);
 	
+    printf("strided_buf->ist_xyz %d \n", strided_buf->ist_xyz);
+    printf("strided_buf->ist_csurf %d \n", strided_buf->ist_csurf);
+    printf("strided_buf->ist_norm %d \n", strided_buf->ist_norm);
+    printf("strided_buf->ist_norm %d \n", strided_buf->ist_data);
+    
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
 						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, strided_buf->istride,
@@ -471,9 +476,7 @@ void kemoview_gl_shader_init(struct kemoview_shaders *kemo_shaders){
     append_text_c(load_phong_cmap_frag(), fragment_shader);
         
 	if (glslInit()) exit(1);
-    
-    printf("%s \n", fragment_shader);
-    
+
 	LoadShaderFromStrings(kemo_shaders->phong, load_phong_cmap_vert(), fragment_shader);
 	
     /*   This glClear send error on Cocoa....  Why?*/
