@@ -13,7 +13,6 @@
 @import simd;
 
 #import "KemoViewShaderTypes.h"
-#import "AAPLImage.h"
 
 #include "m_vertex_buffer.h"
 

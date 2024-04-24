@@ -150,15 +150,7 @@ static const NSUInteger MaxFramesInFlight = 3;
     int iflag = kemoview_get_draw_mode(kemo_sgl);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
     if(iflag == FAST_DRAW){
-        [_kemo3DRenderer[i_current] releaseKemoFastMetalBuffers];
         kemoview_fast_buffers(kemo_sgl);
-        [_kemo3DRenderer[i_current] setKemoFastMetalBuffers:device
-                                                   kemoview:kemo_sgl];
-    }else if(iflag == QUILT_DRAW){
-        [_kemo3DRenderer[i_current] releaseTransparentMetalBuffers];
-        kemoview_transparent_buffers(kemo_sgl);
-        [_kemo3DRenderer[i_current] setKemoTransparentMetalBuffers:device
-                                                          kemoview:kemo_sgl];
     }else{
         [self releaseKemoViewMetalBuffers:_kemo3DRenderer[i_current]
                                  viewflag:iflag_view];
@@ -186,19 +178,10 @@ static const NSUInteger MaxFramesInFlight = 3;
 {
     int iflag_polygon = kemoview_get_object_property_flags(kemo_sgl, POLYGON_SWITCH);
     int iflag_view = kemoview_get_view_type_flag(kemo_sgl);
-    if(kemoview_get_draw_mode(kemo_sgl) == SIMPLE_DRAW){
-        [_kemo3DRenderer[i_current] encodeKemoSimpleObjects:renderEncoder
-                                                      depth:&_depthState
-                                                     unites:monoViewUnites
-                                                      sides:iflag_polygon];
-    }else{
-        int iflag_tube =    kemoview_get_fline_field_param(kemo_sgl, LINETYPE_FLAG);
-        [_kemo3DRenderer[i_current] encodeKemoView3DObjects:renderEncoder
-                                                      depth:&_depthState
-                                                     unites:monoViewUnites
-                                                      sides:iflag_polygon
-                                                  fieldTube:iflag_tube];
-    };
+    [_kemo3DRenderer[i_current] encodeKemoSimpleObjects:renderEncoder
+                                                  depth:&_depthState
+                                                 unites:monoViewUnites
+                                                  sides:iflag_polygon];
 }
 
 -(void) KemoViewEncodeAll:(NSUInteger) i_current

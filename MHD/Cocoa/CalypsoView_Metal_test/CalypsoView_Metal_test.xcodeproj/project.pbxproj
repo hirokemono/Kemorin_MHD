@@ -53,16 +53,10 @@
 		1861CBE92BD9B66800C8E66C /* KemoViewRendererTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBCB2BD9B66400C8E66C /* KemoViewRendererTools.m */; };
 		1861CBEA2BD9B66800C8E66C /* KemoViewMetalBuffers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBCC2BD9B66500C8E66C /* KemoViewMetalBuffers.m */; };
 		1861CBF12BD9B66800C8E66C /* KemoView3DRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBD52BD9B66600C8E66C /* KemoView3DRenderer.m */; };
-		1861CBF32BD9B66800C8E66C /* AAPLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBD72BD9B66600C8E66C /* AAPLImage.m */; };
 		1861CBF42BD9B66800C8E66C /* KemoViewerMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBD92BD9B66600C8E66C /* KemoViewerMetalView.m */; };
 		1861CBF62BD9B66800C8E66C /* KemoViewerMetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBDC2BD9B66700C8E66C /* KemoViewerMetalViewController.m */; };
 		1861CC132BD9BA3B00C8E66C /* PhongShaderWithColorMap.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC0C2BD9BA3B00C8E66C /* PhongShaderWithColorMap.metal */; };
-		1861CC142BD9BA3B00C8E66C /* SmpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC0D2BD9BA3B00C8E66C /* SmpleShader.metal */; };
-		1861CC152BD9BA3B00C8E66C /* TexureShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC0E2BD9BA3B00C8E66C /* TexureShader.metal */; };
-		1861CC162BD9BA3B00C8E66C /* PhongTexureShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC0F2BD9BA3B00C8E66C /* PhongTexureShader.metal */; };
 		1861CC172BD9BA3B00C8E66C /* PhongShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC102BD9BA3B00C8E66C /* PhongShader.metal */; };
-		1861CC182BD9BA3B00C8E66C /* Simple2dShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC112BD9BA3B00C8E66C /* Simple2dShader.metal */; };
-		1861CC192BD9BA3B00C8E66C /* Texture2dShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC122BD9BA3B00C8E66C /* Texture2dShader.metal */; };
 		1861CC232BD9BA5900C8E66C /* colormap_grayscale.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC1A2BD9BA5800C8E66C /* colormap_grayscale.metal */; };
 		1861CC242BD9BA5900C8E66C /* colormap_red_blue.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC1B2BD9BA5800C8E66C /* colormap_red_blue.metal */; };
 		1861CC252BD9BA5900C8E66C /* Base2dShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC1C2BD9BA5800C8E66C /* Base2dShader.metal */; };
@@ -257,7 +251,6 @@
 		185CB97C212F593C00BB3C0B /* t_control_real3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_real3_IO.h; sourceTree = "<group>"; };
 		185CB97D212F593C00BB3C0B /* t_control_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_real_IO.c; sourceTree = "<group>"; };
 		185CB97E212F593C00BB3C0B /* t_control_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_real_IO.h; sourceTree = "<group>"; };
-		1861CBC52BD9B66400C8E66C /* AAPLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AAPLImage.h; path = CalypsoView_Cocoa/Metal/AAPLImage.h; sourceTree = SOURCE_ROOT; };
 		1861CBC62BD9B66400C8E66C /* KemoViewerRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoViewerRenderer.m; path = CalypsoView_Cocoa/Metal/KemoViewerRenderer.m; sourceTree = SOURCE_ROOT; };
 		1861CBC72BD9B66400C8E66C /* KemoViewShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewShaderTypes.h; path = CalypsoView_Cocoa/Metal/KemoViewShaderTypes.h; sourceTree = SOURCE_ROOT; };
 		1861CBC92BD9B66400C8E66C /* KemoViewerMetalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewerMetalView.h; path = CalypsoView_Cocoa/Metal/KemoViewerMetalView.h; sourceTree = SOURCE_ROOT; };
@@ -266,19 +259,13 @@
 		1861CBD02BD9B66500C8E66C /* KemoView3DRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoView3DRenderer.h; path = CalypsoView_Cocoa/Metal/KemoView3DRenderer.h; sourceTree = SOURCE_ROOT; };
 		1861CBD22BD9B66600C8E66C /* KemoViewMetalBuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewMetalBuffers.h; path = CalypsoView_Cocoa/Metal/KemoViewMetalBuffers.h; sourceTree = SOURCE_ROOT; };
 		1861CBD52BD9B66600C8E66C /* KemoView3DRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoView3DRenderer.m; path = CalypsoView_Cocoa/Metal/KemoView3DRenderer.m; sourceTree = SOURCE_ROOT; };
-		1861CBD72BD9B66600C8E66C /* AAPLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AAPLImage.m; path = CalypsoView_Cocoa/Metal/AAPLImage.m; sourceTree = SOURCE_ROOT; };
 		1861CBD82BD9B66600C8E66C /* KemoViewerMetalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewerMetalViewController.h; path = CalypsoView_Cocoa/Metal/KemoViewerMetalViewController.h; sourceTree = SOURCE_ROOT; };
 		1861CBD92BD9B66600C8E66C /* KemoViewerMetalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoViewerMetalView.m; path = CalypsoView_Cocoa/Metal/KemoViewerMetalView.m; sourceTree = SOURCE_ROOT; };
 		1861CBDA2BD9B66700C8E66C /* KemoViewerRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewerRenderer.h; path = CalypsoView_Cocoa/Metal/KemoViewerRenderer.h; sourceTree = SOURCE_ROOT; };
 		1861CBDC2BD9B66700C8E66C /* KemoViewerMetalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KemoViewerMetalViewController.m; path = CalypsoView_Cocoa/Metal/KemoViewerMetalViewController.m; sourceTree = SOURCE_ROOT; };
 		1861CBE22BD9B66700C8E66C /* KemoViewRendererTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewRendererTools.h; path = CalypsoView_Cocoa/Metal/KemoViewRendererTools.h; sourceTree = SOURCE_ROOT; };
 		1861CC0C2BD9BA3B00C8E66C /* PhongShaderWithColorMap.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongShaderWithColorMap.metal; path = Metal/PhongShaderWithColorMap.metal; sourceTree = "<group>"; };
-		1861CC0D2BD9BA3B00C8E66C /* SmpleShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = SmpleShader.metal; path = Metal/SmpleShader.metal; sourceTree = "<group>"; };
-		1861CC0E2BD9BA3B00C8E66C /* TexureShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = TexureShader.metal; path = Metal/TexureShader.metal; sourceTree = "<group>"; };
-		1861CC0F2BD9BA3B00C8E66C /* PhongTexureShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongTexureShader.metal; path = Metal/PhongTexureShader.metal; sourceTree = "<group>"; };
 		1861CC102BD9BA3B00C8E66C /* PhongShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongShader.metal; path = Metal/PhongShader.metal; sourceTree = "<group>"; };
-		1861CC112BD9BA3B00C8E66C /* Simple2dShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Simple2dShader.metal; path = Metal/Simple2dShader.metal; sourceTree = "<group>"; };
-		1861CC122BD9BA3B00C8E66C /* Texture2dShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Texture2dShader.metal; path = Metal/Texture2dShader.metal; sourceTree = "<group>"; };
 		1861CC1A2BD9BA5800C8E66C /* colormap_grayscale.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_grayscale.metal; path = Metal/colormap_grayscale.metal; sourceTree = "<group>"; };
 		1861CC1B2BD9BA5800C8E66C /* colormap_red_blue.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_red_blue.metal; path = Metal/colormap_red_blue.metal; sourceTree = "<group>"; };
 		1861CC1C2BD9BA5800C8E66C /* Base2dShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Base2dShader.metal; path = Metal/Base2dShader.metal; sourceTree = "<group>"; };
@@ -858,8 +845,6 @@
 		18F029692AF5A45C00D37276 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
-				1861CBC52BD9B66400C8E66C /* AAPLImage.h */,
-				1861CBD72BD9B66600C8E66C /* AAPLImage.m */,
 				1861CBD02BD9B66500C8E66C /* KemoView3DRenderer.h */,
 				1861CBD52BD9B66600C8E66C /* KemoView3DRenderer.m */,
 				1861CBC92BD9B66400C8E66C /* KemoViewerMetalView.h */,
@@ -884,11 +869,6 @@
 				1861CC212BD9BA5900C8E66C /* colormap_sym_grayscale.metal */,
 				1861CC102BD9BA3B00C8E66C /* PhongShader.metal */,
 				1861CC0C2BD9BA3B00C8E66C /* PhongShaderWithColorMap.metal */,
-				1861CC0F2BD9BA3B00C8E66C /* PhongTexureShader.metal */,
-				1861CC112BD9BA3B00C8E66C /* Simple2dShader.metal */,
-				1861CC0D2BD9BA3B00C8E66C /* SmpleShader.metal */,
-				1861CC122BD9BA3B00C8E66C /* Texture2dShader.metal */,
-				1861CC0E2BD9BA3B00C8E66C /* TexureShader.metal */,
 			);
 			name = Metal;
 			sourceTree = "<group>";
@@ -1041,7 +1021,6 @@
 				1861CC2B2BD9BA5900C8E66C /* colormap_molten_metal.metal in Sources */,
 				188FFDA22309B3A100F5A0DE /* set_coastline_to_buf.c in Sources */,
 				188BA75D23075E5200348842 /* ysglmaketextbitmap.c in Sources */,
-				1861CC142BD9BA3B00C8E66C /* SmpleShader.metal in Sources */,
 				1861CBF12BD9B66800C8E66C /* KemoView3DRenderer.m in Sources */,
 				1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */,
 				18D3CA67249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c in Sources */,
@@ -1056,7 +1035,6 @@
 				188C9419230CF87500A4DB14 /* kemoviewer_base.c in Sources */,
 				185CB9C9212F593D00BB3C0B /* t_control_real2_IO.c in Sources */,
 				18D7E73A1562D359009B05FF /* numbers_to_bin_c.c in Sources */,
-				1861CC182BD9BA3B00C8E66C /* Simple2dShader.metal in Sources */,
 				18D7E73B1562D359009B05FF /* projection_patch_to_map.c in Sources */,
 				18D7E73C1562D359009B05FF /* quicksort_c.c in Sources */,
 				18F029862AF6F76C00D37276 /* KemoViewerObject.m in Sources */,
@@ -1073,7 +1051,6 @@
 				18D7E7431562D359009B05FF /* read_viewer_mesh_gz_c.c in Sources */,
 				18D7E7441562D359009B05FF /* set_map_data_4_viewer_c.c in Sources */,
 				1888414A22E64C090039BA2B /* psf_patch_buffer.c in Sources */,
-				1861CC192BD9BA3B00C8E66C /* Texture2dShader.metal in Sources */,
 				18D7E7451562D359009B05FF /* set_new_patch_4_map_c.c in Sources */,
 				18D7E7461562D359009B05FF /* set_normal_on_node_4_mesh.c in Sources */,
 				184389FE230C6A7D0074FC31 /* set_cube_to_buf.c in Sources */,
@@ -1100,7 +1077,6 @@
 				1861CC262BD9BA5900C8E66C /* colormap_rainbow.metal in Sources */,
 				18AA13E22494183C004A444D /* read_psf_bin_data_gz_c.c in Sources */,
 				18D7E74E1562D359009B05FF /* transfer_matvec.c in Sources */,
-				1861CBF32BD9B66800C8E66C /* AAPLImage.m in Sources */,
 				1862C4102311BC6B000306E6 /* set_rgba_table_c.c in Sources */,
 				188FFD902308C5F100F5A0DE /* set_mesh_grid_2_gl_buf.c in Sources */,
 				1838708B2BCF4A7E00933367 /* colormap_rainbow_c.c in Sources */,
@@ -1131,10 +1107,8 @@
 				182174D72492F5640044ECA0 /* calypso_zlib_io_c.c in Sources */,
 				18D7E76F1562D359009B05FF /* psf_data_array_manager.c in Sources */,
 				183870892BCF4A7E00933367 /* colormap_space_c.c in Sources */,
-				1861CC152BD9BA3B00C8E66C /* TexureShader.metal in Sources */,
 				18D7E7701562D359009B05FF /* rainbow_color_code_c.c in Sources */,
 				18D7E7711562D359009B05FF /* read_data_4_kemoviewer.c in Sources */,
-				1861CC162BD9BA3B00C8E66C /* PhongTexureShader.metal in Sources */,
 				18D7E7731562D359009B05FF /* rotate_animation.c in Sources */,
 				18D7E7741562D359009B05FF /* set_color_code_on_nodes.c in Sources */,
 				185CB9B2212F593D00BB3C0B /* t_control_chara_IO.c in Sources */,

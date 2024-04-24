@@ -8,7 +8,6 @@ Header for a platform independent renderer class, which performs Metal setup and
 @import MetalKit;
 
 #import "KemoViewShaderTypes.h"
-#import "AAPLImage.h"
 #import "KemoViewerObject.h"
 #import "KemoViewRendererTools.h"
 #import "KemoView3DRenderer.h"
