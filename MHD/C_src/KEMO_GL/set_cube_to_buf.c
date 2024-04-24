@@ -52,6 +52,7 @@ void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
 		strided_buf->n_draw = &strided_buf->v_buf[strided_buf->ist_norm +  strided_buf->ncomp_buf*i];
 		strided_buf->x_txur = &strided_buf->v_buf[strided_buf->ist_tex +   strided_buf->ncomp_buf*i];
 		strided_buf->c_draw = &strided_buf->v_buf[strided_buf->ist_csurf + strided_buf->ncomp_buf*i];
+        strided_buf->d_draw = &strided_buf->v_buf[strided_buf->ist_data +  strided_buf->ncomp_buf*i];
 		
 		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
 					+ cube_vertices[i][1]*cube_vertices[i][1]
@@ -71,6 +72,8 @@ void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
 		strided_buf->c_draw[1] = cube_vertex_colors[i][1];
 		strided_buf->c_draw[2] = cube_vertex_colors[i][2];
 		strided_buf->c_draw[3] = 1.0;
+        
+        strided_buf->d_draw[0] = (float) i;
 	};
 	
     for(i=0;i<index_buf->num_ele_buf;i++){

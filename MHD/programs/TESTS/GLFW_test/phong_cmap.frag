@@ -66,7 +66,7 @@ void main (void)
     float product;
     float fspecular;
     
-    vec4 new_color = darkcolor(ex_Color);
+    vec4 new_color = darkcolor(ex_data);
     
     vec3 view =   normalize(position.xyz);
     vec4 tmpsp =  vec4(frontMaterial.specular.xyz, new_color.w);

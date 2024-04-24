@@ -12,9 +12,9 @@ char * load_colormap_frag(void){
         "// colormap.frag\n"\
         "//\n"\
         "\n"\
-        "vec4 darkcolor(vec4 x)\n"\
+        "vec4 darkcolor(float x)\n"\
         "{\n"\
-        "    return x * 0.2;\n"\
+        "    return vec4(x * 0.1, x*0.05,x*0.01,1.0);\n"\
         "}\n"\
         "\n"\
         "\n"
@@ -98,7 +98,7 @@ char * load_phong_cmap_frag(void){
         "    float product;\n"\
         "    float fspecular;\n"\
         "\n"\
-        "    vec4 new_color = darkcolor(ex_Color);\n"\
+        "    vec4 new_color = darkcolor(ex_data);\n"\
         "\n"\
         "    vec3 view =   normalize(position.xyz);\n"\
         "    vec4 tmpsp =  vec4(frontMaterial.specular.xyz, new_color.w);\n"\

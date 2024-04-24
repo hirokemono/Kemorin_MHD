@@ -119,7 +119,10 @@ int draw_mesh_kemo(void) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-    kemoview_init_cube_buf(single_kemoview);
+
+    CubeNode_to_buf(0.3f, single_kemoview->kemo_buffers->cube_buf, 
+                    single_kemoview->kemo_buffers->cube_index_buf);
+
     kemo_sgl_gl = kemoview_allocate_gl_pointers();
 	
 	/*! glfw Initialization*/
