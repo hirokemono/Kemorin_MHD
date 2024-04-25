@@ -17,20 +17,13 @@ typedef enum AAPLVertexInputIndex
     AAPLVertexInputIndexVertices =     0,
     AAPLVertexInputIndexViewportSize = 1,
     AAPLVertexInputIndexScale =        2,
-
     
     AAPLModelViewMatrix =   1,
     AAPLProjectionMatrix =  2,
     AAPLModelNormalMatrix = 3,
     
-    LeftModelViewMatrix =   4,
-    LeftProjectionMatrix =  5,
-    LeftModelNormalMatrix = 6,
-    
-    RightModelViewMatrix =   7,
-    RightProjectionMatrix =  8,
-    RightModelNormalMatrix = 9,
-    
+    AAPLColormapSet =       4,
+
     AAPLOrthogonalMatrix = 1,
 } AAPLVertexInputIndex;
 
@@ -83,8 +76,20 @@ typedef struct
     vector_float2 textureCoordinate;
 
 /* data value in pixel space. */
-    float  data;
+    vector_float2  data;
 } KemoViewVertex;
+
+typedef struct{
+    float data_reference[16];             // Data
+    float data_normalized[16];             // normalize
+    int num_normalize;
+
+    float alpha_reference[16];             // Data
+    float alpha_output[16];             // normalize
+    int num_opacity;
+
+    int id_cmap;
+} KemoViewNormalize
 
 typedef struct{
 //    vector_float4 ambient[12];              // Aclarri

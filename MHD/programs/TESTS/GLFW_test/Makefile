@@ -55,8 +55,7 @@ SRC_SHADERS = $(shell ls *.vert *.frag)
 MOD_KEMOVIEW_GTK = \
 kemo_mesh_viewer_glfw.o \
 kemoviewer_glfw_test.o \
-view_modifier_glfw.o \
-$(SHADER_PREFIX).o
+view_modifier_glfw.o
 
 GLFW_INC= `pkg-config --cflags glfw3`
 GLFW_LIBS=`pkg-config --cflags --libs glfw3`

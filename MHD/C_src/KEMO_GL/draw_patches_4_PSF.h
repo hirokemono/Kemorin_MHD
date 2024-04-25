@@ -22,15 +22,6 @@
 
 int check_draw_psf(struct kemo_array_control *psf_a);
 
-void const_PSF_patch_buffer(int shading_mode, long ist_psf, long ied_psf,
-                            struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                            struct kemo_array_control *psf_a,
-                            struct gl_strided_buffer *psf_buf);
-void const_PSF_texture_buffer(int shading_mode, long ist_psf, long ied_psf,
-                              struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                              struct kemo_array_control *psf_a,
-                              struct gl_strided_buffer *psf_buf);
-
 void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_solid_buf,

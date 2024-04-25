@@ -513,17 +513,12 @@ void draw_fast(struct kemoviewer_type *kemo_sgl){
 };
 
 void kemoview_gl_shader_init(struct kemoview_shaders *kemo_shaders){
-    long len_fragment = strlen(load_phong_cmap_frag());
-    long len_colormap = strlen(load_colormap_frag());
+    if (glslInit()) exit(1);
 
-    char *fragment_shader = alloc_string(len_fragment+len_colormap);
-    append_text_c(load_colormap_frag(), fragment_shader);
-    append_text_c(load_phong_cmap_frag(), fragment_shader);
-        
-	if (glslInit()) exit(1);
+    char *vertex_shader = phong_colormap_vertex_shader();
+	LoadShaderFromStrings(kemo_shaders->phong_w_cmap, vertex_shader, load_phong_w_colormap_frag());
+    LoadShaderFromStrings(kemo_shaders->phong, vertex_shader, load_phong_w_colormap_frag());
 
-	LoadShaderFromStrings(kemo_shaders->phong, load_phong_cmap_vert(), fragment_shader);
-	
     /*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
 	

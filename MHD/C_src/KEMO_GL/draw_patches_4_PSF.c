@@ -5,10 +5,10 @@
 
 #define ARCPI 0.318309886
 
-void const_PSF_patch_buffer(int shading_mode, long ist_psf, long ied_psf,
-                            struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                            struct kemo_array_control *psf_a,
-                            struct gl_strided_buffer *psf_buf){
+static void const_PSF_patch_buffer(int shading_mode, long ist_psf, long ied_psf,
+                                   struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                                   struct kemo_array_control *psf_a,
+                                   struct gl_strided_buffer *psf_buf){
 	long num_vetex = ITHREE * count_psf_nodes_to_buf(ist_psf, ied_psf);
     set_buffer_address_4_patch(num_vetex, psf_buf);
 	if(psf_buf->num_nod_buf <= 0) return;
@@ -20,10 +20,10 @@ void const_PSF_patch_buffer(int shading_mode, long ist_psf, long ied_psf,
 	return;
 }
 
-void const_PSF_texture_buffer(int shading_mode, long ist_psf, long ied_psf,
-                              struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                              struct kemo_array_control *psf_a,
-                              struct gl_strided_buffer *psf_buf){
+static void const_PSF_texture_buffer(int shading_mode, long ist_psf, long ied_psf,
+                                     struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                                     struct kemo_array_control *psf_a,
+                                     struct gl_strided_buffer *psf_buf){
     const_PSF_patch_buffer(shading_mode, ist_psf, ied_psf, psf_s, psf_m, psf_a, psf_buf);
     if(psf_buf->num_nod_buf > 0) set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
     return;

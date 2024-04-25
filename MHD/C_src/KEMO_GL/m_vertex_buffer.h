@@ -13,8 +13,6 @@
 
 #include "skip_comment_c.h"
 
-#define NPATCH_GL_BUFFER  4096
-
 struct gl_strided_buffer{
     long nsize_buf;
     int istride;
@@ -70,7 +68,7 @@ void resize_strided_buffer(struct gl_strided_buffer *strided_buf);
 void dealloc_strided_buffer(struct gl_strided_buffer *strided_buf);
 
 void set_buffer_address_4_patch(long num_points, struct gl_strided_buffer *strided_buf);
-void set_buffer_address_4_map(struct gl_strided_buffer *strided_buf);
+void set_buffer_address_4_colormap(long num_points, struct gl_strided_buffer *strided_buf);
 
 void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);
 void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf);

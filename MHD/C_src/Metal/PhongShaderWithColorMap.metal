@@ -31,53 +31,7 @@ struct RasterizerData
     float4 pixelSpacePosition;
 };
 
-
-float3 color_rainbow_m(float rnorm){
-    float purple = 0.0;
-    float blue =   0.1;
-    float ocean =  0.325;
-    float green =  0.55;
-    float yellow = 0.775;
-    float red =    1.0;
-            
-    float r = 0.0;
-    float g = 0.0;
-    float b = 0.0;
-    if (rnorm < purple){
-        r = 0.5;
-    } else if (rnorm >= purple && rnorm < blue){
-        r = 0.5 - 5.0 * rnorm;
-    } else if (rnorm >= blue && rnorm < green){
-        r = 0.0;
-    } else if (rnorm >= green && rnorm < yellow){
-        r = (rnorm-green) * 40.0 / 9.0;
-    } else {
-        r = 1.0;
-    }
-    
-    if (rnorm < blue){
-        g = 0.0;
-    } else if (rnorm >= blue && rnorm < ocean){
-        g = (rnorm-blue) * 40.0 / 9.0;
-    } else if (rnorm >= ocean && rnorm < yellow){
-        g = 1.0;
-    } else if (rnorm >= yellow && rnorm < red){
-        g = 1.0 - (rnorm-yellow) * 40.0 / 9.0;
-    } else {
-        g = 0.0;
-    }
-    
-    if (rnorm < blue){
-        b = 1.0;
-    } else if (rnorm >= blue && rnorm < ocean){
-        b = 1.0;
-    } else if (rnorm >= ocean && rnorm < green){
-        b = 1.0 - (rnorm-ocean) * 40.0 / 9.0;
-    } else {
-        b = 0.0;
-    }
-    return float3(r, g, b);
-}
+float4 color_from_scalar(constant KemoViewNormalize *normalizePointer, float x);
 
 
 // Vertex Function
@@ -86,7 +40,8 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
                   constant KemoViewVertex *vertexArray [[ buffer(AAPLVertexInputIndexVertices) ]],
                   constant matrix_float4x4 *ModelViewMatrixPointer [[buffer(AAPLModelViewMatrix)]],
                   constant matrix_float4x4 *ProjectionMatrixPointer [[buffer(AAPLProjectionMatrix)]],
-                  constant matrix_float4x4 *ModelNormalMatrixPointer [[buffer(AAPLModelNormalMatrix)]]
+                  constant matrix_float4x4 *ModelNormalMatrixPointer [[buffer(AAPLModelNormalMatrix)]],
+                  constant KemoViewNormalize *colorMapPointer [[buffer(AAPLColormapSet)]]
                   )
 {
     RasterizerData out;
@@ -95,7 +50,7 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
     float4 objectSpacePosition = vertexArray[vertexID].position;
     float4 objectSpaceNormal =   vertexArray[vertexID].normal;
     float4 pixelSpaceColor =     vertexArray[vertexID].color;
-    float  pixelSpaceData =      vertexArray[vertexID].data;
+    float  pixelSpaceData =      vertexArray[vertexID].data.x;
 
     matrix_float4x4 modelViewMatrix = matrix_float4x4(*ModelViewMatrixPointer);
     matrix_float4x4 projectionMatrix = matrix_float4x4(*ProjectionMatrixPointer);
@@ -111,8 +66,9 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
     out.pixelSpaceNormal.w = 0.0;
     out.pixelSpaceNormal =   modelNormalMatrix * out.pixelSpaceNormal;
     
-    out.pixelSpaceColor =   pixelSpaceColor;
     out.pixelSpaceData =    pixelSpaceData;
+
+    out.pixelSpaceColor = color_from_scalar(colorMapPointer, pixelSpaceData);
     return out;
 }
 
@@ -131,8 +87,8 @@ PhongColorMapFragmentShader(RasterizerData in [[stage_in]],
     float4 materialSpecular =  FrontMaterialParams.specular;
     float  shininess =         FrontMaterialParams.shininess;
 
-//    float4 pixelSpaceColor = in.pixelSpaceColor;
-    float4 pixelSpaceColor = float4(in.pixelSpaceData*0.1, in.pixelSpaceData*0.05, in.pixelSpaceData*0.01, 1.0);
+    float4 pixelSpaceColor = in.pixelSpaceColor;
+//    float4 pixelSpaceColor = float4(in.pixelSpaceData*0.125, in.pixelSpaceData*0.07, in.pixelSpaceData*0.03, 1.0);
     
     float3 view =    normalize(in.pixelSpacePosition.xyz);
     float3 fnormal = normalize(in.pixelSpaceNormal.xyz);

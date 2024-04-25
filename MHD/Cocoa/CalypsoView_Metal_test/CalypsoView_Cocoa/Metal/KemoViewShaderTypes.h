@@ -18,20 +18,13 @@ typedef enum AAPLVertexInputIndex
     AAPLVertexInputIndexViewportSize = 1,
     AAPLVertexInputIndexScale =        2,
 
-    
     AAPLModelViewMatrix =   1,
     AAPLProjectionMatrix =  2,
     AAPLModelNormalMatrix = 3,
     
-    LeftModelViewMatrix =   4,
-    LeftProjectionMatrix =  5,
-    LeftModelNormalMatrix = 6,
+    AAPLColormapSet =       4,
     
-    RightModelViewMatrix =   7,
-    RightProjectionMatrix =  8,
-    RightModelNormalMatrix = 9,
-    
-    AAPLOrthogonalMatrix = 1,
+    AAPLOrthogonalMatrix =  1,
 } AAPLVertexInputIndex;
 
 typedef enum AAPLLightInputIndex

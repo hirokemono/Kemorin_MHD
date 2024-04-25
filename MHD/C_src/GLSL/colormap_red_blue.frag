@@ -1,6 +1,6 @@
 /*
 //  colormap_red_blue.frag
-//    vec4 colormap_red_blue(float x);
+//    vec4 colormap_red_blue(float x, float alpha);
 */
 
 float colormap_redblue_blue(float x) {
@@ -9,17 +9,19 @@ float colormap_redblue_blue(float x) {
 	float white =  ONE / TWO;
 	float red =      0.9;
 	
+    float c;
 	if (x < abyss){
-		return = 0.8;
+        c = 0.8;
 	} else if (x >= abyss && x < blue){
-		return = 0.8 + 2.0 * x;
+        c = 0.8 + 2.0 * x;
 	} else if (x >= blue && x < white){
-		return = ONE - (x - blue) * 0.25;
+        c = ONE - (x - blue) * 0.25;
 	} else if (x >= white && x < red){
-		return = (red - x) * 2.0;
+        c = (red - x) * 2.0;
 	} else {
-		return = ZERO;
+        c = ZERO;
 	}
+    return c;
 }
 
 float colormap_redblue_green(float x) {
@@ -28,17 +30,19 @@ float colormap_redblue_green(float x) {
 	float white =  ONE / TWO;
 	float red =      0.9;
 	
+    float c;
 	if (x < abyss){
-		return = 0.2;
+        c = 0.2;
 	} else if (x >= abyss && x < blue){
-		return = 2.0 * (blue - x);
+        c = 2.0 * (blue - x);
 	} else if (x >= blue && x < white){
-		return = (x - blue) * 2.0;
+        c = (x - blue) * 2.0;
 	} else if (x >= white && x < red){
-		return = (red - x) * 2.0;
+        c = (red - x) * 2.0;
 	} else {
-		return = ZERO;
+        c = ZERO;
 	}
+    return c;
 }
 
 float colormap_redblue_red(float x) {
@@ -47,19 +51,21 @@ float colormap_redblue_red(float x) {
 	float red =      0.9;
 	float blood =    ONE;
 	
+    float c;
 	if (x < blue){
-		return = ZERO;
+        c = ZERO;
 	} else if (x >= blue && x < white){
-		return = (x - blue) * 2.0;
+        c = (x - blue) * 2.0;
 	} else if (x >= white && x < red){
-		return = ONE - (red - x) * 0.25;
+        c = ONE - (red - x) * 0.25;
 	} else if (x >= red && x < blood){
-		return = ONE - (x - red) * 2.0;
+        c = ONE - (x - red) * 2.0;
 	} else {
-		return = 0.8;
+        c = 0.8;
 	}
+    return c;
 }
 
-vec4 colormap_red_blue(float x) {
-    return vec4(colormap_redblue_red(x), colormap_redblue_green(x), colormap_redblue_blue(x), 1.0);
+vec4 colormap_red_blue(float x, float alpha) {
+    return vec4(colormap_redblue_red(x), colormap_redblue_green(x), colormap_redblue_blue(x), alpha);
 }

@@ -17,6 +17,48 @@ int glslInit(void)
 	return error;
 }
 
+
+char *phong_colormap_vertex_shader(void){
+    long len_colormap_rainbow =       strlen(load_colormap_rainbow_frag());
+    long len_colormap_grayscale =     strlen(load_colormap_grayscale_frag());
+    long len_colormap_sym_grayscale = strlen(load_colormap_sym_grayscale_frag());
+    long len_colormap_space =         strlen(load_colormap_space_frag());
+    long len_colormap_red_blue =      strlen(load_colormap_red_blue_frag());
+    long len_colormap_orange_cyan =   strlen(load_colormap_orange_cyan_frag());
+    long len_colormap_molten_metal =  strlen(load_colormap_molten_metal_frag());
+
+    long len_color_normalize = strlen(load_color_normalize_frag());
+    long len_colormap_select = strlen(load_colormap_select_frag());
+
+    long len_phong_w_colormap = strlen(load_phong_w_colormap_vert());
+
+    long len_vertex_shader = len_phong_w_colormap
+                            + len_colormap_select
+                            + len_color_normalize
+                            + len_colormap_molten_metal
+                            + len_colormap_orange_cyan
+                            + len_colormap_red_blue
+                            + len_colormap_space
+                            + len_colormap_sym_grayscale
+                            + len_colormap_grayscale
+                            + len_colormap_rainbow;
+    
+    char *vertex_shader = alloc_string(len_vertex_shader);
+    append_text_c(load_colormap_rainbow_frag(), vertex_shader);
+    append_text_c(load_colormap_grayscale_frag(), vertex_shader);
+    append_text_c(load_colormap_sym_grayscale_frag(), vertex_shader);
+    append_text_c(load_colormap_space_frag(), vertex_shader);
+    append_text_c(load_colormap_red_blue_frag(), vertex_shader);
+    append_text_c(load_colormap_orange_cyan_frag(), vertex_shader);
+    append_text_c(load_colormap_molten_metal_frag(), vertex_shader);
+    
+    append_text_c(load_color_normalize_frag(), vertex_shader);
+    append_text_c(load_colormap_select_frag(), vertex_shader);
+    
+    append_text_c(load_phong_w_colormap_vert(), vertex_shader);
+    return vertex_shader;
+}
+
 /*
 ** Read shader program from source
 */
