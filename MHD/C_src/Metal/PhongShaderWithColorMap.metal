@@ -25,7 +25,7 @@ struct RasterizerData
     // and then passes the interpolated value to the fragment shader for each
     // fragment in the triangle.
     float4 pixelSpaceColor;
-    float2 pixelSpaceData;
+    float  pixelSpaceData;
 
     float4 pixelSpaceNormal;
     float4 pixelSpacePosition;
@@ -95,7 +95,7 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
     float4 objectSpacePosition = vertexArray[vertexID].position;
     float4 objectSpaceNormal =   vertexArray[vertexID].normal;
     float4 pixelSpaceColor =     vertexArray[vertexID].color;
-    float2 pixelSpaceData =      vertexArray[vertexID].data;
+    float  pixelSpaceData =      vertexArray[vertexID].data;
 
     matrix_float4x4 modelViewMatrix = matrix_float4x4(*ModelViewMatrixPointer);
     matrix_float4x4 projectionMatrix = matrix_float4x4(*ProjectionMatrixPointer);
@@ -131,7 +131,8 @@ PhongColorMapFragmentShader(RasterizerData in [[stage_in]],
     float4 materialSpecular =  FrontMaterialParams.specular;
     float  shininess =         FrontMaterialParams.shininess;
 
-    float4 pixelSpaceColor = float4(color_rainbow_m(in.pixelSpaceData.x).xyz, in.pixelSpaceData.y);
+//    float4 pixelSpaceColor = in.pixelSpaceColor;
+    float4 pixelSpaceColor = float4(in.pixelSpaceData*0.1, in.pixelSpaceData*0.05, in.pixelSpaceData*0.01, 1.0);
     
     float3 view =    normalize(in.pixelSpacePosition.xyz);
     float3 fnormal = normalize(in.pixelSpaceNormal.xyz);

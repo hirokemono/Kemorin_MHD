@@ -83,7 +83,7 @@ typedef struct
     vector_float2 textureCoordinate;
 
 /* data value in pixel space. */
-    vector_float2  data;
+    float  data;
 } KemoViewVertex;
 
 typedef struct{
