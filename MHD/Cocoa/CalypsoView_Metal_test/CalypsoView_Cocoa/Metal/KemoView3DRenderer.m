@@ -167,7 +167,7 @@ KemoViewNormalize CubeColor;
                                 length:sizeof(matrix_float4x4)
                                atIndex:AAPLModelNormalMatrix];
         
-        CubeColor.id_cmap[0] = RAINBOW_MODE;
+        CubeColor.id_cmap[0] = RED_BLUE_MODE;
         
         CubeColor.num_normalize[0] = 3;
         CubeColor.data_reference[0] =  0.0;
