@@ -22,7 +22,7 @@ float colormap_orangecyan_blue(float x) {
     return c;
 }
 
-float colormap_orangecyan_green(float x, float alpha) {
+float colormap_orangecyan_green(float x) {
     float red = 1.0;
 
     float c = 0.0;

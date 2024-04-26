@@ -58,13 +58,6 @@
 		185CB9CA212F593D00BB3C0B /* t_control_real3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB97B212F593C00BB3C0B /* t_control_real3_IO.c */; };
 		185CB9CB212F593D00BB3C0B /* t_control_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB97D212F593C00BB3C0B /* t_control_real_IO.c */; };
 		1860DE302B067A6500358654 /* SmpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1860DE2F2B067A6500358654 /* SmpleShader.metal */; };
-		1861CC052BD9B6B900C8E66C /* colormap_rainbow.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBFE2BD9B6B800C8E66C /* colormap_rainbow.metal */; };
-		1861CC062BD9B6B900C8E66C /* colormap_grayscale.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CBFF2BD9B6B800C8E66C /* colormap_grayscale.metal */; };
-		1861CC072BD9B6B900C8E66C /* colormap_molten_metal.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC002BD9B6B800C8E66C /* colormap_molten_metal.metal */; };
-		1861CC082BD9B6B900C8E66C /* colormap_space.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC012BD9B6B800C8E66C /* colormap_space.metal */; };
-		1861CC092BD9B6B900C8E66C /* colormap_red_blue.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC022BD9B6B800C8E66C /* colormap_red_blue.metal */; };
-		1861CC0A2BD9B6B900C8E66C /* colormap_orange_cyan.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC032BD9B6B900C8E66C /* colormap_orange_cyan.metal */; };
-		1861CC0B2BD9B6B900C8E66C /* colormap_sym_grayscale.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1861CC042BD9B6B900C8E66C /* colormap_sym_grayscale.metal */; };
 		1862C4102311BC6B000306E6 /* set_rgba_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */; };
 		1885C3632B06B81600A6AED5 /* PhongTexureShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1885C3622B06B81600A6AED5 /* PhongTexureShader.metal */; };
 		1888414A22E64C090039BA2B /* psf_patch_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 1888414822E64C090039BA2B /* psf_patch_buffer.c */; };
@@ -170,7 +163,6 @@
 		18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */; };
 		18D95C482B0BB745001A801B /* TexureShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18D95C472B0BB745001A801B /* TexureShader.metal */; };
 		18E2A550230879E20048A57A /* set_mesh_patch_2_gl_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18E2A54E230879E10048A57A /* set_mesh_patch_2_gl_buf.c */; };
-		18E7614B2B2610A500A16E5F /* PhongShaderWithColorMap.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18E7614A2B2610A500A16E5F /* PhongShaderWithColorMap.metal */; };
 		18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EE497522E231B0000B1F03 /* m_read_text_to_character.c */; };
 		18F029742AF5A49500D37276 /* KemoViewerMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0296E2AF5A49500D37276 /* KemoViewerMetalView.m */; };
 		18F029752AF5A49500D37276 /* KemoViewerMetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0296F2AF5A49500D37276 /* KemoViewerMetalViewController.m */; };
@@ -284,13 +276,6 @@
 		185CB97D212F593C00BB3C0B /* t_control_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_real_IO.c; sourceTree = "<group>"; };
 		185CB97E212F593C00BB3C0B /* t_control_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_real_IO.h; sourceTree = "<group>"; };
 		1860DE2F2B067A6500358654 /* SmpleShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = SmpleShader.metal; path = Metal/SmpleShader.metal; sourceTree = "<group>"; };
-		1861CBFE2BD9B6B800C8E66C /* colormap_rainbow.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_rainbow.metal; path = Metal/colormap_rainbow.metal; sourceTree = "<group>"; };
-		1861CBFF2BD9B6B800C8E66C /* colormap_grayscale.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_grayscale.metal; path = Metal/colormap_grayscale.metal; sourceTree = "<group>"; };
-		1861CC002BD9B6B800C8E66C /* colormap_molten_metal.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_molten_metal.metal; path = Metal/colormap_molten_metal.metal; sourceTree = "<group>"; };
-		1861CC012BD9B6B800C8E66C /* colormap_space.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_space.metal; path = Metal/colormap_space.metal; sourceTree = "<group>"; };
-		1861CC022BD9B6B800C8E66C /* colormap_red_blue.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_red_blue.metal; path = Metal/colormap_red_blue.metal; sourceTree = "<group>"; };
-		1861CC032BD9B6B900C8E66C /* colormap_orange_cyan.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_orange_cyan.metal; path = Metal/colormap_orange_cyan.metal; sourceTree = "<group>"; };
-		1861CC042BD9B6B900C8E66C /* colormap_sym_grayscale.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_sym_grayscale.metal; path = Metal/colormap_sym_grayscale.metal; sourceTree = "<group>"; };
 		1862C40E2311BC69000306E6 /* set_rgba_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_rgba_table_c.h; sourceTree = "<group>"; };
 		1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_rgba_table_c.c; sourceTree = "<group>"; };
 		1885C3622B06B81600A6AED5 /* PhongTexureShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongTexureShader.metal; path = Metal/PhongTexureShader.metal; sourceTree = "<group>"; };
@@ -502,7 +487,6 @@
 		18D95C472B0BB745001A801B /* TexureShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = TexureShader.metal; path = Metal/TexureShader.metal; sourceTree = "<group>"; };
 		18E2A54E230879E10048A57A /* set_mesh_patch_2_gl_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_mesh_patch_2_gl_buf.c; sourceTree = "<group>"; };
 		18E2A54F230879E10048A57A /* set_mesh_patch_2_gl_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_mesh_patch_2_gl_buf.h; sourceTree = "<group>"; };
-		18E7614A2B2610A500A16E5F /* PhongShaderWithColorMap.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongShaderWithColorMap.metal; path = Metal/PhongShaderWithColorMap.metal; sourceTree = "<group>"; };
 		18EE497522E231B0000B1F03 /* m_read_text_to_character.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = m_read_text_to_character.c; sourceTree = "<group>"; };
 		18EE497622E231B0000B1F03 /* m_read_text_to_character.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_read_text_to_character.h; sourceTree = "<group>"; };
 		18F0296B2AF5A49500D37276 /* KemoViewerMetalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KemoViewerMetalViewController.h; path = Metal/KemoViewerMetalViewController.h; sourceTree = "<group>"; };
@@ -931,16 +915,8 @@
 				18F0296E2AF5A49500D37276 /* KemoViewerMetalView.m */,
 				18F0296B2AF5A49500D37276 /* KemoViewerMetalViewController.h */,
 				18F0296F2AF5A49500D37276 /* KemoViewerMetalViewController.m */,
-				1861CBFF2BD9B6B800C8E66C /* colormap_grayscale.metal */,
-				1861CC002BD9B6B800C8E66C /* colormap_molten_metal.metal */,
-				1861CC032BD9B6B900C8E66C /* colormap_orange_cyan.metal */,
-				1861CBFE2BD9B6B800C8E66C /* colormap_rainbow.metal */,
-				1861CC022BD9B6B800C8E66C /* colormap_red_blue.metal */,
-				1861CC012BD9B6B800C8E66C /* colormap_space.metal */,
-				1861CC042BD9B6B900C8E66C /* colormap_sym_grayscale.metal */,
 				18263FEA2AFA9DC300AA8E72 /* Base2dShader.metal */,
 				18263FEC2AFCB2E900AA8E72 /* PhongShader.metal */,
-				18E7614A2B2610A500A16E5F /* PhongShaderWithColorMap.metal */,
 				1885C3622B06B81600A6AED5 /* PhongTexureShader.metal */,
 				1860DE2F2B067A6500358654 /* SmpleShader.metal */,
 				18D95C472B0BB745001A801B /* TexureShader.metal */,
@@ -1101,7 +1077,6 @@
 				188BA75D23075E5200348842 /* ysglmaketextbitmap.c in Sources */,
 				1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */,
 				18D3CA67249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c in Sources */,
-				1861CC072BD9B6B900C8E66C /* colormap_molten_metal.metal in Sources */,
 				18AA13E32494183C004A444D /* read_psf_bin_data_c.c in Sources */,
 				18D7E7351562D359009B05FF /* m_grouping_mesh_4_viewer_c.c in Sources */,
 				1838708F2BCF4A7E00933367 /* colormap_red_blue_c.c in Sources */,
@@ -1155,7 +1130,6 @@
 				18D7E74D1562D359009B05FF /* take_normal_surf_mesh_c.c in Sources */,
 				18AA13E22494183C004A444D /* read_psf_bin_data_gz_c.c in Sources */,
 				18D7E74E1562D359009B05FF /* transfer_matvec.c in Sources */,
-				18E7614B2B2610A500A16E5F /* PhongShaderWithColorMap.metal in Sources */,
 				1862C4102311BC6B000306E6 /* set_rgba_table_c.c in Sources */,
 				188FFD902308C5F100F5A0DE /* set_mesh_grid_2_gl_buf.c in Sources */,
 				1838708B2BCF4A7E00933367 /* colormap_rainbow_c.c in Sources */,
@@ -1192,7 +1166,6 @@
 				185CB9B2212F593D00BB3C0B /* t_control_chara_IO.c in Sources */,
 				18D3CA64249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c in Sources */,
 				185CB9C8212F593D00BB3C0B /* t_control_int_real_IO.c in Sources */,
-				1861CC092BD9B6B900C8E66C /* colormap_red_blue.metal in Sources */,
 				18D7E7751562D359009B05FF /* set_kemoviewer_ucd_data.c in Sources */,
 				18D7E7761562D359009B05FF /* set_texture_4_psf.c in Sources */,
 				18D7E7771562D359009B05FF /* sort_by_patch_distance.c in Sources */,
@@ -1204,7 +1177,6 @@
 				188FFDA52309BE6F00F5A0DE /* set_menu_bottun_to_buf.c in Sources */,
 				18263FED2AFCB2E900AA8E72 /* PhongShader.metal in Sources */,
 				18D7E77A1562D359009B05FF /* write_modelview_matrix.c in Sources */,
-				1861CC0A2BD9B6B900C8E66C /* colormap_orange_cyan.metal in Sources */,
 				18D7E7831562D359009B05FF /* ColorMapController.m in Sources */,
 				18D7E7841562D359009B05FF /* DomainTableController.m in Sources */,
 				18D7E7851562D359009B05FF /* ElementGroupTableController.m in Sources */,
@@ -1217,10 +1189,7 @@
 				1837EAB22B6DCC1100A52D15 /* KemoViewerRenderer.m in Sources */,
 				1860DE302B067A6500358654 /* SmpleShader.metal in Sources */,
 				18263FEB2AFA9DC300AA8E72 /* Base2dShader.metal in Sources */,
-				1861CC062BD9B6B900C8E66C /* colormap_grayscale.metal in Sources */,
 				18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */,
-				1861CC082BD9B6B900C8E66C /* colormap_space.metal in Sources */,
-				1861CC0B2BD9B6B900C8E66C /* colormap_sym_grayscale.metal in Sources */,
 				18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */,
 				18D7E78B1562D359009B05FF /* KemoviewerController.m in Sources */,
 				18D7E78C1562D359009B05FF /* KemoviewerMovieMaker.m in Sources */,
@@ -1241,7 +1210,6 @@
 				1825197616A11A24006D5158 /* delete_file_c.c in Sources */,
 				1825198116A28AF9006D5158 /* read_psf_vtk_data_c.c in Sources */,
 				188FFD8D2308B39500F5A0DE /* set_mesh_node_2_gl_buf.c in Sources */,
-				1861CC052BD9B6B900C8E66C /* colormap_rainbow.metal in Sources */,
 				18E2A550230879E20048A57A /* set_mesh_patch_2_gl_buf.c in Sources */,
 				188C9416230CAB2500A4DB14 /* m_kemoview_psf.c in Sources */,
 				185CB9AD212F593D00BB3C0B /* t_control_chara2_IO.c in Sources */,

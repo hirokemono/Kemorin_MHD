@@ -27,7 +27,7 @@ float colormap_metal_green(float x) {
     if (x < 0.6) {
         c = 0.0;
     } else if (x <= 1.0) {
-        g = (x - 0.6) * 2.5;
+        c = (x - 0.6) * 2.5;
     } else {
         c = 1.0;
     }
