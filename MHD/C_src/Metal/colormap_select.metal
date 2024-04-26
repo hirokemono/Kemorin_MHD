@@ -9,14 +9,7 @@
 // Include header shared between this Metal shader code and C code executing Metal API commands
 #include "KemoViewShaderTypes.h"
 
-#define RAINBOW_MODE    0
-#define GRAYSCALE_MODE  1
-#define RED_BLUE_MODE   2
-#define SYM_GRAY_MODE   3
-#define ORANGE_CYAN_MODE   4
-#define MOLTEN_METAL_MODE  5
-#define SPACE_COLOR_MODE   6
-
+/*
 
 float color_normalize(uniform int num_tbl,
                       uniform float d_in[16],
@@ -64,3 +57,10 @@ float4 color_from_scalar(constant KemoViewNormalize *normalizePointer, float x)
                                    normalize.alpha_reference, normalize.alpha_output, x);
     return colormap_select(normalize.id_cmap, dataNorm, alpha);
 }
+
+*/
+float4 color_from_scalar(float x){
+    return float4(x*0.01, x*0.1, x*0.01, 1.0);
+};
+
+

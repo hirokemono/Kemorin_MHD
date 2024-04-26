@@ -12,6 +12,8 @@ using namespace metal;
 // Include header shared between this Metal shader code and C code executing Metal API commands
 #include "KemoViewShaderTypes.h"
 
+float4 color_from_scalar(float x);
+
 // Vertex shader outputs and fragment shader inputs
 struct RasterizerData
 {
@@ -29,10 +31,6 @@ struct RasterizerData
 
     float4 pixelSpaceNormal;
     float4 pixelSpacePosition;
-};
-
-float4 color_from_scalar(float x){
-    return float4(x*0.1, x*0.05, x*0.01, 1.0);
 };
 
 

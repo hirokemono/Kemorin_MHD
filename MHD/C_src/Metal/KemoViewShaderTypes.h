@@ -10,6 +10,14 @@ Header containing types and enum constants shared between Metal shaders and C/Ob
 
 #include <simd/simd.h>
 
+#define RAINBOW_MODE    0
+#define GRAYSCALE_MODE  1
+#define RED_BLUE_MODE   2
+#define SYM_GRAY_MODE   3
+#define ORANGE_CYAN_MODE   4
+#define MOLTEN_METAL_MODE  5
+#define SPACE_COLOR_MODE   6
+
 // Buffer index values shared between shader and C code to ensure Metal shader buffer inputs
 // match Metal API buffer set calls.
 typedef enum AAPLVertexInputIndex
