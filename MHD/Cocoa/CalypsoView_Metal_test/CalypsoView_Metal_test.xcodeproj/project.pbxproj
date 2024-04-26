@@ -84,6 +84,7 @@
 		1895A3162BDC464F00701DEB /* PhongShaderWithColorMap.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A3152BDC464F00701DEB /* PhongShaderWithColorMap.metal */; };
 		1895A3182BDC47E700701DEB /* colormap_select.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A3172BDC47E700701DEB /* colormap_select.metal */; };
 		1895A31D2BDC560C00701DEB /* color_normalize.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A31C2BDC560C00701DEB /* color_normalize.metal */; };
+		1895A31F2BDC574F00701DEB /* colormap_rainbow.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A31E2BDC574F00701DEB /* colormap_rainbow.metal */; };
 		1899ACC524B8EEC3004E8F1C /* ElasticMenuWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */; };
 		189F8CCC27037268006FB38F /* write_image_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 189F8CCA27037268006FB38F /* write_image_2_bmp.c */; };
 		18A4D60B24C203B4005A559B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A4D60A24C203B4005A559B /* Images.xcassets */; };
@@ -310,6 +311,7 @@
 		1895A3172BDC47E700701DEB /* colormap_select.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_select.metal; path = Metal/colormap_select.metal; sourceTree = "<group>"; };
 		1895A3192BDC485F00701DEB /* KemoViewShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KemoViewShaderTypes.h; path = Metal/KemoViewShaderTypes.h; sourceTree = "<group>"; };
 		1895A31C2BDC560C00701DEB /* color_normalize.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = color_normalize.metal; path = Metal/color_normalize.metal; sourceTree = "<group>"; };
+		1895A31E2BDC574F00701DEB /* colormap_rainbow.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_rainbow.metal; path = Metal/colormap_rainbow.metal; sourceTree = "<group>"; };
 		1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElasticMenuWindow.m; sourceTree = "<group>"; };
 		1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElasticMenuWindow.h; sourceTree = "<group>"; };
 		189F8CCA27037268006FB38F /* write_image_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = write_image_2_bmp.c; sourceTree = "<group>"; };
@@ -850,6 +852,7 @@
 				1895A3192BDC485F00701DEB /* KemoViewShaderTypes.h */,
 				1895A31C2BDC560C00701DEB /* color_normalize.metal */,
 				1895A3172BDC47E700701DEB /* colormap_select.metal */,
+				1895A31E2BDC574F00701DEB /* colormap_rainbow.metal */,
 				1861CC1F2BD9BA5800C8E66C /* Anaglyph2dShader.metal */,
 				1861CC1C2BD9BA5800C8E66C /* Base2dShader.metal */,
 				1861CC102BD9BA3B00C8E66C /* PhongShader.metal */,
@@ -1111,6 +1114,7 @@
 				18D7E7861562D359009B05FF /* fillRectView.m in Sources */,
 				180999A02B13C14100F83574 /* m_transfer_matrices.c in Sources */,
 				18D7E7891562D359009B05FF /* Kemoview_IO_Controller.m in Sources */,
+				1895A31F2BDC574F00701DEB /* colormap_rainbow.metal in Sources */,
 				1838708E2BCF4A7E00933367 /* colormap_grayscale_c.c in Sources */,
 				188C941F230DA8C300A4DB14 /* set_each_fline_parameters.c in Sources */,
 				18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */,
