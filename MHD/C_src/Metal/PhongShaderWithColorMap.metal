@@ -66,9 +66,8 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
     out.pixelSpaceNormal.w = 0.0;
     out.pixelSpaceNormal =   modelNormalMatrix * out.pixelSpaceNormal;
     
-    out.pixelSpaceData =    pixelSpaceData;
-
-    out.pixelSpaceColor = color_from_scalar(colorMapPointer, pixelSpaceData);
+//    out.pixelSpaceColor = color_from_scalar(colorMapPointer, pixelSpaceData);
+    out.pixelSpaceColor = float4(pixelSpaceData*0.1, pixelSpaceData*0.01, pixelSpaceData*0.05, 1.0);
     return out;
 }
 
@@ -88,7 +87,6 @@ PhongColorMapFragmentShader(RasterizerData in [[stage_in]],
     float  shininess =         FrontMaterialParams.shininess;
 
     float4 pixelSpaceColor = in.pixelSpaceColor;
-//    float4 pixelSpaceColor = float4(in.pixelSpaceData*0.125, in.pixelSpaceData*0.07, in.pixelSpaceData*0.03, 1.0);
     
     float3 view =    normalize(in.pixelSpacePosition.xyz);
     float3 fnormal = normalize(in.pixelSpaceNormal.xyz);
