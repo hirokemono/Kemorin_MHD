@@ -11,7 +11,7 @@
 #define MOLTEN_METAL_MODE  5
 #define SPACE_COLOR_MODE   6
 
-/*
+
 struct KemoViewNormalize{
     float data_reference[16];             // Data
     float data_normalized[16];             // normalize
@@ -22,7 +22,7 @@ struct KemoViewNormalize{
     int num_opacity;
 
     int id_cmap;
-}
+};
 
 /*
 vec4 colormap_select(uniform int id_cmap, float x, float alpha){
@@ -46,7 +46,7 @@ vec4 colormap_select(uniform int id_cmap, float x, float alpha){
     }
     return c;
 }
-vec4 color_from_scalar(uniform KemoViewNormalize colormap, float x)
+vec4 color_from_scalar(KemoViewNormalize colormap, float x)
 {
 //    float dataNorm = color_normalize(colormap.num_normalize,
 //                                     colormap.data_reference, colormap.data_normalized, x);
@@ -56,6 +56,6 @@ vec4 color_from_scalar(uniform KemoViewNormalize colormap, float x)
     return vec4(x*0.1,x*0.04,x*0.01,1.0);
 }
  */
-vec4 color_from_scalar(float x){
-    return vec4(x*0.01,x*0.04,x*0.1,1.0);
+vec4 color_from_scalar(KemoViewNormalize colormap, float x){
+    return vec4(x*0.1,x*0.04,x*0.1,1.0);
 }

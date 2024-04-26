@@ -89,7 +89,7 @@ typedef struct{
     int num_opacity;
 
     int id_cmap;
-} KemoViewNormalize
+} KemoViewNormalize;
 
 typedef struct{
 //    vector_float4 ambient[12];              // Aclarri

@@ -13,7 +13,7 @@ uniform mat4 projectionMat;
 uniform mat4 viewMatrix;
 uniform mat4 modelViewMat;
 uniform mat4 modelNormalMat;
-// uniform KemoViewNormalize colormap;
+uniform KemoViewNormalize colormap;
 
 out vec4  position;
 out vec4  normal;
@@ -25,6 +25,6 @@ void main(void)
     position.w = 1.0;
     position = modelViewMat * position;
 	normal =   modelNormalMat * norm;
-    ex_Color = color_from_scalar(data.x);
+    ex_Color = color_from_scalar(colormap, data.x);
 	gl_Position =  projectionMat * position;
 }

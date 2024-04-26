@@ -483,7 +483,7 @@ char * load_colormap_select_frag(void){
         "#define MOLTEN_METAL_MODE  5\n"\
         "#define SPACE_COLOR_MODE   6\n"\
         "\n"\
-        "/*\n"\
+        "\n"\
         "struct KemoViewNormalize{\n"\
         "    float data_reference[16];             // Data\n"\
         "    float data_normalized[16];             // normalize\n"\
@@ -494,7 +494,7 @@ char * load_colormap_select_frag(void){
         "    int num_opacity;\n"\
         "\n"\
         "    int id_cmap;\n"\
-        "}\n"\
+        "};\n"\
         "\n"\
         "/*\n"\
         "vec4 colormap_select(uniform int id_cmap, float x, float alpha){\n"\
@@ -518,7 +518,7 @@ char * load_colormap_select_frag(void){
         "    }\n"\
         "    return c;\n"\
         "}\n"\
-        "vec4 color_from_scalar(uniform KemoViewNormalize colormap, float x)\n"\
+        "vec4 color_from_scalar(KemoViewNormalize colormap, float x)\n"\
         "{\n"\
         "//    float dataNorm = color_normalize(colormap.num_normalize,\n"\
         "//                                     colormap.data_reference, colormap.data_normalized, x);\n"\
@@ -528,8 +528,8 @@ char * load_colormap_select_frag(void){
         "    return vec4(x*0.1,x*0.04,x*0.01,1.0);\n"\
         "}\n"\
         " */\n"\
-        "vec4 color_from_scalar(float x){\n"\
-        "    return vec4(x*0.01,x*0.04,x*0.1,1.0);\n"\
+        "vec4 color_from_scalar(KemoViewNormalize colormap, float x){\n"\
+        "    return vec4(x*0.1,x*0.04,x*0.1,1.0);\n"\
         "}\n"\
         "\n"
     };
@@ -1673,7 +1673,7 @@ char * load_phong_w_colormap_vert(void){
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
         "uniform mat4 modelNormalMat;\n"\
-        "// uniform KemoViewNormalize colormap;\n"\
+        "uniform KemoViewNormalize colormap;\n"\
         "\n"\
         "out vec4  position;\n"\
         "out vec4  normal;\n"\
@@ -1685,7 +1685,7 @@ char * load_phong_w_colormap_vert(void){
         "    position.w = 1.0;\n"\
         "    position = modelViewMat * position;\n"\
         "	normal =   modelNormalMat * norm;\n"\
-        "    ex_Color = color_from_scalar(data.x);\n"\
+        "    ex_Color = color_from_scalar(colormap, data.x);\n"\
         "	gl_Position =  projectionMat * position;\n"\
         "}\n"\
         "\n"
