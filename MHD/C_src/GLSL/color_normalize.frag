@@ -1,12 +1,17 @@
 /*
 // color_normalize.frag
-//  float color_normalize(int num_tbl, float d_in[16], float d_norm[16],
-//                        float x)
+//     float color_normalize(int num_tbl,
+//                           float d_in[MAX_NORMALIZATION_POINT],
+//                           float d_norm[MAX_NORMALIZATION_POINT],
+//                           float x)
 */
 
-float color_normalize(int num_tbl, float d_in[16], float d_norm[16],
-                      float x)
-{
+#define MAX_NORMALIZATION_POINT 16
+
+float color_normalize(int num_tbl,
+                      float d_in[MAX_NORMALIZATION_POINT],
+                      float d_norm[MAX_NORMALIZATION_POINT],
+                      float x){
     float c = 0.0;
     if(x < d_in[0]){
         c = d_norm[0];

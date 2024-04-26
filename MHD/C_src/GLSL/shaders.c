@@ -78,13 +78,18 @@ char * load_color_normalize_frag(void){
     = {
         "/*\n"\
         "// color_normalize.frag\n"\
-        "//  float color_normalize(int num_tbl, float d_in[16], float d_norm[16],\n"\
-        "//                        float x)\n"\
+        "//     float color_normalize(int num_tbl,\n"\
+        "//                           float d_in[MAX_NORMALIZATION_POINT],\n"\
+        "//                           float d_norm[MAX_NORMALIZATION_POINT],\n"\
+        "//                           float x)\n"\
         "*/\n"\
         "\n"\
-        "float color_normalize(int num_tbl, float d_in[16], float d_norm[16],\n"\
-        "                      float x)\n"\
-        "{\n"\
+        "#define MAX_NORMALIZATION_POINT 16\n"\
+        "\n"\
+        "float color_normalize(int num_tbl,\n"\
+        "                      float d_in[MAX_NORMALIZATION_POINT],\n"\
+        "                      float d_norm[MAX_NORMALIZATION_POINT],\n"\
+        "                      float x){\n"\
         "    float c = 0.0;\n"\
         "    if(x < d_in[0]){\n"\
         "        c = d_norm[0];\n"\
@@ -476,48 +481,46 @@ char * load_colormap_select_frag(void){
         "\n"\
         "\n"\
         "struct KemoViewNormalize{\n"\
-        "    float data_reference[16];             // Data\n"\
-        "    float data_normalized[16];             // normalize\n"\
+        "    float data_reference[MAX_NORMALIZATION_POINT];             // Data\n"\
+        "    float data_normalized[MAX_NORMALIZATION_POINT];             // normalize\n"\
         "    int num_normalize;\n"\
         "\n"\
-        "    float alpha_reference[16];             // Data\n"\
-        "    float alpha_output[16];             // normalize\n"\
+        "    float alpha_reference[MAX_NORMALIZATION_POINT];             // Data\n"\
+        "    float alpha_output[MAX_NORMALIZATION_POINT];             // normalize\n"\
         "    int num_opacity;\n"\
         "\n"\
         "    int id_cmap;\n"\
         "};\n"\
         "\n"\
-        "/*\n"\
-        "vec4 colormap_select(uniform int id_cmap, float x, float alpha){\n"\
+        "vec4 colormap_select(int id_cmap, float x, float alpha){\n"\
         "    vec4 c = vec4(0.0, 0.0, 0.0, 0.0);\n"\
-        "    if(id_cmap == RAINBOW_MODE){\n"\
+        "//    if(id_cmap == RAINBOW_MODE){\n"\
+        "//        c = colormap_rainbow(x, alpha);\n"\
+        "//    }else if(id_cmap == GRAYSCALE_MODE){\n"\
+        "//        c = colormap_grayscale(x, alpha);\n"\
+        "//    }else if(id_cmap == RED_BLUE_MODE){\n"\
+        "//        c = colormap_red_blue(x, alpha);\n"\
+        "//    }else if(id_cmap == SYM_GRAY_MODE){\n"\
+        "//        c = colormap_sym_grayscale(x, alpha);\n"\
+        "//    }else if(id_cmap == ORANGE_CYAN_MODE){\n"\
+        "//        c = colormap_orange_cyan(x, alpha);\n"\
+        "//    }else if(id_cmap == MOLTEN_METAL_MODE){\n"\
+        "//        c = colormap_molten_metal(x, alpha);\n"\
+        "//    }else if(id_cmap == SPACE_COLOR_MODE){\n"\
+        "//        c = colormap_space(x, alpha);\n"\
+        "//    }else{\n"\
         "        c = colormap_rainbow(x, alpha);\n"\
-        "    }else if(id_cmap == GRAYSCALE_MODE){\n"\
-        "        c = colormap_grayscale(x, alpha);\n"\
-        "    }else if(id_cmap == RED_BLUE_MODE){\n"\
-        "        c = colormap_red_blue(x, alpha);\n"\
-        "    }else if(id_cmap == SYM_GRAY_MODE){\n"\
-        "        c = colormap_sym_grayscale(x, alpha);\n"\
-        "    }else if(id_cmap == ORANGE_CYAN_MODE){\n"\
-        "        c = colormap_orange_cyan(x, alpha);\n"\
-        "    }else if(id_cmap == MOLTEN_METAL_MODE){\n"\
-        "        c = colormap_molten_metal(x, alpha);\n"\
-        "    }else if(id_cmap == SPACE_COLOR_MODE){\n"\
-        "        c = colormap_space(x, alpha);\n"\
-        "    }else{\n"\
-        "        c = colormap_rainbow(x, alpha);\n"\
-        "    }\n"\
+        "//    }\n"\
         "    return c;\n"\
         "}\n"\
-        " */\n"\
+        "\n"\
         "vec4 color_from_scalar(KemoViewNormalize colormap, float x)\n"\
         "{\n"\
         "    float dataNorm = color_normalize(colormap.num_normalize,\n"\
         "                                     colormap.data_reference, colormap.data_normalized, x);\n"\
-        "//    float alpha =  color_normalize(colormap.num_opacity,\n"\
-        "//                                   colormap.alpha_reference, colormap.alpha_output, x);\n"\
-        "//    return colormap_select(colormap.id_cmap, dataNorm, alpha);\n"\
-        "    return vec4(dataNorm,dataNorm,dataNorm*0.1,1.0);\n"\
+        "    float alpha =  color_normalize(colormap.num_opacity,\n"\
+        "                                   colormap.alpha_reference, colormap.alpha_output, x);\n"\
+        "    return colormap_select(colormap.id_cmap, dataNorm, alpha);\n"\
         "}\n"\
         "\n"
     };

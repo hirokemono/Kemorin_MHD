@@ -337,7 +337,7 @@ static void light_for_cube(struct initial_cube_lighting *init_light, struct shad
 
 static void colormap_for_cube(struct shader_ids *phong_w_cmap){
     int id_colormap = glGetUniformLocation(phong_w_cmap->programId, "colormap.id_cmap");
-    glUniform1i(id_colormap,    MOLTEN_METAL_MODE);
+    glUniform1i(id_colormap,    RAINBOW_MODE);
     
     int id_datavalue =  0;
     int id_normalized = 0;
@@ -346,15 +346,15 @@ static void colormap_for_cube(struct shader_ids *phong_w_cmap){
     glUniform1i(id_num_ctbl,    3);
     id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.data_reference[0]");
     id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.data_normalized[0]");
-    glUniform1f(id_datavalue,  -1.0);
+    glUniform1f(id_datavalue,  0.0);
     glUniform1f(id_normalized, 0.0);
     id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.data_reference[1]");
     id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.data_normalized[1]");
-    glUniform1f(id_datavalue,  0.0);
-    glUniform1f(id_normalized, 0.25);
+    glUniform1f(id_datavalue,  3.5);
+    glUniform1f(id_normalized, 0.5);
     id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.data_reference[2]");
     id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.data_normalized[2]");
-    glUniform1f(id_datavalue,  1.0);
+    glUniform1f(id_datavalue,  7.0);
     glUniform1f(id_normalized, 1.0);
 
     
@@ -367,11 +367,11 @@ static void colormap_for_cube(struct shader_ids *phong_w_cmap){
     id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_reference[1]");
     id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_output[1]");
     glUniform1f(id_datavalue, -0.25);
-    glUniform1f(id_normalized, 0.1);
+    glUniform1f(id_normalized, 1.0);
     id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_reference[2]");
     id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_output[2]");
     glUniform1f(id_datavalue,  0.25);
-    glUniform1f(id_normalized, 0.1);
+    glUniform1f(id_normalized, 1.0);
     id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_reference[3]");
     id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_output[3]");
     glUniform1f(id_datavalue,  1.0);
