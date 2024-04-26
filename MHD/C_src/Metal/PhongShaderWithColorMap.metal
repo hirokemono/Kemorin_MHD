@@ -31,7 +31,9 @@ struct RasterizerData
     float4 pixelSpacePosition;
 };
 
-float4 color_from_scalar(constant KemoViewNormalize *normalizePointer, float x);
+float4 color_from_scalar(float x){
+    return float4(x*0.1, x*0.05, x*0.01, 1.0);
+};
 
 
 // Vertex Function
@@ -66,8 +68,7 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
     out.pixelSpaceNormal.w = 0.0;
     out.pixelSpaceNormal =   modelNormalMatrix * out.pixelSpaceNormal;
     
-//    out.pixelSpaceColor = color_from_scalar(colorMapPointer, pixelSpaceData);
-    out.pixelSpaceColor = float4(pixelSpaceData*0.1, pixelSpaceData*0.01, pixelSpaceData*0.05, 1.0);
+    out.pixelSpaceColor = color_from_scalar(pixelSpaceData);
     return out;
 }
 
