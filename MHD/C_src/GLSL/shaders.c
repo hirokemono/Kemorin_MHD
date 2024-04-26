@@ -78,20 +78,11 @@ char * load_color_normalize_frag(void){
     = {
         "/*\n"\
         "// color_normalize.frag\n"\
-        "//  float color_normalize(uniform int num_tbl,\n"\
-        "//                      uniform float d_in[16],\n"\
-        "//                      uniform float d_norm[16],\n"\
+        "//  float color_normalize(int num_tbl, float d_in[16], float d_norm[16],\n"\
         "//                        float x)\n"\
         "*/\n"\
         "\n"\
-        "struct NormalizationTable{\n"\
-        "    float xd;              // data value\n"\
-        "    float xc;       // normalizad value\n"\
-        "};\n"\
-        "\n"\
-        "float color_normalize(uniform int num_tbl,\n"\
-        "                      uniform float d_in[16],\n"\
-        "                      uniform float d_norm[16],\n"\
+        "float color_normalize(int num_tbl, float d_in[16], float d_norm[16],\n"\
         "                      float x)\n"\
         "{\n"\
         "    float c = 0.0;\n"\
@@ -100,56 +91,56 @@ char * load_color_normalize_frag(void){
         "    }else if(x >= d_in[num_tbl-1]){\n"\
         "        c = d_norm[num_tbl-1];\n"\
         "\n"\
-        "    }else if(x >= d_in[ 0] && x < d_in[ 1]){\n"\
+        "    }else if(x < d_in[ 1]){\n"\
         "        c = d_norm[ 0] + (d_norm[ 1] - d_norm[ 0])\n"\
         "            * (x - d_in[ 0]) / (d_in[ 1] - d_in[ 0]);\n"\
-        "    }else if(x >= d_in[ 1] && x < d_in[ 2]){\n"\
+        "    }else if(x < d_in[ 2]){\n"\
         "        c = d_norm[ 1] + (d_norm[ 2] - d_norm[ 1])\n"\
         "            * (x - d_in[ 1]) / (d_in[ 2] - d_in[ 1]);\n"\
-        "    }else if(x >= d_in[ 2] && x < d_in[ 3]){\n"\
+        "    }else if(x < d_in[ 3]){\n"\
         "        c = d_norm[ 2] + (d_norm[ 3] - d_norm[ 2])\n"\
         "            * (x - d_in[ 2]) / (d_in[ 3] - d_in[ 2]);\n"\
-        "    }else if(x >= d_in[ 3] && x < d_in[ 4]){\n"\
+        "    }else if(x < d_in[ 4]){\n"\
         "        c = d_norm[ 3] + (d_norm[ 4] - d_norm[ 3])\n"\
         "            * (x - d_in[ 3]) / (d_in[ 4] - d_in[ 3]);\n"\
-        "    }else if(x >= d_in[ 4] && x < d_in[ 5]){\n"\
+        "    }else if(x < d_in[ 5]){\n"\
         "        c = d_norm[ 4] + (d_norm[ 5] - d_norm[ 4])\n"\
         "            * (x - d_in[ 4]) / (d_in[ 5] - d_in[ 4]);\n"\
-        "    }else if(x >= d_in[ 5] && x < d_in[ 6]){\n"\
+        "    }else if(x < d_in[ 6]){\n"\
         "        c = d_norm[ 5] + (d_norm[ 6] - d_norm[ 5])\n"\
         "            * (x - d_in[ 5]) / (d_in[ 6] - d_in[ 5]);\n"\
-        "    }else if(x >= d_in[ 6] && x < d_in[ 7]){\n"\
+        "    }else if(x < d_in[ 7]){\n"\
         "        c = d_norm[ 6] + (d_norm[ 7] - d_norm[ 6])\n"\
         "            * (x - d_in[ 6]) / (d_in[ 7] - d_in[ 6]);\n"\
-        "    }else if(x >= d_in[ 7] && x < d_in[ 8]){\n"\
+        "    }else if(x < d_in[ 8]){\n"\
         "        c = d_norm[ 7] + (d_norm[ 8] - d_norm[ 7])\n"\
         "            * (x - d_in[ 7]) / (d_in[ 8] - d_in[ 7]);\n"\
-        "    }else if(x >= d_in[ 8] && x < d_in[ 9]){\n"\
+        "    }else if(x < d_in[ 9]){\n"\
         "        c = d_norm[ 8] + (d_norm[ 9] - d_norm[ 8])\n"\
         "            * (x - d_in[ 8]) / (d_in[ 9] - d_in[ 8]);\n"\
-        "    }else if(x >= d_in[ 9] && x < d_in[10]){\n"\
+        "    }else if(x < d_in[10]){\n"\
         "        c = d_norm[ 9] + (d_norm[10] - d_norm[ 9])\n"\
         "            * (x - d_in[ 9]) / (d_in[10] - d_in[ 9]);\n"\
-        "    }else if(x >= d_in[10] && x < d_in[11]){\n"\
+        "    }else if(x < d_in[11]){\n"\
         "        c = d_norm[10] + (d_norm[11] - d_norm[10])\n"\
         "            * (x - d_in[10]) / (d_in[11] - d_in[10]);\n"\
-        "    }else if(x >= d_in[11] && x < d_in[12]){\n"\
+        "    }else if(x < d_in[12]){\n"\
         "        c = d_norm[11] + (d_norm[12] - d_norm[11])\n"\
         "            * (x - d_in[11]) / (d_in[12] - d_in[11]);\n"\
-        "    }else if(x >= d_in[12] && x < d_in[13]){\n"\
+        "    }else if(x < d_in[13]){\n"\
         "        c = d_norm[12] + (d_norm[13] - d_norm[12])\n"\
         "            * (x - d_in[12]) / (d_in[13] - d_in[12]);\n"\
-        "    }else if(x >= d_in[13] && x < d_in[14]){\n"\
+        "    }else if(x < d_in[14]){\n"\
         "        c = d_norm[13] + (d_norm[14] - d_norm[13])\n"\
         "            * (x - d_in[13]) / (d_in[14] - d_in[13]);\n"\
-        "    }else if(x >= d_in[14] && x < d_in[15]){\n"\
+        "    }else if(x < d_in[15]){\n"\
         "        c = d_norm[14] + (d_norm[15] - d_norm[14])\n"\
         "            * (x - d_in[14]) / (d_in[15] - d_in[14]);\n"\
         "    }else{\n"\
-        "        c = d_norm[table.num_tbl-1];\n"\
+        "        c = d_norm[num_tbl-1];\n"\
         "    };\n"\
         "    return c;\n"\
-        "};\n"\
+        "}\n"\
         "\n"
     };
     
@@ -518,18 +509,15 @@ char * load_colormap_select_frag(void){
         "    }\n"\
         "    return c;\n"\
         "}\n"\
+        " */\n"\
         "vec4 color_from_scalar(KemoViewNormalize colormap, float x)\n"\
         "{\n"\
-        "//    float dataNorm = color_normalize(colormap.num_normalize,\n"\
-        "//                                     colormap.data_reference, colormap.data_normalized, x);\n"\
+        "    float dataNorm = color_normalize(colormap.num_normalize,\n"\
+        "                                     colormap.data_reference, colormap.data_normalized, x);\n"\
         "//    float alpha =  color_normalize(colormap.num_opacity,\n"\
         "//                                   colormap.alpha_reference, colormap.alpha_output, x);\n"\
         "//    return colormap_select(colormap.id_cmap, dataNorm, alpha);\n"\
-        "    return vec4(x*0.1,x*0.04,x*0.01,1.0);\n"\
-        "}\n"\
-        " */\n"\
-        "vec4 color_from_scalar(KemoViewNormalize colormap, float x){\n"\
-        "    return vec4(x*0.1,x*0.04,x*0.1,1.0);\n"\
+        "    return vec4(dataNorm,dataNorm,dataNorm*0.1,1.0);\n"\
         "}\n"\
         "\n"
     };

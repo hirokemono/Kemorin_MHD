@@ -35,7 +35,7 @@ char *phong_colormap_vertex_shader(void){
     long len_vertex_shader = 0;
     len_vertex_shader += len_phong_w_colormap;
     len_vertex_shader += len_colormap_select;
-//    len_vertex_shader += len_color_normalize;
+    len_vertex_shader += len_color_normalize;
 //    len_vertex_shader += len_colormap_molten_metal;
 //    len_vertex_shader += len_colormap_orange_cyan;
 //    len_vertex_shader += len_colormap_red_blue;
@@ -53,7 +53,7 @@ char *phong_colormap_vertex_shader(void){
 //    append_text_c(load_colormap_orange_cyan_frag(), vertex_shader);
 //    append_text_c(load_colormap_molten_metal_frag(), vertex_shader);
     
-//    append_text_c(load_color_normalize_frag(), vertex_shader);
+    append_text_c(load_color_normalize_frag(), vertex_shader);
     append_text_c(load_colormap_select_frag(), vertex_shader);
     
     append_text_c(load_phong_w_colormap_vert(), vertex_shader);

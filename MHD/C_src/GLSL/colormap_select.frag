@@ -46,16 +46,13 @@ vec4 colormap_select(uniform int id_cmap, float x, float alpha){
     }
     return c;
 }
+ */
 vec4 color_from_scalar(KemoViewNormalize colormap, float x)
 {
-//    float dataNorm = color_normalize(colormap.num_normalize,
-//                                     colormap.data_reference, colormap.data_normalized, x);
+    float dataNorm = color_normalize(colormap.num_normalize,
+                                     colormap.data_reference, colormap.data_normalized, x);
 //    float alpha =  color_normalize(colormap.num_opacity,
 //                                   colormap.alpha_reference, colormap.alpha_output, x);
 //    return colormap_select(colormap.id_cmap, dataNorm, alpha);
-    return vec4(x*0.1,x*0.04,x*0.01,1.0);
-}
- */
-vec4 color_from_scalar(KemoViewNormalize colormap, float x){
-    return vec4(x*0.1,x*0.04,x*0.1,1.0);
+    return vec4(dataNorm,dataNorm,dataNorm*0.1,1.0);
 }
