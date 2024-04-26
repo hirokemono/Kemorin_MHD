@@ -441,15 +441,15 @@ void set_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *in
 };
 
 void draw_test_cube(struct transfer_matrices *matrices, struct VAO_ids *cube_VAO,
-                    struct shader_ids *phong){
+                    struct shader_ids *phong_w_cmap){
     if(cube_VAO->npoint_draw <= 0) return;
 
     struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 
-    glUseProgram(phong->programId);
-    transfer_matrix_to_GL(phong, matrices);
-    light_for_cube(init_light, phong);
-//    colormap_for_cube(phong);
+    glUseProgram(phong_w_cmap->programId);
+    transfer_matrix_to_GL(phong_w_cmap, matrices);
+    light_for_cube(init_light, phong_w_cmap);
+    colormap_for_cube(phong_w_cmap);
     free(init_light);
 
     glBindVertexArray(cube_VAO->id_VAO);

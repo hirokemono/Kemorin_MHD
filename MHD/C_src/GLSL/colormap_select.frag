@@ -3,7 +3,6 @@
 //    vec4 colormap_select(uniform int id_cmap, float x, float alpha);
 */
 
-/*
 #define RAINBOW_MODE    0
 #define GRAYSCALE_MODE  1
 #define RED_BLUE_MODE   2
@@ -12,6 +11,7 @@
 #define MOLTEN_METAL_MODE  5
 #define SPACE_COLOR_MODE   6
 
+/*
 struct KemoViewNormalize{
     float data_reference[16];             // Data
     float data_normalized[16];             // normalize
@@ -24,6 +24,7 @@ struct KemoViewNormalize{
     int id_cmap;
 }
 
+/*
 vec4 colormap_select(uniform int id_cmap, float x, float alpha){
     vec4 c = vec4(0.0, 0.0, 0.0, 0.0);
     if(id_cmap == RAINBOW_MODE){
@@ -55,3 +56,6 @@ vec4 color_from_scalar(uniform KemoViewNormalize colormap, float x)
     return vec4(x*0.1,x*0.04,x*0.01,1.0);
 }
  */
+vec4 color_from_scalar(float x){
+    return vec4(x*0.01,x*0.04,x*0.1,1.0);
+}

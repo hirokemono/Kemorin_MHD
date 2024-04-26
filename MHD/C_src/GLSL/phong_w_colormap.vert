@@ -2,11 +2,6 @@
 //
 // phong.vert
 //
-vec4 color_from_scalar(float x)
-{
-    return vec4(x*0.01,x*0.04,x*0.1,1.0);
-}
-
 layout (location = 0) in vec4  xyz;
 layout (location = 1) in vec4  color;
 layout (location = 2) in vec4  norm;

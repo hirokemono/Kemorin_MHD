@@ -475,7 +475,6 @@ char * load_colormap_select_frag(void){
         "//    vec4 colormap_select(uniform int id_cmap, float x, float alpha);\n"\
         "*/\n"\
         "\n"\
-        "/*\n"\
         "#define RAINBOW_MODE    0\n"\
         "#define GRAYSCALE_MODE  1\n"\
         "#define RED_BLUE_MODE   2\n"\
@@ -484,6 +483,7 @@ char * load_colormap_select_frag(void){
         "#define MOLTEN_METAL_MODE  5\n"\
         "#define SPACE_COLOR_MODE   6\n"\
         "\n"\
+        "/*\n"\
         "struct KemoViewNormalize{\n"\
         "    float data_reference[16];             // Data\n"\
         "    float data_normalized[16];             // normalize\n"\
@@ -496,6 +496,7 @@ char * load_colormap_select_frag(void){
         "    int id_cmap;\n"\
         "}\n"\
         "\n"\
+        "/*\n"\
         "vec4 colormap_select(uniform int id_cmap, float x, float alpha){\n"\
         "    vec4 c = vec4(0.0, 0.0, 0.0, 0.0);\n"\
         "    if(id_cmap == RAINBOW_MODE){\n"\
@@ -527,6 +528,9 @@ char * load_colormap_select_frag(void){
         "    return vec4(x*0.1,x*0.04,x*0.01,1.0);\n"\
         "}\n"\
         " */\n"\
+        "vec4 color_from_scalar(float x){\n"\
+        "    return vec4(x*0.01,x*0.04,x*0.1,1.0);\n"\
+        "}\n"\
         "\n"
     };
     
@@ -1658,11 +1662,6 @@ char * load_phong_w_colormap_vert(void){
         "//\n"\
         "// phong.vert\n"\
         "//\n"\
-        "vec4 color_from_scalar(float x)\n"\
-        "{\n"\
-        "    return vec4(x*0.01,x*0.04,x*0.1,1.0);\n"\
-        "}\n"\
-        "\n"\
         "layout (location = 0) in vec4  xyz;\n"\
         "layout (location = 1) in vec4  color;\n"\
         "layout (location = 2) in vec4  norm;\n"\
