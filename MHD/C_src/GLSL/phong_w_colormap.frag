@@ -1,5 +1,7 @@
-#version 330
+// #version 330
+//
 // phong.frag
+//
 
 in vec4 position;
 in vec4 ex_Color;
@@ -61,10 +63,6 @@ void main (void)
 		out_Color += ex_Color * frontMaterial.ambient
                     + ex_Color * frontMaterial.diffuse * abs(diffuse)
                     + tmpsp * fspecular;
-//		if (diffuse > 0.0) {
-//			out_Color += ex_Color * frontMaterial.diffuse * diffuse
-//                        + tmpsp * fspecular;
-//		}
 	}
 }
 

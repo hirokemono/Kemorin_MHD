@@ -56,6 +56,7 @@ void transfer_matrix_to_GL(struct shader_ids *Shader, struct transfer_matrices *
 void map_matrix_to_GLSL(struct shader_ids *Shader, struct transfer_matrices *matrices);
 void identity_matrix_to_shader(struct shader_ids *Shader);
 
+struct shader_ids * init_shader_ids(void);
 struct kemoview_shaders * init_kemoview_shaders(void);
 void dealloc_kemoview_shaders(struct kemoview_shaders *sds);
 

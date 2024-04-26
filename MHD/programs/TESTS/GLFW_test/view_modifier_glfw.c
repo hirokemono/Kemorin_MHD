@@ -314,16 +314,15 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 	return;
 }
 
-static void light_for_cube(struct initial_cube_lighting *init_light,
-                           struct kemoview_shaders *kemo_shaders){
-    int id_numLight = glGetUniformLocation(kemo_shaders->phong->programId, "num_lights");
-	int id_light1Position = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[0].position");
-	int id_light2Position = glGetUniformLocation(kemo_shaders->phong->programId, "LightSource[1].position");
+static void light_for_cube(struct initial_cube_lighting *init_light, struct shader_ids *phong){
+    int id_numLight = glGetUniformLocation(phong->programId, "num_lights");
+	int id_light1Position = glGetUniformLocation(phong->programId, "LightSource[0].position");
+	int id_light2Position = glGetUniformLocation(phong->programId, "LightSource[1].position");
 	
-	int id_MaterialAmbient = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.ambient");
-	int id_MaterialDiffuse = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.diffuse");
-	int id_MaterialSpecular = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.specular");
-	int id_MaterialShiness = glGetUniformLocation(kemo_shaders->phong->programId, "frontMaterial.shininess");
+	int id_MaterialAmbient = glGetUniformLocation(phong->programId, "frontMaterial.ambient");
+	int id_MaterialDiffuse = glGetUniformLocation(phong->programId, "frontMaterial.diffuse");
+	int id_MaterialSpecular = glGetUniformLocation(phong->programId, "frontMaterial.specular");
+	int id_MaterialShiness = glGetUniformLocation(phong->programId, "frontMaterial.shininess");
 	
 	glUniform1i(id_numLight, init_light->num_light);
 	glUniform4fv(id_light1Position, 1, init_light->lightposition[0]);
@@ -333,48 +332,51 @@ static void light_for_cube(struct initial_cube_lighting *init_light,
 	glUniform4fv(id_MaterialDiffuse, 1, init_light->whitelight[1]);
 	glUniform4fv(id_MaterialSpecular, 1, init_light->whitelight[2]);
 	glUniform1fv(id_MaterialShiness, 1, init_light->shine);
+    return;
+};
 
-    int id_colormap = glGetUniformLocation(kemo_shaders->phong->programId, "id_colormap");
+static void colormap_for_cube(struct shader_ids *phong_w_cmap){
+    int id_colormap = glGetUniformLocation(phong_w_cmap->programId, "colormap.id_cmap");
     glUniform1i(id_colormap,    MOLTEN_METAL_MODE);
     
     int id_datavalue =  0;
     int id_normalized = 0;
 
-    int id_num_ctbl = glGetUniformLocation(kemo_shaders->phong->programId, "num_normalize");
+    int id_num_ctbl = glGetUniformLocation(phong_w_cmap->programId, "colormap.num_normalize");
     glUniform1i(id_num_ctbl,    3);
-    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[0].data");
-    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[0].normalized");
+    id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.data_reference[0]");
+    id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.data_normalized[0]");
     glUniform1f(id_datavalue,  -1.0);
     glUniform1f(id_normalized, 0.0);
-    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[1].data");
-    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[1].normalized");
+    id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.data_reference[1]");
+    id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.data_normalized[1]");
     glUniform1f(id_datavalue,  0.0);
     glUniform1f(id_normalized, 0.25);
-    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[2].data");
-    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "normalizeTable[2].normalized");
+    id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.data_reference[2]");
+    id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.data_normalized[2]");
     glUniform1f(id_datavalue,  1.0);
     glUniform1f(id_normalized, 1.0);
 
     
-    int id_num_opacity = glGetUniformLocation(kemo_shaders->phong->programId, "num_opacity");
+    int id_num_opacity = glGetUniformLocation(phong_w_cmap->programId, "colormap.num_opacity");
     glUniform1i(id_num_opacity, 4);
-    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[0].data");
-    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[0].normalized");
+    id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_reference[0]");
+    id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_output[0]");
     glUniform1f(id_datavalue,  -1.0);
     glUniform1f(id_normalized, 1.0);
-    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[1].data");
-    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[1].normalized");
+    id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_reference[1]");
+    id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_output[1]");
     glUniform1f(id_datavalue, -0.25);
     glUniform1f(id_normalized, 0.1);
-    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[2].data");
-    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[2].normalized");
+    id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_reference[2]");
+    id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_output[2]");
     glUniform1f(id_datavalue,  0.25);
     glUniform1f(id_normalized, 0.1);
-    id_datavalue =  glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[3].data");
-    id_normalized = glGetUniformLocation(kemo_shaders->phong->programId, "opacityTable[3].normalized");
+    id_datavalue =  glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_reference[3]");
+    id_normalized = glGetUniformLocation(phong_w_cmap->programId, "colormap.alpha_output[3]");
     glUniform1f(id_datavalue,  1.0);
     glUniform1f(id_normalized, 1.0);
-    
+
     return;
 };
 
@@ -439,24 +441,25 @@ void set_cube_VAO(struct gl_strided_buffer *cube_buf, struct gl_index_buffer *in
 };
 
 void draw_test_cube(struct transfer_matrices *matrices, struct VAO_ids *cube_VAO,
-                       struct kemoview_shaders *kemo_shaders){
+                    struct shader_ids *phong){
     if(cube_VAO->npoint_draw <= 0) return;
 
     struct initial_cube_lighting *init_light = init_inital_cube_lighting();
 
-    glUseProgram(kemo_shaders->phong->programId);
-    transfer_matrix_to_GL(kemo_shaders->phong, matrices);
-	light_for_cube(init_light, kemo_shaders);
+    glUseProgram(phong->programId);
+    transfer_matrix_to_GL(phong, matrices);
+    light_for_cube(init_light, phong);
+//    colormap_for_cube(phong);
     free(init_light);
 
-	glBindVertexArray(cube_VAO->id_VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	return;
+    glBindVertexArray(cube_VAO->id_VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cube_VAO->id_index);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    return;
 }
 
 static void draw_cube_VAO(struct view_element *view_s, struct kemoview_VAOs *kemo_VAOs,
-                              struct kemoview_shaders *kemo_shaders){
+                          struct shader_ids *phong){
     double *orthogonal = orthogonal_projection_mat_c(0.0, view_s->nx_frame,
                                                      0.0, view_s->ny_frame,
                                                      -1.0, 1.0);
@@ -466,7 +469,7 @@ static void draw_cube_VAO(struct view_element *view_s, struct kemoview_VAOs *kem
     free(orthogonal);
 	
 	/* draw example cube for empty data */
-    draw_test_cube(view_matrices, kemo_VAOs->cube_VAO, kemo_shaders);
+    draw_test_cube(view_matrices, kemo_VAOs->cube_VAO, phong);
 	
     free(map_matrices);
     free(view_matrices);
@@ -484,7 +487,7 @@ static void update_draw_objectss(struct view_element *view_s,
 		set_cube_VAO(kemo_buffers->cube_buf, kemo_buffers->cube_index_buf,
 							 kemo_VAOs->cube_VAO);
     }
-	draw_cube_VAO(view_s, kemo_VAOs, kemo_shaders);
+	draw_cube_VAO(view_s, kemo_VAOs, kemo_shaders->phong_w_cmap);
 	return;
 }
 
@@ -516,8 +519,8 @@ void kemoview_gl_shader_init(struct kemoview_shaders *kemo_shaders){
     if (glslInit()) exit(1);
 
     char *vertex_shader = phong_colormap_vertex_shader();
-	LoadShaderFromStrings(kemo_shaders->phong_w_cmap, vertex_shader, load_phong_w_colormap_frag());
-    LoadShaderFromStrings(kemo_shaders->phong, vertex_shader, load_phong_w_colormap_frag());
+    LoadShaderFromStrings(kemo_shaders->phong_w_cmap, vertex_shader, load_phong_w_colormap_frag());
+    LoadShaderFromStrings(kemo_shaders->phong, load_phong_vert(), load_phong_frag());
 
     /*   This glClear send error on Cocoa....  Why?*/
 	glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);

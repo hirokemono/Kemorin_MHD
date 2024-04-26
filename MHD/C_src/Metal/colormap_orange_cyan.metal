@@ -7,7 +7,7 @@
 
 
 float colormap_orangecyan_blue(float x) {
-    float c;
+    float c = 0.0;
     if (x < 0.0){
         c = 1.0;
     }else if(x < 0.5){
@@ -21,7 +21,7 @@ float colormap_orangecyan_blue(float x) {
 }
 
 float colormap_orangecyan_green(float x, float alpha) {
-    float c;
+    float c = 0.0;
     if (x < 0.0){
         c = 1.0;
     }else if(x < 0.5){
@@ -35,7 +35,7 @@ float colormap_orangecyan_green(float x, float alpha) {
 }
 
 float colormap_orangecyan_red(float x) {
-    float c;
+    float c = 0.0;
     if (x < 0.0){
         c = 0.0;
     }else if(x < 0.5){

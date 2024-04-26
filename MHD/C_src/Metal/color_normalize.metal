@@ -10,8 +10,7 @@ float color_normalize(constant int num_tbl,
                       constant float d_norm[16],
                       float x)
 {
-    float c;
-    
+    float c = 0.0;
     if(x < d_in[0]){
         c = d_norm[0];
     }else if(x >= d_in[num_tbl-1]){

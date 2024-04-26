@@ -8,7 +8,7 @@ float colormap_metal_blue(float x) {
 }
 
 float colormap_metal_green(float x) {
-    float c;
+    float c = 0.0;
     if (x < 0.0) {
         c = 0.0;
     } else if (x <= 0.57147) {
@@ -20,7 +20,7 @@ float colormap_metal_green(float x) {
 }
 
 float colormap_metal_red(float x) {
-    float c;
+    float c = 0.0;
     if (x < 0.6) {
         c = 0.0;
     } else if (x <= 0.95) {

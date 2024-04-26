@@ -12,7 +12,7 @@ float colormap_redblue_blue(float x) {
 	float white =   0.5;
 	float red =     0.9;
 	
-    float c;
+    float c = 0.0;
 	if (x < abyss){
         c = 0.8;
 	} else if (x >= abyss && x < blue){
@@ -33,7 +33,7 @@ float colormap_redblue_green(float x) {
 	float white =   0.5;
 	float red =     0.9;
 	
-    float c;
+    float c = 0.0;
 	if (x < abyss){
         c = 0.2;
 	} else if (x >= abyss && x < blue){
@@ -54,7 +54,7 @@ float colormap_redblue_red(float x) {
 	float red =      0.9;
 	float blood =    1.0;
 	
-    float c;
+    float c = 0.0;
 	if (x < blue){
         c = 0.0;
 	} else if (x >= blue && x < white){

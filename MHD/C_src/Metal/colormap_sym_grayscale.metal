@@ -6,7 +6,7 @@
 #include <metal_stdlib>
 
 float colormap_sym_gray_rgb(float x) {
-    float c;
+    float c = 0.0;
 	if (x < 0.0){
         c = 0.0;
 	} else if (x > 1.0){

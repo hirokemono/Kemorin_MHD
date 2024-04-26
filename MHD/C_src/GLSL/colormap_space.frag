@@ -4,7 +4,7 @@
 //
 
 float colormap_space_red(float x) {
-    float c;
+    float c = 0.0;
     if (x < 37067.0 / 158860.0) {
         c = 0.0;
     } else if (x < 85181.0 / 230350.0) {
@@ -29,8 +29,8 @@ float colormap_space_red(float x) {
 }
 
 float colormap_space_green(float x) {
-    float xx;
-    float c;
+    float xx = 0.0;
+    float c = 0.0;
     if (x < 0.0) {
         c = 0.0;
     } else if (x < (-sqrt(166317494.0) + 39104.0) / 183830.0) {
@@ -51,7 +51,7 @@ float colormap_space_green(float x) {
 }
 
 float colormap_space_blue(float x) {
-    float c;
+    float c = 0.0;
     if (x < 0.0) {
         c = 0.0;
     } else if (x < 51987.0 / 349730.0) {

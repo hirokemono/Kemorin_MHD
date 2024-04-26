@@ -94,8 +94,7 @@ char * load_color_normalize_frag(void){
         "                      uniform float d_norm[16],\n"\
         "                      float x)\n"\
         "{\n"\
-        "    float c;\n"\
-        "\n"\
+        "    float c = 0.0;\n"\
         "    if(x < d_in[0]){\n"\
         "        c = d_norm[0];\n"\
         "    }else if(x >= d_in[num_tbl-1]){\n"\
@@ -170,7 +169,7 @@ char * load_colormap_grayscale_frag(void){
         "*/\n"\
         "\n"\
         "float colormap_gray_rgb(float x) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "	if (x < 0.0){\n"\
         "		c = 0.0;\n"\
         "	} else if (x > 1.0){\n"\
@@ -207,7 +206,7 @@ char * load_colormap_molten_metal_frag(void){
         "}\n"\
         "\n"\
         "float colormap_metal_green(float x) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "    if (x < 0.0) {\n"\
         "        c = 0.0;\n"\
         "    } else if (x <= 0.57147) {\n"\
@@ -219,7 +218,7 @@ char * load_colormap_molten_metal_frag(void){
         "}\n"\
         "\n"\
         "float colormap_metal_red(float x) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "    if (x < 0.6) {\n"\
         "        c = 0.0;\n"\
         "    } else if (x <= 0.95) {\n"\
@@ -252,7 +251,7 @@ char * load_colormap_orange_cyan_frag(void){
         "*/\n"\
         "\n"\
         "float colormap_orangecyan_blue(float x) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "    if (x < 0.0){\n"\
         "        c = 1.0;\n"\
         "    }else if(x < 0.5){\n"\
@@ -266,7 +265,7 @@ char * load_colormap_orange_cyan_frag(void){
         "}\n"\
         "\n"\
         "float colormap_orangecyan_green(float x, float alpha) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "    if (x < 0.0){\n"\
         "        c = 1.0;\n"\
         "    }else if(x < 0.5){\n"\
@@ -280,7 +279,7 @@ char * load_colormap_orange_cyan_frag(void){
         "}\n"\
         "\n"\
         "float colormap_orangecyan_red(float x) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "    if (x < 0.0){\n"\
         "        c = 0.0;\n"\
         "    }else if(x < 0.5){\n"\
@@ -318,7 +317,7 @@ char * load_colormap_rainbow_frag(void){
         "	float ocean =  0.325;\n"\
         "    float green =  0.55;\n"\
         "\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "	if (x < ocean){\n"\
         "		c = 1.0;\n"\
         "	} else if (x >= ocean && x < green){\n"\
@@ -335,7 +334,7 @@ char * load_colormap_rainbow_frag(void){
         "    float yellow = 0.775;\n"\
         "    float red =    1.0;\n"\
         "			\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "	if (x < blue){\n"\
         "        c = 0.0;\n"\
         "	} else if (x >= blue && x < ocean){\n"\
@@ -356,7 +355,7 @@ char * load_colormap_rainbow_frag(void){
         "    float green =  0.55;\n"\
         "    float yellow = 0.775;\n"\
         "			\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "	if (x < purple){\n"\
         "        c = 0.5;\n"\
         "	} else if (x >= purple && x < blue){\n"\
@@ -398,7 +397,7 @@ char * load_colormap_red_blue_frag(void){
         "	float white =  ONE / TWO;\n"\
         "	float red =      0.9;\n"\
         "	\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "	if (x < abyss){\n"\
         "        c = 0.8;\n"\
         "	} else if (x >= abyss && x < blue){\n"\
@@ -419,7 +418,7 @@ char * load_colormap_red_blue_frag(void){
         "	float white =  ONE / TWO;\n"\
         "	float red =      0.9;\n"\
         "	\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "	if (x < abyss){\n"\
         "        c = 0.2;\n"\
         "	} else if (x >= abyss && x < blue){\n"\
@@ -440,7 +439,7 @@ char * load_colormap_red_blue_frag(void){
         "	float red =      0.9;\n"\
         "	float blood =    ONE;\n"\
         "	\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "	if (x < blue){\n"\
         "        c = ZERO;\n"\
         "	} else if (x >= blue && x < white){\n"\
@@ -476,6 +475,7 @@ char * load_colormap_select_frag(void){
         "//    vec4 colormap_select(uniform int id_cmap, float x, float alpha);\n"\
         "*/\n"\
         "\n"\
+        "/*\n"\
         "#define RAINBOW_MODE    0\n"\
         "#define GRAYSCALE_MODE  1\n"\
         "#define RED_BLUE_MODE   2\n"\
@@ -496,9 +496,8 @@ char * load_colormap_select_frag(void){
         "    int id_cmap;\n"\
         "}\n"\
         "\n"\
-        "\n"\
         "vec4 colormap_select(uniform int id_cmap, float x, float alpha){\n"\
-        "    vec4 c;\n"\
+        "    vec4 c = vec4(0.0, 0.0, 0.0, 0.0);\n"\
         "    if(id_cmap == RAINBOW_MODE){\n"\
         "        c = colormap_rainbow(x, alpha);\n"\
         "    }else if(id_cmap == GRAYSCALE_MODE){\n"\
@@ -518,15 +517,16 @@ char * load_colormap_select_frag(void){
         "    }\n"\
         "    return c;\n"\
         "}\n"\
-        "\n"\
         "vec4 color_from_scalar(uniform KemoViewNormalize colormap, float x)\n"\
         "{\n"\
-        "    float dataNorm = color_normalize(colormap.num_normalize,\n"\
-        "                                     colormap.data_reference, colormap.data_normalized, x);\n"\
-        "    float alpha =  color_normalize(colormap.num_opacity,\n"\
-        "                                   colormap.alpha_reference, colormap.alpha_output, x);\n"\
-        "    return colormap_select(colormap.id_cmap, dataNorm, alpha);\n"\
+        "//    float dataNorm = color_normalize(colormap.num_normalize,\n"\
+        "//                                     colormap.data_reference, colormap.data_normalized, x);\n"\
+        "//    float alpha =  color_normalize(colormap.num_opacity,\n"\
+        "//                                   colormap.alpha_reference, colormap.alpha_output, x);\n"\
+        "//    return colormap_select(colormap.id_cmap, dataNorm, alpha);\n"\
+        "    return vec4(x*0.1,x*0.04,x*0.01,1.0);\n"\
         "}\n"\
+        " */\n"\
         "\n"
     };
     
@@ -546,7 +546,7 @@ char * load_colormap_space_frag(void){
         "//\n"\
         "\n"\
         "float colormap_space_red(float x) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "    if (x < 37067.0 / 158860.0) {\n"\
         "        c = 0.0;\n"\
         "    } else if (x < 85181.0 / 230350.0) {\n"\
@@ -571,8 +571,8 @@ char * load_colormap_space_frag(void){
         "}\n"\
         "\n"\
         "float colormap_space_green(float x) {\n"\
-        "    float xx;\n"\
-        "    float c;\n"\
+        "    float xx = 0.0;\n"\
+        "    float c = 0.0;\n"\
         "    if (x < 0.0) {\n"\
         "        c = 0.0;\n"\
         "    } else if (x < (-sqrt(166317494.0) + 39104.0) / 183830.0) {\n"\
@@ -593,7 +593,7 @@ char * load_colormap_space_frag(void){
         "}\n"\
         "\n"\
         "float colormap_space_blue(float x) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "    if (x < 0.0) {\n"\
         "        c = 0.0;\n"\
         "    } else if (x < 51987.0 / 349730.0) {\n"\
@@ -638,7 +638,7 @@ char * load_colormap_sym_grayscale_frag(void){
         "*/\n"\
         "\n"\
         "float colormap_sym_gray_rgb(float x) {\n"\
-        "    float c;\n"\
+        "    float c = 0.0;\n"\
         "	if (x < 0.0){\n"\
         "        c = 0.0;\n"\
         "	} else if (x > 1.0){\n"\
@@ -1573,8 +1573,10 @@ char * load_phong_texture_vert(void){
 char * load_phong_w_colormap_frag(void){
     const char  phong_w_colormap_frag_src[]
     = {
-        "#version 330\n"\
+        "// #version 330\n"\
+        "//\n"\
         "// phong.frag\n"\
+        "//\n"\
         "\n"\
         "in vec4 position;\n"\
         "in vec4 ex_Color;\n"\
@@ -1636,10 +1638,6 @@ char * load_phong_w_colormap_frag(void){
         "		out_Color += ex_Color * frontMaterial.ambient\n"\
         "                    + ex_Color * frontMaterial.diffuse * abs(diffuse)\n"\
         "                    + tmpsp * fspecular;\n"\
-        "//		if (diffuse > 0.0) {\n"\
-        "//			out_Color += ex_Color * frontMaterial.diffuse * diffuse\n"\
-        "//                        + tmpsp * fspecular;\n"\
-        "//		}\n"\
         "	}\n"\
         "}\n"\
         "\n"\
@@ -1660,6 +1658,10 @@ char * load_phong_w_colormap_vert(void){
         "//\n"\
         "// phong.vert\n"\
         "//\n"\
+        "vec4 color_from_scalar(float x)\n"\
+        "{\n"\
+        "    return vec4(x*0.01,x*0.04,x*0.1,1.0);\n"\
+        "}\n"\
         "\n"\
         "layout (location = 0) in vec4  xyz;\n"\
         "layout (location = 1) in vec4  color;\n"\
@@ -1672,7 +1674,7 @@ char * load_phong_w_colormap_vert(void){
         "uniform mat4 viewMatrix;\n"\
         "uniform mat4 modelViewMat;\n"\
         "uniform mat4 modelNormalMat;\n"\
-        "uniform KemoViewNormalize colormap;\n"\
+        "// uniform KemoViewNormalize colormap;\n"\
         "\n"\
         "out vec4  position;\n"\
         "out vec4  normal;\n"\
@@ -1684,8 +1686,7 @@ char * load_phong_w_colormap_vert(void){
         "    position.w = 1.0;\n"\
         "    position = modelViewMat * position;\n"\
         "	normal =   modelNormalMat * norm;\n"\
-        "    ex_Color = color_from_scalar(colormap, data.x);\n"\
-        "\n"\
+        "    ex_Color = color_from_scalar(data.x);\n"\
         "	gl_Position =  projectionMat * position;\n"\
         "}\n"\
         "\n"

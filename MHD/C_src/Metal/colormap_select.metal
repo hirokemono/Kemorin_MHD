@@ -33,7 +33,7 @@ float4 colormap_space(float x, float alpha);
 
 
 float4 colormap_select(constant int id_cmap, float x, float alpha){
-    float4 c;
+    float4 c = float4(0.0, 0.0, 0.0, 0.0);
     if(id_cmap == RAINBOW_MODE){
         c = colormap_rainbow(x, alpha);
     }else if(id_cmap == GRAYSCALE_MODE){

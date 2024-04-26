@@ -3,6 +3,7 @@
 //    vec4 colormap_select(uniform int id_cmap, float x, float alpha);
 */
 
+/*
 #define RAINBOW_MODE    0
 #define GRAYSCALE_MODE  1
 #define RED_BLUE_MODE   2
@@ -23,9 +24,8 @@ struct KemoViewNormalize{
     int id_cmap;
 }
 
-
 vec4 colormap_select(uniform int id_cmap, float x, float alpha){
-    vec4 c;
+    vec4 c = vec4(0.0, 0.0, 0.0, 0.0);
     if(id_cmap == RAINBOW_MODE){
         c = colormap_rainbow(x, alpha);
     }else if(id_cmap == GRAYSCALE_MODE){
@@ -45,12 +45,13 @@ vec4 colormap_select(uniform int id_cmap, float x, float alpha){
     }
     return c;
 }
-
 vec4 color_from_scalar(uniform KemoViewNormalize colormap, float x)
 {
-    float dataNorm = color_normalize(colormap.num_normalize,
-                                     colormap.data_reference, colormap.data_normalized, x);
-    float alpha =  color_normalize(colormap.num_opacity,
-                                   colormap.alpha_reference, colormap.alpha_output, x);
-    return colormap_select(colormap.id_cmap, dataNorm, alpha);
+//    float dataNorm = color_normalize(colormap.num_normalize,
+//                                     colormap.data_reference, colormap.data_normalized, x);
+//    float alpha =  color_normalize(colormap.num_opacity,
+//                                   colormap.alpha_reference, colormap.alpha_output, x);
+//    return colormap_select(colormap.id_cmap, dataNorm, alpha);
+    return vec4(x*0.1,x*0.04,x*0.01,1.0);
 }
+ */

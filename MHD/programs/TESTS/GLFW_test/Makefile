@@ -114,5 +114,6 @@ clean:
 	rm -f *.mod ;
 	rm -f *~ ;
 	rm -f *.par ;
-	rm -f *.diag
+	rm -f *.diag;
+	rm -f $(SHADER_PREFIX).*;
 	rm -f $(TARGET_KEMOVIEW_GTK)

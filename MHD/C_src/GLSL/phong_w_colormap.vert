@@ -2,6 +2,10 @@
 //
 // phong.vert
 //
+vec4 color_from_scalar(float x)
+{
+    return vec4(x*0.01,x*0.04,x*0.1,1.0);
+}
 
 layout (location = 0) in vec4  xyz;
 layout (location = 1) in vec4  color;
@@ -14,7 +18,7 @@ uniform mat4 projectionMat;
 uniform mat4 viewMatrix;
 uniform mat4 modelViewMat;
 uniform mat4 modelNormalMat;
-uniform KemoViewNormalize colormap;
+// uniform KemoViewNormalize colormap;
 
 out vec4  position;
 out vec4  normal;
@@ -26,7 +30,6 @@ void main(void)
     position.w = 1.0;
     position = modelViewMat * position;
 	normal =   modelNormalMat * norm;
-    ex_Color = color_from_scalar(colormap, data.x);
-
+    ex_Color = color_from_scalar(data.x);
 	gl_Position =  projectionMat * position;
 }
