@@ -30,7 +30,7 @@ typedef enum AAPLVertexInputIndex
     AAPLProjectionMatrix =  2,
     AAPLModelNormalMatrix = 3,
     
-    AAPLColormapSet =       4,
+    AAPLColormapTable =     4,
 
     AAPLOrthogonalMatrix = 1,
 } AAPLVertexInputIndex;
@@ -90,13 +90,13 @@ typedef struct
 typedef struct{
     float data_reference[16];             // Data
     float data_normalized[16];             // normalize
-    int num_normalize;
+    int num_normalize[1];
 
     float alpha_reference[16];             // Data
     float alpha_output[16];             // normalize
-    int num_opacity;
+    int num_opacity[1];
 
-    int id_cmap;
+    int id_cmap[1];
 } KemoViewNormalize;
 
 typedef struct{

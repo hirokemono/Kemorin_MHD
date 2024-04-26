@@ -9,12 +9,11 @@
 // Include header shared between this Metal shader code and C code executing Metal API commands
 #include "KemoViewShaderTypes.h"
 
-/*
-
-float color_normalize(uniform int num_tbl,
-                      uniform float d_in[16],
-                      uniform float d_norm[16],
+float color_normalize(constant int num_tbl[1],
+                      constant float d_in[16],
+                      constant float d_norm[16],
                       float x);
+/*
 float4 colormap_rainbow(float x, float alpha);
 float4 colormap_grayscale(float x, float alpha);
 float4 colormap_red_blue(float x, float alpha);
@@ -59,8 +58,15 @@ float4 color_from_scalar(constant KemoViewNormalize *normalizePointer, float x)
 }
 
 */
-float4 color_from_scalar(float x){
-    return float4(x*0.01, x*0.1, x*0.01, 1.0);
+
+float4 color_from_scalar(constant KemoViewNormalize *colorMapPointer, float x){
+    float dataNorm = color_normalize(colorMapPointer->num_normalize,
+                                     colorMapPointer->data_reference,
+                                     colorMapPointer->data_normalized, x);
+    float alpha =    color_normalize(colorMapPointer->num_opacity,
+                                     colorMapPointer->alpha_reference,
+                                     colorMapPointer->alpha_output, x);
+    return float4(dataNorm*0.2, dataNorm, dataNorm*0.8, alpha);
 };
 
 

@@ -12,7 +12,11 @@ using namespace metal;
 // Include header shared between this Metal shader code and C code executing Metal API commands
 #include "KemoViewShaderTypes.h"
 
-float4 color_from_scalar(float x);
+float color_normalize(int num_tbl[1],
+                      constant float d_in[16],
+                      constant float d_norm[16],
+                      float x);
+float4 color_from_scalar(constant KemoViewNormalize *colorMapPointer, float x);
 
 // Vertex shader outputs and fragment shader inputs
 struct RasterizerData
@@ -41,7 +45,7 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
                   constant matrix_float4x4 *ModelViewMatrixPointer [[buffer(AAPLModelViewMatrix)]],
                   constant matrix_float4x4 *ProjectionMatrixPointer [[buffer(AAPLProjectionMatrix)]],
                   constant matrix_float4x4 *ModelNormalMatrixPointer [[buffer(AAPLModelNormalMatrix)]],
-                  constant KemoViewNormalize *colorMapPointer [[buffer(AAPLColormapSet)]]
+                  constant KemoViewNormalize *colorMapPointer [[buffer(AAPLColormapTable)]]
                   )
 {
     RasterizerData out;
@@ -49,7 +53,6 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
 // Index into the array of positions to get the current vertex.
     float4 objectSpacePosition = vertexArray[vertexID].position;
     float4 objectSpaceNormal =   vertexArray[vertexID].normal;
-    float4 pixelSpaceColor =     vertexArray[vertexID].color;
     float  pixelSpaceData =      vertexArray[vertexID].data.x;
 
     matrix_float4x4 modelViewMatrix = matrix_float4x4(*ModelViewMatrixPointer);
@@ -66,7 +69,7 @@ PhongColorMapVertexShader(uint vertexID [[ vertex_id ]],
     out.pixelSpaceNormal.w = 0.0;
     out.pixelSpaceNormal =   modelNormalMatrix * out.pixelSpaceNormal;
     
-    out.pixelSpaceColor = color_from_scalar(pixelSpaceData);
+    out.pixelSpaceColor = color_from_scalar(colorMapPointer, pixelSpaceData);
     return out;
 }
 

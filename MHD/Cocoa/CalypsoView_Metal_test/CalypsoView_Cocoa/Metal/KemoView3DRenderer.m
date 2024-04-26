@@ -136,6 +136,9 @@
     return;
 }
 
+
+KemoViewNormalize CubeColor;
+
 - (void)drawCubeWithPhong:(id<MTLRenderCommandEncoder> *) renderEncoder
                 pipelines:(KemoView3DPipelines *) kemo3DPipelines
                     depth:(id<MTLDepthStencilState> *) depthState
@@ -164,6 +167,30 @@
                                 length:sizeof(matrix_float4x4)
                                atIndex:AAPLModelNormalMatrix];
         
+        CubeColor.id_cmap[0] = RAINBOW_MODE;
+        
+        CubeColor.num_normalize[0] = 3;
+        CubeColor.data_reference[0] =  0.0;
+        CubeColor.data_normalized[0] = 0.0;
+        CubeColor.data_reference[1] =  3.5;
+        CubeColor.data_normalized[1] = 0.5;
+        CubeColor.data_reference[2] =  7.0;
+        CubeColor.data_normalized[2] = 1.0;
+        
+        CubeColor.num_opacity[0] = 4;
+        CubeColor.alpha_reference[0] = -1.0;
+        CubeColor.alpha_output[0] =     0.4;
+        CubeColor.alpha_reference[1] =  2.0;
+        CubeColor.alpha_output[1] =     0.1;
+        CubeColor.alpha_reference[2] =  3.0;
+        CubeColor.alpha_output[2] =     0.05;
+        CubeColor.alpha_reference[3] =  0.0;
+        CubeColor.alpha_output[3] =     4.0;
+
+        [*renderEncoder setVertexBytes:&(CubeColor)
+                                length:sizeof(KemoViewNormalize)
+                               atIndex:AAPLColormapTable];
+
         [*renderEncoder setFragmentBytes:&(monoViewUnites->lights)
                                   length:(sizeof(LightSourceParameters))
                                  atIndex:AAPLLightsParams];
