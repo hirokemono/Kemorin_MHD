@@ -30,8 +30,9 @@
       real(kind = kreal), intent(in) :: rnorm
       real(kind = kreal), intent(inout) ::  r, g, b
 !
-      real(kind = kreal), parameter :: c_r1 = 0.57147
-      real(kind = kreal), parameter :: c_g1 = 0.6
+      real(kind = kreal), parameter :: c_g1 =  0.6
+      real(kind = kreal), parameter :: r_mul = one / c_g1
+      real(kind = kreal), parameter :: g_mul = one / (one - c_g1)
 !
       real(kind = kreal) :: x
 !
@@ -39,8 +40,8 @@
       x = rnorm
       if (x .lt. zero) then
         r = zero
-      else if(r .lt. c_r1) then
-        r = x * 1.749873134197771
+      else if(r .lt. c_g1) then
+        r = x * r_mul
       else
         r = one
       end if
@@ -48,7 +49,7 @@
       if (x .lt. c_g1) then
         g = zero
       else if(r .lt. one) then
-        g = (x - c_g1) / (one - c_g1)
+        g = (x - c_g1) * g_mul
       else
         g = one
       end if

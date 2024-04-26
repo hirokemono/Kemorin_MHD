@@ -4,9 +4,9 @@
 */
 
 float colormap_redblue_blue(float x) {
-	float abyss =   ZERO;
+	float abyss =    0.0;
 	float blue =     0.1;
-	float white =  ONE / TWO;
+    float white =    0.5;
 	float red =      0.9;
 	
     float c = 0.0;
@@ -15,19 +15,19 @@ float colormap_redblue_blue(float x) {
 	} else if (x >= abyss && x < blue){
         c = 0.8 + 2.0 * x;
 	} else if (x >= blue && x < white){
-        c = ONE - (x - blue) * 0.25;
+        c = 1.0 - (x - blue) * 0.25;
 	} else if (x >= white && x < red){
         c = (red - x) * 2.0;
 	} else {
-        c = ZERO;
+        c = 0.0;
 	}
     return c;
 }
 
 float colormap_redblue_green(float x) {
-	float abyss =   ZERO;
+	float abyss =    0.0;
 	float blue =     0.1;
-	float white =  ONE / TWO;
+	float white =    0.5;
 	float red =      0.9;
 	
     float c = 0.0;
@@ -40,26 +40,26 @@ float colormap_redblue_green(float x) {
 	} else if (x >= white && x < red){
         c = (red - x) * 2.0;
 	} else {
-        c = ZERO;
+        c = 0.0;
 	}
     return c;
 }
 
 float colormap_redblue_red(float x) {
 	float blue =     0.1;
-	float white =  ONE / TWO;
+	float white =    0.5;
 	float red =      0.9;
-	float blood =    ONE;
+	float blood =    1.0;
 	
     float c = 0.0;
 	if (x < blue){
-        c = ZERO;
+        c = 0.0;
 	} else if (x >= blue && x < white){
         c = (x - blue) * 2.0;
 	} else if (x >= white && x < red){
-        c = ONE - (red - x) * 0.25;
+        c = 1.0 - (red - x) * 0.25;
 	} else if (x >= red && x < blood){
-        c = ONE - (x - red) * 2.0;
+        c = 1.0 - (x - red) * 2.0;
 	} else {
         c = 0.8;
 	}

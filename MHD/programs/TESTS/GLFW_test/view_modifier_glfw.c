@@ -337,7 +337,7 @@ static void light_for_cube(struct initial_cube_lighting *init_light, struct shad
 
 static void colormap_for_cube(struct shader_ids *phong_w_cmap){
     int id_colormap = glGetUniformLocation(phong_w_cmap->programId, "colormap.id_cmap");
-    glUniform1i(id_colormap,    RAINBOW_MODE);
+    glUniform1i(id_colormap,    MOLTEN_METAL_MODE);
     
     int id_datavalue =  0;
     int id_normalized = 0;

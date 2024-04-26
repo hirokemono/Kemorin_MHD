@@ -36,22 +36,22 @@ char *phong_colormap_vertex_shader(void){
     len_vertex_shader += len_phong_w_colormap;
     len_vertex_shader += len_colormap_select;
     len_vertex_shader += len_color_normalize;
-//    len_vertex_shader += len_colormap_molten_metal;
-//    len_vertex_shader += len_colormap_orange_cyan;
-//    len_vertex_shader += len_colormap_red_blue;
-//    len_vertex_shader += len_colormap_space;
-//    len_vertex_shader += len_colormap_sym_grayscale;
-//    len_vertex_shader += len_colormap_grayscale;
+    len_vertex_shader += len_colormap_molten_metal;
+    len_vertex_shader += len_colormap_orange_cyan;
+    len_vertex_shader += len_colormap_red_blue;
+    len_vertex_shader += len_colormap_space;
+    len_vertex_shader += len_colormap_sym_grayscale;
+    len_vertex_shader += len_colormap_grayscale;
     len_vertex_shader += len_colormap_rainbow;
     
     char *vertex_shader = alloc_string(len_vertex_shader);
     append_text_c(load_colormap_rainbow_frag(), vertex_shader);
-//    append_text_c(load_colormap_grayscale_frag(), vertex_shader);
-//    append_text_c(load_colormap_sym_grayscale_frag(), vertex_shader);
-//    append_text_c(load_colormap_space_frag(), vertex_shader);
-//    append_text_c(load_colormap_red_blue_frag(), vertex_shader);
-//    append_text_c(load_colormap_orange_cyan_frag(), vertex_shader);
-//    append_text_c(load_colormap_molten_metal_frag(), vertex_shader);
+    append_text_c(load_colormap_grayscale_frag(), vertex_shader);
+    append_text_c(load_colormap_sym_grayscale_frag(), vertex_shader);
+    append_text_c(load_colormap_space_frag(), vertex_shader);
+    append_text_c(load_colormap_red_blue_frag(), vertex_shader);
+    append_text_c(load_colormap_orange_cyan_frag(), vertex_shader);
+    append_text_c(load_colormap_molten_metal_frag(), vertex_shader);
     
     append_text_c(load_color_normalize_frag(), vertex_shader);
     append_text_c(load_colormap_select_frag(), vertex_shader);

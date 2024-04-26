@@ -7,15 +7,16 @@
 
 
 void colormap_molten_metal_c(double rnorm, double *r, double *g, double *b){
-    double c_r1 = 0.57147;
     double c_g1 = 0.6;
-    
+    double r_mul = ONE / c_g1;
+    double g_mul = ONE / (ONE - c_g1);
+
     double x = rnorm;
     
     if (x < ZERO){
         *r = 0.0;
-    }else if (x < c_r1){
-        *r = x * 1.749873134197771;
+    }else if (x < c_g1){
+        *r = x * r_mul;
     }else{
         *r = 1.0;
     };
@@ -23,7 +24,7 @@ void colormap_molten_metal_c(double rnorm, double *r, double *g, double *b){
     if (x < c_g1){
         *g = 0.0;
     }else if(x < 1.0){
-        *g = (x - c_g1) / (ONE - c_g1);
+        *g = (x - c_g1) * g_mul;
     }else{
         *g = 1.0;
     };

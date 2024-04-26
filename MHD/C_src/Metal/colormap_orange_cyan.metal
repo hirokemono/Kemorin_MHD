@@ -7,13 +7,15 @@
 
 
 float colormap_orangecyan_blue(float x) {
+    float red = 1.0;
+
     float c = 0.0;
     if (x < 0.0){
         c = 1.0;
     }else if(x < 0.5){
         c = (1.0 - x * 0.5);
-    }else if(x < 1.0){
-        c = (1.0 - x) * 1.5;
+    }else if(x < red){
+        c = (red - x) * 1.5;
     }else{
         c = 0.0;
     };
@@ -21,13 +23,15 @@ float colormap_orangecyan_blue(float x) {
 }
 
 float colormap_orangecyan_green(float x, float alpha) {
+    float red = 1.0;
+
     float c = 0.0;
     if (x < 0.0){
         c = 1.0;
     }else if(x < 0.5){
         c = 1.0;
-    }else if(x < 1.0){
-        c = (1.0 - x) + 0.5;
+    }else if(x <red){
+        c = (red - x) + 0.5;
     }else{
         c = 0.5;
     };

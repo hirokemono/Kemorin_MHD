@@ -26,23 +26,23 @@ struct KemoViewNormalize{
 
 vec4 colormap_select(int id_cmap, float x, float alpha){
     vec4 c = vec4(0.0, 0.0, 0.0, 0.0);
-//    if(id_cmap == RAINBOW_MODE){
-//        c = colormap_rainbow(x, alpha);
-//    }else if(id_cmap == GRAYSCALE_MODE){
-//        c = colormap_grayscale(x, alpha);
-//    }else if(id_cmap == RED_BLUE_MODE){
-//        c = colormap_red_blue(x, alpha);
-//    }else if(id_cmap == SYM_GRAY_MODE){
-//        c = colormap_sym_grayscale(x, alpha);
-//    }else if(id_cmap == ORANGE_CYAN_MODE){
-//        c = colormap_orange_cyan(x, alpha);
-//    }else if(id_cmap == MOLTEN_METAL_MODE){
-//        c = colormap_molten_metal(x, alpha);
-//    }else if(id_cmap == SPACE_COLOR_MODE){
-//        c = colormap_space(x, alpha);
-//    }else{
+    if(id_cmap == RAINBOW_MODE){
         c = colormap_rainbow(x, alpha);
-//    }
+    }else if(id_cmap == GRAYSCALE_MODE){
+        c = colormap_grayscale(x, alpha);
+    }else if(id_cmap == RED_BLUE_MODE){
+        c = colormap_red_blue(x, alpha);
+    }else if(id_cmap == SYM_GRAY_MODE){
+        c = colormap_sym_grayscale(x, alpha);
+    }else if(id_cmap == ORANGE_CYAN_MODE){
+        c = colormap_orange_cyan(x, alpha);
+    }else if(id_cmap == MOLTEN_METAL_MODE){
+        c = colormap_molten_metal(x, alpha);
+    }else if(id_cmap == SPACE_COLOR_MODE){
+        c = colormap_space(x, alpha);
+    }else{
+        c = colormap_rainbow(x, alpha);
+    }
     return c;
 }
 
