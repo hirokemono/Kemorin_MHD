@@ -92,6 +92,7 @@
 		1895A33C2BDC625000701DEB /* colormap_sym_grayscale.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A3332BDC624F00701DEB /* colormap_sym_grayscale.metal */; };
 		1895A33D2BDC625000701DEB /* colormap_select.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A3342BDC625000701DEB /* colormap_select.metal */; };
 		1895A33F2BDC626400701DEB /* PhongShaderWithColorMap.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A33E2BDC626400701DEB /* PhongShaderWithColorMap.metal */; };
+		1895A3412BDD88AE00701DEB /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1895A3402BDD88AE00701DEB /* Accelerate.framework */; };
 		1899ACC524B8EEC3004E8F1C /* ElasticMenuWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */; };
 		189F8CCC27037268006FB38F /* write_image_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 189F8CCA27037268006FB38F /* write_image_2_bmp.c */; };
 		18A4D60B24C203B4005A559B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A4D60A24C203B4005A559B /* Images.xcassets */; };
@@ -342,6 +343,7 @@
 		1895A3332BDC624F00701DEB /* colormap_sym_grayscale.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_sym_grayscale.metal; path = Metal/colormap_sym_grayscale.metal; sourceTree = "<group>"; };
 		1895A3342BDC625000701DEB /* colormap_select.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_select.metal; path = Metal/colormap_select.metal; sourceTree = "<group>"; };
 		1895A33E2BDC626400701DEB /* PhongShaderWithColorMap.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongShaderWithColorMap.metal; path = Metal/PhongShaderWithColorMap.metal; sourceTree = "<group>"; };
+		1895A3402BDD88AE00701DEB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElasticMenuWindow.m; sourceTree = "<group>"; };
 		1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElasticMenuWindow.h; sourceTree = "<group>"; };
 		189F8CCA27037268006FB38F /* write_image_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = write_image_2_bmp.c; sourceTree = "<group>"; };
@@ -543,6 +545,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1895A3412BDD88AE00701DEB /* Accelerate.framework in Frameworks */,
 				180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */,
 				1831B9652AE89EBD00118B1E /* Metal.framework in Frameworks */,
 				180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */,
@@ -1001,6 +1004,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1895A3402BDD88AE00701DEB /* Accelerate.framework */,
 				181B0A092B4FBABC00E23E1C /* CoreAudioTypes.framework */,
 				1831B9642AE89EBC00118B1E /* Metal.framework */,
 				1831B9622AE89EA600118B1E /* AppKit.framework */,

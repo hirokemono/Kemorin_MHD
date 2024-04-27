@@ -39,8 +39,9 @@ void quicksort_int_c(int *ivec, int *list, int lo, int hi) {
 	return;
 };
 
-void quicksort_double_c(double *dvec, int *list, int lo, int hi) {
-	int i, j, itmp;
+void quicksort_double_c(double *dvec, int *list, long lo, long hi){
+    long i, j;
+	int itmp;
 	double rtmp, pivot;
 	
 	if(lo >= hi) return; 
@@ -69,8 +70,9 @@ void quicksort_double_c(double *dvec, int *list, int lo, int hi) {
 	return;
 }
 
-void quicksort_real_c(float *rvec, int *list, int lo, int hi) {
-	int i, j, itmp;
+void quicksort_real_c(float *rvec, int *list, long lo, long hi){
+    long i, j;
+    int itmp;
 	float rtmp, pivot;
 	
 	if(lo == hi) return; 
@@ -98,42 +100,6 @@ void quicksort_real_c(float *rvec, int *list, int lo, int hi) {
 	if (i < hi) quicksort_real_c(rvec, list, i, hi);
 	return;
 }
-
-void quicksort_double_2idx_c(double *dvec, int *list1, int *list2, long lo, long hi){
-    long i, j;
-    int itmp;
-    double rtmp, pivot;
-    
-    if(lo == hi) return; 
-    i = lo; 
-    j = hi;
-    pivot= dvec[(lo+hi)/2]; 
-    
-    /* Split the array into two parts */
-    do {    
-        while (dvec[i] < pivot) i++; 
-        while (dvec[j] > pivot) j--;
-        if (i<=j) {
-            rtmp = dvec[i];
-            dvec[i] = dvec[j];
-            dvec[j] = rtmp;
-            itmp =    list1[i];
-            list1[i] = list1[j];
-            list1[j] = itmp;
-            itmp =    list2[i];
-            list2[i] = list2[j];
-            list2[j] = itmp;
-            i++;
-            j--;
-        }
-    } while (i<=j);
-    
-    if (lo < j) quicksort_double_2idx_c(dvec, list1, list2, lo, j);
-    if (i < hi) quicksort_double_2idx_c(dvec, list1, list2, i, hi);
-    return;
-}
-
-
 
 /*
 void printarr(int n)
