@@ -265,11 +265,11 @@ int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
 	}else if(selected == ISET_NLINE){
 		iflag = send_num_isoline(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_COLORMAP){
-		iflag = send_PSF_colormap_id(kemo_psf->psf_m[i_current]);
+		iflag = get_PSF_colormap_id(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_NUM_COLOR){
-		iflag = send_each_PSF_color_table_num(kemo_psf->psf_m[i_current]);
+		iflag = get_each_PSF_color_table_num(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_NUM_OPACITY){
-		iflag = send_each_PSF_opacity_table_num(kemo_psf->psf_m[i_current]);
+		iflag = get_each_PSF_opacity_table_num(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_VECTOR_COLOR){
 		iflag = send_each_vector_patch_color(kemo_psf->psf_m[i_current]);
 	};
@@ -296,9 +296,9 @@ void get_each_PSF_color_w_exp(int selected, struct kemoview_psf *kemo_psf,
 	double data = 0.0;
 	int i_current = kemo_psf->psf_a->id_current;
 	if(selected == ISET_COLOR_MIN){
-		data = send_each_PSF_color_table_min(kemo_psf->psf_m[i_current]);
+		data = get_each_PSF_color_table_min(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_COLOR_MAX){
-		data = send_each_PSF_color_table_max(kemo_psf->psf_m[i_current]);
+		data = get_each_PSF_color_table_max(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_WIDTH){
 		data = send_isoline_width(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_PSF_REFVECT){
@@ -327,9 +327,9 @@ double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf){
 	double value = 0.0;
 	int i_current = kemo_psf->psf_a->id_current;
 	if(selected == ISET_OPACITY_MIN){
-		value = send_each_PSF_minimum_opacity(kemo_psf->psf_m[i_current]);
+		value = get_each_PSF_minimum_opacity(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_OPACITY_MAX){
-		value = send_each_PSF_maximum_opacity(kemo_psf->psf_m[i_current]);
+		value = get_each_PSF_maximum_opacity(kemo_psf->psf_m[i_current]);
 	};
 	return value;
 };

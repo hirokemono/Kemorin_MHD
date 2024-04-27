@@ -114,16 +114,19 @@ void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point, double
 void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point, double value, double opacity);
 void set_PSF_colormap_id(struct psf_menu_val *psf_menu, int isel);
 
-int send_PSF_colormap_id(struct psf_menu_val *psf_menu);
-double send_each_PSF_color_table_min(struct psf_menu_val *psf_menu);
-double send_each_PSF_color_table_max(struct psf_menu_val *psf_menu);
-double send_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu);
-double send_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu);
-int send_each_PSF_color_table_num(struct psf_menu_val *psf_menu);
-int send_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu);
+int get_PSF_colormap_id(struct psf_menu_val *psf_menu);
+double get_each_PSF_color_table_min(struct psf_menu_val *psf_menu);
+double get_each_PSF_color_table_max(struct psf_menu_val *psf_menu);
+double get_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu);
+double get_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu);
+int get_each_PSF_color_table_num(struct psf_menu_val *psf_menu);
+int get_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu);
 
-void send_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *color);
-void send_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity);
+void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *color);
+void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity);
+
+void get_each_PSF_colormap_tables(struct psf_menu_val *psf_menu, int *id_cmap, int *num_cmap, int *num_alpha,
+                                  float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm);
 
 void write_each_PSF_colormap_control_file(const char *file_name, const int iflag_draw_axis, 
                                           struct psf_menu_val *psf_menu);

@@ -106,38 +106,45 @@ void set_fline_color_mode_id(struct fline_menu_val *fline_m, int isel){
 
 double get_fline_min_color(struct fline_menu_val *fline_m){
 	double d, c;
-	send_color_table_items_s(fline_m->cmap_fline, 0, &d, &c);
+    get_color_table_items_s(fline_m->cmap_fline, 0, &d, &c);
 	return d;
 }
 double get_fline_max_color(struct fline_menu_val *fline_m){
 	double d, c;
-	int n = send_color_table_num_s(fline_m->cmap_fline);
-	send_color_table_items_s(fline_m->cmap_fline, n-1, &d, &c);
+	int n = get_color_table_num_s(fline_m->cmap_fline);
+    get_color_table_items_s(fline_m->cmap_fline, n-1, &d, &c);
 	return d;
 }
 double get_fline_min_opacity(struct fline_menu_val *fline_m){
-	return send_minimum_opacity_s(fline_m->cmap_fline);
+	return get_minimum_opacity_s(fline_m->cmap_fline);
 };
 double get_fline_max_opacity(struct fline_menu_val *fline_m){
-	return send_maximum_opacity_s(fline_m->cmap_fline);
+	return get_maximum_opacity_s(fline_m->cmap_fline);
 };
 
 int get_fline_color_num(struct fline_menu_val *fline_m){
-	return send_color_table_num_s(fline_m->cmap_fline);
+	return get_color_table_num_s(fline_m->cmap_fline);
 };
 int get_fline_opacity_num(struct fline_menu_val *fline_m){
-	return send_opacity_table_num_s(fline_m->cmap_fline);
+	return get_opacity_table_num_s(fline_m->cmap_fline);
 };
 
 
 void get_fline_color_item(struct fline_menu_val *fline_m,
-			int i_point, double *value, double *color){
-	send_color_table_items_s(fline_m->cmap_fline, i_point, value, color);
+                          int i_point, double *value, double *color){
+    get_color_table_items_s(fline_m->cmap_fline, i_point, value, color);
 }
 void get_fline_opacity_item(struct fline_menu_val *fline_m,
-			int i_point, double *value, double *opacity){
-	send_opacity_table_items_s(fline_m->cmap_fline, i_point, value, opacity);
+                            int i_point, double *value, double *opacity){
+    get_opacity_table_items_s(fline_m->cmap_fline, i_point, value, opacity);
 }
+
+void get_fline_colormap_tables(struct fline_menu_val *fline_m, int *id_cmap, int *num_cmap, int *num_alpha,
+                               float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm){
+    get_colormap_to_tables(fline_m->cmap_fline, id_cmap, num_cmap, num_alpha,
+                           cmap_data, cmap_norm, alpha_data, alpha_norm);
+}
+
 
 void write_fline_colormap_file(struct kv_string *filename, const int iflag_draw_axis,
                                struct fline_menu_val *fline_m){
