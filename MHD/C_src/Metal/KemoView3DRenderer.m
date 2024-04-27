@@ -278,8 +278,7 @@
         = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
     NSAssert(kemo3DPipelines->phongPipelineState, @"Failed to create pipeline state: %@", error);
     
-/* Configure a pipeline descriptor that is used to create a pipeline state.
-    
+/* Configure a pipeline descriptor that is used to create a pipeline state. */
     pipelineStateDescriptor.label = @"Phong Shader Pipeline with colormap construction";
     pipelineStateDescriptor.vertexFunction =   kemoViewShaders->phongColorMapVertexFunction;
     pipelineStateDescriptor.fragmentFunction = kemoViewShaders->phongColorMapFragmentFunction;
@@ -297,7 +296,6 @@
     kemo3DPipelines->phongColorMapPipelineState
         = [device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
     NSAssert(kemo3DPipelines->phongColorMapPipelineState, @"Failed to create pipeline state: %@", error);
-    */
 
 /* Configure a pipeline descriptor that is used to create a pipeline state. */
     pipelineStateDescriptor.label = @"Texure Shader Pipeline";
