@@ -690,14 +690,23 @@ double kemoview_get_each_PSF_colormap_range(struct kemoviewer_type *kemoviewer,
 void kemoview_get_PSF_color_items(struct kemoviewer_type *kemoviewer,
                                   int i_point, double *value, double *color){
     int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
-    send_each_PSF_color_table_items(kemoviewer->kemo_psf->psf_m[i_psf], 
-									i_point, value, color);
+    get_each_PSF_color_table_items(kemoviewer->kemo_psf->psf_m[i_psf], 
+                                   i_point, value, color);
 }
 void kemoview_get_PSF_opacity_items(struct kemoviewer_type *kemoviewer,
                                     int i_point, double *value, double *opacity){
     int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
-    send_each_PSF_opacity_table_items(kemoviewer->kemo_psf->psf_m[i_psf],
-									  i_point, value, opacity);
+    get_each_PSF_opacity_table_items(kemoviewer->kemo_psf->psf_m[i_psf],
+                                     i_point, value, opacity);
+}
+void kemoview_get_PSF_colormap_tables(struct kemoviewer_type *kemoviewer, 
+                                      int *id_cmap, int *num_cmap, int *num_alpha,
+                                      float *cmap_data, float *cmap_norm, 
+                                      float *alpha_data, float *alpha_norm){
+    int i_psf = kemoviewer->kemo_psf->psf_a->id_current;
+    get_each_PSF_colormap_tables(kemoviewer->kemo_psf->psf_m[i_psf], 
+                                 id_cmap, num_cmap, num_alpha,
+                                 cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
 
 void kemoview_write_PSF_colormap_file(struct kv_string *filename,
@@ -822,6 +831,13 @@ void kemoview_get_fline_opacity_item(struct kemoviewer_type *kemoviewer,
                                      int i_point, double *value, double *opacity){
 	get_fline_opacity_item(kemoviewer->kemo_fline->fline_m,
                            i_point, value, opacity);
+}
+void kemoview_get_fline_colormap_tables(struct kemoviewer_type *kemoviewer, 
+                                        int *id_cmap, int *num_cmap, int *num_alpha,
+                                        float *cmap_data, float *cmap_norm,
+                                        float *alpha_data, float *alpha_norm){
+    get_fline_colormap_tables(kemoviewer->kemo_fline->fline_m, id_cmap, num_cmap, num_alpha,
+                              cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
 
 void kemoview_write_fline_colormap_file(struct kv_string *filename,

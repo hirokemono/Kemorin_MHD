@@ -133,8 +133,8 @@ void set_PSF_colormap_id(struct psf_menu_val *psf_menu, int isel){
 	set_color_mode_by_id(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], isel);
 	return;
 }
-int send_PSF_colormap_id(struct psf_menu_val *psf_menu){
-	return send_color_mode_id_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
+int get_PSF_colormap_id(struct psf_menu_val *psf_menu){
+	return get_color_mode_id_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
 };
 
 double send_psf_data_min(struct psf_data *psf_d, int icomp){return psf_d->d_min[icomp];};
@@ -203,35 +203,42 @@ void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point, doub
 	return;
 }
 
-double send_each_PSF_color_table_min(struct psf_menu_val *psf_menu){
+double get_each_PSF_color_table_min(struct psf_menu_val *psf_menu){
 	double d, c;
-	send_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], 0, &d, &c);
+    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], 0, &d, &c);
 	return d;
 }
-double send_each_PSF_color_table_max(struct psf_menu_val *psf_menu){
+double get_each_PSF_color_table_max(struct psf_menu_val *psf_menu){
 	double d, c;
-	int n = send_color_table_num_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
-	send_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], n-1, &d, &c);
+	int n = get_color_table_num_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
+    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], n-1, &d, &c);
 	return d;
 }
-double send_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu){
-	return send_minimum_opacity_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
+double get_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu){
+	return get_minimum_opacity_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
 }
-double send_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu){
-	return send_maximum_opacity_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
+double get_each_PSF_maximum_opacity(struct psf_menu_val *psf_menu){
+	return get_maximum_opacity_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
 }
-int send_each_PSF_color_table_num(struct psf_menu_val *psf_menu){
-	return send_color_table_num_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
+int get_each_PSF_color_table_num(struct psf_menu_val *psf_menu){
+	return get_color_table_num_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
 }
-int send_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu){
-	return send_opacity_table_num_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
+int get_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu){
+	return get_opacity_table_num_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
 }
 
-void send_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *color){
-	send_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, color);
+void get_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *color){
+    get_color_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, color);
 }
-void send_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity){
-	send_opacity_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, opacity);
+void get_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity){
+    get_opacity_table_items_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, opacity);
+}
+
+void get_each_PSF_colormap_tables(struct psf_menu_val *psf_menu, int *id_cmap, int *num_cmap, int *num_alpha,
+                                  float *cmap_data, float *cmap_norm, float *alpha_data, float *alpha_norm){
+    get_colormap_to_tables(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], 
+                           id_cmap, num_cmap, num_alpha,
+                           cmap_data, cmap_norm, alpha_data, alpha_norm);
 }
 
 void write_each_PSF_colormap_control_file(const char *file_name, const int iflag_draw_axis, 
