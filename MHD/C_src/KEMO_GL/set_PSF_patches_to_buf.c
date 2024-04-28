@@ -134,7 +134,11 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
 	double radius = psf_m->vector_thick;
 	double ascale = ONE / psf_m->scale_vect;
 	
-	inum_buf = ist_patch;
+    struct colormap_params *cmap_s = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf];
+    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
+    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+
+    inum_buf = ist_patch;
 	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
 		if (inod % psf_m->increment_vect == 0) {
             if(psf_s->norm_nod[inod][0] != 0.0
@@ -163,7 +167,7 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
 				
 				d_mag = sqrt(v_xyz[0]*v_xyz[0]+v_xyz[1]*v_xyz[1]+v_xyz[2]*v_xyz[2]);
 				if(psf_m->vector_patch_color == RAINBOW_SURFACE){
-					set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf],
+					set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
                                            d_mag, dcolor);
 				} else {
 					for(nd=0;nd<4;nd++){dcolor[nd] = arrow_c[nd];};
@@ -193,6 +197,8 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
 			};
 		};
 	};
+    dealloc_colormap_array(omap_array);
+    dealloc_colormap_array(cmap_array);
 	
 	return inum_buf;
 }

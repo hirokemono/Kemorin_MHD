@@ -74,7 +74,11 @@ long solid_colorbar_box_to_buf(const long ist_quad,
 	double f_color[4], l_color[4];
 	long i, nd;
 	
-	set_rainbow_color_code(cmap_s, cbar_wk->psf_min, f_color);
+    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
+    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+	set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+                           cbar_wk->psf_min, f_color);
+    
 	f_color[3] = ONE;
 	for(nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	
@@ -91,8 +95,10 @@ long solid_colorbar_box_to_buf(const long ist_quad,
 		y1 = cbar_wk->ybar_min + cbar_wk->ydelta * (float) i;
 		psf_value = cbar_wk->psf_min + (cbar_wk->psf_max - cbar_wk->psf_min)
 									* (double)(i+1) / (double)cbar_wk->num_quad;
-		set_rainbow_color_code(cmap_s, psf_value, f_color);
-		f_color[3] = ONE;
+		set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+                               psf_value, f_color);
+
+        f_color[3] = ONE;
 		
 		x1[1] = y1;
 		for(nd=0;nd<4;nd++) {c1[nd] = l_color[nd];};
@@ -111,6 +117,8 @@ long solid_colorbar_box_to_buf(const long ist_quad,
 		for(nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
 	inum_quad = ist_quad + cbar_wk->num_quad;
+    dealloc_colormap_array(omap_array);
+    dealloc_colormap_array(cmap_array);
 	return inum_quad;
 };
 
@@ -128,8 +136,12 @@ long fade_colorbar_box_to_buf(const long ist_quad,
 	long i, nd;
 	
 	
-	set_rainbow_color_code(cmap_s, cbar_wk->psf_min, f_color);
-	for (nd=0; nd<3; nd++) {
+    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
+    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+	set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+                           cbar_wk->psf_min, f_color);
+
+    for (nd=0; nd<3; nd++) {
 		f_color[nd] = f_color[nd] * f_color[3]
 				+ bg_color[nd] * (ONE - f_color[3]);
 	};
@@ -150,7 +162,8 @@ long fade_colorbar_box_to_buf(const long ist_quad,
 		
 		psf_value = cbar_wk->psf_min + (cbar_wk->psf_max - cbar_wk->psf_min)
 									* (double)(i+1) / (double)cbar_wk->num_quad;
-		set_rainbow_color_code(cmap_s, psf_value, f_color);
+		set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+                               psf_value, f_color);
 	
 		for (nd=0; nd<3; nd++) {
 			f_color[nd] = f_color[nd] * f_color[3]
@@ -175,6 +188,9 @@ long fade_colorbar_box_to_buf(const long ist_quad,
 		for (nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
 	inum_quad = ist_quad + cbar_wk->num_quad;
+
+    dealloc_colormap_array(omap_array);
+    dealloc_colormap_array(cmap_array);
 	return inum_quad;
 };
 

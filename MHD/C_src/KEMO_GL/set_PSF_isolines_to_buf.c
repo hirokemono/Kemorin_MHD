@@ -67,6 +67,9 @@ static long set_PSF_isolines_to_buf(const long ist_patch, int ist, int ied,
 	double v_line;
 	double f_color[4];
 	
+    struct colormap_params *cmap_s = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf];
+    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
+    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 	if (psf_m->isoline_color == BLACK_LINE){
 		for(nd=0;nd<4;nd++) {f_color[nd] = black[nd];}
 	} else if(psf_m->isoline_color == WHITE_LINE){
@@ -79,14 +82,15 @@ static long set_PSF_isolines_to_buf(const long ist_patch, int ist, int ied,
 								   psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
 		
 		if (psf_m->isoline_color == RAINBOW_LINE){
-			set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf],
-								   v_line, f_color);
+			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+                                   v_line, f_color);
 		};
 		inum_patch = set_each_isoline_to_buf(inum_patch, psf_m->isoline_width, 
 											 v_line, psf_m->icomp_draw_psf,
                                              f_color, psf_s, psf_buf);
 	};
-	
+    dealloc_colormap_array(omap_array);
+    dealloc_colormap_array(cmap_array);
 	return inum_patch;
 }
 

@@ -133,16 +133,14 @@ void set_two_color_scale_g(double val, double *f_color){
 	return;
 }
 
-void set_rainbow_color_code(struct colormap_params *cmap_s, double val_pe,
+void set_rainbow_color_code(struct colormap_array *cmap_array,
+                            struct colormap_array *omap_array,
+                            int id_color_mode, double val_pe,
 							double *f_color){
-    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
-	set_rgb_from_value_s(cmap_array, cmap_s->id_color_mode, val_pe,
+	set_rgb_from_value_s(cmap_array, id_color_mode, val_pe,
                          &f_color[0], &f_color[1], &f_color[2]);
-    dealloc_colormap_array(cmap_array);
 
-    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
     f_color[3] = set_opacity_from_value_s(omap_array, val_pe);
-    dealloc_colormap_array(omap_array);
 	return;
 }
 
