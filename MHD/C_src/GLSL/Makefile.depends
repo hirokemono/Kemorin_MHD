@@ -1,20 +1,20 @@
 #
 drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
   $(C_SRCDIR)/GLSL/drawGL_by_VAO.h \
+  $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/GLSL/glsl.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
   $(C_SRCDIR)/GLSL/shaders.h \
-  $(C_SRCDIR)/GLSL/kemoviewer_gl.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/GLSL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/m_vertex_buffer.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoviewer_data.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf.h \
@@ -353,10 +353,10 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 glsl.o: $(C_SRCDIR)/GLSL/glsl.c \
   $(C_SRCDIR)/GLSL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
@@ -472,10 +472,10 @@ init_gl_lighting_c.o: \
   $(C_SRCDIR)/GLSL/init_gl_lighting_c.c \
   $(C_SRCDIR)/GLSL/init_gl_lighting_c.h \
   $(C_SRCDIR)/GLSL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
@@ -707,10 +707,10 @@ move_draw_objects_gl.o: \
   $(C_SRCDIR)/GLSL/move_draw_objects_gl.c \
   $(C_SRCDIR)/GLSL/move_draw_objects_gl.h \
   $(C_SRCDIR)/GLSL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \
@@ -1179,9 +1179,9 @@ write_gl_window_to_file.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/GLSL/move_draw_objects_gl.h \
   $(C_SRCDIR)/GLSL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/KEMO_GL/m_transfer_matrices.h \

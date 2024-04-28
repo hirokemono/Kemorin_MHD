@@ -187,8 +187,11 @@ void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_m
 
 void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
                             double value, double *red, double *green, double *blue){
-	set_rgb_from_value_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf],
-                         value, red, green, blue);
+    struct colormap_params *cmap_s = psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf];
+    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
+	set_rgb_from_value_s(cmap_array, cmap_s->id_color_mode, value,
+                         red, green, blue);
+    dealloc_colormap_array(cmap_array);
 	return;
 }
 double get_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value){

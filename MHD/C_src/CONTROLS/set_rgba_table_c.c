@@ -58,25 +58,24 @@ void copy_colormap_name_to_ctl(struct colormap_params *cmap_s,
 	return;
 };
 
-void set_rgb_from_value_s(struct colormap_params *cmap_s,
-			double value, double *red, double *green, double *blue){
-	struct colormap_array *cmap_tmp = init_colormap_from_list(cmap_s->colormap);
-    double rnorm = color_normalize_linear_segment_c(cmap_tmp->num,
-                                                       cmap_tmp->data,
-                                                       cmap_tmp->value, value);
-	dealloc_colormap_array(cmap_tmp);
+void set_rgb_from_value_s(struct colormap_array *cmap_array,
+                          int id_color_mode, double value,
+                          double *red, double *green, double *blue){
+    double rnorm = color_normalize_linear_segment_c(cmap_array->num,
+                                                    cmap_array->data,
+                                                    cmap_array->value, value);
 	
-	if(cmap_s->id_color_mode == GRAYSCALE_MODE){
+	if(id_color_mode == GRAYSCALE_MODE){
 		colormap_grayscale_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
+	} else if(id_color_mode == SYM_GRAY_MODE){
 		colormap_sym_grayscale_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == RED_BLUE_MODE){
+	} else if(id_color_mode == RED_BLUE_MODE){
 		colormap_red_blue_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == ORANGE_CYAN_MODE){
+	} else if(id_color_mode == ORANGE_CYAN_MODE){
 		colormap_orange_cyan_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == MOLTEN_METAL_MODE){
+	} else if(id_color_mode == MOLTEN_METAL_MODE){
 		colormap_molten_metal_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == SPACE_COLOR_MODE){
+	} else if(id_color_mode == SPACE_COLOR_MODE){
 		colormap_space_c(rnorm, red, green, blue);
 	} else {
         colormap_rainbow_c(rnorm, red, green, blue);
