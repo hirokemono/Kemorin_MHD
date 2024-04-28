@@ -140,7 +140,9 @@ void set_rainbow_color_code(struct colormap_params *cmap_s, double val_pe,
                          &f_color[0], &f_color[1], &f_color[2]);
     dealloc_colormap_array(cmap_array);
 
-    f_color[3] = set_opacity_from_value_s(cmap_s, val_pe);
+    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+    f_color[3] = set_opacity_from_value_s(omap_array, val_pe);
+    dealloc_colormap_array(omap_array);
 	return;
 }
 

@@ -195,7 +195,10 @@ void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
 	return;
 }
 double get_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value){
-	return set_opacity_from_value_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], value);
+    struct colormap_params *cmap_s = psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf];
+    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+	return set_opacity_from_value_s(omap_array, value);
+    dealloc_colormap_array(omap_array);
 }
 void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point, double value, double color){
 	set_each_color_point_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], i_point, value, color);
