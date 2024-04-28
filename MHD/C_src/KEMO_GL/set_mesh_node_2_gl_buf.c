@@ -33,7 +33,7 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
 	
 	inum_tri = ist_tri;
     for(i = 0; i < mesh_s->num_pe_sf; i++){
-        ip = mesh_s->ip_domain_far[i] - 1;
+        ip = (int) mesh_s->ip_domain_far[i] - 1;
 		if(iflag_domain[ip] != 0){
 			ist = istack_grp[ip];
 			ied = istack_grp[ip+1];

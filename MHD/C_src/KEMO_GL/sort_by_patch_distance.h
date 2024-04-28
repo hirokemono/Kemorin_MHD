@@ -11,6 +11,10 @@
 #include "m_gl_transfer_matrix.h"
 #include "quicksort_c.h"
 
+#ifdef __APPLE__
+  #include <Accelerate/Accelerate.h>
+#endif
+
 /* prototypes */
 
 void copy_patch_distance_mesh(struct viewer_mesh *mesh_s);

@@ -125,10 +125,10 @@ struct viewer_mesh {
 	double *z_domain_view;
 	double *z_ele_grp_view;
 	double *z_surf_grp_view;
-	int *iele_domain_far;
-	int *iele_grp_far;
-	int *isurf_grp_far;
-	int *ip_domain_far;
+    long *iele_domain_far;
+    long *iele_grp_far;
+    long *isurf_grp_far;
+	long *ip_domain_far;
 };
 
 /* prototypes */

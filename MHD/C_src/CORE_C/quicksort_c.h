@@ -6,9 +6,9 @@
 
 /* prototypes */
 
-void quicksort_int_c(int *ivec, int *list, int lo, int hi);
-void quicksort_double_c(double *dvec, int *list, long lo, long hi);
-void quicksort_real_c(float *rvec, int *list, long lo, long hi);
+void quicksort_int8_c(long *ivec, long *list, long lo, long hi);
+void quicksort_double_c(double *dvec, long *list, long lo, long hi);
+void quicksort_real_c(float *rvec, long *list, long lo, long hi);
 
 #endif
 

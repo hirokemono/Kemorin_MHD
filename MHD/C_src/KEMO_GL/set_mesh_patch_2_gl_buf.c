@@ -35,13 +35,13 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
 };
 
 
-long count_mesh_patch_buf(int *istack_grp, int *ip_domain_far,
-                          struct viewer_mesh *mesh_s, int *iflag_domain){
+static long count_mesh_patch_buf(int *istack_grp, long *ip_domain_far,
+                                 struct viewer_mesh *mesh_s, int *iflag_domain){
 	int i, ip, icou, ist, ied;
 	
 	long num_patch = 0;
 	for(i = 0; i < mesh_s->num_pe_sf; i++){
-		ip = ip_domain_far[i] - 1;
+		ip = (int) ip_domain_far[i] - 1;
 		if(iflag_domain[ip] != 0){
 			ist = istack_grp[ip];
 			ied = istack_grp[ip+1];
@@ -58,16 +58,18 @@ static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int poly
                                   int surface_color, int color_mode, int color_loop,
                                   double opacity, float single_color[4], 
                                   int num_grp, int *istack_grp, int *item_grp, 
-                                  double **normal_ele, double **normal_nod, int *isort_grp, 
-                                  int *ip_domain_far, int igrp, struct viewer_mesh *mesh_s, int *iflag_domain, 
+                                  double **normal_ele, double **normal_nod,
+                                  long *isort_grp, long *ip_domain_far, int igrp,
+                                  struct viewer_mesh *mesh_s, int *iflag_domain,
                                   struct gl_strided_buffer *mesh_buf){
-	int i, ip, icou, inum, ist, ied, j, jnum;
+	int i, ip, icou, ist, ied, j;
+    long inum, jnum;
 	double f_color[4];
 	
 	long inum_tri = ist_tri;
 	
 	for(i = 0; i < mesh_s->num_pe_sf; i++){
-		ip = ip_domain_far[i] - 1;
+		ip = (int) ip_domain_far[i] - 1;
 		if(iflag_domain[ip] != 0){
 			set_patch_color_mode_c(surface_color, color_mode, color_loop,
                                    ip, mesh_s->num_pe_sf,

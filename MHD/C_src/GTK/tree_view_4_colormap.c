@@ -240,7 +240,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     float height = 200.0;
     float top_s, height_s;
     
-    int *i_point;
+    long   *i_point;
 	double *d_point;
 	double o_point;
     double d_bottom = 0.0;
@@ -250,10 +250,10 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     int i;
     int num_cmap = count_real2_clist(cmap_param->colormap);
 	int num_omap = count_real2_clist(cmap_param->opacitymap);
-    int ntot = num_cmap + num_omap;
+    long ntot = num_cmap + num_omap;
 	double d1, v1;
 	
-	i_point = (int *) calloc(ntot, sizeof(int));
+	i_point = (long *) calloc(ntot, sizeof(long));
 	d_point = (double *) calloc(ntot, sizeof(double));
 	for(i=0;i<num_cmap;i++){
 		set_from_real2_clist_at_index(i, cmap_param->colormap, &d_point[i], &v1);

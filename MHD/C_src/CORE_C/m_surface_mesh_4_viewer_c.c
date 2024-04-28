@@ -214,7 +214,7 @@ void alloc_domain_stack_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_domain_surf_item_viewer_s(struct viewer_mesh *mesh_s){
 	mesh_s->isurf_domain_sf = (int *)calloc(mesh_s->nsurf_domain_sf,sizeof(int));
-	mesh_s->iele_domain_far = (int *)calloc(mesh_s->nsurf_domain_sf,sizeof(int));
+	mesh_s->iele_domain_far = (long *)calloc(mesh_s->nsurf_domain_sf,sizeof(long));
 	mesh_s->z_domain_view = (double *)calloc(mesh_s->nsurf_domain_sf,sizeof(double));
 	return;
 };
@@ -276,7 +276,7 @@ void alloc_nod_grp_item_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_ele_grp_item_viewer_s(struct viewer_mesh *mesh_s){
 	mesh_s->ele_item_sf = (int *)calloc(mesh_s->nele_ele_sf,sizeof(int));
-	mesh_s->iele_grp_far = (int *)calloc(mesh_s->nele_ele_sf,sizeof(int));
+	mesh_s->iele_grp_far = (long *)calloc(mesh_s->nele_ele_sf,sizeof(long));
 	mesh_s->z_ele_grp_view = (double *)calloc(mesh_s->nele_ele_sf,sizeof(double));
 	return;
 };
@@ -292,7 +292,7 @@ void alloc_ele_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_surf_grp_item_viewer_s(struct viewer_mesh *mesh_s){
 	mesh_s->surf_item_sf = (int *)calloc(mesh_s->nsurf_surf_sf,sizeof(int));
-	mesh_s->isurf_grp_far = (int *)calloc(mesh_s->nsurf_surf_sf,sizeof(int));
+	mesh_s->isurf_grp_far = (long *)calloc(mesh_s->nsurf_surf_sf,sizeof(long));
 	mesh_s->z_surf_grp_view = (double *)calloc(mesh_s->nsurf_surf_sf,sizeof(double));
 	return;
 };
@@ -326,7 +326,7 @@ void alloc_domain_center_s(struct viewer_mesh *mesh_s){
 	};
 
 	mesh_s->z_center_view = (double *)calloc(mesh_s->num_pe_sf,sizeof(double));
-	mesh_s->ip_domain_far = (int *)calloc(mesh_s->num_pe_sf,sizeof(int));
+	mesh_s->ip_domain_far = (long *)calloc(mesh_s->num_pe_sf,sizeof(long));
 	
 	return;
 };

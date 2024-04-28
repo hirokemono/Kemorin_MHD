@@ -60,14 +60,12 @@ void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name)
 
 
 void alloc_psfs_sorting_list(struct kemo_array_control *psf_a){
-    psf_a->z_ele_viz =    (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));
     psf_a->ipsf_viz_far = (int *)calloc(psf_a->ntot_psf_patch,sizeof(int));
     psf_a->iele_viz_far = (int *)calloc(psf_a->ntot_psf_patch,sizeof(int));
     return;
 }
 
 void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a){
-    free(psf_a->z_ele_viz);
     free(psf_a->ipsf_viz_far);
     free(psf_a->iele_viz_far);
     return;

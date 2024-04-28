@@ -32,7 +32,6 @@ struct kemo_array_control{
     long istack_trans_psf_txtur;
     long istack_trans_psf_patch;
     
-    double *z_ele_viz;
     int *ipsf_viz_far;
 	int *iele_viz_far;
 	

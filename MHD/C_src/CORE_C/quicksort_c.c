@@ -9,8 +9,8 @@ int A[maxsize];
 int list[maxsize];
 */
 
-void quicksort_int_c(int *ivec, int *list, int lo, int hi) {
-	int i, j, pivot, itmp;
+void quicksort_int8_c(long *ivec, long *list, long lo, long hi) {
+    long i, j, pivot, itmp;
 	
 	
 	if(lo == hi) return; 
@@ -34,14 +34,14 @@ void quicksort_int_c(int *ivec, int *list, int lo, int hi) {
 		}
 	} while (i<=j);
 	
-	if (lo < j) quicksort_int_c(ivec, list, lo, j);
-	if (i < hi) quicksort_int_c(ivec, list, i, hi);
+	if (lo < j) quicksort_int8_c(ivec, list, lo, j);
+	if (i < hi) quicksort_int8_c(ivec, list, i, hi);
 	return;
 };
 
-void quicksort_double_c(double *dvec, int *list, long lo, long hi){
+void quicksort_double_c(double *dvec, long *list, long lo, long hi){
     long i, j;
-	int itmp;
+	long itmp;
 	double rtmp, pivot;
 	
 	if(lo >= hi) return; 
@@ -70,9 +70,9 @@ void quicksort_double_c(double *dvec, int *list, long lo, long hi){
 	return;
 }
 
-void quicksort_real_c(float *rvec, int *list, long lo, long hi){
+void quicksort_real_c(float *rvec, long *list, long lo, long hi){
     long i, j;
-    int itmp;
+    long itmp;
 	float rtmp, pivot;
 	
 	if(lo == hi) return; 
@@ -102,7 +102,7 @@ void quicksort_real_c(float *rvec, int *list, long lo, long hi){
 }
 
 /*
-void printarr(int n)
+void printarr(long n)
 {
 	int i;
 	for(i=0;i<n;i++)
@@ -113,7 +113,7 @@ void printarr(int n)
 
 main()
 {
-  int i,s;
+ long i,s;
 	printf("enter the number of numbers to be entered \n");
 	scanf("%d",&s);
 	  for(i=0;i<s;i++)
@@ -125,7 +125,7 @@ main()
 	printarr(s);
 	
 	for(i=lo;i<hi+1;i++) list[i] = i;
-	  quicksort_int_c(A, list, 0, s-1);
+  quicksort_int8_c(A, list, 0, s-1);
   printf("array after sorting\n");
   printarr(s);
 }
