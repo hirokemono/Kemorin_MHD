@@ -50,21 +50,21 @@ const int ASCENDING  = 1;
 const int DESCENDING = 0;
 
 
-void init(int num, int *ires, int *org, long *idx);
+void init(long num, int *ires, int *org, long *idx);
 void print(long num, const int *org, const int *ires, const long *idx);
-void test(int num, const int *ires);
+void test(long num, const int *ires);
 //inline void exchange(int i, int j);
 void exchange(int *i, int *j);
 void exchange_long(long *i, long *j);
 void exchange_double(double *x, double *y);
 
-void quicksort_int_c(int *ivec, long *list, int lo, int hi);
-void sort(int num, int *ires, long *idx);
-void impBitonicSort(int num, int *ires, long *idx);
-void recBitonicSort( int lo, int cnt, int dir, int *ires, long *idx);
-void bitonicMerge( int lo, int cnt, int dir, int *ires, long *idx);
+void quicksort_int_c(int *ivec, long *list, long lo, long hi);
+void sort(long num, int *ires, long *idx);
+void impBitonicSort(long num, int *ires, long *idx);
+void recBitonicSort(long lo, long cnt, int dir, int *ires, long *idx);
+void bitonicMerge(long lo, long cnt, int dir, int *ires, long *idx);
 
-void Psort(int num, int *ires, long *idx);
+void Psort(long num, int *ires, long *idx);
 void * PrecBitonicSort(void *arg);
 void * PbitonicMerge(void *arg);
 void OMPimpBitonicSort(int num, int *ires, long *idx);
@@ -134,7 +134,7 @@ int main( int argc, char **argv ) {
         exit( 1 );
     }
     
-    int Narray = 1 << atoi( argv[ 1 ] );
+    long Narray = 1 << atoi( argv[ 1 ] );
     nt = atoi( argv[ 2 ] );
     
     threadlayers = nt;
@@ -143,13 +143,13 @@ int main( int argc, char **argv ) {
     }
     
     int *ia;
-    ia = (int *) malloc( Narray * sizeof( int ) );
-    int *org = (int *) malloc( Narray * sizeof( int ) );
-    long *idx = (long *) malloc( Narray * sizeof( long ) );
+    ia = (int *) malloc(Narray * sizeof(int));
+    int *org = (int *) malloc(Narray * sizeof(int));
+    long *idx = (long *) malloc(Narray * sizeof(long));
     
     init(Narray, ia, org, idx);
     gettimeofday( &startwtime, NULL );
-    quicksort_int_c(ia, idx, 0, Narray);
+    quicksort_int_c(ia, idx, 0, (Narray-1));
     gettimeofday( &endwtime, NULL );
     seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
     printf( "quicksort wall clock time = %f\n", seq_time );
@@ -170,7 +170,7 @@ int main( int argc, char **argv ) {
     Psort(Narray, ia, idx);
     gettimeofday( &endwtime, NULL );
     seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf( "Bitonic parallel recursive with qsort and %i threads wall clock time = %f\n", 1 << nt, seq_time );
+    printf( "Bitonic parallel recursive with quicksort and %i threads wall clock time = %f\n", 1 << nt, seq_time );
     test(Narray, ia);
     print(Narray, org, ia, idx);
     
@@ -244,10 +244,10 @@ int main( int argc, char **argv ) {
 
 
 /** procedure test() : verify sort results **/
-void test(int num, const int *ires){
+void test(long num, const int *ires){
   int pass = 1;
-  int i;
-  for (i = 1; i < num; i++) {
+  long i;
+    for (i=1;i<num;i++) {
     pass &= (ires[i-1] <= ires[i]);
   }
     
@@ -255,10 +255,10 @@ void test(int num, const int *ires){
 }
 
 
-/** procedure init(int num, int *ires, int *org, long *idx) : initialize array "ires" with data **/
-void init(int num, int *ires, int *org, long *idx) {
-  int i;
-  for (i = 0; i < num; i++) {
+/** procedure init(long num, int *ires, int *org, long *idx) : initialize array "ires" with data **/
+void init(long num, int *ires, int *org, long *idx) {
+  long i;
+  for (i=0;i<num;i++) {
         ires[i] = rand() % num; // (N - i);
         org[i] = ires[i];
         idx[i] = i;
@@ -298,16 +298,14 @@ inline void exchange_double(double *x, double *y) {
   *y = t;
 }
 
-void quicksort_int_c(int *ivec, long *list, int lo, int hi) {
+void quicksort_int_c(int *ivec, long *list, long lo, long hi){
     int pivot, itmp;
     long i, j, it8;
-	
 	
 	if(lo == hi) return; 
 	i=lo; 
 	j=hi;
 	pivot= ivec[(lo+hi)/2]; 
-	
 	/* Split the array into two parts */
 	do {    
 		while (ivec[i] < pivot) i++; 
@@ -316,7 +314,7 @@ void quicksort_int_c(int *ivec, long *list, int lo, int hi) {
 			itmp = ivec[i];
 			ivec[i] = ivec[j];
 			ivec[j] = itmp;
-			it8 =    list[i];
+			it8 =     list[i];
 			list[i] = list[j];
 			list[j] = it8;
 			i++;
@@ -335,10 +333,10 @@ void quicksort_int_c(int *ivec, long *list, int lo, int hi) {
    The sequence to be sorted starts at index position lo,
    the parameter cbt is the number of elements to be sorted. 
  **/
-void bitonicMerge(int lo, int cnt, int dir, int *ires, long *idx) {
+void bitonicMerge(long lo, long cnt, int dir, int *ires, long *idx) {
+    long i;
     if (cnt>1) {
-        int k=cnt/2;
-        int i;
+        long k = cnt/2;
         for (i=lo; i<lo+k; i++){
             if (dir == (ires[i]>ires[i+k])){
                 exchange(&ires[i], &ires[i+k]);
@@ -358,9 +356,9 @@ void bitonicMerge(int lo, int cnt, int dir, int *ires, long *idx) {
     its two halves in opposite sorting orders, and then
     calls bitonicMerge to make them in the same order 
  **/
-void recBitonicSort(int lo, int cnt, int dir, int *ires, long *idx) {
+void recBitonicSort(long lo, long cnt, int dir, int *ires, long *idx) {
   if (cnt>1) {
-    int k=cnt/2;
+    long k=cnt/2;
     recBitonicSort(lo, k, ASCENDING, ires, idx);
     recBitonicSort(lo+k, k, DESCENDING, ires, idx);
     bitonicMerge(lo, cnt, dir, ires, idx);
@@ -372,7 +370,7 @@ void recBitonicSort(int lo, int cnt, int dir, int *ires, long *idx) {
    Caller of recBitonicSort for sorting the entire array of length N 
    in ASCENDING order
  **/
-void sort(int num, int *ires, long *idx) {
+void sort(long num, int *ires, long *idx) {
   recBitonicSort(0, num, ASCENDING, ires, idx);
 }
 
@@ -381,8 +379,8 @@ void sort(int num, int *ires, long *idx) {
 /*
   imperative version of bitonic sort
 */
-void impBitonicSort(int num, int *ires, long *idx){
-    int i, j, k, ij;
+void impBitonicSort(long num, int *ires, long *idx){
+    long i, j, k, ij;
     
     for (k=2; k<=num; k=2*k) {
         for (j=k>>1; j>0; j=j>>1) {
@@ -408,8 +406,8 @@ typedef struct{
     int id;
     int nt;
     
-    int lo;
-    int cnt;
+    long lo;
+    long cnt;
     int dir;
     int layer;
     
@@ -421,17 +419,18 @@ typedef struct{
  *  Same as serial, but uses pthreads.
  **/
 void * PbitonicMerge(void *arg){
-    int lo = ((sarg *) arg)->lo;
-    int cnt = ((sarg *) arg)->cnt;
+    long i;
+    
+    long lo = ((sarg *) arg)->lo;
+    long cnt = ((sarg *) arg)->cnt;
     int dir = ((sarg *) arg)->dir;
     int layer = ((sarg *) arg)->layer;
     int *ires = ((sarg *) arg)->ires;
     long *idx = ((sarg *) arg)->idx;
     
     if( cnt > 1 ){
-        int k = cnt / 2;
-        int i;
-        for( i = lo; i < lo + k; ++i ){
+        long k = cnt / 2;
+        for(i=lo;i<(lo+k);++i){
             if (dir == (ires[i]>ires[i+k])){
                 exchange(&ires[i], &ires[i+k]);
                 exchange_long(&idx[i], &idx[i+k]);
@@ -460,6 +459,7 @@ void * PbitonicMerge(void *arg){
         arg2.layer = layer - 1;
         arg2.ires = ires;
         arg2.idx =  idx;
+        
         pthread_create( &thread1, NULL, PbitonicMerge, &arg1 );
         pthread_create( &thread2, NULL, PbitonicMerge, &arg2 );
         
@@ -478,17 +478,20 @@ void * PbitonicMerge(void *arg){
  **/
 
 void * PrecBitonicSort(void *arg){
-    int lo = ((sarg *) arg)->lo;
-    int cnt = ((sarg *) arg)->cnt;
+    long lo = ((sarg *) arg)->lo;
+    long cnt = ((sarg *) arg)->cnt;
     int dir = ((sarg *) arg)->dir;
     int layer = ((sarg *) arg)->layer;
     int *ires = ((sarg *) arg)->ires;
     long *idx = ((sarg *) arg)->idx;
     if ( cnt > 1 ) {
-        int k = cnt / 2;
+        long k = cnt / 2;
         if( layer >= threadlayers ) {
-            qsort( &ires[lo  ], k, sizeof( int ), asc );
-            qsort( &ires[lo+k], k, sizeof( int ), desc );
+            quicksort_int_c(&ires[lo  ], &idx[lo  ], 0, (k-1));
+            
+            flip_sign(k, &ires[lo+k]);
+            quicksort_int_c(&ires[lo+k], &idx[lo+k], 0, (k-1));
+            flip_sign(k, &ires[lo+k]);
         }
         else{
             sarg arg1;
@@ -499,7 +502,6 @@ void * PrecBitonicSort(void *arg){
             arg1.layer = layer + 1;
             arg1.ires = ires;
             arg1.idx =  idx;
-            pthread_create( &thread1, NULL, PrecBitonicSort, &arg1 );
             
             sarg arg2;
             pthread_t thread2;
@@ -509,11 +511,12 @@ void * PrecBitonicSort(void *arg){
             arg2.layer = layer + 1;
             arg2.ires = ires;
             arg2.idx =  idx;
-            pthread_create( &thread2, NULL, PrecBitonicSort, &arg2 );
             
+            pthread_create(&thread1, NULL, PrecBitonicSort, &arg1);
+            pthread_create(&thread2, NULL, PrecBitonicSort, &arg2);
             
-            pthread_join( thread1, NULL );
-            pthread_join( thread2, NULL );
+            pthread_join(thread1, NULL);
+            pthread_join(thread2, NULL);
         }
         sarg arg3;
         arg3.lo = lo;
@@ -531,10 +534,10 @@ void * PrecBitonicSort(void *arg){
    Caller of recBitonicSort for sorting the entire array of length N 
    in ASCENDING order
  **/
-void Psort(int num, int *ires, long *idx){
+void Psort(long num, int *ires, long *idx){
     sarg arg;
     arg.lo = 0;
-    arg.cnt = num;
+    arg.cnt = (int) num;
     arg.dir = ASCENDING;
     arg.layer = 0;
     arg.ires = ires;
