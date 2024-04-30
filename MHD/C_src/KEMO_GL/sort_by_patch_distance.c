@@ -274,8 +274,6 @@ void set_patch_order_by_distance(const long *idx_tmp, struct kemo_array_control 
 
 int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a, struct view_element *view_s){
-    long i, j;
-    
     count_patch_distance_psfs(psf_s, psf_m, psf_a);
     
     double *z_ele_viz =    (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));
