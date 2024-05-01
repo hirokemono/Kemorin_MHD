@@ -10,6 +10,7 @@
 #include "m_kemoview_psf_menu.h"
 #include "m_gl_transfer_matrix.h"
 #include "quicksort_c.h"
+#include "bitonic_sort_pthread.h"
 
 #ifdef __APPLE__
   #include <Accelerate/Accelerate.h>

@@ -65,7 +65,11 @@ OBJ_KEMO_C = \
  invert_small_matrix_c.o \
  transfer_matvec.o \
  quicksort_c.o \
- bitonic_sort_omp.o
+ bitonic_sort_pthread.o \
+ bitonic_sort_long_pthread.o \
+ bitonic_sort_int_pthread.o \
+ bitonic_sort_float_pthread.o \
+ bitonic_sort_c.o
 
 ifdef ZLIB_LIBS
   OBJ_KEMO_C += \

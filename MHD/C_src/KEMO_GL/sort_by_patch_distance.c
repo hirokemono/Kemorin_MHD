@@ -4,6 +4,8 @@
 #include <time.h>
 #include "sort_by_patch_distance.h"
 
+const int numThread = 32;
+
 void copy_patch_distance_mesh(struct viewer_mesh *mesh_s){
     int i;
     
@@ -190,7 +192,7 @@ const int sort_zbuf_ele_by_vDSP(struct kemo_array_control *psf_a,
         kdx_tmp[i] = i;
     };
     
-    vDSP_vsortiD(w_tmp, kdx_tmp, i_unused, lnum, 0);
+    vDSP_vsortiD(w_tmp, kdx_tmp, i_unused, lnum, -1);
     
     for(i=0; i<psf_a->istack_solid_psf_patch; i++){
         ldx_tmp[i] = i;
@@ -216,6 +218,61 @@ const int sort_zbuf_ele_by_vDSP(struct kemo_array_control *psf_a,
     return 0;
 }
 #endif
+
+const int sort_zbuf_ele_by_bitonic(struct kemo_array_control *psf_a,
+                                   double *z_ele_viz, long *ldx_tmp){
+/*
+    struct tm *st_time, *ed_time;
+    struct timeval start_usec, end_usec;
+    int sec_D, usec_D;
+    if(gettimeofday(&start_usec, NULL) == -1){
+        fprintf(stderr,"gettimeofday ERRNO=%d", errno);
+        return -1;
+    }
+*/
+    long i;
+    
+    long lnum = psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch;
+    int nextP2 =  1 + (int) log2((double) (lnum-1));
+    long narrayP2 =  1 << nextP2;
+    double *w_tmp = (double *) calloc(narrayP2,sizeof(double));
+    long *kdx_tmp = (long *) calloc(narrayP2, sizeof(long));
+    
+    for(i=0;i<lnum;i++){
+        w_tmp[i] =   z_ele_viz[i+psf_a->istack_solid_psf_patch];
+        kdx_tmp[i] = i;
+    };
+    flip_sign_Double_pthreads(numThread, lnum, w_tmp);
+    double min_z =  max_Double_Array_pthreads(numThread, lnum, w_tmp);
+    for(i=lnum;i<narrayP2;i++){
+        w_tmp[i] = min_z + 1.0;
+        kdx_tmp[i] = -1;
+    };
+    
+    bitonicsort_Double_Pthread(numThread, narrayP2, w_tmp, kdx_tmp);
+    
+    for(i=0; i<psf_a->istack_solid_psf_patch; i++){
+        ldx_tmp[i] = i;
+    };
+    for(i=0; i<lnum; i++){
+        ldx_tmp[i+psf_a->istack_solid_psf_patch] = kdx_tmp[i] + psf_a->istack_solid_psf_patch;
+    };
+    free(kdx_tmp);
+    free(w_tmp);
+    
+/*
+    if(gettimeofday(&end_usec, NULL) == -1){
+        fprintf(stderr,"gettimeofday ERRNO=%d", errno);
+        return -1;
+    }
+    st_time = localtime(&start_usec.tv_sec);
+    ed_time = localtime(&end_usec.tv_sec);
+    sec_D = ed_time->tm_sec - st_time->tm_sec;
+    usec_D = end_usec.tv_usec - start_usec.tv_usec;
+    printf("vDSP_vsortiD %02d.%d\n",sec_D,usec_D);
+*/
+    return 0;
+}
 
 const int sort_zbuf_ele_by_quicksort(struct kemo_array_control *psf_a,
                                      double *z_ele_viz, long *idx_tmp){
@@ -279,14 +336,22 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
     double *z_ele_viz =    (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));
     set_patch_distance_psfs(psf_s, psf_m, psf_a, view_s, z_ele_viz);
     
-    if((psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch) > 0){
+    long lnum = psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch;
+    if(lnum > 0){
         long *idx_tmp = (long *) calloc(psf_a->ntot_psf_patch,sizeof(long));
 
+        if(lnum < 65536){
 #ifdef __APPLE__
-        sort_zbuf_ele_by_vDSP(psf_a, z_ele_viz, idx_tmp);
+            sort_zbuf_ele_by_vDSP(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
+                                  idx_tmp);
 #else
-        sort_zbuf_ele_by_quicksort(psf_a, z_ele_viz, idx_tmp);
+            sort_zbuf_ele_by_quicksort(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
+                                       idx_tmp);
 #endif
+        }else{
+            sort_zbuf_ele_by_bitonic(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
+                                     idx_tmp);
+        };
 
 /*
         for(i=0; i<psf_a->ntot_psf_patch; i++){

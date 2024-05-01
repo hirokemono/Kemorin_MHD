@@ -61,8 +61,8 @@ void print_sorted_Int(long num, long nArray, const int *iorg,
 void print_sorted_Double(long num, long nArray, const double *dorg, 
                          const double *dres, const long *idx);
 
-void chect_sorted_Int(long num, const int *ires);
-void chect_sorted_Double(long num, const double *ires);
+void check_sorted_Int(long num, const int *ires);
+void check_sorted_Double(long num, const double *ires);
 
 
 /** compare for qsort **/
@@ -165,7 +165,7 @@ int main( int argc, char **argv ) {
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
     printf("Quicksort ");
-    chect_sorted_Int(Narray, ia);
+    check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
     printf("-------------------------------------\n");
     
@@ -176,7 +176,7 @@ int main( int argc, char **argv ) {
     seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
     printf("Bitonic serial   recursive ");
-    chect_sorted_Int(Narray, ia);
+    check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
     printf("-------------------------------------\n");
     
@@ -187,7 +187,7 @@ int main( int argc, char **argv ) {
     seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6 
                          + endwtime.tv_sec - startwtime.tv_sec );
     printf("Bitonic parallel recursive with %i threads ", nthreads);
-    chect_sorted_Int(Narray, ia);
+    check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
     printf("-------------------------------------\n");
     
@@ -199,7 +199,7 @@ int main( int argc, char **argv ) {
     seq_time4 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
     printf("Bitonic serial  imperative ");
-    chect_sorted_Int(Narray, ia);
+    check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
     printf("-------------------------------------\n");
     
@@ -211,7 +211,7 @@ int main( int argc, char **argv ) {
     seq_time5 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                          + endwtime.tv_sec - startwtime.tv_sec );
     printf("OpenMP Bitonic parallel imperagive with %i threads ", nthreads);
-    chect_sorted_Int(Narray, ia);
+    check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
     printf("-------------------------------------\n\n");
 #endif
@@ -298,7 +298,7 @@ int main( int argc, char **argv ) {
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
     printf("Quicksort ");
-    chect_sorted_Double(Narray, da);
+    check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
     printf("-------------------------------------\n");
     
@@ -309,7 +309,7 @@ int main( int argc, char **argv ) {
     seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
     printf("Bitonic serial   recursive ");
-    chect_sorted_Double(Narray, da);
+    check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
     printf("-------------------------------------\n");
     
@@ -320,7 +320,7 @@ int main( int argc, char **argv ) {
     seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6 
                          + endwtime.tv_sec - startwtime.tv_sec );
     printf("Bitonic parallel recursive with %i threads ", nthreads);
-    chect_sorted_Double(Narray, da);
+    check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
     printf("-------------------------------------\n");
     
@@ -332,7 +332,7 @@ int main( int argc, char **argv ) {
     seq_time4 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
     printf("Bitonic serial  imperative ");
-    chect_sorted_Double(Narray, da);
+    check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
     printf("-------------------------------------\n");
     
@@ -352,7 +352,7 @@ int main( int argc, char **argv ) {
     };
     
     printf("                vDSP_vsortiD ");
-    chect_sorted_Double(Narray, da);
+    check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
     printf("-------------------------------------\n\n");
 #else
@@ -363,7 +363,7 @@ int main( int argc, char **argv ) {
     seq_time5 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                          + endwtime.tv_sec - startwtime.tv_sec );
     printf("OpenMP Bitonic parallel imperagive with %i threads ", nthreads);
-    chect_sorted_Double(Narray, da);
+    check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
     printf("-------------------------------------\n\n");
 #endif
@@ -445,8 +445,8 @@ int main( int argc, char **argv ) {
     free(da);
 }
 
-/** procedure chect_sorted_Int() : verify bitonicsort_rec_Int results **/
-void chect_sorted_Int(long num, const int *ires){
+/** procedure check_sorted_Int() : verify bitonicsort_rec_Int results **/
+void check_sorted_Int(long num, const int *ires){
   int pass = 1;
   long i;
     for (i=1;i<num;i++) {
@@ -456,7 +456,7 @@ void chect_sorted_Int(long num, const int *ires){
   printf(" TEST %s\n",(pass) ? "PASSed" : "FAILed");
 }
 
-void chect_sorted_Double(long num, const double *ires){
+void check_sorted_Double(long num, const double *ires){
   int pass = 1;
   long i;
     for (i=1;i<num;i++) {

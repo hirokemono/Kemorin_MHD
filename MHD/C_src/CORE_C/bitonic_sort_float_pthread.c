@@ -33,7 +33,7 @@ static void * max_Float_Array_each_thread(void *args)
     float *rmax =  ((args_pthread_float_sort *) args)->rmax;
     
     rmax[id] = res[lo];
-    for(int i=lo+1;i<hi;i++){
+    for(long i=lo+1;i<hi;i++){
         if(res[i] > rmax[id]){rmax[id] = res[i];};
     };
     return 0;

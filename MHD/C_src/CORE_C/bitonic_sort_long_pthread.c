@@ -29,7 +29,7 @@ static void * max_Long_Array_each_thread(void *args)
     long *lmax = ((args_pthread_long_sort *) args)->lmax;
     
     lmax[id] = lres[lo];
-    for(int i=lo+1;i<hi;i++){
+    for(long i=lo+1;i<hi;i++){
         if(lres[i] > lmax[id]){lmax[id] = lres[i];};
     };
     return 0;

@@ -30,7 +30,7 @@ static void * max_Double_Array_each_thread(void *args)
     double *dmax = ((args_pthread *) args)->dmax;
     
     dmax[id] = dres[lo];
-    for(int i=lo+1;i<hi;i++){
+    for(long i=lo+1;i<hi;i++){
         if(dres[i] > dmax[id]){dmax[id] = dres[i];};
     };
     return 0;

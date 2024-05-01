@@ -29,7 +29,7 @@ static void * max_Int_Array_each_thread(void *args)
     int *imax = ((args_pthread_int_sort *) args)->imax;
     
     imax[id] = ires[lo];
-    for(int i=lo+1;i<hi;i++){
+    for(long i=lo+1;i<hi;i++){
         if(ires[i] > imax[id]){imax[id] = ires[i];};
     };
     return 0;

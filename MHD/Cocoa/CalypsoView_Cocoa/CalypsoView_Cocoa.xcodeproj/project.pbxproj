@@ -93,6 +93,8 @@
 		1895A33D2BDC625000701DEB /* colormap_select.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A3342BDC625000701DEB /* colormap_select.metal */; };
 		1895A33F2BDC626400701DEB /* PhongShaderWithColorMap.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1895A33E2BDC626400701DEB /* PhongShaderWithColorMap.metal */; };
 		1895A3412BDD88AE00701DEB /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1895A3402BDD88AE00701DEB /* Accelerate.framework */; };
+		1895A3442BE28BF700701DEB /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 1895A3432BE28BF700701DEB /* bitonic_sort_pthread.c */; };
+		1895A3472BE28C5800701DEB /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1895A3452BE28C5700701DEB /* bitonic_sort_c.c */; };
 		1899ACC524B8EEC3004E8F1C /* ElasticMenuWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */; };
 		189F8CCC27037268006FB38F /* write_image_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 189F8CCA27037268006FB38F /* write_image_2_bmp.c */; };
 		18A4D60B24C203B4005A559B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A4D60A24C203B4005A559B /* Images.xcassets */; };
@@ -344,6 +346,10 @@
 		1895A3342BDC625000701DEB /* colormap_select.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = colormap_select.metal; path = Metal/colormap_select.metal; sourceTree = "<group>"; };
 		1895A33E2BDC626400701DEB /* PhongShaderWithColorMap.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = PhongShaderWithColorMap.metal; path = Metal/PhongShaderWithColorMap.metal; sourceTree = "<group>"; };
 		1895A3402BDD88AE00701DEB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		1895A3422BE28BF700701DEB /* bitonic_sort_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitonic_sort_pthread.h; sourceTree = "<group>"; };
+		1895A3432BE28BF700701DEB /* bitonic_sort_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitonic_sort_pthread.c; sourceTree = "<group>"; };
+		1895A3452BE28C5700701DEB /* bitonic_sort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bitonic_sort_c.c; sourceTree = "<group>"; };
+		1895A3462BE28C5800701DEB /* bitonic_sort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitonic_sort_c.h; sourceTree = "<group>"; };
 		1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElasticMenuWindow.m; sourceTree = "<group>"; };
 		1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElasticMenuWindow.h; sourceTree = "<group>"; };
 		189F8CCA27037268006FB38F /* write_image_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = write_image_2_bmp.c; sourceTree = "<group>"; };
@@ -707,6 +713,10 @@
 				18D7E66F1562D359009B05FF /* projection_patch_to_map.h */,
 				18D7E6701562D359009B05FF /* quicksort_c.c */,
 				18D7E6711562D359009B05FF /* quicksort_c.h */,
+				1895A3452BE28C5700701DEB /* bitonic_sort_c.c */,
+				1895A3462BE28C5800701DEB /* bitonic_sort_c.h */,
+				1895A3432BE28BF700701DEB /* bitonic_sort_pthread.c */,
+				1895A3422BE28BF700701DEB /* bitonic_sort_pthread.h */,
 				18D7E6721562D359009B05FF /* read_grouping_mesh_c.c */,
 				18D7E6731562D359009B05FF /* read_grouping_mesh_c.h */,
 				18D7E6741562D359009B05FF /* read_image_2_bmp.c */,
@@ -1160,6 +1170,7 @@
 				1895A33B2BDC625000701DEB /* colormap_molten_metal.metal in Sources */,
 				185CB9C6212F593D00BB3C0B /* t_control_int2_IO.c in Sources */,
 				1838708C2BCF4A7E00933367 /* colormap_molten_metal_c.c in Sources */,
+				1895A3472BE28C5800701DEB /* bitonic_sort_c.c in Sources */,
 				18B8535128C1C1AF00E570CD /* calypso_rawfile_io_c.c in Sources */,
 				18D7E74A1562D359009B05FF /* set_surface_mesh_data.c in Sources */,
 				188C9425230DC96E00A4DB14 /* m_kemoview_mesh.c in Sources */,
@@ -1205,6 +1216,7 @@
 				18D95C482B0BB745001A801B /* TexureShader.metal in Sources */,
 				18D7E7741562D359009B05FF /* set_color_code_on_nodes.c in Sources */,
 				185CB9B2212F593D00BB3C0B /* t_control_chara_IO.c in Sources */,
+				1895A3442BE28BF700701DEB /* bitonic_sort_pthread.c in Sources */,
 				18D3CA64249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c in Sources */,
 				185CB9C8212F593D00BB3C0B /* t_control_int_real_IO.c in Sources */,
 				18D7E7751562D359009B05FF /* set_kemoviewer_ucd_data.c in Sources */,
