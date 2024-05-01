@@ -260,4 +260,3 @@ void BitonicSort_imp_Float(long num, float *res, long *idx){
     }
     return;
 }
-
