@@ -4,7 +4,7 @@
 #include <time.h>
 #include "sort_by_patch_distance.h"
 
-const int numThread = 32;
+const int numThread = 16;
 
 void copy_patch_distance_mesh(struct viewer_mesh *mesh_s){
     int i;
@@ -165,17 +165,21 @@ void set_patch_indices_for_psfs(struct psf_data **psf_s,
     return;
 };
 
-void set_patch_distance_psfs(struct view_element *view_s,
-                             struct psf_data **psf_s,
-                             struct kemo_array_control *psf_a,
-                             double *z_ele_viz){
+void set_trans_patch_distance_psfs(struct view_element *view_s,
+                                   struct psf_data **psf_s,
+                                   struct kemo_array_control *psf_a,
+                                   double *z_ele_viz){
     int i, ipsf;
     long icou = 0;
+    long jcou = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(icou >= psf_a->ntot_psf_patch) break;
-        ipsf = psf_a->ipsf_viz_far[icou] - 1;
-        set_distance_in_model(view_s, psf_s[ipsf]->nele_viz,
-                              psf_s[ipsf]->x_ele_viz, &z_ele_viz[icou]);
+        if(icou >= psf_a->istack_solid_psf_patch){
+            ipsf = psf_a->ipsf_viz_far[icou] - 1;
+            jcou = icou - psf_a->istack_solid_psf_patch;
+            set_distance_in_model(view_s, psf_s[ipsf]->nele_viz,
+                                  psf_s[ipsf]->x_ele_viz, &z_ele_viz[jcou]);
+        };
         icou = icou + psf_s[ipsf]->nele_viz;
     }
     return;
@@ -183,108 +187,37 @@ void set_patch_distance_psfs(struct view_element *view_s,
 
 
 #ifdef __APPLE__
-const int sort_zbuf_ele_by_vDSP(struct kemo_array_control *psf_a,
-                                double *z_ele_viz, long *ldx_tmp){
-/*
-    struct tm *st_time, *ed_time;
-    struct timeval start_usec, end_usec;
-    int sec_D, usec_D;
-    if(gettimeofday(&start_usec, NULL) == -1){
-        fprintf(stderr,"gettimeofday ERRNO=%d", errno);
-        return -1;
-    }
-*/
+const int sort_zbuf_ele_by_vDSP(long lnum, double *z_ele_viz, long *ldx_tmp){
     int i;
     
-    long lnum = psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch;
+    vDSP_Length *i_unused = (vDSP_Length *) calloc(lnum,sizeof(vDSP_Length));
     vDSP_Length *kdx_tmp = (vDSP_Length *) calloc(lnum, sizeof(vDSP_Length));
-    vDSP_Length *i_unused = (vDSP_Length *) calloc(psf_a->ntot_psf_patch,sizeof(vDSP_Length));
-    for(i=0;i<lnum;i++){
-        kdx_tmp[i] = i;
-    };
+    for(i=0;i<lnum;i++){kdx_tmp[i] = i;};
     
     vDSP_vsortiD(z_ele_viz, kdx_tmp, i_unused, lnum, 1);
     
-    for(i=0; i<psf_a->istack_solid_psf_patch; i++){
-        ldx_tmp[i] = i;
-    };
-    for(i=0; i<lnum; i++){
-        ldx_tmp[i+psf_a->istack_solid_psf_patch] = kdx_tmp[i] + psf_a->istack_solid_psf_patch;
-    };
+    for(i=0; i<lnum; i++){ldx_tmp[i] = kdx_tmp[i];};
     free(i_unused);
     free(kdx_tmp);
-    
-/*
-    if(gettimeofday(&end_usec, NULL) == -1){
-        fprintf(stderr,"gettimeofday ERRNO=%d", errno);
-        return -1;
-    }
-    st_time = localtime(&start_usec.tv_sec);
-    ed_time = localtime(&end_usec.tv_sec);
-    sec_D = ed_time->tm_sec - st_time->tm_sec;
-    usec_D = end_usec.tv_usec - start_usec.tv_usec;
-    printf("vDSP_vsortiD %02d.%d\n",sec_D,usec_D);
-*/
     return 0;
 }
 #endif
 
-const int sort_zbuf_ele_by_bitonic(struct kemo_array_control *psf_a,
-                                   double *z_ele_viz, long *ldx_tmp){
-/*
-    struct tm *st_time, *ed_time;
-    struct timeval start_usec, end_usec;
-    int sec_D, usec_D;
-    if(gettimeofday(&start_usec, NULL) == -1){
-        fprintf(stderr,"gettimeofday ERRNO=%d", errno);
-        return -1;
-    }
-*/
+const int sort_zbuf_ele_by_bitonic(long lnum, long narrayP2, double *z_ele_viz, long *ldx_tmp){
     long i;
     
-    long lnum = psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch;
-    int nextP2 =  1 + (int) log2((double) (lnum-1));
-    long narrayP2 =  1 << nextP2;
-    double *w_tmp = (double *) calloc(narrayP2,sizeof(double));
-    long *kdx_tmp = (long *) calloc(narrayP2, sizeof(long));
-    
-    for(i=0;i<lnum;i++){
-        w_tmp[i] =   z_ele_viz[i];
-        kdx_tmp[i] = i;
-    };
-    double max_z =  max_Double_Array_pthreads(numThread, lnum, w_tmp);
+    double max_z =  max_Double_Array_pthreads(numThread, lnum, z_ele_viz);
+    for(i=0;i<lnum;i++){ldx_tmp[i] = i;};
     for(i=lnum;i<narrayP2;i++){
-        w_tmp[i] = max_z + 1.0;
-        kdx_tmp[i] = -1;
+        z_ele_viz[i] = max_z + 1.0;
+        ldx_tmp[i] = -1;
     };
     
-    bitonicsort_Double_Pthread(numThread, narrayP2, w_tmp, kdx_tmp);
-    
-    for(i=0; i<psf_a->istack_solid_psf_patch; i++){
-        ldx_tmp[i] = i;
-    };
-    for(i=0; i<lnum; i++){
-        ldx_tmp[i+psf_a->istack_solid_psf_patch] = kdx_tmp[i] + psf_a->istack_solid_psf_patch;
-    };
-    free(kdx_tmp);
-    free(w_tmp);
-    
-/*
-    if(gettimeofday(&end_usec, NULL) == -1){
-        fprintf(stderr,"gettimeofday ERRNO=%d", errno);
-        return -1;
-    }
-    st_time = localtime(&start_usec.tv_sec);
-    ed_time = localtime(&end_usec.tv_sec);
-    sec_D = ed_time->tm_sec - st_time->tm_sec;
-    usec_D = end_usec.tv_usec - start_usec.tv_usec;
-    printf("vDSP_vsortiD %02d.%d\n",sec_D,usec_D);
-*/
+    bitonicsort_Double_Pthread(numThread, narrayP2, z_ele_viz, ldx_tmp);
     return 0;
 }
 
-const int sort_zbuf_ele_by_quicksort(struct kemo_array_control *psf_a,
-                                     double *z_ele_viz, long *idx_tmp){
+const int sort_zbuf_ele_by_quicksort(long lnum, double *z_ele_viz, long *idx_tmp){
 /*
     struct tm *st_time, *ed_time;
     struct timeval start_usec, end_usec;
@@ -294,11 +227,8 @@ const int sort_zbuf_ele_by_quicksort(struct kemo_array_control *psf_a,
         return -1;
     }
 */
-    int i;
-    for(i=0; i<psf_a->ntot_psf_patch; i++){idx_tmp[i] = i;};
-    
-    quicksort_double_c(z_ele_viz, &idx_tmp[psf_a->istack_solid_psf_patch],
-                       ZERO, (psf_a->ntot_psf_patch-psf_a->istack_solid_psf_patch));
+    for(int i=0; i<lnum; i++){idx_tmp[i] = i;};
+    quicksort_double_c(z_ele_viz, idx_tmp, ZERO, (lnum-1));
 /*
     if(gettimeofday(&end_usec, NULL) == -1){
         fprintf(stderr,"gettimeofday ERRNO=%d", errno);
@@ -315,21 +245,34 @@ const int sort_zbuf_ele_by_quicksort(struct kemo_array_control *psf_a,
     return 0;
 }
 
-void set_patch_order_by_distance(const long *idx_tmp, struct kemo_array_control *psf_a){
+void set_patch_order_by_distance(long lnum, const long *idx_tmp, struct kemo_array_control *psf_a){
     long i, j;
-    int *iele_tmp = (int *) calloc(psf_a->ntot_psf_patch,sizeof(int));
-    int *ipsf_tmp = (int *) calloc(psf_a->ntot_psf_patch,sizeof(int));
-    for(i=psf_a->istack_solid_psf_patch; i<psf_a->ntot_psf_patch; i++){
+    int *iele_tmp = (int *) calloc(lnum,sizeof(int));
+    int *ipsf_tmp = (int *) calloc(lnum,sizeof(int));
+    for(i=0; i<lnum; i++){
         j = idx_tmp[i];
-        iele_tmp[i] = psf_a->iele_viz_far[j];
-        ipsf_tmp[i] = psf_a->ipsf_viz_far[j];
+        iele_tmp[i] = psf_a->iele_viz_far[j+psf_a->istack_solid_psf_patch];
+        ipsf_tmp[i] = psf_a->ipsf_viz_far[j+psf_a->istack_solid_psf_patch];
     };
-    for(i=psf_a->istack_solid_psf_patch; i<psf_a->ntot_psf_patch; i++){
-        psf_a->iele_viz_far[i] = iele_tmp[i];
-        psf_a->ipsf_viz_far[i] = ipsf_tmp[i];
+    for(i=0; i<lnum; i++){
+        psf_a->iele_viz_far[i+psf_a->istack_solid_psf_patch] = iele_tmp[i];
+        psf_a->ipsf_viz_far[i+psf_a->istack_solid_psf_patch] = ipsf_tmp[i];
     };
     free(iele_tmp);
     free(ipsf_tmp);
+    return;
+}
+
+void select_sort_zbuf_ele(long lnum, long narrayP2, double *z_ele_viz, long *idx_tmp){
+    if(lnum < 65536){
+#ifdef __APPLE__
+        sort_zbuf_ele_by_vDSP(lnum, z_ele_viz, idx_tmp);
+#else
+        sort_zbuf_ele_by_quicksort(lnum, z_ele_viz, idx_tmp);
+#endif
+    }else{
+        sort_zbuf_ele_by_bitonic(lnum, narrayP2, z_ele_viz, idx_tmp);
+    };
     return;
 }
 
@@ -340,34 +283,15 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
     
     long lnum = psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch;
     if(lnum > 0){
-        double *z_ele_viz = (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));
-        set_patch_distance_psfs(view_s, psf_s, psf_a, z_ele_viz);
-    
-        long *idx_tmp = (long *) calloc(psf_a->ntot_psf_patch,sizeof(long));
-
-        if(lnum < 65536){
-#ifdef __APPLE__
-            sort_zbuf_ele_by_vDSP(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
-                                  idx_tmp);
-#else
-            sort_zbuf_ele_by_quicksort(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
-                                       idx_tmp);
-#endif
-        }else{
-            sort_zbuf_ele_by_bitonic(psf_a,&z_ele_viz[psf_a->istack_solid_psf_patch],
-                                     idx_tmp);
-        };
-
-/*
-        for(i=0; i<psf_a->ntot_psf_patch; i++){
-            if(idx_tmp[i] != (int) ldx_tmp[i]){
-                printf("Failed vDSP_vsortiD %ld %ld %ld %lf\n", i,
-                       idx_tmp[i], ldx_tmp[i], z_ele_viz[ldx_tmp[i]]);
-            }
-        };
-        free(ldx_tmp);
-*/
-        set_patch_order_by_distance(idx_tmp, psf_a);
+        int nextP2 =  1 + (int) log2((double) (lnum-1));
+        long narrayP2 =  1 << nextP2;
+        double *z_ele_viz = (double *)calloc(narrayP2,sizeof(double));
+        long *idx_tmp = (long *) calloc(narrayP2,sizeof(long));
+        
+        set_trans_patch_distance_psfs(view_s, psf_s, psf_a, z_ele_viz);
+        
+        select_sort_zbuf_ele(lnum, narrayP2, z_ele_viz, idx_tmp);
+        set_patch_order_by_distance(lnum, idx_tmp, psf_a);
         free(z_ele_viz);
         free(idx_tmp);
     };
