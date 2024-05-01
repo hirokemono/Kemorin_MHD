@@ -9,8 +9,66 @@ int A[maxsize];
 int list[maxsize];
 */
 
+void exchange(int *i, int *j){
+    int t;
+    t = *i;
+    *i = *j;
+    *j = t;
+    return;
+}
+
+void exchange_long(long *i, long *j){
+    long t;
+    t = *i;
+    *i = *j;
+    *j = t;
+    return;
+}
+
+void exchange_float(float *x, float *y){
+    float t;
+    t = *x;
+    *x = *y;
+    *y = t;
+    return;
+}
+
+void exchange_double(double *x, double *y){
+    double t;
+    t = *x;
+    *x = *y;
+    *y = t;
+    return;
+}
+
+
+void quicksort_int_c(int *ivec, long *list, long lo, long hi){
+    int pivot;
+    long i, j;
+    
+    if(lo == hi) return;
+    i=lo;
+    j=hi;
+    pivot= ivec[(lo+hi)/2];
+    /* Split the array into two parts */
+    do {
+        while (ivec[i] < pivot) i++;
+        while (ivec[j] > pivot) j--;
+        if (i<=j) {
+            exchange(&ivec[i], &ivec[j]);
+            exchange_long(&list[i], &list[j]);
+            i++;
+            j--;
+        }
+    } while (i<=j);
+    
+    if (lo < j) quicksort_int_c(ivec, list, lo, j);
+    if (i < hi) quicksort_int_c(ivec, list, i, hi);
+    return;
+};
+
 void quicksort_int8_c(long *ivec, long *list, long lo, long hi) {
-    long i, j, pivot, itmp;
+    long i, j, pivot;
 	
 	
 	if(lo == hi) return; 
@@ -23,12 +81,8 @@ void quicksort_int8_c(long *ivec, long *list, long lo, long hi) {
 		while (ivec[i] < pivot) i++; 
 		while (ivec[j] > pivot) j--;
 		if (i<=j) {
-			itmp = ivec[i];
-			ivec[i] = ivec[j];
-			ivec[j] = itmp;
-			itmp =    list[i];
-			list[i] = list[j];
-			list[j] = itmp;
+            exchange_long(&ivec[i], &ivec[j]);
+            exchange_long(&list[i], &list[j]);
 			i++;
 			j--;
 		}
@@ -41,8 +95,7 @@ void quicksort_int8_c(long *ivec, long *list, long lo, long hi) {
 
 void quicksort_double_c(double *dvec, long *list, long lo, long hi){
     long i, j;
-	long itmp;
-	double rtmp, pivot;
+	double pivot;
 	
 	if(lo >= hi) return; 
 	i=lo; 
@@ -54,12 +107,8 @@ void quicksort_double_c(double *dvec, long *list, long lo, long hi){
 		while (dvec[i] < pivot) i++; 
 		while (dvec[j] > pivot) j--;
 		if (i<=j) {
-			rtmp = dvec[i];
-			dvec[i] = dvec[j];
-			dvec[j] = rtmp;
-			itmp =    list[i];
-			list[i] = list[j];
-			list[j] = itmp;
+            exchange_double(&dvec[i], &dvec[j]);
+            exchange_long(&list[i], &list[j]);
 			i++;
 			j--;
 		}
@@ -72,8 +121,7 @@ void quicksort_double_c(double *dvec, long *list, long lo, long hi){
 
 void quicksort_real_c(float *rvec, long *list, long lo, long hi){
     long i, j;
-    long itmp;
-	float rtmp, pivot;
+	float pivot;
 	
 	if(lo == hi) return; 
 	i=lo; 
@@ -84,13 +132,9 @@ void quicksort_real_c(float *rvec, long *list, long lo, long hi){
 	do {    
 		while (rvec[i] < pivot) i++; 
 		while (rvec[j] > pivot) j--;
-		if (i<=j) {
-			rtmp = rvec[i];
-			rvec[i] = rvec[j];
-			rvec[j] = rtmp;
-			itmp =    list[i];
-			list[i] = list[j];
-			list[j] = itmp;
+        if (i<=j) {
+            exchange_float(&rvec[i], &rvec[j]);
+            exchange_long(&list[i], &list[j]);
 			i++;
 			j--;
 		}
@@ -101,32 +145,68 @@ void quicksort_real_c(float *rvec, long *list, long lo, long hi){
 	return;
 }
 
-/*
-void printarr(long n)
-{
-	int i;
-	for(i=0;i<n;i++)
-	{
-		printf("address: %d, Value: %d \n",list[i], A[i]);
-	}
-	  }
 
-main()
-{
- long i,s;
-	printf("enter the number of numbers to be entered \n");
-	scanf("%d",&s);
-	  for(i=0;i<s;i++)
-	  {
-	 printf("enter the number \n" );
-	 scanf("%d",&A[i]);
-	 }
-	 printf("array before sorting \n");
-	printarr(s);
-	
-	for(i=lo;i<hi+1;i++) list[i] = i;
-  quicksort_int8_c(A, list, 0, s-1);
-  printf("array after sorting\n");
-  printarr(s);
+
+int max_int_array(long num, const int *ires){
+    long i;
+    int  imax;
+    imax = ires[0];
+    for (i=1;i<num; i++) {
+        if(ires[i] > imax){imax = ires[i];};
+    };
+  return imax;
 }
-*/
+
+long max_long_array(long num, const long *lres){
+    long i, lmax;
+    lmax = lres[0];
+    for (i=1;i<num; i++) {
+        if(lres[i] > lmax){lmax = lres[i];};
+    };
+  return lmax;
+}
+
+double max_double_array(long num, const double *res){
+    long i;
+    double dmax;
+    dmax = res[0];
+    for (i=1;i<num; i++) {
+        if(res[i] > dmax){dmax = res[i];};
+    };
+  return dmax;
+}
+
+float max_float_array(long num, const float *res){
+    long i;
+    float rmax;
+    rmax = res[0];
+    for (i=1;i<num; i++) {
+        if(res[i] > rmax){rmax = res[i];};
+    };
+  return rmax;
+}
+
+
+void flip_int_sign(long num, int *ires){
+    long i;
+    for (i=0;i<num; i++) {ires[i] = -ires[i];};
+    return;
+}
+
+void flip_long_sign(long num, long *lres){
+    long i;
+    for (i=0;i<num; i++) {lres[i] = -lres[i];};
+    return;
+}
+
+void flip_double_sign(long num, double *res){
+    long i;
+    for (i=0;i<num; i++) {res[i] = -res[i];};
+    return;
+}
+
+void flip_float_sign(long num, float *res){
+    long i;
+    for (i=0;i<num; i++) {res[i] = -res[i];};
+    return;
+}

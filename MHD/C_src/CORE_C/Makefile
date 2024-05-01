@@ -64,7 +64,8 @@ OBJ_KEMO_C = \
  set_rgb_colors_c.o \
  invert_small_matrix_c.o \
  transfer_matvec.o \
- quicksort_c.o
+ quicksort_c.o \
+ bitonic_sort_omp.o
 
 ifdef ZLIB_LIBS
   OBJ_KEMO_C += \

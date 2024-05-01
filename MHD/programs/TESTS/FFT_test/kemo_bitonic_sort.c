@@ -3,7 +3,7 @@
 
  This file contains two different implementations of the bitonic sort
         recursive  version :  rec
-        imperative version :  BitonicSort_imp() 
+        imperative version :  BitonicSort_imp_Int() 
  
 
  The bitonic sort is also known as Batcher Sort. 
@@ -38,23 +38,17 @@
 #include <omp.h>
 
 #include "quicksort_c.h"
+#include "bitonic_sort_c.h"
 #include "bitonic_sort_omp.h"
 
-const int ASCENDING  = 1;
-const int DESCENDING = 0;
+// const int ASCENDING  = 1;
+// const int DESCENDING = 0;
 
 
 void init(long num, long nArray, int *ires, int *org, long *idx);
 void print(long num, long nArray, const int *org, 
            const int *ires, const long *idx);
 void test(long num, const int *ires);
-
-void bitonicsort_rec(long num, int *ires, long *idx);
-void BitonicSort_imp(long num, int *ires, long *idx);
-void recBitonicSort(long lo, long hi, int iflag_ascend,
-                    int *ires, long *idx);
-void bitonicMerge(long lo, long hi, int iflag_ascend,
-                  int *ires, long *idx);
 
 void bitonicsort_Pthread(int nthreads, long num, int *ires, long *idx);
 void * PrecBitonicSort(void *arg);
@@ -157,7 +151,7 @@ int main( int argc, char **argv ) {
     
     init(Narray, narrayP2, ia, org, idx);
     gettimeofday( &startwtime, NULL );
-    bitonicsort_rec(narrayP2, ia, idx);
+    bitonicsort_rec_Int(narrayP2, ia, idx);
     gettimeofday( &endwtime, NULL );
     seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
@@ -180,7 +174,7 @@ int main( int argc, char **argv ) {
     
     init(Narray, narrayP2, ia, org, idx);
     gettimeofday( &startwtime, NULL );
-    BitonicSort_imp(narrayP2, ia, idx);
+    BitonicSort_imp_Int(narrayP2, ia, idx);
     gettimeofday( &endwtime, NULL );
     seq_time4 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
@@ -273,7 +267,7 @@ int main( int argc, char **argv ) {
 
 
 
-/** procedure test() : verify bitonicsort_rec results **/
+/** procedure test() : verify bitonicsort_rec_Int results **/
 void test(long num, const int *ires){
   int pass = 1;
   long i;
@@ -316,84 +310,6 @@ void print(long num, long nArray, const int *org,
   }
 }
 
-
-/** Procedure bitonicMerge() 
-   It recursively sorts a bitonic sequence in ascending order, 
-   if iflag_ascend = ASCENDING, and in descending order otherwise. 
-   The sequence to be sorted starts at index position lo,
-   the parameter cbt is the number of elements to be sorted. 
- **/
-void bitonicMerge(long lo, long hi, int iflag_ascend,
-                  int *ires, long *idx) {
-    long i;
-    if (hi>1) {
-        long k = hi/2;
-        for (i=lo; i<lo+k; i++){
-            if (iflag_ascend == (ires[i]>ires[i+k])){
-                exchange(&ires[i], &ires[i+k]);
-                exchange_long(&idx[i], &idx[i+k]);
-            };
-        };
-        
-        bitonicMerge(lo,   k, iflag_ascend, ires, idx);
-        bitonicMerge(lo+k, k, iflag_ascend, ires, idx);
-    }
-}
-
-
-
-/** function recBitonicSort() 
-    first produces a bitonic sequence by recursively sorting 
-    its two halves in opposite sorting orders, and then
-    calls bitonicMerge to make them in the same order 
- **/
-void recBitonicSort(long lo, long hi, int iflag_ascend,
-                    int *ires, long *idx) {
-  if (hi>1) {
-    long k = hi/2;
-    recBitonicSort(lo, k, ASCENDING, ires, idx);
-    recBitonicSort(lo+k, k, DESCENDING, ires, idx);
-    bitonicMerge(lo, hi, iflag_ascend, ires, idx);
-  }
-}
-
-
-/** function bitonicsort_rec() 
-   Caller of recBitonicSort for sorting the entire array of length N 
-   in ASCENDING order
- **/
-void bitonicsort_rec(long num, int *ires, long *idx) {
-  recBitonicSort(0, num, ASCENDING, ires, idx);
-}
-
-
-
-/*
-  imperative version of bitonic sort
-*/
-void BitonicSort_imp(long num, int *ires, long *idx){
-    long i, j, k, ij;
-    
-    for (k=2; k<=num; k=2*k) {
-        for (j=k>>1; j>0; j=j>>1) {
-            for (i=0; i<num; i++) {
-                ij=i^j;
-                if ((ij)>i) {
-                    if ((i&k)==0 && ires[i] > ires[ij]){
-                        exchange(&ires[i], &ires[ij]);
-                        exchange_long(&idx[i], &idx[ij]);
-                    };
-                    if ((i&k)!=0 && ires[i] < ires[ij]){
-                        exchange(&ires[i], &ires[ij]);
-                        exchange_long(&idx[i], &idx[ij]);
-                    };
-                }
-            }
-        }
-    }
-}
-
-
 typedef struct{
     int id;
     int nthreads;
@@ -408,7 +324,7 @@ typedef struct{
     long *idx;
 } sarg;
 
-/** Procedure bitonicMerge
+/** Procedure bitonic_Int_Merge
  *  Same as serial, but uses pthreads.
  **/
 void * PbitonicMerge(void *arg){
@@ -431,8 +347,8 @@ void * PbitonicMerge(void *arg){
             };
         }
         if( layer <= 0 ){
-            bitonicMerge(lo,     k, iflag_ascend, ires, idx);
-            bitonicMerge((lo+k), k, iflag_ascend, ires, idx);
+            bitonic_Int_Merge(lo,     k, iflag_ascend, ires, idx);
+            bitonic_Int_Merge((lo+k), k, iflag_ascend, ires, idx);
             return 0;
         }
         
@@ -468,7 +384,7 @@ void * PbitonicMerge(void *arg){
 /** function PrecBitonicSort() 
     first produces a bitonic sequence by recursively sorting 
     its two halves in opposite sorting orders, and then
-    calls bitonicMerge to make them in the same order 
+    calls bitonic_Int_Merge to make them in the same order 
 
     Uses pthreads
  **/
@@ -531,7 +447,7 @@ void * PrecBitonicSort(void *arg){
 }
 
 /** function sort() 
-   Caller of recBitonicSort for sorting the entire array of length N 
+   Caller of rec_Int_BitonicSort for sorting the entire array of length N 
    in ASCENDING order
  **/
 void bitonicsort_Pthread(int nthreads, long num, int *ires, long *idx){
