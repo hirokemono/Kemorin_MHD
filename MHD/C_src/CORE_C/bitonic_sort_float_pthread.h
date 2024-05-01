@@ -1,12 +1,8 @@
 /*
- bitonic_sort_pthread.h
+ bitonic_sort_float_pthread.h
 
- This file contains two different implementations of the bitonic sort
-        imperative version :  OMPimp_int_BitonicSort(int nthreads, long num, int *ires, long *idx);
-        imperative version :  OMPimp_long_BitonicSort(int nthreads, long num, long *lres, long *idx);
-
-        imperative version :  OMPimp_double_BitonicSort(int nthreads, long num, double *res, long *idx);
- 
+ This file contains the bitonic sort using pthread
+         bitonicsort_Float_Pthread(int nthreads, long num, float *res, long *idx);
 
  The bitonic sort is also known as Batcher Sort. 
  For a reference of the algorithm, see the article titled 
@@ -22,8 +18,8 @@
  http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm 
  */
 
-#ifndef BITONIC_SORT_PTHREAD_
-#define BITONIC_SORT_PTHREAD_
+#ifndef BITONIC_SORT_FLOAT_PTHREAD_
+#define BITONIC_SORT_FLOAT_PTHREAD_
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -43,16 +39,16 @@ typedef struct{
     int maxlayers;
     int layer;
     
-    double *dres;
-    double *dmax;
+    float  *res;
+    float  *rmax;
     
     long *idx;
-} args_pthread;
+} args_pthread_float_sort;
 
 /* prototypes */
 
-double max_Double_Array_pthreads(int nthreads, long num, double *dres);
-void flip_sign_Double_pthreads(int nthreads, long num, double *dres);
-void bitonicsort_Double_Pthread(int nthreads, long num, double *dres, long *idx);
+float  max_Float_Array_pthreads(int nthreads, long num, float *res);
+void flip_sign_Float_pthreads(int nthreads, long num, float *res);
+void bitonicsort_Float_Pthread(int nthreads, long num, float *res, long *idx);
 
-#endif // BITONIC_SORT_PTHREAD_
+#endif // BITONIC_SORT_FLOAT_PTHREAD_

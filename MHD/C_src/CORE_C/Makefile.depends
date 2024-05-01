@@ -4,10 +4,34 @@ bitonic_sort_c.o: \
  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
  $(C_SRCDIR)/CORE_C/quicksort_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+bitonic_sort_float_pthread.o: \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.c \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
+ $(C_SRCDIR)/CORE_C/quicksort_c.h \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+bitonic_sort_int_pthread.o: \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_int_pthread.c \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_int_pthread.h \
+ $(C_SRCDIR)/CORE_C/quicksort_c.h \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+bitonic_sort_long_pthread.o: \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_long_pthread.c \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_long_pthread.h \
+ $(C_SRCDIR)/CORE_C/quicksort_c.h \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 bitonic_sort_omp.o: \
  $(C_SRCDIR)/CORE_C/bitonic_sort_omp.c \
  $(C_SRCDIR)/CORE_C/bitonic_sort_omp.h \
  $(C_SRCDIR)/CORE_C/quicksort_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+bitonic_sort_pthread.o: \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.c \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+ $(C_SRCDIR)/CORE_C/quicksort_c.h \
+ $(C_SRCDIR)/CORE_C/bitonic_sort_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 cal_surface_center_normal_c.o: \
  $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.c \

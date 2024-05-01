@@ -1,6 +1,7 @@
 
 /*   quicksort_c.c */
 
+#include <stdio.h>
 #include "quicksort_c.h"
 
 /*
