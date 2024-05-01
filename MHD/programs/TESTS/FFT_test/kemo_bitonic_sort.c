@@ -37,6 +37,8 @@
 #include <math.h>
 #include <omp.h>
 
+#include "quicksort_c.h"
+#include "bitonic_sort_omp.h"
 
 const int ASCENDING  = 1;
 const int DESCENDING = 0;
@@ -46,12 +48,7 @@ void init(long num, long nArray, int *ires, int *org, long *idx);
 void print(long num, long nArray, const int *org, 
            const int *ires, const long *idx);
 void test(long num, const int *ires);
-//inline void exchange(int i, int j);
-void exchange(int *i, int *j);
-void exchange_long(long *i, long *j);
-void exchange_double(double *x, double *y);
 
-void quicksort_int_c(int *ivec, long *list, long lo, long hi);
 void bitonicsort_rec(long num, int *ires, long *idx);
 void BitonicSort_imp(long num, int *ires, long *idx);
 void recBitonicSort(long lo, long hi, int iflag_ascend,
@@ -62,15 +59,9 @@ void bitonicMerge(long lo, long hi, int iflag_ascend,
 void bitonicsort_Pthread(int nthreads, long num, int *ires, long *idx);
 void * PrecBitonicSort(void *arg);
 void * PbitonicMerge(void *arg);
-void OMPimpBitonicSort(int nthreads, long num, int *ires, long *idx);
 
-int imax_array(long num, const int *ires);
-int imax_array_omp(int nthreads, long num, const int *ires);
 void * thread_work(void *arg);
 int imax_array_pthreads(int nthreads, long num, int *ires);
-
-void flip_sign(long num, int *ires);
-void flip_sign_omp(int nthreads, long num, int *ires);
 void flip_sign_pthreads(int nthreads, long num, int *ires);
 
 
@@ -123,7 +114,8 @@ int asc_long( const void *a, const void *b ){
 /** the main program **/ 
 int main( int argc, char **argv ) {
     struct timeval startwtime, endwtime;
-    double seq_time;
+    double seq_time1, seq_time2, seq_time3;
+    double seq_time4, seq_time5;
     
     if (argc != 3 || atoi( argv[ 2 ] ) > 256 ) {
         printf("Usage: %s n t\n  where n is problem size,");
@@ -156,116 +148,121 @@ int main( int argc, char **argv ) {
     gettimeofday( &startwtime, NULL );
     quicksort_int_c(ia, idx, 0, (Narray-1));
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
-    printf( "quicksort wall clock time = %f\n", seq_time );
+    printf("Quicksort ");
     test(Narray, ia);
     print(Narray, narrayP2, org, ia, idx);
     printf("-------------------------------------\n");
     
-    /*
     init(Narray, narrayP2, ia, org, idx);
     gettimeofday( &startwtime, NULL );
     bitonicsort_rec(narrayP2, ia, idx);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+    seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
-    printf( "Bitonic serial recursive wall clock time = %f\n", seq_time );
+    printf("Bitonic serial   recursive ");
     test(Narray, ia);
     print(Narray, narrayP2, org, ia, idx);
     printf("-------------------------------------\n");
-    */
     
     init(Narray, narrayP2, ia, org, idx);
     gettimeofday( &startwtime, NULL );
     bitonicsort_Pthread(nthreads, narrayP2, ia, idx);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6 
+    seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6 
                          + endwtime.tv_sec - startwtime.tv_sec );
-    printf( "Bitonic parallel recursive with quicksort and %i threads wall clock time = %f\n",
-            nthreads, seq_time );
+    printf("Bitonic parallel recursive with %i threads ", nthreads);
     test(Narray, ia);
     print(Narray, narrayP2, org, ia, idx);
     printf("-------------------------------------\n");
     
     
-    /*
     init(Narray, narrayP2, ia, org, idx);
     gettimeofday( &startwtime, NULL );
     BitonicSort_imp(narrayP2, ia, idx);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+    seq_time4 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                 + endwtime.tv_sec - startwtime.tv_sec );
-    printf( "Bitonic serial imperative wall clock time = %f\n", seq_time );
+    printf("Bitonic serial  imperative ");
     test(Narray, ia);
     print(Narray, narrayP2, org, ia, idx);
     printf("-------------------------------------\n");
-    */
     
     init(Narray, narrayP2, ia, org, idx);
     gettimeofday( &startwtime, NULL );
-    OMPimpBitonicSort(nthreads, narrayP2, ia, idx);
+    OMPimp_int_BitonicSort(nthreads, narrayP2, ia, idx);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+    seq_time5 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                          + endwtime.tv_sec - startwtime.tv_sec );
-    printf( "OpenMP Bitonic parallel imperagive with %i threads wall clock time = %f\n",
-            nthreads,  seq_time );
+    printf("OpenMP Bitonic parallel imperagive with %i threads ", nthreads);
     test(Narray, ia);
     print(Narray, narrayP2, org, ia, idx);
+    printf("-------------------------------------\n\n");
+    
+    printf("                 Quicksort wall clock time = %f\n", seq_time1);
+    printf("Bitonic serial   recursive wall clock time = %f\n", seq_time2);
+    printf("Bitonic parallel recursive with %i threads\n", nthreads);
+    printf("             and quicksort wall clock time = %f\n", seq_time3);
+    printf("Bitonic serial  imperative wall clock time = %f\n", seq_time4);
+    printf("OpenMP Bitonic parallel imperagive \n");
+    printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
     printf("-------------------------------------\n");
     
-    
-    int imax;
+    int imax1, imax2, imax3;
     gettimeofday( &startwtime, NULL );
-    imax = imax_array(Narray, ia);
+    imax1 = max_int_array(Narray, ia);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf("maximum wall clock time = %f\n", seq_time );
-    printf("imax_array %d\n", imax);
     
     gettimeofday( &startwtime, NULL );
-    imax = imax_array_pthreads(nthreads, Narray, ia);
+    imax2 = imax_array_pthreads(nthreads, Narray, ia);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+    seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+    
+    gettimeofday( &startwtime, NULL );
+    imax3 = max_int_array_omp(nthreads, Narray, ia);
+    gettimeofday( &endwtime, NULL );
+    seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+    
+    printf("max_int_array          %d\n", imax1);
+    printf("imax_array_pthreads %d\n", imax2);
+    printf("max_int_array_omp      %d\n", imax3);
+    printf("-------------------------------------\n");
+    
+    printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
     printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
-           nthreads,  seq_time );
-    printf("imax_array_pthreads %d\n", imax);
-    
-    gettimeofday( &startwtime, NULL );
-    imax = imax_array_omp(nthreads, Narray, ia);
-    gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
-                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf( "OpenMP parallel maximum with %i threads wall clock time = %f\n",
-            nthreads,  seq_time );
-    printf("imax_array_omp %d\n", imax);
+           nthreads,  seq_time2);
+    printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
+           nthreads,  seq_time3);
     printf("-------------------------------------\n");
     
     
     gettimeofday( &startwtime, NULL );
-    flip_sign(Narray, ia);
+    flip_int_sign(Narray, ia);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                          + endwtime.tv_sec - startwtime.tv_sec );
-    printf("flip_sign wall clock time = %f\n", seq_time );
+    printf("         Serial flip_int_sign                   wall clock time = %f\n", seq_time1 );
     
     gettimeofday( &startwtime, NULL );
     flip_sign_pthreads(nthreads, Narray, ia);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                          + endwtime.tv_sec - startwtime.tv_sec );
-    printf("pthreads parallel flip_sign with %i threads wall clock time = %f\n",
-           nthreads,  seq_time );
+    printf("pthreads parallel flip_int_sign with %i threads wall clock time = %f\n",
+           nthreads,  seq_time1 );
     
     gettimeofday( &startwtime, NULL );
-    flip_sign_omp(nthreads, Narray, ia);
+    flip_int_sign_omp(nthreads, Narray, ia);
     gettimeofday( &endwtime, NULL );
-    seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                          + endwtime.tv_sec - startwtime.tv_sec );
-    printf( "OpenMP parallel flip_sign with %i threads wall clock time = %f\n", 
-            nthreads,  seq_time );
+    printf("OpenMP   parallel flip_int_sign with %i threads wall clock time = %f\n", 
+            nthreads,  seq_time1);
     
     
     free(ia);
@@ -297,7 +294,7 @@ void init(long num, long nArray, int *ires, int *org, long *idx) {
         org[i] = ires[i];
         idx[i] = i;
     }
-    int imax = imax_array(num, ires);
+    int imax = max_int_array(num, ires);
     for (i=num;i<nArray;i++) {
         ires[i] = imax + 1;
         org[i] = ires[i];
@@ -319,57 +316,6 @@ void print(long num, long nArray, const int *org,
   }
 }
 
-
-/** INLINE procedure exchange() : pair swap **/
-inline void exchange(int *i, int *j) {
-  int t;
-  t = *i;
-  *i = *j;
-  *j = t;
-}
-
-inline void exchange_long(long *i, long *j) {
-  long t;
-  t = *i;
-  *i = *j;
-  *j = t;
-}
-
-inline void exchange_double(double *x, double *y) {
-  double t;
-  t = *x;
-  *x = *y;
-  *y = t;
-}
-
-void quicksort_int_c(int *ivec, long *list, long lo, long hi){
-    int pivot, itmp;
-    long i, j, it8;
-	
-	if(lo == hi) return; 
-	i=lo; 
-	j=hi;
-	pivot= ivec[(lo+hi)/2]; 
-	/* Split the array into two parts */
-	do {    
-		while (ivec[i] < pivot) i++; 
-		while (ivec[j] > pivot) j--;
-		if (i<=j) {
-			itmp = ivec[i];
-			ivec[i] = ivec[j];
-			ivec[j] = itmp;
-			it8 =     list[i];
-			list[i] = list[j];
-			list[j] = it8;
-			i++;
-			j--;
-		}
-	} while (i<=j);
-	
-	if (lo < j) quicksort_int_c(ivec, list, lo, j);
-	if (i < hi) quicksort_int_c(ivec, list, i, hi);
-	return;
-};
 
 /** Procedure bitonicMerge() 
    It recursively sorts a bitonic sequence in ascending order, 
@@ -540,9 +486,9 @@ void * PrecBitonicSort(void *arg){
         if(layer >= maxlayers) {
             quicksort_int_c(&ires[lo  ], &idx[lo  ], 0, (k-1));
             
-            flip_sign(k, &ires[lo+k]);
+            flip_int_sign(k, &ires[lo+k]);
             quicksort_int_c(&ires[lo+k], &idx[lo+k], 0, (k-1));
-            flip_sign(k, &ires[lo+k]);
+            flip_int_sign(k, &ires[lo+k]);
         }
         else{
             sarg arg1;
@@ -607,59 +553,6 @@ void bitonicsort_Pthread(int nthreads, long num, int *ires, long *idx){
 }
 
 
-
-/*
-  imperative version of bitonic sort with OpenMP
-*/
-void OMPimpBitonicSort(int nthreads, long num, int *ires, long *idx){
-    long i, j, ij;
-    long k=0;
-    long term = (long) log2(num);
-    
-    omp_set_num_threads(nthreads);//"num" is the number of threads - arg[2]; 
-#pragma omp parallel private(k,j)
-    for (k = 2; k <= num; k *= 2 ) {
-        for (j=k>>1; j>0; j=j>>1) {
-#pragma omp for private(i,ij)
-            for(i=0; i<num; i++) {
-                ij=i^j;
-                if ((ij)>i) {
-                    if ((i&k)==0 && ires[i] > ires[ij]){
-                        exchange(&ires[i],&ires[ij]);
-                        exchange_long(&idx[i],&idx[ij]);
-                    }
-                    if ((i&k)!=0 && ires[i] < ires[ij]){
-                        exchange(&ires[i],&ires[ij]);
-                        exchange_long(&idx[i],&idx[ij]);
-                    }
-                }
-            }
-        }
-    }
-} 
-
-
-int imax_array(long num, const int *ires){
-    int i, imax;
-    imax = ires[0];
-    for (i=0;i<num; i++) {
-        if(ires[i] > imax){imax = ires[i];};
-    };
-  return imax;
-}
-
-int imax_array_omp(int nthreads, long num, const int *ires){
-    omp_set_num_threads(nthreads);
-    int i, imax;
-    imax = ires[0];
-#pragma omp parallel for private(i) reduction(max:imax)
-    for (i=0;i<num; i++) {
-        if(ires[i] > imax){imax = ires[i];};
-    };
-  return imax;
-}
-
-
 void * thread_work(void *args)
 {
     int id = ((sarg *) args)->id;
@@ -721,22 +614,6 @@ int imax_array_pthreads(int nthreads, long num, int *ires){
     return imax_out;
 }
 
-
-
-
-void flip_sign(long num, int *ires){
-    int i;
-    for (i=0;i<num; i++) {ires[i] = -ires[i];};
-    return;
-}
-
-void flip_sign_omp(int nthreads, long num, int *ires){
-    omp_set_num_threads(nthreads);//"num" is the number of threads - arg[2]; 
-    int i;
-#pragma omp parallel for private(i)
-    for (i=0;i<num; i++) {ires[i] = -ires[i];};
-    return;
-}
 
 void * flip_sign_work(void *args)
 {
