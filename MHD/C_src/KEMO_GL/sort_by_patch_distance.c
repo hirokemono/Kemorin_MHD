@@ -124,11 +124,9 @@ void count_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **ps
     return;
 };
 
-void set_patch_distance_psfs(const struct view_element *view_s,
-                             const struct psf_data **psf_s,
-                             const struct psf_menu_val **psf_m,
-                             struct kemo_array_control *psf_a,
-                             double *z_ele_viz){
+void set_patch_indices_for_psfs(struct psf_data **psf_s,
+                                struct psf_menu_val **psf_m,
+                                struct kemo_array_control *psf_a){
     int i, iele;
     long icou;
     long icou_solid_psf, icou_trans_psf, icou_solid_txt, icou_trans_txt;
@@ -157,11 +155,6 @@ void set_patch_distance_psfs(const struct view_element *view_s,
                     icou_trans_psf = icou_trans_psf + psf_s[i]->nele_viz;
                 };
             };
-            
-            set_distance_in_model(view_s, psf_s[i]->nele_viz,
-                                  psf_s[i]->x_ele_viz,
-                                  &z_ele_viz[icou]);
-            
             for(iele=0; iele < psf_s[i]->nele_viz;iele++) {
                 psf_a->ipsf_viz_far[icou] = i+1;
                 psf_a->iele_viz_far[icou] = iele+1;
@@ -171,6 +164,23 @@ void set_patch_distance_psfs(const struct view_element *view_s,
     };
     return;
 };
+
+void set_patch_distance_psfs(struct view_element *view_s,
+                             struct psf_data **psf_s,
+                             struct kemo_array_control *psf_a,
+                             double *z_ele_viz){
+    int i, ipsf;
+    long icou = 0;
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        if(icou >= psf_a->ntot_psf_patch) break;
+        ipsf = psf_a->ipsf_viz_far[icou] - 1;
+        set_distance_in_model(view_s, psf_s[ipsf]->nele_viz,
+                              psf_s[ipsf]->x_ele_viz, &z_ele_viz[icou]);
+        icou = icou + psf_s[ipsf]->nele_viz;
+    }
+    return;
+};
+
 
 #ifdef __APPLE__
 const int sort_zbuf_ele_by_vDSP(struct kemo_array_control *psf_a,
@@ -187,15 +197,13 @@ const int sort_zbuf_ele_by_vDSP(struct kemo_array_control *psf_a,
     int i;
     
     long lnum = psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch;
-    double *w_tmp = (double *) calloc(lnum,sizeof(double));
     vDSP_Length *kdx_tmp = (vDSP_Length *) calloc(lnum, sizeof(vDSP_Length));
     vDSP_Length *i_unused = (vDSP_Length *) calloc(psf_a->ntot_psf_patch,sizeof(vDSP_Length));
     for(i=0;i<lnum;i++){
-        w_tmp[i] = z_ele_viz[i+psf_a->istack_solid_psf_patch];
         kdx_tmp[i] = i;
     };
     
-    vDSP_vsortiD(w_tmp, kdx_tmp, i_unused, lnum, 1);
+    vDSP_vsortiD(z_ele_viz, kdx_tmp, i_unused, lnum, 1);
     
     for(i=0; i<psf_a->istack_solid_psf_patch; i++){
         ldx_tmp[i] = i;
@@ -205,7 +213,6 @@ const int sort_zbuf_ele_by_vDSP(struct kemo_array_control *psf_a,
     };
     free(i_unused);
     free(kdx_tmp);
-    free(w_tmp);
     
 /*
     if(gettimeofday(&end_usec, NULL) == -1){
@@ -242,12 +249,12 @@ const int sort_zbuf_ele_by_bitonic(struct kemo_array_control *psf_a,
     long *kdx_tmp = (long *) calloc(narrayP2, sizeof(long));
     
     for(i=0;i<lnum;i++){
-        w_tmp[i] =   z_ele_viz[i+psf_a->istack_solid_psf_patch];
+        w_tmp[i] =   z_ele_viz[i];
         kdx_tmp[i] = i;
     };
-    double min_z =  max_Double_Array_pthreads(numThread, lnum, w_tmp);
+    double max_z =  max_Double_Array_pthreads(numThread, lnum, w_tmp);
     for(i=lnum;i<narrayP2;i++){
-        w_tmp[i] = min_z + 1.0;
+        w_tmp[i] = max_z + 1.0;
         kdx_tmp[i] = -1;
     };
     
@@ -288,15 +295,10 @@ const int sort_zbuf_ele_by_quicksort(struct kemo_array_control *psf_a,
     }
 */
     int i;
-    double *z_tmp = (double *) calloc(psf_a->ntot_psf_patch,sizeof(double));
-    for(i=0; i<psf_a->ntot_psf_patch; i++){
-        z_tmp[i] = z_ele_viz[i];
-        idx_tmp[i] = i;
-    };
-
-    quicksort_double_c(z_tmp, idx_tmp,
-                       psf_a->istack_solid_psf_patch, (psf_a->ntot_psf_patch-1));
-    free(z_tmp);
+    for(i=0; i<psf_a->ntot_psf_patch; i++){idx_tmp[i] = i;};
+    
+    quicksort_double_c(z_ele_viz, &idx_tmp[psf_a->istack_solid_psf_patch],
+                       ZERO, (psf_a->ntot_psf_patch-psf_a->istack_solid_psf_patch));
 /*
     if(gettimeofday(&end_usec, NULL) == -1){
         fprintf(stderr,"gettimeofday ERRNO=%d", errno);
@@ -334,22 +336,26 @@ void set_patch_order_by_distance(const long *idx_tmp, struct kemo_array_control 
 int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a, struct view_element *view_s){
     count_patch_distance_psfs(psf_s, psf_m, psf_a);
-    
-    double *z_ele_viz =    (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));
-    set_patch_distance_psfs(view_s, psf_s, psf_m, psf_a, z_ele_viz);
+    set_patch_indices_for_psfs(psf_s, psf_m, psf_a);
     
     long lnum = psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch;
     if(lnum > 0){
+        double *z_ele_viz = (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));
+        set_patch_distance_psfs(view_s, psf_s, psf_a, z_ele_viz);
+    
         long *idx_tmp = (long *) calloc(psf_a->ntot_psf_patch,sizeof(long));
 
         if(lnum < 65536){
 #ifdef __APPLE__
-            sort_zbuf_ele_by_vDSP(psf_a, z_ele_viz,idx_tmp);
+            sort_zbuf_ele_by_vDSP(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
+                                  idx_tmp);
 #else
-            sort_zbuf_ele_by_quicksort(psf_a, z_ele_viz, idx_tmp);
+            sort_zbuf_ele_by_quicksort(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
+                                       idx_tmp);
 #endif
         }else{
-            sort_zbuf_ele_by_bitonic(psf_a, z_ele_viz, idx_tmp);
+            sort_zbuf_ele_by_bitonic(psf_a,&z_ele_viz[psf_a->istack_solid_psf_patch],
+                                     idx_tmp);
         };
 
 /*
@@ -362,8 +368,8 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
         free(ldx_tmp);
 */
         set_patch_order_by_distance(idx_tmp, psf_a);
+        free(z_ele_viz);
         free(idx_tmp);
     };
-    free(z_ele_viz);
     return (int) psf_a->ntot_psf_patch;
 }
