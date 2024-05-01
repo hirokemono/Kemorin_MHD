@@ -573,6 +573,36 @@
                       unites:(KemoViewUnites *) monoViewUnites
                        sides:(int) iflag_polygon
 {
+    /*  Draw transparent objects */
+    [self drawTexureWithPhong:renderEncoder
+                    pipelines:kemo3DPipelines
+                        depth:depthState
+                    numVertex:kemoView3DMetalBuf->numPSFTransTexureVertice
+                       vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
+                       texure:&(kemoView3DMetalBuf->psfTransTexure)
+                       unites:monoViewUnites
+                        sides:BOTH_SURFACES
+                        solid:SMOOTH_SHADE];
+    
+    [self drawSolidWithPhong:renderEncoder
+                   pipelines:kemo3DPipelines
+                       depth:depthState
+                   numVertex:kemoView3DMetalBuf->numPSFTransVertice
+                      vertex:&(kemoView3DMetalBuf->psfTransVertice)
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+    
+    [self drawSolidWithPhong:renderEncoder
+                   pipelines:kemo3DPipelines
+                       depth:depthState
+                   numVertex:kemoView3DMetalBuf->numMeshTransVertice
+                      vertex:&(kemoView3DMetalBuf->meshTransVertice)
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:SMOOTH_SHADE];
+
+    /*  Draw solid objects */
     [self drawTexureWithPhong:renderEncoder
                     pipelines:kemo3DPipelines
                         depth:depthState
@@ -642,34 +672,6 @@
                   vertex:&(kemoView3DMetalBuf->sphGridVertice)
                   unites:monoViewUnites];
     
-    /*  Draw transparent objects */
-    [self drawTexureWithPhong:renderEncoder
-                    pipelines:kemo3DPipelines
-                        depth:depthState
-                    numVertex:kemoView3DMetalBuf->numPSFTransTexureVertice
-                       vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
-                       texure:&(kemoView3DMetalBuf->psfTransTexure)
-                       unites:monoViewUnites
-                        sides:BOTH_SURFACES
-                        solid:SMOOTH_SHADE];
-    
-    [self drawSolidWithPhong:renderEncoder
-                   pipelines:kemo3DPipelines
-                       depth:depthState
-                   numVertex:kemoView3DMetalBuf->numPSFTransVertice
-                      vertex:&(kemoView3DMetalBuf->psfTransVertice)
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
-    
-    [self drawSolidWithPhong:renderEncoder
-                   pipelines:kemo3DPipelines
-                       depth:depthState
-                   numVertex:kemoView3DMetalBuf->numMeshTransVertice
-                      vertex:&(kemoView3DMetalBuf->meshTransVertice)
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:SMOOTH_SHADE];
     return;
 }
 
@@ -681,6 +683,37 @@
                    sides:(int) iflag_polygon
                fieldTube:(int) iflag_tube
 {
+    /*  Draw transparent objects */
+    [self drawTexureWithPhong:renderEncoder
+                    pipelines:kemo3DPipelines
+                        depth:depthState
+                    numVertex:kemoView3DMetalBuf->numPSFTransTexureVertice
+                       vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
+                       texure:&(kemoView3DMetalBuf->psfTransTexure)
+                       unites:monoViewUnites
+                        sides:BOTH_SURFACES
+                        solid:FLAT_SHADE];
+    
+    [self drawSolidWithPhong:renderEncoder
+                   pipelines:kemo3DPipelines
+                       depth:depthState
+                   numVertex:kemoView3DMetalBuf->numPSFTransVertice
+                      vertex:&(kemoView3DMetalBuf->psfTransVertice)
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:FLAT_SHADE];
+    
+    [self drawSolidWithPhong:renderEncoder
+                   pipelines:kemo3DPipelines
+                       depth:depthState
+                   numVertex:kemoView3DMetalBuf->numMeshTransVertice
+                      vertex:&(kemoView3DMetalBuf->meshTransVertice)
+                      unites:monoViewUnites
+                       sides:BOTH_SURFACES
+                       solid:FLAT_SHADE];
+
+
+    /*  Draw solid objects */
     [self drawTexureWithPhong:renderEncoder
                     pipelines:kemo3DPipelines
                         depth:depthState
@@ -786,34 +819,6 @@
                   vertex:&(kemoView3DMetalBuf->sphGridVertice)
                   unites:monoViewUnites];
     
-    /*  Draw transparent objects */
-    [self drawTexureWithPhong:renderEncoder
-                    pipelines:kemo3DPipelines
-                        depth:depthState
-                    numVertex:kemoView3DMetalBuf->numPSFTransTexureVertice
-                       vertex:&(kemoView3DMetalBuf->psfTTexureVertice)
-                       texure:&(kemoView3DMetalBuf->psfTransTexure)
-                       unites:monoViewUnites
-                        sides:BOTH_SURFACES
-                        solid:FLAT_SHADE];
-    
-    [self drawSolidWithPhong:renderEncoder
-                   pipelines:kemo3DPipelines
-                       depth:depthState
-                   numVertex:kemoView3DMetalBuf->numPSFTransVertice
-                      vertex:&(kemoView3DMetalBuf->psfTransVertice)
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:FLAT_SHADE];
-    
-    [self drawSolidWithPhong:renderEncoder
-                   pipelines:kemo3DPipelines
-                       depth:depthState
-                   numVertex:kemoView3DMetalBuf->numMeshTransVertice
-                      vertex:&(kemoView3DMetalBuf->meshTransVertice)
-                      unites:monoViewUnites
-                       sides:BOTH_SURFACES
-                       solid:FLAT_SHADE];
     return;
 }
 

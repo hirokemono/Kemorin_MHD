@@ -124,8 +124,10 @@ void count_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **ps
     return;
 };
 
-void set_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m, 
-                             struct kemo_array_control *psf_a, struct view_element *view_s,
+void set_patch_distance_psfs(const struct view_element *view_s,
+                             const struct psf_data **psf_s,
+                             const struct psf_menu_val **psf_m,
+                             struct kemo_array_control *psf_a,
                              double *z_ele_viz){
     int i, iele;
     long icou;
@@ -156,9 +158,10 @@ void set_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_
                 };
             };
             
-            set_distance_in_model(view_s, psf_s[i]->nele_viz, psf_s[i]->x_ele_viz,
+            set_distance_in_model(view_s, psf_s[i]->nele_viz,
+                                  psf_s[i]->x_ele_viz,
                                   &z_ele_viz[icou]);
-
+            
             for(iele=0; iele < psf_s[i]->nele_viz;iele++) {
                 psf_a->ipsf_viz_far[icou] = i+1;
                 psf_a->iele_viz_far[icou] = iele+1;
@@ -192,7 +195,7 @@ const int sort_zbuf_ele_by_vDSP(struct kemo_array_control *psf_a,
         kdx_tmp[i] = i;
     };
     
-    vDSP_vsortiD(w_tmp, kdx_tmp, i_unused, lnum, -1);
+    vDSP_vsortiD(w_tmp, kdx_tmp, i_unused, lnum, 1);
     
     for(i=0; i<psf_a->istack_solid_psf_patch; i++){
         ldx_tmp[i] = i;
@@ -242,7 +245,6 @@ const int sort_zbuf_ele_by_bitonic(struct kemo_array_control *psf_a,
         w_tmp[i] =   z_ele_viz[i+psf_a->istack_solid_psf_patch];
         kdx_tmp[i] = i;
     };
-    flip_sign_Double_pthreads(numThread, lnum, w_tmp);
     double min_z =  max_Double_Array_pthreads(numThread, lnum, w_tmp);
     for(i=lnum;i<narrayP2;i++){
         w_tmp[i] = min_z + 1.0;
@@ -334,7 +336,7 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
     count_patch_distance_psfs(psf_s, psf_m, psf_a);
     
     double *z_ele_viz =    (double *)calloc(psf_a->ntot_psf_patch,sizeof(double));
-    set_patch_distance_psfs(psf_s, psf_m, psf_a, view_s, z_ele_viz);
+    set_patch_distance_psfs(view_s, psf_s, psf_m, psf_a, z_ele_viz);
     
     long lnum = psf_a->istack_trans_psf_patch - psf_a->istack_solid_psf_patch;
     if(lnum > 0){
@@ -342,15 +344,12 @@ int sort_by_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **p
 
         if(lnum < 65536){
 #ifdef __APPLE__
-            sort_zbuf_ele_by_vDSP(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
-                                  idx_tmp);
+            sort_zbuf_ele_by_vDSP(psf_a, z_ele_viz,idx_tmp);
 #else
-            sort_zbuf_ele_by_quicksort(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
-                                       idx_tmp);
+            sort_zbuf_ele_by_quicksort(psf_a, z_ele_viz, idx_tmp);
 #endif
         }else{
-            sort_zbuf_ele_by_bitonic(psf_a, &z_ele_viz[psf_a->istack_solid_psf_patch],
-                                     idx_tmp);
+            sort_zbuf_ele_by_bitonic(psf_a, z_ele_viz, idx_tmp);
         };
 
 /*
