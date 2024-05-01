@@ -679,7 +679,7 @@ void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
 void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
                             struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *window){
-    fline_menu->closeButton = gtk_button_new_with_label("Close Current PSF");
+    fline_menu->closeButton = gtk_button_new_with_label("Close Fieldline");
 
     g_object_set_data(G_OBJECT(window), "flinemenu", (gpointer) fline_menu);
     g_object_set_data(G_OBJECT(window), "kemoview", (gpointer) kemo_sgl);
