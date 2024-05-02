@@ -485,7 +485,7 @@ static void init_current_psf_set_hbox(struct kemoviewer_type *kemo_sgl,
         };
         kemoview_set_PSF_loaded_params(SET_CURRENT, id_current, kemo_sgl);
     };
-
+    printf("Make PSF selector \n");
     psf_gmenu->renderer_psfs = gtk_cell_renderer_text_new();
     psf_gmenu->combobox_psfs = gtk_combo_box_new_with_model(child_model_psfs);
     gtk_combo_box_set_active(GTK_COMBO_BOX(psf_gmenu->combobox_psfs), index_current);
@@ -494,7 +494,8 @@ static void init_current_psf_set_hbox(struct kemoviewer_type *kemo_sgl,
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(psf_gmenu->combobox_psfs),
                                    psf_gmenu->renderer_psfs,
                                    "text", COLUMN_FIELD_NAME, NULL);
-    
+    printf("Make PSF selector end\n");
+
     g_object_set_data(G_OBJECT(window), "psfmenu", (gpointer) psf_gmenu);
     g_object_set_data(G_OBJECT(window), "kemoview", (gpointer) kemo_sgl);
     g_signal_connect(G_OBJECT(psf_gmenu->combobox_psfs), "changed",
@@ -817,8 +818,6 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
     mbot->expander_quilt = init_quilt_menu_expander(kemo_sgl,
                                                     mbot->quilt_gmenu,
                                                     mbot->view_menu, window_main);
-    mbot->expander_pref = init_preference_expander(kemo_sgl, mbot->pref_gmenu,
-                                                   window_main, kemo_sgl);
     mbot->updatable->expander_evo = init_evoluaiton_menu_expander(kemo_sgl,
                                                                   mbot->updatable->evo_gmenu,
                                                                   window_main);
@@ -832,7 +831,10 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->updatable->expander_evo, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_quilt, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_view, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_pref, FALSE, FALSE, 0);
+/*
+    mbot->expander_pref = init_preference_expander(kemo_sgl, mbot->pref_gmenu, window_main);
+    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_pref, FALSE, FALSE, 0);
+ */
     return;
 }
 

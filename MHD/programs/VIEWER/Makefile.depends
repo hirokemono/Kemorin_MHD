@@ -108,6 +108,8 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/draw_patch_4_mesh_c.h \
   $(MHDDIR)/C_src/KEMO_GL/sort_by_patch_distance.h \
   $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_pthread.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -262,6 +264,8 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/draw_patch_4_mesh_c.h \
   $(MHDDIR)/C_src/KEMO_GL/sort_by_patch_distance.h \
   $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_pthread.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -416,6 +420,8 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/draw_patch_4_mesh_c.h \
   $(MHDDIR)/C_src/KEMO_GL/sort_by_patch_distance.h \
   $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_pthread.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -570,6 +576,8 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/draw_patch_4_mesh_c.h \
   $(MHDDIR)/C_src/KEMO_GL/sort_by_patch_distance.h \
   $(MHDDIR)/C_src/CORE_C/quicksort_c.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_pthread.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_c.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \

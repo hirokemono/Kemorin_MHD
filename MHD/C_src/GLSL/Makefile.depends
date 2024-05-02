@@ -106,6 +106,8 @@ drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -224,6 +226,8 @@ draw_PSF_patches_by_VAO.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -338,6 +342,8 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -458,6 +464,8 @@ glsl.o: $(C_SRCDIR)/GLSL/glsl.c \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -576,6 +584,8 @@ init_gl_lighting_c.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -693,6 +703,8 @@ kemoviewer_gl.o: $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -817,6 +829,8 @@ move_draw_objects_gl.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h
@@ -928,6 +942,8 @@ set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -1045,6 +1061,8 @@ shaders.o: $(C_SRCDIR)/GLSL/shaders.c \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -1163,6 +1181,8 @@ vartex_array_object_gl.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -1287,6 +1307,8 @@ write_gl_window_to_file.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h

@@ -177,6 +177,44 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 	update_windowsize_menu(single_kemoview, mbot->view_menu, gtk_win);
 }
 
+static void prefWindowclose_CB (GtkWidget *new_win, gpointer user_data)
+{
+    GtkWidget *menu_item = GTK_WIDGET(user_data);
+    gtk_widget_set_sensitive(menu_item, TRUE);
+};
+
+static void pref_menu_CB (GtkWidget *menu_item,
+                          gpointer user_data)
+{
+    struct preference_gtk_menu *pref_gmenu
+            = (struct preference_gtk_menu *) g_object_get_data(G_OBJECT(menu_item), "pref_menu");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(menu_item), "kemoview");
+
+    GtkWidget *new_win;
+    new_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(new_win), "Preferences");
+    gtk_widget_set_size_request(new_win, 150, -1);
+    gtk_container_set_border_width(GTK_CONTAINER(new_win), 5);
+    g_signal_connect(G_OBJECT(new_win), "destroy", G_CALLBACK(prefWindowclose_CB), G_OBJECT(menu_item));
+    g_signal_connect(G_OBJECT(new_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
+    g_signal_connect(G_OBJECT(new_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
+    
+    GtkWidget *expander_pref = init_preference_frame(kemo_sgl, mbot->pref_gmenu, new_win);
+    GtkWidget *vbox_pref = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pref), expander_pref, FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(new_win), vbox_pref);
+    gtk_widget_show_all(new_win);
+    gtk_widget_set_sensitive(menu_item, FALSE);
+}
+
+static void tako_callback (GSimpleAction *simple,
+              GVariant      *parameter,
+              gpointer       user_data)
+{
+    g_print ("You clicked \"Tako\"\n");
+}
+
 /* Main GTK window */
 static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     struct gl_texure_image *render_image = alloc_kemoview_gl_texure();
@@ -248,7 +286,34 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	g_signal_connect(G_OBJECT(gtk_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
 	g_signal_connect(G_OBJECT(gtk_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
 	
-	quitButton = gtk_button_new_with_label("Quit");
+
+    GtkWidget *submenu_widget = gtk_menu_new();
+    GtkWidget *itemTako = gtk_menu_item_new_with_mnemonic ("Tako");
+    gtk_menu_shell_append(GTK_MENU (submenu_widget), itemTako);
+    g_signal_connect(itemTako, "activate", G_CALLBACK (tako_callback), NULL);
+
+
+    GtkWidget *menu_widget = gtk_menu_new();
+
+    GtkWidget *itemPref = gtk_menu_item_new_with_mnemonic ("Preferences...");
+    g_object_set_data(G_OBJECT(itemPref), "pref_menu", (gpointer) mbot->pref_gmenu);
+    g_object_set_data(G_OBJECT(itemPref), "kemoview", (gpointer) kemoviewer_data);
+    g_signal_connect(itemPref, "activate", G_CALLBACK (pref_menu_CB), NULL);
+    gtk_menu_shell_append(GTK_MENU (menu_widget), itemPref);
+
+    GtkWidget *imprMi =  gtk_menu_item_new_with_label("Takotako");
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(imprMi), submenu_widget);
+    gtk_menu_shell_append(GTK_MENU (menu_widget), imprMi);
+
+    GtkWidget *menuButton = gtk_menu_button_new();
+    gtk_menu_button_set_popup (GTK_MENU_BUTTON (menuButton), menu_widget);
+    gtk_widget_show_all (menu_widget);
+
+    GtkWidget *menuGrid = gtk_grid_new ();
+    gtk_grid_attach (GTK_GRID (menuGrid), menuButton, 1, 1, 1, 1);
+
+    
+    quitButton = gtk_button_new_with_label("Quit");
 	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtkWindowclose_CB), NULL);
     copyButton = gtk_button_new_with_label("Copy");
     g_signal_connect(G_OBJECT(copyButton), "clicked", G_CALLBACK(gtkCopyToClipboard_CB), (gpointer) clipboard);
@@ -261,9 +326,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     GtkWidget *topbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    /*
-    gtk_box_pack_start(GTK_BOX(topbox), testButton, TRUE, TRUE, 0);
-    */
+    gtk_box_pack_start(GTK_BOX(topbox), menuGrid, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(topbox), copyButton, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(topbox), quitButton, TRUE, TRUE, 0);
 
@@ -337,11 +400,7 @@ int draw_mesh_kemo(void) {
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
     glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
-	
-	/*! GTK Initialization*/
-	/* gtk_set_locale(); */
-	gtk_init(&narg_glut, &arg_glut);
-    
+	    
 	/* Create a windowed mode window and its OpenGL context */
     int nx_buf, ny_buf;
 	glfw_win = open_kemoviwer_glfw_window(NPIX_X, NPIX_Y);
@@ -385,6 +444,9 @@ int draw_mesh_kemo(void) {
 	glfwPollEvents();
 	glfwPostEmptyEvent();
 	
+    /*! GTK Initialization*/
+    /* gtk_set_locale(); */
+    gtk_init(&narg_glut, &arg_glut);
 	kemoview_main_window(single_kemoview);
 	mainloop_4_glfw();
 	glfwTerminate();

@@ -236,6 +236,8 @@ draw_patch_4_mesh_c.o: \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -601,6 +603,8 @@ m_kemoview_object_buffers.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -823,6 +827,8 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -1840,6 +1846,8 @@ set_psf_texture_by_png.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.h \
   $(C_SRCDIR)/KEMO_GL/sort_by_patch_distance.h \
   $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
@@ -1921,7 +1929,9 @@ sort_by_patch_distance.o: \
   $(C_SRCDIR)/CORE_C/colormap_space_c.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
-  $(C_SRCDIR)/CORE_C/quicksort_c.h
+  $(C_SRCDIR)/CORE_C/quicksort_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_pthread.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 trackball.o: $(C_SRCDIR)/KEMO_GL/trackball.c \
   $(C_SRCDIR)/KEMO_GL/trackball.h \

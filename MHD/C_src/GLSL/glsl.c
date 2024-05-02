@@ -239,10 +239,10 @@ void LoadShaderFromStrings(struct shader_ids *shader,
     char *fragment_shader = alloc_string(len_fragment+len_version);
     append_text_c(glsl_version, fragment_shader);
     append_text_c(text_fragment, fragment_shader);
-
+/*
     printf("VERTEX: \n%s\n\n", vertex_shader);
     printf("FRAGMENT: \n%s\n\n", fragment_shader);
- 
+ */
     /* Make shader object */
 	shader->vertexID = glCreateShader(GL_VERTEX_SHADER);
 	shader->fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
