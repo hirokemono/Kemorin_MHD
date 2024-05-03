@@ -37,8 +37,7 @@
 #endif
 
 struct updatable_widgets{
-    int iflag_psfBox;
-    GtkWidget *psfBox;
+    GtkWidget *psfWin;
     struct psf_gtk_menu *psf_gmenu;
     
     int iflag_flineBox;
@@ -89,7 +88,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
 
 void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
                       struct kemoviewer_gl_type *kemo_gl,
-                      struct updatable_widgets *updatable, 
+                      struct psf_gtk_menu *psf_gmenu,
                       GtkWidget *window);
 void pack_psf_menu_frame(struct psf_gtk_menu *psf_gmenu);
 
@@ -103,15 +102,6 @@ void fieldline_gtk_menu(struct fieldline_gtk_menu *fline_menu,
 void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
                        struct updatable_widgets *updatable, 
                        GtkWidget *window);
-
-void update_current_psf_set_hbox(struct kemoviewer_type *kemo_sgl,
-                                 struct psf_gtk_menu *psf_gmenu);
-void update_psf_draw_field_hbox(struct kemoviewer_type *kemo_sgl,
-                                struct psf_gtk_menu *psf_gmenu);
-void update_psf_draw_component_hbox(struct kemoviewer_type *kemo_sgl,
-                                    struct psf_gtk_menu *psf_gmenu);
-void update_by_psf_field(struct kemoviewer_type *kemo_sgl,
-                         struct psf_gtk_menu *psf_gmenu);
 
 void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
                           struct updatable_widgets *updatable,

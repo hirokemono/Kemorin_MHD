@@ -32,23 +32,7 @@
 		1809BC6C2B8FDD8A0008A294 /* kemoview_gtk_rotation_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7424B9318500D30C46 /* kemoview_gtk_rotation_menu.c */; };
 		1809BC6D2B8FDD8A0008A294 /* kemoviewer_glfw_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E1824B925DC00D30C46 /* kemoviewer_glfw_gtk.c */; };
 		1809BC6E2B8FDD8A0008A294 /* kemoview_gtk_fline_selectors.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7324B9318500D30C46 /* kemoview_gtk_fline_selectors.c */; };
-		1809BC712B8FDD8A0008A294 /* libgdk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1326D429A500F6E428 /* libgdk-3.dylib */; };
 		1809BC722B8FDD8A0008A294 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E1224B9256E00D30C46 /* libz.tbd */; };
-		1809BC732B8FDD8A0008A294 /* libgio-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2326D42A3400F6E428 /* libgio-2.0.dylib */; };
-		1809BC742B8FDD8A0008A294 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1926D429E900F6E428 /* libcairo.2.dylib */; };
-		1809BC752B8FDD8A0008A294 /* libglfw.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1526D429BC00F6E428 /* libglfw.dylib */; };
-		1809BC762B8FDD8A0008A294 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E1024B9254C00D30C46 /* CoreFoundation.framework */; };
-		1809BC772B8FDD8A0008A294 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1726D429D500F6E428 /* libpng.dylib */; };
-		1809BC782B8FDD8A0008A294 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0E24B9253400D30C46 /* OpenGL.framework */; };
-		1809BC792B8FDD8A0008A294 /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1B26D429FA00F6E428 /* libglib-2.0.dylib */; };
-		1809BC7A2B8FDD8A0008A294 /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1126D4298A00F6E428 /* libgtk-3.dylib */; };
-		1809BC7B2B8FDD8A0008A294 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0C24B9251D00D30C46 /* Cocoa.framework */; };
-		1809BC7C2B8FDD8A0008A294 /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2126D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib */; };
-		1809BC7D2B8FDD8A0008A294 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0A24B9251100D30C46 /* IOKit.framework */; };
-		1809BC7E2B8FDD8A0008A294 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2526D42A4100F6E428 /* libgobject-2.0.dylib */; };
-		1809BC7F2B8FDD8A0008A294 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0824B9250500D30C46 /* CoreVideo.framework */; };
-		1809BC802B8FDD8A0008A294 /* libatk-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1D26D42A0700F6E428 /* libatk-1.0.dylib */; };
-		1809BC812B8FDD8A0008A294 /* libcairo-gobject.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1F26D42A1700F6E428 /* libcairo-gobject.dylib */; };
 		1809BCEE2B8FF1E50008A294 /* skip_comment_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BC8A2B8FF1E20008A294 /* skip_comment_c.c */; };
 		1809BCEF2B8FF1E50008A294 /* skip_comment_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BC8A2B8FF1E20008A294 /* skip_comment_c.c */; };
 		1809BCF02B8FF1E50008A294 /* calypso_rawfile_io_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1809BC8B2B8FF1E20008A294 /* calypso_rawfile_io_c.c */; };
@@ -353,11 +337,6 @@
 		183870A92BD1D2B400933367 /* colormap_rainbow_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1838709C2BD1D2B400933367 /* colormap_rainbow_c.c */; };
 		183870AA2BD1D2B400933367 /* colormap_sym_gray_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1838709D2BD1D2B400933367 /* colormap_sym_gray_c.c */; };
 		183870AB2BD1D2B400933367 /* colormap_sym_gray_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1838709D2BD1D2B400933367 /* colormap_sym_gray_c.c */; };
-		18A91E0924B9250600D30C46 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0824B9250500D30C46 /* CoreVideo.framework */; };
-		18A91E0B24B9251100D30C46 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0A24B9251100D30C46 /* IOKit.framework */; };
-		18A91E0D24B9251D00D30C46 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0C24B9251D00D30C46 /* Cocoa.framework */; };
-		18A91E0F24B9253500D30C46 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0E24B9253400D30C46 /* OpenGL.framework */; };
-		18A91E1124B9254C00D30C46 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E1024B9254C00D30C46 /* CoreFoundation.framework */; };
 		18A91E1324B9256E00D30C46 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E1224B9256E00D30C46 /* libz.tbd */; };
 		18A91E1924B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E1724B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c */; };
 		18A91E1A24B925DC00D30C46 /* kemoviewer_glfw_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E1824B925DC00D30C46 /* kemoviewer_glfw_gtk.c */; };
@@ -383,17 +362,35 @@
 		18A91E8B24B9318500D30C46 /* kemoview_gtk_fline_selectors.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7324B9318500D30C46 /* kemoview_gtk_fline_selectors.c */; };
 		18A91E8C24B9318500D30C46 /* kemoview_gtk_rotation_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7424B9318500D30C46 /* kemoview_gtk_rotation_menu.c */; };
 		18A91E8D24B9318500D30C46 /* tree_view_4_domain_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7524B9318500D30C46 /* tree_view_4_domain_viewer.c */; };
-		18EC9F1226D4298A00F6E428 /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1126D4298A00F6E428 /* libgtk-3.dylib */; };
-		18EC9F1426D429A500F6E428 /* libgdk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1326D429A500F6E428 /* libgdk-3.dylib */; };
-		18EC9F1626D429BC00F6E428 /* libglfw.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1526D429BC00F6E428 /* libglfw.dylib */; };
-		18EC9F1826D429D500F6E428 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1726D429D500F6E428 /* libpng.dylib */; };
-		18EC9F1A26D429E900F6E428 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1926D429E900F6E428 /* libcairo.2.dylib */; };
-		18EC9F1C26D429FA00F6E428 /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1B26D429FA00F6E428 /* libglib-2.0.dylib */; };
-		18EC9F1E26D42A0700F6E428 /* libatk-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1D26D42A0700F6E428 /* libatk-1.0.dylib */; };
-		18EC9F2026D42A1700F6E428 /* libcairo-gobject.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F1F26D42A1700F6E428 /* libcairo-gobject.dylib */; };
-		18EC9F2226D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2126D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib */; };
-		18EC9F2426D42A3400F6E428 /* libgio-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2326D42A3400F6E428 /* libgio-2.0.dylib */; };
-		18EC9F2626D42A4100F6E428 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2526D42A4100F6E428 /* libgobject-2.0.dylib */; };
+		18D822272BE44E400067B954 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822262BE44E400067B954 /* CoreServices.framework */; };
+		18D822292BE472390067B954 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822282BE472390067B954 /* Accelerate.framework */; };
+		18D8222B2BE473580067B954 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8222A2BE473580067B954 /* libpng.dylib */; };
+		18D8222C2BE473580067B954 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8222A2BE473580067B954 /* libpng.dylib */; };
+		18D822312BE473950067B954 /* libgtk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822302BE473950067B954 /* libgtk-3.0.dylib */; };
+		18D822322BE473950067B954 /* libgtk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822302BE473950067B954 /* libgtk-3.0.dylib */; };
+		18D822342BE4739D0067B954 /* libgdk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822332BE4739D0067B954 /* libgdk-3.0.dylib */; };
+		18D822352BE4739D0067B954 /* libgdk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D822332BE4739D0067B954 /* libgdk-3.0.dylib */; };
+		18D824822BE49F320067B954 /* libgio-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824812BE49F320067B954 /* libgio-2.0.0.dylib */; };
+		18D824832BE49F320067B954 /* libgio-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824812BE49F320067B954 /* libgio-2.0.0.dylib */; };
+		18D824852BE49F3E0067B954 /* libgobject-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824842BE49F3D0067B954 /* libgobject-2.0.0.dylib */; };
+		18D824862BE49F3E0067B954 /* libgobject-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824842BE49F3D0067B954 /* libgobject-2.0.0.dylib */; };
+		18D824882BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824872BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib */; };
+		18D824892BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824872BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib */; };
+		18D8248B2BE49F620067B954 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8248A2BE49F620067B954 /* libglib-2.0.0.dylib */; };
+		18D8248C2BE49F620067B954 /* libglib-2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8248A2BE49F620067B954 /* libglib-2.0.0.dylib */; };
+		18D8248E2BE49F740067B954 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8248D2BE49F740067B954 /* libglfw.3.3.dylib */; };
+		18D8248F2BE49F740067B954 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D8248D2BE49F740067B954 /* libglfw.3.3.dylib */; };
+		18D824912BE49FA20067B954 /* libatk-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824902BE49FA20067B954 /* libatk-1.0.0.dylib */; };
+		18D824922BE49FA20067B954 /* libatk-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824902BE49FA20067B954 /* libatk-1.0.0.dylib */; };
+		18D824942BE49FB30067B954 /* libcairo-gobject.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824932BE49FB30067B954 /* libcairo-gobject.2.dylib */; };
+		18D824952BE49FB30067B954 /* libcairo-gobject.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824932BE49FB30067B954 /* libcairo-gobject.2.dylib */; };
+		18D824972BE49FBC0067B954 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824962BE49FBC0067B954 /* libcairo.2.dylib */; };
+		18D824982BE49FBC0067B954 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824962BE49FBC0067B954 /* libcairo.2.dylib */; };
+		18D8249B2BE49FEF0067B954 /* libpthread.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824992BE49FEF0067B954 /* libpthread.tbd */; };
+		18D8249F2BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */; };
+		18D824A02BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */; };
+		18D824A32BE4A0A70067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */; };
+		18D824A42BE4A0A70067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */; };
 		18EC9F2826D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EC9F2726D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c */; };
 /* End PBXBuildFile section */
 
@@ -743,11 +740,6 @@
 		1838709C2BD1D2B400933367 /* colormap_rainbow_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = colormap_rainbow_c.c; path = ../../../C_src/CORE_C/colormap_rainbow_c.c; sourceTree = "<group>"; };
 		1838709D2BD1D2B400933367 /* colormap_sym_gray_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = colormap_sym_gray_c.c; path = ../../../C_src/CORE_C/colormap_sym_gray_c.c; sourceTree = "<group>"; };
 		18A91C8A24B9241B00D30C46 /* CalypsoView_Intel_GTK_GLFW */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CalypsoView_Intel_GTK_GLFW; sourceTree = BUILT_PRODUCTS_DIR; };
-		18A91E0824B9250500D30C46 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
-		18A91E0A24B9251100D30C46 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		18A91E0C24B9251D00D30C46 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		18A91E0E24B9253400D30C46 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		18A91E1024B9254C00D30C46 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		18A91E1224B9256E00D30C46 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18A91E1624B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemo_mesh_viewer_glfw_gtk.h; path = ../../../programs/VIEWER/kemo_mesh_viewer_glfw_gtk.h; sourceTree = "<group>"; };
 		18A91E1724B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemo_mesh_viewer_glfw_gtk.c; path = ../../../programs/VIEWER/kemo_mesh_viewer_glfw_gtk.c; sourceTree = "<group>"; };
@@ -797,17 +789,24 @@
 		18A91E7424B9318500D30C46 /* kemoview_gtk_rotation_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_rotation_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.c; sourceTree = "<group>"; };
 		18A91E7524B9318500D30C46 /* tree_view_4_domain_viewer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_domain_viewer.c; path = ../../../C_src/KEMO_GLUT/tree_view_4_domain_viewer.c; sourceTree = "<group>"; };
 		18A91E7724B9318500D30C46 /* kemoview_gtk_PSF_isoline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_PSF_isoline_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.h; sourceTree = "<group>"; };
-		18EC9F1126D4298A00F6E428 /* libgtk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.dylib"; path = "../../../../../../../usr/local/lib/libgtk-3.dylib"; sourceTree = "<group>"; };
-		18EC9F1326D429A500F6E428 /* libgdk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.dylib"; path = "../../../../../../../usr/local/lib/libgdk-3.dylib"; sourceTree = "<group>"; };
-		18EC9F1526D429BC00F6E428 /* libglfw.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.dylib; path = ../../../../../../../usr/local/lib/libglfw.dylib; sourceTree = "<group>"; };
-		18EC9F1726D429D500F6E428 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = ../../../../../../../usr/local/lib/libpng.dylib; sourceTree = "<group>"; };
-		18EC9F1926D429E900F6E428 /* libcairo.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.2.dylib; path = ../../../../../../../usr/local/lib/libcairo.2.dylib; sourceTree = "<group>"; };
-		18EC9F1B26D429FA00F6E428 /* libglib-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.dylib"; path = "../../../../../../../usr/local/lib/libglib-2.0.dylib"; sourceTree = "<group>"; };
-		18EC9F1D26D42A0700F6E428 /* libatk-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libatk-1.0.dylib"; path = "../../../../../../../usr/local/lib/libatk-1.0.dylib"; sourceTree = "<group>"; };
-		18EC9F1F26D42A1700F6E428 /* libcairo-gobject.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcairo-gobject.dylib"; path = "../../../../../../../usr/local/lib/libcairo-gobject.dylib"; sourceTree = "<group>"; };
-		18EC9F2126D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.dylib"; path = "../../../../../../../usr/local/lib/libgdk_pixbuf-2.0.dylib"; sourceTree = "<group>"; };
-		18EC9F2326D42A3400F6E428 /* libgio-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgio-2.0.dylib"; path = "../../../../../../../usr/local/lib/libgio-2.0.dylib"; sourceTree = "<group>"; };
-		18EC9F2526D42A4100F6E428 /* libgobject-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.dylib"; path = "../../../../../../../usr/local/lib/libgobject-2.0.dylib"; sourceTree = "<group>"; };
+		18D822262BE44E400067B954 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		18D822282BE472390067B954 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		18D8222A2BE473580067B954 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = ../../../../../../../opt/homebrew/Cellar/libpng/1.6.43/lib/libpng.dylib; sourceTree = "<group>"; };
+		18D822302BE473950067B954 /* libgtk-3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/gtk+3/3.24.41/lib/libgtk-3.0.dylib"; sourceTree = "<group>"; };
+		18D822332BE4739D0067B954 /* libgdk-3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/gtk+3/3.24.41/lib/libgdk-3.0.dylib"; sourceTree = "<group>"; };
+		18D824812BE49F320067B954 /* libgio-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgio-2.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/glib/2.80.0_2/lib/libgio-2.0.0.dylib"; sourceTree = "<group>"; };
+		18D824842BE49F3D0067B954 /* libgobject-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/glib/2.80.0_2/lib/libgobject-2.0.0.dylib"; sourceTree = "<group>"; };
+		18D824872BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib/libgdk_pixbuf-2.0.0.dylib"; sourceTree = "<group>"; };
+		18D8248A2BE49F620067B954 /* libglib-2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/glib/2.80.0_2/lib/libglib-2.0.0.dylib"; sourceTree = "<group>"; };
+		18D8248D2BE49F740067B954 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../../../../opt/homebrew/Cellar/glfw/3.3.8/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
+		18D824902BE49FA20067B954 /* libatk-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libatk-1.0.0.dylib"; path = "../../../../../../../opt/homebrew/Cellar/at-spi2-core/2.52.0/lib/libatk-1.0.0.dylib"; sourceTree = "<group>"; };
+		18D824932BE49FB30067B954 /* libcairo-gobject.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcairo-gobject.2.dylib"; path = "../../../../../../../opt/homebrew/Cellar/cairo/1.18.0/lib/libcairo-gobject.2.dylib"; sourceTree = "<group>"; };
+		18D824962BE49FBC0067B954 /* libcairo.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.2.dylib; path = ../../../../../../../opt/homebrew/Cellar/cairo/1.18.0/lib/libcairo.2.dylib; sourceTree = "<group>"; };
+		18D824992BE49FEF0067B954 /* libpthread.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libpthread.tbd; path = usr/lib/libpthread.tbd; sourceTree = SDKROOT; };
+		18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_pthread.c; path = ../../../C_src/CORE_C/bitonic_sort_pthread.c; sourceTree = "<group>"; };
+		18D8249E2BE4A08C0067B954 /* bitonic_sort_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_pthread.h; path = ../../../C_src/CORE_C/bitonic_sort_pthread.h; sourceTree = "<group>"; };
+		18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_c.c; path = ../../../C_src/CORE_C/bitonic_sort_c.c; sourceTree = "<group>"; };
+		18D824A22BE4A0A70067B954 /* bitonic_sort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_c.h; path = ../../../C_src/CORE_C/bitonic_sort_c.h; sourceTree = "<group>"; };
 		18EC9F2726D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_quilt_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.c; sourceTree = "<group>"; };
 		18EC9F2926D6AE2B00F6E428 /* kemoview_gtk_quilt_menu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_quilt_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -817,23 +816,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1809BC712B8FDD8A0008A294 /* libgdk-3.dylib in Frameworks */,
+				18D8249B2BE49FEF0067B954 /* libpthread.tbd in Frameworks */,
+				18D822292BE472390067B954 /* Accelerate.framework in Frameworks */,
+				18D8222C2BE473580067B954 /* libpng.dylib in Frameworks */,
+				18D824982BE49FBC0067B954 /* libcairo.2.dylib in Frameworks */,
+				18D822352BE4739D0067B954 /* libgdk-3.0.dylib in Frameworks */,
+				18D8248F2BE49F740067B954 /* libglfw.3.3.dylib in Frameworks */,
+				18D824832BE49F320067B954 /* libgio-2.0.0.dylib in Frameworks */,
 				1809BC722B8FDD8A0008A294 /* libz.tbd in Frameworks */,
-				1809BC732B8FDD8A0008A294 /* libgio-2.0.dylib in Frameworks */,
-				1809BC742B8FDD8A0008A294 /* libcairo.2.dylib in Frameworks */,
-				1809BC752B8FDD8A0008A294 /* libglfw.dylib in Frameworks */,
-				1809BC762B8FDD8A0008A294 /* CoreFoundation.framework in Frameworks */,
-				1809BC772B8FDD8A0008A294 /* libpng.dylib in Frameworks */,
-				1809BC782B8FDD8A0008A294 /* OpenGL.framework in Frameworks */,
-				1809BC792B8FDD8A0008A294 /* libglib-2.0.dylib in Frameworks */,
-				1809BC7A2B8FDD8A0008A294 /* libgtk-3.dylib in Frameworks */,
-				1809BC7B2B8FDD8A0008A294 /* Cocoa.framework in Frameworks */,
-				1809BC7C2B8FDD8A0008A294 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
-				1809BC7D2B8FDD8A0008A294 /* IOKit.framework in Frameworks */,
-				1809BC7E2B8FDD8A0008A294 /* libgobject-2.0.dylib in Frameworks */,
-				1809BC7F2B8FDD8A0008A294 /* CoreVideo.framework in Frameworks */,
-				1809BC802B8FDD8A0008A294 /* libatk-1.0.dylib in Frameworks */,
-				1809BC812B8FDD8A0008A294 /* libcairo-gobject.dylib in Frameworks */,
+				18D8248C2BE49F620067B954 /* libglib-2.0.0.dylib in Frameworks */,
+				18D824862BE49F3E0067B954 /* libgobject-2.0.0.dylib in Frameworks */,
+				18D824952BE49FB30067B954 /* libcairo-gobject.2.dylib in Frameworks */,
+				18D824892BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib in Frameworks */,
+				18D822322BE473950067B954 /* libgtk-3.0.dylib in Frameworks */,
+				18D822272BE44E400067B954 /* CoreServices.framework in Frameworks */,
+				18D824922BE49FA20067B954 /* libatk-1.0.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -841,23 +838,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18EC9F1426D429A500F6E428 /* libgdk-3.dylib in Frameworks */,
 				18A91E1324B9256E00D30C46 /* libz.tbd in Frameworks */,
-				18EC9F2426D42A3400F6E428 /* libgio-2.0.dylib in Frameworks */,
-				18EC9F1A26D429E900F6E428 /* libcairo.2.dylib in Frameworks */,
-				18EC9F1626D429BC00F6E428 /* libglfw.dylib in Frameworks */,
-				18A91E1124B9254C00D30C46 /* CoreFoundation.framework in Frameworks */,
-				18EC9F1826D429D500F6E428 /* libpng.dylib in Frameworks */,
-				18A91E0F24B9253500D30C46 /* OpenGL.framework in Frameworks */,
-				18EC9F1C26D429FA00F6E428 /* libglib-2.0.dylib in Frameworks */,
-				18EC9F1226D4298A00F6E428 /* libgtk-3.dylib in Frameworks */,
-				18A91E0D24B9251D00D30C46 /* Cocoa.framework in Frameworks */,
-				18EC9F2226D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
-				18A91E0B24B9251100D30C46 /* IOKit.framework in Frameworks */,
-				18EC9F2626D42A4100F6E428 /* libgobject-2.0.dylib in Frameworks */,
-				18A91E0924B9250600D30C46 /* CoreVideo.framework in Frameworks */,
-				18EC9F1E26D42A0700F6E428 /* libatk-1.0.dylib in Frameworks */,
-				18EC9F2026D42A1700F6E428 /* libcairo-gobject.dylib in Frameworks */,
+				18D824972BE49FBC0067B954 /* libcairo.2.dylib in Frameworks */,
+				18D8248E2BE49F740067B954 /* libglfw.3.3.dylib in Frameworks */,
+				18D824822BE49F320067B954 /* libgio-2.0.0.dylib in Frameworks */,
+				18D824882BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib in Frameworks */,
+				18D8248B2BE49F620067B954 /* libglib-2.0.0.dylib in Frameworks */,
+				18D824912BE49FA20067B954 /* libatk-1.0.0.dylib in Frameworks */,
+				18D822312BE473950067B954 /* libgtk-3.0.dylib in Frameworks */,
+				18D8222B2BE473580067B954 /* libpng.dylib in Frameworks */,
+				18D824852BE49F3E0067B954 /* libgobject-2.0.0.dylib in Frameworks */,
+				18D822342BE4739D0067B954 /* libgdk-3.0.dylib in Frameworks */,
+				18D824942BE49FB30067B954 /* libcairo-gobject.2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -923,6 +915,10 @@
 				1809BCCD2B8FF1E40008A294 /* projection_patch_to_map.h */,
 				1809BC9C2B8FF1E30008A294 /* quicksort_c.c */,
 				1809BC942B8FF1E30008A294 /* quicksort_c.h */,
+				18D824A12BE4A0A70067B954 /* bitonic_sort_c.c */,
+				18D824A22BE4A0A70067B954 /* bitonic_sort_c.h */,
+				18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */,
+				18D8249E2BE4A08C0067B954 /* bitonic_sort_pthread.h */,
 				1809BC8F2B8FF1E20008A294 /* read_grouping_mesh_c.c */,
 				1809BC982B8FF1E30008A294 /* read_grouping_mesh_c.h */,
 				1809BCA32B8FF1E30008A294 /* read_image_2_bmp.c */,
@@ -1256,23 +1252,21 @@
 		18A91E0724B9250500D30C46 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18D824992BE49FEF0067B954 /* libpthread.tbd */,
+				18D822282BE472390067B954 /* Accelerate.framework */,
+				18D822262BE44E400067B954 /* CoreServices.framework */,
 				18A91E1224B9256E00D30C46 /* libz.tbd */,
-				18EC9F1726D429D500F6E428 /* libpng.dylib */,
-				18EC9F1126D4298A00F6E428 /* libgtk-3.dylib */,
-				18EC9F1526D429BC00F6E428 /* libglfw.dylib */,
-				18EC9F1326D429A500F6E428 /* libgdk-3.dylib */,
-				18EC9F1926D429E900F6E428 /* libcairo.2.dylib */,
-				18EC9F1B26D429FA00F6E428 /* libglib-2.0.dylib */,
-				18EC9F1D26D42A0700F6E428 /* libatk-1.0.dylib */,
-				18EC9F1F26D42A1700F6E428 /* libcairo-gobject.dylib */,
-				18EC9F2126D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib */,
-				18EC9F2526D42A4100F6E428 /* libgobject-2.0.dylib */,
-				18EC9F2326D42A3400F6E428 /* libgio-2.0.dylib */,
-				18A91E1024B9254C00D30C46 /* CoreFoundation.framework */,
-				18A91E0E24B9253400D30C46 /* OpenGL.framework */,
-				18A91E0C24B9251D00D30C46 /* Cocoa.framework */,
-				18A91E0A24B9251100D30C46 /* IOKit.framework */,
-				18A91E0824B9250500D30C46 /* CoreVideo.framework */,
+				18D8222A2BE473580067B954 /* libpng.dylib */,
+				18D822332BE4739D0067B954 /* libgdk-3.0.dylib */,
+				18D822302BE473950067B954 /* libgtk-3.0.dylib */,
+				18D824812BE49F320067B954 /* libgio-2.0.0.dylib */,
+				18D824842BE49F3D0067B954 /* libgobject-2.0.0.dylib */,
+				18D824872BE49F500067B954 /* libgdk_pixbuf-2.0.0.dylib */,
+				18D8248A2BE49F620067B954 /* libglib-2.0.0.dylib */,
+				18D8248D2BE49F740067B954 /* libglfw.3.3.dylib */,
+				18D824902BE49FA20067B954 /* libatk-1.0.0.dylib */,
+				18D824932BE49FB30067B954 /* libcairo-gobject.2.dylib */,
+				18D824962BE49FBC0067B954 /* libcairo.2.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1441,6 +1435,7 @@
 				1809BF422B8FF9160008A294 /* kemoviewer_base.c in Sources */,
 				1809BD3B2B8FF1E50008A294 /* set_psf_viewer.c in Sources */,
 				1809BE372B8FF4250008A294 /* draw_PSF_patches_by_VAO.c in Sources */,
+				18D824A02BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */,
 				1809BF8A2B8FF9160008A294 /* rainbow_color_code_c.c in Sources */,
 				1809BFD02B8FFEDB0008A294 /* t_control_chara_int3_IO.c in Sources */,
 				1809BCFD2B8FF1E50008A294 /* read_psf_vtk_data_c.c in Sources */,
@@ -1594,6 +1589,7 @@
 				1809BFB02B8FFD060008A294 /* t_ctl_data_pvr_colormap_c.c in Sources */,
 				1809BF7E2B8FF9160008A294 /* set_mesh_grid_2_gl_buf.c in Sources */,
 				1809BF462B8FF9160008A294 /* read_data_4_kemoviewer.c in Sources */,
+				18D824A42BE4A0A70067B954 /* bitonic_sort_c.c in Sources */,
 				1809BE2F2B8FF4250008A294 /* shader_into_c.f90 in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1625,6 +1621,7 @@
 				1809BF412B8FF9160008A294 /* kemoviewer_base.c in Sources */,
 				1809BD3A2B8FF1E50008A294 /* set_psf_viewer.c in Sources */,
 				1809BE362B8FF4250008A294 /* draw_PSF_patches_by_VAO.c in Sources */,
+				18D8249F2BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */,
 				1809BF892B8FF9160008A294 /* rainbow_color_code_c.c in Sources */,
 				1809BFCF2B8FFEDB0008A294 /* t_control_chara_int3_IO.c in Sources */,
 				1809BCFC2B8FF1E50008A294 /* read_psf_vtk_data_c.c in Sources */,
@@ -1778,6 +1775,7 @@
 				1809BFAF2B8FFD060008A294 /* t_ctl_data_pvr_colormap_c.c in Sources */,
 				1809BF7D2B8FF9160008A294 /* set_mesh_grid_2_gl_buf.c in Sources */,
 				1809BF452B8FF9160008A294 /* read_data_4_kemoviewer.c in Sources */,
+				18D824A32BE4A0A70067B954 /* bitonic_sort_c.c in Sources */,
 				1809BE2E2B8FF4250008A294 /* shader_into_c.f90 in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1788,52 +1786,62 @@
 		1809BC842B8FDD8A0008A294 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 3P2U2MN24Q;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
+					/usr/X11/include,
+					/opt/homebrew/opt/libpng/include/libpng16,
+					/Users/matsui/src_kemo/MHD/C_src/CORE_C,
+					/Users/matsui/src_kemo/MHD/C_src/CONTROLS,
+					/opt/homebrew/opt/libpng/include/libpng16,
+					"/private/tmp/hdf5-mpi-20230512-9510-1222iej/hdf5-1.14.1-2/src/H5FDsubfiling",
+					/opt/homebrew/opt/libaec/include,
+					"/opt/homebrew/Cellar/hdf5-mpi/1.14.1/include",
+					/opt/homebrew/opt/zlib/include,
+					/opt/homebrew/Cellar/fftw/3.3.10_1/include,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GL,
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.38/include/gtk-3.0",
-					"/opt/homebrew/Cellar/glib/2.76.4/include/gio-unix-2.0",
-					/opt/homebrew/Cellar/cairo/1.16.0_5/include/cairo,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
+					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
-					"/opt/homebrew/Cellar/pango/1.50.14/include/pango-1.0",
-					/opt/homebrew/Cellar/harfbuzz/8.0.1/include/harfbuzz,
-					"/opt/homebrew/Cellar/pango/1.50.14/include/pango-1.0",
+					"/opt/homebrew/Cellar/pango/1.52.2/include/pango-1.0",
+					/opt/homebrew/Cellar/harfbuzz/8.4.0/include/harfbuzz,
+					"/opt/homebrew/Cellar/pango/1.52.2/include/pango-1.0",
 					/opt/homebrew/Cellar/fribidi/1.0.13/include/fribidi,
-					/opt/homebrew/Cellar/harfbuzz/8.0.1/include/harfbuzz,
+					/opt/homebrew/Cellar/harfbuzz/8.4.0/include/harfbuzz,
 					/opt/homebrew/Cellar/graphite2/1.3.14/include,
-					"/opt/homebrew/Cellar/atk/2.38.0/include/atk-1.0",
-					/opt/homebrew/Cellar/cairo/1.16.0_5/include/cairo,
-					"/opt/homebrew/Cellar/pixman/0.42.2/include/pixman-1",
-					/opt/homebrew/Cellar/fontconfig/2.14.2/include,
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/include/atk-1.0",
+					/opt/homebrew/Cellar/cairo/1.18.0/include/cairo,
+					/opt/homebrew/Cellar/fontconfig/2.15.0/include,
 					/opt/homebrew/opt/freetype/include/freetype2,
-					/opt/homebrew/Cellar/libxcb/1.15_1/include,
+					/opt/homebrew/Cellar/libxext/1.3.6/include,
 					/opt/homebrew/Cellar/libxrender/0.9.11/include,
-					/opt/homebrew/Cellar/libxext/1.3.5/include,
-					/opt/homebrew/Cellar/libx11/1.8.6/include,
-					/opt/homebrew/Cellar/libxcb/1.15_1/include,
+					/opt/homebrew/Cellar/libx11/1.8.9/include,
+					/opt/homebrew/Cellar/libxcb/1.17.0/include,
 					/opt/homebrew/Cellar/libxau/1.0.11/include,
-					/opt/homebrew/Cellar/libxdmcp/1.1.4/include,
-					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.10_1/include/gdk-pixbuf-2.0",
+					/opt/homebrew/Cellar/libxdmcp/1.1.5/include,
+					"/opt/homebrew/Cellar/pixman/0.42.2/include/pixman-1",
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/include/gdk-pixbuf-2.0",
 					/opt/homebrew/opt/libpng/include/libpng16,
-					/opt/homebrew/Cellar/libtiff/4.5.1/include,
-					/opt/homebrew/Cellar/zstd/1.5.5/include,
-					/opt/homebrew/Cellar/xz/5.4.3/include,
-					"/opt/homebrew/Cellar/jpeg-turbo/3.0.0/include",
-					/opt/homebrew/Cellar/glib/2.76.4/include,
-					"/opt/homebrew/Cellar/glib/2.76.4/include/glib-2.0",
-					"/opt/homebrew/Cellar/glib/2.76.4/lib/glib-2.0/include",
+					/opt/homebrew/Cellar/libtiff/4.6.0/include,
+					/opt/homebrew/opt/zstd/include,
+					/opt/homebrew/Cellar/xz/5.4.6/include,
+					"/opt/homebrew/Cellar/jpeg-turbo/3.0.2/include",
+					/opt/homebrew/Cellar/glib/2.80.0_2/include,
+					"/opt/homebrew/Cellar/glib/2.80.0_2/include/glib-2.0",
+					"/opt/homebrew/Cellar/glib/2.80.0_2/lib/glib-2.0/include",
 					/opt/homebrew/opt/gettext/include,
-					/opt/homebrew/Cellar/pcre2/10.42/include,
-					/opt/homebrew/Cellar/xorgproto/2023.2/include,
-					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/pcre2/10.43/include,
+					/opt/homebrew/Cellar/xorgproto/2024.1/include,
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
+					/opt/homebrew/Cellar/glfw/3.3.8/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1849,60 +1857,78 @@
 					/opt/homebrew/Cellar/glfw/3.3.8/lib,
 					/opt/homebrew/opt/libpng/lib,
 					"/opt/homebrew/opt/zlib/lib/**",
+					/opt/homebrew/Cellar/libpng/1.6.43/lib,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/lib",
+					/opt/homebrew/Cellar/glib/2.80.0_2/lib,
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib",
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
+					/opt/homebrew/Cellar/cairo/1.18.0/lib,
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
 		1809BC852B8FDD8A0008A294 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 3P2U2MN24Q;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
+					/usr/X11/include,
+					/opt/homebrew/opt/libpng/include/libpng16,
+					/Users/matsui/src_kemo/MHD/C_src/CORE_C,
+					/Users/matsui/src_kemo/MHD/C_src/CONTROLS,
+					/opt/homebrew/opt/libpng/include/libpng16,
+					"/private/tmp/hdf5-mpi-20230512-9510-1222iej/hdf5-1.14.1-2/src/H5FDsubfiling",
+					/opt/homebrew/opt/libaec/include,
+					"/opt/homebrew/Cellar/hdf5-mpi/1.14.1/include",
+					/opt/homebrew/opt/zlib/include,
+					/opt/homebrew/Cellar/fftw/3.3.10_1/include,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GL,
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.38/include/gtk-3.0",
-					"/opt/homebrew/Cellar/glib/2.76.4/include/gio-unix-2.0",
-					/opt/homebrew/Cellar/cairo/1.16.0_5/include/cairo,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
+					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
-					"/opt/homebrew/Cellar/pango/1.50.14/include/pango-1.0",
-					/opt/homebrew/Cellar/harfbuzz/8.0.1/include/harfbuzz,
-					"/opt/homebrew/Cellar/pango/1.50.14/include/pango-1.0",
+					"/opt/homebrew/Cellar/pango/1.52.2/include/pango-1.0",
+					/opt/homebrew/Cellar/harfbuzz/8.4.0/include/harfbuzz,
+					"/opt/homebrew/Cellar/pango/1.52.2/include/pango-1.0",
 					/opt/homebrew/Cellar/fribidi/1.0.13/include/fribidi,
-					/opt/homebrew/Cellar/harfbuzz/8.0.1/include/harfbuzz,
+					/opt/homebrew/Cellar/harfbuzz/8.4.0/include/harfbuzz,
 					/opt/homebrew/Cellar/graphite2/1.3.14/include,
-					"/opt/homebrew/Cellar/atk/2.38.0/include/atk-1.0",
-					/opt/homebrew/Cellar/cairo/1.16.0_5/include/cairo,
-					"/opt/homebrew/Cellar/pixman/0.42.2/include/pixman-1",
-					/opt/homebrew/Cellar/fontconfig/2.14.2/include,
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/include/atk-1.0",
+					/opt/homebrew/Cellar/cairo/1.18.0/include/cairo,
+					/opt/homebrew/Cellar/fontconfig/2.15.0/include,
 					/opt/homebrew/opt/freetype/include/freetype2,
-					/opt/homebrew/Cellar/libxcb/1.15_1/include,
+					/opt/homebrew/Cellar/libxext/1.3.6/include,
 					/opt/homebrew/Cellar/libxrender/0.9.11/include,
-					/opt/homebrew/Cellar/libxext/1.3.5/include,
-					/opt/homebrew/Cellar/libx11/1.8.6/include,
-					/opt/homebrew/Cellar/libxcb/1.15_1/include,
+					/opt/homebrew/Cellar/libx11/1.8.9/include,
+					/opt/homebrew/Cellar/libxcb/1.17.0/include,
 					/opt/homebrew/Cellar/libxau/1.0.11/include,
-					/opt/homebrew/Cellar/libxdmcp/1.1.4/include,
-					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.10_1/include/gdk-pixbuf-2.0",
+					/opt/homebrew/Cellar/libxdmcp/1.1.5/include,
+					"/opt/homebrew/Cellar/pixman/0.42.2/include/pixman-1",
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/include/gdk-pixbuf-2.0",
 					/opt/homebrew/opt/libpng/include/libpng16,
-					/opt/homebrew/Cellar/libtiff/4.5.1/include,
-					/opt/homebrew/Cellar/zstd/1.5.5/include,
-					/opt/homebrew/Cellar/xz/5.4.3/include,
-					"/opt/homebrew/Cellar/jpeg-turbo/3.0.0/include",
-					/opt/homebrew/Cellar/glib/2.76.4/include,
-					"/opt/homebrew/Cellar/glib/2.76.4/include/glib-2.0",
-					"/opt/homebrew/Cellar/glib/2.76.4/lib/glib-2.0/include",
+					/opt/homebrew/Cellar/libtiff/4.6.0/include,
+					/opt/homebrew/opt/zstd/include,
+					/opt/homebrew/Cellar/xz/5.4.6/include,
+					"/opt/homebrew/Cellar/jpeg-turbo/3.0.2/include",
+					/opt/homebrew/Cellar/glib/2.80.0_2/include,
+					"/opt/homebrew/Cellar/glib/2.80.0_2/include/glib-2.0",
+					"/opt/homebrew/Cellar/glib/2.80.0_2/lib/glib-2.0/include",
 					/opt/homebrew/opt/gettext/include,
-					/opt/homebrew/Cellar/pcre2/10.42/include,
-					/opt/homebrew/Cellar/xorgproto/2023.2/include,
-					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/pcre2/10.43/include,
+					/opt/homebrew/Cellar/xorgproto/2024.1/include,
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
+					/opt/homebrew/Cellar/glfw/3.3.8/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1918,60 +1944,78 @@
 					/opt/homebrew/Cellar/glfw/3.3.8/lib,
 					/opt/homebrew/opt/libpng/lib,
 					"/opt/homebrew/opt/zlib/lib/**",
+					/opt/homebrew/Cellar/libpng/1.6.43/lib,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/lib",
+					/opt/homebrew/Cellar/glib/2.80.0_2/lib,
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib",
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
+					/opt/homebrew/Cellar/cairo/1.18.0/lib,
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
 		1809BC862B8FDD8A0008A294 /* With_HomeBrew_Intel */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 3P2U2MN24Q;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
+					/usr/X11/include,
+					/opt/homebrew/opt/libpng/include/libpng16,
+					/Users/matsui/src_kemo/MHD/C_src/CORE_C,
+					/Users/matsui/src_kemo/MHD/C_src/CONTROLS,
+					/opt/homebrew/opt/libpng/include/libpng16,
+					"/private/tmp/hdf5-mpi-20230512-9510-1222iej/hdf5-1.14.1-2/src/H5FDsubfiling",
+					/opt/homebrew/opt/libaec/include,
+					"/opt/homebrew/Cellar/hdf5-mpi/1.14.1/include",
+					/opt/homebrew/opt/zlib/include,
+					/opt/homebrew/Cellar/fftw/3.3.10_1/include,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GL,
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.38/include/gtk-3.0",
-					"/opt/homebrew/Cellar/glib/2.76.4/include/gio-unix-2.0",
-					/opt/homebrew/Cellar/cairo/1.16.0_5/include/cairo,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
+					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
-					"/opt/homebrew/Cellar/pango/1.50.14/include/pango-1.0",
-					/opt/homebrew/Cellar/harfbuzz/8.0.1/include/harfbuzz,
-					"/opt/homebrew/Cellar/pango/1.50.14/include/pango-1.0",
+					"/opt/homebrew/Cellar/pango/1.52.2/include/pango-1.0",
+					/opt/homebrew/Cellar/harfbuzz/8.4.0/include/harfbuzz,
+					"/opt/homebrew/Cellar/pango/1.52.2/include/pango-1.0",
 					/opt/homebrew/Cellar/fribidi/1.0.13/include/fribidi,
-					/opt/homebrew/Cellar/harfbuzz/8.0.1/include/harfbuzz,
+					/opt/homebrew/Cellar/harfbuzz/8.4.0/include/harfbuzz,
 					/opt/homebrew/Cellar/graphite2/1.3.14/include,
-					"/opt/homebrew/Cellar/atk/2.38.0/include/atk-1.0",
-					/opt/homebrew/Cellar/cairo/1.16.0_5/include/cairo,
-					"/opt/homebrew/Cellar/pixman/0.42.2/include/pixman-1",
-					/opt/homebrew/Cellar/fontconfig/2.14.2/include,
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/include/atk-1.0",
+					/opt/homebrew/Cellar/cairo/1.18.0/include/cairo,
+					/opt/homebrew/Cellar/fontconfig/2.15.0/include,
 					/opt/homebrew/opt/freetype/include/freetype2,
-					/opt/homebrew/Cellar/libxcb/1.15_1/include,
+					/opt/homebrew/Cellar/libxext/1.3.6/include,
 					/opt/homebrew/Cellar/libxrender/0.9.11/include,
-					/opt/homebrew/Cellar/libxext/1.3.5/include,
-					/opt/homebrew/Cellar/libx11/1.8.6/include,
-					/opt/homebrew/Cellar/libxcb/1.15_1/include,
+					/opt/homebrew/Cellar/libx11/1.8.9/include,
+					/opt/homebrew/Cellar/libxcb/1.17.0/include,
 					/opt/homebrew/Cellar/libxau/1.0.11/include,
-					/opt/homebrew/Cellar/libxdmcp/1.1.4/include,
-					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.10_1/include/gdk-pixbuf-2.0",
+					/opt/homebrew/Cellar/libxdmcp/1.1.5/include,
+					"/opt/homebrew/Cellar/pixman/0.42.2/include/pixman-1",
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/include/gdk-pixbuf-2.0",
 					/opt/homebrew/opt/libpng/include/libpng16,
-					/opt/homebrew/Cellar/libtiff/4.5.1/include,
-					/opt/homebrew/Cellar/zstd/1.5.5/include,
-					/opt/homebrew/Cellar/xz/5.4.3/include,
-					"/opt/homebrew/Cellar/jpeg-turbo/3.0.0/include",
-					/opt/homebrew/Cellar/glib/2.76.4/include,
-					"/opt/homebrew/Cellar/glib/2.76.4/include/glib-2.0",
-					"/opt/homebrew/Cellar/glib/2.76.4/lib/glib-2.0/include",
+					/opt/homebrew/Cellar/libtiff/4.6.0/include,
+					/opt/homebrew/opt/zstd/include,
+					/opt/homebrew/Cellar/xz/5.4.6/include,
+					"/opt/homebrew/Cellar/jpeg-turbo/3.0.2/include",
+					/opt/homebrew/Cellar/glib/2.80.0_2/include,
+					"/opt/homebrew/Cellar/glib/2.80.0_2/include/glib-2.0",
+					"/opt/homebrew/Cellar/glib/2.80.0_2/lib/glib-2.0/include",
 					/opt/homebrew/opt/gettext/include,
-					/opt/homebrew/Cellar/pcre2/10.42/include,
-					/opt/homebrew/Cellar/xorgproto/2023.2/include,
-					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/pcre2/10.43/include,
+					/opt/homebrew/Cellar/xorgproto/2024.1/include,
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
+					/opt/homebrew/Cellar/glfw/3.3.8/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1987,60 +2031,78 @@
 					/opt/homebrew/Cellar/glfw/3.3.8/lib,
 					/opt/homebrew/opt/libpng/lib,
 					"/opt/homebrew/opt/zlib/lib/**",
+					/opt/homebrew/Cellar/libpng/1.6.43/lib,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/lib",
+					/opt/homebrew/Cellar/glib/2.80.0_2/lib,
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib",
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
+					/opt/homebrew/Cellar/cairo/1.18.0/lib,
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = With_HomeBrew_Intel;
 		};
 		1809BC872B8FDD8A0008A294 /* With_MacPorts */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 3P2U2MN24Q;
+				DEVELOPMENT_TEAM = "";
 				HEADER_SEARCH_PATHS = (
+					/usr/X11/include,
+					/opt/homebrew/opt/libpng/include/libpng16,
+					/Users/matsui/src_kemo/MHD/C_src/CORE_C,
+					/Users/matsui/src_kemo/MHD/C_src/CONTROLS,
+					/opt/homebrew/opt/libpng/include/libpng16,
+					"/private/tmp/hdf5-mpi-20230512-9510-1222iej/hdf5-1.14.1-2/src/H5FDsubfiling",
+					/opt/homebrew/opt/libaec/include,
+					"/opt/homebrew/Cellar/hdf5-mpi/1.14.1/include",
+					/opt/homebrew/opt/zlib/include,
+					/opt/homebrew/Cellar/fftw/3.3.10_1/include,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GL,
 					/Users/matsui/src_kemo/MHD/C_src/GLSL,
 					/Users/matsui/src_kemo/MHD/C_src/GTK,
 					/Users/matsui/src_kemo/MHD/C_src/KEMO_GLUT,
-					"/opt/homebrew/Cellar/gtk+3/3.24.38/include/gtk-3.0",
-					"/opt/homebrew/Cellar/glib/2.76.4/include/gio-unix-2.0",
-					/opt/homebrew/Cellar/cairo/1.16.0_5/include/cairo,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/include/gtk-3.0",
+					"/opt/homebrew/Cellar/glib/2.80.0_2/include/gio-unix-2.0",
+					/opt/homebrew/Cellar/cairo/1.18.0/include,
 					/opt/homebrew/Cellar/libepoxy/1.5.10/include,
-					"/opt/homebrew/Cellar/pango/1.50.14/include/pango-1.0",
-					/opt/homebrew/Cellar/harfbuzz/8.0.1/include/harfbuzz,
-					"/opt/homebrew/Cellar/pango/1.50.14/include/pango-1.0",
+					"/opt/homebrew/Cellar/pango/1.52.2/include/pango-1.0",
+					/opt/homebrew/Cellar/harfbuzz/8.4.0/include/harfbuzz,
+					"/opt/homebrew/Cellar/pango/1.52.2/include/pango-1.0",
 					/opt/homebrew/Cellar/fribidi/1.0.13/include/fribidi,
-					/opt/homebrew/Cellar/harfbuzz/8.0.1/include/harfbuzz,
+					/opt/homebrew/Cellar/harfbuzz/8.4.0/include/harfbuzz,
 					/opt/homebrew/Cellar/graphite2/1.3.14/include,
-					"/opt/homebrew/Cellar/atk/2.38.0/include/atk-1.0",
-					/opt/homebrew/Cellar/cairo/1.16.0_5/include/cairo,
-					"/opt/homebrew/Cellar/pixman/0.42.2/include/pixman-1",
-					/opt/homebrew/Cellar/fontconfig/2.14.2/include,
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/include/atk-1.0",
+					/opt/homebrew/Cellar/cairo/1.18.0/include/cairo,
+					/opt/homebrew/Cellar/fontconfig/2.15.0/include,
 					/opt/homebrew/opt/freetype/include/freetype2,
-					/opt/homebrew/Cellar/libxcb/1.15_1/include,
+					/opt/homebrew/Cellar/libxext/1.3.6/include,
 					/opt/homebrew/Cellar/libxrender/0.9.11/include,
-					/opt/homebrew/Cellar/libxext/1.3.5/include,
-					/opt/homebrew/Cellar/libx11/1.8.6/include,
-					/opt/homebrew/Cellar/libxcb/1.15_1/include,
+					/opt/homebrew/Cellar/libx11/1.8.9/include,
+					/opt/homebrew/Cellar/libxcb/1.17.0/include,
 					/opt/homebrew/Cellar/libxau/1.0.11/include,
-					/opt/homebrew/Cellar/libxdmcp/1.1.4/include,
-					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.10_1/include/gdk-pixbuf-2.0",
+					/opt/homebrew/Cellar/libxdmcp/1.1.5/include,
+					"/opt/homebrew/Cellar/pixman/0.42.2/include/pixman-1",
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/include/gdk-pixbuf-2.0",
 					/opt/homebrew/opt/libpng/include/libpng16,
-					/opt/homebrew/Cellar/libtiff/4.5.1/include,
-					/opt/homebrew/Cellar/zstd/1.5.5/include,
-					/opt/homebrew/Cellar/xz/5.4.3/include,
-					"/opt/homebrew/Cellar/jpeg-turbo/3.0.0/include",
-					/opt/homebrew/Cellar/glib/2.76.4/include,
-					"/opt/homebrew/Cellar/glib/2.76.4/include/glib-2.0",
-					"/opt/homebrew/Cellar/glib/2.76.4/lib/glib-2.0/include",
+					/opt/homebrew/Cellar/libtiff/4.6.0/include,
+					/opt/homebrew/opt/zstd/include,
+					/opt/homebrew/Cellar/xz/5.4.6/include,
+					"/opt/homebrew/Cellar/jpeg-turbo/3.0.2/include",
+					/opt/homebrew/Cellar/glib/2.80.0_2/include,
+					"/opt/homebrew/Cellar/glib/2.80.0_2/include/glib-2.0",
+					"/opt/homebrew/Cellar/glib/2.80.0_2/lib/glib-2.0/include",
 					/opt/homebrew/opt/gettext/include,
-					/opt/homebrew/Cellar/pcre2/10.42/include,
-					/opt/homebrew/Cellar/xorgproto/2023.2/include,
-					/opt/homebrew/Cellar/glfw/3.3.8/include,
+					/opt/homebrew/Cellar/pcre2/10.43/include,
+					/opt/homebrew/Cellar/xorgproto/2024.1/include,
 					/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk/usr/include/ffi,
 					/usr/X11/include,
+					/opt/homebrew/Cellar/glfw/3.3.8/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2056,8 +2118,16 @@
 					/opt/homebrew/Cellar/glfw/3.3.8/lib,
 					/opt/homebrew/opt/libpng/lib,
 					"/opt/homebrew/opt/zlib/lib/**",
+					/opt/homebrew/Cellar/libpng/1.6.43/lib,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/lib",
+					/opt/homebrew/Cellar/glib/2.80.0_2/lib,
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib",
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
+					/opt/homebrew/Cellar/cairo/1.18.0/lib,
+					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = With_MacPorts;
 		};
@@ -2104,7 +2174,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					__APPLE__,
 					PNG_OUTPUT,
 					ZLIB_IO,
 				);
@@ -2169,7 +2238,6 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					__APPLE__,
 					PNG_OUTPUT,
 					ZLIB_IO,
 				);
@@ -2241,6 +2309,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					/opt/homebrew/Cellar/libpng/1.6.43/lib,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/lib",
+					/opt/homebrew/Cellar/glib/2.80.0_2/lib,
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib",
+					/opt/homebrew/Cellar/glfw/3.3.8/lib,
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
+					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2295,6 +2370,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					/opt/homebrew/Cellar/libpng/1.6.43/lib,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/lib",
+					/opt/homebrew/Cellar/glib/2.80.0_2/lib,
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib",
+					/opt/homebrew/Cellar/glfw/3.3.8/lib,
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
+					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2341,7 +2423,6 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					__APPLE__,
 					PNG_OUTPUT,
 					ZLIB_IO,
 				);
@@ -2410,6 +2491,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					/opt/homebrew/Cellar/libpng/1.6.43/lib,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/lib",
+					/opt/homebrew/Cellar/glib/2.80.0_2/lib,
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib",
+					/opt/homebrew/Cellar/glfw/3.3.8/lib,
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
+					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2456,7 +2544,6 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					__APPLE__,
 					PNG_OUTPUT,
 					ZLIB_IO,
 				);
@@ -2528,6 +2615,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					/opt/homebrew/Cellar/libpng/1.6.43/lib,
+					"/opt/homebrew/Cellar/gtk+3/3.24.41/lib",
+					/opt/homebrew/Cellar/glib/2.80.0_2/lib,
+					"/opt/homebrew/Cellar/gdk-pixbuf/2.42.11/lib",
+					/opt/homebrew/Cellar/glfw/3.3.8/lib,
+					"/opt/homebrew/Cellar/at-spi2-core/2.52.0/lib",
+					/opt/homebrew/Cellar/cairo/1.18.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

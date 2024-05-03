@@ -135,4 +135,3 @@ void init_psf_menu_hbox(struct kemoviewer_type *kemo_sgl,
     set_vector_plot_availablity(kemo_sgl, psf_gmenu);
     return;
 }
-

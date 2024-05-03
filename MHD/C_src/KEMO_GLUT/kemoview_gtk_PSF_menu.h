@@ -46,6 +46,9 @@ struct psf_color_gtk_menu{
 };
 
 struct psf_gtk_menu{
+    int iflag_psfBox;
+    GtkWidget *psfWin;
+
     GtkWidget *psf_frame;
 
 	GtkWidget *closeButton;

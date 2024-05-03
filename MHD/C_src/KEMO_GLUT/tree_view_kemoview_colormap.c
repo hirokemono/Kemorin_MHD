@@ -198,18 +198,6 @@ static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user
     return;
 }
 
-void update_kemoview_cmap_list_box(struct colormap_view *color_vws){
-    clear_r2_tree_view(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
-    color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
-                                                            color_vws->cmap_vws->r2_clist_gtk,
-                                                            GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
-    
-    clear_r2_tree_view(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
-    color_vws->opacity_vws->index_bc = append_r2_list_from_ctl(color_vws->opacity_vws->index_bc,
-                                                               color_vws->opacity_vws->r2_clist_gtk,
-                                                               GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
-}
-
 static void add_kemoview_cmap_list_box(struct kemoviewer_type *kemo_sgl,
                                        struct colormap_view *color_vws,
                                        GtkWidget *vbox){

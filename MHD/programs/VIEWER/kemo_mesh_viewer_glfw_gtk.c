@@ -191,8 +191,7 @@ static void pref_menu_CB (GtkWidget *menu_item,
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(menu_item), "kemoview");
 
-    GtkWidget *new_win;
-    new_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget *new_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(new_win), "Preferences");
     gtk_widget_set_size_request(new_win, 150, -1);
     gtk_container_set_border_width(GTK_CONTAINER(new_win), 5);
@@ -200,9 +199,9 @@ static void pref_menu_CB (GtkWidget *menu_item,
     g_signal_connect(G_OBJECT(new_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
     g_signal_connect(G_OBJECT(new_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
     
-    GtkWidget *expander_pref = init_preference_frame(kemo_sgl, mbot->pref_gmenu, new_win);
+    GtkWidget *frame_pref = init_preference_frame(kemo_sgl, mbot->pref_gmenu, new_win);
     GtkWidget *vbox_pref = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_pref), expander_pref, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_pref), frame_pref, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(new_win), vbox_pref);
     gtk_widget_show_all(new_win);
     gtk_widget_set_sensitive(menu_item, FALSE);
@@ -340,7 +339,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     gtk_box_pack_start(GTK_BOX(takobox), mbot->vbox_menu, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->menuHbox), takobox, FALSE, FALSE, 0);
     
-    mbot->updatable->iflag_psfBox =   0;
+    mbot->updatable->psf_gmenu->iflag_psfBox =   0;
     mbot->updatable->iflag_flineBox = 0;
     mbot->updatable->iflag_meshBox =  0;
     mbot->id_current[0] = 1;
