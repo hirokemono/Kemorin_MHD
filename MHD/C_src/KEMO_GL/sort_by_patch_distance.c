@@ -174,8 +174,8 @@ void set_trans_patch_distance_psfs(struct view_element *view_s,
     long jcou = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(icou >= psf_a->ntot_psf_patch) break;
+        ipsf = psf_a->ipsf_viz_far[icou] - 1;
         if(icou >= psf_a->istack_solid_psf_patch){
-            ipsf = psf_a->ipsf_viz_far[icou] - 1;
             jcou = icou - psf_a->istack_solid_psf_patch;
             set_distance_in_model(view_s, psf_s[ipsf]->nele_viz,
                                   psf_s[ipsf]->x_ele_viz, &z_ele_viz[jcou]);
