@@ -180,17 +180,6 @@ void set_gtk_fieldline_menu(struct kemoviewer_type *kemo_sgl,
 	return;
 };
 
-void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
-                                struct fieldline_gtk_menu *fline_menu){
-    update_fline_component_combobox(kemo_sgl, 
-                                    fline_menu->combobox_comp, 
-                                    fline_menu->label_tree_comp,
-                                    fline_menu->renderer_comp);
-    
-    set_gtk_fieldline_menu(kemo_sgl, fline_menu);
-    return;
-}
-
 void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
                               struct fieldline_gtk_menu *fline_menu){
     GtkWidget *label_tree_color;

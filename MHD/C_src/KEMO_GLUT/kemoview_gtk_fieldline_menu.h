@@ -25,6 +25,9 @@
 #endif
 
 struct fieldline_gtk_menu{
+    int iflag_flineBox;
+    GtkWidget *flineWin;
+
     GtkWidget *closeButton;
     GtkWidget *combobox_color;
     GtkWidget *switch_tube;
@@ -52,7 +55,5 @@ void init_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
                               struct fieldline_gtk_menu *fline_menu);
 
 GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_menu);
-void update_fieldline_menu_hbox(struct kemoviewer_type *kemo_sgl,
-                                struct fieldline_gtk_menu *fline_menu);
 
 #endif

@@ -64,13 +64,6 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
                           struct updatable_widgets *updatable,
                           GtkWidget *menuHbox, GtkWidget *window){
-    kemoview_get_draw_mesh_flag(kemo_sgl);
-    kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
-    kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
-
-    if(updatable->iflag_flineBox > 0){
-        gtk_box_pack_start(GTK_BOX(menuHbox), updatable->flineBox, FALSE, FALSE, 0);
-    };
     if(updatable->iflag_meshBox > 0){
         gtk_box_pack_start(GTK_BOX(menuHbox), updatable->meshBox, FALSE, FALSE, 0);
     };
@@ -84,39 +77,47 @@ static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
                           struct psf_gtk_menu *psf_gmenu,
                           GtkWidget *window){
     if(psf_gmenu->iflag_psfBox > 0){gtk_widget_destroy(psf_gmenu->psfWin);};
-    if(kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED) == 0) return;
+    psf_gmenu->iflag_psfBox = kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
+    if(psf_gmenu->iflag_psfBox == 0){return;}
     
     GtkWidget *psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     set_psf_menu_box(kemo_sgl, kemo_gl, psf_gmenu, window);
     pack_psf_menu_frame(psf_gmenu);
     gtk_box_pack_start(GTK_BOX(psfBox), psf_gmenu->psf_frame, FALSE, FALSE, 0);
-    psf_gmenu->iflag_psfBox = 1;
 
     psf_gmenu->psfWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(psf_gmenu->psfWin), "PSF");
     gtk_widget_set_size_request(psf_gmenu->psfWin, 150, -1);
     gtk_container_set_border_width(GTK_CONTAINER(psf_gmenu->psfWin), 5);
 
-    GtkWidget *vbox_pref = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_pref), psfBox, FALSE, FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(psf_gmenu->psfWin), vbox_pref);
+    GtkWidget *vbox_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_psf), psfBox, FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(psf_gmenu->psfWin), vbox_psf);
     gtk_widget_show_all(psf_gmenu->psfWin);
     return;
 }
 
 static void init_fline_menu(struct kemoviewer_type *kemo_sgl,
-                            struct updatable_widgets *updatable,
+                            struct fieldline_gtk_menu *fline_menu,
                             GtkWidget *window){
-    if(kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH) == 0) return;
-    if(updatable->iflag_flineBox == 0){
-        updatable->flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-        set_fieldline_menu_box(kemo_sgl, updatable->fline_menu, window);
-        GtkWidget *frame = pack_fieldline_menu_frame(updatable->fline_menu);
-        gtk_box_pack_start(GTK_BOX(updatable->flineBox), frame, FALSE, FALSE, 0);
-        updatable->iflag_flineBox = 1;
-    }else{
-        update_fieldline_menu_hbox(kemo_sgl, updatable->fline_menu);
-    };
+    if(fline_menu->iflag_flineBox > 0){gtk_widget_destroy(fline_menu->flineWin);};
+    fline_menu->iflag_flineBox = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
+    if(fline_menu->iflag_flineBox == 0){return;};
+
+    flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    set_fieldline_menu_box(kemo_sgl, fline_menu, window);
+    GtkWidget *frame = pack_fieldline_menu_frame(fline_menu);
+    gtk_box_pack_start(GTK_BOX(flineBox), frame, FALSE, FALSE, 0);
+    
+    fline_menu->flineWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(fline_menu->flineWin), "Fieldline");
+    gtk_widget_set_size_request(fline_menu->flineWin, 150, -1);
+    gtk_container_set_border_width(GTK_CONTAINER(fline_menu->flineWin), 5);
+
+    GtkWidget *vbox_fline = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_fline), flineBox, FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(fline_menu->flineWin), vbox_fline);
+    gtk_widget_show_all(fline_menu->flineWin);
     return;
 }
 
@@ -152,13 +153,13 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
 	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
-    init_fline_menu(kemo_sgl, mbot->updatable, window_main);
     init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
     activate_evolution_menu(kemo_sgl, mbot->updatable->expander_evo);
     
     update_kemoview_menu(kemo_sgl, mbot->updatable, mbot->menuHbox,
                          window_main);
     init_psf_menu(kemo_sgl, kemo_gl, mbot->updatable->psf_gmenu, window_main);
+    init_fline_menu(kemo_sgl, mbot->updatable->fline_menu, window_main);
 
 	gtk_widget_queue_draw(window_main);
     draw_full(kemo_sgl);
@@ -306,7 +307,7 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
 
 	kemoview_close_fieldline_view(kemo_sgl);
 	
-    update_fieldline_menu_hbox(kemo_sgl, fline_menu);
+    init_fline_menu(kemo_sgl, fline_menu, window_main);
 
 	gtk_widget_queue_draw(window_main);
     draw_full(kemo_sgl);
@@ -512,7 +513,7 @@ static void init_psf_draw_field_hbox(struct kemoviewer_type *kemo_sgl,
 	return;
 }
 
-static void init_psf_draw_component_hbox(struct kemoviewer_type *kemo_sgl, 
+static void init_psf_draw_component_hbox(struct kemoviewer_type *kemo_sgl,
                                          struct kemoviewer_gl_type *kemo_gl,
                                          struct psf_gtk_menu *psf_gmenu, GtkWidget *window){
 	char comp_name[1024];

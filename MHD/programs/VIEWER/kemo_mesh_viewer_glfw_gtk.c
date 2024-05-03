@@ -340,7 +340,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     gtk_box_pack_start(GTK_BOX(mbot->menuHbox), takobox, FALSE, FALSE, 0);
     
     mbot->updatable->psf_gmenu->iflag_psfBox =   0;
-    mbot->updatable->iflag_flineBox = 0;
+    mbot->updatable->fline_menu->iflag_flineBox = 0;
     mbot->updatable->iflag_meshBox =  0;
     mbot->id_current[0] = 1;
     

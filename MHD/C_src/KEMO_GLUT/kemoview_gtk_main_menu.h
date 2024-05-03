@@ -37,11 +37,7 @@
 #endif
 
 struct updatable_widgets{
-    GtkWidget *psfWin;
     struct psf_gtk_menu *psf_gmenu;
-    
-    int iflag_flineBox;
-    GtkWidget *flineBox;
     struct fieldline_gtk_menu *fline_menu;
     
     int iflag_meshBox;
