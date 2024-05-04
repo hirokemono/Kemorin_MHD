@@ -183,27 +183,45 @@ static void prefWindowclose_CB (GtkWidget *new_win, gpointer user_data)
     gtk_widget_set_sensitive(menu_item, TRUE);
 };
 
-static void pref_menu_CB (GtkWidget *menu_item,
-                          gpointer user_data)
+static void pref_menu_CB(GtkWidget *menu_item, gpointer user_data)
 {
     struct preference_gtk_menu *pref_gmenu
             = (struct preference_gtk_menu *) g_object_get_data(G_OBJECT(menu_item), "pref_menu");
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(menu_item), "kemoview");
 
-    GtkWidget *new_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(new_win), "Preferences");
-    gtk_widget_set_size_request(new_win, 150, -1);
-    gtk_container_set_border_width(GTK_CONTAINER(new_win), 5);
-    g_signal_connect(G_OBJECT(new_win), "destroy", G_CALLBACK(prefWindowclose_CB), G_OBJECT(menu_item));
-    g_signal_connect(G_OBJECT(new_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
-    g_signal_connect(G_OBJECT(new_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
+    GtkWidget *pref_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(pref_win), "Preferences");
+    gtk_widget_set_size_request(pref_win, 150, -1);
+    gtk_container_set_border_width(GTK_CONTAINER(pref_win), 5);
+    g_signal_connect(G_OBJECT(pref_win), "destroy", G_CALLBACK(prefWindowclose_CB), G_OBJECT(menu_item));
+    g_signal_connect(G_OBJECT(pref_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
+    g_signal_connect(G_OBJECT(pref_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
     
-    GtkWidget *frame_pref = init_preference_frame(kemo_sgl, mbot->pref_gmenu, new_win);
-    GtkWidget *vbox_pref = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_pref), frame_pref, FALSE, FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(new_win), vbox_pref);
-    gtk_widget_show_all(new_win);
+    GtkWidget *frame_pref = init_preference_frame(kemo_sgl, mbot->pref_gmenu, pref_win);
+    gtk_container_add(GTK_CONTAINER(pref_win), frame_pref);
+    gtk_widget_show_all(pref_win);
+    gtk_widget_set_sensitive(menu_item, FALSE);
+}
+
+static void evo_menu_CB(GtkWidget *menu_item, gpointer user_data)
+{
+    struct evolution_gtk_menu *evo_gmenu
+            = (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(menu_item), "pref_menu");
+    struct kemoviewer_type *kemo_sgl
+            = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(menu_item), "kemoview");
+
+    GtkWidget *evo_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(evo_win), "Time evolution");
+    gtk_widget_set_size_request(evo_win, 150, -1);
+    gtk_container_set_border_width(GTK_CONTAINER(evo_win), 5);
+    g_signal_connect(G_OBJECT(evo_win), "destroy", G_CALLBACK(prefWindowclose_CB), G_OBJECT(menu_item));
+    g_signal_connect(G_OBJECT(evo_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
+    g_signal_connect(G_OBJECT(evo_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
+    
+    GtkWidget *frame_evo = init_evoluaiton_menu_expander(kemo_sgl, evo_gmenu, evo_win);
+    gtk_container_add(GTK_CONTAINER(evo_win), frame_evo);
+    gtk_widget_show_all(evo_win);
     gtk_widget_set_sensitive(menu_item, FALSE);
 }
 
@@ -298,7 +316,13 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     g_object_set_data(G_OBJECT(itemPref), "pref_menu", (gpointer) mbot->pref_gmenu);
     g_object_set_data(G_OBJECT(itemPref), "kemoview", (gpointer) kemoviewer_data);
     g_signal_connect(itemPref, "activate", G_CALLBACK (pref_menu_CB), NULL);
-    gtk_menu_shell_append(GTK_MENU (menu_widget), itemPref);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), itemPref);
+
+    GtkWidget *tevoPref = gtk_menu_item_new_with_mnemonic ("Evolution...");
+    g_object_set_data(G_OBJECT(tevoPref), "tevo_menu", (gpointer) mbot->updatable->evo_gmenu);
+    g_object_set_data(G_OBJECT(tevoPref), "kemoview", (gpointer) kemoviewer_data);
+    g_signal_connect(tevoPref, "activate", G_CALLBACK (evo_menu_CB), NULL);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), tevoPref);
 
     GtkWidget *imprMi =  gtk_menu_item_new_with_label("Takotako");
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(imprMi), submenu_widget);
