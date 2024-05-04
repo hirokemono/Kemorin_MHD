@@ -104,19 +104,15 @@ static void init_fline_menu(struct kemoviewer_type *kemo_sgl,
     fline_menu->iflag_flineBox = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
     if(fline_menu->iflag_flineBox == 0){return;};
 
-    GtkWidget *flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    set_fieldline_menu_box(kemo_sgl, fline_menu, window);
-    GtkWidget *frame = pack_fieldline_menu_frame(fline_menu);
-    gtk_box_pack_start(GTK_BOX(flineBox), frame, FALSE, FALSE, 0);
-    
     fline_menu->flineWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(fline_menu->flineWin), "Fieldline");
     gtk_widget_set_size_request(fline_menu->flineWin, 150, -1);
     gtk_container_set_border_width(GTK_CONTAINER(fline_menu->flineWin), 5);
 
-    GtkWidget *vbox_fline = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_fline), flineBox, FALSE, FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(fline_menu->flineWin), vbox_fline);
+    set_fieldline_menu_box(kemo_sgl, fline_menu, window);
+    GtkWidget *flineFrame = pack_fieldline_menu_frame(fline_menu);
+    
+    gtk_container_add(GTK_CONTAINER(fline_menu->flineWin), flineFrame);
     gtk_widget_show_all(fline_menu->flineWin);
     return;
 }
@@ -592,7 +588,7 @@ void set_psf_menu_box(struct kemoviewer_type *kemo_sgl,
     init_psf_draw_component_hbox(kemo_sgl, kemo_gl, psf_gmenu, window);
     init_colormap_params_4_viewer(kemo_sgl, psf_gmenu->color_vws);
 	
-    init_psf_menu_hbox(kemo_sgl, kemo_gl, psf_gmenu, window);
+    init_psf_menu_hbox(kemo_sgl, kemo_gl, psf_gmenu, psf_gmenu->psfWin);
 	return;
 }
 
