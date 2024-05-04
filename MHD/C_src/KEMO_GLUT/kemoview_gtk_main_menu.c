@@ -104,7 +104,7 @@ static void init_fline_menu(struct kemoviewer_type *kemo_sgl,
     fline_menu->iflag_flineBox = kemoview_get_fline_parameters(kemo_sgl, DRAW_SWITCH);
     if(fline_menu->iflag_flineBox == 0){return;};
 
-    flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     set_fieldline_menu_box(kemo_sgl, fline_menu, window);
     GtkWidget *frame = pack_fieldline_menu_frame(fline_menu);
     gtk_box_pack_start(GTK_BOX(flineBox), frame, FALSE, FALSE, 0);
