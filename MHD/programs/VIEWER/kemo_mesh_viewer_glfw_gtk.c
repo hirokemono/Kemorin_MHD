@@ -207,7 +207,7 @@ static void pref_menu_CB(GtkWidget *menu_item, gpointer user_data)
 static void evo_menu_CB(GtkWidget *menu_item, gpointer user_data)
 {
     struct evolution_gtk_menu *evo_gmenu
-            = (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(menu_item), "pref_menu");
+            = (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(menu_item), "tevo_menu");
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(menu_item), "kemoview");
 
@@ -219,7 +219,7 @@ static void evo_menu_CB(GtkWidget *menu_item, gpointer user_data)
     g_signal_connect(G_OBJECT(evo_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
     g_signal_connect(G_OBJECT(evo_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
     
-    GtkWidget *frame_evo = init_evoluaiton_menu_expander(kemo_sgl, evo_gmenu, evo_win);
+    GtkWidget *frame_evo = init_evoluaiton_menu_frame(kemo_sgl, evo_gmenu, evo_win);
     gtk_container_add(GTK_CONTAINER(evo_win), frame_evo);
     gtk_widget_show_all(evo_win);
     gtk_widget_set_sensitive(menu_item, FALSE);
@@ -312,17 +312,17 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 
     GtkWidget *menu_widget = gtk_menu_new();
 
-    GtkWidget *itemPref = gtk_menu_item_new_with_mnemonic ("Preferences...");
+    GtkWidget *itemPref = gtk_menu_item_new_with_mnemonic("Preferences...");
     g_object_set_data(G_OBJECT(itemPref), "pref_menu", (gpointer) mbot->pref_gmenu);
     g_object_set_data(G_OBJECT(itemPref), "kemoview", (gpointer) kemoviewer_data);
     g_signal_connect(itemPref, "activate", G_CALLBACK (pref_menu_CB), NULL);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), itemPref);
 
-    GtkWidget *tevoPref = gtk_menu_item_new_with_mnemonic ("Evolution...");
-    g_object_set_data(G_OBJECT(tevoPref), "tevo_menu", (gpointer) mbot->updatable->evo_gmenu);
-    g_object_set_data(G_OBJECT(tevoPref), "kemoview", (gpointer) kemoviewer_data);
-    g_signal_connect(tevoPref, "activate", G_CALLBACK (evo_menu_CB), NULL);
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), tevoPref);
+    mbot->updatable->itemTEvo = gtk_menu_item_new_with_mnemonic("Evolution...");
+    g_object_set_data(G_OBJECT(mbot->updatable->itemTEvo), "tevo_menu", (gpointer) mbot->updatable->evo_gmenu);
+    g_object_set_data(G_OBJECT(mbot->updatable->itemTEvo), "kemoview", (gpointer) kemoviewer_data);
+    g_signal_connect(mbot->updatable->itemTEvo, "activate", G_CALLBACK (evo_menu_CB), NULL);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu_widget), mbot->updatable->itemTEvo);
 
     GtkWidget *imprMi =  gtk_menu_item_new_with_label("Takotako");
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(imprMi), submenu_widget);
@@ -370,7 +370,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     
     update_kemoview_menu(single_kemoview, mbot->updatable, mbot->menuHbox, 
                          gtk_win);
-
+    activate_evolution_menu(single_kemoview, mbot->updatable->itemTEvo);
 
     GtkWidget *vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);

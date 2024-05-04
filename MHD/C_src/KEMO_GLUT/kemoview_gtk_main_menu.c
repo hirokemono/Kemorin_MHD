@@ -154,7 +154,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     kemoview_free_kvstring(filename);
 	
     init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
-    activate_evolution_menu(kemo_sgl, mbot->updatable->expander_evo);
+    activate_evolution_menu(kemo_sgl, mbot->updatable->itemTEvo);
     
     update_kemoview_menu(kemo_sgl, mbot->updatable, mbot->menuHbox,
                          window_main);
@@ -280,7 +280,6 @@ static void current_psf_select_CB(GtkComboBox *combobox_psfs, gpointer user_data
 };
 
 static void close_psf_CB(GtkButton *button, gpointer user_data){
-    GtkWidget *expander_evo = GTK_WIDGET(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(button), "parent"));
     struct psf_gtk_menu *psf_gmenu = (struct psf_gtk_menu *) g_object_get_data(G_OBJECT(button), "psfmenu");
     struct kemoviewer_type *kemo_sgl
@@ -294,7 +293,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 	
     init_psf_menu(kemo_sgl, kemo_gl, psf_gmenu, window_main);
 
-    activate_evolution_menu(kemo_sgl, expander_evo);
+//    activate_evolution_menu(kemo_sgl, itemTEvo);
 	gtk_widget_queue_draw(window_main);
     draw_full(kemo_sgl);
 };
@@ -746,15 +745,6 @@ void make_gtk_main_menu_box(struct main_buttons *mbot,
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_rot, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_quilt, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_view, FALSE, FALSE, 0);
-/*
-    mbot->updatable->expander_evo = init_evoluaiton_menu_expander(kemo_sgl,
-                                                               mbot->updatable->evo_gmenu,
-                                                               window_main);
-    activate_evolution_menu(kemo_sgl, mbot->updatable->expander_evo);
-    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->updatable->expander_evo, FALSE, FALSE, 0);
-    mbot->expander_pref = init_preference_expander(kemo_sgl, mbot->pref_gmenu, window_main);
-    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->expander_pref, FALSE, FALSE, 0);
- */
     return;
 }
 

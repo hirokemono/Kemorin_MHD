@@ -44,7 +44,7 @@ struct updatable_widgets{
     GtkWidget *meshBox;
     struct kemoview_mesh_view *mesh_vws;
     
-    GtkWidget *expander_evo;
+    GtkWidget *itemTEvo;
     struct evolution_gtk_menu *evo_gmenu;
 };
 
