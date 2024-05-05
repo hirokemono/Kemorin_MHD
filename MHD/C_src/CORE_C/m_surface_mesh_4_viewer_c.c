@@ -47,7 +47,7 @@ void alloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_node_viewer_s(struct viewer_mesh *mesh_s){
 	/* allocate memory  xx_view[node #][direction]*/
-	mesh_s->xx_view = (double *)calloc(3*mesh_s->nnod_viewer,sizeof(double));
+	mesh_s->xx_view = (double *)calloc(4*mesh_s->nnod_viewer,sizeof(double));
 	return;
 };
 
@@ -172,14 +172,11 @@ void alloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
-	int i, num;
-	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
+	int i;
+	long num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
 	/* allocate memory  surf_norm_view[devided surface #][component] */
 	/* allocate memory  surf_center_view[devided surface #][component] */
-	mesh_s->surf_norm_view = (double **)calloc(num,sizeof(double *));
-	for (i = 0; i < num; i++){
-		mesh_s->surf_norm_view[i] = (double *)calloc(3,sizeof(double));
-	};
+	mesh_s->surf_norm_view = (double *)calloc(4*num,sizeof(double));
 	mesh_s->surf_center_view = (double **)calloc(num,sizeof(double *));
 	for (i = 0; i < num; i++){
 		mesh_s->surf_center_view[i] = (double *)calloc(3,sizeof(double));
@@ -399,7 +396,6 @@ static void dealloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 static void dealloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
 	int i, num;
 	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
-	for (i = 0; i < num; i++) free(mesh_s->surf_norm_view[i]);
 	free(mesh_s->surf_norm_view);
 	for (i = 0; i < num; i++) free(mesh_s->surf_center_view[i]);
 	free(mesh_s->surf_center_view);

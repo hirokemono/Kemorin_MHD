@@ -35,7 +35,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	/* printf("node \n");
 	for (i = 0; i < mesh_s->nnod_viewer; i++) {
 		printf(" %d %.12e %.12e %.12e \n", i,
-                mesh_s->xx_view[3*i], mesh_s->xx_view[3*i+1], mesh_s->xx_view[3*i+2]);
+                mesh_s->xx_view[4*i], mesh_s->xx_view[4*i+1], mesh_s->xx_view[4*i+2]);
 	};
 	*/
 	
@@ -310,8 +310,8 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 		for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 			k = j + i*mesh_s->nsurf_each_tri;
 			printf("%d %d %.12e %.12e %.12e %.12e \n", i, j, 
-					mesh_s->surf_norm_view[k][0], mesh_s->surf_norm_view[k][1], 
-					mesh_s->surf_norm_view[k][2], mesh_s->surf_size_view[k] );
+					mesh_s->surf_norm_view[4*k  ], mesh_s->surf_norm_view[4*k+1],
+					mesh_s->surf_norm_view[4*k+2], mesh_s->surf_size_view[4*k+3] );
 		};
 	};
 	*/

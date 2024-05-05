@@ -99,14 +99,14 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	for (i= 0; i < mesh_s->nnod_viewer; i++) {
 		num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 		sscanf(buf, "%d %lf %lf %lf", &itmp, 
-				&mesh_s->xx_view[3*i  ],
-				&mesh_s->xx_view[3*i+1],
-				&mesh_s->xx_view[3*i+2]);
+				&mesh_s->xx_view[4*i  ],
+				&mesh_s->xx_view[4*i+1],
+				&mesh_s->xx_view[4*i+2]);
 	};
 /*	printf("mesh_s->xx_view %e %e %e\n",
-            mesh_s->xx_view[3*mesh_s->nnod_viewer-3],
-			mesh_s->xx_view[3*mesh_s->nnod_viewer-2],
-			mesh_s->xx_view[3*mesh_s->nnod_viewer-1]);*/
+            mesh_s->xx_view[4*mesh_s->nnod_viewer-3],
+			mesh_s->xx_view[4*mesh_s->nnod_viewer-2],
+			mesh_s->xx_view[4*mesh_s->nnod_viewer-1]);*/
 	
 	num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 	sscanf(buf, "%d", &mesh_s->nsurf_viewer);
