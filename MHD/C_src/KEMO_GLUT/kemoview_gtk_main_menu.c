@@ -103,21 +103,21 @@ static void init_fline_menu(struct kemoviewer_type *kemo_sgl,
 
 static void init_mesh_menu(struct kemoviewer_type *kemo_sgl,
                            struct updatable_widgets *updatable, 
-                           GtkWidget *window){
-    if(updatable->iflag_meshBox > 0) {gtk_widget_destroy(updatable->meshWin);};
+                           GtkWidget *meshWin){
+    if(updatable->iflag_meshBox > 0) {gtk_widget_destroy(meshWin);};
     updatable->iflag_meshBox = kemoview_get_draw_mesh_flag(kemo_sgl);
     if(updatable->iflag_meshBox == 0) return;
 
-    updatable->meshWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(updatable->meshWin), "Mesh");
-    gtk_widget_set_size_request(updatable->meshWin, 150, -1);
-    gtk_container_set_border_width(GTK_CONTAINER(updatable->meshWin), 5);
+    meshWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(meshWin), "Mesh");
+    gtk_widget_set_size_request(meshWin, 150, -1);
+    gtk_container_set_border_width(GTK_CONTAINER(meshWin), 5);
 
-    set_mesh_menu_box(kemo_sgl, updatable, window);
-    GtkWidget *frame_mesh = pack_gtk_mesh_menu(updatable->mesh_vws, window);
+    set_mesh_menu_box(kemo_sgl, updatable, meshWin);
+    GtkWidget *frame_mesh = pack_gtk_mesh_menu(updatable->mesh_vws, meshWin);
     
-    gtk_container_add(GTK_CONTAINER(updatable->meshWin), frame_mesh);
-    gtk_widget_show_all(updatable->meshWin);
+    gtk_container_add(GTK_CONTAINER(meshWin), frame_mesh);
+    gtk_widget_show_all(meshWin);
     return;
 }
 
@@ -141,7 +141,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
 	
     init_psf_menu(kemo_sgl, kemo_gl, mbot->updatable->psf_gmenu, window_main);
     init_fline_menu(kemo_sgl, mbot->updatable->fline_menu, window_main);
-    init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
+    init_mesh_menu(kemo_sgl, mbot->updatable, mbot->updatable->meshWin);
 
     activate_evolution_menu(kemo_sgl, mbot->updatable->itemTEvo);
     gtk_widget_show_all(mbot->menuHbox);
