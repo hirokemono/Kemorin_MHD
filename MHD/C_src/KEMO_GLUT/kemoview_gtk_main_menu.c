@@ -79,20 +79,15 @@ static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
     if(psf_gmenu->iflag_psfBox > 0){gtk_widget_destroy(psf_gmenu->psfWin);};
     psf_gmenu->iflag_psfBox = kemoview_get_PSF_loaded_params(kemo_sgl, NUM_LOADED);
     if(psf_gmenu->iflag_psfBox == 0){return;}
-    
-    GtkWidget *psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    set_psf_menu_box(kemo_sgl, kemo_gl, psf_gmenu, window);
-    pack_psf_menu_frame(psf_gmenu);
-    gtk_box_pack_start(GTK_BOX(psfBox), psf_gmenu->psf_frame, FALSE, FALSE, 0);
 
     psf_gmenu->psfWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(psf_gmenu->psfWin), "PSF");
     gtk_widget_set_size_request(psf_gmenu->psfWin, 150, -1);
     gtk_container_set_border_width(GTK_CONTAINER(psf_gmenu->psfWin), 5);
-
-    GtkWidget *vbox_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_psf), psfBox, FALSE, FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(psf_gmenu->psfWin), vbox_psf);
+    
+    set_psf_menu_box(kemo_sgl, kemo_gl, psf_gmenu, window);
+    pack_psf_menu_frame(psf_gmenu);
+    gtk_container_add(GTK_CONTAINER(psf_gmenu->psfWin), psf_gmenu->psf_frame);
     gtk_widget_show_all(psf_gmenu->psfWin);
     return;
 }
