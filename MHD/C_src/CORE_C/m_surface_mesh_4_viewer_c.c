@@ -300,7 +300,7 @@ void alloc_domain_center_s(struct viewer_mesh *mesh_s){
         exit(0);
     }
 	/* allocate memory  domain_max[domain #][direction]*/
-	mesh_s->domain_max = (double *)calloc(mesh_s->num_pe_sf,sizeof(double));
+	mesh_s->domain_max = (double *)calloc(4*mesh_s->num_pe_sf,sizeof(double));
     if(mesh_s->domain_max == NULL) {
         printf("malloc error for domain_max\n");
         exit(0);

@@ -114,12 +114,12 @@
 
 	self.DrawMeshFlag = kemoview_get_draw_mesh_flag(kemo_sgl);
 	NumSubDomain = kemoview_get_num_of_mesh_group(kemo_sgl, DOMAIN_FLAG);
+    /*
     [DomainDisplayNames      removeAllObjects];
 	[DomainDisplayPatchFlags removeAllObjects];
 	[DomainDisplayWireFlags  removeAllObjects];
 	[DomainDisplayNodeFlags  removeAllObjects];
 
-    /*
     DomainDisplayNames= [[NSMutableArray alloc] init];
     DomainDisplayPatchFlags= [[NSMutableArray alloc] init];
     DomainDisplayWireFlags=  [[NSMutableArray alloc] init];
