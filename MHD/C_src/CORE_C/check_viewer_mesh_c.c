@@ -321,8 +321,8 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 		for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 			k = j + i*mesh_s->nsurf_each_tri;
 			printf("%d %d %.12e %.12e %.12e \n", i, j, 
-					mesh_s->surf_center_view[k][0], mesh_s->surf_center_view[k][1], 
-					mesh_s->surf_center_view[k][2] );
+					mesh_s->surf_center_view[4*k  ], mesh_s->surf_center_view[4*k+1],
+					mesh_s->surf_center_view[4*k+2]);
 		};
 	};
 	*/
@@ -334,8 +334,9 @@ void check_viewer_mesh_minmax(struct viewer_mesh *mesh_s){
 	printf("domain_center \n");
 	for (i = 0; i < mesh_s->num_pe_sf; i++) {
 		printf("%d %.12e %.12e %.12e \n", i, 
-			   mesh_s->domain_center[i][0], mesh_s->domain_center[i][1], 
-			   mesh_s->domain_center[i][2] );
+			   mesh_s->domain_center[4*i  ],
+               mesh_s->domain_center[4*i+1],
+			   mesh_s->domain_center[4*i+2]);
 	};
 	
 	

@@ -48,7 +48,7 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
 		if(i2 <0 || i2 >= viz_s->nnod_viz) printf("i2 fault %ld %ld %ld\n", i, i2, viz_s->nnod_viz);
 		if(i3 <0 || i3 >= viz_s->nnod_viz) printf("i3 fault %ld %ld %ld\n", i, i3, viz_s->nnod_viz);
 		cal_center_4_triangle_c(viz_s->xx_viz[i1], viz_s->xx_viz[i2], viz_s->xx_viz[i3],
-								viz_s->x_ele_viz[i]);
+								&viz_s->xyzw_ele_viz[4*i]);
 		viz_s->area_viz[i] = cal_normal_4_triangle_c(viz_s->xx_viz[i1], viz_s->xx_viz[i2],
 													 viz_s->xx_viz[i3], viz_s->norm_ele[i]);
 	};
@@ -274,7 +274,7 @@ static void take_length_ele_fline(struct psf_data *viz_s){
                    + viz_s->norm_ele[i][2]*viz_s->norm_ele[i][2] );
         
 		for (nd=0; nd<3; nd++) {
-			viz_s->x_ele_viz[i][nd] = (viz_s->xx_viz[i1][nd] + viz_s->xx_viz[i2][nd])*HALF;
+			viz_s->xyzw_ele_viz[4*i+nd] = (viz_s->xx_viz[i1][nd] + viz_s->xx_viz[i2][nd])*HALF;
 			viz_s->norm_ele[i][nd] = viz_s->norm_ele[i][nd] / len;
             
 			viz_s->dir_nod[i1][nd] = viz_s->dir_nod[i1][nd] + viz_s->dir_ele[i][nd];

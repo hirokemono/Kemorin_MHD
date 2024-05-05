@@ -174,13 +174,10 @@ void alloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
 	long num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
-	/* allocate memory  surf_norm_view[devided surface #][component] */
-	/* allocate memory  surf_center_view[devided surface #][component] */
-	mesh_s->surf_norm_view = (double *)calloc(4*num,sizeof(double));
-	mesh_s->surf_center_view = (double **)calloc(num,sizeof(double *));
-	for (i = 0; i < num; i++){
-		mesh_s->surf_center_view[i] = (double *)calloc(3,sizeof(double));
-	};
+/* allocate memory  surf_norm_view[devided surface #][component] */
+    mesh_s->surf_norm_view =   (double *)calloc(4*num,sizeof(double));
+/* allocate memory  surf_center_view[devided surface #][component] */
+	mesh_s->surf_center_view = (double *)calloc(4*num,sizeof(double));
 	mesh_s->surf_size_view = (double *)calloc(num,sizeof(double));
 	
 	mesh_s->z_ele_view = (double *)calloc(num,sizeof(double));
@@ -294,12 +291,9 @@ void alloc_domain_center_s(struct viewer_mesh *mesh_s){
 	int i;
 	
 	/* allocate memory  domain_center[domain #][direction]*/
+    mesh_s->domain_center = (double *)calloc(4*mesh_s->num_pe_sf,sizeof(double));
 	/* allocate memory  domain_min[domain #][direction]*/
 	/* allocate memory  domain_max[domain #][direction]*/
-	mesh_s->domain_center = (double **)calloc(mesh_s->num_pe_sf,sizeof(double *));
-	for (i = 0; i < mesh_s->num_pe_sf; i++){
-		mesh_s->domain_center[i] = (double *)calloc(3,sizeof(double));
-	};
 	mesh_s->domain_min = (double **)calloc(mesh_s->num_pe_sf,sizeof(double *));
 	for (i = 0; i < mesh_s->num_pe_sf; i++){
 		mesh_s->domain_min[i] = (double *)calloc(3,sizeof(double));
@@ -394,10 +388,7 @@ static void dealloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 static void dealloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
-	int i, num;
-	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
 	free(mesh_s->surf_norm_view);
-	for (i = 0; i < num; i++) free(mesh_s->surf_center_view[i]);
 	free(mesh_s->surf_center_view);
 	free(mesh_s->surf_size_view);
 	free(mesh_s->z_ele_view);
@@ -502,7 +493,6 @@ static void dealloc_domain_center_s(struct viewer_mesh *mesh_s){
 	free(mesh_s->ip_domain_far);
 	free(mesh_s->z_center_view);
 
-	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->domain_center[i]);
 	free(mesh_s->domain_center);
 	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->domain_min[i]);
 	free(mesh_s->domain_min);

@@ -23,7 +23,7 @@ void sort_by_patch_distance_mesh(struct viewer_mesh *mesh_s, struct view_element
     long num, ist, ied;
 
 	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
-	set_distance_in_model(view_s, num, mesh_s->surf_center_view,  mesh_s->z_ele_view);
+	set_distance_in_model(view_s, num, mesh_s->surf_center_view, mesh_s->z_ele_view);
 	set_distance_in_model(view_s, (long) mesh_s->num_pe_sf, 
                           mesh_s->domain_center,  mesh_s->z_center_view);
 	
@@ -178,7 +178,7 @@ void set_trans_patch_distance_psfs(struct view_element *view_s,
         if(icou >= psf_a->istack_solid_psf_patch){
             jcou = icou - psf_a->istack_solid_psf_patch;
             set_distance_in_model(view_s, psf_s[ipsf]->nele_viz,
-                                  psf_s[ipsf]->x_ele_viz, &z_ele_viz[jcou]);
+                                  psf_s[ipsf]->xyzw_ele_viz, &z_ele_viz[jcou]);
         };
         icou = icou + psf_s[ipsf]->nele_viz;
     }

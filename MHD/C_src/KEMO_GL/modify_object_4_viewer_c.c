@@ -85,12 +85,12 @@ void modify_object_multi_viewer_c(double dist, struct viewer_mesh *mesh_s){
 		ist = mesh_s->inod_sf_stack[ip];
 		ied = mesh_s->inod_sf_stack[ip+1];
 		for (i = ist; i < ied; i++) {
-			mesh_s->xx_draw[i][0] = ( mesh_s->xx_view[4*i  ]
-                                     + dist * ( mesh_s->domain_center[ip][0] ) );
-			mesh_s->xx_draw[i][1] = ( mesh_s->xx_view[4*i+1]
-                                     + dist * ( mesh_s->domain_center[ip][1] ) );
-			mesh_s->xx_draw[i][2] = ( mesh_s->xx_view[4*i+2]
-                                     + dist * ( mesh_s->domain_center[ip][2] ) );
+			mesh_s->xx_draw[i][0] = (mesh_s->xx_view[4*i  ]
+                                     + dist * mesh_s->domain_center[4*ip  ]);
+			mesh_s->xx_draw[i][1] = (mesh_s->xx_view[4*i+1]
+                                     + dist * mesh_s->domain_center[4*ip+1]);
+			mesh_s->xx_draw[i][2] = (mesh_s->xx_view[4*i+2]
+                                     + dist * mesh_s->domain_center[4*ip+2]);
 		}
 	}
 	

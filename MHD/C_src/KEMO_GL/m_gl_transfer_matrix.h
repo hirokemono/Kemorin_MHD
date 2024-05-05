@@ -98,7 +98,7 @@ void copy_viewmatrix_struct(struct view_element *origin, struct view_element *de
 void set_position_in_model(struct view_element *view, int nnod,
                            double **xx, double **end_eye);
 void set_distance_in_model(struct view_element *view, long nnod,
-                           double **xx, double *z_eye);
+                           double *xyzw, double *z_eye);
 void set_3d_position_to_window(int point_screen[2], double xx[3], 
                                int nx_win, int ny_win, struct view_element *view);
 

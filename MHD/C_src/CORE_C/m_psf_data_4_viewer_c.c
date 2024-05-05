@@ -48,22 +48,13 @@ void alloc_viz_ele_s(struct psf_data *psf_s){
         }
 	};
 	
-	/* allocate memory  x_ele_viz[patch #][direction]*/
-	psf_s->x_ele_viz = (double **) malloc(psf_s->nele_viz*sizeof(double *));
-    if(psf_s->x_ele_viz  == NULL){
-        printf("malloc error for psf_s->x_ele_viz \n");
+	/* allocate memory  xyzw_ele_viz[patch #][direction]*/
+	psf_s->xyzw_ele_viz = (double *) malloc(4*psf_s->nele_viz*sizeof(double));
+    if(psf_s->xyzw_ele_viz  == NULL){
+        printf("malloc error for psf_s->xyzw_ele_viz \n");
         exit(0);
     }
-
-    for (i = 0; i < psf_s->nele_viz; i++){
-		psf_s->x_ele_viz[i] = (double *)calloc(3,sizeof(double));
-        if(psf_s->x_ele_viz[i]  == NULL){
-            printf("malloc error for psf_s->x_ele_viz[i], %d \n", i);
-            exit(0);
-        }
-	};
-	
-	return;
+    return;
 };
 
 void alloc_psf_field_name_c(struct psf_data *psf_s){
@@ -269,8 +260,7 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 
 void dealloc_psf_mesh_c(struct psf_data *psf_s){
 	int i;
-	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->x_ele_viz[i]);
-	free(psf_s->x_ele_viz);
+	free(psf_s->xyzw_ele_viz);
 	
 	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->ie_viz[i]);
 	free(psf_s->ie_viz);

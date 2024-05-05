@@ -45,7 +45,7 @@ struct psf_data{
 	
 	char **data_name;
 	
-	double **x_ele_viz;
+	double *xyzw_ele_viz;
 	
 	double **norm_ele;
 	double **norm_nod;
