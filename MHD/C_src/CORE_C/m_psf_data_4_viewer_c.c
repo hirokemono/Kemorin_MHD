@@ -166,30 +166,31 @@ void alloc_psf_norm_s(struct psf_data *psf_s){
 };
 
 void alloc_psf_length_s(struct psf_data *psf_s){
-	int i;
-	
-	/* allocate memory  dir_ele[patch #][component]*/
-	psf_s->dir_ele = (double **)malloc(psf_s->nele_viz*sizeof(double *));
-	for (i = 0; i < psf_s->nele_viz; i++){
-		psf_s->dir_ele[i] = (double *)calloc(3,sizeof(double));
-	};
-	
+/* allocate memory  dir_ele[patch #][component]*/
+	psf_s->dir_ele = (double *)malloc(4*psf_s->nele_viz*sizeof(double));
+    if(psf_s->dir_ele  == NULL){
+        printf("malloc error for psf_s->dir_ele \n");
+        exit(0);
+    }
+
 	psf_s->length_ele = (double *)calloc(psf_s->nele_viz,sizeof(double));
-	
-	/* allocate memory  dir_nod[node #][component]*/
+    if(psf_s->length_ele  == NULL){
+        printf("malloc error for psf_s->length_ele \n");
+        exit(0);
+    }
+
 	psf_s->dir_nod = (double *)malloc(4*psf_s->nnod_viz*sizeof(double));
     if(psf_s->dir_nod  == NULL){
         printf("malloc error for psf_s->dir_nod \n");
         exit(0);
     }
-
 	return;
 };
 
 void alloc_psf_cutting_4_map(struct psf_data *psf_s){
 	int i;
 	
-	/* allocate memory  dir_ele[patch #][component]*/
+	/* allocate memory  inod_org_4_map_itp*/
 	psf_s->inod_org_4_map_itp = (long **)malloc(psf_s->nnod_added_4_map*sizeof(long *));
 	psf_s->coef_4_map_itp = (double **)malloc(psf_s->nnod_added_4_map*sizeof(int *));
 	for (i = 0; i < psf_s->nnod_added_4_map; i++){
@@ -207,13 +208,9 @@ static void dealloc_psf_norm_s(struct psf_data *psf_s){
 };
 
 static void dealloc_psf_length_s(struct psf_data *psf_s){
-	int i;
-	/* deallocate memory*/
 	free(psf_s->dir_nod);
-	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->dir_ele[i]);
 	free(psf_s->dir_ele);
 	free(psf_s->length_ele);
-	
 	return;
 };
 
@@ -274,7 +271,7 @@ void dealloc_psf_mesh_c(struct psf_data *psf_s){
 void dealloc_psf_cutting_4_map(struct psf_data *psf_s){
 	int i;
 	
-	/* allocate memory  dir_ele[patch #][component]*/
+	/* deallocate memory inod_org_4_map_itp*/
 	for (i = 0; i < psf_s->nnod_added_4_map; i++){
 		free(psf_s->inod_org_4_map_itp[i]);
 		free(psf_s->coef_4_map_itp[i]);
