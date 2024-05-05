@@ -6,22 +6,13 @@
 
 
 void alloc_viz_node_s(struct psf_data *psf_s){
-	int i;
-	/* allocate memory  xx_viz[node #][direction]*/
-	psf_s->xx_viz = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
-    if(psf_s->xx_viz  == NULL){
-        printf("malloc error for psf_s->xx_viz \n");
+	/* allocate memory  xyzw_viz[node #][direction]*/
+	psf_s->xyzw_viz = (double *)malloc(IFOUR*psf_s->nnod_viz*sizeof(double));
+    if(psf_s->xyzw_viz  == NULL){
+        printf("malloc error for psf_s->xyzw_viz \n");
         exit(0);
     }
-
-    for (i = 0; i < psf_s->nnod_viz; i++){
-		psf_s->xx_viz[i] =  (double *)calloc(3,sizeof(double));
-        if(psf_s->xx_viz[i]  == NULL){
-            printf("malloc error for psf_s->xx_viz[i], %d \n", i);
-            exit(0);
-        }
-	};
-	
+    
 	psf_s->inod_viz = (long *)calloc(psf_s->nnod_viz,sizeof(long));
     if(psf_s->inod_viz  == NULL){
         printf("malloc error for psf_s->inod_viz \n");
@@ -230,10 +221,7 @@ void dealloc_psf_mesh_c(struct psf_data *psf_s){
 	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->ie_viz[i]);
 	free(psf_s->ie_viz);
 	free(psf_s->inod_viz);
-	
-	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->xx_viz[i]);
-	free(psf_s->xx_viz);
-	
+	free(psf_s->xyzw_viz);
 	return;
 }
 
@@ -311,7 +299,9 @@ void copy_viewer_udt_node(struct psf_data *viz_copied, struct psf_data *viz_org)
 	
 	for (i = 0; i < viz_org->nnod_viz; i++) {
 		viz_copied->inod_viz[i] = viz_org->inod_viz[i];
-		for(j = 0; j < 3; j++) viz_copied->xx_viz[i][j] = viz_org->xx_viz[i][j];
+        for(j = 0; j < 4; j++){
+            viz_copied->xyzw_viz[i*IFOUR + j] = viz_org->xyzw_viz[i*IFOUR + j];
+        };
 	};
 	return;
 }
@@ -401,16 +391,22 @@ void check_psf_read(struct psf_data *psf_s){
 	int i;
 	
 	printf("psf_s->nnod_viz %ld \n", psf_s->nnod_viz);
-	printf("xx_1 %le %le %le \n", psf_s->xx_viz[0][0], psf_s->xx_viz[0][1], psf_s->xx_viz[0][2]);
-	printf("xx_2 %le %le %le \n", psf_s->xx_viz[1][0], psf_s->xx_viz[1][1], psf_s->xx_viz[1][2]);
-	printf("xx_3 %le %le %le \n", psf_s->xx_viz[2][0], psf_s->xx_viz[2][1], psf_s->xx_viz[2][2]);
+	printf("xx_1 %le %le %le \n", psf_s->xyzw_viz[0], psf_s->xyzw_viz[1], psf_s->xyzw_viz[ 2]);
+	printf("xx_2 %le %le %le \n", psf_s->xyzw_viz[4], psf_s->xyzw_viz[5], psf_s->xyzw_viz[ 6]);
+	printf("xx_3 %le %le %le \n", psf_s->xyzw_viz[8], psf_s->xyzw_viz[9], psf_s->xyzw_viz[10]);
 	
-	printf("xx_3 %le %le %le \n", psf_s->xx_viz[psf_s->nnod_viz-3][0],
-		   psf_s->xx_viz[psf_s->nnod_viz-3][1], psf_s->xx_viz[psf_s->nnod_viz-3][2]);
-	printf("xx_2 %le %le %le \n", psf_s->xx_viz[psf_s->nnod_viz-2][0],
-		   psf_s->xx_viz[psf_s->nnod_viz-2][1], psf_s->xx_viz[psf_s->nnod_viz-2][2]);
-	printf("xx_1 %le %le %le \n", psf_s->xx_viz[psf_s->nnod_viz-1][0],
-		   psf_s->xx_viz[psf_s->nnod_viz-1][1], psf_s->xx_viz[psf_s->nnod_viz-1][2]);
+	printf("xx_3 %le %le %le \n",
+           psf_s->xyzw_viz[(psf_s->nnod_viz-3)*IFOUR + 0],
+		   psf_s->xyzw_viz[(psf_s->nnod_viz-3)*IFOUR + 1],
+           psf_s->xyzw_viz[(psf_s->nnod_viz-3)*IFOUR + 2]);
+	printf("xx_2 %le %le %le \n",
+           psf_s->xyzw_viz[(psf_s->nnod_viz-2)*IFOUR + 0],
+		   psf_s->xyzw_viz[(psf_s->nnod_viz-2)*IFOUR + 1],
+           psf_s->xyzw_viz[(psf_s->nnod_viz-2)*IFOUR + 2]);
+	printf("xx_1 %le %le %le \n",
+           psf_s->xyzw_viz[(psf_s->nnod_viz-1)*IFOUR + 0],
+		   psf_s->xyzw_viz[(psf_s->nnod_viz-1)*IFOUR + 1],
+           psf_s->xyzw_viz[(psf_s->nnod_viz-1)*IFOUR + 2]);
 	
 	printf("psf_s->nnod_4_ele_viz %ld \n", psf_s->nnod_4_ele_viz);
 	printf("psf_s->nele_viz %ld \n", psf_s->nele_viz);
@@ -444,11 +440,13 @@ void check_psf_read(struct psf_data *psf_s){
 
 void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z){
 	int i, j;
-	printf("Error xx_viz \n");
+	printf("Error xyzw_viz \n");
 	for(j=0;j<3;j++){
 		for(i=0;i<psf_s->nnod_viz;i++){
-			if(psf_s->xx_viz[i][j] != psf_z->xx_viz[i][j]){
-				printf("%d %d %le %le\n", j, i, psf_s->xx_viz[i][j], psf_z->xx_viz[i][j]);
+			if(psf_s->xyzw_viz[i*IFOUR + j] != psf_z->xyzw_viz[i*IFOUR + j]){
+				printf("%d %d %le %le\n", j, i,
+                       psf_s->xyzw_viz[i*IFOUR + j],
+                       psf_z->xyzw_viz[i*IFOUR + j]);
 			};
 		};
 	};

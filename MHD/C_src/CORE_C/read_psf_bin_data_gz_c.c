@@ -66,7 +66,7 @@ static void read_alloc_psf_node_bin_gz(void *FP_gzip, struct psf_data *psf_z,
         psf_z_WK->ilength = psf_z->nnod_viz * sizeof(double);
         gzread_64bit_psf(FP_gzip, psf_z_WK, (char *) xx_gz);
         for(i=0;i<psf_z->nnod_viz;i++){
-            psf_z->xx_viz[i][j] = xx_gz[i];
+            psf_z->xyzw_viz[i*IFOUR + j] = xx_gz[i];
         };
     };
     free(xx_gz);

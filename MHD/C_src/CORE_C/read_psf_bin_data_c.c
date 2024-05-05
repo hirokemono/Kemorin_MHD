@@ -94,7 +94,7 @@ static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work 
         psf_b_WK->ilength = psf_b->nnod_viz * sizeof(double);
         rawread_64bit_psf(psf_b_WK, xx);
         for(i=0;i<psf_b->nnod_viz;i++){
-            psf_b->xx_viz[i][j] = xx[i];
+            psf_b->xyzw_viz[i*IFOUR + j] = xx[i];
         };
     };
     free(xx);

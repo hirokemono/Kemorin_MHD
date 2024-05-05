@@ -12,8 +12,8 @@ void check_psf_data_c(struct psf_data *tako){
 	 printf("node \n");
 	for (i = 0; i < tako->nnod_viz; i++) {
 		printf(" %d %d %.12e %.12e %.12e \n", i, 
-				tako->inod_viz[i], tako->xx_viz[i][0],
-				tako->xx_viz[i][1], tako->xx_viz[i][2]);
+				tako->inod_viz[i], tako->xyzw_viz[i][0],
+				tako->xyzw_viz[i][1], tako->xyzw_viz[i][2]);
 	};
 	printf("connectivity \n");
 	for (i = 0; i < tako->nele_viz; i++) {

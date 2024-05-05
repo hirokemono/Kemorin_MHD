@@ -41,7 +41,7 @@ static void count_new_node_for_mapping_tri(struct psf_data *viz_s, struct psf_da
 		
 		for (k=0; k<3; k++) {
 			inod = ie_1ele[k] - 1;
-			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xx_viz[inod][nd];};
+			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xyzw_viz[inod*IFOUR + nd];};
 		};
 		num_map_patch = count_new_patch_at_phi180(&xyz_tri[0]);
 		
@@ -71,7 +71,7 @@ static void count_new_node_for_mapping_quad(struct psf_data *viz_s, struct psf_d
 		
 		for (k=0; k<3; k++) {
 			inod = ie_1ele[k];
-			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xx_viz[inod][nd];};
+			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xyzw_viz[inod*IFOUR + nd];};
 		};
 		num_map_patch = count_new_patch_at_phi180(&xyz_tri[0]);		
 		num_add = num_add + num_map_patch-1;
@@ -81,7 +81,7 @@ static void count_new_node_for_mapping_quad(struct psf_data *viz_s, struct psf_d
 		ie_1ele[2] = viz_tmp->ie_viz[iele][0];
 		for (k=0; k<3; k++) {
 			inod = ie_1ele[k];
-			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xx_viz[inod][nd];};
+			for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_tmp->xyzw_viz[inod*IFOUR + nd];};
 		};
 		num_map_patch = count_new_patch_at_phi180(&xyz_tri[0]);
 		num_add = num_add + num_map_patch-1;
@@ -106,7 +106,7 @@ static int cut_each_patch_for_map(int iele, int icou, long nnod_org, long iele_e
 	
 	for (k=0; k<3; k++) {
 		inod = ie_patch[k];
-		for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_s->xx_viz[inod-1][nd];};
+		for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = viz_s->xyzw_viz[(inod-1)*IFOUR + nd];};
 	};
 	ie_patch[3] = nnod_org+icou+1;
 	ie_patch[4] = nnod_org+icou+2;
@@ -200,13 +200,13 @@ static void set_new_node_for_mapping(struct psf_data *viz_s){
 		i1 = viz_s->inod_org_4_map_itp[i][0]-1;
 		i2 = viz_s->inod_org_4_map_itp[i][1]-1;
 
-		viz_s->xx_viz[nnod_org+i][0]
-			= viz_s->coef_4_map_itp[i][0] * viz_s->xx_viz[i1][0]
-			+ viz_s->coef_4_map_itp[i][1] * viz_s->xx_viz[i2][0];
-		viz_s->xx_viz[nnod_org+i][1] = ZERO;
-		viz_s->xx_viz[nnod_org+i][2]
-			= viz_s->coef_4_map_itp[i][0] * viz_s->xx_viz[i1][2]
-			+ viz_s->coef_4_map_itp[i][1] * viz_s->xx_viz[i2][2];
+		viz_s->xyzw_viz[(nnod_org+i)*IFOUR + 0]
+			= viz_s->coef_4_map_itp[i][0] * viz_s->xyzw_viz[i1*IFOUR + 0]
+			+ viz_s->coef_4_map_itp[i][1] * viz_s->xyzw_viz[i2*IFOUR + 0];
+		viz_s->xyzw_viz[(nnod_org+i)*IFOUR + 1] = ZERO;
+		viz_s->xyzw_viz[(nnod_org+i)*IFOUR + 2]
+			= viz_s->coef_4_map_itp[i][0] * viz_s->xyzw_viz[i1*IFOUR + 2]
+			+ viz_s->coef_4_map_itp[i][1] * viz_s->xyzw_viz[i2*IFOUR + 2];
 	};
 
 	return;

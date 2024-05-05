@@ -32,7 +32,7 @@ struct psf_data{
 	long *ncomp;
 	long *istack_comp;
 	
-	double **xx_viz;
+	double *xyzw_viz;
 	double *d_nod;
 	double *d_amp;
 	

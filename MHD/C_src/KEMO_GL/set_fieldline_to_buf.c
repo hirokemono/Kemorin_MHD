@@ -29,8 +29,8 @@ long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s,
 		for (k = 0; k < 2; k++) {
 			inod = fline_s->ie_viz[iele][k] - 1;
 			for (nd=0; nd<3; nd++) {
-				x_line[3*k+nd] = (float) fline_s->xx_viz[inod][nd];
-				dir_line[3*k+nd] = (float) fline_s->dir_nod[4*inod+nd];
+				x_line[3*k+nd] =   (float) fline_s->xyzw_viz[inod*IFOUR + nd];
+				dir_line[3*k+nd] = (float) fline_s->dir_nod[inod*IFOUR + nd];
 			};
 			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[4*inod+nd];};
 		};
@@ -61,8 +61,8 @@ long set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *flin
 		for(k=0;k<ITWO;k++){
 			inod =fline_s->ie_viz[iele][k] - 1;
             set_node_stride_buffer((ITWO*iele+k), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = fline_s->xx_viz[inod][nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[4*inod+nd];};
+			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = fline_s->xyzw_viz[inod*IFOUR + nd];};
+			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[inod*IFOUR + nd];};
 		};
 	};
 	

@@ -13,16 +13,16 @@ static void cal_psf_grid_range(struct psf_data *viz_s){
     double r_tmp;
 	
 	for (nd = 0; nd < 3; nd++) {
-		viz_s->xmin_psf[nd] = viz_s->xx_viz[0][nd];
-		viz_s->xmax_psf[nd] = viz_s->xx_viz[0][nd];
+		viz_s->xmin_psf[nd] = viz_s->xyzw_viz[nd];
+		viz_s->xmax_psf[nd] = viz_s->xyzw_viz[nd];
 	};
 	for (i = 1; i < viz_s->nnod_viz; i++) {
 		for (nd = 0; nd < 3; nd++) {
-			if ( viz_s->xmin_psf[nd] > viz_s->xx_viz[i][nd]) {
-				viz_s->xmin_psf[nd] = viz_s->xx_viz[i][nd];
+			if ( viz_s->xmin_psf[nd] > viz_s->xyzw_viz[i*IFOUR + nd]) {
+				viz_s->xmin_psf[nd] = viz_s->xyzw_viz[i*IFOUR + nd];
             }
-			if ( viz_s->xmax_psf[nd] < viz_s->xx_viz[i][nd]) {
-				viz_s->xmax_psf[nd] = viz_s->xx_viz[i][nd];
+			if ( viz_s->xmax_psf[nd] < viz_s->xyzw_viz[i*IFOUR + nd]) {
+				viz_s->xmax_psf[nd] = viz_s->xyzw_viz[i*IFOUR + nd];
             }
 		}
 	};
@@ -47,10 +47,14 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
 		if(i1 <0 || i1 >= viz_s->nnod_viz) printf("i1 fault %ld %ld %ld\n", i, i1, viz_s->nnod_viz);
 		if(i2 <0 || i2 >= viz_s->nnod_viz) printf("i2 fault %ld %ld %ld\n", i, i2, viz_s->nnod_viz);
 		if(i3 <0 || i3 >= viz_s->nnod_viz) printf("i3 fault %ld %ld %ld\n", i, i3, viz_s->nnod_viz);
-		cal_center_4_triangle_c(viz_s->xx_viz[i1], viz_s->xx_viz[i2], viz_s->xx_viz[i3],
-								&viz_s->xyzw_ele_viz[4*i]);
-		viz_s->area_viz[i] = cal_normal_4_triangle_c(viz_s->xx_viz[i1], viz_s->xx_viz[i2],
-													 viz_s->xx_viz[i3], &viz_s->norm_ele[4*i]);
+		cal_center_4_triangle_c(&viz_s->xyzw_viz[i1*IFOUR],
+                                &viz_s->xyzw_viz[i2*IFOUR],
+                                &viz_s->xyzw_viz[i3*IFOUR],
+								&viz_s->xyzw_ele_viz[i*IFOUR]);
+		viz_s->area_viz[i] = cal_normal_4_triangle_c(&viz_s->xyzw_viz[i1*IFOUR],
+                                                     &viz_s->xyzw_viz[i2*IFOUR],
+													 &viz_s->xyzw_viz[i3*IFOUR],
+                                                     &viz_s->norm_ele[i*IFOUR]);
 	};
     
 	viz_s->area_total = 0.0;
@@ -141,19 +145,19 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
 		i2 = viz_s->ie_viz[i][1] - 1;
 		i3 = viz_s->ie_viz[i][2] - 1;
 		
-		xe[0] = ( viz_s->xx_viz[i1][0] + viz_s->xx_viz[i2][0] + viz_s->xx_viz[i3][0] ) / 3.0;
-		xe[1] = ( viz_s->xx_viz[i1][1] + viz_s->xx_viz[i2][1] + viz_s->xx_viz[i3][1] ) / 3.0;
-		xe[2] = ( viz_s->xx_viz[i1][2] + viz_s->xx_viz[i2][2] + viz_s->xx_viz[i3][2] ) / 3.0;
+		xe[0] = ( viz_s->xyzw_viz[i1*IFOUR + 0] + viz_s->xyzw_viz[i2*IFOUR + 0] + viz_s->xyzw_viz[i3*IFOUR + 0] ) / 3.0;
+		xe[1] = ( viz_s->xyzw_viz[i1*IFOUR + 1] + viz_s->xyzw_viz[i2*IFOUR + 1] + viz_s->xyzw_viz[i3*IFOUR + 1] ) / 3.0;
+		xe[2] = ( viz_s->xyzw_viz[i1*IFOUR + 2] + viz_s->xyzw_viz[i2*IFOUR + 2] + viz_s->xyzw_viz[i3*IFOUR + 2] ) / 3.0;
         
-		d2h[0] = sqrt( (xe[0] - viz_s->xx_viz[i1][0])*(xe[0] - viz_s->xx_viz[i1][0])
-                      + (xe[1] - viz_s->xx_viz[i1][1])*(xe[1] - viz_s->xx_viz[i1][1])
-                      + (xe[2] - viz_s->xx_viz[i1][2])*(xe[2] - viz_s->xx_viz[i1][2]) );
-		d2h[1] = sqrt( (xe[0] - viz_s->xx_viz[i2][0])*(xe[0] - viz_s->xx_viz[i2][0])
-                      + (xe[1] - viz_s->xx_viz[i2][1])*(xe[1] - viz_s->xx_viz[i2][1])
-                      + (xe[2] - viz_s->xx_viz[i2][2])*(xe[2] - viz_s->xx_viz[i2][2]) );
-		d2h[2] = sqrt( (xe[0] - viz_s->xx_viz[i3][0])*(xe[0] - viz_s->xx_viz[i3][0])
-                      + (xe[1] - viz_s->xx_viz[i3][1])*(xe[1] - viz_s->xx_viz[i3][1])
-                      + (xe[2] - viz_s->xx_viz[i3][2])*(xe[2] - viz_s->xx_viz[i3][2]) );
+		d2h[0] = sqrt(  (xe[0] - viz_s->xyzw_viz[i1*IFOUR + 0])*(xe[0] - viz_s->xyzw_viz[i1*IFOUR + 0])
+                      + (xe[1] - viz_s->xyzw_viz[i1*IFOUR + 1])*(xe[1] - viz_s->xyzw_viz[i1*IFOUR + 1])
+                      + (xe[2] - viz_s->xyzw_viz[i1*IFOUR + 2])*(xe[2] - viz_s->xyzw_viz[i1*IFOUR + 2]) );
+		d2h[1] = sqrt(  (xe[0] - viz_s->xyzw_viz[i2*IFOUR + 0])*(xe[0] - viz_s->xyzw_viz[i2*IFOUR + 0])
+                      + (xe[1] - viz_s->xyzw_viz[i2*IFOUR + 1])*(xe[1] - viz_s->xyzw_viz[i2*IFOUR + 1])
+                      + (xe[2] - viz_s->xyzw_viz[i2*IFOUR + 2])*(xe[2] - viz_s->xyzw_viz[i2*IFOUR + 2]) );
+		d2h[2] = sqrt(  (xe[0] - viz_s->xyzw_viz[i3*IFOUR + 0])*(xe[0] - viz_s->xyzw_viz[i3*IFOUR + 0])
+                      + (xe[1] - viz_s->xyzw_viz[i3*IFOUR + 1])*(xe[1] - viz_s->xyzw_viz[i3*IFOUR + 1])
+                      + (xe[2] - viz_s->xyzw_viz[i3*IFOUR + 2])*(xe[2] - viz_s->xyzw_viz[i3*IFOUR + 2]) );
         k = istack_ele_for_nod[i1] + nele_for_nod[i1];
         nele_for_nod[i1] = nele_for_nod[i1] + 1;
         dist_to_ele[k] = d2h[0];
@@ -249,7 +253,7 @@ static void take_length_ele_fline(struct psf_data *viz_s){
 		i2 = viz_s->ie_viz[i][1] - 1;
 		
 		for (nd=0; nd<3; nd++) {
-			viz_s->dir_ele[4*i+nd] = viz_s->xx_viz[i2][nd] - viz_s->xx_viz[i1][nd];
+			viz_s->dir_ele[4*i+nd] = viz_s->xyzw_viz[i2*IFOUR + nd] - viz_s->xyzw_viz[i1*IFOUR + nd];
 		}
 		
 		viz_s->norm_ele[4*i  ] = -viz_s->dir_ele[4*i+2];
@@ -285,7 +289,8 @@ static void take_length_ele_fline(struct psf_data *viz_s){
                    + viz_s->norm_ele[4*i+2]*viz_s->norm_ele[4*i+2] );
         
 		for (nd=0; nd<3; nd++) {
-			viz_s->xyzw_ele_viz[4*i+nd] = (viz_s->xx_viz[i1][nd] + viz_s->xx_viz[i2][nd])*HALF;
+			viz_s->xyzw_ele_viz[4*i+nd] = (viz_s->xyzw_viz[i1*IFOUR + nd]
+                                           + viz_s->xyzw_viz[i2*IFOUR + nd])*HALF;
 			viz_s->norm_ele[4*i+nd] = viz_s->norm_ele[4*i+nd] / len;
             
 			viz_s->dir_nod[4*i1+nd] = viz_s->dir_nod[4*i1+nd] + viz_s->dir_ele[4*i+nd];

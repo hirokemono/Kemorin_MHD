@@ -29,9 +29,9 @@ static void read_psf_vtk_node_data_gz(void *FP_gzip, int lbuf, char *buf,
         viz_s->inod_viz[i] = i + 1;
         get_one_line_from_gz_c(FP_gzip, lbuf, &num_word, &nchara, buf);
 		sscanf(buf, "%lf %lf %lf",
-               &viz_s->xx_viz[i][0],
-               &viz_s->xx_viz[i][1],
-               &viz_s->xx_viz[i][2]);
+               &viz_s->xyzw_viz[i*IFOUR + 0],
+               &viz_s->xyzw_viz[i*IFOUR + 1],
+               &viz_s->xyzw_viz[i*IFOUR + 2]);
 	};
 	return;
 };

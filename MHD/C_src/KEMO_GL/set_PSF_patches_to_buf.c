@@ -24,7 +24,7 @@ void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode,
 			inod = psf_s[ipsf]->ie_viz[iele][lk] - 1;
 			
             set_node_stride_buffer((ITHREE*inum+lk), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xx_viz[inod][nd];};
+			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[4*inod+nd];};
 			if (shading_mode == SMOOTH_SHADE){
                 for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[4*inod+nd];};
@@ -52,9 +52,9 @@ void set_psf_textures_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s
         iele = psf_a->iele_viz_far[inum+ist_psf]-1;
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s[ipsf]->xx_viz[inod][0];
-			xx_tri[3*k+1] = psf_s[ipsf]->xx_viz[inod][1];
-			xx_tri[3*k+2] = psf_s[ipsf]->xx_viz[inod][2];
+			xx_tri[3*k  ] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 0];
+			xx_tri[3*k+1] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 1];
+			xx_tri[3*k+2] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 2];
 		};
 		iflag = latitude_longitude_on_map(xx_tri, rtp_patch);
 		
@@ -80,9 +80,9 @@ void set_psf_map_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
 		iele = psf_a->iele_viz_far[inum+ist_psf]-1;
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-			xx_tri[3*k  ] = psf_s[ipsf]->xx_viz[inod][0];
-			xx_tri[3*k+1] = psf_s[ipsf]->xx_viz[inod][1];
-			xx_tri[3*k+2] = psf_s[ipsf]->xx_viz[inod][2];
+			xx_tri[3*k  ] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 0];
+			xx_tri[3*k+1] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 1];
+			xx_tri[3*k+2] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + 2];
 		};
 		projection_patch_4_map(xx_tri, xyz_map);
 		
@@ -147,10 +147,10 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
                 for (k=0; k<3; k++) v_tmp[k] = psf_s->d_nod[inod*psf_s->ncomptot + icomp+k];
 			
                 if(psf_s->id_coord[psf_m->if_draw_psf]==1){
-                    position_2_sph_c(IONE, psf_s->xx_viz[inod], x_rtp);
+                    position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
                     sph_vector_to_xyz_vect(x_rtp[1], x_rtp[2], v_tmp, v_xyz);
                 } else if(psf_s->id_coord[psf_m->if_draw_psf]==2){
-                    position_2_sph_c(IONE, psf_s->xx_viz[inod], x_rtp);
+                    position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
                     cyl_vector_to_xyz_vect(x_rtp[2], v_tmp, v_xyz);
                 } else {
                     for (k=0; k<3; k++) v_xyz[k] = v_tmp[k];
@@ -174,8 +174,8 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
 				}
 				
 				for (k=0; k<3; k++){
-					x_line[k  ] = psf_s->xx_viz[inod][k];
-					x_line[k+3] = psf_s->xx_viz[inod][k] + v_xyz[k]*ascale;
+					x_line[k  ] = psf_s->xyzw_viz[inod*IFOUR + k];
+					x_line[k+3] = psf_s->xyzw_viz[inod*IFOUR + k] + v_xyz[k]*ascale;
 					dir_line[k  ] =  v_xyz[k];
 					dir_line[k+3] =  v_xyz[k];
 				};
