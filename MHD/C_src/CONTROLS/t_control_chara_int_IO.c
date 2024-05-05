@@ -19,7 +19,8 @@ struct chara_int_ctl_item * init_chara_int_ctl_item_c(void){
 		exit(0);
 	}
 
-    ci_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
+    ci_item->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
+    ci_item->c_tbl =        (char *)calloc(KCHARA_C, sizeof(char));
 	ci_item->i_data = 0;
     return ci_item;
 };

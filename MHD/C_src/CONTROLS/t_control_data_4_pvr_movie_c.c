@@ -19,7 +19,6 @@ struct pvr_movie_ctl_c * init_pvr_movie_ctl_c(){
     }
     movie_c->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
     
-
 	movie_c->f_rotation_axis_ctl = init_chara_ctl_item_c();
     movie_c->f_num_frames_ctl =    init_int_ctl_item_c();
     return movie_c;

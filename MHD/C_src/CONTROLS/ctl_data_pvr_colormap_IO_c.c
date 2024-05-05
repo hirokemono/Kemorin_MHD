@@ -41,15 +41,16 @@ const char label_lighting_ctl[NLBL_LIGHTING_CTL][KCHARA_C] = {
 
 const char label_colorbar_ctl[NLBL_PVR_COLORBAR_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"colorbar_switch_ctl"},
-	/*[ 1]*/	{"colorbar_scale_ctl"},
-	/*[ 2]*/	{"font_size_ctl"},
-	/*[ 3]*/	{"num_grid_ctl"},
-	/*[ 4]*/	{"zeromarker_switch"},
-	/*[ 5]*/	{"colorbar_range"},
+    /*[ 1]*/    {"colorbar_position_ctl"},
+	/*[ 2]*/	{"colorbar_scale_ctl"},
+	/*[ 3]*/	{"font_size_ctl"},
+	/*[ 4]*/	{"num_grid_ctl"},
+	/*[ 5]*/	{"zeromarker_switch"},
+	/*[ 6]*/	{"colorbar_range"},
 	
-	/*[ 6]*/	{"axis_label_switch"},
-    /*[ 7]*/    {"time_label_switch"},
-    /*[ 8]*/    {"map_grid_switch"}
+	/*[ 7]*/	{"axis_label_switch"},
+    /*[ 8]*/    {"time_label_switch"},
+    /*[ 9]*/    {"map_grid_switch"}
 };
 
 const char label_cmap_cbar_ctl[NLBL_CMAP_CBAR_CTL][KCHARA_C] = {
@@ -185,17 +186,17 @@ void read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 0], cbar_c->f_colorbar_switch_ctl);
-        read_chara_ctl_item_c(buf, cbar_c->f_colorbar_position_ctl->c_block_name, cbar_c->f_colorbar_position_ctl);
-		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 1], cbar_c->f_colorbar_scale_ctl);
+        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 1], cbar_c->f_colorbar_position_ctl);
+		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 2], cbar_c->f_colorbar_scale_ctl);
 		
-		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 2], cbar_c->f_font_size_ctl);
-		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 3], cbar_c->f_ngrid_cbar_ctl);
-		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 4], cbar_c->f_zeromarker_flag_ctl);
-		read_real2_ctl_item_c(buf, label_colorbar_ctl[ 5], cbar_c->f_cbar_range_ctl);
+		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 3], cbar_c->f_font_size_ctl);
+		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 4], cbar_c->f_ngrid_cbar_ctl);
+		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 5], cbar_c->f_zeromarker_flag_ctl);
+		read_real2_ctl_item_c(buf, label_colorbar_ctl[ 6], cbar_c->f_cbar_range_ctl);
 		
-		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 6], cbar_c->f_axis_switch_ctl);
-        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 7], cbar_c->f_time_switch_ctl);
-        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 8], cbar_c->f_mapgrid_switch_ctl);
+		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 7], cbar_c->f_axis_switch_ctl);
+        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 8], cbar_c->f_time_switch_ctl);
+        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 9], cbar_c->f_mapgrid_switch_ctl);
 	};
     cbar_c->f_iflag[0] = 1;
 	return;
@@ -218,26 +219,26 @@ int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
     
     write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 0],
 						   cbar_c->f_colorbar_switch_ctl);
-    write_chara_ctl_item_c(fp, level, maxlen, cbar_c->f_colorbar_position_ctl->c_block_name,
+    write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 1],
                            cbar_c->f_colorbar_position_ctl);
-	write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 1],
+	write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 2],
 						   cbar_c->f_colorbar_scale_ctl);
 	
-	write_integer_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 2],
-							 cbar_c->f_font_size_ctl);
 	write_integer_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 3],
+							 cbar_c->f_font_size_ctl);
+	write_integer_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 4],
 							 cbar_c->f_ngrid_cbar_ctl);
 	
-	write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 4],
+	write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 5],
 						   cbar_c->f_zeromarker_flag_ctl);
-	write_real2_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 5],
+	write_real2_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 6],
 						   cbar_c->f_cbar_range_ctl);
 	
-	write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 6],
+	write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 7],
 						   cbar_c->f_axis_switch_ctl);
-    write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 7],
-                           cbar_c->f_time_switch_ctl);
     write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 8],
+                           cbar_c->f_time_switch_ctl);
+    write_chara_ctl_item_c(fp, level, maxlen, label_colorbar_ctl[ 9],
                            cbar_c->f_mapgrid_switch_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

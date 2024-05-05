@@ -19,6 +19,7 @@ struct int_ctl_item * init_int_ctl_item_c(void){
 		exit(0);
 	}
 	
+    i_item->c_block_name = (char *)calloc(KCHARA_C, sizeof(char));
     i_item->i_data = 0;
     return i_item;
 };
