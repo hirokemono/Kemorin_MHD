@@ -113,7 +113,7 @@ static void init_mesh_menu(struct kemoviewer_type *kemo_sgl,
     gtk_widget_set_size_request(meshWin, 150, -1);
     gtk_container_set_border_width(GTK_CONTAINER(meshWin), 5);
 
-    set_mesh_menu_box(kemo_sgl, updatable, meshWin);
+    set_mesh_menu_box(kemo_sgl, updatable->mesh_vws, meshWin);
     GtkWidget *frame_mesh = pack_gtk_mesh_menu(updatable->mesh_vws, meshWin);
     
     gtk_container_add(GTK_CONTAINER(meshWin), frame_mesh);
@@ -297,15 +297,14 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
 };
 
 static void close_mesh_CB(GtkButton *button, gpointer user_data){
-    GtkWidget *window_main = GTK_WIDGET(user_data);
+    GtkWidget *meshWin = GTK_WIDGET(user_data);
     struct updatable_widgets *updatable = (struct updatable_widgets *) g_object_get_data(G_OBJECT(user_data), "updates");
     struct kemoviewer_type *kemo_sgl
             = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 
 	kemoview_close_mesh_view(kemo_sgl);
 	dealloc_mesh_views_4_viewer(updatable->mesh_vws);
-	
-	gtk_widget_queue_draw(window_main);
+    init_mesh_menu(kemo_sgl, updatable, meshWin)
     draw_full(kemo_sgl);
 	return;
 };
@@ -597,19 +596,19 @@ void set_fieldline_menu_box(struct kemoviewer_type *kemo_sgl,
 }
 
 void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
-                       struct updatable_widgets *updatable, 
+                       struct updatable_widgets *mesh_vws,
                        GtkWidget *window){
     init_mesh_views_4_viewer(kemo_sgl, updatable->mesh_vws);
 	
 	/*  Set buttons */
-    g_object_set_data(G_OBJECT(window), "updates", (gpointer) updatable);
+    g_object_set_data(G_OBJECT(window), "updates", (gpointer) mesh_vws);
     g_object_set_data(G_OBJECT(window), "kemoview", (gpointer) kemo_sgl);
 
-    updatable->mesh_vws->closeMeshButton = gtk_button_new_with_label("Close mesh");
-	g_signal_connect(G_OBJECT(updatable->mesh_vws->closeMeshButton), "clicked",
+    mesh_vws->closeMeshButton = gtk_button_new_with_label("Close mesh");
+	g_signal_connect(G_OBJECT(mesh_vws->closeMeshButton), "clicked",
                      G_CALLBACK(close_mesh_CB), (gpointer) window);
 	
-    init_gtk_mesh_menu(kemo_sgl, updatable->mesh_vws, window);
+    init_gtk_mesh_menu(kemo_sgl, mesh_vws, window);
 	return;
 }
 
