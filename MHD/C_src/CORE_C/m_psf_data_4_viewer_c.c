@@ -144,6 +144,12 @@ void alloc_psf_data_s(struct psf_data *psf_s){
 void alloc_psf_norm_s(struct psf_data *psf_s){
 	int i;
 	
+    psf_s->area_viz = (double *)calloc(psf_s->nele_viz,sizeof(double));
+    if(psf_s->area_viz  == NULL){
+        printf("malloc error for psf_s->area_viz \n");
+        exit(0);
+    }
+
 	/* allocate memory  norm_ele[patch #][component]*/
 	psf_s->norm_ele = (double *)malloc(4*psf_s->nele_viz*sizeof(double));
     if(psf_s->norm_ele  == NULL){
@@ -151,14 +157,13 @@ void alloc_psf_norm_s(struct psf_data *psf_s){
         exit(0);
     }
 
-	psf_s->area_viz = (double *)calloc(psf_s->nele_viz,sizeof(double));
-	
 	/* allocate memory  norm_nod[node #][component]*/
-	psf_s->norm_nod = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
-	for (i = 0; i < psf_s->nnod_viz; i++){
-		psf_s->norm_nod[i] = (double *)calloc(3,sizeof(double));
-	};
-	
+	psf_s->norm_nod = (double *)malloc(4*psf_s->nnod_viz*sizeof(double));
+    if(psf_s->norm_nod  == NULL){
+        printf("malloc error for psf_s->norm_nod \n");
+        exit(0);
+    }
+
 	return;
 };
 
@@ -196,13 +201,9 @@ void alloc_psf_cutting_4_map(struct psf_data *psf_s){
 };
 
 static void dealloc_psf_norm_s(struct psf_data *psf_s){
-	int i;
-	/* deallocate memory*/
-	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->norm_nod[i]);
 	free(psf_s->norm_nod);
 	free(psf_s->norm_ele);
 	free(psf_s->area_viz);
-	
 	return;
 };
 

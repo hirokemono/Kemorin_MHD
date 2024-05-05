@@ -27,7 +27,7 @@ void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode,
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xx_viz[inod][nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[inod][nd];};
 			if (shading_mode == SMOOTH_SHADE){
-                for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[inod][nd];};
+                for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[4*inod+nd];};
 			} else {
 				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_ele[4*iele+nd];};
 			};
@@ -106,9 +106,9 @@ long count_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_men
 	long inum_buf = 0;
 	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
 		if (inod % psf_m->increment_vect == 0) {
-			if(psf_s->norm_nod[inod][0] != 0.0
-						|| psf_s->norm_nod[inod][1] !=0.0
-						|| psf_s->norm_nod[inod][2] !=0.0){
+			if(psf_s->norm_nod[4*inod  ] != 0.0
+						|| psf_s->norm_nod[4*inod+1] !=0.0
+						|| psf_s->norm_nod[4*inod+2] !=0.0){
 				inum_buf = inum_buf + ncorner;
 			};
 		};
@@ -141,9 +141,9 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
     inum_buf = ist_patch;
 	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
 		if (inod % psf_m->increment_vect == 0) {
-            if(psf_s->norm_nod[inod][0] != 0.0
-               || psf_s->norm_nod[inod][1] !=0.0
-               || psf_s->norm_nod[inod][2] !=0.0){
+            if(psf_s->norm_nod[4*inod  ] != 0.0
+               || psf_s->norm_nod[4*inod+1] !=0.0
+               || psf_s->norm_nod[4*inod+2] !=0.0){
                 for (k=0; k<3; k++) v_tmp[k] = psf_s->d_nod[inod][icomp+k];
 			
                 if(psf_s->id_coord[psf_m->if_draw_psf]==1){
@@ -158,10 +158,10 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
 			
 				if(psf_m->ivect_tangential==TANGENTIAL_COMPONENT){
 					for (k=0; k<3; k++) {
-						v_xyz[k] = v_xyz[k] - psf_s->norm_nod[inod][k]
-								* (  v_xyz[0]*psf_s->norm_nod[inod][0]
-									+ v_xyz[1]*psf_s->norm_nod[inod][1]
-									+ v_xyz[2]*psf_s->norm_nod[inod][2]);
+						v_xyz[k] = v_xyz[k] - psf_s->norm_nod[4*inod+k]
+								* (  v_xyz[0]*psf_s->norm_nod[4*inod  ]
+                                   + v_xyz[1]*psf_s->norm_nod[4*inod+1]
+                                   + v_xyz[2]*psf_s->norm_nod[4*inod+2]);
 					};
 				};
 				

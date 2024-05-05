@@ -40,7 +40,7 @@ static void dealloc_norm_nod_tmp(int ntot_nod){
 
 
 static void refine_normal_on_node_4_grp(struct viewer_mesh *mesh_s, int ntot_nod, int ist, int ied, 
-									 int *item_grp, double **dist_nod, double **norm_nod){
+                                        int *item_grp, double **dist_nod, double **norm_nod){
 	int j, i, inum, iele, idir, inod, jnum, k1, k, nd;
 	double size, cos_ang;
 

@@ -70,9 +70,10 @@ void easy_normal_nod_psf(struct psf_data *viz_s){
 
 	for (i = 0; i < viz_s->nnod_viz; i++){
         nele_for_nod[i] = 0;
-        viz_s->norm_nod[i][0] = 0.0;
-        viz_s->norm_nod[i][1] = 0.0;
-        viz_s->norm_nod[i][2] = 0.0;
+        viz_s->norm_nod[4*i+0] = 0.0;
+        viz_s->norm_nod[4*i+1] = 0.0;
+        viz_s->norm_nod[4*i+2] = 0.0;
+        viz_s->norm_nod[4*i+3] = 1.0;
     };
 
     for (i = 0; i < viz_s->nele_viz; i++){
@@ -80,25 +81,27 @@ void easy_normal_nod_psf(struct psf_data *viz_s){
             i1 = viz_s->ie_viz[i][k] - 1;
             nele_for_nod[i1] = nele_for_nod[i1] + 1;
             
-            viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
+            viz_s->norm_nod[4*i1  ] = viz_s->norm_nod[4*i1  ]
                                     + viz_s->norm_ele[4*i  ];
-            viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]
+            viz_s->norm_nod[4*i1+1] = viz_s->norm_nod[4*i1+1]
                                     + viz_s->norm_ele[4*i+1];
-            viz_s->norm_nod[i1][2] = viz_s->norm_nod[i1][2]
+            viz_s->norm_nod[4*i1+2] = viz_s->norm_nod[4*i1+2]
                                     + viz_s->norm_ele[4*i+2];
         };
     };
     
 	for (i = 0; i < viz_s->nnod_viz; i++){
  		if(nele_for_nod[i] == 0){
-			viz_s->norm_nod[i][0] = 0.0;
-			viz_s->norm_nod[i][1] = 0.0;
-			viz_s->norm_nod[i][2] = 0.0;
+            viz_s->norm_nod[4*i+0] = 0.0;
+            viz_s->norm_nod[4*i+1] = 0.0;
+            viz_s->norm_nod[4*i+2] = 0.0;
+            viz_s->norm_nod[4*i+3] = 0.0;
         } else {
             d = (double) ONE / nele_for_nod[i];
-            viz_s->norm_nod[i][0] = viz_s->norm_nod[i][0] * d;
-            viz_s->norm_nod[i][1] = viz_s->norm_nod[i][1] * d;
-            viz_s->norm_nod[i][2] = viz_s->norm_nod[i][2] * d;
+            viz_s->norm_nod[4*i  ] = viz_s->norm_nod[4*i  ] * d;
+            viz_s->norm_nod[4*i+1] = viz_s->norm_nod[4*i+1] * d;
+            viz_s->norm_nod[4*i+2] = viz_s->norm_nod[4*i+2] * d;
+            viz_s->norm_nod[4*i+3] = 1.0;
         };
     };
     
@@ -182,9 +185,10 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
             };
         };
         nele_for_nod[i] = 0;
-        viz_s->norm_nod[i][0] = 0.0;
-        viz_s->norm_nod[i][1] = 0.0;
-        viz_s->norm_nod[i][2] = 0.0;
+        viz_s->norm_nod[4*i  ] = 0.0;
+        viz_s->norm_nod[4*i+1] = 0.0;
+        viz_s->norm_nod[4*i+2] = 0.0;
+        viz_s->norm_nod[4*i+3] = 1.0;
     };
     for (i = 0; i < viz_s->nele_viz; i++){
         for (k=0; k<3; k++){
@@ -192,11 +196,11 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
             l = istack_ele_for_nod[i1] + nele_for_nod[i1];
             nele_for_nod[i1] = nele_for_nod[i1] + 1;
             
-            viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
+            viz_s->norm_nod[4*i1  ] = viz_s->norm_nod[4*i1  ]
                                     + dist_to_ele[l] * viz_s->norm_ele[4*i  ];
-            viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]
+            viz_s->norm_nod[4*i1+1] = viz_s->norm_nod[4*i1+1]
                                     + dist_to_ele[l] * viz_s->norm_ele[4*i+1];
-            viz_s->norm_nod[i1][2] = viz_s->norm_nod[i1][2]
+            viz_s->norm_nod[4*i1+2] = viz_s->norm_nod[4*i1+2]
                                     + dist_to_ele[l] * viz_s->norm_ele[4*i+2];
         };
     };
@@ -206,18 +210,20 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
     free(nele_for_nod);
 	
 	for (n = 0; n < viz_s->nnod_viz; n++){
-		d = sqrt( viz_s->norm_nod[n][0]*viz_s->norm_nod[n][0]
-                 + viz_s->norm_nod[n][1]*viz_s->norm_nod[n][1]
-                 + viz_s->norm_nod[n][2]*viz_s->norm_nod[n][2]);
+		d = sqrt(  viz_s->norm_nod[4*n  ]*viz_s->norm_nod[4*n  ]
+                 + viz_s->norm_nod[4*n+1]*viz_s->norm_nod[4*n+1]
+                 + viz_s->norm_nod[4*n+2]*viz_s->norm_nod[4*n+2]);
 		if(d == 0.0){
-			viz_s->norm_nod[n][0] = 0.0;
-			viz_s->norm_nod[n][1] = 0.0;
-			viz_s->norm_nod[n][2] = 0.0;
+			viz_s->norm_nod[4*n+0] = 0.0;
+			viz_s->norm_nod[4*n+1] = 0.0;
+			viz_s->norm_nod[4*n+2] = 0.0;
+            viz_s->norm_nod[4*n+3] = 1.0;
 		} else {
 			d = 1.0 / d;
-			viz_s->norm_nod[n][0] = viz_s->norm_nod[n][0] * d;
-			viz_s->norm_nod[n][1] = viz_s->norm_nod[n][1] * d;
-			viz_s->norm_nod[n][2] = viz_s->norm_nod[n][2] * d;
+			viz_s->norm_nod[4*n+0] = viz_s->norm_nod[4*n+0] * d;
+			viz_s->norm_nod[4*n+1] = viz_s->norm_nod[4*n+1] * d;
+			viz_s->norm_nod[4*n+2] = viz_s->norm_nod[4*n+2] * d;
+            viz_s->norm_nod[4*n+3] = 1.0;
 		}
 	};
 	
@@ -284,19 +290,19 @@ static void take_length_ele_fline(struct psf_data *viz_s){
 	};
     
 	for (i = 0; i < viz_s->nnod_viz; i++){
-		viz_s->norm_nod[i][0] = -viz_s->dir_nod[i][2];
-		viz_s->norm_nod[i][1] =  viz_s->dir_nod[i][2];
-		viz_s->norm_nod[i][2] =  viz_s->dir_nod[i][0]*viz_s->dir_nod[i][2]
+		viz_s->norm_nod[4*i+0] = -viz_s->dir_nod[i][2];
+		viz_s->norm_nod[4*i+1] =  viz_s->dir_nod[i][2];
+		viz_s->norm_nod[4*i+2] =  viz_s->dir_nod[i][0]*viz_s->dir_nod[i][2]
         - viz_s->dir_nod[i][1]*viz_s->dir_nod[i][2];
-		len= sqrt(  viz_s->norm_nod[i][0]*viz_s->norm_nod[i][0]
-				  + viz_s->norm_nod[i][1]*viz_s->norm_nod[i][1]
-				  + viz_s->norm_nod[i][2]*viz_s->norm_nod[i][2] );
+		len= sqrt(  viz_s->norm_nod[4*i+0]*viz_s->norm_nod[4*i+0]
+				  + viz_s->norm_nod[4*i+1]*viz_s->norm_nod[4*i+1]
+				  + viz_s->norm_nod[4*i+2]*viz_s->norm_nod[4*i+2] );
 		len2= sqrt( viz_s->dir_nod[i][0]*viz_s->dir_nod[i][0]
                    + viz_s->dir_nod[i][1]*viz_s->dir_nod[i][1]
                    + viz_s->dir_nod[i][2]*viz_s->dir_nod[i][2] );
 		
 		for (nd=0; nd<3; nd++) {
-			viz_s->norm_nod[i][nd] = viz_s->norm_nod[i][nd] / len;
+			viz_s->norm_nod[4*i+nd] = viz_s->norm_nod[4*i+nd] / len;
 			viz_s->dir_nod[i][nd] =  viz_s->dir_nod[i][nd] / len2;
 		}
 	}

@@ -206,16 +206,16 @@ static void set_edge_direction_4_sf_c(double **xx_viz, struct psf_edge_data_c *p
 	return;
 };
 
-static void set_edge_normal_4_sf_c(double **norm_nod, struct psf_edge_data_c *psf_edge){
+static void set_edge_normal_4_sf_c(double *norm_nod, struct psf_edge_data_c *psf_edge){
 	long iedge, i0, i1;
 	double norm_size;
 	
 	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
 		i0 = psf_edge->ie_edge[iedge][0] - 1;
 		i1 = psf_edge->ie_edge[iedge][1] - 1;
-		psf_edge->edge_norm[3*iedge  ] = 0.5 * (norm_nod[i1][0] + norm_nod[i0][0]);
-		psf_edge->edge_norm[3*iedge+1] = 0.5 * (norm_nod[i1][1] + norm_nod[i0][1]);
-		psf_edge->edge_norm[3*iedge+2] = 0.5 * (norm_nod[i1][2] + norm_nod[i0][2]);
+		psf_edge->edge_norm[3*iedge  ] = 0.5 * (norm_nod[4*i1+0] + norm_nod[4*i0+0]);
+		psf_edge->edge_norm[3*iedge+1] = 0.5 * (norm_nod[4*i1+1] + norm_nod[4*i0+1]);
+		psf_edge->edge_norm[3*iedge+2] = 0.5 * (norm_nod[4*i1+2] + norm_nod[4*i0+2]);
 	};
 	
 	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
@@ -244,7 +244,7 @@ struct psf_edge_data_c * init_psf_edge_data_c(void){
 
 struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nele_viz,
 											 const int nnod_4_ele_viz, long **ie_viz,
-											 double **xx_viz, double **norm_nod){
+											 double **xx_viz, double *norm_nod){
 	struct psf_edge_data_c *psf_edge;
 	
 	int nnod_4_edge =    2;

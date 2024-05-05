@@ -23,7 +23,7 @@ static void copy_each_triangle_postion(long ie_viz[3], double **xx_viz, double *
 	};
 	return;
 };
-static void copy_each_triangle_postion_norm(long ie_viz[3], double **xx_viz, double **norm_nod,
+static void copy_each_triangle_postion_norm(long ie_viz[3], double **xx_viz, double *norm_nod,
 											double **d_nod, long icomp,
 											double xyz_tri[9], double nrm_tri[9], double d_tri[3]){
 	int k;
@@ -35,9 +35,9 @@ static void copy_each_triangle_postion_norm(long ie_viz[3], double **xx_viz, dou
 		xyz_tri[3*k  ] = xx_viz[inod][0];
 		xyz_tri[3*k+1] = xx_viz[inod][1];
 		xyz_tri[3*k+2] = xx_viz[inod][2];
-		nrm_tri[3*k  ] = norm_nod[inod][0];
-		nrm_tri[3*k+1] = norm_nod[inod][1];
-		nrm_tri[3*k+2] = norm_nod[inod][2];
+		nrm_tri[3*k  ] = norm_nod[4*inod+0];
+		nrm_tri[3*k+1] = norm_nod[4*inod+1];
+		nrm_tri[3*k+2] = norm_nod[4*inod+2];
 	};
 	return;
 };

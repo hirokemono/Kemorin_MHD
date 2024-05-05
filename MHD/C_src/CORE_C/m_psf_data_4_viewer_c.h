@@ -48,7 +48,7 @@ struct psf_data{
 	double *xyzw_ele_viz;
 	
 	double *norm_ele;
-	double **norm_nod;
+	double *norm_nod;
 	double *area_viz;
 	double area_total;
 	

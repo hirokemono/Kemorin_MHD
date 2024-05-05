@@ -38,7 +38,7 @@ struct psf_edge_data_c * init_psf_edge_data_c(void);
 
 struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nele_viz,
 											 const int nnod_4_ele_viz, long **ie_viz,
-											 double **xx_viz, double **norm_nod);
+											 double **xx_viz, double *norm_nod);
 void dealloc_edge_data_4_psf(const long nele_viz, struct psf_edge_data_c *psf_edge);
 
 #endif
