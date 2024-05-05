@@ -212,10 +212,10 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 		sscanf(buf, "%d %d %d %d %d", &itmp, 
-				&mesh_s->iedge_sf_viewer[i][0], 
-				&mesh_s->iedge_sf_viewer[i][1], 
-				&mesh_s->iedge_sf_viewer[i][2], 
-				&mesh_s->iedge_sf_viewer[i][3]);
+               &mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i    ],
+               &mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 1],
+               &mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 2],
+               &mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 3]);
 	}
 	
 	/*  node ID for domain boundary */

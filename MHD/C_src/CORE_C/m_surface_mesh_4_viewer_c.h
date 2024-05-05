@@ -43,7 +43,7 @@ struct viewer_mesh {
 	int *ie_sf_viewer;
 	int *ie_edge_viewer;
 	int *surftyp_viewer;
-	int **iedge_sf_viewer;
+	int *iedge_sf_viewer;
 	
 	int nsurf_domain_sf;
 	int nedge_domain_sf;

@@ -110,10 +110,10 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	printf("edge connection for surface \n");
 	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		printf(" %d %d %d %d %d \n", i, 
-				mesh_s->iedge_sf_viewer[i][0], 
-				mesh_s->iedge_sf_viewer[i][1], 
-				mesh_s->iedge_sf_viewer[i][2], 
-				mesh_s->iedge_sf_viewer[i][3]);
+				mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i   0],
+				mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 1],
+				mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 2],
+				mesh_s->iedge_sf_viewer[mesh_s->nedge_4_surf * i + 3]);
 	}
 	*/
 	

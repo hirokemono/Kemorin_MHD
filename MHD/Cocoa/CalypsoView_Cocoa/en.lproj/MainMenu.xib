@@ -538,7 +538,7 @@
                                             <rect key="frame" x="9" y="224" width="324" height="178"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="1" width="322" height="176"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="159"/>
