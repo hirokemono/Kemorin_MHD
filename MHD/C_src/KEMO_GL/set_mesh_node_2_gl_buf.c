@@ -44,7 +44,7 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
 			
 			for(inum = ist; inum < ied; inum++){
 				inod = item_grp[inum]-1;
-				num_ico = set_icosahedron_patch(node_diam, &mesh_s->xx_draw[inod][0],
+				num_ico = set_icosahedron_patch(node_diam, &mesh_s->xyzw_draw[4*inod  ],
 												 xyz_patch, norm_patch);
 				for (ico=0; ico<num_ico; ico++) {
                     set_node_stride_buffer((inum_tri+ico), mesh_buf);

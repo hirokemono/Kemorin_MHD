@@ -4,7 +4,7 @@
 #include "set_mesh_patch_2_gl_buf.h"
 
 static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
-                                    int nnod_4_sf, double **xx_draw, int *ie_sf_viewer,
+                                    int nnod_4_sf, double *xyzw_draw, int *ie_sf_viewer,
                                     int *node_quad_2_linear_tri, double normal_ele[4], double normal_nod[12],
                                     double f_color[4], const long inum_tri, struct gl_strided_buffer *strided_buf){
 	int inod, inum, k1, nd;
@@ -19,7 +19,7 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
 		
         set_node_stride_buffer((ITHREE*inum_tri+k), strided_buf);
 		
-		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = xx_draw[inod][nd];};
+		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = xyzw_draw[4*inod+nd];};
 		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
 		
 		if (shading_mode == SMOOTH_SHADE) {
@@ -89,7 +89,7 @@ static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int poly
                             normal_ele[4*jnum+1], normal_ele[4*jnum+2]);
 					 */
 					inum_tri = add_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
-                                                       mesh_s->nnod_4_surf, mesh_s->xx_draw,
+                                                       mesh_s->nnod_4_surf, mesh_s->xyzw_draw,
                                                        mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
                                                        &normal_ele[4*jnum], &normal_nod[12*jnum],
                                                        f_color, inum_tri, mesh_buf);

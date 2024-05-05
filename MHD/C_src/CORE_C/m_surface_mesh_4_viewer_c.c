@@ -311,12 +311,13 @@ void alloc_domain_center_s(struct viewer_mesh *mesh_s){
 
 void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	long i, num;
-	/* allocate memory  xx_draw[node #][direction]*/
-	mesh_s->xx_draw = (double **)calloc(mesh_s->nnod_viewer,sizeof(double *));
-	for (i = 0; i < mesh_s->nnod_viewer; i++){
-		mesh_s->xx_draw[i] = (double *)calloc(3,sizeof(double));
-	};
-	
+	/* allocate memory  xyzw_draw[node #][direction]*/
+	mesh_s->xyzw_draw = (double *)calloc(4*mesh_s->nnod_viewer,sizeof(double));
+    if(mesh_s->xyzw_draw == NULL) {
+        printf("malloc error for xyzw_draw\n");
+        exit(0);
+    }
+
 	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_domain =   (double *)calloc(4*num,sizeof(double));
     if(mesh_s->normal_domain == NULL) {
@@ -527,27 +528,20 @@ static void dealloc_domain_center_s(struct viewer_mesh *mesh_s){
 };
 
 static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
-	int i, num;
-
-	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_tri;
 	free(mesh_s->normal_surf_grp);
 	free(mesh_s->norm_nod_surf_grp);
 	free(mesh_s->dist_nod_surf_grp);
 
-	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_tri;
 	free(mesh_s->normal_ele_grp);
 	free(mesh_s->norm_nod_ele_grp);
 	free(mesh_s->dist_nod_ele_grp);
 
-	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_tri;
 	free(mesh_s->normal_domain);
 	free(mesh_s->norm_nod_domain);
 	free(mesh_s->dist_nod_domain);
 	
-	/* deallocate memory  xx_draw[node #][direction]*/
-	for (i = 0; i < mesh_s->nnod_viewer; i++) free(mesh_s->xx_draw[i]);
-	free(mesh_s->xx_draw);
-	
+	/* deallocate memory  xyzw_draw[node #][direction]*/
+	free(mesh_s->xyzw_draw);
 	return;
 };
 

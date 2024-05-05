@@ -89,7 +89,7 @@ struct viewer_mesh {
 	double *surf_norm_view;
 	double *surf_center_view;
 	
-	double **xx_draw;
+	double *xyzw_draw;
 	double *domain_center;
 	double **domain_min;
 	double **domain_max;
