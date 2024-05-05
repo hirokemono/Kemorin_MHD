@@ -267,7 +267,7 @@ void set_map_data_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_ma
 	
 	for (inod = 0; inod < psf_s->nnod_viz; inod++){
 		for (j = 0; j < psf_s->ncomptot; j++){
-			psf_map_s->d_nod_map[inod][j] = psf_s->d_nod[inod][j];
+			psf_map_s->d_nod_map[inod][j] = psf_s->d_nod[inod*psf_s->ncomptot + j];
 		};
 	};
 	for (icou = 0; icou < psf_map_s->nnod_add_map; icou++){
@@ -278,7 +278,8 @@ void set_map_data_from_psf_c(struct psf_data *psf_s, struct psf_map_data *psf_ma
 		y2 = psf_map_s->coef_itp_map[icou][1];
 		for (j = 0; j < psf_s->ncomptot; j++){
 			psf_map_s->d_nod_map[inod][j] 
-			  = (y1*psf_s->d_nod[i1-1][j] - y2*psf_s->d_nod[i2-1][j]) / (y1-y2);
+			  = (y1*psf_s->d_nod[(i1-1)*psf_s->ncomptot + j]
+                 - y2*psf_s->d_nod[(i2-1)*psf_s->ncomptot + j]) / (y1-y2);
 		};
 	};
 	

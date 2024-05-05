@@ -223,9 +223,9 @@ static void set_new_data_for_mapping(struct psf_data *viz_s){
 		i1 = viz_s->inod_org_4_map_itp[i][0]-1;
 		i2 = viz_s->inod_org_4_map_itp[i][1]-1;
 		for (nd=0; nd<ncomp; nd++) {
-			viz_s->d_nod[nnod_org+i][nd]
-			= viz_s->coef_4_map_itp[i][0] * viz_s->d_nod[i1][nd]
-			+ viz_s->coef_4_map_itp[i][1] * viz_s->d_nod[i2][nd];
+			viz_s->d_nod[(nnod_org+i)*viz_s->ncomptot + nd]
+			= viz_s->coef_4_map_itp[i][0] * viz_s->d_nod[i1*viz_s->ncomptot + nd]
+			+ viz_s->coef_4_map_itp[i][1] * viz_s->d_nod[i2*viz_s->ncomptot + nd];
 		};
 	};
 	return;

@@ -81,21 +81,13 @@ void alloc_psf_field_name_c(struct psf_data *psf_s){
 };
 
 void alloc_psf_field_data_c(struct psf_data *psf_s){
-	int i;
 	/* allocate memory  d_nod[node #][component]*/
-	psf_s->d_nod = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+    long num = psf_s->ncomptot * psf_s->nnod_viz;
+	psf_s->d_nod = (double *)malloc(num*sizeof(double));
     if(psf_s->d_nod  == NULL){
         printf("malloc error for psf_s->d_nod \n");
         exit(0);
     }
-
-    for (i = 0; i < psf_s->nnod_viz; i++){
-		psf_s->d_nod[i] = (double *)calloc(psf_s->ncomptot,sizeof(double));
-        if(psf_s->d_nod[i]  == NULL){
-            printf("malloc error for psf_s->d_nod[i], %d \n", i);
-            exit(0);
-        }
-	};
 };
 
 void alloc_psf_data_s(struct psf_data *psf_s){
@@ -200,15 +192,11 @@ static void dealloc_psf_length_s(struct psf_data *psf_s){
 };
 
 void dealloc_psf_field_data_c(struct psf_data *psf_s){
-	int i;
-
-	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->d_nod[i]);
 	free(psf_s->d_nod);
-	
 	free(psf_s->ncomp);
 	free(psf_s->istack_comp);
 	
-	for (i = 0; i < psf_s->nfield; i++) free(psf_s->data_name[i]);
+	for(int i = 0; i < psf_s->nfield; i++) free(psf_s->data_name[i]);
 	free(psf_s->data_name);
 	
 	return;
@@ -367,7 +355,8 @@ void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org)
     
 	for (i = 0; i < imin_nod; i++) {
 		for (j = 0; j < imin_comp; j++){
-			viz_copied->d_nod[i][j] = viz_org->d_nod[i][j];
+			viz_copied->d_nod[i*viz_copied->ncomptot + j]
+                = viz_org->d_nod[i*viz_org->ncomptot + j];
 		};
 	};
 	return;
@@ -400,7 +389,7 @@ void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk
         ist = (int) viz_copied->istack_comp[i];
         for (inod=0; inod<viz_copied->nnod_viz; inod++) {
             for (nd=0; nd<viz_copied->ncomp[i]; nd++) {
-                viz_copied->d_nod[inod][nd+ist] = last_fld->d_vtk[inod][nd];
+                viz_copied->d_nod[inod*viz_copied->ncomptot  + (nd+ist)] = last_fld->d_vtk[inod][nd];
             };
         };
         last_fld = last_fld->next_fld;
@@ -443,13 +432,13 @@ void check_psf_read(struct psf_data *psf_s){
 	printf("psf_s->data_name ");
 	for(i=0;i<psf_s->nfield;i++){printf("%d %s \n", i, psf_s->data_name[i]);};
 	printf("\n");
-	printf("d_nod_1 %le \n", psf_s->d_nod[0][0]);
-	printf("d_nod_2 %le \n", psf_s->d_nod[1][0]);
-	printf("d_nod_3 %le \n", psf_s->d_nod[2][0]);
+	printf("d_nod_1 %le \n", psf_s->d_nod[0]);
+	printf("d_nod_2 %le \n", psf_s->d_nod[  psf_s->ncomptot]);
+	printf("d_nod_3 %le \n", psf_s->d_nod[2*psf_s->ncomptot]);
 	
-	printf("d_nod_3 %le \n", psf_s->d_nod[psf_s->nnod_viz-3][0]);
-	printf("d_nod_2 %le \n", psf_s->d_nod[psf_s->nnod_viz-2][0]);
-	printf("d_nod_1 %le \n", psf_s->d_nod[psf_s->nnod_viz-1][0]);
+	printf("d_nod_3 %le \n", psf_s->d_nod[(psf_s->nnod_viz-3)*psf_s->ncomptot]);
+	printf("d_nod_2 %le \n", psf_s->d_nod[(psf_s->nnod_viz-2)*psf_s->ncomptot]);
+	printf("d_nod_1 %le \n", psf_s->d_nod[(psf_s->nnod_viz-1)*psf_s->ncomptot]);
 	
 }
 
@@ -476,8 +465,11 @@ void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z){
 	printf("Error d_nod \n");
 	for(j=0;j<psf_s->ncomptot;j++){
 		for(i=0;i<psf_s->nnod_viz;i++){
-			if(psf_z->d_nod[i][j] != psf_z->d_nod[i][j]){
-				printf("%d %d %le %le\n", j, i, psf_z->d_nod[i][j], psf_z->d_nod[i][j]);
+			if(psf_z->d_nod[i*psf_s->ncomptot + j]
+                != psf_z->d_nod[i*psf_s->ncomptot + j]){
+				printf("%d %d %le %le\n", j, i,
+                       psf_z->d_nod[i*psf_s->ncomptot + j],
+                       psf_z->d_nod[i*psf_s->ncomptot + j]);
 			};
 		};
 	};

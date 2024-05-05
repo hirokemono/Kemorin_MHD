@@ -144,7 +144,7 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
             if(psf_s->norm_nod[4*inod  ] != 0.0
                || psf_s->norm_nod[4*inod+1] !=0.0
                || psf_s->norm_nod[4*inod+2] !=0.0){
-                for (k=0; k<3; k++) v_tmp[k] = psf_s->d_nod[inod][icomp+k];
+                for (k=0; k<3; k++) v_tmp[k] = psf_s->d_nod[inod*psf_s->ncomptot + icomp+k];
 			
                 if(psf_s->id_coord[psf_m->if_draw_psf]==1){
                     position_2_sph_c(IONE, psf_s->xx_viz[inod], x_rtp);

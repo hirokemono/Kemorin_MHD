@@ -187,7 +187,7 @@ static void read_gz_viz_phys_data(void *FP_gzip, struct psf_data *viz_s){
 		sscanf(buf, "%d%n", &itmp, &nread); 
 		iread = iread + nread;
 		for (j = 0; j < viz_s->ncomptot; j++){
-			sscanf(&buf[iread], "%lf%n", &viz_s->d_nod[i][j], &nread); 
+			sscanf(&buf[iread], "%lf%n", &viz_s->d_nod[i*viz_s->ncomptot + j], &nread); 
 			iread = iread + nread;
 		};
 	};

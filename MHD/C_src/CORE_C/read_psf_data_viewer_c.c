@@ -156,7 +156,7 @@ static void read_viz_phys_data(struct psf_data *viz_s){
 	for (i = 0; i < viz_s->nnod_viz; i++) {
 		fscanf(fp_psf, "%d", &itmp); 
 		for (j = 0; j < viz_s->ncomptot; j++){
-			fscanf(fp_psf, "%lf", &viz_s->d_nod[i][j]); 
+			fscanf(fp_psf, "%lf", &viz_s->d_nod[i*viz_s->ncomptot + j]); 
 		};
 	};
 	return;

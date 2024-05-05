@@ -41,7 +41,7 @@ void check_psf_data_c(struct psf_data *tako){
 		for (j = 0; j < tako->nnod_viz; j++){
 			printf("%d %d ", j, tako->inod_viz[j]);
 			for (k = kst; k < ked; k++){
-				printf(" %.12e ", tako->d_nod[j][k]);
+				printf(" %.12e ", tako->d_nod[j+tako->ncomptot + k]);
 			}
 			printf("\n");
 		}
