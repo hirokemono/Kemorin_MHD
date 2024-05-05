@@ -25,7 +25,7 @@ void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode,
 			
             set_node_stride_buffer((ITHREE*inum+lk), strided_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xx_viz[inod][nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[inod][nd];};
+			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[4*inod+nd];};
 			if (shading_mode == SMOOTH_SHADE){
                 for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[4*inod+nd];};
 			} else {
@@ -93,7 +93,7 @@ void set_psf_map_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
 			strided_buf->x_draw[1] = xyz_map[ITHREE*k+1];
 			strided_buf->x_draw[2] = 0.0;
 			
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[inod][nd];};
+			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[4*inod+nd];};
 		};
 	};
 	return;

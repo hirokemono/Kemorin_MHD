@@ -32,7 +32,7 @@ long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s,
 				x_line[3*k+nd] = (float) fline_s->xx_viz[inod][nd];
 				dir_line[3*k+nd] = (float) fline_s->dir_nod[4*inod+nd];
 			};
-			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[inod][nd];};
+			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[4*inod+nd];};
 		};
 		find_normal_of_line(norm_line, x_line, dir_line);
 		num_wall = set_tube_vertex(ncorner, fline_m->fieldline_thick, 
@@ -62,7 +62,7 @@ long set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *flin
 			inod =fline_s->ie_viz[iele][k] - 1;
             set_node_stride_buffer((ITWO*iele+k), strided_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = fline_s->xx_viz[inod][nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[inod][nd];};
+			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[4*inod+nd];};
 		};
 	};
 	

@@ -62,7 +62,7 @@ struct psf_data{
     double xmax_psf[3];
     double rmax_psf;
 	
-	double **color_nod;
+	double *color_nod;
 	
 	int nnod_added_4_map;
 	long **inod_org_4_map_itp;

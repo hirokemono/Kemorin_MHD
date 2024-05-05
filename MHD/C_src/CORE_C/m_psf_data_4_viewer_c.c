@@ -116,19 +116,11 @@ void alloc_psf_data_s(struct psf_data *psf_s){
 	};
 	
 	/* allocate memory  color_nod[node #][rgba code]*/
-	psf_s->color_nod = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+	psf_s->color_nod = (double *)malloc(IFOUR*psf_s->nnod_viz*sizeof(double));
     if(psf_s->color_nod  == NULL){
         printf("malloc error for psf_s->color_nod \n");
         exit(0);
     }
-
-	for (i = 0; i < psf_s->nnod_viz; i++){
-		psf_s->color_nod[i] = (double *)calloc(IFOUR,sizeof(double));
-        if(psf_s->color_nod[i]  == NULL){
-            printf("malloc error for psf_s->color_nod[i], %d \n", i);
-            exit(0);
-        }
-	};
 
 	psf_s->d_min = (double *)calloc(psf_s->ncomptot,sizeof(double));
 	psf_s->d_max = (double *)calloc(psf_s->ncomptot,sizeof(double));
@@ -239,7 +231,6 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	free(psf_s->amp_max);
 	free(psf_s->amp_min);
 	
-    for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->color_nod[i]);
 	free(psf_s->color_nod);
 	
 	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->d_amp[i]);
