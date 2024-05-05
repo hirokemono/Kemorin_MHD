@@ -30,7 +30,7 @@ long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s,
 			inod = fline_s->ie_viz[iele][k] - 1;
 			for (nd=0; nd<3; nd++) {
 				x_line[3*k+nd] = (float) fline_s->xx_viz[inod][nd];
-				dir_line[3*k+nd] = (float) fline_s->dir_nod[inod][nd];
+				dir_line[3*k+nd] = (float) fline_s->dir_nod[4*inod+nd];
 			};
 			for (nd=0; nd<4; nd++) {color_line[4*k+nd] = (float) fline_s->color_nod[inod][nd];};
 		};

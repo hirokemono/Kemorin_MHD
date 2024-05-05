@@ -53,7 +53,7 @@ struct psf_data{
 	double area_total;
 	
 	double **dir_ele;
-	double **dir_nod;
+	double *dir_nod;
 	double *length_ele;
 	double length_total;
     
