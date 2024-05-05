@@ -29,7 +29,7 @@ void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode,
 			if (shading_mode == SMOOTH_SHADE){
                 for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[inod][nd];};
 			} else {
-				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_ele[iele][nd];};
+				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_ele[4*iele+nd];};
 			};
 			if(psf_m[ipsf]->polygon_mode_psf == REVERSE_POLYGON){
 				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = -strided_buf->n_draw[nd];};

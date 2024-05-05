@@ -52,8 +52,8 @@ void check_psf_data_c(struct psf_data *tako){
 	 printf("patch normal \n");
 	for (i = 0; i < tako->nele_viz; i++) {
 		printf(" %d %.12e %.12e %.12e %.12e \n", i, 
-				tako->norm_ele[i][0], tako->norm_ele[i][1], 
-				tako->norm_ele[i][2], tako->area_viz[i]);
+				tako->norm_ele[4*i  ], tako->norm_ele[4*i+1],
+				tako->norm_ele[4*i+2], tako->area_viz[i]);
 	};
 	 printf("node normal \n");
 	for (i = 0; i < tako->nnod_viz; i++) {

@@ -145,11 +145,12 @@ void alloc_psf_norm_s(struct psf_data *psf_s){
 	int i;
 	
 	/* allocate memory  norm_ele[patch #][component]*/
-	psf_s->norm_ele = (double **)malloc(psf_s->nele_viz*sizeof(double *));
-	for (i = 0; i < psf_s->nele_viz; i++){
-		psf_s->norm_ele[i] = (double *)calloc(3,sizeof(double));
-	};
-	
+	psf_s->norm_ele = (double *)malloc(4*psf_s->nele_viz*sizeof(double));
+    if(psf_s->norm_ele  == NULL){
+        printf("malloc error for psf_s->norm_ele \n");
+        exit(0);
+    }
+
 	psf_s->area_viz = (double *)calloc(psf_s->nele_viz,sizeof(double));
 	
 	/* allocate memory  norm_nod[node #][component]*/
@@ -199,7 +200,6 @@ static void dealloc_psf_norm_s(struct psf_data *psf_s){
 	/* deallocate memory*/
 	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->norm_nod[i]);
 	free(psf_s->norm_nod);
-	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->norm_ele[i]);
 	free(psf_s->norm_ele);
 	free(psf_s->area_viz);
 	

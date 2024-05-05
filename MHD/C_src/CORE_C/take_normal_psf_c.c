@@ -50,7 +50,7 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
 		cal_center_4_triangle_c(viz_s->xx_viz[i1], viz_s->xx_viz[i2], viz_s->xx_viz[i3],
 								&viz_s->xyzw_ele_viz[4*i]);
 		viz_s->area_viz[i] = cal_normal_4_triangle_c(viz_s->xx_viz[i1], viz_s->xx_viz[i2],
-													 viz_s->xx_viz[i3], viz_s->norm_ele[i]);
+													 viz_s->xx_viz[i3], &viz_s->norm_ele[4*i]);
 	};
     
 	viz_s->area_total = 0.0;
@@ -81,11 +81,11 @@ void easy_normal_nod_psf(struct psf_data *viz_s){
             nele_for_nod[i1] = nele_for_nod[i1] + 1;
             
             viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
-            + viz_s->norm_ele[i][0];
+                                    + viz_s->norm_ele[4*i  ];
             viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]
-            + viz_s->norm_ele[i][1];
+                                    + viz_s->norm_ele[4*i+1];
             viz_s->norm_nod[i1][2] = viz_s->norm_nod[i1][2]
-            + viz_s->norm_ele[i][2];
+                                    + viz_s->norm_ele[4*i+2];
         };
     };
     
@@ -193,11 +193,11 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
             nele_for_nod[i1] = nele_for_nod[i1] + 1;
             
             viz_s->norm_nod[i1][0] = viz_s->norm_nod[i1][0]
-            + dist_to_ele[l] * viz_s->norm_ele[i][0];
+                                    + dist_to_ele[l] * viz_s->norm_ele[4*i  ];
             viz_s->norm_nod[i1][1] = viz_s->norm_nod[i1][1]
-            + dist_to_ele[l] * viz_s->norm_ele[i][1];
+                                    + dist_to_ele[l] * viz_s->norm_ele[4*i+1];
             viz_s->norm_nod[i1][2] = viz_s->norm_nod[i1][2]
-            + dist_to_ele[l] * viz_s->norm_ele[i][2];
+                                    + dist_to_ele[l] * viz_s->norm_ele[4*i+2];
         };
     };
     
@@ -243,10 +243,10 @@ static void take_length_ele_fline(struct psf_data *viz_s){
 			viz_s->dir_ele[i][nd] = viz_s->xx_viz[i2][nd] - viz_s->xx_viz[i1][nd];
 		}
 		
-		viz_s->norm_ele[i][0] = -viz_s->dir_ele[i][2];
-		viz_s->norm_ele[i][1] =  viz_s->dir_ele[i][2];
-		viz_s->norm_ele[i][2] =  viz_s->dir_ele[i][0]*viz_s->dir_ele[i][2]
-        - viz_s->dir_ele[i][1]*viz_s->dir_ele[i][2];
+		viz_s->norm_ele[4*i  ] = -viz_s->dir_ele[i][2];
+		viz_s->norm_ele[4*i+1] =  viz_s->dir_ele[i][2];
+		viz_s->norm_ele[4*i+2] =  viz_s->dir_ele[i][0]*viz_s->dir_ele[i][2]
+                                - viz_s->dir_ele[i][1]*viz_s->dir_ele[i][2];
         
 		viz_s->length_ele[i]
         = sqrt( viz_s->dir_ele[i][0]*viz_s->dir_ele[i][0]
@@ -269,13 +269,13 @@ static void take_length_ele_fline(struct psf_data *viz_s){
         
 		viz_s->length_total = viz_s->length_total + viz_s->length_ele[i];
 		
-		len = sqrt( viz_s->norm_ele[i][0]*viz_s->norm_ele[i][0]
-                   + viz_s->norm_ele[i][1]*viz_s->norm_ele[i][1]
-                   + viz_s->norm_ele[i][2]*viz_s->norm_ele[i][2] );
+		len = sqrt(  viz_s->norm_ele[4*i  ]*viz_s->norm_ele[4*i  ]
+                   + viz_s->norm_ele[4*i+1]*viz_s->norm_ele[4*i+1]
+                   + viz_s->norm_ele[4*i+2]*viz_s->norm_ele[4*i+2] );
         
 		for (nd=0; nd<3; nd++) {
 			viz_s->xyzw_ele_viz[4*i+nd] = (viz_s->xx_viz[i1][nd] + viz_s->xx_viz[i2][nd])*HALF;
-			viz_s->norm_ele[i][nd] = viz_s->norm_ele[i][nd] / len;
+			viz_s->norm_ele[4*i+nd] = viz_s->norm_ele[4*i+nd] / len;
             
 			viz_s->dir_nod[i1][nd] = viz_s->dir_nod[i1][nd] + viz_s->dir_ele[i][nd];
 			viz_s->dir_nod[i2][nd] = viz_s->dir_nod[i2][nd] + viz_s->dir_ele[i][nd];
