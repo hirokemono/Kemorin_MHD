@@ -10,14 +10,14 @@
 #include "take_normal_surf_mesh_c.h"
 
 
-static void set_center_of_each_surface(int nnod_patch, int *ie_sf, int *ie_each, double **xx, 
+static void set_center_of_each_surface(int nnod_patch, int *ie_sf, int *ie_each, double *xx,
 									   double xx_surf[3]){
 	double xx_quad[4][3];
 	int i1, k, nd;
 	
 	for (k=0; k<nnod_patch; k++) {
 		i1 = ie_sf[(ie_each[k] - 1)]-1;
-		for (nd = 0; nd < 3; nd++){xx_quad[k][nd] = xx[i1][nd];};
+		for (nd = 0; nd < 3; nd++){xx_quad[k][nd] = xx[3*i1+nd];};
 	};
 	
 	if(nnod_patch == IFOUR){
@@ -30,14 +30,14 @@ static void set_center_of_each_surface(int nnod_patch, int *ie_sf, int *ie_each,
 };
 
 static double cal_normal_4_each_surface(int nnod_patch, int *ie_sf, int *ie_each, 
-										double **xx, double normal[3]){
+										double *xx, double normal[3]){
 	double size;
 	double xx_quad[4][3];
 	int i1, k, nd;
 	
 	for (k=0; k<nnod_patch; k++) {
 		i1 = ie_sf[(ie_each[k] - 1)]-1;
-		for (nd = 0; nd < 3; nd++){xx_quad[k][nd] = xx[i1][nd];};
+		for (nd = 0; nd < 3; nd++){xx_quad[k][nd] = xx[3*i1+nd];};
 	};
 	
 	if(nnod_patch == IFOUR){

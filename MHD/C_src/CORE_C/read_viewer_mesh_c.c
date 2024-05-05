@@ -93,15 +93,15 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	for (i= 0; i < mesh_s->nnod_viewer; i++) {
 		fgets(buf, LENGTHBUF, fp_mesh);
 		sscanf(buf, "%d %lf %lf %lf", &itmp, 
-				&mesh_s->xx_view[i][0], 
-				&mesh_s->xx_view[i][1], 
-				&mesh_s->xx_view[i][2]);
+				&mesh_s->xx_view[3*i ],
+				&mesh_s->xx_view[3*i+1],
+				&mesh_s->xx_view[3*i+2]);
 	};
 	/*
 	printf("mesh_s->xx_view %e %e %e\n",
-			mesh_s->xx_view[mesh_s->nnod_viewer-1][0],
-			mesh_s->xx_view[mesh_s->nnod_viewer-1][1],
-			mesh_s->xx_view[mesh_s->nnod_viewer-1][2]);
+			mesh_s->xx_view[3*mesh_s->nnod_viewer-3],
+			mesh_s->xx_view[3*mesh_s->nnod_viewer-2],
+			mesh_s->xx_view[3*mesh_s->nnod_viewer-1]);
 	*/
 	offset = skip_comment_c(fp_mesh);
 	sum_offset = offset + sum_offset;

@@ -83,7 +83,7 @@ struct viewer_mesh {
 	int *surf_nod_item_sf;
 	
 	
-	double **xx_view;
+	double *xx_view;
 	
 	double *surf_size_view;
 	double **surf_norm_view;

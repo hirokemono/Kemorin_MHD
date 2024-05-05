@@ -21,13 +21,13 @@ void set_surface_mesh_size(struct viewer_mesh *mesh_s){
 		for (ip=0; ip < mesh_s->num_pe_sf; ip++) {
 			ist = mesh_s->inod_sf_stack[ip];
 			ied = mesh_s->inod_sf_stack[ip+1];
-			mesh_s->domain_max[ip][nd] = mesh_s->xx_view[ist][nd];
-			mesh_s->domain_min[ip][nd] = mesh_s->xx_view[ist][nd];
+			mesh_s->domain_max[ip][nd] = mesh_s->xx_view[3*ist+nd];
+			mesh_s->domain_min[ip][nd] = mesh_s->xx_view[3*ist+nd];
 			for (inod=ist+1; inod<ied; inod++) {
-				if(mesh_s->xx_view[inod][nd] > mesh_s->domain_max[ip][nd])
-                mesh_s->domain_max[ip][nd] = mesh_s->xx_view[inod][nd];
-				if(mesh_s->xx_view[inod][nd] < mesh_s->domain_min[ip][nd])
-                mesh_s->domain_min[ip][nd] = mesh_s->xx_view[inod][nd];
+				if(mesh_s->xx_view[3*inod+nd] > mesh_s->domain_max[ip][nd])
+                mesh_s->domain_max[ip][nd] = mesh_s->xx_view[3*inod+nd];
+				if(mesh_s->xx_view[3*inod+nd] < mesh_s->domain_min[ip][nd])
+                mesh_s->domain_min[ip][nd] = mesh_s->xx_view[3*inod+nd];
 			};
 			
 			mesh_s->domain_center[ip][nd] = HALF * (mesh_s->domain_min[ip][nd]
@@ -75,12 +75,12 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
 					mesh_s->dist_nod_domain[jnum][k1]
-                    = sqrt( (mesh_s->xx_view[inod][0] - x_center[0])
-                           *(mesh_s->xx_view[inod][0] - x_center[0])
-                           +(mesh_s->xx_view[inod][1] - x_center[1])
-                           *(mesh_s->xx_view[inod][1] - x_center[1])
-                           +(mesh_s->xx_view[inod][2] - x_center[2])
-                           *(mesh_s->xx_view[inod][2] - x_center[2]) );
+                    = sqrt( (mesh_s->xx_view[3*inod+0] - x_center[0])
+                           *(mesh_s->xx_view[3*inod+0] - x_center[0])
+                           +(mesh_s->xx_view[3*inod+1] - x_center[1])
+                           *(mesh_s->xx_view[3*inod+1] - x_center[1])
+                           +(mesh_s->xx_view[3*inod+2] - x_center[2])
+                           *(mesh_s->xx_view[3*inod+2] - x_center[2]) );
                     
 					for (nd=0; nd<3; nd++){
 						mesh_s->norm_nod_domain[jnum][nd+3*k1]
@@ -108,12 +108,12 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
 					mesh_s->dist_nod_ele_grp[jnum][k1]
-					= sqrt( (mesh_s->xx_view[inod][0] - x_center[0])
-						   *(mesh_s->xx_view[inod][0] - x_center[0])
-						   +(mesh_s->xx_view[inod][1] - x_center[1])
-						   *(mesh_s->xx_view[inod][1] - x_center[1])
-						   +(mesh_s->xx_view[inod][2] - x_center[2])
-						   *(mesh_s->xx_view[inod][2] - x_center[2]) );
+					= sqrt( (mesh_s->xx_view[3*inod+0] - x_center[0])
+						   *(mesh_s->xx_view[3*inod+0] - x_center[0])
+						   +(mesh_s->xx_view[3*inod+1] - x_center[1])
+						   *(mesh_s->xx_view[3*inod+1] - x_center[1])
+						   +(mesh_s->xx_view[3*inod+2] - x_center[2])
+						   *(mesh_s->xx_view[3*inod+2] - x_center[2]) );
                     
 					for (nd=0; nd<3; nd++){
 						mesh_s->norm_nod_ele_grp[jnum][nd+3*k1]
@@ -141,12 +141,12 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
 					mesh_s->dist_nod_surf_grp[jnum][k1]
-					= sqrt( (mesh_s->xx_view[inod][0] - x_center[0])
-                           *(mesh_s->xx_view[inod][0] - x_center[0])
-						   +(mesh_s->xx_view[inod][1] - x_center[1])
-						   *(mesh_s->xx_view[inod][1] - x_center[1])
-						   +(mesh_s->xx_view[inod][2] - x_center[2])
-						   *(mesh_s->xx_view[inod][2] - x_center[2]) );
+					= sqrt( (mesh_s->xx_view[3*inod+0] - x_center[0])
+                           *(mesh_s->xx_view[3*inod+0] - x_center[0])
+						   +(mesh_s->xx_view[3*inod+1] - x_center[1])
+						   *(mesh_s->xx_view[3*inod+1] - x_center[1])
+						   +(mesh_s->xx_view[3*inod+2] - x_center[2])
+						   *(mesh_s->xx_view[3*inod+2] - x_center[2]) );
                     
 					for (nd=0; nd<3; nd++){
 						mesh_s->norm_nod_surf_grp[jnum][nd+3*k1]

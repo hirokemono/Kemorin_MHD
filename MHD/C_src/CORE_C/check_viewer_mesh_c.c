@@ -34,7 +34,8 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	
 	/* printf("node \n");
 	for (i = 0; i < mesh_s->nnod_viewer; i++) {
-		printf(" %d %.12e %.12e %.12e \n", i, mesh_s->xx_view[i][0], mesh_s->xx_view[i][1], mesh_s->xx_view[i][2]);
+		printf(" %d %.12e %.12e %.12e \n", i,
+                mesh_s->xx_view[3*i], mesh_s->xx_view[3*i+1], mesh_s->xx_view[3*i+2]);
 	};
 	*/
 	

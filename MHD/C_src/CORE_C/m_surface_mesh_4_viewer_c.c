@@ -46,13 +46,8 @@ void alloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 void alloc_node_viewer_s(struct viewer_mesh *mesh_s){
-	int i;
 	/* allocate memory  xx_view[node #][direction]*/
-	mesh_s->xx_view = (double **)calloc(mesh_s->nnod_viewer,sizeof(double *));
-	for (i = 0; i < mesh_s->nnod_viewer; i++){
-		mesh_s->xx_view[i] = (double *)calloc(3,sizeof(double));
-	};
-	
+	mesh_s->xx_view = (double *)calloc(3*mesh_s->nnod_viewer,sizeof(double));
 	return;
 };
 
@@ -382,8 +377,6 @@ static void dealloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 static void dealloc_node_viewer_s(struct viewer_mesh *mesh_s){
-	int i;
-	for (i = 0; i < mesh_s->nnod_viewer; i++) free(mesh_s->xx_view[i]);
 	free(mesh_s->xx_view);
 	return;
 };
