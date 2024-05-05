@@ -159,12 +159,9 @@ void alloc_surface_params_s(struct viewer_mesh *mesh_s){
 
 
 void alloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
-	int i;
+	long num = mesh_s->nnod_4_surf * mesh_s->nsurf_viewer;
 	/* allocate memory  ie_sf_viewer[element #][node index]*/
-	mesh_s->ie_sf_viewer = (int **)calloc(mesh_s->nsurf_viewer,sizeof(int *));
-	for (i = 0; i < mesh_s->nsurf_viewer; i++){
-		mesh_s->ie_sf_viewer[i] = (int *)calloc(mesh_s->nnod_4_surf,sizeof(int));
-	};
+	mesh_s->ie_sf_viewer = (int *) calloc(num,sizeof(int));
 	return;
 };
 
@@ -397,9 +394,6 @@ static void dealloc_node_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 static void dealloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
-	int i;
-	
-	for (i = 0; i < mesh_s->nsurf_viewer; i++) free(mesh_s->ie_sf_viewer[i]);
 	free(mesh_s->ie_sf_viewer);
 	
 	free(mesh_s->node_quad_2_linear_tri);

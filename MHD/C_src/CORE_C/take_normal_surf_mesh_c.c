@@ -80,13 +80,13 @@ void take_normal_surf_mesh_c(struct viewer_mesh *mesh_s){
 	for(iele = 0; iele < mesh_s->nsurf_viewer; iele++){
 		for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 			jnum = j + iele * mesh_s->nsurf_each_tri;
-			set_center_of_each_surface(ITHREE, mesh_s->ie_sf_viewer[iele], 
-						&mesh_s->node_quad_2_linear_tri[3*j], mesh_s->xx_view,
-						mesh_s->surf_center_view[jnum]);
+			set_center_of_each_surface(ITHREE, &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf*iele],
+                                       &mesh_s->node_quad_2_linear_tri[3*j], mesh_s->xx_view,
+                                       mesh_s->surf_center_view[jnum]);
 			mesh_s->surf_size_view[jnum]
-			= cal_normal_4_each_surface(ITHREE, mesh_s->ie_sf_viewer[iele], 
-						&mesh_s->node_quad_2_linear_tri[3*j], mesh_s->xx_view,
-						mesh_s->surf_norm_view[jnum]);
+			= cal_normal_4_each_surface(ITHREE, &mesh_s->ie_sf_viewer[mesh_s->nnod_4_surf*iele],
+                                        &mesh_s->node_quad_2_linear_tri[3*j], mesh_s->xx_view,
+                                        mesh_s->surf_norm_view[jnum]);
 		};
 	};
 	
