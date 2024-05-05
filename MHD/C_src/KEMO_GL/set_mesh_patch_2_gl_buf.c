@@ -5,7 +5,7 @@
 
 static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
                                     int nnod_4_sf, double **xx_draw, int *ie_sf_viewer,
-                                    int *node_quad_2_linear_tri, double normal_ele[3], double normal_nod[12],
+                                    int *node_quad_2_linear_tri, double normal_ele[4], double normal_nod[12],
                                     double f_color[4], const long inum_tri, struct gl_strided_buffer *strided_buf){
 	int inod, inum, k1, nd;
     long k, kr;
@@ -59,7 +59,7 @@ static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int poly
                                   int surface_color, int color_mode, int color_loop,
                                   double opacity, float single_color[4], 
                                   int num_grp, int *istack_grp, int *item_grp, 
-                                  double **normal_ele, double *normal_nod,
+                                  double *normal_ele, double *normal_nod,
                                   long *isort_grp, long *ip_domain_far, int igrp,
                                   struct viewer_mesh *mesh_s, int *iflag_domain,
                                   struct gl_strided_buffer *mesh_buf){
@@ -85,13 +85,13 @@ static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int poly
 				for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 					jnum = j + inum * mesh_s->nsurf_each_tri;
 					/*
-					printf("%d, %f %f %f \n", jnum, normal_ele[jnum][0],
-								normal_ele[jnum][1], normal_ele[jnum][2]);
+					printf("%d, %f %f %f \n", jnum, normal_ele[4*jnum+0],
+                            normal_ele[4*jnum+1], normal_ele[4*jnum+2]);
 					 */
 					inum_tri = add_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
                                                        mesh_s->nnod_4_surf, mesh_s->xx_draw,
                                                        mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
-                                                       normal_ele[jnum], &normal_nod[12*jnum],
+                                                       &normal_ele[4*jnum], &normal_nod[12*jnum],
                                                        f_color, inum_tri, mesh_buf);
 				};
 			};
