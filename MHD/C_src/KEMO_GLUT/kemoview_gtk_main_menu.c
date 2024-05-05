@@ -85,7 +85,7 @@ static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
     gtk_widget_set_size_request(psf_gmenu->psfWin, 150, -1);
     gtk_container_set_border_width(GTK_CONTAINER(psf_gmenu->psfWin), 5);
     
-    set_psf_menu_box(kemo_sgl, kemo_gl, psf_gmenu, window);
+    set_psf_menu_box(kemo_sgl, kemo_gl, psf_gmenu, psf_gmenu->psfWin);
     pack_psf_menu_frame(psf_gmenu);
     gtk_container_add(GTK_CONTAINER(psf_gmenu->psfWin), psf_gmenu->psf_frame);
     gtk_widget_show_all(psf_gmenu->psfWin);
