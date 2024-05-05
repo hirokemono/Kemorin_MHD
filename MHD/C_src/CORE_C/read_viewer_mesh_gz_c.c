@@ -183,24 +183,26 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 			sscanf(buf, "%d %d %d %d", &itmp, 
-				&mesh_s->ie_edge_viewer[i][0], 
-				&mesh_s->ie_edge_viewer[i][1], 
-				&mesh_s->ie_edge_viewer[i][2]);
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i    ],
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 1],
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 2]);
 		}
 	}
 	else{
 		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 			sscanf(buf, "%d %d %d", &itmp, 
-				&mesh_s->ie_edge_viewer[i][0], 
-				&mesh_s->ie_edge_viewer[i][1]);
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i    ],
+                   &mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 1]);
 		}
 	}
 	
-/*	printf("mesh_s->ie_edge_viewer %d %d\n", 
-			mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][0],
-			mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][1]);*/
-	
+/*
+     printf("mesh_s->ie_edge_viewer %d %d\n",
+             mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * (mesh_s->nedge_viewer-1)    ],
+             mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * (mesh_s->nedge_viewer-1) + 1]);
+*/
+
 	num_word[0] = skip_comment_gz_c(FP_gzip1, lbuf, buf);
 	sscanf(buf, "%d", &itmp);
 	

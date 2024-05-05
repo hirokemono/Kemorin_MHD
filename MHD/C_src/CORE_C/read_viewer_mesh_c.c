@@ -184,23 +184,25 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp_mesh);
 			sscanf(buf, "%d %d %d %d", &itmp, 
-				&mesh_s->ie_edge_viewer[i][0], 
-				&mesh_s->ie_edge_viewer[i][1], 
-				&mesh_s->ie_edge_viewer[i][2]);
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i    ],
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 1],
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 2]);
 		}
 	}
 	else{
 		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp_mesh);
 			sscanf(buf, "%d %d %d", &itmp, 
-				&mesh_s->ie_edge_viewer[i][0], 
-				&mesh_s->ie_edge_viewer[i][1]);
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i    ],
+				&mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * i + 1]);
 		}
 	}
 	
-	/*printf("mesh_s->ie_edge_viewer %d %d\n", 
-	mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][0],
-			mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][1]);*/
+/*
+     printf("mesh_s->ie_edge_viewer %d %d\n",
+             mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * (mesh_s->nedge_viewer-1)    ],
+             mesh_s->ie_edge_viewer[mesh_s->nnod_4_edge * (mesh_s->nedge_viewer-1) + 1]);
+*/
 	
 	offset = skip_comment_c(fp_mesh);
 	sum_offset = offset + sum_offset;

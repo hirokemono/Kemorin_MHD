@@ -166,15 +166,12 @@ void alloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 void alloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
-	int i;
 	/* allocate memory  ie_edge_viewer[edge #][local node ID]*/
-	mesh_s->ie_edge_viewer = (int **)calloc(mesh_s->nedge_viewer,sizeof(int *));
-	for (i = 0; i < mesh_s->nedge_viewer; i++){
-		mesh_s->ie_edge_viewer[i] = (int *)calloc(mesh_s->nnod_4_edge,sizeof(int));
-	};
+    long num = mesh_s->nnod_4_edge * mesh_s->nedge_viewer;
+	mesh_s->ie_edge_viewer = (int *)calloc(num,sizeof(int));
 	/* allocate memory  iedge_sf_viewer[element #][local edge ID]*/
 	mesh_s->iedge_sf_viewer = (int **)calloc(mesh_s->nsurf_viewer,sizeof(int *));
-	for (i = 0; i < mesh_s->nsurf_viewer; i++){
+	for (int i = 0; i < mesh_s->nsurf_viewer; i++){
 		mesh_s->iedge_sf_viewer[i] = (int *)calloc(mesh_s->nedge_4_surf,sizeof(int));
 	};
 	
@@ -404,7 +401,6 @@ static void dealloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
 
 static void dealloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
-	for (i = 0; i < mesh_s->nedge_viewer; i++) free(mesh_s->ie_edge_viewer[i]);
 	free(mesh_s->ie_edge_viewer);
 	for (i = 0; i < mesh_s->nsurf_viewer; i++) free(mesh_s->iedge_sf_viewer[i]);
 	free(mesh_s->iedge_sf_viewer);
