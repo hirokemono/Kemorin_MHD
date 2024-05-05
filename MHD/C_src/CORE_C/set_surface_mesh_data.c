@@ -74,7 +74,7 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
 					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
-					mesh_s->dist_nod_domain[jnum][k1]
+					mesh_s->dist_nod_domain[3*jnum+k1]
                     = sqrt( (mesh_s->xx_view[4*inod+0] - x_center[0])
                            *(mesh_s->xx_view[4*inod+0] - x_center[0])
                            +(mesh_s->xx_view[4*inod+1] - x_center[1])
@@ -108,7 +108,7 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
 					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
-					mesh_s->dist_nod_ele_grp[jnum][k1]
+					mesh_s->dist_nod_ele_grp[3*jnum+k1]
 					= sqrt( (mesh_s->xx_view[4*inod+0] - x_center[0])
 						   *(mesh_s->xx_view[4*inod+0] - x_center[0])
 						   +(mesh_s->xx_view[4*inod+1] - x_center[1])
@@ -142,7 +142,7 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
 					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
-					mesh_s->dist_nod_surf_grp[jnum][k1]
+					mesh_s->dist_nod_surf_grp[3*jnum+k1]
 					= sqrt( (mesh_s->xx_view[4*inod+0] - x_center[0])
                            *(mesh_s->xx_view[4*inod+0] - x_center[0])
 						   +(mesh_s->xx_view[4*inod+1] - x_center[1])
