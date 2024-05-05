@@ -321,31 +321,43 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 
 	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_domain =   (double **)calloc(num,sizeof(double *));
-	mesh_s->norm_nod_domain = (double **)calloc(num,sizeof(double *));
-	mesh_s->dist_nod_domain = (double **)calloc(num,sizeof(double *));
+	mesh_s->norm_nod_domain = (double *)calloc(12*num,sizeof(double));
+    if(mesh_s->norm_nod_domain == NULL) {
+        printf("malloc error for norm_nod_domain\n");
+        exit(0);
+    }
+
+    mesh_s->dist_nod_domain = (double **)calloc(num,sizeof(double *));
 	for (i = 0; i < num; i++){
 		mesh_s->normal_domain[i] =   (double *)calloc( 3,sizeof(double));
-		mesh_s->norm_nod_domain[i] = (double *)calloc( 9,sizeof(double));
 		mesh_s->dist_nod_domain[i] = (double *)calloc( 3,sizeof(double));
 	};
 	
 	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_ele_grp = (double **)calloc(num,sizeof(double *));
-	mesh_s->norm_nod_ele_grp = (double **)calloc(num,sizeof(double *));
+	mesh_s->norm_nod_ele_grp = (double *)calloc(12*num,sizeof(double));
+    if(mesh_s->norm_nod_ele_grp == NULL) {
+        printf("malloc error for norm_nod_ele_grp\n");
+        exit(0);
+    }
+
 	mesh_s->dist_nod_ele_grp = (double **)calloc(num,sizeof(double *));
 	for (i = 0; i < num; i++){
 		mesh_s->normal_ele_grp[i] =   (double *)calloc( 3,sizeof(double));
-		mesh_s->norm_nod_ele_grp[i] = (double *)calloc( 9,sizeof(double));
 		mesh_s->dist_nod_ele_grp[i] = (double *)calloc( 3,sizeof(double));
 	};
 	
 	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_surf_grp =   (double **)calloc(num,sizeof(double *));
-	mesh_s->norm_nod_surf_grp = (double **)calloc(num,sizeof(double *));
+	mesh_s->norm_nod_surf_grp = (double *)calloc(num,sizeof(double));
+    if(mesh_s->norm_nod_surf_grp == NULL) {
+        printf("malloc error for norm_nod_surf_grp\n");
+        exit(0);
+    }
+
 	mesh_s->dist_nod_surf_grp = (double **)calloc(num,sizeof(double *));
 	for (i = 0; i < num; i++){
 		mesh_s->normal_surf_grp[i] =   (double *)calloc( 3,sizeof(double));
-		mesh_s->norm_nod_surf_grp[i] = (double *)calloc( 9,sizeof(double));
 		mesh_s->dist_nod_surf_grp[i] = (double *)calloc( 3,sizeof(double));
 	};
 	
@@ -507,7 +519,6 @@ static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 
 	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_tri;
 	for (i = 0; i < num; i++) free(mesh_s->normal_surf_grp[i]);
-	for (i = 0; i < num; i++) free(mesh_s->norm_nod_surf_grp[i]);
 	for (i = 0; i < num; i++) free(mesh_s->dist_nod_surf_grp[i]);
 	free(mesh_s->normal_surf_grp);
 	free(mesh_s->norm_nod_surf_grp);
@@ -515,7 +526,6 @@ static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 
 	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_tri;
 	for (i = 0; i < num; i++) free(mesh_s->normal_ele_grp[i]);
-	for (i = 0; i < num; i++) free(mesh_s->norm_nod_ele_grp[i]);
 	for (i = 0; i < num; i++) free(mesh_s->dist_nod_ele_grp[i]);
 	free(mesh_s->normal_ele_grp);
 	free(mesh_s->norm_nod_ele_grp);
@@ -523,7 +533,6 @@ static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 
 	num = mesh_s->nsurf_domain_sf * mesh_s->nsurf_each_tri;
 	for (i = 0; i < num; i++) free(mesh_s->normal_domain[i]);
-	for (i = 0; i < num; i++) free(mesh_s->norm_nod_domain[i]);
 	for (i = 0; i < num; i++) free(mesh_s->dist_nod_domain[i]);
 	free(mesh_s->normal_domain);
 	free(mesh_s->norm_nod_domain);

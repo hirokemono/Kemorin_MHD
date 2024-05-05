@@ -40,7 +40,7 @@ static void dealloc_norm_nod_tmp(int ntot_nod){
 
 
 static void refine_normal_on_node_4_grp(struct viewer_mesh *mesh_s, int ntot_nod, int ist, int ied, 
-                                        int *item_grp, double **dist_nod, double **norm_nod){
+                                        int *item_grp, double **dist_nod, double *norm_nod){
 	int j, i, inum, iele, idir, inod, jnum, k1, k, nd;
 	double size, cos_ang;
 
@@ -85,7 +85,7 @@ static void refine_normal_on_node_4_grp(struct viewer_mesh *mesh_s, int ntot_nod
 					for(nd=0;nd<3;nd++){
 						norm_nod_tmp[inod][nd] = norm_nod_tmp[inod][nd]
 							+ (dist_nod_tmp[inod] - dist_nod[jnum][k1])
-							* norm_nod[jnum][nd+3*k1];
+							* norm_nod[12*jnum+4*k1+nd];
 					};
 				};
 			}
@@ -112,11 +112,11 @@ static void refine_normal_on_node_4_grp(struct viewer_mesh *mesh_s, int ntot_nod
 					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
 					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
 	 
-					cos_ang =  norm_nod_tmp[inod][0] * norm_nod[jnum][  3*k1]
-							 + norm_nod_tmp[inod][1] * norm_nod[jnum][1+3*k1]
-							 + norm_nod_tmp[inod][2] * norm_nod[jnum][2+3*k1];
+					cos_ang =  norm_nod_tmp[inod][0] * norm_nod[12*jnum+4*k1  ]
+							 + norm_nod_tmp[inod][1] * norm_nod[12*jnum+4*k1+1]
+							 + norm_nod_tmp[inod][2] * norm_nod[12*jnum+4*k1+2];
 					if(cos_ang > SPLIT_EDGE){
-						for(nd=0;nd<3;nd++) norm_nod[jnum][nd+3*k1] =  norm_nod_tmp[inod][nd];
+						for(nd=0;nd<3;nd++) norm_nod[12*jnum+4*k1+nd] =  norm_nod_tmp[inod][nd];
 					};
 				};
 			}

@@ -95,15 +95,15 @@ struct viewer_mesh {
 	double **domain_max;
 	
 	double **normal_domain;
-	double **norm_nod_domain;
+	double *norm_nod_domain;
 	double **dist_nod_domain;
     
 	double **normal_ele_grp;
-	double **norm_nod_ele_grp;
+	double *norm_nod_ele_grp;
 	double **dist_nod_ele_grp;
     
 	double **normal_surf_grp;
-	double **norm_nod_surf_grp;
+	double *norm_nod_surf_grp;
 	double **dist_nod_surf_grp;
     
     
