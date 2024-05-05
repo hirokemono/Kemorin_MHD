@@ -21,26 +21,26 @@ void set_surface_mesh_size(struct viewer_mesh *mesh_s){
 		for (ip=0; ip < mesh_s->num_pe_sf; ip++) {
 			ist = mesh_s->inod_sf_stack[ip];
 			ied = mesh_s->inod_sf_stack[ip+1];
-			mesh_s->domain_max[ip][nd] = mesh_s->xx_view[4*ist+nd];
-			mesh_s->domain_min[ip][nd] = mesh_s->xx_view[4*ist+nd];
+			mesh_s->domain_max[4*ip+nd] = mesh_s->xx_view[4*ist+nd];
+			mesh_s->domain_min[4*ip+nd] = mesh_s->xx_view[4*ist+nd];
 			for (inod=ist+1; inod<ied; inod++) {
-				if(mesh_s->xx_view[4*inod+nd] > mesh_s->domain_max[ip][nd])
-                mesh_s->domain_max[ip][nd] = mesh_s->xx_view[4*inod+nd];
-				if(mesh_s->xx_view[4*inod+nd] < mesh_s->domain_min[ip][nd])
-                mesh_s->domain_min[ip][nd] = mesh_s->xx_view[4*inod+nd];
+				if(mesh_s->xx_view[4*inod+nd] > mesh_s->domain_max[4*ip+nd])
+                        mesh_s->domain_max[4*ip+nd] = mesh_s->xx_view[4*inod+nd];
+				if(mesh_s->xx_view[4*inod+nd] < mesh_s->domain_min[4*ip+nd])
+                        mesh_s->domain_min[4*ip+nd] = mesh_s->xx_view[4*inod+nd];
 			};
 			
-			mesh_s->domain_center[4*ip+nd] = HALF * (mesh_s->domain_min[ip][nd]
-                                                   + mesh_s->domain_max[ip][nd]);
+			mesh_s->domain_center[4*ip+nd] = HALF * (mesh_s->domain_min[4*ip+nd]
+                                                   + mesh_s->domain_max[4*ip+nd]);
 		};
         
-        mesh_s->xx_mesh_max[nd] = mesh_s->domain_max[0][nd];
-        mesh_s->xx_mesh_min[nd] = mesh_s->domain_min[0][nd];
+        mesh_s->xx_mesh_max[nd] = mesh_s->domain_max[nd];
+        mesh_s->xx_mesh_min[nd] = mesh_s->domain_min[nd];
 		for (ip=1; ip < mesh_s->num_pe_sf; ip++) {
-            if(mesh_s->domain_max[ip][nd] > mesh_s->xx_mesh_max[nd])
-            mesh_s->xx_mesh_max[nd] = mesh_s->domain_max[ip][nd];
-            if(mesh_s->domain_min[ip][nd] < mesh_s->xx_mesh_min[nd])
-            mesh_s->xx_mesh_min[nd] = mesh_s->domain_min[ip][nd];
+            if(mesh_s->domain_max[4*ip+nd] > mesh_s->xx_mesh_max[nd])
+                    mesh_s->xx_mesh_max[nd] = mesh_s->domain_max[4*ip+nd];
+            if(mesh_s->domain_min[4*ip+nd] < mesh_s->xx_mesh_min[nd])
+                    mesh_s->xx_mesh_min[nd] = mesh_s->domain_min[4*ip+nd];
         };
         mesh_s->mesh_center[nd] = HALF * (mesh_s->xx_mesh_min[nd]
                                           + mesh_s->xx_mesh_max[nd]);

@@ -344,8 +344,8 @@ void check_viewer_mesh_minmax(struct viewer_mesh *mesh_s){
 	printf("domain_min \n");
 	for (i = 0; i < mesh_s->num_pe_sf; i++) {
 		printf("%d %.12e %.12e %.12e \n", i, 
-			   mesh_s->domain_min[i][0], mesh_s->domain_min[i][1], 
-			   mesh_s->domain_min[i][2] );
+			   mesh_s->domain_min[4*i+0], mesh_s->domain_min[4*i+1],
+			   mesh_s->domain_min[4*i+2] );
 	};
 	
 	
@@ -353,8 +353,8 @@ void check_viewer_mesh_minmax(struct viewer_mesh *mesh_s){
 	printf("domain_max \n");
 	for (i = 0; i < mesh_s->num_pe_sf; i++) {
 		printf("%d %.12e %.12e %.12e \n", i, 
-			   mesh_s->domain_max[i][0], mesh_s->domain_max[i][1], 
-			   mesh_s->domain_max[i][2] );
+			   mesh_s->domain_max[4*i+0], mesh_s->domain_max[i+1],
+			   mesh_s->domain_max[4*i+2] );
 	};
 	
 	return;

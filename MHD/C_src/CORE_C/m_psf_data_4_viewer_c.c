@@ -142,8 +142,6 @@ void alloc_psf_data_s(struct psf_data *psf_s){
 };
 
 void alloc_psf_norm_s(struct psf_data *psf_s){
-	int i;
-	
     psf_s->area_viz = (double *)calloc(psf_s->nele_viz,sizeof(double));
     if(psf_s->area_viz  == NULL){
         printf("malloc error for psf_s->area_viz \n");

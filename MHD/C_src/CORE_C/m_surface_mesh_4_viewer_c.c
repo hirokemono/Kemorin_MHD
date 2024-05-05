@@ -172,7 +172,6 @@ void alloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
-	int i;
 	long num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
 /* allocate memory  surf_norm_view[devided surface #][component] */
     mesh_s->surf_norm_view =   (double *)calloc(4*num,sizeof(double));
@@ -288,20 +287,24 @@ void alloc_surf_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
 
 
 void alloc_domain_center_s(struct viewer_mesh *mesh_s){
-	int i;
-	
 	/* allocate memory  domain_center[domain #][direction]*/
     mesh_s->domain_center = (double *)calloc(4*mesh_s->num_pe_sf,sizeof(double));
+    if(mesh_s->domain_center == NULL) {
+        printf("malloc error for domain_center\n");
+        exit(0);
+    }
 	/* allocate memory  domain_min[domain #][direction]*/
+    mesh_s->domain_min = (double *)calloc(4*mesh_s->num_pe_sf,sizeof(double));
+    if(mesh_s->domain_min == NULL) {
+        printf("malloc error for domain_min\n");
+        exit(0);
+    }
 	/* allocate memory  domain_max[domain #][direction]*/
-	mesh_s->domain_min = (double **)calloc(mesh_s->num_pe_sf,sizeof(double *));
-	for (i = 0; i < mesh_s->num_pe_sf; i++){
-		mesh_s->domain_min[i] = (double *)calloc(3,sizeof(double));
-	};
-	mesh_s->domain_max = (double **)calloc(mesh_s->num_pe_sf,sizeof(double *));
-	for (i = 0; i < mesh_s->num_pe_sf; i++){
-		mesh_s->domain_max[i] = (double *)calloc(3,sizeof(double));
-	};
+	mesh_s->domain_max = (double *)calloc(mesh_s->num_pe_sf,sizeof(double));
+    if(mesh_s->domain_max == NULL) {
+        printf("malloc error for domain_max\n");
+        exit(0);
+    }
 
 	mesh_s->z_center_view = (double *)calloc(mesh_s->num_pe_sf,sizeof(double));
 	mesh_s->ip_domain_far = (long *)calloc(mesh_s->num_pe_sf,sizeof(long));
@@ -310,7 +313,7 @@ void alloc_domain_center_s(struct viewer_mesh *mesh_s){
 };
 
 void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
-	long i, num;
+	long num;
 	/* allocate memory  xyzw_draw[node #][direction]*/
 	mesh_s->xyzw_draw = (double *)calloc(4*mesh_s->nnod_viewer,sizeof(double));
     if(mesh_s->xyzw_draw == NULL) {
@@ -513,17 +516,12 @@ static void dealloc_surf_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
 
 
 static void dealloc_domain_center_s(struct viewer_mesh *mesh_s){
-	int i;
-	
 	free(mesh_s->ip_domain_far);
 	free(mesh_s->z_center_view);
 
 	free(mesh_s->domain_center);
-	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->domain_min[i]);
 	free(mesh_s->domain_min);
-	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->domain_max[i]);
 	free(mesh_s->domain_max);
-	
 	return;
 };
 

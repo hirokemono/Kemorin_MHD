@@ -91,8 +91,8 @@ struct viewer_mesh {
 	
 	double *xyzw_draw;
 	double *domain_center;
-	double **domain_min;
-	double **domain_max;
+	double *domain_min;
+	double *domain_max;
 	
 	double *normal_domain;
 	double *norm_nod_domain;
