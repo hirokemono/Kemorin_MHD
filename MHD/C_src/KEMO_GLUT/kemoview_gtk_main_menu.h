@@ -41,7 +41,7 @@ struct updatable_widgets{
     struct fieldline_gtk_menu *fline_menu;
     
     int iflag_meshBox;
-    GtkWidget *meshBox;
+    GtkWidget *meshWin;
     struct kemoview_mesh_view *mesh_vws;
     
     GtkWidget *itemTEvo;
@@ -98,10 +98,6 @@ void fieldline_gtk_menu(struct fieldline_gtk_menu *fline_menu,
 void set_mesh_menu_box(struct kemoviewer_type *kemo_sgl,
                        struct updatable_widgets *updatable, 
                        GtkWidget *window);
-
-void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
-                          struct updatable_widgets *updatable,
-                          GtkWidget *menuHbox, GtkWidget *window);
 
 void make_gtk_main_menu_box(struct main_buttons *mbot,
                             GtkWidget *takobox, GtkWidget *window_main,

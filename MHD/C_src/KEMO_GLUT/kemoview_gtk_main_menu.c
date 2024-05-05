@@ -61,17 +61,6 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 };
 
 
-void update_kemoview_menu(struct kemoviewer_type *kemo_sgl,
-                          struct updatable_widgets *updatable,
-                          GtkWidget *menuHbox, GtkWidget *window){
-    if(updatable->iflag_meshBox > 0){
-        gtk_box_pack_start(GTK_BOX(menuHbox), updatable->meshBox, FALSE, FALSE, 0);
-    };
-	gtk_window_resize(GTK_WINDOW(window), 240, 200);
-    gtk_widget_show_all(menuHbox);
-	return;
-};
-
 static void init_psf_menu(struct kemoviewer_type *kemo_sgl,
                           struct kemoviewer_gl_type *kemo_gl,
                           struct psf_gtk_menu *psf_gmenu,
@@ -115,14 +104,20 @@ static void init_fline_menu(struct kemoviewer_type *kemo_sgl,
 static void init_mesh_menu(struct kemoviewer_type *kemo_sgl,
                            struct updatable_widgets *updatable, 
                            GtkWidget *window){
-    if(updatable->iflag_meshBox > 0) return;
-    if(kemoview_get_draw_mesh_flag(kemo_sgl) == 0) return;
+    if(updatable->iflag_meshBox > 0) {gtk_widget_destroy(updatable->meshWin);};
+    updatable->iflag_meshBox = kemoview_get_draw_mesh_flag(kemo_sgl)
+    if(updatable->iflag_meshBox == 0) return;
 
-    updatable->meshBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    updatable->meshWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(updatable->meshWin), "Mesh");
+    gtk_widget_set_size_request(updatable->meshWin, 150, -1);
+    gtk_container_set_border_width(GTK_CONTAINER(updatable->meshWin), 5);
+
     set_mesh_menu_box(kemo_sgl, updatable, window);
     GtkWidget *frame_mesh = pack_gtk_mesh_menu(updatable->mesh_vws, window);
-    gtk_box_pack_start(GTK_BOX(updatable->meshBox), frame_mesh, FALSE, FALSE, 0);
-    updatable->iflag_meshBox = 1;
+    
+    gtk_container_add(GTK_CONTAINER(updatable->meshWin), frame_mesh);
+    gtk_widget_show_all(updatable->meshWin);
     return;
 }
 
@@ -144,14 +139,12 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
 	iflag_datatype = kemoview_open_data(filename, kemo_sgl);
     kemoview_free_kvstring(filename);
 	
-    init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
-    activate_evolution_menu(kemo_sgl, mbot->updatable->itemTEvo);
-    
-    update_kemoview_menu(kemo_sgl, mbot->updatable, mbot->menuHbox,
-                         window_main);
     init_psf_menu(kemo_sgl, kemo_gl, mbot->updatable->psf_gmenu, window_main);
     init_fline_menu(kemo_sgl, mbot->updatable->fline_menu, window_main);
+    init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
 
+    activate_evolution_menu(kemo_sgl, mbot->updatable->itemTEvo);
+    gtk_widget_show_all(menuHbox);
 	gtk_widget_queue_draw(window_main);
     draw_full(kemo_sgl);
 	return;
@@ -312,7 +305,6 @@ static void close_mesh_CB(GtkButton *button, gpointer user_data){
 	kemoview_close_mesh_view(kemo_sgl);
 	dealloc_mesh_views_4_viewer(updatable->mesh_vws);
 	
-    gtk_widget_hide(updatable->meshBox);
 	gtk_widget_queue_draw(window_main);
     draw_full(kemo_sgl);
 	return;

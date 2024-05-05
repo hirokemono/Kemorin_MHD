@@ -368,8 +368,6 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     mbot->updatable->iflag_meshBox =  0;
     mbot->id_current[0] = 1;
     
-    update_kemoview_menu(single_kemoview, mbot->updatable, mbot->menuHbox, 
-                         gtk_win);
     activate_evolution_menu(single_kemoview, mbot->updatable->itemTEvo);
 
     GtkWidget *vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -379,7 +377,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	gtk_widget_show(quitButton);
     gtk_widget_show(copyButton);
 	gtk_widget_show(vbox_main);
-//	gtk_widget_show(mbot->menuHbox);
+	gtk_widget_show_all(mbot->menuHbox);
 	gtk_widget_show(gtk_win);
 	return;
 }
