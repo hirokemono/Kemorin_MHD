@@ -72,7 +72,7 @@ static void * flip_sign_Double_each_thread(void *args)
     long hi =      ((args_pthread *) args)->hi;
     double *dres = ((args_pthread *) args)->dres;
     
-    for(int i=lo;i<hi;i++){dres[i] = -dres[i];};
+    for(long i=lo;i<hi;i++){dres[i] = -dres[i];};
     return 0;
 }
 

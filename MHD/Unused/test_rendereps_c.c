@@ -12,7 +12,7 @@
 
 /* Compile: cc -o rendereps rendereps_c.c test_rendereps_c.c -lglut -lGLU -lGL -lXmu -lXext -lX11 -lm */
 
-#ifdef WITH_COCOA
+#ifdef __APPLE__
 #include <OpenGL/GLU.h>
 #include <GLUT/glut.h>
 #else

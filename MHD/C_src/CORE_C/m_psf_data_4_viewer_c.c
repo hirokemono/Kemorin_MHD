@@ -155,19 +155,6 @@ void alloc_psf_length_s(struct psf_data *psf_s){
 	return;
 };
 
-void alloc_psf_cutting_4_map(struct psf_data *psf_s){
-	int i;
-	
-	/* allocate memory  inod_org_4_map_itp*/
-	psf_s->inod_org_4_map_itp = (long **)malloc(psf_s->nnod_added_4_map*sizeof(long *));
-	psf_s->coef_4_map_itp = (double **)malloc(psf_s->nnod_added_4_map*sizeof(int *));
-	for (i = 0; i < psf_s->nnod_added_4_map; i++){
-		psf_s->inod_org_4_map_itp[i] = (long *)calloc(2,sizeof(long));
-		psf_s->coef_4_map_itp[i] = (double *)calloc(2,sizeof(double));
-	};
-	return;
-};
-
 static void dealloc_psf_norm_s(struct psf_data *psf_s){
 	free(psf_s->norm_nod);
 	free(psf_s->norm_ele);
@@ -225,24 +212,10 @@ void dealloc_psf_mesh_c(struct psf_data *psf_s){
 	return;
 }
 
-void dealloc_psf_cutting_4_map(struct psf_data *psf_s){
-	int i;
-	
-	/* deallocate memory inod_org_4_map_itp*/
-	for (i = 0; i < psf_s->nnod_added_4_map; i++){
-		free(psf_s->inod_org_4_map_itp[i]);
-		free(psf_s->coef_4_map_itp[i]);
-	};
-	free(psf_s->inod_org_4_map_itp);
-	free(psf_s->coef_4_map_itp);
-	return;
-};
-
 void deallc_all_psf_data(struct psf_data *psf_s){
     /*
     dealloc_edge_data_4_psf(psf_s->nele_viz, psf_s->psf_edge);
     */
-	dealloc_psf_cutting_4_map(psf_s);
 	dealloc_psf_norm_s(psf_s);
 	dealloc_psf_data_s(psf_s);
 	dealloc_psf_mesh_c(psf_s);

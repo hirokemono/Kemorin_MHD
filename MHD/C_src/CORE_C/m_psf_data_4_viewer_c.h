@@ -64,12 +64,10 @@ struct psf_data{
 	
 	double *color_nod;
 	
-	int nnod_added_4_map;
-	long **inod_org_4_map_itp;
-	double **coef_4_map_itp;
-    
+
     struct psf_edge_data_c *psf_edge; 
 };
+
 
 typedef struct vtk_fields_list vtk_fields_t;
 
@@ -95,16 +93,13 @@ void alloc_viz_ele_s(struct psf_data *psf_s);
 void alloc_psf_field_name_c(struct psf_data *psf_s);
 void alloc_psf_data_s(struct psf_data *psf_s);
 void alloc_psf_field_data_c(struct psf_data *psf_s);
-void alloc_psf_cutting_4_map(struct psf_data *psf_s);
 
 void alloc_psf_norm_s(struct psf_data *psf_s);
 void alloc_psf_length_s(struct psf_data *psf_s);
-void alloc_psf_cutting_4_map(struct psf_data *psf_s);
 
 void dealloc_psf_mesh_c(struct psf_data *psf_s);
 void dealloc_psf_field_data_c(struct psf_data *psf_s);
 void dealloc_psf_data_s(struct psf_data *psf_s);
-void dealloc_psf_cutting_4_map(struct psf_data *psf_s);
 void deallc_all_psf_data(struct psf_data *psf_s);
 void deallc_all_fline_data(struct psf_data *psf_s);
 

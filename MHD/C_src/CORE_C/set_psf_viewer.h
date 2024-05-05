@@ -15,12 +15,15 @@
 #include "skip_comment_c.h"
 #include "set_new_patch_4_map_c.h"
 
+struct map_interpolate{
+    int nnod_added_4_map;
+    long *inod_org_4_map_itp;
+    double *coef_4_map_itp;
+};
+
 
 /* prototypes */
 void set_viewer_ucd_data(struct psf_data *viz_s, struct psf_data *viz_tmp);
-void set_evolution_udt_data(struct psf_data *viz_s, struct psf_data *viz_tmp);
-
 void set_ucd_with_mapping(struct psf_data *viz_s, struct psf_data *viz_tmp);
-void set_evolution_map_udt_data(struct psf_data *viz_s, struct psf_data *viz_tmp);
 
 #endif

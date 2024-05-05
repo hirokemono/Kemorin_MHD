@@ -335,6 +335,7 @@ t_all_field_control_c.o: \
 t_psf_edge_connect_c.o: \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.c \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 t_surf_edge_hash_c.o: \

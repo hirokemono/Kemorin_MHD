@@ -1396,8 +1396,8 @@ set_each_fline_parameters.o: \
 set_each_isoline_to_buf.o: \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.c \
   $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
-  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
   $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \

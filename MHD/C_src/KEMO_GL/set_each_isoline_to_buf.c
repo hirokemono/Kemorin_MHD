@@ -9,7 +9,7 @@
 
 #include "set_each_isoline_to_buf.h"
 
-static void copy_each_triangle_postion(int ntot_comp, long ie_viz[3],
+static void copy_each_triangle_postion(long ntot_comp, long ie_viz[3],
                                        double *xyzw_viz, double *d_nod, long icomp,
 									   double xyz_tri[9], double d_tri[3]){
 	int k;
@@ -24,7 +24,7 @@ static void copy_each_triangle_postion(int ntot_comp, long ie_viz[3],
 	};
 	return;
 };
-static void copy_each_triangle_postion_norm(int ntot_comp, long ie_viz[3], double *xyzw_viz, double *norm_nod,
+static void copy_each_triangle_postion_norm(long ntot_comp, long ie_viz[3], double *xyzw_viz, double *norm_nod,
 											double *d_nod, long icomp,
 											double xyz_tri[9], double nrm_tri[9], double d_tri[3]){
 	int k;
@@ -43,7 +43,7 @@ static void copy_each_triangle_postion_norm(int ntot_comp, long ie_viz[3], doubl
 	return;
 };
 
-static void copy_each_triangle_map_postion(int ntot_comp, long ie_viz[3], double *xyzw_viz,
+static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], double *xyzw_viz,
                                            double *d_nod, long icomp,
                                            double xyz_map[9], double nrm_tri[9], double d_tri[3]){
 	double xyz_tri[9];
