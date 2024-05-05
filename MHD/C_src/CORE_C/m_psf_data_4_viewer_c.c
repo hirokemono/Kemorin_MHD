@@ -99,23 +99,16 @@ void alloc_psf_field_data_c(struct psf_data *psf_s){
 };
 
 void alloc_psf_data_s(struct psf_data *psf_s){
-	int i;
+    long num;
 	/* allocate memory  d_amp[node #][field]*/
-	psf_s->d_amp = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+    num = psf_s->nfield * psf_s->nnod_viz;
+	psf_s->d_amp = (double *)malloc(num*sizeof(double));
     if(psf_s->d_amp  == NULL){
         printf("malloc error for psf_s->d_amp \n");
         exit(0);
     }
 
-    for (i = 0; i < psf_s->nnod_viz; i++){
-		psf_s->d_amp[i] = (double *)calloc(psf_s->nfield,sizeof(double));
-        if(psf_s->d_amp[i]  == NULL){
-            printf("malloc error for psf_s->d_amp[i], %d \n", i);
-            exit(0);
-        }
-	};
-	
-	/* allocate memory  color_nod[node #][rgba code]*/
+    /* allocate memory  color_nod[node #][rgba code]*/
 	psf_s->color_nod = (double *)malloc(IFOUR*psf_s->nnod_viz*sizeof(double));
     if(psf_s->color_nod  == NULL){
         printf("malloc error for psf_s->color_nod \n");
@@ -222,7 +215,6 @@ void dealloc_psf_field_data_c(struct psf_data *psf_s){
 };
 
 void dealloc_psf_data_s(struct psf_data *psf_s){
-	int i;
 	/* deallocate memory*/
 	free(psf_s->d_rms);
 	free(psf_s->d_ave);
@@ -232,8 +224,6 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	free(psf_s->amp_min);
 	
 	free(psf_s->color_nod);
-	
-	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->d_amp[i]);
 	free(psf_s->d_amp);
 	
 	free(psf_s->id_coord);

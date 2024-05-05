@@ -372,14 +372,16 @@ static void take_minmax_psf_fields(struct psf_data *viz_s){
     long icomp;
 	
 	for (ifld = 0; ifld < viz_s->nfield; ifld++){
-		for (n = 0; n < viz_s->nnod_viz; n++) viz_s->d_amp[n][ifld] = 0.0;
+		for(n = 0; n < viz_s->nnod_viz; n++) viz_s->d_amp[n*viz_s->nfield + ifld] = 0.0;
 		for (icomp = viz_s->istack_comp[ifld]; icomp < viz_s->istack_comp[ifld+1]; icomp++){
 			for (n = 0; n < viz_s->nnod_viz; n++){
-				viz_s->d_amp[n][ifld] = viz_s->d_amp[n][ifld]
+				viz_s->d_amp[n*viz_s->nfield + ifld] = viz_s->d_amp[n*viz_s->nfield + ifld]
                 + viz_s->d_nod[n][icomp] * viz_s->d_nod[n][icomp];
 			};
 		};
-		for (n = 0; n < viz_s->nnod_viz; n++) viz_s->d_amp[n][ifld] = sqrt(viz_s->d_amp[n][ifld]);
+        for (n = 0; n < viz_s->nnod_viz; n++){
+            viz_s->d_amp[n*viz_s->nfield + ifld] = sqrt(viz_s->d_amp[n*viz_s->nfield + ifld]);
+        };
 	};
 	
 	for (icomp = 0; icomp < viz_s->ncomptot; icomp++){

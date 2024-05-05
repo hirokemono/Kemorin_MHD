@@ -34,7 +34,7 @@ struct psf_data{
 	
 	double **xx_viz;
 	double **d_nod;
-	double **d_amp;
+	double *d_amp;
 	
 	double *d_ave;
 	double *d_rms;
