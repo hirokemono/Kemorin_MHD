@@ -35,7 +35,7 @@ struct kv_string* init_kvstring_by_string(const char *org_string){
 	return kvstring;
 };
 void dealloc_kvstring(struct kv_string *kvstring){
-	free(kvstring->string);
+	kvstring->string = NULL;
 	free(kvstring);
 	return;
 };

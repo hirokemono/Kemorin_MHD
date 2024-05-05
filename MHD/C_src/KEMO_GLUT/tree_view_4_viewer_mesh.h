@@ -77,7 +77,10 @@ struct nod_grp_gtk_menu{
 };
 
 struct kemoview_mesh_view{
-	struct group_gtk_menu *domain_group_gmenu;
+    int iflag_meshBox;
+    int ij_Win[2];
+
+    struct group_gtk_menu *domain_group_gmenu;
 	struct nod_grp_gtk_menu  *node_group_gmenu;
 	struct group_gtk_menu *ele_group_gmenu;
 	struct group_gtk_menu *surf_group_gmenu;

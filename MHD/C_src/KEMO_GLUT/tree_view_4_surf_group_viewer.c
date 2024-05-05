@@ -401,8 +401,8 @@ void set_surf_group_draw_box(struct kemoviewer_type *kemo_sgl,
 	return;
 };
 
-void init_surf_group_draw_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
-                                   struct group_gtk_menu *surf_group_gmenu){
+void init_surf_group_draw_box(struct kemoviewer_type *kemo_sgl, GtkWidget *window,
+                              struct group_gtk_menu *surf_group_gmenu){
     g_object_set_data(G_OBJECT(window), "kemoview",  (gpointer) kemo_sgl);
 
     create_surface_group_view(kemo_sgl, surf_group_gmenu->group_vws);
@@ -528,7 +528,9 @@ void init_surf_group_draw_expander(struct kemoviewer_type *kemo_sgl, GtkWidget *
     return;
 }
 
-GtkWidget * pack_surf_group_draw_expander(GtkWidget *window, struct group_gtk_menu *surf_group_gmenu){
+GtkWidget * pack_surf_group_menu_box(struct group_gtk_menu *surf_group_gmenu){
+    GtkWidget *box_grp;
+
     GtkWidget *vbox_table = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(vbox_table), surf_group_gmenu->scrolled_table, TRUE, TRUE, 0);
     add_sorting_signal_w_label(GTK_TREE_VIEW(surf_group_gmenu->group_vws->tree_view), vbox_table);
@@ -572,7 +574,7 @@ GtkWidget * pack_surf_group_draw_expander(GtkWidget *window, struct group_gtk_me
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), surf_group_gmenu->button_node_color, TRUE, FALSE, 0);
 	
 	
-    GtkWidget *box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_table, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_draw, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_hide, TRUE, FALSE, 0);
@@ -580,8 +582,5 @@ GtkWidget * pack_surf_group_draw_expander(GtkWidget *window, struct group_gtk_me
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_patch_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_grid_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_node_color, TRUE, FALSE, 0);
-    
-    GtkWidget *expander_surf = wrap_into_scroll_expansion_gtk("Surface group", 400, 300,
-                                                              window, box_grp);
-	return expander_surf;
+    return box_grp;
 };
