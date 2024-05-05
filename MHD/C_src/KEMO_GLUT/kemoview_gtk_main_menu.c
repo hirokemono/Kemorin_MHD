@@ -105,7 +105,7 @@ static void init_mesh_menu(struct kemoviewer_type *kemo_sgl,
                            struct updatable_widgets *updatable, 
                            GtkWidget *window){
     if(updatable->iflag_meshBox > 0) {gtk_widget_destroy(updatable->meshWin);};
-    updatable->iflag_meshBox = kemoview_get_draw_mesh_flag(kemo_sgl)
+    updatable->iflag_meshBox = kemoview_get_draw_mesh_flag(kemo_sgl);
     if(updatable->iflag_meshBox == 0) return;
 
     updatable->meshWin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -144,7 +144,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_type *kemo_sgl,
     init_mesh_menu(kemo_sgl, mbot->updatable, window_main);
 
     activate_evolution_menu(kemo_sgl, mbot->updatable->itemTEvo);
-    gtk_widget_show_all(menuHbox);
+    gtk_widget_show_all(mbot->menuHbox);
 	gtk_widget_queue_draw(window_main);
     draw_full(kemo_sgl);
 	return;
