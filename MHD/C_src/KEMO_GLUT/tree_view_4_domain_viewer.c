@@ -528,8 +528,8 @@ void init_domain_draw_expander(struct kemoviewer_type *kemo_sgl,
 
     
     
-GtkWidget * pack_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *domain_group_gmenu){
-    GtkWidget *expander_domain;
+GtkWidget * pack_domain_menu_box(struct group_gtk_menu *domain_group_gmenu){
+    GtkWidget *box_domain;
     
     GtkWidget *vbox_table = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(vbox_table), domain_group_gmenu->scrolled_table, TRUE, TRUE, 0);
@@ -575,7 +575,7 @@ GtkWidget * pack_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), domain_group_gmenu->combobox_node_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), domain_group_gmenu->button_node_color, TRUE, FALSE, 0);
 	
-    GtkWidget *box_domain = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    box_domain = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(box_domain), hbox_table, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_domain), hbox_draw, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_domain), hbox_hide, TRUE, FALSE, 0);
@@ -583,8 +583,6 @@ GtkWidget * pack_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *
 	gtk_box_pack_start(GTK_BOX(box_domain), hbox_patch_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_domain), hbox_grid_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_domain), hbox_node_color, TRUE, FALSE, 0);
-    
-    expander_domain = wrap_into_scroll_expansion_gtk("Domain", 400, 300, window, box_domain);
-    return expander_domain;
+    return box_domain;
 };
 

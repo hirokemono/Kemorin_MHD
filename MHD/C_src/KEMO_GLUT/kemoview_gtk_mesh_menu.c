@@ -175,7 +175,7 @@ static void init_gtk_mesh_menu(struct kemoviewer_type *kemo_sgl,
     
     init_domain_draw_expander(kemo_sgl, window, mesh_vws->domain_group_gmenu);
     init_nod_group_draw_expander(kemo_sgl,  window, mesh_vws->node_group_gmenu);
-    init_ele_group_draw_expander(kemo_sgl,  window, mesh_vws->ele_group_gmenu);
+    init_ele_group_draw_box(kemo_sgl,  window, mesh_vws->ele_group_gmenu);
     init_surf_group_draw_box(kemo_sgl, window, mesh_vws->surf_group_gmenu);
     
     set_domain_draw_box(kemo_sgl, mesh_vws->domain_group_gmenu);
@@ -208,10 +208,17 @@ static GtkWidget * pack_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws,
     gtk_box_pack_start(GTK_BOX(hbox_num_loop), gtk_label_new("Number of color loop: "), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox_num_loop), mesh_vws->spin_num_loop, TRUE, TRUE, 0);
     
-    GtkWidget *expander_domain = pack_domain_draw_expander(window, mesh_vws->domain_group_gmenu);
-    GtkWidget *expander_node =   pack_nod_group_draw_expander(window, mesh_vws->node_group_gmenu);
-    GtkWidget *expander_ele =    pack_ele_group_draw_expander(window, mesh_vws->ele_group_gmenu);
-    GtkWidget *box_surf_grp = pack_surf_group_menu_box(mesh_vws->surf_group_gmenu);
+    GtkWidget *box_domain =    pack_domain_menu_box(mesh_vws->domain_group_gmenu);
+    GtkWidget *box_node_grp =  pack_nod_group_menu_box(mesh_vws->node_group_gmenu);
+    GtkWidget *box_ele_grp =   pack_ele_group_menu_box(mesh_vws->ele_group_gmenu);
+    GtkWidget *box_surf_grp =  pack_surf_group_menu_box(mesh_vws->surf_group_gmenu);
+
+    GtkWidget *expander_domain = wrap_into_scroll_expansion_gtk("Domain", 480, 640,
+                                                                window, box_domain);
+    GtkWidget *expander_node = wrap_into_scroll_expansion_gtk("Node group", 480, 480,
+                                                              window, box_node_grp);
+    GtkWidget *expander_ele =  wrap_into_scroll_expansion_gtk("Element group", 480, 640,
+                                                              window, box_ele_grp);
     GtkWidget *expander_surf = wrap_into_scroll_expansion_gtk("Surface group", 480, 640,
                                                               window, box_surf_grp);
 

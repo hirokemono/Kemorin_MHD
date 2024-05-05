@@ -229,9 +229,9 @@ void init_nod_group_draw_expander(struct kemoviewer_type *kemo_sgl,
     return;
 }
 
-GtkWidget * pack_nod_group_draw_expander(GtkWidget *window, struct nod_grp_gtk_menu *node_group_gmenu){
-    GtkWidget *expander_node;
-
+GtkWidget * pack_nod_group_menu_box(struct nod_grp_gtk_menu *node_group_gmenu){
+    GtkWidget *box_grp;
+    
     GtkWidget *vbox_table = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(vbox_table), node_group_gmenu->scrolled_table, TRUE, TRUE, 0);
     add_sorting_signal_w_label(GTK_TREE_VIEW(node_group_gmenu->nod_grp_vws->tree_view), vbox_table);
@@ -258,13 +258,11 @@ GtkWidget * pack_nod_group_draw_expander(GtkWidget *window, struct nod_grp_gtk_m
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), node_group_gmenu->combobox_node_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), node_group_gmenu->button_node_color, TRUE, FALSE, 0);
 	
-    GtkWidget *box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_table, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_draw, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_hide, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_grp), hbox_node_color, TRUE, FALSE, 0);
-    
-    expander_node = wrap_into_scroll_expansion_gtk("Node group", 400, 300, window, box_grp);
-    return expander_node;
+    return box_grp;
 };
 
