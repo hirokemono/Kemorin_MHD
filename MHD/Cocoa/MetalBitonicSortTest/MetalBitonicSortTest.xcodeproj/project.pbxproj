@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		18D824B52BE8AC1B0067B954 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D824B42BE8AC1B0067B954 /* main.m */; };
-		18D824BD2BE8AC330067B954 /* bitonicsort.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18D824BB2BE8AC320067B954 /* bitonicsort.metal */; };
-		18D824C02BE8AC830067B954 /* MetalBitonicSort.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D824BE2BE8AC830067B954 /* MetalBitonicSort.m */; };
+		18D824E22BE91CA30067B954 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824E12BE91CA30067B954 /* Metal.framework */; };
+		18D824E42BE91CAE0067B954 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D824E32BE91CAE0067B954 /* Foundation.framework */; };
+		18D824E72BE91D420067B954 /* MetalBitonicSort.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D824E52BE91D410067B954 /* MetalBitonicSort.m */; };
+		18D824EA2BE91D4E0067B954 /* bitonicsort.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18D824E92BE91D4E0067B954 /* bitonicsort.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,10 +29,12 @@
 /* Begin PBXFileReference section */
 		18D824B12BE8AC1B0067B954 /* MetalBitonicSortTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MetalBitonicSortTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18D824B42BE8AC1B0067B954 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		18D824BB2BE8AC320067B954 /* bitonicsort.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = bitonicsort.metal; path = ../../../../Desktop/takotest/takotest/bitonicsort.metal; sourceTree = "<group>"; };
-		18D824BC2BE8AC330067B954 /* compute.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = compute.glsl; path = ../../../../Desktop/takotest/takotest/compute.glsl; sourceTree = "<group>"; };
-		18D824BE2BE8AC830067B954 /* MetalBitonicSort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetalBitonicSort.m; path = ../../../../Downloads/PerformingCalculationsOnAGPU/MetalComputeBasic/MetalBitonicSort.m; sourceTree = "<group>"; };
-		18D824BF2BE8AC830067B954 /* MetalBitonicSort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetalBitonicSort.h; path = ../../../../Downloads/PerformingCalculationsOnAGPU/MetalComputeBasic/MetalBitonicSort.h; sourceTree = "<group>"; };
+		18D824E12BE91CA30067B954 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		18D824E32BE91CAE0067B954 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		18D824E52BE91D410067B954 /* MetalBitonicSort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalBitonicSort.m; sourceTree = "<group>"; };
+		18D824E62BE91D410067B954 /* MetalBitonicSort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalBitonicSort.h; sourceTree = "<group>"; };
+		18D824E82BE91D4E0067B954 /* compute.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = compute.glsl; sourceTree = "<group>"; };
+		18D824E92BE91D4E0067B954 /* bitonicsort.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = bitonicsort.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +42,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18D824E42BE91CAE0067B954 /* Foundation.framework in Frameworks */,
+				18D824E22BE91CA30067B954 /* Metal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,6 +55,7 @@
 			children = (
 				18D824B32BE8AC1B0067B954 /* MetalBitonicSortTest */,
 				18D824B22BE8AC1B0067B954 /* Products */,
+				18D824E02BE91CA30067B954 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,12 +71,21 @@
 			isa = PBXGroup;
 			children = (
 				18D824B42BE8AC1B0067B954 /* main.m */,
-				18D824BF2BE8AC830067B954 /* MetalBitonicSort.h */,
-				18D824BE2BE8AC830067B954 /* MetalBitonicSort.m */,
-				18D824BB2BE8AC320067B954 /* bitonicsort.metal */,
-				18D824BC2BE8AC330067B954 /* compute.glsl */,
+				18D824E62BE91D410067B954 /* MetalBitonicSort.h */,
+				18D824E52BE91D410067B954 /* MetalBitonicSort.m */,
+				18D824E92BE91D4E0067B954 /* bitonicsort.metal */,
+				18D824E82BE91D4E0067B954 /* compute.glsl */,
 			);
 			path = MetalBitonicSortTest;
+			sourceTree = "<group>";
+		};
+		18D824E02BE91CA30067B954 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				18D824E32BE91CAE0067B954 /* Foundation.framework */,
+				18D824E12BE91CA30067B954 /* Metal.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,9 +145,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18D824C02BE8AC830067B954 /* MetalBitonicSort.m in Sources */,
-				18D824BD2BE8AC330067B954 /* bitonicsort.metal in Sources */,
+				18D824E72BE91D420067B954 /* MetalBitonicSort.m in Sources */,
 				18D824B52BE8AC1B0067B954 /* main.m in Sources */,
+				18D824EA2BE91D4E0067B954 /* bitonicsort.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

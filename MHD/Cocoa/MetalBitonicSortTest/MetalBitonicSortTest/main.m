@@ -26,6 +26,7 @@ int main(int argc, const char * argv[]) {
         [_bitonic prepareSort:_d];
         [_bitonic sendSortCommand:_d];
         NSLog(@"Sort finished");
+ 
     }
     return 0;
 }
