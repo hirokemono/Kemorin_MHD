@@ -143,7 +143,7 @@ int main( int argc, char **argv ) {
     printf("narrayP2 %d %d %d \n", narrayP2n, narrayP2, narrayP2p);
     */
     
-    
+/*
     int    *ia = (int *)    malloc(narrayP2 * sizeof(int));
     long   *la = (long *)   malloc(narrayP2 * sizeof(long));
     double *da = (double *) malloc(narrayP2 * sizeof(double));
@@ -155,10 +155,35 @@ int main( int argc, char **argv ) {
     float *org =   (float *)  malloc(narrayP2 * sizeof(float));
     
     long *idx = (long *) malloc(narrayP2 * sizeof(long));
+*/
+    int    *ia;
+    long   *la;
+    double *da;
+    float  *ra;
     
+    int *iorg;
+    long *lorg;
+    double *dorg;
+    float *org;
+    
+    long *idx;
+    
+    posix_memalign((void**)&ia, 4096, narrayP2*sizeof(int));
+    posix_memalign((void**)&la, 4096, narrayP2*sizeof(long));
+    posix_memalign((void**)&da, 4096, narrayP2*sizeof(double));
+
+    posix_memalign((void**)&iorg, 4096, narrayP2*sizeof(int));
+    posix_memalign((void**)&lorg, 4096, narrayP2*sizeof(long));
+    posix_memalign((void**)&dorg, 4096, narrayP2*sizeof(double));
+
+    posix_memalign((void**)&idx, 4096, narrayP2*sizeof(long));
+
     init_Int_Array(Narray, narrayP2, ia, iorg, idx);
     init_Long_Array(Narray, narrayP2, la, lorg, idx);
     init_Double_Array(Narray, narrayP2, da, dorg, idx);
+
+    posix_memalign((void**)&ra, 4096, narrayP2*sizeof(float));
+    posix_memalign((void**)&org, 4096, narrayP2*sizeof(float));
     init_Float_Array(Narray, narrayP2, ra, org, idx);
     
     
