@@ -168,25 +168,77 @@ int main( int argc, char **argv ) {
     
     long *idx;
     
-    posix_memalign((void**)&ia, 4096, narrayP2*sizeof(int));
-    posix_memalign((void**)&la, 4096, narrayP2*sizeof(long));
-    posix_memalign((void**)&da, 4096, narrayP2*sizeof(double));
-
-    posix_memalign((void**)&iorg, 4096, narrayP2*sizeof(int));
-    posix_memalign((void**)&lorg, 4096, narrayP2*sizeof(long));
-    posix_memalign((void**)&dorg, 4096, narrayP2*sizeof(double));
-
     posix_memalign((void**)&idx, 4096, narrayP2*sizeof(long));
 
-    init_Int_Array(Narray, narrayP2, ia, iorg, idx);
+    posix_memalign((void**)&la, 4096, narrayP2*sizeof(long));
+    posix_memalign((void**)&lorg, 4096, narrayP2*sizeof(long));
     init_Long_Array(Narray, narrayP2, la, lorg, idx);
-    init_Double_Array(Narray, narrayP2, da, dorg, idx);
 
-    posix_memalign((void**)&ra, 4096, narrayP2*sizeof(float));
-    posix_memalign((void**)&org, 4096, narrayP2*sizeof(float));
-    init_Float_Array(Narray, narrayP2, ra, org, idx);
+    free(lorg);
+    free(la);
     
+    posix_memalign((void**)&ia, 4096, narrayP2*sizeof(int));
+    posix_memalign((void**)&iorg, 4096, narrayP2*sizeof(int));
+    init_Int_Array(Narray, narrayP2, ia, iorg, idx);
+
+    int imax1, imax2, imax3;
+    gettimeofday( &startwtime, NULL );
+    imax1 = max_int_array(Narray, ia);
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+    printf("max_int_array          %d\n", imax1);
     
+    gettimeofday( &startwtime, NULL );
+    imax2 = max_Int_Array_pthreads(nthreads, Narray, ia);
+    gettimeofday( &endwtime, NULL );
+    seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+    printf("max_Int_Array_pthreads %d\n", imax2);
+    
+#ifndef __APPLE__
+    gettimeofday( &startwtime, NULL );
+    imax3 = max_int_array_omp(nthreads, Narray, ia);
+    gettimeofday( &endwtime, NULL );
+    seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+#endif
+    
+    printf("max_int_array_omp      %d\n", imax3);
+    printf("-------------------------------------\n");
+    
+    printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
+    printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
+           nthreads,  seq_time2);
+#ifndef __APPLE__
+    printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
+           nthreads,  seq_time3);
+#endif
+    
+    gettimeofday( &startwtime, NULL );
+    flip_int_sign(Narray, ia);
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+    printf("         Serial flip_int_sign                   wall clock time = %f\n", seq_time1 );
+    
+    gettimeofday( &startwtime, NULL );
+    flip_sign_Int_pthreads(nthreads, Narray, ia);
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+    printf("pthreads parallel flip_int_sign with %i threads wall clock time = %f\n",
+           nthreads,  seq_time1 );
+    
+#ifndef __APPLE__
+    gettimeofday( &startwtime, NULL );
+    flip_int_sign_omp(nthreads, Narray, ia);
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+    printf("OpenMP   parallel flip_int_sign with %i threads wall clock time = %f\n",
+            nthreads,  seq_time1);
+#endif
     printf("--- Integer sorting ---\n");
     copy_Int_Array(narrayP2, ia, iorg, idx);
     gettimeofday( &startwtime, NULL );
@@ -254,69 +306,17 @@ int main( int argc, char **argv ) {
 #endif
     printf("-------------------------------------\n");
     
-    int imax1, imax2, imax3;
-    gettimeofday( &startwtime, NULL );
-    imax1 = max_int_array(Narray, ia);
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
-                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf("max_int_array          %d\n", imax1);
-    
-    gettimeofday( &startwtime, NULL );
-    imax2 = max_Int_Array_pthreads(nthreads, Narray, ia);
-    gettimeofday( &endwtime, NULL );
-    seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
-                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf("max_Int_Array_pthreads %d\n", imax2);
-    
-#ifndef __APPLE__
-    gettimeofday( &startwtime, NULL );
-    imax3 = max_int_array_omp(nthreads, Narray, ia);
-    gettimeofday( &endwtime, NULL );
-    seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
-                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-#endif
-    
-    printf("max_int_array_omp      %d\n", imax3);
-    printf("-------------------------------------\n");
-    
-    printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
-    printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
-           nthreads,  seq_time2);
-#ifndef __APPLE__
-    printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
-           nthreads,  seq_time3);
-#endif
-    
-    gettimeofday( &startwtime, NULL );
-    flip_int_sign(Narray, ia);
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-    printf("         Serial flip_int_sign                   wall clock time = %f\n", seq_time1 );
-    
-    gettimeofday( &startwtime, NULL );
-    flip_sign_Int_pthreads(nthreads, Narray, ia);
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-    printf("pthreads parallel flip_int_sign with %i threads wall clock time = %f\n",
-           nthreads,  seq_time1 );
-    
-#ifndef __APPLE__
-    gettimeofday( &startwtime, NULL );
-    flip_int_sign_omp(nthreads, Narray, ia);
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-    printf("OpenMP   parallel flip_int_sign with %i threads wall clock time = %f\n", 
-            nthreads,  seq_time1);
-#endif
+    free(iorg);
     free(ia);
-    
+
+
     
     printf("\n-------------------------------------\n");
     printf("--- Single precision sorting ---\n");
+    posix_memalign((void**)&ra, 4096, narrayP2*sizeof(float));
+    posix_memalign((void**)&org, 4096, narrayP2*sizeof(float));
+    init_Float_Array(Narray, narrayP2, ra, org, idx);
+    
     copy_Float_Array(narrayP2, ra, org, idx);
     gettimeofday( &startwtime, NULL );
     quicksort_real_c(ra, idx, 0, (Narray-1));
@@ -390,6 +390,9 @@ int main( int argc, char **argv ) {
     print_sorted_Float(Narray, narrayP2, org, ra, idx);
 #endif
     
+    free(ra);
+    free(org);
+    
     printf("-------------------------------------\n\n");
     printf("--- Single precision sorting wall clock times ---\n");
     printf("                 Quicksort wall clock time = %f\n", seq_time1);
@@ -407,7 +410,72 @@ int main( int argc, char **argv ) {
 
     
     printf("\n-------------------------------------\n");
-    printf("--- Double precision sorting ---\n");
+    posix_memalign((void**)&da, 4096, narrayP2*sizeof(double));
+    posix_memalign((void**)&dorg, 4096, narrayP2*sizeof(double));
+    init_Double_Array(Narray, narrayP2, da, dorg, idx);
+
+    double dmax1, dmax2, dmax3;
+    gettimeofday( &startwtime, NULL );
+    dmax1 = max_double_array(Narray, da);
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+    printf("max_double_array          %lf\n", dmax1);
+    
+    gettimeofday( &startwtime, NULL );
+    dmax2 = max_Double_Array_pthreads(nthreads, Narray, da);
+    gettimeofday( &endwtime, NULL );
+    seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+    printf("max_Double_Array_pthreads %lf\n", dmax2);
+    
+#ifndef __APPLE__
+    gettimeofday( &startwtime, NULL );
+    dmax3 = max_double_array_omp(1, Narray, da);
+    gettimeofday( &endwtime, NULL );
+    seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
+                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+    printf("max_double_array_omp      %lf\n", dmax3);
+    
+    printf("-------------------------------------\n");
+#endif
+    
+    printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
+    printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
+           nthreads,  seq_time2);
+#ifndef __APPLE__
+    printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
+           nthreads,  seq_time3);
+#endif
+    printf("-------------------------------------\n");
+    
+    
+    gettimeofday( &startwtime, NULL );
+    flip_double_sign(Narray, da);
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+    printf("         Serial flip_double_sign                   wall clock time = %f\n", seq_time1 );
+    
+    gettimeofday( &startwtime, NULL );
+    flip_sign_Double_pthreads(nthreads, Narray, da);
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+    printf("pthreads parallel flip_double_sign with %i threads wall clock time = %f\n",
+           nthreads,  seq_time1 );
+    
+#ifndef __APPLE__
+    gettimeofday( &startwtime, NULL );
+    flip_double_sign_omp(nthreads, Narray, da);
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+    printf("OpenMP   parallel flip_double_sign with %i threads wall clock time = %f\n",
+            nthreads,  seq_time1);
+#endif
+    printf("\n--- Double precision sorting ---\n");
+
     copy_Double_Array(narrayP2, da, dorg, idx);
     gettimeofday( &startwtime, NULL );
     quicksort_double_c(da, idx, 0, (Narray-1));
@@ -479,7 +547,7 @@ int main( int argc, char **argv ) {
     check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
 #endif
-    
+
     printf("-------------------------------------\n\n");
     printf("--- Double precision sorting wall clock times ---\n");
     printf("                 Quicksort wall clock time = %f\n", seq_time1);
@@ -495,67 +563,7 @@ int main( int argc, char **argv ) {
 #endif
     printf("-------------------------------------\n");
     
-    double dmax1, dmax2, dmax3;
-    gettimeofday( &startwtime, NULL );
-    dmax1 = max_double_array(Narray, da);
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
-                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf("max_double_array          %lf\n", dmax1);
-    
-    gettimeofday( &startwtime, NULL );
-    dmax2 = max_Double_Array_pthreads(nthreads, Narray, da);
-    gettimeofday( &endwtime, NULL );
-    seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
-                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf("max_Double_Array_pthreads %lf\n", dmax2);
-    
-#ifndef __APPLE__
-    gettimeofday( &startwtime, NULL );
-    dmax3 = max_double_array_omp(1, Narray, da);
-    gettimeofday( &endwtime, NULL );
-    seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
-                         / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf("max_double_array_omp      %lf\n", dmax3);
-    
-    printf("-------------------------------------\n");
-#endif
-    
-    printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
-    printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
-           nthreads,  seq_time2);
-#ifndef __APPLE__
-    printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
-           nthreads,  seq_time3);
-#endif
-    printf("-------------------------------------\n");
-    
-    
-    gettimeofday( &startwtime, NULL );
-    flip_double_sign(Narray, da);
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-    printf("         Serial flip_double_sign                   wall clock time = %f\n", seq_time1 );
-    
-    gettimeofday( &startwtime, NULL );
-    flip_sign_Double_pthreads(nthreads, Narray, da);
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-    printf("pthreads parallel flip_double_sign with %i threads wall clock time = %f\n",
-           nthreads,  seq_time1 );
-    
-#ifndef __APPLE__
-    gettimeofday( &startwtime, NULL );
-    flip_double_sign_omp(nthreads, Narray, da);
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-    printf("OpenMP   parallel flip_double_sign with %i threads wall clock time = %f\n", 
-            nthreads,  seq_time1);
-#endif
-    
+    free(dorg);
     free(da);
 }
 
