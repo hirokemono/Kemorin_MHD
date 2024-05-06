@@ -50,12 +50,12 @@ double quicksort_float_test(struct sort_float_array *rSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
+    printf("Quicksort......");
     gettimeofday( &startwtime, NULL );
     quicksort_real_c(rSort->ra, rSort->idx, 0, (rSort->Narray-1));
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Quicksort ");
     check_sorted_Float(rSort->Narray, rSort->ra);
     print_sorted_Float(rSort->Narray, rSort->narrayP2,
                      rSort->org, rSort->ra, rSort->idx);
@@ -67,14 +67,14 @@ double bitonicsort_pthread_float_test(struct sort_float_array *rSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
+    printf("Bitonic parallel recursive with %i threads...",
+           rSort->nthreads);
     gettimeofday( &startwtime, NULL );
     bitonicsort_Float_Pthread(rSort->nthreads, rSort->narrayP2,
                                rSort->ra, rSort->idx);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6 
                          + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic parallel recursive with %i threads ",
-           rSort->nthreads);
     check_sorted_Float(rSort->Narray, rSort->ra);
     print_sorted_Float(rSort->Narray, rSort->narrayP2, rSort->org, rSort->ra, rSort->idx);
     dealloc_sort_float_works(rSort);
@@ -85,12 +85,12 @@ double bitonicsort_rec_float_test(struct sort_float_array *rSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
+    printf("Bitonic serial   recursive......");
     gettimeofday( &startwtime, NULL );
     bitonicsort_rec_Float(rSort->narrayP2, rSort->ra, rSort->idx);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic serial   recursive ");
     check_sorted_Float(rSort->Narray, rSort->ra);
     print_sorted_Float(rSort->Narray, rSort->narrayP2,
                      rSort->org, rSort->ra, rSort->idx);
@@ -102,12 +102,12 @@ double bitonicsort_imp_float_test(struct sort_float_array *rSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
+    printf("Bitonic serial  imperative......");
     gettimeofday( &startwtime, NULL );
     BitonicSort_imp_Float(rSort->narrayP2, rSort->ra, rSort->idx);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic serial  imperative ");
     check_sorted_Float(rSort->Narray, rSort->ra);
     print_sorted_Float(rSort->Narray, rSort->narrayP2,
                         rSort->org, rSort->ra, rSort->idx);
@@ -174,6 +174,7 @@ double vDSP_vsorti_test(struct sort_float_array *rSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
+    printf("Sorting by vDSP_vsortiD...... ");
     gettimeofday( &startwtime, NULL );
     vDSP_Length *kdx_tmp = (vDSP_Length *) calloc(rSort->Narray, sizeof(vDSP_Length));
     for(long i=0;i<rSort->Narray;i++){kdx_tmp[i] = i;};
@@ -186,7 +187,6 @@ double vDSP_vsorti_test(struct sort_float_array *rSort){
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("                vDSP_vsortiD ");
     check_sorted_Float(rSort->Narray, rSort->ra);
     print_sorted_Float(rSort->Narray, rSort->narrayP2,
                         rSort->org, rSort->ra, rSort->idx);
@@ -198,14 +198,14 @@ double bitonicsort_OMP_float_test(struct sort_float_array *rSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_float_works(rSort);
+    printf("OpenMP Bitonic parallel imperagive with %i threads...",
+           rSort->nthreads);
     gettimeofday( &startwtime, NULL );
     OMPimp_float_BitonicSort(rSort->nthreads, rSort->narrayP2,
                              rSort->ra, rSort->idx);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("OpenMP Bitonic parallel imperagive with %i threads ",
-           rSort->nthreads);
     check_sorted_Float(rSort->Narray, rSort->ra);
     print_sorted_Float(rSort->Narray, rSort->narrayP2,
                         rSort->org, rSort->ra, rSort->idx);

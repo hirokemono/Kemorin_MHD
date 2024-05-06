@@ -52,36 +52,10 @@
 #endif
 
 
-
-/** the main program **/ 
-int main( int argc, char **argv ) {
-    struct timeval startwtime, endwtime;
+void sort_comparison_int(int nthreads, long Narray) {
     double seq_time1, seq_time2, seq_time3;
     double seq_time4, seq_time5, seq_time6;
     
-    if (argc != 3 || atoi( argv[ 2 ] ) > 256 ) {
-        printf("Usage: %s n t\n  where n is problem size,", argv[ 0 ]);
-        printf(" and t is the number of threads to use.\n");
-        exit( 1 );
-    }
-    
-    long Narray =  atol(argv[1]);
-    int nthreads = atoi(argv[2]);
-//    long Narray =  1 << atoi(argv[1]);
-//    int nthreads = 1 << atoi(argv[2]);
-    
-    int nextP2 =  1 + (int) log2((double) (Narray-1));
-    long narrayP2 =  1 << nextP2;
-    /*
-    int nextP2n = 1 + (int) log2((double) (Narray-2));
-    int nextP2p = 1 + (int) log2((double) (Narray  ));
-    long narrayP2n =  1 << nextP2n;
-    long narrayP2p =  1 << nextP2p;
-    printf("nextP2   %d %d %d \n", nextP2n,   nextP2,   nextP2p);
-    printf("narrayP2 %d %d %d \n", narrayP2n, narrayP2, narrayP2p);
-    */
-    
-    printf("-------------------------------------\n");
     printf("----- Integer simple operations -----\n");
     struct sort_int_array *_iSort = init_sort_int_array(nthreads, Narray);
     
@@ -138,8 +112,13 @@ int main( int argc, char **argv ) {
     printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
 #endif
     
+    return;
+}
+
+void sort_comparison_float(int nthreads, long Narray) {
+    double seq_time1, seq_time2, seq_time3;
+    double seq_time4, seq_time5, seq_time6;
     
-    printf("-------------------------------------\n");
     printf("------ float simple operations ------\n");
     struct sort_float_array *rSort = init_sort_float_array(nthreads, Narray);
     
@@ -197,8 +176,13 @@ int main( int argc, char **argv ) {
     printf("OpenMP Bitonic parallel imperagive \n");
     printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
 #endif
+    return;
+}
+
+void sort_comparison_double(int nthreads, long Narray) {
+    double seq_time1, seq_time2, seq_time3;
+    double seq_time4, seq_time5, seq_time6;
     
-    printf("-------------------------------------\n");
     printf("----- double simple operations ------\n");
     struct sort_double_array *dSort = init_sort_double_array(nthreads, Narray);
     
@@ -256,4 +240,41 @@ int main( int argc, char **argv ) {
     printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
 #endif
     printf("-------------------------------------\n");
+    return;
+}
+
+/** the main program **/ 
+int main( int argc, char **argv ) {
+    struct timeval startwtime, endwtime;
+    double seq_time1, seq_time2, seq_time3;
+    double seq_time4, seq_time5, seq_time6;
+    
+    if (argc != 3 || atoi( argv[ 2 ] ) > 256 ) {
+        printf("Usage: %s n t\n  where n is problem size,", argv[ 0 ]);
+        printf(" and t is the number of threads to use.\n");
+        exit( 1 );
+    }
+    
+    long Narray =  atol(argv[1]);
+    int nthreads = atoi(argv[2]);
+//    long Narray =  1 << atoi(argv[1]);
+//    int nthreads = 1 << atoi(argv[2]);
+    
+    int nextP2 =  1 + (int) log2((double) (Narray-1));
+    long narrayP2 =  1 << nextP2;
+    /*
+    int nextP2n = 1 + (int) log2((double) (Narray-2));
+    int nextP2p = 1 + (int) log2((double) (Narray  ));
+    long narrayP2n =  1 << nextP2n;
+    long narrayP2p =  1 << nextP2p;
+    printf("nextP2   %d %d %d \n", nextP2n,   nextP2,   nextP2p);
+    printf("narrayP2 %d %d %d \n", narrayP2n, narrayP2, narrayP2p);
+    */
+    
+    printf("-------------------------------------\n");
+    sort_comparison_int(nthreads, Narray);
+    printf("-------------------------------------\n");
+    sort_comparison_float(nthreads, Narray);
+    printf("-------------------------------------\n");
+    sort_comparison_double(nthreads, Narray);
 }

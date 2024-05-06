@@ -49,12 +49,12 @@ double quicksort_int_test(struct sort_int_array *_iSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_int_works(_iSort);
+    printf("Quicksort......");
     gettimeofday( &startwtime, NULL );
     quicksort_int_c(_iSort->ia, _iSort->idx, 0, (_iSort->Narray-1));
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Quicksort ");
     check_sorted_Int(_iSort->Narray, _iSort->ia);
     print_sorted_Int(_iSort->Narray, _iSort->narrayP2,
                      _iSort->iorg, _iSort->ia, _iSort->idx);
@@ -66,14 +66,14 @@ double bitonicsort_pthread_int_test(struct sort_int_array *_iSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_int_works(_iSort);
+    printf("Bitonic parallel recursive with %i threads...",
+           _iSort->nthreads);
     gettimeofday( &startwtime, NULL );
     bitonicsort_Int_Pthread(_iSort->nthreads, _iSort->narrayP2,
                             _iSort->ia, _iSort->idx);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6 
                          + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic parallel recursive with %i threads ",
-           _iSort->nthreads);
     check_sorted_Int(_iSort->Narray, _iSort->ia);
     print_sorted_Int(_iSort->Narray, _iSort->narrayP2, _iSort->iorg, _iSort->ia, _iSort->idx);
     dealloc_sort_int_works(_iSort);
@@ -84,12 +84,12 @@ double bitonicsort_rec_int_test(struct sort_int_array *_iSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_int_works(_iSort);
+    printf("Bitonic serial   recursive ......");
     gettimeofday( &startwtime, NULL );
     bitonicsort_rec_Int(_iSort->narrayP2, _iSort->ia, _iSort->idx);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic serial   recursive ");
     check_sorted_Int(_iSort->Narray, _iSort->ia);
     print_sorted_Int(_iSort->Narray, _iSort->narrayP2,
                      _iSort->iorg, _iSort->ia, _iSort->idx);
@@ -101,12 +101,12 @@ double bitonicsort_imp_int_test(struct sort_int_array *_iSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_int_works(_iSort);
+    printf("Bitonic serial  imperative ......");
     gettimeofday( &startwtime, NULL );
     BitonicSort_imp_Int(_iSort->narrayP2, _iSort->ia, _iSort->idx);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic serial  imperative ");
     check_sorted_Int(_iSort->Narray, _iSort->ia);
     print_sorted_Int(_iSort->Narray, _iSort->narrayP2,
                      _iSort->iorg, _iSort->ia, _iSort->idx);
@@ -173,14 +173,14 @@ double bitonicsort_OMP_int_test(struct sort_int_array *_iSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
     alloc_sort_int_works(_iSort);
+    printf("OpenMP Bitonic parallel imperagive with %i threads...",
+           _iSort->nthreads);
     gettimeofday( &startwtime, NULL );
     OMPimp_int_BitonicSort(_iSort->nthreads, _iSort->narrayP2,
                            _iSort->ia, _iSort->idx);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                           + endwtime.tv_sec - startwtime.tv_sec );
-    printf("OpenMP Bitonic parallel imperagive with %i threads ",
-           _iSort->nthreads);
     check_sorted_Int(_iSort->Narray, _iSort->ia);
     print_sorted_Int(_iSort->Narray, _iSort->narrayP2,
                      _iSort->iorg, _iSort->ia, _iSort->idx);
