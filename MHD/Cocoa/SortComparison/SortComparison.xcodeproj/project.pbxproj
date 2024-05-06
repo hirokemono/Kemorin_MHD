@@ -1,0 +1,312 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		18D824CE2BE91AE10067B954 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D824CD2BE91AE10067B954 /* main.m */; };
+		18D824ED2BE91E320067B954 /* bitonicsort.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18D824EB2BE91E310067B954 /* bitonicsort.metal */; };
+		18D824F02BE91EDF0067B954 /* MetalSortComparison.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D824EF2BE91EDF0067B954 /* MetalSortComparison.m */; };
+		18D824F22BE923860067B954 /* quicksort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824F12BE923860067B954 /* quicksort_c.c */; };
+		18D824F62BE928160067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824F42BE928160067B954 /* bitonic_sort_c.c */; };
+		18D824F92BE928250067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824F82BE928250067B954 /* bitonic_sort_pthread.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		18D824C82BE91AE10067B954 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		18D824CA2BE91AE10067B954 /* SortComparison */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SortComparison; sourceTree = BUILT_PRODUCTS_DIR; };
+		18D824CD2BE91AE10067B954 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		18D824EB2BE91E310067B954 /* bitonicsort.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = bitonicsort.metal; sourceTree = "<group>"; };
+		18D824EC2BE91E310067B954 /* compute.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = compute.glsl; sourceTree = "<group>"; };
+		18D824EE2BE91EDF0067B954 /* MetalSortComparison.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalSortComparison.h; sourceTree = "<group>"; };
+		18D824EF2BE91EDF0067B954 /* MetalSortComparison.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalSortComparison.m; sourceTree = "<group>"; };
+		18D824F12BE923860067B954 /* quicksort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = quicksort_c.c; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/quicksort_c.c; sourceTree = "<group>"; };
+		18D824F32BE9238C0067B954 /* quicksort_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = quicksort_c.h; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/quicksort_c.h; sourceTree = "<group>"; };
+		18D824F42BE928160067B954 /* bitonic_sort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_c.c; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/bitonic_sort_c.c; sourceTree = "<group>"; };
+		18D824F52BE928160067B954 /* bitonic_sort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_c.h; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/bitonic_sort_c.h; sourceTree = "<group>"; };
+		18D824F72BE928250067B954 /* bitonic_sort_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_pthread.h; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/bitonic_sort_pthread.h; sourceTree = "<group>"; };
+		18D824F82BE928250067B954 /* bitonic_sort_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_pthread.c; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/bitonic_sort_pthread.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		18D824C72BE91AE10067B954 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		18D824C12BE91AE10067B954 = {
+			isa = PBXGroup;
+			children = (
+				18D824CC2BE91AE10067B954 /* SortComparison */,
+				18D824CB2BE91AE10067B954 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		18D824CB2BE91AE10067B954 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				18D824CA2BE91AE10067B954 /* SortComparison */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		18D824CC2BE91AE10067B954 /* SortComparison */ = {
+			isa = PBXGroup;
+			children = (
+				18D824CD2BE91AE10067B954 /* main.m */,
+				18D824EB2BE91E310067B954 /* bitonicsort.metal */,
+				18D824EC2BE91E310067B954 /* compute.glsl */,
+				18D824EE2BE91EDF0067B954 /* MetalSortComparison.h */,
+				18D824EF2BE91EDF0067B954 /* MetalSortComparison.m */,
+				18D824F12BE923860067B954 /* quicksort_c.c */,
+				18D824F32BE9238C0067B954 /* quicksort_c.h */,
+				18D824F42BE928160067B954 /* bitonic_sort_c.c */,
+				18D824F52BE928160067B954 /* bitonic_sort_c.h */,
+				18D824F82BE928250067B954 /* bitonic_sort_pthread.c */,
+				18D824F72BE928250067B954 /* bitonic_sort_pthread.h */,
+			);
+			path = SortComparison;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		18D824C92BE91AE10067B954 /* SortComparison */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18D824D12BE91AE10067B954 /* Build configuration list for PBXNativeTarget "SortComparison" */;
+			buildPhases = (
+				18D824C62BE91AE10067B954 /* Sources */,
+				18D824C72BE91AE10067B954 /* Frameworks */,
+				18D824C82BE91AE10067B954 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SortComparison;
+			productName = SortComparison;
+			productReference = 18D824CA2BE91AE10067B954 /* SortComparison */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		18D824C22BE91AE10067B954 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1410;
+				TargetAttributes = {
+					18D824C92BE91AE10067B954 = {
+						CreatedOnToolsVersion = 14.1;
+					};
+				};
+			};
+			buildConfigurationList = 18D824C52BE91AE10067B954 /* Build configuration list for PBXProject "SortComparison" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 18D824C12BE91AE10067B954;
+			productRefGroup = 18D824CB2BE91AE10067B954 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				18D824C92BE91AE10067B954 /* SortComparison */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18D824C62BE91AE10067B954 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18D824F02BE91EDF0067B954 /* MetalSortComparison.m in Sources */,
+				18D824F92BE928250067B954 /* bitonic_sort_pthread.c in Sources */,
+				18D824F22BE923860067B954 /* quicksort_c.c in Sources */,
+				18D824ED2BE91E320067B954 /* bitonicsort.metal in Sources */,
+				18D824F62BE928160067B954 /* bitonic_sort_c.c in Sources */,
+				18D824CE2BE91AE10067B954 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		18D824CF2BE91AE10067B954 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.7;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		18D824D02BE91AE10067B954 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.7;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		18D824D22BE91AE10067B954 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3P2U2MN24Q;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		18D824D32BE91AE10067B954 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3P2U2MN24Q;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18D824C52BE91AE10067B954 /* Build configuration list for PBXProject "SortComparison" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18D824CF2BE91AE10067B954 /* Debug */,
+				18D824D02BE91AE10067B954 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18D824D12BE91AE10067B954 /* Build configuration list for PBXNativeTarget "SortComparison" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18D824D22BE91AE10067B954 /* Debug */,
+				18D824D32BE91AE10067B954 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 18D824C22BE91AE10067B954 /* Project object */;
+}
