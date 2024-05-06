@@ -20,7 +20,7 @@ struct sort_int_array * init_sort_int_array(int nthreads, long Narray){
     _iSort->nextP2 =    1 + (int) log2((double) (_iSort->Narray-1));
     _iSort->narrayP2 =  1 << _iSort->nextP2;
     
-    posix_memalign((void**)&_iSort->iorg, 4096, _iSort->narrayP2*sizeof(long));
+    posix_memalign((void**)&_iSort->iorg, 4096, _iSort->narrayP2*sizeof(int));
     
     init_Int_Array(_iSort->Narray, _iSort->narrayP2, _iSort->iorg);
     return _iSort;
@@ -28,7 +28,7 @@ struct sort_int_array * init_sort_int_array(int nthreads, long Narray){
 
 void alloc_sort_int_works(struct sort_int_array *_iSort){
     posix_memalign((void**)&_iSort->idx,  4096, _iSort->narrayP2*sizeof(long));
-    posix_memalign((void**)&_iSort->ia,   4096, _iSort->narrayP2*sizeof(long));
+    posix_memalign((void**)&_iSort->ia,   4096, _iSort->narrayP2*sizeof(int));
     copy_Int_Array(_iSort->Narray, _iSort->narrayP2, 
                    _iSort->iorg, _iSort->ia, _iSort->idx);
     return;

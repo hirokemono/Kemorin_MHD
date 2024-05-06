@@ -28,7 +28,7 @@ struct sort_double_array * init_sort_double_array(int nthreads, long Narray){
 
 void alloc_sort_double_works(struct sort_double_array *dSort){
     posix_memalign((void**)&dSort->idx,  4096, dSort->narrayP2*sizeof(long));
-    posix_memalign((void**)&dSort->da,   4096, dSort->narrayP2*sizeof(long));
+    posix_memalign((void**)&dSort->da,   4096, dSort->narrayP2*sizeof(double));
     copy_Double_Array(dSort->Narray, dSort->narrayP2, 
                       dSort->dorg, dSort->da, dSort->idx);
     return;
@@ -217,12 +217,12 @@ double max_double_array_omp_test(struct sort_double_array *dSort){
     struct timeval startwtime, endwtime;
     alloc_sort_double_works(dSort);
     gettimeofday( &startwtime, NULL );
-    int imax1 = max_double_array_omp(dSort->nthreads, dSort->Narray, dSort->da);
+    double rmax1 = max_double_array_omp(dSort->nthreads, dSort->Narray, dSort->da);
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
     dealloc_sort_double_works(dSort);
-    printf("max_double_array_omp      %d\n", imax1);
+    printf("max_double_array_omp      %lf\n", rmax1);
     return seq_time1;
 }
 

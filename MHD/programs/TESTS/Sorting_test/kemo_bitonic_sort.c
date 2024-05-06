@@ -38,6 +38,7 @@
 #include "array_for_sorting_test.h"
 #include "integer_sorting_tests.h"
 #include "double_sorting_tests.h"
+#include "float_sorting_tests.h"
 #include "quicksort_c.h"
 #include "bitonic_sort_c.h"
 #include "bitonic_sort_pthread.h"
@@ -49,21 +50,6 @@
 #else
   #include "bitonic_sort_omp.h"
 #endif
-
-
-struct sort_float_array{
-    long Narray;
-    int nthreads;
-    int nextP2;
-    long narrayP2;
-
-    long *idx;
-    
-    float *org;
-    float *ra;
-};
-
-
 
 
 
@@ -95,25 +81,8 @@ int main( int argc, char **argv ) {
     printf("narrayP2 %d %d %d \n", narrayP2n, narrayP2, narrayP2p);
     */
     
-    long   *la;
-    double *da;
-    float  *ra;
-    
-    long *lorg;
-    double *dorg;
-    float *org;
-    
-    long *idx;
-    
-    posix_memalign((void**)&idx, 4096, narrayP2*sizeof(long));
-
-    posix_memalign((void**)&la, 4096, narrayP2*sizeof(long));
-    posix_memalign((void**)&lorg, 4096, narrayP2*sizeof(long));
-    init_Long_Array(Narray, narrayP2, lorg);
-
-    free(lorg);
-    free(la);
-    
+    printf("-------------------------------------\n");
+    printf("----- Integer simple operations -----\n");
     struct sort_int_array *_iSort = init_sort_int_array(nthreads, Narray);
     
     seq_time1 = max_int_array_test(_iSort);
@@ -155,6 +124,7 @@ int main( int argc, char **argv ) {
 #ifndef __APPLE__
     seq_time5 = bitonicsort_OMP_int_test(_iSort);
 #endif
+    dealloc_sort_int_array(_iSort);
     
     printf("-------------------------------------\n\n");
     printf("--- Integer sorting wall clock times ---\n");
@@ -167,90 +137,52 @@ int main( int argc, char **argv ) {
     printf("OpenMP Bitonic parallel imperagive \n");
     printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
 #endif
+    
+    
     printf("-------------------------------------\n");
-
+    printf("------ float simple operations ------\n");
+    struct sort_float_array *rSort = init_sort_float_array(nthreads, Narray);
     
-    printf("\n-------------------------------------\n");
-    printf("--- Single precision sorting ---\n");
-    posix_memalign((void**)&ra, 4096, narrayP2*sizeof(float));
-    posix_memalign((void**)&org, 4096, narrayP2*sizeof(float));
-    init_Float_Array(Narray, narrayP2, org);
-    
-    copy_Float_Array(Narray, narrayP2, org, ra, idx);
-    gettimeofday( &startwtime, NULL );
-    quicksort_real_c(ra, idx, 0, (Narray-1));
-    gettimeofday( &endwtime, NULL );
-    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Quicksort ");
-    check_sorted_Float(Narray, ra);
-    print_sorted_Float(Narray, narrayP2, org, ra, idx);
-    
-    copy_Float_Array(Narray, narrayP2, org, ra, idx);
-    gettimeofday( &startwtime, NULL );
-    bitonicsort_rec_Float(narrayP2, ra, idx);
-    gettimeofday( &endwtime, NULL );
-    seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic serial   recursive ");
-    check_sorted_Float(Narray, ra);
-    print_sorted_Float(Narray, narrayP2, org, ra, idx);
-    
-    copy_Float_Array(Narray, narrayP2, org, ra, idx);
-    gettimeofday( &startwtime, NULL );
-    bitonicsort_Float_Pthread(nthreads, narrayP2, ra, idx);
-    gettimeofday( &endwtime, NULL );
-    seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic parallel recursive with %i threads ", nthreads);
-    check_sorted_Float(Narray, ra);
-    print_sorted_Float(Narray, narrayP2, org, ra, idx);
-    
-    
-    copy_Float_Array(Narray, narrayP2, org, ra, idx);
-    gettimeofday( &startwtime, NULL );
-    BitonicSort_imp_Float(narrayP2, ra, idx);
-    gettimeofday( &endwtime, NULL );
-    seq_time4 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic serial  imperative ");
-    check_sorted_Float(Narray, ra);
-    print_sorted_Float(Narray, narrayP2, org, ra, idx);
-    
-#ifdef __APPLE__
-    copy_Float_Array(Narray, narrayP2, org, ra, idx);
-    gettimeofday( &startwtime, NULL );
-
-    vDSP_Length *ldx_tmp = (vDSP_Length *) calloc(Narray, sizeof(vDSP_Length));
-    for(long i=0;i<Narray;i++){ldx_tmp[i] = i;};
-    
-    vDSP_vsorti(ra, ldx_tmp, nil, Narray, 0);
-    for(long i=0;i<Narray;i++){
-        idx[i] = ldx_tmp[i];
-        ra[i] = org[ldx_tmp[i]];
-    };
-    free(ldx_tmp);
-    gettimeofday( &endwtime, NULL );
-    seq_time6 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-
-    printf("                vDSP_vsorti ");
-    check_sorted_Float(Narray, ra);
-    print_sorted_Float(Narray, narrayP2, org, ra, idx);
-#else
-    copy_Float_Array(Narray, narrayP2, org, ra, idx);
-    gettimeofday( &startwtime, NULL );
-    OMPimp_float_BitonicSort(nthreads, narrayP2, ra, idx);
-    gettimeofday( &endwtime, NULL );
-    seq_time5 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
-    printf("OpenMP Bitonic parallel imperagive with %i threads ", nthreads);
-    check_sorted_Float(Narray, ra);
-    print_sorted_Float(Narray, narrayP2, org, ra, idx);
+    seq_time1 = max_float_array_test(rSort);
+    seq_time2 = max_float_array_pthread_test(rSort);
+#ifndef __APPLE__
+    seq_time3 = max_float_array_omp_test(rSort);
 #endif
     
-    free(ra);
-    free(org);
+    printf("-------------------------------------\n");
+    printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
+    printf("pthreads parallel maximum with %i threads wall clock time = %f\n",
+           nthreads,  seq_time2);
+#ifndef __APPLE__
+    printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
+           nthreads,  seq_time3);
+#endif
+    printf("-------------------------------------\n");
+    
+    seq_time1 = flip_sign_float_test(rSort);
+    seq_time2 = flip_sign_float_pthread_test(rSort);
+    
+    printf("         Serial flip_float_sign                   wall clock time = %f\n", seq_time1 );
+    printf("pthreads parallel flip_float_sign with %i threads wall clock time = %f\n",
+           nthreads,  seq_time2);
+    
+#ifndef __APPLE__
+    seq_time3 = flip_sign_float_omp_test(rSort);
+    printf("OpenMP   parallel flip_float_sign with %i threads wall clock time = %f\n",
+            nthreads,  seq_time1);
+#endif
+    
+    printf("--- Single precision sorting ---\n");
+    seq_time1 = quicksort_float_test(rSort);
+    seq_time2 = bitonicsort_rec_float_test(rSort);
+    seq_time4 = bitonicsort_imp_float_test(rSort);
+    seq_time3 = bitonicsort_pthread_float_test(rSort);
+#ifdef __APPLE__
+    seq_time6 = vDSP_vsorti_test(rSort);
+#else
+    seq_time5 = bitonicsort_OMP_float_test(rSort);
+#endif
+    dealloc_sort_float_array(rSort);
     
     printf("-------------------------------------\n\n");
     printf("--- Single precision sorting wall clock times ---\n");
@@ -265,16 +197,11 @@ int main( int argc, char **argv ) {
     printf("OpenMP Bitonic parallel imperagive \n");
     printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
 #endif
-    printf("-------------------------------------\n");
-
     
-    printf("\n-------------------------------------\n");
+    printf("-------------------------------------\n");
+    printf("----- double simple operations ------\n");
     struct sort_double_array *dSort = init_sort_double_array(nthreads, Narray);
     
-    posix_memalign((void**)&da, 4096, narrayP2*sizeof(double));
-    posix_memalign((void**)&dorg, 4096, narrayP2*sizeof(double));
-    init_Double_Array(Narray, narrayP2, dorg);
-
     seq_time1 = max_double_array_test(dSort);
     seq_time2 = max_double_array_pthread_test(dSort);
     printf("           Serial maximum                 wall clock time = %f\n", seq_time1);
@@ -313,7 +240,8 @@ int main( int argc, char **argv ) {
 #else
     seq_time5 = bitonicsort_OMP_double_test(dSort);
 #endif
-
+    dealloc_sort_double_array(dSort);
+    
     printf("-------------------------------------\n\n");
     printf("--- Double precision sorting wall clock times ---\n");
     printf("                 Quicksort wall clock time = %f\n", seq_time1);
@@ -328,7 +256,4 @@ int main( int argc, char **argv ) {
     printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
 #endif
     printf("-------------------------------------\n");
-    
-    free(dorg);
-    free(da);
 }
