@@ -10,9 +10,12 @@
 		18D824CE2BE91AE10067B954 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D824CD2BE91AE10067B954 /* main.m */; };
 		18D824ED2BE91E320067B954 /* bitonicsort.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18D824EB2BE91E310067B954 /* bitonicsort.metal */; };
 		18D824F02BE91EDF0067B954 /* MetalSortComparison.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D824EF2BE91EDF0067B954 /* MetalSortComparison.m */; };
-		18D824F22BE923860067B954 /* quicksort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824F12BE923860067B954 /* quicksort_c.c */; };
-		18D824F62BE928160067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824F42BE928160067B954 /* bitonic_sort_c.c */; };
-		18D824F92BE928250067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824F82BE928250067B954 /* bitonic_sort_pthread.c */; };
+		18D825002BE93D870067B954 /* bitonic_sort_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824FC2BE93D870067B954 /* bitonic_sort_pthread.c */; };
+		18D825012BE93D870067B954 /* bitonic_sort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824FD2BE93D870067B954 /* bitonic_sort_c.c */; };
+		18D825022BE93D870067B954 /* quicksort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D824FF2BE93D870067B954 /* quicksort_c.c */; };
+		18D825052BE93DB30067B954 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D825042BE93DB30067B954 /* Foundation.framework */; };
+		18D825072BE93DB80067B954 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D825062BE93DB70067B954 /* Accelerate.framework */; };
+		18D825092BE93DC00067B954 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D825082BE93DC00067B954 /* Metal.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,12 +37,15 @@
 		18D824EC2BE91E310067B954 /* compute.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = compute.glsl; sourceTree = "<group>"; };
 		18D824EE2BE91EDF0067B954 /* MetalSortComparison.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalSortComparison.h; sourceTree = "<group>"; };
 		18D824EF2BE91EDF0067B954 /* MetalSortComparison.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalSortComparison.m; sourceTree = "<group>"; };
-		18D824F12BE923860067B954 /* quicksort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = quicksort_c.c; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/quicksort_c.c; sourceTree = "<group>"; };
-		18D824F32BE9238C0067B954 /* quicksort_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = quicksort_c.h; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/quicksort_c.h; sourceTree = "<group>"; };
-		18D824F42BE928160067B954 /* bitonic_sort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_c.c; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/bitonic_sort_c.c; sourceTree = "<group>"; };
-		18D824F52BE928160067B954 /* bitonic_sort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_c.h; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/bitonic_sort_c.h; sourceTree = "<group>"; };
-		18D824F72BE928250067B954 /* bitonic_sort_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_pthread.h; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/bitonic_sort_pthread.h; sourceTree = "<group>"; };
-		18D824F82BE928250067B954 /* bitonic_sort_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_pthread.c; path = ../../../../../../Volumes/Sources/matsui/Kemorin_MHD/MHD/C_src/CORE_C/bitonic_sort_pthread.c; sourceTree = "<group>"; };
+		18D824FA2BE93D870067B954 /* quicksort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quicksort_c.h; path = ../../../C_src/CORE_C/quicksort_c.h; sourceTree = "<group>"; };
+		18D824FB2BE93D870067B954 /* bitonic_sort_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_pthread.h; path = ../../../C_src/CORE_C/bitonic_sort_pthread.h; sourceTree = "<group>"; };
+		18D824FC2BE93D870067B954 /* bitonic_sort_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_pthread.c; path = ../../../C_src/CORE_C/bitonic_sort_pthread.c; sourceTree = "<group>"; };
+		18D824FD2BE93D870067B954 /* bitonic_sort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_c.c; path = ../../../C_src/CORE_C/bitonic_sort_c.c; sourceTree = "<group>"; };
+		18D824FE2BE93D870067B954 /* bitonic_sort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_c.h; path = ../../../C_src/CORE_C/bitonic_sort_c.h; sourceTree = "<group>"; };
+		18D824FF2BE93D870067B954 /* quicksort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = quicksort_c.c; path = ../../../C_src/CORE_C/quicksort_c.c; sourceTree = "<group>"; };
+		18D825042BE93DB30067B954 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		18D825062BE93DB70067B954 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		18D825082BE93DC00067B954 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +53,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18D825092BE93DC00067B954 /* Metal.framework in Frameworks */,
+				18D825072BE93DB80067B954 /* Accelerate.framework in Frameworks */,
+				18D825052BE93DB30067B954 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +67,7 @@
 			children = (
 				18D824CC2BE91AE10067B954 /* SortComparison */,
 				18D824CB2BE91AE10067B954 /* Products */,
+				18D825032BE93DB30067B954 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -77,14 +87,24 @@
 				18D824EC2BE91E310067B954 /* compute.glsl */,
 				18D824EE2BE91EDF0067B954 /* MetalSortComparison.h */,
 				18D824EF2BE91EDF0067B954 /* MetalSortComparison.m */,
-				18D824F12BE923860067B954 /* quicksort_c.c */,
-				18D824F32BE9238C0067B954 /* quicksort_c.h */,
-				18D824F42BE928160067B954 /* bitonic_sort_c.c */,
-				18D824F52BE928160067B954 /* bitonic_sort_c.h */,
-				18D824F82BE928250067B954 /* bitonic_sort_pthread.c */,
-				18D824F72BE928250067B954 /* bitonic_sort_pthread.h */,
+				18D824FD2BE93D870067B954 /* bitonic_sort_c.c */,
+				18D824FE2BE93D870067B954 /* bitonic_sort_c.h */,
+				18D824FC2BE93D870067B954 /* bitonic_sort_pthread.c */,
+				18D824FB2BE93D870067B954 /* bitonic_sort_pthread.h */,
+				18D824FF2BE93D870067B954 /* quicksort_c.c */,
+				18D824FA2BE93D870067B954 /* quicksort_c.h */,
 			);
 			path = SortComparison;
+			sourceTree = "<group>";
+		};
+		18D825032BE93DB30067B954 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				18D825082BE93DC00067B954 /* Metal.framework */,
+				18D825062BE93DB70067B954 /* Accelerate.framework */,
+				18D825042BE93DB30067B954 /* Foundation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,10 +165,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				18D824F02BE91EDF0067B954 /* MetalSortComparison.m in Sources */,
-				18D824F92BE928250067B954 /* bitonic_sort_pthread.c in Sources */,
-				18D824F22BE923860067B954 /* quicksort_c.c in Sources */,
+				18D825022BE93D870067B954 /* quicksort_c.c in Sources */,
+				18D825002BE93D870067B954 /* bitonic_sort_pthread.c in Sources */,
 				18D824ED2BE91E320067B954 /* bitonicsort.metal in Sources */,
-				18D824F62BE928160067B954 /* bitonic_sort_c.c in Sources */,
+				18D825012BE93D870067B954 /* bitonic_sort_c.c in Sources */,
 				18D824CE2BE91AE10067B954 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
