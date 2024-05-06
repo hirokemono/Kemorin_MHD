@@ -65,8 +65,7 @@ double quicksort_int_test(struct sort_int_array *_iSort){
 double bitonicsort_pthread_int_test(struct sort_int_array *_iSort){
     double seq_time1;
     struct timeval startwtime, endwtime;
-    copy_Int_Array(_iSort->Narray, _iSort->narrayP2,
-                   _iSort->iorg, _iSort->ia, _iSort->idx);
+    alloc_sort_int_works(_iSort);
     gettimeofday( &startwtime, NULL );
     bitonicsort_Int_Pthread(_iSort->nthreads, _iSort->narrayP2,
                             _iSort->ia, _iSort->idx);
@@ -77,6 +76,7 @@ double bitonicsort_pthread_int_test(struct sort_int_array *_iSort){
            _iSort->nthreads);
     check_sorted_Int(_iSort->Narray, _iSort->ia);
     print_sorted_Int(_iSort->Narray, _iSort->narrayP2, _iSort->iorg, _iSort->ia, _iSort->idx);
+    dealloc_sort_int_works(_iSort);
     return seq_time1;
 }
 
@@ -121,6 +121,7 @@ double max_int_array_test(struct sort_int_array *_iSort){
     gettimeofday( &startwtime, NULL );
     int imax1 = max_int_array(_iSort->Narray, _iSort->ia);
     gettimeofday( &endwtime, NULL );
+    dealloc_sort_int_works(_iSort);
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
     printf("max_int_array          %d\n", imax1);
@@ -134,9 +135,10 @@ double max_int_array_pthread_test(struct sort_int_array *_iSort){
     gettimeofday( &startwtime, NULL );
     int imax1 = max_Int_Array_pthreads(_iSort->nthreads, _iSort->Narray, _iSort->ia);
     gettimeofday( &endwtime, NULL );
+    dealloc_sort_int_works(_iSort);
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
-    printf("max_int_array          %d\n", imax1);
+    printf("max_Int_Array_pthreads  %d\n", imax1);
     return seq_time1;
 }
 
@@ -147,6 +149,7 @@ double flip_sign_int_test(struct sort_int_array *_iSort){
     gettimeofday( &startwtime, NULL );
     flip_int_sign(_iSort->Narray, _iSort->ia);
     gettimeofday( &endwtime, NULL );
+    dealloc_sort_int_works(_iSort);
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
     return seq_time1;
@@ -159,6 +162,7 @@ double flip_sign_int_pthread_test(struct sort_int_array *_iSort){
     gettimeofday( &startwtime, NULL );
     flip_sign_Int_pthreads(_iSort->nthreads, _iSort->Narray, _iSort->ia);
     gettimeofday( &endwtime, NULL );
+    dealloc_sort_int_works(_iSort);
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
     return seq_time1;
@@ -194,6 +198,7 @@ double max_int_array_omp_test(struct sort_int_array *_iSort){
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
     printf("max_int_array_omp      %d\n", imax1);
+    dealloc_sort_int_works(_iSort);
     return seq_time1;
 }
 
@@ -206,6 +211,7 @@ double flip_sign_int_omp_test(struct sort_int_array *_iSort){
     gettimeofday( &endwtime, NULL );
     seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec )
                          / 1.0e6 + endwtime.tv_sec - startwtime.tv_sec );
+    dealloc_sort_int_works(_iSort);
     return seq_time1;
 }
 #endif
