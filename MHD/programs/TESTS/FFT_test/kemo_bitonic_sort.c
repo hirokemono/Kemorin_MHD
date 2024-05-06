@@ -39,6 +39,7 @@
 #include "bitonic_sort_c.h"
 #include "bitonic_sort_pthread.h"
 #include "bitonic_sort_int_pthread.h"
+#include "bitonic_sort_float_pthread.h"
 
 #ifdef __APPLE__
   #include <Accelerate/Accelerate.h>
@@ -60,9 +61,12 @@ void print_sorted_Int(long num, long nArray, const int *iorg,
                       const int *ires, const long *idx);
 void print_sorted_Double(long num, long nArray, const double *dorg, 
                          const double *dres, const long *idx);
+void print_sorted_Float(long num, long nArray, const float *org,
+                        const float *res, const long *idx);
 
 void check_sorted_Int(long num, const int *ires);
-void check_sorted_Double(long num, const double *ires);
+void check_sorted_Double(long num, const double *dres);
+void check_sorted_Float(long num, const float *res);
 
 
 /** compare for qsort **/
@@ -158,6 +162,7 @@ int main( int argc, char **argv ) {
     init_Float_Array(Narray, narrayP2, ra, org, idx);
     
     
+    printf("--- Integer sorting ---\n");
     copy_Int_Array(narrayP2, ia, iorg, idx);
     gettimeofday( &startwtime, NULL );
     quicksort_int_c(ia, idx, 0, (Narray-1));
@@ -167,7 +172,6 @@ int main( int argc, char **argv ) {
     printf("Quicksort ");
     check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
-    printf("-------------------------------------\n");
     
     copy_Int_Array(narrayP2, ia, iorg, idx);
     gettimeofday( &startwtime, NULL );
@@ -178,7 +182,6 @@ int main( int argc, char **argv ) {
     printf("Bitonic serial   recursive ");
     check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
-    printf("-------------------------------------\n");
     
     copy_Int_Array(narrayP2, ia, iorg, idx);
     gettimeofday( &startwtime, NULL );
@@ -189,7 +192,6 @@ int main( int argc, char **argv ) {
     printf("Bitonic parallel recursive with %i threads ", nthreads);
     check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
-    printf("-------------------------------------\n");
     
     
     copy_Int_Array(narrayP2, ia, iorg, idx);
@@ -201,7 +203,6 @@ int main( int argc, char **argv ) {
     printf("Bitonic serial  imperative ");
     check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
-    printf("-------------------------------------\n");
     
 #ifndef __APPLE__
     copy_Int_Array(narrayP2, ia, iorg, idx);
@@ -213,9 +214,10 @@ int main( int argc, char **argv ) {
     printf("OpenMP Bitonic parallel imperagive with %i threads ", nthreads);
     check_sorted_Int(Narray, ia);
     print_sorted_Int(Narray, narrayP2, iorg, ia, idx);
-    printf("-------------------------------------\n\n");
 #endif
     
+    printf("-------------------------------------\n\n");
+    printf("--- Integer sorting wall clock times ---\n");
     printf("                 Quicksort wall clock time = %f\n", seq_time1);
     printf("Bitonic serial   recursive wall clock time = %f\n", seq_time2);
     printf("Bitonic parallel recursive with %i threads\n", nthreads);
@@ -260,8 +262,6 @@ int main( int argc, char **argv ) {
     printf("OpenMP   parallel maximum with %i threads wall clock time = %f\n",
            nthreads,  seq_time3);
 #endif
-    printf("-------------------------------------\n");
-    
     
     gettimeofday( &startwtime, NULL );
     flip_int_sign(Narray, ia);
@@ -290,7 +290,99 @@ int main( int argc, char **argv ) {
     free(ia);
     
     
+    printf("\n-------------------------------------\n");
+    printf("--- Single precision sorting ---\n");
+    copy_Float_Array(narrayP2, ra, org, idx);
+    gettimeofday( &startwtime, NULL );
+    quicksort_real_c(ra, idx, 0, (Narray-1));
+    gettimeofday( &endwtime, NULL );
+    seq_time1 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                + endwtime.tv_sec - startwtime.tv_sec );
+    printf("Quicksort ");
+    check_sorted_Float(Narray, ra);
+    print_sorted_Float(Narray, narrayP2, org, ra, idx);
     
+    copy_Float_Array(narrayP2, ra, org, idx);
+    gettimeofday( &startwtime, NULL );
+    bitonicsort_rec_Float(narrayP2, ra, idx);
+    gettimeofday( &endwtime, NULL );
+    seq_time2 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                + endwtime.tv_sec - startwtime.tv_sec );
+    printf("Bitonic serial   recursive ");
+    check_sorted_Float(Narray, ra);
+    print_sorted_Float(Narray, narrayP2, org, ra, idx);
+    
+    copy_Float_Array(narrayP2, ra, org, idx);
+    gettimeofday( &startwtime, NULL );
+    bitonicsort_Float_Pthread(nthreads, narrayP2, ra, idx);
+    gettimeofday( &endwtime, NULL );
+    seq_time3 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+    printf("Bitonic parallel recursive with %i threads ", nthreads);
+    check_sorted_Float(Narray, ra);
+    print_sorted_Float(Narray, narrayP2, org, ra, idx);
+    
+    
+    copy_Float_Array(narrayP2, ra, org, idx);
+    gettimeofday( &startwtime, NULL );
+    BitonicSort_imp_Float(narrayP2, ra, idx);
+    gettimeofday( &endwtime, NULL );
+    seq_time4 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                + endwtime.tv_sec - startwtime.tv_sec );
+    printf("Bitonic serial  imperative ");
+    check_sorted_Float(Narray, ra);
+    print_sorted_Float(Narray, narrayP2, org, ra, idx);
+    
+#ifdef __APPLE__
+    copy_Float_Array(narrayP2, ra, org, idx);
+    gettimeofday( &startwtime, NULL );
+
+    vDSP_Length *ldx_tmp = (vDSP_Length *) calloc(Narray, sizeof(vDSP_Length));
+    for(long i=0;i<Narray;i++){ldx_tmp[i] = i;};
+    
+    vDSP_vsorti(ra, ldx_tmp, nil, Narray, 0);
+    for(long i=0;i<Narray;i++){
+        idx[i] = ldx_tmp[i];
+        ra[i] = org[ldx_tmp[i]];
+    };
+    free(ldx_tmp);
+    gettimeofday( &endwtime, NULL );
+    seq_time6 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+
+    printf("                vDSP_vsorti ");
+    check_sorted_Float(Narray, ra);
+    print_sorted_Float(Narray, narrayP2, org, ra, idx);
+#else
+    copy_Float_Array(narrayP2, ra, org, idx);
+    gettimeofday( &startwtime, NULL );
+    OMPimp_float_BitonicSort(nthreads, narrayP2, ra, idx);
+    gettimeofday( &endwtime, NULL );
+    seq_time5 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+    printf("OpenMP Bitonic parallel imperagive with %i threads ", nthreads);
+    check_sorted_Float(Narray, ra);
+    print_sorted_Float(Narray, narrayP2, org, ra, idx);
+#endif
+    
+    printf("-------------------------------------\n\n");
+    printf("--- Single precision sorting wall clock times ---\n");
+    printf("                 Quicksort wall clock time = %f\n", seq_time1);
+    printf("Bitonic serial   recursive wall clock time = %f\n", seq_time2);
+    printf("Bitonic parallel recursive with %i threads\n", nthreads);
+    printf("             and quicksort wall clock time = %f\n", seq_time3);
+    printf("Bitonic serial  imperative wall clock time = %f\n", seq_time4);
+#ifdef __APPLE__
+    printf("               vDSP_vsorti wall clock time = %f\n", seq_time6);
+#else
+    printf("OpenMP Bitonic parallel imperagive \n");
+    printf("           with %i threads wall clock time = %f\n", nthreads,  seq_time5);
+#endif
+    printf("-------------------------------------\n");
+
+    
+    printf("\n-------------------------------------\n");
+    printf("--- Double precision sorting ---\n");
     copy_Double_Array(narrayP2, da, dorg, idx);
     gettimeofday( &startwtime, NULL );
     quicksort_double_c(da, idx, 0, (Narray-1));
@@ -300,7 +392,6 @@ int main( int argc, char **argv ) {
     printf("Quicksort ");
     check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
-    printf("-------------------------------------\n");
     
     copy_Double_Array(narrayP2, da, dorg, idx);
     gettimeofday( &startwtime, NULL );
@@ -311,7 +402,6 @@ int main( int argc, char **argv ) {
     printf("Bitonic serial   recursive ");
     check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
-    printf("-------------------------------------\n");
     
     copy_Double_Array(narrayP2, da, dorg, idx);
     gettimeofday( &startwtime, NULL );
@@ -322,7 +412,6 @@ int main( int argc, char **argv ) {
     printf("Bitonic parallel recursive with %i threads ", nthreads);
     check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
-    printf("-------------------------------------\n");
     
     
     copy_Double_Array(narrayP2, da, dorg, idx);
@@ -334,27 +423,26 @@ int main( int argc, char **argv ) {
     printf("Bitonic serial  imperative ");
     check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
-    printf("-------------------------------------\n");
     
 #ifdef __APPLE__
     copy_Double_Array(narrayP2, da, dorg, idx);
+
+    gettimeofday( &startwtime, NULL );
     vDSP_Length *kdx_tmp = (vDSP_Length *) calloc(Narray, sizeof(vDSP_Length));
     for(long i=0;i<Narray;i++){kdx_tmp[i] = i;};
-    
-    gettimeofday( &startwtime, NULL );
     vDSP_vsortiD(da, kdx_tmp, nil, Narray, 0);
-    gettimeofday( &endwtime, NULL );
-    seq_time6 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
-                         + endwtime.tv_sec - startwtime.tv_sec );
     for(long i=0;i<Narray;i++){
         idx[i] = kdx_tmp[i];
         da[i] = dorg[kdx_tmp[i]];
     };
-    
+    free(kdx_tmp);
+    gettimeofday( &endwtime, NULL );
+    seq_time6 = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
+                         + endwtime.tv_sec - startwtime.tv_sec );
+
     printf("                vDSP_vsortiD ");
     check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
-    printf("-------------------------------------\n\n");
 #else
     copy_Double_Array(narrayP2, da, dorg, idx);
     gettimeofday( &startwtime, NULL );
@@ -365,9 +453,10 @@ int main( int argc, char **argv ) {
     printf("OpenMP Bitonic parallel imperagive with %i threads ", nthreads);
     check_sorted_Double(Narray, da);
     print_sorted_Double(Narray, narrayP2, dorg, da, idx);
-    printf("-------------------------------------\n\n");
 #endif
     
+    printf("-------------------------------------\n\n");
+    printf("--- Double precision sorting wall clock times ---\n");
     printf("                 Quicksort wall clock time = %f\n", seq_time1);
     printf("Bitonic serial   recursive wall clock time = %f\n", seq_time2);
     printf("Bitonic parallel recursive with %i threads\n", nthreads);
@@ -456,11 +545,21 @@ void check_sorted_Int(long num, const int *ires){
   printf(" TEST %s\n",(pass) ? "PASSed" : "FAILed");
 }
 
-void check_sorted_Double(long num, const double *ires){
+void check_sorted_Double(long num, const double *dres){
   int pass = 1;
   long i;
     for (i=1;i<num;i++) {
-    pass &= (ires[i-1] <= ires[i]);
+    pass &= (dres[i-1] <= dres[i]);
+  }
+    
+  printf(" TEST %s\n",(pass) ? "PASSed" : "FAILed");
+}
+
+void check_sorted_Float(long num, const float *res){
+  int pass = 1;
+  long i;
+    for (i=1;i<num;i++) {
+    pass &= (res[i-1] <= res[i]);
   }
     
   printf(" TEST %s\n",(pass) ? "PASSed" : "FAILed");
@@ -591,3 +690,16 @@ void print_sorted_Double(long num, long nArray, const double *dorg,
         printf("%d %lf: %d %lf \n", i, dorg[i], (int) idx[i], dres[i]);
   }
 }
+
+void print_sorted_Float(long num, long nArray, const float *org,
+                        const float *res, const long *idx){
+    int i;
+    if(num > 33) return;
+  for (i = 0; i < num; i++) {
+        printf("%d %f: %d %f \n", i, org[i], (int) idx[i], res[i]);
+  }
+  printf("\n");
+  for (i = num; i < nArray; i++) {
+        printf("%d %f: %d %f \n", i, org[i], (int) idx[i], res[i]);
+  }
+};
