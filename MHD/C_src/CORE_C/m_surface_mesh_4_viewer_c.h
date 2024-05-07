@@ -130,6 +130,16 @@ struct viewer_mesh {
     int    *igroup_mesh_patch;
     double *normal_mesh_patch;
     double *normal_nod_mesh_patch;
+    
+    long ntot_solid_patch;
+    long *iele_solid_patch;
+    
+    long ntot_trans_patch;
+    long nextP2_trans_patch;
+    long ntotP2_trans_patch;
+    long *iele_trans_patch;
+    long *index_trans_patch;
+    float *z_trans_patch;
 };
 
 /* prototypes */

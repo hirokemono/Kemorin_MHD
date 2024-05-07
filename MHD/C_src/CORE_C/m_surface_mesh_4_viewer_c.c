@@ -355,13 +355,13 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
     mesh_s->ist_sf_grp_patch =  mesh_s->ist_ele_grp_patch + mesh_s->nele_ele_sf;
     mesh_s->ntot_mesh_patch =   mesh_s->ist_sf_grp_patch + mesh_s->nsurf_surf_sf;
     
-    long num = mesh_s->ntot_mesh_patch * mesh_s->nsurf_each_tri;
-    mesh_s->igroup_mesh_patch = (int *)calloc(num,sizeof(int));
+    mesh_s->igroup_mesh_patch = (int *)calloc(mesh_s->ntot_mesh_patch,sizeof(int));
     if(mesh_s->igroup_mesh_patch == NULL) {
         printf("malloc error for normal_mesh_patch\n");
         exit(0);
     }
 
+    long num = mesh_s->ntot_mesh_patch * mesh_s->nsurf_each_tri;
     mesh_s->normal_mesh_patch = (double *)calloc(4*num,sizeof(double));
     if(mesh_s->normal_mesh_patch == NULL) {
         printf("malloc error for normal_mesh_patch\n");
