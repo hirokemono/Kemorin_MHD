@@ -26,7 +26,9 @@
 	NSMutableArray *ElementGroupDisplayWireFlags;
 	NSMutableArray *ElementGroupDisplayNodeFlags;
 
-	NSString *selectedElementGroupObjectType;
+    CGFloat eleGrpAlpha;
+
+    NSString *selectedElementGroupObjectType;
 	
 	IBOutlet id _EleGrpPatchColorItem;
 	IBOutlet id _EleGrpLineColorItem;
@@ -39,6 +41,7 @@
     NSColor *nsEleGrpGridColor;
     NSColor *nsEleGrpNodeColor;
 }
+@property CGFloat eleGrpAlpha;
 
 - (id) init;
 - (id) dealloc;
@@ -67,6 +70,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseEleGrpLineColorAction:(id)sender;
 - (IBAction)ChooseEleGrpNodeColorAction:(id)sender;
 
+- (IBAction)SetEleGrpPatchAlphaAction:(id)sender;
 - (IBAction)SetEleGrpPatchColorAction:(id)sender;
 - (IBAction)SetEleGrpLineColorAction:(id)sender;
 - (IBAction)SetEleGrpNodeColorAction:(id)sender;

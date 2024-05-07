@@ -42,7 +42,8 @@
 	NSString *selectedDomainObjectType;
 	
 	CGFloat objectDistance;
-	
+    CGFloat domainAlpha;
+
 	IBOutlet id _DomainPatchColorItem;
 	IBOutlet id _DomainLineColorItem;
 	IBOutlet id _DomainNodeColorItem;
@@ -57,6 +58,7 @@
 
 @property NSInteger DrawMeshFlag;
 @property CGFloat objectDistance;
+@property CGFloat domainAlpha;
 @property(retain) NSString* DomainWindowlabel;
 
 - (id) init;
@@ -88,6 +90,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseDomainLineColorAction:(id)sender;
 - (IBAction)ChooseDomainNodeColorAction:(id)sender;
 
+- (IBAction)SetDomainPatchAlphaAction:(id)sender;
 - (IBAction)SetDomainPatchColorAction:(id)sender;
 - (IBAction)SetDomainLineColorAction:(id)sender;
 - (IBAction)SetDomainNodeColorAction:(id)sender;
