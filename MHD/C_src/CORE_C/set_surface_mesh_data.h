@@ -36,6 +36,7 @@ void refine_normal_on_node_4_grp(struct viewer_mesh *mesh_s, int ntot_nod, int i
                                  int *item_grp, double *dist_nod, double *norm_nod, 
                                  struct normal_nod_work *wk_norm);
 
-void set_each_patch_group_id(int num_pe_sf, int igrp, long istart_group, 
+void set_each_patch_group_id(int num_pe_sf, int nsurf_each_tri,
+                             int igrp, long istart_group,
                              int *istack_grp, int *igroup_mesh_patch);
 #endif
