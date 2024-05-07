@@ -139,7 +139,7 @@ void set_mesh_patch_group_id(struct viewer_mesh *mesh_s){
                                 mesh_s->ist_ele_grp, mesh_s->ele_stack_sf,
                                 &mesh_s->igroup_mesh_patch[mesh_s->ist_ele_grp_patch]);
     }
-	for (igrp = 0; igrp < mesh_s->ngrp_ele_sf; igrp++){
+	for (igrp = 0; igrp < mesh_s->ngrp_surf_sf; igrp++){
         set_each_patch_group_id(mesh_s->num_pe_sf, igrp, 
                                 mesh_s->ist_surf_grp,  mesh_s->surf_stack_sf,
                                 &mesh_s->igroup_mesh_patch[mesh_s->ist_sf_grp_patch]);
