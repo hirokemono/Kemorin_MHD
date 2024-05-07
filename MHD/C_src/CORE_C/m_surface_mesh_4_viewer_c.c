@@ -334,12 +334,6 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
         exit(0);
     }
 
-    mesh_s->dist_nod_domain = (double *)calloc(3*num,sizeof(double));
-    if(mesh_s->dist_nod_domain == NULL) {
-        printf("malloc error for dist_nod_domain\n");
-        exit(0);
-    }
-
 	num = mesh_s->nele_ele_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_ele_grp = (double *)calloc(4*num,sizeof(double));
     if(mesh_s->normal_ele_grp == NULL) {
@@ -353,12 +347,6 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
         exit(0);
     }
 
-	mesh_s->dist_nod_ele_grp = (double *)calloc(3*num,sizeof(double));
-    if(mesh_s->dist_nod_ele_grp == NULL) {
-        printf("malloc error for dist_nod_ele_grp\n");
-        exit(0);
-    }
-
 	num = mesh_s->nsurf_surf_sf * mesh_s->nsurf_each_tri;
 	mesh_s->normal_surf_grp =   (double *)calloc(4*num,sizeof(double));
     if(mesh_s->normal_surf_grp == NULL) {
@@ -369,12 +357,6 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	mesh_s->norm_nod_surf_grp = (double *)calloc(12*num,sizeof(double));
     if(mesh_s->norm_nod_surf_grp == NULL) {
         printf("malloc error for norm_nod_surf_grp\n");
-        exit(0);
-    }
-
-	mesh_s->dist_nod_surf_grp = (double *)calloc(3*num,sizeof(double));
-    if(mesh_s->dist_nod_surf_grp == NULL) {
-        printf("malloc error for dist_nod_surf_grp\n");
         exit(0);
     }
 	return;
@@ -528,11 +510,9 @@ static void dealloc_domain_center_s(struct viewer_mesh *mesh_s){
 static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	free(mesh_s->normal_ele_grp);
 	free(mesh_s->norm_nod_ele_grp);
-	free(mesh_s->dist_nod_ele_grp);
 
 	free(mesh_s->normal_domain);
 	free(mesh_s->norm_nod_domain);
-	free(mesh_s->dist_nod_domain);
 	
 	/* deallocate memory  xyzw_draw[node #][direction]*/
 	free(mesh_s->xyzw_draw);

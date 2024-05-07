@@ -11,7 +11,9 @@
 
 #include <stdlib.h>
 #include <math.h>
+
 #include "m_surface_mesh_4_viewer_c.h"
+#include "set_surface_mesh_data.h"
 
 /* prototypes */
 
