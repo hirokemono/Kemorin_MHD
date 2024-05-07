@@ -22,7 +22,7 @@
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         int nthreads = 32;
-        long nArray = 1 << 25;
+        long nArray = 1 << 21;
         
         struct sort_float_array *rSort = init_sort_float_array(nthreads, nArray);
         printf("nthreads %d \n", nthreads);

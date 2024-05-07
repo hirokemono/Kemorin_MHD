@@ -11,17 +11,15 @@ A class to manage all of the Metal objects this app creates.
 
 #include "array_for_sorting_test.h"
 #include "float_sorting_tests.h"
-#import "MetalBitonicSort.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MetalSortComparison : NSObject{
-    MetalBitonicSort * _sort;
-}
+@interface MetalBitonicSort : NSObject
 
 - (instancetype) initWithDevice: (id<MTLDevice>) device;
-- (double) sendSortCommand:(struct sort_float_array *) rSort;
-
+- (void) bitonicSortCommand:(int) nArrayPower
+                  sortArray:(float *) result
+                 indexArray:(int *) index;
 @end
 
 NS_ASSUME_NONNULL_END
