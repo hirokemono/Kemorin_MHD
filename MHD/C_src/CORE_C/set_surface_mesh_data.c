@@ -54,7 +54,7 @@ void set_surface_mesh_size(struct viewer_mesh *mesh_s){
 	return;
 };
 
-void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
+void set_domain_normal_4_each_node(struct viewer_mesh *mesh_s){
 	int i, j, inum, jnum, k, k1;
 	int iele, idir, inod, nd;
 	double x_center[3];
@@ -90,76 +90,99 @@ void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
 			}
 		}
 	};
-    
-	for (i=0; i<mesh_s->nele_ele_sf; i++) {
-		iele = abs(mesh_s->ele_item_sf[i]) - 1;
-		idir = abs(mesh_s->ele_item_sf[i]) / mesh_s->ele_item_sf[i];
-		
-		for (j=0; j<mesh_s->nsurf_each_tri; j++) {
-			jnum = j + i * mesh_s->nsurf_each_tri;
-			inum = j + iele * mesh_s->nsurf_each_tri;
-            
-			for (nd=0; nd<3; nd++){
-				mesh_s->normal_ele_grp[4*jnum+nd]
-                    = ((double) idir) * mesh_s->surf_norm_view[4*inum+nd];
-				x_center[nd] = mesh_s->surf_center_view[4*inum+nd];
-			};
-			for (k1=0; k1<ITHREE; k1++) {
-				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
-					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
-					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
-					mesh_s->dist_nod_ele_grp[3*jnum+k1]
-					= sqrt( (mesh_s->xx_view[4*inod+0] - x_center[0])
-						   *(mesh_s->xx_view[4*inod+0] - x_center[0])
-						   +(mesh_s->xx_view[4*inod+1] - x_center[1])
-						   *(mesh_s->xx_view[4*inod+1] - x_center[1])
-						   +(mesh_s->xx_view[4*inod+2] - x_center[2])
-						   *(mesh_s->xx_view[4*inod+2] - x_center[2]) );
-                    
-					for (nd=0; nd<3; nd++){
-						mesh_s->norm_nod_ele_grp[12*jnum+4*k1+nd]
-                            = ((double) idir) * mesh_s->surf_norm_view[4*inum+nd];
-					};
-				};
-			}
-		}
-	}
-    
-	for (i=0; i<mesh_s->nsurf_surf_sf; i++) {
-		iele = abs(mesh_s->surf_item_sf[i]) - 1;
-		idir = abs(mesh_s->surf_item_sf[i]) / mesh_s->surf_item_sf[i];
-        
-		for (j=0; j<mesh_s->nsurf_each_tri; j++) {
-			jnum = j + i * mesh_s->nsurf_each_tri;
-			inum = j + iele * mesh_s->nsurf_each_tri;
-			
-			for (nd=0; nd<3; nd++){
-				mesh_s->normal_surf_grp[4*jnum+nd]
-                    = ((double) idir) * mesh_s->surf_norm_view[4*inum+nd];
-				x_center[nd] = mesh_s->surf_center_view[4*inum+nd];
-			};
-			for (k1=0; k1<ITHREE; k1++) {
-				if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
-					k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
-					inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
-					mesh_s->dist_nod_surf_grp[3*jnum+k1]
-					= sqrt( (mesh_s->xx_view[4*inod+0] - x_center[0])
-                           *(mesh_s->xx_view[4*inod+0] - x_center[0])
-						   +(mesh_s->xx_view[4*inod+1] - x_center[1])
-						   *(mesh_s->xx_view[4*inod+1] - x_center[1])
-						   +(mesh_s->xx_view[4*inod+2] - x_center[2])
-						   *(mesh_s->xx_view[4*inod+2] - x_center[2]) );
-                    
-					for (nd=0; nd<3; nd++){
-						mesh_s->norm_nod_surf_grp[jnum+4*k1+nd]
-						= ((double) idir) * mesh_s->surf_norm_view[4*inum+nd];
-					};
-				};
-			}
-		}
-	}
-	
 	return;
 }
+
+void set_ele_group_normal_4_each_node(struct viewer_mesh *mesh_s){
+    int i, j, inum, jnum, k, k1;
+    int iele, idir, inod, nd;
+    double x_center[3];
+    
+    for (i=0; i<mesh_s->nele_ele_sf; i++) {
+        iele = abs(mesh_s->ele_item_sf[i]) - 1;
+        idir = abs(mesh_s->ele_item_sf[i]) / mesh_s->ele_item_sf[i];
+        
+        for (j=0; j<mesh_s->nsurf_each_tri; j++) {
+            jnum = j + i * mesh_s->nsurf_each_tri;
+            inum = j + iele * mesh_s->nsurf_each_tri;
+            
+            for (nd=0; nd<3; nd++){
+                mesh_s->normal_ele_grp[4*jnum+nd]
+                    = ((double) idir) * mesh_s->surf_norm_view[4*inum+nd];
+                x_center[nd] = mesh_s->surf_center_view[4*inum+nd];
+            };
+            for (k1=0; k1<ITHREE; k1++) {
+                if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
+                    k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
+                    inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
+                    mesh_s->dist_nod_ele_grp[3*jnum+k1]
+                    = sqrt( (mesh_s->xx_view[4*inod+0] - x_center[0])
+                           *(mesh_s->xx_view[4*inod+0] - x_center[0])
+                           +(mesh_s->xx_view[4*inod+1] - x_center[1])
+                           *(mesh_s->xx_view[4*inod+1] - x_center[1])
+                           +(mesh_s->xx_view[4*inod+2] - x_center[2])
+                           *(mesh_s->xx_view[4*inod+2] - x_center[2]) );
+                    
+                    for (nd=0; nd<3; nd++){
+                        mesh_s->norm_nod_ele_grp[12*jnum+4*k1+nd]
+                            = ((double) idir) * mesh_s->surf_norm_view[4*inum+nd];
+                    };
+                };
+            }
+        }
+    }
+    return;
+}
+
+
+void set_surf_group_normal_4_each_node(struct viewer_mesh *mesh_s){
+    int i, j, inum, jnum, k, k1;
+    int iele, idir, inod, nd;
+    double x_center[3];
+    
+    for (i=0; i<mesh_s->nsurf_surf_sf; i++) {
+        iele = abs(mesh_s->surf_item_sf[i]) - 1;
+        idir = abs(mesh_s->surf_item_sf[i]) / mesh_s->surf_item_sf[i];
+        
+        for (j=0; j<mesh_s->nsurf_each_tri; j++) {
+            jnum = j + i * mesh_s->nsurf_each_tri;
+            inum = j + iele * mesh_s->nsurf_each_tri;
+            
+            for (nd=0; nd<3; nd++){
+                mesh_s->normal_surf_grp[4*jnum+nd]
+                    = ((double) idir) * mesh_s->surf_norm_view[4*inum+nd];
+                x_center[nd] = mesh_s->surf_center_view[4*inum+nd];
+            };
+            for (k1=0; k1<ITHREE; k1++) {
+                if(mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] > 0){
+                    k = mesh_s->node_quad_2_linear_tri[ITHREE*j+k1] - 1;
+                    inod = mesh_s->ie_sf_viewer[k + mesh_s->nnod_4_surf*iele] - 1;
+                    mesh_s->dist_nod_surf_grp[3*jnum+k1]
+                    = sqrt( (mesh_s->xx_view[4*inod+0] - x_center[0])
+                           *(mesh_s->xx_view[4*inod+0] - x_center[0])
+                           +(mesh_s->xx_view[4*inod+1] - x_center[1])
+                           *(mesh_s->xx_view[4*inod+1] - x_center[1])
+                           +(mesh_s->xx_view[4*inod+2] - x_center[2])
+                           *(mesh_s->xx_view[4*inod+2] - x_center[2]) );
+                    
+                    for (nd=0; nd<3; nd++){
+                        mesh_s->norm_nod_surf_grp[jnum+4*k1+nd]
+                        = ((double) idir) * mesh_s->surf_norm_view[4*inum+nd];
+                    };
+                };
+            }
+        }
+    }
+    
+    return;
+}
+
+void set_surface_normal_4_each_node(struct viewer_mesh *mesh_s){
+    set_domain_normal_4_each_node(mesh_s);
+    set_ele_group_normal_4_each_node(mesh_s);
+    set_surf_group_normal_4_each_node(mesh_s);
+    return;
+}
+
 
 

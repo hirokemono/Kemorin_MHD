@@ -126,38 +126,48 @@ static void refine_normal_on_node_4_grp(struct viewer_mesh *mesh_s, int ntot_nod
 	return;
 }
 
+void set_normal_on_domain_group(struct viewer_mesh *mesh_s){
+    int i, ip;
+    for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
+        refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
+                                 mesh_s->isurf_stack_domain_sf[ip], mesh_s->isurf_stack_domain_sf[ip+1],
+                                 mesh_s->isurf_domain_sf, mesh_s->dist_nod_domain, mesh_s->norm_nod_domain);
+    }
+    return;
+}
+
+void set_normal_on_node_element_group(struct viewer_mesh *mesh_s){
+    int i, ip, ip_st;
+    for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
+        for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
+            ip_st = ip + i * mesh_s->num_pe_sf;
+            refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
+                                     mesh_s->ele_stack_sf[ip_st], mesh_s->ele_stack_sf[ip_st+1],
+                                     mesh_s->ele_item_sf, mesh_s->dist_nod_ele_grp, mesh_s->norm_nod_ele_grp);
+        };
+    };
+    return;
+}
+
+void set_normal_on_node_surface_group(struct viewer_mesh *mesh_s){
+    int i, ip, ip_st;
+    for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
+        for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
+            ip_st = ip + i * mesh_s->num_pe_sf;
+            refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
+                                     mesh_s->surf_stack_sf[ip_st], mesh_s->surf_stack_sf[ip_st+1],
+                                     mesh_s->surf_item_sf, mesh_s->dist_nod_surf_grp, mesh_s->norm_nod_surf_grp);
+        };
+    };
+    
+    return;
+}
+
 void set_normal_on_node_4_mesh(struct viewer_mesh *mesh_s){
-	int i, ip, ip_st;
-	
 	alloc_norm_nod_tmp(mesh_s->nnod_viewer);
-	
-	for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
-		refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
-								 mesh_s->isurf_stack_domain_sf[ip], mesh_s->isurf_stack_domain_sf[ip+1],
-								 mesh_s->isurf_domain_sf, mesh_s->dist_nod_domain, mesh_s->norm_nod_domain);
-	}
-	/* ! draw element group */
-	
-	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
-		for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
-			ip_st = ip + i * mesh_s->num_pe_sf;
-			refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
-									 mesh_s->ele_stack_sf[ip_st], mesh_s->ele_stack_sf[ip_st+1],
-									 mesh_s->ele_item_sf, mesh_s->dist_nod_ele_grp, mesh_s->norm_nod_ele_grp);
-		};
-	};
-	/* ! draw surface group */
-	
-	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
-		for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
-			ip_st = ip + i * mesh_s->num_pe_sf;
-			refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
-									 mesh_s->surf_stack_sf[ip_st], mesh_s->surf_stack_sf[ip_st+1],
-									 mesh_s->surf_item_sf, mesh_s->dist_nod_surf_grp, mesh_s->norm_nod_surf_grp);
-		};
-	};
-	
+    set_normal_on_domain_group(mesh_s);
+    set_normal_on_node_element_group(mesh_s);
+    set_normal_on_node_surface_group(mesh_s);
 	dealloc_norm_nod_tmp(mesh_s->nnod_viewer);
-	
 	return;
 }

@@ -129,6 +129,15 @@ struct viewer_mesh {
     long *iele_grp_far;
     long *isurf_grp_far;
 	long *ip_domain_far;
+    
+    
+    long ntot_mesh_patch;
+    long ist_domain_patch;
+    long ist_ele_grp_patch;
+    long ist_sf_grp_patch;
+    double *normal_mesh_patch;
+    double *normal_nod_mesh_patch;
+    double *dist_nod_mesh_patch;
 };
 
 /* prototypes */

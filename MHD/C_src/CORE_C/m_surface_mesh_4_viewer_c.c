@@ -526,10 +526,6 @@ static void dealloc_domain_center_s(struct viewer_mesh *mesh_s){
 };
 
 static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
-	free(mesh_s->normal_surf_grp);
-	free(mesh_s->norm_nod_surf_grp);
-	free(mesh_s->dist_nod_surf_grp);
-
 	free(mesh_s->normal_ele_grp);
 	free(mesh_s->norm_nod_ele_grp);
 	free(mesh_s->dist_nod_ele_grp);
