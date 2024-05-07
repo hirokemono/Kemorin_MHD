@@ -75,10 +75,10 @@ static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int poly
 			ied = istack_grp[ip+1];
 			for(icou = ist; icou < ied; icou++){
                 inum = isort_grp[icou];
-                icolor = igroup_mesh_patch[inum];
-
+				
 				for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 					jnum = j + inum * mesh_s->nsurf_each_tri;
+                    icolor = igroup_mesh_patch[jnum];
 					/*
 					printf("%d, %f %f %f \n", jnum, normal_ele[4*jnum+0],
                             normal_ele[4*jnum+1], normal_ele[4*jnum+2]);
@@ -185,7 +185,7 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
                                         mesh_m->domain_surface_color_code, mesh_s->mesh_color,
                                         mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf,
                                         mesh_s->isurf_domain_sf,
-                                            &mesh_s->igroup_mesh_patch[mesh_s->ist_domain_patch],
+                                            &mesh_s->igroup_mesh_patch[ist_norm],
                                         &mesh_s->normal_mesh_patch[4*ist_norm],
                                         &mesh_s->normal_nod_mesh_patch[12*ist_norm],
                                         mesh_s->iele_domain_far, mesh_s->ip_domain_far,
@@ -205,7 +205,7 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
                                             mesh_m->ele_surface_color_code, mesh_s->mesh_color,
                                             mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
                                             mesh_s->ele_item_sf,
-                                            &mesh_s->igroup_mesh_patch[mesh_s->ist_ele_grp_patch],
+                                            &mesh_s->igroup_mesh_patch[ist_norm],
                                             &mesh_s->normal_mesh_patch[4*ist_norm],
                                             &mesh_s->normal_nod_mesh_patch[12*ist_norm],
                                             mesh_s->iele_grp_far, mesh_s->ip_domain_far,
@@ -226,7 +226,7 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
                                             mesh_m->surf_surface_color_code, mesh_s->mesh_color,
                                             mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
                                             mesh_s->surf_item_sf,
-                                            &mesh_s->igroup_mesh_patch[mesh_s->ist_sf_grp_patch],
+                                            &mesh_s->igroup_mesh_patch[ist_norm],
                                             &mesh_s->normal_mesh_patch[4*ist_norm],
                                             &mesh_s->normal_nod_mesh_patch[12*ist_norm],
                                             mesh_s->isurf_grp_far, mesh_s->ip_domain_far,
@@ -252,7 +252,7 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
                                         mesh_m->domain_surface_color_code, mesh_s->mesh_color,
                                         mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf,
                                         mesh_s->isurf_domain_sf,
-                                            &mesh_s->igroup_mesh_patch[mesh_s->ist_domain_patch],
+                                            &mesh_s->igroup_mesh_patch[ist_norm],
                                         &mesh_s->normal_mesh_patch[4*ist_norm],
                                         &mesh_s->normal_nod_mesh_patch[12*ist_norm],
                                         mesh_s->iele_domain_far, mesh_s->ip_domain_far,
@@ -273,7 +273,7 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
                                             mesh_m->ele_surface_color_code, mesh_s->mesh_color,
                                             mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
                                             mesh_s->ele_item_sf,
-                                            &mesh_s->igroup_mesh_patch[mesh_s->ist_ele_grp_patch],
+                                            &mesh_s->igroup_mesh_patch[ist_norm],
                                                 &mesh_s->normal_mesh_patch[4*ist_norm],
                                                 &mesh_s->normal_nod_mesh_patch[12*ist_norm],
                                             mesh_s->iele_grp_far, mesh_s->ip_domain_far,
@@ -295,7 +295,7 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
                                             mesh_m->surf_surface_color_code, mesh_s->mesh_color,
                                             mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
                                             mesh_s->surf_item_sf,
-                                            &mesh_s->igroup_mesh_patch[mesh_s->ist_sf_grp_patch],
+                                            &mesh_s->igroup_mesh_patch[ist_norm],
                                                 &mesh_s->normal_mesh_patch[4*ist_norm],
                                                 &mesh_s->normal_nod_mesh_patch[12*ist_norm],
                                             mesh_s->isurf_grp_far, mesh_s->ip_domain_far,
@@ -349,38 +349,6 @@ void set_mesh_patch_colors(struct mesh_menu_val *mesh_m, struct viewer_mesh *mes
                                     mesh_s->num_pe_sf, mesh_m->always_draw_domains,
                                     &mesh_s->mesh_color[4*(ip_st+mesh_s->ist_surf_grp)]);
     };
-    
-    
-    
-    	mesh_s->ntot_solid_patch = count_solid_mesh_patches(mesh_s, mesh_m);
-    mesh_s->ntot_trans_patch = count_transparent_mesh_patches(mesh_s, mesh_m);
-    mesh_s->nextP2_trans_patch = 1 + (int) log2((double) (mesh_s->ntot_trans_patch-1));
-    mesh_s->ntotP2_trans_patch =  1 << mesh_s->nextP2_trans_patch;
-    
-    posix_memalign((void**)&mesh_s->index_trans_patch, 4096, mesh_s->ntotP2_trans_patch*sizeof(long));
-    if(mesh_s->index_trans_patch == NULL) {
-        printf("malloc error for index_trans_patch\n");
-        exit(0);
-    }
-    posix_memalign((void**)&mesh_s->z_trans_patch, 4096, mesh_s->ntotP2_trans_patch*sizeof(float));
-    if(mesh_s->z_trans_patch == NULL) {
-        printf("malloc error for z_trans_patch\n");
-        exit(0);
-    }
-    
-    mesh_s->iele_trans_patch = (long *)calloc(mesh_s->ntot_mesh_patch,sizeof(long));
-    if(mesh_s->iele_trans_patch == NULL) {
-        printf("malloc error for iele_trans_patch\n");
-        exit(0);
-    }
-    
-    mesh_s->iele_solid_patch = (long *)calloc(mesh_s->ntot_mesh_patch,sizeof(long));
-    if(mesh_s->iele_solid_patch == NULL) {
-        printf("malloc error for iele_solid_patch\n");
-        exit(0);
-    }
-    
-
     return;
 }
 
