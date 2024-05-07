@@ -177,6 +177,10 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s);
 void dealloc_mesh_normals_s(struct viewer_mesh *mesh_s);
 
 
+void alloc_trans_mesh_distance(long num_solid, long num_trans,
+                               struct viewer_mesh *mesh_s);
+void dealloc_trans_mesh_distance(struct viewer_mesh *mesh_s);
+
 struct viewer_mesh * alloc_viewer_mesh(void);
 void dealloc_all_mesh_4_viewer_s(struct viewer_mesh *mesh_s);
 
