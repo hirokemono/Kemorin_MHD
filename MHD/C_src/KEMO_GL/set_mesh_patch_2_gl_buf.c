@@ -183,13 +183,15 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
 	long ist_tri = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
 		ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
-				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
-				mesh_m->num_of_color_loop, mesh_m->domain_opacity,
-				mesh_m->domain_surface_color_code, 
-				mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf, 
-				mesh_s->isurf_domain_sf, mesh_s->normal_domain, mesh_s->norm_nod_domain,
-				mesh_s->iele_domain_far, mesh_s->ip_domain_far,
-				IZERO, mesh_s, mesh_m->draw_domains_solid, mesh_buf);
+                                        mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
+                                        mesh_m->num_of_color_loop, mesh_m->domain_opacity,
+                                        mesh_m->domain_surface_color_code,
+                                        mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf,
+                                        mesh_s->isurf_domain_sf,
+                                        &mesh_s->normal_mesh_patch[4*mesh_s->ist_domain_patch],
+                                        &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_domain_patch],
+                                        mesh_s->iele_domain_far, mesh_s->ip_domain_far,
+                                        IZERO, mesh_s, mesh_m->draw_domains_solid, mesh_buf);
 	};
 	
 	/* ! draw element group */
@@ -199,13 +201,15 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
 		
 		if( mesh_m->draw_elegrp_solid[i] != 0 && mesh_m->ele_grp_opacity >= 1.0){
 			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
-					mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
-					mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
-					mesh_m->ele_surface_color_code, 
-					mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
-					mesh_s->ele_item_sf, mesh_s->normal_ele_grp, mesh_s->norm_nod_ele_grp,
-					mesh_s->iele_grp_far, mesh_s->ip_domain_far,
-					i, mesh_s, mesh_m->always_draw_domains, mesh_buf);
+                                            mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
+                                            mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
+                                            mesh_m->ele_surface_color_code,
+                                            mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
+                                            mesh_s->ele_item_sf,
+                                            &mesh_s->normal_mesh_patch[4*mesh_s->ist_ele_grp_patch],
+                                            &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_ele_grp_patch],
+                                            mesh_s->iele_grp_far, mesh_s->ip_domain_far,
+                                            i, mesh_s, mesh_m->always_draw_domains, mesh_buf);
 		};
 	};
 	
@@ -216,13 +220,15 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
 		
 		if( mesh_m->draw_surfgrp_solid[i] != 0 && mesh_m->surf_grp_opacity >= 1.0){
 			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
-					mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
-					mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
-					mesh_m->surf_surface_color_code,
-					mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
-					mesh_s->surf_item_sf, mesh_s->normal_surf_grp, mesh_s->norm_nod_surf_grp, 
-					mesh_s->isurf_grp_far, mesh_s->ip_domain_far,
-					i, mesh_s, mesh_m->always_draw_domains, mesh_buf);
+                                            mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
+                                            mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
+                                            mesh_m->surf_surface_color_code,
+                                            mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
+                                            mesh_s->surf_item_sf,
+                                            &mesh_s->normal_mesh_patch[4*mesh_s->ist_sf_grp_patch],
+                                            &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_sf_grp_patch],
+                                            mesh_s->isurf_grp_far, mesh_s->ip_domain_far,
+                                            i, mesh_s, mesh_m->always_draw_domains, mesh_buf);
 		};
 	};
 	return ist_tri;
@@ -237,12 +243,14 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
 	long ist_tri = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity < 1.0){
 		ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
-				mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
-				mesh_m->num_of_color_loop, mesh_m->domain_opacity,
-				mesh_m->domain_surface_color_code, 
-				mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf, 
-				mesh_s->isurf_domain_sf, mesh_s->normal_domain, mesh_s->norm_nod_domain,
-				mesh_s->iele_domain_far, mesh_s->ip_domain_far,
+                                        mesh_m->domain_surface_color, mesh_m->mesh_color_mode,
+                                        mesh_m->num_of_color_loop, mesh_m->domain_opacity,
+                                        mesh_m->domain_surface_color_code,
+                                        mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf,
+                                        mesh_s->isurf_domain_sf,
+                                        &mesh_s->normal_mesh_patch[4*mesh_s->ist_domain_patch],
+                                        &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_domain_patch],
+                                        mesh_s->iele_domain_far, mesh_s->ip_domain_far,
 				IZERO, mesh_s, mesh_m->draw_domains_solid, mesh_buf);
 	};
 	
@@ -254,13 +262,15 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
 			
 			if( mesh_m->draw_elegrp_solid[i] != 0){
 			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
-					mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
-					mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
-					mesh_m->ele_surface_color_code, 
-					mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
-					mesh_s->ele_item_sf, mesh_s->normal_ele_grp, mesh_s->norm_nod_ele_grp,
-					mesh_s->iele_grp_far, mesh_s->ip_domain_far,
-					i, mesh_s, mesh_m->always_draw_domains, mesh_buf);
+                                            mesh_m->ele_surface_color, mesh_m->mesh_color_mode,
+                                            mesh_m->num_of_color_loop, mesh_m->ele_grp_opacity,
+                                            mesh_m->ele_surface_color_code,
+                                            mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
+                                            mesh_s->ele_item_sf,
+                                            &mesh_s->normal_mesh_patch[4*mesh_s->ist_ele_grp_patch],
+                                            &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_ele_grp_patch],
+                                            mesh_s->iele_grp_far, mesh_s->ip_domain_far,
+                                            i, mesh_s, mesh_m->always_draw_domains, mesh_buf);
 			};
 		};
 	}
@@ -272,13 +282,15 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
 		
 			if( mesh_m->draw_surfgrp_solid[i] != 0){
 			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode, 
-					mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
-					mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
-					mesh_m->surf_surface_color_code,
-					mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
-					mesh_s->surf_item_sf, mesh_s->normal_surf_grp, mesh_s->norm_nod_surf_grp, 
-					mesh_s->isurf_grp_far, mesh_s->ip_domain_far,
-					i, mesh_s, mesh_m->always_draw_domains, mesh_buf);
+                                            mesh_m->surf_surface_color, mesh_m->mesh_color_mode,
+                                            mesh_m->num_of_color_loop, mesh_m->surf_grp_opacity,
+                                            mesh_m->surf_surface_color_code,
+                                            mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
+                                            mesh_s->surf_item_sf,
+                                            &mesh_s->normal_mesh_patch[4*mesh_s->ist_sf_grp_patch],
+                                            &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_sf_grp_patch],
+                                            mesh_s->isurf_grp_far, mesh_s->ip_domain_far,
+                                            i, mesh_s, mesh_m->always_draw_domains, mesh_buf);
 			};
 		};
 	};

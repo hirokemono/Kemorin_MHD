@@ -14,35 +14,9 @@ static void set_viewer_mesh(struct viewer_mesh *mesh_s){
 	set_surface_mesh_size(mesh_s);
 	take_normal_surf_mesh_c(mesh_s);
     
+    alloc_mesh_normals_s(mesh_s);
 	set_normal_on_node_4_mesh(mesh_s);
-    
-    mesh_s->ist_domain_patch = 0;
-    mesh_s->ist_ele_grp_patch = mesh_s->ist_domain_patch + mesh_s->nsurf_domain_sf;
-    mesh_s->ist_sf_grp_patch =  mesh_s->ist_ele_grp_patch + mesh_s->nele_ele_sf;
-    mesh_s->ntot_mesh_patch =   mesh_s->ist_sf_grp_patch + mesh_s->nsurf_surf_sf;
-    
-    long num = mesh_s->ntot_mesh_patch * mesh_s->nsurf_each_tri;
-    mesh_s->normal_mesh_patch = (double *)calloc(4*num,sizeof(double));
-    if(mesh_s->normal_mesh_patch == NULL) {
-        printf("malloc error for normal_mesh_patch\n");
-        exit(0);
-    }
-    mesh_s->normal_nod_mesh_patch = (double *)calloc(12*num,sizeof(double));
-    if(mesh_s->normal_nod_mesh_patch == NULL) {
-        printf("malloc error for normal_nod_mesh_patch\n");
-        exit(0);
-    }
-
-    mesh_s->dist_nod_mesh_patch = (double *)calloc(3*num,sizeof(double));
-    if(mesh_s->dist_nod_mesh_patch == NULL) {
-        printf("malloc error for dist_nod_mesh_patch\n");
-        exit(0);
-    }
-    
-    free(mesh_s->dist_nod_mesh_patch);
-    free(mesh_s->normal_nod_mesh_patch);
-    free(mesh_s->normal_mesh_patch);
-	return;
+    return;
 }
 
 static void set_kemoviewer_mesh(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m, 

@@ -94,16 +94,6 @@ struct viewer_mesh {
 	double *domain_min;
 	double *domain_max;
 	
-	double *normal_domain;
-	double *norm_nod_domain;
-    
-	double *normal_ele_grp;
-	double *norm_nod_ele_grp;
-    
-	double *normal_surf_grp;
-	double *norm_nod_surf_grp;
-    
-    
 	double mesh_center[3];
 	double xx_mesh_min[3];
 	double xx_mesh_max[3];
@@ -134,7 +124,6 @@ struct viewer_mesh {
     long ist_sf_grp_patch;
     double *normal_mesh_patch;
     double *normal_nod_mesh_patch;
-    double *dist_nod_mesh_patch;
 };
 
 /* prototypes */
@@ -167,6 +156,10 @@ void alloc_surf_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s);
 void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s);
 void alloc_domain_center_s(struct viewer_mesh *mesh_s);
 void alloc_mesh_draw_s(struct viewer_mesh *mesh_s);
+
+void alloc_mesh_normals_s(struct viewer_mesh *mesh_s);
+void dealloc_mesh_normals_s(struct viewer_mesh *mesh_s);
+
 
 struct viewer_mesh * alloc_viewer_mesh(void);
 void dealloc_all_mesh_4_viewer_s(struct viewer_mesh *mesh_s);

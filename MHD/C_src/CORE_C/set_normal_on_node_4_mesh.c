@@ -7,6 +7,7 @@
  *
  */
 
+#include <math.h>
 #include "set_normal_on_node_4_mesh.h"
 
 
@@ -15,12 +16,16 @@ static void set_domain_normal_4_each_node(struct viewer_mesh *mesh_s,
                                           double *norm_nod_domain,
                                           double *dist_nod_domain){
 	int i, iele, idir;
-	for (i=0; i<mesh_s->nsurf_domain_sf; i++) {
-		iele = abs(mesh_s->isurf_domain_sf[i]) - 1;
-		idir = abs(mesh_s->isurf_domain_sf[i]) / mesh_s->isurf_domain_sf[i];
+    for (i=0; i<mesh_s->nsurf_domain_sf; i++) {
+        iele = abs(mesh_s->isurf_domain_sf[i]) - 1;
+        idir = abs(mesh_s->isurf_domain_sf[i]) / mesh_s->isurf_domain_sf[i];
         set_normal_4_each_node(i, iele, idir, mesh_s,
                                normal_domain, norm_nod_domain,
                                dist_nod_domain);
+        if(abs(normal_domain[4*i])+abs(normal_domain[4*i+1])+abs(normal_domain[4*i+2]) != 1.0){
+            printf("Wrong iele idir %d %d %f %f %f %f\n", iele, idir,
+                   normal_domain[4*i], normal_domain[4*i+1], normal_domain[4*i+2], normal_domain[4*i+3]);
+        }
 	};
 	return;
 }
@@ -64,7 +69,8 @@ static void set_normal_on_domain_group(struct viewer_mesh *mesh_s,
         refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
                                     mesh_s->isurf_stack_domain_sf[ip], mesh_s->isurf_stack_domain_sf[ip+1],
                                     mesh_s->isurf_domain_sf, wk_norm->dist_nod_domain,
-                                    mesh_s->norm_nod_domain, wk_norm);
+                                    &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_domain_patch]
+                                    , wk_norm);
     }
     return;
 }
@@ -78,7 +84,8 @@ static void set_normal_on_node_element_group(struct viewer_mesh *mesh_s,
             refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
                                         mesh_s->ele_stack_sf[ip_st], mesh_s->ele_stack_sf[ip_st+1],
                                         mesh_s->ele_item_sf, wk_norm->dist_nod_ele_grp,
-                                        mesh_s->norm_nod_ele_grp, wk_norm);
+                                        &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_ele_grp_patch],
+                                        wk_norm);
         };
     };
     return;
@@ -93,7 +100,8 @@ static void set_normal_on_node_surface_group(struct viewer_mesh *mesh_s,
             refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
                                         mesh_s->surf_stack_sf[ip_st], mesh_s->surf_stack_sf[ip_st+1],
                                         mesh_s->surf_item_sf, wk_norm->dist_nod_surf_grp,
-                                        mesh_s->norm_nod_surf_grp, wk_norm);
+                                        &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_sf_grp_patch],
+                                        wk_norm);
         };
     };
     return;
@@ -101,18 +109,21 @@ static void set_normal_on_node_surface_group(struct viewer_mesh *mesh_s,
 
 void set_normal_on_node_4_mesh(struct viewer_mesh *mesh_s){
     struct normal_nod_work *wk_norm = alloc_norm_nod_tmp(mesh_s);
-    set_domain_normal_4_each_node(mesh_s, mesh_s->normal_domain,
-                                  mesh_s->norm_nod_domain,
+    set_domain_normal_4_each_node(mesh_s,
+                                  &mesh_s->normal_mesh_patch[4*mesh_s->ist_domain_patch],
+                                  &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_domain_patch],
                                   wk_norm->dist_nod_domain);
     set_normal_on_domain_group(mesh_s, wk_norm);
 
-    set_ele_group_normal_4_each_node(mesh_s, mesh_s->normal_ele_grp,
-                                     mesh_s->norm_nod_ele_grp,
+    set_ele_group_normal_4_each_node(mesh_s,
+                                     &mesh_s->normal_mesh_patch[4*mesh_s->ist_ele_grp_patch],
+                                     &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_ele_grp_patch],
                                      wk_norm->dist_nod_ele_grp);
     set_normal_on_node_element_group(mesh_s, wk_norm);
 
-    set_surf_group_normal_4_each_node(mesh_s, mesh_s->normal_surf_grp,
-                                      mesh_s->norm_nod_surf_grp,
+    set_surf_group_normal_4_each_node(mesh_s,
+                                      &mesh_s->normal_mesh_patch[4*mesh_s->ist_sf_grp_patch],
+                                      &mesh_s->normal_nod_mesh_patch[12*mesh_s->ist_sf_grp_patch],
                                       wk_norm->dist_nod_surf_grp);
     set_normal_on_node_surface_group(mesh_s, wk_norm);
     dealloc_norm_nod_tmp(wk_norm);
