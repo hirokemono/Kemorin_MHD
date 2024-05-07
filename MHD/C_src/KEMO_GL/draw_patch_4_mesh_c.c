@@ -13,6 +13,7 @@ static void const_solid_mesh_patch_bufffer(int shading_mode,
 	if(mesh_buf->num_nod_buf <= 0) return;
 	
 	resize_strided_buffer(mesh_buf);
+    set_mesh_patch_colors(mesh_m, mesh_s);
 	set_solid_mesh_patches_to_buf(shading_mode, mesh_s, mesh_m, mesh_buf);
 	return;
 }
@@ -36,6 +37,7 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
 
     if(mesh_trns_buf->num_nod_buf > 0){
         resize_strided_buffer(mesh_trns_buf);
+        set_mesh_patch_colors(mesh_m, mesh_s);
         set_transparent_mesh_patches_to_buf(view_s->shading_mode, mesh_s, mesh_m, mesh_trns_buf);
     };
     return;
