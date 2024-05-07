@@ -10,28 +10,14 @@ A class to manage all of the Metal objects this app creates.
 #import <Metal/Metal.h>
 
 #include "array_for_sorting_test.h"
+#include "float_sorting_tests.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-// The number of floats in each array, and the size of the arrays in bytes.
-struct sortdata{
-    unsigned long sortLength;
-    unsigned long narrayP2;
-    unsigned int nextP2;
-    long nsize_buf;
- 
-    float *floatinput;
-    int   *intinput;
-    float *floatresult;
-    int   *intresult;
-};
-
 
 @interface MetalSortComparison : NSObject
 - (instancetype) initWithDevice: (id<MTLDevice>) device;
 
-- (void) prepareSort:(struct sortdata *) _d;
-- (void) sendSortCommand:(struct sortdata *) _d;
+- (void) sendSortCommand:(struct sort_float_array *) rSort;
 
 @end
 

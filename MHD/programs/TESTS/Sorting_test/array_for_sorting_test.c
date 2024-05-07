@@ -89,7 +89,7 @@ void init_Float_Array(long num, long nArray, float *org) {
     long i;
     for (i=0;i<num;i++) {
         org[i] = 1.0 + (double) (rand() % num);
-        org[i] = 1.0 / org[i];
+        org[i] = org[i] * 0.001;
     }
     float rmax = max_float_array(num, org);
     for (i=num;i<nArray;i++) {org[i] = rmax + 1;}

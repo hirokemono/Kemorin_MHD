@@ -22,29 +22,24 @@
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         int nthreads = 32;
+        long nArray = 1 << 23;
         
-        
+        struct sort_float_array *rSort = init_sort_float_array(nthreads, nArray);
+        printf("nthreads %d \n", nthreads);
+        printf("rSort->narrayP2 %ld \n", rSort->narrayP2);
+
+
         id<MTLDevice> device = MTLCreateSystemDefaultDevice();
 
         // Create the custom object used to encapsulate the Metal code.
         // Initializes objects to communicate with the GPU.
         MetalSortComparison* _bitonic = [[MetalSortComparison alloc] initWithDevice:device];
 
-        struct sortdata *_d;
-        if((_d = (struct sortdata *) malloc(sizeof(struct sortdata))) == NULL) {
-            printf("malloc error for sortdata\n");
-            exit(0);
-        }
-        [_bitonic prepareSort:_d];
-
-        printf("nthreads %d \n", nthreads);
-        printf("_d->sortLength %ld \n", _d->sortLength);
-
-
-        [_bitonic sendSortCommand:_d];
+        alloc_sort_float_works(rSort);
+        [_bitonic sendSortCommand:rSort];
+        dealloc_sort_float_works(rSort);
         NSLog(@"Metal Sort finished");
  
-        struct sort_float_array *rSort = init_sort_float_array(nthreads, _d->sortLength);
 
         double seq_time1 = quicksort_float_test(rSort);
         double seq_time2 = bitonicsort_rec_float_test(rSort);

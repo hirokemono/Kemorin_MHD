@@ -77,61 +77,21 @@ static long prod_padding_1024floats(int ncomp_buf){
     return prod_padding_4096chars(nsize);
 };
 
-- (void) prepareSort:(struct sortdata *) _d
+void verifySort(struct sort_float_array *rSort)
 {
-    _d->sortLength = 1<<23;
-    printf("sortLength %ld \n", _d->sortLength);
-
-    _d->nextP2 =  1 + (int) log2((double) (_d->sortLength-1));
-    posix_memalign((void**)&_d->floatresult, 4096, _d->sortLength*sizeof(float));
-    if(_d->floatresult == NULL){
-        printf("malloc error for floatresult\n");
-        exit(0);
-    };
-    posix_memalign((void**)&_d->floatinput, 4096, _d->sortLength*sizeof(float));
-    if(_d->floatinput == NULL){
-        printf("malloc error for floatinput\n");
-        exit(0);
-    };
-    posix_memalign((void**)&_d->intresult, 4096, _d->sortLength*sizeof(int));
-    if(_d->intresult == NULL){
-        printf("malloc error for intresult\n");
-        exit(0);
-    };
-    posix_memalign((void**)&_d->intinput, 4096, _d->sortLength*sizeof(int));
-    if(_d->intinput == NULL){
-        printf("malloc error for intinput\n");
-        exit(0);
-    };
-    for(long i=0;i<_d->sortLength;i++){
-        _d->floatresult[i] = -i + ((float) _d->sortLength * 0.5);
-        _d->intresult[i] =  (int) ( -i + _d->sortLength-1);
-        _d->floatinput[i] = _d->floatresult[i];
-        _d->intinput[i] =   _d->intinput[i];
-    }
-}
-
-void verifySort(struct sortdata *_d)
-{
-    long nout = _d->sortLength;
-    if(_d->sortLength > 256) nout = 128;
+    long nout = rSort->narrayP2;
+    if(rSort->narrayP2 > 256) nout = 128;
     for(long i=0;i<nout;i++){
-        printf("%ld %f: %d %f: \n", i, _d->floatinput[i],
-               _d->intresult[i], _d->floatresult[i]);
+        printf("%ld %f: %ld %f: \n", i, rSort->org[i],
+               rSort->idx[i], rSort->ra[i]);
     }
 }
 
-int nsend[2];
 
 - (void)encodeSortCommand:(id<MTLComputeCommandEncoder>)computeEncoder
-                     data:(struct sortdata *) _d{
+                     data:(struct sort_float_array *) rSort
+{
 
-    // Encode the pipeline state object and its parameters.
-    [computeEncoder setComputePipelineState:_mBitonicSort];
-    [computeEncoder setBuffer:_sortFBuffer offset:0 atIndex:0];
-    [computeEncoder setBuffer:_sortIBuffer offset:0 atIndex:1];
-    [computeEncoder setBytes:&nsend[0] length:sizeof(int) atIndex:2];
-    [computeEncoder setBytes:&nsend[1] length:sizeof(int) atIndex:3];
 /*
     MTLSize gridSize = MTLSizeMake(sortLength, 1, 1);
     // Calculate a threadgroup size.
@@ -146,7 +106,7 @@ int nsend[2];
     [computeEncoder dispatchThreads:gridSize
               threadsPerThreadgroup:threadgroupSize];
 */
-    long ngroup = _d->sortLength / _mBitonicSort.threadExecutionWidth;
+    long ngroup = rSort->narrayP2 / _mBitonicSort.threadExecutionWidth;
     MTLSize nThreadgroupsPerGrid =   MTLSizeMake(ngroup, 1, 1);
     MTLSize nThreadsPerThreadgroup = MTLSizeMake(_mBitonicSort.threadExecutionWidth, 1, 1);
     [computeEncoder dispatchThreadgroups:nThreadgroupsPerGrid
@@ -154,23 +114,34 @@ int nsend[2];
 
 }
 
-- (void) sendSortCommand:(struct sortdata *) _d
+- (void) sendSortCommand:(struct sort_float_array *) rSort;
 {
-
-    _sortFBuffer = [_mDevice newBufferWithBytesNoCopy:_d->floatresult
-                                               length:(_d->sortLength * sizeof(float))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-    _sortIBuffer = [_mDevice newBufferWithBytesNoCopy:_d->intresult
-                                               length:(_d->sortLength * sizeof(int))
-                                              options:MTLResourceStorageModeShared
-                                          deallocator:nil];
-    
     struct timeval startwtime;
     struct timeval endwtime;
-    gettimeofday( &startwtime, NULL );
+    long i;
+    
+    int *intinput;
+    posix_memalign((void**)&intinput, 4096, rSort->narrayP2*sizeof(int));
+    if(intinput == NULL){
+        printf("malloc error for intinput\n");
+        exit(0);
+    };
+    for (i=0;i<rSort->Narray;i++) {intinput[i] = (int) i;}
+    for (i=rSort->Narray;i<rSort->narrayP2;i++) {intinput[i] = -1;}
 
-    for(int i=0;i<_d->nextP2;i++){
+    _sortFBuffer = [_mDevice newBufferWithBytesNoCopy:rSort->ra
+                                               length:(rSort->narrayP2 * sizeof(float))
+                                              options:MTLResourceStorageModeShared
+                                          deallocator:nil];
+    _sortIBuffer = [_mDevice newBufferWithBytesNoCopy:intinput
+                                               length:(rSort->narrayP2 * sizeof(int))
+                                              options:MTLResourceStorageModeShared
+                                          deallocator:nil];
+
+    gettimeofday( &startwtime, NULL );
+    int nsend[2];
+
+    for(int i=0;i<rSort->nextP2;i++){
         for(int j=0;j<i+1;j++){
             nsend[0] = i;
             nsend[1] = j;
@@ -181,8 +152,16 @@ int nsend[2];
             // Start a compute pass.
             id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncoder];
             assert(computeEncoder != nil);
+
+            // Encode the pipeline state object and its parameters.
+            [computeEncoder setComputePipelineState:_mBitonicSort];
+            [computeEncoder setBuffer:_sortFBuffer offset:0 atIndex:0];
+            [computeEncoder setBuffer:_sortIBuffer offset:0 atIndex:1];
+            [computeEncoder setBytes:&nsend[0] length:sizeof(int) atIndex:2];
+            [computeEncoder setBytes:&nsend[1] length:sizeof(int) atIndex:3];
+
             [self encodeSortCommand:computeEncoder
-                               data:_d];
+                               data:rSort];
 
             [computeEncoder endEncoding];
             [commandBuffer commit];
@@ -190,11 +169,12 @@ int nsend[2];
         }
     };
     gettimeofday( &endwtime, NULL );
+    for(i=0;i<rSort->narrayP2;i++) {rSort->idx[i] = intinput[i];}
+    free(intinput);
 
 
-    verifySort(_d);
-    check_sorted_Int(_d->sortLength,   _d->intresult);
-    check_sorted_Float(_d->sortLength, _d->floatresult);
+    verifySort(rSort);
+    check_sorted_Float(rSort->narrayP2, rSort->ra);
 
     double seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                                + endwtime.tv_sec - startwtime.tv_sec );
