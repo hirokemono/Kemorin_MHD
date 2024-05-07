@@ -79,7 +79,9 @@ static long prod_padding_1024floats(int ncomp_buf){
 
 - (void) prepareSort:(struct sortdata *) _d
 {
-    _d->sortLength = 1<<24;
+    _d->sortLength = 1<<23;
+    printf("sortLength %ld \n", _d->sortLength);
+
     _d->nextP2 =  1 + (int) log2((double) (_d->sortLength-1));
     posix_memalign((void**)&_d->floatresult, 4096, _d->sortLength*sizeof(float));
     if(_d->floatresult == NULL){
@@ -117,26 +119,6 @@ void verifySort(struct sortdata *_d)
         printf("%ld %f: %d %f: \n", i, _d->floatinput[i],
                _d->intresult[i], _d->floatresult[i]);
     }
-}
-
-void check_sorted_Int(long num, const int *ires){
-  int pass = 1;
-  long i;
-    for (i=1;i<num;i++) {
-    pass &= (ires[i-1] <= ires[i]);
-  }
-    
-  printf("Integer TEST %s\n",(pass) ? "PASSed" : "FAILed");
-}
-
-void check_sorted_Float(long num, const float *res){
-  int pass = 1;
-  long i;
-    for (i=1;i<num;i++) {
-    pass &= (res[i-1] <= res[i]);
-  }
-    
-  printf("Float TEST %s\n",(pass) ? "PASSed" : "FAILed");
 }
 
 int nsend[2];

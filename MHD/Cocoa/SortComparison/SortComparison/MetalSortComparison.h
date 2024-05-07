@@ -9,6 +9,8 @@ A class to manage all of the Metal objects this app creates.
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 
+#include "array_for_sorting_test.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 // The number of floats in each array, and the size of the arrays in bytes.

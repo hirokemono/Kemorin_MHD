@@ -163,60 +163,60 @@ void check_sorted_Float(long num, const float *res){
 /** Output sorted lists for short array **/
 void print_sorted_Int(long num, long nArray, const int *iorg,
                       const int *ires, const long *idx) {
-    int i;
+    long i;
     if(num > 33) return;
     printf("Length of sorting and array: %ld %ld \n", num, nArray);
     printf("Index original_value: original_index, sorted_value\n");
     for (i = 0; i < num; i++) {
-        printf("%d %d: %d %d \n", i, iorg[i], (int) idx[i], ires[i]);
+        printf("%ld %d: %d %d \n", i, iorg[i], (int) idx[i], ires[i]);
     }
     printf("\n");
     for (i = num; i < nArray; i++) {
-        printf("%d %d: %d %d \n", i, iorg[i], (int) idx[i], ires[i]);
+        printf("%ld %d: %d %d \n", i, iorg[i], (int) idx[i], ires[i]);
     }
 }
 
 void print_sorted_Long(long num, long nArray, const long *iorg,
                        const long *ires, const long *idx) {
-    int i;
+    long i;
     if(num > 33) return;
     printf("Length of sorting and array: %ld %ld \n", num, nArray);
     printf("Index original_value: original_index, sorted_value\n");
     for (i = 0; i < num; i++) {
-        printf("%d %ld: %ld %ld \n", i, iorg[i], idx[i], ires[i]);
+        printf("%ld %ld: %ld %ld \n", i, iorg[i], idx[i], ires[i]);
     }
     printf("\n");
     for (i = num; i < nArray; i++) {
-        printf("%d %ld: %ld %ld \n", i, iorg[i],  idx[i], ires[i]);
+        printf("%ld %ld: %ld %ld \n", i, iorg[i],  idx[i], ires[i]);
     }
 }
 
 void print_sorted_Double(long num, long nArray, const double *dorg, 
                          const double *dres, const long *idx) {
-    int i;
+    long i;
     if(num > 33) return;
     printf("Length of sorting and array: %ld %ld \n", num, nArray);
     printf("Index original_value: original_index, sorted_value\n");
     for (i = 0; i < num; i++) {
-        printf("%d %lf: %d %lf \n", i, dorg[i], (int) idx[i], dres[i]);
+        printf("%ld %lf: %d %lf \n", i, dorg[i], (int) idx[i], dres[i]);
     }
     printf("\n");
     for (i = num; i < nArray; i++) {
-        printf("%d %lf: %d %lf \n", i, dorg[i], (int) idx[i], dres[i]);
+        printf("%ld %lf: %d %lf \n", i, dorg[i], (int) idx[i], dres[i]);
     }
 }
 
 void print_sorted_Float(long num, long nArray, const float *org,
                         const float *res, const long *idx){
-    int i;
+    long i;
     if(num > 33) return;
     printf("Length of sorting and array: %ld %ld \n", num, nArray);
     printf("Index original_value: original_index, sorted_value\n");
     for (i = 0; i < num; i++) {
-        printf("%d %f: %d %f \n", i, org[i], (int) idx[i], res[i]);
+        printf("%ld %f: %d %f \n", i, org[i], (int) idx[i], res[i]);
     }
     printf("\n");
     for (i = num; i < nArray; i++) {
-        printf("%d %f: %d %f \n", i, org[i], (int) idx[i], res[i]);
+        printf("%ld %f: %d %f \n", i, org[i], (int) idx[i], res[i]);
     }
 };

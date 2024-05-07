@@ -79,7 +79,7 @@ static void * flip_sign_Float_each_thread(void *args)
     long hi =      ((args_pthread_float_sort *) args)->hi;
     float *res =   ((args_pthread_float_sort *) args)->res;
     
-    for(int i=lo;i<hi;i++){res[i] = -res[i];};
+    for(long i=lo;i<hi;i++){res[i] = -res[i];};
     return 0;
 }
 
