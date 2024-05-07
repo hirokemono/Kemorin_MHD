@@ -117,11 +117,17 @@ struct viewer_mesh {
     long *isurf_grp_far;
 	long *ip_domain_far;
     
-    
+    long ntot_groups;
+    long ist_domain_grp;
+    long ist_ele_grp;
+    long ist_surf_grp;
+    double *mesh_color;
+
     long ntot_mesh_patch;
     long ist_domain_patch;
     long ist_ele_grp_patch;
     long ist_sf_grp_patch;
+    int    *igroup_mesh_patch;
     double *normal_mesh_patch;
     double *normal_nod_mesh_patch;
 };

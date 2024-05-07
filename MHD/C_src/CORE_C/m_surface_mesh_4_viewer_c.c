@@ -238,9 +238,21 @@ void alloc_surf_grp_stack_viewer_s(struct viewer_mesh *mesh_s){
 	int i, num;
 	num = mesh_s->num_pe_sf*mesh_s->ngrp_surf_sf+1;
 	mesh_s->surf_stack_sf =      (int *)calloc(num,sizeof(int));
+    if(mesh_s->surf_stack_sf == NULL) {
+        printf("malloc error for surf_stack_sf\n");
+        exit(0);
+    }
 	mesh_s->surf_edge_stack_sf = (int *)calloc(num,sizeof(int));
+    if(mesh_s->surf_edge_stack_sf == NULL) {
+        printf("malloc error for surf_edge_stack_sf\n");
+        exit(0);
+    }
 	mesh_s->surf_nod_stack_sf =  (int *)calloc(num,sizeof(int));
-	
+    if(mesh_s->surf_nod_stack_sf == NULL) {
+        printf("malloc error for surf_nod_stack_sf\n");
+        exit(0);
+    }
+
 	mesh_s->surf_gp_name_sf = (char **)calloc(mesh_s->ngrp_surf_sf, sizeof(char *));
 	for (i = 0; i < mesh_s->ngrp_surf_sf; i++) {
 		mesh_s->surf_gp_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
@@ -324,11 +336,31 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 };
 
 void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
+    mesh_s->ist_domain_grp = 0;
+    mesh_s->ist_ele_grp =  mesh_s->ist_domain_grp + 1;
+    mesh_s->ist_surf_grp = mesh_s->ist_ele_grp + mesh_s->ngrp_ele_sf;
+    mesh_s->ntot_groups =  mesh_s->ist_surf_grp + mesh_s->ngrp_surf_sf;
+    mesh_s->ist_ele_grp =  mesh_s->num_pe_sf * mesh_s->ist_ele_grp;
+    mesh_s->ist_surf_grp = mesh_s->num_pe_sf * mesh_s->ist_surf_grp;
+    mesh_s->ntot_groups =  mesh_s->num_pe_sf * mesh_s->ntot_groups;
+
+    mesh_s->mesh_color = (double *)calloc(4*mesh_s->ntot_groups,sizeof(double));
+    if(mesh_s->mesh_color == NULL) {
+        printf("malloc error for mesh_color\n");
+        exit(0);
+    }
+
     mesh_s->ist_domain_patch = 0;
     mesh_s->ist_ele_grp_patch = mesh_s->ist_domain_patch + mesh_s->nsurf_domain_sf;
     mesh_s->ist_sf_grp_patch =  mesh_s->ist_ele_grp_patch + mesh_s->nele_ele_sf;
     mesh_s->ntot_mesh_patch =   mesh_s->ist_sf_grp_patch + mesh_s->nsurf_surf_sf;
     
+    mesh_s->igroup_mesh_patch = (int *)calloc(mesh_s->ntot_mesh_patch,sizeof(int));
+    if(mesh_s->igroup_mesh_patch == NULL) {
+        printf("malloc error for normal_mesh_patch\n");
+        exit(0);
+    }
+
     long num = mesh_s->ntot_mesh_patch * mesh_s->nsurf_each_tri;
     mesh_s->normal_mesh_patch = (double *)calloc(4*num,sizeof(double));
     if(mesh_s->normal_mesh_patch == NULL) {
@@ -345,10 +377,17 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
 void dealloc_mesh_normals_s(struct viewer_mesh *mesh_s){
     free(mesh_s->normal_nod_mesh_patch);
     free(mesh_s->normal_mesh_patch);
+    free(mesh_s->igroup_mesh_patch);
     mesh_s->ist_domain_patch =  0;
     mesh_s->ist_ele_grp_patch = 0;
     mesh_s->ist_sf_grp_patch =  0;
     mesh_s->ntot_mesh_patch =   0;
+    
+    free(mesh_s->mesh_color);
+    mesh_s->ist_domain_grp =  0;
+    mesh_s->ist_ele_grp =     0;
+    mesh_s->ist_surf_grp =    0;
+    mesh_s->ntot_groups =     0;
     return;
 };
 

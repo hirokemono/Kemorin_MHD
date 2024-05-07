@@ -18,5 +18,6 @@
 /* prototypes */
 
 void set_normal_on_node_4_mesh(struct viewer_mesh *mesh_s);
+void set_mesh_patch_group_id(struct viewer_mesh *mesh_s);
 
 #endif

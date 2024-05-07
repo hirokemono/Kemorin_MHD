@@ -22,10 +22,6 @@ static void set_domain_normal_4_each_node(struct viewer_mesh *mesh_s,
         set_normal_4_each_node(i, iele, idir, mesh_s,
                                normal_domain, norm_nod_domain,
                                dist_nod_domain);
-        if(abs(normal_domain[4*i])+abs(normal_domain[4*i+1])+abs(normal_domain[4*i+2]) != 1.0){
-            printf("Wrong iele idir %d %d %f %f %f %f\n", iele, idir,
-                   normal_domain[4*i], normal_domain[4*i+1], normal_domain[4*i+2], normal_domain[4*i+3]);
-        }
 	};
 	return;
 }
@@ -128,4 +124,21 @@ void set_normal_on_node_4_mesh(struct viewer_mesh *mesh_s){
     set_normal_on_node_surface_group(mesh_s, wk_norm);
     dealloc_norm_nod_tmp(wk_norm);
 	return;
+}
+
+void set_mesh_patch_group_id(struct viewer_mesh *mesh_s){
+    int igrp;
+    set_each_patch_group_id(mesh_s->num_pe_sf, IZERO, 
+                            mesh_s->ist_domain_grp, mesh_s->isurf_stack_domain_sf, 
+                            &mesh_s->igroup_mesh_patch[mesh_s->ist_domain_patch]);
+	for (igrp = 0; igrp < mesh_s->ngrp_ele_sf; igrp++){
+        set_each_patch_group_id(mesh_s->num_pe_sf, igrp, 
+                                mesh_s->ist_ele_grp, mesh_s->ele_stack_sf,
+                                &mesh_s->igroup_mesh_patch[mesh_s->ist_ele_grp_patch]);
+    }
+	for (igrp = 0; igrp < mesh_s->ngrp_ele_sf; igrp++){
+        set_each_patch_group_id(mesh_s->num_pe_sf, igrp, 
+                                mesh_s->ist_surf_grp,  mesh_s->surf_stack_sf,
+                                &mesh_s->igroup_mesh_patch[mesh_s->ist_sf_grp_patch]);
+    }
 }
