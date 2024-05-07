@@ -15,9 +15,9 @@ A class to manage all of the Metal objects this app creates.
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MetalSortComparison : NSObject
-- (instancetype) initWithDevice: (id<MTLDevice>) device;
 
-- (void) sendSortCommand:(struct sort_float_array *) rSort;
+- (instancetype) initWithDevice: (id<MTLDevice>) device;
+- (double) sendSortCommand:(struct sort_float_array *) rSort;
 
 @end
 

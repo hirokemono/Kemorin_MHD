@@ -9,8 +9,6 @@ A class to manage all of the Metal objects this app creates.
 @import MetalKit;
 #import "MetalSortComparison.h"
 
-struct sortdata *_d;
-
 @implementation MetalSortComparison
 {
     id<MTLDevice> _mDevice;
@@ -89,7 +87,7 @@ void verifySort(struct sort_float_array *rSort)
 
 
 - (void)encodeSortCommand:(id<MTLComputeCommandEncoder>)computeEncoder
-                     data:(struct sort_float_array *) rSort
+                arraySize:(long) narrayP2
 {
 
 /*
@@ -106,7 +104,7 @@ void verifySort(struct sort_float_array *rSort)
     [computeEncoder dispatchThreads:gridSize
               threadsPerThreadgroup:threadgroupSize];
 */
-    long ngroup = rSort->narrayP2 / _mBitonicSort.threadExecutionWidth;
+    long ngroup = narrayP2 / _mBitonicSort.threadExecutionWidth;
     MTLSize nThreadgroupsPerGrid =   MTLSizeMake(ngroup, 1, 1);
     MTLSize nThreadsPerThreadgroup = MTLSizeMake(_mBitonicSort.threadExecutionWidth, 1, 1);
     [computeEncoder dispatchThreadgroups:nThreadgroupsPerGrid
@@ -114,34 +112,24 @@ void verifySort(struct sort_float_array *rSort)
 
 }
 
-- (void) sendSortCommand:(struct sort_float_array *) rSort;
+- (void) bitonicSortCommand:(int) nArrayPower
+                  sortArray:(float *) result
+                 indexArray:(int *) index
 {
-    struct timeval startwtime;
-    struct timeval endwtime;
     long i;
-    
-    int *intinput;
-    posix_memalign((void**)&intinput, 4096, rSort->narrayP2*sizeof(int));
-    if(intinput == NULL){
-        printf("malloc error for intinput\n");
-        exit(0);
-    };
-    for (i=0;i<rSort->Narray;i++) {intinput[i] = (int) i;}
-    for (i=rSort->Narray;i<rSort->narrayP2;i++) {intinput[i] = -1;}
+    long narrayP2 = 1 << nArrayPower;
 
-    _sortFBuffer = [_mDevice newBufferWithBytesNoCopy:rSort->ra
-                                               length:(rSort->narrayP2 * sizeof(float))
+    _sortFBuffer = [_mDevice newBufferWithBytesNoCopy:result
+                                               length:(narrayP2 * sizeof(float))
                                               options:MTLResourceStorageModeShared
                                           deallocator:nil];
-    _sortIBuffer = [_mDevice newBufferWithBytesNoCopy:intinput
-                                               length:(rSort->narrayP2 * sizeof(int))
+    _sortIBuffer = [_mDevice newBufferWithBytesNoCopy:index
+                                               length:(narrayP2 * sizeof(int))
                                               options:MTLResourceStorageModeShared
                                           deallocator:nil];
 
-    gettimeofday( &startwtime, NULL );
     int nsend[2];
-
-    for(int i=0;i<rSort->nextP2;i++){
+    for(int i=0;i<nArrayPower;i++){
         for(int j=0;j<i+1;j++){
             nsend[0] = i;
             nsend[1] = j;
@@ -161,23 +149,47 @@ void verifySort(struct sort_float_array *rSort)
             [computeEncoder setBytes:&nsend[1] length:sizeof(int) atIndex:3];
 
             [self encodeSortCommand:computeEncoder
-                               data:rSort];
+                          arraySize:narrayP2];
 
             [computeEncoder endEncoding];
             [commandBuffer commit];
             [commandBuffer waitUntilCompleted];
         }
     };
-    gettimeofday( &endwtime, NULL );
+    return;
+};
+
+- (double) sendSortCommand:(struct sort_float_array *) rSort;
+{
+    struct timeval startwtime;
+    struct timeval endwtime;
+    long i;
+    
+    int *intinput;
+    posix_memalign((void**)&intinput, 4096, rSort->narrayP2*sizeof(int));
+    if(intinput == NULL){
+        printf("malloc error for intinput\n");
+        exit(0);
+    };
+    for (i=0;i<rSort->Narray;i++) {intinput[i] = (int) i;}
+    for (i=rSort->Narray;i<rSort->narrayP2;i++) {intinput[i] = -1;}
+    alloc_sort_float_works(rSort);
+
+    gettimeofday( &startwtime, NULL );
+    [self bitonicSortCommand:rSort->nextP2
+                   sortArray:rSort->ra
+                  indexArray:intinput];
     for(i=0;i<rSort->narrayP2;i++) {rSort->idx[i] = intinput[i];}
     free(intinput);
-
-
+    gettimeofday( &endwtime, NULL );
     verifySort(rSort);
     check_sorted_Float(rSort->narrayP2, rSort->ra);
+    dealloc_sort_float_works(rSort);
 
     double seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                                + endwtime.tv_sec - startwtime.tv_sec );
-    printf("Bitonic sort by Metal wall clock time = %f\n", seq_time);
+    return seq_time;
 }
+
+
 @end

@@ -22,7 +22,7 @@
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         int nthreads = 32;
-        long nArray = 1 << 23;
+        long nArray = 1 << 25;
         
         struct sort_float_array *rSort = init_sort_float_array(nthreads, nArray);
         printf("nthreads %d \n", nthreads);
@@ -35,9 +35,7 @@ int main(int argc, const char * argv[]) {
         // Initializes objects to communicate with the GPU.
         MetalSortComparison* _bitonic = [[MetalSortComparison alloc] initWithDevice:device];
 
-        alloc_sort_float_works(rSort);
-        [_bitonic sendSortCommand:rSort];
-        dealloc_sort_float_works(rSort);
+        double seq_time7 = [_bitonic sendSortCommand:rSort];
         NSLog(@"Metal Sort finished");
  
 
@@ -54,6 +52,7 @@ int main(int argc, const char * argv[]) {
         printf("                 Quicksort wall clock time = %f\n", seq_time1);
         printf("Bitonic serial   recursive wall clock time = %f\n", seq_time2);
         printf("Bitonic serial  imperative wall clock time = %f\n", seq_time4);
+        printf("Bitonic by Metal shader    wall clock time = %f\n", seq_time7);
         printf("Bitonic parallel recursive with %i threads\n", nthreads);
         printf("             and quicksort wall clock time = %f\n", seq_time3);
         printf("               vDSP_vsorti wall clock time = %f\n", seq_time6);
