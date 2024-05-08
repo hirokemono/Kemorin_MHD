@@ -56,7 +56,7 @@ static long count_mesh_patch_buf(int *istack_grp, struct viewer_mesh *mesh_s,
 
 static long set_merged_mesh_patch_list(const long ist_tri, int *istack_grp, long ist_group_patch,
                                        int num_pe_sf, int nsurf_each_tri, int *iflag_domain,
-                                       long *iele_solid_patch){
+                                       long *iele_patch){
 	int ip, ist, ied, j;
     long inum;
 	
@@ -68,7 +68,7 @@ static long set_merged_mesh_patch_list(const long ist_tri, int *istack_grp, long
 			ied = istack_grp[ip+1];
 			for(inum = ist; inum < ied; inum++){
 				for (j = 0; j < nsurf_each_tri; j++) {
-                    iele_solid_patch[inum_tri] = j + (inum + ist_group_patch)*nsurf_each_tri;
+                    iele_patch[inum_tri] = j + (inum + ist_group_patch)*nsurf_each_tri;
                     inum_tri = inum_tri + 1;
 				};
 			};
@@ -97,55 +97,22 @@ void set_trans_mesh_patch_for_sort(struct viewer_mesh *mesh_s,
 }
 
 
-void add_solid_mesh_patch_to_buf(int shading_mode, int polygon_mode, 
-                                 struct viewer_mesh *mesh_s,
-                                 struct gl_strided_buffer *mesh_buf){
+void add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
+                              struct viewer_mesh *mesh_s,
+                              long ntot_patch, long *iele_patch,
+                              struct gl_strided_buffer *mesh_buf){
 	int j, icolor;
     long inum, icou, jnum, item;
 	
 	long inum_tri = 0;
 	
-    for (inum =0;inum<mesh_s->ntot_solid_patch; inum++) {
-        icou = mesh_s->iele_solid_patch[inum] / mesh_s->nsurf_each_tri;
-        j =    mesh_s->iele_solid_patch[inum] % mesh_s->nsurf_each_tri;
+    for (inum =0;inum<ntot_patch; inum++) {
+        icou = iele_patch[inum] / mesh_s->nsurf_each_tri;
+        j =    iele_patch[inum] % mesh_s->nsurf_each_tri;
         
         item =  mesh_s->item_mesh_patch[icou];
         jnum = j + (icou) * mesh_s->nsurf_each_tri;
         icolor = mesh_s->igroup_mesh_patch[jnum];
-        inum_tri = add_each_mesh_tri_patch(j, (int) item, shading_mode, polygon_mode,
-                                           mesh_s->nnod_4_surf, mesh_s->xyzw_draw,
-                                           mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
-                                           &mesh_s->normal_mesh_patch[4*jnum],
-                                           &mesh_s->normal_nod_mesh_patch[12*jnum],
-                                           &mesh_s->mesh_color[4*icolor], inum_tri, mesh_buf);
-    };
-	return;
-}
-
-
-void add_trans_mesh_patch_to_buf(int shading_mode, int polygon_mode,
-                                 struct viewer_mesh *mesh_s,
-                                 struct gl_strided_buffer *mesh_buf){
-	int j, icolor;
-    long inum, jnum, item, icou;
-	
-	long inum_tri = 0;
-	
-    for (inum =0;inum<mesh_s->ntot_trans_patch; inum++) {
-        icou = mesh_s->iele_trans_patch[inum] / mesh_s->nsurf_each_tri;
-        j =    mesh_s->iele_trans_patch[inum] % mesh_s->nsurf_each_tri;
-        
-        item =  mesh_s->item_mesh_patch[icou];
-        jnum = j + (icou) * mesh_s->nsurf_each_tri;
-        icolor = mesh_s->igroup_mesh_patch[jnum];
-//        printf(" %d ",icolor);
-        /*
-        printf("color %d %f %f %f %f \n",icolor,
-                            mesh_s->mesh_color[4*icolor+0],
-                            mesh_s->mesh_color[4*icolor+1],
-                            mesh_s->mesh_color[4*icolor+2],
-                            mesh_s->mesh_color[4*icolor+3]);
-         */
         inum_tri = add_each_mesh_tri_patch(j, (int) item, shading_mode, polygon_mode,
                                            mesh_s->nnod_4_surf, mesh_s->xyzw_draw,
                                            mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,

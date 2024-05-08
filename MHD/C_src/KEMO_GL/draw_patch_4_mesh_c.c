@@ -58,7 +58,9 @@ static void const_solid_mesh_patch_bufffer(int shading_mode,
     set_buffer_address_4_patch(ITHREE*mesh_s->ntot_solid_patch, mesh_solid_buf);
 	if(mesh_solid_buf->num_nod_buf <= 0) return;
     resize_strided_buffer(mesh_solid_buf);
-    add_solid_mesh_patch_to_buf(shading_mode, mesh_m->polygon_mode, mesh_s, mesh_solid_buf);
+    add_mesh_patch_to_buffer(shading_mode, mesh_m->polygon_mode, mesh_s,
+                             mesh_s->ntot_solid_patch, mesh_s->iele_solid_patch,
+                             mesh_solid_buf);
 	return;
 }
 
@@ -70,10 +72,13 @@ void sort_transparent_mesh_patches(struct viewer_mesh *mesh_s,
         mesh_sort->z_trans_patch[i] = rmax + 10000.0;
         mesh_sort->index_trans_patch[i] = -1;
     }
-    
+
+    /*
+    quicksort_real_c(mesh_sort->z_trans_patch, mesh_sort->index_trans_patch,
+                     IZERO, mesh_sort->ntotP2_trans_patch-1);
+     */
     bitonicsort_Float_Pthread(NTHREADS, mesh_sort->ntotP2_trans_patch,
                               mesh_sort->z_trans_patch, mesh_sort->index_trans_patch);
-    
     for(i=0;i<mesh_s->ntot_trans_patch;i++){
         mesh_s->iele_trans_patch[i] = mesh_sort->index_trans_patch[i];
     }
@@ -105,8 +110,9 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
     set_buffer_address_4_patch(ITHREE*mesh_s->ntot_trans_patch, mesh_trns_buf);
     if(mesh_trns_buf->num_nod_buf > 0){
         resize_strided_buffer(mesh_trns_buf);
-        add_trans_mesh_patch_to_buf(view_s->shading_mode, mesh_m->polygon_mode,
-                                    mesh_s, mesh_trns_buf);
+        add_mesh_patch_to_buffer(view_s->shading_mode, mesh_m->polygon_mode, mesh_s,
+                                 mesh_s->ntot_trans_patch, mesh_s->iele_trans_patch,
+                                 mesh_trns_buf);
     };
     return;
 };

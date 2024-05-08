@@ -15,12 +15,10 @@
 long count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 long count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 
-void add_solid_mesh_patch_to_buf(int shading_mode, int polygon_mode,
-                                 struct viewer_mesh *mesh_s,
-                                 struct gl_strided_buffer *mesh_buf);
-void add_trans_mesh_patch_to_buf(int shading_mode, int polygon_mode,
-                                 struct viewer_mesh *mesh_s,
-                                 struct gl_strided_buffer *mesh_buf);
+void add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
+                              struct viewer_mesh *mesh_s,
+                              long ntot_patch, long *iele_patch,
+                              struct gl_strided_buffer *mesh_buf);
 
 long set_solid_mesh_patches_to_buf(struct mesh_menu_val *mesh_m,
                                    struct viewer_mesh *mesh_s,
@@ -34,10 +32,4 @@ void set_trans_mesh_patch_for_sort(struct viewer_mesh *mesh_s,
                                    float *z_trans_patch, long *index_trans_patch);
 
 void set_mesh_patch_colors(struct mesh_menu_val *mesh_m, struct viewer_mesh *mesh_s);
-
-void set_solid_mesh_patches_to_buf2(int shading_mode,
-                                    struct viewer_mesh *mesh_s, 
-                                    struct mesh_menu_val *mesh_m,
-                                    struct gl_strided_buffer *mesh_buf);
-
 #endif
