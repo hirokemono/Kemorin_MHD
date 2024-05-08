@@ -134,7 +134,6 @@ struct viewer_mesh {
     
     long ntot_solid_patch;
     long *iele_solid_patch;
-    long *item_solid_patch;
     long *iseg_solid_patch;
 
     long ntot_trans_patch;
