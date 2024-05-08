@@ -9,7 +9,7 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
                                     double f_color[4], const long inum_tri, struct gl_strided_buffer *strided_buf){
 	int inod, inum, k1, nd;
     long k, kr;
-	
+    
 	for (k=0; k<ITHREE; k++) {
 		if (iele < 0) {kr = ITHREE - k - 1;}
 		else {kr = k;};
@@ -98,7 +98,7 @@ static long set_trans_mesh_patch_list(const long ist_tri, int *istack_grp, long 
                     
                     item =  abs(item_mesh_patch[inum + ist_group_patch]);
                     jnum = j + item * nsurf_each_tri;
-                    z_trans_patch[inum_tri] = (float) z_ele_view[item * nsurf_each_tri];
+                    z_trans_patch[inum_tri] = (float) z_ele_view[jnum];
                     index_trans_patch[inum_tri] = iele_solid_patch[inum_tri];
                     inum_tri = inum_tri + 1;
 				};
@@ -145,12 +145,20 @@ void add_trans_mesh_patch_to_buf(int shading_mode, int polygon_mode,
 	long inum_tri = 0;
 	
     for (inum =0;inum<mesh_s->ntot_trans_patch; inum++) {
-        icou = mesh_s->iele_solid_patch[inum] / mesh_s->nsurf_each_tri;
-        j =    mesh_s->iele_solid_patch[inum] % mesh_s->nsurf_each_tri;
+        icou = mesh_s->iele_trans_patch[inum] / mesh_s->nsurf_each_tri;
+        j =    mesh_s->iele_trans_patch[inum] % mesh_s->nsurf_each_tri;
         
         item =  mesh_s->item_mesh_patch[icou];
         jnum = j + (icou) * mesh_s->nsurf_each_tri;
         icolor = mesh_s->igroup_mesh_patch[jnum];
+//        printf(" %d ",icolor);
+        /*
+        printf("color %d %f %f %f %f \n",icolor,
+                            mesh_s->mesh_color[4*icolor+0],
+                            mesh_s->mesh_color[4*icolor+1],
+                            mesh_s->mesh_color[4*icolor+2],
+                            mesh_s->mesh_color[4*icolor+3]);
+         */
         inum_tri = add_each_mesh_tri_patch(j, (int) item, shading_mode, polygon_mode,
                                            mesh_s->nnod_4_surf, mesh_s->xyzw_draw,
                                            mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
@@ -172,22 +180,24 @@ long count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *
 	};
 	
 	/* ! draw element group */
-	
-	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
-		if( mesh_m->draw_elegrp_solid[i] != 0 && mesh_m->ele_grp_opacity >= 1.0){
-            ip_st = i * mesh_s->num_pe_sf;
-			num_patch = num_patch + count_mesh_patch_buf(&mesh_s->ele_stack_sf[ip_st],
+    if(mesh_m->ele_grp_opacity >= 1.0){
+        for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
+            if(mesh_m->draw_elegrp_solid[i]){
+                ip_st = i * mesh_s->num_pe_sf;
+                num_patch = num_patch + count_mesh_patch_buf(&mesh_s->ele_stack_sf[ip_st],
                                                          mesh_s, mesh_m->always_draw_domains);
+            };
 		};
 	};
 	
 	/* ! draw surface group */
-	
+    if(mesh_m->surf_grp_opacity >= 1.0){
 	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
-		if( mesh_m->draw_surfgrp_solid[i] != 0 && mesh_m->surf_grp_opacity >= 1.0){
-            ip_st = i * mesh_s->num_pe_sf;
-			num_patch = num_patch + count_mesh_patch_buf(&mesh_s->surf_stack_sf[ip_st], 
-                                                         mesh_s, mesh_m->always_draw_domains);
+		if( mesh_m->draw_surfgrp_solid[i] != 0){
+                ip_st = i * mesh_s->num_pe_sf;
+                num_patch = num_patch + count_mesh_patch_buf(&mesh_s->surf_stack_sf[ip_st],
+                                                             mesh_s, mesh_m->always_draw_domains);
+            };
 		};
 	};
 	return num_patch;
@@ -205,11 +215,11 @@ long count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu
 	
 	/* ! draw element group */
 	
-	if(mesh_m->ele_grp_opacity < 1.0){
-		for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
-			ip_st = i * mesh_s->num_pe_sf;
-			if( mesh_m->draw_elegrp_solid[i] != 0){
-				num_patch = num_patch + count_mesh_patch_buf(&mesh_s->ele_stack_sf[ip_st], 
+    if(mesh_m->ele_grp_opacity < 1.0){
+        for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
+            if(mesh_m->draw_elegrp_solid[i] != 0){
+                ip_st = i * mesh_s->num_pe_sf;
+				num_patch = num_patch + count_mesh_patch_buf(&mesh_s->ele_stack_sf[ip_st],
                                                              mesh_s, mesh_m->always_draw_domains);
 			};
 		};
@@ -218,8 +228,8 @@ long count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu
 	/* ! draw surface group */
 	if(mesh_m->surf_grp_opacity < 1.0){
 		for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
-			ip_st = i * mesh_s->num_pe_sf;
-			if( mesh_m->draw_surfgrp_solid[i] != 0){
+			if(mesh_m->draw_surfgrp_solid[i] != 0){
+                ip_st = i * mesh_s->num_pe_sf;
 				num_patch = num_patch + count_mesh_patch_buf(&mesh_s->surf_stack_sf[ip_st],
                                                              mesh_s, mesh_m->always_draw_domains);
 			};
@@ -232,36 +242,40 @@ long set_solid_mesh_patches_to_buf(struct mesh_menu_val *mesh_m,
                                    struct viewer_mesh *mesh_s,
                                    long *iele_solid_patch){
 	int i, ip_st;
-	long ist_tri = 0;
+	long ist_solid = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity >= 1.0){
-		ist_tri = set_solid_mesh_patch_list(ist_tri, mesh_s->isurf_stack_domain_sf,
-                                            mesh_s->ist_domain_patch, mesh_s->num_pe_sf,
-                                            mesh_s->nsurf_each_tri, mesh_m->draw_domains_solid, 
-                                            iele_solid_patch);
+		ist_solid = set_solid_mesh_patch_list(ist_solid, mesh_s->isurf_stack_domain_sf,
+                                              mesh_s->ist_domain_patch, mesh_s->num_pe_sf,
+                                              mesh_s->nsurf_each_tri, mesh_m->draw_domains_solid, 
+                                              iele_solid_patch);
 	};
 	
 	/* ! draw element group */
-	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
-		if( mesh_m->draw_elegrp_solid[i] != 0 && mesh_m->ele_grp_opacity >= 1.0){
-            ip_st = i * mesh_s->num_pe_sf;
-            ist_tri = set_solid_mesh_patch_list(ist_tri, &mesh_s->ele_stack_sf[ip_st],
-                                                  mesh_s->ist_ele_grp_patch, mesh_s->num_pe_sf,
-                                                  mesh_s->nsurf_each_tri, mesh_m->always_draw_domains, 
-                                                  iele_solid_patch);
+    if(mesh_m->ele_grp_opacity >= 1.0){
+        for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
+            if(mesh_m->draw_elegrp_solid[i] != 0){
+                ip_st = i * mesh_s->num_pe_sf;
+                ist_solid = set_solid_mesh_patch_list(ist_solid, &mesh_s->ele_stack_sf[ip_st],
+                                                      mesh_s->ist_ele_grp_patch, mesh_s->num_pe_sf,
+                                                      mesh_s->nsurf_each_tri, mesh_m->always_draw_domains,
+                                                      iele_solid_patch);
+            };
 		};
 	};
 	
 	/* ! draw surface group */
-	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
-		if( mesh_m->draw_surfgrp_solid[i] != 0 && mesh_m->surf_grp_opacity >= 1.0){
-            ip_st = i * mesh_s->num_pe_sf;
-            ist_tri = set_solid_mesh_patch_list(ist_tri, &mesh_s->surf_stack_sf[ip_st],
-                                                mesh_s->ist_sf_grp_patch, mesh_s->num_pe_sf,
-                                                mesh_s->nsurf_each_tri, mesh_m->always_draw_domains, 
-                                                iele_solid_patch);
+    if(mesh_m->surf_grp_opacity >= 1.0){
+        for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
+            if( mesh_m->draw_surfgrp_solid[i]){
+                ip_st = i * mesh_s->num_pe_sf;
+                ist_solid = set_solid_mesh_patch_list(ist_solid, &mesh_s->surf_stack_sf[ip_st],
+                                                      mesh_s->ist_sf_grp_patch, mesh_s->num_pe_sf,
+                                                      mesh_s->nsurf_each_tri, mesh_m->always_draw_domains,
+                                                      iele_solid_patch);
+            };
 		};
 	};
-    return ist_tri;
+    return ist_solid;
 }
 
 
@@ -272,39 +286,43 @@ long set_transparent_mesh_patches_to_buf(struct mesh_menu_val *mesh_m,
                                          float *z_trans_patch,
                                          long *index_trans_patch){
 	int i, ip_st;
-	long ist_tri = 0;
+	long ist_trans = 0;
 	if(mesh_m->draw_surface_solid != 0 && mesh_m->domain_opacity < 1.0){
-		ist_tri = set_trans_mesh_patch_list(ist_tri, mesh_s->isurf_stack_domain_sf,
-                                            mesh_s->ist_domain_patch, mesh_s->num_pe_sf,
-                                            mesh_s->nsurf_each_tri, mesh_m->draw_domains_solid, 
-                                            mesh_s->item_mesh_patch, z_ele_view, iele_trans_patch,
-                                            z_trans_patch, index_trans_patch);
+		ist_trans = set_trans_mesh_patch_list(ist_trans, mesh_s->isurf_stack_domain_sf,
+                                              mesh_s->ist_domain_patch, mesh_s->num_pe_sf,
+                                              mesh_s->nsurf_each_tri, mesh_m->draw_domains_solid, 
+                                              mesh_s->item_mesh_patch, z_ele_view, iele_trans_patch,
+                                              z_trans_patch, index_trans_patch);
 	};
 	
 	/* ! draw element group */
-	for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
-		if( mesh_m->draw_elegrp_solid[i] != 0 && mesh_m->ele_grp_opacity < 1.0){
-            ip_st = i * mesh_s->num_pe_sf;
-            ist_tri = set_trans_mesh_patch_list(ist_tri, &mesh_s->ele_stack_sf[ip_st],
-                                                mesh_s->ist_ele_grp_patch, mesh_s->num_pe_sf,
-                                                mesh_s->nsurf_each_tri, mesh_m->always_draw_domains, 
-                                                mesh_s->item_mesh_patch, z_ele_view, iele_trans_patch,
-                                                z_trans_patch, index_trans_patch);
+    if(mesh_m->ele_grp_opacity < 1.0){
+        for (i = 0; i < mesh_s->ngrp_ele_sf; i++){
+            if( mesh_m->draw_elegrp_solid[i] != 0){
+                ip_st = i * mesh_s->num_pe_sf;
+                ist_trans = set_trans_mesh_patch_list(ist_trans, &mesh_s->ele_stack_sf[ip_st],
+                                                      mesh_s->ist_ele_grp_patch, mesh_s->num_pe_sf,
+                                                      mesh_s->nsurf_each_tri, mesh_m->always_draw_domains,
+                                                      mesh_s->item_mesh_patch, z_ele_view, iele_trans_patch,
+                                                      z_trans_patch, index_trans_patch);
+            };
 		};
 	};
 	
 	/* ! draw surface group */
-	for (i = 0; i < mesh_s->ngrp_surf_sf; i++){
-		if( mesh_m->draw_surfgrp_solid[i] != 0 && mesh_m->surf_grp_opacity < 1.0){
-            ip_st = i * mesh_s->num_pe_sf;
-            ist_tri = set_trans_mesh_patch_list(ist_tri, &mesh_s->surf_stack_sf[ip_st],
-                                                mesh_s->ist_sf_grp_patch, mesh_s->num_pe_sf,
-                                                mesh_s->nsurf_each_tri, mesh_m->always_draw_domains, 
-                                                mesh_s->item_mesh_patch, z_ele_view, iele_trans_patch,
-                                                z_trans_patch, index_trans_patch);
-		};
+    if(mesh_m->surf_grp_opacity < 1.0){
+        for(i = 0; i < mesh_s->ngrp_surf_sf; i++){
+            if( mesh_m->draw_surfgrp_solid[i] != 0){
+                ip_st = i * mesh_s->num_pe_sf;
+                ist_trans = set_trans_mesh_patch_list(ist_trans, &mesh_s->surf_stack_sf[ip_st],
+                                                      mesh_s->ist_sf_grp_patch, mesh_s->num_pe_sf,
+                                                      mesh_s->nsurf_each_tri, mesh_m->always_draw_domains,
+                                                      mesh_s->item_mesh_patch, z_ele_view, iele_trans_patch,
+                                                      z_trans_patch, index_trans_patch);
+            };
+        };
 	};
-	return ist_tri;
+	return ist_trans;
 }
 
 
@@ -350,6 +368,20 @@ void set_mesh_patch_colors(struct mesh_menu_val *mesh_m, struct viewer_mesh *mes
                                     mesh_s->num_pe_sf, mesh_m->always_draw_domains,
                                     &mesh_s->mesh_color[4*(ip_st+mesh_s->ist_surf_grp)]);
     };
+/*
+    for (igrp = 0; igrp < mesh_s->ngrp_surf_sf; igrp++){
+        printf("S color %d %f %f %f %f \n",igrp+mesh_s->ist_surf_grp,
+               mesh_s->mesh_color[4*mesh_s->ist_surf_grp+4*igrp+0],
+               mesh_s->mesh_color[4*mesh_s->ist_surf_grp+4*igrp+1],
+               mesh_s->mesh_color[4*mesh_s->ist_surf_grp+4*igrp+2],
+               mesh_s->mesh_color[4*mesh_s->ist_surf_grp+4*igrp+3]);
+    }
+    printf("D color %d %f %f %f %f \n",0+mesh_s->ist_domain_grp,
+           mesh_s->mesh_color[4*mesh_s->ist_domain_grp+0],
+           mesh_s->mesh_color[4*mesh_s->ist_domain_grp+1],
+           mesh_s->mesh_color[4*mesh_s->ist_domain_grp+2],
+           mesh_s->mesh_color[4*mesh_s->ist_domain_grp+3]);
+*/
     return;
 }
 

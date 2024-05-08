@@ -790,7 +790,7 @@
                   vertex:&(kemoView3DMetalBuf->sphGridVertice)
                   unites:monoViewUnites];
     
-    /*  Draw transparent objects */
+/*  Draw transparent objects */
     [self drawTexureWithPhong:renderEncoder
                     pipelines:kemo3DPipelines
                         depth:depthState

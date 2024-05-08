@@ -48,15 +48,17 @@ void dealloc_mesh_sorting_work(struct mesh_sorting_work *mesh_sort){
 static void const_solid_mesh_patch_bufffer(int shading_mode,
                                            struct viewer_mesh *mesh_s,
                                            struct mesh_menu_val *mesh_m,
-                                           struct gl_strided_buffer *mesh_buf){
+                                           struct gl_strided_buffer *mesh_solid_buf){
 	mesh_s->ntot_solid_patch = count_solid_mesh_patches(mesh_s, mesh_m);
-    set_buffer_address_4_patch(ITHREE*mesh_s->ntot_solid_patch, mesh_buf);
-	if(mesh_buf->num_nod_buf <= 0) return;
-	
-    resize_strided_buffer(mesh_buf);
-    set_mesh_patch_colors(mesh_m, mesh_s);
-	set_solid_mesh_patches_to_buf(mesh_m, mesh_s, mesh_s->iele_solid_patch);
-    add_solid_mesh_patch_to_buf(shading_mode, mesh_m->polygon_mode, mesh_s, mesh_buf);
+    if(mesh_s->ntot_solid_patch > 0){
+        set_mesh_patch_colors(mesh_m, mesh_s);
+        set_solid_mesh_patches_to_buf(mesh_m, mesh_s, mesh_s->iele_solid_patch);
+    };
+    
+    set_buffer_address_4_patch(ITHREE*mesh_s->ntot_solid_patch, mesh_solid_buf);
+	if(mesh_solid_buf->num_nod_buf <= 0) return;
+    resize_strided_buffer(mesh_solid_buf);
+    add_solid_mesh_patch_to_buf(shading_mode, mesh_m->polygon_mode, mesh_s, mesh_solid_buf);
 	return;
 }
 
@@ -68,6 +70,7 @@ void sort_transparent_mesh_patches(struct viewer_mesh *mesh_s,
         mesh_sort->z_trans_patch[i] = rmax + 1.0;
         mesh_sort->index_trans_patch[i] = -1;
     }
+    
     bitonicsort_Float_Pthread(NTHREADS, mesh_sort->ntotP2_trans_patch,
                               mesh_sort->z_trans_patch, mesh_sort->index_trans_patch);
     
@@ -85,14 +88,10 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
 
     
     mesh_s->ntot_trans_patch = count_transparent_mesh_patches(mesh_s, mesh_m);
-    set_buffer_address_4_patch(ITHREE*mesh_s->ntot_trans_patch, mesh_trns_buf);
-
-    if(mesh_trns_buf->num_nod_buf > 0){
-        resize_strided_buffer(mesh_trns_buf);
-
-        struct mesh_sorting_work * mesh_sort = alloc_mesh_sorting_work(mesh_s->ntot_trans_patch, mesh_s);
+    if(mesh_s->ntot_trans_patch > 0){
         set_mesh_patch_colors(mesh_m, mesh_s);
-                
+        struct mesh_sorting_work * mesh_sort = alloc_mesh_sorting_work(mesh_s->ntot_trans_patch, mesh_s);
+        
         long num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
         set_distance_in_model(view_s, num, mesh_s->surf_center_view, mesh_sort->z_ele_view);
         set_transparent_mesh_patches_to_buf(mesh_m, mesh_s,
@@ -102,7 +101,11 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
                                             mesh_sort->index_trans_patch);
         sort_transparent_mesh_patches(mesh_s, mesh_sort);
         dealloc_mesh_sorting_work(mesh_sort);
-
+    };
+    
+    set_buffer_address_4_patch(ITHREE*mesh_s->ntot_trans_patch, mesh_trns_buf);
+    if(mesh_trns_buf->num_nod_buf > 0){
+        resize_strided_buffer(mesh_trns_buf);
         add_trans_mesh_patch_to_buf(view_s->shading_mode, mesh_m->polygon_mode,
                                     mesh_s, mesh_trns_buf);
     };
