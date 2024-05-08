@@ -81,7 +81,7 @@ static long set_solid_mesh_patch_list(const long ist_tri, int *istack_grp, long 
 static long set_trans_mesh_patch_list(const long ist_tri, int *istack_grp, long ist_group_patch,
                                       int num_pe_sf, int nsurf_each_tri, int *iflag_domain,
                                       int *item_mesh_patch, const double *z_ele_view, 
-                                      long *iele_solid_patch, float *z_trans_patch,
+                                      long *iele_trans_patch, float *z_trans_patch,
                                       long *index_trans_patch){
 	int ip, ist, ied, j, item, jnum;
     long inum;
@@ -94,12 +94,12 @@ static long set_trans_mesh_patch_list(const long ist_tri, int *istack_grp, long 
 			ied = istack_grp[ip+1];
 			for(inum = ist; inum < ied; inum++){
 				for (j = 0; j < nsurf_each_tri; j++) {
-                    iele_solid_patch[inum_tri] = j + (inum + ist_group_patch)*nsurf_each_tri;
+                    iele_trans_patch[inum_tri] = j + (inum + ist_group_patch)*nsurf_each_tri;
                     
                     item =  abs(item_mesh_patch[inum + ist_group_patch]);
-                    jnum = j + item * nsurf_each_tri;
+                    jnum = j + (item-1) * nsurf_each_tri;
                     z_trans_patch[inum_tri] = (float) z_ele_view[jnum];
-                    index_trans_patch[inum_tri] = iele_solid_patch[inum_tri];
+                    index_trans_patch[inum_tri] = iele_trans_patch[inum_tri];
                     inum_tri = inum_tri + 1;
 				};
 			};
