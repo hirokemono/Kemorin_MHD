@@ -24,7 +24,7 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
                                      int *iflag_domain, struct gl_strided_buffer *mesh_buf){
 	double f_color[4];
 	double xyz_patch[180], norm_patch[180];
-    int i, ip, inod, inum, ist, ied;
+    int ip, inod, inum, ist, ied;
     long ico, nd;
     long inum_tri, num_ico;
 	
@@ -32,8 +32,7 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
                           igrp, num_grp, single_color);
 	
 	inum_tri = ist_tri;
-    for(i = 0; i < mesh_s->num_pe_sf; i++){
-        ip = (int) mesh_s->ip_domain_far[i] - 1;
+    for(ip = 0; ip<mesh_s->num_pe_sf; ip++){
 		if(iflag_domain[ip] != 0){
 			ist = istack_grp[ip];
 			ied = istack_grp[ip+1];

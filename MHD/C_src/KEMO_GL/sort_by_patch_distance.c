@@ -6,31 +6,6 @@
 
 const int numThread = 16;
 
-void copy_patch_distance_mesh(struct viewer_mesh *mesh_s){
-    int i;
-    
-    for(i=0; i < mesh_s->num_pe_sf;i++){mesh_s->ip_domain_far[i] = i+1;};
-    
-	return;
-}
-
-void sort_by_patch_distance_mesh(struct viewer_mesh *mesh_s, struct view_element *view_s){
-	int ip, i, j;
-    long num, ist, ied;
-
-	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
-	set_distance_in_model(view_s, num, mesh_s->surf_center_view, mesh_s->z_ele_view);
-	set_distance_in_model(view_s, (long) mesh_s->num_pe_sf, 
-                          mesh_s->domain_center,  mesh_s->z_center_view);
-	
-	for(i=0; i < mesh_s->num_pe_sf;i++){
-		mesh_s->ip_domain_far[i] = i+1;
-	};	
-	ied = mesh_s->num_pe_sf - 1;
-	quicksort_double_c(mesh_s->z_center_view, mesh_s->ip_domain_far, IZERO, ied);
-    return;
-}
-
 void count_patch_distance_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m, 
                                struct kemo_array_control *psf_a){
     long ntot_tmp;

@@ -107,10 +107,7 @@ struct viewer_mesh {
 	char **surf_gp_name_sf;
     
 	double *z_ele_view;
-	double *z_center_view;
-    
-	long *ip_domain_far;
-    
+        
     long ntot_groups;
     long ist_domain_grp;
     long ist_ele_grp;

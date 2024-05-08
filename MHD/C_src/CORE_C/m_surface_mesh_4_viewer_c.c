@@ -322,10 +322,6 @@ void alloc_domain_center_s(struct viewer_mesh *mesh_s){
         printf("malloc error for domain_max\n");
         exit(0);
     }
-
-	mesh_s->z_center_view = (double *)calloc(mesh_s->num_pe_sf,sizeof(double));
-	mesh_s->ip_domain_far = (long *)calloc(mesh_s->num_pe_sf,sizeof(long));
-	
 	return;
 };
 
@@ -583,9 +579,6 @@ static void dealloc_surf_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
 
 
 static void dealloc_domain_center_s(struct viewer_mesh *mesh_s){
-	free(mesh_s->ip_domain_far);
-	free(mesh_s->z_center_view);
-
 	free(mesh_s->domain_center);
 	free(mesh_s->domain_min);
 	free(mesh_s->domain_max);
