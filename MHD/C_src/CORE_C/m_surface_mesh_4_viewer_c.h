@@ -136,10 +136,12 @@ struct viewer_mesh {
     long *iele_solid_patch;
     long *iseg_solid_patch;
 
+
     long ntot_trans_patch;
     long nextP2_trans_patch;
     long ntotP2_trans_patch;
-    long *iele2_trans_patch;
+    long *iele_trans_patch;
+    long *iseg_trans_patch;
     long *index_trans_patch;
     float *z_trans_patch;
 };

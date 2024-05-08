@@ -381,12 +381,17 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
         exit(0);
     }
     
-    mesh_s->iele2_trans_patch = (long *)calloc(2*num,sizeof(long));
-    if(mesh_s->iele2_trans_patch == NULL) {
-        printf("malloc error for iele2_trans_patch\n");
+    mesh_s->iele_trans_patch = (long *)calloc(2*num,sizeof(long));
+    if(mesh_s->iele_trans_patch == NULL) {
+        printf("malloc error for iele_trans_patch\n");
         exit(0);
     }
-    
+    mesh_s->iseg_trans_patch = (long *)calloc(2*num,sizeof(long));
+    if(mesh_s->iseg_trans_patch == NULL) {
+        printf("malloc error for iseg_trans_patch\n");
+        exit(0);
+    }
+
     mesh_s->iele_solid_patch = (long *)calloc(num,sizeof(long));
     if(mesh_s->iele_solid_patch == NULL) {
         printf("malloc error for iele2_solid_patch\n");
@@ -402,7 +407,7 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
 
 
 void alloc_trans_mesh_distance(long num_trans, struct viewer_mesh *mesh_s){
-    mesh_s->ntot_trans_patch = mesh_s->nsurf_each_tri * num_trans;
+    mesh_s->ntot_trans_patch = num_trans;
     mesh_s->nextP2_trans_patch = 1 + (int) log2((double) (mesh_s->ntot_trans_patch-1));
     mesh_s->ntotP2_trans_patch =  1 << mesh_s->nextP2_trans_patch;
     
@@ -426,7 +431,8 @@ void dealloc_trans_mesh_distance(struct viewer_mesh *mesh_s){
 }
 
 void dealloc_mesh_normals_s(struct viewer_mesh *mesh_s){
-    free(mesh_s->iele2_trans_patch);
+    free(mesh_s->iele_trans_patch);
+    free(mesh_s->iseg_trans_patch);
 
     free(mesh_s->iele_solid_patch);
     free(mesh_s->iseg_solid_patch);
