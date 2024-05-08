@@ -91,8 +91,9 @@ void set_fline_constant_opacity(struct psf_data *fline_d, struct fline_menu_val 
 double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value){
     struct colormap_params *cmap_s = fline_m->cmap_fline;
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
-	return set_opacity_from_value_s(omap_array, value);
+	double opacity =  set_opacity_from_value_s(omap_array, value);
     dealloc_colormap_array(omap_array);
+    return opacity;
 }
 void set_fline_color_data(struct fline_menu_val *fline_m, 
 			int i_point, double value, double color){

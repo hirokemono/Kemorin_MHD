@@ -65,16 +65,6 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], doubl
 	return;
 };
 
-typedef struct{
-    int id;
-    int nthreads;
-    struct psf_data *psf_s;
-    long icomp;
-    double v_line;
-
-    long *num_line;
-} args_pthread_float_sort;
-
 long count_each_isoline_npatch(const long ist, const long ied, const double v_line,
                                long icomp, struct psf_data *psf_s){
     double d_tri[3], xyz_tri[9];
@@ -97,7 +87,7 @@ long count_each_isoline_npatch(const long ist, const long ied, const double v_li
 
 static void * count_each_isoline_npatch_each(void *args)
 {
-    args_pthread_float_sort * p = (args_pthread_float_sort *) args;
+    args_pthread_PSF_counting * p = (args_pthread_PSF_counting *) args;
     int id =       p->id;
     int nthreads = p->nthreads;
     
@@ -119,9 +109,9 @@ long count_each_isoline_npatch_pthread(const int nthreads, double v_line,
 	int iele, idraw;
 	
     /* Allocate thread arguments. */
-    args_pthread_float_sort *args
-            = (args_pthread_float_sort *) malloc (nthreads * sizeof(args_pthread_float_sort));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_float_sort.\n"); exit(1);}
+    args_pthread_PSF_counting *args
+            = (args_pthread_PSF_counting *) malloc (nthreads * sizeof(args_pthread_PSF_counting));
+    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_counting.\n"); exit(1);}
     
     float *rmax = (float *) malloc (nthreads * sizeof(float));
     if (!rmax) {fprintf (stderr, "Malloc failed for rmax.\n"); exit(1);}

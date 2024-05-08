@@ -15,6 +15,17 @@
 #include "set_hex_tube_to_buf.h"
 #include "set_new_patch_4_map_c.h"
 
+typedef struct{
+    int id;
+    int nthreads;
+    struct psf_data *psf_s;
+    long icomp;
+    double v_line;
+
+    long *num_line;
+} args_pthread_PSF_counting;
+
+
 /* prototypes */
 
 long count_each_isoline_npatch(const long ist, const long ied, const double v_line,
