@@ -56,14 +56,14 @@ static long count_mesh_patch_buf(int *istack_grp, long *ip_domain_far,
 }
 
 static long add_no_sort_mesh_patch_to_buf(const long ist_tri, int shading_mode, int polygon_mode, 
-                                  int num_grp, int *istack_grp, int *item_grp, double *f_color,
-                                  int ist_group_patch, int *igroup_mesh_patch, 
+                                  int num_grp, int *istack_grp, double *f_color,
+                                  int ist_group_patch, int *item_mesh_patch, int *igroup_mesh_patch, 
                                   double *normal_ele, double *normal_nod,
                                   long *isort_grp, long *ip_domain_far, int igrp,
                                   struct viewer_mesh *mesh_s, int *iflag_domain,
                                   struct gl_strided_buffer *mesh_buf){
 	int i, ip, icou, ist, ied, j, icolor;
-    long inum, jnum;
+    long inum, jnum, item;
 	
 	long inum_tri = ist_tri;
 	
@@ -73,14 +73,19 @@ static long add_no_sort_mesh_patch_to_buf(const long ist_tri, int shading_mode, 
 			ist = istack_grp[ip];
 			ied = istack_grp[ip+1];
 			for(inum = ist; inum < ied; inum++){
+                item = item_mesh_patch[inum+ist_group_patch];
 				for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
-					jnum = j + inum * mesh_s->nsurf_each_tri + ist_group_patch * mesh_s->nsurf_each_tri;
+					jnum = j + (inum+ist_group_patch) * mesh_s->nsurf_each_tri;
                     icolor = igroup_mesh_patch[jnum];
+/*               
+                    iele_solid_patch[jnum] = inum + ist_group_patch;
+                    iseg_solid_patch[jnum] = j;
+                    */
 					/*
 					printf("%d, %f %f %f \n", jnum, normal_ele[4*jnum+0],
                             normal_ele[4*jnum+1], normal_ele[4*jnum+2]);
 					 */
-					inum_tri = add_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
+					inum_tri = add_each_mesh_tri_patch(j, item, shading_mode, polygon_mode,
                                                        mesh_s->nnod_4_surf, mesh_s->xyzw_draw,
                                                        mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
                                                        &normal_ele[4*jnum], &normal_nod[12*jnum],
@@ -95,14 +100,14 @@ static long add_no_sort_mesh_patch_to_buf(const long ist_tri, int shading_mode, 
 
 
 static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int polygon_mode, 
-                                  int num_grp, int *istack_grp, int *item_grp, double *f_color,
-                                  int ist_group_patch, int *igroup_mesh_patch, 
+                                  int num_grp, int *istack_grp, double *f_color,
+                                  int ist_group_patch, int *item_mesh_patch, int *igroup_mesh_patch, 
                                   double *normal_ele, double *normal_nod,
                                   long *isort_grp, long *ip_domain_far, int igrp,
                                   struct viewer_mesh *mesh_s, int *iflag_domain,
                                   struct gl_strided_buffer *mesh_buf){
 	int i, ip, icou, ist, ied, j, icolor;
-    long inum, jnum;
+    long inum, jnum, item;
 	
 	long inum_tri = ist_tri;
 	
@@ -113,15 +118,15 @@ static long add_mesh_patch_to_buf(const long ist_tri, int shading_mode, int poly
 			ied = istack_grp[ip+1];
 			for(icou = ist; icou < ied; icou++){
                 inum = isort_grp[icou];
-				
+                item = item_mesh_patch[inum+ist_group_patch];
 				for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
-					jnum = j + inum * mesh_s->nsurf_each_tri + ist_group_patch * mesh_s->nsurf_each_tri;
+					jnum = j + (inum+ist_group_patch) * mesh_s->nsurf_each_tri;
                     icolor = igroup_mesh_patch[jnum];
 					/*
 					printf("%d, %f %f %f \n", jnum, normal_ele[4*jnum+0],
                             normal_ele[4*jnum+1], normal_ele[4*jnum+2]);
 					 */
-					inum_tri = add_each_mesh_tri_patch(j, item_grp[inum], shading_mode, polygon_mode,
+					inum_tri = add_each_mesh_tri_patch(j, item, shading_mode, polygon_mode,
                                                        mesh_s->nnod_4_surf, mesh_s->xyzw_draw,
                                                        mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
                                                        &normal_ele[4*jnum], &normal_nod[12*jnum],
@@ -219,8 +224,9 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
         ist_norm = mesh_s->ist_domain_patch * mesh_s->nsurf_each_tri;
 		ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode,
                                         mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf,
-                                        mesh_s->isurf_domain_sf, mesh_s->mesh_color,
+                                        mesh_s->mesh_color,
                                         mesh_s->ist_domain_patch,
+                                        mesh_s->item_mesh_patch,
                                         mesh_s->igroup_mesh_patch,
                                         mesh_s->normal_mesh_patch,
                                         mesh_s->normal_nod_mesh_patch,
@@ -237,8 +243,9 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
             ist_norm = mesh_s->ist_ele_grp_patch * mesh_s->nsurf_each_tri;
 			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode,
                                             mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
-                                            mesh_s->ele_item_sf, mesh_s->mesh_color,
+                                            mesh_s->mesh_color,
                                             mesh_s->ist_ele_grp_patch,
+                                        mesh_s->item_mesh_patch,
                                         mesh_s->igroup_mesh_patch,
                                         mesh_s->normal_mesh_patch,
                                         mesh_s->normal_nod_mesh_patch,
@@ -256,8 +263,9 @@ long set_solid_mesh_patches_to_buf(int shading_mode,
             ist_norm = mesh_s->ist_sf_grp_patch * mesh_s->nsurf_each_tri;
 			ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode,
                                             mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
-                                            mesh_s->surf_item_sf, mesh_s->mesh_color,
+                                            mesh_s->mesh_color,
                                             mesh_s->ist_sf_grp_patch,
+                                        mesh_s->item_mesh_patch,
                                         mesh_s->igroup_mesh_patch,
                                         mesh_s->normal_mesh_patch,
                                         mesh_s->normal_nod_mesh_patch,
@@ -280,8 +288,9 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
         ist_norm = mesh_s->ist_domain_patch * mesh_s->nsurf_each_tri;
 		ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode,
                                         mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf,
-                                        mesh_s->isurf_domain_sf, mesh_s->mesh_color,
+                                        mesh_s->mesh_color,
                                         mesh_s->ist_domain_patch,
+                                        mesh_s->item_mesh_patch,
                                         mesh_s->igroup_mesh_patch,
                                         mesh_s->normal_mesh_patch,
                                         mesh_s->normal_nod_mesh_patch,
@@ -299,8 +308,9 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
                 ist_norm = mesh_s->ist_ele_grp_patch * mesh_s->nsurf_each_tri;
                 ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode,
                                                 mesh_s->ngrp_ele_sf, &mesh_s->ele_stack_sf[ip_st],
-                                                mesh_s->ele_item_sf, mesh_s->mesh_color,
+                                                mesh_s->mesh_color,
                                                 mesh_s->ist_ele_grp_patch,
+                                        mesh_s->item_mesh_patch,
                                         mesh_s->igroup_mesh_patch,
                                         mesh_s->normal_mesh_patch,
                                         mesh_s->normal_nod_mesh_patch,
@@ -319,8 +329,9 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
                 ist_norm = mesh_s->ist_sf_grp_patch * mesh_s->nsurf_each_tri;
                 ist_tri = add_mesh_patch_to_buf(ist_tri, shading_mode, mesh_m->polygon_mode,
                                                 mesh_s->ngrp_surf_sf, &mesh_s->surf_stack_sf[ip_st],
-                                                mesh_s->surf_item_sf, mesh_s->mesh_color,
+                                                mesh_s->mesh_color,
                                                 mesh_s->ist_sf_grp_patch,
+                                        mesh_s->item_mesh_patch,
                                         mesh_s->igroup_mesh_patch,
                                         mesh_s->normal_mesh_patch,
                                         mesh_s->normal_nod_mesh_patch,

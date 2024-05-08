@@ -249,14 +249,22 @@ void refine_normal_on_node_4_grp(struct viewer_mesh *mesh_s, int ntot_nod, int i
 
 void set_each_patch_group_id(int num_pe_sf, int nsurf_each_tri,
                              int igrp, long istart_group,
-                             int *istack_grp, int *igroup_mesh_patch){
+                             int *istack_grp, int *item_grp,
+                             int *item_mesh_patch,
+                             int *igroup_mesh_patch){
     int ist, ied, icou;
     int ip_st = igrp * num_pe_sf;
     for(int ip = 0; ip < num_pe_sf; ip++){
+        ist = istack_grp[ip_st+ip];
+        ied = istack_grp[ip_st+ip+1];
+        for(icou=ist;icou<ied; icou++){
+            item_mesh_patch[icou] = item_grp[icou];
+        }
+        
         ist = nsurf_each_tri * istack_grp[ip_st+ip];
         ied = nsurf_each_tri * istack_grp[ip_st+ip+1];
         for(icou=ist;icou<ied; icou++){
-            igroup_mesh_patch[icou] = ip + ip_st + istart_group;
+            igroup_mesh_patch[icou] = ip + ip_st + (int) istart_group;
         }
     }
     return;

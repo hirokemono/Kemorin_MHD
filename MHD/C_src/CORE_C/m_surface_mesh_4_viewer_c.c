@@ -357,6 +357,12 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
     mesh_s->ist_sf_grp_patch =  mesh_s->ist_ele_grp_patch + mesh_s->nele_ele_sf;
     mesh_s->ntot_mesh_patch =   mesh_s->ist_sf_grp_patch + mesh_s->nsurf_surf_sf;
     
+    mesh_s->item_mesh_patch = (int *)calloc(mesh_s->ntot_mesh_patch,sizeof(int));
+    if(mesh_s->item_mesh_patch == NULL) {
+        printf("malloc error for item_mesh_patch\n");
+        exit(0);
+    }
+
     long num = mesh_s->ntot_mesh_patch * mesh_s->nsurf_each_tri;
     mesh_s->igroup_mesh_patch = (int *)calloc(num,sizeof(int));
     if(mesh_s->igroup_mesh_patch == NULL) {
@@ -380,8 +386,19 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
         printf("malloc error for iele2_trans_patch\n");
         exit(0);
     }
-    mesh_s->iele2_solid_patch = (long *)calloc(2*num,sizeof(long));
-    if(mesh_s->iele2_solid_patch == NULL) {
+    
+    mesh_s->iele_solid_patch = (long *)calloc(num,sizeof(long));
+    if(mesh_s->iele_solid_patch == NULL) {
+        printf("malloc error for iele2_solid_patch\n");
+        exit(0);
+    }
+    mesh_s->item_solid_patch = (long *)calloc(num,sizeof(long));
+    if(mesh_s->item_solid_patch == NULL) {
+        printf("malloc error for iele2_solid_patch\n");
+        exit(0);
+    }
+    mesh_s->iseg_solid_patch = (long *)calloc(num,sizeof(long));
+    if(mesh_s->iseg_solid_patch == NULL) {
         printf("malloc error for iele2_solid_patch\n");
         exit(0);
     }
@@ -415,11 +432,15 @@ void dealloc_trans_mesh_distance(struct viewer_mesh *mesh_s){
 
 void dealloc_mesh_normals_s(struct viewer_mesh *mesh_s){
     free(mesh_s->iele2_trans_patch);
-    free(mesh_s->iele2_solid_patch);
+
+    free(mesh_s->iele_solid_patch);
+    free(mesh_s->item_solid_patch);
+    free(mesh_s->iseg_solid_patch);
 
     free(mesh_s->normal_nod_mesh_patch);
     free(mesh_s->normal_mesh_patch);
     free(mesh_s->igroup_mesh_patch);
+    free(mesh_s->item_mesh_patch);
     mesh_s->ist_domain_patch =  0;
     mesh_s->ist_ele_grp_patch = 0;
     mesh_s->ist_sf_grp_patch =  0;

@@ -127,13 +127,16 @@ struct viewer_mesh {
     long ist_domain_patch;
     long ist_ele_grp_patch;
     long ist_sf_grp_patch;
+    int    *item_mesh_patch;
     int    *igroup_mesh_patch;
     double *normal_mesh_patch;
     double *normal_nod_mesh_patch;
     
     long ntot_solid_patch;
-    long *iele2_solid_patch;
-    
+    long *iele_solid_patch;
+    long *item_solid_patch;
+    long *iseg_solid_patch;
+
     long ntot_trans_patch;
     long nextP2_trans_patch;
     long ntotP2_trans_patch;
