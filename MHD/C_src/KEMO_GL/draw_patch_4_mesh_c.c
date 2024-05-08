@@ -67,7 +67,7 @@ void sort_transparent_mesh_patches(struct viewer_mesh *mesh_s,
     long i;
     float rmax = max_Float_Array_pthreads(NTHREADS, mesh_s->ntot_trans_patch, mesh_sort->z_trans_patch);
     for(i=mesh_s->ntot_trans_patch;i<mesh_sort->ntotP2_trans_patch;i++){
-        mesh_sort->z_trans_patch[i] = rmax + 1.0;
+        mesh_sort->z_trans_patch[i] = rmax + 10000.0;
         mesh_sort->index_trans_patch[i] = -1;
     }
     

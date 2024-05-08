@@ -601,7 +601,6 @@ void set_distance_in_model(struct view_element *view, long nnod,
                            double *xyzw, double *z_eye){
 	long i;
 	
-	/* transfer matrix for object*/
 	for (i=0;i<nnod;i++){
 		z_eye[i]= (double) view->mat_object_2_eye[   2] * xyzw[4*i  ]
                 + (double) view->mat_object_2_eye[ 4+2] * xyzw[4*i+1]

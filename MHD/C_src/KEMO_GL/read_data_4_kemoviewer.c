@@ -12,6 +12,7 @@ static void set_viewer_mesh(struct viewer_mesh *mesh_s){
 	alloc_mesh_draw_s(mesh_s);
 	
 	set_surface_mesh_size(mesh_s);
+    center_of_mesh_triangles(mesh_s, mesh_s->surf_center_view);
 	take_normal_surf_mesh_c(mesh_s);
     
     alloc_mesh_normals_s(mesh_s);
