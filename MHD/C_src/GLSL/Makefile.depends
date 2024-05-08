@@ -111,6 +111,7 @@ drawGL_by_VAO.o: $(C_SRCDIR)/GLSL/drawGL_by_VAO.c \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -231,6 +232,7 @@ draw_PSF_patches_by_VAO.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -347,6 +349,7 @@ drawcube_gl.o: $(C_SRCDIR)/GLSL/drawcube_gl.c \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
@@ -469,6 +472,7 @@ glsl.o: $(C_SRCDIR)/GLSL/glsl.c \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -589,6 +593,7 @@ init_gl_lighting_c.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -708,6 +713,7 @@ kemoviewer_gl.o: $(C_SRCDIR)/GLSL/kemoviewer_gl.c \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -833,7 +839,8 @@ move_draw_objects_gl.o: \
   $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
-  $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h
+  $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
   $(C_SRCDIR)/GLSL/set_cube_VAO.h \
@@ -947,6 +954,7 @@ set_cube_VAO.o: $(C_SRCDIR)/GLSL/set_cube_VAO.c \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -1066,6 +1074,7 @@ shaders.o: $(C_SRCDIR)/GLSL/shaders.c \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -1186,6 +1195,7 @@ vartex_array_object_gl.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -1311,5 +1321,6 @@ write_gl_window_to_file.o: \
   $(C_SRCDIR)/CORE_C/bitonic_sort_c.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
-  $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h
+  $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<

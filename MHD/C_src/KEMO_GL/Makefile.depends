@@ -241,7 +241,8 @@ draw_patch_4_mesh_c.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
-  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
+  $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 draw_patches_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patches_4_PSF.c \
@@ -608,6 +609,7 @@ m_kemoview_object_buffers.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
@@ -832,6 +834,7 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
@@ -1851,6 +1854,7 @@ set_psf_texture_by_png.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \

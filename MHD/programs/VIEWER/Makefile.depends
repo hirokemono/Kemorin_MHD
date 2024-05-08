@@ -113,6 +113,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_float_pthread.h \
   $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
@@ -269,6 +270,7 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_float_pthread.h \
   $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \
@@ -425,6 +427,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_float_pthread.h \
   $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(MHDDIR)/C_src/GTK/calypso_GTK.h \
@@ -581,6 +584,7 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(MHDDIR)/C_src/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(MHDDIR)/C_src/CORE_C/bitonic_sort_float_pthread.h \
   $(MHDDIR)/C_src/GLSL/write_gl_window_to_file.h \
   $(MHDDIR)/C_src/KEMO_GL/set_kemoviewer_ucd_data.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h \

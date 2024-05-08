@@ -597,6 +597,7 @@ tree_view_viewer_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/set_mesh_patch_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_grid_2_gl_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_mesh_node_2_gl_buf.h \
+  $(C_SRCDIR)/CORE_C/bitonic_sort_float_pthread.h \
   $(C_SRCDIR)/GLSL/write_gl_window_to_file.h \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/KEMO_GL/set_kemoviewer_ucd_data.h \
