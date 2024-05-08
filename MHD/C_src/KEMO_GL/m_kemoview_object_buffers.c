@@ -7,6 +7,8 @@
 
 #include "m_kemoview_object_buffers.h"
 
+#define NTHREADS 32
+
 struct kemoview_buffers * init_kemoview_buffers(void)
 {
     long n_point = 1024;
@@ -120,7 +122,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         set_map_patch_buffer(IZERO, kemo_psf->psf_a->istack_solid_psf_patch,
                              kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
                              kemo_buffers->MAP_solid_buf);
-        set_map_PSF_isolines_buffer(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+        set_map_PSF_isolines_buffer(NTHREADS,
+                                    kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
                                     view_s, kemo_buffers->MAP_isoline_buf);
         
         set_map_coastline_buffer(kemo_mesh->mesh_m, kemo_buffers->coast_buf);
@@ -136,7 +139,8 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
         set_color_code_for_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a);
         
-        const_PSF_solid_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
+        const_PSF_solid_objects_buffer(NTHREADS,
+                                       view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,
                                        kemo_buffers->PSF_solid_buf, kemo_buffers->PSF_stxur_buf,
                                        kemo_buffers->PSF_isoline_buf, kemo_buffers->PSF_arrow_buf);
         const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a,

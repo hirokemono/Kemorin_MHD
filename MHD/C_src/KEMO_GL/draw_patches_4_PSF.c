@@ -56,7 +56,8 @@ void const_PSF_arrow_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m
 }
 
 
-static void const_PSF_isoline_buffer(struct view_element *view_s, struct psf_data **psf_s,
+static void const_PSF_isoline_buffer(const int nthreads,
+                                     struct view_element *view_s, struct psf_data **psf_s,
                                      struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                      struct gl_strided_buffer *psf_buf){
 	double ref_width = 1.5;
@@ -66,7 +67,7 @@ static void const_PSF_isoline_buffer(struct view_element *view_s, struct psf_dat
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
         if(iflag != 0){
-			num_patch = num_patch + count_PSF_all_isolines_to_buf(psf_s[i], psf_m[i]);
+			num_patch = num_patch + count_PSF_all_isolines_to_buf(nthreads, psf_s[i], psf_m[i]);
 		};
 	};
     set_buffer_address_4_patch((ITHREE*num_patch), psf_buf);
@@ -96,7 +97,8 @@ int check_draw_psf(struct kemo_array_control *psf_a){
 	return iflag_psf;
 };
 
-void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
+void const_PSF_solid_objects_buffer(const int nthreads,
+                                    struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_solid_buf,
                                     struct gl_strided_buffer *PSF_stxur_buf,
@@ -108,7 +110,7 @@ void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data
     const_PSF_patch_buffer(view_s->shading_mode, 
                            psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch,
                            psf_s, psf_m, psf_a, PSF_solid_buf);
-    const_PSF_isoline_buffer(view_s, psf_s, psf_m, psf_a, PSF_isoline_buf);
+    const_PSF_isoline_buffer(nthreads, view_s, psf_s, psf_m, psf_a, PSF_isoline_buf);
     const_PSF_arrow_buffer(psf_s, psf_m, psf_a, PSF_arrow_buf);
     return;
 }

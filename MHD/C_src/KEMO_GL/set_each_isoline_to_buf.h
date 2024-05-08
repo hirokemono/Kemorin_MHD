@@ -17,8 +17,11 @@
 
 /* prototypes */
 
-long add_each_isoline_npatch(const long ist_patch, double v_line,
-                             long icomp, struct psf_data *psf_s);
+long count_each_isoline_npatch(const long ist, const long ied, const double v_line,
+                               long icomp, struct psf_data *psf_s);
+long count_each_isoline_npatch_pthread(const int nthreads,  double v_line,
+                                       long icomp, struct psf_data *psf_s);
+
 long set_each_isoline_to_buf(const long ist_patch, double width,
                              double v_line, long icomp, double *f_color,
                              struct psf_data *psf_s,

@@ -22,7 +22,8 @@
 
 int check_draw_psf(struct kemo_array_control *psf_a);
 
-void const_PSF_solid_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
+void const_PSF_solid_objects_buffer(const int nthreads,
+                                    struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_solid_buf,
                                     struct gl_strided_buffer *PSF_stxur_buf,

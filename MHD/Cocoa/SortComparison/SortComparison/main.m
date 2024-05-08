@@ -22,7 +22,7 @@
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         int nthreads = 32;
-        long nArray = 1 << 21;
+        long nArray = 1 << 18;
         
         struct sort_float_array *rSort = init_sort_float_array(nthreads, nArray);
         printf("nthreads %d \n", nthreads);
@@ -45,6 +45,7 @@ int main(int argc, const char * argv[]) {
         double seq_time3 = bitonicsort_pthread_float_test(rSort);
         double seq_time6 = vDSP_vsorti_test(rSort);
 
+        double ddd = max_float_array_pthread_test(rSort);
         dealloc_sort_float_array(rSort);
 
         printf("-------------------------------------\n\n");
@@ -56,6 +57,9 @@ int main(int argc, const char * argv[]) {
         printf("Bitonic parallel recursive with %i threads\n", nthreads);
         printf("             and quicksort wall clock time = %f\n", seq_time3);
         printf("               vDSP_vsorti wall clock time = %f\n", seq_time6);
+
     }
+
+
     return 0;
 }

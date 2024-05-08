@@ -45,7 +45,8 @@ int find_start_positive_lines(int n_isoline, struct colormap_params *cmap_s){
     return ist_positive_line;
 }
 
-static long add_num_PSF_isolines(long ist_patch, int ist, int ied,
+static long add_num_PSF_isolines(const int nthreads,
+                                 long ist_patch, int ist, int ied,
                                  struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int j;
 	double v_line;
@@ -54,8 +55,9 @@ static long add_num_PSF_isolines(long ist_patch, int ist, int ied,
 	for (j = ist; j < ied; j++){
 		v_line = cal_isoline_value(j, psf_m->n_isoline,
 								   psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
-		num_patch = add_each_isoline_npatch(num_patch, v_line, 
-											psf_m->icomp_draw_psf, psf_s);
+		num_patch = num_patch + count_each_isoline_npatch_pthread(nthreads, v_line,
+                                                                  psf_m->icomp_draw_psf,
+                                                                  psf_s);
 	};
 	return num_patch;
 }
@@ -95,23 +97,28 @@ static long set_PSF_isolines_to_buf(const long ist_patch, int ist, int ied,
 }
 
 
-long count_PSF_all_isolines_to_buf(struct psf_data *psf_s, struct psf_menu_val *psf_m){
+long count_PSF_all_isolines_to_buf(const int nthreads,
+                                   struct psf_data *psf_s,
+                                   struct psf_menu_val *psf_m){
 	long num_patch = 0;
 	if(psf_m->draw_psf_grid  != 0){
 		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline,
 								psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
 		if(psf_m->ist_positive_line > 1){
-			num_patch = add_num_PSF_isolines(num_patch, IZERO, psf_m->ist_positive_line,
+			num_patch = add_num_PSF_isolines(nthreads, num_patch,
+                                             IZERO, psf_m->ist_positive_line,
 											 psf_s, psf_m);
 		};
         if(psf_m->ist_positive_line < psf_m->n_isoline){
-            num_patch = add_num_PSF_isolines(num_patch, psf_m->ist_positive_line, psf_m->n_isoline,
+            num_patch = add_num_PSF_isolines(nthreads, num_patch,
+                                             psf_m->ist_positive_line, psf_m->n_isoline,
 											 psf_s, psf_m);
         };
     };
 	if(psf_m->draw_psf_zero != 0){
-		num_patch = add_each_isoline_npatch(num_patch, ZERO, 
-                                            psf_m->icomp_draw_psf, psf_s);
+		num_patch = num_patch + count_each_isoline_npatch_pthread(nthreads, ZERO,
+                                                                  psf_m->icomp_draw_psf,
+                                                                  psf_s);
     };
 	return num_patch;
 }

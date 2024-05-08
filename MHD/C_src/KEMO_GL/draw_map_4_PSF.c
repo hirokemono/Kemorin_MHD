@@ -27,7 +27,8 @@ void set_map_patch_buffer(long ist_psf, long ied_psf, struct psf_data **psf_s,
 	return;
 }
 
-void set_map_PSF_isolines_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m,
+void set_map_PSF_isolines_buffer(const int nthreads,
+                                 struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a, struct view_element *view_s,
                                  struct gl_strided_buffer *mline_buf){
 	double ref_width = 1.5;
@@ -36,7 +37,7 @@ void set_map_PSF_isolines_buffer(struct psf_data **psf_s, struct psf_menu_val **
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){
-			num_patch = count_map_PSF_isoline(num_patch, psf_s[i], psf_m[i]);
+			num_patch = count_map_PSF_isoline(nthreads, num_patch, psf_s[i], psf_m[i]);
 		};
 	};
     

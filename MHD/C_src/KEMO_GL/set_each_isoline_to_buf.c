@@ -8,6 +8,7 @@
  */
 
 #include "set_each_isoline_to_buf.h"
+#include <pthread.h>
 
 static void copy_each_triangle_postion(long ntot_comp, long ie_viz[3],
                                        double *xyzw_viz, double *d_nod, long icomp,
@@ -64,23 +65,93 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], doubl
 	return;
 };
 
+typedef struct{
+    int id;
+    int nthreads;
+    struct psf_data *psf_s;
+    long icomp;
+    double v_line;
 
-long add_each_isoline_npatch(const long ist_patch, double v_line,
-                             long icomp, struct psf_data *psf_s){
+    long *num_line;
+} args_pthread_float_sort;
+
+long count_each_isoline_npatch(const long ist, const long ied, const double v_line,
+                               long icomp, struct psf_data *psf_s){
+    double d_tri[3], xyz_tri[9];
+    long iele;
+    int idraw;
+    
+    long inum_patch = 0;
+    for(iele=ist;iele<ied;iele++){
+        copy_each_triangle_postion(psf_s->ncomptot,
+                                   &psf_s->ie_viz[iele][0], psf_s->xyzw_viz,
+                                   psf_s->d_nod, icomp, xyz_tri, d_tri);
+        /*  find isoline */
+        idraw = find_isoline_on_triangle(xyz_tri, d_tri, v_line);
+        /*  count isoline */
+        inum_patch = inum_patch + 12 * idraw;
+    };
+    return inum_patch;
+};
+
+
+static void * count_each_isoline_npatch_each(void *args)
+{
+    args_pthread_float_sort * p = (args_pthread_float_sort *) args;
+    int id =       p->id;
+    int nthreads = p->nthreads;
+    
+    struct psf_data *psf_s = p->psf_s;
+    long icomp = p->icomp;
+    double v_line = p->v_line;
+    long *num_line = p->num_line;
+    
+    long lo = psf_s->nele_viz * id /     nthreads;
+    long hi = psf_s->nele_viz * (id+1) / nthreads;
+    
+    num_line[id] = count_each_isoline_npatch(lo, hi, v_line, icomp, psf_s);
+    return 0;
+}
+
+long count_each_isoline_npatch_pthread(const int nthreads, double v_line,
+                                       long icomp, struct psf_data *psf_s){
 	double d_tri[3], xyz_tri[9];
 	int iele, idraw;
 	
-	long inum_patch = ist_patch;
-	for (iele = 0; iele < psf_s->nele_viz; iele++) {
-		copy_each_triangle_postion(psf_s->ncomptot,
-                                   &psf_s->ie_viz[iele][0], psf_s->xyzw_viz,
-								   psf_s->d_nod, icomp, xyz_tri, d_tri);
-		/*  find isoline */
-		idraw = find_isoline_on_triangle(xyz_tri, d_tri, v_line);
-		/*  count isoline */
-		inum_patch = inum_patch + 12 * idraw;
-	};
-	
+    /* Allocate thread arguments. */
+    args_pthread_float_sort *args
+            = (args_pthread_float_sort *) malloc (nthreads * sizeof(args_pthread_float_sort));
+    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_float_sort.\n"); exit(1);}
+    
+    float *rmax = (float *) malloc (nthreads * sizeof(float));
+    if (!rmax) {fprintf (stderr, "Malloc failed for rmax.\n"); exit(1);}
+/* Initialize thread handles and barrier. */
+    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
+    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
+    
+    int ip;
+    long *num_line = (long *) malloc (nthreads * sizeof(long));
+    for(ip=0;ip<nthreads;ip++) {
+        args[ip].id = ip;
+        args[ip].nthreads = nthreads;
+        
+        args[ip].icomp = icomp;
+        args[ip].v_line = v_line;
+        args[ip].psf_s = psf_s;
+        args[ip].num_line = num_line;
+        
+        pthread_create(&thread_handles[ip], NULL, count_each_isoline_npatch_each, &args[ip]);
+    }
+    for(ip=1;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
+    
+    long inum_patch = 0;
+    for(ip=0;ip<nthreads;ip++){
+        inum_patch = inum_patch + num_line[ip];
+    }
+    free(num_line);
+    free(thread_handles);
+    free(args);
+//    printf("Parallel count %ld\n", inum_patch);
 	return inum_patch;
 };
 
