@@ -95,10 +95,9 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
         long num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
         set_distance_in_model(view_s, num, mesh_s->surf_center_view, mesh_sort->z_ele_view);
         set_transparent_mesh_patches_to_buf(mesh_m, mesh_s,
-                                            mesh_sort->z_ele_view,
-                                            mesh_s->iele_trans_patch,
-                                            mesh_sort->z_trans_patch,
-                                            mesh_sort->index_trans_patch);
+                                            mesh_s->iele_trans_patch);
+        set_trans_mesh_patch_for_sort(mesh_s, mesh_s->iele_trans_patch, mesh_sort->z_ele_view,
+                                      mesh_sort->z_trans_patch, mesh_sort->index_trans_patch);
         sort_transparent_mesh_patches(mesh_s, mesh_sort);
         dealloc_mesh_sorting_work(mesh_sort);
     };

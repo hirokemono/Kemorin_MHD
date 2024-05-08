@@ -4,6 +4,8 @@
 #ifndef SET_MESH_NODE_2_GL_BUF_
 #define SET_MESH_NODE_2_GL_BUF_
 
+#include <math.h>
+
 #include "kemoviewer_param_c.h"
 #include "m_kemoview_mesh_menu.h"
 #include "m_surface_mesh_4_viewer_c.h"
