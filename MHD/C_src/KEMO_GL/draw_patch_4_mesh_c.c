@@ -8,13 +8,14 @@ static void const_solid_mesh_patch_bufffer(int shading_mode,
                                            struct viewer_mesh *mesh_s,
                                            struct mesh_menu_val *mesh_m,
                                            struct gl_strided_buffer *mesh_buf){
-	long num_patch = count_solid_mesh_patches(mesh_s, mesh_m);
-    set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
+	mesh_s->ntot_solid_patch = count_solid_mesh_patches(mesh_s, mesh_m);
+    set_buffer_address_4_patch(ITHREE*mesh_s->ntot_solid_patch, mesh_buf);
 	if(mesh_buf->num_nod_buf <= 0) return;
 	
-	resize_strided_buffer(mesh_buf);
+    resize_strided_buffer(mesh_buf);
     set_mesh_patch_colors(mesh_m, mesh_s);
 	set_solid_mesh_patches_to_buf(shading_mode, mesh_s, mesh_m, mesh_buf);
+//    set_solid_mesh_patches_to_buf2(shading_mode, mesh_s, mesh_m, mesh_buf);
 	return;
 }
 
@@ -32,14 +33,17 @@ void const_trans_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *m
         copy_patch_distance_mesh(mesh_s);
     }
     
-    long num_patch = count_transparent_mesh_patches(mesh_s, mesh_m);
-    set_buffer_address_4_patch(ITHREE*num_patch, mesh_trns_buf);
+    long num_trans = count_transparent_mesh_patches(mesh_s, mesh_m);
+    
+    alloc_trans_mesh_distance(num_trans, mesh_s);
+    set_buffer_address_4_patch(ITHREE*mesh_s->ntot_trans_patch, mesh_trns_buf);
 
     if(mesh_trns_buf->num_nod_buf > 0){
         resize_strided_buffer(mesh_trns_buf);
         set_mesh_patch_colors(mesh_m, mesh_s);
         set_transparent_mesh_patches_to_buf(view_s->shading_mode, mesh_s, mesh_m, mesh_trns_buf);
     };
+    dealloc_trans_mesh_distance(mesh_s);
     return;
 };
 

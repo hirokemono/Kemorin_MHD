@@ -25,4 +25,10 @@ long set_transparent_mesh_patches_to_buf(int shading_mode,
                                          struct gl_strided_buffer *mesh_buf);
 
 void set_mesh_patch_colors(struct mesh_menu_val *mesh_m, struct viewer_mesh *mesh_s);
+
+void set_solid_mesh_patches_to_buf2(int shading_mode,
+                                    struct viewer_mesh *mesh_s, 
+                                    struct mesh_menu_val *mesh_m,
+                                    struct gl_strided_buffer *mesh_buf);
+
 #endif

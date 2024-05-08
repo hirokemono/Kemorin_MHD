@@ -132,12 +132,12 @@ struct viewer_mesh {
     double *normal_nod_mesh_patch;
     
     long ntot_solid_patch;
-    long *iele_solid_patch;
+    long *iele2_solid_patch;
     
     long ntot_trans_patch;
     long nextP2_trans_patch;
     long ntotP2_trans_patch;
-    long *iele_trans_patch;
+    long *iele2_trans_patch;
     long *index_trans_patch;
     float *z_trans_patch;
 };
@@ -177,8 +177,7 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s);
 void dealloc_mesh_normals_s(struct viewer_mesh *mesh_s);
 
 
-void alloc_trans_mesh_distance(long num_solid, long num_trans,
-                               struct viewer_mesh *mesh_s);
+void alloc_trans_mesh_distance(long num_solid, struct viewer_mesh *mesh_s);
 void dealloc_trans_mesh_distance(struct viewer_mesh *mesh_s);
 
 struct viewer_mesh * alloc_viewer_mesh(void);
