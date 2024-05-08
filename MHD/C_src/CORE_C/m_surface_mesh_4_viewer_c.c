@@ -197,8 +197,6 @@ void alloc_domain_stack_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_domain_surf_item_viewer_s(struct viewer_mesh *mesh_s){
 	mesh_s->isurf_domain_sf = (int *)calloc(mesh_s->nsurf_domain_sf,sizeof(int));
-	mesh_s->iele_domain_far = (long *)calloc(mesh_s->nsurf_domain_sf,sizeof(long));
-	mesh_s->z_domain_view = (double *)calloc(mesh_s->nsurf_domain_sf,sizeof(double));
 	return;
 };
 void alloc_domain_nod_item_viewer_s(struct viewer_mesh *mesh_s){
@@ -271,8 +269,10 @@ void alloc_nod_grp_item_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_ele_grp_item_viewer_s(struct viewer_mesh *mesh_s){
 	mesh_s->ele_item_sf = (int *)calloc(mesh_s->nele_ele_sf,sizeof(int));
-	mesh_s->iele_grp_far = (long *)calloc(mesh_s->nele_ele_sf,sizeof(long));
-	mesh_s->z_ele_grp_view = (double *)calloc(mesh_s->nele_ele_sf,sizeof(double));
+    if(mesh_s->ele_item_sf == NULL) {
+        printf("malloc error for ele_item_sf\n");
+        exit(0);
+    }
 	return;
 };
 void alloc_ele_grp_nod_item_viewer_s(struct viewer_mesh *mesh_s){
@@ -287,8 +287,10 @@ void alloc_ele_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_surf_grp_item_viewer_s(struct viewer_mesh *mesh_s){
 	mesh_s->surf_item_sf = (int *)calloc(mesh_s->nsurf_surf_sf,sizeof(int));
-	mesh_s->isurf_grp_far = (long *)calloc(mesh_s->nsurf_surf_sf,sizeof(long));
-	mesh_s->z_surf_grp_view = (double *)calloc(mesh_s->nsurf_surf_sf,sizeof(double));
+    if(mesh_s->surf_item_sf == NULL) {
+        printf("malloc error for surf_item_sf\n");
+        exit(0);
+    }
 	return;
 };
 void alloc_surf_grp_nod_item_viewer_s(struct viewer_mesh *mesh_s){
@@ -504,8 +506,6 @@ static void dealloc_domain_stack_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 static void dealloc_domain_surf_item_viewer_s(struct viewer_mesh *mesh_s){
-	free(mesh_s->z_domain_view);
-	free(mesh_s->iele_domain_far);
 	free(mesh_s->isurf_domain_sf);
 	return;
 };
@@ -556,8 +556,6 @@ static void dealloc_nod_grp_item_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 static void dealloc_ele_grp_item_viewer_s(struct viewer_mesh *mesh_s){
-	free(mesh_s->z_ele_grp_view);
-	free(mesh_s->iele_grp_far);
 	free(mesh_s->ele_item_sf);
 	return;
 };
@@ -571,8 +569,6 @@ static void dealloc_ele_grp_edge_item_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 static void dealloc_surf_grp_item_viewer_s(struct viewer_mesh *mesh_s){
-	free(mesh_s->z_surf_grp_view);
-	free(mesh_s->isurf_grp_far);
 	free(mesh_s->surf_item_sf);
 	return;
 };
