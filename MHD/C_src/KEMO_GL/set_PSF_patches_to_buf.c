@@ -24,12 +24,12 @@ void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode,
 			inod = psf_s[ipsf]->ie_viz[iele][lk] - 1;
 			
             set_node_stride_buffer((ITHREE*inum+lk), strided_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xyzw_viz[inod*IFOUR + nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[4*inod+nd];};
+			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];};
+			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];};
 			if (shading_mode == SMOOTH_SHADE){
-                for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[4*inod+nd];};
+                for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[IFOUR*inod+nd];};
 			} else {
-				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_ele[4*iele+nd];};
+				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_ele[IFOUR*iele+nd];};
 			};
 			if(psf_m[ipsf]->polygon_mode_psf == REVERSE_POLYGON){
 				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = -strided_buf->n_draw[nd];};
