@@ -15,15 +15,22 @@
 long count_solid_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 long count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 
-long set_solid_mesh_patches_to_buf(int shading_mode, 
-                                   struct viewer_mesh *mesh_s, 
-                                   struct mesh_menu_val *mesh_m, 
-                                   struct gl_strided_buffer *mesh_buf);
-long set_transparent_mesh_patches_to_buf(int shading_mode,
-                                         struct viewer_mesh *mesh_s, 
-                                         struct mesh_menu_val *mesh_m,
-                                         double *z_ele_view,
-                                         struct gl_strided_buffer *mesh_buf);
+void add_solid_mesh_patch_to_buf(int shading_mode, int polygon_mode,
+                                 struct viewer_mesh *mesh_s,
+                                 struct gl_strided_buffer *mesh_buf);
+void add_trans_mesh_patch_to_buf(int shading_mode, int polygon_mode,
+                                 struct viewer_mesh *mesh_s,
+                                 struct gl_strided_buffer *mesh_buf);
+
+long set_solid_mesh_patches_to_buf(struct mesh_menu_val *mesh_m,
+                                   struct viewer_mesh *mesh_s,
+                                   long *iele_solid_patch);
+long set_transparent_mesh_patches_to_buf(struct mesh_menu_val *mesh_m,
+                                         struct viewer_mesh *mesh_s,
+                                         const double *z_ele_view,
+                                         long *iele_trans_patch,
+                                         float *z_trans_patch,
+                                         long *index_trans_patch);
 
 void set_mesh_patch_colors(struct mesh_menu_val *mesh_m, struct viewer_mesh *mesh_s);
 

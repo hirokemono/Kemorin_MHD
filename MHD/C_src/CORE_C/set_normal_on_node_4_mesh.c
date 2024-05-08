@@ -69,7 +69,8 @@ static void set_normal_on_domain_group(struct viewer_mesh *mesh_s,
     
     for(ip = 0; ip < mesh_s->num_pe_sf; ip++){
         refine_normal_on_node_4_grp(mesh_s, mesh_s->nnod_viewer,
-                                    mesh_s->isurf_stack_domain_sf[ip], mesh_s->isurf_stack_domain_sf[ip+1],
+                                    mesh_s->isurf_stack_domain_sf[ip],
+                                    mesh_s->isurf_stack_domain_sf[ip+1],
                                     mesh_s->isurf_domain_sf, wk_norm->dist_nod_domain,
                                     &mesh_s->normal_nod_mesh_patch[12*ist],
                                     wk_norm);

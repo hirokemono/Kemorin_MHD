@@ -181,9 +181,6 @@ void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
 /* allocate memory  surf_center_view[devided surface #][component] */
 	mesh_s->surf_center_view = (double *)calloc(4*num,sizeof(double));
 	mesh_s->surf_size_view = (double *)calloc(num,sizeof(double));
-	
-	mesh_s->z_ele_view = (double *)calloc(num,sizeof(double));
-	
 	return;
 };
 
@@ -384,19 +381,8 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
         printf("malloc error for iele_trans_patch\n");
         exit(0);
     }
-    mesh_s->iseg_trans_patch = (long *)calloc(2*num,sizeof(long));
-    if(mesh_s->iseg_trans_patch == NULL) {
-        printf("malloc error for iseg_trans_patch\n");
-        exit(0);
-    }
-
     mesh_s->iele_solid_patch = (long *)calloc(num,sizeof(long));
     if(mesh_s->iele_solid_patch == NULL) {
-        printf("malloc error for iele2_solid_patch\n");
-        exit(0);
-    }
-    mesh_s->iseg_solid_patch = (long *)calloc(num,sizeof(long));
-    if(mesh_s->iseg_solid_patch == NULL) {
         printf("malloc error for iele2_solid_patch\n");
         exit(0);
     }
@@ -404,36 +390,10 @@ void alloc_mesh_normals_s(struct viewer_mesh *mesh_s){
 };
 
 
-void alloc_trans_mesh_distance(long num_trans, struct viewer_mesh *mesh_s){
-    mesh_s->ntot_trans_patch = num_trans;
-    mesh_s->nextP2_trans_patch = 1 + (int) log2((double) (mesh_s->ntot_trans_patch-1));
-    mesh_s->ntotP2_trans_patch =  1 << mesh_s->nextP2_trans_patch;
-    
-    posix_memalign((void**)&mesh_s->index_trans_patch, NPAGE,
-                   mesh_s->ntotP2_trans_patch*sizeof(long));
-    if(mesh_s->index_trans_patch == NULL) {
-        printf("malloc error for index_trans_patch\n");
-        exit(0);
-    }
-    posix_memalign((void**)&mesh_s->z_trans_patch, NPAGE,
-                   mesh_s->ntotP2_trans_patch*sizeof(float));
-    if(mesh_s->z_trans_patch == NULL) {
-        printf("malloc error for z_trans_patch\n");
-        exit(0);
-    }
-};
-
-void dealloc_trans_mesh_distance(struct viewer_mesh *mesh_s){
-    free(mesh_s->index_trans_patch);
-    free(mesh_s->z_trans_patch);
-}
 
 void dealloc_mesh_normals_s(struct viewer_mesh *mesh_s){
     free(mesh_s->iele_trans_patch);
-    free(mesh_s->iseg_trans_patch);
-
     free(mesh_s->iele_solid_patch);
-    free(mesh_s->iseg_solid_patch);
 
     free(mesh_s->normal_nod_mesh_patch);
     free(mesh_s->normal_mesh_patch);
@@ -488,8 +448,6 @@ static void dealloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
 	free(mesh_s->surf_norm_view);
 	free(mesh_s->surf_center_view);
 	free(mesh_s->surf_size_view);
-	free(mesh_s->z_ele_view);
-	
 	return;
 };
 

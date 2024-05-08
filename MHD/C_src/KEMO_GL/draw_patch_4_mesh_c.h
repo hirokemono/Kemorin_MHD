@@ -15,6 +15,18 @@
 #include "set_mesh_patch_2_gl_buf.h"
 #include "set_mesh_grid_2_gl_buf.h"
 #include "set_mesh_node_2_gl_buf.h"
+#include "bitonic_sort_float_pthread.h"
+
+struct mesh_sorting_work{
+    long nextP2_trans_patch;
+    long ntotP2_trans_patch;
+
+    long *index_trans_patch;
+    float *z_trans_patch;
+    
+    double *z_ele_view;
+};
+
 
 /* prototypes */
 void const_solid_mesh_buffer(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m, struct view_element *view_s,
