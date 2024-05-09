@@ -6,34 +6,34 @@
 
 
 static void set_one_quad_to_buf(long i_quad, 
-                                float x1[3], float x2[3], float x3[3], float x4[3],
+                                float x1[4], float x2[4], float x3[4], float x4[4],
                                 float c1[4], float c2[4], float c3[4], float c4[4],
                                 struct gl_strided_buffer *strided_buf,
                                 struct gl_local_buffer_address *point_buf){
 	int nd;
 	
     set_node_stride_buffer(6*i_quad, strided_buf, point_buf);
-	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x1[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x1[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
 	
     set_node_stride_buffer(6*i_quad+1, strided_buf, point_buf);
-	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x2[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x2[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c2[nd];};
 		
     set_node_stride_buffer(6*i_quad+2, strided_buf, point_buf);
-	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x3[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x3[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
 		
     set_node_stride_buffer(6*i_quad+3, strided_buf, point_buf);
-	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x3[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x3[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
 		
     set_node_stride_buffer(6*i_quad+4, strided_buf, point_buf);
-	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x4[nd];}
+	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x4[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c4[nd];};
 	
     set_node_stride_buffer(6*i_quad+5, strided_buf, point_buf);
-	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x1[nd];};
+	for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = x1[nd];};
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
 	return;
 };
@@ -71,7 +71,7 @@ long solid_colorbar_box_to_buf(const long ist_quad,
                                struct gl_local_buffer_address *point_buf){
 	long inum_quad = ist_quad;
 	float y1;
-	float x1[3], x2[3], x3[3], x4[3];
+	float x1[4], x2[4], x3[4], x4[4];
 	float c1[4], c2[4], c3[4], c4[4];
 	double psf_value;
 	double f_color[4], l_color[4];
@@ -85,7 +85,12 @@ long solid_colorbar_box_to_buf(const long ist_quad,
 	f_color[3] = ONE;
 	for(nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	
-	x1[0] = cbar_wk->xbar_min;
+    x1[3] = 1.0;
+    x2[3] = 1.0;
+    x3[3] = 1.0;
+    x4[3] = 1.0;
+
+    x1[0] = cbar_wk->xbar_min;
 	x2[0] = cbar_wk->xbar_mid;
 	x3[0] = cbar_wk->xbar_mid;
 	x4[0] = cbar_wk->xbar_min;
@@ -133,7 +138,7 @@ long fade_colorbar_box_to_buf(const long ist_quad,
                               struct gl_local_buffer_address *point_buf){
 	long inum_quad = ist_quad;
 	float y1;
-	float x1[3], x2[3], x3[3], x4[3];
+	float x1[4], x2[4], x3[4], x4[4];
 	float c1[4], c2[4], c3[4], c4[4];
 	
 	double psf_value;
@@ -153,7 +158,12 @@ long fade_colorbar_box_to_buf(const long ist_quad,
 	f_color[3] = ONE;
 	for (nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	
-	x1[0] = cbar_wk->xbar_mid;
+    x1[3] = 1.0;
+    x2[3] = 1.0;
+    x3[3] = 1.0;
+    x4[3] = 1.0;
+
+    x1[0] = cbar_wk->xbar_mid;
 	x2[0] = cbar_wk->xbar_max;
 	x3[0] = cbar_wk->xbar_max;
 	x4[0] = cbar_wk->xbar_mid;
@@ -204,7 +214,7 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
                            float *text_color, struct cbar_work *cbar_wk,
                            struct gl_strided_buffer *strided_buf,
                            struct gl_local_buffer_address *point_buf){
-	float x1[3], x2[3], x3[3], x4[3];
+	float x1[4], x2[4], x3[4], x4[4];
 	float c1[4], c2[4], c3[4], c4[4];
 	int nd;
 	
@@ -212,6 +222,10 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
 	x2[2] = 0.001;
 	x3[2] = 0.001;
 	x4[2] = 0.001;
+    x1[3] = 1.0;
+    x2[3] = 1.0;
+    x3[3] = 1.0;
+    x4[3] = 1.0;
 	
 	for(nd=0;nd<4;nd++) {c1[nd] = text_color[nd];};
 	for(nd=0;nd<4;nd++) {c2[nd] = text_color[nd];};
@@ -301,12 +315,17 @@ void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
                           struct gl_strided_buffer *max_vertex,
                           struct gl_strided_buffer *zero_vertex,
                           struct gl_local_buffer_address *point_buf){
-	float x1[3], x2[3], x3[3], x4[3];
+	float x1[4], x2[4], x3[4], x4[4];
 	float c1[4], c2[4], c3[4], c4[4];
 	float t1[2], t2[2], t3[2], t4[2];
 	int nd;
 	
-	x1[0] = cbar_wk->xbar_max +   8.0*(iflag_retina + 1);
+    x1[3] = 1.0;
+    x2[3] = 1.0;
+    x3[3] = 1.0;
+    x4[3] = 1.0;
+
+    x1[0] = cbar_wk->xbar_max +   8.0*(iflag_retina + 1);
 	x2[0] = cbar_wk->xbar_max + 104.0*(iflag_retina + 1);
 	x3[0] = cbar_wk->xbar_max + 104.0*(iflag_retina + 1);
 	x4[0] = cbar_wk->xbar_max +   8.0*(iflag_retina + 1);
@@ -391,11 +410,15 @@ void time_mbox_to_buf(int iflag_retina, float *text_color,
                       float xwin, float ywin,
 					  struct gl_strided_buffer *strided_buf,
                       struct gl_local_buffer_address *point_buf){
-	float x1[3], x2[3], x3[3], x4[3];
+	float x1[4], x2[4], x3[4], x4[4];
 	float c1[4], c2[4], c3[4], c4[4];
 	float t1[2], t2[2], t3[2], t4[2];
 	int nd;
 	
+    x1[3] = 1.0;
+    x2[3] = 1.0;
+    x3[3] = 1.0;
+    x4[3] = 1.0;
 	x1[0] = xwin - 188.0*(iflag_retina + 1);
 	x2[0] = xwin -   8.0*(iflag_retina + 1);
 	x3[0] = xwin -   8.0*(iflag_retina + 1);
@@ -434,7 +457,7 @@ void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
                          struct gl_strided_buffer *strided_buf,
                          struct gl_local_buffer_address *point_buf){
 	float c1[4];
-	float x1[3], x2[3], x3[3], x4[3];
+	float x1[4], x2[4], x3[4], x4[4];
 	float t1[2], t2[2], t3[2], t4[2];
 	int nd;
 	
@@ -450,6 +473,10 @@ void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
 	x2[2] = 0.001;
 	x3[2] = 0.001;
 	x4[2] = 0.001;
+    x1[3] = 1.0;
+    x2[3] = 1.0;
+    x3[3] = 1.0;
+    x4[3] = 1.0;
 	
 	c1[3] = text_opacity;
 	for(nd=0;nd<4;nd++) {c1[nd] = 0.0;};
@@ -475,7 +502,7 @@ void screen_mbox_to_buf(const int npix_x, const int npix_y,
                         struct gl_strided_buffer *strided_buf,
                         struct gl_local_buffer_address *point_buf){
     float c1[4];
-    float x1[3], x2[3], x3[3], x4[3];
+    float x1[4], x2[4], x3[4], x4[4];
     float t1[2], t2[2], t3[2], t4[2];
     int nd;
     
@@ -491,6 +518,10 @@ void screen_mbox_to_buf(const int npix_x, const int npix_y,
     x2[2] = 0.0;
     x3[2] = 0.0;
     x4[2] = 0.0;
+    x1[3] = 1.0;
+    x2[3] = 1.0;
+    x3[3] = 1.0;
+    x4[3] = 1.0;
     
     c1[3] = 1.0;
     for(nd=0;nd<4;nd++) {c1[nd] = 0.0;};

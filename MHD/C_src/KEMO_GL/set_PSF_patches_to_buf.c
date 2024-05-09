@@ -152,8 +152,8 @@ void set_psf_textures_to_buf(long ist_psf, long ied_psf,
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
             set_node_stride_buffer((ITHREE*inum+k), strided_buf, point_buf);
-			strided_buf->x_txur[0] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
-			strided_buf->x_txur[1] = 1.0 - rtp_patch[ITHREE*k+1] * ARCPI;
+			strided_buf->v_buf[point_buf->igl_txur  ] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
+			strided_buf->v_buf[point_buf->igl_txur+1] = 1.0 - rtp_patch[ITHREE*k+1] * ARCPI;
 		};
 	};
 	return;
