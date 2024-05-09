@@ -28,14 +28,14 @@ void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color
 						int hex_tube[2][3], double norms_hex[48], double radius,
 						double xyzw_edge[8], double color_edge[8]);
 
-void interpolate_on_edge(double xyz_mid[3], double dir_mid[4], double norm_mid[4], 
-						 const double xyz1[3], const double xyz2[3], 
+void interpolate_on_edge(double xyzw_mid[4], double dir_mid[4], double norm_mid[4], 
+						 const double xyzw1[4], const double xyz2[4], 
 						 const double nrm1[3], const double nrm2[3],
 						 const double dat1, const double dat2, const double v_line);
 int find_isoline_on_triangle(const double xyz_tri[9], 
 							 const double d_tri[3], const double v_line);
 int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm_line[8], 
-							const double xyz_tri[9], const double nrm_tri[9],
+                            const double xyzw_tri[12], const double nrm_tri[9],
 							const double d_tri[3], const double v_line);
 
 int add_line_tube_patch_num(int ipatch_in);

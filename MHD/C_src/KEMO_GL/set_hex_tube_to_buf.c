@@ -145,15 +145,15 @@ void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color
 	return;
 };
 
-void interpolate_on_edge(double xyz_mid[3], double dir_mid[4], double norm_mid[4], 
-						 const double xyz1[3], const double xyz2[3], 
+void interpolate_on_edge(double xyzw_mid[4], double dir_mid[4], double norm_mid[4], 
+						 const double xyzw1[4], const double xyzw2[4], 
 						 const double nrm1[3], const double nrm2[3],
 						 const double dat1, const double dat2, const double v_line){
 	int nd;
 	double coef = (dat2 - v_line) / (dat2 - dat1);
 	for(nd=0; nd<3; nd++){
-		dir_mid[nd] =  xyz2[nd] - xyz1[nd];
-		xyz_mid[nd] = coef * xyz1[nd] + (1.0 - coef) * xyz2[nd];
+		dir_mid[nd] =  xyzw2[nd] - xyzw1[nd];
+        xyzw_mid[nd] = coef * xyzw1[nd] + (1.0 - coef) * xyzw2[nd];
         norm_mid[nd] = coef * nrm1[nd] + (1.0 - coef) * nrm2[nd];
 	};
 	coef = sqrt(dir_mid[0]*dir_mid[0] + dir_mid[1]*dir_mid[1] + dir_mid[2]*dir_mid[2]);
@@ -193,7 +193,7 @@ int find_isoline_on_triangle(const double xyz_tri[9],
 };
 
 int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm_line[8], 
-							const double xyz_tri[9], const double nrm_tri[9],
+							const double xyzw_tri[12], const double nrm_tri[9],
 							const double d_tri[3], const double v_line){
 	double sig[3];
 	int k1, nd, i1, i2, i3;
@@ -210,24 +210,24 @@ int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm
 		
 		if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]<ZERO) ){
 			interpolate_on_edge(&xyzw_line[0], &dir_line[0], &norm_line[0], 
-								&xyz_tri[3*i1], &xyz_tri[3*i2], 
+								&xyzw_tri[4*i1], &xyzw_tri[4*i2], 
 								&nrm_tri[3*i1], &nrm_tri[3*i2],
 								d_tri[i1], d_tri[i2], v_line);
 			for(nd=0; nd<3; nd++){
-                xyzw_line[4+nd] =  xyz_tri[3*i3+nd];
+                xyzw_line[4+nd] = xyzw_tri[4*i3+nd];
 				dir_line[4+nd] = -dir_line[nd];
-                norm_line[4+nd] = xyz_tri[3*i3+nd];
+                norm_line[4+nd] = xyzw_tri[4*i3+nd];
 			};
 			idraw = 1;
 			break;
 		}
 		else if ( (sig[0]<ZERO) && (sig[2]<ZERO) ){
 			interpolate_on_edge(&xyzw_line[0], &dir_line[0], &norm_line[0], 
-								&xyz_tri[3*i1], &xyz_tri[3*i2], 
+								&xyzw_tri[4*i1], &xyzw_tri[4*i2], 
 								&nrm_tri[3*i1], &nrm_tri[3*i2],
 								d_tri[i1], d_tri[i2], v_line);
 			interpolate_on_edge(&xyzw_line[4], &dir_line[4], &norm_line[4], 
-								&xyz_tri[3*i3], &xyz_tri[3*i2], 
+								&xyzw_tri[4*i3], &xyzw_tri[4*i2], 
 								&nrm_tri[3*i3], &nrm_tri[3*i2],
 								d_tri[i3], d_tri[i2], v_line);
 			idraw = 1;
