@@ -44,7 +44,10 @@ long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shadin
                 };
 			};
 			if(psf_m[ipsf]->polygon_mode_psf == REVERSE_POLYGON){
-				for(nd=0;nd<3;nd++){strided_buf->v_buf[nd+point_buf->igl_norm] = -strided_buf->n_draw[nd];};
+				for(nd=0;nd<3;nd++){
+                    strided_buf->v_buf[nd+point_buf->igl_norm]
+                        = -strided_buf->v_buf[nd+point_buf->igl_norm];
+                };
 			};
 		};
         ipatch = ipatch + 1;
@@ -197,11 +200,14 @@ void set_psf_map_to_buf(long ist_psf, long ied_psf,
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
             set_node_stride_buffer((ITHREE*inum+k), strided_buf, point_buf);
-			strided_buf->x_draw[0] = xyz_map[ITHREE*k  ];
-			strided_buf->x_draw[1] = xyz_map[ITHREE*k+1];
-			strided_buf->x_draw[2] = 0.0;
+			strided_buf->v_buf[  point_buf->igl_xyzw] = xyz_map[ITHREE*k  ];
+			strided_buf->v_buf[1+point_buf->igl_xyzw] = xyz_map[ITHREE*k+1];
+			strided_buf->v_buf[2+point_buf->igl_xyzw] = 0.0;
+            strided_buf->v_buf[3+point_buf->igl_xyzw] = 1.0;
 			
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[4*inod+nd];};
+			for(nd=0;nd<4;nd++){
+                strided_buf->v_buf[nd+point_buf->igl_color] = psf_s[ipsf]->color_nod[4*inod+nd];
+            };
 		};
 	};
 	return;
@@ -233,7 +239,7 @@ long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
                            struct gl_strided_buffer *strided_buf,
                            struct gl_local_buffer_address *point_buf){
 	double x_line[6], dir_line[6], color_line[8];
-	double xyz[18*ncorner], nor[18*ncorner], col[24*ncorner];
+	double xyzw[24*ncorner], norm[24*ncorner], col[24*ncorner];
 	double dcolor[4];
 	int num_wall;
 	
@@ -297,13 +303,15 @@ long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
 				};
 				
 				num_wall = set_cone_vertex(ncorner, radius, x_line, dir_line, color_line,
-                                           xyz, nor, col);
+                                           xyzw, norm, col);
 				
 				for (i=0; i<3*num_wall; i++) {
                     set_node_stride_buffer((ITHREE*inum_buf+i), strided_buf, point_buf);
-					for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*i+nd];};
-					for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*i+nd];};
-					for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*i+nd];};
+					for(nd=0;nd<4;nd++){
+                        strided_buf->v_buf[nd+point_buf->igl_xyzw] = xyzw[4*i+nd];
+                        strided_buf->v_buf[nd+point_buf->igl_norm] = norm[4*i+nd];
+                        strided_buf->v_buf[nd+point_buf->igl_color] = col[4*i+nd];
+                    };
 				};
 				inum_buf = inum_buf + num_wall;
 			};

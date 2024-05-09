@@ -239,7 +239,7 @@ int set_tube_vertex(int ncorner, double radius,
 }
 
 int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_line[6],
-                    double color_line[8], double *xyz, double *nor, double *col){
+                    double color_line[8], double *xyzw, double *norm, double *col){
     double norm_line[6];
     double xx_w1[3*ncorner], norm_w1[3*ncorner];
     int npatch_wall = 0;
@@ -257,23 +257,28 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
     
     for(k=0;k<ncorner-1;k++){
         for (nd=0; nd<3; nd++) {
-            xyz[3*(3*k)+  nd] = xx_w1[3*k+  nd];
-            xyz[3*(3*k+1)+nd] = xx_w1[3*k+3+nd];
-            xyz[3*(3*k+2)+nd] = x_line[nd+3];
-            nor[3*(3*k)+  nd] = norm_w1[3*k+  nd];
-            nor[3*(3*k+1)+nd] = norm_w1[3*k+3+nd];
-            nor[3*(3*k+2)+nd] = 0.5 * (norm_w1[3*k+  nd] + norm_w1[3*k+3+nd]);
+            xyzw[4*(3*k)+  nd] = xx_w1[3*k+  nd];
+            xyzw[4*(3*k+1)+nd] = xx_w1[3*k+3+nd];
+            xyzw[4*(3*k+2)+nd] = x_line[nd+3];
+            norm[4*(3*k)+  nd] = norm_w1[3*k+  nd];
+            norm[4*(3*k+1)+nd] = norm_w1[3*k+3+nd];
+            norm[4*(3*k+2)+nd] = 0.5 * (norm_w1[3*k+  nd] + norm_w1[3*k+3+nd]);
         };
     };
     
     for (nd=0; nd<3; nd++) {
-        xyz[3*(3*(ncorner-1))+  nd] = xx_w1[3*(ncorner-1)+nd];
-        xyz[3*(3*(ncorner-1)+1)+nd] = xx_w1[nd];
-        xyz[3*(3*(ncorner-1)+2)+nd] = x_line[nd+3];
-        nor[3*(3*(ncorner-1))+  nd] = norm_w1[3*(ncorner-1)+nd];
-        nor[3*(3*(ncorner-1)+1)+nd] = norm_w1[nd];
-        nor[3*(3*(ncorner-1)+2)+nd] = 0.5 * (norm_w1[3*(ncorner-1)+nd] + norm_w1[nd]);
+        xyzw[4*(3*(ncorner-1))+  nd] = xx_w1[3*(ncorner-1)+nd];
+        xyzw[4*(3*(ncorner-1)+1)+nd] = xx_w1[nd];
+        xyzw[4*(3*(ncorner-1)+2)+nd] = x_line[nd+3];
+        norm[4*(3*(ncorner-1))+  nd] = norm_w1[3*(ncorner-1)+nd];
+        norm[4*(3*(ncorner-1)+1)+nd] = norm_w1[nd];
+        norm[4*(3*(ncorner-1)+2)+nd] = 0.5 * (norm_w1[3*(ncorner-1)+nd] + norm_w1[nd]);
     };
+    for(k=0;k<3*ncorner;k++){
+        xyzw[4*k+  3] = 1.0;
+        norm[4*k+  3] = 1.0;
+    }
+    
     for(k=0;k<ncorner;k++){
         for (nd=0; nd<4; nd++) {
             col[4*(3*k)+  nd] = color_line[  nd];

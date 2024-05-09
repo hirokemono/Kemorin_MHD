@@ -19,8 +19,8 @@ void find_normal_of_line(double norm_line[6],
 int set_tube_vertex(int ncorner, double radius, 
 					double x_line[6], double dir_line[6], double norm_line[6],
 					double color_line[8], double *xyz, double *nor, double *col);
-int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_line[6],
-                    double color_line[8], double *xyz, double *nor, double *col);
+int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_line[8],
+                    double color_line[8], double *xyzw, double *norm, double *col);
 
 
 long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius,
