@@ -101,7 +101,7 @@ void hex_ring_4_edge(double norms_hex[36], double dir_edge[6], double nrm_edge[6
 	return;
 }
 
-void set_each_tube_data(double xx_tube[18], double norm_tube[18], double color_tube[24],
+void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color_tube[24],
 						int hex_tube[2][3], double norms_hex[36], double radius,
 						double xyz_edge[6], double color_edge[8]){
     int nd;
@@ -112,30 +112,34 @@ void set_each_tube_data(double xx_tube[18], double norm_tube[18], double color_t
 	int j2 = hex_tube[1][1];
 	int j3 = hex_tube[1][2];
 	
+    for(nd=0;nd<4;nd++){
+        color_tube[   nd] = color_edge[  nd];
+        color_tube[ 4+nd] = color_edge[4+nd];
+        color_tube[ 8+nd] = color_edge[  nd];
+        color_tube[12+nd] = color_edge[  nd];
+        color_tube[16+nd] = color_edge[4+nd];
+        color_tube[20+nd] = color_edge[4+nd];
+    };
 	for(nd=0;nd<3;nd++){
 		norm_tube[   nd] = norms_hex[3*i1+nd];
-		norm_tube[ 3+nd] = norms_hex[3*i2+nd];
-		norm_tube[ 6+nd] = norms_hex[3*i3+nd];
-		norm_tube[ 9+nd] = norms_hex[3*j1+nd];
-		norm_tube[12+nd] = norms_hex[3*j2+nd];
-		norm_tube[15+nd] = norms_hex[3*j3+nd];
+		norm_tube[ 4+nd] = norms_hex[3*i2+nd];
+		norm_tube[ 8+nd] = norms_hex[3*i3+nd];
+		norm_tube[12+nd] = norms_hex[3*j1+nd];
+		norm_tube[16+nd] = norms_hex[3*j2+nd];
+		norm_tube[20+nd] = norms_hex[3*j3+nd];
 	};
 	for(nd=0;nd<3;nd++){
-		xx_tube[   nd] = xyz_edge[  nd] + radius * norm_tube[   nd];
-		xx_tube[ 3+nd] = xyz_edge[3+nd] + radius * norm_tube[ 3+nd];
-		xx_tube[ 6+nd] = xyz_edge[  nd] + radius * norm_tube[ 6+nd];
-		xx_tube[ 9+nd] = xyz_edge[  nd] + radius * norm_tube[ 9+nd];
-		xx_tube[12+nd] = xyz_edge[3+nd] + radius * norm_tube[12+nd];
-		xx_tube[15+nd] = xyz_edge[3+nd] + radius * norm_tube[15+nd];
+        xyzw_tube[   nd] = xyz_edge[  nd] + radius * norm_tube[   nd];
+        xyzw_tube[ 4+nd] = xyz_edge[3+nd] + radius * norm_tube[ 3+nd];
+        xyzw_tube[ 8+nd] = xyz_edge[  nd] + radius * norm_tube[ 6+nd];
+        xyzw_tube[12+nd] = xyz_edge[  nd] + radius * norm_tube[ 9+nd];
+        xyzw_tube[16+nd] = xyz_edge[3+nd] + radius * norm_tube[12+nd];
+        xyzw_tube[20+nd] = xyz_edge[3+nd] + radius * norm_tube[15+nd];
 	};
-	for(nd=0;nd<4;nd++){
-		color_tube[   nd] = color_edge[  nd];
-		color_tube[ 4+nd] = color_edge[4+nd];
-		color_tube[ 8+nd] = color_edge[  nd];
-		color_tube[12+nd] = color_edge[  nd];
-		color_tube[16+nd] = color_edge[4+nd];
-		color_tube[20+nd] = color_edge[4+nd];
-	};
+    for(nd=0;nd<6;nd++){
+        xyzw_tube[4*nd+3] = 1.0;
+        norm_tube[4*nd+3] = 1.0;
+    };
 	return;
 };
 
@@ -247,21 +251,21 @@ long append_line_tube_to_buf(const long ipatch_in,
                              struct gl_local_buffer_address *point_buf){
 	long ipatch = ipatch_in;
 	long i, k, nd;
-	double xx_tube[18];
-	double norm_tube[18];
+	double xyzw_tube[24];
+	double norm_tube[24];
 	double color_tube[24];
 	
 	double norms_hex[36];
 	
 	hex_ring_4_edge(norms_hex, dir_edge, nrm_edge);
 	for(i=0;i<6;i++){
-		set_each_tube_data(xx_tube, norm_tube, color_tube, 
+		set_each_tube_data(xyzw_tube, norm_tube, color_tube, 
 						   &hex_tube[2*i], norms_hex, radius, xyz_edge, color_edge);
 		for(k=0;k<6;k++){
             set_node_stride_buffer((3*ipatch+6*i+k), strided_buf, point_buf);
-			for(nd=0;nd<3;nd++){strided_buf->v_buf[nd+point_buf->igl_xyzw] =  (float) xx_tube[3*k+nd];};
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf->igl_xyzw] =  (float) xyzw_tube[4*k+nd];};
 			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf->igl_color] = (float) color_tube[4*k+nd];};
-			for(nd=0;nd<3;nd++){strided_buf->v_buf[nd+point_buf->igl_norm] =  (float) norm_tube[3*k+nd];};
+			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf->igl_norm] =  (float) norm_tube[4*k+nd];};
 		};
 	};
 	return ipatch + 12;

@@ -24,7 +24,7 @@ void copy_hex_tube_nn(int hex_tube[12][3]);
 void hex_ring(double edge_dir[3], double edge_norm[3], double norm_hex[18]);
 void hex_ring_4_edge(double norms_hex[36], double dir_edge[6], double nrm_edge[6]);
 
-void set_each_tube_data(double xx_tube[18], double norm_tube[18], double color_tube[24],
+void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color_tube[24],
 						int hex_tube[2][3], double norms_hex[36], double radius,
 						double xyz_edge[6], double color_edge[8]);
 

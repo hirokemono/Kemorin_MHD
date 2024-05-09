@@ -309,12 +309,6 @@ long set_each_isoline_to_buf_pthread(const long ist_patch,
     free(num_line);
     free(thread_handles);
     free(args);
-//    printf("Parallel count %ld\n", inum_patch);
-/*
-    return set_each_isoline_to_buf(ist_patch, IZERO, psf_s->nele_viz,
-                                   width, v_line, icomp, f_color, psf_s,
-                                   strided_buf, point_buf);
- */
     return num_patch;
 };
 
