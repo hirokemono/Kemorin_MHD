@@ -92,7 +92,7 @@ long set_each_isoline_to_buf(const long ist_patch,
                              struct gl_strided_buffer *strided_buf,
                              struct gl_local_buffer_address *point_buf){
 	double d_tri[3], xyz_tri[9], nrm_tri[9];
-	double x_line[6], dir_line[6], norm_line[6], color_line[8];
+	double x_line[6], dir_line[8], norm_line[6], color_line[8];
 	int hex_tube[12][3];
 	
 	int idraw, nd;
@@ -129,7 +129,7 @@ long set_each_map_isoline_to_buf(const long ist_patch,
                                  struct gl_local_buffer_address *point_buf){
     double d_tri[3], nrm_tri[9];
     double xyz_map[9];
-    double x_line[6], dir_line[6], norm_line[6], color_line[8];
+    double x_line[6], dir_line[8], norm_line[6], color_line[8];
     int hex_tube[12][3];
     
     int idraw, nd;
