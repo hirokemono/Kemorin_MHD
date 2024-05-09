@@ -121,14 +121,16 @@
     if(buf->num_nod_buf > 0){
         for(i=0;i<buf->num_nod_buf;i++){
             set_node_stride_buffer(i, buf, &point_buf);
-            buf->x_draw[1] = npix_img[1] - buf->x_draw[1];
+            buf->v_buf[point_buf.igl_xyzw+1]
+                = npix_img[1] - buf->v_buf[point_buf.igl_xyzw+1];
         }
         *vertices = [*device newBufferWithBytes:((KemoViewVertex *) buf->v_buf)
                                          length:(buf->num_nod_buf * sizeof(KemoViewVertex))
                                         options:MTLResourceStorageModeShared];
         for(i=0;i<buf->num_nod_buf;i++){
             set_node_stride_buffer(i, buf, &point_buf);
-            buf->x_draw[1] = npix_img[1] - buf->x_draw[1];
+            buf->v_buf[point_buf.igl_xyzw+1]
+                = npix_img[1] - buf->v_buf[point_buf.igl_xyzw+1];
         }
         
 /* Construct message texture */

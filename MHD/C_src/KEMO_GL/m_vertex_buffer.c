@@ -94,7 +94,6 @@ void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf,
     point_buf->igl_txur =  2*inum + strided_buf->ist_tex *   strided_buf->num_nod_buf;
     point_buf->igl_data =    inum + strided_buf->ist_data *  strided_buf->num_nod_buf;
     
-    strided_buf->x_draw = &strided_buf->v_buf[point_buf->igl_xyzw];
     strided_buf->c_draw = &strided_buf->v_buf[point_buf->igl_color];
     strided_buf->n_draw = &strided_buf->v_buf[point_buf->igl_norm];
     strided_buf->x_txur = &strided_buf->v_buf[point_buf->igl_txur];
@@ -110,7 +109,6 @@ void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf,
     point_buf->igl_txur =  strided_buf->ncomp_buf * inum + strided_buf->ist_tex;
     point_buf->igl_data =  strided_buf->ncomp_buf * inum + strided_buf->ist_data;
     
-    strided_buf->x_draw = &strided_buf->v_buf[point_buf->igl_xyzw];
     strided_buf->c_draw = &strided_buf->v_buf[point_buf->igl_color];
     strided_buf->n_draw = &strided_buf->v_buf[point_buf->igl_norm];
     strided_buf->x_txur = &strided_buf->v_buf[point_buf->igl_txur];

@@ -22,17 +22,26 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
 		
         set_node_stride_buffer((ITHREE*inum_tri+k), strided_buf, point_buf);
 		
-		for(nd=0;nd<4;nd++) {strided_buf->x_draw[nd] = xyzw_draw[4*inod+nd];};
-		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
+		for(nd=0;nd<4;nd++){
+            strided_buf->v_buf[nd+point_buf->igl_xyzw] =  xyzw_draw[4*inod+nd];
+            strided_buf->v_buf[nd+point_buf->igl_color] = f_color[nd];
+        };
 		
 		if (shading_mode == SMOOTH_SHADE) {
-			for (nd = 0; nd < 3; nd++){strided_buf->n_draw[nd] = normal_nod[4*kr+nd];};
+			for (nd = 0; nd < 4; nd++){
+                strided_buf->v_buf[nd+point_buf->igl_norm] = normal_nod[4*kr+nd];
+            };
 		} else {
-			for (nd = 0; nd < 3; nd++){strided_buf->n_draw[nd] = normal_ele[nd];};
+			for (nd = 0; nd < 4; nd++){
+                strided_buf->v_buf[nd+point_buf->igl_norm] = normal_ele[nd];
+            };
 		};
 		
 		if(polygon_mode == REVERSE_POLYGON){
-			for (nd = 0; nd < 3; nd++){strided_buf->n_draw[nd] = -strided_buf->n_draw[nd];};
+			for (nd = 0; nd < 4; nd++){
+                strided_buf->v_buf[nd+point_buf->igl_norm] = 
+                    - strided_buf->v_buf[nd+point_buf->igl_norm];
+            };
 		};
 	};
 	return (inum_tri + 1);
