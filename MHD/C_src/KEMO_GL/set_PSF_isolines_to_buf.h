@@ -19,10 +19,13 @@
 double cal_isoline_value(int j, int n_isoline, struct colormap_params *cmap_s);
 int find_start_positive_lines(int n_isoline, struct colormap_params *cmap_s);
 
-long count_PSF_all_isolines_to_buf(const int nthreads,
-                                   struct psf_data *psf_s,
-                                   struct psf_menu_val *psf_m);
-long set_PSF_all_isolines_to_buf(const long ist_patch, struct psf_data *psf_s,
-                                struct psf_menu_val *psf_m,
+long add_PSF_all_isolines_num(const long ist_patch, const int nthreads,
+                              struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                              long *istack_smp_psf_iso_n, long *istack_smp_psf_iso_p,
+                              long *istack_smp_psf_iso_0);
+long set_PSF_all_isolines_to_buf(const long ist_patch, const int nthreads,
+                                 long *istack_smp_psf_iso_n, long *istack_smp_psf_iso_p,
+                                 long *istack_smp_psf_iso_0,
+                                 struct psf_data *psf_s, struct psf_menu_val *psf_m,
                                  struct gl_strided_buffer *psf_buf);
 #endif

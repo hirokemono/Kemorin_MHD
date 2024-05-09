@@ -60,14 +60,32 @@ static void const_PSF_isoline_buffer(const int nthreads,
                                      struct view_element *view_s, struct psf_data **psf_s,
                                      struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                      struct gl_strided_buffer *psf_buf){
-	double ref_width = 1.5;
+    long *istack_smp_psf_iso_n = (long *) calloc(nthreads+1, sizeof(long));
+    if(istack_smp_psf_iso_n == NULL) {
+        printf("malloc error for istack_smp_psf_iso_n\n");
+        exit(0);
+    }
+    long *istack_smp_psf_iso_p = (long *) calloc(nthreads+1, sizeof(long));
+    if(istack_smp_psf_iso_p == NULL) {
+        printf("malloc error for istack_smp_psf_iso_p\n");
+        exit(0);
+    }
+    long *istack_smp_psf_iso_0 = (long *) calloc(nthreads+1, sizeof(long));
+    if(istack_smp_psf_iso_0 == NULL) {
+        printf("malloc error for istack_smp_psf_iso_0\n");
+        exit(0);
+    }
+
+    double ref_width = 1.5;
 	int i, iflag;
 	
 	long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
         if(iflag != 0){
-			num_patch = num_patch + count_PSF_all_isolines_to_buf(nthreads, psf_s[i], psf_m[i]);
+			num_patch = add_PSF_all_isolines_num(num_patch, nthreads, psf_s[i], psf_m[i],
+                                                 istack_smp_psf_iso_n, istack_smp_psf_iso_p,
+                                                 istack_smp_psf_iso_0);
 		};
 	};
     set_buffer_address_4_patch((ITHREE*num_patch), psf_buf);
@@ -82,7 +100,10 @@ static void const_PSF_isoline_buffer(const int nthreads,
 			if(psf_m[i]->isoline_width <= 0.0){
 				psf_m[i]->isoline_width = set_tube_radius_by_view(view_s, ref_width);
 			};
-			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, psf_s[i], psf_m[i], psf_buf);
+			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, nthreads,
+                                                     istack_smp_psf_iso_n, istack_smp_psf_iso_p,
+                                                     istack_smp_psf_iso_0,
+                                                     psf_s[i], psf_m[i], psf_buf);
 		};
 	};
 	return;

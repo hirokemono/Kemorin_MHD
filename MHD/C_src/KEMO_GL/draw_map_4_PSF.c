@@ -31,13 +31,31 @@ void set_map_PSF_isolines_buffer(const int nthreads,
                                  struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a, struct view_element *view_s,
                                  struct gl_strided_buffer *mline_buf){
+    long *istack_smp_map_iso_n = (long *) calloc(nthreads+1, sizeof(long));
+    if(istack_smp_map_iso_n == NULL) {
+        printf("malloc error for istack_smp_map_iso_n\n");
+        exit(0);
+    }
+    long *istack_smp_map_iso_p = (long *) calloc(nthreads+1, sizeof(long));
+    if(istack_smp_map_iso_p == NULL) {
+        printf("malloc error for istack_smp_map_iso_p\n");
+        exit(0);
+    }
+    long *istack_smp_map_iso_0 = (long *) calloc(nthreads+1, sizeof(long));
+    if(istack_smp_map_iso_0 == NULL) {
+        printf("malloc error for istack_smp_map_iso_0\n");
+        exit(0);
+    }
+
 	double ref_width = 1.5;
 	int i, iflag;
 	long num_patch = 0;
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){
-			num_patch = count_map_PSF_isoline(nthreads, num_patch, psf_s[i], psf_m[i]);
+			num_patch = count_map_PSF_isoline(num_patch, nthreads, psf_s[i], psf_m[i],
+                                              istack_smp_map_iso_n, istack_smp_map_iso_p,
+                                              istack_smp_map_iso_0);
 		};
 	};
     
@@ -59,5 +77,8 @@ void set_map_PSF_isolines_buffer(const int nthreads,
             };
         };
     }
+    free(istack_smp_map_iso_n);
+    free(istack_smp_map_iso_p);
+    free(istack_smp_map_iso_0);
     return;
 }

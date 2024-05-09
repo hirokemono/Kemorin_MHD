@@ -65,13 +65,13 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], doubl
 	return;
 };
 
-long count_each_isoline_npatch(const long ist, const long ied, const double v_line,
-                               long icomp, struct psf_data *psf_s){
+long add_each_isoline_npatch(const long ist_patch, const long ist, const long ied,
+                             const double v_line, long icomp, struct psf_data *psf_s){
     double d_tri[3], xyz_tri[9];
     long iele;
     int idraw;
     
-    long inum_patch = 0;
+    long inum_patch = ist_patch;
     for(iele=ist;iele<ied;iele++){
         copy_each_triangle_postion(psf_s->ncomptot,
                                    &psf_s->ie_viz[iele][0], psf_s->xyzw_viz,
@@ -85,9 +85,9 @@ long count_each_isoline_npatch(const long ist, const long ied, const double v_li
 };
 
 
-static void * count_each_isoline_npatch_each(void *args)
+static void * add_isoline_npatch_each(void *args)
 {
-    args_pthread_PSF_counting * p = (args_pthread_PSF_counting *) args;
+    args_pthread_PSF_Isoline * p = (args_pthread_PSF_Isoline *) args;
     int id =       p->id;
     int nthreads = p->nthreads;
     
@@ -99,19 +99,20 @@ static void * count_each_isoline_npatch_each(void *args)
     long lo = psf_s->nele_viz * id /     nthreads;
     long hi = psf_s->nele_viz * (id+1) / nthreads;
     
-    num_line[id] = count_each_isoline_npatch(lo, hi, v_line, icomp, psf_s);
+    num_line[id] = add_each_isoline_npatch(IZERO, lo, hi, v_line, icomp, psf_s);
     return 0;
 }
 
-long count_each_isoline_npatch_pthread(const int nthreads, double v_line,
-                                       long icomp, struct psf_data *psf_s){
+long add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
+                                     double v_line, long icomp, struct psf_data *psf_s,
+                                     long *istack_threads){
 	double d_tri[3], xyz_tri[9];
 	int iele, idraw;
 	
-    /* Allocate thread arguments. */
-    args_pthread_PSF_counting *args
-            = (args_pthread_PSF_counting *) malloc (nthreads * sizeof(args_pthread_PSF_counting));
-    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_counting.\n"); exit(1);}
+/* Allocate thread arguments. */
+    args_pthread_PSF_Isoline *args
+            = (args_pthread_PSF_Isoline *) malloc (nthreads * sizeof(args_pthread_PSF_Isoline));
+    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Isoline.\n"); exit(1);}
     
     float *rmax = (float *) malloc (nthreads * sizeof(float));
     if (!rmax) {fprintf (stderr, "Malloc failed for rmax.\n"); exit(1);}
@@ -130,35 +131,37 @@ long count_each_isoline_npatch_pthread(const int nthreads, double v_line,
         args[ip].psf_s = psf_s;
         args[ip].num_line = num_line;
         
-        pthread_create(&thread_handles[ip], NULL, count_each_isoline_npatch_each, &args[ip]);
+        pthread_create(&thread_handles[ip], NULL, add_isoline_npatch_each, &args[ip]);
     }
-    for(ip=1;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
+    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
     
-    long inum_patch = 0;
+    istack_threads[0] = ist_patch;
     for(ip=0;ip<nthreads;ip++){
-        inum_patch = inum_patch + num_line[ip];
+        istack_threads[ip+1] = istack_threads[ip] + num_line[ip];
     }
     free(num_line);
     free(thread_handles);
     free(args);
 //    printf("Parallel count %ld\n", inum_patch);
-	return inum_patch;
+	return istack_threads[nthreads];
 };
 
-long set_each_isoline_to_buf(const long ist_patch, double width, 
-                             double v_line, long icomp, double *f_color,
+long set_each_isoline_to_buf(const long ist_patch,
+                             const long ist, const long ied,
+                             double width, double v_line,
+                             long icomp, double *f_color,
                              struct psf_data *psf_s,
                              struct gl_strided_buffer *strided_buf){
 	double d_tri[3], xyz_tri[9], nrm_tri[9];
 	double x_line[6], dir_line[6], norm_line[6], color_line[8];
 	int hex_tube[12][3];
 	
-	int idraw;
-	int iele, nd;
+	int idraw, nd;
+	long iele;
 	
 	long inum_patch = ist_patch;
 	copy_hex_tube_pp(hex_tube);
-	for (iele = 0; iele < psf_s->nele_viz; iele++) {
+	for (iele = ist; iele < ied; iele++) {
 		copy_each_triangle_postion_norm(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                         psf_s->xyzw_viz, psf_s->norm_nod,
 										psf_s->d_nod, icomp, xyz_tri, nrm_tri, d_tri);
@@ -176,6 +179,87 @@ long set_each_isoline_to_buf(const long ist_patch, double width,
 
 	return inum_patch;
 };
+
+static void * set_each_isoline_to_buf_each(void *args)
+{
+    args_pthread_PSF_Isoline * p = (args_pthread_PSF_Isoline *) args;
+    int id =       p->id;
+    int nthreads = p->nthreads;
+    
+    struct gl_strided_buffer *strided_buf = p->strided_buf;
+    struct psf_data *psf_s = p->psf_s;
+    
+    long icomp =      p->icomp;
+    double width =    p->width;
+    double v_line =   p->v_line;
+    double *f_color = p->f_color;
+    
+    long ist_patch =  p->ist_patch;
+    long *num_line =  p->num_line;
+    
+    long lo = psf_s->nele_viz * id /     nthreads;
+    long hi = psf_s->nele_viz * (id+1) / nthreads;
+    
+    num_line[id] = set_each_isoline_to_buf(ist_patch, lo, hi,
+                                           width, v_line, icomp, f_color,
+                                           psf_s, strided_buf);
+    return 0;
+}
+
+
+long set_each_isoline_to_buf_pthread(const long ist_patch, const int nthreads,
+                                     long *istack_threads,
+                                     double width, double v_line,
+                                     long icomp, double *f_color,
+                                     struct psf_data *psf_s,
+                                     struct gl_strided_buffer *strided_buf){
+/* Allocate thread arguments.
+    args_pthread_PSF_Isoline *args
+            = (args_pthread_PSF_Isoline *) malloc (nthreads * sizeof(args_pthread_PSF_Isoline));
+    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Isoline.\n"); exit(1);}
+        
+    float *rmax = (float *) malloc (nthreads * sizeof(float));
+    if (!rmax) {fprintf (stderr, "Malloc failed for rmax.\n"); exit(1);}
+/* Initialize thread handles and barrier.
+    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
+    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
+    
+    int ip;
+    long *num_line = (long *) malloc (nthreads * sizeof(long));
+    for(ip=0;ip<nthreads;ip++) {
+        args[ip].id = ip;
+        args[ip].nthreads = nthreads;
+        
+        args[ip].strided_buf = strided_buf;
+        args[ip].psf_s = psf_s;
+
+        args[ip].icomp = icomp;
+        args[ip].width = width;
+        args[ip].v_line = v_line;
+        args[ip].f_color = f_color;
+        
+        args[ip].ist_patch = istack_threads[ip];
+        args[ip].num_line = num_line;
+        
+        pthread_create(&thread_handles[ip], NULL, set_each_isoline_to_buf_each, &args[ip]);
+    }
+    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
+    long num_patch = ist_patch;
+    for(ip=0;ip<nthreads;ip++){
+        num_patch = num_patch + num_line[ip];
+    }
+    free(num_line);
+    free(thread_handles);
+    free(args);
+//    printf("Parallel count %ld\n", inum_patch);
+ */
+    return set_each_isoline_to_buf(ist_patch, IZERO, psf_s->nele_viz,
+                                   width, v_line, icomp, f_color, psf_s,
+                                   strided_buf);
+};
+
+
+
 
 long set_each_map_isoline_to_buf(const long ist_patch, double width, 
                                  double v_line, long icomp, double *f_color,
