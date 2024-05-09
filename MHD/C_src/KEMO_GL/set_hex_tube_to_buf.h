@@ -26,7 +26,7 @@ void hex_ring_4_edge(double norms_hex[48], double dir_edge[8], double norm_edge[
 
 void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color_tube[24],
 						int hex_tube[2][3], double norms_hex[48], double radius,
-						double xyz_edge[6], double color_edge[8]);
+						double xyzw_edge[8], double color_edge[8]);
 
 void interpolate_on_edge(double xyz_mid[3], double dir_mid[4], double norm_mid[4], 
 						 const double xyz1[3], const double xyz2[3], 
@@ -34,14 +34,14 @@ void interpolate_on_edge(double xyz_mid[3], double dir_mid[4], double norm_mid[4
 						 const double dat1, const double dat2, const double v_line);
 int find_isoline_on_triangle(const double xyz_tri[9], 
 							 const double d_tri[3], const double v_line);
-int set_isoline_on_triangle(double xyz_line[6], double dir_line[8], double norm_line[8], 
+int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm_line[8], 
 							const double xyz_tri[9], const double nrm_tri[9],
 							const double d_tri[3], const double v_line);
 
 int add_line_tube_patch_num(int ipatch_in);
 long append_line_tube_to_buf(const long ipatch_in, 
                              int hex_tube[12][3], double radius, 
-                             double color_edge[8], double xyz_edge[6], 
+                             double color_edge[8], double xyzw_edge[8], 
                              double dir_edge[8], double norm_edge[8], 
                              struct gl_strided_buffer *strided_buf,
                              struct gl_local_buffer_address *point_buf);

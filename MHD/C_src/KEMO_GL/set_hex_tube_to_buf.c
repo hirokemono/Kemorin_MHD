@@ -106,7 +106,7 @@ void hex_ring_4_edge(double norms_hex[48], double dir_edge[8], double norm_edge[
 
 void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color_tube[24],
 						int hex_tube[2][3], double norms_hex[48], double radius,
-						double xyz_edge[6], double color_edge[8]){
+						double xyzw_edge[8], double color_edge[8]){
     int nd;
 	int i1 = hex_tube[0][0];
 	int i2 = hex_tube[0][1];
@@ -132,12 +132,12 @@ void set_each_tube_data(double xyzw_tube[24], double norm_tube[24], double color
 		norm_tube[20+nd] = norms_hex[4*j3+nd];
 	};
 	for(nd=0;nd<3;nd++){
-        xyzw_tube[   nd] = xyz_edge[  nd] + radius * norm_tube[   nd];
-        xyzw_tube[ 4+nd] = xyz_edge[3+nd] + radius * norm_tube[ 3+nd];
-        xyzw_tube[ 8+nd] = xyz_edge[  nd] + radius * norm_tube[ 6+nd];
-        xyzw_tube[12+nd] = xyz_edge[  nd] + radius * norm_tube[ 9+nd];
-        xyzw_tube[16+nd] = xyz_edge[3+nd] + radius * norm_tube[12+nd];
-        xyzw_tube[20+nd] = xyz_edge[3+nd] + radius * norm_tube[15+nd];
+        xyzw_tube[   nd] = xyzw_edge[  nd] + radius * norm_tube[   nd];
+        xyzw_tube[ 4+nd] = xyzw_edge[4+nd] + radius * norm_tube[ 4+nd];
+        xyzw_tube[ 8+nd] = xyzw_edge[  nd] + radius * norm_tube[ 8+nd];
+        xyzw_tube[12+nd] = xyzw_edge[  nd] + radius * norm_tube[12+nd];
+        xyzw_tube[16+nd] = xyzw_edge[4+nd] + radius * norm_tube[16+nd];
+        xyzw_tube[20+nd] = xyzw_edge[4+nd] + radius * norm_tube[20+nd];
 	};
     for(nd=0;nd<6;nd++){
         xyzw_tube[4*nd+3] = 1.0;
@@ -192,7 +192,7 @@ int find_isoline_on_triangle(const double xyz_tri[9],
 	return idraw;
 };
 
-int set_isoline_on_triangle(double xyz_line[6], double dir_line[8], double norm_line[8], 
+int set_isoline_on_triangle(double xyzw_line[8], double dir_line[8], double norm_line[8], 
 							const double xyz_tri[9], const double nrm_tri[9],
 							const double d_tri[3], const double v_line){
 	double sig[3];
@@ -209,24 +209,24 @@ int set_isoline_on_triangle(double xyz_line[6], double dir_line[8], double norm_
 		sig[2] = (d_tri[i1] - v_line) * (d_tri[i2] - v_line);
 		
 		if ( (sig[0]==ZERO) && (sig[1]==ZERO) && (sig[2]<ZERO) ){
-			interpolate_on_edge(&xyz_line[0], &dir_line[0], &norm_line[0], 
+			interpolate_on_edge(&xyzw_line[0], &dir_line[0], &norm_line[0], 
 								&xyz_tri[3*i1], &xyz_tri[3*i2], 
 								&nrm_tri[3*i1], &nrm_tri[3*i2],
 								d_tri[i1], d_tri[i2], v_line);
 			for(nd=0; nd<3; nd++){
-				xyz_line[3+nd] =  xyz_tri[3*i3+nd];
+                xyzw_line[4+nd] =  xyz_tri[3*i3+nd];
 				dir_line[4+nd] = -dir_line[nd];
-                norm_line[3+nd] = xyz_tri[3*i3+nd];
+                norm_line[4+nd] = xyz_tri[3*i3+nd];
 			};
 			idraw = 1;
 			break;
 		}
 		else if ( (sig[0]<ZERO) && (sig[2]<ZERO) ){
-			interpolate_on_edge(&xyz_line[0], &dir_line[0], &norm_line[0], 
+			interpolate_on_edge(&xyzw_line[0], &dir_line[0], &norm_line[0], 
 								&xyz_tri[3*i1], &xyz_tri[3*i2], 
 								&nrm_tri[3*i1], &nrm_tri[3*i2],
 								d_tri[i1], d_tri[i2], v_line);
-			interpolate_on_edge(&xyz_line[3], &dir_line[4], &norm_line[4], 
+			interpolate_on_edge(&xyzw_line[4], &dir_line[4], &norm_line[4], 
 								&xyz_tri[3*i3], &xyz_tri[3*i2], 
 								&nrm_tri[3*i3], &nrm_tri[3*i2],
 								d_tri[i3], d_tri[i2], v_line);
@@ -234,11 +234,13 @@ int set_isoline_on_triangle(double xyz_line[6], double dir_line[8], double norm_
 			break;
 		}
 	}
+    xyzw_line[ 3] = 1.0;
+    xyzw_line[ 7] = 1.0;
 	if(idraw == 0) return idraw;
 	
 	if(v_line < 0.0){
-		for(nd=0; nd<3; nd++){
-			xyz_line[ 3+nd] =   0.5*(xyz_line[  nd] + xyz_line[3+nd]);
+		for(nd=0; nd<4; nd++){
+            xyzw_line[ 4+nd] =   0.5*(xyzw_line[  nd] + xyzw_line[4+nd]);
 		};
 	};
 	return idraw;
@@ -249,7 +251,7 @@ int add_line_tube_patch_num(int ipatch_in){return ipatch_in + 12;};
 
 long append_line_tube_to_buf(const long ipatch_in, 
                              int hex_tube[12][3], double radius, 
-							 double color_edge[8], double xyz_edge[6], 
+							 double color_edge[8], double xyzw_edge[8], 
 							 double dir_edge[8], double norm_edge[8], 
 							 struct gl_strided_buffer *strided_buf,
                              struct gl_local_buffer_address *point_buf){
@@ -264,7 +266,7 @@ long append_line_tube_to_buf(const long ipatch_in,
 	hex_ring_4_edge(norms_hex, dir_edge, norm_edge);
 	for(i=0;i<6;i++){
 		set_each_tube_data(xyzw_tube, norm_tube, color_tube, 
-						   &hex_tube[2*i], norms_hex, radius, xyz_edge, color_edge);
+						   &hex_tube[2*i], norms_hex, radius, xyzw_edge, color_edge);
 		for(k=0;k<6;k++){
             set_node_stride_buffer((3*ipatch+6*i+k), strided_buf, point_buf);
 			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf->igl_xyzw] =  (float) xyzw_tube[4*k+nd];};

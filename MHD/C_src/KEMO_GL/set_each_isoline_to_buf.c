@@ -92,7 +92,7 @@ long set_each_isoline_to_buf(const long ist_patch,
                              struct gl_strided_buffer *strided_buf,
                              struct gl_local_buffer_address *point_buf){
 	double d_tri[3], xyz_tri[9], nrm_tri[9];
-	double x_line[6], dir_line[8], norm_line[8], color_line[8];
+	double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
 	int hex_tube[12][3];
 	
 	int idraw, nd;
@@ -105,14 +105,14 @@ long set_each_isoline_to_buf(const long ist_patch,
                                         psf_s->xyzw_viz, psf_s->norm_nod,
 										psf_s->d_nod, icomp, xyz_tri, nrm_tri, d_tri);
 		/*  find isoline */
-		idraw = set_isoline_on_triangle(x_line, dir_line, norm_line, 
+		idraw = set_isoline_on_triangle(xyzw_line, dir_line, norm_line, 
 										xyz_tri, nrm_tri, d_tri, v_line);
 		/* draw isoline */
 		if(idraw == 1){
 			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
 			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
 			inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line, 
-												 x_line, dir_line, norm_line,
+                                                 xyzw_line, dir_line, norm_line,
                                                  strided_buf, point_buf);
 		};
 	};
@@ -129,7 +129,7 @@ long set_each_map_isoline_to_buf(const long ist_patch,
                                  struct gl_local_buffer_address *point_buf){
     double d_tri[3], nrm_tri[9];
     double xyz_map[9];
-    double x_line[6], dir_line[8], norm_line[8], color_line[8];
+    double xyzw_line[8], dir_line[8], norm_line[8], color_line[8];
     int hex_tube[12][3];
     
     int idraw, nd;
@@ -141,14 +141,14 @@ long set_each_map_isoline_to_buf(const long ist_patch,
         copy_each_triangle_map_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
                                        psf_s->xyzw_viz, psf_s->d_nod, icomp,
                                        xyz_map, nrm_tri, d_tri);
-        idraw = set_isoline_on_triangle(x_line, dir_line, norm_line,
+        idraw = set_isoline_on_triangle(xyzw_line, dir_line, norm_line,
                                         xyz_map, nrm_tri, d_tri, v_line);
         /*  draw isoline */
         if(idraw == 1){
             for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
             for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
             inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line,
-                                                 x_line, dir_line, norm_line,
+                                                 xyzw_line, dir_line, norm_line,
                                                  strided_buf, point_buf);
         };
     };
