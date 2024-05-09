@@ -337,6 +337,8 @@
 		183870A92BD1D2B400933367 /* colormap_rainbow_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1838709C2BD1D2B400933367 /* colormap_rainbow_c.c */; };
 		183870AA2BD1D2B400933367 /* colormap_sym_gray_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1838709D2BD1D2B400933367 /* colormap_sym_gray_c.c */; };
 		183870AB2BD1D2B400933367 /* colormap_sym_gray_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1838709D2BD1D2B400933367 /* colormap_sym_gray_c.c */; };
+		1849CD922BEC7B65003865EF /* bitonic_sort_float_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 1849CD902BEC7B65003865EF /* bitonic_sort_float_pthread.c */; };
+		1849CD932BEC7B65003865EF /* bitonic_sort_float_pthread.c in Sources */ = {isa = PBXBuildFile; fileRef = 1849CD902BEC7B65003865EF /* bitonic_sort_float_pthread.c */; };
 		18A91E1324B9256E00D30C46 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E1224B9256E00D30C46 /* libz.tbd */; };
 		18A91E1924B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E1724B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c */; };
 		18A91E1A24B925DC00D30C46 /* kemoviewer_glfw_gtk.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E1824B925DC00D30C46 /* kemoviewer_glfw_gtk.c */; };
@@ -739,6 +741,8 @@
 		1838709B2BD1D2B400933367 /* colormap_molten_metal_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = colormap_molten_metal_c.c; path = ../../../C_src/CORE_C/colormap_molten_metal_c.c; sourceTree = "<group>"; };
 		1838709C2BD1D2B400933367 /* colormap_rainbow_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = colormap_rainbow_c.c; path = ../../../C_src/CORE_C/colormap_rainbow_c.c; sourceTree = "<group>"; };
 		1838709D2BD1D2B400933367 /* colormap_sym_gray_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = colormap_sym_gray_c.c; path = ../../../C_src/CORE_C/colormap_sym_gray_c.c; sourceTree = "<group>"; };
+		1849CD902BEC7B65003865EF /* bitonic_sort_float_pthread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitonic_sort_float_pthread.c; path = ../../../C_src/CORE_C/bitonic_sort_float_pthread.c; sourceTree = "<group>"; };
+		1849CD912BEC7B65003865EF /* bitonic_sort_float_pthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitonic_sort_float_pthread.h; path = ../../../C_src/CORE_C/bitonic_sort_float_pthread.h; sourceTree = "<group>"; };
 		18A91C8A24B9241B00D30C46 /* CalypsoView_Intel_GTK_GLFW */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CalypsoView_Intel_GTK_GLFW; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A91E1224B9256E00D30C46 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18A91E1624B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemo_mesh_viewer_glfw_gtk.h; path = ../../../programs/VIEWER/kemo_mesh_viewer_glfw_gtk.h; sourceTree = "<group>"; };
@@ -919,6 +923,8 @@
 				18D824A22BE4A0A70067B954 /* bitonic_sort_c.h */,
 				18D8249D2BE4A08C0067B954 /* bitonic_sort_pthread.c */,
 				18D8249E2BE4A08C0067B954 /* bitonic_sort_pthread.h */,
+				1849CD902BEC7B65003865EF /* bitonic_sort_float_pthread.c */,
+				1849CD912BEC7B65003865EF /* bitonic_sort_float_pthread.h */,
 				1809BC8F2B8FF1E20008A294 /* read_grouping_mesh_c.c */,
 				1809BC982B8FF1E30008A294 /* read_grouping_mesh_c.h */,
 				1809BCA32B8FF1E30008A294 /* read_image_2_bmp.c */,
@@ -1436,6 +1442,7 @@
 				1809BD3B2B8FF1E50008A294 /* set_psf_viewer.c in Sources */,
 				1809BE372B8FF4250008A294 /* draw_PSF_patches_by_VAO.c in Sources */,
 				18D824A02BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */,
+				1849CD932BEC7B65003865EF /* bitonic_sort_float_pthread.c in Sources */,
 				1809BF8A2B8FF9160008A294 /* rainbow_color_code_c.c in Sources */,
 				1809BFD02B8FFEDB0008A294 /* t_control_chara_int3_IO.c in Sources */,
 				1809BCFD2B8FF1E50008A294 /* read_psf_vtk_data_c.c in Sources */,
@@ -1622,6 +1629,7 @@
 				1809BD3A2B8FF1E50008A294 /* set_psf_viewer.c in Sources */,
 				1809BE362B8FF4250008A294 /* draw_PSF_patches_by_VAO.c in Sources */,
 				18D8249F2BE4A08C0067B954 /* bitonic_sort_pthread.c in Sources */,
+				1849CD922BEC7B65003865EF /* bitonic_sort_float_pthread.c in Sources */,
 				1809BF892B8FF9160008A294 /* rainbow_color_code_c.c in Sources */,
 				1809BFCF2B8FFEDB0008A294 /* t_control_chara_int3_IO.c in Sources */,
 				1809BCFC2B8FF1E50008A294 /* read_psf_vtk_data_c.c in Sources */,
