@@ -37,11 +37,6 @@ struct gl_strided_buffer{
     int ist_data;
     
     float *v_buf;
-    
-    float *x_txur;
-    float *n_draw;
-    float *c_draw;
-    float *d_draw;
 };
 
 struct gl_index_buffer{
