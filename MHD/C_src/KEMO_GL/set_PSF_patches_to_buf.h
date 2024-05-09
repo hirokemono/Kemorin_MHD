@@ -17,7 +17,7 @@
 
 long count_psf_nodes_to_buf(long ist_psf, long ied_psf);
 
-void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode, 
+long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode, 
                           struct psf_data **psf_s, struct psf_menu_val **psf_m,
                           struct kemo_array_control *psf_a,
                           struct gl_strided_buffer *strided_buf,
@@ -39,5 +39,13 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
                            struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf,
                            struct gl_local_buffer_address *point_buf);
+
+
+long set_psf_nodes_to_buf_pthread(long ipatch_in, int nthreads,
+                                  long ist_psf, long ied_psf, int shading_mode, 
+                                  struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                                  struct kemo_array_control *psf_a,
+                                  struct gl_strided_buffer *strided_buf,
+                                  struct gl_local_buffer_address **para_point_buf);
 
 #endif

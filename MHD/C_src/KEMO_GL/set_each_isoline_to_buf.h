@@ -10,6 +10,7 @@
 #ifndef SET_EACH_ISOLINE_TO_BUF_
 #define SET_EACH_ISOLINE_TO_BUF_
 
+#include <pthread.h>
 #include "calypso_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "set_hex_tube_to_buf.h"

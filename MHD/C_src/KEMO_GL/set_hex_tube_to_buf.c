@@ -269,9 +269,11 @@ long append_line_tube_to_buf(const long ipatch_in,
 						   &hex_tube[2*i], norms_hex, radius, xyzw_edge, color_edge);
 		for(k=0;k<6;k++){
             set_node_stride_buffer((3*ipatch+6*i+k), strided_buf, point_buf);
-			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf->igl_xyzw] =  (float) xyzw_tube[4*k+nd];};
-			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf->igl_color] = (float) color_tube[4*k+nd];};
-			for(nd=0;nd<4;nd++){strided_buf->v_buf[nd+point_buf->igl_norm] =  (float) norm_tube[4*k+nd];};
+			for(nd=0;nd<4;nd++){
+                strided_buf->v_buf[nd+point_buf->igl_xyzw] =  (float) xyzw_tube[4*k+nd];
+                strided_buf->v_buf[nd+point_buf->igl_color] = (float) color_tube[4*k+nd];
+                strided_buf->v_buf[nd+point_buf->igl_norm] =  (float) norm_tube[4*k+nd];
+            };
 		};
 	};
 	return ipatch + 12;

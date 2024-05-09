@@ -1,6 +1,7 @@
 
 /* set_PSF_patches_to_buf.c */
 
+#include <pthread.h>
 #include "set_PSF_patches_to_buf.h"
 
 #define ARCPI 0.318309886
@@ -11,35 +12,136 @@ long count_psf_nodes_to_buf(long ist_psf, long ied_psf){
 	return (ied_psf - ist_psf);
 };
 
-void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode, 
+long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shading_mode, 
                           struct psf_data **psf_s, struct psf_menu_val **psf_m,
                           struct kemo_array_control *psf_a,
                           struct gl_strided_buffer *strided_buf,
                           struct gl_local_buffer_address *point_buf){
+    long ipatch = ipatch_in;
     long lk, inum, iele, inod;
     int nd, ipsf;
 	
-	for(inum=0; inum<(ied_psf-ist_psf); inum++){
-		ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
-		iele = psf_a->iele_viz_far[inum+ist_psf]-1;
+	for(inum=ist_psf;inum<ied_psf;inum++){
+		ipsf = psf_a->ipsf_viz_far[inum]-1;
+		iele = psf_a->iele_viz_far[inum]-1;
 		for (lk = 0; lk < ITHREE; lk++) {
 			inod = psf_s[ipsf]->ie_viz[iele][lk] - 1;
 			
-            set_node_stride_buffer((ITHREE*inum+lk), strided_buf, point_buf);
-			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];};
-			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];};
+            set_node_stride_buffer((ITHREE*ipatch+lk), strided_buf, point_buf);
+			for(nd=0;nd<3;nd++){
+                strided_buf->v_buf[nd+point_buf->igl_xyzw] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];
+            };
+			for(nd=0;nd<4;nd++){
+                strided_buf->v_buf[nd+point_buf->igl_color] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];
+            };
 			if (shading_mode == SMOOTH_SHADE){
-                for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_nod[IFOUR*inod+nd];};
+                for(nd=0;nd<3;nd++){
+                    strided_buf->v_buf[nd+point_buf->igl_norm] = psf_s[ipsf]->norm_nod[IFOUR*inod+nd];
+                };
 			} else {
-				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = psf_s[ipsf]->norm_ele[IFOUR*iele+nd];};
+				for(nd=0;nd<3;nd++){
+                    strided_buf->v_buf[nd+point_buf->igl_norm] = psf_s[ipsf]->norm_ele[IFOUR*iele+nd];
+                };
 			};
 			if(psf_m[ipsf]->polygon_mode_psf == REVERSE_POLYGON){
-				for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = -strided_buf->n_draw[nd];};
+				for(nd=0;nd<3;nd++){strided_buf->v_buf[nd+point_buf->igl_norm] = -strided_buf->n_draw[nd];};
 			};
 		};
+        ipatch = ipatch + 1;
     };
-    return;
+    return ipatch;
 }
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    struct gl_strided_buffer        *strided_buf;
+    struct gl_local_buffer_address  *point_buf;
+
+    struct psf_data     **psf_s;
+    struct psf_menu_val **psf_m;
+    struct kemo_array_control *psf_a;
+    int shading_mode;
+    
+    long ist_psf;
+    long ied_psf;
+    long *num_patch;
+} args_pthread_PSF_Patch;
+
+static void * set_psf_nodes_to_buf_1thread(void *args)
+{
+    args_pthread_PSF_Patch * p = (args_pthread_PSF_Patch *) args;
+    int id =       p->id;
+    int nthreads = p->nthreads;
+    
+    struct gl_strided_buffer *strided_buf = p->strided_buf;
+    struct gl_local_buffer_address *point_buf = p->point_buf;
+    
+    struct psf_data     **psf_s =       p->psf_s;
+    struct psf_menu_val **psf_m =       p->psf_m;
+    struct kemo_array_control *psf_a = p->psf_a;
+   
+    int shading_mode = p->shading_mode;
+    
+    long ist_psf = p->ist_psf;
+    long ied_psf = p->ied_psf;
+    long *num_patch =  p->num_patch;
+    
+    long lo = ist_psf + (ied_psf-ist_psf) * id /     nthreads;
+    long hi = ist_psf + (ied_psf-ist_psf) * (id+1) / nthreads;
+    num_patch[id] = set_psf_nodes_to_buf(lo, lo, hi, shading_mode, 
+                                         psf_s, psf_m, psf_a,
+                                         strided_buf, point_buf);
+    return 0;
+}
+
+long set_psf_nodes_to_buf_pthread(long ipatch_in, int nthreads,
+                                  long ist_psf, long ied_psf, int shading_mode, 
+                                  struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                                  struct kemo_array_control *psf_a,
+                                  struct gl_strided_buffer *strided_buf,
+                                  struct gl_local_buffer_address **para_point_buf){
+/* Allocate thread arguments. */
+    args_pthread_PSF_Patch *args
+            = (args_pthread_PSF_Patch *) malloc (nthreads * sizeof(args_pthread_PSF_Patch));
+    if (!args) {fprintf (stderr, "Malloc failed for args_pthread_PSF_Patch.\n"); exit(1);}
+/* Initialize thread handles and barrier. */
+    pthread_t* thread_handles = malloc (nthreads * sizeof(pthread_t));
+    if (!thread_handles) {fprintf (stderr, "Malloc failed for thread_handles.\n"); exit(1);}
+    
+    int ip;
+    long *num_each = (long *) malloc (nthreads * sizeof(long));
+    for(ip=0;ip<nthreads;ip++) {
+        args[ip].id = ip;
+        args[ip].nthreads = nthreads;
+        
+        args[ip].strided_buf = strided_buf;
+        args[ip].point_buf = para_point_buf[ip];
+        args[ip].psf_s = psf_s;
+        args[ip].psf_m = psf_m;
+        args[ip].psf_a = psf_a;
+        args[ip].shading_mode = shading_mode;
+
+        args[ip].ist_psf = ist_psf;
+        args[ip].ied_psf = ied_psf;
+        args[ip].num_patch = num_each;
+        
+        pthread_create(&thread_handles[ip], NULL, set_psf_nodes_to_buf_1thread, &args[ip]);
+    }
+    for(ip=0;ip<nthreads;ip++){pthread_join(thread_handles[ip], NULL);}
+    long num_patch = ipatch_in;
+    for(ip=0;ip<nthreads;ip++){
+        num_patch = num_patch + num_each[ip];
+    }
+    free(num_each);
+    free(thread_handles);
+    free(args);
+    return num_patch;
+};
+
+
+
 
 void set_psf_textures_to_buf(long ist_psf, long ied_psf,
                              struct psf_data **psf_s,

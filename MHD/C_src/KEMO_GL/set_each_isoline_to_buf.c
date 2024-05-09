@@ -8,7 +8,6 @@
  */
 
 #include "set_each_isoline_to_buf.h"
-#include <pthread.h>
 
 static void copy_each_triangle_postion(long ntot_comp, long ie_viz[3],
                                        double *d_nod, long icomp,
