@@ -297,7 +297,7 @@ long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
 				};
 				
 				num_wall = set_cone_vertex(ncorner, radius, x_line, dir_line, color_line,
-							xyz, nor, col);
+                                           xyz, nor, col);
 				
 				for (i=0; i<3*num_wall; i++) {
                     set_node_stride_buffer((ITHREE*inum_buf+i), strided_buf, point_buf);

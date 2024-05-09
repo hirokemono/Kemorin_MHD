@@ -275,7 +275,7 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
         nor[3*(3*(ncorner-1)+2)+nd] = 0.5 * (norm_w1[3*(ncorner-1)+nd] + norm_w1[nd]);
     };
     for(k=0;k<ncorner;k++){
-        for (nd=0; nd<3; nd++) {
+        for (nd=0; nd<4; nd++) {
             col[4*(3*k)+  nd] = color_line[  nd];
             col[4*(3*k+1)+nd] = color_line[  nd];
             col[4*(3*k+2)+nd] = color_line[4+nd];
