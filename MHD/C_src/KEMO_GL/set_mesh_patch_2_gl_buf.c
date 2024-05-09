@@ -84,8 +84,7 @@ static long set_merged_mesh_patch_list(const long ist_tri, int *istack_grp, long
 void set_trans_mesh_patch_for_sort(struct viewer_mesh *mesh_s,
                                    const long *iele_trans_patch, const double *z_ele_view,
                                    float *z_trans_patch, long *index_trans_patch){
-	int j, icolor;
-    long inum, jtem, item, icou;
+    long inum, jtem, item, icou, j;
     
     for (inum =0;inum<mesh_s->ntot_trans_patch; inum++) {
         icou = mesh_s->iele_trans_patch[inum] / mesh_s->nsurf_each_tri;

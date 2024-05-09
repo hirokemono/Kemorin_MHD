@@ -14,11 +14,11 @@
 #include "skip_comment_c.h"
 
 struct gl_local_buffer_address{
-    int igl_xyzw;
-    int igl_txur;
-    int igl_norm;
-    int igl_color;
-    int igl_data;
+    long igl_xyzw;
+    long igl_txur;
+    long igl_norm;
+    long igl_color;
+    long igl_data;
 };
 
 
