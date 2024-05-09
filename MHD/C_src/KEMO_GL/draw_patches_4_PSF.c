@@ -16,14 +16,12 @@ static void const_PSF_patch_buffer(int shading_mode, const int nthreads,
 	if(psf_buf->num_nod_buf <= 0) return;
 	
 	resize_strided_buffer(psf_buf);
-
+/*
     num_patch = set_psf_nodes_to_buf_pthread(0, nthreads, ist_psf, ied_psf, shading_mode, 
                                      psf_s, psf_m, psf_a, psf_buf, para_point_buf);
-
-/*
+*/
     num_patch = set_psf_nodes_to_buf(0, ist_psf, ied_psf, shading_mode, 
                                      psf_s, psf_m, psf_a, psf_buf, para_point_buf[0]);
-*/ 
 	return;
 }
 
