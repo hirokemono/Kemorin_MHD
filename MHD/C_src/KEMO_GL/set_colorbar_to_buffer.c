@@ -6,58 +6,60 @@
 
 
 static void set_one_quad_to_buf(long i_quad, 
-			float x1[3], float x2[3], float x3[3], float x4[3], 
-			float c1[4], float c2[4], float c3[4], float c4[4], 
-			struct gl_strided_buffer *strided_buf){
+                                float x1[3], float x2[3], float x3[3], float x4[3],
+                                float c1[4], float c2[4], float c3[4], float c4[4],
+                                struct gl_strided_buffer *strided_buf,
+                                struct gl_local_buffer_address *point_buf){
 	int nd;
 	
-    set_node_stride_buffer(6*i_quad, strided_buf);
+    set_node_stride_buffer(6*i_quad, strided_buf, point_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x1[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
 	
-    set_node_stride_buffer(6*i_quad+1, strided_buf);
+    set_node_stride_buffer(6*i_quad+1, strided_buf, point_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x2[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c2[nd];};
 		
-    set_node_stride_buffer(6*i_quad+2, strided_buf);
+    set_node_stride_buffer(6*i_quad+2, strided_buf, point_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x3[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
 		
-    set_node_stride_buffer(6*i_quad+3, strided_buf);
+    set_node_stride_buffer(6*i_quad+3, strided_buf, point_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x3[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c3[nd];};
 		
-    set_node_stride_buffer(6*i_quad+4, strided_buf);
+    set_node_stride_buffer(6*i_quad+4, strided_buf, point_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x4[nd];}
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c4[nd];};
 	
-    set_node_stride_buffer(6*i_quad+5, strided_buf);
+    set_node_stride_buffer(6*i_quad+5, strided_buf, point_buf);
 	for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = x1[nd];};
 	for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = c1[nd];};
 	return;
 };
 
 static void set_one_texture_to_buf(const long i_quad, 
-			float t1[2], float t2[2], float t3[2], float t4[2], 
-			struct gl_strided_buffer *strided_buf){
+                                   float t1[2], float t2[2], float t3[2], float t4[2],
+                                   struct gl_strided_buffer *strided_buf,
+                                   struct gl_local_buffer_address *point_buf){
 	int nd;
 	
-    set_node_stride_buffer(6*i_quad, strided_buf);
+    set_node_stride_buffer(6*i_quad, strided_buf, point_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t1[nd];}
 	
-    set_node_stride_buffer(6*i_quad+1, strided_buf);
+    set_node_stride_buffer(6*i_quad+1, strided_buf, point_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t2[nd];}
 		
-    set_node_stride_buffer(6*i_quad+2, strided_buf);
+    set_node_stride_buffer(6*i_quad+2, strided_buf, point_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t3[nd];}
 		
-    set_node_stride_buffer(6*i_quad+3, strided_buf);
+    set_node_stride_buffer(6*i_quad+3, strided_buf, point_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t3[nd];}
 		
-    set_node_stride_buffer(6*i_quad+4, strided_buf);
+    set_node_stride_buffer(6*i_quad+4, strided_buf, point_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t4[nd];}
 	
-    set_node_stride_buffer(6*i_quad+5, strided_buf);
+    set_node_stride_buffer(6*i_quad+5, strided_buf, point_buf);
 	for(nd=0;nd<2;nd++) {strided_buf->x_txur[nd] = t1[nd];};
 	return;
 };
@@ -65,7 +67,8 @@ static void set_one_texture_to_buf(const long i_quad,
 long solid_colorbar_box_to_buf(const long ist_quad,
                                struct colormap_params *cmap_s, 
                                struct cbar_work *cbar_wk,
-                               struct gl_strided_buffer *strided_buf){
+                               struct gl_strided_buffer *strided_buf,
+                               struct gl_local_buffer_address *point_buf){
 	long inum_quad = ist_quad;
 	float y1;
 	float x1[3], x2[3], x3[3], x4[3];
@@ -112,7 +115,8 @@ long solid_colorbar_box_to_buf(const long ist_quad,
 		x4[1] = y1 + cbar_wk->ydelta;
 		for(nd=0;nd<4;nd++) {c4[nd] = f_color[nd];};
 		
-		set_one_quad_to_buf(i, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+		set_one_quad_to_buf(i, x1, x2, x3, x4, c1, c2, c3, c4,
+                            strided_buf, point_buf);
 		
 		for(nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
@@ -125,7 +129,8 @@ long solid_colorbar_box_to_buf(const long ist_quad,
 long fade_colorbar_box_to_buf(const long ist_quad, 
                               struct colormap_params *cmap_s, float *bg_color, 
                               struct cbar_work *cbar_wk, 
-                              struct gl_strided_buffer *strided_buf){
+                              struct gl_strided_buffer *strided_buf,
+                              struct gl_local_buffer_address *point_buf){
 	long inum_quad = ist_quad;
 	float y1;
 	float x1[3], x2[3], x3[3], x4[3];
@@ -183,7 +188,8 @@ long fade_colorbar_box_to_buf(const long ist_quad,
 		x4[1] = y1 + cbar_wk->ydelta;
 		for(nd=0;nd<4;nd++) {c4[nd] = f_color[nd];};
 		
-		set_one_quad_to_buf(ist_quad+i, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+		set_one_quad_to_buf(ist_quad+i, x1, x2, x3, x4, c1, c2, c3, c4,
+                            strided_buf, point_buf);
 		
 		for (nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
 	};
@@ -196,7 +202,8 @@ long fade_colorbar_box_to_buf(const long ist_quad,
 
 long colorbar_frame_to_buf(const long ist_quad, int iflag_retina, 
                            float *text_color, struct cbar_work *cbar_wk,
-                           struct gl_strided_buffer *strided_buf){
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_local_buffer_address *point_buf){
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	int nd;
@@ -222,7 +229,8 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
 	
 	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
-	set_one_quad_to_buf(ist_quad, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad, x1, x2, x3, x4, c1, c2, c3, c4,
+                        strided_buf, point_buf);
 	
 	
 	x1[0] = cbar_wk->xbar_max;
@@ -236,7 +244,8 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
 	
 	x4[0] = cbar_wk->xbar_max;
 	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
-	set_one_quad_to_buf(ist_quad+1, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad+1, x1, x2, x3, x4, c1, c2, c3, c4,
+                        strided_buf, point_buf);
 	
 	
 	x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
@@ -250,7 +259,8 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
 	
 	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 	x4[1] = cbar_wk->ybar_min;
-	set_one_quad_to_buf(ist_quad+2, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad+2, x1, x2, x3, x4, c1, c2, c3, c4,
+                        strided_buf, point_buf);
 	
 	
 	x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
@@ -264,7 +274,8 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
 	
 	x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 	x4[1] = cbar_wk->ybar_max + iflag_retina + 1;
-	set_one_quad_to_buf(ist_quad+3, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+	set_one_quad_to_buf(ist_quad+3, x1, x2, x3, x4, c1, c2, c3, c4,
+                        strided_buf, point_buf);
 	
 	if(cbar_wk->iflag_zero == 1){
 		x1[0] = cbar_wk->xbar_min - iflag_retina - 1;
@@ -278,14 +289,18 @@ long colorbar_frame_to_buf(const long ist_quad, int iflag_retina,
 		
 		x4[0] = cbar_wk->xbar_min - iflag_retina - 1;
 		x4[1] = cbar_wk->yline_zero;
-		set_one_quad_to_buf(ist_quad+4, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
+		set_one_quad_to_buf(ist_quad+4, x1, x2, x3, x4, c1, c2, c3, c4,
+                            strided_buf, point_buf);
 	};
 	return (ist_quad+4);
 };
 
-void colorbar_mbox_to_buf(int iflag_retina, float *text_color, struct cbar_work *cbar_wk,
-                          struct gl_strided_buffer *min_vertex, struct gl_strided_buffer *max_vertex,
-                          struct gl_strided_buffer *zero_vertex){
+void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
+                          struct cbar_work *cbar_wk,
+                          struct gl_strided_buffer *min_vertex,
+                          struct gl_strided_buffer *max_vertex,
+                          struct gl_strided_buffer *zero_vertex,
+                          struct gl_local_buffer_address *point_buf){
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	float t1[2], t2[2], t3[2], t4[2];
@@ -320,8 +335,10 @@ void colorbar_mbox_to_buf(int iflag_retina, float *text_color, struct cbar_work 
 	t2[1] = 0.0;
 	t3[1] = 1.0;
 	t4[1] = 1.0;
-	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, min_vertex);
-	set_one_texture_to_buf(0, t1, t2, t3, t4, min_vertex);
+	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4,
+                        min_vertex, point_buf);
+	set_one_texture_to_buf(0, t1, t2, t3, t4,
+                           min_vertex, point_buf);
 	
 	
 	x1[0] = cbar_wk->xbar_max +   8.0*(iflag_retina + 1);
@@ -340,8 +357,10 @@ void colorbar_mbox_to_buf(int iflag_retina, float *text_color, struct cbar_work 
 	t2[1] = 0.0;
 	t3[1] = 1.0;
 	t4[1] = 1.0;
-	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, max_vertex);
-	set_one_texture_to_buf(0, t1, t2, t3, t4, max_vertex);
+	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4,
+                        max_vertex, point_buf);
+	set_one_texture_to_buf(0, t1, t2, t3, t4,
+                           max_vertex, point_buf);
 	
 	if(cbar_wk->iflag_zero == 1){
         x1[0] = cbar_wk->xbar_max +   8.0*(iflag_retina + 1);
@@ -360,14 +379,18 @@ void colorbar_mbox_to_buf(int iflag_retina, float *text_color, struct cbar_work 
 		t2[1] = 0.0;
 		t3[1] = 1.0;
 		t4[1] = 1.0;
-		set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, zero_vertex);
-		set_one_texture_to_buf(0, t1, t2, t3, t4, zero_vertex);
+		set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4,
+                            zero_vertex, point_buf);
+		set_one_texture_to_buf(0, t1, t2, t3, t4,
+                               zero_vertex, point_buf);
 	};
 	return;
 };
 
-void time_mbox_to_buf(int iflag_retina, float *text_color, float xwin, float ywin,
-					  struct gl_strided_buffer *strided_buf){
+void time_mbox_to_buf(int iflag_retina, float *text_color,
+                      float xwin, float ywin,
+					  struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf){
 	float x1[3], x2[3], x3[3], x4[3];
 	float c1[4], c2[4], c3[4], c4[4];
 	float t1[2], t2[2], t3[2], t4[2];
@@ -399,14 +422,17 @@ void time_mbox_to_buf(int iflag_retina, float *text_color, float xwin, float ywi
 	t2[1] = 0.0;
 	t3[1] = 1.0;
 	t4[1] = 1.0;
-	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
-	set_one_texture_to_buf(0, t1, t2, t3, t4, strided_buf);
+	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4,
+                        strided_buf, point_buf);
+	set_one_texture_to_buf(0, t1, t2, t3, t4,
+                           strided_buf, point_buf);
 	return;
 };
 
 void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
                          const float xbar_max, const float ybar_min,
-                         struct gl_strided_buffer *strided_buf){
+                         struct gl_strided_buffer *strided_buf,
+                         struct gl_local_buffer_address *point_buf){
 	float c1[4];
 	float x1[3], x2[3], x3[3], x4[3];
 	float t1[2], t2[2], t3[2], t4[2];
@@ -437,14 +463,17 @@ void message_mbox_to_buf(const int iflag_retina, const float text_opacity,
 	t2[1] = 0.0;
 	t3[1] = 1.0;
 	t4[1] = 1.0;
-	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c1, c1, c1, strided_buf);
-	set_one_texture_to_buf(0, t1, t2, t3, t4, strided_buf);
+	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c1, c1, c1,
+                        strided_buf, point_buf);
+	set_one_texture_to_buf(0, t1, t2, t3, t4,
+                           strided_buf, point_buf);
 	return;
 };
 
 
 void screen_mbox_to_buf(const int npix_x, const int npix_y,
-                        struct gl_strided_buffer *strided_buf){
+                        struct gl_strided_buffer *strided_buf,
+                        struct gl_local_buffer_address *point_buf){
     float c1[4];
     float x1[3], x2[3], x3[3], x4[3];
     float t1[2], t2[2], t3[2], t4[2];
@@ -475,8 +504,10 @@ void screen_mbox_to_buf(const int npix_x, const int npix_y,
     t2[1] = 0.0;
     t3[1] = 1.0;
     t4[1] = 1.0;
-    set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c1, c1, c1, strided_buf);
-    set_one_texture_to_buf(0, t1, t2, t3, t4, strided_buf);
+    set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c1, c1, c1,
+                        strided_buf, point_buf);
+    set_one_texture_to_buf(0, t1, t2, t3, t4,
+                           strided_buf, point_buf);
     return;
 };
 

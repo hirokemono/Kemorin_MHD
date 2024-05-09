@@ -12,8 +12,10 @@ long count_psf_nodes_to_buf(long ist_psf, long ied_psf){
 };
 
 void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode, 
-			struct psf_data **psf_s, struct psf_menu_val **psf_m, 
-			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
+                          struct psf_data **psf_s, struct psf_menu_val **psf_m,
+                          struct kemo_array_control *psf_a,
+                          struct gl_strided_buffer *strided_buf,
+                          struct gl_local_buffer_address *point_buf){
     long lk, inum, iele, inod;
     int nd, ipsf;
 	
@@ -23,7 +25,7 @@ void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode,
 		for (lk = 0; lk < ITHREE; lk++) {
 			inod = psf_s[ipsf]->ie_viz[iele][lk] - 1;
 			
-            set_node_stride_buffer((ITHREE*inum+lk), strided_buf);
+            set_node_stride_buffer((ITHREE*inum+lk), strided_buf, point_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = psf_s[ipsf]->xyzw_viz[IFOUR*inod + nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = psf_s[ipsf]->color_nod[IFOUR*inod+nd];};
 			if (shading_mode == SMOOTH_SHADE){
@@ -39,9 +41,11 @@ void set_psf_nodes_to_buf(long ist_psf, long ied_psf, int shading_mode,
     return;
 }
 
-void set_psf_textures_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
+void set_psf_textures_to_buf(long ist_psf, long ied_psf,
+                             struct psf_data **psf_s,
                              struct kemo_array_control *psf_a,
-                             struct gl_strided_buffer *strided_buf){
+                             struct gl_strided_buffer *strided_buf,
+                             struct gl_local_buffer_address *point_buf){
     long inum, iele, inod, k;
     int ipsf;
 	int iflag;
@@ -60,7 +64,7 @@ void set_psf_textures_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s
 		
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-            set_node_stride_buffer((ITHREE*inum+k), strided_buf);
+            set_node_stride_buffer((ITHREE*inum+k), strided_buf, point_buf);
 			strided_buf->x_txur[0] =  rtp_patch[ITHREE*k+2] * ARCPI * HALF;
 			strided_buf->x_txur[1] = 1.0 - rtp_patch[ITHREE*k+1] * ARCPI;
 		};
@@ -68,9 +72,11 @@ void set_psf_textures_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s
 	return;
 }
 
-void set_psf_map_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
+void set_psf_map_to_buf(long ist_psf, long ied_psf,
+                        struct psf_data **psf_s,
                         struct kemo_array_control *psf_a,
-                        struct gl_strided_buffer *strided_buf){
+                        struct gl_strided_buffer *strided_buf,
+                        struct gl_local_buffer_address *point_buf){
     long inum, iele, inod, k;
     int ipsf, nd;
 	double xx_tri[9], xyz_map[9];
@@ -88,7 +94,7 @@ void set_psf_map_to_buf(long ist_psf, long ied_psf, struct psf_data **psf_s,
 		
 		for (k = 0; k < ITHREE; k++) {
 			inod = psf_s[ipsf]->ie_viz[iele][k] - 1;
-            set_node_stride_buffer((ITHREE*inum+k), strided_buf);
+            set_node_stride_buffer((ITHREE*inum+k), strided_buf, point_buf);
 			strided_buf->x_draw[0] = xyz_map[ITHREE*k  ];
 			strided_buf->x_draw[1] = xyz_map[ITHREE*k+1];
 			strided_buf->x_draw[2] = 0.0;
@@ -119,7 +125,8 @@ long count_psf_arrows_to_buf(int ncorner, struct psf_data *psf_s, struct psf_men
 
 long set_psf_arrows_to_buf(long ist_patch, int ncorner, 
                            struct psf_data *psf_s, struct psf_menu_val *psf_m, 
-                           struct gl_strided_buffer *strided_buf) {
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_local_buffer_address *point_buf){
 	double x_line[6], dir_line[6], color_line[8];
 	double xyz[18*ncorner], nor[18*ncorner], col[24*ncorner];
 	double dcolor[4];
@@ -188,7 +195,7 @@ long set_psf_arrows_to_buf(long ist_patch, int ncorner,
 							xyz, nor, col);
 				
 				for (i=0; i<3*num_wall; i++) {
-                    set_node_stride_buffer((ITHREE*inum_buf+i), strided_buf);
+                    set_node_stride_buffer((ITHREE*inum_buf+i), strided_buf, point_buf);
 					for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*i+nd];};
 					for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*i+nd];};
 					for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*i+nd];};

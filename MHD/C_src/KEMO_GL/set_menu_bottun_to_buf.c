@@ -134,12 +134,13 @@ static long count_menu_to_buf(void){
 };
 
 static long set_menu_to_buf(unsigned char *menubottun_bits,
-                            struct gl_strided_buffer *strided_buf){
+                            struct gl_strided_buffer *strided_buf,
+                            struct gl_local_buffer_address *point_buf){
 	long i, j, idx, icou;
 	for(j=0;j<MENU_HEIGHT;j++){
 		for(i=0;i<MENU_WIDTH;i++){
 			idx = i + j * MENU_WIDTH;
-            set_node_stride_buffer(idx, strided_buf);
+            set_node_stride_buffer(idx, strided_buf, point_buf);
 			strided_buf->x_draw[0] =  2.0*((float) i / (float) MENU_WIDTH) - 1.0;
 			strided_buf->x_draw[1] =  2.0*((float) j / (float) MENU_HEIGHT)- 1.0;
 			strided_buf->x_draw[2] = 0.0;
@@ -154,7 +155,8 @@ static long set_menu_to_buf(unsigned char *menubottun_bits,
 	return icou;
 };
 
-void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf){
+void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf,
+                              struct gl_local_buffer_address *point_buf){
     unsigned char menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
 	long num_dot = count_menu_to_buf();
 	
@@ -162,6 +164,6 @@ void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf){
 	resize_strided_buffer(strided_buf);
 	
 	menubottun_bitmap(menubottun_bits);
-	set_menu_to_buf(menubottun_bits, strided_buf);
+	set_menu_to_buf(menubottun_bits, strided_buf, point_buf);
 	return;
 };

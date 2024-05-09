@@ -404,7 +404,8 @@ void move_draw_anaglyph_gl3(struct kemoviewer_type *kemoview,
     const_screen_buffer(kemoview->view_s->iflag_view_type,
                         kemoview->view_s->nx_frame,
                         kemoview->view_s->ny_frame,
-                        kemoview->kemo_buffers->screen_buf);
+                        kemoview->kemo_buffers->screen_buf,
+                        kemoview->kemo_buffers->point_buf);
 
     const_texture_VBO(anaglyph_image, kemoview->kemo_buffers->screen_buf,
                       kemo_gl->kemo_VAOs->screen_VAO);

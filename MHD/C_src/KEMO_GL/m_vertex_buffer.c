@@ -86,41 +86,44 @@ void set_buffer_address_4_colormap(long num_points, struct gl_strided_buffer *st
     return;
 };
 
-void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf){
-    strided_buf->igl_xyzw =  4*inum + strided_buf->ist_xyz *   strided_buf->num_nod_buf;
-    strided_buf->igl_color = 4*inum + strided_buf->ist_csurf * strided_buf->num_nod_buf;
-    strided_buf->igl_norm =  4*inum + strided_buf->ist_norm *  strided_buf->num_nod_buf;
-    strided_buf->igl_txur =  2*inum + strided_buf->ist_tex *   strided_buf->num_nod_buf;
-    strided_buf->igl_data =    inum + strided_buf->ist_data *  strided_buf->num_nod_buf;
+void set_zero_stride_buffer(long inum, struct gl_strided_buffer *strided_buf,
+                            struct gl_local_buffer_address *point_buf){
+    point_buf->igl_xyzw =  4*inum + strided_buf->ist_xyz *   strided_buf->num_nod_buf;
+    point_buf->igl_color = 4*inum + strided_buf->ist_csurf * strided_buf->num_nod_buf;
+    point_buf->igl_norm =  4*inum + strided_buf->ist_norm *  strided_buf->num_nod_buf;
+    point_buf->igl_txur =  2*inum + strided_buf->ist_tex *   strided_buf->num_nod_buf;
+    point_buf->igl_data =    inum + strided_buf->ist_data *  strided_buf->num_nod_buf;
     
-    strided_buf->x_draw = &strided_buf->v_buf[strided_buf->igl_xyzw];
-    strided_buf->c_draw = &strided_buf->v_buf[strided_buf->igl_color];
-    strided_buf->n_draw = &strided_buf->v_buf[strided_buf->igl_norm];
-    strided_buf->x_txur = &strided_buf->v_buf[strided_buf->igl_txur];
-    strided_buf->d_draw = &strided_buf->v_buf[strided_buf->igl_data];
+    strided_buf->x_draw = &strided_buf->v_buf[point_buf->igl_xyzw];
+    strided_buf->c_draw = &strided_buf->v_buf[point_buf->igl_color];
+    strided_buf->n_draw = &strided_buf->v_buf[point_buf->igl_norm];
+    strided_buf->x_txur = &strided_buf->v_buf[point_buf->igl_txur];
+    strided_buf->d_draw = &strided_buf->v_buf[point_buf->igl_data];
     return;
 };
 
-void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf){
-    strided_buf->igl_xyzw =  strided_buf->ncomp_buf * inum + strided_buf->ist_xyz;
-    strided_buf->igl_color = strided_buf->ncomp_buf * inum + strided_buf->ist_csurf;
-    strided_buf->igl_norm =  strided_buf->ncomp_buf * inum + strided_buf->ist_norm;
-    strided_buf->igl_txur =  strided_buf->ncomp_buf * inum + strided_buf->ist_tex;
-    strided_buf->igl_data =  strided_buf->ncomp_buf * inum + strided_buf->ist_data;
+void set_node_stride_buffer(long inum, struct gl_strided_buffer *strided_buf,
+                            struct gl_local_buffer_address *point_buf){
+    point_buf->igl_xyzw =  strided_buf->ncomp_buf * inum + strided_buf->ist_xyz;
+    point_buf->igl_color = strided_buf->ncomp_buf * inum + strided_buf->ist_csurf;
+    point_buf->igl_norm =  strided_buf->ncomp_buf * inum + strided_buf->ist_norm;
+    point_buf->igl_txur =  strided_buf->ncomp_buf * inum + strided_buf->ist_tex;
+    point_buf->igl_data =  strided_buf->ncomp_buf * inum + strided_buf->ist_data;
     
-    strided_buf->x_draw = &strided_buf->v_buf[strided_buf->igl_xyzw];
-    strided_buf->c_draw = &strided_buf->v_buf[strided_buf->igl_color];
-    strided_buf->n_draw = &strided_buf->v_buf[strided_buf->igl_norm];
-    strided_buf->x_txur = &strided_buf->v_buf[strided_buf->igl_txur];
-    strided_buf->d_draw = &strided_buf->v_buf[strided_buf->igl_data];
+    strided_buf->x_draw = &strided_buf->v_buf[point_buf->igl_xyzw];
+    strided_buf->c_draw = &strided_buf->v_buf[point_buf->igl_color];
+    strided_buf->n_draw = &strided_buf->v_buf[point_buf->igl_norm];
+    strided_buf->x_txur = &strided_buf->v_buf[point_buf->igl_txur];
+    strided_buf->d_draw = &strided_buf->v_buf[point_buf->igl_data];
     return;
 };
 
-void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf){
+void select_strided_buffer(long inum, struct gl_strided_buffer *strided_buf,
+                           struct gl_local_buffer_address *point_buf){
     if(strided_buf->istride == 0){
-        set_zero_stride_buffer(inum, strided_buf);
+        set_zero_stride_buffer(inum, strided_buf, point_buf);
     } else {
-        set_node_stride_buffer(inum, strided_buf);
+        set_node_stride_buffer(inum, strided_buf, point_buf);
     };
 }
 

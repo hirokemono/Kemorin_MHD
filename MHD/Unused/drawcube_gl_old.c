@@ -251,7 +251,9 @@ void drawCube_Element(GLfloat fSize)
 }
 
 void drawCube_flat(GLfloat fSize, 
-				   struct gl_strided_buffer *strided_buf, struct VAO_ids *cube_VAO){
+				   struct gl_strided_buffer *strided_buf,
+                   struct gl_local_buffer_address *point_buf,
+                   struct VAO_ids *cube_VAO){
 	int icou;
 	
 	/* Set Stride for each vertex buffer */
@@ -261,8 +263,8 @@ void drawCube_flat(GLfloat fSize,
 	
 	icou = 0;
 	icou = flatSurfCube_VBO(icou, fSize, strided_buf);
-	icou = flatEdgeCube_VBO(icou, fSize, strided_buf);
-	icou = flatNodeCube_VBO(icou, fSize, strided_buf);
+	icou = flatEdgeCube_VBO(icou, fSize, strided_buf, point_buf);
+	icou = flatNodeCube_VBO(icou, fSize, strided_buf, point_buf);
 	
 	/* Create VAO */
 	glGenVertexArrays(1, &(cube_VAO->id_VAO));

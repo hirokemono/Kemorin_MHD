@@ -21,7 +21,9 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
                                      struct viewer_mesh *mesh_s, double node_diam,
                                      int node_color, int color_mode,
                                      int color_loop, float single_color[4],
-                                     int *iflag_domain, struct gl_strided_buffer *mesh_buf){
+                                     int *iflag_domain,
+                                     struct gl_strided_buffer *mesh_buf,
+                                     struct gl_local_buffer_address *point_buf){
 	double f_color[4];
 	double xyz_patch[180], norm_patch[180];
     int ip, inod, inum, ist, ied;
@@ -46,7 +48,7 @@ static long set_mesh_node_ico_to_buf(const long ist_tri, int num_grp, int igrp,
 				num_ico = set_icosahedron_patch(node_diam, &mesh_s->xyzw_draw[4*inod  ],
 												 xyz_patch, norm_patch);
 				for (ico=0; ico<num_ico; ico++) {
-                    set_node_stride_buffer((inum_tri+ico), mesh_buf);
+                    set_node_stride_buffer((inum_tri+ico), mesh_buf, point_buf);
 					for(nd=0;nd<3;nd++){mesh_buf->x_draw[nd] =  xyz_patch[3*ico+nd];};
 					for(nd=0;nd<3;nd++){mesh_buf->n_draw[nd] = norm_patch[3*ico+nd];};
 					for(nd=0;nd<4;nd++){mesh_buf->c_draw[nd] = f_color[nd];};
@@ -100,8 +102,10 @@ long count_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *me
 }
 
 
-long set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                          struct gl_strided_buffer *mesh_buf){
+long set_mesh_node_to_buf(struct viewer_mesh *mesh_s,
+                          struct mesh_menu_val *mesh_m,
+                          struct gl_strided_buffer *mesh_buf,
+                          struct gl_local_buffer_address *point_buf){
 	int i, ip_st;
 	long ist_tri = 0;
 	
@@ -111,7 +115,7 @@ long set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh
                                        mesh_m->node_diam, mesh_m->domain_node_color,
                                        mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                        mesh_m->domain_node_color_code, mesh_m->draw_domains_nod,
-                                       mesh_buf);
+                                       mesh_buf, point_buf);
 	
 	/* ! draw node group */
 	
@@ -123,7 +127,7 @@ long set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh
 						mesh_m->node_diam, mesh_m->node_node_color,
 						mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
 						mesh_m->node_node_color_code, mesh_m->always_draw_domains, 
-						mesh_buf);
+						mesh_buf, point_buf);
 	
 		};
 	};
@@ -140,7 +144,7 @@ long set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh
                                                mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                                mesh_m->ele_node_color_code,
                                                mesh_m->always_draw_domains,
-                                               mesh_buf);
+                                               mesh_buf, point_buf);
 	
 		};
 	};
@@ -157,7 +161,7 @@ long set_mesh_node_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh
                                                mesh_m->mesh_color_mode, mesh_m->num_of_color_loop,
                                                mesh_m->surf_node_color_code,
                                                mesh_m->always_draw_domains,
-                                               mesh_buf);
+                                               mesh_buf, point_buf);
 	
 		};
 	};

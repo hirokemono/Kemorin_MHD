@@ -151,7 +151,8 @@ long set_each_isoline_to_buf(const long ist_patch,
                              double width, double v_line,
                              long icomp, double *f_color,
                              struct psf_data *psf_s,
-                             struct gl_strided_buffer *strided_buf){
+                             struct gl_strided_buffer *strided_buf,
+                             struct gl_local_buffer_address *point_buf){
 	double d_tri[3], xyz_tri[9], nrm_tri[9];
 	double x_line[6], dir_line[6], norm_line[6], color_line[8];
 	int hex_tube[12][3];
@@ -173,7 +174,8 @@ long set_each_isoline_to_buf(const long ist_patch,
 			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
 			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
 			inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line, 
-												 x_line, dir_line, norm_line, strided_buf);
+												 x_line, dir_line, norm_line,
+                                                 strided_buf, point_buf);
 		};
 	};
 
@@ -187,6 +189,7 @@ static void * set_each_isoline_to_buf_each(void *args)
     int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
+    struct gl_local_buffer_address *point_buf = p->point_buf;
     struct psf_data *psf_s = p->psf_s;
     
     long icomp =      p->icomp;
@@ -202,7 +205,7 @@ static void * set_each_isoline_to_buf_each(void *args)
     
     num_line[id] = set_each_isoline_to_buf(ist_patch, lo, hi,
                                            width, v_line, icomp, f_color,
-                                           psf_s, strided_buf);
+                                           psf_s, strided_buf, point_buf);
     return 0;
 }
 
@@ -212,7 +215,8 @@ long set_each_isoline_to_buf_pthread(const long ist_patch, const int nthreads,
                                      double width, double v_line,
                                      long icomp, double *f_color,
                                      struct psf_data *psf_s,
-                                     struct gl_strided_buffer *strided_buf){
+                                     struct gl_strided_buffer *strided_buf,
+                                     struct gl_local_buffer_address *point_buf){
 /* Allocate thread arguments.
     args_pthread_PSF_Isoline *args
             = (args_pthread_PSF_Isoline *) malloc (nthreads * sizeof(args_pthread_PSF_Isoline));
@@ -231,6 +235,7 @@ long set_each_isoline_to_buf_pthread(const long ist_patch, const int nthreads,
         args[ip].nthreads = nthreads;
         
         args[ip].strided_buf = strided_buf;
+        args[ip].point_buf = point_buf[ip];
         args[ip].psf_s = psf_s;
 
         args[ip].icomp = icomp;
@@ -255,7 +260,7 @@ long set_each_isoline_to_buf_pthread(const long ist_patch, const int nthreads,
  */
     return set_each_isoline_to_buf(ist_patch, IZERO, psf_s->nele_viz,
                                    width, v_line, icomp, f_color, psf_s,
-                                   strided_buf);
+                                   strided_buf, point_buf);
 };
 
 
@@ -264,7 +269,8 @@ long set_each_isoline_to_buf_pthread(const long ist_patch, const int nthreads,
 long set_each_map_isoline_to_buf(const long ist_patch, double width, 
                                  double v_line, long icomp, double *f_color,
                                  struct psf_data *psf_s, 
-                                 struct gl_strided_buffer *strided_buf){
+                                 struct gl_strided_buffer *strided_buf,
+                                 struct gl_local_buffer_address *point_buf){
 	double d_tri[3], nrm_tri[9];
 	double xyz_map[9];
 	double x_line[6], dir_line[6], norm_line[6], color_line[8];
@@ -285,7 +291,8 @@ long set_each_map_isoline_to_buf(const long ist_patch, double width,
 			for(nd=0;nd<4;nd++){color_line[  nd] = f_color[nd];};
 			for(nd=0;nd<4;nd++){color_line[4+nd] = f_color[nd];};
 			inum_patch = append_line_tube_to_buf(inum_patch, hex_tube, width, color_line,
-												 x_line, dir_line, norm_line, strided_buf);
+												 x_line, dir_line, norm_line,
+                                                 strided_buf, point_buf);
 		};
 	};
 	return inum_patch;

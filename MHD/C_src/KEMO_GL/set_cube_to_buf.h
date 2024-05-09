@@ -20,8 +20,10 @@ void CubeNode_to_buf(float fSize, struct gl_strided_buffer *strided_buf,
 int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_buf);
 
 long flatEdgeCube_VBO(long icou, float fSize,
-                      struct gl_strided_buffer *strided_buf);
-long flatNodeCube_VBO(long icou, float fSize, 
-                      struct gl_strided_buffer *strided_buf);
+                      struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf);
+long flatNodeCube_VBO(long icou, float fSize,
+                      struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf);
 
 #endif

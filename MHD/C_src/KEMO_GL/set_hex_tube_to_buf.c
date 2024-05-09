@@ -243,7 +243,8 @@ long append_line_tube_to_buf(const long ipatch_in,
                              int hex_tube[12][3], double radius, 
 							 double color_edge[8], double xyz_edge[6], 
 							 double dir_edge[6], double nrm_edge[6], 
-							 struct gl_strided_buffer *strided_buf){
+							 struct gl_strided_buffer *strided_buf,
+                             struct gl_local_buffer_address *point_buf){
 	long ipatch = ipatch_in;
 	long i, k, nd;
 	double xx_tube[18];
@@ -257,7 +258,7 @@ long append_line_tube_to_buf(const long ipatch_in,
 		set_each_tube_data(xx_tube, norm_tube, color_tube, 
 						   &hex_tube[2*i], norms_hex, radius, xyz_edge, color_edge);
 		for(k=0;k<6;k++){
-            set_node_stride_buffer((3*ipatch+6*i+k), strided_buf);
+            set_node_stride_buffer((3*ipatch+6*i+k), strided_buf, point_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = (float) xx_tube[3*k+nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = (float) color_tube[4*k+nd];};
 			for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = (float) norm_tube[3*k+nd];};

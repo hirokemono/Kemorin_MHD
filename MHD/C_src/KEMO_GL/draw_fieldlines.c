@@ -5,7 +5,8 @@
 
 void const_fieldlines_buffer(struct psf_data *fline_s, struct fline_menu_val *fline_m,
                              struct gl_strided_buffer *FLINE_tube_buf,
-                             struct gl_strided_buffer *FLINE_line_buf){
+                             struct gl_strided_buffer *FLINE_line_buf,
+                             struct gl_local_buffer_address *point_buf){
     int ncorner = ISIX;
 
     FLINE_tube_buf->num_nod_buf = 0;
@@ -19,7 +20,8 @@ void const_fieldlines_buffer(struct psf_data *fline_s, struct fline_menu_val *fl
         set_buffer_address_4_patch(ITHREE*num_patch, FLINE_tube_buf);
         if(FLINE_tube_buf->num_nod_buf> 0){
             resize_strided_buffer(FLINE_tube_buf);
-            set_fieldtubes_to_buf(ncorner, fline_s, fline_m, FLINE_tube_buf);
+            set_fieldtubes_to_buf(ncorner, fline_s, fline_m,
+                                  FLINE_tube_buf, point_buf);
         };
     };
 
@@ -27,7 +29,8 @@ void const_fieldlines_buffer(struct psf_data *fline_s, struct fline_menu_val *fl
     set_buffer_address_4_patch(ITWO*num_edge, FLINE_line_buf);
     if(FLINE_line_buf->num_nod_buf>0){
         resize_strided_buffer(FLINE_line_buf);
-        set_fieldlines_to_buf(fline_s, fline_m, FLINE_line_buf);
+        set_fieldlines_to_buf(fline_s, fline_m,
+                              FLINE_line_buf, point_buf);
     };
 	return;
 }

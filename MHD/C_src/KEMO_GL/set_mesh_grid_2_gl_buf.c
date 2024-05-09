@@ -3,8 +3,10 @@
 
 #include "set_mesh_grid_2_gl_buf.h"
 
-static long set_each_mesh_grid(int iedge, struct viewer_mesh *mesh_s, double f_color[4],
-                               long inum_buf, struct gl_strided_buffer *strided_buf){
+static long set_each_mesh_grid(int iedge, struct viewer_mesh *mesh_s,
+                               double f_color[4], long inum_buf,
+                               struct gl_strided_buffer *strided_buf,
+                               struct gl_local_buffer_address *point_buf){
 	int i1, i2, k1, nd, inum;
 	
 	for(k1=0;k1<(mesh_s->nnod_4_edge-1);k1++){
@@ -12,12 +14,12 @@ static long set_each_mesh_grid(int iedge, struct viewer_mesh *mesh_s, double f_c
 		i1 = mesh_s->ie_edge_viewer[inum  ] - 1;
         i2 = mesh_s->ie_edge_viewer[inum+1] - 1;
         
-        set_node_stride_buffer((ITWO*inum_buf), strided_buf);
+        set_node_stride_buffer((ITWO*inum_buf), strided_buf, point_buf);
 		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] =  mesh_s->xyzw_draw[4*i1+nd];};
 		for(nd=0;nd<3;nd++) {strided_buf->n_draw[nd] =  0.0;};
 		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
 		
-        set_node_stride_buffer((ITWO*inum_buf+1), strided_buf);
+        set_node_stride_buffer((ITWO*inum_buf+1), strided_buf, point_buf);
 		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] =  mesh_s->xyzw_draw[4*i2+nd];};
 		for(nd=0;nd<3;nd++) {strided_buf->n_draw[nd] =  0.0;};
 		for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = f_color[nd];};
@@ -43,7 +45,8 @@ long add_mesh_edge_to_buf(const long ist_edge, int line_color, int color_mode,
                           int color_loop, float single_color[4],
                           int num_grp, int *istack_grp, int *item_grp, int igrp,
                           int *iflag_domain, struct viewer_mesh *mesh_s,
-                          struct gl_strided_buffer *mesh_buf){
+                          struct gl_strided_buffer *mesh_buf,
+                          struct gl_local_buffer_address *point_buf){
 	int ip, inum, iedge, ist, ied;
 	long inum_buf;
 	double f_color[4];
@@ -58,7 +61,8 @@ long add_mesh_edge_to_buf(const long ist_edge, int line_color, int color_mode,
 			ied = istack_grp[ip+1];
 			for(inum = ist; inum < ied; inum++){
 				iedge = abs( item_grp[inum] ) - 1;
-				inum_buf = set_each_mesh_grid(iedge, mesh_s, f_color, inum_buf, mesh_buf);
+				inum_buf = set_each_mesh_grid(iedge, mesh_s, f_color, inum_buf,
+                                              mesh_buf, point_buf);
 			};
 		};
 	};
@@ -103,7 +107,8 @@ long count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *me
 }
 
 long set_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                          struct gl_strided_buffer *mesh_buf){
+                          struct gl_strided_buffer *mesh_buf,
+                          struct gl_local_buffer_address *point_buf){
 	int i, ip_st;
 	long ist_edge = 0;
 	if(mesh_m->draw_surface_grid != 0){
@@ -111,7 +116,7 @@ long set_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh
 					   mesh_m->num_of_color_loop, mesh_m->domain_grid_color_code,
 					   mesh_s->num_pe_sf, mesh_s->edge_stack_domain_sf, 
 					   mesh_s->edge_item_domain_sf, IZERO, mesh_m->draw_domains_grid,
-					   mesh_s, mesh_buf);
+					   mesh_s, mesh_buf, point_buf);
 	};
 	
 	/* ! draw element group */
@@ -124,7 +129,7 @@ long set_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh
 						   mesh_m->num_of_color_loop, mesh_m->ele_grid_color_code,
 						   mesh_s->ngrp_ele_sf, &mesh_s->ele_edge_stack_sf[ip_st],
 						   mesh_s->ele_edge_item_sf, i, mesh_m->always_draw_domains,
-						   mesh_s, mesh_buf);
+						   mesh_s, mesh_buf, point_buf);
 		};
 	};
 	
@@ -138,7 +143,7 @@ long set_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh
 						   mesh_m->num_of_color_loop, mesh_m->surf_grid_color_code,
 						   mesh_s->ngrp_surf_sf, &mesh_s->surf_edge_stack_sf[ip_st], 
 						   mesh_s->surf_edge_item_sf, i, mesh_m->always_draw_domains, 
-						   mesh_s, mesh_buf);
+						   mesh_s, mesh_buf, point_buf);
 		};
 	};
 	return ist_edge;

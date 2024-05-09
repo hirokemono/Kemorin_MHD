@@ -13,7 +13,8 @@ long count_fieldlines_to_buf(struct psf_data *fline_s){
 
 long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s, 
                            struct fline_menu_val *fline_m,
-                           struct gl_strided_buffer *strided_buf) {
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_local_buffer_address *point_buf){
     long inum_patch, k;
 	int num_wall;
 	int iele, nd;
@@ -40,7 +41,7 @@ long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s,
 								   xyz, nor, col);
 		
 		for (k=0; k<3*num_wall; k++) {
-            set_node_stride_buffer((ITHREE*inum_patch+k), strided_buf);
+            set_node_stride_buffer((ITHREE*inum_patch+k), strided_buf, point_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
 			for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = col[4*k+nd];};
@@ -51,8 +52,10 @@ long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s,
 };
 
 
-long set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-                           struct gl_strided_buffer *strided_buf) {
+long set_fieldlines_to_buf(struct psf_data *fline_s,
+                           struct fline_menu_val *fline_m,
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_local_buffer_address *point_buf){
 	long iele, k, nd, inod;
 	
 	set_color_code_for_fieldlines(fline_s, fline_m);
@@ -60,7 +63,7 @@ long set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *flin
 	for(iele=0; iele<fline_s->nele_viz; iele++){
 		for(k=0;k<ITWO;k++){
 			inod =fline_s->ie_viz[iele][k] - 1;
-            set_node_stride_buffer((ITWO*iele+k), strided_buf);
+            set_node_stride_buffer((ITWO*iele+k), strided_buf, point_buf);
 			for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = fline_s->xyzw_viz[inod*IFOUR + nd];};
 			for(nd=0;nd<4;nd++){strided_buf->c_draw[nd] = fline_s->color_nod[inod*IFOUR + nd];};
 		};

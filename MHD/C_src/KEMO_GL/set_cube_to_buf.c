@@ -119,12 +119,13 @@ int flatSurfCube_VBO(int icou, float fSize, struct gl_strided_buffer *strided_bu
 };
 
 long flatEdgeCube_VBO(long icou, float fSize,
-                      struct gl_strided_buffer *strided_buf){
+                      struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf){
 	int i, j, k;
 	
 	for(j=0;j<12;j++){
 		for(k=0;k<2;k++){
-            set_node_stride_buffer(icou, strided_buf);
+            set_node_stride_buffer(icou, strided_buf, point_buf);
 			icou = icou + 1;
 			
 			i = cube_edge[j][k];
@@ -150,12 +151,13 @@ long flatEdgeCube_VBO(long icou, float fSize,
 };
 
 long flatNodeCube_VBO(long icou, float fSize, 
-                      struct gl_strided_buffer *strided_buf){
+                      struct gl_strided_buffer *strided_buf,
+                      struct gl_local_buffer_address *point_buf){
 	int i, j;
 	float radius;
 	
 	for(j=0;j<8;j++){
-        set_node_stride_buffer(icou, strided_buf);
+        set_node_stride_buffer(icou, strided_buf, point_buf);
 		icou = icou + 1;
 		
 		i = j;

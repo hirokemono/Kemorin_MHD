@@ -17,7 +17,10 @@ long count_fieldlines_to_buf(struct psf_data *fline_s);
 
 long set_fieldtubes_to_buf(int ncorner, struct psf_data *fline_s, 
                            struct fline_menu_val *fline_m,
-                           struct gl_strided_buffer *strided_buf);
-long set_fieldlines_to_buf(struct psf_data *fline_s, struct fline_menu_val *fline_m,
-                           struct gl_strided_buffer *strided_buf);
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_local_buffer_address *point_buf);
+long set_fieldlines_to_buf(struct psf_data *fline_s,
+                           struct fline_menu_val *fline_m,
+                           struct gl_strided_buffer *strided_buf,
+                           struct gl_local_buffer_address *point_buf);
 #endif

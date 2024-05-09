@@ -8,7 +8,8 @@
 static void const_PSF_patch_buffer(int shading_mode, long ist_psf, long ied_psf,
                                    struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                    struct kemo_array_control *psf_a,
-                                   struct gl_strided_buffer *psf_buf){
+                                   struct gl_strided_buffer *psf_buf,
+                                   struct gl_local_buffer_address *point_buf){
 	long num_vetex = ITHREE * count_psf_nodes_to_buf(ist_psf, ied_psf);
     set_buffer_address_4_patch(num_vetex, psf_buf);
 	if(psf_buf->num_nod_buf <= 0) return;
@@ -16,21 +17,26 @@ static void const_PSF_patch_buffer(int shading_mode, long ist_psf, long ied_psf,
 	resize_strided_buffer(psf_buf);
 	
 	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, 
-                         psf_s, psf_m, psf_a, psf_buf);
+                         psf_s, psf_m, psf_a, psf_buf, point_buf);
 	return;
 }
 
 static void const_PSF_texture_buffer(int shading_mode, long ist_psf, long ied_psf,
                                      struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                      struct kemo_array_control *psf_a,
-                                     struct gl_strided_buffer *psf_buf){
-    const_PSF_patch_buffer(shading_mode, ist_psf, ied_psf, psf_s, psf_m, psf_a, psf_buf);
-    if(psf_buf->num_nod_buf > 0) set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a, psf_buf);
+                                     struct gl_strided_buffer *psf_buf,
+                                     struct gl_local_buffer_address *point_buf){
+    const_PSF_patch_buffer(shading_mode, ist_psf, ied_psf, psf_s, psf_m, psf_a,
+                           psf_buf, point_buf);
+    if(psf_buf->num_nod_buf > 0) set_psf_textures_to_buf(ist_psf, ied_psf, psf_s, psf_a,
+                                                         psf_buf, point_buf);
     return;
 }
 
 void const_PSF_arrow_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m,
-                            struct kemo_array_control *psf_a, struct gl_strided_buffer *psf_buf){
+                            struct kemo_array_control *psf_a,
+                            struct gl_strided_buffer *psf_buf,
+                            struct gl_local_buffer_address *point_buf){
     int ncorner = 20;
     int i;
     
@@ -49,7 +55,8 @@ void const_PSF_arrow_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m
     long inum_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            inum_buf = set_psf_arrows_to_buf(inum_buf, ncorner, psf_s[i], psf_m[i], psf_buf);
+            inum_buf = set_psf_arrows_to_buf(inum_buf, ncorner, psf_s[i], psf_m[i],
+                                             psf_buf, point_buf);
         };
     };
     return;
@@ -59,7 +66,8 @@ void const_PSF_arrow_buffer(struct psf_data **psf_s, struct psf_menu_val **psf_m
 static void const_PSF_isoline_buffer(const int nthreads,
                                      struct view_element *view_s, struct psf_data **psf_s,
                                      struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
-                                     struct gl_strided_buffer *psf_buf){
+                                     struct gl_strided_buffer *psf_buf,
+                                     struct gl_local_buffer_address *point_buf){
     long *istack_smp_psf_iso_n = (long *) calloc(nthreads+1, sizeof(long));
     if(istack_smp_psf_iso_n == NULL) {
         printf("malloc error for istack_smp_psf_iso_n\n");
@@ -103,7 +111,8 @@ static void const_PSF_isoline_buffer(const int nthreads,
 			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, nthreads,
                                                      istack_smp_psf_iso_n, istack_smp_psf_iso_p,
                                                      istack_smp_psf_iso_0,
-                                                     psf_s[i], psf_m[i], psf_buf);
+                                                     psf_s[i], psf_m[i],
+                                                     psf_buf, point_buf);
 		};
 	};
 	return;
@@ -124,28 +133,33 @@ void const_PSF_solid_objects_buffer(const int nthreads,
                                     struct gl_strided_buffer *PSF_solid_buf,
                                     struct gl_strided_buffer *PSF_stxur_buf,
                                     struct gl_strided_buffer *PSF_isoline_buf,
-                                    struct gl_strided_buffer *PSF_arrow_buf){
+                                    struct gl_strided_buffer *PSF_arrow_buf,
+                                    struct gl_local_buffer_address *point_buf){
     const_PSF_texture_buffer(view_s->shading_mode,
                              IZERO, psf_a->istack_solid_psf_txtur,
-                             psf_s, psf_m, psf_a, PSF_stxur_buf);
+                             psf_s, psf_m, psf_a,
+                             PSF_stxur_buf, point_buf);
     const_PSF_patch_buffer(view_s->shading_mode, 
                            psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch,
-                           psf_s, psf_m, psf_a, PSF_solid_buf);
-    const_PSF_isoline_buffer(nthreads, view_s, psf_s, psf_m, psf_a, PSF_isoline_buf);
-    const_PSF_arrow_buffer(psf_s, psf_m, psf_a, PSF_arrow_buf);
+                           psf_s, psf_m, psf_a, PSF_solid_buf, point_buf);
+    const_PSF_isoline_buffer(nthreads, view_s, psf_s, psf_m, psf_a,
+                             PSF_isoline_buf, point_buf);
+    const_PSF_arrow_buffer(psf_s, psf_m, psf_a, PSF_arrow_buf, point_buf);
     return;
 }
 
 void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_trns_buf,
-                                    struct gl_strided_buffer *PSF_ttxur_buf){
+                                    struct gl_strided_buffer *PSF_ttxur_buf,
+                                    struct gl_local_buffer_address *point_buf){
     const_PSF_texture_buffer(view_s->shading_mode,
                              psf_a->istack_solid_psf_patch, psf_a->istack_trans_psf_txtur,
-                             psf_s, psf_m, psf_a, PSF_ttxur_buf);
+                             psf_s, psf_m, psf_a,
+                             PSF_ttxur_buf, point_buf);
     const_PSF_patch_buffer(view_s->shading_mode,
                            psf_a->istack_trans_psf_txtur, psf_a->ntot_psf_patch, 
-                           psf_s, psf_m, psf_a, PSF_trns_buf);
+                           psf_s, psf_m, psf_a, PSF_trns_buf, point_buf);
 	return;
 };
 

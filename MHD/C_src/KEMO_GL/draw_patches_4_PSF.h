@@ -28,9 +28,11 @@ void const_PSF_solid_objects_buffer(const int nthreads,
                                     struct gl_strided_buffer *PSF_solid_buf,
                                     struct gl_strided_buffer *PSF_stxur_buf,
                                     struct gl_strided_buffer *PSF_isoline_buf,
-                                    struct gl_strided_buffer *PSF_arrow_buf);
+                                    struct gl_strided_buffer *PSF_arrow_buf,
+                                    struct gl_local_buffer_address *point_buf);
 void const_PSF_trans_objects_buffer(struct view_element *view_s, struct psf_data **psf_s,
                                     struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                     struct gl_strided_buffer *PSF_trns_buf,
-                                    struct gl_strided_buffer *PSF_ttxur_buf);
+                                    struct gl_strided_buffer *PSF_ttxur_buf,
+                                    struct gl_local_buffer_address *point_buf);
 #endif

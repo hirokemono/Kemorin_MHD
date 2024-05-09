@@ -43,7 +43,8 @@ long append_line_tube_to_buf(const long ipatch_in,
                              int hex_tube[12][3], double radius, 
                              double color_edge[8], double xyz_edge[6], 
                              double dir_edge[6], double nrm_edge[6], 
-                             struct gl_strided_buffer *strided_buf);
+                             struct gl_strided_buffer *strided_buf,
+                             struct gl_local_buffer_address *point_buf);
 
 /* SET_HEX_TUBE_TO_BUF_ */
 #endif

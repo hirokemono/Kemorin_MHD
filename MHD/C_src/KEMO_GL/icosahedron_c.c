@@ -288,8 +288,10 @@ int set_cone_vertex(int ncorner, double radius, double x_line[6], double dir_lin
 
 
 long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius, 
-                             double x_line[6], double dir_line[6], double norm_line[6],
-                             double color_line[8], struct gl_strided_buffer *strided_buf){
+                             double x_line[6], double dir_line[6],
+                             double norm_line[6], double color_line[8],
+                             struct gl_strided_buffer *strided_buf,
+                             struct gl_local_buffer_address *point_buf){
 	double xyz[9*2*ncorner], nor[9*2*ncorner], col[12*2*ncorner];
 	long npatch_wall = 0;
 	long k, nd;
@@ -297,7 +299,7 @@ long set_tube_strided_buffer(const long ist_patch, int ncorner, double radius,
 	npatch_wall = set_tube_vertex(ncorner, radius, x_line, dir_line, norm_line, color_line,
 								   xyz, nor, col);
 	for (k=0; k<3*npatch_wall; k++) {
-        set_node_stride_buffer((ITHREE*ist_patch+k), strided_buf);
+        set_node_stride_buffer((ITHREE*ist_patch+k), strided_buf, point_buf);
 		for(nd=0;nd<3;nd++){strided_buf->x_draw[nd] = xyz[3*k+nd];};
         strided_buf->x_draw[3] = 1.0;
 		for(nd=0;nd<3;nd++){strided_buf->n_draw[nd] = nor[3*k+nd];};

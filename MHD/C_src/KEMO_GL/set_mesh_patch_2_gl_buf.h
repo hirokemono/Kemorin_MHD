@@ -18,7 +18,8 @@ long count_transparent_mesh_patches(struct viewer_mesh *mesh_s, struct mesh_menu
 void add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
                               struct viewer_mesh *mesh_s,
                               long ntot_patch, long *iele_patch,
-                              struct gl_strided_buffer *mesh_buf);
+                              struct gl_strided_buffer *mesh_buf,
+                              struct gl_local_buffer_address *point_buf);
 
 long set_solid_mesh_patches_to_buf(struct mesh_menu_val *mesh_m,
                                    struct viewer_mesh *mesh_s,

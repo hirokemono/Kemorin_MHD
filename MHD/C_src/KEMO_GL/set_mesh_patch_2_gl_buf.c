@@ -5,8 +5,11 @@
 
 static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, int polygon_mode, 
                                     int nnod_4_sf, double *xyzw_draw, int *ie_sf_viewer,
-                                    int *node_quad_2_linear_tri, double normal_ele[4], double normal_nod[12],
-                                    double f_color[4], const long inum_tri, struct gl_strided_buffer *strided_buf){
+                                    int *node_quad_2_linear_tri,
+                                    double normal_ele[4], double normal_nod[12],
+                                    double f_color[4], const long inum_tri,
+                                    struct gl_strided_buffer *strided_buf,
+                                    struct gl_local_buffer_address *point_buf){
 	int inod, inum, k1, nd;
     long k, kr;
     
@@ -17,7 +20,7 @@ static long add_each_mesh_tri_patch(int ie_local, int iele, int shading_mode, in
         inum = k1-1 + nnod_4_sf * (abs(iele)-1);
 		inod = ie_sf_viewer[inum]-1;
 		
-        set_node_stride_buffer((ITHREE*inum_tri+k), strided_buf);
+        set_node_stride_buffer((ITHREE*inum_tri+k), strided_buf, point_buf);
 		
 		for(nd=0;nd<3;nd++) {strided_buf->x_draw[nd] = xyzw_draw[4*inod+nd];};
 		for(nd=0;nd<4;nd++) {strided_buf->c_draw[nd] = f_color[nd];};
@@ -100,7 +103,8 @@ void set_trans_mesh_patch_for_sort(struct viewer_mesh *mesh_s,
 void add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
                               struct viewer_mesh *mesh_s,
                               long ntot_patch, long *iele_patch,
-                              struct gl_strided_buffer *mesh_buf){
+                              struct gl_strided_buffer *mesh_buf,
+                              struct gl_local_buffer_address *point_buf){
 	int j, icolor;
     long inum, icou, jnum, item;
 	
@@ -118,7 +122,8 @@ void add_mesh_patch_to_buffer(int shading_mode, int polygon_mode,
                                            mesh_s->ie_sf_viewer, mesh_s->node_quad_2_linear_tri,
                                            &mesh_s->normal_mesh_patch[4*jnum],
                                            &mesh_s->normal_nod_mesh_patch[12*jnum],
-                                           &mesh_s->mesh_color[4*icolor], inum_tri, mesh_buf);
+                                           &mesh_s->mesh_color[4*icolor], inum_tri,
+                                           mesh_buf, point_buf);
     };
 	return;
 }

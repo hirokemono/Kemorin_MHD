@@ -27,5 +27,6 @@ long set_PSF_all_isolines_to_buf(const long ist_patch, const int nthreads,
                                  long *istack_smp_psf_iso_n, long *istack_smp_psf_iso_p,
                                  long *istack_smp_psf_iso_0,
                                  struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                                 struct gl_strided_buffer *psf_buf);
+                                 struct gl_strided_buffer *psf_buf,
+                                 struct gl_local_buffer_address *point_buf);
 #endif

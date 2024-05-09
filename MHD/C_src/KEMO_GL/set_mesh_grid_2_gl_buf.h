@@ -15,6 +15,7 @@
 
 long count_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m);
 long set_mesh_grid_to_buf(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m,
-                          struct gl_strided_buffer *mesh_buf);
+                          struct gl_strided_buffer *mesh_buf,
+                          struct gl_local_buffer_address *point_buf);
 
 #endif
