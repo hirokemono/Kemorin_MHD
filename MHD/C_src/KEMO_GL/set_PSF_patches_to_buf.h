@@ -34,12 +34,9 @@ void set_psf_map_to_buf(long ist_psf, long ied_psf,
                         struct gl_strided_buffer *strided_buf,
                         struct gl_local_buffer_address *point_buf);
 
-long add_num_psf_arrows(long ist_patch, long ist, long ied,
-                        const int nthreads, int ncorner,
-                        struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                        long *istack_smp_psf_arrow);
+long add_num_psf_arrows(long ist_patch, long ist, long ied, int ncorner,
+                        struct psf_data *psf_s, struct psf_menu_val *psf_m);
 long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
-                           const int nthreads, long *istack_smp_psf_arrow, 
                            int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf,
                            struct gl_local_buffer_address *point_buf);
@@ -51,5 +48,14 @@ long set_psf_nodes_to_buf_pthread(long ipatch_in, int nthreads,
                                   struct kemo_array_control *psf_a,
                                   struct gl_strided_buffer *strided_buf,
                                   struct gl_local_buffer_address **para_point_buf);
+
+long add_num_psf_arrows_pthread(long ist_patch, const int nthreads,
+                                long *istack_arrow, int ncorner, 
+                                struct psf_data *psf_s, struct psf_menu_val *psf_m);
+long set_psf_arrows_to_buf_pthread(long ist_patch, const int nthreads, 
+                                   long *istack_smp_arrow, int ncorner, 
+                                   struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                                   struct gl_strided_buffer *strided_buf,
+                                   struct gl_local_buffer_address **para_point_buf);
 
 #endif

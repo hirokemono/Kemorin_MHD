@@ -45,16 +45,16 @@ static void const_PSF_arrow_buffer(const int nthreads,
                                    struct gl_local_buffer_address **para_point_buf){
     int ncorner = 20;
     int i;
-    long **istack_smp_psf_arrow = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
-    if(istack_smp_psf_arrow == NULL) {
-        printf("malloc error for istack_smp_psf_arrow\n");
+    long **istack_smp_arrow = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
+    if(istack_smp_arrow == NULL) {
+        printf("malloc error for istack_smp_arrow\n");
         exit(0);
     }
     for(i=0; i<psf_a->nmax_loaded; i++){
         int ntot = (psf_m[i]->n_isoline + 1) * nthreads;
-        istack_smp_psf_arrow[i] = (long *) calloc(ntot+1, sizeof(long));
-        if(istack_smp_psf_arrow[i] == NULL) {
-            printf("malloc error for istack_smp_psf_iso[i] for %d\n", i);
+        istack_smp_arrow[i] = (long *) calloc(ntot+1, sizeof(long));
+        if(istack_smp_arrow[i] == NULL) {
+            printf("malloc error for istack_smp_arrow[i] for %d\n", i);
             exit(0);
         }
     };
@@ -62,10 +62,13 @@ static void const_PSF_arrow_buffer(const int nthreads,
     long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            num_patch = add_num_psf_arrows(num_patch, 0, psf_s[i]->nnod_viz, 
-                                           nthreads, ncorner,
-                                           psf_s[i], psf_m[i], 
-                                           istack_smp_psf_arrow[i]);
+            num_patch = add_num_psf_arrows_pthread(num_patch,
+                                           nthreads, istack_smp_arrow[i], 
+                                           ncorner, psf_s[i], psf_m[i]);
+/*
+            num_patch0 = add_num_psf_arrows(num_patch, 0, psf_s[i]->nnod_viz, 
+                                            ncorner, psf_s[i], psf_m[i]);
+*/
         };
     };
     
@@ -77,15 +80,20 @@ static void const_PSF_arrow_buffer(const int nthreads,
     long inum_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
+            inum_buf = set_psf_arrows_to_buf_pthread(inum_buf, nthreads, 
+                                                     istack_smp_arrow[i], ncorner,
+                                                     psf_s[i], psf_m[i],
+                                                     psf_buf, para_point_buf);
+/*
             inum_buf = set_psf_arrows_to_buf(inum_buf, 0, psf_s[i]->nnod_viz, 
-                                             nthreads, istack_smp_psf_arrow[i],
                                              ncorner, psf_s[i], psf_m[i],
                                              psf_buf, para_point_buf[0]);
+*/
         };
     };
 
-    for(i=0; i<psf_a->nmax_loaded; i++){free(istack_smp_psf_arrow[i]);};
-    free(istack_smp_psf_arrow);
+    for(i=0; i<psf_a->nmax_loaded; i++){free(istack_smp_arrow[i]);};
+    free(istack_smp_arrow);
     return;
 }
 
