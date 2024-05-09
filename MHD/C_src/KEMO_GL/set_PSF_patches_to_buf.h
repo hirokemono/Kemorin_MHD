@@ -4,6 +4,8 @@
 #ifndef SET_PSF_PATCHES_TO_BUF_
 #define SET_PSF_PATCHES_TO_BUF_
 
+#include <pthread.h>
+
 #include "kemoviewer_param_c.h"
 #include "m_kemoview_psf_menu.h"
 #include "m_psf_data_4_viewer_c.h"
@@ -12,6 +14,39 @@
 #include "coordinate_converter_c.h"
 #include "set_color_code_on_nodes.h"
 #include "icosahedron_c.h"
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    struct gl_strided_buffer        *strided_buf;
+    struct gl_local_buffer_address  *point_buf;
+
+    struct psf_data     **psf_s;
+    struct psf_menu_val **psf_m;
+    struct kemo_array_control *psf_a;
+    int shading_mode;
+    
+    long ist_psf;
+    long ied_psf;
+    long *num_patch;
+} args_pthread_PSF_Patch;
+
+typedef struct{
+    int id;
+    int nthreads;
+    
+    struct gl_strided_buffer        *strided_buf;
+    struct gl_local_buffer_address  *point_buf;
+
+    struct psf_data     *psf_s;
+    struct psf_menu_val *psf_m;
+    int ncorner;
+    
+    long *istack_smp_arrow;
+    long nnod_viz;
+    long *num_patch;
+} args_pthread_PSF_Arrow;
 
 /* prptotypes */
 

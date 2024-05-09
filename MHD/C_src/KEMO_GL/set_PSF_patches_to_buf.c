@@ -1,7 +1,6 @@
 
 /* set_PSF_patches_to_buf.c */
 
-#include <pthread.h>
 #include "set_PSF_patches_to_buf.h"
 
 #define ARCPI 0.318309886
@@ -54,23 +53,6 @@ long set_psf_nodes_to_buf(long ipatch_in, long ist_psf, long ied_psf, int shadin
     };
     return ipatch;
 }
-
-typedef struct{
-    int id;
-    int nthreads;
-    
-    struct gl_strided_buffer        *strided_buf;
-    struct gl_local_buffer_address  *point_buf;
-
-    struct psf_data     **psf_s;
-    struct psf_menu_val **psf_m;
-    struct kemo_array_control *psf_a;
-    int shading_mode;
-    
-    long ist_psf;
-    long ied_psf;
-    long *num_patch;
-} args_pthread_PSF_Patch;
 
 static void * set_psf_nodes_to_buf_1thread(void *args)
 {
@@ -319,23 +301,6 @@ long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
 	
 	return inum_buf;
 }
-
-
-typedef struct{
-    int id;
-    int nthreads;
-    
-    struct gl_strided_buffer        *strided_buf;
-    struct gl_local_buffer_address  *point_buf;
-
-    struct psf_data     *psf_s;
-    struct psf_menu_val *psf_m;
-    int ncorner;
-    
-    long *istack_smp_arrow;
-    long nnod_viz;
-    long *num_patch;
-} args_pthread_PSF_Arrow;
 
 static void * add_num_psf_arrows_1thread(void *args){
     args_pthread_PSF_Arrow * p = (args_pthread_PSF_Arrow *) args;
