@@ -33,7 +33,7 @@ void set_map_PSF_isolines_buffer(const int nthreads,
                                  struct psf_data **psf_s, struct psf_menu_val **psf_m,
                                  struct kemo_array_control *psf_a, struct view_element *view_s,
                                  struct gl_strided_buffer *mline_buf,
-                                 struct gl_local_buffer_address *point_buf){
+                                 struct gl_local_buffer_address **para_point_buf){
     int i, iflag;
     long **istack_smp_map_iso = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
     if(istack_smp_map_iso == NULL) {
@@ -54,30 +54,29 @@ void set_map_PSF_isolines_buffer(const int nthreads,
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){
-			num_patch = count_map_PSF_isoline(num_patch, nthreads,
-                                              psf_s[i], psf_m[i],
-                                              istack_smp_map_iso[i]);
+			num_patch = add_map_PSF_isoline(num_patch, nthreads,
+                                            psf_s[i], psf_m[i],
+                                            istack_smp_map_iso[i]);
 		};
 	};
-    
     set_buffer_address_4_patch((ITHREE * num_patch), mline_buf);
-    long inum_patch;
-    if(mline_buf->num_nod_buf > 0){
-        resize_strided_buffer(mline_buf);
-        
-        inum_patch = 0;
-        for(i=0; i<psf_a->nmax_loaded; i++){
-            iflag = psf_a->iflag_loaded[i]
-            * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
-            if(iflag > 0){
-                if(psf_m[i]->isoline_width <= 0.0){
-                    psf_m[i]->isoline_width = set_tube_radius_by_view(view_s, ref_width);
-                };
-                inum_patch = set_map_PSF_isoline_to_buf(inum_patch, psf_s[i], psf_m[i],
-                                                        mline_buf, point_buf);
+
+    if(mline_buf->num_nod_buf <= 0) return;
+    resize_strided_buffer(mline_buf);
+    
+    long inum_patch = 0;
+    for(i=0; i<psf_a->nmax_loaded; i++){
+        iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
+        if(iflag > 0){
+            if(psf_m[i]->isoline_width <= 0.0){
+                psf_m[i]->isoline_width = set_tube_radius_by_view(view_s, ref_width);
             };
+            inum_patch = set_map_PSF_isoline_to_buf(inum_patch,
+                                                    nthreads, istack_smp_map_iso[i],
+                                                    psf_s[i], psf_m[i],
+                                                    mline_buf, para_point_buf);
         };
-    }
+    };
     
     for(i=0; i<psf_a->nmax_loaded; i++){free(istack_smp_map_iso[i]);};
     free(istack_smp_map_iso);

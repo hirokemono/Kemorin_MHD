@@ -34,10 +34,11 @@ static long add_map_isoline_num(long num_patch, const int nthreads,
 	return num_patch;
 }
 
-static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied, 
+static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied,
+                                    const int nthreads, long *istack_smp_map_iso,
                                     struct psf_data *psf_s, struct psf_menu_val *psf_m, 
                                     struct gl_strided_buffer *psf_buf,
-                                    struct gl_local_buffer_address *point_buf){
+                                    struct gl_local_buffer_address **para_point_buf){
 	long inum_patch = ist_patch;
 	int j, nd;
 	double v_line;
@@ -60,9 +61,18 @@ static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied,
 			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
                                    v_line, f_color);
 		};
-		inum_patch = set_each_map_isoline_to_buf(inum_patch, psf_m->isoline_width, 
+        
+        inum_patch = set_each_map_isoline_to_buf_pthread(inum_patch, nthreads,
+                                                         &istack_smp_map_iso[j*nthreads],
+                                                         psf_m->isoline_width,
+                                                         v_line, psf_m->icomp_draw_psf,
+                                                         f_color, psf_s, psf_buf, para_point_buf);
+/*
+		inum_patch = set_each_map_isoline_to_buf(inum_patch, IZERO, psf_s->nele_viz,
+                                                 psf_m->isoline_width,
 												 v_line, psf_m->icomp_draw_psf,
-												 f_color, psf_s, psf_buf, point_buf);
+												 f_color, psf_s, psf_buf, para_point_buf[0]);
+*/
 	};
     dealloc_colormap_array(omap_array);
     dealloc_colormap_array(cmap_array);
@@ -71,9 +81,9 @@ static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied,
 
 
 
-long count_map_PSF_isoline(const long ist_patch, const int nthreads,
-                           struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                           long *istack_smp_map_iso){
+long add_map_PSF_isoline(const long ist_patch, const int nthreads,
+                         struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                         long *istack_smp_map_iso){
 	long num_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
 		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline,
@@ -99,9 +109,10 @@ long count_map_PSF_isoline(const long ist_patch, const int nthreads,
 
 
 long set_map_PSF_isoline_to_buf(const long ist_patch,
+                                const int nthreads, long *istack_smp_map_iso,
                                 struct psf_data *psf_s, struct psf_menu_val *psf_m,
                                 struct gl_strided_buffer *psf_buf,
-                                struct gl_local_buffer_address *point_buf){
+                                struct gl_local_buffer_address **para_point_buf){
 	double dub_r;
 	long inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
@@ -110,20 +121,23 @@ long set_map_PSF_isoline_to_buf(const long ist_patch,
                                         psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
 		if(psf_m->ist_positive_line > 1){
 			inum_patch = set_map_isolines_to_buf(inum_patch,
-						IZERO, psf_m->ist_positive_line,
-						psf_s, psf_m, psf_buf, point_buf);
+                                                 IZERO, psf_m->ist_positive_line,
+                                                 nthreads, istack_smp_map_iso,
+                                                 psf_s, psf_m, psf_buf, para_point_buf);
 		};
 		if(psf_m->ist_positive_line < psf_m->n_isoline){
 			inum_patch = set_map_isolines_to_buf(inum_patch,
-						psf_m->ist_positive_line, psf_m->n_isoline, 
-						psf_s, psf_m, psf_buf, point_buf);
+                                                 psf_m->ist_positive_line, psf_m->n_isoline,
+                                                 nthreads, istack_smp_map_iso,
+                                                 psf_s, psf_m, psf_buf, para_point_buf);
 		};
 	};
 	if(psf_m->draw_psf_zero  != 0){
 		dub_r = 2.0 * psf_m->isoline_width;
-		inum_patch = set_each_map_isoline_to_buf(inum_patch, dub_r,
-												 ZERO, psf_m->icomp_draw_psf,
-												 black, psf_s, psf_buf, point_buf);
+		inum_patch = set_each_map_isoline_to_buf_pthread(inum_patch, nthreads,
+                                                         &istack_smp_map_iso[psf_m->n_isoline*nthreads],
+                                                         dub_r, ZERO, psf_m->icomp_draw_psf,
+                                                         black, psf_s, psf_buf, para_point_buf);
 	};
 	return inum_patch;
 }

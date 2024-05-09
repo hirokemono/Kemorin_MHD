@@ -156,7 +156,7 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
         set_map_PSF_isolines_buffer(NTHREADS, kemo_psf->psf_d, kemo_psf->psf_m,
                                     kemo_psf->psf_a, view_s,
                                     kemo_buffers->MAP_isoline_buf,
-                                    kemo_buffers->point_buf);
+                                    kemo_buffers->para_point_buf);
         
         set_map_coastline_buffer(kemo_mesh->mesh_m,
                                  kemo_buffers->coast_buf,
@@ -181,7 +181,6 @@ void set_kemoviewer_buffers(struct kemoview_psf *kemo_psf, struct kemoview_fline
                                        kemo_buffers->PSF_stxur_buf,
                                        kemo_buffers->PSF_isoline_buf,
                                        kemo_buffers->PSF_arrow_buf,
-                                       kemo_buffers->point_buf,
                                        kemo_buffers->para_point_buf);
         const_PSF_trans_objects_buffer(view_s, kemo_psf->psf_d,
                                        kemo_psf->psf_m, kemo_psf->psf_a,

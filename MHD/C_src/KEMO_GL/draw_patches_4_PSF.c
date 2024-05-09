@@ -67,7 +67,6 @@ static void const_PSF_isoline_buffer(const int nthreads,
                                      struct view_element *view_s, struct psf_data **psf_s,
                                      struct psf_menu_val **psf_m, struct kemo_array_control *psf_a,
                                      struct gl_strided_buffer *psf_buf,
-                                     struct gl_local_buffer_address *point_buf,
                                      struct gl_local_buffer_address **para_point_buf){
     int i, iflag;
     long **istack_smp_psf_iso = (long **) malloc(psf_a->nmax_loaded * sizeof(long *));
@@ -107,8 +106,10 @@ static void const_PSF_isoline_buffer(const int nthreads,
 			if(psf_m[i]->isoline_width <= 0.0){
 				psf_m[i]->isoline_width = set_tube_radius_by_view(view_s, ref_width);
 			};
-			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, nthreads, istack_smp_psf_iso[i],
-                                                     psf_s[i], psf_m[i], psf_buf, para_point_buf);
+			inum_patch = set_PSF_all_isolines_to_buf(inum_patch,
+                                                     nthreads, istack_smp_psf_iso[i],
+                                                     psf_s[i], psf_m[i],
+                                                     psf_buf, para_point_buf);
 		};
 	};
     
@@ -133,18 +134,17 @@ void const_PSF_solid_objects_buffer(const int nthreads,
                                     struct gl_strided_buffer *PSF_stxur_buf,
                                     struct gl_strided_buffer *PSF_isoline_buf,
                                     struct gl_strided_buffer *PSF_arrow_buf,
-                                    struct gl_local_buffer_address *point_buf,
                                     struct gl_local_buffer_address **para_point_buf){
     const_PSF_texture_buffer(view_s->shading_mode,
                              IZERO, psf_a->istack_solid_psf_txtur,
                              psf_s, psf_m, psf_a,
-                             PSF_stxur_buf, point_buf);
+                             PSF_stxur_buf, para_point_buf[0]);
     const_PSF_patch_buffer(view_s->shading_mode, 
                            psf_a->istack_solid_psf_txtur, psf_a->istack_solid_psf_patch,
-                           psf_s, psf_m, psf_a, PSF_solid_buf, point_buf);
+                           psf_s, psf_m, psf_a, PSF_solid_buf, para_point_buf[0]);
     const_PSF_isoline_buffer(nthreads, view_s, psf_s, psf_m, psf_a,
-                             PSF_isoline_buf, point_buf, para_point_buf);
-    const_PSF_arrow_buffer(psf_s, psf_m, psf_a, PSF_arrow_buf, point_buf);
+                             PSF_isoline_buf, para_point_buf);
+    const_PSF_arrow_buffer(psf_s, psf_m, psf_a, PSF_arrow_buf, para_point_buf[0]);
     return;
 }
 
