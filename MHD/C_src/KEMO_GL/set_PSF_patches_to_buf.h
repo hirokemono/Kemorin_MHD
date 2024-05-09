@@ -34,10 +34,12 @@ void set_psf_map_to_buf(long ist_psf, long ied_psf,
                         struct gl_strided_buffer *strided_buf,
                         struct gl_local_buffer_address *point_buf);
 
-long add_num_psf_arrows(long inum_buf, const int nthreads, int ncorner,
+long add_num_psf_arrows(long ist_patch, long ist, long ied,
+                        const int nthreads, int ncorner,
                         struct psf_data *psf_s, struct psf_menu_val *psf_m,
                         long *istack_smp_psf_arrow);
-long set_psf_arrows_to_buf(long ist_patch, const int nthreads, long *istack_smp_psf_arrow, 
+long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
+                           const int nthreads, long *istack_smp_psf_arrow, 
                            int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf,
                            struct gl_local_buffer_address *point_buf);

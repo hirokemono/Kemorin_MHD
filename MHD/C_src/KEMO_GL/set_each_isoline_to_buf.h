@@ -73,8 +73,6 @@ long set_each_map_isoline_to_buf_pthread(const long ist_patch,
                                          struct psf_data *psf_s,
                                          struct gl_strided_buffer *strided_buf,
                                          struct gl_local_buffer_address **para_point_buf);
-/*
-
 /* SET_EACH_ISOLINE_TO_BUF_ */
 #endif
 

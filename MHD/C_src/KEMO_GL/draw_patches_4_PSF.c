@@ -62,7 +62,8 @@ static void const_PSF_arrow_buffer(const int nthreads,
     long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            num_patch = add_num_psf_arrows(num_patch, nthreads, ncorner,
+            num_patch = add_num_psf_arrows(num_patch, 0, psf_s[i]->nnod_viz, 
+                                           nthreads, ncorner,
                                            psf_s[i], psf_m[i], 
                                            istack_smp_psf_arrow[i]);
         };
@@ -76,7 +77,8 @@ static void const_PSF_arrow_buffer(const int nthreads,
     long inum_buf = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         if(psf_a->iflag_loaded[i]*psf_m[i]->draw_psf_vect != 0){
-            inum_buf = set_psf_arrows_to_buf(inum_buf, nthreads, istack_smp_psf_arrow[i],
+            inum_buf = set_psf_arrows_to_buf(inum_buf, 0, psf_s[i]->nnod_viz, 
+                                             nthreads, istack_smp_psf_arrow[i],
                                              ncorner, psf_s[i], psf_m[i],
                                              psf_buf, para_point_buf[0]);
         };

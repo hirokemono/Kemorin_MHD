@@ -207,27 +207,28 @@ void set_psf_map_to_buf(long ist_psf, long ied_psf,
 	return;
 }
 
-
-long add_num_psf_arrows(long inum_buf, const int nthreads, int ncorner,
+long add_num_psf_arrows(long ist_patch, long ist, long ied,
+                        const int nthreads, int ncorner,
                         struct psf_data *psf_s, struct psf_menu_val *psf_m,
-                        long *istack_smp_psf_arrow);
-	int inod;
-	
-	long inum_buf = 0;
-	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
-		if (inod % psf_m->increment_vect == 0) {
-			if(psf_s->norm_nod[4*inod  ] != 0.0
-						|| psf_s->norm_nod[4*inod+1] !=0.0
-						|| psf_s->norm_nod[4*inod+2] !=0.0){
-				inum_buf = inum_buf + ncorner;
-			};
-		};
-	};
-	
-	return inum_buf;
+                        long *istack_smp_psf_arrow){
+    long inod;
+    long inum_buf = ist_patch;
+    for(inod = ist; inod < ied; inod++){
+        if (inod % psf_m->increment_vect == 0) {
+            if(psf_s->norm_nod[4*inod  ] != 0.0
+                        || psf_s->norm_nod[4*inod+1] !=0.0
+                        || psf_s->norm_nod[4*inod+2] !=0.0){
+                inum_buf = inum_buf + ncorner;
+            };
+        };
+    };
+    
+    return inum_buf;
 }
 
-long set_psf_arrows_to_buf(long ist_patch, const int nthreads, long *istack_smp_psf_arrow, 
+
+long set_psf_arrows_to_buf(long ist_patch, long ist, long ied,
+                           const int nthreads, long *istack_smp_psf_arrow, 
                            int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m,
                            struct gl_strided_buffer *strided_buf,
                            struct gl_local_buffer_address *point_buf){
@@ -238,8 +239,8 @@ long set_psf_arrows_to_buf(long ist_patch, const int nthreads, long *istack_smp_
 	
 	double v_tmp[3], v_xyz[3], x_rtp[3], d_mag;
     
-	int inod, k, nd;
-    long inum_buf, i;
+	int k, nd;
+    long inod, inum_buf, i;
 	
 	long icomp = psf_s->istack_comp[psf_m->if_draw_psf];
 	double radius = psf_m->vector_thick;
@@ -250,7 +251,7 @@ long set_psf_arrows_to_buf(long ist_patch, const int nthreads, long *istack_smp_
     struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
 
     inum_buf = ist_patch;
-	for (inod = 0; inod < psf_s->nnod_viz; inod++) {
+    for(inod = ist; inod < ied; inod++){
 		if (inod % psf_m->increment_vect == 0) {
             if(psf_s->norm_nod[4*inod  ] != 0.0
                || psf_s->norm_nod[4*inod+1] !=0.0
